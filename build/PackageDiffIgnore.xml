@@ -12105,12 +12105,6 @@
 				fullName="System.Void Windows.UI.Xaml.Controls.HubSectionCollection.set_IsReadOnly(System.Boolean value)"
 				reason="API alignment" />
 			<Member
-				fullName="System.Boolean Windows.UI.Xaml.Controls.RichTextBlock.Focus(Windows.UI.Xaml.FocusState value)"
-				reason="API alignment" />
-			<Member
-				fullName="System.Boolean Windows.UI.Xaml.Controls.TextBlock.Focus(Windows.UI.Xaml.FocusState value)"
-				reason="API alignment" />
-			<Member
 				fullName="System.Void Windows.UI.Xaml.Media.BrushCollection.set_Count(System.Int32 value)"
 				reason="API alignment" />
 			<Member
@@ -12136,6 +12130,592 @@
 				reason="API alignment" />
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Media.Animation.TransitionCollection.set_IsReadOnly(System.Boolean value)"
+				reason="API alignment" />
+
+			<Member
+				fullName="System.Void Windows.Web.WebError..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Web.Syndication.SyndicationError..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.WebUI.WebUIApplication..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.WebUI.WebUIBackgroundTaskInstance..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.ViewManagement.ApplicationViewSwitcher..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.ViewManagement.ProjectionManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Text.TextConstants..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Text.Core.CoreTextServicesConstants..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Shell.AdaptiveCardBuilder..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Notifications.BadgeUpdateManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Notifications.KnownAdaptiveNotificationHints..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Notifications.KnownAdaptiveNotificationTextStyles..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Notifications.KnownNotificationBindings..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Notifications.TileFlyoutUpdateManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Notifications.TileUpdateManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Notifications.ToastNotificationManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Input.Preview.InputActivationListenerPreview..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.KnownUserProperties..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.MemoryManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.RemoteLauncher..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.UserDeviceAssociation..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.UserProfile.AdvertisingManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.Threading.ThreadPool..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.RemoteSystems.KnownRemoteSystemCapabilities..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.RemoteSystems.RemoteSystemKinds..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.RemoteDesktop.InteractiveSession..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.Profile.AppApplicability..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.Profile.EducationSettings..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.Profile.PlatformDiagnosticsAndUsageDataSettings..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.Profile.SystemIdentification..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.Profile.SystemSetupInfo..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.Profile.WindowsIntegrityPolicy..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.Power.BackgroundEnergyManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.Power.ForegroundEnergyManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.Power.PowerManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.Power.Diagnostics.BackgroundEnergyDiagnostics..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.Power.Diagnostics.ForegroundEnergyDiagnostics..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticActions..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.Diagnostics.Telemetry.PlatformTelemetryClient..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Storage.DownloadsFolder..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Storage.SystemProperties..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Storage.Streams.RandomAccessStream..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Storage.Provider.CachedFileUpdater..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Storage.FileProperties.GeotagHelper..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Storage.AccessCache.StorageApplicationPermissions..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Services.Maps.MapManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Services.Maps.MapRouteFinder..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Services.Maps.MapService..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Cryptography.CryptographicBuffer..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Cryptography.Core.AsymmetricAlgorithmNames..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Cryptography.Core.CryptographicEngine..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Cryptography.Core.EccCurveNames..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Cryptography.Core.HashAlgorithmNames..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Cryptography.Core.KeyDerivationAlgorithmNames..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Cryptography.Core.MacAlgorithmNames..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Cryptography.Core.PersistedKeyProvider..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Cryptography.Core.SymmetricAlgorithmNames..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Cryptography.Certificates.CertificateEnrollmentManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Cryptography.Certificates.CertificateStores..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Cryptography.Certificates.KeyAlgorithmNames..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Cryptography.Certificates.KeyAttestationHelper..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Cryptography.Certificates.KeyStorageProviderNames..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Cryptography.Certificates.StandardCertificateStoreNames..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Credentials.KeyCredentialManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Credentials.UI.CredentialPicker..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Credentials.UI.UserConsentVerifier..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Authentication.Web.Provider.WebAccountManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Authentication.Web.Core.WebAuthenticationCoreManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Security.Authentication.OnlineId.OnlineIdSystemAuthenticator..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Phone.UI.Input.HardwareButtons..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Phone.System.SystemProtection..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Phone.System.UserProfile.GameServices.Core.GameService..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Phone.System.Profile.RetailMode..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Phone.System.Power.PowerManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Phone.PersonalInformation.KnownContactProperties..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Phone.PersonalInformation.Provisioning.ContactPartnerProvisioningManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Phone.PersonalInformation.Provisioning.MessagePartnerProvisioningManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Phone.Notification.Management.AccessoryManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Phone.Management.Deployment.EnterpriseEnrollmentManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Phone.Management.Deployment.InstallationManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Phone.ApplicationModel.ApplicationProfile..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Perception.PerceptionTimestampHelper..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Perception.Spatial.SpatialAnchorManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Perception.Spatial.SpatialAnchorTransferManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Perception.Spatial.Preview.SpatialGraphInteropPreview..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Networking.Sockets.SocketError..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Networking.Sockets.WebSocketError..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Networking.PushNotifications.PushNotificationChannelManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Networking.Proximity.PeerFinder..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Networking.NetworkOperators.ESimManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Networking.NetworkOperators.KnownCSimFilePaths..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Networking.NetworkOperators.KnownRuimFilePaths..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Networking.NetworkOperators.KnownSimFilePaths..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Networking.NetworkOperators.KnownUSimFilePaths..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Networking.Connectivity.ConnectivityManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Networking.BackgroundTransfer.BackgroundTransferError..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Networking.BackgroundTransfer.ContentPrefetcher..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.MediaMarkerTypes..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.VideoEffects..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.SpeechRecognition.VoiceCommandManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.Protection.PlayReady.PlayReadyContentResolver..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.Protection.PlayReady.PlayReadyLicenseManagement..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.Protection.PlayReady.PlayReadyStatics..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.Playback.BackgroundMediaPlayer..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.MediaProperties.H264ProfileIds..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.MediaProperties.MediaEncodingSubtypes..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.MediaProperties.Mpeg2ProfileIds..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.Import.PhotoImportManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.Effects.AudioEffectsManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.Devices.MediaDevice..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.Core.CodecSubtypes..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.Core.LowLightFusion..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.Core.Preview.SoundLevelBroker..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.ClosedCaptioning.ClosedCaptionProperties..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Media.Audio.SpatialAudioFormatSubtype..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Management.MdmSessionManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Management.Workplace.MdmPolicy..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Management.Policies.NamedPolicy..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Graphics.Printing.StandardPrintTaskOptions..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Graphics.Display.DisplayProperties..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Globalization.CalendarIdentifiers..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Globalization.CurrencyIdentifiers..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Globalization.NumeralSystemIdentifiers..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Gaming.UI.GameBar..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Gaming.Input.Custom.GameControllerFactoryManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Foundation.Diagnostics.AsyncCausalityTracer..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.PointOfService.BarcodeSymbologies..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.PointOfService.MagneticStripeReaderCardTypes..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.PointOfService.MagneticStripeReaderEncryptionAlgorithms..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.PointOfService.PosPrinterCharacterSetIds..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.Perception.KnownCameraIntrinsicsProperties..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.Perception.KnownPerceptionColorFrameSourceProperties..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.Perception.KnownPerceptionDepthFrameSourceProperties..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.Perception.KnownPerceptionFrameSourceProperties..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.Perception.KnownPerceptionInfraredFrameSourceProperties..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.Perception.KnownPerceptionVideoFrameSourceProperties..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.Perception.KnownPerceptionVideoProfileProperties..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.Perception.Provider.KnownPerceptionFrameKind..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.Perception.Provider.PerceptionFrameProviderManagerService..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.AllJoyn.AllJoynStatus..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.Bluetooth.BluetoothLEAppearanceSubcategories..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.Bluetooth.BluetoothUuidHelper..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicUuids..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorUuids..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormatTypes..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceUuids..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Data.Text.UnicodeCharacters..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Data.Json.JsonError..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Data.Html.HtmlUtilities..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.CameraApplicationManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.LimitedAccessFeatures..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Wallet.WalletManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Wallet.System.WalletManagerSystem..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinitionManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.UserDataAccounts.UserDataAccountManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.UserDataAccounts.SystemAccess.UserDataAccountSystemAccessManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.UserActivities.Core.CoreUserActivityManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Store.CurrentApp..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Store.CurrentAppSimulator..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Store.Preview.StoreConfiguration..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Store.Preview.StorePreview..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Store.LicenseManagement.LicenseManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Preview.Holographic.HolographicApplicationPreview..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.AppService.AppServiceCatalog..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Email.EmailManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.StandardDataFormats..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.HtmlFormatHelper..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.DataTransfer.SharedStorageAccessManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Core.CoreApplication..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Contacts.ContactLaunchActionVerbs..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Contacts.ContactManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Contacts.KnownContactField..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Chat.ChatCapabilitiesManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Chat.ChatMessageBlocking..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Chat.ChatMessageManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Chat.RcsManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Calls.PhoneCallBlocking..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Calls.PhoneCallHistoryManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Calls.PhoneCallVideoCapabilitiesManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Calls.Provider.PhoneCallOriginManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Background.BackgroundExecutionManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Background.BackgroundWorkCost..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Appointments.AppointmentProperties..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Appointments.AppointmentManager..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Appointments.AppointmentsProvider.AppointmentsProviderLaunchActionVerbs..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Foundation.Metadata.ApiInformation..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Maps.MapStyleSheetEntries..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Maps.MapStyleSheetEntryStates..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.System.UserProfile.GlobalizationPreferences..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Storage.KnownFolders..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.Services.Maps.MapLocationFinder..ctor()"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Calls.PhoneCallManager..ctor()"
 				reason="API alignment" />
 		</Methods>
 		<Events>
@@ -13169,6 +13749,7 @@
 			<Member
 				fullName="Windows.UI.Core.CoreDispatcher Windows.UI.Core.CoreDispatcher::Main()"
 				reason="API alignment" />
+
 			<Member
 				fullName="Windows.UI.Xaml.Controls.ListViewBase Windows.UI.Xaml.Controls.VirtualizingPanelLayout::XamlParent()"
 				reason="Make non-standard property internal" />
