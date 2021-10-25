@@ -6,7 +6,7 @@ jobs:
   displayName: 'Build Generic Binaries'
   timeoutInMinutes: 90
   
-  dependsOn: Commitsar
+  dependsOn: Pipeline_Validations
 
   pool: ${{ parameters.poolName }}
 
