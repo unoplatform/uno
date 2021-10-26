@@ -33,9 +33,9 @@ namespace Windows.UI.Xaml.Controls
 			Visual.Children.InsertAtTop(_imageSprite);
 		}
 
-		partial void OnSourceChanged(DependencyPropertyChangedEventArgs e)
+		partial void OnSourceChanged(ImageSource newValue)
 		{
-			if (e.NewValue is ImageSource source)
+			if (newValue is ImageSource source)
 			{
 				_sourceDisposable.Disposable = source.Subscribe(img =>
 				{

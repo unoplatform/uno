@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Specialized;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
@@ -10,6 +11,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
+using System.Collections.ObjectModel;
+
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -314,5 +317,81 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			comboBox.Items.Add(new ComboBoxItem());
 			Assert.AreEqual(-1, comboBox.SelectedIndex); // Will no longer become 2
 		}
+
+		[TestMethod]
+		public async Task When_Collection_Reset()
+		{
+			var SUT = new ComboBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+
+				var c = new MyObservableCollection<string>();
+				c.Add("One");
+				c.Add("Two");
+				c.Add("Three");
+
+				SUT.ItemsSource = c;
+
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(SUT.Items.Count, 3);
+
+				using (c.BatchUpdate())
+				{
+					c.Add("Four");
+					c.Add("Five");
+				}
+
+				SUT.IsDropDownOpen = true;
+
+				// Items are materialized when the popup is opened
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(SUT.Items.Count, 5);
+				Assert.IsNotNull(SUT.ContainerFromItem("One"));
+				Assert.IsNotNull(SUT.ContainerFromItem("Four"));
+				Assert.IsNotNull(SUT.ContainerFromItem("Five"));
+			}
+			finally
+			{
+				SUT.IsDropDownOpen = false;
+			}
+		}
+
+		public class MyObservableCollection<TType> : ObservableCollection<TType>
+		{
+			private int _batchUpdateCount;
+
+			public IDisposable BatchUpdate()
+			{
+				++_batchUpdateCount;
+
+				return Uno.Disposables.Disposable.Create(Release);
+
+				void Release()
+				{
+					if (--_batchUpdateCount <= 0)
+					{
+						OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+					}
+				}
+			}
+
+			protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+			{
+				if (_batchUpdateCount > 0)
+				{
+					return;
+				}
+
+				base.OnCollectionChanged(e);
+			}
+
+			public void Append(TType item) => Add(item);
+
+			public TType GetAt(int index) => this[index];
+		}
+
 	}
 }

@@ -162,10 +162,10 @@ This guide will walk you through the necessary steps to setup and to use the [`U
                             </DataTemplate>
                         </material:Card.SupportingContentTemplate>
                     </material:Card>
-                    <material:ChipGroup SelectionMode="Multiple" Style="{StaticResource MaterialChipGroupStyle}">
-                        <material:Chip Content="Uno" Style="{StaticResource MaterialChipStyle}" />
-                        <material:Chip Content="Material" Style="{StaticResource MaterialChipStyle}" />
-                        <material:Chip Content="Controls" Style="{StaticResource MaterialChipStyle}" />
+                    <material:ChipGroup SelectionMode="Multiple" Style="{StaticResource MaterialFilledInputChipGroupStyle}">
+                        <material:Chip Content="Uno" />
+                        <material:Chip Content="Material" />
+                        <material:Chip Content="Controls" />
                     </material:ChipGroup>
                 </StackPanel>
             </ScrollViewer>

@@ -70,6 +70,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Is this view the top of the managed visual tree
 		/// </summary>
+		/// <remarks>This differs from the XamlRoot be being true for the root element of a native Popup.</remarks>
 		internal bool IsVisualTreeRoot { get; set; }
 
 		private void Initialize()
@@ -298,7 +299,7 @@ namespace Windows.UI.Xaml
 
 		internal static Matrix3x2 GetTransform(UIElement from, UIElement to)
 		{
-			var logInfoString = from.Log().IsEnabled(LogLevel.Information) ? new StringBuilder() : null;
+			var logInfoString = from.Log().IsEnabled(LogLevel.Debug) ? new StringBuilder() : null;
 			logInfoString?.Append($"{nameof(GetTransform)}(from: {from}, to: {to?.ToString() ?? "<null>"}) Offsets: [");
 
 			if (from == to)
@@ -344,35 +345,22 @@ namespace Windows.UI.Xaml
 					offsetY = layoutSlot.Y;
 				}
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-				// On Skia, the Scrolling is managed by the ScrollContentPresenter (as UWP), which is flagged as IsScrollPort.
-				// Note: We should still add support for the zoom factor ... which is not yet supported on Skia.
+#if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling and zooming which has already been included.
 				if (elt is ScrollViewer sv
 					// Don't adjust for scroll offsets if it's the ScrollViewer itself calling TransformToVisual
-					&& elt != from
-				)
+					&& elt != from)
 				{
+					// Scroll offsets are handled at SCP level using the IsScrollPort
+
 					var zoom = sv.ZoomFactor;
 					if (zoom != 1)
 					{
 						matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
 						matrix *= Matrix3x2.CreateScale(zoom);
-
-						offsetX = -sv.HorizontalOffset;
-						offsetY = -sv.VerticalOffset;
-					}
-					else
-					{
-						offsetX -= sv.HorizontalOffset;
-						offsetY -= sv.VerticalOffset;
 					}
 				}
-				else
-#endif
-#if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling which has already been included.
-				if (elt.IsScrollPort
-					// Don't adjust for scroll offsets if it's the scroll port itself calling TransformToVisual, only for ancestors
-					&& elt != from) // Custom scroller
+
+				if (elt.IsScrollPort) // Managed SCP or custom scroller
 				{
 					offsetX -= elt.ScrollOffsets.X;
 					offsetY -= elt.ScrollOffsets.Y;
@@ -398,7 +386,7 @@ namespace Windows.UI.Xaml
 			if (logInfoString != null)
 			{
 				logInfoString.Append($"], matrix: {matrix}");
-				from.Log().LogInformation(logInfoString.ToString());
+				from.Log().LogDebug(logInfoString.ToString());
 			}
 			return matrix;
 		}
@@ -676,11 +664,21 @@ namespace Windows.UI.Xaml
 		/// Backing property for <see cref="LayoutInformation.GetLayoutSlot(FrameworkElement)"/>
 		/// </summary>
 		Rect IUIElement.LayoutSlot { get; set; }
+
 		/// <summary>
-		/// Gets the 'finalSize' of the last Arrange
+		/// Gets the 'finalSize' of the last Arrange.
+		/// Be aware that it's the rect provided by the parent, **before** margins and alignment are being applied,
+		/// so the size of that rect can be different to the size get in the `ArrangeOverride`.
 		/// </summary>
+		/// <remarks>This is expressed in parent's coordinate space.</remarks>
 		internal Rect LayoutSlot => ((IUIElement)this).LayoutSlot;
 
+		/// <summary>
+		/// This is the <see cref="LayoutSlot"/> **after** margins and alignments has been applied.
+		/// It's somehow the region into which an element renders itself in its parent (before any RenderTransform).
+		/// This is the 'finalRect' of the last Arrange.
+		/// </summary>
+		/// <remarks>This is expressed in parent's coordinate space.</remarks>
 		internal Rect LayoutSlotWithMarginsAndAlignments { get; set; } = default;
 
 		internal bool NeedsClipToSlot { get; set; }
@@ -704,16 +702,16 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public Size RenderSize { get; internal set; }
 
-		public virtual void Measure(Size availableSize)
-		{
-		}
-
 #if !UNO_REFERENCE_API
 		/// <summary>
 		/// This is the Frame that should be used as "available Size" for the Arrange phase.
 		/// </summary>
 		internal Rect? ClippedFrame;
 #endif
+
+		public virtual void Measure(Size availableSize)
+		{
+		}
 
 		public virtual void Arrange(Rect finalRect)
 		{
@@ -759,7 +757,7 @@ namespace Windows.UI.Xaml
 			{
 				// This currently doesn't support nested scrolling.
 				// This currently doesn't support BringIntoViewOptions.AnimationDesired.
-				var scrollContentPresenter = this.FindFirstParent<IScrollContentPresenter>();
+				var scrollContentPresenter = this.FindFirstParent<ScrollContentPresenter>();
 				scrollContentPresenter?.MakeVisible(this, options.TargetRect ?? Rect.Empty);
 			});
 #endif

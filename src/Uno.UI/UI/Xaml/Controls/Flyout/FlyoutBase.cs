@@ -69,6 +69,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				{
 					Child = child,
 					IsLightDismissEnabled = _isLightDismissEnabled,
+					IsForFlyout = true,
 				};
 
 				SynchronizePropertyToPopup(Popup.TemplatedParentProperty, TemplatedParent);

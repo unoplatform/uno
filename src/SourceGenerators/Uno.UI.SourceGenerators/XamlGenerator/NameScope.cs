@@ -36,7 +36,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public Dictionary<string, Subclass> Subclasses { get; } = new Dictionary<string, Subclass>();
 
-		public List<XamlObjectDefinition> Components { get; } = new List<XamlObjectDefinition>();
+		public List<ComponentDefinition> Components { get; } = new List<ComponentDefinition>();
 
 		public List<XamlObjectDefinition> XBindExpressions { get; } = new List<XamlObjectDefinition>();
 

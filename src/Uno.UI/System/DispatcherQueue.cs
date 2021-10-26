@@ -2,7 +2,7 @@
 using System;
 using Windows.UI.Core;
 
-namespace Microsoft.System
+namespace Microsoft.UI.Dispatching
 {
 	public partial class DispatcherQueue
 	{

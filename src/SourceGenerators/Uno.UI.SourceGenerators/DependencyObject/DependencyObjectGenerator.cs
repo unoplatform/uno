@@ -27,7 +27,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 		public void Execute(GeneratorExecutionContext context)
 		{
-
 			if (PlatformHelper.IsValidPlatform(context))
 			{
 				var visitor = new SerializationMethodsGenerator(context);
@@ -71,6 +70,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			public override void VisitNamedType(INamedTypeSymbol type)
 			{
+				_context.CancellationToken.ThrowIfCancellationRequested();
+
 				foreach (var t in type.GetTypeMembers())
 				{
 					VisitNamedType(t);
@@ -81,11 +82,15 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			public override void VisitModule(IModuleSymbol symbol)
 			{
+				_context.CancellationToken.ThrowIfCancellationRequested();
+
 				VisitNamespace(symbol.GlobalNamespace);
 			}
 
 			public override void VisitNamespace(INamespaceSymbol symbol)
 			{
+				_context.CancellationToken.ThrowIfCancellationRequested();
+
 				foreach (var n in symbol.GetNamespaceMembers())
 				{
 					VisitNamespace(n);
@@ -99,6 +104,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			private void ProcessType(INamedTypeSymbol typeSymbol)
 			{
+				_context.CancellationToken.ThrowIfCancellationRequested();
+
 				if (typeSymbol.TypeKind != TypeKind.Class)
 				{
 					return;
@@ -150,13 +157,13 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 					using (builder.BlockInvariant($"namespace {typeSymbol.ContainingNamespace}"))
 					{
-						if (_bindableAttributeSymbol != null && typeSymbol.FindAttribute(_bindableAttributeSymbol) == null)
-						{
-							builder.AppendLineInvariant(@"[global::Windows.UI.Xaml.Data.Bindable]");
-						}
-
 						using (GenerateNestingContainers(builder, typeSymbol))
 						{
+							if (_bindableAttributeSymbol != null && typeSymbol.FindAttribute(_bindableAttributeSymbol) == null)
+							{
+								builder.AppendLineInvariant(@"[global::Windows.UI.Xaml.Data.Bindable]");
+							}
+
 							using (builder.BlockInvariant($"partial class {typeSymbol.Name} : IDependencyObjectStoreProvider, IWeakReferenceProvider"))
 							{
 								GenerateDependencyObjectImplementation(builder);
@@ -852,7 +859,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				builder.AppendLineInvariant(@"public Windows.UI.Core.CoreDispatcher Dispatcher => Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher;");
 
 				builder.AppendLineInvariant(@"#if HAS_UNO_WINUI");
-				builder.AppendLineInvariant(@"public global::Microsoft.System.DispatcherQueue DispatcherQueue => global::Microsoft.System.DispatcherQueue.GetForCurrentThread();");
+				builder.AppendLineInvariant(@"public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue => global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();");
 				builder.AppendLineInvariant(@"#endif");
 
 				using (builder.BlockInvariant($"private DependencyObjectStore __Store"))

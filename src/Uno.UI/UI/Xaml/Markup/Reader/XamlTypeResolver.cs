@@ -322,7 +322,7 @@ namespace Windows.UI.Xaml.Markup.Reader
                         .FirstOrDefault()
                         .SelectOrDefault(n => n.Namespace);
 
-                var clrNamespaces = KnownNamespaces.UnoGetValueOrDefault(defaultXmlNamespace, new string[0]);
+                var clrNamespaces = KnownNamespaces.UnoGetValueOrDefault(defaultXmlNamespace, Array.Empty<string>());
 
                 // Search first using the default namespace
                 foreach (var clrNamespace in clrNamespaces)
@@ -399,7 +399,7 @@ namespace Windows.UI.Xaml.Markup.Reader
             // Search for the type the clr namespaces registered with the xml namespace
             if (xamlMember.DeclaringType != null)
             {
-                var clrNamespaces = KnownNamespaces.UnoGetValueOrDefault(xamlMember.DeclaringType.PreferredXamlNamespace, new string[0]);
+                var clrNamespaces = KnownNamespaces.UnoGetValueOrDefault(xamlMember.DeclaringType.PreferredXamlNamespace, Array.Empty<string>());
 
                 foreach (var clrNamespace in clrNamespaces)
                 {

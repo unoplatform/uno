@@ -21,7 +21,7 @@ namespace Windows.UI.Popups
 	{
 		const int MaximumCommands = 3;
 
-		private void ShowInner(CancellationToken ct, TaskCompletionSource<IUICommand> invokedCommand)
+		private async Task<IUICommand> ShowInner(CancellationToken ct)
 		{
 			// Android recommends placing buttons in this order:
 			//  1) positive (default accept)
@@ -30,6 +30,7 @@ namespace Windows.UI.Popups
 			// For the moment, we respect instead the order they were added in Commands,
 			// just like under Windows.
 
+			var result = new TaskCompletionSource<IUICommand>();
 			var dialog = Commands
 				.Where(command => !(command is UICommandSeparator)) // Not supported on Android
 				.DefaultIfEmpty(new UICommand("Close")) // TODO: Localize (PBI 28711)
@@ -44,7 +45,7 @@ namespace Windows.UI.Popups
 					new global::AndroidX.AppCompat.App.AlertDialog.Builder(ContextHelper.Current)
 						.SetTitle(Title ?? "")
 						.SetMessage(Content ?? "")
-						.SetOnCancelListener(new DialogListener(this, invokedCommand))
+						.SetOnCancelListener(new DialogListener(this, result))
 						.SetCancelable(false)
 						.Create(),
 					(alertDialog, commandInfo) =>
@@ -55,21 +56,22 @@ namespace Windows.UI.Popups
 							(_, __) =>
 							{
 								commandInfo.Command.Invoked?.Invoke(commandInfo.Command);
-								invokedCommand.TrySetResult(commandInfo.Command);
+								result.TrySetResult(commandInfo.Command);
 							}
 						);
 						return alertDialog;
 					}
 				);
 
-			using (ct.Register(() =>
+			await using (ct.Register(() =>
 			{
 				// If the cancellation token itself gets cancelled, we cancel as well.
-				invokedCommand.TrySetCanceled();
+				result.TrySetCanceled();
 				dialog.Dismiss();
 			}))
 			{
 				dialog.Show();
+				return await result.Task;
 			}
 		}
 

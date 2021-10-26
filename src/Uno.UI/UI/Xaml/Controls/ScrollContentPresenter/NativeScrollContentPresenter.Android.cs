@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		private ScrollBarVisibility _verticalScrollBarVisibility;
 		public ScrollBarVisibility VerticalScrollBarVisibility
 		{
-			get { return _verticalScrollBarVisibility; }
+			get => _verticalScrollBarVisibility;
 			set
 			{
 				_verticalScrollBarVisibility = value;
@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml.Controls
 		public ScrollBarVisibility _horizontalScrollBarVisibility;
 		public ScrollBarVisibility HorizontalScrollBarVisibility
 		{
-			get { return _horizontalScrollBarVisibility; }
+			get => _horizontalScrollBarVisibility;
 			set
 			{
 				_horizontalScrollBarVisibility = value;
@@ -208,7 +208,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					var desiredChildSize = LayoutInformation.GetDesiredSize(child);
 
-					var occludedPadding = ScrollContentPresenter._occludedRectPadding;
+					var occludedPadding = ScrollContentPresenter._padding;
 					slotSize.Width -= occludedPadding.Left + occludedPadding.Right;
 					slotSize.Height -= occludedPadding.Top + occludedPadding.Bottom;
 
@@ -235,12 +235,37 @@ namespace Windows.UI.Xaml.Controls
 			protected override string Name => Panel.Name;
 		}
 
+		#region Managed to native
+		private Thickness _padding;
+		Thickness INativeScrollContentPresenter.Padding
+		{
+			get => _padding;
+			set
+			{
+				_padding = value;
+				UpdatePadding();
+			}
+		}
+
+		void INativeScrollContentPresenter.SmoothScrollBy(int physicalDeltaX, int physicalDeltaY)
+			=> SmoothScrollBy(physicalDeltaX, physicalDeltaY);
+
+		bool INativeScrollContentPresenter.Set(
+			double? horizontalOffset,
+			double? verticalOffset,
+			float? zoomFactor,
+			bool disableAnimation,
+			bool isIntermediate)
+			=> throw new NotImplementedException(); 
+		#endregion
+
+		#region Native to managed
 		protected override void OnScrollChanged(int scrollX, int scrollY, bool isIntermediate)
 		{
 			// Does nothing, so avoid useless interop!
 			// base.OnScrollChanged(scrollX, scrollY, isIntermediate);
 
-			ScrollOwner?.OnScrollInternal(
+			ScrollOwner?.Presenter?.OnNativeScroll(
 				ViewHelper.PhysicalToLogicalPixels(scrollX),
 				ViewHelper.PhysicalToLogicalPixels(scrollY),
 				isIntermediate
@@ -249,53 +274,9 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnZoomScaleChanged(float p0, float p1)
 		{
-			ScrollOwner?.OnZoomInternal(p1);
-		}
-
-		public Rect MakeVisible(UIElement visual, Rect rectangle)
-		{
-			if (visual is FrameworkElement fe)
-			{
-				var scrollRect = new Rect(
-					_occludedRectPadding.Left,
-					_occludedRectPadding.Top,
-					ActualWidth - _occludedRectPadding.Right,
-					ActualHeight - _occludedRectPadding.Bottom
-				);
-
-				var visualPoint = UIElement.TransformToVisual(visual, this).TransformPoint(new Point());
-				var visualRect = new Rect(visualPoint, new Size(fe.ActualWidth, fe.ActualHeight));
-
-				var deltaX = Math.Min(visualRect.Left - scrollRect.Left, Math.Max(0, visualRect.Right - scrollRect.Right));
-				var deltaY = Math.Min(visualRect.Top - scrollRect.Top, Math.Max(0, visualRect.Bottom - scrollRect.Bottom));
-
-				SmoothScrollBy(
-					ViewHelper.LogicalToPhysicalPixels(deltaX),
-					ViewHelper.LogicalToPhysicalPixels(deltaY)
-				);
-			}
-
-			return rectangle;
-		}
-
-		IDisposable IScrollContentPresenter.Pad(Rect occludedRect)
-		{
-			var viewPortPoint = UIElement.TransformToVisual(this, null).TransformPoint(new Point());
-			var viewPortSize = new Size(ActualWidth, ActualHeight);
-			var viewPortRect = new Rect(viewPortPoint, viewPortSize);
-			var intersection = viewPortRect;
-			intersection.Intersect(occludedRect);
-			if (intersection.IsEmpty)
-			{
-				SetOccludedRectPadding(new Thickness());
-			}
-			else
-			{
-				SetOccludedRectPadding(new Thickness(0, 0, 0, intersection.Height));
-			}
-
-			return Disposable.Create(() => SetOccludedRectPadding(new Thickness()));
-		}
+			ScrollOwner?.Presenter?.OnNativeZoom(p1);
+		} 
+		#endregion
 
 		private Thickness _childMargin;
 		private void SetChildMargin(Thickness childMargin)
@@ -307,21 +288,13 @@ namespace Windows.UI.Xaml.Controls
 			UpdatePadding();
 		}
 
-		private Thickness _occludedRectPadding;
-
-		private void SetOccludedRectPadding(Thickness occludedRectPadding)
-		{
-			_occludedRectPadding = occludedRectPadding;
-			UpdatePadding();
-		}
-
 		private void UpdatePadding()
 		{
 			SetPadding(
-				ViewHelper.LogicalToPhysicalPixels(_occludedRectPadding.Left + _childMargin.Left),
-				ViewHelper.LogicalToPhysicalPixels(_occludedRectPadding.Top + _childMargin.Top),
-				ViewHelper.LogicalToPhysicalPixels(_occludedRectPadding.Right + _childMargin.Right),
-				ViewHelper.LogicalToPhysicalPixels(_occludedRectPadding.Bottom + _childMargin.Bottom)
+				ViewHelper.LogicalToPhysicalPixels(_padding.Left + _childMargin.Left),
+				ViewHelper.LogicalToPhysicalPixels(_padding.Top + _childMargin.Top),
+				ViewHelper.LogicalToPhysicalPixels(_padding.Right + _childMargin.Right),
+				ViewHelper.LogicalToPhysicalPixels(_padding.Bottom + _childMargin.Bottom)
 			);
 		}
 	}

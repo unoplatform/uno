@@ -7,7 +7,7 @@ using Uno.Extensions;
 using Uno.Logging;
 using Windows.Foundation;
 
-namespace Microsoft.System
+namespace Microsoft.UI.Dispatching
 {
 	public partial class DispatcherQueueTimer
 	{

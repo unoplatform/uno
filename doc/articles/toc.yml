@@ -117,6 +117,15 @@
               href: interop/wasm-javascript-2.md
             - name: Part 3
               href: interop/wasm-javascript-3.md
+        - name: Deploy to Raspberry Pi
+          topicHref: guides/raspberry-pi/raspberry-pi-intro.md
+          items:
+            - name: Get Started
+              href: guides/raspberry-pi/raspberry-pi-intro.md
+            - name: Create a GPIO control interface
+              href: guides/raspberry-pi/raspberry-pi-gpio.md
+            - name: Connect to Azure IoT
+              href: guides/raspberry-pi/raspberry-pi-azure.md
     - name: Other examples
       items:
         - name: Uno.Samples

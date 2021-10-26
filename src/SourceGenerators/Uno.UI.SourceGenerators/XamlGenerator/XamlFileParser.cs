@@ -74,6 +74,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				return null;
 			}
+			catch (OperationCanceledException)
+			{
+				throw;
+			}
 			catch (__uno::Uno.Xaml.XamlParseException e)
 			{
 				throw new XamlParsingException(e.Message, null, e.LineNumber, e.LinePosition, file);

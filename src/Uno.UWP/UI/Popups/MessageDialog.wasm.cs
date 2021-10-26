@@ -17,7 +17,7 @@ namespace Windows.UI.Popups
 
 		public IAsyncOperation<IUICommand> ShowAsync()
 		{
-			VisualTreeHelperProxy.CloseAllPopups();
+			VisualTreeHelperProxy.CloseAllFlyouts();
 
 			var command = $"Uno.UI.WindowManager.current.alert(\"{Uno.Foundation.WebAssemblyRuntime.EscapeJs(Content)}\");";
 			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);

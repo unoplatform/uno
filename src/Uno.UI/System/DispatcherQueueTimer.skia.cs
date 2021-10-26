@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.System.Threading;
 
-namespace Microsoft.System
+namespace Microsoft.UI.Dispatching
 {
 	partial class DispatcherQueueTimer
 	{

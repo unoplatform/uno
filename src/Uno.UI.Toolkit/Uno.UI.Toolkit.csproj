@@ -89,12 +89,12 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net5.0-windows10.0.18362.0' or '$(TargetFramework)'=='uap10.0.17763'">
-		<PackageReference Include="Microsoft.ProjectReunion" Condition="'$(UNO_UWP_BUILD)'!='true'">
-			<Version>0.5.6</Version>
+		<PackageReference Include="Microsoft.WindowsAppSDK" Condition="'$(UNO_UWP_BUILD)'!='true'">
+			<Version>1.0.0-preview2</Version>
 		</PackageReference>
 
-		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.18362.16" Condition="'$(UNO_UWP_BUILD)'!='true'" />
-		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.18362.16" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.18362.21" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.18362.21" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 
 		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI\Extensions\DependencyObjectExtensions.cs">
 			<Link>Uno.UI\Extensions\%(RecursiveDir)%(FileName)%(Extension)</Link>

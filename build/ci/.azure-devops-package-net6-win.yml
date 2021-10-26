@@ -8,7 +8,7 @@ jobs:
 
   pool: ${{ parameters.poolName }}
   
-  dependsOn: Commitsar
+  dependsOn: Pipeline_Validations
 
   strategy:
     matrix:

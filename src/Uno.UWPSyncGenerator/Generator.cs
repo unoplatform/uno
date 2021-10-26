@@ -85,8 +85,14 @@ namespace Uno.UWPSyncGenerator
 
 			var origins = from externalRedfs in _referenceCompilation.ExternalReferences
 						  where Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Foundation")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.WinUI")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI")
-						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.System")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Text")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.Foundation")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Composition")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Dispatching")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Input")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI.Windowing")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.ApplicationModel.Resources")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.Graphics")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Phone.PhoneContract")
@@ -102,9 +108,12 @@ namespace Uno.UWPSyncGenerator
 			var unoUINamespaces = new[] {
 				"Windows.UI.Xaml",
 #if HAS_UNO_WINUI
+				"Microsoft.Foundation",
 				"Microsoft.UI.Xaml",
 				"Microsoft.UI.Composition",
+				"Microsoft.UI.Dispatching",
 				"Microsoft.UI.Text",
+				"Microsoft.UI.Windowing",
 				"Microsoft.UI.Input",
 				"Microsoft.System",
 				"Microsoft.Graphics",
@@ -187,25 +196,26 @@ namespace Uno.UWPSyncGenerator
 			{
 				return @"..\..\..\Uno.Foundation\Generated\2.0.0.0";
 			}
-			else if (!(
+			else if (
 				type.ContainingNamespace.ToString().StartsWith("Windows.UI.Xaml")
 				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Xaml")
 #if HAS_UNO_WINUI
 				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.System")
 				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Composition")
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Dispatching")
 				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Text")
 				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Input")
 				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.Graphics")
 				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.ApplicationModel.Resources")
 				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.Web")
 #endif
-			))
+			)
 			{
-				return @"..\..\..\Uno.UWP\Generated\3.0.0.0";
+				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
 			}
 			else
 			{
-				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
+				return @"..\..\..\Uno.UWP\Generated\3.0.0.0";
 			}
 		}
 

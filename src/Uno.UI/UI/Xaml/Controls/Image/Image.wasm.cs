@@ -84,13 +84,13 @@ namespace Windows.UI.Xaml.Controls
 			remove => _htmlImage.UnregisterEventHandler("error", value, GenericEventHandlers.RaiseExceptionRoutedEventHandler);
 		}
 
-		partial void OnSourceChanged(DependencyPropertyChangedEventArgs e)
+		partial void OnSourceChanged(ImageSource newValue)
 		{
 			UpdateHitTest();
 
 			_lastMeasuredSize = _zeroSize;
 
-			if (e.NewValue is ImageSource source)
+			if (newValue is ImageSource source)
 			{
 				void OnSourceOpened(ImageData img)
 				{

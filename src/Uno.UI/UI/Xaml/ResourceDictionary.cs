@@ -249,6 +249,7 @@ namespace Windows.UI.Xaml
 			{
 				_hasUnmaterializedItems = true;
 				_values[resourceKey] = new LazyInitializer(ResourceResolver.CurrentScope, resourceInitializer);
+				ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
 			}
 			else
 			{

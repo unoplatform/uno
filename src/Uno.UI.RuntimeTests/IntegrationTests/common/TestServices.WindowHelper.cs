@@ -29,24 +29,18 @@ namespace Private.Infrastructure
 
 			public static UIElement WindowContent
 			{
-				get
-				{
-					if (UseActualWindowRoot)
-					{
-						return Windows.UI.Xaml.Window.Current.Content;
-					}
-					return EmbeddedTestRootControl.Content as UIElement;
-				}
-
+				get => UseActualWindowRoot
+					? Windows.UI.Xaml.Window.Current.Content
+					: EmbeddedTestRoot.getContent?.Invoke();
 				internal set
 				{
 					if (UseActualWindowRoot)
 					{
 						Windows.UI.Xaml.Window.Current.Content = value;
 					}
-					else if (EmbeddedTestRootControl is ContentControl content)
+					else if (EmbeddedTestRoot.setContent is {} setter)
 					{
-						content.Content = value;
+						setter(value);
 					}
 					else
 					{
@@ -69,11 +63,11 @@ namespace Private.Infrastructure
 				}
 			}
 
-			public static ContentControl EmbeddedTestRootControl { get; set; }
+			public static (UIElement control, Func<UIElement> getContent, Action<UIElement> setContent) EmbeddedTestRoot { get; set; }
 
-			public static UIElement RootElement => UseActualWindowRoot ?
-					Windows.UI.Xaml.Window.Current.Content :
-					EmbeddedTestRootControl;
+			public static UIElement RootElement => UseActualWindowRoot
+				? Windows.UI.Xaml.Window.Current.Content
+				: EmbeddedTestRoot.control;
 
 			internal static async Task WaitForIdle()
 			{
@@ -102,6 +96,12 @@ namespace Private.Infrastructure
 
 					if (element is Control control && control.FindFirstChild<FrameworkElement>(includeCurrent: false) == null)
 					{
+						return false;
+					}
+
+					if (element is ListView listView && listView.Items.Count > 0 && listView.ContainerFromIndex(0) == null)
+					{
+						// If it's a ListView, wait for items to be populated
 						return false;
 					}
 

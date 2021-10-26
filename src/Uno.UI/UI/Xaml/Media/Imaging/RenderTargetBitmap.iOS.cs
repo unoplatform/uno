@@ -1,4 +1,7 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Windows.Foundation;
 using CoreGraphics;
@@ -14,10 +17,10 @@ namespace Windows.UI.Xaml.Media.Imaging
 		private protected override bool IsSourceReady => _buffer != null;
 
 		/// <inheritdoc />
-		private protected override bool TryOpenSourceSync(out UIImage image)
+		private protected override bool TryOpenSourceSync([NotNullWhen(true)] out UIImage? image)
 		{
 			image = UIImage.LoadFromData(NSData.FromArray(_buffer));
-			return true;
+			return image != null;
 		}
 
 		private byte[] RenderAsPng(UIElement element, Size? scaledSize = null)
@@ -25,9 +28,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 			UIImage img;
 			try
 			{
-				UIGraphics.BeginImageContextWithOptions(new Size(element.ActualSize.X, element.ActualSize.Y), true, 1f);
+				UIGraphics.BeginImageContextWithOptions(new Size(element.ActualSize.X, element.ActualSize.Y), false, 1f);
 				var ctx = UIGraphics.GetCurrentContext();
-				ctx.SetFillColor(Colors.White);
+				ctx.SetFillColor(Colors.Transparent); // This is only for pixels not used, but the bitmap as the same size of the element. We keep it only for safety!
 				element.Layer.RenderInContext(ctx);
 				img = UIGraphics.GetImageFromCurrentImageContext();
 			}

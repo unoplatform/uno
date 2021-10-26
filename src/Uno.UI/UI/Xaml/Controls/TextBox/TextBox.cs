@@ -168,6 +168,20 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private static string GetFirstLine(string value)
+		{
+			for (int i = 0; i < value.Length; i++)
+			{
+				var c = value[i];
+				if (c == '\r' || c == '\n')
+				{
+					return value.Substring(0, i);
+				}
+			}
+
+			return value;
+		}
+
 		public static DependencyProperty TextProperty { get; } =
 			DependencyProperty.Register(
 				"Text",
@@ -265,6 +279,11 @@ namespace Windows.UI.Xaml.Controls
 				return DependencyProperty.UnsetValue;
 			}
 
+			if (!AcceptsReturn)
+			{
+				baseString = GetFirstLine(baseString);
+			}
+
 			var args = new TextBoxBeforeTextChangingEventArgs(baseString);
 			BeforeTextChanging?.Invoke(this, args);
 			if (args.Cancel)
@@ -272,7 +291,7 @@ namespace Windows.UI.Xaml.Controls
 				return DependencyProperty.UnsetValue;
 			}
 
-			return baseValue;
+			return baseString;
 		}
 
 		#endregion
@@ -404,6 +423,16 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnAcceptsReturnChanged(DependencyPropertyChangedEventArgs e)
 		{
+			if (e.NewValue is false)
+			{
+				var text = Text;
+				var singleLineText = GetFirstLine(text);
+				if (text != singleLineText)
+				{
+					Text = singleLineText;
+				}
+			}
+
 			OnAcceptsReturnChangedPartial(e);
 			UpdateButtonStates();
 		}

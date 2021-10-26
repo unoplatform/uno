@@ -16,8 +16,9 @@ namespace Windows.UI.Popups
 	{
 		private static readonly SemaphoreSlim _viewControllerAccess = new SemaphoreSlim(1, 1);
 
-		private async void ShowInner(CancellationToken ct, TaskCompletionSource<IUICommand> invokedCommand)
+		private async Task<IUICommand> ShowInner(CancellationToken ct)
 		{
+			var result = new TaskCompletionSource<IUICommand>();
 			var alertActions = Commands
 				.Where(command => !(command is UICommandSeparator)) // Not supported on iOS
 				.DefaultIfEmpty(new UICommand("OK")) // TODO: Localize (PBI 28711)
@@ -30,7 +31,7 @@ namespace Windows.UI.Popups
 						handler: _ =>
 						{
 							command.Invoked?.Invoke(command);
-							invokedCommand.TrySetResult(command);
+							result.TrySetResult(command);
 						}
 					)
 				)
@@ -52,7 +53,7 @@ namespace Windows.UI.Popups
 			using (ct.Register(() =>
 				{
 					// If the cancellation token itself gets cancelled, we cancel as well.
-					invokedCommand.TrySetCanceled();
+					result.TrySetCanceled();
 					UIApplication.SharedApplication.KeyWindow?.RootViewController?.DismissViewController(false, () => { });
 				}))
 			{
@@ -60,19 +61,14 @@ namespace Windows.UI.Popups
 
 				try
 				{
-					try
-					{
-						await UIApplication.SharedApplication.KeyWindow?.RootViewController?.PresentViewControllerAsync(alertController, animated: true);
-					}
-					catch (Exception error)
-					{
-						invokedCommand.TrySetException(error);
-					}
+					await UIApplication.SharedApplication.KeyWindow?.RootViewController?.PresentViewControllerAsync(alertController, animated: true);
 				}
 				finally
 				{
 					_viewControllerAccess.Release();
 				}
+
+				return await result.Task;
 			}
 		}
 

@@ -16,6 +16,7 @@ using Uno.Extensions;
 using Uno.Logging;
 using Windows.UI.Xaml;
 using Android.OS;
+using Windows.UI.ViewManagement;
 
 namespace Uno.UI
 {
@@ -130,7 +131,7 @@ namespace Uno.UI
 		{
 			InitializeBinder();
 			ContextHelper.Current = this;
-			NotifyCreatingInstance();
+			Initialize();
 
 #if !IS_UNO
 			Performance.Increment(CreatedTotalBindableActivityCounter);
@@ -142,12 +143,21 @@ namespace Uno.UI
 		{
 			InitializeBinder();
 			ContextHelper.Current = this;
-			NotifyCreatingInstance();
+			Initialize();
 
 #if !IS_UNO
 			Performance.Increment(CreatedTotalBindableActivityCounter);
 			Performance.Increment(ActiveBindableActivityCounter);
 #endif
+		}
+
+		private void Initialize()
+		{
+			// Eagerly create the ApplicationView instance for IBaseActivityEvents
+			// to be useable (specifically for the Create event)
+			ApplicationView.GetForCurrentView();
+
+			NotifyCreatingInstance();
 		}
 
 		partial void InnerAttachedToWindow() => BinderAttachedToWindow();

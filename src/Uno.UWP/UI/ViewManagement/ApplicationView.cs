@@ -27,6 +27,11 @@ namespace Windows.UI.ViewManagement
 		private IReadOnlyList<Rect> _defaultSpanningRects;
 		private IApplicationViewSpanningRects _applicationViewSpanningRects;
 
+		private void Initialize()
+		{
+			_instance = this;
+		}
+
 		[global::Uno.NotImplemented]
 		public int Id => 1;
 

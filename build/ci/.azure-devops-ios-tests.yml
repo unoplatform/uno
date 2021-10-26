@@ -9,7 +9,7 @@ jobs:
 - job: iOS_Build
   displayName: 'iOS Samples App UI Tests (Build)'
 
-  dependsOn: Commitsar
+  dependsOn: Pipeline_Validations
 
   pool:
     vmImage: ${{ parameters.vmImage }}

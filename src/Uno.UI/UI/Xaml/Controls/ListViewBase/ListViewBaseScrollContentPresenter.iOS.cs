@@ -10,7 +10,7 @@ using UIKit;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public sealed partial class ListViewBaseScrollContentPresenter : ContentPresenter, IScrollContentPresenter
+	public sealed partial class ListViewBaseScrollContentPresenter : IScrollContentPresenter
 	{
 		public CGPoint UpperScrollLimit => NativePanel?.UpperScrollLimit ?? CGPoint.Empty;
 
@@ -32,9 +32,12 @@ namespace Windows.UI.Xaml.Controls
 			NativePanel?.SetZoomScale(scale, animated);
 		}
 
-		public Rect MakeVisible(UIElement visual, Rect rectangle)
-		{
-			return rectangle;
-		}
+		bool INativeScrollContentPresenter.Set(
+			double? horizontalOffset,
+			double? verticalOffset,
+			float? zoomFactor,
+			bool disableAnimation,
+			bool isIntermediate)
+			=> throw new NotImplementedException();
 	}
 }

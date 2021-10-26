@@ -7,6 +7,7 @@ using Uno.Extensions;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
 using AndroidX.ViewPager.Widget;
+using System.Collections.Specialized;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -14,7 +15,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private NativePagedView PagedView { get { return InternalItemsPanelRoot as NativePagedView; } }
 
-		protected override bool UpdateItems()
+		private protected override void UpdateItems(NotifyCollectionChangedEventArgs args)
 		{
 			if (PagedView != null && PagedView.Adapter == null)
 			{
@@ -27,10 +28,8 @@ namespace Windows.UI.Xaml.Controls
 				PagedView.CurrentItem = SelectedIndex;
 			}
 			PagedView?.Adapter.NotifyDataSetChanged();
-			var updatedItems = base.UpdateItems();
+			base.UpdateItems(args);
 			RequestLayout();
-
-			return updatedItems;
 		}
 
 		partial void OnSelectedIndexChangedPartial(int oldValue, int newValue, bool animateChange)
@@ -38,14 +37,6 @@ namespace Windows.UI.Xaml.Controls
 			if (PagedView == null || PagedView.CurrentItem == newValue)
 			{
 				return;
-			}
-
-			//Update PagedView state if necessary, to avoid an IllegalStateException
-			var collectionHasChanged = UpdateItemsIfNeeded();
-
-			if (collectionHasChanged)
-			{
-				PagedView.Adapter?.NotifyDataSetChanged();
 			}
 
 			PagedView.SetCurrentItem(newValue, smoothScroll: animateChange);

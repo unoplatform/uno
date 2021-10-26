@@ -5,7 +5,7 @@ using System.Text;
 using Android.OS;
 using Java.Lang;
 
-namespace Microsoft.System
+namespace Microsoft.UI.Dispatching
 {
 	partial class DispatcherQueueTimer
 	{

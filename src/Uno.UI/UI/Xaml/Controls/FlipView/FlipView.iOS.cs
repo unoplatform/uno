@@ -63,12 +63,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override bool UpdateItems()
+		private protected override void UpdateItems(NotifyCollectionChangedEventArgs args)
 		{
 			if (InternalItemsPanelRoot == null)
 			{
 				//We probably haven't called OnApplyTemplate() yet
-				return base.UpdateItems(); ;
+				base.UpdateItems(args);
+				return;
 			}
 
 			if (CollectionView == null)
@@ -84,10 +85,10 @@ namespace Windows.UI.Xaml.Controls
 				};
 				CollectionView.Source = source;
 			}
-			var updatedItems = base.UpdateItems();
-			CollectionView.ReloadData();
 
-			return updatedItems;
+			base.UpdateItems(args);
+
+			CollectionView.ReloadData();
 		}
 
 		internal override void OnItemsSourceSingleCollectionChanged(object sender, NotifyCollectionChangedEventArgs c, int section)

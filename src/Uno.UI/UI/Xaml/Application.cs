@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml
 			ApiInformation.RegisterAssembly(typeof(Windows.Storage.ApplicationData).Assembly);
 
 			Uno.Helpers.DispatcherTimerProxy.SetDispatcherTimerGetter(() => new DispatcherTimer());
-			Uno.Helpers.VisualTreeHelperProxy.SetCloseAllPopupsAction(() => Media.VisualTreeHelper.CloseAllPopups());
+			Uno.Helpers.VisualTreeHelperProxy.SetCloseAllFlyoutsAction(() => Media.VisualTreeHelper.CloseAllFlyouts());
 
 			InitializePartialStatic();
 		}

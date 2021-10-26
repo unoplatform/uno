@@ -1,7 +1,15 @@
 parameters:
   dotnetInstallationPath: ''
+  skipCacheDownload: ''
 
 steps:
+
+  - task: DownloadBuildArtifacts@0
+    condition: ne('${{parameters.skipCacheDownload}}', 'true')
+    displayName: 'Download GitVersion Cache'
+    inputs:
+        artifactName: gitversion_cache
+        downloadPath: '$(build.sourcesdirectory)/.git'
 
   # This step changes the PR version ID so that produced nuget packages can be tied
   # to specific builds. This can be used to create canaries from PR artifacts.
@@ -55,3 +63,9 @@ steps:
 
     condition: eq(variables['Build.Reason'], 'PullRequest')
     displayName: Update GITVERSION.SemVer for PullRequests
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/.git/gitversion_cache
+      ArtifactName: gitversion_cache
+      ArtifactType: Container

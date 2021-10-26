@@ -713,6 +713,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_Relative_Path_With_Leading_Slash_From_Non_Root()
+		{
+			var withSlash = XamlFilePathHelper.ResolveAbsoluteSource("Dictionaries/App.xaml", "/App/Xaml/Test_Dictionary.xaml");
+			var withoutSlash = XamlFilePathHelper.ResolveAbsoluteSource("Dictionaries/App.xaml", "App/Xaml/Test_Dictionary.xaml");
+
+			Assert.AreEqual("App/Xaml/Test_Dictionary.xaml", withSlash);
+			Assert.AreEqual("Dictionaries/App/Xaml/Test_Dictionary.xaml", withoutSlash);
+		}
+
+		[TestMethod]
 		public void When_SharedHelpers_FindResource()
 		{
 			var rdInner = new ResourceDictionary();
@@ -873,6 +883,26 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			dictionary.ThemeDictionaries.Remove("Default");
 			Assert.IsFalse(dictionary.TryGetValue("TestKey", out _));
+		}
+
+		[TestMethod]
+		public void When_Lazy()
+		{
+			var dictionary = new ResourceDictionary();
+			var brush = new SolidColorBrush { Color = Colors.Red };
+			dictionary.TryGetValue("TestKey", out _);
+
+			dictionary.ThemeDictionaries.Add("Light", new WeakResourceInitializer(new Application(), o =>
+				new ResourceDictionary
+				{
+					["TestKey"] = new WeakResourceInitializer(o, _ => brush)
+				}));
+
+
+			// Make sure the cache is updated.
+			Assert.IsTrue(dictionary.TryGetValue("TestKey", out var testValue));
+			Assert.AreEqual(brush, testValue);
+
 		}
 
 		[TestMethod]

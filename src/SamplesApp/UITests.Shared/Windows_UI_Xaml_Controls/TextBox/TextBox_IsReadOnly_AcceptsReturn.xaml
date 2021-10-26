@@ -20,8 +20,8 @@
 		</StackPanel>
 
 		<TextBox x:Name="TargetTextBox"
-				 Text="lorem&#x0a;ipsum&#x0a;asd&#x0a;asd&#x0a;asd"
 				 AcceptsReturn="True"
-				 IsReadOnly="True" />
+				 IsReadOnly="True"
+				 Text="lorem&#x0a;ipsum&#x0a;asd&#x0a;asd&#x0a;asd" />
 	</StackPanel>
 </UserControl>
