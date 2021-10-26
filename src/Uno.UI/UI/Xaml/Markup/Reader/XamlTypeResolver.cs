@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Markup.Reader
         private readonly XamlFileDefinition FileDefinition;
         private readonly Func<string, string, Type?> _findPropertyTypeByName;
         private readonly Func<XamlMember, Type?> _findPropertyTypeByXamlMember;
-        private readonly Func<Type, PropertyInfo?> _findContentProperty;
+        private readonly Func<Type?, PropertyInfo?> _findContentProperty;
 
 		public static ImmutableDictionary<string, string[]> KnownNamespaces { get; } 
 			= new Dictionary<string, string[]>
@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Markup.Reader
             _isAttachedProperty = Funcs.Create<Type, string, bool>(SourceIsAttachedProperty).AsLockedMemoized();
             _findPropertyTypeByXamlMember = Funcs.Create<XamlMember, Type?>(SourceFindPropertyType).AsLockedMemoized();
             _findPropertyTypeByName = Funcs.Create<string, string, Type?>(SourceFindPropertyType).AsLockedMemoized();
-            _findContentProperty = Funcs.Create<Type, PropertyInfo?>(SourceFindContentProperty).AsLockedMemoized();
+            _findContentProperty = Funcs.Create<Type?, PropertyInfo?>(SourceFindContentProperty).AsLockedMemoized();
         }
 
         public bool IsAttachedProperty(XamlMemberDefinition member)
@@ -106,7 +106,7 @@ namespace Windows.UI.Xaml.Markup.Reader
         public PropertyInfo? GetPropertyByName(XamlType declaringType, string propertyName) 
             => GetPropertyByName(FindType(declaringType), propertyName);
 
-        public PropertyInfo? FindContentProperty(Type elementType)
+        public PropertyInfo? FindContentProperty(Type? elementType)
             => _findContentProperty(elementType);
 
         private static PropertyInfo? GetPropertyByName(Type? type, string propertyName) 
@@ -171,7 +171,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 		}
 
-		public DependencyProperty? FindDependencyProperty(Type propertyOwner, string propertyName)
+		public DependencyProperty? FindDependencyProperty(Type propertyOwner, string? propertyName)
 		{
 			var propertyDependencyPropertyQuery = GetAllProperties(propertyOwner)
 								.Where(p => p.Name == propertyName + "Property")

@@ -110,7 +110,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 				return Activator.CreateInstance(type, builder);
 			}
-			else if (type.Is<ResourceDictionary>())
+			else if (type.Is<ResourceDictionary>() && unknownContent != null)
 			{
 				var contentOwner = unknownContent;
 
@@ -774,7 +774,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			?.Value
 			?.ToString();
 
-		private Type GetResourceTargetType(XamlObjectDefinition child) =>
+		private Type? GetResourceTargetType(XamlObjectDefinition child) =>
 				TypeResolver.FindType(child.Members.FirstOrDefault(m =>
 					string.Equals(m.Member.Name, "TargetType", StringComparison.OrdinalIgnoreCase)
 				)
@@ -782,7 +782,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				?.ToString() ?? ""
 			);
 
-		private PropertyInfo GetMemberProperty(XamlObjectDefinition control, XamlMemberDefinition member)
+		private PropertyInfo? GetMemberProperty(XamlObjectDefinition control, XamlMemberDefinition member)
 		{
 			if (member.Member.Name == "_UnknownContent")
 			{
