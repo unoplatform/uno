@@ -20,13 +20,6 @@ using Uno.UI.Xaml.Core.Rendering;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 using Windows.UI.Core;
 
-//TODO Uno: Workaround for https://github.com/unoplatform/uno/issues/134
-#if NETFX_CORE
-using Popup = Windows.UI.Xaml.Controls.Primitives.Popup;
-#else
-using Popup = Windows.UI.Xaml.Controls.Popup;
-#endif
-
 //TODO:MZ: Handle parameters in/out
 
 namespace Windows.UI.Xaml.Input

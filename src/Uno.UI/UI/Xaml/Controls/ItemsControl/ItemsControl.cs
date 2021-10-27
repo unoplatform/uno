@@ -59,6 +59,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private int[] _groupCounts;
 
+		internal ScrollViewer ScrollViewer { get; private set; }
+
 		/// <summary>
 		/// This template is stored here in order to allow for 
 		/// FrameworkTemplate pooling to function properly when an ItemTemplateSelector has been
@@ -164,7 +166,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ItemsPanelProperty, value); }
 		}
 
-		public static DependencyProperty ItemsPanelProperty =
+		public static DependencyProperty ItemsPanelProperty { get; } =
 			DependencyProperty.Register(
 				"ItemsPanel",
 				typeof(ItemsPanelTemplate),
@@ -194,7 +196,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ItemTemplateProperty, value); }
 		}
 
-		public static DependencyProperty ItemTemplateProperty =
+		public static DependencyProperty ItemTemplateProperty { get; } =
 			DependencyProperty.Register(
 				"ItemTemplate",
 				typeof(DataTemplate),
@@ -222,7 +224,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(ItemTemplateSelectorProperty, value); }
 		}
 
-		public static DependencyProperty ItemTemplateSelectorProperty =
+		public static DependencyProperty ItemTemplateSelectorProperty { get; } =
 			DependencyProperty.Register(
 				"ItemTemplateSelector",
 				typeof(DataTemplateSelector),
@@ -835,6 +837,8 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
+
+			ScrollViewer = this.GetTemplateChild("ScrollViewer") as ScrollViewer;
 
 			_isReady = true;
 

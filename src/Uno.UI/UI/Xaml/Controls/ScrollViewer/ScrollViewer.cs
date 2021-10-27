@@ -547,7 +547,7 @@ namespace Windows.UI.Xaml.Controls
 			private set => SetValue(VerticalOffsetProperty, value);
 		}
 
-		public static DependencyProperty VerticalOffsetProperty =
+		public static DependencyProperty VerticalOffsetProperty { get; } =
 			DependencyProperty.Register(
 				"VerticalOffset",
 				typeof(double),
@@ -567,7 +567,7 @@ namespace Windows.UI.Xaml.Controls
 			private set => SetValue(HorizontalOffsetProperty, value);
 		}
 
-		public static DependencyProperty HorizontalOffsetProperty =
+		public static DependencyProperty HorizontalOffsetProperty { get; } =
 			DependencyProperty.Register(
 				"HorizontalOffset",
 				typeof(double),

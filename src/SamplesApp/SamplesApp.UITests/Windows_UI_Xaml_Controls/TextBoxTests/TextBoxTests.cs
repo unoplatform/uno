@@ -818,6 +818,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			ImageAssert.HasColorAt(after, multilinePosition.X, multilinePosition.Y, Color.Blue);
 		}
 
+		[Test]
+		[AutoRetry]
+		public void InputScope_Should_Not_Validate_Input()
+		{
+			// InputScope doesn't prevent any input, it just changes the keyboard shown for touch devices (or when in Tablet Mode in Windows).
+
+			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.Input_InputScope_CurrencyAmount");
+
+			_app.EnterText(marked: "CurrencyTextBox", text: "123,,321abc123");
+
+			_app.WaitForDependencyPropertyValue("CurrencyTextBox", "Text", "123,,321abc123");
+		}
+
 		private static PointF GetPixelPositionWithColor(ScreenshotInfo screenshotInfo, IAppRect boundingRect, Color expectedColor)
 		{
 			var bitmap = screenshotInfo.GetBitmap();

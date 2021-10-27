@@ -2,31 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Haptics
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SimpleHapticsControllerFeedback 
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan Duration
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan SimpleHapticsControllerFeedback.Duration is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  ushort Waveform
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort SimpleHapticsControllerFeedback.Waveform is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Duration
+		// Skipping already declared property Waveform
 		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsControllerFeedback.Waveform.get
 		// Forced skipping of method Windows.Devices.Haptics.SimpleHapticsControllerFeedback.Duration.get
 	}

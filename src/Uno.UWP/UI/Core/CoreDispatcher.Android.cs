@@ -18,11 +18,6 @@ namespace Windows.UI.Core
 {
 	public sealed partial class CoreDispatcher
 	{
-		/// <summary>
-		/// Gets the dispatcher for the main thread.
-		/// </summary>
-		public static readonly CoreDispatcher Main = new CoreDispatcher();
-
 		private Handler _handler;
 		private Choreographer _choreographer;
 		private CoreDispatcherImplementor _implementor;

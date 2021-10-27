@@ -2,22 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IItemContainerMapping 
 	{
-		#if false
-		object ItemFromContainer( global::Windows.UI.Xaml.DependencyObject container);
-		#endif
-		#if false
-		global::Windows.UI.Xaml.DependencyObject ContainerFromItem( object item);
-		#endif
-		#if false
-		int IndexFromContainer( global::Windows.UI.Xaml.DependencyObject container);
-		#endif
-		#if false
-		global::Windows.UI.Xaml.DependencyObject ContainerFromIndex( int index);
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.IItemContainerMapping.ItemFromContainer(Windows.UI.Xaml.DependencyObject)
+		// Skipping already declared method Windows.UI.Xaml.Controls.IItemContainerMapping.ContainerFromItem(object)
+		// Skipping already declared method Windows.UI.Xaml.Controls.IItemContainerMapping.IndexFromContainer(Windows.UI.Xaml.DependencyObject)
+		// Skipping already declared method Windows.UI.Xaml.Controls.IItemContainerMapping.ContainerFromIndex(int)
 	}
 }

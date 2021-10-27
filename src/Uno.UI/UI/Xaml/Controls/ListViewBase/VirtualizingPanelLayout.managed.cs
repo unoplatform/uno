@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private ScrollViewer? ScrollViewer { get; set; }
 		internal ItemsControl? ItemsControl { get; set; }
-		public ListViewBase? XamlParent => ItemsControl as ListViewBase;
+		internal ItemsControl? XamlParent => ItemsControl;
 
 		/// <summary>
 		/// Ordered record of all currently-materialized lines.
@@ -791,7 +791,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		protected virtual Uno.UI.IndexPath? GetDynamicSeedIndex(Uno.UI.IndexPath? firstVisibleItem)
 		{
-			var lastItem = XamlParent?.GetLastItem();
+			var lastItem = ItemsControl?.GetLastItem();
 			if (lastItem == null ||
 				(firstVisibleItem != null && firstVisibleItem.Value > lastItem.Value)
 			)
@@ -1094,7 +1094,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (reorder.index is null)
 				{
-					reorder.index = XamlParent!.GetIndexPathFromItem(reorder.item);
+					reorder.index = ItemsControl!.GetIndexPathFromItem(reorder.item);
 					_pendingReorder = reorder; // _pendingReorder is a struct!
 				}
 

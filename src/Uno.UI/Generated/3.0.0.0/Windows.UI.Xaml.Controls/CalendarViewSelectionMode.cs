@@ -2,21 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum CalendarViewSelectionMode 
 	{
-		#if false
-		None,
-		#endif
-		#if false
-		Single,
-		#endif
-		#if false
-		Multiple,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Controls.CalendarViewSelectionMode.None
+		// Skipping already declared field Windows.UI.Xaml.Controls.CalendarViewSelectionMode.Single
+		// Skipping already declared field Windows.UI.Xaml.Controls.CalendarViewSelectionMode.Multiple
 	}
 	#endif
 }

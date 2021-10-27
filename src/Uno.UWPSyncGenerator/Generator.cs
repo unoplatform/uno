@@ -46,6 +46,7 @@ namespace Uno.UWPSyncGenerator
 
 		private ISymbol _voidSymbol;
 		private ISymbol _dependencyPropertySymbol;
+		protected ISymbol FlagsAttributeSymbol { get; private set; }
 		protected ISymbol UIElementSymbol { get; private set; }
 		private static string MSBuildBasePath;
 
@@ -77,6 +78,7 @@ namespace Uno.UWPSyncGenerator
 
 			_voidSymbol = _referenceCompilation.GetTypeByMetadataName("System.Void");
 			_dependencyPropertySymbol = _referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".DependencyProperty");
+			FlagsAttributeSymbol = _referenceCompilation.GetTypeByMetadataName("System.FlagsAttribute");
 			UIElementSymbol = _referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".UIElement");
 			var a = _referenceCompilation.GetTypeByMetadataName("Microsoft.UI.ViewManagement.StatusBar");
 
@@ -606,7 +608,7 @@ namespace Uno.UWPSyncGenerator
 								b.AppendLineInvariant($"throw new global::System.NotSupportedException();");
 							}
 						}
-						if (property.GetMethod != null)
+						if (property.SetMethod != null)
 						{
 							using (b.BlockInvariant($"set"))
 							{
@@ -833,10 +835,9 @@ namespace Uno.UWPSyncGenerator
 
 					if (type.TypeKind == TypeKind.Enum)
 					{
-						// if (!field.IsSpecialName)
-						{
-							b.AppendLineInvariant($"{field.Name},");
-						}
+						var constantValue = field.ConstantValue != null ? $" = {field.ConstantValue}" : string.Empty;
+
+						b.AppendLineInvariant($"{field.Name}{constantValue},");
 					}
 					else
 					{
@@ -1408,22 +1409,6 @@ namespace Uno.UWPSyncGenerator
 
 		private bool SkipProperty(IPropertySymbol property)
 		{
-			if (property.ContainingType.Name == "WebView")
-			{
-				switch (property.Name)
-				{
-					case "XYFocusRight":
-					case "XYFocusLeft":
-					case "XYFocusDown":
-					case "XYFocusUp":
-					case "XYFocusRightProperty":
-					case "XYFocusLeftProperty":
-					case "XYFocusDownProperty":
-					case "XYFocusUpProperty":
-						return true;
-				}
-			}
-
 			if (property.ContainingType.Name == "WebView2")
 			{
 				switch (property.Name)

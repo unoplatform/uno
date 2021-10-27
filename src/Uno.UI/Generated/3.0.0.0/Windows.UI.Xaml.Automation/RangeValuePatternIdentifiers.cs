@@ -2,71 +2,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RangeValuePatternIdentifiers 
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty IsReadOnlyProperty
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AutomationProperty RangeValuePatternIdentifiers.IsReadOnlyProperty is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty LargeChangeProperty
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AutomationProperty RangeValuePatternIdentifiers.LargeChangeProperty is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty MaximumProperty
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AutomationProperty RangeValuePatternIdentifiers.MaximumProperty is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty MinimumProperty
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AutomationProperty RangeValuePatternIdentifiers.MinimumProperty is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty SmallChangeProperty
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AutomationProperty RangeValuePatternIdentifiers.SmallChangeProperty is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty ValueProperty
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AutomationProperty RangeValuePatternIdentifiers.ValueProperty is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property IsReadOnlyProperty
+		// Skipping already declared property LargeChangeProperty
+		// Skipping already declared property MaximumProperty
+		// Skipping already declared property MinimumProperty
+		// Skipping already declared property SmallChangeProperty
+		// Skipping already declared property ValueProperty
 		// Forced skipping of method Windows.UI.Xaml.Automation.RangeValuePatternIdentifiers.IsReadOnlyProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.RangeValuePatternIdentifiers.LargeChangeProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.RangeValuePatternIdentifiers.MaximumProperty.get

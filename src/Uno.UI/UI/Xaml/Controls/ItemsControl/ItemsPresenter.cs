@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(PaddingProperty, value);
 		}
 
-		public static DependencyProperty PaddingProperty =
+		public static DependencyProperty PaddingProperty { get; } =
 			DependencyProperty.Register(
 				"Padding",
 				typeof(Thickness),

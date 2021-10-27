@@ -228,7 +228,14 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_textBoxView != null)
 			{
-				_textBoxView.InputType = types;
+				if (FeatureConfiguration.TextBox.UseLegacyInputScope)
+				{
+					_textBoxView.InputType = types;
+				}
+				else
+				{
+					_textBoxView.SetRawInputType(types);
+				}
 
 				if (!types.HasPasswordFlag())
 				{
@@ -312,25 +319,42 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private InputTypes AdjustInputTypes(InputTypes inputType, InputScope inputScope)
+		{
+			inputType = InputScopeHelper.ConvertToCapitalization(inputType, inputScope);
+
+			if (!IsSpellCheckEnabled)
+			{
+				inputType = InputScopeHelper.ConvertToRemoveSuggestions(inputType, ShouldForceDisableSpellCheck);
+			}
+
+			if (AcceptsReturn)
+			{
+				inputType |= InputTypes.TextFlagMultiLine;
+			}
+
+			return inputType;
+		}
+
 		private void UpdateInputScope(InputScope inputScope)
 		{
 			if (_textBoxView != null)
 			{
-				var inputType = InputScopeHelper.ConvertInputScope(inputScope ?? InputScope);
+				var inputType = InputScopeHelper.ConvertInputScope(inputScope);
+				inputType = AdjustInputTypes(inputType, inputScope);
 
-				inputType = InputScopeHelper.ConvertToCapitalization(inputType, inputScope ?? InputScope);
-
-				if (!IsSpellCheckEnabled)
+				if (FeatureConfiguration.TextBox.UseLegacyInputScope)
 				{
-					inputType = InputScopeHelper.ConvertToRemoveSuggestions(inputType, ShouldForceDisableSpellCheck);
+					_textBoxView.InputType = inputType;
 				}
-
-				if (AcceptsReturn)
+				else
 				{
-					inputType |= InputTypes.TextFlagMultiLine;
+					// InputScopes like multi-line works on Android only for InputType property, not SetRawInputType.
+					// For CurrencyAmount (and others), both works but there is a behavioral difference documented in UseLegacyInputScope.
+					// The behavior that matches UWP is achieved by SetRawInputType.
+					_textBoxView.InputType = AdjustInputTypes(InputTypes.ClassText, inputScope);
+					_textBoxView.SetRawInputType(inputType);
 				}
-
-				_textBoxView.InputType = inputType;
 			}
 		}
 

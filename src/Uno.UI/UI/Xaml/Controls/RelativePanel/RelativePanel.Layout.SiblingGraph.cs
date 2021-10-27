@@ -129,12 +129,12 @@ namespace Windows.UI.Xaml.Controls
 
 				foreach (var sibling in cluster)
 				{
-					if (isHorizontallyInfinite && RelativePanel.GetAlignRightWithPanel(sibling.Element))
+					if (isHorizontallyInfinite && RelativePanel.GetAlignRightWithPanel((UIElement)sibling.Element))
 					{
 						ReverseDependencies(sibling, true);
 					}
 
-					if (isVerticallyInfinite && RelativePanel.GetAlignBottomWithPanel(sibling.Element))
+					if (isVerticallyInfinite && RelativePanel.GetAlignBottomWithPanel((UIElement)sibling.Element))
 					{
 						ReverseDependencies(sibling, false);
 					}
@@ -194,11 +194,15 @@ namespace Windows.UI.Xaml.Controls
 				// element (3) has precedence over a bottom-right aligned element (1+1)
 				var orderedByAlignment = new List<Sibling>(cluster
 					.OrderByDescending(s =>
-						(IsAlignLeftWithPanel(s.Element) ? 3 : 0) +
-						(IsAlignTopWithPanel(s.Element) ? 3 : 0) +
-						(RelativePanel.GetAlignRightWithPanel(s.Element) ? 1 : 0) +
-						(RelativePanel.GetAlignBottomWithPanel(s.Element) ? 1 : 0)
-					)
+					{
+						var uiElement = (UIElement)s.Element;
+
+						return
+							(IsAlignLeftWithPanel(uiElement) ? 3 : 0) +
+							(IsAlignTopWithPanel(uiElement) ? 3 : 0) +
+							(RelativePanel.GetAlignRightWithPanel(uiElement) ? 1 : 0) +
+							(RelativePanel.GetAlignBottomWithPanel(uiElement) ? 1 : 0);
+					})
 				);
 
 				var ordered = new List<Sibling>();
@@ -496,12 +500,12 @@ namespace Windows.UI.Xaml.Controls
 					ExecuteOnSiblingLayoutInfoIfAvailable(child, siblingLayoutInfos, sli => sli.Center = new Point(center, sli.Center.Y));
 				}
 
-				if (IsAlignLeftWithPanel(child))
+				if (IsAlignLeftWithPanel((UIElement)child))
 				{
 					ExecuteOnSiblingLayoutInfoIfAvailable(child, siblingLayoutInfos, sli => sli.IsLeftBound = true);
 				}
 
-				if (GetAlignHorizontalCenterWithPanel(child))
+				if (GetAlignHorizontalCenterWithPanel((UIElement)child))
 				{
 					var spacing = child.Margin.Left + child.Margin.Right;
 					var size = double.IsNaN(child.Width) ?
@@ -523,7 +527,7 @@ namespace Windows.UI.Xaml.Controls
 			/// <summary>
 			/// Returns true if the child is left aligned with Panel or has no horizontal alignment instructions
 			/// </summary>
-			private bool IsAlignLeftWithPanel(IFrameworkElement child)
+			private bool IsAlignLeftWithPanel(UIElement child)
 			{
 				return RelativePanel.GetAlignLeftWithPanel(child) ||
 					!(
@@ -572,12 +576,12 @@ namespace Windows.UI.Xaml.Controls
 					ExecuteOnSiblingLayoutInfoIfAvailable(child, siblingLayoutInfos, sli => sli.Center = new Point(sli.Center.X, center));
 				}
 
-				if (IsAlignTopWithPanel(child))
+				if (IsAlignTopWithPanel((UIElement)child))
 				{
 					ExecuteOnSiblingLayoutInfoIfAvailable(child, siblingLayoutInfos, sli => sli.IsTopBound = true);
 				}
 
-				if (GetAlignVerticalCenterWithPanel(child))
+				if (GetAlignVerticalCenterWithPanel((UIElement)child))
 				{
 					var spacing = child.Margin.Top + child.Margin.Bottom;
 					var size = double.IsNaN(child.Height) ?
@@ -599,7 +603,7 @@ namespace Windows.UI.Xaml.Controls
 			/// <summary>
 			/// Returns true if the child is top aligned with Panel or has no vertical alignment instructions
 			/// </summary>
-			private bool IsAlignTopWithPanel(IFrameworkElement child)
+			private bool IsAlignTopWithPanel(UIElement child)
 			{
 				return RelativePanel.GetAlignTopWithPanel(child) ||
 					!(
@@ -638,7 +642,7 @@ namespace Windows.UI.Xaml.Controls
 					return rightAlign.Min(d => siblingLayoutInfos[d.Sibling.Element].Area.Right);
 				}
 
-				if (RelativePanel.GetAlignRightWithPanel(child))
+				if (RelativePanel.GetAlignRightWithPanel((UIElement)child))
 				{
 					ExecuteOnSiblingLayoutInfoIfAvailable(child, siblingLayoutInfos, sli => sli.IsRightBound = true);
 					return availableSize.Width - graphPadding.Right;
@@ -688,7 +692,7 @@ namespace Windows.UI.Xaml.Controls
 					return bottomAlign.Min(d => siblingLayoutInfos[d.Sibling.Element].Area.Bottom);
 				}
 
-				if (RelativePanel.GetAlignBottomWithPanel(child))
+				if (RelativePanel.GetAlignBottomWithPanel((UIElement)child))
 				{
 					ExecuteOnSiblingLayoutInfoIfAvailable(child, siblingLayoutInfos, sli => sli.IsBottomBound = true);
 					return availableSize.Height - graphPadding.Bottom;

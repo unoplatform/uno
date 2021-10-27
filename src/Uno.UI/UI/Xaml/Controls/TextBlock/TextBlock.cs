@@ -576,7 +576,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(PaddingProperty, value);
 		}
 
-		public static DependencyProperty PaddingProperty =
+		public static DependencyProperty PaddingProperty { get; } =
 			DependencyProperty.Register(
 				"Padding",
 				typeof(Thickness),
@@ -603,7 +603,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(CharacterSpacingProperty, value);
 		}
 
-		public static DependencyProperty CharacterSpacingProperty =
+		public static DependencyProperty CharacterSpacingProperty { get; } =
 			DependencyProperty.Register(
 				"CharacterSpacing",
 				typeof(int),
@@ -633,10 +633,10 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(TextDecorationsProperty, value);
 		}
 
-		public static DependencyProperty TextDecorationsProperty =
+		public static DependencyProperty TextDecorationsProperty { get; } =
 			DependencyProperty.Register(
 				"TextDecorations",
-				typeof(int),
+				typeof(uint),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextDecorations.None,
@@ -946,6 +946,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		internal override bool CanHaveChildren() => true;
+
+		public new bool Focus(FocusState value) => base.Focus(value);
 
 		internal override bool IsFocusable =>
 			/*IsActive() &&*/ //TODO Uno: No concept of IsActive in Uno yet.

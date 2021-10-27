@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private ManagedWeakReference _xamlParentWeakReference;
 
-		public ListViewBase XamlParent
+		internal ListViewBase XamlParent
 		{
 			get => _xamlParentWeakReference?.Target as ListViewBase;
 			set

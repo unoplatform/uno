@@ -2,21 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Composition
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum CompositionGradientExtendMode 
 	{
-		#if false
-		Clamp,
-		#endif
-		#if false
-		Wrap,
-		#endif
-		#if false
-		Mirror,
-		#endif
+		// Skipping already declared field Windows.UI.Composition.CompositionGradientExtendMode.Clamp
+		// Skipping already declared field Windows.UI.Composition.CompositionGradientExtendMode.Wrap
+		// Skipping already declared field Windows.UI.Composition.CompositionGradientExtendMode.Mirror
 	}
 	#endif
 }

@@ -18,6 +18,7 @@ using Windows.Globalization.DateTimeFormatting;
 using Windows.UI.Core;
 using Uno.Logging;
 using Uno.UI.Extensions;
+using Windows.UI.Xaml.Controls.Primitives;
 
 #if __IOS__
 using UIKit;

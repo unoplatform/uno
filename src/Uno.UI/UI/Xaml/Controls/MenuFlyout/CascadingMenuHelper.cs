@@ -721,7 +721,7 @@ namespace Windows.UI.Xaml.Controls
 		internal void OnPresenterSizeChanged(
 			object pSender,
 			SizeChangedEventArgs args,
-			Controls.Popup popup)
+			Popup popup)
 		{
 			Control ownerAsControl = m_wpOwner?.Target as Control;
 

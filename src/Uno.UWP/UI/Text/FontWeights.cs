@@ -6,38 +6,40 @@ namespace Windows.UI.Text
 {
     public partial class FontWeights
     {
-		public static readonly FontWeight Thin = new FontWeight(100);
+		private static FontWeight? _thin;
+		private static FontWeight? _extraLight;
+		private static FontWeight? _ultraLight;
+		private static FontWeight? _semiLight;
+		private static FontWeight? _light;
+		private static FontWeight? _normal;
+		private static FontWeight? _regular;
+		private static FontWeight? _medium;
+		private static FontWeight? _semiBold;
+		private static FontWeight? _demiBold;
+		private static FontWeight? _bold;
+		private static FontWeight? _ultraBold;
+		private static FontWeight? _extraBold;
+		private static FontWeight? _black;
+		private static FontWeight? _heavy;
+		private static FontWeight? _extraBlack;
+		private static FontWeight? _ultraBlack;
 
-		public static readonly FontWeight ExtraLight = new FontWeight(200);
-
-		public static readonly FontWeight UltraLight = new FontWeight(200);
-
-		public static readonly FontWeight SemiLight = new FontWeight(250);
-
-		public static readonly FontWeight Light = new FontWeight(300);
-
-		public static readonly FontWeight Normal = new FontWeight(400);
-
-		public static readonly FontWeight Regular = new FontWeight(400);
-		
-		public static readonly FontWeight Medium = new FontWeight(500);
-
-		public static readonly FontWeight SemiBold = new FontWeight(600);
-
-		public static readonly FontWeight DemiBold = new FontWeight(600);
-
-		public static readonly FontWeight Bold = new FontWeight(700);
-
-		public static readonly FontWeight UltraBold = new FontWeight(800);
-
-		public static readonly FontWeight ExtraBold = new FontWeight(800);
-
-		public static readonly FontWeight Black = new FontWeight(900);
-
-		public static readonly FontWeight Heavy = new FontWeight(900);
-
-		public static readonly FontWeight ExtraBlack = new FontWeight(950);
-
-		public static readonly FontWeight UltraBlack = new FontWeight(950);
+		public static FontWeight Thin => _thin ??= new FontWeight(100);
+		public static FontWeight ExtraLight => _extraLight ??= new FontWeight(200);
+		public static FontWeight UltraLight => _ultraLight ??= new FontWeight(200);
+		public static FontWeight SemiLight => _semiLight ??= new FontWeight(250);
+		public static FontWeight Light => _light ??= new FontWeight(300);
+		public static FontWeight Normal => _normal ??= new FontWeight(400);
+		public static FontWeight Regular => _regular ??= new FontWeight(400);
+		public static FontWeight Medium => _medium ??= new FontWeight(500);
+		public static FontWeight SemiBold => _semiBold ??= new FontWeight(600);
+		public static FontWeight DemiBold => _demiBold ??= new FontWeight(600);
+		public static FontWeight Bold => _bold ??= new FontWeight(700);
+		public static FontWeight UltraBold => _ultraBold ??= new FontWeight(800);
+		public static FontWeight ExtraBold => _extraBold ??= new FontWeight(800);
+		public static FontWeight Black => _black ??= new FontWeight(900);
+		public static FontWeight Heavy => _heavy ??= new FontWeight(900);
+		public static FontWeight ExtraBlack => _extraBlack ??= new FontWeight(950);
+		public static FontWeight UltraBlack => _ultraBlack ??= new FontWeight(950);
 	}
 }

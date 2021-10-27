@@ -3,55 +3,53 @@
 namespace Windows.Media.Protection
 {
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
-	public   enum RevocationAndRenewalReasons 
+	[global::System.FlagsAttribute]
+	public   enum RevocationAndRenewalReasons : uint
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		UserModeComponentLoad,
+		UserModeComponentLoad = 1,
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		KernelModeComponentLoad,
+		KernelModeComponentLoad = 2,
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AppComponent,
+		AppComponent = 4,
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		GlobalRevocationListLoadFailed,
+		GlobalRevocationListLoadFailed = 16,
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		InvalidGlobalRevocationListSignature,
+		InvalidGlobalRevocationListSignature = 32,
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		GlobalRevocationListAbsent,
+		GlobalRevocationListAbsent = 4096,
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ComponentRevoked,
+		ComponentRevoked = 8192,
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		InvalidComponentCertificateExtendedKeyUse,
+		InvalidComponentCertificateExtendedKeyUse = 16384,
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ComponentCertificateRevoked,
+		ComponentCertificateRevoked = 32768,
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		InvalidComponentCertificateRoot,
+		InvalidComponentCertificateRoot = 65536,
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ComponentHighSecurityCertificateRevoked,
+		ComponentHighSecurityCertificateRevoked = 131072,
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ComponentLowSecurityCertificateRevoked,
+		ComponentLowSecurityCertificateRevoked = 262144,
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		BootDriverVerificationFailed,
+		BootDriverVerificationFailed = 1048576,
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ComponentSignedWithTestCertificate,
+		ComponentSignedWithTestCertificate = 16777216,
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		EncryptionFailure,
+		EncryptionFailure = 268435456,
 		#endif
 	}
 	#endif
