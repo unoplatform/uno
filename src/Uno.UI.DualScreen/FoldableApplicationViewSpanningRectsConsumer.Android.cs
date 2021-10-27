@@ -29,6 +29,7 @@ namespace Uno.UI.DualScreen
 		const string TAG = "DualScreen-JWM"; // Jetpack Window Manager
 		WindowInfoRepositoryCallbackAdapter windowInfoRepository;
 		IWindowMetricsCalculator windowMetricsCalculator;
+		float density = 1f;
 
 		// HACK: expose properties for FoldableApplicationViewSpanningRects
 		public bool HasFoldFeature { get; set; }
@@ -78,8 +79,12 @@ namespace Uno.UI.DualScreen
 
 		void layoutStateChange(WindowLayoutInfo newLayoutInfo)
 		{
-			Android.Util.Log.Info(TAG, "    Current: " + windowMetricsCalculator.ComputeCurrentWindowMetrics(ContextHelper.Current as Android.App.Activity).Bounds.ToString());
+			var wm = windowMetricsCalculator.ComputeCurrentWindowMetrics(ContextHelper.Current as Android.App.Activity);
+			Android.Util.Log.Info(TAG, "    Current: " + wm.Bounds.ToString());
 			Android.Util.Log.Info(TAG, "    Maximum: " + windowMetricsCalculator.ComputeMaximumWindowMetrics(ContextHelper.Current as Android.App.Activity).Bounds.ToString());
+
+			density = (ContextHelper.Current as Android.App.Activity).Resources.DisplayMetrics.Density;
+			Android.Util.Log.Info(TAG, "    Density: " + density);
 
 			FoldBounds = null;
 			IsSeparating = false;
@@ -96,7 +101,10 @@ namespace Uno.UI.DualScreen
 					// Set properties for FoldableApplicationViewSpanningRects to reference
 					HasFoldFeature = true;
 					IsSeparating = foldingFeature.IsSeparating;
-					FoldBounds = foldingFeature.Bounds;
+					FoldBounds = new Rect(foldingFeature.Bounds.Left / density,
+						foldingFeature.Bounds.Top / density,
+						foldingFeature.Bounds.Width()/ density,
+						foldingFeature.Bounds.Height() / density);
 					FoldState = foldingFeature.State;
 					FoldOcclusionType = foldingFeature.OcclusionType;
 

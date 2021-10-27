@@ -40,10 +40,12 @@ namespace Uno.UI.DualScreen
 		{
 			windowInfoRepository = new WindowInfoRepositoryCallbackAdapter(WindowInfoRepository.Companion.GetOrCreate(ContextHelper.Current as Android.App.Activity));
 			windowMetricsCalculator = WindowMetricsCalculator.Companion.OrCreate; // HACK: source method is `getOrCreate`, binding generator munges this badly :(	
+			Android.Util.Log.Info(TAG, $"FoldableApplicationViewSpanningRects.OnCreateEvent");
 		}
 		private void OnStartEvent()
 		{
 			windowInfoRepository.AddWindowLayoutInfoListener(runOnUiThreadExecutor(), this); // `this` is the IConsumer implementation
+			Android.Util.Log.Info(TAG, $"FoldableApplicationViewSpanningRects.OnStartEvent");
 		}
 		private void OnStopEvent()
 		{
@@ -51,6 +53,7 @@ namespace Uno.UI.DualScreen
 		}
 		public IReadOnlyList<Rect> GetSpanningRects()
 		{
+			Android.Util.Log.Info(TAG, $"FoldableApplicationViewSpanningRects.GetSpanningRects HasFoldFeature={HasFoldFeature}");
 			if (HasFoldFeature) // IsSeparating or just "is fold present?" - changing this will affect the behavior of TwoPaneView on foldable devices
 			{
 // HACK: needed?                    _previousMode.orientation = currentActivity.Orientation;
@@ -59,6 +62,7 @@ namespace Uno.UI.DualScreen
                 var wuxWindowBounds = ApplicationView.GetForCurrentView().VisibleBounds.LogicalToPhysicalPixels();
                 var wuOrientation = DisplayInformation.GetForCurrentView().CurrentOrientation;
 
+				Android.Util.Log.Info(TAG, $"                  FoldBounds={FoldBounds}");
 				// TODO: bring the list of all folding features here, for future compatibility
 				List<Rect> occludedRects = new List<Rect>
                     {   // Hinge/fold bounds
@@ -161,8 +165,13 @@ namespace Uno.UI.DualScreen
                                 this.Log().Warn($"DualMode: Unknown screen layout");
                             }
                         }
-                    }
-                    else
+						Android.Util.Log.Info(TAG, $"               _previousMode.result={_previousMode.result.Count}");
+						foreach (var pmr in _previousMode.result) {
+							Android.Util.Log.Info(TAG, $"               > {pmr}");
+						}
+
+					}
+					else
                     {
                         if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
                         {
