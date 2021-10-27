@@ -3956,6 +3956,20 @@
 	</IgnoreSet>
 
 	<IgnoreSet baseVersion="3.10.11">
+		<Types>
+			<Member
+				fullName="Windows.UI.Core.ICoreWindowExtension"
+				reason="Internal interface" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.Popup"
+				reason="Adjust Popup hierarchy" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.PopupBase"
+				reason="Adjust Popup hierarchy" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.NativePopup"
+				reason="Adjust Popup hierarchy" />
+		</Types>
 		<Methods>
 			<Member
 				fullName="System.Object Windows.UI.Xaml.Media.Animation.ObjectKeyFrame.get_Value()"
@@ -4020,52 +4034,6 @@
 			<Member
 				fullName="System.Void Windows.Devices.Radios.Radio..ctor()"
 				reason="Not part of UWP API" />
-		</Methods>
-
-		<Properties>
-			<Member
-				fullName="Windows.UI.Xaml.Controls.ScrollBarVisibility Windows.UI.Xaml.Controls.ScrollContentPresenter::HorizontalScrollBarVisibility()"
-				reason="Not part of the UWP API" />
-			<Member
-				fullName="Windows.UI.Xaml.Controls.ScrollBarVisibility Windows.UI.Xaml.Controls.ScrollContentPresenter::VerticalScrollBarVisibility()"
-				reason="Not part of the UWP API" />
-			<Member
-				fullName="System.Boolean Windows.UI.Xaml.Controls.ScrollViewer::ArePointerWheelEventsIgnored()"
-				reason="Not part of the UWP API" />
-			<Member
-				fullName="Windows.UI.Xaml.Controls.ScrollBarVisibility Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter::HorizontalScrollBarVisibility()"
-				reason="Not part of the UWP API" />
-			<Member
-				fullName="Windows.UI.Xaml.Controls.ScrollBarVisibility Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter::VerticalScrollBarVisibility()"
-				reason="Not part of the UWP API" />
-			<Member
-				fullName="System.Boolean Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter::CanHorizontallyScroll()"
-				reason="Not part of the UWP API" />
-			<Member
-				fullName="System.Boolean Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter::CanVerticallyScroll()"
-				reason="Not part of the UWP API" />
-		</Properties>
-
-		<Types>
-			<Member
-				fullName="Windows.UI.Core.ICoreWindowExtension"
-				reason="Internal interface" />
-		</Types>
-	</IgnoreSet>
-
-	<IgnoreSet baseVersion="3.11.0">
-		<Types>
-			<Member
-				fullName="Windows.UI.Xaml.Controls.Popup"
-				reason="Adjust Popup hierarchy" />
-			<Member
-				fullName="Windows.UI.Xaml.Controls.PopupBase"
-				reason="Adjust Popup hierarchy" />
-			<Member
-				fullName="Windows.UI.Xaml.Controls.NativePopup"
-				reason="Adjust Popup hierarchy" />
-		</Types>
-		<Methods>
 			<Member
 				fullName="System.Collections.Generic.IReadOnlyList`1&lt;Windows.UI.Xaml.Controls.Popup&gt; Windows.UI.Xaml.Media.VisualTreeHelper.GetOpenPopups(Windows.UI.Xaml.Window window)"
 				reason="Adjust Popup hierarchy" />
@@ -8285,6 +8253,27 @@
 				reason="API alignment" />
 		</Fields>
 		<Properties>
+			<Member
+				fullName="Windows.UI.Xaml.Controls.ScrollBarVisibility Windows.UI.Xaml.Controls.ScrollContentPresenter::HorizontalScrollBarVisibility()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.ScrollBarVisibility Windows.UI.Xaml.Controls.ScrollContentPresenter::VerticalScrollBarVisibility()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.ScrollViewer::ArePointerWheelEventsIgnored()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.ScrollBarVisibility Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter::HorizontalScrollBarVisibility()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="Windows.UI.Xaml.Controls.ScrollBarVisibility Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter::VerticalScrollBarVisibility()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter::CanHorizontallyScroll()"
+				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter::CanVerticallyScroll()"
+				reason="Not part of the UWP API" />
 			<Member
 				fullName="System.Boolean Windows.UI.Xaml.Controls.Primitives.CarouselPanel::AreHorizontalSnapPointsRegular()"
 				reason="Relates to #4956" />
