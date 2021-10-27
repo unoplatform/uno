@@ -77,4 +77,8 @@
 	  <None Remove="FoldableApplicationViewSpanningRectsConsumer.Android.cs" />
 	  <None Remove="FoldableHingeAngleSensor.Android.cs" />
 	</ItemGroup>
+
+	<PropertyGroup>
+		<AndroidLinkSkip>Xamarin.AndroidX.Core;Xamarin.AndroidX.Window;Xamarin.AndroidX.Window.WindowJava;Xamarin.Kotlin.StdLib;Xamarin.KotlinX.Coroutines.Core</AndroidLinkSkip>
+	</PropertyGroup>
 </Project>

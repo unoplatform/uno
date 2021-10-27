@@ -21,6 +21,7 @@ namespace Uno.UI.DualScreen
     /// and exposing the properties needed to make UI change when required.
     /// HACK: need to implement an event for layout changes, so we can detect folding state
     /// </remarks>
+	[Preserve]
     public partial class FoldableApplicationViewSpanningRects : IApplicationViewSpanningRects, INativeDualScreenProvider, INativeFoldableProvider
 	{
 		private (SurfaceOrientation orientation, List<Rect> result) _previousMode = EmptyMode;
