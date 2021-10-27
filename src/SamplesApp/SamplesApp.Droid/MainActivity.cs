@@ -27,16 +27,10 @@ namespace SamplesApp.Droid
 	public class MainActivity : Windows.UI.Xaml.ApplicationActivity
 	{
 		private bool _onCreateEventInvoked = false;
-		IApplicationViewSpanningRects _foldable;
+		
 		public MainActivity()
 		{
 			ApplicationViewHelper.GetBaseActivityEvents().Create += OnCreateEvent;
-
-			if (Uno.Foundation.Extensibility.ApiExtensibility.CreateInstance<IApplicationViewSpanningRects>(this, out var extension))
-			{
-				_foldable = extension;
-			}
-			
 		}
 
 		private void OnCreateEvent(Android.OS.Bundle savedInstanceState)
