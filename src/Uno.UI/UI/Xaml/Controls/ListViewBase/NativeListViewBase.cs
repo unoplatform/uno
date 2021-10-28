@@ -66,6 +66,30 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return ((IScrollSnapPointsInfo)NativeLayout).GetRegularSnapPoints(orientation, alignment, out offset);
 		}
+
+		internal double ItemsPresenterMinWidth
+		{
+			get => NativeLayout?.ItemsPresenterMinWidth ?? double.NaN;
+			set
+			{
+				if (NativeLayout != null)
+				{
+					NativeLayout.ItemsPresenterMinWidth = value;
+				}
+			}
+		}
+
+		internal double ItemsPresenterMinHeight
+		{
+			get => NativeLayout?.ItemsPresenterMinHeight ?? double.NaN;
+			set
+			{
+				if (NativeLayout != null)
+				{
+					NativeLayout.ItemsPresenterMinHeight = value;
+				}
+			}
+		}
 	}
 }
 
