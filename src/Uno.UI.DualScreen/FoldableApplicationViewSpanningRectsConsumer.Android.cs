@@ -101,10 +101,7 @@ namespace Uno.UI.DualScreen
 					// Set properties for FoldableApplicationViewSpanningRects to reference
 					HasFoldFeature = true;
 					IsSeparating = foldingFeature.IsSeparating;
-					FoldBounds = new Rect(foldingFeature.Bounds.Left / density,
-						foldingFeature.Bounds.Top / density,
-						foldingFeature.Bounds.Width()/ density,
-						foldingFeature.Bounds.Height() / density);
+					FoldBounds = foldingFeature.Bounds; // physical pixel values
 					FoldState = foldingFeature.State;
 					FoldOcclusionType = foldingFeature.OcclusionType;
 
