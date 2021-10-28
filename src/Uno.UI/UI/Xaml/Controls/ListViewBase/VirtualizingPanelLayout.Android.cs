@@ -142,6 +142,30 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private double _itemsPresenterMinWidth;
+		internal double ItemsPresenterMinWidth
+		{
+			get => _itemsPresenterMinWidth;
+			set
+			{
+				_itemsPresenterMinWidth = value;
+				RequestLayout();
+			}
+		}
+
+		private double itemsPresenterMinHeight;
+		internal double ItemsPresenterMinHeight
+		{
+			get => itemsPresenterMinHeight;
+			set
+			{
+				itemsPresenterMinHeight = value;
+				RequestLayout();
+			}
+		}
+
+		private int ItemsPresenterMinExtent => (int)ViewHelper.LogicalToPhysicalPixels(ScrollOrientation == Orientation.Vertical ? ItemsPresenterMinHeight : ItemsPresenterMinWidth);
+
 		private int InitialExtentPadding => (int)ViewHelper.LogicalToPhysicalPixels(ScrollOrientation == Orientation.Vertical ? Padding.Top : Padding.Left);
 		private int FinalExtentPadding => (int)ViewHelper.LogicalToPhysicalPixels(ScrollOrientation == Orientation.Vertical ? Padding.Bottom : Padding.Right);
 		private int InitialBreadthPadding => (int)ViewHelper.LogicalToPhysicalPixels(ScrollOrientation == Orientation.Vertical ? Padding.Left : Padding.Top);
@@ -731,7 +755,7 @@ namespace Windows.UI.Xaml.Controls
 				GetChildEndWithMargin(base.GetChildAt(FirstItemView + ItemViewCount - 1));
 			Debug.Assert(range > 0, "Must report a non-negative scroll range.");
 			Debug.Assert(remainingItems == 0 || range > Extent, "If any items are non-visible, the content range must be greater than the viewport extent.");
-			return range;
+			return Math.Max(range, ItemsPresenterMinExtent);
 		}
 
 		/// <summary>
@@ -1161,8 +1185,9 @@ namespace Windows.UI.Xaml.Controls
 			int maxPossibleDelta;
 			if (fillDirection == GeneratorDirection.Forward)
 			{
+				var contentEnd = Math.Max(GetContentEnd(), ItemsPresenterMinExtent - ContentOffset);
 				// If this value is negative, collection dimensions are larger than all children and we should not scroll
-				maxPossibleDelta = Math.Max(0, GetContentEnd() - Extent);
+				maxPossibleDelta = Math.Max(0, contentEnd - Extent);
 				// In the rare case that GetContentStart() is positive (see below), permit a positive value.
 				maxPossibleDelta = Math.Max(GetContentStart(), maxPossibleDelta);
 			}

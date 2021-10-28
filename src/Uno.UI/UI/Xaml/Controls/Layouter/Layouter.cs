@@ -530,6 +530,11 @@ namespace Windows.UI.Xaml.Controls
 				var childMaxWidth = frameworkElement.MaxWidth;
 				var childMinHeight = frameworkElement.MinHeight;
 				var childMinWidth = frameworkElement.MinWidth;
+				if (frameworkElement is ILayoutOptOut optOutElement && !optOutElement.ShouldUseMinSize)
+				{
+					childMinHeight = 0;
+					childMinWidth = 0;
+				}
 				var childWidth = frameworkElement.Width;
 				var childHeight = frameworkElement.Height;
 				var childMargin = frameworkElement.Margin;
@@ -537,8 +542,8 @@ namespace Windows.UI.Xaml.Controls
 				var hasChildWidth = !IsNaN(childWidth);
 				var hasChildMaxWidth = !IsInfinity(childMaxWidth) && !IsNaN(childMaxWidth);
 				var hasChildMaxHeight = !IsInfinity(childMaxHeight) && !IsNaN(childMaxHeight);
-				var hasChildMinWidth = childMinWidth > 0.0f;
-				var hasChildMinHeight = childMinHeight > 0.0f;
+				var hasChildMinWidth = childMinWidth > 0.0;
+				var hasChildMinHeight = childMinHeight > 0.0;
 
 				if (
 					childVerticalAlignment != VerticalAlignment.Stretch
