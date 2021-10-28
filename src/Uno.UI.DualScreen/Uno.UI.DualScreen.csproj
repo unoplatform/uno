@@ -79,6 +79,6 @@
 	</ItemGroup>
 
 	<PropertyGroup>
-		<AndroidLinkSkip>Xamarin.AndroidX.Core;Xamarin.AndroidX.Window;Xamarin.AndroidX.Window.WindowJava;Xamarin.Kotlin.StdLib;Xamarin.KotlinX.Coroutines.Core</AndroidLinkSkip>
+		<AndroidLinkSkip>Xamarin.AndroidX.Core;Xamarin.AndroidX.RecyclerView;Xamarin.AndroidX.Window;Xamarin.AndroidX.Window.WindowJava;Xamarin.Kotlin.StdLib;Xamarin.KotlinX.Coroutines.Core</AndroidLinkSkip>
 	</PropertyGroup>
 </Project>
