@@ -21,6 +21,7 @@ using Uno.UI;
 using Uno.Logging;
 using Uno.UI.Extensions;
 using Microsoft.Extensions.Logging;
+using Uno.UI.UI.Xaml.Controls.Layouter;
 
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
@@ -655,7 +656,7 @@ namespace Windows.UI.Xaml.Controls
 	/// <summary>
 	/// A hidden root item that allows the reuse of ContentControl features.
 	/// </summary>
-	internal class ListViewBaseInternalContainer : UICollectionViewCell
+	internal class ListViewBaseInternalContainer : UICollectionViewCell, ISetLayoutSlots
 	{
 		/// <summary>
 		/// Native constructor, do not use explicitly.

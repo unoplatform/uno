@@ -16,13 +16,15 @@ using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Extensions;
-using Uno.UI.Extensions;
 using DependencyObjectExtensions = Uno.UI.Extensions.DependencyObjectExtensions;
 using static Private.Infrastructure.TestServices.WindowHelper;
 using Windows.UI.Xaml.Shapes;
+using Uno.UI.RuntimeTests.Helpers;
 
 #if __IOS__
 using UIKit;
+#else
+using Uno.UI.Extensions;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
@@ -146,6 +148,57 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 #endif
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TransformToVisual_Through_ListView_Scrolled()
+		{
+			var listView = new ListView
+			{
+				ItemContainerStyle = TestsResourceHelper.GetResource<Style>("NoExtraSpaceListViewContainerStyle"),
+				ItemTemplate = TestsResourceHelper.GetResource<DataTemplate>("FixedSizeItemTemplate"),
+				ItemsSource = Enumerable.Range(0, 20).ToArray(),
+				Height = 120
+			};
+			var sut = new Grid
+			{
+				Height = 300,
+				Width = 200,
+				Children = { listView }
+			};
+
+			WindowContent = sut;
+			await WaitForLoaded(listView);
+
+			AssertItem(0, 0);
+			AssertItem(1, 29);
+
+			var sv = listView.FindFirstChild<ScrollViewer>();
+			Assert.IsNotNull(sv);
+			sv.ChangeView(null, 10, null);
+			await WaitForEqual(10, () => sv.VerticalOffset);
+
+			AssertItem(0, -10);
+			AssertItem(1, 19);
+
+			sv.ChangeView(null, 40, null);
+
+			await WaitForEqual(40, () => sv.VerticalOffset);
+
+			AssertItem(1, -11);
+
+			void AssertItem(int index, double expectedY)
+			{
+				const double defaultTolerance = 1.5;
+				var tolerance = defaultTolerance * Math.Min(index + 1, 3);
+
+				var container = listView.ContainerFromIndex(index) as ContentControl
+					?? throw new NullReferenceException($"Cannot find the container of item {index}");
+
+				var containerToListView = container.TransformToVisual(listView).TransformBounds(new Rect(0, 0, 42, 42));
+
+				Assert.AreEqual(expectedY, containerToListView.Y, tolerance);
+			}
+		}
 
 		[TestMethod]
 		[RunsOnUIThread]
