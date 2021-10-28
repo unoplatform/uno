@@ -45,7 +45,6 @@
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net6.0-android'">
-		<PackageReference Include="Xamarin.DuoSdk" />
 		<PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Version="1.0.0.3-beta02" />
 	</ItemGroup>
 
