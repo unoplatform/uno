@@ -98,8 +98,6 @@ namespace Uno.UI.DualScreen
                         }
                     }
 
-					// HACK: force for testing
-					intersecting = true;
                     if (intersecting) // Occluded region overlaps the app
                     {
                         if ((int)occludedRect.X == (int)bounds.X)
