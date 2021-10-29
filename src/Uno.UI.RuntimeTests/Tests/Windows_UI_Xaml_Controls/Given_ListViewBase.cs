@@ -1524,6 +1524,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __WASM__
+		[Ignore] // https://github.com/unoplatform/uno/issues/7323
+#endif
 		public async Task When_Unequal_Size_Item_Removed()
 		{
 			var source = new ObservableCollection<ItemHeightViewModel>(
