@@ -74,6 +74,13 @@ namespace Windows.UI.Xaml
 		{
 			if (IsLoaded && IsEffectiveViewportEnabled)
 			{
+#if CHECK_LAYOUTED
+				if (IsLoaded)
+				{
+					_isLayouted = true;
+				}
+#endif
+
 				if (_parentViewportUpdatesSubscription == null)
 				{
 					TRACE_EFFECTIVE_VIEWPORT("Enabling effective viewport propagation.");
