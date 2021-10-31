@@ -3,6 +3,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+#pragma warning disable 105 // remove when moving to WinUI tree
+
 using System;
 using System.Collections;
 using System.Collections.Generic;

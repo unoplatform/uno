@@ -103,4 +103,17 @@
 			  PropertyName="_WindowsAppSDKFoundationPlatform" />
 	  </CreateProperty>
   </Target>
+
+  <Target Name="WorkaroundMissingWinAppSDKDLL_2"
+				BeforeTargets="BeforeBuild">
+
+	<!-- Workaround for
+         C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\Microsoft.Common.CurrentVersion.targets(4559,5):
+				 error MSB3030: Could not copy the file "C:\a\.nuget\microsoft.windowsappsdk\1.0.0-preview3\build\..\runtimes\lib\native\AnyCPU\Microsoft.WindowsAppRuntime.Bootstrap.dll" because it was not found.
+	  -->
+	<ItemGroup>
+	  <_itemToRemove Include="@(ReferenceCopyLocalPaths)" Condition="'%(FileName)%(Extension)'=='Microsoft.WindowsAppRuntime.Bootstrap.dll'" />
+	  <ReferenceCopyLocalPaths Remove="@(_itemToRemove)"/>
+	</ItemGroup>
+  </Target>
 </Project>

@@ -9,7 +9,7 @@
 	<PropertyGroup>
 		<AssemblyName>Uno.UI</AssemblyName>
 		<RootNamespace>Uno.UI</RootNamespace>
-		<DefineConstants>$(DefineConstants);IS_UNO</DefineConstants>
+		<DefineConstants>$(DefineConstants);IS_UNO;IS_UNO_UI_PROJECT</DefineConstants>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<BuildForLiveUnitTesting>false</BuildForLiveUnitTesting>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>

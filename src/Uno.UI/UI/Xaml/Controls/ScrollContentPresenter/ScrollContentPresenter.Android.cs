@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnPointerMoved(object sender, Input.PointerRoutedEventArgs e)
 		{
-			if (e.Pointer.PointerDeviceType == PointerDeviceType.Touch)
+			if ((PointerDeviceType)e.Pointer.PointerDeviceType == PointerDeviceType.Touch)
 			{
 				// Prevent PointerMoved being called on parent, as on UWP.
 				// Note: We only want to do this if the ScrollViewer is actually scrollable (in any direction), but at present on Android

@@ -10,7 +10,6 @@ using System.Diagnostics;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Windows.Devices.Input;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -41,6 +40,13 @@ using View = Windows.UI.Xaml.UIElement;
 using _ScrollContentPresenter = Windows.UI.Xaml.Controls.ScrollContentPresenter;
 #else
 using _ScrollContentPresenter = Windows.UI.Xaml.Controls.IScrollContentPresenter;
+#endif
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
 #endif
 
 namespace Windows.UI.Xaml.Controls

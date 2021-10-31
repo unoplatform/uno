@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			base.OnPointerPressed(args);
 
-			if (!ShouldCapture(args.Pointer.PointerDeviceType))
+			if (!ShouldCapture((PointerDeviceType)args.Pointer.PointerDeviceType))
 			{
 				return;
 			}

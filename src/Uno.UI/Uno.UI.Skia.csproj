@@ -9,7 +9,7 @@
 	<PropertyGroup>
 		<UnoSourceGeneratorUseGenerationHost>false</UnoSourceGeneratorUseGenerationHost>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
-		<DefineConstants>$(DefineConstants);IS_UNO</DefineConstants>
+		<DefineConstants>$(DefineConstants);IS_UNO;IS_UNO_UI_PROJECT</DefineConstants>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
@@ -111,6 +111,22 @@
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputCursor.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputDesktopResourceCursor.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputKeyboardSource.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputLightDismissAction.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputLightDismissEventArgs.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputObject.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputPointerSource.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputPointerSourceDeviceKinds.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputSystemCursor.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputSystemCursorShape.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\IPointerPointTransform.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\PointerDeviceType.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\PointerEventArgs.cs" />
 	</ItemGroup>
 	
 </Project>

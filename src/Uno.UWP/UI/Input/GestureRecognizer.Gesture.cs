@@ -12,7 +12,11 @@ using Microsoft.Extensions.Logging;
 using Uno;
 using Uno.Logging;
 
+#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+namespace Microsoft.UI.Input
+#else
 namespace Windows.UI.Input
+#endif
 {
 	public partial class GestureRecognizer
 	{
@@ -50,7 +54,7 @@ namespace Windows.UI.Input
 
 				Down = down;
 				PointerIdentifier = GetPointerIdentifier(down);
-				PointerType = down.PointerDevice.PointerDeviceType;
+				PointerType = (PointerDeviceType)down.PointerDevice.PointerDeviceType;
 
 				// This is how WinUI behaves: it will fire the double tap
 				// on Down for a double tap instead of the Up.

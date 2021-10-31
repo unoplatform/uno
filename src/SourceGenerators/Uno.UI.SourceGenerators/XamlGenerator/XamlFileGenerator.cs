@@ -4623,11 +4623,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (fontWeights.GetProperties().Any(p => p.Name.Equals(memberValue, StringComparison.OrdinalIgnoreCase)))
 			{
-				return "FontWeights." + memberValue;
+				return $"global::{fontWeights.ToDisplayString()}." + memberValue;
 			}
 			else
 			{
-				return "FontWeights.Normal /* Warning {0} is not supported on this platform */".InvariantCultureFormat(memberValue);
+				return $"global::{fontWeights.ToDisplayString()}.Normal /* Warning {memberValue} is not supported on this platform */";
 			}
 		}
 
