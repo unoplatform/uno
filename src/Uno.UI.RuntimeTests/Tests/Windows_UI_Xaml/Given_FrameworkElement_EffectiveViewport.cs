@@ -1123,7 +1123,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				leaf.Loading += ElementLoading;
 			}
 
-			private void ElementLoading(FrameworkElement sender, object args)
+			private void ElementLoading(object sender, object args)
 			{
 				_leaf.Loading -= ElementLoading;
 
