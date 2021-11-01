@@ -32,6 +32,14 @@ using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation;
 using Uno.UI.Controls;
 
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.UI.Input;
+using Windows.Devices.Input;
+using Windows.UI.Core;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class AppBar : ContentControl
@@ -595,7 +603,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void OnWindowSizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e)
+		private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs e)
 		{
 			if (m_Mode == AppBarMode.Inline)
 			{
@@ -708,7 +716,7 @@ namespace Windows.UI.Xaml.Controls
 			if (m_Mode != AppBarMode.Inline)
 			{
 				var pointerDeviceType = e.PointerDeviceType;
-				if (pointerDeviceType != Windows.Devices.Input.PointerDeviceType.Mouse)
+				if (pointerDeviceType != PointerDeviceType.Mouse)
 				{
 					return;
 				}
