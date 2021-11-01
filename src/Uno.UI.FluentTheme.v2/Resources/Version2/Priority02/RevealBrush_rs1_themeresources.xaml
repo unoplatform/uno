@@ -31,7 +31,7 @@
             <Color x:Key="SystemRevealChromeGrayColor">#F2767676</Color>
             <Color x:Key="SystemRevealListLowColor">#18FFFFFF</Color>
             <Color x:Key="SystemRevealListMediumColor">#30FFFFFF</Color>
-            
+
             <!-- Background Brushes -->
             <SolidColorBrush x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush" Color="{StaticResource SystemBaseLowColor}" />
             <SolidColorBrush x:Key="SystemControlTransparentRevealBackgroundBrush" Color="Transparent" />
@@ -235,7 +235,7 @@
             <Color x:Key="SystemRevealChromeGrayColor">#E6767676</Color>
             <Color x:Key="SystemRevealListLowColor">#17000000</Color>
             <Color x:Key="SystemRevealListMediumColor">#2E000000</Color>
-            
+
             <!-- Background Brushes -->
             <SolidColorBrush x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush" Color="{StaticResource SystemBaseLowColor}" />
             <SolidColorBrush x:Key="SystemControlTransparentRevealBackgroundBrush" Color="Transparent" />
@@ -267,7 +267,7 @@
             <SolidColorBrush x:Key="SystemControlBackgroundListMediumRevealBorderBrush" Color="{StaticResource SystemListMediumColor}" />
             <SolidColorBrush x:Key="SystemControlTransparentRevealBorderBrush" Color="Transparent" />
             <SolidColorBrush x:Key="SystemControlForegroundRevealTransparentBorderBrush" Color="Transparent" />
-            <SolidColorBrush x:Key="SystemControlBackgroundTransparentRevealBorderBrush" Color="Transparent" />            
+            <SolidColorBrush x:Key="SystemControlBackgroundTransparentRevealBorderBrush" Color="Transparent" />
             <SolidColorBrush x:Key="SystemControlHighlightTransparentRevealBorderBrush" Color="Transparent" />
             <SolidColorBrush x:Key="SystemControlHighlightAltTransparentRevealBorderBrush" Color="Transparent" />
             <SolidColorBrush x:Key="SystemControlHighlightAccentRevealBorderBrush" Color="{ThemeResource SystemAccentColor}" />
@@ -439,7 +439,7 @@
             <Color x:Key="SystemRevealChromeGrayColor">#FF767676</Color>
             <Color x:Key="SystemRevealListLowColor">#19FFFFFF</Color>
             <Color x:Key="SystemRevealListMediumColor">#33FFFFFF</Color>
-            
+
             <!-- Background Brushes -->
             <SolidColorBrush x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
             <SolidColorBrush x:Key="SystemControlTransparentRevealBackgroundBrush" Color="Transparent" />
@@ -619,11 +619,8 @@
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
-    <Thickness x:Key="CommandBarMoreButtonMargin">14,19,14,0</Thickness>
     <x:Double x:Key="AppBarButtonContentHeight">16</x:Double>
-    <x:Double x:Key="AppBarThemeMinHeight">56</x:Double>
-    <x:Double x:Key="AppBarThemeCompactHeight">40</x:Double>
-    
+    <Thickness x:Key="CommandBarMoreButtonMargin">14,19,14,0</Thickness>
     <Style TargetType="Button" x:Key="ButtonRevealStyle"/>
     <Style TargetType="RepeatButton" x:Key="RepeatButtonRevealStyle"/>
     <Style TargetType="ToggleButton" x:Key="ToggleButtonRevealStyle"/>

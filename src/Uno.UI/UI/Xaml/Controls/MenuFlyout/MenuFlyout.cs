@@ -371,7 +371,10 @@ namespace Windows.UI.Xaml.Controls
 				Control presenter = GetPresenter();
 				MenuFlyoutPresenter menuFlyoutPresenter = presenter as MenuFlyoutPresenter;
 
-				menuFlyoutPresenter.IsSubPresenter = value != null;
+				if (menuFlyoutPresenter is { })
+				{
+					menuFlyoutPresenter.IsSubPresenter = value != null;
+				}
 			}
 		}
 

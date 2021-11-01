@@ -7267,6 +7267,12 @@
 			<Member
 				fullName="System.Void Windows.ApplicationModel.Calls.PhoneCallManager..ctor()"
 				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.AppBarTemplateSettings..ctor(Windows.UI.Xaml.Controls.AppBar appBar)"
+				reason="API alignment" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings..ctor(Windows.UI.Xaml.Controls.CommandBar commandBar)"
+				reason="API alignment" />
 		</Methods>
 		<Events>
 			<Member

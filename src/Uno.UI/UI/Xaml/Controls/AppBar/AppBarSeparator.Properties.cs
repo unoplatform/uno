@@ -1,14 +1,13 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class AppBarSeparator : Control, ICommandBarElement, ICommandBarElement2, ICommandBarElement3
+	partial class AppBarSeparator
 	{
-		public AppBarSeparator()
-		{
-			DefaultStyleKey = typeof(AppBarSeparator);
-		}
-
 		#region IsCompat
 
 		public bool IsCompact
@@ -49,7 +48,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public bool IsInOverflow
 		{
-			get => (bool)this.GetValue(IsInOverflowProperty);
+			get => CommandBar.IsCommandBarElementInOverflow(this);
 			internal set => this.SetValue(IsInOverflowProperty, value);
 		}
 
@@ -62,6 +61,30 @@ namespace Windows.UI.Xaml.Controls
 		public static DependencyProperty IsInOverflowProperty { get; } =
 			DependencyProperty.Register(
 				"IsInOverflow",
+				typeof(bool),
+				typeof(AppBarSeparator),
+				new FrameworkPropertyMetadata(default(bool))
+			);
+
+		#endregion
+
+		#region UseOverflowStyle
+
+		internal bool UseOverflowStyle
+		{
+			get => (bool)this.GetValue(UseOverflowStyleProperty);
+			set => this.SetValue(UseOverflowStyleProperty, value);
+		}
+
+		bool ICommandBarOverflowElement.UseOverflowStyle
+		{
+			get => UseOverflowStyle;
+			set => UseOverflowStyle = value;
+		}
+
+		internal static DependencyProperty UseOverflowStyleProperty { get; } =
+			DependencyProperty.Register(
+				nameof(UseOverflowStyle),
 				typeof(bool),
 				typeof(AppBarSeparator),
 				new FrameworkPropertyMetadata(default(bool))

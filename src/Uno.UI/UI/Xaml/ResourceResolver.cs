@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Uno.Diagnostics.Eventing;
@@ -241,8 +242,9 @@ namespace Uno.UI
 			// See https://github.com/dotnet/runtime/issues/56309 for details
 			var sourcesEnumerator = CurrentScope.Sources.GetEnumerator();
 
-			while(sourcesEnumerator.MoveNext())
+			while (sourcesEnumerator.MoveNext())
 			{
+				
 				var source = sourcesEnumerator.Current;
 
 				var dictionary = (source.Target as FrameworkElement)?.Resources

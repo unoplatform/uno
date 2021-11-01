@@ -69,6 +69,19 @@ namespace Private.Infrastructure
 				? Windows.UI.Xaml.Window.Current.Content
 				: EmbeddedTestRoot.control;
 
+			internal static Page SetupSimulatedAppPage()
+			{
+				var spFrame = new Frame();
+
+				var spRootFrameAsCC = spFrame as ContentControl;
+
+				var spRootFrameAsUI = spRootFrameAsCC as UIElement;
+				WindowContent = spRootFrameAsUI;
+
+				spFrame.Navigate(typeof(Page));
+				return spRootFrameAsCC.Content as Page;
+			}
+
 			internal static async Task WaitForIdle()
 			{
 				await RootElement.Dispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });

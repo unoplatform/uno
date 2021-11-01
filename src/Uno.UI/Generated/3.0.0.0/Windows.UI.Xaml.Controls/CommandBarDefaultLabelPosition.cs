@@ -2,18 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	public   enum CommandBarDefaultLabelPosition 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Bottom = 0,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Right = 1,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Collapsed = 2,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Controls.CommandBarDefaultLabelPosition.Bottom
+		// Skipping already declared field Windows.UI.Xaml.Controls.CommandBarDefaultLabelPosition.Right
+		// Skipping already declared field Windows.UI.Xaml.Controls.CommandBarDefaultLabelPosition.Collapsed
 	}
 	#endif
 }
