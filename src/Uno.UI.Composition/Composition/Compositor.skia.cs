@@ -170,5 +170,33 @@ namespace Windows.UI.Composition
 				CoreWindow.QueueInvalidateRender();
 			}
 		}
+
+		private void ComputeDropShadowValues(float offsetZ, out float dx, out float dy, out float sigmaX, out float sigmaY, out SKColor shadowColor)
+		{
+			// Following math magic seems to follow UWP ThemeShadow quite nicely.
+			const float SHADOW_OFFSET_MAX = 150;
+			const byte SHADOW_ALPHA_FALLBACK = 150;
+			const float SHADOW_ALPHA_MODIFIER = 1f / 650f;
+			const float SHADOW_SIGMA_X_MODIFIER = 1f / 5f;
+			const float SHADOW_SIGMA_Y_MODIFIER = 1f / 3.5f;
+
+			byte alpha;
+			if (offsetZ <= SHADOW_OFFSET_MAX)
+			{
+				// Alpha should slightly decrease as the offset increases
+				alpha = (byte)((1.0f - (offsetZ * SHADOW_ALPHA_MODIFIER)) * 255);
+			}
+			else
+			{
+				alpha = SHADOW_ALPHA_FALLBACK;
+				offsetZ = SHADOW_OFFSET_MAX;
+			}
+
+			dx = 0;
+			dy = offsetZ / 2 - offsetZ * SHADOW_SIGMA_Y_MODIFIER;
+			sigmaX = offsetZ * SHADOW_SIGMA_X_MODIFIER;
+			sigmaY = offsetZ * SHADOW_SIGMA_Y_MODIFIER;
+			shadowColor = SKColor.Parse("ACACAC").WithAlpha(alpha);
+		}
 	}
 }

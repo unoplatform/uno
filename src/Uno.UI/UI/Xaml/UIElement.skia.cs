@@ -27,6 +27,7 @@ namespace Windows.UI.Xaml
 		internal double _canvasTop;
 		internal double _canvasLeft;
 		private Rect _currentFinalRect;
+		private Vector3 _translation;
 
 		public UIElement()
 		{
@@ -41,6 +42,12 @@ namespace Windows.UI.Xaml
 			UpdateHitTest();
 		}
 
+		public Vector3 Translation
+		{
+			get { return _translation; }
+			set { _translation = value; }
+		}
+		
 		internal bool IsChildrenRenderOrderDirty { get; set; } = true;
 
 		partial void InitializeKeyboard();
@@ -318,9 +325,10 @@ namespace Windows.UI.Xaml
 		{
 			var roundedRect = LayoutRound(rect);
 
-			Visual.Offset = new Vector3((float)roundedRect.X, (float)roundedRect.Y, 0);
-			Visual.Size = new Vector2((float)roundedRect.Width, (float)roundedRect.Height);
-			Visual.CenterPoint = new Vector3((float)RenderTransformOrigin.X, (float)RenderTransformOrigin.Y, 0);
+			var visual = Visual;
+			visual.Offset = new Vector3((float)roundedRect.X, (float)roundedRect.Y, 0) + _translation;
+			visual.Size = new Vector2((float)roundedRect.Width, (float)roundedRect.Height);
+			visual.CenterPoint = new Vector3((float)RenderTransformOrigin.X, (float)RenderTransformOrigin.Y, 0);
 
 			ApplyNativeClip(clip ?? Rect.Empty);
 		}
