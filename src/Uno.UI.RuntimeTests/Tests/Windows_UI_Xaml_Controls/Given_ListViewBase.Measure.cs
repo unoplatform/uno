@@ -251,6 +251,57 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		public async Task When_ItemsPresenter_MinHeight()
+		{
+			var SUT = new ListView
+			{
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = FixedSizeItemTemplate,
+				ItemsSource = Enumerable.Range(0, 3).ToArray(),
+				Height = 250
+			};
+
+			WindowHelper.WindowContent = SUT;
+			var itemsPresenter = await WindowHelper.WaitForNonNull(() => SUT.FindFirstChild<ItemsPresenter>());
+			itemsPresenter.MinHeight = 310;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.AreEqual(250, SUT.ActualHeight, 1);
+
+			var container = SUT.ContainerFromIndex(2) as ListViewItem;
+			Assert.IsNotNull(container);
+			var initialRect = container.GetRelativeBounds(SUT);
+			const double HeightOfTwoItems = 29 * 2;
+			Assert.AreEqual(HeightOfTwoItems, initialRect.Y, 1);
+
+			await Task.Delay(2000);
+			var sv = SUT.FindFirstChild<ScrollViewer>();
+			ScrollBy(SUT, 40);
+			double InitialScroll()
+			{
+#if NETFX_CORE
+				// For some reason on UWP the initial ChangeView may not work
+				ScrollBy(SUT, 40); 
+#endif
+				return sv.VerticalOffset;
+			}
+
+			await WindowHelper.WaitForEqual(40, InitialScroll);
+
+			var rectScrolledPartial = container.GetRelativeBounds(SUT);
+			Assert.AreEqual(HeightOfTwoItems - 40, rectScrolledPartial.Y, 1);
+
+			await ScrollByInIncrements(SUT, 200);
+			const double MaxPossibleScroll = 310 - 250;
+			await WindowHelper.WaitForEqual(MaxPossibleScroll, () => sv.VerticalOffset);
+
+			var rectScrollFinal = container.GetRelativeBounds(SUT);
+			Assert.AreEqual(HeightOfTwoItems - MaxPossibleScroll, rectScrollFinal.Y, 1);
+		}
+
 
 		// Works around ScrollIntoView() not implemented for all platforms
 		private static void ScrollBy(ListViewBase listViewBase, double scrollBy)

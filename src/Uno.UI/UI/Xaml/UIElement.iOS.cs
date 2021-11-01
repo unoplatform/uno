@@ -162,6 +162,12 @@ namespace Windows.UI.Xaml
 
 						switch (parent)
 						{
+							case ListViewBaseInternalContainer listViewBaseInternalContainer:
+								// In the case of ListViewBaseInternalContainer, the first managed parent is normally ItemsPresenter. We omit
+								// the offset since it's incorporated separately via the layout slot propagated to ListViewItem + the scroll offset.
+								parentElement = listViewBaseInternalContainer.FindFirstParent<UIElement>();
+								return true;
+
 							case UIElement eltParent:
 								// We found a UIElement in the parent hierarchy, we compute the X/Y offset between the
 								// first parent 'view' and this 'elt', and return it.

@@ -21,6 +21,7 @@ using Uno.UI;
 using Uno.Logging;
 using Uno.UI.Extensions;
 using Microsoft.Extensions.Logging;
+using Uno.UI.UI.Xaml.Controls.Layouter;
 
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
@@ -655,7 +656,7 @@ namespace Windows.UI.Xaml.Controls
 	/// <summary>
 	/// A hidden root item that allows the reuse of ContentControl features.
 	/// </summary>
-	internal class ListViewBaseInternalContainer : UICollectionViewCell
+	internal class ListViewBaseInternalContainer : UICollectionViewCell, ISetLayoutSlots
 	{
 		/// <summary>
 		/// Native constructor, do not use explicitly.
@@ -750,6 +751,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				base.Frame = value;
 				UpdateContentViewFrame();
+				UpdateContentLayoutSlots(value);
 			}
 		}
 
@@ -766,6 +768,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				base.Bounds = value;
 				UpdateContentViewFrame();
+				UpdateContentLayoutSlots(Frame);
 			}
 		}
 
@@ -778,6 +781,20 @@ namespace Windows.UI.Xaml.Controls
 			if (ContentView != null)
 			{
 				ContentView.Frame = Bounds;
+			}
+		}
+
+		/// <summary>
+		/// Fakely propagate the applied Frame of this internal container as the LayoutSlot of the publicly visible container.
+		/// This is required for the UIElement.TransformToVisual to work properly.
+		/// </summary>
+		private void UpdateContentLayoutSlots(Rect frame)
+		{
+			var content = Content;
+			if (content != null)
+			{
+				LayoutInformation.SetLayoutSlot(content, frame);
+				content.LayoutSlotWithMarginsAndAlignments = frame;
 			}
 		}
 
@@ -918,6 +935,11 @@ namespace Windows.UI.Xaml.Controls
 			if (Content != null)
 			{
 				Layouter.ArrangeChild(Content, new Rect(0, 0, (float)size.Width, (float)size.Height));
+
+				// The item has to be arranged relative to this internal container (at 0,0),
+				// but doing this the LayoutSlot[WithMargins] has been updated, 
+				// so we fakely re-inject the relative position of the item in its parent.
+				UpdateContentLayoutSlots(Frame);
 			}
 		}
 
