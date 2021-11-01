@@ -1120,12 +1120,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				_root = root;
 				_leaf = leaf;
 
-				leaf.Loaded += ElementLoaded;
+				leaf.Loading += ElementLoading;
 			}
 
-			private void ElementLoaded(object sender, RoutedEventArgs e)
+			private void ElementLoading(object sender, object args)
 			{
-				_leaf.Loaded -= ElementLoaded;
+				_leaf.Loading -= ElementLoading;
 
 				Subscribe(sender);
 
@@ -1155,7 +1155,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			public void Dispose()
 			{
-				_leaf.Loaded -= ElementLoaded;
+				_leaf.Loading -= ElementLoading;
 				foreach (var listener in _listeners.Values)
 				{
 					listener.Dispose();
