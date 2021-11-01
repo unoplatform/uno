@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
 using Foundation;
 using UIKit;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
 using Windows.UI.Input;
+using Windows.Devices.Input;
+#endif
 
 namespace Windows.UI.Xaml.Input
 {
@@ -58,7 +63,7 @@ namespace Windows.UI.Xaml.Input
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
 			var timestamp = ToTimeStamp(_nativeTouch.Timestamp);
-			var device = PointerDevice.For(Pointer.PointerDeviceType);
+			var device = Windows.Devices.Input.PointerDevice.For((Windows.Devices.Input.PointerDeviceType)Pointer.PointerDeviceType);
 			var rawPosition = (Point)_nativeTouch.GetPreciseLocation(null);
 			var position = relativeTo == null
 				? rawPosition

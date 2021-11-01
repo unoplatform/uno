@@ -3,18 +3,23 @@
 using System.Numerics;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.UI.Helpers.WinUI;
-using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -324,7 +329,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
 		{
-			if (IsSelected && args.Pointer.PointerDeviceType == PointerDeviceType.Mouse)
+			if (IsSelected && (PointerDeviceType)args.Pointer.PointerDeviceType == PointerDeviceType.Mouse)
 			{
 				var pointerPoint = args.GetCurrentPoint(this);
 				if (pointerPoint.Properties.IsLeftButtonPressed)

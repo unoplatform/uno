@@ -37,6 +37,12 @@ using _View = AppKit.NSView;
 using _View = Windows.UI.Xaml.FrameworkElement;
 #endif
 
+#if HAS_UNO_WINUI
+using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+#else
+using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class ComboBox : Selector
@@ -171,7 +177,7 @@ namespace Windows.UI.Xaml.Controls
 			DropDownOpened?.Invoke(this, null!);
 		}
 
-		private void OnWindowSizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e)
+		private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs e)
 		{
 			IsDropDownOpen = false;
 		}

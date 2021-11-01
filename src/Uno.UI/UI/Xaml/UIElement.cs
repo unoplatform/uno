@@ -936,5 +936,15 @@ namespace Windows.UI.Xaml
 
 		[GeneratedDependencyProperty(DefaultValue = default(KeyboardNavigationMode))]
 		public static DependencyProperty TabFocusNavigationProperty { get; } = CreateTabFocusNavigationProperty();
+
+#if HAS_UNO_WINUI
+		// Skipping already declared property ActualSize
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public UI.Input.InputCursor ProtectedCursor
+		{
+			get;
+			set;
+		}
+#endif
 	}
 }

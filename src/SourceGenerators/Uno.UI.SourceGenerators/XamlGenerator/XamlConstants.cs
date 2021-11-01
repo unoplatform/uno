@@ -86,7 +86,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			// Text
 			public const string FontWeight = Namespaces.Text + ".FontWeight";
-			public const string FontWeights = Namespaces.Text + ".FontWeights";
+			public const string FontWeights = RootMUINamespace + ".Text.FontWeights";
 
 			// Misc
 			public const string Setter = BaseXamlNamespace + ".Setter";

@@ -8,6 +8,12 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Tests")]
 [assembly: InternalsVisibleTo("Uno.UI.Toolkit")]
 
+[assembly: InternalsVisibleTo("SamplesApp")]
+[assembly: InternalsVisibleTo("SamplesApp.Droid")]
+[assembly: InternalsVisibleTo("SamplesApp.macOS")]
+[assembly: InternalsVisibleTo("SamplesApp.Wasm")]
+[assembly: InternalsVisibleTo("SamplesApp.Skia")]
+
 #if NET6_0_OR_GREATER
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]
 #elif __IOS__

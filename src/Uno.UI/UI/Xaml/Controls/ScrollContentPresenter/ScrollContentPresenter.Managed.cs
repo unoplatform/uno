@@ -256,7 +256,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void CompleteTouchScroll(object sender, ManipulationCompletedRoutedEventArgs e)
 		{
-			if (e.PointerDeviceType != PointerDeviceType.Touch)
+			if ((PointerDeviceType)e.PointerDeviceType != PointerDeviceType.Touch)
 			{
 				return;
 			}

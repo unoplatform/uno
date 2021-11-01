@@ -3,11 +3,17 @@ using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
 using Uno.Disposables;
-using Windows.UI.Input;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {

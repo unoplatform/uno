@@ -168,7 +168,7 @@ namespace Windows.UI.Xaml
 				_sizeChangedHandlers,
 				handler,
 				(h, s, e) =>
-					(h as Windows.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (Windows.UI.Core.WindowSizeChangedEventArgs)e)
+					(h as Windows.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e)
 			);
 		}
 
@@ -220,7 +220,12 @@ namespace Windows.UI.Xaml
 
 		private void RaiseSizeChanged(Windows.UI.Core.WindowSizeChangedEventArgs windowSizeChangedEventArgs)
 		{
-			SizeChanged?.Invoke(this, windowSizeChangedEventArgs);
+			var baseSizeChanged = new WindowSizeChangedEventArgs(windowSizeChangedEventArgs.Size) { Handled = windowSizeChangedEventArgs.Handled };
+
+			SizeChanged?.Invoke(this, baseSizeChanged);
+
+			windowSizeChangedEventArgs.Handled = baseSizeChanged.Handled;
+
 			CoreWindow.GetForCurrentThread()?.OnSizeChanged(windowSizeChangedEventArgs);
 
 			foreach (var action in _sizeChangedHandlers)
