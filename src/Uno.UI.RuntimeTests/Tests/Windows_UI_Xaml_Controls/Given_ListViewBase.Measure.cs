@@ -191,8 +191,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForEqual(244, () => border.ActualWidth);
 		}
 
-<<<<<<< HEAD
-=======
 		[TestMethod]
 		public async Task When_Item_Margins_And_Scrolled()
 		{
@@ -302,8 +300,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var rectScrollFinal = container.GetRelativeBounds(SUT);
 			Assert.AreEqual(HeightOfTwoItems - MaxPossibleScroll, rectScrollFinal.Y, 1);
 		}
-
->>>>>>> 6dfc25156 (feat(listview): [iOS] [Android] Support ItemsPresenter.MinHeight)
 
 		// Works around ScrollIntoView() not implemented for all platforms
 		private static void ScrollBy(ListViewBase listViewBase, double scrollBy)
