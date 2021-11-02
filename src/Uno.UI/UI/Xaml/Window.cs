@@ -228,9 +228,11 @@ namespace Windows.UI.Xaml
 
 			CoreWindow.GetForCurrentThread()?.OnSizeChanged(windowSizeChangedEventArgs);
 
+			baseSizeChanged.Handled = windowSizeChangedEventArgs.Handled;
+
 			foreach (var action in _sizeChangedHandlers)
 			{
-				action(this, windowSizeChangedEventArgs);
+				action(this, baseSizeChanged);
 			}
 		}
 
