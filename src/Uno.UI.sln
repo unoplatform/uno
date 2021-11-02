@@ -137,7 +137,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.Samples.UITest.Generato
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.SourceGenerators.Tests", "SourceGenerators\Uno.UI.SourceGenerators.Tests\Uno.UI.SourceGenerators.Tests.csproj", "{34DB4266-6184-4889-8D16-92F22C43BB15}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.DualScreen", "Uno.UI.DualScreen\Uno.UI.DualScreen.csproj", "{C187CD35-E5B4-4054-99C2-5D85AD9D6C73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Foldable", "Uno.UI.Foldable\Uno.UI.Foldable.csproj", "{C187CD35-E5B4-4054-99C2-5D85AD9D6C73}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.WinUIRevert", "Uno.WinUIRevert\Uno.WinUIRevert.csproj", "{C598D6FA-81F1-4B54-8028-ED8987F88FFA}"
 EndProject
@@ -265,7 +265,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.FluentTheme.v2.Skia"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.FluentTheme.v2.Wasm", "Uno.UI.FluentTheme.v2\Uno.UI.FluentTheme.v2.Wasm.csproj", "{AD35E340-34DF-4FA9-B545-B9FBB72D3A2E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.DualScreen.net6", "Uno.UI.DualScreen\Uno.UI.DualScreen.net6.csproj", "{CC0AF5E6-FA87-4A09-958A-95ADE1E5B946}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Foldable.net6", "Uno.UI.Foldable\Uno.UI.Foldable.net6.csproj", "{CC0AF5E6-FA87-4A09-958A-95ADE1E5B946}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.Foundation.Logging", "Uno.Foundation.Logging\Uno.Foundation.Logging.csproj", "{76875E6F-30F3-4225-821F-11A299BCBDB0}"
 EndProject

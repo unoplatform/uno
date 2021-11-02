@@ -10,7 +10,7 @@ using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.ViewManagement;
 
-namespace Uno.UI.DualScreen
+namespace Uno.UI.Foldable
 {
     /// <summary>
     /// Provides two Rect that represent the two screen dimensions when
