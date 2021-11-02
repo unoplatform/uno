@@ -59,6 +59,21 @@ namespace UnoWinUIRevert
 				}
 			}
 
+			var dispatcherQueuePath = Path.Combine(basePath, @"src", "Uno.UWP", "System");
+			if (Directory.Exists(dispatcherQueuePath))
+			{
+				Console.WriteLine(@"Copying DispatcherQueue types");
+				foreach(var file in Directory.GetFiles(dispatcherQueuePath, "DispatcherQueue*.cs"))
+				{
+					var relativePath = Path.GetRelativePath(dispatcherQueuePath, file);
+
+					var targetFile = Path.Combine(basePath, "src", "Uno.UI", "UI", "Dispatching", relativePath);
+
+					Directory.CreateDirectory(Path.GetDirectoryName(targetFile));
+					File.Copy(file, targetFile, true);
+				}
+			}
+
 			// Files/Class that are implemented in both MUX and WUX and which should not be converted
 			var duplicatedImplementations = new[]
 			{
