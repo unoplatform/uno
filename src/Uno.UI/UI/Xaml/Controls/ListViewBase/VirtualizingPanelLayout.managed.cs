@@ -1094,8 +1094,12 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (reorder.index is null)
 				{
-					reorder.index = XamlParent!.GetIndexPathFromItem(reorder.item);
-					_pendingReorder = reorder; // _pendingReorder is a struct!
+					var itemIndex = XamlParent!.GetIndexPathFromItem(reorder.item);
+					if (itemIndex.Row >= 0) // GetIndexPathFromItem() will return Row=-1 if item is not found, which may happen eg if it's been removed from the collection during dragging. Prefer to leave index null in this case.
+					{
+						reorder.index = itemIndex;
+						_pendingReorder = reorder; // _pendingReorder is a struct! 
+					}
 				}
 
 				return reorder.index;
