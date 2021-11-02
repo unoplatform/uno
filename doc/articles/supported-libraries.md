@@ -5,8 +5,9 @@ This article lists some of the 3rd-party libraries supported by Uno Platform.
 ## Control libraries
 
  * [Windows Community Toolkit](uno-community-toolkit.md)
- * [SyncFusion](https://github.com/syncfusion/Uno.SfChart)
+ * [Syncfusion](https://github.com/syncfusion/Uno.SfChart)
  * [Infragistics](https://www.infragistics.com/products/uno-platform)
+ * [LightningChart](https://www.arction.com/uno-platform-data-visualization-template/)
 
 ## Presentation frameworks
 
