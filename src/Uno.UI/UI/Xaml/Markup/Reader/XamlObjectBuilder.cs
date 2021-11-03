@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				return Convert.ChangeType(primitiveValue, type, CultureInfo.InvariantCulture);
 			}
-			else if (type == typeof(string) && unknownContentValue is string stringValue)
+			else if (type == typeof(string) && initializationMember?.Value is string stringValue)
 			{
 				return stringValue;
 			}
