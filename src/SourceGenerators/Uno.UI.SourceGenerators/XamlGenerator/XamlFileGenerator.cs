@@ -2549,6 +2549,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else if (!ShouldLazyInitializeResource(resource))
 					{
+						var xName = resource.Members.SingleOrDefault(m => HasXNameProperty(m))?.Value as string;
+						// NOTE: IsMemberInsideFrameworkTemplate returns TRUE if the parameter IS framework template.
+						// The intention here is really "Inside" (excluding framework template) - so we pass the Owner.
+						// Uno TODO: Have Both "IsMemberIsOrInsideFrameworkTemplate" and "IsMemberInsideFrameworkTemplate"
+						// Then review all callers and confirm which one should be called.
+						// Uno TODO: Singletons should most likely produce fields.
+						if (!_isInSingletonInstance && !string.IsNullOrEmpty(xName) && !IsMemberInsideFrameworkTemplate(resource.Owner).isInside)
+						{
+							// Assign the generated field as well.
+							writer.AppendLineInvariant($"{xName} =");
+							RegisterBackingField(GetType(resource.Type).ToDisplayString(), xName!, FindObjectFieldAccessibility(resource));
+						}
+
 						BuildChild(writer, null, resource);
 					}
 					else if (_isTopLevelDictionary
@@ -3078,11 +3091,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 						else
 						{
-							var isMemberInsideResourceDictionary = IsMemberInsideResourceDictionary(objectDefinition);
+							var topLevelControl = _fileDefinition.Objects.First().Type;
 
 							if (
 								member.Member.Name == "Name"
-								&& !isMemberInsideResourceDictionary.isInside
+								&& !IsApplication(topLevelControl)
+								&& !_isInSingletonInstance
 							)
 							{
 								writer.AppendLineInvariant($@"nameScope.RegisterName(""{member.Value}"", {closureName});");
@@ -3091,7 +3105,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (
 								member.Member.Name == "Name"
 								&& !IsAttachedProperty(member)
-								&& !isMemberInsideResourceDictionary.isInside
+								&& !IsApplication(topLevelControl)
+								&& !_isInSingletonInstance
 							)
 							{
 								nameMember = member;
