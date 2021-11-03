@@ -1012,7 +1012,7 @@ namespace Windows.UI.Xaml
 					// This block is a manual enumeration to avoid the foreach pattern
 					// See https://github.com/dotnet/runtime/issues/56309 for details
 					var propertiesEnumerator = _updatedProperties.GetEnumerator();
-					while(propertiesEnumerator.MoveNext())
+					while (propertiesEnumerator.MoveNext())
 					{
 						var dp = propertiesEnumerator.Current;
 						SetValue(dp, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
@@ -1227,7 +1227,7 @@ namespace Windows.UI.Xaml
 		{
 			foreach (var propertyDetail in _properties.GetAllDetails())
 			{
-				if(propertyDetail == null
+				if (propertyDetail == null
 					|| propertyDetail == _properties.DataContextPropertyDetails
 					|| propertyDetail == _properties.TemplatedParentPropertyDetails)
 				{
@@ -1281,7 +1281,10 @@ namespace Windows.UI.Xaml
 
 				if (candidateFE != null)
 				{
-					yield return candidateFE.Resources;
+					if (candidateFE.Resources != null) // It's legal (if pointless) on UWP to set Resources to null from user code, so check
+					{
+						yield return candidateFE.Resources;
+					}
 
 					if (parent is FrameworkElement fe)
 					{
@@ -1383,7 +1386,7 @@ namespace Windows.UI.Xaml
 			// This block is a manual enumeration to avoid the foreach pattern
 			// See https://github.com/dotnet/runtime/issues/56309 for details
 			var forwardedEnumerator = _inheritedForwardedProperties.GetEnumerator();
-			while(forwardedEnumerator.MoveNext())
+			while (forwardedEnumerator.MoveNext())
 			{
 				var sourceInstanceProperties = forwardedEnumerator.Current;
 
@@ -1671,7 +1674,7 @@ namespace Windows.UI.Xaml
 			// Raise the callback for backing fields update before PropertyChanged to get
 			// the backingfield updated, in case the PropertyChanged handler reads the
 			// dependency property value through the cache.
-			propertyMetadata.RaiseBackingFieldUpdate(actualInstanceAlias, newValue);			
+			propertyMetadata.RaiseBackingFieldUpdate(actualInstanceAlias, newValue);
 
 			// Raise the changes for the callback register to the property itself
 			propertyMetadata.RaisePropertyChanged(actualInstanceAlias, eventArgs);

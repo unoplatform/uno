@@ -405,5 +405,16 @@
 	  Condition="$(MSBuildProjectFullPath.Contains('#')) and '$(UnoUIDisable5953Warning)'==''"
 	  Text="The path to your project contains the '#' character, which causes known build issues. Try moving your project to a different location. (See https://github.com/unoplatform/uno/issues/5953 for more details)."/>
   </Target>
+  
+  <Target Name="Roslyn51768Workaround"
+          BeforeTargets="BeforeBuild"
+				  Condition="'$(DisableRoslyn51768Workaround)'==''">
+	<!-- Workaround for https://github.com/dotnet/roslyn/issues/51768 -->
+	<CreateProperty Value="$(IntermediateOutputPath)$(MSBuildProjectName).d$(DesignTimeBuild)-b$(BuildingProject).GeneratedMSBuildEditorConfig.editorconfig">
+	  <Output
+		  TaskParameter="Value"
+		  PropertyName="GeneratedMSBuildEditorConfigFile" />
+	</CreateProperty>
+  </Target>
 
 </Project>

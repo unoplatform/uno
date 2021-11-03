@@ -228,7 +228,10 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					if (member.Objects.None())
 					{
-						if (TypeResolver.IsInitializedCollection(propertyInfo))
+						if (TypeResolver.IsInitializedCollection(propertyInfo)
+							// The Resources property has a public setter, but should be treated as an empty collection
+							|| IsResourcesProperty(propertyInfo)
+						)
 						{
 							// Empty collection
 						}
@@ -519,6 +522,9 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 		private bool IsThemeResourceMarkupNode(XamlMemberDefinition member)
 			=> member.Objects.Any(o => o.Type.Name == "ThemeResource");
+
+		private bool IsResourcesProperty(PropertyInfo propertyInfo)
+			=> propertyInfo.Name == "Resources" && propertyInfo.PropertyType == typeof(ResourceDictionary);
 
 		private void ProcessBindingMarkupNode(object instance, XamlMemberDefinition member)
 		{
