@@ -52,7 +52,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _projectDirectory;
 		private readonly string _projectFullPath;
 		private readonly bool _outputSourceComments = true;
-		private readonly bool _xamlResourcesTrimming;		private readonly RoslynMetadataHelper _metadataHelper;
+		private readonly bool _xamlResourcesTrimming;
+		private readonly RoslynMetadataHelper _metadataHelper;
 
 		/// <summary>
 		/// If set, code generated from XAML will be annotated with the source method and line # in XamlFileGenerator, for easier debugging.
@@ -408,7 +409,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					return Location.Create(
 						xamlFile.Path,
-						xamlText.Lines.ElementAtOrDefault(xamlParsingException.LineNumber.Value-1).Span,
+						xamlText.Lines.ElementAtOrDefault(xamlParsingException.LineNumber.Value - 1).Span,
 						new LinePositionSpan(linePosition, linePosition)
 					);
 				}
@@ -439,7 +440,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						from module in sym.Modules
 						from reference in module.ReferencedAssemblies
 
-						// Only consider assemblies that reference Uno.UI
+							// Only consider assemblies that reference Uno.UI
 						where reference.Name == "Uno.UI" || sym.Name == "Uno.UI"
 
 						// Don't consider Uno.UI.Fluent assemblies, as they manage their own initialization
@@ -556,7 +557,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				resourceKeys = _resourceFiles
 					.AsParallel()
 					.WithCancellation(ct)
-					.SelectMany(file => {
+					.SelectMany(file =>
+					{
 						this.Log().Info("Parse resource file : " + file);
 
 						//load document
@@ -716,7 +718,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							writer.AppendLineInvariant("_dictionariesRegistered = true;");
 
-							if(!IsUnoAssembly && !IsUnoFluentAssembly)
+							if (!IsUnoAssembly && !IsUnoFluentAssembly)
 							{
 								// For third-party libraries, expose all files using standard uri
 								foreach (var file in files.Where(IsResourceDictionary))
@@ -738,7 +740,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							void RegisterForFile(string baseFilePath, string url)
 							{
 								var file = files.FirstOrDefault(f =>
-									f.FilePath.Substring(_projectDirectory.Length+1).Equals(baseFilePath, StringComparison.OrdinalIgnoreCase));
+									f.FilePath.Substring(_projectDirectory.Length + 1).Equals(baseFilePath, StringComparison.OrdinalIgnoreCase));
 
 								if (file != null)
 								{
@@ -766,10 +768,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						foreach (var file in files.Where(IsResourceDictionary))
 						{
 							// We leave context null because local resources should be found through Application.Resources
-							writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{0}{1}\", context: null, dictionary: () => {2}_ResourceDictionary);",
+							writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{0}{1}\", context: null, dictionary: () => {2}_ResourceDictionary, {3});",
 								XamlFilePathHelper.LocalResourcePrefix,
 								map.GetSourceLink(file),
-								file.UniqueID
+								file.UniqueID,
+								// Make ResourceDictionary retrievable by Hot Reload
+								_isDebug ? $"\"{file.FilePath.Replace("\\", "/")}\"" : "null"
 							);
 							// Local resources can also be found through the ms-appx:/// prefix
 							writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{0}{1}\", context: null, dictionary: () => {2}_ResourceDictionary);",
@@ -789,7 +793,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					// Generate all the partial methods, even if they don't exist. That avoids
 					// having to sync the generation of the files with this global table.
-					foreach (var file in files.Select(f=>f.UniqueID).Distinct())
+					foreach (var file in files.Select(f => f.UniqueID).Distinct())
 					{
 						writer.AppendLineInvariant("static partial void RegisterDefaultStyles_{0}();", file);
 					}

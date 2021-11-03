@@ -417,7 +417,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Copy another dictionary's contents, this is used when setting the <see cref="Source"/> property
 		/// </summary>
-		private void CopyFrom(ResourceDictionary source)
+		internal void CopyFrom(ResourceDictionary source)
 		{
 			_values.Clear();
 			_mergedDictionaries.Clear();

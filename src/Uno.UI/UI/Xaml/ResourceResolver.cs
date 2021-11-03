@@ -30,6 +30,10 @@ namespace Uno.UI
 
 		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionariesByUri = new Dictionary<string, Func<ResourceDictionary>>(StringComparer.InvariantCultureIgnoreCase);
 		private static readonly Dictionary<string, ResourceDictionary> _registeredDictionariesByAssembly = new Dictionary<string, ResourceDictionary>();
+		/// <summary>
+		/// This is used by hot reload (since converting the file path to a Source is impractical at runtime).
+		/// </summary>
+		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionariesByFilepath = new Dictionary<string, Func<ResourceDictionary>>(StringComparer.InvariantCultureIgnoreCase);
 
 		private static int _assemblyRef = -1;
 
@@ -244,7 +248,7 @@ namespace Uno.UI
 
 			while (sourcesEnumerator.MoveNext())
 			{
-				
+
 				var source = sourcesEnumerator.Current;
 
 				var dictionary = (source.Target as FrameworkElement)?.Resources
@@ -375,12 +379,15 @@ namespace Uno.UI
 		/// </summary>
 		internal static IDisposable WriteInitiateGlobalStaticResourcesEventActivity() => _trace.WriteEventActivity(TraceProvider.InitGenericXamlStart, TraceProvider.InitGenericXamlStop);
 
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void RegisterResourceDictionaryBySource(string uri, XamlParseContext context, Func<ResourceDictionary> dictionary)
+			=> RegisterResourceDictionaryBySource(uri, context, dictionary, null);
 		/// <summary>
 		/// Register a dictionary for a given source, this is used for retrieval when setting the Source property in code-behind or to an
 		/// external resource.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void RegisterResourceDictionaryBySource(string uri, XamlParseContext context, Func<ResourceDictionary> dictionary)
+		public static void RegisterResourceDictionaryBySource(string uri, XamlParseContext context, Func<ResourceDictionary> dictionary, string filePath)
 		{
 			_registeredDictionariesByUri[uri] = dictionary;
 
@@ -391,6 +398,11 @@ namespace Uno.UI
 				var initializer = new ResourceDictionary.ResourceInitializer(dictionary);
 				_assemblyRef++; // We don't actually use this key, we just need it to be unique
 				assemblyDict[_assemblyRef] = initializer;
+			}
+
+			if (filePath != null)
+			{
+				_registeredDictionariesByFilepath[filePath] = dictionary;
 			}
 		}
 
@@ -431,6 +443,16 @@ namespace Uno.UI
 			}
 
 			throw new InvalidOperationException($"Cannot locate resource from '{source}'");
+		}
+
+		internal static ResourceDictionary RetrieveDictionaryForFilePath(string filePath)
+		{
+			if (_registeredDictionariesByFilepath.TryGetValue(filePath, out var func))
+			{
+				return func();
+			}
+
+			return null;
 		}
 
 		/// <summary>

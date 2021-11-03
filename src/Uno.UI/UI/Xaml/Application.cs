@@ -322,6 +322,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		internal void UpdateResourceBindingsForHotReload() => OnRequestedThemeChanged();
+
 		private void OnRequestedThemeChanged()
 		{
 			if (GetTreeRoot() is { } root)
