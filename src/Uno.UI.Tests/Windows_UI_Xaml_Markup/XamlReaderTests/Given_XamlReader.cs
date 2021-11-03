@@ -802,6 +802,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as ContentControl;
 		}
 
+		[TestMethod]
+		public void When_Resources_And_Empty()
+		{
+			var s = "<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' > <Grid.Resources ></Grid.Resources ></Grid > ";
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as Grid;
+			Assert.IsNotNull(r.Resources);
+		}
+
 		private string GetContent(string testName)
 		{
 			var assembly = this.GetType().Assembly;
