@@ -163,6 +163,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __ANDROID__
+		[Ignore]
+#endif
 		public async Task When_InvalidateDuringMeasure_Then_GetReMeasured()
 		{
 			var sut = new ObservableLayoutingControl();
@@ -183,6 +186,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __ANDROID__
+		[Ignore]
+#endif
 		public async Task When_InvalidateDuringArrange_Then_GetReArranged()
 		{
 			var sut = new ObservableLayoutingControl();
