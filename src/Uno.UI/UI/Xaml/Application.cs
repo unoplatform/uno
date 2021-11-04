@@ -36,6 +36,7 @@ using AppKit;
 #else
 using View = Windows.UI.Xaml.UIElement;
 using ViewGroup = Windows.UI.Xaml.UIElement;
+using Windows.UI.Xaml.Data;
 #endif
 
 namespace Windows.UI.Xaml
@@ -322,19 +323,21 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal void UpdateResourceBindingsForHotReload() => OnRequestedThemeChanged();
+		internal void UpdateResourceBindingsForHotReload() => OnResourcesChanged(ResourceUpdateReason.HotReload);
 
-		private void OnRequestedThemeChanged()
+		private void OnRequestedThemeChanged() => OnResourcesChanged(ResourceUpdateReason.ThemeResource);
+
+		private void OnResourcesChanged(ResourceUpdateReason updateReason)
 		{
 			if (GetTreeRoot() is { } root)
 			{
 				// Update theme bindings in application resources
-				Resources?.UpdateThemeBindings();
+				Resources?.UpdateThemeBindings(updateReason);
 
 				// Update theme bindings in system resources
-				ResourceResolver.UpdateSystemThemeBindings();
+				ResourceResolver.UpdateSystemThemeBindings(updateReason);
 
-				PropagateThemeChanged(root);
+				PropagateResourcesChanged(root, updateReason);
 			}
 
 			// Start from the real root, which may not be a FrameworkElement on some platforms
@@ -354,13 +357,13 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Propagate theme changed to <paramref name="instance"/> and its descendants, to have them update any theme bindings.
 		/// </summary>
-		internal static void PropagateThemeChanged(object instance)
+		internal static void PropagateResourcesChanged(object instance, ResourceUpdateReason updateReason)
 		{
 
 			// Update ThemeResource references that have changed
 			if (instance is FrameworkElement fe)
 			{
-				fe.UpdateThemeBindings();
+				fe.UpdateThemeBindings(updateReason);
 			}
 
 			//Try Panel.Children before ViewGroup.GetChildren - this results in fewer allocations
@@ -368,14 +371,14 @@ namespace Windows.UI.Xaml
 			{
 				foreach (object o in p.Children)
 				{
-					PropagateThemeChanged(o);
+					PropagateResourcesChanged(o, updateReason);
 				}
 			}
 			else if (instance is ViewGroup g)
 			{
 				foreach (object o in g.GetChildren())
 				{
-					PropagateThemeChanged(o);
+					PropagateResourcesChanged(o, updateReason);
 				}
 			}
 		}

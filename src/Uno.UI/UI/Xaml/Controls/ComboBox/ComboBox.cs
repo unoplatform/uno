@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public ComboBox()
 		{
-			ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "ComboBoxLightDismissOverlayBackground", isThemeResourceExtension: true);
+			ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "ComboBoxLightDismissOverlayBackground", isThemeResourceExtension: true, isHotReloadSupported: true);
 
 			DefaultStyleKey = typeof(ComboBox);
 		}

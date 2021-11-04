@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			InitializePartial();
 
-				ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "PopupLightDismissOverlayBackground", isThemeResourceExtension: true);
+			ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "PopupLightDismissOverlayBackground", isThemeResourceExtension: true, isHotReloadSupported: true);
 
 			ApplyLightDismissOverlayMode();
 		}
@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set => SetValue(PopupPanelProperty, value);
 		}
 
-		public static DependencyProperty PopupPanelProperty { get ; } =
+		public static DependencyProperty PopupPanelProperty { get; } =
 			DependencyProperty.Register("PopupPanel", typeof(PopupPanel), typeof(Popup), new FrameworkPropertyMetadata(null, (s, e) => ((Popup)s)?.OnPopupPanelChanged((PopupPanel)e.OldValue, (PopupPanel)e.NewValue)));
 
 		private void OnPopupPanelChanged(PopupPanel oldHost, PopupPanel newHost)
@@ -154,7 +154,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				var position = e.GetCurrentPoint(content).Position;
 				if (
 					position.X < 0 || position.X > content.ActualWidth
-					               || position.Y < 0 || position.Y > content.ActualHeight)
+								   || position.Y < 0 || position.Y > content.ActualHeight)
 				{
 					popup.IsOpen = false;
 				}
@@ -173,12 +173,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			//		 But this would require us to refactor more deeply the Popup which is not the purpose of the current work.
 		};
 
-		internal override void UpdateThemeBindings()
+		internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
 		{
-			base.UpdateThemeBindings();
+			base.UpdateThemeBindings(updateReason);
 
 			// Ensure bindings are updated on the child, which may be part of an isolated visual tree on some platforms (ie Android).
-			Application.PropagateThemeChanged(Child);
+			Application.PropagateResourcesChanged(Child, updateReason);
 		}
 
 		public LightDismissOverlayMode LightDismissOverlayMode
@@ -235,7 +235,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set { SetValue(LightDismissOverlayBackgroundProperty, value); }
 		}
 
-		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get ; } =
+		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get; } =
 			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(Popup), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
 	}
 }

@@ -177,6 +177,10 @@ namespace Uno.UI
 
 			return fallbackValue;
 		}
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		// This overload is kept for backwards compatibility
+		public static void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, object context = null)
+			=> ApplyResource(owner, property, resourceKey, isThemeResourceExtension, false, context);
 
 		/// <summary>
 		/// Apply a StaticResource or ThemeResource assignment to a DependencyProperty of a DependencyObject. The assignment will be provisionally
@@ -188,24 +192,40 @@ namespace Uno.UI
 		/// <param name="isThemeResourceExtension">True for {ThemeResource Foo}, false for {StaticResource Foo}</param>
 		/// <param name="context">Optional parameter that provides parse-time context</param>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, object context = null)
-			=> ApplyResource(owner, property, new SpecializedResourceDictionary.ResourceKey(resourceKey), isThemeResourceExtension, context, null);
+		public static void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, bool isHotReloadSupported, object context = null)
+		{
+			var updateReason = ResourceUpdateReason.None;
+			if (isThemeResourceExtension)
+			{
+				updateReason |= ResourceUpdateReason.ThemeResource;
+			}
+			if (isHotReloadSupported)
+			{
+				updateReason |= ResourceUpdateReason.HotReload;
+			}
+			if (updateReason == ResourceUpdateReason.None)
+			{
+				updateReason = ResourceUpdateReason.StaticResourceLoading;
+			}
 
-		internal static void ApplyResource(DependencyObject owner, DependencyProperty property, SpecializedResourceDictionary.ResourceKey specializedKey, bool isThemeResourceExtension, object context, DependencyPropertyValuePrecedences? precedence)
+			ApplyResource(owner, property, new SpecializedResourceDictionary.ResourceKey(resourceKey), updateReason, context, null);
+		}
+
+		internal static void ApplyResource(DependencyObject owner, DependencyProperty property, SpecializedResourceDictionary.ResourceKey specializedKey, ResourceUpdateReason updateReason, object context, DependencyPropertyValuePrecedences? precedence)
 		{
 			// Set initial value based on statically-available top-level resources.
 			if (TryStaticRetrieval(specializedKey, context, out var value))
 			{
 				owner.SetValue(property, BindingPropertyHelper.Convert(() => property.Type, value), precedence);
 
-				if (!isThemeResourceExtension)
+				if (updateReason == ResourceUpdateReason.StaticResourceLoading)
 				{
 					// If it's {StaticResource Foo} and we managed to resolve it at parse-time, then we don't want to update it again (per UWP).
 					return;
 				}
 			}
 
-			(owner as IDependencyObjectStoreProvider).Store.SetResourceBinding(property, specializedKey, isThemeResourceExtension, context, precedence, null);
+			(owner as IDependencyObjectStoreProvider).Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
 		}
 
 		/// <summary>
@@ -219,7 +239,7 @@ namespace Uno.UI
 		/// True if the value was successfully applied and registered for theme updates, false if no theme resource was found or the target
 		/// property is not a <see cref="DependencyProperty"/>.
 		/// </returns>
-		internal static bool ApplyVisualStateSetter(SpecializedResourceDictionary.ResourceKey resourceKey, object context, BindingPath bindingPath, DependencyPropertyValuePrecedences precedence)
+		internal static bool ApplyVisualStateSetter(SpecializedResourceDictionary.ResourceKey resourceKey, object context, BindingPath bindingPath, DependencyPropertyValuePrecedences precedence, ResourceUpdateReason updateReason)
 		{
 			if (TryStaticRetrieval(resourceKey, context, out var value)
 				&& bindingPath.DataContext != null)
@@ -229,7 +249,7 @@ namespace Uno.UI
 				{
 					// Set current resource value
 					bindingPath.Value = value;
-					provider.Store.SetResourceBinding(property, resourceKey, isTheme: true, context, precedence, bindingPath);
+					provider.Store.SetResourceBinding(property, resourceKey, updateReason, context, precedence, bindingPath);
 					return true;
 				}
 			}
@@ -483,7 +503,7 @@ namespace Uno.UI
 		public static object ResolveStaticResourceAlias(string resourceKey, object parseContext)
 			=> ResourceDictionary.GetStaticResourceAliasPassthrough(resourceKey, parseContext as XamlParseContext);
 
-		internal static void UpdateSystemThemeBindings() => MasterDictionary.UpdateThemeBindings();
+		internal static void UpdateSystemThemeBindings(ResourceUpdateReason updateReason) => MasterDictionary.UpdateThemeBindings(updateReason);
 	}
 
 

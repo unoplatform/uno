@@ -480,7 +480,8 @@ namespace Windows.UI.Xaml.Markup.Reader
 						dependencyObject,
 						dependencyProperty,
 						keyName,
-						isThemeResourceExtension: IsThemeResourceMarkupNode(member));
+						isThemeResourceExtension: IsThemeResourceMarkupNode(member),
+						isHotReloadSupported: true);
 
 					if (instance is FrameworkElement fe)
 					{
