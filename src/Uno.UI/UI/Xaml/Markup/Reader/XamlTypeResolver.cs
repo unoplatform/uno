@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 		{
 			var namedType = property.PropertyType as Type;
 
-			var isNewable = property.SetMethod.SelectOrDefault(m => m.IsPublic, false) &&
+			var isNewable = (property.SetMethod?.IsPublic ?? false) &&
 				namedType.SelectOrDefault(nts => nts.GetConstructors().Any(ms => ms.GetParameters().Length == 0), false);
 
 			newableType = isNewable ? namedType : null;
@@ -189,32 +189,36 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 		private static IEnumerable<PropertyInfo> GetAllProperties(Type type)
 		{
-			while(type != typeof(object))
+			Type? currentType = type;
+
+			while(currentType != null && currentType != typeof(object))
 			{
-				foreach(var property in type.GetProperties())
+				foreach(var property in currentType.GetProperties())
 				{
 					yield return property;
 				}
 
-				type = type.BaseType;
+				currentType = currentType.BaseType;
 			}
 		}
 
 		private static IEnumerable<FieldInfo> GetAllFields(Type type)
 		{
-			while (type != typeof(object))
+			Type? currentType = type;
+
+			while (currentType != null && currentType != typeof(object))
 			{
-				foreach (var field in type.GetFields())
+				foreach (var field in currentType.GetFields())
 				{
 					yield return field;
 				}
 
-				type = type.BaseType;
+				currentType = currentType.BaseType;
 			}
 		}
 
 		private bool IsInitializableProperty(PropertyInfo property) 
-            => !property.SetMethod.SelectOrDefault(m => m.IsPublic, false);
+            => !(property.SetMethod?.IsPublic ?? false);
 
         public bool IsCollectionOrListType(Type type)
         {
@@ -226,7 +230,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
         private bool IsImplementingInterface(Type type, Type iface) => 
             type
-                .Flatten(t => t.BaseType)
+                .Flatten(t => t.BaseType!)
                 .Any(t => t
                     .GetInterfaces()
                     .Any(i => 
@@ -235,7 +239,7 @@ namespace Windows.UI.Xaml.Markup.Reader
                     )
                 );
 
-        public bool IsType(XamlType xamlType, string typeName)
+        public bool IsType(XamlType xamlType, string? typeName)
         {
             var type = FindType(xamlType);
 
@@ -333,7 +337,7 @@ namespace Windows.UI.Xaml.Markup.Reader
                         .Namespaces
                         .Where(n => n.Prefix.None())
                         .FirstOrDefault()
-                        .SelectOrDefault(n => n.Namespace);
+                        ?.Namespace ?? "";
 
                 var clrNamespaces = KnownNamespaces.UnoGetValueOrDefault(defaultXmlNamespace, Array.Empty<string>());
 
@@ -355,7 +359,7 @@ namespace Windows.UI.Xaml.Markup.Reader
                 }
             }
 
-            var resolvers = new Func<Type>[] {
+            var resolvers = new Func<Type?>[] {
 
 				// As a full name
 				() => Type.GetType(name),
@@ -383,10 +387,17 @@ namespace Windows.UI.Xaml.Markup.Reader
         }
         private static bool SourceIsAttachedProperty(Type type, string name)
         {
+			Type? currentType = type;
+
             do
             {
-                var property = type.GetProperties().FirstOrDefault(p => p.Name == name);
-                var setMethod = type.GetMethods().FirstOrDefault(p => p.Name == "Set" + name);
+				if (currentType == null)
+				{
+					return false;
+				}
+
+				var property = currentType.GetProperties().FirstOrDefault(p => p.Name == name);
+                var setMethod = currentType.GetMethods().FirstOrDefault(p => p.Name == "Set" + name);
 
                 if (property?.GetMethod?.IsStatic ?? false)
                 {
@@ -398,7 +409,7 @@ namespace Windows.UI.Xaml.Markup.Reader
                     return true;
                 }
 
-                type = type.BaseType;
+				currentType = currentType.BaseType;
 
                 if (type == null || type.Name == "Object")
                 {

@@ -114,20 +114,26 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				var contentOwner = unknownContent;
 
-				var rd = (ResourceDictionary)Activator.CreateInstance(type);
-				foreach (var xamlObjectDefinition in contentOwner.Objects)
+				if (Activator.CreateInstance(type) is ResourceDictionary rd)
 				{
-					var key = xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "Key")?.Value;
-
-					var instance = LoadObject(xamlObjectDefinition);
-
-					if (key != null)
+					foreach (var xamlObjectDefinition in contentOwner.Objects)
 					{
-						rd.Add(key, instance);
-					}
-				}
+						var key = xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "Key")?.Value;
 
-				return rd;
+						var instance = LoadObject(xamlObjectDefinition);
+
+						if (key != null)
+						{
+							rd.Add(key, instance);
+						}
+					}
+
+					return rd;
+				}
+				else
+				{
+					throw new InvalidCastException();
+				}
 			}
 			else if (type.IsPrimitive && initializationMember?.Value is string primitiveValue)
 			{
@@ -144,7 +150,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			else
 			{
 				var classType = TypeResolver.FindType(classMember?.Value?.ToString());
-				var instance = component ?? Activator.CreateInstance(type);
+				var instance = component ?? Activator.CreateInstance(type)!;
 
 				IDisposable? TryProcessStyle()
 				{
@@ -363,7 +369,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			if (member.Value is string targetPath)
 			{
 				// This builds property setters for specified member setter.
-				var separatorIndex = member.Value.ToString().IndexOf(".");
+				var separatorIndex = targetPath.IndexOf(".");
 				var elementName = targetPath.Substring(0, separatorIndex);
 				var propertyName = targetPath.Substring(separatorIndex + 1);
 
@@ -411,11 +417,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					if (property.Type.GetGenericTypeDefinition() == typeof(IList<>))
 					{
-						return Activator.CreateInstance(typeof(List<>).MakeGenericType(property.Type.GenericTypeArguments[0]));
+						return Activator.CreateInstance(typeof(List<>)!.MakeGenericType(property.Type.GenericTypeArguments[0]))!;
 					}
 					else
 					{
-						return Activator.CreateInstance(property.Type);
+						return Activator.CreateInstance(property.Type)!;
 					}
 				}
 
@@ -438,7 +444,8 @@ namespace Windows.UI.Xaml.Markup.Reader
 				if (propertyInfo.PropertyType == typeof(ResourceDictionary))
 				{
 					var methods = propertyInfo.PropertyType.GetMethods();
-					var addMethod = propertyInfo.PropertyType.GetMethod("Add", new[] { typeof(object), typeof(object) });
+					var addMethod = propertyInfo.PropertyType.GetMethod("Add", new[] { typeof(object), typeof(object) })
+						?? throw new InvalidOperationException($"The property {propertyInfo} type does not provide an Add method (Line {member.LineNumber}:{member.LinePosition}");
 
 					foreach (var child in member.Objects)
 					{
@@ -455,6 +462,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 							throw new InvalidOperationException($"No target type was specified (Line {member.LineNumber}:{member.LinePosition}");
 						}
 
+						if(propertyInfo.GetMethod == null)
+						{
+							throw new InvalidOperationException($"The property {propertyInfo} does not provide a getter (Line {member.LineNumber}:{member.LinePosition}");
+						}
+
 						var propertyInstance = propertyInfo.GetMethod.Invoke(instance, null);
 
 						addMethod.Invoke(propertyInstance, new[] { resourceKey ?? resourceTargetType, item });
@@ -462,17 +474,29 @@ namespace Windows.UI.Xaml.Markup.Reader
 				}
 				else if (TypeResolver.IsNewableProperty(propertyInfo, out var collectionType))
 				{
-					var collection = Activator.CreateInstance(collectionType);
+					var collection = Activator.CreateInstance(collectionType!);
 
-					AddCollectionItems(collection, member.Objects);
+					AddCollectionItems(collection!, member.Objects);
 
 					GetPropertySetter(propertyInfo).Invoke(instance, new[] { collection });
 				}
 				else if (TypeResolver.IsInitializedCollection(propertyInfo))
 				{
+					if (propertyInfo.GetMethod == null)
+					{
+						throw new InvalidOperationException($"The property {propertyInfo} does not provide a getter (Line {member.LineNumber}:{member.LinePosition}");
+					}
+
 					var propertyInstance = propertyInfo.GetMethod.Invoke(instance, null);
 
-					AddCollectionItems(propertyInstance, member.Objects);
+					if (propertyInstance != null)
+					{
+						AddCollectionItems(propertyInstance, member.Objects);
+					}
+					else
+					{
+						throw new InvalidOperationException($"The property {propertyInfo} getter did not provide a value (Line {member.LineNumber}:{member.LinePosition}");
+					}
 				}
 				else
 				{
@@ -642,9 +666,9 @@ namespace Windows.UI.Xaml.Markup.Reader
 						var subject = new ElementNameSubject();
 						binding.ElementName = subject;
 
-						if (bindingProperty.Value != null)
+						if (bindingProperty.Value?.ToString() is { } value)
 						{
-							AddElementName(bindingProperty.Value.ToString(), subject);
+							AddElementName(value, subject);
 						}
 						break;
 
@@ -756,7 +780,8 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 		private void AddCollectionItems(object collectionInstance, IEnumerable<XamlObjectDefinition> nonBindingObjects)
 		{
-			var addMethod = collectionInstance.GetType().GetMethod("Add");
+			var addMethod = collectionInstance.GetType().GetMethod("Add")
+				?? throw new InvalidOperationException($"The type {collectionInstance.GetType()} contains an Add method");
 
 			foreach (var child in nonBindingObjects)
 			{
