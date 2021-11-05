@@ -88,6 +88,12 @@ namespace Uno.UI.RemoteControl.Host
 
 			var basePath = msg.BasePath.Replace('/', Path.DirectorySeparatorChar);
 
+#if NET6_0_OR_GREATER
+			basePath = Path.Combine(basePath, "net6.0");
+#else
+			basePath = Path.Combine(basePath, "netcoreapp3.1");
+#endif
+
 			var assemblies = new List<System.Reflection.Assembly>();
 
 			foreach (var file in Directory.GetFiles(basePath, "Uno.*.dll"))

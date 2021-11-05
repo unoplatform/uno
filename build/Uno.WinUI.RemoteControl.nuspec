@@ -172,7 +172,8 @@
 	<file src="..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Skia\Release\netstandard2.0\Uno.UI.RemoteControl.*" target="uno-runtime\skia" />
 
 	<!-- Remote Control host and integration -->
-	<file src="..\src\Uno.UI.RemoteControl.Host\bin\Release\netcoreapp3.1\*.*" target="tools\rc\host" />
+	<file src="..\src\Uno.UI.RemoteControl.Host\bin\Release\netcoreapp3.1\*.*" target="tools\rc\host\netcoreapp3.1" />
+	<file src="..\src\Uno.UI.RemoteControl.Host\bin\Release\net6.0\*.*" target="tools\rc\host\net6.0" />
 	<file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net461\*.dll" target="tools\rc\16.0" />
 	<file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net461\Newtonsoft.Json.dll" target="tools\rc\16.0" />
 	<file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net461\*.pdb" target="tools\rc\16.0" />

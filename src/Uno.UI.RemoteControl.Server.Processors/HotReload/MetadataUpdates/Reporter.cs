@@ -1,6 +1,7 @@
-﻿using Microsoft.Build.Tasks;
+﻿#if NET6_0_OR_GREATER
+using Microsoft.Build.Tasks;
 
-namespace Uno.UI.RemoteControl.Host.HotReload
+namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
 	internal class Reporter : IReporter
 	{
@@ -10,3 +11,4 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		public void Warn(string message) => System.Console.WriteLine($"[Warn] {message}");
 	}
 }
+#endif

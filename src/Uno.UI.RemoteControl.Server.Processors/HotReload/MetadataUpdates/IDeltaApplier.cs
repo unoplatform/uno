@@ -1,10 +1,11 @@
-﻿using System;
+﻿#if NET6_0_OR_GREATER
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Uno.UI.RemoteControl.Host.HotReload
+namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
 	interface IDeltaApplier : IDisposable
 	{
@@ -15,3 +16,4 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		ValueTask ReportDiagnosticsAsync(IEnumerable<string> diagnostics, CancellationToken cancellationToken);
 	}
 }
+#endif

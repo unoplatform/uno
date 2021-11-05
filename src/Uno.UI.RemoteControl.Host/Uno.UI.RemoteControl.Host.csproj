@@ -2,8 +2,14 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<RollForward>Major</RollForward>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(CI_Build)'=='true'">
+		<TargetFrameworks Condition="'$(IS_NET6_BUILD)'==''">netcoreapp3.1</TargetFrameworks>
+		<TargetFrameworks Condition="'$(IS_NET6_BUILD)'=='true'">net6.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NET6_0_OR_GREATER
+using System;
 using System.Collections;
 using System.Collections.Immutable;
 using System.Data;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Host;
 
-namespace Uno.UI.RemoteControl.Host.HotReload
+namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
 	public class WatchHotReloadService
 	{
@@ -133,3 +134,4 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		public void EndSession() => _endSession();
 	}
 }
+#endif

@@ -61,7 +61,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				this.Log().LogDebug($"Xaml Search Paths: {string.Join(", ", configureServer.XamlPaths)}");
 			}
 
+#if NET6_0_OR_GREATER
 			InitializeMetadataUpdater(configureServer);
+#endif
 
 			_watchers = configureServer.XamlPaths
 				.Select(p => new FileSystemWatcher
@@ -107,7 +109,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					.Buffer(TimeSpan.FromMilliseconds(250))
 					.Subscribe(filePaths =>
 					{
+#if NET6_0_OR_GREATER
 						ProcessMetadataChanges(filePaths);
+#endif
 
 						foreach (var file in filePaths.Distinct().Where(f => Path.GetExtension(f).Equals(".xaml", StringComparison.OrdinalIgnoreCase)))
 						{

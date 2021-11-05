@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿#if NET6_0_OR_GREATER
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.IO;
 using System.Reflection;
 using Uno.Extensions;
 
-namespace Uno.UI.RemoteControl.Host.HotReload
+namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
 	internal static class CompilationWorkspaceProvider
 	{
@@ -194,3 +195,4 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 	}
 }
+#endif
