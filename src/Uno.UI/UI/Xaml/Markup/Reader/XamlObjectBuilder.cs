@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Uno.Extensions;
 using Uno.UI;
+using Uno.UI.Helpers.Xaml;
 using Uno.UI.Xaml;
 using Uno.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -494,9 +495,20 @@ namespace Windows.UI.Xaml.Markup.Reader
 				else if (propertyInfo != null)
 				{
 					GetPropertySetter(propertyInfo).Invoke(
-						instance,
-						new[] { ResourceResolver.ResolveResourceStatic(keyName, propertyInfo.PropertyType) }
-					);
+								instance,
+								new[] { ResourceResolver.ResolveResourceStatic(keyName, propertyInfo.PropertyType) }
+							);
+
+					if (instance is Setter setter && propertyInfo.Name == "Value")
+					{
+						// Register StaticResource/ThemeResource assignations to Value for resource updates
+						setter.ApplyThemeResourceUpdateValues(
+							keyName,
+							null,
+							IsThemeResourceMarkupNode(member),
+							true
+						);
+					}
 				}
 			}
 		}

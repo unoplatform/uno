@@ -832,6 +832,52 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 
 		}
 
+		[TestMethod]
+		public void When_ThemeResource_And_Setter_And_Theme_Changed()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+			var themeDict = new ResourceDictionary
+			{
+				ThemeDictionaries =
+				{
+					{"Light", new ResourceDictionary
+						{
+							{"MyIntResourceThemed", 244 }
+						}
+					},
+					{"Dark", new ResourceDictionary
+						{
+							{"MyIntResourceThemed", 9 }
+						}
+					},
+				}
+			};
+			app.Resources.MergedDictionaries.Add(themeDict);
+			try
+			{
+				var s = GetContent(nameof(When_ThemeResource_And_Setter_And_Theme_Changed));
+				var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as Page;
+
+				var root = r.FindName("root") as Grid;
+				var inner = root.Children.First() as Button;
+
+				app.HostView.Children.Add(r);
+
+				Assert.AreEqual(ApplicationTheme.Light, app.RequestedTheme);
+				Assert.AreEqual(244, inner.Tag);
+
+				app.SetExplicitRequestedTheme(ApplicationTheme.Dark);
+				Assert.AreEqual(ApplicationTheme.Dark, app.RequestedTheme);
+				Assert.AreEqual(9, inner.Tag);
+			}
+			finally
+			{
+				app.SetExplicitRequestedTheme(null);
+				app.Resources.MergedDictionaries.Remove(themeDict);
+			}
+
+		}
+
 		private string GetContent(string testName)
 		{
 			var assembly = this.GetType().Assembly;
