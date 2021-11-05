@@ -76,8 +76,6 @@ namespace Uno.UI.Runtime.Skia
 				return true;
 			}
 
-			Windows.System.DispatcherQueue.EnqueueNativeOverride = EnqueueNative;
-
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = (d) => EcoreMainloop.PostAndWakeUp(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => EcoreMainloop.IsMainThread;
 
