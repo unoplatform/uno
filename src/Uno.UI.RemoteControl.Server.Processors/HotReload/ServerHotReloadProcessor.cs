@@ -12,9 +12,11 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.HotReload.Messages;
 
+[assembly: Uno.UI.RemoteControl.Host.ServerProcessorAttribute(typeof(Uno.UI.RemoteControl.Host.HotReload.ServerHotReloadProcessor))]
+
 namespace Uno.UI.RemoteControl.Host.HotReload
 {
-	class ServerHotReloadProcessor : IServerProcessor, IDisposable
+	partial class ServerHotReloadProcessor : IServerProcessor, IDisposable
 	{
 		private FileSystemWatcher[] _watchers;
 		private CompositeDisposable _watcherEventsDisposable;
@@ -58,6 +60,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				this.Log().LogDebug($"Base project path: {configureServer.ProjectPath}");
 				this.Log().LogDebug($"Xaml Search Paths: {string.Join(", ", configureServer.XamlPaths)}");
 			}
+
+			InitializeMetadataUpdater(configureServer);
 
 			_watchers = configureServer.XamlPaths
 				.Select(p => new FileSystemWatcher
@@ -103,6 +107,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					.Buffer(TimeSpan.FromMilliseconds(250))
 					.Subscribe(filePaths =>
 					{
+						ProcessMetadataChanges(filePaths);
+
 						foreach (var file in filePaths.Distinct().Where(f => Path.GetExtension(f).Equals(".xaml", StringComparison.OrdinalIgnoreCase)))
 						{
 							OnXamlFileChanged(file);

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  
+
   <ItemGroup>
     <UnoRuntimeEnabledPackage Include="Uno.UI.RemoteControl" PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.ui.remotecontrol.targets'" />
     <UnoRuntimeEnabledPackage Include="Uno.WinUI.RemoteControl"  PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.winui.remotecontrol.targets'"  />
@@ -10,5 +10,29 @@
     <!-- Keep the inner path with '/' separator -->
     <UnoRemoteControlProcessorsPath Condition="'$(SolutionFileName)'!='Uno.UI.sln'">$(MSBuildThisFileDirectory)../tools/rc/processors</UnoRemoteControlProcessorsPath>
   </PropertyGroup>
+
+  <Target Name="GetRemoteControlHostPath">
+    <Message Text="&lt;RemoteControlHostPath&gt;$(MSBuildThisFileDirectory)../tools/rc/host/Uno.UI.RemoteControl.Host.dll&lt;/RemoteControlHostPath&gt;" Importance="High" />
+    <Message Text="&lt;IntermediateOutputPath&gt;$(MSBuildProjectDirectory)/$(IntermediateOutputPath)&lt;/IntermediateOutputPath&gt;" Importance="High" />
+  </Target>
+
+  <Target Name="InjectRemoteControlPort" BeforeTargets="BeforeBuild" Condition="exists('$(IntermediateOutputPath)\RemoteControlPort.config')">
+	
+	  <ItemGroup>
+	    <WasmShellMonoEnvironment Include="DOTNET_MODIFIABLE_ASSEMBLIES" Value="debug" />
+	  </ItemGroup>
+	
+    <ReadLinesFromFile File="$(IntermediateOutputPath)\RemoteControlPort.config" >
+      <Output TaskParameter="Lines" ItemName="_RemoteControlPortContent"/>
+    </ReadLinesFromFile>
+
+    <CreateProperty
+        Value="@(_RemoteControlPortContent)">
+      <Output
+          TaskParameter="Value"
+          PropertyName="UnoRemoteControlPort" />
+    </CreateProperty>
+
+  </Target>
 
 </Project>

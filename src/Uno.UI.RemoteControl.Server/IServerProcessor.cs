@@ -10,4 +10,16 @@ namespace Uno.UI.RemoteControl.Host
 
 		Task ProcessFrame(Frame frame);
 	}
+
+	[System.AttributeUsage(AttributeTargets.Assembly, Inherited = false, AllowMultiple = true)]
+	public sealed class ServerProcessorAttribute : Attribute
+	{
+		readonly Type processor;
+
+		// This is a positional argument
+		public ServerProcessorAttribute(Type processor) => this.processor = processor;
+
+		public Type ProcessorType
+			=> processor;
+	}
 }
