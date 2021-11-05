@@ -251,7 +251,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 					{
 						if (IsMarkupExtension(member))
 						{
-							ProcessMemberMarkupExtension(instance, member);
+							ProcessMemberMarkupExtension(instance, member, propertyInfo);
 						}
 						else
 						{
@@ -278,7 +278,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 					{
 						if (IsMarkupExtension(member))
 						{
-							ProcessMemberMarkupExtension(instance, member);
+							ProcessMemberMarkupExtension(instance, member, null);
 						}
 						else if (instance is DependencyObject dependencyObject)
 						{
@@ -350,7 +350,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				if (IsMarkupExtension(member))
 				{
-					ProcessMemberMarkupExtension(instance, member);
+					ProcessMemberMarkupExtension(instance, member, null);
 				}
 				else
 				{
@@ -451,7 +451,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 		private static MethodInfo GetPropertySetter(PropertyInfo propertyInfo)
 			=> propertyInfo?.SetMethod ?? throw new InvalidOperationException($"Unable to find setter for property [{propertyInfo}]");
 
-		private void ProcessMemberMarkupExtension(object instance, XamlMemberDefinition member)
+		private void ProcessMemberMarkupExtension(object instance, XamlMemberDefinition member, PropertyInfo propertyInfo)
 		{
 			if (IsBindingMarkupNode(member))
 			{
@@ -459,11 +459,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 			else if (IsStaticResourceMarkupNode(member) || IsThemeResourceMarkupNode(member))
 			{
-				ProcessStaticResourceMarkupNode(instance, member);
+				ProcessStaticResourceMarkupNode(instance, member, propertyInfo);
 			}
 		}
 
-		private void ProcessStaticResourceMarkupNode(object instance, XamlMemberDefinition member)
+		private void ProcessStaticResourceMarkupNode(object instance, XamlMemberDefinition member, PropertyInfo propertyInfo)
 		{
 			var resourceNode = member.Objects.FirstOrDefault();
 
@@ -491,10 +491,12 @@ namespace Windows.UI.Xaml.Markup.Reader
 						};
 					}
 				}
-				else
+				else if (propertyInfo != null)
 				{
-					// Here we assigned a {StaticResource} on a standard property (not a DependencyProperty)
-					// We can't resolve it.
+					GetPropertySetter(propertyInfo).Invoke(
+						instance,
+						new[] { ResourceResolver.ResolveResourceStatic(keyName, propertyInfo.PropertyType) }
+					);
 				}
 			}
 		}

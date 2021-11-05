@@ -810,6 +810,28 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.IsNotNull(r.Resources);
 		}
 
+		[TestMethod]
+		public void When_StaticResource_And_NonDependencyProperty()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.Resources["MyIntResource"] = 77;
+			try
+			{
+				var s = GetContent(nameof(When_StaticResource_And_NonDependencyProperty));
+				var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as Page;
+
+				var root = r.FindName("root") as Grid;
+				var inner = root.Children.First() as NonDependencyPropertyAssignable;
+
+				Assert.AreEqual(77, inner.MyProperty);
+			}
+			finally
+			{
+				app.Resources.Remove("MyDoubleResource");
+			}
+
+		}
+
 		private string GetContent(string testName)
 		{
 			var assembly = this.GetType().Assembly;
