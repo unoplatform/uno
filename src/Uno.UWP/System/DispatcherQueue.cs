@@ -52,12 +52,21 @@ namespace Windows.System
 		}
 
 		public bool TryEnqueue(DispatcherQueueHandler callback)
-		{
-			return TryEnqueue(DispatcherQueuePriority.Normal, callback);
-		}
+			=> TryEnqueue(DispatcherQueuePriority.Normal, callback);
+
 		public bool TryEnqueue(DispatcherQueuePriority priority, DispatcherQueueHandler callback)
 		{
-			return TryEnqueueNative(priority, callback);
+			var p = priority switch
+			{
+				DispatcherQueuePriority.Normal => CoreDispatcherPriority.Normal,
+				DispatcherQueuePriority.High => CoreDispatcherPriority.High,
+				DispatcherQueuePriority.Low => CoreDispatcherPriority.Low,
+				_ => CoreDispatcherPriority.Normal
+			};
+
+			CoreDispatcher.Main.RunAsync(p, () => callback());
+
+			return true;
 		}
 
 		public bool HasThreadAccess

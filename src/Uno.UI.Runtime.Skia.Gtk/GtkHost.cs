@@ -91,15 +91,6 @@ namespace Uno.UI.Runtime.Skia
 				Gtk.Application.Quit();
 			};
 
-			bool EnqueueNative(DispatcherQueuePriority priority, DispatcherQueueHandler callback)
-			{
-				Dispatch(() => callback());
-
-				return true;
-			}
-
-			Windows.System.DispatcherQueue.EnqueueNativeOverride = EnqueueNative;
-
 			void Dispatch(System.Action d)
 			{
 				if (Gtk.Application.EventsPending())
