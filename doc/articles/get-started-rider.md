@@ -8,7 +8,7 @@
 
 |                       | Windows (UWP/WinUI) | Android | iOS  | Wasm | macOS | Skia-GTK (Linux) | Skia-WPF |
 | --------------------- | ------------------- | ------- | ---- | ---- | ----- | -------- | -------- |
-| **Rider for Linux**   | ❌                   | ✔️†      | ❌    | ✔️†   | ❌     | ✔️        | ❌        |
+| **Rider for Linux**   | ❌                   | ❌†      | ❌    | ✔️†   | ❌     | ✔️        | ❌        |
 | **Rider for Mac**     | ❌                   | ✔️       | ✔️    | ✔️†   | ✔️     | ✔️†       | ❌        |
 | **Rider for Windows** | ✔️                   | ✔️       | ✔️†   | ✔️†   | ❌     | ✔️        | ✔️        |
 
