@@ -34,7 +34,7 @@
 
 * **iOS** on Windows: An attached Mac is needed, the iOS simulator will open on the Mac.
 
-* **Android** on Linux: Xamarin.Android does not natively support linux development. Rider has been capable of Android development on Linux in the past, but [previous directions are considered obsolete.](https://rider-support.jetbrains.com/hc/en-us/articles/360000557259--Obsolete-How-to-develop-Xamarin-Android-applications-on-Linux-with-Rider) As of this comment (3 Nov 2021,) [Xamarin Android builds on linux fail](https://github.com/xamarin/xamarin-android).
+* **Android** on Linux: Xamarin.Android does not natively support linux development. Rider has been capable of Android development on Linux in the past, but [previous directions are considered obsolete.](https://rider-support.jetbrains.com/hc/en-us/articles/360000557259--Obsolete-How-to-develop-Xamarin-Android-applications-on-Linux-with-Rider) As of this comment (3 Nov 2021) [Xamarin Android builds on linux fail](https://github.com/xamarin/xamarin-android).
 
 ## Creating a new Uno Platform project
 
