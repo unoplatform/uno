@@ -14,7 +14,11 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
 
+#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+namespace Microsoft.UI.Input
+#else
 namespace Windows.UI.Input
+#endif
 {
 	public partial class GestureRecognizer
 	{
@@ -108,7 +112,7 @@ namespace Windows.UI.Input
 			private Manipulation(GestureRecognizer recognizer, PointerPoint pointer1)
 			{
 				_recognizer = recognizer;
-				_deviceType = pointer1.PointerDevice.PointerDeviceType;
+				_deviceType = (PointerDeviceType)pointer1.PointerDevice.PointerDeviceType;
 
 				_origins = _currents = pointer1;
 				_contacts = (0, 1);
@@ -161,7 +165,7 @@ namespace Windows.UI.Input
 
 			public bool IsActive(PointerIdentifier pointer)
 				=> _state != ManipulationState.Completed
-					&& _deviceType == pointer.Type
+					&& _deviceType == (PointerDeviceType)pointer.Type
 					&& _origins.ContainsPointer(pointer.Id);
 
 			private bool TryAdd(PointerPoint point)
@@ -179,7 +183,7 @@ namespace Windows.UI.Input
 					// A new manipulation has to be started
 					return false;
 				}
-				else if (point.PointerDevice.PointerDeviceType != _deviceType
+				else if ((PointerDeviceType)point.PointerDevice.PointerDeviceType != _deviceType
 					|| _currents.HasPointer2)
 				{
 					// A manipulation is already active, but cannot handle this new pointer.
@@ -294,7 +298,7 @@ namespace Windows.UI.Input
 
 			private bool TryUpdate(PointerPoint point)
 			{
-				if (_deviceType != point.PointerDevice.PointerDeviceType)
+				if (_deviceType != (PointerDeviceType)point.PointerDevice.PointerDeviceType)
 				{
 					return false;
 				}

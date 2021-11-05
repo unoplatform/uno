@@ -10,16 +10,7 @@ namespace Windows.UI.Input
 		// Skipping already declared property Cumulative
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint ContactCount
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint ManipulationStartedEventArgs.ContactCount is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property ContactCount
 		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.PointerDeviceType.get
 		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.Position.get
 		// Forced skipping of method Windows.UI.Input.ManipulationStartedEventArgs.Cumulative.get

@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Controls
 			// are no circular references.  Once this is done, we can go ahead and build the full graph.
 			foreach (var child in children)
 			{
-				var dependencies = GetDependencies(child, children);
+				var dependencies = GetDependencies((UIElement)child, children);
 				var dependencyElements = dependencies.SelectToArray(d => d.Element);
 
 				ValidateDependencies(children, dependencyElements);
@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Gets all the direct dependencies of a FrameworkElement (based on the set AttachedProperties)
 		/// </summary>
-		private Dependency[] GetDependencies(IFrameworkElement child, IFrameworkElement[] allChildren)
+		private Dependency[] GetDependencies(UIElement child, IFrameworkElement[] allChildren)
 		{
 			var dependencies = new List<Dependency>(Dependency.DependencyTypeCount);
 

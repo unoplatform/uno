@@ -4,7 +4,7 @@ parameters:
 jobs:
 - job: Documentation
   displayName: 'Documentation WebSite'
-  dependsOn: Commitsar
+  dependsOn: Pipeline_Validations
 
   pool:
     vmImage: ${{ parameters.vmImage }}

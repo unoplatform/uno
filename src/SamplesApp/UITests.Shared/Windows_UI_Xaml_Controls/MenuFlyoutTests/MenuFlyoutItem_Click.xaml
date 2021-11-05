@@ -15,7 +15,7 @@
 			<RowDefinition/>
 		</Grid.RowDefinitions>
 		<TextBlock x:Name="mfiResult" Text="Starting..." />
-		<AppBar x:Name="mfiCmdBar" Grid.Row="1"> 
+		<CommandBar x:Name="mfiCmdBar" Grid.Row="1"> 
             <AppBarButton Icon="Pin" Label="Start" x:Name="mfiButton" >
                 <AppBarButton.Flyout>
                     <MenuFlyout>
@@ -24,6 +24,6 @@
                     </MenuFlyout>
                 </AppBarButton.Flyout>
             </AppBarButton>
-		</AppBar>
+		</CommandBar>
 	</Grid>
 </UserControl>

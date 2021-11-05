@@ -16,7 +16,7 @@ using Android.Views;
 
 #nullable enable
 
-namespace Windows.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	partial class PlacementPopupPanel
 	{

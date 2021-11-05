@@ -10,7 +10,6 @@ using System.Diagnostics;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Windows.Devices.Input;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -41,6 +40,13 @@ using View = Windows.UI.Xaml.UIElement;
 using _ScrollContentPresenter = Windows.UI.Xaml.Controls.ScrollContentPresenter;
 #else
 using _ScrollContentPresenter = Windows.UI.Xaml.Controls.IScrollContentPresenter;
+#endif
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
 #endif
 
 namespace Windows.UI.Xaml.Controls
@@ -547,7 +553,7 @@ namespace Windows.UI.Xaml.Controls
 			private set => SetValue(VerticalOffsetProperty, value);
 		}
 
-		public static DependencyProperty VerticalOffsetProperty =
+		public static DependencyProperty VerticalOffsetProperty { get; } =
 			DependencyProperty.Register(
 				"VerticalOffset",
 				typeof(double),
@@ -567,7 +573,7 @@ namespace Windows.UI.Xaml.Controls
 			private set => SetValue(HorizontalOffsetProperty, value);
 		}
 
-		public static DependencyProperty HorizontalOffsetProperty =
+		public static DependencyProperty HorizontalOffsetProperty { get; } =
 			DependencyProperty.Register(
 				"HorizontalOffset",
 				typeof(double),

@@ -2,6 +2,8 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference NavigationView.cpp, commit 996c2e5
 
+#pragma warning disable 105 // remove when moving to WinUI tree
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

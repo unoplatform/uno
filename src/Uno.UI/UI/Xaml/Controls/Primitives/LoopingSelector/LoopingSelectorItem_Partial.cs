@@ -1,8 +1,13 @@
-using Windows.Devices.Input;
 using Windows.Foundation;
-using Windows.UI.Input;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Input;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
@@ -61,7 +66,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			var pointerDeviceType = PointerDeviceType.Touch;
 			PointerPoint spPointerPoint;
-			PointerDevice spPointerDevice;
+			Windows.Devices.Input.PointerDevice spPointerDevice;
 
 			spPointerPoint = pEventArgs.GetCurrentPoint(null);
 			if (spPointerPoint == null) { return; }
@@ -69,7 +74,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			spPointerDevice = spPointerPoint.PointerDevice;
 			if (spPointerDevice == null) { return; }
 
-			pointerDeviceType = spPointerDevice.PointerDeviceType;
+			pointerDeviceType = (PointerDeviceType)spPointerDevice.PointerDeviceType;
 
 			if (pointerDeviceType == PointerDeviceType.Mouse)
 			{

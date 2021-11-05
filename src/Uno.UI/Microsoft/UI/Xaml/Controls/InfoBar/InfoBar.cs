@@ -1,5 +1,7 @@
 ﻿// MUX reference InfoBar.cpp, commit 1f7779d
 
+#pragma warning disable 105 // remove when moving to WinUI tree
+
 using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.UI.Helpers.WinUI;
 using Windows.UI.Xaml;

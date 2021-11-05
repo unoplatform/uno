@@ -113,9 +113,19 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		partial void OnInputScopeChangedPartial(DependencyPropertyChangedEventArgs e)
+		{
+			if (e.NewValue is InputScope scope)
+			{
+				ApplyInputScope(scope);
+			}
+		}
+
 		private void ApplyEnabled(bool? isEnabled = null) => _textBoxView?.SetEnabled(isEnabled ?? IsEnabled);
 
 		private void ApplyIsReadonly(bool? isReadOnly = null) => _textBoxView?.SetIsReadOnly(isReadOnly ?? IsReadOnly);
+
+		private void ApplyInputScope(InputScope scope) => _textBoxView?.SetInputScope(scope);
 
 		partial void SelectPartial(int start, int length)
 		{

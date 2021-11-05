@@ -2,25 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class FocusEngagedEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool Handled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool FocusEngagedEventArgs.Handled is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.FocusEngagedEventArgs", "bool FocusEngagedEventArgs.Handled");
-			}
-		}
-		#endif
+		// Skipping already declared property Handled
 		// Forced skipping of method Windows.UI.Xaml.Controls.FocusEngagedEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.FocusEngagedEventArgs.Handled.set
 	}

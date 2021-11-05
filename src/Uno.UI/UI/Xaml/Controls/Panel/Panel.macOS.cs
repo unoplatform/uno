@@ -105,9 +105,9 @@ namespace Windows.UI.Xaml.Controls
 					this,
 					Background,
 					InternalBackgroundSizing,
-					BorderThickness,
-					BorderBrush,
-					CornerRadius,
+					BorderThicknessInternal,
+					BorderBrushInternal,
+					CornerRadiusInternal,
 					backgroundImage
 				);
 			}
@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls
 			return HitTestOutsideFrame ? this.HitTestOutsideFrame(point) : base.HitTest(point);
 		}
 
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None;
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadiusInternal == CornerRadius.None;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 	}
 }

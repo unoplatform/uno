@@ -5,7 +5,6 @@ using Uno.Extensions;
 using System.Globalization;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Text;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,6 +22,16 @@ using Android.Graphics;
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
+#endif
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Text;
+using FontWeights = Windows.UI.Text.FontWeights;
+using FontWeight = Windows.UI.Text.FontWeight;
+#else
+using Windows.UI.Text;
+using FontWeights = Windows.UI.Text.FontWeights;
+using FontWeight = Windows.UI.Text.FontWeight;
 #endif
 
 namespace Uno.UI.DataBinding
@@ -588,8 +597,16 @@ namespace Uno.UI.DataBinding
 						output = TextAlignment.Left;
 						return true;
 
+					case "start":
+						output = TextAlignment.Start;
+						return true;
+
 					case "right":
 						output = TextAlignment.Right;
+						return true;
+
+					case "end":
+						output = TextAlignment.End;
 						return true;
 
 					case "justify":

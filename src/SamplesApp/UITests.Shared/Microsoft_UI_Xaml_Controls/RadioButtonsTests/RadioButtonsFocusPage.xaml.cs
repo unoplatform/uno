@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+#pragma warning disable 105 // Disabled until the tree is migrate to WinUI
+
 using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 using MUXControlsTestApp;

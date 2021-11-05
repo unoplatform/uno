@@ -1,9 +1,14 @@
 using System;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
-using Windows.UI.Input;
 using Microsoft.Extensions.Logging;
 using Uno.Logging;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.UI.Input;
+#endif
 
 namespace Windows.UI.Xaml.Input
 {

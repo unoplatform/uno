@@ -135,6 +135,30 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private double _itemsPresenterMinWidth;
+		internal double ItemsPresenterMinWidth
+		{
+			get => _itemsPresenterMinWidth;
+			set
+			{
+				_itemsPresenterMinWidth = value;
+				InvalidateLayout();
+			}
+		}
+
+		private double itemsPresenterMinHeight;
+		internal double ItemsPresenterMinHeight
+		{
+			get => itemsPresenterMinHeight;
+			set
+			{
+				itemsPresenterMinHeight = value;
+				InvalidateLayout();
+			}
+		}
+
+		private Size ItemsPresenterMinSize => new Size(ItemsPresenterMinWidth, ItemsPresenterMinHeight);
+
 		private double InitialExtentPadding => ScrollOrientation == Orientation.Vertical ? Padding.Top : Padding.Left;
 		private double FinalExtentPadding => ScrollOrientation == Orientation.Vertical ? Padding.Bottom : Padding.Right;
 		private double InitialBreadthPadding => ScrollOrientation == Orientation.Vertical ? Padding.Left : Padding.Top;
@@ -271,13 +295,15 @@ namespace Windows.UI.Xaml.Controls
 				{
 					if (ScrollOrientation == Orientation.Vertical)
 					{
-						return new CGSize(measured.Width, DynamicContentExtent);
+						measured = new CGSize(measured.Width, DynamicContentExtent);
 					}
 					else
 					{
-						return new CGSize(DynamicContentExtent, measured.Height);
+						measured = new CGSize(DynamicContentExtent, measured.Height);
 					}
 				}
+
+				measured = LayoutHelper.Max(measured, ItemsPresenterMinSize);
 				return measured;
 			}
 		}

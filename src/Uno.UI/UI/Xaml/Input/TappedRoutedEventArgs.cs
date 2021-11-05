@@ -2,9 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI.Xaml.Input;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
 using Windows.Devices.Input;
 using Windows.UI.Input;
-using Uno.UI.Xaml.Input;
+#endif
 
 namespace Windows.UI.Xaml.Input
 {
@@ -20,7 +25,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			_originalSource = originalSource;
 			_position = args.Position;
-			PointerDeviceType = args.PointerDeviceType;
+			PointerDeviceType = (PointerDeviceType)args.PointerDeviceType;
 		}
 
 		public bool Handled { get; set; }

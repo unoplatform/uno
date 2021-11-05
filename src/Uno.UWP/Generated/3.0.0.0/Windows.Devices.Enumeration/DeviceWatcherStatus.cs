@@ -3,9 +3,6 @@
 namespace Windows.Devices.Enumeration
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
 	public   enum DeviceWatcherStatus 
 	{
 		// Skipping already declared field Windows.Devices.Enumeration.DeviceWatcherStatus.Created

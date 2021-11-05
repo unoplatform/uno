@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private ManagedWeakReference _xamlParentWeakReference;
 
-		public ListViewBase XamlParent
+		internal ListViewBase XamlParent
 		{
 			get => _xamlParentWeakReference?.Target as ListViewBase;
 			set
@@ -141,6 +141,30 @@ namespace Windows.UI.Xaml.Controls
 				RequestLayout();
 			}
 		}
+
+		private double _itemsPresenterMinWidth;
+		internal double ItemsPresenterMinWidth
+		{
+			get => _itemsPresenterMinWidth;
+			set
+			{
+				_itemsPresenterMinWidth = value;
+				RequestLayout();
+			}
+		}
+
+		private double itemsPresenterMinHeight;
+		internal double ItemsPresenterMinHeight
+		{
+			get => itemsPresenterMinHeight;
+			set
+			{
+				itemsPresenterMinHeight = value;
+				RequestLayout();
+			}
+		}
+
+		private int ItemsPresenterMinExtent => (int)ViewHelper.LogicalToPhysicalPixels(ScrollOrientation == Orientation.Vertical ? ItemsPresenterMinHeight : ItemsPresenterMinWidth);
 
 		private int InitialExtentPadding => (int)ViewHelper.LogicalToPhysicalPixels(ScrollOrientation == Orientation.Vertical ? Padding.Top : Padding.Left);
 		private int FinalExtentPadding => (int)ViewHelper.LogicalToPhysicalPixels(ScrollOrientation == Orientation.Vertical ? Padding.Bottom : Padding.Right);
@@ -731,7 +755,7 @@ namespace Windows.UI.Xaml.Controls
 				GetChildEndWithMargin(base.GetChildAt(FirstItemView + ItemViewCount - 1));
 			Debug.Assert(range > 0, "Must report a non-negative scroll range.");
 			Debug.Assert(remainingItems == 0 || range > Extent, "If any items are non-visible, the content range must be greater than the viewport extent.");
-			return range;
+			return Math.Max(range, ItemsPresenterMinExtent);
 		}
 
 		/// <summary>
@@ -960,7 +984,19 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				return (child as FrameworkElement)?.AssignedActualSize ?? ViewHelper.PhysicalToLogicalPixels(new Size(child.Width, child.Height));
+				return GetMeasuredChildSize(child);
+			}
+		}
+
+		private static Size GetMeasuredChildSize(View child)
+		{
+			if (child is FrameworkElement fe)
+			{
+				return fe.AssignedActualSize.Add(fe.Margin);
+			}
+			else
+			{
+				return ViewHelper.PhysicalToLogicalPixels(new Size(child.Width, child.Height));
 			}
 		}
 
@@ -1161,8 +1197,9 @@ namespace Windows.UI.Xaml.Controls
 			int maxPossibleDelta;
 			if (fillDirection == GeneratorDirection.Forward)
 			{
+				var contentEnd = Math.Max(GetContentEnd(), ItemsPresenterMinExtent - ContentOffset);
 				// If this value is negative, collection dimensions are larger than all children and we should not scroll
-				maxPossibleDelta = Math.Max(0, GetContentEnd() - Extent);
+				maxPossibleDelta = Math.Max(0, contentEnd - Extent);
 				// In the rare case that GetContentStart() is positive (see below), permit a positive value.
 				maxPossibleDelta = Math.Max(GetContentStart(), maxPossibleDelta);
 			}

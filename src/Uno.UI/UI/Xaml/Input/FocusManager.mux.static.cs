@@ -509,13 +509,13 @@ namespace Windows.UI.Xaml.Input
 		/// <param name="focusNavigationDirection">Focus direction.</param>
 		/// <returns>True if focus was set.</returns>
 		internal static bool SetFocusedElementWithDirection(
-			 DependencyObject pElement,
+			 DependencyObject? pElement,
 			 FocusState focusState,
 			 bool animateIfBringIntoView,
 			 bool forceBringIntoView,
 			 FocusNavigationDirection focusNavigationDirection)
 		{
-			DependencyObject spElementToFocus = pElement;
+			DependencyObject? spElementToFocus = pElement;
 			Control? spControlToFocus;
 			bool pFocusUpdated = false;
 

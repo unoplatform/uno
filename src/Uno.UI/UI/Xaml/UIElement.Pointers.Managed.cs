@@ -8,7 +8,6 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Windows.Devices.Input;
 using Microsoft.Extensions.Logging;
 using Uno.Disposables;
 using Uno.Extensions;
@@ -22,6 +21,13 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
 using Uno.UI.Xaml;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace Windows.UI.Xaml
 {
@@ -45,7 +51,7 @@ namespace Windows.UI.Xaml
 				Windows.UI.Xaml.Window.Current.CoreWindow.PointerCancelled += CoreWindow_PointerCancelled;
 			}
 
-			private void CoreWindow_PointerWheelChanged(CoreWindow sender, PointerEventArgs args)
+			private void CoreWindow_PointerWheelChanged(CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
 			{
 				var (originalSource, _) = VisualTreeHelper.HitTest(args.CurrentPoint.Position);
 
@@ -75,7 +81,7 @@ namespace Windows.UI.Xaml
 				RaiseUsingCaptures(Wheel, originalSource, routedArgs);
 			}
 
-			private void CoreWindow_PointerEntered(CoreWindow sender, PointerEventArgs args)
+			private void CoreWindow_PointerEntered(CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
 			{
 				var (originalSource, _) = VisualTreeHelper.HitTest(args.CurrentPoint.Position);
 
@@ -104,7 +110,7 @@ namespace Windows.UI.Xaml
 				Raise(Enter, originalSource, routedArgs);
 			}
 
-			private void CoreWindow_PointerExited(CoreWindow sender, PointerEventArgs args)
+			private void CoreWindow_PointerExited(CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
 			{
 				// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 				var originalSource = Windows.UI.Xaml.Window.Current.Content;
@@ -138,7 +144,7 @@ namespace Windows.UI.Xaml
 				var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
 				Raise(Leave, overBranchLeaf, routedArgs);
-				if (!args.CurrentPoint.IsInContact && args.CurrentPoint.Pointer.Type == PointerDeviceType.Touch)
+				if (!args.CurrentPoint.IsInContact && (PointerDeviceType)args.CurrentPoint.Pointer.Type == PointerDeviceType.Touch)
 				{
 					// We release the captures on exit when pointer if not pressed
 					// Note: for a "Tap" with a finger the sequence is Up / Exited / Lost, so the lost cannot be raised on Up
@@ -146,7 +152,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			private void CoreWindow_PointerPressed(CoreWindow sender, PointerEventArgs args)
+			private void CoreWindow_PointerPressed(CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
 			{
 				var (originalSource, _) = VisualTreeHelper.HitTest(args.CurrentPoint.Position);
 
@@ -176,7 +182,7 @@ namespace Windows.UI.Xaml
 				Raise(Pressed, originalSource, routedArgs);
 			}
 
-			private void CoreWindow_PointerReleased(CoreWindow sender, PointerEventArgs args)
+			private void CoreWindow_PointerReleased(CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
 			{
 				var (originalSource, _) = VisualTreeHelper.HitTest(args.CurrentPoint.Position);
 				var isOutOfWindow = originalSource is null;
@@ -204,7 +210,7 @@ namespace Windows.UI.Xaml
 				var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
 				RaiseUsingCaptures(Released, originalSource, routedArgs);
-				if (isOutOfWindow || args.CurrentPoint.Pointer.Type != PointerDeviceType.Touch)
+				if (isOutOfWindow || (PointerDeviceType)args.CurrentPoint.Pointer.Type != PointerDeviceType.Touch)
 				{
 					// We release the captures on up but only after the released event and processed the gesture
 					// Note: For a "Tap" with a finger the sequence is Up / Exited / Lost, so we let the Exit raise the capture lost
@@ -213,7 +219,7 @@ namespace Windows.UI.Xaml
 				ClearPressedState(routedArgs);
 			}
 
-			private void CoreWindow_PointerMoved(CoreWindow sender, PointerEventArgs args)
+			private void CoreWindow_PointerMoved(CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
 			{
 				var (originalSource, staleBranch) = VisualTreeHelper.HitTest(args.CurrentPoint.Position, isStale: _isOver);
 
@@ -254,7 +260,7 @@ namespace Windows.UI.Xaml
 				RaiseUsingCaptures(Move, originalSource, routedArgs);
 			}
 
-			private void CoreWindow_PointerCancelled(CoreWindow sender, PointerEventArgs args)
+			private void CoreWindow_PointerCancelled(CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
 			{
 				var (originalSource, _) = VisualTreeHelper.HitTest(args.CurrentPoint.Position);
 

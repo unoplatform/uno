@@ -3,7 +3,7 @@
 This folder contains source code for the generation of uno's documentation
 
 > [!IMPORTANT]
-> It's very important that you read the deploy section before commiting anything to the repo.
+> It's very important that you read the deploy section before committing anything to the repo.
 
 # Running a local environment
 
@@ -49,9 +49,9 @@ the implemented views. To test DocFx and break on error run the `npm run strict`
 
 # Deploy
 
-DocFx will use the content of the `styles` folder when building. When working localy, sourcemaps are generated to help
+DocFx will use the content of the `styles` folder when building. When working locally, sourcemaps are generated to help
 debugging the site; the javascript and css are not minified for the same reason. It's very important that the
-build command is ran just before commiting your work; this will minify the code, clean up the `styles` and `_site`
+build command is ran just before committing your work; this will minify the code, clean up the `styles` and `_site`
 folders and build the DocFx according to the `docfx.json`. The CI only runs the DocFx command, it will not regenerate
 the `styles` folder.
 
@@ -71,7 +71,7 @@ npm start
 
 Will build the docfx documentation according to the `docfx.json` file, will minify and concatenate all javascript
 everything in the `docfx.js` file (except`main.js`) and will compile and minify the sass. This command needs to be run
-before commiting any changes to the repos.
+before committing any changes to the repos.
 
 ```
 npm run build
@@ -88,7 +88,7 @@ npm run prod
 ## Strict
 
 The reference pages are generate by the CI and are not there locally. This causes errors when building docfx. You can
-generate stub pages (see in the **Generate Implemented Views** section). Since generating those is often unecessary, it's
+generate stub pages (see in the **Generate Implemented Views** section). Since generating those is often unnecessary, it's
 faster to generate them only if they are needed. When running the command strict, it is the same as running the Prod
 command but the errors won't be ignored.
 
@@ -123,4 +123,4 @@ The local environment is usually located on port `3000` unless another process i
 
 You have to remove the `docs` fragment from the WordPress menu to reach your local documentation server.
 
-There are some additionnal information on running DocFx locally that can be found [here](https://platform.uno/docs/articles/uno-development/docfx.html?tabs=tabid-1).
+There are some additional information on running DocFx locally that can be found [here](https://platform.uno/docs/articles/uno-development/docfx.html?tabs=tabid-1).

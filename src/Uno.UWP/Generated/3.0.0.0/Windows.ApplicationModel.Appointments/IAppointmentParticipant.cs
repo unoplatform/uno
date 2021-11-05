@@ -2,25 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Appointments
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IAppointmentParticipant 
 	{
-		#if false
-		string Address
-		{
-			get;
-			set;
-		}
-		#endif
-		#if false
-		string DisplayName
-		{
-			get;
-			set;
-		}
-		#endif
+		// Skipping already declared property Address
+		// Skipping already declared property DisplayName
 		// Forced skipping of method Windows.ApplicationModel.Appointments.IAppointmentParticipant.DisplayName.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.IAppointmentParticipant.DisplayName.set
 		// Forced skipping of method Windows.ApplicationModel.Appointments.IAppointmentParticipant.Address.get

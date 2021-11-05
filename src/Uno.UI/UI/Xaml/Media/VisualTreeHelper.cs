@@ -18,6 +18,7 @@ using Windows.Globalization.DateTimeFormatting;
 using Windows.UI.Core;
 using Uno.Logging;
 using Uno.UI.Extensions;
+using Windows.UI.Xaml.Controls.Primitives;
 
 #if __IOS__
 using UIKit;
@@ -146,6 +147,15 @@ namespace Windows.UI.Xaml.Media
 				.AsReadOnly();
 		}
 
+		private static IReadOnlyList<Popup> GetOpenFlyoutPopups()
+		{
+			return _openPopups
+				.Select(WeakReferenceExtensions.GetTarget)
+				.OfType<Popup>()
+				.Where(p => p.IsForFlyout)
+				.ToList().AsReadOnly();
+		}
+
 		public static IReadOnlyList<Popup> GetOpenPopupsForXamlRoot(XamlRoot xamlRoot)
 		{
 			if (xamlRoot == XamlRoot.Current)
@@ -170,6 +180,14 @@ namespace Windows.UI.Xaml.Media
 		internal static void CloseAllPopups()
 		{
 			foreach (var popup in GetOpenPopups(Window.Current))
+			{
+				popup.IsOpen = false;
+			}
+		}
+
+		internal static void CloseAllFlyouts()
+		{
+			foreach (var popup in GetOpenFlyoutPopups())
 			{
 				popup.IsOpen = false;
 			}

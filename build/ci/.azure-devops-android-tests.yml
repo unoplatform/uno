@@ -12,7 +12,7 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
 
-  dependsOn: Commitsar
+  dependsOn: Pipeline_Validations
 
   variables:
     CI_Build: true
@@ -56,7 +56,7 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
 
-  dependsOn: Commitsar
+  dependsOn: Pipeline_Validations
 
   variables:
     CI_Build: true
@@ -132,6 +132,7 @@ jobs:
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
         TARGETPLATFORM_NAME: xamarin
         FAILBUILD_ON_FAILURE: true
+        ALLOW_RERUN: true
 
       Android_9.0_Group_02:
         ANDROID_SIMULATOR_APILEVEL: 28
@@ -140,6 +141,7 @@ jobs:
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
         TARGETPLATFORM_NAME: xamarin
         FAILBUILD_ON_FAILURE: true
+        ALLOW_RERUN: true
 
       Android_9.0_Group_03:
         ANDROID_SIMULATOR_APILEVEL: 28
@@ -148,6 +150,7 @@ jobs:
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
         TARGETPLATFORM_NAME: xamarin
         FAILBUILD_ON_FAILURE: true
+        ALLOW_RERUN: true
 
       Android_9.0_Snapshots:
         ANDROID_SIMULATOR_APILEVEL: 28
@@ -156,6 +159,7 @@ jobs:
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
         TARGETPLATFORM_NAME: xamarin
         FAILBUILD_ON_FAILURE: true
+        ALLOW_RERUN: true
 
       Android_9.0_RuntimeTests:
         ANDROID_SIMULATOR_APILEVEL: 28
@@ -164,6 +168,7 @@ jobs:
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
         TARGETPLATFORM_NAME: xamarin
         FAILBUILD_ON_FAILURE: true
+        ALLOW_RERUN: false
 
       Android_9.0_RuntimeTests_Net6:
         ANDROID_SIMULATOR_APILEVEL: 28
@@ -171,6 +176,7 @@ jobs:
         UNO_UITEST_BUCKET_ID: RuntimeTests
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-net6-build
         TARGETPLATFORM_NAME: net6
+        ALLOW_RERUN: false
         FAILBUILD_ON_FAILURE: false # false until https://github.com/unoplatform/uno/issues/5873 and https://github.com/dotnet/runtime/pull/55681 are released 
 
       # Android 10 testing is disabled because of https://github.com/microsoft/appcenter/issues/1451
@@ -238,6 +244,7 @@ jobs:
       $(build.sourcesdirectory)/build/android-uitest-run.sh
 
     displayName: Run Android Tests
+    condition: eq(variables.ALLOW_RERUN, 'true')
 
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
@@ -249,7 +256,7 @@ jobs:
       TARGETPLATFORM_NAME: "$(TARGETPLATFORM_NAME)"
  
   - task: PublishTestResults@2
-    condition: always()
+    condition: eq(variables.ALLOW_RERUN, 'true')
     inputs:
       testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(UITEST_TEST_MODE_NAME)/$(UNO_UITEST_BUCKET_ID)/$(TARGETPLATFORM_NAME) Test ReRun'
       testResultsFormat: 'NUnit'

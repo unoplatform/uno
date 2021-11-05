@@ -9,7 +9,7 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
 
-  dependsOn: Commitsar
+  dependsOn: Pipeline_Validations
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget

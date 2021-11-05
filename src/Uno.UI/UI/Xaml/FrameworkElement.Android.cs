@@ -241,12 +241,12 @@ namespace Windows.UI.Xaml
 				base.OnLayoutCore(changed, left, top, right, bottom);
 
 				Rect finalRect;
-				if (ArrangeLogicalSize is Rect als)
+				if (TransientArrangeFinalRect is Rect tafr)
 				{
 					// If the parent element is from managed code,
 					// we can recover the "Arrange" with double accuracy.
 					// We use that because the conversion to android's "int" is loosing too much precision.
-					finalRect = als;
+					finalRect = tafr;
 				}
 				else
 				{
@@ -254,9 +254,10 @@ namespace Windows.UI.Xaml
 					// so we convert those measurements to logical ones.
 					finalRect = new Rect(left, top, right - left, bottom - top).PhysicalToLogicalPixels();
 
-					// We also need to set the LayoutSlot as it was not by the parent.
+					// We also need to set the LayoutSlot as it was not set by the parent.
 					// Note: This is only an approximation of the LayoutSlot as margin and alignment might already been applied at this point.
 					LayoutInformation.SetLayoutSlot(this, finalRect);
+					LayoutSlotWithMarginsAndAlignments = finalRect;
 				}
 
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))

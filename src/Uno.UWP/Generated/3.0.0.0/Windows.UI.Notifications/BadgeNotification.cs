@@ -1,7 +1,7 @@
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Notifications
-{	
+{
 	#if __ANDROID__ || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif

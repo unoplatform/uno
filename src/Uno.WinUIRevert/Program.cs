@@ -16,7 +16,7 @@ namespace UnoWinUIRevert
 			DeleteFolder(Path.Combine(basePath, "src", "Uno.UI", "Generated"));
 			DeleteFolder(Path.Combine(basePath, "src", "Uno.UWP", "Generated"));
 			DeleteFolder(Path.Combine(basePath, "src", "Uno.UI", "UI", "Composition"));
-			DeleteFolder(Path.Combine(basePath, "src", "Uno.UI", "UI", "Xaml", "Controls", "ProgressBar")); // ProgressBar in WinUI is a replacement of the UWP's version.
+			DeleteFolder(Path.Combine(basePath, "src", "Uno.UI", "UI", "Xaml", "Controls", "ProgressBar")); // ProgressBar in WinUI is a replacement of the UWP's version
 
 			var compositionPath = Path.Combine(basePath, @"src", "Uno.UWP", "UI", "Composition");
 			if (Directory.Exists(compositionPath))
@@ -37,6 +37,43 @@ namespace UnoWinUIRevert
 				File.Copy(colorHelperFilePath, Path.Combine(basePath, @"src", "Uno.UI", "UI", "ColorHelper.cs"), true);
 			}
 
+			var fontWeightsFilePath = Path.Combine(basePath, @"src", "Uno.UWP", "UI", "Text", "FontWeights.cs");
+			if (File.Exists(fontWeightsFilePath))
+			{
+				Directory.CreateDirectory(Path.Combine(basePath, "src", "Uno.UI", "UI", "Text"));
+				File.Copy(fontWeightsFilePath, Path.Combine(basePath, @"src", "Uno.UI", "UI", "Text", "FontWeights.cs"), true);
+			}
+			
+			var inputPath = Path.Combine(basePath, @"src", "Uno.UWP", "UI", "Input");
+			if (Directory.Exists(inputPath))
+			{
+				Console.WriteLine(@"Copying UI.Input");
+				foreach(var file in Directory.GetFiles(inputPath))
+				{
+					var relativePath = Path.GetRelativePath(inputPath, file);
+
+					var targetFile = Path.Combine(basePath, "src", "Uno.UI", "UI", "Input", relativePath);
+
+					Directory.CreateDirectory(Path.GetDirectoryName(targetFile));
+					File.Copy(file, targetFile, true);
+				}
+			}
+
+			var dispatcherQueuePath = Path.Combine(basePath, @"src", "Uno.UWP", "System");
+			if (Directory.Exists(dispatcherQueuePath))
+			{
+				Console.WriteLine(@"Copying DispatcherQueue types");
+				foreach(var file in Directory.GetFiles(dispatcherQueuePath, "DispatcherQueue*.cs"))
+				{
+					var relativePath = Path.GetRelativePath(dispatcherQueuePath, file);
+
+					var targetFile = Path.Combine(basePath, "src", "Uno.UI", "UI", "Dispatching", relativePath);
+
+					Directory.CreateDirectory(Path.GetDirectoryName(targetFile));
+					File.Copy(file, targetFile, true);
+				}
+			}
+
 			// Files/Class that are implemented in both MUX and WUX and which should not be converted
 			var duplicatedImplementations = new[]
 			{
@@ -53,6 +90,7 @@ namespace UnoWinUIRevert
 				("Windows.UI.Xaml", "Microsoft.UI.Xaml"),
 				("Windows.UI.Composition", "Microsoft.UI.Composition"),
 				("Windows.UI.Colors", "Microsoft.UI.Colors"),
+				("Windows.UI.Text.FontWeights", "Microsoft.UI.Text.FontWeights"),
 				("Windows.UI.ColorHelper", "Microsoft.UI.ColorHelper"),
 				("Windows.UI.Xaml", "Microsoft.UI.Xaml"),
 				("Microsoft.UI.Xaml.Controls\", \"ProgressRing", "Uno.UI.Controls.Legacy\", \"ProgressRing"),

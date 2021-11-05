@@ -46,6 +46,7 @@ namespace Uno.UWPSyncGenerator
 
 		private ISymbol _voidSymbol;
 		private ISymbol _dependencyPropertySymbol;
+		protected ISymbol FlagsAttributeSymbol { get; private set; }
 		protected ISymbol UIElementSymbol { get; private set; }
 		private static string MSBuildBasePath;
 
@@ -77,6 +78,7 @@ namespace Uno.UWPSyncGenerator
 
 			_voidSymbol = _referenceCompilation.GetTypeByMetadataName("System.Void");
 			_dependencyPropertySymbol = _referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".DependencyProperty");
+			FlagsAttributeSymbol = _referenceCompilation.GetTypeByMetadataName("System.FlagsAttribute");
 			UIElementSymbol = _referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".UIElement");
 			var a = _referenceCompilation.GetTypeByMetadataName("Microsoft.UI.ViewManagement.StatusBar");
 
@@ -123,6 +125,7 @@ namespace Uno.UWPSyncGenerator
 			var q = from asm in origins
 					where asm.Name == sourceAssembly
 					from targetType in GetNamespaceTypes(asm.Modules.First().GlobalNamespace)
+					where !SkipNamespace(targetType)
 					where targetType.DeclaredAccessibility == Accessibility.Public
 					where ((baseName == "Uno" || baseName == "Uno.Foundation") && !targetType.ContainingNamespace.ToString().StartsWith("Windows.UI.Xaml") && !targetType.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Xaml"))
 					|| (baseName == "Uno.UI" && unoUINamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n)))
@@ -142,6 +145,17 @@ namespace Uno.UWPSyncGenerator
 					ProcessType(type, ns.Namespace);
 				}
 			}
+		}
+
+		private bool SkipNamespace(INamedTypeSymbol namedTypeSymbol)
+		{
+			if (namedTypeSymbol.ContainingNamespace.ToDisplayString().StartsWith("Microsoft.UI.Input.Experimental"))
+			{
+				// Skip Microsoft.UI.Input.Experimental as it is not part of WinAppSDK desktop APIs
+				return true;
+			}
+
+			return false;
 		}
 
 		protected abstract void ProcessType(INamedTypeSymbol type, INamespaceSymbol ns);
@@ -457,6 +471,22 @@ namespace Uno.UWPSyncGenerator
 				case "Microsoft.UI.Xaml.Controls.XamlControlsResources":
 					// Skipped because the type is placed in the Uno.UI.FluentTheme assembly
 					return true;
+
+				case "Microsoft.UI.Xaml.Data.INotifyPropertyChanged":
+				case "Microsoft.UI.Xaml.Data.PropertyChangedEventArgs":
+				case "Microsoft.UI.Xaml.Data.PropertyChangedEventHandler":
+					// Skipped because the types are hidden from the projections in WinAppSDK
+					return true;
+
+#if HAS_UNO_WINUI
+				case "Windows.UI.Text.FontWeights":
+					// Skipped because the type not present WinAppSDK projection
+					return true;
+
+				case "Windows.UI.Colors":
+					// Skipped because the type not present WinAppSDK projection
+					return true;
+#endif
 			}
 
 
@@ -606,7 +636,7 @@ namespace Uno.UWPSyncGenerator
 								b.AppendLineInvariant($"throw new global::System.NotSupportedException();");
 							}
 						}
-						if (property.GetMethod != null)
+						if (property.SetMethod != null)
 						{
 							using (b.BlockInvariant($"set"))
 							{
@@ -833,10 +863,9 @@ namespace Uno.UWPSyncGenerator
 
 					if (type.TypeKind == TypeKind.Enum)
 					{
-						// if (!field.IsSpecialName)
-						{
-							b.AppendLineInvariant($"{field.Name},");
-						}
+						var constantValue = field.ConstantValue != null ? $" = {field.ConstantValue}" : string.Empty;
+
+						b.AppendLineInvariant($"{field.Name}{constantValue},");
 					}
 					else
 					{
@@ -945,6 +974,7 @@ namespace Uno.UWPSyncGenerator
 				if (
 					method.MethodKind == MethodKind.Constructor
 					&& type.TypeKind != TypeKind.Interface
+					&& !SkipMethod(type, method)
 					&& type.Name != "DependencyObject"
 					&& (
 						!type.IsValueType
@@ -1097,6 +1127,55 @@ namespace Uno.UWPSyncGenerator
 					case "SetBinding":
 						return true;
 				}
+			}
+
+			if (method.ContainingType.Name == "SwapChainPanel")
+			{
+				switch (method.Name)
+				{
+					// This member uses the experimental input layer from UWP
+					case "CreateCoreIndependentInputSource":
+						return true;
+				}
+			}
+
+			if (method.ContainingType.Name == "SwapChainPanel")
+			{
+				switch (method.Name)
+				{
+					// This member uses the experimental input layer from UWP
+					case "CreateCoreIndependentInputSource":
+						return true;
+				}
+			}
+
+			if (method.ContainingType.Name == "VisualInteractionSource")
+			{
+				switch (method.Name)
+				{
+					// This member uses the experimental input layer from UWP
+					case "TryRedirectForManipulation":
+						return true;
+				}
+			}
+
+			if (method.ContainingType.Name == "UIElement")
+			{
+				switch (method.Name)
+				{
+					// This member uses the experimental input layer from UWP
+					case "StartDragAsync":
+						return true;
+				}
+			}
+
+			if (method.ContainingType.Name == "ScrollControllerInteractionRequestedEventArgs"
+				&& method.MethodKind == MethodKind.Constructor
+				&& method.Parameters.Length == 1
+				&& method.Parameters[0].Type.ToDisplayString() == "Microsoft.UI.Input.Experimental.ExpPointerPoint")
+			{
+				// This member uses the experimental input layer from UWP
+				return true;
 			}
 
 			return false;
@@ -1408,22 +1487,6 @@ namespace Uno.UWPSyncGenerator
 
 		private bool SkipProperty(IPropertySymbol property)
 		{
-			if (property.ContainingType.Name == "WebView")
-			{
-				switch (property.Name)
-				{
-					case "XYFocusRight":
-					case "XYFocusLeft":
-					case "XYFocusDown":
-					case "XYFocusUp":
-					case "XYFocusRightProperty":
-					case "XYFocusLeftProperty":
-					case "XYFocusDownProperty":
-					case "XYFocusUpProperty":
-						return true;
-				}
-			}
-
 			if (property.ContainingType.Name == "WebView2")
 			{
 				switch (property.Name)
@@ -1469,6 +1532,36 @@ namespace Uno.UWPSyncGenerator
 				switch (property.Name)
 				{
 					case "TemplatedParent":
+						return true;
+				}
+			}
+
+			if (property.ContainingType.Name == "ExpCompositionContent")
+			{
+				switch (property.Name)
+				{
+					case "InputSite":
+						// Member uses the experimental Input layer from UAP
+						return true;
+				}
+			}
+
+			if (property.ContainingType.Name == "ExpCompositionContent")
+			{
+				switch (property.Name)
+				{
+					case "InputSite":
+						// Member uses the experimental Input layer from UAP
+						return true;
+				}
+			}
+
+			if (property.ContainingType.Name == "ScrollControllerInteractionRequestedEventArgs")
+			{
+				switch (property.Name)
+				{
+					case "PointerPoint":
+						// Member uses the experimental Input layer from UAP
 						return true;
 				}
 			}

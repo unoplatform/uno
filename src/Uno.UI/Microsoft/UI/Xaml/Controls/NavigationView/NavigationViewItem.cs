@@ -15,7 +15,6 @@ using System.Collections.Specialized;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
-using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Xaml;
@@ -28,6 +27,13 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 using FlyoutBase = Windows.UI.Xaml.Controls.Primitives.FlyoutBase;
 using FlyoutBaseClosingEventArgs = Windows.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs;
 using NavigationViewItemAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.UI.Input;
+using Windows.Devices.Input;
+#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {

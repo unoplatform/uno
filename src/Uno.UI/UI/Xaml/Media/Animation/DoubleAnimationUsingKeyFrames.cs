@@ -163,7 +163,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				_startingValue = null;
 			}
 
-			SetValue(_finalValue);//Set property to its final value
+			SetValue(KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).LastOrDefault()?.Value);//Set property to its final value
 
 			OnEnd();
 		}

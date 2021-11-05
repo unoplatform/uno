@@ -4,11 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI;
-using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
-using Windows.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
@@ -17,6 +15,13 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -454,7 +459,7 @@ namespace Windows.UI.Xaml.Controls
 				Pointer spPointer;
 				spPointer = (pArgs.Pointer);
 				var pointerDeviceType = (spPointer.PointerDeviceType);
-				if (PointerDeviceType.Mouse == pointerDeviceType && !m_isSubPresenter)
+				if (PointerDeviceType.Mouse == (PointerDeviceType)pointerDeviceType && !m_isSubPresenter)
 				{
 					var isHitVerticalScrollBarOrSubPresenter = false;
 					IMenuPresenter subPresenter;
@@ -575,7 +580,7 @@ namespace Windows.UI.Xaml.Controls
 				Pointer spPointer;
 				spPointer = pArgs.Pointer;
 				var pointerDeviceType = spPointer.PointerDeviceType;
-				if (PointerDeviceType.Mouse == pointerDeviceType && m_isSubPresenter)
+				if (PointerDeviceType.Mouse == (PointerDeviceType)pointerDeviceType && m_isSubPresenter)
 				{
 					CancelCloseMenuFlyoutSubItem();
 					var owner = (this as IMenuPresenter).Owner;
