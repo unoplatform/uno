@@ -73,4 +73,8 @@ You can use **Visual Studio for Mac**, **JetBrains Rider**, or **Visual Studio C
 |                 | Windows 10 (UWP/WinUI) | Android | iOS | Web (WebAssembly) | macOS | Linux (Skia-Gtk) | Windows 7+ (Skia-WPF) |
 |-----------------|------------------------|---------|-----|-------------------|-------|------------------|-----------------------|
 | [**VS Code**](get-started-vscode.md)         | ❌                      | ❌       | ❌   | ✔️                 | ❌     | ✔️                | ❌                     |
-| [**JetBrains Rider**](get-started-rider.md) | ❌                      | ✔️       | ❌   | ✔️                 | ❌     | ✔️                | ❌                     |
+| [**JetBrains Rider**](get-started-rider.md) | ❌                      | ❌†       | ❌   | ✔️                 | ❌     | ✔️                | ❌                     |
+
+† Notes:
+
+* **Android** on Linux: Xamarin.Android does not natively support linux development. Rider has been capable of Android development on Linux in the past, but [previous directions are considered obsolete.](https://rider-support.jetbrains.com/hc/en-us/articles/360000557259--Obsolete-How-to-develop-Xamarin-Android-applications-on-Linux-with-Rider) As of this comment (3 Nov 2021) [Xamarin Android builds on linux fail](https://github.com/xamarin/xamarin-android).
