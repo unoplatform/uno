@@ -41,9 +41,11 @@ namespace Uno.UI.RemoteControl.HotReload
 					ReloadFile(JsonConvert.DeserializeObject<HotReload.Messages.FileReload>(frame.Content));
 					break;
 
+#if NET6_0_OR_GREATER || __WASM__ || __SKIA__
 				case AssemblyDeltaReload.Name:
 					AssemblyReload(JsonConvert.DeserializeObject<HotReload.Messages.AssemblyDeltaReload>(frame.Content));
 					break;
+#endif
 
 				default:
 					if (this.Log().IsEnabled(LogLevel.Error))
