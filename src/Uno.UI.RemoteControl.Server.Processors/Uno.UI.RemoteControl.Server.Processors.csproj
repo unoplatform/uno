@@ -6,7 +6,7 @@
 	</PropertyGroup>
 
 
-  <PropertyGroup Condition="'$(CI_Build)'=='true'">
+  <PropertyGroup Condition="'$(CI_Build)'=='true' or '$(TF_BUILD)' == 'true'">
 		<TargetFrameworks Condition="'$(IS_NET6_BUILD)'==''">netcoreapp3.1</TargetFrameworks>
 		<TargetFrameworks Condition="'$(IS_NET6_BUILD)'=='true'">net6.0</TargetFrameworks>
 	</PropertyGroup>
