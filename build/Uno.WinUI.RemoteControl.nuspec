@@ -159,8 +159,10 @@
 	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.net6\Release\net6.0-macos\Uno.UI.RemoteControl.pdb" target="lib\net6.0-macos" />
 
 	<!-- Processors -->
-	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\netcoreapp3.1\*.dll" target="tools\rc\processors" />
-	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\netcoreapp3.1\*.pdb" target="tools\rc\processors" />
+	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\netcoreapp3.1\Uno.UI.RemoteControl.Server.Processors.dll" target="tools\rc\processors\netcoreapp3.1" />
+	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\netcoreapp3.1\Uno.UI.RemoteControl.Server.Processors.pdb" target="tools\rc\processors\netcoreapp3.1" />
+	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net6.0\Uno.UI.RemoteControl.Server.Processors.dll" target="tools\rc\processors\net6.0" />
+	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net6.0\Uno.UI.RemoteControl.Server.Processors.pdb" target="tools\rc\processors\net6.0" />
 
 	<!-- Build targets -->
 	<file src="..\src\Uno.UI.RemoteControl\buildTransitive\*" target="buildTransitive" />
