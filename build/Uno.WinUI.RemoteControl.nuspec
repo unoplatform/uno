@@ -161,8 +161,8 @@
 	<!-- Processors -->
 	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\netcoreapp3.1\Uno.UI.RemoteControl.Server.Processors.dll" target="tools\rc\processors\netcoreapp3.1" />
 	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\netcoreapp3.1\Uno.UI.RemoteControl.Server.Processors.pdb" target="tools\rc\processors\netcoreapp3.1" />
-	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net6.0\Uno.UI.RemoteControl.Server.Processors.dll" target="tools\rc\processors\net6.0" />
-	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net6.0\Uno.UI.RemoteControl.Server.Processors.pdb" target="tools\rc\processors\net6.0" />
+	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net6.0\*.dll" target="tools\rc\processors\net6.0" />
+	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net6.0\*.pdb" target="tools\rc\processors\net6.0" />
 
 	<!-- Build targets -->
 	<file src="..\src\Uno.UI.RemoteControl\buildTransitive\*" target="buildTransitive" />
