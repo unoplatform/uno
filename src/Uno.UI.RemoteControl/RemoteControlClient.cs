@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,12 +21,12 @@ namespace Uno.UI.RemoteControl
 {
 	public class RemoteControlClient : IRemoteControlClient
 	{
-		public static RemoteControlClient Instance { get; private set; }
+		public static RemoteControlClient? Instance { get; private set; }
 
 		public Type AppType { get; }
 
-		private readonly (string endpoint, int port)[] _serverAddresses;
-		private WebSocket _webSocket;
+		private readonly (string endpoint, int port)[]? _serverAddresses;
+		private WebSocket? _webSocket;
 		private Dictionary<string, IRemoteControlProcessor> _processors = new Dictionary<string, IRemoteControlProcessor>();
 
 		private RemoteControlClient(Type appType)
@@ -37,7 +39,7 @@ namespace Uno.UI.RemoteControl
 				{
 					foreach (var endpoint in endpoints)
 					{
-						if (endpoint.Port == 0)
+						if (endpoint.Port == 0 && !Uri.TryCreate(endpoint.Endpoint, UriKind.Absolute, out _))
 						{
 							this.Log().LogError($"Failed to get remote control server port from the IDE for endpoint {endpoint.Endpoint}.");
 						}
@@ -71,47 +73,61 @@ namespace Uno.UI.RemoteControl
 		{
 			try
 			{
-				async Task<(string endPoint, int port, WebSocket socket)> Connect(string endpoint, int port, CancellationToken ct)
+				async Task<(Uri endPoint, WebSocket socket)> Connect(string endpoint, int port, CancellationToken ct)
 				{
-#if __WASM__
-					var s = new Uno.Wasm.WebSockets.WasmWebSocket();
-#else
 					var s = new ClientWebSocket();
-#endif
 
-					if(port == 443)
+					Uri BuildServerUri()
 					{
-#if __WASM__
-						if (endpoint.EndsWith("gitpod.io"))
+						if (Uri.TryCreate(endpoint, UriKind.Absolute, out var fullUri))
 						{
-							var originParts = endpoint.Split('-');
+							var wsScheme = fullUri.Scheme switch
+							{
+								"http" => "ws",
+								"https" => "ws",
+								_ => throw new InvalidOperationException($"Unsupported remote host scheme ({fullUri})"),
+							};
 
-							var currentHost = Foundation.WebAssemblyRuntime.InvokeJS("window.location.hostname");
-							var targetParts = currentHost.Split('-');
-
-							endpoint = originParts[0] + '-' + currentHost.Substring(targetParts[0].Length + 1);
+							return new Uri($"{wsScheme}://{fullUri.Authority}/rc");
 						}
+						else if (port == 443)
+						{
+#if __WASM__
+							if (endpoint.EndsWith("gitpod.io"))
+							{
+								var originParts = endpoint.Split('-');
+
+								var currentHost = Foundation.WebAssemblyRuntime.InvokeJS("window.location.hostname");
+								var targetParts = currentHost.Split('-');
+
+								endpoint = originParts[0] + '-' + currentHost.Substring(targetParts[0].Length + 1);
+							}
 #endif
 
-						await s.ConnectAsync(new Uri($"wss://{endpoint}/rc"), ct);
-					}
-					else
-					{
-						await s.ConnectAsync(new Uri($"ws://{endpoint}:{port}/rc"), ct);
+							return new Uri($"wss://{endpoint}/rc");
+						}
+						else
+						{
+							return new Uri($"ws://{endpoint}:{port}/rc");
+						}
 					}
 
-					return (endpoint, port, s);
+					var serverUri = BuildServerUri();
+
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().LogTrace($"Connecting to [{serverUri}]");
+					}
+
+					await s.ConnectAsync(serverUri, ct);
+
+					return (serverUri, s);
 				}
 
 				var connections = _serverAddresses
-					.Where(adr => adr.port != 0)
+					.Where(adr => adr.port != 0 || Uri.TryCreate(adr.endpoint, UriKind.Absolute, out _))
 					.Select(s =>
 					{
-						if (this.Log().IsEnabled(LogLevel.Debug))
-						{
-							this.Log().LogDebug($"Connecting to {s}...");
-						}
-
 						var cts = new CancellationTokenSource();
 						var task = Connect(s.endpoint, s.port, cts.Token);
 
@@ -146,11 +162,11 @@ namespace Uno.UI.RemoteControl
 					return;
 				}
 
-				var connected = ((Task<(string endPoint, int port, WebSocket socket)>)completed).Result;
+				var connected = ((Task<(Uri endPoint, WebSocket socket)>)completed).Result;
 
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().LogDebug($"Connected to {connected.endPoint}:{connected.port}");
+					this.Log().LogDebug($"Connected to {connected.endPoint}");
 				}
 
 				_webSocket = connected.socket;

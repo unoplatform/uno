@@ -16,21 +16,21 @@
     <Message Text="&lt;IntermediateOutputPath&gt;$(MSBuildProjectDirectory)/$(IntermediateOutputPath)&lt;/IntermediateOutputPath&gt;" Importance="High" />
   </Target>
 
-  <Target Name="InjectRemoteControlPort" BeforeTargets="BeforeBuild" Condition="exists('$(IntermediateOutputPath)\RemoteControlPort.config')">
+  <Target Name="InjectRemoteControlHost" BeforeTargets="BeforeBuild" Condition="exists('$(IntermediateOutputPath)\RemoteControlHost.config')">
 	
 	  <ItemGroup>
 	    <WasmShellMonoEnvironment Include="DOTNET_MODIFIABLE_ASSEMBLIES" Value="debug" />
 	  </ItemGroup>
 	
-    <ReadLinesFromFile File="$(IntermediateOutputPath)\RemoteControlPort.config" >
-      <Output TaskParameter="Lines" ItemName="_RemoteControlPortContent"/>
+    <ReadLinesFromFile File="$(IntermediateOutputPath)\RemoteControlHost.config" >
+      <Output TaskParameter="Lines" ItemName="_RemoteControlHostContent"/>
     </ReadLinesFromFile>
 
     <CreateProperty
-        Value="@(_RemoteControlPortContent)">
+        Value="@(_RemoteControlHostContent)">
       <Output
           TaskParameter="Value"
-          PropertyName="UnoRemoteControlPort" />
+          PropertyName="UnoRemoteControlHost" />
     </CreateProperty>
 
   </Target>
