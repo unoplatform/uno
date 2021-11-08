@@ -23,6 +23,10 @@ using Uno.UI.Extensions;
 using Microsoft.Extensions.Logging;
 using Uno.UI.UI.Xaml.Controls.Layouter;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;

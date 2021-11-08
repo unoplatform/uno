@@ -11,6 +11,10 @@ using Foundation;
 using Uno.Extensions;
 using Windows.UI.Xaml.Controls;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 #if __IOS__
 using UIKit;
 using _View = UIKit.UIView;

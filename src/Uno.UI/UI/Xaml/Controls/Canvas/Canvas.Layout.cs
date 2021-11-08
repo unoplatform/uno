@@ -11,8 +11,10 @@ using Uno.Logging;
 using _View = Android.Views.View;
 #elif __IOS__
 using _View = UIKit.UIView;
+using ObjCRuntime;
 #elif __MACOS__
 using _View = AppKit.NSView;
+using ObjCRuntime;
 #elif UNO_REFERENCE_API || NET461
 using _View = Windows.UI.Xaml.UIElement;
 #endif

@@ -7273,6 +7273,60 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings..ctor(Windows.UI.Xaml.Controls.CommandBar commandBar)"
 				reason="API alignment" />
+
+
+		  <!-- BEGIN .NET 6 BREAKING CHANGE -->
+		  <Member fullName="System.Void UIKit.UIViewExtensions.SetDimensions(UIKit.UIView view, System.Nullable`1&lt;System.nfloat&gt; width, System.Nullable`1&lt;System.nfloat&gt; height)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.nfloat UIKit.UIViewExtensions.StackSubViews(UIKit.UIView thisView)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.nfloat UIKit.UIViewExtensions.StackSubViews(UIKit.UIView thisView, System.Single topPadding, System.Single spaceBetweenElements)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.nfloat UIKit.UIViewExtensions.GetNativeAlpha(UIKit.UIView view)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.SetZoomScale(System.nfloat scale, System.Boolean animated)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.nfloat Windows.UI.Xaml.Controls.VirtualizingPanelLayout.LayoutItemsInGroup(System.Int32 group, System.nfloat availableBreadth, CoreGraphics.CGRect&amp; frame, System.Boolean createLayoutInfo, System.Collections.Generic.Dictionary`2&lt;Foundation.NSIndexPath,System.Nullable`1&lt;CoreGraphics.CGSize&gt;&gt; oldItemSizes)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.Void Windows.UI.Xaml.Controls.VirtualizingPanelLayout.UpdateLayoutAttributesForGroupHeader(UIKit.UICollectionViewLayoutAttributes groupHeaderLayout, System.nfloat extentDifference, System.Boolean applyOffsetToThis)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="CoreGraphics.CGRect Windows.UI.Xaml.Controls.VirtualizingPanelLayout.AdjustExtentOffset(CoreGraphics.CGRect frame, System.nfloat adjustment)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="CoreGraphics.CGPoint Windows.UI.Xaml.Controls.VirtualizingPanelLayout.AdjustExtentOffset(CoreGraphics.CGPoint point, System.nfloat adjustment)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.nfloat Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetExtentStart(CoreGraphics.CGRect frame)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.nfloat Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetExtentEnd(CoreGraphics.CGRect frame)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.nfloat Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetBreadth(CoreGraphics.CGSize size)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.nfloat Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetBreadthStart(CoreGraphics.CGRect frame)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.nfloat Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetBreadthEnd(CoreGraphics.CGRect frame)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.Void Windows.UI.Xaml.Controls.VirtualizingPanelLayout.SetBreadthStart(CoreGraphics.CGRect&amp; frame, System.nfloat breadthStart)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.Void Windows.UI.Xaml.Controls.VirtualizingPanelLayout.SetBreadth(CoreGraphics.CGRect&amp; frame, System.nfloat breadth)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.Void Windows.UI.Xaml.Controls.VirtualizingPanelLayout.SetExtentStart(CoreGraphics.CGRect&amp; frame, System.nfloat extentStart)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.Void Windows.UI.Xaml.Controls.VirtualizingPanelLayout.SetExtent(CoreGraphics.CGSize&amp; size, System.nfloat extent)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="CoreGraphics.CGPoint Windows.UI.Xaml.Controls.VirtualizingPanelLayout.SetExtentOffset(CoreGraphics.CGPoint point, System.nfloat newOffset)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.nfloat Uno.UI.ViewHelper.get_OnePixel()" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.nfloat Uno.UI.ViewHelper.GetConvertedPixel(System.Single thickness)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.nfloat Uno.UI.ViewHelper.StackSubViews(System.Collections.Generic.IEnumerable`1&lt;UIKit.UIView&gt; views)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.nfloat Uno.UI.ViewHelper.StackSubViews(UIKit.UIView thisView, System.Single topPadding, System.Single spaceBetweenElements)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.IncrementX(CoreGraphics.CGRect thisCGRect, System.nfloat delta)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.IncrementY(CoreGraphics.CGRect thisCGRect, System.nfloat delta)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.SetX(CoreGraphics.CGRect thisCGRect, System.nfloat value)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.SetY(CoreGraphics.CGRect thisCGRect, System.nfloat value)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.SetBottom(CoreGraphics.CGRect thisCGRect, System.nfloat value)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.SetRight(CoreGraphics.CGRect thisCGRect, System.nfloat value)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.SetRightRespectWidth(CoreGraphics.CGRect thisCGRect, System.nfloat value)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.SetHorizontalCenter(CoreGraphics.CGRect thisCGRect, System.nfloat value)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.SetVerticalCenter(CoreGraphics.CGRect thisCGRect, System.nfloat value)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.Shrink(CoreGraphics.CGRect thisCGRect, System.nfloat numberOfPixels)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.Shrink(CoreGraphics.CGRect thisCGRect, System.nfloat left, System.nfloat top, System.nfloat right, System.nfloat bottom)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.IncrementHeight(CoreGraphics.CGRect thisCGRect, System.nfloat delta)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.IncrementWidth(CoreGraphics.CGRect thisCGRect, System.nfloat delta)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.SetWidth(CoreGraphics.CGRect thisCGRect, System.nfloat value)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.SetHeight(CoreGraphics.CGRect thisCGRect, System.nfloat value)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.nfloat Uno.UI.Extensions.CGRectExtensions.GetXOrY(CoreGraphics.CGRect rect, System.Int32 axisIndex)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.nfloat Uno.UI.Extensions.CGRectExtensions.GetWidthOrHeight(CoreGraphics.CGRect rect, System.Int32 axisIndex)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.SetXOrY(CoreGraphics.CGRect rect, System.Int32 axisIndex, System.nfloat newXYValue)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.nfloat Uno.UI.Extensions.CGPointExtensions.GetXOrY(CoreGraphics.CGPoint point, System.Int32 axisIndex)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="T Uno.UI.Extensions.UIViewPositioningExtensions.SetY(T thisView, System.nfloat value)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.Void AppKit.UIViewExtensions.SetDimensions(AppKit.NSView view, System.Nullable`1&lt;System.nfloat&gt; width, System.Nullable`1&lt;System.nfloat&gt; height)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.nfloat AppKit.UIViewExtensions.StackSubViews(AppKit.NSView thisView)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.nfloat AppKit.UIViewExtensions.StackSubViews(AppKit.NSView thisView, System.Single topPadding, System.Single spaceBetweenElements)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.nfloat AppKit.UIViewExtensions.GetNativeAlpha(AppKit.NSView view)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.nfloat Uno.UI.ViewHelper.StackSubViews(System.Collections.Generic.IEnumerable`1&lt;AppKit.NSView&gt; views)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.nfloat Uno.UI.ViewHelper.StackSubViews(AppKit.NSView thisView, System.Single topPadding, System.Single spaceBetweenElements)" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.nfloat Uno.UI.Extensions.FontWeightExtensions.ToNSFontWeight(Windows.UI.Text.FontWeight fontWeight)" reason=".NET 6 RTM breaking change" />
+		  <!-- END .NET 6 BREAKING CHANGE -->
 		</Methods>
 		<Events>
 			<Member
@@ -8257,6 +8311,12 @@
 			<Member
 				fullName="Windows.UI.Core.CoreDispatcher Windows.UI.Core.CoreDispatcher::Main"
 				reason="API alignment" />
+
+		  <!-- BEGIN .NET 6 BREAKING CHANGE -->
+		  <Member fullName="System.Collections.Generic.Dictionary`2&lt;System.Int32,System.nfloat&gt; Windows.UI.Xaml.Controls.VirtualizingPanelLayout::_sectionEnd" reason=".NET 6 RTM breaking change" />
+		  <Member fullName="System.nfloat Uno.UI.ViewHelper::MainScreenScale" reason=".NET 6 RTM breaking change" />
+		  <!-- END .NET 6 BREAKING CHANGE -->
+
 		</Fields>
 		<Properties>
 			<Member
@@ -8330,6 +8390,10 @@
 			<Member
 				fullName="Windows.UI.Xaml.Controls.ListViewBase Windows.UI.Xaml.Controls.VirtualizingPanelLayout::XamlParent()"
 				reason="Make non-standard property internal" />
+		  
+		  <!-- BEGIN .NET 6 BREAKING CHANGE -->
+		  <Member fullName="System.nfloat Uno.UI.ViewHelper::OnePixel()" reason=".NET 6 RTM breaking change" />
+		  <!-- END .NET 6 BREAKING CHANGE -->
 		</Properties>
 	</IgnoreSet>
 	<!--

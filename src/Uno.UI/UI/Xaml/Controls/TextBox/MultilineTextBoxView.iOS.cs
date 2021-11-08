@@ -15,6 +15,10 @@ using Uno.UI.Controls;
 using Windows.UI;
 using Uno.Disposables;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class MultilineTextBoxView : UITextView, ITextBoxView, DependencyObject, IFontScalable, IUIScrollView

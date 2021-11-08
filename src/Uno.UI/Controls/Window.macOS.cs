@@ -26,6 +26,10 @@ using Windows.System;
 using Windows.UI.Input;
 using Point = Windows.Foundation.Point;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace Uno.UI.Controls
 {
 	/// <summary>

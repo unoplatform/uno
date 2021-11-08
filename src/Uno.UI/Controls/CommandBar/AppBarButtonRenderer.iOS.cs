@@ -14,6 +14,10 @@ using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI.Extensions;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace Uno.UI.Controls
 {
 	internal class AppBarButtonRenderer : Renderer<AppBarButton, UIBarButtonItem>

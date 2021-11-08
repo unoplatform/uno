@@ -26,6 +26,10 @@ using Windows.UI.Xaml.Automation.Provider;
 using Windows.UI.Xaml.Automation;
 using Uno.UI.Xaml;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 <# 
 	foreach(var mixin in _mixins) { 
 #>
