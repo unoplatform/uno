@@ -8,6 +8,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using Uno.Extensions;
+using Uno.UI.RemoteControl.Server.Processors.Helpers;
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
@@ -64,42 +65,39 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 		{
 			RegisterAssemblyLoader();
 
-			var pi = new System.Diagnostics.ProcessStartInfo(
-				"cmd.exe",
-				@"/c ""C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe"" -property installationPath"
-			)
+			MSBuildBasePath = BuildMSBuildPath();
+
+			Environment.SetEnvironmentVariable("MSBuildSDKsPath", Path.Combine(MSBuildBasePath, "Sdks"));
+
+			var MSBuildExists = File.Exists(Path.Combine(MSBuildBasePath, "Microsoft.Build.dll"));
+
+			if (!MSBuildExists)
 			{
-				RedirectStandardOutput = true,
-				UseShellExecute = false,
-				CreateNoWindow = true
-			};
-
-			var process = System.Diagnostics.Process.Start(pi);
-			process.WaitForExit();
-			var installPath = process.StandardOutput.ReadToEnd().Split('\r').First();
-
-			SetupMSBuildLookupPath(installPath);
-		}
-
-		private static void SetupMSBuildLookupPath(string installPath)
-		{
-			Environment.SetEnvironmentVariable("VSINSTALLDIR", installPath);
-			Environment.SetEnvironmentVariable("MSBuildSDKsPath", @"C:\Program Files\dotnet\sdk\6.0.100-rc.2.21505.57\Sdks");
-
-			bool MSBuildExists() => File.Exists(Path.Combine(MSBuildBasePath, "Microsoft.Build.dll"));
-
-			MSBuildBasePath = @"C:\Program Files\dotnet\sdk\6.0.100-rc.2.21505.57";
-
-			if (!MSBuildExists())
-			{
-				MSBuildBasePath = Path.Combine(installPath, "MSBuild\\Current\\Bin");
-				if (!MSBuildExists())
-				{
-					throw new InvalidOperationException($"Invalid Visual studio installation (Cannot find Microsoft.Build.dll)");
-				}
+				throw new InvalidOperationException($"Invalid dotnet installation installation (Cannot find Microsoft.Build.dll in [{MSBuildBasePath}])");
 			}
 		}
 
+		private static string BuildMSBuildPath()
+		{
+			var result = ProcessHelper.RunProcess("dotnet.exe", "--info");
+
+			if (result.exitCode == 0)
+			{
+				var reader = new StringReader(result.output);
+
+				while (reader.ReadLine() is string line)
+				{
+					if (line.Contains("Base Path:"))
+					{
+						return line.Substring(line.IndexOf(':') + 1).Trim();
+					}
+				}
+
+				throw new InvalidOperationException($"Unable to find dotnet SDK base path in:\n {result.output}");
+			}
+
+			throw new InvalidOperationException("Unable to find dotnet SDK base path");
+		}
 
 		private static void RegisterAssemblyLoader()
 		{
