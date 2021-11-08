@@ -26,5 +26,6 @@
         <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="UnoItemTemplate" d:TargetPath="|UnoItemTemplate;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
         <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="UnoLibraryTemplate.net6" d:TargetPath="|UnoLibraryTemplate.net6;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
+        <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="UnoSolutionTemplate" d:TargetPath="|UnoSolutionTemplate;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
     </Assets>
 </PackageManifest>
