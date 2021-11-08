@@ -84,7 +84,7 @@ namespace Uno.UI.RemoteControl
 							var wsScheme = fullUri.Scheme switch
 							{
 								"http" => "ws",
-								"https" => "ws",
+								"https" => "wss",
 								_ => throw new InvalidOperationException($"Unsupported remote host scheme ({fullUri})"),
 							};
 
