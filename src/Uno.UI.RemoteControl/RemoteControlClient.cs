@@ -124,53 +124,63 @@ namespace Uno.UI.RemoteControl
 					return (serverUri, s);
 				}
 
-				var connections = _serverAddresses
-					.Where(adr => adr.port != 0 || Uri.TryCreate(adr.endpoint, UriKind.Absolute, out _))
-					.Select(s =>
-					{
-						var cts = new CancellationTokenSource();
-						var task = Connect(s.endpoint, s.port, cts.Token);
-
-						return (task, cts);
-					})
-					.ToArray();
-
-				var timeout = Task.Delay(30000);
-				var completed = await Task.WhenAny(connections.Select(c => c.task).Concat(timeout));
-
-				foreach (var connection in connections)
+				if (_serverAddresses != null)
 				{
-					if (connection.task == completed)
+					var connections = _serverAddresses
+						.Where(adr => adr.port != 0 || Uri.TryCreate(adr.endpoint, UriKind.Absolute, out _))
+						.Select(s =>
+						{
+							var cts = new CancellationTokenSource();
+							var task = Connect(s.endpoint, s.port, cts.Token);
+
+							return (task, cts);
+						})
+						.ToArray();
+
+					var timeout = Task.Delay(30000);
+					var completed = await Task.WhenAny(connections.Select(c => c.task).Concat(timeout));
+
+					foreach (var connection in connections)
 					{
-						continue;
+						if (connection.task == completed)
+						{
+							continue;
+						}
+
+						connection.cts.Cancel();
+						if (connection.task.Status == TaskStatus.RanToCompletion)
+						{
+							connection.task.Result.socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
+						}
 					}
 
-					connection.cts.Cancel();
-					if (connection.task.Status == TaskStatus.RanToCompletion)
+					if (completed == timeout)
 					{
-						connection.task.Result.socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
-					}
-				}
+						if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							this.Log().LogError("Failed to connect to the server (timeout).");
+						}
 
-				if (completed == timeout)
-				{
-					if (this.Log().IsEnabled(LogLevel.Error))
-					{
-						this.Log().LogError("Failed to connect to the server (timeout).");
+						return;
 					}
 
-					return;
+					var connected = ((Task<(Uri endPoint, WebSocket socket)>)completed).Result;
+
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug($"Connected to {connected.endPoint}");
+					}
+
+					_webSocket = connected.socket;
+					await ProcessMessages();
 				}
-
-				var connected = ((Task<(Uri endPoint, WebSocket socket)>)completed).Result;
-
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				else
 				{
-					this.Log().LogDebug($"Connected to {connected.endPoint}");
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().LogWarning($"No server addresses provided, skipping.");
+					}
 				}
-
-				_webSocket = connected.socket;
-				await ProcessMessages();
 			}
 			catch (Exception ex)
 			{
