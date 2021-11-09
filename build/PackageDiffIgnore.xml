@@ -4153,6 +4153,8 @@
 		  <Member fullName="Windows.UI.Composition.Desktop.DesktopWindowTarget" reason="Composition API relocation" />
 		  <Member fullName="Windows.UI.Composition.Core.CompositorController" reason="Composition API relocation" />
 		  <!-- END Composition relocation -->
+		  
+		  <Member fullName="Microsoft.UI.Xaml.Controls.InfoBarPanel" reason="InfoBarPanel has wrong namespace" />
 		</Types>
 		<Methods>
 			<Member
@@ -7458,6 +7460,9 @@
 				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings..ctor(Windows.UI.Xaml.Controls.CommandBar commandBar)"
 				reason="API alignment" />
 
+			<Member
+				fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBar.set_TemplateSettings(Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings value)"
+				reason="Setter is not public in WinUI" />
 
 		  <!-- BEGIN .NET 6 BREAKING CHANGE -->
 		  <Member fullName="System.Void UIKit.UIViewExtensions.SetDimensions(UIKit.UIView view, System.Nullable`1&lt;System.nfloat&gt; width, System.Nullable`1&lt;System.nfloat&gt; height)" reason=".NET 6 RTM breaking change" />
@@ -8525,6 +8530,9 @@
 		  <Member fullName="System.nfloat Uno.UI.ViewHelper::MainScreenScale" reason=".NET 6 RTM breaking change" />
 		  <!-- END .NET 6 BREAKING CHANGE -->
 
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings::IconElementProperty"
+				reason="DPs should be properties" />
 		</Fields>
 		<Properties>
 			<Member
