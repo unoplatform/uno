@@ -452,7 +452,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 							else
 							{
-								if (_generationRunFileInfo.RunInfo.Manager.PreviousRuns.FirstOrDefault(r => r.GetRunFileInfo(_fileUniqueId)?.ComponentCode != null) is var runFileInfo)
+								if (_generationRunFileInfo.RunInfo.Manager.PreviousRuns.FirstOrDefault(r => r.GetRunFileInfo(_fileUniqueId)?.ComponentCode != null) is { } runFileInfo)
 								{
 									var generationRunFileInfo = runFileInfo.GetRunFileInfo(_fileUniqueId);
 
@@ -635,12 +635,30 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			foreach (var reference in _metadataHelper.Compilation.ExternalReferences)
 			{
-				if (!File.Exists(reference.Display))
+				string? GetFilePath()
+				{
+					if(reference is PortableExecutableReference per && File.Exists(per.FilePath))
+					{
+						return per.FilePath;
+					}
+					else if (File.Exists(reference.Display))
+					{
+						return reference.Display;
+					}
+					else
+					{
+						return null;
+					}
+				}
+
+				var referenceFilePath = GetFilePath();
+
+				if (referenceFilePath == null)
 				{
 					throw new InvalidOperationException($"The reference {reference.Display} could not be found in {reference.Display}");
 				}
 
-				using var stream = File.OpenRead(reference.Display!);
+				using var stream = File.OpenRead(referenceFilePath);
 				var asm = Mono.Cecil.AssemblyDefinition.ReadAssembly(stream);
 
 				if (asm.MainModule.HasResources && asm.MainModule.Resources.Any(r => r.Name.EndsWith("upri")))
