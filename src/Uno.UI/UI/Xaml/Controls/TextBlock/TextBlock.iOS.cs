@@ -12,6 +12,10 @@ using Windows.UI.Text;
 using Uno.UI;
 using Windows.UI;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class TextBlock : FrameworkElement, IFontScalable
@@ -132,7 +136,10 @@ namespace Windows.UI.Xaml.Controls
 					// This measures the height correctly, even if the Text is null or empty
 					// This matches Windows where empty TextBlocks still have a height (especially useful when measuring ListView items with no DataContext)
 					var font = UIFontHelper.TryGetFont((float)FontSize, FontWeight, FontStyle, FontFamily);
+
+#pragma warning disable BI1234 // error BI1234: 'UIStringDrawing.StringSize(string, UIFont, CGSize)' is obsolete: 'Starting with ios7.0 use NSString.GetBoundingRect (CGSize, NSStringDrawingOptions, UIStringAttributes, NSStringDrawingContext) instead.'
 					result = (Text ?? NSString.Empty).StringSize(font, size);
+#pragma warning restore BI1234
 				}
 
 				result = result.Add(padding);

@@ -13,6 +13,10 @@ using Windows.UI.Text;
 using Uno.Logging;
 using AppKit;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace Windows.UI
 {
 	internal static class NSFontHelper

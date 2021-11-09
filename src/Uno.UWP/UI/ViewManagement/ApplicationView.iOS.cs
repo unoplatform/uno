@@ -7,6 +7,10 @@ using Uno.Extensions;
 using Uno.Logging;
 using Windows.UI.Core;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace Windows.UI.ViewManagement
 {
 	partial class ApplicationView

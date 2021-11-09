@@ -9,6 +9,7 @@ using Uno.Logging;
 using Uno.UI;
 using Uno.UI.UI.Xaml.Media;
 using static System.Double;
+using ObjCRuntime;
 
 #if __IOS__
 using _Color = UIKit.UIColor;
