@@ -19,6 +19,10 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using Windows.Foundation;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
 	public abstract partial class VirtualizingPanelLayout : UICollectionViewLayout, DependencyObject

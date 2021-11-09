@@ -11,6 +11,10 @@ using AppKit;
 using CoreAnimation;
 using CoreGraphics;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace Windows.UI.Xaml
 {
 	public partial class UIElement : BindableNSView

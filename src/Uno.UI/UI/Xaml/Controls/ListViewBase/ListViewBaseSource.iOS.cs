@@ -22,6 +22,10 @@ using Uno.Logging;
 using Uno.UI.Extensions;
 using Microsoft.Extensions.Logging;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;

@@ -21,6 +21,10 @@ using Uno.UI.UI.Xaml.Controls.Layouter;
 using Uno.UI.Xaml.Input;
 using DraggingEventArgs = UIKit.DraggingEventArgs;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
 	partial class NativeScrollContentPresenter : UIScrollView, DependencyObject, ISetLayoutSlots

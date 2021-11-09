@@ -13,12 +13,22 @@ using static System.Double;
 #if __IOS__
 using _Color = UIKit.UIColor;
 using NativePath = CoreGraphics.CGPath;
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+using NativeSingle = ObjCRuntime.nfloat;
+#else
 using NativeSingle = System.nfloat;
+#endif
 #elif __MACOS__
 using AppKit;
 using _Color = AppKit.NSColor;
 using NativePath = CoreGraphics.CGPath;
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+using NativeSingle = ObjCRuntime.nfloat;
+#else
 using NativeSingle = System.nfloat;
+#endif
 #elif __SKIA__
 using _Color = Windows.UI.Color;
 using NativePath = Windows.UI.Composition.SkiaGeometrySource2D;

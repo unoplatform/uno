@@ -7,6 +7,10 @@ using MonoTouch.UIKit;
 using nfloat = System.Single;
 #endif
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace Windows.UI
 {
 	public static class UIColors

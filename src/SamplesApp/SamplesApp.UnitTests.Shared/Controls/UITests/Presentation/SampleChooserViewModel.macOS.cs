@@ -20,6 +20,10 @@ using Uno.Extensions;
 using Uno.Logging;
 using Microsoft.Extensions.Logging;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace SampleControl.Presentation
 {
 

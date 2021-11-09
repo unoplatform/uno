@@ -8,6 +8,10 @@ using Uno.Logging;
 using Windows.Foundation;
 using UIKit;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
 	public sealed partial class ListViewBaseScrollContentPresenter : IScrollContentPresenter

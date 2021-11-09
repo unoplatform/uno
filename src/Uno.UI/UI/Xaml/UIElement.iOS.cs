@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using UIViewExtensions = UIKit.UIViewExtensions;
+using ObjCRuntime;
 
 namespace Windows.UI.Xaml
 {
