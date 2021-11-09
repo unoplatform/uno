@@ -5,6 +5,10 @@ using CoreAnimation;
 using CoreGraphics;
 using Uno.Extensions;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace Microsoft.UI.Xaml.Media
 {
 	partial class RadialGradientBrush

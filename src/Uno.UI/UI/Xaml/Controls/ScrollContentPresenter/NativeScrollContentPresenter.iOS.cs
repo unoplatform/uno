@@ -20,6 +20,10 @@ using Uno.UI.UI.Xaml.Controls.Layouter;
 using Uno.UI.Xaml.Input;
 using DraggingEventArgs = UIKit.DraggingEventArgs;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 #else

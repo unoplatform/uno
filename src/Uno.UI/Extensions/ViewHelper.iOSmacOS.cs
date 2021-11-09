@@ -9,6 +9,10 @@ using Uno.Extensions;
 using Foundation;
 using CoreGraphics;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 #if __IOS__
 using UIKit;
 using _View = UIKit.UIView;

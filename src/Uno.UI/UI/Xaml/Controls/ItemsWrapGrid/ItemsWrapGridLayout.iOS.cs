@@ -8,6 +8,7 @@ using Foundation;
 using UIKit;
 using CoreGraphics;
 using Uno.UI.Extensions;
+using ObjCRuntime;
 
 namespace Windows.UI.Xaml.Controls
 {

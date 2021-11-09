@@ -16,6 +16,10 @@ using Foundation;
 using UIKit;
 using CoreGraphics;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollViewer : ContentControl, ICustomClippingElement

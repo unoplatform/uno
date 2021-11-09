@@ -20,6 +20,10 @@ using Microsoft.UI;
 using CoreGraphics;
 #endif
 
+#if NET6_0_OR_GREATER && (__IOS__ || __MACOS__)
+using ObjCRuntime;
+#endif
+
 namespace Uno.UI.Toolkit
 {
 #if !NET6_0_OR_GREATER // Moved to the linker definition file

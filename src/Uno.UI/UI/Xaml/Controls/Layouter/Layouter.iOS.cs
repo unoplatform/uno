@@ -14,6 +14,10 @@ using UIKit;
 using CoreGraphics;
 using Uno.Disposables;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
 	abstract partial class Layouter
