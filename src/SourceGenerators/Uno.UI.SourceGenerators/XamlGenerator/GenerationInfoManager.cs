@@ -55,6 +55,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 			}
+
+			if(bool.TryParse(context.GetMSBuildPropertyValue("DesignTimeBuild"), out var designTimeBuild) && designTimeBuild)
+			{
+				_runs.Clear();
+			}
 		}
 	}
 }
