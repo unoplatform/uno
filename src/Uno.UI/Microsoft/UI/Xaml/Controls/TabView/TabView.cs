@@ -1,7 +1,6 @@
-// MUX Reference: TabView.cpp, TabView.h, commit a987a18
-
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference TabView.cpp, commit ed31e13
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 
@@ -67,11 +66,11 @@ namespace Microsoft.UI.Xaml.Controls
 				ctrlf4Accel.ScopeOwner = this;
 				KeyboardAccelerators.Add(ctrlf4Accel);
 
-				m_tabCloseButtonTooltipText = ResourceAccessor.GetLocalizedStringResource(SR_TabViewCloseButtonTooltipWithKA);
+				m_tabCloseButtonTooltipText = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_TabViewCloseButtonTooltipWithKA);
 			}
 			else
 			{
-				m_tabCloseButtonTooltipText = ResourceAccessor.GetLocalizedStringResource(SR_TabViewCloseButtonTooltip);
+				m_tabCloseButtonTooltipText = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_TabViewCloseButtonTooltip);
 			}
 
 			// Ctrl+Tab as a KeyboardAccelerator only works on 19H1+
@@ -813,12 +812,9 @@ namespace Microsoft.UI.Xaml.Controls
 						}
 
 					}
-					// Last item removed, update sizes
-					// The index of the last element is "Size() - 1", but in TabItems, it is already removed.
 					if (TabWidthMode == TabViewWidthMode.Equal)
 					{
-						m_updateTabWidthOnPointerLeave = true;
-						if (args.Index == TabItems.Count)
+						if (!m_pointerInTabstrip || args.Index == TabItems.Count)
 						{
 							UpdateTabWidths(true, false);
 						}
@@ -881,7 +877,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var item = args.Items[0];
 			var tab = FindTabViewItemFromDragItem(item);
-			var myArgs = new TabViewTabDragStartingEventArgs(args.Data, item, tab);
+			var myArgs = new TabViewTabDragStartingEventArgs(args, item, tab);
 
 			TabDragStarting?.Invoke(this, myArgs);
 		}
@@ -900,7 +896,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var item = args.Items[0];
 			var tab = FindTabViewItemFromDragItem(item);
-			var myArgs = new TabViewTabDragCompletedEventArgs(args.DropResult, item, tab);
+			var myArgs = new TabViewTabDragCompletedEventArgs(args, item, tab);
 
 			TabDragCompleted?.Invoke(this, myArgs);
 

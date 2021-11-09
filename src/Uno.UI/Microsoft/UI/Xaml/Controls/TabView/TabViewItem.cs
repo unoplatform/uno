@@ -24,10 +24,16 @@ using Windows.UI.Input;
 
 namespace Microsoft.UI.Xaml.Controls
 {
+	/// <summary>
+	/// Represents a single tab within a TabView.
+	/// </summary>
 	public partial class TabViewItem : ListViewItem
 	{
 		private const string c_overlayCornerRadiusKey = "OverlayCornerRadius";
 
+		/// <summary>
+		/// Initializes a new instance of the TabViewItem class.
+		/// </summary>
 		public TabViewItem()
 		{
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_TabViewItem);

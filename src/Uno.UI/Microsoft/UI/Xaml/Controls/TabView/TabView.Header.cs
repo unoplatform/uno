@@ -64,7 +64,6 @@ namespace Microsoft.UI.Xaml.Controls
 #if HAS_UNO
 		//TODO Uno specific: Watches scrollable width to update visibility of scroll buttons.
 		private readonly SerialDisposable m_ScrollViewerScrollableWidthPropertyChangedRevoker = new SerialDisposable();
-
 #endif
 	}
 }
