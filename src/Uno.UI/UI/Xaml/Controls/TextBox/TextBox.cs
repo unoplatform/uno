@@ -22,6 +22,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Xaml.Input;
+using Windows.Devices.Input;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -712,15 +713,23 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnPointerPressed(args);
 
-			args.Handled = true;
+			if (ShouldFocusOnPointerPressed(args))
+			{
+				Focus(FocusState.Pointer);
+			}
 
-			Focus(FocusState.Pointer);
+			args.Handled = true;
 		}
 
 		/// <inheritdoc />
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
 		{
 			base.OnPointerReleased(args);
+
+			if (!ShouldFocusOnPointerPressed(args))
+			{
+				Focus(FocusState.Pointer);
+			}
 
 			args.Handled = true;
 		}
@@ -883,5 +892,9 @@ namespace Windows.UI.Xaml.Controls
 		partial void SelectAllPartial();
 
 		internal override bool CanHaveChildren() => true;
+
+		private bool ShouldFocusOnPointerPressed(PointerRoutedEventArgs args) =>
+			// For mouse and pen, the TextBox should focus on pointer press, for other input types on release
+			args.Pointer.PointerDeviceType != PointerDeviceType.Touch;
 	}
 }
