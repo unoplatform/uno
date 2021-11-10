@@ -361,7 +361,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 		private static void SubscribeToEvent(object instance, object rootInstance, EventInfo eventInfo, string eventHandlerName, bool supportsParameterless)
 		{
-			var eventParamCount = eventInfo.EventHandlerType.GetMethod("Invoke").GetParameters().Length;
+			var eventParamCount = eventInfo.EventHandlerType?.GetMethod("Invoke")?.GetParameters().Length ?? throw new InvalidOperationException();
 			var rootType = rootInstance.GetType();
 			var targetMethod = GetMethod(eventHandlerName, eventParamCount, rootType);
 			if (targetMethod != null)
@@ -372,11 +372,13 @@ namespace Windows.UI.Xaml.Markup.Reader
 			else if (supportsParameterless && GetMethod(eventHandlerName, 0, rootType) is { } parameterlessMethod && eventParamCount <= 2)
 			{
 				var wrapper = new EventHandlerWrapper(rootInstance, parameterlessMethod);
+				var wrappedHandler = (typeof(EventHandlerWrapper).GetMethod(eventParamCount == 2 ? nameof(EventHandlerWrapper.Handler2) : nameof(EventHandlerWrapper.Handler1)))
+					?? throw new InvalidOperationException();
 				var handler = Delegate.CreateDelegate(
 					eventInfo.EventHandlerType,
 					wrapper,
-					typeof(EventHandlerWrapper).GetMethod(eventParamCount == 2 ? nameof(EventHandlerWrapper.Handler2) : nameof(EventHandlerWrapper.Handler1))
-				);
+					wrappedHandler
+				); ;
 				eventInfo.AddEventHandler(instance, handler);
 			}
 		}
