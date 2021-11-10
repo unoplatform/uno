@@ -27,6 +27,7 @@ namespace Uno.UI.Tests
 				builder.AddConsole(o => o.LogToStandardErrorThreshold = logLevel);
 			});
 
+			Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
 			Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = factory;
 		}
 	}

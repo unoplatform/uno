@@ -30,7 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.5" PrivateAssets="all" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" PrivateAssets="all" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
