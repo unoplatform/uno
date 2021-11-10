@@ -112,6 +112,12 @@ namespace Windows.UI.Xaml.Markup.Reader
         private static PropertyInfo? GetPropertyByName(Type? type, string propertyName) 
             => type?.GetProperties().FirstOrDefault(p => p.Name == propertyName);
 
+		public EventInfo? GetEventByName(XamlType declaringType, string eventName)
+			=> GetEventByName(FindType(declaringType), eventName);
+
+		private static EventInfo? GetEventByName(Type? type, string eventName)
+				=> type?.GetEvents().FirstOrDefault(p => p.Name == eventName);
+
         private PropertyInfo? SourceFindContentProperty(Type? elementType)
         {
 			if(elementType == null)

@@ -43,7 +43,7 @@ namespace Uno.UI.RemoteControl.HotReload
 							break;
 #endif
                             case ContentControl content:
-                                content.Content = XamlReader.Load(fileReload.Content);
+                                content.Content = XamlReader.LoadUsingXClass(fileReload.Content);
                                 break;
                         }
 					}

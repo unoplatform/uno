@@ -797,7 +797,39 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		}
 
 		[TestMethod]
-		public void When_Color_Thickness_GridLength_As_String()
+		public void When_Event_Handler()
+		{
+			var s = GetContent(nameof(When_Event_Handler));
+			var r = new When_Event_Handler();
+			Windows.UI.Xaml.Markup.XamlReader.LoadUsingComponent(s, r);
+
+			var button1 = r.FindName("Button1") as Button;
+			button1.RaiseClick();
+			Assert.AreEqual(1, r.Handler1Count);
+
+			var button2 = r.FindName("Button2") as Button;
+			button2.RaiseClick();
+			Assert.AreEqual(1, r.Handler2Count);
+		}
+
+		[TestMethod]
+		public void When_Event_Handler_xBind()
+		{
+			var s = GetContent(nameof(When_Event_Handler_xBind));
+			var r = new When_Event_Handler_xBind();
+			Windows.UI.Xaml.Markup.XamlReader.LoadUsingComponent(s, r);
+
+			var button1 = r.FindName("Button1") as Button;
+			button1.RaiseClick();
+			Assert.AreEqual(1, r.Handler1Count);
+
+			var button2 = r.FindName("Button2") as Button;
+			button2.RaiseClick();
+			Assert.AreEqual(1, r.Handler2Count);
+		}
+
+		[TestMethod]
+		public void When_Brush_And_StringColor()
 		{
 			var s = GetContent(nameof(When_Color_Thickness_GridLength_As_String));
 			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as ContentControl;

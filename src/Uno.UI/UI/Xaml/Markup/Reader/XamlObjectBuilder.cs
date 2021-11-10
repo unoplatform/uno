@@ -59,18 +59,18 @@ namespace Windows.UI.Xaml.Markup.Reader
 			TypeResolver = new XamlTypeResolver(_fileDefinition);
 		}
 
-		internal object? Build(object? component = null)
+		internal object? Build(object? component = null, bool createInstanceFromXClass = false)
 		{
 			var topLevelControl = _fileDefinition.Objects.First();
 
-			var instance = LoadObject(topLevelControl, component);
+			var instance = LoadObject(topLevelControl, rootInstance: null, component: component, createInstanceFromXClass: createInstanceFromXClass);
 
 			ApplyPostActions(instance);
 
 			return instance;
 		}
 
-		private object? LoadObject(XamlObjectDefinition? control, object? component = null)
+		private object? LoadObject(XamlObjectDefinition? control, object? rootInstance, object? component = null, bool createInstanceFromXClass = false)
 		{
 			if (control == null)
 			{
@@ -87,6 +87,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 			var type = TypeResolver.FindType(control.Type);
 			var classMember = control.Members.FirstOrDefault(m => m.Member.Name == "Class" && m.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace);
+
+			if (createInstanceFromXClass && TypeResolver.FindType(classMember?.Value?.ToString()) is { } classType)
+			{
+				return Activator.CreateInstance(classType);
+			}
 
 			if (type == null)
 			{
@@ -105,7 +110,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					var contentOwner = unknownContent;
 
-					return LoadObject(contentOwner?.Objects.FirstOrDefault()) as _View;
+					return LoadObject(contentOwner?.Objects.FirstOrDefault(), rootInstance: rootInstance) as _View;
 				};
 
 				return Activator.CreateInstance(type, builder);
@@ -120,7 +125,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 					{
 						var key = xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "Key")?.Value;
 
-						var instance = LoadObject(xamlObjectDefinition);
+						var instance = LoadObject(xamlObjectDefinition, rootInstance: rootInstance);
 
 						if (key != null)
 						{
@@ -149,8 +154,8 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 			else
 			{
-				var classType = TypeResolver.FindType(classMember?.Value?.ToString());
 				var instance = component ?? Activator.CreateInstance(type)!;
+				rootInstance ??= instance;
 
 				IDisposable? TryProcessStyle()
 				{
@@ -186,7 +191,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					foreach (var member in control.Members)
 					{
-						ProcessNamedMember(control, instance, member);
+						ProcessNamedMember(control, instance, member, rootInstance);
 					}
 				}
 
@@ -243,7 +248,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			return value;
 		}
 
-		private void ProcessNamedMember(XamlObjectDefinition control, object instance, XamlMemberDefinition member)
+		private void ProcessNamedMember(XamlObjectDefinition control, object instance, XamlMemberDefinition member, object rootInstance)
 		{
 			// Exclude attached properties, must be set in the extended apply section.
 			// If there is no type attached, this can be a binding.
@@ -255,11 +260,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				if (instance is TextBlock textBlock)
 				{
-					ProcessTextBlock(control, textBlock, member);
+					ProcessTextBlock(control, textBlock, member, rootInstance);
 				}
 				else if (instance is Documents.Span span && member.Member.Name == "_UnknownContent")
 				{
-					ProcessSpan(control, span, member);
+					ProcessSpan(control, span, member, rootInstance);
 				}
 				else if (GetMemberProperty(control, member) is PropertyInfo propertyInfo)
 				{
@@ -292,7 +297,21 @@ namespace Windows.UI.Xaml.Markup.Reader
 						}
 						else
 						{
-							ProcessMemberElements(instance, member, propertyInfo);
+							ProcessMemberElements(instance, member, propertyInfo, rootInstance);
+						}
+					}
+				}
+				else if (GetMemberEvent(control, member) is EventInfo eventInfo)
+				{
+					if (member.Value is string eventHandlerName)
+					{
+						SubscribeToEvent(instance, rootInstance, eventInfo, eventHandlerName, false);
+					}
+					else if (member.Objects.FirstOrDefault() is { } memberObject && memberObject.Type.Name == "Bind")
+					{
+						if (memberObject.Members.FirstOrDefault() is { } bindMember && bindMember.Value is string xBindEventHandlerName)
+						{
+							SubscribeToEvent(instance, rootInstance, eventInfo, xBindEventHandlerName, true);
 						}
 					}
 				}
@@ -319,7 +338,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 						}
 						else if (instance is DependencyObject dependencyObject)
 						{
-							ProcessMemberElements(dependencyObject, member, dependencyProperty);
+							ProcessMemberElements(dependencyObject, member, dependencyProperty, rootInstance);
 						}
 						else
 						{
@@ -340,13 +359,40 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 		}
 
-		private void ProcessSpan(XamlObjectDefinition control, Span span, XamlMemberDefinition member)
+		private static void SubscribeToEvent(object instance, object rootInstance, EventInfo eventInfo, string eventHandlerName, bool supportsParameterless)
+		{
+			var eventParamCount = eventInfo.EventHandlerType.GetMethod("Invoke").GetParameters().Length;
+			var rootType = rootInstance.GetType();
+			var targetMethod = GetMethod(eventHandlerName, eventParamCount, rootType);
+			if (targetMethod != null)
+			{
+				var handler = targetMethod.CreateDelegate(eventInfo.EventHandlerType, rootInstance);
+				eventInfo.AddEventHandler(instance, handler);
+			}
+			else if (supportsParameterless && GetMethod(eventHandlerName, 0, rootType) is { } parameterlessMethod && eventParamCount <= 2)
+			{
+				var wrapper = new EventHandlerWrapper(rootInstance, parameterlessMethod);
+				var handler = Delegate.CreateDelegate(
+					eventInfo.EventHandlerType,
+					wrapper,
+					typeof(EventHandlerWrapper).GetMethod(eventParamCount == 2 ? nameof(EventHandlerWrapper.Handler2) : nameof(EventHandlerWrapper.Handler1))
+				);
+				eventInfo.AddEventHandler(instance, handler);
+			}
+		}
+
+		private static MethodInfo? GetMethod(string methodName, int paramCount, Type type)
+			=> type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+			.Where(m => m.Name == methodName && m.GetParameters().Length == paramCount)
+			.FirstOrDefault();
+
+		private void ProcessSpan(XamlObjectDefinition control, Span span, XamlMemberDefinition member, object rootInstance)
 		{
 			if (member.Objects.Count != 0)
 			{
 				foreach (var node in member.Objects)
 				{
-					if (LoadObject(node) is Inline inline)
+					if (LoadObject(node, rootInstance) is Inline inline)
 					{
 						span.Inlines.Add(inline);
 					}
@@ -384,7 +430,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 		}
 
-		private void ProcessTextBlock(XamlObjectDefinition control, TextBlock instance, XamlMemberDefinition member)
+		private void ProcessTextBlock(XamlObjectDefinition control, TextBlock instance, XamlMemberDefinition member, object rootInstance)
 		{
 			if (member.Objects.Any())
 			{
@@ -396,7 +442,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					foreach (var node in member.Objects)
 					{
-						if (LoadObject(node) is Inline inline)
+						if (LoadObject(node, rootInstance) is Inline inline)
 						{
 							instance.Inlines.Add(inline);
 						}
@@ -409,7 +455,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 		}
 
-		private void ProcessMemberElements(DependencyObject instance, XamlMemberDefinition member, DependencyProperty property)
+		private void ProcessMemberElements(DependencyObject instance, XamlMemberDefinition member, DependencyProperty property, object rootInstance)
 		{
 			if (TypeResolver.IsCollectionOrListType(property.Type))
 			{
@@ -427,17 +473,17 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 				var collection = BuildInstance();
 
-				AddCollectionItems(collection, member.Objects);
+				AddCollectionItems(collection, member.Objects, rootInstance);
 
 				instance.SetValue(property, collection);
 			}
 			else
 			{
-				instance.SetValue(property, LoadObject(member.Objects.First()));
+				instance.SetValue(property, LoadObject(member.Objects.First(), rootInstance: rootInstance));
 			}
 		}
 
-		private void ProcessMemberElements(object instance, XamlMemberDefinition member, PropertyInfo propertyInfo)
+		private void ProcessMemberElements(object instance, XamlMemberDefinition member, PropertyInfo propertyInfo, object rootInstance)
 		{
 			if (TypeResolver.IsCollectionOrListType(propertyInfo.PropertyType))
 			{
@@ -449,7 +495,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 					foreach (var child in member.Objects)
 					{
-						var item = LoadObject(child);
+						var item = LoadObject(child, rootInstance: rootInstance);
 
 						var resourceKey = GetResourceKey(child);
 						var resourceTargetType = GetResourceTargetType(child);
@@ -476,7 +522,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					var collection = Activator.CreateInstance(collectionType!);
 
-					AddCollectionItems(collection!, member.Objects);
+					AddCollectionItems(collection!, member.Objects, rootInstance);
 
 					GetPropertySetter(propertyInfo).Invoke(instance, new[] { collection });
 				}
@@ -491,7 +537,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 					if (propertyInstance != null)
 					{
-						AddCollectionItems(propertyInstance, member.Objects);
+						AddCollectionItems(propertyInstance, member.Objects, rootInstance);
 					}
 					else
 					{
@@ -505,7 +551,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 			else
 			{
-				GetPropertySetter(propertyInfo).Invoke(instance, new[] { LoadObject(member.Objects.First()) });
+				GetPropertySetter(propertyInfo).Invoke(instance, new[] { LoadObject(member.Objects.First(), rootInstance: rootInstance) });
 			}
 		}
 
@@ -778,14 +824,14 @@ namespace Windows.UI.Xaml.Markup.Reader
 				)
 				.Any();
 
-		private void AddCollectionItems(object collectionInstance, IEnumerable<XamlObjectDefinition> nonBindingObjects)
+		private void AddCollectionItems(object collectionInstance, IEnumerable<XamlObjectDefinition> nonBindingObjects, object rootInstance)
 		{
 			var addMethod = collectionInstance.GetType().GetMethod("Add")
 				?? throw new InvalidOperationException($"The type {collectionInstance.GetType()} contains an Add method");
 
 			foreach (var child in nonBindingObjects)
 			{
-				var item = LoadObject(child);
+				var item = LoadObject(child, rootInstance: rootInstance);
 
 				addMethod.Invoke(collectionInstance, new[] { item });
 			}
@@ -824,6 +870,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				return TypeResolver.GetPropertyByName(control.Type, member.Member.Name);
 			}
+		}
+
+		private EventInfo? GetMemberEvent(XamlObjectDefinition control, XamlMemberDefinition member)
+		{
+			return TypeResolver.GetEventByName(control.Type, member.Member.Name);
 		}
 
 		private object? BuildLiteralValue(XamlMemberDefinition member, Type? propertyType = null)
@@ -897,6 +948,28 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					bindingSubject.ElementInstance = element;
 				}
+			}
+		}
+
+		private class EventHandlerWrapper
+		{
+			private readonly object _instance;
+			private readonly MethodInfo _method;
+
+			public EventHandlerWrapper(object instance, MethodInfo method)
+			{
+				_instance = instance;
+				_method = method;
+			}
+
+			public void Handler2(object sender, object args)
+			{
+				_method.Invoke(_instance, Array.Empty<object>());
+			}
+
+			public void Handler1(object sender)
+			{
+				_method.Invoke(_instance, Array.Empty<object>());
 			}
 		}
 	}
