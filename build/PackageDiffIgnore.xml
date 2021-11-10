@@ -7327,6 +7327,9 @@
 		  <Member fullName="System.nfloat Uno.UI.ViewHelper.StackSubViews(AppKit.NSView thisView, System.Single topPadding, System.Single spaceBetweenElements)" reason=".NET 6 RTM breaking change" />
 		  <Member fullName="System.nfloat Uno.UI.Extensions.FontWeightExtensions.ToNSFontWeight(Windows.UI.Text.FontWeight fontWeight)" reason=".NET 6 RTM breaking change" />
 		  <!-- END .NET 6 BREAKING CHANGE -->
+
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TabViewItem.set_TabViewTemplateSettings(Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings value)" reason="Setter not public in WinUI" />
+		  
 		</Methods>
 		<Events>
 			<Member
