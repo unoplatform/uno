@@ -12,6 +12,7 @@ using Uno.Helpers.Theming;
 using Windows.UI.ViewManagement;
 using Uno.Extensions;
 using Microsoft.Extensions.Logging;
+using Windows.UI.Xaml.Data;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -36,7 +37,6 @@ using AppKit;
 #else
 using View = Windows.UI.Xaml.UIElement;
 using ViewGroup = Windows.UI.Xaml.UIElement;
-using Windows.UI.Xaml.Data;
 #endif
 
 namespace Windows.UI.Xaml
