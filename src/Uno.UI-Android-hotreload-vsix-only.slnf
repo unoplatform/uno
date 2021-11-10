@@ -32,7 +32,9 @@
       "Uno.UWP\\Uno.csproj",
       "UnoItemTemplate\\UnoItemTemplate.csproj",
       "Uno.UI.RemoteControl.Server.Processors\\Uno.UI.RemoteControl.Server.Processors.csproj",
-      "Uno.UI.RemoteControl.Server\\Uno.UI.RemoteControl.Server.csproj"
+      "Uno.UI.RemoteControl.Server\\Uno.UI.RemoteControl.Server.csproj",
+      "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",
+      "Uno.UI.Adapter.Microsoft.Logging.Extensions\\Uno.UI.Adapter.Microsoft.Logging.Extensions.csproj"
     ]
   }
 }

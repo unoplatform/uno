@@ -20,6 +20,8 @@
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
       "T4Generator\\T4Generator.csproj",
+      "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",
+      "Uno.UI.Adapter.Microsoft.Logging.Extensions\\Uno.UI.Adapter.Microsoft.Logging.Extensions.csproj",
       "Uno.Foundation\\Uno.Foundation.Skia.csproj",
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.Skia.csproj",
       "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.Skia.csproj",

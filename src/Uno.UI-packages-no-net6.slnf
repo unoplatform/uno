@@ -26,6 +26,8 @@
       "T4Generator\\T4Generator.csproj",
       "UWPUsageStatsGenerator\\UWPUsageStatsGenerator.csproj",
       "Uno.Analyzers.Tests\\Uno.Analyzers.Tests.csproj",
+      "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",
+      "Uno.UI.Adapter.Microsoft.Logging.Extensions\\Uno.UI.Adapter.Microsoft.Logging.Extensions.csproj",
       "Uno.Analyzers\\Uno.Analyzers.csproj",
       "Uno.Foundation.Runtime.WebAssembly\\Uno.Foundation.Runtime.WebAssembly.csproj",
       "Uno.Foundation\\Uno.Foundation.Skia.csproj",
