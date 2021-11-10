@@ -61,12 +61,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						new[] { ("Duration", elapsed.TotalSeconds) }
 					);
 				}
+#pragma warning disable CS0168 // unused parameter
 				catch (Exception e)
 				{
 #if DEBUG
 					Console.WriteLine($"Telemetry failure: {e}");
 #endif
 				}
+#pragma warning restore CS0168 // unused parameter
 			}
 		}
 
@@ -86,12 +88,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						new[] { ("Duration", elapsed.TotalSeconds) }
 					);
 				}
+#pragma warning disable CS0168 // unused parameter
 				catch (Exception telemetryException)
 				{
 #if DEBUG
 					Console.WriteLine($"Telemetry failure: {telemetryException}");
 #endif
 				}
+#pragma warning restore CS0168 // unused parameter
 			}
 		}
 
@@ -121,12 +125,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						new[] { ("FileCount", (double)files.Length) }
 					);
 				}
+#pragma warning disable CS0168 // unused parameter
 				catch (Exception telemetryException)
 				{
 #if DEBUG
 					Console.Write($"Telemetry failure: {telemetryException}");
 #endif
 				}
+#pragma warning restore CS0168 // unused parameter
 			}
 		}
 
