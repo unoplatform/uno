@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.Logging;
 using Uno.Extensions;
 using System;
 using System.Collections.Generic;

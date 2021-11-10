@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
 using Uno.UI;
 using Windows.Foundation;
@@ -18,6 +18,7 @@ using Uno.UI.Extensions;
 using System.Collections.Specialized;
 using Uno.UI.Xaml.Controls;
 using DirectUI;
+using Uno.Foundation.Logging;
 #if __MACOS__
 using AppKit;
 #elif __IOS__

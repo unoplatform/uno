@@ -3,7 +3,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using AppKit;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
 using Windows.Devices.Input;
 using Windows.Foundation;

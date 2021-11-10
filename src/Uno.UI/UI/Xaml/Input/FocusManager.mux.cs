@@ -5,7 +5,7 @@
 #nullable enable
 
 using System;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
@@ -19,6 +19,7 @@ using Uno.UI.Xaml.Rendering;
 using Uno.UI.Xaml.Core.Rendering;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 using Windows.UI.Core;
+using Uno.Foundation.Logging;
 
 //TODO:MZ: Handle parameters in/out
 
@@ -3181,7 +3182,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().LogTrace($"XY focus entered begin for direction {direction}");
+				this.Log().Trace($"XY focus entered begin for direction {direction}");
 			}
 		}
 
@@ -3189,7 +3190,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().LogTrace($"XY focus entered end");
+				this.Log().Trace($"XY focus entered end");
 			}
 		}
 
@@ -3197,7 +3198,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().LogTrace("Update focus begin");
+				this.Log().Trace("Update focus begin");
 			}
 		}
 
@@ -3205,7 +3206,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().LogTrace($"Did not find XY focus from {focusedElement} in {direction}");
+				this.Log().Trace($"Did not find XY focus from {focusedElement} in {direction}");
 			}
 		}
 
@@ -3213,7 +3214,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().LogTrace($"Update focus ended for {focusedElement}");
+				this.Log().Trace($"Update focus ended for {focusedElement}");
 			}
 		}
 

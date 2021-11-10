@@ -20,7 +20,8 @@ using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Automation.Peers;
 using Uno;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 
 #if XAMARIN_IOS
 using UIKit;

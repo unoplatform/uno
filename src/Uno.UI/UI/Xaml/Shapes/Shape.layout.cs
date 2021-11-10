@@ -6,7 +6,7 @@ using System.Linq;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using static System.Double;
 
@@ -243,7 +243,7 @@ namespace Windows.UI.Xaml.Shapes
 
 			if (NativeSingle.IsInfinity(pathBounds.Right) || NativeSingle.IsInfinity(pathBounds.Bottom))
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Ignoring path with invalid bounds {pathBounds}");
 				}
@@ -359,7 +359,7 @@ namespace Windows.UI.Xaml.Shapes
 
 			if (NativeSingle.IsInfinity(pathBounds.Right) || NativeSingle.IsInfinity(pathBounds.Bottom))
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Ignoring path with invalid bounds {pathBounds}");
 				}

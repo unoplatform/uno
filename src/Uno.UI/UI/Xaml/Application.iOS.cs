@@ -9,8 +9,9 @@ using ObjCRuntime;
 using Windows.Graphics.Display;
 using Uno.UI.Services;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
+
 using Windows.UI.Core;
+using Uno.Foundation.Logging;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;

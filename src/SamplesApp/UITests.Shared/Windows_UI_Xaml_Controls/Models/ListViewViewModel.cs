@@ -10,7 +10,6 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Uno;
 using Uno.Extensions;
-using Uno.Logging;
 using Uno.UI.Samples.UITests.Helpers;
 
 using ICommand = System.Windows.Input.ICommand;
@@ -21,6 +20,8 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 	[Bindable]
 	public class ListViewViewModel : ViewModelBase
 	{
+		private Uno.Foundation.Logging.Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Factory.CreateLogger(typeof(ListViewViewModel));
+
 		private static readonly object[] RandomValues = new object[] { null, new object(), 0, -1, 0, 0.5, 1, "", " ", "test", 'a', ' ', new string[] { "A", "B", "C" }, DateTime.Now };
 		private object[] _randomItems = new object[0];
 		private string _newInput = "1,1,2,2,3,3";
@@ -114,7 +115,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 
 		private void ExecuteDoSomething()
 		{
-			this.Log().Error("============= Item Clicked");
+			_log.Error("============= Item Clicked");
 		}
 
 		private static string[] GetSampleItems()
@@ -146,7 +147,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 		private void ExecuteVaryWidth()
 		{
 			var newWidth = (new Random()).NextDouble() * 100d + 300d;
-			this.Log().Warn($"Changing {nameof(VariableWidth)} to {newWidth}");
+			_log.Warn($"Changing {nameof(VariableWidth)} to {newWidth}");
 			VariableWidth =  newWidth;
 		}
 

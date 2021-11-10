@@ -4,9 +4,9 @@ using System.Text;
 using Windows.Foundation;
 using SkiaSharp;
 using Uno.Extensions;
-using Uno.Logging;
 using WUX = Windows.UI.Xaml;
 using Uno.UI.Runtime.Skia.Native;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -38,7 +38,7 @@ namespace Uno.UI.Runtime.Skia
 		{
 			int width, height;
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Trace))
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
 				this.Log().Trace($"Render {renderCount++}");
 			}

@@ -11,7 +11,7 @@ using UIKit;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 
 #if NET6_0_OR_GREATER

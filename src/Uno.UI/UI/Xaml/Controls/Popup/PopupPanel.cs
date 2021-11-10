@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
 using Uno.UI;
 using Windows.Foundation;
@@ -10,6 +10,7 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Uno.UI.DataBinding;
+using Uno.Foundation.Logging;
 
 #if XAMARIN_IOS
 using UIKit;

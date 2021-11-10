@@ -28,12 +28,16 @@ using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Newtonsoft.Json;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Samples.Tests
 {
 	public sealed partial class UnitTestsControl : UserControl
 	{
+#pragma warning disable CS0109
+		private new readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(UnitTestsControl));
+#pragma warning restore CS0109
+
 		private const StringComparison StrComp = StringComparison.InvariantCultureIgnoreCase;
 		private Task _runner;
 		private CancellationTokenSource _cts = new CancellationTokenSource();
@@ -367,7 +371,7 @@ namespace Uno.UI.Samples.Tests
 				}
 				catch (Exception e)
 				{
-					this.Log().Error("Failed to restore runtime tests config", e);
+					_log.Error("Failed to restore runtime tests config", e);
 				}
 			}
 

@@ -9,7 +9,6 @@ using System.Xml;
 using Uno.Roslyn;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
-using Uno.Logging;
 using Uno.UI.SourceGenerators.Telemetry;
 
 #if NETFRAMEWORK
@@ -40,10 +39,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_telemetry = new Telemetry.Telemetry(isTelemetryOptout);
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
-			{
-				this.Log().InfoFormat($"Telemetry enabled: {_telemetry.Enabled}");
-			}
+#if DEBUG
+			Console.WriteLine($"Telemetry enabled: {_telemetry.Enabled}");
+#endif
 		}
 
 		private bool IsTelemetryEnabled => _telemetry?.Enabled ?? false;
@@ -65,10 +63,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 				catch (Exception e)
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-					{
-						this.Log().Debug($"Telemetry failure: {e}");
-					}
+#if DEBUG
+					Console.WriteLine($"Telemetry failure: {e}");
+#endif
 				}
 			}
 		}
@@ -91,10 +88,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 				catch (Exception telemetryException)
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-					{
-						this.Log().Debug($"Telemetry failure: {telemetryException}");
-					}
+#if DEBUG
+					Console.WriteLine($"Telemetry failure: {telemetryException}");
+#endif
 				}
 			}
 		}
@@ -127,10 +123,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 				catch (Exception telemetryException)
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-					{
-						this.Log().Debug($"Telemetry failure: {telemetryException}");
-					}
+#if DEBUG
+					Console.Write($"Telemetry failure: {telemetryException}");
+#endif
 				}
 			}
 		}

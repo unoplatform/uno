@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI.DataBinding;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Linq;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Data;
@@ -210,7 +210,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 			else
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Failed to find target {Storyboard.GetTargetName(this)} on {this.GetParent()?.GetType()}");
 				}
@@ -255,7 +255,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// </summary>
 		protected void SetValue(object value)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat(
 					"Setting [{0}] to [{1} / {2}] current {3:X8}/{4}={5}",
@@ -275,7 +275,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// </summary>
 		protected void ClearValue()
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat("Clearing [{0} / {1}]", Storyboard.GetTargetName(this), Storyboard.GetTargetProperty(this));
 			}

@@ -1,10 +1,11 @@
 ﻿using Android.Views;
-using Microsoft.Extensions.Logging;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 

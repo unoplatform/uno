@@ -11,7 +11,8 @@ using Windows.ApplicationModel;
 using Uno.Helpers.Theming;
 using Windows.UI.ViewManagement;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Data;
 
 #if HAS_UNO_WINUI

@@ -1,9 +1,9 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using DateTimeOffset = System.DateTimeOffset;
 

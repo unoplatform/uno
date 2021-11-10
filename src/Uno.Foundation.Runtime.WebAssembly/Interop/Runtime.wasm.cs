@@ -11,12 +11,13 @@ using Uno.Extensions;
 using Uno.Foundation.Interop;
 using System.Text;
 using Uno.Diagnostics.Eventing;
-using Microsoft.Extensions.Logging;
-using Uno.Logging;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Foundation.Runtime.WebAssembly.Interop;
+using Uno.Foundation.Logging;
+using System.Globalization;
+using Uno.Foundation.Runtime.WebAssembly.Helpers;
 
 namespace Uno.Foundation
 {
@@ -24,7 +25,7 @@ namespace Uno.Foundation
 	{
 		private static Dictionary<string, IntPtr> MethodMap = new Dictionary<string, IntPtr>();
 
-		private static readonly Lazy<ILogger> _logger = new Lazy<ILogger>(() => typeof(WebAssemblyRuntime).Log());
+		private static readonly Logger _logger = typeof(WebAssemblyRuntime).Log();
 
 		public static bool IsWebAssembly => PlatformHelper.IsWebAssembly;
 
@@ -249,9 +250,9 @@ namespace Uno.Foundation
 
 		private static string InnerInvokeJS(String str)
 		{
-			if (_logger.Value.IsEnabled(LogLevel.Debug))
+			if (_logger.IsEnabled(LogLevel.Debug))
 			{
-				_logger.Value.Debug("InvokeJS:" + str);
+				_logger.Debug("InvokeJS:" + str);
 			}
 
 			string result;
@@ -348,7 +349,7 @@ namespace Uno.Foundation
 				"const __f = ()=>",
 				promiseCode,
 				";\nUno.UI.Interop.AsyncInteropHelper.Invoke(",
-				handle.ToStringInvariant(),
+				handle.ToString(CultureInfo.InvariantCulture),
 				", __f);"
 			};
 

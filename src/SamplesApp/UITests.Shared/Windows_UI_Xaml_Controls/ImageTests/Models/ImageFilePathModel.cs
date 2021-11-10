@@ -9,10 +9,11 @@ using Windows.UI.Xaml.Media;
 using System.IO;
 using Windows.UI;
 using Uno.Extensions;
-using Uno.Logging;
 using System.ComponentModel;
 using Windows.UI.Core;
 using Uno.UI.Samples.UITests.Helpers;
+using Uno.Foundation.Logging;
+
 #if __IOS__
 using UIKit;
 using CoreGraphics;
@@ -32,6 +33,10 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 {
 	public class ImageFilePathModel : ViewModelBase
 	{
+#pragma warning disable CS0109
+		private new readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(ImageFilePathModel));
+#pragma warning restore CS0109
+
 #if HAS_UNO
 		private static readonly Size ImageSize = new Size(200, 200); 
 #endif
@@ -76,7 +81,7 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 #if HAS_UNO && !__WASM__ && !__SKIA__ && !__MACOS__
 			var bitmap = await CreateBitmap();
 
-			this.Log().Warn(bitmap.ToString());
+			_log.Warn(bitmap.ToString());
 
 			var path = await StoreFile(bitmap);
 			Uri uri;

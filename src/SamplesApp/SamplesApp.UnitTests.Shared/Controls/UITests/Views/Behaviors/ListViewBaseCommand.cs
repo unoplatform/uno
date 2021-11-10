@@ -1,8 +1,8 @@
 ﻿using System.Windows.Input;
 using System.Runtime.CompilerServices;
-using Uno.Extensions;
-using Uno.Logging;
 using Uno.UI.Samples.Helper;
+using Uno.Foundation.Logging;
+using Uno.Extensions;
 
 #if NETFX_CORE
 using Windows.ApplicationModel.Store;
@@ -26,6 +26,8 @@ namespace Uno.UI.Samples.Behaviors
 
 	public static class ListViewBaseCommand
 	{
+		private static readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(ListViewBaseCommand));
+
 		private static readonly ConditionalWeakTable<ListViewBase, ItemClickEventHandler> _registeredItemClickEventHandler = new ConditionalWeakTable<ListViewBase, ItemClickEventHandler>();
 
 		#region Attached Properties
@@ -65,7 +67,7 @@ namespace Uno.UI.Samples.Behaviors
 			{
 				if (!listView.IsItemClickEnabled)
 				{
-					sender.Log().Warn("IsItemClickEnabled is not enabled on the associated list. This must be enabled to make this behavior work");
+					_log.Warn("IsItemClickEnabled is not enabled on the associated list. This must be enabled to make this behavior work");
 				}
 
 				// Be sure to not have multiples handlers for the same listview command if command change.

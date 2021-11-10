@@ -10,7 +10,7 @@ using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 #if NETCOREAPP
 using Microsoft.UI;

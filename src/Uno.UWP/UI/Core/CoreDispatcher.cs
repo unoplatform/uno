@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Runtime.CompilerServices;
 
 namespace Windows.UI.Core
@@ -175,7 +175,7 @@ namespace Windows.UI.Core
 				}
 				else
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Error("Invalid operation");
 					}
@@ -308,7 +308,7 @@ namespace Windows.UI.Core
 			}
 			else if (!ShouldRaiseRenderEvents)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Error("Dispatch queue is empty");
 				}

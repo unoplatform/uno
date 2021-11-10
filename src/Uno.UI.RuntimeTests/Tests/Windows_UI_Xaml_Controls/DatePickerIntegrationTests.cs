@@ -7,7 +7,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.Extensions;
-using Uno.Logging;
 using Windows.UI.Xaml.Media;
 using Uno.Disposables;
 using Windows.Globalization.DateTimeFormatting;
@@ -16,6 +15,7 @@ using Windows.Foundation;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Uno.UI.RuntimeTests.MUX.Helpers;
+using Uno.Foundation.Logging;
 
 namespace Microsoft.UI.Tests.Controls.DatePickerTests
 {

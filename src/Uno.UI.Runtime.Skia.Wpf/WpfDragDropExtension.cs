@@ -18,11 +18,11 @@ using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Input;
 using Uno.Extensions;
-using Uno.Logging;
 using DragEventArgs = System.Windows.DragEventArgs;
 using Point = Windows.Foundation.Point;
 using UIElement = Windows.UI.Xaml.UIElement;
 using Window = System.Windows.Window;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Skia.Platform
 {

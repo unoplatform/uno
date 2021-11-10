@@ -13,7 +13,6 @@ using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Uno.Roslyn;
 using Uno;
-using Uno.Logging;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 using System.Runtime.CompilerServices;
 using Uno.UI.Xaml;
@@ -283,7 +282,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public string GenerateFile()
 		{
-			this.Log().Info("Processing file {0}".InvariantCultureFormat(_fileDefinition.FilePath));
+#if DEBUG
+			Console.WriteLine("Processing file {0}".InvariantCultureFormat(_fileDefinition.FilePath));
+#endif
 
 			// Check for the Roslyn generator's output location
 			var outputFile = Path.Combine(
@@ -307,7 +308,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					&& outputInfo.Length != 0
 				)
 				{
-					this.Log().Info("Skipping unmodified file {0}".InvariantCultureFormat(_fileDefinition.FilePath));
+#if DEBUG
+					Console.WriteLine("Skipping unmodified file {0}".InvariantCultureFormat(_fileDefinition.FilePath));
+#endif
 					return File.ReadAllText(outputFile);
 				}
 			}
@@ -4146,7 +4149,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else
 			{
-				this.Log().Error($"Unable to determine the return type needed for the markup extension ('{member.Member}' cannot be found).");
+#if DEBUG
+				Console.WriteLine($"Unable to determine the return type needed for the markup extension ('{member.Member}' cannot be found).");
+#endif
 				return string.Empty;
 			}
 
@@ -4769,7 +4774,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (!string.IsNullOrEmpty(bindingType.Type.Name))
 				{
 					var message = $"#Error // {bindingType.Type.Name} could not be found.";
-					this.Log().Error(message);
 
 					return message;
 				}
@@ -5923,7 +5927,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else if (memberValue.ToLowerInvariant().EndsWith("px"))
 			{
-				this.Log().Warn($"The value [{memberValue}] is specified in pixel and is not yet supported. ({owner?.LineNumber}, {owner?.LinePosition} in {_fileDefinition.FilePath})");
+#if DEBUG
+				Console.WriteLine($"The value [{memberValue}] is specified in pixel and is not yet supported. ({owner?.LineNumber}, {owner?.LinePosition} in {_fileDefinition.FilePath})");
+#endif
 				return "{0}{1}".InvariantCultureFormat(memberValue.TrimEnd("px"), isDouble ? "d" : "f");
 			}
 

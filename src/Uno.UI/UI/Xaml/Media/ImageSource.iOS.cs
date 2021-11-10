@@ -11,10 +11,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using UIKit;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Core;
 using Uno.Disposables;
-using Microsoft.Extensions.Logging;
+
 
 namespace Windows.UI.Xaml.Media
 {

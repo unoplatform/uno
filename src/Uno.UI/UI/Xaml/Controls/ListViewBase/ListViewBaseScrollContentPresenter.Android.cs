@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Uno.UI;
 using Uno.Disposables;

@@ -5,7 +5,7 @@ using Windows.UI.Xaml.Media;
 using CoreAnimation;
 using CoreGraphics;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.UI.Xaml.Media;
 using static System.Double;

@@ -3,8 +3,8 @@
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
 	
-	<Import Project="../netcore-build.props"/>
-	<Import Project="../targetframework-override.props"/>
+	<Import Project="../netcore-build.props" />
+	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
@@ -36,11 +36,11 @@
 	<Import Project="..\Uno.CrossTargetting.props" />
 	
 	<ItemGroup>
-    <PackageReference Include="Uno.Core" />
 		<PackageReference Include="Uno.MonoAnalyzers" Condition="!$(_IsNetCore)">
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Uno.Diagnostics.Eventing" Version="1.0.0-dev.4" />
+		<PackageReference Include="Uno.Diagnostics.Eventing" />
+		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(_IsNetStd) or $(_IsNet)">

@@ -14,7 +14,7 @@ using Uno.Diagnostics.Eventing;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.UI.Xaml.Controls;
 
@@ -178,7 +178,7 @@ namespace Windows.UI.Xaml
 					_trace.WriteEventActivity(TraceProvider.CreateTemplate, EventOpcode.Send, new[] { ((Func<View>)template).Method.DeclaringType?.ToString() });
 				}
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Creating new template, id={GetTemplateDebugId(template)} IsPoolingEnabled:{IsPoolingEnabled}");
 				}
@@ -201,7 +201,7 @@ namespace Windows.UI.Xaml
 					_trace.WriteEventActivity(TraceProvider.ReuseTemplate, EventOpcode.Send, new[] { instance.GetType().ToString() });
 				}
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Recycling template,    id={GetTemplateDebugId(template)}, {list.Count} items remaining in cache");
 				}
@@ -260,13 +260,13 @@ namespace Windows.UI.Xaml
 					_activeInstances.Remove(item);
 #endif
 				}
-				else if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				else if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 				{
 					this.Log().Warn($"Enqueued template root was not a view");
 				}
 
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					(this).Log().Debug($"Caching template,      id={GetTemplateDebugId(key as FrameworkTemplate)}, {list.Count} items now in cache");
 				}

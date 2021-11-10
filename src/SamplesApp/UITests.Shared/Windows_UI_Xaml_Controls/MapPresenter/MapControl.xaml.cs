@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Samples.Controls;
 using Windows.Devices.Geolocation;
 using Windows.UI.Xaml.Controls;
@@ -15,6 +15,10 @@ namespace Uno.UI.Samples.Content.UITests.MapControl
 	[SampleControlInfo("Map", "MapControl")]
 	public sealed partial class MapControl : UserControl
 	{
+#pragma warning disable CS0109
+		private new readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(ControlWithTouchEvent));
+#pragma warning restore CS0109
+
 		public Geopoint PinPoint { get; set; }
 
 		public MapControl()
@@ -26,7 +30,7 @@ namespace Uno.UI.Samples.Content.UITests.MapControl
 			}
 			catch (Exception e)
 			{
-				this.Log().Error("Map initialization failed to complete", e);
+				_log.Error("Map initialization failed to complete", e);
 			}
 		}
 

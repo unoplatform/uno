@@ -12,7 +12,7 @@ using Uno.UI.Controls;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Media.Animation;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;

@@ -5,7 +5,7 @@ using System.Text;
 using AndroidX.RecyclerView.Widget;
 using Android.Views;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				Layout.AttachView(result.ItemView);
 				recycler.BindViewToPosition(result.ItemView, position);
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Returning cached view for position={position} and view type={type}. {views.Count} cached views remaining.");
 				}
@@ -94,7 +94,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (views.Count == MaxCacheSize)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Cache already contains {MaxCacheSize} views, sending {view} to recycler.");
 				}
@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			views.Add(holder);
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Caching view of type {view.GetType().Name}. {views.Count} views cached in total.");
 			}

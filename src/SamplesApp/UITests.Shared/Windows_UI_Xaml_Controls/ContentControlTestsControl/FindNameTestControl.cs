@@ -4,12 +4,16 @@ using System.Collections.Generic;
 using System.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 {
 	public partial class FindNameTestControl : Control
 	{
+#pragma warning disable CS0109 
+		private new readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(FindNameTestControl));
+#pragma warning restore CS0109
+
 		private static readonly string[] ButtonNames = { "ButtonOutsideScrollViewer", "ButtonInsideScrollViewer", "ButtonInsideContentControl" };
 
 		public FindNameTestControl()
@@ -30,7 +34,7 @@ namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 				}
 				else
 				{
-					this.Log().Warn($"{buttonName} template part not found.");
+					_log.Warn($"{buttonName} template part not found.");
 				}
 			}
 		}

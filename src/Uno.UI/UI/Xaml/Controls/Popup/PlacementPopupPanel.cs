@@ -6,7 +6,8 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using Windows.UI.Core;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 
 #if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;

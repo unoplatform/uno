@@ -5,18 +5,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Uno.Extensions;
-using Uno.Logging;
 using Uno.UI.Common;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
 
 using ICommand = System.Windows.Input.ICommand;
 using EventHandler = System.EventHandler;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Samples.UITests.ImageTests.Models
 {
 	public class ImageWithLateSourceViewModel : ViewModelBase
 	{
+		private static readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(ImageWithLateSourceViewModel));
+
 		public ImageWithLateSourceViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
 		}
@@ -41,7 +43,7 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 		private void OnSetSource()
 		{
 			const string source = FinalSource;
-			this.Log().Warn("Setting image source to " + source);
+			_log.Warn("Setting image source to " + source);
 
 			SourceUri = source;
 		}

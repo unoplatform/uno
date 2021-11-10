@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
-using Uno.Logging;
 
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;

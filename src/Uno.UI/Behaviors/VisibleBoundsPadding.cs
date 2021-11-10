@@ -9,13 +9,13 @@ using System.Text;
 using Uno.Collections;
 using Uno.Extensions;
 using Uno.UI.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Microsoft.Extensions.Logging;
+
 #if XAMARIN_IOS
 using UIKit;
 #elif __MACOS__
@@ -54,9 +54,9 @@ namespace Uno.UI.Toolkit
 #endif
 	{
 #if IS_UNO
-		private static readonly Lazy<ILogger> _log = new Lazy<ILogger>(() => typeof(InternalVisibleBoundsPadding).Log());
+		private static readonly Logger _log = typeof(InternalVisibleBoundsPadding).Log();
 #else
-		private static readonly Lazy<ILogger> _log = new Lazy<ILogger>(() => typeof(VisibleBoundsPadding).Log());
+		private static readonly Logger _log = typeof(VisibleBoundsPadding).Log();
 #endif
 
 		[Flags]
@@ -87,9 +87,9 @@ namespace Uno.UI.Toolkit
 					Bottom = bounds.Bottom - visibleBounds.Bottom
 				};
 
-				if (_log.Value.IsEnabled(LogLevel.Debug))
+				if (_log.IsEnabled(LogLevel.Debug))
 				{
-					_log.Value.LogDebug($"WindowPadding={result} bounds={bounds} visibleBounds={visibleBounds}");
+					_log.LogDebug($"WindowPadding={result} bounds={bounds} visibleBounds={visibleBounds}");
 				}
 
 				return result;
@@ -326,9 +326,9 @@ namespace Uno.UI.Toolkit
 			{
 				if (Owner is { } owner
 					&& owner.SetPadding(padding)
-					&& _log.Value.IsEnabled(LogLevel.Debug))
+					&& _log.IsEnabled(LogLevel.Debug))
 				{
-					_log.Value.LogDebug($"ApplyPadding={padding}");
+					_log.LogDebug($"ApplyPadding={padding}");
 				}
 			}
 

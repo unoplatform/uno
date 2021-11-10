@@ -1,7 +1,7 @@
 ﻿using Android.Graphics;
 using Android.Graphics.Drawables;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,7 +14,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Android.Provider;
-using Microsoft.Extensions.Logging;
+
 using Uno.UI;
 using Uno;
 
@@ -168,7 +168,7 @@ namespace Windows.UI.Xaml.Media
 
 		internal async Task<Bitmap> Open(CancellationToken ct, Android.Widget.ImageView targetImage = null, int? targetWidth = null, int? targetHeight = null)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug(this.ToString() + $" Open(tw:{targetWidth}x{targetHeight})");
 			}
@@ -251,7 +251,7 @@ namespace Windows.UI.Xaml.Media
 				}
 				else
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().DebugFormat("Using ImageLoader to get {0}", WebUri);
 					}

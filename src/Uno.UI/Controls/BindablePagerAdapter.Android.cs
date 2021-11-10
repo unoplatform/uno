@@ -15,7 +15,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using Uno.Extensions;
 using System.Windows.Input;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Object = Java.Lang.Object;
 using Uno.Extensions.Specialized;
 

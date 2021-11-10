@@ -54,10 +54,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.Core" />
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Uno.Core.Build" />
 		<PackageReference Include="Uno.MonoAnalyzers" Condition="!$(_IsNetCore)">
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>

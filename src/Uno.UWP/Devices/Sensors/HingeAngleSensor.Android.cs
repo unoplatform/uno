@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Uno.Devices.Sensors;
 using Uno.Foundation.Extensibility;
 using Windows.Foundation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Extensions;
 using Uno.Devices.Sensors.Helpers;
 

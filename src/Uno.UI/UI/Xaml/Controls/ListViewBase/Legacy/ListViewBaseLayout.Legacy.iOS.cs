@@ -13,7 +13,7 @@ using Uno.Diagnostics.Eventing;
 using Uno;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Controls;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 #if NET6_0_OR_GREATER
 using ObjCRuntime;
@@ -184,7 +184,7 @@ namespace Uno.UI.Controls.Legacy
 			var listViewBase = CollectionView as ListViewBase;
 			if (listViewBase?.NeedsReloadData ?? false)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("LVBL: Calling immediate data reload");
 				}
