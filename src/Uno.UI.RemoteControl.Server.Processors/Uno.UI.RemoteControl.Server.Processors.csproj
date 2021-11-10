@@ -53,7 +53,7 @@
 		<PropertyGroup>
 			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
       <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
-			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI.RemoteControl\$(UnoNugetOverrideVersion)\tools\rc\processors</_TargetNugetFolder>
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI.RemoteControl\$(UnoNugetOverrideVersion)\tools\rc\processors\$(TargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)*.*" />
