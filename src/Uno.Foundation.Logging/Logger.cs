@@ -36,6 +36,7 @@ namespace Uno.Foundation.Logging
 		public void Trace(string message) => Log(LogLevel.Trace, message);
 		public void Trace(IFormattable formattable) => Log(LogLevel.Trace, formattable.ToString());
 
+		public void LogDebug(string message) => Log(LogLevel.Debug, message);
 		public void LogDebug(string message, params object?[] items) => Log(LogLevel.Debug, string.Format(message, items));
 		public void DebugFormat(string message) => Log(LogLevel.Debug, message);
 		public void DebugFormat(string message, params object?[] items) => Log(LogLevel.Debug, string.Format(message, items));
