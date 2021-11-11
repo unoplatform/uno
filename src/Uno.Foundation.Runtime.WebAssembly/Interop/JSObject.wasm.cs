@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Uno.Extensions;
 // using Uno.Logging;
 
 namespace Uno.Foundation.Interop

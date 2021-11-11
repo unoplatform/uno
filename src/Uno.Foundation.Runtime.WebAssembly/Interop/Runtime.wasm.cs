@@ -2,12 +2,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Linq;
 using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
-using Uno.Extensions;
 using Uno.Foundation.Interop;
 using System.Text;
 using Uno.Diagnostics.Eventing;

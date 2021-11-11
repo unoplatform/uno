@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -14,5 +15,19 @@ namespace Uno.Foundation.Runtime.WebAssembly.Helpers
 			return _newLineRegex.Value.Replace(text, new String('\t', indentCount));
 		}
 
+		public static string JoinBy(this IEnumerable<string> items, string joinBy)
+		{
+			return string.Join(joinBy, items.ToArray());
+		}
+
+		public static bool HasValue(this string instance)
+		{
+			return !string.IsNullOrWhiteSpace(instance);
+		}
+
+		public static bool HasValueTrimmed(this string instance)
+		{
+			return !string.IsNullOrWhiteSpace(instance);
+		}
 	}
 }

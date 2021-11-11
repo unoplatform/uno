@@ -10,6 +10,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Core
 {

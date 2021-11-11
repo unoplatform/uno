@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Foundation.Runtime.WebAssembly.Helpers;
 
@@ -171,7 +170,7 @@ namespace Uno.Foundation.Interop
 
 					var indent = builder.Indent();
 
-					return new ActionDisposable(() =>
+					return new DisposableAction(() =>
 					{
 						indent.Dispose();
 						if (index == 0)

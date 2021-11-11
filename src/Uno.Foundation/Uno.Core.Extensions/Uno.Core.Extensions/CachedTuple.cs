@@ -18,12 +18,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+#if IS_UNO_FOUNDATION_RUNTIME_WEBASSEMBLY_PROJECT
+namespace Uno.Foundation.Runtime.WebAssembly.Helpers
+#else
 namespace Uno
+#endif
 {
 	/// <summary>
 	/// A tuple implementation that caches the GetHashCode value for faster lookup performance.
 	/// </summary>
-    public class CachedTuple
+	internal class CachedTuple
     {
 		/// <summary>
 		/// Creates a tuple with two values.
@@ -53,7 +57,7 @@ namespace Uno
 	/// <summary>
 	/// A tuple with two values implementation that caches the GetHashCode value for faster lookup performance.
 	/// </summary>
-	public class CachedTuple<T1, T2>
+	internal class CachedTuple<T1, T2>
 	{
 		private readonly int _cachedHashCode;
 
@@ -113,7 +117,7 @@ namespace Uno
 	/// <summary>
 	/// A tuple with three values implementation that caches the GetHashCode value for faster lookup performance.
 	/// </summary>
-	public class CachedTuple<T1, T2, T3>
+	internal class CachedTuple<T1, T2, T3>
 	{
 		private readonly int _cachedHashCode;
 
@@ -178,7 +182,7 @@ namespace Uno
 	/// <summary>
 	/// A tuple with four values implementation that caches the GetHashCode value for faster lookup performance.
 	/// </summary>
-	public class CachedTuple<T1, T2, T3, T4>
+	internal class CachedTuple<T1, T2, T3, T4>
 	{
 		private readonly int _cachedHashCode;
 

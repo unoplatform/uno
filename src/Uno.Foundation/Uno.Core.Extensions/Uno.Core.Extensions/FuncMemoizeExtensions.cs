@@ -25,9 +25,13 @@ using System.Threading.Tasks;
 using System.Collections.Concurrent;
 #endif
 
+#if IS_UNO_FOUNDATION_RUNTIME_WEBASSEMBLY_PROJECT
+namespace Uno.Foundation.Runtime.WebAssembly.Helpers
+#else
 namespace Uno.Extensions
+#endif
 {
-	public static class FuncMemoizeExtensions
+	internal static partial class FuncMemoizeExtensions
 	{
 		/// <summary>
 		/// Parameter less memoizer, used to perform a lazy-cached evaluation. (see http://en.wikipedia.org/wiki/Memoization)
@@ -186,126 +190,6 @@ namespace Uno.Extensions
 				return value;
 			};
 		}
-
-		/// <summary>
-		/// Creates a parameter-less memoizer for the the specified task provider. The task provider is guaranteed to be executed only once.
-		/// </summary>
-		/// <typeparam name="T">The return value type</typeparam>
-		/// <param name="func">A function that will call the create the task.</param>
-		/// <returns>A function that will return a task </returns>
-		[Legacy("NV0115")]
-		public static Func<CancellationToken, Task<T>> AsMemoized<T>(this Func<CancellationToken, Task<T>> func)
-		{
-			Task<T> value = null;
-			object gate = new object();
-
-			return ct =>
-			{
-				if (value == null)
-				{
-					lock (gate)
-					{
-						if (value == null)
-						{
-							value = Funcs.Create(async ct2 =>
-							{
-								try
-								{
-									return await func(ct2);
-								}
-								catch (OperationCanceledException)
-								{
-									lock (gate)
-									{
-										value = null;
-									}
-
-									throw;
-								}
-							})(ct);
-						}
-					}
-				}
-
-				return value;
-			};
-		}
-
-		/// <summary>
-		/// Creates a parameter-less memoizer for the the specified task provider. The task provider is guaranteed to be executed only once.
-		/// </summary>
-		/// <typeparam name="T">The return value type</typeparam>
-		/// <param name="func">A function that will call the create the task.</param>
-		/// <returns>A function that will return a task </returns>
-		public static FuncAsync<T> AsMemoized<T>(this FuncAsync<T> func)
-		{
-			Task<T> value = null;
-			object gate = new object();
-
-			return ct =>
-			{
-				if (value == null)
-				{
-					lock (gate)
-					{
-						if (value == null)
-						{
-							value = Funcs.Create(async ct2 =>
-							{
-								try
-								{
-									return await func(ct2);
-								}
-								catch (OperationCanceledException)
-								{
-									lock (gate)
-									{
-										value = null;
-									}
-
-									throw;
-								}
-							})(ct);
-						}
-					}
-				}
-
-				return value;
-			};
-		}
-
-		/// <summary>
-		/// Creates a memoizer with one parameter for the the specified task provider. The task provider is guaranteed to be executed only once per parameter instance.
-		/// </summary>
-		/// <typeparam name="TResult">The return value type</typeparam>
-		/// <typeparam name="TParam"></typeparam>
-		/// <param name="func">A function that will call the create the task.</param>
-		/// <returns>A function that will return a task </returns>
-		public static FuncAsync<TParam, TResult> AsMemoized<TParam, TResult>(this FuncAsync<TParam, TResult> func)
-		{
-#if HAS_NO_CONCURRENT_DICT
-			var values = new SynchronizedDictionary<TParam, FuncAsync<TResult>>();
-#else
-			var values = new System.Collections.Concurrent.ConcurrentDictionary<TParam, FuncAsync<TResult>>();
-#endif
-			// It's safe to use default(TParam) as this won't get called anyway if TParam is a value type.
-			var nullValue = Funcs.CreateAsyncMemoized(ct => func(ct, default(TParam)));
-
-			return (ct, param) =>
-			{
-				if (param == null)
-				{
-					return nullValue(ct);
-				}
-				else
-				{
-					var memoizedFunc = values.GetOrAdd(param, p => Funcs.CreateAsyncMemoized(c => func(c, p)));
-
-					return memoizedFunc(ct);
-				}
-			};
-		}
-
 
 		/// <summary>
 		/// Parameter less thread-safe memoizer, used to perform a lazy-cached evaluation. (see http://en.wikipedia.org/wiki/Memoization)

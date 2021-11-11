@@ -15,7 +15,7 @@
 	<PropertyGroup>
 		<AssemblyName>Uno.Foundation</AssemblyName>
     	<RootNamespace>Windows.Foundation</RootNamespace>
-		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		<NoWarn>$(NoWarn);NU1701;1572;1712;1711;1574</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>

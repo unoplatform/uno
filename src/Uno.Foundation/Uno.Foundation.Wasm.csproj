@@ -29,10 +29,10 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation.Runtime.WebAssembly\Uno.Foundation.Runtime.WebAssembly.csproj" />
-		<ProjectReference Include="..\Uno.Core.Extensions\Uno.Core.Extensions.csproj" />
 		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
 	</ItemGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
+	<Import Project="Uno.Core.Extensions\Uno.Core.Extensions.props" />
 
 </Project>

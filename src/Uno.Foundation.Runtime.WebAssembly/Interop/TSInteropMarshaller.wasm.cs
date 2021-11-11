@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
-using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Foundation.Logging;
 
