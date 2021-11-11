@@ -11,8 +11,9 @@
 	<ItemGroup>
 		<PackageReference Include="System.Reactive" Version="5.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.5" />
-		<PackageReference Include="Uno.Core.Extensions" Version="4.0.0-dev.5" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
+		<PackageReference Include="Uno.Core.Extensions" />
+		<PackageReference Include="Uno.Core.Extensions.Disposables" />
 	</ItemGroup>
 
 	<ItemGroup>

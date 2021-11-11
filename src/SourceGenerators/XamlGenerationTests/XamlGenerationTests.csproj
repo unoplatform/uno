@@ -17,7 +17,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Uno.Core.Build" />
 	</ItemGroup>
 	
 	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
