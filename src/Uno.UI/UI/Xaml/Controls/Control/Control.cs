@@ -60,9 +60,9 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override bool IsEnabledOverride() => IsEnabled && base.IsEnabledOverride();
 
-		internal override void UpdateThemeBindings()
+		internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
 		{
-			base.UpdateThemeBindings();
+			base.UpdateThemeBindings(updateReason);
 
 			//override the default value from dependency property based on application theme
 			SetDefaultForeground(ForegroundProperty);

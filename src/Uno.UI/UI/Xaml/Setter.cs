@@ -64,6 +64,8 @@ namespace Windows.UI.Xaml
 
 		internal XamlParseContext? ThemeResourceContext { get; set; }
 
+		internal ResourceUpdateReason ResourceBindingUpdateReason { get; set; }
+
 		public Setter(DependencyProperty targetProperty, object value)
 		{
 			Property = targetProperty;
@@ -96,7 +98,7 @@ namespace Windows.UI.Xaml
 			{
 				if (ThemeResourceKey.HasValue)
 				{
-					ResourceResolver.ApplyResource(o, Property, ThemeResourceKey.Value, isThemeResourceExtension: true, context: ThemeResourceContext, precedence: null);
+					ResourceResolver.ApplyResource(o, Property, ThemeResourceKey.Value, ResourceBindingUpdateReason, context: ThemeResourceContext, precedence: null);
 				}
 				else
 				{
@@ -116,7 +118,7 @@ namespace Windows.UI.Xaml
 
 			if (path != null)
 			{
-				if (ThemeResourceKey.HasValue && ResourceResolver.ApplyVisualStateSetter(ThemeResourceKey.Value, ThemeResourceContext, path, precedence))
+				if (ThemeResourceKey.HasValue && ResourceResolver.ApplyVisualStateSetter(ThemeResourceKey.Value, ThemeResourceContext, path, precedence, ResourceBindingUpdateReason))
 				{
 					// Applied as theme binding, no need to do more
 					return;

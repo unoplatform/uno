@@ -12,6 +12,7 @@ using Windows.UI.Input.Spatial;
 
 using ResourceKey = Windows.UI.Xaml.SpecializedResourceDictionary.ResourceKey;
 using System.Runtime.CompilerServices;
+using Windows.UI.Xaml.Data;
 
 namespace Windows.UI.Xaml
 {
@@ -417,7 +418,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Copy another dictionary's contents, this is used when setting the <see cref="Source"/> property
 		/// </summary>
-		private void CopyFrom(ResourceDictionary source)
+		internal void CopyFrom(ResourceDictionary source)
 		{
 			_values.Clear();
 			_mergedDictionaries.Clear();
@@ -541,19 +542,19 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Update theme bindings on DependencyObjects in the dictionary.
 		/// </summary>
-		internal void UpdateThemeBindings()
+		internal void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{
 			foreach (var item in _values.Values)
 			{
 				if (item is IDependencyObjectStoreProvider provider && provider.Store.Parent == null)
 				{
-					provider.Store.UpdateResourceBindings(isThemeChangedUpdate: true, containingDictionary: this);
+					provider.Store.UpdateResourceBindings(updateReason, containingDictionary: this);
 				}
 			}
 
 			foreach (var mergedDict in _mergedDictionaries)
 			{
-				mergedDict.UpdateThemeBindings();
+				mergedDict.UpdateThemeBindings(updateReason);
 			}
 		}
 
