@@ -6,10 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Uno.Collections;
-using Uno.Extensions;
 using Uno.UI.Extensions;
-using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
@@ -22,7 +19,13 @@ using UIKit;
 using AppKit;
 #endif
 
-#if IS_UNO
+#if HAS_UNO // Is building using Uno.UI
+using Uno.Collections;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+#endif
+
+#if IS_UNO // Is inside the Uno.UI project
 using _VisibleBoundsPadding = Uno.UI.Behaviors.InternalVisibleBoundsPadding;
 #else
 using Uno.UI.Toolkit.Extensions;
@@ -53,10 +56,12 @@ namespace Uno.UI.Toolkit
 	public static class VisibleBoundsPadding
 #endif
 	{
+#if HAS_UNO // Is building using Uno.UI
 #if IS_UNO
 		private static readonly Logger _log = typeof(InternalVisibleBoundsPadding).Log();
 #else
 		private static readonly Logger _log = typeof(VisibleBoundsPadding).Log();
+#endif
 #endif
 
 		[Flags]
@@ -87,10 +92,12 @@ namespace Uno.UI.Toolkit
 					Bottom = bounds.Bottom - visibleBounds.Bottom
 				};
 
+#if HAS_UNO
 				if (_log.IsEnabled(LogLevel.Debug))
 				{
 					_log.LogDebug($"WindowPadding={result} bounds={bounds} visibleBounds={visibleBounds}");
 				}
+#endif
 
 				return result;
 			}
@@ -140,10 +147,12 @@ namespace Uno.UI.Toolkit
 			}
 			else
 			{
+#if HAS_UNO // Is building using Uno.UI
 				if (dependencyObject.Log().IsEnabled(LogLevel.Debug))
 				{
 					dependencyObject.Log().LogDebug($"PaddingMask is only supported on FrameworkElement (Found {dependencyObject?.GetType()})");
 				}
+#endif
 			}
 		}
 
@@ -324,12 +333,14 @@ namespace Uno.UI.Toolkit
 
 			private void ApplyPadding(Thickness padding)
 			{
+#if HAS_UNO // Is building using Uno.UI
 				if (Owner is { } owner
 					&& owner.SetPadding(padding)
 					&& _log.IsEnabled(LogLevel.Debug))
 				{
 					_log.LogDebug($"ApplyPadding={padding}");
 				}
+#endif
 			}
 
 			internal static VisibleBoundsDetails GetInstance(FrameworkElement element)

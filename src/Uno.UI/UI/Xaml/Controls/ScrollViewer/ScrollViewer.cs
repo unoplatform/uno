@@ -19,6 +19,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml.Input;
 using Uno;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 
 
 #if __ANDROID__
@@ -47,7 +48,6 @@ using Microsoft.UI.Input;
 #else
 using Windows.Devices.Input;
 using Windows.UI.Input;
-using Uno.Foundation.Logging;
 #endif
 
 namespace Windows.UI.Xaml.Controls

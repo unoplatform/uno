@@ -49,11 +49,4 @@
 	<ItemGroup>
 	  <UpToDateCheckInput Remove="Extensions\RectExtensions.cs" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Include="Uno.Core.Extensions\Uno.Core.Extensions.Compatibility\Extensions\ComparableExtensions.cs" />
-	  <Compile Include="Uno.Core.Extensions\Uno.Core.Extensions.Compatibility\Extensions\FuncAsyncExtensions.cs" />
-	  <Compile Include="Uno.Core.Extensions\Uno.Core.Extensions.Compatibility\Extensions\InvocationLockingMode.cs" />
-	</ItemGroup>
-
 </Project>

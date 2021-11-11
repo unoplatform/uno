@@ -2,6 +2,7 @@
 
 namespace Uno.UI.Adapter.Microsoft.Extensions.Logging
 {
+	using System;
 	using Uno.Foundation.Logging;
 
 	class MicrosoftLogger : IExternalLogger
@@ -44,8 +45,22 @@ namespace Uno.UI.Adapter.Microsoft.Extensions.Logging
 				_ => LogLevel.None,
 			};
 
+		private global::Microsoft.Extensions.Logging.LogLevel Convert(LogLevel logLevel)
+			=> logLevel switch
+			{
+				LogLevel.Trace => global::Microsoft.Extensions.Logging.LogLevel.Trace,
+				LogLevel.Debug => global::Microsoft.Extensions.Logging.LogLevel.Debug,
+				LogLevel.Information => global::Microsoft.Extensions.Logging.LogLevel.Information,
+				LogLevel.Warning => global::Microsoft.Extensions.Logging.LogLevel.Warning,
+				LogLevel.Error => global::Microsoft.Extensions.Logging.LogLevel.Error,
+				LogLevel.Critical => global::Microsoft.Extensions.Logging.LogLevel.Critical,
+				LogLevel.None => global::Microsoft.Extensions.Logging.LogLevel.None,
+				_ => global::Microsoft.Extensions.Logging.LogLevel.None,
+			};
+
 		public LogLevel LogLevel { get; private set; }
 
-		public void Log(LogLevel logLevel, string message) => throw new System.NotImplementedException();
+		public void Log(LogLevel logLevel, string? message, Exception? exception = null)
+			=> _logger.Log<object>(Convert(logLevel), 0, null!, exception, (_, __) => message);
 	}
 }

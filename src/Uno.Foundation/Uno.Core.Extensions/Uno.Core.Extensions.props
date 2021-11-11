@@ -76,6 +76,7 @@
 	<Compile Remove="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Equality\FuncComparer.cs" />
 	<Compile Remove="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Equality\FuncEqualityComparer.cs" />
 	<Compile Remove="$(MSBuildThisFileDirectory)Uno.Core.Extensions\UriExtensions.cs" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\FuncAsyncExtensions.cs" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\InvocationLockingMode.cs" />
   </ItemGroup>
-
 </Project>
