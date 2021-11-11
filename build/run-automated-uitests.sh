@@ -8,6 +8,7 @@ npm i chromedriver@86.0.0
 npm i puppeteer@5.3.1
 
 # install dotnet serve / Remove as needed
+dotnet tool uninstall dotnet-serve -g || true
 dotnet tool uninstall dotnet-serve --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
 dotnet tool install dotnet-serve --version 1.8.15 --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
 export PATH="$PATH:$BUILD_SOURCESDIRECTORY/build/tools"
