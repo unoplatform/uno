@@ -21,6 +21,10 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
+#if NET6_0_OR_GREATER && __IOS__
+using ObjCRuntime;
+#endif
+
 namespace Uno.Conversion
 {
     public class PrimitiveConversionStrategy : IConversionStrategy
@@ -54,7 +58,7 @@ namespace Uno.Conversion
 #if XAMARIN_IOS
 									// Those are platform primitives provided for 64 bits compatibility
 									// with iOS 8.0 and later
-									|| value is ObjCRuntime.nfloat
+									|| value is nfloat
 									|| value is nint
 									|| value is nuint
 #endif
