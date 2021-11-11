@@ -57,8 +57,7 @@ jobs:
         !**\*Wasm.Test*.dll
         !**\*UITests.dll
         !**\*.RuntimeTests.dll
-      vstestLocationMethod: version
-      vsTestVersion: latest
+      vsTestVersion: toolsInstaller
       testRunTitle: $(Agent.JobName)
       testSelector: testAssemblies
       batchingBasedOnAgentsOption: customBatchSize
