@@ -93,7 +93,7 @@
 	  On other targets, .NET 6.0's compiler takes precedence.
 	  -->
 
-	  <MicrosoftNetCompilerVersionOverride Condition="'$(MSBuildRuntimeType)'!='Core' and ($([MSBuild]::IsOSPlatform('OSX') or '$(MSBuildVersion)' &lt; '17.0')">4.0.1</MicrosoftNetCompilerVersionOverride>
+	  <MicrosoftNetCompilerVersionOverride Condition="'$(MSBuildRuntimeType)'!='Core' and ($([MSBuild]::IsOSPlatform('OSX')) or '$(MSBuildVersion)' &lt; '17.0')">4.0.1</MicrosoftNetCompilerVersionOverride>
   </PropertyGroup>
 
   <!-- Import the override as the nuget tooling in VS is skipping ItemGroup conditions for legacy projects -->
