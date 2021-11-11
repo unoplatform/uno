@@ -231,7 +231,7 @@ namespace Uno.Extensions
 		/// <typeparam name="T"></typeparam>
 		/// <param name="list">List to search</param>
 		/// <param name="predicate">A function to test each element for a condition</param>
-		/// <param name="startingAt">Index to start searching from<</param>
+		/// <param name="startingAt">Index to start searching from</param>
 		/// <returns></returns>
 		public static T FindNearestItem<T>(this IList<T> list, Func<T, bool> predicate, int startingAt = 0)
 		{
@@ -246,7 +246,7 @@ namespace Uno.Extensions
 		/// <typeparam name="T"></typeparam>
 		/// <param name="list">List to search</param>
 		/// <param name="predicate">A function to test each element for a condition</param>
-		/// <param name="startingAt">Index to start searching from<</param>
+		/// <param name="startingAt">Index to start searching from</param>
 		/// <returns></returns>
 		public static T FindNearestItem<T>(this IReadOnlyList<T> list, Func<T, bool> predicate, int startingAt = 0)
 		{

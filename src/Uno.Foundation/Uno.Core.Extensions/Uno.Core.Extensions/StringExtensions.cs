@@ -274,7 +274,7 @@ namespace Uno.Extensions
 		/// Removes diacritics (e.g. accents) from a given string.
 		/// </summary>
 		/// <param name="s">The string.</param>
-		/// <returns>The string without diacritics, e.g. Montréal -> Montreal, or <c>string.Empty</c> if the string is <c>null</c> or <c>"".</returns>
+		/// <returns>The string without diacritics, e.g. Montréal to Montreal, or <c>string.Empty</c> if the string is <c>null</c> or <c>""</c>.</returns>
 		public static string RemoveDiacritics(this string s)
 		{
 			if (s.IsNullOrEmpty())
