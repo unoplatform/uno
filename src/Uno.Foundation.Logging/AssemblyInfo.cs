@@ -21,6 +21,8 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Wpf")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Linux.FrameBuffer")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests")]
+[assembly: InternalsVisibleTo("Uno.UI.DualScreen")]
+[assembly: InternalsVisibleTo("Uno.UI.DualScreen.net6")]
 [assembly: InternalsVisibleTo("SamplesApp.Wasm")]
 [assembly: InternalsVisibleTo("SamplesApp.Skia")]
 [assembly: InternalsVisibleTo("SamplesApp")]

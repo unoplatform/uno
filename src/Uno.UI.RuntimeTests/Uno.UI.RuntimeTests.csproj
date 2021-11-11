@@ -25,6 +25,11 @@
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Uno.Core.Extensions" />
+		<PackageReference Include="Uno.Core.Extensions.Logging" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
+		<PackageReference Include="Uno.Core.Extensions.Disposables" />
+		<PackageReference Include="Uno.Core.Extensions.Compatibility" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj" />
 		<Reference Include="System.Xml" />
 		<Reference Include="System.Xml.Linq" />

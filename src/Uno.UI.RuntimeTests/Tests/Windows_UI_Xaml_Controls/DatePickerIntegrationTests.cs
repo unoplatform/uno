@@ -15,7 +15,12 @@ using Windows.Foundation;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Uno.UI.RuntimeTests.MUX.Helpers;
+
+#if HAS_UNO
 using Uno.Foundation.Logging;
+#else
+using Uno.Logging;
+#endif
 
 namespace Microsoft.UI.Tests.Controls.DatePickerTests
 {
