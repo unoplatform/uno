@@ -7,7 +7,8 @@ cd $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries
 npm i chromedriver@86.0.0
 npm i puppeteer@5.3.1
 
-# install dotnet serve
+# install dotnet serve / Remove as needed
+dotnet tool uninstall dotnet-serve || true
 dotnet tool install dotnet-serve --version 1.8.15 --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
 export PATH="$PATH:$BUILD_SOURCESDIRECTORY/build/tools"
 
