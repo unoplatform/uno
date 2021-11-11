@@ -87,6 +87,15 @@
 		 Text="The Uno.UI Solution cannot build with a space in the path. Consider changing to a path without spaces."/>
   </Target>
 
+  <PropertyGroup>
+	  <!--
+	  macOS needs an explicit override of the current compiler when running under mono.
+	  On other targets, .NET 6.0's compiler takes precedence.
+	  -->
+	
+	  <MicrosoftNetCompilerVersionOverride Condition="'$(MSBuildRuntimeType)'!='Core' and $([MSBuild]::IsOSPlatform('OSX'))">4.0.1</MicrosoftNetCompilerVersionOverride>
+  </PropertyGroup>
+
   <!-- Import the override as the nuget tooling in VS is skipping ItemGroup conditions for legacy projects -->
   <Import Project="roslyn-override.targets" Condition="'$(MicrosoftNetCompilerVersionOverride)'!=''"/>
 
