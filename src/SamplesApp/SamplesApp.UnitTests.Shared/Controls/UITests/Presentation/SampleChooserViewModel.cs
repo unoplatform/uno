@@ -19,7 +19,13 @@ using System.IO;
 using Windows.UI.Popups;
 using Uno.Extensions;
 using Uno.UI.Samples.Tests;
+
+#if HAS_UNO
 using Uno.Foundation.Logging;
+#else
+using Microsoft.Extensions.Logging;
+using Uno.Logging;
+#endif
 
 #if XAMARIN || UNO_REFERENCE_API
 using Windows.UI.Xaml.Controls;
@@ -47,7 +53,13 @@ namespace SampleControl.Presentation
 #else
 		private const int _numberOfRecentSamplesVisible = 0;
 #endif
+
+#if HAS_UNO
 		private Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(SampleChooserViewModel));
+#else
+		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(SampleChooserViewModel));
+#endif
+
 
 		private List<SampleChooserCategory> _categories;
 

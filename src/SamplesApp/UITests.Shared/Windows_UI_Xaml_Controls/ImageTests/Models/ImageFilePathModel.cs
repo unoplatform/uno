@@ -12,7 +12,12 @@ using Uno.Extensions;
 using System.ComponentModel;
 using Windows.UI.Core;
 using Uno.UI.Samples.UITests.Helpers;
+
+#if HAS_UNO
 using Uno.Foundation.Logging;
+#else
+using Microsoft.Extensions.Logging;
+#endif
 
 #if __IOS__
 using UIKit;
@@ -34,7 +39,12 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 	public class ImageFilePathModel : ViewModelBase
 	{
 #pragma warning disable CS0109
+#if HAS_UNO
 		private new readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(ImageFilePathModel));
+#else
+		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(ImageWithLateSourceViewModel));
+#endif
+
 #pragma warning restore CS0109
 
 #if HAS_UNO

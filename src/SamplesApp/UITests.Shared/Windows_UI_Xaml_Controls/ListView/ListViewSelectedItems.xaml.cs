@@ -1,8 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Uno.Extensions;
-using Uno.Foundation.Logging;
 using Uno.UI.Samples.Controls;
+
+#if HAS_UNO
+using Uno.Foundation.Logging;
+#else
+using Microsoft.Extensions.Logging;
+using Uno.Logging;
+#endif
 
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -13,8 +19,11 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 	public sealed partial class ListViewSelectedItems : UserControl
 	{
 #pragma warning disable CS0109
-
+#if HAS_UNO
 		private new readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(ControlWithTouchEvent));
+#else
+		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(ControlWithTouchEvent));
+#endif
 #pragma warning restore CS0109
 
 		public ListViewSelectedItems()

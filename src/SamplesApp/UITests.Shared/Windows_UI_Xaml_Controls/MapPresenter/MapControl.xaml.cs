@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using Uno.Extensions;
-using Uno.Foundation.Logging;
 using Uno.UI.Samples.Controls;
 using Windows.Devices.Geolocation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Maps;
 
+#if HAS_UNO
+using Uno.Foundation.Logging;
+#else
+using Microsoft.Extensions.Logging;
+using Uno.Logging;
+#endif
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -16,7 +21,11 @@ namespace Uno.UI.Samples.Content.UITests.MapControl
 	public sealed partial class MapControl : UserControl
 	{
 #pragma warning disable CS0109
-		private new readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(ControlWithTouchEvent));
+#if HAS_UNO
+		private new readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(MapControl));
+#else
+		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(MapControl));
+#endif
 #pragma warning restore CS0109
 
 		public Geopoint PinPoint { get; set; }

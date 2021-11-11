@@ -11,13 +11,23 @@ using Windows.UI.Core;
 
 using ICommand = System.Windows.Input.ICommand;
 using EventHandler = System.EventHandler;
+
+#if HAS_UNO
 using Uno.Foundation.Logging;
+#else
+using Microsoft.Extensions.Logging;
+using Uno.Logging;
+#endif
 
 namespace Uno.UI.Samples.UITests.ImageTests.Models
 {
 	public class ImageWithLateSourceViewModel : ViewModelBase
 	{
+#if HAS_UNO
 		private static readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(ImageWithLateSourceViewModel));
+#else
+		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(ImageWithLateSourceViewModel));
+#endif
 
 		public ImageWithLateSourceViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{

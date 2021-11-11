@@ -15,7 +15,13 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+
+#if HAS_UNO
 using Uno.Foundation.Logging;
+#else
+using Microsoft.Extensions.Logging;
+using Uno.Logging;
+#endif
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -25,7 +31,11 @@ namespace UITests.Shared.Windows_UI_Xaml_Media.Transform
 	public sealed partial class Transformed_Ancestor_And_UI_Blocked : UserControl
 	{
 #pragma warning disable CS0109
-		private new readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(ControlWithTouchEvent));
+#if HAS_UNO
+		private new readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(Transformed_Ancestor_And_UI_Blocked));
+#else
+		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(Transformed_Ancestor_And_UI_Blocked));
+#endif
 #pragma warning restore CS0109
 
 		private bool _isLoaded;

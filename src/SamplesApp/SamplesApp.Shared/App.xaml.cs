@@ -30,6 +30,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Logging;
 
+#if !HAS_UNO
+using Uno.Logging;
+#endif
+
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 #else
@@ -43,7 +47,11 @@ namespace SamplesApp
 	/// </summary>
 	sealed public partial class App : Application
 	{
+#if HAS_UNO
 		private static Uno.Foundation.Logging.Logger _log;
+#else
+		private static ILogger _log;
+#endif
 
 		static App()
 		{
@@ -446,9 +454,12 @@ namespace SamplesApp
 
 			});
 
-			global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
+
 			Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = factory;
+#if HAS_UNO
+			global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
 			_log = Uno.Foundation.Logging.LogExtensionPoint.Factory.CreateLogger(typeof(App));
+#endif
 		}
 
 		static void ConfigureFeatureFlags()

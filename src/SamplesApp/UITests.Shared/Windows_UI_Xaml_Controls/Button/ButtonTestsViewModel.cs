@@ -8,13 +8,23 @@ using Windows.UI.Core;
 using System.Runtime.CompilerServices;
 
 using ICommand = System.Windows.Input.ICommand;
+using Uno.Logging;
+
+#if HAS_UNO
 using Uno.Foundation.Logging;
+#else
+using Microsoft.Extensions.Logging;
+#endif
 
 namespace Uno.UI.Samples.Presentation.SamplePages
 {
 	public class ButtonTestsViewModel : ViewModelBase
 	{
+#if HAS_UNO
 		private readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(ButtonTestsViewModel));
+#else
+		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(ButtonTestsViewModel));
+#endif
 
 		private int _myData;
 		private string _message = string.Empty;

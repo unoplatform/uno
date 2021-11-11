@@ -2,10 +2,17 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using Uno.Foundation.Logging;
+using Uno.Extensions;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
+using Uno.Extensions;
+
+#if HAS_UNO
+using Uno.Foundation.Logging;
+#else
+using Uno.Logging;
+#endif
 
 namespace Uno.UI.Samples.Converters
 {
