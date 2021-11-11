@@ -8,12 +8,12 @@ using Windows.UI.Core;
 using System.Runtime.CompilerServices;
 
 using ICommand = System.Windows.Input.ICommand;
-using Uno.Logging;
 
 #if HAS_UNO
 using Uno.Foundation.Logging;
 #else
 using Microsoft.Extensions.Logging;
+using Uno.Logging;
 #endif
 
 namespace Uno.UI.Samples.Presentation.SamplePages
