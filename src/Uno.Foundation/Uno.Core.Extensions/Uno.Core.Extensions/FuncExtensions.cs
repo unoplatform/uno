@@ -19,7 +19,7 @@ using System.Collections.Generic;
 
 namespace Uno.Extensions
 {
-    public static partial class FuncExtensions
+    internal static partial class FuncExtensions
     {
         public static Func<T, bool> Not<T>(this Func<T, bool> func)
         {

@@ -21,7 +21,7 @@ using Uno.Extensions;
 
 namespace Uno.Expressions
 {
-    public class EditableUnaryExpression : EditableExpression<UnaryExpression>
+    internal class EditableUnaryExpression : EditableExpression<UnaryExpression>
     {
         public EditableUnaryExpression(UnaryExpression expression)
             : base(expression)

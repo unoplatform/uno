@@ -21,7 +21,7 @@ using Uno.Collections;
 
 namespace Uno.Extensions
 {
-	public static class DictionaryExtensions
+	internal static class DictionaryExtensions
 	{
 		public static TValue FindOrCreate<TKey, TValue>(this IDictionary<TKey, TValue> items, TKey key, Func<TValue> factory)
 		{

@@ -16,7 +16,7 @@
 // ******************************************************************
 namespace Uno.Extensions.ValueType
 {
-    public class Int32Support : ValueSupport<int>
+    internal class Int32Support : ValueSupport<int>
     {
         protected override int CoreAnd(int lhs, int rhs)
         {

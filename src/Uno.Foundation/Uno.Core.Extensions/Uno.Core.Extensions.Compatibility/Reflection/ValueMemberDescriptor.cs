@@ -19,7 +19,7 @@ using System.Reflection;
 
 namespace Uno.Reflection
 {
-    public abstract class ValueMemberDescriptor<TMemberInfo> : MemberDescriptor<TMemberInfo>, IValueMemberDescriptor
+    internal abstract class ValueMemberDescriptor<TMemberInfo> : MemberDescriptor<TMemberInfo>, IValueMemberDescriptor
         where TMemberInfo : MemberInfo
     {
         public ValueMemberDescriptor(TMemberInfo memberInfo)

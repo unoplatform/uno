@@ -26,7 +26,7 @@ namespace Uno.Equality
 	/// <summary>
 	/// An EqualityComparre which compare sequence of items
 	/// </summary>
-	public class CollectionEqualityComparer<T> : IEqualityComparer<IEnumerable<T>>
+	internal class CollectionEqualityComparer<T> : IEqualityComparer<IEnumerable<T>>
 	{
 		private readonly IEqualityComparer<T>? _comparer;
 

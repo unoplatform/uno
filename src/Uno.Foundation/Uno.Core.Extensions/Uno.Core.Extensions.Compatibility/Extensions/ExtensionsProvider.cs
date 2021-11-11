@@ -19,7 +19,7 @@ using CommonServiceLocator;
 
 namespace Uno.Extensions
 {
-    public static class ExtensionsProvider
+    internal static class ExtensionsProvider
     {
         public static TService Get<TService, TConcrete>()
             where TConcrete : TService, new()

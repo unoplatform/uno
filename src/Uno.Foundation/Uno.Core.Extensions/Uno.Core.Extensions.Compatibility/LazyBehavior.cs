@@ -16,7 +16,7 @@
 // ******************************************************************
 namespace Uno
 {
-    public enum LazyBehavior
+    internal enum LazyBehavior
     {
         Loaded,
         Default,

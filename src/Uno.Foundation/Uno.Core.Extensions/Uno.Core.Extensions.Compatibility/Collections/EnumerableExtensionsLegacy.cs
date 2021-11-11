@@ -6,7 +6,7 @@ using Uno.Collections;
 
 namespace Uno.Core.Collections
 {
-	public static class EnumerableExtensionsLegacy
+	internal static class EnumerableExtensionsLegacy
 	{
 		public static IEnumerable<Pair<object>> Pair(this IEnumerable xItems, IEnumerable yItems)
 		{

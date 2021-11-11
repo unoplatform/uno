@@ -31,7 +31,7 @@ namespace Uno.Disposables
 	/// public void Dispose() => _subscriptions.Dispose();
 	/// </remarks>
 	/// </summary>
-	public interface IExtensibleDisposable : IDisposable
+	internal interface IExtensibleDisposable : IDisposable
 	{
 		/// <summary>
 		/// Currently registered extensions

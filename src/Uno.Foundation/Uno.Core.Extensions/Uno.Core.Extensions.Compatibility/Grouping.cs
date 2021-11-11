@@ -23,7 +23,7 @@ using System.Text;
 
 namespace Uno
 {
-	public class Grouping<TKey, TValues>
+	internal class Grouping<TKey, TValues>
 					: IGrouping<TKey, TValues>
 	{
 		public TKey Key { get; private set; }

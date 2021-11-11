@@ -19,7 +19,7 @@ using System.Globalization;
 
 namespace Uno.Extensions
 {
-	public static class FormattableExtensions
+	internal static class FormattableExtensions
 	{
 		public static string ToStringInvariant<T>(this T number) where T : IFormattable
 		{

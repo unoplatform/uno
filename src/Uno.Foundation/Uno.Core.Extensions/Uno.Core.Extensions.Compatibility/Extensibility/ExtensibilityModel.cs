@@ -23,7 +23,7 @@ using System.Reflection;
 
 namespace Uno.Extensibility
 {
-	public static class ExtensionManagerExtensions
+	internal static class ExtensionManagerExtensions
 	{
 		public static TExtension FindOrCreateExtension<TExtension>(this IExtensionManager extensionManager, Func<TExtension> factory) where TExtension : IExtension
 		{
@@ -56,21 +56,21 @@ namespace Uno.Extensibility
 		}
 	}
 
-	public interface IExtensionManager
+	internal interface IExtensionManager
 	{
 		object Target { get; }
 		void RegisterExtension(IExtension extension);
 		IEnumerable<IExtension> GetRegisteredExtensions();
 	}
 
-	public interface IExtensionManager<TTarget> : IExtensionManager
+	internal interface IExtensionManager<TTarget> : IExtensionManager
 	{
 		new TTarget Target { get; }
 		void RegisterExtension(IExtension<TTarget> extension);
 		new IEnumerable<IExtension<TTarget>> GetRegisteredExtensions();
 	}
 
-	public class ExtensionManager<TTarget> : IExtensionManager<TTarget>
+	internal class ExtensionManager<TTarget> : IExtensionManager<TTarget>
 	{
 		private IList<IExtension<TTarget>> _extensions = new List<IExtension<TTarget>>();
 
@@ -112,12 +112,12 @@ namespace Uno.Extensibility
 		}
 	}
 
-	public interface IExtension
+	internal interface IExtension
 	{
 		void ApplyTo(object target);
 	}
 
-	public interface IExtension<TTarget> : IExtension
+	internal interface IExtension<TTarget> : IExtension
 	{
 		void ApplyTo(TTarget target);
 	}

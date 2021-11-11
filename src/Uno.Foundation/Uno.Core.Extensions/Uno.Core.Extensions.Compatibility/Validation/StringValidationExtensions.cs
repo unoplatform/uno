@@ -19,7 +19,7 @@ using Uno.Validation;
 
 namespace Uno.Extensions
 {
-	public static class StringValidationExtensions
+	internal static class StringValidationExtensions
 	{
 		public static string NotNullOrEmpty(this ValidationExtensionPoint<string> extension, string name)
 		{

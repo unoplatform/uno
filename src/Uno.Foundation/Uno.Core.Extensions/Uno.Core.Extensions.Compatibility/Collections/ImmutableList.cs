@@ -33,7 +33,7 @@ namespace Uno.Collections
 	/// if you are exposing it outside your code. For true immutability
 	/// protection, you should prefer those from Micrososft's Immutable Collections.
 	/// </remarks>
-	public class ImmutableList<T> : IImmutableList<T>
+	internal class ImmutableList<T> : IImmutableList<T>
 	{
 		private readonly T[] _data;
 

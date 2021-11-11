@@ -20,7 +20,7 @@ using System.Linq;
 
 namespace Uno
 {
-    public static class FieldsExtensions
+    internal static class FieldsExtensions
     {
         public static Func<TDerived, IEnumerable<object>> Concat<TBase, TDerived>(
             this Func<TBase, IEnumerable<object>> baseFields, Func<TDerived, IEnumerable<object>> derivedFields)

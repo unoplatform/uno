@@ -22,7 +22,7 @@ using Uno.Logging;
 
 namespace Uno.Disposables
 {
-    public static class DisposableExtensionsLegacy
+    internal static class DisposableExtensionsLegacy
 	{
 		/// <summary>
 		/// Dispose the dispoable, and if an error is raised log it

@@ -29,7 +29,7 @@ namespace Uno.Core.Comparison
 	/// A fast type comparer for dictionaries, to avoid going through object.Equals type checking. 
 	/// To be used along with <see cref="Dictionary{TKey, TValue}"/> when <see cref="Type"/> is the key.
 	/// </summary>
-	public class FastTypeComparer : IEqualityComparer<Type>
+	internal class FastTypeComparer : IEqualityComparer<Type>
 	{
 		public bool Equals(Type? x, Type? y) => object.ReferenceEquals(x, y);
 

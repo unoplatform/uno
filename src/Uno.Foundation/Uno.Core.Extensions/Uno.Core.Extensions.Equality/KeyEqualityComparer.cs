@@ -30,7 +30,7 @@ namespace Uno.Equality
 	/// For this comparer, the compared objects MUST IMPLEMENT <see cref="IKeyEquatable"/> (the non-generic version)
 	/// i.e. **not <see cref="IKeyEquatable{T}"/>**
 	/// </remarks>
-	public class KeyEqualityComparer : IEqualityComparer
+	internal class KeyEqualityComparer : IEqualityComparer
 	{
 		private readonly IEqualityComparer _fallbackComparer;
 
@@ -97,7 +97,7 @@ namespace Uno.Equality
 	/// An <see cref="IEqualityComparer{T}"/> which compares the key of the objects.
 	/// </summary>
 	/// <typeparam name="T">Type of the object to compare</typeparam>
-	public class KeyEqualityComparer<T> : IEqualityComparer<T>, IEqualityComparer
+	internal class KeyEqualityComparer<T> : IEqualityComparer<T>, IEqualityComparer
 		where T : IKeyEquatable<T>
 	{
 		/// <summary>

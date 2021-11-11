@@ -16,7 +16,7 @@
 // ******************************************************************
 namespace Uno.Extensions.ValueType
 {
-    public interface IValueSupport
+    internal interface IValueSupport
     {
         object And(object lhs, object rhs);
         object Or(object lhs, object rhs);

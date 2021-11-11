@@ -21,7 +21,7 @@ using System.Text;
 
 namespace Uno.Logging
 {
-    public static partial class LogExtensions
+    internal static partial class LogExtensions
     {
         /// <summary>
         /// Adds a debug log, but only if debug logs are enabled. If they're not, the provided messageDelegate

@@ -20,7 +20,7 @@ using System.Text;
 
 namespace Uno.Extensions
 {
-	public static class UriExtensions
+	internal static class UriExtensions
 	{
 		private const int EscapeDataStringCharactersMaxLength = 10000;
 
@@ -29,7 +29,7 @@ namespace Uno.Extensions
 		/// This extension bypasses the Uri.EscapeDataString characters limit.
 		/// </summary>
 		/// Source: http://stackoverflow.com/questions/6695208/uri-escapedatastring-invalid-uri-the-uri-string-is-too-long
-		public static string EscapeDataString(string value)
+		internal static string EscapeDataString(string value)
 		{
 			var sb = new StringBuilder();
 			var loops = value.Length / EscapeDataStringCharactersMaxLength;

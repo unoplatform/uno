@@ -19,7 +19,7 @@ using System.Collections.Generic;
 
 namespace Uno.Collections
 {
-    public class ListAdapter<T, U> : CollectionAdapter<T, U>, IList<U>
+    internal class ListAdapter<T, U> : CollectionAdapter<T, U>, IList<U>
     {
         public ListAdapter(IList<T> target, Func<U, T> from, Func<T, U> to)
             : base(target, from, to)

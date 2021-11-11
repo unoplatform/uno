@@ -17,7 +17,7 @@
 using System;
 namespace Uno.Reflection
 {
-    public interface IValueMemberDescriptor : IMemberDescriptor
+    internal interface IValueMemberDescriptor : IMemberDescriptor
     {
         object GetValue(object instance);
         void SetValue(object instance, object value);

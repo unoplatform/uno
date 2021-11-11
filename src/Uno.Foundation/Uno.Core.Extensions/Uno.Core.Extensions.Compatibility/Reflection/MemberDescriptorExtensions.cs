@@ -22,7 +22,7 @@ using Uno.Reflection;
 namespace Uno.Extensions
 {
     //TODO Use Extensions Pattern or move to ReflectionExtensions. Or maybe MemberInfoExtensions directly.
-    public static class MemberDescriptorExtensions
+    internal static class MemberDescriptorExtensions
     {
         public static T FindAttribute<T>(this IMemberDescriptor descriptor)
             where T : Attribute

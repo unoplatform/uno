@@ -18,7 +18,7 @@ using System;
 
 namespace Uno.Extensions
 {
-	public interface IIndentedStringBuilder
+	internal interface IIndentedStringBuilder
 	{
 		/// <summary>
 		/// Gets the current indentation level

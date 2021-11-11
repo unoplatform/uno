@@ -21,7 +21,7 @@ using Uno.Extensions;
 
 namespace Uno.Expressions
 {
-    public class EditableExpressionCollection<T>
+    internal class EditableExpressionCollection<T>
         where T : Expression
     {
         private readonly IList<EditableExpression<T>> items;

@@ -21,7 +21,7 @@ using System.Text;
 
 namespace Uno
 { 
-    public interface I<T>
+    internal interface I<T>
     { 
         T Value { get; }
     }  

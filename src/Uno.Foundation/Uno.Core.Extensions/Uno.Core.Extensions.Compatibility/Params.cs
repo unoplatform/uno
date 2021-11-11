@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace Uno
 {
-    public static class Params
+    internal static class Params
     {
         public static IEnumerable<T> AsEnumerable<T>(params T[] values)
         {

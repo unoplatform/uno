@@ -24,7 +24,7 @@ using System.Threading;
 
 namespace Uno
 {
-	public static partial class Transactional
+	internal static partial class Transactional
 	{
 		/// <summary>
 		/// Transactionally updates the <paramref name="original"/> reference using the provided <paramref name="selector"/>.

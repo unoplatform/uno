@@ -20,7 +20,7 @@ using System.Text;
 
 namespace Uno
 {
-	public class UnavailableResourceException : Exception
+	internal class UnavailableResourceException : Exception
 	{
 	}
 }

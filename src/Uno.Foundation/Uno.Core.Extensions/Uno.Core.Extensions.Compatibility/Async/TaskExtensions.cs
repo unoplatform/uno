@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace Uno.Extensions
 {
-    public static class TaskExtensions
+    internal static class TaskExtensions
     {
         public static T GetSyncResult<T>(this Task<T> task)
         {

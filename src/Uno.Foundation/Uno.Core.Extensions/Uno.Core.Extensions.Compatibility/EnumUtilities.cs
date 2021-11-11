@@ -24,7 +24,7 @@ using Uno.Reflection;
 
 namespace Uno
 {
-	public static class EnumUtilities
+	internal static class EnumUtilities
 	{
 		static readonly Func<Type, bool, System.Tuple<string, object, object>[]> _getValues = GetValues;
 

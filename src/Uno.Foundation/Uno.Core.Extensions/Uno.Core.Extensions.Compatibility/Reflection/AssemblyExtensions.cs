@@ -21,7 +21,7 @@ using System.Text.RegularExpressions;
 
 namespace Uno.Extensions
 {
-    public static class AssemblyExtensions
+    internal static class AssemblyExtensions
     {
         public static Version GetVersionNumber(this Assembly assembly)
         {

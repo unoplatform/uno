@@ -21,7 +21,7 @@ using System.Text;
 
 namespace Uno
 {
-    public class Instance<T> : I<T>
+    internal class Instance<T> : I<T>
     {
         public Instance(Func<T> provider)
         {

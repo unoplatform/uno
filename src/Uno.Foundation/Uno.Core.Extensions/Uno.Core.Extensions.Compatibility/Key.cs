@@ -25,7 +25,7 @@ namespace Uno
     /// <summary>
     /// Represents a Key concept.
     /// </summary>
-    public class Key
+    internal class Key
     {
         private static readonly Func<Key, IEnumerable<object>> Fields = item => item.Items;
 

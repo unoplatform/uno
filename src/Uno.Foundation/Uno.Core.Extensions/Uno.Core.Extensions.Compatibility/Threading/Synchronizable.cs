@@ -18,7 +18,7 @@ using System;
 
 namespace Uno.Threading
 {
-    public class Synchronizable<T> : ISynchronizable<T>
+    internal class Synchronizable<T> : ISynchronizable<T>
     {
 #if WINDOWS_PHONE
 		

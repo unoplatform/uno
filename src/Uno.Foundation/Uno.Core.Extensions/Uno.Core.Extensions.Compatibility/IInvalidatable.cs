@@ -21,7 +21,7 @@ using System.Text;
 
 namespace Uno
 {
-    public interface IInvalidatable
+    internal interface IInvalidatable
     {
         void Invalidate();
     }

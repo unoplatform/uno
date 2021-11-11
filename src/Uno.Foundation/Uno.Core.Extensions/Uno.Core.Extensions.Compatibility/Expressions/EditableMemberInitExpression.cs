@@ -20,7 +20,7 @@ using Uno.Extensions;
 
 namespace Uno.Expressions
 {
-    public class EditableMemberInitExpression : EditableExpression<MemberInitExpression>
+    internal class EditableMemberInitExpression : EditableExpression<MemberInitExpression>
     {
         private readonly List<MemberBinding> bindings;
 

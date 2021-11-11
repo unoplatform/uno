@@ -21,7 +21,7 @@ using Uno.Extensions;
 
 namespace Uno.Expressions
 {
-    public class EditableTypeBinaryExpression : EditableExpression<TypeBinaryExpression>
+    internal class EditableTypeBinaryExpression : EditableExpression<TypeBinaryExpression>
     {
         public EditableTypeBinaryExpression(TypeBinaryExpression expression)
             : base(expression, false)

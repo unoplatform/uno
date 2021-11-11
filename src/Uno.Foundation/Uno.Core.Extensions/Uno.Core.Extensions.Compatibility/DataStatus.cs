@@ -24,7 +24,7 @@ namespace Uno
 {
     [DataContract(Namespace = "Uno.Contract")]
     [Flags]
-    public enum DataStatus
+    internal enum DataStatus
     {
         [EnumMember]
         NotInitialized = 0,

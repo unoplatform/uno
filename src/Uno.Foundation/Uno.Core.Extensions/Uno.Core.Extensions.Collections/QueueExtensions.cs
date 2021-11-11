@@ -19,7 +19,7 @@ using System.Collections.Generic;
 
 namespace Uno.Extensions
 {
-    public static class QueueExtensions
+    internal static class QueueExtensions
     {
         public static bool Remove<T>(this Queue<T> queue, Func<T, bool> predicate)
         {

@@ -20,7 +20,7 @@ using Uno.Decorator;
 
 namespace Uno.Collections
 {
-    public class ListDecorator<T> : CollectionDecorator<T>, IList<T>
+    internal class ListDecorator<T> : CollectionDecorator<T>, IList<T>
     {
         public ListDecorator()
         {

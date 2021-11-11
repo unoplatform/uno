@@ -20,7 +20,7 @@ using System.Globalization;
 
 namespace Uno.Logging
 {
-	public static partial class LogExtensions
+	internal static partial class LogExtensions
 	{
 		/// <summary>
 		/// Send a log message of the provided log level to configured loggers.

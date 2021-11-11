@@ -28,7 +28,7 @@ namespace Uno
 	/// https://en.wikipedia.org/wiki/Option_type
 	/// </remarks>
 	[DebuggerDisplay("None()")]
-	public sealed class None<T> : Option<T>
+	internal sealed class None<T> : Option<T>
 	{
 		/// <summary>
 		/// Singleton instance of this

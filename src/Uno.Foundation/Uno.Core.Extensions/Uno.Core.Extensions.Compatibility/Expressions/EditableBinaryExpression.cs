@@ -20,7 +20,7 @@ using Uno.Extensions;
 
 namespace Uno.Expressions
 {
-    public class EditableBinaryExpression : EditableExpression<BinaryExpression>
+    internal class EditableBinaryExpression : EditableExpression<BinaryExpression>
     {
         public EditableBinaryExpression(BinaryExpression expression)
             : base(expression)

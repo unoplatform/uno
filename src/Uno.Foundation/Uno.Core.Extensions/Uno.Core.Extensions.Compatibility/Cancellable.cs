@@ -20,7 +20,7 @@ using Uno.Extensions;
 
 namespace Uno
 {
-	public class Cancellable
+	internal class Cancellable
 	{
 		private readonly Action _onCancel;
 		private int _isCancelled = 0;

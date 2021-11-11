@@ -22,7 +22,7 @@ using System.Collections.Generic;
 
 namespace Uno.Equality
 {
-	public class WeakReferenceEqualityComparer<T> : IEqualityComparer<System.WeakReference<T>>
+	internal class WeakReferenceEqualityComparer<T> : IEqualityComparer<System.WeakReference<T>>
 		where T : class
 	{
 		public bool Equals(System.WeakReference<T> w1, T t2)

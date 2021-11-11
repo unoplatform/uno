@@ -27,7 +27,7 @@ namespace Uno.Extensions
 	/// <summary>
 	/// Provides Extensions Methods for IList
 	/// </summary>
-	public static class ListExtensions
+	internal static class ListExtensions
 	{
 		/// <summary>
 		/// Returns a readonly instance of the specified list.

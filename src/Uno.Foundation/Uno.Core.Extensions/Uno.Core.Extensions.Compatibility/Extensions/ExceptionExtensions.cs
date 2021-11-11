@@ -21,7 +21,7 @@ using System.Text;
 
 namespace Uno.Extensions
 {
-	public static class ExceptionExtensions
+	internal static class ExceptionExtensions
 	{
 		public static void WriteToDebug(this Exception ex, string message)
 		{

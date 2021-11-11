@@ -22,7 +22,7 @@ using System.Linq;
 
 namespace Uno.Disposables
 {
-    public static class DisposableExtensions
+    internal static class DisposableExtensions
 	{
 		/// <summary>
 		/// Register an object who implements IDisposable to be disposed by a CompositeDisposable.

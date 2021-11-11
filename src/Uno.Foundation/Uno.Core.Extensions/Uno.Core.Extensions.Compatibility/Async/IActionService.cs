@@ -19,7 +19,7 @@ using System.Security.Principal;
 
 namespace Uno.Async
 {
-    public interface IActionService
+    internal interface IActionService
     {
         void Register<T>(Func<T> provider, Action<T> action);
 

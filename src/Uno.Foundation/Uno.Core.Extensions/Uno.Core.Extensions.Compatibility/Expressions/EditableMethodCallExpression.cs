@@ -21,7 +21,7 @@ using Uno.Extensions;
 
 namespace Uno.Expressions
 {
-    public class EditableMethodCallExpression : EditableExpression<MethodCallExpression>
+    internal class EditableMethodCallExpression : EditableExpression<MethodCallExpression>
     {
         private readonly EditableExpressionCollection<Expression> arguments;
 

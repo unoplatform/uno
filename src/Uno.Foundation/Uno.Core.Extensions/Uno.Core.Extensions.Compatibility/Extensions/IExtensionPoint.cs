@@ -18,7 +18,7 @@ using System;
 
 namespace Uno.Extensions
 {
-    public interface IExtensionPoint
+    internal interface IExtensionPoint
     {
         object ExtendedValue { get; }
         Type ExtendedType { get; }

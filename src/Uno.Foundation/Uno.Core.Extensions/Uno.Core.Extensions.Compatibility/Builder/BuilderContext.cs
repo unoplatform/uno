@@ -27,7 +27,7 @@ namespace Uno.Builder
 	/// A context that helps the creation of an IBuilder based builder.
 	/// </summary>
 	/// <typeparam name="TOwner"></typeparam>
-	public class BuilderContext<TOwner> : BuilderContext
+	internal class BuilderContext<TOwner> : BuilderContext
 	{
 		public BuilderContext(TOwner owner)
 		{
@@ -41,7 +41,7 @@ namespace Uno.Builder
 	/// A context that helps the creation of an IBuilder based builder.
 	/// </summary>
 	/// <typeparam name="TOwner"></typeparam>
-	public class BuilderContext
+	internal class BuilderContext
 	{
 		private static WeakAttachedDictionary<object, object> _attached = new WeakAttachedDictionary<object, object>();
 

@@ -18,7 +18,7 @@ using System;
 
 namespace Uno
 {
-    public interface ILoadable
+    internal interface ILoadable
     {
         bool IsLoaded { get; }
         event EventHandler<EventArgs> Loaded;

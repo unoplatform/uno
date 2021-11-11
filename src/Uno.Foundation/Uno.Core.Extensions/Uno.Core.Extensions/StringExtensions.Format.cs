@@ -22,7 +22,7 @@ using System.Text;
 
 namespace Uno.Extensions
 {
-	public static partial class StringExtensions
+	internal static partial class StringExtensions
 	{
 		/// <summary>
 		/// Improves upon <see cref="string.Format(string, object[])"/> to allow a 4th and 5th

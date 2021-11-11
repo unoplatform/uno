@@ -10,7 +10,7 @@ using Uno.Threading;
 
 namespace Uno.Core.Collections
 {
-	public static class DictionaryExtensionsLegacy
+	internal static class DictionaryExtensionsLegacy
 	{
 		public static TValue FindOrCreate<TKey, TValue>(this SynchronizedDictionary<TKey, TValue> items, TKey key, Func<TValue> factory)
 		{

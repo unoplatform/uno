@@ -21,7 +21,7 @@ using System.Text;
 
 namespace Uno.Extensions
 {
-    public static class ActionExtensions
+    internal static class ActionExtensions
     {
         public static IDisposable ToDisposable(this Action action)
         {

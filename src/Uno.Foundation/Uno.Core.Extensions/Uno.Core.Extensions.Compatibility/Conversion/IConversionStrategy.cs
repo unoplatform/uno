@@ -19,7 +19,7 @@ using System.Globalization;
 
 namespace Uno.Conversion
 {
-	public interface IConversionStrategy
+	internal interface IConversionStrategy
 	{
 		/// <summary>
 		/// If the strategy can support a specific value as input

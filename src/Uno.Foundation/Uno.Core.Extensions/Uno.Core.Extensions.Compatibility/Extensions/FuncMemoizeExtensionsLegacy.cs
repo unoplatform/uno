@@ -21,7 +21,7 @@ using Uno.Collections;
 
 namespace Uno.Extensions
 {
-	public static class FuncMemoizeExtensionsLegacy
+	internal static class FuncMemoizeExtensionsLegacy
 	{
 		/// <summary>
 		/// Creates a memoizer with one parameter for the the specified task provider. The task provider is guaranteed to be executed only once per parameter instance.

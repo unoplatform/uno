@@ -22,7 +22,7 @@ namespace Uno.Extensions
     /// <summary>
     /// Provides Extensions Methods for IGrouping.
     /// </summary>
-    public static class GroupingExtensions
+    internal static class GroupingExtensions
     {
         /// <summary>
         /// Adapts a IEnumarable of a IGrouping into a IDictionary.

@@ -4,7 +4,7 @@ using Uno.Collections;
 
 namespace Uno.Core.Collections
 {
-	public static class CollectionsExtensionsLegacy
+	internal static class CollectionsExtensionsLegacy
 	{
 		public static ICollection<U> Adapt<T, U>(this ICollection<T> collection)
 		{

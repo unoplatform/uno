@@ -19,7 +19,7 @@ using Uno.Extensions.ValueType;
 
 namespace Uno.Extensions
 {
-	public static class DateTimeExtensions
+	internal static class DateTimeExtensions
 	{
 		public static bool IsWeekEnd(this DateTime instance)
 		{

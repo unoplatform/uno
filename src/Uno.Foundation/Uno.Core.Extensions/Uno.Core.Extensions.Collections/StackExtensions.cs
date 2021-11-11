@@ -20,7 +20,7 @@ using Uno.Disposables;
 
 namespace Uno.Extensions
 {
-    public static class StackExtensions
+    internal static class StackExtensions
     {
         public static T PeekOrDefault<T>(this Stack<T> stack)
         {

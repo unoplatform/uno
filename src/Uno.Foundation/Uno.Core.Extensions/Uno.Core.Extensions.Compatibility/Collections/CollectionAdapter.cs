@@ -28,7 +28,7 @@ namespace Uno.Collections
     /// </summary>
     /// <typeparam name="T">Original type</typeparam>
     /// <typeparam name="U">Target type</typeparam>
-    public class CollectionAdapter<T, U> : Decorator<ICollection<T>>, ICollection<U>
+    internal class CollectionAdapter<T, U> : Decorator<ICollection<T>>, ICollection<U>
     {
         /// <summary>
         /// Constructs a CollectionAdapter

@@ -20,7 +20,7 @@ using System.Reflection;
 
 namespace Uno.Extensions
 {
-	public static class EnumHelper
+	internal static class EnumHelper
 	{
 		/// <summary>
 		/// This is an alternative to Enum.GetNames() who is faster because are

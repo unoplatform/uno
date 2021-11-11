@@ -22,7 +22,7 @@ namespace Uno
 	/// Container for stock actions.
 	/// </summary>
 	/// <typeparam name="T">The type of the argument for the actions.</typeparam>
-	public static class Actions<T>
+	internal static class Actions<T>
 	{
 		/// <summary>
 		/// A Null action, that performs nothing.
@@ -35,7 +35,7 @@ namespace Uno
 		public static readonly ActionAsync<T> NullAsync = (_, __) => Actions.NullTask;
 	}
 
-	public static class Actions<T1, T2>
+	internal static class Actions<T1, T2>
 	{
 		/// <summary>
 		/// A Null action, that performs nothing.

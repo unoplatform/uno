@@ -20,7 +20,7 @@ using System.Linq.Expressions;
 namespace Uno.Expressions.Builder
 {
     //TODO
-    public interface IPredicateBuilder<T>
+    internal interface IPredicateBuilder<T>
     {
         Expression<Func<T, bool>> ToExpression();
     }

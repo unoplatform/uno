@@ -23,7 +23,7 @@ namespace Uno.Disposables
     /// <summary>
     /// Represents a disposable resource whose underlying disposable resource can be replaced by another disposable resource, causing automatic disposal of the previous underlying disposable resource.
     /// </summary>
-    public sealed class SerialDisposable : ICancelable
+    internal sealed class SerialDisposable : ICancelable
     {
         private readonly object _gate = new object();
         private IDisposable? _current;

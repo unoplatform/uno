@@ -21,7 +21,7 @@ using Uno.Contracts;
 
 namespace Uno.Reflection
 {
-    public class BindingContract : IContract
+    internal class BindingContract : IContract
     {
         internal static readonly BindingContract Default;
 
@@ -54,7 +54,7 @@ namespace Uno.Reflection
     // Summary:
     //     Marks each type of member that is defined as a derived class of MemberInfo.
     [Flags]
-    public enum MemberTypes
+    internal enum MemberTypes
     {
         Constructor = 1,
         Event = 2,

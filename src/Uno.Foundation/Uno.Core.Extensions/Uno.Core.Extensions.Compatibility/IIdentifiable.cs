@@ -21,7 +21,7 @@ using System.Text;
 
 namespace Uno
 {
-    public interface IIdentifiable
+    internal interface IIdentifiable
     {
         Guid Id { get; set; }
     }

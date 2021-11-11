@@ -29,7 +29,7 @@ namespace Uno
 	/// immutability, in conjuction with de-serialization scenarios where performance is an issue.
 	/// </remarks>
 	[System.AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = true)]
-	public sealed class InternalsWriteableFromAttribute : Attribute
+	internal sealed class InternalsWriteableFromAttribute : Attribute
 	{
 		public InternalsWriteableFromAttribute(string source)
 		{

@@ -21,7 +21,7 @@ using System.Reflection;
 
 namespace Uno.Conversion
 {
-	public class CustomCulturelessConversionStrategy<TFrom, TTo> : IConversionStrategy
+	internal class CustomCulturelessConversionStrategy<TFrom, TTo> : IConversionStrategy
 	{
 		private readonly Func<TFrom, TTo> _conversion;
 

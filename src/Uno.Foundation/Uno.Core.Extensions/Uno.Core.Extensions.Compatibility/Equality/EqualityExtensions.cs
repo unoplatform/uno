@@ -22,7 +22,7 @@ using Uno.Equality;
 
 namespace Uno.Extensions
 {
-	public static class EqualityExtensions
+	internal static class EqualityExtensions
 	{
 		public static EqualityExtensionPoint<T> Equality<T>(this T instance)
 		{

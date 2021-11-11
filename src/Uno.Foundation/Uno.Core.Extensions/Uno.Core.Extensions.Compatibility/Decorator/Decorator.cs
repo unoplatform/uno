@@ -22,7 +22,7 @@ namespace Uno.Decorator
     /// A implementation of IDecorator.
     /// </summary>
     /// <typeparam name="T">The type to decorate.</typeparam>
-    public class Decorator<T> : IDecorator<T>
+    internal class Decorator<T> : IDecorator<T>
     {
         /// <summary>
         /// Constructs a new Decorator for a default(T) target.

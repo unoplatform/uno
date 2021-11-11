@@ -25,7 +25,7 @@ namespace Uno.Comparison
 	/// An <see cref="IComparer{T}"/> configurable using Funcs
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public class FuncComparer<T> : IComparer<T>
+	internal class FuncComparer<T> : IComparer<T>
 	{
 		private readonly Func<T?, T?, int> _compare;
 

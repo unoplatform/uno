@@ -20,7 +20,7 @@ using Uno.Extensions;
 
 namespace Uno.Expressions
 {
-    public class PredicateExpression<T>
+    internal class PredicateExpression<T>
     {
         private readonly Expression<Func<T, bool>> expression;
 

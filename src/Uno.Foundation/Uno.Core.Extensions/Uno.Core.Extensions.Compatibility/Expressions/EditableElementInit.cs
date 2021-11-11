@@ -19,7 +19,7 @@ using System.Reflection;
 
 namespace Uno.Expressions
 {
-    public class EditableElementInit
+    internal class EditableElementInit
     {
         private readonly EditableExpressionCollection<Expression> arguments;
 

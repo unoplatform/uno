@@ -19,7 +19,7 @@ using Uno.Validation;
 
 namespace Uno.Extensions
 {
-    public static class ValidationExtensions
+    internal static class ValidationExtensions
     {
         public static ValidationExtensionPoint<T> Validation<T>(this T value) where T : class
         {

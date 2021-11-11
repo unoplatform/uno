@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace Uno.Extensions
 {
-	public static partial class FuncExtensions
+	internal static partial class FuncExtensions
 	{
 		public static async Task<T> Retry<T>(this Func<Task<T>> selector, int tries = 3, TimeSpan? retryDelay = null)
 		{

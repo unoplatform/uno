@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 namespace Uno.Extensions
 {
-	public static partial class FuncExtensions
+	internal static partial class FuncExtensions
 	{
 		private static ConditionalWeakTable<object, ConcurrentDictionary<object, object>> _weakResults =
 			new ConditionalWeakTable<object, ConcurrentDictionary<object, object>>();

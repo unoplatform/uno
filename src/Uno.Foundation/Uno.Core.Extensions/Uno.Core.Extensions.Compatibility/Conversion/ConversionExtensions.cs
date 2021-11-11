@@ -20,7 +20,7 @@ using System.Globalization;
 
 namespace Uno.Extensions
 {
-	public static class ConversionExtensions
+	internal static class ConversionExtensions
 	{
 		public static IConversionExtensions Extensions { get; } = new DefaultConversionExtensions();
 

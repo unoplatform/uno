@@ -26,7 +26,7 @@ namespace Uno
 	/// to mark elements as obsolete, but fail compilation based on static analysis rules.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Interface | AttributeTargets.Constructor | AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Event | AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
-	public sealed class LegacyAttribute : Attribute
+	internal sealed class LegacyAttribute : Attribute
 	{
 		readonly string _ruleId;
 

@@ -20,7 +20,7 @@ using Uno.Extensions;
 
 namespace Uno.Reflection
 {
-    public class PropertyDescriptor : ValueMemberDescriptor<PropertyInfo>
+    internal class PropertyDescriptor : ValueMemberDescriptor<PropertyInfo>
     {
         public PropertyDescriptor(PropertyInfo pi)
             : base(pi)

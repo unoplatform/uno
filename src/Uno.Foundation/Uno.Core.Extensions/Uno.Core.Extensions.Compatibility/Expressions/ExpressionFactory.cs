@@ -19,7 +19,7 @@ using System.Linq.Expressions;
 
 namespace Uno.Expressions
 {
-    public static class ExpressionFactory
+    internal static class ExpressionFactory
     {
         public static Expression<Func<T, bool>> PropertyEqualConstant<T>(string propertyName, object value)
         {

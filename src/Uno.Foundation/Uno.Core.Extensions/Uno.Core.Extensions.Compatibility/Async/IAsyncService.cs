@@ -21,7 +21,7 @@ using System.Text;
 
 namespace Uno.Async
 {
-    public interface IAsyncService
+    internal interface IAsyncService
     {
         void Invoke<T>(
             Func<AsyncCallback, object, IAsyncResult> begin,

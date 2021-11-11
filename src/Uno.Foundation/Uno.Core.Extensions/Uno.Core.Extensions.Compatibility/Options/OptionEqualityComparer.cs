@@ -23,7 +23,7 @@ namespace Uno
 	/// This is an implementation of <see cref="IEqualityComparer{T}"/> which compare the
 	/// <see cref="Option{T}"/> type and uses an optional inner comparer for the value.
 	/// </summary>
-	public sealed class OptionEqualityComparer<T> : IEqualityComparer<Option<T>>
+	internal sealed class OptionEqualityComparer<T> : IEqualityComparer<Option<T>>
 	{
 		private readonly IEqualityComparer<T> _innerComparer;
 

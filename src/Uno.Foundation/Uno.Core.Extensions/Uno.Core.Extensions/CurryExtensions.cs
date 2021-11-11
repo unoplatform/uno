@@ -19,7 +19,7 @@ using System.Threading;
 
 namespace Uno.Extensions
 {
-	public static class CurryExtensions
+	internal static class CurryExtensions
 	{
 		#region Func currying extenions
 

@@ -22,7 +22,7 @@ using _Task = System.Threading.Tasks.Task;
 
 namespace Uno
 {
-    public static class Actions
+    internal static class Actions
     {
         /// <summary>
         /// An action which does nothing.

@@ -16,7 +16,7 @@
 // ******************************************************************
 namespace Uno.Threading
 {
-    public interface ISynchronizable<T>
+    internal interface ISynchronizable<T>
     {
         ISynchronizableLock<T> Lock { get; }
     }

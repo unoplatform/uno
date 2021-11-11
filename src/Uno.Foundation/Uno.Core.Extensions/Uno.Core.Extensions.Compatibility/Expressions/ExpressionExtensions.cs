@@ -21,7 +21,7 @@ using System.Reflection;
 
 namespace Uno.Extensions
 {
-    public static class ExpressionExtensions
+    internal static class ExpressionExtensions
     {
         public static string GetMemberName<T>(this Expression<Func<T>> selector)
         {

@@ -20,7 +20,7 @@ using Uno.Extensions;
 
 namespace Uno.Collections
 {
-    public class DictionnaryCompositeDisposable<TKey> : Dictionary<TKey, IDisposable>, IDisposable
+    internal class DictionnaryCompositeDisposable<TKey> : Dictionary<TKey, IDisposable>, IDisposable
     {
         ~DictionnaryCompositeDisposable()
         {

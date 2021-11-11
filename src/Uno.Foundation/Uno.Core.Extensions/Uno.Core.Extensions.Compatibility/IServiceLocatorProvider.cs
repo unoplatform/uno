@@ -22,7 +22,7 @@ using CommonServiceLocator;
 
 namespace Uno
 {
-    public interface IServiceLocatorProvider
+    internal interface IServiceLocatorProvider
     {
         IServiceLocator ServiceLocator { get; }
     }

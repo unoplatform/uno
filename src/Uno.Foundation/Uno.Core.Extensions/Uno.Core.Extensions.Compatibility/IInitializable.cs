@@ -22,7 +22,7 @@ using System.Text;
 namespace Uno
 {
 	[Legacy("NV0120")]
-	public interface IInitializable
+	internal interface IInitializable
 	{
 		[Legacy("NV0120")]
 		bool IsInitialized { get; }

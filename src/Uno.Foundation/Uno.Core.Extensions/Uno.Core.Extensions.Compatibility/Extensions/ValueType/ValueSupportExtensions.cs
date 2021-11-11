@@ -16,7 +16,7 @@
 // ******************************************************************
 namespace Uno.Extensions.ValueType
 {
-    public static class ValueSupportExtensions
+    internal static class ValueSupportExtensions
     {
         public static T And<T>(this T lhs, T rhs)
             where T : struct

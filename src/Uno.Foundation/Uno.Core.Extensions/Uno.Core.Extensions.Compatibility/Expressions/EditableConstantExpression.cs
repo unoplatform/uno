@@ -18,7 +18,7 @@ using System.Linq.Expressions;
 
 namespace Uno.Expressions
 {
-    public class EditableConstantExpression : EditableExpression<ConstantExpression>
+    internal class EditableConstantExpression : EditableExpression<ConstantExpression>
     {
         public EditableConstantExpression(ConstantExpression expression)
             : base(expression, false)

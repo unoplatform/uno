@@ -22,7 +22,7 @@ using Uno.Extensions;
 					
 namespace Uno.Collections
 {
-	public class ConditionalWeakTableSlow<TKey, TValue>
+	internal class ConditionalWeakTableSlow<TKey, TValue>
 		where TKey : class
 		where TValue : class, new()
 	{

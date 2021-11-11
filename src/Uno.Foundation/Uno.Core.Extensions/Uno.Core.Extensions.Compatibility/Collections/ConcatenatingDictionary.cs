@@ -29,7 +29,7 @@ namespace Uno.Collections
 	/// reflects the values, with possible repeated keys. This is required since a few Linq operators use Count and CopyTo
 	/// for optimisations.
 	/// </summary>
-    public class ConcatenatingDictionary : IDictionary<string, string>
+    internal class ConcatenatingDictionary : IDictionary<string, string>
     {
 		private readonly char _separator;
 		private readonly Dictionary<string, string> _innerDictionary;

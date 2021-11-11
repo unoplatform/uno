@@ -20,7 +20,7 @@ using System.IO;
 
 namespace Uno.Extensions
 {
-    public static class TextWriterExtensions
+    internal static class TextWriterExtensions
     {
         public static void Write(this TextWriter writer, string format, params object[] args)
         {

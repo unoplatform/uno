@@ -25,7 +25,7 @@ namespace Uno.Threading
     /// <summary>
     /// An asynchronous lock, that can be used in conjuction with C# async/await
     /// </summary>
-    public sealed class AsyncLock
+    internal sealed class AsyncLock
     {
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 

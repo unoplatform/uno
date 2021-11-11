@@ -19,7 +19,7 @@ using System;
 namespace Uno
 {
     [Flags]
-    public enum DateTimeUnit
+    internal enum DateTimeUnit
     {
         Year = 1,
         Month = 2,

@@ -22,7 +22,7 @@ using System.Linq.Expressions;
 
 namespace Uno.Extensions
 {
-    public static class ReflectionExtensions
+    internal static class ReflectionExtensions
     {
         public static IReflectionExtensions Extensions { get; } = new DefaultReflectionExtensions();
 

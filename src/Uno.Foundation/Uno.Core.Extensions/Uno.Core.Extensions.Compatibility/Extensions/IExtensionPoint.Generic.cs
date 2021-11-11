@@ -16,7 +16,7 @@
 // ******************************************************************
 namespace Uno.Extensions
 {
-    public interface IExtensionPoint<T> : IExtensionPoint
+    internal interface IExtensionPoint<T> : IExtensionPoint
     {
         new T ExtendedValue { get; }
     }

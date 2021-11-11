@@ -21,7 +21,7 @@ namespace Uno.Disposables
 	/// <summary>
 	/// Provides a set of static methods for creating Disposables.
 	/// </summary>
-	public static class Disposable
+	internal static class Disposable
 	{
 		/// <summary>
 		/// Gets the disposable that does nothing when disposed.

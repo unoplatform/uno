@@ -166,7 +166,7 @@ namespace Uno
 		}
 	}
 
-	public static class NullableFuncs<T>
+	internal static class NullableFuncs<T>
 		where T : struct
 	{
 		public static readonly Func<T?, T> FromNullable = item => item.GetValueOrDefault();

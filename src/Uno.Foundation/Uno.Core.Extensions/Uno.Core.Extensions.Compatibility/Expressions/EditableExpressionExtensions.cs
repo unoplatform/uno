@@ -21,7 +21,7 @@ using Uno.Expressions;
 
 namespace Uno.Extensions
 {
-    public static class EditableExpressionExtensions
+    internal static class EditableExpressionExtensions
     {
         public static EditableLambdaExpression<T> Edit<T>(this Expression<T> expression)
         {

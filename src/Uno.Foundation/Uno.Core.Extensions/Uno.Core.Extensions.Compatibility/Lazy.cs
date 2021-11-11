@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 namespace Uno
 {
     [Legacy("NV0049")]
-	public static class Lazy
+	internal static class Lazy
     {
         public static T Get<T>(ref T value, Func<T> factory)
 			where T : class

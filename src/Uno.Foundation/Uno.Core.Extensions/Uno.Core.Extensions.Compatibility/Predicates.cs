@@ -22,7 +22,7 @@ namespace Uno
 	/// <summary>
 	/// A set of common prediactes
 	/// </summary>
-	public static class Predicates
+	internal static class Predicates
 	{
 		/// <summary>
 		/// A predicate that checks equality of two objects using the <see cref="EqualityExtensions"/>.

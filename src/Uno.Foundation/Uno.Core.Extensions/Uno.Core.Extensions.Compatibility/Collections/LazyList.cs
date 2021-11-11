@@ -19,7 +19,7 @@ using System.Collections.Generic;
 
 namespace Uno.Collections
 {
-    public class LazyList<T> : ListDecorator<T>
+    internal class LazyList<T> : ListDecorator<T>
     {
         public LazyList(Func<IList<T>> factory)
             : base(null)

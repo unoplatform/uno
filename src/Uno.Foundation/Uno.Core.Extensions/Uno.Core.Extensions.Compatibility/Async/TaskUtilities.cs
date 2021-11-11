@@ -28,7 +28,7 @@ using StaticTask = System.Threading.Tasks.Task;
 
 namespace Uno
 {
-	public static class TaskUtilities
+	internal static class TaskUtilities
 	{
 		/// <summary>
 		/// Executes a provided <see cref="Task"/>, cancelling the task and executing a fallback action if the Task doesn't complete before the provided timeout.

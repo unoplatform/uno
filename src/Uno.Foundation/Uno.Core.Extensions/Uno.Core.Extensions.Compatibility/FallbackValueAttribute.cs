@@ -19,7 +19,7 @@ using System;
 namespace Uno
 {
 	[AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
-	public class FallbackValueAttribute : Attribute
+	internal class FallbackValueAttribute : Attribute
 	{
 	}
 }

@@ -19,7 +19,7 @@ namespace Uno
 	/// <summary>
 	/// Static method to create an <see cref="Option{T}"/>
 	/// </summary>
-	public abstract class Option
+	internal abstract class Option
 	{
 		/// <summary>
 		/// Creates an option which represent an absence of value.
@@ -74,7 +74,7 @@ namespace Uno
 	/// This is the implementation of a functional "Option Type" using F# semantic
 	/// https://en.wikipedia.org/wiki/Option_type
 	/// </remarks>
-	public abstract class Option<T> : Option
+	internal abstract class Option<T> : Option
 	{
 		protected Option(OptionType type)
 			: base(type)

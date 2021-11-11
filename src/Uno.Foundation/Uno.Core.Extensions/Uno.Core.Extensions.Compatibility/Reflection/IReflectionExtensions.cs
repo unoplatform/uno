@@ -21,7 +21,7 @@ using System.Linq.Expressions;
 
 namespace Uno.Reflection
 {
-    public interface IReflectionExtensions
+    internal interface IReflectionExtensions
     {
         IReflectionExtensionPoint Reflection(Type type);
         IReflectionExtensionPoint<T> Reflection<T>(T instance);

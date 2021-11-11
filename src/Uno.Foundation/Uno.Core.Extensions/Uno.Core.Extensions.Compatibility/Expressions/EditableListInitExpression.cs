@@ -21,7 +21,7 @@ using Uno.Extensions;
 
 namespace Uno.Expressions
 {
-    public class EditableListInitExpression : EditableExpression<ListInitExpression>
+    internal class EditableListInitExpression : EditableExpression<ListInitExpression>
     {
         private readonly List<EditableElementInit> initializers;
 

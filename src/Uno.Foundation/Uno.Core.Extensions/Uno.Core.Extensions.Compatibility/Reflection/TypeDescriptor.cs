@@ -19,7 +19,7 @@ using System;
 
 namespace Uno.Reflection
 {
-    public class TypeDescriptor : MemberDescriptor<Type>
+    internal class TypeDescriptor : MemberDescriptor<Type>
     {
         public TypeDescriptor(Type type)
             : base(type)

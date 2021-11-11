@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 namespace Uno.Threading
 {
 	[System.Diagnostics.DebuggerDisplayAttribute("Current Count = {_currentCount}")]
-	public class AsyncEvent
+	internal class AsyncEvent
 	{
 #if HAS_NO_CONCURRENT_DICT
 		private Queue<FastTaskCompletionSource<bool>> _queue = new Queue<FastTaskCompletionSource<bool>>();

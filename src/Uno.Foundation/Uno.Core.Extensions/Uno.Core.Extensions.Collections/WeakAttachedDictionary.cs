@@ -28,7 +28,7 @@ namespace Uno.Collections
 	/// </summary>
 	/// <typeparam name="TOwner">The type of the owner</typeparam>
 	/// <typeparam name="TKey">The key type</typeparam>
-	public class WeakAttachedDictionary<TOwner, TKey>
+	internal class WeakAttachedDictionary<TOwner, TKey>
 		where TOwner : class
 		where TKey : class
 	{

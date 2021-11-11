@@ -24,7 +24,7 @@ namespace Uno.Builder
 	/// <summary>
 	/// Defines a builder
 	/// </summary>
-	public interface IBuilder
+	internal interface IBuilder
 	{
 		/// <summary>
 		/// Appends a build action when the parent builder is built
@@ -42,7 +42,7 @@ namespace Uno.Builder
 	/// Defines a builder typed with its owner
 	/// </summary>
 	/// <typeparam name="TOwner"></typeparam>
-	public interface IBuilder<TOwner> : IBuilder
+	internal interface IBuilder<TOwner> : IBuilder
 	{
 		/// <summary>
 		/// The owner instance of this builder

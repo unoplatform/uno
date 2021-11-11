@@ -19,7 +19,7 @@ namespace Uno
 	/// <summary>
 	/// Represents the different possible types of an <see cref="Option{T}"/>
 	/// </summary>
-	public enum OptionType : byte
+	internal enum OptionType : byte
 	{
 		/// <summary>
 		/// The option does not have value

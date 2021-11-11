@@ -22,7 +22,7 @@ namespace Uno.Disposables
     /// <summary>
     /// Represents a disposable resource that has an associated <seealso cref="T:System.Threading.CancellationToken"/> that will be set to the cancellation requested state upon disposal.
     /// </summary>
-    public sealed class CancellationDisposable : ICancelable
+    internal sealed class CancellationDisposable : ICancelable
     {
         private readonly CancellationTokenSource _cts;
 

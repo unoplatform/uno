@@ -19,7 +19,7 @@ using System.Linq.Expressions;
 
 namespace Uno.Expressions
 {
-    public class EditableParameterExpression : EditableExpression<ParameterExpression>
+    internal class EditableParameterExpression : EditableExpression<ParameterExpression>
     {
         public EditableParameterExpression(ParameterExpression expression)
             : base(expression, false)

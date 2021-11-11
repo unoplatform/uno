@@ -26,7 +26,7 @@ namespace Uno.Disposables
 	/// <summary>
 	/// A disposable that can call an action when a dependent object has been collected.
 	/// </summary>
-	public class ConditionalDisposable : IDisposable
+	internal class ConditionalDisposable : IDisposable
 	{
 		private static ConditionalWeakTable<object, List<IDisposable>> _registrations = new ConditionalWeakTable<object, List<IDisposable>>();
 

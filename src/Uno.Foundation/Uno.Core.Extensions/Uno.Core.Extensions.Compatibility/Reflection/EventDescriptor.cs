@@ -21,7 +21,7 @@ using System.Collections.Generic;
 
 namespace Uno.Reflection
 {
-    public class EventDescriptor : MemberDescriptor<EventInfo>, IEventDescriptor
+    internal class EventDescriptor : MemberDescriptor<EventInfo>, IEventDescriptor
     {
         private Dictionary<string, IMethodDescriptor> descriptors = new Dictionary<string, IMethodDescriptor>();
 

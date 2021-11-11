@@ -18,7 +18,7 @@ using System;
 
 namespace Uno.Extensions.ValueType
 {
-    public class EnumSupport<T> : ValueSupport<T>
+    internal class EnumSupport<T> : ValueSupport<T>
     {
         private readonly IValueSupport support;
 

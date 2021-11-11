@@ -23,7 +23,7 @@ using Windows.Storage;
 
 namespace Uno.Extensions
 {
-	public static class StorageFolderExtensions
+	internal static class StorageFolderExtensions
 	{
 		public static async Task<IStorageFile> TryGetFileAsync(this IStorageFolder folder, CancellationToken ct, string name)
 		{

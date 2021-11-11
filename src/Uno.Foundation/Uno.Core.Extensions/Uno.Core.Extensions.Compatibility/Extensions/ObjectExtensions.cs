@@ -20,7 +20,7 @@ using System.Linq;
 
 namespace Uno.Extensions
 {
-    public static class ObjectExtensions
+    internal static class ObjectExtensions
     {
         public static ExtensionPoint<T> Extensions<T>(this T value)
         {

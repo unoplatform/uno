@@ -18,7 +18,7 @@ using System;
 
 namespace Uno.Extensions.ValueType
 {
-    public class ValueSupport<T> : IValueSupport<T>
+    internal class ValueSupport<T> : IValueSupport<T>
     {
         #region IValueSupport<T> Members
 

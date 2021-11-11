@@ -21,7 +21,7 @@ using System.Text;
 
 namespace Uno.Extensions
 {
-    public static class ComparableExtensions
+    internal static class ComparableExtensions
     {
         public static T Min<T>(this T left, T right)
             where T : IComparable

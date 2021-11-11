@@ -23,7 +23,7 @@ namespace Uno
 	/// <summary>
 	/// A reference equality comparer for instances.
 	/// </summary>
-	public class ReferenceEqualityComparer<T> : IEqualityComparer<T>
+	internal class ReferenceEqualityComparer<T> : IEqualityComparer<T>
 	{
 		public static readonly ReferenceEqualityComparer<T> Default = new ReferenceEqualityComparer<T>();
 

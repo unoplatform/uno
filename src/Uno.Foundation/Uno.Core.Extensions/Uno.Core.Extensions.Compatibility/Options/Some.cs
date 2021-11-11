@@ -26,7 +26,7 @@ namespace Uno
 	/// https://en.wikipedia.org/wiki/Option_type
 	/// </remarks>
 	[DebuggerDisplay("Some({" + nameof(Value) + "})")]
-	public sealed class Some<T> : Option<T>
+	internal sealed class Some<T> : Option<T>
 	{
 		/// <summary>
 		/// Creates an <see cref="Option{T}"/> for a given value

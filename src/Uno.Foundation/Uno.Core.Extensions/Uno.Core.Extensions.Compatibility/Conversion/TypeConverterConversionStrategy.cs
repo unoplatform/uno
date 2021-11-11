@@ -23,7 +23,7 @@ using Uno.Extensions;
 
 namespace Uno.Conversion
 {
-    public class TypeConverterConversionStrategy : IConversionStrategy
+    internal class TypeConverterConversionStrategy : IConversionStrategy
     {
         #region IConversionStrategy Members
 

@@ -21,7 +21,7 @@ using System.Threading;
 
 namespace Uno.Localisation
 {
-	public class CultureContext : IDisposable
+	internal class CultureContext : IDisposable
 	{
 		private readonly CultureInfo _previousUICulture;
 		private readonly CultureInfo _previousCulture;

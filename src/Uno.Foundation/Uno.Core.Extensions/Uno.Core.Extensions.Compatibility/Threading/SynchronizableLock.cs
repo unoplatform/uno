@@ -22,7 +22,7 @@ using System.Runtime.Serialization;
 namespace Uno.Threading
 {
 
-    public class SynchronizableLock<T> : ISynchronizableLock<T>
+    internal class SynchronizableLock<T> : ISynchronizableLock<T>
     {
         private readonly T instance;
 

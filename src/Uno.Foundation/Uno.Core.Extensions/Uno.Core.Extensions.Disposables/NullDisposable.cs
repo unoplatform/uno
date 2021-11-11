@@ -21,7 +21,7 @@ namespace Uno
     /// <summary>
     /// An empty implementation of the IDisposable class.
     /// </summary>
-    public class NullDisposable : IDisposable
+    internal class NullDisposable : IDisposable
     {
         /// <summary>
         /// Provider for a instance of the NullDisposable

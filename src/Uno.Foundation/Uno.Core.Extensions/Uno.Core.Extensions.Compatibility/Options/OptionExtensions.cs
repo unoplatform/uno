@@ -21,7 +21,7 @@ namespace Uno
 	/// <summary>
 	/// Extension methods over <see cref="Option{T}"/>.
 	/// </summary>
-	public static class OptionExtensions
+	internal static class OptionExtensions
 	{
 		/// <summary>
 		/// Creates an <see cref="Option{T2}"/> using an <see cref="Option{T1}"/>.

@@ -23,7 +23,7 @@ namespace Uno.Extensions
 	/// with details about what what was added, moved and removed.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public class ObservableCollectionUpdateResults<T>
+	internal class ObservableCollectionUpdateResults<T>
 	{
 		public ObservableCollectionUpdateResults(IEnumerable<T> added, IEnumerable<T> moved, IEnumerable<T> removed)
 		{

@@ -19,7 +19,7 @@ using System.Reflection;
 
 namespace Uno.Reflection
 {
-    public interface IMemberDescriptor
+    internal interface IMemberDescriptor
     {
         Type Type { get; }
 

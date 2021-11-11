@@ -24,7 +24,7 @@ using Uno.Extensions;
 
 namespace Uno.Reflection
 {
-    public class FieldDescriptor : ValueMemberDescriptor<FieldInfo>
+    internal class FieldDescriptor : ValueMemberDescriptor<FieldInfo>
     {
         public FieldDescriptor(FieldInfo fi)
             : base(fi)

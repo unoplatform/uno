@@ -26,7 +26,7 @@ namespace Uno.Equality
 	/// Allows <see cref="FuncEqualityComparer{T}"/> methods to be called without specifying the compared 
 	/// type explicitely, which simplifies the syntax and allows for equality comparisons on anonymous types
 	/// </summary>
-	public class FuncEqualityComparer
+	internal class FuncEqualityComparer
 	{
 		/// <summary>
 		/// Creates an <see cref="IEqualityComparer{T}"/> which determine objects equality and hash codes based on a value obtained using a selector.
@@ -54,7 +54,7 @@ namespace Uno.Equality
 	/// An EqualityComparer configurable using Funcs.
 	/// </summary>
 	/// <typeparam name="T">The type of objects to compare.</typeparam>
-	public class FuncEqualityComparer<T> : IEqualityComparer<T>
+	internal class FuncEqualityComparer<T> : IEqualityComparer<T>
 	{
 		private readonly Func<T?, T?, bool> _equals;
 		private readonly Func<T, int> _getHashCode;
@@ -128,7 +128,7 @@ namespace Uno.Equality
 	/// </summary>
 	/// <typeparam name="T">The type of objects to compare.</typeparam>
 	/// <typeparam name="TValue">The type of the value used for comparison.</typeparam>
-	public class FuncEqualityComparer<T, TValue> : IEqualityComparer<T>
+	internal class FuncEqualityComparer<T, TValue> : IEqualityComparer<T>
 	{
 		private readonly Func<T, TValue> _valueSelector;
 		private readonly IEqualityComparer<TValue> _valueEqualityComparer;

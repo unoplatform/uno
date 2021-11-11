@@ -26,7 +26,7 @@ namespace Uno.Validation
 	/// <summary>
 	/// Static class containing a series of method for validating inputs
 	/// </summary>
-	public static class ValidationHelper
+	internal static class ValidationHelper
 	{
 		#region Fields and Const
 

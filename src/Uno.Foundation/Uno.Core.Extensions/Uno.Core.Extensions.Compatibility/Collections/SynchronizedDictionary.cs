@@ -24,7 +24,7 @@ using System;
 
 namespace Uno.Collections
 {
-	public class SynchronizedDictionary<TKey, TValue> : Decorator<IDictionary<TKey, TValue>>, IDictionary<TKey, TValue>,
+	internal class SynchronizedDictionary<TKey, TValue> : Decorator<IDictionary<TKey, TValue>>, IDictionary<TKey, TValue>,
 		ISynchronizable<IDictionary<TKey, TValue>>
 	{
 		private readonly Synchronizable<IDictionary<TKey, TValue>> target;

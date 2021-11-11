@@ -31,7 +31,7 @@ namespace Uno
 	/// </remarks>
 	/// </summary>
 	/// <typeparam name="TValue">The field's type. This must be a reference type.</typeparam>
-	public class DelegateConditionalWeakTable<TValue>
+	internal class DelegateConditionalWeakTable<TValue>
 		where TValue : class
 	{
 		/*

@@ -20,7 +20,7 @@ using Uno.Extensions;
 
 namespace Uno.Expressions
 {
-    public class EditableConditionalExpression : EditableExpression<ConditionalExpression>
+    internal class EditableConditionalExpression : EditableExpression<ConditionalExpression>
     {
         public EditableConditionalExpression(ConditionalExpression expression)
             : base(expression)

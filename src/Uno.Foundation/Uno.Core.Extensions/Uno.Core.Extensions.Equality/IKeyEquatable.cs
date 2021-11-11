@@ -23,7 +23,7 @@ namespace Uno.Equality
 	/// <summary>
 	/// Defines a generalized method that a value type or class implements to create a type-specific method for determining equality of version of instances.
 	/// </summary>
-	public interface IKeyEquatable
+	internal interface IKeyEquatable
 	{
 		/// <summary>
 		/// Gets the hash code of the key of this object.
@@ -42,7 +42,7 @@ namespace Uno.Equality
 	/// <summary>
 	/// Defines a generalized method that a value type or class implements to create a type-specific method for determining equality of version of instances.
 	/// </summary>
-	public interface IKeyEquatable<T>
+	internal interface IKeyEquatable<T>
 	{
 		/// <summary>
 		/// Gets the hash code of the key of this object.

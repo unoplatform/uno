@@ -8,7 +8,7 @@ using Uno.Extensions.ValueType;
 
 namespace Uno.Core
 {
-	public static class Funcs<T>
+	internal static class Funcs<T>
 	{
 		public static readonly Func<T, object> CastFrom = Funcs<T, object>.Cast;
 		public static readonly Func<object, T> CastTo = Funcs<object, T>.Cast;
@@ -26,7 +26,7 @@ namespace Uno.Core
 		}
 	}
 
-	public static class Funcs<TParam, TResult>
+	internal static class Funcs<TParam, TResult>
 	{
 		public static readonly Func<TParam, TResult> Cast = item => (TResult)(object)item;
 

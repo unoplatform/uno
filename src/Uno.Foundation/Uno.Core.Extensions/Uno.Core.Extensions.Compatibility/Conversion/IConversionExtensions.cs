@@ -20,7 +20,7 @@ using System.Globalization;
 
 namespace Uno.Conversion
 {
-	public interface IConversionExtensions
+	internal interface IConversionExtensions
 	{
 		/// <summary>
 		/// Create extension point (prefer the usage of method extensions)
@@ -55,7 +55,7 @@ namespace Uno.Conversion
 		object To(ConversionExtensionPoint extensionPoint, Type toType, CultureInfo culture = null);
 	}
 
-	public static class ConversionExtensionsExtensions
+	internal static class ConversionExtensionsExtensions
 	{
 		/// <summary>
 		/// Fluently register a conversion strategy

@@ -20,7 +20,7 @@ using System.Text;
 
 namespace Uno.Extensions
 {
-	public static class StringBuilderExtensions
+	internal static class StringBuilderExtensions
 	{
 		public static void AppendFormatInvariant(this StringBuilder builder, string format, params object[] args)
 		{

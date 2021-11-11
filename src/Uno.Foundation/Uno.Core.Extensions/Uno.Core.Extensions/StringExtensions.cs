@@ -26,7 +26,7 @@ using System.Text.RegularExpressions;
 
 namespace Uno.Extensions
 {
-	public static partial class StringExtensions
+	internal static partial class StringExtensions
 	{
 #if (!SILVERLIGHT && !WINDOWS_UWP && HAS_COMPILEDREGEX) || WINDOWS_PHONE || HAS_COMPILEDREGEX
         private static readonly Regex _newLineRegex = new Regex(@"^", RegexOptions.Compiled | RegexOptions.Multiline);

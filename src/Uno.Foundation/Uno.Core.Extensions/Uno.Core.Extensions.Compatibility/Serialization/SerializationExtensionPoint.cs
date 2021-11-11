@@ -19,7 +19,7 @@ using Uno.Extensions;
 
 namespace Uno.Serialization
 {
-    public class SerializationExtensionPoint<T> : ExtensionPoint<T>
+    internal class SerializationExtensionPoint<T> : ExtensionPoint<T>
     {
         public SerializationExtensionPoint(T value)
             : base(value)

@@ -26,7 +26,7 @@ namespace Uno.Events
 	/// </summary>
 	/// <typeparam name="TFromHandler">The source handler</typeparam>
 	/// <typeparam name="TToHandler">The target handler</typeparam>
-	public class EventHandlerConverter<TFromHandler, TToHandler>
+	internal class EventHandlerConverter<TFromHandler, TToHandler>
 	{
 		private ImmutableDictionary<TFromHandler, TToHandler> _handlers = ImmutableDictionary<TFromHandler, TToHandler>.Empty;
 

@@ -16,7 +16,7 @@
 // ******************************************************************
 namespace Uno.Extensions.ValueType
 {
-    public class ByteSupport : ValueSupport<byte>
+    internal class ByteSupport : ValueSupport<byte>
     {
         protected override byte CoreAnd(byte lhs, byte rhs)
         {

@@ -21,7 +21,7 @@ using Uno.Contracts;
 
 namespace Uno.Reflection
 {
-    public class BindingContract : IContract
+    internal class BindingContract : IContract
     {
         internal static readonly BindingContract Default;
 

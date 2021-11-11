@@ -20,7 +20,7 @@ using Uno.Extensions;
 
 namespace Uno
 {
-	public class WebRequestCreate : IWebRequestCreate
+	internal class WebRequestCreate : IWebRequestCreate
 	{
 		public WebRequest Create(Uri uri)
 		{
@@ -30,7 +30,7 @@ namespace Uno
 		}
 	}
 
-	public class FuncWebRequestCreate : IWebRequestCreate
+	internal class FuncWebRequestCreate : IWebRequestCreate
 	{
 		private readonly Func<Uri, WebRequest> _provider;
 
@@ -45,7 +45,7 @@ namespace Uno
 		}
 	}
 
-	public class WebRequestCreateDecorator : IWebRequestCreate
+	internal class WebRequestCreateDecorator : IWebRequestCreate
 	{
 		private readonly IWebRequestCreate _webRequestProvider;
 		private readonly Func<WebRequest, WebRequest> _decorator;
@@ -62,7 +62,7 @@ namespace Uno
 		}
 	}
 
-	public static class WebRequestCreateExtensions
+	internal static class WebRequestCreateExtensions
 	{
 		public static IWebRequestCreate Decorate(this IWebRequestCreate webRequestProvider, Func<WebRequest, WebRequest> requestDecorator)
 		{

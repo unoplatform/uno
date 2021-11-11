@@ -21,7 +21,7 @@ namespace Uno.Disposables
     /// <summary>
     /// Disposable resource with dipsosal state tracking.
     /// </summary>
-    public interface ICancelable : IDisposable
+    internal interface ICancelable : IDisposable
     {
         /// <summary>
         /// Gets a value that indicates whether the object is disposed.

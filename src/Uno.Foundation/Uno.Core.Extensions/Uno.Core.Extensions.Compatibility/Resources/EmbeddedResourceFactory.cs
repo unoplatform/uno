@@ -19,7 +19,7 @@ using System.Reflection;
 
 namespace Uno.Resources
 {
-	public static class EmbeddedResourceFactory
+	internal static class EmbeddedResourceFactory
 	{
 		public static Stream Get(Assembly assembly, string fullName)
 		{

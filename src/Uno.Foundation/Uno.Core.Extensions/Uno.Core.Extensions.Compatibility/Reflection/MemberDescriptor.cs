@@ -20,7 +20,7 @@ using Uno.Extensions;
 
 namespace Uno.Reflection
 {
-    public abstract class MemberDescriptor<TMemberInfo> : IMemberDescriptor
+    internal abstract class MemberDescriptor<TMemberInfo> : IMemberDescriptor
         where TMemberInfo : MemberInfo
     {
         private readonly TMemberInfo memberInfo;

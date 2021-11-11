@@ -21,7 +21,7 @@ using System.Diagnostics;
 
 namespace Uno.Extensions
 {
-    public static class LogExtensionPoint
+    internal static class LogExtensionPoint
     {
         private static ILoggerFactory? _loggerFactory;
 

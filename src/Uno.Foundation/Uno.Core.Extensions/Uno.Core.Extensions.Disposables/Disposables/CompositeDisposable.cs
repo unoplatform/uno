@@ -26,7 +26,7 @@ namespace Uno.Disposables
     /// Represents a group of disposable resources that are disposed together.
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix", Justification = "Backward compat + ideally want to get rid of the ICollection nature of the type.")]
-    public sealed class CompositeDisposable : ICollection<IDisposable>, ICancelable
+    internal sealed class CompositeDisposable : ICollection<IDisposable>, ICancelable
     {
         private readonly object _gate = new object();
 

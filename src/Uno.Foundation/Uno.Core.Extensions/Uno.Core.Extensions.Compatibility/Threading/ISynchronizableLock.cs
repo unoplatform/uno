@@ -18,7 +18,7 @@ using System;
 
 namespace Uno.Threading
 {
-    public interface ISynchronizableLock<T>
+    internal interface ISynchronizableLock<T>
     {
         TValue Read<TValue>(int millisecondsTimeout, Func<T, TValue> read);
 

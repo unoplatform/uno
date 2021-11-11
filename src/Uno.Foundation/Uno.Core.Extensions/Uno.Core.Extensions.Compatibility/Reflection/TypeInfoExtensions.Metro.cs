@@ -25,7 +25,7 @@ using Uno.Extensions;
 namespace Uno.Extensions
 {
 #if HAS_TYPEINFO || WINDOWS_UWP
-    public static class TypeInfoExtensions
+    internal static class TypeInfoExtensions
     {
 #if !HAS_TYPEINFO_EXTENSIONS
         public static MemberInfo FindMemberInfo(this Type type, string memberName)

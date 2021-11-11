@@ -22,7 +22,7 @@ using CommonServiceLocator;
 
 namespace Uno.Extensions
 {
-    public static class ServiceLocatorProviderExtensions
+    internal static class ServiceLocatorProviderExtensions
     {
         public static IServiceLocator ServiceLocation(this object instance)
         {

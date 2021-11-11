@@ -18,7 +18,7 @@ using Uno.Extensions;
 
 namespace Uno.Conversion
 {
-	public class ConversionExtensionPoint : ExtensionPoint<object>
+	internal class ConversionExtensionPoint : ExtensionPoint<object>
 	{
 		public ConversionExtensionPoint(object value)
 			: base(value)

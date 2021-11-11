@@ -20,7 +20,7 @@ using System.Text;
 
 namespace Uno.Extensions
 {
-	public static class DoubleExtensions
+	internal static class DoubleExtensions
 	{
 		/// <summary>
 		/// Clamps the value between a minimum and maximum (clamping means limiting to a certain range)

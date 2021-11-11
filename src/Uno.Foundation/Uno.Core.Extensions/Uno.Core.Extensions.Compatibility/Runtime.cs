@@ -32,7 +32,7 @@ namespace Uno
 	/// <summary>
 	/// Runtime information helper class
 	/// </summary>
-	public class Runtime
+	internal class Runtime
 	{
 		private static readonly char[] InvalidPathChars;
 
@@ -109,7 +109,7 @@ namespace Uno
 		}
 	}
 
-	public static class RuntimeExtensions
+	internal static class RuntimeExtensions
 	{
 		public static bool IsLocal(this Uri uri)
 		{

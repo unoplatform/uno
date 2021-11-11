@@ -21,7 +21,7 @@ using System.Globalization;
 
 namespace Uno.Conversion
 {
-    public sealed class DefaultConversionExtensions : IConversionExtensions
+    internal sealed class DefaultConversionExtensions : IConversionExtensions
     {
         private readonly List<IConversionStrategy> _registrations;
         private readonly List<IConversionStrategy> _fallbackRegistrations;

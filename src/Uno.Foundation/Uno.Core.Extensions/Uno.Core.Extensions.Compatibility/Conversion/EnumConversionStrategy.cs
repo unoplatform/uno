@@ -30,7 +30,7 @@ namespace Uno.Conversion
     /// or parsing value, if not empty.
     /// A description attribute with "?" is considered default value.
     /// </remarks>
-    public sealed class EnumConversionStrategy : IConversionStrategy
+    internal sealed class EnumConversionStrategy : IConversionStrategy
     {
         private static Func<Type, string, CultureInfo, string> _findValue;
 

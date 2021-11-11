@@ -19,7 +19,7 @@ using System.Linq.Expressions;
 
 namespace Uno.Expressions
 {
-    public class Expressions<T>
+    internal class Expressions<T>
     {
         public static readonly Expression<Func<T, bool>> False = item => false;
         public static readonly Expression<Func<T, bool>> True = item => true;

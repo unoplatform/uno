@@ -4,7 +4,7 @@ using Uno.Collections;
 
 namespace Uno.Core.Collections
 {
-	public static class ListExtensionsLegacy
+	internal static class ListExtensionsLegacy
 	{
 
 		/// <summary>

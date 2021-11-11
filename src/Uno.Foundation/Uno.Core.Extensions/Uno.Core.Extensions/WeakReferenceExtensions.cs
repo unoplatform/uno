@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace Uno.Extensions
 {
-	public static class WeakReferenceExtensions
+	internal static class WeakReferenceExtensions
 	{
 		public static bool HasTarget<T>(this System.WeakReference<T> wr) where T : class
 		{

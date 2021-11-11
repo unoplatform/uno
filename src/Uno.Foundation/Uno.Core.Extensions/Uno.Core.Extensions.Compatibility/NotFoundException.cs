@@ -23,7 +23,7 @@ namespace Uno
     /// <summary>
     /// A NotFoundException is thrown when demanding something that doesn't exist be found.
     /// </summary>
-    public class NotFoundException : ApplicationException
+    internal class NotFoundException : ApplicationException
     {
         /// <summary>
         /// See Exception Pattern.

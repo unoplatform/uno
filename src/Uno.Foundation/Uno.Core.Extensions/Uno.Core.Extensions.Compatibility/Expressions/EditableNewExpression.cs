@@ -21,7 +21,7 @@ using System.Reflection;
 
 namespace Uno.Expressions
 {
-    public class EditableNewExpression : EditableExpression<NewExpression>
+    internal class EditableNewExpression : EditableExpression<NewExpression>
     {
         private readonly EditableExpressionCollection<Expression> arguments;
 

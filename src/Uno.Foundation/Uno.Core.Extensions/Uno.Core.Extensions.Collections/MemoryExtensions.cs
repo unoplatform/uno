@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace Uno.Collections
 {
-    public static class MemoryExtensions
+    internal static class MemoryExtensions
     {
         /// <summary>
         /// Selects the values of a <see cref="List{T}"/> to a pre-allocated <see cref="Span{T}"/>.

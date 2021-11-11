@@ -27,7 +27,7 @@ using ObjCRuntime;
 
 namespace Uno.Conversion
 {
-    public class PrimitiveConversionStrategy : IConversionStrategy
+    internal class PrimitiveConversionStrategy : IConversionStrategy
     {
         public bool CanConvert(object value, Type toType, CultureInfo culture = null)
         {

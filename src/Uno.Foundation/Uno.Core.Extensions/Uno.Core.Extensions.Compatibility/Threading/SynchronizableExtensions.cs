@@ -19,7 +19,7 @@ using Uno.Threading;
 
 namespace Uno.Extensions
 {
-    public static class SynchronizableExtensions
+    internal static class SynchronizableExtensions
     {
         public static void Read<T>(this ISynchronizableLock<T> sync, Action<T> read)
         {

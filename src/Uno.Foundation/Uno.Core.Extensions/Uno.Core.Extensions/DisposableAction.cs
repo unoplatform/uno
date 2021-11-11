@@ -21,7 +21,7 @@ using System.Text;
 
 namespace Uno
 {
-    public class DisposableAction : IDisposable
+    internal class DisposableAction : IDisposable
     {
         public DisposableAction(Action action)
         {

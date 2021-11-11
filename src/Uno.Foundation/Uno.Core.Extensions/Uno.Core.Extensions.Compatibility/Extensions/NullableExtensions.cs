@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace Uno.Extensions
 {
-	public static class NullableExtensions
+	internal static class NullableExtensions
 	{
 		public static bool SafeEquals<T>(this T? obj, T? other)
 			where T : struct

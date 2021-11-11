@@ -19,7 +19,7 @@ namespace Uno
     /// <summary>
     /// Represets the type of composition.
     /// </summary>
-    public enum CompositionType
+    internal enum CompositionType
     {
         And,
         Or

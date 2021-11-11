@@ -23,7 +23,7 @@ using System.Reflection;
 
 namespace Uno.Core.Equality
 {
-	public static class EqualityComparerExtensions
+	internal static class EqualityComparerExtensions
 	{
 		/// <summary>
 		/// Create a non-generic <see cref="IEqualityComparer"/> from a generic version.

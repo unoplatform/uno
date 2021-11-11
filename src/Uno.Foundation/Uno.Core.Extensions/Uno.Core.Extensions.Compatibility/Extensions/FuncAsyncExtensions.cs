@@ -28,7 +28,7 @@ namespace Uno.Extensions
 	/// <summary>
 	/// Extensions of <see cref="FuncAsync"/>.
 	/// </summary>
-	public static class FuncAsyncExtensions
+	internal static class FuncAsyncExtensions
 	{
 		/// <summary>
 		/// Invoke the <paramref name="func"/> if not null.

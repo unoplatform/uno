@@ -25,7 +25,7 @@ namespace Uno.Extensions
     /// <summary>
     /// Provide extentions for the System.Text.RegularExpressions.Match class
     /// </summary>
-    public static class MatchExtensions
+    internal static class MatchExtensions
     {
         /// <summary>
         /// Converts a Regular Expression Match instance to an enumerable of Regular Expression Match instances

@@ -22,7 +22,7 @@ using System.Threading;
 
 namespace Uno.Async
 {
-    public class AsyncResultDecorator : IAsyncResult
+    internal class AsyncResultDecorator : IAsyncResult
     {
         public AsyncResultDecorator(IAsyncResult result, object state)
         {

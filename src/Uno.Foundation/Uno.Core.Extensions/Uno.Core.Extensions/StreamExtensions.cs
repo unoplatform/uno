@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace Uno.Extensions
 {
-	public static class StreamExtensions
+	internal static class StreamExtensions
 	{
 		public static async Task<byte[]> ReadBytesAsync(this Stream stream)
 		{

@@ -24,7 +24,7 @@ namespace Uno.Extensions.Specialized
 	/// <summary>
 	/// Provides Extensions Methods for IEnumerable.
 	/// </summary>
-	public static partial class EnumerableExtensions
+	internal static partial class EnumerableExtensions
 	{
 		public static int Count(this IEnumerable enumerable)
 		{

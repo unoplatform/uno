@@ -21,7 +21,7 @@ using Uno.Extensions;
 
 namespace Uno.Expressions
 {
-    public class EditableMemberExpression : EditableExpression<MemberExpression>
+    internal class EditableMemberExpression : EditableExpression<MemberExpression>
     {
         public EditableMemberExpression(MemberExpression expression)
             : base(expression, false)

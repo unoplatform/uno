@@ -23,13 +23,13 @@ using Uno.Extensions;
 
 namespace Uno.Async
 {
-    public class ActionServiceEntry
+    internal class ActionServiceEntry
     {
         public Delegate Provider { get; set; }     
         public Delegate Action { get; set; }
     }
 
-    public class ActionService : IActionService
+    internal class ActionService : IActionService
     {
         private List<ActionServiceEntry> entries = new List<ActionServiceEntry>();
 

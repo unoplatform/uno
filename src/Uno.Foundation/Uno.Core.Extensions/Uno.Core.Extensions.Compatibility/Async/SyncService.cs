@@ -21,7 +21,7 @@ using System.Text;
 
 namespace Uno.Async
 {
-    public class SyncService : IAsyncService
+    internal class SyncService : IAsyncService
     {
         public static readonly IAsyncService Instance = new SyncService();
 

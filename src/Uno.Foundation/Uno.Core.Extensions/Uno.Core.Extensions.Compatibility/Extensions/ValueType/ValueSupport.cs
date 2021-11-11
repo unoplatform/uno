@@ -21,7 +21,7 @@ using Uno.Collections;
 
 namespace Uno.Extensions.ValueType
 {
-    public static class ValueSupport
+    internal static class ValueSupport
     {
         //private static readonly SynchronizedDictionary<Type, IValueSupport> support;
         private static readonly IDictionary<Type, IValueSupport> support;

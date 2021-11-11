@@ -19,7 +19,7 @@ namespace Uno.Extensions
 	/// <summary>
 	/// Modes for asynchronous action / func invocation lock
 	/// </summary>
-	public enum InvocationLockingMode
+	internal enum InvocationLockingMode
 	{
 		/// <summary>
 		/// Invocations are queued and sequencially

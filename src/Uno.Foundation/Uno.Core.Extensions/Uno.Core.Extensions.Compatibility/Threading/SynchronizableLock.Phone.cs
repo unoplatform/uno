@@ -21,7 +21,7 @@ using System.Runtime.Serialization;
 
 namespace Uno.Threading
 {
-    public class SynchronizableExclusiveLock<T> : ISynchronizableLock<T>
+    internal class SynchronizableExclusiveLock<T> : ISynchronizableLock<T>
     {
         private readonly T instance;
 		private object _gate = new object();

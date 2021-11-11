@@ -19,12 +19,12 @@ using System.Net;
 
 namespace Uno.Async
 {
-    public class AsyncResult
+    internal class AsyncResult
     {
         public Exception Exception { get; set; }
     }
 
-    public class AsyncResult<T> : AsyncResult
+    internal class AsyncResult<T> : AsyncResult
     {
         public T Data { get; set; }
     }

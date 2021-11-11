@@ -26,7 +26,7 @@ namespace Uno
     /// Represents a Pair of Ts.
     /// </summary>
     /// <typeparam name="T">The type of elements in this Pair.</typeparam>
-    public class Pair<T>
+    internal class Pair<T>
     {
         private static readonly Func<Pair<T>, IEnumerable<object>> Fields = item => new object[] {item.X, item.Y};
 
@@ -75,7 +75,7 @@ namespace Uno
         }
     }
 
-    public class Pair<TKey, TValue>
+    internal class Pair<TKey, TValue>
     {
         private static readonly Func<Pair<TKey, TValue>, IEnumerable<object>> Fields =
             item => new object[] {item.Key, item.Value};

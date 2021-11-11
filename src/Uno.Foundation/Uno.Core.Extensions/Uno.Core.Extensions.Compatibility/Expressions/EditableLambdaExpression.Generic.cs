@@ -20,7 +20,7 @@ using Uno.Extensions;
 
 namespace Uno.Expressions
 {
-    public class EditableLambdaExpression<T> : EditableExpression<Expression<T>>
+    internal class EditableLambdaExpression<T> : EditableExpression<Expression<T>>
     {
         private readonly EditableParameterExpressionCollection parameters;
 

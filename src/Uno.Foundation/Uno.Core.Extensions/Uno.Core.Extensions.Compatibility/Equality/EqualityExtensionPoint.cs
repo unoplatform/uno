@@ -18,7 +18,7 @@ using Uno.Extensions;
 
 namespace Uno.Equality
 {
-    public class EqualityExtensionPoint<T> : ExtensionPoint<T>
+    internal class EqualityExtensionPoint<T> : ExtensionPoint<T>
     {
         public EqualityExtensionPoint(T value)
             : base(value)

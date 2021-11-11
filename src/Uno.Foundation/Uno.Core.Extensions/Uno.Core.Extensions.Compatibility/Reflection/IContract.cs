@@ -16,7 +16,7 @@
 // ******************************************************************
 namespace Uno.Contracts
 {
-    public interface IContract
+    internal interface IContract
     {
     }
 }

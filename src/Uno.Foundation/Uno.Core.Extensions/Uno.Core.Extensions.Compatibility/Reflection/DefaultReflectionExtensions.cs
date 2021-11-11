@@ -23,7 +23,7 @@ using System.Linq.Expressions;
 
 namespace Uno.Reflection
 {
-    public class DefaultReflectionExtensions : IReflectionExtensions
+    internal class DefaultReflectionExtensions : IReflectionExtensions
     {
         #region IReflectionExtensions Members
 

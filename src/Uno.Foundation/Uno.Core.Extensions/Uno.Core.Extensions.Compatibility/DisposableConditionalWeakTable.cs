@@ -24,7 +24,7 @@ namespace Uno.Core
 	/// <summary>Enables compilers to dynamically attach IDisposable fields to managed objects. Attached disposable will be disposed on when the key object is collected.</summary>
 	/// <typeparam name="TKey">The reference type to which the field is attached. </typeparam>
 	/// <typeparam name="TValue">The field's type. This must be a reference type.</typeparam>
-	public class DisposableConditionalWeakTable<TKey, TValue>
+	internal class DisposableConditionalWeakTable<TKey, TValue>
 		where TKey : class
 		where TValue : class, IDisposable
 	{

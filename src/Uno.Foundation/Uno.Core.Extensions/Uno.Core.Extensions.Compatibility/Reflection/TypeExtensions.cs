@@ -24,7 +24,7 @@ using System.Linq.Expressions;
 
 namespace Uno.Extensions
 {
-    public static class TypeExtensions
+    internal static class TypeExtensions
     {
         public static object New(this Type type, params object[] args)
         {

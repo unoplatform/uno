@@ -21,7 +21,7 @@ using System.Linq.Expressions;
 
 namespace Uno.Expressions
 {
-    public class EditableNewArrayExpression : EditableExpression<NewArrayExpression>
+    internal class EditableNewArrayExpression : EditableExpression<NewArrayExpression>
     {
         private readonly EditableExpressionCollection<Expression> expressions;
 

@@ -20,7 +20,7 @@ using System.Linq.Expressions;
 
 namespace Uno.Expressions
 {
-    public interface IEditableExpression
+    internal interface IEditableExpression
     {
         Expression OriginalExpression { get; }
         ExpressionType NodeType { get; set; }

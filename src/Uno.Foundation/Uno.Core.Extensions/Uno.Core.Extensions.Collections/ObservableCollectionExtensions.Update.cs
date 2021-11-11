@@ -26,7 +26,7 @@ using Uno.Extensions;
 
 namespace Uno.Extensions
 {
-	public static class ObservableCollectionExtensions
+	internal static class ObservableCollectionExtensions
 	{
 		/// <summary>
 		/// Updates an ObservableCollection using the provided enumerable, resulting in equal sequences.

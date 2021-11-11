@@ -21,7 +21,7 @@ using Uno.Extensions;
 
 namespace Uno.Expressions
 {
-    public class EditableParameterExpressionCollection : EditableExpressionCollection<ParameterExpression>
+    internal class EditableParameterExpressionCollection : EditableExpressionCollection<ParameterExpression>
     {
         private readonly IEditableExpression body;
         private IEnumerable<ParameterExpression> parametersOverride;

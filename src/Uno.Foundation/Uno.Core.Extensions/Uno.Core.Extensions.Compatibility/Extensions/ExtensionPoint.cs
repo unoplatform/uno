@@ -18,7 +18,7 @@ using System;
 
 namespace Uno.Extensions
 {
-    public class ExtensionPoint<T> : IExtensionPoint<T>
+    internal class ExtensionPoint<T> : IExtensionPoint<T>
     {
         private readonly Type type;
         private readonly T value;

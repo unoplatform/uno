@@ -23,7 +23,7 @@ namespace Uno
 	/// A set of common prediactes
 	/// </summary>
 	/// <typeparam name="T">Type of parameter of predicates</typeparam>
-	public static class Predicates<T>
+	internal static class Predicates<T>
 	{
 		/// <summary>
 		/// A predicate that checks equality of two instances of <typeparamref name="T"/> using the <see cref="EqualityExtensions"/>.

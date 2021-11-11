@@ -22,7 +22,7 @@ using System.Linq;
 
 namespace Uno.Extensions
 {
-	public static partial class EnumerableExtensions
+	internal static partial class EnumerableExtensions
 	{
 		public static IEnumerable<IEnumerable<T>> GroupBy<T>(this IEnumerable<T> items, int itemsByGroup)
 		{
@@ -94,12 +94,12 @@ namespace Uno.Extensions
 		}
 	}
 
-	public interface IBindableGrouping<TKey, TItem> : IGrouping<TKey, TItem>
+	internal interface IBindableGrouping<TKey, TItem> : IGrouping<TKey, TItem>
 	{
 		bool HasItems { get; }
 	}
 
-	public class BindableGroup<TKey, TItem> : IEnumerable<TItem>, IBindableGrouping<TKey, TItem>
+	internal class BindableGroup<TKey, TItem> : IEnumerable<TItem>, IBindableGrouping<TKey, TItem>
 	{
 		public BindableGroup(TKey key)
 			: this(key, new List<TItem>())
@@ -147,7 +147,7 @@ namespace Uno.Extensions
 		}
 	}
 
-	public class GroupDescriptor<TKey, TItem>
+	internal class GroupDescriptor<TKey, TItem>
 	{
 		public GroupDescriptor(TKey key)
 			: this(key, item => true)
@@ -174,7 +174,7 @@ namespace Uno.Extensions
 		public bool Required { get; private set; }
 	}
 
-	public class GroupDescriptorComparer<TKey> : IComparer<TKey>
+	internal class GroupDescriptorComparer<TKey> : IComparer<TKey>
 	{
 		private readonly List<TKey> _keys;
 

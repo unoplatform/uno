@@ -27,7 +27,7 @@ namespace Uno.Threading
 	/// <summary>
 	/// An re-entrant asynchronous lock, that can be used in conjuction with C# async/await
 	/// </summary>
-	public sealed class FastAsyncLock
+	internal sealed class FastAsyncLock
 	{
 		private readonly AsyncLocal<AsyncLocalMonitor> _localMonitor = new AsyncLocal<AsyncLocalMonitor>();
 

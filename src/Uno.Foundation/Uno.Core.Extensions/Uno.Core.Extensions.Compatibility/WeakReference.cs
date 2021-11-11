@@ -19,7 +19,7 @@ using System;
 
 namespace Uno
 {
-    public class WeakReference<T>
+    internal class WeakReference<T>
     {
         private readonly WeakReference _reference;
         public WeakReference(T target)

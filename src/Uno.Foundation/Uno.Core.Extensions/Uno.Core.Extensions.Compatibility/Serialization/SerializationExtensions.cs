@@ -25,7 +25,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Uno.Extensions
 {
-    public static class SerializationExtensions
+    internal static class SerializationExtensions
     {
         public static SerializationExtensionPoint<T> Serialization<T>(this T value)
         {

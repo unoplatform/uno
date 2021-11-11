@@ -19,7 +19,7 @@ using System;
 namespace Uno.Reflection
 {
     [Flags]
-    public enum BindingBehavior
+    internal enum BindingBehavior
     {
         Inherited = 1,
         Interface = 2,

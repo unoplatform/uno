@@ -23,7 +23,7 @@ namespace Uno
     /// A ReadOnlyException is thrown when accessing a logically readonly
     /// accessor when it is presents a readwrite interface.
     /// </summary>
-    public class ReadOnlyException : ApplicationException
+    internal class ReadOnlyException : ApplicationException
     {
         /// <summary>
         /// See Exception Pattern.

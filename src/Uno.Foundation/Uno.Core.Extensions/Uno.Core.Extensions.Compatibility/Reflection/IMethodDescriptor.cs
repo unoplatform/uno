@@ -17,7 +17,7 @@
 using System;
 namespace Uno.Reflection
 {
-    public interface IMethodDescriptor : IMemberDescriptor
+    internal interface IMethodDescriptor : IMemberDescriptor
     {
         object Invoke(object instance, params object[] args);
 

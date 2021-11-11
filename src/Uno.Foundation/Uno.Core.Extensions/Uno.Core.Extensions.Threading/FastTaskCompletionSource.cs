@@ -32,11 +32,11 @@ namespace Uno.Threading
 	/// In most situation, the TaskCompletionSource could be replaced directly by this one.
 	/// It is sligthly more efficient to use the .Task insead of directly awaiting this object.
 	/// </remarks>
-	public class FastTaskCompletionSource<T> : INotifyCompletion
+	internal class FastTaskCompletionSource<T> : INotifyCompletion
 	{
 		private int _terminationType; // 0-nom completed, 1-result, 2-exception, 3-canceled
 
-		public enum TerminationType
+		internal enum TerminationType
 		{
 			Running = 0,
 			Result = 1,
