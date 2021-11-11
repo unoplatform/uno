@@ -115,7 +115,12 @@
     <PackageReference Include="Uno.CodeGen">
       <Version>1.32.0</Version>
     </PackageReference>
-  </ItemGroup>
+		<PackageReference Include="Uno.Core.Extensions.Logging" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
+		<PackageReference Include="Uno.Core.Extensions.Disposables" />
+		<PackageReference Include="Uno.Core.Extensions.Compatibility" />
+		<PackageReference Include="Uno.Core.Extensions" />
+	</ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
