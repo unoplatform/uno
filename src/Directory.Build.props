@@ -43,8 +43,6 @@
     <DefineConstants Condition="$(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('xamarinios'))  OR $(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('net6.0-ios'))">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_IOS</DefineConstants>
 
     <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
-
-    <MicrosoftNetCompilerVersionOverride>4.0.0-6.final</MicrosoftNetCompilerVersionOverride>
   </PropertyGroup>
 
   <PropertyGroup>
