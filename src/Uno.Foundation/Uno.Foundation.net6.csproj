@@ -30,7 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
+		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.net6.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
