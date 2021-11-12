@@ -36,6 +36,7 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("XamlGenerationTests.Core")]
 [assembly: InternalsVisibleTo("Uno.UI.Adapter.Microsoft.Extensions.Logging")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.WebAssembly")]
+[assembly: InternalsVisibleTo("Uno.UI.Tests.Performance")]
 
 #if NET6_0_OR_GREATER
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]
