@@ -125,6 +125,7 @@
 	  <UpToDateCheckInput Remove="Microsoft\UI\Input\IPointerPointTransform.cs" />
 	  <UpToDateCheckInput Remove="Microsoft\UI\Input\PointerDeviceType.cs" />
 	  <UpToDateCheckInput Remove="Microsoft\UI\Input\PointerEventArgs.cs" />
+	  <UpToDateCheckInput Remove="UI\Xaml\Data\BindingExtensions.cs" />
 	</ItemGroup>
 	
 </Project>
