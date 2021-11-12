@@ -33,6 +33,10 @@
 		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" />
+	</ItemGroup>
+
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
