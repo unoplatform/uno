@@ -226,6 +226,13 @@
 	</Target>
 
 	<Target Name="GenerateDoc" DependsOnTargets="BuildSyncGenerator">
+		
+		<MSBuild Properties="Configuration=Debug"
+				 Projects="..\src\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj"
+				 Targets="Restore;Build"
+				 RebaseOutputs="false"
+				 BuildInParallel="true" />
+
 		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\Uno.UWPSyncGenerator.exe &quot;doc&quot;" />
 		<Exec Command="$(Pkgdocfx_console)\tools\docfx.exe ..\doc\docfx.json -o $(OutputDir)\doc" />
 	</Target>
