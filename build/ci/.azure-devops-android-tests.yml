@@ -209,6 +209,8 @@ jobs:
 
   - template: templates/optimize-roslyn-mono.yml
 
+  - template: templates/dotnet-install.yml
+
   - template: templates/ios-build-select-version.yml
     parameters:
       xCodeRoot: ${{ parameters.xCodeRoot }}

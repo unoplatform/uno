@@ -186,7 +186,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __ANDROID__
+#if __ANDROID__ || __IOS__
 		[Ignore]
 #endif
 		public async Task When_InvalidateDuringArrange_Then_GetReArranged()

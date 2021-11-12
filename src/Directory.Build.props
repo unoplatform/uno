@@ -27,44 +27,44 @@
 
     <DefaultLanguage>en-US</DefaultLanguage>
 
-	<UnoSourceGeneratorUseGenerationHost>true</UnoSourceGeneratorUseGenerationHost>
+    <UnoSourceGeneratorUseGenerationHost>true</UnoSourceGeneratorUseGenerationHost>
 
-	<!-- Disable generation controller to conserver CI server memory -->
-	<UnoSourceGeneratorUseGenerationController Condition="'$(CI_Build)'=='true'">false</UnoSourceGeneratorUseGenerationController>
+    <!-- Disable generation controller to conserver CI server memory -->
+    <UnoSourceGeneratorUseGenerationController Condition="'$(CI_Build)'=='true'">false</UnoSourceGeneratorUseGenerationController>
 
-	<!-- Disable source link when not building on GitHub -->
+    <!-- Disable source link when not building on GitHub -->
     <SourceLinkEnabled Condition="'$(BUILD_REPOSITORY_PROVIDER)'!='GitHub'">false</SourceLinkEnabled>
-	<EmbedUntrackedSources Condition="'$(BUILD_REPOSITORY_PROVIDER)'=='GitHub'">true</EmbedUntrackedSources>
-	<Deterministic>true</Deterministic>
-	
-	<UNO_UWP_BUILD>true</UNO_UWP_BUILD>
-	<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
-	<DefineConstants Condition="$(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('monoandroid')) OR $(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('net6.0-android'))">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_ANDROID</DefineConstants>
-	<DefineConstants Condition="$(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('xamarinios'))  OR $(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('net6.0-ios'))">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_IOS</DefineConstants>
+    <EmbedUntrackedSources Condition="'$(BUILD_REPOSITORY_PROVIDER)'=='GitHub'">true</EmbedUntrackedSources>
+    <Deterministic>true</Deterministic>
+    
+    <UNO_UWP_BUILD>true</UNO_UWP_BUILD>
+    <DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
+    <DefineConstants Condition="$(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('monoandroid')) OR $(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('net6.0-android'))">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_ANDROID</DefineConstants>
+    <DefineConstants Condition="$(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('xamarinios'))  OR $(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('net6.0-ios'))">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_IOS</DefineConstants>
 
-	<DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
+    <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
   </PropertyGroup>
 
   <PropertyGroup>
-	<LangVersion>8.0</LangVersion>
+    <LangVersion>10.0</LangVersion>
 
-	<!--
-	Use this property to use either the Uno.SourceGeneration framework, or Roslyn's C# 9.0 generators.
-	If UnoUIUseRoslynSourceGenerators is not defined, the environment defines if Roslyn is used or not, see
-	Uno.UI.SourceGenerators.props for more details. Note that Roslyn generators required VS 16.8 Pre 3 or later.
-	-->
-	<UnoUIUseRoslynSourceGenerators>false</UnoUIUseRoslynSourceGenerators>
+    <!--
+    Use this property to use either the Uno.SourceGeneration framework, or Roslyn's C# 9.0 generators.
+    If UnoUIUseRoslynSourceGenerators is not defined, the environment defines if Roslyn is used or not, see
+    Uno.UI.SourceGenerators.props for more details. Note that Roslyn generators required VS 16.8 Pre 3 or later.
+    -->
+    <UnoUIUseRoslynSourceGenerators>false</UnoUIUseRoslynSourceGenerators>
 
-	<!--
-	Force the compilation using Roslyn Generators to avoid type nuget
-	restore issues in the lottie project when building on .NET 5+
-	-->
-	<UnoUIUseRoslynSourceGenerators Condition="'$(MSBuildRuntimeType)'=='Core'">true</UnoUIUseRoslynSourceGenerators>
+    <!--
+    Force the compilation using Roslyn Generators to avoid type nuget
+    restore issues in the lottie project when building on .NET 5+
+    -->
+    <UnoUIUseRoslynSourceGenerators Condition="'$(MSBuildRuntimeType)'=='Core'">true</UnoUIUseRoslynSourceGenerators>
   
-	<!--
-	Force the compilation using Roslyn Generators on net6.0 and later
-	-->
-	<UnoUIUseRoslynSourceGenerators Condition="$(TargetFramework.StartsWith('net6'))">true</UnoUIUseRoslynSourceGenerators>
+    <!--
+    Force the compilation using Roslyn Generators on net6.0 and later
+    -->
+    <UnoUIUseRoslynSourceGenerators Condition="$(TargetFramework.StartsWith('net6'))">true</UnoUIUseRoslynSourceGenerators>
   </PropertyGroup>
 
   <!--
@@ -103,15 +103,15 @@
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.net6.csproj</_AdjustedOutputProjects>
 
-	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v1.Wasm.csproj</_AdjustedOutputProjects>
-	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v1.Skia.csproj</_AdjustedOutputProjects>
-	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v1.net6.csproj</_AdjustedOutputProjects>
+    <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v1.Wasm.csproj</_AdjustedOutputProjects>
+    <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v1.Skia.csproj</_AdjustedOutputProjects>
+    <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v1.net6.csproj</_AdjustedOutputProjects>
 
-	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.Wasm.csproj</_AdjustedOutputProjects>
-	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.Skia.csproj</_AdjustedOutputProjects>
-	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.net6.csproj</_AdjustedOutputProjects>
+    <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.Wasm.csproj</_AdjustedOutputProjects>
+    <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.Skia.csproj</_AdjustedOutputProjects>
+    <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.net6.csproj</_AdjustedOutputProjects>
 
-	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Xaml.net6.csproj</_AdjustedOutputProjects>
+    <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Xaml.net6.csproj</_AdjustedOutputProjects>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -123,9 +123,9 @@
   </ItemGroup>
 
   <PropertyGroup Condition="$(_AdjustedOutputProjects.Contains('$(MSBuildProjectFile)'))">
-	<BaseOutputPath>bin\$(MSBuildProjectName)</BaseOutputPath>
-	<BaseIntermediateOutputPath>obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
-	<DefaultItemExcludes>$(DefaultItemExcludes);obj/**;bin/**</DefaultItemExcludes>
+    <BaseOutputPath>bin\$(MSBuildProjectName)</BaseOutputPath>
+    <BaseIntermediateOutputPath>obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
+    <DefaultItemExcludes>$(DefaultItemExcludes);obj/**;bin/**</DefaultItemExcludes>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -134,24 +134,24 @@
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net472' or '$(TargetFramework)'==''">
-	<!--
-	Include the reference assemblies to ensure that hard links don't use system files (workaround for same disk restriction)
-	Make sure to include on the versions that are needed to avoid growing the nuget cache unnecessarily.
-	-->
-	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.2" PrivateAssets="All" />
-	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.2" PrivateAssets="All" />
-	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.2" PrivateAssets="All" />
+    <!--
+    Include the reference assemblies to ensure that hard links don't use system files (workaround for same disk restriction)
+    Make sure to include on the versions that are needed to avoid growing the nuget cache unnecessarily.
+    -->
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.2" PrivateAssets="All" />
   </ItemGroup>
 
   <PropertyGroup>
-	<IsMonoAndroid>false</IsMonoAndroid>
-	<IsMonoAndroid Condition="$(TargetFramework.ToLower().StartsWith('monoandroid')) or '$(TargetFramework)'=='net6.0-android'">true</IsMonoAndroid>
-	
-	<IsXamarinIOS>false</IsXamarinIOS>
-	<IsXamarinIOS Condition="$(TargetFramework.ToLower().StartsWith('xamarinios')) or '$(TargetFramework)'=='net6.0-ios'">true</IsXamarinIOS>
-	
-	<IsXamarinMac>false</IsXamarinMac>
-	<IsXamarinMac Condition="$(TargetFramework.ToLower().StartsWith('xamarinmac')) or '$(TargetFramework)'=='net6.0-macos'">true</IsXamarinMac>
+    <IsMonoAndroid>false</IsMonoAndroid>
+    <IsMonoAndroid Condition="$(TargetFramework.ToLower().StartsWith('monoandroid')) or '$(TargetFramework)'=='net6.0-android'">true</IsMonoAndroid>
+    
+    <IsXamarinIOS>false</IsXamarinIOS>
+    <IsXamarinIOS Condition="$(TargetFramework.ToLower().StartsWith('xamarinios')) or '$(TargetFramework)'=='net6.0-ios'">true</IsXamarinIOS>
+    
+    <IsXamarinMac>false</IsXamarinMac>
+    <IsXamarinMac Condition="$(TargetFramework.ToLower().StartsWith('xamarinmac')) or '$(TargetFramework)'=='net6.0-macos'">true</IsXamarinMac>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -161,10 +161,10 @@
 
   <PropertyGroup>
     <!--
-		This works around the fact that AndroidResgenFile is
-		automatically included as compiled file, even if AndroidUseIntermediateDesignerFile
-		is set to true.
-		-->
+        This works around the fact that AndroidResgenFile is
+        automatically included as compiled file, even if AndroidUseIntermediateDesignerFile
+        is set to true.
+        -->
     <AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
     <AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
   </PropertyGroup>
@@ -175,7 +175,7 @@
         <!-- Optional: Declare that the Repository URL can be published to NuSpec -->
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <!-- Optional: Embed source files that are not tracked by the source control manager to the PDB -->
-		<!-- Disabled because of https://github.com/mono/linker/issues/1409 -->
+        <!-- Disabled because of https://github.com/mono/linker/issues/1409 -->
         <EmbedUntrackedSources>false</EmbedUntrackedSources>
         <!-- Optional: Include PDB in the built .nupkg -->
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>

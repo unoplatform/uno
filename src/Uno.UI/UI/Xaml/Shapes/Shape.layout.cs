@@ -229,7 +229,7 @@ namespace Windows.UI.Xaml.Shapes
 
 		private protected Size MeasureAbsoluteShape(Size availableSize, NativePath? path)
 		{
-			if (path == null)
+			if (path! == null!)
 			{
 				return default;
 			}
@@ -342,7 +342,7 @@ namespace Windows.UI.Xaml.Shapes
 
 		private protected Size ArrangeAbsoluteShape(Size finalSize, NativePath? path, FillRule fillRule = FillRule.EvenOdd)
 		{
-			if (path == null)
+			if (path! == null!)
 			{
 				Render(null);
 				return default;
