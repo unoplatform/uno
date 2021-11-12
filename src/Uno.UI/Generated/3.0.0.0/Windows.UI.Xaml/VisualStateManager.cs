@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml
 	#endif
 	public  partial class VisualStateManager : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty CustomVisualStateManagerProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
@@ -34,14 +34,14 @@ namespace Windows.UI.Xaml
 		// Skipping already declared method Windows.UI.Xaml.VisualStateManager.GoToStateCore(Windows.UI.Xaml.Controls.Control, Windows.UI.Xaml.FrameworkElement, string, Windows.UI.Xaml.VisualStateGroup, Windows.UI.Xaml.VisualState, bool)
 		// Skipping already declared method Windows.UI.Xaml.VisualStateManager.GetVisualStateGroups(Windows.UI.Xaml.FrameworkElement)
 		// Forced skipping of method Windows.UI.Xaml.VisualStateManager.CustomVisualStateManagerProperty.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.VisualStateManager GetCustomVisualStateManager( global::Windows.UI.Xaml.FrameworkElement obj)
 		{
 			return (global::Windows.UI.Xaml.VisualStateManager)obj.GetValue(CustomVisualStateManagerProperty);
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetCustomVisualStateManager( global::Windows.UI.Xaml.FrameworkElement obj,  global::Windows.UI.Xaml.VisualStateManager value)
 		{

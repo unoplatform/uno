@@ -98,6 +98,19 @@ namespace Windows.UI.Xaml
 
 		#endregion
 
+		#region CustomVisualStateManager Attached Property
+		public static DependencyProperty CustomVisualStateManagerProperty { get; } = DependencyProperty.RegisterAttached(
+				"CustomVisualStateManager", typeof(VisualStateManager),
+				typeof(VisualStateManager),
+				new FrameworkPropertyMetadata(default(VisualStateManager)));
+
+		public static VisualStateManager GetCustomVisualStateManager(FrameworkElement obj)
+			=> (VisualStateManager)obj.GetValue(CustomVisualStateManagerProperty);
+
+		public static void SetCustomVisualStateManager(FrameworkElement obj, VisualStateManager value)
+			=> obj.SetValue(CustomVisualStateManagerProperty, value);
+		#endregion
+
 		public static bool GoToState(Control control, string stateName, bool useTransitions)
 		{
 			var templateRoot = control.GetTemplateRoot();
@@ -147,12 +160,12 @@ namespace Windows.UI.Xaml
 				return false;
 			}
 
-			var vsm = GetVisualStateManager(control);
+			var vsm = GetCustomVisualStateManager(control) ?? GetVisualStateManager(control);
 			if (vsm is null)
 			{
 				if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-					_log.DebugFormat("Failed to set state [{0}], there is no VisualStateManagr on [{1}]", stateName, control);
+					_log.DebugFormat("Failed to set state [{0}], there is no VisualStateManager on [{1}]", stateName, control);
 				}
 
 				return false;
