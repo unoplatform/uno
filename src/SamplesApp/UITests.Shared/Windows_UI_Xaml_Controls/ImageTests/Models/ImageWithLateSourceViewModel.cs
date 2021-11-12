@@ -21,7 +21,7 @@ using Uno.Logging;
 
 namespace Uno.UI.Samples.UITests.ImageTests.Models
 {
-	public class ImageWithLateSourceViewModel : ViewModelBase
+	internal class ImageWithLateSourceViewModel : ViewModelBase
 	{
 #if HAS_UNO
 		private static readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(ImageWithLateSourceViewModel));

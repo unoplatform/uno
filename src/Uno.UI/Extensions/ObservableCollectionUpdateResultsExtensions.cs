@@ -2,7 +2,7 @@
 
 namespace Uno.Extensions
 {
-	public static class ObservableCollectionUpdateResultsExtensions
+	internal static class ObservableCollectionUpdateResultsExtensions
 	{
 		public static bool HasChanged<T>(this ObservableCollectionUpdateResults<T> observableCollection)
 		{

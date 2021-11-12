@@ -7,14 +7,14 @@ using Windows.UI.Xaml.Data;
 
 namespace Uno.UI.Samples.Content.UITests.Flyout
 {
-	public class FlyoutButonViewModel : ViewModelBase
+	internal class FlyoutButonViewModel : ViewModelBase
 	{
 		public FlyoutButonViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
 			DataBoundText = "Button not clicked";
 		}
 
-		public Command ChangeTextCommand => new Command((p) =>
+		internal Command ChangeTextCommand => new Command((p) =>
 		{
 			DataBoundText = "Button was clicked";
 		});

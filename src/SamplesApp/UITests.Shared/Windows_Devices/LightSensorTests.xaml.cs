@@ -16,7 +16,7 @@ namespace UITests.Windows_Devices
 	}
 
 	[Bindable]
-	public class LightSensorTestsViewModel : ViewModelBase
+	internal class LightSensorTestsViewModel : ViewModelBase
 	{
 		private readonly LightSensor _LightSensor = null;
 		private bool _readingChangedAttached;
@@ -45,13 +45,13 @@ namespace UITests.Windows_Devices
 			}));
 		}
 
-		public Command AttachReadingChangedCommand => new Command((p) =>
+		internal Command AttachReadingChangedCommand => new Command((p) =>
 		{
 			_LightSensor.ReadingChanged += LightSensor_ReadingChanged;
 			ReadingChangedAttached = true;
 		});
 
-		public Command DetachReadingChangedCommand => new Command((p) =>
+		internal Command DetachReadingChangedCommand => new Command((p) =>
 		{
 			_LightSensor.ReadingChanged -= LightSensor_ReadingChanged;
 			ReadingChangedAttached = false;

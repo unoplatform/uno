@@ -18,7 +18,7 @@ using Uno.Logging;
 
 namespace Uno.UI.Samples.Presentation.SamplePages
 {
-	public class ButtonTestsViewModel : ViewModelBase
+	internal class ButtonTestsViewModel : ViewModelBase
 	{
 #if HAS_UNO
 		private readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(ButtonTestsViewModel));

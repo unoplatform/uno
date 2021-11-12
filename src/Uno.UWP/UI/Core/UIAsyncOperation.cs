@@ -65,7 +65,7 @@ namespace Windows.UI.Core
 			}
 		}
 
-		public FastTaskCompletionSource<object> CompletionSource
+		internal FastTaskCompletionSource<object> CompletionSource
 		{
 			get
 			{

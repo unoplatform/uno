@@ -36,7 +36,7 @@ namespace UITests.Shared.Windows_Devices
 		}
 
 		[Bindable]
-		public class HingeAngleSensorTestsViewModel : ViewModelBase
+		internal class HingeAngleSensorTestsViewModel : ViewModelBase
 		{
 			private HingeAngleSensor _hinge;
 			private bool _readingChangedAttached;
@@ -70,13 +70,13 @@ namespace UITests.Shared.Windows_Devices
 				}));
 			}
 
-			public Command AttachReadingChangedCommand => new Command((p) =>
+			internal Command AttachReadingChangedCommand => new Command((p) =>
 			{
 				_hinge.ReadingChanged += HingeAngleSensor_ReadingChanged;
 				ReadingChangedAttached = true;
 			});
 
-			public Command DetachReadingChangedCommand => new Command((p) =>
+			internal Command DetachReadingChangedCommand => new Command((p) =>
 			{
 				_hinge.ReadingChanged -= HingeAngleSensor_ReadingChanged;
 				ReadingChangedAttached = false;

@@ -36,7 +36,7 @@ using _Color = Windows.UI.Color;
 
 namespace Uno.UI.Samples.UITests.ImageTests.Models
 {
-	public class ImageFilePathModel : ViewModelBase
+	internal class ImageFilePathModel : ViewModelBase
 	{
 #pragma warning disable CS0109
 #if HAS_UNO

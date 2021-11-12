@@ -21,7 +21,7 @@ namespace UITests.Shared.Windows_Devices
 	}
 
 	[Bindable]
-	public class GyrometerTestsViewModel : ViewModelBase
+	internal class GyrometerTestsViewModel : ViewModelBase
 	{
 		private readonly Gyrometer _gyrometer = null;
 		private bool _readingChangedAttached;
@@ -52,13 +52,13 @@ namespace UITests.Shared.Windows_Devices
 			}));
 		}
 
-		public Command AttachReadingChangedCommand => new Command((p) =>
+		internal Command AttachReadingChangedCommand => new Command((p) =>
 		{
 			_gyrometer.ReadingChanged += Gyrometer_ReadingChanged;
 			ReadingChangedAttached = true;
 		});
 
-		public Command DetachReadingChangedCommand => new Command((p) =>
+		internal Command DetachReadingChangedCommand => new Command((p) =>
 		{
 			_gyrometer.ReadingChanged -= Gyrometer_ReadingChanged;
 			ReadingChangedAttached = false;

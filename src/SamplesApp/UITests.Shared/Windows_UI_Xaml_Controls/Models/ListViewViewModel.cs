@@ -25,7 +25,7 @@ using Uno.Logging;
 namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 {
 	[Bindable]
-	public class ListViewViewModel : ViewModelBase
+	internal class ListViewViewModel : ViewModelBase
 	{
 #if HAS_UNO
 		private Uno.Foundation.Logging.Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Factory.CreateLogger(typeof(ListViewViewModel));

@@ -25,7 +25,7 @@ namespace UITests.Shared.Windows_System
 		}
 	}
 
-	public class LauncherTestsViewModel : ViewModelBase
+	internal class LauncherTestsViewModel : ViewModelBase
 	{
 		private string _uri = "https://platform.uno";
 		private string _error;
