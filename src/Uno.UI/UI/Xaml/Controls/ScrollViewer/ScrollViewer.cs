@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Controls
 				public const string ExpandedWithoutAnimation = "ScrollBarSeparatorExpandedWithoutAnimation";
 				public const string CollapsedWithoutAnimation = "ScrollBarSeparatorCollapsedWithoutAnimation";
 
-				// On WinUI3 visuals states are prefixed with "ScrolBar***s***" (with a trailing 's')
+				// On WinUI3 visuals states are prefixed with "ScrollBar***s***" (with a trailing 's')
 				//public const string Collapsed = "ScrollBarsSeparatorCollapsed";
 				//public const string CollapsedDisabled = "ScrollBarsSeparatorCollapsedDisabled"; // Not supported yet
 				//public const string Expanded = "ScrollBarsSeparatorExpanded";
