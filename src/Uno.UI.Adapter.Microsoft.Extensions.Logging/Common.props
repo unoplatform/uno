@@ -1,8 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project>
-  <Import Project="../netcore-build.props"/>
-  <Import Project="../targetframework-override.props"/>
-
   <PropertyGroup>
     <NoWarn>$(NoWarn);NU1701</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
