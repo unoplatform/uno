@@ -14,7 +14,7 @@ namespace Uno.UI.Samples.Content.UITests.Flyout
 			DataBoundText = "Button not clicked";
 		}
 
-		internal Command ChangeTextCommand => new Command((p) =>
+		public Command ChangeTextCommand => new Command((p) =>
 		{
 			DataBoundText = "Button was clicked";
 		});
