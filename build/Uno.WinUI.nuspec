@@ -23,28 +23,28 @@
 		<dependency id="Xamarin.AndroidX.RecyclerView" version="1.1.0.8-net6preview02.4535000" />
 		<dependency id="Xamarin.AndroidX.Fragment" version="1.3.0.1-net6preview02.4535000" />
 		<dependency id="Uno.SourceGenerationTasks" version="3.2.0" />
-		<dependency id="Uno.Foundation.Logging" version="2.7.1000" />
+		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.0-dev.22" />
 	  </group>
 
 	  <!-- net6.0-ios -->
 	  <group targetFramework="net6.0-ios">
 		<dependency id="Uno.SourceGenerationTasks" version="3.2.0" />
-		<dependency id="Uno.Foundation.Logging" version="2.7.1000" />
+		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.0-dev.22" />
 	  </group>
 
 	  <!-- net6.0-maccatalyst -->
 	  <group targetFramework="net6.0-maccatalyst">
 		<dependency id="Uno.SourceGenerationTasks" version="3.2.0" />
-		<dependency id="Uno.Foundation.Logging" version="2.7.1000" />
+		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.0-dev.22" />
 	  </group>
 
 	  <!-- net6.0-macos -->
 	  <group targetFramework="net6.0-macos">
 		<dependency id="Uno.SourceGenerationTasks" version="3.2.0" />
-		<dependency id="Uno.Foundation.Logging" version="2.7.1000" />
+		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.0-dev.22" />
 	  </group>
 
@@ -56,7 +56,7 @@
 		<dependency id="Xamarin.AndroidX.Fragment" version="1.1.0" />
 		<dependency id="Xamarin.AndroidX.Activity" version="1.1.0" />
 		<dependency id="Uno.SourceGenerationTasks" version="3.2.0" />
-		<dependency id="Uno.Foundation.Logging" version="2.7.1000" />
+		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.0-dev.22" />
 	  </group>
 
@@ -67,28 +67,28 @@
 		<dependency id="Xamarin.AndroidX.RecyclerView" version="1.1.0" />
 		<dependency id="Xamarin.AndroidX.Activity" version="1.1.0" />
 		<dependency id="Uno.SourceGenerationTasks" version="3.2.0" />
-		<dependency id="Uno.Foundation.Logging" version="2.7.1000" />
+		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.0-dev.22" />
 	  </group>
 
 	  <!-- iOS -->
 	  <group targetFramework="xamarinios10">
 		<dependency id="Uno.SourceGenerationTasks" version="3.2.0" />
-		<dependency id="Uno.Foundation.Logging" version="2.7.1000" />
+		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.0-dev.22" />
 	  </group>
 
 	  <!-- macOS -->
 	  <group targetFramework="xamarinmac20">
 		<dependency id="Uno.SourceGenerationTasks" version="3.2.0" />
-		<dependency id="Uno.Foundation.Logging" version="2.7.1000" />
+		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.0-dev.22" />
 	  </group>
 
 	  <!-- .NET Standard 2.0 -->
 	  <group targetFramework="netstandard2.0">
 		<dependency id="Uno.SourceGenerationTasks" version="3.2.0" />
-		<dependency id="Uno.Foundation.Logging" version="2.7.1000" />
+		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="System.Numerics.Vectors" version="4.5.0" />
 		<dependency id="System.Runtime.InteropServices.WindowsRuntime" version="4.3.0" />
 		<dependency id="System.Memory" version="4.5.2" />
@@ -484,7 +484,6 @@
 	<!-- Roslyn Source generators -->
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\Uno.UI.SourceGenerators.dll" target="analyzers/dotnet/cs" />
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\Uno.UI.SourceGenerators.pdb" target="analyzers/dotnet/cs" />
-	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\Uno.Core.dll" target="analyzers/dotnet/cs" />
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\Uno.Xaml.dll" target="analyzers/dotnet/cs" />
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="analyzers/dotnet/cs" />
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\Mono.Cecil*.dll" target="analyzers/dotnet/cs" />
