@@ -20,17 +20,9 @@
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 	
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
-	</PropertyGroup>
-	
-	<PropertyGroup>
-		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
-		<Authors>nventive</Authors>
-		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
-		<PackageIconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</PackageIconUrl>
-		<PackageIcon>uno.png</PackageIcon>
-		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
-		<Description>Internal Uno.UI usage only.</Description>
-		<Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
+
+		<!-- Manual packaging during CI -->
+		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 	
 	<ItemGroup>

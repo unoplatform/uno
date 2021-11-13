@@ -1,14 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>net6.0-android;net6.0-ios</TargetFrameworks>
-		<TargetFrameworksCI>net6.0-android;net6.0-ios</TargetFrameworksCI>
-
-		<TargetFrameworks>$(TargetFrameworks);net6.0-maccatalyst;net6.0-macos</TargetFrameworks>
-		<TargetFrameworksCI>$(TargetFrameworks);net6.0-maccatalyst;net6.0-macos</TargetFrameworksCI>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+		<TargetFrameworks>net6.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props"/>
@@ -24,22 +16,10 @@
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 	
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		
+		<!-- Manual packaging during CI -->
+		<IsPackable>false</IsPackable>
 	</PropertyGroup>
-	
-	<PropertyGroup>
-		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
-		<Authors>nventive</Authors>
-		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
-		<PackageIconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</PackageIconUrl>
-		<PackageIcon>uno.png</PackageIcon>
-		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
-		<Description>Internal Uno.UI usage only.</Description>
-		<Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
-	</PropertyGroup>
-	
-	<ItemGroup>
-		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" />
