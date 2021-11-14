@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using AppKit;
 using CoreGraphics;
 using Foundation;
+using Microsoft.Extensions.Logging;
 using Uno.Extensions;
-using Uno.Foundation.Logging;
 using Windows.Foundation;
 
 namespace Windows.ApplicationModel.DataTransfer
@@ -78,7 +78,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 			else
 			{
-				if (typeof(DataTransferManager).Log().IsEnabled(LogLevel.Error))
+				if (typeof(DataTransferManager).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
 				{
 					typeof(DataTransferManager).Log().LogError($"The current Window.ContentView is null, unable to run ShowShareUIAsync");
 				}

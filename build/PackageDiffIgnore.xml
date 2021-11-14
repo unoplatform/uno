@@ -7460,9 +7460,6 @@
 				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings..ctor(Windows.UI.Xaml.Controls.CommandBar commandBar)"
 				reason="API alignment" />
 
-			<Member
-				fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBar.set_TemplateSettings(Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings value)"
-				reason="Setter is not public in WinUI" />
 
 		  <!-- BEGIN .NET 6 BREAKING CHANGE -->
 		  <Member fullName="System.Void UIKit.UIViewExtensions.SetDimensions(UIKit.UIView view, System.Nullable`1&lt;System.nfloat&gt; width, System.Nullable`1&lt;System.nfloat&gt; height)" reason=".NET 6 RTM breaking change" />
@@ -8530,9 +8527,6 @@
 		  <Member fullName="System.nfloat Uno.UI.ViewHelper::MainScreenScale" reason=".NET 6 RTM breaking change" />
 		  <!-- END .NET 6 BREAKING CHANGE -->
 
-			<Member
-				fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.InfoBarTemplateSettings::IconElementProperty"
-				reason="DPs should be properties" />
 		</Fields>
 		<Properties>
 			<Member
@@ -8610,19 +8604,6 @@
 		  <!-- BEGIN .NET 6 BREAKING CHANGE -->
 		  <Member fullName="System.nfloat Uno.UI.ViewHelper::OnePixel()" reason=".NET 6 RTM breaking change" />
 		  <!-- END .NET 6 BREAKING CHANGE -->
-
-		  <!-- BEGIN Uno.Core dependency Removal -->
-		  <Member fullName="Uno.Threading.FastTaskCompletionSource`1&lt;System.Object&gt; Windows.UI.Core.UIAsyncOperation::CompletionSource()" reason="Uno.Core dependency removal" />
-		  <Member fullName="Microsoft.Extensions.Logging.LogLevel Windows.Foundation.Metadata.ApiInformation::NotImplementedLogLevel()" reason="Uno.Core dependency removal" />
-		  <!-- END Uno.Core dependency Removal -->
-		  
-		  <!-- BEGIN Composition Relocation -->
-		  <Member fullName="System.Collections.Generic.IList`1&lt;Windows.UI.Composition.IVisualElement&gt; Windows.UI.WindowManagement.AppWindowFrame::DragRegionVisuals()" reason="Composition Relocation" />
-		  <Member fullName="Windows.UI.Composition.ContainerVisual Windows.UI.Input.Inking.Core.CoreInkPresenterHost::RootVisual()" reason="Composition Relocation" />
-		  <Member fullName="Windows.UI.Composition.ICompositionSurface Windows.Media.Playback.MediaPlayerSurface::CompositionSurface()" reason="Composition Relocation" />
-		  <Member fullName="Windows.UI.Composition.Compositor Windows.Media.Playback.MediaPlayerSurface::Compositor()" reason="Composition Relocation" />
-		  <!-- END Composition Relocation -->
-
 		</Properties>
 	</IgnoreSet>
 	<!--

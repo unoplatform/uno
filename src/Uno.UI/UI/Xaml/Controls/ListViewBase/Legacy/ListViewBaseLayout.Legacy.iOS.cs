@@ -19,6 +19,10 @@ using Uno.Foundation.Logging;
 using ObjCRuntime;
 #endif
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace Uno.UI.Controls.Legacy
 {
 	public abstract partial class ListViewBaseLayout : UICollectionViewLayout, DependencyObject

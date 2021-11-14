@@ -46,8 +46,15 @@ namespace Uno.UI.RemoteControl.HotReload
                                 content.Content = XamlReader.Load(fileReload.Content);
                                 break;
                         }
-                    }
-                }
+					}
+
+					if (ResourceResolver.RetrieveDictionaryForFilePath(uri.AbsolutePath) is { } targetDictionary)
+					{
+						var replacementDictionary = (ResourceDictionary)XamlReader.Load(fileReload.Content);
+						targetDictionary.CopyFrom(replacementDictionary);
+						Application.Current.UpdateResourceBindingsForHotReload();
+					}
+				}
                 catch (Exception e)
                 {
                     if (this.Log().IsEnabled(LogLevel.Error))

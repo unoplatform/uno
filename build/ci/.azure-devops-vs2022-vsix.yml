@@ -18,11 +18,6 @@ jobs:
   - checkout: self
     clean: true
 
-      dotnet tool update -g dotnet-vs
-      $MSBUILDPREVIEWPATH="$(vs where preview --prop=InstallationPath)\MSBuild\Current\Bin"
-      Write-Host "##vso[task.setvariable variable=MSBUILDPREVIEWPATH;]$MSBUILDPREVIEWPATH"
-    displayName: Setup VS17 Path
-
   - template: templates/gitversion.yml
 
   - task: MSBuild@1

@@ -40,12 +40,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="Helpers\ProcessHelpers.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <PackageReference Include="System.ValueTuple" Version="4.5.0" />
 	</ItemGroup>
+
+	<!-- Fix for VS 2022 -->
+	<Target Name="GetTargetPath" />
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>
