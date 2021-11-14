@@ -161,6 +161,9 @@
 		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
 							 Query="//PackageReference[@Include='Uno.UI.Runtime.WebAssembly']/@Version"
 							 Value="$(GitVersion_SemVer)" />
+		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
+							 Query="//PackageReference[@Include='Uno.UI.Adapter.Microsoft.Extensions.Logging']/@Version"
+							 Value="$(GitVersion_SemVer)" />
 	</Target>
 
 	<Target Name="UpdateTasksSHA">
