@@ -15,8 +15,10 @@ namespace Uno.UI.Adapter.Microsoft.Extensions.Logging
 	}
 }
 
+#if !NET6_0_OR_GREATER
 namespace System.Runtime.CompilerServices
 {
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 	internal sealed class ModuleInitializerAttribute : System.Attribute { }
 }
+#endif
