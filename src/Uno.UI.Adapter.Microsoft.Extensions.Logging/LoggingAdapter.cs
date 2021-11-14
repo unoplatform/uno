@@ -15,7 +15,7 @@ namespace Uno.UI.Adapter.Microsoft.Extensions.Logging
 	}
 }
 
-#if !NET6_0_OR_GREATER
+#if NETSTANDARD2_0
 namespace System.Runtime.CompilerServices
 {
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
