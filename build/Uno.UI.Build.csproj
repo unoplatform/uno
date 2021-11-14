@@ -280,16 +280,13 @@
 			<_NuspecFiles Include=".\Uno.UI.Adapter.Microsoft.Extensions.Logging.nuspec" />
 		</ItemGroup>
 
-		<!-- Update the package version -->
-		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies/x:dependency/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
-
 		<!-- Update Uno.WinUI references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
 		
 		<!-- Update Uno.Foundation.Runtime.WebAssembly references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.Foundation.Runtime.WebAssembly']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
 
-		<!-- Update Uno.Foundation.Runtime.WebAssembly references version -->
+		<!-- Update Uno.WinUI.Runtime.WebAssembly references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.WebAssembly']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
 
 		<!-- Update Uno.WinUI.Runtime.Skia.Gtk references version -->
