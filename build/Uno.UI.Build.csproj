@@ -136,7 +136,7 @@
 							 Value="$(GitVersion_SemVer)"
 							 Namespaces="$(MSBuildDeveloperNamespace)"
 							 />
-		
+
 		<XmlPoke XmlInputPath="%(_legacyProject.Identity)"
 							 Query="//x:PackageReference[@Include='Uno.UI.Adapter.Microsoft.Extensions.Logging']/@Version"
 							 Value="$(GitVersion_SemVer)"
