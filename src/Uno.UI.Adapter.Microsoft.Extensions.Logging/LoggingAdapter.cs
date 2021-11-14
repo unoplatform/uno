@@ -7,7 +7,7 @@ namespace Uno.UI.Adapter.Microsoft.Extensions.Logging
 
 	public class LoggingAdapter
 	{
-		[ModuleInitializer]
+		// [ModuleInitializer]
 		public static void Initialize()
 		{
 			Foundation.Logging.LoggerFactory.ExternalLoggerFactory = new MicrosoftLoggerFactory();
