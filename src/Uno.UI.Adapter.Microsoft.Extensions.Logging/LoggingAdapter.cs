@@ -7,10 +7,10 @@ namespace Uno.UI.Adapter.Microsoft.Extensions.Logging
 
 	public class LoggingAdapter
 	{
-		// [ModuleInitializer]
+		[ModuleInitializer]
 		public static void Initialize()
 		{
-			Uno.Foundation.Logging.LoggerFactory.ExternalLoggerFactory = new MicrosoftLoggerFactory();
+			Foundation.Logging.LoggerFactory.ExternalLoggerFactory = new MicrosoftLoggerFactory();
 		}
 	}
 }
@@ -18,5 +18,5 @@ namespace Uno.UI.Adapter.Microsoft.Extensions.Logging
 namespace System.Runtime.CompilerServices
 {
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-	public sealed class ModuleInitializerAttribute : System.Attribute { }
+	internal sealed class ModuleInitializerAttribute : System.Attribute { }
 }
