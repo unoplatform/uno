@@ -16,7 +16,7 @@ using System.Diagnostics;
 
 namespace Windows.UI.Core
 {
-	public sealed partial class CoreDispatcher
+	internal sealed partial class CoreDispatcher
 	{
 		private Handler _handler;
 		private Choreographer _choreographer;

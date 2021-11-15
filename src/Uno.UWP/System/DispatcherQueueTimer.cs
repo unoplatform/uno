@@ -7,7 +7,7 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 using DateTimeOffset = System.DateTimeOffset;
 
-#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+#if HAS_UNO_WINUI && IS_UNO_UI_DISPATCHING_PROJECT
 namespace Microsoft.UI.Dispatching
 #else
 namespace Windows.System

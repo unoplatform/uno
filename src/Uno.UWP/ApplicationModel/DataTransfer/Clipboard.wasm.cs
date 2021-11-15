@@ -17,8 +17,8 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		public static void SetContent(DataPackage/* ? */ content)
 		{
-			CoreDispatcher.Main.RunAsync(
-				CoreDispatcherPriority.High,
+			Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
+				Uno.UI.Dispatching.CoreDispatcherPriority.High,
 				() => SetContentAsync(content));
 		}
 
@@ -41,8 +41,8 @@ namespace Windows.ApplicationModel.DataTransfer
 				async ct =>
 				{
 					var text = string.Empty;
-					await CoreDispatcher.Main.RunAsync(
-						CoreDispatcherPriority.High,
+					await Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
+						Uno.UI.Dispatching.CoreDispatcherPriority.High,
 						async _ => text = await GetClipboardText());
 
 					return text;

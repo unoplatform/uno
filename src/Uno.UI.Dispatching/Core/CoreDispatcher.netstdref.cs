@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Windows.UI.Core
+namespace Uno.UI.Dispatching
 {
-	public sealed partial class CoreDispatcher
+	internal sealed partial class CoreDispatcher
 	{
 		private bool GetHasThreadAccess() => throw new NotSupportedException("Ref assembly");
 

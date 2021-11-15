@@ -37,6 +37,8 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Adapter.Microsoft.Extensions.Logging")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.WebAssembly")]
 [assembly: InternalsVisibleTo("Uno.UI.Tests.Performance")]
+[assembly: InternalsVisibleTo("Uno.UI.Composition")]
+[assembly: InternalsVisibleTo("Uno.UI.Dispatching")]
 
 #if NET6_0_OR_GREATER
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]

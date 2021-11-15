@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Windows.UI.Core
 {
-    public sealed partial class CoreDispatcher
+    internal sealed partial class CoreDispatcher
     {
         private CoreFoundation.DispatchQueue _mainQueue = CoreFoundation.DispatchQueue.MainQueue;
 

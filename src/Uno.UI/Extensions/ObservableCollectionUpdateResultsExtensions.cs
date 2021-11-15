@@ -4,7 +4,7 @@ namespace Uno.Extensions
 {
 	internal static class ObservableCollectionUpdateResultsExtensions
 	{
-		public static bool HasChanged<T>(this ObservableCollectionUpdateResults<T> observableCollection)
+		internal static bool HasChanged<T>(this ObservableCollectionUpdateResults<T> observableCollection)
 		{
 			return observableCollection.Moved.Any()
 				|| observableCollection.Added.Any()
