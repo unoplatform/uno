@@ -105,7 +105,6 @@
 		<ProjectReference Include="..\..\Uno.UI.Foldable\Uno.UI.Foldable.net6.csproj"/>
 		
 		<!--
-		<!--
 		<ProjectReference Include="..\..\Uno.UI.Maps\Uno.UI.Maps.net6.csproj"/>
 		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.net6.csproj"/>
 		-->
