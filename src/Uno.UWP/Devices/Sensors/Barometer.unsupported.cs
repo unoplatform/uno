@@ -1,4 +1,4 @@
-﻿#if __MACOS__ || NET461 || __WASM__
+﻿#if __MACOS__ || __SKIA__ || __NETSTD_REFERENCE__ || NET461 || __WASM__
 namespace Windows.Devices.Sensors
 {
 	public partial class Barometer

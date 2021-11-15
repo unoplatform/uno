@@ -1,4 +1,4 @@
-﻿#if __MACOS__ || __WASM__ || NET461
+﻿#if __MACOS__ || __WASM__ || NET461 || __SKIA__ || __NETSTD_REFERENCE__
 using System;
 using System.Threading.Tasks;
 using Windows.Foundation;

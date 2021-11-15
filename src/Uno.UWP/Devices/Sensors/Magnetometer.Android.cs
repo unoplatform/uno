@@ -12,15 +12,10 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Magnetometer
 	{
-		private readonly Sensor _sensor;
+		private Sensor _sensor;
 		private uint _reportInterval = SensorHelpers.UiReportingInterval;
 
 		private MagnetometerListener _listener;
-
-		private Magnetometer(Sensor barometerSensor)
-		{
-			_sensor = barometerSensor;
-		}
 
 		public uint ReportInterval
 		{
@@ -31,7 +26,7 @@ namespace Windows.Devices.Sensors
 				{
 					_reportInterval = value;
 
-					if (_readingChanged != null)
+					if (_readingChangedWrapper.Event != null)
 					{
 						//restart reading to apply interval
 						StopReading();
@@ -47,7 +42,9 @@ namespace Windows.Devices.Sensors
 			var sensor = sensorManager.GetDefaultSensor(Android.Hardware.SensorType.MagneticField);
 			if (sensor != null)
 			{
-				return new Magnetometer(sensor);
+				var magnetometer = new Magnetometer();
+				magnetometer._sensor = sensor;
+				return magnetometer;
 			}
 			return null;
 		}

@@ -28,10 +28,6 @@ namespace Windows.Devices.Geolocation
 		private LocationManager _locationManager;
 		private string _locationProvider;
 
-		public Geolocator()
-		{
-		}
-
 		private void TryInitialize()
 		{
 			if (_locationManager == null)
@@ -161,7 +157,7 @@ namespace Windows.Devices.Geolocation
 		public void OnLocationChanged(Location location)
 		{
 			BroadcastStatus(PositionStatus.Ready);
-			this._positionChanged?.Invoke(this, new PositionChangedEventArgs(location.ToGeoPosition()));
+			this._positionChangedWrapper.Event?.Invoke(this, new PositionChangedEventArgs(location.ToGeoPosition()));
 		}
 
 		public void OnProviderDisabled(string provider)

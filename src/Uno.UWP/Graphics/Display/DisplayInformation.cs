@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Uno;
+using Uno.Helpers;
 using Windows.Foundation;
 
 namespace Windows.Graphics.Display
@@ -21,11 +22,20 @@ namespace Windows.Graphics.Display
 
 		private static DisplayOrientations _autoRotationPreferences;
 
-		private TypedEventHandler<DisplayInformation, object> _orientationChanged;
-		private TypedEventHandler<DisplayInformation, object> _dpiChanged;
+		private readonly StartStopTypedEventWrapper<DisplayInformation, object> _orientationChangedWrapper;
+		private readonly StartStopTypedEventWrapper<DisplayInformation, object> _dpiChangedWrapper;
 
 		private DisplayInformation()
 		{
+			_orientationChangedWrapper = new StartStopTypedEventWrapper<DisplayInformation, object>(
+				() => StartOrientationChanged(),
+				() => StopOrientationChanged(),
+				_syncLock);
+			_dpiChangedWrapper = new StartStopTypedEventWrapper<DisplayInformation, object>(
+				() => StartDpiChanged(),
+				() => StopDpiChanged(),
+				_syncLock);
+
 			Initialize();
 		}
 
@@ -37,7 +47,7 @@ namespace Windows.Graphics.Display
 				_autoRotationPreferences = value;
 				SetOrientationPartial(_autoRotationPreferences);
 			}
-		}		
+		}
 
 		public bool StereoEnabled { get; private set; } = false;
 
@@ -58,62 +68,22 @@ namespace Windows.Graphics.Display
 #pragma warning disable CS0067
 		public event TypedEventHandler<DisplayInformation, object> OrientationChanged
 		{
-			add
-			{
-				lock (_syncLock)
-				{
-					bool isFirstSubscriber = _orientationChanged == null;
-					_orientationChanged += value;
-					if (isFirstSubscriber)
-					{
-						StartOrientationChanged();
-					}
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_orientationChanged -= value;
-					if (_orientationChanged == null)
-					{
-						StopOrientationChanged();
-					}
-				}
-			}
+			add => _orientationChangedWrapper.AddHandler(value);
+			remove => _orientationChangedWrapper.RemoveHandler(value);
 		}
 
 		public event TypedEventHandler<DisplayInformation, object> DpiChanged
 		{
-			add
-			{
-				lock (_syncLock)
-				{
-					bool isFirstSubscriber = _dpiChanged == null;
-					_dpiChanged += value;
-					if (isFirstSubscriber)
-					{
-						StartDpiChanged();
-					}
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_dpiChanged -= value;
-					if (_dpiChanged == null)
-					{
-						StopDpiChanged();
-					}
-				}
-			}
+			add => _dpiChangedWrapper.AddHandler(value);
+			remove => _dpiChangedWrapper.RemoveHandler(value);
 		}
 #pragma warning restore CS0067
 
-		private void OnOrientationChanged() => _orientationChanged?.Invoke(this, null);
+		private void OnOrientationChanged() =>
+			_orientationChangedWrapper.Invoke(this, null);
 
-		private void OnDpiChanged() => _dpiChanged?.Invoke(this, null);
+		private void OnDpiChanged() =>
+			_dpiChangedWrapper.Invoke(this, null);
 
 		private void OnDisplayMetricsChanged()
 		{

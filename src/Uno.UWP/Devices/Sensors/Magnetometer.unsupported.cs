@@ -1,4 +1,4 @@
-﻿#if __MACOS__ || NET461
+﻿#if __MACOS__ || NET461 || __SKIA__ || __NETSTD_REFERENCE__
 namespace Windows.Devices.Sensors
 {
 	public partial class Magnetometer

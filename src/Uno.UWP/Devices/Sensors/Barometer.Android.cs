@@ -12,14 +12,10 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Barometer
 	{
-		private readonly Sensor _sensor;
-		private BarometerListener _listener;
+		private Sensor _sensor;
 		private uint _reportInterval = SensorHelpers.UiReportingInterval;
 
-		private Barometer(Sensor barometerSensor)
-		{
-			_sensor = barometerSensor;
-		}
+		private BarometerListener _listener;
 
 		public uint ReportInterval
 		{
@@ -30,7 +26,7 @@ namespace Windows.Devices.Sensors
 				{
 					_reportInterval = value;
 
-					if (_readingChanged != null)
+					if (_readingChangedWrapper.Event != null)
 					{
 						//restart reading to apply interval
 						StopReading();
@@ -46,7 +42,9 @@ namespace Windows.Devices.Sensors
 			var sensor = sensorManager.GetDefaultSensor(Android.Hardware.SensorType.Pressure);
 			if (sensor != null)
 			{
-				return new Barometer(sensor);
+				var barometer = new Barometer();
+				barometer._sensor = sensor;
+				return barometer;
 			}
 			return null;
 		}
@@ -88,9 +86,7 @@ namespace Windows.Devices.Sensors
 				var barometerReading = new BarometerReading(
 					e.Values[0],
 					SensorHelpers.TimestampToDateTimeOffset(e.Timestamp));
-				_barometer._readingChanged?.Invoke(
-					_barometer,
-					new BarometerReadingChangedEventArgs(barometerReading));
+				_barometer.OnReadingChanged(barometerReading);
 			}
 		}
 	}

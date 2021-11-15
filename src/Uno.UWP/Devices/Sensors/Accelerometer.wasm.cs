@@ -18,6 +18,7 @@ namespace Windows.Devices.Sensors
 
 		private Accelerometer()
 		{
+			InitializeCommon();
 		}
 
 		public uint ReportInterval { get; set; }

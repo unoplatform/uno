@@ -7,7 +7,7 @@ namespace Windows.System.Display
 {
 	public partial class DisplayRequest
 	{
-		private static object _syncLock = new object();
+		private static readonly object _syncLock = new object();
 		private static int _globalRequestCount = 0;
 
 		private int _instanceRequestCount = 0;

@@ -9,16 +9,11 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Accelerometer
 	{
-		private readonly Sensor _accelerometer;
+		private Sensor _sensor;
+		private uint _reportInterval = SensorHelpers.UiReportingInterval;
 
 		private ReadingChangedListener _readingChangedListener;
 		private ShakeListener _shakeListener;
-		private uint _reportInterval = SensorHelpers.UiReportingInterval;
-
-		private Accelerometer(Sensor accelerometer)
-		{
-			_accelerometer = accelerometer;
-		}
 
 		public uint ReportInterval
 		{
@@ -29,7 +24,7 @@ namespace Windows.Devices.Sensors
 				{
 					_reportInterval = value;
 
-					if (_readingChanged != null)
+					if (_readingChangedWrapper.IsActive)
 					{
 						//restart reading to apply interval
 						StopReadingChanged();
@@ -42,10 +37,12 @@ namespace Windows.Devices.Sensors
 		private static Accelerometer TryCreateInstance()
 		{
 			var sensorManager = SensorHelpers.GetSensorManager();
-			var accelerometer = sensorManager?.GetDefaultSensor(Android.Hardware.SensorType.Accelerometer);
-			if (accelerometer != null)
+			var sensor = sensorManager?.GetDefaultSensor(Android.Hardware.SensorType.Accelerometer);
+			if (sensor != null)
 			{
-				return new Accelerometer(accelerometer);
+				var accelerometer = new Accelerometer();
+				accelerometer._sensor = sensor;
+				return accelerometer;
 			}
 			return null;
 		}
@@ -55,7 +52,7 @@ namespace Windows.Devices.Sensors
 			_readingChangedListener = new ReadingChangedListener(this);
 			SensorHelpers.GetSensorManager().RegisterListener(
 				_readingChangedListener,
-				_accelerometer,
+				_sensor,
 				(SensorDelay)(_reportInterval * 1000));
 		}
 
@@ -63,7 +60,7 @@ namespace Windows.Devices.Sensors
 		{
 			if (_readingChangedListener != null)
 			{
-				SensorHelpers.GetSensorManager().UnregisterListener(_readingChangedListener, _accelerometer);
+				SensorHelpers.GetSensorManager().UnregisterListener(_readingChangedListener, _sensor);
 				_readingChangedListener.Dispose();
 				_readingChangedListener = null;
 			}
@@ -72,14 +69,14 @@ namespace Windows.Devices.Sensors
 		private void StartShaken()
 		{
 			_shakeListener = new ShakeListener(this);
-			SensorHelpers.GetSensorManager().RegisterListener(_shakeListener, _accelerometer, (SensorDelay)100000);
+			SensorHelpers.GetSensorManager().RegisterListener(_shakeListener, _sensor, (SensorDelay)100000);
 		}
 
 		private void StopShaken()
 		{
 			if (_shakeListener != null)
 			{
-				SensorHelpers.GetSensorManager().UnregisterListener(_shakeListener, _accelerometer);
+				SensorHelpers.GetSensorManager().UnregisterListener(_shakeListener, _sensor);
 				_shakeListener.Dispose();
 				_shakeListener = null;
 			}
@@ -88,7 +85,6 @@ namespace Windows.Devices.Sensors
 		class ReadingChangedListener : Java.Lang.Object, ISensorEventListener
 		{
 			private readonly Accelerometer _accelerometer;
-			private long _lastTimestamp;
 
 			public ReadingChangedListener(Accelerometer accelerometer)
 			{
@@ -107,7 +103,6 @@ namespace Windows.Devices.Sensors
 					e.Values[2] / SensorManager.GravityEarth * -1,
 					SensorHelpers.TimestampToDateTimeOffset(e.Timestamp));
 
-				_lastTimestamp = e.Timestamp;
 				_accelerometer.OnReadingChanged(reading);
 			}
 		}

@@ -5,25 +5,26 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using CoreLocation;
-using Foundation;
-using Uno.Extensions;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
-using Windows.UI.Core;
-
 namespace Windows.Devices.Geolocation
 {
 	public sealed partial class Geolocator
 	{
 		private CLLocationManager _locationManager;
 
-		public Geolocator()
+		partial void InitializePlatform()
 		{
+			InitializeCommon();
 			_locationManager = new CLLocationManager
 			{
 				DesiredAccuracy = DesiredAccuracy == PositionAccuracy.Default ? 10 : 1,
 			};
+
+#if __IOS__ //required only for iOS
+			_locationManager.RequestWhenInUseAuthorization();
+#endif
 
 			_locationManager.LocationsUpdated += _locationManager_LocationsUpdated;
 
@@ -42,34 +43,19 @@ namespace Windows.Devices.Geolocation
 		}
 
 #if __IOS__
-		public Task<Geoposition> GetGeopositionAsync() => GetGeopositionInternalAsync(); //will be removed with #2240
+		public async Task<Geoposition> GetGeopositionAsync() //will be removed with #2240
 #else
-		public IAsyncOperation<Geoposition> GetGeopositionAsync() => GetGeopositionInternalAsync().AsAsyncOperation();
+		public IAsyncOperation<Geoposition> GetGeopositionAsync()
 #endif
-
-		public Task<Geoposition> GetGeopositionInternalAsync()
-
 		{
-			if (CoreDispatcher.Main.HasThreadAccess)
-			{
-				BroadcastStatus(PositionStatus.Initializing);
-				var location = _locationManager.Location;
-				if (location == null)
-				{
-					throw new InvalidOperationException("Could not obtain the location. Please make sure that NSLocationWhenInUseUsageDescription and NSLocationUsageDescription are set in info.plist.");
-				}
-
-				BroadcastStatus(PositionStatus.Ready);
-
-				return Task.FromResult(ToGeoposition(location));
-			}
-			else
-			{
-				return CoreDispatcher.Main.RunWithResultAsync<Geoposition>(
-					priority: CoreDispatcherPriority.Normal,
-					task: () => GetGeopositionInternalAsync()
-				);
-			}
+			BroadcastStatus(PositionStatus.Initializing);
+			var location = _locationManager.Location;
+			BroadcastStatus(PositionStatus.Ready);
+#if __IOS__
+			return ToGeoposition(location);
+#else
+			return Task.FromResult(ToGeoposition(location)).AsAsyncOperation();
+#endif
 		}
 
 		private static Geoposition ToGeoposition(CLLocation location)
@@ -105,79 +91,62 @@ namespace Windows.Devices.Geolocation
 		private static List<CLLocationManager> _requestManagers = new List<CLLocationManager>();
 
 #if __IOS__
-		public static Task<GeolocationAccessStatus> RequestAccessAsync() => RequestAccessInternalAsync(); //will be removed with #2240
+		public static async Task<GeolocationAccessStatus> RequestAccessAsync() //will be removed with #2240
 #else
-		public static IAsyncOperation<GeolocationAccessStatus> RequestAccessAsync() => RequestAccessInternalAsync().AsAsyncOperation();
-#endif
+		public static IAsyncOperation<GeolocationAccessStatus> RequestAccessAsync() =>
+			RequestAccessInternalAsync().AsAsyncOperation();
+
 		private static async Task<GeolocationAccessStatus> RequestAccessInternalAsync()
-
-		{
-			if (CoreDispatcher.Main.HasThreadAccess)
-			{
-				var mgr = new CLLocationManager();
-
-				lock (_requestManagers)
-				{
-					_requestManagers.Add(mgr);
-				}
-
-				try
-				{
-					var accessStatus = default(GeolocationAccessStatus);
-					var tsc = new TaskCompletionSource<CLAuthorizationStatus>();
-
-#if __IOS__
-					// Workaround for a bug in Xamarin.iOS https://github.com/unoplatform/uno/issues/4853
-					var @delegate = new CLLocationManagerDelegate();
-
-					mgr.Delegate = @delegate;
-
-					@delegate.AuthorizationChanged += (s, e) =>
-#else
-					mgr.AuthorizationChanged += (s, e) =>
 #endif
+		{
+			var mgr = new CLLocationManager();
+
+			lock (_requestManagers)
+			{
+				_requestManagers.Add(mgr);
+			}
+
+			try
+			{
+				GeolocationAccessStatus accessStatus;
+				var cts = new TaskCompletionSource<CLAuthorizationStatus>();
+
+				mgr.AuthorizationChanged += (s, e) =>
+				{
+
+					if (e.Status != CLAuthorizationStatus.NotDetermined)
 					{
-						if (e.Status != CLAuthorizationStatus.NotDetermined)
-						{
-							tsc.TrySetResult(e.Status);
-						}
-					};
+						cts.TrySetResult(e.Status);
+					}
+				};
 
 #if __IOS__ //required only for iOS
-					mgr.RequestWhenInUseAuthorization();
+				mgr.RequestWhenInUseAuthorization();
 #endif
 
-					if (CLLocationManager.Status != CLAuthorizationStatus.NotDetermined)
-					{
-						accessStatus = TranslateStatus(CLLocationManager.Status);
-					}
-
-					var cLAuthorizationStatus = await tsc.Task;
-
-					accessStatus = TranslateStatus(cLAuthorizationStatus);
-
-					//if geolocation is not well accessible, default geoposition should be recommended
-					if (accessStatus != GeolocationAccessStatus.Allowed)
-					{
-						IsDefaultGeopositionRecommended = true;
-					}
-
-					return accessStatus;
-				}
-				finally
+				if (CLLocationManager.Status != CLAuthorizationStatus.NotDetermined)
 				{
-					lock (_requestManagers)
-					{
-						_requestManagers.Remove(mgr);
-					}
+					accessStatus = TranslateStatus(CLLocationManager.Status);
 				}
+
+				var cLAuthorizationStatus = await cts.Task;
+
+				accessStatus = TranslateStatus(cLAuthorizationStatus);
+				
+				//if geolocation is not well accessible, default geoposition should be recommended
+				if (accessStatus != GeolocationAccessStatus.Allowed)
+				{
+					IsDefaultGeopositionRecommended = true;
+				}
+
+				return accessStatus;
 			}
-			else
+			finally
 			{
-				return await CoreDispatcher.Main.RunWithResultAsync<GeolocationAccessStatus>(
-					priority: CoreDispatcherPriority.Normal,
-					task: () => RequestAccessInternalAsync()
-				);
+				lock (_requestManagers)
+				{
+					_requestManagers.Remove(mgr);
+				}
 			}
 		}
 
@@ -205,19 +174,6 @@ namespace Windows.Devices.Geolocation
 					return GeolocationAccessStatus.Denied;
 			}
 		}
-		
-#if __IOS__
-		private class CLLocationManagerDelegate : NSObject, ICLLocationManagerDelegate
-		{
-			public event EventHandler<CLAuthorizationChangedEventArgs> AuthorizationChanged;
-
-			[Export("locationManager:didChangeAuthorizationStatus:")]
-			public void DidChangeAuthorizationStatus(CLLocationManager manager, CLAuthorizationStatus status)
-			{
-				AuthorizationChanged?.Invoke(manager, new CLAuthorizationChangedEventArgs(status));
-			}
-		}
-#endif
 	}
 }
 #endif

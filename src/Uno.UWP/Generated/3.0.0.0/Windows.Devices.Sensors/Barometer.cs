@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Sensors
 {
-	#if false || false || false || false || __SKIA__ || __NETSTD_REFERENCE__ || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Barometer 
@@ -106,8 +106,8 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member string Barometer.GetDeviceSelector() is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || false || false || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+		#if false || false || false || false || false || false || false
+		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Sensors.Barometer GetDefault()
 		{
 			throw new global::System.NotImplementedException("The member Barometer Barometer.GetDefault() is not implemented in Uno.");

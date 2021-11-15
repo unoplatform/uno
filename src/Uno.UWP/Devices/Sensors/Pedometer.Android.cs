@@ -10,14 +10,10 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Pedometer
 	{
-		private readonly Sensor _sensor;
-		private StepCounterListener _listener;
+		private Sensor _sensor;
 		private uint _reportInterval = SensorHelpers.UiReportingInterval;
 
-		private Pedometer(Sensor stepCounterSensor)
-		{
-			_sensor = stepCounterSensor;
-		}
+		private StepCounterListener _listener;
 
 		public uint ReportInterval
 		{
@@ -30,7 +26,7 @@ namespace Windows.Devices.Sensors
 					{
 						_reportInterval = value;
 
-						if (_readingChanged != null)
+						if (_readingChangedWrapper.Event != null)
 						{
 							//restart reading to apply interval
 							StopReading();
@@ -47,7 +43,9 @@ namespace Windows.Devices.Sensors
 			var sensor = sensorManager.GetDefaultSensor(Android.Hardware.SensorType.StepCounter);
 			if (sensor != null)
 			{
-				return new Pedometer(sensor);
+				var pedometer = new Pedometer();
+				pedometer._sensor = sensor;
+				return pedometer;
 			}
 			return null;
 		}

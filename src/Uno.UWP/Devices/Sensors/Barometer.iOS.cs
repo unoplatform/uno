@@ -14,6 +14,7 @@ namespace Windows.Devices.Sensors
 
 		private Barometer(CMAltimeter altimeter)
 		{
+			InitializeCommon();
 			_altimeter = altimeter;
 		}
 
@@ -41,9 +42,7 @@ namespace Windows.Devices.Sensors
 			var barometerReading = new BarometerReading(
 				KPaToHPa(data.Pressure.DoubleValue),
 				SensorHelpers.TimestampToDateTimeOffset(data.Timestamp));
-			_readingChanged?.Invoke(
-				this,
-				new BarometerReadingChangedEventArgs(barometerReading));
+			this.OnReadingChanged(barometerReading);
 		}
 
 		private double KPaToHPa(double pressureInKPa) => pressureInKPa * 10;
