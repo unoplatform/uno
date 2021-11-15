@@ -8,7 +8,6 @@ namespace Uno.UI.Xaml.Media
 	{
 		internal static void UpdateShadow(UIElement uiElement)
 		{
-			typeof(ThemeShadowManager).Log().LogError($"Updating shadow null={uiElement.Shadow != null} , {uiElement.Translation.Z}");
 			if (uiElement.Shadow == null || uiElement.Translation.Z <= 0)
 			{
 				UnsetShadow(uiElement);

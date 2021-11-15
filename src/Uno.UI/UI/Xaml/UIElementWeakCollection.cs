@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml
 {
@@ -10,7 +11,7 @@ namespace Windows.UI.Xaml
 	/// </summary>
 	public partial class UIElementWeakCollection : IList<UIElement>, IEnumerable<UIElement>
 	{
-		private readonly List<WeakReference<UIElement>> _innerList = new List<WeakReference<UIElement>>();
+		private readonly List<ManagedWeakReference> _innerList = new List<ManagedWeakReference>();
 
 		/// <summary>
 		/// Initializes a new instance of the UIElementWeakCollection class.
@@ -28,7 +29,7 @@ namespace Windows.UI.Xaml
 			for (int i = 0; i < _innerList.Count; i++)
 			{
 				var weakItem = _innerList[i];
-				if (weakItem.TryGetTarget(out var target) && target == item)
+				if (TryGetTarget(weakItem, out var target) && target == item)
 				{
 					return i;
 				}
@@ -37,7 +38,7 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <inheritdoc />
-		public void Insert(int index, UIElement item) => _innerList.Insert(index, new WeakReference<UIElement>(item));
+		public void Insert(int index, UIElement item) => _innerList.Insert(index, GetWeakReference(item));
 
 		/// <inheritdoc />
 		public void RemoveAt(int index) => _innerList.RemoveAt(index);
@@ -45,12 +46,12 @@ namespace Windows.UI.Xaml
 		/// <inheritdoc />
 		public UIElement this[int index]
 		{
-			get => _innerList[index].TryGetTarget(out var target) ? target : null;
-			set => _innerList[index] = new WeakReference<UIElement>(value);
+			get => TryGetTarget(_innerList[index], out var target) ? target : null;
+			set => _innerList[index] = GetWeakReference(value);
 		}
 
 		/// <inheritdoc />
-		public void Add(UIElement item) => _innerList.Add(new WeakReference<UIElement>(item));
+		public void Add(UIElement item) => _innerList.Add(GetWeakReference(item));
 
 		/// <inheritdoc />
 		public void Clear() => _innerList.Clear();
@@ -62,7 +63,7 @@ namespace Windows.UI.Xaml
 		public void CopyTo(UIElement[] array, int arrayIndex)
 		{
 			_innerList
-				.Select(item => item.TryGetTarget(out var target) ? target : null)
+				.Select(item => TryGetTarget(item, out var target) ? target : null)
 				.ToList()
 				.CopyTo(array, arrayIndex);
 		}
@@ -99,7 +100,7 @@ namespace Windows.UI.Xaml
 		{
 			foreach (var item in _innerList)
 			{
-				if (item.TryGetTarget(out var target))
+				if (TryGetTarget(item, out var target))
 				{
 					yield return target;
 				}
@@ -108,5 +109,21 @@ namespace Windows.UI.Xaml
 
 		/// <inheritdoc />
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+		private ManagedWeakReference GetWeakReference(UIElement uiElement) =>
+			((IWeakReferenceProvider)uiElement).WeakReference;
+
+		private bool TryGetTarget(ManagedWeakReference weakReference, out UIElement target)
+		{
+			target = null;
+
+			if (weakReference.IsAlive && weakReference.Target is UIElement weakTarget)
+			{
+				target = weakTarget;
+				return true;
+			}
+
+			return false;
+		}
 	}
 }

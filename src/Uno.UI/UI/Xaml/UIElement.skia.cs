@@ -27,7 +27,6 @@ namespace Windows.UI.Xaml
 		internal double _canvasTop;
 		internal double _canvasLeft;
 		private Rect _currentFinalRect;
-		private Vector3 _translation;
 
 		public UIElement()
 		{

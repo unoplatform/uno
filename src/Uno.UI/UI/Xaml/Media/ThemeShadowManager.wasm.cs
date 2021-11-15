@@ -15,7 +15,6 @@ namespace Uno.UI.Xaml.Media
 		{
 			var translation = uiElement.Translation;
 			var boxShadowValue = CreateBoxShadow(translation.Z);
-			typeof(ThemeShadowManager).Log().LogError($"Box shadow value {boxShadowValue}");
 			uiElement.SetStyle("box-shadow", boxShadowValue);
 		}
 

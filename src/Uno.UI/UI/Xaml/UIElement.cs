@@ -15,25 +15,33 @@ using Uno;
 using Uno.UI.Controls;
 using Uno.UI.Media;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using System.Reflection;
 using Windows.UI.Xaml.Markup;
 
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Uno;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
-using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
+using Uno.UI.Xaml.Media;
+using Windows.Foundation;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Automation;
+using Uno.UI.Media;
+using Windows.UI.Xaml.Automation.Peers;
 using System.Runtime.CompilerServices;
 using Windows.Graphics.Display;
 using Uno.UI.Extensions;
@@ -200,8 +208,11 @@ namespace Windows.UI.Xaml
 			get => _translation;
 			set
 			{
-				_translation = value;
-				ThemeShadowManager.UpdateShadow(this);
+				if (_translation != value)
+				{
+					_translation = value;
+					ThemeShadowManager.UpdateShadow(this);
+				}
 			}
 		}
 
@@ -225,8 +236,6 @@ namespace Windows.UI.Xaml
 				ThemeShadowManager.UpdateShadow(uiElement);
 			}
 		}
-
-		partial void UpdateShadowPartial();		
 
 		internal Size AssignedActualSize { get; set; }
 

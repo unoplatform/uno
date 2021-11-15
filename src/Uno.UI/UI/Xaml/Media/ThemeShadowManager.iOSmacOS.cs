@@ -7,8 +7,6 @@ namespace Uno.UI.Xaml.Media
 	{
 		static partial void UnsetShadow(UIElement uiElement)
 		{
-			var translation = uiElement.Translation;
-
 #if __MACOS__
 			if (uiElement is AppKit.NSView view)
 #else
