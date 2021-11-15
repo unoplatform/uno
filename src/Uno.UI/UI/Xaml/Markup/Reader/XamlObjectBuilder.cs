@@ -512,7 +512,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 		private static MethodInfo GetPropertySetter(PropertyInfo propertyInfo)
 			=> propertyInfo?.SetMethod ?? throw new InvalidOperationException($"Unable to find setter for property [{propertyInfo}]");
 
-		private void ProcessMemberMarkupExtension(object instance, XamlMemberDefinition member, PropertyInfo propertyInfo)
+		private void ProcessMemberMarkupExtension(object instance, XamlMemberDefinition member, PropertyInfo? propertyInfo)
 		{
 			if (IsBindingMarkupNode(member))
 			{
@@ -524,7 +524,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 		}
 
-		private void ProcessStaticResourceMarkupNode(object instance, XamlMemberDefinition member, PropertyInfo propertyInfo)
+		private void ProcessStaticResourceMarkupNode(object instance, XamlMemberDefinition member, PropertyInfo? propertyInfo)
 		{
 			var resourceNode = member.Objects.FirstOrDefault();
 
