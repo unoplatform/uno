@@ -31,7 +31,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net48'">
-		<PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.0-previews-2-31512-422" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.31902.203" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.0.5232" />
 		<PackageReference Include="Newtonsoft.Json" version="12.0.3" />
 		<PackageReference Include="NuGet.VisualStudio" version="4.5.0" />
