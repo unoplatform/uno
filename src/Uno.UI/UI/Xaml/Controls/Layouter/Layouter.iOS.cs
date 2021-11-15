@@ -5,7 +5,7 @@ using System.Text;
 using Uno.Extensions;
 using Uno;
 using Uno.UI;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Collections;
 using Windows.UI.Xaml.Media;
 using Windows.Foundation;
@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void LogArrange(View view, CGRect frame)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				LogArrange(view, (Rect)frame);
 			}

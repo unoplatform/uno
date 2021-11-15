@@ -15,7 +15,7 @@ using System.Collections;
 using Android.Graphics.Drawables;
 using Android.Graphics;
 using System.Globalization;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml;
 using Uno.Extensions.Specialized;
 

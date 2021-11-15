@@ -11,7 +11,7 @@ using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml;
 using System.Diagnostics.CodeAnalysis;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Core;
 using Uno.UI.Controls;
 using Windows.UI.Xaml.Controls;

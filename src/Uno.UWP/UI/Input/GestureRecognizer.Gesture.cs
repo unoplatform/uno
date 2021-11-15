@@ -8,9 +8,9 @@ using System.Reflection;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
-using Microsoft.Extensions.Logging;
+
 using Uno;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 #if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
 namespace Microsoft.UI.Input

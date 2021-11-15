@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 
@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml
 		{
 			if (CurrentPrecedence == precedence)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat($"StateTrigger [{GetType().Name}] (owner={Owner?.Owner ?? (object)"<null>"}/{Owner ?? (object)"<null>"}) precedence:{precedence} [DUPLICATED: IGNORED]");
 				}
@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml
 				return; // nothing to do
 			}
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat($"StateTrigger [{GetType().Name}] (owner={Owner?.Owner ?? (object)"<null>"}/{Owner ?? (object)"<null>"}) precedence:{precedence}");
 			}

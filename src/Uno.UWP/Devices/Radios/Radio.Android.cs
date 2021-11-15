@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 using Uno.Extensions;
 
 
@@ -43,7 +43,7 @@ namespace Windows.Devices.Radios
 			bool hasBluetoothLE = pkgManager.HasSystemFeature(Android.Content.PM.PackageManager.FeatureBluetoothLe);
 			if (!(hasBluetooth || hasBluetoothLE))
 			{
-				if (typeof(Radio).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (typeof(Radio).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					typeof(Radio).Log().Debug("GetRadiosBluetooth(): this device doesn't have any Bluetooth interface");
 				}
@@ -56,7 +56,7 @@ namespace Windows.Devices.Radios
 
 			if (!Windows.Extensions.PermissionsHelper.IsDeclaredInManifest(Android.Manifest.Permission.Bluetooth))
 			{
-				if (typeof(Radio).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				if (typeof(Radio).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 				{
 					typeof(Radio).Log().Debug("GetRadiosBluetooth(): no 'Bluetooth' permission, check app Manifest");
 				}
@@ -72,7 +72,7 @@ namespace Windows.Devices.Radios
 #pragma warning restore CS0618 // Type or member is obsolete
 				if (adapter == null)
 				{
-					if (typeof(Radio).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+					if (typeof(Radio).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 					{
 						typeof(Radio).Log().Debug("GetRadiosBluetooth(): should not happen: Android inconsistence, device has Bluetooth capability but no Bluetooth adapter (old API)");
 					}
@@ -96,7 +96,7 @@ namespace Windows.Devices.Radios
 					var adapter = bluetoothManager.Adapter;
 					if (adapter == null)
 					{
-						if (typeof(Radio).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+						if (typeof(Radio).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 						{
 							typeof(Radio).Log().Debug("GetRadiosBluetooth(): should not happen: Android inconsistence, device has Bluetooth capability but no Bluetooth adapter (new API)");
 						}
@@ -115,7 +115,7 @@ namespace Windows.Devices.Radios
 				}
 				else
 				{
-					if (typeof(Radio).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+					if (typeof(Radio).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 					{
 						typeof(Radio).Log().Debug("GetRadiosBluetooth(): should not happen: Android inconsistence, device has Bluetooth capability but no BluetoothService (new API)");
 					}
@@ -130,7 +130,7 @@ namespace Windows.Devices.Radios
 			var activeNetwork = connManager.ActiveNetwork;
 			if (activeNetwork is null)
 			{
-				if (typeof(Radio).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				if (typeof(Radio).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 				{
 					typeof(Radio).Log().Debug("GetRadioStateForNet(): ActiveNetwork is null, assuming no radio");
 				}
@@ -140,7 +140,7 @@ namespace Windows.Devices.Radios
 			var netCaps = connManager.GetNetworkCapabilities(activeNetwork);
 			if (netCaps is null)
 			{
-				if (typeof(Radio).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (typeof(Radio).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					typeof(Radio).Log().Debug("GetRadioStateForNet(): GetNetworkCapabilities is null, assuming no radio");
 				}
@@ -180,7 +180,7 @@ namespace Windows.Devices.Radios
 
 			if (!pkgManager.HasSystemFeature(systemFeature))
 			{
-				if (typeof(Radio).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (typeof(Radio).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					typeof(Radio).Log().Debug("GetRadiosWiFiOrCellular(" + radioKind.ToString() + "): this device doesn't have any interface of this kind");
 				}
@@ -200,7 +200,7 @@ namespace Windows.Devices.Radios
 
 			if (!Windows.Extensions.PermissionsHelper.IsDeclaredInManifest(Android.Manifest.Permission.AccessNetworkState))
 			{
-				if (typeof(Radio).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				if (typeof(Radio).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 				{
 					typeof(Radio).Log().Debug("GetRadiosWiFiOrCellular(" + radioKind.ToString() + "): no 'AccessNetworkState' permission, check app Manifest");
 				}
@@ -211,7 +211,7 @@ namespace Windows.Devices.Radios
 			var sysService = context.GetSystemService(Android.Content.Context.ConnectivityService);
 			if (sysService is null)
 			{
-				if (typeof(Radio).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				if (typeof(Radio).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 				{
 					typeof(Radio).Log().Debug("GetRadiosWiFiOrCellular(" + radioKind.ToString() + "): GetSystemService returns null, assuming no radio");
 				}
@@ -221,7 +221,7 @@ namespace Windows.Devices.Radios
 			var connManager = (Android.Net.ConnectivityManager)sysService;
 			if (connManager is null)
 			{
-				if (typeof(Radio).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				if (typeof(Radio).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 				{
 					typeof(Radio).Log().Debug("GetRadiosWiFiOrCellular(" + radioKind.ToString() + "): Android.Net.ConnectivityManager is null, assuming no WiFi radio");
 				}

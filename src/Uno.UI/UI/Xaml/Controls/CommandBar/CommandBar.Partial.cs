@@ -15,7 +15,7 @@ using System.Text;
 using DirectUI;
 using Uno.Disposables;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;

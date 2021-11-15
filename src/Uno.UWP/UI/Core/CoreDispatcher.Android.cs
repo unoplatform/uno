@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Collections.Immutable;
 using Uno;
 using System.Diagnostics;

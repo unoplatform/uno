@@ -3,9 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+
 using Uno.Devices.Midi.Internal;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Windows.Devices.Enumeration;
 using static Uno.Foundation.WebAssemblyRuntime;
 

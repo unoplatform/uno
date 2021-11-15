@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Uno.Extensions;
 using Uno;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Collections;
 using Windows.Foundation;
 

@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls;
 using System.ComponentModel;
 using Windows.UI.Xaml.Media;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI
 {

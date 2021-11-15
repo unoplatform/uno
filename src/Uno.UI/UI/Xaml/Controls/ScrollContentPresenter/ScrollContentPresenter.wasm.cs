@@ -1,5 +1,5 @@
 ﻿using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;
 using System;
@@ -11,7 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Foundation;
 using Uno.UI.Xaml;
-using Microsoft.Extensions.Logging;
+
 using Uno.UI.Extensions;
 
 namespace Windows.UI.Xaml.Controls

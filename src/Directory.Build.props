@@ -111,7 +111,13 @@
     <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.Skia.csproj</_AdjustedOutputProjects>
     <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.net6.csproj</_AdjustedOutputProjects>
 
-    <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Xaml.net6.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Xaml.net6.csproj</_AdjustedOutputProjects>
+	
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Adapter.Microsoft.Extensions.Logging.net6.csproj</_AdjustedOutputProjects>
+	
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Logging.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Logging.net6.csproj</_AdjustedOutputProjects>
   </PropertyGroup>
 
   <PropertyGroup>

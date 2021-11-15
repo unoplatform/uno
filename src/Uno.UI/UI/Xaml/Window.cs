@@ -10,9 +10,9 @@ using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
-using Microsoft.Extensions.Logging;
+
 
 namespace Windows.UI.Xaml
 {
@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 				{
 					this.Log().Warn("Unable to raise WindowCreatedEvent, there is no active Application");
 				}

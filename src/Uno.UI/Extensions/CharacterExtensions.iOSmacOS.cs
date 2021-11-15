@@ -4,8 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.System;
-using Microsoft.Extensions.Logging;
-using Uno.Logging;
+
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Extensions
 {

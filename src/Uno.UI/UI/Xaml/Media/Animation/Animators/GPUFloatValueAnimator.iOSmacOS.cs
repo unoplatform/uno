@@ -16,7 +16,7 @@ using CoreGraphics;
 using Foundation;
 using CoreAnimation;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Composition;
 using Uno.UI;
 using Uno.UI.Extensions;
@@ -127,7 +127,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			InitializeCoreAnimation();
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat("Starting GPU Float value animator on property {0}.", _bindingPath.LastOrDefault().PropertyName);
 			}
@@ -409,7 +409,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		private void FinalizeAnimation(UnoCoreAnimation.CompletedInfo completedInfo)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat("Finalizing animation for GPU Float value animator on property {0}.", _bindingPath.LastOrDefault().PropertyName);
 			}

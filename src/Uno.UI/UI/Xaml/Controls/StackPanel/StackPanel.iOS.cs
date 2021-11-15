@@ -1,7 +1,7 @@
 using System;
 using System.Drawing;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml;
 
 namespace Windows.UI.Xaml.Controls

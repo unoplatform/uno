@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using Windows.Foundation;
-using Microsoft.Extensions.Logging;
+
 using Uno;
 using Uno.Extensions;
 using Uno.UI;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {

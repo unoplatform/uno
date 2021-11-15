@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using Uno.Extensions;
 using Uno.Disposables;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Input;
 
 #if XAMARIN_IOS_UNIFIED
@@ -43,14 +43,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				return;
 			}
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug("ControlTemplateRoot is a UIControl, hooking on to AllTouchEvents and TouchUpInside");
 			}
 
 			void clickHandler(object e, EventArgs s)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("TouchUpInside, executing command");
 				}

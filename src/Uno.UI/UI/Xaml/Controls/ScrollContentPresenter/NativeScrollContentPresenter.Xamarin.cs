@@ -1,6 +1,6 @@
 ﻿#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;
 using System;

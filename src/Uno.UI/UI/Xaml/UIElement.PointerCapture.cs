@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Windows.Devices.Input;
 using Windows.UI.Xaml.Input;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using System.Runtime.CompilerServices;
 

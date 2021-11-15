@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using System.Collections.Generic;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Disposables;
 using System.Linq;
 using Windows.Devices.Input;
@@ -22,7 +22,7 @@ using System.Collections;
 using System.Numerics;
 using System.Reflection;
 using Windows.UI.Xaml.Markup;
-using Microsoft.Extensions.Logging;
+
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
 using System.Text;
@@ -622,7 +622,7 @@ namespace Windows.UI.Xaml
 
 				if (DependencyProperty.GetProperty(owner.GetType(), dependencyPropertyName) is DependencyProperty dp)
 				{
-					if (owner.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (owner.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						owner.Log().LogDebug($"SetDependencyPropertyValue({dependencyPropertyName}) = {value}");
 					}
@@ -633,7 +633,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					if (owner.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (owner.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						owner.Log().LogDebug($"Failed to find property [{dependencyPropertyName}] on [{owner}]");
 					}

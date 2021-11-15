@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Android.Content.Res;
 using Uno;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.Storage.FileProperties;
@@ -37,7 +37,7 @@ namespace Windows.Storage
 			var assets = global::Android.App.Application.Context.Assets;
 			var outputCachePath = global::System.IO.Path.Combine(Android.App.Application.Context.CacheDir.AbsolutePath, path);
 
-			if (typeof(StorageFile).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (typeof(StorageFile).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				typeof(StorageFile).Log().Debug($"GetFileFromApplicationUriAsyncTask path:{path} outputCachePath:{outputCachePath}");
 			}

@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.UI.Xaml.Data;
 
@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml
 	[Markup.ContentProperty(Name = "Setters")]
 	public partial class Style
 	{
-		private static ILogger _logger = typeof(Style).Log();
+		private static Logger _logger = typeof(Style).Log();
 
 		private delegate void ApplyToHandler(DependencyObject instance);
 

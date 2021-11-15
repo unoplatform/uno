@@ -10,9 +10,9 @@ using Android.Content;
 using Android.Graphics;
 using Android.OS;
 using Android.Views;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Controls;
 using Uno.UI.Xaml.Media;
@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			if (this.Log().IsEnabled(LogLevel.Information))
 			{
-				this.Log().LogInformation("Renderer::EnableBlur()");
+				this.Log().Info("Renderer::EnableBlur()");
 			}
 
 			if (state.BlurView == null)
@@ -107,7 +107,7 @@ namespace Windows.UI.Xaml.Media
 
 			if (this.Log().IsEnabled(LogLevel.Information))
 			{
-				this.Log().LogInformation("Renderer::EnableBlur() => adding pre draw listener");
+				this.Log().Info("Renderer::EnableBlur() => adding pre draw listener");
 			}
 
 			var blurViewWrapper = new ContentPresenter()
@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml.Media
 
 			if (this.Log().IsEnabled(LogLevel.Information))
 			{
-				this.Log().LogInformation("Renderer::DisableBlur() => removing pre draw listener");
+				this.Log().Info("Renderer::DisableBlur() => removing pre draw listener");
 			}
 
 			state.Owner.RemoveView(state.BlurViewWrapper);

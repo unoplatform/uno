@@ -14,7 +14,7 @@ using System.Collections;
 using System.Windows.Input;
 using Uno.Extensions;
 using Uno.Disposables;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Core;

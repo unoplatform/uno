@@ -10,7 +10,7 @@ using Uno.UI.Controls;
 using Uno.Extensions;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Input;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -19,7 +19,7 @@ using Uno.UI;
 using System.Linq;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Data;
-using Microsoft.Extensions.Logging;
+
 
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;

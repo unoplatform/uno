@@ -10,9 +10,9 @@ using Android.App;
 using Android.Graphics;
 using Android.OS;
 using Android.Views;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Exception = System.Exception;
 using Point = Windows.Foundation.Point;
 using Rect = Windows.Foundation.Rect;

@@ -4,7 +4,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
@@ -110,7 +110,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_suggestionsList != null)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("ItemsChanged, refreshing suggestion list");
 				}
@@ -297,7 +297,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnSuggestionListItemClick(object sender, ItemClickEventArgs e)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Suggestion item clicked {e.ClickedItem}");
 			}
@@ -308,7 +308,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnQueryButtonClick(object sender, RoutedEventArgs e)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Query button clicked");
 			}
@@ -326,7 +326,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (e.Key == Windows.System.VirtualKey.Enter)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Enter key pressed");
 				}

@@ -2,7 +2,7 @@
 using Uno.UI.DataBinding;
 using Uno.UI.Controls;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using Android.Graphics;
 using Windows.UI.Xaml;
 using Uno.UI;
 using Windows.UI.Xaml.Media;
-using Microsoft.Extensions.Logging;
+
 
 namespace Windows.UI.Xaml.Controls
 {

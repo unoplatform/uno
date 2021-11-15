@@ -4,7 +4,7 @@ using Android.Views;
 using Android.Widget;
 using Uno;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Diagnostics.Eventing;
 using Windows.UI.Xaml.Media;
 using System;
@@ -106,7 +106,7 @@ namespace Windows.UI.Xaml.Controls
 				&& _openedImage != null
 			)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 				{
 					this.Log().Debug(
 						this.ToString() +
@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (!forceReload && _openedImage == imageSource)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug(this.ToString() + " TryOpenImage - cancelling because Source has not changed");
 				}
@@ -138,7 +138,7 @@ namespace Windows.UI.Xaml.Controls
 				// must not be loaded until the first layout has been done.
 				if (!IsLoaded)
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug(this.ToString() + " TryOpenImage - cancelling because view is not loaded");
 					}
@@ -146,7 +146,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug(this.ToString() + " TryOpenImage - proceeding");
 			}
@@ -194,7 +194,7 @@ namespace Windows.UI.Xaml.Controls
 						// be able to set a targetSize and must load the image without one.
 						if (imageSource.UseTargetSize && _targetWidth == null && _targetHeight == null && (_hasFiniteBounds ?? true) && !MustOpenImageToMeasure())
 						{
-							if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+							if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 							{
 								this.Log().Debug(this.ToString() + " TryOpenImage - cancelling because view needs to be measured");
 							}

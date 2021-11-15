@@ -3969,6 +3969,10 @@
 			<Member
 				fullName="Windows.UI.Xaml.Controls.NativePopup"
 				reason="Adjust Popup hierarchy" />
+
+		  <!-- BEGIN Uno.Core dependency Removal -->
+		  <Member fullName="Uno.Extensions.ObservableCollectionUpdateResultsExtensions" reason="Uno.Core dependency removal" />
+		  <!-- END Uno.Core dependency Removal -->
 		</Types>
 		<Methods>
 			<Member
@@ -7327,6 +7331,12 @@
 		  <Member fullName="System.nfloat Uno.UI.ViewHelper.StackSubViews(AppKit.NSView thisView, System.Single topPadding, System.Single spaceBetweenElements)" reason=".NET 6 RTM breaking change" />
 		  <Member fullName="System.nfloat Uno.UI.Extensions.FontWeightExtensions.ToNSFontWeight(Windows.UI.Text.FontWeight fontWeight)" reason=".NET 6 RTM breaking change" />
 		  <!-- END .NET 6 BREAKING CHANGE -->
+
+		  <!-- BEGIN Uno.Core dependency Removal -->
+		  <Member fullName="Uno.Threading.FastTaskCompletionSource`1&lt;System.Object&gt; Windows.UI.Core.UIAsyncOperation.get_CompletionSource()" reason="Uno.Core dependency removal" />
+		  <Member fullName="Microsoft.Extensions.Logging.LogLevel Windows.Foundation.Metadata.ApiInformation.get_NotImplementedLogLevel()" reason="Uno.Core dependency removal" />
+		  <Member fullName="System.Void Windows.Foundation.Metadata.ApiInformation.set_NotImplementedLogLevel(Microsoft.Extensions.Logging.LogLevel value)" reason="Uno.Core dependency removal" />
+		  <!-- END Uno.Core dependency Removal -->
 		</Methods>
 		<Events>
 			<Member
@@ -8394,6 +8404,12 @@
 		  <!-- BEGIN .NET 6 BREAKING CHANGE -->
 		  <Member fullName="System.nfloat Uno.UI.ViewHelper::OnePixel()" reason=".NET 6 RTM breaking change" />
 		  <!-- END .NET 6 BREAKING CHANGE -->
+
+		  <!-- BEGIN Uno.Core dependency Removal -->
+		  <Member fullName="Uno.Threading.FastTaskCompletionSource`1&lt;System.Object&gt; Windows.UI.Core.UIAsyncOperation::CompletionSource()" reason="Uno.Core dependency removal" />
+		  <Member fullName="Microsoft.Extensions.Logging.LogLevel Windows.Foundation.Metadata.ApiInformation::NotImplementedLogLevel()" reason="Uno.Core dependency removal" />
+		  <!-- END Uno.Core dependency Removal -->
+
 		</Properties>
 	</IgnoreSet>
 	<!--

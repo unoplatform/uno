@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using Android.App;
 using Android.Views;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Core;

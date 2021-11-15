@@ -3,7 +3,7 @@
 using CoreAnimation;
 using Foundation;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -133,7 +133,7 @@ namespace Windows.UI.Composition
 
 		public void Cancel()
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat("CoreAnimation '{0}': animation cancelled (.Cancel).", _key);
 			}
@@ -144,7 +144,7 @@ namespace Windows.UI.Composition
 		{
 			var layer = _layer;
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat("CoreAnimation '{0}' is starting from {1} to {2}.", _key, from, to);
 			}
@@ -194,7 +194,7 @@ namespace Windows.UI.Composition
 		{
 			if (_current.animation == null)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("CoreAnimation '{0}' unable to remove native animation: no running animation. Already disposed?", _key);
 				}
@@ -203,7 +203,7 @@ namespace Windows.UI.Composition
 
 			var layer = _layer;
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat("CoreAnimation '{0}' is forcefully stopping.", _key);
 			}
@@ -233,7 +233,7 @@ namespace Windows.UI.Composition
 					return; // We are no longer the current animation, do not interfere with the current
 				}
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("CoreAnimation '{0}' has started.", _property);
 				}
@@ -266,7 +266,7 @@ namespace Windows.UI.Composition
 				var (currentAnim, from, to) = _current;
 				if (currentAnim != animation)
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().DebugFormat("CoreAnimation '{0}' [{1}]: unable to {2} because another animation is running.", _key, _property, _stop.reason);
 					}
@@ -275,7 +275,7 @@ namespace Windows.UI.Composition
 
 				_current = default;
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("CoreAnimation {0} has been {1}.", _key, _stop.reason);
 				}
@@ -312,7 +312,7 @@ namespace Windows.UI.Composition
 				// Then reactivate the managed code handling of transforms that was disabled by the _prepare.
 				_cleanup?.Invoke();
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("CoreAnimation {0} [{1}] Stopped (reason: {2}, Finished:{3})", _key, _property, _stop.reason, args.Finished);
 				}

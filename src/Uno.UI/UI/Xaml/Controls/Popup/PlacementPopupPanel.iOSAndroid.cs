@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using Windows.UI.Core;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
+
 #if __IOS__
 using View = UIKit.UIView;
 #else

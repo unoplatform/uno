@@ -12,7 +12,6 @@ using System.Xml;
 using Uno.Roslyn;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
-using Uno.Logging;
 using Uno.UI.SourceGenerators.Telemetry;
 using Uno.UI.Xaml;
 using System.Drawing;
@@ -255,7 +254,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			try
 			{
-				this.Log().InfoFormat("Xaml Source Generation is using the {0} Xaml Parser", XamlRedirection.XamlConfig.IsUnoXaml ? "Uno.UI" : "System");
+#if DEBUG
+				Console.Write("Xaml Source Generation is using the {0} Xaml Parser", XamlRedirection.XamlConfig.IsUnoXaml ? "Uno.UI" : "System");
+#endif
 
 				var lastBinaryUpdateTime = _forceGeneration ? DateTime.MaxValue : GetLastBinaryUpdateTime();
 
@@ -557,9 +558,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				resourceKeys = _resourceFiles
 					.AsParallel()
 					.WithCancellation(ct)
-					.SelectMany(file =>
-					{
-						this.Log().Info("Parse resource file : " + file);
+					.SelectMany(file => {
+#if DEBUG
+						Console.Write("Parse resource file : " + file);
+#endif
 
 						//load document
 						var doc = new XmlDocument();
@@ -576,7 +578,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					.ToArray();
 			}
 
-			this.Log().Info(resourceKeys.Count() + " localization keys found");
+#if DEBUG
+			Console.Write(resourceKeys.Count() + " localization keys found");
+#endif
 			return resourceKeys;
 		}
 

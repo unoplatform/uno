@@ -4,9 +4,10 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using Microsoft.Extensions.Logging;
+
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
 using Windows.UI.Xaml;
@@ -47,7 +48,7 @@ namespace Uno.UI
 
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
-		private static readonly ILogger _log = typeof(ResourceResolver).Log();
+		private static readonly Logger _log = typeof(ResourceResolver).Log();
 
 		private static readonly Stack<XamlScope> _scopeStack;
 

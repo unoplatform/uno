@@ -29,8 +29,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.Core" />
-		<PackageReference Include="Uno.Core.Build" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Uno.MonoAnalyzers" Condition="!$(_IsNetCore)">
 			<PrivateAssets>all</PrivateAssets>
@@ -127,6 +125,8 @@
 	  <UpToDateCheckInput Remove="Microsoft\UI\Input\IPointerPointTransform.cs" />
 	  <UpToDateCheckInput Remove="Microsoft\UI\Input\PointerDeviceType.cs" />
 	  <UpToDateCheckInput Remove="Microsoft\UI\Input\PointerEventArgs.cs" />
+	  <UpToDateCheckInput Remove="UI\Xaml\Data\BindingExtensions.cs" />
+	  <UpToDateCheckInput Remove="UI\Xaml\Markup\ApplyExtensions.cs" />
 	</ItemGroup>
 	
 </Project>

@@ -17,8 +17,6 @@ using System.IO;
 using Foundation;
 using Windows.UI;
 using Uno.Extensions;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
 
 #if NET6_0_OR_GREATER
 using ObjCRuntime;
