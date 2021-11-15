@@ -52,13 +52,13 @@ namespace UITests.Shared.Windows_Devices
 			}));
 		}
 
-		internal Command AttachReadingChangedCommand => new Command((p) =>
+		public Command AttachReadingChangedCommand => new Command((p) =>
 		{
 			_gyrometer.ReadingChanged += Gyrometer_ReadingChanged;
 			ReadingChangedAttached = true;
 		});
 
-		internal Command DetachReadingChangedCommand => new Command((p) =>
+		public Command DetachReadingChangedCommand => new Command((p) =>
 		{
 			_gyrometer.ReadingChanged -= Gyrometer_ReadingChanged;
 			ReadingChangedAttached = false;

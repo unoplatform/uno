@@ -1,8 +1,15 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+		<TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid11.0;net461;netstandard2.0</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid10.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
 	</PropertyGroup>
-	
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
+	<Import Project="../targetframework-override.props"/>
+
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
 	</ItemGroup>
