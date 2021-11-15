@@ -77,6 +77,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly Dictionary<string, string[]> _uiAutomationMappings;
 		private readonly string _defaultLanguage;
 		private readonly bool _isDebug;
+		private readonly bool _isDesignTimeBuild;
 		private readonly string _relativePath;
 		/// <summary>
 		/// True if the file currently being parsed contains a top-level ResourceDictionary definition.
@@ -221,6 +222,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			string defaultLanguage,
 			bool isWasm,
 			bool isDebug,
+			bool isDesignTimeBuild,
 			bool skipUserControlsInVisualTree,
 			bool shouldAnnotateGeneratedXaml,
 			bool isUnoAssembly,
@@ -243,6 +245,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_uiAutomationMappings = uiAutomationMappings;
 			_defaultLanguage = defaultLanguage.HasValue() ? defaultLanguage : "en-US";
 			_isDebug = isDebug;
+			_isDesignTimeBuild = isDesignTimeBuild;
 			_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
 			_shouldAnnotateGeneratedXaml = shouldAnnotateGeneratedXaml;
 			_isLazyVisualStateManagerEnabled = isLazyVisualStateManagerEnabled;
@@ -549,7 +552,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLine();
 			writer.AppendLineInvariant($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
 			writer.AppendLineInvariant($"global::{_defaultNamespace}.GlobalStaticResources.RegisterResourceDictionariesBySourceLocal();");
-			writer.AppendLineInvariant($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");
+
+			if (!_isDesignTimeBuild)
+			{
+				writer.AppendLineInvariant($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");
+			}
 
 			writer.AppendLineInvariant($"#if __ANDROID__");
 			writer.AppendLineInvariant($"global::Uno.Helpers.DrawableHelper.Drawables = typeof(global::{_defaultNamespace}.Resource.Drawable);");

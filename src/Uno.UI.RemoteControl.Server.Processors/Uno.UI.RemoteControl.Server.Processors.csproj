@@ -22,10 +22,10 @@
 	</ItemGroup>
 		
 	<ItemGroup Condition="'$(TargetFramework)'=='net6.0'">
-		<PackageReference Include="Microsoft.CodeAnalysis" Version="3.10.0-3.21210.2" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="3.10.0-3.21210.2" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.10.0-3.21210.2" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="3.10.0-3.21210.2" />
+		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.0.1" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.0.1" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.0.1" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.0.1" />
 		<PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Build">
 			<Version>16.5.0</Version>

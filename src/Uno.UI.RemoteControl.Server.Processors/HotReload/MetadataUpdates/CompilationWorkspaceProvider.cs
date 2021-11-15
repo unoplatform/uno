@@ -9,6 +9,7 @@ using System.IO;
 using System.Reflection;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Server.Processors.Helpers;
+using System.Collections.Generic;
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
@@ -16,17 +17,32 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 	{
 		private static string MSBuildBasePath;
 
-		public static Task<(Solution, WatchHotReloadService)> CreateWorkspaceAsync(string projectPath, IReporter reporter, CancellationToken cancellationToken)
+		public static Task<(Solution, WatchHotReloadService)> CreateWorkspaceAsync(string projectPath, IReporter reporter, string[] metadataUpdateCapabilities, CancellationToken cancellationToken)
 		{
 			var taskCompletionSource = new TaskCompletionSource<(Solution, WatchHotReloadService)>(TaskCreationOptions.RunContinuationsAsynchronously);
-			CreateProject(taskCompletionSource, projectPath, reporter, cancellationToken);
+			CreateProject(taskCompletionSource, projectPath, reporter, metadataUpdateCapabilities, cancellationToken);
 
 			return taskCompletionSource.Task;
 		}
 
-		static async void CreateProject(TaskCompletionSource<(Solution, WatchHotReloadService)> taskCompletionSource, string projectPath, IReporter reporter, CancellationToken cancellationToken)
+		static async void CreateProject(
+			TaskCompletionSource<(Solution, WatchHotReloadService)> taskCompletionSource,
+			string projectPath,
+			IReporter reporter,
+			string[] metadataUpdateCapabilities,
+			CancellationToken cancellationToken)
 		{
-			var workspace = MSBuildWorkspace.Create();
+			var intermediatePath = Path.Combine(Path.GetDirectoryName(projectPath), "obj", "hr") + Path.DirectorySeparatorChar;
+
+			Directory.CreateDirectory(intermediatePath);
+
+			var globalProperties = new Dictionary<string, string> {
+				// Override the output path so custom compilation lists do not override the
+				// main compilation caches, which can invalidate incremental compilation.
+				{ "IntermediateOutputPath", intermediatePath },
+			};
+
+			var workspace = MSBuildWorkspace.Create(globalProperties);
 
 			workspace.WorkspaceFailed += (_sender, diag) =>
 			{
@@ -45,7 +61,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 			await workspace.OpenProjectAsync(projectPath, cancellationToken: cancellationToken);
 			var currentSolution = workspace.CurrentSolution;
-			var hotReloadService = new WatchHotReloadService(workspace.Services);
+			var hotReloadService = new WatchHotReloadService(workspace.Services, metadataUpdateCapabilities);
 			await hotReloadService.StartSessionAsync(currentSolution, cancellationToken);
 
 			// Read the documents to memory

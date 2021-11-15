@@ -310,6 +310,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									defaultLanguage: _defaultLanguage,
 									isWasm: _isWasm,
 									isDebug: _isDebug,
+									isDesignTimeBuild: _isDesignTimeBuild,
 									skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
 									shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
 									isUnoAssembly: IsUnoAssembly,

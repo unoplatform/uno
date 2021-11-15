@@ -36,13 +36,16 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			}
 		}
 
-		public WatchHotReloadService(HostWorkspaceServices services)
+		public WatchHotReloadService(HostWorkspaceServices services, string[] metadataUpdateCapabilities)
 		{
 			if(Assembly.Load("Microsoft.CodeAnalysis.Features") is { } featuresAssembly)
 			{
 				if(featuresAssembly.GetType("Microsoft.CodeAnalysis.ExternalAccess.Watch.Api.WatchHotReloadService", false) is { } watchHotReloadServiceType)
 				{
-					_targetInstance = Activator.CreateInstance(watchHotReloadServiceType, services);
+					_targetInstance = Activator.CreateInstance(
+						watchHotReloadServiceType,
+						services,
+						ImmutableArray<string>.Empty.AddRange(metadataUpdateCapabilities));
 
 					if (watchHotReloadServiceType.GetMethod(nameof(StartSessionAsync)) is { } startSessionAsyncMethod)
 					{

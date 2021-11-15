@@ -21,6 +21,43 @@ namespace Uno.UI.RemoteControl.HotReload
 
 		private delegate void ApplyUpdateHandler(Assembly assembly, ReadOnlySpan<byte> metadataDelta, ReadOnlySpan<byte> ilDelta, ReadOnlySpan<byte> pdbDelta);
 
+		private string[] GetMetadataUpdateCapabilities()
+		{
+#if NET6_0_OR_GREATER || __WASM__ || __SKIA__
+
+			if (Type.GetType("System.Reflection.Metadata.MetadataUpdater") is { } type)
+			{
+				if (type.GetMethod("GetCapabilities", BindingFlags.Static | BindingFlags.NonPublic) is { } getCapabilities)
+				{
+					if (getCapabilities.Invoke(null, Array.Empty<string>()) is string caps)
+					{
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().LogTrace($"Metadata Updates runtime capabilities: {caps}");
+						}
+
+						return caps.Split(' ');
+					}
+					else
+					{
+						throw new NotSupportedException($"Invalid returned type for System.Reflection.Metadata.MetadataUpdater.GetCapabilities()");
+					}
+				}
+				else
+				{
+					throw new NotSupportedException($"Unable to find System.Reflection.Metadata.MetadataUpdater.GetCapabilities()");
+				}
+			}
+			else
+			{
+				throw new NotSupportedException($"Unable to find System.Reflection.Metadata.MetadataUpdater");
+			}
+
+#else
+			return new string[0];
+#endif
+		}
+
 		private void AssemblyReload(AssemblyDeltaReload assemblyDeltaReload)
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
@@ -56,12 +93,12 @@ namespace Uno.UI.RemoteControl.HotReload
 						}
 						else
 						{
-							throw new NotSupportedException($"Unable to find System.Reflection.Metadata.AssemblyExtensions.ApplyUpdate(...)");
+							throw new NotSupportedException($"Unable to find System.Reflection.Metadata.MetadataUpdater.ApplyUpdate(...)");
 						}
 					}
 					else
 					{
-						throw new NotSupportedException($"Unable to find System.Reflection.Metadata.AssemblyExtensions");
+						throw new NotSupportedException($"Unable to find System.Reflection.Metadata.MetadataUpdater");
 					}
 				}
 

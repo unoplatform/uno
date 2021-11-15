@@ -44,7 +44,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 
 		private void InitializeInner(ConfigureServer configureServer) => _initializeTask = Task.Run(() =>
-							CompilationWorkspaceProvider.CreateWorkspaceAsync(configureServer.ProjectPath, _reporter, CancellationToken.None),
+							CompilationWorkspaceProvider.CreateWorkspaceAsync(configureServer.ProjectPath, _reporter, configureServer.MetadataUpdateCapabilities, CancellationToken.None),
 							CancellationToken.None);
 
 		private void ProcessMetadataChanges(IList<string> filePaths)

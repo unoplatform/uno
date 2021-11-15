@@ -78,7 +78,7 @@ namespace Uno.UI.RemoteControl.HotReload
 				}
 			}
 
-			await _rcClient.SendMessage(new HotReload.Messages.ConfigureServer(_projectPath, _xamlPaths));
+			await _rcClient.SendMessage(new HotReload.Messages.ConfigureServer(_projectPath, _xamlPaths, GetMetadataUpdateCapabilities()));
 		}
 	}
 }
