@@ -1000,6 +1000,30 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 
 		}
 
+		[TestMethod]
+		public void When_xName_Reload()
+		{
+			var s = GetContent(nameof(When_xName_Reload));
+			var SUT = new When_xName_Reload();
+			Windows.UI.Xaml.Markup.XamlReader.LoadUsingComponent(s, SUT);
+
+			var Button1_field_private = SUT.FindName("Button1_field_private") as Button;
+			Assert.IsNotNull(Button1_field_private);
+			Assert.AreEqual(Button1_field_private, SUT.Button1_field_private_Getter);
+
+			var Button1_field_public = SUT.FindName("Button1_field_public") as Button;
+			Assert.IsNotNull(Button1_field_public);
+			Assert.AreEqual(Button1_field_public, SUT.Button1_field_public);
+
+			var Button2_property_private = SUT.FindName("Button2_property_private") as Button;
+			Assert.IsNotNull(Button2_property_private);
+			Assert.AreEqual(Button2_property_private, SUT.Button2_property_private_Getter);
+
+			var Button2_property_public = SUT.FindName("Button2_property_public") as Button;
+			Assert.IsNotNull(Button2_property_public);
+			Assert.AreEqual(Button2_property_public, SUT.Button2_property_public);
+		}
+
 		private string GetContent(string testName)
 		{
 			var assembly = this.GetType().Assembly;

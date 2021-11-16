@@ -103,14 +103,26 @@ namespace Windows.UI.Xaml.Markup.Reader
             return false;
         }
 
-        public PropertyInfo? GetPropertyByName(XamlType declaringType, string propertyName) 
-            => GetPropertyByName(FindType(declaringType), propertyName);
+		public PropertyInfo? GetPropertyByName(XamlType declaringType, string propertyName, BindingFlags? flags = null)
+			=> GetPropertyByName(FindType(declaringType), propertyName, flags);
 
-        public PropertyInfo? FindContentProperty(Type? elementType)
+		public FieldInfo? GetFieldByName(XamlType declaringType, string propertyName, BindingFlags? flags = null)
+			=> GetFieldByName(FindType(declaringType), propertyName, flags);
+
+		public PropertyInfo? FindContentProperty(Type? elementType)
             => _findContentProperty(elementType);
 
-        private static PropertyInfo? GetPropertyByName(Type? type, string propertyName) 
-            => type?.GetProperties().FirstOrDefault(p => p.Name == propertyName);
+		public PropertyInfo? GetPropertyByName(Type? type, string propertyName, BindingFlags? flags = null)
+			=> (flags != null
+				? type?.GetProperties(flags.Value)
+				: type?.GetProperties()
+			).FirstOrDefault(p => p.Name == propertyName);
+
+		public FieldInfo? GetFieldByName(Type? type, string propertyName, BindingFlags? flags = null)
+			=> (flags != null
+				? type?.GetFields(flags.Value)
+				: type?.GetFields()
+			).FirstOrDefault(p => p.Name == propertyName);
 
 		public EventInfo? GetEventByName(XamlType declaringType, string eventName)
 			=> GetEventByName(FindType(declaringType), eventName);

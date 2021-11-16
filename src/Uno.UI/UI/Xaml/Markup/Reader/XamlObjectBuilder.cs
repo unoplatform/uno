@@ -248,7 +248,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 			return value;
 		}
 
-		private void ProcessNamedMember(XamlObjectDefinition control, object instance, XamlMemberDefinition member, object rootInstance)
+		private void ProcessNamedMember(
+			XamlObjectDefinition control,
+			object instance,
+			XamlMemberDefinition member,
+			object rootInstance)
 		{
 			// Exclude attached properties, must be set in the extended apply section.
 			// If there is no type attached, this can be a binding.
@@ -355,6 +359,22 @@ namespace Windows.UI.Xaml.Markup.Reader
 				if (TypeResolver.GetPropertyByName(control.Type, "Name") is PropertyInfo nameInfo)
 				{
 					GetPropertySetter(nameInfo).Invoke(instance, new[] { member.Value });
+				}
+
+				// Update x:Name generated fields, if any
+				if (rootInstance != null && member.Value is string nameValue)
+				{
+					var allMembers = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+					var rootInstanceType = rootInstance.GetType();
+
+					if (TypeResolver.GetPropertyByName(rootInstanceType, nameValue, allMembers) is { } xNameProperty)
+					{
+						GetPropertySetter(xNameProperty).Invoke(rootInstance, new[] { instance });
+					}
+					else if (TypeResolver.GetFieldByName(rootInstanceType, nameValue, allMembers) is { } xNameField)
+					{
+						xNameField.SetValue(rootInstance, instance);
+					}
 				}
 			}
 		}
