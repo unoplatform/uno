@@ -2,12 +2,10 @@
   
   <PropertyGroup>
     <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid11.0;net461;netstandard2.0</TargetFrameworks>
-    <TargetFrameworksCI>MonoAndroid11.0;MonoAndroid10.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid10.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
   </PropertyGroup>
-
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	
+	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<AssemblyName>Uno.UI.Dispatching</AssemblyName>
@@ -32,7 +30,7 @@
 		Use to avoid namespace conflicts with the default namespace of this
 		assembly, for non-fully qualified types in System and Windows.System
 		-->
-		<AndroidResgenNamespace>Uno.UI.Composition</AndroidResgenNamespace>
+		<AndroidResgenNamespace>Uno.UI.Dispatching</AndroidResgenNamespace>
 	</PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />

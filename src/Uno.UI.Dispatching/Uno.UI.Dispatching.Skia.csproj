@@ -34,10 +34,6 @@
 	</PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
-
-	<ItemGroup>
-	  <None Remove="Dispatching\DispatcherQueueTimer.skia.cs" />
-	</ItemGroup>
 	
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
