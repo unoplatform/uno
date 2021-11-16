@@ -116,9 +116,19 @@
 	
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Adapter.Microsoft.Extensions.Logging.net6.csproj</_AdjustedOutputProjects>
-	
+
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Logging.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Logging.net6.csproj</_AdjustedOutputProjects>
+
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.net6.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.Skia.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.Wasm.csproj</_AdjustedOutputProjects>
+
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.net6.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.Skia.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.Wasm.csproj</_AdjustedOutputProjects>
   </PropertyGroup>
 
   <PropertyGroup>
