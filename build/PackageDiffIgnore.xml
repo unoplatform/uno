@@ -3973,6 +3973,186 @@
 		  <!-- BEGIN Uno.Core dependency Removal -->
 		  <Member fullName="Uno.Extensions.ObservableCollectionUpdateResultsExtensions" reason="Uno.Core dependency removal" />
 		  <!-- END Uno.Core dependency Removal -->
+		  
+		  <!-- BEGIN Composition relocation -->
+		  <Member fullName="Uno.CompositionConfiguration" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Core.UIAsyncOperation" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.AmbientLight" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.AnimationController" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.AnimationControllerProgressBehavior" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.AnimationDelayBehavior" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.AnimationDirection" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.AnimationIterationBehavior" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.AnimationPropertyAccessMode" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.AnimationPropertyInfo" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.AnimationStopBehavior" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.BooleanKeyFrameAnimation" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.BounceScalarNaturalMotionAnimation" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.BounceVector2NaturalMotionAnimation" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.BounceVector3NaturalMotionAnimation" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.ColorKeyFrameAnimation" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionAnimation" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionAnimationGroup" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionBackdropBrush" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionBackfaceVisibility" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionBatchCompletedEventArgs" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionBitmapInterpolationMode" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionBorderMode" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionBrush" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionCapabilities" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionClip" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionColorBrush" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionColorGradientStop" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionColorGradientStopCollection" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionColorSpace" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionCommitBatch" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionCompositeMode" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionContainerShape" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionDrawingSurface" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionDropShadowSourcePolicy" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionEasingFunction" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionEffectBrush" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionEffectFactory" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionEffectFactoryLoadStatus" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionEffectSourceParameter" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionEllipseGeometry" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionGeometricClip" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionGeometry" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionGetValueStatus" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionGradientBrush" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionGraphicsDevice" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionLight" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionLinearGradientBrush" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionLineGeometry" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionMaskBrush" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionMipmapSurface" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionNineGridBrush" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionObject" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionPath" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionPathGeometry" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionProjectedShadow" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionProjectedShadowCaster" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionProjectedShadowCasterCollection" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionProjectedShadowReceiver" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionProjectedShadowReceiverUnorderedCollection" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionPropertySet" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionRadialGradientBrush" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionRectangleGeometry" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionRoundedRectangleGeometry" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionScopedBatch" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionShadow" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionShape" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionShapeCollection" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionSpriteShape" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionStretch" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionStrokeCap" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionStrokeDashArray" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionStrokeLineJoin" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionSurfaceBrush" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionTarget" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionTransform" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionViewBox" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionVirtualDrawingSurface" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionVisualSurface" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Compositor" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.ContainerVisual" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CubicBezierEasingFunction" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.DistantLight" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.DropShadow" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.ExpressionAnimation" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.IAnimationObject" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.ICompositionAnimationBase" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.ICompositionSurface" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.ImplicitAnimationCollection" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.InitialValueExpressionCollection" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.InsetClip" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.IVisualElement" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.KeyFrameAnimation" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.LayerVisual" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.LinearEasingFunction" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.NaturalMotionAnimation" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.PathKeyFrameAnimation" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.PointLight" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.QuaternionKeyFrameAnimation" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.RedirectVisual" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.RenderingDeviceReplacedEventArgs" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.ScalarKeyFrameAnimation" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.ScalarNaturalMotionAnimation" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.ShapeVisual" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.SpotLight" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.SpringScalarNaturalMotionAnimation" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.SpringVector2NaturalMotionAnimation" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.SpringVector3NaturalMotionAnimation" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.SpriteVisual" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.StepEasingFunction" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Vector2KeyFrameAnimation" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Vector2NaturalMotionAnimation" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Vector3KeyFrameAnimation" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Vector3NaturalMotionAnimation" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Vector4KeyFrameAnimation" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Visual" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.VisualCollection" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.VisualUnorderedCollection" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionBatchTypes" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionGradientExtendMode" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.CompositionMappingMode" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.RectangleClip" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Private.RectangleClip" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Scenes.SceneAlphaMode" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Scenes.SceneAttributeSemantic" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Scenes.SceneBoundingBox" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Scenes.SceneComponent" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Scenes.SceneComponentCollection" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Scenes.SceneComponentType" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Scenes.SceneMaterial" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Scenes.SceneMaterialInput" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Scenes.SceneMesh" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Scenes.SceneMeshRendererComponent" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Scenes.SceneMetallicRoughnessMaterial" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Scenes.SceneModelTransform" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Scenes.SceneNode" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Scenes.SceneNodeCollection" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Scenes.SceneObject" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Scenes.ScenePbrMaterial" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Scenes.SceneRendererComponent" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Scenes.SceneSurfaceMaterialInput" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Scenes.SceneVisual" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Scenes.SceneWrappingMode" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.CompositionConditionalValue" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.ICompositionInteractionSource" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.IInteractionTrackerOwner" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.InteractionBindingAxisModes" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.InteractionChainingMode" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.InteractionSourceConfiguration" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.InteractionSourceMode" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.InteractionSourceRedirectionMode" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.InteractionTracker" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.InteractionTrackerClampingOption" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.InteractionTrackerInertiaMotion" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.InteractionTrackerInertiaNaturalMotion" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.InteractionTrackerPositionUpdateOption" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.InteractionTrackerVector2InertiaNaturalMotion" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.VisualInteractionSource" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Interactions.VisualInteractionSourceRedirectionMode" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Effects.SceneLightingEffect" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Effects.SceneLightingEffectReflectanceModel" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Diagnostics.CompositionDebugHeatMaps" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Diagnostics.CompositionDebugOverdrawContentKinds" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Diagnostics.CompositionDebugSettings" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Desktop.DesktopWindowTarget" reason="Composition API relocation" />
+		  <Member fullName="Windows.UI.Composition.Core.CompositorController" reason="Composition API relocation" />
+		  <!-- END Composition relocation -->
 		</Types>
 		<Methods>
 			<Member
@@ -7337,6 +7517,20 @@
 		  <Member fullName="Microsoft.Extensions.Logging.LogLevel Windows.Foundation.Metadata.ApiInformation.get_NotImplementedLogLevel()" reason="Uno.Core dependency removal" />
 		  <Member fullName="System.Void Windows.Foundation.Metadata.ApiInformation.set_NotImplementedLogLevel(Microsoft.Extensions.Logging.LogLevel value)" reason="Uno.Core dependency removal" />
 		  <!-- END Uno.Core dependency Removal -->
+		  
+		  <!-- BEGIN Composition Relocation -->
+		  <Member fullName="System.Collections.Generic.IList`1&lt;Windows.UI.Composition.IVisualElement&gt; Windows.UI.WindowManagement.AppWindowFrame.get_DragRegionVisuals()" reason="Composition Relocation" />
+		  <Member fullName="Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview.CreateForVisual(Windows.UI.Composition.Visual inputPanelVisual, Windows.Foundation.Rect inputPanelRect)" reason="Composition Relocation" />
+		  <Member fullName="Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview.CreateForVisual(Windows.UI.Composition.Visual inputPanelVisual, Windows.Foundation.Rect inputPanelRect, Windows.UI.Composition.Visual viewportVisual, Windows.Foundation.Rect viewportRect)" reason="Composition Relocation" />
+		  <Member fullName="Windows.UI.Composition.ContainerVisual Windows.UI.Input.Inking.Core.CoreInkPresenterHost.get_RootVisual()" reason="Composition Relocation" />
+		  <Member fullName="System.Void Windows.UI.Input.Inking.Core.CoreInkPresenterHost.set_RootVisual(Windows.UI.Composition.ContainerVisual value)" reason="Composition Relocation" />
+		  <Member fullName="Windows.UI.Core.UIAsyncOperation Windows.UI.Core.CoreDispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority priority, Windows.UI.Core.DispatchedHandler handler)" reason="Composition Relocation" />
+		  <Member fullName="Windows.UI.Core.UIAsyncOperation Windows.UI.Core.CoreDispatcher.RunIdleAsync(Windows.UI.Core.IdleDispatchedHandler handler)" reason="Composition Relocation" />
+		  <Member fullName="Windows.Media.Playback.MediaPlayerSurface Windows.Media.Playback.MediaPlayer.GetSurface(Windows.UI.Composition.Compositor compositor)" reason="Composition Relocation" />
+		  <Member fullName="Windows.UI.Composition.ICompositionSurface Windows.Media.Playback.MediaPlayerSurface.get_CompositionSurface()" reason="Composition Relocation" />
+		  <Member fullName="Windows.UI.Composition.Compositor Windows.Media.Playback.MediaPlayerSurface.get_Compositor()" reason="Composition Relocation" />
+		  <Member fullName="Windows.Graphics.Capture.GraphicsCaptureItem Windows.Graphics.Capture.GraphicsCaptureItem.CreateFromVisual(Windows.UI.Composition.Visual visual)" reason="Composition Relocation" />
+		  <!-- END Composition Relocation -->
 		</Methods>
 		<Events>
 			<Member
@@ -8409,6 +8603,13 @@
 		  <Member fullName="Uno.Threading.FastTaskCompletionSource`1&lt;System.Object&gt; Windows.UI.Core.UIAsyncOperation::CompletionSource()" reason="Uno.Core dependency removal" />
 		  <Member fullName="Microsoft.Extensions.Logging.LogLevel Windows.Foundation.Metadata.ApiInformation::NotImplementedLogLevel()" reason="Uno.Core dependency removal" />
 		  <!-- END Uno.Core dependency Removal -->
+		  
+		  <!-- BEGIN Composition Relocation -->
+		  <Member fullName="System.Collections.Generic.IList`1&lt;Windows.UI.Composition.IVisualElement&gt; Windows.UI.WindowManagement.AppWindowFrame::DragRegionVisuals()" reason="Composition Relocation" />
+		  <Member fullName="Windows.UI.Composition.ContainerVisual Windows.UI.Input.Inking.Core.CoreInkPresenterHost::RootVisual()" reason="Composition Relocation" />
+		  <Member fullName="Windows.UI.Composition.ICompositionSurface Windows.Media.Playback.MediaPlayerSurface::CompositionSurface()" reason="Composition Relocation" />
+		  <Member fullName="Windows.UI.Composition.Compositor Windows.Media.Playback.MediaPlayerSurface::Compositor()" reason="Composition Relocation" />
+		  <!-- END Composition Relocation -->
 
 		</Properties>
 	</IgnoreSet>
