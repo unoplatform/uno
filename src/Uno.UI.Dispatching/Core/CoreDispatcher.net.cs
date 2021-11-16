@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Windows.UI.Core
+namespace Uno.UI.Dispatching
 {
 	internal sealed partial class CoreDispatcher
 	{
@@ -28,5 +28,13 @@ namespace Windows.UI.Core
 					throw new NotSupportedException("Option " + options + " not supported. Only ProcessAllIfPresent is supported yet.");
 			}
 		}
+	}
+
+	internal enum CoreProcessEventsOption
+	{
+		ProcessOneAndAllPending,
+		ProcessOneIfPresent,
+		ProcessUntilQuit,
+		ProcessAllIfPresent,
 	}
 }
