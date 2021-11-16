@@ -53,10 +53,6 @@
 		<ProjectReference Include="..\Uno.UWP\Uno.Wasm.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Wasm.csproj" />
 	</ItemGroup>
-	
-	<ItemGroup>
-		<PackageReference Include="Uno.Wasm.WebSockets" Version="1.1.0" />
-	</ItemGroup>
 
 	<ItemGroup Condition="'$(DocsGeneration)'==''">
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Host\Uno.UI.RemoteControl.Host.csproj">
