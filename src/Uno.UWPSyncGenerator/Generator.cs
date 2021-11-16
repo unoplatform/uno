@@ -165,7 +165,7 @@ namespace Uno.UWPSyncGenerator
 
 		private static void InitializeRoslyn()
 		{
-			var installPath = @"C:\VS\2022\Odd"; // Environment.GetEnvironmentVariable("VSINSTALLDIR");
+			var installPath = Environment.GetEnvironmentVariable("VSINSTALLDIR");
 
 			if (string.IsNullOrEmpty(installPath))
 			{
