@@ -27,7 +27,7 @@ namespace Uno.UI.Services
 			if (!_IsArrangeRequested)
 			{
 				_IsArrangeRequested = true;
-				CoreDispatcher.Main.RunAnimation(Arrange);
+				Uno.UI.Dispatching.CoreDispatcher.Main.RunAnimation(Arrange);
 			}
 
 			_arrangeQueue.Add(view);

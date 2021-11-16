@@ -86,5 +86,12 @@ namespace Windows.UI.Core
 		/// <returns>An async operation for the scheduled handler.</returns>
 		public IAsyncAction RunIdleAsync(IdleDispatchedHandler handler)
 			=> _inner.RunIdleAsync(c => handler(new IdleDispatchedHandlerArgs(c)));
+
+#if __ANDROID__
+		internal Uno.UI.Dispatching.UIAsyncOperation RunAnimation(DispatchedHandler handler)
+		{
+			return _inner.RunAnimation(new Uno.UI.Dispatching.DispatchedHandler(handler));
+		}
+#endif
 	}
 }
