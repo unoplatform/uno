@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using Uno.Devices.Sensors;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.ViewManagement;
@@ -75,19 +75,19 @@ namespace Uno.UI.Foldable
 
 				if (occludedRects.Count > 0)
                 {
-                    if (occludedRects.Count > 1 && this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
-                    {
-                        this.Log().Warn($"DualMode: Unknown screen layout, more than one occluded region. Only first will be considered. Please report your device to Uno Platform!");
-                    }
+					if (occludedRects.Count > 1 && this.Log().IsEnabled(LogLevel.Warning))
+					{
+					    this.Log().Warn($"DualMode: Unknown screen layout, more than one occluded region. Only first will be considered. Please report your device to Uno Platform!");
+					}
 
-                    var bounds = wuxWindowBounds;
+					var bounds = wuxWindowBounds;
                     var occludedRect = occludedRects[0];
                     var intersecting = ((Android.Graphics.RectF)bounds).Intersect(occludedRect);
 
-					this.Log().Warn($"Intersect calculation: window " + bounds + " with occluded " + occludedRect);
+					this.Log().Info($"Intersect calculation: window " + bounds + " with occluded " + occludedRect);
 
 				//if (wuOrientation == DisplayOrientations.Portrait || wuOrientation == DisplayOrientations.PortraitFlipped)  // *Device* portrait assumption works for Surface Duo, but not other foldables which have a vertical hinge in portrait mode
-				if (IsFoldVertical == false) // FoldOrientation == AndroidX.Window.Layout.FoldingFeatureOrientation.Horizontal)
+					if (IsFoldVertical == false) // FoldOrientation == AndroidX.Window.Layout.FoldingFeatureOrientation.Horizontal)
                     {
                         // Compensate for the status bar size (the occluded area is rooted on the screen size, whereas
                         // wuxWindowBoundsis rooted on the visible size of the window, unless the status bar is translucent.
@@ -122,12 +122,12 @@ namespace Uno.UI.Foldable
                                                 bounds.Height - occludedRect.Bottom),
                                         };
 
-                            if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-                            {
-                                this.Log().Debug($"DualMode: Horizontal spanning rects: {string.Join(";", spanningRects)}");
-                            }
+							if (this.Log().IsEnabled(LogLevel.Debug))
+							{
+								this.Log().Debug($"DualMode: Horizontal spanning rects: {string.Join(";", spanningRects)}");
+							}
 
-                            _previousMode.result = spanningRects;
+							_previousMode.result = spanningRects;
                         }
                         else if ((int)occludedRect.Y == (int)bounds.Y)
                         {
@@ -150,20 +150,20 @@ namespace Uno.UI.Foldable
                                                 bounds.Height),
                                         };
 
-                            if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-                            {
-                                this.Log().Debug($"DualMode: Vertical spanning rects: {string.Join(";", spanningRects)}");
-                            }
+							if (this.Log().IsEnabled(LogLevel.Debug))
+							{
+								this.Log().Debug($"DualMode: Vertical spanning rects: {string.Join(";", spanningRects)}");
+							}
 
-                            _previousMode.result = spanningRects;
+							_previousMode.result = spanningRects;
                         }
                         else
                         {
-                            if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
-                            {
-                                this.Log().Warn($"DualMode: Unknown screen layout");
-                            }
-                        }
+							if (this.Log().IsEnabled(LogLevel.Warning))
+							{
+								this.Log().Warn($"DualMode: Unknown screen layout");
+							}
+						}
 						Android.Util.Log.Info(TAG, $"               _previousMode.result={_previousMode.result.Count}");
 						foreach (var pmr in _previousMode.result) {
 							Android.Util.Log.Info(TAG, $"               > {pmr}");
@@ -172,19 +172,19 @@ namespace Uno.UI.Foldable
 					}
 					else
                     {
-                        if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-                        {
-                            this.Log().Debug($"DualMode: Without intersection, single screen");
-                        }
-                    }
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().Debug($"DualMode: Without intersection, single screen");
+						}
+					}
                 }
                 else
                 {
-                    if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-                    {
-                        this.Log().Debug($"DualMode: Without occlusion");
-                    }
-                }
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug($"DualMode: Without occlusion");
+					}
+				}
 			}
 			else
 			{

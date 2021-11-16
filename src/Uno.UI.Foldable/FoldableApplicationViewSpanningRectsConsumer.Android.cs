@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using Uno.Devices.Sensors;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.ViewManagement;
