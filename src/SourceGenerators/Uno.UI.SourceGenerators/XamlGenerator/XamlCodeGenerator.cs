@@ -31,7 +31,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public void Execute(GeneratorExecutionContext context)
 		{
 			// No initialization required for this one
-			//if (!Process.GetCurrentProcess().ProcessName.Equals("devenv", StringComparison.OrdinalIgnoreCase))
+			//if (!Process.GetCurrentProcess().ProcessName.Equals("omnisharp.exe", StringComparison.OrdinalIgnoreCase))
 			//{
 			//	Debugger.Launch();
 			//}

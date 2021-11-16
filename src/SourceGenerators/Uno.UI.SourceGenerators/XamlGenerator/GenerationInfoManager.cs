@@ -56,10 +56,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
-			if(bool.TryParse(context.GetMSBuildPropertyValue("DesignTimeBuild"), out var designTimeBuild) && designTimeBuild)
+			if(GetIsDesignTimeBuild(context) && !GetIsHotReloadHost(context))
 			{
+				// Design-time builds need to clear runs for the x:Name values to be regenerated, in the context of OmniSharp.
+				// In the context of HotReload, we need to skip this, as the HotReload service sets DesignTimeBuild to build
+				// to true, preventing existing runs to be kept active.
 				_runs.Clear();
 			}
+		}
+
+		private bool GetIsDesignTimeBuild(GeneratorExecutionContext context)
+		{
+			return bool.TryParse(context.GetMSBuildPropertyValue("DesignTimeBuild"), out var value) && value;
+		}
+
+		private bool GetIsHotReloadHost(GeneratorExecutionContext context)
+		{
+			return bool.TryParse(context.GetMSBuildPropertyValue("IsHotReloadHost"), out var value) && value;
 		}
 	}
 }
