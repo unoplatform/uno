@@ -23,8 +23,6 @@ namespace Uno.UI.RemoteControl.HotReload
 
 		private string[] GetMetadataUpdateCapabilities()
 		{
-#if NET6_0_OR_GREATER || __WASM__ || __SKIA__
-
 			if (Type.GetType("System.Reflection.Metadata.MetadataUpdater") is { } type)
 			{
 				if (type.GetMethod("GetCapabilities", BindingFlags.Static | BindingFlags.NonPublic) is { } getCapabilities)
@@ -52,10 +50,6 @@ namespace Uno.UI.RemoteControl.HotReload
 			{
 				throw new NotSupportedException($"Unable to find System.Reflection.Metadata.MetadataUpdater");
 			}
-
-#else
-			return new string[0];
-#endif
 		}
 
 		private void AssemblyReload(AssemblyDeltaReload assemblyDeltaReload)
