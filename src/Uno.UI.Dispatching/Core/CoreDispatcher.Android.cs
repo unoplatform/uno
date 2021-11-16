@@ -14,7 +14,7 @@ using System.Collections.Immutable;
 using Uno;
 using System.Diagnostics;
 
-namespace Windows.UI.Core
+namespace Uno.UI.Dispatching
 {
 	internal sealed partial class CoreDispatcher
 	{

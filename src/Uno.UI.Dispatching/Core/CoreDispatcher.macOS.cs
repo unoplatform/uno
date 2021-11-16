@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Windows.UI.Core
+namespace Uno.UI.Dispatching
 {
     internal sealed partial class CoreDispatcher
     {

@@ -205,7 +205,15 @@
       <Project>{58C0CBAB-2619-4F58-BC41-5C74DBE31261}</Project>
       <Name>Uno</Name>
     </ProjectReference>
-  </ItemGroup>
+		<ProjectReference Include="..\..\Uno.UI.Composition\Uno.UI.Composition.csproj">
+			<Project>{39c20ebb-59d8-43e5-9cf6-390521c0c82a}</Project>
+			<Name>Uno.UI.Composition</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.csproj">
+			<Project>{ac6e2bd5-3902-46f4-8ea9-9bef09d8b39c}</Project>
+			<Name>Uno.UI.Dispatching</Name>
+		</ProjectReference>
+	</ItemGroup>
   <Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
   <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
   <Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
