@@ -5,9 +5,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -31,7 +31,7 @@ namespace Uno.UI.RemoteControl.HotReload
 					{
 						if (this.Log().IsEnabled(LogLevel.Trace))
 						{
-							this.Log().LogTrace($"Metadata Updates runtime capabilities: {caps}");
+							this.Log().Trace($"Metadata Updates runtime capabilities: {caps}");
 						}
 
 						return caps.Split(' ');
@@ -56,7 +56,7 @@ namespace Uno.UI.RemoteControl.HotReload
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().LogTrace($"Applying IL Delta after {assemblyDeltaReload.FilePath}, Guid:{assemblyDeltaReload.ModuleId}");
+				this.Log().Trace($"Applying IL Delta after {assemblyDeltaReload.FilePath}, Guid:{assemblyDeltaReload.ModuleId}");
 			}
 
 			var moduleIdGuid = Guid.Parse(assemblyDeltaReload.ModuleId);
@@ -71,7 +71,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().LogTrace($"Applying IL Delta for {assembly} (metadata: {metadataDelta.Length}, metadata: {metadataDelta.Length}, metadata: {metadataDelta.Length})");
+					this.Log().Trace($"Applying IL Delta for {assembly} (metadata: {metadataDelta.Length}, metadata: {metadataDelta.Length}, metadata: {metadataDelta.Length})");
 				}
 
 #if NET6_OR_GREATER

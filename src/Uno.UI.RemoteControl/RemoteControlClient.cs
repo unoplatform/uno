@@ -116,7 +116,7 @@ namespace Uno.UI.RemoteControl
 
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
-						this.Log().LogTrace($"Connecting to [{serverUri}]");
+						this.Log().Trace($"Connecting to [{serverUri}]");
 					}
 
 					await s.ConnectAsync(serverUri, ct);
