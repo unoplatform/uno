@@ -163,7 +163,7 @@ namespace Windows.UI.Xaml
 			var vsm = GetCustomVisualStateManager(control) ?? GetVisualStateManager(control);
 			if (vsm is null)
 			{
-				if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					_log.DebugFormat("Failed to set state [{0}], there is no VisualStateManager on [{1}]", stateName, control);
 				}

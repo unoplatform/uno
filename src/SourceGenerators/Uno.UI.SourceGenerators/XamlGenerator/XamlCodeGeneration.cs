@@ -560,9 +560,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				resourceKeys = _resourceFiles
 					.AsParallel()
 					.WithCancellation(ct)
-					.SelectMany(file =>
-					{
-						this.Log().Info("Parse resource file : " + file);
+					.SelectMany(file => {
+#if DEBUG
+						Console.Write("Parse resource file : " + file);
+#endif
 
 						//load document
 						var doc = new XmlDocument();
