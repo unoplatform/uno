@@ -28,14 +28,14 @@
   </TemplateData>
   <TemplateContent>
 	<ProjectCollection>
-	  <ProjectTemplateLink ProjectName="$projectname$.Shared" CopyParameters="true">Shared\Shared.vstemplate</ProjectTemplateLink>
+	  <ProjectTemplateLink ProjectName="$projectname$.Shared" CopyParameters="true">Shared\Shared.net6.vstemplate</ProjectTemplateLink>
 	  <SolutionFolder Name="Platforms">
-		<ProjectTemplateLink ProjectName="$projectname$.Mobile" CopyParameters="true">Mobile\Mobile.vstemplate</ProjectTemplateLink>
-		<ProjectTemplateLink ProjectName="$projectname$.UWP" CopyParameters="true">UWP\UWP.vstemplate</ProjectTemplateLink>
-		<ProjectTemplateLink ProjectName="$projectname$.Wasm" CopyParameters="true">Wasm\Wasm.vstemplate</ProjectTemplateLink>
-		<ProjectTemplateLink ProjectName="$projectname$.Skia.Wpf.Host" CopyParameters="true">Skia.Wpf.Host\SkiaWpfHost.vstemplate</ProjectTemplateLink>
-		<ProjectTemplateLink ProjectName="$projectname$.Skia.Wpf" CopyParameters="true">Skia.Wpf\SkiaWpf.vstemplate</ProjectTemplateLink>
-		<ProjectTemplateLink ProjectName="$projectname$.Skia.Gtk" CopyParameters="true">Skia.Gtk\SkiaGtk.vstemplate</ProjectTemplateLink>
+		<ProjectTemplateLink ProjectName="$projectname$.Mobile" CopyParameters="true">Mobile\Mobile.net6.vstemplate</ProjectTemplateLink>
+		<ProjectTemplateLink ProjectName="$projectname$.UWP" CopyParameters="true">UWP\UWP.net6.vstemplate</ProjectTemplateLink>
+		<ProjectTemplateLink ProjectName="$projectname$.Wasm" CopyParameters="true">Wasm\Wasm.net6.vstemplate</ProjectTemplateLink>
+		<ProjectTemplateLink ProjectName="$projectname$.Skia.Wpf.Host" CopyParameters="true">Skia.Wpf.Host\SkiaWpfHost.net6.vstemplate</ProjectTemplateLink>
+		<ProjectTemplateLink ProjectName="$projectname$.Skia.Wpf" CopyParameters="true">Skia.Wpf\SkiaWpf.net6.vstemplate</ProjectTemplateLink>
+		<ProjectTemplateLink ProjectName="$projectname$.Skia.Gtk" CopyParameters="true">Skia.Gtk\SkiaGtk.net6.vstemplate</ProjectTemplateLink>
 	  </SolutionFolder>
 	</ProjectCollection>
   </TemplateContent>
