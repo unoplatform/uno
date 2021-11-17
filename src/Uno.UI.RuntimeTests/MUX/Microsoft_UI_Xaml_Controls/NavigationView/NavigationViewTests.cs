@@ -694,6 +694,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
+		[Ignore]
 		public void VerifyClosedCompactVisualState()
 		{
 			NavigationView navView = null;

@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference NavigationView.cpp, commit 991c831
+// MUX Reference NavigationView.cpp, commit 3ac8fc1
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 
@@ -193,6 +193,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				m_selectionChangedRevoker.Disposable = null;
 				m_autoSuggestBoxQuerySubmittedRevoker.Disposable = null;
+				ClearAllNavigationViewItemRevokers();
 			}
 		}
 
@@ -1382,20 +1383,7 @@ namespace Microsoft.UI.Xaml.Controls
 					var childDepth = GetChildDepth(position, nvibImpl);
 					nvi.PropagateDepthToChildren(childDepth);
 
-					// Register for item events
-					nvi.Tapped += OnNavigationViewItemTapped;
-					nvi.KeyDown += OnNavigationViewItemKeyDown;
-					nvi.GotFocus += OnNavigationViewItemOnGotFocus;
-					var isSelectedSubscription = nvi.RegisterPropertyChangedCallback(NavigationViewItemBase.IsSelectedProperty, OnNavigationViewItemIsSelectedPropertyChanged);
-					var isExpandedSubscription = nvi.RegisterPropertyChangedCallback(NavigationViewItem.IsExpandedProperty, OnNavigationViewItemExpandedPropertyChanged);
-					nvi.EventRevoker.Disposable = Disposable.Create(() =>
-					{
-						nvi.Tapped -= OnNavigationViewItemTapped;
-						nvi.KeyDown -= OnNavigationViewItemKeyDown;
-						nvi.GotFocus -= OnNavigationViewItemOnGotFocus;
-						nvi.UnregisterPropertyChangedCallback(NavigationViewItemBase.IsSelectedProperty, isSelectedSubscription);
-						nvi.UnregisterPropertyChangedCallback(NavigationViewItem.IsExpandedProperty, isExpandedSubscription);
-					});
+					SetNavigationViewItemRevokers(nvi);
 				}
 
 #if IS_UNO
@@ -2013,7 +2001,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var newButtonWidths = GetNewButtonWidths();
 
 			templateSettings.PaneToggleButtonWidth = newButtonWidths;
-			templateSettings.SmallerPaneToggleButtonWidth = newButtonWidths - 8;
+			templateSettings.SmallerPaneToggleButtonWidth = Math.Max(0.0, newButtonWidths - 8);
 		}
 
 		private void OnBackButtonClicked(object sender, RoutedEventArgs args)
@@ -3670,6 +3658,39 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			bool isToggleButtonVisible = IsPaneToggleButtonVisible;
 			VisualStateManager.GoToState(this, isToggleButtonVisible || !m_isLeftPaneTitleEmpty ? "TogglePaneButtonVisible" : "TogglePaneButtonCollapsed", false /*useTransitions*/);
+		}
+
+		private void SetNavigationViewItemRevokers(NavigationViewItem nvi)
+		{
+			nvi.Tapped += OnNavigationViewItemTapped;
+			nvi.KeyDown += OnNavigationViewItemKeyDown;
+			nvi.GotFocus += OnNavigationViewItemOnGotFocus;
+			var isSelectedSubscription = nvi.RegisterPropertyChangedCallback(NavigationViewItemBase.IsSelectedProperty, OnNavigationViewItemIsSelectedPropertyChanged);
+			var isExpandedSubscription = nvi.RegisterPropertyChangedCallback(NavigationViewItem.IsExpandedProperty, OnNavigationViewItemExpandedPropertyChanged);
+			nvi.EventRevoker.Disposable = Disposable.Create(() =>
+			{
+				nvi.Tapped -= OnNavigationViewItemTapped;
+				nvi.KeyDown -= OnNavigationViewItemKeyDown;
+				nvi.GotFocus -= OnNavigationViewItemOnGotFocus;
+				nvi.UnregisterPropertyChangedCallback(NavigationViewItemBase.IsSelectedProperty, isSelectedSubscription);
+				nvi.UnregisterPropertyChangedCallback(NavigationViewItem.IsExpandedProperty, isExpandedSubscription);
+			});
+			m_itemsWithRevokerObjects.Add(nvi);
+		}
+
+		private void ClearNavigationViewItemRevokers(NavigationViewItem nvi)
+		{
+			nvi.EventRevoker.Disposable = null;
+			m_itemsWithRevokerObjects.Remove(nvi);
+		}
+
+		private void ClearAllNavigationViewItemRevokers()
+		{
+			foreach (var nvi in m_itemsWithRevokerObjects)
+			{
+				nvi.EventRevoker.Disposable = null;
+			}
+			m_itemsWithRevokerObjects.Clear();
 		}
 
 		private void InvalidateTopNavPrimaryLayout()

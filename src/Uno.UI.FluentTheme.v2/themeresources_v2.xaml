@@ -18196,12 +18196,14 @@
                 <VisualState x:Name="ChevronVisibleOpen">
                   <VisualState.Setters>
                     <Setter Target="ExpandCollapseChevron.Visibility" Value="Visible" />
+                    <Setter Target="ExpandCollapseChevronIcon.Visibility" Value="Visible" />
                     <contract7NotPresent:Setter Target="ExpandCollapseChevronRotateTransform.Angle" Value="180" />
                   </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="ChevronVisibleClosed">
                   <VisualState.Setters>
                     <Setter Target="ExpandCollapseChevron.Visibility" Value="Visible" />
+                    <Setter Target="ExpandCollapseChevronIcon.Visibility" Value="Visible" />
                     <contract7NotPresent:Setter Target="ExpandCollapseChevronRotateTransform.Angle" Value="0" />
                   </VisualState.Setters>
                 </VisualState>
@@ -18210,42 +18212,42 @@
                 <VisualState x:Name="NormalChevronHidden" />
                 <VisualState x:Name="NormalChevronVisibleOpen">
                   <VisualState.Setters>
-                    <Setter Target="ExpandCollapseChevronIcon.(controls:AnimatedIcon.State)" Value="NormalOn" />
+                    <Setter Target="ExpandCollapseChevron.(controls:AnimatedIcon.State)" Value="NormalOn" />
                   </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="NormalChevronVisibleClosed">
                   <VisualState.Setters>
-                    <Setter Target="ExpandCollapseChevronIcon.(controls:AnimatedIcon.State)" Value="NormalOff" />
+                    <Setter Target="ExpandCollapseChevron.(controls:AnimatedIcon.State)" Value="NormalOff" />
                   </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="PointerOverChevronHidden">
                   <VisualState.Setters>
-                    <Setter Target="ExpandCollapseChevronIcon.(controls:AnimatedIcon.State)" Value="PointerOverOff" />
+                    <Setter Target="ExpandCollapseChevron.(controls:AnimatedIcon.State)" Value="PointerOverOff" />
                   </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="PointerOverChevronVisibleOpen">
                   <VisualState.Setters>
-                    <Setter Target="ExpandCollapseChevronIcon.(controls:AnimatedIcon.State)" Value="PointerOverOn" />
+                    <Setter Target="ExpandCollapseChevron.(controls:AnimatedIcon.State)" Value="PointerOverOn" />
                   </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="PointerOverChevronVisibleClosed">
                   <VisualState.Setters>
-                    <Setter Target="ExpandCollapseChevronIcon.(controls:AnimatedIcon.State)" Value="PointerOverOff" />
+                    <Setter Target="ExpandCollapseChevron.(controls:AnimatedIcon.State)" Value="PointerOverOff" />
                   </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="PressedChevronHidden">
                   <VisualState.Setters>
-                    <Setter Target="ExpandCollapseChevronIcon.(controls:AnimatedIcon.State)" Value="PressedOff" />
+                    <Setter Target="ExpandCollapseChevron.(controls:AnimatedIcon.State)" Value="PressedOff" />
                   </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="PressedChevronVisibleOpen">
                   <VisualState.Setters>
-                    <Setter Target="ExpandCollapseChevronIcon.(controls:AnimatedIcon.State)" Value="PressedOn" />
+                    <Setter Target="ExpandCollapseChevron.(controls:AnimatedIcon.State)" Value="PressedOn" />
                   </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="PressedChevronVisibleClosed">
                   <VisualState.Setters>
-                    <Setter Target="ExpandCollapseChevronIcon.(controls:AnimatedIcon.State)" Value="PressedOff" />
+                    <Setter Target="ExpandCollapseChevron.(controls:AnimatedIcon.State)" Value="PressedOff" />
                   </VisualState.Setters>
                 </VisualState>
               </VisualStateGroup>
@@ -18282,8 +18284,8 @@
                   </Viewbox>
                 </Border>
                 <ContentPresenter x:Name="ContentPresenter" Grid.Column="1" Margin="{ThemeResource NavigationViewItemContentPresenterMargin}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" Padding="{TemplateBinding Padding}" AutomationProperties.AccessibilityView="Raw" />
-                <Grid x:Name="ExpandCollapseChevron" Grid.Column="3" Visibility="Collapsed" HorizontalAlignment="Right" Width="40" Margin="{ThemeResource NavigationViewItemExpandChevronMargin}" Background="Transparent">
-                  <controls:AnimatedIcon Width="12" Height="12" RenderTransformOrigin="0.5, 0.5" x:Name="ExpandCollapseChevronIcon" HorizontalAlignment="Center" VerticalAlignment="Center" AutomationProperties.AccessibilityView="Raw" local:AnimatedIcon.State="NormalOff" xmlns:local="using:Microsoft.UI.Xaml.Controls">
+                <Grid x:Name="ExpandCollapseChevron" Grid.Column="3" Visibility="Collapsed" HorizontalAlignment="Right" Width="40" Margin="{ThemeResource NavigationViewItemExpandChevronMargin}" Background="Transparent" local:AnimatedIcon.State="NormalOff" xmlns:local="using:Microsoft.UI.Xaml.Controls">
+                  <controls:AnimatedIcon Width="12" Height="12" RenderTransformOrigin="0.5, 0.5" x:Name="ExpandCollapseChevronIcon" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" AutomationProperties.AccessibilityView="Raw" x:DeferLoadStrategy="Lazy">
                     <animatedvisuals:AnimatedChevronUpDownSmallVisualSource />
                     <controls:AnimatedIcon.FallbackIconSource>
                       <controls:FontIconSource Foreground="{ThemeResource NavigationViewItemForeground}" FontSize="{ThemeResource NavigationViewItemExpandedGlyphFontSize}" Glyph="{StaticResource NavigationViewItemExpandedGlyph}" FontFamily="{StaticResource SymbolThemeFontFamily}" />

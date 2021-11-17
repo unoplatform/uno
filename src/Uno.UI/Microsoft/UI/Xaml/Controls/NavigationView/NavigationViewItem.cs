@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItem.cpp, commit fd22d7f
+// MUX reference NavigationViewItem.cpp, commit 2562ac6
 
 #if __ANDROID__
 // For performance considerations, we prefer to delay pressed and over state in order to avoid
@@ -419,8 +419,8 @@ namespace Microsoft.UI.Xaml.Controls
 				case NavigationViewRepeaterPosition.LeftFooter:
 					if (SharedHelpers.IsRS4OrHigher() && Application.Current.FocusVisualKind == FocusVisualKind.Reveal)
 					{
-						// OnLeftNavigationReveal is introduced in RS6. 
-						// Will fallback to stateName for the customer who re-template rs5 NavigationViewItem
+						// OnLeftNavigationReveal is introduced in RS6 and only in the V1 style.
+						// Fallback to OnLeftNavigation for other styles.
 						if (VisualStateManager.GoToState(this, NavigationViewItemHelper.c_OnLeftNavigationReveal, false /*useTransitions*/))
 						{
 							handled = true;
@@ -429,13 +429,15 @@ namespace Microsoft.UI.Xaml.Controls
 					break;
 				case NavigationViewRepeaterPosition.TopPrimary:
 				case NavigationViewRepeaterPosition.TopFooter:
+					stateName = NavigationViewItemHelper.c_OnTopNavigationPrimary;
 					if (SharedHelpers.IsRS4OrHigher() && Application.Current.FocusVisualKind == FocusVisualKind.Reveal)
 					{
-						stateName = NavigationViewItemHelper.c_OnTopNavigationPrimaryReveal;
-					}
-					else
-					{
-						stateName = NavigationViewItemHelper.c_OnTopNavigationPrimary;
+						// OnTopNavigationPrimaryReveal is introduced in RS6 and only in the V1 style.
+						// Fallback to c_OnTopNavigationPrimary for other styles.
+						if (VisualStateManager.GoToState(this, NavigationViewItemHelper.c_OnTopNavigationPrimaryReveal, false /*useTransitions*/))
+						{
+							handled = true;
+						}
 					}
 					break;
 				case NavigationViewRepeaterPosition.TopOverflow:
