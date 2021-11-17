@@ -105,7 +105,7 @@ var Windows;
                     }
                     else {
                         if (!CoreDispatcher._coreDispatcherCallback) {
-                            CoreDispatcher._coreDispatcherCallback = Module.mono_bind_static_method("[Uno] Windows.UI.Core.CoreDispatcher:DispatcherCallback");
+                            CoreDispatcher._coreDispatcherCallback = Module.mono_bind_static_method("[Uno.UI.Dispatching] Uno.UI.Dispatching.CoreDispatcher:DispatcherCallback");
                         }
                     }
                 }

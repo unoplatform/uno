@@ -115,6 +115,10 @@
 		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="'$(TargetFramework)' == 'MonoAndroid11.0' or '$(TargetFramework)' == 'MonoAndroid10.0'">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
+
+		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.csproj">
+			<TreatAsPackageReference>false</TreatAsPackageReference>
+		</ProjectReference>
 	</ItemGroup>
 
 	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac)">

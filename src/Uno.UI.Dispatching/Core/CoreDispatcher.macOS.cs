@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Windows.UI.Core
+namespace Uno.UI.Dispatching
 {
-    public sealed partial class CoreDispatcher
+    internal sealed partial class CoreDispatcher
     {
         private CoreFoundation.DispatchQueue _mainQueue = CoreFoundation.DispatchQueue.MainQueue;
 

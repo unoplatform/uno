@@ -14,20 +14,20 @@ namespace Windows.UI.Xaml.Media
 			{
 				CoreDispatcher.CheckThreadAccess();
 
-				var currentlyRaisingEvents = CoreDispatcher.Main.ShouldRaiseRenderEvents;
-				CoreDispatcher.Main.Rendering += value;
-				CoreDispatcher.Main.RenderEventThrottle = FeatureConfiguration.CompositionTarget.RenderEventThrottle;
-				CoreDispatcher.Main.RenderingEventArgsGenerator ??= (d => new RenderingEventArgs(d));
+				var currentlyRaisingEvents = Uno.UI.Dispatching.CoreDispatcher.Main.ShouldRaiseRenderEvents;
+				Uno.UI.Dispatching.CoreDispatcher.Main.Rendering += value;
+				Uno.UI.Dispatching.CoreDispatcher.Main.RenderEventThrottle = FeatureConfiguration.CompositionTarget.RenderEventThrottle;
+				Uno.UI.Dispatching.CoreDispatcher.Main.RenderingEventArgsGenerator ??= (d => new RenderingEventArgs(d));
 				if (!currentlyRaisingEvents)
 				{
-					CoreDispatcher.Main.WakeUp();
+					Uno.UI.Dispatching.CoreDispatcher.Main.WakeUp();
 				}
 			}
 			remove
 			{
-				CoreDispatcher.CheckThreadAccess();
+				Uno.UI.Dispatching.CoreDispatcher.CheckThreadAccess();
 
-				CoreDispatcher.Main.Rendering -= value;
+				Uno.UI.Dispatching.CoreDispatcher.Main.Rendering -= value;
 			}
 		}
 	}

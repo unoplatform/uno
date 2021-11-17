@@ -126,6 +126,9 @@
 		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.net6.csproj" Condition="'$(TargetFramework)' == 'net6.0-android'">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
+		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.net6.csproj">
+			<TreatAsPackageReference>false</TreatAsPackageReference>
+		</ProjectReference>
 	</ItemGroup>
 
 	<ItemGroup>
