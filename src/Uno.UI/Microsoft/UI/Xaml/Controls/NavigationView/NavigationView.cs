@@ -1996,7 +1996,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var newButtonWidths = GetNewButtonWidths();
 
 			templateSettings.PaneToggleButtonWidth = newButtonWidths;
-			templateSettings.SmallerPaneToggleButtonWidth = newButtonWidths - 8;
+			templateSettings.SmallerPaneToggleButtonWidth = Math.Max(0.0, newButtonWidths - 8);
 		}
 
 		private void OnBackButtonClicked(object sender, RoutedEventArgs args)
