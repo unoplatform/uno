@@ -408,8 +408,35 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				_isTopLevelDictionary = true;
 
-				BuildResourceDictionaryBackingClass(writer, topLevelControl);
-				BuildTopLevelResourceDictionary(writer, topLevelControl);
+				if (_generationRunFileInfo.RunInfo.Index == 0)
+				{
+					var componentBuilder = new IndentedStringBuilder();
+
+					using (componentBuilder.Indent(writer.CurrentLevel))
+					{
+						BuildResourceDictionaryBackingClass(componentBuilder, topLevelControl);
+						BuildTopLevelResourceDictionary(componentBuilder, topLevelControl);
+
+						_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
+						_generationRunFileInfo.ComponentCode = componentBuilder.ToString();
+					}
+
+					writer.AppendLineInvariant("{0}", componentBuilder.ToString());
+				}
+				else
+				{
+					if (_generationRunFileInfo.RunInfo.Manager.PreviousRuns.FirstOrDefault(r => r.GetRunFileInfo(_fileUniqueId)?.ComponentCode != null) is { } runFileInfo)
+					{
+						var generationRunFileInfo = runFileInfo.GetRunFileInfo(_fileUniqueId);
+
+						writer.AppendLineInvariant("{0}", generationRunFileInfo.ComponentCode);
+
+						foreach (var type in generationRunFileInfo.AppliedTypes)
+						{
+							_xamlAppliedTypes.Add(type.Key, type.Value);
+						}
+					}
+				}
 			}
 			else
 			{
