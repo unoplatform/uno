@@ -434,8 +434,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									BuildInitializeComponent(componentBuilder, topLevelControl, controlBaseType, false);
 
-									_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
-
 									TryBuildElementStubHolders(componentBuilder);
 
 									BuildPartials(componentBuilder, isStatic: false);
@@ -448,6 +446,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 									BuildCompiledBindings(componentBuilder, _className.className);
 
+									_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
 									_generationRunFileInfo.ComponentCode = componentBuilder.ToString();
 								}
 
