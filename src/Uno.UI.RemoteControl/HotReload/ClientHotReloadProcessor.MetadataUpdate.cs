@@ -18,8 +18,22 @@ namespace Uno.UI.RemoteControl.HotReload
 	partial class ClientHotReloadProcessor : IRemoteControlProcessor
 	{
 		private ApplyUpdateHandler _applyUpdate;
+		private bool _linkerEnabled;
 
 		private delegate void ApplyUpdateHandler(Assembly assembly, ReadOnlySpan<byte> metadataDelta, ReadOnlySpan<byte> ilDelta, ReadOnlySpan<byte> pdbDelta);
+
+		partial void InitializeMetadataUpdater()
+		{
+			_linkerEnabled = string.Equals(Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_LINKER_ENABLED"), "true", StringComparison.OrdinalIgnoreCase);
+
+			if (_linkerEnabled)
+			{
+				var message = "The application was compiled with the IL linker enabled, hot reload is disabled. " +
+							"See WasmShellILLinkerEnabled for more details.";
+
+				Console.WriteLine($"[ERROR] {message}");
+			}
+		}
 
 		private string[] GetMetadataUpdateCapabilities()
 		{
@@ -60,14 +74,18 @@ namespace Uno.UI.RemoteControl.HotReload
 			}
 
 			var moduleIdGuid = Guid.Parse(assemblyDeltaReload.ModuleId);
-			var assembly = AppDomain.CurrentDomain.GetAssemblies()
-				.FirstOrDefault(a => a.Modules.FirstOrDefault() is Module m && m.ModuleVersionId == moduleIdGuid);
+			var assemblyQuery = from a in AppDomain.CurrentDomain.GetAssemblies()
+								from m in a.Modules
+								where m.ModuleVersionId == moduleIdGuid
+								select a;
+
+			var assembly = assemblyQuery.FirstOrDefault();
 
 			ReadOnlySpan<byte> metadataDelta = Convert.FromBase64String(assemblyDeltaReload.MetadataDelta);
 			ReadOnlySpan<byte> ilDeta = Convert.FromBase64String(assemblyDeltaReload.ILDelta);
 			ReadOnlySpan<byte> pdbDelta = Convert.FromBase64String(assemblyDeltaReload.PdbDelta);
 
-			if (!(assembly is null))
+			if (assembly is not null)
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
@@ -98,6 +116,13 @@ namespace Uno.UI.RemoteControl.HotReload
 
 				_applyUpdate(assembly, metadataDelta, ilDeta, pdbDelta);
 #endif
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"Unable to applying IL delta for {assemblyDeltaReload.FilePath} (Unable to find module with guid:{assemblyDeltaReload.ModuleId}, is the IL Linker enabled?)");
+				}
 			}
 		}
 	}

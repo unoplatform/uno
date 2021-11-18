@@ -24,7 +24,10 @@ namespace Uno.UI.RemoteControl.HotReload
 		public ClientHotReloadProcessor(IRemoteControlClient rcClient)
 		{
 			_rcClient = rcClient;
+			InitializeMetadataUpdater();
 		}
+
+		partial void InitializeMetadataUpdater();
 
 		string IRemoteControlProcessor.Scope => HotReloadConstants.ScopeName;
 
