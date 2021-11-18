@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Uno.UI;
@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml
 
 				_isApplyingTemplateBindings = true;
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat(
 						"{0}.ApplyTemplateBindings({1}/{2}) (h:{3:X8})",
@@ -399,14 +399,14 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal void SetResourceBinding(DependencyProperty dependencyProperty, SpecializedResourceDictionary.ResourceKey resourceKey, bool isTheme, object context, DependencyPropertyValuePrecedences? precedence, BindingPath? setterBindingPath)
+		internal void SetResourceBinding(DependencyProperty dependencyProperty, SpecializedResourceDictionary.ResourceKey resourceKey, ResourceUpdateReason updateReason, object context, DependencyPropertyValuePrecedences? precedence, BindingPath? setterBindingPath)
 		{
 			if (precedence == null && _overriddenPrecedences?.Count > 0)
 			{
 				precedence = _overriddenPrecedences.Peek();
 			}
 
-			var binding = new ResourceBinding(resourceKey, isTheme, context, precedence ?? DependencyPropertyValuePrecedences.Local, setterBindingPath);
+			var binding = new ResourceBinding(resourceKey, updateReason, context, precedence ?? DependencyPropertyValuePrecedences.Local, setterBindingPath);
 			SetBinding(dependencyProperty, binding);
 		}
 
@@ -515,7 +515,7 @@ namespace Windows.UI.Xaml
 			{
 				// This guards against the scenario where inherited DataContext is removed when the view is removed from the visual tree,
 				// in which case 2-way bindings should not be updated.
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("SetSourceValue() not called because inherited property is being unset.");
 				}
@@ -554,7 +554,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					if (typeof(DependencyProperty).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (typeof(DependencyProperty).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						typeof(DependencyProperty).Log().DebugFormat(
 							"Unable to find the dependency property [{0}] on type [{1}]"

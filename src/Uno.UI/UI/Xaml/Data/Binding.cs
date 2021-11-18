@@ -15,6 +15,7 @@ using _NativeObject = System.Object;
 
 namespace Windows.UI.Xaml.Data
 {
+
 	public partial class Binding : BindingBase
 	{
 		/// <summary>

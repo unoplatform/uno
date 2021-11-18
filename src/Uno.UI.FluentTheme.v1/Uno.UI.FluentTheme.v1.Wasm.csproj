@@ -28,7 +28,6 @@
 	
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Uno.Core.Build" />
 	</ItemGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />

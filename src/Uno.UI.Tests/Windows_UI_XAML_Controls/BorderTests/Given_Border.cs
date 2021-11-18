@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno;
 using Uno.Extensions;
-using Uno.Logging;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using System;

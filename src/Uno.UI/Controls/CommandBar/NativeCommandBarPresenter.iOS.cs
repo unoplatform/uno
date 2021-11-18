@@ -33,9 +33,10 @@ namespace Uno.UI.Controls
 
 			// TODO: Find a proper way to decide whether a CommandBar exists on canvas (within Page), or is mapped to the UINavigationController's NavigationBar.
 
-			var commandBar = _commandBar?.Target;
+			CommandBar? commandBar = null;
+			_commandBar?.TryGetTarget(out commandBar);
 
-			if (commandBar == null)
+			if (_commandBar == null)
 			{
 				commandBar = TemplatedParent as CommandBar;
 				_commandBar = new WeakReference<CommandBar?>(commandBar);
@@ -85,7 +86,12 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		CommandBarRenderer RendererFactory() => new CommandBarRenderer(_commandBar?.Target);
+		CommandBarRenderer RendererFactory()
+		{
+			CommandBar? target = null;
+			_commandBar?.TryGetTarget(out target);
+			return new CommandBarRenderer(target);
+		}
 
 		protected override Size MeasureOverride(Size size)
 		{

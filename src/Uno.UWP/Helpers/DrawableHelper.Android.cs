@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 
 namespace Uno.Helpers
@@ -43,7 +43,7 @@ namespace Uno.Helpers
 			var id = _drawablesLookup.UnoGetValueOrDefault(key, 0);
 			if (id == 0)
 			{
-				if (typeof(DrawableHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				if (typeof(DrawableHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 				{
 					typeof(DrawableHelper).Log().Error("Couldn't find drawable with key: " + key);
 				}

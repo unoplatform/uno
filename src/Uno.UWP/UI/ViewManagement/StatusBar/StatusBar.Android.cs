@@ -9,7 +9,7 @@ using Uno.Extensions;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Threading.Tasks;
 
 namespace Windows.UI.ViewManagement

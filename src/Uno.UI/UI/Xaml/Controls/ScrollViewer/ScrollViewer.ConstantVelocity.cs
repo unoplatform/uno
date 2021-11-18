@@ -20,7 +20,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml.Input;
 using Uno;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
+
 
 #if __ANDROID__
 using View = Android.Views.View;

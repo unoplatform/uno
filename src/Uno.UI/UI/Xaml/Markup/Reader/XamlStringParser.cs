@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.IO;
 using System.Reflection;
 using Uno.Xaml;

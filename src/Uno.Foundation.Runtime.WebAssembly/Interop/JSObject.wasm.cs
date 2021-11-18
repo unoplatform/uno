@@ -2,8 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Uno.Extensions;
-using Uno.Logging;
+// using Uno.Logging;
 
 namespace Uno.Foundation.Interop
 {
@@ -26,19 +25,19 @@ namespace Uno.Foundation.Interop
 
 			if (!handle.IsAllocated)
 			{
-				handle.Log().Debug($"Cannot invoke '{method}' as target has been collected!");
+				//handle.Log().Debug($"Cannot invoke '{method}' as target has been collected!");
 				return;
 			}
 
 			if (!(handle.Target is JSObjectHandle jsObjectHandle))
 			{
-				handle.Log().Debug($"Cannot invoke '{method}' as target is not a valid JSObjectHandle! ({handle.Target?.GetType()})");
+				//handle.Log().Debug($"Cannot invoke '{method}' as target is not a valid JSObjectHandle! ({handle.Target?.GetType()})");
 				return;
 			}
 
 			if (!jsObjectHandle.TryGetManaged(out var target))
 			{
-				jsObjectHandle.Log().Debug($"Cannot invoke '{method}' as target has been collected!");
+				//jsObjectHandle.Log().Debug($"Cannot invoke '{method}' as target has been collected!");
 				return;
 			}
 

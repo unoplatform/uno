@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
 using Windows.Foundation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using AppKit;
 

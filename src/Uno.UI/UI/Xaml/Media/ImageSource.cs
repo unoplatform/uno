@@ -1,5 +1,5 @@
 ﻿using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Media
 			}
 			else
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("The uri [{0}] is not valid, skipping.", url);
 				}
@@ -162,7 +162,7 @@ namespace Windows.UI.Xaml.Media
 		/// <returns>n Uri containing a local path for the downloaded image.</returns>
 		private async Task<Uri> Download(CancellationToken ct, Uri uri)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat("Initiated download from {0}", uri);
 			}

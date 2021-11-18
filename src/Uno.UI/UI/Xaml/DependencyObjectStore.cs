@@ -4,7 +4,7 @@ using System;
 using Uno.UI.DataBinding;
 using System.Collections.Generic;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Diagnostics.Eventing;
 using Uno.Disposables;
 using System.Linq;
@@ -106,7 +106,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Is a theme-bound value currently being set?
 		/// </summary>
-		private bool _isSettingThemeBinding;
+		private bool _isSettingPersistentResourceBinding;
 		/// <summary>
 		/// The theme last to apply theme bindings on this object and its children.
 		/// </summary>
@@ -328,7 +328,7 @@ namespace Windows.UI.Xaml
 
 			_overriddenPrecedences.Push(precedence);
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"OverrideLocalPrecedence({precedence}) - stack is {string.Join(", ", _overriddenPrecedences)}");
 			}
@@ -341,7 +341,7 @@ namespace Windows.UI.Xaml
 					throw new InvalidOperationException($"Error while unstacking precedence. Should be {precedence}, got {popped}.");
 				}
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					var newPrecedence = _overriddenPrecedences.Count == 0 ? "<none>" : _overriddenPrecedences.Peek().ToString();
 					this.Log().Debug($"OverrideLocalPrecedence({precedence}).Dispose() ==> new overriden precedence is {newPrecedence})");
@@ -411,7 +411,7 @@ namespace Windows.UI.Xaml
 			SetValue(property, DependencyProperty.UnsetValue, precedence);
 		}
 
-		internal void SetValue(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails = null, bool isThemeBinding = false)
+		internal void SetValue(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails = null, bool isPersistentResourceBinding = false)
 		{
 			if (_trace.IsEnabled)
 			{
@@ -420,23 +420,23 @@ namespace Windows.UI.Xaml
 				/// can be significantly slower than other methods as a result on WebAssembly.
 				/// See https://github.com/dotnet/runtime/issues/56309
 				/// </remarks>
-				void SetValueWithTrace(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails, bool isThemeBinding)
+				void SetValueWithTrace(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails, bool isPersistentResourceBinding)
 				{
 					using (WritePropertyEventTrace(TraceProvider.SetValueStart, TraceProvider.SetValueStop, property, precedence))
 					{
-						InnerSetValue(property, value, precedence, propertyDetails, isThemeBinding);
+						InnerSetValue(property, value, precedence, propertyDetails, isPersistentResourceBinding);
 					}
 				}
 
-				SetValueWithTrace(property, value, precedence, propertyDetails, isThemeBinding);
+				SetValueWithTrace(property, value, precedence, propertyDetails, isPersistentResourceBinding);
 			}
 			else
 			{
-				InnerSetValue(property, value, precedence, propertyDetails, isThemeBinding);
+				InnerSetValue(property, value, precedence, propertyDetails, isPersistentResourceBinding);
 			}
 		}
 
-		private void InnerSetValue(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails, bool isThemeBinding)
+		private void InnerSetValue(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails, bool isPersistentResourceBinding)
 		{
 			if (precedence == DependencyPropertyValuePrecedences.Coercion)
 			{
@@ -471,7 +471,7 @@ namespace Windows.UI.Xaml
 					// Set even if they are different to make sure the value is now set on the right precedence
 					SetValueInternal(value, precedence, propertyDetails);
 
-					if (!isThemeBinding && !_isSettingThemeBinding)
+					if (!isPersistentResourceBinding && !_isSettingPersistentResourceBinding)
 					{
 						// If a non-theme value is being set, clear any theme binding so it's not overwritten if the theme changes.
 						_resourceBindings?.ClearBinding(property, precedence);
@@ -488,7 +488,7 @@ namespace Windows.UI.Xaml
 
 					TryUpdateInheritedAttachedProperty(property, propertyDetails);
 
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						var name = (_originalObjectRef.Target as IFrameworkElement)?.Name ?? _originalObjectRef.Target?.GetType().Name;
 						var hashCode = _originalObjectRef.Target?.GetHashCode();
@@ -1076,11 +1076,16 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Do a tree walk to find the correct values of StaticResource and ThemeResource assignations.
 		/// </summary>
-		internal void UpdateResourceBindings(bool isThemeChangedUpdate, ResourceDictionary? containingDictionary = null)
+		internal void UpdateResourceBindings(ResourceUpdateReason updateReason, ResourceDictionary? containingDictionary = null)
 		{
+			if (updateReason == ResourceUpdateReason.None)
+			{
+				throw new ArgumentException();
+			}
+
 			if (_resourceBindings == null || !_resourceBindings.HasBindings)
 			{
-				UpdateChildResourceBindings(isThemeChangedUpdate);
+				UpdateChildResourceBindings(updateReason);
 				return;
 			}
 
@@ -1090,10 +1095,10 @@ namespace Windows.UI.Xaml
 
 			foreach (var (property, binding) in bindings)
 			{
-				InnerUpdateResourceBindings(isThemeChangedUpdate, dictionariesInScope, property, binding);
+				InnerUpdateResourceBindings(updateReason, dictionariesInScope, property, binding);
 			}
 
-			UpdateChildResourceBindings(isThemeChangedUpdate);
+			UpdateChildResourceBindings(updateReason);
 		}
 
 		/// <remarks>
@@ -1102,15 +1107,15 @@ namespace Windows.UI.Xaml
 		/// See https://github.com/dotnet/runtime/issues/56309
 		/// </remarks>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void InnerUpdateResourceBindings(bool isThemeChangedUpdate, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
+		private void InnerUpdateResourceBindings(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
 		{
 			try
 			{
-				InnerUpdateResourceBindingsUnsafe(isThemeChangedUpdate, dictionariesInScope, property, binding);
+				InnerUpdateResourceBindingsUnsafe(updateReason, dictionariesInScope, property, binding);
 			}
 			catch (Exception e)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 				{
 					this.Log().Warn($"Failed to update binding, target may have been disposed", e);
 				}
@@ -1123,7 +1128,7 @@ namespace Windows.UI.Xaml
 		/// See https://github.com/dotnet/runtime/issues/56309
 		/// </remarks>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void InnerUpdateResourceBindingsUnsafe(bool isThemeChangedUpdate, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
+		private void InnerUpdateResourceBindingsUnsafe(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
 		{
 			var wasSet = false;
 			foreach (var dict in dictionariesInScope)
@@ -1136,7 +1141,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			if (!wasSet && isThemeChangedUpdate && binding.IsThemeResourceExtension)
+			if (!wasSet && (binding.UpdateReason & updateReason) != ResourceUpdateReason.None)
 			{
 				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value))
 				{
@@ -1154,36 +1159,37 @@ namespace Windows.UI.Xaml
 				try
 #endif
 				{
-					_isSettingThemeBinding = binding.IsThemeResourceExtension;
+					_isSettingPersistentResourceBinding = binding.IsPersistent;
 					binding.SetterBindingPath.Value = convertedValue;
 				}
 #if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				finally
 #endif
 				{
-					_isSettingThemeBinding = false;
+					_isSettingPersistentResourceBinding = false;
 				}
 			}
 			else
 			{
-				SetValue(property, convertedValue, binding.Precedence, isThemeBinding: binding.IsThemeResourceExtension);
+				SetValue(property, convertedValue, binding.Precedence, isPersistentResourceBinding: binding.IsPersistent);
 			}
 		}
 
 		private bool _isUpdatingChildResourceBindings;
 
-		private void UpdateChildResourceBindings(bool isThemeChangedUpdate)
+		private void UpdateChildResourceBindings(ResourceUpdateReason updateReason)
 		{
 			if (_isUpdatingChildResourceBindings)
 			{
 				// Some DPs might be creating reference cycles, so we make sure not to enter an infinite loop.
 				return;
 			}
-			if (isThemeChangedUpdate)
+
+			if ((updateReason & ResourceUpdateReason.PropagatesThroughTree) != ResourceUpdateReason.None)
 			{
 				try
 				{
-					InnerUpdateChildResourceBindings(isThemeChangedUpdate);
+					InnerUpdateChildResourceBindings(updateReason);
 				}
 				finally
 				{
@@ -1204,14 +1210,14 @@ namespace Windows.UI.Xaml
 		/// See https://github.com/dotnet/runtime/issues/56309
 		/// </remarks>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void InnerUpdateChildResourceBindings(bool isThemeChangedUpdate)
+		private void InnerUpdateChildResourceBindings(ResourceUpdateReason updateReason)
 		{
 			_isUpdatingChildResourceBindings = true;
 			foreach (var child in GetChildrenDependencyObjects())
 			{
 				if (!(child is IFrameworkElement) && child is IDependencyObjectStoreProvider storeProvider)
 				{
-					storeProvider.Store.UpdateResourceBindings(isThemeChangedUpdate);
+					storeProvider.Store.UpdateResourceBindings(updateReason);
 				}
 			}
 		}
@@ -1602,7 +1608,7 @@ namespace Windows.UI.Xaml
 
 				InvokeCallbacks(actualInstanceAlias, propertyDetails.Property, propertyDetails, unpropagatedPrevious, previousPrecedence, newValue, newPrecedence);
 			}
-			else if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			else if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug(
 					$"Skipped raising PropertyChangedCallbacks because value for property {propertyDetails.Property.OwnerType}.{propertyDetails.Property.Name} remained identical."
@@ -1830,7 +1836,7 @@ namespace Windows.UI.Xaml
 					_themeLastUsed = null;
 					if (Application.Current?.RequestedThemeForResources is { } currentTheme && !previousTheme.Equals(currentTheme))
 					{
-						Application.PropagateThemeChanged(frameworkElement);
+						Application.PropagateResourcesChanged(frameworkElement, ResourceUpdateReason.ThemeResource);
 					}
 				}
 			}

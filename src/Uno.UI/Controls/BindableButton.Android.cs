@@ -13,7 +13,7 @@ using Android.Widget;
 using System.Windows.Input;
 using Uno.Disposables;
 using Java.Lang;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.Extensions;
 using Windows.UI.Xaml;

@@ -20,7 +20,7 @@
 		<PackageReference Include="Microsoft.WindowsAppSDK.WinUI" Version="1.0.0-experimental1" />
 		<PackageReference Include="Microsoft.WindowsAppSDK.InteractiveExperiences" Version="1.0.0-experimental1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-		<PackageReference Include="Uno.Core" Version="2.4.0" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
 	</ItemGroup>
 
 	<ItemGroup>

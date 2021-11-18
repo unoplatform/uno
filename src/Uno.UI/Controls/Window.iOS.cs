@@ -8,7 +8,7 @@ using Uno.Collections;
 using Uno.Diagnostics.Eventing;
 using Uno.Disposables;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Controls;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;

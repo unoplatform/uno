@@ -4,7 +4,7 @@ using Uno.Disposables;
 using System.Text;
 using CoreGraphics;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Controls.Primitives;
 using UIKit;

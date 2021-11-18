@@ -1,6 +1,6 @@
 ﻿using Android.Views;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Controls;
 using System;
@@ -194,7 +194,7 @@ namespace Windows.UI.Xaml
 
 				var measuredSizelogical = _layouter.Measure(availableSize);
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat(
 						"[{0}/{1}] OnMeasure1({2}, {3}) (parent: {4}/{5})",
@@ -260,7 +260,7 @@ namespace Windows.UI.Xaml
 					LayoutSlotWithMarginsAndAlignments = finalRect;
 				}
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat(
 						"[{0}/{1}] OnLayoutCore({2}, {3}, {4}, {5}) (parent: {5},{6})",

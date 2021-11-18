@@ -26,7 +26,7 @@ namespace UITests.Windows_ApplicationModel.Contacts
 			Model?.Load();
 		}
 
-		public PickContactViewModel Model { get; private set; }
+		internal PickContactViewModel Model { get; private set; }
 
 		private void PickContact_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{
@@ -34,7 +34,7 @@ namespace UITests.Windows_ApplicationModel.Contacts
 		}
 	}
 
-	public class PickContactViewModel : ViewModelBase
+	internal class PickContactViewModel : ViewModelBase
 	{
 		private string _status = "";
 		private Contact[] _pickedContacts = Array.Empty<Contact>();

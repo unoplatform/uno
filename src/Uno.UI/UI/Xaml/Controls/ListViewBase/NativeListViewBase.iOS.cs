@@ -13,8 +13,8 @@ using Uno.UI.Controls;
 using System.ComponentModel;
 using Uno.Extensions.Specialized;
 using Windows.UI.Xaml.Controls.Primitives;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 using Uno.UI;
 using Windows.UI.Xaml.Data;
 using Uno.UI.Extensions;

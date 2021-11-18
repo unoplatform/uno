@@ -29,12 +29,12 @@ namespace UITests.Windows_Storage
 			ViewModel = args.NewValue as StorageFolderOperationsTestsViewModel;
 		}
 
-		public StorageFolderOperationsTestsViewModel ViewModel { get; private set; }
+		internal StorageFolderOperationsTestsViewModel ViewModel { get; private set; }
 
 		public StorageItemListTemplateSelector StorageItemListTemplateSelector { get; }
 	}
 
-	public class StorageFolderOperationsTestsViewModel : ViewModelBase
+	internal class StorageFolderOperationsTestsViewModel : ViewModelBase
 	{
 		public StorageFolder _pickedFolder = null;
 		private ObservableCollection<IStorageItem> _storageItemList;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
@@ -11,7 +11,7 @@ namespace Windows.UI.Xaml.Media.Animation
 	{
 		internal static void SetValueBypassPropagation(this Timeline timeline, object value)
 		{
-			if (timeline.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (timeline.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				timeline.Log().DebugFormat("Setting [{0}] to [{1} / {2}] and bypassing native propagation", value, Storyboard.GetTargetName(timeline), Storyboard.GetTargetProperty(timeline));
 			}

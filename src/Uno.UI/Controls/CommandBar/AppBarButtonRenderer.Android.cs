@@ -11,7 +11,7 @@ using Windows.Foundation;
 using Uno.Disposables;
 using Android.Graphics.Drawables;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Controls
 {
@@ -99,7 +99,7 @@ namespace Uno.UI.Controls
 					case PathIcon path: // not supported
 					case SymbolIcon symbol: // not supported
 					default:
-						this.Log().WarnIfEnabled(() => $"{GetType().Name ?? "FontIcon, PathIcon and SymbolIcon"} are not supported. Use BitmapIcon instead with UriSource.");
+						this.Log().Warn($"{GetType().Name ?? "FontIcon, PathIcon and SymbolIcon"} are not supported. Use BitmapIcon instead with UriSource.");
 						native.SetIcon(null);
 						break;
 				}

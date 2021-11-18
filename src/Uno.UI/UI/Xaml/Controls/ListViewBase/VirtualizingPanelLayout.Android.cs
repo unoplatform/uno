@@ -8,7 +8,7 @@ using AndroidX.RecyclerView.Widget;
 using Android.Views;
 using Uno.Extensions;
 using Uno.UI;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Controls.Primitives;
 using Android.Graphics;
@@ -1590,7 +1590,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			if (groupToCreate / increment > targetGroupIndex / increment)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 				{
 					this.Log().Error($"Invalid state when creating new groups: leadingGroup.GroupIndex={leadingGroup?.GroupIndex}, targetGroupIndex={targetGroupIndex}, fillDirection={fillDirection}");
 				}

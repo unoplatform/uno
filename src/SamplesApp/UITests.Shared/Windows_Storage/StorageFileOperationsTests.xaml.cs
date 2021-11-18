@@ -25,10 +25,10 @@ namespace UITests.Windows_Storage
 			ViewModel = args.NewValue as StorageFileOperationsTestsViewModel;
 		}
 
-		public StorageFileOperationsTestsViewModel ViewModel { get; private set; }
+		internal StorageFileOperationsTestsViewModel ViewModel { get; private set; }
 	}
 
-	public class StorageFileOperationsTestsViewModel : ViewModelBase
+	internal class StorageFileOperationsTestsViewModel : ViewModelBase
 	{
 		public StorageFile _pickedFile = null;
 		private string _errorMessage;

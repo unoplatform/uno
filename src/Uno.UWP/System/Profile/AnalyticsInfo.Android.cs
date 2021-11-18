@@ -8,8 +8,9 @@ using System.Diagnostics;
 using Android.Content.Res;
 using Android.Telephony;
 using Android.Util;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 
 namespace Windows.System.Profile
 {

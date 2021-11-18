@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Uno.Disposables;
 using System.Text;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Controls.Primitives;
 using Android.Views;

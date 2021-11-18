@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using UIKit;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Core;
 
 #if NET6_0_OR_GREATER

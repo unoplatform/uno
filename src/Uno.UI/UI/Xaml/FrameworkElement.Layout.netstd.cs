@@ -5,10 +5,10 @@ using System.Globalization;
 using System.Linq;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
-using Microsoft.Extensions.Logging;
+
 using Uno.UI;
 using static System.Math;
 using static Uno.UI.LayoutHelper;
@@ -98,7 +98,7 @@ namespace Windows.UI.Xaml
 
 			var desiredSize = MeasureOverride(frameworkAvailableSize);
 
-			_logDebug?.LogTrace($"{DepthIndentation}{FormatDebugName()}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize} minSize={minSize} maxSize={maxSize} marginSize={marginSize}");
+			_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize} minSize={minSize} maxSize={maxSize} marginSize={marginSize}");
 
 			if (
 				double.IsNaN(desiredSize.Width)

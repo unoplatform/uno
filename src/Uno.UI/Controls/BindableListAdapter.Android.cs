@@ -13,7 +13,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using Uno.Disposables;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Windows.Input;
 using Windows.UI.Xaml.Controls;
 using System.Diagnostics;
@@ -530,7 +530,7 @@ namespace Uno.UI.Controls
 
 				count += CustomViewTypeCount;
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Returning ViewTypeCount: {count}");
 				}

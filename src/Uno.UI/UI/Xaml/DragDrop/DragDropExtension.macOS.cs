@@ -8,7 +8,7 @@ using AppKit;
 using CoreGraphics;
 using Foundation;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Input;

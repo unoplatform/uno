@@ -4,7 +4,7 @@ using System.Text;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Markup;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
 using Uno;

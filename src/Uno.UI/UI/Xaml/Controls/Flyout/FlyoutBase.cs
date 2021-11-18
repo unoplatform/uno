@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using Microsoft.Extensions.Logging;
+
 using Uno;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
@@ -62,7 +63,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			if (_popup == null)
 			{
-				ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "FlyoutLightDismissOverlayBackground", isThemeResourceExtension: true);
+				ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "FlyoutLightDismissOverlayBackground", isThemeResourceExtension: true, isHotReloadSupported: true);
 
 				var child = CreatePresenter();
 				_popup = new Popup()
