@@ -7512,6 +7512,8 @@
 		  <Member fullName="System.nfloat Uno.UI.Extensions.FontWeightExtensions.ToNSFontWeight(Windows.UI.Text.FontWeight fontWeight)" reason=".NET 6 RTM breaking change" />
 		  <!-- END .NET 6 BREAKING CHANGE -->
 
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TabViewItem.set_TabViewTemplateSettings(Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings value)" reason="Setter not public in WinUI" />
+		  
 		  <!-- BEGIN Uno.Core dependency Removal -->
 		  <Member fullName="Uno.Threading.FastTaskCompletionSource`1&lt;System.Object&gt; Windows.UI.Core.UIAsyncOperation.get_CompletionSource()" reason="Uno.Core dependency removal" />
 		  <Member fullName="Microsoft.Extensions.Logging.LogLevel Windows.Foundation.Metadata.ApiInformation.get_NotImplementedLogLevel()" reason="Uno.Core dependency removal" />
