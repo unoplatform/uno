@@ -31,30 +31,54 @@ namespace Uno.UI.Foldable
 		IWindowMetricsCalculator windowMetricsCalculator;
 		float density = 1f;
 
-		// HACK: expose properties for FoldableApplicationViewSpanningRects
-		public bool HasFoldFeature { get; set; }
-		public bool IsSeparating { get; set; }
-		public bool IsFoldVertical { get; set; }
+		/// <summary>Rectangle that describes the coordinates of the hinge or fold on a dual-screen device</summary>	
 		public Android.Graphics.Rect FoldBounds { get; set; }
-		[Obsolete("Can't surface this in a platform agnostic way, not sure we need it when we have FoldOrientation via Window Manager")]
+		/// <summary>Deprecated - hinges and folds can be across the vertical or horizontal axis, so orientation is not relevant for determining spanning rectangles</summary>
+		[Obsolete("Can't surface this in a device agnostic way, not sure we need it when we have FoldOrientation via Window Manager. Has not been deleted since it was part of the original public API")]
 		public SurfaceOrientation Orientation = SurfaceOrientation.Rotation0;
-		public FoldingFeatureState FoldState;
-		public FoldingFeatureOcclusionType FoldOcclusionType;
-		public FoldingFeatureOrientation FoldOrientation;
 
-		private EventHandler<NativeFold> _layoutChanged;
-		// ENDHACK
-		public event EventHandler<NativeFold> LayoutChanged
+		#region Future public properties to expand dual-screen functionality - keep private until needed
+		private bool HasFoldFeature { get; set; }
+		private bool IsSeparating { get; set; }
+		private bool IsFoldVertical { get; set; }
+		private FoldingFeatureState FoldState;
+		private FoldingFeatureOcclusionType FoldOcclusionType;
+		private FoldingFeatureOrientation FoldOrientation;
+		private bool IsOccluding
 		{
-			add
+			get
 			{
-				_layoutChanged += value;
-			}
-			remove
-			{
-				_layoutChanged -= value;
+				return FoldOcclusionType == FoldingFeatureOcclusionType.Full;
 			}
 		}
+		private bool IsFlat
+		{
+			get
+			{
+				return FoldState == FoldingFeatureState.Flat;
+			}
+		}
+		private bool IsVertical
+		{
+			get
+			{
+				return FoldOrientation == FoldingFeatureOrientation.Vertical;
+			}
+		}
+		//private EventHandler<NativeFold> _layoutChanged;
+		//// ENDHACK
+		//public event EventHandler<NativeFold> LayoutChanged
+		//{
+		//	add
+		//	{
+		//		_layoutChanged += value;
+		//	}
+		//	remove
+		//	{
+		//		_layoutChanged -= value;
+		//	}
+		//}
+		#endregion
 
 		#region Used by WindowInfoRepository callback
 		IExecutor runOnUiThreadExecutor()
@@ -70,6 +94,9 @@ namespace Uno.UI.Foldable
 			}
 		}
 
+		/// <summary>
+		/// Not for public use - this method is for the IConsumer interface implementation and should not be called by application code
+		/// </summary>
 		public void Accept(Java.Lang.Object newLayoutInfo)  // Object will be WindowLayoutInfo
 		{
 			Android.Util.Log.Info(TAG, "FoldableApplicationViewSpanningRects.Accept");
@@ -150,7 +177,8 @@ namespace Uno.UI.Foldable
 				Android.Util.Log.Info(TAG, "App is not spanned, on a single screen");
 			}
 
-			_layoutChanged?.Invoke(this, lastFoldingFeature);
+			// FUTURE USE
+			//_layoutChanged?.Invoke(this, lastFoldingFeature);
 		}
 		#endregion
 	}

@@ -19,10 +19,10 @@ namespace Uno.UI.Foldable
     /// <remarks>
     /// Relies on the MainActivity implementing Jetpack Window Manager layout change listener,
     /// and exposing the properties needed to make UI change when required.
-    /// HACK: need to implement an event for layout changes, so we can detect folding state
+    /// FUTURE: implement an event for layout changes, so we can respond to folding state changes in app code too
     /// </remarks>
 	[Preserve]
-    public partial class FoldableApplicationViewSpanningRects : IApplicationViewSpanningRects, INativeDualScreenProvider, INativeFoldableProvider
+    public partial class FoldableApplicationViewSpanningRects : IApplicationViewSpanningRects, INativeDualScreenProvider
 	{
 		private (SurfaceOrientation orientation, List<Rect> result) _previousMode = EmptyMode;
 
@@ -57,7 +57,6 @@ namespace Uno.UI.Foldable
 			Android.Util.Log.Info(TAG, $"FoldableApplicationViewSpanningRects.GetSpanningRects HasFoldFeature={HasFoldFeature}");
 			if (HasFoldFeature) // IsSeparating or just "is fold present?" - changing this will affect the behavior of TwoPaneView on foldable devices
 			{
-// HACK: needed?                    _previousMode.orientation = currentActivity.Orientation;
                 _previousMode.result = null;
 
                 var wuxWindowBounds = ApplicationView.GetForCurrentView().VisibleBounds.LogicalToPhysicalPixels();
@@ -209,6 +208,9 @@ namespace Uno.UI.Foldable
 			}
 		}
 
+		/// <summary>
+		/// Whether the app is spanned across a hinge or fold (if the fold is not occluding, will not be detected as spanned)
+		/// </summary>
 		public bool? IsSpanned
 		{
 			get
@@ -217,34 +219,15 @@ namespace Uno.UI.Foldable
 			}
 		}
 
+		/// <summary>
+		/// Legacy property - previously used to detect Surface Duo (only) via hardcoding. Currently synonymous with IsSpanned.
+		/// </summary>
 		[Obsolete("Prefer IsSpanned, since it provides a better experience on non-occluding folding features")]
 		public bool IsDualScreen
 		{
 			get
 			{
 				return IsSeparating;
-			}
-		}
-
-        public bool IsOccluding
-        {
-			get {
-				return FoldOcclusionType == FoldingFeatureOcclusionType.Full;
-			}
-		}
-
-        public bool IsFlat {
-			get
-			{
-				return FoldState == FoldingFeatureState.Flat;
-			}
-		}
-
-		public bool IsVertical
-		{
-			get
-			{
-				return FoldOrientation == FoldingFeatureOrientation.Vertical;
 			}
 		}
 
