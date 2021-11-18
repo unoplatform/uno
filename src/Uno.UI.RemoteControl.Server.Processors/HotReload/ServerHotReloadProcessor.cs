@@ -109,10 +109,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					.Buffer(TimeSpan.FromMilliseconds(250))
 					.Subscribe(filePaths =>
 					{
-#if NET6_0_OR_GREATER
-						ProcessMetadataChanges(filePaths);
-#endif
-
 						foreach (var file in filePaths.Distinct().Where(f => Path.GetExtension(f).Equals(".xaml", StringComparison.OrdinalIgnoreCase)))
 						{
 							OnXamlFileChanged(file);
@@ -150,6 +146,17 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					watcher.Dispose();
 				}
 			}
+
+#if NET6_0_OR_GREATER
+			_solutionWatcherEventsDisposable?.Dispose();
+			if (_solutionWatchers != null)
+			{
+				foreach (var watcher in _solutionWatchers)
+				{
+					watcher.Dispose();
+				}
+			}
+#endif
 		}
 	}
 }

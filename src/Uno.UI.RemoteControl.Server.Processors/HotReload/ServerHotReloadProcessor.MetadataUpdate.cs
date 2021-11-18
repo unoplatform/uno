@@ -23,6 +23,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 {
 	partial class ServerHotReloadProcessor : IServerProcessor, IDisposable
 	{
+		private FileSystemWatcher[] _solutionWatchers;
+		private CompositeDisposable _solutionWatcherEventsDisposable;
+
 		private Task<(Solution, WatchHotReloadService)>? _initializeTask;
 		private Solution _currentSolution;
 		private WatchHotReloadService _hotReloadService;
@@ -33,6 +36,8 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private void InitializeMetadataUpdater(ConfigureServer configureServer)
 		{
+			Debugger.Launch();
+
 			_ = bool.TryParse(_remoteControlServer.GetServerConfiguration("metadata-updates"), out _useRoslynHotReload);
 
 			if (_useRoslynHotReload)
@@ -43,11 +48,78 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private void InitializeInner(ConfigureServer configureServer) => _initializeTask = Task.Run(() =>
-							CompilationWorkspaceProvider.CreateWorkspaceAsync(configureServer.ProjectPath, _reporter, configureServer.MetadataUpdateCapabilities, CancellationToken.None),
-							CancellationToken.None);
+		private void InitializeInner(ConfigureServer configureServer) => _initializeTask = Task.Run(
+			async () =>
+			{
+				var result = await CompilationWorkspaceProvider.CreateWorkspaceAsync(configureServer.ProjectPath, _reporter, configureServer.MetadataUpdateCapabilities, CancellationToken.None);
 
-		private void ProcessMetadataChanges(IList<string> filePaths)
+				ObserveSolutionPaths(result.Item1);
+
+				return result;
+			},
+			CancellationToken.None);
+
+		private void ObserveSolutionPaths(Solution solution)
+		{
+			_solutionWatchers = solution.Projects
+				.SelectMany(p => p.Documents.Select(d => Path.GetDirectoryName(d.FilePath)))
+				.Distinct()
+				.Select(p => new FileSystemWatcher
+				{
+					Path = p,
+					Filter = "*.*",
+					NotifyFilter = NotifyFilters.LastWrite |
+						NotifyFilters.Attributes |
+						NotifyFilters.Size |
+						NotifyFilters.CreationTime |
+						NotifyFilters.FileName,
+					EnableRaisingEvents = true,
+					IncludeSubdirectories = false
+				})
+				.ToArray();
+
+			_solutionWatcherEventsDisposable = new CompositeDisposable();
+
+			foreach (var watcher in _solutionWatchers)
+			{
+				// Create an observable instead of using the FromEventPattern which
+				// does not register to events properly.
+				// Renames are required for the WriteTemporary->DeleteOriginal->RenameToOriginal that
+				// Visual Studio uses to save files.
+
+				var changes = Observable.Create<string>(o =>
+				{
+
+					void changed(object s, FileSystemEventArgs args) => o.OnNext(args.FullPath);
+					void renamed(object s, RenamedEventArgs args) => o.OnNext(args.FullPath);
+
+					watcher.Changed += changed;
+					watcher.Created += changed;
+					watcher.Renamed += renamed;
+
+					return Disposable.Create(() =>
+					{
+						watcher.Changed -= changed;
+						watcher.Created -= changed;
+						watcher.Renamed -= renamed;
+					});
+				});
+
+				var disposable = changes
+					.Buffer(TimeSpan.FromMilliseconds(250))
+					.Subscribe(filePaths =>
+					{
+#if NET6_0_OR_GREATER
+						ProcessMetadataChanges(filePaths.Distinct());
+#endif
+					}, e => Console.WriteLine($"Error {e}"));
+
+				_solutionWatcherEventsDisposable.Add(disposable);
+
+			}
+		}
+
+		private void ProcessMetadataChanges(IEnumerable<string> filePaths)
 		{
 			if (_useRoslynHotReload)
 			{
