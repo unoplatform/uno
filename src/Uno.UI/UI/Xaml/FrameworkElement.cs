@@ -867,7 +867,7 @@ namespace Windows.UI.Xaml
 				// Schedule all the phases at once
 				for (int i = startPhaseIndex; i < presenterRoot.DataTemplateRenderPhases.Length; i++)
 				{
-					UIAsyncOperation action = null;
+					Uno.UI.Dispatching.UIAsyncOperation action = null;
 					var phaseCapture = i;
 
 					async void ApplyPhase()
@@ -886,9 +886,9 @@ namespace Windows.UI.Xaml
 
 #if __ANDROID__
 					// Schedule on the animation dispatcher so the callback appears faster.
-					action = presenterRoot.Dispatcher.RunAnimation(ApplyPhase);
+					action = (Uno.UI.Dispatching.UIAsyncOperation)presenterRoot.Dispatcher.RunAnimation(ApplyPhase);
 #elif __IOS__ || __MACOS__
-					action = presenterRoot.Dispatcher.RunAsync(CoreDispatcherPriority.High, ApplyPhase);
+					action = (Uno.UI.Dispatching.UIAsyncOperation)presenterRoot.Dispatcher.RunAsync(CoreDispatcherPriority.High, ApplyPhase);
 #endif
 
 					registerForRecycled(

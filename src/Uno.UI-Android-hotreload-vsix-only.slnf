@@ -19,6 +19,7 @@
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.csproj",
       "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.csproj",
       "Uno.UI.FluentTheme.v2\\Uno.UI.FluentTheme.v2.csproj",
+      "Uno.UI.Composition\\Uno.UI.Composition.csproj",
       "T4Generator\\T4Generator.csproj",
       "Uno.Foundation\\Uno.Foundation.csproj",
       "Uno.UI.RemoteControl.Host\\Uno.UI.RemoteControl.Host.csproj",

@@ -14,9 +14,9 @@ using System.Collections.Immutable;
 using Uno;
 using System.Diagnostics;
 
-namespace Windows.UI.Core
+namespace Uno.UI.Dispatching
 {
-	public sealed partial class CoreDispatcher
+	internal sealed partial class CoreDispatcher
 	{
 		private Handler _handler;
 		private Choreographer _choreographer;

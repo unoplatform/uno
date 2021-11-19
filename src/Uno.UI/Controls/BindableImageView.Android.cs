@@ -284,9 +284,9 @@ namespace Uno.UI.Controls
 			}
 			else
 			{
-				_download.Disposable = CoreDispatcher.Main
+				_download.Disposable = Uno.UI.Dispatching.CoreDispatcher.Main
 					.RunAsync(
-						CoreDispatcherPriority.Normal, 
+						Uno.UI.Dispatching.CoreDispatcherPriority.Normal, 
 						async (ct) =>
 						{
 							var localUri = UriSource;

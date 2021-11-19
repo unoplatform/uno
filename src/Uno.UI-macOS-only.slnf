@@ -19,6 +19,8 @@
       "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.csproj",
       "Uno.UI.FluentTheme.v2\\Uno.UI.FluentTheme.v2.csproj",
       "Uno.UI.Maps\\Uno.UI.Maps.csproj",
+      "Uno.UI.Composition\\Uno.UI.Composition.csproj",
+      "Uno.UI.Dispatching\\Uno.UI.Dispatching.csproj",
       "Uno.UI.RemoteControl.Host\\Uno.UI.RemoteControl.Host.csproj",
       "Uno.UI.RemoteControl.VS\\Uno.UI.RemoteControl.VS.csproj",
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.csproj",

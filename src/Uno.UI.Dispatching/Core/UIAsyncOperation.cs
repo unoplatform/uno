@@ -9,9 +9,9 @@ using System.Runtime.CompilerServices;
 using Uno.Threading;
 using Uno;
 
-namespace Windows.UI.Core
+namespace Uno.UI.Dispatching
 {
-	public class UIAsyncOperation : IDisposable, IAsyncAction
+	internal class UIAsyncOperation : IDisposable, IAsyncAction
 	{
 		private FastTaskCompletionSource<object> _tcs;
 		private CancellationTokenSource _cts;

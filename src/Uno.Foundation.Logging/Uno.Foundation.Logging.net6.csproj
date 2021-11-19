@@ -3,8 +3,6 @@
 		<TargetFrameworks>net6.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../targetframework-override.props"/>
-
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>

@@ -1,9 +1,10 @@
-﻿// MUX Reference: TabViewItem.cpp, commit 542e6f9
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference: TabViewItem.cpp, commit 27052f7
 
 using System.Numerics;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.UI.Helpers.WinUI;
-using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -23,23 +24,16 @@ using Windows.UI.Input;
 
 namespace Microsoft.UI.Xaml.Controls
 {
+	/// <summary>
+	/// Represents a single tab within a TabView.
+	/// </summary>
 	public partial class TabViewItem : ListViewItem
 	{
 		private const string c_overlayCornerRadiusKey = "OverlayCornerRadius";
-		private const string SR_TabViewCloseButtonName = "TabViewCloseButtonName";
 
-		private bool m_firstTimeSettingToolTip = true;
-		private bool m_hasPointerCapture = false;
-		private bool m_isMiddlePointerButtonPressed = false;
-		private bool m_isDragging = false;
-		private bool m_isPointerOver = false;
-		private TabViewCloseButtonOverlayMode m_closeButtonOverlayMode = TabViewCloseButtonOverlayMode.Auto;
-		private TabViewWidthMode m_tabViewWidthMode = TabViewWidthMode.Equal;
-		private Button m_closeButton;
-		private ToolTip m_toolTip;
-		private object m_shadow;
-		private TabView m_parentTabView;
-
+		/// <summary>
+		/// Initializes a new instance of the TabViewItem class.
+		/// </summary>
 		public TabViewItem()
 		{
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_TabViewItem);
@@ -51,11 +45,14 @@ namespace Microsoft.UI.Xaml.Controls
 			Loaded += OnLoaded;
 
 			RegisterPropertyChangedCallback(SelectorItem.IsSelectedProperty, OnIsSelectedPropertyChanged);
+			RegisterPropertyChangedCallback(Control.ForegroundProperty, OnForegroundPropertyChanged);
 		}
 
 		protected override void OnApplyTemplate()
 		{
 			var popupRadius = (CornerRadius)ResourceAccessor.ResourceLookup(this, c_overlayCornerRadiusKey);
+
+			m_headerContentPresenter = GetTemplateChild<ContentPresenter>("ContentPresenter");
 
 			var tabView = SharedHelpers.GetAncestorOfType<TabView>(VisualTreeHelper.GetParent(this));
 			var internalTabView = tabView ?? null;
@@ -68,7 +65,7 @@ namespace Microsoft.UI.Xaml.Controls
 					// Do localization for the close button automation name
 					if (string.IsNullOrEmpty(AutomationProperties.GetName(closeButton)))
 					{
-						var closeButtonName = ResourceAccessor.GetLocalizedStringResource(SR_TabViewCloseButtonName);
+						var closeButtonName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_TabViewCloseButtonName);
 						AutomationProperties.SetName(closeButton, closeButtonName);
 					}
 
@@ -86,6 +83,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			m_closeButton = GetCloseButton(internalTabView);
 
+			OnHeaderChanged();
 			OnIconSourceChanged();
 
 			if (tabView != null)
@@ -97,7 +95,7 @@ namespace Microsoft.UI.Xaml.Controls
 						var shadow = new ThemeShadow();
 						if (!SharedHelpers.Is21H1OrHigher())
 						{
-							if (internalTabView.GetShadowReceiver() is UIElement shadowReceiver)
+							if (internalTabView.GetShadowReceiver() is { } shadowReceiver)
 							{
 								shadow.Receivers.Add(shadowReceiver);
 							}
@@ -119,6 +117,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			UpdateCloseButton();
+			UpdateForeground();
 			UpdateWidthModeVisualState();
 		}
 
@@ -154,6 +153,25 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateWidthModeVisualState();
 
 			UpdateCloseButton();
+			UpdateForeground();
+		}
+
+		private void OnForegroundPropertyChanged(DependencyObject sender, DependencyProperty property)
+		{
+			UpdateForeground();
+		}
+
+		private void UpdateForeground()
+		{
+			// We only need to set the foreground state when the TabViewItem is in rest state and not selected.
+			if (!IsSelected && !m_isPointerOver)
+			{
+				// If Foreground is set, then change icon and header foreground to match.
+				VisualStateManager.GoToState(
+					this,
+					ReadLocalValue(ForegroundProperty) == DependencyProperty.UnsetValue ? "ForegroundNotSet" : "ForegroundSet",
+					false /*useTransitions*/);
+			}
 		}
 
 		private void UpdateShadow()
@@ -183,6 +201,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			m_isDragging = false;
 			UpdateShadow();
+			UpdateForeground();
 		}
 
 		protected override AutomationPeer OnCreateAutomationPeer()
@@ -288,8 +307,19 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateCloseButton();
 		}
 
+
 		private void OnHeaderPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
+			OnHeaderChanged();
+		}
+
+		private void OnHeaderChanged()
+		{
+			if (m_headerContentPresenter is { } headerContentPresenter)
+			{
+				headerContentPresenter.Content = Header;
+			}
+
 			if (m_firstTimeSettingToolTip)
 			{
 				m_firstTimeSettingToolTip = false;
@@ -314,15 +344,17 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// Update tooltip text to new header text
 				var headerContent = Header;
-				var potentialString = headerContent as IPropertyValue;
 
-				if (potentialString != null && potentialString.Type == PropertyType.String)
+				// Only show tooltip if header is a non-empty string.
+				if (headerContent is string headerString && !string.IsNullOrEmpty(headerString))
 				{
-					toolTip.Content = headerContent;
+					toolTip.Content = headerString;
+					toolTip.IsEnabled = true;
 				}
 				else
 				{
 					toolTip.Content = null;
+					toolTip.IsEnabled = false;
 				}
 			}
 		}
@@ -421,6 +453,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_isMiddlePointerButtonPressed = false;
 
 			UpdateCloseButton();
+			UpdateForeground();
 			RestoreLeftAdjacentTabSeparatorVisibility();
 		}
 

@@ -7,16 +7,16 @@ namespace Windows.UI.WindowManagement
 	#endif
 	public  partial class AppWindowFrame 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.UI.Composition.IVisualElement> DragRegionVisuals
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<IVisualElement> AppWindowFrame.DragRegionVisuals is not implemented in Uno.");
-			}
-		}
-		#endif
+		//#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		//[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		//public  global::System.Collections.Generic.IList<global::Windows.UI.Composition.IVisualElement> DragRegionVisuals
+		//{
+		//	get
+		//	{
+		//		throw new global::System.NotImplementedException("The member IList<IVisualElement> AppWindowFrame.DragRegionVisuals is not implemented in Uno.");
+		//	}
+		//}
+		//#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.WindowManagement.AppWindowFrameStyle GetFrameStyle()

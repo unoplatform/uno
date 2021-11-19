@@ -100,8 +100,8 @@ namespace Windows.UI.Xaml.Media
 				{
 					_opening.Disposable = null;
 
-					_opening.Disposable = CoreDispatcher.Main.RunAsync(
-						CoreDispatcherPriority.Normal,
+					_opening.Disposable = Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
+						Uno.UI.Dispatching.CoreDispatcherPriority.Normal,
 						ct => Open(ct, targetWidth, targetHeight));
 				}
 			}
