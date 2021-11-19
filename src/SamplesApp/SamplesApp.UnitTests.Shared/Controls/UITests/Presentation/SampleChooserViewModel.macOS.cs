@@ -22,10 +22,6 @@ using Uno.Extensions;
 using ObjCRuntime;
 #endif
 
-#if NET6_0_OR_GREATER
-using ObjCRuntime;
-#endif
-
 namespace SampleControl.Presentation
 {
 

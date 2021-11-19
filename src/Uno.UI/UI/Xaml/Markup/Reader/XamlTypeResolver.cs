@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -14,9 +14,13 @@ using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Markup.Reader
 {
-    internal class XamlTypeResolver
-    {
-		private readonly static Assembly _frameworkElementAssembly = typeof(FrameworkElement).Assembly;
+	internal class XamlTypeResolver
+	{
+		private readonly static Assembly[] _lookupAssemblies = new[]{
+			typeof(FrameworkElement).Assembly,
+			typeof(Color).Assembly,
+			typeof(Size).Assembly,
+		};
 
         private readonly Func<string?, Type?> _findType;
         private readonly Func<Type, string, bool> _isAttachedProperty;

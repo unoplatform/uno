@@ -829,7 +829,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		}
 
 		[TestMethod]
-		public void When_Brush_And_StringColor()
+		public void When_Color_Thickness_GridLength_As_String()
 		{
 			var s = GetContent(nameof(When_Color_Thickness_GridLength_As_String));
 			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as ContentControl;

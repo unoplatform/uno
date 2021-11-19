@@ -148,9 +148,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				return stringValue;
 			}
-			else if (isBrush)
+			else if (
+				_genericConvertibles.Contains(type)
+				&& control.Members.Where(m => m.Member.Name == "_UnknownContent").FirstOrDefault()?.Value is string otherContentValue)
 			{
-				return XamlBindingHelper.ConvertValue(typeof(Media.Brush), unknownContentValue);
+				return XamlBindingHelper.ConvertValue(type, otherContentValue);
 			}
 			else
 			{
