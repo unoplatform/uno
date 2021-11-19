@@ -387,6 +387,8 @@ namespace Uno.UI.Runtime.Skia
 					break;
 			}
 
+			properties.IsInRange = true;
+
 			var pointerPoint = new Windows.UI.Input.PointerPoint(
 				frameId: time,
 				timestamp: time,
