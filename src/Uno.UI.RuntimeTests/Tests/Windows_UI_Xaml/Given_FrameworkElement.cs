@@ -160,6 +160,53 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(new Size(10, 10), SUT.MeasureOverrides[1]);
 			});
 
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __ANDROID__
+		[Ignore]
+#endif
+		public async Task When_InvalidateDuringMeasure_Then_GetReMeasured()
+		{
+			var sut = new ObservableLayoutingControl();
+			var count = 0;
+			sut.OnMeasure += (snd, e) =>
+			{
+				if (count++ == 0)
+				{
+					snd.InvalidateMeasure();
+				}
+			};
+
+			TestServices.WindowHelper.WindowContent = sut;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2, count);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __ANDROID__ || __IOS__
+		[Ignore]
+#endif
+		public async Task When_InvalidateDuringArrange_Then_GetReArranged()
+		{
+			var sut = new ObservableLayoutingControl();
+			var count = 0;
+			sut.OnArrange += (snd, e) =>
+			{
+				if (count++ == 0)
+				{
+					snd.InvalidateArrange();
+				}
+			};
+
+			TestServices.WindowHelper.WindowContent = sut;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2, count);
+		}
+
 		[TestMethod]
 		public Task MeasureWithNan() =>
 			RunOnUIThread.ExecuteAsync(() =>
@@ -647,6 +694,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var height = double.IsPositiveInfinity(availableSize.Height) ? 0 : availableSize.Height;
 			var width = height * AspectRatio;
 			return new Size(width, height);
+		}
+	}
+
+	public partial class ObservableLayoutingControl : FrameworkElement
+	{
+		public event TypedEventHandler<ObservableLayoutingControl, Size> OnMeasure;
+
+		public event TypedEventHandler<ObservableLayoutingControl, Size> OnArrange;
+
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			OnMeasure?.Invoke(this, availableSize);
+			return new Size(100, 100);
+		}
+
+		/// <inheritdoc />
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			OnArrange?.Invoke(this, finalSize);
+			return new Size(100, 100);
 		}
 	}
 }

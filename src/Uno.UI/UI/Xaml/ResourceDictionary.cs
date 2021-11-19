@@ -12,6 +12,7 @@ using Windows.UI.Input.Spatial;
 
 using ResourceKey = Windows.UI.Xaml.SpecializedResourceDictionary.ResourceKey;
 using System.Runtime.CompilerServices;
+using Windows.UI.Xaml.Data;
 
 namespace Windows.UI.Xaml
 {
@@ -417,7 +418,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Copy another dictionary's contents, this is used when setting the <see cref="Source"/> property
 		/// </summary>
-		private void CopyFrom(ResourceDictionary source)
+		internal void CopyFrom(ResourceDictionary source)
 		{
 			_values.Clear();
 			_mergedDictionaries.Clear();
@@ -432,10 +433,10 @@ namespace Windows.UI.Xaml
 		}
 
 		public global::System.Collections.Generic.ICollection<object> Keys
-			=> _values.Keys.Select(k => ConvertKey(k.Key)).ToList();
+			=> _values.Keys.Select(k => ConvertKey(k)).ToList();
 
 		private static object ConvertKey(ResourceKey resourceKey)
-			=> resourceKey.IsType ? Type.GetType(resourceKey.Key) : (object)resourceKey.Key;
+			=> resourceKey.TypeKey ?? (object)resourceKey.Key;
 
 		// TODO: this doesn't handle lazy initializers or aliases
 		public global::System.Collections.Generic.ICollection<object> Values => _values.Values;
@@ -487,11 +488,11 @@ namespace Windows.UI.Xaml
 				var aliased = kvp.Value;
 				if (TryResolveAlias(ref aliased))
 				{
-					yield return new KeyValuePair<object, object>(ConvertKey(kvp.Key.Key), aliased);
+					yield return new KeyValuePair<object, object>(ConvertKey(kvp.Key), aliased);
 				}
 				else
 				{
-					yield return new KeyValuePair<object, object>(ConvertKey(kvp.Key.Key), kvp.Value);
+					yield return new KeyValuePair<object, object>(ConvertKey(kvp.Key), kvp.Value);
 				}
 			}
 		}
@@ -541,19 +542,19 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Update theme bindings on DependencyObjects in the dictionary.
 		/// </summary>
-		internal void UpdateThemeBindings()
+		internal void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{
 			foreach (var item in _values.Values)
 			{
 				if (item is IDependencyObjectStoreProvider provider && provider.Store.Parent == null)
 				{
-					provider.Store.UpdateResourceBindings(isThemeChangedUpdate: true, containingDictionary: this);
+					provider.Store.UpdateResourceBindings(updateReason, containingDictionary: this);
 				}
 			}
 
 			foreach (var mergedDict in _mergedDictionaries)
 			{
-				mergedDict.UpdateThemeBindings();
+				mergedDict.UpdateThemeBindings(updateReason);
 			}
 		}
 

@@ -11,11 +11,10 @@ using Uno.Disposables;
 using Windows.UI.Core;
 using Uno.UI.Controls;
 using System.ComponentModel;
-using Windows.UI.Input;
 using Uno.Extensions.Specialized;
 using Windows.UI.Xaml.Controls.Primitives;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 using Uno.UI;
 using Windows.UI.Xaml.Data;
 using Uno.UI.Extensions;
@@ -25,6 +24,13 @@ using Foundation;
 using UIKit;
 using CoreGraphics;
 using CoreAnimation;
+#endif
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.UI.Input;
+using Windows.Devices.Input;
 #endif
 
 namespace Windows.UI.Xaml.Controls
@@ -559,6 +565,7 @@ namespace Windows.UI.Xaml.Controls
 					var cd = new CancellationDisposable();
 					_scrollIntoViewSubscription.Disposable = cd;
 					//Item is present but no items are visible, probably being called on first load. Dispatch so that it actually does something.
+
 					Dispatcher.RunAsync(CoreDispatcherPriority.Normal, DispatchedScrollInner).AsTask(cd.Token);
 				}
 				else
@@ -754,7 +761,7 @@ namespace Windows.UI.Xaml.Controls
 			set { NativeLayout.Padding = value; }
 		}
 
-		#region Touches
+#region Touches
 		private TouchesManager _touchesManager;
 
 		internal TouchesManager TouchesManager => _touchesManager ??= new NativeListViewBaseTouchesManager(this);
@@ -785,6 +792,6 @@ namespace Windows.UI.Xaml.Controls
 			protected override void SetCanCancel(bool canCancel)
 				=> _listView.CanCancelContentTouches = canCancel;
 		}
-		#endregion
+#endregion
 	}
 }

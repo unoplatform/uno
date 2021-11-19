@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -8,14 +8,20 @@ using System.Text;
 using Uno;
 using Uno.Extensions;
 using Uno.Xaml;
+using Windows.UI;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Markup.Reader
 {
-    internal class XamlTypeResolver
-    {
-		private readonly static Assembly _frameworkElementAssembly = typeof(FrameworkElement).Assembly;
+	internal class XamlTypeResolver
+	{
+		private readonly static Assembly[] _lookupAssemblies = new[]{
+			typeof(FrameworkElement).Assembly,
+			typeof(Color).Assembly,
+			typeof(Size).Assembly,
+		};
 
-        private readonly Func<string, Type> _findType;
+		private readonly Func<string, Type> _findType;
         private readonly Func<Type, string, bool> _isAttachedProperty;
         private readonly XamlFileDefinition FileDefinition;
         private readonly Func<string, string, Type> _findPropertyTypeByName;
@@ -330,12 +336,15 @@ namespace Windows.UI.Xaml.Markup.Reader
 					// This lookup is performed in the current assembly as it is the
 					// original behavior, and the Wasm AOT engine does not yet respect this
 					// behavior (because of Wasm missing stack walking feature)
-					var type = _frameworkElementAssembly.GetType(clrNamespace + "." + name);
+					foreach (var assembly in _lookupAssemblies)
+					{
+						var type = assembly.GetType(clrNamespace + "." + name);
 
-                    if (type != null)
-                    {
-                        return type;
-                    }
+						if (type != null)
+						{
+							return type;
+						}
+					}
                 }
             }
 

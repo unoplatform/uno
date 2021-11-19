@@ -111,9 +111,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.Text = "Something";
 		}
 
-#if __SKIA__
-		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
-#endif
 		[TestMethod]
 		public async Task When_Calling_Select_With_Negative_Values()
 		{
@@ -125,9 +122,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.ThrowsException<ArgumentException>(() => textBox.Select(-1, 0));
 		}
 
-#if __SKIA__
-		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
-#endif
 		[TestMethod]
 		public async Task When_Calling_Select_With_In_Range_Values()
 		{
@@ -150,9 +144,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(7, textBox.SelectionLength);
 		}
 
-#if __SKIA__
-		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
-#endif
 		[TestMethod]
 		public async Task When_Calling_Select_With_Out_Of_Range_Length()
 		{
@@ -175,9 +166,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(9, textBox.SelectionLength);
 		}
 
-#if __SKIA__
-		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
-#endif
 		[TestMethod]
 		public async Task When_Calling_Select_With_Out_Of_Range_Start()
 		{

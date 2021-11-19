@@ -55,7 +55,6 @@ namespace Uno.UI.Runtime.Skia
 				_eventLoop.Schedule(() => d());
 			}
 
-			Windows.System.DispatcherQueue.EnqueueNativeOverride = EnqueueNative;
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 

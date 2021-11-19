@@ -6,7 +6,7 @@ using System.Text;
 using System.Drawing;
 using Uno.Extensions;
 using Uno;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Collections;
 
 using View = Android.Views.View;

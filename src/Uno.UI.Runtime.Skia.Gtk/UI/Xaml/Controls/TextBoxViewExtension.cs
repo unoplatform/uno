@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using Gtk;
 using Uno.UI.Xaml.Controls.Extensions;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using GLib;
 using Pango;
@@ -291,8 +292,16 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 
 		public void Select(int start, int length)
 		{
+			var textBox = _owner.TextBox;
+			if (textBox == null)
+			{
+				return;
+			}
+
+			EnsureWidget(textBox);
 			if (_currentInputWidget is Entry entry)
 			{
+				textBox.UpdateFocusState(FocusState.Programmatic);
 				entry.SelectRegion(start_pos: start, end_pos: start + length);
 			}
 			// TODO: Handle TextView..

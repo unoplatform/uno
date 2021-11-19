@@ -7,6 +7,7 @@ parameters:
   JobDisplayName: ''
   UITEST_SNAPSHOTS_ONLY: ''
   UITEST_SNAPSHOTS_GROUP: ''
+  UITEST_ALLOW_RERUN: ''
   nugetPackages: ''
 
 jobs:
@@ -98,6 +99,7 @@ jobs:
       $(build.sourcesdirectory)/build/ios-uitest-run.sh
 
     displayName: Run iOS Simulator Tests (re-run)
+    condition: eq(variables.UITEST_ALLOW_RERUN, 'true')
 
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
@@ -108,7 +110,7 @@ jobs:
       UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/ios-uitest-build/SamplesApp.app"
 
   - task: PublishTestResults@2
-    condition: always()
+    condition: eq(variables.UITEST_ALLOW_RERUN, 'true')
     inputs:
       testRunTitle: 'iOS Test Run ($(Agent.JobName))'
       testResultsFormat: 'NUnit'

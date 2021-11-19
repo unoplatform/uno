@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using Uno.Extensions;
-using Uno.Logging;
 using System.IO;
 using System.Reflection;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
@@ -50,7 +49,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			try
 			{
-				this.Log().InfoFormat("Pre-processing XAML file: {0}", file);
+#if DEBUG
+				Console.WriteLine("Pre-processing XAML file: {0}", file);
+#endif
 
 				var document = ApplyIgnorables(file);
 
@@ -127,7 +128,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				ignorables.Value = newIgnoredFlat;
 
-				this.Log().InfoFormat("Ignorable XAML namespaces: {0} for {1}", ignorables.Value, file);
+#if DEBUG
+				Console.WriteLine("Ignorable XAML namespaces: {0} for {1}", ignorables.Value, file);
+#endif
 
 				// change the namespaces using textreplace, to keep the formatting and have proper
 				// line/position reporting.

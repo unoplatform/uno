@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Diagnostics.Eventing;
 
 namespace Windows.UI.Xaml
@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml
 	public partial class VisualStateManager : DependencyObject
 	{
 		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
-		private static readonly ILogger _log = typeof(VisualStateManager).Log();
+		private static readonly Logger _log = typeof(VisualStateManager).Log();
 
 		public static class TraceProvider
 		{
@@ -98,12 +98,25 @@ namespace Windows.UI.Xaml
 
 		#endregion
 
+		#region CustomVisualStateManager Attached Property
+		public static DependencyProperty CustomVisualStateManagerProperty { get; } = DependencyProperty.RegisterAttached(
+				"CustomVisualStateManager", typeof(VisualStateManager),
+				typeof(VisualStateManager),
+				new FrameworkPropertyMetadata(default(VisualStateManager)));
+
+		public static VisualStateManager GetCustomVisualStateManager(FrameworkElement obj)
+			=> (VisualStateManager)obj.GetValue(CustomVisualStateManagerProperty);
+
+		public static void SetCustomVisualStateManager(FrameworkElement obj, VisualStateManager value)
+			=> obj.SetValue(CustomVisualStateManagerProperty, value);
+		#endregion
+
 		public static bool GoToState(Control control, string stateName, bool useTransitions)
 		{
 			var templateRoot = control.GetTemplateRoot();
 			if (templateRoot is null)
 			{
-				if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					_log.DebugFormat("Failed to set state [{0}], unable to find template root on [{1}]", stateName, control);
 				}
@@ -115,7 +128,7 @@ namespace Windows.UI.Xaml
 			{
 				if (fe.GoToElementState(stateName, useTransitions))
 				{
-					if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						_log.DebugFormat($"GoToElementStateCore({stateName}) override on [{control}]");
 					}
@@ -127,7 +140,7 @@ namespace Windows.UI.Xaml
 			var groups = GetVisualStateGroups(templateRoot);
 			if (groups is null)
 			{
-				if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					_log.DebugFormat("Failed to set state [{0}], no visual state group on [{1}]", stateName, control);
 				}
@@ -139,7 +152,7 @@ namespace Windows.UI.Xaml
 			var (group, state) = GetValidGroupAndState(stateName, groups);
 			if (group is null)
 			{
-				if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					_log.DebugFormat("Failed to set state [{0}], there are no matching groups on [{1}]", stateName, control);
 				}
@@ -147,12 +160,12 @@ namespace Windows.UI.Xaml
 				return false;
 			}
 
-			var vsm = GetVisualStateManager(control);
+			var vsm = GetCustomVisualStateManager(control) ?? GetVisualStateManager(control);
 			if (vsm is null)
 			{
-				if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
-					_log.DebugFormat("Failed to set state [{0}], there is no VisualStateManagr on [{1}]", stateName, control);
+					_log.DebugFormat("Failed to set state [{0}], there is no VisualStateManager on [{1}]", stateName, control);
 				}
 
 				return false;

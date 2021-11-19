@@ -26,10 +26,10 @@ namespace UITests.Windows_Storage.Pickers
 			ViewModel = args.NewValue as FolderPickerTestsViewModel;
 		}
 
-		public FolderPickerTestsViewModel ViewModel { get; private set; }
+		internal FolderPickerTestsViewModel ViewModel { get; private set; }
 	}
 
-	public class FolderPickerTestsViewModel : ViewModelBase
+	internal class FolderPickerTestsViewModel : ViewModelBase
 	{
 		private string _fileType = string.Empty;
 		private string _errorMessage = string.Empty;

@@ -11,9 +11,9 @@ using Windows.Graphics.Display;
 using Uno.UI.Services;
 using System.Globalization;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Linq;
-using Microsoft.Extensions.Logging;
+
 using Selector = ObjCRuntime.Selector;
 using Windows.System.Profile;
 using Windows.UI.Core;

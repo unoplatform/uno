@@ -3,6 +3,8 @@
 
 // MUX reference NavigationViewPage.xaml, commit 426e54f
 
+#pragma warning disable 105 // Disabled until the tree is migrate to WinUI
+
 using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;

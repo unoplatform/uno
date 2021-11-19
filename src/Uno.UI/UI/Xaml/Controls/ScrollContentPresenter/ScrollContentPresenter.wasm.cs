@@ -1,5 +1,5 @@
 ﻿using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;
 using System;
@@ -11,7 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Foundation;
 using Uno.UI.Xaml;
-using Microsoft.Extensions.Logging;
+
 using Uno.UI.Extensions;
 
 namespace Windows.UI.Xaml.Controls
@@ -239,15 +239,6 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnScroll(object sender, EventArgs args)
 		{
-			if (IsArrangeDirty && _pendingScrollTo.HasValue)
-			{
-				// When the native element of the SCP is becoming "valid" with a non 0 offset, it will raise a scroll event.
-				// But if we have a manual scroll request pending, we need to mute it and wait for the next layout updated.
-				return;
-			}
-
-			_pendingScrollTo = default;
-
 			// We don't have any information from the DOM 'scroll' event about the intermediate vs. final state.
 			// We could try to rely on the IsPointerPressed state to detect when the user is scrolling and use it.
 			// This would however not include scrolling due to the inertia which should also be flagged as intermediate.
@@ -261,6 +252,21 @@ namespace Windows.UI.Xaml.Controls
 
 			var horizontalOffset = GetNativeHorizontalOffset();
 			var verticalOffset = GetNativeVerticalOffset();
+
+			if (IsArrangeDirty
+				&& _pendingScrollTo is { } pending
+				&& (
+					pending.horizontal is { } hOffset && Math.Abs(horizontalOffset - hOffset) > 1
+					|| pending.vertical is { } vOffset && Math.Abs(verticalOffset - vOffset) > 1)
+				)
+			{
+				// When the native element of the SCP is becoming "valid" with a non 0 offset, it will raise a scroll event.
+				// But if we have a manual scroll request pending, we need to mute it and wait for the next layout updated.
+
+				return;
+			}
+
+			_pendingScrollTo = default;
 
 			HorizontalOffset = horizontalOffset;
 			VerticalOffset = verticalOffset;

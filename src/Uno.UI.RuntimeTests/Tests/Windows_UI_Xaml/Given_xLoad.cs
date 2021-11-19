@@ -390,7 +390,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		private async Task AssertIsNullAsync<T>(Func<T> getter, TimeSpan? timeout = null)
 		{
-			timeout ??= TimeSpan.FromSeconds(5);
+			timeout ??= TimeSpan.FromSeconds(10);
 			var sw = Stopwatch.StartNew();
 
 			while (sw.Elapsed < timeout && getter() != null)

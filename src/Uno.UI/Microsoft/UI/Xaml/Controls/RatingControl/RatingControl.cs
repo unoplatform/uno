@@ -15,8 +15,14 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Automation.Peers;
 using System.Numerics;
-using Windows.Devices.Input;
 using RatingControlAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {

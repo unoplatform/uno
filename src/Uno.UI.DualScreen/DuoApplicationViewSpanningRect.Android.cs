@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using Android.App;
 using Android.Views;
 using Uno.Extensions;
-using Uno.Logging;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.ViewManagement;
 using Uno.Devices.Sensors;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.DualScreen
 {
@@ -55,7 +55,7 @@ namespace Uno.UI.DualScreen
 
 						if (occludedRects.Length > 0)
 						{
-							if (occludedRects.Length > 1 && this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+							if (occludedRects.Length > 1 && this.Log().IsEnabled(LogLevel.Warning))
 							{
 								this.Log().Warn($"DualMode: Unknown screen layout, more than one occluded region. Only first will be considered. Please report your device to Uno Platform!");
 							}
@@ -99,7 +99,7 @@ namespace Uno.UI.DualScreen
 											bounds.Height - occludedRect.Bottom),
 									};
 
-									if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+									if (this.Log().IsEnabled(LogLevel.Debug))
 									{
 										this.Log().Debug($"DualMode: Horizontal spanning rects: {string.Join(";", spanningRects)}");
 									}
@@ -127,7 +127,7 @@ namespace Uno.UI.DualScreen
 											bounds.Height),
 									};
 
-									if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+									if (this.Log().IsEnabled(LogLevel.Debug))
 									{
 										this.Log().Debug($"DualMode: Vertical spanning rects: {string.Join(";", spanningRects)}");
 									}
@@ -136,7 +136,7 @@ namespace Uno.UI.DualScreen
 								}
 								else
 								{
-									if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+									if (this.Log().IsEnabled(LogLevel.Warning))
 									{
 										this.Log().Warn($"DualMode: Unknown screen layout");
 									}
@@ -144,7 +144,7 @@ namespace Uno.UI.DualScreen
 							}
 							else
 							{
-								if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+								if (this.Log().IsEnabled(LogLevel.Debug))
 								{
 									this.Log().Debug($"DualMode: Without intersection, single screen");
 								}
@@ -152,7 +152,7 @@ namespace Uno.UI.DualScreen
 						}
 						else
 						{
-							if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+							if (this.Log().IsEnabled(LogLevel.Debug))
 							{
 								this.Log().Debug($"DualMode: Without occlusion");
 							}

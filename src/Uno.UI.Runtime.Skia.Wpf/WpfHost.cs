@@ -118,8 +118,6 @@ namespace Uno.UI.Skia.Platform
 				return true;
 			}
 
-			Windows.System.DispatcherQueue.EnqueueNativeOverride = EnqueueNative;
-
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = d => dispatcher.BeginInvoke(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = dispatcher.CheckAccess;
 

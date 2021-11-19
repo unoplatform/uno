@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-using Uno.Logging;
 using Uno.Extensions;
 using System;
 using System.Collections.Generic;
@@ -129,7 +128,16 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						message = (e as AggregateException)?.InnerExceptions.Select(ex => ex.Message + e.StackTrace).JoinBy("\r\n");
 					}
 
-					this.Log().Error("Failed to generate type providers.", new Exception("Failed to generate type providers." + message, e));
+#if NETSTANDARD
+					var diagnostic = Diagnostic.Create(
+						XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
+						null,
+						$"Failed to generate type providers. ({e.Message})");
+
+					context.ReportDiagnostic(diagnostic);
+#else
+					Console.WriteLine("Failed to generate type providers.", new Exception("Failed to generate type providers." + message, e));
+#endif
 				}
 			}
 
@@ -160,6 +168,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				writer.AppendLine();
 				writer.AppendLineInvariant("#pragma warning disable 618  // Ignore obsolete members warnings");
 				writer.AppendLineInvariant("#pragma warning disable 1591 // Ignore missing XML comment warnings");
+				writer.AppendLineInvariant("#pragma warning disable Uno0001 // Ignore not implemented members");
 				writer.AppendLineInvariant("using System;");
 				writer.AppendLineInvariant("using System.Linq;");
 				writer.AppendLineInvariant("using System.Diagnostics;");

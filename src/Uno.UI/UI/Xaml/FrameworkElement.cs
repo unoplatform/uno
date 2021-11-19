@@ -1,4 +1,6 @@
-﻿using Uno.Diagnostics.Eventing;
+﻿#pragma warning disable CS0105 // Ignore duplicate namespaces, to remove when moving to WinUI source tree.
+
+using Uno.Diagnostics.Eventing;
 using Windows.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
@@ -10,7 +12,7 @@ using Uno.UI.Controls;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Media.Animation;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
@@ -21,6 +23,7 @@ using System.ComponentModel;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Data;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 #elif XAMARIN_IOS_UNIFIED
@@ -578,8 +581,8 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			ResourceResolver.ApplyResource(this, FocusVisualPrimaryBrushProperty, new SpecializedResourceDictionary.ResourceKey("SystemControlFocusVisualPrimaryBrush"), false, null, DependencyPropertyValuePrecedences.DefaultValue);
-			ResourceResolver.ApplyResource(this, FocusVisualSecondaryBrushProperty, new SpecializedResourceDictionary.ResourceKey("SystemControlFocusVisualSecondaryBrush"), false, null, DependencyPropertyValuePrecedences.DefaultValue);
+			ResourceResolver.ApplyResource(this, FocusVisualPrimaryBrushProperty, new SpecializedResourceDictionary.ResourceKey("SystemControlFocusVisualPrimaryBrush"), ResourceUpdateReason.ThemeResource, null, DependencyPropertyValuePrecedences.DefaultValue);
+			ResourceResolver.ApplyResource(this, FocusVisualSecondaryBrushProperty, new SpecializedResourceDictionary.ResourceKey("SystemControlFocusVisualSecondaryBrush"), ResourceUpdateReason.ThemeResource, null, DependencyPropertyValuePrecedences.DefaultValue);
 
 			_focusVisualBrushesInitialized = true;
 		}
@@ -864,7 +867,7 @@ namespace Windows.UI.Xaml
 				// Schedule all the phases at once
 				for (int i = startPhaseIndex; i < presenterRoot.DataTemplateRenderPhases.Length; i++)
 				{
-					UIAsyncOperation action = null;
+					Uno.UI.Dispatching.UIAsyncOperation action = null;
 					var phaseCapture = i;
 
 					async void ApplyPhase()
@@ -883,9 +886,9 @@ namespace Windows.UI.Xaml
 
 #if __ANDROID__
 					// Schedule on the animation dispatcher so the callback appears faster.
-					action = presenterRoot.Dispatcher.RunAnimation(ApplyPhase);
+					action = (Uno.UI.Dispatching.UIAsyncOperation)presenterRoot.Dispatcher.RunAnimation(ApplyPhase);
 #elif __IOS__ || __MACOS__
-					action = presenterRoot.Dispatcher.RunAsync(CoreDispatcherPriority.High, ApplyPhase);
+					action = (Uno.UI.Dispatching.UIAsyncOperation)presenterRoot.Dispatcher.RunAsync(CoreDispatcherPriority.High, ApplyPhase);
 #endif
 
 					registerForRecycled(
@@ -907,18 +910,21 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Update ThemeResource references. 
 		/// </summary>
-		internal virtual void UpdateThemeBindings()
+		internal virtual void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{
-			Resources?.UpdateThemeBindings();
-			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(isThemeChangedUpdate: true);
+			Resources?.UpdateThemeBindings(updateReason);
+			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(updateReason);
 
 			// After theme change, the focus visual brushes may not reflect the correct settings
 			_focusVisualBrushesInitialized = false;
 
-			// Trigger ActualThemeChanged if relevant
-			if (ActualThemeChanged != null && RequestedTheme == ElementTheme.Default)
+			if (updateReason == ResourceUpdateReason.ThemeResource)
 			{
-				ActualThemeChanged?.Invoke(this, null);
+				// Trigger ActualThemeChanged if relevant
+				if (ActualThemeChanged != null && RequestedTheme == ElementTheme.Default)
+				{
+					ActualThemeChanged?.Invoke(this, null);
+				}
 			}
 		}
 
@@ -934,7 +940,7 @@ namespace Windows.UI.Xaml
 								: SolidColorBrushHelper.White, DependencyPropertyValuePrecedences.DefaultValue);
 		}
 
-#region AutomationPeer
+		#region AutomationPeer
 #if !__IOS__ && !__ANDROID__ && !__MACOS__ // This code is generated in FrameworkElementMixins
 		private AutomationPeer _automationPeer;
 
@@ -985,7 +991,7 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
-#endregion
+		#endregion
 
 #if !UNO_REFERENCE_API
 		private class FrameworkElementLayouter : Layouter

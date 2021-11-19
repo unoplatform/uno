@@ -1,4 +1,6 @@
-﻿// MUX Reference: TabViewListView.cpp, commit 309c88f
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference: TabViewListView.cpp, commit 309c88f
 
 using Uno.UI.Helpers.WinUI;
 using Windows.UI.Xaml;
@@ -7,8 +9,14 @@ using Windows.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
+	/// <summary>
+	/// Represents the ListView corresponding to the TabStrip within the TabView.
+	/// </summary>
 	public partial class TabViewListView : ListView
 	{
+		/// <summary>
+		/// Initializes a new instance of the TabViewListView class.
+		/// </summary>
 		public TabViewListView()
 		{
 			// TODO: Uno specific - avoid stretching tabs vertically.
@@ -79,29 +87,5 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				internalTabView.UpdateTabContent();
 			}
 		}
-
-#if IS_UNO
-
-		// TODO: Uno specific: Getting scrollviewer from template and applying scroll properties directly to it
-		// until attached property template bindings are supported (issue #4259)
-
-		private ScrollViewer m_scrollViewer;
-
-		protected override void OnApplyTemplate()
-		{
-			base.OnApplyTemplate();
-
-			m_scrollViewer = GetTemplateChild<ScrollViewer>("ScrollViewer");
-		}
-
-		internal void SetHorizontalScrollBarVisibility(ScrollBarVisibility scrollBarVisibility)
-		{
-			if (m_scrollViewer != null)
-			{
-				ScrollViewer.SetHorizontalScrollBarVisibility(m_scrollViewer, scrollBarVisibility);
-			}
-		}
-
-#endif
 	}
 }

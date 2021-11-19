@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-using Uno.Logging;
 using Uno.Extensions;
 using System;
 using System.Collections.Generic;
@@ -108,7 +107,16 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						message = (e as AggregateException)?.InnerExceptions.Select(ex => ex.Message + e.StackTrace).JoinBy("\r\n");
 					}
 
-					this.Log().Error("Failed to generate type providers.", new Exception("Failed to generate type providers." + message, e));
+#if NETSTANDARD
+					var diagnostic = Diagnostic.Create(
+						XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
+						null,
+						$"Failed to generate dependency objects. ({e.Message})");
+
+					context.ReportDiagnostic(diagnostic);
+#else
+					Console.WriteLine("Failed to generate type providers.", new Exception("Failed to generate type providers." + message, e));
+#endif
 				}
 			}
 

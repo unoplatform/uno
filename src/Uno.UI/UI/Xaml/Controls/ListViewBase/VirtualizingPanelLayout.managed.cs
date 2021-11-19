@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
 using Uno.UI;
 using Windows.Foundation;
@@ -18,6 +18,7 @@ using Uno.UI.Extensions;
 using System.Collections.Specialized;
 using Uno.UI.Xaml.Controls;
 using DirectUI;
+using Uno.Foundation.Logging;
 #if __MACOS__
 using AppKit;
 #elif __IOS__
@@ -1094,8 +1095,12 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (reorder.index is null)
 				{
-					reorder.index = ItemsControl!.GetIndexPathFromItem(reorder.item);
-					_pendingReorder = reorder; // _pendingReorder is a struct!
+					var itemIndex = ItemsControl!.GetIndexPathFromItem(reorder.item);
+					if (itemIndex.Row >= 0) // GetIndexPathFromItem() will return Row=-1 if item is not found, which may happen eg if it's been removed from the collection during dragging. Prefer to leave index null in this case.
+					{
+						reorder.index = itemIndex;
+						_pendingReorder = reorder; // _pendingReorder is a struct! 
+					}
 				}
 
 				return reorder.index;

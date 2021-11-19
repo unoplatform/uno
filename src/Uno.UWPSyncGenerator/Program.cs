@@ -36,16 +36,22 @@ namespace Uno.UWPSyncGenerator
 #if HAS_UNO_WINUI
 				new SyncGenerator().Build(@"..\..\..\Uno.Foundation", "Uno.Foundation", "Microsoft.Foundation");
 
-				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Xaml");
+				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.Foundation");
+
+				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.Graphics");
+				new SyncGenerator().Build(@"..\..\..\Uno.UI.Dispatching", "Uno.UI.Dispatching", "Microsoft.UI.Dispatching");
+				new SyncGenerator().Build(@"..\..\..\Uno.UI.Composition", "Uno.UI.Composition", "Microsoft.UI.Composition");
+
 				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Text");
 				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.ApplicationModel.Resources");
 				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.Web.WebView2.Core");
 
-				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.Foundation");
-				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Composition");
-				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Dispatching");
 				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Input");
+				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI");
 				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Windowing");
+
+				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Xaml");
+
 #else
 				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Windows.Foundation.UniversalApiContract");
 #endif
@@ -54,15 +60,21 @@ namespace Uno.UWPSyncGenerator
 			if (mode == DocMode || mode == AllMode)
 			{
 #if HAS_UNO_WINUI
-				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Xaml");
 				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.ApplicationModel.Resources");
 				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.Web.WebView2.Core");
+
+				new DocGenerator().Build(@"..\..\..\Uno.UI.Dispatching", "Uno.UI.Dispatching", "Microsoft.UI.Dispatching");
+				new DocGenerator().Build(@"..\..\..\Uno.UI.Composition", "Uno.UI.Composition", "Microsoft.UI.Composition");
 
 				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.Foundation");
 				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Composition");
 				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Dispatching");
 				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Input");
+				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.Graphics");
 				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Windowing");
+				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI");
+
+				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Xaml");
 #else
 				new DocGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Windows.Foundation.UniversalApiContract");
 #endif

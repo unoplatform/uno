@@ -9,6 +9,12 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
+#if HAS_UNO_WINUI
+using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+#else
+using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
+#endif
+
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TwoPaneView : Windows.UI.Xaml.Controls.Control
@@ -117,7 +123,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void OnWindowSizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs args)
+		void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs args)
 		{
 			UpdateMode();
 		}

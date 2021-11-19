@@ -2,6 +2,8 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference NavigationView.cpp, commit 996c2e5
 
+#pragma warning disable 105 // remove when moving to WinUI tree
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -1994,7 +1996,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var newButtonWidths = GetNewButtonWidths();
 
 			templateSettings.PaneToggleButtonWidth = newButtonWidths;
-			templateSettings.SmallerPaneToggleButtonWidth = newButtonWidths - 8;
+			templateSettings.SmallerPaneToggleButtonWidth = Math.Max(0.0, newButtonWidths - 8);
 		}
 
 		private void OnBackButtonClicked(object sender, RoutedEventArgs args)

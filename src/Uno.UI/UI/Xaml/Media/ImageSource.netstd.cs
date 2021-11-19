@@ -1,5 +1,5 @@
 ﻿using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,7 +17,7 @@ using Uno.Diagnostics.Eventing;
 using Windows.UI.Xaml.Media.Imaging;
 using Uno.Disposables;
 using Windows.Devices.Enumeration;
-using Microsoft.Extensions.Logging;
+
 
 #if !IS_UNO
 using Uno.Web.Query;
@@ -100,8 +100,8 @@ namespace Windows.UI.Xaml.Media
 				{
 					_opening.Disposable = null;
 
-					_opening.Disposable = CoreDispatcher.Main.RunAsync(
-						CoreDispatcherPriority.Normal,
+					_opening.Disposable = Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
+						Uno.UI.Dispatching.CoreDispatcherPriority.Normal,
 						ct => Open(ct, targetWidth, targetHeight));
 				}
 			}

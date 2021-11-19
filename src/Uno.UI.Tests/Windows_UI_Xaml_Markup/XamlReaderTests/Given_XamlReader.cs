@@ -17,6 +17,7 @@ using FluentAssertions;
 using Windows.UI.Xaml.Controls.Primitives;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI;
+using Windows.UI;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {
@@ -796,10 +797,99 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		}
 
 		[TestMethod]
-		public void When_Brush_And_StringColor()
+		public void When_Color_Thickness_GridLength_As_String()
 		{
-			var s = GetContent(nameof(When_Brush_And_StringColor));
+			var s = GetContent(nameof(When_Color_Thickness_GridLength_As_String));
 			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as ContentControl;
+
+			Assert.AreEqual(Windows.UI.Colors.Red, r.Resources["Color01"]);
+			Assert.AreEqual(Windows.UI.Colors.Blue, (r.Resources["scb01"] as SolidColorBrush).Color);
+			Assert.AreEqual(new Thickness(42), r.Resources["thickness"]);
+			Assert.AreEqual(new CornerRadius(42), r.Resources["cornerRadius"]);
+			Assert.AreEqual("TestFamily", (r.Resources["fontFamily"] as FontFamily).Source);
+			Assert.AreEqual(GridLength.FromString("42"), r.Resources["gridLength"]);
+			Assert.AreEqual(Windows.UI.Xaml.Media.Animation.KeyTime.FromTimeSpan(TimeSpan.Parse("1:2:3")), r.Resources["keyTime"]);
+			Assert.AreEqual(new Duration(TimeSpan.Parse("1:2:3")), r.Resources["duration"]);
+			Assert.AreEqual(Matrix.Identity, r.Resources["matrix"]);
+			Assert.AreEqual(Windows.UI.Text.FontWeights.Bold, r.Resources["fontWeight"]);
+
+			Assert.AreEqual(Windows.UI.Colors.Red, ((r.Content as Grid)?.Background as SolidColorBrush).Color);
+		}
+
+		[TestMethod]
+		public void When_Resources_And_Empty()
+		{
+			var s = "<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' > <Grid.Resources ></Grid.Resources ></Grid > ";
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as Grid;
+			Assert.IsNotNull(r.Resources);
+		}
+
+		[TestMethod]
+		public void When_StaticResource_And_NonDependencyProperty()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.Resources["MyIntResource"] = 77;
+			try
+			{
+				var s = GetContent(nameof(When_StaticResource_And_NonDependencyProperty));
+				var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as Page;
+
+				var root = r.FindName("root") as Grid;
+				var inner = root.Children.First() as NonDependencyPropertyAssignable;
+
+				Assert.AreEqual(77, inner.MyProperty);
+			}
+			finally
+			{
+				app.Resources.Remove("MyDoubleResource");
+			}
+
+		}
+
+		[TestMethod]
+		public void When_ThemeResource_And_Setter_And_Theme_Changed()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+			var themeDict = new ResourceDictionary
+			{
+				ThemeDictionaries =
+				{
+					{"Light", new ResourceDictionary
+						{
+							{"MyIntResourceThemed", 244 }
+						}
+					},
+					{"Dark", new ResourceDictionary
+						{
+							{"MyIntResourceThemed", 9 }
+						}
+					},
+				}
+			};
+			app.Resources.MergedDictionaries.Add(themeDict);
+			try
+			{
+				var s = GetContent(nameof(When_ThemeResource_And_Setter_And_Theme_Changed));
+				var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as Page;
+
+				var root = r.FindName("root") as Grid;
+				var inner = root.Children.First() as Button;
+
+				app.HostView.Children.Add(r);
+
+				Assert.AreEqual(ApplicationTheme.Light, app.RequestedTheme);
+				Assert.AreEqual(244, inner.Tag);
+
+				app.SetExplicitRequestedTheme(ApplicationTheme.Dark);
+				Assert.AreEqual(ApplicationTheme.Dark, app.RequestedTheme);
+				Assert.AreEqual(9, inner.Tag);
+			}
+			finally
+			{
+				app.SetExplicitRequestedTheme(null);
+				app.Resources.MergedDictionaries.Remove(themeDict);
+			}
+
 		}
 
 		private string GetContent(string testName)

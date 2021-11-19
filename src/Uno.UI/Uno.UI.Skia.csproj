@@ -9,7 +9,7 @@
 	<PropertyGroup>
 		<UnoSourceGeneratorUseGenerationHost>false</UnoSourceGeneratorUseGenerationHost>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
-		<DefineConstants>$(DefineConstants);IS_UNO</DefineConstants>
+		<DefineConstants>$(DefineConstants);IS_UNO;IS_UNO_UI_PROJECT</DefineConstants>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
@@ -29,8 +29,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.Core" />
-		<PackageReference Include="Uno.Core.Build" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Uno.MonoAnalyzers" Condition="!$(_IsNetCore)">
 			<PrivateAssets>all</PrivateAssets>
@@ -40,6 +38,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.Skia.csproj" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
 	</ItemGroup>
@@ -111,6 +110,73 @@
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputCursor.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputDesktopResourceCursor.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputKeyboardSource.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputLightDismissAction.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputLightDismissEventArgs.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputObject.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputPointerSource.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputPointerSourceDeviceKinds.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputSystemCursor.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputSystemCursorShape.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\IPointerPointTransform.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\PointerDeviceType.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Input\PointerEventArgs.cs" />
+	  <UpToDateCheckInput Remove="UI\Xaml\Data\BindingExtensions.cs" />
+	  <UpToDateCheckInput Remove="UI\Xaml\Markup\ApplyExtensions.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Include="Mixins\DependencyPropertyMixins.g.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>DependencyPropertyMixins.tt</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Mixins\Android\BaseActivity.Callbacks.g.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>BaseActivity.Callbacks.tt</DependentUpon>
+	  </None>
+	  <None Include="Mixins\Android\FrameworkElementMixins.g.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>FrameworkElementMixins.tt</DependentUpon>
+	  </None>
+	  <None Include="Mixins\iOS\FrameworkElementMixins.g.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>FrameworkElementMixins.tt</DependentUpon>
+	  </None>
+	  <None Include="Mixins\macOS\FrameworkElementMixins.g.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>FrameworkElementMixins.tt</DependentUpon>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Mixins\Android\BaseActivity.Callbacks.tt">
+	    <LastGenOutput>BaseActivity.Callbacks.g.cs</LastGenOutput>
+	  </None>
+	  <None Update="Mixins\Android\FrameworkElementMixins.tt">
+	    <LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
+	  </None>
+	  <None Update="Mixins\DependencyPropertyMixins.tt">
+	    <LastGenOutput>DependencyPropertyMixins.g.cs</LastGenOutput>
+	  </None>
+	  <None Update="Mixins\iOS\FrameworkElementMixins.tt">
+	    <LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
+	  </None>
+	  <None Update="Mixins\macOS\FrameworkElementMixins.tt">
+	    <LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
+	  </None>
 	</ItemGroup>
 	
 </Project>

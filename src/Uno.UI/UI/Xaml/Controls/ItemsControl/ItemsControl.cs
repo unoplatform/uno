@@ -12,10 +12,11 @@ using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;
 using Windows.Foundation.Collections;
 using Uno.Extensions.Specialized;
-using Microsoft.Extensions.Logging;
+
 using Uno.UI.Extensions;
 using System.ComponentModel;
 using Windows.UI.Xaml.Controls.Primitives;
+using Uno.Foundation.Logging;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;

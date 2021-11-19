@@ -8,7 +8,7 @@ using UIKit;
 using System.ComponentModel;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.UI.Xaml.Controls.Layouter;
 
@@ -64,7 +64,11 @@ namespace Windows.UI.Xaml
 
 					Rect finalRect;
 					var parent = Superview;
-					if (parent is UIElement || parent is ISetLayoutSlots)
+					if (parent is UIElement
+						|| parent is ISetLayoutSlots
+						// In the case of ListViewItem inside native list, its parent's parent is ListViewBaseInternalContainer
+						|| parent?.Superview is ISetLayoutSlots
+					)
 					{
 						finalRect = LayoutSlotWithMarginsAndAlignments;
 					}

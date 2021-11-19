@@ -1,7 +1,7 @@
 ﻿using Android.Graphics;
 using Windows.UI.Xaml.Controls;
 using System;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Extensions;
 using System.Drawing;
 using Uno.UI;
@@ -161,7 +161,7 @@ namespace Windows.UI.Xaml.Shapes
 				}
 				else
 				{
-					this.Log().ErrorIfEnabled(() => "StrokeDashArray containing an odd number of values is not supported on Android.");
+					this.Log().Error("StrokeDashArray containing an odd number of values is not supported on Android.");
 				}
 			}
 		}

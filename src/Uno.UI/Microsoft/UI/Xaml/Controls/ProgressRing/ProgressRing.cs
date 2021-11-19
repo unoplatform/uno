@@ -5,7 +5,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 
 #nullable enable

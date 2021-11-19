@@ -53,6 +53,8 @@ jobs:
       packageType: runtime
       version: 2.2.x
 
+  - template: templates/dotnet-install.yml
+
   # Required for the Wasm uitests project
   - task: NodeTool@0
 

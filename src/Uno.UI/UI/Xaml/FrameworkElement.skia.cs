@@ -6,12 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Controls;
 using Windows.Foundation;
 using View = Windows.UI.Xaml.UIElement;
 using System.Collections;
-using Microsoft.Extensions.Logging;
+
 using Uno.UI.Xaml;
 using System.Numerics;
 

@@ -43,25 +43,30 @@ namespace SamplesApp.UITests.Runtime
 
 			async Task<bool> IsTestExecutionDone()
 			{
+				return await GetWithRetry("IsTestExecutionDone", () => runningState.GetDependencyPropertyValue("Text")?.ToString().Equals("Finished", StringComparison.OrdinalIgnoreCase) ?? false);
+			}
+
+			async Task<T> GetWithRetry<T>(string logName, Func<T> getter, int timeoutSeconds = 10)
+			{
 				var sw = Stopwatch.StartNew();
 				Exception lastException = null;
 				do
 				{
 					try
 					{
-						return runningState.GetDependencyPropertyValue("Text")?.ToString().Equals("Finished", StringComparison.OrdinalIgnoreCase) ?? false;
+						return getter();
 					}
 					catch (Exception e)
 					{
 						lastException = e;
-						Console.WriteLine($"IsTestExecutionDone failed with {e.Message}");
+						Console.WriteLine($"{logName} failed with {e.Message}");
 					}
 
 					await Task.Delay(TimeSpan.FromSeconds(.5));
 
-					Console.WriteLine($"IsTestExecutionDone retrying");
+					Console.WriteLine($"{logName} retrying");
 				}
-				while (sw.Elapsed < TimeSpan.FromSeconds(10));
+				while (sw.Elapsed < TimeSpan.FromSeconds(timeoutSeconds));
 
 				throw lastException;
 			}
@@ -75,7 +80,8 @@ namespace SamplesApp.UITests.Runtime
 
 			while(DateTimeOffset.Now - lastChange < TestRunTimeout)
 			{
-				var newValue = GetValue(nameof(runTestCount), runTestCount);
+				var newValue = await GetWithRetry("GetRunTestCount", () => runTestCount.GetDependencyPropertyValue("Text")?.ToString());
+
 				if (lastValue != newValue)
 				{
 					lastChange = DateTimeOffset.Now;

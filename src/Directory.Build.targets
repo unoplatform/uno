@@ -20,9 +20,12 @@
 	<!-- Keep aligned with MSBuild extras' default ExtrasUwpMetaPackageVersion -->
 	<PackageReference Update="Uno.SourceGenerationTasks" Version="3.2.0" />
 	<PackageReference Update="Uno.SourceGeneration" Version="3.2.0" />
-	<PackageReference Update="Uno.Core" Version="3.0.0" />
-	<PackageReference Update="Uno.Core.Build" Version="3.0.0" />
-	<PackageReference Update="Uno.Diagnostics.Eventing" Version="1.0.4" />
+	<PackageReference Update="Uno.Core.Extensions" Version="4.0.0-dev.7" />
+	<PackageReference Update="Uno.Core.Extensions.Logging" Version="4.0.0-dev.7" />
+	<PackageReference Update="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
+	<PackageReference Update="Uno.Core.Extensions.Disposables" Version="4.0.0-dev.7" />
+	<PackageReference Update="Uno.Core.Extensions.Compatibility" Version="4.0.0-dev.7" />
+	<PackageReference Update="Uno.Diagnostics.Eventing" Version="2.0.0-dev.22" />
 	<PackageReference Update="Uno.Wasm.Bootstrap" Version="2.1.0" />
 	<PackageReference Update="Uno.Wasm.Bootstrap.DevServer" Version="2.1.0" />
 	<PackageReference Update="xamarin.build.download" Version="0.10.0" PrivateAssets="all" />
@@ -42,11 +45,11 @@
 	<PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.4" />
 	<PackageReference Update="Xamarin.UITest" Version="3.0.15" />
 	<PackageReference Update="System.Numerics.Vectors" Version="4.5.0" />
-	<PackageReference Update="SkiaSharp.Views" Version="2.80.0" />
-	<PackageReference Update="SkiaSharp.Views.WPF" Version="2.80.0" />
-	<PackageReference Update="SkiaSharp" Version="2.80.0" />
-	<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.80.0" />
-	<PackageReference Update="GtkSharp" Version="3.24.24.4" />
+	<PackageReference Update="SkiaSharp.Views" Version="2.80.3" />
+	<PackageReference Update="SkiaSharp.Views.WPF" Version="2.80.3" />
+	<PackageReference Update="SkiaSharp" Version="2.80.3" />
+	<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.80.3" />
+	<PackageReference Update="GtkSharp" Version="3.24.24.34" />
 	<PackageReference Update="System.Json" Version="4.7.1" />
 	<PackageReference Update="FluentAssertions" Version="5.10.3" />
 	<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
@@ -87,6 +90,14 @@
 		 Text="The Uno.UI Solution cannot build with a space in the path. Consider changing to a path without spaces."/>
   </Target>
 
+  <PropertyGroup>
+	  <!--
+	  macOS needs an explicit override of the current compiler when running under mono.
+	  On other targets, .NET 6.0's compiler takes precedence.
+	  -->
+	  <MicrosoftNetCompilerVersionOverride Condition="'$(MSBuildRuntimeType)'!='Core' and ($([MSBuild]::IsOSPlatform('OSX')) or '$(MSBuildVersion)' &lt; '17.0')">4.0.1</MicrosoftNetCompilerVersionOverride>
+  </PropertyGroup>
+
   <!-- Import the override as the nuget tooling in VS is skipping ItemGroup conditions for legacy projects -->
   <Import Project="roslyn-override.targets" Condition="'$(MicrosoftNetCompilerVersionOverride)'!=''"/>
 
@@ -102,5 +113,18 @@
 			  TaskParameter="Value"
 			  PropertyName="_WindowsAppSDKFoundationPlatform" />
 	  </CreateProperty>
+  </Target>
+
+  <Target Name="WorkaroundMissingWinAppSDKDLL_2"
+				BeforeTargets="BeforeBuild">
+
+	<!-- Workaround for
+         C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\Microsoft.Common.CurrentVersion.targets(4559,5):
+				 error MSB3030: Could not copy the file "C:\a\.nuget\microsoft.windowsappsdk\1.0.0-preview3\build\..\runtimes\lib\native\AnyCPU\Microsoft.WindowsAppRuntime.Bootstrap.dll" because it was not found.
+	  -->
+	<ItemGroup>
+	  <_itemToRemove Include="@(ReferenceCopyLocalPaths)" Condition="'%(FileName)%(Extension)'=='Microsoft.WindowsAppRuntime.Bootstrap.dll'" />
+	  <ReferenceCopyLocalPaths Remove="@(_itemToRemove)"/>
+	</ItemGroup>
   </Target>
 </Project>

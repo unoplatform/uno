@@ -8,7 +8,7 @@ using AndroidX.RecyclerView.Widget;
 using Android.Views;
 using Uno.Extensions;
 using Uno.UI;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Controls.Primitives;
 using Android.Graphics;
@@ -141,6 +141,30 @@ namespace Windows.UI.Xaml.Controls
 				RequestLayout();
 			}
 		}
+
+		private double _itemsPresenterMinWidth;
+		internal double ItemsPresenterMinWidth
+		{
+			get => _itemsPresenterMinWidth;
+			set
+			{
+				_itemsPresenterMinWidth = value;
+				RequestLayout();
+			}
+		}
+
+		private double itemsPresenterMinHeight;
+		internal double ItemsPresenterMinHeight
+		{
+			get => itemsPresenterMinHeight;
+			set
+			{
+				itemsPresenterMinHeight = value;
+				RequestLayout();
+			}
+		}
+
+		private int ItemsPresenterMinExtent => (int)ViewHelper.LogicalToPhysicalPixels(ScrollOrientation == Orientation.Vertical ? ItemsPresenterMinHeight : ItemsPresenterMinWidth);
 
 		private int InitialExtentPadding => (int)ViewHelper.LogicalToPhysicalPixels(ScrollOrientation == Orientation.Vertical ? Padding.Top : Padding.Left);
 		private int FinalExtentPadding => (int)ViewHelper.LogicalToPhysicalPixels(ScrollOrientation == Orientation.Vertical ? Padding.Bottom : Padding.Right);
@@ -731,7 +755,7 @@ namespace Windows.UI.Xaml.Controls
 				GetChildEndWithMargin(base.GetChildAt(FirstItemView + ItemViewCount - 1));
 			Debug.Assert(range > 0, "Must report a non-negative scroll range.");
 			Debug.Assert(remainingItems == 0 || range > Extent, "If any items are non-visible, the content range must be greater than the viewport extent.");
-			return range;
+			return Math.Max(range, ItemsPresenterMinExtent);
 		}
 
 		/// <summary>
@@ -1173,8 +1197,9 @@ namespace Windows.UI.Xaml.Controls
 			int maxPossibleDelta;
 			if (fillDirection == GeneratorDirection.Forward)
 			{
+				var contentEnd = Math.Max(GetContentEnd(), ItemsPresenterMinExtent - ContentOffset);
 				// If this value is negative, collection dimensions are larger than all children and we should not scroll
-				maxPossibleDelta = Math.Max(0, GetContentEnd() - Extent);
+				maxPossibleDelta = Math.Max(0, contentEnd - Extent);
 				// In the rare case that GetContentStart() is positive (see below), permit a positive value.
 				maxPossibleDelta = Math.Max(GetContentStart(), maxPossibleDelta);
 			}
@@ -1565,7 +1590,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			if (groupToCreate / increment > targetGroupIndex / increment)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 				{
 					this.Log().Error($"Invalid state when creating new groups: leadingGroup.GroupIndex={leadingGroup?.GroupIndex}, targetGroupIndex={targetGroupIndex}, fillDirection={fillDirection}");
 				}

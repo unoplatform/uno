@@ -1,4 +1,5 @@
 ﻿#!/bin/bash
+set -x #echo on
 set -euo pipefail
 IFS=$'\n\t'
 
@@ -7,7 +8,9 @@ cd $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries
 npm i chromedriver@86.0.0
 npm i puppeteer@5.3.1
 
-# install dotnet serve
+# install dotnet serve / Remove as needed
+dotnet tool uninstall dotnet-serve -g || true
+dotnet tool uninstall dotnet-serve --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
 dotnet tool install dotnet-serve --version 1.8.15 --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
 export PATH="$PATH:$BUILD_SOURCESDIRECTORY/build/tools"
 
@@ -47,7 +50,7 @@ fi
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
 ## The python server serves the current working directory, and may be changed by the nunit runner
-dotnet serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-$SITE_SUFFIX" &
+dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-$SITE_SUFFIX" &
 
 ## Build the NUnit configuration file
 echo "--trace=Verbose" > $UNO_TESTS_RESPONSE_FILE

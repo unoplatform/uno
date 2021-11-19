@@ -10,7 +10,7 @@ using Uno.UI.Controls;
 using Uno.Extensions;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Input;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -19,7 +19,7 @@ using Uno.UI;
 using System.Linq;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Data;
-using Microsoft.Extensions.Logging;
+
 
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;
@@ -35,6 +35,12 @@ using AppKit;
 using _View = AppKit.NSView;
 #else
 using _View = Windows.UI.Xaml.FrameworkElement;
+#endif
+
+#if HAS_UNO_WINUI
+using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+#else
+using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 #endif
 
 namespace Windows.UI.Xaml.Controls
@@ -59,7 +65,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public ComboBox()
 		{
-			ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "ComboBoxLightDismissOverlayBackground", isThemeResourceExtension: true);
+			ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "ComboBoxLightDismissOverlayBackground", isThemeResourceExtension: true, isHotReloadSupported: true);
 
 			DefaultStyleKey = typeof(ComboBox);
 		}
@@ -171,7 +177,7 @@ namespace Windows.UI.Xaml.Controls
 			DropDownOpened?.Invoke(this, null!);
 		}
 
-		private void OnWindowSizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e)
+		private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs e)
 		{
 			IsDropDownOpen = false;
 		}
