@@ -58,9 +58,7 @@ You should now have a folder structure that looks like this:
 ![rider-folder-structure](Assets/quick-start/rider-folder-structure.JPG)
 
 ### Android
-1. Remove the following line from the `YourProject.Droid.csproj` file:  
-`<Target Name="GenerateBuild" DependsOnTargets="SignAndroidPackage" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''" />`
-2. Set Android as your startup project. Run.  
+1. Set Android as your startup project. Run.  
 ![run-android-rider](Assets/quick-start/run-android-rider.JPG)
 
 Note: Whether you're using a physical device or the emulator, the app will install but will not automatically open.
