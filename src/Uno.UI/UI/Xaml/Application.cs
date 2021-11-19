@@ -38,7 +38,6 @@ using AppKit;
 #else
 using View = Windows.UI.Xaml.UIElement;
 using ViewGroup = Windows.UI.Xaml.UIElement;
-using System.Collections.Generic;
 #endif
 
 namespace Windows.UI.Xaml
