@@ -22598,7 +22598,7 @@
                 <ColumnDefinition Width="Auto" x:Name="AddButtonColumn" />
                 <ColumnDefinition Width="*" x:Name="RightContentColumn" />
               </Grid.ColumnDefinitions>
-              <Border BorderBrush="{ThemeResource TabViewBorderBrush}" BorderThickness="1" Height="1" Grid.Column="1" Grid.ColumnSpan="2" VerticalAlignment="Bottom" />
+              <Border BorderBrush="{ThemeResource TabViewBorderBrush}" BorderThickness="1" Height="1" Grid.ColumnSpan="4" VerticalAlignment="Bottom" />
               <ContentPresenter Grid.Column="0" x:Name="LeftContentPresenter" Content="{TemplateBinding TabStripHeader}" ContentTemplate="{TemplateBinding TabStripHeaderTemplate}" />
               <primitives:TabViewListView Grid.Column="1" x:Name="TabListView" Padding="{TemplateBinding Padding}" CanReorderItems="{TemplateBinding CanReorderTabs}" CanDragItems="{TemplateBinding CanDragTabs}" AllowDrop="{TemplateBinding AllowDropTabs}" ItemsSource="{TemplateBinding TabItemsSource}" ItemTemplate="{TemplateBinding TabItemTemplate}" ItemTemplateSelector="{TemplateBinding TabItemTemplateSelector}" />
               <Border Visibility="{Binding IsAddTabButtonVisible, RelativeSource={RelativeSource TemplatedParent}}" Grid.Column="2" Padding="{ThemeResource TabViewItemAddButtonContainerPadding}" VerticalAlignment="Bottom">
@@ -22783,6 +22783,7 @@
     </Setter>
   </Style>
   <Style TargetType="controls:TabViewItem">
+    <Setter Property="Background" Value="{ThemeResource TabViewItemHeaderBackground}" />
     <Setter Property="HorizontalContentAlignment" Value="Left" />
     <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
     <Setter Property="MinHeight" Value="{ThemeResource TabViewItemMinHeight}" />
@@ -22996,13 +22997,22 @@
                   </VisualState.Setters>
                 </VisualState>
               </VisualStateGroup>
+              <VisualStateGroup>
+                <VisualState x:Name="ForegroundNotSet" />
+                <VisualState x:Name="ForegroundSet">
+                  <VisualState.Setters>
+                    <Setter Target="IconControl.Foreground" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Foreground}" />
+                    <Setter Target="ContentPresenter.Foreground" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Foreground}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
             <Path x:Name="LeftRadiusRenderArc" x:Load="False" Fill="{ThemeResource CardStrokeColorDefault}" VerticalAlignment="Bottom" Visibility="Collapsed" Margin="-4,0,0,0" Height="4" Width="4" Data="M4 0C4 1.19469 3.47624 2.26706 2.64582 3H0C1.65685 3 3 1.65685 3 0H4Z" />
             <Path x:Name="LeftRadiusRenderTriangle" x:Load="False" Fill="{ThemeResource TabViewItemHeaderBackgroundSelected}" VerticalAlignment="Bottom" Margin="-4,0,0,0" Visibility="Collapsed" Data="M0 4H4V0C4 2.20914 2.20914 4 0 4Z" />
             <Path x:Name="RightRadiusRenderArc" x:Load="False" Grid.Column="2" Visibility="Collapsed" Fill="{ThemeResource CardStrokeColorDefault}" VerticalAlignment="Bottom" Margin="0,0,-4,0" Height="4" Width="4" Data="M0 0C0 1.19469 0.523755 2.26706 1.35418 3H4C2.34315 3 1 1.65685 1 0H0Z" />
             <Path x:Name="RightRadiusRenderTriangle" x:Load="False" Grid.Column="2" Visibility="Collapsed" Fill="{ThemeResource TabViewItemHeaderBackgroundSelected}" VerticalAlignment="Bottom" Margin="0,0,-4,0" Data="M4 4H0V0C0 2.20914 1.79086 4 4 4Z" />
             <Border x:Name="TabSeparator" HorizontalAlignment="Right" Width="1" Grid.Column="1" BorderBrush="{ThemeResource TabViewItemSeparator}" BorderThickness="1" Margin="{ThemeResource TabViewItemSeparatorMargin}" />
-            <Grid x:Name="TabContainer" Grid.Column="1" Background="{ThemeResource TabViewItemHeaderBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Control.IsTemplateFocusTarget="True" Padding="{ThemeResource TabViewItemHeaderPadding}" contract7Present:CornerRadius="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CornerRadius, Converter={StaticResource TopCornerRadiusFilterConverter}}" contract7NotPresent:CornerRadius="{Binding Source={ThemeResource OverlayCornerRadius}, Converter={StaticResource TopCornerRadiusFilterConverter}}" FocusVisualMargin="{TemplateBinding FocusVisualMargin}">
+            <Grid x:Name="TabContainer" Grid.Column="1" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Control.IsTemplateFocusTarget="True" Padding="{ThemeResource TabViewItemHeaderPadding}" contract7Present:CornerRadius="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CornerRadius, Converter={StaticResource TopCornerRadiusFilterConverter}}" contract7NotPresent:CornerRadius="{Binding Source={ThemeResource OverlayCornerRadius}, Converter={StaticResource TopCornerRadiusFilterConverter}}" FocusVisualMargin="{TemplateBinding FocusVisualMargin}">
               <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="IconColumn" Width="Auto" />
                 <ColumnDefinition Width="*" />

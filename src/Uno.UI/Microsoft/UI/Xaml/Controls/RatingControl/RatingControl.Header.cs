@@ -23,12 +23,12 @@ public partial class RatingControl
 	}
 
 	// Private members
-	private TextBlock m_captionTextBlock = null;
+	private TextBlock? m_captionTextBlock = null;
 
-	private CompositionPropertySet m_sharedPointerPropertySet = null;
+	private CompositionPropertySet? m_sharedPointerPropertySet = null;
 
-	private StackPanel m_backgroundStackPanel = null;
-	private StackPanel m_foregroundStackPanel = null;
+	private StackPanel? m_backgroundStackPanel = null;
+	private StackPanel? m_foregroundStackPanel = null;
 
 	private bool m_isPointerOver = false;
 	private bool m_isPointerDown = false;
@@ -42,17 +42,7 @@ public partial class RatingControl
 	private bool m_disengagedWithA = false;
 	private bool m_shouldDiscardValue = true;
 
-	private readonly SerialDisposable m_pointerCancelledToken = new();
-	private readonly SerialDisposable m_pointerCaptureLostToken = new();
-	private readonly SerialDisposable m_pointerMovedToken = new();
-	private readonly SerialDisposable m_pointerEnteredToken = new();
-	private readonly SerialDisposable m_pointerExitedToken = new();
-	private readonly SerialDisposable m_pointerPressedToken = new();
-	private readonly SerialDisposable m_pointerReleasedToken = new();
-	private readonly SerialDisposable m_captionSizeChangedToken = new();
 	private long m_fontFamilyChangedToken;
 
-	private readonly SerialDisposable m_textScaleChangedRevoker = new();
-
-	private DispatcherHelper m_dispatcherHelper = null;
+	private DispatcherHelper? m_dispatcherHelper = null;
 }
