@@ -1,9 +1,10 @@
 ﻿#nullable enable
 
 using System;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls.Extensions;
 using Windows.UI.Xaml.Media;
 

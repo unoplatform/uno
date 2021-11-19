@@ -6,10 +6,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Microsoft.Extensions.Logging;
+
 using Uno;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Core;
 using Uno.UI.Extensions;

@@ -5,7 +5,7 @@ using Uno.UI.Samples.UITests.Helpers;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.GridTestsControl
 {
-	public class GridTestsViewModel : ViewModelBase
+	internal class GridTestsViewModel : ViewModelBase
 	{
 		private long _gridColumnAlternating;
 		private object _gridWidthAlternatingNull;

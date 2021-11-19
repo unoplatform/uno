@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Data;
 
 namespace Uno.UI.Converters

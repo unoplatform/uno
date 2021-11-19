@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using CoreGraphics;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
-using Uno.Logging;
+
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using UIKit;
 

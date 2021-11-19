@@ -11,7 +11,7 @@ using Android.Graphics;
 using Android.Graphics.Drawables;
 using Uno.Extensions;
 using Windows.UI.Xaml.Media;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Android.Views;
 using Android.Runtime;
 using Android.Text;
@@ -173,7 +173,7 @@ namespace Windows.UI.Xaml.Controls
 
 					if (PorterDuff.Mode.SrcIn == null)
 					{
-						editText.Log().WarnIfEnabled(() => "Failed to change the cursor color. Some devices don't support this.");
+						editText.Log().Warn("Failed to change the cursor color. Some devices don't support this.");
 						return;
 					}
 
@@ -188,7 +188,7 @@ namespace Windows.UI.Xaml.Controls
 					else if (_cursorDrawableField == null || _cursorDrawableResField == null || _editorField == null || PorterDuff.Mode.SrcIn == null)
 					{
 						// PrepareFields() failed, give up now
-						editText.Log().WarnIfEnabled(() => "Failed to change the cursor color. Some devices don't support this.");
+						editText.Log().Warn("Failed to change the cursor color. Some devices don't support this.");
 						return;
 					}
 					else
@@ -235,7 +235,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				catch (Exception)
 				{
-					editText.Log().WarnIfEnabled(() => "Failed to change the cursor color. Some devices don't support this.");
+					editText.Log().Warn("Failed to change the cursor color. Some devices don't support this.");
 				}
 			}
 		}

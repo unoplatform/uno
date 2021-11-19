@@ -9,8 +9,9 @@ using Windows.ApplicationModel.Activation;
 using Windows.UI.StartScreen;
 using Android.Content;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
+
 using System.ComponentModel;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml
 {

@@ -15,7 +15,6 @@ using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 using Windows.Storage;
 using Uno.Extensions;
-using Uno.Logging;
 using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml;
 using System.IO;

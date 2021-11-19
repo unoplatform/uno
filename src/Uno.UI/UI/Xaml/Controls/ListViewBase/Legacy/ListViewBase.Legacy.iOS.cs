@@ -15,8 +15,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Uno.Extensions.Specialized;
 using Windows.UI.Xaml.Controls.Primitives;
-using Microsoft.Extensions.Logging;
-using Uno.Logging;
+
+using Uno.Foundation.Logging;
 
 #if XAMARIN_IOS_UNIFIED
 using Foundation;

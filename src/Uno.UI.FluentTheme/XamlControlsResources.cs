@@ -1,7 +1,7 @@
 ﻿using System;
-using Microsoft.Extensions.Logging;
 using Uno;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
 using Windows.UI.Xaml;
 

@@ -14,7 +14,7 @@ using Android.Views.InputMethods;
 using Android.Widget;
 using Uno.Disposables;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
@@ -467,11 +467,11 @@ namespace Windows.UI.Xaml.Controls
 			//We get the view token early to avoid nullvalues when the view has already been detached
 			var viewWindowToken = _textBoxView.WindowToken;
 
-			_keyboardDisposable.Disposable = CoreDispatcher.Main
+			_keyboardDisposable.Disposable = Uno.UI.Dispatching.CoreDispatcher.Main
 				//The delay is required because the OnFocusChange method is called when the focus is being changed, not when it has changed.
 				//If the focus is moved from one TextBox to another, the CurrentFocus will be null, meaning we would hide the keyboard when we shouldn't.
 				.RunAsync(
-					CoreDispatcherPriority.Normal,
+					Uno.UI.Dispatching.CoreDispatcherPriority.Normal,
 					async () =>
 					{
 						await Task.Delay(TimeSpan.FromMilliseconds(_keyboardAccessDelay));

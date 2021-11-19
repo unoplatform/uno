@@ -11,7 +11,7 @@ using EventHandler = System.EventHandler;
 namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 {
 	[Bindable]
-	public class RotatedListViewViewModel : ViewModelBase
+	internal class RotatedListViewViewModel : ViewModelBase
 	{
 		private Person _selectedItem = null;
 		private int _selectedIndex = -1;

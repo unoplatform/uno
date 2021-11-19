@@ -238,9 +238,9 @@ This guide will walk you through the necessary steps to setup and to use the [`U
             <ResourceDictionary.MergedDictionaries>
                 <!-- ... -->
 
-                <!-- Load Material Color Palette with ColorPaletteOverrideSource -->
+                <!-- Load Material Color Palette with OverrideSource -->
 				<MaterialColors xmlns="using:Uno.Material"
-								ColorPaletteOverrideSource="ms-appx:///ColorPaletteOverride.xaml" />
+								OverrideSource="ms-appx:///ColorPaletteOverride.xaml" />
 
                 <!-- Load the Material control resources -->
 				<MaterialResources xmlns="using:Uno.Material" />
@@ -251,6 +251,44 @@ This guide will walk you through the necessary steps to setup and to use the [`U
     </Application.Resources>
     ```
 1. Run the app, you should now see the controls using your new color scheme.
+
+### Section 4: Fonts
+By default, Uno.Material will attempt to apply a FontFamily with a name of `Roboto` to its controls. This FontFamily resource is given the key `MaterialFontFamily`. If there is no FontFamily with name `Roboto` loaded into your application, the default system font will be used. You can override this default behavior by providing an `OverrideSource` to the `<MaterialFonts />` initialization within your `App.xaml`.
+
+1. Install your custom font following the steps [here](../features/custom-fonts.md)
+1. Create the nested folders `Styles\` and then `Styles\Application\` under the `.Shared` project
+1. Add a new Resource Dictionary `MaterialFontsOverride.xaml` under `Styles\Application\`
+1. Add your custom font with the resource key `MaterialFontFamily`:
+    ```xml
+    <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+        <FontFamily x:Key="MaterialFontFamily">ms-appx:///Assets/Fonts/Material/RobotoMono-VariableFont_wght.ttf#Roboto Mono</FontFamily>
+        
+    </ResourceDictionary>
+    ```
+1. In `App.xaml`, add the line that initializes the `MaterialFonts` to include the new font override:
+    ```xml
+    <Application.Resources>
+    <ResourceDictionary>
+        <ResourceDictionary.MergedDictionaries>
+            <!-- ... -->
+
+            <!-- Load Material Font with OverrideSource -->
+            <MaterialFonts xmlns="using:Uno.Material"
+                            OverrideSource="ms-appx:///MaterialFontsOverride.xaml" />
+            
+            <!-- Load the Material control resources -->
+            <MaterialResources xmlns="using:Uno.Material" />
+
+            <!-- ... -->
+        </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+    </Application.Resources>
+    ```
+1. Run the app, you should now see the controls using your new FontFamily.
+
 
 ## Note
 - Certain controls may require additional setup to setup and/or overriding color pallette. For details, see: [Uno.Material controls extra setup](../features/uno-material-controls-extra-setup.md)

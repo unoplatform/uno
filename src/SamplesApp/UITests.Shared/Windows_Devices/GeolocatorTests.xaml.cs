@@ -23,7 +23,7 @@ namespace UITests.Shared.Windows_Devices
 			this.DataContextChanged += GeolocatorTests_DataContextChanged;
 		}
 
-		public GeolocatorTestsViewModel ViewModel { get; private set; }
+		internal GeolocatorTestsViewModel ViewModel { get; private set; }
 
 		private void GeolocatorTests_DataContextChanged(DependencyObject sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
 		{
@@ -32,7 +32,7 @@ namespace UITests.Shared.Windows_Devices
 	}
 
 	[Bindable]
-	public class GeolocatorTestsViewModel : ViewModelBase
+	internal class GeolocatorTestsViewModel : ViewModelBase
 	{
 		private Geolocator _geolocator = new Geolocator();
 
@@ -122,20 +122,20 @@ namespace UITests.Shared.Windows_Devices
 			GetOrCreateCommand(GetGeoposition);
 
 
-		public Command AttachPositionChangedCommand => new Command((p) =>
+		internal Command AttachPositionChangedCommand => new Command((p) =>
 		{
 			_geolocator.PositionChanged += Geolocator_PositionChanged;
 			PositionChangedAttached = true;
 		});
 
-		public Command DetachPositionChangedCommand => new Command((p) =>
+		internal Command DetachPositionChangedCommand => new Command((p) =>
 		{
 			_geolocator.PositionChanged -= Geolocator_PositionChanged;
 			PositionChangedAttached = false;
 		});
 
 
-		public Command AttachStatusChangedCommand => new Command((p) =>
+		internal Command AttachStatusChangedCommand => new Command((p) =>
 		{
 			_geolocator.StatusChanged += Geolocator_StatusChanged;
 			StatusChangedAttached = true;

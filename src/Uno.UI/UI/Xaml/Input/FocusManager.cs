@@ -3,9 +3,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+
 using Uno;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
@@ -18,7 +19,7 @@ namespace Windows.UI.Xaml.Input
 {
 	public sealed partial class FocusManager
 	{
-		private static readonly Lazy<ILogger> _log = new Lazy<ILogger>(() => typeof(FocusManager).Log());
+		private static readonly Lazy<Logger> _log = new Lazy<Logger>(() => typeof(FocusManager).Log());
 		private static readonly Dictionary<XamlRoot, object> _focusedElements = new Dictionary<XamlRoot, object>(1);
 
 		/// <summary>

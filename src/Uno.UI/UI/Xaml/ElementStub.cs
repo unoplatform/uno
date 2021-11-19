@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 
@@ -179,7 +179,7 @@ namespace Windows.UI.Xaml
 
 		private void Materialize(bool isVisibilityChanged)
 		{
-			if(this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if(this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"ElementStub.Materialize(isVibilityChanged: {isVisibilityChanged})");
 			}
@@ -219,7 +219,7 @@ namespace Windows.UI.Xaml
 
 		private void Dematerialize()
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"ElementStub.Dematerialize()");
 			}

@@ -1,8 +1,8 @@
 using System;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
-using Microsoft.Extensions.Logging;
-using Uno.Logging;
+
+using Uno.Foundation.Logging;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Input
 			=> mode == ManipulationModes.All
 			|| (mode & _unsupported) == 0;
 
-		public static void LogIfNotSupported(this ManipulationModes mode, ILogger log)
+		public static void LogIfNotSupported(this ManipulationModes mode, Logger log)
 		{
 			if (!mode.IsSupported() && log.IsEnabled(LogLevel.Information))
 			{

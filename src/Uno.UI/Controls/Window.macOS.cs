@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml;
 using Uno.UI.Controls;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Core.Preview;

@@ -7,7 +7,7 @@ using EventHandler = System.EventHandler;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.WebView
 {
-	public class WebViewStaticViewModel : ViewModelBase
+	internal class WebViewStaticViewModel : ViewModelBase
 	{
 		private static readonly string[] WebSites =
 		{

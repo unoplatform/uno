@@ -23,6 +23,8 @@ jobs:
   - checkout: self
     clean: true
 
+  - template: templates/dotnet-install.yml
+
   - task: MSBuild@1
     displayName: 'Build UI Tests'
     inputs:

@@ -11,11 +11,9 @@ using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
-using Microsoft.Extensions.Logging;
 using Uno;
 using Uno.Disposables;
-using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {

@@ -2,7 +2,7 @@
 using Android.Views;
 using Uno.Disposables;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.UI.Xaml.Input;
 using Android.Runtime;
@@ -63,9 +63,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 			else
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
-					this.Log().WarnFormat("ControlTemplateRoot is not available, {0} will not be clickable", this.GetType());
+					this.Log().Warn($"ControlTemplateRoot is not available, {this.GetType()} will not be clickable");
 				}
 			}
 		}

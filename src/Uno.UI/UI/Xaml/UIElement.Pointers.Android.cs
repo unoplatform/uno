@@ -6,9 +6,9 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Android.Runtime;
 using Android.Views;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 
 #if HAS_UNO_WINUI

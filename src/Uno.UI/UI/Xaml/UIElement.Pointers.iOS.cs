@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Input;
 using Foundation;
 using UIKit;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 
 #if HAS_UNO_WINUI

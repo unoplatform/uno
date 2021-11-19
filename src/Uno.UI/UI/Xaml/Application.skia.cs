@@ -7,12 +7,12 @@ using Windows.ApplicationModel;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Threading;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.Foundation.Extensibility;
-using Microsoft.Extensions.Logging;
+
 
 namespace Windows.UI.Xaml
 {

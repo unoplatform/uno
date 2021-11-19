@@ -5,7 +5,7 @@ using System.Linq;
 using CoreAnimation;
 using CoreGraphics;
 using Foundation;
-using Microsoft.Extensions.Logging;
+
 using UIKit;
 using Uno.Extensions;
 using Uno.UI;

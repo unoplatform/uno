@@ -102,7 +102,7 @@
 	<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.17763' ">
+  <PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.17763' and '$(TargetFramework)'!='net5.0-windows10.0.18362.0' ">
 	<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
   </PropertyGroup>
 

@@ -11,8 +11,9 @@ using Windows.UI.Xaml.Data;
 using Uno.Extensions;
 using System.Collections.Specialized;
 using Uno.Disposables;
-using Microsoft.Extensions.Logging;
+
 using Windows.UI.Xaml.Controls.Primitives;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {

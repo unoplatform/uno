@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -96,6 +96,13 @@ namespace Uno.UI.RemoteControl.HotReload
                                 break;
                         }
                     }
+
+					if (ResourceResolver.RetrieveDictionaryForFilePath(uri.AbsolutePath) is { } targetDictionary)
+					{
+						var replacementDictionary = (ResourceDictionary)XamlReader.Load(fileReload.Content);
+						targetDictionary.CopyFrom(replacementDictionary);
+						Application.Current.UpdateResourceBindingsForHotReload();
+					}
                 }
                 catch (Exception e)
                 {

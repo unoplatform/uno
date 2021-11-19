@@ -12,7 +12,7 @@ using Windows.System;
 using Uno;
 using Uno.Disposables;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 #if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
 namespace Microsoft.UI.Input

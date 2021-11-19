@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Media.Animation;
 using System.Collections;
@@ -13,7 +13,7 @@ using Windows.Foundation;
 using Uno.UI;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
-using Microsoft.Extensions.Logging;
+
 using Uno.UI.Xaml;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -868,7 +868,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetContentTemplateRootToPlaceholder()
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat("No ContentTemplate was specified for {0} and content is not a UIView, defaulting to TextBlock.", GetType().Name);
 			}
@@ -1033,9 +1033,9 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
-		internal override void UpdateThemeBindings()
+		internal override void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{
-			base.UpdateThemeBindings();
+			base.UpdateThemeBindings(updateReason);
 			SetDefaultForeground(ForegroundProperty);
 		}
 

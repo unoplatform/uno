@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 
 #if __IOS__

@@ -7,9 +7,9 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
@@ -180,7 +180,7 @@ namespace Uno.UI.RemoteControl
 				{
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
-						this.Log().LogTrace($"Received frame [{frame.Scope}/{frame.Name}]");
+						this.Log().Trace($"Received frame [{frame.Scope}/{frame.Name}]");
 					}
 
 					await processor.ProcessFrame(frame);

@@ -20,7 +20,7 @@ using Uno.Extensions.Specialized;
 using System.Collections;
 using System.Linq;
 using Windows.UI.Xaml.Controls.Primitives;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Disposables;
 using Uno.Client;
 using System.Threading.Tasks;
@@ -458,7 +458,7 @@ namespace Windows.UI.Xaml.Controls
 						completeRefresh();
 						return;
 					}
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Inserting {args.NewItems.Count} items starting at {args.NewStartingIndex}");
 					}
@@ -478,7 +478,7 @@ namespace Windows.UI.Xaml.Controls
 						completeRefresh();
 						return;
 					}
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Deleting {args.OldItems.Count} items starting at {args.OldStartingIndex}");
 					}
@@ -489,7 +489,7 @@ namespace Windows.UI.Xaml.Controls
 
 					break;
 				case NotifyCollectionChangedAction.Replace:
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Replacing {args.NewItems.Count} items starting at {args.NewStartingIndex}");
 					}
@@ -819,7 +819,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			catch (Exception e)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 				{
 					this.Log().Warn($"{nameof(LoadMoreItemsAsync)} failed.", e);
 				}

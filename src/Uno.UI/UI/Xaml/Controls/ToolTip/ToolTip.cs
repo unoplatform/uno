@@ -2,9 +2,9 @@
 
 using System;
 using System.Diagnostics;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls.Primitives;

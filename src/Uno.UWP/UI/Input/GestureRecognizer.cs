@@ -4,10 +4,10 @@ using System.Linq;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Microsoft.Extensions.Logging;
+
 using Uno.Disposables;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno;
 using Windows.Devices.Haptics;
 
@@ -31,7 +31,7 @@ namespace Windows.UI.Input
 
 		internal const long DragWithTouchMinDelayTicks = TimeSpan.TicksPerMillisecond * 300; // https://docs.microsoft.com/en-us/windows/uwp/design/input/drag-and-drop#open-a-context-menu-on-an-item-you-can-drag-with-touch
 
-		private readonly ILogger _log;
+		private readonly Logger _log;
 		private IDictionary<uint, Gesture> _gestures = new Dictionary<uint, Gesture>(_defaultGesturesSize);
 		private Manipulation _manipulation;
 		private GestureSettings _gestureSettings;

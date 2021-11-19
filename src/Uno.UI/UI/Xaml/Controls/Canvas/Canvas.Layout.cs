@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using Windows.Foundation;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
-using Uno.Logging;
+
+using Uno.Foundation.Logging;
 
 #if __ANDROID__
 using _View = Android.Views.View;

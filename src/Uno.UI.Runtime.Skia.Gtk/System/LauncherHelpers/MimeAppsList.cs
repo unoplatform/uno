@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.IO;
-using Microsoft.Extensions.Logging;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia.GTK.Extensions.System.LauncherHelpers
 {

@@ -7,11 +7,15 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Uno.Extensions;
 using Uno.UI;
+using Uno.UI.Helpers.Xaml;
 using Uno.UI.Xaml;
 using Uno.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Documents;
+using Windows.UI;
+using Windows.Foundation;
+using Windows.UI.Text;
 
 #if XAMARIN_ANDROID
 using _View = Android.Views.View;
@@ -31,6 +35,21 @@ namespace Windows.UI.Xaml.Markup.Reader
 		private readonly Stack<Type> _styleTargetTypeStack = new Stack<Type>();
 		private Queue<Action> _postActions = new Queue<Action>();
 		private static readonly Regex _attachedPropertMatch = new Regex(@"(\(.*?\))");
+
+		private static Type[] _genericConvertibles = new []
+		{
+			typeof(Media.Brush),
+			typeof(Media.SolidColorBrush),
+			typeof(Color),
+			typeof(Thickness),
+			typeof(CornerRadius),
+			typeof(Media.FontFamily),
+			typeof(GridLength),
+			typeof(Media.Animation.KeyTime),
+			typeof(Duration),
+			typeof(Media.Matrix),
+			typeof(FontWeight),
+		};
 
 		public XamlObjectBuilder(XamlFileDefinition xamlFileDefinition)
 		{
@@ -109,9 +128,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				return stringValue;
 			}
-			else if (type == typeof(Media.Brush) && control.Members.Where(m => m.Member.Name == "_UnknownContent").FirstOrDefault()?.Value is string brushStringValue)
+			else if (
+				_genericConvertibles.Contains(type)
+				&& control.Members.Where(m => m.Member.Name == "_UnknownContent").FirstOrDefault()?.Value is string otherContentValue)
 			{
-				return XamlBindingHelper.ConvertValue(typeof(Media.Brush), brushStringValue);
+				return XamlBindingHelper.ConvertValue(type, otherContentValue);
 			}
 			else
 			{
@@ -251,7 +272,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 					{
 						if (IsMarkupExtension(member))
 						{
-							ProcessMemberMarkupExtension(instance, member);
+							ProcessMemberMarkupExtension(instance, member, propertyInfo);
 						}
 						else
 						{
@@ -278,7 +299,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 					{
 						if (IsMarkupExtension(member))
 						{
-							ProcessMemberMarkupExtension(instance, member);
+							ProcessMemberMarkupExtension(instance, member, null);
 						}
 						else if (instance is DependencyObject dependencyObject)
 						{
@@ -350,7 +371,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				if (IsMarkupExtension(member))
 				{
-					ProcessMemberMarkupExtension(instance, member);
+					ProcessMemberMarkupExtension(instance, member, null);
 				}
 				else
 				{
@@ -451,7 +472,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 		private static MethodInfo GetPropertySetter(PropertyInfo propertyInfo)
 			=> propertyInfo?.SetMethod ?? throw new InvalidOperationException($"Unable to find setter for property [{propertyInfo}]");
 
-		private void ProcessMemberMarkupExtension(object instance, XamlMemberDefinition member)
+		private void ProcessMemberMarkupExtension(object instance, XamlMemberDefinition member, PropertyInfo propertyInfo)
 		{
 			if (IsBindingMarkupNode(member))
 			{
@@ -459,11 +480,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 			else if (IsStaticResourceMarkupNode(member) || IsThemeResourceMarkupNode(member))
 			{
-				ProcessStaticResourceMarkupNode(instance, member);
+				ProcessStaticResourceMarkupNode(instance, member, propertyInfo);
 			}
 		}
 
-		private void ProcessStaticResourceMarkupNode(object instance, XamlMemberDefinition member)
+		private void ProcessStaticResourceMarkupNode(object instance, XamlMemberDefinition member, PropertyInfo propertyInfo)
 		{
 			var resourceNode = member.Objects.FirstOrDefault();
 
@@ -480,7 +501,8 @@ namespace Windows.UI.Xaml.Markup.Reader
 						dependencyObject,
 						dependencyProperty,
 						keyName,
-						isThemeResourceExtension: IsThemeResourceMarkupNode(member));
+						isThemeResourceExtension: IsThemeResourceMarkupNode(member),
+						isHotReloadSupported: true);
 
 					if (instance is FrameworkElement fe)
 					{
@@ -490,10 +512,23 @@ namespace Windows.UI.Xaml.Markup.Reader
 						};
 					}
 				}
-				else
+				else if (propertyInfo != null)
 				{
-					// Here we assigned a {StaticResource} on a standard property (not a DependencyProperty)
-					// We can't resolve it.
+					GetPropertySetter(propertyInfo).Invoke(
+								instance,
+								new[] { ResourceResolver.ResolveResourceStatic(keyName, propertyInfo.PropertyType) }
+							);
+
+					if (instance is Setter setter && propertyInfo.Name == "Value")
+					{
+						// Register StaticResource/ThemeResource assignations to Value for resource updates
+						setter.ApplyThemeResourceUpdateValues(
+							keyName,
+							null,
+							IsThemeResourceMarkupNode(member),
+							true
+						);
+					}
 				}
 			}
 		}

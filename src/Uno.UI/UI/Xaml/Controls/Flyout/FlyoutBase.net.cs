@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.Disposables;
 using Uno.UI.DataBinding;

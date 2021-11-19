@@ -1,7 +1,7 @@
 using Android.App;
 using Android.Views;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
@@ -112,7 +112,7 @@ namespace Uno.UI
 			{
 				base.Dispose(disposing);
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("Disposing {0}", disposing);
 				}

@@ -12,7 +12,7 @@ using System.Linq;
 using Foundation;
 using UIKit;
 using CoreGraphics;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;

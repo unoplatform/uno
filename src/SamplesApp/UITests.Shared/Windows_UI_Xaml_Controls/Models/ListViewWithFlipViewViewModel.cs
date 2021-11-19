@@ -6,7 +6,7 @@ using Windows.UI.Core;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 {
-	public class ListViewWithFlipViewViewModel : ViewModelBase
+	internal class ListViewWithFlipViewViewModel : ViewModelBase
 	{
 		private FlipViewItems[] SampleItems { get; }
 

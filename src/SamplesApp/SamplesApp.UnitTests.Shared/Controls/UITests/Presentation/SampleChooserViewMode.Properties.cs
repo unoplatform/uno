@@ -17,7 +17,6 @@ using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 using Windows.Storage;
 using Uno.Extensions;
-using Uno.Logging;
 using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml;
 using System.IO;
@@ -414,9 +413,10 @@ namespace SampleControl.Presentation
 				}
 #if HAS_UNO
 				// Force the in app styles to reload
-				Application.Current.Resources?.UpdateThemeBindings();
-				Uno.UI.ResourceResolver.UpdateSystemThemeBindings();
-				Application.PropagateThemeChanged(Windows.UI.Xaml.Window.Current.Content);
+				var updateReason = ResourceUpdateReason.ThemeResource;
+				Application.Current.Resources?.UpdateThemeBindings(updateReason);
+				Uno.UI.ResourceResolver.UpdateSystemThemeBindings(updateReason);
+				Application.PropagateResourcesChanged(Windows.UI.Xaml.Window.Current.Content, updateReason);
 #endif
 				RaisePropertyChanged();
 			}

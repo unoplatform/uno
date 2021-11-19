@@ -12,8 +12,8 @@ using System.Threading.Tasks;
 using Uno.UI;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Foundation;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 using Windows.UI;
 using Windows.UI.Core;
 
@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected virtual void OnImageFailed(ImageSource imageSource)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug(this.ToString() + " Image failed to open");
 			}
@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected virtual void OnImageOpened(ImageSource imageSource)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug(this.ToString() + " Image opened successfully");
 			}
@@ -268,7 +268,7 @@ namespace Windows.UI.Xaml.Controls
 		protected override Size MeasureOverride(Size availableSize)
 		{
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug(ToString() + $" measuring with availableSize={availableSize}");
 			}
@@ -325,7 +325,7 @@ namespace Windows.UI.Xaml.Controls
 
 				var containerSize = this.MeasureSource(availableSize, sourceSize);
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug(ToString() + $" measuring with Stretch.Uniform with availableSize={constrainedAvailableSize}, returning desiredSize={containerSize}");
 				}
@@ -373,7 +373,7 @@ namespace Windows.UI.Xaml.Controls
 						break;
 				}
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug(ToString() + $" measuring with knownWidth={knownWidth} with availableSize={constrainedAvailableSize}, returning desiredSize={desiredSize}");
 				}
@@ -404,7 +404,7 @@ namespace Windows.UI.Xaml.Controls
 						break;
 				}
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug(ToString() + $" measuring with knownHeight={knownHeight} with availableSize={constrainedAvailableSize}, returning desiredSize={desiredSize}");
 				}
@@ -417,7 +417,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug(ToString() + $" arranging with finalSize={finalSize}");
 			}
