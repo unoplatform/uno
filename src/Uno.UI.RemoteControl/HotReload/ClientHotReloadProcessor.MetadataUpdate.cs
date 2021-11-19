@@ -17,6 +17,8 @@ namespace Uno.UI.RemoteControl.HotReload
 {
 	partial class ClientHotReloadProcessor : IRemoteControlProcessor
 	{
+		private const string MetadataUpdaterType = "System.Reflection.Metadata.MetadataUpdater";
+
 		private ApplyUpdateHandler _applyUpdate;
 		private bool _linkerEnabled;
 
@@ -37,7 +39,7 @@ namespace Uno.UI.RemoteControl.HotReload
 
 		private string[] GetMetadataUpdateCapabilities()
 		{
-			if (Type.GetType("System.Reflection.Metadata.MetadataUpdater") is { } type)
+			if (Type.GetType(MetadataUpdaterType) is { } type)
 			{
 				if (type.GetMethod("GetCapabilities", BindingFlags.Static | BindingFlags.NonPublic) is { } getCapabilities)
 				{
@@ -52,18 +54,28 @@ namespace Uno.UI.RemoteControl.HotReload
 					}
 					else
 					{
-						throw new NotSupportedException($"Invalid returned type for System.Reflection.Metadata.MetadataUpdater.GetCapabilities()");
+						if (this.Log().IsEnabled(LogLevel.Warning))
+						{
+							this.Log().Trace($"Runtime does not support Hot Reload (Invalid returned type for {MetadataUpdaterType}.GetCapabilities())");
+						}
 					}
 				}
 				else
 				{
-					throw new NotSupportedException($"Unable to find System.Reflection.Metadata.MetadataUpdater.GetCapabilities()");
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().Trace($"Runtime does not support Hot Reload (Unable to find method {MetadataUpdaterType}.GetCapabilities())");
+					}
 				}
 			}
 			else
 			{
-				throw new NotSupportedException($"Unable to find System.Reflection.Metadata.MetadataUpdater");
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Trace($"Runtime does not support Hot Reload (Unable to find type {MetadataUpdaterType})");
+				}
 			}
+			return Array.Empty<string>();
 		}
 
 		private void AssemblyReload(AssemblyDeltaReload assemblyDeltaReload)
@@ -97,7 +109,7 @@ namespace Uno.UI.RemoteControl.HotReload
 #else
 				if (_applyUpdate == null)
 				{
-					if (Type.GetType("System.Reflection.Metadata.MetadataUpdater") is { } type)
+					if (Type.GetType(MetadataUpdaterType) is { } type)
 					{
 						if (type.GetMethod("ApplyUpdate") is { } applyUpdateMethod)
 						{
@@ -114,7 +126,10 @@ namespace Uno.UI.RemoteControl.HotReload
 					}
 				}
 
-				_applyUpdate(assembly, metadataDelta, ilDeta, pdbDelta);
+				if (_applyUpdate is not null)
+				{
+					_applyUpdate(assembly, metadataDelta, ilDeta, pdbDelta);
+				}
 #endif
 			}
 			else
