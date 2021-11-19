@@ -36,8 +36,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private void InitializeMetadataUpdater(ConfigureServer configureServer)
 		{
-			Debugger.Launch();
-
 			_ = bool.TryParse(_remoteControlServer.GetServerConfiguration("metadata-updates"), out _useRoslynHotReload);
 
 			if (_useRoslynHotReload)
