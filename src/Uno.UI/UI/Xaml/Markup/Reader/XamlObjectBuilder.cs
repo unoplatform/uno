@@ -13,6 +13,9 @@ using Uno.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Documents;
+using Windows.UI;
+using Windows.Foundation;
+using Windows.UI.Text;
 
 #if XAMARIN_ANDROID
 using _View = Android.Views.View;
@@ -32,6 +35,21 @@ namespace Windows.UI.Xaml.Markup.Reader
 		private readonly Stack<Type> _styleTargetTypeStack = new Stack<Type>();
 		private Queue<Action> _postActions = new Queue<Action>();
 		private static readonly Regex _attachedPropertMatch = new Regex(@"(\(.*?\))");
+
+		private static Type[] _genericConvertibles = new []
+		{
+			typeof(Media.Brush),
+			typeof(Media.SolidColorBrush),
+			typeof(Color),
+			typeof(Thickness),
+			typeof(CornerRadius),
+			typeof(Media.FontFamily),
+			typeof(GridLength),
+			typeof(Media.Animation.KeyTime),
+			typeof(Duration),
+			typeof(Media.Matrix),
+			typeof(FontWeight),
+		};
 
 		public XamlObjectBuilder(XamlFileDefinition xamlFileDefinition)
 		{
@@ -110,9 +128,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				return stringValue;
 			}
-			else if (type == typeof(Media.Brush) && control.Members.Where(m => m.Member.Name == "_UnknownContent").FirstOrDefault()?.Value is string brushStringValue)
+			else if (
+				_genericConvertibles.Contains(type)
+				&& control.Members.Where(m => m.Member.Name == "_UnknownContent").FirstOrDefault()?.Value is string otherContentValue)
 			{
-				return XamlBindingHelper.ConvertValue(typeof(Media.Brush), brushStringValue);
+				return XamlBindingHelper.ConvertValue(type, otherContentValue);
 			}
 			else
 			{
