@@ -126,6 +126,9 @@
       <Name>Uno.Foundation</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Uno.UI.Foldable\Uno.UI.Foldable.csproj">
+      <Project>{c187cd35-e5b4-4054-99c2-5d85ad9d6c73}</Project>
+      <Name>Uno.UI.Foldable</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Uno.UI.Composition\Uno.UI.Composition.csproj">
       <Project>{39c20ebb-59d8-43e5-9cf6-390521c0c82a}</Project>
       <Name>Uno.UI.Composition</Name>
@@ -133,9 +136,6 @@
     <ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.csproj">
       <Project>{ac6e2bd5-3902-46f4-8ea9-9bef09d8b39c}</Project>
       <Name>Uno.UI.Dispatching</Name>
-    </ProjectReference>
-      <Project>{c187cd35-e5b4-4054-99c2-5d85ad9d6c73}</Project>
-      <Name>Uno.UI.Foldable</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Uno.UI.Maps\Uno.UI.Maps.csproj">
       <Project>{f25ccf70-5a21-4245-ae4e-342bc55f9e86}</Project>
