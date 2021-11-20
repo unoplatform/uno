@@ -48,33 +48,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private const int c_noValueSetSentinel = -1;
 
-		private static UISettings _uiSettings = null;
-
-		private DispatcherHelper m_dispatcherHelper;
-
-		// Private members
-		private TextBlock m_captionTextBlock;
-
-		private CompositionPropertySet m_sharedPointerPropertySet;
-
-		private StackPanel m_backgroundStackPanel;
-		private StackPanel m_foregroundStackPanel;
-
-		private bool m_isPointerOver = false;
-		private bool m_isPointerDown = false;
-		private double m_mousePercentage = 0.0;
-
-		private RatingInfoType m_infoType = RatingInfoType.Font;
-		private double m_preEngagementValue = 0.0;
-		private bool m_disengagedWithA = false;
-		private bool m_shouldDiscardValue = true;
-		private long m_fontFamilyChangedToken;
-
 		/// <summary>
 		/// Initializes a new instance of the RatingControl class.
 		/// </summary>
 		public RatingControl()
 		{
+			// Uno specific: Needs to be initialized in constructor, as "this" is not available in readonly field initializer
 			m_dispatcherHelper = new DispatcherHelper(this);
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_RatingControl);
 
@@ -365,6 +344,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void ApplyScaleExpressionAnimation(UIElement uiElement, int starIndex)
 		{
+			var scaleTransform = new ScaleTransform()
+			{
+				ScaleX = 0.5,
+				ScaleY = 0.5
+			};
+			uiElement.RenderTransform = scaleTransform;
+			uiElement.RenderTransformOrigin = new Point(0.5, 0.5);
 			//TODO: Uno Specific - Expression animations are not supported yet
 
 			//Visual uiElementVisual = ElementCompositionPreview.GetElementVisual(uiElement);
@@ -1211,22 +1197,12 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 
+		private UISettings _uiSettings;
+
 		private UISettings GetUISettings()
 		{
 			_uiSettings = _uiSettings ?? new UISettings();
 			return _uiSettings;
-		}
-
-		// Header file
-
-		private bool IsItemInfoPresentAndFontInfo()
-		{
-			return m_infoType == RatingInfoType.Font;
-		}
-
-		private bool IsItemInfoPresentAndImageInfo()
-		{
-			return m_infoType == RatingInfoType.Image;
 		}
 	}
 }
