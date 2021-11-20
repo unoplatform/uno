@@ -42,8 +42,17 @@ namespace Microsoft.UI.Xaml.Controls
 			DefaultStyleKey = typeof(TwoPaneView);
 
 			SizeChanged += OnSizeChanged;
-			Windows.UI.Xaml.Window.Current.SizeChanged += OnWindowSizeChanged;
-			m_windowSizeChangedRevoker.Disposable = Disposable.Create(() => Windows.UI.Xaml.Window.Current.SizeChanged -= OnWindowSizeChanged);
+			var window = Windows.UI.Xaml.Window.Current;
+			window.SizeChanged += OnWindowSizeChanged;
+			m_windowSizeChangedRevoker.Disposable = Disposable.Create(() => window.SizeChanged -= OnWindowSizeChanged);
+
+			// TODO Uno specific: Revoke events - https://github.com/microsoft/microsoft-ui-xaml/issues/6357
+			Unloaded += (s, e) =>
+			{
+				m_windowSizeChangedRevoker.Disposable = null;
+				m_pane1LoadedRevoker.Disposable = null;
+				m_pane2LoadedRevoker.Disposable = null;
+			};
 		}
 
 		protected override void OnApplyTemplate()
