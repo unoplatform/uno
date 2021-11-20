@@ -57,9 +57,20 @@ namespace Uno.UI.RemoteControl.Host
 
 			while (await WebSocketHelper.ReadFrame(socket, ct) is Frame frame)
 			{
-				if (frame.Name == ProcessorsDiscovery.Name)
+				if (frame.Scope == "RemoteControlServer")
 				{
-					ProcessDiscoveryFrame(frame);
+					if (frame.Name == ProcessorsDiscovery.Name)
+					{
+						ProcessDiscoveryFrame(frame);
+					}
+
+					if (frame.Name == KeepAliveMessage.Name)
+					{
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().LogTrace($"Client Keepalive frame");
+						}
+					}
 				}
 
 				if (_processors.TryGetValue(frame.Scope, out var processor))

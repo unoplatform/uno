@@ -28,6 +28,7 @@ namespace Uno.UI.RemoteControl
 		private readonly (string endpoint, int port)[]? _serverAddresses;
 		private WebSocket? _webSocket;
 		private Dictionary<string, IRemoteControlProcessor> _processors = new Dictionary<string, IRemoteControlProcessor>();
+		private Timer? _keepAliveTimer;
 
 		private RemoteControlClient(Type appType)
 		{
@@ -200,6 +201,8 @@ namespace Uno.UI.RemoteControl
 				await processor.Value.Initialize();
 			}
 
+			StartKeepAliveTimer();
+
 			while (await WebSocketHelper.ReadFrame(_webSocket, CancellationToken.None) is HotReload.Messages.Frame frame)
 			{
 				if (_processors.TryGetValue(frame.Scope, out var processor))
@@ -219,6 +222,35 @@ namespace Uno.UI.RemoteControl
 					}
 				}
 			}
+		}
+
+		private void StartKeepAliveTimer()
+		{
+			KeepAliveMessage keepAlive = new();
+
+			_keepAliveTimer = new Timer(_ => {
+
+				try
+				{
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"Sending Keepalive frame");
+					}
+
+					SendMessage(keepAlive);
+				}
+				catch(Exception)
+				{
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"Keepalive failed");
+					}
+
+					_keepAliveTimer?.Dispose();
+				}
+			});
+
+			_keepAliveTimer.Change(TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(30));
 		}
 
 		private async Task InitializeServerProcessors()
