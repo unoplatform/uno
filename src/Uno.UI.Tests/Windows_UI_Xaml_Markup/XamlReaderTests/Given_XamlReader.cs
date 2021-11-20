@@ -948,6 +948,23 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.AreEqual(Button2_property_public, SUT.Button2_property_public);
 		}
 
+		[TestMethod]
+		public void When_ResourceDictionary_Colors()
+		{
+			var s = GetContent(nameof(When_ResourceDictionary_Colors));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as ResourceDictionary;
+
+			var lightTheme = r.ThemeDictionaries["Light"] as ResourceDictionary;
+			Assert.IsNotNull(lightTheme);
+
+			Assert.AreEqual(Windows.UI.Colors.Red, lightTheme["MaterialPrimaryColor"]);
+
+			var darkTheme = r.ThemeDictionaries["Dark"] as ResourceDictionary;
+			Assert.IsNotNull(darkTheme);
+
+			Assert.AreEqual(Windows.UI.Colors.White, darkTheme["MaterialOnPrimaryColor"]);
+		}
+
 		private string GetContent(string testName)
 		{
 			var assembly = this.GetType().Assembly;

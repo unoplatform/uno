@@ -561,7 +561,14 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 					if (propertyInstance != null)
 					{
-						AddCollectionItems(propertyInstance, member.Objects, rootInstance);
+						if (propertyInstance is IDictionary<object, object> propertyInstanceAsDictionary)
+						{
+							AddGenericDictionaryItems(propertyInstanceAsDictionary, member.Objects, rootInstance);
+						}
+						else
+						{
+							AddCollectionItems(propertyInstance, member.Objects, rootInstance);
+						}
 					}
 					else
 					{
@@ -848,16 +855,67 @@ namespace Windows.UI.Xaml.Markup.Reader
 				)
 				.Any();
 
-		private void AddCollectionItems(object collectionInstance, IEnumerable<XamlObjectDefinition> nonBindingObjects, object rootInstance)
+		private void AddGenericDictionaryItems(
+			IDictionary<object, object> dictionary,
+			IEnumerable<XamlObjectDefinition> nonBindingObjects,
+			object rootInstance)
 		{
-			var addMethod = collectionInstance.GetType().GetMethod("Add")
-				?? throw new InvalidOperationException($"The type {collectionInstance.GetType()} contains an Add method");
+			foreach (var child in nonBindingObjects)
+			{
+				var item = LoadObject(child, rootInstance: rootInstance);
+
+				var resourceKey = GetResourceKey(child);
+
+				if (resourceKey != null && item != null)
+				{
+					dictionary[resourceKey] = item;
+				}
+			}
+		}
+
+		private void AddDictionaryItems(object collectionInstance, IEnumerable<XamlObjectDefinition> nonBindingObjects, object rootInstance)
+		{
+			MethodInfo? addMethodInfo = null;
 
 			foreach (var child in nonBindingObjects)
 			{
 				var item = LoadObject(child, rootInstance: rootInstance);
 
-				addMethod.Invoke(collectionInstance, new[] { item });
+				if (addMethodInfo == null)
+				{
+					addMethodInfo = collectionInstance
+						.GetType()
+						.GetMethods(BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public)
+						.Where(m => m.Name == "set_Item")
+						.FirstOrDefault(m => m.GetParameters() is { Length: 1 } p
+							&& (item?.GetType() ?? typeof(object)).Is(p[0].ParameterType))
+						?? throw new InvalidOperationException($"The type does {collectionInstance.GetType()} contains an Add({item?.GetType()}) method");
+				}
+
+				addMethodInfo.Invoke(collectionInstance, new[] { item });
+			}
+		}
+
+		private void AddCollectionItems(object collectionInstance, IEnumerable<XamlObjectDefinition> nonBindingObjects, object rootInstance)
+		{
+			MethodInfo? addMethodInfo = null;
+
+			foreach (var child in nonBindingObjects)
+			{
+				var item = LoadObject(child, rootInstance: rootInstance);
+
+				if (addMethodInfo == null)
+				{
+					addMethodInfo = collectionInstance
+						.GetType()
+						.GetMethods(BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public)
+						.Where(m => m.Name == "Add")
+						.FirstOrDefault(m => m.GetParameters() is { Length: 1 } p
+							&& (item?.GetType() ?? typeof(object)).Is(p[0].ParameterType))
+						?? throw new InvalidOperationException($"The type does {collectionInstance.GetType()} contains an Add({item?.GetType()}) method");
+				}
+
+				addMethodInfo.Invoke(collectionInstance, new[] { item });
 			}
 		}
 
