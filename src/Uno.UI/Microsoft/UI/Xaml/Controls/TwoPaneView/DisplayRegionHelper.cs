@@ -1,61 +1,59 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference DisplayRegionHelper.cpp, commit 45e6a3f
+
+using Uno.UI;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
-using Uno.UI;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+internal partial class DisplayRegionHelper
 {
-	internal class DisplayRegionHelper
+	internal static DisplayRegionHelperInfo GetRegionInfo()
 	{
-		private bool m_simulateDisplayRegions = false;
-		private TwoPaneViewMode m_simulateMode = TwoPaneViewMode.SinglePane;
+		var instance = LifetimeHandler.GetDisplayRegionHelperInstance();
 
-		static readonly Rect m_simulateWide0 = new Rect(0, 0, 300, 400);
-		static readonly Rect m_simulateWide1 = new Rect(312, 0, 300, 400);
-		static readonly Rect m_simulateTall0 = new Rect(0, 0, 400, 300);
-		static readonly Rect m_simulateTall1 = new Rect(0, 312, 400, 300);
+		var info = new DisplayRegionHelperInfo();
+		info.Mode = TwoPaneViewMode.SinglePane;
 
-		internal static DisplayRegionHelperInfo GetRegionInfo()
+		if (instance.m_simulateDisplayRegions)
 		{
-			var instance = LifetimeHandler.GetDisplayRegionHelperInstance();
-
-			var info = new DisplayRegionHelperInfo();
-			info.Mode = TwoPaneViewMode.SinglePane;
-
-			if (instance.m_simulateDisplayRegions)
+			// Create fake rectangles for test app
+			if (instance.m_simulateMode == TwoPaneViewMode.Wide)
 			{
-				// Create fake rectangles for test app
-				if (instance.m_simulateMode == TwoPaneViewMode.Wide)
-				{
-					info.Regions[0] = m_simulateWide0;
-					info.Regions[1] = m_simulateWide1;
-					info.Mode = TwoPaneViewMode.Wide;
-				}
-				else if (instance.m_simulateMode == TwoPaneViewMode.Tall)
-				{
-					info.Regions[0] = m_simulateTall0;
-					info.Regions[1] = m_simulateTall1;
-					info.Mode = TwoPaneViewMode.Tall;
-				}
-				else
-				{
-					info.Regions[0] = m_simulateWide0;
-				}
+				info.Regions[0] = m_simulateWide0;
+				info.Regions[1] = m_simulateWide1;
+				info.Mode = TwoPaneViewMode.Wide;
+			}
+			else if (instance.m_simulateMode == TwoPaneViewMode.Tall)
+			{
+				info.Regions[0] = m_simulateTall0;
+				info.Regions[1] = m_simulateTall1;
+				info.Mode = TwoPaneViewMode.Tall;
 			}
 			else
 			{
-				// ApplicationView.GetForCurrentView throws on failure; in that case we just won't do anything.
-				ApplicationView view = null;
-				try
-				{
-					view = ApplicationView.GetForCurrentView();
-				}
-				catch { }
+				info.Regions[0] = m_simulateWide0;
+			}
+		}
+		else
+		{
+			// ApplicationView.GetForCurrentView throws on failure; in that case we just won't do anything.
+			ApplicationView view = null;
+			try
+			{
+				view = ApplicationView.GetForCurrentView();
+			}
+			catch { }
 
-				if (view != null)
+			if (view != null && view.ViewMode == ApplicationViewMode.Spanning)
+			{
+				if (view is IApplicationViewSpanningRects appView)
 				{
-					var rects = view.GetSpanningRects();
+					var rects = appView.GetSpanningRects();
 
 					if (rects.Count == 2)
 					{
@@ -77,81 +75,80 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 			}
-
-			return info;
 		}
 
-		/* static */
-		internal static UIElement WindowElement()
-		{
-			var instance = LifetimeHandler.GetDisplayRegionHelperInstance();
+		return info;
+	}
 
-			if (instance.m_simulateDisplayRegions)
+	/* static */
+	internal static UIElement WindowElement()
+	{
+		var instance = LifetimeHandler.GetDisplayRegionHelperInstance();
+
+		if (instance.m_simulateDisplayRegions)
+		{
+			// Instead of returning the actual window, find the SimulatedWindow element
+			UIElement window = null;
+
+			if (Window.Current.Content is FrameworkElement fe)
 			{
-				// Instead of returning the actual window, find the SimulatedWindow element
-				UIElement window = null;
-
-				if (Window.Current.Content is FrameworkElement fe)
-				{
-					// UNO TODO
-					// window = SharedHelpers.FindInVisualTreeByName(fe, "SimulatedWindow");
-				}
-
-				return window;
+				window = SharedHelpers.FindInVisualTreeByName(fe, "SimulatedWindow");
 			}
-			else
-			{
-				return Window.Current.Content;
-			}
-		}
 
-		/* static */
-		internal static Rect WindowRect()
+			return window;
+		}
+		else
 		{
-			var instance = LifetimeHandler.GetDisplayRegionHelperInstance();
-
-			if (instance.m_simulateDisplayRegions)
-			{
-				// Return the bounds of the simulated window
-				FrameworkElement window = WindowElement() as FrameworkElement;
-				Rect rc = new Rect(
-					0, 0,
-					(float)window.ActualWidth,
-					(float)window.ActualHeight);
-				return rc;
-			}
-			else
-			{
-				return Window.Current.Bounds;
-			}
+			return Window.Current.Content;
 		}
+	}
 
-		/* static */
-		internal static void SimulateDisplayRegions(bool value)
+	/* static */
+	internal static Rect WindowRect()
+	{
+		var instance = LifetimeHandler.GetDisplayRegionHelperInstance();
+
+		if (instance.m_simulateDisplayRegions)
 		{
-			var instance = LifetimeHandler.GetDisplayRegionHelperInstance();
-			instance.m_simulateDisplayRegions = value;
+			// Return the bounds of the simulated window
+			FrameworkElement window = WindowElement() as FrameworkElement;
+			Rect rc = new Rect(
+				0, 0,
+				(float)window.ActualWidth,
+				(float)window.ActualHeight);
+			return rc;
 		}
-
-		/* static */
-		internal static bool SimulateDisplayRegions()
+		else
 		{
-			var instance = LifetimeHandler.GetDisplayRegionHelperInstance();
-			return instance.m_simulateDisplayRegions;
+			return Window.Current.Bounds;
 		}
+	}
 
-		/* static */
-		internal static void SimulateMode(TwoPaneViewMode value)
-		{
-			var instance = LifetimeHandler.GetDisplayRegionHelperInstance();
-			instance.m_simulateMode = value;
-		}
+	/* static */
+	internal static void SimulateDisplayRegions(bool value)
+	{
+		var instance = LifetimeHandler.GetDisplayRegionHelperInstance();
+		instance.m_simulateDisplayRegions = value;
+	}
 
-		/* static */
-		internal static TwoPaneViewMode SimulateMode()
-		{
-			var instance = LifetimeHandler.GetDisplayRegionHelperInstance();
-			return instance.m_simulateMode;
-		}
+	/* static */
+	internal static bool SimulateDisplayRegions()
+	{
+		var instance = LifetimeHandler.GetDisplayRegionHelperInstance();
+		return instance.m_simulateDisplayRegions;
+	}
+
+	/* static */
+	internal static void SimulateMode(TwoPaneViewMode value)
+	{
+		var instance = LifetimeHandler.GetDisplayRegionHelperInstance();
+		instance.m_simulateMode = value;
+	}
+
+	/* static */
+	internal static TwoPaneViewMode SimulateMode()
+	{
+		var instance = LifetimeHandler.GetDisplayRegionHelperInstance();
+		return instance.m_simulateMode;
 	}
 }
