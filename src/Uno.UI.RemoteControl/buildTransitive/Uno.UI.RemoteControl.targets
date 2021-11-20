@@ -12,8 +12,13 @@
   </PropertyGroup>
 
   <Target Name="GetRemoteControlHostPath">
+	<PropertyGroup>
+	  <_IsRCClientRemote>false</_IsRCClientRemote>
+	  <_IsRCClientRemote Condition="'$(PkgUno_Wasm_Bootstrap_DevServer)'!=''">true</_IsRCClientRemote>
+	</PropertyGroup>
     <Message Text="&lt;RemoteControlHostPath&gt;$(MSBuildThisFileDirectory)../tools/rc/host/net6.0/Uno.UI.RemoteControl.Host.dll&lt;/RemoteControlHostPath&gt;" Importance="High" />
     <Message Text="&lt;IntermediateOutputPath&gt;$(MSBuildProjectDirectory)/$(IntermediateOutputPath)&lt;/IntermediateOutputPath&gt;" Importance="High" />
+    <Message Text="&lt;IsRCClientRemote&gt;$(_IsRCClientRemote)&lt;/IsRCClientRemote&gt;" Importance="High" />
   </Target>
 
   <Target Name="InjectRemoteControlHost" BeforeTargets="BeforeBuild" Condition="exists('$(IntermediateOutputPath)\RemoteControlHost.config')">
