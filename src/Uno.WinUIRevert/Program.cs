@@ -74,7 +74,12 @@ namespace UnoWinUIRevert
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icon\SymbolIconSource.cs"),
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icon\PathIconSource.cs"),
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icon\FontIconSource.cs"),
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icon\IconSource.cs")
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icon\IconSource.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\RatingControl.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\SplitButton.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\ToggleSplitButton.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\TreeView.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\TwoPaneView.cs"),
 			};
 			DeleteFiles(duplicatedImplementations);
 
