@@ -36,11 +36,11 @@ public partial class TwoPaneView
 	private readonly SerialDisposable m_pane1LoadedRevoker = new();
 	private readonly SerialDisposable m_pane2LoadedRevoker = new();
 
-	private ColumnDefinition m_columnLeft = null;
-	private ColumnDefinition m_columnMiddle = null;
-	private ColumnDefinition m_columnRight = null;
-	private RowDefinition m_rowTop = null;
-	private RowDefinition m_rowMiddle = null;
-	private RowDefinition m_rowBottom = null;
+	private ColumnDefinition? m_columnLeft = null;
+	private ColumnDefinition? m_columnMiddle = null;
+	private ColumnDefinition? m_columnRight = null;
+	private RowDefinition? m_rowTop = null;
+	private RowDefinition? m_rowMiddle = null;
+	private RowDefinition? m_rowBottom = null;
 	private readonly SerialDisposable m_windowSizeChangedRevoker = new();
 }
