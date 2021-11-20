@@ -29,7 +29,6 @@ namespace Uno.UI.Foldable
 		const string TAG = "DualScreen-JWM"; // Jetpack Window Manager
 		WindowInfoRepositoryCallbackAdapter windowInfoRepository;
 		IWindowMetricsCalculator windowMetricsCalculator;
-		float density = 1f;
 
 		/// <summary>Rectangle that describes the coordinates of the hinge or fold on a dual-screen device</summary>	
 		public Android.Graphics.Rect FoldBounds { get; set; }
@@ -99,19 +98,22 @@ namespace Uno.UI.Foldable
 		/// </summary>
 		public void Accept(Java.Lang.Object newLayoutInfo)  // Object will be WindowLayoutInfo
 		{
-			Android.Util.Log.Info(TAG, "FoldableApplicationViewSpanningRects.Accept");
-			Android.Util.Log.Info(TAG, "    newLayoutInfo: " + newLayoutInfo.ToString());
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"DualMode: FoldableApplicationViewSpanningRects.Accept\n     newLayoutInfo: {newLayoutInfo}");
+			}
 			layoutStateChange(newLayoutInfo as WindowLayoutInfo);
 		}
 
 		void layoutStateChange(WindowLayoutInfo newLayoutInfo)
 		{
 			var wm = windowMetricsCalculator.ComputeCurrentWindowMetrics(ContextHelper.Current as Android.App.Activity);
-			Android.Util.Log.Info(TAG, "    Current: " + wm.Bounds.ToString());
-			Android.Util.Log.Info(TAG, "    Maximum: " + windowMetricsCalculator.ComputeMaximumWindowMetrics(ContextHelper.Current as Android.App.Activity).Bounds.ToString());
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"DualMode:    CurrentWindowBounds: " + wm.Bounds.ToString());
+				this.Log().Debug($"DualMode:    MaximumWindowBounds: " + windowMetricsCalculator.ComputeMaximumWindowMetrics(ContextHelper.Current as Android.App.Activity).Bounds.ToString());
 
-			density = (ContextHelper.Current as Android.App.Activity).Resources.DisplayMetrics.Density;
-			Android.Util.Log.Info(TAG, "    Density: " + density);
+			}
 
 			FoldBounds = null;
 			IsSeparating = false;
@@ -152,29 +154,24 @@ namespace Uno.UI.Foldable
 						IsFlat = foldingFeature.State == FoldingFeatureState.Flat,
 						IsVertical = IsFoldVertical
 					};
-					// DEBUG INFO
-					if (foldingFeature.OcclusionType == FoldingFeatureOcclusionType.None)
+					
+					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						Android.Util.Log.Info(TAG, "App is spanned across a fold");
-					}
-					if (foldingFeature.OcclusionType == FoldingFeatureOcclusionType.Full)
-					{
-						Android.Util.Log.Info(TAG, "App is spanned across a hinge");
-					}
-					var summary = "\n    IsSeparating: " + foldingFeature.IsSeparating
+						var summary = "\n    IsSeparating: " + foldingFeature.IsSeparating
+							+ "\n    OcclusionType: " + foldingFeature.OcclusionType  // FoldingFeatureOcclusionType.None or Full
 							+ "\n    Orientation: " + foldingFeature.Orientation  // FoldingFeatureOrientation.Vertical or Horizontal
 							+ "\n    State: " + foldingFeature.State; // FoldingFeatureState.Flat or HalfOpened
-					Android.Util.Log.Info(TAG, summary);
-					// END DEBUG INFO
+						this.Log().Debug($"DualMode: {summary}");
+					}
 				}
 				else
 				{
-					Android.Util.Log.Info(TAG, "DisplayFeature is not a fold or hinge");
+					this.Log().Debug($"DualMode: DisplayFeature is not a fold or hinge");
 				}
 			}
 			if (lastFoldingFeature is null)
 			{
-				Android.Util.Log.Info(TAG, "App is not spanned, on a single screen");
+				this.Log().Debug($"DualMode: App is not spanned, on a single screen");
 			}
 
 			// FUTURE USE

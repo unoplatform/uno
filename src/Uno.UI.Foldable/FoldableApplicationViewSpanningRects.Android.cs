@@ -41,12 +41,18 @@ namespace Uno.UI.Foldable
 		{
 			windowInfoRepository = new WindowInfoRepositoryCallbackAdapter(WindowInfoRepository.Companion.GetOrCreate(ContextHelper.Current as Android.App.Activity));
 			windowMetricsCalculator = WindowMetricsCalculator.Companion.OrCreate; // HACK: source method is `getOrCreate`, binding generator munges this badly :(	
-			Android.Util.Log.Info(TAG, $"FoldableApplicationViewSpanningRects.OnCreateEvent");
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"DualMode: FoldableApplicationViewSpanningRects.OnCreateEvent");
+			}
 		}
 		private void OnStartEvent()
 		{
 			windowInfoRepository.AddWindowLayoutInfoListener(runOnUiThreadExecutor(), this); // `this` is the IConsumer implementation
-			Android.Util.Log.Info(TAG, $"FoldableApplicationViewSpanningRects.OnStartEvent");
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"DualMode: FoldableApplicationViewSpanningRects.OnStartEvent");
+			}
 		}
 		private void OnStopEvent()
 		{
@@ -54,7 +60,7 @@ namespace Uno.UI.Foldable
 		}
 		public IReadOnlyList<Rect> GetSpanningRects()
 		{
-			Android.Util.Log.Info(TAG, $"FoldableApplicationViewSpanningRects.GetSpanningRects HasFoldFeature={HasFoldFeature}");
+			this.Log().Info($"DualMode: FoldableApplicationViewSpanningRects.GetSpanningRects HasFoldFeature={HasFoldFeature}");
 			if (HasFoldFeature) // IsSeparating or just "is fold present?" - changing this will affect the behavior of TwoPaneView on foldable devices
 			{
                 _previousMode.result = null;
@@ -62,7 +68,7 @@ namespace Uno.UI.Foldable
                 var wuxWindowBounds = ApplicationView.GetForCurrentView().VisibleBounds.LogicalToPhysicalPixels();
                 var wuOrientation = DisplayInformation.GetForCurrentView().CurrentOrientation;
 
-				Android.Util.Log.Info(TAG, $"                  FoldBounds={FoldBounds}");
+				this.Log().Info($"DualMode:                  FoldBounds={FoldBounds}");
 				// TODO: bring the list of all folding features here, for future compatibility
 				List<Rect> occludedRects = new List<Rect>
                     {   // Hinge/fold bounds
@@ -83,9 +89,8 @@ namespace Uno.UI.Foldable
                     var occludedRect = occludedRects[0];
                     var intersecting = ((Android.Graphics.RectF)bounds).Intersect(occludedRect);
 
-					this.Log().Info($"Intersect calculation: window " + bounds + " with occluded " + occludedRect);
+					this.Log().Info($"DualMode: Intersect calculation: window " + bounds + " with occluded " + occludedRect);
 
-				//if (wuOrientation == DisplayOrientations.Portrait || wuOrientation == DisplayOrientations.PortraitFlipped)  // *Device* portrait assumption works for Surface Duo, but not other foldables which have a vertical hinge in portrait mode
 					if (IsFoldVertical == false) // FoldOrientation == AndroidX.Window.Layout.FoldingFeatureOrientation.Horizontal)
                     {
                         // Compensate for the status bar size (the occluded area is rooted on the screen size, whereas
@@ -163,11 +168,14 @@ namespace Uno.UI.Foldable
 								this.Log().Warn($"DualMode: Unknown screen layout");
 							}
 						}
-						Android.Util.Log.Info(TAG, $"               _previousMode.result={_previousMode.result.Count}");
-						foreach (var pmr in _previousMode.result) {
-							Android.Util.Log.Info(TAG, $"               > {pmr}");
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().Debug($"DualMode:       _previousMode.result={_previousMode.result.Count}");
+							foreach (var pmr in _previousMode.result)
+							{
+								this.Log().Debug($"               > {pmr}");
+							}
 						}
-
 					}
 					else
                     {
