@@ -70,6 +70,8 @@ namespace Uno.UI.RemoteControl.Host
 						{
 							this.Log().LogTrace($"Client Keepalive frame");
 						}
+
+						await SendFrame(new KeepAliveMessage());
 					}
 				}
 

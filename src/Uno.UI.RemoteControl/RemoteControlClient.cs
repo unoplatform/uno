@@ -205,20 +205,33 @@ namespace Uno.UI.RemoteControl
 
 			while (await WebSocketHelper.ReadFrame(_webSocket, CancellationToken.None) is HotReload.Messages.Frame frame)
 			{
-				if (_processors.TryGetValue(frame.Scope, out var processor))
+				if (frame.Scope == "RemoteControlServer")
 				{
-					if (this.Log().IsEnabled(LogLevel.Trace))
+					if (frame.Name == KeepAliveMessage.Name)
 					{
-						this.Log().Trace($"Received frame [{frame.Scope}/{frame.Name}]");
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace($"Server Keepalive frame");
+						}
 					}
-
-					await processor.ProcessFrame(frame);
 				}
 				else
 				{
-					if (this.Log().IsEnabled(LogLevel.Error))
+					if (_processors.TryGetValue(frame.Scope, out var processor))
 					{
-						this.Log().LogError($"Unknown Frame scope {frame.Scope}");
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace($"Received frame [{frame.Scope}/{frame.Name}]");
+						}
+
+						await processor.ProcessFrame(frame);
+					}
+					else
+					{
+						if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							this.Log().LogError($"Unknown Frame scope {frame.Scope}");
+						}
 					}
 				}
 			}
