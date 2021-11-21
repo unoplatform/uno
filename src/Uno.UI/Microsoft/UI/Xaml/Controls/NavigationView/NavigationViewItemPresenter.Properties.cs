@@ -39,7 +39,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public static DependencyProperty InfoBadgeProperty { get; } =
 			DependencyProperty.Register(nameof(InfoBadge), typeof(InfoBadge), typeof(NavigationViewItemPresenter), new FrameworkPropertyMetadata(null));
 
-
 		/// <summary>
 		/// Gets the template settings.
 		/// </summary>
