@@ -160,26 +160,22 @@ namespace Windows.UI.Xaml
 				return false;
 			}
 
-			var vsm = GetCustomVisualStateManager(control) ?? GetVisualStateManager(control);
-			if (vsm is null)
-			{
-				if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-				{
-					_log.DebugFormat("Failed to set state [{0}], there is no VisualStateManager on [{1}]", stateName, control);
-				}
-
-				return false;
-			}
-
-
-			var output = templateRoot is FrameworkElement fwRoot
-				? vsm.GoToStateCore(control, fwRoot, stateName, group, state, useTransitions)
-				: vsm.GoToStateCorePrivateBaseImplementation(control, group, state, useTransitions); // For backward compatibility!
-				
 #if __WASM__
 			TryAssignDOMVisualStates(groups, templateRoot);
 #endif
-			return output;
+
+			if (templateRoot is not FrameworkElement fwRoot)
+			{
+				// For backward compatibility!
+				return GetVisualStateManager(control).GoToStateCorePrivateBaseImplementation(control, group, state, useTransitions);
+			}
+
+			// Note: We resolve the 'CustomVisualStateManager' on the 'fwRoot' like UWP,
+			//		 but for compatibility reason we resolve the default visual state manager on the 'control' itself.
+			//		 We should validate the behavior on UWP, including for controls that does not have templates!
+			var vsm = GetCustomVisualStateManager(fwRoot) ?? GetVisualStateManager(control);
+
+			return vsm.GoToStateCore(control, fwRoot, stateName, group, state, useTransitions);
 		}
 
 		protected virtual bool GoToStateCore(Control control, FrameworkElement templateRoot, string stateName, VisualStateGroup group, VisualState state, bool useTransitions)
