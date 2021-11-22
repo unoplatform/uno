@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference NavigationViewItemPresenter.properties.cpp, commit 2343eed
+// MUX Reference NavigationViewTemplateSettings.properties.cpp, commit 991c831
 
 using Windows.UI.Xaml;
 
