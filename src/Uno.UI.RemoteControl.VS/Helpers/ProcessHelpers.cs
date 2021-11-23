@@ -21,7 +21,9 @@ namespace Uno.UI.RemoteControl.VS.Helpers
 					RedirectStandardOutput = true,
 					RedirectStandardError = true,
 					FileName = executable,
-					Arguments = parameters
+					Arguments = parameters,
+					CreateNoWindow = true,
+					WindowStyle = ProcessWindowStyle.Hidden,
 				}
 			};
 
