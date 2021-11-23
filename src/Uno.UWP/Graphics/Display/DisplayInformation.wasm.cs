@@ -2,6 +2,7 @@
 using Uno;
 using Uno.Foundation;
 using System;
+using System.Globalization;
 
 namespace Windows.Graphics.Display
 {
@@ -134,7 +135,7 @@ namespace Windows.Graphics.Display
 		}
 
 		private static bool TryReadJsFloat(string property, out float value) =>
-			float.TryParse(WebAssemblyRuntime.InvokeJS(property), out value);
+			float.TryParse(WebAssemblyRuntime.InvokeJS(property), NumberStyles.Any, CultureInfo.InvariantCulture, out value);
 
 		private static string ReadJsString(string property) => WebAssemblyRuntime.InvokeJS(property);
 
