@@ -726,6 +726,15 @@ namespace Windows.UI.Xaml.Controls
 			args.Handled = true;
 		}
 
+		protected override void OnTapped(TappedRoutedEventArgs e)
+		{
+			base.OnTapped(e);
+
+			OnTappedPartial();
+		}
+
+		partial void OnTappedPartial();
+
 		/// <inheritdoc />
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
