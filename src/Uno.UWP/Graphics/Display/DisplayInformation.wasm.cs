@@ -2,6 +2,7 @@
 using Uno;
 using Uno.Foundation;
 using System;
+using System.Globalization;
 
 namespace Windows.Graphics.Display
 {
