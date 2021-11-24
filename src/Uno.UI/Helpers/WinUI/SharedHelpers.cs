@@ -39,6 +39,11 @@ namespace Uno.UI.Helpers.WinUI
 		private static bool s_isMouseModeEnabledInitialized = false;
 		private static bool s_isMouseModeEnabled = false;
 
+		static SharedHelpers()
+		{
+			isApiContractVxAvailable = new Dictionary<ushort, bool>();
+		}
+
 		public static bool IsSystemDll() => false;
 
 		public static bool IsAnimationsEnabled()
@@ -371,7 +376,7 @@ namespace Uno.UI.Helpers.WinUI
 
 		private static bool s_dynamicScrollbarsDirty = true;
 		private static bool s_dynamicScrollbars;
-		private static readonly Dictionary<ushort, bool> isApiContractVxAvailable = new Dictionary<ushort, bool>();
+		private static readonly Dictionary<ushort, bool> isApiContractVxAvailable;
 
 		public static bool IsAPIContractVxAvailable(ushort apiVersion)
 		{
