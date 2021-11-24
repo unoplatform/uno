@@ -412,8 +412,8 @@
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.pdb" target="lib\net6.0-android30.0" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.Foundation.dll" target="lib\net6.0-android30.0" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.Foundation.pdb" target="lib\net6.0-android30.0" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.Foundation.Logging.dll" target="lib\net6.0-android" />
-	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.Foundation.Logging.pdb" target="lib\net6.0-android" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.Foundation.Logging.dll" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.Foundation.Logging.pdb" target="lib\net6.0-android30.0" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.UI.dll" target="lib\net6.0-android30.0" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.UI.pdb" target="lib\net6.0-android30.0" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.UI.Composition.dll" target="lib\net6.0-android30.0" />
