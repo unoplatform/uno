@@ -24,6 +24,14 @@ using Windows.UI.Xaml.Media;
 using Uno.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+#else
+using Windows.UI.Input;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
 	public class TextBoxConstants
@@ -763,15 +771,23 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnPointerPressed(args);
 
-			args.Handled = true;
+			if (ShouldFocusOnPointerPressed(args))
+			{
+				Focus(FocusState.Pointer);
+			}
 
-			Focus(FocusState.Pointer);
+			args.Handled = true;
 		}
 
 		/// <inheritdoc />
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
 		{
 			base.OnPointerReleased(args);
+
+			if (!ShouldFocusOnPointerPressed(args))
+			{
+				Focus(FocusState.Pointer);
+			}
 
 			args.Handled = true;
 		}
@@ -934,5 +950,9 @@ namespace Windows.UI.Xaml.Controls
 		partial void SelectAllPartial();
 
 		internal override bool CanHaveChildren() => true;
+
+		private bool ShouldFocusOnPointerPressed(PointerRoutedEventArgs args) =>
+			// For mouse and pen, the TextBox should focus on pointer press, for other input types on release
+			args.Pointer.PointerDeviceType != PointerDeviceType.Touch;
 	}
 }
