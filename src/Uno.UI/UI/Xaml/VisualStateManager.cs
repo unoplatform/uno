@@ -160,13 +160,9 @@ namespace Windows.UI.Xaml
 				return false;
 			}
 
-			var vsm = GetCustomVisualStateManager(control) ?? GetVisualStateManager(control);
-			if (vsm is null)
-			{
-				if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-				{
-					_log.DebugFormat("Failed to set state [{0}], there is no VisualStateManager on [{1}]", stateName, control);
-				}
+#if __WASM__
+			TryAssignDOMVisualStates(groups, templateRoot);
+#endif
 
 			if (templateRoot is not FrameworkElement fwRoot)
 			{
