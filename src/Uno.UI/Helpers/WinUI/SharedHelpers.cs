@@ -6,6 +6,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
@@ -368,23 +369,25 @@ namespace Uno.UI.Helpers.WinUI
 			return s_IsIsLoadedAvailable.Value;
 		}
 
-		static bool isAPIContractVxAvailableInitialized = false;
-		static bool isAPIContractVxAvailable = false;
 		private static bool s_dynamicScrollbarsDirty = true;
 		private static bool s_dynamicScrollbars;
+		private static readonly Dictionary<ushort, bool> isApiContractVxAvailable = new Dictionary<ushort, bool>();
 
 		public static bool IsAPIContractVxAvailable(ushort apiVersion)
 		{
-			if (!isAPIContractVxAvailableInitialized)
+			// Uno specific: WinUI caches using static variables inside of a template function,
+			// which creates a separate cache for eache apiVersion value. Instead, we use a dictionary
+			// for the same functionality.
+			if (!isApiContractVxAvailable.TryGetValue(apiVersion, out var available))
 			{
-				isAPIContractVxAvailableInitialized = true;
-				isAPIContractVxAvailable =
+				available =
 					IsSystemDll() ?
 					true :
 					ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", apiVersion);
+				isApiContractVxAvailable[apiVersion] = available;
 			}
 
-			return isAPIContractVxAvailable;
+			return available;
 		}
 
 		// base helpers
