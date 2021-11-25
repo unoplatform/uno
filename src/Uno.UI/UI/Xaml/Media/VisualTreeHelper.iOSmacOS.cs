@@ -3,13 +3,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+#if __IOS__
+using UIKit;
+using _View = UIKit.UIView;
+#elif __MACOS__
+using AppKit;
+using _View = AppKit.NSView;
+#endif
 using Uno.Extensions;
 
 namespace Windows.UI.Xaml.Media
 {
 	public partial class VisualTreeHelper
 	{
-		internal static void SwapViews(UIElement oldView, UIElement newView)
+		internal static void SwapViews(_View oldView, _View newView)
 		{
 			var currentPosition = oldView?.Superview?.Subviews.IndexOf(oldView) ?? -1;
 

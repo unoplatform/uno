@@ -12,6 +12,17 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
+#if __IOS__
+using _View = UIKit.UIView;
+#else
+using _View = Windows.UI.Xaml.FrameworkElement;
+#endif
+
+#if __IOS__
+using UIKit;
+#elif __ANDROID__
+using Uno.UI;
+#endif
 
 namespace Uno.UI.RemoteControl.HotReload
 {
@@ -22,31 +33,31 @@ namespace Uno.UI.RemoteControl.HotReload
 			Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(
 				Windows.UI.Core.CoreDispatcherPriority.Normal,
 				async () =>
-            {
-                try
-                {
-                    if (this.Log().IsEnabled(LogLevel.Debug))
-                    {
-                        this.Log().LogDebug($"Reloading changed file [{fileReload.FilePath}]");
-                    }
+			{
+				try
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug($"Reloading changed file [{fileReload.FilePath}]");
+					}
 
-                    var uri = new Uri("file:///" + fileReload.FilePath.Replace("\\", "/"));
+					var uri = new Uri("file:///" + fileReload.FilePath.Replace("\\", "/"));
 
 					Application.RegisterComponent(uri, fileReload.Content);
 
 					foreach (var instance in EnumerateInstances(Window.Current.Content, uri))
-                    {
-                        switch (instance)
-                        {
+					{
+						switch (instance)
+						{
 #if __IOS__
-						case UserControl userControl:
-							userControl.Content = XamlReader.LoadUsingXClass(fileReload.Content) as UIKit.UIView;
-							break;
+							case UserControl userControl:
+								SwapViews(userControl, XamlReader.LoadUsingXClass(fileReload.Content) as UIKit.UIView);
+								break;
 #endif
-                            case ContentControl content:
-                                SwapViews(content, XamlReader.LoadUsingXClass(fileReload.Content) as ContentControl);
-                                break;
-                        }
+							case ContentControl content:
+								SwapViews(content, XamlReader.LoadUsingXClass(fileReload.Content) as ContentControl);
+								break;
+						}
 					}
 
 					if (ResourceResolver.RetrieveDictionaryForFilePath(uri.AbsolutePath) is { } targetDictionary)
@@ -56,12 +67,12 @@ namespace Uno.UI.RemoteControl.HotReload
 						Application.Current.UpdateResourceBindingsForHotReload();
 					}
 				}
-                catch (Exception e)
-                {
-                    if (this.Log().IsEnabled(LogLevel.Error))
-                    {
-                        this.Log().LogError($"Failed reloading changed file [{fileReload.FilePath}]", e);
-                    }
+				catch (Exception e)
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().LogError($"Failed reloading changed file [{fileReload.FilePath}]", e);
+					}
 
 					await _rcClient.SendMessage(
 						new HotReload.Messages.XamlLoadError(
@@ -80,7 +91,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			{
 				yield return fe;
 			}
-			else if(instance != null)
+			else if (instance != null)
 			{
 				IEnumerable<IEnumerable<UIElement>> Dig()
 				{
@@ -97,7 +108,7 @@ namespace Uno.UI.RemoteControl.HotReload
 							yield return EnumerateInstances(border.Child, baseUri);
 							break;
 
-						case ContentControl control when control.ContentTemplateRoot != null || control.Content != null: 
+						case ContentControl control when control.ContentTemplateRoot != null || control.Content != null:
 							yield return EnumerateInstances(control.ContentTemplateRoot ?? control.Content, baseUri);
 							break;
 
@@ -121,10 +132,10 @@ namespace Uno.UI.RemoteControl.HotReload
 			}
 		}
 
-		private static void SwapViews(FrameworkElement oldView, FrameworkElement newView)
+		private static void SwapViews(_View oldView, _View newView)
 		{
-			var parentAsContentControl = oldView.Parent as ContentControl;
-			parentAsContentControl = parentAsContentControl ?? (oldView.Parent as ContentPresenter)?.FindFirstParent<ContentControl>();
+			var parentAsContentControl = oldView.GetVisualTreeParent() as ContentControl;
+			parentAsContentControl = parentAsContentControl ?? (oldView.GetVisualTreeParent() as ContentPresenter)?.FindFirstParent<ContentControl>();
 
 			if (parentAsContentControl?.Content == oldView)
 			{
@@ -135,11 +146,15 @@ namespace Uno.UI.RemoteControl.HotReload
 				VisualTreeHelper.SwapViews(oldView, newView);
 			}
 
-			PropagateProperties(oldView, newView);
+			PropagateProperties(oldView as FrameworkElement, newView as FrameworkElement);
 		}
 
 		private static void PropagateProperties(FrameworkElement oldView, FrameworkElement newView)
 		{
+			if (oldView == null || newView == null)
+			{
+				return;
+			}
 			newView.BaseUri = oldView.BaseUri;
 
 			if (oldView is Page oldPage && newView is Page newPage)
