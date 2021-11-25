@@ -20,6 +20,8 @@ using _View = Windows.UI.Xaml.FrameworkElement;
 
 #if __IOS__
 using UIKit;
+#elif __MACOS__
+using AppKit;
 #elif __ANDROID__
 using Uno.UI;
 #endif
