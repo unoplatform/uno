@@ -78,6 +78,35 @@ This will create a solution that only contains the WebAssembly and Skia+GTK plat
 1. Place a breakpoint inside the `OnClick` method
 1. Click the button in the app, and the breakpoint will hit
 
+## Using code snippets
+
+### Adding a new Page
+    1. In the MyApp.Shared folder, create a new file named `Page2.xaml`
+    2. Type `page` then press the `tab` key to add the page markup
+    3. Adjust the name and namespaces as needed
+    4. In the MyApp.Shared folder, create a new file named `Page2.xaml.cs`
+    5. Type `page` then press the `tab` key to add the page code-behind C#
+    6. Adjust the name and namespaces as needed
+
+### Adding a new UserControl
+    1. In the MyApp.Shared folder, create a new file named `UserControl1.xaml`
+    2. Type `usercontrol` then press they `tab` key to add the page markup
+    3. Adjust the name and namespaces as needed
+    4. In the MyApp.Shared folder, create a new file named `UserControl1.xaml.cs`
+    5. Type `usercontrol` then press the `tab` key to add the page code-behind C#
+    6. Adjust the name and namespaces as needed
+
+### Adding a new ResourceDictionary
+    1. In the MyApp.Shared folder, create a new file named `ResourceDictionary1.xaml`
+    2. Type `resourcedic` then press they `tab` key to add the page markup
+
+### Other snippets
+    * `rd` creates a new `RowDefinition`
+    * `cd` creates a new `ColumnDefinition`
+    * `tag` creates a new XAML tag
+    * `set` creates a new `Style` setter
+    * `ctag` creates a new close XAML tag
+
 ## Updating an existing application to work with VS Code
 
 **Coming soon**
@@ -86,7 +115,6 @@ This will create a solution that only contains the WebAssembly and Skia+GTK plat
 - C# Debugging is not supported when running in a remote Linux Container, Code Spaces or GitPod.
 - C# Hot Reload for WebAssembly only supports modifying method bodies. Any other modification is rejected by the compiler.
 - C# Hot Reload for Skia supports modifying method bodies, adding properties, adding methods, adding classes. A more accurate list is provided here in Microsoft's documentation.
-- Adding new pages, controls or resources is not yet supported from the UI or command line.
 
 ## Troubleshooting Uno Platform VS Code issues
 
