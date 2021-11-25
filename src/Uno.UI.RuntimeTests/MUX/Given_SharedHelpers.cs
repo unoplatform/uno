@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿#if HAS_UNO
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Helpers.WinUI;
 
 namespace Uno.UI.RuntimeTests.MUX;
@@ -32,3 +33,4 @@ public class Given_SharedHelpers
 		Assert.IsTrue(SharedHelpers.IsAPIContractVxAvailable(1));
 	}
 }
+#endif
