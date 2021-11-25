@@ -646,7 +646,9 @@ namespace Windows.UI.Xaml.Controls
 					continue;
 				}
 
+#pragma warning disable 618 // 'RecyclerView.ViewHolder.AdapterPosition' is obsolete
 				if (vh.AdapterPosition != position)
+#pragma warning restore 618 // 'RecyclerView.ViewHolder.AdapterPosition' is obsolete
 				{
 					continue;
 				}
