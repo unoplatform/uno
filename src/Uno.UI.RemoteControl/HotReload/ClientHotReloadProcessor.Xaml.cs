@@ -11,6 +11,7 @@ using Uno.UI.RemoteControl.HotReload.Messages;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.RemoteControl.HotReload
 {
@@ -39,11 +40,11 @@ namespace Uno.UI.RemoteControl.HotReload
                         {
 #if __IOS__
 						case UserControl userControl:
-							userControl.Content = XamlReader.Load(fileReload.Content) as UIKit.UIView;
+							userControl.Content = XamlReader.LoadUsingXClass(fileReload.Content) as UIKit.UIView;
 							break;
 #endif
                             case ContentControl content:
-                                content.Content = XamlReader.LoadUsingXClass(fileReload.Content);
+                                SwapViews(content, XamlReader.LoadUsingXClass(fileReload.Content) as ContentControl);
                                 break;
                         }
 					}
@@ -117,6 +118,33 @@ namespace Uno.UI.RemoteControl.HotReload
 						yield return validElement;
 					}
 				}
+			}
+		}
+
+		private static void SwapViews(FrameworkElement oldView, FrameworkElement newView)
+		{
+			var parentAsContentControl = oldView.Parent as ContentControl;
+			parentAsContentControl = parentAsContentControl ?? (oldView.Parent as ContentPresenter)?.FindFirstParent<ContentControl>();
+
+			if (parentAsContentControl?.Content == oldView)
+			{
+				parentAsContentControl.Content = newView;
+			}
+			else
+			{
+				VisualTreeHelper.SwapViews(oldView, newView);
+			}
+
+			PropagateProperties(oldView, newView);
+		}
+
+		private static void PropagateProperties(FrameworkElement oldView, FrameworkElement newView)
+		{
+			newView.BaseUri = oldView.BaseUri;
+
+			if (oldView is Page oldPage && newView is Page newPage)
+			{
+				newPage.Frame = oldPage.Frame;
 			}
 		}
 	}
