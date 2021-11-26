@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
 using Uno.Extensions;
 using Uno.UI;
@@ -15,9 +14,8 @@ using Uno.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Documents;
-using Windows.UI;
-using Windows.Foundation;
 using Windows.UI.Text;
+using Windows.Foundation.Metadata;
 
 #if XAMARIN_ANDROID
 using _View = Android.Views.View;
@@ -38,7 +36,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 		private Queue<Action> _postActions = new Queue<Action>();
 		private static readonly Regex _attachedPropertMatch = new Regex(@"(\(.*?\))");
 
-		private static Type[] _genericConvertibles = new []
+		private static Type[] _genericConvertibles = new[]
 		{
 			typeof(Media.Brush),
 			typeof(Media.SolidColorBrush),
@@ -1006,6 +1004,39 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 		private object? BuildLiteralValue(Type propertyType, string? memberValue)
 		{
+			if (propertyType.GetCustomAttribute<CreateFromStringAttribute>() is { } createFromString)
+			{
+				var sourceType = propertyType;
+				var methodName = createFromString.MethodName;
+				if (createFromString.MethodName.Contains("."))
+				{
+					var splitIndex = createFromString.MethodName.LastIndexOf(".");
+					var typeName = createFromString.MethodName.Substring(0, splitIndex);
+					sourceType = AppDomain.CurrentDomain
+						.GetAssemblies()
+						.Select(a => a.GetType(typeName))
+						.Trim()
+						.FirstOrDefault();
+					methodName = createFromString.MethodName.Substring(splitIndex + 1);
+				}
+
+				if (sourceType?.GetMethod(methodName) is { } conversionMethod && conversionMethod.IsStatic && !conversionMethod.IsPrivate)
+				{
+					try
+					{
+						return conversionMethod.Invoke(null, new object[] { memberValue });
+					}
+					catch (Exception ex)
+					{
+						throw new XamlParseException("Executing [CreateFromString] method for type " + propertyType + " failed.", ex);
+					}
+				}
+				else
+				{
+					throw new XamlParseException("Method referenced by [CreateFromString] cannot be found for " + propertyType);
+				}
+			}
+
 			return Uno.UI.DataBinding.BindingPropertyHelper.Convert(() => propertyType, memberValue);
 		}
 
