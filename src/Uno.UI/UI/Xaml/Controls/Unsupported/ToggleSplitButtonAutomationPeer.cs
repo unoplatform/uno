@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 
 namespace Windows.UI.Xaml.Controls;
 
 [Obsolete(
 	"The Windows.UI.Xaml.Controls version of this control is not supported. " +
 	"Please use Microsoft.UI.Xaml.Controls.ToggleSplitButton instead.")]
-public partial class ToggleSplitButton
+public partial class ToggleSplitButtonAutomationPeer
 {
-	public ToggleSplitButton()
+	public ToggleSplitButtonAutomationPeer(ToggleSplitButton owner) : base(owner)
 	{
 		throw new NotImplementedException(
 			"The Windows.UI.Xaml.Controls version of this control is not supported. " +
