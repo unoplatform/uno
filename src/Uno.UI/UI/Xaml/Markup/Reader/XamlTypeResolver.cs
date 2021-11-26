@@ -328,6 +328,21 @@ namespace Windows.UI.Xaml.Markup.Reader
 
         private Type? SourceFindType(string? name)
         {
+			static string GetFullyQualifiedName(NamespaceDeclaration ns, string nonQualifiedName)
+			{
+				if (ns != null)
+				{
+					var nsName = ns.Namespace.TrimStart("using:");
+
+					if (nsName.StartsWith("clr-namespace:"))
+					{
+						nsName = nsName.Split(new[] { ';' })[0].TrimStart("clr-namespace:");
+					}
+
+					return nsName + "." + nonQualifiedName;
+				}
+			}
+
 			if(name == null)
 			{
 				return null;
@@ -341,25 +356,16 @@ namespace Windows.UI.Xaml.Markup.Reader
 
                 var ns = FileDefinition.Namespaces.FirstOrDefault(n => n.Prefix == fields[0]);
 
-                if (ns != null)
-                {
-                    var nsName = ns.Namespace.TrimStart("using:");
-
-                    if (nsName.StartsWith("clr-namespace:"))
-                    {
-                        nsName = nsName.Split(new[] { ';' })[0].TrimStart("clr-namespace:");
-                    }
-
-                    name = nsName + "." + fields[1];
-                }
+				name = GetFullyQualifiedName(ns, fields[1]);
             }
             else
             {
-                var defaultXmlNamespace = FileDefinition
-                        .Namespaces
-                        .Where(n => n.Prefix.None())
-                        .FirstOrDefault()
-                        ?.Namespace ?? "";
+				var defaultXmlNamespaceDeclaration = FileDefinition
+						.Namespaces
+						.Where(n => n.Prefix.None())
+						.FirstOrDefault();
+
+				var defaultXmlNamespace = defaultXmlNamespaceDeclaration?.Namespace ?? "";
 
                 var clrNamespaces = KnownNamespaces.UnoGetValueOrDefault(defaultXmlNamespace, Array.Empty<string>());
 
@@ -379,6 +385,9 @@ namespace Windows.UI.Xaml.Markup.Reader
 						}
 					}
                 }
+
+				// The default namespace for the XAML snippet may be non-standard (starting with using: or clr-namespace:)
+				name = GetFullyQualifiedName(defaultXmlNamespaceDeclaration, name);
             }
 
             var resolvers = new Func<Type?>[] {
