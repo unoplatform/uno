@@ -11,6 +11,8 @@ namespace Uno.UI.Xaml.Controls.Extensions
 
 		void UpdateNativeView();
 
+		void InvalidateLayout();
+
 		void UpdateSize();
 
 		void UpdatePosition();

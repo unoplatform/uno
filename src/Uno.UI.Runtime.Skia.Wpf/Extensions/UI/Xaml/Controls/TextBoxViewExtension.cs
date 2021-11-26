@@ -18,8 +18,6 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 		private ContentControl? _contentElement;
 		private WpfTextViewTextBox? _currentInputWidget;
 
-		private readonly SerialDisposable _textBoxEventSubscriptions = new SerialDisposable();
-
 		public TextBoxViewExtension(TextBoxView owner)
 		{
 			_owner = owner ?? throw new ArgumentNullException(nameof(owner));
@@ -42,20 +40,10 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			EnsureWidgetForAcceptsReturn();
 			textInputLayer.Children.Add(_currentInputWidget!);
 
-			textBox.SizeChanged += ContentElementSizeChanged;
-			textBox.LayoutUpdated += ContentElementLayoutUpdated;
-
-			_textBoxEventSubscriptions.Disposable = Disposable.Create(() =>
-			{
-				textBox.SizeChanged -= ContentElementSizeChanged;
-				textBox.LayoutUpdated -= ContentElementLayoutUpdated;
-			});
-
 			UpdateNativeView();
 			SetTextNative(textBox.Text);
 
-			UpdateSize();
-			UpdatePosition();
+			InvalidateLayout();
 
 			_currentInputWidget!.Focus();
 		}
@@ -68,7 +56,6 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			}
 
 			_contentElement = null;
-			_textBoxEventSubscriptions.Disposable = null;
 
 			var textInputLayer = GetWindowTextInputLayer();
 			textInputLayer?.Children.Remove(_currentInputWidget);
@@ -98,6 +85,12 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			_currentInputWidget.MaxLength = textBox.MaxLength;
 			_currentInputWidget.IsReadOnly = textBox.IsReadOnly;
 			_currentInputWidget.Foreground = textBox.Foreground.ToWpfBrush();
+		}
+
+		public void InvalidateLayout()
+		{
+			UpdateSize();
+			UpdatePosition();
 		}
 
 		public void UpdateSize()
@@ -161,18 +154,6 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 		}
 
 		private string? GetInputText() => _currentInputWidget?.Text;
-
-		private void ContentElementLayoutUpdated(object? sender, object e)
-		{
-			UpdateSize();
-			UpdatePosition();
-		}
-
-		private void ContentElementSizeChanged(object sender, Windows.UI.Xaml.SizeChangedEventArgs args)
-		{
-			UpdateSize();
-			UpdatePosition();
-		}
 
 		public void SetIsPassword(bool isPassword)
 		{

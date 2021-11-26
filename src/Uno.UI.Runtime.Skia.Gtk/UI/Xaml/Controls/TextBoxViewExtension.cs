@@ -12,10 +12,14 @@ using Uno.Disposables;
 using Uno.UI.Runtime.Skia.GTK.UI.Text;
 using GtkWindow = Gtk.Window;
 using Object = GLib.Object;
-using Point = Windows.Foundation.Point;
 using Scale = Pango.Scale;
 using System.Diagnostics;
 using Windows.UI.Xaml.Media;
+using Gdk;
+using Point = Windows.Foundation.Point;
+using GdkPoint = Gdk.Point;
+using Size = Windows.Foundation.Size;
+using GdkSize = Gdk.Size;
 
 namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 {
@@ -28,15 +32,18 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 		private ContentControl? _contentElement;
 		private Widget? _currentInputWidget;
 		private bool _handlingTextChanged;
+		private GdkPoint _lastPosition = new GdkPoint(-1, -1);
+		private GdkSize _lastSize = new GdkSize(-1, -1);
 
 		private readonly SerialDisposable _textChangedDisposable = new SerialDisposable();
-		private readonly SerialDisposable _textBoxEventSubscriptions = new SerialDisposable();
 
 		public TextBoxViewExtension(TextBoxView owner, GtkWindow window)
 		{
 			_owner = owner ?? throw new ArgumentNullException(nameof(owner));
 			_window = window ?? throw new ArgumentNullException(nameof(window));
 		}
+
+		public static TextBoxViewExtension? ActiveTextBoxView { get; private set; }
 
 		private Fixed GetWindowTextInputLayer()
 		{
@@ -58,20 +65,12 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			EnsureWidget(textBox);
 			var textInputLayer = GetWindowTextInputLayer();
 			textInputLayer.Put(_currentInputWidget!, 0, 0);
-
-			textBox.SizeChanged += ContentElementSizeChanged;
-			textBox.LayoutUpdated += ContentElementLayoutUpdated;
-			_textBoxEventSubscriptions.Disposable = Disposable.Create(() =>
-			{
-				textBox.SizeChanged -= ContentElementSizeChanged;
-				textBox.LayoutUpdated -= ContentElementLayoutUpdated;
-			});
-
+			_lastSize = new GdkSize(-1, -1);
+			_lastPosition = new GdkPoint(-1, -1);
 			UpdateNativeView();
 			SetWidgetText(textBox.Text);
 
-			UpdateSize();
-			UpdatePosition();
+			InvalidateLayout();
 
 			textInputLayer.ShowAll();
 			_currentInputWidget!.HasFocus = true;
@@ -85,7 +84,6 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			}
 
 			_contentElement = null;
-			_textBoxEventSubscriptions.Disposable = null;
 
 			if (_currentInputWidget != null)
 			{
@@ -131,6 +129,12 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			}
 		}
 
+		public void InvalidateLayout()
+		{
+			UpdateSize();
+			UpdatePosition();
+		}
+
 		public void UpdateSize()
 		{
 			if (_contentElement == null || _currentInputWidget == null)
@@ -139,9 +143,18 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			}
 
 			var textInputLayer = GetWindowTextInputLayer();
-			if (textInputLayer.Children.Contains(_currentInputWidget))
+			if (!textInputLayer.Children.Contains(_currentInputWidget))
 			{
-				_currentInputWidget?.SetSizeRequest((int)_contentElement.ActualWidth, (int)_contentElement.ActualHeight);
+				return;
+			}
+
+			var width = (int)_contentElement.ActualWidth;
+			var height = (int)_contentElement.ActualHeight;
+
+			if (_lastSize.Width != width && _lastSize.Height != height)
+			{
+				_lastSize = new GdkSize(width, height);
+				_currentInputWidget?.SetSizeRequest(_lastSize.Width, _lastSize.Height);
 			}
 		}
 
@@ -152,12 +165,21 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 				return;
 			}
 
+			var textInputLayer = GetWindowTextInputLayer();
+			if (!textInputLayer.Children.Contains(_currentInputWidget))
+			{
+				return;
+			}
+
 			var transformToRoot = _contentElement.TransformToVisual(Windows.UI.Xaml.Window.Current.Content);
 			var point = transformToRoot.TransformPoint(new Point(0, 0));
-			var textInputLayer = GetWindowTextInputLayer();
-			if (textInputLayer.Children.Contains(_currentInputWidget))
+			var pointX = point.X;
+			var pointY = point.Y;
+
+			if (_lastPosition.X != pointX && _lastPosition.Y != pointY)
 			{
-				textInputLayer.Move(_currentInputWidget, (int)point.X, (int)point.Y);
+				_lastPosition = new GdkPoint((int)pointX, (int)pointY);
+				textInputLayer.Move(_currentInputWidget, _lastPosition.X, _lastPosition.Y);
 			}
 		}
 
@@ -269,18 +291,6 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 					textView.Buffer.Text = text;
 					break;
 			};
-		}
-
-		private void ContentElementLayoutUpdated(object? sender, object e)
-		{
-			UpdateSize();
-			UpdatePosition();
-		}
-
-		private void ContentElementSizeChanged(object sender, Windows.UI.Xaml.SizeChangedEventArgs args)
-		{
-			UpdateSize();
-			UpdatePosition();
 		}
 
 		public void SetIsPassword(bool isPassword)

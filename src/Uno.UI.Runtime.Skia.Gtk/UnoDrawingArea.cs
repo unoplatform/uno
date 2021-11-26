@@ -6,6 +6,7 @@ using Uno.UI.Xaml.Core;
 using Windows.UI.Xaml.Input;
 using WUX = Windows.UI.Xaml;
 using Uno.Foundation.Logging;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -21,18 +22,24 @@ namespace Uno.UI.Runtime.Skia
 				+= () =>
 				{
 					// TODO Uno: Make this invalidation less often if possible.
-					InvalidateFocusVisual();
+					InvalidateOverlays();
 					Invalidate();
 				};
 		}
 
-		private void InvalidateFocusVisual()
+		private void InvalidateOverlays()
 		{
-			if (_focusManager == null)
-			{
-				_focusManager = VisualTree.GetFocusManagerForElement(Windows.UI.Xaml.Window.Current?.RootElement);
-			}
+			_focusManager ??= VisualTree.GetFocusManagerForElement(Windows.UI.Xaml.Window.Current?.RootElement);
 			_focusManager?.FocusRectManager?.RedrawFocusVisual();
+			if (_focusManager?.FocusedElement is TextBox textBox)
+			{
+				textBox.TextBoxView?.Extension?.InvalidateLayout();
+			}
+		}
+
+		private void InvalidateInputField()
+		{
+
 		}
 
 		private void Invalidate()
