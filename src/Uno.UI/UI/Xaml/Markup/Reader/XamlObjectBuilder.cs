@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Text;
 using Windows.Foundation.Metadata;
+using Color = Windows.UI.Color;
 
 #if XAMARIN_ANDROID
 using _View = Android.Views.View;

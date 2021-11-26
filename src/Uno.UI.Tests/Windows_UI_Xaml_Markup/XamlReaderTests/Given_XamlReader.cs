@@ -925,6 +925,86 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		}
 
 		[TestMethod]
+		public void When_Xmlns_Non_Default()
+		{
+			var xaml = "<NonDefaultXamlNamespace Test=\"42\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
+			var builder = Windows.UI.Xaml.Markup.XamlReader.Load(xaml);
+			if (builder is CreateFromStringFullyQualifiedMethodNameOwner owner)
+			{
+				Assert.AreEqual(42, owner.Test);
+			}
+		}
+
+		[TestMethod]
+		public void When_CreateFromString_Invalid_MethodName()
+		{
+			var xaml = "<CreateFromStringInvalidMethodNameOwner Test=\"8\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
+			Assert.ThrowsException<Uno.Xaml.XamlParseException>(() => Windows.UI.Xaml.Markup.XamlReader.Load(xaml));
+		}
+
+		[TestMethod]
+		public void When_CreateFromString_Non_Qualified_MethodName()
+		{
+			var xaml = "<CreateFromStringNonQualifiedMethodNameOwner Test=\"16\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
+			var builder = Windows.UI.Xaml.Markup.XamlReader.Load(xaml);
+			if (builder is CreateFromStringFullyQualifiedMethodNameOwner owner)
+			{
+				Assert.AreEqual(32, owner.Test.Value);
+			}
+		}
+
+		[TestMethod]
+		public void When_CreateFromString_Non_Static_Method()
+		{
+			var xaml = "<CreateFromStringNonStaticMethodOwner Test=\"4\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
+			Assert.ThrowsException<Uno.Xaml.XamlParseException>(() => Windows.UI.Xaml.Markup.XamlReader.Load(xaml));
+		}
+
+		[TestMethod]
+		public void When_CreateFromString_Private_Static_Method()
+		{
+			var xaml = "<CreateFromStringPrivateStaticMethodOwner Test=\"21\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
+			Assert.ThrowsException<Uno.Xaml.XamlParseException>(() => Windows.UI.Xaml.Markup.XamlReader.Load(xaml));
+		}
+
+		[TestMethod]
+		public void When_CreateFromString_Internal_Static_Method()
+		{
+			var xaml = "<CreateFromStringInternalStaticMethodOwner Test=\"42\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
+			var builder = Windows.UI.Xaml.Markup.XamlReader.Load(xaml);
+			if (builder is CreateFromStringFullyQualifiedMethodNameOwner owner)
+			{
+				Assert.AreEqual(84, owner.Test.Value);
+			}
+		}
+
+		[TestMethod]
+		public void When_CreateFromString_Invalid_Parameters()
+		{
+			var xaml = "<CreateFromStringInvalidParametersOwner Test=\"2\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
+			Assert.ThrowsException<Uno.Xaml.XamlParseException>(() => Windows.UI.Xaml.Markup.XamlReader.Load(xaml));
+		}
+
+		[TestMethod]
+		public void When_CreateFromString_Invalid_Return_Type()
+		{
+			var xaml = "<CreateFromStringInvalidReturnTypeOwner Test=\"1\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
+			// TODO: This should throw XamlParseException too
+			Assert.ThrowsException<ArgumentException>(() => Windows.UI.Xaml.Markup.XamlReader.Load(xaml));
+		}
+
+		[TestMethod]
+		public void When_CreateFromString_Fully_Qualified_MethodName()
+		{
+			var xaml = "<CreateFromStringFullyQualifiedMethodNameOwner Test=\"12\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
+			var builder = Windows.UI.Xaml.Markup.XamlReader.Load(xaml);
+			if (builder is CreateFromStringFullyQualifiedMethodNameOwner owner)
+			{
+				Assert.AreEqual(24, owner.Test.Value);
+			}
+		}
+		
+		[TestMethod]
 		public void When_xName_Reload()
 		{
 			var s = GetContent(nameof(When_xName_Reload));
