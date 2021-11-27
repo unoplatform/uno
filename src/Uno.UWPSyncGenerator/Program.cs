@@ -41,6 +41,8 @@ namespace Uno.UWPSyncGenerator
 				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.Graphics");
 				new SyncGenerator().Build(@"..\..\..\Uno.UI.Dispatching", "Uno.UI.Dispatching", "Microsoft.UI.Dispatching");
 				new SyncGenerator().Build(@"..\..\..\Uno.UI.Composition", "Uno.UI.Composition", "Microsoft.UI.Composition");
+				new SyncGenerator().Build(@"..\..\..\Uno.UI.Dispatching", "Uno.UI.Dispatching", "Microsoft.UI");
+				new SyncGenerator().Build(@"..\..\..\Uno.UI.Composition", "Uno.UI.Composition", "Microsoft.UI");
 
 				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Text");
 				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.ApplicationModel.Resources");

@@ -1,4 +1,5 @@
 ﻿using Windows.Foundation;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Xaml.Controls.Extensions
 {
@@ -23,5 +24,7 @@ namespace Uno.UI.Xaml.Controls.Extensions
 		int GetSelectionStart();
 
 		int GetSelectionLength();
+
+		void SetForeground(Brush brush);
 	}
 }

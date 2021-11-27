@@ -121,12 +121,12 @@ namespace Windows.UI.Xaml
 		//	Especially for wheel where preventing the default would break scrolling.
 		//	cf. remarks on HtmlEventDispatchResult.PreventDefault
 		private static HtmlEventDispatchResult DispatchNativePointerEnter(UIElement target, string eventPayload)
-			=> TryParse(eventPayload, out var args) && target.OnNativePointerEnter(ToPointerArgs(target, args, isInContact: false))
+			=> TryParse(eventPayload, out var args) && target.OnNativePointerEnter(ToPointerArgs(target, args))
 				? HtmlEventDispatchResult.StopPropagation
 				: HtmlEventDispatchResult.Ok;
 
 		private static HtmlEventDispatchResult DispatchNativePointerLeave(UIElement target, string eventPayload)
-			=> TryParse(eventPayload, out var args) && target.OnNativePointerExited(ToPointerArgs(target, args, isInContact: false))
+			=> TryParse(eventPayload, out var args) && target.OnNativePointerExited(ToPointerArgs(target, args))
 				? HtmlEventDispatchResult.StopPropagation
 				: HtmlEventDispatchResult.Ok;
 
@@ -136,12 +136,12 @@ namespace Windows.UI.Xaml
 				: HtmlEventDispatchResult.Ok;
 
 		private static HtmlEventDispatchResult DispatchNativePointerUp(UIElement target, string eventPayload)
-			=> TryParse(eventPayload, out var args) && target.OnNativePointerUp(ToPointerArgs(target, args, isInContact: true))
+			=> TryParse(eventPayload, out var args) && target.OnNativePointerUp(ToPointerArgs(target, args, isInContact: false))
 				? HtmlEventDispatchResult.StopPropagation
 				: HtmlEventDispatchResult.Ok;
 
 		private static HtmlEventDispatchResult DispatchNativePointerMove(UIElement target, string eventPayload)
-			=> TryParse(eventPayload, out var args) && target.OnNativePointerMove(ToPointerArgs(target, args, isInContact: true))
+			=> TryParse(eventPayload, out var args) && target.OnNativePointerMove(ToPointerArgs(target, args))
 				? HtmlEventDispatchResult.StopPropagation
 				: HtmlEventDispatchResult.Ok;
 
@@ -207,7 +207,7 @@ namespace Windows.UI.Xaml
 		private static PointerRoutedEventArgs ToPointerArgs(
 			UIElement snd,
 			NativePointerEventArgs args,
-			bool? isInContact,
+			bool? isInContact = null,
 			(bool isHorizontalWheel, double delta) wheel = default)
 		{
 			var pointerId = (uint)args.pointerId;

@@ -24,6 +24,14 @@ using Windows.UI.Xaml.Media;
 using Uno.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+#else
+using Windows.UI.Input;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
 	public class TextBoxConstants
@@ -105,7 +113,7 @@ namespace Windows.UI.Xaml.Controls
 			OnFocusStateChanged((FocusState)FocusStateProperty.GetMetadata(GetType()).DefaultValue, FocusState, initial: true);
 			OnVerticalContentAlignmentChanged(VerticalAlignment.Top, VerticalContentAlignment);
 			OnTextCharacterCasingChanged(CreateInitialValueChangerEventArgs(CharacterCasingProperty, CharacterCasingProperty.GetMetadata(GetType()).DefaultValue, CharacterCasing));
-
+			OnDescriptionChanged(CreateInitialValueChangerEventArgs(DescriptionProperty, DescriptionProperty.GetMetadata(GetType()).DefaultValue, Description));
 			var buttonRef = _deleteButton?.GetTarget();
 
 			if (buttonRef != null)
@@ -295,6 +303,56 @@ namespace Windows.UI.Xaml.Controls
 			return baseString;
 		}
 
+		#endregion
+
+		#region Description DependencyProperty
+
+		public
+#if __IOS__ || __MACOS__
+		new
+#endif
+		object Description
+		{
+			get => (object)this.GetValue(DescriptionProperty);
+			set
+			{
+				this.SetValue(DescriptionProperty, value);
+			}
+		}
+
+		public static DependencyProperty DescriptionProperty { get; } =
+			DependencyProperty.Register(
+				"Description",
+				typeof(object),
+				typeof(TextBox),
+				new FrameworkPropertyMetadata(
+					defaultValue: null,
+					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnDescriptionChanged(e)
+				)
+			);
+
+		private void OnDescriptionChanged(DependencyPropertyChangedEventArgs args)
+		{
+			ContentPresenter descriptionPresenter = this.FindName("DescriptionPresenter") as ContentPresenter;
+			if (descriptionPresenter != null)
+			{
+				if (args.NewValue != null)
+				{
+					if (args.NewValue is string s && string.IsNullOrWhiteSpace(s))
+					{
+						descriptionPresenter.Visibility = Visibility.Collapsed;
+					}
+					else
+					{
+						descriptionPresenter.Visibility = Visibility.Visible;
+					}
+				}
+				else
+				{
+					descriptionPresenter.Visibility = Visibility.Collapsed;
+				}
+			}
+		}
 		#endregion
 
 		protected override void OnFontSizeChanged(double oldValue, double newValue)
@@ -713,15 +771,23 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnPointerPressed(args);
 
-			args.Handled = true;
+			if (ShouldFocusOnPointerPressed(args))
+			{
+				Focus(FocusState.Pointer);
+			}
 
-			Focus(FocusState.Pointer);
+			args.Handled = true;
 		}
 
 		/// <inheritdoc />
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
 		{
 			base.OnPointerReleased(args);
+
+			if (!ShouldFocusOnPointerPressed(args))
+			{
+				Focus(FocusState.Pointer);
+			}
 
 			args.Handled = true;
 		}
@@ -884,5 +950,9 @@ namespace Windows.UI.Xaml.Controls
 		partial void SelectAllPartial();
 
 		internal override bool CanHaveChildren() => true;
+
+		private bool ShouldFocusOnPointerPressed(PointerRoutedEventArgs args) =>
+			// For mouse and pen, the TextBox should focus on pointer press, for other input types on release
+			args.Pointer.PointerDeviceType != PointerDeviceType.Touch;
 	}
 }
