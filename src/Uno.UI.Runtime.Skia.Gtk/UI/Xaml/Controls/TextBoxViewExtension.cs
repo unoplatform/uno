@@ -263,10 +263,18 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			switch (_currentInputWidget)
 			{
 				case Entry entry:
-					entry.Text = text;
+					// Avoid setting same text (as it raises WidgetTextChanged on GTK).
+					if (entry.Text != text)
+					{
+						entry.Text = text;
+					}
 					break;
 				case TextView textView:
-					textView.Buffer.Text = text;
+					// Avoid setting same text (as it raises WidgetTextChanged on GTK).
+					if (textView.Buffer.Text != text)
+					{
+						textView.Buffer.Text = text;
+					}
 					break;
 			};
 		}
