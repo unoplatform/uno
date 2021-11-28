@@ -543,7 +543,6 @@
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\net461\Microsoft.ApplicationInsights.dll" target="tools/uno-sourcegen" />
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\net461\System.Diagnostics.DiagnosticSource.dll" target="tools/uno-sourcegen" />
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\net461\Microsoft.DotNet.PlatformAbstractions.dll" target="tools/uno-sourcegen" />
-	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\net461\System.Collections.Immutable.dll" target="tools/uno-sourcegen" />
 
 	<!-- Roslyn Source generators -->
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\Uno.UI.SourceGenerators.dll" target="analyzers/dotnet/cs" />
@@ -555,7 +554,6 @@
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\Microsoft.ApplicationInsights.dll" target="analyzers/dotnet/cs" />
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\System.Diagnostics.DiagnosticSource.dll" target="analyzers/dotnet/cs" />
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\Microsoft.DotNet.PlatformAbstractions.dll" target="analyzers/dotnet/cs" />
-	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\System.Collections.Immutable.dll" target="analyzers/dotnet/cs" />
 
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Bin\Release\*.dll" target="buildTransitive\Uno.UI.Tasks" />
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Bin\Release\*.pdb" target="buildTransitive\Uno.UI.Tasks" />

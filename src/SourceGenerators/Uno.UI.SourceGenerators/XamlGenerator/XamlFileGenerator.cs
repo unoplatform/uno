@@ -332,6 +332,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				return InnerGenerateFile();
 			}
+			catch (OperationCanceledException)
+			{
+				throw;
+			}
 			catch (Exception e)
 			{
 				throw new Exception($"Processing failed for file {_fileDefinition.FilePath} ({e})", e);
@@ -2438,6 +2442,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				return false;
+			}
+			catch (OperationCanceledException)
+			{
+				throw;
 			}
 			catch (Exception e)
 			{

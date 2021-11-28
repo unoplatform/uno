@@ -119,6 +119,10 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						}
 					}
 				}
+				catch (OperationCanceledException)
+				{
+					throw;
+				}
 				catch (Exception e)
 				{
 					string? message = e.Message + e.StackTrace;
