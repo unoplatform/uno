@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<TargetFrameworks>net6.0-android;net6.0-ios</TargetFrameworks>
 		<TargetFrameworksCI>net6.0-android;net6.0-ios</TargetFrameworksCI>
-		<AssemblyName>Uno.UI.DualScreen</AssemblyName>
+		<AssemblyName>Uno.UI.Foldable</AssemblyName>
 
 		<TargetFrameworks>$(TargetFrameworks);net6.0-maccatalyst;net6.0-macos</TargetFrameworks>
 		<TargetFrameworksCI>$(TargetFrameworks);net6.0-maccatalyst;net6.0-macos</TargetFrameworksCI>
@@ -45,7 +45,7 @@
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net6.0-android'">
-		<PackageReference Include="Xamarin.DuoSdk" />
+		<PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Version="1.0.0.3-beta02" />
 	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
@@ -54,7 +54,7 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI.DualScreen\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI.Foldable\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />
