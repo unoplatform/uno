@@ -10,6 +10,12 @@ namespace Windows.UI.Composition
 {
 	public partial class Compositor
 	{
+		private const float ShadowOffsetMax = 150;
+		private const byte ShadowAlphaFallback = 150;
+		private const float ShadowAlphaModifier = 1f / 650f;
+		private const float ShadowSigmaXModifier = 1f / 5f;
+		private const float ShadowSigmaYModifier = 1f / 3.5f;
+
 		private readonly Stack<float> _opacityStack = new Stack<float>();
 		private float _currentOpacity = 1.0f;
 		private bool _isDirty;
@@ -174,29 +180,23 @@ namespace Windows.UI.Composition
 		private void ComputeDropShadowValues(float offsetZ, out float dx, out float dy, out float sigmaX, out float sigmaY, out SKColor shadowColor)
 		{
 			// Following math magic seems to follow UWP ThemeShadow quite nicely.
-			const float SHADOW_OFFSET_MAX = 150;
-			const byte SHADOW_ALPHA_FALLBACK = 150;
-			const float SHADOW_ALPHA_MODIFIER = 1f / 650f;
-			const float SHADOW_SIGMA_X_MODIFIER = 1f / 5f;
-			const float SHADOW_SIGMA_Y_MODIFIER = 1f / 3.5f;
-
 			byte alpha;
-			if (offsetZ <= SHADOW_OFFSET_MAX)
+			if (offsetZ <= ShadowOffsetMax)
 			{
 				// Alpha should slightly decrease as the offset increases
-				alpha = (byte)((1.0f - (offsetZ * SHADOW_ALPHA_MODIFIER)) * 255);
+				alpha = (byte)((1.0f - (offsetZ * ShadowAlphaModifier)) * 255);
 			}
 			else
 			{
-				alpha = SHADOW_ALPHA_FALLBACK;
-				offsetZ = SHADOW_OFFSET_MAX;
+				alpha = ShadowAlphaFallback;
+				offsetZ = ShadowOffsetMax;
 			}
 
 			dx = 0;
-			dy = offsetZ / 2 - offsetZ * SHADOW_SIGMA_Y_MODIFIER;
-			sigmaX = offsetZ * SHADOW_SIGMA_X_MODIFIER;
-			sigmaY = offsetZ * SHADOW_SIGMA_Y_MODIFIER;
-			shadowColor = SKColor.Parse("ACACAC").WithAlpha(alpha);
+			dy = offsetZ / 2 - offsetZ * ShadowSigmaYModifier;
+			sigmaX = offsetZ * ShadowSigmaXModifier;
+			sigmaY = offsetZ * ShadowSigmaYModifier;
+			shadowColor = SKColor.Parse("000000").WithAlpha(alpha);
 		}
 	}
 }

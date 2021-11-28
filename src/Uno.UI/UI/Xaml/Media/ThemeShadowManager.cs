@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Uno.Extensions;
+﻿using Uno.Extensions;
 using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Media
