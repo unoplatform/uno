@@ -202,7 +202,11 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public Shadow Shadow
+		public
+#if __MACOS__
+			new
+#endif
+			Shadow Shadow
 		{
 			get => (Shadow)GetValue(ShadowProperty);
 			set => SetValue(ShadowProperty, value);
