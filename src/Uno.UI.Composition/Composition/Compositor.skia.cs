@@ -192,6 +192,9 @@ namespace Windows.UI.Composition
 				offsetZ = ShadowOffsetMax;
 			}
 
+			// Make black less prominent
+			alpha = (byte)(alpha / 3);
+
 			dx = 0;
 			dy = offsetZ / 2 - offsetZ * ShadowSigmaYModifier;
 			sigmaX = offsetZ * ShadowSigmaXModifier;
