@@ -405,7 +405,8 @@ namespace Windows.UI.Xaml.Markup.Reader
 				() => AppDomain.CurrentDomain
 					.GetAssemblies()
 					.Select(a =>
-						a.GetType(name)
+						a.GetType(name) ??
+						a.GetType(originalName)
 					)
 					.Trim()
 					.FirstOrDefault(),

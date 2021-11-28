@@ -1013,11 +1013,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					var splitIndex = createFromString.MethodName.LastIndexOf(".");
 					var typeName = createFromString.MethodName.Substring(0, splitIndex);
-					sourceType = AppDomain.CurrentDomain
-						.GetAssemblies()
-						.Select(a => a.GetType(typeName))
-						.Trim()
-						.FirstOrDefault();
+					sourceType = TypeResolver.FindType(typeName);
 					methodName = createFromString.MethodName.Substring(splitIndex + 1);
 				}
 
