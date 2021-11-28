@@ -746,7 +746,19 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			ScrollableHeight = Math.Max(ExtentHeight - ViewportHeight, 0);
+			// On Skia, the ExtentHeight can include a rounding error, which may cause
+			// unwanted ScrollBar to pop in and out of existence.
+			if (ScrollableHeight < 0.1)
+			{
+				ScrollableHeight = 0;
+			}
 			ScrollableWidth = Math.Max(ExtentWidth - ViewportWidth, 0);
+			// On Skia, the ExtentWidth can include a rounding error, which may cause
+			// unwanted ScrollBar to pop in and out of existence.
+			if (ScrollableWidth < 0.1)
+			{
+				ScrollableWidth = 0;
+			}
 
 			UpdateComputedVerticalScrollability(invalidate: false);
 			UpdateComputedHorizontalScrollability(invalidate: false);
