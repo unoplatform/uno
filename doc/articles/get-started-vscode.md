@@ -109,7 +109,11 @@ This will create a solution that only contains the WebAssembly and Skia+GTK plat
 
 ## Updating an existing application to work with VS Code
 
-**Coming soon**
+An existing application needs additional changes to be debugged properly.
+
+1. At the root of the workspace, create a folder named `.vscode`
+2. Inside this folder, create a file named `launch.json` and copy the [contents of this file](https://github.com/unoplatform/uno/blob/5b9d4b7/src/SolutionTemplate/Uno.ProjectTemplates.Dotnet/content/unoapp-net6/.vscode/launch.json).
+3. Inside this folder, create a file named `tasks.json` and copy the [contents of this file](https://github.com/unoplatform/uno/blob/5b9d4b725459dbc4d684f47db1485d84579b443b/src/SolutionTemplate/Uno.ProjectTemplates.Dotnet/content/unoapp-net6/.vscode/tasks.json).
 
 ### Known limitations for Code support
 - C# Debugging is not supported when running in a remote Linux Container, Code Spaces or GitPod.
