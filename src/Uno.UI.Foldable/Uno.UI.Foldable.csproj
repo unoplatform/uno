@@ -5,7 +5,7 @@
 		<!--<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>-->
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
-		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.DualScreen</PackageId>
+		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Foldable</PackageId>
 	</PropertyGroup>
 	
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
