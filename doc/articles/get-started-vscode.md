@@ -2,6 +2,10 @@
 
 This guide will walk you through the set-up process for building WebAssembly apps with Uno under Windows, Linux, or macOS.
 
+See these sections for information about using Uno Platform with:
+- [Codespaces](articles/working-with-codespaces.md)
+- [Gitpod](articles/working-with-gitpod.md)
+
 ## Prerequisites
 
 * [**Visual Studio Code**](https://code.visualstudio.com/)
@@ -77,6 +81,18 @@ This will create a solution that only contains the WebAssembly and Skia+GTK plat
 1. Press `F5` to start the debugging session
 1. Place a breakpoint inside the `OnClick` method
 1. Click the button in the app, and the breakpoint will hit
+
+Note that C# Hot Reload is not available when running with the debugger. In order to use C# Hot Reload, run the app using the following:
+- On Windows, type the following:
+    ```
+    $env:DOTNET_MODIFIABLE_ASSEMBLIES="debug"
+    dotnet run
+    ```
+- On Linux or macOS:
+    ```
+    export DOTNET_MODIFIABLE_ASSEMBLIES=debug
+    dotnet run
+    ```
 
 ## Using code snippets
 
