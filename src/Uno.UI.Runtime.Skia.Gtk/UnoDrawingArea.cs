@@ -37,11 +37,6 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
-		private void InvalidateInputField()
-		{
-
-		}
-
 		private void Invalidate()
 			=> QueueDrawArea(0, 0, 10000, 10000);
 
