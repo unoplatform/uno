@@ -133,11 +133,11 @@
       "defaultValue": "true",
       "description": "Enables the Skia/Linux Framebuffer platform support project"
     },
-    "vscodeWasm": {
+    "vscode": {
       "type": "parameter",
       "dataType": "bool",
       "defaultValue": "false",
-      "description": "Adds the Visual Studio Code Debugging support files for WebAssembly"
+      "description": "Adds the Visual Studio Code Debugging support files"
     },
     "skipRestore": {
       "type": "parameter",
@@ -252,7 +252,7 @@
           ]
         },
         {
-          "condition": "(!vscodeWasm)",
+          "condition": "(!vscode)",
           "exclude": [
             ".vscode/**/*"
           ]
