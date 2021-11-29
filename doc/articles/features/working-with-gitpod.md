@@ -2,7 +2,9 @@
 
 ## Developing an Uno App using Gitpod
 
-The easiest way to get started is to visible the Uno.QuickStart repository. It allows you to get started with minimal configuration or project creation steps.
+The easiest way to get started is to visit the [Uno.QuickStart](https://github.com/unoplatform/Uno.QuickStart) repository. It allows you to get started with minimal configuration or project creation steps.
+
+### Creating the environment from scratch
 
 If you want to start from an empty repository, follow these steps:
 1. Create an empty repository
@@ -38,32 +40,6 @@ If you want to start from an empty repository, follow these steps:
 1. Using the Gitpod top left menu, open the `MyApp` folder
 
 You're ready to develop for WebAssembly or the Linux desktop (Skia+Gtk).
-
-### Developing for WebAssembly
-1. Once the C# environment is setup, with the commmand palette use the command "Omnisharp: Select project" (or click on the project name in the status bar)
-1. Select the `MyApp.Wasm` project
-1. Using a terminal, navigate to the `MyApp.Wasm` folder
-1. Type `dotnet run`
-1. Once the compilation is done, a server will open on port 5000
-1. Gitpod will suggest to open a new browser window or as a preview window
-
-You can now use C# Hot Reload and XAML HotReload to develop your application.
-
-See [the VS Code Getting started](../get-started-vscode.md) documentation for additional details about developing with VS Code.
-
-### Developing for Skia.Gtk
-1. As Gitpod will suggest, open the port 6080 as a browser preview to get access to the X11 environment.
-1. Once the C# environment is setup, with the commmand palette use the command "Omnisharp: Select project" (or click on the project name in the status bar)
-1. Select the `MyApp.Skia.Gtk` project
-1. To run your application, either:
-    - Using a terminal, navigate to the `MyApp.Skia.Gtk` folder and type `dotnet run`
-    - In the debug activity section on the left, select `Skia.GTK (Debug)` in drop down, the press `F5` or Ctrl+F5 to start the application without the debugger.
-1. Once the compilation is done, a server will open on port 5000
-1. Gitpod will suggest to open a new browser window or as a preview window
-
-You can now use C# Hot Reload and XAML HotReload to develop your application.
-
-See [the VS Code Getting started](../get-started-vscode.md) documentation for additional details about developing with VS Code.
 
 ## Contributing to Uno using Gitpod
 

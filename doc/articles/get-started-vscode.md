@@ -12,7 +12,7 @@ See these sections for information about using Uno Platform with:
 * **.NET SDK**
     * [.NET 6.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (**version 6.0 (SDK 6.0.100)** or later)
     > Use `dotnet --version` from the terminal to get the version installed.
-* The [Uno Platform Visual Studio Code](https://marketplace.visualstudio.com/search?term=uno%20platform) Extension
+* The [Uno Platform Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=unoplatform.vscode) Extension
 
 You can use [`uno-check`](https://github.com/unoplatform/uno.check) to make your installation compatible with Uno Platform.
 
