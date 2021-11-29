@@ -14,6 +14,8 @@
       href: get-started-rider.md
     - name: dotnet new templates
       href: get-started-dotnet-new.md
+    - name: Get Started - Uno Figma
+      href: getting-started-uno-figma.md
     - name: Additional setup for Linux
       href: get-started-with-linux.md
     - name: Additional instructions for WinUI 3
