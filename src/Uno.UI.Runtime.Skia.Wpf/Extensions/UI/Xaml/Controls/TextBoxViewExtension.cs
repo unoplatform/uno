@@ -2,17 +2,13 @@
 
 using System;
 using System.Windows;
-using System.Windows.Media;
-using System.Windows.Threading;
 using Windows.UI.Xaml.Controls;
 using Uno.Disposables;
 using Uno.UI.Runtime.Skia.WPF.Controls;
 using Uno.UI.Skia.Platform;
 using Uno.UI.Xaml.Controls.Extensions;
 using Point = Windows.Foundation.Point;
-using SolidColorBrush = Windows.UI.Xaml.Media.SolidColorBrush;
 using WpfCanvas = System.Windows.Controls.Canvas;
-using WpfTextBox = System.Windows.Controls.TextBox;
 
 namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 {
@@ -101,12 +97,7 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			_currentInputWidget.TextWrapping = textBox.AcceptsReturn ? TextWrapping.Wrap : TextWrapping.NoWrap;
 			_currentInputWidget.MaxLength = textBox.MaxLength;
 			_currentInputWidget.IsReadOnly = textBox.IsReadOnly;
-
-			if (textBox.Foreground is SolidColorBrush colorBrush)
-			{
-				var unoColor = colorBrush.Color;
-				_currentInputWidget.Foreground = new System.Windows.Media.SolidColorBrush(Color.FromArgb(unoColor.A, unoColor.R, unoColor.G, unoColor.B));
-			}
+			_currentInputWidget.Foreground = textBox.Foreground.ToWpfBrush();
 		}
 
 		public void UpdateSize()
@@ -193,5 +184,13 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 		public int GetSelectionStart() => _currentInputWidget?.SelectionStart ?? 0;
 
 		public int GetSelectionLength() => _currentInputWidget?.SelectionLength ?? 0;
+
+		public void SetForeground(Windows.UI.Xaml.Media.Brush brush)
+		{
+			if (_currentInputWidget != null)
+			{
+				_currentInputWidget.Foreground = brush.ToWpfBrush();
+			}
+		}
 	}
 }

@@ -27,7 +27,7 @@ namespace SamplesApp.Droid
 	public class MainActivity : Windows.UI.Xaml.ApplicationActivity
 	{
 		private bool _onCreateEventInvoked = false;
-
+		
 		public MainActivity()
 		{
 			ApplicationViewHelper.GetBaseActivityEvents().Create += OnCreateEvent;

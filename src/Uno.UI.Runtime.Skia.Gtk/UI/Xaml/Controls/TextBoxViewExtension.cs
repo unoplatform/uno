@@ -15,6 +15,7 @@ using Object = GLib.Object;
 using Point = Windows.Foundation.Point;
 using Scale = Pango.Scale;
 using System.Diagnostics;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 {
@@ -262,10 +263,18 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			switch (_currentInputWidget)
 			{
 				case Entry entry:
-					entry.Text = text;
+					// Avoid setting same text (as it raises WidgetTextChanged on GTK).
+					if (entry.Text != text)
+					{
+						entry.Text = text;
+					}
 					break;
 				case TextView textView:
-					textView.Buffer.Text = text;
+					// Avoid setting same text (as it raises WidgetTextChanged on GTK).
+					if (textView.Buffer.Text != text)
+					{
+						textView.Buffer.Text = text;
+					}
 					break;
 			};
 		}
@@ -337,6 +346,20 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			}
 
 			return 0;
+		}
+
+		public void SetForeground(Windows.UI.Xaml.Media.Brush brush)
+		{
+			if (brush is SolidColorBrush scb)
+			{
+				_currentInputWidget?.OverrideColor(StateFlags.Normal, new Gdk.RGBA
+				{
+					Red = scb.ColorWithOpacity.R,
+					Green = scb.ColorWithOpacity.G,
+					Blue = scb.ColorWithOpacity.B,
+					Alpha = scb.ColorWithOpacity.A
+				});
+			}
 		}
 	}
 }

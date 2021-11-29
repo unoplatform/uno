@@ -7538,6 +7538,8 @@
 		  <Member fullName="Windows.UI.Composition.Compositor Windows.Media.Playback.MediaPlayerSurface.get_Compositor()" reason="Composition Relocation" />
 		  <Member fullName="Windows.Graphics.Capture.GraphicsCaptureItem Windows.Graphics.Capture.GraphicsCaptureItem.CreateFromVisual(Windows.UI.Composition.Visual visual)" reason="Composition Relocation" />
 		  <!-- END Composition Relocation -->
+		
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TwoPaneView.set_Mode(Microsoft.UI.Xaml.Controls.TwoPaneViewMode value)" reason="This property is get-only in WinUI" />
 		</Methods>
 		<Events>
 			<Member

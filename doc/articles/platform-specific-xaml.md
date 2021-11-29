@@ -22,7 +22,7 @@ For prefixes which will be excluded on Windows (e.g. `android`, `ios`), the actu
 
 ### Examples
 
-##### Example 1
+#### Example 1
 
 Using the following XAML:
 
@@ -135,6 +135,7 @@ Where:
  * 'Droid' represents Android
 
 ### XAML prefixes in cross-targeted libraries
+
 For Uno 3.0 and above, XAML prefixes behave differently in class libraries than when used directly in application code. Specifically, it isn't possible to distinguish Skia and Wasm in a library, since both platforms use the .NET Standard 2.0 target. The `wasm` and `skia` prefixes will always evaluate to false inside of a library.
 
 The prefix `netstdref` is available and will include the objects or properties in both Skia and Wasm build. A prefix `not_nestdref` can also be used to exclude them. Since Skia and Wasm are similar, it is often not necessary to make the distinction. 
