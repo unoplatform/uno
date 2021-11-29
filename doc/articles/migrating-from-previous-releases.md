@@ -19,14 +19,15 @@ To migrate your application to Uno 4.0:
     ```csharp
     global::Uno.UI.FeatureConfiguration.ApiInformation.NotImplementedLogLevel = global::Uno.Foundation.Logging.LogLevel.Debug; // Raise not implemented usages as Debug messages
     ```
-- Many other smaller breaking changes that may have forced `#if HAS_UNO` conditionals, such as:
+- Many other smaller breaking changes that may have previously forced `#if HAS_UNO` conditionals, such as:
     - `FrameworkElement.DataContextChanged` signature
     - `FrameworkElement.Loading` signature
     - `Popup` is now correctly in the `Primitives` namespace
     - `FlyoutBase` event signatures
 - Uno.UI packages no longer depend on `Uno.Core`.
   If you did depend on types or extensions provided by this package, you can take a direct dependency on it, or
-  use one of the sub packages created to limit the number of transitive dependencies. 
+  use one of the sub packages created to limit the number of transitive dependencies.
+- The `Uno.UI.DualScreen` package is now renamed as` Uno.UI.Foldable`
 
 ### Uno 3.6 
 
