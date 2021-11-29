@@ -145,6 +145,8 @@ The Uno Platform extension provides multiple output windows to troubleshoot its 
 - **Uno Platform - Hot Reload**, which provides activity messages about the Hot Reload feature
 - **Uno Platform - XAML**, which provides activity messages about the XAML Code Completion feature
 
+If the extension is not behaving properly, try using the `Developer: Reload Window` (or `Ctrl+R`) command in the palette.
+
 ## Getting Help
 
 If you continue experiencing issues with Visual Studio and Uno Platform, please visit our [Discord](https://www.platform.uno/discord) - #uno-platform channel or [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform) where our engineering team and community will be able to help you. 
