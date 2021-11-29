@@ -435,7 +435,9 @@
       href: uno-development/debugging-uno-ui.md
     - name: Building Uno.UI for macOS using Visual Studio for Mac
       href: uno-development/building-uno-macos.md
-    - name: Using GitPod
+    - name: Using Codespaces
+      href: features/working-with-codespaces.md
+    - name: Using Gitpod
       href: features/working-with-gitpod.md
     - name: Inspecting the visual tree
       href: uno-development/debugging-inspect-visual-tree.md
