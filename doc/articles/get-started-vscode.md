@@ -3,8 +3,8 @@
 This guide will walk you through the set-up process for building WebAssembly apps with Uno under Windows, Linux, or macOS.
 
 See these sections for information about using Uno Platform with:
-- [Codespaces](articles/working-with-codespaces.md)
-- [Gitpod](articles/working-with-gitpod.md)
+- [Codespaces](features/working-with-codespaces.md)
+- [Gitpod](features/working-with-gitpod.md)
 
 ## Prerequisites
 
