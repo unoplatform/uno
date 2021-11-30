@@ -1102,5 +1102,7 @@ namespace Windows.UI.Xaml.Controls
 		private protected override Thickness GetBorderThickness() => BorderThickness;
 
 		internal override bool CanHaveChildren() => true;
+
+		internal override bool IsViewHit() => Border.IsViewHitImpl(this);
 	}
 }
