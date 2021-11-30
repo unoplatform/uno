@@ -37,8 +37,12 @@ Make sure that the version number is the same as the `Uno.UI` package.
 ## Troubleshooting
 
 ### Common issues
-- The application logs file reloads, so you should see diagnostics messages in the app when a XAML file is reloaded.
+- The application logs file changes. You should see diagnostics messages in the app when a XAML file is reloaded.
 - The file named `obj\Debug\XXX\g\RemoteControlGenerator\RemoteControl.g.cs` (Xamarin iOS/Android) or the `RemoteControlGenerator\RemoteControl.g.cs` node (Wasm, `net6` or Skia) in the Analyzers node in your project contains the connection information, verify that the information makes sense, particularly the port number.
+- WebAssembly: `Hot Reload fails to start with Mixed Content: The page at XXX was loaded over HTTPS, but attempted to connect to the insecure WebSocket endpoint`. This issue is caused by Visual Studio 2022 enforcing https connections for locally served apps. You can work around this by either:
+    - Removing the https endpoint in the `Properties/launchSettings.json` file
+    - Unchecking the `Use SSL` option in the project's Debug launch profiles
+    - Selecting the project name instead of IISExpress in the toolbar debug icon drop down list
 
 ### Visual Studio 2019/2022
 - The output window in VS has an output named "Uno Platform" in its drop down. Diagnostics messages from the VS integration appear there.
@@ -54,7 +58,6 @@ Make sure that the version number is the same as the `Uno.UI` package.
 ### VS Code
 - The output window in Code has an output named "Uno Platform - Hot Reload" in its drop down. Diagnostics messages from the extension appear there.
 - Make sure that the selected project in the status bar is not the solution file, but rather the project platform you are debugging.
-
 
 ## XAML Hot Reload inside of the Uno Solution
 
