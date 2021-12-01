@@ -119,7 +119,7 @@
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
 		<PackageReference Include="Uno.Core.Extensions.Disposables" Version="4.0.0-dev.7" />
 		<PackageReference Include="Uno.Core.Extensions.Compatibility" Version="4.0.0-dev.7" />
-		<PackageReference Include="Uno.Core.Extensions" Version="4.0.0-dev.7" />
+		<PackageReference Include="Uno.Core.Extensions" Version="4.0.1" />
 	</ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
