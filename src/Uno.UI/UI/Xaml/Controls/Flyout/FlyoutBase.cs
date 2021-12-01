@@ -70,7 +70,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				{
 					Child = child,
 					IsLightDismissEnabled = _isLightDismissEnabled,
-					IsForFlyout = true,
+					AssociatedFlyout = this,
 				};
 
 				SynchronizePropertyToPopup(Popup.TemplatedParentProperty, TemplatedParent);
@@ -244,9 +244,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				bool cancel = false;
 				OnClosing(ref cancel);
-				var closing = new FlyoutBaseClosingEventArgs();
-				Closing?.Invoke(this, closing);
-				if (cancel || closing.Cancel)
+				if (cancel)
 				{
 					return;
 				}
@@ -367,7 +365,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private protected virtual void OnOpening() { }
 
-		private protected virtual void OnClosing(ref bool cancel) { }
+		internal virtual void OnClosing(ref bool cancel) {
+
+			var closing = new FlyoutBaseClosingEventArgs();
+			Closing?.Invoke(this, closing);
+			cancel = closing.Cancel;
+		}
 
 		private protected virtual void OnClosed()
 		{

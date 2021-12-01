@@ -198,6 +198,17 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			// Make sure we are the original source.  We do not want to handle PointerPressed on the Popup itself.
 			if (args.OriginalSource == this && Popup is { } popup)
 			{
+				ClosePopup(popup);
+			}
+		}
+
+		private static void ClosePopup(Popup popup)
+		{
+			// Give the popup an opportunity to cancel closing.
+			var cancel = false;
+			popup.OnClosing(ref cancel);
+			if (!cancel)
+			{
 				popup.IsOpen = false;
 			}
 		}

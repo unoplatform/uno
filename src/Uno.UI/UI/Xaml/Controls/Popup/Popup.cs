@@ -8,6 +8,7 @@ using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
 using Uno;
+using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
@@ -26,7 +27,18 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal bool IsSubMenu { get; set; }
 
-		internal bool IsForFlyout { get; set; }
+		internal bool IsForFlyout => AssociatedFlyout != null;
+
+		private ManagedWeakReference _associatedFlyoutWeakRef;
+		internal FlyoutBase AssociatedFlyout
+		{
+			get => _associatedFlyoutWeakRef?.Target as FlyoutBase;
+			set
+			{
+				WeakReferencePool.ReturnWeakReference(this, _associatedFlyoutWeakRef);
+				_associatedFlyoutWeakRef = WeakReferencePool.RentWeakReference(this, value);
+			}
+		}
 
 		/// <summary>
 		/// In WinUI, Popup has IsTabStop set to true by default.
