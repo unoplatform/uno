@@ -2,8 +2,14 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<RollForward>Major</RollForward>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(CI_Build)'=='true' or '$(TF_BUILD)' == 'true'">
+		<TargetFrameworks Condition="'$(IS_NET6_BUILD)'==''">netcoreapp3.1</TargetFrameworks>
+		<TargetFrameworks Condition="'$(IS_NET6_BUILD)'=='true'">net6.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -36,7 +42,7 @@
 		<PropertyGroup>
 			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
 			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
-			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\tools\rc\host</_TargetNugetFolder>
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI.RemoteControl\$(UnoNugetOverrideVersion)\tools\rc\host\$(TargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)*.*" />
@@ -46,5 +52,7 @@
 		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
 		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
+
+	<Target Name="GetTargetPath" />
 
 </Project>

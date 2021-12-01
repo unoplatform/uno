@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Uno.UI.Foldable")]
@@ -20,3 +21,5 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Uno.UI.FluentTheme.v2")]
 
 [assembly: AssemblyMetadata("IsTrimmable", "True")]
+
+[assembly: System.Reflection.Metadata.MetadataUpdateHandler(typeof(Uno.UI.RuntimeTypeMetadataUpdateHandler))]

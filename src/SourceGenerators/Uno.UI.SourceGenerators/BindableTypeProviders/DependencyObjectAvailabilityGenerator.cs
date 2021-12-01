@@ -98,6 +98,10 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						GenerateLinkerSubstitutionDefinition(bindableTypes, isApplication);
 					}
 				}
+				catch (OperationCanceledException)
+				{
+					throw;
+				}
 				catch (Exception e)
 				{
 					string? message = e.Message + e.StackTrace;

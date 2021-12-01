@@ -19,19 +19,6 @@ XAML Intellisense [is not working properly](https://developercommunity.visualstu
 
 To work around this issue, close all XAML editors, open a C# file and select 'UWP' in the top left drop-down list of the text editor sector. Once selected, re-open the XAML file.
 
-#### The XAML editor may be empty or "Empty path not legal" in Visual Studio 16.8 or earlier
-
-The XAML editor may be empty when the active editor project is not UWP.
-
-To work around this issue:
-- Close all XAML editors
-- If you just created the project in the same Visual Studio 2019 instance:
-  - Close the solution and/or restart Visual Studio
-  - Reopen the solution
-- Open a C# file and select 'UWP' in the top left drop-down list of the text editor sector. Once selected, re-open the XAML file.
-
-> This issue has been fixed by Microsoft in VS 16.9 Preview 3.
-
 #### `InitializeComponent` or `x:Name` variable is not available in code-behind
 Visual Studio [does not refresh the intellisense cache](https://developercommunity.visualstudio.com/content/problem/588021/the-compile-itemgroup-intellisense-cache-is-not-re.html) properly, causing variables to be incorrectly defined.
 
@@ -130,4 +117,5 @@ More troubleshooting information is available [in this section](features/working
 
 This issue is caused by visual studio enforcing https connections for local content. You can work around this by either:
 - Removing the https endpoint in the `Properties/launchSettings.json` file
+- Unchecking the `Use SSL` option in the project's Debug launch profiles
 - Selecting the project name instead of IISExpress in the toolbar debug icon drop down list

@@ -1,6 +1,8 @@
 ﻿using System.Threading;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 
@@ -29,7 +31,7 @@ namespace Uno.UI.RemoteControl.Host
 
 					try
 					{
-						using (var server = new RemoteControlServer())
+						using (var server = new RemoteControlServer(context.RequestServices.GetService<IConfiguration>()))
 						{
 							await server.Run(await context.WebSockets.AcceptWebSocketAsync(), CancellationToken.None);
 						}

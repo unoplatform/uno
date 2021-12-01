@@ -39,6 +39,10 @@
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+	</ItemGroup>
+
 	<!-- Fix for VS 2022 -->
 	<Target Name="GetTargetPath" />
 

@@ -35,7 +35,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			bool? isTelemetryOptout()
 				=> telemetryOptOut.Equals("true", StringComparison.OrdinalIgnoreCase)
-				|| telemetryOptOut.Equals("1", StringComparison.OrdinalIgnoreCase);
+				|| telemetryOptOut.Equals("1", StringComparison.OrdinalIgnoreCase)
+				|| _isDesignTimeBuild;
 
 			_telemetry = new Telemetry.Telemetry(isTelemetryOptout);
 

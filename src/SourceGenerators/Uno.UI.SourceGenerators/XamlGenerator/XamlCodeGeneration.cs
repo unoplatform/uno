@@ -248,7 +248,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return link;
 		}
 
-		public KeyValuePair<string, string>[] Generate()
+		public KeyValuePair<string, string>[] Generate(GenerationRunInfo generationRunInfo)
 		{
 			var stopwatch = Stopwatch.StartNew();
 
@@ -310,12 +310,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									defaultLanguage: _defaultLanguage,
 									isWasm: _isWasm,
 									isDebug: _isDebug,
+									isDesignTimeBuild: _isDesignTimeBuild,
 									skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
 									shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
 									isUnoAssembly: IsUnoAssembly,
 									isLazyVisualStateManagerEnabled: _isLazyVisualStateManagerEnabled,
 									generatorContext: _generatorContext,
-									xamlResourcesTrimming: _xamlResourcesTrimming
+									xamlResourcesTrimming: _xamlResourcesTrimming,
+									generationRunFileInfo: generationRunInfo.GetRunFileInfo(file.UniqueID)
 								)
 								.GenerateFile()
 						)

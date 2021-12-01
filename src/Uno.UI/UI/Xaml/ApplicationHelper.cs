@@ -1,4 +1,5 @@
-﻿using Windows.UI.Xaml;
+﻿using System;
+using Windows.UI.Xaml;
 
 namespace Uno.UI
 {
@@ -33,6 +34,11 @@ namespace Uno.UI
 
 				Application.UpdateRequestedThemesForResources();
 			}
+		}
+
+		public static bool IsLoadableComponent(Uri resource)
+		{
+			return Application.Current.IsLoadableComponent(resource);
 		}
 	}
 }

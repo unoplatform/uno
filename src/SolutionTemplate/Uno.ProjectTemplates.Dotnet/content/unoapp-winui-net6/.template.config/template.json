@@ -131,7 +131,7 @@
       "defaultValue": "true",
       "description": "Enables the WinUI desktop platform support project"
     },
-    "vscodeWasm": {
+    "vscode": {
       "type": "parameter",
       "dataType": "bool",
       "defaultValue": "false",
@@ -218,7 +218,7 @@
           ]
         },
         {
-          "condition": "(!vscodeWasm)",
+          "condition": "(!vscode)",
           "exclude": [
             ".vscode/**/*"
           ]
