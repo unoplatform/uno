@@ -6,10 +6,7 @@
 ## Pixel-Perfect. Multi-Platform. C# & Windows XAML. Today.
 
 [![Open Uno in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/unoplatform/uno) 
-
 [![Azure DevOps](https://img.shields.io/azure-devops/build/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/5/master?label=master)](https://uno-platform.visualstudio.com/Uno%20Platform/_build?definitionId=5)
-[![Azure DevOps](https://img.shields.io/azure-devops/build/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/5/release/beta/Batman?label=release/beta/Batman)](https://uno-platform.visualstudio.com/Uno%20Platform/_build?definitionId=5)
-[![Azure DevOps](https://img.shields.io/azure-devops/build/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/5/release/stable/Batman?label=release/stable/Batman)](https://uno-platform.visualstudio.com/Uno%20Platform/_build?definitionId=5)
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=unoplatform/uno)](https://dependabot.com)
 [![Twitter Followers](https://img.shields.io/twitter/follow/unoplatform?label=follow%20%40unoplatform&style=flat)](https://twitter.com/unoplatform)
 [![GitHub Stars](https://img.shields.io/github/stars/unoplatform/uno?label=github%20stars)](https://github.com/unoplatform/uno/stargazers/)
@@ -18,12 +15,11 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/unoplatform/uno/blob/master/CONTRIBUTING.md)
 
 # What is the Uno Platform?
-
 The Uno Platform is a UI Platform for building single-codebase applications for Windows, Web/WebAssembly, iOS, macOS, Android and Linux. 
 
-It allows C# and Windows XAML code to run on all target platforms, while allowing you control of every pixel. It comes with support for Fluent, Material and Cupertino design systems out of the box. Uno Platform implements a growing number of the UWP APIs, such as **Windows.UI.Xaml**, to enable UWP and WinUI applications to run on on all platforms with native performance. 
+It allows C# and WinUI XAML code to run on all target platforms, while allowing you control of every pixel. It comes with support for Fluent, Material and Cupertino design systems out of the box. Uno Platform implements a growing number of the WinRT and WinUI APIs, such as **Windows.UI.Xaml**, to enable WinUI applications to run on on all platforms with native performance. 
 
-Use the UWP/WinUI tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [XAML Hot Reload](https://docs.microsoft.com/en-us/visualstudio/xaml-tools/xaml-hot-reload?view=vs-2019) and [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp), build your application as much as possible on Windows, then validate that your application runs on iOS, Android, macOS and WebAssembly.
+Use the WinUI tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [XAML Hot Reload](https://docs.microsoft.com/en-us/visualstudio/xaml-tools/xaml-hot-reload?view=vs-2019) and [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp), build your application as much as possible on Windows, then validate that your application runs on iOS, Android, macOS and WebAssembly.
 
 Visit [our documentation](doc/articles/intro.md) for more details.
 
