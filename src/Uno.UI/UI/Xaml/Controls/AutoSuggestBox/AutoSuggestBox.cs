@@ -52,6 +52,7 @@ namespace Windows.UI.Xaml.Controls
 #if __ANDROID__
 			_popup.DisableFocus();
 #endif
+			_popup.IsLightDismissEnabled = true;
 
 			UpdateQueryButton();
 			UpdateTextBox();

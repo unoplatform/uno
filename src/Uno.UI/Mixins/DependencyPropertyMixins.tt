@@ -88,7 +88,7 @@
 			.Class("Popup")
 				.Property("IsOpen", "bool", "false")
 				.Property("Child", "UIElement", "null", frameworkPropertyOption: "ValueInheritsDataContext")
-				.Property("IsLightDismissEnabled", "bool", "true")
+				.Property("IsLightDismissEnabled", "bool", "false")
 				//.Property("ChildTransitions", "TransitionCollection", "null")
 				.Property("HorizontalOffset", "double", "0")
 				.Property("VerticalOffset", "double", "0")
