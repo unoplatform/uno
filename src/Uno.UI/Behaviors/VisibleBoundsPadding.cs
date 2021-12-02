@@ -83,6 +83,9 @@ namespace Uno.UI.Toolkit
 		{
 			get
 			{
+#if WINUI
+				return new();
+#else
 				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
 				var bounds = Window.Current?.Bounds ?? Rect.Empty;
 				var result = new Thickness {
@@ -100,6 +103,7 @@ namespace Uno.UI.Toolkit
 #endif
 
 				return result;
+#endif
 			}
 		}
 
@@ -110,6 +114,9 @@ namespace Uno.UI.Toolkit
 		{
 			get
 			{
+#if WINUI
+				return new();
+#else
 				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
 
 				if (Window.Current is Window window)
@@ -120,6 +127,7 @@ namespace Uno.UI.Toolkit
 				}
 
 				return visibleBounds;
+#endif
 			}
 		}
 
@@ -141,6 +149,9 @@ namespace Uno.UI.Toolkit
 
 		private static void OnIsPaddingMaskChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
+#if WINUI
+			// VisibleBoundsPadding is disabled for WinUI 3 and up as there's available API for bounds.
+#else
 			if (dependencyObject is FrameworkElement fe)
 			{
 				VisibleBoundsDetails.GetInstance(fe).OnIsPaddingMaskChanged((PaddingMask)args.OldValue, (PaddingMask)args.NewValue);
@@ -154,8 +165,10 @@ namespace Uno.UI.Toolkit
 				}
 #endif
 			}
+#endif
 		}
 
+#if !WINUI
 		/// <summary>
 		/// If false, ApplicationView.VisibleBounds and Window.Current.Bounds have different aspect ratios (eg portrait vs landscape) which 
 		/// might arise transiently when the screen orientation changes.
@@ -365,5 +378,6 @@ namespace Uno.UI.Toolkit
 					.TransformBounds(new Rect(0, 0, boundsOf.ActualWidth, boundsOf.ActualHeight));
 			}
 		}
+#endif
 	}
 }
