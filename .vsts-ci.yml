@@ -32,7 +32,7 @@ variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   windowsHostedVMImage: 'windows-2019'
   windows2022HostedVMImage: 'windows-2022'
-  windowsScaledPool: 'Windows2019-20201210-0'
+  windowsScaledPool: 'Windows2019-20211130'
   linuxVMImage: 'ubuntu-latest'
   macOSVMImage: 'macOS-10.15'
   xCodeRoot: '/Applications/Xcode_12.3.app'
