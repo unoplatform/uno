@@ -18,20 +18,12 @@ jobs:
   - checkout: self
     clean: true
 
-  - powershell: |
-      dotnet tool update -g dotnet-vs
-      $MSBUILDPREVIEWPATH="$(vs where preview --prop=InstallationPath)\MSBuild\Current\Bin"
-      Write-Host "##vso[task.setvariable variable=MSBUILDPREVIEWPATH;]$MSBUILDPREVIEWPATH"
-    displayName: Setup VS17 Path
-
   - template: templates/gitversion.yml
 
   - task: MSBuild@1
     displayName: Build 2022 VSIX
     inputs:
       solution: Build/Uno.UI.Build.csproj
-      msbuildLocationMethod: location
-      msbuildLocation: $(MSBUILDPREVIEWPATH)
       msbuildArguments: /r /m /t:Build2022VSIX "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-generate-vsix2022.binlog
       clean: false
       restoreNugetPackages: false
