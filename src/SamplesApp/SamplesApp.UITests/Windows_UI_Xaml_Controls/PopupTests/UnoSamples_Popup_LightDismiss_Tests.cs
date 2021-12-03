@@ -10,6 +10,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 {
+	[TestFixture]
 	public partial class UnoSamples_Popup_LightDismiss_Tests : SampleControlUITestBase
 	{
 		[Test]
