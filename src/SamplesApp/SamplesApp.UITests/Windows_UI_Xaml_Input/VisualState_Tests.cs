@@ -131,7 +131,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)] // For touch, focus should be set only when released outside of TextBox
+		[ActivePlatforms(/*Platform.Android, */Platform.iOS)] // For touch, focus should be set only when released outside of TextBox
 		public void TestTextBoxReleaseOutUnfocused()
 		{
 			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.TextBox_VisualStates");
