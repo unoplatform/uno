@@ -77,6 +77,7 @@ jobs:
 - template: build/ci/.azure-devops-skia-tests.yml
   parameters:
     vmImage: '$(windowsHostedVMImage)'
+    poolName: '$(windowsScaledPool)'
 
 - template: build/ci/.azure-devops-docs.yml
   parameters:

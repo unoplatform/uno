@@ -1,13 +1,15 @@
 parameters:
   vmImage: ''
+  poolName: ''
 
 jobs:
 - job: Skia_Tests_Build
   displayName: 'Skia Samples App Build'
   timeoutInMinutes: 60
 
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  pool: ${{ parameters.poolName }}
+  #pool:
+  #  vmImage: ${{ parameters.vmImage }}
 
   dependsOn: Pipeline_Validations
 
@@ -38,8 +40,9 @@ jobs:
   displayName: 'Skia Samples App Snapshot Tests'
   timeoutInMinutes: 60
 
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  pool: ${{ parameters.poolName }}
+  #pool:
+  #  vmImage: ${{ parameters.vmImage }}
 
   dependsOn: Skia_Tests_Build
 
