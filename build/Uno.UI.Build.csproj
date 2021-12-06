@@ -215,7 +215,7 @@
 
 		<ItemGroup>
 			<MixinTargetFrameworks Include="xamarinios10" />
-			<MixinTargetFrameworks Include="MonAndroid11.0" />
+			<MixinTargetFrameworks Include="MonoAndroid12.0" />
 			<MixinTargetFrameworks Include="xamarinmac20" />
 			<MixinTargetFrameworks Include="net461" />
 			<MixinTargetFrameworks Include="netstandard2.0" />
