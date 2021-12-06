@@ -64,7 +64,7 @@ namespace Uno.UWPSyncGenerator
 
 			_referenceCompilation = LoadProject(@"..\..\..\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj");
 			_iOSCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "xamarinios10");
-			_androidCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "MonoAndroid10.0");
+			_androidCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "MonoAndroid12.0");
 			_net461Compilation = LoadProject($@"{basePath}\{baseName}.csproj", "net461");
 			_macCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "xamarinmac20");
 

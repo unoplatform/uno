@@ -61,7 +61,7 @@
 		<dependency id="Com.Airbnb.Android.Lottie" version="4.1.0" />
 		<dependency id="Newtonsoft.Json" version="9.0.1" />
 	  </group>
-	  <group targetFramework="MonoAndroid10.0">
+	  <group targetFramework="MonoAndroid12.0">
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 		<dependency id="Com.Airbnb.Android.Lottie" version="4.1.0" />
         <dependency id="Newtonsoft.Json" version="9.0.1" />
@@ -94,7 +94,7 @@
 	  <group targetFramework="MonoAndroid11.0">
 		<reference file="Uno.UI.Lottie.dll" />
 	  </group>
-	  <group targetFramework="MonoAndroid10.0">
+	  <group targetFramework="MonoAndroid12.0">
 		<reference file="Uno.UI.Lottie.dll" />
 	  </group>
 	  <!-- For UAP (UWP), the reference to Microsoft.Toolkit.Uwp.UI.Lottie will be added manually -->
@@ -105,7 +105,7 @@
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\xamarinios10\Uno.UI.Lottie.dll" target="lib\xamarinios10" />
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\xamarinmac20\Uno.UI.Lottie.dll" target="lib\xamarinmac20" />
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\MonoAndroid11.0\Uno.UI.Lottie.dll" target="lib\MonoAndroid11.0" />
-	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\MonoAndroid10.0\Uno.UI.Lottie.dll" target="lib\MonoAndroid10.0" />
+	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\MonoAndroid12.0\Uno.UI.Lottie.dll" target="lib\MonoAndroid12.0" />
 	
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.net6\Release\net6.0-android\Uno.UI.Lottie.dll" target="lib\net6.0-android" />
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.net6\Release\net6.0-ios\Uno.UI.Lottie.dll" target="lib\net6.0-ios" />

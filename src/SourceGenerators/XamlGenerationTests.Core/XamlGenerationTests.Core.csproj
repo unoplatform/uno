@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>MonoAndroid11.0;xamarinios10;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid10.0;xamarinios10;netstandard2.0</TargetFrameworksCI>
+		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid12.0;xamarinios10;netstandard2.0</TargetFrameworksCI>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -26,7 +26,7 @@
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView"/>
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid10.0'">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid12.0'">
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4"/>
 		<PackageReference Include="Xamarin.AndroidX.AppCompat"/>
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView"/>
