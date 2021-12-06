@@ -28,7 +28,7 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.0.1" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.0.1" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.0.1" />
-		<PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Build">
 			<Version>16.5.0</Version>
 			<ExcludeAssets>runtime</ExcludeAssets>
