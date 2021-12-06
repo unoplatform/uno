@@ -15,7 +15,7 @@
     <AndroidApplication>true</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-    <TargetFrameworkVersion>v11.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v12.0</TargetFrameworkVersion>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
     <ResourcesDirectory>..\SamplesApp.Shared\Strings</ResourcesDirectory>
@@ -156,17 +156,17 @@
       <Project>{58332380-4302-4259-8F36-AF572C53827F}</Project>
       <Name>Uno.UI.BindingHelper.Android</Name>
     </ProjectReference>
-		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj">
-			<Project>{535339e2-6c01-4478-9889-f6e76b1c00f4}</Project>
-			<Name>Uno.UI.FluentTheme</Name>
-		</ProjectReference>
-		<ProjectReference Include="..\..\Uno.UI.FluentTheme.v1\Uno.UI.FluentTheme.v1.csproj">
-			<Name>Uno.UI.FluentTheme.v1</Name>
-		</ProjectReference>
-		<ProjectReference Include="..\..\Uno.UI.FluentTheme.v2\Uno.UI.FluentTheme.v2.csproj">
-			<Name>Uno.UI.FluentTheme.v2</Name>
-		</ProjectReference>
-	</ItemGroup>
+    <ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj">
+      <Project>{535339e2-6c01-4478-9889-f6e76b1c00f4}</Project>
+      <Name>Uno.UI.FluentTheme</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Uno.UI.FluentTheme.v1\Uno.UI.FluentTheme.v1.csproj">
+      <Name>Uno.UI.FluentTheme.v1</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Uno.UI.FluentTheme.v2\Uno.UI.FluentTheme.v2.csproj">
+      <Name>Uno.UI.FluentTheme.v2</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
@@ -206,7 +206,7 @@
   <Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\Benchmarks.Shared\Benchmarks.Shared.projitems" Label="Shared" />
-	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" />
+  <Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" />
   <Target Name="GenerateBuild" DependsOnTargets="SignAndroidPackage" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(UnoSampleAppDisableAPKGeneration)'==''" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
      Other similar extension points exist, see Microsoft.Common.targets.

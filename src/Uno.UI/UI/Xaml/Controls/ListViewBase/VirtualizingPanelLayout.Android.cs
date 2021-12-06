@@ -646,7 +646,9 @@ namespace Windows.UI.Xaml.Controls
 					continue;
 				}
 
+#pragma warning disable CS0618 // Type or member is obsolete
 				if (vh.AdapterPosition != position)
+#pragma warning restore CS0618 // Type or member is obsolete
 				{
 					continue;
 				}
