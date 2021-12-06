@@ -36,7 +36,7 @@ variables:
   linuxVMImage: 'ubuntu-latest'
   macOSVMImage: 'macOS-10.15'
   xCodeRoot: '/Applications/Xcode_12.3.app'
-  XamarinSDKVersion: 6_12_4
+  XamarinSDKVersion: 6_12_7
   xCodeRoot_iOS_UITests: '/Applications/Xcode_11.5.app'
   XamarinSDKVersion_iOS_UITests: 6_10_0
 
