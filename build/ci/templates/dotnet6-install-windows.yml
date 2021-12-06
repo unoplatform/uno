@@ -15,10 +15,7 @@ steps:
     errorActionPreference: stop
     retryCountOnTaskFailure: 3
 
-  - pwsh: |
-      echo "##vso[task.setvariable variable=JAVA_HOME]$(JAVA_HOME_11_X64)"
-      echo "##vso[task.setvariable variable=JavaSdkDirectory]$(JAVA_HOME_11_X64)"
-    displayName: Select JDK 11
+  - template: jdk-setup.yml
     
   - powershell: |
       & dotnet tool update --global uno.check --version ${{ parameters.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
