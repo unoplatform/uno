@@ -68,6 +68,7 @@ jobs:
     clean: true
 
   - template: templates/dotnet-install.yml
+  - template: templates/jdk-setup.yml
 
   - template: templates/nuget-cache.yml
     parameters:
