@@ -106,11 +106,11 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
     <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.4.0.1" />
-    <PackageReference Include="Xamarin.AndroidX.Fragment" Version="1.3.6.4" />
+    <PackageReference Include="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
+    <PackageReference Include="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
+    <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
     <PackageReference Include="Uno.BenchmarkDotNet" Version="0.11.7-develop" />
     <PackageReference Include="Uno.BenchmarkDotNet.Annotations" Version="0.11.7-develop" />
-    <PackageReference Include="Xamarin.AndroidX.RecyclerView" Version="1.2.1.4" />
-    <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.2.1.4" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
   </ItemGroup>
   <ItemGroup>
