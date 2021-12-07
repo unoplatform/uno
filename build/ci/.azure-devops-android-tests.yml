@@ -80,7 +80,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /m /r /p:Configuration=Release /p:IsUiAutomationMappingEnabled=true
+      msbuildArguments: /m /r /p:Configuration=Release /p:IsUiAutomationMappingEnabled=true /bl:$(build.artifactstagingdirectory)/android-sampleapp.binlog
       clean: false
       maximumCpuCount: true
       restoreNugetPackages: false
