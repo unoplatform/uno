@@ -299,7 +299,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 					{
 						if (IsMarkupExtension(member))
 						{
-							ProcessMemberMarkupExtension(instance, member, propertyInfo);
+							ProcessMemberMarkupExtension(instance, rootInstance, member, propertyInfo);
 						}
 						else
 						{
@@ -340,7 +340,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 					{
 						if (IsMarkupExtension(member))
 						{
-							ProcessMemberMarkupExtension(instance, member, null);
+							ProcessMemberMarkupExtension(instance, rootInstance, member, null);
 						}
 						else if (instance is DependencyObject dependencyObject)
 						{
@@ -460,7 +460,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				if (IsMarkupExtension(member))
 				{
-					ProcessMemberMarkupExtension(instance, member, null);
+					ProcessMemberMarkupExtension(instance, rootInstance, member, null);
 				}
 				else
 				{
@@ -589,11 +589,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 		private static MethodInfo GetPropertySetter(PropertyInfo propertyInfo)
 			=> propertyInfo?.SetMethod ?? throw new InvalidOperationException($"Unable to find setter for property [{propertyInfo}]");
 
-		private void ProcessMemberMarkupExtension(object instance, XamlMemberDefinition member, PropertyInfo? propertyInfo)
+		private void ProcessMemberMarkupExtension(object instance, object? rootInstance, XamlMemberDefinition member, PropertyInfo? propertyInfo)
 		{
 			if (IsBindingMarkupNode(member))
 			{
-				ProcessBindingMarkupNode(instance, member);
+				ProcessBindingMarkupNode(instance, rootInstance, member);
 			}
 			else if (IsStaticResourceMarkupNode(member) || IsThemeResourceMarkupNode(member))
 			{
@@ -679,9 +679,9 @@ namespace Windows.UI.Xaml.Markup.Reader
 		private bool IsResourcesProperty(PropertyInfo propertyInfo)
 			=> propertyInfo.Name == "Resources" && propertyInfo.PropertyType == typeof(ResourceDictionary);
 
-		private void ProcessBindingMarkupNode(object instance, XamlMemberDefinition member)
+		private void ProcessBindingMarkupNode(object instance, object? rootInstance, XamlMemberDefinition member)
 		{
-			var binding = BuildBindingExpression(instance, member);
+			var binding = BuildBindingExpression(instance, rootInstance, member);
 
 			if (instance is IDependencyObjectStoreProvider provider)
 			{
@@ -699,7 +699,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 					}
 					else
 					{
-						GetPropertySetter(propertyInfo).Invoke(instance, new[] { BuildBindingExpression(null, member) });
+						GetPropertySetter(propertyInfo).Invoke(instance, new[] { BuildBindingExpression(null, rootInstance, member) });
 					}
 				}
 				else
@@ -713,10 +713,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 		}
 
-		private Binding BuildBindingExpression(object? instance, XamlMemberDefinition member)
+		private Binding BuildBindingExpression(object? instance, object? rootInstance, XamlMemberDefinition member)
 		{
 			var bindingNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Binding");
 			var templateBindingNode = member.Objects.FirstOrDefault(o => o.Type.Name == "TemplateBinding");
+			var xBindNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Bind");
 
 			var binding = new Data.Binding();
 
@@ -725,12 +726,19 @@ namespace Windows.UI.Xaml.Markup.Reader
 				binding.RelativeSource = RelativeSource.TemplatedParent;
 			}
 
-			if(bindingNode == null && templateBindingNode == null)
+			if (xBindNode != null)
 			{
-				throw new InvalidOperationException("Unable to find Binding or TemplateBinding node");
+				binding.Source = rootInstance;
+				// TODO: here we should be setting Mode to OneTime by default, and we should also respect x:DefaultBindMode values set 
+				// further up in the tree.
 			}
 
-			foreach (var bindingProperty in (bindingNode ?? templateBindingNode)!.Members)
+			if(bindingNode == null && templateBindingNode == null && xBindNode == null)
+			{
+				throw new InvalidOperationException("Unable to find Binding or TemplateBinding or x:Bind node");
+			}
+
+			foreach (var bindingProperty in (bindingNode ?? templateBindingNode ?? xBindNode)!.Members)
 			{
 				switch (bindingProperty.Member.Name)
 				{
@@ -841,7 +849,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 		}
 
 		private bool IsBindingMarkupNode(XamlMemberDefinition member)
-			=> member.Objects.Any(o => o.Type.Name == "Binding" || o.Type.Name == "TemplateBinding");
+			=> member.Objects.Any(o => o.Type.Name == "Binding" || o.Type.Name == "TemplateBinding" || o.Type.Name == "Bind");
 
 		private static bool IsMarkupExtension(XamlMemberDefinition member)
 			=> member
