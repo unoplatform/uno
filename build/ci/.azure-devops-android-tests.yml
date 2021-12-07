@@ -77,8 +77,8 @@ jobs:
   - task: MSBuild@1
     inputs:
       solution: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Droid/SamplesApp.Droid.csproj
-      msbuildLocationMethod: version
-      msbuildVersion: latest
+      msbuildLocationMethod: location
+      msbuildLocation: '/Applications/Visual Studio.app/Contents/Resources/lib/monodevelop/bin/MSBuild/Current/bin/msbuild.dll'
       msbuildArchitecture: x86
       msbuildArguments: /m /r /p:Configuration=Release /p:IsUiAutomationMappingEnabled=true /p:AndroidBuildApplicationPackage=True /bl:$(build.artifactstagingdirectory)/android-sampleapp.binlog
       clean: false
