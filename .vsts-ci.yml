@@ -112,7 +112,8 @@ jobs:
 
 - template: build/ci/.azure-devops-ios-tests.yml
   parameters:
-    vmImage: '$(macOSVMImage_UITests)'
+    vmImage: '$(macOSVMImage)'
+    vmImageTest: '$(macOSVMImage_UITests)'
     xCodeRootBuild: '$(xCodeRoot)'
     XamarinSDKVersionBuild: '$(XamarinSDKVersion)'
     xCodeRootTest: '$(xCodeRoot_iOS_UITests)'

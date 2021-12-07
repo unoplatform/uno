@@ -66,7 +66,7 @@ jobs:
     JobName: 'iOS_Automated_Tests_Group_01'
     JobDisplayName: 'iOS Automated Tests Group 01'
     JobTimeoutInMinutes: 60
-    vmImage: ${{ parameters.vmImage }}
+    vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: false
     UITEST_AUTOMATED_GROUP: 1
     xCodeRoot: ${{ parameters.xCodeRootTest }}
@@ -78,7 +78,7 @@ jobs:
     JobName: 'iOS_Automated_Tests_Group_02'
     JobDisplayName: 'iOS Automated Tests Group 02'
     JobTimeoutInMinutes: 60
-    vmImage: ${{ parameters.vmImage }}
+    vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: false
     UITEST_AUTOMATED_GROUP: 2
     xCodeRoot: ${{ parameters.xCodeRootTest }}
@@ -90,7 +90,7 @@ jobs:
     JobName: 'iOS_Automated_Tests_Group_03'
     JobDisplayName: 'iOS Automated Tests Group 03'
     JobTimeoutInMinutes: 60
-    vmImage: ${{ parameters.vmImage }}
+    vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: false
     UITEST_AUTOMATED_GROUP: 3
     xCodeRoot: ${{ parameters.xCodeRootTest }}
@@ -102,7 +102,7 @@ jobs:
     JobName: 'iOS_Automated_Tests_Runtime_Tests'
     JobDisplayName: 'iOS Automated Runtime Tests'
     JobTimeoutInMinutes: 60
-    vmImage: ${{ parameters.vmImage }}
+    vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: false
     UITEST_AUTOMATED_GROUP: 4
     xCodeRoot: ${{ parameters.xCodeRootTest }}
@@ -115,7 +115,7 @@ jobs:
 #     JobName: 'iOS_Automated_Tests_Benchmarks'
 #     JobDisplayName: 'iOS Automated Benchmarks'
 #     JobTimeoutInMinutes: 40
-#     vmImage: ${{ parameters.vmImage }}
+#     vmImage: ${{ parameters.vmImageTest }}
 #     UITEST_SNAPSHOTS_ONLY: false
 #     UITEST_AUTOMATED_GROUP: Benchmarks
 #     xCodeRoot: ${{ parameters.xCodeRootTest }}
@@ -127,7 +127,7 @@ jobs:
     JobName: 'iOS_Snaphot_Tests_Group_01'
     JobDisplayName: 'iOS Snaphot Tests Group 01'
     JobTimeoutInMinutes: 45
-    vmImage: ${{ parameters.vmImage }}
+    vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: true
     UITEST_SNAPSHOTS_GROUP: 00
     xCodeRoot: ${{ parameters.xCodeRootTest }}
@@ -139,7 +139,7 @@ jobs:
     JobName: 'iOS_Snaphot_Tests_Group_02'
     JobDisplayName: 'iOS Snaphot Tests Group 02'
     JobTimeoutInMinutes: 45
-    vmImage: ${{ parameters.vmImage }}
+    vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: true
     UITEST_SNAPSHOTS_GROUP: 01
     xCodeRoot: ${{ parameters.xCodeRootTest }}
@@ -151,7 +151,7 @@ jobs:
     JobName: 'iOS_Snaphot_Tests_Group_03'
     JobDisplayName: 'iOS Snaphot Tests Group 03'
     JobTimeoutInMinutes: 45
-    vmImage: ${{ parameters.vmImage }}
+    vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: true
     UITEST_SNAPSHOTS_GROUP: 02
     xCodeRoot: ${{ parameters.xCodeRootTest }}
@@ -163,7 +163,7 @@ jobs:
     JobName: 'iOS_Snaphot_Tests_Group_04'
     JobDisplayName: 'iOS Snaphot Tests Group 04'
     JobTimeoutInMinutes: 45
-    vmImage: ${{ parameters.vmImage }}
+    vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: true
     UITEST_SNAPSHOTS_GROUP: 03
     xCodeRoot: ${{ parameters.xCodeRootTest }}
