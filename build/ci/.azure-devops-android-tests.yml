@@ -62,6 +62,7 @@ jobs:
     CI_Build: true
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
+    VS_MSBUILD: '/Applications/Visual Studio.app/Contents/Resources/lib/monodevelop/bin/MSBuild/Current/bin/msbuild.dll'
 
   steps:
   - checkout: self
@@ -74,18 +75,10 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - task: MSBuild@1
-    inputs:
-      solution: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Droid/SamplesApp.Droid.csproj
-      msbuildLocationMethod: location
-      msbuildLocation: '/Applications/Visual Studio.app/Contents/Resources/lib/monodevelop/bin/MSBuild/Current/bin/msbuild.dll'
-      msbuildArchitecture: x86
-      msbuildArguments: /m /r /p:Configuration=Release /p:IsUiAutomationMappingEnabled=true /p:AndroidBuildApplicationPackage=True /bl:$(build.artifactstagingdirectory)/android-sampleapp.binlog
-      clean: false
-      maximumCpuCount: true
-      restoreNugetPackages: false
-      logProjectEvents: false
-      createLogFile: false
+  - script: |
+      mono '$(VS_MSBUILD)' '$(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Droid/SamplesApp.Droid.csproj' /m /r /p:Configuration=Release /p:IsUiAutomationMappingEnabled=true /p:AndroidBuildApplicationPackage=True /bl:$(build.artifactstagingdirectory)/android-sampleapp.binlog
+    displayName: Build Android App
+
 
   - task: CopyFiles@2
     inputs:
