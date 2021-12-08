@@ -199,6 +199,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 		{
 			Run("UITests.Windows_UI_Input.PointersTests.HitTest_LightDismiss");
 
+			_app.FastTap("ResetButton");
+
 			_app.FastTap("LaunchDismissiblePopupButton");
 
 			_app.WaitForElement("TargetPopupContent");
@@ -212,7 +214,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 
 			_app.FastTap("ActionButton"); // Should dismiss popup, without executing button click event
 
-			_app.WaitForText("False", _app.GetText("PopupStatusTextBlock"));
+			_app.WaitForText("PopupStatusTextBlock", "False");
 			Assert.AreEqual("Popup content pressed", _app.GetText("ResultTextBlock"));
 
 			_app.FastTap("ResetButton");
@@ -223,6 +225,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 		public void When_Undismissible_Popup()
 		{
 			Run("UITests.Windows_UI_Input.PointersTests.HitTest_LightDismiss");
+
+			_app.FastTap("ResetButton");
 
 			_app.FastTap("LaunchUndismissiblePopupButton");
 
@@ -241,7 +245,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 			Assert.AreEqual("True", _app.GetText("PopupStatusTextBlock"));
 
 			_app.FastTap("ResetButton"); // Dismiss popup programmatically
-			_app.WaitForText("False", _app.GetText("PopupStatusTextBlock"));
+			_app.WaitForText("PopupStatusTextBlock", "False");
 		}
 
 		[Test]
@@ -249,6 +253,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 		public void When_Flyout()
 		{
 			Run("UITests.Windows_UI_Input.PointersTests.HitTest_LightDismiss");
+
+			_app.FastTap("ResetButton");
 
 			_app.FastTap("FlyoutButton");
 
@@ -273,6 +279,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 		{
 			Run("UITests.Windows_UI_Input.PointersTests.HitTest_LightDismiss");
 
+			_app.FastTap("ResetButton");
+
 			_app.FastTap("TargetComboBox");
 			_app.WaitForText("ComboBoxStatusTextBlock", "True");
 
@@ -280,7 +288,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 
 			_app.FastTap("ActionButton"); // Should dismiss ComboBox dropdown, without executing button click event
 
-			_app.WaitForText("False", _app.GetText("ComboBoxStatusTextBlock"));
+			_app.WaitForText("ComboBoxStatusTextBlock", "False");
 			Assert.AreEqual("None", _app.GetText("ResultTextBlock"));
 
 			_app.FastTap("ResetButton");
