@@ -244,4 +244,19 @@
     </PropertyGroup>
     <Error Condition="!$(_MyMdpiAsset.Contains('-nodpi'))" Text="The file nodpi-validationresource.jpeg does not exist under drawable-nodpi directory" />
   </Target>
+	
+  <Target Name="_FilterInvalidMacOSmsorlibReference" BeforeTargets="ResolveAssemblyReference" Condition="$([MSBuild]::IsOsPlatform('OSX'))">
+		<!--
+		On macOS, starting from android 12, the tooling includes two versions of mscorlib:
+
+				CSC error CS1703: Multiple assemblies with equivalent identity have been imported: '/Library/Frameworks/Mono.framework/External/xbuild-frameworks/MonoAndroid/v1.0/mscorlib.dll'
+				and '/Library/Frameworks/Mono.framework/Versions/6.12.0/lib/mono/4.5/mscorlib.dll'. Remove one of the duplicate references.
+
+		We're removing one of the explicit reference for the build to continue.
+		-->
+    <ItemGroup>
+			<_FilteredExplicitReference Include="@(_ExplicitReference)" Condition="'%(_ExplicitReference.FileName)'=='mscorlib.dll'" />
+			<_ExplicitReference Remove="@(_FilteredExplicitReference)" />
+    </ItemGroup>
+  </Target>
 </Project>
