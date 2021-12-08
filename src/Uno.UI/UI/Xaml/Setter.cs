@@ -31,6 +31,8 @@ namespace Windows.UI.Xaml
 		private readonly SetterValueProviderHandler? _valueProvider;
 		private object? _value;
 		private int _targetNameResolutionFailureCount;
+		private DependencyProperty? _property;
+		private TargetPropertyPath? _target;
 
 		public object? Value
 		{
@@ -43,19 +45,44 @@ namespace Windows.UI.Xaml
 
 				return _value;
 			}
-			set => _value = value;
+			set
+			{
+				ValidateIsSealed();
+
+				_value = value;
+			}
+		}
+
+		private void ValidateIsSealed()
+		{
+			if (IsSealed)
+			{
+				throw new InvalidOperationException($"The setter is sealed and cannot be modified");
+			}
 		}
 
 		public TargetPropertyPath? Target
 		{
-			get;
-			set;
+			get => _target;
+			set
+			{
+				ValidateIsSealed();
+				_target = value;
+			}
 		}
 
 		/// <summary>
 		/// The property being set by this setter
 		/// </summary>
-		public DependencyProperty? Property { get; set; }
+		public DependencyProperty? Property
+		{
+			get => _property;
+			set
+			{
+				ValidateIsSealed();
+				_property = value;
+			}
+		}
 
 		/// <summary>
 		/// The name of the ThemeResource applied to the value, if any, as an optimized key.

@@ -28,6 +28,14 @@ namespace Windows.UI.Xaml
 		{
 			this.Log().Debug("SetterBase.DataContextChanged");
 		}
+
+		public bool IsSealed
+		{
+			get; private set;
+		}
+
+		internal void Seal()
+			=> IsSealed = true;
 	}
 }
 
