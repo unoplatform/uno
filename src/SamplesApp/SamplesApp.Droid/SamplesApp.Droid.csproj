@@ -245,7 +245,7 @@
     <Error Condition="!$(_MyMdpiAsset.Contains('-nodpi'))" Text="The file nodpi-validationresource.jpeg does not exist under drawable-nodpi directory" />
   </Target>
 	
-  <Target Name="_FilterInvalidMacOSmsorlibReference" BeforeTargets="ResolveAssemblyReference" Condition="$([MSBuild]::IsOsPlatform('OSX'))">
+  <Target Name="_FilterInvalidMacOSmsorlibReference" BeforeTargets="ResolveAssemblyReference">  <!--Condition="$([MSBuild]::IsOsPlatform('OSX'))"-->
 		<!--
 		On macOS, starting from android 12, the tooling includes two versions of mscorlib:
 
