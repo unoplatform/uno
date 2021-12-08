@@ -255,7 +255,7 @@
 		We're removing one of the explicit reference for the build to continue.
 		-->
     <ItemGroup>
-			<_FilteredExplicitReference Include="@(_ExplicitReference)" Condition="'%(_ExplicitReference.FileName)'=='mscorlib.dll'" />
+			<_FilteredExplicitReference Include="@(_ExplicitReference)" Condition="'%(_ExplicitReference.FileName)'=='mscorlib'" />
 			<_ExplicitReference Remove="@(_FilteredExplicitReference)" />
     </ItemGroup>
   </Target>
