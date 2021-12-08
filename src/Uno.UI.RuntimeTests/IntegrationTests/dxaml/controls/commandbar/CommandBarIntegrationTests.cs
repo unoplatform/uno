@@ -2144,6 +2144,8 @@ namespace Windows.UI.Tests.Enterprise
 			double expectedMenuItemHeight_Touch = 40;
 #if __IOS__
 			double expectedMenuItemHeight_NonTouch = 31;
+#elif __SKIA__
+			double expectedMenuItemHeight_NonTouch = 30;
 #else
 			double expectedMenuItemHeight_NonTouch = 32;
 #endif
