@@ -133,7 +133,7 @@
     <JavaSdkDirectory Condition="'$(JavaSdkDirectory)'=='' and '$(JAVA_HOME_8_X64)'!=''">$(JAVA_HOME_8_X64)</JavaSdkDirectory>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net472' or '$(TargetFramework)'==''">
+  <ItemGroup Condition="('$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net472' or '$(TargetFramework)'=='') and '$(AndroidManifest)'==''">
 	<!--
 	Include the reference assemblies to ensure that hard links don't use system files (workaround for same disk restriction)
 	Make sure to include on the versions that are needed to avoid growing the nuget cache unnecessarily.
