@@ -53,14 +53,14 @@ namespace UITests.Windows_UI_Input.PointersTests
 
 			void OnFlyoutOpenedOrClosed(object sender, object args)
 			{
-				FlyoutStatusTextBlock.Text = (sender as Flyout).IsOpen.ToString();
+				FlyoutStatusTextBlock.Text = ((Flyout)sender).IsOpen.ToString();
 			}
 			ButtonFlyout.Opened += OnFlyoutOpenedOrClosed;
 			ButtonFlyout.Closed += OnFlyoutOpenedOrClosed;
 
 			void OnPopupOpenedOrClosed(object sender, object args)
 			{
-				PopupStatusTextBlock.Text = (sender as Popup).IsOpen.ToString();
+				PopupStatusTextBlock.Text = ((Popup)sender).IsOpen.ToString();
 			}
 			_popup.Opened += OnPopupOpenedOrClosed;
 			_popup.Closed += OnPopupOpenedOrClosed;
