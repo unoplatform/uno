@@ -228,14 +228,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_textBoxView != null)
 			{
-				if (FeatureConfiguration.TextBox.UseLegacyInputScope)
-				{
-					_textBoxView.InputType = types;
-				}
-				else
-				{
-					_textBoxView.SetRawInputType(types);
-				}
+				_textBoxView.InputType = types;
+				_textBoxView.SetRawInputType(types);
 
 				if (!types.HasPasswordFlag())
 				{
