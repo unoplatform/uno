@@ -12,7 +12,7 @@
 //
 // Make sure to arrange alphabetically with more-specific locations at the end.
 
-\Controls\ColorPicker    : 0b97572cdcf4e1469c9f7199e0e3f9848d8be482 (without XAML style updates for 2.5 and 2.6)
+\Controls\ColorPicker    : 841d01d84bc379ad0af330cd9b49c63b5fe9038f
 \Controls\Expander       : 0b97572cdcf4e1469c9f7199e0e3f9848d8be482
 \Controls\NumberBox      : 2237b09d9ba6052414ddccf3d61316de20564303
 \Controls\RatingControl  : 3c73749
