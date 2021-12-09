@@ -37,7 +37,6 @@
 	
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Uno.MonoAnalyzers" />
 	</ItemGroup>
 
 	<ItemGroup>

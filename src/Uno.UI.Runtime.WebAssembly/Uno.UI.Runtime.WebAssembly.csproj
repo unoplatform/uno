@@ -24,9 +24,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Uno.MonoAnalyzers" Condition="!$(_IsNetCore)">
-			<PrivateAssets>all</PrivateAssets>
-		</PackageReference>
 		<PackageReference Include="System.Memory" Version="4.5.2" />
 	</ItemGroup>
 

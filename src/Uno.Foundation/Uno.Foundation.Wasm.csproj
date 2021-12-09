@@ -21,7 +21,6 @@
 
 	<ItemGroup>
     <PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Uno.MonoAnalyzers" />
 		<PackageReference Include="System.Memory" />
 		<PackageReference Include="System.Runtime.InteropServices.WindowsRuntime" Version="4.3.0" />
 		<PackageReference Include="System.Collections.Immutable" Version="1.3.1" />
