@@ -6,3 +6,4 @@ steps:
         brew install gtk+3
 
     displayName: Install GTK3 runtime
+    retryCountOnTaskFailure: 3

@@ -13,6 +13,7 @@ steps:
       & dotnet --list-sdks
     displayName: Install .NET ${{ parameters.DotNetVersion }}
     errorActionPreference: stop
+    retryCountOnTaskFailure: 3
 
   - template: jdk-setup.yml
     
@@ -22,3 +23,4 @@ steps:
     displayName: Install .NET Workloads
     errorActionPreference: continue
     ignoreLASTEXITCODE: true
+    retryCountOnTaskFailure: 3
