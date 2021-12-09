@@ -21,10 +21,11 @@ namespace SamplesApp.UITests.Runtime
 		private const string PendingTestsText = "Pending...";
 		private readonly TimeSpan TestRunTimeout = TimeSpan.FromMinutes(2);
 		private const string TestResultsOutputFilePath = "UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH";
+		private const string TestResultsOutputTempFilePath = "UNO_UITEST_RUNTIMETESTS_RESULTS_TEMP_FILE_PATH";
 
 		[Test]
 		[AutoRetry(tryCount: 1)]
-		[Timeout(7200000)] // Adjust this timeout based on average test run duration
+		[Timeout(1800000)] // Adjust this timeout based on average test run duration
 		public async Task RunRuntimeTests()
 		{
 			Run("SamplesApp.Samples.UnitTests.UnitTestsPage");
