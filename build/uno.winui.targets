@@ -191,7 +191,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(TargetFramework.ToLowerInvariant().StartsWith('monoandroid')) or '$(ProjectTypeGuids)'=='{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}'">
-	  <UnoUIMinAndroidSDKVersion>10.0</UnoUIMinAndroidSDKVersion>
+	  <UnoUIMinAndroidSDKVersion>11.0</UnoUIMinAndroidSDKVersion>
 	  <_CurrentTrimmedAndroidSDLVersion>$(TargetFrameworkVersion.Substring(1))</_CurrentTrimmedAndroidSDLVersion>
 	</PropertyGroup>
 
