@@ -200,6 +200,15 @@ namespace Windows.UI.Xaml.Shapes
 					backgroundLayer.FillColor = Colors.Transparent;
 				}
 
+				outerLayer.Path = path;
+				backgroundLayer.Path = backgroundPath;
+
+				sublayers.Add(outerLayer);
+				sublayers.Add(backgroundLayer);
+				parent.AddSublayer(outerLayer);
+				parent.InsertSublayer(backgroundLayer, insertionIndex);
+
+
 				if (borderBrush is SolidColorBrush scbBorder || borderBrush == null)
 				{
 					Brush.AssignAndObserveBrush(borderBrush, color =>
@@ -223,16 +232,6 @@ namespace Windows.UI.Xaml.Shapes
 					CreateGradientBrushLayers(area, area, parent, sublayers, ref borderLayerIndex, gradientBorder, fillMask);
 				}
 
-
-				outerLayer.Path = path;
-				backgroundLayer.Path = backgroundPath;
-
-				sublayers.Add(outerLayer);
-				sublayers.Add(backgroundLayer);
-				parent.AddSublayer(outerLayer);
-				parent.InsertSublayer(backgroundLayer, insertionIndex);
-
-			
 				parent.Mask = new CAShapeLayer()
 				{
 					Path = outerPath,

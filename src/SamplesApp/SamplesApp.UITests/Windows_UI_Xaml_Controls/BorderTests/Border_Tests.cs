@@ -208,6 +208,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 			ImageAssert.HasColorAt(screenshot, (float)(textBoxRect.CenterX - 0.45 * textBoxRect.Width), textBoxRect.Y, Color.Red, tolerance: 20);
 		}
 
+		[Test]
+		[AutoRetry]
+		public void Border_CornerRadius_GradientBrush()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.BorderTests.Border_CornerRadius_Gradient");
+
+			var textBoxRect = _app.GetPhysicalRect("RedBorder");
+
+			using var screenshot = TakeScreenshot("Screenshot");
+
+			ImageAssert.HasColorAt(screenshot, textBoxRect.CenterX, textBoxRect.CenterY, Color.FromArgb(0, 255, 0));
+		}
+
 		private void SetBorderProperty(string borderName, string propertyName, string value)
 		{
 			Console.WriteLine($"Setting {borderName}'s {propertyName} to {value}");
