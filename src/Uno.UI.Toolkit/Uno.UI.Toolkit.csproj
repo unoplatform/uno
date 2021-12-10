@@ -1,6 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>xamarinmac20;MonoAndroid11.0;xamarinios10;netstandard2.0</TargetFrameworks>
+		<TargetFrameworks>xamarinmac20;MonoAndroid12.0;xamarinios10;netstandard2.0</TargetFrameworks>
 		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid12.0;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworksCI>
 
 		<TargetFrameworks Condition="'$(UNO_UWP_BUILD)'=='true'">$(TargetFrameworks);uap10.0.17763</TargetFrameworks>

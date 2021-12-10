@@ -1,6 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
   <PropertyGroup>
-		<TargetFrameworks>MonoAndroid11.0;xamarinios10</TargetFrameworks>
+		<TargetFrameworks>MonoAndroid12.0;xamarinios10</TargetFrameworks>
 		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid12.0;xamarinios10</TargetFrameworksCI>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 	</PropertyGroup>

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
 	<PropertyGroup>
-		<TargetFrameworks>xamarinmac20;MonoAndroid11.0;xamarinios10;net461;netstandard2.0;uap10.0.17763</TargetFrameworks>
+		<TargetFrameworks>xamarinmac20;MonoAndroid12.0;xamarinios10;net461;netstandard2.0;uap10.0.17763</TargetFrameworks>
 		<TargetFrameworksCI>xamarinmac20;MonoAndroid11.0;MonoAndroid12.0;xamarinios10;net461;netstandard2.0;uap10.0.17763</TargetFrameworksCI>
 		<NoWarn>$(NoWarn);NU1701;NU5100;NU5118;NU5128</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
