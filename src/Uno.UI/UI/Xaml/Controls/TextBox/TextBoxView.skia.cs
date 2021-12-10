@@ -33,6 +33,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		internal ITextBoxViewExtension Extension => _textBoxExtension;
+
 		public TextBox? TextBox
 		{
 			get
@@ -50,7 +52,6 @@ namespace Windows.UI.Xaml.Controls
 		internal int GetSelectionLength() => _textBoxExtension?.GetSelectionLength() ?? 0;
 
 		public TextBlock DisplayBlock { get; } = new TextBlock();
-
 
 		internal void SetTextNative(string text)
 		{
