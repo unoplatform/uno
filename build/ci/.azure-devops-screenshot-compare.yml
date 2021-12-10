@@ -9,7 +9,7 @@ jobs:
     - Wasm_UITests_Snap
     - Wasm_UITests_Automated
     - Android_Tests
-    - Skia_Screenshot_Tests
+    - Skia_Gtk_Screenshot_Tests
     - iOS_Automated_Tests_Group_01
     - iOS_Automated_Tests_Group_02
     - iOS_Automated_Tests_Group_03

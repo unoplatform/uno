@@ -31,10 +31,6 @@
   <ItemGroup>
     <PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
-	
-	<ItemGroup>
-		<PackageReference Include="Uno.MonoAnalyzers" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj">

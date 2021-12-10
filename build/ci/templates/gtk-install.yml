@@ -10,3 +10,4 @@ steps:
         Write-Host "##vso[task.setvariable variable=PATH;]${env:PATH};C:\Program Files\GTK3-Runtime Win64\bin";
 
     displayName: Install GTK3 runtime
+    retryCountOnTaskFailure: 3

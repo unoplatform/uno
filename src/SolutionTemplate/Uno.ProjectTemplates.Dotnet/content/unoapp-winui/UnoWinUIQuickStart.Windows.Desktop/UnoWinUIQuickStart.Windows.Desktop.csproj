@@ -22,8 +22,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.18362.21" />
-		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.18362.21" />
+		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.18362.22" />
+		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.18362.22" />
 	</ItemGroup>
 
 	<Import Project="..\UnoWinUIQuickStart.Shared\UnoWinUIQuickStart.Shared.projitems" Label="Shared" />
