@@ -1,6 +1,10 @@
 ﻿using System;
 using Windows.UI.Xaml;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace Uno.UI.Xaml.Media
 {
 	internal static partial class ThemeShadowManager
