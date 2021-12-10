@@ -7,6 +7,7 @@ steps:
   - task: DownloadBuildArtifacts@0
     condition: ne('${{parameters.skipCacheDownload}}', 'true')
     displayName: 'Download GitVersion Cache'
+    retryCountOnTaskFailure: 3
     inputs:
         artifactName: gitversion_cache
         downloadPath: '$(build.sourcesdirectory)/.git'
@@ -23,6 +24,7 @@ steps:
 
   - task: UseDotNet@2
     displayName: 'Use .Net Core runtime 5.0.3'
+    retryCountOnTaskFailure: 3
     inputs:
       packageType: runtime
       version: 5.0.3
@@ -30,6 +32,7 @@ steps:
 
   - task: UseDotNet@2
     displayName: 'Use .Net Core runtime 3.1.12'
+    retryCountOnTaskFailure: 3
     inputs:
       packageType: runtime
       version: 3.1.12
@@ -42,10 +45,12 @@ steps:
     displayName: Adjust nuget.org source
 
   - task: gitversion/setup@0
+    retryCountOnTaskFailure: 3
     inputs:
       versionSpec: '5.6.8'
 
   - task: gitversion/execute@0
+    retryCountOnTaskFailure: 3
     inputs:
       updateAssemblyInfo: 'False'
       useConfigFile: true
@@ -65,6 +70,7 @@ steps:
     displayName: Update GITVERSION.SemVer for PullRequests
 
   - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/.git/gitversion_cache
       ArtifactName: gitversion_cache

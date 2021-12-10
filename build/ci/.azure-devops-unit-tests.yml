@@ -40,6 +40,7 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - template: templates/gitversion.yml
+  - template: templates/jdk-setup.yml
 
   - task: MSBuild@1
     inputs:

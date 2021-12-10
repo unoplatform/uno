@@ -206,7 +206,7 @@
 
 		<ItemGroup>
 			<MixinTargetFrameworks Include="xamarinios10" />
-			<MixinTargetFrameworks Include="monoandroid10.0" />
+			<MixinTargetFrameworks Include="MonoAndroid12.0" />
 			<MixinTargetFrameworks Include="xamarinmac20" />
 			<MixinTargetFrameworks Include="net461" />
 			<MixinTargetFrameworks Include="netstandard2.0" />
@@ -419,8 +419,7 @@
 			<PackageNamePrefix Condition="'$(UNO_UWP_BUILD)'=='true'">Uno.UI</PackageNamePrefix>
 		</PropertyGroup>
 
-		<Exec Command="dotnet tool install --tool-path $(MSBuildThisFileDirectory)\tools Uno.PackageDiff --version 1.0.0-dev.36" IgnoreExitCode="true" />
-		<Exec Command="$(MSBuildThisFileDirectory)\tools\generatepkgdiff.exe --base=$(PackageNamePrefix) --other=$(PackageNamePrefix).$(GITVERSION_SemVer).nupkg --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff.$(GITVERSION_SemVer).md" />
+		<!-- Validation is disabled when running on release branch -->
 	</Target>
 	
 	<Target Name="ValidatePackageReferenceAPI" AfterTargets="BuildNuGetPackage">
