@@ -134,7 +134,7 @@ namespace Windows.UI.Xaml.Controls
 					overlayMode = LightDismissOverlayMode;
 					((FlyoutBase)m_tpFlyout).LightDismissOverlayMode = overlayMode;
 				}
-			}						
+			}
 		}
 
 		protected override void OnApplyTemplate()

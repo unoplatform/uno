@@ -5,12 +5,13 @@
     xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:mux="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<NumberBox x:Name="DescriptionNumberBox">
-		<NumberBox.Description>
+	<mux:NumberBox x:Name="DescriptionNumberBox">
+		<mux:NumberBox.Description>
 			<Border Width="300" Height="300" Background="Red" />
-		</NumberBox.Description>
-	</NumberBox>
+		</mux:NumberBox.Description>
+	</mux:NumberBox>
 </Page>
