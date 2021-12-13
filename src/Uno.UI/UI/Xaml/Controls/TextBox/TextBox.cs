@@ -698,7 +698,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var oldValue = FocusState;
 			base.UpdateFocusState(focusState);
-			OnFocusStateChanged(oldValue, focusState, initial: false);
+			if (oldValue != focusState)
+			{
+				OnFocusStateChanged(oldValue, focusState, initial: false);
+			}
 		}
 
 		private void OnFocusStateChanged(FocusState oldValue, FocusState newValue, bool initial)
