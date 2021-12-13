@@ -196,9 +196,15 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private void OnPointerPressed(object sender, PointerRoutedEventArgs args)
 		{
 			// Make sure we are the original source.  We do not want to handle PointerPressed on the Popup itself.
-			if (args.OriginalSource == this && Popup is { } popup)
+			if (args.OriginalSource == this && Popup is { } popup
+			)
 			{
-				ClosePopup(popup);
+				// The check is here because ContentDialogPopupPanel returns true for IsViewHit() even though light-dismiss is always
+				// disabled for ContentDialogs
+				if (popup.IsLightDismissEnabled)
+				{
+					ClosePopup(popup);
+				}
 				args.Handled = true;
 			}
 		}
