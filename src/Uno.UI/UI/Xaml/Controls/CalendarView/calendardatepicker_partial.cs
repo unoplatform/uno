@@ -134,7 +134,7 @@ namespace Windows.UI.Xaml.Controls
 					overlayMode = LightDismissOverlayMode;
 					((FlyoutBase)m_tpFlyout).LightDismissOverlayMode = overlayMode;
 				}
-			}
+			}						
 		}
 
 		protected override void OnApplyTemplate()
@@ -278,6 +278,9 @@ namespace Windows.UI.Xaml.Controls
 			FormatDate();
 
 			UpdateVisualState();
+
+			// TODO: Uno specific: This logic should later move to Control to match WinUI
+			UpdateDescriptionVisibility(true);
 
 			void OnFlyoutOpened(object sender, object eventArgs)
 			{
@@ -1103,6 +1106,21 @@ namespace Windows.UI.Xaml.Controls
 			if (m_tpDateText is {})
 			{
 				value = m_tpDateText.Text;
+			}
+		}
+
+		private void UpdateDescriptionVisibility(bool initialization)
+		{
+			if (initialization && Description == null)
+			{
+				// Avoid loading DescriptionPresenter element in template if not needed.
+				return;
+			}
+
+			var descriptionPresenter = this.FindName("DescriptionPresenter") as ContentPresenter;
+			if (descriptionPresenter != null)
+			{
+				descriptionPresenter.Visibility = Description != null ? Visibility.Visible : Visibility.Collapsed;
 			}
 		}
 	}

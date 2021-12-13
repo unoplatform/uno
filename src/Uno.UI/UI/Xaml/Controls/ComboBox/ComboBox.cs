@@ -108,6 +108,7 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateHeaderVisibility();
 			UpdateContentPresenter();
+			UpdateDescriptionVisibility(true);
 
 			if (_contentPresenter != null)
 			{
@@ -268,6 +269,37 @@ namespace Windows.UI.Xaml.Controls
 			if (_headerContentPresenter != null)
 			{
 				_headerContentPresenter.Visibility = headerVisibility;
+			}
+		}
+
+		public
+#if __IOS__ || __MACOS__
+		new
+#endif
+			object Description
+		{
+			get => this.GetValue(DescriptionProperty);
+			set => this.SetValue(DescriptionProperty, value);
+		}
+
+		public static DependencyProperty DescriptionProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Description), typeof(object),
+				typeof(ComboBox),
+				new FrameworkPropertyMetadata(default(object), propertyChangedCallback: (s, e) => (s as ComboBox)?.UpdateDescriptionVisibility(false)));
+
+		private void UpdateDescriptionVisibility(bool initialization)
+		{
+			if (initialization && Description == null)
+			{
+				// Avoid loading DescriptionPresenter element in template if not needed.
+				return;
+			}
+
+			var descriptionPresenter = this.FindName("DescriptionPresenter") as ContentPresenter;
+			if (descriptionPresenter != null)
+			{
+				descriptionPresenter.Visibility = Description != null ? Visibility.Visible : Visibility.Collapsed;
 			}
 		}
 

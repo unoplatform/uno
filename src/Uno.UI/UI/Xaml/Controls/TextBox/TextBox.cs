@@ -113,7 +113,7 @@ namespace Windows.UI.Xaml.Controls
 			OnFocusStateChanged((FocusState)FocusStateProperty.GetMetadata(GetType()).DefaultValue, FocusState, initial: true);
 			OnVerticalContentAlignmentChanged(VerticalAlignment.Top, VerticalContentAlignment);
 			OnTextCharacterCasingChanged(CreateInitialValueChangerEventArgs(CharacterCasingProperty, CharacterCasingProperty.GetMetadata(GetType()).DefaultValue, CharacterCasing));
-			OnDescriptionChanged(CreateInitialValueChangerEventArgs(DescriptionProperty, DescriptionProperty.GetMetadata(GetType()).DefaultValue, Description));
+			UpdateDescriptionVisibility(true);
 			var buttonRef = _deleteButton?.GetTarget();
 
 			if (buttonRef != null)
@@ -313,44 +313,33 @@ namespace Windows.UI.Xaml.Controls
 #endif
 		object Description
 		{
-			get => (object)this.GetValue(DescriptionProperty);
-			set
-			{
-				this.SetValue(DescriptionProperty, value);
-			}
+			get => this.GetValue(DescriptionProperty);
+			set => this.SetValue(DescriptionProperty, value);
 		}
 
 		public static DependencyProperty DescriptionProperty { get; } =
 			DependencyProperty.Register(
-				"Description",
+				nameof(Description),
 				typeof(object),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					defaultValue: null,
-					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnDescriptionChanged(e)
+					propertyChangedCallback: (s, e) => ((TextBox)s)?.UpdateDescriptionVisibility(false)
 				)
 			);
 
-		private void OnDescriptionChanged(DependencyPropertyChangedEventArgs args)
+		private void UpdateDescriptionVisibility(bool initialization)
 		{
-			ContentPresenter descriptionPresenter = this.FindName("DescriptionPresenter") as ContentPresenter;
+			if (initialization && Description == null)
+			{
+				// Avoid loading DescriptionPresenter element in template if not needed.
+				return;
+			}
+
+			var descriptionPresenter = this.FindName("DescriptionPresenter") as ContentPresenter;
 			if (descriptionPresenter != null)
 			{
-				if (args.NewValue != null)
-				{
-					if (args.NewValue is string s && string.IsNullOrWhiteSpace(s))
-					{
-						descriptionPresenter.Visibility = Visibility.Collapsed;
-					}
-					else
-					{
-						descriptionPresenter.Visibility = Visibility.Visible;
-					}
-				}
-				else
-				{
-					descriptionPresenter.Visibility = Visibility.Collapsed;
-				}
+				descriptionPresenter.Visibility = Description != null ? Visibility.Visible : Visibility.Collapsed;
 			}
 		}
 		#endregion
