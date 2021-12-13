@@ -199,6 +199,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			if (args.OriginalSource == this && Popup is { } popup)
 			{
 				ClosePopup(popup);
+				args.Handled = true;
 			}
 		}
 
