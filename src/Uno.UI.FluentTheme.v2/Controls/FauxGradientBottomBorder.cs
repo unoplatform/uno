@@ -6,15 +6,15 @@ using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.FluentTheme.Controls
 {
-	internal class FauxGradientBottomBorder : ContentControl
+	internal partial class FauxGradientBottomBorder : ContentControl
 	{
-#if __WASM__ || __IOS__ || __ANDROID__
+#if __WASM__
 		private readonly Border? _displayBorder = null;
 #endif
 
 		public FauxGradientBottomBorder()
 		{
-#if __WASM__ || __IOS__ || __ANDROID__
+#if __WASM__
 			HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Stretch;
 			VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Stretch;
 			Content = _displayBorder = new Border();
@@ -62,7 +62,7 @@ namespace Uno.UI.FluentTheme.Controls
 
 		private void OnBorderChanged()
 		{
-#if __WASM__ || __IOS__ || __ANDROID__
+#if __WASM__
 			if (_displayBorder == null)
 			{
 				return;
