@@ -222,6 +222,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser, Platform.iOS)] // On Android when using native popups (as in SamplesApp), the native popup intercepts pointer events
 		public void When_Undismissible_Popup()
 		{
 			Run("UITests.Windows_UI_Input.PointersTests.HitTest_LightDismiss");
