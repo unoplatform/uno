@@ -1021,7 +1021,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					try
 					{
-						return conversionMethod.Invoke(null, new object[] { memberValue });
+						return conversionMethod.Invoke(null, new object?[] { memberValue });
 					}
 					catch (Exception ex)
 					{
