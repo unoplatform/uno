@@ -9,16 +9,13 @@
     xmlns:not_win="http://uno.ui/not_win"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ufc="using:Uno.UI.FluentTheme.Controls"
     mc:ignorable="not_win">
 
     <Style x:Key="SplitButtonStyle" TargetType="local:SplitButton">
         <Setter Property="Background" Value="{ThemeResource SplitButtonBackground}" />
         <Setter Property="Foreground" Value="{ThemeResource SplitButtonForeground}" />
-
-        <!-- Uno specific (LinearGradientBrush borders): Use solid border brush -->
-        <win:Setter Property="BorderBrush" Value="{ThemeResource SplitButtonBorderBrush}" />
-        <not_win:Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
-
+        <Setter Property="BorderBrush" Value="{ThemeResource SplitButtonBorderBrush}" />
         <Setter Property="BorderThickness" Value="{ThemeResource SplitButtonBorderThemeThickness}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Center" />
@@ -104,8 +101,7 @@
                                     <VisualState.Setters>
                                         <Setter Target="PrimaryBackgroundGrid.Background" Value="{ThemeResource SplitButtonBackgroundPressed}"/>
                                         <Setter Target="SecondaryBackgroundGrid.Background" Value="{ThemeResource SplitButtonBackgroundPressed}"/>
-                                        <!-- Uno specific (LinearGradientBrush borders): Keep the same brush -->
-                                        <win:Setter Target="Border.BorderBrush" Value="{ThemeResource SplitButtonBorderBrushPressed}"/>
+                                        <Setter Target="Border.BorderBrush" Value="{ThemeResource SplitButtonBorderBrushPressed}"/>
                                         <Setter Target="PrimaryButton.Foreground" Value="{ThemeResource SplitButtonForegroundPressed}"/>
                                         <Setter Target="SecondaryButton.Foreground" Value="{ThemeResource SplitButtonForegroundSecondaryPressed}"/>
                                     </VisualState.Setters>
@@ -115,8 +111,7 @@
                                     <VisualState.Setters>
                                         <Setter Target="PrimaryBackgroundGrid.Background" Value="{ThemeResource SplitButtonBackgroundPressed}"/>
                                         <Setter Target="SecondaryBackgroundGrid.Background" Value="{ThemeResource SplitButtonBackgroundPressed}"/>
-                                        <!-- Uno specific (LinearGradientBrush borders): Keep the same brush -->
-                                        <win:Setter Target="Border.BorderBrush" Value="{ThemeResource SplitButtonBorderBrushPressed}"/>
+                                        <Setter Target="Border.BorderBrush" Value="{ThemeResource SplitButtonBorderBrushPressed}"/>
                                         <Setter Target="PrimaryButton.Foreground" Value="{ThemeResource SplitButtonForegroundPressed}"/>
                                         <Setter Target="SecondaryButton.Foreground" Value="{ThemeResource SplitButtonForegroundSecondaryPressed}"/>
                                     </VisualState.Setters>
@@ -161,8 +156,7 @@
                                     <VisualState.Setters>
                                         <Setter Target="PrimaryBackgroundGrid.Background" Value="{ThemeResource SplitButtonBackgroundChecked}"/>
                                         <Setter Target="SecondaryBackgroundGrid.Background" Value="{ThemeResource SplitButtonBackgroundChecked}"/>
-                                        <!-- Uno specific (LinearGradientBrush borders): Keep the same brush -->
-                                        <win:Setter Target="Border.BorderBrush" Value="{ThemeResource SplitButtonBorderBrushChecked}"/>
+                                        <Setter Target="Border.BorderBrush" Value="{ThemeResource SplitButtonBorderBrushChecked}"/>
                                         <Setter Target="PrimaryButton.Foreground" Value="{ThemeResource SplitButtonForegroundChecked}"/>
                                         <Setter Target="SecondaryButton.Foreground" Value="{ThemeResource SplitButtonForegroundChecked}"/>
                                         <Setter Target="DividerBackgroundGrid.Background" Value="{ThemeResource SplitButtonBorderBrushCheckedDivider}"/>
@@ -173,8 +167,7 @@
                                     <VisualState.Setters>
                                         <Setter Target="PrimaryBackgroundGrid.Background" Value="{ThemeResource SplitButtonBackgroundCheckedPressed}"/>
                                         <Setter Target="SecondaryBackgroundGrid.Background" Value="{ThemeResource SplitButtonBackgroundCheckedPressed}"/>
-                                        <!-- Uno specific (LinearGradientBrush borders): Keep the same brush -->
-                                        <win:Setter Target="Border.BorderBrush" Value="{ThemeResource SplitButtonBorderBrushCheckedPressed}"/>
+                                        <Setter Target="Border.BorderBrush" Value="{ThemeResource SplitButtonBorderBrushCheckedPressed}"/>
                                         <Setter Target="PrimaryButton.Foreground" Value="{ThemeResource SplitButtonForegroundCheckedPressed}"/>
                                         <Setter Target="SecondaryButton.Foreground" Value="{ThemeResource SplitButtonForegroundCheckedPressed}"/>
                                         <Setter Target="DividerBackgroundGrid.Background" Value="{ThemeResource SplitButtonBorderBrushCheckedDivider}"/>
@@ -274,12 +267,11 @@
                             BorderThickness="{TemplateBinding BorderThickness}"
                             contract7Present:CornerRadius="{TemplateBinding CornerRadius}"/>
                         <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
-                        <not_win:Border x:Name="BottomBorderElement"                        
-                            BorderThickness="0,0,0,1"
+                        <ufc:FauxGradientBottomBorder
                             Grid.ColumnSpan="3"
-                            contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
-                            contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}"
-                            BorderBrush="{ThemeResource UnoElevationBorderOverlayBrush}" />
+                            RequestedBorderBrush="{Binding ElementName=Border, Path=BorderBrush}"
+                            RequestedBorderThickness="{Binding ElementName=Border, Path=BorderThickness}"
+                            RequestedCornderRadius="{Binding ElementName=Border, Path=CornerRadius}" />                            
                         <Button x:Name="PrimaryButton"
                             Grid.Column="0"
                             Foreground="{TemplateBinding Foreground}"
