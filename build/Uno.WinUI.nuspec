@@ -530,7 +530,7 @@
 	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\netstandard2.0\Uno.UI.Toolkit.pdb" target="uno-runtime\skia" />
 
 	<!-- Unsupported android targets -->
-	<file src="_._" target="lib\MonoAndroid12.0" />
+	<file src="_._" target="lib\MonoAndroid10.0" />
 	<file src="_._" target="lib\MonoAndroid90" />
 	<file src="_._" target="lib\MonoAndroid80" />
 
