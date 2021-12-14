@@ -219,6 +219,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 				var inputText = GetInputText();
 				_currentInputWidget = CreateInputWidget(acceptsReturn, isPassword, isPasswordVisible);
 				SetWidgetText(inputText ?? string.Empty);
+				SetForeground(textBox.Foreground);
 			}
 		}
 
