@@ -133,10 +133,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			private set => SetValue(IsOpenProperty, value);
 		}
 		public static DependencyProperty IsOpenProperty { get; } =
-		DependencyProperty.Register(
-			nameof(IsOpen), typeof(bool),
-			typeof(FlyoutBase),
-			new FrameworkPropertyMetadata(default(bool)));
+			DependencyProperty.Register(
+				nameof(IsOpen), typeof(bool),
+				typeof(FlyoutBase),
+				new FrameworkPropertyMetadata(default(bool)));
 
 		#region Placement
 
@@ -374,7 +374,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private protected virtual void OnOpening() { }
 
-		internal virtual void OnClosing(ref bool cancel) {
+		internal virtual void OnClosing(ref bool cancel)
+		{
 
 			var closing = new FlyoutBaseClosingEventArgs();
 			Closing?.Invoke(this, closing);
