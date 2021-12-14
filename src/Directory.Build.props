@@ -150,14 +150,14 @@
     <JavaSdkDirectory Condition="'$(JavaSdkDirectory)'=='' and '$(JAVA_HOME_8_X64)'!=''">$(JAVA_HOME_8_X64)</JavaSdkDirectory>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net472' or '$(TargetFramework)'==''">
-    <!--
-    Include the reference assemblies to ensure that hard links don't use system files (workaround for same disk restriction)
-    Make sure to include on the versions that are needed to avoid growing the nuget cache unnecessarily.
-    -->
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.2" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.2" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.2" PrivateAssets="All" />
+  <ItemGroup Condition="('$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net472' or '$(TargetFramework)'=='') and '$(AndroidManifest)'==''">
+	<!--
+	Include the reference assemblies to ensure that hard links don't use system files (workaround for same disk restriction)
+	Make sure to include on the versions that are needed to avoid growing the nuget cache unnecessarily.
+	-->
+	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.2" PrivateAssets="All" />
+	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.2" PrivateAssets="All" />
+	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.2" PrivateAssets="All" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -25,6 +25,7 @@ jobs:
   - template: templates/install-windows-sdk.yml
 
   - template: templates/gitversion.yml
+  - template: templates/jdk-setup.yml
 
   - task: NuGetToolInstaller@0
     inputs:

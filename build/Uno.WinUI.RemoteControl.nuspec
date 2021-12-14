@@ -16,7 +16,7 @@
 
 	<dependencies>
 
-	  <!-- Android 9.0 -->
+	  <!-- Android 11.0 -->
 	  <group targetFramework="MonoAndroid11.0">
 		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 
@@ -24,8 +24,8 @@
 		<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.2.0" />
 	  </group>
 
-	  <!-- Android 10.0 -->
-	  <group targetFramework="MonoAndroid10.0">
+	  <!-- Android 12.0 -->
+	  <group targetFramework="MonoAndroid12.0">
 		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 
 		<dependency id="Newtonsoft.Json" version="12.0.2" />
@@ -112,7 +112,7 @@
 	  </group>
 
 	  <!-- Android 10.0 -->
-	  <group targetFramework="MonoAndroid10.0">
+	  <group targetFramework="MonoAndroid12.0">
 		<reference file="Uno.UI.RemoteControl.dll" />
 	  </group>
 
@@ -137,8 +137,8 @@
 	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid11.0\Uno.UI.RemoteControl.dll" target="lib\MonoAndroid11.0" />
 	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid11.0\Uno.UI.RemoteControl.pdb" target="lib\MonoAndroid11.0" />
 
-	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid10.0\Uno.UI.RemoteControl.dll" target="lib\MonoAndroid10.0" />
-	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid10.0\Uno.UI.RemoteControl.pdb" target="lib\MonoAndroid10.0" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid12.0\Uno.UI.RemoteControl.dll" target="lib\MonoAndroid12.0" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid12.0\Uno.UI.RemoteControl.pdb" target="lib\MonoAndroid12.0" />
 
 	<file src="..\src\Uno.UI.RemoteControl\bin\Release\xamarinios10\Uno.UI.RemoteControl.dll" target="lib\xamarinios10" />
 	<file src="..\src\Uno.UI.RemoteControl\bin\Release\xamarinios10\Uno.UI.RemoteControl.pdb" target="lib\xamarinios10" />

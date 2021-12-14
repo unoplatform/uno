@@ -90,8 +90,13 @@
 		  Condition="exists('$(MSBuildThisFileDirectory)..\Uno.UI.SourceGenerators.csproj')">
 
 	<ItemGroup >
-	  <Analyzer Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\*.dll" Exclude="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\Microsoft.CodeAnalysis.*.dll" />
-	  <AdditionalFiles Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\*.dll" Exclude="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\Microsoft.CodeAnalysis.*.dll" />
+	  <_UnoAnalyzerExclusion Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\Microsoft.CodeAnalysis.*.dll" />
+	  <_UnoAnalyzerExclusion Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\System.*.dll" />
+
+	  <Analyzer Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\*.dll"
+			  Exclude="@(_UnoAnalyzerExclusion)" />
+	  <AdditionalFiles Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\*.dll"
+					 Exclude="@(_UnoAnalyzerExclusion)" />
 	  <!-- generator is automatically included in nuget package, no need to add it here -->
 	</ItemGroup>
   </Target>
