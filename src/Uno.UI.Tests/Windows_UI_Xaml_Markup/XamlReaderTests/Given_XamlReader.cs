@@ -965,6 +965,57 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.AreEqual(Windows.UI.Colors.White, darkTheme["MaterialOnPrimaryColor"]);
 		}
 
+		[TestMethod]
+		public void When_xBind_Simple()
+		{
+			var s = GetContent(nameof(When_xBind_Simple));
+			var r = new When_xBind_Simple();
+			Windows.UI.Xaml.Markup.XamlReader.LoadUsingComponent(s, r);
+
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(r);
+
+			var SUT = r.FindFirstChild<TextBlock>();
+
+			Assert.AreEqual("Sprong", SUT.Text);
+		}
+
+		[TestMethod]
+		public void When_xBind_TwoWay()
+		{
+			var s = GetContent(nameof(When_xBind_TwoWay));
+			var r = new When_xBind_TwoWay();
+			Windows.UI.Xaml.Markup.XamlReader.LoadUsingComponent(s, r);
+
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(r);
+
+			var SUT = r.FindFirstChild<CheckBox>();
+
+			Assert.AreEqual(false, SUT.IsChecked);
+
+			r.MyVM.MyBool = true;
+			Assert.AreEqual(true, SUT.IsChecked);
+		}
+
+		[TestMethod]
+		public void When_xBind_TwoWay_Back()
+		{
+			var s = GetContent(nameof(When_xBind_TwoWay));
+			var r = new When_xBind_TwoWay();
+			Windows.UI.Xaml.Markup.XamlReader.LoadUsingComponent(s, r);
+
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(r);
+
+			var SUT = r.FindFirstChild<CheckBox>();
+
+			Assert.AreEqual(false, SUT.IsChecked);
+
+			SUT.IsChecked = true;
+			Assert.AreEqual(true, r.MyVM.MyBool);
+		}
+
 		private string GetContent(string testName)
 		{
 			var assembly = this.GetType().Assembly;
