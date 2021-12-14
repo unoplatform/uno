@@ -8625,8 +8625,27 @@
 
 		</Properties>
 	</IgnoreSet>
+	
+	<IgnoreSet baseVersion="4.0.11">
+	  <Assemblies>
+		<Member fullName="Uno" reason="Android 12 support"/>
+		<Member fullName="Uno.Foundation" reason="Android 12 support"/>
+		<Member fullName="Uno.Foundation.Logging" reason="Android 12 support"/>
+		<Member fullName="Uno.UI.BindingHelper.Android" reason="Android 12 support"/>
+		<Member fullName="Uno.UI.Composition" reason="Android 12 support"/>
+		<Member fullName="Uno.UI.Dispatching" reason="Android 12 support"/>
+		<Member fullName="Uno.UI" reason="Android 12 support"/>
+		<Member fullName="Uno.UI.FluentTheme" reason="Android 12 support"/>
+		<Member fullName="Uno.UI.FluentTheme.v1" reason="Android 12 support"/>
+		<Member fullName="Uno.UI.FluentTheme.v2" reason="Android 12 support"/>
+		<Member fullName="Uno.UI.Toolkit" reason="Android 12 support"/>
+		<Member fullName="Uno.Xaml" reason="Android 12 support"/>
+	  </Assemblies>
+	</IgnoreSet>
+
 	<!--
 	Supported nodes (please keep at the bottom of this file):
+	<IgnoreSet baseVersion="0.0.0">
 		<Types>
 		</Types>
 
@@ -8641,6 +8660,7 @@
 
 		<Methods>
 		</Methods>
+	</IgnoreSet>
 	-->
   </IgnoreSets>
 </DiffIgnore>
