@@ -794,7 +794,15 @@ namespace Windows.UI.Xaml
 			return this.IsHeightConstrainedSimple();
 		}
 
-		internal override bool IsViewHit() => false;
+		internal override bool IsViewHit()
+		{
+			if (FeatureConfiguration.FrameworkElement.UseLegacyHitTest)
+			{
+				return Background != null;
+			}
+			
+			return false;
+		}
 
 		/// <summary>
 		/// The list of available children render phases, if this

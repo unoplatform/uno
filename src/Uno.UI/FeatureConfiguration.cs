@@ -219,6 +219,13 @@ namespace Uno.UI
 			/// disabled to improve application performance on WebAssembly. See See #7005 for additional details.
 			/// </summary>
 			public static bool HandleLoadUnloadExceptions { get; set; } = true;
+
+			/// <summary>
+			/// When true, any FrameworkElement with Background non-null will intercept pointer events. When set to false, the default, only
+			/// certain views (Panels, Borders, and ContentPresenters) will intercept pointers if their background is non-null, while others (Control)
+			/// will not, which is how WinUI behaves. Set to true if you have code written for earlier versions of Uno that relies upon the old behavior.
+			/// </summary>
+			public static bool UseLegacyHitTest { get; set; } = false;
 		}
 
 		public static class Image
