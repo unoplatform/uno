@@ -183,7 +183,7 @@
              ContinueOnError="true" />
 	</Target>
 
-  <Target Name="ValidateUnoUIAndroid" BeforeTargets="Build" Condition="'$(AndroidApplication)'!='' and '$(TargetFrameworkVersion)'!=''">
+  <Target Name="ValidateUnoUIAndroid" BeforeTargets="BeforeBuild" Condition="'$(AndroidApplication)'!='' and '$(TargetFrameworkVersion)'!=''">
 
 	<PropertyGroup Condition="'$(NETCoreAppMaximumVersion)'!='' and '$(NETCoreAppMaximumVersion)'&gt;='6.0'">
 	  <UnoUIMinAndroidSDKVersion>30</UnoUIMinAndroidSDKVersion>
@@ -195,7 +195,7 @@
 	  <_CurrentTrimmedAndroidSDLVersion>$(TargetFrameworkVersion.Substring(1))</_CurrentTrimmedAndroidSDLVersion>
 	</PropertyGroup>
 
-	<Error Text="This version of the Android SDK ($(_CurrentTrimmedAndroidSDLVersion)) is not supported by Uno.UI. You must change the &quot;Compile using Android version:&quot; field in the android project property with at least version $(UnoUIMinAndroidSDKVersion)."
+	<Error Text="This version of the Android SDK ($(_CurrentTrimmedAndroidSDLVersion)) is not supported by Uno Platform. You must change the &quot;Compile using Android version:&quot; field in the android project property with at least version $(UnoUIMinAndroidSDKVersion)."
 				 Condition="'$(_CurrentTrimmedAndroidSDLVersion)' &lt; '$(UnoUIMinAndroidSDKVersion)'" />
   </Target>
 
