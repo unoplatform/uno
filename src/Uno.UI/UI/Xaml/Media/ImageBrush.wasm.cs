@@ -43,8 +43,8 @@ namespace Windows.UI.Xaml.Media
 			{
 				Stretch.Fill => "100% 100%",
 				Stretch.None => "auto",
-				Stretch.Uniform => "auto", // patch for now
-				Stretch.UniformToFill => "auto", // patch for now
+				Stretch.Uniform => "contain", // patch for now
+				Stretch.UniformToFill => "cover",
 				_ => "auto"
 			};
 		}
