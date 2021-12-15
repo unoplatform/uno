@@ -2,6 +2,29 @@
 
 This article details the migration steps required to migrate from one version to the next.
 
+### Uno 4.1
+
+### Android 12 support
+Uno 4.1 removes the support for the Android SDK 10 and adds support for Android 12. Note that Android 10  versions and below are still supported at runtime, but you'll need to have Android 11 SDK or later to build an Uno Platform App. You can upgrade to Android 11 or 12 using the `Compile using Android version: (Targer Framework)` option in Visual Studio Android project properties.
+
+Additionally, here are some specific hints about the migration to Android 12:
+- If you are building with Android 12 on Azure Devops Hosted Agents (macOS or Windows), you'll need two updates:
+    - Use the JDK 11, using the following step:
+        ```yml
+        - pwsh: |
+            echo "##vso[task.setvariable variable=JAVA_HOME]$(JAVA_HOME_11_X64)"
+            echo "##vso[task.setvariable variable=JavaSdkDirectory]$(JAVA_HOME_11_X64)"
+        displayName: Select JDK 11
+        ```
+    - You may need to [add the following property](https://github.com/tdevere/AppCenterSupportDocs/blob/main/Build/Could_not_determine_API_level_for_$TargetFrameworkVersion_of_v12.0.md) to your android csproj:
+        ```xml
+        <PropertyGroup>
+            <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
+        </PropertyGroup>
+        ```
+- The AndroidX libraries need to be at specific versions to avoid [an upstream android issue](https://docs.microsoft.com/en-us/answers/questions/650236/error-androidattrlstar-not-found-after-upgrading-n.html). The Uno Platform NuGet packages are using those versions automatically, but if you override those packages, make sure to avoid direct or indirect dependencies on `Xamarin.AndroidX.Core(>=1.7.0.1)`. For reference, [view this page](https://github.com/unoplatform/uno/blob/533c5316cbe7537bb2f4a542b46a52b96c75004a/build/Uno.WinUI.nuspec#L66-L69) to get the packages versions used by Uno Platform.
+
+
 ### Uno 4.0
 
 Uno 4.0 introduces a set of binary and source breaking changes required to align with the Windows App SDK 1.0.
