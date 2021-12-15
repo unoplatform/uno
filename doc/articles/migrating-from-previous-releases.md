@@ -8,7 +8,7 @@ This article details the migration steps required to migrate from one version to
 Uno 4.1 removes the support for the Android SDK 10 and adds support for Android 12. Note that Android 10  versions and below are still supported at runtime, but you'll need to have Android 11 SDK or later to build an Uno Platform App. You can upgrade to Android 11 or 12 using the `Compile using Android version: (Targer Framework)` option in Visual Studio Android project properties.
 
 Additionally, here are some specific hints about the migration to Android 12:
-- If you are building with Android 12 on Azure Devops Hosted Agents (macOS or Windows), you'll need two update:
+- If you are building with Android 12 on Azure Devops Hosted Agents (macOS or Windows), you'll need two updates:
     - Use the JDK 11, using the following step:
         ```yml
         - pwsh: |
