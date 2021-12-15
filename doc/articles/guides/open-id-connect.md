@@ -39,10 +39,10 @@ Add the package [`IdentityModel.OidcClient`](https://www.nuget.org/packages/Iden
 
 **Android**
 
-Add the following class in the project of the Android Head:
+Add the following class in the project of the Android Head.
 
 ``` csharp
-[Activity(NoHistory = true, LaunchMode = LaunchMode.SingleTop)]
+[Activity(NoHistory = true, LaunchMode = LaunchMode.SingleTop, Exported = true)]
 [IntentFilter(
 	new[] {Android.Content.Intent.ActionView},
 	Categories = new[] {Android.Content.Intent.CategoryDefault, Android.Content.Intent.CategoryBrowsable},
@@ -51,6 +51,8 @@ public class WebAuthenticationBrokerActivity : WebAuthenticationBrokerActivityBa
 {
 }
 ```
+
+Note the `[Activity]` attribute needs to include `Exported = true` if you are targeting Android 12.
 
 This activity will intercept the return URI and forward it to any waiting `WebAuthenticationBroker`.
 
