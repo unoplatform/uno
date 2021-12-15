@@ -48,13 +48,13 @@ namespace Windows.UI.Popups
 			{
 				alertController.PreferredAction = alertActions.ElementAtOrDefault((int)DefaultCommandIndex);
 			}
-
+			
 			using (ct.Register(() =>
 				{
 					// If the cancellation token itself gets cancelled, we cancel as well.
 					result.TrySetCanceled();
 					UIApplication.SharedApplication.KeyWindow?.RootViewController?.DismissViewController(false, () => { });
-				}))
+				}, useSynchronizationContext: true))
 			{
 				await _viewControllerAccess.WaitAsync(ct);
 
