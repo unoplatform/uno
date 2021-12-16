@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -68,8 +68,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 		[RunsOnUIThread]
 #if __WASM__ || __SKIA__
 		[Ignore("Message dialog not implemented  https://github.com/unoplatform/uno/issues/7271")]
-#elif __IOS__
-		[Ignore("Test fails on CI")]
 #endif
 		public async Task When_Cancel_Then_CloseDialog()
 		{
