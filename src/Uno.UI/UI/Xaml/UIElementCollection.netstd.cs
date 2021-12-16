@@ -65,8 +65,10 @@ namespace Windows.UI.Xaml.Controls
 			return item;
 		}
 
-		private bool RemoveCore(View item) => _owner.RemoveChild(item);
+		private bool RemoveCore(View item)
+			=> _owner.RemoveChild(item);
 
-		private View SetAtIndexCore(int index, View value) => throw new NotImplementedException();
+		private View SetAtIndexCore(int index, View value)
+			=> _owner.ReplaceChild(index, value);
 	}
 }
