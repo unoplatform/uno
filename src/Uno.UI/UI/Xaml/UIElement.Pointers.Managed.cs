@@ -362,7 +362,7 @@ namespace Windows.UI.Xaml
 					}
 					else
 					{
-						var explicitTarget = targets.Find(c => c.Kind == PointerCaptureKind.Explicit)!;
+						var explicitTarget = targets.Find(c => c.Kind.HasFlag(PointerCaptureKind.Explicit))!;
 
 						raise(explicitTarget.Element, routedArgs, BubblingContext.Bubble);
 

@@ -117,15 +117,15 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (ItemsControlFromItemContainer(sender) is ListViewBase that && that.CanDragItems)
 			{
-				var items = that.SelectionMode == ListViewSelectionMode.Multiple || that.SelectionMode == ListViewSelectionMode.Extended
-					? that.SelectedItems.ToList()
-					: new List<object>();
+				// The items contains all selected items ONLY if the draggedItem is selected.
 				var draggedItem = that.ItemFromContainer(sender);
-				if (draggedItem is { } && !items.Contains(draggedItem))
-				{
-					items.Add(draggedItem);
-				}
-
+				var items =
+					draggedItem is null ? new List<object>()
+					: (that.SelectionMode == ListViewSelectionMode.Multiple || that.SelectionMode == ListViewSelectionMode.Extended)
+						&& that.SelectedItems is { Count: > 0 } selected
+						&& selected.Contains(draggedItem)
+						? selected.ToList()
+						: new List<object>(1) { draggedItem };
 				var args = new DragItemsStartingEventArgs(innerArgs, items);
 
 				that.DragItemsStarting?.Invoke(that, args);
@@ -312,6 +312,9 @@ namespace Windows.UI.Xaml.Controls
 					}
 #endif
 				}
+
+				// When moving more than one item (multi-select), we keep their actual order in the list, no matter which one was dragged.
+				movedItems.Sort((it1, it2) => indexOf(it1).CompareTo(indexOf(it2)));
 
 				for (var i = 0; i < movedItems.Count; i++)
 				{
