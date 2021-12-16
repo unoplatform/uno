@@ -111,7 +111,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)] // TODO: support drag-and-drop testing on mobile https://github.com/unoplatform/Uno.UITest/issues/31
-		public void When_ReorderWithMultiSelectStartingFromASelectedItem_Down() => Test_ReorderMulti(2, 4);
+		public void When_ReorderWithMultiSelectStartingFromASelectedItem_Down() => Test_ReorderMulti(2, 4, expectedTo: 3);
 
 		[Test]
 		[AutoRetry]
@@ -126,7 +126,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)] // TODO: support drag-and-drop testing on mobile https://github.com/unoplatform/Uno.UITest/issues/31
-		public void When_ReorderWithMultiSelectStartingFromASelectedItem_To_Last() => Test_ReorderMulti(2, 5);
+		public void When_ReorderWithMultiSelectStartingFromASelectedItem_To_Last() => Test_ReorderMulti(2, 5, expectedTo: 4);
 
 		private void Test_Reorder(int from, int to)
 		{
@@ -150,7 +150,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 			Assert.IsTrue(op.GetDependencyPropertyValue<string>("Text").Contains("Move"));
 		}
 
-		private void Test_ReorderMulti(int from, int to)
+		private void Test_ReorderMulti(int from, int to, int? expectedTo = null)
 		{
 			Run("UITests.Windows_UI_Xaml.DragAndDrop.DragDrop_ListView", skipInitialScreenshot: true);
 
@@ -163,16 +163,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 			var x = sutBounds.X + 50;
 			var srcY = Item(sutBounds, from);
 			var dstY = Item(sutBounds, to);
+			var expectedY = expectedTo is null ? dstY : Item(sutBounds, expectedTo.Value);
 
 			_app.TapCoordinates(x, Item(sutBounds, 4)); // We select the 4th item first, as it has to remain after the 2nd
 			_app.TapCoordinates(x, Item(sutBounds, 2));
 			_app.DragCoordinates(x, srcY, x, dstY);
 
 			var result = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
-			if (from is 2 or 4 || to is 2 or 4)
+			if (from is 2 or 4)
 			{
-				ImageAssert.HasColorAt(result, x, dstY, _items[2], tolerance: 10);
-				ImageAssert.HasColorAt(result, x, dstY + _itemHeight, _items[4], tolerance: 10);
+				ImageAssert.HasColorAt(result, x, expectedY, _items[2], tolerance: 10);
+				ImageAssert.HasColorAt(result, x, expectedY + _itemHeight, _items[4], tolerance: 10);
 			}
 			else
 			{
