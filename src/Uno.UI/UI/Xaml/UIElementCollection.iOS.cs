@@ -46,8 +46,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var view = _owner.ChildrenShadow[index];
 
-			// Set the view directly in the original array
-			_owner.Subviews[index] = value;
+			RemoveAt(index);
+			Insert(index, value);
 
 			return view as UIElement;
 		}
