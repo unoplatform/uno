@@ -158,6 +158,15 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		internal UIElement ReplaceChild(int index, UIElement child)
+		{
+			var previous = _children[index];
+			RemoveChild(previous);
+			AddChild(child, index);
+
+			return previous;
+		}
+
 		internal void ClearChildren()
 		{
 			foreach (var child in _children.ToArray())
