@@ -11,6 +11,7 @@ using Uno.UI.ViewManagement;
 namespace SamplesApp.Droid
 {
 	[Activity(
+			Exported = true,
 			MainLauncher = true,
 			ConfigurationChanges = global::Uno.UI.ActivityHelper.AllConfigChanges,
 			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden
@@ -80,7 +81,7 @@ namespace SamplesApp.Droid
 	}
 
 
-	[Activity]
+	[Activity(Exported = true)]
 	[IntentFilter(
 		new[] {
 			Android.Content.Intent.ActionView
