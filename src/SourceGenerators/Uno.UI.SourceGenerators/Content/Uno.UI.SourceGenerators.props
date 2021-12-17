@@ -420,7 +420,7 @@
 	</CreateProperty>
   </Target>
 
-  <Target Name="_GenerateReloadCookie" BeforeTargets="BeforeCompile">
+  <Target Name="_GenerateReloadCookie" BeforeTargets="BeforeCompile" Condition="'$(DefaultLanguageSourceExtension)'=='.cs'">
 		<!-- Generate an empty C# file that OmniSharp can pick up when Uno has marked XAML files as modified -->
 		<WriteLinesToFile File="$(IntermediateOutputPath)\uno.reload.cookie.g.cs" />
 		<ItemGroup>
