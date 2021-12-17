@@ -296,6 +296,11 @@ namespace Windows.UI.Xaml.Media
 #endif
 		}
 
+		internal static UIElement ReplaceChild(UIElement view, int index, UIElement child)
+		{
+			throw new NotImplementedException("ReplaceChild not implemented on this platform.");
+		}
+
 		internal static IReadOnlyList<_View> ClearChildren(UIElement view)
 		{
 #if __ANDROID__

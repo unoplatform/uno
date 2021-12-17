@@ -40,6 +40,8 @@ namespace Windows.UI.Xaml
 
 		internal bool RemoveChild(UIElement child) => throw new NotSupportedException("Reference assembly");
 
+		internal UIElement ReplaceChild(int index, UIElement child) => throw new NotSupportedException("Reference assembly");
+
 		internal void ClearChildren() => throw new NotSupportedException("Reference assembly");
 
 		internal void UpdateHitTest() => throw new NotSupportedException("Reference assembly");
