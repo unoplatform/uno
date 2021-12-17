@@ -344,7 +344,7 @@ namespace Windows.UI.Xaml.Controls
 		// Calculates the rectangle to be brought into view from the index.
 		private Rect CalculateBounds(int index)
 		{
-			Rect emptyRect = Rect.Empty;
+			Rect emptyRect = default;
 			bool isVertical = false;
 			Orientation physicalOrientation = Orientation.Vertical;
 			double width = 0;
