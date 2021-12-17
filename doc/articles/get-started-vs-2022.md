@@ -25,12 +25,11 @@ For more information about these prerequisites, see [Installing Xamarin](https:/
 ## Finalize your environment setup using uno-check
 * Install the uno-check tool:
    ```
-   dotnet tool install -g Uno.Check --version 0.2.0-dev.327
+   dotnet tool install -g Uno.Check
    ```
-   If a [later version is available](https://www.nuget.org/packages/Uno.Check), you can use it instead of 0.2.0-dev.327
 * Run the uno-check tool:
    ```
-   uno-check --preview
+   uno-check
    ```
 
 Follow the steps indicated by the tool.
