@@ -8,7 +8,7 @@ using AndroidX.RecyclerView.Widget;
 using Android.Views;
 using Uno.Extensions;
 using Uno.UI;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Controls.Primitives;
 using Android.Graphics;
@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private ManagedWeakReference _xamlParentWeakReference;
 
-		public ListViewBase XamlParent
+		internal ListViewBase XamlParent
 		{
 			get => _xamlParentWeakReference?.Target as ListViewBase;
 			set
@@ -141,6 +141,30 @@ namespace Windows.UI.Xaml.Controls
 				RequestLayout();
 			}
 		}
+
+		private double _itemsPresenterMinWidth;
+		internal double ItemsPresenterMinWidth
+		{
+			get => _itemsPresenterMinWidth;
+			set
+			{
+				_itemsPresenterMinWidth = value;
+				RequestLayout();
+			}
+		}
+
+		private double itemsPresenterMinHeight;
+		internal double ItemsPresenterMinHeight
+		{
+			get => itemsPresenterMinHeight;
+			set
+			{
+				itemsPresenterMinHeight = value;
+				RequestLayout();
+			}
+		}
+
+		private int ItemsPresenterMinExtent => (int)ViewHelper.LogicalToPhysicalPixels(ScrollOrientation == Orientation.Vertical ? ItemsPresenterMinHeight : ItemsPresenterMinWidth);
 
 		private int InitialExtentPadding => (int)ViewHelper.LogicalToPhysicalPixels(ScrollOrientation == Orientation.Vertical ? Padding.Top : Padding.Left);
 		private int FinalExtentPadding => (int)ViewHelper.LogicalToPhysicalPixels(ScrollOrientation == Orientation.Vertical ? Padding.Bottom : Padding.Right);
@@ -622,7 +646,9 @@ namespace Windows.UI.Xaml.Controls
 					continue;
 				}
 
+#pragma warning disable CS0618 // Type or member is obsolete
 				if (vh.AdapterPosition != position)
+#pragma warning restore CS0618 // Type or member is obsolete
 				{
 					continue;
 				}
@@ -724,12 +750,34 @@ namespace Windows.UI.Xaml.Controls
 				remainingGroupExtent = remainingGroups * lastGroup.HeaderExtent;
 			}
 
+			CorrectForEstimationErrors();
+
 			var range = ContentOffset + remainingItemExtent + remainingGroupExtent + headerExtent + footerExtent +
 				//TODO: An inline group header might actually be the view at the bottom of the viewport, we should take this into account
 				GetChildEndWithMargin(base.GetChildAt(FirstItemView + ItemViewCount - 1));
 			Debug.Assert(range > 0, "Must report a non-negative scroll range.");
 			Debug.Assert(remainingItems == 0 || range > Extent, "If any items are non-visible, the content range must be greater than the viewport extent.");
-			return range;
+			return Math.Max(range, ItemsPresenterMinExtent);
+		}
+
+		/// <summary>
+		/// Correct the scroll offset, eg if items were added/removed or had their databound heights changed while they were scrolled out
+		/// of view.
+		/// </summary>
+		private void CorrectForEstimationErrors()
+		{
+			if (ContentOffset < 0)
+			{
+				// Scroll offset should always be non-negative
+				ContentOffset = 0;
+			}
+
+			var firstVisible = GetFirstVisibleIndexPath();
+			if (firstVisible.Row == 0 && firstVisible.Section == 0)
+			{
+				// If first item is in view, we can set ContentOffset exactly
+				ContentOffset = -GetContentStart();
+			}
 		}
 
 		/// <summary>
@@ -742,7 +790,9 @@ namespace Windows.UI.Xaml.Controls
 		private void ApplyOffset(int delta)
 		{
 			ContentOffset -= delta;
-			Debug.Assert(ContentOffset >= 0, "ContentOffset must be non-negative.");
+
+			CorrectForEstimationErrors();
+
 			foreach (var group in _groups)
 			{
 				group.Start += delta;
@@ -936,7 +986,19 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				return (child as FrameworkElement)?.AssignedActualSize ?? ViewHelper.PhysicalToLogicalPixels(new Size(child.Width, child.Height));
+				return GetMeasuredChildSize(child);
+			}
+		}
+
+		private static Size GetMeasuredChildSize(View child)
+		{
+			if (child is FrameworkElement fe)
+			{
+				return fe.AssignedActualSize.Add(fe.Margin);
+			}
+			else
+			{
+				return ViewHelper.PhysicalToLogicalPixels(new Size(child.Width, child.Height));
 			}
 		}
 
@@ -1053,6 +1115,10 @@ namespace Windows.UI.Xaml.Controls
 		private int ScrollBy(int offset, RecyclerView.Recycler recycler, RecyclerView.State state)
 		{
 			var fillDirection = offset >= 0 ? GeneratorDirection.Forward : GeneratorDirection.Backward;
+			if (IsReorderingAndNotReadyToScroll(fillDirection))
+			{
+				return 0;
+			}
 			int unconsumedOffset = offset;
 			int actualOffset = 0;
 			int appliedOffset = 0;
@@ -1092,6 +1158,15 @@ namespace Windows.UI.Xaml.Controls
 			return actualOffset;
 		}
 
+		/// <summary>
+		/// During a drag-to-reorder, if the item is dragged very rapidly then we may receive a scroll request before the item has been
+		/// redrawn at the position under the cursor. If the item is still at the beginning of the list (that is, the 'trailing' position
+		/// relative to scroll), this would violate the assumptions of the reordering logic (<see cref="TryTrimReorderingView(GeneratorDirection, RecyclerView.Recycler)"/>).
+		/// As a simple fix we simply skip this scroll request, and wait for one to occur after the item has been repositioned.
+		/// </summary>
+		private bool IsReorderingAndNotReadyToScroll(GeneratorDirection fillDirection)
+			=> _pendingReorder?.index is { } reorderingIndex && reorderingIndex == GetTrailingLine(fillDirection).FirstItem;
+
 		private int GetScrollConsumptionIncrement(GeneratorDirection fillDirection)
 		{
 			if (ItemViewCount > 0)
@@ -1124,8 +1199,9 @@ namespace Windows.UI.Xaml.Controls
 			int maxPossibleDelta;
 			if (fillDirection == GeneratorDirection.Forward)
 			{
+				var contentEnd = Math.Max(GetContentEnd(), ItemsPresenterMinExtent - ContentOffset);
 				// If this value is negative, collection dimensions are larger than all children and we should not scroll
-				maxPossibleDelta = Math.Max(0, GetContentEnd() - Extent);
+				maxPossibleDelta = Math.Max(0, contentEnd - Extent);
 				// In the rare case that GetContentStart() is positive (see below), permit a positive value.
 				maxPossibleDelta = Math.Max(GetContentStart(), maxPossibleDelta);
 			}
@@ -1516,7 +1592,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			if (groupToCreate / increment > targetGroupIndex / increment)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 				{
 					this.Log().Error($"Invalid state when creating new groups: leadingGroup.GroupIndex={leadingGroup?.GroupIndex}, targetGroupIndex={targetGroupIndex}, fillDirection={fillDirection}");
 				}
@@ -2127,6 +2203,10 @@ namespace Windows.UI.Xaml.Controls
 
 		internal Uno.UI.IndexPath? CompleteReorderingItem(FrameworkElement element, object item)
 		{
+			// Ensure that _pendingReorder.index is set. This is necessary in case it was invalidated from UpdateReorderingItem() but the
+			// list was not yet remeasured, which can happen when dragging rapidly.
+			GetAndUpdateReorderingIndex();
+
 			var updatedIndex = default(Uno.UI.IndexPath?);
 			if (_pendingReorder?.index is { } index)
 			{
@@ -2146,14 +2226,23 @@ namespace Windows.UI.Xaml.Controls
 					_shouldDecrementSeedForPendingReorder = true;
 				}
 			}
+
+			CleanupReordering();
+
+			return updatedIndex;
+		}
+
+		/// <summary>
+		/// Clean up state after a drag-to-reorder operation.
+		/// </summary>
+		internal void CleanupReordering()
+		{
 			_pendingReorder = null;
 
 			ViewCache.RemoveReorderingItem();
 			// We need a full refresh to properly re-arrange all items at their right location,
 			// ignoring the temp location of the dragged / reordered item.
 			RecycleLayout();
-
-			return updatedIndex;
 		}
 
 		protected bool ShouldInsertReorderingView(GeneratorDirection direction, double physicalExtentOffset)

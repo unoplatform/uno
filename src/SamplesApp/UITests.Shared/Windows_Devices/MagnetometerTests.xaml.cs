@@ -33,7 +33,7 @@ namespace UITests.Shared.Windows_Devices
     }
 
     [Bindable]
-    public class MagnetometerTestsViewModel : ViewModelBase
+	internal class MagnetometerTestsViewModel : ViewModelBase
     {
         private readonly Magnetometer _magnetometer = null;
         private bool _readingChangedAttached;
@@ -65,13 +65,13 @@ namespace UITests.Shared.Windows_Devices
             }));
         }
 
-        public Command AttachReadingChangedCommand => new Command((p) =>
+		internal Command AttachReadingChangedCommand => new Command((p) =>
         {
             _magnetometer.ReadingChanged += Magnetometer_ReadingChanged;
             ReadingChangedAttached = true;
         });
 
-        public Command DetachReadingChangedCommand => new Command((p) =>
+		internal Command DetachReadingChangedCommand => new Command((p) =>
         {
             _magnetometer.ReadingChanged -= Magnetometer_ReadingChanged;
             ReadingChangedAttached = false;

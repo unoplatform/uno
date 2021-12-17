@@ -6,13 +6,13 @@ using Java.Interop;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Microsoft.Identity.Client;
+using Uno.UI;
 
 namespace SamplesApp.Droid
 {
 	[Activity(
 			MainLauncher = true,
-			Exported = true,
-			ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode,
+			ConfigurationChanges = ActivityHelper.AllConfigChanges,
 			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden
 		)]
 	[IntentFilter(

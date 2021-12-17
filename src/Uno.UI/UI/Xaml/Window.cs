@@ -9,9 +9,10 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
-using Uno.Logging;
+using Windows.UI.Xaml.Controls.Primitives;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
-using Microsoft.Extensions.Logging;
+
 
 namespace Windows.UI.Xaml
 {
@@ -54,7 +55,7 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 				{
 					this.Log().Warn("Unable to raise WindowCreatedEvent, there is no active Application");
 				}
@@ -167,7 +168,7 @@ namespace Windows.UI.Xaml
 				_sizeChangedHandlers,
 				handler,
 				(h, s, e) =>
-					(h as Windows.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (Windows.UI.Core.WindowSizeChangedEventArgs)e)
+					(h as Windows.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e)
 			);
 		}
 
@@ -219,12 +220,19 @@ namespace Windows.UI.Xaml
 
 		private void RaiseSizeChanged(Windows.UI.Core.WindowSizeChangedEventArgs windowSizeChangedEventArgs)
 		{
-			SizeChanged?.Invoke(this, windowSizeChangedEventArgs);
+			var baseSizeChanged = new WindowSizeChangedEventArgs(windowSizeChangedEventArgs.Size) { Handled = windowSizeChangedEventArgs.Handled };
+
+			SizeChanged?.Invoke(this, baseSizeChanged);
+
+			windowSizeChangedEventArgs.Handled = baseSizeChanged.Handled;
+
 			CoreWindow.GetForCurrentThread()?.OnSizeChanged(windowSizeChangedEventArgs);
+
+			baseSizeChanged.Handled = windowSizeChangedEventArgs.Handled;
 
 			foreach (var action in _sizeChangedHandlers)
 			{
-				action(this, windowSizeChangedEventArgs);
+				action(this, baseSizeChanged);
 			}
 		}
 

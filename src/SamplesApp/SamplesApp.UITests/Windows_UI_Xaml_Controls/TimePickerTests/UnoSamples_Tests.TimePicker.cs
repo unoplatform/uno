@@ -12,7 +12,6 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 {
 	[TestFixture]
-	[Ignore("One of this test is preventing CI to pass https://github.com/unoplatform/uno/issues/6668")]
 	public partial class TimePickerTests_Tests : SampleControlUITestBase
 	{
 		[Test]
@@ -123,9 +122,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 			{
 				Assert.AreEqual("12:00:00", theTimePicker.GetDependencyPropertyValue("Time")?.ToString());
 			}
-
-			// Dismiss the flyout
-			_app.TapCoordinates(10, 10);
 		}
 
 		[Test]
@@ -141,14 +137,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 			var timePickerFlyout = theTimePicker.Child;
 
 			// Open flyout
-			theTimePicker.FastTap();
+			_app.FastTap("HourTextBlock");
 
 			//Assert
 			Assert.IsNotNull(theTimePicker.GetDependencyPropertyValue("DataContext"));
 			Assert.IsNotNull(timePickerFlyout.GetDependencyPropertyValue("DataContext"));
 
 			// Dismiss the flyout
-			_app.TapCoordinates(10, 10);
+			_app.TapCoordinates(30, 30);
 		}
 
 		[Test]
@@ -179,7 +175,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 		public void TimePicker_Flyout()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.TimePicker_Flyout_Automated", skipInitialScreenshot: true);
-
 			var picker = _app.Marked("TestTimePicker");
 
 			_app.WaitForElement(picker);
@@ -189,7 +184,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 			TakeScreenshot("TimePicker - Flyout", ignoreInSnapshotCompare: true);
 
 			// Dismiss the flyout
-			_app.TapCoordinates(10, 10);
+			_app.TapCoordinates(30, 30);
 		}
 
 		[Test]

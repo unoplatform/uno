@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Data;
 
 namespace Uno.UI.Samples.Content.UITests.Flyout
 {
-	public class FlyoutButonViewModel : ViewModelBase
+	internal class FlyoutButonViewModel : ViewModelBase
 	{
 		public FlyoutButonViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{

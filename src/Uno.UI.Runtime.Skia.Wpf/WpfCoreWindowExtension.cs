@@ -4,7 +4,6 @@ using System;
 using Windows.Devices.Input;
 using Windows.UI.Core;
 using Uno.Extensions;
-using Uno.Logging;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 using WpfApplication = System.Windows.Application;
 using WpfWindow = System.Windows.Window;
@@ -18,7 +17,7 @@ using MouseDevice = System.Windows.Input.MouseDevice;
 using System.Reflection;
 using Windows.System;
 using Uno.UI.Skia.Platform.Extensions;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Skia.Platform
 {
@@ -84,11 +83,11 @@ namespace Uno.UI.Skia.Platform
 			}
 		}
 
-		public void ReleasePointerCapture()
-			=> WpfHost.Current.ReleaseMouseCapture();
-
-		public void SetPointerCapture()
+		public void SetPointerCapture(PointerIdentifier pointer)
 			=> WpfHost.Current.CaptureMouse();
+
+		public void ReleasePointerCapture(PointerIdentifier pointer)
+			=> WpfHost.Current.ReleaseMouseCapture();
 
 		private static uint GetNextFrameId()
 			=> (uint)Interlocked.Increment(ref _currentFrameId);

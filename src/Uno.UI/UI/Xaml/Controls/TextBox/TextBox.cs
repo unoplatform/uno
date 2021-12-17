@@ -8,19 +8,29 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
-using Windows.System;
+
 using Uno.Extensions;
 using Uno.UI.Common;
+using Uno.UI.DataBinding;
+using Windows.Foundation;
+using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.Foundation;
-using Windows.UI.Core;
-using Microsoft.Extensions.Logging;
-using Uno.UI.DataBinding;
+using Uno.UI.Xaml.Input;
+using Uno.Foundation.Logging;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+#else
+using Windows.UI.Input;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -72,7 +82,6 @@ namespace Windows.UI.Xaml.Controls
 
 		public TextBox()
 		{
-			InitializeVisualStates();
 			this.RegisterParentChangedCallback(this, OnParentChanged);
 
 			DefaultStyleKey = typeof(TextBox);
@@ -104,7 +113,7 @@ namespace Windows.UI.Xaml.Controls
 			OnFocusStateChanged((FocusState)FocusStateProperty.GetMetadata(GetType()).DefaultValue, FocusState, initial: true);
 			OnVerticalContentAlignmentChanged(VerticalAlignment.Top, VerticalContentAlignment);
 			OnTextCharacterCasingChanged(CreateInitialValueChangerEventArgs(CharacterCasingProperty, CharacterCasingProperty.GetMetadata(GetType()).DefaultValue, CharacterCasing));
-
+			OnDescriptionChanged(CreateInitialValueChangerEventArgs(DescriptionProperty, DescriptionProperty.GetMetadata(GetType()).DefaultValue, Description));
 			var buttonRef = _deleteButton?.GetTarget();
 
 			if (buttonRef != null)
@@ -145,6 +154,7 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateTextBoxView();
 			InitializeProperties();
+			UpdateVisualState();
 		}
 
 		partial void InitializePropertiesPartial();
@@ -167,7 +177,21 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public static DependencyProperty TextProperty { get ; } =
+		private static string GetFirstLine(string value)
+		{
+			for (int i = 0; i < value.Length; i++)
+			{
+				var c = value[i];
+				if (c == '\r' || c == '\n')
+				{
+					return value.Substring(0, i);
+				}
+			}
+
+			return value;
+		}
+
+		public static DependencyProperty TextProperty { get; } =
 			DependencyProperty.Register(
 				"Text",
 				typeof(string),
@@ -264,6 +288,11 @@ namespace Windows.UI.Xaml.Controls
 				return DependencyProperty.UnsetValue;
 			}
 
+			if (!AcceptsReturn)
+			{
+				baseString = GetFirstLine(baseString);
+			}
+
 			var args = new TextBoxBeforeTextChangingEventArgs(baseString);
 			BeforeTextChanging?.Invoke(this, args);
 			if (args.Cancel)
@@ -271,9 +300,59 @@ namespace Windows.UI.Xaml.Controls
 				return DependencyProperty.UnsetValue;
 			}
 
-			return baseValue;
+			return baseString;
 		}
 
+		#endregion
+
+		#region Description DependencyProperty
+
+		public
+#if __IOS__ || __MACOS__
+		new
+#endif
+		object Description
+		{
+			get => (object)this.GetValue(DescriptionProperty);
+			set
+			{
+				this.SetValue(DescriptionProperty, value);
+			}
+		}
+
+		public static DependencyProperty DescriptionProperty { get; } =
+			DependencyProperty.Register(
+				"Description",
+				typeof(object),
+				typeof(TextBox),
+				new FrameworkPropertyMetadata(
+					defaultValue: null,
+					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnDescriptionChanged(e)
+				)
+			);
+
+		private void OnDescriptionChanged(DependencyPropertyChangedEventArgs args)
+		{
+			ContentPresenter descriptionPresenter = this.FindName("DescriptionPresenter") as ContentPresenter;
+			if (descriptionPresenter != null)
+			{
+				if (args.NewValue != null)
+				{
+					if (args.NewValue is string s && string.IsNullOrWhiteSpace(s))
+					{
+						descriptionPresenter.Visibility = Visibility.Collapsed;
+					}
+					else
+					{
+						descriptionPresenter.Visibility = Visibility.Visible;
+					}
+				}
+				else
+				{
+					descriptionPresenter.Visibility = Visibility.Collapsed;
+				}
+			}
+		}
 		#endregion
 
 		protected override void OnFontSizeChanged(double oldValue, double newValue)
@@ -314,7 +393,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(PlaceholderTextProperty, value);
 		}
 
-		public static DependencyProperty PlaceholderTextProperty { get ; } =
+		public static DependencyProperty PlaceholderTextProperty { get; } =
 			DependencyProperty.Register(
 				"PlaceholderText",
 				typeof(string),
@@ -332,7 +411,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(InputScopeProperty, value);
 		}
 
-		public static DependencyProperty InputScopeProperty { get ; } =
+		public static DependencyProperty InputScopeProperty { get; } =
 			DependencyProperty.Register(
 				"InputScope",
 				typeof(InputScope),
@@ -365,7 +444,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(MaxLengthProperty, value);
 		}
 
-		public static DependencyProperty MaxLengthProperty { get ; } =
+		public static DependencyProperty MaxLengthProperty { get; } =
 			DependencyProperty.Register(
 				"MaxLength",
 				typeof(int),
@@ -390,7 +469,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(AcceptsReturnProperty, value);
 		}
 
-		public static DependencyProperty AcceptsReturnProperty { get ; } =
+		public static DependencyProperty AcceptsReturnProperty { get; } =
 			DependencyProperty.Register(
 				"AcceptsReturn",
 				typeof(bool),
@@ -403,6 +482,16 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnAcceptsReturnChanged(DependencyPropertyChangedEventArgs e)
 		{
+			if (e.NewValue is false)
+			{
+				var text = Text;
+				var singleLineText = GetFirstLine(text);
+				if (text != singleLineText)
+				{
+					Text = singleLineText;
+				}
+			}
+
 			OnAcceptsReturnChangedPartial(e);
 			UpdateButtonStates();
 		}
@@ -418,7 +507,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(TextWrappingProperty, value);
 		}
 
-		public static DependencyProperty TextWrappingProperty { get ; } =
+		public static DependencyProperty TextWrappingProperty { get; } =
 			DependencyProperty.Register(
 				"TextWrapping",
 				typeof(TextWrapping),
@@ -475,7 +564,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(IsReadOnlyProperty, value);
 		}
 
-		public static DependencyProperty IsReadOnlyProperty { get ; } =
+		public static DependencyProperty IsReadOnlyProperty { get; } =
 			DependencyProperty.Register(
 				"IsReadOnly",
 				typeof(bool),
@@ -504,7 +593,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(HeaderProperty, value);
 		}
 
-		public static DependencyProperty HeaderProperty { get ; } =
+		public static DependencyProperty HeaderProperty { get; } =
 			DependencyProperty.Register("Header",
 				typeof(object),
 				typeof(TextBox),
@@ -519,7 +608,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(HeaderTemplateProperty, value);
 		}
 
-		public static DependencyProperty HeaderTemplateProperty { get ; } =
+		public static DependencyProperty HeaderTemplateProperty { get; } =
 			DependencyProperty.Register("HeaderTemplate",
 				typeof(DataTemplate),
 				typeof(TextBox),
@@ -550,7 +639,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(IsSpellCheckEnabledProperty, value);
 		}
 
-		public static DependencyProperty IsSpellCheckEnabledProperty { get ; } =
+		public static DependencyProperty IsSpellCheckEnabledProperty { get; } =
 			DependencyProperty.Register(
 				"IsSpellCheckEnabled",
 				typeof(bool),
@@ -577,7 +666,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		[Uno.NotImplemented]
-		public static DependencyProperty IsTextPredictionEnabledProperty { get ; } =
+		public static DependencyProperty IsTextPredictionEnabledProperty { get; } =
 			DependencyProperty.Register(
 				"IsTextPredictionEnabled",
 				typeof(bool),
@@ -606,7 +695,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(TextAlignmentProperty, value); }
 		}
 
-		public static DependencyProperty TextAlignmentProperty { get ; } =
+		public static DependencyProperty TextAlignmentProperty { get; } =
 			DependencyProperty.Register("TextAlignment", typeof(TextAlignment), typeof(TextBox), new FrameworkPropertyMetadata(TextAlignment.Left, (s, e) => ((TextBox)s)?.OnTextAlignmentChanged(e)));
 
 
@@ -640,18 +729,54 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_hasTextChangedThisFocusSession = false;
 			}
+
+			UpdateVisualState();
 		}
 		partial void OnFocusStateChangedPartial(FocusState focusState);
 
+		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
+		{
+			if (newValue == Visibility.Visible)
+			{
+				UpdateVisualState();
+			}
+			else
+			{
+				_isPointerOver = false;
+			}
+		}
+
+		protected override void OnPointerEntered(PointerRoutedEventArgs e)
+		{
+			base.OnPointerEntered(e);
+			_isPointerOver = true;
+			UpdateVisualState();
+		}
+
+		protected override void OnPointerExited(PointerRoutedEventArgs e)
+		{
+			base.OnPointerExited(e);
+			_isPointerOver = false;
+			UpdateVisualState();
+		}
+
+		protected override void OnPointerCaptureLost(PointerRoutedEventArgs e)
+		{
+			base.OnPointerCaptureLost(e);
+			_isPointerOver = false;
+			UpdateVisualState();
+		}
 
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
 		{
 			base.OnPointerPressed(args);
 
+			if (ShouldFocusOnPointerPressed(args))
+			{
+				Focus(FocusState.Pointer);
+			}
+
 			args.Handled = true;
-#if !__WASM__
-			Focus(FocusState.Pointer);
-#endif
 		}
 
 		/// <inheritdoc />
@@ -659,8 +784,22 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnPointerReleased(args);
 
+			if (!ShouldFocusOnPointerPressed(args))
+			{
+				Focus(FocusState.Pointer);
+			}
+
 			args.Handled = true;
 		}
+
+		protected override void OnTapped(TappedRoutedEventArgs e)
+		{
+			base.OnTapped(e);
+
+			OnTappedPartial();
+		}
+
+		partial void OnTappedPartial();
 
 		/// <inheritdoc />
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
@@ -685,6 +824,16 @@ namespace Windows.UI.Xaml.Controls
 					args.Handled = true;
 					break;
 			}
+
+#if __WASM__
+			if (args.Handled)
+			{
+				// Marking the routed event as Handled makes the browser call
+				// preventDefault() for key events. This is a problem as it
+				// breaks the browser caret navigation within the input.
+				((IPreventDefaultHandling)args).DoNotPreventDefault = true;
+			}
+#endif
 		}
 
 		protected virtual void UpdateButtonStates()
@@ -767,6 +916,52 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnVerticalContentAlignmentChangedPartial(VerticalAlignment oldVerticalContentAlignment, VerticalAlignment newVerticalContentAlignment);
 
+		public void Select(int start, int length)
+		{
+			if (start < 0)
+			{
+				throw new ArgumentException($"'{start}' cannot be negative.", nameof(start));
+			}
+
+			if (length < 0)
+			{
+				throw new ArgumentException($"'{length}' cannot be negative.", nameof(length));
+			}
+
+			// TODO: Test and adjust (if needed) this logic for surrogate pairs.
+
+			var textLength = Text.Length;
+
+			if (start >= textLength)
+			{
+				start = textLength;
+				length = 0;
+			}
+			else if (start + length > textLength)
+			{
+				length = textLength - start;
+			}
+
+			if (SelectionStart == start && SelectionLength == length)
+			{
+				return;
+			}
+
+			SelectPartial(start, length);
+			OnSelectionChanged();
+		}
+
+		public void SelectAll() => SelectAllPartial();
+
+
+		partial void SelectPartial(int start, int length);
+
+		partial void SelectAllPartial();
+
 		internal override bool CanHaveChildren() => true;
+
+		private bool ShouldFocusOnPointerPressed(PointerRoutedEventArgs args) =>
+			// For mouse and pen, the TextBox should focus on pointer press, for other input types on release
+			args.Pointer.PointerDeviceType != PointerDeviceType.Touch;
 	}
 }

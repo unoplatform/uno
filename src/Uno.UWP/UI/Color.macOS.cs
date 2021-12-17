@@ -1,6 +1,10 @@
 ﻿#if __MACOS__
 using System;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace Windows.UI
 {
 	public partial struct Color : IFormattable

@@ -71,7 +71,43 @@ Notes:
 
 1. `ImageBrush` on Android & iOS can only be used as a `Fill` / `Background` brush; it is not supported for `Stroke`  / `BorderBrush` properties and **the image needs to be a local asset**. They are not supported as text's `Froreground`.
 2. On Android & iOS, gradient brushes (`LinearGradientBrush` & `RadialGradientBrush`) are only used as a `Fill` / `Background` brush.
-3. On Android, iOS, and macOS, `AcrylicBrush` has an important limitation: it should only be used on elements which have no children. Eg, if you wanted to have an acrylic effect in the background of a `Grid` with child content, then you would add a `Border` with no inner child behind the other content in the `Grid` and set the acrylic background on the `Border`, rather than set it directly on the `Grid`.
+3. On Android, iOS, and macOS `AcrylicBrush` has some limitations. Please see the following section for details.
+
+## AcrylicBrush
+
+Uno Platform supports the `Backdrop` version of `AcrylicBrush` (blurring in-app content behind element) on all targets except GTK and WPF. In addition, on macOS we support the `HostBackdrop` acrylic (blurring content behind the app window).
+
+The brush currently has an important limitation on Android, iOS, and macOS: it can be used **only on elements which have no children**. Eg., if you wanted to have an acrylic effect in the background of a `Grid` with child content, then you would add a `Border` with no inner child behind the other content in the `Grid` and set the acrylic background on the `Border`, rather than set it directly on the `Grid`:
+
+```xml
+<Grid>
+    <Grid.RowDefinitions>
+        <RowDefinition />
+        <RowDefinition />
+    </Grid.RowDefinitions>
+    
+    <!-- This border represents the background, 
+        it covers the entire parent area -->
+    <Border Grid.RowSpan="2">
+        <Border.Background>
+            <AcrylicBrush 
+                AlwaysUseFallback="False" 
+                TintColor="Red" 
+                TintOpacity="0.8" />
+        </Border.Background>
+    </Border>
+    
+    <TextBox Text="Some input" />
+    <Button Grid.Row="1">My content</Button>
+</Grid>
+
+```
+
+Because many WinUI styles use `AcrylicBrush` on elements which violate this condition, we made the brush use solid fallback color by default on targets other than WASM. To enable the brush, you need to explicitly set the `AlwaysUseFallback` property to `false`:
+
+```xml
+<AcrylicBrush x:Key="MyAcrylicBrush" AlwaysUseFallback="False" ... />
+```
 
 ## Brushes Usages
 

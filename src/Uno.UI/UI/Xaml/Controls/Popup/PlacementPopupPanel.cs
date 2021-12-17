@@ -6,15 +6,27 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using Windows.UI.Core;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml.Controls
+
+#if HAS_UNO_WINUI
+using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+#else
+using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
+#endif
+
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	/// <summary>
 	/// This is a base popup panel to calculate the placement near an anchor control.
 	/// </summary>
 	/// <remarks>
-	/// This class exists mostly to reuse the same logic between a Flyout and a ToolTip
+	/// This class exists mostly to reuse the same logic between a Flyout and a ToolTip.
+	///
+	/// This class should eventually be removed, and Uno should match WinUI's approach, where Flyout sets Popup.HorizontalOffset and VerticalOffset
+	/// as well as Width and Height on FlyoutPresenter when it opens, and then allows the popup layouting to do its job.
+	///
+	/// See also remarks on <see cref="FlyoutBasePopupPanel"/>.
 	/// </remarks>
 	internal abstract partial class PlacementPopupPanel : PopupPanel
 	{
@@ -67,12 +79,16 @@ namespace Windows.UI.Xaml.Controls
 			Unloaded += (s, e) => Windows.UI.Xaml.Window.Current.SizeChanged -= Current_SizeChanged;
 		}
 
-		private void Current_SizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e)
+		private void Current_SizeChanged(object sender, WindowSizeChangedEventArgs e)
 			=> InvalidateMeasure();
 
 		protected abstract FlyoutPlacementMode PopupPlacement { get; }
 
 		protected abstract FrameworkElement AnchorControl { get; }
+
+		protected abstract Point? PositionInAnchorControl { get; }
+
+		internal virtual FlyoutBase Flyout => null;
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
@@ -86,6 +102,12 @@ namespace Windows.UI.Xaml.Controls
 				var desiredSize = elem.DesiredSize;
 				var maxSize = (elem as FrameworkElement).GetMaxSize(); // UWP takes FlyoutPresenter's MaxHeight and MaxWidth into consideration, but ignores Height and Width
 				var rect = CalculateFlyoutPlacement(desiredSize, maxSize);
+
+				if (Flyout?.IsTargetPositionSet ?? false)
+				{
+					rect = Flyout.UpdateTargetPosition(ApplicationView.GetForCurrentView().VisibleBounds, desiredSize, rect);
+				}
+
 				elem.Arrange(rect);
 			}
 
@@ -232,12 +254,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				this.Log().LogDebug($"Calculated placement, finalRect={finalRect}");
 			}
-
 			return finalRect;
 		}
 
 		// Return true if placement is along vertical axis, false otherwise.
-		protected static bool IsPlacementModeVertical(
+		private static bool IsPlacementModeVertical(
 			FlyoutBase.MajorPlacementMode placementMode)
 		{
 			// We are safe even if placementMode is Full. because the case for placementMode is Full has already been put in another if branch in function PerformPlacement.

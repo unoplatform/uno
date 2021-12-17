@@ -32,7 +32,7 @@ namespace UITests.Windows_UI_Core
 			DataContextChanged += WindowActivationTests_DataContextChanged;
 		}
 
-		public WindowActivationViewModel Model { get; private set; }
+		internal WindowActivationViewModel Model { get; private set; }
 
 		private void WindowActivationTests_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{
@@ -40,7 +40,7 @@ namespace UITests.Windows_UI_Core
 		}
 	}
 
-	public class WindowActivationViewModel : ViewModelBase
+	internal class WindowActivationViewModel : ViewModelBase
 	{
 		private string _changeTime;
 		private CoreWindowActivationState? _coreWindowActivationState;

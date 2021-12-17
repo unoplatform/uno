@@ -99,9 +99,27 @@
     <None Include="iOS\LaunchScreen.storyboard">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\Contents.json">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
+    <Content Include="Droid\Resources\mipmap-hdpi\icon.png" />
+    <Content Include="Droid\Resources\mipmap-ldpi\icon.png" />
+    <Content Include="Droid\Resources\mipmap-mdpi\icon.png" />
+    <Content Include="Droid\Resources\mipmap-tvdpi\icon.png" />
+    <Content Include="Droid\Resources\mipmap-xhdpi\icon.png" />
+    <Content Include="Droid\Resources\mipmap-xxhdpi\icon.png" />
+    <Content Include="Droid\Resources\mipmap-xxxhdpi\icon.png" />
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\Contents.json" />
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\Icon1024.png" />
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\Icon120.png" />
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\Icon152.png" />
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\Icon167.png" />
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\Icon180.png" />
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\Icon20.png" />
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\Icon29.png" />
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\Icon40.png" />
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\Icon58.png" />
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\Icon60.png" />
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\Icon76.png" />
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\Icon80.png" />
+    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\Icon87.png" />
     <Content Include="iOS\Media.xcassets\LaunchImages.launchimage\Contents.json">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -145,7 +163,6 @@
     <None Include="Droid\Android.vstemplate" />
     <None Include="Droid\Assets\AboutAssets.txt" />
     <None Include="Droid\Resources\AboutResources.txt" />
-    <None Include="Droid\Resources\drawable\Icon.png" />
     <None Include="iOS\Entitlements.plist" />
     <None Include="iOS\Info.plist">
       <SubType>Designer</SubType>
@@ -199,27 +216,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\ios-marketing-1024x1024%401x.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPad-76x76%402x.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPad-84x84%402x.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPhone-20x20%402x.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPhone-20x20%403x.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPhone-40x40%403x.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="iOS\Media.xcassets\AppIcons.appiconset\iPhone-60x60%402x.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="iOS\Resources\SplashScreen%402x.png" />
     <Content Include="iOS\Resources\SplashScreen%403x.png" />
     <None Include="macOS\macOS.vstemplate" />

@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 
@@ -46,6 +48,14 @@ namespace Windows.UI.Xaml
 #endif
 
 		/// <summary>
+		/// Ensures that materialization handles reentrancy properly.
+		/// This scenario can happen on android specifically because the Parent
+		/// property is not immediately set to null once a view is removed from
+		/// the tree.
+		/// </summary>
+		private bool _isMaterializing;
+
+		/// <summary>
 		/// A delegate used to raise materialization changes in <see cref="ElementStub.MaterializationChanged"/>
 		/// </summary>
 		/// <param name="sender">The instance being changed</param>
@@ -55,6 +65,23 @@ namespace Windows.UI.Xaml
 		/// An event raised when the materialized object of the <see cref="ElementStub"/> has changed.
 		/// </summary>
 		public event MaterializationChangedHandler MaterializationChanged;
+
+		/// <summary>
+		/// A delegate used to signal that the content is being materialized in <see cref="ElementStub.Materializing"/>
+		/// </summary>
+		/// <param name="sender">The instance being changed</param>
+		public delegate void MaterializingChangedHandler(ElementStub sender);
+
+		/// <summary>
+		/// An event raised when the materialized object of the <see cref="ElementStub"/> has changed.
+		/// </summary>
+		/// <remarks>
+		/// This event is only raised when the ElementStub is materializing its target (not
+		/// dematerializing), and is raised after the element stub has been removed from the
+		/// tree, but before the new target is added to the tree (so the x:Bind on loaded event
+		/// can be raised properly).
+		/// </remarks>
+		public event MaterializationChangedHandler Materializing;
 
 		public bool Load
 		{
@@ -142,29 +169,61 @@ namespace Windows.UI.Xaml
 		public void Materialize()
 			=> Materialize(isVisibilityChanged: false);
 
+		private void RaiseMaterializing()
+		{
+			if (_isMaterializing)
+			{
+				Materializing?.Invoke(this);
+			}
+		}
+
 		private void Materialize(bool isVisibilityChanged)
 		{
-			if (_content == null)
+			if(this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				_content = SwapViews(oldView: (FrameworkElement)this, newViewProvider: ContentBuilder);
-				var targetDependencyObject = _content as DependencyObject;
+				this.Log().Debug($"ElementStub.Materialize(isVibilityChanged: {isVisibilityChanged})");
+			}
 
-				if (isVisibilityChanged && targetDependencyObject != null)
+			if (_content == null && !_isMaterializing)
+			{
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
+				try
 				{
-					var visibilityProperty = GetVisibilityProperty(_content);
+#endif
+					_isMaterializing = true;
 
-					// Set the visibility at the same precedence it was currently set with on the stub.
-					var precedence = this.GetCurrentHighestValuePrecedence(visibilityProperty);
+					_content = SwapViews(oldView: (FrameworkElement)this, newViewProvider: ContentBuilder);
+					var targetDependencyObject = _content as DependencyObject;
 
-					targetDependencyObject.SetValue(visibilityProperty, Visibility.Visible, precedence);
+					if (isVisibilityChanged && targetDependencyObject != null)
+					{
+						var visibilityProperty = GetVisibilityProperty(_content);
+
+						// Set the visibility at the same precedence it was currently set with on the stub.
+						var precedence = this.GetCurrentHighestValuePrecedence(visibilityProperty);
+
+						targetDependencyObject.SetValue(visibilityProperty, Visibility.Visible, precedence);
+					}
+
+					MaterializationChanged?.Invoke(this);
+
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				}
-
-				MaterializationChanged?.Invoke(this);
+				finally
+#endif
+				{
+					_isMaterializing = false;
+				}
 			}
 		}
 
 		private void Dematerialize()
 		{
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"ElementStub.Dematerialize()");
+			}
+
 			if (_content != null)
 			{
 				var newView = SwapViews(oldView: (FrameworkElement)_content, newViewProvider: () => this as View);

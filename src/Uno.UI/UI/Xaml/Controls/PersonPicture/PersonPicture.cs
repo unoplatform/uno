@@ -55,12 +55,12 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// The initials from the DisplayName property.
 		/// </summary>
-		string m_displayNameInitials;
+		string m_displayNameInitials = string.Empty; // Uno docs: hstring in C++ is a struct and can't be null. So we explicitly initialize to string.Empty.
 
 		/// <summary>
 		/// The initials from the Contact property.
 		/// </summary>
-		string m_contactDisplayNameInitials;
+		string m_contactDisplayNameInitials = string.Empty; // Uno docs: hstring in C++ is a struct and can't be null. So we explicitly initialize to string.Empty.
 
 		/// <summary>
 		/// The ImageSource from the Contact property.

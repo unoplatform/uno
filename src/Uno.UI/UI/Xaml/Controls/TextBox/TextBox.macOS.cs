@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Uno.UI;
-using Windows.UI.Xaml.Data;
-using AppKit;
+﻿using AppKit;
 using CoreGraphics;
 using Uno.UI.Extensions;
 using Uno.Extensions;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Input;
-using Uno.Client;
-using Foundation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -61,7 +54,15 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextAlignmentChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
+			UpdateTextBoxView();
 		}
+
+		partial void SelectPartial(int start, int length)
+		{
+			_textBoxView?.Select(start, length);
+		}
+
+		partial void SelectAllPartial() => Select(0, Text.Length);
 
 		private void UpdateTextBoxView()
 		{
@@ -74,8 +75,8 @@ namespace Windows.UI.Xaml.Controls
 
 				if (_isPassword)
 				{
-					_textBoxView = new SecureTextBoxView(this) { UsesSingleLineMode = true };
-					_revealView = new TextBoxView(this) { UsesSingleLineMode = true };
+					_textBoxView = new SecureTextBoxView(this) { UsesSingleLineMode = true, Alignment = TextAlignment.ToNativeTextAlignment() };
+					_revealView = new TextBoxView(this) { UsesSingleLineMode = true, Alignment = TextAlignment.ToNativeTextAlignment() };
 					_isSecured = true;
 				}
 				else
@@ -86,6 +87,7 @@ namespace Windows.UI.Xaml.Controls
 					{
 						UsesSingleLineMode = usesSingleLineMode,
 						LineBreakMode = textWrapping == TextWrapping.WrapWholeWords ? NSLineBreakMode.ByWordWrapping : NSLineBreakMode.CharWrapping,
+						Alignment = TextAlignment.ToNativeTextAlignment()
 					};
 				}
 

@@ -20,11 +20,11 @@
 
 * The *redirect URI* **MUST** use a custom scheme URI. This one will launch a special *Activity* declared in the application.
 
-* You **MUST** declare an activity inheriting from `WebAuthenticationBrokerActivityBase` in the Android head:
+* You **MUST** declare an activity inheriting from `WebAuthenticationBrokerActivityBase` in the Android head. Note the `[Activity]` attribute needs to include `Exported = true` if you are targeting Android 12.
 
   ``` csharp
   // Android: add this class near the MainActivity, in the head project
-  [Activity(NoHistory = true, LaunchMode = LaunchMode.SingleTop)]
+  [Activity(NoHistory = true, LaunchMode = LaunchMode.SingleTop, Exported = true)]
   [IntentFilter(
   	new[] {Android.Content.Intent.ActionView},
   	Categories = new[] {Android.Content.Intent.CategoryDefault, Android.Content.Intent.CategoryBrowsable},

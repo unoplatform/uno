@@ -13,9 +13,10 @@ using Android.Runtime;
 using Android.Views;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml;
 using Android.OS;
+using Windows.UI.ViewManagement;
 
 namespace Uno.UI
 {
@@ -56,7 +57,7 @@ namespace Uno.UI
 		public static event EventHandler<CurrentActivityChangedEventArgs> CurrentChanged;
 
 		private static int _instanceCount = 0;
-		private static IImmutableDictionary<int, BaseActivity> _instances = ImmutableDictionary<int, BaseActivity>.Empty;
+		private static Dictionary<int, BaseActivity> _instances = new Dictionary<int, BaseActivity>();
 		private static BaseActivity _current;
 
 		/// <summary>
@@ -67,7 +68,8 @@ namespace Uno.UI
 		/// <summary>
 		/// Gets a list of all activities which are currently alive.
 		/// </summary>
-		public static IImmutableDictionary<int, BaseActivity> Instances => _instances;
+		public static IImmutableDictionary<int, BaseActivity> Instances
+			=> ImmutableDictionary<int, BaseActivity>.Empty.AddRange(_instances) ;
 
 		/// <summary>
 		/// Gets the currently running activity, if any.
@@ -129,7 +131,7 @@ namespace Uno.UI
 		{
 			InitializeBinder();
 			ContextHelper.Current = this;
-			NotifyCreatingInstance();
+			Initialize();
 
 #if !IS_UNO
 			Performance.Increment(CreatedTotalBindableActivityCounter);
@@ -141,12 +143,21 @@ namespace Uno.UI
 		{
 			InitializeBinder();
 			ContextHelper.Current = this;
-			NotifyCreatingInstance();
+			Initialize();
 
 #if !IS_UNO
 			Performance.Increment(CreatedTotalBindableActivityCounter);
 			Performance.Increment(ActiveBindableActivityCounter);
 #endif
+		}
+
+		private void Initialize()
+		{
+			// Eagerly create the ApplicationView instance for IBaseActivityEvents
+			// to be useable (specifically for the Create event)
+			ApplicationView.GetForCurrentView();
+
+			NotifyCreatingInstance();
 		}
 
 		partial void InnerAttachedToWindow() => BinderAttachedToWindow();
@@ -175,7 +186,7 @@ namespace Uno.UI
 
 		#region Activity LifeCycle cf. https://developer.android.com/reference/android/app/Activity.html
 
-		partial void InnerCreate(Android.OS.Bundle bundle) => SetAsCurrent();
+		partial void InnerCreate(Android.OS.Bundle savedInstanceState) => SetAsCurrent();
 
 		partial void InnerCreateWithPersistedState(Bundle savedInstanceState, PersistableBundle persistentState) => SetAsCurrent();
 
@@ -246,37 +257,28 @@ namespace Uno.UI
 
 		private void NotifyCreatingInstance()
 		{
-			IImmutableDictionary<int, BaseActivity> capture, updated;
-			do
+			lock (_instances)
 			{
-				capture = _instances;
-				updated = capture.Add(Id, this);
-			} while (Interlocked.CompareExchange(ref _instances, updated, capture) != capture);
+				_instances.Add(Id, this);
+			}
 
-			InstancesChanged?.Invoke(null, ActivitiesCollectionChangedEventArgs.Added(Id, updated));
+			InstancesChanged?.Invoke(null, ActivitiesCollectionChangedEventArgs.Added(Id, Instances));
 		}
 
 		private void NotifyDestroyingInstance(bool isFinalizer)
 		{
 			try
 			{
-				IImmutableDictionary<int, BaseActivity> capture, updated;
-				do
+				lock (_instances)
 				{
-					capture = _instances;
-					if (!capture.ContainsKey(Id))
-					{
-						return;
-					}
-
-					updated = capture.Remove(Id);
-				} while (Interlocked.CompareExchange(ref _instances, updated, capture) != capture);
+					_instances.Remove(Id);
+				}
 
 				DispatchedHandler notify = () =>
 				{
 					try
 					{
-						InstancesChanged?.Invoke(null, ActivitiesCollectionChangedEventArgs.Removed(Id, updated));
+						InstancesChanged?.Invoke(null, ActivitiesCollectionChangedEventArgs.Removed(Id, Instances));
 					}
 					catch (Exception e)
 					{
@@ -306,7 +308,7 @@ namespace Uno.UI
 			{
 				base.Dispose(disposing);
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("Disposing {0}", disposing);
 				}

@@ -1,7 +1,6 @@
 ﻿using CommonServiceLocator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Uno.Logging;
 using Uno.Extensions;
 using Uno.Presentation.Resources;
 using Uno.UI.DataBinding;

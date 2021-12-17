@@ -2,21 +2,13 @@
 #nullable enable
 
 using System;
+using Windows.Devices.Input;
 using Uno.Foundation;
 using Uno.Foundation.Extensibility;
 using Windows.Foundation;
 
 namespace Windows.UI.Core
 {
-	public interface ICoreWindowExtension
-	{
-		public CoreCursor PointerCursor { get; set; }
-
-		void ReleasePointerCapture();
-
-		void SetPointerCapture();
-	}
-
 	public partial class CoreWindow : ICoreWindowEvents
 	{
 		private ICoreWindowExtension? _coreWindowExtension;
@@ -52,10 +44,14 @@ namespace Windows.UI.Core
 		}
 
 		public void SetPointerCapture()
-			=> _coreWindowExtension?.SetPointerCapture();
+			=> _coreWindowExtension?.SetPointerCapture(LastPointerEvent?.Pointer ?? default);
+		internal void SetPointerCapture(PointerIdentifier pointer)
+			=> _coreWindowExtension?.SetPointerCapture(pointer);
 
 		public void ReleasePointerCapture()
-			=> _coreWindowExtension?.ReleasePointerCapture();
+			=> _coreWindowExtension?.ReleasePointerCapture(LastPointerEvent?.Pointer ?? default);
+		internal void ReleasePointerCapture(PointerIdentifier pointer)
+			=> _coreWindowExtension?.ReleasePointerCapture(pointer);
 
 		void ICoreWindowEvents.RaisePointerEntered(PointerEventArgs args)
 			=> PointerEntered?.Invoke(this, args);

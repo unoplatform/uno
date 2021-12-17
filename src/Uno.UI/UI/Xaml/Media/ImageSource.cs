@@ -1,5 +1,5 @@
 ﻿using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -65,18 +65,15 @@ namespace Windows.UI.Xaml.Media
 
 		protected ImageSource(string url) : this()
 		{
-			if (url.StartsWith("/"))
-			{
-				url = MsAppXScheme + "://" + url;
-			}
+			var uri = TryCreateUriFromString(url);
 
-			if (url.HasValueTrimmed() && Uri.TryCreate(url.Trim(), UriKind.RelativeOrAbsolute, out var uri))
+			if (uri != null)
 			{
 				InitFromUri(uri);
 			}
 			else
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("The uri [{0}] is not valid, skipping.", url);
 				}
@@ -86,6 +83,26 @@ namespace Windows.UI.Xaml.Media
 		protected ImageSource(Uri uri) : this()
 		{
 			InitFromUri(uri);
+		}
+
+		internal static Uri TryCreateUriFromString(string url)
+		{
+			if (url.StartsWith("/"))
+			{
+				url = MsAppXScheme + "://" + url;
+			}
+
+			if (url.HasValueTrimmed() && Uri.TryCreate(url.Trim(), UriKind.RelativeOrAbsolute, out var uri))
+			{
+				if (!uri.IsAbsoluteUri || uri.Scheme.Length == 0)
+				{
+					uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart("/"));
+				}
+
+				return uri;
+			}
+
+			return null;
 		}
 
 		internal void InitFromUri(Uri uri)
@@ -145,7 +162,7 @@ namespace Windows.UI.Xaml.Media
 		/// <returns>n Uri containing a local path for the downloaded image.</returns>
 		private async Task<Uri> Download(CancellationToken ct, Uri uri)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat("Initiated download from {0}", uri);
 			}

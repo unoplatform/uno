@@ -57,7 +57,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FrameworkElementTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Browser, Platform.Android)] // Not supported on iOS & Skia yet.
+		[ActivePlatforms(Platform.Browser, Platform.Android, Platform.iOS)] // Not supported on Skia yet.
 		public void FrameworkElement_BackgroundSizing()
 		{
 			Run("UITests.Windows_UI_Xaml.FrameworkElementTests.DynamicBackgroundSizing");

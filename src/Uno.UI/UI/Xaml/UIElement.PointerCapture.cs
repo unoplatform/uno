@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Windows.Devices.Input;
 using Windows.UI.Xaml.Input;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+using System.Runtime.CompilerServices;
 
 namespace Windows.UI.Xaml
 {
@@ -22,7 +23,7 @@ namespace Windows.UI.Xaml
 		 */
 
 		[Flags]
-		private protected enum PointerCaptureKind : byte
+		internal enum PointerCaptureKind : byte
 		{
 			None = 0,
 
@@ -237,7 +238,7 @@ namespace Windows.UI.Xaml
 					// ** This is an IMPORTANT safety catch to prevent the application to become unresponsive **
 					Clear();
 
-					return false;
+					return true;
 				}
 				else if (_targets.TryGetValue(element, out var target))
 				{
@@ -296,14 +297,7 @@ namespace Windows.UI.Xaml
 					{
 						_nativeCaptureElement = _targets.Single().Value.NativeCaptureElement;
 
-						try
-						{
-							_nativeCaptureElement.CapturePointerNative(Pointer);
-						}
-						catch (Exception e)
-						{
-							this.Log().Error($"Failed to capture natively pointer {Pointer}.", e);
-						}
+						CapturePointerNative();
 					}
 				}
 				else
@@ -312,14 +306,7 @@ namespace Windows.UI.Xaml
 
 					if (_nativeCaptureElement != null)
 					{
-						try
-						{
-							_nativeCaptureElement.ReleasePointerNative(Pointer);
-						}
-						catch (Exception e)
-						{
-							this.Log().Error($"Failed to release native capture of {Pointer}", e);
-						}
+						ReleasePointerNative();
 
 						_nativeCaptureElement = null;
 					}
@@ -329,6 +316,42 @@ namespace Windows.UI.Xaml
 						// This is what makes this capture inactive
 						_actives.Remove(Pointer.UniqueId);
 					}
+				}
+			}
+
+			/// <remarks>
+			/// This method contains or is called by a try/catch containing method and can
+			/// be significantly slower than other methods as a result on WebAssembly.
+			/// See https://github.com/dotnet/runtime/issues/56309
+			/// </remarks>
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			private void ReleasePointerNative()
+			{
+				try
+				{
+					_nativeCaptureElement.ReleasePointerNative(Pointer);
+				}
+				catch (Exception e)
+				{
+					this.Log().Error($"Failed to release native capture of {Pointer}", e);
+				}
+			}
+
+			/// <remarks>
+			/// This method contains or is called by a try/catch containing method and
+			/// can be significantly slower than other methods as a result on WebAssembly.
+			/// See https://github.com/dotnet/runtime/issues/56309
+			/// </remarks>
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			private void CapturePointerNative()
+			{
+				try
+				{
+					_nativeCaptureElement.CapturePointerNative(Pointer);
+				}
+				catch (Exception e)
+				{
+					this.Log().Error($"Failed to capture natively pointer {Pointer}.", e);
 				}
 			}
 		}

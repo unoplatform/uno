@@ -14,8 +14,8 @@ using Java.IO;
 using Android.Graphics;
 using Windows.UI.Xaml.Media;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
-using Uno.Logging;
+
+using Uno.Foundation.Logging;
 using Uno.UI.Controls;
 using Uno.UI;
 using Android.Views;

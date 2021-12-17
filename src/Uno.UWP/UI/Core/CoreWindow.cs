@@ -1,11 +1,14 @@
 #nullable enable
 
 using System;
-using Microsoft.Extensions.Logging;
+using Windows.Devices.Input;
+
 using Uno.Extensions;
 using Uno.UI.Core;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Input;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Core
 {
@@ -50,6 +53,8 @@ namespace Windows.UI.Core
 		/// Gets the event dispatcher for the window.
 		/// </summary>
 		public CoreDispatcher Dispatcher => CoreDispatcher.Main;
+
+		public DispatcherQueue DispatcherQueue { get; } = DispatcherQueue.GetForCurrentThread();
 
 		/// <summary>
 		/// Gets the client coordinates of the pointer.
@@ -120,6 +125,8 @@ namespace Windows.UI.Core
 
 		internal interface IPointerEventArgs
 		{
+			PointerIdentifier Pointer { get; }
+
 			PointerPoint GetLocation(object? relativeTo);
 		}
 

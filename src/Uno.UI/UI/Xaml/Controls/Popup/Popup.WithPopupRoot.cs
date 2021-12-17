@@ -1,13 +1,13 @@
 ﻿#if __ANDROID__ || __WASM__ || __SKIA__
 using Uno.Extensions;
 using Uno.Disposables;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Controls.Primitives;
 using System;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class Popup
 	{
@@ -31,10 +31,8 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void InitializeNativePartial();
 
-		protected override void OnChildChanged(UIElement oldChild, UIElement newChild)
+		partial void OnChildChangedPartialNative(UIElement oldChild, UIElement newChild)
 		{
-			base.OnChildChanged(oldChild, newChild);
-
 			PopupPanel.Children.Remove(oldChild);
 
 			if (newChild != null)
@@ -43,10 +41,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnIsLightDismissEnabledChanged(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
+		partial void OnIsLightDismissEnabledChangedPartialNative(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
 		{
-			base.OnIsLightDismissEnabledChanged(oldIsLightDismissEnabled, newIsLightDismissEnabled);
-
 #if __ANDROID__
 			if (_useNativePopup)
 			{
@@ -64,11 +60,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsLightDismissEnabledChangedNative(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled);
 
-		protected override void OnIsOpenChanged(bool oldIsOpen, bool newIsOpen)
+		partial void OnIsOpenChangedPartialNative(bool oldIsOpen, bool newIsOpen) 
 		{
-			base.OnIsOpenChanged(oldIsOpen, newIsOpen);
-
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Popup.IsOpenChanged({oldIsOpen}, {newIsOpen})");
 			}

@@ -155,6 +155,7 @@ namespace Windows.UI.Xaml
 
 			_state = State.None;
 			_acceptedOperation = DataPackageOperation.None;
+			_viewOverride.Clear();
 			await _target.LeaveAsync(Info).AsTask(ct);
 
 			// When the pointer goes out of the window, we hide our internal control and,

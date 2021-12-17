@@ -25,51 +25,60 @@
 				</AppBarButton.Icon>
 			</AppBarButton>
 
-			<android:CommandBar Content="Title"
-								toolkit:CommandBarExtensions.Subtitle="Subtitle" />
+			<android:Grid>
+				<CommandBar Content="Title"
+							  toolkit:CommandBarExtensions.Subtitle="Subtitle" />
+			</android:Grid>
 
-			<xamarin:CommandBar Content="Title">
-				<toolkit:CommandBarExtensions.NavigationCommand>
-					<AppBarButton Command="{Binding Command}"
-								  Label="Label">
+			<xamarin:Grid>
+				<CommandBar Content="Title">
+					<toolkit:CommandBarExtensions.NavigationCommand>
+						<AppBarButton Command="{Binding Command}"
+									  Label="Label">
+							<AppBarButton.Icon>
+								<BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
+							</AppBarButton.Icon>
+						</AppBarButton>
+					</toolkit:CommandBarExtensions.NavigationCommand>
+				</CommandBar>
+			</xamarin:Grid>
+
+			<xamarin:Grid>
+				<CommandBar Content="Title"
+							  Background="Tomato"
+							  Foreground="White">
+					<toolkit:CommandBarExtensions.NavigationCommand>
+						<AppBarButton Command="{Binding Command}"
+									  Label="Label"
+									  Foreground="White">
+							<AppBarButton.Icon>
+								<BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
+							</AppBarButton.Icon>
+						</AppBarButton>
+					</toolkit:CommandBarExtensions.NavigationCommand>
+				</CommandBar>
+			</xamarin:Grid>
+
+			<ios:Grid>
+				<CommandBar Content="Title"
+							  toolkit:CommandBarExtensions.BackButtonForeground="Red">
+					<toolkit:CommandBarExtensions.NavigationCommand>
+						<AppBarButton Command="{Binding Command}"
+									  Label="Label">
+							<AppBarButton.Icon>
+								<BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
+							</AppBarButton.Icon>
+						</AppBarButton>
+					</toolkit:CommandBarExtensions.NavigationCommand>
+					<AppBarButton Content="Button" />
+					<AppBarButton>
 						<AppBarButton.Icon>
-							<BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
+							<BitmapIcon UriSource="ms-appx:///Assets/Icons/search.png" />
 						</AppBarButton.Icon>
 					</AppBarButton>
-				</toolkit:CommandBarExtensions.NavigationCommand>
-			</xamarin:CommandBar>
+				</CommandBar>
+			</ios:Grid>
 
-			<xamarin:CommandBar Content="Title"
-								Background="Tomato"
-								Foreground="White">
-				<toolkit:CommandBarExtensions.NavigationCommand>
-					<AppBarButton Command="{Binding Command}"
-								  Label="Label"
-								  Foreground="White">
-						<AppBarButton.Icon>
-							<BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
-						</AppBarButton.Icon>
-					</AppBarButton>
-				</toolkit:CommandBarExtensions.NavigationCommand>
-			</xamarin:CommandBar>
-
-			<ios:CommandBar Content="Title"
-							toolkit:CommandBarExtensions.BackButtonForeground="Red">
-				<toolkit:CommandBarExtensions.NavigationCommand>
-					<AppBarButton Command="{Binding Command}"
-								  Label="Label">
-						<AppBarButton.Icon>
-							<BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
-						</AppBarButton.Icon>
-					</AppBarButton>
-				</toolkit:CommandBarExtensions.NavigationCommand>
-				<AppBarButton Content="Button" />
-				<AppBarButton>
-					<AppBarButton.Icon>
-						<BitmapIcon UriSource="ms-appx:///Assets/Icons/search.png" />
-					</AppBarButton.Icon>
-				</AppBarButton>
-			</ios:CommandBar>
 
 		</StackPanel>
 	</ScrollViewer>

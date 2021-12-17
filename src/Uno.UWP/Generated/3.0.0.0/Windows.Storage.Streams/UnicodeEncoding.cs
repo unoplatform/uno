@@ -3,9 +3,6 @@
 namespace Windows.Storage.Streams
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
 	public   enum UnicodeEncoding 
 	{
 		// Skipping already declared field Windows.Storage.Streams.UnicodeEncoding.Utf8

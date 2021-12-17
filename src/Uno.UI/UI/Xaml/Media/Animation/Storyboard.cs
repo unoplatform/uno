@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Markup;
 using System.Threading;
 using Windows.UI.Core;
 using Uno.Disposables;
+using System.Diagnostics;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
@@ -29,7 +30,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			public const int StoryBoard_Resume = 4;
 		}
 
-		private DateTimeOffset _lastBeginTime;
+		private readonly Stopwatch _activeDuration = new Stopwatch();
 		private int _replayCount = 1;
 		private int _runningChildren = 0;
 		private bool _hasFillingChildren = false;
@@ -110,7 +111,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			State = TimelineState.Active;
 			_hasFillingChildren = false;
 			_replayCount = 1;
-			_lastBeginTime = DateTimeOffset.Now;
+			_activeDuration.Restart();
 
 			Play();
 		}
@@ -119,8 +120,10 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (Children != null && Children.Count > 0)
 			{
-				foreach (ITimeline child in Children)
+				for (int i = 0; i < Children.Count; i++)
 				{
+					ITimeline child = Children[i];
+
 					DisposeChildRegistrations(child);
 
 					_runningChildren++;
@@ -166,8 +169,10 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			if (Children != null)
 			{
-				foreach (ITimeline child in Children)
+				for (int i = 0; i < Children.Count; i++)
 				{
+					ITimeline child = Children[i];
+
 					child.Stop();
 					DisposeChildRegistrations(child);
 				}
@@ -191,8 +196,10 @@ namespace Windows.UI.Xaml.Media.Animation
 			{
 				State = TimelineState.Active;
 
-				foreach (ITimeline child in Children)
+				for (int i = 0; i < Children.Count; i++)
 				{
+					ITimeline child = Children[i];
+
 					child.Resume();
 				}
 			}
@@ -214,8 +221,10 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			if (Children != null)
 			{
-				foreach (ITimeline child in Children)
+				for (int i = 0; i < Children.Count; i++)
 				{
+					ITimeline child = Children[i];
+
 					child.Pause();
 				}
 			}
@@ -225,8 +234,10 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (Children != null)
 			{
-				foreach (ITimeline child in Children)
+				for (int i = 0; i < Children.Count; i++)
 				{
+					ITimeline child = Children[i];
+
 					child.Seek(offset);
 				}
 			}
@@ -236,8 +247,10 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (Children != null)
 			{
-				foreach (ITimeline child in Children)
+				for (int i = 0; i < Children.Count; i++)
 				{
+					ITimeline child = Children[i];
+
 					child.SeekAlignedToLastTick(offset);
 				}
 			}
@@ -246,8 +259,10 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (Children != null)
 			{
-				foreach (ITimeline child in Children)
+				for (int i = 0; i < Children.Count; i++)
 				{
+					ITimeline child = Children[i];
+
 					child.SkipToFill();
 				}
 			}
@@ -260,8 +275,10 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			if (Children != null)
 			{
-				foreach (ITimeline child in Children)
+				for (int i = 0; i < Children.Count; i++)
 				{
+					ITimeline child = Children[i];
+
 					child.Deactivate();
 					DisposeChildRegistrations(child);
 				}
@@ -274,8 +291,10 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			var affectedProperties = storyboard.Children.TargetedProperties;
 
-			foreach (var child in Children)
+			for (int i = 0; i < Children.Count; i++)
 			{
+				var child = Children[i];
+
 				var id = child.GetTimelineTargetFullName();
 
 				if (affectedProperties.Contains(id))
@@ -340,7 +359,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			if (_runningChildren == 0)
 			{
-				if (NeedsRepeat(_lastBeginTime, _replayCount))
+				if (NeedsRepeat(_activeDuration, _replayCount))
 				{
 					Replay(); // replay the animation
 					return;
@@ -360,9 +379,9 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			if (Children != null)
 			{
-				foreach (var child in Children)
+				for (int i = 0; i < Children.Count; i++)
 				{
-					child.Dispose();
+					Children[i].Dispose();
 				}
 			}
 		}

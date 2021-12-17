@@ -36,6 +36,8 @@ Register your protocol on the `MainActivity` with the `[IntentFilter]` attribute
     DataScheme = "my-scheme")]
 ```
 
+If your target framework is Android 12, you must also add `Exported = true` to the `[Activity]` attribute.
+
 `CategoryDefault` is required (must be included for all implicit intents) and `CategoryBrowsable` is optional (allows opening the custom URI from the browser).
 
 ### WASM

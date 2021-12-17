@@ -219,7 +219,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Menu Flyout actions
-		private void ShowMenuFlyout()
+		internal void ShowMenuFlyout()
 		{
 			if (m_button != null)
 			{
@@ -252,7 +252,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void CloseMenuFlyout()
+		internal void CloseMenuFlyout()
 		{
 			m_flyout.Hide();
 		}

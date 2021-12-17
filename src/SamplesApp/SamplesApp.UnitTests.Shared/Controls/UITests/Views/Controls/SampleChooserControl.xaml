@@ -49,7 +49,7 @@
 				<Setter Property="BorderThickness"
 						Value="0,0,0,1" />
 				<Setter Property="Background"
-						Value="{StaticResource Color08Brush}" />
+						Value="{StaticResource ApplicationPageBackgroundThemeBrush}" />
 				<Setter Property="Height"
 								Value="50" />
 			</Style>
@@ -252,7 +252,7 @@
 			</VisualStateGroup>
 		</VisualStateManager.VisualStateGroups>
 		<SplitView.Pane>
-			<Grid Background="{StaticResource Color08Brush}"
+			<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
 				  BorderBrush="LightGray"
 				  BorderThickness="0,0,1,0"
 				  toolkit:VisibleBoundsPadding.PaddingMask="All">
@@ -339,7 +339,7 @@
 								ContentTemplate="{StaticResource SearchList}" />
 
 				<!--NAVIGATION BUTTONS-->
-				<Border Background="{StaticResource Color08Brush}"
+				<Border Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
 						
 						BorderThickness="0,1,0,0"
 						BorderBrush="{StaticResource Color05Brush}"
@@ -419,7 +419,7 @@
 			</Grid>
 		</SplitView.Pane>
 		<SplitView.Content>
-			<Grid Background="{StaticResource Color08Brush}"
+			<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
 				  toolkit:VisibleBoundsPadding.PaddingMask="All">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
@@ -431,6 +431,7 @@
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="50" />
 						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
@@ -530,6 +531,11 @@
 							  Grid.Column="8"
 							  IsChecked="{Binding UseFluentStyles, Mode=TwoWay}"
 							  Style="{x:Null}"/>
+					<!-- Dark theme check box -->
+					<CheckBox Grid.Column="9"
+							  IsChecked="{Binding UseDarkTheme, Mode=TwoWay}">
+						<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEC46;" />
+					</CheckBox>
 				</Grid>
 
 				<!-- Sample Content -->

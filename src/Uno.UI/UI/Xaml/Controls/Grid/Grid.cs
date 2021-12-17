@@ -192,9 +192,12 @@ namespace Windows.UI.Xaml.Controls
 			bool treatStarAsAuto)
 		{
 			//for (auto & cdo : definitions)
-			foreach(DefinitionBase def in definitions.GetItems())
+			var itemsEnumerator = definitions.GetItems().GetEnumerator();
+
+			while(itemsEnumerator.MoveNext())
 			{
-				//var def = (DefinitionBase)(cdo);
+				var def = itemsEnumerator.Current;
+
 				bool useLayoutRounding = GetUseLayoutRounding();
 				var userSize = double.PositiveInfinity;
 				var userMinSize = useLayoutRounding
@@ -1024,8 +1027,6 @@ namespace Windows.UI.Xaml.Controls
 		//------------------------------------------------------------------------
 		protected override XSIZEF MeasureOverride(XSIZEF availableSize)
 		{
-			XSIZEF desiredSize;
-
 			// Locking the row and columns definitions to prevent changes by user code
 			// during the measure pass.
 			LockDefinitions();
@@ -1033,209 +1034,254 @@ namespace Windows.UI.Xaml.Controls
 			//{
 			//	UnlockDefinitions();
 			//});
+
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			try
 			{
-				XSIZEF combinedThickness = Border.HelperGetCombinedThickness(this);
-				XSIZEF innerAvailableSize =
-					new XSIZEF(
-						availableSize.Width - combinedThickness.Width,
-						availableSize.Height - combinedThickness.Height);
+#endif
+				var result = InnerMeasureOverride(availableSize);
 
-				desiredSize = default;
+#if HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
+				UnlockDefinitions();
+#endif
 
-				if (IsWithoutRowAndColumnDefinitions())
+				return result;
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
+			}
+			finally
+			{
+				UnlockDefinitions();
+			}
+#endif
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private XSIZEF InnerMeasureOverride(XSIZEF availableSize)
+		{
+			XSIZEF desiredSize;
+
+			XSIZEF combinedThickness = Border.HelperGetCombinedThickness(this);
+			XSIZEF innerAvailableSize =
+				new XSIZEF(
+					availableSize.Width - combinedThickness.Width,
+					availableSize.Height - combinedThickness.Height);
+
+			desiredSize = default;
+
+			if (IsWithoutRowAndColumnDefinitions())
+			{
+				// If this Grid has no user-defined rows or columns, it is possible
+				// to shortcut this MeasureOverride.
+				var children = (GetChildren());
+				if (children is { })
 				{
-					// If this Grid has no user-defined rows or columns, it is possible
-					// to shortcut this MeasureOverride.
-					var children = (GetChildren());
-					if (children is { })
+					// This block is a manual enumeration to avoid the foreach pattern
+					// See https://github.com/dotnet/runtime/issues/56309 for details
+					var childrenEnumerator = children.GetEnumerator();
+					while (childrenEnumerator.MoveNext())
 					{
-						//for (auto & cdo : (children))
-						foreach(var currentChild in children)
-						{
-							//var currentChild = (UIElement)(cdo);
-							ASSERT(currentChild is { });
+						var currentChild = childrenEnumerator.Current;
+						ASSERT(currentChild is { });
 
-							//currentChild.Measure(innerAvailableSize);
-							this.MeasureElement(currentChild, innerAvailableSize);
-							//currentChild.EnsureLayoutStorage();
+						//currentChild.Measure(innerAvailableSize);
+						this.MeasureElement(currentChild, innerAvailableSize);
+						//currentChild.EnsureLayoutStorage();
 
-							//XSIZEF childDesiredSize = currentChild.GetLayoutStorage().m_desiredSize;
-							XSIZEF childDesiredSize = currentChild.DesiredSize;
-							desiredSize.Width = Math.Max(desiredSize.Width, childDesiredSize.Width);
-							desiredSize.Height = Math.Max(desiredSize.Height, childDesiredSize.Height);
-						}
+						//XSIZEF childDesiredSize = currentChild.GetLayoutStorage().m_desiredSize;
+						XSIZEF childDesiredSize = currentChild.DesiredSize;
+						desiredSize.Width = Math.Max(desiredSize.Width, childDesiredSize.Width);
+						desiredSize.Height = Math.Max(desiredSize.Height, childDesiredSize.Height);
 					}
+				}
+			}
+			else
+			{
+				if (HasGridFlags(GridFlags.DefinitionsChanged))
+				{
+					ClearGridFlags(GridFlags.DefinitionsChanged);
+					InitializeDefinitionStructure();
+				}
+
+				ValidateDefinitions(m_pRows, innerAvailableSize.Height == XFLOAT.PositiveInfinity /* treatStarAsAuto */);
+				ValidateDefinitions(m_pColumns, innerAvailableSize.Width == XFLOAT.PositiveInfinity /* treatStarAsAuto */);
+
+				XFLOAT rowSpacing = RowSpacing;
+				XFLOAT columnSpacing = ColumnSpacing;
+				XFLOAT combinedRowSpacing = rowSpacing * (m_pRows.Count - 1);
+				XFLOAT combinedColumnSpacing = columnSpacing * (m_pColumns.Count - 1);
+				innerAvailableSize.Width -= combinedColumnSpacing;
+				innerAvailableSize.Height -= combinedRowSpacing;
+
+				var children = GetUnsortedChildren();
+				int childrenCount = children.Count;
+
+				CellCacheStackVector cellCacheVector = new CellCacheStackVector(childrenCount);
+				CellGroups cellGroups = ValidateCells(children, ref cellCacheVector);
+
+				// The group number of a cell indicates the order in which it will be
+				// measured; a certain order is necessary to dynamically resolve star
+				// definitions since there are cases when the topology of a Grid causes
+				// cyclical dependencies. For example:
+				//
+				//
+				//                         column width="Auto"      column width="*"
+				//                      +----------------------+----------------------+
+				//                      |                      |                      |
+				//                      |                      |                      |
+				//                      |                      |                      |
+				//                      |                      |                      |
+				//  row height="Auto"   |                      |      cell 1 2        |
+				//                      |                      |                      |
+				//                      |                      |                      |
+				//                      |                      |                      |
+				//                      |                      |                      |
+				//                      +----------------------+----------------------+
+				//                      |                      |                      |
+				//                      |                      |                      |
+				//                      |                      |                      |
+				//                      |                      |                      |
+				//  row height="*"      |       cell 2 1       |                      |
+				//                      |                      |                      |
+				//                      |                      |                      |
+				//                      |                      |                      |
+				//                      |                      |                      |
+				//                      +----------------------+----------------------+
+				//
+				// In order to accurately calculate the raining width for "cell 1 2"
+				// (which corresponds to the remaining space of the grid's available width
+				// and calculated value of the var column), "cell 2 1" needs to be calculated
+				// first, as it contributes to the calculated value of the var column.
+				// At the same time in order to accurately calculate the raining
+				// height for "cell 2 1", "cell 1 2" needs to be calcualted first,
+				// as it contributes to the calculated height of the var row, which is used
+				// in the computation of the resolved height of the star row.
+				//
+				// To break this cyclical dependency we are making the (arbitrary)
+				// decision to treat cells like "cell 2 1" as if they were in auto
+				// rows. We will recalculate them later once the heights of star rows
+				// are resolved. In other words, the code below implements the
+				// following logic:
+				//
+				//                       +---------+
+				//                       |  enter  |
+				//                       +---------+
+				//                            |
+				//                            V
+				//                    +----------------+
+				//                    | Measure Group1 |
+				//                    +----------------+
+				//                            |
+				//                            V
+				//                          / - \
+				//                        /       \
+				//                  Y   /    Can    \    N
+				//            +--------|   Resolve   |-----------+
+				//            |         \  StarsV?  /            |
+				//            |           \       /              |
+				//            |             \ - /                |
+				//            V                                  V
+				//    +----------------+                       / - \
+				//    | Resolve StarsV |                     /       \
+				//    +----------------+               Y   /    Can    \    N
+				//            |                      +----|   Resolve   |------+
+				//            V                      |     \  StarsU?  /       |
+				//    +----------------+             |       \       /         |
+				//    | Measure Group2 |             |         \ - /           |
+				//    +----------------+             |                         V
+				//            |                      |                 +-----------------+
+				//            V                      |                 | Measure Group2' |
+				//    +----------------+             |                 +-----------------+
+				//    | Resolve StarsU |             |                         |
+				//    +----------------+             V                         V
+				//            |              +----------------+        +----------------+
+				//            V              | Resolve StarsU |        | Resolve StarsU |
+				//    +----------------+     +----------------+        +----------------+
+				//    | Measure Group3 |             |                         |
+				//    +----------------+             V                         V
+				//            |              +----------------+        +----------------+
+				//            |              | Measure Group3 |        | Measure Group3 |
+				//            |              +----------------+        +----------------+
+				//            |                      |                         |
+				//            |                      V                         V
+				//            |              +----------------+        +----------------+
+				//            |              | Resolve StarsV |        | Resolve StarsV |
+				//            |              +----------------+        +----------------+
+				//            |                      |                         |
+				//            |                      |                         V
+				//            |                      |                +------------------+
+				//            |                      |                | Measure Group2'' |
+				//            |                      |                +------------------+
+				//            |                      |                         |
+				//            +----------------------+-------------------------+
+				//                                   |
+				//                                   V
+				//                           +----------------+
+				//                           | Measure Group4 |
+				//                           +----------------+
+				//                                   |
+				//                                   V
+				//                               +--------+
+				//                               |  exit  |
+				//                               +--------+
+				//
+				// Where:
+				// *   StarsV = Stars in Rows
+				// *   StarsU = Stars in Columns.
+				// *   All [Measure GroupN] - regular children measure process -
+				//     each cell is measured given contraint size as an input
+				//     and each cell's desired size is accumulated on the
+				//     corresponding column / row.
+				// *   [Measure Group2'] - is when each cell is measured with
+				//     infinit height as a raint and a cell's desired
+				//     height is ignored.
+				// *   [Measure Groups''] - is when each cell is measured (second
+				//     time during single Grid.MeasureOverride) regularly but its
+				//     returned width is ignored.
+				//
+				// This algorithm is believed to be as close to ideal as possible.
+				// It has the following drawbacks:
+				// *   Cells belonging to Group2 could be measured twice.
+				// *   Iff during the second measure, a cell belonging to Group2
+				//     returns a desired width greater than desired width returned
+				//     the first time, the cell is going to be clipped, even though
+				//     it appears in an var column.
+
+				// Measure Group1. After Group1 is measured, only Group3 can have
+				// cells belonging to var rows.
+				MeasureCellsGroup((int)cellGroups.group1, childrenCount, rowSpacing, columnSpacing, false, false, ref cellCacheVector);
+
+				// After Group1 is measured, only Group3 may have cells belonging to
+				// Auto rows.
+				if (!HasGridFlags(GridFlags.HasAutoRowsAndStarColumn))
+				{
+					// We have no cyclic dependency; resolve star row/var column first.
+					if (HasGridFlags(GridFlags.HasStarRows))
+					{
+						ResolveStar(m_pRows, innerAvailableSize.Height);
+					}
+
+					// Measure Group2.
+					MeasureCellsGroup((int)cellGroups.group2, childrenCount, rowSpacing, columnSpacing, false, false, ref cellCacheVector);
+
+					if (HasGridFlags(GridFlags.HasStarColumns))
+					{
+						ResolveStar(m_pColumns, innerAvailableSize.Width);
+					}
+
+					// Measure Group3.
+					MeasureCellsGroup((int)cellGroups.group3, childrenCount, rowSpacing, columnSpacing, false, false, ref cellCacheVector);
 				}
 				else
 				{
-					if (HasGridFlags(GridFlags.DefinitionsChanged))
+					// If at least one cell exists in Group2, it must be measured
+					// before star columns can be resolved.
+					if (cellGroups.group2 > childrenCount)
 					{
-						ClearGridFlags(GridFlags.DefinitionsChanged);
-						InitializeDefinitionStructure();
-					}
-
-					ValidateDefinitions(m_pRows, innerAvailableSize.Height == XFLOAT.PositiveInfinity /* treatStarAsAuto */);
-					ValidateDefinitions(m_pColumns, innerAvailableSize.Width == XFLOAT.PositiveInfinity /* treatStarAsAuto */);
-
-					XFLOAT rowSpacing = RowSpacing;
-					XFLOAT columnSpacing = ColumnSpacing;
-					XFLOAT combinedRowSpacing = rowSpacing * (m_pRows.Count - 1);
-					XFLOAT combinedColumnSpacing = columnSpacing * (m_pColumns.Count - 1);
-					innerAvailableSize.Width -= combinedColumnSpacing;
-					innerAvailableSize.Height -= combinedRowSpacing;
-
-					var children = GetUnsortedChildren();
-					int childrenCount = children.Count;
-
-					CellCacheStackVector cellCacheVector = new CellCacheStackVector(childrenCount);
-					CellGroups cellGroups = ValidateCells(children, ref cellCacheVector);
-
-					// The group number of a cell indicates the order in which it will be
-					// measured; a certain order is necessary to dynamically resolve star
-					// definitions since there are cases when the topology of a Grid causes
-					// cyclical dependencies. For example:
-					//
-					//
-					//                         column width="Auto"      column width="*"
-					//                      +----------------------+----------------------+
-					//                      |                      |                      |
-					//                      |                      |                      |
-					//                      |                      |                      |
-					//                      |                      |                      |
-					//  row height="Auto"   |                      |      cell 1 2        |
-					//                      |                      |                      |
-					//                      |                      |                      |
-					//                      |                      |                      |
-					//                      |                      |                      |
-					//                      +----------------------+----------------------+
-					//                      |                      |                      |
-					//                      |                      |                      |
-					//                      |                      |                      |
-					//                      |                      |                      |
-					//  row height="*"      |       cell 2 1       |                      |
-					//                      |                      |                      |
-					//                      |                      |                      |
-					//                      |                      |                      |
-					//                      |                      |                      |
-					//                      +----------------------+----------------------+
-					//
-					// In order to accurately calculate the raining width for "cell 1 2"
-					// (which corresponds to the remaining space of the grid's available width
-					// and calculated value of the var column), "cell 2 1" needs to be calculated
-					// first, as it contributes to the calculated value of the var column.
-					// At the same time in order to accurately calculate the raining
-					// height for "cell 2 1", "cell 1 2" needs to be calcualted first,
-					// as it contributes to the calculated height of the var row, which is used
-					// in the computation of the resolved height of the star row.
-					//
-					// To break this cyclical dependency we are making the (arbitrary)
-					// decision to treat cells like "cell 2 1" as if they were in auto
-					// rows. We will recalculate them later once the heights of star rows
-					// are resolved. In other words, the code below implements the
-					// following logic:
-					//
-					//                       +---------+
-					//                       |  enter  |
-					//                       +---------+
-					//                            |
-					//                            V
-					//                    +----------------+
-					//                    | Measure Group1 |
-					//                    +----------------+
-					//                            |
-					//                            V
-					//                          / - \
-					//                        /       \
-					//                  Y   /    Can    \    N
-					//            +--------|   Resolve   |-----------+
-					//            |         \  StarsV?  /            |
-					//            |           \       /              |
-					//            |             \ - /                |
-					//            V                                  V
-					//    +----------------+                       / - \
-					//    | Resolve StarsV |                     /       \
-					//    +----------------+               Y   /    Can    \    N
-					//            |                      +----|   Resolve   |------+
-					//            V                      |     \  StarsU?  /       |
-					//    +----------------+             |       \       /         |
-					//    | Measure Group2 |             |         \ - /           |
-					//    +----------------+             |                         V
-					//            |                      |                 +-----------------+
-					//            V                      |                 | Measure Group2' |
-					//    +----------------+             |                 +-----------------+
-					//    | Resolve StarsU |             |                         |
-					//    +----------------+             V                         V
-					//            |              +----------------+        +----------------+
-					//            V              | Resolve StarsU |        | Resolve StarsU |
-					//    +----------------+     +----------------+        +----------------+
-					//    | Measure Group3 |             |                         |
-					//    +----------------+             V                         V
-					//            |              +----------------+        +----------------+
-					//            |              | Measure Group3 |        | Measure Group3 |
-					//            |              +----------------+        +----------------+
-					//            |                      |                         |
-					//            |                      V                         V
-					//            |              +----------------+        +----------------+
-					//            |              | Resolve StarsV |        | Resolve StarsV |
-					//            |              +----------------+        +----------------+
-					//            |                      |                         |
-					//            |                      |                         V
-					//            |                      |                +------------------+
-					//            |                      |                | Measure Group2'' |
-					//            |                      |                +------------------+
-					//            |                      |                         |
-					//            +----------------------+-------------------------+
-					//                                   |
-					//                                   V
-					//                           +----------------+
-					//                           | Measure Group4 |
-					//                           +----------------+
-					//                                   |
-					//                                   V
-					//                               +--------+
-					//                               |  exit  |
-					//                               +--------+
-					//
-					// Where:
-					// *   StarsV = Stars in Rows
-					// *   StarsU = Stars in Columns.
-					// *   All [Measure GroupN] - regular children measure process -
-					//     each cell is measured given contraint size as an input
-					//     and each cell's desired size is accumulated on the
-					//     corresponding column / row.
-					// *   [Measure Group2'] - is when each cell is measured with
-					//     infinit height as a raint and a cell's desired
-					//     height is ignored.
-					// *   [Measure Groups''] - is when each cell is measured (second
-					//     time during single Grid.MeasureOverride) regularly but its
-					//     returned width is ignored.
-					//
-					// This algorithm is believed to be as close to ideal as possible.
-					// It has the following drawbacks:
-					// *   Cells belonging to Group2 could be measured twice.
-					// *   Iff during the second measure, a cell belonging to Group2
-					//     returns a desired width greater than desired width returned
-					//     the first time, the cell is going to be clipped, even though
-					//     it appears in an var column.
-
-					// Measure Group1. After Group1 is measured, only Group3 can have
-					// cells belonging to var rows.
-					MeasureCellsGroup((int)cellGroups.group1, childrenCount, rowSpacing, columnSpacing, false, false, ref cellCacheVector);
-
-					// After Group1 is measured, only Group3 may have cells belonging to
-					// Auto rows.
-					if (!HasGridFlags(GridFlags.HasAutoRowsAndStarColumn))
-					{
-						// We have no cyclic dependency; resolve star row/var column first.
-						if (HasGridFlags(GridFlags.HasStarRows))
-						{
-							ResolveStar(m_pRows, innerAvailableSize.Height);
-						}
-
-						// Measure Group2.
-						MeasureCellsGroup((int)cellGroups.group2, childrenCount, rowSpacing, columnSpacing, false, false, ref cellCacheVector);
-
 						if (HasGridFlags(GridFlags.HasStarColumns))
 						{
 							ResolveStar(m_pColumns, innerAvailableSize.Width);
@@ -1243,66 +1289,47 @@ namespace Windows.UI.Xaml.Controls
 
 						// Measure Group3.
 						MeasureCellsGroup((int)cellGroups.group3, childrenCount, rowSpacing, columnSpacing, false, false, ref cellCacheVector);
+
+						if (HasGridFlags(GridFlags.HasStarRows))
+						{
+							ResolveStar(m_pRows, innerAvailableSize.Height);
+						}
 					}
 					else
 					{
-						// If at least one cell exists in Group2, it must be measured
-						// before star columns can be resolved.
-						if (cellGroups.group2 > childrenCount)
+						// We have a cyclic dependency; measure Group2 for their
+						// widths, while setting the row heights to infinity.
+						MeasureCellsGroup((int)cellGroups.group2, childrenCount, rowSpacing, columnSpacing, false, true, ref cellCacheVector);
+
+						if (HasGridFlags(GridFlags.HasStarColumns))
 						{
-							if (HasGridFlags(GridFlags.HasStarColumns))
-							{
-								ResolveStar(m_pColumns, innerAvailableSize.Width);
-							}
-
-							// Measure Group3.
-							MeasureCellsGroup((int)cellGroups.group3, childrenCount, rowSpacing, columnSpacing, false, false, ref cellCacheVector);
-
-							if (HasGridFlags(GridFlags.HasStarRows))
-							{
-								ResolveStar(m_pRows, innerAvailableSize.Height);
-							}
+							ResolveStar(m_pColumns, innerAvailableSize.Width);
 						}
-						else
+
+						// Measure Group3.
+						MeasureCellsGroup(cellGroups.group3, childrenCount, rowSpacing, columnSpacing, false, false, ref cellCacheVector);
+
+						if (HasGridFlags(GridFlags.HasStarRows))
 						{
-							// We have a cyclic dependency; measure Group2 for their
-							// widths, while setting the row heights to infinity.
-							MeasureCellsGroup((int)cellGroups.group2, childrenCount, rowSpacing, columnSpacing, false, true, ref cellCacheVector);
-
-							if (HasGridFlags(GridFlags.HasStarColumns))
-							{
-								ResolveStar(m_pColumns, innerAvailableSize.Width);
-							}
-
-							// Measure Group3.
-							MeasureCellsGroup(cellGroups.group3, childrenCount, rowSpacing, columnSpacing, false, false, ref cellCacheVector);
-
-							if (HasGridFlags(GridFlags.HasStarRows))
-							{
-								ResolveStar(m_pRows, innerAvailableSize.Height);
-							}
-
-							// Now, Measure Group2 again for their heights and ignore their widths.
-							MeasureCellsGroup((int)cellGroups.group2, childrenCount, rowSpacing, columnSpacing, true, false, ref cellCacheVector);
+							ResolveStar(m_pRows, innerAvailableSize.Height);
 						}
+
+						// Now, Measure Group2 again for their heights and ignore their widths.
+						MeasureCellsGroup((int)cellGroups.group2, childrenCount, rowSpacing, columnSpacing, true, false, ref cellCacheVector);
 					}
-
-					// Finally, measure Group4.
-					MeasureCellsGroup((int)cellGroups.group4, childrenCount, rowSpacing, columnSpacing, false, false, ref cellCacheVector);
-
-					desiredSize.Width = GetDesiredInnerSize(m_pColumns) + combinedColumnSpacing;
-					desiredSize.Height = GetDesiredInnerSize(m_pRows) + combinedRowSpacing;
 				}
 
-				desiredSize.Width += combinedThickness.Width;
-				desiredSize.Height += combinedThickness.Height;
+				// Finally, measure Group4.
+				MeasureCellsGroup((int)cellGroups.group4, childrenCount, rowSpacing, columnSpacing, false, false, ref cellCacheVector);
 
-				return desiredSize;
+				desiredSize.Width = GetDesiredInnerSize(m_pColumns) + combinedColumnSpacing;
+				desiredSize.Height = GetDesiredInnerSize(m_pRows) + combinedRowSpacing;
 			}
-			finally
-			{
-				UnlockDefinitions();
-			}
+
+			desiredSize.Width += combinedThickness.Width;
+			desiredSize.Height += combinedThickness.Height;
+
+			return desiredSize;
 		}
 
 		//------------------------------------------------------------------------
@@ -1315,87 +1342,23 @@ namespace Windows.UI.Xaml.Controls
 		//------------------------------------------------------------------------
 		protected override XSIZEF ArrangeOverride(XSIZEF finalSize)
 		{
-
 			// Locking the row and columns definitions to prevent changes by user code
 			// during the arrange pass.
 			LockDefinitions();
+#if !HAS_EXPENSIVE_TRYFINALLY
 			try
 			{
-				XRECTF innerRect = Border.HelperGetInnerRect(this, finalSize);
+#endif
+				var result = InnerArrangeOverride(finalSize);
 
-				if (IsWithoutRowAndColumnDefinitions())
-				{
-					// If this Grid has no user-defined rows or columns, it is possible
-					// to shortcut this ArrangeOverride.
-					var children = GetChildren();
-					if (children is { })
-					{
-						//for (auto & cdo : (children))
-						foreach(var cdo in children)
-						{
-							var currentChild = (UIElement)(cdo);
-							ASSERT(currentChild is { });
+#if HAS_EXPENSIVE_TRYFINALLY
+				m_ppTempDefinitions = null;
+				m_cTempDefinitions = 0;
+				UnlockDefinitions();
+#endif
+				return result;
 
-							//currentChild.EnsureLayoutStorage();
-							//XSIZEF childDesiredSize = currentChild.GetLayoutStorage().m_desiredSize;
-							XSIZEF childDesiredSize = currentChild.DesiredSize;
-							innerRect.Width = Math.Max(innerRect.Width, childDesiredSize.Width);
-							innerRect.Height = Math.Max(innerRect.Height, childDesiredSize.Height);
-							//currentChild.Arrange(innerRect);
-							this.ArrangeElement(currentChild, innerRect);
-						}
-					}
-				}
-				else
-				{
-					// UNO NRE FIX
-					if (HasGridFlags(GridFlags.DefinitionsChanged))
-					{
-						// A call to .Measure() is required before arranging children
-						// When the DefinitionsChanged is set, the measure is already invalidated
-						// This can arise in certain niche layout scenarios, like adding a child during MeasureOverride() set to Collapsed, then setting it to Visible during ArrangeOverride (true story)
-						return default;  // Returning (0, 0)
-					}
-					//IFCEXPECT_RETURN(m_pRows && m_pColumns);
-
-					XFLOAT rowSpacing = (XFLOAT)RowSpacing;
-					XFLOAT columnSpacing = (XFLOAT)ColumnSpacing;
-					XFLOAT combinedRowSpacing = rowSpacing * (m_pRows.Count - 1);
-					XFLOAT combinedColumnSpacing = columnSpacing * (m_pColumns.Count - 1);
-
-					// Given an effective final size, compute the offsets and sizes of each
-					// row and column, including the resdistribution of Star sizes based on
-					// the new width and height.
-					SetFinalSize(m_pRows, (XFLOAT)innerRect.Height - combinedRowSpacing);
-					SetFinalSize(m_pColumns, (XFLOAT)innerRect.Width - combinedColumnSpacing);
-
-					var children = GetUnsortedChildren();
-					int count = children.Count;
-
-					for (Xuint childIndex = 0; childIndex < count; childIndex++)
-					{
-						UIElement currentChild = children[childIndex];
-						ASSERT(currentChild is { });
-
-						DefinitionBase row = GetRowNoRef(currentChild);
-						DefinitionBase column = GetColumnNoRef(currentChild);
-						Xuint columnIndex = GetColumnIndex(currentChild);
-						Xuint rowIndex = GetRowIndex(currentChild);
-
-						XRECTF arrangeRect = new XRECTF();
-						arrangeRect.X = column.GetFinalOffset() + innerRect.X + (columnSpacing * columnIndex);
-						arrangeRect.Y = row.GetFinalOffset() + innerRect.Y + (rowSpacing * rowIndex);
-						arrangeRect.Width = GetFinalSizeForRange(m_pColumns, columnIndex, GetColumnSpanAdjusted(currentChild), columnSpacing);
-						arrangeRect.Height = GetFinalSizeForRange(m_pRows, rowIndex, GetRowSpanAdjusted(currentChild), rowSpacing);
-
-						//currentChild.Arrange(arrangeRect);
-						this.ArrangeElement(currentChild, arrangeRect);
-					}
-				}
-
-				XSIZEF newFinalSize = finalSize;
-
-				return newFinalSize;
+#if !HAS_EXPENSIVE_TRYFINALLY
 			}
 			finally
 			{
@@ -1403,6 +1366,93 @@ namespace Windows.UI.Xaml.Controls
 				m_cTempDefinitions = 0;
 				UnlockDefinitions();
 			}
+#endif
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private XSIZEF InnerArrangeOverride(XSIZEF finalSize)
+		{
+			XRECTF innerRect = Border.HelperGetInnerRect(this, finalSize);
+
+			if (IsWithoutRowAndColumnDefinitions())
+			{
+				// If this Grid has no user-defined rows or columns, it is possible
+				// to shortcut this ArrangeOverride.
+				var children = GetChildren();
+				if (children is { })
+				{
+					// This block is a manual enumeration to avoid the foreach pattern
+					// See https://github.com/dotnet/runtime/issues/56309 for details
+					var childrenEnumerator = children.GetEnumerator();
+					while (childrenEnumerator.MoveNext())
+					{
+						var currentChild = childrenEnumerator.Current;
+						ASSERT(currentChild is { });
+
+						//currentChild.EnsureLayoutStorage();
+						//XSIZEF childDesiredSize = currentChild.GetLayoutStorage().m_desiredSize;
+						XSIZEF childDesiredSize = currentChild.DesiredSize;
+						innerRect.Width = Math.Max(innerRect.Width, childDesiredSize.Width);
+						innerRect.Height = Math.Max(innerRect.Height, childDesiredSize.Height);
+						//currentChild.Arrange(innerRect);
+						this.ArrangeElement(currentChild, innerRect);
+					}
+				}
+			}
+			else
+			{
+				// UNO NRE FIX
+				if (HasGridFlags(GridFlags.DefinitionsChanged))
+				{
+					// A call to .Measure() is required before arranging children
+					// When the DefinitionsChanged is set, the measure is already invalidated
+					// This can arise in certain niche layout scenarios, like adding a child during MeasureOverride() set to Collapsed, then setting it to Visible during ArrangeOverride (true story)
+					return default;  // Returning (0, 0)
+				}
+				//IFCEXPECT_RETURN(m_pRows && m_pColumns);
+
+				XFLOAT rowSpacing = (XFLOAT)RowSpacing;
+				XFLOAT columnSpacing = (XFLOAT)ColumnSpacing;
+				XFLOAT combinedRowSpacing = rowSpacing * (m_pRows.Count - 1);
+				XFLOAT combinedColumnSpacing = columnSpacing * (m_pColumns.Count - 1);
+
+				// Given an effective final size, compute the offsets and sizes of each
+				// row and column, including the resdistribution of Star sizes based on
+				// the new width and height.
+				SetFinalSize(m_pRows, (XFLOAT)innerRect.Height - combinedRowSpacing);
+				SetFinalSize(m_pColumns, (XFLOAT)innerRect.Width - combinedColumnSpacing);
+
+				var children = GetUnsortedChildren();
+				int count = children.Count;
+
+				for (Xuint childIndex = 0; childIndex < count; childIndex++)
+				{
+					UIElement currentChild = children[childIndex];
+					ASSERT(currentChild is { });
+
+					DefinitionBase row = GetRowNoRef(currentChild);
+					DefinitionBase column = GetColumnNoRef(currentChild);
+					Xuint columnIndex = GetColumnIndex(currentChild);
+					Xuint rowIndex = GetRowIndex(currentChild);
+
+					XRECTF arrangeRect = new XRECTF();
+					arrangeRect.X = column.GetFinalOffset() + innerRect.X + (columnSpacing * columnIndex);
+					arrangeRect.Y = row.GetFinalOffset() + innerRect.Y + (rowSpacing * rowIndex);
+					arrangeRect.Width = GetFinalSizeForRange(m_pColumns, columnIndex, GetColumnSpanAdjusted(currentChild), columnSpacing);
+					arrangeRect.Height = GetFinalSizeForRange(m_pRows, rowIndex, GetRowSpanAdjusted(currentChild), rowSpacing);
+
+					//currentChild.Arrange(arrangeRect);
+					this.ArrangeElement(currentChild, arrangeRect);
+				}
+			}
+
+			XSIZEF newFinalSize = finalSize;
+
+			return newFinalSize;
 		}
 
 

@@ -179,6 +179,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private protected override void OnClosed()
 		{
+			base.OnClosed();
+
 			CloseSubMenu();
 
 			AutomationPeer.RaiseEventIfListener(GetPresenter(), AutomationEvents.MenuClosed);
@@ -369,7 +371,10 @@ namespace Windows.UI.Xaml.Controls
 				Control presenter = GetPresenter();
 				MenuFlyoutPresenter menuFlyoutPresenter = presenter as MenuFlyoutPresenter;
 
-				menuFlyoutPresenter.IsSubPresenter = value != null;
+				if (menuFlyoutPresenter is { })
+				{
+					menuFlyoutPresenter.IsSubPresenter = value != null;
+				}
 			}
 		}
 

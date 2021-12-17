@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable 105 // Disabled until the tree is migrate to WinUI
+
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Reflection;
@@ -15,7 +17,6 @@ using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 using Windows.Storage;
 using Uno.Extensions;
-using Uno.Logging;
 using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml;
 using System.IO;
@@ -53,6 +54,7 @@ namespace SampleControl.Presentation
 		private bool _isAnyContentVisible = false;
 		private bool _contentAttachedToWindow;
 		private bool _useFluentStyles;
+		private bool _useDarkTheme;
 		private object _contentPhone = null;
 		private string _searchTerm = "";
 
@@ -402,12 +404,33 @@ namespace SampleControl.Presentation
 				_useFluentStyles = value;
 				if (_useFluentStyles)
 				{
-					_fluentResources = _fluentResources ?? new XamlControlsResources();
+					_fluentResources = _fluentResources ?? new XamlControlsResources() { ControlsResourcesVersion = ControlsResourcesVersion.Version2 };
 					Application.Current.Resources.MergedDictionaries.Add(_fluentResources);
 				}
 				else
 				{
 					Application.Current.Resources.MergedDictionaries.Remove(_fluentResources);
+				}
+#if HAS_UNO
+				// Force the in app styles to reload
+				var updateReason = ResourceUpdateReason.ThemeResource;
+				Application.Current.Resources?.UpdateThemeBindings(updateReason);
+				Uno.UI.ResourceResolver.UpdateSystemThemeBindings(updateReason);
+				Application.PropagateResourcesChanged(Windows.UI.Xaml.Window.Current.Content, updateReason);
+#endif
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool UseDarkTheme
+		{
+			get => _useDarkTheme;
+			set
+			{
+				_useDarkTheme = value;
+				if (Windows.UI.Xaml.Window.Current.Content is FrameworkElement root)
+				{
+					root.RequestedTheme = _useDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
 				}
 				RaisePropertyChanged();
 			}

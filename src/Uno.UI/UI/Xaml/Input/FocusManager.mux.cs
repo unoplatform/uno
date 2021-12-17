@@ -5,7 +5,7 @@
 #nullable enable
 
 using System;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
@@ -19,13 +19,7 @@ using Uno.UI.Xaml.Rendering;
 using Uno.UI.Xaml.Core.Rendering;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 using Windows.UI.Core;
-
-//TODO Uno: Workaround for https://github.com/unoplatform/uno/issues/134
-#if NETFX_CORE
-using Popup = Windows.UI.Xaml.Controls.Primitives.Popup;
-#else
-using Popup = Windows.UI.Xaml.Controls.Popup;
-#endif
+using Uno.Foundation.Logging;
 
 //TODO:MZ: Handle parameters in/out
 
@@ -799,7 +793,7 @@ namespace Windows.UI.Xaml.Input
 		/// Gets next tab stop, includes the full logic with special case handling
 		/// Calls internal version of the method which contains further logic
 		/// </remarks>
-		private DependencyObject? GetNextTabStop(DependencyObject? pCurrentTabStop = null, bool bIgnoreCurrentTabStopScope = false)
+		internal DependencyObject? GetNextTabStop(DependencyObject? pCurrentTabStop = null, bool bIgnoreCurrentTabStopScope = false)
 		{
 			DependencyObject? pNewTabStop = null;
 			DependencyObject? pFocused = pCurrentTabStop ?? _focusedElement;
@@ -1053,7 +1047,7 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		/// <param name="pCurrentTabStop">Current tab stop</param>
 		/// <returns>Previous tab stop.</returns>
-		private DependencyObject? GetPreviousTabStop(DependencyObject? pCurrentTabStop = null)
+		internal DependencyObject? GetPreviousTabStop(DependencyObject? pCurrentTabStop = null)
 		{
 			DependencyObject? pFocused = pCurrentTabStop ?? _focusedElement;
 			DependencyObject? pNewTabStop = null;
@@ -3188,7 +3182,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().LogTrace($"XY focus entered begin for direction {direction}");
+				this.Log().Trace($"XY focus entered begin for direction {direction}");
 			}
 		}
 
@@ -3196,7 +3190,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().LogTrace($"XY focus entered end");
+				this.Log().Trace($"XY focus entered end");
 			}
 		}
 
@@ -3204,7 +3198,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().LogTrace("Update focus begin");
+				this.Log().Trace("Update focus begin");
 			}
 		}
 
@@ -3212,7 +3206,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().LogTrace($"Did not find XY focus from {focusedElement} in {direction}");
+				this.Log().Trace($"Did not find XY focus from {focusedElement} in {direction}");
 			}
 		}
 
@@ -3220,7 +3214,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().LogTrace($"Update focus ended for {focusedElement}");
+				this.Log().Trace($"Update focus ended for {focusedElement}");
 			}
 		}
 

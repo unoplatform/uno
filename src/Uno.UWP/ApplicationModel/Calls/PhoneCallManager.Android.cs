@@ -23,16 +23,22 @@ namespace Windows.ApplicationModel.Calls
 			}
 			_telephonyManager = (TelephonyManager)ContextHelper.Current
 				.GetSystemService(Context.TelephonyService);
+#pragma warning disable CS0618 // TelephonyManager is obsolete in API 31
 			_telephonyManager.Listen(new CallStateListener(), PhoneStateListenerFlags.CallState);
+#pragma warning restore CS0618 // TelephonyManager is obsolete in API 31
 		}
 
 		public static event EventHandler<object> CallStateChanged;
 
 		public static bool IsCallActive =>
+#pragma warning disable CS0618 // TelephonyManager is obsolete in API 31
 			_telephonyManager.CallState == CallState.Offhook;
+#pragma warning restore CS0618 // TelephonyManager is obsolete in API 31
 
 		public static bool IsCallIncoming =>
+#pragma warning disable CS0618 // TelephonyManager is obsolete in API 31
 			_telephonyManager.CallState == CallState.Ringing;
+#pragma warning restore CS0618 // TelephonyManager is obsolete in API 31
 
 		public static void ShowPhoneCallSettingsUI()
 		{

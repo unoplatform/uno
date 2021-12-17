@@ -257,7 +257,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 1. Now we will update the Grid so that we define 6 rows with a small spacing between the rows to add a little padding between the row elements.
 
     ```xml
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RowSpacing="8">
+    <Grid>
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />
         <RowDefinition Height="Auto" />
@@ -321,7 +321,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
                   Padding="20">
         <TextBlock Text="Status" FontWeight="Bold" FontSize="16" Margin="10,0" />
         <ComboBox ItemsSource="{x:Bind StatusList}"
-                  SelectedItem="{x:Bind Item.Status}"
+                  SelectedItem="{x:Bind Item.Status, Mode=TwoWay}"
                   HorizontalAlignment="Stretch"
                   SelectionChanged="StatusPicker_SelectionChanged" />
         <TextBlock Text="{x:Bind FormatDate('Started:', Item.StartedAt), Mode=OneWay}" />

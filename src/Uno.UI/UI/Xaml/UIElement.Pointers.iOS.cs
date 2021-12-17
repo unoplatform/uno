@@ -3,13 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
 using Foundation;
 using UIKit;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.UI.Input;
+using Windows.Devices.Input;
+#endif
 
 namespace Windows.UI.Xaml
 {
@@ -266,7 +272,7 @@ namespace Windows.UI.Xaml
 			// As we have to walk the tree and this method may be invoked too early, we don't try to track the state between the old and the new mode
 			=> PrepareParentTouchesManagers(newMode, CanDrag);
 
-		partial void OnCanDragChanged(bool _, bool newValue)
+		partial void OnCanDragChanged(bool oldValue, bool newValue)
 			=> PrepareParentTouchesManagers(ManipulationMode, newValue);
 
 		private void OnLoadedForPointers()

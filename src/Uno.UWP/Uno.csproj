@@ -1,8 +1,8 @@
 <Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
   
   <PropertyGroup>
-    <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid11.0;net461;netstandard2.0</TargetFrameworks>
-    <TargetFrameworksCI>MonoAndroid11.0;MonoAndroid10.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+    <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid12.0;net461;netstandard2.0</TargetFrameworks>
+    <TargetFrameworksCI>MonoAndroid11.0;MonoAndroid12.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
   </PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
@@ -40,25 +40,10 @@
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
 	</ItemGroup>
-	
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="Devices\Bluetooth\BluetoothAddressType.cs" />
-	  <UpToDateCheckInput Remove="Devices\Bluetooth\BluetoothDevice.cs" />
-	  <UpToDateCheckInput Remove="Devices\Bluetooth\BluetoothLEAppearance.cs" />
-	  <UpToDateCheckInput Remove="Devices\Bluetooth\BluetoothLEDevice.cs" />
-	  <UpToDateCheckInput Remove="Devices\Enumeration\BluetoothClassOfDevice.cs" />
-	  <UpToDateCheckInput Remove="Devices\Enumeration\BluetoothConnectionStatus.cs" />
-	  <UpToDateCheckInput Remove="Devices\Enumeration\BluetoothMajorClass.cs" />
-	  <UpToDateCheckInput Remove="Devices\Enumeration\BluetoothMinorClass.cs" />
-	  <UpToDateCheckInput Remove="Devices\Enumeration\BluetoothServiceCapabilities.cs" />
-	  <UpToDateCheckInput Remove="Devices\Enumeration\DeviceInformationKind.cs" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Uno.Core" />
-		<PackageReference Include="Uno.MonoAnalyzers" />
 		<PackageReference Include="System.Memory" Version="4.5.2" />
 	</ItemGroup>
 	
@@ -68,7 +53,7 @@
 		<PackageReference Include="Xamarin.AndroidX.Fragment" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid10.0'">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid12.0'">
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 	</ItemGroup>
@@ -81,6 +66,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.csproj" />
+		<ProjectReference Include="..\Uno.UI.Dispatching\Uno.UI.Dispatching.csproj" />
 	</ItemGroup>
 	
 	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />

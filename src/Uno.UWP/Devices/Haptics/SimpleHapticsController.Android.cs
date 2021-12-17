@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using Android.App;
 using Android.Views;
 using Android.Provider;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
 using Uno.UI;
 using PhoneVibrationDevice = Windows.Phone.Devices.Notification.VibrationDevice;
+using Uno.Foundation.Logging;
 
 namespace Windows.Devices.Haptics
 {

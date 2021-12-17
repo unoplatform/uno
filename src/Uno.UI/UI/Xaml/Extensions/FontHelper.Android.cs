@@ -1,4 +1,6 @@
-﻿using Android.App;
+﻿#nullable enable
+
+using Android.App;
 using Android.Graphics;
 using System;
 using System.Collections.Generic;
@@ -10,41 +12,41 @@ using System.Linq;
 using Android.OS;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 
 namespace Windows.UI.Xaml
 {
-	internal class FontHelper
-	{
-		internal static readonly Func<FontFamily, FontWeight, TypefaceStyle, Typeface> _fontFamilyToTypeFace;
+	internal partial class FontHelper
+	{ 
 		private static bool _assetsListed;
 		private static readonly string DefaultFontFamilyName = "sans-serif";
 
-		static FontHelper()
-		{
-			_fontFamilyToTypeFace = Funcs
-				.Create<FontFamily, FontWeight, TypefaceStyle, Typeface>(InternalFontFamilyToTypeFace)
-				.AsLockedMemoized();
+		internal static Typeface? FontFamilyToTypeFace(FontFamily? fontFamily, FontWeight fontWeight, TypefaceStyle style = TypefaceStyle.Normal)
+		{  
+			var entry = new FontFamilyToTypeFaceDictionary.Entry(fontFamily?.Source, fontWeight, style);
+			 
+			if (!_fontFamilyToTypeFaceDictionary.TryGetValue(entry , out var typeFace))
+			{
+				typeFace = InternalFontFamilyToTypeFace(fontFamily, fontWeight, style);
+				_fontFamilyToTypeFaceDictionary.Add(entry, typeFace);
+			}
+
+			return typeFace;
 		}
 
-		internal static Typeface FontFamilyToTypeFace(FontFamily fontFamily, FontWeight fontWeight, TypefaceStyle style = TypefaceStyle.Normal)
-		{
-			return _fontFamilyToTypeFace(fontFamily, fontWeight, style);
-		}
-
-		internal static Typeface InternalFontFamilyToTypeFace(FontFamily fontFamily, FontWeight fontWeight, TypefaceStyle style)
+		internal static Typeface? InternalFontFamilyToTypeFace(FontFamily? fontFamily, FontWeight fontWeight, TypefaceStyle style)
 		{
 			if (fontFamily?.Source == null || fontFamily.Equals(FontFamily.Default))
 			{
 				fontFamily = GetDefaultFontFamily(fontWeight);
 			}
 
-			Typeface typeface;
+			Typeface? typeface;
 
 			try
 			{
-				if (typeof(FontHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (typeof(FontHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					typeof(FontHelper).Log().Debug($"Searching for font [{fontFamily.Source}]");
 				}
@@ -60,7 +62,7 @@ namespace Windows.UI.Xaml
 					source = source.TrimStart("/assets/", StringComparison.OrdinalIgnoreCase);
 					source = FontFamilyHelper.RemoveHashFamilyName(source);
 
-					if (typeof(FontHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (typeof(FontHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						typeof(FontHelper).Log().Debug($"Searching for font as asset [{source}]");
 					}
@@ -72,7 +74,7 @@ namespace Windows.UI.Xaml
 					{
 						typeface = Android.Graphics.Typeface.CreateFromAsset(Android.App.Application.Context.Assets, actualAsset);
 
-						if (style != typeface.Style)
+						if (style != typeface?.Style)
 						{
 							typeface = Typeface.Create(typeface, style);
 						}
@@ -91,7 +93,7 @@ namespace Windows.UI.Xaml
 			}
 			catch (Exception e)
 			{
-				if (typeof(FontHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				if (typeof(FontHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 				{
 					typeof(FontHelper).Log().Error("Unable to find font", e);
 

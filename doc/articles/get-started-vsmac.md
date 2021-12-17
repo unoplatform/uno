@@ -12,50 +12,48 @@ While it is easier to create apps using Uno Platform on Windows, you can also cr
 * [**GTK+3**](https://formulae.brew.sh/formula/gtk+3) for running the Skia/GTK projects
 
 ## Installing the dotnet new templates
-- In order to create a new Uno Project, you'll need to install the [`dotnet new` Uno Platform templates](get-started-dotnet-new.md).
-- Once done, in Visual Studio for Mac, open the preference menu:
-  - On left side, open the **Other** then **Preview Features** menu
-  - Check the **Show all .NET Core templates in the New Project dialog**
+In order to create a new Uno Project, you'll need to install the [`dotnet new` Uno Platform templates](get-started-dotnet-new.md).
 
 ## Create a new project using the IDE
-1. To create a new project:
-    - Click the **New** button on the welcome screen
-    - Select **Cross Platform App (Uno Platform)**
-    - If presented with a list of options, uncheck **Skia/WPF**
-    - Choose a name then click create
+1. To create a new project, from the command line:
+    ```
+    cd src
+    dotnet new unoapp -o MyApp01
+    ```
 
-1. Once created, you should see your folder structure set up like this:
-![folder-structure](Assets/quick-start/vs-mac-folder-structure.png)\
+1. Once created, open the `MyApp-vsmac.slnf` file
+    - This `slnf` is called a solution filter, which automatically excludes projects which are not compatible with Visual Studio for mac.
     - If you have a warning symbol on your iOS project, make sure you have the minimum version of Xcode installed.
 ![update-xcode](Assets/quick-start/xcode-version-warning.jpg)\
+
 To update, go to `Visual Studio > Preferences > Projects > SDK Locations > Apple` and select Xcode 12 or higher.
 Restart Visual Studio.
-1. If you did not get presented a list of options to create the project, as of Visual Studio for Mac 8.8, the Uno Platform template contains WPF projects that prevent NuGet restore to work properly. To fix this:
-    - Select the `MyProject.Skia.Wpf` and `MyProject.Skia.Wpf.Host`
-    - Right click to remove them from the solution.
-    - At the top of the tree, on the solution node, right click and select **Restore Nuget Packages**
-1. You can now run on iOS, Android, and macOS by setting your startup project and running.
-![startup-projects](Assets/quick-start/vs-mac-build.png)
+1. You can now run on iOS, Android, macOS and Skia.GTK projects by changing your startup project and start the debugger.
    
 Note: You will not be able to build the UWP and WPF projects on a Mac. All changes to this project must be made on Windows.
 
-## Create a new project using the command line
+## Create a other projects types using the command line
 
 You can create a new Uno Platfom solution with the following terminal command:
     ```bash
-    dotnet new unoapp -o MyProject --skia-wpf=false
+    dotnet new unoapp -o MyProject --wasm=false
     ```
-Once created, you can open it using the Visual Studio IDE.
 
+Once created, you can open it using the Visual Studio IDE.
 
 ### Build and Run for WebAssembly
 
 Building for WebAssembly takes a few more steps:
 
 1. Set `MyProject.Wasm` to startup project
-2. Build the project
-3. In the terminal, navigate to your build output. This will typically be: `MyProject.Wasm > bin > Debug > netstandard2.0 > dist > server.py` Run the `server.py` program.
-4. In your browser, open localhost:8000. 
+1. Build the project
+1. In the terminal, navigate to your build output path. This will typically be: `MyProject.Wasm > bin > Debug > net5.0 > dist`
+1. Install `dotnet serve`:
+    ```
+    dotnet tool install -g dotnet-serve
+    ```
+1. Once installed type `dotnet serve`.
+1. Navigate to the url presented by the tool to run your application
 
 ### Video Tutorial
 [![Getting Started Visual Studio Mac Video](Assets/vsmac-cover.JPG)](http://www.youtube.com/watch?v=ESGJr6kHQg0 "")

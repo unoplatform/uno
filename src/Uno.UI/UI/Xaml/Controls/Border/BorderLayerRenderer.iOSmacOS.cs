@@ -11,6 +11,10 @@ using Foundation;
 using Uno.Extensions;
 using Windows.UI.Xaml.Controls;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 #if __IOS__
 using UIKit;
 using _View = UIKit.UIView;
@@ -89,6 +93,7 @@ namespace Windows.UI.Xaml.Shapes
 			var borderThickness = state.BorderThickness;
 			var borderBrush = state.BorderBrush;
 			var cornerRadius = state.CornerRadius;
+			var backgroundSizing = state.BackgroundSizing;
 
 			var disposables = new CompositeDisposable();
 			var sublayers = new List<CALayer>();
@@ -123,21 +128,19 @@ namespace Windows.UI.Xaml.Shapes
 					Math.Min(cornerRadius.BottomLeft, maxInnerRadius));
 
 				var outerLayer = new CAShapeLayer();
-				var innerLayer = new CAShapeLayer();
-				innerLayer.FillColor = null;
+				var backgroundLayer = new CAShapeLayer();
+				backgroundLayer.FillColor = null;
 				outerLayer.FillRule = CAShapeLayer.FillRuleEvenOdd;
 				outerLayer.LineWidth = 0;
 
-				Brush.AssignAndObserveBrush(borderBrush, color =>
-					{
-						outerLayer.StrokeColor = color;
-						outerLayer.FillColor = color;
-					})
-					.DisposeWith(disposables);
-
+				
 				var path = GetRoundedRect(cornerRadius, innerCornerRadius, area, adjustedArea);
 				var innerPath = GetRoundedPath(cornerRadius, adjustedArea);
 				var outerPath = GetRoundedPath(cornerRadius, area);
+
+				var isInnerBorderEdge = backgroundSizing == BackgroundSizing.InnerBorderEdge;
+				var backgroundPath = isInnerBorderEdge ? innerPath : outerPath;
+				var backgroundArea = isInnerBorderEdge ? adjustedArea : area;
 
 				var insertionIndex = 0;
 
@@ -145,17 +148,17 @@ namespace Windows.UI.Xaml.Shapes
 				{
 					var fillMask = new CAShapeLayer()
 					{
-						Path = innerPath,
+						Path = backgroundPath,
 						Frame = area,
 						// We only use the fill color to create the mask area
 						FillColor = _Color.White.CGColor,
 					};
 
-					CreateGradientBrushLayers(area, adjustedArea, parent, sublayers, ref insertionIndex, gradientBackground, fillMask);
+					CreateGradientBrushLayers(area, backgroundArea, parent, sublayers, ref insertionIndex, gradientBackground, fillMask);
 				}
 				else if (background is SolidColorBrush scbBackground)
 				{
-					Brush.AssignAndObserveBrush(scbBackground, color => innerLayer.FillColor = color)
+					Brush.AssignAndObserveBrush(scbBackground, color => backgroundLayer.FillColor = color)
 						.DisposeWith(disposables);
 				}
 				else if (background is ImageBrush imgBackground)
@@ -165,45 +168,69 @@ namespace Windows.UI.Xaml.Shapes
 					{
 						var fillMask = new CAShapeLayer()
 						{
-							Path = innerPath,
+							Path = backgroundPath,
 							Frame = area,
 							// We only use the fill color to create the mask area
 							FillColor = _Color.White.CGColor,
 						};
 
-						CreateImageBrushLayers(area, adjustedArea, parent, sublayers, ref insertionIndex, imgBackground, fillMask);
+						CreateImageBrushLayers(area, backgroundArea, parent, sublayers, ref insertionIndex, imgBackground, fillMask);
 					}
 				}
 				else if (background is AcrylicBrush acrylicBrush)
 				{
 					var fillMask = new CAShapeLayer()
 					{
-						Path = innerPath,
+						Path = backgroundPath,
 						Frame = area,
 						// We only use the fill color to create the mask area
 						FillColor = _Color.White.CGColor,
 					};
 
-					acrylicBrush.Subscribe(owner, area, adjustedArea, parent, sublayers, ref insertionIndex, fillMask)
+					acrylicBrush.Subscribe(owner, area, backgroundArea, parent, sublayers, ref insertionIndex, fillMask)
 						.DisposeWith(disposables);
 				}
 				else if (background is XamlCompositionBrushBase unsupportedCompositionBrush)
 				{
-					Brush.AssignAndObserveBrush(unsupportedCompositionBrush, color => innerLayer.FillColor = color)
+					Brush.AssignAndObserveBrush(unsupportedCompositionBrush, color => backgroundLayer.FillColor = color)
 						.DisposeWith(disposables);
 				}
 				else
 				{
-					innerLayer.FillColor = Colors.Transparent;
+					backgroundLayer.FillColor = Colors.Transparent;
 				}
 
 				outerLayer.Path = path;
-				innerLayer.Path = innerPath;
+				backgroundLayer.Path = backgroundPath;
 
 				sublayers.Add(outerLayer);
-				sublayers.Add(innerLayer);
+				sublayers.Add(backgroundLayer);
 				parent.AddSublayer(outerLayer);
-				parent.InsertSublayer(innerLayer, insertionIndex);
+				parent.InsertSublayer(backgroundLayer, insertionIndex);
+
+
+				if (borderBrush is SolidColorBrush scbBorder || borderBrush == null)
+				{
+					Brush.AssignAndObserveBrush(borderBrush, color =>
+					{
+						outerLayer.StrokeColor = color;
+						outerLayer.FillColor = color;
+					})
+					.DisposeWith(disposables);
+				}
+				else if (borderBrush is GradientBrush gradientBorder)
+				{
+					var fillMask = new CAShapeLayer()
+					{
+						Path = path,
+						Frame = area,
+						// We only use the fill color to create the mask area
+						FillColor = _Color.White.CGColor,
+					};
+
+					var borderLayerIndex = parent.Sublayers.Length;
+					CreateGradientBrushLayers(area, area, parent, sublayers, ref borderLayerIndex, gradientBorder, fillMask);
+				}
 
 				parent.Mask = new CAShapeLayer()
 				{
@@ -222,22 +249,25 @@ namespace Windows.UI.Xaml.Shapes
 			}
 			else
 			{
+				var backgroundLayer = new CAShapeLayer();
+				backgroundLayer.FillColor = null;
+
+				var innerPath = GetRoundedPath(CornerRadius.None, adjustedArea);
+				var outerPath = GetRoundedPath(CornerRadius.None, area);
+
+				var isInnerBorderEdge = backgroundSizing == BackgroundSizing.InnerBorderEdge;
+				var backgroundPath = isInnerBorderEdge ? innerPath : outerPath;
+				var backgroundArea = isInnerBorderEdge ? adjustedArea : area;
+
+				var insertionIndex = 0;
+
 				if (background is GradientBrush gradientBackground)
 				{
-					var fullArea = new CGRect(
-						area.X + borderThickness.Left,
-						area.Y + borderThickness.Top,
-						area.Width - borderThickness.Left - borderThickness.Right,
-						area.Height - borderThickness.Top - borderThickness.Bottom);
-
-					var insideArea = new CGRect(CGPoint.Empty, fullArea.Size);
-					var insertionIndex = 0;
-
-					CreateGradientBrushLayers(fullArea, insideArea, parent, sublayers, ref insertionIndex, gradientBackground, fillMask: null);
+					CreateGradientBrushLayers(area, backgroundArea, parent, sublayers, ref insertionIndex, gradientBackground, fillMask: null);
 				}
 				else if (background is SolidColorBrush scbBackground)
 				{
-					Brush.AssignAndObserveBrush(scbBackground, c => parent.BackgroundColor = c)
+					Brush.AssignAndObserveBrush(scbBackground, c => backgroundLayer.FillColor = c)
 						.DisposeWith(disposables);
 
 					// This is required because changing the CornerRadius changes the background drawing 
@@ -250,115 +280,79 @@ namespace Windows.UI.Xaml.Shapes
 					var bgSrc = imgBackground.ImageSource;
 					if (bgSrc != null && bgSrc.TryOpenSync(out var uiImage) && uiImage.Size != CGSize.Empty)
 					{
-						var fullArea = new CGRect(
-								area.X + borderThickness.Left,
-								area.Y + borderThickness.Top,
-								area.Width - borderThickness.Left - borderThickness.Right,
-								area.Height - borderThickness.Top - borderThickness.Bottom);
-
-						var insideArea = new CGRect(CGPoint.Empty, fullArea.Size);
-						var insertionIndex = 0;
-
-						CreateImageBrushLayers(fullArea, insideArea, parent, sublayers, ref insertionIndex, imgBackground, fillMask: null);
+						CreateImageBrushLayers(area, backgroundArea, parent, sublayers, ref insertionIndex, imgBackground, fillMask: null);
 					}
 				}
 				else if (background is AcrylicBrush acrylicBrush)
 				{
-					var fullArea = new CGRect(
-							area.X + borderThickness.Left,
-							area.Y + borderThickness.Top,
-							area.Width - borderThickness.Left - borderThickness.Right,
-							area.Height - borderThickness.Top - borderThickness.Bottom);
-
-					var insideArea = new CGRect(CGPoint.Empty, fullArea.Size);
-					var insertionIndex = 0;
-
-					acrylicBrush.Subscribe(owner, fullArea, insideArea, parent, sublayers, ref insertionIndex, fillMask: null);
+					acrylicBrush.Subscribe(owner, area, backgroundArea, parent, sublayers, ref insertionIndex, fillMask: null);
 				}
 				else if (background is XamlCompositionBrushBase unsupportedCompositionBrush)
 				{
-					Brush.AssignAndObserveBrush(unsupportedCompositionBrush, color => parent.BackgroundColor = color)
+					Brush.AssignAndObserveBrush(unsupportedCompositionBrush, color => backgroundLayer.FillColor = color)
 						.DisposeWith(disposables);
 
 					// This is required because changing the CornerRadius changes the background drawing 
 					// implementation and we don't want a rectangular background behind a rounded background.
-					Disposable.Create(() => parent.BackgroundColor = null)
+					Disposable.Create(() => backgroundLayer.FillColor = null)
 						.DisposeWith(disposables);
 				}
 				else
 				{
-					parent.BackgroundColor = Colors.Transparent;
+					backgroundLayer.FillColor = Colors.Transparent;
 				}
 
 				if (borderThickness != Thickness.Empty)
 				{
-					Action<Action<CAShapeLayer, CGPath>> createLayer = builder =>
-					{
-						var layer = new CAShapeLayer();
-						var path = new CGPath();
+					var borderPath = GetRoundedRect(CornerRadius.None, CornerRadius.None, area, adjustedArea);
+					var layer = new CAShapeLayer();
 
-						Brush.AssignAndObserveBrush(borderBrush, c => layer.StrokeColor = c)
+					layer.FillRule = CAShapeLayer.FillRuleEvenOdd;
+					layer.LineWidth = 0;
+					layer.Path = borderPath;
+
+					// Must be inserted below the other subviews, which may happen when
+					// the current view has subviews.
+					sublayers.Add(layer);
+					parent.AddSublayer(layer);
+
+					if (borderBrush is SolidColorBrush scbBorder)
+					{
+						Brush.AssignAndObserveBrush(borderBrush, c => layer.FillColor = c)
 							.DisposeWith(disposables);
 
-						builder(layer, path);
-						layer.Path = path;
-
-						// Must be inserted below the other subviews, which may happen when
-						// the current view has subviews.
-						sublayers.Add(layer);
-						parent.InsertSublayer(layer, 0);
-					};
-
-					if (borderThickness.Top != 0)
+					}
+					else if (borderBrush is GradientBrush gradientBorder)
 					{
-						createLayer((l, path) =>
+						var fillMask = new CAShapeLayer()
 						{
-							l.LineWidth = (nfloat)borderThickness.Top;
-							var lineWidthAdjust = (nfloat)(borderThickness.Top / 2);
-							path.MoveToPoint(area.X + (nfloat)borderThickness.Left, area.Y + lineWidthAdjust);
-							path.AddLineToPoint(area.X + area.Width - (nfloat)borderThickness.Right, area.Y + lineWidthAdjust);
-							path.CloseSubpath();
-						});
+							Path = borderPath,
+							Frame = area,
+							// We only use the fill color to create the mask area
+							FillColor = _Color.White.CGColor,
+						};
+
+						var borderLayerIndex = parent.Sublayers.Length;
+						CreateGradientBrushLayers(area, area, parent, sublayers, ref borderLayerIndex, gradientBorder, fillMask);
 					}
 
-					if (borderThickness.Bottom != 0)
-					{
-						createLayer((l, path) =>
-						{
-							l.LineWidth = (nfloat)borderThickness.Bottom;
-							var lineWidthAdjust = borderThickness.Bottom / 2;
-							path.MoveToPoint(area.X + (nfloat)borderThickness.Left, (nfloat)(area.Y + area.Height - lineWidthAdjust));
-							path.AddLineToPoint(area.X + area.Width - (nfloat)borderThickness.Right, (nfloat)(area.Y + area.Height - lineWidthAdjust));
-							path.CloseSubpath();
-						});
-					}
-
-					if (borderThickness.Left != 0)
-					{
-						createLayer((l, path) =>
-						{
-							l.LineWidth = (nfloat)borderThickness.Left;
-							var lineWidthAdjust = borderThickness.Left / 2;
-							path.MoveToPoint((nfloat)(area.X + lineWidthAdjust), area.Y);
-							path.AddLineToPoint((nfloat)(area.X + lineWidthAdjust), area.Y + area.Height);
-							path.CloseSubpath();
-						});
-					}
-
-					if (borderThickness.Right != 0)
-					{
-						createLayer((l, path) =>
-						{
-							l.LineWidth = (nfloat)borderThickness.Right;
-							var lineWidthAdjust = borderThickness.Right / 2;
-							path.MoveToPoint((nfloat)(area.X + area.Width - lineWidthAdjust), area.Y);
-							path.AddLineToPoint((nfloat)(area.X + area.Width - lineWidthAdjust), area.Y + area.Height);
-							path.CloseSubpath();
-						});
-					}
 				}
 
-				state.BoundsPath = CGPath.FromRect(parent.Bounds);
+				backgroundLayer.Path = backgroundPath;
+
+				sublayers.Add(backgroundLayer);
+				parent.InsertSublayer(backgroundLayer, insertionIndex);
+
+				parent.Mask = new CAShapeLayer()
+				{
+					Path = outerPath,
+					Frame = area,
+					// We only use the fill color to create the mask area
+					FillColor = _Color.White.CGColor,
+				};
+
+				
+				state.BoundsPath = outerPath;
 			}
 
 			disposables.Add(() =>

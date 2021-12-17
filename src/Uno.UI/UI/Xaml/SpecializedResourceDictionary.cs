@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml
 		public readonly struct ResourceKey
 		{
 			public readonly string Key;
-			public readonly bool IsType;
+			public readonly Type TypeKey;
 			public readonly uint HashCode;
 
 			public static ResourceKey Empty { get; } = new ResourceKey(false);
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml
 			private ResourceKey(bool dummy)
 			{
 				Key = null;
-				IsType = false;
+				TypeKey = null;
 				HashCode = 0;
 			}
 
@@ -54,14 +54,14 @@ namespace Windows.UI.Xaml
 				if (key is string s)
 				{
 					Key = s;
-					IsType = false;
-					HashCode = (uint)(s.GetHashCode() ^ IsType.GetHashCode());
+					TypeKey = null;
+					HashCode = (uint)(s.GetHashCode() ^ TypeKey?.GetHashCode() ?? 0);
 				}
 				else if (key is Type t)
 				{
 					Key = t.ToString();
-					IsType = true;
-					HashCode = (uint)(t.GetHashCode() ^ IsType.GetHashCode());
+					TypeKey = t;
+					HashCode = (uint)(t.GetHashCode() ^ TypeKey?.GetHashCode() ?? 0);
 				}
 				else if (key is ResourceKey)
 				{
@@ -72,8 +72,8 @@ namespace Windows.UI.Xaml
 				else
 				{
 					Key = key.ToString();
-					IsType = false;
-					HashCode = (uint)(key.GetHashCode() ^ IsType.GetHashCode());
+					TypeKey = null;
+					HashCode = (uint)(key.GetHashCode() ^ TypeKey?.GetHashCode() ?? 0);
 				}
 			}
 
@@ -84,8 +84,8 @@ namespace Windows.UI.Xaml
 			public ResourceKey(string key)
 			{
 				Key = key;
-				IsType = false;
-				HashCode = (uint)(key.GetHashCode() ^ IsType.GetHashCode());
+				TypeKey = null;
+				HashCode = (uint)(key.GetHashCode() ^ TypeKey?.GetHashCode() ?? 0);
 			}
 
 			/// <summary>
@@ -95,15 +95,15 @@ namespace Windows.UI.Xaml
 			public ResourceKey(Type key)
 			{
 				Key = key.ToString();
-				IsType = true;
-				HashCode = (uint)(key.GetHashCode() ^ IsType.GetHashCode());
+				TypeKey = key;
+				HashCode = (uint)(key.GetHashCode() ^ TypeKey?.GetHashCode() ?? 0);
 			}
 
 			/// <summary>
 			/// Compares this instance with another ResourceKey instance
 			/// </summary>
 			public bool Equals(ResourceKey other)
-				=> IsType == other.IsType && Key == other.Key;
+				=> TypeKey == other.TypeKey && Key == other.Key;
 
 
 			public static implicit operator ResourceKey(string key)
@@ -1019,18 +1019,31 @@ namespace Windows.UI.Xaml
 
 					int count = _dictionary._count;
 					Entry[] entries = _dictionary._entries;
-					try
+					index = MoveKeys(index, objects, count, entries);
+				}
+			}
+
+			/// <remarks>
+			/// This method contains or is called by a try/catch containing method and
+			/// can be significantly slower than other methods as a result on WebAssembly.
+			/// See https://github.com/dotnet/runtime/issues/56309
+			/// </remarks>
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			private static int MoveKeys(int index, object[] objects, int count, Entry[] entries)
+			{
+				try
+				{
+					for (int i = 0; i < count; i++)
 					{
-						for (int i = 0; i < count; i++)
-						{
-							if (entries![i].next >= -1) objects[index++] = entries[i].key;
-						}
-					}
-					catch (ArrayTypeMismatchException)
-					{
-						throw new ArgumentException("Argument_InvalidArrayType()");
+						if (entries![i].next >= -1) objects[index++] = entries[i].key;
 					}
 				}
+				catch (ArrayTypeMismatchException)
+				{
+					throw new ArgumentException("Argument_InvalidArrayType()");
+				}
+
+				return index;
 			}
 
 			bool ICollection.IsSynchronized => false;
@@ -1208,18 +1221,30 @@ namespace Windows.UI.Xaml
 
 					int count = _dictionary._count;
 					Entry[] entries = _dictionary._entries;
-					try
+					index = MoveValues(index, objects, count, entries);
+				}
+			}
+
+			/// <remarks>
+			/// This method contains or is called by a try/catch containing method and can be significantly slower than other methods as a result on WebAssembly.
+			/// See https://github.com/dotnet/runtime/issues/56309
+			/// </remarks>
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			private static int MoveValues(int index, object[] objects, int count, Entry[] entries)
+			{
+				try
+				{
+					for (int i = 0; i < count; i++)
 					{
-						for (int i = 0; i < count; i++)
-						{
-							if (entries![i].next >= -1) objects[index++] = entries[i].value!;
-						}
-					}
-					catch (ArrayTypeMismatchException)
-					{
-						throw new ArgumentException("Argument_InvalidArrayType()");
+						if (entries![i].next >= -1) objects[index++] = entries[i].value!;
 					}
 				}
+				catch (ArrayTypeMismatchException)
+				{
+					throw new ArgumentException("Argument_InvalidArrayType()");
+				}
+
+				return index;
 			}
 
 			bool ICollection.IsSynchronized => false;

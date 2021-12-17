@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Globalization;
 using System.Reflection;
 using Uno.UI.DataBinding;
@@ -15,9 +15,10 @@ using Uno;
 using Windows.UI.Xaml;
 using System.Collections;
 using Uno.Conversion;
-using Microsoft.Extensions.Logging;
+
 using Windows.UI.Xaml.Data;
 using System.Dynamic;
+using System.Runtime.CompilerServices;
 
 namespace Uno.UI.DataBinding
 {
@@ -39,7 +40,7 @@ namespace Uno.UI.DataBinding
 
     internal static partial class BindingPropertyHelper
 	{
-		private static readonly ILogger _log = typeof(BindingPropertyHelper).Log();
+		private static readonly Logger _log = typeof(BindingPropertyHelper).Log();
 
 		//
 		// Warning: These dictionaries are here in place of memoized Funcs for performance
@@ -59,6 +60,17 @@ namespace Uno.UI.DataBinding
 		{
 			MethodInvokerBuilder = DefaultInvokerBuilder;
 			Conversion = new DefaultConversionExtensions();
+		}
+
+		internal static void ClearCaches()
+		{
+			_getValueGetter.Clear();
+			_getValueSetter.Clear();
+			_getPrecedenceSpecificValueGetter.Clear();
+			_getSubstituteValueGetter.Clear();
+			_getValueUnsetter.Clear();
+			_isEvent.Clear();
+			_getPropertyType.Clear();
 		}
 
 		private static Func<object, object?[], object?> DefaultInvokerBuilder(MethodInfo method)
@@ -274,7 +286,7 @@ namespace Uno.UI.DataBinding
 				using (Performance.Measure("InternalGetPropertyType.Reflection"))
 #endif
 				{
-					if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						_log.Debug($"GetPropertyType({type}, {property}) [Reflection]");
 					}
@@ -533,7 +545,7 @@ namespace Uno.UI.DataBinding
 				using (Performance.Measure("InternalGetValueGetter.Reflection"))
 #endif
 				{
-					if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						_log.Debug($"GetValueGetter({type}, {property}) [Reflection]");
 					}
@@ -609,7 +621,7 @@ namespace Uno.UI.DataBinding
 			using (Performance.Measure("InternalGetValueGetter.Reflection2"))
 #endif
 			{
-				if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					_log.Debug($"GetValueGetter({type}, {property}) [Reflection]");
 				}
@@ -792,7 +804,7 @@ namespace Uno.UI.DataBinding
 				using (Performance.Measure("InternalGetValueSetter.Reflection"))
 #endif
 				{
-					if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						_log.Debug($"GetValueSetter({type}, {property}) [Reflection]");
 					}
@@ -867,7 +879,7 @@ namespace Uno.UI.DataBinding
 			using (Performance.Measure("InternalGetValueSetter.Reflection"))
 #endif
 			{
-				if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					_log.Debug($"GetValueSetter({type}, {property}) [Reflection]");
 				}
@@ -1066,21 +1078,34 @@ namespace Uno.UI.DataBinding
 					}
 					else if (t != typeof(object))
 					{
-						try
-						{
-							value = Conversion.To(value, t, CultureInfo.CurrentCulture);
-						}
-						catch (Exception)
-						{
-							// This is a temporary fallback solution.
-							// The problem is that we don't actually know which culture we must use in advance.
-							// Values can come from the xaml (invariant culture) or from a two way binding (current culture).
-							// The real solution would be to pass a culture or source when setting a value in a Dependency Property.
-							value = Conversion.To(value, t, CultureInfo.InvariantCulture);
-						}
+						value = ConvertWithConvertionExtension(value, t);
 					}
 				}
 			}
+			return value;
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static object ConvertWithConvertionExtension(object? value, Type? t)
+		{
+			try
+			{
+				value = Conversion.To(value, t, CultureInfo.CurrentCulture);
+			}
+			catch (Exception)
+			{
+				// This is a temporary fallback solution.
+				// The problem is that we don't actually know which culture we must use in advance.
+				// Values can come from the xaml (invariant culture) or from a two way binding (current culture).
+				// The real solution would be to pass a culture or source when setting a value in a Dependency Property.
+				value = Conversion.To(value, t, CultureInfo.InvariantCulture);
+			}
+
 			return value;
 		}
 

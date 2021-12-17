@@ -14,6 +14,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 
@@ -459,6 +460,68 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Flyout_Content_Takes_Focus()
+		{
+			var stackPanel = new StackPanel();
+			var button = new Button() { Content = "Flyout owner" };
+			stackPanel.Children.Add(button);
+			TestServices.WindowHelper.WindowContent = stackPanel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var flyout = new Flyout();
+			var flyoutButton = new Button() { Content = "Flyout content" };
+			flyout.Content = flyoutButton;
+			FlyoutBase.SetAttachedFlyout(button, flyout);
+			button.Focus(FocusState.Pointer);
+
+			Assert.AreEqual(button, FocusManager.GetFocusedElement());
+
+			FlyoutBase.ShowAttachedFlyout(button);
+			flyoutButton.Focus(FocusState.Pointer);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreNotEqual(button, FocusManager.GetFocusedElement());
+
+			flyout.Hide();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(button, FocusManager.GetFocusedElement());
+
+			TestServices.WindowHelper.WindowContent = null;
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Flyout_Has_Focusable_Child()
+		{
+			var stackPanel = new StackPanel();
+			var button = new Button() { Content = "Flyout owner" };
+			stackPanel.Children.Add(button);
+			TestServices.WindowHelper.WindowContent = stackPanel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var flyout = new Flyout();
+			var flyoutButton = new Button() { Content = "Flyout content" };
+			flyout.Content = flyoutButton;
+			FlyoutBase.SetAttachedFlyout(button, flyout);
+			button.Focus(FocusState.Pointer);
+
+			Assert.AreEqual(button, FocusManager.GetFocusedElement());
+
+			FlyoutBase.ShowAttachedFlyout(button);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var focused = FocusManager.GetFocusedElement();
+			Assert.IsInstanceOfType(focused, typeof(Popup));
+
+			flyout.Hide();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			TestServices.WindowHelper.WindowContent = null;
+		}
+
 		private static void VerifyRelativeContentPosition(HorizontalPosition horizontalPosition, VerticalPosition verticalPosition, FrameworkElement content, double minimumTargetOffset, FrameworkElement target)
 		{
 			var contentScreenBounds = content.GetOnScreenBounds();
@@ -510,6 +573,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private static void VerifyRelativeContentPosition(Windows.Foundation.Point position, HorizontalPosition horizontalPosition, VerticalPosition verticalPosition, FrameworkElement content, double minimumTargetOffset, FrameworkElement target)
 		{
 			var contentScreenBounds = content.GetOnScreenBounds();
+#if __ANDROID__
+			if (FeatureConfiguration.Popup.UseNativePopup)
+			{
+				// Adjust for status bar height, which is omitted from TransformToVisual() for elements inside of a native popup.
+				var rootViewBounds = ((FrameworkElement)Window.Current.Content).GetOnScreenBounds();
+				contentScreenBounds.Y += rootViewBounds.Y;
+			}
+#endif
 			var contentCenter = contentScreenBounds.GetCenter();
 			var targetScreenBounds = target.GetOnScreenBounds();
 			var targetCenter = targetScreenBounds.GetCenter();

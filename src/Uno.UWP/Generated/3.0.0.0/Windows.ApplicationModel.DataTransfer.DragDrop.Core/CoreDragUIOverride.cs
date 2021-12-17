@@ -2,67 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CoreDragUIOverride 
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsGlyphVisible
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CoreDragUIOverride.IsGlyphVisible is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride", "bool CoreDragUIOverride.IsGlyphVisible");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsContentVisible
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CoreDragUIOverride.IsContentVisible is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride", "bool CoreDragUIOverride.IsContentVisible");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsCaptionVisible
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CoreDragUIOverride.IsCaptionVisible is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride", "bool CoreDragUIOverride.IsCaptionVisible");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Caption
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CoreDragUIOverride.Caption is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride", "string CoreDragUIOverride.Caption");
-			}
-		}
-		#endif
+		// Skipping already declared property IsGlyphVisible
+		// Skipping already declared property IsContentVisible
+		// Skipping already declared property IsCaptionVisible
+		// Skipping already declared property Caption
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void SetContentFromSoftwareBitmap( global::Windows.Graphics.Imaging.SoftwareBitmap softwareBitmap)
@@ -85,12 +33,6 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.IsCaptionVisible.set
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.IsGlyphVisible.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.IsGlyphVisible.set
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Clear()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride", "void CoreDragUIOverride.Clear()");
-		}
-		#endif
+		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride.Clear()
 	}
 }

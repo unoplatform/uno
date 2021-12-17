@@ -24,7 +24,7 @@ function Get-TemplateConfiguration(
     $iOSFlag = '-ios'
     $macOSFlag = '-macos'
     $wasmFlag = '-wasm'
-    $wasmVsCodeFlag = '--vscodeWasm'
+    $wasmVsCodeFlag = '--vscode'
     $skiaWpfFlag = '--skia-wpf'
     $skiaGtkFlag = '--skia-gtk'
     $skiaLinuxFBFlag = '--skia-linux-fb'

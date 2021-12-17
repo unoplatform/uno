@@ -9,7 +9,7 @@ using Uno;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
@@ -17,6 +17,7 @@ using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 
@@ -55,7 +56,7 @@ namespace Windows.UI.Xaml
 			{
 				_invalidateRequested = true;
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("DispatchInvalidateMeasure scheduled");
 				}
@@ -81,7 +82,7 @@ namespace Windows.UI.Xaml
 				_rootVisual.Arrange(Bounds);
 				sw.Stop();
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"DispatchInvalidateMeasure: {sw.Elapsed}");
 				}
@@ -107,7 +108,7 @@ namespace Windows.UI.Xaml
 
 			if (newBounds != Bounds)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"OnNativeSizeChanged: {size}");
 				}
@@ -214,7 +215,7 @@ namespace Windows.UI.Xaml
 
 		internal IDisposable OpenPopup(Popup popup)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Creating popup");
 			}
@@ -231,7 +232,7 @@ namespace Windows.UI.Xaml
 				Disposable.Create(() =>
 				{
 
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Closing popup");
 					}

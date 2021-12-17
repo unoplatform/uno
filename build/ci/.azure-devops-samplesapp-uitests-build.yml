@@ -8,7 +8,7 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
     
-  dependsOn: Commitsar
+  dependsOn: Pipeline_Validations
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
@@ -22,6 +22,8 @@ jobs:
   steps:
   - checkout: self
     clean: true
+
+  - template: templates/dotnet-install.yml
 
   - task: MSBuild@1
     displayName: 'Build UI Tests'

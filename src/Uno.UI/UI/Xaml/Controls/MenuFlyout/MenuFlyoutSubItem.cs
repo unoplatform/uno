@@ -5,6 +5,7 @@ using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Markup;
 

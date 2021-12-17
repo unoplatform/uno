@@ -10,10 +10,11 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using _DragEventArgs = global::Windows.UI.Xaml.DragEventArgs;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -68,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 					items.ForEach(ClearContainerForDragDrop);
 				}
 			}
-		} 
+		}
 		#endregion
 
 		private void PrepareContainerForDragDrop(UIElement itemContainer)
@@ -116,15 +117,15 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (ItemsControlFromItemContainer(sender) is ListViewBase that && that.CanDragItems)
 			{
-				var items = that.SelectionMode == ListViewSelectionMode.Multiple || that.SelectionMode == ListViewSelectionMode.Extended
-					? that.SelectedItems.ToList()
-					: new List<object>();
+				// The items contains all selected items ONLY if the draggedItem is selected.
 				var draggedItem = that.ItemFromContainer(sender);
-				if (draggedItem is { } && !items.Contains(draggedItem))
-				{
-					items.Add(draggedItem);
-				}
-
+				var items =
+					draggedItem is null ? new List<object>()
+					: (that.SelectionMode == ListViewSelectionMode.Multiple || that.SelectionMode == ListViewSelectionMode.Extended)
+						&& that.SelectedItems is { Count: > 0 } selected
+						&& selected.Contains(draggedItem)
+						? selected.ToList()
+						: new List<object>(1) { draggedItem };
 				var args = new DragItemsStartingEventArgs(innerArgs, items);
 
 				that.DragItemsStarting?.Invoke(that, args);
@@ -134,7 +135,7 @@ namespace Windows.UI.Xaml.Controls
 
 				// The ListView must have both CanReorderItems and AllowDrop flags set to allow re-ordering (UWP)
 				// We also do not allow re-ordering if we where not able to find the item (as it has to be hidden in the view) (Uno only)
-				if (that.CanReorderItems && that.AllowDrop && draggedItem is {})
+				if (that.CanReorderItems && that.AllowDrop && draggedItem is { })
 				{
 					args.Data.SetData(ReorderOwnerFormatId, that);
 					args.Data.SetData(ReorderItemFormatId, draggedItem);
@@ -176,6 +177,10 @@ namespace Windows.UI.Xaml.Controls
 
 					that.DragItemsCompleted?.Invoke(that, args);
 				}
+
+				// Normally this will have been done by OnReorderCompleted, but sometimes OnReorderCompleted may not be called
+				// (eg if drag was released outside bounds of list)
+				that.CleanupReordering();
 			}
 		}
 
@@ -191,9 +196,19 @@ namespace Windows.UI.Xaml.Controls
 			if (that is null || src is null || item is null || container is null || src != that)
 			{
 				dragEventArgs.Log().Warn("Invalid reorder event.");
+				dragEventArgs.AcceptedOperation = DataPackageOperation.None;
 
 				return;
 			}
+
+			dragEventArgs.AcceptedOperation = DataPackageOperation.Move;
+#pragma warning disable CS0162 // Unreachable code since RenderTargetBitmap.IsImplemented is a const
+			if (RenderTargetBitmap.IsImplemented)
+			{
+				dragEventArgs.DragUIOverride.IsGlyphVisible = false;
+				dragEventArgs.DragUIOverride.IsCaptionVisible = false;
+			}
+#pragma warning restore CS0162
 
 			var position = dragEventArgs.GetPosition(that);
 			that.UpdateReordering(position, container, item);
@@ -294,9 +309,12 @@ namespace Windows.UI.Xaml.Controls
 						// If we've moved items down, we have to take in consideration that the updatedIndex
 						// is already assuming that the item has been removed, so it's offsetted by 1.
 						newIndex--;
-					} 
+					}
 #endif
 				}
+
+				// When moving more than one item (multi-select), we keep their actual order in the list, no matter which one was dragged.
+				movedItems.Sort((it1, it2) => indexOf(it1).CompareTo(indexOf(it2)));
 
 				for (var i = 0; i < movedItems.Count; i++)
 				{
@@ -341,8 +359,15 @@ namespace Windows.UI.Xaml.Controls
 		private void UpdateReordering(Point location, FrameworkElement draggedContainer, object draggedItem)
 			=> VirtualizingPanel?.GetLayouter().UpdateReorderingItem(location, draggedContainer, draggedItem);
 
-		Uno.UI.IndexPath? CompleteReordering(FrameworkElement draggedContainer, object draggedItem)
+		private Uno.UI.IndexPath? CompleteReordering(FrameworkElement draggedContainer, object draggedItem)
 			=> VirtualizingPanel?.GetLayouter().CompleteReorderingItem(draggedContainer, draggedItem);
+
+		private void CleanupReordering()
+#if __ANDROID__
+			=> VirtualizingPanel?.GetLayouter().CleanupReordering();
+#else
+		{ }
+#endif
 
 		#region Helpers
 		private static bool IsObservableCollection(object src)

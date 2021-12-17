@@ -14,6 +14,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 #if !WINDOWS_UWP // GetTemplateChild is protected in UWP while public in Uno.
 		[TestMethod]
 		[Description("Verifies that the TextBlock representing the Chevron glyph uses the correct font")]
+		[Ignore("Fluent styles V2 use AnimatedIcon instead of FontIcon")]
 		public void VerifyFontFamilyForChevron()
 		{
 			DropDownButton dropDownButton = null;

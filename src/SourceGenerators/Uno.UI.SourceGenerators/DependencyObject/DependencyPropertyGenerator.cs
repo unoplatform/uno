@@ -2,14 +2,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
-using Uno.Roslyn;
 using Uno.UI.SourceGenerators.Helpers;
 using Uno.UI.SourceGenerators.XamlGenerator;
 
@@ -59,6 +55,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			public override void VisitNamedType(INamedTypeSymbol type)
 			{
+				_context.CancellationToken.ThrowIfCancellationRequested();
+
 				foreach (var t in type.GetTypeMembers())
 				{
 					VisitNamedType(t);
@@ -69,11 +67,15 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			public override void VisitModule(IModuleSymbol symbol)
 			{
+				_context.CancellationToken.ThrowIfCancellationRequested();
+
 				VisitNamespace(symbol.GlobalNamespace);
 			}
 
 			public override void VisitNamespace(INamespaceSymbol symbol)
 			{
+				_context.CancellationToken.ThrowIfCancellationRequested();
+
 				foreach (var n in symbol.GetNamespaceMembers())
 				{
 					VisitNamespace(n);
@@ -112,8 +114,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						builder.AppendLineInvariant($"using System.Diagnostics.CodeAnalysis;");
 						builder.AppendLineInvariant($"using Uno.Disposables;");
 						builder.AppendLineInvariant($"using System.Runtime.CompilerServices;");
-						builder.AppendLineInvariant($"using Uno.Extensions;");
-						builder.AppendLineInvariant($"using Uno.Logging;");
 						builder.AppendLineInvariant($"using Uno.UI;");
 						builder.AppendLineInvariant($"using Uno.UI.DataBinding;");
 						builder.AppendLineInvariant($"using Windows.UI.Xaml;");
@@ -127,7 +127,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						{
 							using (GenerateNestingContainers(builder, typeSymbol))
 							{
-								using (builder.BlockInvariant($"{typeSymbol.GetAccessibilityAsCodeString()} partial class {typeSymbol.Name}"))
+								using (builder.BlockInvariant($"partial class {typeSymbol.Name}"))
 								{
 									foreach (var memberSymbol in typeSymbol.GetMembers())
 									{

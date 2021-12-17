@@ -28,10 +28,10 @@ namespace UITests.Uno_Web.Http
 			ViewModel = args.NewValue as CookieManagerTestsViewModel;
 		}
 
-		public CookieManagerTestsViewModel ViewModel { get; private set; }
+		internal CookieManagerTestsViewModel ViewModel { get; private set; }
 	}
 
-	public class CookieManagerTestsViewModel : ViewModelBase
+	internal class CookieManagerTestsViewModel : ViewModelBase
 	{
 		private string _cookiesText = string.Empty;
 

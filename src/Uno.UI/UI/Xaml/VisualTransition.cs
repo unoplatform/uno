@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Data;
 
 namespace Windows.UI.Xaml
 {
@@ -48,7 +49,7 @@ namespace Windows.UI.Xaml
 				{
 					// Set the theme changed flag on so the update processes
 					// the children.
-					storyboardProvider.Store.UpdateResourceBindings(true);
+					storyboardProvider.Store.UpdateResourceBindings(ResourceUpdateReason.ThemeResource);
 				}
 			}
 		}

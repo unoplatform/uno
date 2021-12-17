@@ -30,7 +30,7 @@ namespace UITests.Shared.Windows_Devices
         }
 
         [Bindable]
-        public class BarometerTestsViewModel : ViewModelBase
+		internal class BarometerTestsViewModel : ViewModelBase
         {
             private Barometer _barometer;
             private bool _readingChangedAttached;
@@ -60,13 +60,13 @@ namespace UITests.Shared.Windows_Devices
                 }));
             }
 
-            public Command AttachReadingChangedCommand => new Command((p) =>
+			internal Command AttachReadingChangedCommand => new Command((p) =>
             {
                 _barometer.ReadingChanged += Barometer_ReadingChanged;
                 ReadingChangedAttached = true;
             });
 
-            public Command DetachReadingChangedCommand => new Command((p) =>
+			internal Command DetachReadingChangedCommand => new Command((p) =>
             {
                 _barometer.ReadingChanged -= Barometer_ReadingChanged;
                 ReadingChangedAttached = false;

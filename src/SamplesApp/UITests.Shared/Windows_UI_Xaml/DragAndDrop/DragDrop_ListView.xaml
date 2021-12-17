@@ -9,17 +9,26 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
 		<ListView 
 			CanDragItems="True"
 			CanReorderItems="True"
 			AllowDrop="True"
+			SelectionMode="Multiple"
 			MinHeight="300"
 			x:Name="SUT">
 			<ListView.ItemTemplate>
 				<DataTemplate>
-					<Rectangle Fill="{Binding}" Width="300" Height="100" />
+					<Border Background="{Binding}" Width="300" Height="100">
+						<TextBlock Text="{Binding}" Foreground="Black" />
+					</Border>
 				</DataTemplate>
 			</ListView.ItemTemplate>
 		</ListView>
+
+		<TextBlock x:Name="Operation" Text="--none--" Grid.Row="1" />
 	</Grid>
 </Page>

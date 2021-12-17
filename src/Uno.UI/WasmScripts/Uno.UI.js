@@ -105,7 +105,7 @@ var Windows;
                     }
                     else {
                         if (!CoreDispatcher._coreDispatcherCallback) {
-                            CoreDispatcher._coreDispatcherCallback = Module.mono_bind_static_method("[Uno] Windows.UI.Core.CoreDispatcher:DispatcherCallback");
+                            CoreDispatcher._coreDispatcherCallback = Module.mono_bind_static_method("[Uno.UI.Dispatching] Uno.UI.Dispatching.CoreDispatcher:DispatcherCallback");
                         }
                     }
                 }
@@ -1938,6 +1938,9 @@ var Uno;
                     img.src = imageUrl;
                     this.containerElement.appendChild(img);
                 });
+            }
+            selectInputRange(elementId, start, length) {
+                this.getView(elementId).setSelectionRange(start, start + length);
             }
         }
         WindowManager._isHosted = false;

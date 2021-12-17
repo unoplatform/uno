@@ -11,7 +11,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml;
 using Uno.UI.Extensions;
 using System.Drawing;
@@ -611,6 +611,7 @@ namespace Uno.UI
 					.Append($"-({ViewHelper.PhysicalToLogicalPixels(innerView.Width):F1}x{ViewHelper.PhysicalToLogicalPixels(innerView.Height):F1})@({ViewHelper.PhysicalToLogicalPixels(innerView.Left):F1},{ViewHelper.PhysicalToLogicalPixels(innerView.Top):F1})")
 					.Append($"  {innerView.Visibility}")
 					.Append(fe != null ? $" HA={fe.HorizontalAlignment},VA={fe.VerticalAlignment}" : "")
+					.Append(fe != null && (!double.IsNaN(fe.Width) || !double.IsNaN(fe.Height)) ? $"FE.Width={fe.Width},FE.Height={fe.Height}" : "")
 					.Append(fe != null && fe.Margin != default ? $" Margin={fe.Margin}" : "")
 					.Append(fe != null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
 					.Append(fe != null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")

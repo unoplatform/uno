@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-var common = require('./common.js');
-var extension = require('./conceptual.extension.js')
+const common = require('./common.js');
+const extension = require('./conceptual.extension.js')
 
 exports.transform = function (model) {
   if (extension && extension.preTransform) {

@@ -1,3 +1,6 @@
+To add cross-platform image assets for your Uno Platform app, use the Assets folder
+in the shared project instead. Assets in this folder are Android-only assets.
+
 Any raw assets you want to be deployed with your application can be placed in
 this directory (and child directories) and given a Build Action of "AndroidAsset".
 

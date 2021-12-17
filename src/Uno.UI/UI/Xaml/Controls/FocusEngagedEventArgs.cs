@@ -20,6 +20,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get => Handled;
 			set => Handled = value;
-		}		
+		}
 	}
 }

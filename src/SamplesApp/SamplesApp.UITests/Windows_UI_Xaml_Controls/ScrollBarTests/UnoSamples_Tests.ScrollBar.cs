@@ -19,6 +19,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollBarTests
 	{
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] // This test cannot run on Android/iOS, because the ScrollBar buttons do not react to touch (which is valid MUX behavior).
 		public void ScrollBar_Vertical()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ScrollBar.ScrollBar_Simple");
@@ -65,6 +66,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollBarTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] // This test cannot run on Android/iOS, because the ScrollBar buttons do not react to touch (which is valid MUX behavior).
 		public void ScrollBar_Horizontal()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ScrollBar.ScrollBar_Simple");

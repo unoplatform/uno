@@ -30,7 +30,7 @@ namespace UITests.Windows_ApplicationModel
 			this.DataContextChanged += ClipboardTests_DataContextChanged;
 		}
 
-		public ClipboardTestsViewModel Model { get; private set; }
+		internal ClipboardTestsViewModel Model { get; private set; }
 
 		private void ClipboardTests_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{
@@ -38,7 +38,7 @@ namespace UITests.Windows_ApplicationModel
 		}
 	}
 
-	public class ClipboardTestsViewModel : ViewModelBase
+	internal class ClipboardTestsViewModel : ViewModelBase
 	{
 		private bool _isObservingContentChanged = false;
 		private string _lastContentChangedDate = "";

@@ -5,10 +5,10 @@ using System.Globalization;
 using System.Linq;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
-using Microsoft.Extensions.Logging;
+
 using Uno.UI;
 using static System.Math;
 using static Uno.UI.LayoutHelper;
@@ -50,16 +50,26 @@ namespace Windows.UI.Xaml
 		{
 			if (_trace.IsEnabled)
 			{
-				var traceActivity = _trace.WriteEventActivity(
-					TraceProvider.FrameworkElement_MeasureStart,
-					TraceProvider.FrameworkElement_MeasureStop,
-					new object[] { GetType().Name, this.GetDependencyObjectId(), Name, availableSize.ToString() }
-				);
-
-				using (traceActivity)
+				/// <remarks>
+				/// This method contains or is called by a try/catch containing method and
+				/// can be significantly slower than other methods as a result on WebAssembly.
+				/// See https://github.com/dotnet/runtime/issues/56309
+				/// </remarks>
+				void MeasureCoreWithTrace(Size availableSize)
 				{
-					InnerMeasureCore(availableSize);
+					var traceActivity = _trace.WriteEventActivity(
+										TraceProvider.FrameworkElement_MeasureStart,
+										TraceProvider.FrameworkElement_MeasureStop,
+										new object[] { GetType().Name, this.GetDependencyObjectId(), Name, availableSize.ToString() }
+									);
+
+					using (traceActivity)
+					{
+						InnerMeasureCore(availableSize);
+					}
 				}
+
+				MeasureCoreWithTrace(availableSize);
 			}
 			else
 			{
@@ -67,6 +77,7 @@ namespace Windows.UI.Xaml
 				// invocations generation for mono-wasm AOT inside of try/catch/finally blocks.
 				InnerMeasureCore(availableSize);
 			}
+
 		}
 
 		private void InnerMeasureCore(Size availableSize)
@@ -87,7 +98,7 @@ namespace Windows.UI.Xaml
 
 			var desiredSize = MeasureOverride(frameworkAvailableSize);
 
-			_logDebug?.LogTrace($"{DepthIndentation}{FormatDebugName()}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize} minSize={minSize} maxSize={maxSize} marginSize={marginSize}");
+			_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize} minSize={minSize} maxSize={maxSize} marginSize={marginSize}");
 
 			if (
 				double.IsNaN(desiredSize.Width)
@@ -124,16 +135,21 @@ namespace Windows.UI.Xaml
 		{
 			if (_trace.IsEnabled)
 			{
-				var traceActivity = _trace.WriteEventActivity(
-					TraceProvider.FrameworkElement_ArrangeStart,
-					TraceProvider.FrameworkElement_ArrangeStop,
-					new object[] { GetType().Name, this.GetDependencyObjectId(), Name, finalRect.ToString() }
-				);
-
-				using (traceActivity)
+				void ArrangeCoreWithTrace(Rect finalRect)
 				{
-					InnerArrangeCore(finalRect);
+					var traceActivity = _trace.WriteEventActivity(
+										TraceProvider.FrameworkElement_ArrangeStart,
+										TraceProvider.FrameworkElement_ArrangeStop,
+										new object[] { GetType().Name, this.GetDependencyObjectId(), Name, finalRect.ToString() }
+									);
+
+					using (traceActivity)
+					{
+						InnerArrangeCore(finalRect);
+					}
 				}
+
+				ArrangeCoreWithTrace(finalRect);
 			}
 			else
 			{
@@ -141,6 +157,7 @@ namespace Windows.UI.Xaml
 				// invocations generation for mono-wasm AOT inside of try/catch/finally blocks.
 				InnerArrangeCore(finalRect);
 			}
+
 		}
 
 		private static bool IsLessThanAndNotCloseTo(double a, double b) => a < (b - SIZE_EPSILON);
@@ -256,10 +273,7 @@ namespace Windows.UI.Xaml
 				var layoutFrame = new Rect(offset, clippedInkSize);
 
 				// Calculate clipped frame.
-				var clippedFrameWithParentOrigin =
-					layoutFrame
-						.IntersectWith(finalRect.DeflateBy(margin))
-					?? Rect.Empty;
+				var clippedFrameWithParentOrigin = layoutFrame.IntersectWith(finalRect.DeflateBy(margin)) ?? Rect.Empty;
 
 				// Rebase the origin of the clipped frame to layout
 				var clippedFrame = new Rect(

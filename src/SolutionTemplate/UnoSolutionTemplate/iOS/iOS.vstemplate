@@ -28,13 +28,19 @@
       <Folder Name="Media.xcassets" TargetFolderName="Media.xcassets">
         <Folder Name="AppIcons.appiconset" TargetFolderName="AppIcons.appiconset">
           <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Contents.json">Contents.json</ProjectItem>
-          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="ios-marketing-1024x1024@1x.png">ios-marketing-1024x1024@1x.png</ProjectItem>
-          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPad-76x76@2x.png">iPad-76x76@2x.png</ProjectItem>
-          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPad-84x84@2x.png">iPad-84x84@2x.png</ProjectItem>
-          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPhone-20x20@2x.png">iPhone-20x20@2x.png</ProjectItem>
-          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPhone-20x20@3x.png">iPhone-20x20@3x.png</ProjectItem>
-          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPhone-40x40@3x.png">iPhone-40x40@3x.png</ProjectItem>
-          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="iPhone-60x60@2x.png">iPhone-60x60@2x.png</ProjectItem>
+          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Icon20.png">Icon20.png</ProjectItem>
+          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Icon29.png">Icon29.png</ProjectItem>
+          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Icon40.png">Icon40.png</ProjectItem>
+          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Icon58.png">Icon58.png</ProjectItem>
+          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Icon60.png">Icon60.png</ProjectItem>
+          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Icon76.png">Icon76.png</ProjectItem>
+          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Icon80.png">Icon80.png</ProjectItem>
+          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Icon87.png">Icon87.png</ProjectItem>
+          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Icon120.png">Icon120.png</ProjectItem>
+          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Icon152.png">Icon152.png</ProjectItem>
+          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Icon167.png">Icon167.png</ProjectItem>
+          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Icon180.png">Icon180.png</ProjectItem>
+          <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Icon1024.png">Icon1024.png</ProjectItem>
         </Folder>
         <Folder Name="LaunchImages.launchimage" TargetFolderName="LaunchImages.launchimage">
           <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Contents.json">Contents.json</ProjectItem>

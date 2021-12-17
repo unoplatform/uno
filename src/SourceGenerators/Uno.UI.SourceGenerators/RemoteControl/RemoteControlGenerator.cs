@@ -3,14 +3,11 @@
 using Microsoft.CodeAnalysis;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Roslyn;
 using Uno.UI.SourceGenerators.Helpers;
@@ -92,7 +89,7 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 
 			sb.AppendLineInvariant("{0}", $"new string[]{{{distictPaths}}}");
 
-			sb.AppendLineInvariant($")]");
+			sb.AppendLineInvariant(")]");
 		}
 
 

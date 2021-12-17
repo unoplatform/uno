@@ -28,18 +28,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			current.RemoveFromSuperview();
 		}
-
-		public override void Layout()
-		{
-			UpdateItemsIfNeeded();
-			base.Layout();
-		}
-
-		public override void Measure(Size availableSize)
-		{
-			UpdateItemsIfNeeded();
-			base.Measure(availableSize);
-		}
 	}
 }
 

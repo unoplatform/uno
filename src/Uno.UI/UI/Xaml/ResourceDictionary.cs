@@ -12,6 +12,7 @@ using Windows.UI.Input.Spatial;
 
 using ResourceKey = Windows.UI.Xaml.SpecializedResourceDictionary.ResourceKey;
 using System.Runtime.CompilerServices;
+using Windows.UI.Xaml.Data;
 
 namespace Windows.UI.Xaml
 {
@@ -20,6 +21,11 @@ namespace Windows.UI.Xaml
 		private readonly SpecializedResourceDictionary _values = new SpecializedResourceDictionary();
 		private readonly List<ResourceDictionary> _mergedDictionaries = new List<ResourceDictionary>();
 		private ResourceDictionary _themeDictionaries;
+
+		/// <summary>
+		/// This event is fired when a key that has value of type <see cref="ResourceDictionary"/> is added or changed in the current <see cref="ResourceDictionary" />
+		/// </summary>
+		private event EventHandler ResourceDictionaryValueChange;
 
 		/// <summary>
 		/// If true, there may be lazily-set values in the dictionary that need to be initialized.
@@ -48,7 +54,25 @@ namespace Windows.UI.Xaml
 		}
 
 		public IList<ResourceDictionary> MergedDictionaries => _mergedDictionaries;
-		public IDictionary<object, object> ThemeDictionaries => _themeDictionaries ??= new ResourceDictionary();
+		public IDictionary<object, object> ThemeDictionaries => GetOrCreateThemeDictionaries();
+
+		private ResourceDictionary GetOrCreateThemeDictionaries()
+		{
+			if (_themeDictionaries is null)
+			{
+				_themeDictionaries = new ResourceDictionary();
+				_themeDictionaries.ResourceDictionaryValueChange += (sender, e) =>
+				{
+					// Invalidate the cache whenever a theme dictionary is added/removed.
+					// This is safest and avoids handling edge cases.
+					// Note that adding or removing theme dictionary isn't very common,
+					// so invalidating the cache shouldn't be a performance issue.
+					_activeTheme = ResourceKey.Empty;
+				};
+			}
+
+			return _themeDictionaries;
+		}
 
 		/// <summary>
 		/// Is this a ResourceDictionary created from system resources, ie within the Uno.UI assembly?
@@ -96,11 +120,25 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public bool Remove(object key) => _values.Remove(new ResourceKey(key));
+		public bool Remove(object key)
+		{
+			var keyToRemove = new ResourceKey(key);
+			if (_values.Remove(keyToRemove))
+			{
+				ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
+				return true;
+			}
 
-		public bool Remove(KeyValuePair<object, object> key) => _values.Remove(new ResourceKey(key.Key));
+			return false;
+		}
 
-		public void Clear() => _values.Clear();
+		public bool Remove(KeyValuePair<object, object> key) => Remove(key.Key);
+
+		public void Clear()
+		{
+			_values.Clear();
+			ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
+		}
 
 		public void Add(object key, object value) => Set(new ResourceKey(key), value, throwIfPresent: true);
 
@@ -189,7 +227,7 @@ namespace Windows.UI.Xaml
 			}
 			set
 			{
-				if(!(key is null))
+				if (!(key is null))
 				{
 					Set(new ResourceKey(key), value, throwIfPresent: false);
 				}
@@ -212,10 +250,15 @@ namespace Windows.UI.Xaml
 			{
 				_hasUnmaterializedItems = true;
 				_values[resourceKey] = new LazyInitializer(ResourceResolver.CurrentScope, resourceInitializer);
+				ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
 			}
 			else
 			{
 				_values[resourceKey] = value;
+				if (value is ResourceDictionary)
+				{
+					ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
+				}
 			}
 		}
 
@@ -241,6 +284,10 @@ namespace Windows.UI.Xaml
 				{
 					value = newValue;
 					_values[key] = newValue; // If Initializer threw an exception this will push null, to avoid running buggy initialization again and again (and avoid surfacing initializer to consumer code)
+					if (newValue is ResourceDictionary)
+					{
+						ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
+					}
 					ResourceResolver.PopScope();
 				}
 			}
@@ -371,7 +418,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Copy another dictionary's contents, this is used when setting the <see cref="Source"/> property
 		/// </summary>
-		private void CopyFrom(ResourceDictionary source)
+		internal void CopyFrom(ResourceDictionary source)
 		{
 			_values.Clear();
 			_mergedDictionaries.Clear();
@@ -381,16 +428,15 @@ namespace Windows.UI.Xaml
 			_mergedDictionaries.AddRange(source._mergedDictionaries);
 			if (source._themeDictionaries != null)
 			{
-				_themeDictionaries ??= new ResourceDictionary();
-				_themeDictionaries.CopyFrom(source._themeDictionaries);
+				GetOrCreateThemeDictionaries().CopyFrom(source._themeDictionaries);
 			}
 		}
 
 		public global::System.Collections.Generic.ICollection<object> Keys
-			=> _values.Keys.Select(k => ConvertKey(k.Key)).ToList();
+			=> _values.Keys.Select(k => ConvertKey(k)).ToList();
 
 		private static object ConvertKey(ResourceKey resourceKey)
-			=> resourceKey.IsType ? Type.GetType(resourceKey.Key) : (object)resourceKey.Key;
+			=> resourceKey.TypeKey ?? (object)resourceKey.Key;
 
 		// TODO: this doesn't handle lazy initializers or aliases
 		public global::System.Collections.Generic.ICollection<object> Values => _values.Values;
@@ -442,11 +488,11 @@ namespace Windows.UI.Xaml
 				var aliased = kvp.Value;
 				if (TryResolveAlias(ref aliased))
 				{
-					yield return new KeyValuePair<object, object>(ConvertKey(kvp.Key.Key), aliased);
+					yield return new KeyValuePair<object, object>(ConvertKey(kvp.Key), aliased);
 				}
 				else
 				{
-					yield return new KeyValuePair<object, object>(ConvertKey(kvp.Key.Key), kvp.Value);
+					yield return new KeyValuePair<object, object>(ConvertKey(kvp.Key), kvp.Value);
 				}
 			}
 		}
@@ -496,19 +542,19 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Update theme bindings on DependencyObjects in the dictionary.
 		/// </summary>
-		internal void UpdateThemeBindings()
+		internal void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{
 			foreach (var item in _values.Values)
 			{
 				if (item is IDependencyObjectStoreProvider provider && provider.Store.Parent == null)
 				{
-					provider.Store.UpdateResourceBindings(isThemeChangedUpdate: true, containingDictionary: this);
+					provider.Store.UpdateResourceBindings(updateReason, containingDictionary: this);
 				}
 			}
 
 			foreach (var mergedDict in _mergedDictionaries)
 			{
-				mergedDict.UpdateThemeBindings();
+				mergedDict.UpdateThemeBindings(updateReason);
 			}
 		}
 

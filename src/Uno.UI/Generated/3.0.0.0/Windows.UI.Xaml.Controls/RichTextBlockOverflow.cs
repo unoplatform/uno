@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RichTextBlockOverflow : global::Windows.UI.Xaml.FrameworkElement
@@ -149,13 +149,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.RichTextBlockOverflow), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public RichTextBlockOverflow() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.RichTextBlockOverflow", "RichTextBlockOverflow.RichTextBlockOverflow()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.RichTextBlockOverflow.RichTextBlockOverflow()
 		// Forced skipping of method Windows.UI.Xaml.Controls.RichTextBlockOverflow.RichTextBlockOverflow()
 		// Forced skipping of method Windows.UI.Xaml.Controls.RichTextBlockOverflow.OverflowContentTarget.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.RichTextBlockOverflow.OverflowContentTarget.set

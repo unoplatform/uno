@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Extensions.Logging;
+
 using Uno;
 using Uno.Foundation;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
@@ -18,6 +19,8 @@ namespace Windows.UI.Xaml.Input
 		/// True during a call to native focusView().
 		/// </summary>
 		private static bool _isCallingFocusNative;
+
+		private static bool _skipNativeFocus;
 
 		internal static void ProcessControlFocused(Control control)
 		{
@@ -40,9 +43,26 @@ namespace Windows.UI.Xaml.Input
 				_log.Value.LogDebug($"{nameof(ProcessElementFocused)}() focusedElement={GetFocusedElement()}, element={element}, searching for focusable parent control");
 			}
 
-			// Try to find the first focusable parent and set it as focused, otherwise just keep it for reference (GetFocusedElement())
-			var ownerControl = element.GetParents().OfType<Control>().Where(control => control.IsFocusable).FirstOrDefault();
-			ProcessControlFocused(ownerControl);
+			foreach (var parent in element.GetParents())
+			{
+				// Try to find the first focusable parent and set it as focused, otherwise just keep it for reference (GetFocusedElement())
+				if (parent is TextBlock textBlock && textBlock.IsFocusable)
+				{
+					// Focusable TextBlock parent, we can move focus to it.
+					var focusManager = VisualTree.GetFocusManagerForElement(textBlock);
+
+					// We cannot call native focus here, as it would fail and would then blur focus immediately.
+					_skipNativeFocus = true;
+					focusManager?.UpdateFocus(new FocusMovement(textBlock, FocusNavigationDirection.None, FocusState.Pointer));
+					_skipNativeFocus = false;
+					break;
+				}
+				else if (parent is Control control && control.IsFocusable)
+				{
+					ProcessControlFocused(control);
+					break;
+				}
+			}
 		}
 
 		internal static bool FocusNative(UIElement element)
@@ -52,8 +72,22 @@ namespace Windows.UI.Xaml.Input
 				_log.Value.LogDebug($"{nameof(FocusNative)}(element: {element})");
 			}
 
+			if (_skipNativeFocus)
+			{
+				_log.Value.LogDebug($"{nameof(FocusNative)} skipping native focus");
+				return false;
+			}
+
 			if (element == null)
 			{
+				return false;
+			}
+
+			var focusManager = VisualTree.GetFocusManagerForElement(element);
+
+			if (focusManager?.InitialFocus == true)
+			{
+				 // Do not focus natively on initial focus so the soft keyboard is not opened
 				return false;
 			}
 

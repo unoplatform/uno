@@ -1,3 +1,6 @@
+To add cross-platform image assets for your Uno Platform app, use the Assets folder
+in the shared project instead. Resources in this folder are Android-only.
+
 Images, layout descriptions, binary blobs and string dictionaries can be included 
 in your application as resource files.  Various Android APIs are designed to 
 operate on the resource IDs instead of dealing with images, strings or binary blobs 

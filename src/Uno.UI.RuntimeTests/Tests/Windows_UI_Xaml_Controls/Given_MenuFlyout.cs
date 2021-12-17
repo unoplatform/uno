@@ -13,12 +13,19 @@ using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.MenuFlyoutPages;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
+#if NETFX_CORE
+// Use the MUX MenuBar on Window for consistency, since Uno is using the MUX styles. (However Uno.UI only defines WUXC.MenuBar, not MUXC.MenuBar)
+using MenuBar = Microsoft.UI.Xaml.Controls.MenuBar;
+using MenuBarItem = Microsoft.UI.Xaml.Controls.MenuBarItem;
+using MenuBarItemAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -58,5 +65,96 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			}
 		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task Verify_MenuBarItem_Bounds()
+		{
+			using (StyleHelper.UseFluentStyles())
+			{
+				var flyoutItem = new MenuFlyoutItem { Text = "Open..." };
+				var menuBarItem = new MenuBarItem
+				{
+					Title = "File",
+					Items =
+				{
+					flyoutItem,
+					new MenuFlyoutItem { Text = "Don't open..."}
+				}
+				};
+
+				var menuBar = new MenuBar
+				{
+					Items =
+				{
+					menuBarItem
+				}
+				};
+
+				var contentSpacer = new Border { Background = new SolidColorBrush(Colors.Tomato), Margin = new Thickness(20) };
+				Grid.SetRow(contentSpacer, 1);
+
+				var hostPanel = new Grid
+				{
+					Children =
+				{
+					menuBar,
+					contentSpacer
+				},
+					RowDefinitions =
+				{
+					new RowDefinition {Height = GridLength.Auto},
+					new RowDefinition {Height = new GridLength(1, GridUnitType.Star)}
+				}
+				};
+
+				WindowHelper.WindowContent = hostPanel;
+				await WindowHelper.WaitForLoaded(hostPanel);
+
+				var peer = new MenuBarItemAutomationPeer(menuBarItem);
+				try
+				{
+					peer.Invoke();
+
+					await WindowHelper.WaitForLoaded(flyoutItem);
+
+					var menuBarItemBounds = menuBarItem.GetOnScreenBounds();
+
+					var flyoutItemBounds = flyoutItem.GetOnScreenBounds();
+
+					var menuBarBounds = menuBar.GetOnScreenBounds();
+
+					Assert.AreEqual(32, menuBarItemBounds.Height, 1);
+
+					var expectedY = 39.0;
+#if __ANDROID__
+					if (!FeatureConfiguration.Popup.UseNativePopup)
+					{
+						// If using managed popup, the expected offset must be adjusted for the status bar
+						expectedY += menuBarBounds.Y;
+					}
+#endif
+
+					Assert.AreEqual(5, flyoutItemBounds.X, 3);
+					Assert.AreEqual(expectedY, flyoutItemBounds.Y, 3);
+				}
+				finally
+				{
+					peer.Collapse();
+				}
+			}
+		}
+
+#if __ANDROID__
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task Verify_MenuBarItem_Bounds_Managed_Popups()
+		{
+			using (ConfigHelper.UseManagedPopups())
+			{
+				await Verify_MenuBarItem_Bounds();
+			}
+		}
+#endif
 	}
 }

@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml;
 using Uno.UI.Controls;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Core.Preview;
@@ -25,6 +25,10 @@ using Windows.Devices.Input;
 using Windows.System;
 using Windows.UI.Input;
 using Point = Windows.Foundation.Point;
+
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 
 namespace Uno.UI.Controls
 {

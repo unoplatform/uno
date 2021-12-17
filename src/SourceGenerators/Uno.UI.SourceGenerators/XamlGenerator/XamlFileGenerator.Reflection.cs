@@ -24,6 +24,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly static Func<INamedTypeSymbol, IPropertySymbol?> _findContentProperty;
 		private readonly static Func<INamedTypeSymbol, string, bool> _isAttachedProperty;
 		private readonly static Func<INamedTypeSymbol, string, INamedTypeSymbol> _getAttachedPropertyType;
+		private readonly static Func<INamedTypeSymbol, bool> _isTypeImplemented;
 
 		private void InitCaches()
 		{
@@ -41,7 +42,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.FirstOrDefault()
 				?.Namespace ?? "";
 
-			_clrNamespaces = _knownNamespaces?.UnoGetValueOrDefault(defaultXmlNamespace, new string[0]);
+			_clrNamespaces = _knownNamespaces?.UnoGetValueOrDefault(defaultXmlNamespace, Array.Empty<string>());
 		}
 
 		/// <summary>
@@ -358,7 +359,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Search for the type the clr namespaces registered with the xml namespace
 			if (xamlMember.DeclaringType != null)
 			{
-				var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(xamlMember.DeclaringType.PreferredXamlNamespace, new string[0]);
+				var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(xamlMember.DeclaringType.PreferredXamlNamespace, Array.Empty<string>());
 
 				foreach (var clrNamespace in clrNamespaces)
 				{
@@ -747,11 +748,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				// Remove the namespace conditionals declaration
 				var trimmedNamespace = type.PreferredXamlNamespace.Split('?').First();
-				var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(trimmedNamespace, new string[0]);
+				var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(trimmedNamespace, Array.Empty<string>());
 
 				foreach (var clrNamespace in clrNamespaces)
 				{
-					if(_findType!(clrNamespace + "." + type.Name) is { } result)
+					if (_findType!(clrNamespace + "." + type.Name) is { } result)
 					{
 						return result;
 					}
@@ -835,9 +836,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// Search first using the default namespace
 					foreach (var clrNamespace in _clrNamespaces)
 					{
-						var type = _metadataHelper.FindTypeByFullName(clrNamespace + "." + name) as INamedTypeSymbol;
-
-						if (type != null)
+						if (_metadataHelper.FindTypeByFullName(clrNamespace + "." + name) is INamedTypeSymbol type)
 						{
 							return type;
 						}
@@ -908,5 +907,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Select(p => p.Name)
 				.ToArray();
 		}
+
+		private bool IsTypeImplemented(INamedTypeSymbol type) => _isTypeImplemented(type);
+
+		private static bool SourceIsTypeImplemented(INamedTypeSymbol type)
+			=> type.GetAttributes().None(a => a.AttributeClass?.ToDisplayString() == XamlConstants.Types.NotImplementedAttribute);
 	}
 }

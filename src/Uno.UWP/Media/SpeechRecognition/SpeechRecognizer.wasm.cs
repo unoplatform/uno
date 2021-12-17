@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+
 using Uno;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 
 namespace Windows.Media.SpeechRecognition
@@ -46,7 +47,7 @@ namespace Windows.Media.SpeechRecognition
 				}
 				else
 				{
-					if (typeof(SpeechRecognizer).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+					if (typeof(SpeechRecognizer).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 					{
 						typeof(SpeechRecognizer).Log().LogError($"Speech recognition failed with '{error}'");
 					}

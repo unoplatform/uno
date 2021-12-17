@@ -38,6 +38,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Control : FrameworkElement
 	{
+		private bool _suspendStateChanges;
 		private View _templatedRoot;
 		private bool _updateTemplate;
 
@@ -59,9 +60,9 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override bool IsEnabledOverride() => IsEnabled && base.IsEnabledOverride();
 
-		internal override void UpdateThemeBindings()
+		internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
 		{
-			base.UpdateThemeBindings();
+			base.UpdateThemeBindings(updateReason);
 
 			//override the default value from dependency property based on application theme
 			SetDefaultForeground(ForegroundProperty);
@@ -78,9 +79,12 @@ namespace Windows.UI.Xaml.Controls
 			// base.OnBackgroundChanged(e);
 		}
 
-		internal void UpdateVisualState(bool useTransitions = true)
+		internal virtual void UpdateVisualState(bool useTransitions = true)
 		{
-			ChangeVisualState(useTransitions);
+			if (!_suspendStateChanges)
+			{
+				ChangeVisualState(useTransitions);
+			}
 		}
 
 		private protected virtual void ChangeVisualState(bool useTransitions)

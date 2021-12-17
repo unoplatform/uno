@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Controls;
 using Windows.Foundation;
 using View = Windows.UI.Xaml.UIElement;
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml
 				The propagation of this loaded state is also made by the UIElement.
 		 */
 
-		private void NativeOnLoading(object sender, RoutedEventArgs args)
+		private void NativeOnLoading(FrameworkElement sender, object args)
 		{
 			OnLoadingPartial();
 
@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml
 			// properties that affect the visual tree.
 			foreach (var child in _children)
 			{
-				(child as FrameworkElement)?.InternalDispatchEvent("loading", args);
+				(child as FrameworkElement)?.InternalDispatchEvent("loading", args as EventArgs);
 			}
 		}
 
@@ -58,6 +58,17 @@ namespace Windows.UI.Xaml
 				(child as FrameworkElement)?.InternalDispatchEvent("loaded", args);
 			}
 
+			RaiseOnLoadedSafe();
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void RaiseOnLoadedSafe()
+		{
 			try
 			{
 				OnLoaded();
@@ -69,7 +80,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-
 		private void NativeOnUnloaded(object sender, RoutedEventArgs args)
 		{
 			base.IsLoaded = false;
@@ -79,6 +89,16 @@ namespace Windows.UI.Xaml
 				(child as FrameworkElement)?.InternalDispatchEvent("unloaded", args);
 			}
 
+			RaiseOnUnloadedSafe();
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void RaiseOnUnloadedSafe()
+		{
 			try
 			{
 				OnUnloaded();
@@ -109,8 +129,8 @@ namespace Windows.UI.Xaml
 
 		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
 
-		private event RoutedEventHandler _loading;
-		public event RoutedEventHandler Loading
+		private event TypedEventHandler<FrameworkElement, object> _loading;
+		public event TypedEventHandler<FrameworkElement, object> Loading
 		{
 			add
 			{

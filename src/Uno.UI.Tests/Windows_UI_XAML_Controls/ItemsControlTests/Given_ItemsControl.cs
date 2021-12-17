@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
+using Uno.UI.Tests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -157,7 +159,42 @@ namespace Uno.UI.Tests.ItemsControlTests
 		}
 
 		[TestMethod]
-		public void When_ObservableVectorChanged()
+		public void When_GroupedCollectionViewSource()
+		{
+			var count = 0;
+			var panel = new StackPanel();
+
+			var ungrouped = new[] { "Arg", "Aought", "Crab", "Crump", "Dart", "Fish", "Flash", "Fork", "Lion", "Louse", "Lemur" };
+			var groups = ungrouped.GroupBy(s => s.First().ToString()).ToArray();
+			var obsGroups = groups.Select(g => new GroupedObservableCollection<string>(g)).ToArray();
+			var source = new ObservableCollection<object>(obsGroups);
+
+			var cvs = new CollectionViewSource
+			{
+				Source = source,
+				IsSourceGrouped = true
+			}.View;
+
+			var SUT = new ItemsControl()
+			{
+				ItemsPanelRoot = panel,
+				InternalItemsPanelRoot = panel,
+				ItemTemplate = new DataTemplate(() =>
+				{
+					count++;
+					return new Border();
+				}),
+			};
+
+			SUT.ItemsSource = cvs;
+
+			// This behavior is not the UWP one, this assertion
+			// is present to freeze the behavior.
+			Assert.AreEqual(0, count);
+		}
+
+		[TestMethod]
+		public void When_ObservableVectorIntChanged()
 		{
 			var count = 0;
 			var panel = new StackPanel();
@@ -181,10 +218,92 @@ namespace Uno.UI.Tests.ItemsControlTests
 			Assert.AreEqual(3, count);
 
 			source.Add(4);
-			Assert.AreEqual(7, count);
+			Assert.AreEqual(4, count);
 
 			source.Remove(1);
-			Assert.AreEqual(7, count);
+			Assert.AreEqual(4, count);
+
+			source[0] = 5;
+			// Data template is not recreated because of pooling
+			Assert.AreEqual(4, count);
+		}
+
+		[TestMethod]
+		public void When_ObservableVectorStringChanged()
+		{
+			var count = 0;
+			var panel = new StackPanel();
+
+			var source = new ObservableVector<string>() { "1", "2", "3" };
+
+			var SUT = new ItemsControl()
+			{
+				ItemsPanelRoot = panel,
+				InternalItemsPanelRoot = panel,
+				ItemTemplate = new DataTemplate(() =>
+				{
+					count++;
+					return new Border();
+				})
+			};
+
+			Assert.AreEqual(0, count);
+
+			SUT.ItemsSource = source;
+			Assert.AreEqual(3, count);
+
+			source.Add("4");
+			Assert.AreEqual(4, count);
+
+			source.Remove("1");
+			Assert.AreEqual(4, count);
+
+			source[0] = "5";
+			// Data template is not recreated because of pooling
+			Assert.AreEqual(4, count);
+		}
+
+		[TestMethod]
+		public void When_ObservableCollectionChanged()
+		{
+			var count = 0;
+			var panel = new StackPanel();
+
+			var source = new ObservableCollection<int>() { 1, 2, 3 };
+
+			var SUT = new ItemsControl()
+			{
+				ItemsPanelRoot = panel,
+				InternalItemsPanelRoot = panel,
+				ItemTemplate = new DataTemplate(() =>
+				{
+					count++;
+					return new Border();
+				})
+			};
+
+			Assert.AreEqual(0, count);
+
+			SUT.ItemsSource = source;
+			Assert.AreEqual(3, count);
+			Assert.AreEqual(3, SUT.Items.Count);
+			Assert.AreEqual(3, SUT.ItemsPanelRoot.Children.Count);
+
+			source.Add(4);
+			Assert.AreEqual(4, count);
+			Assert.AreEqual(4, SUT.Items.Count);
+			Assert.AreEqual(4, SUT.ItemsPanelRoot.Children.Count);
+
+			source.Remove(1);
+			Assert.AreEqual(4, count);
+			Assert.AreEqual(3, SUT.Items.Count);
+			Assert.AreEqual(3, SUT.ItemsPanelRoot.Children.Count);
+
+			source[0] = 5;
+			// Data template is not recreated because of pooling
+			Assert.AreEqual(4, count);
+			Assert.AreEqual(3, SUT.Items.Count);
+			Assert.AreEqual(3, SUT.ItemsPanelRoot.Children.Count);
 		}
 
 		[TestMethod]
@@ -215,10 +334,79 @@ namespace Uno.UI.Tests.ItemsControlTests
 			Assert.AreEqual(3, count);
 
 			source.Add(4);
-			Assert.AreEqual(7, count);
+			Assert.AreEqual(4, count);
 
 			source.Remove(1);
-			Assert.AreEqual(7, count);
+			Assert.AreEqual(4, count);
+		}
+
+		[TestMethod]
+		public async Task When_ItemsSource_Changes_Items_VectorChanged_Triggered()
+		{
+			var listView = new ItemsControl();
+
+			var triggerCount = 0;
+			listView.Items.VectorChanged += (s, e) =>
+			{
+				triggerCount++;
+			};
+
+			listView.ItemsSource = new List<int>() { 1, 2 };
+
+			Assert.AreEqual(1, triggerCount);
+			Assert.AreEqual(2, listView.Items.Count);
+
+			listView.ItemsSource = new List<int>() { 3, 4 };
+
+			Assert.AreEqual(2, triggerCount);
+			Assert.AreEqual(2, listView.Items.Count);
+
+			listView.ItemsSource = null;
+
+			Assert.AreEqual(3, triggerCount);
+			Assert.AreEqual(0, listView.Items.Count);
+		}
+
+		[TestMethod]
+		public async Task When_Collection_Reset()
+		{
+			var count = 0;
+			var panel = new StackPanel();
+
+			var SUT = new ItemsControl()
+			{
+				ItemsPanelRoot = panel,
+				ItemContainerStyle = BuildBasicContainerStyle(),
+				InternalItemsPanelRoot = panel,
+				ItemTemplate = new DataTemplate(() =>
+				{
+					count++;
+					return new Border();
+				})
+			};
+			SUT.ApplyTemplate();
+
+			var c = new ObservableCollectionEx<string>();
+			c.Add("One");
+			c.Add("Two");
+			c.Add("Three");
+
+			SUT.ItemsSource = c;
+			Assert.AreEqual(count, 3);
+
+			Assert.AreEqual(SUT.Items.Count, 3);
+
+			using (c.BatchUpdate())
+			{
+				c.Add("Four");
+				c.Add("Five");
+			}
+
+			Assert.AreEqual(SUT.Items.Count, 5);
+			Assert.AreEqual(count, 5);
+			Assert.IsNotNull(SUT.ContainerFromItem("One"));
+			Assert.IsNotNull(SUT.ContainerFromItem("Four"));
+			Assert.IsNotNull(SUT.ContainerFromItem("Five"));
 		}
 
 		private Style BuildBasicContainerStyle() =>

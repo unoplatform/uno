@@ -3,6 +3,7 @@ using Windows.Foundation;
 using System;
 using System.Diagnostics;
 using Windows.UI.Xaml.Controls.Primitives;
+using System.Runtime.CompilerServices;
 
 namespace Windows.UI.Xaml
 {
@@ -100,15 +101,7 @@ namespace Windows.UI.Xaml
 
 			if (IsVisualTreeRoot)
 			{
-				try
-				{
-					_isLayoutingVisualTreeRoot = true;
-					DoMeasure(availableSize);
-				}
-				finally
-				{
-					_isLayoutingVisualTreeRoot = false;
-				}
+				MeasureVisualTreeRoot(availableSize);
 			}
 			else
 			{
@@ -117,13 +110,34 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and
+		/// can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void MeasureVisualTreeRoot(Size availableSize)
+		{
+			try
+			{
+				_isLayoutingVisualTreeRoot = true;
+				DoMeasure(availableSize);
+			}
+			finally
+			{
+				_isLayoutingVisualTreeRoot = false;
+			}
+		}
+
 		private void DoMeasure(Size availableSize)
 		{
 			InvalidateArrange();
 
+			// We must reset the flag **BEFORE** doing the actual measure, so the elements are able to re-invalidate themselves
+			_isMeasureValid = true;
+
 			MeasureCore(availableSize);
 			LayoutInformation.SetAvailableSize(this, availableSize);
-			_isMeasureValid = true;
 		}
 
 		internal virtual void MeasureCore(Size availableSize)
@@ -157,20 +171,30 @@ namespace Windows.UI.Xaml
 
 			if (IsVisualTreeRoot)
 			{
-				try
-				{
-					_isLayoutingVisualTreeRoot = true;
-					DoArrange(finalRect);
-				}
-				finally
-				{
-					_isLayoutingVisualTreeRoot = false;
-				}
+				ArrangeVisualTreeRoot(finalRect);
 			}
 			else
 			{
 				// If possible we avoid the try/finally which might be costly on some platforms
 				DoArrange(finalRect);
+			}
+		}
+
+		/// <remarks>
+		/// This method contains or is called by a try/catch containing method and can be significantly slower than other methods as a result on WebAssembly.
+		/// See https://github.com/dotnet/runtime/issues/56309
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void ArrangeVisualTreeRoot(Rect finalRect)
+		{
+			try
+			{
+				_isLayoutingVisualTreeRoot = true;
+				DoArrange(finalRect);
+			}
+			finally
+			{
+				_isLayoutingVisualTreeRoot = false;
 			}
 		}
 
@@ -183,8 +207,10 @@ namespace Windows.UI.Xaml
 			// For instance, the EffectiveViewPort computation reads that value to detect slot changes (cf. PropagateEffectiveViewportChange)
 			LayoutInformation.SetLayoutSlot(this, finalRect);
 
-			ArrangeCore(finalRect);
+			// We must reset the flag **BEFORE** doing the actual arrange, so the elements are able to re-invalidate themselves
 			_isArrangeValid = true;
+
+			ArrangeCore(finalRect);
 		}
 
 		partial void HideVisual();

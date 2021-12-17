@@ -5,7 +5,7 @@ using System.Linq;
 using CoreAnimation;
 using CoreGraphics;
 using Foundation;
-using Microsoft.Extensions.Logging;
+
 using UIKit;
 using Uno.Extensions;
 using Uno.UI;
@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using UIViewExtensions = UIKit.UIViewExtensions;
+using ObjCRuntime;
 
 namespace Windows.UI.Xaml
 {
@@ -162,6 +163,12 @@ namespace Windows.UI.Xaml
 
 						switch (parent)
 						{
+							case ListViewBaseInternalContainer listViewBaseInternalContainer:
+								// In the case of ListViewBaseInternalContainer, the first managed parent is normally ItemsPresenter. We omit
+								// the offset since it's incorporated separately via the layout slot propagated to ListViewItem + the scroll offset.
+								parentElement = listViewBaseInternalContainer.FindFirstParent<UIElement>();
+								return true;
+
 							case UIElement eltParent:
 								// We found a UIElement in the parent hierarchy, we compute the X/Y offset between the
 								// first parent 'view' and this 'elt', and return it.

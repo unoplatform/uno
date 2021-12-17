@@ -37,8 +37,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			var result =
 				Regex.Replace(
 					markup,
-					 "\"{x:Bind (.*?)}\"",
-					e => $"\"{{x:Bind {RewriteParameters(e.Groups[1].Value)}}}\""
+					 "\"{x:Bind\\s(.*?)}\"",
+					e => $"\"{{x:Bind {RewriteParameters(e.Groups[1].Value.Trim())}}}\"",
+					RegexOptions.Singleline
 				);
 
 			return result;

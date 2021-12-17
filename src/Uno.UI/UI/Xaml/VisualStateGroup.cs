@@ -7,13 +7,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Markup;
 using Uno.UI;
 using Windows.Foundation.Collections;
-using Microsoft.Extensions.Logging;
+
 using static Windows.UI.Xaml.Media.Animation.Timeline.TimelineState;
 
 #if XAMARIN_IOS
@@ -181,7 +181,7 @@ namespace Windows.UI.Xaml
 		{
 			global::System.Diagnostics.Debug.Assert(state is null || States.Contains(state));
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat("Go to state [{0}/{1}] on [{2}]", Name, state?.Name, element);
 			}
@@ -240,8 +240,13 @@ namespace Windows.UI.Xaml
 			//		  the value is applied only at the end of the transition
 			if (current.setters is { } currentSetters)
 			{
-				foreach (var setter in currentSetters.OfType<Setter>())
+				// This block is a manual enumeration to avoid the foreach pattern
+				// See https://github.com/dotnet/runtime/issues/56309 for details
+				var settersEnumerator = currentSetters.OfType<Setter>().GetEnumerator();
+				while(settersEnumerator.MoveNext())
 				{
+					var setter = settersEnumerator.Current;
+
 					if (element != null && (target.setters?.OfType<Setter>().Any(o => o.HasSameTarget(setter, DependencyPropertyValuePrecedences.Animations, element)) ?? false))
 					{
 						// We clear the value of the current setter only if there isn't any setter in the target state
@@ -303,19 +308,10 @@ namespace Windows.UI.Xaml
 				// Starts target state animation
 				if (target.animation is { } stateAnimation)
 				{
-					stateAnimation.Completed += OnStateStoryboardCompleted;
 					stateAnimation.Begin();
+				}
 
-					void OnStateStoryboardCompleted(object s, object a)
-					{
-						state.Storyboard.Completed -= OnStateStoryboardCompleted;
-						onStateChanged();
-					}
-				}
-				else
-				{
-					onStateChanged();
-				}
+				onStateChanged();
 			}
 
 			void ApplyTargetStateSetters()
@@ -333,9 +329,13 @@ namespace Windows.UI.Xaml
 					// We need to invoke them using the right resource context.
 					ResourceResolver.PushNewScope(_xamlScope);
 
-					foreach (var setter in target.setters.OfType<Setter>())
+					// This block is a manual enumeration to avoid the foreach pattern
+					// See https://github.com/dotnet/runtime/issues/56309 for details
+					var settersEnumerator = target.setters.OfType<Setter>().GetEnumerator();
+
+					while(settersEnumerator.MoveNext())
 					{
-						setter.ApplyValue(DependencyPropertyValuePrecedences.Animations, element);
+						settersEnumerator.Current.ApplyValue(DependencyPropertyValuePrecedences.Animations, element);
 					}
 				}
 #if !HAS_EXPENSIVE_TRYFINALLY

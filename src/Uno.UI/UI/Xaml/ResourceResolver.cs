@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
-using Microsoft.Extensions.Logging;
+
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
 using Windows.UI.Xaml;
@@ -29,6 +31,10 @@ namespace Uno.UI
 
 		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionariesByUri = new Dictionary<string, Func<ResourceDictionary>>(StringComparer.InvariantCultureIgnoreCase);
 		private static readonly Dictionary<string, ResourceDictionary> _registeredDictionariesByAssembly = new Dictionary<string, ResourceDictionary>();
+		/// <summary>
+		/// This is used by hot reload (since converting the file path to a Source is impractical at runtime).
+		/// </summary>
+		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionariesByFilepath = new Dictionary<string, Func<ResourceDictionary>>(StringComparer.InvariantCultureIgnoreCase);
 
 		private static int _assemblyRef = -1;
 
@@ -42,7 +48,7 @@ namespace Uno.UI
 
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
-		private static readonly ILogger _log = typeof(ResourceResolver).Log();
+		private static readonly Logger _log = typeof(ResourceResolver).Log();
 
 		private static readonly Stack<XamlScope> _scopeStack;
 
@@ -69,6 +75,33 @@ namespace Uno.UI
 			}
 
 			return default(T);
+		}
+
+		/// <summary>
+		/// Performs a one-time, typed resolution of a named resource, using Application.Resources.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static object ResolveResourceStatic(object key, Type type, object context = null)
+		{
+			if (TryStaticRetrieval(new SpecializedResourceDictionary.ResourceKey(key), context, out var value))
+			{
+				if (value.GetType().Is(type))
+				{
+					return value;
+				}
+				else
+				{
+					var convertedValue = BindingPropertyHelper.Convert(() => type, value);
+					if (convertedValue is null && _log.IsEnabled(LogLevel.Warning))
+					{
+						_log.LogWarning($"Unable to convert value '{value}' of type '{value.GetType()}' to type '{type}'");
+					}
+
+					return convertedValue;
+				}
+			}
+
+			return null;
 		}
 
 		/// <summary>
@@ -145,6 +178,10 @@ namespace Uno.UI
 
 			return fallbackValue;
 		}
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		// This overload is kept for backwards compatibility
+		public static void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, object context = null)
+			=> ApplyResource(owner, property, resourceKey, isThemeResourceExtension, false, context);
 
 		/// <summary>
 		/// Apply a StaticResource or ThemeResource assignment to a DependencyProperty of a DependencyObject. The assignment will be provisionally
@@ -156,24 +193,40 @@ namespace Uno.UI
 		/// <param name="isThemeResourceExtension">True for {ThemeResource Foo}, false for {StaticResource Foo}</param>
 		/// <param name="context">Optional parameter that provides parse-time context</param>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, object context = null)
-			=> ApplyResource(owner, property, new SpecializedResourceDictionary.ResourceKey(resourceKey), isThemeResourceExtension, context, null);
+		public static void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, bool isHotReloadSupported, object context = null)
+		{
+			var updateReason = ResourceUpdateReason.None;
+			if (isThemeResourceExtension)
+			{
+				updateReason |= ResourceUpdateReason.ThemeResource;
+			}
+			if (isHotReloadSupported)
+			{
+				updateReason |= ResourceUpdateReason.HotReload;
+			}
+			if (updateReason == ResourceUpdateReason.None)
+			{
+				updateReason = ResourceUpdateReason.StaticResourceLoading;
+			}
 
-		internal static void ApplyResource(DependencyObject owner, DependencyProperty property, SpecializedResourceDictionary.ResourceKey specializedKey, bool isThemeResourceExtension, object context, DependencyPropertyValuePrecedences? precedence)
+			ApplyResource(owner, property, new SpecializedResourceDictionary.ResourceKey(resourceKey), updateReason, context, null);
+		}
+
+		internal static void ApplyResource(DependencyObject owner, DependencyProperty property, SpecializedResourceDictionary.ResourceKey specializedKey, ResourceUpdateReason updateReason, object context, DependencyPropertyValuePrecedences? precedence)
 		{
 			// Set initial value based on statically-available top-level resources.
 			if (TryStaticRetrieval(specializedKey, context, out var value))
 			{
 				owner.SetValue(property, BindingPropertyHelper.Convert(() => property.Type, value), precedence);
 
-				if (!isThemeResourceExtension)
+				if (updateReason == ResourceUpdateReason.StaticResourceLoading)
 				{
 					// If it's {StaticResource Foo} and we managed to resolve it at parse-time, then we don't want to update it again (per UWP).
 					return;
 				}
 			}
 
-			(owner as IDependencyObjectStoreProvider).Store.SetResourceBinding(property, specializedKey, isThemeResourceExtension, context, precedence, null);
+			(owner as IDependencyObjectStoreProvider).Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
 		}
 
 		/// <summary>
@@ -187,7 +240,7 @@ namespace Uno.UI
 		/// True if the value was successfully applied and registered for theme updates, false if no theme resource was found or the target
 		/// property is not a <see cref="DependencyProperty"/>.
 		/// </returns>
-		internal static bool ApplyVisualStateSetter(SpecializedResourceDictionary.ResourceKey resourceKey, object context, BindingPath bindingPath, DependencyPropertyValuePrecedences precedence)
+		internal static bool ApplyVisualStateSetter(SpecializedResourceDictionary.ResourceKey resourceKey, object context, BindingPath bindingPath, DependencyPropertyValuePrecedences precedence, ResourceUpdateReason updateReason)
 		{
 			if (TryStaticRetrieval(resourceKey, context, out var value)
 				&& bindingPath.DataContext != null)
@@ -197,7 +250,7 @@ namespace Uno.UI
 				{
 					// Set current resource value
 					bindingPath.Value = value;
-					provider.Store.SetResourceBinding(property, resourceKey, isTheme: true, context, precedence, bindingPath);
+					provider.Store.SetResourceBinding(property, resourceKey, updateReason, context, precedence, bindingPath);
 					return true;
 				}
 			}
@@ -210,8 +263,15 @@ namespace Uno.UI
 		/// </summary>
 		private static bool TryStaticRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
 		{
-			foreach (var source in CurrentScope.Sources)
+			// This block is a manual enumeration to avoid the foreach pattern
+			// See https://github.com/dotnet/runtime/issues/56309 for details
+			var sourcesEnumerator = CurrentScope.Sources.GetEnumerator();
+
+			while (sourcesEnumerator.MoveNext())
 			{
+
+				var source = sourcesEnumerator.Current;
+
 				var dictionary = (source.Target as FrameworkElement)?.Resources
 					?? source.Target as ResourceDictionary;
 				if (dictionary != null && dictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
@@ -340,12 +400,15 @@ namespace Uno.UI
 		/// </summary>
 		internal static IDisposable WriteInitiateGlobalStaticResourcesEventActivity() => _trace.WriteEventActivity(TraceProvider.InitGenericXamlStart, TraceProvider.InitGenericXamlStop);
 
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void RegisterResourceDictionaryBySource(string uri, XamlParseContext context, Func<ResourceDictionary> dictionary)
+			=> RegisterResourceDictionaryBySource(uri, context, dictionary, null);
 		/// <summary>
 		/// Register a dictionary for a given source, this is used for retrieval when setting the Source property in code-behind or to an
 		/// external resource.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void RegisterResourceDictionaryBySource(string uri, XamlParseContext context, Func<ResourceDictionary> dictionary)
+		public static void RegisterResourceDictionaryBySource(string uri, XamlParseContext context, Func<ResourceDictionary> dictionary, string filePath)
 		{
 			_registeredDictionariesByUri[uri] = dictionary;
 
@@ -356,6 +419,11 @@ namespace Uno.UI
 				var initializer = new ResourceDictionary.ResourceInitializer(dictionary);
 				_assemblyRef++; // We don't actually use this key, we just need it to be unique
 				assemblyDict[_assemblyRef] = initializer;
+			}
+
+			if (filePath != null)
+			{
+				_registeredDictionariesByFilepath[filePath] = dictionary;
 			}
 		}
 
@@ -398,6 +466,16 @@ namespace Uno.UI
 			throw new InvalidOperationException($"Cannot locate resource from '{source}'");
 		}
 
+		internal static ResourceDictionary RetrieveDictionaryForFilePath(string filePath)
+		{
+			if (_registeredDictionariesByFilepath.TryGetValue(filePath, out var func))
+			{
+				return func();
+			}
+
+			return null;
+		}
+
 		/// <summary>
 		/// Retrieves a resource for a {CustomResource} markup, with the <see cref="CustomXamlResourceLoader"/> currently set.
 		/// </summary>
@@ -426,7 +504,7 @@ namespace Uno.UI
 		public static object ResolveStaticResourceAlias(string resourceKey, object parseContext)
 			=> ResourceDictionary.GetStaticResourceAliasPassthrough(resourceKey, parseContext as XamlParseContext);
 
-		internal static void UpdateSystemThemeBindings() => MasterDictionary.UpdateThemeBindings();
+		internal static void UpdateSystemThemeBindings(ResourceUpdateReason updateReason) => MasterDictionary.UpdateThemeBindings(updateReason);
 	}
 
 

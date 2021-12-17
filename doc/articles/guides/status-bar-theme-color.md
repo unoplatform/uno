@@ -11,7 +11,7 @@ The complete sample code can be found here: [StatusBarThemeColor](https://github
 2. In `MainPage.xaml`, add a `<CommandBar>`:
     > On iOS, the status bar color cannot be set directly, so it is done via through a `CommandBar` placed in the page. You could also use any XAML element like `<Grid>` or `<Border>` to achieve a similar effect, if your application doesn't use navigation or doesn't use native navigation. This is because the page content can go under the status bar. In fact, you usually have to add padding to avoid that (see next step).
     ```xml
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -34,8 +34,7 @@ The complete sample code can be found here: [StatusBarThemeColor](https://github
           xmlns:toolkit="using:Uno.UI.Toolkit"
           ...>
 
-        <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-              toolkit:VisibleBoundsPadding.PaddingMask="Top">
+        <Grid toolkit:VisibleBoundsPadding.PaddingMask="Top">
     ```
 4. In `MainPage.xaml.cs`, expose the `MyCommandBar` which will be referenced in a later step:
     ```cs

@@ -9,8 +9,9 @@ using Android.Content;
 using Android.Net;
 using Android.OS;
 using Android.Telecom;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Extensions;
 using AndroidConnectivityManager = Android.Net.ConnectivityManager;
@@ -83,7 +84,9 @@ namespace Windows.Networking.Connectivity
 
 				if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
 				{
+#pragma warning disable CS0618 // ConnectivityManager.GetAllNetworks() is obsolete in API 31
 					var networks = manager.GetAllNetworks();
+#pragma warning restore CS0618 // ConnectivityManager.GetAllNetworks() is obsolete in API 31
 
 					// some devices running 21 and 22 only use the older api.
 					if (networks.Length == 0 && (int)Build.VERSION.SdkInt < 23)

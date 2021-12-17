@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Automation
 			return (string)element.GetValue(NameProperty);
 		}
 
-		public static DependencyProperty NameProperty =
+		public static DependencyProperty NameProperty { get; } =
 			DependencyProperty.RegisterAttached(
 				"Name",
 				typeof(string),

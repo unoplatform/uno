@@ -1,4 +1,6 @@
-﻿using System.Collections.Specialized;
+﻿#pragma warning disable 105 // Disabled until the tree is migrate to WinUI
+
+using System.Collections.Specialized;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml;

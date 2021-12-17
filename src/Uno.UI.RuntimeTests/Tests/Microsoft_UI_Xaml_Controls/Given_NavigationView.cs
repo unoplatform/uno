@@ -70,18 +70,22 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 
 				var togglePaneButton = navView.FindFirstChild<Button>(b => b.Name == "TogglePaneButton");
-				var iconTextBlock = togglePaneButton?.FindFirstChild<TextBlock>(t => t.Name == "Icon");
+				var icon = togglePaneButton?.FindFirstChild<FrameworkElement>(f => f.Name == "Icon");
+				var iconTextBlock = icon?.FindFirstChild<TextBlock>(includeCurrent: true);
 
-				Assert.AreEqual(Colors.Black, (iconTextBlock.Foreground as SolidColorBrush)?.Color);
+				Assert.IsNotNull(iconTextBlock);
+
+				ColorAssert.IsDark((iconTextBlock.Foreground as SolidColorBrush)?.Color);
 				using (ThemeHelper.UseDarkTheme())
 				{
 					await WindowHelper.WaitForIdle();
 					Assert.AreEqual(Colors.White, (iconTextBlock.Foreground as SolidColorBrush)?.Color);
+					ColorAssert.IsLight((iconTextBlock.Foreground as SolidColorBrush)?.Color);
 #if __ANDROID__
 					// This is the meat of the test - we verify that the actual color of the TextBlock matches the managed Color, which will only be the
 					// case if it was correctly measured and arranged as requested after the theme changed.
 					Assert.AreEqual(false, iconTextBlock.IsLayoutRequested);
-					Assert.AreEqual(Android.Graphics.Color.White, iconTextBlock.NativeArrangedColor);
+					Assert.AreEqual((Android.Graphics.Color)((iconTextBlock.Foreground as SolidColorBrush).Color), iconTextBlock.NativeArrangedColor);
 #endif
 				}
 			}
