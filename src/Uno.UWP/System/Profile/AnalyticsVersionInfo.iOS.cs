@@ -1,13 +1,20 @@
-namespace Windows.System.Profile
-{
-	public partial class AnalyticsVersionInfo
-	{
-		private const string OsName = "iOS";
+using System;
+using UIKit;
+using Windows.System.Profile.Internal;
 
-		partial void Initialize()
+namespace Windows.System.Profile;
+
+public partial class AnalyticsVersionInfo
+{
+	private const string OsName = "iOS";
+
+	partial void Initialize()
+	{
+		DeviceFamily = $"{OsName}.{AnalyticsInfo.DeviceForm}";
+
+		if (Version.TryParse(UIDevice.CurrentDevice.SystemVersion, out var version))
 		{
-			DeviceFamily = $"{OsName}.{AnalyticsInfo.DeviceForm}";
-			DeviceFamilyVersion = UIDevice.CurrentDevice.SystemVersion;
+			DeviceFamilyVersion = VersionHelpers.ToLong(version).ToString();
 		}
 	}
 }

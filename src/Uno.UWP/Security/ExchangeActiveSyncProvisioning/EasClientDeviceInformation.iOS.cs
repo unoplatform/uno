@@ -1,4 +1,6 @@
-﻿namespace Windows.Security.ExchangeActiveSyncProvisioning
+﻿using UIKit;
+
+namespace Windows.Security.ExchangeActiveSyncProvisioning
 {
     public partial class EasClientDeviceInformation
     {
@@ -6,8 +8,9 @@
         {
 			OperatingSystem = "IOS";
 			SystemManufacturer = "Apple inc.";
-			SystemProductName = Android.OS.Build.Model;
-			FriendlyName = Settings.Global.GetString(ContextHelper.Current.ContentResolver, Settings.Global.DeviceName);
+			SystemFirmwareVersion = UIDevice.CurrentDevice.SystemVersion;
+			SystemProductName = UIDevice.CurrentDevice.Model;
+			FriendlyName = UIDevice.CurrentDevice.Name;
 		}
 	}
 }

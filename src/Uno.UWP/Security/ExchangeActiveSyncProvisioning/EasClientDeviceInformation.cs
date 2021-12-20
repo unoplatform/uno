@@ -20,7 +20,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		/// Gets the friendly name of the local device.
 		/// This value might come from a NetBIOS computer name.
 		/// </summary>
-		[NotImplemented("__ANDROID__", "__IOS__", "__WASM__", "__SKIA__", "__MACOS__")]
+		[NotImplemented("__ANDROID__", "__WASM__", "__SKIA__", "__MACOS__")]
 		public string FriendlyName { get; private set; } = "";
 
 		/// <summary>
@@ -38,20 +38,18 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		/// Gets the system manufacturer of the local device.
 		/// Use SystemManufacturer only if the value of SystemSku is empty.
 		/// </summary>
-		[NotImplemented("__WASM__")]
-		public string SystemManufacturer { get; private set; } = "";
+		public string SystemManufacturer { get; private set; } = "System manufacturer";
 
 		/// <summary>
 		/// Gets the system product name of the local device.
 		/// Use SystemProductName only if the value of SystemSku is empty.
 		/// </summary>
-		[NotImplemented("__IOS__", "__WASM__", "__SKIA__", "__MACOS__")]
-		public string SystemProductName { get; private set; } = "";
+		public string SystemProductName { get; private set; } = "System Product Name";
 
 		/// <summary>
 		/// Gets the system SKU of the local device.
 		/// </summary>
-		public string SystemSku { get; private set; } = "";
+		public string SystemSku { get; private set; } = "SKU";
 
 		/// <summary>
 		/// Gets the system firmware version of the local device.

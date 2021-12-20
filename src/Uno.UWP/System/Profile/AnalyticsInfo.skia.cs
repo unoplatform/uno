@@ -2,7 +2,7 @@
 
 using System;
 using Uno.Foundation.Extensibility;
-using Uno.System.Profile;
+using Windows.System.Profile.Internal;
 
 namespace Windows.System.Profile
 {

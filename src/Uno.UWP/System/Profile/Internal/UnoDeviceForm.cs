@@ -1,17 +1,16 @@
 ﻿#nullable enable
 
-namespace Uno.System.Profile
+namespace Windows.System.Profile.Internal;
+
+internal enum UnoDeviceForm
 {
-	internal enum UnoDeviceForm
-	{
-		Unknown,
-		Mobile,
-		Tablet,
-		Television,
-		Car,
-		Watch,
-		VirtualReality,
-		Desktop,
-		GameConsole,
-	}
+	Unknown,
+	Mobile,
+	Tablet,
+	Television,
+	Car,
+	Watch,
+	VirtualReality,
+	Desktop,
+	GameConsole,
 }

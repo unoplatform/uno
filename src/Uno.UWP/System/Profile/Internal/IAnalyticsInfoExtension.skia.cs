@@ -2,10 +2,9 @@
 
 using Uno.System.Profile;
 
-namespace Windows.System.Profile.Internal
+namespace Windows.System.Profile.Internal;
+
+internal interface IAnalyticsInfoExtension
 {
-	internal interface IAnalyticsInfoExtension
-	{
-		UnoDeviceForm GetDeviceForm();
-	}
+	UnoDeviceForm GetDeviceForm();
 }

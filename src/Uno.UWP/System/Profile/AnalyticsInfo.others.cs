@@ -1,11 +1,10 @@
 ﻿#if NET461 || __NETSTD_REFERENCE__
-using Uno.System.Profile;
+using Windows.System.Profile.Internal;
 
-namespace Windows.System.Profile
+namespace Windows.System.Profile;
+
+public partial class AnalyticsInfo
 {
-	public partial class AnalyticsInfo
-    {
-		private static UnoDeviceForm GetDeviceForm() => UnoDeviceForm.Desktop;
-	}
+	private static UnoDeviceForm GetDeviceForm() => UnoDeviceForm.Desktop;
 }
 #endif
