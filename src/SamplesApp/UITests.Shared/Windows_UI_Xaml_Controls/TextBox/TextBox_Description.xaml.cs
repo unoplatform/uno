@@ -17,9 +17,9 @@ using Windows.UI.Xaml.Navigation;
 namespace UITests.Windows_UI_Xaml_Controls.TextBox
 {
 	[Sample("TextBox")]
-    public sealed partial class TextBox_Descripition : Page
+    public sealed partial class TextBox_Description : Page
     {
-        public TextBox_Descripition()
+        public TextBox_Description()
         {
             this.InitializeComponent();
         }
