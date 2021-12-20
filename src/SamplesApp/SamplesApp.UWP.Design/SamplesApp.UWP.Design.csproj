@@ -124,7 +124,7 @@
     <EmbeddedResource Include="Properties\SamplesApp.UWP.Design.rd.xml" />
   </ItemGroup>
   <ItemGroup>
-		<PackageReference Include="IdentityModel.OidcClient" Version="3.1.2" />
+		<PackageReference Include="IdentityModel.OidcClient" Version="5.0.0" />
     <PackageReference Include="Microsoft.Identity.Client">
       <Version>4.15.0</Version>
     </PackageReference>
