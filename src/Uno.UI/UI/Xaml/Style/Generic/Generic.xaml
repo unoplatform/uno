@@ -553,6 +553,7 @@
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
 						</Grid.RowDefinitions>
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="*" />
@@ -767,6 +768,13 @@
 										   HorizontalAlignment="Right"
 										   VerticalAlignment="Center"
 										   AutomationProperties.AccessibilityView="Raw" />
+						<ContentPresenter x:Name="DescriptionPresenter"
+										   Grid.Row="2"
+										   Grid.Column="0"
+										   Grid.ColumnSpan="2"
+										   Foreground="{ThemeResource SystemControlDescriptionTextForegroundBrush}"
+										   Content="{TemplateBinding Description}"
+										   x:Load="False"/>
 						<Popup x:Name="Popup">
 							<Border x:Name="PopupBorder"
 									Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
@@ -4428,6 +4436,7 @@
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
 						</Grid.RowDefinitions>
 						<Border x:Name="BackgroundElement"
 								Grid.Row="1"
@@ -4486,6 +4495,14 @@
 								FontSize="{TemplateBinding FontSize}"
 								VerticalAlignment="Stretch"
 								MinWidth="34" />
+						<ContentPresenter x:Name="DescriptionPresenter"
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Content="{TemplateBinding Description}"
+                            Foreground="{ThemeResource SystemControlDescriptionTextForegroundBrush}"
+                            AutomationProperties.AccessibilityView="Raw"
+                            x:Load="False"/>
 					</Grid>
 				</ControlTemplate>
 			</Setter.Value>
@@ -6029,6 +6046,7 @@
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="*" />
+							<RowDefinition Height="Auto" />
 						</Grid.RowDefinitions>
 						<Border x:Name="BorderElement"
 							Grid.Row="1"
@@ -6093,7 +6111,13 @@
 							Width="{TemplateBinding Height}"
 							VerticalAlignment="Stretch"
 							AutomationProperties.AccessibilityView="Raw"/>
-
+                        <ContentPresenter x:Name="DescriptionPresenter"
+                            Grid.Row="2"
+                            Grid.ColumnSpan="3"
+                            Content="{TemplateBinding Description}"
+                            x:Load="False"
+                            Foreground="{ThemeResource SystemControlDescriptionTextForegroundBrush}"
+                            AutomationProperties.AccessibilityView="Raw" />
 					</Grid>
 				</ControlTemplate>
 			</Setter.Value>
@@ -6123,6 +6147,7 @@
 							PlaceholderText="{TemplateBinding PlaceholderText}"
 							Header="{TemplateBinding Header}"
 							Width="{TemplateBinding Width}"
+                            Description="{TemplateBinding Description}"
 							ScrollViewer.BringIntoViewOnFocusChange="False"
 							Canvas.ZIndex="0"
 							Margin="0"
