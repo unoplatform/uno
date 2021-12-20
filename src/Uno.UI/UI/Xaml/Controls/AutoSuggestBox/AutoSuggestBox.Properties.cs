@@ -66,7 +66,11 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(QueryIconProperty, value);
 		}
 
-		public object Description
+		public 
+#if __IOS__ || __MACOS__
+		new
+#endif
+		object Description
 		{
 			get => this.GetValue(DescriptionProperty);
 			set => this.SetValue(DescriptionProperty, value);
