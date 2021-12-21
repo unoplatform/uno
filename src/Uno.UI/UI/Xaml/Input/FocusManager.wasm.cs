@@ -130,7 +130,9 @@ namespace Windows.UI.Xaml.Input
 			{
 				// This might occur if a non-Uno element receives focus
 				var focusManager = VisualTree.GetFocusManagerForElement(Window.Current.RootElement);
-				focusManager.ClearFocus();
+
+				// The focus manager may be null if JS raises focusin/blur before the app is initialized.
+				focusManager?.ClearFocus();
 			}
 		}
 
