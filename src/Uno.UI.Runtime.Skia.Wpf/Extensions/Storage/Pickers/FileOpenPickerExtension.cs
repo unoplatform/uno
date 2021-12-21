@@ -51,7 +51,7 @@ namespace Uno.Extensions.Storage.Pickers
 			{
 				// Add default entry for all item types at once
 				var fullFilter = string.Join(";", _picker.FileTypeFilter.Select(fileType => $"*{fileType}"));
-				filterBuilder.Append($"All|{fullFilter}");
+				filterBuilder.Append($"|All|{fullFilter}");
 			}
 
 			openFileDialog.Filter = filterBuilder.ToString();
