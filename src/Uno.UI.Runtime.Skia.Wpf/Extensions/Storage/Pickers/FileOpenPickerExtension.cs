@@ -45,16 +45,31 @@ namespace Uno.Extensions.Storage.Pickers
 			};
 
 			var filterBuilder = new StringBuilder();
-			filterBuilder.Append(string.Join("|", _picker.FileTypeFilter.Select(fileType => $"{fileType}|*{fileType}")));
-
-			if (_picker.FileTypeFilter.Count > 1)
+			var all = false;
+			foreach (var fileType in _picker.FileTypeFilter)
 			{
-				// Add default entry for all item types at once
+				if (fileType == "*")
+				{
+					all = true;
+				}
+				else
+				{
+					filterBuilder.Append($"|{fileType}|*{fileType}");
+				}
+			}
+
+			if (all)
+			{
+				filterBuilder.Append("|All|*");
+			}
+			else
+			{
 				var fullFilter = string.Join(";", _picker.FileTypeFilter.Select(fileType => $"*{fileType}"));
 				filterBuilder.Append($"|All|{fullFilter}");
 			}
 
-			openFileDialog.Filter = filterBuilder.ToString();
+
+			openFileDialog.Filter = filterBuilder.ToString(1, filterBuilder.Length - 1);
 			openFileDialog.FilterIndex = _picker.FileTypeFilter.Count > 1 ? _picker.FileTypeFilter.Count : 0;
 
 			openFileDialog.InitialDirectory = PickerHelpers.GetInitialDirectory(_picker.SuggestedStartLocation);
