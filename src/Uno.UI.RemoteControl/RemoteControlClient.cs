@@ -75,7 +75,11 @@ namespace Uno.UI.RemoteControl
 		{
 			try
 			{
+#if __WASM__
 				var isHttps = WebAssemblyRuntime.InvokeJS("window.location.protocol == 'https:'").ToLower() == "true";
+#else
+				const bool isHttps = false;
+#endif
 				async Task<(Uri endPoint, WebSocket socket)> Connect(string endpoint, int port, CancellationToken ct)
 				{
 					var s = new ClientWebSocket();
@@ -111,11 +115,8 @@ namespace Uno.UI.RemoteControl
 						}
 						else
 						{
-							if (isHttps)
-							{
-								return new Uri($"wss://{endpoint}:{port}/rc");
-							}
-							return new Uri($"ws://{endpoint}:{port}/rc");
+							var scheme = isHttps ? "wss" : "ws";
+							return new Uri($"{scheme}://{endpoint}:{port}/rc");
 						}
 					}
 
