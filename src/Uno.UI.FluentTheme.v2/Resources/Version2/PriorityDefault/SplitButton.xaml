@@ -271,7 +271,7 @@
                             Grid.ColumnSpan="3"
                             RequestedBorderBrush="{Binding ElementName=Border, Path=BorderBrush}"
                             RequestedBorderThickness="{Binding ElementName=Border, Path=BorderThickness}"
-                            RequestedCornderRadius="{Binding ElementName=Border, Path=CornerRadius}" />                            
+                            RequestedCornerRadius="{Binding ElementName=Border, Path=CornerRadius}" />                            
                         <Button x:Name="PrimaryButton"
                             Grid.Column="0"
                             Foreground="{TemplateBinding Foreground}"
