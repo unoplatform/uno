@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateBorder()
 		{
-			SetBorder(Thickness.Empty, null, default);
+			SetBorder(Thickness.Empty, null, CornerRadius.None);
 		}
 	}
 }

@@ -257,7 +257,7 @@
                                                     Grid.ColumnSpan="2"
                                                     RequestedBorderBrush="{Binding ElementName=ContentPresenter, Path=BorderBrush}"
                                                     RequestedBorderThickness="{Binding ElementName=ContentPresenter, Path=BorderThickness}"
-                                                    RequestedCornderRadius="{Binding ElementName=ContentPresenter, Path=CornerRadius}" />
+                                                    RequestedCornerRadius="{Binding ElementName=ContentPresenter, Path=CornerRadius}" />
                                             </Grid>
                                         </ControlTemplate>
                                     </Setter.Value>

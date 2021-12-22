@@ -3,10 +3,10 @@ using System.Drawing;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	/// <summary>
 	/// Declares a Content presenter
@@ -20,7 +20,6 @@ namespace Microsoft.UI.Xaml.Controls
 		public ContentPresenter()
 		{
 			InitializeContentPresenter();
-			this.SizeChanged += (_, _) => UpdateBorder();
 		}
 
 		private void SetUpdateTemplate()
@@ -40,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateCornerRadius(CornerRadius radius)
 		{
-			UpdateBorder();
+			SetBorder(BorderThickness, BorderBrush, radius);
 		}
 
 		private void UpdateBorder()
@@ -56,5 +55,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			UpdateBorder();
 		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
+
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 	}
 }
