@@ -677,7 +677,7 @@
                             Grid.ColumnSpan="2"
                             RequestedBorderBrush="{Binding ElementName=Background, Path=BorderBrush}"
                             RequestedBorderThickness="{Binding ElementName=Background, Path=BorderThickness}"
-                            RequestedCornderRadius="{Binding ElementName=Background, Path=CornerRadius}" />
+                            RequestedCornerRadius="{Binding ElementName=Background, Path=CornerRadius}" />
 
                         <Rectangle x:Name="Pill"
                             Style="{StaticResource ComboBoxItemPill}"
@@ -1043,7 +1043,7 @@
                         <ufc:FauxGradientBottomBorder
                             RequestedBorderBrush="{Binding ElementName=BorderElement, Path=BorderBrush}"
                             RequestedBorderThickness="{Binding ElementName=BorderElement, Path=BorderThickness}"
-                            RequestedCornderRadius="{Binding ElementName=BorderElement, Path=CornerRadius}" />
+                            RequestedCornerRadius="{Binding ElementName=BorderElement, Path=CornerRadius}" />
 
                         <ScrollViewer x:Name="ContentElement"
                             Margin="{TemplateBinding BorderThickness}"

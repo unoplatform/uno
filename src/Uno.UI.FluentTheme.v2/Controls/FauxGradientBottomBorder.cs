@@ -1,5 +1,9 @@
 ﻿#nullable enable
 
+using System.Collections.Generic;
+using System.Linq;
+using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Media;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -8,15 +12,17 @@ namespace Uno.UI.FluentTheme.Controls
 {
 	internal partial class FauxGradientBottomBorder : ContentControl
 	{
-#if __WASM__
+#if __WASM__ || __IOS__
+		private static readonly Dictionary<LinearGradientBrush, SolidColorBrush> _overlayBrushCache = new();
+
 		private readonly Border? _displayBorder = null;
 #endif
 
 		public FauxGradientBottomBorder()
 		{
-#if __WASM__
-			HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Stretch;
-			VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Stretch;
+#if __WASM__ || __IOS__
+			HorizontalContentAlignment = HorizontalAlignment.Stretch;
+			VerticalContentAlignment = VerticalAlignment.Stretch;
 			Content = _displayBorder = new Border();
 #endif
 		}
@@ -62,7 +68,7 @@ namespace Uno.UI.FluentTheme.Controls
 
 		private void OnBorderChanged()
 		{
-#if __WASM__
+#if __WASM__ || __IOS__
 			if (_displayBorder == null)
 			{
 				return;
@@ -72,12 +78,53 @@ namespace Uno.UI.FluentTheme.Controls
 			var requestedBorderBrush = RequestedBorderBrush;
 			var requestedCornerRadius = RequestedCornerRadius;
 
-			if (requestedThickness.Bottom == 0 ||
-				requestedBorderBrush is not GradientBrush gradientBrush)
+			if (requestedBorderBrush is not LinearGradientBrush gradientBrush)
 			{
 				_displayBorder.Visibility = Visibility.Collapsed;
 				return;
 			}
+
+#if __WASM__
+			if (requestedCornerRadius == CornerRadius.None)
+			{
+				// WASM can render linear gradient border unless corner radius is set.
+				_displayBorder.Visibility = Visibility.Collapsed;
+				return;
+			}
+#endif
+
+			requestedThickness.Left = 0;
+			requestedThickness.Right = 0;
+			var minorStopAlignment = BorderGradientBrushHelper.GetMinorStopAlignment(gradientBrush);
+			if (minorStopAlignment == VerticalAlignment.Top)
+			{
+				requestedThickness.Bottom = 0;
+			}
+			else
+			{
+				requestedThickness.Top = 0;
+			}
+
+			if (requestedThickness == Thickness.Empty)
+			{
+				_displayBorder.Visibility = Visibility.Collapsed;
+				return;
+			}
+
+			_displayBorder.Visibility = Visibility.Visible;
+
+			if (!_overlayBrushCache.TryGetValue(gradientBrush, out var overlayBrush))
+			{
+				var majorStop = BorderGradientBrushHelper.GetMajorStop(gradientBrush);
+				var minorStop = gradientBrush.GradientStops.First(s => s != majorStop);
+
+				overlayBrush = new SolidColorBrush(minorStop.Color);
+				_overlayBrushCache[gradientBrush] = overlayBrush;
+			}
+
+			_displayBorder.CornerRadius = requestedCornerRadius;
+			_displayBorder.BorderThickness = requestedThickness;
+			_displayBorder.BorderBrush = overlayBrush;
 #endif
 		}
 	}
