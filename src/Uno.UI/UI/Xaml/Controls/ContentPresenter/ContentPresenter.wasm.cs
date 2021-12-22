@@ -39,12 +39,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateCornerRadius(CornerRadius radius)
 		{
-			SetCornerRadius(radius);
+			SetBorder(BorderThickness, BorderBrush, radius);
 		}
 
 		private void UpdateBorder()
 		{
-			SetBorder(BorderThickness, BorderBrush);
+			SetBorder(BorderThickness, BorderBrush, CornerRadius);
 			SetAndObserveBackgroundBrush(Background);
 		}
 

@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Linq;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -35,21 +34,12 @@ namespace Windows.UI.Xaml.Shapes
 				subscription.Disposable = SetAndObserveBackgroundBrush(fwElt, background);
 			}
 
-			if (_border != (borderBrush, borderThickness))
-			{
-				_border = (borderBrush, borderThickness);
-				SetBorder(element, borderThickness, borderBrush);
-			}
-
-			if (_cornerRadius != cornerRadius)
-			{
-				_cornerRadius = cornerRadius;
-				SetCornerRadius(element, cornerRadius);
-			}
+			SetBorder(element, borderThickness, borderBrush, cornerRadius);
 		}
 
-		public static void SetCornerRadius(UIElement element, CornerRadius cornerRadius)
+		public void SetBorder(UIElement element, Thickness thickness, Brush brush, CornerRadius cornerRadius)
 		{
+			var cornerRadiusChanged = cornerRadius != _cornerRadius;
 			if (cornerRadius == CornerRadius.None)
 			{
 				element.ResetStyle("border-radius", "overflow");
@@ -61,10 +51,15 @@ namespace Windows.UI.Xaml.Shapes
 					("border-radius", borderRadiusCssString),
 					("overflow", "hidden")); // overflow: hidden is required here because the clipping can't do its job when it's non-rectangular.
 			}
-		}
+			_cornerRadius = cornerRadius;
 
-		public static void SetBorder(UIElement element, Thickness thickness, Brush brush)
-		{
+			var borderChanged = _border != (brush, thickness) ||
+				(brush is LinearGradientBrush && cornerRadiusChanged); // Corner radius impacts linear gradient border rendering.
+			if (!borderChanged)
+			{
+				return;
+			}
+
 			if (thickness == Thickness.Empty)
 			{
 				element.SetStyle(
@@ -75,24 +70,48 @@ namespace Windows.UI.Xaml.Shapes
 			else
 			{
 				var borderWidth = $"{thickness.Top.ToStringInvariant()}px {thickness.Right.ToStringInvariant()}px {thickness.Bottom.ToStringInvariant()}px {thickness.Left.ToStringInvariant()}px";
+
+				static void ApplySolidColor(UIElement element, Color color, string borderWidth)
+				{
+					element.SetStyle(
+						("border", ""),
+						("border-style", "solid"),
+						("border-color", color.ToHexString()),
+						("border-width", borderWidth));
+				}
+
+				static void ApplyGradient(UIElement element, GradientBrush gradient, string borderWidth)
+				{
+					var border = gradient.ToCssString(element.RenderSize); // TODO: Reevaluate when size is changing
+					element.SetStyle(
+						("border-style", "solid"),
+						("border-color", ""),
+						("border-image", border),
+						("border-width", borderWidth),
+						("border-image-slice", "1"));
+				}
+
 				switch (brush)
 				{
 					case SolidColorBrush solidColorBrush:
-						var borderColor = solidColorBrush.ColorWithOpacity;
-						element.SetStyle(
-							("border", ""),
-							("border-style", "solid"),
-							("border-color", borderColor.ToHexString()),
-							("border-width", borderWidth));
+						ApplySolidColor(element, solidColorBrush.ColorWithOpacity, borderWidth);
+						break;
+					case LinearGradientBrush linearGradientBrush:
+						if (cornerRadius == CornerRadius.None ||
+							!BorderGradientBrushHelper.CanApplySolidColorRendering(linearGradientBrush))
+						{
+							ApplyGradient(element, linearGradientBrush, borderWidth);
+						}
+						else
+						{
+							var majorStop = BorderGradientBrushHelper.GetMajorStop(linearGradientBrush);
+							var borderColor = Color.FromArgb((byte)(linearGradientBrush.Opacity * majorStop.Color.A), majorStop.Color.R, majorStop.Color.G, majorStop.Color.B);
+
+							ApplySolidColor(element, borderColor, borderWidth);
+						}
 						break;
 					case GradientBrush gradientBrush:
-						var border = gradientBrush.ToCssString(element.RenderSize); // TODO: Reevaluate when size is changing
-						element.SetStyle(
-							("border-style", "solid"),
-							("border-color", ""),
-							("border-image", border),
-							("border-width", borderWidth),
-							("border-image-slice", "1"));
+						ApplyGradient(element, gradientBrush, borderWidth);
 						break;
 					case AcrylicBrush acrylicBrush:
 						var acrylicFallbackColor = acrylicBrush.FallbackColorWithOpacity;
@@ -107,6 +126,8 @@ namespace Windows.UI.Xaml.Shapes
 						break;
 				}
 			}
+
+			_border = (brush, thickness);
 		}
 
 		public static IDisposable SetAndObserveBackgroundBrush(FrameworkElement element, Brush brush)
@@ -173,6 +194,12 @@ namespace Windows.UI.Xaml.Shapes
 					RecalculateBrushOnSizeChanged(element, false);
 					break;
 			}
+		}
+
+		public void SetCornerRadius(UIElement element, CornerRadius cornerRadius)
+		{
+			// Apply corner radius while reusing previous border properties.
+			SetBorder(element, _border.Item2, _border.Item1, cornerRadius);
 		}
 
 		private static readonly SizeChangedEventHandler _onSizeChangedForBrushCalculation = (sender, args) =>

@@ -268,7 +268,7 @@
                             MinHeight="32"
                             RequestedBorderBrush="{Binding ElementName=Background, Path=BorderBrush}"
                             RequestedBorderThickness="{Binding ElementName=Background, Path=BorderThickness}"
-                            RequestedCornderRadius="{Binding ElementName=Background, Path=CornerRadius}" />                          
+                            RequestedCornerRadius="{Binding ElementName=Background, Path=CornerRadius}" />                          
                         <TextBlock x:Name="DateText"
                             Grid.Row="1"
                             Grid.Column="1"

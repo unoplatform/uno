@@ -436,7 +436,7 @@
                             Grid.ColumnSpan="2"
                             RequestedBorderBrush="{Binding ElementName=BorderElement, Path=BorderBrush}"
                             RequestedBorderThickness="{Binding ElementName=BorderElement, Path=BorderThickness}"
-                            RequestedCornderRadius="{Binding ElementName=BorderElement, Path=CornerRadius}" />
+                            RequestedCornerRadius="{Binding ElementName=BorderElement, Path=CornerRadius}" />
 
                         <ScrollViewer x:Name="ContentElement"
                             Grid.Row="1"

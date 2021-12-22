@@ -1,5 +1,7 @@
 ﻿using Windows.UI.Xaml.Markup;
 using Windows.UI;
+using Windows.Foundation;
+using System;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -11,8 +13,8 @@ namespace Windows.UI.Xaml.Media
 			GradientStops = new GradientStopCollection();
 		}
 
-		public static DependencyProperty FallbackColorProperty { get; } = DependencyProperty.Register(
-			"FallbackColor", typeof(Color), typeof(GradientBrush), new FrameworkPropertyMetadata(default(Color)));
+		public static DependencyProperty FallbackColorProperty { get ; } = DependencyProperty.Register(
+			nameof(FallbackColor), typeof(Color), typeof(GradientBrush), new FrameworkPropertyMetadata(default(Color)));
 
 		public Color FallbackColor
 		{
@@ -20,8 +22,8 @@ namespace Windows.UI.Xaml.Media
 			set => SetValue(FallbackColorProperty, value);
 		}
 
-		public static DependencyProperty GradientStopsProperty { get; } = DependencyProperty.Register(
-			"GradientStops",
+		public static DependencyProperty GradientStopsProperty { get ; } = DependencyProperty.Register(
+			nameof(GradientStops),
 			typeof(GradientStopCollection),
 			typeof(GradientBrush),
 				new FrameworkPropertyMetadata(
@@ -38,7 +40,7 @@ namespace Windows.UI.Xaml.Media
 
 		public static DependencyProperty MappingModeProperty { get; } =
 			DependencyProperty.Register(
-				"MappingMode",
+				nameof(MappingMode),
 				typeof(BrushMappingMode),
 				typeof(GradientBrush),
 				new FrameworkPropertyMetadata(

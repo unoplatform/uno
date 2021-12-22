@@ -330,7 +330,7 @@
                             Grid.RowSpan="1"
                             RequestedBorderBrush="{Binding ElementName=BorderElement, Path=BorderBrush}"
                             RequestedBorderThickness="{Binding ElementName=BorderElement, Path=BorderThickness}"
-                            RequestedCornderRadius="{Binding ElementName=BorderElement, Path=CornerRadius}" />
+                            RequestedCornerRadius="{Binding ElementName=BorderElement, Path=CornerRadius}" />
                         <ScrollViewer x:Name="ContentElement"
                             Grid.Row="1"
                             HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
