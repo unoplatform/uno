@@ -13,7 +13,7 @@ internal static class VersionHelpers
 		var build = (ushort)version.Build;
 		var revision = (ushort)version.Revision;
 
-		var versionNumber = major << 48 | minor << 32 | build << 16 | revision;
+		var versionNumber = (long)major << 48 | (long)minor << 32 | (long)build << 16 | (long)revision;
 		return versionNumber;
 	}
 }

@@ -18,10 +18,10 @@ namespace UITests.Shared.Windows_System.Profile
 			try
 			{
 				ulong v = ulong.Parse(AnalyticsInfo.VersionInfo.DeviceFamilyVersion);
-				ulong v1 = (v & 0xFFFF000000000000L) >> 48;
-				ulong v2 = (v & 0x0000FFFF00000000L) >> 32;
-				ulong v3 = (v & 0x00000000FFFF0000L) >> 16;
-				ulong v4 = (v & 0x000000000000FFFFL);
+				var v1 = (ushort)((v & 0xFFFF000000000000L) >> 48);
+				var v2 = (ushort)((v & 0x0000FFFF00000000L) >> 32);
+				var v3 = (ushort)((v & 0x00000000FFFF0000L) >> 16);
+				var v4 = (ushort)((v & 0x000000000000FFFFL));
 				var decodedVersion = $"{v1}.{v2}.{v3}.{v4}";
 				DecodedDeviceFamilyVersionTextBlock.Text = decodedVersion;
 			}
