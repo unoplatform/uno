@@ -139,6 +139,8 @@ exports.build = build;
 
 exports.default = series(build, run);
 
+exports.clean = series(clean);
+
 exports.debug = series(useDebug, build, run);
 
 exports.strict = series(useDebug, useStrict, build, run);

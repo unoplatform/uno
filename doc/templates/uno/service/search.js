@@ -153,7 +153,7 @@ function enableSearch() {
 
             postSearchQuery(worker, query);
 
-        }).then(r => r.resolve());
+        });
     }
 
     /**
