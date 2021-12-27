@@ -1,4 +1,6 @@
+using System;
 using Android.OS;
+using Windows.System.Profile.Internal;
 
 namespace Windows.System.Profile;
 
@@ -9,6 +11,14 @@ public partial class AnalyticsVersionInfo
 	partial void Initialize()
 	{
 		DeviceFamily = $"{OsName}.{AnalyticsInfo.DeviceForm}";
-		DeviceFamilyVersion = Build.VERSION.Release;
+		var versionString = Build.VERSION.Release;
+		if (int.TryParse(versionString, out var intVersion))
+		{
+			versionString = $"{intVersion}.0.0.0";
+		}
+		if (Version.TryParse(versionString, out var version))
+		{
+			DeviceFamilyVersion = VersionHelpers.ToLong(version).ToString();
+		}
 	}
 }

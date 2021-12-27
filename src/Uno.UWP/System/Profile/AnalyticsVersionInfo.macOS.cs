@@ -1,5 +1,6 @@
-using AppKit;
+using System;
 using Foundation;
+using Windows.System.Profile.Internal;
 
 namespace Windows.System.Profile;
 
@@ -10,10 +11,10 @@ public partial class AnalyticsVersionInfo
 	partial void Initialize()
 	{
 		DeviceFamily = $"{OsName}.{AnalyticsInfo.DeviceForm}";
-		DeviceFamilyVersion = UIDevice.CurrentDevice.SystemVersion;
+
+		if (Version.TryParse(NSProcessInfo.ProcessInfo.OperatingSystemVersionString, out var version))
+		{
+			DeviceFamilyVersion = VersionHelpers.ToLong(version).ToString();
+		}
 	}
-
-	public string DeviceFamily => OsName + '.' + AnalyticsInfo.DeviceForm;
-
-	public string DeviceFamilyVersion => NSProcessInfo.ProcessInfo.OperatingSystemVersionString;
 }
