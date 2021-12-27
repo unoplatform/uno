@@ -12,7 +12,7 @@ namespace Uno.UI.FluentTheme.Controls
 {
 	internal partial class FauxGradientBottomBorder : ContentControl
 	{
-#if __WASM__ || __IOS__
+#if __WASM__ || __IOS__ || __MACOS__
 		private static readonly Dictionary<LinearGradientBrush, SolidColorBrush> _overlayBrushCache = new();
 
 		private readonly Border? _displayBorder = null;
@@ -20,7 +20,7 @@ namespace Uno.UI.FluentTheme.Controls
 
 		public FauxGradientBottomBorder()
 		{
-#if __WASM__ || __IOS__
+#if __WASM__ || __IOS__ || __MACOS__
 			HorizontalContentAlignment = HorizontalAlignment.Stretch;
 			VerticalContentAlignment = VerticalAlignment.Stretch;
 			Content = _displayBorder = new Border();
@@ -68,7 +68,7 @@ namespace Uno.UI.FluentTheme.Controls
 
 		private void OnBorderChanged()
 		{
-#if __WASM__ || __IOS__
+#if __WASM__ || __IOS__ || __MACOS__
 			if (_displayBorder == null)
 			{
 				return;
@@ -88,6 +88,15 @@ namespace Uno.UI.FluentTheme.Controls
 			if (requestedCornerRadius == CornerRadius.None)
 			{
 				// WASM can render linear gradient border unless corner radius is set.
+				_displayBorder.Visibility = Visibility.Collapsed;
+				return;
+			}
+#endif
+
+#if __IOS__ || __MACOS__
+			if (gradientBrush.RelativeTransform == null)
+			{
+				// iOS can render linear gradient border unless relative transform is used.
 				_displayBorder.Visibility = Visibility.Collapsed;
 				return;
 			}
