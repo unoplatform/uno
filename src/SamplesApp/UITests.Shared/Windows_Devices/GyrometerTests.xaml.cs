@@ -21,7 +21,7 @@ namespace UITests.Shared.Windows_Devices
 	}
 
 	[Bindable]
-	public class GyrometerTestsViewModel : ViewModelBase
+	internal class GyrometerTestsViewModel : ViewModelBase
 	{
 		private readonly Gyrometer _gyrometer = null;
 		private bool _readingChangedAttached;

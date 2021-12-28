@@ -42,7 +42,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 			var dummy = dialog.ShowAsync();
 		}
 
-		public class ComboBoxDialogViewModel : ViewModelBase
+		internal class ComboBoxDialogViewModel : ViewModelBase
 		{
 			public ComboBoxDialogViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 			{

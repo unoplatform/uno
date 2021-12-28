@@ -344,7 +344,7 @@ namespace Windows.UI.Xaml.Controls
 		// Calculates the rectangle to be brought into view from the index.
 		private Rect CalculateBounds(int index)
 		{
-			Rect emptyRect = Rect.Empty;
+			Rect emptyRect = default;
 			bool isVertical = false;
 			Orientation physicalOrientation = Orientation.Vertical;
 			double width = 0;
@@ -750,13 +750,13 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnItemsChanged(object e)
 		{
-			base.OnItemsChanged(e);
-
 			int currentSelectedIndex = 0;
 			int previousSelectedIndex = 0;
 			bool savedSkipAnimationOnce = m_skipAnimationOnce;
 
 			previousSelectedIndex = SelectedIndex;
+
+			base.OnItemsChanged(e); // TODO: this currently will never modify SelectedIndex, because the base method doesn't do anything. As part of work to align selection handling better with WinUI, the logic to update SelectedIndex on collection changes should move to Selector.OnItemsChanged() (which currently doesn't exist).
 
 			currentSelectedIndex = SelectedIndex;
 			if (previousSelectedIndex < 0 ||

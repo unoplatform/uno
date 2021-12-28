@@ -1,11 +1,14 @@
 parameters:
   vmImage: ''
+  vmMacImage: ''
+  poolName: ''
 
 jobs:
 - job: Skia_Tests_Build
   displayName: 'Skia Samples App Build'
   timeoutInMinutes: 60
 
+  #pool: ${{ parameters.poolName }}
   pool:
     vmImage: ${{ parameters.vmImage }}
 
@@ -31,30 +34,46 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Release\netcoreapp3.1
-      ArtifactName: skia-samples-app
+      ArtifactName: skia-gtk-samples-app
       ArtifactType: Container
 
-- job: Skia_Screenshot_Tests
+  - powershell: dotnet msbuild src/SamplesApp/SamplesApp.Skia.WPF/SamplesApp.Skia.WPF.csproj /r /m /p:Configuration=Release /detailedsummary /m # /bl:$(build.artifactstagingdirectory)\build.binlog
+    displayName: Build WPF Head
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.WPF\bin\Release\netcoreapp3.1
+      ArtifactName: skia-wpf-samples-app
+      ArtifactType: Container
+
+##
+## GTK
+##
+
+- job: Skia_Gtk_Screenshot_Tests
   displayName: 'Skia Samples App Snapshot Tests'
   timeoutInMinutes: 60
 
+  #pool: ${{ parameters.poolName }}
   pool:
-    vmImage: ${{ parameters.vmImage }}
+    vmImage: ${{ parameters.vmMacImage }}
 
   dependsOn: Skia_Tests_Build
 
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-        artifactName: skia-samples-app
+        artifactName: skia-gtk-samples-app
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/dotnet-install.yml
-  - template: templates/gtk-install.yml
+  #- template: templates/gtk-install.yml
+  - template: templates/gtk-install-macos.yml
 
   - script: |
-        cd $(build.sourcesdirectory)/build/skia-samples-app
-        SamplesApp.Skia.Gtk.exe --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-gtk-screenshots
+        cd $(build.sourcesdirectory)/build/skia-gtk-samples-app
+        dotnet SamplesApp.Skia.Gtk.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-gtk-screenshots
 
     displayName: Run Skia UI Snapshot Tests
 
@@ -65,34 +84,37 @@ jobs:
       ArtifactName: uitests-results
       ArtifactType: Container
 
-- job: Skia_Runtime_Tests_Build
+- job: Skia_Gtk_Runtime_Tests_Build
   displayName: 'Skia Samples App Runtime Tests'
   timeoutInMinutes: 30
 
+  #pool: ${{ parameters.poolName }}
   pool:
-    vmImage: ${{ parameters.vmImage }}
+    vmImage: ${{ parameters.vmMacImage }}
 
   dependsOn: Skia_Tests_Build
 
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-        artifactName: skia-samples-app
+        artifactName: skia-gtk-samples-app
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/dotnet-install.yml
-  - template: templates/gtk-install.yml
+  #- template: templates/gtk-install.yml
+  - template: templates/gtk-install-macos.yml
 
   - script: |
-        cd $(build.sourcesdirectory)/build/skia-samples-app
-        SamplesApp.Skia.Gtk.exe --runtime-tests=$(build.sourcesdirectory)\build\skia-runtime-tests-results.xml
+        cd $(build.sourcesdirectory)/build/skia-gtk-samples-app
+        dotnet SamplesApp.Skia.Gtk.dll --runtime-tests=$(build.sourcesdirectory)/build/skia-gtk-runtime-tests-results.xml
 
-    displayName: Run Skia Runtime Tests
+    displayName: Run Skia GTK Runtime Tests
 
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Skia Runtime Tests'
+      testRunTitle: 'Skia GTK Runtime Tests'
       testResultsFormat: 'NUnit'
-      testResultsFiles: '$(build.sourcesdirectory)/build/skia-runtime-tests-results.xml'
+      testResultsFiles: '$(build.sourcesdirectory)/build/skia-gtk-runtime-tests-results.xml'
       failTaskOnFailedTests: true
+

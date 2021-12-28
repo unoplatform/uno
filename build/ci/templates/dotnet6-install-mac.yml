@@ -1,19 +1,21 @@
 parameters:
-  DotNetVersion: '6.0.100-rc.1.21452.64'
-  MauiCheck_Version: '0.8.5'
-  MauiCheck_Manifest: 'https://raw.githubusercontent.com/Redth/dotnet-maui-check/d469cb3804d68ad52a1bfec041b95a8800acf4ab/manifests/maui-preview.manifest.json'
+  DotNetVersion: '6.0.100'
+  UnoCheck_Version: '0.2.0-dev.361'
+  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/bf3684e2ad725baa66da3573759129d6bb1d8817/manifests/uno.ui.manifest.json'
   Dotnet_Root: '/usr/local/share/dotnet/'
   Dotnet_Tools: '~/.dotnet/tools'
 
 steps:
   - task: UseDotNet@2
     displayName: install .NET 5
+    retryCountOnTaskFailure: 3
     inputs:
       version: 5.x
       installationPath: ${{ parameters.Dotnet_Root }}
 
   - task: UseDotNet@2
     displayName: install .NET 3.1
+    retryCountOnTaskFailure: 3
     inputs:
       version: 3.1.x
       installationPath: ${{ parameters.Dotnet_Root }}
@@ -25,13 +27,12 @@ steps:
       dotnet --list-sdks
       echo "##vso[task.setvariable variable=PATH]$PATH"
     displayName: install .NET ${{ parameters.DotNetVersion }}
+    retryCountOnTaskFailure: 3
 
-  - pwsh: |
-      echo "##vso[task.setvariable variable=JAVA_HOME]$(JAVA_HOME_11_X64)"
-      echo "##vso[task.setvariable variable=JavaSdkDirectory]$(JAVA_HOME_11_X64)"
-    displayName: Select JDK 11
+  - template: jdk-setup.yml
 
   - bash: |
-      dotnet tool update --global redth.net.maui.check --version ${{ parameters.MauiCheck_Version }} --add-source https://api.nuget.org/v3/index.json
-      maui-check --ci --non-interactive --fix --skip androidsdk --skip xcode --skip vswin --skip vsmac --manifest ${{ parameters.MauiCheck_Manifest }}
+      dotnet tool update --global uno.check --version ${{ parameters.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
+      uno-check --ci --non-interactive --fix --skip androidsdk --skip gtk3 --skip xcode --skip vswin --skip vsmac --manifest ${{ parameters.UnoCheck_Manifest }}
     displayName: Install .NET Workloads
+    retryCountOnTaskFailure: 3

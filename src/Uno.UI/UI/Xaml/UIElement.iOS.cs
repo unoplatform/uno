@@ -5,7 +5,7 @@ using System.Linq;
 using CoreAnimation;
 using CoreGraphics;
 using Foundation;
-using Microsoft.Extensions.Logging;
+
 using UIKit;
 using Uno.Extensions;
 using Uno.UI;
@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using UIViewExtensions = UIKit.UIViewExtensions;
+using ObjCRuntime;
 
 namespace Windows.UI.Xaml
 {

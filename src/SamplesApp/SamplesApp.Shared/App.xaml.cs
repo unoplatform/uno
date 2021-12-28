@@ -7,7 +7,6 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -24,12 +23,17 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation.Metadata;
-using Uno.Logging;
 using Windows.Graphics.Display;
 using System.Globalization;
 using Windows.UI.ViewManagement;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging.Console;
+using Microsoft.Extensions.Logging;
+
+#if !HAS_UNO
+using Uno.Logging;
+#endif
+
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 #else
@@ -43,6 +47,12 @@ namespace SamplesApp
 	/// </summary>
 	sealed public partial class App : Application
 	{
+#if HAS_UNO
+		private static Uno.Foundation.Logging.Logger _log;
+#else
+		private static ILogger _log;
+#endif
+
 		static App()
 		{
 			ConfigureFilters();
@@ -351,7 +361,7 @@ namespace SamplesApp
 			}
 			catch (Exception ex)
 			{
-				this.Log().Error($"Could not navigate to initial sample - {ex}");
+				_log.Error($"Could not navigate to initial sample - {ex}");
 			}
 			return false;
 		}
@@ -385,10 +395,10 @@ namespace SamplesApp
 		public static void ConfigureFilters()
 		{
 #if HAS_UNO
-			System.Threading.Tasks.TaskScheduler.UnobservedTaskException += (s, e) => typeof(App).Log().Error("UnobservedTaskException", e.Exception);
-			AppDomain.CurrentDomain.UnhandledException += (s, e) => typeof(App).Log().Error("UnhandledException", e.ExceptionObject as Exception);
+			System.Threading.Tasks.TaskScheduler.UnobservedTaskException += (s, e) => _log.Error("UnobservedTaskException", e.Exception);
+			AppDomain.CurrentDomain.UnhandledException += (s, e) => _log.Error("UnhandledException", e.ExceptionObject as Exception);
 #endif
-			var factory = LoggerFactory.Create(builder =>
+			var factory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
 			{
 #if __WASM__
 				builder.AddProvider(new Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
@@ -444,7 +454,12 @@ namespace SamplesApp
 
 			});
 
+
 			Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = factory;
+#if HAS_UNO
+			global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
+			_log = Uno.Foundation.Logging.LogExtensionPoint.Factory.CreateLogger(typeof(App));
+#endif
 		}
 
 		static void ConfigureFeatureFlags()

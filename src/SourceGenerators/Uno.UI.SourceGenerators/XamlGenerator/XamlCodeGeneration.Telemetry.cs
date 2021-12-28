@@ -9,7 +9,6 @@ using System.Xml;
 using Uno.Roslyn;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
-using Uno.Logging;
 using Uno.UI.SourceGenerators.Telemetry;
 
 #if NETFRAMEWORK
@@ -36,14 +35,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			bool? isTelemetryOptout()
 				=> telemetryOptOut.Equals("true", StringComparison.OrdinalIgnoreCase)
-				|| telemetryOptOut.Equals("1", StringComparison.OrdinalIgnoreCase);
+				|| telemetryOptOut.Equals("1", StringComparison.OrdinalIgnoreCase)
+				|| _isDesignTimeBuild;
 
 			_telemetry = new Telemetry.Telemetry(isTelemetryOptout);
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
-			{
-				this.Log().InfoFormat($"Telemetry enabled: {_telemetry.Enabled}");
-			}
+#if DEBUG
+			Console.WriteLine($"Telemetry enabled: {_telemetry.Enabled}");
+#endif
 		}
 
 		private bool IsTelemetryEnabled => _telemetry?.Enabled ?? false;
@@ -63,13 +62,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						new[] { ("Duration", elapsed.TotalSeconds) }
 					);
 				}
+#pragma warning disable CS0168 // unused parameter
 				catch (Exception e)
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-					{
-						this.Log().Debug($"Telemetry failure: {e}");
-					}
+#if DEBUG
+					Console.WriteLine($"Telemetry failure: {e}");
+#endif
 				}
+#pragma warning restore CS0168 // unused parameter
 			}
 		}
 
@@ -89,13 +89,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						new[] { ("Duration", elapsed.TotalSeconds) }
 					);
 				}
+#pragma warning disable CS0168 // unused parameter
 				catch (Exception telemetryException)
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-					{
-						this.Log().Debug($"Telemetry failure: {telemetryException}");
-					}
+#if DEBUG
+					Console.WriteLine($"Telemetry failure: {telemetryException}");
+#endif
 				}
+#pragma warning restore CS0168 // unused parameter
 			}
 		}
 
@@ -125,13 +126,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						new[] { ("FileCount", (double)files.Length) }
 					);
 				}
+#pragma warning disable CS0168 // unused parameter
 				catch (Exception telemetryException)
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-					{
-						this.Log().Debug($"Telemetry failure: {telemetryException}");
-					}
+#if DEBUG
+					Console.Write($"Telemetry failure: {telemetryException}");
+#endif
 				}
+#pragma warning restore CS0168 // unused parameter
 			}
 		}
 

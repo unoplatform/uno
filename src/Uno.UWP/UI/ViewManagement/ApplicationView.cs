@@ -8,9 +8,9 @@ using Windows.Foundation;
 using Uno.Devices.Sensors;
 using Uno.Foundation.Extensibility;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+
 using Windows.Storage;
 
 namespace Windows.UI.ViewManagement
@@ -147,7 +147,7 @@ namespace Windows.UI.ViewManagement
 					return Task.FromResult(true);
 				}
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 				{
 					this.Log().LogWarning(
 						$"Cannot not enter view mode {viewMode}, " +
@@ -184,7 +184,7 @@ namespace Windows.UI.ViewManagement
 			{
 				VisibleBounds = newVisibleBounds;
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Updated visible bounds {VisibleBounds}");
 				}

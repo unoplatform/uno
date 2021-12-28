@@ -11,6 +11,7 @@ using Uno.UI.ViewManagement;
 namespace SamplesApp.Droid
 {
 	[Activity(
+			Exported = true,
 			MainLauncher = true,
 			ConfigurationChanges = global::Uno.UI.ActivityHelper.AllConfigChanges,
 			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden
@@ -27,7 +28,7 @@ namespace SamplesApp.Droid
 	public class MainActivity : Windows.UI.Xaml.ApplicationActivity
 	{
 		private bool _onCreateEventInvoked = false;
-
+		
 		public MainActivity()
 		{
 			ApplicationViewHelper.GetBaseActivityEvents().Create += OnCreateEvent;
@@ -80,7 +81,7 @@ namespace SamplesApp.Droid
 	}
 
 
-	[Activity]
+	[Activity(Exported = true)]
 	[IntentFilter(
 		new[] {
 			Android.Content.Intent.ActionView

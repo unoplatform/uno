@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project>
+  <ItemGroup>
+	<Compile Remove="$(MSBuildThisFileDirectory)**\*.cs" />
+	<!-- Remove everything because of the inclusion in source generators -->
+	<Compile Include="$(MSBuildThisFileDirectory)**\*.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Remove="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\**\*.cs" />
+	<Compile Remove="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Logging\**\*.cs" />
+	<Compile Remove="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Logging.Singleton\**\*.cs" />
+	<Compile Remove="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Threading\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Collections\ImmutableList.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\ConversionExtensionPoint.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\ConversionExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\CustomConversionStrategy.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\CustomCulturelessConversionStrategy.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\DefaultConversionExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\EnumConversionStrategy.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\IConversionExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\IConversionStrategy.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\PrimitiveConversionStrategy.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\TypeConverterConversionStrategy.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\DateTimeExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\ExtensionPoint.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\FormattableExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\IExtensionPoint.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\IExtensionPoint.Generic.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\IIndentedStringBuilder.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\IndentedStringBuilder.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\IndentedStringBuilderExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\ObjectExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\StringBuilderExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\ValueType\ByteSupport.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\ValueType\EnumSupport.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\ValueType\Int32Support.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\ValueType\IValueSupport.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\ValueType\IValueSupport.Generic.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\ValueType\ValueSupport.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\ValueType\ValueSupport.Generic.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\ValueType\ValueSupportExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Grouping.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\ObjectReferenceEqualityComparer.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\AssemblyExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\BindingBehavior.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\BindingContract.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\BindingContract.Metro.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\DefaultReflectionExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\EventDescriptor.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\FieldDescriptor.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\IContract.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\IEventDescriptor.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\IMemberDescriptor.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\IMethodDescriptor.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\IReflectionExtensionPoint.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\IReflectionExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\IValueMemberDescriptor.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\MemberDescriptor.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\MemberDescriptorExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\NestedTypeDescriptor.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\PropertyDescriptor.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\ReflectionExtensionPoint.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\ReflectionExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\TypeDescriptor.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\TypeExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\TypeInfoExtensions.Metro.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Reflection\ValueMemberDescriptor.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Threading\AsyncLock.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Validation\ValidationExtensionPoint.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Validation\ValidationExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Threading\FastTaskCompletionSource.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Threading\Transactional.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Threading\Transactional.Immutables.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\ComparableExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Remove="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Equality\FuncComparer.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Remove="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Equality\FuncEqualityComparer.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Remove="$(MSBuildThisFileDirectory)Uno.Core.Extensions\UriExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\FuncAsyncExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\InvocationLockingMode.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
+  </ItemGroup>
+</Project>

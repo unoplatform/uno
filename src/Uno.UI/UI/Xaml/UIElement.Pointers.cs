@@ -20,9 +20,9 @@ using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Imaging;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Xaml;
 
@@ -338,7 +338,7 @@ namespace Windows.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			that.OnDragStarting(args);
 		};
-				#endregion
+		#endregion
 
 		private GestureRecognizer CreateGestureRecognizer()
 		{
@@ -395,7 +395,7 @@ namespace Windows.UI.Xaml
 				this.Log().Error("Haptic feedback for drag failed", error);
 			}
 		}
-				#endregion
+		#endregion
 		
 		#region Manipulations (recognizer settings / custom bubbling)
 		partial void AddManipulationHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
@@ -452,7 +452,7 @@ namespace Windows.UI.Xaml
 			}
 			// Note: We do not need to alter the location of the events, on UWP they are always relative to the OriginalSource.
 		}
-				#endregion
+		#endregion
 
 		#region Gestures (recognizer settings / custom bubbling / early completion)
 		private bool _isGestureCompleted;
@@ -905,7 +905,7 @@ namespace Windows.UI.Xaml
 				// so we should not use them for gesture recognition.
 				var isDragging = _gestures.Value.IsDragging;
 				_gestures.Value.ProcessUpEvent(args.GetCurrentPoint(this), !ctx.IsInternal || isOverOrCaptured);
-				if (isDragging)
+				if (isDragging && !ctx.IsInternal)
 				{
 					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessDropped(args);
 				}

@@ -19,7 +19,8 @@ using Windows.UI.Core;
 using Windows.UI.Xaml.Input;
 using Uno;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -89,7 +90,7 @@ namespace Windows.UI.Xaml.Controls
 				public const string ExpandedWithoutAnimation = "ScrollBarSeparatorExpandedWithoutAnimation";
 				public const string CollapsedWithoutAnimation = "ScrollBarSeparatorCollapsedWithoutAnimation";
 
-				// On WinUI3 visuals states are prefixed with "ScrolBar***s***" (with a trailing 's')
+				// On WinUI3 visuals states are prefixed with "ScrollBar***s***" (with a trailing 's')
 				//public const string Collapsed = "ScrollBarsSeparatorCollapsed";
 				//public const string CollapsedDisabled = "ScrollBarsSeparatorCollapsedDisabled"; // Not supported yet
 				//public const string Expanded = "ScrollBarsSeparatorExpanded";
@@ -745,7 +746,19 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			ScrollableHeight = Math.Max(ExtentHeight - ViewportHeight, 0);
+			// On Skia, the ExtentHeight can include a rounding error, which may cause
+			// unwanted ScrollBar to pop in and out of existence.
+			if (ScrollableHeight < 0.1)
+			{
+				ScrollableHeight = 0;
+			}
 			ScrollableWidth = Math.Max(ExtentWidth - ViewportWidth, 0);
+			// On Skia, the ExtentWidth can include a rounding error, which may cause
+			// unwanted ScrollBar to pop in and out of existence.
+			if (ScrollableWidth < 0.1)
+			{
+				ScrollableWidth = 0;
+			}
 
 			UpdateComputedVerticalScrollability(invalidate: false);
 			UpdateComputedHorizontalScrollability(invalidate: false);

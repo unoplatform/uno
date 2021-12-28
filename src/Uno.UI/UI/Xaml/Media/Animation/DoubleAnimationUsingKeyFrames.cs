@@ -6,7 +6,7 @@ using System.Linq;
 using Windows.UI.Xaml.Markup;
 using Uno.Extensions;
 using Windows.UI.Core;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Diagnostics;
 
 namespace Windows.UI.Xaml.Media.Animation
@@ -277,7 +277,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			// if it's the last animation part, in the end of the DoubleAnimationUsingKeyFrames
 			if (nextAnimatorIndex == KeyFrames.Count)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("DoubleAnimationUsingKeyFrames has ended.");
 				}

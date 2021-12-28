@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI
 {
@@ -77,7 +77,7 @@ namespace Uno.UI
 			}
 			catch (Exception e)
 			{
-				if (typeof(AssetsHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				if (typeof(AssetsHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 				{
 					typeof(AssetsHelper).Log().Error($"Failed to write the assets cache file [{_statsFilePath}]", e);
 				}
@@ -112,7 +112,7 @@ namespace Uno.UI
 			}
 			catch(Exception e)
 			{
-				if (typeof(AssetsHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				if (typeof(AssetsHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 				{
 					typeof(AssetsHelper).Log().Error($"Failed to read the assets cache file [{_statsFilePath}]", e);
 				}

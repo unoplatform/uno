@@ -8,10 +8,10 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Microsoft.Extensions.Logging;
+
 using Uno.Disposables;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using Windows.UI.Core;
@@ -362,7 +362,7 @@ namespace Windows.UI.Xaml
 					}
 					else
 					{
-						var explicitTarget = targets.Find(c => c.Kind == PointerCaptureKind.Explicit)!;
+						var explicitTarget = targets.Find(c => c.Kind.HasFlag(PointerCaptureKind.Explicit))!;
 
 						raise(explicitTarget.Element, routedArgs, BubblingContext.Bubble);
 

@@ -42,6 +42,7 @@
 		<CompilerVisibleProperty Include="BuildingProject" />
 		<CompilerVisibleProperty Include="DesignTimeBuild" />
 		<CompilerVisibleProperty Include="UnoUISourceGeneratorDebuggerBreak" />
+		<CompilerVisibleProperty Include="IsHotReloadHost" />
 
 		<CompilerVisibleProperty Include="UseWPF" />
 		<CompilerVisibleProperty Include="IsUnoHead" />
@@ -89,8 +90,13 @@
 		  Condition="exists('$(MSBuildThisFileDirectory)..\Uno.UI.SourceGenerators.csproj')">
 
 	<ItemGroup >
-	  <Analyzer Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\*.dll" />
-	  <AdditionalFiles Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\*.dll"/>
+	  <_UnoAnalyzerExclusion Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\Microsoft.CodeAnalysis.*.dll" />
+	  <_UnoAnalyzerExclusion Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\System.*.dll" />
+
+	  <Analyzer Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\*.dll"
+			  Exclude="@(_UnoAnalyzerExclusion)" />
+	  <AdditionalFiles Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\*.dll"
+					 Exclude="@(_UnoAnalyzerExclusion)" />
 	  <!-- generator is automatically included in nuget package, no need to add it here -->
 	</ItemGroup>
   </Target>
@@ -369,6 +375,8 @@
 	<Message Importance="high"
 		   Condition="'$(UnoUIUseRoslynSourceGenerators)'==''"
 		   Text="Uno.UI is using Uno.SourceGenerators" />
+
+	  <WriteLinesToFile File="$(IntermediateOutputPath)\build-time-generator.touch" />
   </Target>
 
   <Target Name="_RemoveRoslynUnoSourceGeneration" BeforeTargets="CoreCompile" Condition="'$(UnoUIUseRoslynSourceGenerators)'=='false'">
@@ -417,4 +425,11 @@
 	</CreateProperty>
   </Target>
 
+  <Target Name="_GenerateReloadCookie" BeforeTargets="BeforeCompile" Condition="'$(DefaultLanguageSourceExtension)'=='.cs'">
+		<!-- Generate an empty C# file that OmniSharp can pick up when Uno has marked XAML files as modified -->
+		<WriteLinesToFile File="$(IntermediateOutputPath)\uno.reload.cookie.g.cs" />
+		<ItemGroup>
+			<Compile Include="$(IntermediateOutputPath)\uno.reload.cookie.g.cs" />
+		</ItemGroup>
+  </Target>
 </Project>

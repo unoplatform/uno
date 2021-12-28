@@ -70,16 +70,7 @@ namespace Windows.UI.Core
 		#endif
 		// Skipping already declared property Visible
 		// Skipping already declared property ActivationMode
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.System.DispatcherQueue DispatcherQueue
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DispatcherQueue CoreWindow.DispatcherQueue is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property DispatcherQueue
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.UIContext UIContext

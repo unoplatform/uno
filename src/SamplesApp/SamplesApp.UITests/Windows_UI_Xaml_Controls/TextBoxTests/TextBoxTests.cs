@@ -848,5 +848,46 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			throw new InvalidOperationException($"Color {expectedColor} was not found.");
 		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)]
+		public void TextBox_WithPadding_Focus()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_WithPadding_Focus");
+
+			const string Text = "asdqwe";
+
+			foreach (var marked in new[] { "textBox1", "textBox2" })
+			{
+				// tap near the edge (area pushed/occupied by TextBox.Padding)
+				var rect = _app.GetPhysicalRect(marked);
+				_app.TapCoordinates(rect.Right - 5, rect.Bottom - 5);
+				_app.Wait(seconds: 1);
+
+				_app.EnterText(Text);
+				_app.WaitForText(marked, Text, timeout: TimeSpan.FromSeconds(20));
+			}
+		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_With_Description()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_Description", skipInitialScreenshot: true);
+			var textBox = _app.WaitForElement("DescriptionTextBox")[0];
+			using var screenshot = TakeScreenshot("TextBox Description", new ScreenshotOptions() { IgnoreInSnapshotCompare = true });
+			ImageAssert.HasColorAt(screenshot, textBox.Rect.X + textBox.Rect.Width / 2, textBox.Rect.Y + textBox.Rect.Height - 150, Color.Red);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void PasswordBox_With_Description()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.TextBox.PasswordBox_Description", skipInitialScreenshot: true);
+			var passwordBox = _app.WaitForElement("DescriptionPasswordBox")[0];
+			using var screenshot = TakeScreenshot("PasswordBox Description", new ScreenshotOptions() { IgnoreInSnapshotCompare = true });
+			ImageAssert.HasColorAt(screenshot, passwordBox.Rect.X + passwordBox.Rect.Width / 2, passwordBox.Rect.Y + passwordBox.Rect.Height - 150, Color.Red);
+		}
 	}
 }

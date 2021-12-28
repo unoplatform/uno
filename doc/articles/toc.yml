@@ -14,6 +14,8 @@
       href: get-started-rider.md
     - name: dotnet new templates
       href: get-started-dotnet-new.md
+    - name: Get Started - Uno Figma
+      href: getting-started-uno-figma.md
     - name: Additional setup for Linux
       href: get-started-with-linux.md
     - name: Additional instructions for WinUI 3
@@ -31,7 +33,7 @@
       href: get-started-next-steps.md
     - name: Common issues
       href: get-started-wizard.md
-    - name: Get Started on Visual Studio 2022 (Preview)
+    - name: Get Started on Visual Studio 2022
       href: get-started-vs-2022.md
 - name: How-tos and tutorials
   items:
@@ -435,7 +437,9 @@
       href: uno-development/debugging-uno-ui.md
     - name: Building Uno.UI for macOS using Visual Studio for Mac
       href: uno-development/building-uno-macos.md
-    - name: Using GitPod
+    - name: Using Codespaces
+      href: features/working-with-codespaces.md
+    - name: Using Gitpod
       href: features/working-with-gitpod.md
     - name: Inspecting the visual tree
       href: uno-development/debugging-inspect-visual-tree.md

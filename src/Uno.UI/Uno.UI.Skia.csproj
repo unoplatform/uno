@@ -29,17 +29,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.Core" />
-		<PackageReference Include="Uno.Core.Build" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Uno.MonoAnalyzers" Condition="!$(_IsNetCore)">
-			<PrivateAssets>all</PrivateAssets>
-		</PackageReference>
 		<PackageReference Include="System.Memory" Version="4.5.2" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.Skia.csproj" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
 	</ItemGroup>
@@ -112,21 +108,4 @@
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
 	</ItemGroup>
-
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputCursor.cs" />
-	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputDesktopResourceCursor.cs" />
-	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputKeyboardSource.cs" />
-	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputLightDismissAction.cs" />
-	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputLightDismissEventArgs.cs" />
-	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputObject.cs" />
-	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputPointerSource.cs" />
-	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputPointerSourceDeviceKinds.cs" />
-	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputSystemCursor.cs" />
-	  <UpToDateCheckInput Remove="Microsoft\UI\Input\InputSystemCursorShape.cs" />
-	  <UpToDateCheckInput Remove="Microsoft\UI\Input\IPointerPointTransform.cs" />
-	  <UpToDateCheckInput Remove="Microsoft\UI\Input\PointerDeviceType.cs" />
-	  <UpToDateCheckInput Remove="Microsoft\UI\Input\PointerEventArgs.cs" />
-	</ItemGroup>
-	
 </Project>

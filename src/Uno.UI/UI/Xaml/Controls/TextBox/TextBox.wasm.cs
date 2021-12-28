@@ -50,6 +50,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				AddHandler(PointerReleasedEvent, (PointerEventHandler)OnHeaderClick, true);
 			}
+
+			SetStyle("cursor", "text");
+		}
+
+		partial void OnTappedPartial()
+		{
+			FocusTextView();
 		}
 
 		private void OnHeaderClick(object sender, object args)

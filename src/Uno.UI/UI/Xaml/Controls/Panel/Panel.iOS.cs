@@ -2,7 +2,7 @@ using System;
 using Uno.UI.Views.Controls;
 using Windows.UI.Xaml;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Disposables;
 using Windows.UI.Xaml.Controls;
 using Uno.UI.Controls;

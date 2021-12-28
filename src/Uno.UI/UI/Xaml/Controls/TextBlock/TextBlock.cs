@@ -20,7 +20,8 @@ using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Automation.Peers;
 using Uno;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 
 #if XAMARIN_IOS
 using UIKit;
@@ -938,9 +939,9 @@ namespace Windows.UI.Xaml.Controls
 		private protected override double GetActualWidth() => DesiredSize.Width;
 		private protected override double GetActualHeight() => DesiredSize.Height;
 
-		internal override void UpdateThemeBindings()
+		internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
 		{
-			base.UpdateThemeBindings();
+			base.UpdateThemeBindings(updateReason);
 
 			SetDefaultForeground(ForegroundProperty);
 		}

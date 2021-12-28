@@ -231,6 +231,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private void PrepareTouchScroll(object sender, ManipulationStartingRoutedEventArgs e)
 		{
+			if (e.Container != this)
+			{
+				// This gesture is coming from a nested element, we just ignore it!
+				return;
+			}
+
 			if (e.Pointer.Type != PointerDeviceType.Touch)
 			{
 				e.Mode = ManipulationModes.None;
@@ -249,14 +255,22 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private void UpdateTouchScroll(object sender, ManipulationDeltaRoutedEventArgs e)
-			=> Set(
+		{
+			if (e.Container != this) // No needs to check the pointer type, if the manip is local it's touch, otherwise it was cancelled in starting.
+			{
+				// This gesture is coming from a nested element, we just ignore it!
+				return;
+			}
+
+			Set(
 				horizontalOffset: HorizontalOffset - e.Delta.Translation.X,
 				verticalOffset: VerticalOffset - e.Delta.Translation.Y,
 				isIntermediate: true);
+		}
 
 		private void CompleteTouchScroll(object sender, ManipulationCompletedRoutedEventArgs e)
 		{
-			if ((PointerDeviceType)e.PointerDeviceType != PointerDeviceType.Touch)
+			if (e.Container != this || (PointerDeviceType)e.PointerDeviceType != PointerDeviceType.Touch)
 			{
 				return;
 			}

@@ -5,10 +5,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
-using Microsoft.Extensions.Logging;
+
 using Uno;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
 using Windows.UI.Xaml.Controls;
@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml
 			{
 				_isDispatching = true;
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"{_owner}: Dispatching event {_eventName}");
 				}

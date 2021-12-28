@@ -1,4 +1,4 @@
-﻿using Uno.Logging;
+﻿using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Controls;
@@ -25,7 +25,7 @@ using Uno.Diagnostics.Eventing;
 using Windows.UI.Xaml.Markup;
 using Uno;
 using Windows.UI.Xaml.Media;
-using Microsoft.Extensions.Logging;
+
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
 
@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private readonly static IEventProvider _frameworkElementTrace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
-		private static readonly ILogger _log = typeof(TextBlock).Log();
+		private static readonly Logger _log = typeof(TextBlock).Log();
 
 		public new static class TraceProvider
 		{

@@ -4,7 +4,7 @@ using System;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.Models
 {
-	public class DateTimePickerViewModel : ViewModelBase
+	internal class DateTimePickerViewModel : ViewModelBase
 	{
 		public DateTimePickerViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{

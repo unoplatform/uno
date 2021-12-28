@@ -6,7 +6,7 @@ using System.Text;
 using System.Linq;
 using Uno.Diagnostics.Eventing;
 using Windows.UI.Core;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using System.Diagnostics;
 
@@ -255,7 +255,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			private void OnAnimatorAnimationEnd(object sender, EventArgs e)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("DoubleAnimation has ended.");
 				}
@@ -381,7 +381,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			/// </summary>
 			private void OnAnimatorCancelled(object sender, EventArgs e)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("DoubleAnimation was cancelled.");
 				}

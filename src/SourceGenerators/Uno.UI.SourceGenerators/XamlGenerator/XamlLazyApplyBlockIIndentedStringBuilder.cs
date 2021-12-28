@@ -12,7 +12,7 @@ using Microsoft.CodeAnalysis;
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 
-    internal class XamlLazyApplyBlockIIndentedStringBuilder : IIndentedStringBuilder, IDisposable
+	internal class XamlLazyApplyBlockIIndentedStringBuilder : IIndentedStringBuilder, IDisposable
 	{
 		private bool _applyOpened;
 		private readonly string _closureName;
@@ -20,13 +20,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private IDisposable? _applyDisposable;
 		private readonly string? _applyPrefix;
 		private readonly string? _delegateType;
+		private readonly IDisposable? _parentDisposable;
 
-		public XamlLazyApplyBlockIIndentedStringBuilder(IIndentedStringBuilder source, string closureName, string? applyPrefix, string? delegateType)
+		public XamlLazyApplyBlockIIndentedStringBuilder(IIndentedStringBuilder source, string closureName, string? applyPrefix, string? delegateType, IDisposable? parentDisposable = null)
 		{
 			_closureName = closureName;
 			_source = source;
 			_applyPrefix = applyPrefix;
 			_delegateType = delegateType;
+			_parentDisposable = parentDisposable;
 		}
 
 		private void TryWriteApply()
@@ -45,7 +47,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 				else
 				{
-					blockDisposable = _source.BlockInvariant(".Apply({1}({0} => ", _closureName, delegateString);
+					blockDisposable = _source.BlockInvariant(".GenericApply({1}({0} => ", _closureName, delegateString);
 				}
 
 				_applyDisposable = new DisposableAction(() =>
@@ -102,6 +104,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public void Dispose()
 		{
 			_applyDisposable?.Dispose();
+			_parentDisposable?.Dispose();
 		}
 
 		public override string ToString() => _source.ToString();

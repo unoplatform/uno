@@ -7,6 +7,7 @@ namespace Windows.System
 	#endif
 	public  partial class DispatcherQueue 
 	{
+		// Skipping already declared property HasThreadAccess
 		// Skipping already declared method Windows.System.DispatcherQueue.CreateTimer()
 		// Skipping already declared method Windows.System.DispatcherQueue.TryEnqueue(Windows.System.DispatcherQueueHandler)
 		// Skipping already declared method Windows.System.DispatcherQueue.TryEnqueue(Windows.System.DispatcherQueuePriority, Windows.System.DispatcherQueueHandler)

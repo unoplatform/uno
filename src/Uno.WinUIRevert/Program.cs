@@ -14,16 +14,9 @@ namespace UnoWinUIRevert
 			var basePath = args[0];
 
 			DeleteFolder(Path.Combine(basePath, "src", "Uno.UI", "Generated"));
+			DeleteFolder(Path.Combine(basePath, "src", "Uno.UI.Composition", "Generated"));
 			DeleteFolder(Path.Combine(basePath, "src", "Uno.UWP", "Generated"));
-			DeleteFolder(Path.Combine(basePath, "src", "Uno.UI", "UI", "Composition"));
 			DeleteFolder(Path.Combine(basePath, "src", "Uno.UI", "UI", "Xaml", "Controls", "ProgressBar")); // ProgressBar in WinUI is a replacement of the UWP's version
-
-			var compositionPath = Path.Combine(basePath, @"src", "Uno.UWP", "UI", "Composition");
-			if (Directory.Exists(compositionPath))
-			{
-				Console.WriteLine(@"Moving composition");
-				Directory.Move(compositionPath, Path.Combine(basePath, @"src", "Uno.UI", "UI", "Composition"));
-			}
 
 			var colorsFilepath = Path.Combine(basePath, @"src", "Uno.UWP", "UI", "Colors.cs");
 			if (File.Exists(colorsFilepath))
@@ -67,7 +60,7 @@ namespace UnoWinUIRevert
 				{
 					var relativePath = Path.GetRelativePath(dispatcherQueuePath, file);
 
-					var targetFile = Path.Combine(basePath, "src", "Uno.UI", "UI", "Dispatching", relativePath);
+					var targetFile = Path.Combine(basePath, "src", "Uno.UI.Dispatching", "Dispatching", relativePath);
 
 					Directory.CreateDirectory(Path.GetDirectoryName(targetFile));
 					File.Copy(file, targetFile, true);
@@ -81,7 +74,15 @@ namespace UnoWinUIRevert
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icon\SymbolIconSource.cs"),
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icon\PathIconSource.cs"),
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icon\FontIconSource.cs"),
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icon\IconSource.cs")
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icon\IconSource.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\RatingControl.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Automation\Peers\RatingControlAutomationPeer.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\SplitButton.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\SplitButtonAutomationPeer.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\ToggleSplitButton.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\ToggleSplitButtonAutomationPeer.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\TreeView.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\TwoPaneView.cs"),
 			};
 			DeleteFiles(duplicatedImplementations);
 

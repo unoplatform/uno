@@ -14,13 +14,18 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Globalization;
 using Windows.UI.Core;
 using Windows.Storage;
-using Uno.Extensions;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml;
 using System.IO;
 using Windows.UI.Popups;
+using Uno.Extensions;
 using Uno.UI.Samples.Tests;
+
+#if HAS_UNO
+using Uno.Foundation.Logging;
+#else
+using Microsoft.Extensions.Logging;
+using Uno.Logging;
+#endif
 
 #if XAMARIN || UNO_REFERENCE_API
 using Windows.UI.Xaml.Controls;
@@ -48,6 +53,14 @@ namespace SampleControl.Presentation
 #else
 		private const int _numberOfRecentSamplesVisible = 0;
 #endif
+
+#if HAS_UNO
+		private Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(SampleChooserViewModel));
+#else
+		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(SampleChooserViewModel));
+#endif
+
+
 		private List<SampleChooserCategory> _categories;
 
 		private readonly Uno.Threading.AsyncLock _fileLock = new Uno.Threading.AsyncLock();
@@ -94,9 +107,9 @@ namespace SampleControl.Presentation
 
 			_categories = GetSamples();
 
-			if (this.Log().IsEnabled(LogLevel.Information))
+			if (_log.IsEnabled(LogLevel.Information))
 			{
-				this.Log().Info($"Found {_categories.SelectMany(c => c.SamplesContent).Distinct().Count()} sample(s) in {_categories.Count} categories.");
+				_log.Info($"Found {_categories.SelectMany(c => c.SamplesContent).Distinct().Count()} sample(s) in {_categories.Count} categories.");
 			}
 		}
 
@@ -189,7 +202,7 @@ namespace SampleControl.Presentation
 
 					if (currentContent == null)
 					{
-						this.Log().Debug($"No current Sample Control selected.");
+						_log.Debug($"No current Sample Control selected.");
 						return;
 					}
 
@@ -197,7 +210,7 @@ namespace SampleControl.Presentation
 					builder.AppendLine($"Dump for '{currentContent.GetType().FullName}':");
 					PrintViewHierarchy(currentContent, builder);
 					var toLog = builder.ToString();
-					this.Log().Debug(toLog);
+					_log.Debug(toLog);
 				});
 		}
 
@@ -269,9 +282,9 @@ namespace SampleControl.Presentation
 			}
 			catch (Exception e)
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
+				if (_log.IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error("RecordAllTests exception", e);
+					_log.Error("RecordAllTests exception", e);
 				}
 			}
 		}
@@ -309,9 +322,9 @@ namespace SampleControl.Presentation
 					.Where(testInfo => _targetsToSkip.None(testInfo.Matches))
 					.ToArray();
 
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				if (_log.IsEnabled(LogLevel.Debug))
 				{
-					this.Log().Debug($"Generating tests for {tests.Count()} test in {folderName}");
+					_log.Debug($"Generating tests for {tests.Count()} test in {folderName}");
 				}
 
 				foreach (var sample in tests)
@@ -331,9 +344,9 @@ namespace SampleControl.Presentation
 
 							LogMemoryStatistics();
 
-							if (this.Log().IsEnabled(LogLevel.Debug))
+							if (_log.IsEnabled(LogLevel.Debug))
 							{
-								this.Log().Debug($"Generating {folderName}\\{fileName}");
+								_log.Debug($"Generating {folderName}\\{fileName}");
 							}
 
 							await ShowNewSection(ct, Section.SamplesContent);
@@ -352,16 +365,16 @@ namespace SampleControl.Presentation
 						}
 						catch (Exception e)
 						{
-							this.Log().Error($"Failed to execute test for {fileName}", e);
+							_log.Error($"Failed to execute test for {fileName}", e);
 						}
 
 #if TRACK_REFS
 						Uno.UI.DataBinding.BinderReferenceHolder.LogInactiveViewReferencesStatsDiff(inactiveStats);
 						Uno.UI.DataBinding.BinderReferenceHolder.LogActiveViewReferencesStatsDiff(activeStats);
 #endif
-						if (this.Log().IsEnabled(LogLevel.Debug))
+						if (_log.IsEnabled(LogLevel.Debug))
 						{
-							this.Log().Debug($"Initial diff");
+							_log.Debug($"Initial diff");
 						}
 #if TRACK_REFS
 						Uno.UI.DataBinding.BinderReferenceHolder.LogInactiveViewReferencesStatsDiff(initialInactiveStats);
@@ -370,18 +383,18 @@ namespace SampleControl.Presentation
 					}
 					catch (Exception e)
 					{
-						if (this.Log().IsEnabled(LogLevel.Error))
+						if (_log.IsEnabled(LogLevel.Error))
 						{
-							this.Log().Error("Exception", e);
+							_log.Error("Exception", e);
 						}
 					}
 				}
 
 				ContentPhone = null;
 
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				if (_log.IsEnabled(LogLevel.Debug))
 				{
-					this.Log().Debug($"Final binder reference stats");
+					_log.Debug($"Final binder reference stats");
 				}
 
 #if TRACK_REFS
@@ -391,9 +404,9 @@ namespace SampleControl.Presentation
 			}
 			catch (Exception e)
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
+				if (_log.IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error("RecordAllTests exception", e);
+					_log.Error("RecordAllTests exception", e);
 				}
 			}
 			finally
@@ -560,9 +573,9 @@ namespace SampleControl.Presentation
 			}
 			catch (Exception e)
 			{
-				if (this.Log().IsEnabled(LogLevel.Warning))
+				if (_log.IsEnabled(LogLevel.Warning))
 				{
-					this.Log().Warn("Get last run tests failed, returning empty list", e);
+					_log.Warn("Get last run tests failed, returning empty list", e);
 				}
 				return new List<SampleChooserContent>();
 			}
@@ -783,9 +796,9 @@ description: {sample.Description}";
 			}
 			catch (Exception e)
 			{
-				if (this.Log().IsEnabled(LogLevel.Warning))
+				if (_log.IsEnabled(LogLevel.Warning))
 				{
-					this.Log().Warn("Get favorite samples failed, returning empty list", e);
+					_log.Warn("Get favorite samples failed, returning empty list", e);
 				}
 				return new List<SampleChooserContent>();
 			}
@@ -989,7 +1002,7 @@ description: {sample.Description}";
 				}
 				catch (IOException e)
 				{
-					this.Log().Error(e.Message);
+					_log.Error(e.Message);
 				}
 			}
 #endif
@@ -1009,7 +1022,7 @@ description: {sample.Description}";
 				}
 				catch (IOException e)
 				{
-					this.Log().Error(e.Message);
+					_log.Error(e.Message);
 				}
 			}
 
@@ -1021,7 +1034,7 @@ description: {sample.Description}";
 				}
 				catch (Exception ex)
 				{
-					this.Log().Error($"Could not deserialize Sample chooser file {key}.", ex);
+					_log.Error($"Could not deserialize Sample chooser file {key}.", ex);
 				}
 			}
 #endif

@@ -30,6 +30,8 @@
 		We need an APK for deployment on simulators.
 		-->
 		<AndroidPackageFormat>apk</AndroidPackageFormat>
+		
+		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>
 	</PropertyGroup>
 	
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
@@ -46,10 +48,7 @@
 
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net6.0-android'">
-		<!--<PackageReference Include="Xamarin.Google.Android.Material" Version="1.3.0.1-net6preview01" />-->
-		<!--TODO: Xamarin.AndroidX.Arch.Core.Runtime should be transitive dependency and not needed-->
-		<PackageReference Include="Xamarin.AndroidX.Arch.Core.Runtime" Version="2.1.0.8-net6preview02.4535000" />
-		<PackageReference Include="Xamarin.Google.Android.Material" Version="1.3.0.1-net6preview03.4680155" />
+		<PackageReference Include="Xamarin.Google.Android.Material" Version="1.4.0.4" />
 		<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.35" />
 	</ItemGroup>
 
@@ -86,6 +85,7 @@
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net6.0-android'">
@@ -101,7 +101,8 @@
 		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.net6.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.net6.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.net6.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.DualScreen\Uno.UI.DualScreen.net6.csproj"/>
+		<ProjectReference Include="..\..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.net6.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Foldable\Uno.UI.Foldable.net6.csproj"/>
 		
 		<!--
 		<ProjectReference Include="..\..\Uno.UI.Maps\Uno.UI.Maps.net6.csproj"/>

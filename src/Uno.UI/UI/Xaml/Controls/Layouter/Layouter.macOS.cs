@@ -5,7 +5,7 @@ using System.Text;
 using Uno.Extensions;
 using Uno;
 using Uno.UI;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Collections;
 using Windows.UI.Xaml.Media;
 using Windows.Foundation;
@@ -15,6 +15,10 @@ using AppKit;
 using CoreGraphics;
 using Uno.Disposables;
 using CoreAnimation;
+
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -66,7 +70,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void LogArrange(View view, CGRect frame)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				LogArrange(view, (Rect)frame);
 			}

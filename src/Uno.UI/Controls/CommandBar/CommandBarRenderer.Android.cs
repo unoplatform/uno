@@ -15,8 +15,8 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Android.App;
 using Uno.Extensions;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 using Android.Views.InputMethods;
 using Android.Content;
 using AndroidX.AppCompat.Widget;

@@ -31,6 +31,9 @@ using Font = UIKit.UIFont;
 using CoreGraphics;
 using _Size = Windows.Foundation.Size;
 using Point = Windows.Foundation.Point;
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 #elif __MACOS__
 using AppKit;
 using View = AppKit.NSView;
@@ -39,6 +42,9 @@ using Font = AppKit.NSFont;
 using CoreGraphics;
 using _Size = Windows.Foundation.Size;
 using Point = Windows.Foundation.Point;
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 #elif __WASM__
 using nint = System.Int32;
 using nfloat = System.Double;

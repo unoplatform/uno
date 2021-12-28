@@ -63,7 +63,7 @@ namespace UnitTestsApp
 		/// <returns>The 'running' application.</returns>
 		public static App EnsureApplication()
 		{
-			if (Current == null)
+			if (Current is not App)
 			{
 				var application = new App();
 #if !NETFX_CORE

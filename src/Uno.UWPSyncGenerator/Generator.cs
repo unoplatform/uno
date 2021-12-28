@@ -64,7 +64,7 @@ namespace Uno.UWPSyncGenerator
 
 			_referenceCompilation = LoadProject(@"..\..\..\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj");
 			_iOSCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "xamarinios10");
-			_androidCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "MonoAndroid10.0");
+			_androidCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "MonoAndroid12.0");
 			_net461Compilation = LoadProject($@"{basePath}\{baseName}.csproj", "net461");
 			_macCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "xamarinmac20");
 
@@ -128,7 +128,10 @@ namespace Uno.UWPSyncGenerator
 					where !SkipNamespace(targetType)
 					where targetType.DeclaredAccessibility == Accessibility.Public
 					where ((baseName == "Uno" || baseName == "Uno.Foundation") && !targetType.ContainingNamespace.ToString().StartsWith("Windows.UI.Xaml") && !targetType.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Xaml"))
-					|| (baseName == "Uno.UI" && unoUINamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n)))
+					|| (
+						(baseName == "Uno.UI" || baseName == "Uno.UI.Dispatching" || baseName == "Uno.UI.Composition")
+						&& unoUINamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n))
+					)
 					group targetType by targetType.ContainingNamespace into namespaces
 					orderby namespaces.Key.MetadataName
 					select new
@@ -168,7 +171,7 @@ namespace Uno.UWPSyncGenerator
 			{
 				var pi = new System.Diagnostics.ProcessStartInfo(
 					"cmd.exe",
-					@"/c ""C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe"" -property installationPath"
+					@"/c ""C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe"" -property installationPath -prerelease"
 				)
 				{
 					RedirectStandardOutput = true,
@@ -208,6 +211,26 @@ namespace Uno.UWPSyncGenerator
 			{
 				return @"..\..\..\Uno.Foundation\Generated\2.0.0.0";
 			}
+#if !HAS_UNO_WINUI
+			else if (type.ContainingNamespace.ToString().StartsWith("Windows.UI.Composition")
+			)
+			{
+				return @"..\..\..\Uno.UI.Composition\Generated\3.0.0.0";
+			}
+#else
+			else if (
+				type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Composition")
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.Graphics")
+			)
+			{
+				return @"..\..\..\Uno.UI.Composition\Generated\3.0.0.0";
+			}
+			else if (type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Dispatching")
+			)
+			{
+				return @"..\..\..\Uno.UI.Dispatching\Generated\3.0.0.0";
+			}
+#endif
 			else if (
 				type.ContainingNamespace.ToString().StartsWith("Windows.UI.Xaml")
 				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Xaml")
@@ -1169,6 +1192,36 @@ namespace Uno.UWPSyncGenerator
 				}
 			}
 
+			if (method.ContainingType.Name == "GraphicsCaptureItem")
+			{
+				switch (method.Name)
+				{
+					// Will not be implemented in the UWP API set
+					case "CreateFromVisual":
+						return true;
+				}
+			}
+
+			if (method.ContainingType.Name == "MediaPlayer")
+			{
+				switch (method.Name)
+				{
+					// Will not be implemented in the UWP API set
+					case "GetSurface":
+						return true;
+				}
+			}
+
+			if (method.ContainingType.Name == "PalmRejectionDelayZonePreview")
+			{
+				switch (method.Name)
+				{
+					// Will not be implemented in the UWP API set
+					case "CreateForVisual":
+						return true;
+				}
+			}
+
 			if (method.ContainingType.Name == "ScrollControllerInteractionRequestedEventArgs"
 				&& method.MethodKind == MethodKind.Constructor
 				&& method.Parameters.Length == 1
@@ -1562,6 +1615,37 @@ namespace Uno.UWPSyncGenerator
 				{
 					case "PointerPoint":
 						// Member uses the experimental Input layer from UAP
+						return true;
+				}
+			}
+
+			if (property.ContainingType.Name == "CoreInkPresenterHost")
+			{
+				switch (property.Name)
+				{
+					case "RootVisual":
+						// Member uses the experimental Input layer from UAP
+						return true;
+				}
+			}
+
+			if (property.ContainingType.Name == "AppWindowFrame")
+			{
+				switch (property.Name)
+				{
+					case "DragRegionVisuals":
+						// Member uses the experimental Input layer from UAP
+						return true;
+				}
+			}
+
+			if (property.ContainingType.Name == "MediaPlayerSurface")
+			{
+				switch (property.Name)
+				{
+					// Will not be implemented in the UWP API set
+					case "CompositionSurface":
+					case "Compositor":
 						return true;
 				}
 			}

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage.Streams;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Buffer = Windows.Storage.Streams.Buffer;
 
 namespace Windows.UI.Xaml.Media.Imaging

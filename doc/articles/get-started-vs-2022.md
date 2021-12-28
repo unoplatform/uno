@@ -1,9 +1,9 @@
 # Get Started on Visual Studio 2022
 
-> This section is covering **preview** releases of .NET 6 and Visual Studio 2022. It is a work in progress.
+> This section is covering releases of .NET 6 and Visual Studio 2022. It is a work in progress.
 
 ## Prerequisites
-* [**Visual Studio 2022 Preview 3.1 or later**](https://visualstudio.microsoft.com/), with:
+* [**Visual Studio 2022 7.0 or later**](https://visualstudio.microsoft.com/), with:
     * **Universal Windows Platform** workload installed.
 
     ![visual-studio-installer-uwp](Assets/quick-start/vs-install-uwp.png)
@@ -11,13 +11,12 @@
 	* **Mobile development with .NET (Xamarin)** workload installed.
 
     ![visual-studio-installer-xamarin](Assets/quick-start/vs-install-xamarin.png)
-    * Starting from VS 2022 Preview 4, select the **.NET Maui (Preview)** optional component (Installs the .NET 6 Android/iOS workloads)
-    *
-        * the iOS Remote Simulator installed (for iOS development)
+    * Starting from VS 2022 17.1 Preview 1, select the **.NET Maui (Preview)** optional component (Installs the .NET 6 Android and iOS workloads)
+        * The iOS Remote Simulator installed (for iOS development)
 	    * A working Mac with Visual Studio for Mac, XCode 13.5 Beta or later installed (for iOS development)
 	    * Google's Android x86 emulators or a physical Android device (for Android development)
 
-    * **ASP**.**NET and web** workload installed, along with .NET Core 5.0 (for WASM development)
+    * **ASP**.**NET and web** workload installed, along with .NET 6.0 (for WASM development)
 
     ![visual-studio-installer-web](Assets/quick-start/vs-install-web.png)
 
@@ -26,12 +25,11 @@ For more information about these prerequisites, see [Installing Xamarin](https:/
 ## Finalize your environment setup using uno-check
 * Install the uno-check tool:
    ```
-   dotnet tool install -g Uno.Check --version 0.2.0-dev.327
+   dotnet tool install -g Uno.Check
    ```
-   If a [later version is available](https://www.nuget.org/packages/Uno.Check), you can use it instead of 0.2.0-dev.327
 * Run the uno-check tool:
    ```
-   uno-check --preview
+   uno-check
    ```
 
 Follow the steps indicated by the tool.
@@ -54,7 +52,7 @@ To easily create a multi-platform application:
 * To debug the iOS:
     - In the "Debug toolbar" drop down, select framework `net6.0-ios`
     - Select an active device
-    > Note that VS 2022 support for iOS is still a work in progress and may not deploy properly. Deploying to physical devices is not supported as of 17.0 Preview 2.
+    > Note that VS 2022 support for iOS is still a work in progress and may not deploy properly. Deploying to physical devices is not supported as of 17.1 Preview 1.
 * To debug the Android platform:
     - In the "Debug toolbar" drop down, select framework `net6.0-android`
     - Select an active device in "Device" sub-menu
@@ -76,9 +74,6 @@ If XAML Intellisense isn't working on a freshly-created project, try the followi
 2. Close all XAML documents.
 3. Close and reopen Visual Studio.
 4. Reopen XAML documents.
-
-### Video Tutorial
-**To be defined**
 
 ### Troubleshooting Visual Studio and Uno Platform Installation Issues
 

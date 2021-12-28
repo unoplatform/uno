@@ -14,7 +14,7 @@ using Android.Content;
 using Android.Views;
 using Android.Graphics;
 using Android.Runtime;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using AndroidMediaPlayer = Android.Media.MediaPlayer;
 using System.Collections.Generic;
 using Uno;

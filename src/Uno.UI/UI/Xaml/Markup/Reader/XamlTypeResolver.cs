@@ -1,4 +1,5 @@
-﻿
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -8,19 +9,25 @@ using System.Text;
 using Uno;
 using Uno.Extensions;
 using Uno.Xaml;
+using Windows.UI;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Markup.Reader
 {
-    internal class XamlTypeResolver
-    {
-		private readonly static Assembly _frameworkElementAssembly = typeof(FrameworkElement).Assembly;
+	internal class XamlTypeResolver
+	{
+		private readonly static Assembly[] _lookupAssemblies = new[]{
+			typeof(FrameworkElement).Assembly,
+			typeof(Color).Assembly,
+			typeof(Size).Assembly,
+		};
 
-        private readonly Func<string, Type> _findType;
+        private readonly Func<string?, Type?> _findType;
         private readonly Func<Type, string, bool> _isAttachedProperty;
         private readonly XamlFileDefinition FileDefinition;
-        private readonly Func<string, string, Type> _findPropertyTypeByName;
-        private readonly Func<XamlMember, Type> _findPropertyTypeByXamlMember;
-        private readonly Func<Type, PropertyInfo> _findContentProperty;
+        private readonly Func<string, string, Type?> _findPropertyTypeByName;
+        private readonly Func<XamlMember, Type?> _findPropertyTypeByXamlMember;
+        private readonly Func<Type?, PropertyInfo?> _findContentProperty;
 
 		public static ImmutableDictionary<string, string[]> KnownNamespaces { get; } 
 			= new Dictionary<string, string[]>
@@ -43,9 +50,9 @@ namespace Windows.UI.Xaml.Markup.Reader
             _findType = SourceFindType;
             _findType = _findType.AsMemoized();
             _isAttachedProperty = Funcs.Create<Type, string, bool>(SourceIsAttachedProperty).AsLockedMemoized();
-            _findPropertyTypeByXamlMember = Funcs.Create<XamlMember, Type>(SourceFindPropertyType).AsLockedMemoized();
-            _findPropertyTypeByName = Funcs.Create<string, string, Type>(SourceFindPropertyType).AsLockedMemoized();
-            _findContentProperty = Funcs.Create<Type, PropertyInfo>(SourceFindContentProperty).AsLockedMemoized();
+            _findPropertyTypeByXamlMember = Funcs.Create<XamlMember, Type?>(SourceFindPropertyType).AsLockedMemoized();
+            _findPropertyTypeByName = Funcs.Create<string, string, Type?>(SourceFindPropertyType).AsLockedMemoized();
+            _findContentProperty = Funcs.Create<Type?, PropertyInfo?>(SourceFindContentProperty).AsLockedMemoized();
         }
 
         public bool IsAttachedProperty(XamlMemberDefinition member)
@@ -100,17 +107,40 @@ namespace Windows.UI.Xaml.Markup.Reader
             return false;
         }
 
-        public PropertyInfo GetPropertyByName(XamlType declaringType, string propertyName) 
-            => GetPropertyByName(FindType(declaringType), propertyName);
+		public PropertyInfo? GetPropertyByName(XamlType declaringType, string propertyName, BindingFlags? flags = null)
+			=> GetPropertyByName(FindType(declaringType), propertyName, flags);
 
-        public PropertyInfo FindContentProperty(Type elementType)
+		public FieldInfo? GetFieldByName(XamlType declaringType, string propertyName, BindingFlags? flags = null)
+			=> GetFieldByName(FindType(declaringType), propertyName, flags);
+
+		public PropertyInfo? FindContentProperty(Type? elementType)
             => _findContentProperty(elementType);
 
-        private static PropertyInfo GetPropertyByName(Type type, string propertyName) 
-            => type?.GetProperties().FirstOrDefault(p => p.Name == propertyName);
+		public PropertyInfo? GetPropertyByName(Type? type, string propertyName, BindingFlags? flags = null)
+			=> (flags != null
+				? type?.GetProperties(flags.Value)
+				: type?.GetProperties()
+			)?.FirstOrDefault(p => p.Name == propertyName);
 
-        private PropertyInfo SourceFindContentProperty(Type elementType)
+		public FieldInfo? GetFieldByName(Type? type, string propertyName, BindingFlags? flags = null)
+			=> (flags != null
+				? type?.GetFields(flags.Value)
+				: type?.GetFields()
+			)?.FirstOrDefault(p => p.Name == propertyName);
+
+		public EventInfo? GetEventByName(XamlType declaringType, string eventName)
+			=> GetEventByName(FindType(declaringType), eventName);
+
+		private static EventInfo? GetEventByName(Type? type, string eventName)
+				=> type?.GetEvents().FirstOrDefault(p => p.Name == eventName);
+
+        private PropertyInfo? SourceFindContentProperty(Type? elementType)
         {
+			if(elementType == null)
+			{
+				return null;
+			}
+
             var data = elementType
                 .GetCustomAttributes<ContentPropertyAttribute>()
                 .FirstOrDefault();
@@ -135,11 +165,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 		/// <summary>
 		/// Returns true if the property has an accessible public setter and has a parameterless constructor
 		/// </summary>
-		public bool IsNewableProperty(PropertyInfo property, out Type newableType)
+		public bool IsNewableProperty(PropertyInfo property, out Type? newableType)
 		{
 			var namedType = property.PropertyType as Type;
 
-			var isNewable = property.SetMethod.SelectOrDefault(m => m.IsPublic, false) &&
+			var isNewable = (property.SetMethod?.IsPublic ?? false) &&
 				namedType.SelectOrDefault(nts => nts.GetConstructors().Any(ms => ms.GetParameters().Length == 0), false);
 
 			newableType = isNewable ? namedType : null;
@@ -147,7 +177,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			return isNewable;
 		}
 
-		public DependencyProperty FindDependencyProperty(XamlMemberDefinition member)
+		public DependencyProperty? FindDependencyProperty(XamlMemberDefinition member)
 		{
 			var propertyOwner = FindType(member.Member.DeclaringType);
 
@@ -163,7 +193,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 		}
 
-		public DependencyProperty FindDependencyProperty(Type propertyOwner, string propertyName)
+		public DependencyProperty? FindDependencyProperty(Type propertyOwner, string? propertyName)
 		{
 			var propertyDependencyPropertyQuery = GetAllProperties(propertyOwner)
 								.Where(p => p.Name == propertyName + "Property")
@@ -181,32 +211,36 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 		private static IEnumerable<PropertyInfo> GetAllProperties(Type type)
 		{
-			while(type != typeof(object))
+			Type? currentType = type;
+
+			while(currentType != null && currentType != typeof(object))
 			{
-				foreach(var property in type.GetProperties())
+				foreach(var property in currentType.GetProperties())
 				{
 					yield return property;
 				}
 
-				type = type.BaseType;
+				currentType = currentType.BaseType;
 			}
 		}
 
 		private static IEnumerable<FieldInfo> GetAllFields(Type type)
 		{
-			while (type != typeof(object))
+			Type? currentType = type;
+
+			while (currentType != null && currentType != typeof(object))
 			{
-				foreach (var field in type.GetFields())
+				foreach (var field in currentType.GetFields())
 				{
 					yield return field;
 				}
 
-				type = type.BaseType;
+				currentType = currentType.BaseType;
 			}
 		}
 
 		private bool IsInitializableProperty(PropertyInfo property) 
-            => !property.SetMethod.SelectOrDefault(m => m.IsPublic, false);
+            => !(property.SetMethod?.IsPublic ?? false);
 
         public bool IsCollectionOrListType(Type type)
         {
@@ -218,7 +252,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
         private bool IsImplementingInterface(Type type, Type iface) => 
             type
-                .Flatten(t => t.BaseType)
+                .Flatten(t => t.BaseType!)
                 .Any(t => t
                     .GetInterfaces()
                     .Any(i => 
@@ -227,7 +261,7 @@ namespace Windows.UI.Xaml.Markup.Reader
                     )
                 );
 
-        public bool IsType(XamlType xamlType, string typeName)
+        public bool IsType(XamlType xamlType, string? typeName)
         {
             var type = FindType(xamlType);
 
@@ -253,7 +287,7 @@ namespace Windows.UI.Xaml.Markup.Reader
             return false;
         }
 
-        public Type FindType(string name)
+        public Type? FindType(string? name)
         {
 			if (name.IsNullOrWhiteSpace())
 			{
@@ -263,7 +297,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			return _findType(name);
         }
 
-        public Type FindType(XamlType type)
+        public Type? FindType(XamlType? type)
         {
             if (type != null)
             {
@@ -282,7 +316,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 					}
                 }
 
-                var fullName = isKnownNamespace ? ns.Prefix + ":" + type.Name : type.Name;
+                var fullName = isKnownNamespace ? ns?.Prefix + ":" + type.Name : type.Name;
 
                 return _findType(fullName);
             }
@@ -292,8 +326,13 @@ namespace Windows.UI.Xaml.Markup.Reader
             }
         }
 
-        private Type SourceFindType(string name)
+        private Type? SourceFindType(string? name)
         {
+			if(name == null)
+			{
+				return null;
+			}
+
             var originalName = name;
 
             if (name.Contains(":"))
@@ -320,7 +359,7 @@ namespace Windows.UI.Xaml.Markup.Reader
                         .Namespaces
                         .Where(n => n.Prefix.None())
                         .FirstOrDefault()
-                        .SelectOrDefault(n => n.Namespace);
+                        ?.Namespace ?? "";
 
                 var clrNamespaces = KnownNamespaces.UnoGetValueOrDefault(defaultXmlNamespace, Array.Empty<string>());
 
@@ -330,16 +369,19 @@ namespace Windows.UI.Xaml.Markup.Reader
 					// This lookup is performed in the current assembly as it is the
 					// original behavior, and the Wasm AOT engine does not yet respect this
 					// behavior (because of Wasm missing stack walking feature)
-					var type = _frameworkElementAssembly.GetType(clrNamespace + "." + name);
+					foreach (var assembly in _lookupAssemblies)
+					{
+						var type = assembly.GetType(clrNamespace + "." + name);
 
-                    if (type != null)
-                    {
-                        return type;
-                    }
+						if (type != null)
+						{
+							return type;
+						}
+					}
                 }
             }
 
-            var resolvers = new Func<Type>[] {
+            var resolvers = new Func<Type?>[] {
 
 				// As a full name
 				() => Type.GetType(name),
@@ -367,10 +409,17 @@ namespace Windows.UI.Xaml.Markup.Reader
         }
         private static bool SourceIsAttachedProperty(Type type, string name)
         {
+			Type? currentType = type;
+
             do
             {
-                var property = type.GetProperties().FirstOrDefault(p => p.Name == name);
-                var setMethod = type.GetMethods().FirstOrDefault(p => p.Name == "Set" + name);
+				if (currentType == null)
+				{
+					return false;
+				}
+
+				var property = currentType.GetProperties().FirstOrDefault(p => p.Name == name);
+                var setMethod = currentType.GetMethods().FirstOrDefault(p => p.Name == "Set" + name);
 
                 if (property?.GetMethod?.IsStatic ?? false)
                 {
@@ -382,7 +431,7 @@ namespace Windows.UI.Xaml.Markup.Reader
                     return true;
                 }
 
-                type = type.BaseType;
+				currentType = currentType.BaseType;
 
                 if (type == null || type.Name == "Object")
                 {
@@ -392,9 +441,9 @@ namespace Windows.UI.Xaml.Markup.Reader
             } while (true);
         }
 
-        public Type FindPropertyType(XamlMember xamlMember) => _findPropertyTypeByXamlMember(xamlMember);
+        public Type? FindPropertyType(XamlMember xamlMember) => _findPropertyTypeByXamlMember(xamlMember);
 
-        private Type SourceFindPropertyType(XamlMember xamlMember)
+        private Type? SourceFindPropertyType(XamlMember xamlMember)
         {
             // Search for the type the clr namespaces registered with the xml namespace
             if (xamlMember.DeclaringType != null)
@@ -417,12 +466,12 @@ namespace Windows.UI.Xaml.Markup.Reader
             var type = FindType(xamlMember.DeclaringType);
 
             // If not, try to find the closest match using the name only.
-            return FindPropertyType(type.SelectOrDefault(t => t.FullName, "$$unknown"), xamlMember.Name);
+            return FindPropertyType(type?.FullName ?? "$$unknown", xamlMember.Name);
         }
 
-        public Type FindPropertyType(string ownerType, string propertyName) => _findPropertyTypeByName(ownerType, propertyName);
+        public Type? FindPropertyType(string ownerType, string propertyName) => _findPropertyTypeByName(ownerType, propertyName);
 
-        private Type SourceFindPropertyType(string ownerType, string propertyName)
+        private Type? SourceFindPropertyType(string ownerType, string propertyName)
         {
             var type = FindType(ownerType);
 

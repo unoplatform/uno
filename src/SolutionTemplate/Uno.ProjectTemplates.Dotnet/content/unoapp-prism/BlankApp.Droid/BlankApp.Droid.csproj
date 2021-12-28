@@ -62,7 +62,8 @@
   <ItemGroup>
     <PackageReference Include="Uno.UI" Version="3.0.5" />
     <PackageReference Include="Uno.UI.RemoteControl" Version="3.0.5" Condition="'$(Configuration)'=='Debug'" />
-    <PackageReference Include="Uno.UniversalImageLoader" Version="1.9.33" />
+		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="3.0.5" />
+		<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.33" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 
@@ -97,6 +98,4 @@
   </ItemGroup>
   <Import Project="..\BlankApp.Shared\BlankApp.Shared.projitems" Label="Shared" Condition="Exists('..\BlankApp.Shared\BlankApp.Shared.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
-  <!-- This will force the generation of the APK when not building inside visual studio -->
-  <Target Name="GenerateBuild" DependsOnTargets="SignAndroidPackage" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''" />
 </Project>

@@ -12,12 +12,16 @@ using Uno.Diagnostics.Eventing;
 using Uno;
 using Uno.UI.DataBinding;
 using System.Linq;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 using System.Collections.Specialized;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using Windows.Foundation;
+
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -326,7 +330,7 @@ namespace Windows.UI.Xaml.Controls
 			//If data reload is scheduled, call it immediately to avoid NSInternalInconsistencyException caused by supplying layoutAttributes for index paths that the list doesn't 'know about'
 			if (Owner?.NeedsReloadData ?? false)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("LVBL: Calling immediate data reload");
 				}
@@ -450,7 +454,7 @@ namespace Windows.UI.Xaml.Controls
 
 					if (createLayoutInfo)
 					{
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 						{
 							this.Log().Debug("Created new layout info.");
 						}
@@ -909,7 +913,7 @@ namespace Windows.UI.Xaml.Controls
 						frameOffset = sectionMin;
 					}
 
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug) && frameOffset != (axisIndex == 0 ? frame.X : frame.Y))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug) && frameOffset != (axisIndex == 0 ? frame.X : frame.Y))
 					{
 						this.Log().Debug($"Sticky group header adjustment: offsetting header for group {section} by {frameOffset - (axisIndex == 0 ? frame.X : frame.Y)}");
 					}
@@ -1015,7 +1019,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_dirtyState = DirtyState.NeedsRelayout;
 			}
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Invalidating layout with dirty state={_dirtyState}");
 			}
@@ -1154,7 +1158,7 @@ namespace Windows.UI.Xaml.Controls
 				else //No group headers, ie this is an update for the list header
 				{
 					//Offset all items
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Applying offset of {extentDifference} to all items");
 					}
@@ -1260,7 +1264,7 @@ namespace Windows.UI.Xaml.Controls
 			if (applyOffsetToThis)
 			{
 				//Update group header, if it's not the one that triggered the update
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Applying offset of {extentDifference} to group header for section {groupHeaderLayout.IndexPath.Section}");
 				}
@@ -1269,7 +1273,7 @@ namespace Windows.UI.Xaml.Controls
 				_inlineHeaderFrames[groupHeaderLayout.IndexPath.Section] = AdjustExtentOffset(_inlineHeaderFrames[groupHeaderLayout.IndexPath.Section], extentDifference);
 			}
 			//Update all items in this group
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Applying offset of {extentDifference} to each item in section {groupHeaderLayout.IndexPath.Section}");
 			}

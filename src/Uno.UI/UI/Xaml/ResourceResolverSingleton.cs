@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
-using Microsoft.Extensions.Logging;
+
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
@@ -34,6 +34,10 @@ namespace Uno.UI
 		public object ResolveResourceStatic(object key, Type type, object context) => ResourceResolver.ResolveResourceStatic(key, type, context);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
+		public void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, bool isHotReloadSupported, object context) => ResourceResolver.ApplyResource(owner, property, resourceKey, isThemeResourceExtension, isHotReloadSupported, context);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		// This overload is kept for backwards compatibility
 		public void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, object context) => ResourceResolver.ApplyResource(owner, property, resourceKey, isThemeResourceExtension, context);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]

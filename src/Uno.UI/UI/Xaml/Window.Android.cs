@@ -5,7 +5,7 @@ using Android.Util;
 using Android.Views;
 using Uno.Disposables;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
 using Windows.ApplicationModel.Core;
@@ -350,7 +350,7 @@ namespace Windows.UI.Xaml
 
 		internal IDisposable OpenPopup(Controls.Primitives.Popup popup)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Creating popup");
 			}
@@ -367,7 +367,7 @@ namespace Windows.UI.Xaml
 				Disposable.Create(() =>
 				{
 
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Closing popup");
 					}

@@ -62,29 +62,23 @@ jobs:
     CI_Build: true
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
+    VS_MSBUILD: '/Applications/Visual Studio.app/Contents/Resources/lib/monodevelop/bin/MSBuild/Current/bin/msbuild.dll'
 
   steps:
   - checkout: self
     clean: true
 
   - template: templates/dotnet-install.yml
+  - template: templates/jdk-setup.yml
 
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - task: MSBuild@1
-    inputs:
-      solution: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Droid/SamplesApp.Droid.csproj
-      msbuildLocationMethod: version
-      msbuildVersion: latest
-      msbuildArchitecture: x86
-      msbuildArguments: /m /r /p:Configuration=Release /p:IsUiAutomationMappingEnabled=true
-      clean: false
-      maximumCpuCount: true
-      restoreNugetPackages: false
-      logProjectEvents: false
-      createLogFile: false
+  - script: |
+      mono '$(VS_MSBUILD)' '$(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Droid/SamplesApp.Droid.csproj' /m /r /p:Configuration=Release /p:IsUiAutomationMappingEnabled=true /p:AndroidBuildApplicationPackage=True /bl:$(build.artifactstagingdirectory)/android-sampleapp.binlog
+    displayName: Build Android App
+
 
   - task: CopyFiles@2
     inputs:
@@ -208,6 +202,8 @@ jobs:
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/optimize-roslyn-mono.yml
+
+  - template: templates/dotnet-install.yml
 
   - template: templates/ios-build-select-version.yml
     parameters:

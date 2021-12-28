@@ -2,39 +2,48 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "build",
+      "label": "build-wasm",
       "command": "dotnet",
       "type": "process",
       "args": [
         "build",
-        "${workspaceFolder}/UnoWinUIQuickStart.Wasm/UnoWinUIQuickStart.Wasm.csproj",
+        "${workspaceFolder}/UnoQuickStart.Wasm/UnoQuickStart.Wasm.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "publish",
+      "label": "publish-wasm",
       "command": "dotnet",
       "type": "process",
       "args": [
         "publish",
-        "${workspaceFolder}/UnoWinUIQuickStart.Wasm/UnoWinUIQuickStart.Wasm.csproj",
+        "${workspaceFolder}/UnoQuickStart.Wasm/UnoQuickStart.Wasm.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "watch",
+      "label": "build-skia-gtk",
       "command": "dotnet",
       "type": "process",
-      "options": { "cwd": "${workspaceFolder}/UnoWinUIQuickStart.Wasm" },
-      "isBackground": true,
       "args": [
-        "watch",
-        "run",
-        "${workspaceFolder}/UnoWinUIQuickStart.Wasm/UnoWinUIQuickStart.Wasm.csproj",
+        "build",
+        "${workspaceFolder}/UnoQuickStart.Skia.Gtk/UnoQuickStart.Skia.Gtk.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publish-skia-gtk",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "publish",
+        "${workspaceFolder}/UnoQuickStart.Skia.Gtk/UnoQuickStart.Skia.Gtk.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],

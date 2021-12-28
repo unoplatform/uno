@@ -147,8 +147,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					builder.AppendLineInvariant($"using System.Diagnostics.CodeAnalysis;");
 					builder.AppendLineInvariant($"using Uno.Disposables;");
 					builder.AppendLineInvariant($"using System.Runtime.CompilerServices;");
-					builder.AppendLineInvariant($"using Uno.Extensions;");
-					builder.AppendLineInvariant($"using Uno.Logging;");
 					builder.AppendLineInvariant($"using Uno.UI;");
 					builder.AppendLineInvariant($"using Uno.UI.DataBinding;");
 					builder.AppendLineInvariant($"using Windows.UI.Xaml;");
@@ -859,7 +857,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				builder.AppendLineInvariant(@"public Windows.UI.Core.CoreDispatcher Dispatcher => Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher;");
 
 				builder.AppendLineInvariant(@"#if HAS_UNO_WINUI");
-				builder.AppendLineInvariant(@"public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue => global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();");
+				builder.AppendLineInvariant(@"public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue {{ get; }} = global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();");
 				builder.AppendLineInvariant(@"#endif");
 
 				using (builder.BlockInvariant($"private DependencyObjectStore __Store"))

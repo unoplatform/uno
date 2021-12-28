@@ -18,22 +18,25 @@
   <ItemGroup>
 	<PackageReference Update="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.9" />
 	<!-- Keep aligned with MSBuild extras' default ExtrasUwpMetaPackageVersion -->
-	<PackageReference Update="Uno.SourceGenerationTasks" Version="3.2.0" />
-	<PackageReference Update="Uno.SourceGeneration" Version="3.2.0" />
-	<PackageReference Update="Uno.Core" Version="3.0.0" />
-	<PackageReference Update="Uno.Core.Build" Version="3.0.0" />
-	<PackageReference Update="Uno.Diagnostics.Eventing" Version="1.0.4" />
+	<PackageReference Update="Uno.SourceGenerationTasks" Version="4.0.0" />
+	<PackageReference Update="Uno.SourceGeneration" Version="4.0.0" />
+	<PackageReference Update="Uno.Core.Extensions" Version="4.0.1" />
+	<PackageReference Update="Uno.Core.Extensions.Logging" Version="4.0.1" />
+	<PackageReference Update="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
+	<PackageReference Update="Uno.Core.Extensions.Disposables" Version="4.0.1" />
+	<PackageReference Update="Uno.Core.Extensions.Compatibility" Version="4.0.1" />
+	<PackageReference Update="Uno.Diagnostics.Eventing" Version="2.0.1" />
 	<PackageReference Update="Uno.Wasm.Bootstrap" Version="2.1.0" />
 	<PackageReference Update="Uno.Wasm.Bootstrap.DevServer" Version="2.1.0" />
 	<PackageReference Update="xamarin.build.download" Version="0.10.0" PrivateAssets="all" />
-	<PackageReference Update="MSTest.TestAdapter" Version="2.2.7" />
-	<PackageReference Update="MSTest.TestFramework" Version="2.2.6" />
+	<PackageReference Update="MSTest.TestAdapter" Version="2.2.8" />
+	<PackageReference Update="MSTest.TestFramework" Version="2.2.8" />
 	<PackageReference Update="Uno.MonoAnalyzers" Version="1.0.0" PrivateAssets="all" />
 	<PackageReference Update="System.Memory" Version="4.5.4" />
 	<PackageReference Update="Uno.Wasm.WebSockets" Version="1.1.0" />
 	<PackageReference Update="Microsoft.TypeScript.MSBuild" Version="4.3.5" />
 	<PackageReference Update="NUnit" Version="3.13.2" />
-	<PackageReference Update="NUnit3TestAdapter" Version="4.0.0" />
+	<PackageReference Update="NUnit3TestAdapter" Version="4.1.0" />
 	<PackageReference Update="Uno.UITest" Version="1.1.0-dev.24" />
 	<PackageReference Update="Uno.UITest.Selenium" Version="1.1.0-dev.24" />
 	<PackageReference Update="Uno.UITest.Xamarin" Version="1.1.0-dev.24" />
@@ -42,11 +45,11 @@
 	<PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.4" />
 	<PackageReference Update="Xamarin.UITest" Version="3.0.15" />
 	<PackageReference Update="System.Numerics.Vectors" Version="4.5.0" />
-	<PackageReference Update="SkiaSharp.Views" Version="2.80.0" />
-	<PackageReference Update="SkiaSharp.Views.WPF" Version="2.80.0" />
-	<PackageReference Update="SkiaSharp" Version="2.80.0" />
-	<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.80.0" />
-	<PackageReference Update="GtkSharp" Version="3.24.24.4" />
+	<PackageReference Update="SkiaSharp.Views" Version="2.80.3" />
+	<PackageReference Update="SkiaSharp.Views.WPF" Version="2.80.3" />
+	<PackageReference Update="SkiaSharp" Version="2.80.3" />
+	<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.80.3" />
+	<PackageReference Update="GtkSharp" Version="3.24.24.34" />
 	<PackageReference Update="System.Json" Version="4.7.1" />
 	<PackageReference Update="FluentAssertions" Version="5.10.3" />
 	<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
@@ -66,19 +69,19 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-android'">
-	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0.7-net6preview02.4535000" />
-	<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.2.0.7-net6preview02.4535000" />
-	<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.1.0.8-net6preview02.4535000" />
-	<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.0.1-net6preview02.4535000" />
-	<PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.3.0.1-net6preview02.4535000" />
+	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0.10" />
+	<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
+	<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
+	<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.1.3" />
+	<PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
 	<!-- <PackageReference Include="xamarin.androidx.vectordrawable" Version="1.1.0" excludeAssets="buildTransitive" />-->
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid10.0'">
-	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0" />
-	<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.1.0" />
-	<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.1.0" />
-	<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.2.0.2" />
+  <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid12.0'">
+	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0.10" />
+	<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
+	<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
+	<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.4.0.1" />
 	<PackageReference Update="Xamarin.Build.Download" Version="0.10.0" />
   </ItemGroup>
 
@@ -86,6 +89,14 @@
 	<Error Condition="$(MSBuildThisFileDirectory.Contains(' '))"
 		 Text="The Uno.UI Solution cannot build with a space in the path. Consider changing to a path without spaces."/>
   </Target>
+
+  <PropertyGroup>
+	  <!--
+	  macOS needs an explicit override of the current compiler when running under mono.
+	  On other targets, .NET 6.0's compiler takes precedence.
+	  -->
+	  <MicrosoftNetCompilerVersionOverride Condition="'$(MSBuildRuntimeType)'!='Core' and ($([MSBuild]::IsOSPlatform('OSX')) or '$(MSBuildVersion)' &lt; '17.0')">4.0.1</MicrosoftNetCompilerVersionOverride>
+  </PropertyGroup>
 
   <!-- Import the override as the nuget tooling in VS is skipping ItemGroup conditions for legacy projects -->
   <Import Project="roslyn-override.targets" Condition="'$(MicrosoftNetCompilerVersionOverride)'!=''"/>

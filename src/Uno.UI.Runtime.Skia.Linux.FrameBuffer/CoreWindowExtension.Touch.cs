@@ -8,7 +8,6 @@
 #nullable enable
 
 using System;
-using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Windows.Devices.Input;
 using Windows.Foundation;
@@ -19,8 +18,7 @@ using Uno.UI.Runtime.Skia.Native;
 using static Uno.UI.Runtime.Skia.Native.LibInput;
 using static Windows.UI.Input.PointerUpdateKind;
 using static Uno.UI.Runtime.Skia.Native.libinput_event_type;
-
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia
 {

@@ -8,7 +8,7 @@ using CoreFoundation;
 using CoreMedia;
 using Foundation;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Media.Playback;
 using Windows.Media.Core;
 using Uno.Helpers;
@@ -176,7 +176,7 @@ namespace Windows.Media.Playback
 			avSession.SetActive(true, out activationError);
 			if (activationError != null)
 			{
-				this.Log().WarnIfEnabled(() => $"Could not activate audio session: {activationError.LocalizedDescription}");
+				this.Log().Warn($"Could not activate audio session: {activationError.LocalizedDescription}");
 			}
 #endif
 			_videoLayer.AddObserver(_observer, new NSString("videoRect"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, _videoLayer.Handle);

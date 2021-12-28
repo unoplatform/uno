@@ -38,5 +38,21 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ItemsControl
 						.At("second item center", secondItem.CenterX, secondItem.CenterY)
 						.Pixel(lime));
 		}
+
+		[Test]
+		[AutoRetry]
+		public void ItemsControl_ReplaceItem()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ItemsControl.ItemsControl_ReplaceItem");
+
+			var theItemsControl = _app.Marked("theItemsControl");
+			_app.WaitForElement(theItemsControl);
+
+			_app.WaitForElement("UpdateItem01");
+
+			_app.Tap("UpdateContent01");
+
+			_app.WaitForElement("UpdateItem02");
+		}
 	}
 }

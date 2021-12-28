@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Application", "ApplicationHighContrastAdjustment Application.HighContrastAdjustment");
 			}
 		}
-		#endif
+#endif
 		// Skipping already declared property Current
 		// Skipping already declared method Windows.UI.Xaml.Application.Application()
 		// Forced skipping of method Windows.UI.Xaml.Application.Application()
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.Application.HighContrastAdjustment.set
 		// Skipping already declared method Windows.UI.Xaml.Application.OnActivated(Windows.ApplicationModel.Activation.IActivatedEventArgs)
 		// Skipping already declared method Windows.UI.Xaml.Application.OnLaunched(Windows.ApplicationModel.Activation.LaunchActivatedEventArgs)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		protected virtual void OnFileActivated( global::Windows.ApplicationModel.Activation.FileActivatedEventArgs args)
 		{
@@ -105,13 +105,6 @@ namespace Windows.UI.Xaml
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Application.Current.get
 		// Skipping already declared method Windows.UI.Xaml.Application.Start(Windows.UI.Xaml.ApplicationInitializationCallback)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void LoadComponent( object component,  global::System.Uri resourceLocator)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Application", "void Application.LoadComponent(object component, Uri resourceLocator)");
-		}
-		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void LoadComponent( object component,  global::System.Uri resourceLocator,  global::Windows.UI.Xaml.Controls.Primitives.ComponentResourceLocation componentResourceLocation)

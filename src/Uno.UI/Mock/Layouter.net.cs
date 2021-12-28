@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using View = Windows.UI.Xaml.UIElement;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Controls.Primitives;

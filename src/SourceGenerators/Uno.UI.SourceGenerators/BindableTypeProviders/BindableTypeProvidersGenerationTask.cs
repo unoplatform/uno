@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-using Uno.Logging;
 using Uno.Extensions;
 using System;
 using System.Collections.Generic;
@@ -120,6 +119,10 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						}
 					}
 				}
+				catch (OperationCanceledException)
+				{
+					throw;
+				}
 				catch (Exception e)
 				{
 					string? message = e.Message + e.StackTrace;
@@ -129,7 +132,16 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						message = (e as AggregateException)?.InnerExceptions.Select(ex => ex.Message + e.StackTrace).JoinBy("\r\n");
 					}
 
-					this.Log().Error("Failed to generate type providers.", new Exception("Failed to generate type providers." + message, e));
+#if NETSTANDARD
+					var diagnostic = Diagnostic.Create(
+						XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
+						null,
+						$"Failed to generate type providers. ({e.Message})");
+
+					context.ReportDiagnostic(diagnostic);
+#else
+					Console.WriteLine("Failed to generate type providers.", new Exception("Failed to generate type providers." + message, e));
+#endif
 				}
 			}
 
@@ -632,7 +644,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					writer.AppendLineInvariant(@"#if DEBUG");
 					using (writer.BlockInvariant(@"lock(_knownMissingTypes)"))
 					{
-						using (writer.BlockInvariant(@"if(!_knownMissingTypes.Contains(type) && !type.IsGenericType)"))
+						using (writer.BlockInvariant(@"if(bindableType == null && !_knownMissingTypes.Contains(type) && !type.IsGenericType)"))
 						{
 							writer.AppendLineInvariant(@"_knownMissingTypes.Add(type);");
 							writer.AppendLineInvariant(@"Debug.WriteLine($""The Bindable attribute is missing and the type [{{type.FullName}}] is not known by the MetadataProvider. Reflection was used instead of the binding engine and generated static metadata. Add the Bindable attribute to prevent this message and performance issues."");");

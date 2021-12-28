@@ -28,10 +28,10 @@ namespace UITests.Shared.Windows_Storage.Pickers
 			ViewModel = args.NewValue as FileOpenPickerTestsViewModel;
 		}
 
-		public FileOpenPickerTestsViewModel ViewModel { get; private set; }
+		internal FileOpenPickerTestsViewModel ViewModel { get; private set; }
 	}
 
-	public class FileOpenPickerTestsViewModel : ViewModelBase
+	internal class FileOpenPickerTestsViewModel : ViewModelBase
 	{
 		private string _fileType = string.Empty;
 		private string _errorMessage = string.Empty;

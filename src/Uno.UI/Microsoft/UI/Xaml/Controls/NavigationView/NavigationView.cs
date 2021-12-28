@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference NavigationView.cpp, commit 996c2e5
+// MUX Reference NavigationView.cpp, commit 3ac8fc1
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 
@@ -193,6 +193,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				m_selectionChangedRevoker.Disposable = null;
 				m_autoSuggestBoxQuerySubmittedRevoker.Disposable = null;
+				ClearAllNavigationViewItemRevokers();
 			}
 		}
 
@@ -1382,20 +1383,7 @@ namespace Microsoft.UI.Xaml.Controls
 					var childDepth = GetChildDepth(position, nvibImpl);
 					nvi.PropagateDepthToChildren(childDepth);
 
-					// Register for item events
-					nvi.Tapped += OnNavigationViewItemTapped;
-					nvi.KeyDown += OnNavigationViewItemKeyDown;
-					nvi.GotFocus += OnNavigationViewItemOnGotFocus;
-					var isSelectedSubscription = nvi.RegisterPropertyChangedCallback(NavigationViewItemBase.IsSelectedProperty, OnNavigationViewItemIsSelectedPropertyChanged);
-					var isExpandedSubscription = nvi.RegisterPropertyChangedCallback(NavigationViewItem.IsExpandedProperty, OnNavigationViewItemExpandedPropertyChanged);
-					nvi.EventRevoker.Disposable = Disposable.Create(() =>
-					{
-						nvi.Tapped -= OnNavigationViewItemTapped;
-						nvi.KeyDown -= OnNavigationViewItemKeyDown;
-						nvi.GotFocus -= OnNavigationViewItemOnGotFocus;
-						nvi.UnregisterPropertyChangedCallback(NavigationViewItemBase.IsSelectedProperty, isSelectedSubscription);
-						nvi.UnregisterPropertyChangedCallback(NavigationViewItem.IsExpandedProperty, isExpandedSubscription);
-					});
+					SetNavigationViewItemRevokers(nvi);
 				}
 
 #if IS_UNO
@@ -1537,10 +1525,22 @@ namespace Microsoft.UI.Xaml.Controls
 		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			var width = args.NewSize.Width;
+			UpdateOpenPaneWidth(width);
 			UpdateAdaptiveLayout(width);
 			UpdateTitleBarPadding();
 			UpdateBackAndCloseButtonsVisibility();
 			UpdatePaneLayout();
+		}
+
+		private void UpdateOpenPaneWidth(double width)
+		{
+			if (!IsTopNavigationView() && m_rootSplitView != null)
+			{
+				m_openPaneWidth = Math.Max(0.0, Math.Min(width, OpenPaneLength));
+
+				var templateSettings = GetTemplateSettings();
+				templateSettings.OpenPaneWidth = m_openPaneWidth;
+			}
 		}
 
 		private void OnItemsContainerSizeChanged(object sender, SizeChangedEventArgs args)
@@ -1576,7 +1576,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					displayMode = NavigationViewDisplayMode.Expanded;
 				}
-				else if (width < CompactModeThresholdWidth)
+				else if (width > 0 && width < CompactModeThresholdWidth)
 				{
 					displayMode = NavigationViewDisplayMode.Minimal;
 				}
@@ -1623,6 +1623,11 @@ namespace Microsoft.UI.Xaml.Controls
 				&& displayMode == NavigationViewDisplayMode.Compact)
 			{
 				m_initialListSizeStateSet = false;
+				ClosePane();
+			}
+
+			if (displayMode == NavigationViewDisplayMode.Minimal)
+			{
 				ClosePane();
 			}
 		}
@@ -1996,7 +2001,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var newButtonWidths = GetNewButtonWidths();
 
 			templateSettings.PaneToggleButtonWidth = newButtonWidths;
-			templateSettings.SmallerPaneToggleButtonWidth = newButtonWidths - 8;
+			templateSettings.SmallerPaneToggleButtonWidth = Math.Max(0.0, newButtonWidths - 8);
 		}
 
 		private void OnBackButtonClicked(object sender, RoutedEventArgs args)
@@ -3375,7 +3380,10 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (m_appliedTemplate)
 			{
-				m_topDataProvider.InvalidWidthCache();
+				if (MenuItemsSource == null)
+				{
+					m_topDataProvider.InvalidWidthCache();
+				}
 				InvalidateMeasure();
 			}
 		}
@@ -3652,6 +3660,39 @@ namespace Microsoft.UI.Xaml.Controls
 			VisualStateManager.GoToState(this, isToggleButtonVisible || !m_isLeftPaneTitleEmpty ? "TogglePaneButtonVisible" : "TogglePaneButtonCollapsed", false /*useTransitions*/);
 		}
 
+		private void SetNavigationViewItemRevokers(NavigationViewItem nvi)
+		{
+			nvi.Tapped += OnNavigationViewItemTapped;
+			nvi.KeyDown += OnNavigationViewItemKeyDown;
+			nvi.GotFocus += OnNavigationViewItemOnGotFocus;
+			var isSelectedSubscription = nvi.RegisterPropertyChangedCallback(NavigationViewItemBase.IsSelectedProperty, OnNavigationViewItemIsSelectedPropertyChanged);
+			var isExpandedSubscription = nvi.RegisterPropertyChangedCallback(NavigationViewItem.IsExpandedProperty, OnNavigationViewItemExpandedPropertyChanged);
+			nvi.EventRevoker.Disposable = Disposable.Create(() =>
+			{
+				nvi.Tapped -= OnNavigationViewItemTapped;
+				nvi.KeyDown -= OnNavigationViewItemKeyDown;
+				nvi.GotFocus -= OnNavigationViewItemOnGotFocus;
+				nvi.UnregisterPropertyChangedCallback(NavigationViewItemBase.IsSelectedProperty, isSelectedSubscription);
+				nvi.UnregisterPropertyChangedCallback(NavigationViewItem.IsExpandedProperty, isExpandedSubscription);
+			});
+			m_itemsWithRevokerObjects.Add(nvi);
+		}
+
+		private void ClearNavigationViewItemRevokers(NavigationViewItem nvi)
+		{
+			nvi.EventRevoker.Disposable = null;
+			m_itemsWithRevokerObjects.Remove(nvi);
+		}
+
+		private void ClearAllNavigationViewItemRevokers()
+		{
+			foreach (var nvi in m_itemsWithRevokerObjects)
+			{
+				nvi.EventRevoker.Disposable = null;
+			}
+			m_itemsWithRevokerObjects.Clear();
+		}
+
 		private void InvalidateTopNavPrimaryLayout()
 		{
 			if (m_appliedTemplate && IsTopNavigationView())
@@ -3789,7 +3830,9 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var actualWidth = GetTopNavigationViewActualWidth();
 				var desiredWidth = MeasureTopNavigationViewDesiredWidth(c_infSize);
-				MUX_ASSERT(desiredWidth <= actualWidth);
+				// This assert triggers on the InfoBadge page, however it seems to recover fine, disabling the assert for now.
+				// Github issue: https://github.com/microsoft/microsoft-ui-xaml/issues/5771
+				// MUX_ASSERT(desiredWidth <= actualWidth);
 
 				// Calculate selected item size
 				var selectedItemIndex = itemNotFound;
@@ -4300,6 +4343,10 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				UpdatePaneLayout();
 			}
+			else if (property == OpenPaneLengthProperty)
+			{
+				UpdateOpenPaneWidth(ActualWidth);
+			}
 		}
 
 		private void UpdateNavigationViewItemsFactory()
@@ -4677,13 +4724,13 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						if (splitView.DisplayMode == SplitViewDisplayMode.Overlay && IsPaneOpen)
 						{
-							width = OpenPaneLength;
-							togglePaneButtonWidth = OpenPaneLength - ((ShouldShowBackButton() || ShouldShowCloseButton()) ? c_backButtonWidth : 0);
+							width = m_openPaneWidth;
+							togglePaneButtonWidth = m_openPaneWidth - ((ShouldShowBackButton() || ShouldShowCloseButton()) ? c_backButtonWidth : 0);
 						}
 						else if (!(splitView.DisplayMode == SplitViewDisplayMode.Overlay && !IsPaneOpen))
 						{
-							width = OpenPaneLength;
-							togglePaneButtonWidth = OpenPaneLength;
+							width = m_openPaneWidth;
+							togglePaneButtonWidth = m_openPaneWidth;
 						}
 					}
 
@@ -5191,11 +5238,11 @@ namespace Microsoft.UI.Xaml.Controls
 				// Ensure shadow is as wide as the pane when it is open
 				if (DisplayMode == NavigationViewDisplayMode.Compact)
 				{
-					shadowReceiver.Width = OpenPaneLength;
+					shadowReceiver.Width = m_openPaneWidth;
 				}
 				else
 				{
-					shadowReceiver.Width = OpenPaneLength - shadowReceiverMargin.Right;
+					shadowReceiver.Width = m_openPaneWidth - shadowReceiverMargin.Right;
 				}
 				shadowReceiver.Margin(shadowReceiverMargin);
 			}
@@ -5960,7 +6007,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return IsRootItemsRepeater(GetParentItemsRepeaterForContainer(nvib));
 		}
 
-#region Uno specific
+		#region Uno specific
 
 		//TODO: Uno specific - remove when #4689 is fixed
 

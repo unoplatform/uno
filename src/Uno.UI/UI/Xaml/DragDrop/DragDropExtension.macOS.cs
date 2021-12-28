@@ -8,7 +8,7 @@ using AppKit;
 using CoreGraphics;
 using Foundation;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Input;
@@ -90,10 +90,17 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 							return;
 						};
 
-					_window.ContentView.BeginDraggingSession(
-						await DataPackage.CreateNativeDragDropData(info.Data, info.GetPosition(null)),
-						sourceEvent,
-						source);
+					if (_window.ContentView != null)
+					{
+						_window.ContentView.BeginDraggingSession(
+							await DataPackage.CreateNativeDragDropData(info.Data, info.GetPosition(null)),
+							sourceEvent,
+							source);
+					}
+					else
+					{
+						this.Log().Error("Failed to start native Drag and Drop (Window.ContentView is null)");
+					}
 				}
 				catch (Exception e)
 				{
@@ -274,9 +281,9 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			public (Point location, DragDropModifiers modifier) GetState()
 			{
 				CGPoint windowLocation = new CGPoint(0.0, 0.0);
-				if (_macOSDraggingInfo != null)
+				if (_macOSDraggingInfo != null && _window.ContentView is { } contentView)
 				{
-					windowLocation = _window.ContentView.ConvertPointFromView(_macOSDraggingInfo.DraggingLocation, null);
+					windowLocation = contentView.ConvertPointFromView(_macOSDraggingInfo.DraggingLocation, null);
 				}
 				var location = new Windows.Foundation.Point(windowLocation.X, windowLocation.Y);
 
@@ -291,9 +298,9 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			public Point GetPosition(object? relativeTo)
 			{
 				CGPoint windowLocation = new CGPoint(0.0, 0.0);
-				if (_macOSDraggingInfo != null)
+				if (_macOSDraggingInfo != null && _window.ContentView is { } contentView)
 				{
-					windowLocation = _window.ContentView.ConvertPointFromView(_macOSDraggingInfo.DraggingLocation, null);
+					windowLocation = contentView.ConvertPointFromView(_macOSDraggingInfo.DraggingLocation, null);
 				}
 				var rawPosition = new Point(windowLocation.X, windowLocation.Y);
 

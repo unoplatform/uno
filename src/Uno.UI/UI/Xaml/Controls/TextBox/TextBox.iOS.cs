@@ -11,7 +11,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Input;
 using Uno.Client;
 using Foundation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
