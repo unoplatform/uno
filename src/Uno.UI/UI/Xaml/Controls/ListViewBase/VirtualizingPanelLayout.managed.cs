@@ -1062,6 +1062,13 @@ namespace Windows.UI.Xaml.Controls
 			LightRefresh();
 		}
 
+		internal void CleanupReordering()
+		{
+			_pendingReorder = null;
+
+			LightRefresh();
+		}
+
 		internal Uno.UI.IndexPath? CompleteReorderingItem(FrameworkElement element, object item)
 		{
 			var updatedIndex = default(Uno.UI.IndexPath?);

@@ -1488,12 +1488,17 @@ namespace Windows.UI.Xaml.Controls
 
 		internal Uno.UI.IndexPath? CompleteReorderingItem(FrameworkElement element, object item)
 		{
+			var dropTarget = _reorderingDropTarget?.ToIndexPath();
+			CleanupReordering();
+			return dropTarget;
+		}
+
+		internal void CleanupReordering()
+		{
 			_reorderingState = null;
 			ResetReorderedLayoutAttributes();
-			var dropTarget = _reorderingDropTarget?.ToIndexPath();
 			_reorderingDropTarget = null;
 			InvalidateLayout();
-			return dropTarget;
 		}
 
 		/// <summary>
@@ -1506,13 +1511,25 @@ namespace Windows.UI.Xaml.Controls
 			if (_reorderingState is { } reorderingState && reorderingState.LayoutAttributes is { } draggedAttributes)
 			{
 				var dropTargetAttributes = GetLayoutAttributesUnderPoint(reorderingState.Location);
+				if (dropTargetAttributes is null)
+				{
+					// If we have a reorderingState, it means that the pointer is still over the LV.
+					// But if we didn't found any item under the pointer it means that it's after the last item,
+					// so we should consider that the item is going to be placed after the last item.
+					dropTargetAttributes = _itemLayoutInfos
+						.Values
+						.SelectMany(dict => dict.Values)
+						.OrderBy(attr => GetExtentStart(attr.Frame))
+						.LastOrDefault();
+				}
+
 				if (dropTargetAttributes == draggedAttributes)
 				{
 					// The item being dragged is currently under the point, no need to shift any items
 					dropTargetAttributes = null;
 				}
 				_reorderingDropTarget = dropTargetAttributes?.IndexPath;
-				if (dropTargetAttributes != null)
+				if (dropTargetAttributes is not null)
 				{
 					var preDragDraggedFrame = draggedAttributes.Frame;
 

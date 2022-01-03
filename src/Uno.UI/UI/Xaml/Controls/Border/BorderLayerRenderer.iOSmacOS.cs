@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Shapes
 				_currentState = newState;
 			}
 
-			return newState.BoundsPath;
+			return newState.BoundsPath; // Will be null if not updated !!!
 		}
 
 		/// <summary>

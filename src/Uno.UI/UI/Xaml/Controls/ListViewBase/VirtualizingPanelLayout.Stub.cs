@@ -18,6 +18,8 @@ namespace Windows.UI.Xaml.Controls
 		internal void UpdateReorderingItem(Point location, FrameworkElement element, object item) { }
 
 		internal Uno.UI.IndexPath? CompleteReorderingItem(FrameworkElement element, object item) => null;
+
+		internal void CleanupReordering() { }
 	}
 }
 #endif
