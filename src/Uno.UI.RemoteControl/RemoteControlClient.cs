@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Uno.Extensions;
+using Uno.Foundation;
 using Uno.Foundation.Logging;
 using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.HotReload;
@@ -74,6 +75,11 @@ namespace Uno.UI.RemoteControl
 		{
 			try
 			{
+#if __WASM__
+				var isHttps = WebAssemblyRuntime.InvokeJS("window.location.protocol == 'https:'").ToLower() == "true";
+#else
+				const bool isHttps = false;
+#endif
 				async Task<(Uri endPoint, WebSocket socket)> Connect(string endpoint, int port, CancellationToken ct)
 				{
 					var s = new ClientWebSocket();
@@ -109,7 +115,8 @@ namespace Uno.UI.RemoteControl
 						}
 						else
 						{
-							return new Uri($"ws://{endpoint}:{port}/rc");
+							var scheme = isHttps ? "wss" : "ws";
+							return new Uri($"{scheme}://{endpoint}:{port}/rc");
 						}
 					}
 
