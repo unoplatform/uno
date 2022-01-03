@@ -70,7 +70,20 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		public Popup()
 		{
+			this.RegisterDefaultValueProvider(GetDefaultValue);
 			Initialize();
+		}
+
+		private bool GetDefaultValue(DependencyProperty dependencyProperty, out object value)
+		{
+			value = null;			
+
+			if (dependencyProperty == IsLightDismissEnabledProperty)
+			{
+				value = FeatureConfiguration.Popup.EnableLightDismissByDefault ? true : false;
+				return true;
+			}
+			return false;
 		}
 
 		private void Initialize()
