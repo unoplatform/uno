@@ -1253,7 +1253,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				var key = GetDictionaryResourceKey(resource);
 
-				if (key == null)
+				if (key == null || resource.Members.Any(m => m.Member.Name == "IsNativeStyle"))
 				{
 					continue;
 				}
@@ -1277,7 +1277,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				var key = GetDictionaryResourceKey(resource);
 
-				if (key == null)
+				if (key == null || resource.Members.Any(m => m.Member.Name == "IsNativeStyle"))
 				{
 					continue;
 				}

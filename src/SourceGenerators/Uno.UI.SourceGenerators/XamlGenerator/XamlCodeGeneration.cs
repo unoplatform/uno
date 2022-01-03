@@ -80,16 +80,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool IsUnoFluentAssembly
 			=> _defaultNamespace == "Uno.UI.FluentTheme" || _defaultNamespace.StartsWith("Uno.UI.FluentTheme.v");
 
-		/// <summary>
-		/// Resource files that should be initialized first, in given order, because other resource declarations depend on them.
-		/// </summary>
-		private static readonly string[] _baseResourceDependencies = new[]
-		{
-			"SystemResources.xaml",
-			"Generic.xaml",
-			"Generic.Native.xaml",
-		};
-
 		private const string WinUIThemeResourcePathSuffixFormatString = "themeresources_v{0}.xaml";
 		private static string WinUICompactPathSuffix = Path.Combine("DensityStyles", "Compact.xaml");
 
@@ -696,7 +686,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								if (IsUnoAssembly && _xamlSourceFiles.Any())
 								{
 									// Build master dictionary
-									foreach (var dictProperty in map.GetAllDictionaryProperties(_baseResourceDependencies))
+									foreach (var dictProperty in map.GetAllDictionaryProperties())
 									{
 										writer.AppendLineInvariant("MasterDictionary.MergedDictionaries.Add({0});", dictProperty);
 									}
