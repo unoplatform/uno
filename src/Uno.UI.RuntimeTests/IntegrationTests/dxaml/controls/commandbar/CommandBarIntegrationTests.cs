@@ -4591,6 +4591,59 @@ namespace Windows.UI.Tests.Enterprise
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 
+		[TestMethod]
+		[Description("Validates that setting IsChecked on an AppBarToggleButton programatically will still result in the same visual effect")]
+		public async Task ValidateAppBarToggleButtonIsCheckedProgramatically()
+		{
+			TestCleanupWrapper cleanup;
+
+			CommandBar root = null;
+			AppBarToggleButton button = null;
+
+			await RunOnUIThread(() =>
+			{
+				root = (CommandBar)XamlReader.Load(@"
+					
+                            <CommandBar xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"">
+                                <AppBarToggleButton x:Name=""button""/>
+                            </CommandBar>
+				");
+
+				button = (AppBarToggleButton)root.FindName("button");
+
+				SetWindowContent(root);
+			});
+			await WindowHelper.WaitForIdle();
+
+			await OpenCommandBar(root, OpenMethod.Programmatic);
+
+			await WindowHelper.WaitForIdle();
+
+			await RunOnUIThread(() =>
+			{
+				button = (AppBarToggleButton)root.FindName("button");
+			});
+
+			await RunOnUIThread(async () =>
+			{
+				VERIFY_IS_TRUE(await ControlHelper.IsInVisualState(button, "CommonStates", "Normal"));
+			});
+			await WindowHelper.WaitForIdle();
+
+			await RunOnUIThread(() =>
+			{
+				button.IsChecked = true;
+			});
+			await WindowHelper.WaitForIdle();
+
+			await RunOnUIThread(async () =>
+			{
+				VERIFY_IS_TRUE(await ControlHelper.IsInVisualState(button, "CommonStates", "Checked"));
+			});
+			await WindowHelper.WaitForIdle();
+		}
+
+
 		private async Task ValidateDynamicOverflowOrderWorker(CommandBar cmdBar, DynamicOverflowOrderTest orderTestCase)
 		{
 			await OpenCommandBar(cmdBar, OpenMethod.Programmatic);
