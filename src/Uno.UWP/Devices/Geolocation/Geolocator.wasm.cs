@@ -22,10 +22,6 @@ namespace Windows.Devices.Geolocation
 
 		private string _positionChangedRequestId;
 
-		public Geolocator()
-		{
-		}
-
 		partial void OnActualDesiredAccuracyInMetersChanged()
 		{
 			if (_positionChanged != null)
