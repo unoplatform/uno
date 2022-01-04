@@ -5,6 +5,8 @@ using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -54,5 +56,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.IsSuggestionListOpen.Should().BeTrue();
 		}
 #endif
+
+		[TestMethod]
+		public async Task When_Typing_Should_Keep_Focus()
+		{
+			static void GettingFocus(object sender, GettingFocusEventArgs e)
+			{
+				if (e.NewFocusedElement is Popup)
+				{
+					Assert.Fail();
+				}
+			}
+			Button button = null;
+			try
+			{
+				var SUT = new AutoSuggestBox();
+				button = new Button();
+				var stack = new StackPanel()
+				{
+					Children =
+					{
+						button,
+						SUT
+					}
+				};
+				SUT.ItemsSource = new List<string>() { "ab", "abc", "abcde" };
+				WindowHelper.WindowContent = stack;
+				await WindowHelper.WaitForIdle();
+
+				SUT.Focus(FocusState.Programmatic);
+				FocusManager.GettingFocus += GettingFocus;
+				SUT.Text = "a";
+				await WindowHelper.WaitForIdle();				
+			}
+			finally
+			{
+				FocusManager.GettingFocus -= GettingFocus;
+				button?.Focus(FocusState.Programmatic); // Unfocus the AutoSuggestBox to ensure popup is closed.
+				await WindowHelper.WaitForIdle();
+			}
+		}
 	}
 }
