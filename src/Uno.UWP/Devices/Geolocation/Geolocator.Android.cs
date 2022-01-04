@@ -15,7 +15,6 @@ using Uno.Extensions;
 using Windows.ApplicationModel.Core;
 using Windows.Extensions;
 using Windows.UI.Core;
-using System.Diagnostics;
 
 namespace Windows.Devices.Geolocation;
 
@@ -261,7 +260,7 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 				}
 			}
 
-		public async Task<Windows.Devices.Geolocation.Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
+		private void RestartUpdates()
 		{
 
 			_locationManager = (LocationManager)Android.App.Application.Context.GetSystemService(Android.Content.Context.LocationService);

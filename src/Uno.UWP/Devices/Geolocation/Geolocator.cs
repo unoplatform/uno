@@ -111,7 +111,6 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 
-
 		/// <summary>
 		/// Gets or sets the desired accuracy in meters for data returned from the location service.
 		/// </summary>
