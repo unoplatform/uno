@@ -18,7 +18,7 @@ namespace Windows.Devices.Geolocation
 	{
 		private CLLocationManager _locationManager;
 
-		public Geolocator()
+		partial void PlatformInitialize()
 		{
 			_locationManager = new CLLocationManager
 			{
