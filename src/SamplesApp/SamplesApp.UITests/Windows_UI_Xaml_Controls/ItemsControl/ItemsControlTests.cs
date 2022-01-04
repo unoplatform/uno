@@ -54,5 +54,25 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ItemsControl
 
 			_app.WaitForElement("UpdateItem02");
 		}
+
+		[Test]
+		[AutoRetry]
+		public void ItemsControl_AppendItem()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ItemsControl.ItemsControl_AppendItem");
+
+			var theItemsControl = _app.Marked("theItemsControl");
+			_app.WaitForElement(theItemsControl);
+
+			var item01 = _app.WaitForElement("AppendItem01").FirstOrDefault();
+
+			_app.Tap("AppendContent01");
+
+			var item02 = _app.WaitForElement("AppendItem02").FirstOrDefault();
+
+
+			// This check validates that the native collection is properly manipulated
+			Assert.IsTrue(item01.Rect.CenterY < item02.Rect.CenterY);
+		}
 	}
 }
