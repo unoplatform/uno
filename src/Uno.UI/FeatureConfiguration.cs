@@ -275,9 +275,9 @@ namespace Uno.UI
 
 			/// <summary>
 			/// By default, light dismiss is disabled in UWP/WinUI unless
-			/// IsLightDismissEnabled is explicitly set to true.
-			/// In earlier versions of Uno Platform this property defaulted
-			/// to true, which was incorrect behavior. If your code depends on this
+			/// <see cref="Windows.UI.Xaml.Controls.Primitives.Popup.IsLightDismissEnabled"/> is explicitly set to true.
+			/// In earlier versions of Uno Platform, this property defaulted
+			/// to true, which was an incorrect behavior. If your code depends on this
 			/// legacy behavior, use this property to override it.
 			/// </summary>
 			public static bool EnableLightDismissByDefault { get; set; } = false;

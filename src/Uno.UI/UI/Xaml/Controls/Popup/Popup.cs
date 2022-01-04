@@ -76,13 +76,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private bool GetDefaultValue(DependencyProperty dependencyProperty, out object value)
 		{
-			value = null;			
-
 			if (dependencyProperty == IsLightDismissEnabledProperty)
 			{
-				value = FeatureConfiguration.Popup.EnableLightDismissByDefault ? true : false;
+				value = FeatureConfiguration.Popup.EnableLightDismissByDefault;
 				return true;
 			}
+			value = null;			
 			return false;
 		}
 

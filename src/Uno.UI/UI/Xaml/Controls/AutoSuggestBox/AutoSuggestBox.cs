@@ -49,10 +49,16 @@ namespace Windows.UI.Xaml.Controls
 			_suggestionsList = GetTemplateChild("SuggestionsList") as ListView;
 			_queryButton = GetTemplateChild("QueryButton") as Button;
 
+			// Uno specific: If the user enabled the legacy behavior for popup light dismiss default
+			// we force it to false explicitly to make sure the AutoSuggestBox works correctly.
+			if(FeatureConfiguration.Popup.EnableLightDismissByDefault)
+			{
+				_popup.IsLightDismissEnabled = false;
+			}
+
 #if __ANDROID__
 			_popup.DisableFocus();
 #endif
-			_popup.IsLightDismissEnabled = true;
 
 			UpdateQueryButton();
 			UpdateTextBox();
