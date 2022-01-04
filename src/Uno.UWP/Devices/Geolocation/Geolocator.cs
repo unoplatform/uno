@@ -64,6 +64,19 @@ namespace Windows.Devices.Geolocation
 			remove => _statusChangedWrapper.RemoveHandler(value);
 		}
 
+			PlatformInitialize();
+		}
+
+		partial void PlatformInitialize();
+
+		~Geolocator()
+		{
+			StopStatusChanged();
+			PlatformDestruct();
+		}
+
+		partial void PlatformDestruct();
+
 		/// <summary>
 		/// Raised when the location is updated.
 		/// </summary>
@@ -97,7 +110,6 @@ namespace Windows.Devices.Geolocation
 						DefaultAccuracyInMeters : HighAccuracyInMeters;
 			}
 		}
-
 
 		/// <summary>
 		/// Gets or sets the desired accuracy in meters for data returned from the location service.
@@ -165,7 +177,7 @@ namespace Windows.Devices.Geolocation
 		}		
 
 		/// <summary>
-		/// Broadcasts status change to all subscribed Geolocator instances
+		/// Broadcasts position change to all subscribed Geolocator instances
 		/// </summary>
 		/// <param name="positionStatus"></param>
 		private static void BroadcastStatusChanged(PositionStatus positionStatus)

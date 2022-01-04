@@ -15,7 +15,6 @@ using Uno.Extensions;
 using Windows.ApplicationModel.Core;
 using Windows.Extensions;
 using Windows.UI.Core;
-using System.Diagnostics;
 
 namespace Windows.Devices.Geolocation;
 
@@ -231,7 +230,6 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 
 		private Location TryGetCachedGeoposition(TimeSpan maximumAge)
 		{
-
 			var providers = _locationManager.GetProviders(_locationCriteria, true);
 			int bestAccuracy = 10000;
 			Location bestLocation = null;
@@ -270,25 +268,11 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 			return null;
 		}
 
-		public async Task<Windows.Devices.Geolocation.Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
+		private void RestartUpdates()
 		{
-
-			_locationManager = (LocationManager)Android.App.Application.Context.GetSystemService(Android.Content.Context.LocationService);
-
-			_reportInterval = 1000;
-			_movementThreshold = 0;
-
+			RemoveUpdates();
 			RequestUpdates();
-
-			BroadcastStatus(PositionStatus.Initializing);
-
-			Location bestLocation = TryGetCachedGeoposition(maximumAge);
-			if (bestLocation != null)
-			{
-				RemoveUpdates();
-				BroadcastStatus(PositionStatus.Ready);
-				return bestLocation.ToGeoPosition();
-			}
+		}
 
 			// wait for fix
 			if (await TryWaitForGetGeopositionAsync(timeout))
