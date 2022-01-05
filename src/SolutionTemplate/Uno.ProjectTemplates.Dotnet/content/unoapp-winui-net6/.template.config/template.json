@@ -157,11 +157,7 @@
     },
     {
       "condition": "winui-desktop",
-      "path": "UnoWinUIQuickStart.Windows.Desktop\\UnoWinUIQuickStart.Windows.Desktop.csproj"
-    },
-    {
-      "condition": "winui-desktop",
-      "path": "UnoWinUIQuickStart.Windows.Package\\UnoWinUIQuickStart.Windows.Package.csproj"
+      "path": "UnoWinUIQuickStart.Windows\\UnoWinUIQuickStart.Windows.csproj"
     },
     {
       "condition": "Wasm",
