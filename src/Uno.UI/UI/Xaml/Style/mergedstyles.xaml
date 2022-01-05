@@ -5610,7 +5610,7 @@
       <SolidColorBrush x:Key="SystemControlHighlightListMediumRevealBackgroundBrush" Color="{StaticResource SystemListMediumColor}" />
     </ResourceDictionary>
   </ResourceDictionary.ThemeDictionaries>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\ColorPicker\ColorPicker.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\ColorPicker\ColorPicker.xaml-->
   <Style TargetType="controls:ColorPicker" BasedOn="{StaticResource DefaultColorPickerStyle}" />
   <Style x:Key="DefaultColorPickerStyle" TargetType="controls:ColorPicker">
     <Setter Property="MaxWidth" Value="392" />
@@ -6034,12 +6034,12 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\ColorPicker\ColorPicker_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\ColorPicker\ColorPicker_themeresources.xaml-->
   <Style x:Key="ColorPickerBorderStyle" TargetType="Shape">
     <Setter Property="Stroke" Value="{ThemeResource SystemControlForegroundListLowBrush}" />
     <Setter Property="StrokeThickness" Value="2" />
   </Style>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\ColorPicker\ColorSpectrum.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\ColorPicker\ColorSpectrum.xaml-->
   <Style TargetType="primitives:ColorSpectrum">
     <Setter Property="ManipulationMode" Value="None" />
     <Setter Property="UseSystemFocusVisuals" Value="False" />
@@ -6121,7 +6121,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\Expander\Expander.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\Expander\Expander.xaml-->
   <Style TargetType="controls:Expander" BasedOn="{StaticResource DefaultExpanderStyle}" />
   <Style x:Key="DefaultExpanderStyle" TargetType="controls:Expander">
     <!-- We won't make this control tab stoppable, since the tab focus should go
@@ -6245,7 +6245,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\Expander\Expander_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\Expander\Expander_themeresources.xaml-->
   <x:Double x:Key="ExpanderMinHeight">48</x:Double>
   <HorizontalAlignment x:Key="ExpanderHeaderHorizontalContentAlignment">Stretch</HorizontalAlignment>
   <VerticalAlignment x:Key="ExpanderHeaderVerticalContentAlignment">Center</VerticalAlignment>
@@ -6680,9 +6680,9 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\InfoBadge\InfoBadge.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\InfoBadge\InfoBadge.xaml-->
   <Style TargetType="controls:InfoBadge" BasedOn="{StaticResource DefaultInfoBadgeStyle}" />
-  <!--origin: .\Microsoft\UI\Xaml\Controls\InfoBadge\InfoBadge_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\InfoBadge\InfoBadge_themeresources.xaml-->
   <Style TargetType="controls:InfoBadge" x:Key="DefaultInfoBadgeStyle">
     <Setter Property="MinHeight" Value="{ThemeResource InfoBadgeMinHeight}" />
     <Setter Property="MinWidth" Value="{ThemeResource InfoBadgeMinWidth}" />
@@ -6784,7 +6784,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\InfoBar\InfoBar.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\InfoBar\InfoBar.xaml-->
   <Style TargetType="controls:InfoBar">
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="CloseButtonStyle" Value="{StaticResource InfoBarCloseButtonStyle}" />
@@ -6911,7 +6911,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\InfoBar\InfoBar_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\InfoBar\InfoBar_themeresources.xaml-->
   <x:Double x:Key="InfoBarTitleFontSize">14</x:Double>
   <FontWeight x:Key="InfoBarTitleFontWeight">SemiBold</FontWeight>
   <x:Double x:Key="InfoBarMessageFontSize">14</x:Double>
@@ -6953,10 +6953,10 @@
       <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
     </Style.Setters>
   </Style>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\NavigationView\NavigationBackButton_rs1_themeresources_v1.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\NavigationView\NavigationBackButton_rs1_themeresources_v1.xaml-->
   <x:Double x:Key="NavigationBackButtonWidth">40</x:Double>
   <x:Double x:Key="NavigationBackButtonHeight">40</x:Double>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\NavigationView\NavigationBackButton_v1.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\NavigationView\NavigationBackButton_v1.xaml-->
   <Style x:Key="NavigationBackButtonNormalStyle" TargetType="Button">
     <Setter Property="Background" Value="{ThemeResource NavigationViewBackButtonBackground}" />
     <Setter Property="Foreground" Value="{ThemeResource NavigationViewItemForeground}" />
@@ -7026,7 +7026,7 @@
   <Style x:Key="NavigationBackButtonSmallStyle" TargetType="Button" BasedOn="{StaticResource NavigationBackButtonNormalStyle}">
     <Setter Property="Margin" Value="4,2,0,2" />
   </Style>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\NavigationView\NavigationView_rs1_themeresources_v1.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\NavigationView\NavigationView_rs1_themeresources_v1.xaml-->
   <Thickness x:Key="NavigationViewAutoSuggestBoxMargin">10,0,16,0</Thickness>
   <Thickness x:Key="TopNavigationViewAutoSuggestBoxMargin">12,0,12,0</Thickness>
   <x:Double x:Key="PaneToggleButtonSize">40</x:Double>
@@ -7954,7 +7954,7 @@
     <Setter Property="Margin" Value="12,5,0,11" />
     <Setter Property="VerticalAlignment" Value="Stretch" />
   </Style>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\NavigationView\NavigationView_v1.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\NavigationView\NavigationView_v1.xaml-->
   <Style TargetType="controls:NavigationView">
     <Setter Property="PaneToggleButtonStyle" Value="{StaticResource PaneToggleButtonStyle}" />
     <Setter Property="IsTabStop" Value="False" />
@@ -8448,7 +8448,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\NumberBox\NumberBox.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\NumberBox\NumberBox.xaml-->
   <Style TargetType="controls:NumberBox">
     <Setter Property="SelectionHighlightColor" Value="{ThemeResource TextControlSelectionHighlightColor}" />
     <!--UNO TODO  <contract7Present:Setter Property="SelectionFlyout" Value="{StaticResource TextControlCommandBarSelectionFlyout}" /> -->
@@ -8735,14 +8735,14 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\NumberBox\NumberBox_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\NumberBox\NumberBox_themeresources.xaml-->
   <Thickness x:Key="NumberBoxSpinButtonBorderThickness">0,1,1,1</Thickness>
   <Thickness x:Key="NumberBoxIconMargin">10,0,0,0</Thickness>
   <x:Double x:Key="NumberBoxPopupHorizonalOffset">-20</x:Double>
   <x:Double x:Key="NumberBoxPopupVerticalOffset">8</x:Double>
   <x:Double x:Key="NumberBoxPopupShadowDepth">16</x:Double>
   <Thickness x:Key="NumberBoxPopupIndicatorMargin">0,0,8,0</Thickness>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\PagerControl\PagerControl_themeresources_v2.5.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\PagerControl\PagerControl_themeresources_v2.5.xaml-->
   <x:Double x:Key="PagerControlNumberPanelButtonWidth">32</x:Double>
   <Style x:Key="PagerControlPageNavigationButtonStyle" TargetType="Button">
     <Setter Property="Background" Value="Transparent" />
@@ -8844,7 +8844,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\PagerControl\PagerControl_v2.5.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\PagerControl\PagerControl_v2.5.xaml-->
   <Style TargetType="controls:PagerControl">
     <Setter Property="AutomationProperties.LandmarkType" Value="Navigation" />
     <Setter Property="FirstButtonStyle" Value="{StaticResource PagerControlPageNavigationButtonStyle}" />
@@ -9021,7 +9021,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\Primitives\CornerRadius_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\Primitives\CornerRadius_themeresources.xaml-->
   <primitives:CornerRadiusFilterConverter x:Key="TopCornerRadiusFilterConverter" Filter="Top" />
   <primitives:CornerRadiusFilterConverter x:Key="RightCornerRadiusFilterConverter" Filter="Right" />
   <primitives:CornerRadiusFilterConverter x:Key="BottomCornerRadiusFilterConverter" Filter="Bottom" />
@@ -9034,7 +9034,7 @@
   <primitives:CornerRadiusToThicknessConverter x:Key="RightThicknessFilterConverter" ConversionKind="FilterTopAndBottomFromRight" />
   <primitives:CornerRadiusToThicknessConverter x:Key="TabViewLeftInsetCornerConverter" ConversionKind="FilterLeftFromBottomLeft" Multiplier="-1" />
   <primitives:CornerRadiusToThicknessConverter x:Key="TabViewRightInsetCornerConverter" ConversionKind="FilterRightFromBottomRight" Multiplier="-1" />
-  <!--origin: .\Microsoft\UI\Xaml\Controls\ProgressBar\ProgressBar.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\ProgressBar\ProgressBar.xaml-->
   <Style TargetType="controls:ProgressBar">
     <Setter Property="Foreground" Value="{ThemeResource SystemControlHighlightAccentBrush}" />
     <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
@@ -9195,7 +9195,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRing.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRing.xaml-->
   <Style TargetType="controls:ProgressRing">
     <Setter Property="Foreground" Value="{ThemeResource ProgressRingForegroundThemeBrush}" />
     <!--<Setter Property="Background" Value="{ThemeResource ProgressRingBackgroundThemeBrush}" />-->
@@ -9236,8 +9236,8 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\RadioButtons\RadioButton.xaml-->
-  <!--origin: .\Microsoft\UI\Xaml\Controls\RadioButtons\RadioButtons.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\RadioButtons\RadioButton.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\RadioButtons\RadioButtons.xaml-->
   <Style TargetType="controls:RadioButtons" BasedOn="{StaticResource DefaultRadioButtonsStyle}" />
   <Style x:Key="DefaultRadioButtonsStyle" TargetType="controls:RadioButtons">
     <Setter Property="IsTabStop" Value="False" />
@@ -9268,11 +9268,11 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\RadioButtons\RadioButtons_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\RadioButtons\RadioButtons_themeresources.xaml-->
   <x:Double x:Key="RadioButtonsColumnSpacing">7</x:Double>
   <x:Double x:Key="RadioButtonsRowSpacing">3</x:Double>
   <Thickness x:Key="RadioButtonsTopHeaderMargin">0,0,0,4</Thickness>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\RadioMenuFlyoutItem\RadioMenuFlyoutItem_rs1_themeresources_v1.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\RadioMenuFlyoutItem\RadioMenuFlyoutItem_rs1_themeresources_v1.xaml-->
   <Style TargetType="controls:RadioMenuFlyoutItem" BasedOn="{StaticResource DefaultRadioMenuFlyoutItemStyle}" />
   <Style x:Key="DefaultRadioMenuFlyoutItemStyle" TargetType="controls:RadioMenuFlyoutItem">
     <Setter Property="Background" Value="{ThemeResource MenuFlyoutItemBackground}" />
@@ -9372,10 +9372,10 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\RadioMenuFlyoutItem\RadioMenuFlyoutItem_rs2_themeresources_v1.xaml-->
-  <!--origin: .\Microsoft\UI\Xaml\Controls\RadioMenuFlyoutItem\RadioMenuFlyoutItem_rs4_themeresources_v1.xaml-->
-  <!--origin: .\Microsoft\UI\Xaml\Controls\RadioMenuFlyoutItem\RadioMenuFlyoutItem_rs5_themeresources_v1.xaml-->
-  <!--origin: .\Microsoft\UI\Xaml\Controls\RadioMenuFlyoutItem\RadioMenuFlyoutItem_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\RadioMenuFlyoutItem\RadioMenuFlyoutItem_rs2_themeresources_v1.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\RadioMenuFlyoutItem\RadioMenuFlyoutItem_rs4_themeresources_v1.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\RadioMenuFlyoutItem\RadioMenuFlyoutItem_rs5_themeresources_v1.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\RadioMenuFlyoutItem\RadioMenuFlyoutItem_themeresources.xaml-->
   <Style TargetType="MenuFlyoutSubItem" x:Key="RadioMenuFlyoutSubItemStyle" BasedOn="{StaticResource DefaultMenuFlyoutSubItemStyle}">
     <Setter Property="controls:RadioMenuFlyoutItem.AreCheckStatesEnabled" Value="True" />
     <Setter Property="BorderThickness" Value="0" />
@@ -9476,7 +9476,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\RatingControl\RatingControl_themeresources_v1.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\RatingControl\RatingControl_themeresources_v1.xaml-->
   <DataTemplate x:Key="BackgroundGlyphDefaultTemplate">
     <!-- -8, -8 are to compensate for the default scale down, plus factoring in margins -->
     <TextBlock Foreground="{ThemeResource RatingControlUnselectedForeground}" Margin="-8,-8,0,0" FontSize="32" Text="&#xE734;" AutomationProperties.AccessibilityView="Raw" FontFamily="{ThemeResource SymbolThemeFontFamily}" />
@@ -9491,7 +9491,7 @@
   <DataTemplate x:Key="ForegroundImageDefaultTemplate">
     <Image Margin="-8,-8,0,0" AutomationProperties.AccessibilityView="Raw" />
   </DataTemplate>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\RatingControl\RatingControl_v1.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\RatingControl\RatingControl_v1.xaml-->
   <Style TargetType="controls:RatingControl">
     <Setter Property="Height" Value="32" />
     <!-- 9794813: retire these two properties as customisation points once all resource keys available -->
@@ -9557,7 +9557,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\SplitButton\SplitButton.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\SplitButton\SplitButton.xaml-->
   <Style x:Key="SplitButtonInnerButtonStyle" TargetType="Button">
     <!-- TODO: x:Key can removed when #1766 is merged-->
     <Setter Property="Foreground" Value="{ThemeResource SplitButtonForeground}" />
@@ -9764,10 +9764,10 @@
   </Style>
   <Style TargetType="controls:SplitButton" BasedOn="{StaticResource SplitButtonStyle}" />
   <Style TargetType="controls:ToggleSplitButton" BasedOn="{StaticResource SplitButtonStyle}" />
-  <!--origin: .\Microsoft\UI\Xaml\Controls\SplitButton\SplitButton_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\SplitButton\SplitButton_themeresources.xaml-->
   <x:Double x:Key="SplitButtonPrimaryButtonSize">32</x:Double>
   <x:Double x:Key="SplitButtonSecondaryButtonSize">32</x:Double>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\TabView\TabView_themeresources_v1.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\TabView\TabView_themeresources_v1.xaml-->
   <Thickness x:Key="TabViewHeaderPadding">8,8,4,0</Thickness>
   <Thickness x:Key="TabViewItemHeaderPadding">12,8,10,8</Thickness>
   <x:Double x:Key="TabViewItemMaxWidth">240</x:Double>
@@ -9783,7 +9783,7 @@
   <Thickness x:Key="TabViewItemScrollButtonPadding">6,4,10,5</Thickness>
   <x:Double x:Key="TabViewShadowDepth">16</x:Double>
   <Thickness x:Key="TabViewItemSeparatorMargin">0,6,0,6</Thickness>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\TabView\TabView_v1.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\TabView\TabView_v1.xaml-->
   <Style TargetType="controls:TabView" BasedOn="{StaticResource DefaultTabViewStyle}" />
   <Style x:Key="DefaultTabViewStyle" TargetType="controls:TabView">
     <Setter Property="VerticalAlignment" Value="Top" />
@@ -10226,7 +10226,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\TreeView\TreeView.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\TreeView\TreeView.xaml-->
   <DataTemplate x:Key="TreeViewItemDataTemplate">
     <Grid Height="44">
       <TextBlock Text="{Binding Content}" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{ThemeResource BodyTextBlockStyle}" />
@@ -10256,7 +10256,7 @@
     </Setter>
   </Style>
   <Style TargetType="controls:TreeViewItem" BasedOn="{StaticResource MUX_TreeViewItemStyle}" />
-  <!--origin: .\Microsoft\UI\Xaml\Controls\TreeView\TreeViewItem.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\TreeView\TreeViewItem.xaml-->
   <Style TargetType="controls:TreeViewItem" BasedOn="{StaticResource ListViewItemExpanded}" x:Key="MUX_TreeViewItemStyle">
     <Setter Property="Padding" Value="0" />
     <Setter Property="Background" Value="{ThemeResource TreeViewItemBackground}" />
@@ -10381,9 +10381,9 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\Microsoft\UI\Xaml\Controls\TreeView\TreeView_themeresources.xaml-->
-  <!--origin: .\Microsoft\UI\Xaml\Controls\TwoPaneView\TwoPaneView_rs1.xaml-->
-  <!--origin: .\Microsoft\UI\Xaml\Controls\TwoPaneView\TwoPaneView_v1.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\TreeView\TreeView_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\TwoPaneView\TwoPaneView_rs1.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Controls\TwoPaneView\TwoPaneView_v1.xaml-->
   <Style x:Key="DefaultTwoPaneViewStyle" TargetType="controls:TwoPaneView">
     <Setter Property="HorizontalAlignment" Value="Stretch" />
     <Setter Property="VerticalAlignment" Value="Stretch" />
@@ -10469,13 +10469,13 @@
     </Setter>
   </Style>
   <Style TargetType="controls:TwoPaneView" BasedOn="{StaticResource DefaultTwoPaneViewStyle}" />
-  <!--origin: .\Microsoft\UI\Xaml\Styles\Common_themeresources_any.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\Microsoft\UI\Xaml\Styles\Common_themeresources_any.xaml-->
   <x:String x:Key="ControlFastOutSlowInKeySpline">0,0,0,1</x:String>
   <x:String x:Key="ControlNormalAnimationDuration">00:00:00.250</x:String>
   <x:String x:Key="ControlFastAnimationDuration">00:00:00.167</x:String>
   <x:String x:Key="ControlFastAnimationAfterDuration">00:00:00.168</x:String>
   <x:String x:Key="ControlFasterAnimationDuration">00:00:00.083</x:String>
-  <!--origin: .\UI\Xaml\Controls\AppBar\AppBar.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\AppBar\AppBar.xaml-->
   <Thickness x:Key="AppBarButtonContentViewboxMargin">12,10,0,10</Thickness>
   <Thickness x:Key="AppBarButtonContentViewboxCompactMargin">0,10,0,10</Thickness>
   <Thickness x:Key="AppBarButtonContentViewboxCollapsedMargin">0,10,0,0</Thickness>
@@ -11490,7 +11490,7 @@
   <Style TargetType="AppBarButton" BasedOn="{StaticResource XamlDefaultAppBarButton}" />
   <Style TargetType="AppBarToggleButton" BasedOn="{StaticResource XamlDefaultAppBarToggleButton}" />
   <Style TargetType="AppBarSeparator" BasedOn="{StaticResource XamlDefaultAppBarSeparator}" />
-  <!--origin: .\UI\Xaml\Controls\CalendarView\CalendarDatePicker_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\CalendarView\CalendarDatePicker_themeresources.xaml-->
   <Thickness x:Key="CalendarDatePickerTopHeaderMargin">0,0,0,4</Thickness>
   <Style TargetType="CalendarDatePicker" BasedOn="{StaticResource DefaultCalendarDatePicker}" />
   <Style x:Key="DefaultCalendarDatePicker" TargetType="CalendarDatePicker">
@@ -11624,7 +11624,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\UI\Xaml\Controls\CalendarView\CalendarView_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\CalendarView\CalendarView_themeresources.xaml-->
   <Style TargetType="CalendarViewDayItem">
     <Setter Property="MinWidth" Value="40" />
     <Setter Property="MinHeight" Value="40" />
@@ -12378,7 +12378,7 @@
       </Setter.Value>
     </Setter>
   </wasm:Style>
-  <!--origin: .\UI\Xaml\Controls\CommandBar\CommandBar.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\CommandBar\CommandBar.xaml-->
   <Thickness x:Key="CommandBarOverflowPresenterMargin">0,4,0,4</Thickness>
   <Thickness x:Key="CommandBarMoreButtonMargin">14,19,14,0</Thickness>
   <Style x:Key="XamlDefaultCommandBar_EllipsisButton" TargetType="Button">
@@ -13196,7 +13196,7 @@
   </Style>
   <Style x:Key="XamlCommandBar" TargetType="CommandBar" BasedOn="{StaticResource XamlDefaultCommandBar}" />
   <Style TargetType="CommandBar" BasedOn="{StaticResource XamlDefaultCommandBar}" />
-  <!--origin: .\UI\Xaml\Controls\ContentDialog\ContentDialog.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\ContentDialog\ContentDialog.xaml-->
   <StaticResource x:Key="ContentDialogForeground" ResourceKey="SystemControlPageTextBaseHighBrush" />
   <StaticResource x:Key="ContentDialogBackground" ResourceKey="SystemControlPageBackgroundAltHighBrush" />
   <StaticResource x:Key="ContentDialogBorderBrush" ResourceKey="SystemControlBackgroundBaseLowBrush" />
@@ -13414,7 +13414,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\UI\Xaml\Controls\DatePicker\DatePicker_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\DatePicker\DatePicker_themeresources.xaml-->
   <Thickness x:Key="DatePickerTopHeaderMargin">0,0,0,4</Thickness>
   <x:Double x:Key="DatePickerFlyoutPresenterHighlightHeight">40</x:Double>
   <x:Double x:Key="DatePickerFlyoutPresenterItemHeight">40</x:Double>
@@ -13743,7 +13743,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\UI\Xaml\Controls\DatePicker\DateTimePickerFlyout_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\DatePicker\DateTimePickerFlyout_themeresources.xaml-->
   <Style x:Key="DateTimePickerFlyoutButtonStyle" TargetType="ButtonBase">
     <Setter Property="Background" Value="{ThemeResource DateTimePickerFlyoutButtonBackground}" />
     <Setter Property="BackgroundSizing" Value="OuterBorderEdge" />
@@ -13791,7 +13791,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\UI\Xaml\Controls\DropDownButton\DropDownButton.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\DropDownButton\DropDownButton.xaml-->
   <Style x:Key="DefaultDropDownButtonStyle" TargetType="controls:DropDownButton">
     <Setter Property="Background" Value="{ThemeResource ButtonBackground}" />
     <Setter Property="Foreground" Value="{ThemeResource ButtonForeground}" />
@@ -13879,7 +13879,7 @@
     </Setter>
   </Style>
   <Style TargetType="controls:DropDownButton" BasedOn="{StaticResource DefaultDropDownButtonStyle}" />
-  <!--origin: .\UI\Xaml\Controls\FlipView\FlipViewItem_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\FlipView\FlipViewItem_themeresources.xaml-->
   <Style x:Key="DefaultFlipViewItemStyle" TargetType="FlipViewItem">
     <Setter Property="Background" Value="{ThemeResource FlipViewItemBackground}" />
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -13907,7 +13907,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\UI\Xaml\Controls\FocusVisual\SystemFocusVisual.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\FocusVisual\SystemFocusVisual.xaml-->
   <Style TargetType="local:SystemFocusVisual">
     <Setter Property="AllowFocusOnInteraction" Value="False" />
     <Setter Property="IsHitTestVisible" Value="False" />
@@ -13925,7 +13925,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\UI\Xaml\Controls\MenuBar\MenuBar.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\MenuBar\MenuBar.xaml-->
   <Style x:Key="XamlDefaultMenuBar" TargetType="MenuBar">
     <Setter Property="Background" Value="{ThemeResource MenuBarBackground}" />
     <Setter Property="IsTabStop" Value="False" />
@@ -13956,8 +13956,8 @@
       </Setter.Value>
     </Setter>
   </macos:Style>
-  <macos:Style TargetType="ScrollViewer" BasedOn="{StaticResource DefaultScrollViewerStyle}" />
-  <!--origin: .\UI\Xaml\Controls\MenuBar\MenuBarItem.xaml-->
+  <macos:Style TargetType="MenuBar" BasedOn="{StaticResource NativeMenuBar}" />
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\MenuBar\MenuBarItem.xaml-->
   <Style TargetType="MenuBarItem">
     <Setter Property="Background" Value="{ThemeResource MenuBarItemBackground}" />
     <Setter Property="BorderThickness" Value="{ThemeResource MenuBarItemBorderThickness}" />
@@ -14013,9 +14013,9 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\UI\Xaml\Controls\MenuBar\MenuBar_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\MenuBar\MenuBar_themeresources.xaml-->
   <x:Double x:Key="MenuBarHeight">40</x:Double>
-  <!--origin: .\UI\Xaml\Controls\MenuFlyout\MenuFlyout_19h1_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\MenuFlyout\MenuFlyout_19h1_themeresources.xaml-->
   <Style TargetType="MenuFlyoutPresenter" x:Key="DefaultMenuFlyoutPresenterStyle">
     <Setter Property="Background" Value="{ThemeResource MenuFlyoutPresenterBackground}" />
     <Setter Property="BorderBrush" Value="{ThemeResource MenuFlyoutPresenterBorderBrush}" />
@@ -14211,7 +14211,7 @@
     </Setter>
   </Style>
   <Style TargetType="MenuFlyoutPresenter" BasedOn="{StaticResource DefaultMenuFlyoutPresenterStyle}" />
-  <!--origin: .\UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs1_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs1_themeresources.xaml-->
   <Thickness x:Key="MenuFlyoutScrollerMargin">0,4,0,4</Thickness>
   <Style TargetType="MenuFlyoutSeparator">
     <Setter Property="Background" Value="{ThemeResource SystemControlForegroundBaseMediumLowBrush}" />
@@ -14224,9 +14224,9 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs2_themeresources.xaml-->
-  <!--origin: .\UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs4_themeresources.xaml-->
-  <!--origin: .\UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs5_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs2_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs4_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs5_themeresources.xaml-->
   <Thickness x:Key="MenuFlyoutItemRevealBorderThickness">1</Thickness>
   <Thickness x:Key="ToggleMenuFlyoutItemRevealBorderThickness">1</Thickness>
   <Thickness x:Key="MenuFlyoutSubItemRevealBorderThickness">1</Thickness>
@@ -14567,11 +14567,11 @@
   </Style>
   <Style TargetType="MenuFlyoutItem" BasedOn="{StaticResource MenuFlyoutItemRevealStyle}" />
   <Style TargetType="MenuFlyoutSubItem" BasedOn="{StaticResource MenuFlyoutSubItemRevealStyle}" />
-  <!--origin: .\UI\Xaml\Controls\NavigationView\NavigationBackButton.xaml-->
-  <!--origin: .\UI\Xaml\Controls\NavigationView\NavigationBackButton_rs1_themeresources.xaml-->
-  <!--origin: .\UI\Xaml\Controls\NavigationView\NavigationBackButton_rs4_themeresources.xaml-->
-  <!--origin: .\UI\Xaml\Controls\NavigationView\NavigationBackButton_rs5_themeresources.xaml-->
-  <!--origin: .\UI\Xaml\Controls\NavigationView\NavigationView.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\NavigationView\NavigationBackButton.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\NavigationView\NavigationBackButton_rs1_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\NavigationView\NavigationBackButton_rs4_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\NavigationView\NavigationBackButton_rs5_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\NavigationView\NavigationView.xaml-->
   <Style TargetType="navViewLocal:NavigationView">
     <Setter Property="PaneToggleButtonStyle" Value="{StaticResource LegacyPaneToggleButtonStyle}" />
     <Setter Property="IsTabStop" Value="False" />
@@ -14963,7 +14963,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\UI\Xaml\Controls\NavigationView\NavigationView_rs1_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\NavigationView\NavigationView_rs1_themeresources.xaml-->
   <Style x:Key="LegacyPaneToggleButtonStyle" TargetType="Button">
     <Setter Property="FontSize" Value="16" />
     <Setter Property="FontFamily" Value="{StaticResource SymbolThemeFontFamily}" />
@@ -15518,7 +15518,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\UI\Xaml\Controls\NavigationView\NavigationView_rs2_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\NavigationView\NavigationView_rs2_themeresources.xaml-->
   <Style TargetType="primitives:NavigationViewItemPresenter" x:Key="NavigationViewItemPresenterStyleWhenOnLeftPane">
     <Setter Property="Foreground" Value="{ThemeResource NavigationViewItemForeground}" />
     <Setter Property="Background" Value="{ThemeResource NavigationViewItemBackground}" />
@@ -15612,9 +15612,9 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\UI\Xaml\Controls\NavigationView\NavigationView_rs5_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\NavigationView\NavigationView_rs5_themeresources.xaml-->
   <Thickness x:Key="NavigationViewItemIconBoxMargin">10,12,16,12</Thickness>
-  <!--origin: .\UI\Xaml\Controls\PersonPicture\PersonPicture.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\PersonPicture\PersonPicture.xaml-->
   <Style TargetType="controls:PersonPicture" BasedOn="{StaticResource DefaultPersonPictureStyle}" />
   <Style x:Key="DefaultPersonPictureStyle" TargetType="controls:PersonPicture">
     <Setter Property="Foreground" Value="{ThemeResource PersonPictureForegroundThemeBrush}" />
@@ -15695,8 +15695,8 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\UI\Xaml\Controls\PersonPicture\PersonPicture_themeresources.xaml-->
-  <!--origin: .\UI\Xaml\Controls\Primitives\LoopingSelector\LoopingSelector.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\PersonPicture\PersonPicture_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\Primitives\LoopingSelector\LoopingSelector.xaml-->
   <StaticResource x:Key="LoopingSelectorButtonBackground" ResourceKey="SystemControlBackgroundChromeMediumBrush" />
   <StaticResource x:Key="LoopingSelectorItemForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
   <StaticResource x:Key="LoopingSelectorItemForegroundSelected" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
@@ -15794,62 +15794,206 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\UI\Xaml\Controls\ProgressRing\ProgressRing.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\ProgressRing\ProgressRing.xaml-->
   <wasm:Style x:Key="ProgressRingEllipseStyle" TargetType="Ellipse" xmlns:wasm="http://uno.ui/xamarin">
     <Setter Property="Opacity" Value="0" />
     <Setter Property="HorizontalAlignment" Value="Left" />
     <Setter Property="VerticalAlignment" Value="Top" />
   </wasm:Style>
-  <wasm:Style TargetType="Pivot" xamarin:IsNativeStyle="True" BasedOn="{StaticResource XamlDefaultPivot}" />
-  <android:Style TargetType="TimePickerFlyoutPresenter">
-    <Setter Property="VerticalAlignment" Value="Stretch" />
-    <Setter Property="HorizontalAlignment" Value="Stretch" />
-    <Setter Property="HorizontalContentAlignment" Value="Center" />
-    <Setter Property="VerticalContentAlignment" Value="Center" />
+  <wasm:Style TargetType="ProgressRing" xmlns:wasm="http://uno.ui/xamarin">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{ThemeResource SystemControlHighlightAccentBrush}" />
+    <Setter Property="IsHitTestVisible" Value="False" />
+    <Setter Property="HorizontalAlignment" Value="Center" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="MinHeight" Value="20" />
+    <Setter Property="MinWidth" Value="20" />
+    <Setter Property="IsTabStop" Value="False" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="FlyoutPresenter">
-          <Grid>
-            <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsHitTestVisible="False" Opacity="0.50" Background="Black" />
-            <ContentPresenter Content="{TemplateBinding Content}" />
+        <ControlTemplate TargetType="ProgressRing">
+          <Grid x:Name="Ring" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="{TemplateBinding CornerRadius}" Padding="{TemplateBinding Padding}" MaxWidth="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.MaxSideLength}" MaxHeight="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.MaxSideLength}" Visibility="Collapsed" RenderTransformOrigin=".5,.5" FlowDirection="LeftToRight">
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="SizeStates">
+                <VisualState x:Name="Large">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetName="SixthCircle" Storyboard.TargetProperty="Visibility">
+                      <DiscreteObjectKeyFrame KeyTime="0">
+                        <DiscreteObjectKeyFrame.Value>
+                          <Visibility>Visible</Visibility>
+                        </DiscreteObjectKeyFrame.Value>
+                      </DiscreteObjectKeyFrame>
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+                <VisualState x:Name="Small" />
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="ActiveStates">
+                <VisualState x:Name="Inactive" />
+                <VisualState x:Name="Active">
+                  <Storyboard>
+                    <!--Setting RepeatBehavior="Forever" here leads to stack overflow exception in Wasm, probably due to too complex animations. So we set it on each animation individually.-->
+                    <ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetName="Ring" Storyboard.TargetProperty="Visibility">
+                      <DiscreteObjectKeyFrame KeyTime="0">
+                        <DiscreteObjectKeyFrame.Value>
+                          <Visibility>Visible</Visibility>
+                        </DiscreteObjectKeyFrame.Value>
+                      </DiscreteObjectKeyFrame>
+                    </ObjectAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="E1" RepeatBehavior="Forever" Storyboard.TargetProperty="Opacity" BeginTime="0">
+                      <DiscreteDoubleKeyFrame KeyTime="0" Value="1" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:3.21" Value="1" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:3.22" Value="0" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:3.47" Value="0" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames RepeatBehavior="Forever" Storyboard.TargetName="E2" Storyboard.TargetProperty="Opacity" BeginTime="00:00:00.167">
+                      <DiscreteDoubleKeyFrame KeyTime="0" Value="1" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:3.21" Value="1" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:3.22" Value="0" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:3.47" Value="0" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames RepeatBehavior="Forever" Storyboard.TargetName="E3" Storyboard.TargetProperty="Opacity" BeginTime="00:00:00.334">
+                      <DiscreteDoubleKeyFrame KeyTime="0" Value="1" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:3.21" Value="1" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:3.22" Value="0" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:3.47" Value="0" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames RepeatBehavior="Forever" Storyboard.TargetName="E4" Storyboard.TargetProperty="Opacity" BeginTime="00:00:00.501">
+                      <DiscreteDoubleKeyFrame KeyTime="0" Value="1" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:3.21" Value="1" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:3.22" Value="0" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:3.47" Value="0" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames RepeatBehavior="Forever" Storyboard.TargetName="E5" Storyboard.TargetProperty="Opacity" BeginTime="00:00:00.668">
+                      <DiscreteDoubleKeyFrame KeyTime="0" Value="1" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:3.21" Value="1" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:3.22" Value="0" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:3.47" Value="0" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames RepeatBehavior="Forever" Storyboard.TargetName="E6" Storyboard.TargetProperty="Opacity" BeginTime="00:00:00.835">
+                      <DiscreteDoubleKeyFrame KeyTime="0" Value="1" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:3.21" Value="1" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:3.22" Value="0" />
+                      <DiscreteDoubleKeyFrame KeyTime="0:0:3.47" Value="0" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames RepeatBehavior="Forever" Storyboard.TargetName="E1R" BeginTime="0" Storyboard.TargetProperty="Angle">
+                      <SplineDoubleKeyFrame KeyTime="0" Value="-110" KeySpline="0.13,0.21,0.1,0.7" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.433" Value="10" KeySpline="0.02,0.33,0.38,0.77" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:1.2" Value="93" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:1.617" Value="205" KeySpline="0.57,0.17,0.95,0.75" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:2.017" Value="357" KeySpline="0,0.19,0.07,0.72" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:2.783" Value="439" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:3.217" Value="585" KeySpline="0,0,0.95,0.37" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames RepeatBehavior="Forever" Storyboard.TargetName="E2R" BeginTime="00:00:00.167" Storyboard.TargetProperty="Angle">
+                      <SplineDoubleKeyFrame KeyTime="0" Value="-116" KeySpline="0.13,0.21,0.1,0.7" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.433" Value="4" KeySpline="0.02,0.33,0.38,0.77" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:1.2" Value="87" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:1.617" Value="199" KeySpline="0.57,0.17,0.95,0.75" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:2.017" Value="351" KeySpline="0,0.19,0.07,0.72" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:2.783" Value="433" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:3.217" Value="579" KeySpline="0,0,0.95,0.37" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames RepeatBehavior="Forever" Storyboard.TargetName="E3R" BeginTime="00:00:00.334" Storyboard.TargetProperty="Angle">
+                      <SplineDoubleKeyFrame KeyTime="0" Value="-122" KeySpline="0.13,0.21,0.1,0.7" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.433" Value="-2" KeySpline="0.02,0.33,0.38,0.77" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:1.2" Value="81" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:1.617" Value="193" KeySpline="0.57,0.17,0.95,0.75" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:2.017" Value="345" KeySpline="0,0.19,0.07,0.72" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:2.783" Value="427" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:3.217" Value="573" KeySpline="0,0,0.95,0.37" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames RepeatBehavior="Forever" Storyboard.TargetName="E4R" BeginTime="00:00:00.501" Storyboard.TargetProperty="Angle">
+                      <SplineDoubleKeyFrame KeyTime="0" Value="-128" KeySpline="0.13,0.21,0.1,0.7" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.433" Value="-8" KeySpline="0.02,0.33,0.38,0.77" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:1.2" Value="75" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:1.617" Value="187" KeySpline="0.57,0.17,0.95,0.75" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:2.017" Value="339" KeySpline="0,0.19,0.07,0.72" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:2.783" Value="421" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:3.217" Value="567" KeySpline="0,0,0.95,0.37" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames RepeatBehavior="Forever" Storyboard.TargetName="E5R" BeginTime="00:00:00.668" Storyboard.TargetProperty="Angle">
+                      <SplineDoubleKeyFrame KeyTime="0" Value="-134" KeySpline="0.13,0.21,0.1,0.7" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.433" Value="-14" KeySpline="0.02,0.33,0.38,0.77" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:1.2" Value="69" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:1.617" Value="181" KeySpline="0.57,0.17,0.95,0.75" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:2.017" Value="331" KeySpline="0,0.19,0.07,0.72" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:2.783" Value="415" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:3.217" Value="561" KeySpline="0,0,0.95,0.37" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <DoubleAnimationUsingKeyFrames RepeatBehavior="Forever" Storyboard.TargetName="E6R" BeginTime="00:00:00.835" Storyboard.TargetProperty="Angle">
+                      <SplineDoubleKeyFrame KeyTime="0" Value="-140" KeySpline="0.13,0.21,0.1,0.7" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:0.433" Value="-20" KeySpline="0.02,0.33,0.38,0.77" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:1.2" Value="63" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:1.617" Value="175" KeySpline="0.57,0.17,0.95,0.75" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:2.017" Value="325" KeySpline="0,0.19,0.07,0.72" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:2.783" Value="409" />
+                      <SplineDoubleKeyFrame KeyTime="0:0:3.217" Value="555" KeySpline="0,0,0.95,0.37" />
+                    </DoubleAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <Canvas RenderTransformOrigin=".5,.5">
+              <Canvas.RenderTransform>
+                <RotateTransform x:Name="E1R" />
+              </Canvas.RenderTransform>
+              <Ellipse x:Name="E1" Style="{StaticResource ProgressRingEllipseStyle}" Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.EllipseDiameter}" Height="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.EllipseDiameter}" Margin="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.EllipseOffset}" Fill="{TemplateBinding Foreground}" />
+            </Canvas>
+            <Canvas RenderTransformOrigin=".5,.5">
+              <Canvas.RenderTransform>
+                <RotateTransform x:Name="E2R" />
+              </Canvas.RenderTransform>
+              <Ellipse x:Name="E2" Style="{StaticResource ProgressRingEllipseStyle}" Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.EllipseDiameter}" Height="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.EllipseDiameter}" Margin="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.EllipseOffset}" Fill="{TemplateBinding Foreground}" />
+            </Canvas>
+            <Canvas RenderTransformOrigin=".5,.5">
+              <Canvas.RenderTransform>
+                <RotateTransform x:Name="E3R" />
+              </Canvas.RenderTransform>
+              <Ellipse x:Name="E3" Style="{StaticResource ProgressRingEllipseStyle}" Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.EllipseDiameter}" Height="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.EllipseDiameter}" Margin="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.EllipseOffset}" Fill="{TemplateBinding Foreground}" />
+            </Canvas>
+            <Canvas RenderTransformOrigin=".5,.5">
+              <Canvas.RenderTransform>
+                <RotateTransform x:Name="E4R" />
+              </Canvas.RenderTransform>
+              <Ellipse x:Name="E4" Style="{StaticResource ProgressRingEllipseStyle}" Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.EllipseDiameter}" Height="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.EllipseDiameter}" Margin="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.EllipseOffset}" Fill="{TemplateBinding Foreground}" />
+            </Canvas>
+            <Canvas RenderTransformOrigin=".5,.5">
+              <Canvas.RenderTransform>
+                <RotateTransform x:Name="E5R" />
+              </Canvas.RenderTransform>
+              <Ellipse x:Name="E5" Style="{StaticResource ProgressRingEllipseStyle}" Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.EllipseDiameter}" Height="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.EllipseDiameter}" Margin="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.EllipseOffset}" Fill="{TemplateBinding Foreground}" />
+            </Canvas>
+            <Canvas RenderTransformOrigin=".5,.5" Visibility="Collapsed" x:Name="SixthCircle">
+              <Canvas.RenderTransform>
+                <RotateTransform x:Name="E6R" />
+              </Canvas.RenderTransform>
+              <Ellipse x:Name="E6" Style="{StaticResource ProgressRingEllipseStyle}" Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.EllipseDiameter}" Height="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.EllipseDiameter}" Margin="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.EllipseOffset}" Fill="{TemplateBinding Foreground}" />
+            </Canvas>
           </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </wasm:Style>
+  <android:Style TargetType="ProgressRing">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ProgressRing">
+          <NativeProgressRing />
         </ControlTemplate>
       </Setter.Value>
     </Setter>
   </android:Style>
-  <ios:Style TargetType="TimePickerFlyoutPresenter">
-    <Setter Property="Background" Value="{ThemeResource TimePickerFlyoutPresenterBackground}" />
-    <Setter Property="VerticalAlignment" Value="Stretch" />
-    <Setter Property="HorizontalAlignment" Value="Stretch" />
-    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-    <Setter Property="VerticalContentAlignment" Value="Bottom" />
-    <Setter Property="BorderThickness" Value="0" />
-    <Setter Property="IsTabStop" Value="False" />
-    <Setter Property="AutomationProperties.AutomationId" Value="TimePickerFlyoutPresenter" />
+  <ios:Style TargetType="ProgressRing">
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="TimePickerFlyoutPresenter">
-          <Grid x:Name="ContentPanel" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-            <Grid.RowDefinitions>
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="0" x:Name="AcceptDismissHostGrid" Height="44" uBehaviors:InternalVisibleBoundsPadding.PaddingMask="Left">
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-              </Grid.ColumnDefinitions>
-              <Button Grid.Column="0" x:Name="DismissButton" x:Uid="TimePickerFlyoutDismissButton" Content="Cancel" HorizontalAlignment="Left" Style="{StaticResource IosPickerFlyoutTextButtonStyle}" />
-              <Button Grid.Column="2" x:Name="AcceptButton" x:Uid="TimePickerFlyoutAcceptButton" Content="Done" FontWeight="Bold" HorizontalAlignment="Right" Style="{StaticResource IosPickerFlyoutTextButtonStyle}" />
-            </Grid>
-            <ContentPresenter Grid.Row="1" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
-          </Grid>
+        <ControlTemplate TargetType="ProgressRing">
+          <NativeProgressRing />
         </ControlTemplate>
       </Setter.Value>
     </Setter>
   </ios:Style>
-  <!--origin: .\UI\Xaml\Controls\ScrollBar\ScrollBar.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\ScrollBar\ScrollBar.xaml-->
   <ControlTemplate x:Key="XamlDefaultScrollBar_RepeatButtonTemplate" TargetType="RepeatButton">
     <Grid x:Name="Root" Background="Transparent">
       <VisualStateManager.VisualStateGroups>
@@ -16814,190 +16958,11 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <netstdref:Style TargetType="FlipView">
-    <Setter Property="Background" Value="{ThemeResource FlipViewBackground}" />
-    <Setter Property="BorderThickness" Value="0" />
-    <Setter Property="TabNavigation" Value="Once" />
-    <Setter Property="IsTabStop" Value="False" />
-    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden" />
-    <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden" />
-    <Setter Property="ScrollViewer.IsHorizontalRailEnabled" Value="False" />
-    <Setter Property="ScrollViewer.IsVerticalRailEnabled" Value="False" />
-    <Setter Property="ScrollViewer.IsHorizontalScrollChainingEnabled" Value="True" />
-    <Setter Property="ScrollViewer.IsVerticalScrollChainingEnabled" Value="True" />
-    <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="False" />
-    <Setter Property="ScrollViewer.BringIntoViewOnFocusChange" Value="True" />
-    <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
-    <Setter Property="ItemsPanel">
-      <Setter.Value>
-        <ItemsPanelTemplate>
-          <StackPanel AreScrollSnapPointsRegular="True" Orientation="Horizontal" />
-        </ItemsPanelTemplate>
-      </Setter.Value>
-    </Setter>
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="FlipView">
-          <Grid Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
-            <Grid.Resources>
-              <ControlTemplate x:Key="HorizontalNextTemplate" TargetType="Button">
-                <Border x:Name="Root" Background="{ThemeResource FlipViewNextPreviousButtonBackground}" BorderThickness="{ThemeResource FlipViewButtonBorderThemeThickness}" BorderBrush="{ThemeResource FlipViewNextPreviousButtonBorderBrush}">
-                  <VisualStateManager.VisualStateGroups>
-                    <VisualStateGroup x:Name="CommonStates">
-                      <VisualState x:Name="Normal" />
-                      <VisualState x:Name="PointerOver">
-                        <Storyboard>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Background">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBackgroundPointerOver}" />
-                          </ObjectAnimationUsingKeyFrames>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="BorderBrush">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBorderBrushPointerOver}" />
-                          </ObjectAnimationUsingKeyFrames>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousArrowForegroundPointerOver}" />
-                          </ObjectAnimationUsingKeyFrames>
-                        </Storyboard>
-                      </VisualState>
-                      <VisualState x:Name="Pressed">
-                        <Storyboard>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Background">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBackgroundPressed}" />
-                          </ObjectAnimationUsingKeyFrames>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="BorderBrush">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBorderBrushPressed}" />
-                          </ObjectAnimationUsingKeyFrames>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousArrowForegroundPressed}" />
-                          </ObjectAnimationUsingKeyFrames>
-                        </Storyboard>
-                      </VisualState>
-                    </VisualStateGroup>
-                  </VisualStateManager.VisualStateGroups>
-                  <FontIcon x:Name="Arrow" FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="12" Foreground="{ThemeResource FlipViewNextPreviousArrowForeground}" Glyph="&#xE0E3;" HorizontalAlignment="Center" VerticalAlignment="Center" MirroredWhenRightToLeft="True" UseLayoutRounding="False" />
-                </Border>
-              </ControlTemplate>
-              <ControlTemplate x:Key="HorizontalPreviousTemplate" TargetType="Button">
-                <Border x:Name="Root" Background="{ThemeResource FlipViewNextPreviousButtonBackground}" BorderThickness="{ThemeResource FlipViewButtonBorderThemeThickness}" BorderBrush="{ThemeResource FlipViewNextPreviousButtonBorderBrush}">
-                  <VisualStateManager.VisualStateGroups>
-                    <VisualStateGroup x:Name="CommonStates">
-                      <VisualState x:Name="Normal" />
-                      <VisualState x:Name="PointerOver">
-                        <Storyboard>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Background">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBackgroundPointerOver}" />
-                          </ObjectAnimationUsingKeyFrames>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="BorderBrush">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBorderBrushPointerOver}" />
-                          </ObjectAnimationUsingKeyFrames>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousArrowForegroundPointerOver}" />
-                          </ObjectAnimationUsingKeyFrames>
-                        </Storyboard>
-                      </VisualState>
-                      <VisualState x:Name="Pressed">
-                        <Storyboard>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Background">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBackgroundPressed}" />
-                          </ObjectAnimationUsingKeyFrames>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="BorderBrush">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBorderBrushPressed}" />
-                          </ObjectAnimationUsingKeyFrames>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousArrowForegroundPressed}" />
-                          </ObjectAnimationUsingKeyFrames>
-                        </Storyboard>
-                      </VisualState>
-                    </VisualStateGroup>
-                  </VisualStateManager.VisualStateGroups>
-                  <FontIcon x:Name="Arrow" FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="12" Foreground="{ThemeResource FlipViewNextPreviousArrowForeground}" Glyph="&#xE0E2;" HorizontalAlignment="Center" VerticalAlignment="Center" MirroredWhenRightToLeft="True" UseLayoutRounding="False" />
-                </Border>
-              </ControlTemplate>
-              <ControlTemplate x:Key="VerticalNextTemplate" TargetType="Button">
-                <Border x:Name="Root" Background="{ThemeResource FlipViewNextPreviousButtonBackground}" BorderThickness="{ThemeResource FlipViewButtonBorderThemeThickness}" BorderBrush="{ThemeResource FlipViewNextPreviousButtonBorderBrush}">
-                  <VisualStateManager.VisualStateGroups>
-                    <VisualStateGroup x:Name="CommonStates">
-                      <VisualState x:Name="Normal" />
-                      <VisualState x:Name="PointerOver">
-                        <Storyboard>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Background">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBackgroundPointerOver}" />
-                          </ObjectAnimationUsingKeyFrames>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="BorderBrush">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBorderBrushPointerOver}" />
-                          </ObjectAnimationUsingKeyFrames>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousArrowForegroundPointerOver}" />
-                          </ObjectAnimationUsingKeyFrames>
-                        </Storyboard>
-                      </VisualState>
-                      <VisualState x:Name="Pressed">
-                        <Storyboard>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Background">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBackgroundPressed}" />
-                          </ObjectAnimationUsingKeyFrames>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="BorderBrush">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBorderBrushPressed}" />
-                          </ObjectAnimationUsingKeyFrames>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousArrowForegroundPressed}" />
-                          </ObjectAnimationUsingKeyFrames>
-                        </Storyboard>
-                      </VisualState>
-                    </VisualStateGroup>
-                  </VisualStateManager.VisualStateGroups>
-                  <FontIcon x:Name="Arrow" FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="12" Foreground="{ThemeResource FlipViewNextPreviousArrowForeground}" Glyph="&#xE0E5;" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="False" />
-                </Border>
-              </ControlTemplate>
-              <ControlTemplate x:Key="VerticalPreviousTemplate" TargetType="Button">
-                <Border x:Name="Root" Background="{ThemeResource FlipViewNextPreviousButtonBackground}" BorderThickness="{ThemeResource FlipViewButtonBorderThemeThickness}" BorderBrush="{ThemeResource FlipViewNextPreviousButtonBorderBrush}">
-                  <VisualStateManager.VisualStateGroups>
-                    <VisualStateGroup x:Name="CommonStates">
-                      <VisualState x:Name="Normal" />
-                      <VisualState x:Name="PointerOver">
-                        <Storyboard>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Background">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBackgroundPointerOver}" />
-                          </ObjectAnimationUsingKeyFrames>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="BorderBrush">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBorderBrushPointerOver}" />
-                          </ObjectAnimationUsingKeyFrames>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousArrowForegroundPointerOver}" />
-                          </ObjectAnimationUsingKeyFrames>
-                        </Storyboard>
-                      </VisualState>
-                      <VisualState x:Name="Pressed">
-                        <Storyboard>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Background">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBackgroundPressed}" />
-                          </ObjectAnimationUsingKeyFrames>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="BorderBrush">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBorderBrushPressed}" />
-                          </ObjectAnimationUsingKeyFrames>
-                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousArrowForegroundPressed}" />
-                          </ObjectAnimationUsingKeyFrames>
-                        </Storyboard>
-                      </VisualState>
-                    </VisualStateGroup>
-                  </VisualStateManager.VisualStateGroups>
-                  <FontIcon x:Name="Arrow" FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="12" Foreground="{ThemeResource FlipViewNextPreviousArrowForeground}" Glyph="&#xE0E4;" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="False" />
-                </Border>
-              </ControlTemplate>
-            </Grid.Resources>
-            <ScrollViewer x:Name="ScrollingHost" VerticalSnapPointsType="MandatorySingle" HorizontalSnapPointsType="MandatorySingle" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}" IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}" IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}" IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}" IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}" BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}" Padding="{TemplateBinding Padding}" ZoomMode="Disabled" TabNavigation="{TemplateBinding TabNavigation}" IsTabStop="False" AutomationProperties.AccessibilityView="Raw">
-              <ItemsPresenter />
-            </ScrollViewer>
-            <Button x:Name="PreviousButtonHorizontal" Template="{StaticResource HorizontalPreviousTemplate}" Width="20" Height="36" IsTabStop="False" UseSystemFocusVisuals="False" HorizontalAlignment="Left" AutomationProperties.Name="PreviousButtonHorizontal" VerticalAlignment="Center" />
-            <Button x:Name="NextButtonHorizontal" Template="{StaticResource HorizontalNextTemplate}" Width="20" Height="36" IsTabStop="False" UseSystemFocusVisuals="False" HorizontalAlignment="Right" AutomationProperties.Name="NextButtonHorizontal" VerticalAlignment="Center" />
-            <Button x:Name="PreviousButtonVertical" Template="{StaticResource VerticalPreviousTemplate}" Width="36" Height="20" IsTabStop="False" UseSystemFocusVisuals="False" HorizontalAlignment="Center" AutomationProperties.Name="PreviousButtonVertical" VerticalAlignment="Top" />
-            <Button x:Name="NextButtonVertical" Template="{StaticResource VerticalNextTemplate}" Width="36" Height="20" IsTabStop="False" UseSystemFocusVisuals="False" HorizontalAlignment="Center" AutomationProperties.Name="NextButtonVertical" VerticalAlignment="Bottom" />
-          </Grid>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </netstdref:Style>
-  <!--origin: .\UI\Xaml\Controls\ScrollViewer\ScrollViewer.xaml-->
+  <macos:Style TargetType="ScrollBar" BasedOn="{StaticResource XamlNoAnimationScrollBar}" />
+  <netstdref:Style TargetType="ScrollBar" BasedOn="{StaticResource XamlNoAnimationScrollBar}" />
+  <ios:Style TargetType="ScrollBar" BasedOn="{StaticResource XamlDefaultScrollBar}" />
+  <android:Style TargetType="ScrollBar" BasedOn="{StaticResource XamlDefaultScrollBar}" />
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\ScrollViewer\ScrollViewer.xaml-->
   <Style TargetType="ScrollViewer" x:Key="DefaultScrollViewerStyle">
     <Setter Property="HorizontalScrollMode" Value="Auto" />
     <Setter Property="VerticalScrollMode" Value="Auto" />
@@ -17210,7 +17175,11 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\UI\Xaml\Controls\SwipeControl\SwipeControl.xaml-->
+  <macos:Style TargetType="ScrollViewer" BasedOn="{StaticResource DefaultScrollViewerStyle}" />
+  <netstdref:Style TargetType="ScrollViewer" BasedOn="{StaticResource DefaultScrollViewerStyle}" />
+  <ios:Style TargetType="ScrollViewer" BasedOn="{StaticResource NativeScrollViewerStyle}" />
+  <android:Style TargetType="ScrollViewer" BasedOn="{StaticResource NativeScrollViewerStyle}" />
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\SwipeControl\SwipeControl.xaml-->
   <Style x:Key="DefaultSwipeControlStyle" TargetType="controls:SwipeControl">
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="Background" Value="Transparent" />
@@ -17234,10 +17203,10 @@
     </Setter>
   </Style>
   <Style TargetType="controls:SwipeControl" BasedOn="{StaticResource DefaultSwipeControlStyle}" />
-  <!--origin: .\UI\Xaml\Controls\SwipeControl\SwipeControl_rs1.xaml-->
-  <!--origin: .\UI\Xaml\Controls\SwipeControl\SwipeControl_rs1_v1.xaml-->
-  <!--origin: .\UI\Xaml\Controls\SwipeControl\SwipeControl_themeresources.xaml-->
-  <!--origin: .\UI\Xaml\Controls\SwipeControl\SwipeControl_themeresources_v1.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\SwipeControl\SwipeControl_rs1.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\SwipeControl\SwipeControl_rs1_v1.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\SwipeControl\SwipeControl_themeresources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\SwipeControl\SwipeControl_themeresources_v1.xaml-->
   <Style x:Key="SwipeItemStyle" TargetType="AppBarButton">
     <Setter Property="HorizontalAlignment" Value="Center" />
     <Setter Property="VerticalAlignment" Value="Center" />
@@ -17279,8 +17248,8 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\UI\Xaml\Controls\SwipeControl\SwipeControl_v1.xaml-->
-  <!--origin: .\UI\Xaml\Controls\ToolTip\ToolTip.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\SwipeControl\SwipeControl_v1.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Controls\ToolTip\ToolTip.xaml-->
   <SolidColorBrush x:Key="ToolTipForeground" Color="{StaticResource SystemBaseHighColor}" />
   <SolidColorBrush x:Key="ToolTipBackground" Color="{StaticResource SystemChromeMediumLowColor}" />
   <SolidColorBrush x:Key="ToolTipBorderBrush" Color="#000000" />
@@ -17320,7 +17289,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\UI\Xaml\DragDrop\DragView.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\DragDrop\DragView.xaml-->
   <Style TargetType="DragView">
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="IsHitTestVisible" Value="False" />
@@ -17350,7 +17319,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\UI\Xaml\Style\Generic\FlyoutPresenter.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Style\Generic\FlyoutPresenter.xaml-->
   <StaticResource x:Key="FlyoutPresenterBackground" ResourceKey="SystemControlTransientBackgroundBrush" />
   <Thickness x:Key="FlyoutBorderThemeThickness">1</Thickness>
   <Thickness x:Key="FlyoutBorderThemePadding">0</Thickness>
@@ -17391,7 +17360,7 @@
     </Setter>
   </Style>
   <Style TargetType="FlyoutPresenter" BasedOn="{StaticResource DefaultFlyoutPresenter}" />
-  <!--origin: .\UI\Xaml\Style\Generic\Generic.Native.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Style\Generic\Generic.Native.xaml-->
   <android:Style x:Key="NativeDefaultButton" TargetType="Button">
     <Setter Property="Template">
       <Setter.Value>
@@ -17415,50 +17384,7 @@
   <wasm:Style x:Key="NativeDefaultButton" TargetType="Button" BasedOn="{StaticResource XamlDefaultButton}" />
   <skia:Style x:Key="NativeDefaultButton" TargetType="Button" BasedOn="{StaticResource XamlDefaultButton}" />
   <net461:Style x:Key="NativeDefaultButton" TargetType="Button" BasedOn="{StaticResource XamlDefaultButton}" />
-  <xamarin:Style TargetType="GridView">
-    <Setter Property="Padding" Value="0,0,0,10" />
-    <Setter Property="IsTabStop" Value="False" />
-    <Setter Property="TabNavigation" Value="Once" />
-    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
-    <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
-    <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Disabled" />
-    <Setter Property="ScrollViewer.IsHorizontalRailEnabled" Value="False" />
-    <Setter Property="ScrollViewer.VerticalScrollMode" Value="Enabled" />
-    <Setter Property="ScrollViewer.IsVerticalRailEnabled" Value="True" />
-    <!--<Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />-->
-    <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="False" />
-    <Setter Property="ScrollViewer.BringIntoViewOnFocusChange" Value="True" />
-    <Setter Property="IsSwipeEnabled" Value="True" />
-    <Setter Property="ItemContainerTransitions">
-      <Setter.Value>
-        <TransitionCollection>
-          <AddDeleteThemeTransition />
-          <ContentThemeTransition />
-          <ReorderThemeTransition />
-          <EntranceThemeTransition IsStaggeringEnabled="False" />
-        </TransitionCollection>
-      </Setter.Value>
-    </Setter>
-    <Setter Property="ItemsPanel">
-      <Setter.Value>
-        <ItemsPanelTemplate>
-          <itemswrapgridpresent:ItemsWrapGrid Orientation="Horizontal" />
-          <itemswrapgridnotpresent:WrapPanel />
-        </ItemsPanelTemplate>
-      </Setter.Value>
-    </Setter>
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="GridView">
-          <Border BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
-            <ScrollViewer x:Name="ScrollViewer" ios:Style="{StaticResource ListViewBaseScrollViewerStyle}" android:Style="{StaticResource ListViewBaseScrollViewerStyle}" TabNavigation="{TemplateBinding TabNavigation}" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}" IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}" IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}" ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}" IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}" BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}" AutomationProperties.AccessibilityView="Raw">
-              <ItemsPresenter Header="{TemplateBinding Header}" HeaderTemplate="{TemplateBinding HeaderTemplate}" HeaderTransitions="{TemplateBinding HeaderTransitions}" Footer="{TemplateBinding Footer}" FooterTemplate="{TemplateBinding FooterTemplate}" FooterTransitions="{TemplateBinding FooterTransitions}" Padding="{TemplateBinding Padding}" />
-            </ScrollViewer>
-          </Border>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </xamarin:Style>
+  <xamarin:Style TargetType="Button" xamarin:IsNativeStyle="True" BasedOn="{StaticResource NativeDefaultButton}" />
   <android:Style x:Key="NativeDefaultCheckBox" TargetType="CheckBox">
     <Setter Property="Template">
       <Setter.Value>
@@ -17485,6 +17411,7 @@
   <skia:Style x:Key="NativeDefaultCheckBox" TargetType="CheckBox" BasedOn="{StaticResource XamlDefaultCheckBox}" />
   <macos:Style x:Key="NativeDefaultCheckBox" TargetType="CheckBox" BasedOn="{StaticResource XamlDefaultCheckBox}" />
   <net461:Style x:Key="NativeDefaultCheckBox" TargetType="CheckBox" BasedOn="{StaticResource XamlDefaultCheckBox}" />
+  <xamarin:Style TargetType="CheckBox" xamarin:IsNativeStyle="True" BasedOn="{StaticResource NativeDefaultCheckBox}" />
   <android:Style x:Key="AndroidRadioButtonStyle" TargetType="RadioButton">
     <Setter Property="Template">
       <Setter.Value>
@@ -17517,6 +17444,7 @@
   <wasm:Style x:Key="NativeDefaultToggleSwitch" TargetType="ToggleSwitch" BasedOn="{StaticResource XamlDefaultToggleSwitch}" />
   <skia:Style x:Key="NativeDefaultToggleSwitch" TargetType="ToggleSwitch" BasedOn="{StaticResource XamlDefaultToggleSwitch}" />
   <macos:Style x:Key="NativeDefaultToggleSwitch" TargetType="ToggleSwitch" BasedOn="{StaticResource XamlDefaultToggleSwitch}" />
+  <xamarin:Style TargetType="ToggleSwitch" xamarin:IsNativeStyle="True" BasedOn="{StaticResource NativeDefaultToggleSwitch}" />
   <ios:Style x:Key="NativeDefaultSlider" TargetType="Slider">
     <Setter Property="Template">
       <Setter.Value>
@@ -17540,6 +17468,7 @@
   <wasm:Style x:Key="NativeDefaultSlider" TargetType="Slider" BasedOn="{StaticResource XamlDefaultSlider}" />
   <skia:Style x:Key="NativeDefaultSlider" TargetType="Slider" BasedOn="{StaticResource XamlDefaultSlider}" />
   <macos:Style x:Key="NativeDefaultSlider" TargetType="Slider" BasedOn="{StaticResource XamlDefaultSlider}" />
+  <xamarin:Style BasedOn="{StaticResource NativeDefaultSlider}" xamarin:IsNativeStyle="True" TargetType="Slider" />
   <converters:UnoNativeDefaultProgressBarReverseBoolConverter x:Key="nativeDefaultProgressBarReverseBool" />
   <ios:Style x:Key="NativeDefaultProgressBar" TargetType="ProgressBar">
     <Setter Property="Template">
@@ -17568,6 +17497,7 @@
   <wasm:Style x:Key="NativeDefaultProgressBar" TargetType="ProgressBar" BasedOn="{StaticResource XamlDefaultProgressBar}" />
   <skia:Style x:Key="NativeDefaultProgressBar" TargetType="ProgressBar" BasedOn="{StaticResource XamlDefaultProgressBar}" />
   <macos:Style x:Key="NativeDefaultProgressBar" TargetType="ProgressBar" BasedOn="{StaticResource XamlDefaultProgressBar}" />
+  <xamarin:Style TargetType="ProgressBar" xamarin:IsNativeStyle="True" BasedOn="{StaticResource NativeDefaultProgressBar}" />
   <xamarin:Style x:Key="NativeDefaultTextBox" TargetType="TextBox">
     <Setter Property="Template">
       <Setter.Value>
@@ -17588,7 +17518,7 @@
       </Setter.Value>
     </Setter>
   </xamarin:Style>
-  <not_wasm:Style TargetType="Pivot" xamarin:IsNativeStyle="True" BasedOn="{StaticResource NativeDefaultPivot}" />
+  <not_wasm:Style BasedOn="{StaticResource NativeDefaultTextBox}" xamarin:IsNativeStyle="True" TargetType="TextBox" />
   <xamarin:Style x:Key="NativeDefaultPivot" TargetType="Pivot">
     <Setter Property="Template">
       <Setter.Value>
@@ -17598,6 +17528,33 @@
       </Setter.Value>
     </Setter>
   </xamarin:Style>
+  <ios:Style TargetType="NativePivotPresenter">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="Pivot">
+          <Grid>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="1*" />
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid x:Name="PART_Content" Grid.Row="0" />
+            <UITabBar Grid.Row="1" />
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </ios:Style>
+  <android:Style TargetType="NativePivotPresenter">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="Pivot">
+          <ExtendedViewPager OffscreenPageLimit="1" SwipeEnabled="true" />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </android:Style>
+  <not_wasm:Style TargetType="Pivot" xamarin:IsNativeStyle="True" BasedOn="{StaticResource NativeDefaultPivot}" />
+  <wasm:Style TargetType="Pivot" xamarin:IsNativeStyle="True" BasedOn="{StaticResource XamlDefaultPivot}" />
   <ios:Style x:Key="NativeDefaultCommandBar" TargetType="CommandBar">
     <Setter Property="Background" Value="{x:Null}" />
     <Setter Property="Foreground" Value="{x:Null}" />
@@ -17631,6 +17588,7 @@
   <wasm:Style x:Key="NativeDefaultCommandBar" TargetType="CommandBar" BasedOn="{StaticResource XamlDefaultCommandBar}" />
   <skia:Style x:Key="NativeDefaultCommandBar" TargetType="CommandBar" BasedOn="{StaticResource XamlDefaultCommandBar}" />
   <macos:Style x:Key="NativeDefaultCommandBar" TargetType="CommandBar" BasedOn="{StaticResource XamlCommandBar}" />
+  <xamarin:Style TargetType="CommandBar" xamarin:IsNativeStyle="True" BasedOn="{StaticResource NativeDefaultCommandBar}" />
   <ios:Style x:Key="NativeDefaultAppBarButton" TargetType="AppBarButton">
     <Setter Property="Background" Value="Transparent" />
     <ios:Setter Property="Foreground" Value="{x:Null}" />
@@ -17642,6 +17600,7 @@
   <wasm:Style x:Key="NativeDefaultAppBarButton" TargetType="AppBarButton" BasedOn="{StaticResource XamlAppBarButton}" />
   <skia:Style x:Key="NativeDefaultAppBarButton" TargetType="AppBarButton" BasedOn="{StaticResource XamlAppBarButton}" />
   <macos:Style x:Key="NativeDefaultAppBarButton" TargetType="AppBarButton" BasedOn="{StaticResource XamlAppBarButton}" />
+  <xamarin:Style TargetType="AppBarButton" xamarin:IsNativeStyle="True" BasedOn="{StaticResource NativeDefaultAppBarButton}" />
   <ios:Style x:Key="NativeDefaultFrame" TargetType="Frame">
     <Setter Property="Template">
       <Setter.Value>
@@ -17664,6 +17623,7 @@
   <skia:Style x:Key="NativeDefaultFrame" TargetType="Frame" BasedOn="{StaticResource XamlDefaultFrame}" />
   <macos:Style x:Key="NativeDefaultFrame" TargetType="Frame" BasedOn="{StaticResource XamlDefaultFrame}" />
   <net461:Style x:Key="NativeDefaultFrame" TargetType="Frame" BasedOn="{StaticResource XamlDefaultFrame}" />
+  <xamarin:Style TargetType="Frame" xamarin:IsNativeStyle="True" BasedOn="{StaticResource NativeDefaultFrame}" />
   <android:Double x:Key="NativeDefaultSplitViewOpenPaneLength">304</android:Double>
   <android:Style x:Key="LeftDrawerSplitViewStyle" TargetType="SplitView">
     <Setter Property="OpenPaneLength" Value="{StaticResource NativeDefaultSplitViewOpenPaneLength}" />
@@ -17703,7 +17663,123 @@
       </Setter.Value>
     </Setter>
   </ios:Style>
-  <!--origin: .\UI\Xaml\Style\Generic\Generic.xaml-->
+  <ios:Style TargetType="NativeDatePickerFlyoutPresenter">
+    <Setter Property="Background" Value="{ThemeResource TimePickerFlyoutPresenterBackground}" />
+    <Setter Property="VerticalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="VerticalContentAlignment" Value="Bottom" />
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="NativeDatePickerFlyoutPresenter">
+          <Grid x:Name="ContentPanel" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" x:Name="AcceptDismissHostGrid" Height="44" uBehaviors:InternalVisibleBoundsPadding.PaddingMask="Left">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+              <Button Grid.Column="0" x:Name="DismissButton" x:Uid="DatePickerFlyoutDismissButton" Content="Cancel" HorizontalAlignment="Left" Style="{StaticResource IosPickerFlyoutTextButtonStyle}" />
+              <Button Grid.Column="2" x:Name="AcceptButton" x:Uid="DatePickerFlyoutAcceptButton" Content="Done" FontWeight="Bold" HorizontalAlignment="Right" Style="{StaticResource IosPickerFlyoutTextButtonStyle}" />
+            </Grid>
+            <ContentPresenter Grid.Row="1" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </ios:Style>
+  <ios:Style TargetType="DatePickerSelector">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="DatePickerSelector">
+          <native_ios:UIDatePicker />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </ios:Style>
+  <android:Style TargetType="TimePickerFlyoutPresenter">
+    <Setter Property="VerticalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="FlyoutPresenter">
+          <Grid>
+            <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsHitTestVisible="False" Opacity="0.50" Background="Black" />
+            <ContentPresenter Content="{TemplateBinding Content}" />
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </android:Style>
+  <ios:Style TargetType="TimePickerFlyoutPresenter">
+    <Setter Property="Background" Value="{ThemeResource TimePickerFlyoutPresenterBackground}" />
+    <Setter Property="VerticalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="VerticalContentAlignment" Value="Bottom" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="AutomationProperties.AutomationId" Value="TimePickerFlyoutPresenter" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="TimePickerFlyoutPresenter">
+          <Grid x:Name="ContentPanel" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" x:Name="AcceptDismissHostGrid" Height="44" uBehaviors:InternalVisibleBoundsPadding.PaddingMask="Left">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+              <Button Grid.Column="0" x:Name="DismissButton" x:Uid="TimePickerFlyoutDismissButton" Content="Cancel" HorizontalAlignment="Left" Style="{StaticResource IosPickerFlyoutTextButtonStyle}" />
+              <Button Grid.Column="2" x:Name="AcceptButton" x:Uid="TimePickerFlyoutAcceptButton" Content="Done" FontWeight="Bold" HorizontalAlignment="Right" Style="{StaticResource IosPickerFlyoutTextButtonStyle}" />
+            </Grid>
+            <ContentPresenter Grid.Row="1" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </ios:Style>
+  <xamarin:Style TargetType="TimePickerSelector">
+    <ios:Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="TimePickerSelector">
+          <ContentControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+            <native_ios:UIDatePicker />
+          </ContentControl>
+        </ControlTemplate>
+      </Setter.Value>
+    </ios:Setter>
+    <android:Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="TimePickerSelector">
+          <Border Background="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <native_android:TimePicker />
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </android:Setter>
+  </xamarin:Style>
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Style\Generic\Generic.xaml-->
+  <xamarin:Style TargetType="ItemsControl">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ItemsControl">
+          <ItemsPresenter Padding="{TemplateBinding Padding}" />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </xamarin:Style>
   <Style TargetType="ContentControl">
     <Setter Property="HorizontalContentAlignment" Value="Left" />
     <Setter Property="VerticalContentAlignment" Value="Top" />
@@ -17758,6 +17834,51 @@
   <xamarin:Style x:Key="CaptionTextBlockStyle" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlockStyle}">
     <Setter Property="FontSize" Value="12" />
     <Setter Property="FontWeight" Value="Normal" />
+  </xamarin:Style>
+  <xamarin:Style TargetType="HyperlinkButton">
+    <Setter Property="Foreground" Value="{ThemeResource SystemControlHyperlinkTextBrush}" />
+    <Setter Property="BorderThickness" Value="{ThemeResource HyperlinkButtonBorderThemeThickness}" />
+    <Setter Property="Padding" Value="0,6,0,6" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+    <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
+    <Setter Property="UseSystemFocusVisuals" Value="True" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="HyperlinkButton">
+          <Grid x:Name="RootGrid">
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal" />
+                <VisualState x:Name="PointerOver">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHyperlinkBaseMediumBrush}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+                <VisualState x:Name="Pressed">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseMediumLowBrush}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+                <VisualState x:Name="Disabled">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseMediumLowBrush}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" CornerRadius="{TemplateBinding CornerRadius}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" />
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
   </xamarin:Style>
   <Thickness x:Key="TextBoxTopHeaderMargin">0,0,0,4</Thickness>
   <Style x:Key="XamlDefaultTextBox" TargetType="TextBox">
@@ -18187,6 +18308,7 @@
       </Setter.Value>
     </Setter>
   </xamarin:Style>
+  <xamarin:Style TargetType="ComboBoxItem" BasedOn="{StaticResource DefaultComboBoxItemStyle}" />
   <xamarin:Style TargetType="ListViewItem" x:Key="ListViewItemExpanded">
     <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
     <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
@@ -18441,6 +18563,7 @@
       </Setter.Value>
     </Setter>
   </xamarin:Style>
+  <xamarin:Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemExpanded}" />
   <xamarin:Style TargetType="GridViewItem" x:Key="GridViewItemExpanded">
     <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
     <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
@@ -18682,6 +18805,141 @@
             <Rectangle x:Name="FocusVisualBlack" IsHitTestVisible="False" Stroke="{ThemeResource SystemControlForegroundBaseHighBrush}" StrokeEndLineCap="Square" StrokeDashArray="1.0,1.0" StrokeDashOffset="0.5" StrokeThickness="2" Opacity="0" />
             <TextBlock x:Name="MultiArrangeOverlayText" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.DragItemsCount}" Foreground="{ThemeResource ListViewItemDragForegroundThemeBrush}" FontFamily="{ThemeResource ContentControlThemeFontFamily}" FontSize="26.667" IsHitTestVisible="False" Opacity="0" TextWrapping="Wrap" TextTrimming="WordEllipsis" Margin="18,9,0,0" AutomationProperties.AccessibilityView="Raw" Grid.ColumnSpan="2" />
           </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </xamarin:Style>
+  <xamarin:Style TargetType="GridViewItem" BasedOn="{StaticResource GridViewItemExpanded}" />
+  <xamarin:Style TargetType="TimePicker">
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="MinWidth" Value="242" />
+    <Setter Property="MaxWidth" Value="456" />
+    <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+    <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
+    <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <!-- Uno specific property use only in ios, set placement to "Full" to dock of the flyout at the bottom of the screen -->
+    <ios:Setter Property="FlyoutPlacement" Value="Full" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="TimePicker">
+          <StackPanel x:Name="LayoutRoot" Margin="{TemplateBinding Padding}">
+            <StackPanel.Resources>
+              <Style x:Key="TimePickerFlyoutButtonStyle" TargetType="Button">
+                <Setter Property="UseSystemFocusVisuals" Value="False" />
+                <Setter Property="ElementSoundMode" Value="FocusOnly" />
+                <Setter Property="Template">
+                  <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                      <Grid Background="{TemplateBinding Background}">
+                        <VisualStateManager.VisualStateGroups>
+                          <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal" />
+                            <VisualState x:Name="PointerOver">
+                              <Storyboard>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                  <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonBorderBrushPointerOver}" />
+                                </ObjectAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                  <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonBackgroundPointerOver}" />
+                                </ObjectAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                  <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonForegroundPointerOver}" />
+                                </ObjectAnimationUsingKeyFrames>
+                              </Storyboard>
+                            </VisualState>
+                            <VisualState x:Name="Pressed">
+                              <Storyboard>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                  <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonBackgroundPressed}" />
+                                </ObjectAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                  <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonBorderBrushPressed}" />
+                                </ObjectAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                  <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonForegroundPressed}" />
+                                </ObjectAnimationUsingKeyFrames>
+                              </Storyboard>
+                            </VisualState>
+                            <VisualState x:Name="Disabled">
+                              <Storyboard>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                  <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonBackgroundDisabled}" />
+                                </ObjectAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                  <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonBorderBrushDisabled}" />
+                                </ObjectAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                  <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonForegroundDisabled}" />
+                                </ObjectAnimationUsingKeyFrames>
+                              </Storyboard>
+                            </VisualState>
+                          </VisualStateGroup>
+                          <VisualStateGroup x:Name="FocusStates">
+                            <VisualState x:Name="Focused">
+                              <Storyboard>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                  <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonBackgroundFocused}" />
+                                </ObjectAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                  <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonForegroundFocused}" />
+                                </ObjectAnimationUsingKeyFrames>
+                              </Storyboard>
+                            </VisualState>
+                            <VisualState x:Name="Unfocused" />
+                            <VisualState x:Name="PointerFocused" />
+                          </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <ContentPresenter x:Name="ContentPresenter" BorderBrush="{ThemeResource TimePickerButtonBorderBrush}" Background="{ThemeResource TimePickerButtonBackground}" BorderThickness="2" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" AutomationProperties.AccessibilityView="Raw" />
+                      </Grid>
+                    </ControlTemplate>
+                  </Setter.Value>
+                </Setter>
+              </Style>
+            </StackPanel.Resources>
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal" />
+                <VisualState x:Name="Disabled">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HeaderContentPresenter" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseMediumLowBrush}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="FirstColumnDivider" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SecondColumnDivider" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <ContentPresenter x:Name="HeaderContentPresenter" x:DeferLoadStrategy="Lazy" Visibility="Collapsed" Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" Margin="0,0,0,8" Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}" AutomationProperties.AccessibilityView="Raw" />
+            <Button x:Name="FlyoutButton" Style="{StaticResource TimePickerFlyoutButtonStyle}" Foreground="{TemplateBinding Foreground}" Background="{TemplateBinding Background}" IsEnabled="{TemplateBinding IsEnabled}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+              <Grid x:Name="FlyoutButtonContentGrid">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" x:Name="FirstTextBlockColumn" />
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="*" x:Name="SecondTextBlockColumn" />
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="*" x:Name="ThirdTextBlockColumn" />
+                </Grid.ColumnDefinitions>
+                <Border x:Name="FirstPickerHost" Grid.Column="0">
+                  <TextBlock x:Name="HourTextBlock" TextAlignment="Center" Padding="0,3,0,5" FontFamily="{TemplateBinding FontFamily}" FontWeight="{TemplateBinding FontWeight}" FontSize="{TemplateBinding FontSize}" AutomationProperties.AccessibilityView="Raw" />
+                </Border>
+                <Rectangle x:Name="FirstColumnDivider" Fill="{ThemeResource SystemControlForegroundBaseLowBrush}" HorizontalAlignment="Center" Width="2" Grid.Column="1" />
+                <Border x:Name="SecondPickerHost" Grid.Column="2">
+                  <TextBlock x:Name="MinuteTextBlock" TextAlignment="Center" Padding="0,3,0,5" FontFamily="{TemplateBinding FontFamily}" FontWeight="{TemplateBinding FontWeight}" FontSize="{TemplateBinding FontSize}" AutomationProperties.AccessibilityView="Raw" />
+                </Border>
+                <Rectangle x:Name="SecondColumnDivider" Fill="{ThemeResource SystemControlForegroundBaseLowBrush}" HorizontalAlignment="Center" Width="2" Grid.Column="3" />
+                <Border x:Name="ThirdPickerHost" Grid.Column="4">
+                  <TextBlock x:Name="PeriodTextBlock" TextAlignment="Center" Padding="0,3,0,5" FontFamily="{TemplateBinding FontFamily}" FontWeight="{TemplateBinding FontWeight}" FontSize="{TemplateBinding FontSize}" AutomationProperties.AccessibilityView="Raw" />
+                </Border>
+              </Grid>
+            </Button>
+          </StackPanel>
         </ControlTemplate>
       </Setter.Value>
     </Setter>
@@ -19137,6 +19395,7 @@
       </Setter.Value>
     </Setter>
   </xamarin:Style>
+  <xamarin:Style TargetType="SplitView" BasedOn="{StaticResource DefaultSplitViewStyle}" />
   <Style x:Key="XamlDefaultButton" TargetType="Button">
     <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
     <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
@@ -19962,6 +20221,93 @@
         </ControlTemplate>
       </Setter.Value>
     </android:Setter>
+  </xamarin:Style>
+  <xamarin:Style TargetType="ListView">
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="TabNavigation" Value="Once" />
+    <Setter Property="IsSwipeEnabled" Value="True" />
+    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+    <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+    <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Disabled" />
+    <Setter Property="ScrollViewer.IsHorizontalRailEnabled" Value="False" />
+    <Setter Property="ScrollViewer.VerticalScrollMode" Value="Enabled" />
+    <Setter Property="ScrollViewer.IsVerticalRailEnabled" Value="True" />
+    <!--ZoomMode attached property is currently not supported-->
+    <!--<Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />-->
+    <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="False" />
+    <Setter Property="ScrollViewer.BringIntoViewOnFocusChange" Value="True" />
+    <Setter Property="ItemContainerTransitions">
+      <Setter.Value>
+        <TransitionCollection>
+          <AddDeleteThemeTransition />
+          <ContentThemeTransition />
+          <ReorderThemeTransition />
+          <EntranceThemeTransition IsStaggeringEnabled="False" />
+        </TransitionCollection>
+      </Setter.Value>
+    </Setter>
+    <Setter Property="ItemsPanel">
+      <Setter.Value>
+        <ItemsPanelTemplate>
+          <ItemsStackPanel Orientation="Vertical" />
+        </ItemsPanelTemplate>
+      </Setter.Value>
+    </Setter>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ListView">
+          <Border BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
+            <ScrollViewer x:Name="ScrollViewer" ios:Style="{StaticResource ListViewBaseScrollViewerStyle}" android:Style="{StaticResource ListViewBaseScrollViewerStyle}" TabNavigation="{TemplateBinding TabNavigation}" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}" IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}" IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}" ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}" IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}" BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}" AutomationProperties.AccessibilityView="Raw">
+              <ItemsPresenter Header="{TemplateBinding Header}" HeaderTemplate="{TemplateBinding HeaderTemplate}" HeaderTransitions="{TemplateBinding HeaderTransitions}" Footer="{TemplateBinding Footer}" FooterTemplate="{TemplateBinding FooterTemplate}" FooterTransitions="{TemplateBinding FooterTransitions}" Padding="{TemplateBinding Padding}" />
+            </ScrollViewer>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </xamarin:Style>
+  <xamarin:Style TargetType="GridView">
+    <Setter Property="Padding" Value="0,0,0,10" />
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="TabNavigation" Value="Once" />
+    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+    <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+    <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Disabled" />
+    <Setter Property="ScrollViewer.IsHorizontalRailEnabled" Value="False" />
+    <Setter Property="ScrollViewer.VerticalScrollMode" Value="Enabled" />
+    <Setter Property="ScrollViewer.IsVerticalRailEnabled" Value="True" />
+    <!--<Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />-->
+    <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="False" />
+    <Setter Property="ScrollViewer.BringIntoViewOnFocusChange" Value="True" />
+    <Setter Property="IsSwipeEnabled" Value="True" />
+    <Setter Property="ItemContainerTransitions">
+      <Setter.Value>
+        <TransitionCollection>
+          <AddDeleteThemeTransition />
+          <ContentThemeTransition />
+          <ReorderThemeTransition />
+          <EntranceThemeTransition IsStaggeringEnabled="False" />
+        </TransitionCollection>
+      </Setter.Value>
+    </Setter>
+    <Setter Property="ItemsPanel">
+      <Setter.Value>
+        <ItemsPanelTemplate>
+          <itemswrapgridpresent:ItemsWrapGrid Orientation="Horizontal" />
+          <itemswrapgridnotpresent:WrapPanel />
+        </ItemsPanelTemplate>
+      </Setter.Value>
+    </Setter>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="GridView">
+          <Border BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
+            <ScrollViewer x:Name="ScrollViewer" ios:Style="{StaticResource ListViewBaseScrollViewerStyle}" android:Style="{StaticResource ListViewBaseScrollViewerStyle}" TabNavigation="{TemplateBinding TabNavigation}" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}" IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}" IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}" ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}" IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}" BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}" AutomationProperties.AccessibilityView="Raw">
+              <ItemsPresenter Header="{TemplateBinding Header}" HeaderTemplate="{TemplateBinding HeaderTemplate}" HeaderTransitions="{TemplateBinding HeaderTransitions}" Footer="{TemplateBinding Footer}" FooterTemplate="{TemplateBinding FooterTemplate}" FooterTransitions="{TemplateBinding FooterTransitions}" Padding="{TemplateBinding Padding}" />
+            </ScrollViewer>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
   </xamarin:Style>
   <ControlTemplate TargetType="ScrollViewer" x:Name="ScrollViewerScrollBarlessTemplate">
     <Grid Background="{TemplateBinding Background}">
@@ -21070,6 +21416,276 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <not_mux:Style TargetType="MediaPlayerElement">
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="VerticalAlignment" Value="Stretch" />
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="Stretch" Value="Uniform" />
+    <Setter Property="Background" Value="Black" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="MediaPlayerElement">
+          <Grid x:Name="LayoutRoot">
+            <Border Background="Transparent" />
+            <Image x:Name="PosterImage" Visibility="Collapsed" Source="{TemplateBinding PosterSource}" Stretch="{TemplateBinding Stretch}" />
+            <MediaPlayerPresenter x:Name="MediaPlayerPresenter" IsFullWindow="{TemplateBinding IsFullWindow}" Stretch="{TemplateBinding Stretch}" MediaPlayer="{TemplateBinding MediaPlayer}" Visibility="Collapsed" Background="{TemplateBinding Background}" />
+            <ContentPresenter x:Name="TransportControlsPresenter" Visibility="{TemplateBinding AreTransportControlsEnabled}" />
+            <Grid x:Name="TimedTextSourcePresenter" />
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </not_mux:Style>
+  <Style x:Key="MTC_ButtonStyle" TargetType="Button">
+    <Setter Property="Width" Value="{ThemeResource MTCMediaButtonWidth}" />
+    <Setter Property="Height" Value="{ThemeResource MTCMediaButtonHeight}" />
+    <Setter Property="AllowFocusOnInteraction" Value="True" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Background" Value="Transparent" />
+  </Style>
+  <Style x:Key="MTC_CommandBarStyle" TargetType="CommandBar" BasedOn="{StaticResource XamlDefaultCommandBar}">
+    <Setter Property="Height" Value="{ThemeResource MTCMediaButtonHeight}" />
+  </Style>
+  <Style x:Key="MediaTextBlockStyle" TargetType="TextBlock">
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
+    <Setter Property="FontSize" Value="{ThemeResource MTCMediaFontSize}" />
+    <Setter Property="FontFamily" Value="{ThemeResource MTCMediaFontFamily}" />
+    <Setter Property="Style" Value="{ThemeResource CaptionTextBlockStyle}" />
+    <Setter Property="IsTextScaleFactorEnabled" Value="False" />
+  </Style>
+  <Style TargetType="Thumb" x:Key="MTC_SliderThumbStyle">
+    <Setter Property="ManipulationMode" Value="None" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Background" Value="{ThemeResource SliderThumbBackground}" />
+    <Setter Property="Foreground" Value="{ThemeResource SystemControlBackgroundChromeMediumBrush}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="Thumb">
+          <Ellipse x:Name="ellipse" Stroke="{TemplateBinding Background}" StrokeThickness="2" Fill="{TemplateBinding Foreground}" />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <Style TargetType="ProgressBar" x:Key="MediaSliderProgressBarStyle">
+    <Setter Property="Height" Value="{ThemeResource SliderTrackThemeHeight}" />
+    <Setter Property="Minimum" Value="0" />
+    <Setter Property="Maximum" Value="100" />
+    <Setter Property="Foreground" Value="{ThemeResource SystemControlHighlightChromeAltLowBrush}" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0.25" />
+  </Style>
+  <Style x:Key="MediaSliderStyle" TargetType="Slider">
+    <Setter Property="Background" Value="{ThemeResource SliderTrackFill}" />
+    <Setter Property="BorderThickness" Value="{ThemeResource SliderBorderThemeThickness}" />
+    <Setter Property="Foreground" Value="{ThemeResource SliderTrackValueFill}" />
+    <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+    <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
+    <Setter Property="ManipulationMode" Value="None" />
+    <Setter Property="UseSystemFocusVisuals" Value="True" />
+    <Setter Property="FocusVisualMargin" Value="-7,0,-7,0" />
+    <Setter Property="IsFocusEngagementEnabled" Value="True" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="Slider">
+          <Grid Margin="{TemplateBinding Padding}">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal" />
+                <VisualState x:Name="Pressed">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalTrackRect" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackFillPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalTrackRect" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackFillPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalThumb" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackgroundPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalThumb" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackgroundPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SliderContainer" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderContainerBackgroundPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalDecreaseRect" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackValueFillPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalDecreaseRect" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackValueFillPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+                <VisualState x:Name="Disabled">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HeaderContentPresenter" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderHeaderForegroundDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalDecreaseRect" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackValueFillDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalTrackRect" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackFillDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalDecreaseRect" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackValueFillDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalTrackRect" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackFillDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalThumb" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackgroundDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalThumb" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackgroundDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TopTickBar" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTickBarFillDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomTickBar" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTickBarFillDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="LeftTickBar" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTickBarFillDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RightTickBar" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTickBarFillDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SliderContainer" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderContainerBackgroundDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+                <VisualState x:Name="PointerOver">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalTrackRect" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackFillPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalTrackRect" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackFillPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalThumb" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackgroundPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalThumb" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackgroundPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SliderContainer" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderContainerBackgroundPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalDecreaseRect" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackValueFillPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalDecreaseRect" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackValueFillPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="FocusEngagementStates">
+                <VisualState x:Name="FocusDisengaged" />
+                <VisualState x:Name="FocusEngagedHorizontal">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SliderContainer" Storyboard.TargetProperty="(Control.IsTemplateFocusTarget)">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="False" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalThumb" Storyboard.TargetProperty="(Control.IsTemplateFocusTarget)">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="True" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+                <VisualState x:Name="FocusEngagedVertical">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SliderContainer" Storyboard.TargetProperty="(Control.IsTemplateFocusTarget)">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="False" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalThumb" Storyboard.TargetProperty="(Control.IsTemplateFocusTarget)">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="True" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <ContentPresenter x:Name="HeaderContentPresenter" x:DeferLoadStrategy="Lazy" Visibility="Collapsed" Foreground="{ThemeResource SliderHeaderForeground}" Margin="{ThemeResource SliderHeaderThemeMargin}" Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" FontWeight="{ThemeResource SliderHeaderThemeFontWeight}" TextWrapping="Wrap" />
+            <Grid x:Name="SliderContainer" Background="{ThemeResource SliderContainerBackground}" Grid.Row="1" Control.IsTemplateFocusTarget="True">
+              <Grid x:Name="HorizontalTemplate" MinHeight="44">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="18" />
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="18" />
+                </Grid.RowDefinitions>
+                <Rectangle x:Name="HorizontalTrackRect" Fill="{TemplateBinding Background}" Height="{ThemeResource SliderTrackThemeHeight}" Grid.Row="1" Grid.ColumnSpan="3" />
+                <ProgressBar x:Name="DownloadProgressIndicator" Style="{StaticResource MediaSliderProgressBarStyle}" Grid.Row="1" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+                <Rectangle x:Name="HorizontalDecreaseRect" Fill="{TemplateBinding Foreground}" Grid.Row="1" />
+                <TickBar x:Name="TopTickBar" Visibility="Collapsed" Fill="{ThemeResource SliderTickBarFill}" Height="{ThemeResource SliderOutsideTickBarThemeHeight}" VerticalAlignment="Bottom" Margin="0,0,0,4" Grid.ColumnSpan="3" />
+                <TickBar x:Name="HorizontalInlineTickBar" Visibility="Collapsed" Fill="{ThemeResource SliderInlineTickBarFill}" Height="{ThemeResource SliderTrackThemeHeight}" Grid.Row="1" Grid.ColumnSpan="3" />
+                <TickBar x:Name="BottomTickBar" Visibility="Collapsed" Fill="{ThemeResource SliderTickBarFill}" Height="{ThemeResource SliderOutsideTickBarThemeHeight}" VerticalAlignment="Top" Margin="0,4,0,0" Grid.Row="2" Grid.ColumnSpan="3" />
+                <Thumb x:Name="HorizontalThumb" Style="{StaticResource MTC_SliderThumbStyle}" Height="24" Width="24" Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" FocusVisualMargin="-14,-6,-14,-6" AutomationProperties.AccessibilityView="Raw">
+                  <!--<ToolTipService.ToolTip>
+										<ToolTip x:Name="ThumbnailTooltip">
+											<ContentPresenter Content="{Binding}" />
+										</ToolTip>
+									</ToolTipService.ToolTip>-->
+                  <Thumb.DataContext>
+                    <Grid Height="112" Width="192">
+                      <Image x:Name="ThumbnailImage" />
+                      <Border Background="{ThemeResource SystemControlBackgroundBaseMediumBrush}" VerticalAlignment="Bottom" HorizontalAlignment="Left">
+                        <TextBlock x:Name="TimeElapsedPreview" Margin="6,1,6,3" Style="{StaticResource BodyTextBlockStyle}" IsTextScaleFactorEnabled="False" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" />
+                      </Border>
+                    </Grid>
+                  </Thumb.DataContext>
+                </Thumb>
+              </Grid>
+              <Grid x:Name="VerticalTemplate" MinWidth="44" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="*" />
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="18" />
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="18" />
+                </Grid.ColumnDefinitions>
+                <Rectangle x:Name="VerticalTrackRect" Fill="{TemplateBinding Background}" Width="{ThemeResource SliderTrackThemeHeight}" Grid.Column="1" Grid.RowSpan="3" />
+                <Rectangle x:Name="VerticalDecreaseRect" Fill="{TemplateBinding Foreground}" Grid.Column="1" Grid.Row="2" />
+                <TickBar x:Name="LeftTickBar" Visibility="Collapsed" Fill="{ThemeResource SliderTickBarFill}" Width="{ThemeResource SliderOutsideTickBarThemeHeight}" HorizontalAlignment="Right" Margin="0,0,4,0" Grid.RowSpan="3" />
+                <TickBar x:Name="VerticalInlineTickBar" Visibility="Collapsed" Fill="{ThemeResource SliderInlineTickBarFill}" Width="{ThemeResource SliderTrackThemeHeight}" Grid.Column="1" Grid.RowSpan="3" />
+                <TickBar x:Name="RightTickBar" Visibility="Collapsed" Fill="{ThemeResource SliderTickBarFill}" Width="{ThemeResource SliderOutsideTickBarThemeHeight}" HorizontalAlignment="Left" Margin="4,0,0,0" Grid.Column="2" Grid.RowSpan="3" />
+                <Thumb x:Name="VerticalThumb" Style="{StaticResource MTC_SliderThumbStyle}" DataContext="{TemplateBinding Value}" Width="24" Height="8" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" FocusVisualMargin="-6,-14,-6,-14" AutomationProperties.AccessibilityView="Raw" />
+              </Grid>
+            </Grid>
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <Style x:Key="MTC_FlyoutStyle" TargetType="FlyoutPresenter">
+    <Setter Property="Background" Value="{ThemeResource SystemControlPageBackgroundAltMediumBrush}" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="MinWidth" Value="50" />
+    <Setter Property="MinHeight" Value="50" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="FlyoutPresenter">
+          <Border Background="{TemplateBinding Background}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
   <not_mux:Style TargetType="MediaTransportControls">
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="Background" Value="Transparent" />
@@ -21386,256 +22002,6 @@
       </Setter.Value>
     </Setter>
   </not_mux:Style>
-  <Style x:Key="MTC_ButtonStyle" TargetType="Button">
-    <Setter Property="Width" Value="{ThemeResource MTCMediaButtonWidth}" />
-    <Setter Property="Height" Value="{ThemeResource MTCMediaButtonHeight}" />
-    <Setter Property="AllowFocusOnInteraction" Value="True" />
-    <Setter Property="BorderThickness" Value="0" />
-    <Setter Property="Background" Value="Transparent" />
-  </Style>
-  <Style x:Key="MTC_CommandBarStyle" TargetType="CommandBar" BasedOn="{StaticResource XamlDefaultCommandBar}">
-    <Setter Property="Height" Value="{ThemeResource MTCMediaButtonHeight}" />
-  </Style>
-  <Style x:Key="MediaTextBlockStyle" TargetType="TextBlock">
-    <Setter Property="VerticalAlignment" Value="Center" />
-    <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
-    <Setter Property="FontSize" Value="{ThemeResource MTCMediaFontSize}" />
-    <Setter Property="FontFamily" Value="{ThemeResource MTCMediaFontFamily}" />
-    <Setter Property="Style" Value="{ThemeResource CaptionTextBlockStyle}" />
-    <Setter Property="IsTextScaleFactorEnabled" Value="False" />
-  </Style>
-  <Style TargetType="Thumb" x:Key="MTC_SliderThumbStyle">
-    <Setter Property="ManipulationMode" Value="None" />
-    <Setter Property="BorderThickness" Value="0" />
-    <Setter Property="Background" Value="{ThemeResource SliderThumbBackground}" />
-    <Setter Property="Foreground" Value="{ThemeResource SystemControlBackgroundChromeMediumBrush}" />
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="Thumb">
-          <Ellipse x:Name="ellipse" Stroke="{TemplateBinding Background}" StrokeThickness="2" Fill="{TemplateBinding Foreground}" />
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
-  <Style TargetType="ProgressBar" x:Key="MediaSliderProgressBarStyle">
-    <Setter Property="Height" Value="{ThemeResource SliderTrackThemeHeight}" />
-    <Setter Property="Minimum" Value="0" />
-    <Setter Property="Maximum" Value="100" />
-    <Setter Property="Foreground" Value="{ThemeResource SystemControlHighlightChromeAltLowBrush}" />
-    <Setter Property="Background" Value="Transparent" />
-    <Setter Property="BorderBrush" Value="Transparent" />
-    <Setter Property="BorderThickness" Value="0.25" />
-  </Style>
-  <Style x:Key="MediaSliderStyle" TargetType="Slider">
-    <Setter Property="Background" Value="{ThemeResource SliderTrackFill}" />
-    <Setter Property="BorderThickness" Value="{ThemeResource SliderBorderThemeThickness}" />
-    <Setter Property="Foreground" Value="{ThemeResource SliderTrackValueFill}" />
-    <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
-    <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
-    <Setter Property="ManipulationMode" Value="None" />
-    <Setter Property="UseSystemFocusVisuals" Value="True" />
-    <Setter Property="FocusVisualMargin" Value="-7,0,-7,0" />
-    <Setter Property="IsFocusEngagementEnabled" Value="True" />
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="Slider">
-          <Grid Margin="{TemplateBinding Padding}">
-            <Grid.RowDefinitions>
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <VisualStateManager.VisualStateGroups>
-              <VisualStateGroup x:Name="CommonStates">
-                <VisualState x:Name="Normal" />
-                <VisualState x:Name="Pressed">
-                  <Storyboard>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalTrackRect" Storyboard.TargetProperty="Fill">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackFillPressed}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalTrackRect" Storyboard.TargetProperty="Fill">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackFillPressed}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalThumb" Storyboard.TargetProperty="Background">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackgroundPressed}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalThumb" Storyboard.TargetProperty="Background">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackgroundPressed}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SliderContainer" Storyboard.TargetProperty="Background">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderContainerBackgroundPressed}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalDecreaseRect" Storyboard.TargetProperty="Fill">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackValueFillPressed}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalDecreaseRect" Storyboard.TargetProperty="Fill">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackValueFillPressed}" />
-                    </ObjectAnimationUsingKeyFrames>
-                  </Storyboard>
-                </VisualState>
-                <VisualState x:Name="Disabled">
-                  <Storyboard>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HeaderContentPresenter" Storyboard.TargetProperty="Foreground">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderHeaderForegroundDisabled}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalDecreaseRect" Storyboard.TargetProperty="Fill">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackValueFillDisabled}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalTrackRect" Storyboard.TargetProperty="Fill">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackFillDisabled}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalDecreaseRect" Storyboard.TargetProperty="Fill">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackValueFillDisabled}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalTrackRect" Storyboard.TargetProperty="Fill">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackFillDisabled}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalThumb" Storyboard.TargetProperty="Background">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackgroundDisabled}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalThumb" Storyboard.TargetProperty="Background">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackgroundDisabled}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TopTickBar" Storyboard.TargetProperty="Fill">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTickBarFillDisabled}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomTickBar" Storyboard.TargetProperty="Fill">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTickBarFillDisabled}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="LeftTickBar" Storyboard.TargetProperty="Fill">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTickBarFillDisabled}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RightTickBar" Storyboard.TargetProperty="Fill">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTickBarFillDisabled}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SliderContainer" Storyboard.TargetProperty="Background">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderContainerBackgroundDisabled}" />
-                    </ObjectAnimationUsingKeyFrames>
-                  </Storyboard>
-                </VisualState>
-                <VisualState x:Name="PointerOver">
-                  <Storyboard>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalTrackRect" Storyboard.TargetProperty="Fill">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackFillPointerOver}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalTrackRect" Storyboard.TargetProperty="Fill">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackFillPointerOver}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalThumb" Storyboard.TargetProperty="Background">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackgroundPointerOver}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalThumb" Storyboard.TargetProperty="Background">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderThumbBackgroundPointerOver}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SliderContainer" Storyboard.TargetProperty="Background">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderContainerBackgroundPointerOver}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalDecreaseRect" Storyboard.TargetProperty="Fill">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackValueFillPointerOver}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalDecreaseRect" Storyboard.TargetProperty="Fill">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SliderTrackValueFillPointerOver}" />
-                    </ObjectAnimationUsingKeyFrames>
-                  </Storyboard>
-                </VisualState>
-              </VisualStateGroup>
-              <VisualStateGroup x:Name="FocusEngagementStates">
-                <VisualState x:Name="FocusDisengaged" />
-                <VisualState x:Name="FocusEngagedHorizontal">
-                  <Storyboard>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SliderContainer" Storyboard.TargetProperty="(Control.IsTemplateFocusTarget)">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="False" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalThumb" Storyboard.TargetProperty="(Control.IsTemplateFocusTarget)">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="True" />
-                    </ObjectAnimationUsingKeyFrames>
-                  </Storyboard>
-                </VisualState>
-                <VisualState x:Name="FocusEngagedVertical">
-                  <Storyboard>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SliderContainer" Storyboard.TargetProperty="(Control.IsTemplateFocusTarget)">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="False" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalThumb" Storyboard.TargetProperty="(Control.IsTemplateFocusTarget)">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="True" />
-                    </ObjectAnimationUsingKeyFrames>
-                  </Storyboard>
-                </VisualState>
-              </VisualStateGroup>
-            </VisualStateManager.VisualStateGroups>
-            <ContentPresenter x:Name="HeaderContentPresenter" x:DeferLoadStrategy="Lazy" Visibility="Collapsed" Foreground="{ThemeResource SliderHeaderForeground}" Margin="{ThemeResource SliderHeaderThemeMargin}" Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" FontWeight="{ThemeResource SliderHeaderThemeFontWeight}" TextWrapping="Wrap" />
-            <Grid x:Name="SliderContainer" Background="{ThemeResource SliderContainerBackground}" Grid.Row="1" Control.IsTemplateFocusTarget="True">
-              <Grid x:Name="HorizontalTemplate" MinHeight="44">
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="Auto" />
-                  <ColumnDefinition Width="Auto" />
-                  <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                  <RowDefinition Height="18" />
-                  <RowDefinition Height="Auto" />
-                  <RowDefinition Height="18" />
-                </Grid.RowDefinitions>
-                <Rectangle x:Name="HorizontalTrackRect" Fill="{TemplateBinding Background}" Height="{ThemeResource SliderTrackThemeHeight}" Grid.Row="1" Grid.ColumnSpan="3" />
-                <ProgressBar x:Name="DownloadProgressIndicator" Style="{StaticResource MediaSliderProgressBarStyle}" Grid.Row="1" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
-                <Rectangle x:Name="HorizontalDecreaseRect" Fill="{TemplateBinding Foreground}" Grid.Row="1" />
-                <TickBar x:Name="TopTickBar" Visibility="Collapsed" Fill="{ThemeResource SliderTickBarFill}" Height="{ThemeResource SliderOutsideTickBarThemeHeight}" VerticalAlignment="Bottom" Margin="0,0,0,4" Grid.ColumnSpan="3" />
-                <TickBar x:Name="HorizontalInlineTickBar" Visibility="Collapsed" Fill="{ThemeResource SliderInlineTickBarFill}" Height="{ThemeResource SliderTrackThemeHeight}" Grid.Row="1" Grid.ColumnSpan="3" />
-                <TickBar x:Name="BottomTickBar" Visibility="Collapsed" Fill="{ThemeResource SliderTickBarFill}" Height="{ThemeResource SliderOutsideTickBarThemeHeight}" VerticalAlignment="Top" Margin="0,4,0,0" Grid.Row="2" Grid.ColumnSpan="3" />
-                <Thumb x:Name="HorizontalThumb" Style="{StaticResource MTC_SliderThumbStyle}" Height="24" Width="24" Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" FocusVisualMargin="-14,-6,-14,-6" AutomationProperties.AccessibilityView="Raw">
-                  <!--<ToolTipService.ToolTip>
-										<ToolTip x:Name="ThumbnailTooltip">
-											<ContentPresenter Content="{Binding}" />
-										</ToolTip>
-									</ToolTipService.ToolTip>-->
-                  <Thumb.DataContext>
-                    <Grid Height="112" Width="192">
-                      <Image x:Name="ThumbnailImage" />
-                      <Border Background="{ThemeResource SystemControlBackgroundBaseMediumBrush}" VerticalAlignment="Bottom" HorizontalAlignment="Left">
-                        <TextBlock x:Name="TimeElapsedPreview" Margin="6,1,6,3" Style="{StaticResource BodyTextBlockStyle}" IsTextScaleFactorEnabled="False" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" />
-                      </Border>
-                    </Grid>
-                  </Thumb.DataContext>
-                </Thumb>
-              </Grid>
-              <Grid x:Name="VerticalTemplate" MinWidth="44" Visibility="Collapsed">
-                <Grid.RowDefinitions>
-                  <RowDefinition Height="*" />
-                  <RowDefinition Height="Auto" />
-                  <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="18" />
-                  <ColumnDefinition Width="Auto" />
-                  <ColumnDefinition Width="18" />
-                </Grid.ColumnDefinitions>
-                <Rectangle x:Name="VerticalTrackRect" Fill="{TemplateBinding Background}" Width="{ThemeResource SliderTrackThemeHeight}" Grid.Column="1" Grid.RowSpan="3" />
-                <Rectangle x:Name="VerticalDecreaseRect" Fill="{TemplateBinding Foreground}" Grid.Column="1" Grid.Row="2" />
-                <TickBar x:Name="LeftTickBar" Visibility="Collapsed" Fill="{ThemeResource SliderTickBarFill}" Width="{ThemeResource SliderOutsideTickBarThemeHeight}" HorizontalAlignment="Right" Margin="0,0,4,0" Grid.RowSpan="3" />
-                <TickBar x:Name="VerticalInlineTickBar" Visibility="Collapsed" Fill="{ThemeResource SliderInlineTickBarFill}" Width="{ThemeResource SliderTrackThemeHeight}" Grid.Column="1" Grid.RowSpan="3" />
-                <TickBar x:Name="RightTickBar" Visibility="Collapsed" Fill="{ThemeResource SliderTickBarFill}" Width="{ThemeResource SliderOutsideTickBarThemeHeight}" HorizontalAlignment="Left" Margin="4,0,0,0" Grid.Column="2" Grid.RowSpan="3" />
-                <Thumb x:Name="VerticalThumb" Style="{StaticResource MTC_SliderThumbStyle}" DataContext="{TemplateBinding Value}" Width="24" Height="8" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" FocusVisualMargin="-6,-14,-6,-14" AutomationProperties.AccessibilityView="Raw" />
-              </Grid>
-            </Grid>
-          </Grid>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
-  <Style x:Key="MTC_FlyoutStyle" TargetType="FlyoutPresenter">
-    <Setter Property="Background" Value="{ThemeResource SystemControlPageBackgroundAltMediumBrush}" />
-    <Setter Property="Padding" Value="0" />
-    <Setter Property="MinWidth" Value="50" />
-    <Setter Property="MinHeight" Value="50" />
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="FlyoutPresenter">
-          <Border Background="{TemplateBinding Background}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-          </Border>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
   <Style x:Key="AccentButtonStyle" TargetType="Button">
     <Setter Property="Foreground" Value="{ThemeResource AccentButtonForeground}" />
     <Setter Property="Background" Value="{ThemeResource AccentButtonBackground}" />
@@ -21769,6 +22135,22 @@
     </Setter>
   </Style>
   <Style TargetType="RepeatButton" BasedOn="{StaticResource XamlDefaultRepeatButton}" />
+  <not_netstdref:Style TargetType="FlipView">
+    <Setter Property="ItemsPanel">
+      <Setter.Value>
+        <ItemsPanelTemplate>
+          <NativeFlipView />
+        </ItemsPanelTemplate>
+      </Setter.Value>
+    </Setter>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate>
+          <ItemsPresenter />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </not_netstdref:Style>
   <not_netstdref:Style TargetType="WebView">
     <Setter Property="Template">
       <Setter.Value>
@@ -21849,6 +22231,189 @@
   <StaticResource x:Key="FlipViewNextPreviousButtonBorderBrushPointerOver" ResourceKey="SystemControlForegroundTransparentBrush" />
   <StaticResource x:Key="FlipViewNextPreviousButtonBorderBrushPressed" ResourceKey="SystemControlForegroundTransparentBrush" />
   <StaticResource x:Key="FlipViewItemBackground" ResourceKey="SystemControlTransparentBrush" />
+  <netstdref:Style TargetType="FlipView">
+    <Setter Property="Background" Value="{ThemeResource FlipViewBackground}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="TabNavigation" Value="Once" />
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden" />
+    <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden" />
+    <Setter Property="ScrollViewer.IsHorizontalRailEnabled" Value="False" />
+    <Setter Property="ScrollViewer.IsVerticalRailEnabled" Value="False" />
+    <Setter Property="ScrollViewer.IsHorizontalScrollChainingEnabled" Value="True" />
+    <Setter Property="ScrollViewer.IsVerticalScrollChainingEnabled" Value="True" />
+    <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="False" />
+    <Setter Property="ScrollViewer.BringIntoViewOnFocusChange" Value="True" />
+    <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+    <Setter Property="ItemsPanel">
+      <Setter.Value>
+        <ItemsPanelTemplate>
+          <StackPanel AreScrollSnapPointsRegular="True" Orientation="Horizontal" />
+        </ItemsPanelTemplate>
+      </Setter.Value>
+    </Setter>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="FlipView">
+          <Grid Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
+            <Grid.Resources>
+              <ControlTemplate x:Key="HorizontalNextTemplate" TargetType="Button">
+                <Border x:Name="Root" Background="{ThemeResource FlipViewNextPreviousButtonBackground}" BorderThickness="{ThemeResource FlipViewButtonBorderThemeThickness}" BorderBrush="{ThemeResource FlipViewNextPreviousButtonBorderBrush}">
+                  <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="CommonStates">
+                      <VisualState x:Name="Normal" />
+                      <VisualState x:Name="PointerOver">
+                        <Storyboard>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Background">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBackgroundPointerOver}" />
+                          </ObjectAnimationUsingKeyFrames>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="BorderBrush">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBorderBrushPointerOver}" />
+                          </ObjectAnimationUsingKeyFrames>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousArrowForegroundPointerOver}" />
+                          </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                      </VisualState>
+                      <VisualState x:Name="Pressed">
+                        <Storyboard>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Background">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBackgroundPressed}" />
+                          </ObjectAnimationUsingKeyFrames>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="BorderBrush">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBorderBrushPressed}" />
+                          </ObjectAnimationUsingKeyFrames>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousArrowForegroundPressed}" />
+                          </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                      </VisualState>
+                    </VisualStateGroup>
+                  </VisualStateManager.VisualStateGroups>
+                  <FontIcon x:Name="Arrow" FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="12" Foreground="{ThemeResource FlipViewNextPreviousArrowForeground}" Glyph="&#xE0E3;" HorizontalAlignment="Center" VerticalAlignment="Center" MirroredWhenRightToLeft="True" UseLayoutRounding="False" />
+                </Border>
+              </ControlTemplate>
+              <ControlTemplate x:Key="HorizontalPreviousTemplate" TargetType="Button">
+                <Border x:Name="Root" Background="{ThemeResource FlipViewNextPreviousButtonBackground}" BorderThickness="{ThemeResource FlipViewButtonBorderThemeThickness}" BorderBrush="{ThemeResource FlipViewNextPreviousButtonBorderBrush}">
+                  <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="CommonStates">
+                      <VisualState x:Name="Normal" />
+                      <VisualState x:Name="PointerOver">
+                        <Storyboard>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Background">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBackgroundPointerOver}" />
+                          </ObjectAnimationUsingKeyFrames>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="BorderBrush">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBorderBrushPointerOver}" />
+                          </ObjectAnimationUsingKeyFrames>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousArrowForegroundPointerOver}" />
+                          </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                      </VisualState>
+                      <VisualState x:Name="Pressed">
+                        <Storyboard>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Background">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBackgroundPressed}" />
+                          </ObjectAnimationUsingKeyFrames>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="BorderBrush">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBorderBrushPressed}" />
+                          </ObjectAnimationUsingKeyFrames>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousArrowForegroundPressed}" />
+                          </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                      </VisualState>
+                    </VisualStateGroup>
+                  </VisualStateManager.VisualStateGroups>
+                  <FontIcon x:Name="Arrow" FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="12" Foreground="{ThemeResource FlipViewNextPreviousArrowForeground}" Glyph="&#xE0E2;" HorizontalAlignment="Center" VerticalAlignment="Center" MirroredWhenRightToLeft="True" UseLayoutRounding="False" />
+                </Border>
+              </ControlTemplate>
+              <ControlTemplate x:Key="VerticalNextTemplate" TargetType="Button">
+                <Border x:Name="Root" Background="{ThemeResource FlipViewNextPreviousButtonBackground}" BorderThickness="{ThemeResource FlipViewButtonBorderThemeThickness}" BorderBrush="{ThemeResource FlipViewNextPreviousButtonBorderBrush}">
+                  <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="CommonStates">
+                      <VisualState x:Name="Normal" />
+                      <VisualState x:Name="PointerOver">
+                        <Storyboard>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Background">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBackgroundPointerOver}" />
+                          </ObjectAnimationUsingKeyFrames>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="BorderBrush">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBorderBrushPointerOver}" />
+                          </ObjectAnimationUsingKeyFrames>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousArrowForegroundPointerOver}" />
+                          </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                      </VisualState>
+                      <VisualState x:Name="Pressed">
+                        <Storyboard>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Background">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBackgroundPressed}" />
+                          </ObjectAnimationUsingKeyFrames>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="BorderBrush">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBorderBrushPressed}" />
+                          </ObjectAnimationUsingKeyFrames>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousArrowForegroundPressed}" />
+                          </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                      </VisualState>
+                    </VisualStateGroup>
+                  </VisualStateManager.VisualStateGroups>
+                  <FontIcon x:Name="Arrow" FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="12" Foreground="{ThemeResource FlipViewNextPreviousArrowForeground}" Glyph="&#xE0E5;" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="False" />
+                </Border>
+              </ControlTemplate>
+              <ControlTemplate x:Key="VerticalPreviousTemplate" TargetType="Button">
+                <Border x:Name="Root" Background="{ThemeResource FlipViewNextPreviousButtonBackground}" BorderThickness="{ThemeResource FlipViewButtonBorderThemeThickness}" BorderBrush="{ThemeResource FlipViewNextPreviousButtonBorderBrush}">
+                  <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="CommonStates">
+                      <VisualState x:Name="Normal" />
+                      <VisualState x:Name="PointerOver">
+                        <Storyboard>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Background">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBackgroundPointerOver}" />
+                          </ObjectAnimationUsingKeyFrames>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="BorderBrush">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBorderBrushPointerOver}" />
+                          </ObjectAnimationUsingKeyFrames>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousArrowForegroundPointerOver}" />
+                          </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                      </VisualState>
+                      <VisualState x:Name="Pressed">
+                        <Storyboard>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Background">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBackgroundPressed}" />
+                          </ObjectAnimationUsingKeyFrames>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="BorderBrush">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousButtonBorderBrushPressed}" />
+                          </ObjectAnimationUsingKeyFrames>
+                          <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource FlipViewNextPreviousArrowForegroundPressed}" />
+                          </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                      </VisualState>
+                    </VisualStateGroup>
+                  </VisualStateManager.VisualStateGroups>
+                  <FontIcon x:Name="Arrow" FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="12" Foreground="{ThemeResource FlipViewNextPreviousArrowForeground}" Glyph="&#xE0E4;" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="False" />
+                </Border>
+              </ControlTemplate>
+            </Grid.Resources>
+            <ScrollViewer x:Name="ScrollingHost" VerticalSnapPointsType="MandatorySingle" HorizontalSnapPointsType="MandatorySingle" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}" IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}" IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}" IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}" IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}" BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}" Padding="{TemplateBinding Padding}" ZoomMode="Disabled" TabNavigation="{TemplateBinding TabNavigation}" IsTabStop="False" AutomationProperties.AccessibilityView="Raw">
+              <ItemsPresenter />
+            </ScrollViewer>
+            <Button x:Name="PreviousButtonHorizontal" Template="{StaticResource HorizontalPreviousTemplate}" Width="20" Height="36" IsTabStop="False" UseSystemFocusVisuals="False" HorizontalAlignment="Left" AutomationProperties.Name="PreviousButtonHorizontal" VerticalAlignment="Center" />
+            <Button x:Name="NextButtonHorizontal" Template="{StaticResource HorizontalNextTemplate}" Width="20" Height="36" IsTabStop="False" UseSystemFocusVisuals="False" HorizontalAlignment="Right" AutomationProperties.Name="NextButtonHorizontal" VerticalAlignment="Center" />
+            <Button x:Name="PreviousButtonVertical" Template="{StaticResource VerticalPreviousTemplate}" Width="36" Height="20" IsTabStop="False" UseSystemFocusVisuals="False" HorizontalAlignment="Center" AutomationProperties.Name="PreviousButtonVertical" VerticalAlignment="Top" />
+            <Button x:Name="NextButtonVertical" Template="{StaticResource VerticalNextTemplate}" Width="36" Height="20" IsTabStop="False" UseSystemFocusVisuals="False" HorizontalAlignment="Center" AutomationProperties.Name="NextButtonVertical" VerticalAlignment="Bottom" />
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </netstdref:Style>
   <Style TargetType="Thumb">
     <Setter Property="Background" Value="{ThemeResource ThumbBackground}" />
     <Setter Property="BorderThickness" Value="1" />
@@ -21884,7 +22449,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: .\UI\Xaml\Style\Generic\SemanticStylesResources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Style\Generic\SemanticStylesResources.xaml-->
   <Color x:Key="AppWhiteColor">#FFFFFFFF</Color>
   <Color x:Key="AppBlackColor">#FF000000</Color>
   <Color x:Key="AppLightGrayColor">#FFCCCCCC</Color>
@@ -21942,7 +22507,7 @@
   <FontWeight x:Key="TextBoxFontWeightHeaderTheme">Light</FontWeight>
   <FontWeight x:Key="ButtonFontWeight">Normal</FontWeight>
   <x:Double x:Key="TextControlInputZoneThemeInnerMinHeight">28</x:Double>
-  <!--origin: .\UI\Xaml\Style\Generic\SystemResources.xaml-->
+  <!--origin: C:\s\nv.github\uno-3\src\Uno.UI\UI\Xaml\Style\Generic\SystemResources.xaml-->
   <Thickness x:Key="TextBoxLeftHeaderMargin">0,5,32,0</Thickness>
   <Thickness x:Key="AutoSuggestBoxTopHeaderMargin">0,0,0,4</Thickness>
   <Thickness x:Key="AutoSuggestBoxLeftHeaderMargin">0,5,32,0</Thickness>
