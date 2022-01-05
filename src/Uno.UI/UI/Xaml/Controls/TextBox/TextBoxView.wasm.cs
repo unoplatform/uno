@@ -18,6 +18,8 @@ namespace Windows.UI.Xaml.Controls
 		private readonly TextBox _textBox;
 		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
 
+		private bool _isReadOnly = false;
+
 		public Brush Foreground
 		{
 			get => (Brush)GetValue(ForegroundProperty);
@@ -125,6 +127,13 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void SetIsReadOnly(bool isReadOnly)
 		{
+			if (_isReadOnly == isReadOnly)
+			{
+				// Avoid JS call if the actual value didn't change.
+				return;
+			}
+
+			_isReadOnly = isReadOnly;
 			if (isReadOnly)
 			{
 				SetAttribute("readonly", "readonly");

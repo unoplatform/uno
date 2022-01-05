@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Controls
 	public partial class TextBox : Control
 	{
 		private TextBoxView _textBoxView;
-		
+
 		protected override bool IsDelegatingFocusToTemplateChild() => true; // _textBoxView
 		partial void OnDeleteButtonClickPartial() => FocusTextView();
 		internal bool FocusTextView() => FocusManager.FocusNative(_textBoxView);
@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void UpdateFontPartial()
 		{
-			if(_textBoxView == null)
+			if (_textBoxView == null)
 			{
 				return;
 			}
@@ -112,12 +112,14 @@ namespace Windows.UI.Xaml.Controls
 			ApplyEnabled(e.NewValue);
 		}
 
-		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e) => UpdateTextBoxViewIsReadOnly();
+
+		partial void OnIsTabStopChangedPartial() => UpdateTextBoxViewIsReadOnly();
+
+		private void UpdateTextBoxViewIsReadOnly()
 		{
-			if (e.NewValue is bool isReadonly)
-			{
-				ApplyIsReadonly(isReadonly);
-			}
+			var isReadOnly = IsReadOnly || !IsTabStop;
+			ApplyIsReadonly(isReadOnly);
 		}
 
 		partial void OnInputScopeChangedPartial(DependencyPropertyChangedEventArgs e)
