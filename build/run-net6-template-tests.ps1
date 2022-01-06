@@ -80,7 +80,7 @@ for($i = 0; $i -lt $dotnetBuildNet6Configurations.Length; $i++)
 }
 
  # Build with msbuild because of https://github.com/microsoft/WindowsAppSDK/issues/1652
- & $msbuild $debug "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj"
+ & $msbuild $debug "/p:Platform=x86" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj"
 Assert-ExitCodeIsZero
 
 popd
