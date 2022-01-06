@@ -637,6 +637,11 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Apply the default style for this element, if one is defined.
 		/// </summary>
+		/// <remarks>
+		/// The default app-wide style is always applied (using the lower priority ImplicitStyle) so that setters that are not
+		/// set by a tree-provided style are still applied. (e.g. a tree-provided implicit style may only change the Foreground of a Button,
+		/// and the Template property still needs to be applied for the template to work).
+		/// </remarks>
 		private protected void ApplyDefaultStyle()
 		{
 			if (_defaultStyleApplied)
