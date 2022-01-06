@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public ScrollBarVisibility _horizontalScrollBarVisibility;
+		private ScrollBarVisibility _horizontalScrollBarVisibility;
 		public ScrollBarVisibility HorizontalScrollBarVisibility
 		{
 			get => _horizontalScrollBarVisibility;
