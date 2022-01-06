@@ -491,7 +491,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 									writer.AppendLineInvariant("{0}", generationRunFileInfo.ComponentCode);
 
-									foreach(var type in generationRunFileInfo.AppliedTypes)
+									foreach (var type in generationRunFileInfo.AppliedTypes)
 									{
 										_xamlAppliedTypes.Add(type.Key, type.Value);
 									}
@@ -674,7 +674,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				string? GetFilePath()
 				{
-					if(reference is PortableExecutableReference per && File.Exists(per.FilePath))
+					if (reference is PortableExecutableReference per && File.Exists(per.FilePath))
 					{
 						return per.FilePath;
 					}
@@ -1253,7 +1253,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				var key = GetDictionaryResourceKey(resource);
 
-				if (key == null)
+				if (key == null || IsNativeStyle(resource))
 				{
 					continue;
 				}
@@ -1277,7 +1277,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				var key = GetDictionaryResourceKey(resource);
 
-				if (key == null)
+				if (key == null || IsNativeStyle(resource))
 				{
 					continue;
 				}
@@ -1404,7 +1404,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var implicitKey = GetImplicitDictionaryResourceKey(style);
 					if (SymbolEqualityComparer.Default.Equals(targetType.ContainingAssembly, _metadataHelper.Compilation.Assembly))
 					{
-						var isNativeStyle = style.Members.FirstOrDefault(m => m.Member.Name == "IsNativeStyle")?.Value as string == "True";
+						var isNativeStyle = IsNativeStyle(style);
 
 						using (TrySingleLineIfForLinkerHint(writer, style))
 						{
@@ -1424,6 +1424,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			return true;
 		}
+
+		/// <summary>
+		/// Determines if the provided object is setting the "IsNativeStyle" property, used in
+		/// conjuction with "FeatureConfiguration.Style.UseUWPDefaultStyles"
+		/// </summary>
+		private bool IsNativeStyle(XamlObjectDefinition style)
+			=> string.Equals(style.Members.FirstOrDefault(m => m.Member.Name == "IsNativeStyle")?.Value as string, "True", StringComparison.OrdinalIgnoreCase);
 
 		/// <summary>
 		/// Initialize a new ResourceDictionary instance and populate its items and properties.

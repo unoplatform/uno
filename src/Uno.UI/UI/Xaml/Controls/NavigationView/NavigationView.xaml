@@ -8,10 +8,10 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:uBehaviors="using:Uno.UI.Behaviors"
 	xmlns:primitives="using:Windows.UI.Xaml.Controls.Primitives"
-    xmlns:local="using:Windows.UI.Xaml.Controls"
+    xmlns:navViewLocal="using:Windows.UI.Xaml.Controls"
 	mc:Ignorable="d">
 
-	<Style TargetType="local:NavigationView">
+	<Style TargetType="navViewLocal:NavigationView">
 		<Setter Property="PaneToggleButtonStyle" Value="{StaticResource LegacyPaneToggleButtonStyle}" />
 		<Setter Property="IsTabStop" Value="False" />
 		<Setter Property="CompactPaneLength" Value="{ThemeResource NavigationViewCompactPaneLength}" />
@@ -468,7 +468,7 @@
     bindings in Styles are only evaluated once, we were unable to bring a TemplateSettings.UseSystemFocusVisuals
     to handle the removal of the focus rect when SelectionFollowsFocus is enabled. Therefore, that has
     been done in code and it's updated whenever SelectionFollowsFocus is changed.-->
-    <Style TargetType="local:NavigationViewItem">
+    <Style TargetType="navViewLocal:NavigationViewItem">
         <Setter Property="Foreground" Value="{ThemeResource NavigationViewItemForeground}" />
         <Setter Property="Background" Value="{ThemeResource NavigationViewItemBackground}" />
         <Setter Property="BorderBrush" Value="{ThemeResource NavigationViewItemBorderBrush}" />
@@ -480,7 +480,7 @@
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:NavigationViewItem">
+                <ControlTemplate TargetType="navViewLocal:NavigationViewItem">
                     <primitives:NavigationViewItemPresenter
                         x:Name="NavigationViewItemPresenter"
                         Icon="{TemplateBinding Icon}"
@@ -537,7 +537,7 @@
 
     <Style TargetType="primitives:NavigationViewItemPresenter" />
 
-    <Style TargetType="local:NavigationViewItemHeader">
+    <Style TargetType="navViewLocal:NavigationViewItemHeader">
         <Setter Property="IsEnabled" Value="False" />
         <Setter Property="IsTabStop" Value="False" />
         <Setter Property="MinHeight" Value="0"/>
@@ -545,7 +545,7 @@
         <Setter Property="AutomationProperties.AccessibilityView" Value="Raw"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:NavigationViewItemHeader">
+                <ControlTemplate TargetType="navViewLocal:NavigationViewItemHeader">
                     <Grid>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="PaneStates">
@@ -616,7 +616,7 @@
         </Setter>
     </Style>
 
-    <Style TargetType="local:NavigationViewItemSeparator">
+    <Style TargetType="navViewLocal:NavigationViewItemSeparator">
         <Setter Property="IsEnabled" Value="False" />
         <Setter Property="IsTabStop" Value="False" />
         <Setter Property="MinHeight" Value="0" />

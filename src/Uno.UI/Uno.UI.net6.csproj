@@ -218,5 +218,6 @@
 	</Target>
 
 	<Import Project="MixinGeneration.targets" />
+	<Import Project="XamlMerge.targets" />
 
 </Project>

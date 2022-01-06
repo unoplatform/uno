@@ -206,6 +206,7 @@
 	</Target>
 
 	<Import Project="MixinGeneration.targets" />
+	<Import Project="XamlMerge.targets" />
 
 	<!-- If any ItemGroup appears here with Remove=XXX, they should be deleted -->
 

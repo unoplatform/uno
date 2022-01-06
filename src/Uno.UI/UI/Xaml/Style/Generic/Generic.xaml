@@ -21,6 +21,7 @@
 					xmlns:native_android="using:Android.Widget"
 					xmlns:itemswrapgridpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypePresent(Windows.UI.Xaml.Controls.ItemsWrapGrid)"
 					xmlns:itemswrapgridnotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Windows.UI.Xaml.Controls.ItemsWrapGrid)"
+					xmlns:uwpOnly="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Microsoft.UI.Xaml.FrameworkElement)"
 					xmlns:uBehaviors="using:Uno.UI.Behaviors"
 					mc:Ignorable="d xamarin ios android not_wasm wasm netstdref not_netstdref macos skia">
 
@@ -4603,8 +4604,8 @@
 		   BasedOn="{StaticResource XamlDefaultFrame}" />
 
 	<!-- Default style for Windows.UI.Xaml.Controls.ProgressBar -->
-	<Style x:Key="XamlDefaultProgressBar"
-				   TargetType="ProgressBar">
+	<uwpOnly:Style x:Key="XamlDefaultProgressBar"
+				   TargetType="uwpOnly:ProgressBar">
 		<Setter Property="Foreground"
 				Value="{ThemeResource SystemControlHighlightAccentBrush}" />
 		<Setter Property="Background"
@@ -4637,9 +4638,9 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</Style>
+	</uwpOnly:Style>
 
-	<Style TargetType="ProgressBar"
+	<uwpOnly:Style TargetType="uwpOnly:ProgressBar"
 		   BasedOn="{StaticResource XamlDefaultProgressBar}" />
 
 

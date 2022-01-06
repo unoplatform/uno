@@ -51,7 +51,7 @@ namespace Uno.UI
 
 		public static bool IsLoadableComponent(Uri resource)
 		{
-			return Application.Current.IsLoadableComponent(resource);
+			return Application.Current?.IsLoadableComponent(resource) ?? false;
 		}
 	}
 }
