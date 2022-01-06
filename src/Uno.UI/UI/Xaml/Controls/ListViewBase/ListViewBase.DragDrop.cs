@@ -192,7 +192,7 @@ namespace Windows.UI.Xaml.Controls
 			var container = dragEventArgs.DataView.FindRawData(ReorderContainerFormatId) as FrameworkElement; // TODO: This might have changed/been recycled if scrolled 
 			if (that is null || src is null || item is null || container is null || src != that)
 			{
-				dragEventArgs.Log().Warn("Invalid reorder event.");
+				if (dragEventArgs.Log().IsEnabled(LogLevel.Warning)) dragEventArgs.Log().Warn("Invalid reorder event.");
 				dragEventArgs.AcceptedOperation = DataPackageOperation.None;
 
 				return;
@@ -222,7 +222,7 @@ namespace Windows.UI.Xaml.Controls
 			var src = dragEventArgs.DataView.FindRawData(ReorderOwnerFormatId) as ListView;
 			if (that is null || src != that)
 			{
-				dragEventArgs.Log().Warn("Invalid reorder event.");
+				if (dragEventArgs.Log().IsEnabled(LogLevel.Warning)) dragEventArgs.Log().Warn("Invalid reorder event.");
 
 				return;
 			}
@@ -242,7 +242,7 @@ namespace Windows.UI.Xaml.Controls
 			var container = dragEventArgs.DataView.FindRawData(ReorderContainerFormatId) as FrameworkElement; // TODO: This might have changed/been recycled if scrolled 
 			if (that is null || src is null || item is null || container is null || src != that)
 			{
-				dragEventArgs.Log().Warn("Invalid reorder event.");
+				if (dragEventArgs.Log().IsEnabled(LogLevel.Warning)) dragEventArgs.Log().Warn("Invalid reorder event.");
 
 				return;
 			}
