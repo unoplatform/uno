@@ -10,6 +10,8 @@
 		<PublishProfile>win10-$(Platform).pubxml</PublishProfile>
 		<UseWinUI>true</UseWinUI>
 		<EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
+		<!-- Bundles the WinAppSDK binaries -->
+		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
 	</PropertyGroup>
 
 	<ItemGroup>
