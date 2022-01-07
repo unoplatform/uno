@@ -32,8 +32,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		public event EventHandler<object> Opening;
 		public event TypedEventHandler<FlyoutBase, FlyoutBaseClosingEventArgs> Closing;
 
-		private bool _isOpen = false;
-
 		internal bool m_isPositionedAtPoint;
 
 		protected internal Popup _popup;
@@ -70,7 +68,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				{
 					Child = child,
 					IsLightDismissEnabled = _isLightDismissEnabled,
-					IsForFlyout = true,
+					AssociatedFlyout = this,
 				};
 
 				SynchronizePropertyToPopup(Popup.TemplatedParentProperty, TemplatedParent);
@@ -128,6 +126,17 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					.Create(() => child.SizeChanged -= handler);
 			}
 		}
+
+		public bool IsOpen
+		{
+			get => (bool)GetValue(IsOpenProperty);
+			private set => SetValue(IsOpenProperty, value);
+		}
+		public static DependencyProperty IsOpenProperty { get; } =
+			DependencyProperty.Register(
+				nameof(IsOpen), typeof(bool),
+				typeof(FlyoutBase),
+				new FrameworkPropertyMetadata(default(bool)));
 
 		#region Placement
 
@@ -235,7 +244,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal void Hide(bool canCancel)
 		{
-			if (!_isOpen)
+			if (!IsOpen)
 			{
 				return;
 			}
@@ -244,16 +253,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				bool cancel = false;
 				OnClosing(ref cancel);
-				var closing = new FlyoutBaseClosingEventArgs();
-				Closing?.Invoke(this, closing);
-				if (cancel || closing.Cancel)
+				if (cancel)
 				{
 					return;
 				}
 			}
 
 			Close();
-			_isOpen = false;
+			IsOpen = false;
 			OnClosed();
 			Closed?.Invoke(this, EventArgs.Empty);
 		}
@@ -277,7 +284,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			m_hasPlacementOverride = false;
 
-			if (_isOpen)
+			if (IsOpen)
 			{
 				if (placementTarget == Target)
 				{
@@ -333,7 +340,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			OnOpening();
 			Opening?.Invoke(this, EventArgs.Empty);
 			Open();
-			_isOpen = true;
+			IsOpen = true;
 
 			// **************************************************************************************
 			// UNO-FIX: Defer the raising of the Opened event to ensure everything is well
@@ -342,7 +349,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			// **************************************************************************************
 			{
-				if (_isOpen)
+				if (IsOpen)
 				{
 					OnOpened();
 					Opened?.Invoke(this, EventArgs.Empty);
@@ -367,7 +374,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private protected virtual void OnOpening() { }
 
-		private protected virtual void OnClosing(ref bool cancel) { }
+		internal virtual void OnClosing(ref bool cancel)
+		{
+
+			var closing = new FlyoutBaseClosingEventArgs();
+			Closing?.Invoke(this, closing);
+			cancel = closing.Cancel;
+		}
 
 		private protected virtual void OnClosed()
 		{

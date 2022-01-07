@@ -102,6 +102,8 @@ namespace Windows.UI.Xaml.Controls
 
 				popup.CustomLayouter = new DropDownLayouter(this, popup);
 
+				popup.IsLightDismissEnabled = true;
+
 				popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
 				popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayBackground));
 			}

@@ -11,6 +11,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Uno.UI.DataBinding;
 using Uno.Foundation.Logging;
+using Windows.UI.Xaml.Input;
 
 #if XAMARIN_IOS
 using UIKit;
@@ -38,6 +39,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			Popup = popup ?? throw new ArgumentNullException(nameof(popup));
 			Visibility = Visibility.Collapsed;
+			PointerPressed += OnPointerPressed;
 		}
 
 		protected Size _lastMeasuredSize;
@@ -188,5 +190,36 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			base.OnUnloaded();
 			this.SetLogicalParent(null);
 		}
+
+		// TODO: pointer handling should really go on PopupRoot. For now it's easier to put here because PopupRoot doesn't track open popups, and also we
+		// need to support native popups on Android that don't use PopupRoot.
+		private void OnPointerPressed(object sender, PointerRoutedEventArgs args)
+		{
+			// Make sure we are the original source.  We do not want to handle PointerPressed on the Popup itself.
+			if (args.OriginalSource == this && Popup is { } popup
+			)
+			{
+				// The check is here because ContentDialogPopupPanel returns true for IsViewHit() even though light-dismiss is always
+				// disabled for ContentDialogs
+				if (popup.IsLightDismissEnabled)
+				{
+					ClosePopup(popup);
+				}
+				args.Handled = true;
+			}
+		}
+
+		private static void ClosePopup(Popup popup)
+		{
+			// Give the popup an opportunity to cancel closing.
+			var cancel = false;
+			popup.OnClosing(ref cancel);
+			if (!cancel)
+			{
+				popup.IsOpen = false;
+			}
+		}
+
+		internal override bool IsViewHit() => Popup?.IsLightDismissEnabled ?? false;
 	}
 }

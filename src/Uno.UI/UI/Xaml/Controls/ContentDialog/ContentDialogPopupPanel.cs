@@ -71,5 +71,9 @@ namespace Windows.UI.Xaml.Controls
 
 			return finalRect;
 		}
+
+		// The ContentDialog backdrop (aka 'smoke layer') doesn't light-dismiss, but does block pointer interactions. On WinUI this is implemented by adding
+		// a second Popup containing a stretched Rectangle. To keep things simple, we just block pointers from passing from here.
+		internal override bool IsViewHit() => true;
 	}
 }

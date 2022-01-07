@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private protected override void OnClosing(ref bool cancel)
+		internal override void OnClosing(ref bool cancel)
 		{
 			base.OnClosing(ref cancel);
 

@@ -800,7 +800,14 @@ namespace Windows.UI.Xaml
 		}
 
 		internal override bool IsViewHit()
-			=> Background != null;
+		{
+			if (FeatureConfiguration.FrameworkElement.UseLegacyHitTest)
+			{
+				return Background != null;
+			}
+			
+			return false;
+		}
 
 		/// <summary>
 		/// The list of available children render phases, if this
