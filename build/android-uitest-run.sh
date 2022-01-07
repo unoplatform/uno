@@ -55,6 +55,9 @@ then
 	# kickstart ADB
 	$ANDROID_HOME/platform-tools/adb devices
 
+	# Workaround for https://github.com/microsoft/appcenter/issues/1451
+	$ANDROID_HOME/platform-tools/adb shell settings put global hidden_api_policy 1
+
 	# Start emulator in background
 	nohup $ANDROID_HOME/emulator/emulator -avd "$AVD_NAME" -skin 1280x800 -memory 2048 -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim > /dev/null 2>&1 &
 
