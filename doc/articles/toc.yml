@@ -372,6 +372,10 @@
               href: migrating-libraries.md
             - name: General guidance
               href: migrating-guidance.md
+        - name: WPF Migration
+          items:
+            - name: Migrating WPF Apps to Web
+              href: wpf-migration.md
         - name: Creating a cross-targeted library
           href: cross-targeted-libraries.md
         - name: Hosting a WebAssembly app
