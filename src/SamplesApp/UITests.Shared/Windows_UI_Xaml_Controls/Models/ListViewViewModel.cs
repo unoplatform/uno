@@ -140,7 +140,10 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 
 		private void ExecuteRemoveLastItem()
 		{
-			this.InitialyEmptyStringList.RemoveAt(this.InitialyEmptyStringList.Count - 1);
+			if (InitialyEmptyStringList.Count > 0)
+			{
+				this.InitialyEmptyStringList.RemoveAt(this.InitialyEmptyStringList.Count - 1);
+			}
 		}
 
 		private static string[] GetSampleItems()
