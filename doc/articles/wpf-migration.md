@@ -2,7 +2,7 @@
 
 This article covers architecture and implementation considerations for migrating WPF applications to the Web using Uno Platform and WinUI.
 
-![A WPF app migrated to the web with Uno platform](Assets\migrated-app.png)
+![A WPF app migrated to the web with Uno platform](Assets/migrated-app.png)
 
 ## Introduction
 
@@ -20,10 +20,10 @@ The Uno Platform not only allows you to maximize reuse of C#, XAML, and .NET inv
 ## Limitations
 
 The vast majority of your codebase will simply "move across". Existing XAML structure, business logic, and view models can simply be reused. You'll need to recompile old code, and won't have access to framework-only APIs. You may encounter APIs that aren't implemented or controls where a subset of the functionality is presently unsupported. Additionally, the following contain substantial enough differences from WPF to require extra research upfront:
-* [Navigation](https://docs.microsoft.com/en-us/windows/apps/design/basics/navigate-between-two-pages)
-* [Advanced binding functionality with x:Bind](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/x-bind-markup-extension)
-* [Modern APIs are often async only](https://docs.microsoft.com/en-us/windows/uwp/threading-async/call-asynchronous-apis-in-csharp-or-visual-basic)
-* [Uno has a streamlined set of XAML capabilities for performance reasons](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/xaml-overview)
+* [Navigation](https://docs.microsoft.com/windows/apps/design/basics/navigate-between-two-pages)
+* [Advanced binding functionality with x:Bind](https://docs.microsoft.com/windows/uwp/xaml-platform/x-bind-markup-extension)
+* [Modern APIs are often async only](https://docs.microsoft.com/windows/uwp/threading-async/call-asynchronous-apis-in-csharp-or-visual-basic)
+* [Uno has a streamlined set of XAML capabilities for performance reasons](https://docs.microsoft.com/windows/uwp/xaml-platform/xaml-overview)
 * [Specific framework capabilities](https://github.com/robloo/PublicDocs/blob/master/UWPvsWPF.md)
 
 ## Understanding beforehand
@@ -57,4 +57,3 @@ Full support for WCF and WCF Data Services are not included in modern .NET versi
 
 ### Desktop Integration
 If your app relies on heavy access to Windows-specific constructs such as the registry, you should rethink your approach to fit the Web's platform agnostic app model.
-
