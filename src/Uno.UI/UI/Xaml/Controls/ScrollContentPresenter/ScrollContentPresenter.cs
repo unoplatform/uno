@@ -158,16 +158,6 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var slotSize = size;
 
-#if __WASM__
-				if (CanVerticallyScroll || _forceChangeToCurrentView)
-				{
-					slotSize.Height = double.PositiveInfinity;
-				}
-				if (CanHorizontallyScroll || _forceChangeToCurrentView)
-				{
-					slotSize.Width = double.PositiveInfinity;
-				}
-#else
 				if (CanVerticallyScroll)
 				{
 					slotSize.Height = double.PositiveInfinity;
@@ -176,7 +166,6 @@ namespace Windows.UI.Xaml.Controls
 				{
 					slotSize.Width = double.PositiveInfinity;
 				}
-#endif
 
 				child.Measure(slotSize);
 
