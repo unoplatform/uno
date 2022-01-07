@@ -27,18 +27,22 @@ namespace Uno.UI.Xaml.Core
 		public RootVisual(CoreServices coreServices)
 		{
 			_coreServices = coreServices ?? throw new System.ArgumentNullException(nameof(coreServices));
-			//Uno specific - flag as VisualTreeRoot for interop with existing logic
+            //Uno specific - flag as VisualTreeRoot for interop with existing logic
 			IsVisualTreeRoot = true;
+#if __WASM__
+			//Uno WASM specific - set tabindex to 0 so the RootVisual is "native focusable"
+			SetAttribute("tabindex", "0");
+#endif
 
 			PointerPressed += RootVisual_PointerPressed;
 			PointerReleased += RootVisual_PointerReleased;
 			PointerCanceled += RootVisual_PointerCanceled;
 		}
 
-		/// <summary>
-		/// Gets or sets the Visual Tree.
-		/// </summary>
-		internal VisualTree? AssociatedVisualTree { get; set; }
+        /// <summary>
+        /// Gets or sets the Visual Tree.
+        /// </summary>
+        internal VisualTree? AssociatedVisualTree { get; set; }
 
 		internal PopupRoot? AssociatedPopupRoot =>
 			AssociatedVisualTree?.PopupRoot ?? this.GetContext().MainPopupRoot;
