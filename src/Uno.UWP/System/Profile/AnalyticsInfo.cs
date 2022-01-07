@@ -1,3 +1,7 @@
+#nullable enable
+
+using System;
+
 namespace Windows.System.Profile;
 
 /// <summary>
@@ -5,6 +9,12 @@ namespace Windows.System.Profile;
 /// </summary>
 public static partial class AnalyticsInfo
 {
+	/// <summary>
+	/// Initializing AnalyticsVersionInfo lazily as it accesses the DeviceForm property, which could otherwise
+	/// happen while the static AnalyticsInfo class is still initializing - causing unpredicatable behavior.
+	/// </summary>
+	private static readonly Lazy<AnalyticsVersionInfo> _analyticsVersionInfo = new(() => new AnalyticsVersionInfo());
+
 	/// <summary>
 	/// Gets the device form factor running the OS. For example,
 	/// the app could be running on a phone, tablet, desktop, and so on.
@@ -14,5 +24,5 @@ public static partial class AnalyticsInfo
 	/// <summary>
 	/// Gets version info about the device family.
 	/// </summary>
-	public static AnalyticsVersionInfo VersionInfo { get; } = new AnalyticsVersionInfo();
+	public static AnalyticsVersionInfo VersionInfo => _analyticsVersionInfo.Value;
 }

@@ -36,6 +36,8 @@ using Uno.UI.Xaml;
 using Uno.UI.Runtime.Skia.Wpf;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Extensions.ApplicationModel.DataTransfer;
+using Windows.System.Profile.Internal;
+using Uno.Extensions.System.Profile;
 
 namespace Uno.UI.Skia.Platform
 {
@@ -69,6 +71,7 @@ namespace Uno.UI.Skia.Platform
 			ApiExtensibility.Register<TextBoxView>(typeof(ITextBoxViewExtension), o => new TextBoxViewExtension(o));
 			ApiExtensibility.Register(typeof(ILauncherExtension), o => new LauncherExtension(o));
 			ApiExtensibility.Register(typeof(IClipboardExtension), o => new ClipboardExtensions(o));
+			ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), o => new AnalyticsInfoExtension());
 		}
 
 		public static WpfHost Current => _current;
