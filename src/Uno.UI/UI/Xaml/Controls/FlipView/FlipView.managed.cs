@@ -474,6 +474,11 @@ namespace Windows.UI.Xaml.Controls
 						m_tpScrollViewer.VerticalScrollMode = ScrollMode.Disabled;
 						m_tpScrollViewer.HorizontalScrollMode = ScrollMode.Enabled;
 					}
+#if HAS_UNO && __WASM__
+					// UNO workaround: the scrollability depends on both the ScrollMode and the ScrollBarVisibility, and by default the latter is Disabled.
+					m_tpScrollViewer.HorizontalScrollBarVisibility = m_tpScrollViewer.HorizontalScrollMode == ScrollMode.Enabled ? ScrollBarVisibility.Hidden : ScrollBarVisibility.Disabled;
+					m_tpScrollViewer.VerticalScrollBarVisibility = m_tpScrollViewer.VerticalScrollMode == ScrollMode.Enabled ? ScrollBarVisibility.Hidden : ScrollBarVisibility.Disabled;
+#endif
 
 					m_tpScrollViewer.SizeChanged += OnScrollingHostPartSizeChanged;
 
@@ -1516,6 +1521,9 @@ namespace Windows.UI.Xaml.Controls
 					m_tpScrollViewer?.UpdateLayout();
 
 					m_tpFixOffsetTimer?.Stop();
+
+					// UNO: force previous/next buttons' visibility to update immediately
+					UpdateVisualState();
 
 					//m_tpScrollViewer?.InvalidateScrollInfo();
 					// When the application is not being rendered, there is no need to animate
