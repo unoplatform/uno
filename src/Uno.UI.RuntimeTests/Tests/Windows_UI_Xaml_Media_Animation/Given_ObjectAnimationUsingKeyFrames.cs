@@ -19,7 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 {
 	[TestClass]
 	[RunsOnUIThread]
-	public class Given_ObjectAnimationUsingKeyFrames
+	public partial class Given_ObjectAnimationUsingKeyFrames
 	{
 
 		[TestMethod]
@@ -328,6 +328,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 		/// </summary>
 		private IDisposable UseFluentStyles() => StyleHelper.UseFluentStyles();
 #endif
+
+		// Intentionally nested to test NativeCtorsGenerator handling of nested classes.
+		public partial class MyCheckBox : CheckBox
+		{
+			public ContentPresenter ContentPresenter { get; set; }
+			protected override void OnApplyTemplate()
+			{
+				base.OnApplyTemplate();
+				ContentPresenter = GetTemplateChild("ContentPresenter") as ContentPresenter; // This is a ContentPresenter
+			}
+		}
 	}
 
 	public partial class AnimTarget : DependencyObject
@@ -374,16 +385,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 					tcs.TrySetResult(History[count - 1]);
 				}
 			}
-		}
-	}
-
-	public partial class MyCheckBox : CheckBox
-	{
-		public ContentPresenter ContentPresenter { get; set; }
-		protected override void OnApplyTemplate()
-		{
-			base.OnApplyTemplate();
-			ContentPresenter = GetTemplateChild("ContentPresenter") as ContentPresenter; // This is a ContentPresenter
 		}
 	}
 }

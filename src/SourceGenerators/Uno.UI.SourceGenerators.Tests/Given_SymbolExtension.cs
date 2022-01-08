@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Uno.Extensions;
 using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 
 namespace Uno.UI.SourceGenerators.Tests
@@ -45,10 +46,153 @@ namespace Uno.UI.SourceGenerators.Tests
 			}
 		}
 
+		[TestMethod]
+		public void When_Generating_Nested_Class()
+		{
+			var compilation = CreateCompilationWithProgramText(@"
+namespace A.B
+{
+    namespace C
+    {
+        partial class D
+        {
+            partial class E
+            {
+            }
+        }
+    }
+}");
+			var type = compilation.GetTypeByMetadataName("A.B.C.D+E");
+			Assert.IsNotNull(type);
+			var builder = new IndentedStringBuilder();
+			var disposables = type.AddToIndentedStringBuilder(builder);
+			Assert.AreEqual(@"namespace A.B.C
+{
+	partial class D
+	{
+		partial class E
+		{
+", builder.ToString());
+
+			while (disposables.Count > 0)
+			{
+				disposables.Pop().Dispose();
+			}
+
+			Assert.AreEqual(@"namespace A.B.C
+{
+	partial class D
+	{
+		partial class E
+		{
+		}
+	}
+}
+", builder.ToString());
+		}
+
+		[TestMethod]
+		public void When_Generating_Nested_Class_With_Action()
+		{
+			var compilation = CreateCompilationWithProgramText(@"
+namespace A.B
+{
+    namespace C
+    {
+        partial class D
+        {
+            partial struct E
+            {
+            }
+        }
+    }
+}");
+			var type = compilation.GetTypeByMetadataName("A.B.C.D+E");
+			Assert.IsNotNull(type);
+			var builder = new IndentedStringBuilder();
+			var disposables = type.AddToIndentedStringBuilder(builder, builder => builder.AppendLineInvariant("[MyAttribute]"));
+			Assert.AreEqual(@"namespace A.B.C
+{
+	partial class D
+	{
+		[MyAttribute]
+		partial struct E
+		{
+", builder.ToString());
+
+			while (disposables.Count > 0)
+			{
+				disposables.Pop().Dispose();
+			}
+
+			Assert.AreEqual(@"namespace A.B.C
+{
+	partial class D
+	{
+		[MyAttribute]
+		partial struct E
+		{
+		}
+	}
+}
+", builder.ToString());
+		}
+
+		[TestMethod]
+		public void When_Generating_Generic_Type()
+		{
+			var compilation = CreateCompilationWithProgramText(@"
+class C<T1, T2>
+{
+}");
+			var type = compilation.GetTypeByMetadataName("C`2");
+			Assert.IsNotNull(type);
+			var builder = new IndentedStringBuilder();
+			var disposables = type.AddToIndentedStringBuilder(builder);
+			while (disposables.Count > 0)
+			{
+				disposables.Pop().Dispose();
+			}
+
+			Assert.AreEqual(@"partial class C<T1, T2>
+{
+}
+", builder.ToString());
+		}
+
+		[TestMethod]
+		public void When_Generating_Generic_Type_With_Variance()
+		{
+			var compilation = CreateCompilationWithProgramText(@"
+interface I<in T1, out T2, T3>
+{
+	class C { }
+}");
+			var type = compilation.GetTypeByMetadataName("I`3+C");
+			Assert.IsNotNull(type);
+			var builder = new IndentedStringBuilder();
+			var disposables = type.AddToIndentedStringBuilder(builder);
+			while (disposables.Count > 0)
+			{
+				disposables.Pop().Dispose();
+			}
+
+			Assert.AreEqual(@"partial interface I<in T1, out T2, T3>
+{
+	partial class C
+	{
+	}
+}
+", builder.ToString());
+		}
+
 		private static Compilation CreateTestCompilation(string type)
+			=> CreateCompilationWithProgramText($"public class Test {{ public static {type} _myField {{ get; set; }} }}");
+
+		private static Compilation CreateCompilationWithProgramText(string text)
 		{
 			var programPath = @"Program.cs";
-			var programText = $"public class Test {{ public static {type} _myField {{ get; set; }} }}";
+			var programText = text;
 			var programTree = CSharpSyntaxTree
 				.ParseText(programText)
 				.WithFilePath(programPath);

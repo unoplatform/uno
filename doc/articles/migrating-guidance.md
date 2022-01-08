@@ -17,7 +17,7 @@ Apart from adding `partial`, you don't need to worry about the generated code. Y
 
 ### Avoid nested classes that inherit from FrameworkElement
 
-Classes that inherit from `FrameworkElement` directly or indirectly can't be nested inside another class; Uno's code generation currently does not support it, and it's also been observed to cause problems on Xamarin.iOS. If you have any nested `FrameworkElement`-derived classes, you'll need to refactor them to be top-level classes.
+Classes that inherit from `FrameworkElement` directly or indirectly can't be nested inside another class; it's been observed to cause problems on Xamarin.iOS. If you have any nested `FrameworkElement`-derived classes, you'll need to refactor them to be top-level classes.
 
 ### Disambiguate naming collisions with native properties
 

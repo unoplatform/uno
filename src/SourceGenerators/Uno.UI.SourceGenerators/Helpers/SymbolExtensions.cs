@@ -14,8 +14,114 @@ namespace Microsoft.CodeAnalysis
 	/// </summary>
 	internal static class SymbolExtensions
 	{
+		// This is the same as MinimallyQualifiedFormat, but adds the SymbolDisplayGenericsOptions.IncludeVariance.
+		private static SymbolDisplayFormat s_format = new SymbolDisplayFormat(
+			globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Omitted,
+			genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters | SymbolDisplayGenericsOptions.IncludeVariance,
+			memberOptions:
+				SymbolDisplayMemberOptions.IncludeParameters |
+				SymbolDisplayMemberOptions.IncludeType |
+				SymbolDisplayMemberOptions.IncludeRef |
+				SymbolDisplayMemberOptions.IncludeContainingType,
+			kindOptions:
+				SymbolDisplayKindOptions.IncludeMemberKeyword,
+			parameterOptions:
+				SymbolDisplayParameterOptions.IncludeName |
+				SymbolDisplayParameterOptions.IncludeType |
+				SymbolDisplayParameterOptions.IncludeParamsRefOut |
+				SymbolDisplayParameterOptions.IncludeDefaultValue,
+			localOptions: SymbolDisplayLocalOptions.IncludeType,
+			miscellaneousOptions:
+				SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers |
+				SymbolDisplayMiscellaneousOptions.UseSpecialTypes |
+				SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier);
+
 		private static bool IsRoslyn34OrEalier { get; }
 			= typeof(INamedTypeSymbol).Assembly.GetVersionNumber() <= new Version("3.4");
+
+
+		/// <summary>
+		/// Given an <see cref="INamedTypeSymbol"/>, add the symbol declaration (including parent classes/namespaces) to the given <see cref="IIndentedStringBuilder"/>.
+		/// </summary>
+		/// <remarks>
+		/// <para>IMPORTANT: The returned stack must be disposed after putting everything for the given <see cref="INamedTypeSymbol"/>.</para>
+		/// <para>Example usage:</para>
+		/// <code><![CDATA[
+		/// var stack = myClass.AddToIndentedStringBuilder(builder);
+		/// using (builder.BlockInvariant("public static void M()"))
+		/// {
+		///     builder.AppendLineInvariant("Console.WriteLine(\"Hello world\")");
+		/// }
+		/// 
+		/// while (disposables.Count > 0)
+		/// {
+		///     disposables.Pop().Dispose();
+		/// }
+		/// ]]></code>
+		/// <para>NOTE: Another possible implementation is to accept an <see cref="Action"/> as a parameter to generate the type members, execute the action here, and also dispose
+		/// the stack here. The advantage is that callers don't need to worry about disposing the stack.</para>
+		/// </remarks>
+		public static Stack<IDisposable> AddToIndentedStringBuilder(this INamedTypeSymbol namedTypeSymbol, IIndentedStringBuilder builder, Action<IIndentedStringBuilder>? beforeClassHeaderAction = null)
+		{
+			var stack = new Stack<string>();
+			ISymbol symbol = namedTypeSymbol;
+			while (symbol != null)
+			{
+				if (symbol is INamespaceSymbol namespaceSymbol)
+				{
+					if (!namespaceSymbol.IsGlobalNamespace)
+					{
+						stack.Push($"namespace {namespaceSymbol}");
+					}
+
+					break;
+				}
+				else if (symbol is INamedTypeSymbol namedSymbol)
+				{
+					stack.Push(GetDeclarationHeaderFromNamedTypeSymbol(namedSymbol));
+				}
+				else
+				{
+					throw new InvalidOperationException($"Unexpected symbol type {symbol}");
+				}
+
+				symbol = symbol.ContainingSymbol;
+			}
+
+			var outputDisposableStack = new Stack<IDisposable>();
+			while (stack.Count > 0)
+			{
+				if (stack.Count == 1)
+				{
+					// Only the original symbol is left (usually a class header). Execute the given action before adding the class (usually this adds attributes).
+					beforeClassHeaderAction?.Invoke(builder);
+				}
+
+				outputDisposableStack.Push(builder.BlockInvariant(stack.Pop()));
+			}
+
+			return outputDisposableStack;
+		}
+
+		public static string GetDeclarationHeaderFromNamedTypeSymbol(this INamedTypeSymbol namedTypeSymbol)
+		{
+			// Interfaces are implicitly abstract, but they can't explicitly have the abstract modifier.
+			var abstractKeyword = namedTypeSymbol.IsAbstract && !namedTypeSymbol.IsAbstract ? "abstract " : string.Empty;
+			var staticKeyword = namedTypeSymbol.IsStatic ? "static " : string.Empty;
+
+			// records are not handled.
+			var typeKeyword = namedTypeSymbol.TypeKind switch
+			{
+				TypeKind.Class => "class ",
+				TypeKind.Interface => "interface ",
+				TypeKind.Struct => "struct ",
+				_ => throw new ArgumentException($"Unexpected type kind {namedTypeSymbol.TypeKind}")
+			};
+			
+			var declarationIdentifier = namedTypeSymbol.ToDisplayString(s_format);
+
+			return $"{abstractKeyword}{staticKeyword}partial {typeKeyword}{declarationIdentifier}";
+		}
 
 		public static IEnumerable<IPropertySymbol> GetProperties(this INamedTypeSymbol symbol) => symbol.GetMembers().OfType<IPropertySymbol>();
 
