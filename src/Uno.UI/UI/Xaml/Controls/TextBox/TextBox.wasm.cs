@@ -118,8 +118,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateTextBoxViewIsReadOnly()
 		{
-			var isReadOnly = IsReadOnly || !IsTabStop;
-			ApplyIsReadonly(isReadOnly);
+			var isNativeReadOnly = IsReadOnly || !IsTabStop;
+			_textBoxView?.SetIsReadOnly(isNativeReadOnly);
 		}
 
 		partial void OnInputScopeChangedPartial(DependencyPropertyChangedEventArgs e)
@@ -131,8 +131,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private void ApplyEnabled(bool? isEnabled = null) => _textBoxView?.SetEnabled(isEnabled ?? IsEnabled);
-
-		private void ApplyIsReadonly(bool? isReadOnly = null) => _textBoxView?.SetIsReadOnly(isReadOnly ?? IsReadOnly);
 
 		private void ApplyInputScope(InputScope scope) => _textBoxView?.SetInputScope(scope);
 
