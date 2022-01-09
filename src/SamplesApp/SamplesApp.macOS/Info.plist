@@ -29,7 +29,7 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>ATSApplicationFontsPath</key>
-	<string>Fonts/uno-fluentui-assets.ttf</string>
+	<string>Fonts</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
