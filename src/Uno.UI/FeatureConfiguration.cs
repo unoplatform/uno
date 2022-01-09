@@ -561,7 +561,7 @@ namespace Uno.UI
 		{
 #if __IOS__
 			/// <summary>
-			/// Gets or set whether the DatePicker rendered matches the Legacy Style or not.
+			/// Gets or set whether the <see cref="Windows.UI.Xaml.Controls.DatePicker" /> rendered matches the Legacy Style or not.
 			/// </summary>
 			/// <remarks>
 			/// Important: This flag will only have an impact on iOS 14 devices
