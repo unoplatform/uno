@@ -748,6 +748,8 @@ namespace Windows.UI.Xaml
 			{
 				case RoutedEventFlag.PointerEntered:
 					OnPointerEnter(ptArgs, BubblingContext.OnManagedBubbling);
+					// Entered and Exited are never bubbling, we bubble them only for internal state updates, but event should not be raised
+					bubblingMode = BubblingMode.IgnoreElement;
 					break;
 				case RoutedEventFlag.PointerPressed:
 					OnPointerDown(ptArgs, BubblingContext.OnManagedBubbling);
@@ -760,6 +762,8 @@ namespace Windows.UI.Xaml
 					break;
 				case RoutedEventFlag.PointerExited:
 					OnPointerExited(ptArgs, BubblingContext.OnManagedBubbling);
+					// Entered and Exited are never bubbling, we bubble them only for internal state updates, but event should not be raised
+					bubblingMode = BubblingMode.IgnoreElement;
 					break;
 				case RoutedEventFlag.PointerCanceled:
 					OnPointerCancel(ptArgs, BubblingContext.OnManagedBubbling);
