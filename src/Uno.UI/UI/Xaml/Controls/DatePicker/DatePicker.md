@@ -4,9 +4,9 @@
 
 DatePicker is use to select a specific date.
 
-*Button showing date open the date picker popup.
-*Bind to the Date property of the control to set initial time.
-*Done/OK button save the new selected date.
+* Button showing date open the date picker popup.
+* Bind to the Date property of the control to set initial time.
+* Done/OK button save the new selected date.
 
 ### Device-specific implementation quirks
 
