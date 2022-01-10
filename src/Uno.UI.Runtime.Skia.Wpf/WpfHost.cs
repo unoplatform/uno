@@ -53,6 +53,9 @@ namespace Uno.UI.Skia.Platform
 		private bool ignorePixelScaling;
 		private FocusManager? _focusManager;
 
+		private double _dpiScaleX;
+		private double _dpiScaleY;
+
 		static WpfHost()
 		{
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(WpfHost), new WpfFrameworkPropertyMetadata(typeof(WpfHost)));
@@ -121,6 +124,10 @@ namespace Uno.UI.Skia.Platform
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = d => dispatcher.BeginInvoke(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = dispatcher.CheckAccess;
 
+			var dpi = VisualTreeHelper.GetDpi(WpfApplication.Current.MainWindow);
+			_dpiScaleX = dpi.DpiScaleX;
+			_dpiScaleY = dpi.DpiScaleY;
+
 			WinUI.Application.Start(CreateApp, args);
 
 			WinUI.Window.InvalidateRender += () =>
@@ -132,6 +139,7 @@ namespace Uno.UI.Skia.Platform
 			WpfApplication.Current.Activated += Current_Activated;
 			WpfApplication.Current.Deactivated += Current_Deactivated;
 			WpfApplication.Current.MainWindow.StateChanged += MainWindow_StateChanged;
+			WpfApplication.Current.MainWindow.DpiChanged += MainWindow_DpiChanged;
 
 			Windows.Foundation.Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 			if (preferredWindowSize != Windows.Foundation.Size.Empty)
@@ -142,6 +150,12 @@ namespace Uno.UI.Skia.Platform
 
 			SizeChanged += WpfHost_SizeChanged;
 			Loaded += WpfHost_Loaded;
+		}
+
+		private void MainWindow_DpiChanged(object sender, DpiChangedEventArgs e)
+		{
+			_dpiScaleX = e.NewDpi.DpiScaleX;
+			_dpiScaleY = e.NewDpi.DpiScaleY;
 		}
 
 		public override void OnApplyTemplate()
@@ -226,9 +240,9 @@ namespace Uno.UI.Skia.Platform
 
 
 			int width, height;
-			var dpi = VisualTreeHelper.GetDpi(WpfApplication.Current.MainWindow);
-			double dpiScaleX = dpi.DpiScaleX;
-			double dpiScaleY = dpi.DpiScaleY;
+			
+			double dpiScaleX = _dpiScaleX;
+			double dpiScaleY = _dpiScaleY;
 			if (IgnorePixelScaling)
 			{
 				width = (int)ActualWidth;
