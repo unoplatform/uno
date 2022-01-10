@@ -1510,19 +1510,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_reorderingState is { } reorderingState && reorderingState.LayoutAttributes is { } draggedAttributes)
 			{
-				var dropTargetAttributes = GetLayoutAttributesUnderPoint(reorderingState.Location);
-				if (dropTargetAttributes is null)
-				{
-					// If we have a reorderingState, it means that the pointer is still over the LV.
-					// But if we didn't found any item under the pointer it means that it's after the last item,
-					// so we should consider that the item is going to be placed after the last item.
-					dropTargetAttributes = _itemLayoutInfos
-						.Values
-						.SelectMany(dict => dict.Values)
-						.OrderBy(attr => GetExtentStart(attr.Frame))
-						.LastOrDefault();
-				}
-
+				var dropTargetAttributes = FindLayoutAttributesClosestOfPoint(reorderingState.Location);
 				if (dropTargetAttributes == draggedAttributes)
 				{
 					// The item being dragged is currently under the point, no need to shift any items
@@ -1595,20 +1583,33 @@ namespace Windows.UI.Xaml.Controls
 			_preReorderFrames.Clear();
 		}
 
-		private UICollectionViewLayoutAttributes GetLayoutAttributesUnderPoint(Point point)
+		private UICollectionViewLayoutAttributes FindLayoutAttributesClosestOfPoint(Point point)
 		{
+			var adjustedPoint = AdjustExtentOffset(point, GetExtent(Owner.ContentOffset));
+
+			var closestDistance = double.MaxValue;
+			var closestElement = default(UICollectionViewLayoutAttributes);
+
 			foreach (var dict in _itemLayoutInfos.Values)
 			{
 				foreach (var layoutAttributes in dict.Values)
 				{
-					if (DoesLayoutAttributesContainDraggedPoint(point, layoutAttributes))
+					var distance = ((Rect)layoutAttributes.Frame).GetDistance(adjustedPoint);
+					if (distance == 0)
 					{
+						// Fats path: we found the element that is under the element
 						return layoutAttributes;
+					}
+
+					if (distance < closestDistance)
+					{
+						closestDistance = distance;
+						closestElement = layoutAttributes;
 					}
 				}
 			}
 
-			return null;
+			return closestElement;
 		}
 
 		private bool DoesLayoutAttributesContainDraggedPoint(Point point, UICollectionViewLayoutAttributes layoutAttributes)
