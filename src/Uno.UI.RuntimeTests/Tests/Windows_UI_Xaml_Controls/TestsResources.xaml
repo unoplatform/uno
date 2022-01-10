@@ -267,4 +267,30 @@
 					   HorizontalAlignment="Center" />
 		</Border>
 	</DataTemplate>
+
+	<Style x:Key="MyGridViewItemStyle"
+               TargetType="GridViewItem">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="TabNavigation" Value="Local" />
+		<Setter Property="IsHoldingEnabled" Value="True" />
+		<Setter Property="HorizontalContentAlignment" Value="Center" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="MinWidth" Value="0" />
+		<Setter Property="MinHeight" Value="0" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="GridViewItem">
+					<Grid x:Name="ContentBorder">
+						<Rectangle x:Name="BorderRectangle"
+                                       Width="100"
+                                       Height="100"
+                                       IsHitTestVisible="False"
+                                       Fill="Green"
+                                       Stroke="Red"
+                                       StrokeThickness="2" />
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
 </ResourceDictionary>
