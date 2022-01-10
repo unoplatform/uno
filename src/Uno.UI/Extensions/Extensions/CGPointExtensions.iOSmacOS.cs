@@ -3,6 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace Uno.UI.Extensions
 {
 	public static class CGPointExtensions

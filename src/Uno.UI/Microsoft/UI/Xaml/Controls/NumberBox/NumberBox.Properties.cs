@@ -149,7 +149,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public new object Description
 		{
-			get => (object)GetValue(DescriptionProperty);
+			get => GetValue(DescriptionProperty);
 			set => SetValue(DescriptionProperty, value);
 		}
 

@@ -12,8 +12,6 @@ using Windows.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Input;
-using Windows.Devices.Input;
 using Windows.Foundation.Collections;
 using Windows.System;
 using Windows.UI.Xaml.Automation.Peers;
@@ -23,6 +21,13 @@ using Uno.UI.Xaml;
 using Uno.Disposables;
 using DirectUI;
 using Uno.UI.Xaml.Core;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -339,7 +344,7 @@ namespace Windows.UI.Xaml.Controls
 		// Calculates the rectangle to be brought into view from the index.
 		private Rect CalculateBounds(int index)
 		{
-			Rect emptyRect = Rect.Empty;
+			Rect emptyRect = default;
 			bool isVertical = false;
 			Orientation physicalOrientation = Orientation.Vertical;
 			double width = 0;
@@ -698,7 +703,7 @@ namespace Windows.UI.Xaml.Controls
 
 			spPointer = pArgs.Pointer;
 			if (spPointer == null) throw new ArgumentNullException();
-			pointerDeviceType = spPointer.PointerDeviceType;
+			pointerDeviceType = (PointerDeviceType)spPointer.PointerDeviceType;
 
 			if (pointerDeviceType == PointerDeviceType.Touch)
 			{
@@ -721,7 +726,7 @@ namespace Windows.UI.Xaml.Controls
 
 			spPointer = pArgs.Pointer;
 			if (spPointer == null) throw new ArgumentNullException();
-			pointerDeviceType = spPointer.PointerDeviceType;
+			pointerDeviceType = (PointerDeviceType)spPointer.PointerDeviceType;
 
 			if (PointerDeviceType.Touch != pointerDeviceType)
 			{
@@ -745,13 +750,13 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnItemsChanged(object e)
 		{
-			base.OnItemsChanged(e);
-
 			int currentSelectedIndex = 0;
 			int previousSelectedIndex = 0;
 			bool savedSkipAnimationOnce = m_skipAnimationOnce;
 
 			previousSelectedIndex = SelectedIndex;
+
+			base.OnItemsChanged(e); // TODO: this currently will never modify SelectedIndex, because the base method doesn't do anything. As part of work to align selection handling better with WinUI, the logic to update SelectedIndex on collection changes should move to Selector.OnItemsChanged() (which currently doesn't exist).
 
 			currentSelectedIndex = SelectedIndex;
 			if (previousSelectedIndex < 0 ||
@@ -1410,7 +1415,7 @@ namespace Windows.UI.Xaml.Controls
 		void HandlePointerLostOrCanceled(PointerRoutedEventArgs pArgs)
 		{
 			PointerPoint spPointerPoint;
-			PointerDevice spPointerDevice;
+			Windows.Devices.Input.PointerDevice spPointerDevice;
 			PointerDeviceType nPointerDeviceType = PointerDeviceType.Touch;
 
 			if (pArgs == null) throw new ArgumentNullException();
@@ -1420,7 +1425,7 @@ namespace Windows.UI.Xaml.Controls
 			if (spPointerPoint == null) throw new ArgumentNullException();
 			spPointerDevice = spPointerPoint.PointerDevice;
 			if (spPointerDevice == null) throw new ArgumentNullException();
-			nPointerDeviceType = spPointerDevice.PointerDeviceType;
+			nPointerDeviceType = (PointerDeviceType)spPointerDevice.PointerDeviceType;
 			if (nPointerDeviceType == PointerDeviceType.Touch)
 			{
 				//m_ShouldShowFocusRect = false;

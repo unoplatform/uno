@@ -7,24 +7,9 @@ namespace Windows.Storage
 	#endif
 	public  partial class StorageStreamTransaction : global::System.IDisposable
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IRandomAccessStream Stream
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStream StorageStreamTransaction.Stream is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Stream
 		// Forced skipping of method Windows.Storage.StorageStreamTransaction.Stream.get
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction CommitAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StorageStreamTransaction.CommitAsync() is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.Storage.StorageStreamTransaction.CommitAsync()
 		// Skipping already declared method Windows.Storage.StorageStreamTransaction.Dispose()
 		// Processing: System.IDisposable
 	}

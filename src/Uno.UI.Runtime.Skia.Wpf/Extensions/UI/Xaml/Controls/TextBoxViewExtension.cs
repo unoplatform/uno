@@ -2,17 +2,13 @@
 
 using System;
 using System.Windows;
-using System.Windows.Media;
-using System.Windows.Threading;
 using Windows.UI.Xaml.Controls;
 using Uno.Disposables;
 using Uno.UI.Runtime.Skia.WPF.Controls;
 using Uno.UI.Skia.Platform;
 using Uno.UI.Xaml.Controls.Extensions;
 using Point = Windows.Foundation.Point;
-using SolidColorBrush = Windows.UI.Xaml.Media.SolidColorBrush;
 using WpfCanvas = System.Windows.Controls.Canvas;
-using WpfTextBox = System.Windows.Controls.TextBox;
 
 namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 {
@@ -21,8 +17,6 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 		private readonly TextBoxView _owner;
 		private ContentControl? _contentElement;
 		private WpfTextViewTextBox? _currentInputWidget;
-
-		private readonly SerialDisposable _textBoxEventSubscriptions = new SerialDisposable();
 
 		public TextBoxViewExtension(TextBoxView owner)
 		{
@@ -46,20 +40,10 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			EnsureWidgetForAcceptsReturn();
 			textInputLayer.Children.Add(_currentInputWidget!);
 
-			textBox.SizeChanged += ContentElementSizeChanged;
-			textBox.LayoutUpdated += ContentElementLayoutUpdated;
-
-			_textBoxEventSubscriptions.Disposable = Disposable.Create(() =>
-			{
-				textBox.SizeChanged -= ContentElementSizeChanged;
-				textBox.LayoutUpdated -= ContentElementLayoutUpdated;
-			});
-
 			UpdateNativeView();
 			SetTextNative(textBox.Text);
 
-			UpdateSize();
-			UpdatePosition();
+			InvalidateLayout();
 
 			_currentInputWidget!.Focus();
 		}
@@ -72,7 +56,6 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			}
 
 			_contentElement = null;
-			_textBoxEventSubscriptions.Disposable = null;
 
 			var textInputLayer = GetWindowTextInputLayer();
 			textInputLayer?.Children.Remove(_currentInputWidget);
@@ -101,12 +84,13 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			_currentInputWidget.TextWrapping = textBox.AcceptsReturn ? TextWrapping.Wrap : TextWrapping.NoWrap;
 			_currentInputWidget.MaxLength = textBox.MaxLength;
 			_currentInputWidget.IsReadOnly = textBox.IsReadOnly;
+			_currentInputWidget.Foreground = textBox.Foreground.ToWpfBrush();
+		}
 
-			if (textBox.Foreground is SolidColorBrush colorBrush)
-			{
-				var unoColor = colorBrush.Color;
-				_currentInputWidget.Foreground = new System.Windows.Media.SolidColorBrush(Color.FromArgb(unoColor.A, unoColor.R, unoColor.G, unoColor.B));
-			}
+		public void InvalidateLayout()
+		{
+			UpdateSize();
+			UpdatePosition();
 		}
 
 		public void UpdateSize()
@@ -171,18 +155,6 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 
 		private string? GetInputText() => _currentInputWidget?.Text;
 
-		private void ContentElementLayoutUpdated(object? sender, object e)
-		{
-			UpdateSize();
-			UpdatePosition();
-		}
-
-		private void ContentElementSizeChanged(object sender, Windows.UI.Xaml.SizeChangedEventArgs args)
-		{
-			UpdateSize();
-			UpdatePosition();
-		}
-
 		public void SetIsPassword(bool isPassword)
 		{
 			// No support for now.
@@ -193,5 +165,13 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 		public int GetSelectionStart() => _currentInputWidget?.SelectionStart ?? 0;
 
 		public int GetSelectionLength() => _currentInputWidget?.SelectionLength ?? 0;
+
+		public void SetForeground(Windows.UI.Xaml.Media.Brush brush)
+		{
+			if (_currentInputWidget != null)
+			{
+				_currentInputWidget.Foreground = brush.ToWpfBrush();
+			}
+		}
 	}
 }

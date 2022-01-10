@@ -2,7 +2,11 @@ using System.Linq;
 using Windows.Devices.Input;
 using Windows.Foundation;
 
+#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+namespace Microsoft.UI.Input
+#else
 namespace Windows.UI.Input
+#endif
 {
 	public partial class ManipulationStartedEventArgs 
 	{
@@ -16,7 +20,7 @@ namespace Windows.UI.Input
 			global::System.Diagnostics.Debug.Assert(pointers.Length > 0 && pointers.All(p => p.Type == pointers[0].Type));
 
 			Pointers = pointers;
-			PointerDeviceType = pointers[0].Type;
+			PointerDeviceType = (PointerDeviceType)pointers[0].Type;
 			Position = position;
 			Cumulative = cumulative;
 			ContactCount = contactCount;

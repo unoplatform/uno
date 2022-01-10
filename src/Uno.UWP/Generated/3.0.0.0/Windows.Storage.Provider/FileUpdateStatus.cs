@@ -2,30 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Provider
 {
-#if false
-#if false
-	[global::Uno.NotImplemented]
-	#endif
-	public enum FileUpdateStatus 
+	#if false || false || false || false || false || false || false
+	public   enum FileUpdateStatus 
 	{
-		#if false
-		Incomplete,
-		#endif
-		#if false
-		Complete,
-		#endif
-		#if false
-		UserInputNeeded,
-		#endif
-		#if false
-		CurrentlyUnavailable,
-		#endif
-		#if false
-		Failed,
-		#endif
-		#if false
-		CompleteAndRenamed,
-		#endif
+		// Skipping already declared field Windows.Storage.Provider.FileUpdateStatus.Incomplete
+		// Skipping already declared field Windows.Storage.Provider.FileUpdateStatus.Complete
+		// Skipping already declared field Windows.Storage.Provider.FileUpdateStatus.UserInputNeeded
+		// Skipping already declared field Windows.Storage.Provider.FileUpdateStatus.CurrentlyUnavailable
+		// Skipping already declared field Windows.Storage.Provider.FileUpdateStatus.Failed
+		// Skipping already declared field Windows.Storage.Provider.FileUpdateStatus.CompleteAndRenamed
 	}
 	#endif
 }

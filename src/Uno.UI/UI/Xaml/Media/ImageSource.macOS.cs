@@ -9,7 +9,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Core;
 using Uno.Disposables;
 
@@ -243,7 +243,7 @@ namespace Windows.UI.Xaml.Media
 			{
 				NSError error;
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Loading image from [{WebUri.OriginalString}]");
 				}

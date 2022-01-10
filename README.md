@@ -6,10 +6,7 @@
 ## Pixel-Perfect. Multi-Platform. C# & Windows XAML. Today.
 
 [![Open Uno in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/unoplatform/uno) 
-
 [![Azure DevOps](https://img.shields.io/azure-devops/build/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/5/master?label=master)](https://uno-platform.visualstudio.com/Uno%20Platform/_build?definitionId=5)
-[![Azure DevOps](https://img.shields.io/azure-devops/build/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/5/release/beta/Batman?label=release/beta/Batman)](https://uno-platform.visualstudio.com/Uno%20Platform/_build?definitionId=5)
-[![Azure DevOps](https://img.shields.io/azure-devops/build/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/5/release/stable/Batman?label=release/stable/Batman)](https://uno-platform.visualstudio.com/Uno%20Platform/_build?definitionId=5)
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=unoplatform/uno)](https://dependabot.com)
 [![Twitter Followers](https://img.shields.io/twitter/follow/unoplatform?label=follow%20%40unoplatform&style=flat)](https://twitter.com/unoplatform)
 [![GitHub Stars](https://img.shields.io/github/stars/unoplatform/uno?label=github%20stars)](https://github.com/unoplatform/uno/stargazers/)
@@ -18,25 +15,17 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/unoplatform/uno/blob/master/CONTRIBUTING.md)
 
 # What is the Uno Platform?
-
 The Uno Platform is a UI Platform for building single-codebase applications for Windows, Web/WebAssembly, iOS, macOS, Android and Linux. 
 
-It allows C# and Windows XAML code to run on all target platforms, while allowing you control of every pixel. It comes with support for Fluent, Material and Cupertino design systems out of the box. Uno Platform implements a growing number of the UWP APIs, such as **Windows.UI.Xaml**, to enable UWP and WinUI applications to run on on all platforms with native performance. 
+It allows C# and WinUI XAML code to run on all target platforms, while allowing you control of every pixel. It comes with support for Fluent, Material and Cupertino design systems out of the box. Uno Platform implements a growing number of the WinRT and WinUI APIs, such as **Windows.UI.Xaml**, to enable WinUI applications to run on on all platforms with native performance. 
 
-Use the UWP/WinUI tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [XAML Hot Reload](https://docs.microsoft.com/en-us/visualstudio/xaml-tools/xaml-hot-reload?view=vs-2019) and [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp), build your application as much as possible on Windows, then validate that your application runs on iOS, Android, macOS and WebAssembly.
+Use the WinUI tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [XAML Hot Reload](https://docs.microsoft.com/en-us/visualstudio/xaml-tools/xaml-hot-reload?view=vs-2019) and [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp), build your application as much as possible on Windows, then validate that your application runs on iOS, Android, macOS and WebAssembly.
 
 Visit [our documentation](doc/articles/intro.md) for more details.
 
 # Getting Started
 
-## Prerequisites
-* [**Visual Studio 2019**](https://visualstudio.microsoft.com/) with:
-    * **Universal Windows Platform component** installed.
-    * **Xamarin component** installed (for Android and iOS development).
-    * **ASP.NET/web component** installed, along with .NET Core SDK 5.0 or later (for WebAssembly development).
-
-To easily create a multi-platform application:
-* See the complete [Getting Started](https://platform.uno/docs/articles/get-started.html) guides for starting with Visual Studio, Visual Studio Code, JetBrains Rider or Visual Studio Mac.
+See the complete [Getting Started](https://platform.uno/docs/articles/get-started.html) guides for starting with Visual Studio, Visual Studio Code, JetBrains Rider or Visual Studio Mac.
 
 For a larger example and features demo:
 * Visit the [Uno Gallery](https://github.com/unoplatform/uno.gallery) repository.
@@ -51,10 +40,11 @@ For a larger example and features demo:
     * Linux through Skia (Gtk and FrameBuffer)
 * Dev loop:
     * Develop on Windows first using Visual Studio
-    * [XAML Edit and Continue](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) for live XAML edition on each keystroke
-    * [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp)
+    * [XAML Hot Reload](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) for live XAML edition on each keystroke
+    * [C# Hot Reload](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp) on Windows (VS2022), Linux and mac (VS Code)
     * Validate on other platforms as late as possible
-    * Experimental XAML Hot Reload for WebAssembly, iOS and Android
+    * Develop in VS Code, Codespaces or GitPod
+    * XAML Hot Reload for WebAssembly, Linux, iOS and Android
     * [Uno.UITest](https://github.com/unoplatform/Uno.UITest), a library to create Cross-Platform UI Tests for WebAssembly, iOS and Android.
 * Cross Platform Controls:
     * [Control Templating](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/control-templates)
@@ -92,6 +82,7 @@ Here's a list of live apps made with the Uno Platform for WebAssembly.
 
 * The [Uno Platform Playground](https://playground.platform.uno) ([Source](https://github.com/unoplatform/uno.Playground)).
 * The [Uno Gallery](https://gallery.platform.uno) demonstrating the use of Fluent and Material guidelines.
+* The [NuGet Package Explorer](https://nuget.info) ([Source](https://github.com/NuGetPackageExplorer/NuGetPackageExplorer)).
 * The [Uno Calculator](https://calculator.platform.uno), a simple yet powerful iOS/Android/WebAssembly C# port of the calculator that ships with Windows ([Source](https://github.com/unoplatform/calculator)). Also try the [iOS version](https://apps.apple.com/app/id1464736591),  the [Android version](https://play.google.com/store/apps/details?id=uno.platform.calculator) and [Linux version](https://snapcraft.io/uno-calculator).
 * The [Ch9](https://ch9.platform.uno) sample educational application.
 * The [Xaml Controls Gallery](https://xamlcontrolsgallery.platform.uno/) ([Source](https://github.com/unoplatform/uno.Xaml-Controls-Gallery)).

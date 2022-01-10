@@ -30,7 +30,7 @@ namespace UITests.Windows_Media
 			this.DataContextChanged += SpeechRecognizerTests_DataContextChanged;
 		}
 
-		public SpeechRecognizerTestsViewModel Model { get; private set; }
+		internal SpeechRecognizerTestsViewModel Model { get; private set; }
 
 		private void SpeechRecognizerTests_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{
@@ -38,7 +38,7 @@ namespace UITests.Windows_Media
 		}
 	}
 
-	public class SpeechRecognizerTestsViewModel : ViewModelBase
+	internal class SpeechRecognizerTestsViewModel : ViewModelBase
 	{
 		private readonly SpeechRecognizer _speechRecognizer = new SpeechRecognizer(new Windows.Globalization.Language("en-US"));
 

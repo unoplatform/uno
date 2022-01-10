@@ -4,13 +4,16 @@ This article explains how to build Uno.UI locally, for instance if you wish to c
 
 ## Prerequisites
 
-- Visual Studio 2019 (16.6 or later) or 2022 (17.0 Preview 2 or later)
+- Visual Studio 2022 (17.0 or later)
     - `Mobile Development with .NET` (Xamarin) development
     - `Visual Studio extensions development` (for the VSIX projects)
+    - `MAUI Preview` (In VS 2022 17.1 Preview 1 or later, for .NET 6 Android/iOS support)
     - `ASP.NET and Web Development`
     - `.NET Core cross-platform development`
-    - `UWP Development`, install all recent UWP SDKs, starting from 10.0.14393 (or above or equal to `TargetPlatformVersion` line [in this file](https://github.com/unoplatform/uno/blob/master/src/Uno.CrossTargetting.props))
+    - `UWP Development`, install all recent UWP SDKs, starting from 10.0.17763 (or above or equal to `TargetPlatformVersion` line [in this file](https://github.com/unoplatform/uno/blob/master/src/Uno.CrossTargetting.props))
+      - Starting from VS 2022, the Windows SDK 10.0.17763 is not available from the installer. Use the [Microsoft Archive](https://developer.microsoft.com/en-us/windows/downloads/sdk-archive/) instead.
 - Install (**Tools** / **Android** / **Android SDK manager**) all Android SDKs starting from 7.1 (or the Android versions `TargetFrameworks` [list used here](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.BindingHelper.Android/Uno.UI.BindingHelper.Android.csproj))
+- Run [Uno.Check](https://github.com/unoplatform/uno.check) on your dev machine to setup .NET 6 Android/iOS workloads
 
 ## Building Uno.UI for a single target platform
 
@@ -29,7 +32,7 @@ This is due to limitations in the legacy .NET versions used by Xamarin projects.
 1. In `crosstargeting_override.props`, uncomment the line `<UnoTargetFrameworkOverride>netstandard2.0</UnoTargetFrameworkOverride>`
 1. Set the build target inside ``<UnoTargetFrameworkOverride></UnoTargetFrameworkOverride>`` to the identifier for the target platform you wish to build for. (Identifiers for each platform are listed in the file.) Save the file.
 1. If you are debugging for `net6.0-XX` targets (`ios`, `android`, `maccatalyst` or `macos`)
-   - Ensure that you are running VS 2022 Preview 2 or later
+   - Ensure that you are running VS 2022 17.1 Preview 1 or later
    - Replace the contents of the `global.json` file with the contents of `global-net6.json`
 1. In the `src` folder, look for the solution filter (`.slnf` file) corresponding to the target platform override you've set, which will be named `Uno.UI-[Platform]-only.slnf`, and open it.
 1. To confirm that everything works:
@@ -63,6 +66,13 @@ Inside Visual Studio, the number of platforms is restricted to limit the compila
 ## Building Uno.UI for macOS using Visual Studio for Mac
 
 See [instructions here](building-uno-macos.md) for building Uno.UI for the macOS platform.
+
+## Troubleshooting build issues
+Here are some tips when building the Uno solution and failures happen:
+- Make sure to be on the latest master commit
+- Make sure to have run `git clean -fdx` (after having closed visual studio) before building again
+- Make sure to have a valid `UnoTargetFrameworkOverride` which matches your solution filter
+- Make sure to have the Windows SDK `17763` installed
 
 ## Other build-related topics 
 

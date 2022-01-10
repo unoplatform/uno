@@ -2,10 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Windows.UI.Input;
 using Windows.UI.Xaml.Controls;
 using UIKit;
 using WebKit;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.UI.Input;
+using Windows.Devices.Input;
+#endif
 
 namespace Windows.UI.Xaml
 {

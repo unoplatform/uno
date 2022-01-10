@@ -61,6 +61,7 @@ else
 			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests' or \
 			namespace = 'SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests' or \
 			namespace = 'SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests' or \
+			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ItemsControl' or \
 			namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests'
 		"
 	elif [ "$UITEST_AUTOMATED_GROUP" == '3' ];

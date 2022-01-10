@@ -2,1132 +2,114 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CalendarView : global::Windows.UI.Xaml.Controls.Control
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.HorizontalAlignment HorizontalFirstOfMonthLabelAlignment
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.HorizontalAlignment)this.GetValue(HorizontalFirstOfMonthLabelAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(HorizontalFirstOfMonthLabelAlignmentProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.HorizontalAlignment HorizontalDayItemAlignment
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.HorizontalAlignment)this.GetValue(HorizontalDayItemAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(HorizontalDayItemAlignmentProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Brush FocusBorderBrush
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(FocusBorderBrushProperty);
-			}
-			set
-			{
-				this.SetValue(FocusBorderBrushProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Text.FontWeight FirstOfYearDecadeLabelFontWeight
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontWeight)this.GetValue(FirstOfYearDecadeLabelFontWeightProperty);
-			}
-			set
-			{
-				this.SetValue(FirstOfYearDecadeLabelFontWeightProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Text.FontStyle FirstOfYearDecadeLabelFontStyle
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontStyle)this.GetValue(FirstOfYearDecadeLabelFontStyleProperty);
-			}
-			set
-			{
-				this.SetValue(FirstOfYearDecadeLabelFontStyleProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.FontFamily MonthYearItemFontFamily
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.FontFamily)this.GetValue(MonthYearItemFontFamilyProperty);
-			}
-			set
-			{
-				this.SetValue(MonthYearItemFontFamilyProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.FontFamily FirstOfYearDecadeLabelFontFamily
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.FontFamily)this.GetValue(FirstOfYearDecadeLabelFontFamilyProperty);
-			}
-			set
-			{
-				this.SetValue(FirstOfYearDecadeLabelFontFamilyProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Text.FontWeight FirstOfMonthLabelFontWeight
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontWeight)this.GetValue(FirstOfMonthLabelFontWeightProperty);
-			}
-			set
-			{
-				this.SetValue(FirstOfMonthLabelFontWeightProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Text.FontStyle FirstOfMonthLabelFontStyle
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontStyle)this.GetValue(FirstOfMonthLabelFontStyleProperty);
-			}
-			set
-			{
-				this.SetValue(FirstOfMonthLabelFontStyleProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double FirstOfMonthLabelFontSize
-		{
-			get
-			{
-				return (double)this.GetValue(FirstOfMonthLabelFontSizeProperty);
-			}
-			set
-			{
-				this.SetValue(FirstOfMonthLabelFontSizeProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.FontFamily FirstOfMonthLabelFontFamily
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.FontFamily)this.GetValue(FirstOfMonthLabelFontFamilyProperty);
-			}
-			set
-			{
-				this.SetValue(FirstOfMonthLabelFontFamilyProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Globalization.DayOfWeek FirstDayOfWeek
-		{
-			get
-			{
-				return (global::Windows.Globalization.DayOfWeek)this.GetValue(FirstDayOfWeekProperty);
-			}
-			set
-			{
-				this.SetValue(FirstDayOfWeekProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Brush BlackoutForeground
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(BlackoutForegroundProperty);
-			}
-			set
-			{
-				this.SetValue(BlackoutForegroundProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DayOfWeekFormat
-		{
-			get
-			{
-				return (string)this.GetValue(DayOfWeekFormatProperty);
-			}
-			set
-			{
-				this.SetValue(DayOfWeekFormatProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Text.FontWeight DayItemFontWeight
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontWeight)this.GetValue(DayItemFontWeightProperty);
-			}
-			set
-			{
-				this.SetValue(DayItemFontWeightProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Text.FontStyle DayItemFontStyle
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontStyle)this.GetValue(DayItemFontStyleProperty);
-			}
-			set
-			{
-				this.SetValue(DayItemFontStyleProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double DayItemFontSize
-		{
-			get
-			{
-				return (double)this.GetValue(DayItemFontSizeProperty);
-			}
-			set
-			{
-				this.SetValue(DayItemFontSizeProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.FontFamily DayItemFontFamily
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.FontFamily)this.GetValue(DayItemFontFamilyProperty);
-			}
-			set
-			{
-				this.SetValue(DayItemFontFamilyProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Brush SelectedPressedBorderBrush
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(SelectedPressedBorderBrushProperty);
-			}
-			set
-			{
-				this.SetValue(SelectedPressedBorderBrushProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Brush CalendarItemForeground
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(CalendarItemForegroundProperty);
-			}
-			set
-			{
-				this.SetValue(CalendarItemForegroundProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Thickness CalendarItemBorderThickness
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Thickness)this.GetValue(CalendarItemBorderThicknessProperty);
-			}
-			set
-			{
-				this.SetValue(CalendarItemBorderThicknessProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Brush CalendarItemBorderBrush
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(CalendarItemBorderBrushProperty);
-			}
-			set
-			{
-				this.SetValue(CalendarItemBorderBrushProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Brush CalendarItemBackground
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(CalendarItemBackgroundProperty);
-			}
-			set
-			{
-				this.SetValue(CalendarItemBackgroundProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string CalendarIdentifier
-		{
-			get
-			{
-				return (string)this.GetValue(CalendarIdentifierProperty);
-			}
-			set
-			{
-				this.SetValue(CalendarIdentifierProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.CalendarViewDisplayMode DisplayMode
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.CalendarViewDisplayMode)this.GetValue(DisplayModeProperty);
-			}
-			set
-			{
-				this.SetValue(DisplayModeProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Brush HoverBorderBrush
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(HoverBorderBrushProperty);
-			}
-			set
-			{
-				this.SetValue(HoverBorderBrushProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Brush PressedBorderBrush
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(PressedBorderBrushProperty);
-			}
-			set
-			{
-				this.SetValue(PressedBorderBrushProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.VerticalAlignment VerticalDayItemAlignment
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.VerticalAlignment)this.GetValue(VerticalDayItemAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(VerticalDayItemAlignmentProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Brush TodayForeground
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(TodayForegroundProperty);
-			}
-			set
-			{
-				this.SetValue(TodayForegroundProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Text.FontWeight TodayFontWeight
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontWeight)this.GetValue(TodayFontWeightProperty);
-			}
-			set
-			{
-				this.SetValue(TodayFontWeightProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.CalendarViewSelectionMode SelectionMode
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.CalendarViewSelectionMode)this.GetValue(SelectionModeProperty);
-			}
-			set
-			{
-				this.SetValue(SelectionModeProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Style CalendarViewDayItemStyle
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Style)this.GetValue(CalendarViewDayItemStyleProperty);
-			}
-			set
-			{
-				this.SetValue(CalendarViewDayItemStyleProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Brush SelectedHoverBorderBrush
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(SelectedHoverBorderBrushProperty);
-			}
-			set
-			{
-				this.SetValue(SelectedHoverBorderBrushProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Brush SelectedForeground
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(SelectedForegroundProperty);
-			}
-			set
-			{
-				this.SetValue(SelectedForegroundProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Brush SelectedBorderBrush
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(SelectedBorderBrushProperty);
-			}
-			set
-			{
-				this.SetValue(SelectedBorderBrushProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Brush PressedForeground
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(PressedForegroundProperty);
-			}
-			set
-			{
-				this.SetValue(PressedForegroundProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.VerticalAlignment VerticalFirstOfMonthLabelAlignment
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.VerticalAlignment)this.GetValue(VerticalFirstOfMonthLabelAlignmentProperty);
-			}
-			set
-			{
-				this.SetValue(VerticalFirstOfMonthLabelAlignmentProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Brush OutOfScopeForeground
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(OutOfScopeForegroundProperty);
-			}
-			set
-			{
-				this.SetValue(OutOfScopeForegroundProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Brush OutOfScopeBackground
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(OutOfScopeBackgroundProperty);
-			}
-			set
-			{
-				this.SetValue(OutOfScopeBackgroundProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int NumberOfWeeksInView
-		{
-			get
-			{
-				return (int)this.GetValue(NumberOfWeeksInViewProperty);
-			}
-			set
-			{
-				this.SetValue(NumberOfWeeksInViewProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Text.FontWeight MonthYearItemFontWeight
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontWeight)this.GetValue(MonthYearItemFontWeightProperty);
-			}
-			set
-			{
-				this.SetValue(MonthYearItemFontWeightProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Text.FontStyle MonthYearItemFontStyle
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontStyle)this.GetValue(MonthYearItemFontStyleProperty);
-			}
-			set
-			{
-				this.SetValue(MonthYearItemFontStyleProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double MonthYearItemFontSize
-		{
-			get
-			{
-				return (double)this.GetValue(MonthYearItemFontSizeProperty);
-			}
-			set
-			{
-				this.SetValue(MonthYearItemFontSizeProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double FirstOfYearDecadeLabelFontSize
-		{
-			get
-			{
-				return (double)this.GetValue(FirstOfYearDecadeLabelFontSizeProperty);
-			}
-			set
-			{
-				this.SetValue(FirstOfYearDecadeLabelFontSizeProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset MinDate
-		{
-			get
-			{
-				return (global::System.DateTimeOffset)this.GetValue(MinDateProperty);
-			}
-			set
-			{
-				this.SetValue(MinDateProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset MaxDate
-		{
-			get
-			{
-				return (global::System.DateTimeOffset)this.GetValue(MaxDateProperty);
-			}
-			set
-			{
-				this.SetValue(MaxDateProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsTodayHighlighted
-		{
-			get
-			{
-				return (bool)this.GetValue(IsTodayHighlightedProperty);
-			}
-			set
-			{
-				this.SetValue(IsTodayHighlightedProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsOutOfScopeEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsOutOfScopeEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsOutOfScopeEnabledProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsGroupLabelVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(IsGroupLabelVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(IsGroupLabelVisibleProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::System.DateTimeOffset> SelectedDates
-		{
-			get
-			{
-				return (global::System.Collections.Generic.IList<global::System.DateTimeOffset>)this.GetValue(SelectedDatesProperty);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings TemplateSettings
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings)this.GetValue(TemplateSettingsProperty);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty BlackoutForegroundProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(BlackoutForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CalendarIdentifierProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CalendarIdentifier), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(string)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CalendarItemBackgroundProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CalendarItemBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CalendarItemBorderBrushProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CalendarItemBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CalendarItemBorderThicknessProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CalendarItemBorderThickness), typeof(global::Windows.UI.Xaml.Thickness), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CalendarItemForegroundProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CalendarItemForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CalendarViewDayItemStyleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CalendarViewDayItemStyle), typeof(global::Windows.UI.Xaml.Style), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Style)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DayItemFontFamilyProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DayItemFontFamily), typeof(global::Windows.UI.Xaml.Media.FontFamily), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.FontFamily)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DayItemFontSizeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DayItemFontSize), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DayItemFontStyleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DayItemFontStyle), typeof(global::Windows.UI.Text.FontStyle), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontStyle)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DayItemFontWeightProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DayItemFontWeight), typeof(global::Windows.UI.Text.FontWeight), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontWeight)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DayOfWeekFormatProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DayOfWeekFormat), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(string)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DisplayModeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DisplayMode), typeof(global::Windows.UI.Xaml.Controls.CalendarViewDisplayMode), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.CalendarViewDisplayMode)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FirstDayOfWeekProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FirstDayOfWeek), typeof(global::Windows.Globalization.DayOfWeek), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.Globalization.DayOfWeek)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FirstOfMonthLabelFontFamilyProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FirstOfMonthLabelFontFamily), typeof(global::Windows.UI.Xaml.Media.FontFamily), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.FontFamily)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FirstOfMonthLabelFontSizeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FirstOfMonthLabelFontSize), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FirstOfMonthLabelFontStyleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FirstOfMonthLabelFontStyle), typeof(global::Windows.UI.Text.FontStyle), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontStyle)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FirstOfMonthLabelFontWeightProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FirstOfMonthLabelFontWeight), typeof(global::Windows.UI.Text.FontWeight), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontWeight)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FirstOfYearDecadeLabelFontFamilyProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FirstOfYearDecadeLabelFontFamily), typeof(global::Windows.UI.Xaml.Media.FontFamily), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.FontFamily)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FirstOfYearDecadeLabelFontSizeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FirstOfYearDecadeLabelFontSize), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FirstOfYearDecadeLabelFontStyleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FirstOfYearDecadeLabelFontStyle), typeof(global::Windows.UI.Text.FontStyle), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontStyle)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FirstOfYearDecadeLabelFontWeightProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FirstOfYearDecadeLabelFontWeight), typeof(global::Windows.UI.Text.FontWeight), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontWeight)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FocusBorderBrushProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FocusBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HorizontalDayItemAlignmentProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HorizontalDayItemAlignment), typeof(global::Windows.UI.Xaml.HorizontalAlignment), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.HorizontalAlignment)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HorizontalFirstOfMonthLabelAlignmentProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HorizontalFirstOfMonthLabelAlignment), typeof(global::Windows.UI.Xaml.HorizontalAlignment), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.HorizontalAlignment)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HoverBorderBrushProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HoverBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsGroupLabelVisibleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsGroupLabelVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsOutOfScopeEnabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsOutOfScopeEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsTodayHighlightedProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsTodayHighlighted), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MaxDateProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MaxDate), typeof(global::System.DateTimeOffset), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::System.DateTimeOffset)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MinDateProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MinDate), typeof(global::System.DateTimeOffset), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::System.DateTimeOffset)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MonthYearItemFontFamilyProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MonthYearItemFontFamily), typeof(global::Windows.UI.Xaml.Media.FontFamily), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.FontFamily)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MonthYearItemFontSizeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MonthYearItemFontSize), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MonthYearItemFontStyleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MonthYearItemFontStyle), typeof(global::Windows.UI.Text.FontStyle), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontStyle)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MonthYearItemFontWeightProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MonthYearItemFontWeight), typeof(global::Windows.UI.Text.FontWeight), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontWeight)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty NumberOfWeeksInViewProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(NumberOfWeeksInView), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(int)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty OutOfScopeBackgroundProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(OutOfScopeBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty OutOfScopeForegroundProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(OutOfScopeForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PressedBorderBrushProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PressedBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PressedForegroundProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PressedForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedBorderBrushProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedDatesProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedDates), typeof(global::System.Collections.Generic.IList<global::System.DateTimeOffset>), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::System.DateTimeOffset>)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedForegroundProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedHoverBorderBrushProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedHoverBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedPressedBorderBrushProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedPressedBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionModeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionMode), typeof(global::Windows.UI.Xaml.Controls.CalendarViewSelectionMode), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.CalendarViewSelectionMode)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TemplateSettingsProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TemplateSettings), typeof(global::Windows.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.CalendarViewTemplateSettings)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TodayFontWeightProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TodayFontWeight), typeof(global::Windows.UI.Text.FontWeight), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontWeight)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TodayForegroundProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TodayForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty VerticalDayItemAlignmentProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(VerticalDayItemAlignment), typeof(global::Windows.UI.Xaml.VerticalAlignment), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.VerticalAlignment)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty VerticalFirstOfMonthLabelAlignmentProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(VerticalFirstOfMonthLabelAlignment), typeof(global::Windows.UI.Xaml.VerticalAlignment), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.VerticalAlignment)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public CalendarView() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.CalendarView", "CalendarView.CalendarView()");
-		}
-		#endif
+		// Skipping already declared property HorizontalFirstOfMonthLabelAlignment
+		// Skipping already declared property HorizontalDayItemAlignment
+		// Skipping already declared property FocusBorderBrush
+		// Skipping already declared property FirstOfYearDecadeLabelFontWeight
+		// Skipping already declared property FirstOfYearDecadeLabelFontStyle
+		// Skipping already declared property MonthYearItemFontFamily
+		// Skipping already declared property FirstOfYearDecadeLabelFontFamily
+		// Skipping already declared property FirstOfMonthLabelFontWeight
+		// Skipping already declared property FirstOfMonthLabelFontStyle
+		// Skipping already declared property FirstOfMonthLabelFontSize
+		// Skipping already declared property FirstOfMonthLabelFontFamily
+		// Skipping already declared property FirstDayOfWeek
+		// Skipping already declared property BlackoutForeground
+		// Skipping already declared property DayOfWeekFormat
+		// Skipping already declared property DayItemFontWeight
+		// Skipping already declared property DayItemFontStyle
+		// Skipping already declared property DayItemFontSize
+		// Skipping already declared property DayItemFontFamily
+		// Skipping already declared property SelectedPressedBorderBrush
+		// Skipping already declared property CalendarItemForeground
+		// Skipping already declared property CalendarItemBorderThickness
+		// Skipping already declared property CalendarItemBorderBrush
+		// Skipping already declared property CalendarItemBackground
+		// Skipping already declared property CalendarIdentifier
+		// Skipping already declared property DisplayMode
+		// Skipping already declared property HoverBorderBrush
+		// Skipping already declared property PressedBorderBrush
+		// Skipping already declared property VerticalDayItemAlignment
+		// Skipping already declared property TodayForeground
+		// Skipping already declared property TodayFontWeight
+		// Skipping already declared property SelectionMode
+		// Skipping already declared property CalendarViewDayItemStyle
+		// Skipping already declared property SelectedHoverBorderBrush
+		// Skipping already declared property SelectedForeground
+		// Skipping already declared property SelectedBorderBrush
+		// Skipping already declared property PressedForeground
+		// Skipping already declared property VerticalFirstOfMonthLabelAlignment
+		// Skipping already declared property OutOfScopeForeground
+		// Skipping already declared property OutOfScopeBackground
+		// Skipping already declared property NumberOfWeeksInView
+		// Skipping already declared property MonthYearItemFontWeight
+		// Skipping already declared property MonthYearItemFontStyle
+		// Skipping already declared property MonthYearItemFontSize
+		// Skipping already declared property FirstOfYearDecadeLabelFontSize
+		// Skipping already declared property MinDate
+		// Skipping already declared property MaxDate
+		// Skipping already declared property IsTodayHighlighted
+		// Skipping already declared property IsOutOfScopeEnabled
+		// Skipping already declared property IsGroupLabelVisible
+		// Skipping already declared property SelectedDates
+		// Skipping already declared property TemplateSettings
+		// Skipping already declared property BlackoutForegroundProperty
+		// Skipping already declared property CalendarIdentifierProperty
+		// Skipping already declared property CalendarItemBackgroundProperty
+		// Skipping already declared property CalendarItemBorderBrushProperty
+		// Skipping already declared property CalendarItemBorderThicknessProperty
+		// Skipping already declared property CalendarItemForegroundProperty
+		// Skipping already declared property CalendarViewDayItemStyleProperty
+		// Skipping already declared property DayItemFontFamilyProperty
+		// Skipping already declared property DayItemFontSizeProperty
+		// Skipping already declared property DayItemFontStyleProperty
+		// Skipping already declared property DayItemFontWeightProperty
+		// Skipping already declared property DayOfWeekFormatProperty
+		// Skipping already declared property DisplayModeProperty
+		// Skipping already declared property FirstDayOfWeekProperty
+		// Skipping already declared property FirstOfMonthLabelFontFamilyProperty
+		// Skipping already declared property FirstOfMonthLabelFontSizeProperty
+		// Skipping already declared property FirstOfMonthLabelFontStyleProperty
+		// Skipping already declared property FirstOfMonthLabelFontWeightProperty
+		// Skipping already declared property FirstOfYearDecadeLabelFontFamilyProperty
+		// Skipping already declared property FirstOfYearDecadeLabelFontSizeProperty
+		// Skipping already declared property FirstOfYearDecadeLabelFontStyleProperty
+		// Skipping already declared property FirstOfYearDecadeLabelFontWeightProperty
+		// Skipping already declared property FocusBorderBrushProperty
+		// Skipping already declared property HorizontalDayItemAlignmentProperty
+		// Skipping already declared property HorizontalFirstOfMonthLabelAlignmentProperty
+		// Skipping already declared property HoverBorderBrushProperty
+		// Skipping already declared property IsGroupLabelVisibleProperty
+		// Skipping already declared property IsOutOfScopeEnabledProperty
+		// Skipping already declared property IsTodayHighlightedProperty
+		// Skipping already declared property MaxDateProperty
+		// Skipping already declared property MinDateProperty
+		// Skipping already declared property MonthYearItemFontFamilyProperty
+		// Skipping already declared property MonthYearItemFontSizeProperty
+		// Skipping already declared property MonthYearItemFontStyleProperty
+		// Skipping already declared property MonthYearItemFontWeightProperty
+		// Skipping already declared property NumberOfWeeksInViewProperty
+		// Skipping already declared property OutOfScopeBackgroundProperty
+		// Skipping already declared property OutOfScopeForegroundProperty
+		// Skipping already declared property PressedBorderBrushProperty
+		// Skipping already declared property PressedForegroundProperty
+		// Skipping already declared property SelectedBorderBrushProperty
+		// Skipping already declared property SelectedDatesProperty
+		// Skipping already declared property SelectedForegroundProperty
+		// Skipping already declared property SelectedHoverBorderBrushProperty
+		// Skipping already declared property SelectedPressedBorderBrushProperty
+		// Skipping already declared property SelectionModeProperty
+		// Skipping already declared property TemplateSettingsProperty
+		// Skipping already declared property TodayFontWeightProperty
+		// Skipping already declared property TodayForegroundProperty
+		// Skipping already declared property VerticalDayItemAlignmentProperty
+		// Skipping already declared property VerticalFirstOfMonthLabelAlignmentProperty
+		// Skipping already declared method Windows.UI.Xaml.Controls.CalendarView.CalendarView()
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.CalendarView()
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.CalendarIdentifier.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.CalendarIdentifier.set
@@ -1233,20 +215,8 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.CalendarViewDayItemChanging.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.SelectedDatesChanged.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.SelectedDatesChanged.remove
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetDisplayDate( global::System.DateTimeOffset date)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.CalendarView", "void CalendarView.SetDisplayDate(DateTimeOffset date)");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetYearDecadeDisplayDimensions( int columns,  int rows)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.CalendarView", "void CalendarView.SetYearDecadeDisplayDimensions(int columns, int rows)");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.CalendarView.SetDisplayDate(System.DateTimeOffset)
+		// Skipping already declared method Windows.UI.Xaml.Controls.CalendarView.SetYearDecadeDisplayDimensions(int, int)
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.CalendarIdentifierProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.DayOfWeekFormatProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.IsGroupLabelVisibleProperty.get
@@ -1298,37 +268,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.VerticalFirstOfMonthLabelAlignmentProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.CalendarItemBorderThicknessProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.CalendarViewDayItemStyleProperty.get
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.CalendarView, global::Windows.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs> CalendarViewDayItemChanging
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.CalendarView", "event TypedEventHandler<CalendarView, CalendarViewDayItemChangingEventArgs> CalendarView.CalendarViewDayItemChanging");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.CalendarView", "event TypedEventHandler<CalendarView, CalendarViewDayItemChangingEventArgs> CalendarView.CalendarViewDayItemChanging");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.CalendarView, global::Windows.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs> SelectedDatesChanged
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.CalendarView", "event TypedEventHandler<CalendarView, CalendarViewSelectedDatesChangedEventArgs> CalendarView.SelectedDatesChanged");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.CalendarView", "event TypedEventHandler<CalendarView, CalendarViewSelectedDatesChangedEventArgs> CalendarView.SelectedDatesChanged");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.Controls.CalendarView.CalendarViewDayItemChanging
+		// Skipping already declared event Windows.UI.Xaml.Controls.CalendarView.SelectedDatesChanged
 	}
 }

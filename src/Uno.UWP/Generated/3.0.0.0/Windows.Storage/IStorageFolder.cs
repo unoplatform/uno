@@ -2,40 +2,20 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IStorageFolder : global::Windows.Storage.IStorageItem
 	{
-		#if false
-		global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CreateFileAsync( string desiredName);
-		#endif
-		#if false
-		global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CreateFileAsync( string desiredName,  global::Windows.Storage.CreationCollisionOption options);
-		#endif
-		#if false
-		global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> CreateFolderAsync( string desiredName);
-		#endif
-		#if false
-		global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> CreateFolderAsync( string desiredName,  global::Windows.Storage.CreationCollisionOption options);
-		#endif
-		#if false
-		global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> GetFileAsync( string name);
-		#endif
-		#if false
-		global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetFolderAsync( string name);
-		#endif
-		#if false
-		global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.IStorageItem> GetItemAsync( string name);
-		#endif
-		#if false
-		global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFile>> GetFilesAsync();
-		#endif
-		#if false
-		global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFolder>> GetFoldersAsync();
-		#endif
-		#if false
-		global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.IStorageItem>> GetItemsAsync();
-		#endif
+		// Skipping already declared method Windows.Storage.IStorageFolder.CreateFileAsync(string)
+		// Skipping already declared method Windows.Storage.IStorageFolder.CreateFileAsync(string, Windows.Storage.CreationCollisionOption)
+		// Skipping already declared method Windows.Storage.IStorageFolder.CreateFolderAsync(string)
+		// Skipping already declared method Windows.Storage.IStorageFolder.CreateFolderAsync(string, Windows.Storage.CreationCollisionOption)
+		// Skipping already declared method Windows.Storage.IStorageFolder.GetFileAsync(string)
+		// Skipping already declared method Windows.Storage.IStorageFolder.GetFolderAsync(string)
+		// Skipping already declared method Windows.Storage.IStorageFolder.GetItemAsync(string)
+		// Skipping already declared method Windows.Storage.IStorageFolder.GetFilesAsync()
+		// Skipping already declared method Windows.Storage.IStorageFolder.GetFoldersAsync()
+		// Skipping already declared method Windows.Storage.IStorageFolder.GetItemsAsync()
 	}
 }

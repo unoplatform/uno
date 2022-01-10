@@ -15,7 +15,7 @@
 	<PropertyGroup>
 		<AssemblyName>Uno.UI</AssemblyName>
 		<RootNamespace>Uno.UI</RootNamespace>
-		<DefineConstants>$(DefineConstants);IS_UNO</DefineConstants>
+		<DefineConstants>$(DefineConstants);IS_UNO;IS_UNO_UI_PROJECT</DefineConstants>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<BuildForLiveUnitTesting>false</BuildForLiveUnitTesting>
 		<NoWarn>$(NoWarn);NU1701;1572;1587;419;1574;1711;1734;CS0105</NoWarn>
@@ -79,10 +79,6 @@
 
 	<ItemGroup>
 		<None Include="Extensions\CGSizeExtensions.iOSmacOS.cs" />
-		<None Include="Mixins\Android\BaseActivity.Callbacks.g.cs">
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
-		</None>
 		<None Include="Mixins\Android\FrameworkElementMixins.g.cs">
 		  <DesignTime>True</DesignTime>
 		  <AutoGen>True</AutoGen>
@@ -105,13 +101,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Uno.Core" />
-		<PackageReference Include="Uno.Core.Build" />
-		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0">
-		  <PrivateAssets>all</PrivateAssets>
-		</PackageReference>
 		<PackageReference Include="System.Memory" Version="4.5.2" />
-		<PackageReference Include="xamarin.build.download" Version="0.4.11" />
+		<PackageReference Include="xamarin.build.download" Version="0.11.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-android'">
@@ -130,6 +121,9 @@
 		</ProjectReference>
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.net6.csproj" />
 		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.net6.csproj" Condition="'$(TargetFramework)' == 'net6.0-android'">
+			<TreatAsPackageReference>false</TreatAsPackageReference>
+		</ProjectReference>
+		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.net6.csproj">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
 	</ItemGroup>
@@ -224,5 +218,6 @@
 	</Target>
 
 	<Import Project="MixinGeneration.targets" />
+	<Import Project="XamlMerge.targets" />
 
 </Project>

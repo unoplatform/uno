@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -13,7 +14,7 @@ using Windows.UI.Xaml.Markup;
 
 namespace Uno.UI.RemoteControl.HotReload
 {
-	public class ClientHotReloadProcessor : IRemoteControlProcessor
+	public partial class ClientHotReloadProcessor : IRemoteControlProcessor
 	{
 		private string _projectPath;
 		private string[] _xamlPaths;
@@ -23,7 +24,10 @@ namespace Uno.UI.RemoteControl.HotReload
 		public ClientHotReloadProcessor(IRemoteControlClient rcClient)
 		{
 			_rcClient = rcClient;
+			InitializeMetadataUpdater();
 		}
+
+		partial void InitializeMetadataUpdater();
 
 		string IRemoteControlProcessor.Scope => HotReloadConstants.ScopeName;
 
@@ -38,6 +42,19 @@ namespace Uno.UI.RemoteControl.HotReload
 			{
 				case FileReload.Name:
 					ReloadFile(JsonConvert.DeserializeObject<HotReload.Messages.FileReload>(frame.Content));
+					break;
+
+#if NET6_0_OR_GREATER || __WASM__ || __SKIA__
+				case AssemblyDeltaReload.Name:
+					AssemblyReload(JsonConvert.DeserializeObject<HotReload.Messages.AssemblyDeltaReload>(frame.Content));
+					break;
+#endif
+
+				default:
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().LogError($"Unknown frame [{frame.Scope}/{frame.Name}]");
+					}
 					break;
 			}
 		}
@@ -64,102 +81,11 @@ namespace Uno.UI.RemoteControl.HotReload
 				}
 			}
 
-			await _rcClient.SendMessage(new HotReload.Messages.ConfigureServer(_projectPath, _xamlPaths));
+			await _rcClient.SendMessage(new HotReload.Messages.ConfigureServer(_projectPath, _xamlPaths, GetMetadataUpdateCapabilities()));
 		}
 
-		private async Task ReloadFile(FileReload fileReload)
-		{
-			Windows.UI.Core.CoreDispatcher.Main.RunAsync(
-				Windows.UI.Core.CoreDispatcherPriority.Normal,
-				async () =>
-            {
-                try
-                {
-                    if (this.Log().IsEnabled(LogLevel.Debug))
-                    {
-                        this.Log().LogDebug($"Reloading changed file [{fileReload.FilePath}]");
-                    }
-
-                    var uri = new Uri("file:///" + fileReload.FilePath.Replace("\\", "/"));
-
-                    foreach (var instance in EnumerateInstances(Window.Current.Content, uri))
-                    {
-                        switch (instance)
-                        {
-#if __IOS__
-						case UserControl userControl:
-							userControl.Content = XamlReader.Load(fileReload.Content) as UIKit.UIView;
-							break;
+#if !(NET6_0_OR_GREATER || __WASM__ || __SKIA__)
+		private string[] GetMetadataUpdateCapabilities() => Array.Empty<string>();
 #endif
-                            case ContentControl content:
-                                content.Content = XamlReader.Load(fileReload.Content);
-                                break;
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    if (this.Log().IsEnabled(LogLevel.Error))
-                    {
-                        this.Log().LogError($"Failed reloading changed file [{fileReload.FilePath}]", e);
-                    }
-
-					await _rcClient.SendMessage(
-						new HotReload.Messages.XamlLoadError(
-							filePath: fileReload.FilePath,
-							exceptionType: e.GetType().ToString(),
-							message: e.Message,
-							stackTrace: e.StackTrace));
-				}
-			});
-		}
-
-		private IEnumerable<UIElement> EnumerateInstances(object instance, Uri baseUri)
-		{
-			if (
-				instance is FrameworkElement fe && baseUri.OriginalString == fe.BaseUri?.OriginalString)
-			{
-				yield return fe;
-			}
-			else if(instance != null)
-			{
-				IEnumerable<IEnumerable<UIElement>> Dig()
-				{
-					switch (instance)
-					{
-						case Panel panel:
-							foreach (var child in panel.Children)
-							{
-								yield return EnumerateInstances(child, baseUri);
-							}
-							break;
-
-						case Border border:
-							yield return EnumerateInstances(border.Child, baseUri);
-							break;
-
-						case ContentControl control when control.ContentTemplateRoot != null || control.Content != null: 
-							yield return EnumerateInstances(control.ContentTemplateRoot ?? control.Content, baseUri);
-							break;
-
-						case Control control:
-							yield return EnumerateInstances(control.TemplatedRoot, baseUri);
-							break;
-
-						case ContentPresenter presenter:
-							yield return EnumerateInstances(presenter.Content, baseUri);
-							break;
-					}
-				}
-
-				foreach (var inner in Dig())
-				{
-					foreach (var validElement in inner)
-					{
-						yield return validElement;
-					}
-				}
-			}
-		}
 	}
 }

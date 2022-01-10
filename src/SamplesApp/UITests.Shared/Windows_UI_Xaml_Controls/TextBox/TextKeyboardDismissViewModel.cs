@@ -12,7 +12,7 @@ using ICommand = System.Windows.Input.ICommand;
 
 namespace Uno.UI.Samples.Presentation.SamplePages
 {
-	public class TextKeyboardDismissViewModel : ViewModelBase
+	internal class TextKeyboardDismissViewModel : ViewModelBase
 	{
 		public TextKeyboardDismissViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{

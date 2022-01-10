@@ -2,23 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation.Provider
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IExpandCollapseProvider 
 	{
-		#if false
-		global::Windows.UI.Xaml.Automation.ExpandCollapseState ExpandCollapseState
-		{
-			get;
-		}
-		#endif
+		// Skipping already declared property ExpandCollapseState
 		// Forced skipping of method Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider.ExpandCollapseState.get
-		#if false
-		void Collapse();
-		#endif
-		#if false
-		void Expand();
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider.Collapse()
+		// Skipping already declared method Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider.Expand()
 	}
 }

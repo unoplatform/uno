@@ -19,14 +19,14 @@
 #if __ANDROID__
 <#
 	AddClass("Windows.UI.Xaml", "FrameworkElement", overridesAttachedToWindow:true, overridesOnLayout: false, isUnoMotionTarget: true, hasLayouter: true);
-	AddClass("Windows.UI.Xaml.Controls", "NativeListViewBase", isUnoMotionTarget: true);
-	AddClass("Windows.UI.Xaml.Controls", "NativePagedView", hasLayouter: true);
-	AddClass("Windows.UI.Xaml.Controls", "NativeScrollContentPresenter", callsBaseOnLayout: false, hasLayouter: true);
-	AddClass("Windows.UI.Xaml.Controls", "TextBoxView", hasNewMinWidthHeight: true, hasNewMaxWidthHeight: true);
-	AddClass("Uno.UI.Controls.Legacy", "GridView");
-	AddClass("Uno.UI.Controls.Legacy", "ListView");
-	AddClass("Uno.UI.Controls.Legacy", "HorizontalGridView");
-	AddClass("Uno.UI.Controls.Legacy", "HorizontalListView");
+	AddClass("Windows.UI.Xaml.Controls", "NativeListViewBase", isUnoMotionTarget: true, derivesFromFrameworkElement: false);
+	AddClass("Windows.UI.Xaml.Controls", "NativePagedView", hasLayouter: true, derivesFromFrameworkElement: false);
+	AddClass("Windows.UI.Xaml.Controls", "NativeScrollContentPresenter", callsBaseOnLayout: false, hasLayouter: true, derivesFromFrameworkElement: false);
+	AddClass("Windows.UI.Xaml.Controls", "TextBoxView", hasNewMinWidthHeight: true, hasNewMaxWidthHeight: true, derivesFromFrameworkElement: false);
+	AddClass("Uno.UI.Controls.Legacy", "GridView", derivesFromFrameworkElement: false);
+	AddClass("Uno.UI.Controls.Legacy", "ListView", derivesFromFrameworkElement: false);
+	AddClass("Uno.UI.Controls.Legacy", "HorizontalGridView", derivesFromFrameworkElement: false);
+	AddClass("Uno.UI.Controls.Legacy", "HorizontalListView", derivesFromFrameworkElement: false);
 #> 
 <#@include file="..\..\UI\Xaml\IFrameworkElementImplementation.Android.tt"#>
 #endif

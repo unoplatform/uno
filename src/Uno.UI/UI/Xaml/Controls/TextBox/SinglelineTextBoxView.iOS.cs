@@ -18,7 +18,9 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private SinglelineTextBoxDelegate _delegate;
 		private readonly WeakReference<TextBox> _textBox;
-		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
+		private readonly SerialDisposable _foregroundChanged = new();
+
+		private string _restoreOnNextKeyStroke;
 
 		public SinglelineTextBoxView(TextBox textBox)
 		{
@@ -28,27 +30,52 @@ namespace Windows.UI.Xaml.Controls
 			Initialize();
 		}
 
-		private void OnEditingChanged(object sender, EventArgs e)
+		/// <inheritdoc />
+		public override bool SecureTextEntry
 		{
-			OnTextChanged();
+			get => base.SecureTextEntry;
+			set
+			{
+				if (base.SecureTextEntry != value)
+				{
+					if (value)
+					{
+						// When we enable the "secure" mode, iOS will auto-magically clear the value on next key stroke
+						// (Without invoking the "ShouldClear" nor any callback except "DidChangeSelection" multiple times).
+						// The only way is to keep ref of the current text and restore it on next text change (expected to be an empty string).
+						_restoreOnNextKeyStroke = base.Text;
+					}
+
+					base.SecureTextEntry = value;
+				}
+			}
 		}
 
 		public override string Text
 		{
-			get
-			{
-				return base.Text;
-			}
-
+			get => base.Text;
 			set
 			{
 				// The native control will ignore a value of null and retain an empty string. We coalesce the null to prevent a spurious empty string getting bounced back via two-way binding.
-				value = value ?? string.Empty;
+				value ??= string.Empty;
 				if (base.Text != value)
 				{
 					base.Text = value;
 					OnTextChanged();
 				}
+			}
+		}
+
+		private void OnEditingChanged(object sender, EventArgs e)
+		{
+			if (_restoreOnNextKeyStroke is { Length: > 0 } text)
+			{
+				base.Text = text + base.Text;
+				_restoreOnNextKeyStroke = default;
+			}
+			else
+			{
+				OnTextChanged();
 			}
 		}
 

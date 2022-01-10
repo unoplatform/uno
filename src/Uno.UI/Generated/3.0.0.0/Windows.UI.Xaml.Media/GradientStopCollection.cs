@@ -7,16 +7,7 @@ namespace Windows.UI.Xaml.Media
 	#endif
 	public  partial class GradientStopCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.GradientStop>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Media.GradientStop>
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint GradientStopCollection.Size is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Size
 		// Skipping already declared method Windows.UI.Xaml.Media.GradientStopCollection.GradientStopCollection()
 		// Forced skipping of method Windows.UI.Xaml.Media.GradientStopCollection.GradientStopCollection()
 		// Forced skipping of method Windows.UI.Xaml.Media.GradientStopCollection.GetAt(uint)
@@ -36,20 +27,7 @@ namespace Windows.UI.Xaml.Media
 		// Skipping already implement System.Collections.Generic.IList<Windows.UI.Xaml.Media.GradientStop>.this[int]
 		// Processing: System.Collections.Generic.ICollection<Windows.UI.Xaml.Media.GradientStop>
 		// Skipping already implement System.Collections.Generic.ICollection<Windows.UI.Xaml.Media.GradientStop>.Count
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsReadOnly
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-		#endif
+		// Skipping already implement System.Collections.Generic.ICollection<Windows.UI.Xaml.Media.GradientStop>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<Windows.UI.Xaml.Media.GradientStop>
 		// Processing: System.Collections.IEnumerable
 	}

@@ -1,7 +1,8 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Uno.UI.DualScreen")]
+[assembly: InternalsVisibleTo("Uno.UI.Foldable")]
 [assembly: InternalsVisibleTo("Uno.UI.Tests")]
 [assembly: InternalsVisibleTo("Uno.UI.Tests.Performance")]
 [assembly: InternalsVisibleTo("Uno.UI.Toolkit")]
@@ -20,3 +21,5 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Uno.UI.FluentTheme.v2")]
 
 [assembly: AssemblyMetadata("IsTrimmable", "True")]
+
+[assembly: System.Reflection.Metadata.MetadataUpdateHandler(typeof(Uno.UI.RuntimeTypeMetadataUpdateHandler))]

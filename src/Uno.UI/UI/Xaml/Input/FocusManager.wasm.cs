@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Extensions.Logging;
+
 using Uno;
 using Uno.Foundation;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
@@ -129,7 +130,9 @@ namespace Windows.UI.Xaml.Input
 			{
 				// This might occur if a non-Uno element receives focus
 				var focusManager = VisualTree.GetFocusManagerForElement(Window.Current.RootElement);
-				focusManager.ClearFocus();
+
+				// The focus manager may be null if JS raises focusin/blur before the app is initialized.
+				focusManager?.ClearFocus();
 			}
 		}
 

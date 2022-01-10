@@ -12,7 +12,7 @@ using ICommand = System.Windows.Input.ICommand;
 
 namespace Uno.UI.Samples.Presentation.SamplePages
 {
-	public class TouchViewModel : ViewModelBase
+	internal class TouchViewModel : ViewModelBase
 	{
 		private int commandCount = 0;
 

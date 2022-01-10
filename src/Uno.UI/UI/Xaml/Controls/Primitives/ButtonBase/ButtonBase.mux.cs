@@ -202,7 +202,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// </summary>
 		/// <param name="oldValue">Old value.</param>
 		/// <param name="newValue">New value.</param>
-		private void OnCommandChanged(object oldValue, object newValue)
+		private protected virtual void OnCommandChanged(object oldValue, object newValue)
 		{
 			// Remove handler for CanExecuteChanged from the old value
 			if (_canExecuteChangedHandler.Disposable != null)

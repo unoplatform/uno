@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 
 namespace Windows.UI.ViewManagement

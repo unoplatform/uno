@@ -6,6 +6,12 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
+#if HAS_UNO_WINUI
+using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+#else
+using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
+#endif
+
 namespace Uno.UI.Xaml.Controls
 {
 	internal partial class SystemFocusVisual : Control
@@ -60,7 +66,7 @@ namespace Uno.UI.Xaml.Controls
 			}
 		}
 
-		private void WindowSizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e) => SetLayoutProperties();
+		private void WindowSizeChanged(object sender, WindowSizeChangedEventArgs e) => SetLayoutProperties();
 
 		private void FocusedElementUnloaded(object sender, RoutedEventArgs e) => FocusedElement = null;
 

@@ -14,17 +14,20 @@
 		</Grid.RowDefinitions>
 
 		<CommandBar x:Name="AppCommandBar"
+					Style="{StaticResource NativeDefaultCommandBar}"
 								Grid.Row="0"
 								Content="Title"
 								Background="Red">
 
 			<!-- Disabled Button -->
 			<AppBarButton x:Uid="ButtonDisabled"
+						  Style="{StaticResource NativeDefaultAppBarButton}"
 										Content="Disabled"
 										IsEnabled="False"	/>
 
 			<!-- Done Button -->
 			<AppBarButton x:Uid="ButtonDone"
+						  Style="{StaticResource NativeDefaultAppBarButton}"
 										Content="Done"
 										Foreground="Blue"
 										Click="OnCommandBarButtonClick"	/>

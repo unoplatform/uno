@@ -11,7 +11,7 @@ using Uno.Disposables;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class Popup
 	{
@@ -77,6 +77,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (PopupPanel.Superview == null)
 			{
+				PopupPanel.IsVisualTreeRoot = true;
 				MainWindow.AddSubview(PopupPanel);
 			}
 		}
@@ -99,18 +100,14 @@ namespace Windows.UI.Xaml.Controls
 			PopupPanel.Children.Remove(child ?? Child);
 		}
 
-		private protected override void OnUnloaded()
+		partial void OnUnloadedPartial()
 		{
-			base.OnUnloaded();
-
 			PopupPanel?.RemoveFromSuperview();
 			UnregisterPopupPanelChild();
 		}
 
-		protected override void OnChildChanged(UIElement oldChild, UIElement newChild)
+		partial void OnChildChangedPartialNative(UIElement oldChild, UIElement newChild)
 		{
-			base.OnChildChanged(oldChild, newChild);
-
 			if (PopupPanel != null)
 			{
 				if (oldChild != null)
@@ -122,10 +119,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnIsOpenChanged(bool oldIsOpen, bool newIsOpen)
+		partial void OnIsOpenChangedPartialNative(bool oldIsOpen, bool newIsOpen)
 		{
-			base.OnIsOpenChanged(oldIsOpen, newIsOpen);
-
 			if (newIsOpen)
 			{
 				RegisterPopupPanelChild(force: true);
@@ -140,10 +135,8 @@ namespace Windows.UI.Xaml.Controls
 			EnsureForward();
 		}
 
-		protected override void OnIsLightDismissEnabledChanged(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
+		partial void OnIsLightDismissEnabledChangedPartialNative(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
 		{
-			base.OnIsLightDismissEnabledChanged(oldIsLightDismissEnabled, newIsLightDismissEnabled);
-
 			if (PopupPanel != null)
 			{
 				PopupPanel.Background = GetPanelBackground();

@@ -94,7 +94,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 				{
 					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
 					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
-					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(10), Value = v3 = new object()},
+					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(100), Value = v3 = new object()},
 				}
 			};
 
@@ -105,7 +105,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			await target.GetValue(ct, 2);
 			await Task.Yield();
 			((ITimeline)sut).Stop();
-			await Task.Delay(100, ct);
+			await Task.Delay(150, ct);
 
 			target.History.Should().BeEquivalentTo(v1, v2);
 			sut.State.Should().Be(Timeline.TimelineState.Stopped);
@@ -127,7 +127,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 				{
 					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
 					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
-					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(10), Value = v3 = new object()},
+					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(100), Value = v3 = new object()},
 				}
 			};
 
@@ -192,13 +192,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			var sut = new ObjectAnimationUsingKeyFrames
 			{
 				BeginTime = TimeSpan.Zero,
-				RepeatBehavior = new RepeatBehavior(TimeSpan.FromMilliseconds(2 * 3)),
+				RepeatBehavior = new RepeatBehavior(TimeSpan.FromMilliseconds(100 * 3)),
 				FillBehavior = FillBehavior.HoldEnd,
 				KeyFrames =
 				{
 					new ObjectKeyFrame{KeyTime = TimeSpan.Zero, Value = v1 = new object()},
-					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(1), Value = v2 = new object()},
-					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(2), Value = v3 = new object()},
+					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(50), Value = v2 = new object()},
+					new ObjectKeyFrame{KeyTime = TimeSpan.FromMilliseconds(100), Value = v3 = new object()},
 				}
 			};
 
@@ -207,9 +207,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 
 			((ITimeline)sut).Begin();
 			await target.GetValue(ct, 9);
-			await Task.Yield();
+			await Task.Delay(100, ct); // Give opportunity to (wrongly) repeat again some frames
 
-			target.History.Should().BeEquivalentTo(v1, v2, v3, v1, v2, v3, v1, v2, v3);
+			target.History.Take(9)/* Helps laggish CI! */.Should().BeEquivalentTo(v1, v2, v3, v1, v2, v3, v1, v2, v3);
 			sut.State.Should().Be(Timeline.TimelineState.Filling);
 		}
 
@@ -261,7 +261,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			var target = new AnimTarget();
 			var sut = new ObjectAnimationUsingKeyFrames
 			{
-				BeginTime = TimeSpan.FromMilliseconds(10),
+				BeginTime = TimeSpan.FromMilliseconds(100),
 				RepeatBehavior = new RepeatBehavior(),
 				FillBehavior = FillBehavior.HoldEnd,
 				KeyFrames =

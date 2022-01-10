@@ -2,7 +2,7 @@
 
 using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+
 using Uno.Client;
 using Uno.Disposables;
 using Uno.Extensions;
@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Controls
 				LightDismissOverlayMode = LightDismissOverlayMode.On,
 			};
 
-			ResourceResolver.ApplyResource(_popup, Popup.LightDismissOverlayBackgroundProperty, "ContentDialogLightDismissOverlayBackground", isThemeResourceExtension: true);
+			ResourceResolver.ApplyResource(_popup, Popup.LightDismissOverlayBackgroundProperty, "ContentDialogLightDismissOverlayBackground", isThemeResourceExtension: true, isHotReloadSupported: true);
 
 			_popup.PopupPanel = new ContentDialogPopupPanel(this);
 

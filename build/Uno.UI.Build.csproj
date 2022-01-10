@@ -30,7 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="docfx.console" Version="2.58.4" GeneratePathProperty="true" />
+		<PackageReference Include="docfx.console" Version="2.58.5" GeneratePathProperty="true" />
 		<PackageReference Include="MSBuildTasks">
 			<Version>1.5.0.235</Version>
 		</PackageReference>
@@ -137,6 +137,12 @@
 							 Namespaces="$(MSBuildDeveloperNamespace)"
 							 />
 
+		<XmlPoke XmlInputPath="%(_legacyProject.Identity)"
+							 Query="//x:PackageReference[@Include='Uno.UI.Adapter.Microsoft.Extensions.Logging']/@Version"
+							 Value="$(GitVersion_SemVer)"
+							 Namespaces="$(MSBuildDeveloperNamespace)"
+							 />
+
 		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
 							 Query="//PackageReference[@Include='Uno.UI']/@Version"
 							 Value="$(GitVersion_SemVer)" />
@@ -160,6 +166,9 @@
 							 Value="$(GitVersion_SemVer)" />
 		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
 							 Query="//PackageReference[@Include='Uno.UI.Runtime.WebAssembly']/@Version"
+							 Value="$(GitVersion_SemVer)" />
+		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
+							 Query="//PackageReference[@Include='Uno.UI.Adapter.Microsoft.Extensions.Logging']/@Version"
 							 Value="$(GitVersion_SemVer)" />
 	</Target>
 
@@ -191,7 +200,7 @@
 
 	<Target Name="BuildCINet6">
 
-		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-net6;PackageVersion=$(GITVERSION_SemVer)"
+		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;IS_NET6_BUILD=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-net6;PackageVersion=$(GITVERSION_SemVer)"
              Projects="..\src\Uno.UI-net6-only.slnf"
              Targets="Restore;Build"
              RebaseOutputs="false"
@@ -206,7 +215,7 @@
 
 		<ItemGroup>
 			<MixinTargetFrameworks Include="xamarinios10" />
-			<MixinTargetFrameworks Include="monoandroid10.0" />
+			<MixinTargetFrameworks Include="MonoAndroid12.0" />
 			<MixinTargetFrameworks Include="xamarinmac20" />
 			<MixinTargetFrameworks Include="net461" />
 			<MixinTargetFrameworks Include="netstandard2.0" />
@@ -226,6 +235,13 @@
 	</Target>
 
 	<Target Name="GenerateDoc" DependsOnTargets="BuildSyncGenerator">
+		
+		<MSBuild Properties="Configuration=Debug"
+				 Projects="..\src\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj"
+				 Targets="Restore;Build"
+				 RebaseOutputs="false"
+				 BuildInParallel="true" />
+
 		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\Uno.UWPSyncGenerator.exe &quot;doc&quot;" />
 		<Exec Command="$(Pkgdocfx_console)\tools\docfx.exe ..\doc\docfx.json -o $(OutputDir)\doc" />
 	</Target>
@@ -265,10 +281,10 @@
 			<_NuspecFiles Include=".\Uno.WinUI.Skia.Wpf.nuspec" />
 			<_NuspecFiles Include=".\Uno.WinUI.Skia.Tizen.nuspec" />
 			<_NuspecFiles Include=".\Uno.WinUI.WebAssembly.nuspec" />
+			<_NuspecFiles Include=".\Uno.WinUI.WebAssembly.nuspec" />
+			<_NuspecFiles Include=".\Uno.Foundation.Logging.nuspec" />
+			<_NuspecFiles Include=".\Uno.UI.Adapter.Microsoft.Extensions.Logging.nuspec" />
 		</ItemGroup>
-
-		<!-- Update the package version -->
-		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies/x:dependency/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
 
 		<!-- Update Uno.WinUI references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
@@ -276,7 +292,7 @@
 		<!-- Update Uno.Foundation.Runtime.WebAssembly references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.Foundation.Runtime.WebAssembly']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
 
-		<!-- Update Uno.Foundation.Runtime.WebAssembly references version -->
+		<!-- Update Uno.WinUI.Runtime.WebAssembly references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.WebAssembly']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
 
 		<!-- Update Uno.WinUI.Runtime.Skia.Gtk references version -->
@@ -290,6 +306,12 @@
 
 		<!-- Update Uno.WinUI.Runtime.Skia.Tizen references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Skia.Tizen']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
+
+		<!-- Update Uno.WinUI.Runtime.Skia.Tizen references version -->
+		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.Foundation.Logging']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
+
+		<!-- Update Uno.UI.Adapter.Microsoft.Extensions.Logging references version -->
+		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.UI.Adapter.Microsoft.Extensions.Logging']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
 
 		<!-- Update package ID based on WinUI / UWP source tree -->
 		<XmlPoke XmlInputPath=".\Uno.WinUI.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix)" Namespaces="$(NugetNamespace)" />
@@ -411,6 +433,8 @@
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.Skia.Tizen.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.Skia.Wpf.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.WebAssembly.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack Uno.Foundation.Logging.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack Uno.UI.Adapter.Microsoft.Extensions.Logging.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 	</Target>
 
 	<Target Name="ValidatePackage" AfterTargets="BuildNuGetPackage" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(UNO_UWP_BUILD)'=='true'">

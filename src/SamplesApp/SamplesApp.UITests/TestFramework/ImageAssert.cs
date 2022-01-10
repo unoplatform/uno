@@ -222,6 +222,27 @@ namespace SamplesApp.UITests.TestFramework
 		public static void HasColorAt(ScreenshotInfo screenshot, float x, float y, Color expectedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
 			=> HasColorAtImpl(screenshot, (int)x, (int)y, expectedColor, tolerance, line);
 
+		/// <summary>
+		/// Asserts that a given screenshot has a color anywhere at a given rectangle.
+		/// </summary>
+		public static void HasColorInRectangle(ScreenshotInfo screenshot, Rectangle rect, Color expectedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
+		{
+			var bitmap = screenshot.GetBitmap();
+			for (var x = rect.Left; x < rect.Right; x++)
+			{
+				for (var y = rect.Top; y < rect.Bottom; y++)
+				{
+					var pixel = bitmap.GetPixel(x, y);
+					if (AreSameColor(expectedColor, pixel, tolerance, out _))
+					{
+						return;
+					}
+				}
+			}
+
+			Assert.Fail($"Expected '{ToArgbCode(expectedColor)}' in rectangle '{rect}'.");
+		}
+
 		private static void HasColorAtImpl(ScreenshotInfo screenshot, int x, int y, Color expectedColor, byte tolerance, int line)
 		{
 			var bitmap = screenshot.GetBitmap();

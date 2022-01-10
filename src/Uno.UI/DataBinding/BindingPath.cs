@@ -12,7 +12,7 @@ using System.Globalization;
 using System.Linq;
 using Uno.Disposables;
 using System.Text;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
@@ -392,7 +392,7 @@ namespace Uno.UI.DataBinding
 				{
 					if (args.PropertyName == propertyName || string.IsNullOrEmpty(args.PropertyName))
 					{
-						if (typeof(BindingPath).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						if (typeof(BindingPath).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 						{
 							typeof(BindingPath).Log().Debug($"Property changed for {propertyName} on [{dataContextReference.Target?.GetType()}]");
 						}
@@ -682,7 +682,7 @@ namespace Uno.UI.DataBinding
 					}
 					catch (Exception exception)
 					{
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 						{
 							this.Log().Error($"Failed to set the source value for [{PropertyName}]", exception);
 						}
@@ -690,7 +690,7 @@ namespace Uno.UI.DataBinding
 				}
 				else
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().DebugFormat("Setting [{0}] failed because the DataContext is null for. It may have already been collected, or explicitly set to null.", PropertyName);
 					}
@@ -742,7 +742,7 @@ namespace Uno.UI.DataBinding
 					}
 					catch (Exception exception)
 					{
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 						{
 							this.Log().Error($"Failed to get the source value for [{PropertyName}]", exception);
 						}
@@ -752,7 +752,7 @@ namespace Uno.UI.DataBinding
 				}
 				else
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().DebugFormat("Unable to get the source value for [{0}]", PropertyName);
 					}
@@ -784,7 +784,7 @@ namespace Uno.UI.DataBinding
 				}
 				else
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().DebugFormat("Unsetting [{0}] failed because the DataContext is null for. It may have already been collected, or explicitly set to null.", PropertyName);
 					}

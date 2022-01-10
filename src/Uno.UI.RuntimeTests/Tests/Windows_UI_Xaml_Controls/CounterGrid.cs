@@ -22,6 +22,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public static int GlobalMeasureCount { get; private set; }
 		public static int GlobalArrangeCount { get; private set; }
 
+		/// <summary>
+		/// How many times has this instance been data-bound?
+		/// </summary>
+		public int LocalBindCount { get; private set; }
+
 		public int LocalMeasureCount { get; private set; }
 		public int LocalArrangeCount { get; private set; }
 
@@ -43,6 +48,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			if (args.NewValue != null)
 			{
 				BindCount++;
+				LocalBindCount++;
 				WasUpdated?.Invoke();
 			}
 		}
@@ -63,6 +69,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			return base.ArrangeOverride(finalSize);
 		}
 
+		/// <summary>
+		/// Reset static counters.
+		/// </summary>
 		public static void Reset()
 		{
 			CreationCount = 0;

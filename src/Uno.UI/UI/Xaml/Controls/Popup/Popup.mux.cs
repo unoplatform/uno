@@ -2,22 +2,17 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // Popup.h, Popup.cpp
 
-namespace Windows.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class Popup
 	{
-		internal bool OnClosing()
+		internal void OnClosing(ref bool cancel)
 		{
-			var cancel = false;
-
-			// TODO Uno: When popups are properly supported, flyout can prevent
-			// closing.
-			//if (IsFlyout())
-			//{
-			//	cancel = FlyoutBase.OnClosing(m_associatedFlyoutWeakRef));
-			//}
-
-			return cancel;
+			// If this popup is associated with a flyout, then give it a chance to cancel closing.
+			if (AssociatedFlyout is { } flyout)
+			{
+				flyout.OnClosing(ref cancel);
+			}
 		}
 	}
 }

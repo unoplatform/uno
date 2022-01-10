@@ -10,7 +10,7 @@ using EventHandler = System.EventHandler;
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.Model
 {
 	[Bindable]
-	public class TimePickerViewModel : ViewModelBase
+	internal class TimePickerViewModel : ViewModelBase
 	{
 		private TimeSpan _time = new TimeSpan(12,0,0);
 

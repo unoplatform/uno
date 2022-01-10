@@ -5,7 +5,7 @@ namespace Windows.Globalization
 	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class ClockIdentifiers 
+	public static partial class ClockIdentifiers 
 	{
 		// Skipping already declared property TwelveHour
 		// Skipping already declared property TwentyFourHour

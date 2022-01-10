@@ -5,7 +5,7 @@ using CoreGraphics;
 using UIKit;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Windows.Foundation;
 using Windows.Storage.Streams;

@@ -30,20 +30,7 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		// Skipping already declared property FontSize
 		// Skipping already declared property FontFamily
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int TabIndex
-		{
-			get
-			{
-				return (int)this.GetValue(TabIndexProperty);
-			}
-			set
-			{
-				this.SetValue(TabIndexProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property TabIndex
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  int CharacterSpacing
@@ -60,20 +47,7 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		// Skipping already declared property BorderThickness
 		// Skipping already declared property BorderBrush
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Input.KeyboardNavigationMode TabNavigation
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Input.KeyboardNavigationMode)this.GetValue(TabNavigationProperty);
-			}
-			set
-			{
-				this.SetValue(TabNavigationProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property TabNavigation
 		// Skipping already declared property Background
 		// Skipping already declared property VerticalContentAlignment
 		// Skipping already declared property Template
@@ -92,76 +66,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool UseSystemFocusVisuals
-		{
-			get
-			{
-				return (bool)this.GetValue(UseSystemFocusVisualsProperty);
-			}
-			set
-			{
-				this.SetValue(UseSystemFocusVisualsProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.DependencyObject XYFocusUp
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.DependencyObject)this.GetValue(XYFocusUpProperty);
-			}
-			set
-			{
-				this.SetValue(XYFocusUpProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.DependencyObject XYFocusRight
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.DependencyObject)this.GetValue(XYFocusRightProperty);
-			}
-			set
-			{
-				this.SetValue(XYFocusRightProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.DependencyObject XYFocusLeft
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.DependencyObject)this.GetValue(XYFocusLeftProperty);
-			}
-			set
-			{
-				this.SetValue(XYFocusLeftProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.DependencyObject XYFocusDown
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.DependencyObject)this.GetValue(XYFocusDownProperty);
-			}
-			set
-			{
-				this.SetValue(XYFocusDownProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property UseSystemFocusVisuals
+		// Skipping already declared property XYFocusUp
+		// Skipping already declared property XYFocusRight
+		// Skipping already declared property XYFocusLeft
+		// Skipping already declared property XYFocusDown
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Controls.RequiresPointer RequiresPointer
@@ -176,35 +85,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsFocusEngagementEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsFocusEngagementEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsFocusEngagementEnabledProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool Is
-
-		{
-			get
-			{
-				return (bool)this.GetValue(IsFocusEngagedProperty);
-			}
-			set
-			{
-				this.SetValue(IsFocusEngagedProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property IsFocusEngagementEnabled
+		// Skipping already declared property IsFocusEngaged
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.ElementSoundMode ElementSoundMode
@@ -233,34 +115,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.CornerRadius CornerRadius
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.CornerRadius)this.GetValue(CornerRadiusProperty);
-			}
-			set
-			{
-				this.SetValue(CornerRadiusProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.BackgroundSizing BackgroundSizing
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.BackgroundSizing)this.GetValue(BackgroundSizingProperty);
-			}
-			set
-			{
-				this.SetValue(BackgroundSizingProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property CornerRadius
+		// Skipping already declared property BackgroundSizing
 		// Skipping already declared property DefaultStyleKey
 		// Skipping already declared property BorderThicknessProperty
 		// Skipping already declared property FocusStateProperty
@@ -281,22 +137,8 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property IsEnabledProperty
 		// Skipping already declared property IsTabStopProperty
 		// Skipping already declared property PaddingProperty
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TabIndexProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TabIndex), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.Control), 
-			new FrameworkPropertyMetadata(default(int)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TabNavigationProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TabNavigation), typeof(global::Windows.UI.Xaml.Input.KeyboardNavigationMode), 
-			typeof(global::Windows.UI.Xaml.Controls.Control), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.KeyboardNavigationMode)));
-		#endif
+		// Skipping already declared property TabIndexProperty
+		// Skipping already declared property TabNavigationProperty
 		// Skipping already declared property TemplateProperty
 		// Skipping already declared property BackgroundProperty
 		// Skipping already declared property BorderBrushProperty
@@ -325,22 +167,8 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.Control), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsTemplateFocusTargetProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"IsTemplateFocusTarget", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Control), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty UseSystemFocusVisualsProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(UseSystemFocusVisuals), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Control), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
+		// Skipping already declared property IsTemplateFocusTargetProperty
+		// Skipping already declared property UseSystemFocusVisualsProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty ElementSoundModeProperty { get; } = 
@@ -349,22 +177,8 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.Control), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ElementSoundMode)));
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsFocusEngagedProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsFocusEngaged), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Control), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsFocusEngagementEnabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsFocusEngagementEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Control), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
+		// Skipping already declared property IsFocusEngagedProperty
+		// Skipping already declared property IsFocusEngagementEnabledProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty RequiresPointerProperty { get; } = 
@@ -373,38 +187,10 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.Control), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.RequiresPointer)));
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty XYFocusDownProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(XYFocusDown), typeof(global::Windows.UI.Xaml.DependencyObject), 
-			typeof(global::Windows.UI.Xaml.Controls.Control), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty XYFocusLeftProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(XYFocusLeft), typeof(global::Windows.UI.Xaml.DependencyObject), 
-			typeof(global::Windows.UI.Xaml.Controls.Control), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty XYFocusRightProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(XYFocusRight), typeof(global::Windows.UI.Xaml.DependencyObject), 
-			typeof(global::Windows.UI.Xaml.Controls.Control), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty XYFocusUpProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(XYFocusUp), typeof(global::Windows.UI.Xaml.DependencyObject), 
-			typeof(global::Windows.UI.Xaml.Controls.Control), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
-		#endif
+		// Skipping already declared property XYFocusDownProperty
+		// Skipping already declared property XYFocusLeftProperty
+		// Skipping already declared property XYFocusRightProperty
+		// Skipping already declared property XYFocusUpProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty DefaultStyleResourceUriProperty { get; } = 
@@ -421,22 +207,8 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.Control), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CornerRadiusProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CornerRadius), typeof(global::Windows.UI.Xaml.CornerRadius), 
-			typeof(global::Windows.UI.Xaml.Controls.Control), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.CornerRadius)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty BackgroundSizingProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(BackgroundSizing), typeof(global::Windows.UI.Xaml.Controls.BackgroundSizing), 
-			typeof(global::Windows.UI.Xaml.Controls.Control), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.BackgroundSizing)));
-		#endif
+		// Skipping already declared property CornerRadiusProperty
+		// Skipping already declared property BackgroundSizingProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.Control.Control()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Control.Control()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Control.FontSize.get
@@ -504,13 +276,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.Control.FocusEngaged.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.Control.FocusDisengaged.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.Control.FocusDisengaged.remove
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void RemoveFocusEngagement()
-		{			
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.RemoveFocusEngagement()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.RemoveFocusEngagement()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Control.DefaultStyleResourceUri.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Control.DefaultStyleResourceUri.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.Control.BackgroundSizing.get
@@ -541,34 +307,10 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnKeyDown(Windows.UI.Xaml.Input.KeyRoutedEventArgs)
 		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnGotFocus(Windows.UI.Xaml.RoutedEventArgs)
 		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnLostFocus(Windows.UI.Xaml.RoutedEventArgs)
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected virtual void OnDragEnter( global::Windows.UI.Xaml.DragEventArgs e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnDragEnter(global::Windows.UI.Xaml.DragEventArgs e)");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected virtual void OnDragLeave( global::Windows.UI.Xaml.DragEventArgs e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnDragLeave(global::Windows.UI.Xaml.DragEventArgs e)");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected virtual void OnDragOver( global::Windows.UI.Xaml.DragEventArgs e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnDragOver(global::Windows.UI.Xaml.DragEventArgs e)");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected virtual void OnDrop( global::Windows.UI.Xaml.DragEventArgs e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnDrop(global::Windows.UI.Xaml.DragEventArgs e)");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnDragEnter(Windows.UI.Xaml.DragEventArgs)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnDragLeave(Windows.UI.Xaml.DragEventArgs)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnDragOver(Windows.UI.Xaml.DragEventArgs)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnDrop(Windows.UI.Xaml.DragEventArgs)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		protected virtual void OnPreviewKeyDown( global::Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
@@ -618,20 +360,8 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.Control.ElementSoundModeProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Control.UseSystemFocusVisualsProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Control.IsTemplateFocusTargetProperty.get
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool GetIsTemplateFocusTarget( global::Windows.UI.Xaml.FrameworkElement element)
-		{
-			return (bool)element.GetValue(IsTemplateFocusTargetProperty);
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SetIsTemplateFocusTarget( global::Windows.UI.Xaml.FrameworkElement element,  bool value)
-		{
-			element.SetValue(IsTemplateFocusTargetProperty, value);
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.GetIsTemplateFocusTarget(Windows.UI.Xaml.FrameworkElement)
+		// Skipping already declared method Windows.UI.Xaml.Controls.Control.SetIsTemplateFocusTarget(Windows.UI.Xaml.FrameworkElement, bool)
 		// Forced skipping of method Windows.UI.Xaml.Controls.Control.IsTextScaleFactorEnabledProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Control.FontSizeProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Control.FontFamilyProperty.get
@@ -653,53 +383,8 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.Control.BorderBrushProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Control.DefaultStyleKeyProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Control.FocusStateProperty.get
-		#if false || false || NET461 || false || false || false || false
-		[global::Uno.NotImplemented("NET461")]
-		public  event global::Windows.UI.Xaml.DependencyPropertyChangedEventHandler IsEnabledChanged
-		{
-			[global::Uno.NotImplemented("NET461")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "event DependencyPropertyChangedEventHandler Control.IsEnabledChanged");
-			}
-			[global::Uno.NotImplemented("NET461")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "event DependencyPropertyChangedEventHandler Control.IsEnabledChanged");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Control, global::Windows.UI.Xaml.Controls.FocusDisengagedEventArgs> FocusDisengaged
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "event TypedEventHandler<Control, FocusDisengagedEventArgs> Control.FocusDisengaged");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "event TypedEventHandler<Control, FocusDisengagedEventArgs> Control.FocusDisengaged");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Control, global::Windows.UI.Xaml.Controls.FocusEngagedEventArgs> FocusEngaged
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "event TypedEventHandler<Control, FocusEngagedEventArgs> Control.FocusEngaged");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "event TypedEventHandler<Control, FocusEngagedEventArgs> Control.FocusEngaged");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.Controls.Control.IsEnabledChanged
+		// Skipping already declared event Windows.UI.Xaml.Controls.Control.FocusDisengaged
+		// Skipping already declared event Windows.UI.Xaml.Controls.Control.FocusEngaged
 	}
 }

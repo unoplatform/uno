@@ -4,16 +4,16 @@ using System.Linq;
 using Gdk;
 using Gtk;
 using Uno.Extensions;
-using Uno.Logging;
 using Uno.UI.Runtime.Skia.GTK.Extensions;
 using Windows.Devices.Input;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
 using static Windows.UI.Input.PointerUpdateKind;
 using Device = Gtk.Device;
 using Exception = System.Exception;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -386,6 +386,8 @@ namespace Uno.UI.Runtime.Skia
 					}
 					break;
 			}
+
+			properties.IsInRange = true;
 
 			var pointerPoint = new Windows.UI.Input.PointerPoint(
 				frameId: time,

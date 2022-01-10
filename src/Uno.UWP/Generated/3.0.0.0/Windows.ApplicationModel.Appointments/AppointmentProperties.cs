@@ -2,10 +2,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Appointments
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class AppointmentProperties 
+	public static partial class AppointmentProperties 
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -17,16 +17,7 @@ namespace Windows.ApplicationModel.Appointments
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string AllDay
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.AllDay is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property AllDay
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string AllowNewTimeProposal
@@ -47,36 +38,9 @@ namespace Windows.ApplicationModel.Appointments
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::System.Collections.Generic.IList<string> DefaultProperties
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<string> AppointmentProperties.DefaultProperties is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string Details
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.Details is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string Duration
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.Duration is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property DefaultProperties
+		// Skipping already declared property Details
+		// Skipping already declared property Duration
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string Recurrence
@@ -127,16 +91,7 @@ namespace Windows.ApplicationModel.Appointments
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string Location
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.Location is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Location
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string OnlineMeetingLink
@@ -147,16 +102,7 @@ namespace Windows.ApplicationModel.Appointments
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string Organizer
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.Organizer is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Organizer
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string OriginalStartTime
@@ -197,26 +143,8 @@ namespace Windows.ApplicationModel.Appointments
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string StartTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.StartTime is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string Subject
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppointmentProperties.Subject is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property StartTime
+		// Skipping already declared property Subject
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string Uri

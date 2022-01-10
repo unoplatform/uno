@@ -8,9 +8,9 @@ using System.Linq;
 using Windows.UI.Composition;
 using System.Numerics;
 using Windows.Foundation.Metadata;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -158,6 +158,15 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		internal UIElement ReplaceChild(int index, UIElement child)
+		{
+			var previous = _children[index];
+			RemoveChild(previous);
+			AddChild(child, index);
+
+			return previous;
+		}
+
 		internal void ClearChildren()
 		{
 			foreach (var child in _children.ToArray())
@@ -245,7 +254,10 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				this.Log().DebugIfEnabled(() => $"{this}: ArrangeVisual({_currentFinalRect}) -- SKIPPED (no change)");
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"{this}: ArrangeVisual({_currentFinalRect}) -- SKIPPED (no change)");
+				}
 			}
 		}
 

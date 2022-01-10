@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.Text;
 using CoreGraphics;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
-using Uno.Logging;
+
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using UIKit;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
-	public sealed partial class ListViewBaseScrollContentPresenter : ContentPresenter, IScrollContentPresenter
+	public sealed partial class ListViewBaseScrollContentPresenter : IScrollContentPresenter
 	{
 		public CGPoint UpperScrollLimit => NativePanel?.UpperScrollLimit ?? CGPoint.Empty;
 
@@ -32,9 +36,12 @@ namespace Windows.UI.Xaml.Controls
 			NativePanel?.SetZoomScale(scale, animated);
 		}
 
-		public Rect MakeVisible(UIElement visual, Rect rectangle)
-		{
-			return rectangle;
-		}
+		bool INativeScrollContentPresenter.Set(
+			double? horizontalOffset,
+			double? verticalOffset,
+			float? zoomFactor,
+			bool disableAnimation,
+			bool isIntermediate)
+			=> throw new NotImplementedException();
 	}
 }

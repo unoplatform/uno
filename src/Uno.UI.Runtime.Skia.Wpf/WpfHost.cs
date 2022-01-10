@@ -118,8 +118,6 @@ namespace Uno.UI.Skia.Platform
 				return true;
 			}
 
-			Windows.System.DispatcherQueue.EnqueueNativeOverride = EnqueueNative;
-
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = d => dispatcher.BeginInvoke(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = dispatcher.CheckAccess;
 
@@ -127,7 +125,7 @@ namespace Uno.UI.Skia.Platform
 
 			WinUI.Window.InvalidateRender += () =>
 			{
-				InvalidateFocusVisual();
+				InvalidateOverlays();
 				InvalidateVisual();
 			};
 
@@ -268,13 +266,14 @@ namespace Uno.UI.Skia.Platform
 			drawingContext.DrawImage(bitmap, new Rect(0, 0, ActualWidth, ActualHeight));
 		}
 
-		private void InvalidateFocusVisual()
+		private void InvalidateOverlays()
 		{
-			if (_focusManager == null)
-			{
-				_focusManager = VisualTree.GetFocusManagerForElement(Windows.UI.Xaml.Window.Current?.RootElement);
-			}
+			_focusManager ??= VisualTree.GetFocusManagerForElement(Windows.UI.Xaml.Window.Current?.RootElement);
 			_focusManager?.FocusRectManager?.RedrawFocusVisual();
+			if (_focusManager?.FocusedElement is TextBox textBox)
+			{
+				textBox.TextBoxView?.Extension?.InvalidateLayout();
+			}
 		}
 	}
 }

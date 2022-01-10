@@ -3,9 +3,6 @@
 namespace Windows.Storage
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
 	public   enum NameCollisionOption 
 	{
 		// Skipping already declared field Windows.Storage.NameCollisionOption.GenerateUniqueName

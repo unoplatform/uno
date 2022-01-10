@@ -2,13 +2,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel
 {
-	#if false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface ISuspendingDeferral 
 	{
-		#if false || false || false || false || false
-		void Complete();
-		#endif
+		// Skipping already declared method Windows.ApplicationModel.ISuspendingDeferral.Complete()
 	}
 }

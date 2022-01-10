@@ -547,13 +547,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android)]
 		public void TextBox_IsReadOnly_AcceptsReturn_Test()
 		{
-			/* test disabled for ios and wasm, due to #
-			 *-ios: when setting AcceptsReturn to false, the TextBox doesn't resize appropriately
-			 * -wasm: AcceptsReturn is not implemented or does nothing */
-
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_IsReadOnly_AcceptsReturn");
 			// for context, IsReadOnly=True used to break AcceptsReturn=True on android
 
@@ -563,15 +558,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			// initial state
 			_app.WaitForElement(target);
-			var multilineReadonlyTextRect = target.FirstResult().Rect;
+			var multilineReadonlyTextRect = target.FirstResult().Rect.ToRectangle();
 
 			// remove readonly
 			readonlyCheckBox.Tap(); // now: unchecked
-			var multilineTextRect = target.FirstResult().Rect;
+			var multilineTextRect = target.FirstResult().Rect.ToRectangle();
 
 			// remove multiline
 			multilineCheckBox.Tap(); // now: unchecked
-			var normalTextRect = target.FirstResult().Rect;
+			var normalTextRect = target.FirstResult().Rect.ToRectangle();
 
 			multilineTextRect.Height.Should().Be(multilineReadonlyTextRect.Height, because: "toggling IsReadOnly should not affect AcceptsReturn=True(multiline) TextBox.Height");
 			normalTextRect.Height.Should().NotBe(multilineTextRect.Height, because: "toggling AcceptsReturn should not affect TextBox.Height");
@@ -823,6 +818,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			ImageAssert.HasColorAt(after, multilinePosition.X, multilinePosition.Y, Color.Blue);
 		}
 
+		[Test]
+		[AutoRetry]
+		public void InputScope_Should_Not_Validate_Input()
+		{
+			// InputScope doesn't prevent any input, it just changes the keyboard shown for touch devices (or when in Tablet Mode in Windows).
+
+			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.Input_InputScope_CurrencyAmount");
+
+			_app.EnterText(marked: "CurrencyTextBox", text: "123,,321abc123");
+
+			_app.WaitForDependencyPropertyValue("CurrencyTextBox", "Text", "123,,321abc123");
+		}
+
 		private static PointF GetPixelPositionWithColor(ScreenshotInfo screenshotInfo, IAppRect boundingRect, Color expectedColor)
 		{
 			var bitmap = screenshotInfo.GetBitmap();
@@ -839,6 +847,47 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			}
 
 			throw new InvalidOperationException($"Color {expectedColor} was not found.");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)]
+		public void TextBox_WithPadding_Focus()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_WithPadding_Focus");
+
+			const string Text = "asdqwe";
+
+			foreach (var marked in new[] { "textBox1", "textBox2" })
+			{
+				// tap near the edge (area pushed/occupied by TextBox.Padding)
+				var rect = _app.GetPhysicalRect(marked);
+				_app.TapCoordinates(rect.Right - 5, rect.Bottom - 5);
+				_app.Wait(seconds: 1);
+
+				_app.EnterText(Text);
+				_app.WaitForText(marked, Text, timeout: TimeSpan.FromSeconds(20));
+			}
+		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_With_Description()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_Description", skipInitialScreenshot: true);
+			var textBox = _app.WaitForElement("DescriptionTextBox")[0];
+			using var screenshot = TakeScreenshot("TextBox Description", new ScreenshotOptions() { IgnoreInSnapshotCompare = true });
+			ImageAssert.HasColorAt(screenshot, textBox.Rect.X + textBox.Rect.Width / 2, textBox.Rect.Y + textBox.Rect.Height - 150, Color.Red);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void PasswordBox_With_Description()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.TextBox.PasswordBox_Description", skipInitialScreenshot: true);
+			var passwordBox = _app.WaitForElement("DescriptionPasswordBox")[0];
+			using var screenshot = TakeScreenshot("PasswordBox Description", new ScreenshotOptions() { IgnoreInSnapshotCompare = true });
+			ImageAssert.HasColorAt(screenshot, passwordBox.Rect.X + passwordBox.Rect.Width / 2, passwordBox.Rect.Y + passwordBox.Rect.Height - 150, Color.Red);
 		}
 	}
 }

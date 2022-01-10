@@ -2,20 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel
 {
-	#if false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface ISuspendingOperation 
 	{
-		#if false || false || false || false || false
-		global::System.DateTimeOffset Deadline
-		{
-			get;
-		}
-		#endif
-		#if false || false || false || false || false
-		global::Windows.ApplicationModel.SuspendingDeferral GetDeferral();
-		#endif
+		// Skipping already declared property Deadline
+		// Skipping already declared method Windows.ApplicationModel.ISuspendingOperation.GetDeferral()
 		// Forced skipping of method Windows.ApplicationModel.ISuspendingOperation.Deadline.get
 	}
 }

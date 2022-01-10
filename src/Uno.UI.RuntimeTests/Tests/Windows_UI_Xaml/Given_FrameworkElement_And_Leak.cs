@@ -50,7 +50,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(ListView), 15)]
 		[DataRow(typeof(ProgressRing), 15)]
 		[DataRow(typeof(Pivot), 15)]
-		[DataRow(typeof(ScrollBar), 15)]
+		// [DataRow(typeof(ScrollBar), 15)] https://github.com/unoplatform/uno/issues/7331
 		[DataRow(typeof(Slider), 15)]
 		[DataRow(typeof(SymbolIcon), 15)]
 		[DataRow(typeof(Viewbox), 15)]
@@ -59,6 +59,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(Canvas), 15)]
 		[DataRow(typeof(AutoSuggestBox), 15)]
 		[DataRow(typeof(AppBar), 15)]
+		[DataRow(typeof(CommandBar), 15)]
 		[DataRow(typeof(Border), 15)]
 		[DataRow(typeof(ContentControl), 15)]
 		[DataRow(typeof(ContentDialog), 15)]

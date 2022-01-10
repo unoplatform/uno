@@ -11,11 +11,16 @@ using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml;
 using System.Diagnostics.CodeAnalysis;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Core;
 using Uno.UI.Controls;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;

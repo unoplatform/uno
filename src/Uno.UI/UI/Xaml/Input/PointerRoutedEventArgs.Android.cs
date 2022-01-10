@@ -1,15 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.Devices.Input;
 using Android.Views;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Input;
 using Windows.UI.Xaml.Extensions;
 using Android.OS;
 using Uno.Extensions;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.UI.Input;
+using Windows.Devices.Input;
+#endif
 
 namespace Windows.UI.Xaml.Input
 {
@@ -55,11 +60,11 @@ namespace Windows.UI.Xaml.Input
 			var nativePointerButtons = nativeEvent.ButtonState;
 			var nativePointerType = nativeEvent.GetToolType(_pointerIndex);
 			var pointerType = nativePointerType.ToPointerDeviceType();
-			var isInContact = IsInContact(nativeEvent, pointerType,  nativePointerAction, nativePointerButtons);
+			var isInContact = IsInContact(nativeEvent, (PointerDeviceType)pointerType,  nativePointerAction, nativePointerButtons);
 			var keys = nativeEvent.MetaState.ToVirtualKeyModifiers();
 
 			FrameId = (uint)_nativeEvent.EventTime;
-			Pointer = new Pointer(pointerId, pointerType, isInContact, isInRange: true);
+			Pointer = new Pointer(pointerId, (PointerDeviceType)pointerType, isInContact, isInRange: true);
 			KeyModifiers = keys;
 			OriginalSource = originalSource;
 
@@ -69,7 +74,7 @@ namespace Windows.UI.Xaml.Input
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
 			var timestamp = ToTimeStamp(_nativeEvent.EventTime);
-			var device = PointerDevice.For(Pointer.PointerDeviceType);
+			var device = Windows.Devices.Input.PointerDevice.For((Windows.Devices.Input.PointerDeviceType)Pointer.PointerDeviceType);
 			var (rawPosition, position) = GetPositions(relativeTo);
 
 			return new PointerPoint(FrameId, timestamp, device, Pointer.PointerId, rawPosition, position, Pointer.IsInContact, _properties);

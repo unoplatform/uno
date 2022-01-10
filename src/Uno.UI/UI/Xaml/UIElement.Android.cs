@@ -90,6 +90,40 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal bool IsArrangeDirty => IsLayoutRequested;
 
+		/// <summary>
+		/// Gets the **logical** frame (a.k.a. 'finalRect') of the element while it's being arranged by a managed parent.
+		/// </summary>
+		/// <remarks>Used to keep "double" precision of arrange phase.</remarks>
+		private protected Rect? TransientArrangeFinalRect { get; private set; }
+
+		/// <summary>
+		/// The difference between the physical layout width and height taking the origin into account,
+		/// and the physical width and height that would've been calculated for an origin of (0,0).
+		/// The difference may be -1,0, or +1 pixels due to different roundings.
+		///
+		/// (Eg, consider a Grid that is 31 logical pixels high, with 3 children with alignment Stretch in successive Star-sized rows.
+		/// Each child will be measured with a logical height of 10.3, and logical origins of 0, 10.3, and 20.6.  Assume the device scale is 1.
+		/// The child origins will be converted to 0, 10, and 21 respectively in integer pixel values; this will give heights of 10, 11, and 10 pixels.
+		/// The FrameRoundingAdjustment values will be (0,0), (0,1), and (0,0) respectively.
+		/// </summary>
+		internal Size? FrameRoundingAdjustment { get; set; }
+
+		internal void SetFramePriorArrange(Rect frame /* a.k.a 'finalRect' */, Rect physicalFrame)
+		{
+			var physicalWidth = ViewHelper.LogicalToPhysicalPixels(frame.Width);
+			var physicalHeight = ViewHelper.LogicalToPhysicalPixels(frame.Height);
+
+			TransientArrangeFinalRect = frame;
+			FrameRoundingAdjustment = new Size(
+				(int)physicalFrame.Width - physicalWidth,
+				(int)physicalFrame.Height - physicalHeight);
+		}
+
+		internal void ResetFramePostArrange()
+		{
+			TransientArrangeFinalRect = null;
+		}
+
 		partial void ApplyNativeClip(Rect rect)
 		{
 			if (rect.IsEmpty)
@@ -408,13 +442,6 @@ namespace Windows.UI.Xaml
 			// If all else fails, just return the string representation of the DP's value
 			return new Java.Lang.String(dpValue.ToString());
 		}
-
-		internal Rect? ArrangeLogicalSize { get; set; } // Used to keep "double" precision of arrange phase
-
-		/// <summary>
-		/// The difference between the physical layout width and height taking the origin into account, and the physical width and height that would've been calculated for an origin of (0,0). The difference may be -1,0, or +1 pixels due to different roundings. (Eg, consider a Grid that is 31 logical pixels high, with 3 children with alignment Stretch in successive Star-sized rows. Each child will be measured with a logical height of 10.3, and logical origins of 0, 10.3, and 20.6.  Assume the device scale is 1. The child origins will be converted to 0, 10, and 21 respectively in integer pixel values; this will give heights of 10, 11, and 10 pixels. The FrameRoundingAdjustment values will be (0,0), (0,1), and (0,0) respectively.
-		/// </summary>
-		internal Size? FrameRoundingAdjustment { get; set; }
 
 #if DEBUG
 		public static Predicate<View> ViewOfInterestSelector { get; set; } = v => (v as FrameworkElement)?.Name == "TargetView";

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Private.Infrastructure;
 using Windows.Foundation.Collections;
 #if NETFX_CORE
 using Uno.UI.Extensions;
@@ -20,16 +19,16 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
-using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
-	[TestClass]
+#if !IS_UNIT_TESTS
 	[RunsOnUIThread]
+#endif
+	[TestClass]
 	public partial class Given_ListViewBase_Items
 	{
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_Items_Added_Count_Updated()
 		{
 			var listView = new ListView();
@@ -38,7 +37,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_Items_Added_ItemsSource_Stays_Null()
 		{
 			var listView = new ListView();
@@ -47,7 +45,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_ItemsSource_Used_Items_NotNull()
 		{
 			var listView = new ListView();
@@ -56,7 +53,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_ItemsSource_Unset_Items_NotNull()
 		{
 			var listView = new ListView();
@@ -67,7 +63,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_ItemsSource_Set_To_Empty_Items_Cleared()
 		{
 			var listView = new ListView();
@@ -77,7 +72,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_ItemsSource_Unset_Items_Not_Cleared()
 		{
 			var listView = new ListView();
@@ -88,7 +82,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_ItemsSource_Unset_When_Already_Null_Items_Not_Cleared()
 		{
 			var listView = new ListView();
@@ -98,7 +91,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_ItemsSource_Set_Items_Not_Modifiable()
 		{
 			var listView = new ListView();
@@ -118,7 +110,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_ItemsSource_Unset_Items_Modifiable()
 		{
 			var listView = new ListView();
@@ -128,7 +119,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_ItemsSource_List_Modified_Change_Is_Reflected()
 		{
 			var listView = new ListView();
@@ -140,7 +130,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_ItemsSource_List_Modified_VectorChange_Not_Triggered()
 		{
 			var listView = new ListView();
@@ -158,7 +147,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_ItemsSource_Resets_ItemsCollection_Reference_Does_Not_Change()
 		{
 			var listView = new ListView();
@@ -174,7 +162,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_ItemsSource_ObservableCollection_Modified_VectorChange_Triggered()
 		{
 			var listView = new ListView();
@@ -192,7 +179,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_ItemsSource_Set_Items_Sync()
 		{
 			var listView = new ListView();
@@ -205,7 +191,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_ItemsSource_Updated_Items_Sync()
 		{
 			var listView = new ListView();
@@ -224,7 +209,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_ItemsSource_Changes_Items_VectorChanged_Triggered()
 		{
 			var listView = new ListView();

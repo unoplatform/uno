@@ -9,7 +9,7 @@ using EventHandler = System.EventHandler;
 
 namespace Uno.UI.Samples.Presentation.SamplePages
 {
-	public class ListViewRefreshTemplateViewModel : ViewModelBase
+	internal class ListViewRefreshTemplateViewModel : ViewModelBase
 	{
 		private string _selectedItem;
 
@@ -42,7 +42,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 				.ToArray();
 		}
 	}
-	public class ItemViewModel : ViewModelBase
+	internal class ItemViewModel : ViewModelBase
 	{
 		private bool _isVisible;
 

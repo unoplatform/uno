@@ -4,8 +4,8 @@ using System.Text;
 using Uno.Extensions;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
-using Microsoft.Extensions.Logging;
-using Uno.Logging;
+
+using Uno.Foundation.Logging;
 
 #if XAMARIN_IOS_UNIFIED
 using Foundation;

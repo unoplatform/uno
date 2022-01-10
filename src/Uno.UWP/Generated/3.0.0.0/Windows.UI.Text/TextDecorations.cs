@@ -3,10 +3,8 @@
 namespace Windows.UI.Text
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
-	public   enum TextDecorations 
+	[global::System.FlagsAttribute]
+	public   enum TextDecorations : uint
 	{
 		// Skipping already declared field Windows.UI.Text.TextDecorations.None
 		// Skipping already declared field Windows.UI.Text.TextDecorations.Underline

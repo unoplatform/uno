@@ -27,7 +27,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 		public void Execute(GeneratorExecutionContext context)
 		{
-
 			if (PlatformHelper.IsValidPlatform(context))
 			{
 				var visitor = new SerializationMethodsGenerator(context);
@@ -48,7 +47,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			private readonly INamedTypeSymbol? _androidFragmentSymbol;
 			private readonly INamedTypeSymbol? _bindableAttributeSymbol;
 			private readonly INamedTypeSymbol? _iFrameworkElementSymbol;
-
+			private readonly INamedTypeSymbol? _frameworkElementSymbol;
 
 			public SerializationMethodsGenerator(GeneratorExecutionContext context)
 			{
@@ -64,12 +63,15 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				_javaObjectSymbol = comp.GetTypeByMetadataName("Java.Lang.Object");
 				_androidActivitySymbol = comp.GetTypeByMetadataName("Android.App.Activity");
 				_androidFragmentSymbol = comp.GetTypeByMetadataName("AndroidX.Fragment.App.Fragment");
-			    _bindableAttributeSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.Data.BindableAttribute");
+				_bindableAttributeSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.Data.BindableAttribute");
 				_iFrameworkElementSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.IFrameworkElement);
+				_frameworkElementSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.FrameworkElement");
 			}
 
 			public override void VisitNamedType(INamedTypeSymbol type)
 			{
+				_context.CancellationToken.ThrowIfCancellationRequested();
+
 				foreach (var t in type.GetTypeMembers())
 				{
 					VisitNamedType(t);
@@ -80,11 +82,15 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			public override void VisitModule(IModuleSymbol symbol)
 			{
+				_context.CancellationToken.ThrowIfCancellationRequested();
+
 				VisitNamespace(symbol.GlobalNamespace);
 			}
 
 			public override void VisitNamespace(INamespaceSymbol symbol)
 			{
+				_context.CancellationToken.ThrowIfCancellationRequested();
+
 				foreach (var n in symbol.GetNamespaceMembers())
 				{
 					VisitNamespace(n);
@@ -98,6 +104,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			private void ProcessType(INamedTypeSymbol typeSymbol)
 			{
+				_context.CancellationToken.ThrowIfCancellationRequested();
+
 				if (typeSymbol.TypeKind != TypeKind.Class)
 				{
 					return;
@@ -139,8 +147,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					builder.AppendLineInvariant($"using System.Diagnostics.CodeAnalysis;");
 					builder.AppendLineInvariant($"using Uno.Disposables;");
 					builder.AppendLineInvariant($"using System.Runtime.CompilerServices;");
-					builder.AppendLineInvariant($"using Uno.Extensions;");
-					builder.AppendLineInvariant($"using Uno.Logging;");
 					builder.AppendLineInvariant($"using Uno.UI;");
 					builder.AppendLineInvariant($"using Uno.UI.DataBinding;");
 					builder.AppendLineInvariant($"using Windows.UI.Xaml;");
@@ -149,13 +155,13 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 					using (builder.BlockInvariant($"namespace {typeSymbol.ContainingNamespace}"))
 					{
-						if (_bindableAttributeSymbol != null && typeSymbol.FindAttribute(_bindableAttributeSymbol) == null)
-						{
-							builder.AppendLineInvariant(@"[global::Windows.UI.Xaml.Data.Bindable]");
-						}
-
 						using (GenerateNestingContainers(builder, typeSymbol))
 						{
+							if (_bindableAttributeSymbol != null && typeSymbol.FindAttribute(_bindableAttributeSymbol) == null)
+							{
+								builder.AppendLineInvariant(@"[global::Windows.UI.Xaml.Data.Bindable]");
+							}
+
 							using (builder.BlockInvariant($"partial class {typeSymbol.Name} : IDependencyObjectStoreProvider, IWeakReferenceProvider"))
 							{
 								GenerateDependencyObjectImplementation(builder);
@@ -201,7 +207,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				WriteMacOSViewWillMoveToSuperview(typeSymbol, builder);
 
 				WriteDispose(typeSymbol, builder);
-
 				WriteBinderImplementation(typeSymbol, builder);
 			}
 
@@ -293,6 +298,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				else
 				{
 					builder.AppendLine($"// Skipped _macosViewSymbol: {typeSymbol.Is(_macosViewSymbol)}, hasNoViewWillMoveToSuperviewMethod: {hasNoWillMoveToSuperviewMethod}");
+					builder.AppendLine();
 				}
 			}
 
@@ -560,7 +566,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					private readonly static IEventProvider _binderTrace = Tracing.Get(DependencyObjectStore.TraceProvider.Id);
 					private BinderReferenceHolder _refHolder;
 
-					public event Windows.Foundation.TypedEventHandler<DependencyObject, DataContextChangedEventArgs> DataContextChanged;
+					public event Windows.Foundation.TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> DataContextChanged;
 
 					partial void InitializeBinder();
 
@@ -693,6 +699,25 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			{
 				var virtualModifier = typeSymbol.IsSealed ? "" : "virtual";
 				var protectedModifier = typeSymbol.IsSealed ? "private" : "internal protected";
+				string dataContextChangedInvokeArgument;
+				if (typeSymbol.Is(_frameworkElementSymbol))
+				{
+					// We can pass 'this' safely to a parameter of type FrameworkElement.
+					dataContextChangedInvokeArgument = "this";
+				}
+				else if (_frameworkElementSymbol.Is(typeSymbol))
+				{
+					// Example: Border -> FrameworkElement -> BindableView
+					// If we have a BindableView, it may or may not be FrameworkElement.
+					dataContextChangedInvokeArgument = "this as FrameworkElement";
+				}
+				else
+				{
+					// This can't be a FrameworkElement. Just pass null.
+					// Passing `this as FrameworkElement` will produce a compile-time error.
+					// error CS0039: Cannot convert type '{0}' to '{1}' via a reference conversion, boxing conversion, unboxing conversion, wrapping conversion, or null type conversion
+					dataContextChangedInvokeArgument = "null";
+				}
 
 				builder.AppendLine($@"
 
@@ -720,7 +745,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					{protectedModifier} {virtualModifier} void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
 					{{
 						OnDataContextChangedPartial(e);
-						DataContextChanged?.Invoke(this, new DataContextChangedEventArgs(DataContext));
+						DataContextChanged?.Invoke({dataContextChangedInvokeArgument}, new DataContextChangedEventArgs(DataContext));
 					}}
 
 					#endregion
@@ -829,10 +854,10 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			private static void GenerateDependencyObjectImplementation(IndentedStringBuilder builder)
 			{
 				builder.AppendLineInvariant(@"private DependencyObjectStore __storeBackingField;");
-				builder.AppendLineInvariant(@"public Windows.UI.Core.CoreDispatcher Dispatcher => Windows.UI.Core.CoreDispatcher.Main;");
+				builder.AppendLineInvariant(@"public Windows.UI.Core.CoreDispatcher Dispatcher => Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher;");
 
 				builder.AppendLineInvariant(@"#if HAS_UNO_WINUI");
-				builder.AppendLineInvariant(@"public global::Microsoft.System.DispatcherQueue DispatcherQueue => global::Microsoft.System.DispatcherQueue.GetForCurrentThread();");
+				builder.AppendLineInvariant(@"public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue {{ get; }} = global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();");
 				builder.AppendLineInvariant(@"#endif");
 
 				using (builder.BlockInvariant($"private DependencyObjectStore __Store"))

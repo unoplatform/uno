@@ -12,6 +12,7 @@ using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 {
+	[TestFixture]
 	public partial class UnoSamples_Popup_Simple_Tests : SampleControlUITestBase
 	{
 		[Test]

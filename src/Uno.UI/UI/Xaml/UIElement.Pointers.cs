@@ -16,17 +16,22 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Devices.Haptics;
-using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Imaging;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Xaml;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.UI.Input;
+using Windows.Devices.Input;
+#endif
 
 namespace Windows.UI.Xaml
 {
@@ -259,7 +264,7 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-				#region GestureRecognizer wire-up
+		#region GestureRecognizer wire-up
 
 				#region Event to RoutedEvent handler adapters
 		// Note: For the manipulation and gesture event args, the original source has to be the element that raise the event
@@ -333,7 +338,7 @@ namespace Windows.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			that.OnDragStarting(args);
 		};
-				#endregion
+		#endregion
 
 		private GestureRecognizer CreateGestureRecognizer()
 		{
@@ -390,9 +395,9 @@ namespace Windows.UI.Xaml
 				this.Log().Error("Haptic feedback for drag failed", error);
 			}
 		}
-				#endregion
-
-				#region Manipulations (recognizer settings / custom bubbling)
+		#endregion
+		
+		#region Manipulations (recognizer settings / custom bubbling)
 		partial void AddManipulationHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{
 			if (handlersCount == 1)
@@ -447,9 +452,9 @@ namespace Windows.UI.Xaml
 			}
 			// Note: We do not need to alter the location of the events, on UWP they are always relative to the OriginalSource.
 		}
-				#endregion
+		#endregion
 
-				#region Gestures (recognizer settings / custom bubbling / early completion)
+		#region Gestures (recognizer settings / custom bubbling / early completion)
 		private bool _isGestureCompleted;
 
 		partial void AddGestureHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
@@ -522,7 +527,7 @@ namespace Windows.UI.Xaml
 		}
 				#endregion
 
-				#region Drag And Drop (recognizer settings / custom bubbling / drag starting event)
+		#region Drag And Drop (recognizer settings / custom bubbling / drag starting event)
 		private void UpdateDragAndDrop(bool isEnabled)
 		{
 			// Note: The drag and drop recognizer setting is only driven by the CanDrag,
@@ -629,7 +634,7 @@ namespace Windows.UI.Xaml
 		private async Task<DataPackageOperation> StartDragAsyncCore(PointerPoint pointer, PointerRoutedEventArgs ptArgs, CancellationToken ct)
 		{
 			ptArgs ??= CoreWindow.GetForCurrentThread()!.LastPointerEvent as PointerRoutedEventArgs;
-			if (ptArgs is null || ptArgs.Pointer.PointerDeviceType != pointer.PointerDevice.PointerDeviceType)
+			if (ptArgs is null || ptArgs.Pointer.PointerDeviceType != pointer.PointerDeviceType)
 			{
 				// Fairly impossible case ...
 				return DataPackageOperation.None;
@@ -639,6 +644,10 @@ namespace Windows.UI.Xaml
 			var routedArgs = new DragStartingEventArgs(this, ptArgs);
 			PrepareShare(routedArgs.Data); // Gives opportunity to the control to fulfill the data
 			SafeRaiseEvent(DragStartingEvent, routedArgs); // The event won't bubble, cf. PrepareManagedDragAndDropEventBubbling
+
+			// We capture the original position of the pointer before going async,
+			// so we have the closet location of the "down" possible.
+			var ptPosition = ptArgs.GetCurrentPoint(this).Position;
 
 			if (routedArgs.Deferral is { } deferral)
 			{
@@ -666,9 +675,14 @@ namespace Windows.UI.Xaml
 
 			if (RenderTargetBitmap.IsImplemented && routedArgs.DragUI.Content is null)
 			{
+				// Note: Bitmap rendered by the RenderTargetBitmap is in physical pixels,
+				//		 so we provide the ActualSize to request the image to be scaled back in logical pixels. 
+
 				var target = new RenderTargetBitmap();
-				await target.RenderAsync(this);
+				await target.RenderAsync(this, (int)ActualSize.X, (int)ActualSize.Y);
+
 				routedArgs.DragUI.Content = target;
+				routedArgs.DragUI.Anchor = -ptPosition;
 			}
 
 			var asyncResult = new TaskCompletionSource<DataPackageOperation>();
@@ -756,7 +770,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-				#region Partial API to raise pointer events and gesture recognition (OnNative***)
+		#region Partial API to raise pointer events and gesture recognition (OnNative***)
 		private bool OnNativePointerEnter(PointerRoutedEventArgs args, BubblingContext ctx = default) => OnPointerEnter(args);
 
 		private bool OnPointerEnter(PointerRoutedEventArgs args, BubblingContext ctx = default)
@@ -891,7 +905,7 @@ namespace Windows.UI.Xaml
 				// so we should not use them for gesture recognition.
 				var isDragging = _gestures.Value.IsDragging;
 				_gestures.Value.ProcessUpEvent(args.GetCurrentPoint(this), !ctx.IsInternal || isOverOrCaptured);
-				if (isDragging)
+				if (isDragging && !ctx.IsInternal)
 				{
 					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessDropped(args);
 				}
@@ -1201,7 +1215,7 @@ namespace Windows.UI.Xaml
 		/// <param name="pointer">The pointer to release.</param>
 		/// <param name="muteEvent">Determines if the event should be raised or not.</param>
 		/// <param name="kinds">The kind of captures to release.</param>
-		internal void ReleasePointerCapture(PointerIdentifier pointer, bool muteEvent = false, PointerCaptureKind kinds = PointerCaptureKind.Explicit)
+		internal void ReleasePointerCapture(Windows.Devices.Input.PointerIdentifier pointer, bool muteEvent = false, PointerCaptureKind kinds = PointerCaptureKind.Explicit)
 		{
 			if (!Release(pointer, kinds, muteEvent: muteEvent)
 				&& this.Log().IsEnabled(LogLevel.Information))
@@ -1297,7 +1311,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private bool Release(PointerIdentifier pointer, PointerCaptureKind kinds, PointerRoutedEventArgs relatedArgs = null, bool muteEvent = false)
+		private bool Release(Windows.Devices.Input.PointerIdentifier pointer, PointerCaptureKind kinds, PointerRoutedEventArgs relatedArgs = null, bool muteEvent = false)
 		{
 			return PointerCapture.TryGet(pointer, out var capture)
 				&& Release(capture, kinds, relatedArgs, muteEvent);
