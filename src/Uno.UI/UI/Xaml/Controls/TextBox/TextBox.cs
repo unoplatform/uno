@@ -949,9 +949,9 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override bool CanHaveChildren() => true;
 
-		internal override void UpdateThemeBindings()
+		internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
 		{
-			base.UpdateThemeBindings();
+			base.UpdateThemeBindings(updateReason);
 
 			UpdateKeyboardThemePartial();
 		}
