@@ -14,7 +14,7 @@ using PasswordVault = UITests.Shared.Windows_Security_Credentials.PasswordVaultT
 
 namespace UITests.Shared.Windows_Security_Credentials.PasswordVaultTests
 {
-	[SampleControlInfo("PasswordVault", "CredentialsPersistence")]
+	[Sample("Windows.Security", Name = "PasswordVault")]
 	public sealed partial class CredentialsPersistence : UserControl
 	{
 		public CredentialsPersistence()

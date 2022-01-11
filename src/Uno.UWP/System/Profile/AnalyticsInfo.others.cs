@@ -1,13 +1,10 @@
-﻿using AppKit;
-using System;
-using System.Runtime.InteropServices;
-using Foundation;
-using ObjCRuntime;
+﻿#if NET461 || __NETSTD_REFERENCE__
 using Windows.System.Profile.Internal;
 
 namespace Windows.System.Profile;
 
-public static partial class AnalyticsInfo
+public partial class AnalyticsInfo
 {
 	private static UnoDeviceForm GetDeviceForm() => UnoDeviceForm.Desktop;
 }
+#endif
