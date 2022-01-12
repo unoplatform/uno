@@ -755,7 +755,6 @@ namespace Windows.UI.Xaml.Controls
 			{
 				base.Frame = value;
 				UpdateContentViewFrame();
-				UpdateContentLayoutSlots(value);
 			}
 		}
 
@@ -772,7 +771,6 @@ namespace Windows.UI.Xaml.Controls
 				}
 				base.Bounds = value;
 				UpdateContentViewFrame();
-				UpdateContentLayoutSlots(Frame);
 			}
 		}
 
@@ -797,8 +795,19 @@ namespace Windows.UI.Xaml.Controls
 			var content = Content;
 			if (content != null)
 			{
-				LayoutInformation.SetLayoutSlot(content, frame);
-				content.LayoutSlotWithMarginsAndAlignments = frame;
+				var layoutSlot = LayoutInformation.GetLayoutSlot(content);
+				var layoutSlotWithMarginsAndAlignments = content.LayoutSlotWithMarginsAndAlignments;
+
+				//The LayoutInformation within ArrangeChild does not take into account the offset relative to the native ListView, so we apply that offset here.
+				//This is needed for TransformToVisual to work
+				layoutSlot.X = frame.X;
+				layoutSlot.Y = frame.Y;
+
+				layoutSlotWithMarginsAndAlignments.X += frame.X;
+				layoutSlotWithMarginsAndAlignments.Y += frame.Y;
+
+				LayoutInformation.SetLayoutSlot(content, layoutSlot);
+				content.LayoutSlotWithMarginsAndAlignments = layoutSlotWithMarginsAndAlignments;
 			}
 		}
 
