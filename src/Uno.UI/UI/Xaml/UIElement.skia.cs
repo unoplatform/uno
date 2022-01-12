@@ -22,8 +22,6 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
-		internal Size _unclippedDesiredSize;
-		internal Point _visualOffset;
 		private ContainerVisual _visual;
 		internal double _canvasTop;
 		internal double _canvasLeft;
@@ -87,11 +85,6 @@ namespace Windows.UI.Xaml
 				return _visual;
 			}
 		} 
-
-		/// <summary>
-		/// The origin of the view's bounds relative to its parent.
-		/// </summary>
-		internal Point RelativePosition => _visualOffset;
 
 		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
 
