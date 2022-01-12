@@ -70,13 +70,6 @@ namespace Uno.UI.Runtime.Skia
 				.Skip(1)
 				.ToArray();
 
-			bool EnqueueNative(DispatcherQueuePriority priority, DispatcherQueueHandler callback)
-			{
-				EcoreMainloop.PostAndWakeUp(() => callback());
-
-				return true;
-			}
-
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = (d) => EcoreMainloop.PostAndWakeUp(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => EcoreMainloop.IsMainThread;
 
