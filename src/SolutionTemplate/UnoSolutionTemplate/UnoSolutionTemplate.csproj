@@ -90,6 +90,7 @@
     <None Include="Skia.WPF.Host\Properties\Settings.Designer.cs" />
     <None Include="Skia.Gtk\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Skia.Gtk\Program.cs" />
+    <None Include="Skia.Gtk\app.manifest" />
     <None Include="macOS\AppDelegate.cs" />
     <None Include="macOS\Main.cs" />
     <None Include="macOS\Properties\AssemblyInfo.cs" />

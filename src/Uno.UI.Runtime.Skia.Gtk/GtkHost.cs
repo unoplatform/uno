@@ -55,7 +55,6 @@ namespace Uno.UI.Runtime.Skia
 
 		public void Run()
 		{
-			DpiHelper.Initialize();
 			Gtk.Application.Init();
 			SetupTheme();
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Gtk;
 using Uno.Helpers;
@@ -24,14 +23,6 @@ namespace Uno.UI.Runtime.Skia.Helpers.Dpi
 		{
 			add => _dpiChangedWrapper.AddHandler(value);
 			remove => _dpiChangedWrapper.RemoveHandler(value);
-		}
-
-		public static void Initialize()
-		{
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-			{
-				WindowsDpiHelper.SetupDpiAwareness();
-			}
 		}
 
 		public float GetLogicalDpi() => _dpi ??= GetNativeDpi();
