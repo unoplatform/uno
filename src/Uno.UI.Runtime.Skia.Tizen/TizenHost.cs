@@ -110,5 +110,8 @@ namespace Uno.UI.Runtime.Skia
 					_tizenApplication.Window.ScreenSize.Height));
 			WinUI.Application.Start(CreateApp, _args);
 		}
+
+		public void TakeScreenshot(string filePath) =>
+			_tizenApplication.TakeScreenshot(filePath);
 	}
 }

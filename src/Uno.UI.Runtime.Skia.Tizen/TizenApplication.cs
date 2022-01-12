@@ -1,4 +1,5 @@
 ﻿using ElmSharp;
+using SkiaSharp;
 using SkiaSharp.Views.Tizen;
 using Tizen.Applications;
 using Windows.UI.Core;
@@ -57,6 +58,11 @@ namespace Uno.UI.Runtime.Skia.Tizen
 			var conformant = new Conformant(Window);
 			conformant.Show();
 			conformant.SetContent(Canvas);
+		}
+
+		internal void TakeScreenshot(string filePath)
+		{
+			Canvas.TakeScreenshot(filePath);
 		}
 	}
 }

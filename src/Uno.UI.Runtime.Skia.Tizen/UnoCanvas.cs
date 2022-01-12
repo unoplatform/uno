@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using ElmSharp;
 using SkiaSharp;
 using SkiaSharp.Views.Tizen;
@@ -10,6 +8,10 @@ namespace Uno.UI.Runtime.Skia
 {
 	public class UnoCanvas : SKCanvasView
 	{
+		readonly static Action<SKSurface, string> doNothing = (_, _) => { };
+		Action<SKSurface, string> MakeScreenshot = doNothing;
+		string? screenshotFilePath = default;
+
 		public UnoCanvas(EvasObject parent) : base(parent)
 		{
 			PaintSurface += UnoCanvas_PaintSurface;
@@ -46,6 +48,37 @@ namespace Uno.UI.Runtime.Skia
 			e.Surface.Canvas.Scale(scale);
 
 			WUX.Window.Current.Compositor.Render(e.Surface, e.Info);
+			MakeScreenshot(e.Surface, screenshotFilePath);
+		}
+
+		internal System.Threading.Tasks.Task TakeScreenshot(string filePath)
+		{
+			screenshotFilePath = filePath;
+			var tcs = new System.Threading.Tasks.TaskCompletionSource<bool>();
+			MakeScreenshot = (surface, fullpath) =>
+			{
+				MakeScreenshot = doNothing;
+				try
+				{
+					using var image = surface.Snapshot();
+					using (var data = image.Encode(SKEncodedImageFormat.Png, 100))
+					{
+						// save the data to a stream
+						using (var stream = System.IO.File.OpenWrite(fullpath))
+						{
+							data.SaveTo(stream);
+						}
+					}
+					tcs.SetResult(true);
+				}
+				catch (Exception ex)
+				{
+					tcs.SetException(ex);
+				}
+			};
+			// Force invalidate to make screenshot
+			Invalidate();
+			return tcs.Task;
 		}
 	}
 }
