@@ -10,7 +10,7 @@ using IdentityModel.OidcClient;
 
 namespace SamplesApp.UITests.Windows_Security_Authentication_Web
 {
-	[Sample("Authentication", IsManualTest = true)]
+	[Sample("Windows.Security", IsManualTest = true)]
 	public sealed partial class AuthenticationBroker_Demo : Page
 	{
 #if !NET6_0_OR_GREATER
