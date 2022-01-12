@@ -38,7 +38,8 @@ namespace SampleControl.Presentation
 
 		private async Task GenerateBitmap(CancellationToken ct, string folderName, string fileName, IFrameworkElement content)
 		{
-			Directory.CreateDirectory(folderName);
+			var folderfullPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), folderName);
+			Directory.CreateDirectory(folderfullPath);
 
 			TakeScreenShot(Path.Combine(folderName, fileName));
 		}
