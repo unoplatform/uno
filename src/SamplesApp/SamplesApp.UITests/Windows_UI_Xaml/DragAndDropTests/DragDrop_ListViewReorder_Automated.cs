@@ -127,22 +127,22 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)] // TODO: support drag-and-drop testing on mobile https://github.com/unoplatform/Uno.UITest/issues/31
-		public void When_Reorder_OnTopPadding() => Test_ReorderWithPadding(null, 5, 0);
+		public void When_Reorder_OnTopPadding() => Test_ReorderWithPadding(null, 25, 0);
 
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)] // TODO: support drag-and-drop testing on mobile https://github.com/unoplatform/Uno.UITest/issues/31
-		public void When_Reorder_OnBottomPadding() => Test_ReorderWithPadding(null, -5, 5);
+		public void When_Reorder_OnBottomPadding() => Test_ReorderWithPadding(null, -25, 5);
 
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)] // TODO: support drag-and-drop testing on mobile https://github.com/unoplatform/Uno.UITest/issues/31
-		public void When_Reorder_OnLeftPadding() => Test_ReorderWithPadding(5, null, 1);
+		public void When_Reorder_OnLeftPadding() => Test_ReorderWithPadding(25, null, 1);
 
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)] // TODO: support drag-and-drop testing on mobile https://github.com/unoplatform/Uno.UITest/issues/31
-		public void When_Reorder_OnRightPadding() => Test_ReorderWithPadding(-5, null, 4);
+		public void When_Reorder_OnRightPadding() => Test_ReorderWithPadding(-25, null, 4);
 
 		private void Test_Reorder(int from, int to, int? expectedTo = null)
 		{
@@ -209,7 +209,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 			_app.WaitForElement(sut);
 
 			const int itemSize = 50;
-			const int movedItem = 3; // 4th item
+			const int movedItem = 4; // 4th item
 
 			var sutBounds = _app.Query(sut).Single().Rect;
 			var srcX = sutBounds.X + 50 /* Left padding */ + 100 /* Over element */;
@@ -219,7 +219,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 				: srcX;
 			var dstY  = relativeY.HasValue
 				? (relativeY.Value >= 0 ? sutBounds.Y + relativeY.Value : sutBounds.Bottom + relativeY.Value)
-				: sutBounds.Y + 50 + itemSize * expectedTo;
+				: sutBounds.Y + 50 + itemSize * (expectedTo + 1) + 25;
 			
 			_app.DragCoordinates(srcX, srcY, dstX, dstY);
 
@@ -231,8 +231,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 			string GetExpected()
 			{
 				var items = _items.ToList();
-				items.RemoveAt(movedItem);
-				items.Insert(expectedTo, _items[movedItem]);
+				items.RemoveAt(movedItem - 1);
+				items.Insert(expectedTo, _items[movedItem - 1]);
 
 				return string.Join(";", items);
 			}
