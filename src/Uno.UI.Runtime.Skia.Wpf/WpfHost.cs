@@ -23,8 +23,6 @@ using Windows.Networking.Connectivity;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using WinUI = Windows.UI.Xaml;
-using Uno.UI.Xaml.Controls.Extensions;
-using Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls;
 using Uno.Extensions.System;
 using Uno.Extensions.Networking.Connectivity;
 using WpfApplication = System.Windows.Application;
@@ -32,8 +30,6 @@ using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfControl = System.Windows.Controls.Control;
 using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
 using Windows.UI.ViewManagement;
-using Uno.UI.Xaml;
-using Uno.UI.Runtime.Skia.Wpf;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Extensions.ApplicationModel.DataTransfer;
 using Windows.System.Profile.Internal;
@@ -51,7 +47,7 @@ namespace Uno.UI.Skia.Platform
 		[ThreadStatic] private static WpfHost _current;
 
 		private WpfCanvas? _nativeOverlayLayer = null;
-		private WriteableBitmap bitmap;
+		private WriteableBitmap? bitmap;
 		private bool ignorePixelScaling;
 		private FocusManager? _focusManager;
 
@@ -292,5 +288,19 @@ namespace Uno.UI.Skia.Platform
 				textBox.TextBoxView?.Extension?.InvalidateLayout();
 			}
 		}
+
+		public void TakeScreenshot(string filePath)
+		{
+			if (bitmap is { } && !string.IsNullOrWhiteSpace(filePath))
+			{
+				using (var stream = new System.IO.FileStream(filePath, System.IO.FileMode.Create))
+				{
+					var encoder = new PngBitmapEncoder();
+					encoder.Frames.Add(BitmapFrame.Create(bitmap));
+					encoder.Save(stream);
+				}
+			}
+		}
+
 	}
 }

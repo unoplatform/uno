@@ -26,7 +26,9 @@ namespace SamplesApp.WPF
 		{
 			InitializeComponent();
 
-			root.Content = new WpfHost(Dispatcher, () => new SamplesApp.App());
+			var host = new WpfHost(Dispatcher, () => new SamplesApp.App());
+			root.Content = host;
+			SampleControl.Presentation.SampleChooserViewModel.TakeScreenShot = filePath => host.TakeScreenshot(filePath);
 		}
 	}
 }
