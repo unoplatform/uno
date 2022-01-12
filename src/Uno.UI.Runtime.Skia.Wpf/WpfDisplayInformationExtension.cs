@@ -1,7 +1,10 @@
 ﻿#nullable enable
 using System;
 using System.Runtime.InteropServices;
+using System.Windows;
+using System.Windows.Media;
 using Windows.Graphics.Display;
+using WpfApplication = global::System.Windows.Application;
 
 namespace Uno.UI.Skia.Platform
 {
@@ -9,9 +12,12 @@ namespace Uno.UI.Skia.Platform
 	{
 		private readonly DisplayInformation _displayInformation;
 
+		private float? _dpi = null;
+
 		public WpfDisplayInformationExtension(object owner)
 		{
 			_displayInformation = (DisplayInformation)owner;
+			WpfApplication.Current.MainWindow.DpiChanged += OnDpiChanged;
 		}
 
 		public DisplayOrientations CurrentOrientation => DisplayOrientations.Landscape;
@@ -20,21 +26,27 @@ namespace Uno.UI.Skia.Platform
 
 		public uint ScreenWidthInRawPixels => 0;
 
-		public float LogicalDpi
-		{
-			get => 96.0f;
-		}
+		public float LogicalDpi => _dpi ??= GetDpi();
 
 		public double RawPixelsPerViewPixel => LogicalDpi / 96.0f;
 
 		public ResolutionScale ResolutionScale => (ResolutionScale)(int)(RawPixelsPerViewPixel * 100.0);
 
-		public void StartDpiChanged()
+		public void StartDpiChanged() { }
+
+		public void StopDpiChanged() { }
+
+
+		private void OnDpiChanged(object sender, DpiChangedEventArgs e)
 		{
+			_dpi = GetDpi();
+			_displayInformation.NotifyDpiChanged();
 		}
 
-		public void StopDpiChanged()
+		private float GetDpi()
 		{
+			var dpi = VisualTreeHelper.GetDpi(WpfApplication.Current.MainWindow);
+			return (float)Math.Max(dpi.DpiScaleX, dpi.DpiScaleY) * 96.0f;
 		}
 	}
 }
