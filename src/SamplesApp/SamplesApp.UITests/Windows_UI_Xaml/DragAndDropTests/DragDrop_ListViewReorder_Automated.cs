@@ -64,10 +64,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 		[ActivePlatforms(Platform.Browser)] // TODO: support drag-and-drop testing on mobile https://github.com/unoplatform/Uno.UITest/issues/31
 		public void When_Reorder_Last_To_First() => Test_Reorder(0, 5);
 
-
-
-
-
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)] // TODO: support drag-and-drop testing on mobile https://github.com/unoplatform/Uno.UITest/issues/31
@@ -128,6 +124,26 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 		[ActivePlatforms(Platform.Browser)] // TODO: support drag-and-drop testing on mobile https://github.com/unoplatform/Uno.UITest/issues/31
 		public void When_ReorderWithMultiSelectStartingFromASelectedItem_To_Last() => Test_ReorderMulti(2, 5, expectedTo: 4);
 
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] // TODO: support drag-and-drop testing on mobile https://github.com/unoplatform/Uno.UITest/issues/31
+		public void When_Reorder_OnTopPadding() => Test_ReorderWithPadding(null, 5, 0);
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] // TODO: support drag-and-drop testing on mobile https://github.com/unoplatform/Uno.UITest/issues/31
+		public void When_Reorder_OnBottomPadding() => Test_ReorderWithPadding(null, -5, 5);
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] // TODO: support drag-and-drop testing on mobile https://github.com/unoplatform/Uno.UITest/issues/31
+		public void When_Reorder_OnLeftPadding() => Test_ReorderWithPadding(5, null, 1);
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] // TODO: support drag-and-drop testing on mobile https://github.com/unoplatform/Uno.UITest/issues/31
+		public void When_Reorder_OnRightPadding() => Test_ReorderWithPadding(-5, null, 4);
+
 		private void Test_Reorder(int from, int to, int? expectedTo = null)
 		{
 			Run("UITests.Windows_UI_Xaml.DragAndDrop.DragDrop_ListView", skipInitialScreenshot: true);
@@ -181,6 +197,45 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 				ImageAssert.HasColorAt(result, x, dstY, _items[from], tolerance: 10);
 			}
 			Assert.IsTrue(op.GetDependencyPropertyValue<string>("Text").Contains("Move"));
+		}
+
+		private void Test_ReorderWithPadding(float? relativeX, float? relativeY, int expectedTo)
+		{
+			Run("UITests.Windows_UI_Xaml.DragAndDrop.DragDrop_ListView_WithPadding", skipInitialScreenshot: true);
+
+			var sut = _app.Marked("SUT");
+			var result = _app.Marked("Result");
+
+			_app.WaitForElement(sut);
+
+			const int itemSize = 50;
+			const int movedItem = 3; // 4th item
+
+			var sutBounds = _app.Query(sut).Single().Rect;
+			var srcX = sutBounds.X + 50 /* Left padding */ + 100 /* Over element */;
+			var srcY = sutBounds.Y + 50 /* Top padding */ + itemSize * movedItem;
+			var dstX = relativeX.HasValue
+				? (relativeX.Value >= 0 ? sutBounds.X + relativeX.Value : sutBounds.Right + relativeX.Value)
+				: srcX;
+			var dstY  = relativeY.HasValue
+				? (relativeY.Value >= 0 ? sutBounds.Y + relativeY.Value : sutBounds.Bottom + relativeY.Value)
+				: sutBounds.Y + 50 + itemSize * expectedTo;
+			
+			_app.DragCoordinates(srcX, srcY, dstX, dstY);
+
+			var expectedOrder = GetExpected();
+			var actualOrder = result.GetDependencyPropertyValue<string>("Text");
+
+			Assert.AreEqual(expectedOrder, actualOrder);
+
+			string GetExpected()
+			{
+				var items = _items.ToList();
+				items.RemoveAt(movedItem);
+				items.Insert(expectedTo, _items[movedItem]);
+
+				return string.Join(";", items);
+			}
 		}
 	}
 }
