@@ -127,16 +127,18 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private bool _canHorizontallyScroll;
 		public bool CanHorizontallyScroll
 		{
-			get => HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled || _forceChangeToCurrentView;
-			set { }
+			get => _canHorizontallyScroll || _forceChangeToCurrentView;
+			set => _canHorizontallyScroll = value;
 		}
 
+		private bool _canVerticallyScroll;
 		public bool CanVerticallyScroll
 		{
-			get => VerticalScrollBarVisibility != ScrollBarVisibility.Disabled || _forceChangeToCurrentView;
-			set { }
+			get => _canVerticallyScroll || _forceChangeToCurrentView;
+			set => _canVerticallyScroll = value;
 		}
 
 		public double HorizontalOffset { get; private set; }
