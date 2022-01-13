@@ -21,5 +21,16 @@ namespace Windows.UI.Xaml.Controls
 			var accessibilityView = AutomationProperties.GetAccessibilityView(parent);
 			AutomationProperties.SetAccessibilityView(this, accessibilityView);
 		}
+
+		private protected override void OnLoaded() => Console.WriteLine($"{this} Loaded");
+
+		private protected override void OnLoading() => Console.WriteLine($"{this} Loading");
+
+		private protected override void OnUnloaded() => Console.WriteLine($"{this} Unloaded");
+
+		public override string ToString()
+		{
+			return $"{base.ToString()}-txt=\"{Text}\"";
+		}
 	}
 }

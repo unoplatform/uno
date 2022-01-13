@@ -845,7 +845,6 @@ var Uno;
                 const params = WindowManagerArrangeElementParams.unmarshal(pParams);
                 const element = this.getView(params.HtmlId);
                 const style = element.style;
-                style.position = "absolute";
                 style.top = params.Top + "px";
                 style.left = params.Left + "px";
                 style.width = params.Width === NaN ? "auto" : params.Width + "px";
@@ -1506,7 +1505,7 @@ var Uno;
                 const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
                 const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
                 // +1 is added to take rounding/flooring into account
-                return [resultWidth + 1, resultHeight];
+                return [resultWidth > 0 ? resultWidth + 1 : 0, resultHeight];
             }
             measureViewInternal(viewId, maxWidth, maxHeight, measureContent) {
                 const element = this.getView(viewId);

@@ -684,7 +684,6 @@ namespace Uno.UI {
 
 			const style = element.style;
 
-			style.position = "absolute";
 			style.top = params.Top + "px";
 			style.left = params.Left + "px";
 			style.width = params.Width === NaN ? "auto" : params.Width + "px";
@@ -1529,7 +1528,7 @@ namespace Uno.UI {
 			const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
 
 			// +1 is added to take rounding/flooring into account
-			return [resultWidth + 1, resultHeight];
+			return [resultWidth > 0 ? resultWidth + 1 : 0, resultHeight];
 		}
 
 		private measureViewInternal(viewId: number, maxWidth: number, maxHeight: number, measureContent: boolean): [number, number] {

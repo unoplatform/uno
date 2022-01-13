@@ -170,7 +170,7 @@ namespace Windows.UI.Xaml
 
 			if (child.IsLoaded)
 			{
-				this.Log().Error($"{this}: Inconsistent state: child {child} is already loaded (OnChildAdded)");
+				this.Log().Info($"{this.GetDebugName()}: Inconsistent state: child {child} is already loaded (OnChildAdded)");
 			}
 			else
 			{
@@ -196,7 +196,7 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				this.Log().Error($"{this}: Inconsistent state: child {child} is not loaded (OnChildRemoved)");
+				this.Log().Info($"{this.GetDebugName()}: Inconsistent state: child {child} is not loaded (OnChildRemoved)");
 			}
 		}
 

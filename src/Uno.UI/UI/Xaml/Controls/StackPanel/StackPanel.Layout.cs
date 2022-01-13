@@ -6,6 +6,7 @@ using Uno.Extensions;
 using Uno.Logging;
 using Uno;
 using Uno.UI;
+using Uno.UI.Extensions;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -77,10 +78,10 @@ namespace Windows.UI.Xaml.Controls
 			return desiredSize.Add(borderAndPaddingSize);
 		}
 
-		protected override Size ArrangeOverride(Size arrangeSize)
+		protected override Size ArrangeOverride(Size finalSize)
 		{
 			var borderAndPaddingSize = BorderAndPaddingSize;
-			arrangeSize = arrangeSize.Subtract(borderAndPaddingSize);
+			var arrangeSize = finalSize.Subtract(borderAndPaddingSize);
 
 			var childRectangle = new Windows.Foundation.Rect(BorderThickness.Left + Padding.Left, BorderThickness.Top + Padding.Top, arrangeSize.Width, arrangeSize.Height);
 
@@ -165,7 +166,7 @@ namespace Windows.UI.Xaml.Controls
 
 				ArrangeElement(view, adjustedRectangle);
 
-				var viewActualSize = view.AssignedActualSize; // TODO universal actual size
+				var viewActualSize = view.AssignedActualSize;
 
 				if (isHorizontal)
 				{
@@ -191,7 +192,13 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			return arrangedSize;
+			if (arrangedSize != finalSize)
+			{
+				Console.WriteLine($"{this.GetDebugName()}: arrangedSize={arrangedSize} (used), availableArrangeSize={finalSize} (allocated by parent)");
+			}
+
+			//return finalSize; // arrangedSize
+			return finalSize;
 		}
 	}
 }

@@ -1161,7 +1161,6 @@ namespace Uno.UI.Xaml
 				SetStyles(
 					htmlId,
 					new[] {
-						("position", "absolute"),
 						("top", rect.Top.ToString(CultureInfo.InvariantCulture) + "px"),
 						("left", rect.Left.ToString(CultureInfo.InvariantCulture) + "px"),
 						("width", rect.Width.ToString(CultureInfo.InvariantCulture) + "px"),

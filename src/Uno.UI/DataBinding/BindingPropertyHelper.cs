@@ -1067,7 +1067,7 @@ namespace Uno.UI.DataBinding
 					}
 					else if (t != typeof(object))
 					{
-						value = ConvertWithConvertionExtension(value, t);
+						value = ConvertWithConversionExtension(value, t);
 					}
 				}
 			}
@@ -1080,19 +1080,27 @@ namespace Uno.UI.DataBinding
 		/// See https://github.com/dotnet/runtime/issues/56309
 		/// </remarks>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private static object ConvertWithConvertionExtension(object? value, Type? t)
+		private static object? ConvertWithConversionExtension(object? value, Type? t)
 		{
 			try
 			{
-				value = Conversion.To(value, t, CultureInfo.CurrentCulture);
+				Console.WriteLine($"Converting {value} ({value?.GetType().FullName}) to type {t?.FullName}...");
+				if (Conversion.TryConvertTo(value, t, out var v, CultureInfo.CurrentCulture))
+				{
+					value = v;
+				}
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
+				Console.WriteLine($"EXCEPTION Converting {value} ({value?.GetType().FullName}) to type {t?.FullName}: {ex}");
 				// This is a temporary fallback solution.
 				// The problem is that we don't actually know which culture we must use in advance.
 				// Values can come from the xaml (invariant culture) or from a two way binding (current culture).
 				// The real solution would be to pass a culture or source when setting a value in a Dependency Property.
-				value = Conversion.To(value, t, CultureInfo.InvariantCulture);
+				if (Conversion.TryConvertTo(value, t, out var v, culture: CultureInfo.InvariantCulture))
+				{
+					value = v;
+				}
 			}
 
 			return value;

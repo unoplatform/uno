@@ -337,11 +337,17 @@ namespace Windows.UI.Xaml.Data
 		{
 			if (ParentBinding.FallbackValue != null)
 			{
+				Console.WriteLine($"Applying fallback value {ParentBinding.FallbackValue} (need to be convected to {_boundPropertyType} before)");
 				SetTargetValue(ConvertToBoundPropertyType(ParentBinding.FallbackValue));
 			}
 			else if (useTypeDefaultValue && TargetPropertyDetails != null)
 			{
+				Console.WriteLine($"Applying fallback value by setting TargetValue...");
 				SetTargetValue(TargetPropertyDetails.Property.GetMetadata(_view.Target?.GetType()).DefaultValue);
+			}
+			else
+			{
+				Console.WriteLine($"No fallback value applied...");
 			}
 		}
 
@@ -637,9 +643,9 @@ namespace Windows.UI.Xaml.Data
 							this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
 						}
 
-						ApplyFallbackValue();
+						//ApplyFallbackValue();
 					}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
+#if !HAS_EXPENSIVE_TRYFINALLY && false // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 					finally
 #endif
 					{
@@ -659,7 +665,7 @@ namespace Windows.UI.Xaml.Data
 		/// can be significantly slower than other methods as a result on WebAssembly.
 		/// See https://github.com/dotnet/runtime/issues/56309
 		/// </remarks>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.NoInlining)]
 		private void InnerSetTargetValueSafe(object v, bool useTargetNullValue)
 		{
 			if (v is UnsetValue)

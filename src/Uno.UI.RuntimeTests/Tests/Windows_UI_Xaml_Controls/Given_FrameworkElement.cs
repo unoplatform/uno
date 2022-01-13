@@ -625,7 +625,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var eventOrderSequence = 0;
 
-			var tcs = new TaskCompletionSource<object>();
+			var tcs1 = new TaskCompletionSource<object>();
+			var tcs2 = new TaskCompletionSource<object>();
+			var tcs3 = new TaskCompletionSource<object>();
 
 			inner.SizeChanged += (o, e) =>
 			{
@@ -634,7 +636,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				Console.WriteLine($"#{eventOrderSequence}: inner.SizeChanged({e.NewSize})");
 
-				tcs.SetResult(null);
+				tcs1.SetResult(null);
 			};
 			sut.SizeChanged += (o, e) =>
 			{
@@ -642,6 +644,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				sutRaisedEventOrder = ++eventOrderSequence;
 
 				Console.WriteLine($"#{eventOrderSequence}: sut.SizeChanged({e.NewSize})");
+
+				tcs2.SetResult(null);
 			};
 			container.SizeChanged += (o, e) =>
 			{
@@ -649,12 +653,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				containerRaisedEventOrder = ++eventOrderSequence;
 
 				Console.WriteLine($"#{eventOrderSequence}: container.SizeChanged({e.NewSize})");
+
+				tcs3.SetResult(null);
 			};
 
 			TestServices.WindowHelper.WindowContent = container;
 
 			// Wait for last event to be raised, or a delay in case of error
-			await Task.WhenAny(tcs.Task, Task.Delay(1500));
+			var all = Task.WhenAll(tcs1.Task, tcs2.Task, tcs3.Task);
+			await Task.WhenAny(all, Task.Delay(1500));
+
+			all.Status.Should().Be(TaskStatus.RanToCompletion, "Size Changed not raised properly.");
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Console.WriteLine("Desired/Actual/Render sizes");
+			//Console.WriteLine($"inner: {inner.DesiredSize}/{inner.ActualSize}/{inner.RenderSize}");
+			//Console.WriteLine($"sut: {sut.DesiredSize}/{sut.ActualSize}/{sut.RenderSize}");
+			//Console.WriteLine($"container: {container.DesiredSize}/{container.ActualSize}/{container.RenderSize}");
 
 			inner.DesiredSize.Should().BeOfWidth(0).And.BeOfHeight(200);
 			inner.RenderSize.Should().BeOfWidth(100).And.BeOfHeight(200);
@@ -675,8 +691,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Event ordering is not well supported on iOS & macOS
 #elif __ANDROID__
 			// Event ordering is not well supported on Android
-#elif __SKIA__
-			// Event order is reversed on Skia
+#elif __SKIA__ || __WASM__
+			// Event order is reversed on Skia & WASM
 #else
 			innerRaisedEventOrder.Should().Be(3, because: nameof(innerRaisedEventOrder));
 			sutRaisedEventOrder.Should().Be(2, because: nameof(sutRaisedEventOrder));

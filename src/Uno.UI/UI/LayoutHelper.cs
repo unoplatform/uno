@@ -88,55 +88,116 @@ namespace Uno.UI
 			return new Size(marginWidth, marginHeight);
 		}
 
-		[Pure]
-		internal static (Point offset, bool overflow) GetAlignmentOffset(this IFrameworkElement e, Size clientSize, Size renderSize)
+		private static bool IsStrechHorizontalALignmentTreatedAsLeft(HorizontalAlignment ha, Size clientSize, Size inkSize)
 		{
-			// Start with Bottom-Right alignment, multiply by 0/0.5/1 for Top-Left/Center/Bottom-Right alignment
-			var offset = new Point(
-				clientSize.Width - renderSize.Width,
-				clientSize.Height - renderSize.Height
-			);
-
-			var overflow = false;
-
-			switch (e.HorizontalAlignment)
-			{
-				case HorizontalAlignment.Stretch when renderSize.Width > clientSize.Width:
-					offset.X = 0;
-					overflow = true;
-					break;
-				case HorizontalAlignment.Left:
-					offset.X = 0;
-					break;
-				case HorizontalAlignment.Stretch:
-				case HorizontalAlignment.Center:
-					offset.X *= 0.5;
-					break;
-				case HorizontalAlignment.Right:
-					offset.X *= 1;
-					break;
-			}
-
-			switch (e.VerticalAlignment)
-			{
-				case VerticalAlignment.Stretch when renderSize.Height > clientSize.Height:
-					offset.Y = 0;
-					overflow = true;
-					break;
-				case VerticalAlignment.Top:
-					offset.Y = 0;
-					break;
-				case VerticalAlignment.Stretch:
-				case VerticalAlignment.Center:
-					offset.Y *= 0.5;
-					break;
-				case VerticalAlignment.Bottom:
-					offset.Y *= 1;
-					break;
-			}
-
-			return (offset, overflow);
+			return ha == HorizontalAlignment.Stretch && inkSize.Width < clientSize.Width;
 		}
+
+		private static bool IsStretchVerticalAlignmentTreatedAsTop(VerticalAlignment va, Size clientSize, Size inkSize)
+		{
+			return va == VerticalAlignment.Stretch && inkSize.Height < clientSize.Height;
+		}
+
+		internal static Point ComputeAlignmentOffset(this IFrameworkElement e, Size clientSize, Size inkSize)
+		{
+			var ha = e.HorizontalAlignment;
+			var va = e.VerticalAlignment;
+
+			var offset = new Point();
+
+			//this is to degenerate Stretch to Top-Left in case when clipping is about to occur
+			if (IsStrechHorizontalALignmentTreatedAsLeft(ha, clientSize, inkSize))
+			{
+				ha = HorizontalAlignment.Left;
+			}
+
+			if (IsStretchVerticalAlignmentTreatedAsTop(va, clientSize, inkSize))
+			{
+				va = VerticalAlignment.Top;
+			}
+			//end of degeneration of Stretch to Top-Left
+
+
+
+			if (ha == HorizontalAlignment.Center || ha == HorizontalAlignment.Stretch)
+			{
+				offset.X = (clientSize.Width - inkSize.Width) / 2;
+			}
+			else if (ha == HorizontalAlignment.Right)
+			{
+				offset.X = clientSize.Width - inkSize.Width;
+			}
+			else
+			{
+				offset.X = 0;
+			}
+
+			if (va == VerticalAlignment.Center || va == VerticalAlignment.Stretch)
+			{
+				offset.Y = (clientSize.Height - inkSize.Height) / 2;
+			}
+			else if (va == VerticalAlignment.Bottom)
+			{
+				offset.Y = clientSize.Height - inkSize.Height;
+			}
+			else
+			{
+				offset.Y = 0;
+			}
+
+
+			return offset;
+		}
+
+		//[Pure]
+		//internal static (Point offset, bool overflow) GetAlignmentOffset(this IFrameworkElement e, Size clientSize, Size renderSize)
+		//{
+		//	// Start with Bottom-Right alignment, multiply by 0/0.5/1 for Top-Left/Center/Bottom-Right alignment
+		//	var offset = new Point(
+		//		clientSize.Width - renderSize.Width,
+		//		clientSize.Height - renderSize.Height
+		//	);
+
+		//	var overflow = false;
+
+		//	switch (e.HorizontalAlignment)
+		//	{
+		//		case HorizontalAlignment.Stretch when renderSize.Width > clientSize.Width:
+		//			offset.X = 0;
+		//			overflow = true;
+		//			break;
+		//		case HorizontalAlignment.Left:
+		//			offset.X = 0;
+		//			break;
+		//		case HorizontalAlignment.Stretch:
+		//		case HorizontalAlignment.Center:
+		//			offset.X *= 0.5;
+		//			break;
+		//		case HorizontalAlignment.Right:
+		//			offset.X *= 1;
+		//			break;
+		//	}
+
+		//	switch (e.VerticalAlignment)
+		//	{
+		//		case VerticalAlignment.Stretch when renderSize.Height > clientSize.Height:
+		//			offset.Y = 0;
+		//			overflow = true;
+		//			break;
+		//		case VerticalAlignment.Top:
+		//			offset.Y = 0;
+		//			break;
+		//		case VerticalAlignment.Stretch:
+		//		case VerticalAlignment.Center:
+		//			offset.Y *= 0.5;
+		//			break;
+		//		case VerticalAlignment.Bottom:
+		//			offset.Y *= 1;
+		//			break;
+		//	}
+
+		//	return (offset, overflow);
+		//}
 
 		[Pure]
 		internal static Size Min(Size val1, Size val2)

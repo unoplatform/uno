@@ -191,8 +191,21 @@ namespace Windows.UI.Composition
 
 		private void StopAnimation(StopReason reason, long? time = default, float? value = default)
 		{
-			if (_current.animation == null || !_layer.TryGetTarget(out var layer))
+			if (_current.animation == null)
 			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().DebugFormat("CoreAnimation '{0}' unable to remove native animation: no running animation.", _key);
+				}
+				return;
+			}
+
+			if (!_layer.TryGetTarget(out var layer))
+			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().DebugFormat("CoreAnimation '{0}' unable to remove native animation: layout not found.", _key);
+				}
 				return;
 			}
 
@@ -259,6 +272,10 @@ namespace Windows.UI.Composition
 				var (currentAnim, from, to) = _current;
 				if (currentAnim != animation)
 				{
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().DebugFormat("CoreAnimation '{0}': unable to {1} because another animation is running.", _key, _stop.reason);
+					}
 					return; // We are no longer the current animation, do not interfere with the current
 				}
 
