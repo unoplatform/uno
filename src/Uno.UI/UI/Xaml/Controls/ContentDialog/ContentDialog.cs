@@ -136,7 +136,9 @@ namespace Windows.UI.Xaml.Controls
 					_popup.Child = null;
 					UpdateVisualState();
 					Closed?.Invoke(this, new ContentDialogClosedEventArgs(result));
-					_tcs.SetResult(result);
+
+					(var tcs, _tcs) = (_tcs, null);
+					DispatcherQueue.TryEnqueue(() => tcs?.TrySetResult(result));
 				}
 				_hiding = false;
 			}
