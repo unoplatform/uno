@@ -7,11 +7,30 @@ namespace Windows.UI.Xaml.Controls
 {
 	// This file only contains support of NativeScrollContentPresenter
 
-	partial class ScrollContentPresenter
+	partial class ScrollContentPresenter : IFrameworkTemplatePoolAware
 	{
 		internal INativeScrollContentPresenter Native { get; set; }
 
 		private object RealContent => Native?.Content;
+
+		public void OnTemplateRecycled()
+		{
+			if (TemplatedParent is null && Native is { })
+			{
+				Native.Content = null;
+				Native = null;
+			}
+		}
+
+		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
+		{
+			if (e.NewValue is null)
+			{
+				Native.Content = null;
+			}
+
+			base.OnTemplatedParentChanged(e);
+		}
 
 		#region SCP to Native SCP
 		public ScrollBarVisibility NativeHorizontalScrollBarVisibility

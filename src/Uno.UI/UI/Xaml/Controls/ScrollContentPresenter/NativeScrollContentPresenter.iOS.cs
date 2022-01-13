@@ -166,6 +166,11 @@ namespace Windows.UI.Xaml.Controls
 				previousView.RemoveFromSuperview();
 			}
 
+			while (Subviews.Length > 0)
+			{
+				Subviews[0].RemoveFromSuperview();
+			}
+
 			if (newView != null)
 			{
 				AddSubview(newView);

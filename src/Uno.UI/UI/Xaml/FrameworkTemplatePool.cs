@@ -249,6 +249,11 @@ namespace Windows.UI.Xaml
 					_trace.WriteEventActivity(TraceProvider.RecycleTemplate, EventOpcode.Send, new[] { instance.GetType().ToString() });
 				}
 
+				if (instance is IDependencyObjectStoreProvider provider)
+				{
+					provider.Store.Parent = null;
+					provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
+				}
 				PropagateOnTemplateReused(instance);
 
 				var item = instance as View;
