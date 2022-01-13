@@ -190,6 +190,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				rootContainer.Content = item;
 				await TestServices.WindowHelper.WaitForIdle();
 
+				if (item is IExtendedLeakTest extendedTest)
+				{
+					await extendedTest.WaitForTestToComplete();
+				}
+
 				// Add all children to the tracking
 				foreach (var child in item.EnumerateAllChildren(maxDepth: 200).OfType<UIElement>())
 				{
