@@ -24,8 +24,10 @@ namespace Windows.UI.Xaml.Controls
 		private CompositionSurfaceBrush _surfaceBrush;
 		private readonly SpriteVisual _imageSprite;
 
+#pragma warning disable CS0067 // not used in skia
 		public event RoutedEventHandler ImageOpened;
 		public event ExceptionRoutedEventHandler ImageFailed;
+#pragma warning restore CS0067
 
 		public Image()
 		{

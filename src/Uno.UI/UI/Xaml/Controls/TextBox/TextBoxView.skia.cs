@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal ITextBoxViewExtension Extension => _textBoxExtension;
+		internal ITextBoxViewExtension? Extension => _textBoxExtension;
 
 		public TextBox? TextBox
 		{
