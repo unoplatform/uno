@@ -22,21 +22,21 @@ namespace Uno.Extensions.Storage.Pickers
 		public async Task<StorageFolder?> PickSingleFolderAsync(CancellationToken token)
 		{
 			NativeMethods.BROWSEINFO pbi = new NativeMethods.BROWSEINFO();
-			pbi.ulFlags = 0x41;
-			pbi.pszDisplayName = new string('\0', 256);
+			pbi.ulFlags = 0x41; //BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE
+			pbi.pszDisplayName = new string('\0', NativeMethods.MAX_PATH);
 
 			IntPtr pidl = NativeMethods.SHBrowseForFolder(ref pbi);
 			if (pidl != IntPtr.Zero)
 			{
-				IntPtr pathp = Marshal.AllocHGlobal(256);
-				bool success = NativeMethods.SHGetPathFromIDList(pidl, pathp);
-				Marshal.FreeCoTaskMem(pidl);
-
-				if (success)
-				{
-					string path = Marshal.PtrToStringAnsi(pathp);
-					Marshal.FreeHGlobal(pathp);
-					return new StorageFolder(path);
+                try
+                {
+					string path = NativeMethods.SHGetPathFromIDListLong(pidl);
+					if (!string.IsNullOrEmpty(path))
+						return new StorageFolder(path);
+                }
+				finally
+                {
+					Marshal.FreeCoTaskMem(pidl);
 				}
 			}
 
@@ -45,11 +45,43 @@ namespace Uno.Extensions.Storage.Pickers
 
 		private static class NativeMethods
 		{
-			[DllImport("shell32")]
+			internal const int MAX_PATH = 260;
+			private const int MAX_LONG_PATH = 32767;
+
+			[DllImport("shell32", EntryPoint ="SHBrowseForFolderW", CharSet=CharSet.Unicode)]
 			internal static extern IntPtr SHBrowseForFolder(ref BROWSEINFO lpbi);
 
+			internal static string? SHGetPathFromIDListLong(IntPtr pidl)
+            {
+				if (pidl == IntPtr.Zero)
+					return null;
+
+				int chars = MAX_PATH;
+
+				IntPtr buffer = Marshal.AllocHGlobal(chars * 2);
+
+				try
+				{
+					while (!SHGetPathFromIDListEx(pidl, buffer, chars * 2, 0))
+					{
+						chars *= 2;
+
+						if (chars > MAX_LONG_PATH)
+							return null;
+
+						buffer = Marshal.ReAllocHGlobal(buffer, (IntPtr)chars * 2);
+					}
+
+					return Marshal.PtrToStringUni(buffer);
+				}
+				finally
+                {
+					Marshal.FreeHGlobal(buffer);
+                }
+			}
+
 			[DllImport("shell32")]
-			internal static extern bool SHGetPathFromIDList(IntPtr pidl, IntPtr pszPath);
+			private static extern bool SHGetPathFromIDListEx(IntPtr pidl, IntPtr pszPath, int len, int flags);
 
 			internal struct BROWSEINFO
 			{
