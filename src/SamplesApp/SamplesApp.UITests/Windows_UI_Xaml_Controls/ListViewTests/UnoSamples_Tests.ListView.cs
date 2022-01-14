@@ -512,6 +512,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // iOS: https://github.com/unoplatform/uno/issues/6454
 		public void ListView_ListView_Shrinking()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Resizing");
@@ -538,6 +539,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // iOS: https://github.com/unoplatform/uno/issues/7754
 		public void ListView_ListView_Growing()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Resizing");
