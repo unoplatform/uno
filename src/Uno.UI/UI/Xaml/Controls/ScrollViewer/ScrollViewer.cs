@@ -989,7 +989,7 @@ namespace Windows.UI.Xaml.Controls
 
 			base.OnContentChanged(oldValue, newValue);
 
-			if (_presenter != null)
+			if (_presenter is not null)
 			{
 				ApplyScrollContentPresenterContent(newValue);
 			}

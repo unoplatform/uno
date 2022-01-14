@@ -166,6 +166,7 @@ namespace Windows.UI.Xaml.Controls
 				previousView.RemoveFromSuperview();
 			}
 
+            // Ensure we're working with an empty view, in case previously removed views were missed.
 			while (Subviews.Length > 0)
 			{
 				Subviews[0].RemoveFromSuperview();

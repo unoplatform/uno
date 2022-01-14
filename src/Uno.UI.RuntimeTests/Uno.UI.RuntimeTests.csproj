@@ -100,11 +100,6 @@
 		<Compile Include="Tests\Windows_UI_Xaml_Controls\HtmlElementAttributeTests\Given_HtmlElementAttribute.Wasm.cs" />
 	</ItemGroup>
 	
-	<ItemGroup>
-	  <None Update="Tests\Windows_UI_Xaml\Controls\ContentDialog_Leak.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	</ItemGroup>
 	
 	<ItemGroup>
 		<Page Update="Tests\Windows_UI_Xaml\Controls\Animation_Leak.xaml">

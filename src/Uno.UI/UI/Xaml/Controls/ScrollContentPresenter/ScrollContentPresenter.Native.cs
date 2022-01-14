@@ -15,6 +15,9 @@ namespace Windows.UI.Xaml.Controls
 
 		public void OnTemplateRecycled()
 		{
+            // If the template is being recycled and it's TemplatedParent is null, this means that 
+            // this instance was part of the ControlTemplate of a ScrollViewer instance that was GC'ed.
+            // We need to ensure that we're not keeping any content coming from ScrollView.Content.
 			if (TemplatedParent is null && Native is { })
 			{
 				Native.Content = null;
@@ -24,6 +27,9 @@ namespace Windows.UI.Xaml.Controls
 
 		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
 		{
+            // Clear the native content, in case this instance is being explicitly removed from its templated parent.
+            // Note that in case the template is being recycled, the parent is not explicitly removed, but rather
+            // relies on weak references, and this method is not called.
 			if (e.NewValue is null)
 			{
 				Native.Content = null;
