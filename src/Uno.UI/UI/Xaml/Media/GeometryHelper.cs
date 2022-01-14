@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Media
 
 		public static void Write(this StreamGeometryContext ctx, LineGeometry lineGeometry)
 		{
-			ctx.BeginFigure(lineGeometry.StartPoint, false, false);
+			ctx.BeginFigure(lineGeometry.StartPoint, false);
 			ctx.LineTo(lineGeometry.EndPoint, true, false);
 			ctx.SetClosedState(true);
 		}
@@ -87,7 +87,7 @@ namespace Windows.UI.Xaml.Media
 			var bottomLeft = new Point(rect.Left, rect.Bottom);
 			var bottomRight = new Point(rect.Right, rect.Bottom);
 
-			ctx.BeginFigure(topLeft, true, true);
+			ctx.BeginFigure(topLeft, true);
 			ctx.LineTo(topRight, true, false);
 			ctx.LineTo(bottomRight, true, false);
 			ctx.LineTo(bottomLeft, true, false);
@@ -114,7 +114,7 @@ namespace Windows.UI.Xaml.Media
 
 		public static void Write(this StreamGeometryContext ctx, PathFigure pathFigure)
 		{
-			ctx.BeginFigure(pathFigure.StartPoint, pathFigure.IsFilled, pathFigure.IsClosed);
+			ctx.BeginFigure(pathFigure.StartPoint, pathFigure.IsFilled);
 			pathFigure.Segments.ForEach(ctx.Write);
 			ctx.SetClosedState(pathFigure.IsClosed);
 		}

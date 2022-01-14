@@ -29,6 +29,14 @@ Consult [the list of supported WinUI controls](implemented-views.md).
 
 You can develop Uno Platform applications on Windows, macOS, or Linux. Supported IDEs include Visual Studio, Visual Studio Code, and Rider. Consult the [setup guide](get-started.md) for more details.
 
+#### Can I use VB.NET for Uno Platform applications?
+
+Much like the new UI technologies from Microsoft, Uno Platform doesn’t support creation of new applications using VB.NET.
+
+If you have an existing VB.NET application which you would like to port/modernize for cross-platform scenarios with Uno Platform, you should be able to reuse all of your VB.NET business logic, packaged as NET standard libraries into a new Uno Platform app where only the new UI code would be defined in XAML with some glue in C#. Additionally, If you’d like to move any of your VB.NET code to C# you may be able to use automated tools such as https://converter.telerik.com
+
+The best course of action is to do a POC and our team is happy to assist you in validating Uno Platform’s fit. Please [contact us](https://platform.uno/contact) with any queries.
+
 ## Technologies
 
 #### What is Universal Windows Platform (UWP)?

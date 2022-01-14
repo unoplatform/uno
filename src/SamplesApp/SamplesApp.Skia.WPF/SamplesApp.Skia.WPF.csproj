@@ -18,6 +18,7 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<UseWPF>true</UseWPF>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net472'">

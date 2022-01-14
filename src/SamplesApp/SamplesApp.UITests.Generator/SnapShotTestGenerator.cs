@@ -154,13 +154,16 @@ namespace Uno.Samples.UITest.Generator
 							builder.AppendLineInvariant("[global::NUnit.Framework.Test]");
 							builder.AppendLineInvariant($"[global::NUnit.Framework.Description(\"runGroup:{group.Index % GroupCount:00}, automated:{test.symbol.ToDisplayString()}\")]");
 
-							if (test.ignoreInSnapshotTests)
+							var (ignored, ignoreReason) = (test.ignoreInSnapshotTests, test.isManual) switch
 							{
-								builder.AppendLineInvariant("[global::NUnit.Framework.Ignore(\"ignoreInSnapshotTests is set for attribute\")]");
-							}
-							if (test.isManual)
+								(true, true) => (true, "ignoreInSnapshotTests and isManual are set for attribute"),
+								(true, false) => (true, "ignoreInSnapshotTests is are set for attribute"),
+								(false, true) => (true, "isManualTest is set for attribute"),
+								_ => (false, default),
+							};
+							if (ignored)
 							{
-								builder.AppendLineInvariant("[global::NUnit.Framework.Ignore(\"isManualTest is set for attribute\")]");
+								builder.AppendLineInvariant($"[global::NUnit.Framework.Ignore(\"{ignoreReason}\")]");
 							}
 
 							builder.AppendLineInvariant("[global::SamplesApp.UITests.TestFramework.AutoRetry]");

@@ -949,6 +949,15 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override bool CanHaveChildren() => true;
 
+		internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
+		{
+			base.UpdateThemeBindings(updateReason);
+
+			UpdateKeyboardThemePartial();
+		}
+
+		partial void UpdateKeyboardThemePartial();
+
 		private bool ShouldFocusOnPointerPressed(PointerRoutedEventArgs args) =>
 			// For mouse and pen, the TextBox should focus on pointer press, for other input types on release
 			args.Pointer.PointerDeviceType != PointerDeviceType.Touch;

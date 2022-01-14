@@ -1,18 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
 
-namespace Windows.System.Profile
+namespace Windows.System.Profile;
+
+public partial class AnalyticsVersionInfo
 {
-    public partial class AnalyticsVersionInfo
-    {
-        internal AnalyticsVersionInfo()
-        {
-        }
-
-        public string DeviceFamily => Environment.OSVersion.Platform.ToString();
-
-        public string DeviceFamilyVersion => Environment.OSVersion.VersionString;
-    }
+	partial void Initialize()
+	{
+		DeviceFamily = $"{Environment.OSVersion.Platform}.{AnalyticsInfo.DeviceForm}";
+	}
 }

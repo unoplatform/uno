@@ -46,7 +46,6 @@ namespace Windows.UI.Xaml
 	{
 		private bool _initializationComplete = false;
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
-		private bool _themeSetExplicitly = false;
 		private ApplicationTheme? _requestedTheme;
 		private bool _systemThemeChangesObserved = false;
 		private SpecializedResourceDictionary.ResourceKey _requestedThemeForResources;
@@ -161,10 +160,12 @@ namespace Windows.UI.Xaml
 			_ => throw new InvalidOperationException("Application's RequestedTheme is invalid."),
 		};
 
+		internal bool IsThemeSetExplicitly { get; private set; } = false;
+
 		internal void SetExplicitRequestedTheme(ApplicationTheme? explicitTheme)
 		{
 			// this flag makes sure the app will not respond to OS events
-			_themeSetExplicitly = explicitTheme.HasValue;
+			IsThemeSetExplicitly = explicitTheme.HasValue;
 			var theme = explicitTheme ?? GetDefaultSystemTheme();
 			SetRequestedTheme(theme);
 		}
@@ -204,7 +205,7 @@ namespace Windows.UI.Xaml
 		public void OnSystemThemeChanged()
 		{
 			// if user overrides theme, don't apply system theme
-			if (!_themeSetExplicitly)
+			if (!IsThemeSetExplicitly)
 			{
 				var theme = GetDefaultSystemTheme();
 				SetRequestedTheme(theme);

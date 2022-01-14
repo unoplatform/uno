@@ -6,8 +6,8 @@
 	  xmlns:fthepresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypePresent(Windows.UI.Xaml.FifthElement)"
 	  xmlns:fenotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Windows.UI.Xaml.FrameworkElement)"
 	  xmlns:fthenotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Windows.UI.Xaml.FifthElement)"
-	  xmlns:easpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypePresent(Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation)"
-	  xmlns:easnotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation)"
+	  xmlns:tilemixedpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypePresent(Windows.UI.StartScreen.TileMixedRealityModel)"
+	  xmlns:tilemixednotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Windows.UI.StartScreen.TileMixedRealityModel)"
 	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	  mc:Ignorable="d"
@@ -26,11 +26,11 @@
 		<TextBlock x:Name="fthenotpresentTextBlock"
 				   x:FieldModifier="public"
 				   fthenotpresent:Text="Is not present" />
-		<TextBlock x:Name="easpresentTextBlock"
+		<TextBlock x:Name="tilemixedpresentTextBlock"
 				   x:FieldModifier="public"
-				   easpresent:Text="Is present" />
-		<TextBlock x:Name="easnotpresentTextBlock"
+				   tilemixedpresent:Text="Is present" />
+		<TextBlock x:Name="tilemixednotpresentTextBlock"
 				   x:FieldModifier="public"
-				   easnotpresent:Text="Is not present" />
+				   tilemixednotpresent:Text="Is not present" />
 	</Grid>
 </Page>

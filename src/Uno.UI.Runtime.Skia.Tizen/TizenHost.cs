@@ -32,6 +32,7 @@ using Uno.ApplicationModel.DataTransfer;
 using Uno.UI.Runtime.Skia.Tizen.ApplicationModel.DataTransfer;
 using Uno.UI.Runtime.Skia.Tizen.System;
 using Uno.Extensions.System;
+using Windows.System.Profile.Internal;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -68,13 +69,6 @@ namespace Uno.UI.Runtime.Skia
 				.GetCommandLineArgs()
 				.Skip(1)
 				.ToArray();
-
-			bool EnqueueNative(DispatcherQueuePriority priority, DispatcherQueueHandler callback)
-			{
-				EcoreMainloop.PostAndWakeUp(() => callback());
-
-				return true;
-			}
 
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = (d) => EcoreMainloop.PostAndWakeUp(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => EcoreMainloop.IsMainThread;

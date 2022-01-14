@@ -26,6 +26,7 @@ using Uno.UI.Extensions;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 using Uno.UI.Xaml.Input;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml;
 using Popup = Windows.UI.Xaml.Controls.Primitives.Popup;
 using Uno.UI;
@@ -355,12 +356,33 @@ namespace Windows.UI.Xaml.Controls
 			UpdateVisualState();
 		}
 
-		//Begin Uno Only
+		#region Uno Only
+
 		private void OnOverflowPopupClosed(object? sender, object e)
 		{
 			IsOpen = false;
 		}
-		//End Uno Only
+
+#if __IOS__ || __ANDROID__
+		private static DependencyProperty NavigationCommandProperty = Uno.UI.ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions", "NavigationCommand");
+
+		internal override void UpdateThemeBindings(ResourceUpdateReason updateReason)
+		{
+			base.UpdateThemeBindings(updateReason);
+
+			// these commands are not part of visual tree, so we need to propagate it manually
+			var commands = new[] { PrimaryCommands, SecondaryCommands }
+				.Where(x => x != null)
+				.SelectMany(x => x)
+				.OfType<AppBarButton>()
+				.Prepend(this.GetValue(NavigationCommandProperty) as AppBarButton);
+			foreach (var command in commands)
+			{
+				command?.UpdateThemeBindings(updateReason);
+			}
+		}
+#endif
+		#endregion
 
 		protected override Size MeasureOverride(Size availableSize)
 		{

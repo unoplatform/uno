@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -20,9 +22,9 @@ namespace Windows.UI.Xaml
 	{
 		private static bool _startInvoked = false;
 		private static string[] _args;
-		private readonly IApplicationExtension _applicationExtension;
+		private readonly IApplicationExtension? _applicationExtension;
 
-		internal ISkiaHost Host { get; set; }
+		internal ISkiaHost? Host { get; set; }
 
 		public Application()
 		{
@@ -88,7 +90,11 @@ namespace Windows.UI.Xaml
 
 		partial void ObserveSystemThemeChanges()
 		{
-			_applicationExtension.SystemThemeChanged += SystemThemeChanged;
+			if (_applicationExtension != null)
+			{
+				_applicationExtension.SystemThemeChanged += SystemThemeChanged;
+			}
+
 			_systemThemeChangesObserved = true;
 		}
 
