@@ -137,6 +137,8 @@ namespace Windows.UI.Xaml.Controls
 					UpdateVisualState();
 					Closed?.Invoke(this, new ContentDialogClosedEventArgs(result));
 
+					// Make sure all clean-up is done before returning result,
+					// to prevent problems when the dialog is reopened synchronously
 					(var tcs, _tcs) = (_tcs, null);
 					DispatcherQueue.TryEnqueue(() => tcs?.TrySetResult(result));
 				}

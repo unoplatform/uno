@@ -134,7 +134,7 @@ namespace Windows.UI.Xaml.Controls
 			Unloaded += DetachScrollBars;
 			Unloaded += ResetScrollIndicator;
 
-			this.RegisterParentChangedCallback(this, (instance, key, args) =>
+			this.RegisterParentChangedCallback(this, (_, _, args) =>
 			{
 				if (args.NewParent is null)
 				{
@@ -980,7 +980,7 @@ namespace Windows.UI.Xaml.Controls
 		#region Content and TemplatedParent forwarding to the ScrollContentPresenter
 		protected override void OnContentChanged(object? oldValue, object? newValue)
 		{
-			if (oldValue is { } && oldValue != newValue)
+			if (oldValue is not null && !ReferenceEquals(oldValue, newValue))
 			{
 				// remove the explicit templated parent propagation
 				// for the lack of TemplatedParentScope support

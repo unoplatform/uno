@@ -251,6 +251,7 @@ namespace Windows.UI.Xaml
 
 				if (instance is IDependencyObjectStoreProvider provider)
 				{
+					// Make sure the TemplatedParent is disconnected
 					provider.Store.Parent = null;
 					provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 				}
