@@ -106,26 +106,6 @@ namespace Uno.UI.Skia.Platform
 				app.Host = this;
 			}
 
-			bool EnqueueNative(DispatcherQueuePriority priority, DispatcherQueueHandler callback)
-			{
-				if (priority == DispatcherQueuePriority.Normal)
-				{
-					dispatcher.BeginInvoke(callback);
-				}
-				else
-				{
-					var p = priority switch
-					{
-						DispatcherQueuePriority.Low => DispatcherPriority.Background,
-						DispatcherQueuePriority.High => DispatcherPriority.Send, // This one is higher than normal
-						_ => DispatcherPriority.Normal
-					};
-					dispatcher.BeginInvoke(p, callback);
-				}
-
-				return true;
-			}
-
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = d => dispatcher.BeginInvoke(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = dispatcher.CheckAccess;
 

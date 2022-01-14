@@ -21,9 +21,9 @@ namespace Windows.UI.Xaml.Shapes
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeAbsoluteShape(finalSize, GetPath());
 
-		private SkiaGeometrySource2D GetPath() => GetSkiaGeometry(Data);
+		private SkiaGeometrySource2D? GetPath() => GetSkiaGeometry(Data);
 
-		private SkiaGeometrySource2D GetSkiaGeometry(Geometry geometry)
+		private SkiaGeometrySource2D? GetSkiaGeometry(Geometry? geometry)
 		{
 			switch (geometry)
 			{
@@ -98,8 +98,10 @@ namespace Windows.UI.Xaml.Shapes
 
 			foreach (var geometry in geometryGroup.Children)
 			{
-				var geometryPath = GetSkiaGeometry(geometry);
-				path.AddPath(geometryPath.Geometry);
+				if (GetSkiaGeometry(geometry) is { } geometryPath)
+				{
+					path.AddPath(geometryPath.Geometry);
+				}
 			}
 
 			path.FillType = geometryGroup.FillRule.ToSkiaFillType();

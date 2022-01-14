@@ -19,6 +19,8 @@
 
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
+		
+		<WarningsAsErrors>true</WarningsAsErrors>
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI</PackageId>
 	</PropertyGroup>
