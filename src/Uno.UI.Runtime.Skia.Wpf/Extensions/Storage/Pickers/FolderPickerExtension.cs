@@ -69,7 +69,7 @@ namespace Uno.Extensions.Storage.Pickers
 						if (chars > MAX_LONG_PATH)
 							return null;
 
-						buffer = Marshal.ReAllocHGlobal(buffer, (IntPtr)chars * 2);
+						buffer = Marshal.ReAllocHGlobal(buffer, (IntPtr)(chars * 2));
 					}
 
 					return Marshal.PtrToStringUni(buffer);
