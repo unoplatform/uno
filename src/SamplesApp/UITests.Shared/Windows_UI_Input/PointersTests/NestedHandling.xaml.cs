@@ -61,24 +61,53 @@ namespace UITests.Windows_UI_Input.PointersTests
 				PointerEnteredEvent,
 				new PointerEventHandler((snd, e) =>
 				{
-					if (e.OriginalSource != _container)
+					if (e.OriginalSource == _nested
+						|| e.OriginalSource == _intermediate2
+						|| e.OriginalSource == _intermediate)
 					{
-						_enterResult.Text = "FAILED";
+						_enterResult.Text = "FAILED (container)";
 					}
 				}),
 				handledEventsToo: true);
-			_nested.PointerEntered += (snd, e) => _enterResult.Text = "SUCCESS";
+			_intermediate.AddHandler(
+				PointerEnteredEvent,
+				new PointerEventHandler((snd, e) => _enterResult.Text += "SUCCESS"),
+				handledEventsToo: true);
+			_intermediate2.AddHandler(
+				PointerExitedEvent,
+				new PointerEventHandler((snd, e) => _exitResult.Text = "FAILED (intermediate 2)"),
+				handledEventsToo: false);
+			_nested.PointerEntered += (snd, e) =>
+			{
+				e.Handled = true;
+				_enterResult.Text = "";
+			};
+
 			_container.AddHandler(
 				PointerExitedEvent,
 				new PointerEventHandler((snd, e) =>
 				{
-					if (e.OriginalSource != _container)
+					if (e.OriginalSource == _nested
+						|| e.OriginalSource == _intermediate2
+						|| e.OriginalSource == _intermediate)
 					{
-						_exitResult.Text = "FAILED";
+						_exitResult.Text = "FAILED (container)";
 					}
 				}),
 				handledEventsToo: true);
-			_nested.PointerExited += (snd, e) => _exitResult.Text = "SUCCESS";
+			_intermediate.AddHandler(
+				PointerExitedEvent,
+				new PointerEventHandler((snd, e) => _exitResult.Text += "SUCCESS"),
+				handledEventsToo: true);
+			_intermediate2.AddHandler(
+				PointerExitedEvent,
+				new PointerEventHandler((snd, e) => _exitResult.Text = "FAILED (intermediate 2)"),
+				handledEventsToo: false);
+			_nested.PointerExited += (snd, e) =>
+			{
+				e.Handled = true;
+				_exitResult.Text = "";
+			};
 		}
 	}
 }
