@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml
 
 		static partial void InitializePointersStaticPartial();
 
-				#region ManipulationMode (DP)
+		#region ManipulationMode (DP)
 		public static DependencyProperty ManipulationModeProperty { get; } = DependencyProperty.Register(
 			"ManipulationMode",
 			typeof(ManipulationModes),
@@ -111,9 +111,9 @@ namespace Windows.UI.Xaml
 			get => (ManipulationModes)this.GetValue(ManipulationModeProperty);
 			set => this.SetValue(ManipulationModeProperty, value);
 		}
-				#endregion
+		#endregion
 
-				#region CanDrag (DP)
+		#region CanDrag (DP)
 		public static DependencyProperty CanDragProperty { get; } = DependencyProperty.Register(
 			nameof(CanDrag),
 			typeof(bool),
@@ -136,9 +136,9 @@ namespace Windows.UI.Xaml
 			get => (bool)GetValue(CanDragProperty);
 			set => SetValue(CanDragProperty, value);
 		}
-				#endregion
+		#endregion
 
-				#region AllowDrop (DP)
+		#region AllowDrop (DP)
 		public static DependencyProperty AllowDropProperty { get; } = DependencyProperty.Register(
 			nameof(AllowDrop),
 			typeof(bool),
@@ -150,7 +150,7 @@ namespace Windows.UI.Xaml
 			get => (bool)GetValue(AllowDropProperty);
 			set => SetValue(AllowDropProperty, value);
 		}
-				#endregion
+		#endregion
 
 		private /* readonly but partial */ GestureRecognizer _gestures;
 
@@ -755,9 +755,16 @@ namespace Windows.UI.Xaml
 			switch (routedEvent.Flag)
 			{
 				case RoutedEventFlag.PointerEntered:
+					if (IsOver(ptArgs.Pointer))
+					{
+						// Entered and Exited are not really bubbling, they are raised only for element on which we are effectively crossing boundaries.
+						// In uno we are however bubbling them for internal state updates.
+						// Note: When we cross boundaries of multiple elements at once, we are effectively following the standard bubbling rules:
+						//	* OriginalSource is the top most element;
+						//	* Flagging args as handle does prevent parent elements to raise events.
+						bubblingMode = BubblingMode.IgnoreElement;
+					}
 					OnPointerEnter(ptArgs, BubblingContext.OnManagedBubbling);
-					// Entered and Exited are never bubbling, we bubble them only for internal state updates, but event should not be raised
-					bubblingMode = BubblingMode.IgnoreElement;
 					break;
 				case RoutedEventFlag.PointerPressed:
 					OnPointerDown(ptArgs, BubblingContext.OnManagedBubbling);
@@ -769,9 +776,16 @@ namespace Windows.UI.Xaml
 					OnPointerUp(ptArgs, BubblingContext.OnManagedBubbling);
 					break;
 				case RoutedEventFlag.PointerExited:
+					if (!IsOver(ptArgs.Pointer))
+					{
+						// Entered and Exited are not really bubbling, they are raised only for element on which we are effectively crossing boundaries.
+						// In uno we are however bubbling them for internal state updates.
+						// Note: When we cross boundaries of multiple elements at once, we are effectively following the standard bubbling rules:
+						//	* OriginalSource is the top most element;
+						//	* Flagging args as handle does prevent parent elements to raise events.
+						bubblingMode = BubblingMode.IgnoreElement;
+					}
 					OnPointerExited(ptArgs, BubblingContext.OnManagedBubbling);
-					// Entered and Exited are never bubbling, we bubble them only for internal state updates, but event should not be raised
-					bubblingMode = BubblingMode.IgnoreElement;
 					break;
 				case RoutedEventFlag.PointerCanceled:
 					OnPointerCancel(ptArgs, BubblingContext.OnManagedBubbling);
