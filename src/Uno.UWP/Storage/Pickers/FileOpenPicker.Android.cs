@@ -130,16 +130,17 @@ namespace Windows.Storage.Pickers
 
 			List<string> mimeTypes = new List<string>();
 
-			Android.Webkit.MimeTypeMap? mimeTypeMap = Android.Webkit.MimeTypeMap.Singleton;
+			using Android.Webkit.MimeTypeMap? mimeTypeMap = Android.Webkit.MimeTypeMap.Singleton;
 			if (mimeTypeMap is null )
 			{
 				// when map is unavailable (probably never happens, but Singleton returns nullable)
 				return new[] { "*/*" };
 			}
 
-
 			foreach (string oneExtensionForLoop in FileTypeFilter)
             {
+				bool unknownExtensionPresent = false;
+
 				string oneExtension = oneExtensionForLoop;
 				if (oneExtension.StartsWith("."))
 				{
@@ -150,16 +151,14 @@ namespace Windows.Storage.Pickers
 				if(!mimeTypeMap.HasExtension(oneExtension))
                 {
 					// when there is unknown extension, we should show all files
-					mimeTypeMap.Dispose();
-					return new[] { "*/*" };
+					unknownExtensionPresent = true;
 				}
 
 				string? mimeType = mimeTypeMap.GetMimeTypeFromExtension(oneExtension);
 				if (string.IsNullOrEmpty(mimeType))
 				{
 					// second check for unknown extension...
-					mimeTypeMap.Dispose();
-					return new[] { "*/*" };
+					unknownExtensionPresent = true;
 				}
 				else
 				{
@@ -171,9 +170,32 @@ namespace Windows.Storage.Pickers
 					}
 #pragma warning restore CS8604 // Possible null reference argument.
 				}
+
+				if (unknownExtensionPresent)
+				{
+					// it is some unknown extension
+					var mimeTypesFromUno = FileTypeFilter
+						.Select(extension => MimeTypeService.GetFromExtension(extension))
+						.Distinct();
+
+					if (mimeTypesFromUno is null || mimeTypesFromUno.Count() < 1)
+					{
+						return new[] { "*/*" };
+					}
+
+					foreach(var oneUnoMimeType in mimeTypesFromUno)
+					{
+						if (!mimeTypes.Contains(oneUnoMimeType))
+						{
+							mimeTypes.Add(oneUnoMimeType);
+						}
+					}
+
+				}
+
 			}
 
-			mimeTypeMap.Dispose();
+
 			return mimeTypes.ToArray();
 		}
 	}
