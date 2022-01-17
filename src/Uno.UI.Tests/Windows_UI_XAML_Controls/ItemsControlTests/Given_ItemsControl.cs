@@ -409,6 +409,46 @@ namespace Uno.UI.Tests.ItemsControlTests
 			Assert.IsNotNull(SUT.ContainerFromItem("Five"));
 		}
 
+		[TestMethod]
+		public async Task When_Collection_Append()
+		{
+			var count = 0;
+			var panel = new StackPanel();
+
+			var SUT = new ItemsControl()
+			{
+				ItemsPanelRoot = panel,
+				ItemContainerStyle = BuildBasicContainerStyle(),
+				InternalItemsPanelRoot = panel,
+				ItemTemplate = new DataTemplate(() =>
+				{
+					count++;
+					return new Border();
+				})
+			};
+			SUT.ApplyTemplate();
+
+			var c = new ObservableCollection<string>();
+
+			SUT.ItemsSource = c;
+
+			c.Add("One");
+			Assert.AreEqual(count, 1);
+
+			c.Add("Two");
+			Assert.AreEqual(count, 2);
+
+			c.Add("Three");
+			Assert.AreEqual(count, 3);
+
+			Assert.AreEqual(SUT.Items.Count, 3);
+
+			c.Add("Four");
+
+			Assert.AreEqual(SUT.Items.Count, 4);
+			Assert.AreEqual(count, 4);
+		}
+
 		private Style BuildBasicContainerStyle() =>
 			new Style(typeof(Windows.UI.Xaml.Controls.ListViewItem))
 			{
