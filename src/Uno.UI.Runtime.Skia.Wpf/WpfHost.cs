@@ -108,6 +108,27 @@ namespace Uno.UI.Skia.Platform
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = d => dispatcher.BeginInvoke(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = dispatcher.CheckAccess;
 
+			// WPF before dispatch operation always replace Current SynchronizationContext with own
+			// and restore when Operation is copletated or failed.
+			// To avoid this problem, hook WPF Dispatcher's OperationPosted
+			// to restore SynchronizationContext with CoreDispatcherSynchronizationContext
+			// based on the priority of the operation.
+			// GitHub issue #7829
+			dispatcher.Hooks.OperationPosted += (s, e) =>
+				{
+					var priority = (int)e.Operation.Priority switch
+					{
+						<= 5 => Windows.UI.Core.CoreDispatcherPriority.Idle,
+						< 9 => Windows.UI.Core.CoreDispatcherPriority.Low,
+						9 => Windows.UI.Core.CoreDispatcherPriority.Normal,
+						10 => Windows.UI.Core.CoreDispatcherPriority.High,
+						_ => throw new NotSupportedException(),
+					};
+
+					var ctx = Windows.UI.Core.CoreDispatcher.Main
+						.GetSynchronizationContextFromPriority(priority);
+					System.Threading.SynchronizationContext.SetSynchronizationContext(ctx);
+				};
 			WinUI.Application.Start(CreateApp, args);
 
 			WinUI.Window.InvalidateRender += () =>

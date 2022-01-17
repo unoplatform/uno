@@ -39,5 +39,17 @@ namespace Uno.UI.Dispatching
 
 			DispatchOverride(() => DispatchItems());
 		}
+
+		[global::System.Runtime.CompilerServices
+			.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		internal System.Threading.SynchronizationContext GetSynchronizationContextFromPriority(CoreDispatcherPriority priority)
+			=> priority switch
+			{
+				CoreDispatcherPriority.Idle => _idleSyncCtx,
+				CoreDispatcherPriority.Low => _lowSyncCtx,
+				CoreDispatcherPriority.Normal => _normalSyncCtx,
+				CoreDispatcherPriority.High => _highSyncCtx,
+				_ => throw new ArgumentException(nameof(priority))
+			};
 	}
 }

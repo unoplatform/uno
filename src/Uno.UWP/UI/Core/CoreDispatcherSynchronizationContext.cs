@@ -1,44 +1,51 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using Uno.Disposables;
 
 namespace Windows.UI.Core
 {
-    /// <summary>
-    /// Provides a CoreDispatched Synchronization context, to allow for async methods to keep the dispatcher priority.
-    /// </summary>
-    internal sealed class CoreDispatcherSynchronizationContext : SynchronizationContext
+	/// <summary>
+	/// Provides a CoreDispatched Synchronization context, to allow for async methods to keep the dispatcher priority.
+	/// </summary>
+	internal sealed class CoreDispatcherSynchronizationContext : SynchronizationContext
     {
-        private readonly CoreDispatcher _dispatcher;
-        private readonly CoreDispatcherPriority _priority;
+     	private readonly Action<SendOrPostCallback, object> _postAction;
+		private readonly Action<SendOrPostCallback, object> _sendAction;
 
-        public CoreDispatcherSynchronizationContext(CoreDispatcher dispatcher, CoreDispatcherPriority priority)
+		public CoreDispatcherSynchronizationContext(CoreDispatcher dispatcher, CoreDispatcherPriority priority)
         {
-            _priority = priority;
-            _dispatcher = dispatcher;
-        }
+			_postAction = (d, state) =>
+				{
+					dispatcher.RunAsync(priority, () => d(state));
+				};
+			_sendAction = (d, state) =>
+				 {
+					 if (dispatcher.HasThreadAccess)
+					 {
+						 d(state);
+					 }
+					 else
+					 {
+						 dispatcher
+							 .RunAsync(priority, () => d(state))
+							 .AsTask(CancellationToken.None)
+							 .Wait();
+					 }
+				 };
+		}
 
-        public override void Post(SendOrPostCallback d, object state)
-        {
-            _dispatcher.RunAsync(_priority, () => d(state));
-        }
+		public CoreDispatcherSynchronizationContext(SynchronizationContext inerContex)
+		{
+			_postAction = (d, state) => inerContex.Post(d, state);
+			_sendAction = (d, state) => inerContex.Send(d, state);
+		}
 
-        public override void Send(SendOrPostCallback d, object state)
-        {
-            if (_dispatcher.HasThreadAccess)
-            {
-                d(state);
-            }
-            else
-            {
-                _dispatcher
-                    .RunAsync(_priority, () => d(state))
-                    .AsTask(CancellationToken.None)
-                    .Wait();
-            }
-        }
+		public override void Post(SendOrPostCallback d, object state) =>
+			_postAction(d, state);
+
+
+		public override void Send(SendOrPostCallback d, object state) =>
+			_sendAction(d, state);
 
         /// <summary>
         /// Creates a scoped assignment of <see cref="SynchronizationContext.Current"/>.
