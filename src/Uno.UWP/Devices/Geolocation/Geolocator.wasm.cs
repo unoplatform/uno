@@ -34,7 +34,7 @@ namespace Windows.Devices.Geolocation
 
 		partial void StartPositionChanged()
 		{
-			BroadcastStatus(PositionStatus.Initializing); //GPS is initializing
+			BroadcastStatusChanged(PositionStatus.Initializing); //GPS is initializing
 			_positionChangedRequestId = Guid.NewGuid().ToString();
 			_positionChangedSubscriptions.TryAdd(_positionChangedRequestId, this);
 			var command = $"{JsType}.startPositionWatch({ActualDesiredAccuracyInMeters},\"{_positionChangedRequestId}\")";
@@ -102,7 +102,7 @@ namespace Windows.Devices.Geolocation
 			return AsyncOperation.FromTask(async ct =>
 			{
 
-				BroadcastStatus(PositionStatus.Initializing); //GPS is initializing
+				BroadcastStatusChanged(PositionStatus.Initializing); //GPS is initializing
 				var completionRequest = new TaskCompletionSource<Geoposition>();
 				var requestId = Guid.NewGuid().ToString();
 				_pendingGeopositionRequests.TryAdd(requestId, completionRequest);

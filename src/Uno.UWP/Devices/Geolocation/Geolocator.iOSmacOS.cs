@@ -32,13 +32,13 @@ namespace Windows.Devices.Geolocation
 
 		private void _locationManager_LocationsUpdated(object sender, CLLocationsUpdatedEventArgs e)
 		{
-			BroadcastStatus(PositionStatus.Ready);
+			BroadcastStatusChanged(PositionStatus.Ready);
 			this._positionChanged?.Invoke(this, new PositionChangedEventArgs(ToGeoposition(e.Locations.Last())));
 		}
 
 		partial void StartPositionChanged()
 		{
-			BroadcastStatus(PositionStatus.Initializing);
+			BroadcastStatusChanged(PositionStatus.Initializing);
 		}
 
 #if __IOS__
@@ -52,7 +52,7 @@ namespace Windows.Devices.Geolocation
 		{
 			if (CoreDispatcher.Main.HasThreadAccess)
 			{
-				BroadcastStatus(PositionStatus.Initializing);
+				BroadcastStatusChanged(PositionStatus.Initializing);
 				var location = _locationManager.Location;
 				if (location == null)
 				{
