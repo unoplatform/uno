@@ -524,11 +524,6 @@ namespace Windows.UI.Xaml
 			_properties.SetSourceValue(propertyDetails, value);
 		}
 
-		internal void RegisterDefaultValueProvider(DefaultValueProvider provider)
-		{
-			_properties.RegisterDefaultValueProvider(provider);
-		}
-
 		/// <summary>
 		/// Subscribes to a dependency property changed handler
 		/// </summary>

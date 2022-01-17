@@ -1900,14 +1900,13 @@ namespace Uno.UI.Tests.BinderTests
 
 	}
 
-	partial class MyDependencyObjectWithDefaultValueOverride : DependencyObject
+	partial class MyDependencyObjectWithDefaultValueOverride : FrameworkElement
 	{
 		public MyDependencyObjectWithDefaultValueOverride()
 		{
-			this.RegisterDefaultValueProvider(OnProvideDefaultValue);
 		}
 
-		private bool OnProvideDefaultValue(DependencyProperty property, out object defaultValue)
+		internal override bool GetDefaultValue2(DependencyProperty property, out object defaultValue)
 		{
 			if (property == MyPropertyProperty)
 			{
@@ -1916,8 +1915,7 @@ namespace Uno.UI.Tests.BinderTests
 				return true;
 			}
 
-			defaultValue = null;
-			return false;
+			return base.GetDefaultValue2(property, out defaultValue);
 		}
 
 		public int MyProperty

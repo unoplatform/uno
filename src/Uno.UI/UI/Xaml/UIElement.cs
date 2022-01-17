@@ -75,12 +75,17 @@ namespace Windows.UI.Xaml
 
 		private void Initialize()
 		{
-			this.RegisterDefaultValueProvider(OnGetDefaultValue);
 		}
 
 		private protected virtual bool IsTabStopDefaultValue => false;
 
-		private bool OnGetDefaultValue(DependencyProperty property, out object defaultValue)
+		/// <summary>
+		/// Provide an instance-specific default value for the specified property
+		/// </summary>
+		/// <remarks>
+		/// In general, it is best do define the property default value using <see cref="PropertyMetadata"/>.
+		/// </remarks>
+		internal virtual bool GetDefaultValue2(DependencyProperty property, out object defaultValue)
 		{
 			if (property == KeyboardAcceleratorsProperty)
 			{

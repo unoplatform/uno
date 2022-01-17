@@ -39,7 +39,6 @@ namespace Windows.UI.Xaml
 		private int _entriesLength;
 		private int _minId;
 		private int _maxId;
-		private List<DependencyObjectStore.DefaultValueProvider>? _defaultValueProviders = null;
 
 		private object? Owner => _hardOwnerReference ?? _ownerReference.Target;
 
@@ -194,18 +193,12 @@ namespace Windows.UI.Xaml
 
 		private bool TryResolveDefaultValueFromProviders(DependencyProperty property, out object? value)
 		{
-			if (_defaultValueProviders != null)
+			// Replicate the WinUI behavior of DependencyObject::GetDefaultValue2 specifically for UIElement.
+			if (Owner is UIElement uiElement)
 			{
-				for (int i = _defaultValueProviders.Count - 1; i >= 0; i--)
-				{
-					var provider = _defaultValueProviders[i];
-					if (provider.Invoke(property, out var resolvedValue))
-					{
-						value = resolvedValue;
-						return true;
-					}
-				}
+				return uiElement.GetDefaultValue2(property, out value);
 			}
+
 			value = null;
 			return false;
 		}
@@ -231,27 +224,6 @@ namespace Windows.UI.Xaml
 		}
 
 		internal DependencyPropertyDetails?[] GetAllDetails() => Entries;
-
-		/// <summary>
-		/// Adds a default value provider.
-		/// </summary>
-		/// <param name="provider">Default value provider.</param>
-		/// <remarks>
-		/// Providers which are registered later have higher priority.
-		/// E.g. when both a derived and base class register their own default
-		/// value provider in the constructor for the same property, the derived
-		/// class value is used.
-		/// </remarks>
-		public void RegisterDefaultValueProvider(DependencyObjectStore.DefaultValueProvider provider)
-		{
-			if (provider == null)
-			{
-				throw new ArgumentNullException(nameof(provider));
-			}
-
-			_defaultValueProviders ??= new List<DependencyObjectStore.DefaultValueProvider>(2);
-			_defaultValueProviders.Add(provider);
-		}
 
 		internal void TryEnableHardReferences()
 		{
