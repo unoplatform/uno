@@ -23,9 +23,6 @@ namespace Windows.Devices.Geolocation
 		// (used only in GetGeopositionAsync with parameters, parameterless call can return older location)
 		private const int MaxLocationAgeInSeconds = 60;
 
-		// Using ConcurrentDictionary as concurrent HashSet (https://stackoverflow.com/questions/18922985/concurrent-hashsett-in-net-framework), byte is throwaway.
-		private static readonly ConcurrentDictionary<Geolocator, byte> _positionChangedSubscriptions = new ConcurrentDictionary<Geolocator, byte>();
-
 		private readonly Criteria _locationCriteria = new() { HorizontalAccuracy = Accuracy.Medium };
 
 		private LocationManager _locationManager;
@@ -164,7 +161,7 @@ namespace Windows.Devices.Geolocation
 			}
 
 			// wait for fix
-			if (await TryWaitForGetGeopositionAsync(timeout))
+			if (await TryWaitForGetGeopositionAsync(timeout, DateTime.Now-maximumAge))
 			{
 				// success
 				RemoveUpdates();
@@ -239,7 +236,7 @@ namespace Windows.Devices.Geolocation
 
 		partial void StopPositionChanged() => _positionChangedSubscriptions.TryRemove(this, out var _);
 
-		private async Task<bool> TryWaitForGetGeopositionAsync(TimeSpan timeout)
+		private async Task<bool> TryWaitForGetGeopositionAsync(TimeSpan timeout, DateTime earliestDate)
 		{
 			var stopwatch = Stopwatch.StartNew();
 
@@ -248,8 +245,12 @@ namespace Windows.Devices.Geolocation
 				await Task.Delay(250);
 				if (_locChanged)
 				{
-					stopwatch.Stop();
-					return true;
+					// check if we get current (not obsolete) location
+					if (_location.Time >= earliestDate.ToUnixTimeMilliseconds())
+					{	
+						stopwatch.Stop();
+						return true;
+					}
 				}
 			}
 			stopwatch.Stop();
