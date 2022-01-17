@@ -170,7 +170,6 @@ namespace Windows.Devices.Geolocation
 		/// <summary>
 		/// Broadcasts position change to all subscribed Geolocator instances
 		/// </summary>
-		/// <param name="positionStatus"></param>
 		private static void BroadcastPositionChanged(Geoposition geoposition)
 		{
 			foreach (var subscriber in _positionChangedSubscriptions.Keys)
