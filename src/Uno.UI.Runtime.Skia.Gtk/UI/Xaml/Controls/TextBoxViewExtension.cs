@@ -32,8 +32,8 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 		private GdkPoint _lastPosition = new GdkPoint(-1, -1);
 		private GdkSize _lastSize = new GdkSize(-1, -1);
 
-		private int? _requestedSelectionStart = null;
-		private int? _requestedSelectionLength = null;
+		private int? _selectionStartCache = null;
+		private int? _selectionLengthCache = null;
 
 		private readonly SerialDisposable _textChangedDisposable = new SerialDisposable();
 
@@ -61,10 +61,6 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 				return;
 			}
 
-			// Selection is now handled by native control
-			_requestedSelectionStart = null;
-			_requestedSelectionLength = null;
-
 			_contentElement = textBox.ContentElement;
 			EnsureWidget(textBox);
 			var textInputLayer = GetWindowTextInputLayer();
@@ -81,6 +77,20 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 
 			textInputLayer.ShowAll();
 			_currentInputWidget!.HasFocus = true;
+
+			// Selection is now handled by native control
+			if (_selectionStartCache != null && _selectionLengthCache != null)
+			{
+				Select(_selectionStartCache.Value, _selectionLengthCache.Value);
+			}
+			else
+			{
+				// Select end of the text
+				var endIndex = textBox.Text.Length;
+				Select(endIndex, 0);
+			}
+			_selectionStartCache = null;
+			_selectionLengthCache = null;
 		}
 
 		public void EndEntry()
@@ -94,6 +104,8 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 
 			if (_currentInputWidget != null)
 			{
+				var bounds = GetNativeSelectionBounds();
+				(_selectionStartCache, _selectionLengthCache) = (bounds.start, bounds.end - bounds.start);
 				var textInputLayer = GetWindowTextInputLayer();
 				textInputLayer.Remove(_currentInputWidget);
 			}
@@ -326,21 +338,47 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			}
 
 			EnsureWidget(textBox);
+			if (textBox.FocusState == FocusState.Unfocused)
+			{
+				// Native control can't handle selection until it is part of visual tree.
+				// Use managed selection until then.
+				_selectionStartCache = textBox.Text.Length >= start ? start : textBox.Text.Length;
+				_selectionLengthCache = textBox.Text.Length >= start + length ? length : textBox.Text.Length - start;
+			}
+			else
+			{
+				SetNativeSelectionBounds(start, start + length);
+			}
+		}
+
+		private void SetNativeSelectionBounds(int start, int end)
+		{
 			if (_currentInputWidget is Entry entry)
 			{
-				if (textBox.FocusState == FocusState.Unfocused)
-				{
-					// Native control can't handle selection until it is part of visual tree.
-					// Use managed selection until then.
-					_requestedSelectionStart = textBox.Text.Length >= start ? start : textBox.Text.Length;
-					_requestedSelectionLength = textBox.Text.Length >= start + length ? length : textBox.Text.Length - start;
-				}
-				else
-				{
-					entry.SelectRegion(start_pos: start, end_pos: start + length);
-				}
+				entry.SelectRegion(start_pos: start, end_pos: end);
 			}
-			// TODO: Handle TextView..
+			else if (_currentInputWidget is TextView textView)
+			{
+				var startIterator = textView.Buffer.GetIterAtOffset(start);
+				var endIterator = textView.Buffer.GetIterAtOffset(end);
+				textView.Buffer.SelectRange(startIterator, endIterator);
+			}
+		}
+
+		private (int start, int end) GetNativeSelectionBounds()
+		{
+			if (_currentInputWidget is Entry entry)
+			{
+				entry.GetSelectionBounds(out var start, out var end);
+				return (start, end);
+			}
+			else if (_currentInputWidget is TextView textView)
+			{
+				textView.Buffer.GetSelectionBounds(out var start, out var end);
+				return (start.Offset, end.Offset); // TODO: Confirm this implementation is correct.
+			}
+
+			return (0, 0);
 		}
 
 		public int GetSelectionStart()
@@ -353,21 +391,12 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 
 			if (textBox.FocusState == FocusState.Unfocused)
 			{
-				return _requestedSelectionStart ?? 0;
+				return _selectionStartCache ?? 0;
 			}
-
-			if (_currentInputWidget is Entry entry)
+			else
 			{
-				entry.GetSelectionBounds(out var start, out _);
-				return start;
+				return GetNativeSelectionBounds().start;
 			}
-			else if (_currentInputWidget is TextView textView)
-			{
-				textView.Buffer.GetSelectionBounds(out var start, out _);
-				return start.Offset; // TODO: Confirm this implementation is correct.
-			}
-
-			return 0;
 		}
 
 		public int GetSelectionLength()
@@ -380,21 +409,13 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 
 			if (textBox.FocusState == FocusState.Unfocused)
 			{
-				return _requestedSelectionLength ?? 0;
+				return _selectionLengthCache ?? 0;
 			}
-
-			if (_currentInputWidget is Entry entry)
+			else
 			{
-				entry.GetSelectionBounds(out var start, out var end);
-				return end - start;
+				var bounds = GetNativeSelectionBounds();
+				return bounds.end - bounds.start;
 			}
-			else if (_currentInputWidget is TextView textView)
-			{
-				textView.Buffer.GetSelectionBounds(out var start, out var end);
-				return end.Offset - start.Offset;
-			}
-
-			return 0;
 		}
 
 		public void SetForeground(Windows.UI.Xaml.Media.Brush brush)
