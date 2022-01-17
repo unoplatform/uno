@@ -59,7 +59,7 @@ namespace Windows.Devices.Geolocation
 					throw new InvalidOperationException("Could not obtain the location. Please make sure that NSLocationWhenInUseUsageDescription and NSLocationUsageDescription are set in info.plist.");
 				}
 
-				BroadcastStatus(PositionStatus.Ready);
+				BroadcastStatusChanged(PositionStatus.Ready);
 
 				return Task.FromResult(ToGeoposition(location));
 			}

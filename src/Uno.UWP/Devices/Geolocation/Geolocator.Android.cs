@@ -116,6 +116,8 @@ namespace Windows.Devices.Geolocation
 		/// <returns>An asynchronous operation that, upon completion, returns a Geoposition marking the found location.</returns>
 		public Task<Geoposition> GetGeopositionAsync()
 		{
+			// on UWP, "This method times out after 60 seconds, except when in Connected Standby. During Connected Standby, Geolocator objects can be instantiated but the Geolocator object will not find any sensors to aggregate and calls to GetGeopositionAsync will time out after 7 seconds."
+			// so we have discrepancy here.
 			if (CoreDispatcher.Main.HasThreadAccess)
 			{
 				TryInitialize();
