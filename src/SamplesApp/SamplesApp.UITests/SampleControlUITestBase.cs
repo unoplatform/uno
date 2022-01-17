@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using SamplesApp.UITests.Extensions;
@@ -28,6 +29,8 @@ namespace SamplesApp.UITests
 		{
 			ValidateAppMode();
 		}
+
+		protected IApp App => _app;
 
 		static SampleControlUITestBase()
 		{
@@ -293,6 +296,9 @@ namespace SamplesApp.UITests
 
 			}
 		}
+
+		protected async Task RunAsync(string metadataName, bool waitForSampleControl = true, bool skipInitialScreenshot = false, int sampleLoadTimeout = 5)
+			=> Run(metadataName, waitForSampleControl, skipInitialScreenshot, sampleLoadTimeout);
 
 		protected void Run(string metadataName, bool waitForSampleControl = true, bool skipInitialScreenshot = false, int sampleLoadTimeout = 5)
 		{
