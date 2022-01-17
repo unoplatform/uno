@@ -124,6 +124,26 @@ namespace Windows.UI.Xaml.Input
 			}
 			else if (focused != null)
 			{
+				// Special handling for RootVisual - which is not focusable on managed side
+				// but is focusable on native side. The purpose of this trick is to allow
+				// us to recognize, that the page was focused by tabbing from the address bar
+				// and focusing the first focusable element on the page instead.
+				if (focused is RootVisual rootVisual)
+				{					
+					var firstFocusable = FocusManager.FindFirstFocusableElement(rootVisual);
+					if (firstFocusable is FrameworkElement frameworkElement)
+					{
+						if (_log.Value.IsEnabled(LogLevel.Debug))
+						{
+							_log.Value.LogDebug(
+								$"Root visual focused - caused by browser keyboard navigation to the page, " +
+								$"moving focus to actual first focusable element - {frameworkElement?.ToString() ?? "[null]"}.");
+						}
+						frameworkElement.Focus(FocusState.Keyboard);
+					}
+					return;
+				}
+
 				ProcessElementFocused(focused);
 			}
 			else
