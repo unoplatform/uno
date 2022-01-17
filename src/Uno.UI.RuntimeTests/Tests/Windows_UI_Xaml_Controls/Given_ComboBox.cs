@@ -288,6 +288,112 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Index_Is_Removed_Check_Reindex()
+		{
+			var SUT = new ComboBox();
+			var source = new ObservableCollection<string>();
+			for (int i = 0; i <= 5; i++)
+			{
+				InsertAnItem(i);
+			}
+
+			SUT.ItemsSource = source;
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			SUT.IsDropDownOpen = true;
+
+			// Items are materialized when the popup is opened
+			await WindowHelper.WaitForIdle();
+
+			//Confirm count before RemoveAt
+			Assert.AreEqual(SUT.Items.Count, 6);
+
+			//Removed index == 2
+			source.RemoveAt(2);
+
+			await Task.Delay(5);
+
+			//Verify if SelectedIndex was reseted
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			//Confirm count after RemoveAt
+			Assert.AreEqual(SUT.Items.Count, 5);
+
+			//Items that continuous existing on source
+			Assert.IsNotNull(SUT.ContainerFromItem("Item #0"));
+			Assert.IsNotNull(SUT.ContainerFromItem("Item #1"));
+			Assert.IsNotNull(SUT.ContainerFromItem("Item #3"));
+			Assert.IsNotNull(SUT.ContainerFromItem("Item #4"));
+			Assert.IsNotNull(SUT.ContainerFromItem("Item #5"));
+
+			//Item removed is null
+			Assert.IsNull(SUT.ContainerFromItem("Item #2"));
+
+			void InsertAnItem(int index)
+			{
+				source.Add($"Item #{index}");
+			}
+		}
+		/// <summary>
+		/// Skia and WebAssembly issue https://github.com/unoplatform/uno/issues/8204
+		/// </summary>
+		/// <returns></returns>
+#if (!__SKIA__ && !__WASM__)
+		[TestMethod]
+		public async Task When_ComboBoxItem_Is_Removed_Check_index_NotWrong()
+		{
+			var SUT = new ComboBox();
+			var source = new ObservableCollection<string>();
+			for (int i = 0; i <= 5; i++)
+			{
+				InsertAnItem(i);
+			}
+
+			SUT.ItemsSource = source;
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			SUT.IsDropDownOpen = true;
+
+			// Items are materialized when the popup is opened
+			await WindowHelper.WaitForIdle();
+
+			//Removed index == 2
+			source.RemoveAt(2);
+
+			await Task.Delay(5);
+
+			//Verify if SelectedIndex was reseted
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			ComboBoxItem cbi = null;
+			await WindowHelper.WaitFor(() => (cbi = SUT.ContainerFromIndex(4) as ComboBoxItem) != null); 
+			await WindowHelper.WaitForLoaded(cbi); 
+			cbi.IsSelected = true;
+
+			//Verify if the index don't continuous -1 after selected new item
+			Assert.AreNotEqual(-1, SUT.SelectedIndex);
+
+			//Verify if the content has a correct value after selected item
+			Assert.AreEqual("Item #5", cbi.Content);
+
+			//Verify the quantity of source
+			Assert.AreEqual(5, source.Count);
+
+			//Verify the quantity of ItemsPanelRoot
+			Assert.AreEqual(5, SUT.ItemsPanelRoot.Children.Count);
+
+			void InsertAnItem(int index)
+			{
+				source.Add($"Item #{index}");
+			}
+		}
+#endif
+
+		[TestMethod]
 		[Ignore] // https://github.com/unoplatform/uno/issues/4686
 		public void When_Index_Is_Out_Of_Range_And_Later_Becomes_Valid()
 		{

@@ -1899,6 +1899,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		public async Task When_ListViewItem_Is_Removed_Check_index_NotWrong()
+		{
+			var SUT = new ListView();
+			var source = new ObservableCollection<string>();
+			for (int i = 0; i <= 5; i++)
+			{
+				InsertAnItem(i);
+			}
+
+			SUT.ItemsSource = source;
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			//Removed index == 2
+			source.RemoveAt(2);
+
+			await Task.Delay(5);
+
+			//Verify if SelectedIndex was reseted
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			ListViewItem cbi = null;
+			await WindowHelper.WaitFor(() => (cbi = SUT.ContainerFromIndex(4) as ListViewItem) != null);
+			await WindowHelper.WaitForLoaded(cbi);
+			cbi.IsSelected = true;
+
+			//Verify if the index don't continuous -1 after selected new item
+			Assert.AreNotEqual(-1, SUT.SelectedIndex);
+
+			//Verify if the content has a correct value after selected item
+			Assert.AreEqual("Item #5", cbi.Content);
+
+			//Verify the quantity of source
+			Assert.AreEqual(5, source.Count);
+
+			void InsertAnItem(int index)
+			{
+				source.Add($"Item #{index}");
+			}
+		}
+
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
 
 

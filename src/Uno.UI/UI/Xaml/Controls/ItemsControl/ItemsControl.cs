@@ -61,6 +61,23 @@ namespace Windows.UI.Xaml.Controls
 		internal ScrollViewer ScrollViewer { get; private set; }
 
 		/// <summary>
+		/// Reindex ItemsControl.IndexForContainerProperty after the collection changes.		
+		/// </summary>
+		/// <param name="startingIndex">The minimum index of containers we care about.</param>
+		/// <param name="indexChange">How does the index change.</param>
+		private void SaveContainersAndRepairIndex(int startingIndex, int indexChange)
+		{
+			foreach (var container in MaterializedContainers)
+			{
+				var currentIndex = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);
+				if (currentIndex >= startingIndex)
+				{
+					container.SetValue(ItemsControl.IndexForItemContainerProperty, currentIndex + indexChange);
+				}
+			}
+		}
+
+		/// <summary>
 		/// This template is stored here in order to allow for 
 		/// FrameworkTemplate pooling to function properly when an ItemTemplateSelector has been
 		/// specified.
@@ -1034,6 +1051,7 @@ namespace Windows.UI.Xaml.Controls
 					LocalCleanupContainer(container);
 					ReassignIndexes(index);
 					RequestLayoutPartial();
+					SaveContainersAndRepairIndex(args.OldStartingIndex, -args.OldItems.Count);
 					return;
 				}
 				else if (args.Action == NotifyCollectionChangedAction.Add
@@ -1043,6 +1061,7 @@ namespace Windows.UI.Xaml.Controls
 					ItemsPanelRoot.Children.Insert(index, (UIElement)LocalCreateContainer(index));
 					ReassignIndexes(index+1);
 					RequestLayoutPartial();
+					SaveContainersAndRepairIndex(args.NewStartingIndex, args.NewItems.Count);
 					return;
 				}
 				else if (args.Action == NotifyCollectionChangedAction.Replace
