@@ -42,6 +42,10 @@ namespace Windows.UI.Xaml
 				=> _target.OnNativeMotionEvent(nativeEvent, view, true);
 		}
 
+		partial void InitializePointersPartial()
+		{
+			ArePointersEnabled = true;
+		}
 
 		partial void AddPointerHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{
@@ -61,7 +65,7 @@ namespace Windows.UI.Xaml
 
 		protected sealed override bool OnNativeMotionEvent(MotionEvent nativeEvent, View originalSource, bool isInView)
 		{
-			if (IsPointersSuspended)
+			if (!ArePointersEnabled)
 			{
 				return false;
 			}

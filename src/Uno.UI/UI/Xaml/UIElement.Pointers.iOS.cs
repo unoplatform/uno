@@ -76,12 +76,14 @@ namespace Windows.UI.Xaml
 		{
 			MultipleTouchEnabled = true;
 			RegisterLoadActions(OnLoadedForPointers, OnUnloadedForPointers);
+
+			ArePointersEnabled = true;
 		}
 
 		#region Native touch handling (i.e. source of the pointer / gesture events)
 		public override void TouchesBegan(NSSet touches, UIEvent evt)
 		{
-			if (IsPointersSuspended)
+			if (!ArePointersEnabled)
 			{
 				return; // Will also prevent subsequents events
 			}
