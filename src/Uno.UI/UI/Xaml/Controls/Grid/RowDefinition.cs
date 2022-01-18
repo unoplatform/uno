@@ -16,9 +16,7 @@ namespace Windows.UI.Xaml.Controls
 			IsAutoPropertyInheritanceEnabled = false;
 		}
 
-		/// <remarks>
-		/// This method is called from the generated IDependencyObjectInternal.OnPropertyChanged2 method
-		/// </summary>
+		// This method is called from the generated IDependencyObjectInternal.OnPropertyChanged2 method
 		internal void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
 			InvalidateDefinition();
