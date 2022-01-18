@@ -683,72 +683,88 @@ namespace Windows.UI.Xaml
 
 		internal IDisposable RegisterPropertyChangedCallback(DependencyProperty property, PropertyChangedCallback callback, DependencyPropertyDetails? propertyDetails = null)
 		{
-			var weakDelegate = CreateWeakDelegate(callback);
-
 			propertyDetails ??= _properties.GetPropertyDetails(property);
 
-			var cookie = propertyDetails.CallbackManager.RegisterCallback(weakDelegate.callback);
+			if (ReferenceEquals(callback.Target, ActualInstance))
+			{
+				return propertyDetails.CallbackManager.RegisterCallback(callback);
+			}
+			else
+			{
+				var weakDelegate = CreateWeakDelegate(callback);
 
-			// Capture the weak reference to this instance.
-			var instanceRef = ThisWeakReference;
+				var cookie = propertyDetails.CallbackManager.RegisterCallback(weakDelegate.callback);
 
-			return new DispatcherConditionalDisposable(
-				callback.Target,
-				instanceRef.CloneWeakReference(),
-				() =>
-				{
-					// This weak reference ensure that the closure will not link
-					// the caller and the callee, in the same way "newValueActionWeak"
-					// does not link the callee to the caller.
-					var that = instanceRef.Target as DependencyObjectStore;
+				// Capture the weak reference to this instance.
+				var instanceRef = ThisWeakReference;
 
-					if (that != null)
+				return new DispatcherConditionalDisposable(
+					callback.Target,
+					instanceRef.CloneWeakReference(),
+					() =>
 					{
-						cookie.Dispose();
-						weakDelegate.release.Dispose();
+						// This weak reference ensure that the closure will not link
+						// the caller and the callee, in the same way "newValueActionWeak"
+						// does not link the callee to the caller.
+						var that = instanceRef.Target as DependencyObjectStore;
+
+						if (that != null)
+						{
+							cookie.Dispose();
+							weakDelegate.release.Dispose();
 
 						// Force a closure on the callback, to make its lifetime as long
 						// as the subscription being held by the callee.
 						callback = null!;
-					}
-				});
+						}
+					});
+			}
 		}
 
 		internal IDisposable RegisterPropertyChangedCallback(ExplicitPropertyChangedCallback handler)
 		{
-			var weakDelegate = CreateWeakDelegate(handler);
+			if (ReferenceEquals(handler.Target, ActualInstance))
+			{
+				_genericCallbacks = _genericCallbacks.Add(handler);
 
-			// Delegates integrate a null check when adding new delegates.
-			_genericCallbacks = _genericCallbacks.Add(weakDelegate.callback);
+				return Disposable.Create(() => _genericCallbacks = _genericCallbacks.Remove(handler));
+			}
+			else
+			{
+				var weakDelegate = CreateWeakDelegate(handler);
 
-			// This weak reference ensure that the closure will not link
-			// the caller and the callee, in the same way "newValueActionWeak"
-			// does not link the callee to the caller.
-			var instanceRef = ThisWeakReference;
+				// Delegates integrate a null check when adding new delegates.
+				_genericCallbacks = _genericCallbacks.Add(weakDelegate.callback);
 
-			return new DispatcherConditionalDisposable(
-				handler.Target,
-				instanceRef.CloneWeakReference(),
-				() =>
-				{
-					// This weak reference ensure that the closure will not link
-					// the caller and the callee, in the same way "newValueActionWeak"
-					// does not link the callee to the caller.
-					var that = instanceRef.Target as DependencyObjectStore;
+				// This weak reference ensure that the closure will not link
+				// the caller and the callee, in the same way "newValueActionWeak"
+				// does not link the callee to the caller.
+				var instanceRef = ThisWeakReference;
 
-					if (that != null)
+				return new DispatcherConditionalDisposable(
+					handler.Target,
+					instanceRef.CloneWeakReference(),
+					() =>
 					{
-						// Delegates integrate a null check when removing new delegates.
-						that._genericCallbacks = that._genericCallbacks.Remove(weakDelegate.callback);
+						// This weak reference ensure that the closure will not link
+						// the caller and the callee, in the same way "newValueActionWeak"
+						// does not link the callee to the caller.
+						var that = instanceRef.Target as DependencyObjectStore;
+
+							if (that != null)
+							{
+							// Delegates integrate a null check when removing new delegates.
+							that._genericCallbacks = that._genericCallbacks.Remove(weakDelegate.callback);
+							}
+
+							weakDelegate.release.Dispose();
+
+						// Force a closure on the callback, to make its lifetime as long
+						// as the subscription being held by the callee.
+						handler = null!;
 					}
-
-					weakDelegate.release.Dispose();
-
-					// Force a closure on the callback, to make its lifetime as long
-					// as the subscription being held by the callee.
-					handler = null!;
-				}
-			);
+				);
+			}
 		}
 
 		/// <summary>
@@ -824,41 +840,58 @@ namespace Windows.UI.Xaml
 		/// <param name="callback">A callback to be called</param>
 		internal IDisposable RegisterParentChangedCallback(object key, ParentChangedCallback callback)
 		{
-			var wr = WeakReferencePool.RentWeakReference(this, callback);
-
-			ParentChangedCallback weakDelegate =
-				(s, _, e) => (wr.Target as ParentChangedCallback)?.Invoke(s, key, e);
-
-			_parentChangedCallbacks = _parentChangedCallbacks.Add(weakDelegate);
-
-			// This weak reference ensure that the closure will not link
-			// the caller and the callee, in the same way "newValueActionWeak"
-			// does not link the callee to the caller.
-			var instanceRef = ThisWeakReference;
-
-			void Cleanup()
+			if (ReferenceEquals(callback.Target, ActualInstance))
 			{
-				var that = instanceRef.Target as DependencyObjectStore;
+				_parentChangedCallbacks = _parentChangedCallbacks.Add(callback);
 
-				if (that != null)
+				return Disposable.Create(() => _parentChangedCallbacks = _parentChangedCallbacks.Remove(callback));
+			}
+			else
+			{
+				var wr = WeakReferencePool.RentWeakReference(this, callback);
+
+				ParentChangedCallback weakDelegate =
+					(s, _, e) => (wr.Target as ParentChangedCallback)?.Invoke(s, key, e);
+
+				_parentChangedCallbacks = _parentChangedCallbacks.Add(weakDelegate);
+
+				// This weak reference ensure that the closure will not link
+				// the caller and the callee, in the same way "newValueActionWeak"
+				// does not link the callee to the caller.
+				var instanceRef = ThisWeakReference;
+
+				void Cleanup()
 				{
-					// Delegates integrate a null check when removing new delegates.
-					that._parentChangedCallbacks = that._parentChangedCallbacks.Remove(weakDelegate);
+					var that = instanceRef.Target as DependencyObjectStore;
+
+					if (that != null)
+					{
+						// Delegates integrate a null check when removing new delegates.
+						that._parentChangedCallbacks = that._parentChangedCallbacks.Remove(weakDelegate);
+					}
+
+					WeakReferencePool.ReturnWeakReference(that, wr);
+
+					// Force a closure on the callback, to make its lifetime as long
+					// as the subscription being held by the callee.
+					callback = null!;
 				}
 
-				WeakReferencePool.ReturnWeakReference(that, wr);
-
-				// Force a closure on the callback, to make its lifetime as long
-				// as the subscription being held by the callee.
-				callback = null!;
+				return new DispatcherConditionalDisposable(
+					callback.Target,
+					instanceRef.CloneWeakReference(),
+					Cleanup
+				);
 			}
-
-			return new DispatcherConditionalDisposable(
-				callback.Target,
-				instanceRef.CloneWeakReference(),
-				Cleanup
-			);
 		}
+
+		/// <summary>
+		/// Registers to parent changes for self
+		/// </summary>
+		/// <param name="key">A key to be passed to the callback parameter.</param>
+		/// <param name="callback">A callback to be called</param>
+		internal void RegisterParentChangedCallbackStrong(object key, ParentChangedCallback callback)
+			=> _parentChangedCallbacks = _parentChangedCallbacks.Add((s, _, e) => callback(s, key, e));
 
 		internal (object? value, DependencyPropertyValuePrecedences precedence) GetValueUnderPrecedence(DependencyProperty property, DependencyPropertyValuePrecedences precedence)
 		{
@@ -1691,9 +1724,9 @@ namespace Windows.UI.Xaml
 			// Raise the common property change callback of WinUI
 			// This is raised *after* the data bound properties are updated
 			// but before the registered property callbacks
-			if (actualInstanceAlias is UIElement uiElt)
+			if (actualInstanceAlias is IDependencyObjectInternal doInternal)
 			{
-				uiElt.OnPropertyChanged2(eventArgs);
+				doInternal.OnPropertyChanged2(eventArgs);
 			}
 
 			// Raise the changes for the callbacks register through RegisterPropertyChangedCallback.

@@ -48,6 +48,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			private readonly INamedTypeSymbol? _bindableAttributeSymbol;
 			private readonly INamedTypeSymbol? _iFrameworkElementSymbol;
 			private readonly INamedTypeSymbol? _frameworkElementSymbol;
+			private readonly bool _isUnoSolution;
 
 			public SerializationMethodsGenerator(GeneratorExecutionContext context)
 			{
@@ -66,6 +67,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				_bindableAttributeSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.Data.BindableAttribute");
 				_iFrameworkElementSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.IFrameworkElement);
 				_frameworkElementSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.FrameworkElement");
+				_isUnoSolution = _context.GetMSBuildPropertyValue("_IsUnoUISolution") == "true";
 			}
 
 			public override void VisitNamedType(INamedTypeSymbol type)
@@ -116,7 +118,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 				if (isDependencyObject)
 				{
-					if (_context.GetMSBuildPropertyValue("_IsUnoUISolution") != "true")
+					if (!_isUnoSolution)
 					{
 						if (typeSymbol.Is(_iosViewSymbol))
 						{
@@ -162,9 +164,11 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 								builder.AppendLineInvariant(@"[global::Windows.UI.Xaml.Data.Bindable]");
 							}
 
-							using (builder.BlockInvariant($"partial class {typeSymbol.Name} : IDependencyObjectStoreProvider, IWeakReferenceProvider"))
+							var internalDependencyObject = _isUnoSolution && !typeSymbol.IsSealed ? ", IDependencyObjectInternal" : "";
+
+							using (builder.BlockInvariant($"partial class {typeSymbol.Name} : IDependencyObjectStoreProvider, IWeakReferenceProvider{internalDependencyObject}"))
 							{
-								GenerateDependencyObjectImplementation(builder);
+								GenerateDependencyObjectImplementation(typeSymbol, builder);
 								GenerateIBinderImplementation(typeSymbol, builder);
 							}
 						}
@@ -851,7 +855,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 			}
 
-			private static void GenerateDependencyObjectImplementation(IndentedStringBuilder builder)
+			private void GenerateDependencyObjectImplementation(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
 			{
 				builder.AppendLineInvariant(@"private DependencyObjectStore __storeBackingField;");
 				builder.AppendLineInvariant(@"public Windows.UI.Core.CoreDispatcher Dispatcher => Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher;");
@@ -890,6 +894,16 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				builder.AppendLineInvariant("public long RegisterPropertyChangedCallback(DependencyProperty dp, DependencyPropertyChangedCallback callback) => __Store.RegisterPropertyChangedCallback(dp, callback);");
 
 				builder.AppendLineInvariant("public void UnregisterPropertyChangedCallback(DependencyProperty dp, long token) => __Store.UnregisterPropertyChangedCallback(dp, token);");
+
+				if (_isUnoSolution && !typeSymbol.IsSealed)
+				{
+					builder.AppendLineInvariant("void IDependencyObjectInternal.OnPropertyChanged2(global::Windows.UI.Xaml.DependencyPropertyChangedEventArgs args) => OnPropertyChanged2(args);");
+
+					if (typeSymbol.GetMethodsWithName("OnPropertyChanged2").None(m => m.Parameters.Length == 1))
+					{
+						builder.AppendLineInvariant("internal virtual void OnPropertyChanged2(global::Windows.UI.Xaml.DependencyPropertyChangedEventArgs args) {{ }}");
+					}
+				}
 			}
 		}
 	}

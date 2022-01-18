@@ -20,31 +20,28 @@ namespace Windows.UI.Xaml
 	/// </remarks>
     internal class DispatcherConditionalDisposable : ConditionalDisposable
 	{
-		private readonly WeakReference _conditionSource;
+		private readonly Action _action;
 
-		public DispatcherConditionalDisposable(object target, WeakReference conditionSource, Action action) : base(target, Wrap(action), conditionSource)
+		public DispatcherConditionalDisposable(object target, WeakReference conditionSource, Action action) : base(target, conditionSource)
 		{
-			_conditionSource = conditionSource;
+			_action = action;
 		}
 
-		private static Action Wrap(Action action)
+		protected override void TargetFinalized()
 		{
-			return () => 
+			if (CoreDispatcher.Main.HasThreadAccess)
 			{
-				if (CoreDispatcher.Main.HasThreadAccess)
-				{
-					action();
-				}
-				else
-				{
-					CoreDispatcher.Main.RunIdleAsync(
-						delegate
-						{
-							action();
-						}
-					);
-				}
-			};
+				_action();
+			}
+			else
+			{
+				Uno.UI.Dispatching.CoreDispatcher.Main.RunIdleAsync(
+					delegate
+					{
+						_action();
+					}
+				);
+			}
 		}
 	}
 }

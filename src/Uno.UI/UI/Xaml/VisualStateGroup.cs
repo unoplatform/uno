@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml
 			IsAutoPropertyInheritanceEnabled = false;
 			InitializeBinder();
 
-			this.RegisterParentChangedCallback(this, OnParentChanged);
+			this.RegisterParentChangedCallbackStrong(this, OnParentChanged);
 		}
 
 		public VisualState CurrentState => _current.state;
