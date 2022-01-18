@@ -11,20 +11,26 @@ namespace Uno.UITest.Helpers.Queries;
 internal static class QueryExtensions
 {
 	public static IEnumerable<QueryResult> WaitForElement(this SkiaApp app, string elementName)
-		=> new QueryEx(app, elementName).Execute();
+		=> QueryEx.Any(app).Marked(elementName).Execute();
 
 	public static QueryEx Marked(this SkiaApp app, string elementName)
-		=> new(app, elementName);
+		=> QueryEx.Any(app).Marked(elementName);
 
-	public static void FastTap(this QueryEx query)
+	public static void Tap(this QueryEx query)
 	{
 		var bounds = query.Execute().Single().Rect;
 
 		query.App.TapCoordinates((float)(bounds.X + bounds.Width / 2), (float)(bounds.Y + bounds.Height / 2));
 	}
 
+	public static void Tap(this SkiaApp app, string elementName)
+		=> app.Marked(elementName).Tap();
+
+	public static void FastTap(this QueryEx query)
+		=> query.Tap();
+
 	public static void FastTap(this SkiaApp app, string elementName)
-		=> app.Marked(elementName).FastTap();
+		=> app.Marked(elementName).Tap();
 
 	public static object GetDependencyPropertyValue(this QueryEx query, string propertyName)
 	{

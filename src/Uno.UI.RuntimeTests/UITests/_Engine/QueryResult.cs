@@ -7,9 +7,9 @@ namespace Uno.UITest.Helpers.Queries;
 
 internal class QueryResult
 {
-	private readonly UIElement _element;
+	private readonly FrameworkElement _element;
 
-	public QueryResult(UIElement element)
+	public QueryResult(FrameworkElement element)
 	{
 		_element = element;
 	}

@@ -54,7 +54,7 @@ namespace Windows.UI.Input
 			props.IsXButton2Pressed = muxProps.IsXButton2Pressed;
 			props.IsBarrelButtonPressed = muxProps.IsBarrelButtonPressed;
 			props.IsEraser = muxProps.IsEraser;
-			props.Pressure = muxProps.Pressure
+			props.Pressure = muxProps.Pressure;
 			props.Orientation = muxProps.Orientation;
 			props.ContactRect = muxProps.ContactRect;
 			props.TouchConfidence = muxProps.TouchConfidence;
