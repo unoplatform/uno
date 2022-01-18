@@ -16,6 +16,13 @@ namespace Windows.UI.Xaml.Media.Animation
 		private WeakReference<DependencyObject> _targetElement;
 		private BindingPath _propertyInfo;
 		private List<ITimelineListener> _timelineListeners = new();
+		private List<EventHandler<object>> _completedHandlers = new();
+
+		public event EventHandler<object> Completed
+		{
+			add => _completedHandlers.Add(value);
+			remove => _completedHandlers.Remove(value);
+		}
 
 		public Timeline()
 		{
@@ -87,8 +94,6 @@ namespace Windows.UI.Xaml.Media.Animation
 			DependencyProperty.Register("RepeatBehavior", typeof(RepeatBehavior), typeof(Timeline), new FrameworkPropertyMetadata(new RepeatBehavior()));
 
 
-		public event EventHandler<object> Completed;
-
 		void ITimeline.RegisterListener(ITimelineListener listener)
 			=> _timelineListeners.Add(listener);
 
@@ -97,7 +102,10 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		protected void OnCompleted()
 		{
-			Completed?.Invoke(this, null);
+			for (int i = 0; i < _completedHandlers.Count; i++)
+			{
+				_completedHandlers[i].Invoke(this, null);
+			}
 
 			for (var i = 0; i < _timelineListeners.Count; i++)
 			{
