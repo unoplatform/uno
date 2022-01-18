@@ -294,7 +294,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				var measured = PrepareLayout(false);
+				var measured = PrepareLayoutIfNeeded(false);
 				if (_lastElement != null && HasDynamicElementSizes)
 				{
 					if (ScrollOrientation == Orientation.Vertical)
@@ -339,7 +339,7 @@ namespace Windows.UI.Xaml.Controls
 				Owner.ReloadDataIfNeeded();
 			}
 
-			PrepareLayout(true);
+			PrepareLayoutIfNeeded(true);
 		}
 
 		public override void PrepareForCollectionViewUpdates(UICollectionViewUpdateItem[] updateItems)
@@ -410,7 +410,7 @@ namespace Windows.UI.Xaml.Controls
 		public CGSize SizeThatFits(CGSize size)
 		{
 			TrySetHasConsumedUnusedSpace();
-			return PrepareLayout(false, size);
+			return PrepareLayoutIfNeeded(false, size);
 		}
 
 		/// <summary>
@@ -421,7 +421,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <returns>The total collection size</returns>
 		/// <remarks>This is called by overridden methods which need to know the total dimensions of the panel content. If a full relayout is required,
 		/// it calls <see cref="PrepareLayoutInternal(bool, bool, CGSize)"/>; otherwise it returns a cached value.</remarks>
-		private CGSize PrepareLayout(bool createLayoutInfo, CGSize? size = null)
+		private CGSize PrepareLayoutIfNeeded(bool createLayoutInfo, CGSize? size = null)
 		{
 			using (
 			   _trace.WriteEventActivity(
