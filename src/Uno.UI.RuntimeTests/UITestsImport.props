@@ -2,13 +2,9 @@
 
 	<ItemGroup>
 		<!-- File path or directy with globbing relative to SamplesApp\SamplesApp.UITests directory -->
-		<UITests Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\Windows_UI_Xaml_Input\NestedHandling_Tests.cs" />
+		<UITests Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\**\Windows_UI_Xaml_Input\NestedHandling_Tests.cs" />
+		<UITests Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\**\Windows_UI_Xaml_Controls\ListViewTests\Selection_Pointers.cs" />
 	</ItemGroup>
-
-	<!--<ItemGroup>
-		--><!-- Maps patterns to files --><!--
-		<UITestFiles Include="@(UITests->'$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\%(filename)')" />
-	</ItemGroup>-->
 
 	<ItemGroup>
 		<Compile Include="@(UITests)">
