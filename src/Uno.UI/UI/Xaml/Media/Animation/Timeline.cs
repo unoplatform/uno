@@ -15,6 +15,7 @@ namespace Windows.UI.Xaml.Media.Animation
 	{
 		private WeakReference<DependencyObject> _targetElement;
 		private BindingPath _propertyInfo;
+		private List<ITimelineListener> _timelineListeners = new();
 
 		public Timeline()
 		{
@@ -87,16 +88,30 @@ namespace Windows.UI.Xaml.Media.Animation
 
 
 		public event EventHandler<object> Completed;
-		internal event EventHandler<object> Failed;
 
-		event EventHandler<object> ITimeline.Failed
+		void ITimeline.RegisterListener(ITimelineListener listener)
+			=> _timelineListeners.Add(listener);
+
+		void ITimeline.UnregisterListener(ITimelineListener listener)
+			=> _timelineListeners.Remove(listener);
+
+		protected void OnCompleted()
 		{
-			add => Failed += value;
-			remove => Failed += value;
+			Completed?.Invoke(this, null);
+
+			for (var i = 0; i < _timelineListeners.Count; i++)
+			{
+				_timelineListeners[i].ChildCompleted(this);
+			}
 		}
 
-		protected void OnCompleted() => Completed?.Invoke(this, null);
-		protected void OnFailed() => Failed?.Invoke(this, null);
+		protected void OnFailed()
+		{
+			for (var i = 0; i < _timelineListeners.Count; i++)
+			{
+				_timelineListeners[i].ChildFailed(this);
+			}
+		}
 
 		/// <summary>
 		/// Compute duration of the Timeline. Sometimes it's define by components.
