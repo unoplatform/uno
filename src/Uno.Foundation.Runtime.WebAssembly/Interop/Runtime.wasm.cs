@@ -283,7 +283,13 @@ namespace Uno.Foundation
 			}
 			else
 			{
-				var commandBuilder = new IndentedStringBuilder();
+				var commandBuilder =
+#if DEBUG
+					new IndentedStringBuilder();
+#else
+					new StringBuilder();
+#endif
+
 				commandBuilder.Append("(function() {");
 
 				var parameters = formattable.GetArguments();
@@ -304,7 +310,11 @@ namespace Uno.Foundation
 					}
 				}
 
+#if DEBUG
 				commandBuilder.AppendFormatInvariant(formattable.Format, parameters);
+#else
+				commandBuilder.AppendFormat(CultureInfo.InvariantCulture, formattable.Format, parameters);
+#endif
 				commandBuilder.Append("return \"ok\"; })();");
 
 				command = commandBuilder.ToString();
