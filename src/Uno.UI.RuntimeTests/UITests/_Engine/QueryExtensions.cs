@@ -8,19 +8,26 @@ using Uno.UITest;
 
 namespace Uno.UITest.Helpers.Queries;
 
+internal static class Helpers
+{
+	internal static SkiaApp App { get; set; }
+}
+
 internal static class QueryExtensions
 {
+	private static SkiaApp App => Helpers.App;
+
 	public static IEnumerable<QueryResult> WaitForElement(this SkiaApp app, string elementName)
-		=> QueryEx.Any(app).Marked(elementName).Execute();
+		=> app.Query(q => q.Marked(elementName));
 
 	public static QueryEx Marked(this SkiaApp app, string elementName)
-		=> QueryEx.Any(app).Marked(elementName);
+		=> new(q => q.Marked(elementName));
 
 	public static void Tap(this QueryEx query)
 	{
-		var bounds = query.Execute().Single().Rect;
+		var bounds = App.Query(query).Single().Rect;
 
-		query.App.TapCoordinates((float)(bounds.X + bounds.Width / 2), (float)(bounds.Y + bounds.Height / 2));
+		App.TapCoordinates((float)(bounds.X + bounds.Width / 2), (float)(bounds.Y + bounds.Height / 2));
 	}
 
 	public static void Tap(this SkiaApp app, string elementName)
@@ -34,7 +41,7 @@ internal static class QueryExtensions
 
 	public static object GetDependencyPropertyValue(this QueryEx query, string propertyName)
 	{
-		var elt = query.Execute().Single().Element;
+		var elt = App.Query(query).Single().Element;
 		var property = elt.GetType().GetProperty(propertyName + "Property", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)?.GetValue(elt) as DependencyProperty;
 		if (property is null)
 		{
@@ -43,4 +50,7 @@ internal static class QueryExtensions
 
 		return elt.GetValue(property);
 	}
+
+	public static T GetDependencyPropertyValue<T>(this QueryEx query, string propertyName)
+		=> (T)query.GetDependencyPropertyValue(propertyName);
 }

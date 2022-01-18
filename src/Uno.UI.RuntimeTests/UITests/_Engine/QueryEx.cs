@@ -9,30 +9,29 @@ namespace Uno.UITest.Helpers.Queries;
 
 internal class QueryEx
 {
-	private readonly Func<IEnumerable<QueryResult>> _query;
+	private readonly Func<IEnumerable<QueryResult>, IEnumerable<QueryResult>> _query;
 
-	public static QueryEx Any(SkiaApp app)
-		=> new(
-			app,
-			() => TestServices.WindowHelper.WindowContent
-				.GetAllChildren(includeCurrent: true)
-				.OfType<FrameworkElement>()
-				.Select(elt => new QueryResult(elt)));
+	public static QueryEx Any
+		=> new((Func<IEnumerable<QueryResult>, IEnumerable<QueryResult>>)(elts => elts));
 
-	private QueryEx(SkiaApp app, Func<IEnumerable<QueryResult>> query)
-	{
-		App = app;
-		_query = query;
-	}
+	public QueryEx(Func<QueryEx, QueryEx> query)
+		=> _query = elts => query(Any)._query(elts);
 
-	public SkiaApp App { get; }
+	private QueryEx(Func<IEnumerable<QueryResult>, IEnumerable<QueryResult>> query)
+		=> _query = query;
 
 	public QueryEx Marked(string marked)
-		=> new (App, () => _query().Where(result => result.Element.Name == marked));
+		=> new (elts => _query(elts).Where(result => result.Element.Name == marked));
 
 	public QueryEx AtIndex(int index)
-		=> new(App, () => _query().Skip(index).Take(1));
+		=> new(elts => _query(elts).Skip(index).Take(1));
 
-	internal IEnumerable<QueryResult> Execute()
-		=> _query();
+	public QueryEx Descendant()
+		=> new(elts => _query(elts)
+			.SelectMany(result => result.Element.GetAllChildren(includeCurrent: false))
+			.OfType<FrameworkElement>()
+			.Select(elt => new QueryResult(elt)));
+
+	internal IEnumerable<QueryResult> Execute(IEnumerable<QueryResult> elements)
+		=> _query(elements);
 }

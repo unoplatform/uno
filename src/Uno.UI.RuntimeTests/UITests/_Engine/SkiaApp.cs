@@ -10,7 +10,9 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.Web.Http;
 using Private.Infrastructure;
+using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests;
+using Uno.UITest.Helpers.Queries;
 
 namespace Uno.UITest;
 
@@ -23,6 +25,9 @@ public class SkiaApp
 		_input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Cannot create input injector");
 
 		CurrentPointerType = DefaultPointerType;
+
+		// Does not supports parallel testing ... but we are running on the UI thread anyway, we cannot use concurrent testing!
+		Uno.UITest.Helpers.Queries.Helpers.App = this;
 	}
 
 	/// <summary>
@@ -48,12 +53,34 @@ public class SkiaApp
 			sample.UpdateLayout();
 			await TestServices.WindowHelper.WaitForIdle();
 
-			await Task.Delay(10);
+			// Give ability to visually render the content ...
+			// TODO: Make it reliable instead of that random value!
+			await Task.Delay(33);
 		}
 		else
 		{
 			throw new InvalidOperationException($"Failed to run sample '{metadataName}'");
 		}
+	}
+
+	internal QueryResult[] Query(QueryEx query)
+	{
+		var all = TestServices.WindowHelper.WindowContent
+			.GetAllChildren(includeCurrent: true)
+			.OfType<FrameworkElement>()
+			.Select(elt => new QueryResult(elt));
+
+		return query.Execute(all).ToArray();
+	}
+
+	internal QueryResult[] Query(Func<QueryEx, QueryEx> query)
+	{
+		var all = TestServices.WindowHelper.WindowContent
+			.GetAllChildren(includeCurrent: true)
+			.OfType<FrameworkElement>()
+			.Select(elt => new QueryResult(elt));
+
+		return query(QueryEx.Any).Execute(all).ToArray();
 	}
 
 	public IDisposable SetPointer(PointerDeviceType type)
@@ -64,7 +91,7 @@ public class SkiaApp
 		return new DisposableAction(() => CurrentPointerType = previous);
 	}
 
-	public void TapCoordinates(float x, float y)
+	public void TapCoordinates(double x, double y)
 	{
 		switch (CurrentPointerType)
 		{
@@ -95,7 +122,7 @@ public class SkiaApp
 							PixelLocation =
 							{
 								PositionX = (int)x,
-								PositionY = (int)x
+								PositionY = (int)y
 							},
 							PointerOptions = InjectedInputPointerOptions.FirstButton
 								| InjectedInputPointerOptions.PointerUp
