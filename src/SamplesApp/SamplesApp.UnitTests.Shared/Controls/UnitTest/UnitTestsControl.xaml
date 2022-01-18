@@ -70,6 +70,13 @@
 									IsChecked="True"
 									not_skia:Content="➰ Auto retry"
 									skia:Content="Auto retry" />
+								<ToggleButton
+									x:Name="contentScroller"
+									IsChecked="True"
+									not_skia:Content="⇲ Content scroll"
+									skia:Content="Content scroll"
+									Checked="UpdateContentScroller"
+									Unchecked="UpdateContentScroller"/>
 							</StackPanel>
 						</Flyout>
 					</Button.Flyout>
@@ -185,7 +192,7 @@
 			x:Name="unitTestContentScroller">
 			<ContentControl
 				x:Name="unitTestContentRoot"
-				HorizontalContentAlignment="Center"
+					HorizontalContentAlignment="Center"
 				VerticalAlignment="Center"
 				MinWidth="1600"
 				MinHeight="1600" />
