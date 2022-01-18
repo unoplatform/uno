@@ -208,7 +208,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			UpdateCaretColor();
 
-			_textBox.GetTarget()?.Focus(FocusState.Pointer);
+			if (_textBox.GetTarget() is TextBox textBox && textBox.FocusState == FocusState.Unfocused)
+			{
+				textBox.Focus(FocusState.Pointer);
+			}
 
 			return base.BecomeFirstResponder();
 		}

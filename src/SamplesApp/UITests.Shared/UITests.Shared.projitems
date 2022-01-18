@@ -1917,6 +1917,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_IsTabStop.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_Margin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5761,6 +5765,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_Formatting_Flicker.xaml.cs">
       <DependentUpon>TextBox_Formatting_Flicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_IsTabStop.xaml.cs">
+      <DependentUpon>TextBox_IsTabStop.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_Margin.xaml.cs">
       <DependentUpon>TextBox_Margin.xaml</DependentUpon>

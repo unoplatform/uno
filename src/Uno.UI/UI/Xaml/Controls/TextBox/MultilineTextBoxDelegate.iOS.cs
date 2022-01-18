@@ -28,8 +28,10 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		public override void EditingStarted(UITextView textView)
 		{
-			// Using FocusState.Pointer by default until need to distinguish between Pointer, Programmatic and Keyboard.
-			_textBox.GetTarget()?.Focus(FocusState.Pointer);
+			if (_textBox.GetTarget() is TextBox textBox && textBox.FocusState == FocusState.Unfocused)
+			{
+				textBox.Focus(FocusState.Pointer);
+			}
 		}
 
 		/// <summary>
@@ -40,8 +42,10 @@ namespace Windows.UI.Xaml.Controls
 			var bindableTextView = textView as MultilineTextBoxView;
 			bindableTextView?.OnTextChanged();
 
-			// TODO: Remove when Focus is implemented correctly
-			_textBox.GetTarget()?.Unfocus();
+			if (_textBox.GetTarget() is TextBox textBox && textBox.FocusState != FocusState.Unfocused)
+			{
+				textBox.Unfocus();
+			}
 		}
 
 		public override bool ShouldChangeText(UITextView textView, NSRange range, string text)
@@ -70,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 
 			return false;
 		}
-        
+
 		public override bool ShouldEndEditing(UITextView textView)
 		{
 			var bindableTextView = textView as MultilineTextBoxView;
@@ -79,7 +83,13 @@ namespace Windows.UI.Xaml.Controls
 
 		public override bool ShouldBeginEditing(UITextView textView)
 		{
-			return !_textBox.GetTarget()?.IsReadOnly ?? false;
+			if (_textBox.GetTarget() is not TextBox textBox)
+			{
+				return false;
+			}
+
+			// Both IsReadOnly = true and IsTabStop = false can prevent editing
+			return !textBox.IsReadOnly && textBox.IsTabStop;
 		}
 	}
 }

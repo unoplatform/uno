@@ -57,6 +57,13 @@ namespace Windows.UI.Xaml.Input
 					_skipNativeFocus = false;
 					break;
 				}
+				else if (
+					parent is FrameworkElement fe &&
+					(!fe.AllowFocusOnInteraction || !fe.IsTabStop))
+				{
+					// Stop propagating, this element does not want to receive focus.
+					break;
+				}
 				else if (parent is Control control && control.IsFocusable)
 				{
 					ProcessControlFocused(control);
@@ -87,7 +94,7 @@ namespace Windows.UI.Xaml.Input
 
 			if (focusManager?.InitialFocus == true)
 			{
-				 // Do not focus natively on initial focus so the soft keyboard is not opened
+				// Do not focus natively on initial focus so the soft keyboard is not opened
 				return false;
 			}
 

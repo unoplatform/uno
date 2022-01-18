@@ -694,6 +694,14 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
+		private protected override void OnIsTabStopChanged(bool oldValue, bool newValue)
+		{
+			base.OnIsTabStopChanged(oldValue, newValue);
+			OnIsTabStopChangedPartial();
+		}
+
+		partial void OnIsTabStopChangedPartial();
+
 		internal override void UpdateFocusState(FocusState focusState)
 		{
 			var oldValue = FocusState;

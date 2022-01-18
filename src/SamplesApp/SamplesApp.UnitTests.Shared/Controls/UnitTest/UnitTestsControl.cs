@@ -57,6 +57,8 @@ namespace Uno.UI.Samples.Tests
 		private readonly TimeSpan DefaultUnitTestTimeout = TimeSpan.FromSeconds(60);
 #endif
 
+		private ApplicationView _applicationView;
+
 		private List<TestCase> _testCases = new List<TestCase>();
 		private TestRun _currentRun;
 
@@ -88,6 +90,8 @@ namespace Uno.UI.Samples.Tests
 			SampleChooserViewModel.Instance.SampleChanging += OnSampleChanging;
 			EnableConfigPersistence();
 			OverrideDebugProviderAsserts();
+
+			_applicationView = ApplicationView.GetForCurrentView();
 		}
 
 		private static void OverrideDebugProviderAsserts()
@@ -154,6 +158,7 @@ namespace Uno.UI.Samples.Tests
 				stopButton.IsEnabled = _cts != null && !_cts.IsCancellationRequested || !isRunning;
 				runningState.Text = isRunning ? "Running" : "Finished";
 				runStatus.Text = message;
+				_applicationView.Title = message;
 			}
 
 			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, Setter);

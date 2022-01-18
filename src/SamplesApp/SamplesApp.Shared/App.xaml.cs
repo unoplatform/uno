@@ -29,6 +29,7 @@ using Windows.UI.ViewManagement;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Logging;
+using Uno;
 
 #if !HAS_UNO
 using Uno.Logging;
@@ -466,6 +467,9 @@ namespace SamplesApp
 		{
 #if __IOS__
 			Uno.UI.FeatureConfiguration.CommandBar.AllowNativePresenterContent = true;
+#endif
+#if __IOS__ || __ANDROID__
+			WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus = true;
 #endif
 		}
 
