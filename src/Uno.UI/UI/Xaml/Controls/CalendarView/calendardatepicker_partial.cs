@@ -68,8 +68,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			DefaultStyleKey = typeof(CalendarDatePicker);
 
-			this.RegisterDefaultValueProvider(SetPropertyDefaultValue);
-
 			m_isYearDecadeViewDimensionRequested = false;
 			m_colsInYearDecadeView = 0;
 			m_rowsInYearDecadeView = 0;

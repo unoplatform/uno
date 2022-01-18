@@ -180,8 +180,6 @@ namespace Windows.UI.Xaml.Controls
 
 		public DatePicker()
 		{
-			this.RegisterDefaultValueProvider(GetDefaultValue2);
-
 			m_numberOfYears = 0;
 			m_reactionToSelectionChangeAllowed = true;
 			m_isInitializing = true;
@@ -1012,7 +1010,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Gives the default values for our properties.
-		private bool GetDefaultValue2(
+		internal override bool GetDefaultValue2(
 			 DependencyProperty pDP,
 			 out object pValue)
 		{

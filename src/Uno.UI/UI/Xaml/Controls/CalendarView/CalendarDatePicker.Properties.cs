@@ -179,7 +179,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private const int DEFAULT_MIN_MAX_DATE_YEAR_OFFSET = 100;
 
-		private bool SetPropertyDefaultValue(DependencyProperty property, out object value)
+		internal override bool GetDefaultValue2(DependencyProperty property, out object value)
 		{
 			Calendar GetOrCreateGregorianCalendar()
 			{
@@ -241,8 +241,7 @@ namespace Windows.UI.Xaml.Controls
 				return true;
 			}
 
-			value = default;
-			return false;
+			return base.GetDefaultValue2(property, out value);
 		}
 	}
 }

@@ -444,9 +444,6 @@ namespace Windows.UI.Xaml
 			uielement?.InvalidateRender();
 		}
 
-		internal static void RegisterDefaultValueProvider(this IDependencyObjectStoreProvider storeProvider, DependencyObjectStore.DefaultValueProvider provider)
-			=> storeProvider.Store.RegisterDefaultValueProvider(provider);
-
 		/// <summary>
 		/// See <see cref="DependencyObjectStore.RegisterPropertyChangedCallbackStrong(ExplicitPropertyChangedCallback)"/> for more details
 		/// </summary>
