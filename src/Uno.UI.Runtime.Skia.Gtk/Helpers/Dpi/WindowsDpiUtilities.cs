@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 namespace Uno.UI.Runtime.Skia.Helpers.Windows;
 
 // note this class considers dpix = dpiy
-public static class DpiUtilities
+internal static class DpiUtilities
 {
 	[DllImport("libgdk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
 	static extern IntPtr gdk_win32_window_get_handle(IntPtr window);

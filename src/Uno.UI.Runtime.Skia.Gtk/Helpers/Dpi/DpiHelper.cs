@@ -6,7 +6,7 @@ using Uno.UI.Runtime.Skia.Helpers.Windows;
 
 namespace Uno.UI.Runtime.Skia.Helpers.Dpi
 {
-	public class DpiHelper
+	internal class DpiHelper
 	{
 		private readonly Window _window;
 		private readonly StartStopEventWrapper<EventHandler> _dpiChangedWrapper;

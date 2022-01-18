@@ -53,12 +53,6 @@ namespace Uno.UI.Runtime.Skia
 		private void Invalidate()
 			=> QueueDrawArea(0, 0, 10000, 10000);
 
-		private void Screen_MonitorsChanged(object sender, EventArgs e)
-		{
-			UpdateDpi();
-			Invalidate();
-		}
-
 		protected override bool OnDrawn(Cairo.Context cr)
 		{
 			int width, height;
@@ -119,9 +113,6 @@ namespace Uno.UI.Runtime.Skia
 			bitmap.Encode(wstream, SKEncodedImageFormat.Png, 100);
 		}
 
-		private void UpdateDpi()
-		{
-			_dpi = (float)_displayInformation.RawPixelsPerViewPixel;
-		}
+		private void UpdateDpi() => _dpi = (float)_displayInformation.RawPixelsPerViewPixel;
 	}
 }

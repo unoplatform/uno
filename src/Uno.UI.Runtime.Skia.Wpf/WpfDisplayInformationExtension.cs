@@ -1,6 +1,5 @@
 ﻿#nullable enable
 using System;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media;
 using Windows.Graphics.Display;
@@ -31,11 +30,6 @@ namespace Uno.UI.Skia.Platform
 		public double RawPixelsPerViewPixel => LogicalDpi / 96.0f;
 
 		public ResolutionScale ResolutionScale => (ResolutionScale)(int)(RawPixelsPerViewPixel * 100.0);
-
-		public void StartDpiChanged() { }
-
-		public void StopDpiChanged() { }
-
 
 		private void OnDpiChanged(object sender, DpiChangedEventArgs e)
 		{
