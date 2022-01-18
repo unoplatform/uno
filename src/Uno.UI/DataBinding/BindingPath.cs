@@ -586,28 +586,7 @@ namespace Uno.UI.DataBinding
 						}
 					}
 
-					_propertyChanged.Disposable =
-							SubscribeToPropertyChanged((previousValue, newValue, shouldRaiseValueChanged) =>
-								{
-									if (_isDataContextChanging && newValue is UnsetValue)
-									{
-										// We're in a "resubscribe" scenario when the DataContext is provided a new non-null value, so we don't need to
-										// pass through the DependencyProperty.UnsetValue.
-										// We simply discard this update.
-										return;
-									}
-
-									if (Next != null)
-									{
-										Next.DataContext = newValue;
-									}
-
-									if (shouldRaiseValueChanged && previousValue != newValue)
-									{
-										RaiseValueChanged(newValue);
-									}
-								}
-							);
+					_propertyChanged.Disposable = SubscribeToPropertyChanged();
 
 					RaiseValueChanged(Value);
 
@@ -625,6 +604,27 @@ namespace Uno.UI.DataBinding
 					RaiseValueChanged(null);
 
 					_propertyChanged.Disposable = null;
+				}
+			}
+
+			private void OnPropertyChanged(object? previousValue, object? newValue, bool shouldRaiseValueChanged)
+			{
+				if (_isDataContextChanging && newValue is UnsetValue)
+				{
+					// We're in a "resubscribe" scenario when the DataContext is provided a new non-null value, so we don't need to
+					// pass through the DependencyProperty.UnsetValue.
+					// We simply discard this update.
+					return;
+				}
+
+				if (Next != null)
+				{
+					Next.DataContext = newValue;
+				}
+
+				if (shouldRaiseValueChanged && previousValue != newValue)
+				{
+					RaiseValueChanged(newValue);
 				}
 			}
 
@@ -801,9 +801,9 @@ namespace Uno.UI.DataBinding
 			/// </summary>
 			/// <param name="action">The action to execute when new values are raised</param>
 			/// <returns>A disposable to be called when the subscription is disposed.</returns>
-			private IDisposable SubscribeToPropertyChanged(PropertyChangedHandler action)
+			private IDisposable SubscribeToPropertyChanged()
 			{
-				var disposables = new CompositeDisposable((_propertyChangedHandlers.Count * 3));
+				var disposables = new CompositeDisposable(_propertyChangedHandlers.Count);
 
 				for (var i = 0; i < _propertyChangedHandlers.Count; i++)
 				{
@@ -814,14 +814,9 @@ namespace Uno.UI.DataBinding
 					{
 						var newValue = GetSourceValue();
 
-						action(previousValue, newValue, shouldRaiseValueChanged: true);
+						OnPropertyChanged(previousValue, newValue, shouldRaiseValueChanged: true);
 
 						previousValue = newValue;
-					};
-
-					Action disposeAction = () =>
-					{
-						action(previousValue, DependencyProperty.UnsetValue, shouldRaiseValueChanged: false);
 					};
 
 					var handlerDisposable = handler(_dataContextWeakStorage!, PropertyName, updateProperty);
@@ -836,9 +831,12 @@ namespace Uno.UI.DataBinding
 						//
 						// All registrations made by _propertyChangedHandlers are
 						// weak with regards to the delegates that are provided.
-						disposables.Add(() => updateProperty = null);
-						disposables.Add(handlerDisposable);
-						disposables.Add(disposeAction);
+						disposables.Add(() =>
+						{
+							updateProperty = null;
+							handlerDisposable.Dispose();
+							OnPropertyChanged(previousValue, DependencyProperty.UnsetValue, shouldRaiseValueChanged: false);
+						});
 					}
 				}
 
