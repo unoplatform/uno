@@ -888,6 +888,22 @@ var Uno;
                 element.style.setProperty("color", this.numberToCssColor(color));
             }
             /**
+            * Sets the fill property of the specified element
+            */
+            setElementFill(elementId, color) {
+                this.setElementColorInternal(elementId, color);
+                return "ok";
+            }
+            setElementFillNative(pParam) {
+                const params = WindowManagerSetElementFillParams.unmarshal(pParam);
+                this.setElementFillInternal(params.HtmlId, params.Color);
+                return true;
+            }
+            setElementFillInternal(elementId, color) {
+                const element = this.getView(elementId);
+                element.style.setProperty("fill", this.numberToCssColor(color));
+            }
+            /**
             * Sets the background color property of the specified element
             */
             setElementBackgroundColor(pParam) {
@@ -5342,6 +5358,19 @@ class WindowManagerSetElementBackgroundGradientParams {
 class WindowManagerSetElementColorParams {
     static unmarshal(pData) {
         const ret = new WindowManagerSetElementColorParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.Color = Module.HEAPU32[(pData + 4) >> 2];
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetElementFillParams {
+    static unmarshal(pData) {
+        const ret = new WindowManagerSetElementFillParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
