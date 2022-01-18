@@ -8645,6 +8645,12 @@
 			<Member
 				fullName="System.Void Uno.Media.StreamGeometryContext.BeginFigure(Windows.Foundation.Point startPoint, System.Boolean isFilled, System.Boolean isClosed)"
 				reason="isClosed paramater is not used and is misleading" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Media.Animation.Timeline.add_Completed(System.EventHandler`1&lt;System.Object&gt; value)"
+				reason="Incorrectly marked as removed because removed from an internal interface" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Media.Animation.Timeline.remove_Completed(System.EventHandler`1&lt;System.Object&gt; value)"
+				reason="Incorrectly marked as removed because removed from an internal interface" />
 		</Methods>
 	</IgnoreSet>
 

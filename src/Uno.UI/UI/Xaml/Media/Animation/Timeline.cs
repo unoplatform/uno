@@ -16,12 +16,12 @@ namespace Windows.UI.Xaml.Media.Animation
 		private WeakReference<DependencyObject> _targetElement;
 		private BindingPath _propertyInfo;
 		private List<ITimelineListener> _timelineListeners = new();
-		private List<EventHandler<object>> _completedHandlers = new();
+		private List<EventHandler<object>> _completedHandlers;
 
 		public event EventHandler<object> Completed
 		{
-			add => _completedHandlers.Add(value);
-			remove => _completedHandlers.Remove(value);
+			add => (_completedHandlers ??= new()).Add(value);
+			remove => _completedHandlers?.Remove(value);
 		}
 
 		public Timeline()
@@ -102,9 +102,12 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		protected void OnCompleted()
 		{
-			for (int i = 0; i < _completedHandlers.Count; i++)
+			if (_completedHandlers != null)
 			{
-				_completedHandlers[i].Invoke(this, null);
+				for (int i = 0; i < _completedHandlers.Count; i++)
+				{
+					_completedHandlers[i].Invoke(this, null);
+				}
 			}
 
 			for (var i = 0; i < _timelineListeners.Count; i++)
