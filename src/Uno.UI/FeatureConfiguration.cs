@@ -272,6 +272,15 @@ namespace Uno.UI
 			/// </summary>
 			public static bool UseNativePopup { get; set; } = true;
 #endif
+
+			/// <summary>
+			/// By default, light dismiss is disabled in UWP/WinUI unless
+			/// <see cref="Windows.UI.Xaml.Controls.Primitives.Popup.IsLightDismissEnabled"/> is explicitly set to true.
+			/// In earlier versions of Uno Platform, this property defaulted
+			/// to true, which was an incorrect behavior. If your code depends on this
+			/// legacy behavior, use this property to override it.
+			/// </summary>
+			public static bool EnableLightDismissByDefault { get; set; } = false;
 		}
 
 		public static class ProgressRing
