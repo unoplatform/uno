@@ -1597,7 +1597,7 @@ namespace Windows.UI.Xaml.Controls
 					var distance = ((Rect)layoutAttributes.Frame).GetDistance(adjustedPoint);
 					if (distance == 0)
 					{
-						// Fats path: we found the element that is under the element
+						// Fast path: we found the element that is under the element
 						return layoutAttributes;
 					}
 

@@ -132,16 +132,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)] // TODO: support drag-and-drop testing on mobile https://github.com/unoplatform/Uno.UITest/issues/31
+		[Ignore("https://github.com/unoplatform/Uno.UITest/pull/35")]
 		public void When_Reorder_OnBottomPadding() => Test_ReorderWithPadding(null, -25, 5);
 
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)] // TODO: support drag-and-drop testing on mobile https://github.com/unoplatform/Uno.UITest/issues/31
+		[Ignore("https://github.com/unoplatform/Uno.UITest/pull/35")]
 		public void When_Reorder_OnLeftPadding() => Test_ReorderWithPadding(25, null, 1);
 
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)] // TODO: support drag-and-drop testing on mobile https://github.com/unoplatform/Uno.UITest/issues/31
+		[Ignore("https://github.com/unoplatform/Uno.UITest/pull/35")]
 		public void When_Reorder_OnRightPadding() => Test_ReorderWithPadding(-25, null, 4);
 
 		private void Test_Reorder(int from, int to, int? expectedTo = null)
