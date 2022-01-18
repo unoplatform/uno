@@ -408,7 +408,7 @@ namespace Windows.UI.Xaml
 		/// <param name="handler">A callback to be called</param>
 		/// <returns>A disposable that cancels the subscription.</returns>
 		internal static void RegisterParentChangedCallbackStrong(this DependencyObject instance, object key, ParentChangedCallback handler)
-			=> GetStore(instance).RegisterParentChangedCallback(key, handler);
+			=> GetStore(instance).RegisterParentChangedCallbackStrong(key, handler);
 
 		/// <summary>
 		/// Determines if the specified dependency property is set.
