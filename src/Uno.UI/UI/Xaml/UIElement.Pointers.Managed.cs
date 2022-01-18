@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml
 			// TODO: Use pointer ID for the predicates
 			private static readonly Predicate<UIElement> _isOver = e => e.IsPointerOver;
 
-			private readonly Dictionary<Pointer, UIElement> _pressedElements = new Dictionary<Pointer, UIElement>();
+			private readonly Dictionary<Pointer, UIElement> _pressedElements = new();
 
 			public PointerManager()
 			{

@@ -1220,11 +1220,22 @@ namespace Windows.UI.Xaml
 				&& PointerCapture.TryGet(pointer, out var capture)
 				&& capture.IsTarget(this, PointerCaptureKind.Explicit);
 
+		internal bool IsCaptured(Pointer pointer, PointerCaptureKind kinds)
+			=> PointerCapture.TryGet(pointer, out var capture)
+				&& capture.IsTarget(this, kinds);
+
 		public bool CapturePointer(Pointer value)
 		{
 			var pointer = value ?? throw new ArgumentNullException(nameof(value));
 
 			return Capture(pointer, PointerCaptureKind.Explicit, _pendingRaisedEvent.args);
+		}
+
+		private protected bool CapturePointer(Pointer value, PointerCaptureKind kind)
+		{
+			var pointer = value ?? throw new ArgumentNullException(nameof(value));
+
+			return Capture(pointer, kind, _pendingRaisedEvent.args);
 		}
 
 		public void ReleasePointerCapture(Pointer value)

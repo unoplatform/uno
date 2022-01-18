@@ -67,6 +67,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private string _currentState;
 		private uint _goToStateRequest;
 		private DateTime _pauseStateUpdateUntil;
+		private bool _isPressed;
 
 		public SelectorItem()
 		{
@@ -137,7 +138,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private void UpdateCommonStates(ManipulationUpdateKind manipulationUpdate = ManipulationUpdateKind.None)
 		{
-			var state = GetState(IsEnabled, IsSelected, IsPointerOver, HasPointerCapture);
+			var state = GetState(IsEnabled, IsSelected, IsPointerOver, _isPressed);
 
 			// On Windows, the pressed state appears only after a few, and won't appear at all if you quickly start to scroll with the finger.
 			// So here we make sure to delay the beginning of a manipulation to match this behavior (and avoid flickering when scrolling)
@@ -283,10 +284,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			if (ShouldHandlePressed
 				&& IsItemClickEnabled
 				&& args.GetCurrentPoint(this).Properties.IsLeftButtonPressed
-				&& CapturePointer(args.Pointer))
+				&& CapturePointer(args.Pointer, PointerCaptureKind.Implicit))
 			{
-				args.Handled = true;
+				_isPressed = true;
 			}
+
+			args.Handled = ShouldHandlePressed;
 
 			Focus(FocusState.Pointer);
 
@@ -298,21 +301,23 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
 		{
 			ManipulationUpdateKind update;
-			if (IsCaptured(args.Pointer))
+			if (IsCaptured(args.Pointer, PointerCaptureKind.Implicit))
 			{
+				_isPressed = false;
+
 				update = ManipulationUpdateKind.Clicked;
 				Selector?.OnItemClicked(this);
 
 				// This should be automatically done by the pointers due to release, but if for any reason
 				// the state is invalid, this makes sure to not keep invalid capture longer than needed.
-				ReleasePointerCapture(args.Pointer);
-
-				args.Handled = true;
+				ReleasePointerCapture(args.Pointer.UniqueId, kinds: PointerCaptureKind.Implicit);
 			}
 			else
 			{
 				update = ManipulationUpdateKind.End;
 			}
+
+			args.Handled = ShouldHandlePressed;
 
 			base.OnPointerReleased(args);
 			UpdateCommonStatesWithoutNeedsLayout(update);
@@ -322,7 +327,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		protected override void OnPointerExited(PointerRoutedEventArgs args)
 		{
 			// Not like a Button, if the pointer goes out of this item, we abort the ItemClick
-			ReleasePointerCapture(args.Pointer);
+			_isPressed = false;
+			ReleasePointerCapture(args.Pointer.UniqueId, kinds: PointerCaptureKind.Implicit);
 
 			base.OnPointerExited(args);
 			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.End);
@@ -331,6 +337,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// <inheritdoc />
 		protected override void OnPointerCanceled(PointerRoutedEventArgs args)
 		{
+			_isPressed = false;
+
 			base.OnPointerCanceled(args);
 			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.End);
 		}
@@ -338,6 +346,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// <inheritdoc />
 		protected override void OnPointerCaptureLost(PointerRoutedEventArgs args)
 		{
+			_isPressed = false;
+
 			base.OnPointerCaptureLost(args);
 			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.End);
 		}
