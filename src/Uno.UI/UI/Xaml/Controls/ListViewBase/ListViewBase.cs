@@ -704,7 +704,8 @@ namespace Windows.UI.Xaml.Controls
 #if __IOS__ || __ANDROID__ // TODO: The managed ListView should similarly go through the recycling to use the proper container matching the new template
 					if (HasTemplateChanged(((FrameworkElement)container).DataContext, item))
 					{
-						// If items are using different templates, we should go through the native 
+						// If items are using different templates, we should go through the native replace operation, to use a container
+						// with the right template.
 						NativeReplaceItems(i, 1, section);
 					}
 					else

@@ -12,7 +12,7 @@ using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml
 {
-	public static class DependencyObjectExtensions
+	public static partial class DependencyObjectExtensions
 	{
 		private static ConditionalWeakTable<object, AttachedDependencyObject> _objectData
 			= new ConditionalWeakTable<object, AttachedDependencyObject>();
