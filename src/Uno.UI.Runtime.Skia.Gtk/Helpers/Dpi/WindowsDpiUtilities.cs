@@ -8,6 +8,13 @@ namespace Uno.UI.Runtime.Skia.Helpers.Windows;
 // note this class considers dpix = dpiy
 internal static class DpiUtilities
 {
+	internal enum MonitorDpiType
+	{
+		Effective = 0,
+		Angular = 1,
+		Raw = 2,
+	}
+
 	[DllImport("libgdk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
 	static extern IntPtr gdk_win32_window_get_handle(IntPtr window);
 
@@ -109,11 +116,4 @@ internal static class DpiUtilities
 
 		// the rest is not implemented as we don't need it
 	}
-}
-
-public enum MonitorDpiType
-{
-	Effective = 0,
-	Angular = 1,
-	Raw = 2,
 }

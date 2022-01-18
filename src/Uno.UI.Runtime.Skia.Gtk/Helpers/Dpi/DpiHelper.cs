@@ -68,17 +68,15 @@ namespace Uno.UI.Runtime.Skia.Helpers.Dpi
 
 		private float GetNativeDpi()
 		{
+			if (_window.Window == null)
+			{
+				return 96.0f; // GDK Window not initialized yet, default to 96 DPI.
+			}
+
 			float dpi;
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 			{
-				if (_window.Window != null)
-				{
-					dpi = DpiUtilities.GetDpiForWindow(DpiUtilities.GetWin32Hwnd(_window.Window));
-				}
-				else
-				{
-					dpi = 96.0f; // GDK Window not initialized yet, default to 96 DPI.
-				}
+				dpi = DpiUtilities.GetDpiForWindow(DpiUtilities.GetWin32Hwnd(_window.Window));
 			}
 			else
 			{
