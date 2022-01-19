@@ -49,7 +49,7 @@ namespace Windows.UI.Composition
 
 			if (RootVisual != null)
 			{
-				foreach (var visual in RootVisual.Children)
+				foreach (var visual in RootVisual.GetChildrenInRenderOrder())
 				{
 					RenderVisual(surface, info, visual);
 				}
@@ -88,14 +88,14 @@ namespace Windows.UI.Composition
 				switch (visual)
 				{
 					case SpriteVisual spriteVisual:
-						foreach (var inner in spriteVisual.Children)
+						foreach (var inner in spriteVisual.GetChildrenInRenderOrder())
 						{
 							RenderVisual(surface, info, inner);
 						}
 						break;
 
 					case ContainerVisual containerVisual:
-						foreach (var inner in containerVisual.Children)
+						foreach (var inner in containerVisual.GetChildrenInRenderOrder())
 						{
 							RenderVisual(surface, info, inner);
 						}
