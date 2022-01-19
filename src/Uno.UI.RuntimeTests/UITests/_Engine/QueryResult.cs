@@ -16,11 +16,13 @@ internal class QueryResult
 		_element = element;
 	}
 
-	public UIElement Element => _element;
+	public FrameworkElement Element => _element;
 
 	public AppRect Rect => _element.TransformToVisual(null).TransformBounds(new Rect(default, _element.RenderSize));
 
+#if HAS_UNO
 	/// <inheritdoc />
 	public override string ToString()
 		=> Element.GetDebugIdentifier();
+#endif
 }
