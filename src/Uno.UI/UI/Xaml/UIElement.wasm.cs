@@ -576,6 +576,14 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
+		public UIElement ReplaceChild(int index, UIElement child)
+		{
+			var previous = _children[index];
+			RemoveChild(previous);
+			AddChild(child, index);
+			return previous;
+		}
+
 		internal void MoveChildTo(int oldIndex, int newIndex)
 		{
 			var view = _children[oldIndex];
