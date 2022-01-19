@@ -786,9 +786,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnLoaded();
 
-			ResetDataContextOnFirstLoad();
-
-			SetUpdateTemplate();
+			if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
+			{
+				SetUpdateTemplate();
+			}
 
 			// When the control is loaded, set the TemplatedParent
 			// as it may have been reset during the last unload.
@@ -797,7 +798,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
-		private void ResetDataContextOnFirstLoad()
+		private bool ResetDataContextOnFirstLoad()
 		{
 			if (!_firstLoadResetDone)
 			{
@@ -808,7 +809,11 @@ namespace Windows.UI.Xaml.Controls
 				this.ClearValue(DataContextProperty, DependencyPropertyValuePrecedences.Local);
 
 				TrySetDataContextFromContent(Content);
+
+				return true;
 			}
+
+			return false;
 		}
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
@@ -846,7 +851,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					IsUsingDefaultTemplate = false;
 				}
-			}	
+			}
 
 			if (Content != null
 				&& !(Content is View)
@@ -855,7 +860,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Use basic default root for non-View Content if no template is supplied
 				SetContentTemplateRootToPlaceholder();
-			}			
+			}
 
 			if (ContentTemplateRoot == null && Content is View contentView && dataTemplate == null)
 			{

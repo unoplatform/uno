@@ -63,6 +63,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private DataTemplate GreenSelectableTemplate => _testsResources["GreenSelectableTemplate"] as DataTemplate;
 		private DataTemplate BeigeSelectableTemplate => _testsResources["BeigeSelectableTemplate"] as DataTemplate;
 
+		private DataTemplate SelectableBoundTemplateA => _testsResources["SelectableBoundTemplateA"] as DataTemplate;
+		private DataTemplate SelectableBoundTemplateB => _testsResources["SelectableBoundTemplateB"] as DataTemplate;
+
 		private DataTemplate BoundHeightItemTemplate => _testsResources["BoundHeightItemTemplate"] as DataTemplate;
 
 		[TestInitialize]
@@ -1640,6 +1643,68 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(listBounds.Y, itemBounds.Y); // Top of first item should align with top of list
 		}
 
+		[TestMethod]
+		public async Task When_TemplateSelector_And_List_Reloaded()
+		{
+			var itemsSource = new ObservableCollection<SourceAwareItem>();
+			var selector = new SourceAwareSelector(itemsSource, SelectableBoundTemplateA, SelectableBoundTemplateB);
+			var counter = 0;
+
+			AddItem();
+			AddItem();
+			AddItem();
+
+			var list = new ListView()
+			{
+				Width = 200,
+				Height = 300,
+				ItemsSource = itemsSource,
+				ItemTemplateSelector = selector
+			};
+
+			WindowHelper.WindowContent = list;
+
+			await WindowHelper.WaitForLoaded(list);
+
+			AddItem();
+			AddItem();
+			AddItem();
+
+			RemoveItem();
+			RemoveItem();
+			RemoveItem();
+
+			await WindowHelper.WaitFor(() =>
+			{
+				var firstContainer = (list.ContainerFromIndex(0) as ListViewItem);
+				return firstContainer?.Content == itemsSource[0];
+			});
+
+			WindowHelper.WindowContent = null; // Unload list
+
+			await Task.Delay(100);
+
+			WindowHelper.WindowContent = list;
+
+			await WindowHelper.WaitForLoaded(list);
+
+			if (selector.Exception is { } ex)
+			{
+				throw ex;
+			}
+
+			void AddItem()
+			{
+				itemsSource.Add(new SourceAwareItem { No = counter });
+				counter++;
+			}
+
+			void RemoveItem()
+			{
+				itemsSource.RemoveAt(0);
+			}
+		}
+
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
 
 		private class When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext : System.ComponentModel.INotifyPropertyChanged
@@ -1836,5 +1901,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+	}
+
+	public class SourceAwareItem
+	{
+		public int No { get; set; }
+
+		public override string ToString() => $"Item {No}";
+	}
+
+	public class SourceAwareSelector : DataTemplateSelector
+	{
+		private readonly IList<SourceAwareItem> _itemsSource;
+		public DataTemplate _dataTemplateA;
+		private readonly DataTemplate _dataTemplateB;
+
+		public Exception Exception { get; private set; }
+
+		public SourceAwareSelector(IList<SourceAwareItem> itemsSource, DataTemplate dataTemplateA, DataTemplate dataTemplateB)
+		{
+			_itemsSource = itemsSource;
+			_dataTemplateA = dataTemplateA;
+			_dataTemplateB = dataTemplateB;
+		}
+
+		protected override DataTemplate SelectTemplateCore(object item)
+		{
+			if (
+#if __IOS__
+				// On iOS, the template selector may be invoked with a null item. This is arguably also a bug, but not presently under test here.
+				item != null &&
+#endif
+					!_itemsSource.Contains(item)
+			)
+			{
+				var ex = new InvalidOperationException($"Selector called for item not in source ({item})");
+				Exception = Exception ?? ex;
+				throw ex;
+			}
+
+			if (item is SourceAwareItem dataItem && dataItem.No > 2)
+			{
+				return _dataTemplateB;
+			}
+
+			else
+			{
+				return _dataTemplateA;
+			}
+		}
 	}
 }

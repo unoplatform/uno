@@ -255,6 +255,21 @@
 		</Border>
 	</DataTemplate>
 
+	<DataTemplate x:Key="SelectableBoundTemplateA">
+		<Border BorderBrush="Green"
+				BorderThickness="2"
+				CornerRadius="5">
+			<TextBlock Text="{Binding}" />
+		</Border>
+	</DataTemplate>
+	<DataTemplate x:Key="SelectableBoundTemplateB">
+		<Border BorderBrush="Red"
+				BorderThickness="2"
+				CornerRadius="5">
+			<TextBlock Text="{Binding}" />
+		</Border>
+	</DataTemplate>
+
 	<DataTemplate x:Key="BoundHeightItemTemplate">
 		<Border x:Name="ItemBorder"
 				MinWidth="130"
