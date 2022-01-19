@@ -1,4 +1,4 @@
-<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives" xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals" xmlns:media="using:Microsoft.UI.Xaml.Media" xmlns:contract4Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:contract4NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:primitiveContract7Present="using:Microsoft.UI.Xaml.Controls.Primitives?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract5Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)" xmlns:contract5NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)" xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)" xmlns:animation="clr-namespace:Windows.UI.Xaml.Media.Animation" xmlns:ios="http://uno.ui/ios" xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:xamarin="http://uno.ui/xamarin" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:uBehaviors="using:Uno.UI.Behaviors" xmlns:local="using:Windows.UI.Xaml.Controls" xmlns:wasm="http://uno.ui/wasm" xmlns:automation="clr-namespace:Windows.UI.Xaml.Automation" xmlns:uno="using:Uno.UI.Xaml.Controls" mc:Ignorable="d xamarin ios android not_wasm wasm netstdref macos skia not_netstdref" xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:u="using:Uno.UI.Controls" xmlns:android="http://uno.ui/android" xmlns:not_wasm="http://uno.ui/not_wasm" xmlns:macos="http://uno.ui/macos" xmlns:not_macos="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:navViewLocal="using:Windows.UI.Xaml.Controls" xmlns:legacy="using:Windows.UI.Xaml.Controls" xmlns:netstdref="http://uno.ui/netstdref" xmlns:skia="http://uno.ui/skia" xmlns:native="using:UIKit" xmlns:not_mux="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:localConverters="using:GenericApp.Views.Converters" xmlns:not_netstdref="http://uno.ui/not_netstdref" xmlns:native_ios="using:UIKit" xmlns:native_android="using:Android.Widget" xmlns:itemswrapgridpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypePresent(Windows.UI.Xaml.Controls.ItemsWrapGrid)" xmlns:itemswrapgridnotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Windows.UI.Xaml.Controls.ItemsWrapGrid)" xmlns:uwpOnly="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Microsoft.UI.Xaml.FrameworkElement)" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives" xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals" xmlns:media="using:Microsoft.UI.Xaml.Media" xmlns:contract4Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:contract4NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:primitiveContract7Present="using:Microsoft.UI.Xaml.Controls.Primitives?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract5Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)" xmlns:contract5NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)" xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)" xmlns:animation="clr-namespace:Windows.UI.Xaml.Media.Animation" xmlns:ios="http://uno.ui/ios" xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:xamarin="http://uno.ui/xamarin" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:uBehaviors="using:Uno.UI.Behaviors" xmlns:local="using:Windows.UI.Xaml.Controls" xmlns:wasm="http://uno.ui/wasm" xmlns:automation="clr-namespace:Windows.UI.Xaml.Automation" xmlns:uno="using:Uno.UI.Xaml.Controls" mc:Ignorable="d xamarin ios android not_wasm wasm netstdref macos skia not_netstdref" xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:u="using:Uno.UI.Controls" xmlns:android="http://uno.ui/android" xmlns:not_wasm="http://uno.ui/not_wasm" xmlns:localUIXC="using:Uno.UI.Xaml.Controls" xmlns:macos="http://uno.ui/macos" xmlns:not_macos="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:navViewLocal="using:Windows.UI.Xaml.Controls" xmlns:wuxPrimitives="using:Windows.UI.Xaml.Controls.Primitives" xmlns:legacy="using:Windows.UI.Xaml.Controls" xmlns:netstdref="http://uno.ui/netstdref" xmlns:skia="http://uno.ui/skia" xmlns:native="using:UIKit" xmlns:not_mux="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:not_netstdref="http://uno.ui/not_netstdref" xmlns:native_ios="using:UIKit" xmlns:native_android="using:Android.Widget" xmlns:itemswrapgridpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypePresent(Windows.UI.Xaml.Controls.ItemsWrapGrid)" xmlns:itemswrapgridnotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Windows.UI.Xaml.Controls.ItemsWrapGrid)" xmlns:uwpOnly="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Microsoft.UI.Xaml.FrameworkElement)" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
   <ResourceDictionary.ThemeDictionaries>
     <ResourceDictionary x:Key="Default">
       <StaticResource x:Key="ColorPickerSliderThumbBackground" ResourceKey="SystemControlForegroundBaseHighBrush" />
@@ -2312,7 +2312,7 @@
       <StaticResource x:Key="SwipeItemPostThresholdExecuteBackground" ResourceKey="SystemControlBackgroundAccentBrush" />
     </ResourceDictionary>
   </ResourceDictionary.ThemeDictionaries>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\ColorPicker\ColorPicker.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\ColorPicker\ColorPicker.xaml-->
   <Style TargetType="controls:ColorPicker" BasedOn="{StaticResource DefaultColorPickerStyle}" />
   <Style x:Key="DefaultColorPickerStyle" TargetType="controls:ColorPicker">
     <Setter Property="MaxWidth" Value="392" />
@@ -2736,12 +2736,12 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\ColorPicker\ColorPicker_themeresources.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\ColorPicker\ColorPicker_themeresources.xaml-->
   <Style x:Key="ColorPickerBorderStyle" TargetType="Shape">
     <Setter Property="Stroke" Value="{ThemeResource SystemControlForegroundListLowBrush}" />
     <Setter Property="StrokeThickness" Value="2" />
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\ColorPicker\ColorSpectrum.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\ColorPicker\ColorSpectrum.xaml-->
   <Style TargetType="primitives:ColorSpectrum">
     <Setter Property="ManipulationMode" Value="None" />
     <Setter Property="UseSystemFocusVisuals" Value="False" />
@@ -2823,7 +2823,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\Expander\Expander.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\Expander\Expander.xaml-->
   <Style TargetType="controls:Expander" BasedOn="{StaticResource DefaultExpanderStyle}" />
   <Style x:Key="DefaultExpanderStyle" TargetType="controls:Expander">
     <!-- We won't make this control tab stoppable, since the tab focus should go
@@ -2947,7 +2947,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\Expander\Expander_themeresources.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\Expander\Expander_themeresources.xaml-->
   <x:Double x:Key="ExpanderMinHeight">48</x:Double>
   <HorizontalAlignment x:Key="ExpanderHeaderHorizontalContentAlignment">Stretch</HorizontalAlignment>
   <VerticalAlignment x:Key="ExpanderHeaderVerticalContentAlignment">Center</VerticalAlignment>
@@ -3382,9 +3382,9 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\InfoBadge\InfoBadge.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\InfoBadge\InfoBadge.xaml-->
   <Style TargetType="controls:InfoBadge" BasedOn="{StaticResource DefaultInfoBadgeStyle}" />
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\InfoBadge\InfoBadge_themeresources.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\InfoBadge\InfoBadge_themeresources.xaml-->
   <Style TargetType="controls:InfoBadge" x:Key="DefaultInfoBadgeStyle">
     <Setter Property="MinHeight" Value="{ThemeResource InfoBadgeMinHeight}" />
     <Setter Property="MinWidth" Value="{ThemeResource InfoBadgeMinWidth}" />
@@ -3486,7 +3486,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\InfoBar\InfoBar.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\InfoBar\InfoBar.xaml-->
   <Style TargetType="controls:InfoBar">
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="CloseButtonStyle" Value="{StaticResource InfoBarCloseButtonStyle}" />
@@ -3613,7 +3613,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\InfoBar\InfoBar_themeresources.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\InfoBar\InfoBar_themeresources.xaml-->
   <x:Double x:Key="InfoBarTitleFontSize">14</x:Double>
   <FontWeight x:Key="InfoBarTitleFontWeight">SemiBold</FontWeight>
   <x:Double x:Key="InfoBarMessageFontSize">14</x:Double>
@@ -3655,10 +3655,10 @@
       <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
     </Style.Setters>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\NavigationView\NavigationBackButton_rs1_themeresources_v1.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\NavigationView\NavigationBackButton_rs1_themeresources_v1.xaml-->
   <x:Double x:Key="NavigationBackButtonWidth">40</x:Double>
   <x:Double x:Key="NavigationBackButtonHeight">40</x:Double>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\NavigationView\NavigationBackButton_v1.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\NavigationView\NavigationBackButton_v1.xaml-->
   <Style x:Key="NavigationBackButtonNormalStyle" TargetType="Button">
     <Setter Property="Background" Value="{ThemeResource NavigationViewBackButtonBackground}" />
     <Setter Property="Foreground" Value="{ThemeResource NavigationViewItemForeground}" />
@@ -3728,7 +3728,7 @@
   <Style x:Key="NavigationBackButtonSmallStyle" TargetType="Button" BasedOn="{StaticResource NavigationBackButtonNormalStyle}">
     <Setter Property="Margin" Value="4,2,0,2" />
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\NavigationView\NavigationView_rs1_themeresources_v1.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\NavigationView\NavigationView_rs1_themeresources_v1.xaml-->
   <Thickness x:Key="NavigationViewAutoSuggestBoxMargin">10,0,16,0</Thickness>
   <Thickness x:Key="TopNavigationViewAutoSuggestBoxMargin">12,0,12,0</Thickness>
   <x:Double x:Key="PaneToggleButtonSize">40</x:Double>
@@ -4656,7 +4656,7 @@
     <Setter Property="Margin" Value="12,5,0,11" />
     <Setter Property="VerticalAlignment" Value="Stretch" />
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\NavigationView\NavigationView_v1.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\NavigationView\NavigationView_v1.xaml-->
   <Style TargetType="controls:NavigationView">
     <Setter Property="PaneToggleButtonStyle" Value="{StaticResource PaneToggleButtonStyle}" />
     <Setter Property="IsTabStop" Value="False" />
@@ -5150,7 +5150,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\NumberBox\NumberBox.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\NumberBox\NumberBox.xaml-->
   <Style TargetType="controls:NumberBox">
     <Setter Property="SelectionHighlightColor" Value="{ThemeResource TextControlSelectionHighlightColor}" />
     <!--UNO TODO  <contract7Present:Setter Property="SelectionFlyout" Value="{StaticResource TextControlCommandBarSelectionFlyout}" /> -->
@@ -5437,14 +5437,14 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\NumberBox\NumberBox_themeresources.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\NumberBox\NumberBox_themeresources.xaml-->
   <Thickness x:Key="NumberBoxSpinButtonBorderThickness">0,1,1,1</Thickness>
   <Thickness x:Key="NumberBoxIconMargin">10,0,0,0</Thickness>
   <x:Double x:Key="NumberBoxPopupHorizonalOffset">-20</x:Double>
   <x:Double x:Key="NumberBoxPopupVerticalOffset">8</x:Double>
   <x:Double x:Key="NumberBoxPopupShadowDepth">16</x:Double>
   <Thickness x:Key="NumberBoxPopupIndicatorMargin">0,0,8,0</Thickness>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\PagerControl\PagerControl_themeresources_v2.5.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\PagerControl\PagerControl_themeresources_v2.5.xaml-->
   <x:Double x:Key="PagerControlNumberPanelButtonWidth">32</x:Double>
   <Style x:Key="PagerControlPageNavigationButtonStyle" TargetType="Button">
     <Setter Property="Background" Value="Transparent" />
@@ -5546,7 +5546,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\PagerControl\PagerControl_v2.5.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\PagerControl\PagerControl_v2.5.xaml-->
   <Style TargetType="controls:PagerControl">
     <Setter Property="AutomationProperties.LandmarkType" Value="Navigation" />
     <Setter Property="FirstButtonStyle" Value="{StaticResource PagerControlPageNavigationButtonStyle}" />
@@ -5723,7 +5723,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\Primitives\CornerRadius_themeresources.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\Primitives\CornerRadius_themeresources.xaml-->
   <primitives:CornerRadiusFilterConverter x:Key="TopCornerRadiusFilterConverter" Filter="Top" />
   <primitives:CornerRadiusFilterConverter x:Key="RightCornerRadiusFilterConverter" Filter="Right" />
   <primitives:CornerRadiusFilterConverter x:Key="BottomCornerRadiusFilterConverter" Filter="Bottom" />
@@ -5736,7 +5736,7 @@
   <primitives:CornerRadiusToThicknessConverter x:Key="RightThicknessFilterConverter" ConversionKind="FilterTopAndBottomFromRight" />
   <primitives:CornerRadiusToThicknessConverter x:Key="TabViewLeftInsetCornerConverter" ConversionKind="FilterLeftFromBottomLeft" Multiplier="-1" />
   <primitives:CornerRadiusToThicknessConverter x:Key="TabViewRightInsetCornerConverter" ConversionKind="FilterRightFromBottomRight" Multiplier="-1" />
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\ProgressBar\ProgressBar.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\ProgressBar\ProgressBar.xaml-->
   <Style TargetType="controls:ProgressBar">
     <Setter Property="Foreground" Value="{ThemeResource SystemControlHighlightAccentBrush}" />
     <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
@@ -5897,7 +5897,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRing.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRing.xaml-->
   <Style TargetType="controls:ProgressRing">
     <Setter Property="Foreground" Value="{ThemeResource ProgressRingForegroundThemeBrush}" />
     <!--<Setter Property="Background" Value="{ThemeResource ProgressRingBackgroundThemeBrush}" />-->
@@ -5938,8 +5938,8 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\RadioButtons\RadioButton.xaml-->
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\RadioButtons\RadioButtons.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\RadioButtons\RadioButton.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\RadioButtons\RadioButtons.xaml-->
   <Style TargetType="controls:RadioButtons" BasedOn="{StaticResource DefaultRadioButtonsStyle}" />
   <Style x:Key="DefaultRadioButtonsStyle" TargetType="controls:RadioButtons">
     <Setter Property="IsTabStop" Value="False" />
@@ -5970,11 +5970,11 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\RadioButtons\RadioButtons_themeresources.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\RadioButtons\RadioButtons_themeresources.xaml-->
   <x:Double x:Key="RadioButtonsColumnSpacing">7</x:Double>
   <x:Double x:Key="RadioButtonsRowSpacing">3</x:Double>
   <Thickness x:Key="RadioButtonsTopHeaderMargin">0,0,0,4</Thickness>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\RadioMenuFlyoutItem\RadioMenuFlyoutItem_rs1_themeresources_v1.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\RadioMenuFlyoutItem\RadioMenuFlyoutItem_rs1_themeresources_v1.xaml-->
   <Style TargetType="controls:RadioMenuFlyoutItem" BasedOn="{StaticResource DefaultRadioMenuFlyoutItemStyle}" />
   <Style x:Key="DefaultRadioMenuFlyoutItemStyle" TargetType="controls:RadioMenuFlyoutItem">
     <Setter Property="Background" Value="{ThemeResource MenuFlyoutItemBackground}" />
@@ -6074,10 +6074,10 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\RadioMenuFlyoutItem\RadioMenuFlyoutItem_rs2_themeresources_v1.xaml-->
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\RadioMenuFlyoutItem\RadioMenuFlyoutItem_rs4_themeresources_v1.xaml-->
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\RadioMenuFlyoutItem\RadioMenuFlyoutItem_rs5_themeresources_v1.xaml-->
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\RadioMenuFlyoutItem\RadioMenuFlyoutItem_themeresources.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\RadioMenuFlyoutItem\RadioMenuFlyoutItem_rs2_themeresources_v1.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\RadioMenuFlyoutItem\RadioMenuFlyoutItem_rs4_themeresources_v1.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\RadioMenuFlyoutItem\RadioMenuFlyoutItem_rs5_themeresources_v1.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\RadioMenuFlyoutItem\RadioMenuFlyoutItem_themeresources.xaml-->
   <Style TargetType="MenuFlyoutSubItem" x:Key="RadioMenuFlyoutSubItemStyle" BasedOn="{StaticResource DefaultMenuFlyoutSubItemStyle}">
     <Setter Property="controls:RadioMenuFlyoutItem.AreCheckStatesEnabled" Value="True" />
     <Setter Property="BorderThickness" Value="0" />
@@ -6178,7 +6178,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\RatingControl\RatingControl_themeresources_v1.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\RatingControl\RatingControl_themeresources_v1.xaml-->
   <DataTemplate x:Key="BackgroundGlyphDefaultTemplate">
     <!-- -8, -8 are to compensate for the default scale down, plus factoring in margins -->
     <TextBlock Foreground="{ThemeResource RatingControlUnselectedForeground}" Margin="-8,-8,0,0" FontSize="32" Text="&#xE734;" AutomationProperties.AccessibilityView="Raw" FontFamily="{ThemeResource SymbolThemeFontFamily}" />
@@ -6193,7 +6193,7 @@
   <DataTemplate x:Key="ForegroundImageDefaultTemplate">
     <Image Margin="-8,-8,0,0" AutomationProperties.AccessibilityView="Raw" />
   </DataTemplate>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\RatingControl\RatingControl_v1.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\RatingControl\RatingControl_v1.xaml-->
   <Style TargetType="controls:RatingControl">
     <Setter Property="Height" Value="32" />
     <!-- 9794813: retire these two properties as customisation points once all resource keys available -->
@@ -6259,7 +6259,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\SplitButton\SplitButton.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\SplitButton\SplitButton.xaml-->
   <Style x:Key="SplitButtonInnerButtonStyle" TargetType="Button">
     <!-- TODO: x:Key can removed when #1766 is merged-->
     <Setter Property="Foreground" Value="{ThemeResource SplitButtonForeground}" />
@@ -6466,10 +6466,10 @@
   </Style>
   <Style TargetType="controls:SplitButton" BasedOn="{StaticResource SplitButtonStyle}" />
   <Style TargetType="controls:ToggleSplitButton" BasedOn="{StaticResource SplitButtonStyle}" />
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\SplitButton\SplitButton_themeresources.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\SplitButton\SplitButton_themeresources.xaml-->
   <x:Double x:Key="SplitButtonPrimaryButtonSize">32</x:Double>
   <x:Double x:Key="SplitButtonSecondaryButtonSize">32</x:Double>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\TabView\TabView_themeresources_v1.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\TabView\TabView_themeresources_v1.xaml-->
   <Thickness x:Key="TabViewHeaderPadding">8,8,4,0</Thickness>
   <Thickness x:Key="TabViewItemHeaderPadding">12,8,10,8</Thickness>
   <x:Double x:Key="TabViewItemMaxWidth">240</x:Double>
@@ -6485,7 +6485,7 @@
   <Thickness x:Key="TabViewItemScrollButtonPadding">6,4,10,5</Thickness>
   <x:Double x:Key="TabViewShadowDepth">16</x:Double>
   <Thickness x:Key="TabViewItemSeparatorMargin">0,6,0,6</Thickness>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\TabView\TabView_v1.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\TabView\TabView_v1.xaml-->
   <Style TargetType="controls:TabView" BasedOn="{StaticResource DefaultTabViewStyle}" />
   <Style x:Key="DefaultTabViewStyle" TargetType="controls:TabView">
     <Setter Property="VerticalAlignment" Value="Top" />
@@ -6928,7 +6928,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\TreeView\TreeView.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\TreeView\TreeView.xaml-->
   <DataTemplate x:Key="TreeViewItemDataTemplate">
     <Grid Height="44">
       <TextBlock Text="{Binding Content}" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{ThemeResource BodyTextBlockStyle}" />
@@ -6958,7 +6958,7 @@
     </Setter>
   </Style>
   <Style TargetType="controls:TreeViewItem" BasedOn="{StaticResource MUX_TreeViewItemStyle}" />
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\TreeView\TreeViewItem.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\TreeView\TreeViewItem.xaml-->
   <Style TargetType="controls:TreeViewItem" BasedOn="{StaticResource ListViewItemExpanded}" x:Key="MUX_TreeViewItemStyle">
     <Setter Property="Padding" Value="0" />
     <Setter Property="Background" Value="{ThemeResource TreeViewItemBackground}" />
@@ -7083,9 +7083,9 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\TreeView\TreeView_themeresources.xaml-->
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\TwoPaneView\TwoPaneView_rs1.xaml-->
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\TwoPaneView\TwoPaneView_v1.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\TreeView\TreeView_themeresources.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\TwoPaneView\TwoPaneView_rs1.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\TwoPaneView\TwoPaneView_v1.xaml-->
   <Style x:Key="DefaultTwoPaneViewStyle" TargetType="controls:TwoPaneView">
     <Setter Property="HorizontalAlignment" Value="Stretch" />
     <Setter Property="VerticalAlignment" Value="Stretch" />
@@ -7171,13 +7171,13 @@
     </Setter>
   </Style>
   <Style TargetType="controls:TwoPaneView" BasedOn="{StaticResource DefaultTwoPaneViewStyle}" />
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\Microsoft\UI\Xaml\Styles\Common_themeresources_any.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Styles\Common_themeresources_any.xaml-->
   <x:String x:Key="ControlFastOutSlowInKeySpline">0,0,0,1</x:String>
   <x:String x:Key="ControlNormalAnimationDuration">00:00:00.250</x:String>
   <x:String x:Key="ControlFastAnimationDuration">00:00:00.167</x:String>
   <x:String x:Key="ControlFastAnimationAfterDuration">00:00:00.168</x:String>
   <x:String x:Key="ControlFasterAnimationDuration">00:00:00.083</x:String>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\AppBar\AppBar.xaml-->
+  <!--origin: UI\Xaml\Controls\AppBar\AppBar.xaml-->
   <Thickness x:Key="AppBarButtonContentViewboxMargin">12,10,0,10</Thickness>
   <Thickness x:Key="AppBarButtonContentViewboxCompactMargin">0,10,0,10</Thickness>
   <Thickness x:Key="AppBarButtonContentViewboxCollapsedMargin">0,10,0,0</Thickness>
@@ -8192,7 +8192,7 @@
   <Style TargetType="AppBarButton" BasedOn="{StaticResource XamlDefaultAppBarButton}" />
   <Style TargetType="AppBarToggleButton" BasedOn="{StaticResource XamlDefaultAppBarToggleButton}" />
   <Style TargetType="AppBarSeparator" BasedOn="{StaticResource XamlDefaultAppBarSeparator}" />
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\CalendarView\CalendarDatePicker_themeresources.xaml-->
+  <!--origin: UI\Xaml\Controls\CalendarView\CalendarDatePicker_themeresources.xaml-->
   <Thickness x:Key="CalendarDatePickerTopHeaderMargin">0,0,0,4</Thickness>
   <Style TargetType="CalendarDatePicker" BasedOn="{StaticResource DefaultCalendarDatePicker}" />
   <Style x:Key="DefaultCalendarDatePicker" TargetType="CalendarDatePicker">
@@ -8326,7 +8326,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\CalendarView\CalendarView_themeresources.xaml-->
+  <!--origin: UI\Xaml\Controls\CalendarView\CalendarView_themeresources.xaml-->
   <Style TargetType="CalendarViewDayItem">
     <Setter Property="MinWidth" Value="40" />
     <Setter Property="MinHeight" Value="40" />
@@ -9080,7 +9080,7 @@
       </Setter.Value>
     </Setter>
   </wasm:Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\CommandBar\CommandBar.xaml-->
+  <!--origin: UI\Xaml\Controls\CommandBar\CommandBar.xaml-->
   <Thickness x:Key="CommandBarOverflowPresenterMargin">0,4,0,4</Thickness>
   <Thickness x:Key="CommandBarMoreButtonMargin">14,19,14,0</Thickness>
   <Style x:Key="XamlDefaultCommandBar_EllipsisButton" TargetType="Button">
@@ -9898,7 +9898,7 @@
   </Style>
   <Style x:Key="XamlCommandBar" TargetType="CommandBar" BasedOn="{StaticResource XamlDefaultCommandBar}" />
   <Style TargetType="CommandBar" BasedOn="{StaticResource XamlDefaultCommandBar}" />
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\ContentDialog\ContentDialog.xaml-->
+  <!--origin: UI\Xaml\Controls\ContentDialog\ContentDialog.xaml-->
   <StaticResource x:Key="ContentDialogForeground" ResourceKey="SystemControlPageTextBaseHighBrush" />
   <StaticResource x:Key="ContentDialogBackground" ResourceKey="SystemControlPageBackgroundAltHighBrush" />
   <StaticResource x:Key="ContentDialogBorderBrush" ResourceKey="SystemControlBackgroundBaseLowBrush" />
@@ -10116,7 +10116,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\DatePicker\DatePicker_themeresources.xaml-->
+  <!--origin: UI\Xaml\Controls\DatePicker\DatePicker_themeresources.xaml-->
   <Thickness x:Key="DatePickerTopHeaderMargin">0,0,0,4</Thickness>
   <x:Double x:Key="DatePickerFlyoutPresenterHighlightHeight">40</x:Double>
   <x:Double x:Key="DatePickerFlyoutPresenterItemHeight">40</x:Double>
@@ -10445,7 +10445,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\DatePicker\DateTimePickerFlyout_themeresources.xaml-->
+  <!--origin: UI\Xaml\Controls\DatePicker\DateTimePickerFlyout_themeresources.xaml-->
   <Style x:Key="DateTimePickerFlyoutButtonStyle" TargetType="ButtonBase">
     <Setter Property="Background" Value="{ThemeResource DateTimePickerFlyoutButtonBackground}" />
     <Setter Property="BackgroundSizing" Value="OuterBorderEdge" />
@@ -10493,7 +10493,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\DropDownButton\DropDownButton.xaml-->
+  <!--origin: UI\Xaml\Controls\DropDownButton\DropDownButton.xaml-->
   <Style x:Key="DefaultDropDownButtonStyle" TargetType="controls:DropDownButton">
     <Setter Property="Background" Value="{ThemeResource ButtonBackground}" />
     <Setter Property="Foreground" Value="{ThemeResource ButtonForeground}" />
@@ -10581,7 +10581,7 @@
     </Setter>
   </Style>
   <Style TargetType="controls:DropDownButton" BasedOn="{StaticResource DefaultDropDownButtonStyle}" />
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\FlipView\FlipViewItem_themeresources.xaml-->
+  <!--origin: UI\Xaml\Controls\FlipView\FlipViewItem_themeresources.xaml-->
   <Style x:Key="DefaultFlipViewItemStyle" TargetType="FlipViewItem">
     <Setter Property="Background" Value="{ThemeResource FlipViewItemBackground}" />
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -10609,15 +10609,15 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\FocusVisual\SystemFocusVisual.xaml-->
-  <Style TargetType="local:SystemFocusVisual">
+  <!--origin: UI\Xaml\Controls\FocusVisual\SystemFocusVisual.xaml-->
+  <Style TargetType="localUIXC:SystemFocusVisual">
     <Setter Property="AllowFocusOnInteraction" Value="False" />
     <Setter Property="IsHitTestVisible" Value="False" />
     <Setter Property="IsTapEnabled" Value="False" />
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="local:SystemFocusVisual">
+        <ControlTemplate TargetType="localUIXC:SystemFocusVisual">
           <Border RenderTransform="{Binding Path=FocusedElement.RenderTransform, RelativeSource={RelativeSource TemplatedParent}}" RenderTransformOrigin="{Binding Path=FocusedElement.RenderTransformOrigin, RelativeSource={RelativeSource TemplatedParent}}">
             <Border Background="{x:Null}" BorderBrush="{Binding Path=FocusedElement.FocusVisualPrimaryBrush, RelativeSource={RelativeSource TemplatedParent}}" BorderThickness="{Binding Path=FocusedElement.FocusVisualPrimaryThickness, RelativeSource={RelativeSource TemplatedParent}}" CornerRadius="{Binding Path=FocusedElement.CornerRadius, RelativeSource={RelativeSource TemplatedParent}}" Margin="{Binding Path=FocusedElement.FocusVisualMargin, RelativeSource={RelativeSource TemplatedParent}}">
               <Border BorderBrush="{Binding Path=FocusedElement.FocusVisualSecondaryBrush, RelativeSource={RelativeSource TemplatedParent}}" BorderThickness="{Binding Path=FocusedElement.FocusVisualSecondaryThickness, RelativeSource={RelativeSource TemplatedParent}}" CornerRadius="{Binding Path=FocusedElement.CornerRadius, RelativeSource={RelativeSource TemplatedParent}}" />
@@ -10627,7 +10627,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\MenuBar\MenuBar.xaml-->
+  <!--origin: UI\Xaml\Controls\MenuBar\MenuBar.xaml-->
   <Style x:Key="XamlDefaultMenuBar" TargetType="MenuBar">
     <Setter Property="Background" Value="{ThemeResource MenuBarBackground}" />
     <Setter Property="IsTabStop" Value="False" />
@@ -10659,7 +10659,7 @@
     </Setter>
   </macos:Style>
   <macos:Style TargetType="MenuBar" BasedOn="{StaticResource NativeMenuBar}" />
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\MenuBar\MenuBarItem.xaml-->
+  <!--origin: UI\Xaml\Controls\MenuBar\MenuBarItem.xaml-->
   <Style TargetType="MenuBarItem">
     <Setter Property="Background" Value="{ThemeResource MenuBarItemBackground}" />
     <Setter Property="BorderThickness" Value="{ThemeResource MenuBarItemBorderThickness}" />
@@ -10715,9 +10715,9 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\MenuBar\MenuBar_themeresources.xaml-->
+  <!--origin: UI\Xaml\Controls\MenuBar\MenuBar_themeresources.xaml-->
   <x:Double x:Key="MenuBarHeight">40</x:Double>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\MenuFlyout\MenuFlyout_19h1_themeresources.xaml-->
+  <!--origin: UI\Xaml\Controls\MenuFlyout\MenuFlyout_19h1_themeresources.xaml-->
   <Style TargetType="MenuFlyoutPresenter" x:Key="DefaultMenuFlyoutPresenterStyle">
     <Setter Property="Background" Value="{ThemeResource MenuFlyoutPresenterBackground}" />
     <Setter Property="BorderBrush" Value="{ThemeResource MenuFlyoutPresenterBorderBrush}" />
@@ -10913,7 +10913,7 @@
     </Setter>
   </Style>
   <Style TargetType="MenuFlyoutPresenter" BasedOn="{StaticResource DefaultMenuFlyoutPresenterStyle}" />
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs1_themeresources.xaml-->
+  <!--origin: UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs1_themeresources.xaml-->
   <Thickness x:Key="MenuFlyoutScrollerMargin">0,4,0,4</Thickness>
   <Style TargetType="MenuFlyoutSeparator">
     <Setter Property="Background" Value="{ThemeResource SystemControlForegroundBaseMediumLowBrush}" />
@@ -10926,9 +10926,9 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs2_themeresources.xaml-->
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs4_themeresources.xaml-->
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs5_themeresources.xaml-->
+  <!--origin: UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs2_themeresources.xaml-->
+  <!--origin: UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs4_themeresources.xaml-->
+  <!--origin: UI\Xaml\Controls\MenuFlyout\MenuFlyout_rs5_themeresources.xaml-->
   <Thickness x:Key="MenuFlyoutItemRevealBorderThickness">1</Thickness>
   <Thickness x:Key="ToggleMenuFlyoutItemRevealBorderThickness">1</Thickness>
   <Thickness x:Key="MenuFlyoutSubItemRevealBorderThickness">1</Thickness>
@@ -11269,11 +11269,11 @@
   </Style>
   <Style TargetType="MenuFlyoutItem" BasedOn="{StaticResource MenuFlyoutItemRevealStyle}" />
   <Style TargetType="MenuFlyoutSubItem" BasedOn="{StaticResource MenuFlyoutSubItemRevealStyle}" />
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\NavigationView\NavigationBackButton.xaml-->
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\NavigationView\NavigationBackButton_rs1_themeresources.xaml-->
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\NavigationView\NavigationBackButton_rs4_themeresources.xaml-->
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\NavigationView\NavigationBackButton_rs5_themeresources.xaml-->
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\NavigationView\NavigationView.xaml-->
+  <!--origin: UI\Xaml\Controls\NavigationView\NavigationBackButton.xaml-->
+  <!--origin: UI\Xaml\Controls\NavigationView\NavigationBackButton_rs1_themeresources.xaml-->
+  <!--origin: UI\Xaml\Controls\NavigationView\NavigationBackButton_rs4_themeresources.xaml-->
+  <!--origin: UI\Xaml\Controls\NavigationView\NavigationBackButton_rs5_themeresources.xaml-->
+  <!--origin: UI\Xaml\Controls\NavigationView\NavigationView.xaml-->
   <Style TargetType="navViewLocal:NavigationView">
     <Setter Property="PaneToggleButtonStyle" Value="{StaticResource LegacyPaneToggleButtonStyle}" />
     <Setter Property="IsTabStop" Value="False" />
@@ -11542,7 +11542,7 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="navViewLocal:NavigationViewItem">
-          <primitives:NavigationViewItemPresenter x:Name="NavigationViewItemPresenter" Icon="{TemplateBinding Icon}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Margin="{TemplateBinding Margin}" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" UseSystemFocusVisuals="{TemplateBinding UseSystemFocusVisuals}" VerticalAlignment="{TemplateBinding VerticalAlignment}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" Content="{TemplateBinding Content}" IsTabStop="False" xmlns:primitives="using:Windows.UI.Xaml.Controls.Primitives">
+          <wuxPrimitives:NavigationViewItemPresenter x:Name="NavigationViewItemPresenter" Icon="{TemplateBinding Icon}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Margin="{TemplateBinding Margin}" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" UseSystemFocusVisuals="{TemplateBinding UseSystemFocusVisuals}" VerticalAlignment="{TemplateBinding VerticalAlignment}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" Content="{TemplateBinding Content}" IsTabStop="False">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="ItemOnNavigationViewListPositionStates">
                 <VisualState x:Name="OnLeftNavigation">
@@ -11572,11 +11572,12 @@
                 </VisualState>
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-          </primitives:NavigationViewItemPresenter>
+          </wuxPrimitives:NavigationViewItemPresenter>
         </ControlTemplate>
       </Setter.Value>
     </Setter>
   </Style>
+  <Style TargetType="wuxPrimitives:NavigationViewItemPresenter" />
   <Style TargetType="navViewLocal:NavigationViewItemHeader">
     <Setter Property="IsEnabled" Value="False" />
     <Setter Property="IsTabStop" Value="False" />
@@ -11665,7 +11666,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\NavigationView\NavigationView_rs1_themeresources.xaml-->
+  <!--origin: UI\Xaml\Controls\NavigationView\NavigationView_rs1_themeresources.xaml-->
   <Style x:Key="LegacyPaneToggleButtonStyle" TargetType="Button">
     <Setter Property="FontSize" Value="16" />
     <Setter Property="FontFamily" Value="{StaticResource SymbolThemeFontFamily}" />
@@ -11840,7 +11841,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style TargetType="primitives:NavigationViewItemPresenter" x:Key="NavigationViewItemPresenterStyleWhenOnLeftPaneWithRevealFocus">
+  <Style TargetType="wuxPrimitives:NavigationViewItemPresenter" x:Key="NavigationViewItemPresenterStyleWhenOnLeftPaneWithRevealFocus">
     <Setter Property="Foreground" Value="{ThemeResource NavigationViewItemForeground}" />
     <Setter Property="Background" Value="{ThemeResource NavigationViewItemBackground}" />
     <Setter Property="BorderBrush" Value="{ThemeResource NavigationViewItemBorderBrush}" />
@@ -11849,7 +11850,7 @@
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="primitives:NavigationViewItemPresenter">
+        <ControlTemplate TargetType="wuxPrimitives:NavigationViewItemPresenter">
           <Grid x:Name="LayoutRoot" Height="40" Background="{TemplateBinding Background}" Control.IsTemplateFocusTarget="True">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="DisabledStates">
@@ -11981,10 +11982,10 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style TargetType="primitives:NavigationViewItemPresenter" x:Key="NavigationViewItemPresenterStyleWhenOnTopPane">
+  <Style TargetType="wuxPrimitives:NavigationViewItemPresenter" x:Key="NavigationViewItemPresenterStyleWhenOnTopPane">
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="primitives:NavigationViewItemPresenter">
+        <ControlTemplate TargetType="wuxPrimitives:NavigationViewItemPresenter">
           <Grid x:Name="LayoutRoot" Background="{TemplateBinding Background}" Control.IsTemplateFocusTarget="True">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="PointerStates">
@@ -12077,10 +12078,10 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style TargetType="primitives:NavigationViewItemPresenter" x:Key="NavigationViewItemPresenterStyleWhenOnTopPaneWithRevealFocus">
+  <Style TargetType="wuxPrimitives:NavigationViewItemPresenter" x:Key="NavigationViewItemPresenterStyleWhenOnTopPaneWithRevealFocus">
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="primitives:NavigationViewItemPresenter">
+        <ControlTemplate TargetType="wuxPrimitives:NavigationViewItemPresenter">
           <Grid x:Name="LayoutRoot" Background="{TemplateBinding Background}" Control.IsTemplateFocusTarget="True">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="DisabledStates">
@@ -12141,10 +12142,10 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style TargetType="primitives:NavigationViewItemPresenter" x:Key="NavigationViewItemPresenterStyleWhenOnTopPaneOverflow">
+  <Style TargetType="wuxPrimitives:NavigationViewItemPresenter" x:Key="NavigationViewItemPresenterStyleWhenOnTopPaneOverflow">
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="primitives:NavigationViewItemPresenter">
+        <ControlTemplate TargetType="wuxPrimitives:NavigationViewItemPresenter">
           <Grid x:Name="LayoutRoot" Height="40" Background="{TemplateBinding Background}" Control.IsTemplateFocusTarget="True">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="PointerStates">
@@ -12220,8 +12221,8 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\NavigationView\NavigationView_rs2_themeresources.xaml-->
-  <Style TargetType="primitives:NavigationViewItemPresenter" x:Key="NavigationViewItemPresenterStyleWhenOnLeftPane">
+  <!--origin: UI\Xaml\Controls\NavigationView\NavigationView_rs2_themeresources.xaml-->
+  <Style TargetType="wuxPrimitives:NavigationViewItemPresenter" x:Key="NavigationViewItemPresenterStyleWhenOnLeftPane">
     <Setter Property="Foreground" Value="{ThemeResource NavigationViewItemForeground}" />
     <Setter Property="Background" Value="{ThemeResource NavigationViewItemBackground}" />
     <Setter Property="BorderBrush" Value="{ThemeResource NavigationViewItemBorderBrush}" />
@@ -12230,7 +12231,7 @@
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="primitives:NavigationViewItemPresenter">
+        <ControlTemplate TargetType="wuxPrimitives:NavigationViewItemPresenter">
           <Grid x:Name="LayoutRoot" Height="40" Background="{TemplateBinding Background}" Control.IsTemplateFocusTarget="True">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="PointerStates">
@@ -12314,9 +12315,9 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\NavigationView\NavigationView_rs5_themeresources.xaml-->
+  <!--origin: UI\Xaml\Controls\NavigationView\NavigationView_rs5_themeresources.xaml-->
   <Thickness x:Key="NavigationViewItemIconBoxMargin">10,12,16,12</Thickness>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\PersonPicture\PersonPicture.xaml-->
+  <!--origin: UI\Xaml\Controls\PersonPicture\PersonPicture.xaml-->
   <Style TargetType="controls:PersonPicture" BasedOn="{StaticResource DefaultPersonPictureStyle}" />
   <Style x:Key="DefaultPersonPictureStyle" TargetType="controls:PersonPicture">
     <Setter Property="Foreground" Value="{ThemeResource PersonPictureForegroundThemeBrush}" />
@@ -12397,8 +12398,8 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\PersonPicture\PersonPicture_themeresources.xaml-->
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\Primitives\LoopingSelector\LoopingSelector.xaml-->
+  <!--origin: UI\Xaml\Controls\PersonPicture\PersonPicture_themeresources.xaml-->
+  <!--origin: UI\Xaml\Controls\Primitives\LoopingSelector\LoopingSelector.xaml-->
   <StaticResource x:Key="LoopingSelectorButtonBackground" ResourceKey="SystemControlBackgroundChromeMediumBrush" />
   <StaticResource x:Key="LoopingSelectorItemForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
   <StaticResource x:Key="LoopingSelectorItemForegroundSelected" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
@@ -12496,13 +12497,13 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\ProgressRing\ProgressRing.xaml-->
-  <wasm:Style x:Key="ProgressRingEllipseStyle" TargetType="Ellipse" xmlns:wasm="http://uno.ui/xamarin">
+  <!--origin: UI\Xaml\Controls\ProgressRing\ProgressRing.xaml-->
+  <wasm:Style x:Key="ProgressRingEllipseStyle" TargetType="Ellipse">
     <Setter Property="Opacity" Value="0" />
     <Setter Property="HorizontalAlignment" Value="Left" />
     <Setter Property="VerticalAlignment" Value="Top" />
   </wasm:Style>
-  <wasm:Style TargetType="ProgressRing" xmlns:wasm="http://uno.ui/xamarin">
+  <wasm:Style TargetType="ProgressRing">
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="Foreground" Value="{ThemeResource SystemControlHighlightAccentBrush}" />
     <Setter Property="IsHitTestVisible" Value="False" />
@@ -12695,7 +12696,7 @@
       </Setter.Value>
     </Setter>
   </ios:Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\ScrollBar\ScrollBar.xaml-->
+  <!--origin: UI\Xaml\Controls\ScrollBar\ScrollBar.xaml-->
   <ControlTemplate x:Key="XamlDefaultScrollBar_RepeatButtonTemplate" TargetType="RepeatButton">
     <Grid x:Name="Root" Background="Transparent">
       <VisualStateManager.VisualStateGroups>
@@ -13664,7 +13665,7 @@
   <netstdref:Style TargetType="ScrollBar" BasedOn="{StaticResource XamlNoAnimationScrollBar}" />
   <ios:Style TargetType="ScrollBar" BasedOn="{StaticResource XamlDefaultScrollBar}" />
   <android:Style TargetType="ScrollBar" BasedOn="{StaticResource XamlDefaultScrollBar}" />
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\ScrollViewer\ScrollViewer.xaml-->
+  <!--origin: UI\Xaml\Controls\ScrollViewer\ScrollViewer.xaml-->
   <Style TargetType="ScrollViewer" x:Key="DefaultScrollViewerStyle">
     <Setter Property="HorizontalScrollMode" Value="Auto" />
     <Setter Property="VerticalScrollMode" Value="Auto" />
@@ -13881,7 +13882,7 @@
   <netstdref:Style TargetType="ScrollViewer" BasedOn="{StaticResource DefaultScrollViewerStyle}" />
   <ios:Style TargetType="ScrollViewer" BasedOn="{StaticResource NativeScrollViewerStyle}" />
   <android:Style TargetType="ScrollViewer" BasedOn="{StaticResource NativeScrollViewerStyle}" />
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\SwipeControl\SwipeControl.xaml-->
+  <!--origin: UI\Xaml\Controls\SwipeControl\SwipeControl.xaml-->
   <Style x:Key="DefaultSwipeControlStyle" TargetType="controls:SwipeControl">
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="Background" Value="Transparent" />
@@ -13905,10 +13906,10 @@
     </Setter>
   </Style>
   <Style TargetType="controls:SwipeControl" BasedOn="{StaticResource DefaultSwipeControlStyle}" />
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\SwipeControl\SwipeControl_rs1.xaml-->
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\SwipeControl\SwipeControl_rs1_v1.xaml-->
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\SwipeControl\SwipeControl_themeresources.xaml-->
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\SwipeControl\SwipeControl_themeresources_v1.xaml-->
+  <!--origin: UI\Xaml\Controls\SwipeControl\SwipeControl_rs1.xaml-->
+  <!--origin: UI\Xaml\Controls\SwipeControl\SwipeControl_rs1_v1.xaml-->
+  <!--origin: UI\Xaml\Controls\SwipeControl\SwipeControl_themeresources.xaml-->
+  <!--origin: UI\Xaml\Controls\SwipeControl\SwipeControl_themeresources_v1.xaml-->
   <Style x:Key="SwipeItemStyle" TargetType="AppBarButton">
     <Setter Property="HorizontalAlignment" Value="Center" />
     <Setter Property="VerticalAlignment" Value="Center" />
@@ -13950,8 +13951,8 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\SwipeControl\SwipeControl_v1.xaml-->
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Controls\ToolTip\ToolTip.xaml-->
+  <!--origin: UI\Xaml\Controls\SwipeControl\SwipeControl_v1.xaml-->
+  <!--origin: UI\Xaml\Controls\ToolTip\ToolTip.xaml-->
   <SolidColorBrush x:Key="ToolTipForeground" Color="{StaticResource SystemBaseHighColor}" />
   <SolidColorBrush x:Key="ToolTipBackground" Color="{StaticResource SystemChromeMediumLowColor}" />
   <SolidColorBrush x:Key="ToolTipBorderBrush" Color="#000000" />
@@ -13991,7 +13992,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\DragDrop\DragView.xaml-->
+  <!--origin: UI\Xaml\DragDrop\DragView.xaml-->
   <Style TargetType="DragView">
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="IsHitTestVisible" Value="False" />
@@ -14021,7 +14022,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Style\Generic\FlyoutPresenter.xaml-->
+  <!--origin: UI\Xaml\Style\Generic\FlyoutPresenter.xaml-->
   <StaticResource x:Key="FlyoutPresenterBackground" ResourceKey="SystemControlTransientBackgroundBrush" />
   <StaticResource x:Key="FlyoutBorderThemeBrush" ResourceKey="SystemControlTransientBorderBrush" />
   <Thickness x:Key="FlyoutBorderThemeThickness">1</Thickness>
@@ -14063,7 +14064,7 @@
     </Setter>
   </Style>
   <Style TargetType="FlyoutPresenter" BasedOn="{StaticResource DefaultFlyoutPresenter}" />
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Style\Generic\Generic.xaml-->
+  <!--origin: UI\Xaml\Style\Generic\Generic.xaml-->
   <xamarin:Style TargetType="ItemsControl">
     <Setter Property="Template">
       <Setter.Value>
@@ -17184,7 +17185,7 @@
     </Setter>
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="local:Pivot">
+        <ControlTemplate TargetType="Pivot">
           <Grid x:Name="RootElement" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}" Background="{TemplateBinding Background}">
             <Grid.Resources />
             <VisualStateManager.VisualStateGroups>
@@ -17331,7 +17332,7 @@
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="local:PivotItem">
+        <ControlTemplate TargetType="PivotItem">
           <Grid Background="{TemplateBinding Background}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="Pivot">
@@ -17346,7 +17347,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style TargetType="local:PivotHeaderItem">
+  <Style TargetType="PivotHeaderItem">
     <Setter Property="FontSize" Value="{ThemeResource PivotHeaderItemFontSize}" />
     <Setter Property="FontFamily" Value="{ThemeResource PivotHeaderItemFontFamily}" />
     <Setter Property="FontWeight" Value="{ThemeResource PivotHeaderItemThemeFontWeight}" />
@@ -17360,7 +17361,7 @@
     <Setter Property="UseSystemFocusVisuals" Value="False" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="local:PivotHeaderItem">
+        <ControlTemplate TargetType="PivotHeaderItem">
           <Grid x:Name="Grid" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="SelectionStates">
@@ -18752,7 +18753,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: D:\code\uno\framework\uno\src\Uno.UI\UI\Xaml\Style\Generic\SemanticStylesResources.xaml-->
+  <!--origin: UI\Xaml\Style\Generic\SemanticStylesResources.xaml-->
   <Color x:Key="AppWhiteColor">#FFFFFFFF</Color>
   <Color x:Key="AppBlackColor">#FF000000</Color>
   <Color x:Key="AppLightGrayColor">#FFCCCCCC</Color>

@@ -7,7 +7,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:uBehaviors="using:Uno.UI.Behaviors"
-	xmlns:primitives="using:Windows.UI.Xaml.Controls.Primitives"
+	xmlns:wuxPrimitives="using:Windows.UI.Xaml.Controls.Primitives"
     xmlns:navViewLocal="using:Windows.UI.Xaml.Controls"
 	mc:Ignorable="d">
 
@@ -481,7 +481,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="navViewLocal:NavigationViewItem">
-                    <primitives:NavigationViewItemPresenter
+                    <wuxPrimitives:NavigationViewItemPresenter
                         x:Name="NavigationViewItemPresenter"
                         Icon="{TemplateBinding Icon}"
                         ContentTransitions="{TemplateBinding ContentTransitions}"
@@ -529,13 +529,13 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                    </primitives:NavigationViewItemPresenter>
+                    </wuxPrimitives:NavigationViewItemPresenter>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
-    <Style TargetType="primitives:NavigationViewItemPresenter" />
+    <Style TargetType="wuxPrimitives:NavigationViewItemPresenter" />
 
     <Style TargetType="navViewLocal:NavigationViewItemHeader">
         <Setter Property="IsEnabled" Value="False" />
