@@ -31,7 +31,7 @@
 		<Reference Include="System.Xml.Linq" />
 	</ItemGroup>
 
-	<Import Project="UnitTestsImport.props"/>
+	<Import Project="UnitTestsImport.props" />
 
 	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
 		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
@@ -100,8 +100,12 @@
 		<Compile Include="Tests\Windows_UI_Xaml_Controls\HtmlElementAttributeTests\Given_HtmlElementAttribute.Wasm.cs" />
 	</ItemGroup>
 	
+	
 	<ItemGroup>
 		<Page Update="Tests\Windows_UI_Xaml\Controls\Animation_Leak.xaml">
+		  <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+		</Page>
+		<Page Update="Tests\Windows_UI_Xaml\Controls\ContentDialog_Leak.xaml">
 		  <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
 		</Page>
 		<Page Update="Tests\Windows_UI_Xaml\Controls\xLoad_xBind.xaml">

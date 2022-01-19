@@ -34,6 +34,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			InitializePartial();
 			RegisterAsScrollPort(this);
+
+			InitializeScrollContentPresenter();
 		}
 		partial void InitializePartial();
 

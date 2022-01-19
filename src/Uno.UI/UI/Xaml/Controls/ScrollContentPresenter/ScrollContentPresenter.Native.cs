@@ -7,11 +7,36 @@ namespace Windows.UI.Xaml.Controls
 {
 	// This file only contains support of NativeScrollContentPresenter
 
-	partial class ScrollContentPresenter
+	partial class ScrollContentPresenter : IFrameworkTemplatePoolAware
 	{
 		internal INativeScrollContentPresenter Native { get; set; }
 
 		private object RealContent => Native?.Content;
+
+		public void OnTemplateRecycled()
+		{
+			// If the template is being recycled and it's TemplatedParent is null, this means that 
+			// this instance was part of the ControlTemplate of a ScrollViewer instance that was GC'ed.
+			// We need to ensure that we're not keeping any content coming from ScrollView.Content.
+			if (TemplatedParent is null && Native is { })
+			{
+				Native.Content = null;
+				Native = null;
+			}
+		}
+
+		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
+		{
+			// Clear the native content, in case this instance is being explicitly removed from its templated parent.
+			// Note that in case the template is being recycled, the parent is not explicitly removed, but rather
+			// relies on weak references, and this method is not called.
+			if (e.NewValue is null)
+			{
+				Native.Content = null;
+			}
+
+			base.OnTemplatedParentChanged(e);
+		}
 
 		#region SCP to Native SCP
 		public ScrollBarVisibility NativeHorizontalScrollBarVisibility

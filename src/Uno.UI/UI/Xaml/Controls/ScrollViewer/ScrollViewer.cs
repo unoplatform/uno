@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Uno;
 using Uno.Extensions;
@@ -132,6 +133,14 @@ namespace Windows.UI.Xaml.Controls
 			Loaded += AttachScrollBars;
 			Unloaded += DetachScrollBars;
 			Unloaded += ResetScrollIndicator;
+
+			this.RegisterParentChangedCallback(this, (_, _, args) =>
+			{
+				if (args.NewParent is null)
+				{
+					ClearContentTemplatedParent(Content);
+				}
+			});
 		}
 
 		partial void InitializePartial();
@@ -969,16 +978,19 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#region Content and TemplatedParent forwarding to the ScrollContentPresenter
-		protected override void OnContentChanged(object oldValue, object newValue)
+		protected override void OnContentChanged(object? oldValue, object? newValue)
 		{
-			base.OnContentChanged(oldValue, newValue);
-
-			if (_presenter != null)
+			if (oldValue is not null && !ReferenceEquals(oldValue, newValue))
 			{
 				// remove the explicit templated parent propagation
 				// for the lack of TemplatedParentScope support
 				ClearContentTemplatedParent(oldValue);
+			}
 
+			base.OnContentChanged(oldValue, newValue);
+
+			if (_presenter is not null)
+			{
 				ApplyScrollContentPresenterContent(newValue);
 			}
 
@@ -987,7 +999,7 @@ namespace Windows.UI.Xaml.Controls
 			_snapPointsInfo = newValue as IScrollSnapPointsInfo;
 		}
 
-		private void ApplyScrollContentPresenterContent(object content)
+		private void ApplyScrollContentPresenterContent(object? content)
 		{
 			// Stop the automatic propagation of the templated parent on the Content
 			// This prevents issues when the a ScrollViewer is hosted in a control template
@@ -1048,7 +1060,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void ClearContentTemplatedParent(object oldContent)
+		private void ClearContentTemplatedParent(object? oldContent)
 		{
 			if (oldContent is IDependencyObjectStoreProvider provider)
 			{

@@ -50,7 +50,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(ListView), 15)]
 		[DataRow(typeof(ProgressRing), 15)]
 		[DataRow(typeof(Pivot), 15)]
-		// [DataRow(typeof(ScrollBar), 15)] https://github.com/unoplatform/uno/issues/7331
+		[DataRow(typeof(ScrollBar), 15)]
 		[DataRow(typeof(Slider), 15)]
 		[DataRow(typeof(SymbolIcon), 15)]
 		[DataRow(typeof(Viewbox), 15)]
@@ -68,6 +68,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.Buttons", 15)]
 		[DataRow("UITests.Windows_UI_Xaml.xLoadTests.xLoad_Test_For_Leak", 15)]
 		[DataRow("UITests.Windows_UI_Xaml_Controls.ToolTip.ToolTip_LeakTest", 15)]
+#if !__WASM__ // Temporary disabled on WASM - https://github.com/unoplatform/uno/issues/7860
+		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ContentDialog_Leak", 15)]
+#endif
 		public async Task When_Add_Remove(object controlTypeRaw, int count)
 		{
 #if TRACK_REFS
@@ -188,6 +191,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				TrackDependencyObject(item);
 				rootContainer.Content = item;
 				await TestServices.WindowHelper.WaitForIdle();
+
+				if (item is IExtendedLeakTest extendedTest)
+				{
+					await extendedTest.WaitForTestToComplete();
+				}
 
 				// Add all children to the tracking
 				foreach (var child in item.EnumerateAllChildren(maxDepth: 200).OfType<UIElement>())

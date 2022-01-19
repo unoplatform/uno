@@ -833,7 +833,6 @@ namespace Uno.UI.Samples.Tests
 				select type;
 
 			var types = GetType().GetTypeInfo().Assembly.GetTypes().Concat(testAssembliesTypes);
-			var ts = types.Select(t => t.FullName).ToArray();
 
 			return from type in types
 				   where type.GetTypeInfo().GetCustomAttribute(typeof(TestClassAttribute)) != null

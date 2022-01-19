@@ -249,6 +249,12 @@ namespace Windows.UI.Xaml
 					_trace.WriteEventActivity(TraceProvider.RecycleTemplate, EventOpcode.Send, new[] { instance.GetType().ToString() });
 				}
 
+				if (instance is IDependencyObjectStoreProvider provider)
+				{
+					// Make sure the TemplatedParent is disconnected
+					provider.Store.Parent = null;
+					provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
+				}
 				PropagateOnTemplateReused(instance);
 
 				var item = instance as View;
@@ -320,10 +326,8 @@ namespace Windows.UI.Xaml
 			{
 				i++;
 				var pooledTemplate = kvp.Key;
-				if (template?.Equals(pooledTemplate) ?? false)
+				if ((template?.Equals(pooledTemplate) ?? false) && template._viewFactory is { } func)
 				{
-					var func = ((Func<View>)template);
-
 					return $"{i}({func.Method.DeclaringType}.{func.Method.Name})";
 				}
 			}
