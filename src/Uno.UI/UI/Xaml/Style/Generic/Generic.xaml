@@ -4,9 +4,7 @@
 					xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-					xmlns:local="using:GenericApp.Views.Controls"
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-					xmlns:localConverters="using:GenericApp.Views.Converters"
 					xmlns:u="using:Uno.UI.Controls"
 					xmlns:xamarin="http://uno.ui/xamarin"
 					xmlns:ios="http://uno.ui/ios"
@@ -5325,7 +5323,7 @@
 		</Setter>
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="local:Pivot">
+				<ControlTemplate TargetType="Pivot">
 					<Grid x:Name="RootElement"
 						  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
 						  VerticalAlignment="{TemplateBinding VerticalAlignment}"
@@ -5582,7 +5580,7 @@
 				Value="False" />
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="local:PivotItem">
+				<ControlTemplate TargetType="PivotItem">
 					<Grid Background="{TemplateBinding Background}"
 						  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
 						  VerticalAlignment="{TemplateBinding VerticalAlignment}">
@@ -5609,7 +5607,7 @@
 	</Style>
 
 	<!-- Default style for Windows.UI.Xaml.Controls.Primitives.PivotHeaderItem -->
-	<Style TargetType="local:PivotHeaderItem">
+	<Style TargetType="PivotHeaderItem">
 		<Setter Property="FontSize"
 				Value="{ThemeResource PivotHeaderItemFontSize}" />
 		<Setter Property="FontFamily"
@@ -5634,7 +5632,7 @@
 				Value="False" />
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="local:PivotHeaderItem">
+				<ControlTemplate TargetType="PivotHeaderItem">
 					<Grid x:Name="Grid"
 						  Background="{TemplateBinding Background}"
 						  Padding="{TemplateBinding Padding}">
