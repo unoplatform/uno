@@ -737,6 +737,26 @@ namespace Uno.UI {
 		}
 
 		/**
+		* Sets the fill property of the specified element
+		*/
+		public setElementFill(elementId: number, color: number): string {
+			this.setElementColorInternal(elementId, color);
+			return "ok";
+		}
+
+		public setElementFillNative(pParam: number): boolean {
+			const params = WindowManagerSetElementFillParams.unmarshal(pParam);
+			this.setElementFillInternal(params.HtmlId, params.Color);
+			return true;
+		}
+
+		private setElementFillInternal(elementId: number, color: number): void {
+			const element = this.getView(elementId);
+
+			element.style.setProperty("fill", this.numberToCssColor(color));
+		}
+
+		/**
 		* Sets the background color property of the specified element
 		*/
 		public setElementBackgroundColor(pParam: number): boolean {
