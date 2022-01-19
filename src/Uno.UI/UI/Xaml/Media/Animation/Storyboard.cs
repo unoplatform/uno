@@ -15,7 +15,7 @@ using System.Diagnostics;
 namespace Windows.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = "Children")]
-	public sealed partial class Storyboard : Timeline, ITimeline, IAdditionalChildrenProvider, IThemeChangeAware
+	public sealed partial class Storyboard : Timeline, ITimeline, IAdditionalChildrenProvider, IThemeChangeAware, ITimelineListener
 	{
 		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private EventActivity _traceActivity;
@@ -34,7 +34,6 @@ namespace Windows.UI.Xaml.Media.Animation
 		private int _replayCount = 1;
 		private int _runningChildren = 0;
 		private bool _hasFillingChildren = false;
-		private Dictionary<ITimeline, IDisposable> _childrenSubscriptions = new Dictionary<ITimeline, IDisposable>();
 
 		public Storyboard()
 		{
@@ -77,11 +76,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// <param name="child"></param>
 		private void DisposeChildRegistrations(ITimeline child)
 		{
-			if(_childrenSubscriptions.TryGetValue(child, out var disposable))
-			{
-				disposable.Dispose();
-				_childrenSubscriptions.Remove(child);
-			}
+			child.UnregisterListener(this);
 		}
 
 		/// <summary>
@@ -127,16 +122,7 @@ namespace Windows.UI.Xaml.Media.Animation
 					DisposeChildRegistrations(child);
 
 					_runningChildren++;
-					child.Completed += Child_Completed;
-					child.Failed += Child_Failed;
-
-					_childrenSubscriptions.Add(
-						child,
-						Disposable.Create(() => {
-							child.Completed -= Child_Completed;
-							child.Failed -= Child_Failed;
-						})
-					);
+					child.RegisterListener(this);
 
 					child.Begin();
 				}
@@ -330,13 +316,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			throw new NotImplementedException();
 		}
 
-		private void Child_Failed(object sender, object e)
+		void ITimelineListener.ChildFailed(Timeline child)
 		{
-			if (!(sender is Timeline child))
-			{
-				return;
-			}
-
 			DisposeChildRegistrations(child);
 
 			Interlocked.Decrement(ref _runningChildren);
@@ -345,13 +326,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			// child, where completed relates to all children being completed.
 		}
 
-		private void Child_Completed(object sender, object e)
+		void ITimelineListener.ChildCompleted(Timeline child)
 		{
-			if (!(sender is Timeline child))
-			{
-				return;
-			}
-
 			DisposeChildRegistrations(child);
 
 			Interlocked.Decrement(ref _runningChildren);

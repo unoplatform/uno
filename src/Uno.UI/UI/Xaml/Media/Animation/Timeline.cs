@@ -15,6 +15,14 @@ namespace Windows.UI.Xaml.Media.Animation
 	{
 		private WeakReference<DependencyObject> _targetElement;
 		private BindingPath _propertyInfo;
+		private List<ITimelineListener> _timelineListeners = new();
+		private List<EventHandler<object>> _completedHandlers;
+
+		public event EventHandler<object> Completed
+		{
+			add => (_completedHandlers ??= new()).Add(value);
+			remove => _completedHandlers?.Remove(value);
+		}
 
 		public Timeline()
 		{
@@ -86,17 +94,35 @@ namespace Windows.UI.Xaml.Media.Animation
 			DependencyProperty.Register("RepeatBehavior", typeof(RepeatBehavior), typeof(Timeline), new FrameworkPropertyMetadata(new RepeatBehavior()));
 
 
-		public event EventHandler<object> Completed;
-		internal event EventHandler<object> Failed;
+		void ITimeline.RegisterListener(ITimelineListener listener)
+			=> _timelineListeners.Add(listener);
 
-		event EventHandler<object> ITimeline.Failed
+		void ITimeline.UnregisterListener(ITimelineListener listener)
+			=> _timelineListeners.Remove(listener);
+
+		protected void OnCompleted()
 		{
-			add => Failed += value;
-			remove => Failed += value;
+			if (_completedHandlers != null)
+			{
+				for (int i = 0; i < _completedHandlers.Count; i++)
+				{
+					_completedHandlers[i].Invoke(this, null);
+				}
+			}
+
+			for (var i = 0; i < _timelineListeners.Count; i++)
+			{
+				_timelineListeners[i].ChildCompleted(this);
+			}
 		}
 
-		protected void OnCompleted() => Completed?.Invoke(this, null);
-		protected void OnFailed() => Failed?.Invoke(this, null);
+		protected void OnFailed()
+		{
+			for (var i = 0; i < _timelineListeners.Count; i++)
+			{
+				_timelineListeners[i].ChildFailed(this);
+			}
+		}
 
 		/// <summary>
 		/// Compute duration of the Timeline. Sometimes it's define by components.
