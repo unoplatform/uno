@@ -82,7 +82,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public TextBox()
 		{
-			this.RegisterParentChangedCallback(this, OnParentChanged);
+			this.RegisterParentChangedCallbackStrong(this, OnParentChanged);
 
 			DefaultStyleKey = typeof(TextBox);
 			SizeChanged += OnSizeChanged;

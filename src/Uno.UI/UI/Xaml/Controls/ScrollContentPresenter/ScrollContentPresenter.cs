@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void InitializeScrollContentPresenter()
 		{
-			this.RegisterParentChangedCallback(this, OnParentChanged);
+			this.RegisterParentChangedCallbackStrong(this, OnParentChanged);
 		}
 
 		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)

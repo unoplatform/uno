@@ -26,11 +26,10 @@ namespace Uno.Disposables
 	/// <summary>
 	/// A disposable that can call an action when a dependent object has been collected.
 	/// </summary>
-	internal class ConditionalDisposable : IDisposable
+	internal abstract class ConditionalDisposable : IDisposable
 	{
 		private static ConditionalWeakTable<object, List<IDisposable>> _registrations = new ConditionalWeakTable<object, List<IDisposable>>();
 
-		private readonly Action _action;
 		private bool _disposed;
 		private readonly WeakReference? _conditionSource;
 		private readonly List<IDisposable> _list;
@@ -43,12 +42,10 @@ namespace Uno.Disposables
 		/// Creates a <see cref="ConditionalDisposable"/> instance using 
 		/// <paramref name="target"/> as a reference for its lifetime.
 		/// </summary>
-		/// <param name="action">The action to be executed when target has been collected</param>
 		/// <param name="conditionSource">An optional secondary reference, used to avoid calling action if it has been collected</param>
 		/// <param name="target">The instance to use to keep the disposable alive</param>
-		public ConditionalDisposable(object target, Action action, WeakReference? conditionSource = null)
+		public ConditionalDisposable(object target, WeakReference? conditionSource = null)
 		{
-			_action = action;
 			_conditionSource = conditionSource;
 
 #if DEBUG
@@ -74,6 +71,8 @@ namespace Uno.Disposables
 			Dispose(true);
 		}
 
+		protected abstract void TargetFinalized();
+
 		private void Dispose(bool disposing)
 		{
 			if(disposing)
@@ -94,7 +93,7 @@ namespace Uno.Disposables
 					{
 						_disposed = true;
 
-						_action();
+						TargetFinalized();
 					}
 				}
 			}
@@ -105,5 +104,4 @@ namespace Uno.Disposables
 			Dispose(false);
 		}
 	}
-
 }

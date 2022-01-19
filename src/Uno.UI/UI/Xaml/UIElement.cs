@@ -651,11 +651,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		// This is part of the WinUI internal contract and is being invoked on each DP change
-		internal virtual void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
-		{
-		}
-
 		/// <summary>
 		/// Backing property for <see cref="LayoutInformation.GetAvailableSize(UIElement)"/>
 		/// </summary>

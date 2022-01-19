@@ -401,6 +401,16 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
+		/// Registers to parent changes.
+		/// </summary>
+		/// <param name="instance">The target dependency object</param>
+		/// <param name="key">A key to be passed to the callback parameter.</param>
+		/// <param name="handler">A callback to be called</param>
+		/// <returns>A disposable that cancels the subscription.</returns>
+		internal static void RegisterParentChangedCallbackStrong(this DependencyObject instance, object key, ParentChangedCallback handler)
+			=> GetStore(instance).RegisterParentChangedCallbackStrong(key, handler);
+
+		/// <summary>
 		/// Determines if the specified dependency property is set.
 		/// A property is set whenever a value (including null) is assigned to it.
 		/// </summary>

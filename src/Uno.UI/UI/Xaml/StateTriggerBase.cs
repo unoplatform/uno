@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml
 
 			IsAutoPropertyInheritanceEnabled = false;
 
-			this.RegisterParentChangedCallback(
+			this.RegisterParentChangedCallbackStrong(
 				key: this,
 				handler: (instance, key, handler)
 					=> OnOwnerChanged()
