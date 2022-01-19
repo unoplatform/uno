@@ -121,5 +121,25 @@ namespace Uno.UI.Tests.ComboBoxTests
 			comboBox.Items.RemoveAt(2);
 			Assert.AreEqual<int>(-1, comboBox.SelectedIndex);
 		}
+
+		[TestMethod]
+		public void When_Removed_Item_And_SelectLastItem_Value_Is_Correct()
+		{
+			var comboBox = new ComboBox();
+			string[] items = new string[] { "string1", "string2", "string3", "string4", "string5" };
+			foreach (string item in items)
+			{
+				ComboBoxItem ni = new ComboBoxItem { Content = item, IsSelected = item == "string3" };
+				comboBox.Items.Add(ni);
+			}
+
+			Assert.AreEqual<int>(2, comboBox.SelectedIndex);
+
+			comboBox.Items.RemoveAt(2);
+			Assert.AreEqual<int>(-1, comboBox.SelectedIndex);
+
+			comboBox.SelectedIndex = 3;
+			Assert.AreEqual<string>("string5", ((ComboBoxItem)comboBox.SelectedItem).Content.ToString());
+		}
 	}
 }
