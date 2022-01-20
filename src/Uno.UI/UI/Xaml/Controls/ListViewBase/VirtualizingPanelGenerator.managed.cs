@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 #if __ANDROID__ || __IOS__
 using _VirtualizingPanelLayout = Windows.UI.Xaml.Controls.ManagedVirtualizingPanelLayout;
 #else

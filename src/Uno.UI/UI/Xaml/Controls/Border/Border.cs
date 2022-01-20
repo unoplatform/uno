@@ -31,6 +31,7 @@ using Color = Windows.UI.Color;
 using Color = System.Drawing.Color;
 using View = Windows.UI.Xaml.UIElement;
 #endif
+using _Debug = System.Diagnostics.Debug;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -308,5 +309,17 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		internal override bool CanHaveChildren() => true;
+
+		internal override bool IsViewHit() => IsViewHitImpl(this);
+
+		internal static bool IsViewHitImpl(FrameworkElement element)
+		{
+			_Debug.Assert(element is Panel
+				|| element is Border
+				|| element is ContentPresenter
+			);
+
+			return element.Background != null;
+		}
 	}
 }

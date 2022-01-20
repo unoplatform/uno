@@ -7,13 +7,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Markup;
 using Uno.UI;
 using Windows.Foundation.Collections;
-using Microsoft.Extensions.Logging;
+
 using static Windows.UI.Xaml.Media.Animation.Timeline.TimelineState;
 
 #if XAMARIN_IOS
@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml
 			IsAutoPropertyInheritanceEnabled = false;
 			InitializeBinder();
 
-			this.RegisterParentChangedCallback(this, OnParentChanged);
+			this.RegisterParentChangedCallbackStrong(this, OnParentChanged);
 		}
 
 		public VisualState CurrentState => _current.state;
@@ -181,7 +181,7 @@ namespace Windows.UI.Xaml
 		{
 			global::System.Diagnostics.Debug.Assert(state is null || States.Contains(state));
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat("Go to state [{0}/{1}] on [{2}]", Name, state?.Name, element);
 			}
@@ -308,19 +308,10 @@ namespace Windows.UI.Xaml
 				// Starts target state animation
 				if (target.animation is { } stateAnimation)
 				{
-					stateAnimation.Completed += OnStateStoryboardCompleted;
 					stateAnimation.Begin();
+				}
 
-					void OnStateStoryboardCompleted(object s, object a)
-					{
-						state.Storyboard.Completed -= OnStateStoryboardCompleted;
-						onStateChanged();
-					}
-				}
-				else
-				{
-					onStateChanged();
-				}
+				onStateChanged();
 			}
 
 			void ApplyTargetStateSetters()

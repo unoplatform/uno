@@ -38,7 +38,7 @@ namespace UITests.Shared.Windows_Devices
         }
     }
 
-	public class PedometerTestsViewModel : ViewModelBase
+	internal class PedometerTestsViewModel : ViewModelBase
 	{
 		private Pedometer _pedometer = null;
 		private string _pedometerStatus;
@@ -88,13 +88,13 @@ namespace UITests.Shared.Windows_Devices
 			}
 		}
 
-		public Command AttachReadingChangedCommand => new Command((p) =>
+		internal Command AttachReadingChangedCommand => new Command((p) =>
 		{
 			_pedometer.ReadingChanged += Pedometer_ReadingChanged;
 			ReadingChangedAttached = true;
 		});
 
-		public Command DetachReadingChangedCommand => new Command((p) =>
+		internal Command DetachReadingChangedCommand => new Command((p) =>
 		{
 			_pedometer.ReadingChanged -= Pedometer_ReadingChanged;
 			ReadingChangedAttached = false;

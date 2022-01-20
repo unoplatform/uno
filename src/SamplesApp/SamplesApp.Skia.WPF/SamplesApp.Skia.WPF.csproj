@@ -1,6 +1,12 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
 		<TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
+		
+		<!--
+		Enable implicit dotnet runtime forward rolling, as a net5
+		project may run with net6 only SDK installed
+		-->
+		<RollForward>Major</RollForward>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
@@ -12,7 +18,7 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<UseWPF>true</UseWPF>
-	  <Prefer32Bit>true</Prefer32Bit>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net472'">
@@ -34,7 +40,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
-		<PackageReference Include="SkiaSharp.Views.WPF" Version="2.80.2" />
+		<PackageReference Include="SkiaSharp.Views.WPF" Version="2.80.3" />
 	</ItemGroup>
 
 	<ItemGroup>

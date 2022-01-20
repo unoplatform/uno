@@ -7,16 +7,7 @@ namespace Windows.System
 	#endif
 	public  partial class DispatcherQueue 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool HasThreadAccess
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool DispatcherQueue.HasThreadAccess is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property HasThreadAccess
 		// Skipping already declared method Windows.System.DispatcherQueue.CreateTimer()
 		// Skipping already declared method Windows.System.DispatcherQueue.TryEnqueue(Windows.System.DispatcherQueueHandler)
 		// Skipping already declared method Windows.System.DispatcherQueue.TryEnqueue(Windows.System.DispatcherQueuePriority, Windows.System.DispatcherQueueHandler)

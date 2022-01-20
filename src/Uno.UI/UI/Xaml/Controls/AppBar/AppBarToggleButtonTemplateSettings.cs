@@ -1,18 +1,17 @@
 using Uno;
+using Windows.UI.Xaml;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	[NotImplemented]
-	public partial class AppBarToggleButtonTemplateSettings : global::Windows.UI.Xaml.DependencyObject
+	public partial class AppBarToggleButtonTemplateSettings : DependencyObject
 	{
-		[NotImplemented]
 		public double KeyboardAcceleratorTextMinWidth
 		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings", "KeyboardAcceleratorTextMinWidth");
-				return 0;
-			}
+			get => (double)GetValue(KeyboardAcceleratorTextMinWidthProperty);
+			internal set => SetValue(KeyboardAcceleratorTextMinWidthProperty, value);
 		}
+
+		internal static DependencyProperty KeyboardAcceleratorTextMinWidthProperty { get; } =
+			DependencyProperty.Register("KeyboardAcceleratorTextMinWidth", typeof(double), typeof(AppBarToggleButtonTemplateSettings), new FrameworkPropertyMetadata(0.0));
 	}
 }

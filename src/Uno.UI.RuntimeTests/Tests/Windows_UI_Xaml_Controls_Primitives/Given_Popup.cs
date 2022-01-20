@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives.PopupPages;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 
@@ -54,6 +55,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			}
 		}
 #endif
+
+		[TestMethod]
+		public void When_IsLightDismissEnabled_Default()
+		{
+			var popup = new Popup();
+			Assert.IsFalse(popup.IsLightDismissEnabled);
+		}
 
 		private static bool CanReach(DependencyObject startingElement, DependencyObject targetElement)
 		{

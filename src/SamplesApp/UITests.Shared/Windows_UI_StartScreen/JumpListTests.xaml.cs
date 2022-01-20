@@ -27,7 +27,7 @@ namespace UITests.Shared.Windows_UI_StartScreen
 			DataContextChanged += JumpListTests_DataContextChanged;
 		}
 
-		public JumpListTestsViewModel Model { get; private set; }
+		internal JumpListTestsViewModel Model { get; private set; }
 
 		private void JumpListTests_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{

@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using System.Text;
 using AndroidX.RecyclerView.Widget;
 using Android.Views;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
 using static AndroidX.RecyclerView.Widget.RecyclerView;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {

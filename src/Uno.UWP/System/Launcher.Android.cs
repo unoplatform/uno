@@ -6,8 +6,8 @@ using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Uno.Extensions;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 
 namespace Windows.System
 {

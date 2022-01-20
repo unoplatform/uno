@@ -2,16 +2,21 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Windows.Devices.Input;
-using Windows.UI.Input;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Android.Runtime;
 using Android.Views;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.UI.Input;
+using Windows.Devices.Input;
+#endif
 
 namespace Windows.UI.Xaml
 {
@@ -37,6 +42,10 @@ namespace Windows.UI.Xaml
 				=> _target.OnNativeMotionEvent(nativeEvent, view, true);
 		}
 
+		partial void InitializePointersPartial()
+		{
+			ArePointersEnabled = true;
+		}
 
 		partial void AddPointerHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{
@@ -56,7 +65,7 @@ namespace Windows.UI.Xaml
 
 		protected sealed override bool OnNativeMotionEvent(MotionEvent nativeEvent, View originalSource, bool isInView)
 		{
-			if (IsPointersSuspended)
+			if (!ArePointersEnabled)
 			{
 				return false;
 			}

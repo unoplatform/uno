@@ -6,13 +6,15 @@ using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
 using Windows.Foundation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 
 #if __IOS__
 using _View = UIKit.UIView;
+using ObjCRuntime;
 #elif __MACOS__
 using _View = AppKit.NSView;
+using ObjCRuntime;
 #endif
 
 namespace Windows.UI.Xaml

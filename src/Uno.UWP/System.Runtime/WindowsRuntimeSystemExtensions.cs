@@ -44,6 +44,11 @@ namespace System
 				return action.Task;
 			}
 
+			if (source is Uno.UI.Dispatching.UIAsyncOperation operation)
+			{
+				return operation.AsTask(ct);
+			}
+
 			throw new NotSupportedException("Custom IAsyncAction implementations are not supported.");
 		}
 
@@ -121,7 +126,7 @@ namespace System
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static TaskAwaiter GetAwaiter(this IAsyncAction source)
 		{
-			if (source is UIAsyncOperation uiAsyncOperation)
+			if (source is Uno.UI.Dispatching.UIAsyncOperation uiAsyncOperation)
 			{
 				return uiAsyncOperation.GetAwaiter();
 			}

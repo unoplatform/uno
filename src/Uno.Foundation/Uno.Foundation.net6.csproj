@@ -15,7 +15,7 @@
 	<PropertyGroup>
 		<AssemblyName>Uno.Foundation</AssemblyName>
     	<RootNamespace>Windows.Foundation</RootNamespace>
-		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		<NoWarn>$(NoWarn);NU1701;1572;1712;1711;1574</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
@@ -26,8 +26,11 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Uno.Core" />
 		<PackageReference Include="Uno.Diagnostics.Eventing" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.net6.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -45,9 +48,11 @@
 	</ItemGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
+	<Import Project="Uno.Core.Extensions\Uno.Core.Extensions.props" />
 
 	<ItemGroup>
 	  <UpToDateCheckInput Remove="Extensions\RectExtensions.cs" />
 	</ItemGroup>
+
 
 </Project>

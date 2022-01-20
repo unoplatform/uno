@@ -22,6 +22,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	{
 		private protected ScrollViewer m_tpScrollViewer;
 
+		private protected IVirtualizingPanel VirtualizingPanel => ItemsPanelRoot as IVirtualizingPanel;
+
 		private protected int m_iFocusedIndex;
 
 		private protected bool m_skipScrollIntoView;
@@ -436,6 +438,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					}
 					break;
 			}
+
+			OnItemsChanged(c);
 		}
 
 		internal override void OnItemsSourceGroupsChanged(object sender, NotifyCollectionChangedEventArgs c)
@@ -503,16 +507,29 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal void OnItemClicked(SelectorItem selectorItem) => OnItemClicked(IndexFromContainer(selectorItem));
 
-		internal virtual void OnItemClicked(int clickedIndex) { }
+		internal virtual void OnItemClicked(int clickedIndex)
+		{
+			if (ItemsSource is ICollectionView collectionView)
+			{
+				//NOTE: Windows seems to call MoveCurrentTo(item); we set position instead to have expected behavior when you have duplicate items in the list.
+				collectionView.MoveCurrentToPosition(clickedIndex);
 
-		protected override void OnItemsChanged(object e)
+				// The CollectionView may have intercepted the change
+				clickedIndex = collectionView.CurrentPosition;
+			}
+
+			SelectedIndex = clickedIndex;
+		}
+
+		private void OnItemsChanged(NotifyCollectionChangedEventArgs e)
 		{
 			if (
 				// When ItemsSource is set, we get collection changes from it directly (and it's not possible to directly modify Items)
-				ItemsSource == null &&
-				e is IVectorChangedEventArgs iVCE
+				ItemsSource == null
 			)
 			{
+				var iVCE = e.ToVectorChangedEventArgs();
+
 				if (iVCE.CollectionChange == CollectionChange.ItemChanged
 					|| (iVCE.CollectionChange == CollectionChange.ItemInserted && iVCE.Index < Items.Count))
 				{
@@ -522,11 +539,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					{
 						ChangeSelectedItem(selectorItem, false, true);
 					}
-					// If the item is inserted before the currently selected one, increase the selected index.
-					else if (iVCE.CollectionChange == CollectionChange.ItemInserted && (int)iVCE.Index <= SelectedIndex)
-					{
-						SelectedIndex++;
-					}
 				}
 				else if (iVCE.CollectionChange == CollectionChange.ItemRemoved)
 				{
@@ -534,11 +546,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					if ((int)iVCE.Index == SelectedIndex)
 					{
 						SelectedIndex = -1;
-					}
-					// But if it's before the currently selected one, decrement SelectedIndex
-					else if ((int)iVCE.Index < SelectedIndex)
-					{
-						SelectedIndex--;
 					}
 				}
 			}
@@ -611,6 +618,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			base.Refresh();
 			_itemTemplatesThatArentContainers.Clear();
+			RefreshPartial();
 		}
 
 
@@ -776,5 +784,18 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			return !isItemsHostInvalid && isInLiveTree && !m_skipScrollIntoView && !m_inCollectionChange;
 		}
+
+		partial void RefreshPartial();
+
+
+		/// <summary>
+		/// Is the managed implementation for virtualized lists (ItemsStackPanel, ItemsWrapGrid, CarouselPanel etc) used on this platform?
+		/// </summary>
+		internal const bool UsesManagedLayouting =
+#if __IOS__ || __ANDROID__
+			false;
+#else
+			true;
+#endif
 	}
 }

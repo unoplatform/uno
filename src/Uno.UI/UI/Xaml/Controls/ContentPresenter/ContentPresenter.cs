@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Media.Animation;
 using System.Collections;
@@ -13,7 +13,7 @@ using Windows.Foundation;
 using Uno.UI;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
-using Microsoft.Extensions.Logging;
+
 using Uno.UI.Xaml;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -59,6 +59,11 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		/// <remarks>Clear this flag to let the control nested directly under this ContentPresenter to inherit the correct templated parent</remarks>
 		internal bool SynchronizeContentWithOuterTemplatedParent { get; set; } = true;
+
+		/// <summary>
+		/// Flag indicating whether the content presenter uses implicit text block to render its content.
+		/// </summary>
+		internal bool IsUsingDefaultTemplate { get; private set; } = false;
 
 		/// <summary>
 		/// Determines if the current ContentPresenter is hosting a native control.
@@ -781,9 +786,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnLoaded();
 
-			ResetDataContextOnFirstLoad();
-
-			SetUpdateTemplate();
+			if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
+			{
+				SetUpdateTemplate();
+			}
 
 			// When the control is loaded, set the TemplatedParent
 			// as it may have been reset during the last unload.
@@ -792,7 +798,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
-		private void ResetDataContextOnFirstLoad()
+		private bool ResetDataContextOnFirstLoad()
 		{
 			if (!_firstLoadResetDone)
 			{
@@ -803,7 +809,11 @@ namespace Windows.UI.Xaml.Controls
 				this.ClearValue(DataContextProperty, DependencyPropertyValuePrecedences.Local);
 
 				TrySetDataContextFromContent(Content);
+
+				return true;
 			}
+
+			return false;
 		}
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
@@ -837,6 +847,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_dataTemplateUsedLastUpdate = dataTemplate;
 				ContentTemplateRoot = dataTemplate?.LoadContentCached() ?? Content as View;
+				if (ContentTemplateRoot != null)
+				{
+					IsUsingDefaultTemplate = false;
+				}
 			}
 
 			if (Content != null
@@ -853,11 +867,13 @@ namespace Windows.UI.Xaml.Controls
 				// No template and Content is a View, set it directly as root
 				ContentTemplateRoot = contentView as View;
 			}
+
+			IsUsingDefaultTemplate = ContentTemplateRoot is ImplicitTextBlock;
 		}
 
 		private void SetContentTemplateRootToPlaceholder()
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat("No ContentTemplate was specified for {0} and content is not a UIView, defaulting to TextBlock.", GetType().Name);
 			}
@@ -883,6 +899,7 @@ namespace Windows.UI.Xaml.Controls
 			setBinding(TextBlock.TextAlignmentProperty, nameof(TextAlignment));
 
 			ContentTemplateRoot = textBlock;
+			IsUsingDefaultTemplate = true;
 		}
 
 		private bool _isBoundImplicitelyToContent;
@@ -1021,9 +1038,9 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
-		internal override void UpdateThemeBindings()
+		internal override void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{
-			base.UpdateThemeBindings();
+			base.UpdateThemeBindings(updateReason);
 			SetDefaultForeground(ForegroundProperty);
 		}
 
@@ -1090,5 +1107,7 @@ namespace Windows.UI.Xaml.Controls
 		private protected override Thickness GetBorderThickness() => BorderThickness;
 
 		internal override bool CanHaveChildren() => true;
+
+		internal override bool IsViewHit() => Border.IsViewHitImpl(this);
 	}
 }

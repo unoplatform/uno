@@ -13,9 +13,10 @@ using Android.Runtime;
 using Android.Views;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml;
 using Android.OS;
+using Windows.UI.ViewManagement;
 
 namespace Uno.UI
 {
@@ -130,7 +131,7 @@ namespace Uno.UI
 		{
 			InitializeBinder();
 			ContextHelper.Current = this;
-			NotifyCreatingInstance();
+			Initialize();
 
 #if !IS_UNO
 			Performance.Increment(CreatedTotalBindableActivityCounter);
@@ -142,12 +143,21 @@ namespace Uno.UI
 		{
 			InitializeBinder();
 			ContextHelper.Current = this;
-			NotifyCreatingInstance();
+			Initialize();
 
 #if !IS_UNO
 			Performance.Increment(CreatedTotalBindableActivityCounter);
 			Performance.Increment(ActiveBindableActivityCounter);
 #endif
+		}
+
+		private void Initialize()
+		{
+			// Eagerly create the ApplicationView instance for IBaseActivityEvents
+			// to be useable (specifically for the Create event)
+			ApplicationView.GetForCurrentView();
+
+			NotifyCreatingInstance();
 		}
 
 		partial void InnerAttachedToWindow() => BinderAttachedToWindow();
@@ -298,7 +308,7 @@ namespace Uno.UI
 			{
 				base.Dispose(disposing);
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("Disposing {0}", disposing);
 				}

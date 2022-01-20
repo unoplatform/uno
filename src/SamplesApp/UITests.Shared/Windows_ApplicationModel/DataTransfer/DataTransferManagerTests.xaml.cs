@@ -20,7 +20,7 @@ namespace UITests.Windows_ApplicationModel.DataTransfer
 			this.DataContextChanged += DataTransferManagerTests_DataContextChanged;
 		}
 
-		public DataTransferManagerTestsViewModel ViewModel { get; private set; }
+		internal DataTransferManagerTestsViewModel ViewModel { get; private set; }
 
 		private void DataTransferManagerTests_DataContextChanged(Windows.UI.Xaml.DependencyObject sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
 		{
@@ -28,7 +28,7 @@ namespace UITests.Windows_ApplicationModel.DataTransfer
 		}
 	}
 
-	public class DataTransferManagerTestsViewModel : ViewModelBase
+	internal class DataTransferManagerTestsViewModel : ViewModelBase
 	{
 		private readonly DataTransferManager _dataTransferManager;
 		private string _title = null;

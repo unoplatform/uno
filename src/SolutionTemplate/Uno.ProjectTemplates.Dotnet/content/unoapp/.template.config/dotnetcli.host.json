@@ -25,6 +25,10 @@
       "longName": "skia-gtk",
       "shortName": "skia-gtk"
     },
+    "skia-tizen": {
+      "longName": "skia-tizen",
+      "shortName": "skia-tizen"
+    },
     "skia-linux-fb": {
       "longName": "skia-linux-fb",
       "shortName": "skia-linux-fb"

@@ -6,6 +6,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
+using Windows.UI.Xaml;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -186,6 +187,79 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.Select(20, 5);
 			Assert.AreEqual(10, textBox.SelectionStart);
 			Assert.AreEqual(0, textBox.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_SelectionStart_Set()
+		{
+			var textBox = new TextBox
+			{
+				Text = "0123456789"
+			};
+
+			var button = new Button()
+			{
+				Content = "Some button"
+			};
+
+			var stackPanel = new StackPanel()
+			{
+				Children =
+				{
+					textBox,
+					button
+				}
+			};
+
+			WindowHelper.WindowContent = stackPanel;
+			await WindowHelper.WaitForLoaded(textBox);
+
+			button.Focus(FocusState.Programmatic);
+
+			await WindowHelper.WaitForIdle();
+
+			textBox.SelectionStart = 3;
+
+			textBox.Focus(FocusState.Programmatic);
+			Assert.AreEqual(3, textBox.SelectionStart);
+		}
+
+		[TestMethod]
+		public async Task When_Focus_Changes_SelectionStart_Preserved()
+		{
+			var textBox = new TextBox
+			{
+				Text = "0123456789"
+			};
+
+			var button = new Button()
+			{
+				Content = "Some button"
+			};
+
+			var stackPanel = new StackPanel()
+			{
+				Children =
+				{
+					textBox,
+					button
+				}
+			};
+
+			WindowHelper.WindowContent = stackPanel;
+			await WindowHelper.WaitForLoaded(textBox);
+
+			textBox.Focus(FocusState.Programmatic);
+
+			await WindowHelper.WaitForIdle();
+
+			textBox.SelectionStart = 3;
+
+			button.Focus(FocusState.Programmatic);
+			Assert.AreEqual(3, textBox.SelectionStart);
+
+			textBox.Focus(FocusState.Programmatic);
+			Assert.AreEqual(3, textBox.SelectionStart);
 		}
 	}
 }

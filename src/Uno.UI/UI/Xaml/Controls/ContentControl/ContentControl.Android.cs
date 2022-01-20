@@ -3,7 +3,7 @@ using Android.Graphics.Drawables;
 using Android.Views;
 using Android.Widget;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Uno.UI.Controls;
 using Windows.UI.Xaml.Data;

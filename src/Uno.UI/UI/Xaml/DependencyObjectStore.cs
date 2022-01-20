@@ -4,7 +4,7 @@ using System;
 using Uno.UI.DataBinding;
 using System.Collections.Generic;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Diagnostics.Eventing;
 using Uno.Disposables;
 using System.Linq;
@@ -106,7 +106,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Is a theme-bound value currently being set?
 		/// </summary>
-		private bool _isSettingThemeBinding;
+		private bool _isSettingPersistentResourceBinding;
 		/// <summary>
 		/// The theme last to apply theme bindings on this object and its children.
 		/// </summary>
@@ -237,7 +237,6 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Returns the local value of a dependency property, if a local value is set.
 		/// </summary>
-		/// <param name="instance">The instance on which the property is attached</param>
 		/// <param name="property">The dependency property to get</param>
 		/// <returns></returns>
 		public object? ReadLocalValue(DependencyProperty property)
@@ -248,7 +247,6 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Returns the local value of a dependency property, if a local value is set.
 		/// </summary>
-		/// <param name="instance">The instance on which the property is attached</param>
 		/// <param name="property">The dependency property to get</param>
 		/// <returns></returns>
 		public object? GetAnimationBaseValue(DependencyProperty property)
@@ -297,8 +295,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Determines the current highest dependency property value precedence
 		/// </summary>
-		/// <param name="instance">The instance on which the property is attached</param>
-		/// <param name="property">The dependency property to get</param>
+		/// <param name="propertyDetails">The dependency property to get</param>
 		/// <returns></returns>
 		internal DependencyPropertyValuePrecedences GetCurrentHighestValuePrecedence(DependencyPropertyDetails propertyDetails)
 		{
@@ -308,7 +305,6 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Determines the current highest dependency property value precedence
 		/// </summary>
-		/// <param name="instance">The instance on which the property is attached</param>
 		/// <param name="property">The dependency property to get</param>
 		/// <returns></returns>
 		internal DependencyPropertyValuePrecedences GetCurrentHighestValuePrecedence(DependencyProperty property)
@@ -332,7 +328,7 @@ namespace Windows.UI.Xaml
 
 			_overriddenPrecedences.Push(precedence);
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"OverrideLocalPrecedence({precedence}) - stack is {string.Join(", ", _overriddenPrecedences)}");
 			}
@@ -345,7 +341,7 @@ namespace Windows.UI.Xaml
 					throw new InvalidOperationException($"Error while unstacking precedence. Should be {precedence}, got {popped}.");
 				}
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					var newPrecedence = _overriddenPrecedences.Count == 0 ? "<none>" : _overriddenPrecedences.Peek().ToString();
 					this.Log().Debug($"OverrideLocalPrecedence({precedence}).Dispose() ==> new overriden precedence is {newPrecedence})");
@@ -415,7 +411,7 @@ namespace Windows.UI.Xaml
 			SetValue(property, DependencyProperty.UnsetValue, precedence);
 		}
 
-		internal void SetValue(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails = null, bool isThemeBinding = false)
+		internal void SetValue(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails = null, bool isPersistentResourceBinding = false)
 		{
 			if (_trace.IsEnabled)
 			{
@@ -424,23 +420,23 @@ namespace Windows.UI.Xaml
 				/// can be significantly slower than other methods as a result on WebAssembly.
 				/// See https://github.com/dotnet/runtime/issues/56309
 				/// </remarks>
-				void SetValueWithTrace(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails, bool isThemeBinding)
+				void SetValueWithTrace(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails, bool isPersistentResourceBinding)
 				{
 					using (WritePropertyEventTrace(TraceProvider.SetValueStart, TraceProvider.SetValueStop, property, precedence))
 					{
-						InnerSetValue(property, value, precedence, propertyDetails, isThemeBinding);
+						InnerSetValue(property, value, precedence, propertyDetails, isPersistentResourceBinding);
 					}
 				}
 
-				SetValueWithTrace(property, value, precedence, propertyDetails, isThemeBinding);
+				SetValueWithTrace(property, value, precedence, propertyDetails, isPersistentResourceBinding);
 			}
 			else
 			{
-				InnerSetValue(property, value, precedence, propertyDetails, isThemeBinding);
+				InnerSetValue(property, value, precedence, propertyDetails, isPersistentResourceBinding);
 			}
 		}
 
-		private void InnerSetValue(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails, bool isThemeBinding)
+		private void InnerSetValue(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails, bool isPersistentResourceBinding)
 		{
 			if (precedence == DependencyPropertyValuePrecedences.Coercion)
 			{
@@ -475,7 +471,7 @@ namespace Windows.UI.Xaml
 					// Set even if they are different to make sure the value is now set on the right precedence
 					SetValueInternal(value, precedence, propertyDetails);
 
-					if (!isThemeBinding && !_isSettingThemeBinding)
+					if (!isPersistentResourceBinding && !_isSettingPersistentResourceBinding)
 					{
 						// If a non-theme value is being set, clear any theme binding so it's not overwritten if the theme changes.
 						_resourceBindings?.ClearBinding(property, precedence);
@@ -492,7 +488,7 @@ namespace Windows.UI.Xaml
 
 					TryUpdateInheritedAttachedProperty(property, propertyDetails);
 
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						var name = (_originalObjectRef.Target as IFrameworkElement)?.Name ?? _originalObjectRef.Target?.GetType().Name;
 						var hashCode = _originalObjectRef.Target?.GetHashCode();
@@ -687,72 +683,88 @@ namespace Windows.UI.Xaml
 
 		internal IDisposable RegisterPropertyChangedCallback(DependencyProperty property, PropertyChangedCallback callback, DependencyPropertyDetails? propertyDetails = null)
 		{
-			var weakDelegate = CreateWeakDelegate(callback);
-
 			propertyDetails ??= _properties.GetPropertyDetails(property);
 
-			var cookie = propertyDetails.CallbackManager.RegisterCallback(weakDelegate.callback);
+			if (ReferenceEquals(callback.Target, ActualInstance))
+			{
+				return propertyDetails.CallbackManager.RegisterCallback(callback);
+			}
+			else
+			{
+				var weakDelegate = CreateWeakDelegate(callback);
 
-			// Capture the weak reference to this instance.
-			var instanceRef = ThisWeakReference;
+				var cookie = propertyDetails.CallbackManager.RegisterCallback(weakDelegate.callback);
 
-			return new DispatcherConditionalDisposable(
-				callback.Target,
-				instanceRef.CloneWeakReference(),
-				() =>
-				{
-					// This weak reference ensure that the closure will not link
-					// the caller and the callee, in the same way "newValueActionWeak"
-					// does not link the callee to the caller.
-					var that = instanceRef.Target as DependencyObjectStore;
+				// Capture the weak reference to this instance.
+				var instanceRef = ThisWeakReference;
 
-					if (that != null)
+				return new DispatcherConditionalDisposable(
+					callback.Target,
+					instanceRef.CloneWeakReference(),
+					() =>
 					{
-						cookie.Dispose();
-						weakDelegate.release.Dispose();
+						// This weak reference ensure that the closure will not link
+						// the caller and the callee, in the same way "newValueActionWeak"
+						// does not link the callee to the caller.
+						var that = instanceRef.Target as DependencyObjectStore;
+
+						if (that != null)
+						{
+							cookie.Dispose();
+							weakDelegate.release.Dispose();
 
 						// Force a closure on the callback, to make its lifetime as long
 						// as the subscription being held by the callee.
 						callback = null!;
-					}
-				});
+						}
+					});
+			}
 		}
 
 		internal IDisposable RegisterPropertyChangedCallback(ExplicitPropertyChangedCallback handler)
 		{
-			var weakDelegate = CreateWeakDelegate(handler);
+			if (ReferenceEquals(handler.Target, ActualInstance))
+			{
+				_genericCallbacks = _genericCallbacks.Add(handler);
 
-			// Delegates integrate a null check when adding new delegates.
-			_genericCallbacks = _genericCallbacks.Add(weakDelegate.callback);
+				return Disposable.Create(() => _genericCallbacks = _genericCallbacks.Remove(handler));
+			}
+			else
+			{
+				var weakDelegate = CreateWeakDelegate(handler);
 
-			// This weak reference ensure that the closure will not link
-			// the caller and the callee, in the same way "newValueActionWeak"
-			// does not link the callee to the caller.
-			var instanceRef = ThisWeakReference;
+				// Delegates integrate a null check when adding new delegates.
+				_genericCallbacks = _genericCallbacks.Add(weakDelegate.callback);
 
-			return new DispatcherConditionalDisposable(
-				handler.Target,
-				instanceRef.CloneWeakReference(),
-				() =>
-				{
-					// This weak reference ensure that the closure will not link
-					// the caller and the callee, in the same way "newValueActionWeak"
-					// does not link the callee to the caller.
-					var that = instanceRef.Target as DependencyObjectStore;
+				// This weak reference ensure that the closure will not link
+				// the caller and the callee, in the same way "newValueActionWeak"
+				// does not link the callee to the caller.
+				var instanceRef = ThisWeakReference;
 
-					if (that != null)
+				return new DispatcherConditionalDisposable(
+					handler.Target,
+					instanceRef.CloneWeakReference(),
+					() =>
 					{
-						// Delegates integrate a null check when removing new delegates.
-						that._genericCallbacks = that._genericCallbacks.Remove(weakDelegate.callback);
+						// This weak reference ensure that the closure will not link
+						// the caller and the callee, in the same way "newValueActionWeak"
+						// does not link the callee to the caller.
+						var that = instanceRef.Target as DependencyObjectStore;
+
+							if (that != null)
+							{
+							// Delegates integrate a null check when removing new delegates.
+							that._genericCallbacks = that._genericCallbacks.Remove(weakDelegate.callback);
+							}
+
+							weakDelegate.release.Dispose();
+
+						// Force a closure on the callback, to make its lifetime as long
+						// as the subscription being held by the callee.
+						handler = null!;
 					}
-
-					weakDelegate.release.Dispose();
-
-					// Force a closure on the callback, to make its lifetime as long
-					// as the subscription being held by the callee.
-					handler = null!;
-				}
-			);
+				);
+			}
 		}
 
 		/// <summary>
@@ -828,41 +840,58 @@ namespace Windows.UI.Xaml
 		/// <param name="callback">A callback to be called</param>
 		internal IDisposable RegisterParentChangedCallback(object key, ParentChangedCallback callback)
 		{
-			var wr = WeakReferencePool.RentWeakReference(this, callback);
-
-			ParentChangedCallback weakDelegate =
-				(s, _, e) => (wr.Target as ParentChangedCallback)?.Invoke(s, key, e);
-
-			_parentChangedCallbacks = _parentChangedCallbacks.Add(weakDelegate);
-
-			// This weak reference ensure that the closure will not link
-			// the caller and the callee, in the same way "newValueActionWeak"
-			// does not link the callee to the caller.
-			var instanceRef = ThisWeakReference;
-
-			void Cleanup()
+			if (ReferenceEquals(callback.Target, ActualInstance))
 			{
-				var that = instanceRef.Target as DependencyObjectStore;
+				_parentChangedCallbacks = _parentChangedCallbacks.Add(callback);
 
-				if (that != null)
+				return Disposable.Create(() => _parentChangedCallbacks = _parentChangedCallbacks.Remove(callback));
+			}
+			else
+			{
+				var wr = WeakReferencePool.RentWeakReference(this, callback);
+
+				ParentChangedCallback weakDelegate =
+					(s, _, e) => (wr.Target as ParentChangedCallback)?.Invoke(s, key, e);
+
+				_parentChangedCallbacks = _parentChangedCallbacks.Add(weakDelegate);
+
+				// This weak reference ensure that the closure will not link
+				// the caller and the callee, in the same way "newValueActionWeak"
+				// does not link the callee to the caller.
+				var instanceRef = ThisWeakReference;
+
+				void Cleanup()
 				{
-					// Delegates integrate a null check when removing new delegates.
-					that._parentChangedCallbacks = that._parentChangedCallbacks.Remove(weakDelegate);
+					var that = instanceRef.Target as DependencyObjectStore;
+
+					if (that != null)
+					{
+						// Delegates integrate a null check when removing new delegates.
+						that._parentChangedCallbacks = that._parentChangedCallbacks.Remove(weakDelegate);
+					}
+
+					WeakReferencePool.ReturnWeakReference(that, wr);
+
+					// Force a closure on the callback, to make its lifetime as long
+					// as the subscription being held by the callee.
+					callback = null!;
 				}
 
-				WeakReferencePool.ReturnWeakReference(that, wr);
-
-				// Force a closure on the callback, to make its lifetime as long
-				// as the subscription being held by the callee.
-				callback = null!;
+				return new DispatcherConditionalDisposable(
+					callback.Target,
+					instanceRef.CloneWeakReference(),
+					Cleanup
+				);
 			}
-
-			return new DispatcherConditionalDisposable(
-				callback.Target,
-				instanceRef.CloneWeakReference(),
-				Cleanup
-			);
 		}
+
+		/// <summary>
+		/// Registers to parent changes for self
+		/// </summary>
+		/// <param name="key">A key to be passed to the callback parameter.</param>
+		/// <param name="callback">A callback to be called</param>
+		internal void RegisterParentChangedCallbackStrong(object key, ParentChangedCallback callback)
+			=> _parentChangedCallbacks = _parentChangedCallbacks.Add((s, _, e) => callback(s, key, e));
 
 		internal (object? value, DependencyPropertyValuePrecedences precedence) GetValueUnderPrecedence(DependencyProperty property, DependencyPropertyValuePrecedences precedence)
 		{
@@ -1016,7 +1045,7 @@ namespace Windows.UI.Xaml
 					// This block is a manual enumeration to avoid the foreach pattern
 					// See https://github.com/dotnet/runtime/issues/56309 for details
 					var propertiesEnumerator = _updatedProperties.GetEnumerator();
-					while(propertiesEnumerator.MoveNext())
+					while (propertiesEnumerator.MoveNext())
 					{
 						var dp = propertiesEnumerator.Current;
 						SetValue(dp, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
@@ -1080,11 +1109,16 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Do a tree walk to find the correct values of StaticResource and ThemeResource assignations.
 		/// </summary>
-		internal void UpdateResourceBindings(bool isThemeChangedUpdate, ResourceDictionary? containingDictionary = null)
+		internal void UpdateResourceBindings(ResourceUpdateReason updateReason, ResourceDictionary? containingDictionary = null)
 		{
+			if (updateReason == ResourceUpdateReason.None)
+			{
+				throw new ArgumentException();
+			}
+
 			if (_resourceBindings == null || !_resourceBindings.HasBindings)
 			{
-				UpdateChildResourceBindings(isThemeChangedUpdate);
+				UpdateChildResourceBindings(updateReason);
 				return;
 			}
 
@@ -1094,10 +1128,10 @@ namespace Windows.UI.Xaml
 
 			foreach (var (property, binding) in bindings)
 			{
-				InnerUpdateResourceBindings(isThemeChangedUpdate, dictionariesInScope, property, binding);
+				InnerUpdateResourceBindings(updateReason, dictionariesInScope, property, binding);
 			}
 
-			UpdateChildResourceBindings(isThemeChangedUpdate);
+			UpdateChildResourceBindings(updateReason);
 		}
 
 		/// <remarks>
@@ -1106,15 +1140,15 @@ namespace Windows.UI.Xaml
 		/// See https://github.com/dotnet/runtime/issues/56309
 		/// </remarks>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void InnerUpdateResourceBindings(bool isThemeChangedUpdate, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
+		private void InnerUpdateResourceBindings(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
 		{
 			try
 			{
-				InnerUpdateResourceBindingsUnsafe(isThemeChangedUpdate, dictionariesInScope, property, binding);
+				InnerUpdateResourceBindingsUnsafe(updateReason, dictionariesInScope, property, binding);
 			}
 			catch (Exception e)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 				{
 					this.Log().Warn($"Failed to update binding, target may have been disposed", e);
 				}
@@ -1127,7 +1161,7 @@ namespace Windows.UI.Xaml
 		/// See https://github.com/dotnet/runtime/issues/56309
 		/// </remarks>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void InnerUpdateResourceBindingsUnsafe(bool isThemeChangedUpdate, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
+		private void InnerUpdateResourceBindingsUnsafe(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
 		{
 			var wasSet = false;
 			foreach (var dict in dictionariesInScope)
@@ -1140,7 +1174,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			if (!wasSet && isThemeChangedUpdate && binding.IsThemeResourceExtension)
+			if (!wasSet && (binding.UpdateReason & updateReason) != ResourceUpdateReason.None)
 			{
 				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value))
 				{
@@ -1158,36 +1192,37 @@ namespace Windows.UI.Xaml
 				try
 #endif
 				{
-					_isSettingThemeBinding = binding.IsThemeResourceExtension;
+					_isSettingPersistentResourceBinding = binding.IsPersistent;
 					binding.SetterBindingPath.Value = convertedValue;
 				}
 #if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				finally
 #endif
 				{
-					_isSettingThemeBinding = false;
+					_isSettingPersistentResourceBinding = false;
 				}
 			}
 			else
 			{
-				SetValue(property, convertedValue, binding.Precedence, isThemeBinding: binding.IsThemeResourceExtension);
+				SetValue(property, convertedValue, binding.Precedence, isPersistentResourceBinding: binding.IsPersistent);
 			}
 		}
 
 		private bool _isUpdatingChildResourceBindings;
 
-		private void UpdateChildResourceBindings(bool isThemeChangedUpdate)
+		private void UpdateChildResourceBindings(ResourceUpdateReason updateReason)
 		{
 			if (_isUpdatingChildResourceBindings)
 			{
 				// Some DPs might be creating reference cycles, so we make sure not to enter an infinite loop.
 				return;
 			}
-			if (isThemeChangedUpdate)
+
+			if ((updateReason & ResourceUpdateReason.PropagatesThroughTree) != ResourceUpdateReason.None)
 			{
 				try
 				{
-					InnerUpdateChildResourceBindings(isThemeChangedUpdate);
+					InnerUpdateChildResourceBindings(updateReason);
 				}
 				finally
 				{
@@ -1208,14 +1243,14 @@ namespace Windows.UI.Xaml
 		/// See https://github.com/dotnet/runtime/issues/56309
 		/// </remarks>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void InnerUpdateChildResourceBindings(bool isThemeChangedUpdate)
+		private void InnerUpdateChildResourceBindings(ResourceUpdateReason updateReason)
 		{
 			_isUpdatingChildResourceBindings = true;
 			foreach (var child in GetChildrenDependencyObjects())
 			{
 				if (!(child is IFrameworkElement) && child is IDependencyObjectStoreProvider storeProvider)
 				{
-					storeProvider.Store.UpdateResourceBindings(isThemeChangedUpdate);
+					storeProvider.Store.UpdateResourceBindings(updateReason);
 				}
 			}
 		}
@@ -1231,7 +1266,7 @@ namespace Windows.UI.Xaml
 		{
 			foreach (var propertyDetail in _properties.GetAllDetails())
 			{
-				if(propertyDetail == null
+				if (propertyDetail == null
 					|| propertyDetail == _properties.DataContextPropertyDetails
 					|| propertyDetail == _properties.TemplatedParentPropertyDetails)
 				{
@@ -1285,7 +1320,10 @@ namespace Windows.UI.Xaml
 
 				if (candidateFE != null)
 				{
-					yield return candidateFE.Resources;
+					if (candidateFE.Resources != null) // It's legal (if pointless) on UWP to set Resources to null from user code, so check
+					{
+						yield return candidateFE.Resources;
+					}
 
 					if (parent is FrameworkElement fe)
 					{
@@ -1387,7 +1425,7 @@ namespace Windows.UI.Xaml
 			// This block is a manual enumeration to avoid the foreach pattern
 			// See https://github.com/dotnet/runtime/issues/56309 for details
 			var forwardedEnumerator = _inheritedForwardedProperties.GetEnumerator();
-			while(forwardedEnumerator.MoveNext())
+			while (forwardedEnumerator.MoveNext())
 			{
 				var sourceInstanceProperties = forwardedEnumerator.Current;
 
@@ -1603,7 +1641,7 @@ namespace Windows.UI.Xaml
 
 				InvokeCallbacks(actualInstanceAlias, propertyDetails.Property, propertyDetails, unpropagatedPrevious, previousPrecedence, newValue, newPrecedence);
 			}
-			else if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			else if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug(
 					$"Skipped raising PropertyChangedCallbacks because value for property {propertyDetails.Property.OwnerType}.{propertyDetails.Property.Name} remained identical."
@@ -1675,7 +1713,7 @@ namespace Windows.UI.Xaml
 			// Raise the callback for backing fields update before PropertyChanged to get
 			// the backingfield updated, in case the PropertyChanged handler reads the
 			// dependency property value through the cache.
-			propertyMetadata.RaiseBackingFieldUpdate(actualInstanceAlias, newValue);			
+			propertyMetadata.RaiseBackingFieldUpdate(actualInstanceAlias, newValue);
 
 			// Raise the changes for the callback register to the property itself
 			propertyMetadata.RaisePropertyChanged(actualInstanceAlias, eventArgs);
@@ -1686,9 +1724,9 @@ namespace Windows.UI.Xaml
 			// Raise the common property change callback of WinUI
 			// This is raised *after* the data bound properties are updated
 			// but before the registered property callbacks
-			if (actualInstanceAlias is UIElement uiElt)
+			if (actualInstanceAlias is IDependencyObjectInternal doInternal)
 			{
-				uiElt.OnPropertyChanged2(eventArgs);
+				doInternal.OnPropertyChanged2(eventArgs);
 			}
 
 			// Raise the changes for the callbacks register through RegisterPropertyChangedCallback.
@@ -1831,7 +1869,7 @@ namespace Windows.UI.Xaml
 					_themeLastUsed = null;
 					if (Application.Current?.RequestedThemeForResources is { } currentTheme && !previousTheme.Equals(currentTheme))
 					{
-						Application.PropagateThemeChanged(frameworkElement);
+						Application.PropagateResourcesChanged(frameworkElement, ResourceUpdateReason.ThemeResource);
 					}
 				}
 			}

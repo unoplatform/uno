@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.Extensions.System;
 using Uno.UI.Runtime.Skia.GTK.Extensions.System.LauncherHelpers;
-using Uno.Logging;
 using Windows.System;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia.GTK.Extensions.System
 {

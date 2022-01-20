@@ -4,7 +4,7 @@ using System.Text;
 using Android.Animation;
 using Android.Views.Animations;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Media.Animation
 {

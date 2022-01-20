@@ -25,7 +25,14 @@ namespace Windows.UI.Xaml.Controls
 
 		private void InsertCore(int index, UIElement item)
 		{
-			_owner.InsertSubview(item, index);
+			if (_owner.ChildrenShadow.Count == index)
+			{
+				_owner.AddSubview(item);
+			}
+			else
+			{
+				_owner.InsertSubview(item, index);
+			}
 		}
 
 		private UIElement RemoveAtCore(int index)
@@ -46,8 +53,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var view = _owner.ChildrenShadow[index];
 
-			// Set the view directly in the original array
-			_owner.Subviews[index] = value;
+			RemoveAt(index);
+			Insert(index, value);
 
 			return view as UIElement;
 		}

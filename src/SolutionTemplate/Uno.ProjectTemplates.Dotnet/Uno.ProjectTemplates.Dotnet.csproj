@@ -120,28 +120,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="content\unoapp-net6\NuGet.config" />
-	  <None Remove="content\unoapp-net6\UnoQuickStart-vsmac.slnf" />
-	  <None Remove="content\unoapp-winui-net6\UnoWinUIQuickStart-vsmac.slnf" />
-	  <None Remove="content\unoapp-winui\UnoWinUIQuickStart-vsmac.slnf" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="content\unoapp-net6\NuGet.config" />
-	  <UpToDateCheckInput Remove="content\unoapp-net6\UnoQuickStart-vsmac.slnf" />
-	  <UpToDateCheckInput Remove="content\unoapp-winui-net6\UnoWinUIQuickStart-vsmac.slnf" />
-	  <UpToDateCheckInput Remove="content\unoapp-winui\UnoWinUIQuickStart-vsmac.slnf" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Content Update="content\unoapp-net6\UnoQuickStart-vsmac.slnf">
 	    <PackagePath>content\unoapp</PackagePath>
 	  </Content>
 	  <Content Update="content\unoapp-winui-net6\UnoWinUIQuickStart-vsmac.slnf">
-	    <PackagePath>content\unoapp</PackagePath>
+	    <PackagePath>content\unoapp-winui-net6</PackagePath>
 	  </Content>
 	  <Content Update="content\unoapp-winui\UnoWinUIQuickStart-vsmac.slnf">
-	    <PackagePath>content\unoapp</PackagePath>
+	    <PackagePath>content\unoapp-winui</PackagePath>
 	  </Content>
 	</ItemGroup>
 
@@ -310,6 +296,7 @@
 							{
 								s = s
 									.Replace("Include=\"Uno.UI", "Include=\"Uno.WinUI")
+									.Replace("Include=\"Uno.WinUI.Adapter.Microsoft.Extensions.Logging", "Include=\"Uno.UI.Adapter.Microsoft.Extensions.Logging")
 									.Replace("args.PreviousExecutionState", "args.UWPLaunchActivatedEventArgs.PreviousExecutionState")
 									.Replace("args.PrelaunchActivated", "args.UWPLaunchActivatedEventArgs.PrelaunchActivated")
 									.Replace("OnLaunched(LaunchActivatedEventArgs", "OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs")

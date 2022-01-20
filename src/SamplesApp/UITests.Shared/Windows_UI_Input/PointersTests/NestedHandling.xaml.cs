@@ -55,6 +55,30 @@ namespace UITests.Windows_UI_Input.PointersTests
 			_container.PointerPressed += (snd, e) => _result.Text = "Pressed FAIL";
 			_container.PointerMoved += (snd, e) => nestedMoveCount++;
 			_container.PointerReleased += (snd, e) => _result.Text += $" | Released {(nestedMoveCount == containerMoveCount ? "SUCCESS" : "FAIL")}";
+
+
+			_container.AddHandler(
+				PointerEnteredEvent,
+				new PointerEventHandler((snd, e) =>
+				{
+					if (e.OriginalSource != _container)
+					{
+						_enterResult.Text = "FAILED";
+					}
+				}),
+				handledEventsToo: true);
+			_nested.PointerEntered += (snd, e) => _enterResult.Text = "SUCCESS";
+			_container.AddHandler(
+				PointerExitedEvent,
+				new PointerEventHandler((snd, e) =>
+				{
+					if (e.OriginalSource != _container)
+					{
+						_exitResult.Text = "FAILED";
+					}
+				}),
+				handledEventsToo: true);
+			_nested.PointerExited += (snd, e) => _exitResult.Text = "SUCCESS";
 		}
 	}
 }

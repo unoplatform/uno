@@ -5,10 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Microsoft.Extensions.Logging;
+
 using Uno;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Resources
 	{
 		private const int UPRIVersion = 2;
 		private const string DefaultResourceLoaderName = "Resources";
-		private static readonly Lazy<ILogger> _log = new Lazy<ILogger>(() => typeof(ResourceLoader).Log());
+		private static readonly Logger _log = typeof(ResourceLoader).Log();
 
 		private static readonly List<Assembly> _lookupAssemblies = new List<Assembly>();
 		private static readonly Dictionary<string, ResourceLoader> _loaders = new Dictionary<string, ResourceLoader>(StringComparer.OrdinalIgnoreCase);
@@ -40,9 +40,9 @@ namespace Windows.ApplicationModel.Resources
 
 		public ResourceLoader()
 		{
-			if (_log.Value.IsEnabled(LogLevel.Debug))
+			if (_log.IsEnabled(LogLevel.Debug))
 			{
-				_log.Value.LogDebug($"Initializing ResourceLoader (CurrentUICulture: {CultureInfo.CurrentUICulture})");
+				_log.LogDebug($"Initializing ResourceLoader (CurrentUICulture: {CultureInfo.CurrentUICulture})");
 			}
 		}
 
@@ -88,9 +88,9 @@ namespace Windows.ApplicationModel.Resources
 
 		private bool FindForCulture(string culture, string resource, out string resourceValue)
 		{
-			if (_log.Value.IsEnabled(LogLevel.Debug))
+			if (_log.IsEnabled(LogLevel.Debug))
 			{
-				_log.Value.Debug($"[{LoaderName}] FindForCulture {culture}, {resource}");
+				_log.Debug($"[{LoaderName}] FindForCulture {culture}, {resource}");
 			}
 
 			if (_resources.TryGetValue(culture, out var values)
@@ -283,9 +283,9 @@ namespace Windows.ApplicationModel.Resources
 						var key = reader.ReadString();
 						var value = reader.ReadString();
 
-						if (_log.Value.IsEnabled(LogLevel.Debug))
+						if (_log.IsEnabled(LogLevel.Debug))
 						{
-							_log.Value.Debug($"[{name}, {fileName}, {culture}] Adding resource {key}={value}");
+							_log.Debug($"[{name}, {fileName}, {culture}] Adding resource {key}={value}");
 						}
 
 						resources[key] = value;
@@ -293,9 +293,9 @@ namespace Windows.ApplicationModel.Resources
 				}
 				else
 				{
-					if (_log.Value.IsEnabled(LogLevel.Debug))
+					if (_log.IsEnabled(LogLevel.Debug))
 					{
-						_log.Value.LogDebug($"Skipping resource file {fileName} for {culture} (CurrentCulture {CultureInfo.CurrentUICulture.IetfLanguageTag})");
+						_log.LogDebug($"Skipping resource file {fileName} for {culture} (CurrentCulture {CultureInfo.CurrentUICulture.IetfLanguageTag})");
 					}
 				}
 			}

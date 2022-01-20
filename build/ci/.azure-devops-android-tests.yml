@@ -12,7 +12,7 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
 
-  dependsOn: Commitsar
+  dependsOn: Pipeline_Validations
 
   variables:
     CI_Build: true
@@ -56,35 +56,29 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
 
-  dependsOn: Commitsar
+  dependsOn: Pipeline_Validations
 
   variables:
     CI_Build: true
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
+    VS_MSBUILD: '/Applications/Visual Studio.app/Contents/Resources/lib/monodevelop/bin/MSBuild/Current/bin/msbuild.dll'
 
   steps:
   - checkout: self
     clean: true
 
   - template: templates/dotnet-install.yml
+  - template: templates/jdk-setup.yml
 
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - task: MSBuild@1
-    inputs:
-      solution: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Droid/SamplesApp.Droid.csproj
-      msbuildLocationMethod: version
-      msbuildVersion: latest
-      msbuildArchitecture: x86
-      msbuildArguments: /m /r /p:Configuration=Release /p:IsUiAutomationMappingEnabled=true
-      clean: false
-      maximumCpuCount: true
-      restoreNugetPackages: false
-      logProjectEvents: false
-      createLogFile: false
+  - script: |
+      mono '$(VS_MSBUILD)' '$(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Droid/SamplesApp.Droid.csproj' /m /r /p:Configuration=Release /p:IsUiAutomationMappingEnabled=true /p:AndroidBuildApplicationPackage=True /p:AndroidUseLatestPlatformSdk=true /bl:$(build.artifactstagingdirectory)/android-sampleapp.binlog
+    displayName: Build Android App
+
 
   - task: CopyFiles@2
     inputs:
@@ -132,6 +126,7 @@ jobs:
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
         TARGETPLATFORM_NAME: xamarin
         FAILBUILD_ON_FAILURE: true
+        ALLOW_RERUN: true
 
       Android_9.0_Group_02:
         ANDROID_SIMULATOR_APILEVEL: 28
@@ -140,6 +135,7 @@ jobs:
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
         TARGETPLATFORM_NAME: xamarin
         FAILBUILD_ON_FAILURE: true
+        ALLOW_RERUN: true
 
       Android_9.0_Group_03:
         ANDROID_SIMULATOR_APILEVEL: 28
@@ -148,6 +144,7 @@ jobs:
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
         TARGETPLATFORM_NAME: xamarin
         FAILBUILD_ON_FAILURE: true
+        ALLOW_RERUN: true
 
       Android_9.0_Snapshots:
         ANDROID_SIMULATOR_APILEVEL: 28
@@ -156,6 +153,7 @@ jobs:
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
         TARGETPLATFORM_NAME: xamarin
         FAILBUILD_ON_FAILURE: true
+        ALLOW_RERUN: true
 
       Android_9.0_RuntimeTests:
         ANDROID_SIMULATOR_APILEVEL: 28
@@ -164,6 +162,7 @@ jobs:
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
         TARGETPLATFORM_NAME: xamarin
         FAILBUILD_ON_FAILURE: true
+        ALLOW_RERUN: false
 
       Android_9.0_RuntimeTests_Net6:
         ANDROID_SIMULATOR_APILEVEL: 28
@@ -171,6 +170,7 @@ jobs:
         UNO_UITEST_BUCKET_ID: RuntimeTests
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-net6-build
         TARGETPLATFORM_NAME: net6
+        ALLOW_RERUN: false
         FAILBUILD_ON_FAILURE: false # false until https://github.com/unoplatform/uno/issues/5873 and https://github.com/dotnet/runtime/pull/55681 are released 
 
       # Android 10 testing is disabled because of https://github.com/microsoft/appcenter/issues/1451
@@ -202,6 +202,8 @@ jobs:
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/optimize-roslyn-mono.yml
+
+  - template: templates/dotnet-install.yml
 
   - template: templates/ios-build-select-version.yml
     parameters:
@@ -238,6 +240,7 @@ jobs:
       $(build.sourcesdirectory)/build/android-uitest-run.sh
 
     displayName: Run Android Tests
+    condition: eq(variables.ALLOW_RERUN, 'true')
 
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
@@ -249,7 +252,7 @@ jobs:
       TARGETPLATFORM_NAME: "$(TARGETPLATFORM_NAME)"
  
   - task: PublishTestResults@2
-    condition: always()
+    condition: eq(variables.ALLOW_RERUN, 'true')
     inputs:
       testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(UITEST_TEST_MODE_NAME)/$(UNO_UITEST_BUCKET_ID)/$(TARGETPLATFORM_NAME) Test ReRun'
       testResultsFormat: 'NUnit'

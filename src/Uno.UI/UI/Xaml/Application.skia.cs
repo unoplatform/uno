@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -7,12 +9,12 @@ using Windows.ApplicationModel;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Threading;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.Foundation.Extensibility;
-using Microsoft.Extensions.Logging;
+
 
 namespace Windows.UI.Xaml
 {
@@ -20,9 +22,9 @@ namespace Windows.UI.Xaml
 	{
 		private static bool _startInvoked = false;
 		private static string[] _args;
-		private readonly IApplicationExtension _applicationExtension;
+		private readonly IApplicationExtension? _applicationExtension;
 
-		internal ISkiaHost Host { get; set; }
+		internal ISkiaHost? Host { get; set; }
 
 		public Application()
 		{
@@ -78,11 +80,25 @@ namespace Windows.UI.Xaml
 				// Force init
 				Window.Current.ToString();
 
+				InitializationCompleted();
+
 				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, string.Join(";", _args)));
 			}
 		}
 
 		internal void ForceSetRequestedTheme(ApplicationTheme theme) => _requestedTheme = theme;
+
+		partial void ObserveSystemThemeChanges()
+		{
+			if (_applicationExtension != null)
+			{
+				_applicationExtension.SystemThemeChanged += SystemThemeChanged;
+			}
+
+			_systemThemeChangesObserved = true;
+		}
+
+		private void SystemThemeChanged(object sender, EventArgs e) => OnSystemThemeChanged();
 	}
 
 	internal interface IApplicationEvents

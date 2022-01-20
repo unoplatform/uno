@@ -23,6 +23,8 @@
 			</TextBlock>
 
 			<TextBox Margin="0,12,0,0" Header="Desired accuracy in meters" Text="{Binding DesiredAccuracyInMeters, Mode=TwoWay}" />
+			<TimePicker Name="uiMaxCacheTime" ClockIdentifier="24HourClock" Header="Max cache time (mm:ss)" SelectedTime="{Binding maximumAge, Mode=TwoWay}" />
+			<TimePicker Name="uiTimeout" ClockIdentifier="24HourClock" Header="Timeout (mm:ss)" SelectedTime="{Binding timeout, Mode=TwoWay}" />
 
 			<Button Margin="0,12,0,0" Command="{Binding GetGeopositionCommand}">Get geoposition</Button>
 			<local:GeopositionDisplayControl Geoposition="{x:Bind ViewModel.Geoposition, Mode=OneWay}" />

@@ -12,9 +12,13 @@ using Windows.System;
 using Uno;
 using Uno.Disposables;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
+#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+namespace Microsoft.UI.Input
+#else
 namespace Windows.UI.Input
+#endif
 {
 	public partial class GestureRecognizer
 	{
@@ -77,10 +81,38 @@ namespace Windows.UI.Input
 			public bool IsRotateEnabled	  => _isRotateEnabled;
 			public bool IsScaleEnabled	  => _isScaleEnabled;
 
-			public Manipulation(GestureRecognizer recognizer, PointerPoint pointer1)
+			internal static void AddPointer(GestureRecognizer recognizer, PointerPoint pointer)
+			{
+				var current = recognizer._manipulation;
+				if (current != null)
+				{
+					if (current.TryAdd(pointer))
+					{
+						// The pending manipulation which can either handle the pointer, either is still active with another pointer,
+						// just ignore the new pointer.
+						return;
+					}
+
+					// The current manipulation should be discarded
+					current.Complete(); // Will removed 'current' from the 'recognizer._manipulation' field.
+				}
+
+				var manipulation = new Manipulation(recognizer, pointer);
+				if (manipulation._state == ManipulationState.Completed)
+				{
+					// The new manipulation has been cancelled in the ManipStarting handler, throw it away.
+					manipulation.Complete(); // Should not do anything, safety only
+				}
+				else
+				{
+					recognizer._manipulation = manipulation;
+				}
+			}
+
+			private Manipulation(GestureRecognizer recognizer, PointerPoint pointer1)
 			{
 				_recognizer = recognizer;
-				_deviceType = pointer1.PointerDevice.PointerDeviceType;
+				_deviceType = (PointerDeviceType)pointer1.PointerDevice.PointerDeviceType;
 
 				_origins = _currents = pointer1;
 				_contacts = (0, 1);
@@ -114,27 +146,29 @@ namespace Windows.UI.Input
 
 				if ((_settings & (GestureSettingsHelper.Manipulations | GestureSettingsHelper.DragAndDrop)) == 0)
 				{
+					// The manipulation has been cancelled (all possible manip has been removed)
+					// WARNING: The _gestureRecognizer._manipulation has not been set yet! We cannot invoke the Complete right now (cf. AddPointer)
+
 					_state = ManipulationState.Completed;
+					return;
 				}
-				else
-				{
-					_isDraggingEnable = (_settings & GestureSettings.Drag) != 0;
-					_isTranslateXEnabled = (_settings & (GestureSettings.ManipulationTranslateX | GestureSettings.ManipulationTranslateRailsX)) != 0;
-					_isTranslateYEnabled = (_settings & (GestureSettings.ManipulationTranslateY | GestureSettings.ManipulationTranslateRailsY)) != 0;
-					_isRotateEnabled = (_settings & GestureSettings.ManipulationRotate) != 0;
-					_isScaleEnabled = (_settings & GestureSettings.ManipulationScale) != 0;
-				}
+
+				_isDraggingEnable = (_settings & GestureSettings.Drag) != 0;
+				_isTranslateXEnabled = (_settings & (GestureSettings.ManipulationTranslateX | GestureSettings.ManipulationTranslateRailsX)) != 0;
+				_isTranslateYEnabled = (_settings & (GestureSettings.ManipulationTranslateY | GestureSettings.ManipulationTranslateRailsY)) != 0;
+				_isRotateEnabled = (_settings & GestureSettings.ManipulationRotate) != 0;
+				_isScaleEnabled = (_settings & GestureSettings.ManipulationScale) != 0;
 
 				_recognizer.ManipulationConfigured?.Invoke(_recognizer, this);
 				StartDragTimer();
 			}
 
-			public bool IsActive(PointerDeviceType type, uint id)
+			public bool IsActive(PointerIdentifier pointer)
 				=> _state != ManipulationState.Completed
-					&& _deviceType == type
-					&& _origins.ContainsPointer(id);
+					&& _deviceType == (PointerDeviceType)pointer.Type
+					&& _origins.ContainsPointer(pointer.Id);
 
-			public bool TryAdd(PointerPoint point)
+			private bool TryAdd(PointerPoint point)
 			{
 				if (point.Pointer == _origins.Pointer1.Pointer)
 				{
@@ -142,14 +176,14 @@ namespace Windows.UI.Input
 						"Invalid manipulation state: We are receiving a down for the second time for the same pointer!"
 						+ "This is however common when using iOS emulator with VNC where we might miss some pointer events "
 						+ "due to focus being stole by debugger, in that case you can safely ignore this message.");
-					return false; // Request to create a new manipualtion
+					return false; // Request to create a new manipulation
 				}
 				else if (_state >= ManipulationState.Inertia)
 				{
 					// A new manipulation has to be started
 					return false;
 				}
-				else if (point.PointerDevice.PointerDeviceType != _deviceType
+				else if ((PointerDeviceType)point.PointerDevice.PointerDeviceType != _deviceType
 					|| _currents.HasPointer2)
 				{
 					// A manipulation is already active, but cannot handle this new pointer.
@@ -236,11 +270,16 @@ namespace Windows.UI.Input
 							new ManipulationCompletedEventArgs(_currents.Identifiers, position, cumulative, velocities, _state == ManipulationState.Inertia, _contacts.onStart, _contacts.current));
 						break;
 
-					default:
+					case ManipulationState.Starting:
 						_inertia?.Dispose();
 						_state = ManipulationState.Completed;
 
 						_recognizer.ManipulationAborted?.Invoke(_recognizer, this);
+						break;
+
+					default: // Safety only
+						_inertia?.Dispose();
+						_state = ManipulationState.Completed;
 						break;
 				}
 
@@ -259,7 +298,7 @@ namespace Windows.UI.Input
 
 			private bool TryUpdate(PointerPoint point)
 			{
-				if (_deviceType != point.PointerDevice.PointerDeviceType)
+				if (_deviceType != (PointerDeviceType)point.PointerDevice.PointerDeviceType)
 				{
 					return false;
 				}
@@ -524,6 +563,7 @@ namespace Windows.UI.Input
 			{
 				_dragHoldTimer?.Stop();
 			}
+
 			// For pen and mouse this only means down -> * moves out of tap range;
 			// For touch it means down -> * moves close to origin for DragUsingFingerMinDelayTicks -> * moves far from the origin 
 			private bool IsBeginningOfDragManipulation()

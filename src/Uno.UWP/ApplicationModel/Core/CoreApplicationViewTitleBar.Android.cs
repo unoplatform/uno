@@ -1,8 +1,9 @@
 using Android.App;
 using Android.OS;
 using Android.Views;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
 
 namespace Windows.ApplicationModel.Core
@@ -44,7 +45,7 @@ namespace Windows.ApplicationModel.Core
 						}
 						else
 						{
-							if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+							if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 							{
 								this.Log().LogWarning($"Context helper is not yet available, cannot set TranslucentStatus");
 							}

@@ -20,7 +20,7 @@ using Uno.Extensions.Specialized;
 using System.Collections;
 using System.Linq;
 using Windows.UI.Xaml.Controls.Primitives;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Disposables;
 using Uno.Client;
 using System.Threading.Tasks;
@@ -32,9 +32,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ListViewBase : Selector
 	{
-		internal ScrollViewer ScrollViewer { get; private set; }
-		IVirtualizingPanel VirtualizingPanel => ItemsPanelRoot as IVirtualizingPanel;
-
 		/// <summary>
 		/// When this flag is set, the ListViewBase will process every notification from <see cref="INotifyCollectionChanged"/> as if it 
 		/// were a 'Reset', triggering a complete refresh of the list. By default this is false.
@@ -338,8 +335,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnApplyTemplate();
 
-			ScrollViewer = this.GetTemplateChild("ScrollViewer") as ScrollViewer;
-
 			OnApplyTemplatePartial();
 		}
 		partial void OnApplyTemplatePartial();
@@ -369,6 +364,8 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override void OnItemClicked(int clickedIndex)
 		{
+			// Note: don't call base.OnItemClicked(), because we override the default single-selection-only handling
+
 			var item = ItemFromIndex(clickedIndex);
 			if (IsItemClickEnabled)
 			{
@@ -461,7 +458,7 @@ namespace Windows.UI.Xaml.Controls
 						completeRefresh();
 						return;
 					}
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Inserting {args.NewItems.Count} items starting at {args.NewStartingIndex}");
 					}
@@ -481,18 +478,18 @@ namespace Windows.UI.Xaml.Controls
 						completeRefresh();
 						return;
 					}
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Deleting {args.OldItems.Count} items starting at {args.OldStartingIndex}");
 					}
-          
+
 					SaveContainersForIndexRepair(args.OldStartingIndex, -args.OldItems.Count);
 					RemoveItems(args.OldStartingIndex, args.OldItems.Count, section);
 					RepairIndices();
 
 					break;
 				case NotifyCollectionChangedAction.Replace:
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Replacing {args.NewItems.Count} items starting at {args.NewStartingIndex}");
 					}
@@ -547,7 +544,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private void RepairIndices()
 		{
-			foreach(var containerPair in _containersForIndexRepair)
+			foreach (var containerPair in _containersForIndexRepair)
 			{
 				containerPair.Key.SetValue(ItemsControl.IndexForItemContainerProperty, containerPair.Value);
 			}
@@ -704,7 +701,18 @@ namespace Windows.UI.Xaml.Controls
 				if (container != null)
 				{
 					var item = GetDisplayItemFromIndexPath(unoIndexPath);
-					PrepareContainerForIndex(container, flatIndex);
+#if __IOS__ || __ANDROID__ // TODO: The managed ListView should similarly go through the recycling to use the proper container matching the new template
+					if (HasTemplateChanged(((FrameworkElement)container).DataContext, item))
+					{
+						// If items are using different templates, we should go through the native replace operation, to use a container
+						// with the right template.
+						NativeReplaceItems(i, 1, section);
+					}
+					else
+#endif
+					{
+						PrepareContainerForIndex(container, flatIndex);
+					}
 				}
 				else
 				{
@@ -713,6 +721,19 @@ namespace Windows.UI.Xaml.Controls
 					NativeReplaceItems(i, 1, section);
 				}
 			}
+		}
+
+		/// <summary>
+		/// Does <paramref name="newItem"/> resolve to a different template than <paramref name="oldItem"/>?
+		/// </summary>
+		private bool HasTemplateChanged(object oldItem, object newItem)
+		{
+			if (ItemTemplateSelector == null)
+			{
+				return false;
+			}
+
+			return ResolveItemTemplate(oldItem) != ResolveItemTemplate(newItem);
 		}
 
 		partial void NativeReplaceItems(int firstItem, int count, int section);
@@ -756,16 +777,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			return false;
-		}
-
-		protected override void OnItemsChanged(object e)
-		{
-
-			if (ItemsSource == null) // We're only interested when Items is modified directly, ie iff ItemsSource is not set
-			{
-				Refresh(); // Ensure item views are updated correctly if Items collection is manipulated 
-			}
-			base.OnItemsChanged(e);
 		}
 
 		/// <summary>
@@ -832,7 +843,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			catch (Exception e)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 				{
 					this.Log().Warn($"{nameof(LoadMoreItemsAsync)} failed.", e);
 				}
@@ -849,15 +860,5 @@ namespace Windows.UI.Xaml.Controls
 				TryLoadMoreItems();
 			}
 		}
-
-		/// <summary>
-		/// Is the ListView.managed implementation used on this platform?
-		/// </summary>
-		internal static bool UsesManagedLayouting =>
-#if __IOS__ || __ANDROID__
-			false;
-#else
-			true;
-#endif
 	}
 }

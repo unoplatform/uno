@@ -16,7 +16,13 @@
 		</Border>
 
 		<StackPanel Orientation="Horizontal">
-			<TextBlock Text="Result: " />
+			<TextBlock Text="Entered result: " />
+			<TextBlock Text="**not run**" x:Name="_enterResult" />
+
+			<TextBlock Text="Exited result: " />
+			<TextBlock Text="**not run**" x:Name="_exitResult" />
+
+			<TextBlock Text="Pressed/Release result: " />
 			<TextBlock Text="**not run**" x:Name="_result" />
 		</StackPanel>
 	</Grid>

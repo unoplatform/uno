@@ -3,12 +3,14 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using AppKit;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
+using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Core
 {
@@ -54,10 +56,10 @@ namespace Windows.UI.Core
 		}
 
 		/// <inheritdoc />
-		public void ReleasePointerCapture() { }
+		public void ReleasePointerCapture(PointerIdentifier pointer) { }
 
 		/// <inheritdoc />
-		public void SetPointerCapture() { }
+		public void SetPointerCapture(PointerIdentifier pointer) { }
 
 		private void RefreshCursor()
 		{

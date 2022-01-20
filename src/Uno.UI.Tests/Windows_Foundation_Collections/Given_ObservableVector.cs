@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -65,6 +66,46 @@ namespace Uno.UI.Tests.Windows_Foundation_Collections
 
 			vector.RemoveAt(2);
 			vector.Remove("one");
+		}
+
+		[TestMethod]
+		public void When_IListOverride_IndexOf()
+		{
+			var vector = new MyObservableVector();
+			vector.Add(21);
+			vector.Add(42);
+
+			var vectorAsIList = (IList)vector;
+
+			Assert.AreEqual(1, vectorAsIList.IndexOf(42));
+
+			Assert.AreEqual(2, vector.IndexGetCount);
+		}
+
+		private class MyObservableVector : ObservableVector<int>
+		{
+			public int IndexGetCount;
+			public int IndexSetCount;
+
+			public MyObservableVector()
+			{
+
+			}
+
+			public override int this[int index]
+			{
+				get
+				{
+					IndexGetCount++;
+					return base[index];
+				}
+
+				set
+				{
+					IndexSetCount++;
+					base[index] = value;
+				}
+			}
 		}
 	}
 }

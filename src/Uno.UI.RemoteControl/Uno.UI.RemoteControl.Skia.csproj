@@ -38,6 +38,9 @@
 	</ItemGroup>
 	
 	<ItemGroup>
+	  <UpToDateCheckInput Remove="HotReload\ClientHotReloadProcessor.MetadataUpdate.cs" />
+	  <UpToDateCheckInput Remove="HotReload\ClientHotReloadProcessor.Xaml.cs" />
+	  <UpToDateCheckInput Remove="HotReload\Messages\AssemblyDeltaReload.cs" />
 	  <UpToDateCheckInput Remove="Messages\ProcessorsDiscovery.cs" />
 	  <UpToDateCheckInput Remove="ServerEndpointAttribute.cs" />
 	  <UpToDateCheckInput Remove="ServerProcessorsConfigurationAttribute.cs" />
@@ -51,7 +54,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-		<PackageReference Include="Uno.MonoAnalyzers" />
+		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>

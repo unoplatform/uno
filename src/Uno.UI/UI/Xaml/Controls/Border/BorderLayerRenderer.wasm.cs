@@ -133,7 +133,8 @@ namespace Windows.UI.Xaml.Shapes
 								("background-origin", "content-box"),
 								("background-position", imgBrush.ToCssPosition()),
 								("background-size", imgBrush.ToCssBackgroundSize()),
-								("background-image", "url(" + img.Value + ")")
+								("background-image", "url(" + img.Value + ")"),
+								("background-repeat", "no-repeat")
 							);
 							break;
 					}

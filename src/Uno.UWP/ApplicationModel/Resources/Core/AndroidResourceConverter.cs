@@ -11,7 +11,7 @@ using Uno.UI;
 
 #if HAS_UNO
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 #endif
 
 namespace Windows.ApplicationModel.Resources.Core

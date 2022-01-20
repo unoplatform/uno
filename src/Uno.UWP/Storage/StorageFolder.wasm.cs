@@ -7,7 +7,7 @@ using Uno.Foundation;
 using Uno.Foundation.Interop;
 using Uno.Extensions;
 using System.Threading.Tasks;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.Storage
 {
@@ -20,14 +20,14 @@ namespace Windows.Storage
 
 		private static async Task TryInitializeStorage()
 		{
-			if (typeof(StorageFolder).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (typeof(StorageFolder).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				typeof(StorageFolder).Log().Debug("Waiting for emscripten storage initialization");
 			}
 
 			await _storageInitialized.Task;
 
-			if (typeof(StorageFolder).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (typeof(StorageFolder).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				typeof(StorageFolder).Log().Debug("Emscripten storage initialized");
 			}
@@ -56,7 +56,7 @@ namespace Windows.Storage
 
 		internal static void DispatchStorageInitialized()
 		{
-			if (typeof(StorageFolder).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (typeof(StorageFolder).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				typeof(StorageFolder).Log().Debug("Dispatch emscripten storage initialized");
 			}

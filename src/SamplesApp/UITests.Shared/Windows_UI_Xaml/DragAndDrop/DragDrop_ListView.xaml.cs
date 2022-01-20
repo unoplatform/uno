@@ -24,6 +24,11 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 				"#0000F9",
 				"#86007D"
 			};
+
+			SUT.DragOver += (snd, e) =>
+			{
+				Operation.Text += e.AcceptedOperation.ToString();
+			};
 		}
 	}
 }

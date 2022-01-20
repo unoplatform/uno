@@ -4,8 +4,9 @@ using System.Threading.Tasks;
 using Android.App;
 using Android.Content.PM;
 using AndroidX.Core.Content;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 
 namespace Windows.Devices.Haptics
 {

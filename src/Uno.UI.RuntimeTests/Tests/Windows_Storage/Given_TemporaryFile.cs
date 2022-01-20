@@ -11,6 +11,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 	[TestClass]
 	public class Given_TemporaryFile
 	{
+#if __SKIA__
+		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
+#endif
 		[TestMethod]
 		public void When_CloseLast_Then_FileDeleted()
 		{

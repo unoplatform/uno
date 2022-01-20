@@ -35,7 +35,7 @@
     "B445DF73-AC9E-4276-9FBA-7CB5AD5D2518",
     "3EA9E612-E717-4E55-9034-DE653429FEFD", // WPF
     "3EA9E612-E717-4E55-9034-C415CD62AF9A", // UWP
-    "2B1FDFB6-C93C-4CA1-A6AB-528C4B3654B9"  // UWP
+    "2B1FDFB6-C93C-4CA1-A6AB-528C4B3654B9" // UWP
   ],
   "symbols": {
     "guid1": {
@@ -131,11 +131,17 @@
       "defaultValue": "true",
       "description": "Enables the WinUI desktop platform support project"
     },
-    "vscodeWasm": {
+    "vscode": {
       "type": "parameter",
       "dataType": "bool",
       "defaultValue": "false",
       "description": "Adds the Visual Studio Code Debugging support files for WebAssembly"
+    },
+    "skipRestore": {
+      "type": "parameter",
+      "datatype": "bool",
+      "description": "If specified, skips the automatic restore of the project on create.",
+      "defaultValue": "false"
     }
   },
   "primaryOutputs": [
@@ -151,11 +157,7 @@
     },
     {
       "condition": "winui-desktop",
-      "path": "UnoWinUIQuickStart.Windows.Desktop\\UnoWinUIQuickStart.Windows.Desktop.csproj"
-    },
-    {
-      "condition": "winui-desktop",
-      "path": "UnoWinUIQuickStart.Windows.Package\\UnoWinUIQuickStart.Windows.Package.csproj"
+      "path": "UnoWinUIQuickStart.Windows\\UnoWinUIQuickStart.Windows.csproj"
     },
     {
       "condition": "Wasm",
@@ -212,12 +214,25 @@
           ]
         },
         {
-          "condition": "(!vscodeWasm)",
+          "condition": "(!vscode)",
           "exclude": [
             ".vscode/**/*"
           ]
         }
       ]
+    }
+  ],
+  "postActions": [
+    {
+      "condition": "(!skipRestore)",
+      "description": "Restore NuGet packages required by this project",
+      "manualInstructions": [
+        {
+          "text": "Run 'dotnet restore'"
+        }
+      ],
+      "actionId": "210D431B-A78B-4D2F-B762-4ED3E3EA9025",
+      "continueOnError": true
     }
   ]
 }

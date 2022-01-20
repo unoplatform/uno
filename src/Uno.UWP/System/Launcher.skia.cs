@@ -3,10 +3,11 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
 using Uno.Extensions.System;
 using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
 
 namespace Windows.System
 {

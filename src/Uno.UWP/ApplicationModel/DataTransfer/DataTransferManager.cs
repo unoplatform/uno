@@ -3,8 +3,8 @@
 #if __WASM__ || __IOS__ || __ANDROID__ || __MACOS__ || __SKIA__
 using System;
 using Windows.Foundation;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 using Uno.Extensions;
 using System.Threading.Tasks;
 

@@ -9,7 +9,7 @@ using System.Windows.Input;
 using Uno;
 using Uno.UI.DataBinding;
 using Uno.Presentation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Globalization;
 using System.Reflection;
 using Uno.UI;
@@ -224,7 +224,7 @@ namespace Windows.UI.Xaml.Data
 			}
 			catch (Exception exception)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 				{
 					this.Log().Error($"Failed to set the source value for x:Bind path [{ParentBinding.Path}]", exception);
 				}
@@ -349,7 +349,7 @@ namespace Windows.UI.Xaml.Data
 		{
 			if (_isElementNameSource || ExplicitSource != null && !_isCompiledSource)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("Applying explicit source {0} on {1}", ExplicitSource?.GetType(), _view.Target?.GetType());
 				}
@@ -362,7 +362,7 @@ namespace Windows.UI.Xaml.Data
 		{
 			if (_isCompiledSource && ExplicitSource != null)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("Applying compiled source {0} on {1}", ExplicitSource.GetType(), _view.Target?.GetType());
 				}
@@ -553,7 +553,7 @@ namespace Windows.UI.Xaml.Data
 					// if no FallbackValue was specified.
 					ApplyFallbackValue(useTypeDefaultValue: false);
 
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Binding path does not provide a value [{TargetPropertyDetails}] on [{_targetOwnerType}], using fallback value");
 					}
@@ -577,7 +577,7 @@ namespace Windows.UI.Xaml.Data
 					{
 						ApplyFallbackValue();
 
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 						{
 							this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
 						}
@@ -604,7 +604,7 @@ namespace Windows.UI.Xaml.Data
 
 		private void SetTargetValueSafe(object v, bool useTargetNullValue)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat(
 					"{0}.SetTargetValueSafe({1}) (p:{2}, h:{3:X8})",
@@ -632,7 +632,7 @@ namespace Windows.UI.Xaml.Data
 					}
 					catch (Exception e)
 					{
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 						{
 							this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
 						}

@@ -5,8 +5,8 @@ using Foundation;
 using UIKit;
 using Uno.UI.Extensions;
 using Uno.Extensions;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 using Uno.UI;
 using Windows.Globalization;
 
@@ -216,6 +216,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_picker == null)
 			{
+				return;
+			}
+
+			if (UIDevice.CurrentDevice.CheckSystemVersion(15, 0))
+			{
+				_picker.PreferredDatePickerStyle = UIDatePickerStyle.Wheels;
+
 				return;
 			}
 

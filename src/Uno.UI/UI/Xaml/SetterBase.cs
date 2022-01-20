@@ -2,7 +2,7 @@
 
 using System.ComponentModel;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml
 {
@@ -28,6 +28,14 @@ namespace Windows.UI.Xaml
 		{
 			this.Log().Debug("SetterBase.DataContextChanged");
 		}
+
+		public bool IsSealed
+		{
+			get; private set;
+		}
+
+		internal void Seal()
+			=> IsSealed = true;
 	}
 }
 

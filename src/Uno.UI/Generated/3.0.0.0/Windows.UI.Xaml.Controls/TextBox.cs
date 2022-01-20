@@ -190,7 +190,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  object Description
 		{
@@ -353,7 +353,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty DescriptionProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -384,7 +384,7 @@ namespace Windows.UI.Xaml.Controls
 			nameof(CanPasteClipboardContent), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(bool)));
-#endif
+		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.TextBox.TextBox()
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBox.TextBox()
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBox.Text.get

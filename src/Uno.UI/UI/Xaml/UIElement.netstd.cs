@@ -9,22 +9,22 @@ using Windows.UI.Xaml.Media;
 using Uno.Collections;
 using Uno.Extensions;
 using Uno.Foundation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.System;
 using System.Reflection;
-using Microsoft.Extensions.Logging;
+
 using Uno.Core.Comparison;
 
 namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
-		internal protected readonly ILogger _log;
-		private protected readonly ILogger _logDebug;
+		private protected readonly Logger _log;
+		private protected readonly Logger _logDebug;
 
 		private readonly bool _isFrameworkElement;
 		internal readonly MaterializableList<UIElement> _children = new MaterializableList<UIElement>();
@@ -170,7 +170,10 @@ namespace Windows.UI.Xaml
 
 			if (child.IsLoaded)
 			{
-				this.Log().Error($"{this}: Inconsistent state: child {child} is already loaded (OnChildAdded)");
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"{this.GetDebugName()}: Inconsistent state: child {child} is already loaded (OnChildAdded). Common cause for this is an exception during Unloaded handling.");
+				}
 			}
 			else
 			{
@@ -196,7 +199,10 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				this.Log().Error($"{this}: Inconsistent state: child {child} is not loaded (OnChildRemoved)");
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"{this.GetDebugName()}: Inconsistent state: child {child} is not loaded (OnChildRemoved). Common cause for this is an exception during Loaded handling.");
+				}
 			}
 		}
 

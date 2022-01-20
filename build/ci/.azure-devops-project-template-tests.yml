@@ -21,6 +21,10 @@ jobs:
       artifactName: NugetPackages
 
   - template: templates/gitversion.yml
+  - template: templates/jdk-setup.yml
+  - template: templates/install-windows-sdk.yml
+    parameters:
+      sdkVersion: '18362' # Align with TargetPlatformVersion in templates
 
   - script: copy $(System.ArtifactsDirectory)\NugetPackages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
     displayName: Copy Artifacts to PackageCache
@@ -48,8 +52,10 @@ jobs:
       artifactName: NugetPackages
 
   - template: templates/gitversion.yml
-
   - template: templates/dotnet6-install-windows.yml
+  - template: templates/install-windows-sdk.yml
+    parameters:
+      sdkVersion: '18362' # Align with TargetPlatformVersion in templates
 
   - script: copy $(System.ArtifactsDirectory)\NugetPackages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
     displayName: Copy Artifacts to PackageCache

@@ -1,7 +1,12 @@
-﻿// MUX Reference: TabView.idl, commit 8aaf7f8
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference: TabView.h, commit ed31e13
 
 namespace Microsoft.UI.Xaml.Controls
 {
+	/// <summary>
+	/// Provides data for the TabDroppedOutside event.
+	/// </summary>
 	public sealed partial class TabViewTabDroppedOutsideEventArgs
     {
 		internal TabViewTabDroppedOutsideEventArgs(object item, TabViewItem tab)
@@ -10,8 +15,14 @@ namespace Microsoft.UI.Xaml.Controls
 			Tab = tab;
 		}
 
+		/// <summary>
+		/// Gets the item that was dropped outside of the TabStrip.
+		/// </summary>
 		public object Item { get; }
 
+		/// <summary>
+		/// Gets the TabViewItem that was dropped outside of the TabStrip.
+		/// </summary>
 		public TabViewItem Tab { get; }
 	}
 }

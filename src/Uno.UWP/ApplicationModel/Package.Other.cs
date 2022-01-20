@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Xml;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.ApplicationModel.Email.DataProvider;
 using Windows.Storage;
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel
 					}
 					catch (Exception ex)
 					{
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 						{
 							this.Log().Error($"Failed to read manifest [{PackageManifestName}]", ex);
 						}
@@ -91,7 +91,7 @@ namespace Windows.ApplicationModel
 				}
 				else
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Skipping manifest reading, unable to find [{PackageManifestName}]");
 					}

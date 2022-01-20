@@ -29,6 +29,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty InfoBadgeCornerRadiusProperty { get; } =
-			DependencyProperty.Register(nameof(InfoBadgeCornerRadius), typeof(CornerRadius), typeof(InfoBadgeTemplateSettings), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(InfoBadgeCornerRadius), typeof(CornerRadius), typeof(InfoBadgeTemplateSettings), new FrameworkPropertyMetadata(default(CornerRadius)));
 	}
 }

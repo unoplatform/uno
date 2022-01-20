@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Windows.Foundation;
 using Windows.UI.Xaml.Automation.Peers;
 using DirectUI;
 using Uno.Disposables;
@@ -17,9 +18,29 @@ namespace Windows.UI.Xaml.Controls
 
 		internal bool m_templatedParentHandlesMouseButton;
 
+		// Indicates whether ScrollViewer should ignore mouse wheel scroll events (not zoom).
+		internal bool ArePointerWheelEventsIgnored { get; set; } = false;
+		internal bool IsInManipulation => IsInDirectManipulation || m_isInConstantVelocityPan;
+
+		/// <summary>
+		/// Gets or set whether the <see cref="ScrollViewer"/> will allow scrolling outside of the ScrollViewer's Child bound.
+		/// </summary>		
+		internal bool ForceChangeToCurrentView { get; set; } = false;
 		internal bool IsInDirectManipulation { get; }
 		internal bool TemplatedParentHandlesScrolling { get; set; }
 		internal Func<AutomationPeer>? AutomationPeerFactoryIndex { get; set; }
+
+		internal bool BringIntoViewport(Rect bounds,
+			bool skipDuringTouchContact,
+			bool skipAnimationWhileRunning,
+			bool animate)
+		{
+#if __WASM__
+			return ChangeView(bounds.X, bounds.Y, null, true);
+#else
+			return ChangeView(bounds.X, bounds.Y, null, !animate);
+#endif
+		}
 
 		internal void SetDirectManipulationStateChangeHandler(IDirectManipulationStateChangeHandler? handler)
 		{

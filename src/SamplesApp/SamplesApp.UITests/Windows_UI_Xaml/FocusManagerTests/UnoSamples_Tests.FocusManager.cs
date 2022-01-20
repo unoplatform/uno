@@ -11,7 +11,6 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 {
-	[ActivePlatforms(Platform.iOS, Platform.Browser)]   // Ignore focus tests for android, focus is getting stolen incorrectly 
 	[TestFixture]
 	public partial class FocusManagerTests_Tests : SampleControlUITestBase
 	{
@@ -531,6 +530,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // WASM temporarily disabled due to #7820
 		public void FocusManager_GetFocusedElement_ComboBoxItem_LostFocus_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.FocusTests.FocusManager_GetFocus_Automated");

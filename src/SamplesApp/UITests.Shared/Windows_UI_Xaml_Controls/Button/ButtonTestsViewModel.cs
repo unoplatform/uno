@@ -2,9 +2,6 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Uno.Extensions;
-using Microsoft.Extensions.Logging;
-using Uno.Logging;
 using Uno.UI.Samples.UITests.Helpers;
 using System.Windows.Input;
 using Windows.UI.Core;
@@ -12,10 +9,23 @@ using System.Runtime.CompilerServices;
 
 using ICommand = System.Windows.Input.ICommand;
 
+#if HAS_UNO
+using Uno.Foundation.Logging;
+#else
+using Microsoft.Extensions.Logging;
+using Uno.Logging;
+#endif
+
 namespace Uno.UI.Samples.Presentation.SamplePages
 {
-	public class ButtonTestsViewModel : ViewModelBase
+	internal class ButtonTestsViewModel : ViewModelBase
 	{
+#if HAS_UNO
+		private readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(ButtonTestsViewModel));
+#else
+		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(ButtonTestsViewModel));
+#endif
+
 		private int _myData;
 		private string _message = string.Empty;
 		private int comboBoxSimple_SelectedItem = 1;
@@ -107,9 +117,9 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 
 		private void DoStuff()
 		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
+			if (_log.IsEnabled(LogLevel.Warning))
 			{
-				this.Log().Warn("Do Stuff");
+				_log.Warn("Do Stuff");
 			}
 
 			WriteMsg("SampleCommand !" + DateTime.Now);
@@ -117,9 +127,9 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 
 		private void DoOtherStuff()
 		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
+			if (_log.IsEnabled(LogLevel.Warning))
 			{
-				this.Log().Warn("Do Other Stuff");
+				_log.Warn("Do Other Stuff");
 			}
 
 			WriteMsg("SampleCommand 2 !" + DateTime.Now);

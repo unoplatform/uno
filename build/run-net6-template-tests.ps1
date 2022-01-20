@@ -65,7 +65,6 @@ $dotnetBuildNet6Configurations =
     @("Wasm", ""),
     @("Skia.Gtk", ""),
     @("Skia.Linux.FrameBuffer", ""),
-    # @("Windows.Desktop", ""), # Disabled because of https://github.com/microsoft/microsoft-ui-xaml/issues/5143
     @("Skia.WPF.Host", "")
 )
 
@@ -79,6 +78,10 @@ for($i = 0; $i -lt $dotnetBuildNet6Configurations.Length; $i++)
     & dotnet build -c Debug $default $dotnetBuildNet6Configurations[$i][1] "UnoAppWinUI.$platform\UnoAppWinUI.$platform.csproj"
     Assert-ExitCodeIsZero
 }
+
+ # Build with msbuild because of https://github.com/microsoft/WindowsAppSDK/issues/1652
+ & $msbuild $debug "/p:Platform=x86" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj"
+Assert-ExitCodeIsZero
 
 popd
 

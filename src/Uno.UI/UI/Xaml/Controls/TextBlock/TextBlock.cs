@@ -22,6 +22,8 @@ using Windows.UI.Xaml.Automation.Peers;
 using Uno;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml.Media;
+using Uno.Foundation.Logging;
+
 
 #if XAMARIN_IOS
 using UIKit;
@@ -423,8 +425,12 @@ namespace Windows.UI.Xaml.Controls
 #endif
 			}
 
-			_foregroundChanged.Disposable =
-				Brush.AssignAndObserveBrush(Foreground, c => refreshForeground(), refreshForeground);
+			_foregroundChanged.Disposable = null;
+			if (Foreground?.SupportsAssignAndObserveBrush ?? false)
+			{
+				_foregroundChanged.Disposable =
+					Brush.AssignAndObserveBrush(Foreground, c => refreshForeground(), refreshForeground);
+			}
 
 			refreshForeground();
 		}
@@ -801,7 +807,7 @@ namespace Windows.UI.Xaml.Controls
 				that.CompleteGesture();
 
 				// On UWP we don't get any CaptureLost, so make sure to manually release the capture silently
-				that.ReleasePointerCapture(e.Pointer, muteEvent: true);
+				that.ReleasePointerCapture(e.Pointer.UniqueId, muteEvent: true);
 
 				// KNOWN ISSUE:
 				// On UWP the 'click' event is raised **after** the PointerReleased ... but deferring the event on the Dispatcher
@@ -935,14 +941,16 @@ namespace Windows.UI.Xaml.Controls
 		private protected override double GetActualWidth() => DesiredSize.Width;
 		private protected override double GetActualHeight() => DesiredSize.Height;
 
-		internal override void UpdateThemeBindings()
+		internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
 		{
-			base.UpdateThemeBindings();
+			base.UpdateThemeBindings(updateReason);
 
 			SetDefaultForeground(ForegroundProperty);
 		}
 
 		internal override bool CanHaveChildren() => true;
+
+		public new bool Focus(FocusState value) => base.Focus(value);
 
 		internal override bool IsFocusable =>
 			/*IsActive() &&*/ //TODO Uno: No concept of IsActive in Uno yet.

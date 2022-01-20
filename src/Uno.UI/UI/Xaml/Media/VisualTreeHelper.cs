@@ -16,7 +16,7 @@ using Uno.Extensions;
 using Uno.Disposables;
 using Windows.Globalization.DateTimeFormatting;
 using Windows.UI.Core;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
 
@@ -147,6 +147,15 @@ namespace Windows.UI.Xaml.Media
 				.AsReadOnly();
 		}
 
+		private static IReadOnlyList<Popup> GetOpenFlyoutPopups()
+		{
+			return _openPopups
+				.Select(WeakReferenceExtensions.GetTarget)
+				.OfType<Popup>()
+				.Where(p => p.IsForFlyout)
+				.ToList().AsReadOnly();
+		}
+
 		public static IReadOnlyList<Popup> GetOpenPopupsForXamlRoot(XamlRoot xamlRoot)
 		{
 			if (xamlRoot == XamlRoot.Current)
@@ -171,6 +180,14 @@ namespace Windows.UI.Xaml.Media
 		internal static void CloseAllPopups()
 		{
 			foreach (var popup in GetOpenPopups(Window.Current))
+			{
+				popup.IsOpen = false;
+			}
+		}
+
+		internal static void CloseAllFlyouts()
+		{
+			foreach (var popup in GetOpenFlyoutPopups())
 			{
 				popup.IsOpen = false;
 			}
@@ -279,6 +296,11 @@ namespace Windows.UI.Xaml.Media
 #endif
 		}
 
+		internal static UIElement ReplaceChild(UIElement view, int index, UIElement child)
+		{
+			throw new NotImplementedException("ReplaceChild not implemented on this platform.");
+		}
+
 		internal static IReadOnlyList<_View> ClearChildren(UIElement view)
 		{
 #if __ANDROID__
@@ -364,7 +386,9 @@ namespace Windows.UI.Xaml.Media
 			// The maximum region where the current element and its children might draw themselves
 			// TODO: Get the real clipping rect! For now we assume no clipping.
 			// This is expressed in element coordinate space.
-			var clippingBounds = Rect.Infinite;
+			// For some controls imported from WinUI, such as NavigationView, 
+			// the Clip property may be significant. 
+			var clippingBounds = element.Clip?.Bounds ?? Rect.Infinite;
 
 			// The region where the current element draws itself.
 			// Be aware that children might be out of this rendering bounds if no clipping defined. TODO: .Intersect(clippingBounds)
@@ -388,28 +412,21 @@ namespace Windows.UI.Xaml.Media
 				renderingBounds = parentToElement.Transform(renderingBounds);
 			}
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-			// On Skia, the Scrolling is managed by the ScrollContentPresenter (as UWP), which is flagged as IsScrollPort.
-			// Note: We should still add support for the zoom factor ... which is not yet supported on Skia.
+#if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling and zooming which has already been included.
 			if (element is ScrollViewer sv)
 			{
+				// Note: We check only the zoom factor as scroll offsets are handled at SCP level using the IsScrollPort
 				var zoom = sv.ZoomFactor;
 
 				TRACE($"- scroller: x={sv.HorizontalOffset} | y={sv.VerticalOffset} | zoom={zoom}");
 
-				// Note: This is probably wrong for skia as the zoom is probably also handled by the ScrollContentPresenter
 				posRelToElement.X /= zoom;
 				posRelToElement.Y /= zoom;
 
-				posRelToElement.X += sv.HorizontalOffset;
-				posRelToElement.Y += sv.VerticalOffset;
-
 				renderingBounds = new Rect(renderingBounds.Location, new Size(sv.ExtentWidth, sv.ExtentHeight));
 			}
-			else
-#endif
-#if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling which has already been included.
-			if (element.IsScrollPort)
+
+			if (element.IsScrollPort) // Managed SCP or custom scroller
 			{
 				posRelToElement.X += element.ScrollOffsets.X;
 				posRelToElement.Y += element.ScrollOffsets.Y;
@@ -507,6 +524,15 @@ namespace Windows.UI.Xaml.Media
 			}
 
 			return root;
+		}
+
+		internal static IEnumerable<DependencyObject> EnumerateAncestors(DependencyObject o)
+		{
+			while ((o as FrameworkElement)?.Parent is { } parent)
+			{
+				yield return parent;
+				o = parent;
+			}
 		}
 
 		#region Helpers

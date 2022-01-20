@@ -8,7 +8,12 @@ using Color = global::Windows .UI.Color;
 
 namespace Windows.UI
 {
-	public static partial class Colors
+#if HAS_UNO_WINUI && !IS_UNO_UI_PROJECT
+    internal
+#else
+	public
+#endif
+	static partial class Colors
 	{
 		private static Dictionary<string, Color> _colorMap = new Dictionary<string, Color>(StringComparer.OrdinalIgnoreCase);
 		

@@ -6,7 +6,14 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using Windows.UI.Core;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
+
+#if HAS_UNO_WINUI
+using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+#else
+using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
+#endif
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
@@ -72,7 +79,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			Unloaded += (s, e) => Windows.UI.Xaml.Window.Current.SizeChanged -= Current_SizeChanged;
 		}
 
-		private void Current_SizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e)
+		private void Current_SizeChanged(object sender, WindowSizeChangedEventArgs e)
 			=> InvalidateMeasure();
 
 		protected abstract FlyoutPlacementMode PopupPlacement { get; }

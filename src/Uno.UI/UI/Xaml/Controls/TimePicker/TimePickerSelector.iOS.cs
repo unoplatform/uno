@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using UIKit;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.Globalization;
@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_picker == null)
 			{
-				this.Log().DebugIfEnabled(() => $"No {nameof(UIDatePicker)} was found in the visual hierarchy.");
+				this.Log().Debug($"No {nameof(UIDatePicker)} was found in the visual hierarchy.");
 				return;
 			}
 
@@ -157,6 +157,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_picker == null)
 			{
+				return;
+			}
+
+			if (UIDevice.CurrentDevice.CheckSystemVersion(15, 0))
+			{
+				_picker.PreferredDatePickerStyle = UIDatePickerStyle.Wheels;
+
 				return;
 			}
 

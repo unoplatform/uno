@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Android.Graphics;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Controls;
 using Windows.UI.Xaml.Media;
 using Android.Graphics.Drawables;
@@ -14,7 +14,7 @@ using Windows.Foundation;
 using Uno.Disposables;
 using Windows.UI.Core;
 using Uno.UI;
-using Microsoft.Extensions.Logging;
+
 using Rect = Windows.Foundation.Rect;
 
 namespace Windows.UI.Xaml.Media
@@ -168,7 +168,7 @@ namespace Windows.UI.Xaml.Media
 
 			if (sourceBitmap.Handle == IntPtr.Zero || sourceBitmap.IsRecycled)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 				{
 					this.Log().Error("Attempted to use a collected or recycled bitmap.");
 				}

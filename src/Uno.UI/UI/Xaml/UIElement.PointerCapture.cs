@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Windows.Devices.Input;
 using Windows.UI.Xaml.Input;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using System.Runtime.CompilerServices;
 
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml
 		 */
 
 		[Flags]
-		private protected enum PointerCaptureKind : byte
+		internal enum PointerCaptureKind : byte
 		{
 			None = 0,
 
@@ -238,7 +238,7 @@ namespace Windows.UI.Xaml
 					// ** This is an IMPORTANT safety catch to prevent the application to become unresponsive **
 					Clear();
 
-					return false;
+					return true;
 				}
 				else if (_targets.TryGetValue(element, out var target))
 				{

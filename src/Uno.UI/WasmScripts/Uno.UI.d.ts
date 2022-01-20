@@ -339,6 +339,12 @@ declare namespace Uno.UI {
         setElementColorNative(pParam: number): boolean;
         private setElementColorInternal;
         /**
+        * Sets the fill property of the specified element
+        */
+        setElementFill(elementId: number, color: number): string;
+        setElementFillNative(pParam: number): boolean;
+        private setElementFillInternal;
+        /**
         * Sets the background color property of the specified element
         */
         setElementBackgroundColor(pParam: number): boolean;
@@ -1456,6 +1462,11 @@ declare class WindowManagerSetElementColorParams {
     HtmlId: number;
     Color: number;
     static unmarshal(pData: number): WindowManagerSetElementColorParams;
+}
+declare class WindowManagerSetElementFillParams {
+    HtmlId: number;
+    Color: number;
+    static unmarshal(pData: number): WindowManagerSetElementFillParams;
 }
 declare class WindowManagerSetElementTransformParams {
     HtmlId: number;

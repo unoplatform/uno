@@ -5,9 +5,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CoreGraphics;
 using Foundation;
-using Microsoft.Extensions.Logging;
+
 using UIKit;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;

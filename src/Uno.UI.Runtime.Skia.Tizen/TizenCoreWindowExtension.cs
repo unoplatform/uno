@@ -12,8 +12,7 @@ using Windows.UI.Input;
 using Windows.UI.Xaml;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
 using TizenWindow = ElmSharp.Window;
 using Windows.System;
 using System.Threading;
@@ -62,13 +61,12 @@ namespace Uno.UI.Runtime.Skia
 		}
 
 		/// <inheritdoc />
-		public void ReleasePointerCapture()
-			=> this.Log().Warn("Pointer capture release is not supported on Tizen");
-
-		/// <inheritdoc />
-		public void SetPointerCapture()
+		public void SetPointerCapture(PointerIdentifier pointer)
 			=> this.Log().Warn("Pointer capture is not supported on Tizen");
 
+		/// <inheritdoc />
+		public void ReleasePointerCapture(PointerIdentifier pointer)
+			=> this.Log().Warn("Pointer capture release is not supported on Tizen");
 
 		private void SetupTapGesture()
 		{

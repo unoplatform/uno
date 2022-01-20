@@ -45,7 +45,7 @@ namespace Microsoft.UI.Xaml.Media
 				return null;
 			}
 
-			var colors = GradientStops.SelectToArray(s => ((Android.Graphics.Color)s.Color).ToArgb());
+			var colors = GradientStops.SelectToArray(s => ((Android.Graphics.Color)GetColorWithOpacity(s.Color)).ToArgb());
 			var locations = GradientStops.SelectToArray(s => (float)s.Offset);
 
 			var width = destinationRect.Width;

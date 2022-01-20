@@ -4,15 +4,20 @@ using System.Linq;
 using System.Text;
 using Uno.Disposables;
 using Uno.UI.Xaml.Core;
-using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -52,6 +57,9 @@ namespace Windows.UI.Xaml.Controls
 
 		// This fallback is used if we fail to retrieve a value from the MenuShowDelay RegKey
 		const int DefaultMenuShowDelay = 400; // in milliseconds
+
+		// Uno-specific workaround (see comment below)
+		private Point? _lastTargetPoint;
 
 		public CascadingMenuHelper()
 		{
@@ -567,6 +575,13 @@ namespace Windows.UI.Xaml.Controls
 						}
 
 						ownerAsSubMenuOwner.OpenSubMenu(targetPoint);
+						if (_lastTargetPoint is { } lastTargetPoint)
+						{
+							// Uno-specific workaround: reapply the location calculated in OnPresenterSizeChanged(), since that one properly
+							// adjusts to keep submenu within screen bounds. (WinUI seemingly relies upon presenter.SizeChanged being raised
+							// every time submenu opens? On Uno it isn't.)
+							ownerAsSubMenuOwner.PositionSubMenu(lastTargetPoint);
+						}
 						ownerAsSubMenuOwner.RaiseAutomationPeerExpandCollapse(true /* isOpen */);
 						ElementSoundPlayer.RequestInteractionSoundForElement(ElementSoundKind.Invoke, ownerAsControl);
 					}
@@ -932,6 +947,7 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 
+				_lastTargetPoint = targetPoint;
 				ownerAsSubMenuOwner.PositionSubMenu(targetPoint);
 			}
 		}

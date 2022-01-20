@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls;
 using System.ComponentModel;
 using Windows.UI.Xaml.Media;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI
 {
@@ -219,6 +219,13 @@ namespace Uno.UI
 			/// disabled to improve application performance on WebAssembly. See See #7005 for additional details.
 			/// </summary>
 			public static bool HandleLoadUnloadExceptions { get; set; } = true;
+
+			/// <summary>
+			/// When true, any FrameworkElement with Background non-null will intercept pointer events. When set to false, the default, only
+			/// certain views (Panels, Borders, and ContentPresenters) will intercept pointers if their background is non-null, while others (Control)
+			/// will not, which is how WinUI behaves. Set to true if you have code written for earlier versions of Uno that relies upon the old behavior.
+			/// </summary>
+			public static bool UseLegacyHitTest { get; set; } = false;
 		}
 
 		public static class Image
@@ -265,6 +272,15 @@ namespace Uno.UI
 			/// </summary>
 			public static bool UseNativePopup { get; set; } = true;
 #endif
+
+			/// <summary>
+			/// By default, light dismiss is disabled in UWP/WinUI unless
+			/// <see cref="Windows.UI.Xaml.Controls.Primitives.Popup.IsLightDismissEnabled"/> is explicitly set to true.
+			/// In earlier versions of Uno Platform, this property defaulted
+			/// to true, which was an incorrect behavior. If your code depends on this
+			/// legacy behavior, use this property to override it.
+			/// </summary>
+			public static bool EnableLightDismissByDefault { get; set; } = false;
 		}
 
 		public static class ProgressRing
@@ -352,7 +368,7 @@ namespace Uno.UI
 			public static IDictionary<Type, bool> UseUWPDefaultStylesOverride { get; } = new Dictionary<Type, bool>();
 
 			/// <summary>
-			/// This enables native frame navigation on Android and iOS by setting related classes (<see cref="Frame"/>, <see cref="Windows.UI.Xaml.Controls.CommandBar"/>
+			/// This enables native frame navigation on Android and iOS by setting related classes (<see cref="Frame"/>, <see cref="CommandBar"/>
 			/// and <see cref="Windows.UI.Xaml.Controls.AppBarButton"/>) to use their native styles.
 			/// </summary>
 			public static void ConfigureNativeFrameNavigation()
@@ -389,6 +405,18 @@ namespace Uno.UI
 			/// </summary>
 			/// <remarks>This feature is used to avoid screenshot comparisons false positives</remarks>
 			public static bool HideCaret { get; set; } = false;
+
+#if __ANDROID__
+			/// <summary>
+			/// The legacy <see cref="Windows.UI.Xaml.Controls.TextBox.InputScope"/> prevents invalid input on hardware keyboard.
+			/// This property defaults to <see langword="false"/> matching UWP, where InputScope only affects the keyboard layout,
+			/// but doesn't do any validation.
+			/// </summary>
+			/// <remarks>
+			/// This is available on Android only
+			/// </remarks>
+			public static bool UseLegacyInputScope { get; set; }
+#endif
 		}
 
 		public static class ScrollViewer
@@ -548,6 +576,12 @@ namespace Uno.UI
 		public static class DatePicker
 		{
 #if __IOS__
+			/// <summary>
+			/// Gets or set whether the <see cref="Windows.UI.Xaml.Controls.DatePicker" /> rendered matches the Legacy Style or not.
+			/// </summary>
+			/// <remarks>
+			/// Important: This flag will only have an impact on iOS 14 devices
+			/// </remarks>
 			public static bool UseLegacyStyle { get; set; } = false;
 #endif
 		}
@@ -555,6 +589,12 @@ namespace Uno.UI
 		public static class TimePicker
 		{
 #if __IOS__
+			/// <summary>
+			/// Gets or set whether the TimePicker rendered matches the Legacy Style or not.
+			/// </summary>
+			/// <remarks>
+			/// Important: This flag will only have an impact on iOS 14 devices
+			/// </remarks>
 			public static bool UseLegacyStyle { get; set; } = false;
 #endif
 		}

@@ -27,20 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property BorderThickness
 		// Skipping already declared property BorderBrush
 		// Skipping already declared property Spacing
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.BackgroundSizing BackgroundSizing
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.BackgroundSizing)this.GetValue(BackgroundSizingProperty);
-			}
-			set
-			{
-				this.SetValue(BackgroundSizingProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property BackgroundSizing
 		// Skipping already declared property AreHorizontalSnapPointsRegular
 		// Skipping already declared property AreVerticalSnapPointsRegular
 		// Skipping already declared property AreScrollSnapPointsRegularProperty
@@ -50,14 +37,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property CornerRadiusProperty
 		// Skipping already declared property PaddingProperty
 		// Skipping already declared property SpacingProperty
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty BackgroundSizingProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(BackgroundSizing), typeof(global::Windows.UI.Xaml.Controls.BackgroundSizing), 
-			typeof(global::Windows.UI.Xaml.Controls.StackPanel), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.BackgroundSizing)));
-		#endif
+		// Skipping already declared property BackgroundSizingProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.StackPanel.StackPanel()
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.StackPanel()
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.AreScrollSnapPointsRegular.get

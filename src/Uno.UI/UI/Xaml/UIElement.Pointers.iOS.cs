@@ -3,13 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
 using Foundation;
 using UIKit;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.UI.Input;
+using Windows.Devices.Input;
+#endif
 
 namespace Windows.UI.Xaml
 {
@@ -70,12 +76,14 @@ namespace Windows.UI.Xaml
 		{
 			MultipleTouchEnabled = true;
 			RegisterLoadActions(OnLoadedForPointers, OnUnloadedForPointers);
+
+			ArePointersEnabled = true;
 		}
 
 		#region Native touch handling (i.e. source of the pointer / gesture events)
 		public override void TouchesBegan(NSSet touches, UIEvent evt)
 		{
-			if (IsPointersSuspended)
+			if (!ArePointersEnabled)
 			{
 				return; // Will also prevent subsequents events
 			}
