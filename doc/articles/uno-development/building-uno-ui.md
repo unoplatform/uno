@@ -70,7 +70,8 @@ See [instructions here](building-uno-macos.md) for building Uno.UI for the macOS
 ## Troubleshooting build issues
 Here are some tips when building the Uno solution and failures happen:
 - Make sure to be on the latest master commit
-- Make sure to have run `git clean -fdx` (after having closed visual studio) before building again
+- Try to close VS 2022, delete the `src/.vs` folder, then try rebuilding the solution
+- If the `.vs` deletion did not help, run `git clean -fdx` (after having closed visual studio) before building again
 - Make sure to have a valid `UnoTargetFrameworkOverride` which matches your solution filter
 - Make sure to have the Windows SDK `17763` installed
 
