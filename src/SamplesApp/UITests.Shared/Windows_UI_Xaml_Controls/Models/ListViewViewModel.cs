@@ -14,6 +14,7 @@ using Uno.UI.Samples.UITests.Helpers;
 
 using ICommand = System.Windows.Input.ICommand;
 using EventHandler = System.EventHandler;
+using System.Collections.ObjectModel;
 
 #if HAS_UNO
 using Uno.Foundation.Logging;
@@ -40,6 +41,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 		private List<string> _singleItemList = new List<string> { "1" };
 		private double _variableWidth = 500d;
 		private string _selectedItem = "3";
+		public ObservableCollection<string> InitialyEmptyStringList { get; } = new ObservableCollection<string>();
 
 		public ListViewViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
@@ -52,6 +54,8 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 		public ICommand DoSomething => GetOrCreateCommand(ExecuteDoSomething);
 		public ICommand VaryWidth => GetOrCreateCommand(ExecuteVaryWidth);
 		public ICommand UpdateWithNewInput => GetOrCreateCommand(ExecuteOnUpdateWithNewInput);
+		public ICommand AddRandomItem => GetOrCreateCommand(ExecuteAddRandomItem);
+		public ICommand RemoveLastItem => GetOrCreateCommand(ExecuteRemoveLastItem);
 
 		public Orientation SelectedOrientation => Orientation.Horizontal;
 
@@ -127,6 +131,19 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 		private void ExecuteDoSomething()
 		{
 			_log.Error("============= Item Clicked");
+		}
+
+		private void ExecuteAddRandomItem()
+		{
+			this.InitialyEmptyStringList.Add(Guid.NewGuid().ToString());
+		}
+
+		private void ExecuteRemoveLastItem()
+		{
+			if (InitialyEmptyStringList.Count > 0)
+			{
+				this.InitialyEmptyStringList.RemoveAt(this.InitialyEmptyStringList.Count - 1);
+			}
 		}
 
 		private static string[] GetSampleItems()
