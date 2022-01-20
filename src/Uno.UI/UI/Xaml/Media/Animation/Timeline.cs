@@ -416,7 +416,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		~Timeline()
 		{
-			Dispose(true);
+			Dispose(false);
 		}
 	}
 }
