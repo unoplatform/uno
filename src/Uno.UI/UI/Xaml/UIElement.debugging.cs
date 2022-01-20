@@ -47,6 +47,8 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement
 	{
+		public Style AppliedDefaultStyle { get; protected set; }
+
 		/// <summary>
 		/// Debugging helper method to get a list of the set value at each precedence for a DependencyProperty.
 		/// </summary>

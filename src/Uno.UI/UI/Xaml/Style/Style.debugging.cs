@@ -3,16 +3,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
-using Windows.UI.Xaml.Controls;
-using Windows.UI;
-using Uno.UI.Xaml;
+using System.Linq;
 
-namespace Windows.UI.Xaml.Media
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+using Uno.UI;
+using Windows.UI.Xaml.Data;
+
+namespace Windows.UI.Xaml
 {
-	partial class Brush
+	public partial class Style
 	{
 		/// <summary>
 		/// Debugging aid which returns the resource key associated with this resource, if it came from a <see cref="ResourceDictionary"/>.
@@ -23,5 +24,4 @@ namespace Windows.UI.Xaml.Media
 		public ResourceDictionary? ContainingResourceDictionaryDebug => this.GetContainingResourceDictionaryDebug();
 	}
 }
-
 #endif

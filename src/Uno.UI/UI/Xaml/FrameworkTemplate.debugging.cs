@@ -3,16 +3,26 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel;
-using System.Diagnostics.Contracts;
-using Windows.UI.Xaml.Controls;
-using Windows.UI;
-using Uno.UI.Xaml;
+using Uno.Extensions;
+using Uno.UI;
+using Uno.UI.DataBinding;
 
-namespace Windows.UI.Xaml.Media
+#if XAMARIN_ANDROID
+using View = Android.Views.View;
+#elif XAMARIN_IOS_UNIFIED
+using View = UIKit.UIView;
+#elif __MACOS__
+using View = AppKit.NSView;
+#elif XAMARIN_IOS
+using View = MonoTouch.UIKit.UIView;
+#else
+using View = Windows.UI.Xaml.UIElement;
+#endif
+
+namespace Windows.UI.Xaml
 {
-	partial class Brush
+
+	public partial class FrameworkTemplate
 	{
 		/// <summary>
 		/// Debugging aid which returns the resource key associated with this resource, if it came from a <see cref="ResourceDictionary"/>.
@@ -23,5 +33,6 @@ namespace Windows.UI.Xaml.Media
 		public ResourceDictionary? ContainingResourceDictionaryDebug => this.GetContainingResourceDictionaryDebug();
 	}
 }
+
 
 #endif

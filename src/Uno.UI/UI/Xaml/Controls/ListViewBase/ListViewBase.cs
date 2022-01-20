@@ -701,7 +701,18 @@ namespace Windows.UI.Xaml.Controls
 				if (container != null)
 				{
 					var item = GetDisplayItemFromIndexPath(unoIndexPath);
-					PrepareContainerForIndex(container, flatIndex);
+#if __IOS__ || __ANDROID__ // TODO: The managed ListView should similarly go through the recycling to use the proper container matching the new template
+					if (HasTemplateChanged(((FrameworkElement)container).DataContext, item))
+					{
+						// If items are using different templates, we should go through the native replace operation, to use a container
+						// with the right template.
+						NativeReplaceItems(i, 1, section);
+					}
+					else
+#endif
+					{
+						PrepareContainerForIndex(container, flatIndex);
+					}
 				}
 				else
 				{
@@ -710,6 +721,19 @@ namespace Windows.UI.Xaml.Controls
 					NativeReplaceItems(i, 1, section);
 				}
 			}
+		}
+
+		/// <summary>
+		/// Does <paramref name="newItem"/> resolve to a different template than <paramref name="oldItem"/>?
+		/// </summary>
+		private bool HasTemplateChanged(object oldItem, object newItem)
+		{
+			if (ItemTemplateSelector == null)
+			{
+				return false;
+			}
+
+			return ResolveItemTemplate(oldItem) != ResolveItemTemplate(newItem);
 		}
 
 		partial void NativeReplaceItems(int firstItem, int count, int section);

@@ -173,6 +173,11 @@ namespace Windows.UI.Xaml.Controls
 			ManagedVirtualizingPanel?.GetLayouter().RemoveItems(firstItem, count, section);
 		}
 
+		partial void NativeReplaceItems(int firstItem, int count, int section)
+		{
+			NativePanel?.ReloadItems(GetIndexPathsFromStartAndCount(firstItem, count, section));
+		}
+
 		/// <summary>
 		/// Add a group using the native in-place modifier.
 		/// </summary>
