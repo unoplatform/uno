@@ -31,6 +31,7 @@ using Windows.UI.Xaml.Automation.Peers;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using System.Runtime.CompilerServices;
+using Windows.Graphics.Display;
 
 #if __IOS__
 using UIKit;
@@ -875,7 +876,7 @@ namespace Windows.UI.Xaml
 		internal double GetScaleFactorForLayoutRounding()
 		{
 			// TODO use actual scaling based on current transforms.
-			return global::Windows.Graphics.Display.DisplayInformation.GetForCurrentView().LogicalDpi / 96.0f; // 100%
+			return global::Windows.Graphics.Display.DisplayInformation.GetForCurrentView().LogicalDpi / DisplayInformation.BaseDpi; // 100%
 		}
 
 		double XcpRound(double x)

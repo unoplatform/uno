@@ -67,7 +67,7 @@ namespace Windows.Graphics.Display
 		public double RawPixelsPerViewPixel => 0;
 
 		[NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float LogicalDpi => 96.0f;
+		public float LogicalDpi => BaseDpi;
 
 		[NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ResolutionScale ResolutionScale => Display.ResolutionScale.Invalid;

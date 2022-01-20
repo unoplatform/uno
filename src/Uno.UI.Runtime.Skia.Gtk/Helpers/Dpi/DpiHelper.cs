@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using Gtk;
 using Uno.Helpers;
 using Uno.UI.Runtime.Skia.Helpers.Windows;
+using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia.Helpers.Dpi
 {
@@ -70,7 +71,7 @@ namespace Uno.UI.Runtime.Skia.Helpers.Dpi
 		{
 			if (_window.Window == null)
 			{
-				return 96.0f; // GDK Window not initialized yet, default to 96 DPI.
+				return DisplayInformation.BaseDpi; // GDK Window not initialized yet
 			}
 
 			float dpi;
@@ -80,7 +81,7 @@ namespace Uno.UI.Runtime.Skia.Helpers.Dpi
 			}
 			else
 			{
-				dpi = _window.Display.GetMonitorAtWindow(_window.Window).ScaleFactor * 96.0f;
+				dpi = _window.Display.GetMonitorAtWindow(_window.Window).ScaleFactor * DisplayInformation.BaseDpi;
 			}
 			return dpi;
 		}

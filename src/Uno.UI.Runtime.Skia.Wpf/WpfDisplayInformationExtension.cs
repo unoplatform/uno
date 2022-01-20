@@ -27,7 +27,7 @@ namespace Uno.UI.Skia.Platform
 
 		public float LogicalDpi => _dpi ??= GetDpi();
 
-		public double RawPixelsPerViewPixel => LogicalDpi / 96.0f;
+		public double RawPixelsPerViewPixel => LogicalDpi / DisplayInformation.BaseDpi;
 
 		public ResolutionScale ResolutionScale => (ResolutionScale)(int)(RawPixelsPerViewPixel * 100.0);
 
@@ -40,7 +40,7 @@ namespace Uno.UI.Skia.Platform
 		private float GetDpi()
 		{
 			var dpi = VisualTreeHelper.GetDpi(WpfApplication.Current.MainWindow);
-			return (float)Math.Max(dpi.DpiScaleX, dpi.DpiScaleY) * 96.0f;
+			return (float)Math.Max(dpi.DpiScaleX, dpi.DpiScaleY) * DisplayInformation.BaseDpi;
 		}
 	}
 }

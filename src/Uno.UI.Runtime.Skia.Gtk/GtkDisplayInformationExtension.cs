@@ -31,7 +31,7 @@ internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 
 	public float LogicalDpi => _dpi ??= GetLogicalDpi();
 
-	public double RawPixelsPerViewPixel => LogicalDpi / 96.0f;
+	public double RawPixelsPerViewPixel => LogicalDpi / DisplayInformation.BaseDpi;
 
 	public ResolutionScale ResolutionScale => (ResolutionScale)(int)(RawPixelsPerViewPixel * 100.0);
 
