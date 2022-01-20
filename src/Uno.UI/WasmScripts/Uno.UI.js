@@ -4417,19 +4417,25 @@ var Windows;
             (function (Media) {
                 var Animation;
                 (function (Animation) {
-                    class RenderingLoopFloatAnimator {
+                    class RenderingLoopAnimator {
                         constructor(managedHandle) {
                             this.managedHandle = managedHandle;
                             this._isEnabled = false;
                         }
                         static createInstance(managedHandle, jsHandle) {
-                            RenderingLoopFloatAnimator.activeInstances[jsHandle] = new RenderingLoopFloatAnimator(managedHandle);
+                            RenderingLoopAnimator.activeInstances[jsHandle] = new RenderingLoopAnimator(managedHandle);
                         }
                         static getInstance(jsHandle) {
-                            return RenderingLoopFloatAnimator.activeInstances[jsHandle];
+                            return RenderingLoopAnimator.activeInstances[jsHandle];
                         }
                         static destroyInstance(jsHandle) {
-                            delete RenderingLoopFloatAnimator.activeInstances[jsHandle];
+                            var instance = RenderingLoopAnimator.getInstance(jsHandle);
+                            // If the JSObjectHandle is being disposed before the animator is stopped (GC collecting JSObjectHandle before the animator)
+                            // we won't be able to DisableFrameReporting anymore.
+                            if (instance) {
+                                instance.DisableFrameReporting();
+                            }
+                            delete RenderingLoopAnimator.activeInstances[jsHandle];
                         }
                         SetStartFrameDelay(delay) {
                             this.unscheduleFrame();
@@ -4484,8 +4490,8 @@ var Windows;
                             });
                         }
                     }
-                    RenderingLoopFloatAnimator.activeInstances = {};
-                    Animation.RenderingLoopFloatAnimator = RenderingLoopFloatAnimator;
+                    RenderingLoopAnimator.activeInstances = {};
+                    Animation.RenderingLoopAnimator = RenderingLoopAnimator;
                 })(Animation = Media.Animation || (Media.Animation = {}));
             })(Media = Xaml.Media || (Xaml.Media = {}));
         })(Xaml = UI.Xaml || (UI.Xaml = {}));

@@ -1196,11 +1196,11 @@ declare namespace Windows.UI.Xaml {
     }
 }
 declare namespace Windows.UI.Xaml.Media.Animation {
-    class RenderingLoopFloatAnimator {
+    class RenderingLoopAnimator {
         private managedHandle;
         private static activeInstances;
         static createInstance(managedHandle: string, jsHandle: number): void;
-        static getInstance(jsHandle: number): RenderingLoopFloatAnimator;
+        static getInstance(jsHandle: number): RenderingLoopAnimator;
         static destroyInstance(jsHandle: number): void;
         private constructor();
         SetStartFrameDelay(delay: number): void;

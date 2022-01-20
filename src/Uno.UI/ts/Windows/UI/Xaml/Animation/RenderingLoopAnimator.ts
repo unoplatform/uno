@@ -1,17 +1,23 @@
 ﻿namespace Windows.UI.Xaml.Media.Animation {
-	export class RenderingLoopFloatAnimator {
-		private static activeInstances: { [jsHandle: number]: RenderingLoopFloatAnimator} = {};
+	export class RenderingLoopAnimator {
+		private static activeInstances: { [jsHandle: number]: RenderingLoopAnimator} = {};
 
 		public static createInstance(managedHandle: string, jsHandle: number) {
-			RenderingLoopFloatAnimator.activeInstances[jsHandle] = new RenderingLoopFloatAnimator(managedHandle);
+			RenderingLoopAnimator.activeInstances[jsHandle] = new RenderingLoopAnimator(managedHandle);
 		}
 
-		public static getInstance(jsHandle: number): RenderingLoopFloatAnimator {
-			return RenderingLoopFloatAnimator.activeInstances[jsHandle];
+		public static getInstance(jsHandle: number): RenderingLoopAnimator {
+			return RenderingLoopAnimator.activeInstances[jsHandle];
 		}
 
 		public static destroyInstance(jsHandle: number) {
-			delete RenderingLoopFloatAnimator.activeInstances[jsHandle];
+			var instance = RenderingLoopAnimator.getInstance(jsHandle);
+			// If the JSObjectHandle is being disposed before the animator is stopped (GC collecting JSObjectHandle before the animator)
+			// we won't be able to DisableFrameReporting anymore.
+			if (instance) {
+				instance.DisableFrameReporting();
+			}
+			delete RenderingLoopAnimator.activeInstances[jsHandle];
 		}
 
 		private constructor(private managedHandle: string) {
