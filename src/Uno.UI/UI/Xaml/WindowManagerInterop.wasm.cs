@@ -24,7 +24,7 @@ namespace Uno.UI.Xaml
 		//When users set double.MaxValue to scroll to the end of the page Javascript doesn't scroll.
 		private const double MAX_SCROLLING_OFFSET = 1_000_000_000_000_000_000;
 
-		private static bool UseJavascriptEval =>
+		private static bool UseJavascriptEval { get; } =
 			!WebAssemblyRuntime.IsWebAssembly || FeatureConfiguration.Interop.ForceJavascriptInterop;
 
 		#region Init

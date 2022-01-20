@@ -11,12 +11,14 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Linq;
 using Uno.Diagnostics.Eventing;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.UI.Xaml.Controls;
+using Uno.UI.Dispatching;
+using Windows.Foundation.Metadata;
+using Windows.System;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -85,8 +87,8 @@ namespace Windows.UI.Xaml
 
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
-		private readonly Stopwatch _watch = new Stopwatch();
 		private readonly Dictionary<FrameworkTemplate, List<TemplateEntry>> _pooledInstances = new Dictionary<FrameworkTemplate, List<TemplateEntry>>(FrameworkTemplate.FrameworkTemplateEqualityComparer.Default);
+		private IFrameworkTemplatePoolPlatformProvider _platformProvider = new FrameworkTemplatePoolDefaultPlatformProvider();
 
 #if USE_HARD_REFERENCES
 		/// <summary>
@@ -113,12 +115,22 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public static bool IsPoolingEnabled { get; set; } = true;
 
+		/// <summary>
+		/// Defines the ratio of memory usage at which the pools starts to stop pooling elligible views.
+		/// </summary>
+		internal static float HighMemoryThreshold { get; set; } = .8f;
+
+		/// <summary>
+		/// Registers a custom <see cref="IFrameworkTemplatePoolPlatformProvider"/>
+		/// </summary>
+		/// <param name="provider"></param>
+		internal void SetPlatformProvider(IFrameworkTemplatePoolPlatformProvider provider)
+			=> _platformProvider = provider;
+
 		private FrameworkTemplatePool()
 		{
-			_watch.Start();
-
 #if !NET461
-			CoreDispatcher.Main.RunIdleAsync(Scavenger);
+			_platformProvider.Schedule(Scavenger);
 #endif
 		}
 
@@ -126,14 +138,14 @@ namespace Windows.UI.Xaml
 		{
 			Scavenge(false);
 
-			await Task.Delay(TimeSpan.FromSeconds(30));
+			await _platformProvider.Delay(TimeSpan.FromSeconds(30));
 
-			CoreDispatcher.Main.RunIdleAsync(Scavenger);
+			_platformProvider.Schedule(Scavenger);
 		}
 
-		private void Scavenge(bool isManual)
+		internal void Scavenge(bool isManual)
 		{
-			var now = _watch.Elapsed;
+			var now = _platformProvider.Now;
 			var removedInstancesCount = 0;
 
 			foreach (var list in _pooledInstances.Values)
@@ -240,6 +252,16 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
+			if (!CanUsePool())
+			{
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+				{
+					(this).Log().Debug($"Not caching template, memory threshold is reached");
+				}
+
+				return;
+			}
+
 			var list = GetTemplatePool(key as FrameworkTemplate ?? throw new InvalidOperationException($"Received {key} but expecting {typeof(FrameworkElement)}"));
 
 			if (args?.NewParent == null)
@@ -261,7 +283,7 @@ namespace Windows.UI.Xaml
 
 				if (item != null)
 				{
-					list.Add(new TemplateEntry(_watch.Elapsed, item));
+					list.Add(new TemplateEntry(_platformProvider.Now, item));
 #if USE_HARD_REFERENCES
 					_activeInstances.Remove(item);
 #endif
@@ -285,6 +307,18 @@ namespace Windows.UI.Xaml
 				{
 					list.RemoveAt(index);
 				}
+			}
+		}
+
+		private bool CanUsePool()
+		{
+			if (_platformProvider.CanUseMemoryManager)
+			{
+				return ((float)_platformProvider.AppMemoryUsage / _platformProvider.AppMemoryUsageLimit) < HighMemoryThreshold;
+			}
+			else
+			{
+				return true;
 			}
 		}
 

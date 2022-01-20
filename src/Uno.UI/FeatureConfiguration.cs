@@ -228,6 +228,24 @@ namespace Uno.UI
 			public static bool UseLegacyHitTest { get; set; } = false;
 		}
 
+		public static class FrameworkTemplate
+		{
+			/// <summary>
+			/// Determines if the pooling is enabled. If false, all requested instances are new.
+			/// </summary>
+			public static bool IsPoolingEnabled { get => FrameworkTemplatePool.IsPoolingEnabled; set => FrameworkTemplatePool.IsPoolingEnabled = value; }
+
+			/// <summary>
+			/// Determines the duration for which a pooled template stays alive
+			/// </summary>
+			public static TimeSpan TimeToLive { get => FrameworkTemplatePool.TimeToLive; set => FrameworkTemplatePool.TimeToLive = value; }
+
+			/// <summary>
+			/// Defines the ratio of memory usage at which the pools starts to stop pooling elligible views, between 0 and 1
+			/// </summary>
+			public static float HighMemoryThreshold { get => FrameworkTemplatePool.HighMemoryThreshold; set => FrameworkTemplatePool.HighMemoryThreshold = value; }
+		}
+
 		public static class Image
 		{
 			/// <summary>
