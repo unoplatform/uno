@@ -691,33 +691,60 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				var weakDelegate = CreateWeakDelegate(callback);
+				CreateWeakDelegate(callback, out var weakCallback, out var weakDelegateRelease);
 
-				var cookie = propertyDetails.CallbackManager.RegisterCallback(weakDelegate.callback);
+				var cookie = propertyDetails.CallbackManager.RegisterCallback(weakCallback);
 
-				// Capture the weak reference to this instance.
-				var instanceRef = ThisWeakReference;
+				return new RegisterPropertyChangedCallbackForPropertyConditionalDisposable(
+					callback,
+					weakDelegateRelease,
+					cookie,
+					ThisWeakReference
+				);
+			}
+		}
 
-				return new DispatcherConditionalDisposable(
-					callback.Target,
-					instanceRef.CloneWeakReference(),
-					() =>
-					{
-						// This weak reference ensure that the closure will not link
-						// the caller and the callee, in the same way "newValueActionWeak"
-						// does not link the callee to the caller.
-						var that = instanceRef.Target as DependencyObjectStore;
+		/// <summary>
+		/// Specialized <see cref="DispatcherConditionalDisposable"/> for
+		/// <see cref="RegisterPropertyChangedCallback(DependencyProperty, PropertyChangedCallback, DependencyPropertyDetails?)"/>.
+		/// </summary>
+		/// <remarks>
+		/// This class is used to avoid the creation of a set of <see cref="Action"/> instances, as well as delegate invocations.
+		/// </remarks>
+		private class RegisterPropertyChangedCallbackForPropertyConditionalDisposable : DispatcherConditionalDisposable
+		{
+			private PropertyChangedCallback _callback;
+			private WeakReferenceReturnDisposable _releaseWeakDelegate;
+			private IDisposable _callbackManagedCookie;
+			private ManagedWeakReference _doStoreRef;
 
-						if (that != null)
-						{
-							cookie.Dispose();
-							weakDelegate.release.Dispose();
+			public RegisterPropertyChangedCallbackForPropertyConditionalDisposable(
+				PropertyChangedCallback callback,
+				WeakReferenceReturnDisposable releaseWeakDelegate,
+				IDisposable callbackManagerCookie,
+				ManagedWeakReference doStoreRef)
+				: base(callback.Target, doStoreRef.CloneWeakReference())
+			{
+				_callback = callback;
+				_releaseWeakDelegate = releaseWeakDelegate;
+				_callbackManagedCookie = callbackManagerCookie;
+				_doStoreRef = doStoreRef;
+			}
 
-						// Force a closure on the callback, to make its lifetime as long
-						// as the subscription being held by the callee.
-						callback = null!;
-						}
-					});
+			protected override void DispatchedTargetFinalized()
+			{
+				// This weak reference ensure that the closure will not link
+				// the caller and the callee, in the same way "newValueActionWeak"
+				// does not link the callee to the caller.
+				if (_doStoreRef.Target is DependencyObjectStore that)
+				{
+					_callbackManagedCookie.Dispose();
+					_releaseWeakDelegate.Dispose();
+
+					// Force a closure on the callback, to make its lifetime as long
+					// as the subscription being held by the callee.
+					_callback = null!;
+				}
 			}
 		}
 
@@ -731,39 +758,62 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				var weakDelegate = CreateWeakDelegate(handler);
+				CreateWeakDelegate(handler, out var weakHandler, out var weakHandlerRelease);
 
 				// Delegates integrate a null check when adding new delegates.
-				_genericCallbacks = _genericCallbacks.Add(weakDelegate.callback);
+				_genericCallbacks = _genericCallbacks.Add(weakHandler);
 
+				return new RegisterPropertyChangedCallbackConditionalDisposable(
+					weakHandler,
+					weakHandlerRelease,
+					ThisWeakReference,
+					handler
+				);
+			}
+		}
+
+		/// <summary>
+		/// Specialized DispatcherConditionalDisposable for <see cref="RegisterPropertyChangedCallback(ExplicitPropertyChangedCallback)"/>
+		/// </summary>
+		/// <remarks>
+		/// This class is used to avoid the creation of a set of <see cref="Action"/> instances, as well as delegate invocations.
+		/// </remarks>
+		private class RegisterPropertyChangedCallbackConditionalDisposable : DispatcherConditionalDisposable
+		{
+			private ExplicitPropertyChangedCallback _weakCallback;
+			private WeakReferenceReturnDisposable _weakCallbackRelease;
+			private ManagedWeakReference _instanceRef;
+			private ExplicitPropertyChangedCallback _callback;
+
+			public RegisterPropertyChangedCallbackConditionalDisposable(
+				ExplicitPropertyChangedCallback weakCallback,
+				WeakReferenceReturnDisposable weakCallbackRelease,
+				ManagedWeakReference instanceRef,
+				ExplicitPropertyChangedCallback callback)
+				: base(callback.Target, instanceRef.CloneWeakReference())
+			{
+				_weakCallback = weakCallback;
+				_weakCallbackRelease = weakCallbackRelease;
+				_instanceRef = instanceRef;
+				_callback = callback;
+			}
+
+			protected override void DispatchedTargetFinalized()
+			{
 				// This weak reference ensure that the closure will not link
 				// the caller and the callee, in the same way "newValueActionWeak"
 				// does not link the callee to the caller.
-				var instanceRef = ThisWeakReference;
+				if (_instanceRef.Target is DependencyObjectStore that)
+				{
+					// Delegates integrate a null check when removing new delegates.
+					that._genericCallbacks = that._genericCallbacks.Remove(_weakCallback);
+				}
 
-				return new DispatcherConditionalDisposable(
-					handler.Target,
-					instanceRef.CloneWeakReference(),
-					() =>
-					{
-						// This weak reference ensure that the closure will not link
-						// the caller and the callee, in the same way "newValueActionWeak"
-						// does not link the callee to the caller.
-						var that = instanceRef.Target as DependencyObjectStore;
+				_weakCallbackRelease.Dispose();
 
-							if (that != null)
-							{
-							// Delegates integrate a null check when removing new delegates.
-							that._genericCallbacks = that._genericCallbacks.Remove(weakDelegate.callback);
-							}
-
-							weakDelegate.release.Dispose();
-
-						// Force a closure on the callback, to make its lifetime as long
-						// as the subscription being held by the callee.
-						handler = null!;
-					}
-				);
+				// Force a closure on the callback, to make its lifetime as long
+				// as the subscription being held by the callee.
+				_callback = null!;
 			}
 		}
 
@@ -848,40 +898,69 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				var wr = WeakReferencePool.RentWeakReference(this, callback);
+				var weakCallbackRef = WeakReferencePool.RentWeakReference(this, callback);
 
-				ParentChangedCallback weakDelegate =
-					(s, _, e) => (wr.Target as ParentChangedCallback)?.Invoke(s, key, e);
+				ParentChangedCallback weakCallback =
+					(s, _, e) => (weakCallbackRef.Target as ParentChangedCallback)?.Invoke(s, key, e);
 
-				_parentChangedCallbacks = _parentChangedCallbacks.Add(weakDelegate);
+				_parentChangedCallbacks = _parentChangedCallbacks.Add(weakCallback);
 
 				// This weak reference ensure that the closure will not link
 				// the caller and the callee, in the same way "newValueActionWeak"
 				// does not link the callee to the caller.
 				var instanceRef = ThisWeakReference;
 
-				void Cleanup()
+				return new RegisterParentChangedCallbackConditionalDisposable(
+					instanceRef.CloneWeakReference(),
+					instanceRef,
+					weakCallbackRef,
+					weakCallback,
+					callback
+				);
+			}
+		}
+
+		/// <summary>
+		/// Specialized DispatcherConditionalDisposable for <see cref="RegisterParentChangedCallback(object, ParentChangedCallback)"/>
+		/// </summary>
+		/// <remarks>
+		/// This class is used to avoid the creation of a set of <see cref="Action"/> instances, as well as delegate invocations.
+		/// </remarks>
+		private class RegisterParentChangedCallbackConditionalDisposable : DispatcherConditionalDisposable
+		{
+			private ManagedWeakReference _doStoreRef;
+			private ManagedWeakReference _weakCallbackRef;
+			private ParentChangedCallback _weakCallback;
+			private ParentChangedCallback _callback;
+
+			public RegisterParentChangedCallbackConditionalDisposable(
+				WeakReference conditionSource,
+				ManagedWeakReference doStoreRef,
+				ManagedWeakReference weakCallbackRef,
+				ParentChangedCallback weakCallback,
+				ParentChangedCallback callback) : base(callback.Target, conditionSource)
+			{
+				_doStoreRef = doStoreRef;
+				_weakCallbackRef = weakCallbackRef;
+				_weakCallback = weakCallback;
+				_callback = callback;
+			}
+
+			protected override void DispatchedTargetFinalized()
+			{
+				var that = _doStoreRef.Target as DependencyObjectStore;
+
+				if (that != null)
 				{
-					var that = instanceRef.Target as DependencyObjectStore;
-
-					if (that != null)
-					{
-						// Delegates integrate a null check when removing new delegates.
-						that._parentChangedCallbacks = that._parentChangedCallbacks.Remove(weakDelegate);
-					}
-
-					WeakReferencePool.ReturnWeakReference(that, wr);
-
-					// Force a closure on the callback, to make its lifetime as long
-					// as the subscription being held by the callee.
-					callback = null!;
+					// Delegates integrate a null check when removing new delegates.
+					that._parentChangedCallbacks = that._parentChangedCallbacks.Remove(_weakCallback);
 				}
 
-				return new DispatcherConditionalDisposable(
-					callback.Target,
-					instanceRef.CloneWeakReference(),
-					Cleanup
-				);
+				WeakReferencePool.ReturnWeakReference(that, _weakCallbackRef);
+
+				// Force a closure on the callback, to make its lifetime as long
+				// as the subscription being held by the callee.
+				_callback = null!;
 			}
 		}
 
@@ -1547,37 +1626,17 @@ namespace Windows.UI.Xaml
 		/// on Mono 4.2 and earlier, when Full AOT is enabled. This should be revised once this behavior is updated, or
 		/// the cost of calling generic delegates is lowered.
 		/// </remarks>
-		private static (PropertyChangedCallback callback, IDisposable release) CreateWeakDelegate(PropertyChangedCallback callback)
+		private static void CreateWeakDelegate(
+			PropertyChangedCallback callback,
+			out PropertyChangedCallback weakCallback,
+			out WeakReferenceReturnDisposable weakRelease)
 		{
 			var wr = WeakReferencePool.RentWeakReference(null, callback);
 
-			PropertyChangedCallback weakDelegate =
+			weakCallback =
 				(s, e) => (!wr.IsDisposed ? wr.Target as PropertyChangedCallback : null)?.Invoke(s, e);
 
-			return (weakDelegate, Disposable.Create(() => WeakReferencePool.ReturnWeakReference(null, wr)));
-		}
-
-		/// <summary>
-		/// Creates a weak delegate for the specified <see cref="Action"/> callback.
-		/// </summary>
-		/// <param name="callback">The callback to reference</param>
-		/// <remarks>
-		/// This method is used to avoid creating a hard link between the source instance
-		/// and the stored delegate for the instance, thus avoid memory leaks.
-		/// We also do not need to clear the delegate created because it is already associated with the instance.
-		///
-		/// Note that this method is not generic to avoid the cost of trampoline resolution
-		/// on Mono 4.2 and earlier, when Full AOT is enabled. This should be revised once this behavior is updated, or
-		/// the cost of calling generic delegates is lowered.
-		/// </remarks>
-		private static (Action callback, IDisposable release) CreateWeakDelegate(Action callback)
-		{
-			var wr = WeakReferencePool.RentWeakReference(null, callback);
-
-			Action weakDelegate =
-				() => (wr.Target as Action)?.Invoke();
-
-			return (weakDelegate, Disposable.Create(() => WeakReferencePool.ReturnWeakReference(null, wr)));
+			weakRelease = new WeakReferenceReturnDisposable(wr);
 		}
 
 		/// <summary>
@@ -1593,14 +1652,28 @@ namespace Windows.UI.Xaml
 		/// on Mono 4.2 and earlier, when Full AOT is enabled. This should be revised once this behavior is updated, or
 		/// the cost of calling generic delegates is lowered.
 		/// </remarks>
-		private static (ExplicitPropertyChangedCallback callback, IDisposable release) CreateWeakDelegate(ExplicitPropertyChangedCallback callback)
+		private static void CreateWeakDelegate(
+			ExplicitPropertyChangedCallback callback,
+			out ExplicitPropertyChangedCallback weakDelegate,
+			out WeakReferenceReturnDisposable weakRelease)
 		{
 			var wr = WeakReferencePool.RentWeakReference(null, callback);
 
-			ExplicitPropertyChangedCallback weakDelegate =
+			weakDelegate =
 				(instance, s, e) => (wr.Target as ExplicitPropertyChangedCallback)?.Invoke(instance, s, e);
 
-			return (weakDelegate, Disposable.Create(() => WeakReferencePool.ReturnWeakReference(null, wr)));
+			weakRelease = new WeakReferenceReturnDisposable(wr);
+		}
+
+		private struct WeakReferenceReturnDisposable
+		{
+			private readonly ManagedWeakReference _wr;
+
+			public WeakReferenceReturnDisposable(ManagedWeakReference wr)
+				=> _wr = wr;
+
+			public void Dispose()
+				=> WeakReferencePool.ReturnWeakReference(null, _wr);
 		}
 
 		private void RaiseCallbacks(

@@ -18,30 +18,29 @@ namespace Windows.UI.Xaml
 	/// capturing lambda to be passed as a callback, and not have to unintended memory leaks
 	/// on either the sender or receiver of the callback.
 	/// </remarks>
-    internal class DispatcherConditionalDisposable : ConditionalDisposable
+    internal abstract class DispatcherConditionalDisposable : ConditionalDisposable
 	{
-		private readonly Action _action;
-
-		public DispatcherConditionalDisposable(object target, WeakReference conditionSource, Action action) : base(target, conditionSource)
+		public DispatcherConditionalDisposable(object target, WeakReference conditionSource) : base(target, conditionSource)
 		{
-			_action = action;
 		}
 
 		protected override void TargetFinalized()
 		{
 			if (CoreDispatcher.Main.HasThreadAccess)
 			{
-				_action();
+				DispatchedTargetFinalized();
 			}
 			else
 			{
 				Uno.UI.Dispatching.CoreDispatcher.Main.RunIdleAsync(
 					delegate
 					{
-						_action();
+						DispatchedTargetFinalized();
 					}
 				);
 			}
 		}
+
+		protected abstract void DispatchedTargetFinalized();
 	}
 }
