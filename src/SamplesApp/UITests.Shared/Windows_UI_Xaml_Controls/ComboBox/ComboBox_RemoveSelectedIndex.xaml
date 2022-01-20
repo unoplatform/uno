@@ -1,0 +1,24 @@
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ComboBox.ComboBox_RemoveSelectedIndex"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid>
+		<StackPanel Orientation="Vertical">
+			<TextBlock Text="Choice the item:"/>
+			<ComboBox x:Name="combo" SelectionChanged="comboChanged_Selection">
+				<ComboBoxItem>Item #0</ComboBoxItem>
+				<ComboBoxItem>Item #1</ComboBoxItem>
+				<ComboBoxItem>Item #2</ComboBoxItem>
+				<ComboBoxItem>Item #3</ComboBoxItem>
+				<ComboBoxItem>Item #4</ComboBoxItem>
+				<ComboBoxItem>Item #5</ComboBoxItem>
+			</ComboBox>
+			<Button x:Name="btnDelete" Click="btnDelete_Click" Content="Remove select item"/>
+			<TextBlock x:Name="steps" Text="....Steps...."/>
+		</StackPanel>
+	</Grid>
+</UserControl>
