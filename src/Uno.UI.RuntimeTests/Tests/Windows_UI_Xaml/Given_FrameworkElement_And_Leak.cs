@@ -67,6 +67,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.Buttons", 15)]
 		[DataRow("UITests.Windows_UI_Xaml.xLoadTests.xLoad_Test_For_Leak", 15)]
 		[DataRow("UITests.Windows_UI_Xaml_Controls.ToolTip.ToolTip_LeakTest", 15)]
+<<<<<<< HEAD
+=======
+		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.Button_Command_Leak", 15)]
+#if !__WASM__ // Temporary disabled on WASM - https://github.com/unoplatform/uno/issues/7860
+		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ContentDialog_Leak", 15)]
+#endif
+>>>>>>> ac5daf5e6 (test: ButtonBase.Command leak)
 		public async Task When_Add_Remove(object controlTypeRaw, int count)
 		{
 #if TRACK_REFS
