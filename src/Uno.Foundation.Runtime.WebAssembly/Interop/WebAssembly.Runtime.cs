@@ -9,6 +9,8 @@ namespace WebAssembly
 	[Obfuscation(Feature = "renaming", Exclude = true)]
 	internal sealed class Runtime
 	{
+		internal static bool RethrowNativeExceptions { get; set; } = true;
+
 		/// <summary>
 		/// Mono specific internal call.
 		/// </summary>
@@ -30,15 +32,23 @@ namespace WebAssembly
 		internal static string InvokeJS(string str)
 		{
 			int exceptionResult;
-			var r = PlatformHelper.IsNetCore
-			? NetCoreInvokeJS(str, out exceptionResult)
-			: MonoInvokeJS(str, out exceptionResult);
+			var result = PlatformHelper.IsNetCore
+				? NetCoreInvokeJS(str, out exceptionResult)
+				: MonoInvokeJS(str, out exceptionResult);
 
 			if (exceptionResult != 0)
 			{
-				Console.Error.WriteLine($"Error #{exceptionResult} \"{r}\" executing javascript: \"{str}\"");
+				var errorMessage = $"Error #{exceptionResult} \"{result}\" executing javascript: \"{str}\"";
+				if (RethrowNativeExceptions)
+				{
+					throw new InvalidOperationException(errorMessage);
+				}
+				else
+				{
+					Console.Error.WriteLine(errorMessage);
+				}
 			}
-			return r;
+			return result;
 		}
 	}
 
