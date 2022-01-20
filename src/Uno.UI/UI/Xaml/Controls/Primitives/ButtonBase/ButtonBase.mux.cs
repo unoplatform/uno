@@ -62,11 +62,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			SetAcceptsReturn(true);
 
 			Loaded += OnLoaded;
+			//TODO Uno specific: Call LeaveImpl to simulate leaving visual tree
+			Unloaded += (s, e) => LeaveImpl();
 		}
 
 		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
-			//ButtonBaseGenerated.OnPropertyChanged2(args);
+			base.OnPropertyChanged2(args);
 
 			if (args.Property == ClickModeProperty)
 			{
@@ -299,7 +301,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="args">Event args.</param>
-		private void OnLoaded(object sender, RoutedEventArgs args) => UpdateVisualState(false);
+		private void OnLoaded(object sender, RoutedEventArgs args)
+		{
+			UpdateVisualState(false);
+			// TODO Uno specific: Call EnterImpl to simulate entering visual tree
+			EnterImpl();
+		}
 
 		/// <summary>
 		/// GotFocus event handler.
