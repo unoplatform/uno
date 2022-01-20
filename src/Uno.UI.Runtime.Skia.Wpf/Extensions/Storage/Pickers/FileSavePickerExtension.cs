@@ -55,7 +55,7 @@ namespace Uno.Extensions.Storage.Pickers
 			{
 				if (!File.Exists(saveFileDialog.FileName))
 				{
-					File.WriteAllText(saveFileDialog.FileName, "");
+					File.Create(saveFileDialog.FileName).Dispose();
 				}
 				return await StorageFile.GetFileFromPathAsync(saveFileDialog.FileName);
 			}
