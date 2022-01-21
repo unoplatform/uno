@@ -190,8 +190,8 @@ jobs:
 
    ## First ui tests run
   - bash: |
-      chmod +x $BUILD_SOURCESDIRECTORY/build/run-automated-uitests.sh
-      $BUILD_SOURCESDIRECTORY/build/run-automated-uitests.sh
+      chmod +x $BUILD_SOURCESDIRECTORY/build/test-scripts/wasm-run-automated-uitests.sh
+      $BUILD_SOURCESDIRECTORY/build/test-scripts/wasm-run-automated-uitests.sh
 
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
@@ -211,8 +211,8 @@ jobs:
 
    ## Second ui tests run
   - bash: |
-      chmod +x $BUILD_SOURCESDIRECTORY/build/run-automated-uitests.sh
-      $BUILD_SOURCESDIRECTORY/build/run-automated-uitests.sh
+      chmod +x $BUILD_SOURCESDIRECTORY/build/test-scripts/wasm-run-automated-uitests.sh
+      $BUILD_SOURCESDIRECTORY/build/test-scripts/wasm-run-automated-uitests.sh
 
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"

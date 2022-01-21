@@ -25,7 +25,7 @@ namespace SamplesApp.UITests.Runtime
 
 		[Test]
 		[AutoRetry(tryCount: 1)]
-		[Timeout(2400000)] // Adjust this timeout based on average test run duration
+		[Timeout(1200000)] // Adjust this timeout based on average test run duration
 		public async Task RunRuntimeTests()
 		{
 			Run("SamplesApp.Samples.UnitTests.UnitTestsPage");
@@ -45,38 +45,6 @@ namespace SamplesApp.UITests.Runtime
 			async Task<bool> IsTestExecutionDone()
 			{
 				return await GetWithRetry("IsTestExecutionDone", () => runningState.GetDependencyPropertyValue("Text")?.ToString().Equals("Finished", StringComparison.OrdinalIgnoreCase) ?? false);
-			}
-
-			async Task<T> GetWithRetry<T>(string logName, Func<T> getter, int timeoutSeconds = 10)
-			{
-				var sw = Stopwatch.StartNew();
-				Exception lastException = null;
-				do
-				{
-					try
-					{
-						var result = getter();
-
-						if(sw.Elapsed > TimeSpan.FromSeconds(timeoutSeconds / 2))
-						{
-							Console.WriteLine($"{logName} succeeded after retries");
-						}
-
-						return result;
-					}
-					catch (Exception e)
-					{
-						lastException = e;
-						Console.WriteLine($"{logName} failed with {e.Message}");
-					}
-
-					await Task.Delay(TimeSpan.FromSeconds(.5));
-
-					Console.WriteLine($"{logName} retrying");
-				}
-				while (sw.Elapsed < TimeSpan.FromSeconds(timeoutSeconds));
-
-				throw lastException;
 			}
 
 			_app.WaitForElement(runButton);
@@ -123,6 +91,38 @@ namespace SamplesApp.UITests.Runtime
 			}
 
 			TakeScreenshot("Runtime Tests Results",	ignoreInSnapshotCompare: true);
+		}
+
+		async Task<T> GetWithRetry<T>(string logName, Func<T> getter, int timeoutSeconds = 15)
+		{
+			var sw = Stopwatch.StartNew();
+			Exception lastException = null;
+			do
+			{
+				try
+				{
+					var result = getter();
+
+					if (sw.Elapsed > TimeSpan.FromSeconds(timeoutSeconds / 2))
+					{
+						Console.WriteLine($"{logName} succeeded after retries");
+					}
+
+					return result;
+				}
+				catch (Exception e)
+				{
+					lastException = e;
+					Console.WriteLine($"{logName} failed with {e.Message}");
+				}
+
+				await Task.Delay(TimeSpan.FromSeconds(.5));
+
+				Console.WriteLine($"{logName} retrying");
+			}
+			while (sw.Elapsed < TimeSpan.FromSeconds(timeoutSeconds));
+
+			throw lastException;
 		}
 
 		private static string ArchiveResults(QueryEx unitTestsControl)
