@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using Uno.Foundation;
 using Uno.Foundation.Interop;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
@@ -22,6 +23,10 @@ namespace Windows.UI.Xaml.Media.Animation
 			{
 				WebAssemblyRuntime.InvokeJSWithInterop($"{this}.EnableFrameReporting();");
 			}
+			else if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug("Cannot EnableFrameReporting as Handle is no longer alive.");
+			}
 		}
 
 		protected override void DisableFrameReporting()
@@ -29,6 +34,10 @@ namespace Windows.UI.Xaml.Media.Animation
 			if (Handle.IsAlive)
 			{
 				WebAssemblyRuntime.InvokeJSWithInterop($"{this}.DisableFrameReporting();");
+			}
+			else if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug("Cannot DisableFrameReporting as Handle is no longer alive.");
 			}
 		}
 
@@ -38,6 +47,10 @@ namespace Windows.UI.Xaml.Media.Animation
 			{
 				WebAssemblyRuntime.InvokeJSWithInterop($"{this}.SetStartFrameDelay({delayMs});");
 			}
+			else if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug("Cannot SetStartFrameDelay as Handle is no longer alive.");
+			}
 		}
 
 		protected override void SetAnimationFramesInterval()
@@ -45,6 +58,10 @@ namespace Windows.UI.Xaml.Media.Animation
 			if (Handle.IsAlive)
 			{
 				WebAssemblyRuntime.InvokeJSWithInterop($"{this}.SetAnimationFramesInterval();");
+			}
+			else if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug("Cannot SetAnimationFramesInterval as Handle is no longer alive.");
 			}
 		}
 
