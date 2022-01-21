@@ -55,7 +55,14 @@ namespace SamplesApp.UITests.Runtime
 				{
 					try
 					{
-						return getter();
+						var result = getter();
+
+						if(sw.Elapsed > TimeSpan.FromSeconds(timeoutSeconds / 2))
+						{
+							Console.WriteLine($"{logName} succeeded after retries");
+						}
+
+						return result;
 					}
 					catch (Exception e)
 					{
