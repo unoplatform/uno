@@ -327,7 +327,6 @@ namespace Windows.UI.Xaml
 		internal enum HtmlEventExtractor : int
 		{
 			None = 0,
-			PointerEventExtractor = 1, // See PayloadToPointerArgs
 			TappedEventExtractor = 2,
 			KeyboardEventExtractor = 3,
 			FocusEventExtractor = 4,
@@ -336,7 +335,7 @@ namespace Windows.UI.Xaml
 		}
 
 		[Flags]
-		internal enum HtmlEventDispatchResult
+		internal enum HtmlEventDispatchResult : byte
 		{
 			/// <summary>
 			/// Event has been dispatched properly, but there is no specific action to take.

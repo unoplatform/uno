@@ -80,9 +80,6 @@ namespace Windows.UI.Xaml
 
 		public UIElement(string htmlTag, bool isSvg)
 		{
-			_log = this.Log();
-			_logDebug = _log.IsEnabled(LogLevel.Debug) ? _log : null;
-
 			Initialize();
 
 			_gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
@@ -353,6 +350,18 @@ namespace Windows.UI.Xaml
 					Math.Floor(rect.X).ToStringInvariant(), "px)"
 				)
 			);
+		}
+
+		internal static UIElement GetElementFromHandle(IntPtr handle)
+		{
+			var gcHandle = GCHandle.FromIntPtr(handle);
+
+			if (gcHandle.IsAllocated && gcHandle.Target is UIElement element)
+			{
+				return element;
+			}
+
+			return null;
 		}
 
 		internal static UIElement GetElementFromHandle(int handle)

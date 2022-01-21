@@ -246,7 +246,7 @@ namespace Uno.Foundation
 			}
 		}
 
-		private static string InnerInvokeJS(String str)
+		private static string InnerInvokeJS(string str)
 		{
 			if (_logger.IsEnabled(LogLevel.Debug))
 			{
