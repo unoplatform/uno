@@ -1,5 +1,5 @@
 #!/bin/bash
-export BUILD_SOURCESDIRECTORY=`pwd`/..
+export BUILD_SOURCESDIRECTORY=`pwd`/../..
 export BUILD_ARTIFACTSTAGINGDIRECTORY=/tmp/uno-uitests-results
 export UITEST_SNAPSHOTS_ONLY=false
 export UITEST_SNAPSHOTS_GROUP=01

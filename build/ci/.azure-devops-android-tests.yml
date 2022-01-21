@@ -212,7 +212,7 @@ jobs:
 
   ## First tests run (https://github.com/unoplatform/uno/issues/6714)
   - bash: |
-      $(build.sourcesdirectory)/build/android-uitest-run.sh
+      $(build.sourcesdirectory)/build/test-scripts/android-uitest-run.sh
 
     displayName: Run Android Tests
 
@@ -237,7 +237,7 @@ jobs:
 
   ## Second tests run (https://github.com/unoplatform/uno/issues/6714)
   - bash: |
-      $(build.sourcesdirectory)/build/android-uitest-run.sh
+      $(build.sourcesdirectory)/build/test-scripts/android-uitest-run.sh
 
     displayName: Run Android Tests
     condition: eq(variables.ALLOW_RERUN, 'true')

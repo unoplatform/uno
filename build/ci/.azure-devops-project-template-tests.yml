@@ -32,7 +32,7 @@ jobs:
   - script: dotnet new -i $(System.ArtifactsDirectory)\NugetPackages\vslatest\Uno.ProjectTemplates.Dotnet*.nupkg
     displayName: Install Project Templates
 
-  - powershell: build\run-template-tests.ps1
+  - powershell: build\test-scripts\run-template-tests.ps1
     displayName: Run Project Templates Tests
     env:
       NUGET_CI_CONFIG: $(Build.SourcesDirectory)\src\nuget.ci.config
@@ -63,7 +63,7 @@ jobs:
   - script: dotnet new -i $(System.ArtifactsDirectory)\NugetPackages\vslatest\Uno.ProjectTemplates.Dotnet*.nupkg
     displayName: Install Project Templates
 
-  - powershell: build\run-net6-template-tests.ps1
+  - powershell: build\test-scripts\run-net6-template-tests.ps1
     displayName: Run Project Templates Tests
     env:
       NUGET_CI_CONFIG: $(Build.SourcesDirectory)\src\nuget.ci.net6.config
@@ -97,7 +97,7 @@ jobs:
   - script: dotnet new -i $(System.ArtifactsDirectory)/NugetPackages/vslatest/Uno.ProjectTemplates.Dotnet*.nupkg
     displayName: Install Project Templates
 
-  - pwsh: build/run-template-tests-linux.ps1
+  - pwsh: build/test-scripts/run-template-tests-linux.ps1
     displayName: Run Project Templates Tests
     env:
       NUGET_CI_CONFIG: $(Build.SourcesDirectory)/src/nuget.ci.config
