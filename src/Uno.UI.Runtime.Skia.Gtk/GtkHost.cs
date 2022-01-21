@@ -24,6 +24,8 @@ using Uno.UI.Runtime.Skia.GTK.Extensions.ApplicationModel.DataTransfer;
 using Uno.Foundation.Logging;
 using Windows.System.Profile.Internal;
 using Uno.UI.Runtime.Skia.GTK.System.Profile;
+using Uno.UI.Runtime.Skia.Helpers;
+using Uno.UI.Runtime.Skia.Helpers.Dpi;
 
 namespace Uno.UI.Runtime.Skia
 {

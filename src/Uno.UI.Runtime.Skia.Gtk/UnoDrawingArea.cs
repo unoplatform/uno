@@ -7,17 +7,27 @@ using Windows.UI.Xaml.Input;
 using WUX = Windows.UI.Xaml;
 using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Controls;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using Uno.UI.Runtime.Skia.Helpers.Windows;
+using Uno.UI.Runtime.Skia.Helpers.Dpi;
+using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia
 {
 	internal class UnoDrawingArea : Gtk.DrawingArea
 	{
+		private readonly DisplayInformation _displayInformation;
 		private FocusManager _focusManager;
 		private SKBitmap bitmap;
 		private int renderCount;
 
+		private float? _dpi = 1;
+
 		public UnoDrawingArea()
 		{
+			_displayInformation = DisplayInformation.GetForCurrentView();
+			_displayInformation.DpiChanged += OnDpiChanged;
 			WUX.Window.InvalidateRender
 				+= () =>
 				{
@@ -26,6 +36,9 @@ namespace Uno.UI.Runtime.Skia
 					Invalidate();
 				};
 		}
+
+		private void OnDpiChanged(DisplayInformation sender, object args) =>
+			UpdateDpi();
 
 		private void InvalidateOverlays()
 		{
@@ -40,16 +53,6 @@ namespace Uno.UI.Runtime.Skia
 		private void Invalidate()
 			=> QueueDrawArea(0, 0, 10000, 10000);
 
-		private void Screen_MonitorsChanged(object sender, EventArgs e)
-		{
-			UpdateDpi();
-			Invalidate();
-		}
-
-		private void UpdateDpi()
-		{
-		}
-
 		protected override bool OnDrawn(Cairo.Context cr)
 		{
 			int width, height;
@@ -59,13 +62,16 @@ namespace Uno.UI.Runtime.Skia
 				this.Log().Trace($"Render {renderCount++}");
 			}
 
-			var dpi = (Window.Screen?.Resolution ?? 1) / 96.0;
-
+			if (_dpi == null)
+			{
+				UpdateDpi();
+			}
+			
 			width = (int)AllocatedWidth;
 			height = (int)AllocatedHeight;
 
-			var scaledWidth = (int)(width * dpi);
-			var scaledHeight = (int)(height * dpi);
+			var scaledWidth = (int)(width * _dpi.Value);
+			var scaledHeight = (int)(height * _dpi.Value);
 
 			var info = new SKImageInfo(scaledWidth, scaledHeight, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
 
@@ -79,7 +85,7 @@ namespace Uno.UI.Runtime.Skia
 			{
 				surface.Canvas.Clear(SKColors.White);
 
-				surface.Canvas.Scale((float)dpi);
+				surface.Canvas.Scale((float)_dpi);
 
 				WUX.Window.Current.Compositor.Render(surface, info);
 
@@ -90,7 +96,7 @@ namespace Uno.UI.Runtime.Skia
 					bitmap.Width * 4))
 				{
 					gtkSurface.MarkDirty();
-					cr.Scale(1 / dpi, 1 / dpi);
+					cr.Scale(1 / _dpi.Value, 1 / _dpi.Value);
 					cr.SetSourceSurface(gtkSurface, 0, 0);
 					cr.Paint();
 				}
@@ -106,5 +112,7 @@ namespace Uno.UI.Runtime.Skia
 
 			bitmap.Encode(wstream, SKEncodedImageFormat.Png, 100);
 		}
+
+		private void UpdateDpi() => _dpi = (float)_displayInformation.RawPixelsPerViewPixel;
 	}
 }
