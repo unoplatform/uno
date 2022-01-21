@@ -38,6 +38,7 @@ using Uno.ApplicationModel.DataTransfer;
 using Uno.Extensions.ApplicationModel.DataTransfer;
 using Windows.System.Profile.Internal;
 using Uno.Extensions.System.Profile;
+using Windows.Storage.Pickers;
 
 namespace Uno.UI.Skia.Platform
 {
@@ -68,6 +69,7 @@ namespace Uno.UI.Skia.Platform
 			ApiExtensibility.Register(typeof(IDisplayInformationExtension), o => new WpfDisplayInformationExtension(o));
 			ApiExtensibility.Register(typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension), o => new WpfDragDropExtension(o));
 			ApiExtensibility.Register(typeof(IFileOpenPickerExtension), o => new FileOpenPickerExtension(o));
+			ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new FolderPickerExtension(o));
 			ApiExtensibility.Register(typeof(IFileSavePickerExtension), o => new FileSavePickerExtension(o));
 			ApiExtensibility.Register(typeof(IConnectionProfileExtension), o => new WindowsConnectionProfileExtension(o));
 			ApiExtensibility.Register<TextBoxView>(typeof(ITextBoxViewExtension), o => new TextBoxViewExtension(o));
