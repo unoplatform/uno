@@ -128,6 +128,10 @@ namespace Windows.UI.Xaml
 
 			OnChildAdded(child);
 
+			// Reset to original (invalidated) state
+			child.ResetLayoutFlags();
+
+			// Force a new measure of this element (the parent of the new child)
 			InvalidateMeasure();
 		}
 
@@ -141,19 +145,25 @@ namespace Windows.UI.Xaml
 			if (_children.Remove(child))
 			{
 				InnerRemoveChild(child);
+
+				// Force a new measure of this element
+				InvalidateMeasure();
+
 				return true;
 			}
-			else
-			{
-				return false;
-			}
+
+			return false;
 		}
 
 		internal UIElement ReplaceChild(int index, UIElement child)
 		{
 			var previous = _children[index];
-			RemoveChild(previous);
-			AddChild(child, index);
+
+			if (!ReferenceEquals(child, previous))
+			{
+				RemoveChild(previous);
+				AddChild(child, index);
+			}
 
 			return previous;
 		}
