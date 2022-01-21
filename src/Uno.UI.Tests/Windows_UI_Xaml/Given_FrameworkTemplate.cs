@@ -37,6 +37,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		{
 			FrameworkTemplatePool.IsPoolingEnabled = _previousPoolingEnabled;
 			FrameworkTemplatePool.Instance.SetPlatformProvider(null);
+			FrameworkTemplatePool.Scavenge();
 		}
 
 		[TestMethod]

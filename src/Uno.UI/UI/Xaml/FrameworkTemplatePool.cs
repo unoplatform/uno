@@ -125,7 +125,16 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="provider"></param>
 		internal void SetPlatformProvider(IFrameworkTemplatePoolPlatformProvider provider)
-			=> _platformProvider = provider;
+		{
+			if (provider is not null)
+			{
+				_platformProvider = provider;
+			}
+			else
+			{
+				_platformProvider = new FrameworkTemplatePoolDefaultPlatformProvider();
+			}
+		}
 
 		private FrameworkTemplatePool()
 		{
