@@ -191,7 +191,7 @@ namespace Windows.UI.Xaml
 		static void InitializeStaticBinder()
 		{
 			// Register the ability for the BindingPath to subscribe to dependency property changes.
-			BindingPath.RegisterPropertyChangedRegistrationHandler(SubscribeToDependencyPropertyChanged);
+			BindingPath.RegisterPropertyChangedRegistrationHandler(new BindingPathPropertyChangedRegistrationHandler());
 		}
 
 		internal DependencyProperty DataContextProperty => _dataContextProperty!;
@@ -532,7 +532,7 @@ namespace Windows.UI.Xaml
 		/// <param name="newValueAction">The action to execute when a new value is raised</param>
 		/// <param name="disposeAction">The action to execute when the listener wants to dispose the subscription</param>
 		/// <returns></returns>
-		private static IDisposable? SubscribeToDependencyPropertyChanged(ManagedWeakReference dataContextReference, string propertyName, Action newValueAction)
+		private static IDisposable? SubscribeToDependencyPropertyChanged(ManagedWeakReference dataContextReference, string propertyName, BindingPath.IPropertyChangedValueHandler newValueAction)
 		{
 			var dependencyObject = dataContextReference.Target as DependencyObject;
 
@@ -542,10 +542,8 @@ namespace Windows.UI.Xaml
 
 				if (dp != null)
 				{
-					Windows.UI.Xaml.PropertyChangedCallback handler = (s, e) => newValueAction();
-
 					return Windows.UI.Xaml.DependencyObjectExtensions
-						.RegisterDisposablePropertyChangedCallback(dependencyObject, dp, handler);
+						.RegisterDisposablePropertyChangedCallback(dependencyObject, dp, newValueAction.NewValue);
 				}
 				else
 				{
@@ -657,6 +655,15 @@ namespace Windows.UI.Xaml
 
 		public Windows.UI.Xaml.Data.Binding? GetBinding(DependencyProperty dependencyProperty)
 			=> GetBindingExpression(dependencyProperty)?.ParentBinding;
+
+		/// <summary>
+		/// BindingPath Registration handler for DependencyProperty instances
+		/// </summary>
+		private class BindingPathPropertyChangedRegistrationHandler : BindingPath.IPropertyChangedRegistrationHandler
+		{
+			public IDisposable? Register(ManagedWeakReference dataContext, string propertyName, BindingPath.IPropertyChangedValueHandler onNewValue)
+				=> SubscribeToDependencyPropertyChanged(dataContext, propertyName, onNewValue);
+		}
 	}
 }
 
