@@ -130,20 +130,23 @@ namespace SamplesApp.UITests
 				TakeScreenshot($"{TestContext.CurrentContext.Test.Name} - Tear down on error", ignoreInSnapshotCompare: true);
 			}
 
-			WriteBrowserLogs(GetCurrentStepTitle("log"));
+			WriteSystemLogs(GetCurrentStepTitle("log"));
 		}
 
-		private void WriteBrowserLogs(string fileName)
+		private void WriteSystemLogs(string fileName)
 		{
-			var outputPath = string.IsNullOrEmpty(_screenShotPath)
-				? Environment.CurrentDirectory
-				: _screenShotPath;
-
-			using (var logOutput = new StreamWriter(Path.Combine(outputPath, $"{fileName}_{DateTime.Now:yyyy-MM-dd-HH-mm-ss.fff}.txt")))
+			if (_app != null && AppInitializer.GetLocalPlatform() == Platform.Browser)
 			{
-				foreach (var log in _app.GetSystemLogs(_startTime.ToUniversalTime()))
+				var outputPath = string.IsNullOrEmpty(_screenShotPath)
+					? Environment.CurrentDirectory
+					: _screenShotPath;
+
+				using (var logOutput = new StreamWriter(Path.Combine(outputPath, $"{fileName}_{DateTime.Now:yyyy-MM-dd-HH-mm-ss.fff}.txt")))
 				{
-					logOutput.WriteLine($"{log.Timestamp}/{log.Level}: {log.Message}");
+					foreach (var log in _app.GetSystemLogs(_startTime.ToUniversalTime()))
+					{
+						logOutput.WriteLine($"{log.Timestamp}/{log.Level}: {log.Message}");
+					}
 				}
 			}
 		}
@@ -304,7 +307,7 @@ namespace SamplesApp.UITests
 				if (_firstRun)
 				{
 					_firstRun = false;
-					WriteBrowserLogs("AppStartup");
+					WriteSystemLogs("AppStartup");
 				}
 			}
 
