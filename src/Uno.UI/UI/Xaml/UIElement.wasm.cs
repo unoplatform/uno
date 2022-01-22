@@ -149,14 +149,24 @@ namespace Windows.UI.Xaml
 
 		~UIElement()
 		{
-			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			try
 			{
-				this.Log().Debug($"Collecting UIElement for [{HtmlId}]");
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"Collecting UIElement for [{HtmlId}]");
+				}
+
+				Cleanup();
+
+				Uno.UI.Xaml.WindowManagerInterop.DestroyView(HtmlId);
 			}
-
-			Cleanup();
-
-			Uno.UI.Xaml.WindowManagerInterop.DestroyView(HtmlId);
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
+				{
+					this.Log().Warn($"Collection of UIElement for [{HtmlId}] failed", e);
+				}
+			}
 
 			_gcHandle.Free();
 		}
