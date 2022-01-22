@@ -11,6 +11,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls
 			InitializeComponent();
 		}
 
+
 		public async Task WaitForTestToComplete()
 		{
 			var t = ShowAsync();

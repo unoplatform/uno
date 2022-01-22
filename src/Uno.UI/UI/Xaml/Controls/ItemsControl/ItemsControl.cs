@@ -686,25 +686,12 @@ namespace Windows.UI.Xaml.Controls
 			//Subscribe to changes on grouped source that is an observable collection
 			else if (unwrappedSource is CollectionView collectionView && collectionView.CollectionGroups != null && collectionView.InnerCollection is INotifyCollectionChanged observableGroupedSource)
 			{
-				// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
-				// remove the handler.
-				NotifyCollectionChangedEventHandler handler = OnItemsSourceGroupsChanged;
-				_notifyCollectionChanged.Disposable = Disposable.Create(() =>
-					observableGroupedSource.CollectionChanged -= handler
-				);
-				observableGroupedSource.CollectionChanged += handler;
+				ObserveCollectionChanged(observableGroupedSource);
 			}
 			//Subscribe to changes on ICollectionView that is grouped
 			else if (unwrappedSource is ICollectionView iCollectionView && iCollectionView.CollectionGroups != null)
 			{
-				// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
-				// remove the handler.
-				VectorChangedEventHandler<object> handler = OnItemsSourceGroupsVectorChanged;
-				_notifyCollectionChanged.Disposable = Disposable.Create(() =>
-					iCollectionView.CollectionGroups.VectorChanged -= handler
-				);
-				iCollectionView.CollectionGroups.VectorChanged += handler;
-
+				ObserveCollectionChanged(iCollectionView);
 			}
 			else
 			{
@@ -716,61 +703,162 @@ namespace Windows.UI.Xaml.Controls
 			//Subscribe to group changes if they are observable collections
 			if (unwrappedSource is ICollectionView collectionViewGrouped && collectionViewGrouped.CollectionGroups != null)
 			{
-				var disposables = new CompositeDisposable();
-				int i = -1;
-				foreach (ICollectionViewGroup group in collectionViewGrouped.CollectionGroups)
+				ObserveCollectionChangedGrouped(collectionViewGrouped);
+			}
+		}
+
+		private void ObserveCollectionChanged(INotifyCollectionChanged observableGroupedSource)
+		{
+			var thatRef = (this as IWeakReferenceProvider)?.WeakReference;
+
+			// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
+			// remove the handler.
+			void handler(object s, NotifyCollectionChangedEventArgs e)
+			{
+				// Wrap the registered delegate to avoid creating a strong
+				// reference to this ItemsControl. The ItemsControl is holding
+				// a reference to the items source, so it won`t be collected
+				// unless unset. Note that this block is not extracted to a separate
+				// helper to avoid the cost of creating additional delegates.
+				if (thatRef.Target is ItemsControl that)
 				{
-					//Hidden empty groups shouldn't be counted because they won't appear to UICollectionView
-					if (!AreEmptyGroupsHidden || group.GroupItems.Count > 0)
-					{
-						i++;
-					}
-					var insideLoop = i;
+					that.OnItemsSourceGroupsChanged(s, e);
+				}
+				else
+				{
+					observableGroupedSource.CollectionChanged -= handler;
+				}
+			}
 
-					// TODO: At present we listen to changes on ICollectionViewGroup.Group, which supports 'observable of observable groups'
-					// using CollectionViewSource. The correct way to do this would be for CollectionViewGroup.GroupItems to instead implement 
-					// INotifyCollectionChanged.
-					INotifyCollectionChanged observableGroup = group.GroupItems as INotifyCollectionChanged ?? group.Group as INotifyCollectionChanged;
-					// Prefer INotifyCollectionChanged for, eg, batched item changes
-					if (observableGroup != null)
-					{
-						NotifyCollectionChangedEventHandler onCollectionChanged = (o, e) => OnItemsSourceSingleCollectionChanged(o, e, insideLoop);
-						Disposable.Create(() => observableGroup.CollectionChanged -= onCollectionChanged)
-							.DisposeWith(disposables);
-						observableGroup.CollectionChanged += onCollectionChanged;
-					}
-					else
-					{
-						VectorChangedEventHandler<object> onVectorChanged = (o, e) => OnItemsSourceSingleCollectionChanged(o, e.ToNotifyCollectionChangedEventArgs(), insideLoop);
-						Disposable.Create(() =>
-							group.GroupItems.VectorChanged -= onVectorChanged
-						)
-							.DisposeWith(disposables);
-						group.GroupItems.VectorChanged += onVectorChanged;
-					}
+			_notifyCollectionChanged.Disposable = Disposable.Create(() =>
+				observableGroupedSource.CollectionChanged -= handler
+			);
+			observableGroupedSource.CollectionChanged += handler;
+		}
 
-					if (group is global::System.ComponentModel.INotifyPropertyChanged bindableGroup)
-					{
-						Disposable.Create(() =>
-							bindableGroup.PropertyChanged -= onPropertyChanged
-						)
-							.DisposeWith(disposables);
-						bindableGroup.PropertyChanged += onPropertyChanged;
-						OnGroupPropertyChanged(group, insideLoop);
+		private void ObserveCollectionChanged(ICollectionView iCollectionView)
+		{
+			var thatRef = (this as IWeakReferenceProvider)?.WeakReference;
 
-						void onPropertyChanged(object sender, global::System.ComponentModel.PropertyChangedEventArgs e)
+			// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
+			// remove the handler.
+			void handler(IObservableVector<object> s, IVectorChangedEventArgs e)
+			{
+				// Wrap the registered delegate to avoid creating a strong
+				// reference to this ItemsControl.The ItemsControl is holding
+				// a reference to the items source, so it won`t be collected
+				// unless unset.Note that this block is not extracted to a separate
+				// helper to avoid the cost of creating additional delegates.
+				if (thatRef.Target is ItemsControl that)
+				{
+					that.OnItemsSourceGroupsVectorChanged(s, e);
+				}
+				else
+				{
+					iCollectionView.CollectionGroups.VectorChanged -= handler;
+				}
+			}
+
+			_notifyCollectionChanged.Disposable = Disposable.Create(() =>
+				iCollectionView.CollectionGroups.VectorChanged -= handler
+			);
+			iCollectionView.CollectionGroups.VectorChanged += handler;
+		}
+
+		private void ObserveCollectionChangedGrouped(ICollectionView collectionViewGrouped)
+		{
+			var thatRef = (this as IWeakReferenceProvider)?.WeakReference;
+
+			var disposables = new CompositeDisposable();
+			int i = -1;
+			foreach (ICollectionViewGroup group in collectionViewGrouped.CollectionGroups)
+			{
+				//Hidden empty groups shouldn't be counted because they won't appear to UICollectionView
+				if (!AreEmptyGroupsHidden || group.GroupItems.Count > 0)
+				{
+					i++;
+				}
+				var insideLoop = i;
+
+				// TODO: At present we listen to changes on ICollectionViewGroup.Group, which supports 'observable of observable groups'
+				// using CollectionViewSource. The correct way to do this would be for CollectionViewGroup.GroupItems to instead implement 
+				// INotifyCollectionChanged.
+				INotifyCollectionChanged observableGroup = group.GroupItems as INotifyCollectionChanged ?? group.Group as INotifyCollectionChanged;
+				// Prefer INotifyCollectionChanged for, eg, batched item changes
+				if (observableGroup != null)
+				{
+					void onCollectionChanged(object o, NotifyCollectionChangedEventArgs e)
+					{
+						// Wrap the registered delegate to avoid creating a strong
+						// reference to this ItemsControl.The ItemsControl is holding
+						// a reference to the items source, so it won`t be collected
+						// unless unset.Note that this block is not extracted to a separate
+						// helper to avoid the cost of creating additional delegates.
+						if (thatRef.Target is ItemsControl that)
 						{
-							if (e.PropertyName == "Group")
+							that.OnItemsSourceSingleCollectionChanged(o, e, insideLoop);
+						}
+						else
+						{
+							observableGroup.CollectionChanged -= onCollectionChanged;
+						}
+					}
+
+					Disposable.Create(() => observableGroup.CollectionChanged -= onCollectionChanged)
+						.DisposeWith(disposables);
+					observableGroup.CollectionChanged += onCollectionChanged;
+				}
+				else
+				{
+					void onVectorChanged(IObservableVector<object> o, IVectorChangedEventArgs e)
+					{
+						// Wrap the registered delegate to avoid creating a strong
+						// reference to this ItemsControl.The ItemsControl is holding
+						// a reference to the items source, so it won`t be collected
+						// unless unset.
+						if (thatRef.Target is ItemsControl that)
+						{
+							that.OnItemsSourceSingleCollectionChanged(o, e.ToNotifyCollectionChangedEventArgs(), insideLoop);
+						}
+						else
+						{
+							group.GroupItems.VectorChanged -= onVectorChanged;
+						}
+					}
+
+					Disposable.Create(() =>
+						group.GroupItems.VectorChanged -= onVectorChanged
+					)
+						.DisposeWith(disposables);
+					group.GroupItems.VectorChanged += onVectorChanged;
+				}
+
+				if (group is global::System.ComponentModel.INotifyPropertyChanged bindableGroup)
+				{
+					Disposable.Create(() =>
+						bindableGroup.PropertyChanged -= onPropertyChanged
+					)
+						.DisposeWith(disposables);
+					bindableGroup.PropertyChanged += onPropertyChanged;
+					OnGroupPropertyChanged(group, insideLoop);
+
+					void onPropertyChanged(object sender, global::System.ComponentModel.PropertyChangedEventArgs e)
+					{
+						if (e.PropertyName == "Group")
+						{
+							// Wrap the registered delegate to avoid creating a strong
+							// reference to this ItemsControl.
+							if (thatRef.Target is ItemsControl that)
 							{
-								OnGroupPropertyChanged(group, insideLoop);
+								that.OnGroupPropertyChanged(group, insideLoop);
 							}
 						}
 					}
 				}
-				_notifyCollectionGroupsChanged.Disposable = disposables;
-
-				UpdateGroupCounts();
 			}
+			_notifyCollectionGroupsChanged.Disposable = disposables;
+
+			UpdateGroupCounts();
 		}
 
 		private void UpdateGroupCounts()
