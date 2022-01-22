@@ -18,6 +18,8 @@
 				<ComboBoxItem>Item #5</ComboBoxItem>
 			</ComboBox>
 			<Button x:Name="btnDelete" Click="btnDelete_Click" Content="Remove select item"/>
+			<Button x:Name="btnRemoveTwoItems" Click="btnRemoveTwoItems_Click" Content="Remove items #2 and #3"/>
+			<Button x:Name="btnRemoveItemsThreeAndTwo" Click="btnRemoveItemsThreeAndTwo_Click" Content="Remove items #3 and #2"/>
 			<TextBlock x:Name="steps" Text="....Steps...."/>
 		</StackPanel>
 	</Grid>

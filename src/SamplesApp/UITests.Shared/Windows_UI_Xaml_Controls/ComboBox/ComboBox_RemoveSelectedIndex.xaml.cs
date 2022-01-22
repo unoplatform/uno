@@ -62,5 +62,35 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 				steps.Text += "\nError: " + ex.Message;
 			}
 		}
+
+		private void btnRemoveTwoItems_Click(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				combo.Items.RemoveAt(2);
+				steps.Text += $"\nRemoved Index: 2";
+				combo.Items.RemoveAt(3);
+				steps.Text += $"\nRemoved Index: 3";
+			}
+			catch (Exception ex)
+			{
+				steps.Text += "\nError: " + ex.Message;
+			}
+		}
+
+		private void btnRemoveItemsThreeAndTwo_Click(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				combo.Items.RemoveAt(3);
+				steps.Text += $"\nRemoved Index: 3";
+				combo.Items.RemoveAt(2);
+				steps.Text += $"\nRemoved Index: 2";
+			}
+			catch (Exception ex)
+			{
+				steps.Text += "\nError: " + ex.Message;
+			}
+		}
 	}
 }
