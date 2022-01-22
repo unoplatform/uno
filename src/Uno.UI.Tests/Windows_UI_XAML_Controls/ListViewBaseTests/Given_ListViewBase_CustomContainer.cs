@@ -134,7 +134,7 @@ namespace Uno.UI.Tests.ItemsControlTests_CustomContainer
 
 			collection[0] = 44;
 
-			Assert.AreEqual(4, count);
+			Assert.AreEqual(FeatureConfiguration.FrameworkTemplate.IsPoolingEnabled ? 3 : 4, count);
 		}
 	}
 
