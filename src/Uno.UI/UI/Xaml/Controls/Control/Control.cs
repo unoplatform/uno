@@ -795,8 +795,11 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
+			// TODO Uno specific: Adding check for IsEnabledSuppressed here
+			// as we need to make sure that when a Command is executing, the control
+			// should not lose focus
 			bool shouldReevaluateFocus =
-				!IsEnabled && //!pControl->ParserOwnsParent()
+				!(IsEnabled || IsEnabledSuppressed) && //!pControl->ParserOwnsParent()
 				!AllowFocusWhenDisabled &&
 				// We just disabled this control, find if this control
 				//or one of its children had focus.

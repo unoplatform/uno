@@ -720,14 +720,19 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
+		internal bool IsEnabledSuppressed => _suppressIsEnabled;
+
 		/// <summary>
 		/// Provides the ability to disable <see cref="IsEnabled"/> value changes, e.g. in the context of ICommand CanExecute.
 		/// </summary>
 		/// <param name="suppress">If true, <see cref="IsEnabled"/> will always be false</param>
 		private protected void SuppressIsEnabled(bool suppress)
 		{
-			_suppressIsEnabled = suppress;
-			this.CoerceValue(IsEnabledProperty);
+			if (_suppressIsEnabled != suppress)
+			{
+				_suppressIsEnabled = suppress;
+				this.CoerceValue(IsEnabledProperty);
+			}
 		}
 
 		private object CoerceIsEnabled(object baseValue)
