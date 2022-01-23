@@ -36,7 +36,7 @@ jobs:
       XamarinSDKVersion: ${{ parameters.XamarinSDKVersionBuild }}
 
   - bash: |
-      $(build.sourcesdirectory)/build/ios-uitest-build.sh
+      $(build.sourcesdirectory)/build/test-scripts/ios-uitest-build.sh
 
     displayName: Build iOS App for UI Tests
 

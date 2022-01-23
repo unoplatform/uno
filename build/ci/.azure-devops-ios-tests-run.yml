@@ -71,7 +71,7 @@ jobs:
 
   ## First UI Tests run (https://github.com/unoplatform/uno/issues/6714)
   - bash: |
-      $(build.sourcesdirectory)/build/ios-uitest-run.sh
+      $(build.sourcesdirectory)/build/test-scripts/ios-uitest-run.sh
 
     displayName: Run iOS Simulator Tests
 
@@ -96,7 +96,7 @@ jobs:
 
   ## Second UI Tests run (https://github.com/unoplatform/uno/issues/6714)
   - bash: |
-      $(build.sourcesdirectory)/build/ios-uitest-run.sh
+      $(build.sourcesdirectory)/build/test-scripts/ios-uitest-run.sh
 
     displayName: Run iOS Simulator Tests (re-run)
     condition: eq(variables.UITEST_ALLOW_RERUN, 'true')
