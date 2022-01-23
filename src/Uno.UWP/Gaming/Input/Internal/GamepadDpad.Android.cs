@@ -8,7 +8,7 @@ using Windows.System;
 namespace Uno.Gaming.Input.Internal
 {
 	/// <summary>
-	/// Implementation based on <see cref="https://developer.android.com/training/game-controllers/controller-input#dpad"/>.
+	/// Implementation based on https://developer.android.com/training/game-controllers/controller-input.
 	/// </summary>
 	internal static class GamepadDpad
 	{

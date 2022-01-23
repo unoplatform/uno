@@ -90,7 +90,7 @@ namespace Windows.Gaming.Input
 					_gamepadCache.Add(id, gamepad);
 				}
 			}
-			_gamepadAdded?.Invoke(null, gamepad);
+			_gamepadAddedWrapper.Event?.Invoke(null, gamepad);
 			return 0;
 		}
 
@@ -106,7 +106,7 @@ namespace Windows.Gaming.Input
 					_gamepadCache.Add(id, gamepad);
 				}
 			}
-			_gamepadRemoved?.Invoke(null, gamepad);
+			_gamepadAddedWrapper.Event?.Invoke(null, gamepad);
 			return 0;
 		}
 

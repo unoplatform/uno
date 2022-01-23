@@ -20,7 +20,7 @@ namespace UITests.Windows_Gaming
 			this.DataContextChanged += GamepadReadingTest_DataContextChanged;
 		}
 
-		public GamepadReadingTestViewModel ViewModel { get; private set; }
+		internal GamepadReadingTestViewModel ViewModel { get; private set; }
 
 		private void GamepadReadingTest_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{
@@ -28,7 +28,7 @@ namespace UITests.Windows_Gaming
 		}
 	}
 
-	public class GamepadReadingTestViewModel : ViewModelBase
+	internal class GamepadReadingTestViewModel : ViewModelBase
 	{
 		private bool _isCheckingAutomatically = false;
 		private DispatcherTimer _checkTimer = new DispatcherTimer()
