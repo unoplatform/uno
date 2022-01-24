@@ -33,7 +33,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 
 			var clickMode = ClickMode.Release;
 
-			var dataViewModel = new ButtonEventsDataViewModel("Tapped", "On UWP, TAPPED will be raised when the pointer is both pressed and released over the button and the pointer didn't move significantly while being pressed.");
+			var dataViewModel = new ButtonEventsDataViewModel("Tapped", "On UWP, TAPPED will be raised when the pointer is both pressed and released over the button and the pointer didn't move significantly while being pressed. For touch input the touch must be released in less than a second in order for the event to be raised.");
 			var testBtn = new Windows.UI.Xaml.Controls.Button() { Content = "ON TAPPED", ClickMode = clickMode };
 			testBtn.Tapped += dataViewModel.IncrementCount;
 			testBtn.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -47,7 +47,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 			testBtn.VerticalAlignment = VerticalAlignment.Stretch;
 			_viewModels.Add(new ButtonEventsViewModel(testBtn, dataViewModel));
 
-			dataViewModel = new ButtonEventsDataViewModel("Click", "On UWP, CLICK will be raised when the pointer is both pressed and released over the button. The pointer can go anywhere while pressed, as soon it's pressed and released over the control.");
+			dataViewModel = new ButtonEventsDataViewModel("Click", "On UWP, CLICK will be raised when the pointer is both pressed and released over the button. The pointer can go anywhere while pressed, as long as it's pressed and released over the control.");
 			testBtn = new Windows.UI.Xaml.Controls.Button() { Content = "ON CLICK", ClickMode = clickMode };
 			testBtn.Click += dataViewModel.IncrementCount;
 			testBtn.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -61,21 +61,21 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 			testBtn.VerticalAlignment = VerticalAlignment.Stretch;
 			_viewModels.Add(new ButtonEventsViewModel(testBtn, dataViewModel));
 
-			dataViewModel = new ButtonEventsDataViewModel("Pointer Released", "On UWP, RELEASED is never raised from a button.");
+			dataViewModel = new ButtonEventsDataViewModel("Pointer Released", "On UWP, RELEASED is never raised from a button using a mouse. Using touch, it will be raised if a touch begins on the button, is held for at least a second, and is released without any substantial movement.");
 			testBtn = new Windows.UI.Xaml.Controls.Button() { Content = "ON POINTER RELEASED", ClickMode = clickMode };
 			testBtn.PointerReleased += dataViewModel.IncrementCount;
 			testBtn.HorizontalAlignment = HorizontalAlignment.Stretch;
 			testBtn.VerticalAlignment = VerticalAlignment.Stretch;
 			_viewModels.Add(new ButtonEventsViewModel(testBtn, dataViewModel));
 
-			dataViewModel = new ButtonEventsDataViewModel("Pointer Entered", "On UWP, ENTERED is raised when the pointer is entering the button's bounds.");
+			dataViewModel = new ButtonEventsDataViewModel("Pointer Entered", "On UWP, ENTERED is raised when the pointer is entering the button's bounds, including beginning a touch within a button.");
 			testBtn = new Windows.UI.Xaml.Controls.Button() { Content = "ON POINTER ENTERED", ClickMode = clickMode };
 			testBtn.PointerEntered += dataViewModel.IncrementCount;
 			testBtn.HorizontalAlignment = HorizontalAlignment.Stretch;
 			testBtn.VerticalAlignment = VerticalAlignment.Stretch;
 			_viewModels.Add(new ButtonEventsViewModel(testBtn, dataViewModel));
 
-			dataViewModel = new ButtonEventsDataViewModel("Pointer Exited", "On UWP, EXITED is raised when the pointer is leaving the button zone.");
+			dataViewModel = new ButtonEventsDataViewModel("Pointer Exited", "On UWP, EXITED is raised when the pointer is leaving the button's bounds, including releasing a touch within the button.");
 			testBtn = new Windows.UI.Xaml.Controls.Button() { Content = "ON POINTER EXITED", ClickMode = clickMode };
 			testBtn.PointerExited += dataViewModel.IncrementCount;
 			testBtn.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -112,6 +112,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 		private void PreviousEventCommand_ExecuteRequested(Windows.UI.Xaml.Input.XamlUICommand sender, Windows.UI.Xaml.Input.ExecuteRequestedEventArgs args)
 		{
 			_currentIndex = System.Math.Max(0, _currentIndex - 1);
+			CurrentViewModel?.DataViewModel.ResetCount();
 			CurrentViewModel = _viewModels[_currentIndex];
 			if (_currentIndex == 0)
 			{
@@ -125,6 +126,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 		private void NextEventCommand_ExecuteRequested(Windows.UI.Xaml.Input.XamlUICommand sender, Windows.UI.Xaml.Input.ExecuteRequestedEventArgs args)
 		{
 			_currentIndex = System.Math.Min(_viewModels.Count - 1, _currentIndex + 1);
+			CurrentViewModel?.DataViewModel.ResetCount();
 			CurrentViewModel = _viewModels[_currentIndex];
 			if (_currentIndex == _viewModels.Count - 1)
 			{

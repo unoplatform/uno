@@ -58,6 +58,12 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 			}
 		}
 
+		public void ResetCount()
+		{
+			_countValue = 0;
+			Count = _countValue.ToString();
+		}
+
 		public string TestTitle { get; }
 		public string ExpectedBehavior { get; }
 

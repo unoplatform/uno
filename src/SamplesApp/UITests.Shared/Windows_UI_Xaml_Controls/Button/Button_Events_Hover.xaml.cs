@@ -69,18 +69,18 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 			testBtn.PointerReleased += dataViewModel.IncrementCount;
 			_viewModels.Add(new ButtonEventsViewModel(testBtn, dataViewModel));
 
-			dataViewModel = new ButtonEventsDataViewModel("Pointer Entered", "On UWP, ENTERED is raised when the pointer is entering the button's bounds.");
+			dataViewModel = new ButtonEventsDataViewModel("Pointer Entered", "On UWP, ENTERED is raised when the pointer is entering the button's bounds, including beginning a touch within a button.");
 			testBtn = new Windows.UI.Xaml.Controls.Button() { Content = "ON POINTER ENTERED", ClickMode = clickMode };
+			testBtn.PointerEntered += dataViewModel.IncrementCount;
 			testBtn.HorizontalAlignment = HorizontalAlignment.Stretch;
 			testBtn.VerticalAlignment = VerticalAlignment.Stretch;
-			testBtn.PointerEntered += dataViewModel.IncrementCount;
 			_viewModels.Add(new ButtonEventsViewModel(testBtn, dataViewModel));
 
-			dataViewModel = new ButtonEventsDataViewModel("Pointer Exited", "On UWP, EXITED is raised when the pointer is leaving the button's bounds.");
+			dataViewModel = new ButtonEventsDataViewModel("Pointer Exited", "On UWP, EXITED is raised when the pointer is leaving the button's bounds, including releasing a touch within the button.");
 			testBtn = new Windows.UI.Xaml.Controls.Button() { Content = "ON POINTER EXITED", ClickMode = clickMode };
+			testBtn.PointerExited += dataViewModel.IncrementCount;
 			testBtn.HorizontalAlignment = HorizontalAlignment.Stretch;
 			testBtn.VerticalAlignment = VerticalAlignment.Stretch;
-			testBtn.PointerExited += dataViewModel.IncrementCount;
 			_viewModels.Add(new ButtonEventsViewModel(testBtn, dataViewModel));
 
 			var timer = new DispatcherTimer() { Interval = new System.TimeSpan(0, 0, 2) };
@@ -113,6 +113,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 		private void PreviousEventCommand_ExecuteRequested(Windows.UI.Xaml.Input.XamlUICommand sender, Windows.UI.Xaml.Input.ExecuteRequestedEventArgs args)
 		{
 			_currentIndex = System.Math.Max(0, _currentIndex - 1);
+			CurrentViewModel?.DataViewModel.ResetCount();
 			CurrentViewModel = _viewModels[_currentIndex];
 			if (_currentIndex == 0)
 			{
@@ -126,6 +127,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 		private void NextEventCommand_ExecuteRequested(Windows.UI.Xaml.Input.XamlUICommand sender, Windows.UI.Xaml.Input.ExecuteRequestedEventArgs args)
 		{
 			_currentIndex = System.Math.Min(_viewModels.Count - 1, _currentIndex + 1);
+			CurrentViewModel?.DataViewModel.ResetCount();
 			CurrentViewModel = _viewModels[_currentIndex];
 			if (_currentIndex == _viewModels.Count - 1)
 			{

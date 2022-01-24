@@ -52,8 +52,8 @@
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" MinHeight="40" />
 				<RowDefinition Height="Auto" MinHeight="40" />
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" MinHeight="60" />
+				<RowDefinition Height="Auto" MinHeight="60" />
 				<RowDefinition Height="*" />
 			</Grid.RowDefinitions>
 
@@ -62,11 +62,11 @@
 					   Grid.Column="2">Count</TextBlock>
 
 			<ContentControl Content="{x:Bind CurrentViewModel.TestBtn}"
-							MinWidth="100"
-							MinHeight="50"
+							MinWidth="180"
+							MinHeight="80"
 							VerticalContentAlignment="Stretch"
 							HorizontalContentAlignment="Stretch"
-							Margin="4"
+							Margin="4,0"
 							Grid.Row="1"
 							Grid.Column="1" />
 			<TextBlock Grid.Row="1"
@@ -92,8 +92,8 @@
 			<Border Background="BlueViolet"
 					x:Name="hitInvisibleZone"
 					Opacity="0.5"
-					Width="15"
-					Margin="20,0,0,0"
+					Width="60"
+					Margin="30,0,4,0"
 					HorizontalAlignment="Left"
 					IsHitTestVisible="False"
 					Grid.Column="1"
@@ -103,8 +103,8 @@
 			<Border Background="Gold"
 					x:Name="hitVisibleZone"
 					Opacity="0.5"
-					Width="15"
-					Margin="35,0,0,0"
+					Width="60"
+					Margin="60,0,4,0"
 					HorizontalAlignment="Left"
 					IsHitTestVisible="True"
 					Grid.Column="1"
@@ -113,24 +113,30 @@
 
 			<Border Background="Gold"
 					Opacity="0.5"
-					Margin="35,0,0,0"
+					Margin="60,0,4,0"
 					HorizontalAlignment="Stretch"
 					Grid.Column="1"
 					Grid.Row="2" />
 
 			<Border Background="BlueViolet"
 					Opacity="0.5"
-					Margin="20,0,0,0"
+					Margin="30,0,4,0"
 					HorizontalAlignment="Stretch"
 					Grid.Column="1"
 					Grid.Row="3" />
 
 			<TextBlock Grid.Row="2"
+					   VerticalAlignment="Center"
+					   TextWrapping="WrapWholeWords"
+					   Margin="4,0,0,0"
 					   Grid.Column="2"
 					   Grid.ColumnSpan="2">
 				Hit test visible (pointer doesn't pass through)
 			</TextBlock>
 			<TextBlock Grid.Row="3"
+					   VerticalAlignment="Center"
+					   TextWrapping="WrapWholeWords"
+					   Margin="4,0,0,0"
 					   Grid.Column="2"
 					   Grid.ColumnSpan="2">
 				Hit test NOT visible (pointer pass through)
