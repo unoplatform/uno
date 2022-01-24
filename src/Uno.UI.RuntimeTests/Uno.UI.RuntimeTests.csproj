@@ -111,6 +111,12 @@
 		<Page Update="Tests\Windows_UI_Xaml\Controls\xLoad_xBind.xaml">
 			<SubType>Designer</SubType>
 		</Page>
+		<Page Update="Tests\Windows_UI_Xaml_Input\TestPages\TwoButtonSecondPage.xaml">
+		  <SubType>Designer</SubType>
+		</Page>
+		<Page Update="Tests\Windows_UI_Xaml_Input\TestPages\TwoButtonFirstPage.xaml">
+		  <SubType>Designer</SubType>
+		</Page>
 	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
