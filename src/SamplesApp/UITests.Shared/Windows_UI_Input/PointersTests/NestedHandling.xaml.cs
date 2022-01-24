@@ -57,53 +57,53 @@ namespace UITests.Windows_UI_Input.PointersTests
 			_container.PointerReleased += (snd, e) => _result.Text += $" | Released {(nestedMoveCount == containerMoveCount ? "SUCCESS" : "FAIL")}";
 
 
-			_container.AddHandler(
+			_sample2_container.AddHandler(
 				PointerEnteredEvent,
 				new PointerEventHandler((snd, e) =>
 				{
-					if (e.OriginalSource == _nested
-						|| e.OriginalSource == _intermediate2
-						|| e.OriginalSource == _intermediate)
+					if (e.OriginalSource == _sample2_nested
+						|| e.OriginalSource == _sample2_intermediate2
+						|| e.OriginalSource == _sample2_intermediate)
 					{
 						_enterResult.Text = "FAILED (container)";
 					}
 				}),
 				handledEventsToo: true);
-			_intermediate.AddHandler(
+			_sample2_intermediate.AddHandler(
 				PointerEnteredEvent,
 				new PointerEventHandler((snd, e) => _enterResult.Text += "SUCCESS"),
 				handledEventsToo: true);
-			_intermediate2.AddHandler(
+			_sample2_intermediate2.AddHandler(
 				PointerExitedEvent,
 				new PointerEventHandler((snd, e) => _exitResult.Text = "FAILED (intermediate 2)"),
 				handledEventsToo: false);
-			_nested.PointerEntered += (snd, e) =>
+			_sample2_nested.PointerEntered += (snd, e) =>
 			{
 				e.Handled = true;
 				_enterResult.Text = "";
 			};
 
-			_container.AddHandler(
+			_sample2_container.AddHandler(
 				PointerExitedEvent,
 				new PointerEventHandler((snd, e) =>
 				{
-					if (e.OriginalSource == _nested
-						|| e.OriginalSource == _intermediate2
-						|| e.OriginalSource == _intermediate)
+					if (e.OriginalSource == _sample2_nested
+						|| e.OriginalSource == _sample2_intermediate2
+						|| e.OriginalSource == _sample2_intermediate)
 					{
 						_exitResult.Text = "FAILED (container)";
 					}
 				}),
 				handledEventsToo: true);
-			_intermediate.AddHandler(
+			_sample2_intermediate.AddHandler(
 				PointerExitedEvent,
 				new PointerEventHandler((snd, e) => _exitResult.Text += "SUCCESS"),
 				handledEventsToo: true);
-			_intermediate2.AddHandler(
+			_sample2_intermediate2.AddHandler(
 				PointerExitedEvent,
 				new PointerEventHandler((snd, e) => _exitResult.Text = "FAILED (intermediate 2)"),
 				handledEventsToo: false);
-			_nested.PointerExited += (snd, e) =>
+			_sample2_nested.PointerExited += (snd, e) =>
 			{
 				e.Handled = true;
 				_exitResult.Text = "";

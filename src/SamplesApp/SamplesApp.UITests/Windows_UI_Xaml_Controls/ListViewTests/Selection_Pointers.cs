@@ -72,16 +72,23 @@ public partial class ListViewTests_Tests : SampleControlUITestBase
 		var itemTapped = App.Marked("_itemTapped").GetDependencyPropertyValue<string>("Text");
 		var itemClicked = App.Marked("_itemClicked").GetDependencyPropertyValue<string>("Text");
 
-		pageEntered.Should().Be("D");
-		itemEntered.Should().Be("D");
-		//pageExited.Should().Be("D");
-		itemExited.Should().Be("D");
-		pagePressed.Should().Be("-");
-		itemPressed.Should().Be("D");
-		pageReleased.Should().Be("-");
-		itemReleased.Should().Be("D");
-		pageTapped.Should().Be("D");
-		itemTapped.Should().Be("D");
-		itemClicked.Should().Be(clicked ? "D" : "-");
+		pageEntered.Should().Be("D", "entered page");
+		itemEntered.Should().Be("D", "entered item");
+#if !__SKIA__
+		if (Uno.UITests.Helpers.AppInitializer.GetLocalPlatform() != Platform.Browser) // Disabled on Browser as we have a mouse, we don't have exit
+#endif
+		{
+#if !__SKIA__ // DataContext issue
+			pageExited.Should().Be("D", "exited page");
+#endif
+			itemExited.Should().Be("D", "exited item");
+		}
+		pagePressed.Should().Be("-", "item should have handled pressed event");
+		itemPressed.Should().Be("D", "item pressed");
+		pageReleased.Should().Be("-", "item should have handled released event");
+		itemReleased.Should().Be("D", "item released");
+		pageTapped.Should().Be("D", "page has been tapped");
+		itemTapped.Should().Be("D", "item has been tapped");
+		itemClicked.Should().Be(clicked ? "D" : "-", clicked ? "item has been clicked" : "item click is disabled.");
 	}
 }

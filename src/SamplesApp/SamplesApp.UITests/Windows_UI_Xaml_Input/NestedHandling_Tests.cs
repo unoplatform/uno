@@ -32,13 +32,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
+#if !__SKIA__
+		[ActivePlatforms(Platform.Browser)] // Not supported on iOS and Android where dispatch is native and has "implicit capture".
+#endif
 		[InjectedPointer(PointerDeviceType.Touch)]
 		public async Task When_Nested_Then_EnterAndExitedDoesNotBubble()
 		{
 			await RunAsync(_sample);
 
-			var container = App.WaitForElement("_container").Single().Rect;
-			var nested = App.WaitForElement("_nested").Single().Rect;
+			var container = App.WaitForElement("_sample2_container").Single().Rect;
+			var nested = App.WaitForElement("_sample2_nested").Single().Rect;
 
 			App.DragCoordinates(container.X + 10, container.CenterY, container.Right - 10, nested.CenterY);
 
