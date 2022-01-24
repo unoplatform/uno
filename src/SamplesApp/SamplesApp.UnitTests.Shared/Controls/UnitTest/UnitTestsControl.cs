@@ -648,20 +648,30 @@ namespace Uno.UI.Samples.Tests
 					.GetCustomAttributes<ExpectedExceptionAttribute>()
 					.SingleOrDefault();
 				var dataRows = testMethod
-					.GetCustomAttributes<DataRowAttribute>()
-					.ToList();
+					.GetCustomAttributes<DataRowAttribute>();
+				var dynamicData = testMethod
+					.GetCustomAttribute<DynamicDataAttribute>();
+				var parameterList = new List<object[]>();
 				if (dataRows.Any())
+				{				
+					parameterList.AddRange(dataRows.Select(row => row.Data));
+				}
+				if (dynamicData is { })
 				{
-					foreach (var row in dataRows)
+					parameterList.AddRange(dynamicData.GetData(testMethod));
+				}
+
+				if (parameterList.Any())
+				{
+					foreach (var row in parameterList)
 					{
 						if (ct.IsCancellationRequested)
 						{
 							_ = ReportMessage("Stopped by user.", false);
 							return;
 						}
-
-						var d = row.Data;
-						await InvokeTestMethod(d);
+						
+						await InvokeTestMethod(row);
 					}
 				}
 				else
