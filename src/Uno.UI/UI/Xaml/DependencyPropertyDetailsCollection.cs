@@ -80,7 +80,6 @@ namespace Windows.UI.Xaml
 
 					// Entries are pre-sorted by the DependencyProperty.GetPropertiesForType method
 					AssignEntries(entries, entriesLength);
-
 				}
 				else
 				{
