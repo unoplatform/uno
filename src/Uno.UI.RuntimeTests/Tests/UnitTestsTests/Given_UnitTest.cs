@@ -41,7 +41,7 @@ namespace Uno.UI.RuntimeTests.Tests.UnitTestsTests
 	}
 
 	[TestClass]
-	class Give_UnitTest_DynamicData_From_Method
+	class Give_UnitTest_DynamicData_From_Method : IDisposable
 	{
 		static int TestSucces_Count = 0;
 
@@ -61,15 +61,12 @@ namespace Uno.UI.RuntimeTests.Tests.UnitTestsTests
 			yield return new object[] { 14, 1, 15 };
 		}
 		
-		[TestCleanup]
-		public void TestCleanup()
-		{
+		public void Dispose() =>
 			Assert.Equals(TestSucces_Count, 3);
-		}
 	}
 
 	[TestClass]
-	class Give_UnitTest_DynamicData_From_Property
+	class Give_UnitTest_DynamicData_From_Property : IDisposable
 	{
 		static int TestSucces_Count = 0;
 
@@ -92,10 +89,7 @@ namespace Uno.UI.RuntimeTests.Tests.UnitTestsTests
 			}
 		}
 
-		[TestCleanup]
-		public void TestCleanup()
-		{
+		public void Dispose() =>
 			Assert.Equals(TestSucces_Count, 3);
-		}
 	}
 }
