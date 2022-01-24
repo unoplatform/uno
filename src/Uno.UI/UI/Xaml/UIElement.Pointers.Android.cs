@@ -124,14 +124,26 @@ namespace Windows.UI.Xaml
 
 				case MotionEventActions.Down when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
 				case MotionEventActions.PointerDown when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
-					return OnNativePointerEnter(args) | OnNativePointerDown(args);
+					// We don't have any enter / exit on Android for touches, so we explicitly generate one on down / up.
+					// That event args is requested to bubble in managed code only (args.CanBubbleNatively = false),
+					// so we follow the same sequence as UWP (the whole tree gets entered before the pressed),
+					// and we make sure that the event will bubble through the whole tree, no matter if the Pressed event is handle or not.
+					// Note: Parents will also try to raise the "Enter" but they will be silent since the pointer is already considered as pressed.
+					args.CanBubbleNatively = false;
+					OnNativePointerEnter(args);
+					return OnNativePointerDown(args.Reset());
 				case PointerRoutedEventArgs.StylusWithBarrelDown:
 				case MotionEventActions.Down:
 				case MotionEventActions.PointerDown:
 					return OnNativePointerDown(args);
 				case MotionEventActions.Up when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
 				case MotionEventActions.PointerUp when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
-					return OnNativePointerUp(args) | OnNativePointerExited(args);
+					var handled = OnNativePointerUp(args);
+					// Like for the Down, we manually generate an Exited, but we DON'T REQUEST IT to bubble in managed as it would mean
+					// that parent elements would get the Exit **before** the Release!
+					// Instead we raise it per layer, which means that we won't follow the UWP behavior where the whole tree gets the Released and then the Exited.
+					OnNativePointerExited(args.Reset());
+					return handled;
 				case PointerRoutedEventArgs.StylusWithBarrelUp:
 				case MotionEventActions.Up:
 				case MotionEventActions.PointerUp:
@@ -141,9 +153,9 @@ namespace Windows.UI.Xaml
 				// So on each POINTER_MOVE we make sure to update the pressed state if it does not match.
 				// Note: We can also have HOVER_MOVE with barrel button pressed, so we make sure to "PointerDown" only for Mouse.
 				case MotionEventActions.HoverMove when args.Pointer.PointerDeviceType == PointerDeviceType.Mouse && args.HasPressedButton && !IsPressed(args.Pointer):
-					return OnNativePointerDown(args) | OnNativePointerMoveWithOverCheck(args, isInView);
+					return OnNativePointerDown(args) | OnNativePointerMoveWithOverCheck(args.Reset(), isInView);
 				case MotionEventActions.HoverMove when !args.HasPressedButton && IsPressed(args.Pointer):
-					return OnNativePointerUp(args) | OnNativePointerMoveWithOverCheck(args, isInView);
+					return OnNativePointerUp(args) | OnNativePointerMoveWithOverCheck(args.Reset(), isInView);
 
 				case PointerRoutedEventArgs.StylusWithBarrelMove:
 				case MotionEventActions.Move:
