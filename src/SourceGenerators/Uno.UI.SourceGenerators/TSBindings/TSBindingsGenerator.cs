@@ -41,6 +41,8 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 				if (!string.IsNullOrEmpty(_bindingsPaths))
 				{
+					Directory.CreateDirectory(_bindingsPaths);
+
 					_intPtrSymbol = context.Compilation.GetTypeByMetadataName("System.IntPtr");
 					_structLayoutSymbol = context.Compilation.GetTypeByMetadataName(typeof(StructLayoutAttribute).FullName);
 					_interopMessageSymbol = context.Compilation.GetTypeByMetadataName("Uno.Foundation.Interop.TSInteropMessageAttribute");

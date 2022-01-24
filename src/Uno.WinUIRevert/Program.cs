@@ -16,8 +16,9 @@ namespace UnoWinUIRevert
 			DeleteFolder(Path.Combine(basePath, "src", "Uno.UI", "Generated"));
 			DeleteFolder(Path.Combine(basePath, "src", "Uno.UI.Composition", "Generated"));
 			DeleteFolder(Path.Combine(basePath, "src", "Uno.UWP", "Generated"));
+			DeleteFolder(Path.Combine(basePath, "src", "Uno.UI", "tsBindings")); // Generated
 			DeleteFolder(Path.Combine(basePath, "src", "Uno.UI", "UI", "Xaml", "Controls", "ProgressBar")); // ProgressBar in WinUI is a replacement of the UWP's version
-
+			
 			var colorsFilepath = Path.Combine(basePath, @"src", "Uno.UWP", "UI", "Colors.cs");
 			if (File.Exists(colorsFilepath))
 			{
