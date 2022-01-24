@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = "KeyFrames")]
 	public partial class DoubleAnimationUsingKeyFrames : Timeline, ITimeline
-    {
+	{
 		private readonly Stopwatch _activeDuration = new Stopwatch();
 		private int _replayCount = 1;
 		private double? _startingValue = null;
@@ -77,7 +77,6 @@ namespace Windows.UI.Xaml.Media.Animation
 						return; // nothing to do
 					}
 					_wasBeginScheduled = false;
-                    _subscriptions.Clear(); //Dispose all and start a new
 
 					_activeDuration.Restart();
 					_replayCount = 1;
@@ -157,7 +156,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		void ITimeline.SkipToFill()
 		{
-			if (_currentAnimator != null && _currentAnimator.IsRunning)
+			if (_currentAnimator is { IsRunning: true })
 			{
 				_currentAnimator.Cancel();//Stop the animator if it is running
 				_startingValue = null;
@@ -170,7 +169,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		void ITimeline.Deactivate()
 		{
-			if (_currentAnimator != null && _currentAnimator.IsRunning)
+			if (_currentAnimator is { IsRunning: true })
 			{
 				_currentAnimator.Cancel();//Stop the animator if it is running
 				_startingValue = null;
@@ -191,7 +190,8 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// </summary>
 		private void Play()
 		{
-			InitializeAnimators();//Create the animator
+			_subscriptions.Clear(); // Dispose all current animators
+			InitializeAnimators(); // Create the animator
 
 			if (!EnableDependentAnimation && this.GetIsDependantAnimation())
 			{ // Don't start the animator its a dependent animation
@@ -267,7 +267,7 @@ namespace Windows.UI.Xaml.Media.Animation
 					OnAnimatorEnd(i);
 				};
 				++index;
-            }
+			}
 		}
 
 		private void OnAnimatorEnd(int i)
@@ -288,7 +288,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			else
 			{
 				_currentAnimator = _animators[nextAnimatorIndex];
-                _currentAnimator.Start();
+				_currentAnimator.Start();
 			}
 		}
 
@@ -315,6 +315,8 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// </summary>
 		private void OnEnd()
 		{
+			_subscriptions.Clear(); // Dispose all current animators
+
 			// If the animation was GPU based, remove the animated value
 			if (NeedsRepeat(_activeDuration, _replayCount))
 			{

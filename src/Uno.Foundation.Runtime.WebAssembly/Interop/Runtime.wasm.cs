@@ -302,8 +302,13 @@ namespace Uno.Foundation
 					{
 						if (!mappedParameters.TryGetValue(jsObject, out var parameterReference))
 						{
+							if (!jsObject.Handle.IsAlive)
+							{
+								throw new InvalidOperationException("JSObjectHandle is invalid.");
+							}
+
 							mappedParameters[jsObject] = parameterReference = $"__parameter_{i}";
-							commandBuilder.AppendLine($"var {parameterReference} = {jsObject.Handle.GetNativeInstance()};");
+							commandBuilder.AppendLine($"const {parameterReference} = {jsObject.Handle.GetNativeInstance()};");
 						}
 
 						parameters[i] = parameterReference;

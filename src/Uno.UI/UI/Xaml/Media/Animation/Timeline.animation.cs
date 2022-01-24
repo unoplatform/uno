@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			public void SkipToFill()
 			{
-				if (_animator != null && _animator.IsRunning)
+				if (_animator is { IsRunning: true })
 				{
 					_animator.Cancel();//Stop the animator if it is running
 					_startingValue = null;
@@ -257,7 +257,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			{
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
-					this.Log().Debug("DoubleAnimation has ended.");
+					this.Log().Debug("TimeLine has ended.");
 				}
 
 				OnEnd();
@@ -275,7 +275,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			/// </summary>
 			private void Play()
 			{
-				InitializeAnimator();//Create the animator
+				_animator?.Dispose();
+				InitializeAnimator(); // Create the animator
 
 				if (!EnableDependentAnimation && _owner.GetIsDependantAnimation())
 				{ // Don't start the animator its a dependent animation
@@ -330,6 +331,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			/// </summary>
 			private void OnEnd()
 			{
+				_animator?.Dispose();
+
 				// If the animation was GPU based, remove the animated value
 				if (NeedsRepeat(_activeDuration, _replayCount))
 				{
