@@ -95,22 +95,24 @@ namespace Uno.UI.SourceGenerators.TSBindings
 							sb.AppendLineInvariant($"public {field.Name} : {GetTSFieldType(field.Type)};");
 						}
 
-						if (message.attr.GetNamedValue<CodeGeneration>(nameof(TSInteropMessageAttribute.UnMarshaller)) switch
-							{
-								CodeGeneration.Enabled => true,
-								CodeGeneration.Disabled => false,
-								_ => message.type.Name.EndsWith("Params") || message.type.Name.EndsWith("EventArgs"),
-							})
+						var needsUnMarshaller = message.attr.GetNamedValue<CodeGeneration>(nameof(TSInteropMessageAttribute.UnMarshaller)) switch
+						{
+							CodeGeneration.Enabled => true,
+							CodeGeneration.Disabled => false,
+							_ => message.type.Name.EndsWith("Params") || message.type.Name.EndsWith("EventArgs"),
+						};
+						if (needsUnMarshaller)
 						{
 							GenerateUnmarshaler(message.type, sb, packValue);
 						}
 
-						if (message.attr.GetNamedValue<CodeGeneration>(nameof(TSInteropMessageAttribute.Marshaller)) switch
-							{
-								CodeGeneration.Enabled => true,
-								CodeGeneration.Disabled => false,
-								_ => message.type.Name.EndsWith("Return") || message.type.Name.EndsWith("EventArgs"),
-							})
+						var needsMarshaller = message.attr.GetNamedValue<CodeGeneration>(nameof(TSInteropMessageAttribute.Marshaller)) switch
+						{
+							CodeGeneration.Enabled => true,
+							CodeGeneration.Disabled => false,
+							_ => message.type.Name.EndsWith("Return") || message.type.Name.EndsWith("EventArgs"),
+						};
+						if (needsMarshaller)
 						{
 							GenerateMarshaler(message.type, sb, packValue);
 						}
