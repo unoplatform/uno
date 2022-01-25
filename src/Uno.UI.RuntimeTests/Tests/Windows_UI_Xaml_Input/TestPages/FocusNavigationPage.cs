@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input.TestPages
 {
-	public class FocusNavigationPage : Page
+	public partial class FocusNavigationPage : Page
 	{
 		private TaskCompletionSource<object> _loadingTaskCompletionSource =
 			new TaskCompletionSource<object>();

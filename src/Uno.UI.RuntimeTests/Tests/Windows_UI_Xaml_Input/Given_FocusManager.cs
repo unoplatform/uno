@@ -184,7 +184,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-		public async Task When_Page_Navigates_Focus_With_Outer_Wrapper()
+		[Ignore("This test only passes on Windows - see #7900")]
+		public async Task When_Page_Navigates_Focus_With_Outer_Before()
 		{
 			var stackPanel = new StackPanel();
 			var frame = new Frame();
@@ -217,6 +218,75 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		public async Task When_Page_Navigates_Focus_Outside_Frame()
+		{
+			var stackPanel = new StackPanel();
+			var frame = new Frame();
+			var outerButton = new ToggleButton() { Name = "OuterButton" };
+			stackPanel.Children.Add(outerButton);
+			stackPanel.Children.Add(frame);
+			TestServices.WindowHelper.WindowContent = stackPanel;
+			frame.Navigate(typeof(TwoButtonFirstPage));
+			await ((TwoButtonFirstPage)frame.Content).FinishedLoadingTask;
+			outerButton.Focus(FocusState.Programmatic);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Focus should stay on the outer button
+			var expectedSequence = new string[]
+			{
+			};
+
+			Func<Task> navigationAction = async () =>
+			{
+				frame.Navigate(typeof(TwoButtonSecondPage));
+
+				await ((TwoButtonSecondPage)frame.Content).FinishedLoadingTask;
+			};
+
+			await AssertNavigationFocusSequence(expectedSequence, navigationAction);
+
+			TestServices.WindowHelper.WindowContent = null;
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		[Ignore("This test only passes on Windows - see #7900")]
+		public async Task When_Page_Navigates_Focus_With_Outer_After()
+		{
+			var stackPanel = new StackPanel();
+			var frame = new Frame();
+			stackPanel.Children.Add(new ToggleButton() { Name = "OuterButton" });
+			stackPanel.Children.Add(frame);
+			stackPanel.Children.Add(new ToggleButton() { Name = "OuterButtonAfter" });
+			TestServices.WindowHelper.WindowContent = stackPanel;
+			frame.Navigate(typeof(TwoButtonFirstPage));
+			await ((TwoButtonFirstPage)frame.Content).FinishedLoadingTask;
+			((TwoButtonFirstPage)frame.Content).FocusFirst();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var expectedSequence = new string[]
+			{
+				"OuterButtonAfter"
+			};
+
+			Func<Task> navigationAction = async () =>
+			{
+				frame.Navigate(typeof(TwoButtonSecondPage));
+
+				await ((TwoButtonSecondPage)frame.Content).FinishedLoadingTask;
+			};
+
+			await AssertNavigationFocusSequence(expectedSequence, navigationAction);
+
+			TestServices.WindowHelper.WindowContent = null;
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
 		public async Task When_Page_Navigate_Back_Without_Outer_Wrapper()
 		{
 			var frame = new Frame();
@@ -224,6 +294,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			frame.Navigate(typeof(TwoButtonFirstPage));
 			frame.Navigate(typeof(TwoButtonSecondPage));
 			await ((TwoButtonSecondPage)frame.Content).FinishedLoadingTask;
+			((TwoButtonSecondPage)frame.Content).FocusFirst();
 
 			await TestServices.WindowHelper.WaitForIdle();
 
@@ -249,7 +320,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-		public async Task When_Page_Navigate_Back_With_Outer_Wrapper()
+		[Ignore("This test only passes on Windows - see #7900")]
+		public async Task When_Page_Navigate_Back_With_Outer_Before()
 		{
 			var stackPanel = new StackPanel();
 			var frame = new Frame();
@@ -265,6 +337,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			var expectedSequence = new string[]
 			{
 				"OuterButton"
+			};
+
+			Func<Task> navigationAction = async () =>
+			{
+				frame.GoBack();
+				await ((TwoButtonFirstPage)frame.Content).FinishedLoadingTask;
+
+				await TestServices.WindowHelper.WaitForIdle();
+			};
+
+			await AssertNavigationFocusSequence(expectedSequence, navigationAction);
+
+			TestServices.WindowHelper.WindowContent = null;
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		[Ignore("This test only passes on Windows - see #7900")]
+		public async Task When_Page_Navigate_Back_With_Outer_After()
+		{
+			var stackPanel = new StackPanel();
+			var frame = new Frame();
+			stackPanel.Children.Add(new ToggleButton() { Name = "OuterButton" });
+			stackPanel.Children.Add(frame);
+			stackPanel.Children.Add(new ToggleButton() { Name = "OuterButtonAfter" });
+			TestServices.WindowHelper.WindowContent = stackPanel;
+			frame.Navigate(typeof(TwoButtonFirstPage));
+			frame.Navigate(typeof(TwoButtonSecondPage));
+			((TwoButtonSecondPage)frame.Content).FocusFirst();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var expectedSequence = new string[]
+			{
+				"OuterButtonAfter"
 			};
 
 			Func<Task> navigationAction = async () =>

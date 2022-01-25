@@ -12,6 +12,8 @@ using Uno;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
 using System.Runtime.CompilerServices;
+using Windows.UI.Xaml.Input;
+using Uno.UI.Xaml.Core;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -355,6 +357,8 @@ namespace Windows.UI.Xaml.Controls
 				CurrentEntry.Instance = page;
 			}
 
+			UnfocusCurrentPage();
+
 			Content = CurrentEntry.Instance;
 
 			if (IsNavigationStackEnabled)
@@ -398,6 +402,8 @@ namespace Windows.UI.Xaml.Controls
 			CurrentEntry.Instance.OnNavigatedTo(navigationEvent);
 
 			Navigated?.Invoke(this, navigationEvent);
+
+			FocusCurrentPage();
 
 			return true;
 		}
@@ -455,6 +461,38 @@ namespace Windows.UI.Xaml.Controls
 						entry.SourcePageType,
 						null
 					));
+		}
+
+		private void UnfocusCurrentPage()
+		{
+			var focusManager = VisualTree.GetFocusManagerForElement(this);
+			if (focusManager?.FocusedElement is not { } focusedElement)
+			{
+				return;
+			}
+
+			var isWithinCurrentPage = focusedElement.GetParents().Any(p => p == this);
+			if (isWithinCurrentPage)
+			{
+				focusManager.ClearFocus();
+			}
+		}
+
+		private void FocusCurrentPage()
+		{
+			var focusManager = VisualTree.GetFocusManagerForElement(this);
+			if (focusManager is null)
+			{
+				return;
+			}
+
+			var focused = focusManager.FocusedElement;
+
+			if (focused is null && Content is Page page)
+			{
+				// Try to set focus on the page
+				page.TryInitialFocus();
+			}
 		}
 	}
 }

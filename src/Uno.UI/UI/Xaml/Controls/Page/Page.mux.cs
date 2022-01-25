@@ -22,6 +22,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnLoaded();
 
+			TryInitialFocus();
+		}
+
+		public void TryInitialFocus()
+		{
 			var spCurrentFocusedElement = this.GetFocusedElement();
 
 			var focusManager = VisualTree.GetFocusManagerForElement(this);
