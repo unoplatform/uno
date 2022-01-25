@@ -397,17 +397,6 @@ declare namespace Uno.UI {
             * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
             */
         registerEventOnViewNative(pParams: number): boolean;
-        registerPointerEventsOnView(pParams: number): void;
-        static onPointerEventReceived(evt: PointerEvent): void;
-        static dispatchPointerEvent(element: HTMLElement | SVGElement, evt: PointerEvent): void;
-        static onPointerEnterReceived(evt: PointerEvent): void;
-        static onPointerLeaveReceived(evt: PointerEvent): void;
-        private processPendingLeaveEvent;
-        private _isPendingLeaveProcessingEnabled;
-        /**
-         * Ensure that any pending leave event are going to be processed (cf @see processPendingLeaveEvent )
-         */
-        private ensurePendingLeaveEventProcessing;
         /**
             * Add an event handler to a html element.
             *
@@ -415,13 +404,6 @@ declare namespace Uno.UI {
             * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
             */
         private registerEventOnViewInternal;
-        /**
-         * pointer event extractor to be used with registerEventOnView
-         * @param evt
-         */
-        private static pointerEventExtractor;
-        private static _wheelLineSize;
-        private static get wheelLineSize();
         /**
          * keyboard event extractor to be used with registerEventOnView
          * @param evt
@@ -1200,6 +1182,48 @@ declare namespace Windows.UI.Xaml {
         Dark = "Dark"
     }
 }
+declare namespace Windows.UI.Xaml {
+    enum NativePointerEvent {
+        pointerenter = 1,
+        pointerleave = 2,
+        pointerdown = 4,
+        pointerup = 8,
+        pointercancel = 16,
+        pointermove = 32,
+        wheel = 64
+    }
+    class UIElement_Pointers {
+        private static _dispatchPointerEventMethod;
+        private static _dispatchPointerEventArgs;
+        private static _dispatchPointerEventResult;
+        private static _isPendingLeaveProcessingEnabled;
+        static setPointerEventArgs(pArgs: number): void;
+        static setPointerEventResult(pArgs: number): void;
+        static subscribePointerEvents(pParams: number): void;
+        static unSubscribePointerEvents(pParams: number): void;
+        private static onPointerEventReceived;
+        private static onPointerEnterReceived;
+        private static onPointerLeaveReceived;
+        private static processPendingLeaveEvent;
+        /**
+         * Ensure that any pending leave event are going to be processed (cf @see processPendingLeaveEvent )
+         */
+        private static ensurePendingLeaveEventProcessing;
+        private static dispatchPointerEvent;
+        private static _wheelLineSize;
+        private static get wheelLineSize();
+        /**
+         * pointer event extractor to be used with registerEventOnView
+         * @param evt
+         */
+        private static toNativePointerEventArgs;
+        private static toNativeEvent;
+    }
+}
+declare namespace Windows.UI.Xaml {
+    class UIElement extends Windows.UI.Xaml.UIElement_Pointers {
+    }
+}
 declare namespace Windows.UI.Xaml.Media.Animation {
     class RenderingLoopAnimator {
         private managedHandle;
@@ -1220,92 +1244,6 @@ declare namespace Windows.UI.Xaml.Media.Animation {
         private _frameRequestId?;
         private _isEnabled;
     }
-}
-declare class ApplicationDataContainer_ClearParams {
-    Locality: string;
-    static unmarshal(pData: number): ApplicationDataContainer_ClearParams;
-}
-declare class ApplicationDataContainer_ContainsKeyParams {
-    Key: string;
-    Value: string;
-    Locality: string;
-    static unmarshal(pData: number): ApplicationDataContainer_ContainsKeyParams;
-}
-declare class ApplicationDataContainer_ContainsKeyReturn {
-    ContainsKey: boolean;
-    marshal(pData: number): void;
-}
-declare class ApplicationDataContainer_GetCountParams {
-    Locality: string;
-    static unmarshal(pData: number): ApplicationDataContainer_GetCountParams;
-}
-declare class ApplicationDataContainer_GetCountReturn {
-    Count: number;
-    marshal(pData: number): void;
-}
-declare class ApplicationDataContainer_GetKeyByIndexParams {
-    Locality: string;
-    Index: number;
-    static unmarshal(pData: number): ApplicationDataContainer_GetKeyByIndexParams;
-}
-declare class ApplicationDataContainer_GetKeyByIndexReturn {
-    Value: string;
-    marshal(pData: number): void;
-}
-declare class ApplicationDataContainer_GetValueByIndexParams {
-    Locality: string;
-    Index: number;
-    static unmarshal(pData: number): ApplicationDataContainer_GetValueByIndexParams;
-}
-declare class ApplicationDataContainer_GetValueByIndexReturn {
-    Value: string;
-    marshal(pData: number): void;
-}
-declare class ApplicationDataContainer_RemoveParams {
-    Locality: string;
-    Key: string;
-    static unmarshal(pData: number): ApplicationDataContainer_RemoveParams;
-}
-declare class ApplicationDataContainer_RemoveReturn {
-    Removed: boolean;
-    marshal(pData: number): void;
-}
-declare class ApplicationDataContainer_SetValueParams {
-    Key: string;
-    Value: string;
-    Locality: string;
-    static unmarshal(pData: number): ApplicationDataContainer_SetValueParams;
-}
-declare class ApplicationDataContainer_TryGetValueParams {
-    Key: string;
-    Locality: string;
-    static unmarshal(pData: number): ApplicationDataContainer_TryGetValueParams;
-}
-declare class ApplicationDataContainer_TryGetValueReturn {
-    Value: string;
-    HasValue: boolean;
-    marshal(pData: number): void;
-}
-declare class DragDropExtensionEventArgs {
-    eventName: string;
-    allowedOperations: string;
-    acceptedOperation: string;
-    dataItems: string;
-    timestamp: number;
-    x: number;
-    y: number;
-    id: number;
-    buttons: number;
-    shift: boolean;
-    ctrl: boolean;
-    alt: boolean;
-    static unmarshal(pData: number): DragDropExtensionEventArgs;
-    marshal(pData: number): void;
-}
-declare class StorageFolderMakePersistentParams {
-    Paths_Length: number;
-    Paths: Array<string>;
-    static unmarshal(pData: number): StorageFolderMakePersistentParams;
 }
 declare class WindowManagerAddViewParams {
     HtmlId: number;
@@ -1536,4 +1474,155 @@ declare class WindowManagerSetXUidParams {
     HtmlId: number;
     Uid: string;
     static unmarshal(pData: number): WindowManagerSetXUidParams;
+}
+declare namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core {
+    class DragDropExtensionEventArgs {
+        eventName: string;
+        allowedOperations: string;
+        acceptedOperation: string;
+        dataItems: string;
+        timestamp: number;
+        x: number;
+        y: number;
+        id: number;
+        buttons: number;
+        shift: boolean;
+        ctrl: boolean;
+        alt: boolean;
+        static unmarshal(pData: number): DragDropExtensionEventArgs;
+        marshal(pData: number): void;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_ClearParams {
+        Locality: string;
+        static unmarshal(pData: number): ApplicationDataContainer_ClearParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_ContainsKeyParams {
+        Key: string;
+        Value: string;
+        Locality: string;
+        static unmarshal(pData: number): ApplicationDataContainer_ContainsKeyParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_ContainsKeyReturn {
+        ContainsKey: boolean;
+        marshal(pData: number): void;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_GetCountParams {
+        Locality: string;
+        static unmarshal(pData: number): ApplicationDataContainer_GetCountParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_GetCountReturn {
+        Count: number;
+        marshal(pData: number): void;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_GetKeyByIndexParams {
+        Locality: string;
+        Index: number;
+        static unmarshal(pData: number): ApplicationDataContainer_GetKeyByIndexParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_GetKeyByIndexReturn {
+        Value: string;
+        marshal(pData: number): void;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_GetValueByIndexParams {
+        Locality: string;
+        Index: number;
+        static unmarshal(pData: number): ApplicationDataContainer_GetValueByIndexParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_GetValueByIndexReturn {
+        Value: string;
+        marshal(pData: number): void;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_RemoveParams {
+        Locality: string;
+        Key: string;
+        static unmarshal(pData: number): ApplicationDataContainer_RemoveParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_RemoveReturn {
+        Removed: boolean;
+        marshal(pData: number): void;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_SetValueParams {
+        Key: string;
+        Value: string;
+        Locality: string;
+        static unmarshal(pData: number): ApplicationDataContainer_SetValueParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_TryGetValueParams {
+        Key: string;
+        Locality: string;
+        static unmarshal(pData: number): ApplicationDataContainer_TryGetValueParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_TryGetValueReturn {
+        Value: string;
+        HasValue: boolean;
+        marshal(pData: number): void;
+    }
+}
+declare namespace Windows.Storage {
+    class StorageFolderMakePersistentParams {
+        Paths_Length: number;
+        Paths: Array<string>;
+        static unmarshal(pData: number): StorageFolderMakePersistentParams;
+    }
+}
+declare namespace Windows.UI.Xaml {
+    class NativePointerEventArgs {
+        HtmlId: number;
+        Event: number;
+        pointerId: number;
+        x: number;
+        y: number;
+        ctrl: boolean;
+        shift: boolean;
+        buttons: number;
+        buttonUpdate: number;
+        typeStr: string;
+        srcHandle: number;
+        timestamp: number;
+        pressure: number;
+        wheelDeltaX: number;
+        wheelDeltaY: number;
+        marshal(pData: number): void;
+    }
+}
+declare namespace Windows.UI.Xaml {
+    class NativePointerEventResult {
+        Result: number;
+        static unmarshal(pData: number): NativePointerEventResult;
+    }
+}
+declare namespace Windows.UI.Xaml {
+    class NativePointerSubscriptionParams {
+        HtmlId: number;
+        Events: number;
+        static unmarshal(pData: number): NativePointerSubscriptionParams;
+    }
 }

@@ -29,8 +29,6 @@ namespace Windows.UI.Xaml
 
 		public UIElement()
 		{
-			_log = this.Log();
-			_logDebug = _log.IsEnabled(LogLevel.Debug) ? _log : null;
 			_isFrameworkElement = this is FrameworkElement;
 
 			Initialize();

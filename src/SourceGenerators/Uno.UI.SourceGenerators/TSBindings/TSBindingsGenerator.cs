@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
+using Uno.Foundation.Interop;
 using Uno.UI.SourceGenerators.Helpers;
 using Uno.Roslyn;
 
@@ -32,7 +34,6 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 		public void Execute(GeneratorExecutionContext context)
 		{
-
 			if (!DesignTimeHelper.IsDesignTime(context))
 			{
 				_bindingsPaths = context.GetMSBuildPropertyValue("TSBindingsPath")?.ToString();
@@ -40,6 +41,8 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 				if (!string.IsNullOrEmpty(_bindingsPaths))
 				{
+					Directory.CreateDirectory(_bindingsPaths);
+
 					_intPtrSymbol = context.Compilation.GetTypeByMetadataName("System.IntPtr");
 					_structLayoutSymbol = context.Compilation.GetTypeByMetadataName(typeof(StructLayoutAttribute).FullName);
 					_interopMessageSymbol = context.Compilation.GetTypeByMetadataName("Uno.Foundation.Interop.TSInteropMessageAttribute");
@@ -59,52 +62,71 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 		internal void GenerateTSMarshallingLayouts(IEnumerable<IModuleSymbol> modules)
 		{
-			var messageTypes = from module in modules
-							   from type in GetNamespaceTypes(module)
-							   where (
-								   type.FindAttributeFlattened(_interopMessageSymbol) != null
-								   && type.TypeKind == TypeKind.Struct
-							   )
-							   select type;
+			var messages = from module in modules
+				from type in GetNamespaceTypes(module)
+				let attr = type.FindAttributeFlattened(_interopMessageSymbol)
+				where attr is not null && type.TypeKind is TypeKind.Struct
+				select (type, attr);
 
-			messageTypes = messageTypes.ToArray();
+			messages = messages.ToArray();
 
-			foreach (var messageType in messageTypes)
+			foreach (var message in messages)
 			{
-				var packValue = GetStructPack(messageType);
+				var packValue = GetStructPack(message.type);
 
 				var sb = new IndentedStringBuilder();
 
 				sb.AppendLineInvariant($"/* {nameof(TSBindingsGenerator)} Generated code -- this code is regenerated on each build */");
 
-				using (sb.BlockInvariant($"class {messageType.Name}"))
+				var ns = message.type.ContainingNamespace.ToDisplayString();
+				if (message.type.ContainingType?.Name?.Contains("WindowManagerInterop", StringComparison.OrdinalIgnoreCase) ?? false)
 				{
-					sb.AppendLineInvariant($"/* Pack={packValue} */");
+					// For backward compatibility, we include the namespace only for types that are not part of the WindowsManagerInterop.
+					// We should include the namespace for all messages, but it would require to update all usages.
+					ns = null;
+				}
 
-					foreach (var field in messageType.GetFields())
+				using (ns is null ? null : sb.BlockInvariant($"namespace {ns}"))
+				{
+					using (sb.BlockInvariant($"{(ns is null ? "": "export ")}class {message.type.Name}"))
 					{
-						sb.AppendLineInvariant($"public {field.Name} : {GetTSFieldType(field.Type)};");
-					}
+						sb.AppendLineInvariant($"/* Pack={packValue} */");
 
-					if (messageType.Name.EndsWith("Params") || messageType.Name.EndsWith("EventArgs"))
-					{
-						GenerateUnmarshaler(messageType, sb, packValue);
-					}
+						foreach (var field in message.type.GetFields())
+						{
+							sb.AppendLineInvariant($"public {field.Name} : {GetTSFieldType(field.Type)};");
+						}
 
-					if (messageType.Name.EndsWith("Return") || messageType.Name.EndsWith("EventArgs"))
-					{
-						GenerateMarshaler(messageType, sb, packValue);
+						var needsUnMarshaller = message.attr.GetNamedValue<CodeGeneration>(nameof(TSInteropMessageAttribute.UnMarshaller)) switch
+						{
+							CodeGeneration.Enabled => true,
+							CodeGeneration.Disabled => false,
+							_ => message.type.Name.EndsWith("Params") || message.type.Name.EndsWith("EventArgs"),
+						};
+						if (needsUnMarshaller)
+						{
+							GenerateUnmarshaler(message.type, sb, packValue);
+						}
+
+						var needsMarshaller = message.attr.GetNamedValue<CodeGeneration>(nameof(TSInteropMessageAttribute.Marshaller)) switch
+						{
+							CodeGeneration.Enabled => true,
+							CodeGeneration.Disabled => false,
+							_ => message.type.Name.EndsWith("Return") || message.type.Name.EndsWith("EventArgs"),
+						};
+						if (needsMarshaller)
+						{
+							GenerateMarshaler(message.type, sb, packValue);
+						}
 					}
 				}
 
-				var outputPath = Path.Combine(_bindingsPaths, $"{messageType.Name}.ts");
+				var outputPath = Path.Combine(_bindingsPaths, $"{(ns is null ? "" : ns.Replace('.', '_') + "_")}{message.type.Name}.ts");
 
 				var fileExists = File.Exists(outputPath);
 				var output = sb.ToString();
 
-				if (
-					(fileExists && File.ReadAllText(outputPath) != output)
-					|| !fileExists)
+				if (!fileExists || File.ReadAllText(outputPath) != output)
 				{
 					File.WriteAllText(outputPath, output);
 				}
@@ -361,6 +383,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 				SymbolEqualityComparer.Default.Equals(field.Type, _intPtrSymbol) ||
 				field.Type.SpecialType is SpecialType.System_Single ||
 				field.Type.SpecialType is SpecialType.System_Boolean ||
+				field.Type.SpecialType is SpecialType.System_Byte ||
 				field.Type is IArrayTypeSymbol
 			)
 			{

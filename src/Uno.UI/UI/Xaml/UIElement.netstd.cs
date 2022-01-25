@@ -23,8 +23,9 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
-		private protected readonly Logger _log;
-		private protected readonly Logger _logDebug;
+		private static protected readonly Logger _log = typeof(UIElement).Log();
+		private static protected readonly Logger _logDebug = _log.IsEnabled(LogLevel.Debug) ? _log : null;
+		private static protected readonly Logger _logTrace = _log.IsEnabled(LogLevel.Trace) ? _log : null;
 
 		private readonly bool _isFrameworkElement;
 		internal readonly MaterializableList<UIElement> _children = new MaterializableList<UIElement>();

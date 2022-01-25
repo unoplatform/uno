@@ -568,5 +568,17 @@ namespace Microsoft.CodeAnalysis
 
 			return type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 		}
+
+		public static TypedConstant? FindNamedArg(this AttributeData attribute, string argName)
+			=> attribute.NamedArguments is { IsDefaultOrEmpty: false } args
+				&& args.FirstOrDefault(arg => arg.Key == argName) is { Key: not null } arg
+					? arg.Value
+					: null;
+
+		public static T? GetNamedValue<T>(this AttributeData attribute, string argName)
+			where T : Enum
+			=> attribute.FindNamedArg(argName) is { IsNull: false, Kind: TypedConstantKind.Enum } arg && arg.Type!.Name == typeof(T).Name
+				? (T)arg.Value!
+				: default(T?);
 	}
 }
