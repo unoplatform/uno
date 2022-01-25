@@ -163,3 +163,20 @@ function breakText() {
         $(this).breakWord();
     });
 }
+
+/**
+ * This observer will post a message containing the new height every time it changes.
+ *
+ * @type {ResizeObserver}
+ */
+const resizeObserver = new ResizeObserver(entries => {
+    for (let entry of entries) {
+        let height = 0;
+        if (entry.contentBoxSize) {
+            height = entry.contentBoxSize[0].blockSize;
+        } else {
+            height = entry.contentRect.height;
+        }
+        window.parent.postMessage(["setHeight", height], "*");
+    }
+});
