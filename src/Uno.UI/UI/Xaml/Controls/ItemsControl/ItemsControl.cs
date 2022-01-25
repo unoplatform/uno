@@ -62,6 +62,41 @@ namespace Windows.UI.Xaml.Controls
 
 		internal ScrollViewer ScrollViewer { get; private set; }
 
+		private readonly Dictionary<DependencyObject, object> _containersForIndexRepair = new Dictionary<DependencyObject, object>();
+
+		/// <summary>
+		/// Stores materialized containers starting a given index, so that their
+		/// ItemsControl.IndexForContainerProperty can be updated after the collection changes.		
+		/// </summary>
+		/// <param name="startingIndex">The minimum index of containers we care about.</param>
+		/// <param name="indexChange">How does the index change.</param>
+		private void SaveContainersForIndexRepair(int startingIndex, int indexChange)
+		{
+			_containersForIndexRepair.Clear();
+			foreach (var container in MaterializedContainers)
+			{
+				var currentIndex = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);
+				if (currentIndex >= startingIndex)
+				{
+					// we store the index, that should be set after the collection change
+					_containersForIndexRepair.Add(container, currentIndex + indexChange);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets the indices of stored materialized containers to the appropriate index after
+		/// collection change.
+		/// </summary>
+		private void RepairIndices()
+		{
+			foreach (var containerPair in _containersForIndexRepair)
+			{
+				containerPair.Key.SetValue(ItemsControl.IndexForItemContainerProperty, containerPair.Value);
+			}
+			_containersForIndexRepair.Clear();
+		}
+
 		/// <summary>
 		/// This template is stored here in order to allow for 
 		/// FrameworkTemplate pooling to function properly when an ItemTemplateSelector has been
@@ -934,6 +969,8 @@ namespace Windows.UI.Xaml.Controls
 
 					LocalCleanupContainer(container);
 					RequestLayoutPartial();
+					SaveContainersForIndexRepair(args.OldStartingIndex, -args.OldItems.Count);
+					RepairIndices();
 					return;
 				}
 				else if (args.Action == NotifyCollectionChangedAction.Add
@@ -941,6 +978,8 @@ namespace Windows.UI.Xaml.Controls
 				{
 					ItemsPanelRoot.Children.Insert(args.NewStartingIndex, (UIElement)LocalCreateContainer(args.NewStartingIndex));
 					RequestLayoutPartial();
+					SaveContainersForIndexRepair(args.NewStartingIndex, args.NewItems.Count);
+					RepairIndices();
 					return;
 				}
 				else if (args.Action == NotifyCollectionChangedAction.Replace
