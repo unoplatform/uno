@@ -71,6 +71,9 @@ namespace Windows.UI.Xaml
 				table = null;
 				return false;
 			}
+
+			internal void Dispose()
+				=> _entries.Dispose();
 		}
 	}
 }
