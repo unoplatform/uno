@@ -194,7 +194,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private string SingletonClassName => $"ResourceDictionarySingleton__{_fileDefinition.ShortId}";
 
-		private bool IsHotReloadEnabled => _isDebug;
+		private readonly bool _isHotReloadEnabled;
 
 		private const string DictionaryProviderInterfaceName = "global::Uno.UI.IXamlResourceDictionaryProvider";
 
@@ -222,6 +222,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			string defaultLanguage,
 			bool isWasm,
 			bool isDebug,
+			bool isHotReloadEnabled,
 			bool isDesignTimeBuild,
 			bool skipUserControlsInVisualTree,
 			bool shouldAnnotateGeneratedXaml,
@@ -245,6 +246,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_uiAutomationMappings = uiAutomationMappings;
 			_defaultLanguage = defaultLanguage.HasValue() ? defaultLanguage : "en-US";
 			_isDebug = isDebug;
+			_isHotReloadEnabled = isHotReloadEnabled;
 			_isDesignTimeBuild = isDesignTimeBuild;
 			_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
 			_shouldAnnotateGeneratedXaml = shouldAnnotateGeneratedXaml;
@@ -1771,10 +1773,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						propertyType
 					);
 					var isThemeResource = valueObject?.Type.Name == "ThemeResource";
-					var isStaticResourceForHotReload = IsHotReloadEnabled && valueObject?.Type.Name == "StaticResource";
+					var isStaticResourceForHotReload = _isHotReloadEnabled && valueObject?.Type.Name == "StaticResource";
 					if (valueObject != null && (isThemeResource || isStaticResourceForHotReload))
 					{
-						writer.AppendLineInvariant(".ApplyThemeResourceUpdateValues(\"{0}\", {1}, {2}, {3})", valueObject.Members.FirstOrDefault()?.Value, ParseContextPropertyAccess, isThemeResource ? "true" : "false", IsHotReloadEnabled ? "true" : "false");
+						writer.AppendLineInvariant(".ApplyThemeResourceUpdateValues(\"{0}\", {1}, {2}, {3})", valueObject.Members.FirstOrDefault()?.Value, ParseContextPropertyAccess, isThemeResource ? "true" : "false", _isHotReloadEnabled ? "true" : "false");
 					}
 
 					writer.AppendLineInvariant(lineEnding);
@@ -1837,10 +1839,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 
 					var isThemeResource = valueObject?.Type.Name == "ThemeResource";
-					var isStaticResourceForHotReload = IsHotReloadEnabled && valueObject?.Type.Name == "StaticResource";
+					var isStaticResourceForHotReload = _isHotReloadEnabled && valueObject?.Type.Name == "StaticResource";
 					if (valueObject != null && (isThemeResource || isStaticResourceForHotReload))
 					{
-						writer.AppendLineInvariant(".ApplyThemeResourceUpdateValues(\"{0}\", {1}, {2}, {3})", valueObject.Members.FirstOrDefault()?.Value, ParseContextPropertyAccess, isThemeResource ? "true" : "false", IsHotReloadEnabled ? "true" : "false");
+						writer.AppendLineInvariant(".ApplyThemeResourceUpdateValues(\"{0}\", {1}, {2}, {3})", valueObject.Members.FirstOrDefault()?.Value, ParseContextPropertyAccess, isThemeResource ? "true" : "false", _isHotReloadEnabled ? "true" : "false");
 					}
 
 					writer.AppendLineInvariant(lineEnding);
@@ -3884,7 +3886,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (IsDependencyProperty(member.Member))
 					{
 						var propertyOwner = GetType(member.Member.DeclaringType);
-						writer.AppendLineInvariant("global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource({0}, {1}.{2}Property, \"{3}\", isThemeResourceExtension: {4}, isHotReloadSupported: {5}, context: {6});", closureName, GetGlobalizedTypeName(propertyOwner.ToDisplayString()), member.Member.Name, resourceKey, isThemeResourceExtension ? "true" : "false", IsHotReloadEnabled ? "true" : "false", ParseContextPropertyAccess);
+						writer.AppendLineInvariant("global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource({0}, {1}.{2}Property, \"{3}\", isThemeResourceExtension: {4}, isHotReloadSupported: {5}, context: {6});", closureName, GetGlobalizedTypeName(propertyOwner.ToDisplayString()), member.Member.Name, resourceKey, isThemeResourceExtension ? "true" : "false", _isHotReloadEnabled ? "true" : "false", ParseContextPropertyAccess);
 					}
 					else if (IsAttachedProperty(member))
 					{
@@ -5426,10 +5428,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// Set ThemeResource information, if any, on Setter
 					var valueObject = valueNode.Objects.FirstOrDefault();
 					var isThemeResource = valueObject?.Type.Name == "ThemeResource";
-					var isStaticResourceForHotReload = IsHotReloadEnabled && valueObject?.Type.Name == "StaticResource";
+					var isStaticResourceForHotReload = _isHotReloadEnabled && valueObject?.Type.Name == "StaticResource";
 					if (valueObject != null && (isThemeResource || isStaticResourceForHotReload))
 					{
-						writer.AppendLineInvariant(".ApplyThemeResourceUpdateValues(\"{0}\", {1}, {2}, {3})", valueObject.Members.FirstOrDefault()?.Value, ParseContextPropertyAccess, isThemeResource ? "true" : "false", IsHotReloadEnabled ? "true" : "false");
+						writer.AppendLineInvariant(".ApplyThemeResourceUpdateValues(\"{0}\", {1}, {2}, {3})", valueObject.Members.FirstOrDefault()?.Value, ParseContextPropertyAccess, isThemeResource ? "true" : "false", _isHotReloadEnabled ? "true" : "false");
 					}
 				}
 				else if (fullTypeName == XamlConstants.Types.ResourceDictionary)

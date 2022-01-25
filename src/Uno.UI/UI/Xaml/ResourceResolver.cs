@@ -200,13 +200,13 @@ namespace Uno.UI
 			{
 				updateReason |= ResourceUpdateReason.ThemeResource;
 			}
-			if (isHotReloadSupported)
+			else
+			{
+				updateReason |= ResourceUpdateReason.StaticResourceLoading;
+			}
+			if (isHotReloadSupported && !FeatureConfiguration.Xaml.ForceHotReloadDisabled)
 			{
 				updateReason |= ResourceUpdateReason.HotReload;
-			}
-			if (updateReason == ResourceUpdateReason.None)
-			{
-				updateReason = ResourceUpdateReason.StaticResourceLoading;
 			}
 
 			ApplyResource(owner, property, new SpecializedResourceDictionary.ResourceKey(resourceKey), updateReason, context, null);
