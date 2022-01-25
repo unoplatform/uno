@@ -14,16 +14,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input.TestPages
 			Unloaded += Page_Unloaded;
 		}
 
-		private void Page_Unloaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
-		{
-			_loadingTaskCompletionSource = new TaskCompletionSource<object>();
-		}
+		public Task FinishedLoadingTask => _loadingTaskCompletionSource.Task;
 
 		private void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
 		{
 			_loadingTaskCompletionSource.SetResult(null);
 		}
 
-		public Task FinishedLoadingTask => _loadingTaskCompletionSource.Task;
+		private void Page_Unloaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+		{
+			// Reset loading task for next navigation
+			_loadingTaskCompletionSource = new TaskCompletionSource<object>();
+		}
 	}
 }

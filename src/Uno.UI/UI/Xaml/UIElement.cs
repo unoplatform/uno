@@ -107,6 +107,8 @@ namespace Windows.UI.Xaml
 
 		internal Size AssignedActualSize { get; set; }
 
+		internal bool IsLeavingFrame { get; set; }
+
 		private protected virtual double GetActualWidth() => AssignedActualSize.Width;
 
 		private protected virtual double GetActualHeight() => AssignedActualSize.Height;

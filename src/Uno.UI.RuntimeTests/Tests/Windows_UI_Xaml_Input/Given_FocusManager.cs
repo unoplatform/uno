@@ -160,6 +160,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			var frame = new Frame();
 			TestServices.WindowHelper.WindowContent = frame;
 			frame.Navigate(typeof(TwoButtonFirstPage));
+			((TwoButtonFirstPage)frame.Content).FocusFirst();
 
 			await TestServices.WindowHelper.WaitForIdle();
 
@@ -173,6 +174,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			{
 				frame.Navigate(typeof(TwoButtonSecondPage));
 
+				await ((TwoButtonSecondPage)frame.Content).FinishedLoadingTask;
 				await TestServices.WindowHelper.WaitForIdle();
 			};
 
@@ -285,7 +287,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-		public async Task When_Page_Navigate_Back_Without_Outer_Wrapper()
+		public async Task When_Page_Navigates_Back_Without_Outer_Wrapper()
 		{
 			var frame = new Frame();
 			TestServices.WindowHelper.WindowContent = frame;
@@ -318,7 +320,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-		public async Task When_Page_Navigate_Back_With_Outer_Before()
+		public async Task When_Page_Navigates_Back_With_Outer_Before()
 		{
 			var stackPanel = new StackPanel();
 			var frame = new Frame();
@@ -352,7 +354,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-		public async Task When_Page_Navigate_Back_With_Outer_After()
+		public async Task When_Page_Navigates_Back_With_Outer_After()
 		{
 			var stackPanel = new StackPanel();
 			var frame = new Frame();
@@ -409,11 +411,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 				FocusManager.GettingFocus += FocusManager_GettingFocus;
 
 				await navigationSequence();
-
-				global::System.Diagnostics.Debug.WriteLine($"####");
-				global::System.Diagnostics.Debug.WriteLine($"Expected: {string.Join(",", expectedSequence)}");
-				global::System.Diagnostics.Debug.WriteLine($"Actual: {string.Join(",", actualSequence)}");
-
+				
 				CollectionAssert.AreEqual(expectedSequence, actualSequence);
 
 			}

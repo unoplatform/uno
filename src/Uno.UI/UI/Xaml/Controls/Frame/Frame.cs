@@ -357,10 +357,7 @@ namespace Windows.UI.Xaml.Controls
 				CurrentEntry.Instance = page;
 			}
 
-			using (var leavingDisposable = MarkCurrentPageLeaving())
-			{
-				MoveFocusFromCurrent();
-			}
+			MoveFocusFromCurrentContent();
 
 			Content = CurrentEntry.Instance;
 
@@ -468,30 +465,53 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (Content is Page page)
 			{
-				page.IsLeavingFrame = true;
 				return Disposable.Create(() => page.IsLeavingFrame = false);
 			}
 			return Disposable.Empty;
 		}
 
-		private void MoveFocusFromCurrent()
+		/// <summary>
+		/// In case the current page contains a focused element,
+		/// we need to move the focus out of the page.
+		/// </summary>
+		/// <remarks>
+		/// In UWP this is done automatically as the elements are unloaded,
+		/// but due to the control lifecycle differences in Uno the focus move multiple times
+		/// as controls are unloaded in "layers" and it could also not move outside this Frame,
+		/// as the Parent would already be unassigned during the OnUnloaded execution.
+		/// </remarks>
+		private void MoveFocusFromCurrentContent()
 		{
-			var focusManager = VisualTree.GetFocusManagerForElement(this);
-			if (focusManager?.FocusedElement is not { } focusedElement)
+			if (Content is not UIElement uiElement)
 			{
 				return;
 			}
-
-			var inCurrentPage = focusedElement.GetParents().Any(p => p == this);
-
-			if (inCurrentPage)
+			uiElement.IsLeavingFrame = true;
+#if !HAS_EXPENSIVE_TRYFINALLY
+			try
+#endif
 			{
-				// Set the focus on the next focusable element.
-				// If we remove the currently focused element from the live tree, inside a GettingFocus or LosingFocus handler,
-				// we failfast. This is being tracked by Bug 9840123
-				focusManager.SetFocusOnNextFocusableElement(FocusState, true);
+				var focusManager = VisualTree.GetFocusManagerForElement(this);
+				if (focusManager?.FocusedElement is not { } focusedElement)
+				{
+					return;
+				}
 
-				(focusedElement as Control)?.UpdateFocusState(FocusState.Unfocused);
+				var inCurrentPage = focusedElement.GetParents().Any(p => p == this);
+
+				if (inCurrentPage)
+				{
+					// Set the focus on the next focusable element.
+					focusManager.SetFocusOnNextFocusableElement(FocusState, true);
+
+					(focusedElement as Control)?.UpdateFocusState(FocusState.Unfocused);
+				}
+			}
+#if !HAS_EXPENSIVE_TRYFINALLY
+			finally
+#endif
+			{
+				uiElement.IsLeavingFrame = false;
 			}
 		}
 	}
