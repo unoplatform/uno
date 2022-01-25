@@ -99,6 +99,17 @@ public partial class UIElement : DependencyObject
 			return;
 		}
 
+		if (!IsLoaded)
+		{
+			// If element is not in the visual tree its native element might also have been already destroyed,
+			// in that case we just ignore the native handler removal.
+			// The native handler will somehow leak, but if the control is re-used we will actually avoid the cost to re-create the handler,
+			// and if the control if dropped, then native handler will also be dropped.
+			// Even if not recommended, it might happen that users use the control finalizer to remove pointer events
+			// (cf. WinUI's TreeViewItem.RecycleEvents() invoked by the finalizer), this check make sure to not crash in the finalizer!
+			return;
+		}
+
 		if (_gestures is null
 			&& CountHandler(PointerEnteredEvent) is 0
 			&& CountHandler(PointerExitedEvent) is 0
