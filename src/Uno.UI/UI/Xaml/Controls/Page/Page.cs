@@ -91,5 +91,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			UpdateBorder();
 		}
+
+		internal bool IsLeavingFrame { get; set; }
 	}
 }

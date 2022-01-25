@@ -104,6 +104,13 @@ namespace Windows.UI.Xaml
 					return false;
 				}
 
+				// TODO Uno specific: IsLeaving is not yet implemented on visual tree level,
+				// so we check if the Page is being navigated away from here instead.
+				if (pNext is Page page && page.IsLeavingFrame) 
+				{
+					return false;
+				}
+
 				pElement = pNext;
 			}
 

@@ -357,7 +357,10 @@ namespace Windows.UI.Xaml.Controls
 				CurrentEntry.Instance = page;
 			}
 
-			UnfocusCurrentPage();
+			using (var leavingDisposable = MarkCurrentPageLeaving())
+			{
+				MoveFocusFromCurrent();
+			}
 
 			Content = CurrentEntry.Instance;
 
@@ -402,8 +405,6 @@ namespace Windows.UI.Xaml.Controls
 			CurrentEntry.Instance.OnNavigatedTo(navigationEvent);
 
 			Navigated?.Invoke(this, navigationEvent);
-
-			FocusCurrentPage();
 
 			return true;
 		}
@@ -463,7 +464,17 @@ namespace Windows.UI.Xaml.Controls
 					));
 		}
 
-		private void UnfocusCurrentPage()
+		private IDisposable MarkCurrentPageLeaving()
+		{
+			if (Content is Page page)
+			{
+				page.IsLeavingFrame = true;
+				return Disposable.Create(() => page.IsLeavingFrame = false);
+			}
+			return Disposable.Empty;
+		}
+
+		private void MoveFocusFromCurrent()
 		{
 			var focusManager = VisualTree.GetFocusManagerForElement(this);
 			if (focusManager?.FocusedElement is not { } focusedElement)
@@ -471,27 +482,16 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var isWithinCurrentPage = focusedElement.GetParents().Any(p => p == this);
-			if (isWithinCurrentPage)
-			{
-				focusManager.ClearFocus();
-			}
-		}
+			var inCurrentPage = focusedElement.GetParents().Any(p => p == this);
 
-		private void FocusCurrentPage()
-		{
-			var focusManager = VisualTree.GetFocusManagerForElement(this);
-			if (focusManager is null)
+			if (inCurrentPage)
 			{
-				return;
-			}
+				// Set the focus on the next focusable element.
+				// If we remove the currently focused element from the live tree, inside a GettingFocus or LosingFocus handler,
+				// we failfast. This is being tracked by Bug 9840123
+				focusManager.SetFocusOnNextFocusableElement(FocusState, true);
 
-			var focused = focusManager.FocusedElement;
-
-			if (focused is null && Content is Page page)
-			{
-				// Try to set focus on the page
-				page.TryInitialFocus();
+				(focusedElement as Control)?.UpdateFocusState(FocusState.Unfocused);
 			}
 		}
 	}
