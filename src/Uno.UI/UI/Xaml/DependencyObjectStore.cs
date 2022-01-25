@@ -1242,6 +1242,12 @@ namespace Windows.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void InnerUpdateResourceBindingsUnsafe(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
 		{
+			if ((binding.UpdateReason & updateReason) == ResourceUpdateReason.None)
+			{
+				// If the reason for the update doesn't match the reason(s) that the binding was created for, don't update it
+				return;
+			}
+
 			var wasSet = false;
 			foreach (var dict in dictionariesInScope)
 			{
@@ -1253,7 +1259,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			if (!wasSet && (binding.UpdateReason & updateReason) != ResourceUpdateReason.None)
+			if (!wasSet)
 			{
 				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value))
 				{

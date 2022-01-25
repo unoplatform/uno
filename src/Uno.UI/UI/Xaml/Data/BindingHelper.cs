@@ -38,7 +38,7 @@ namespace Uno.UI.Xaml
 			if(instance is IDependencyObjectStoreProvider provider)
 			{
 				provider.Store.ApplyElementNameBindings();
-				provider.Store.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading);
+				provider.Store.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading);
 			}
 		}
 	}
