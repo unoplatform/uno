@@ -553,7 +553,7 @@ namespace Windows.UI.Xaml
 		{
 			foreach (var item in _values.Values)
 			{
-				if (item is IDependencyObjectStoreProvider provider && provider.Store.Parent == null)
+				if (item is IDependencyObjectStoreProvider provider)
 				{
 					provider.Store.UpdateResourceBindings(updateReason, containingDictionary: this);
 				}
