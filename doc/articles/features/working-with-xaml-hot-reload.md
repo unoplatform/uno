@@ -67,6 +67,16 @@ Make sure that the version number is the same as the `Uno.UI` package.
 
 This scenario is designed for contributors to the Uno platform, to test changes to the XAML directly in the running applications.
 
+### Disabling XAML Hot Reload
+
+If you want to disable Uno's XAML Hot Reload support for some reason, you can do so by adding the following code to your `App` constructor:
+```csharp
+#if HAS_UNO
+        // This disables hot reload during debugging.
+        Uno.UI.FeatureConfiguration.Xaml.ForceHotReloadDisabled = true;
+#endif
+```
+
 ## Debugging the Visual Studio extension
 
 1. Select a version of Uno.UI that is installed in your nuget cache, and set that version in the `crosstargeting_override.props` file. See [this document](../uno-development/debugging-uno-ui.md) for more information.
