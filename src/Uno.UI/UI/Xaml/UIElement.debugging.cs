@@ -207,6 +207,34 @@ namespace Windows.UI.Xaml
 			return current as FrameworkElement;
 		}
 
+		internal View[] GetAllAncestorsDebug()
+		{
+			return GetInner().ToArray();
+
+			IEnumerable<View> GetInner()
+			{
+				var current = this.GetVisualTreeParent();
+				while (current != null)
+				{
+					yield return current;
+					current = current.GetVisualTreeParent();
+				}
+			}
+		}
+
+		internal string[] GetAllAncestorsAsStrings()
+		{
+			return GetAllAncestorsDebug().Select(v =>
+				{
+					if (v is FrameworkElement fe && !fe.Name.IsNullOrEmpty())
+					{
+						return $"{fe.Name}({fe.GetType().Name})";
+					}
+					return v.GetType().Name;
+				})
+				.ToArray();
+		}
+
 		/// <summary>
 		/// Debugging helper method to get a condensed summary of visual states on controls in this element's hierarchy.
 		/// </summary>
