@@ -63,7 +63,7 @@ The complete sample code can be found here: [NativeFrameNav](https://github.com/
     ```cs
     public App()
     {
-        ConfigureFilters(global::Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory);
+        InitializeLogging();
 
     #if __IOS__ || __ANDROID__
         Uno.UI.FeatureConfiguration.Style.ConfigureNativeFrameNavigation();
