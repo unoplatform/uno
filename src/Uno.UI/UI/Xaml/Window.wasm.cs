@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml
 		private void Init()
 		{
 			Dispatcher = CoreDispatcher.Main;
-			CoreWindow = new CoreWindow();
+			CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
 		}
 
 		internal static void InvalidateMeasure()

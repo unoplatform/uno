@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml
 		public void Init()
 		{
 			Dispatcher = CoreDispatcher.Main;
-			CoreWindow = new CoreWindow();
+			CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
 			CoreWindow.SetInvalidateRender(QueueInvalidateRender);
 			InitDragAndDrop();
 		}

@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml
 		public Window()
 		{
 			Dispatcher = CoreDispatcher.Main;
-			CoreWindow = new CoreWindow();
+			CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
 
 			CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged
 				+= RaiseNativeSizeChanged;
@@ -292,7 +292,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		#region StatusBar properties
+#region StatusBar properties
 		private bool IsStatusBarVisible()
 		{
 			var decorView = (ContextHelper.Current as Activity)?.Window?.DecorView;
@@ -317,9 +317,9 @@ namespace Windows.UI.Xaml
 			return activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.TranslucentStatus)
 				|| activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.LayoutNoLimits);
 		}
-		#endregion
+#endregion
 
-		#region NavigationBar properties
+#region NavigationBar properties
 		private bool IsNavigationBarVisible()
 		{
 			var decorView = (ContextHelper.Current as Activity)?.Window?.DecorView;
@@ -346,7 +346,7 @@ namespace Windows.UI.Xaml
 			return flags.HasFlag(WindowManagerFlags.TranslucentNavigation)
 				|| flags.HasFlag(WindowManagerFlags.LayoutNoLimits);
 		}
-		#endregion
+#endregion
 
 		internal IDisposable OpenPopup(Controls.Primitives.Popup popup)
 		{
