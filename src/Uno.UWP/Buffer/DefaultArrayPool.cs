@@ -17,6 +17,8 @@ namespace Uno.Buffers
 		internal static readonly int DefaultAutomaticMaxNumberOfArraysPerBucket;
 		/// <summary>The default maximum number of arrays per bucket that are available for rent.</summary>
 		internal static readonly int DefaultMaxNumberOfArraysPerBucket;
+		/// <summary>Determines if automatic memory management can be used.</summary>
+		internal static readonly bool EnableAutomaticMemoryManagement;
 
 		/// <summary>Lazily-allocated empty array used when arrays of length 0 are requested.</summary>
 		private static T[] s_emptyArray; // we support contracts earlier than those with Array.Empty<T>()
@@ -34,6 +36,7 @@ namespace Uno.Buffers
 			DefaultMaxArrayLength = WinRTFeatureConfiguration.ArrayPool.DefaultMaxArrayLength;
 			DefaultAutomaticMaxNumberOfArraysPerBucket = WinRTFeatureConfiguration.ArrayPool.DefaultAutomaticMaxNumberOfArraysPerBucket;
 			DefaultMaxNumberOfArraysPerBucket = WinRTFeatureConfiguration.ArrayPool.DefaultMaxNumberOfArraysPerBucket;
+			EnableAutomaticMemoryManagement = WinRTFeatureConfiguration.ArrayPool.EnableAutomaticMemoryManagement;
 		}
 
 		internal ArrayPool() : this(DefaultMaxArrayLength, DefaultMaxNumberOfArraysPerBucket)
@@ -89,11 +92,11 @@ namespace Uno.Buffers
 		private ArrayPool(bool automaticManagement)
 			: this(
 				  maxArrayLength: DefaultMaxArrayLength,
-				  maxArraysPerBucket: automaticManagement && _platformProvider.CanUseMemoryManager
+				  maxArraysPerBucket: automaticManagement && EnableAutomaticMemoryManagement && _platformProvider.CanUseMemoryManager
 					? DefaultAutomaticMaxNumberOfArraysPerBucket
 					: DefaultMaxNumberOfArraysPerBucket)
 		{
-			_automaticManagement = automaticManagement && _platformProvider.CanUseMemoryManager;
+			_automaticManagement = automaticManagement && EnableAutomaticMemoryManagement && _platformProvider.CanUseMemoryManager;
 		}
 
 		/// <summary>Gets an ID for the pool to use with events.</summary>
