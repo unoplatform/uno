@@ -92,7 +92,7 @@ jobs:
 
       # don't fail on failed tests, second run will do it
       # see https://github.com/unoplatform/uno/issues/6714
-      failTaskOnFailedTests: false
+      failTaskOnFailedTests: ${{ ne(variables.UITEST_ALLOW_RERUN, 'true') }}
 
   ## Second UI Tests run (https://github.com/unoplatform/uno/issues/6714)
   - bash: |

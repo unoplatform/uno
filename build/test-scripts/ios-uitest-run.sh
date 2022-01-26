@@ -126,6 +126,11 @@ else
 	echo "$BUILD_SOURCESDIRECTORY/build/samplesapp-uitest-binaries/SamplesApp.UITests.dll" >> $UNO_TESTS_RESPONSE_FILE
 fi
 
+# export the simulator logs
+export LOG_FILEPATH=$UNO_UITEST_SCREENSHOT_PATH/_logs
+mkdir -p $LOG_FILEPATH
+xcrun simctl spawn booted log collect --output $LOG_FILEPATH/DeviceLog-`date +"%Y%m%d%H%M%S"`.logarchive
+
 echo Response file:
 cat $UNO_TESTS_RESPONSE_FILE
 
