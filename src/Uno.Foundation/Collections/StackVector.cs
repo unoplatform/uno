@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Uno.Buffers;
 
 namespace Uno.Collections
 {
@@ -10,10 +11,11 @@ namespace Uno.Collections
 		internal delegate bool RefPredicateDelegate(ref T item);
 
 		private Memory<T> _inner;
+		private T[] _originalArray;
 
 		public StackVector(int capacity, int initialLength = 0)
 		{
-			_inner = new Memory<T>(new T[capacity]);
+			AllocateInner(capacity);
 			Count = initialLength;
 		}
 
@@ -34,13 +36,30 @@ namespace Uno.Collections
 				// list.
 				// The resize takes place only to reuse the working
 				// memory, not to store it.
-
-				_inner = new Memory<T>(new T[newCount]);
+				AllocateInner(newCount);
 
 				IncrementResizeCount();
 			}
 
 			Count = newCount;
+		}
+
+		private void AllocateInner(int newSize)
+		{
+			if (_originalArray != null)
+			{
+				ArrayPool<T>.Shared.Return(_originalArray, clearArray: true);
+			}
+
+			_inner = new Memory<T>(_originalArray = ArrayPool<T>.Shared.Rent(newSize));
+		}
+
+		public void Dispose()
+		{
+			if (_originalArray != null)
+			{
+				ArrayPool<T>.Shared.Return(_originalArray, clearArray: true);
+			}
 		}
 
 #if DEBUG
