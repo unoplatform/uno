@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.Devices.Input;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using SamplesApp.UITests.Extensions;
@@ -50,6 +51,19 @@ namespace SamplesApp.UITests
 			// and gain some time for the tests.
 			AppInitializer.ColdStartApp();
 		}
+
+		/// <summary>
+		/// Gets the default pointer type for the current platform
+		/// </summary>
+		public PointerDeviceType DefaultPointerType => AppInitializer.GetLocalPlatform() switch
+		{
+			Platform.Browser => PointerDeviceType.Mouse,
+			Platform.iOS => PointerDeviceType.Touch,
+			Platform.Android => PointerDeviceType.Touch,
+			_ => throw new InvalidOperationException($"Unknown platform '{AppInitializer.GetLocalPlatform()}'.")
+		};
+
+		public PointerDeviceType CurrentPointerType => DefaultPointerType; // We cannot change pointer type on this platform
 
 		public void ValidateAppMode()
 		{

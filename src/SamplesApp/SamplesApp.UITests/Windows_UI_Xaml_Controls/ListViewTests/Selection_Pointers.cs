@@ -72,17 +72,22 @@ public partial class ListViewTests_Tests : SampleControlUITestBase
 		var itemTapped = App.Marked("_itemTapped").GetDependencyPropertyValue<string>("Text");
 		var itemClicked = App.Marked("_itemClicked").GetDependencyPropertyValue<string>("Text");
 
-		pageEntered.Should().Be("D", "entered page");
-		itemEntered.Should().Be("D", "entered item");
-#if !__SKIA__
-		if (Uno.UITests.Helpers.AppInitializer.GetLocalPlatform() != Platform.Browser) // Disabled on Browser as we have a mouse, we don't have exit
-#endif
+		if (CurrentPointerType is PointerDeviceType.Mouse)
 		{
-#if !__SKIA__ // DataContext issue
+			// With mouse, we will have pointer enter on the page as soon as pointer is over (so datacontext won't be D)
+			// and we won't get any pointer leave after test.
+			itemEntered.Should().Be("D", "entered item");
+		}
+		else
+		{
+			pageEntered.Should().Be("D", "entered page");
+			itemEntered.Should().Be("D", "entered item");
+#if !__SKIA__
 			pageExited.Should().Be("D", "exited page");
 #endif
 			itemExited.Should().Be("D", "exited item");
 		}
+
 		pagePressed.Should().Be("-", "item should have handled pressed event");
 		itemPressed.Should().Be("D", "item pressed");
 		pageReleased.Should().Be("-", "item should have handled released event");

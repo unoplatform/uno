@@ -17,6 +17,13 @@ public class SampleControlUITestBase : IInjectPointers
 
 	protected SkiaApp App => _app ??= new();
 
+	/// <summary>
+	/// Gets the default pointer type for the current platform
+	/// </summary>
+	public PointerDeviceType DefaultPointerType => App.DefaultPointerType;
+
+	public PointerDeviceType CurrentPointerType => App.CurrentPointerType;
+
 	protected async Task RunAsync(string metadataName)
 	{
 		await App.RunAsync(metadataName);

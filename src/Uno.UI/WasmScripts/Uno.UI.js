@@ -4270,10 +4270,10 @@ var Windows;
                     const params = Windows.UI.Xaml.NativePointerSubscriptionParams.unmarshal(pParams);
                     const element = WindowManager.current.getView(params.HtmlId);
                     if (params.Events & NativePointerEvent.pointerenter) {
-                        element.addEventListener("pointerenter", Xaml.UIElement.onPointerEnterReceived);
+                        element.addEventListener("pointerover", Xaml.UIElement.onPointerEnterReceived);
                     }
                     if (params.Events & NativePointerEvent.pointerleave) {
-                        element.addEventListener("pointerleave", Xaml.UIElement.onPointerLeaveReceived);
+                        element.addEventListener("pointerout", Xaml.UIElement.onPointerLeaveReceived);
                     }
                     if (params.Events & NativePointerEvent.pointerdown) {
                         element.addEventListener("pointerdown", Xaml.UIElement.onPointerEventReceived);
@@ -4298,10 +4298,10 @@ var Windows;
                         return;
                     }
                     if (params.Events & NativePointerEvent.pointerenter) {
-                        element.removeEventListener("pointerenter", Xaml.UIElement.onPointerEnterReceived);
+                        element.removeEventListener("pointerover", Xaml.UIElement.onPointerEnterReceived);
                     }
                     if (params.Events & NativePointerEvent.pointerleave) {
-                        element.removeEventListener("pointerleave", Xaml.UIElement.onPointerLeaveReceived);
+                        element.removeEventListener("pointerout", Xaml.UIElement.onPointerLeaveReceived);
                     }
                     if (params.Events & NativePointerEvent.pointerdown) {
                         element.removeEventListener("pointerdown", Xaml.UIElement.onPointerEventReceived);
@@ -4523,9 +4523,9 @@ var Windows;
                 }
                 static toNativeEvent(eventName) {
                     switch (eventName) {
-                        case "pointerenter":
+                        case "pointerover":
                             return NativePointerEvent.pointerenter;
-                        case "pointerleave":
+                        case "pointerout":
                             return NativePointerEvent.pointerleave;
                         case "pointerdown":
                             return NativePointerEvent.pointerdown;

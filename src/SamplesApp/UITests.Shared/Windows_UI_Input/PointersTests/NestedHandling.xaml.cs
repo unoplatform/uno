@@ -39,7 +39,7 @@ namespace UITests.Windows_UI_Input.PointersTests
 			_nested.PointerMoved += (snd, e) =>
 			{
 				// We filter out half of the events to validate that handled events are not always invalidly bubbled.
-				if (even) 
+				if (even)
 				{
 					containerMoveCount++;
 				}
@@ -65,7 +65,7 @@ namespace UITests.Windows_UI_Input.PointersTests
 						|| e.OriginalSource == _sample2_intermediate2
 						|| e.OriginalSource == _sample2_intermediate)
 					{
-						_enterResult.Text = "FAILED (container)";
+						_enterResult.Text += "FAILED (container)";
 					}
 				}),
 				handledEventsToo: true);
@@ -75,12 +75,12 @@ namespace UITests.Windows_UI_Input.PointersTests
 				handledEventsToo: true);
 			_sample2_intermediate2.AddHandler(
 				PointerExitedEvent,
-				new PointerEventHandler((snd, e) => _exitResult.Text = "FAILED (intermediate 2)"),
+				new PointerEventHandler((snd, e) => _exitResult.Text += "FAILED (intermediate 2)"),
 				handledEventsToo: false);
 			_sample2_nested.PointerEntered += (snd, e) =>
 			{
 				e.Handled = true;
-				_enterResult.Text = "";
+				_enterResult.Text = "ENTERED ";
 			};
 
 			_sample2_container.AddHandler(
@@ -91,7 +91,7 @@ namespace UITests.Windows_UI_Input.PointersTests
 						|| e.OriginalSource == _sample2_intermediate2
 						|| e.OriginalSource == _sample2_intermediate)
 					{
-						_exitResult.Text = "FAILED (container)";
+						_exitResult.Text += "FAILED (container)";
 					}
 				}),
 				handledEventsToo: true);
@@ -101,12 +101,12 @@ namespace UITests.Windows_UI_Input.PointersTests
 				handledEventsToo: true);
 			_sample2_intermediate2.AddHandler(
 				PointerExitedEvent,
-				new PointerEventHandler((snd, e) => _exitResult.Text = "FAILED (intermediate 2)"),
+				new PointerEventHandler((snd, e) => _exitResult.Text += "FAILED (intermediate 2)"),
 				handledEventsToo: false);
 			_sample2_nested.PointerExited += (snd, e) =>
 			{
 				e.Handled = true;
-				_exitResult.Text = "";
+				_exitResult.Text = "EXITED ";
 			};
 		}
 	}

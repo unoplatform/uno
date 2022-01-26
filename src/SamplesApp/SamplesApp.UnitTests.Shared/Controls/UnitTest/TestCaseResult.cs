@@ -8,7 +8,7 @@ namespace Uno.UI.Samples.Tests;
 internal record TestCaseResult
 {
 	public TestResult TestResult { get; init; }
-	public string TestName { get; init; }
+	public string? TestName { get; init; }
 	public TimeSpan Duration { get; init; }
-	public string Message { get; init; }
+	public string? Message { get; init; }
 }

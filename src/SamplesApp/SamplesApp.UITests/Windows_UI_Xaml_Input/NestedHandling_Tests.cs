@@ -16,6 +16,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 	{
 		private const string _sample = "UITests.Windows_UI_Input.PointersTests.NestedHandling";
 
+#if !__SKIA__
 		[Test]
 		[AutoRetry]
 		[InjectedPointer(PointerDeviceType.Touch)]
@@ -29,6 +30,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			var result = App.Marked("_result").GetDependencyPropertyValue("Text");
 			result.Should().Be("Pressed SUCCESS | Released SUCCESS");
 		}
+#endif
 
 		[Test]
 		[AutoRetry]
@@ -45,11 +47,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 			App.DragCoordinates(container.X + 10, container.CenterY, container.Right - 10, nested.CenterY);
 
-			var enterResult = App.Marked("_enterResult").GetDependencyPropertyValue("Text");
-			enterResult.Should().Be("SUCCESS");
+			var enterResult = App.Marked("_enterResult").GetDependencyPropertyValue<string>("Text").Trim();
+			enterResult.Should().Be("ENTERED SUCCESS", "we should have received ENTER only on '_intermediate' which has subscribed to handled events too.");
 
-			var exitResult = App.Marked("_exitResult").GetDependencyPropertyValue("Text");
-			exitResult.Should().Be("SUCCESS");
+			var exitResult = App.Marked("_exitResult").GetDependencyPropertyValue<string>("Text").Trim();
+			exitResult.Should().Be("EXITED SUCCESS", "we should have received EXIT only on '_intermediate' which has subscribed to handled events too.");
 		}
 	}
 }
