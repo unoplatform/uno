@@ -43,7 +43,8 @@
       "Uno.UI\\Uno.UI.Skia.csproj",
       "Uno.UWPSyncGenerator.Reference\\Uno.UWPSyncGenerator.Reference.csproj",
       "Uno.UWPSyncGenerator\\Uno.UWPSyncGenerator.csproj",
-      "Uno.UWP\\Uno.Skia.csproj"
+      "Uno.UWP\\Uno.Skia.csproj",
+	  "Uno.UI.RuntimeTests.Skia.WPF\\Uno.UI.RuntimeTests.Skia.WPF.csproj"
     ]
   }
 }
