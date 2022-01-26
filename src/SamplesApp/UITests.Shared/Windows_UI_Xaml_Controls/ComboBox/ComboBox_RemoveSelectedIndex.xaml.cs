@@ -92,5 +92,18 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 				steps.Text += "\nError: " + ex.Message;
 			}
 		}
+
+		private void btnRemoveIndexZero_Click(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				combo.Items.RemoveAt(0);
+				steps.Text += $"\nRemoved Index: 0";
+			}
+			catch (Exception ex)
+			{
+				steps.Text += "\nError: " + ex.Message;
+			}
+		}
 	}
 }
