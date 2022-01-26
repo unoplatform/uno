@@ -504,6 +504,12 @@ namespace Uno.UI
 		public static class UIElement
 		{
 			/// <summary>
+			/// Call the .MeasureOverride only on element explicitly invalidating
+			/// their measure and when the size changed.
+			/// </summary>
+			public static bool ReduceMeasureCalls { get; set; } = true;
+
+			/// <summary>
 			/// [DEPRECATED]
 			/// Not used anymore, does nothing.
 			/// </summary>

@@ -50,6 +50,13 @@ namespace Windows.UI.Xaml
 			Current?.InnerInvalidateMeasure();
 		}
 
+		internal static void InvalidateArrange()
+		{
+			// Right now, both measure & arrange invalidations
+			// are done in the same loop
+			Current?.InnerInvalidateMeasure();
+		}
+
 		private void InnerInvalidateMeasure()
 		{
 			if (!_invalidateRequested)

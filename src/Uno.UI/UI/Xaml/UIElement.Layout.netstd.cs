@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using Windows.UI.Xaml.Controls.Primitives;
 using System.Runtime.CompilerServices;
+using Uno.UI;
 
 namespace Windows.UI.Xaml
 {
@@ -85,13 +86,13 @@ namespace Windows.UI.Xaml
 			get => GetLayoutFlag(LayoutFlag.MeasureDirty);
 		}
 
-		internal bool IsMeasurePathDirty
+		internal bool IsMeasureDirtyPath
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => GetLayoutFlag(LayoutFlag.MeasureDirtyPath);
 		}
 
-		internal bool IsMeasureOrMeasurePathDirty
+		internal bool IsMeasureOrMeasureDirtyPath
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => GetAnyFlag(LayoutFlag.MeasureDirty | LayoutFlag.MeasureDirtyPath);
@@ -117,13 +118,24 @@ namespace Windows.UI.Xaml
 
 			SetLayoutFlag(LayoutFlag.MeasureDirty);
 
-			InvalidateParentMeasurePath();
+			if (FeatureConfiguration.UIElement.ReduceMeasureCalls)
+			{
+				InvalidateParentMeasurePath();
+			}
+			else
+			{
+				(this.GetParent() as UIElement)?.InvalidateMeasure();
+				if (IsVisualTreeRoot)
+				{
+					Window.InvalidateMeasure();
+				}
+			}
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void InvalidateMeasurePath()
 		{
-			if(IsMeasureOrMeasurePathDirty)
+			if(IsMeasureOrMeasureDirtyPath)
 			{
 				return; // Already invalidated
 			}
@@ -166,7 +178,7 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				Window.InvalidateMeasure();
+				Window.InvalidateArrange();
 			}
 		}
 
@@ -226,62 +238,89 @@ namespace Windows.UI.Xaml
 
 		private void DoMeasure(Size availableSize)
 		{
-			var isDirty = IsMeasureDirty;
+			var isDirty =
+				(availableSize != LastAvailableSize)
+				|| IsMeasureDirty
+				|| !GetLayoutFlag(LayoutFlag.FirstMeasureDone);
+
+			if (!isDirty && !IsMeasureDirtyPath)
+			{
+				return; // Nothing to do
+			}
 
 			if (!GetLayoutFlag(LayoutFlag.FirstMeasureDone))
 			{
 				SetLayoutFlag(LayoutFlag.FirstMeasureDone);
 				isDirty = true;
+
 			}
 
-			if (isDirty || availableSize != LastAvailableSize)
+			while (true)
 			{
-				// We must reset the flag **BEFORE** doing the actual measure, so the elements are able to re-invalidate themselves
 
-				ClearLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.MeasureDirtyPath);
+				if (isDirty)
+				{
+					// We must reset the flag **BEFORE** doing the actual measure, so the elements are able to re-invalidate themselves
 
-				// The dirty flag is explicitly set on this element
+					ClearLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.MeasureDirtyPath);
+
+					// The dirty flag is explicitly set on this element
 #if DEBUG
-				try
+					try
 #endif
-				{
-					MeasureCore(availableSize);
-					InvalidateArrange();
-				}
-#if DEBUG
-				catch (Exception ex)
-				{
-					_log.Error($"Error measuring {this}", ex);
-				}
-				finally
-#endif
-				{
-					LayoutInformation.SetAvailableSize(this, availableSize);
-					if (IsMeasureDirty)
 					{
-						Console.WriteLine("!!");
+						MeasureCore(availableSize);
+						InvalidateArrange();
+					}
+#if DEBUG
+					catch (Exception ex)
+					{
+						_log.Error($"Error measuring {this}", ex);
+					}
+					finally
+#endif
+					{
+						LayoutInformation.SetAvailableSize(this, availableSize);
+					}
+
+					break;
+				}
+
+				if (IsMeasureDirtyPath)
+				{
+					ClearLayoutFlags(LayoutFlag.MeasureDirtyPath);
+
+					// The dirty flag is set on one of the descendents:
+					// it will bypass the current element's MeasureOverride()
+					// since it shouldn't produce a different result and it's
+					// just a waste of precious CPU time to call it.
+					var children = GetChildren();
+
+					foreach (var child in children)
+					{
+						// If the child is dirty (or is a path to a dirty descendant child),
+						// We're remeasuring it.
+
+						if (child.IsMeasureOrMeasureDirtyPath)
+						{
+							var previousDesiredSize = child.DesiredSize;
+							child.Measure(child.LastAvailableSize);
+							if (child.DesiredSize != previousDesiredSize)
+							{
+								isDirty = true;
+								break;
+							}
+						}
+					}
+
+					if (!isDirty)
+					{
+						break;
 					}
 				}
-			}
-			else if (IsMeasurePathDirty)
-			{
-				ClearLayoutFlags(LayoutFlag.MeasureDirtyPath);
-
-				// The dirty flag is set on one of the descendents:
-				// it will bypass the current element's MeasureOverride()
-				// since it shouldn't produce a different result and it's
-				// just a waste of precious CPU time to call it.
-				var children = GetChildren();
-
-				foreach (var child in children)
+				else
 				{
-					// If the child is dirty (or is a path to a dirty descendant child),
-					// We're remeasuring it.
-
-					if (child.IsMeasureOrMeasurePathDirty)
-					{
-						child.Measure(child.LastAvailableSize);
-					}
+					break;
 				}
 			}
 		}

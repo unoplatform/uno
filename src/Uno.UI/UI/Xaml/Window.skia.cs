@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml
 
 		internal void QueueInvalidateRender()
 		{
-			if (!_isMeasuring && !_renderQueued)
+			if (!_isMeasuringOrArranging && !_renderQueued)
 			{
 				_renderQueued = true;
 
@@ -66,48 +66,102 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private static bool _isMeasureQueued = false;
-		private static bool _isMeasuring = false;
+		private bool _isMeasureWaiting = false;
+		private bool _isArrangeWaiting = false;
+		private bool _isMeasuringOrArranging = false;
 
 		internal static void InvalidateMeasure()
 		{
-			Current.InnerInvalidateMeasure();
+			Current.ScheduleInvalidateMeasureOrArrange(invalidateMeasure: true);
 		}
 
-		internal void InnerInvalidateMeasure()
+		internal static void InvalidateArrange()
 		{
+			Current.ScheduleInvalidateMeasureOrArrange(invalidateMeasure: false);
+		}
+
+		internal void ScheduleInvalidateMeasureOrArrange(bool invalidateMeasure)
+		{
+			if (invalidateMeasure)
+			{
+				if (_isMeasureWaiting)
+				{
+					// A measure is already queued
+					return;
+				}
+
+				_isMeasureWaiting = true;
+
+				if (_isArrangeWaiting)
+				{
+					// Since an arrange is already queued, no need to
+					// schedule something on the dispatcher
+					return;
+				}
+			}
+			else
+			{
+				if (_isArrangeWaiting)
+				{
+					// An arrange is already queued
+					return;
+				}
+
+				_isArrangeWaiting = true;
+
+				if (_isMeasureWaiting)
+				{
+					// Since a measure is already queued, no need to
+					// schedule something on the dispatcher
+					return;
+				}
+			}
+
 			if (_rootVisual != null)
 			{
-				if (!_isMeasureQueued)
+				CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, RunMeasureAndArrange);
+			}
+		}
+
+		private void RunMeasureAndArrange()
+		{
+			if (_isMeasuringOrArranging || _rootVisual is null)
+			{
+				return; // weird case
+			}
+
+			var forMeasure = _isMeasureWaiting;
+			var forArrange = _isArrangeWaiting;
+
+			_isMeasureWaiting = false;
+			_isArrangeWaiting = false;
+			try
+			{
+				_isMeasuringOrArranging = true;
+
+				var sw = Stopwatch.StartNew();
+
+				if (forMeasure)
 				{
-					_isMeasureQueued = true;
-
-					CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
-					{
-						try
-						{
-							_isMeasureQueued = false;
-
-							_isMeasuring = true;
-
-							var sw = Stopwatch.StartNew();
-							_rootVisual.Measure(Bounds.Size);
-							_rootVisual.Arrange(Bounds);
-							sw.Stop();
-
-							if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-							{
-								this.Log().Debug($"DispatchInvalidateMeasure: {sw.Elapsed}");
-							}
-
-							InvalidateRender();
-						}
-						finally
-						{
-							_isMeasuring = false;
-						}
-					});
+					_rootVisual.Measure(Bounds.Size);
 				}
+
+				if (forArrange)
+				{
+					_rootVisual.Arrange(Bounds);
+					InvalidateRender();
+				}
+
+				sw.Stop();
+
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"DispatchInvalidateMeasure: {sw.Elapsed}");
+				}
+			}
+			finally
+			{
+				_isMeasuringOrArranging = false;
 			}
 		}
 
@@ -154,6 +208,8 @@ namespace Windows.UI.Xaml
 				UIElement.LoadingRootElement(_rootVisual);
 
 				Compositor.RootVisual = _rootVisual.Visual;
+
+				RunMeasureAndArrange();
 
 				UIElement.RootElementLoaded(_rootVisual);
 			}
