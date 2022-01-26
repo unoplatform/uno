@@ -15,10 +15,6 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.System;
-using System.Reflection;
-
-using Uno.Core.Comparison;
-using Uno.Foundation.Runtime.WebAssembly.Interop;
 
 namespace Windows.UI.Xaml
 {
@@ -85,11 +81,12 @@ namespace Windows.UI.Xaml
 			_gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
 			_isFrameworkElement = this is FrameworkElement;
 
-			HtmlTag = GetHtmlTag(htmlTag);
-			HtmlTagIsSvg = isSvg;
-
 			var type = GetType();
+			var tag = HtmlElementHelper.GetHtmlTag(type, htmlTag);
 
+			HtmlTag = tag.Name;
+			HtmlTagIsSvg = isSvg;
+			HtmlTagIsExternallyDefined = tag.IsExternallyDefined;
 			Handle = GCHandle.ToIntPtr(_gcHandle);
 			HtmlId = Handle;
 
@@ -104,44 +101,6 @@ namespace Windows.UI.Xaml
 
 			InitializePointers();
 			UpdateHitTest();
-		}
-
-		private static Dictionary<Type, string> _htmlTagCache = new Dictionary<Type, string>(FastTypeComparer.Default);
-		private static Type _htmlElementAttribute;
-		private static PropertyInfo _htmlTagAttributeTagGetter;
-		private static readonly Assembly _unoUIAssembly = typeof(UIElement).Assembly;
-
-		private string GetHtmlTag(string htmlTag)
-		{
-			var currentType = GetType();
-
-			if (currentType.Assembly != _unoUIAssembly)
-			{
-				if (_htmlElementAttribute == null)
-				{
-					_htmlElementAttribute = GetUnoUIRuntimeWebAssembly().GetType("Uno.UI.Runtime.WebAssembly.HtmlElementAttribute", true);
-					_htmlTagAttributeTagGetter = _htmlElementAttribute.GetProperty("Tag");
-				}
-
-				if (!_htmlTagCache.TryGetValue(currentType, out var htmlTagOverride))
-				{
-					// Set the tag from the internal explicit UIElement parameter
-					htmlTagOverride = htmlTag;
-
-					if (currentType.GetCustomAttribute(_htmlElementAttribute, true) is Attribute attr)
-					{
-						_htmlTagCache[currentType] = htmlTagOverride = _htmlTagAttributeTagGetter.GetValue(attr, Array.Empty<object>()) as string;
-					}
-
-					_htmlTagCache[currentType] = htmlTagOverride;
-				}
-
-				return htmlTagOverride;
-			}
-			else
-			{
-				return htmlTag;
-			}
 		}
 
 		~UIElement()
@@ -175,6 +134,8 @@ namespace Windows.UI.Xaml
 		public string HtmlTag { get; }
 
 		public bool HtmlTagIsSvg { get; }
+
+		internal bool HtmlTagIsExternallyDefined { get; }
 
 		protected internal void SetStyle(string name, string value)
 		{
@@ -699,22 +660,6 @@ namespace Windows.UI.Xaml
 			}
 
 			return new RoutedEventArgs(src);
-		}
-
-		private static Assembly GetUnoUIRuntimeWebAssembly()
-		{
-			const string UnoUIRuntimeWebAssemblyName = "Uno.UI.Runtime.WebAssembly";
-
-			if (PlatformHelper.IsNetCore)
-			{
-				// .NET Core fails to load assemblies property because of ALC issues: https://github.com/dotnet/runtime/issues/44269
-				return AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == UnoUIRuntimeWebAssemblyName)
-					?? throw new InvalidOperationException($"Unable to find {UnoUIRuntimeWebAssemblyName} in the loaded assemblies");
-			}
-			else
-			{
-				return Assembly.Load(UnoUIRuntimeWebAssemblyName);
-			}
 		}
 	}
 }
