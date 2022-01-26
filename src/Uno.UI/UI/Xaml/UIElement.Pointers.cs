@@ -814,7 +814,7 @@ namespace Windows.UI.Xaml
 #elif UNO_HAS_MANAGED_POINTERS
 					// On Skia and macOS the pointer exit is raised properly by the PointerManager with a "Root"(a.k.a. UpTo) element.
 					// If we are here, it means that we just have to update private state and let the bubbling algorithm do its job!
-					Debug.Assert(IsOver(ptArgs.Pointer));
+					// Debug.Assert(IsOver(ptArgs.Pointer)); // Fails when fast scrolling samples categories list on Skia
 					OnPointerExited(ptArgs, BubblingContext.OnManagedBubbling);
 #elif __IOS__
 					// On iOS all pointers are handled just like if they were touches by the platform and there isn't any notion of "over".
@@ -1012,7 +1012,7 @@ namespace Windows.UI.Xaml
 			var handledInManaged = false;
 			var isOverOrCaptured = ValidateAndUpdateCapture(args);
 
-			handledInManaged |= SetOver(args, false, muteEvent: ctx.IsInternal || !isOverOrCaptured);
+			handledInManaged |= SetOver(args, false, muteEvent: ctx.IsInternal || !isOverOrCaptured, ctx);
 
 			if (IsGestureRecognizerCreated && GestureRecognizer.IsDragging)
 			{
@@ -1140,7 +1140,7 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		internal bool IsOver(Pointer pointer) => IsPointerOver;
 
-		private bool SetOver(PointerRoutedEventArgs args, bool isOver, bool muteEvent = false)
+		private bool SetOver(PointerRoutedEventArgs args, bool isOver, bool muteEvent = false, BubblingContext ctx = default)
 		{
 			var wasOver = IsPointerOver;
 			IsPointerOver = isOver;
@@ -1154,12 +1154,12 @@ namespace Windows.UI.Xaml
 			if (isOver) // Entered
 			{
 				args.Handled = false;
-				return RaisePointerEvent(PointerEnteredEvent, args);
+				return RaisePointerEvent(PointerEnteredEvent, args, ctx);
 			}
 			else // Exited
 			{
 				args.Handled = false;
-				return RaisePointerEvent(PointerExitedEvent, args);
+				return RaisePointerEvent(PointerExitedEvent, args, ctx);
 			}
 		}
 		#endregion
@@ -1201,7 +1201,7 @@ namespace Windows.UI.Xaml
 
 		private bool IsPressed(uint pointerId) => _pressedPointers.Contains(pointerId);
 
-		private bool SetPressed(PointerRoutedEventArgs args, bool isPressed, bool muteEvent = false)
+		private bool SetPressed(PointerRoutedEventArgs args, bool isPressed, bool muteEvent = false, BubblingContext ctx = default)
 		{
 			var wasPressed = IsPressed(args.Pointer);
 			if (wasPressed == isPressed) // nothing changed
@@ -1219,7 +1219,7 @@ namespace Windows.UI.Xaml
 				}
 
 				args.Handled = false;
-				return RaisePointerEvent(PointerPressedEvent, args);
+				return RaisePointerEvent(PointerPressedEvent, args, ctx);
 			}
 			else // Released
 			{
@@ -1231,7 +1231,7 @@ namespace Windows.UI.Xaml
 				}
 
 				args.Handled = false;
-				return RaisePointerEvent(PointerReleasedEvent, args);
+				return RaisePointerEvent(PointerReleasedEvent, args, ctx);
 			}
 		}
 

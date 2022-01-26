@@ -49,12 +49,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			{
 				// On CI we might miss moves on exit, so we split the movement in 2 gestures,
 				// as it's a mouse, we won't have noisy 'exit' on pointer 'up'.
-				App.DragCoordinates(nested.X - 10, container.CenterY, nested.X + 10, nested.CenterY);
+				App.DragCoordinates(container.X + 10, container.CenterY, container.Right - 10, nested.CenterY);
 				App.DragCoordinates(nested.Right - 10, nested.CenterY, nested.Right + 10, container.CenterY);
 			}
 			else
 			{
-				App.DragCoordinates(container.Right - 10, container.CenterY, container.Right - 10, container.Y + 10);
+				App.DragCoordinates(container.X + 10, container.CenterY, container.Right - 10, container.CenterY);
 			}
 
 			var enterResult = App.Marked("_enterResult").GetDependencyPropertyValue<string>("Text").Trim();
