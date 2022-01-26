@@ -45,7 +45,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			var container = App.WaitForElement("_sample2_container").Single().Rect;
 			var nested = App.WaitForElement("_sample2_nested").Single().Rect;
 
-			App.DragCoordinates(container.X + 10, container.CenterY, container.Right - 10, nested.CenterY);
+			if (CurrentPointerType is PointerDeviceType.Mouse)
+			{
+				// On CI we might miss moves on exit, so we split the movement in 2 gestures,
+				// as it's a mouse, we won't have noisy 'exit' on pointer 'up'.
+				App.DragCoordinates(nested.X - 10, container.CenterY, nested.X + 10, nested.CenterY);
+				App.DragCoordinates(nested.Right - 10, nested.CenterY, nested.Right + 10, container.CenterY);
+			}
+			else
+			{
+				App.DragCoordinates(container.Right - 10, container.CenterY, container.Right - 10, container.Y + 10);
+			}
 
 			var enterResult = App.Marked("_enterResult").GetDependencyPropertyValue<string>("Text").Trim();
 			enterResult.Should().Be("ENTERED SUCCESS", "we should have received ENTER only on '_intermediate' which has subscribed to handled events too.");
