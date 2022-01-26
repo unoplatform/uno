@@ -115,7 +115,7 @@ namespace Windows.Media.Capture
 				throw new InvalidOperationException("Info.plist must define NSCameraUsageDescription");
 			}
 
-			var isAllowed = await AVCaptureDevice.RequestAccessForMediaTypeAsync(AVMediaType.Video);
+			var isAllowed = await AVCaptureDevice.RequestAccessForMediaTypeAsync(AVMediaTypes.Video.GetConstant());
 			if (!isAllowed)
 			{
 				throw new UnauthorizedAccessException();

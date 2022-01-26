@@ -86,8 +86,8 @@
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(SingleProject)' == 'true' ">
+	<ProjectCapability Include="Msix" />
 	<ProjectCapability Include="MauiSingleProject" />
-	
 	<ProjectCapability Include="LaunchProfiles" />
 	<!-- If VS is older than Dev17 -->
 	<ProjectCapability Include="XamarinStaticLaunchProfiles" Condition=" '$(VisualStudioVersion)' != '' and '$(VisualStudioVersion)' &lt; '17.0' " />

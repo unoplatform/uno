@@ -13,7 +13,13 @@ internal struct DisplayRegionHelperInfo
 {
 	private const int c_maxRegions = 2;
 
-	public TwoPaneViewMode Mode { get; set; } = TwoPaneViewMode.SinglePane;
+	public DisplayRegionHelperInfo()
+	{
+		Mode = TwoPaneViewMode.SinglePane;
+		Regions = new Rect[c_maxRegions]; ;
+	}
 
-	public Rect[] Regions { get; set; } = new Rect[c_maxRegions];
+	public TwoPaneViewMode Mode { get; set; }
+
+	public Rect[] Regions { get; set; }
 }

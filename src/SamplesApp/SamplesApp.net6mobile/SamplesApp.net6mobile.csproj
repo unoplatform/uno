@@ -9,8 +9,7 @@
 		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
 
-		<!-- Error: Optimizing assemblies for size is not supported for the selected publish configuration -->
-		<PublishTrimmed>false</PublishTrimmed>
+		<PublishTrimmed>true</PublishTrimmed>
 		
 				<RuntimeIdentifier Condition="'$(TargetFramework)' == 'net6.0-ios'">iossimulator-x64</RuntimeIdentifier>
 		<RuntimeIdentifier Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
@@ -33,7 +32,17 @@
 		
 		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>
 	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)'=='net6.0-ios'">
+		<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
+	</PropertyGroup>
 	
+	<PropertyGroup Condition="'$(TargetFramework)'=='net6.0-android'">
+		<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
+		<PublishTrimmed>false</PublishTrimmed>
+		<AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
+	</PropertyGroup>
+
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
@@ -85,7 +94,7 @@
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
-		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" PrivateAssets="all" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net6.0-android'">
