@@ -781,17 +781,21 @@ namespace Windows.UI.Xaml
 					break;
 				case RoutedEventFlag.PointerReleased:
 					OnPointerUp(ptArgs, BubblingContext.OnManagedBubbling);
-#if __IOS__
+
+#if __IOS__ || __ANDROID__
 					// As the 'exit' is expected to be raised from 'up', if the 'up' event is handled
 					// (so we are bubbling event in managed code ... i.e. we are here),
 					// we do also have to generate (non bubbling) 'exit' to replicate that behavior.
 					// Note: We use the NoBubbling context in order to get the event raised locally (not IsInternal)!
-					OnPointerExited(ptArgs, BubblingContext.NoBubbling);
-#elif __ANDROID__
-					// Ame reason as iOS, but we have to do that only for touches.
+
+#if __ANDROID__ // On Android we inject 'exit' on 'up' only for touches
 					if (ptArgs.Pointer.PointerDeviceType is PointerDeviceType.Touch)
+#endif
 					{
+						var wasHandled = ptArgs.Handled; // As we use NoBubbling, the OnPointerExited might reset the Handled flag
+						global::System.Diagnostics.Debug.Assert(wasHandled);
 						OnPointerExited(ptArgs, BubblingContext.NoBubbling);
+						ptArgs.Handled = wasHandled;
 					}
 #endif
 					break;
