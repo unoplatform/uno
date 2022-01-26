@@ -137,7 +137,7 @@ public partial class UIElement : DependencyObject
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static void OnNativePointerEvent()
 	{
-		var handled = false;
+		var stopPropagation = false;
 		try
 		{
 			_logTrace?.Trace("Receiving native pointer event.");
@@ -160,38 +160,50 @@ public partial class UIElement : DependencyObject
 			switch ((NativePointerEvent)args.Event)
 			{
 				case NativePointerEvent.pointerenter:
-					handled = element.OnNativePointerEnter(ToPointerArgs(element, args));
+				{
+					// On WASM we do get 'pointerover' event for sub elements,
+					// so we can avoid useless work by validating if the pointer is already flagged as over element.
+					// If so, we stop bubbling since our parent will do the same!
+					var ptArgs = ToPointerArgs(element, args);
+					stopPropagation = element.IsOver(ptArgs.Pointer) || element.OnNativePointerEnter(ptArgs);
 					break;
+				}
 
 				case NativePointerEvent.pointerleave:
-					handled = element.OnNativePointerExited(ToPointerArgs(element, args));
+				{
+					// On WASM we do get 'pointerout' event for sub elements,
+					// so we need to check if pointer is actually still on the element.
+					// In that case we stop bubbling so our parents won't have to check that again.
+					var ptArgs = ToPointerArgs(element, args);
+					stopPropagation = ptArgs.IsOver(element) || element.OnNativePointerExited(ptArgs);
 					break;
+				}
 
 				case NativePointerEvent.pointerdown:
-					handled = element.OnNativePointerDown(ToPointerArgs(element, args, isInContact: true));
+					stopPropagation = element.OnNativePointerDown(ToPointerArgs(element, args, isInContact: true));
 					break;
 
 				case NativePointerEvent.pointerup:
-					handled = element.OnNativePointerUp(ToPointerArgs(element, args, isInContact: false));
+					stopPropagation = element.OnNativePointerUp(ToPointerArgs(element, args, isInContact: false));
 					break;
 
 				case NativePointerEvent.pointermove:
-					handled = element.OnNativePointerMove(ToPointerArgs(element, args));
+					stopPropagation = element.OnNativePointerMove(ToPointerArgs(element, args));
 					break;
 
 				case NativePointerEvent.pointercancel:
-					handled = element.OnNativePointerCancel(ToPointerArgs(element, args, isInContact: false), isSwallowedBySystem: true);
+					stopPropagation = element.OnNativePointerCancel(ToPointerArgs(element, args, isInContact: false), isSwallowedBySystem: true);
 					break;
 
 				case NativePointerEvent.wheel:
 					if (args.wheelDeltaX is not 0)
 					{
-						handled |= element.OnNativePointerWheel(ToPointerArgs(element, args, wheel: (true, args.wheelDeltaX), isInContact: null /* maybe */));
+						stopPropagation |= element.OnNativePointerWheel(ToPointerArgs(element, args, wheel: (true, args.wheelDeltaX), isInContact: null /* maybe */));
 					}
 					if (args.wheelDeltaY is not 0)
 					{
 						// Note: Web browser vertical scrolling is the opposite compared to WinUI!
-						handled |= element.OnNativePointerWheel(ToPointerArgs(element, args, wheel: (false, -args.wheelDeltaY), isInContact: null /* maybe */));
+						stopPropagation |= element.OnNativePointerWheel(ToPointerArgs(element, args, wheel: (false, -args.wheelDeltaY), isInContact: null /* maybe */));
 					}
 					break;
 			}
@@ -207,7 +219,7 @@ public partial class UIElement : DependencyObject
 		{
 			_pointerEventResult.Value = new NativePointerEventResult
 			{
-				Result = (byte)(handled
+				Result = (byte)(stopPropagation
 					? HtmlEventDispatchResult.StopPropagation
 					: HtmlEventDispatchResult.Ok)
 			};

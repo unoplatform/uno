@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
@@ -24,6 +25,7 @@ using Windows.UI.Xaml.Media.Imaging;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 
 #if HAS_UNO_WINUI
@@ -747,7 +749,7 @@ namespace Windows.UI.Xaml
 				SafeRaiseEvent(DropEvent, args);
 			}
 		}
-#endregion
+		#endregion
 
 		partial void PrepareManagedPointerEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode)
 		{
@@ -757,35 +759,80 @@ namespace Windows.UI.Xaml
 				case RoutedEventFlag.PointerEntered:
 					if (IsOver(ptArgs.Pointer))
 					{
-						// Entered and Exited are not really bubbling, they are raised only for element on which we are effectively crossing boundaries.
-						// In uno we are however bubbling them for internal state updates.
-						// Note: When we cross boundaries of multiple elements at once, we are effectively following the standard bubbling rules:
-						//	* OriginalSource is the top most element;
-						//	* Flagging args as handle does prevent parent elements to raise events.
-						bubblingMode = BubblingMode.IgnoreElement;
+						// If pointer is already flagged as "over",
+						// it's the same on parents and we should just stop bubbling right now.
+						// (Depending of the platform, this might be really common to reach this case.)
+						bubblingMode = BubblingMode.NoBubbling;
 					}
-					OnPointerEnter(ptArgs, BubblingContext.OnManagedBubbling);
+					else
+					{
+						OnPointerEnter(ptArgs, BubblingContext.OnManagedBubbling);
+					}
 					break;
 				case RoutedEventFlag.PointerPressed:
 					OnPointerDown(ptArgs, BubblingContext.OnManagedBubbling);
 					break;
 				case RoutedEventFlag.PointerMoved:
+#if __IOS__ || __ANDROID__
+					OnNativePointerMoveWithOverCheck(ptArgs, ptArgs.IsOver(this), BubblingContext.OnManagedBubbling);
+#else
 					OnPointerMove(ptArgs, BubblingContext.OnManagedBubbling);
+#endif
 					break;
 				case RoutedEventFlag.PointerReleased:
 					OnPointerUp(ptArgs, BubblingContext.OnManagedBubbling);
+#if __IOS__
+					// As the 'exit' is expected to be raised from 'up', if the 'up' event is handled
+					// (so we are bubbling event in managed code ... i.e. we are here),
+					// we do also have to generate (non bubbling) 'exit' to replicate that behavior.
+					// Note: We use the NoBubbling context in order to get the event raised locally (not IsInternal)!
+					OnPointerExited(ptArgs, BubblingContext.NoBubbling);
+#elif __ANDROID__
+					// Ame reason as iOS, but we have to do that only for touches.
+					if (ptArgs.Pointer.PointerDeviceType is PointerDeviceType.Touch)
+					{
+						OnPointerExited(ptArgs, BubblingContext.NoBubbling);
+					}
+#endif
 					break;
 				case RoutedEventFlag.PointerExited:
-					if (!IsOver(ptArgs.Pointer))
+#if __WASM__
+					// On WASM, the pointer 'exit' is raise by the platform, but here the event has been handled and is bubbling in managed.
+					// We only need to replicate the UWP behavior and stop bubbling as soon as we reach an element which still under the pointer.
+					if (ptArgs.IsOver(this))
 					{
-						// Entered and Exited are not really bubbling, they are raised only for element on which we are effectively crossing boundaries.
-						// In uno we are however bubbling them for internal state updates.
-						// Note: When we cross boundaries of multiple elements at once, we are effectively following the standard bubbling rules:
-						//	* OriginalSource is the top most element;
-						//	* Flagging args as handle does prevent parent elements to raise events.
-						bubblingMode = BubblingMode.IgnoreElement;
+						bubblingMode = BubblingMode.NoBubbling;
 					}
+					else
+					{
+						OnPointerEnter(ptArgs, BubblingContext.OnManagedBubbling);
+					}
+#elif UNO_HAS_MANAGED_POINTERS
+					// On Skia and macOS the pointer exit is raised properly by the PointerManager with a "Root"(a.k.a. UpTo) element.
+					// If we are here, it means that we just have to update private state and let the bubbling algorithm do its job!
+					Debug.Assert(IsOver(ptArgs.Pointer));
 					OnPointerExited(ptArgs, BubblingContext.OnManagedBubbling);
+#elif __IOS__
+					// On iOS all pointers are handled just like if they were touches by the platform and there isn't any notion of "over".
+					// To compensate that, we are generating 'exit' on native (and managed bubbling, cf. PointerExited) pointer 'up',
+					// so we should never let bubble an 'exit' (the bubbling 'exit' would be raised before the 'up' on parent elements).
+					// Note: If we are here it means that the 'exit' has been flagged as handle ...
+					//		 unfortunately, for now, this won't have any impact as parent element will re-create one for the 'up'.
+					bubblingMode = BubblingMode.NoBubbling;
+#elif __ANDROID__
+					// On Android, like for iOS we do generate 'exit' on 'up', but only for touches!
+					// For mouse and pen it's like for WASM, the platform is raising the events in the right sequence,
+					// except that if the event has been flagged as handled (so we are here) native bubbling will stop,
+					// so we have to let managed bubbling occurs and stop it on first element which is still isOver == true.
+					if (ptArgs.Pointer.PointerDeviceType is PointerDeviceType.Touch || ptArgs.IsOver(this))
+					{
+						bubblingMode = BubblingMode.NoBubbling;
+					}
+					else
+					{
+						OnPointerEnter(ptArgs, BubblingContext.OnManagedBubbling);
+					}
+#endif
 					break;
 				case RoutedEventFlag.PointerCanceled:
 					OnPointerCancel(ptArgs, BubblingContext.OnManagedBubbling);
@@ -854,14 +901,17 @@ namespace Windows.UI.Xaml
 
 		// This is for iOS and Android which are not raising the Exit properly (due to native "implicit capture" when pointer is pressed),
 		// and for which we have to re-compute / update the over state for each move.
-		private bool OnNativePointerMoveWithOverCheck(PointerRoutedEventArgs args, bool isOver)
+		private bool OnNativePointerMoveWithOverCheck(PointerRoutedEventArgs args, bool isOver, BubblingContext ctx = default)
 		{
 			var handledInManaged = false;
 			var isOverOrCaptured = ValidateAndUpdateCapture(args, isOver);
 
+			// Note: The 'ctx' here is for the "Move", not the "WithOverCheck", so we don't use it to update the over state.
+			//		 (i.e. even if the 'move' has been handled and is now flagged as 'IsInternal' -- so event won't be publicly raised unless handledEventToo --,
+			//		 if we are crossing the boundaries of the element we should still raise the enter/exit publicly.)
 			handledInManaged |= SetOver(args, isOver);
 
-			if (isOverOrCaptured)
+			if (!ctx.IsInternal && isOverOrCaptured)
 			{
 				// If this pointer was wrongly dispatched here (out of the bounds and not captured),
 				// we don't raise the 'move' event
@@ -873,7 +923,7 @@ namespace Windows.UI.Xaml
 			if (IsGestureRecognizerCreated)
 			{
 				var gestures = GestureRecognizer;
-				gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), isOverOrCaptured);
+				gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), !ctx.IsInternal || isOverOrCaptured);
 				if (gestures.IsDragging)
 				{
 					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessMoved(args);
@@ -903,8 +953,9 @@ namespace Windows.UI.Xaml
 			{
 				// We need to process only events that were not handled by a child control,
 				// so we should not use them for gesture recognition.
-				GestureRecognizer.ProcessMoveEvents(args.GetIntermediatePoints(this), !ctx.IsInternal || isOverOrCaptured);
-				if (GestureRecognizer.IsDragging)
+				var gestures = GestureRecognizer;
+				gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), !ctx.IsInternal || isOverOrCaptured);
+				if (gestures.IsDragging)
 				{
 					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessMoved(args);
 				}

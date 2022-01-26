@@ -65,6 +65,9 @@ namespace Windows.UI.Xaml.Input
 			return this;
 		}
 
+		internal bool IsOver(UIElement element)
+			=> new Rect(default, element.AssignedActualSize).Contains(GetCurrentPoint(element).Position);
+
 		/// <inheritdoc />
 		public override string ToString()
 			=> $"PointerRoutedEventArgs({Pointer}@{GetCurrentPoint(null).Position})";

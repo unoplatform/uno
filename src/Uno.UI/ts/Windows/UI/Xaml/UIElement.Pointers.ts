@@ -41,10 +41,10 @@
 			const element = WindowManager.current.getView(params.HtmlId);
 
 			if (params.Events & NativePointerEvent.pointerenter) {
-				element.addEventListener("pointerenter", UIElement.onPointerEnterReceived);
+				element.addEventListener("pointerover", UIElement.onPointerEnterReceived);
 			}
 			if (params.Events & NativePointerEvent.pointerleave) {
-				element.addEventListener("pointerleave", UIElement.onPointerLeaveReceived);
+				element.addEventListener("pointerout", UIElement.onPointerLeaveReceived);
 			}
 			if (params.Events & NativePointerEvent.pointerdown) {
 				element.addEventListener("pointerdown", UIElement.onPointerEventReceived);
@@ -72,10 +72,10 @@
 			}
 
 			if (params.Events & NativePointerEvent.pointerenter) {
-				element.removeEventListener("pointerenter", UIElement.onPointerEnterReceived);
+				element.removeEventListener("pointerover", UIElement.onPointerEnterReceived);
 			}
 			if (params.Events & NativePointerEvent.pointerleave) {
-				element.removeEventListener("pointerleave", UIElement.onPointerLeaveReceived);
+				element.removeEventListener("pointerout", UIElement.onPointerLeaveReceived);
 			}
 			if (params.Events & NativePointerEvent.pointerdown) {
 				element.removeEventListener("pointerdown", UIElement.onPointerEventReceived);
@@ -331,9 +331,9 @@
 
 		private static toNativeEvent(eventName: string): NativePointerEvent {
 			switch (eventName) {
-				case "pointerenter":
+				case "pointerover":
 					return NativePointerEvent.pointerenter;
-				case "pointerleave"  :
+				case "pointerout":
 					return NativePointerEvent.pointerleave;
 				case "pointerdown"	 :
 					return NativePointerEvent.pointerdown;
