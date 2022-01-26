@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Uno.UI.RuntimeTests.Tests.UnitTestsTests
 {
 	[TestClass]
-	class Give_UnitTest_DynamicData_From_Property : IDisposable
+	public class Give_UnitTest_DynamicData_From_Property : IDisposable
 	{
 		static int TestSucces_Count = 0;
 
