@@ -1,3 +1,5 @@
+#nullable enable
+
 using Windows.Foundation;
 
 namespace Windows.ApplicationModel;

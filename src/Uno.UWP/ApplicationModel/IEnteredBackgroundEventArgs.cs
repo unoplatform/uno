@@ -1,7 +1,12 @@
+#nullable enable
+
 using Windows.Foundation;
 
 namespace Windows.ApplicationModel;
 
+/// <summary>
+/// Gets the deferral object when an app has entered the background state.
+/// </summary>
 public partial interface IEnteredBackgroundEventArgs
 {
 	/// <summary>
