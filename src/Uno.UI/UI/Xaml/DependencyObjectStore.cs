@@ -1552,6 +1552,10 @@ namespace Windows.UI.Xaml
 					}
 				}
 			}
+
+			// Explicit dispose to return HashtableEx's internal array to the pool
+			// without having to rely on GC's finalizers.
+			ancestors.Dispose();
 		}
 
 		private static bool IsAncestor(DependencyObject? instance, AncestorsDictionary map, object ancestor)

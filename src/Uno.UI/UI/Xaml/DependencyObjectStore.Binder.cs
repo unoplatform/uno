@@ -257,6 +257,7 @@ namespace Windows.UI.Xaml
 			}
 
 			_properties.Dispose();
+			_childrenBindableMap.Dispose();
 		}
 
 		private void OnDataContextChanged(object? providedDataContext, object? actualDataContext, DependencyPropertyValuePrecedences precedence)

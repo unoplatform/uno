@@ -39,6 +39,9 @@ namespace Windows.UI.Xaml
 				=> _entries.Add(key, value);
 
 			internal void Clear() => _entries.Clear();
+
+			internal void Dispose()
+				=> _entries.Dispose();
 		}
 	}
 }

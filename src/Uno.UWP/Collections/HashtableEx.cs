@@ -82,7 +82,25 @@ namespace Uno.Collections
 			public int hash_coll;   // Store hash code; sign bit means there was a collision.
 		}
 
-		private bucket[] _buckets = null!;
+		private readonly struct buckets
+		{
+			public readonly int Length;
+
+			public readonly bucket[] Array;
+
+			public buckets(int length)
+			{
+				Length = length;
+				Array = Uno.Buffers.ArrayPool<bucket>.Shared.Rent(length);
+			}
+
+			public void Return()
+			{
+				Uno.Buffers.ArrayPool<bucket>.Shared.Return(Array, true);
+			}
+		}
+
+		private buckets _buckets;
 
 		// The total number of entries in the hash table.
 		private int _count;
@@ -144,7 +162,7 @@ namespace Uno.Collections
 
 			// Avoid awfully small sizes
 			int hashsize = (rawsize > InitialSize) ? HashHelpers.GetPrime((int)rawsize) : InitialSize;
-			_buckets = new bucket[hashsize];
+			_buckets = new buckets(hashsize);
 
 			_loadsize = (int)(_loadFactor * hashsize);
 			// Based on the current algorithm, loadsize must be less than hashsize.
@@ -168,24 +186,24 @@ namespace Uno.Collections
 		// Constructs a new hashtable containing a copy of the entries in the given
 		// dictionary. The hashtable is created with a load factor of 1.0.
 		//
-		public HashtableEx(IDictionary d) : this(d, 1.0f)
+		public HashtableEx(HashtableEx d) : this(d, 1.0f)
 		{
 		}
 
 		// Constructs a new hashtable containing a copy of the entries in the given
 		// dictionary. The hashtable is created with the given load factor.
 		//
-		public HashtableEx(IDictionary d, float loadFactor)
+		public HashtableEx(HashtableEx d, float loadFactor)
 			: this(d, loadFactor, (IEqualityComparer?)null)
 		{
 		}
 
-		public HashtableEx(IDictionary d, IEqualityComparer? equalityComparer)
+		public HashtableEx(HashtableEx d, IEqualityComparer? equalityComparer)
 			: this(d, 1.0f, equalityComparer)
 		{
 		}
 
-		public HashtableEx(IDictionary d, float loadFactor, IEqualityComparer? equalityComparer)
+		public HashtableEx(HashtableEx d, float loadFactor, IEqualityComparer? equalityComparer)
 			: this(d != null ? d.Count : 0, loadFactor, equalityComparer)
 		{
 			if (d == null)
@@ -194,6 +212,11 @@ namespace Uno.Collections
 			IDictionaryEnumerator e = d.GetEnumerator();
 			while (e.MoveNext())
 				Add(e.Key, e.Value);
+		}
+
+		public void Dispose()
+		{
+			_buckets.Return();
 		}
 
 		// ?InitHash? is basically an implementation of classic DoubleHashing (see http://en.wikipedia.org/wiki/Double_hashing)
@@ -246,11 +269,14 @@ namespace Uno.Collections
 			if (_count == 0 && _occupancy == 0)
 				return;
 
+			// Local alias for performance
+			var bucketsArray = _buckets.Array;
+
 			for (int i = 0; i < _buckets.Length; i++)
 			{
-				_buckets[i].hash_coll = 0;
-				_buckets[i].key = null;
-				_buckets[i].val = null;
+				bucketsArray[i].hash_coll = 0;
+				bucketsArray[i].key = null;
+				bucketsArray[i].val = null;
 			}
 
 			_count = 0;
@@ -262,7 +288,7 @@ namespace Uno.Collections
 		// to those Objects.
 		public virtual object Clone()
 		{
-			bucket[] lbuckets = _buckets;
+			buckets lbuckets = _buckets;
 			HashtableEx ht = new HashtableEx(_count, _keycomparer);
 			ht._loadFactor = _loadFactor;
 			ht._count = 0;
@@ -271,10 +297,10 @@ namespace Uno.Collections
 			while (bucket > 0)
 			{
 				bucket--;
-				object? keyv = lbuckets[bucket].key;
-				if ((keyv != null) && (keyv != lbuckets))
+				object? keyv = lbuckets.Array[bucket].key;
+				if ((keyv != null) && (keyv != lbuckets.Array))
 				{
-					ht[keyv] = lbuckets[bucket].val;
+					ht[keyv] = lbuckets.Array[bucket].val;
 				}
 			}
 
@@ -298,7 +324,7 @@ namespace Uno.Collections
 			}
 
 			// Take a snapshot of buckets, in case another thread resizes table
-			bucket[] lbuckets = _buckets;
+			buckets lbuckets = _buckets;
 			uint hashcode = InitHash(key, lbuckets.Length, out uint seed, out uint incr);
 			int ntry = 0;
 
@@ -306,7 +332,7 @@ namespace Uno.Collections
 			int bucketNumber = (int)(seed % (uint)lbuckets.Length);
 			do
 			{
-				b = lbuckets[bucketNumber];
+				b = lbuckets.Array[bucketNumber];
 				if (b.key == null)
 				{
 					return false;
@@ -327,11 +353,14 @@ namespace Uno.Collections
 		//
 		public virtual bool ContainsValue(object? value)
 		{
+			// Local alias for performance
+			var bucketsArray = _buckets.Array;
+
 			if (value == null)
 			{
 				for (int i = _buckets.Length; --i >= 0;)
 				{
-					if (_buckets[i].key != null && _buckets[i].key != _buckets && _buckets[i].val == null)
+					if (bucketsArray[i].key != null && bucketsArray[i].key != bucketsArray && bucketsArray[i].val == null)
 						return true;
 				}
 			}
@@ -339,7 +368,7 @@ namespace Uno.Collections
 			{
 				for (int i = _buckets.Length; --i >= 0;)
 				{
-					object? val = _buckets[i].val;
+					object? val = bucketsArray[i].val;
 					if (val != null && val.Equals(value))
 						return true;
 				}
@@ -355,11 +384,11 @@ namespace Uno.Collections
 			Debug.Assert(array != null);
 			Debug.Assert(array!.Rank == 1);
 
-			bucket[] lbuckets = _buckets;
+			buckets lbuckets = _buckets;
 			for (int i = lbuckets.Length; --i >= 0;)
 			{
-				object? keyv = lbuckets[i].key;
-				if ((keyv != null) && (keyv != _buckets))
+				object? keyv = lbuckets.Array[i].key;
+				if ((keyv != null) && (keyv != _buckets.Array))
 				{
 					array.SetValue(keyv, arrayIndex++);
 				}
@@ -374,13 +403,13 @@ namespace Uno.Collections
 			Debug.Assert(array != null);
 			Debug.Assert(array!.Rank == 1);
 
-			bucket[] lbuckets = _buckets;
+			buckets lbuckets = _buckets;
 			for (int i = lbuckets.Length; --i >= 0;)
 			{
-				object? keyv = lbuckets[i].key;
-				if ((keyv != null) && (keyv != _buckets))
+				object? keyv = lbuckets.Array[i].key;
+				if ((keyv != null) && (keyv != _buckets.Array))
 				{
-					DictionaryEntry entry = new DictionaryEntry(keyv, lbuckets[i].val);
+					DictionaryEntry entry = new DictionaryEntry(keyv, lbuckets.Array[i].val);
 					array.SetValue(entry, arrayIndex++);
 				}
 			}
@@ -410,13 +439,13 @@ namespace Uno.Collections
 		{
 			KeyValuePairs[] array = new KeyValuePairs[_count];
 			int index = 0;
-			bucket[] lbuckets = _buckets;
+			buckets lbuckets = _buckets;
 			for (int i = lbuckets.Length; --i >= 0;)
 			{
-				object? keyv = lbuckets[i].key;
-				if ((keyv != null) && (keyv != _buckets))
+				object? keyv = lbuckets.Array[i].key;
+				if ((keyv != null) && (keyv != _buckets.Array))
 				{
-					array[index++] = new KeyValuePairs(keyv, lbuckets[i].val);
+					array[index++] = new KeyValuePairs(keyv, lbuckets.Array[i].val);
 				}
 			}
 
@@ -431,13 +460,13 @@ namespace Uno.Collections
 			Debug.Assert(array != null);
 			Debug.Assert(array!.Rank == 1);
 
-			bucket[] lbuckets = _buckets;
+			buckets lbuckets = _buckets;
 			for (int i = lbuckets.Length; --i >= 0;)
 			{
-				object? keyv = lbuckets[i].key;
-				if ((keyv != null) && (keyv != _buckets))
+				object? keyv = lbuckets.Array[i].key;
+				if ((keyv != null) && (keyv != _buckets.Array))
 				{
-					array.SetValue(lbuckets[i].val, arrayIndex++);
+					array.SetValue(lbuckets.Array[i].val, arrayIndex++);
 				}
 			}
 		}
@@ -463,7 +492,7 @@ namespace Uno.Collections
 			}
 
 			// Take a snapshot of buckets, in case another thread does a resize
-			bucket[] lbuckets = _buckets;
+			buckets lbuckets = _buckets;
 			uint hashcode = InitHash(key, lbuckets.Length, out uint seed, out uint incr);
 			int ntry = 0;
 
@@ -488,7 +517,7 @@ namespace Uno.Collections
 				// we will see the 'isWriterProgress' flag to be true or 'version' is changed in the reader.
 				//
 
-				b = lbuckets[bucketNumber];
+				b = lbuckets.Array[bucketNumber];
 
 				if (b.key == null)
 				{
@@ -540,22 +569,30 @@ namespace Uno.Collections
 			//      at all times
 			//   2) Protect against an OutOfMemoryException while allocating this
 			//      new bucket[].
-			bucket[] newBuckets = new bucket[newsize];
+			buckets newBuckets = new buckets(newsize);
+
+			// Local alias for performance
+			var bucketsArray = _buckets.Array;
 
 			// rehash table into new buckets
 			int nb;
 			for (nb = 0; nb < _buckets.Length; nb++)
 			{
-				bucket oldb = _buckets[nb];
-				if ((oldb.key != null) && (oldb.key != _buckets))
+				bucket oldb = bucketsArray[nb];
+				if ((oldb.key != null) && (oldb.key != bucketsArray))
 				{
 					int hashcode = oldb.hash_coll & 0x7FFFFFFF;
-					putEntry(newBuckets, oldb.key, oldb.val, hashcode);
+					putEntry(ref newBuckets, oldb.key, oldb.val, hashcode);
 				}
 			}
 
+			var previousBuckets = _buckets;
 			// New bucket[] is good to go - replace buckets and other internal state.
 			_buckets = newBuckets;
+
+			// Return the bucket's array to the pool
+			previousBuckets.Return();
+
 			_loadsize = (int)(_loadFactor * newsize);
 			// minimum size of hashtable is 3 now and maximum loadFactor is 0.72 now.
 			Debug.Assert(_loadsize < newsize, "Our current implementation means this is not possible.");
@@ -606,7 +643,7 @@ namespace Uno.Collections
 		protected virtual bool KeyEquals(object? item, object key)
 		{
 			Debug.Assert(key != null, "key can't be null here!");
-			if (object.ReferenceEquals(_buckets, item))
+			if (object.ReferenceEquals(_buckets.Array, item))
 			{
 				return false;
 			}
@@ -661,6 +698,9 @@ namespace Uno.Collections
 				rehash();
 			}
 
+			// Local alias for access performance
+			var bucketsArray = _buckets.Array;
+
 			// Assume we only have one thread writing concurrently.  Modify
 			// buckets to contain new data, as long as we insert in the right order.
 			uint hashcode = InitHash(key, _buckets.Length, out uint seed, out uint incr);
@@ -674,14 +714,14 @@ namespace Uno.Collections
 				// that once contained an entry and also has had a collision.
 				// We need to search this entire collision chain because we have to ensure that there are no
 				// duplicate entries in the table.
-				if (emptySlotNumber == -1 && (_buckets[bucketNumber].key == _buckets) && (_buckets[bucketNumber].hash_coll < 0))// (((buckets[bucketNumber].hash_coll & unchecked(0x80000000))!=0)))
+				if (emptySlotNumber == -1 && (bucketsArray[bucketNumber].key == bucketsArray) && (bucketsArray[bucketNumber].hash_coll < 0))// (((buckets[bucketNumber].hash_coll & unchecked(0x80000000))!=0)))
 					emptySlotNumber = bucketNumber;
 
 				// Insert the key/value pair into this bucket if this bucket is empty and has never contained an entry
 				// OR
 				// This bucket once contained an entry but there has never been a collision
-				if ((_buckets[bucketNumber].key == null) ||
-					(_buckets[bucketNumber].key == _buckets && ((_buckets[bucketNumber].hash_coll & unchecked(0x80000000)) == 0)))
+				if ((bucketsArray[bucketNumber].key == null) ||
+					(bucketsArray[bucketNumber].key == bucketsArray && ((bucketsArray[bucketNumber].hash_coll & unchecked(0x80000000)) == 0)))
 				{
 					// If we have found an available bucket that has never had a collision, but we've seen an available
 					// bucket in the past that has the collision bit set, use the previous bucket instead
@@ -690,9 +730,9 @@ namespace Uno.Collections
 
 					// We pretty much have to insert in this order.  Don't set hash
 					// code until the value & key are set appropriately.
-					_buckets[bucketNumber].val = nvalue;
-					_buckets[bucketNumber].key = key;
-					_buckets[bucketNumber].hash_coll |= (int)hashcode;
+					bucketsArray[bucketNumber].val = nvalue;
+					bucketsArray[bucketNumber].key = key;
+					bucketsArray[bucketNumber].hash_coll |= (int)hashcode;
 					_count++;
 
 					return;
@@ -701,14 +741,14 @@ namespace Uno.Collections
 				// The current bucket is in use
 				// OR
 				// it is available, but has had the collision bit set and we have already found an available bucket
-				if (((_buckets[bucketNumber].hash_coll & 0x7FFFFFFF) == hashcode) &&
-					KeyEquals(_buckets[bucketNumber].key, key))
+				if (((bucketsArray[bucketNumber].hash_coll & 0x7FFFFFFF) == hashcode) &&
+					KeyEquals(bucketsArray[bucketNumber].key, key))
 				{
 					if (add)
 					{
 						throw new ArgumentException("SR.Argument_AddingDuplicate__"); // SR.Format("SR.Argument_AddingDuplicate__", _buckets[bucketNumber].key, key));
 					}
-					_buckets[bucketNumber].val = nvalue;
+					bucketsArray[bucketNumber].val = nvalue;
 
 					return;
 				}
@@ -717,9 +757,9 @@ namespace Uno.Collections
 				// unless we have remembered an available slot previously.
 				if (emptySlotNumber == -1)
 				{// We don't need to set the collision bit here since we already have an empty slot
-					if (_buckets[bucketNumber].hash_coll >= 0)
+					if (bucketsArray[bucketNumber].hash_coll >= 0)
 					{
-						_buckets[bucketNumber].hash_coll |= unchecked((int)0x80000000);
+						bucketsArray[bucketNumber].hash_coll |= unchecked((int)0x80000000);
 						_occupancy++;
 					}
 				}
@@ -732,9 +772,9 @@ namespace Uno.Collections
 			{
 				// We pretty much have to insert in this order.  Don't set hash
 				// code until the value & key are set appropriately.
-				_buckets[emptySlotNumber].val = nvalue;
-				_buckets[emptySlotNumber].key = key;
-				_buckets[emptySlotNumber].hash_coll |= (int)hashcode;
+				bucketsArray[emptySlotNumber].val = nvalue;
+				bucketsArray[emptySlotNumber].key = key;
+				bucketsArray[emptySlotNumber].hash_coll |= (int)hashcode;
 				_count++;
 
 				return;
@@ -747,26 +787,29 @@ namespace Uno.Collections
 			throw new InvalidOperationException("SR.InvalidOperation_HashInsertFailed");
 		}
 
-		private void putEntry(bucket[] newBuckets, object key, object? nvalue, int hashcode)
+		private void putEntry(ref buckets newBuckets, object key, object? nvalue, int hashcode)
 		{
 			Debug.Assert(hashcode >= 0, "hashcode >= 0");  // make sure collision bit (sign bit) wasn't set.
+
+			// Local alias for access speed
+			var newBucketsArray = newBuckets.Array;
 
 			uint seed = (uint)hashcode;
 			uint incr = unchecked((uint)(1 + ((seed * HashHelpers.HashPrime) % ((uint)newBuckets.Length - 1))));
 			int bucketNumber = (int)(seed % (uint)newBuckets.Length);
 			while (true)
 			{
-				if ((newBuckets[bucketNumber].key == null) || (newBuckets[bucketNumber].key == _buckets))
+				if ((newBucketsArray[bucketNumber].key == null) || (newBucketsArray[bucketNumber].key == _buckets.Array))
 				{
-					newBuckets[bucketNumber].val = nvalue;
-					newBuckets[bucketNumber].key = key;
-					newBuckets[bucketNumber].hash_coll |= hashcode;
+					newBucketsArray[bucketNumber].val = nvalue;
+					newBucketsArray[bucketNumber].key = key;
+					newBucketsArray[bucketNumber].hash_coll |= hashcode;
 					return;
 				}
 
-				if (newBuckets[bucketNumber].hash_coll >= 0)
+				if (newBucketsArray[bucketNumber].hash_coll >= 0)
 				{
-					newBuckets[bucketNumber].hash_coll |= unchecked((int)0x80000000);
+					newBucketsArray[bucketNumber].hash_coll |= unchecked((int)0x80000000);
 					_occupancy++;
 				}
 				bucketNumber = (int)(((long)bucketNumber + incr) % (uint)newBuckets.Length);
@@ -788,25 +831,28 @@ namespace Uno.Collections
 			uint hashcode = InitHash(key, _buckets.Length, out uint seed, out uint incr);
 			int ntry = 0;
 
+			// Local alias for access speed
+			var bucketsArray = _buckets.Array;
+
 			bucket b;
 			int bn = (int)(seed % (uint)_buckets.Length);  // bucketNumber
 			do
 			{
-				b = _buckets[bn];
+				b = bucketsArray[bn];
 				if (((b.hash_coll & 0x7FFFFFFF) == hashcode) &&
 					KeyEquals(b.key, key))
 				{
 					// Clear hash_coll field, then key, then value
-					_buckets[bn].hash_coll &= unchecked((int)0x80000000);
-					if (_buckets[bn].hash_coll != 0)
+					bucketsArray[bn].hash_coll &= unchecked((int)0x80000000);
+					if (bucketsArray[bn].hash_coll != 0)
 					{
-						_buckets[bn].key = _buckets;
+						bucketsArray[bn].key = bucketsArray;
 					}
 					else
 					{
-						_buckets[bn].key = null;
+						bucketsArray[bn].key = null;
 					}
-					_buckets[bn].val = null;  // Free object references sooner & simplify ContainsValue.
+					bucketsArray[bn].val = null;  // Free object references sooner & simplify ContainsValue.
 					_count--;
 					return;
 				}
@@ -931,14 +977,17 @@ namespace Uno.Collections
 
 			public bool MoveNext()
 			{
+				// Local alias for performance
+				var bucketsArray = _hashtable._buckets.Array;
+
 				while (_bucket > 0)
 				{
 					_bucket--;
-					object? keyv = _hashtable._buckets[_bucket].key;
-					if ((keyv != null) && (keyv != _hashtable._buckets))
+					object? keyv = bucketsArray[_bucket].key;
+					if ((keyv != null) && (keyv != bucketsArray))
 					{
 						_currentKey = keyv;
-						_currentValue = _hashtable._buckets[_bucket].val;
+						_currentValue = bucketsArray[_bucket].val;
 						_current = true;
 						return true;
 					}
