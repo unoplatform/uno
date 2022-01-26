@@ -233,14 +233,20 @@ namespace Windows.UI.Xaml
 		private void OnEnteredBackground(NSNotification notification)
 		{
 			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
-			EnteredBackground?.Invoke(this, new EnteredBackgroundEventArgs());
+
+			var enteredBackgroundArgs = new EnteredBackgroundEventArgs(null);
+			EnteredBackground?.Invoke(this, enteredBackgroundArgs);
+			enteredBackgroundArgs.DeferralManager.EventRaiseCompleted();
 
 			OnSuspending();
 		}
 
 		private void OnLeavingBackground(NSNotification notification)
-		{			
-			LeavingBackground?.Invoke(this, new LeavingBackgroundEventArgs());
+		{
+			var leavingBackgroundArgs = new LeavingBackgroundEventArgs(null);
+			LeavingBackground?.Invoke(this, leavingBackgroundArgs);
+			leavingBackgroundArgs.DeferralManager.EventRaiseCompleted();
+
 			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
 		}
 
