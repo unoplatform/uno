@@ -681,26 +681,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			AssertEx.AssertHasColor(ellipse.Stroke, Colors.DarkGreen);
 		}
 
-		private static async Task<bool> SwapSystemTheme()
-		{
-			var currentTheme = Application.Current.RequestedTheme;
-			var targetTheme = currentTheme == ApplicationTheme.Light ?
-				ApplicationTheme.Dark :
-				ApplicationTheme.Light;
-#if NETFX_CORE
-			if (!UnitTestsApp.App.EnableInteractiveTests || targetTheme == ApplicationTheme.Light)
-			{
-				return false;
-			}
-
-			_swapTask = _swapTask ?? GetSwapTask();
-
-			await _swapTask;
-#else
-			Application.Current.SetExplicitRequestedTheme(targetTheme);
-#endif
-			Assert.AreEqual(targetTheme, Application.Current.RequestedTheme);
-			return true;
-		}
+		internal static Task<bool> SwapSystemTheme() => ThemeHelper.SwapSystemTheme();
 	}
 }

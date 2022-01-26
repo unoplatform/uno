@@ -200,13 +200,13 @@ namespace Uno.UI
 			{
 				updateReason |= ResourceUpdateReason.ThemeResource;
 			}
-			if (isHotReloadSupported)
+			else
+			{
+				updateReason |= ResourceUpdateReason.StaticResourceLoading;
+			}
+			if (isHotReloadSupported && !FeatureConfiguration.Xaml.ForceHotReloadDisabled)
 			{
 				updateReason |= ResourceUpdateReason.HotReload;
-			}
-			if (updateReason == ResourceUpdateReason.None)
-			{
-				updateReason = ResourceUpdateReason.StaticResourceLoading;
 			}
 
 			ApplyResource(owner, property, new SpecializedResourceDictionary.ResourceKey(resourceKey), updateReason, context, null);
@@ -219,9 +219,12 @@ namespace Uno.UI
 			{
 				owner.SetValue(property, BindingPropertyHelper.Convert(() => property.Type, value), precedence);
 
-				if (updateReason == ResourceUpdateReason.StaticResourceLoading)
+				// If it's {StaticResource Foo} and we managed to resolve it at parse-time, then we don't want to update it again (per UWP).
+				updateReason &= ~ResourceUpdateReason.StaticResourceLoading;
+
+				if (updateReason == ResourceUpdateReason.None)
 				{
-					// If it's {StaticResource Foo} and we managed to resolve it at parse-time, then we don't want to update it again (per UWP).
+					// If there's no other reason, don't create a resource binding.
 					return;
 				}
 			}

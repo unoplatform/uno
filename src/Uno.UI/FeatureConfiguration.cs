@@ -589,6 +589,11 @@ namespace Uno.UI
 			[Obsolete("This flag is no longer used.")]
 			[EditorBrowsable(EditorBrowsableState.Never)]
 			public static int MaxRecursiveResolvingDepth { get; set; } = 12;
+
+			/// <summary>
+			/// By default, XAML hot reload will be enabled when building in debug. Setting this flag to 'true' will force it to be disabled.
+			/// </summary>
+			public static bool ForceHotReloadDisabled { get; set; } = false;
 		}
 
 		public static class DatePicker

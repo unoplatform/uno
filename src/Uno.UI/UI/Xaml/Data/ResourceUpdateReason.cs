@@ -28,5 +28,9 @@ namespace Windows.UI.Xaml.Data
 		/// Updates that should be propagated recursively through the visual tree
 		/// </summary>
 		PropagatesThroughTree = ThemeResource | HotReload,
+		/// <summary>
+		/// Updates that should be re-resolved when the bound object or its parent is loaded into the visual tree
+		/// </summary>
+		ResolvedOnLoading = StaticResourceLoading | ThemeResource,
 	}
 }

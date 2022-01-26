@@ -921,7 +921,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var brush = new SolidColorBrush { Color = Colors.Red };
 			dictionary.TryGetValue("TestKey", out _);
 
-			dictionary.ThemeDictionaries.Add("Light", new WeakResourceInitializer(new Application(), o =>
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			dictionary.ThemeDictionaries.Add("Light", new WeakResourceInitializer(app, o =>
 				new ResourceDictionary
 				{
 					["TestKey"] = new WeakResourceInitializer(o, _ => brush)
