@@ -8,6 +8,11 @@ namespace Windows.System
 	{
 		private const string JsType = "Windows.System.MemoryManager";
 
+		static MemoryManager()
+		{
+			IsAvailable = true;
+		}
+
 		public static ulong AppMemoryUsage
 		{
 			get

@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml
 		private DependencyPropertyDetails? _dataContextPropertyDetails;
 		private DependencyPropertyDetails? _templatedParentPropertyDetails;
 
-		private readonly static ArrayPool<DependencyPropertyDetails?> _pool = ArrayPool<DependencyPropertyDetails?>.Create(500, 100);
+		private readonly static ArrayPool<DependencyPropertyDetails?> _pool = ArrayPool<DependencyPropertyDetails?>.Shared;
 
 		private DependencyPropertyDetails?[]? _entries;
 		private int _entriesLength;
@@ -80,7 +80,6 @@ namespace Windows.UI.Xaml
 
 					// Entries are pre-sorted by the DependencyProperty.GetPropertiesForType method
 					AssignEntries(entries, entriesLength);
-
 				}
 				else
 				{

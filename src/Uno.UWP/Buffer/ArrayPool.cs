@@ -48,7 +48,7 @@ namespace Uno.Buffers
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ArrayPool<T> EnsureSharedCreated()
         {
-            Interlocked.CompareExchange(ref s_sharedInstance, Create(), null);
+            Interlocked.CompareExchange(ref s_sharedInstance, new ArrayPool<T>(automaticManagement: true), null);
             return s_sharedInstance;
         }
 
