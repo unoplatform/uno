@@ -148,14 +148,7 @@ namespace Windows.UI.Xaml.Controls
 
 			Closing?.Invoke(this, closingArgs);
 
-			if (!closingArgs.IsDeferred)
-			{
-				Complete(closingArgs);
-			}
-			else
-			{
-				closingArgs.EventRaiseCompleted();
-			}
+			closingArgs.DeferralManager.EventRaiseCompleted();
 
 			return !closingArgs.Cancel;
 		}

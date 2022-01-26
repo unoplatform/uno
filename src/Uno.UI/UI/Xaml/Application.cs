@@ -274,7 +274,9 @@ namespace Windows.UI.Xaml
 			if (!_isInBackground)
 			{
 				_isInBackground = true;
-				EnteredBackground?.Invoke(this, new EnteredBackgroundEventArgs());
+				var enteredEventArgs = new EnteredBackgroundEventArgs(null);
+				EnteredBackground?.Invoke(this, enteredEventArgs);
+				enteredEventArgs.DeferralManager.EventRaiseCompleted();
 			}
 		}
 
@@ -283,7 +285,9 @@ namespace Windows.UI.Xaml
 			if (_isInBackground)
 			{
 				_isInBackground = false;
-				LeavingBackground?.Invoke(this, new LeavingBackgroundEventArgs());
+				var leavingEventArgs = new LeavingBackgroundEventArgs(null);
+				LeavingBackground?.Invoke(this, leavingEventArgs);
+				leavingEventArgs.DeferralManager.EventRaiseCompleted();
 			}
 		}
 

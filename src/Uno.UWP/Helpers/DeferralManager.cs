@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Core;
 
@@ -11,6 +12,7 @@ namespace Uno.Helpers
 	internal class DeferralManager<T>
 	{
 		private readonly Func<DeferralCompletedHandler, T> _deferralFactory;
+		private readonly TaskCompletionSource<object> _allDeferralsCompletedCompletionSource;
 
 		/// <summary>
 		/// Start the count at 1, this ensures the deferral won't be completed until all subscribers to the corresponding event have had a
@@ -21,6 +23,7 @@ namespace Uno.Helpers
 		public DeferralManager(Func<DeferralCompletedHandler, T> deferralFactory)
 		{
 			_deferralFactory = deferralFactory;
+			_allDeferralsCompletedCompletionSource = new TaskCompletionSource<object>();
 		}
 
 		internal event EventHandler Completed;
@@ -47,9 +50,14 @@ namespace Uno.Helpers
 		}
 
 		/// <summary>
-		/// This must be called after the event which gives out the referral has finished being raised.
+		/// This marks the deferral as ready for completion.
+		/// Must be called after the related event finished invoking.
+		/// In case the operation is not deferred, it will also synchronously raise
+		/// the Completed event.
 		/// </summary>
 		internal void EventRaiseCompleted() => DeferralCompleted();
+
+		internal Task WhenAllCompletedAsync() => _allDeferralsCompletedCompletionSource.Task;
 
 		private void DeferralCompleted()
 		{
@@ -57,6 +65,7 @@ namespace Uno.Helpers
 			if (_deferralsCount <= 0)
 			{
 				Completed?.Invoke(this, EventArgs.Empty);
+				_allDeferralsCompletedCompletionSource.TrySetResult(null);
 			}
 		}
 	}

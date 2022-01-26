@@ -66,7 +66,9 @@ namespace Windows.UI.Xaml
 			var window = Windows.UI.Xaml.Window.Current;
 			if (isVisible)
 			{
-				application?.LeavingBackground?.Invoke(application, new LeavingBackgroundEventArgs());
+				var leavingEventArgs = new LeavingBackgroundEventArgs(() => { });
+				application?.LeavingBackground?.Invoke(application, leavingEventArgs);
+				leavingEventArgs.DeferralManager.EventRaiseCompleted();
 				window?.OnVisibilityChanged(true);
 				window?.OnActivated(CoreWindowActivationState.CodeActivated);
 			}
@@ -74,7 +76,9 @@ namespace Windows.UI.Xaml
 			{
 				window?.OnActivated(CoreWindowActivationState.Deactivated);
 				window?.OnVisibilityChanged(false);
-				application?.EnteredBackground?.Invoke(application, new EnteredBackgroundEventArgs());
+				var enteredEventArgs = new EnteredBackgroundEventArgs(() => { });
+				application?.EnteredBackground?.Invoke(application, enteredEventArgs);
+				enteredEventArgs.DeferralManager.EventRaiseCompleted();
 			}
 
 			return 0;
