@@ -31,6 +31,7 @@ jobs:
     displayName: Build GTK Head
 
   - task: PublishBuildArtifacts@1
+    displayName: Publish GTK SamplesApp
     condition: always()
     inputs:
       PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Release\netcoreapp3.1
@@ -41,10 +42,22 @@ jobs:
     displayName: Build WPF Head
 
   - task: PublishBuildArtifacts@1
+    displayName: Publish WPF SamplesApp 
     condition: always()
     inputs:
       PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.WPF\bin\Release\netcoreapp3.1
       ArtifactName: skia-wpf-samples-app
+      ArtifactType: Container
+
+  - powershell: dotnet msbuild src/Uno.UI.RuntimeTests.Skia.WPF/Uno.UI.RuntimeTests.Skia.WPF.csproj /r /m /p:Configuration=Release /detailedsummary /m # /bl:$(build.artifactstagingdirectory)\build.binlog
+    displayName: Build WPF Runtime Tests
+
+  - task: PublishBuildArtifacts@1
+    displayName: Publish WPF Runtime Tests 
+    condition: always()
+    inputs:
+      PathtoPublish: $(Build.SourcesDirectory)\src\Uno.UI.RuntimeTests.Skia.WPF\bin\Release\
+      ArtifactName: skia-wpf-runtime-tests
       ArtifactType: Container
 
 ##
@@ -118,3 +131,52 @@ jobs:
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-gtk-runtime-tests-results.xml'
       failTaskOnFailedTests: true
 
+##
+## WPF
+##
+
+- job: Skia_WPF_Runtime_Tests
+  displayName: 'Skia WPF Runtime Tests'
+  timeoutInMinutes: 30
+  strategy:
+    matrix:
+      net47:
+        framework: "net472"
+      core:
+        framework: "netcoreapp3.1"
+      net50:
+        framework: "net5.0-windows"
+  pool:
+    vmImage: ${{ parameters.vmImage}}
+
+  dependsOn: Skia_Tests_Build
+
+  variables:
+    CombinedConfiguration: Release|Any CPU
+    CI_Build: true
+    # This is required to be able to use hard links as much as possible
+    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
+
+  steps:
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: skia-wpf-runtime-tests
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: templates/dotnet-install.yml
+    
+
+  - script: |
+        cd $(build.sourcesdirectory)/build/skia-wpf-runtime-tests/$(framework)
+        dotnet test Uno.UI.RuntimeTests.Skia.WPF.dll  --logger "trx;LogFileName=$(build.sourcesdirectory)/build/testresults/skia-wpf-runtime-tests-$(framework)-results.trx"
+
+    displayName: Run Skia WPF Runtime Tests $(framework)
+
+  - task: PublishTestResults@2
+    condition: always()
+    displayName: 'Publish WPF Runtime Tests Result'
+    inputs:
+      testRunTitle: 'Skia WPF Runtime Tests $(framework)'
+      testResultsFormat: 'VSTest'
+      testResultsFiles: '$(build.sourcesdirectory)/build/testresults/*.trx'
+      failTaskOnFailedTests: true    
