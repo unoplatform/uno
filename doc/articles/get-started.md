@@ -18,7 +18,8 @@ If you already use and love **JetBrains Rider** or **Visual Studio Code**, you c
 
 **Choose the IDE you want to use:**
 
- - [Get started with Visual Studio for Windows](get-started-vs.md)
+ - [Get started with Visual Studio 2017 or 2019 for Windows](get-started-vs.md)
+ - [Get started with Visual Studio 2022 for Windows](get-started-vs-2022.md)
  - [Get started with VS Code, Codespaces and GitPod](get-started-vscode.md)
  - [Get started with Rider](get-started-rider.md)
 
