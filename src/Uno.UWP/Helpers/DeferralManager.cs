@@ -56,17 +56,21 @@ internal class DeferralManager<T>
 	/// In case the operation is not deferred, it will also synchronously raise
 	/// the Completed event.
 	/// </summary>
-	internal void EventRaiseCompleted() => DeferralCompleted();
+	/// <returns>A value indicating whether the deferral completed synchronously.</returns>
+	internal bool EventRaiseCompleted() => DeferralCompleted();
 
 	internal Task WhenAllCompletedAsync() => _allDeferralsCompletedCompletionSource.Task;
 
-	private void DeferralCompleted()
+	private bool DeferralCompleted()
 	{
 		_deferralsCount--;
 		if (_deferralsCount <= 0)
 		{
 			Completed?.Invoke(this, EventArgs.Empty);
 			_allDeferralsCompletedCompletionSource.TrySetResult(null);
+			return true;
 		}
+
+		return false;
 	}
 }

@@ -10,7 +10,7 @@ namespace Windows.ApplicationModel;
 /// </summary>
 public sealed partial class SuspendingOperation : ISuspendingOperation
 {
-	internal SuspendingOperation(DateTimeOffset offset, Action? onComplete = null)
+	internal SuspendingOperation(DateTimeOffset offset, Action? onComplete)
 	{
 		Deadline = offset;
 		DeferralManager = new DeferralManager<SuspendingDeferral>(h => new SuspendingDeferral(h));

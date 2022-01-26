@@ -35,10 +35,8 @@ namespace Windows.UI.Xaml
 			Resuming?.Invoke(null, null);
 		}
 
-		partial void OnSuspendingPartial()
-		{
-			Suspending?.Invoke(this, new Windows.ApplicationModel.SuspendingEventArgs(new Windows.ApplicationModel.SuspendingOperation(DateTime.Now.AddSeconds(30))));
-		}
+		private SuspendingOperation CreateSuspendingOperation() =>
+			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(30), null);
 
 		public void Exit()
 		{

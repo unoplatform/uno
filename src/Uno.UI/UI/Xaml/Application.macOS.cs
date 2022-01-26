@@ -91,18 +91,12 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		partial void OnSuspendingPartial()
-		{
-			var operation = new SuspendingOperation(DateTime.Now.AddSeconds(30), () =>
+		private SuspendinOperation CreateSuspendingOperation() =>
+			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(30), () =>
 			{
 				Suspended = true;
 				NSApplication.SharedApplication.KeyWindow.PerformClose(null);
 			});
-
-			Suspending?.Invoke(this, new SuspendingEventArgs(operation));
-
-			operation.EventRaiseCompleted();
-		}
 
 		/// <summary>
 		/// This method enables UI Tests to get the output path

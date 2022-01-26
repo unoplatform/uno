@@ -302,13 +302,29 @@ namespace Windows.UI.Xaml
 
 		internal void OnSuspending()
 		{
-			var suspendingEventArgs = new SuspendingEventArgs(new SuspendingOperation(DateTime.Now.AddSeconds(30)));
-			CoreApplication.RaiseSuspending(suspendingEventArgs);
+			var suspendingOperation = CreateSuspendingOperation();
+			var suspendingEventArgs = new SuspendingEventArgs(suspendingOperation);
 
-			OnSuspendingPartial();
+			CoreApplication.RaiseSuspending(suspendingEventArgs);
+			Suspending?.Invoke(this, suspendingEventArgs);
+			
+			var completedSynchronously = suspendingOperation.DeferralManager.EventRaiseCompleted();
+
+#if !__IOS__ && !__ANDROID__ && !__MACOS__
+			// Asynchronous suspension is not supported on all targets, warn the user
+			if (!completedSynchronously && this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning(
+					"This platform does not support asynchronous Suspending deferral. " +
+					"Code executed after the of the method called by Suspending may not get executed.");
+			}
+#endif
 		}
 
-		partial void OnSuspendingPartial();
+#if !__IOS__ && !__ANDROID__ && !__MACOS__
+		private SuspendinOperation CreateSuspendingOperation() =>
+			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(0), null);
+#endif
 
 		protected virtual void OnWindowCreated(global::Windows.UI.Xaml.WindowCreatedEventArgs args)
 		{

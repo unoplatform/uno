@@ -129,14 +129,8 @@ namespace Windows.UI.Xaml
 			_preventSecondaryActivationHandling = false;
 		}
 
-		partial void OnSuspendingPartial()
-		{
-			var operation = new SuspendingOperation(DateTime.Now.AddSeconds(10));
-
-			Suspending?.Invoke(this, new SuspendingEventArgs(operation));
-
-			_suspended = true;
-		}
+		private SuspendinOperation CreateSuspendingOperation() =>
+			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(10), () => _suspended = true);
 
 		public override void WillEnterForeground(UIApplication application)
 			=> OnResuming();

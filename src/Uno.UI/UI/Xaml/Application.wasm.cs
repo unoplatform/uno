@@ -141,20 +141,6 @@ namespace Windows.UI.Xaml
 			Current?.OnSuspending();
 		}
 
-		partial void OnSuspendingPartial()
-		{
-			var completed = false;
-			var operation = new SuspendingOperation(DateTime.Now.AddSeconds(0), () => completed = true);
-
-			Suspending?.Invoke(this, new SuspendingEventArgs(operation));
-			operation.EventRaiseCompleted();
-
-			if (!completed && this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().LogWarning($"This platform does not support asynchronous Suspending deferral. Code executed after the of the method called by Suspending may not get executed.");
-			}
-		}
-
 		private void ObserveApplicationVisibility()
 		{
 			WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.observeVisibility()");
