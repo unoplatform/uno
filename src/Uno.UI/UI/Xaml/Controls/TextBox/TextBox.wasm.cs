@@ -108,7 +108,7 @@ namespace Windows.UI.Xaml.Controls
 		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
 		{
 			base.OnIsEnabledChanged(e);
-
+			UpdateVisualState();
 			ApplyEnabled(e.NewValue);
 		}
 
