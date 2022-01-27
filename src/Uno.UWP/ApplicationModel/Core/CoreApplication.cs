@@ -40,25 +40,25 @@ public partial class CoreApplication
 	/// <summary>
 	/// Raises the <see cref="Resuming"/> event.
 	/// </summary>
-	internal static void OnResuming() => Resuming?.Invoke(null, null);
+	internal static void RaiseResuming() => Resuming?.Invoke(null, null);
 
 	/// <summary>
 	/// Raises the <see cref="Suspending"/> event.
 	/// </summary>
 	/// <param name="args">Suspending event args.</param>
-	internal static void OnSuspending(SuspendingEventArgs args) => Suspending?.Invoke(null, args);
+	internal static void RaiseSuspending(SuspendingEventArgs args) => Suspending?.Invoke(null, args);
 
 	/// <summary>
 	/// Raises the <see cref="EnteredBackground"/> event.
 	/// </summary>
 	/// <param name="args">Entered background event args.</param>
-	internal static void OnEnteredBackground(EnteredBackgroundEventArgs args) => EnteredBackground?.Invoke(null, args);
+	internal static void RaiseEnteredBackground(EnteredBackgroundEventArgs args) => EnteredBackground?.Invoke(null, args);
 
 	/// <summary>
 	/// Raises the <see cref="LeavingBackground"/> event.
 	/// </summary>
 	/// <param name="args">Leaving background event args.</param>
-	internal static void OnLeavingBackground(LeavingBackgroundEventArgs args) => LeavingBackground?.Invoke(null, args);
+	internal static void RaiseLeavingBackground(LeavingBackgroundEventArgs args) => LeavingBackground?.Invoke(null, args);
 
 	public static CoreApplicationView GetCurrentView() => _currentView;
 

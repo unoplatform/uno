@@ -269,30 +269,41 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal void OnEnteredBackground()
+		internal void RaiseEnteredBackground(Action onComplete)
 		{
 			if (!_isInBackground)
 			{
 				_isInBackground = true;
 				var enteredEventArgs = new EnteredBackgroundEventArgs(null);
 				EnteredBackground?.Invoke(this, enteredEventArgs);
+				CoreApplication.RaiseEnteredBackground(enteredEventArgs);
 				enteredEventArgs.DeferralManager.EventRaiseCompleted();
+			}
+			else
+			{
+				onComplete?.Invoke();
 			}
 		}
 
-		internal void OnLeavingBackground()
+		internal void RaiseLeavingBackground(Action onComplete)
 		{
 			if (_isInBackground)
 			{
 				_isInBackground = false;
 				var leavingEventArgs = new LeavingBackgroundEventArgs(null);
 				LeavingBackground?.Invoke(this, leavingEventArgs);
+				CoreApplication.RaiseLeavingBackground(leavingEventArgs);
 				leavingEventArgs.DeferralManager.EventRaiseCompleted();
+			}
+			else
+			{
+				onComplete?.Invoke();
 			}
 		}
 
-		internal void OnResuming()
+		internal void RaiseResuming()
 		{
+			Resuming?.Invoke(null, null);
 			CoreApplication.RaiseResuming();
 
 			OnResumingPartial();
@@ -300,14 +311,13 @@ namespace Windows.UI.Xaml
 
 		partial void OnResumingPartial();
 
-		internal void OnSuspending()
+		internal void RaiseSuspending()
 		{
 			var suspendingOperation = CreateSuspendingOperation();
 			var suspendingEventArgs = new SuspendingEventArgs(suspendingOperation);
 
-			CoreApplication.RaiseSuspending(suspendingEventArgs);
 			Suspending?.Invoke(this, suspendingEventArgs);
-			
+			CoreApplication.RaiseSuspending(suspendingEventArgs);			
 			var completedSynchronously = suspendingOperation.DeferralManager.EventRaiseCompleted();
 
 #if !__IOS__ && !__ANDROID__ && !__MACOS__
@@ -322,7 +332,11 @@ namespace Windows.UI.Xaml
 		}
 
 #if !__IOS__ && !__ANDROID__ && !__MACOS__
-		private SuspendinOperation CreateSuspendingOperation() =>
+		/// <summary>
+		/// On platforms which don't support asynchronous suspension we indicate that with immediate
+		/// deadline and warning in logs.
+		/// </summary>
+		private SuspendingOperation CreateSuspendingOperation() =>
 			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(0), null);
 #endif
 

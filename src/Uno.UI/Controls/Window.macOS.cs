@@ -608,12 +608,12 @@ namespace Uno.UI.Controls
 			{
 				Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
 				Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
-				Windows.UI.Xaml.Application.Current?.OnEnteredBackground();
+				Windows.UI.Xaml.Application.Current?.RaiseEnteredBackground();
 			}
 
 			public override void DidDeminiaturize(NSNotification notification)
 			{
-				Windows.UI.Xaml.Application.Current?.OnLeavingBackground();
+				Windows.UI.Xaml.Application.Current?.RaiseLeavingBackground();
 				Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
 				Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
 			}

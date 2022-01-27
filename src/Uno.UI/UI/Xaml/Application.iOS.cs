@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml
 			_preventSecondaryActivationHandling = false;
 		}
 
-		private SuspendinOperation CreateSuspendingOperation() =>
+		private SuspendingOperation CreateSuspendingOperation() =>
 			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(10), () => _suspended = true);
 
 		public override void WillEnterForeground(UIApplication application)
@@ -228,20 +228,13 @@ namespace Windows.UI.Xaml
 		{
 			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
 
-			var enteredBackgroundArgs = new EnteredBackgroundEventArgs(null);
-			EnteredBackground?.Invoke(this, enteredBackgroundArgs);
-			enteredBackgroundArgs.DeferralManager.EventRaiseCompleted();
-
-			OnSuspending();
+			RaiseEnteredBackground(() => RaiseSuspending());
 		}
 
 		private void OnLeavingBackground(NSNotification notification)
 		{
-			var leavingBackgroundArgs = new LeavingBackgroundEventArgs(null);
-			LeavingBackground?.Invoke(this, leavingBackgroundArgs);
-			leavingBackgroundArgs.DeferralManager.EventRaiseCompleted();
-
-			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
+			RaiseResuming();
+			RaiseLeavingBackground(() => Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true));
 		}
 
 		private void OnActivated(NSNotification notification)

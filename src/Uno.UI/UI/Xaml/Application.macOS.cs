@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private SuspendinOperation CreateSuspendingOperation() =>
+		private SuspendingOperation CreateSuspendingOperation() =>
 			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(30), () =>
 			{
 				Suspended = true;
@@ -179,14 +179,19 @@ namespace Windows.UI.Xaml
 		private void OnEnteredBackground(NSNotification notification)
 		{
 			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
-			EnteredBackground?.Invoke(this, new EnteredBackgroundEventArgs());
+
+			var enteredBackgroundEventArgs = new EnteredBackgroundEventArgs(null);
+			EnteredBackground?.Invoke(this, enteredBackgroundEventArgs);
+			enteredBackgroundEventArgs.DeferralManager.EventRaiseCompleted();
 
 			OnSuspending();
 		}
 
 		private void OnLeavingBackground(NSNotification notification)
 		{
-			LeavingBackground?.Invoke(this, new LeavingBackgroundEventArgs());
+			var leavingBackgroundEventArgs = new LeavingBackgroundEventArgs(null);
+			LeavingBackground?.Invoke(this, leavingBackgroundEventArgs);
+			leavingBackgroundEventArgs.DeferralManager.EventRaiseCompleted();
 			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
 		}
 
