@@ -7,6 +7,7 @@ using Windows.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Tests.Enterprise;
+using Windows.UI.Core;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -99,27 +100,44 @@ namespace Private.Infrastructure
 			/// </remarks>
 			internal static async Task WaitForLoaded(FrameworkElement element)
 			{
-				await WaitFor(IsLoaded, message: $"{element} loaded");
-				bool IsLoaded()
+				TaskCompletionSource<bool> cts = new();
+
+				_ = element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
 				{
-					if (element.ActualHeight == 0 || element.ActualWidth == 0)
+					try
 					{
-						return false;
-					}
+						bool IsLoaded()
+						{
+							if (element.ActualHeight == 0 || element.ActualWidth == 0)
+							{
+								return false;
+							}
 
-					if (element is Control control && control.FindFirstChild<FrameworkElement>(includeCurrent: false) == null)
+							if (element is Control control && control.FindFirstChild<FrameworkElement>(includeCurrent: false) == null)
+							{
+								return false;
+							}
+
+							if (element is ListView listView && listView.Items.Count > 0 && listView.ContainerFromIndex(0) == null)
+							{
+								// If it's a ListView, wait for items to be populated
+								return false;
+							}
+
+							return true;
+						}
+
+						await WaitFor(IsLoaded, message: $"{element} loaded");
+
+						cts.TrySetResult(true);
+					}
+					catch(Exception e)
 					{
-						return false;
+						cts.TrySetException(e);
 					}
+				});
 
-					if (element is ListView listView && listView.Items.Count > 0 && listView.ContainerFromIndex(0) == null)
-					{
-						// If it's a ListView, wait for items to be populated
-						return false;
-					}
-
-					return true;
-				}
+				await cts.Task;
 			}
 
 			internal static async Task WaitForRelayouted(FrameworkElement frameworkElement)
