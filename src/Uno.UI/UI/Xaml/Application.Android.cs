@@ -3,6 +3,7 @@ using System;
 using Android.Content.Res;
 using Android.OS;
 using Uno.UI.Extensions;
+using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;

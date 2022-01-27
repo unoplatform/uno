@@ -194,7 +194,7 @@ namespace Uno.UI
 		{
 			SetAsCurrent();
 
-			Windows.UI.Xaml.Application.Current?.OnLeavingBackground();
+			Windows.UI.Xaml.Application.Current?.RaiseLeavingBackground(null);
 			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
 		}
 
@@ -204,7 +204,7 @@ namespace Uno.UI
 		{
 			SetAsCurrent();			
 
-			Windows.UI.Xaml.Application.Current?.OnResuming();
+			Windows.UI.Xaml.Application.Current?.RaiseResuming();
 			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
 		}
 
@@ -221,7 +221,7 @@ namespace Uno.UI
 			ResignCurrent();
 
 			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
-			Windows.UI.Xaml.Application.Current?.OnSuspending();
+			Windows.UI.Xaml.Application.Current?.RaiseSuspending();
 		}
 
 		partial void InnerStop()
@@ -229,7 +229,7 @@ namespace Uno.UI
 			ResignCurrent();
 
 			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
-			Windows.UI.Xaml.Application.Current?.OnEnteredBackground();
+			Windows.UI.Xaml.Application.Current?.RaiseEnteredBackground(null);
 		}
 
 		partial void InnerDestroy() => ResignCurrent();
