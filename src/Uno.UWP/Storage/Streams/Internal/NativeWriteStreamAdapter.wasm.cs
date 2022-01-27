@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Foundation;
+using Uno.Foundation.Logging;
 
 namespace Uno.Storage.Streams.Internal
 {
@@ -116,9 +117,16 @@ namespace Uno.Storage.Streams.Internal
 
 		protected override async void Dispose(bool disposing)
 		{
-			await ProcessPendingAsync();
-			// Close and dispose.
-			await WebAssemblyRuntime.InvokeAsync($"{JsType}.closeAsync('{_streamId}')");
+			try
+			{
+				await ProcessPendingAsync();
+				// Close and dispose.
+				await WebAssemblyRuntime.InvokeAsync($"{JsType}.closeAsync('{_streamId}')");
+			}
+			catch(Exception e)
+			{
+				this.Log().Warn("Failed to dispose NativeWriteStreamAdapter", e);
+			}
 		}
 
 		public async Task TruncateAsync(long length)
