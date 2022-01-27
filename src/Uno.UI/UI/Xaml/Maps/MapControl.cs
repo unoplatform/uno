@@ -3,9 +3,10 @@
 #pragma warning disable 114 // new keyword hiding
 using System;
 using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
+
 using Uno;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Windows.Devices.Geolocation;
 
 namespace Windows.UI.Xaml.Controls.Maps

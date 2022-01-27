@@ -12,7 +12,7 @@ using Android.Views.Accessibility;
 using Uno.Diagnostics.Eventing;
 using Uno.Disposables;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
@@ -44,7 +44,7 @@ namespace <#= mixin.NamespaceName #>
 
 		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
 
-		public event TypedEventHandler<DependencyObject, object> Loading;
+		public event TypedEventHandler<FrameworkElement, object> Loading;
 
 		public event RoutedEventHandler Loaded;
 
@@ -757,7 +757,7 @@ namespace <#= mixin.NamespaceName #>
 		internal virtual void OnLoading()
 		{
 			OnLoadingPartial();
-			Loading?.Invoke(this, null);
+			Loading?.Invoke(<#= mixin.LoadingInvokeArgument #>, null);
 			OnPostLoading();
 		}
 		
@@ -919,7 +919,8 @@ namespace <#= mixin.NamespaceName #>
 		bool overridesOnLayout = true,
 		bool callsBaseOnLayout = true,
 		bool hasAutomationPeer = false,
-		bool hasLayouter = false
+		bool hasLayouter = false,
+		bool derivesFromFrameworkElement = true
 	)
 	{
 		_mixins.Add(
@@ -936,7 +937,8 @@ namespace <#= mixin.NamespaceName #>
 				IsFrameworkElement = className == "FrameworkElement" ? "true" : "false",
 				HasAutomationPeer = hasAutomationPeer ? "true" : "false",
 				CallsBaseOnLayout = callsBaseOnLayout ? "true" : "false",
-				HasLayouter = hasLayouter ? "true" : "false"
+				HasLayouter = hasLayouter ? "true" : "false",
+				LoadingInvokeArgument = derivesFromFrameworkElement ? "this" : "null"
 			}
 		);
 	}
@@ -956,6 +958,7 @@ namespace <#= mixin.NamespaceName #>
 		public string HasAutomationPeer;
 		public string CallsBaseOnLayout;
 		public string HasLayouter;
+		public string LoadingInvokeArgument;
 	}
 
 	private List<MixinParams> _mixins = new List<MixinParams>();

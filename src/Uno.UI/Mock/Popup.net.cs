@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Windows.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class Popup
 	{
@@ -13,9 +13,8 @@ namespace Windows.UI.Xaml.Controls
 			PopupPanel = new PopupPanel(this);
 		}
 
-		protected override void OnIsOpenChanged(bool oldIsOpen, bool newIsOpen)
+		partial void OnIsOpenChangedPartialNative(bool oldIsOpen, bool newIsOpen)
 		{
-			base.OnIsOpenChanged(oldIsOpen, newIsOpen);
 			if (newIsOpen)
 			{
 				PopupPanel.Visibility = Visibility.Visible;
@@ -26,10 +25,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnChildChanged(UIElement oldChild, UIElement newChild)
+		partial void OnChildChangedPartialNative(UIElement oldChild, UIElement newChild)
 		{
-			base.OnChildChanged(oldChild, newChild);
-
 			PopupPanel.Children.Remove(oldChild);
 			PopupPanel.Children.Add(newChild);
 		}

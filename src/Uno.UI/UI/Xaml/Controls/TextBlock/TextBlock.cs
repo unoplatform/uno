@@ -20,7 +20,8 @@ using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Automation.Peers;
 using Uno;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 
 #if XAMARIN_IOS
 using UIKit;
@@ -576,7 +577,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(PaddingProperty, value);
 		}
 
-		public static DependencyProperty PaddingProperty =
+		public static DependencyProperty PaddingProperty { get; } =
 			DependencyProperty.Register(
 				"Padding",
 				typeof(Thickness),
@@ -603,7 +604,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(CharacterSpacingProperty, value);
 		}
 
-		public static DependencyProperty CharacterSpacingProperty =
+		public static DependencyProperty CharacterSpacingProperty { get; } =
 			DependencyProperty.Register(
 				"CharacterSpacing",
 				typeof(int),
@@ -633,10 +634,10 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(TextDecorationsProperty, value);
 		}
 
-		public static DependencyProperty TextDecorationsProperty =
+		public static DependencyProperty TextDecorationsProperty { get; } =
 			DependencyProperty.Register(
 				"TextDecorations",
-				typeof(int),
+				typeof(uint),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextDecorations.None,
@@ -938,14 +939,16 @@ namespace Windows.UI.Xaml.Controls
 		private protected override double GetActualWidth() => DesiredSize.Width;
 		private protected override double GetActualHeight() => DesiredSize.Height;
 
-		internal override void UpdateThemeBindings()
+		internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
 		{
-			base.UpdateThemeBindings();
+			base.UpdateThemeBindings(updateReason);
 
 			SetDefaultForeground(ForegroundProperty);
 		}
 
 		internal override bool CanHaveChildren() => true;
+
+		public new bool Focus(FocusState value) => base.Focus(value);
 
 		internal override bool IsFocusable =>
 			/*IsActive() &&*/ //TODO Uno: No concept of IsActive in Uno yet.

@@ -6,7 +6,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml.Markup;
 using Uno.Disposables;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Diagnostics;
 
 namespace Windows.UI.Xaml.Media.Animation
@@ -94,8 +94,6 @@ namespace Windows.UI.Xaml.Media.Animation
 					PropertyInfo?.CloneShareableObjectsInPath();
 
 					_wasBeginScheduled = false;
-					_subscriptions.Clear(); //Dispose all and start a new
-
 					_activeDuration.Restart();
 					_replayCount = 1;
 
@@ -179,7 +177,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		void ITimeline.SkipToFill()
 		{
-			if (_currentAnimator != null && _currentAnimator.IsRunning)
+			if (_currentAnimator is { IsRunning: true })
 			{
 				_currentAnimator.Cancel();//Stop the animator if it is running
 				_startingValue = null;
@@ -192,7 +190,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		void ITimeline.Deactivate()
 		{
-			if (_currentAnimator != null && _currentAnimator.IsRunning)
+			if (_currentAnimator is { IsRunning: true })
 			{
 				_currentAnimator.Cancel();//Stop the animator if it is running
 				_startingValue = null;
@@ -213,7 +211,8 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// </summary>
 		private void Play()
 		{
-			InitializeAnimators();//Create the animator
+			_subscriptions.Clear(); // Dispose all and start a new
+			InitializeAnimators(); // Create the animator
 
 			if (!EnableDependentAnimation && this.GetIsDependantAnimation())
 			{ // Don't start the animator its a dependent animation
@@ -299,7 +298,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			// if it's the last animation part, in the end of the ColorAnimationUsingKeyFrames
 			if (nextAnimatorIndex == KeyFrames.Count)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("ColorAnimationUsingKeyFrames has ended.");
 				}
@@ -351,6 +350,8 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// </summary>
 		private void OnEnd()
 		{
+			_subscriptions.Clear();
+
 			// If the animation was GPU based, remove the animated value
 			if (NeedsRepeat(_activeDuration, _replayCount))
 			{

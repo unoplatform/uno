@@ -56,15 +56,11 @@ namespace Windows.Graphics.Display
 
 		public double RawPixelsPerViewPixel => NSScreen.MainScreen.BackingScaleFactor;
 
-		public float LogicalDpi
-		{
-			get
-			{
-				// Scale of 1 is considered @1x, which is the equivalent of 96.0 or 100% for UWP.
-				// https://developer.apple.com/documentation/uikit/uiscreen/1617836-scale
-				return (float)(NSScreen.MainScreen.BackingScaleFactor * 96.0f);
-			}
-		}
+		/// <summary>
+		/// Scale of 1 is considered @1x, which is the equivalent of 96.0 or 100% for UWP.
+		/// https://developer.apple.com/documentation/uikit/uiscreen/1617836-scale
+		/// </summary>
+		public float LogicalDpi => (float)(NSScreen.MainScreen.BackingScaleFactor * BaseDpi);
 
 		public ResolutionScale ResolutionScale => (ResolutionScale)(int)(NSScreen.MainScreen.BackingScaleFactor * 100.0);
 

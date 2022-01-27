@@ -5,11 +5,14 @@ enableSearch();
 renderTables();
 renderAlerts();
 renderLinks();
-renderNavbar();
 renderSidebar();
 renderAffix();
-renderFooter();
-renderLogo();
+
+if (!iframed) {
+    renderNavbar();
+    renderLogo();
+    renderFooter();
+}
 
 breakText();
 renderTabs();

@@ -288,9 +288,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				args.Handled = true;
 			}
 
-#if !__WASM__
 			Focus(FocusState.Pointer);
-#endif
 
 			base.OnPointerPressed(args);
 			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.Begin);

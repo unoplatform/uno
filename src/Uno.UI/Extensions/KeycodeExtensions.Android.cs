@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using Android.Views;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.System;
-using Microsoft.Extensions.Logging;
+
 
 namespace Uno.UI.Extensions
 {

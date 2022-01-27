@@ -107,6 +107,7 @@ namespace Uno.UI.SourceGenerators.Telemetry
 		public void Dispose()
 		{
 			_persistenceChannel?.Dispose();
+			_telemetryConfig?.Dispose();
 		}
 
 		public void ThreadBlockingTrackEvent(string eventName, IDictionary<string, string> properties, IDictionary<string, double> measurements)

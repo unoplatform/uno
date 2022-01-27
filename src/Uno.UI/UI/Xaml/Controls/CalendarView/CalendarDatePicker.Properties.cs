@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty DescriptionProperty { get; } = DependencyProperty.Register(
-			"Description", typeof(object), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(object)));
+			"Description", typeof(object), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(object), propertyChangedCallback: (s, e) => (s as CalendarDatePicker)?.UpdateDescriptionVisibility(false)));
 
 #if __IOS__ || __MACOS__
 		public new // .Description already exists on NSObject (both macOS & iOS)
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 			object Description
 		{
-			get => (string)GetValue(DescriptionProperty);
+			get => GetValue(DescriptionProperty);
 			set => SetValue(DescriptionProperty, value);
 		}
 
@@ -179,7 +179,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private const int DEFAULT_MIN_MAX_DATE_YEAR_OFFSET = 100;
 
-		private bool SetPropertyDefaultValue(DependencyProperty property, out object value)
+		internal override bool GetDefaultValue2(DependencyProperty property, out object value)
 		{
 			Calendar GetOrCreateGregorianCalendar()
 			{
@@ -241,8 +241,7 @@ namespace Windows.UI.Xaml.Controls
 				return true;
 			}
 
-			value = default;
-			return false;
+			return base.GetDefaultValue2(property, out value);
 		}
 	}
 }

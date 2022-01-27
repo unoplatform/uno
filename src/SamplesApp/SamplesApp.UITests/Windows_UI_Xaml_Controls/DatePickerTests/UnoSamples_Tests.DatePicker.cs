@@ -329,5 +329,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 
 			_app.FastTap("DismissButton");
 		}
+
+		[Test]
+		[AutoRetry]
+		public void CalendarDatePicker_With_Description()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.CalendarView.CalendarDatePicker_Description", skipInitialScreenshot: true);
+			var autoSuggestBox = _app.WaitForElement("DescriptionCalendarDatePicker")[0];
+			using var screenshot = TakeScreenshot("CalendarDatePicker Description", new ScreenshotOptions() { IgnoreInSnapshotCompare = true });
+			ImageAssert.HasColorAt(screenshot, autoSuggestBox.Rect.X + autoSuggestBox.Rect.Width / 2, autoSuggestBox.Rect.Y + autoSuggestBox.Rect.Height - 150, Color.Red);
+		}
 	}
 }

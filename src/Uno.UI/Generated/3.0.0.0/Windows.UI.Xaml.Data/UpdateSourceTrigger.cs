@@ -3,9 +3,6 @@
 namespace Windows.UI.Xaml.Data
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
 	public   enum UpdateSourceTrigger 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Data.UpdateSourceTrigger.Default

@@ -2,6 +2,7 @@
 
 using Gtk;
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.UI.Runtime.Skia;
@@ -41,7 +42,11 @@ namespace Uno.Extensions.Storage.Pickers
 			StorageFile? file = null;
 			if (dialog.Run() == (int)ResponseType.Accept)
 			{
-				file = await StorageFile.GetFileFromPathAsync(dialog.Filename);
+				if (!File.Exists(dialog.Filename))
+				{
+					File.Create(dialog.Filename).Dispose();
+				}
+				file = await StorageFile.GetFileFromPathAsync(dialog.Filename);				
 			}
 
 			dialog.Destroy();

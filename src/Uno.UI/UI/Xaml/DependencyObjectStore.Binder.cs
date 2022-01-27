@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Uno.UI;
@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml
 
 				_isApplyingTemplateBindings = true;
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat(
 						"{0}.ApplyTemplateBindings({1}/{2}) (h:{3:X8})",
@@ -191,7 +191,7 @@ namespace Windows.UI.Xaml
 		static void InitializeStaticBinder()
 		{
 			// Register the ability for the BindingPath to subscribe to dependency property changes.
-			BindingPath.RegisterPropertyChangedRegistrationHandler(SubscribeToDependencyPropertyChanged);
+			BindingPath.RegisterPropertyChangedRegistrationHandler(new BindingPathPropertyChangedRegistrationHandler());
 		}
 
 		internal DependencyProperty DataContextProperty => _dataContextProperty!;
@@ -257,6 +257,7 @@ namespace Windows.UI.Xaml
 			}
 
 			_properties.Dispose();
+			_childrenBindableMap.Dispose();
 		}
 
 		private void OnDataContextChanged(object? providedDataContext, object? actualDataContext, DependencyPropertyValuePrecedences precedence)
@@ -399,14 +400,14 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal void SetResourceBinding(DependencyProperty dependencyProperty, SpecializedResourceDictionary.ResourceKey resourceKey, bool isTheme, object context, DependencyPropertyValuePrecedences? precedence, BindingPath? setterBindingPath)
+		internal void SetResourceBinding(DependencyProperty dependencyProperty, SpecializedResourceDictionary.ResourceKey resourceKey, ResourceUpdateReason updateReason, object context, DependencyPropertyValuePrecedences? precedence, BindingPath? setterBindingPath)
 		{
 			if (precedence == null && _overriddenPrecedences?.Count > 0)
 			{
 				precedence = _overriddenPrecedences.Peek();
 			}
 
-			var binding = new ResourceBinding(resourceKey, isTheme, context, precedence ?? DependencyPropertyValuePrecedences.Local, setterBindingPath);
+			var binding = new ResourceBinding(resourceKey, updateReason, context, precedence ?? DependencyPropertyValuePrecedences.Local, setterBindingPath);
 			SetBinding(dependencyProperty, binding);
 		}
 
@@ -515,18 +516,13 @@ namespace Windows.UI.Xaml
 			{
 				// This guards against the scenario where inherited DataContext is removed when the view is removed from the visual tree,
 				// in which case 2-way bindings should not be updated.
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("SetSourceValue() not called because inherited property is being unset.");
 				}
 				return;
 			}
 			_properties.SetSourceValue(propertyDetails, value);
-		}
-
-		internal void RegisterDefaultValueProvider(DefaultValueProvider provider)
-		{
-			_properties.RegisterDefaultValueProvider(provider);
 		}
 
 		/// <summary>
@@ -537,7 +533,7 @@ namespace Windows.UI.Xaml
 		/// <param name="newValueAction">The action to execute when a new value is raised</param>
 		/// <param name="disposeAction">The action to execute when the listener wants to dispose the subscription</param>
 		/// <returns></returns>
-		private static IDisposable? SubscribeToDependencyPropertyChanged(ManagedWeakReference dataContextReference, string propertyName, Action newValueAction)
+		private static IDisposable? SubscribeToDependencyPropertyChanged(ManagedWeakReference dataContextReference, string propertyName, BindingPath.IPropertyChangedValueHandler newValueAction)
 		{
 			var dependencyObject = dataContextReference.Target as DependencyObject;
 
@@ -547,14 +543,12 @@ namespace Windows.UI.Xaml
 
 				if (dp != null)
 				{
-					Windows.UI.Xaml.PropertyChangedCallback handler = (s, e) => newValueAction();
-
 					return Windows.UI.Xaml.DependencyObjectExtensions
-						.RegisterDisposablePropertyChangedCallback(dependencyObject, dp, handler);
+						.RegisterDisposablePropertyChangedCallback(dependencyObject, dp, newValueAction.NewValue);
 				}
 				else
 				{
-					if (typeof(DependencyProperty).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (typeof(DependencyProperty).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						typeof(DependencyProperty).Log().DebugFormat(
 							"Unable to find the dependency property [{0}] on type [{1}]"
@@ -662,6 +656,15 @@ namespace Windows.UI.Xaml
 
 		public Windows.UI.Xaml.Data.Binding? GetBinding(DependencyProperty dependencyProperty)
 			=> GetBindingExpression(dependencyProperty)?.ParentBinding;
+
+		/// <summary>
+		/// BindingPath Registration handler for DependencyProperty instances
+		/// </summary>
+		private class BindingPathPropertyChangedRegistrationHandler : BindingPath.IPropertyChangedRegistrationHandler
+		{
+			public IDisposable? Register(ManagedWeakReference dataContext, string propertyName, BindingPath.IPropertyChangedValueHandler onNewValue)
+				=> SubscribeToDependencyPropertyChanged(dataContext, propertyName, onNewValue);
+		}
 	}
 }
 

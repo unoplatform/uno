@@ -10,7 +10,7 @@ using Windows.Foundation;
 using Uno.Extensions;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Shapes
 {

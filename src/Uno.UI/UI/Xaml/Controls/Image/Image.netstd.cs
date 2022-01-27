@@ -4,22 +4,33 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Media.Imaging;
 using Uno.Disposables;
 using Windows.Storage.Streams;
 using System.Runtime.InteropServices;
-using Microsoft.Extensions.Logging;
+
 using Windows.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
 	partial class Image : FrameworkElement, ICustomClippingElement
 	{
+		private Color? _monochromeColor;
+
 		/// <summary>
 		/// When set, the resulting image is tentatively converted to Monochrome.
 		/// </summary>
-		internal Color? MonochromeColor { get; set; }
+		internal Color? MonochromeColor
+		{
+			get => _monochromeColor;
+			set
+			{
+				_monochromeColor = value;
+				// Force loading the image.
+				OnSourceChanged(Source);
+			}
+		}
 
 		#region Source DependencyProperty
 
@@ -30,9 +41,9 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SourceProperty { get; } =
-			DependencyProperty.Register("Source", typeof(ImageSource), typeof(Image), new FrameworkPropertyMetadata(null, (s, e) => ((Image)s)?.OnSourceChanged(e)));
+			DependencyProperty.Register("Source", typeof(ImageSource), typeof(Image), new FrameworkPropertyMetadata(null, (s, e) => ((Image)s)?.OnSourceChanged(e.NewValue as ImageSource)));
 
-		partial void OnSourceChanged(DependencyPropertyChangedEventArgs e);
+		partial void OnSourceChanged(ImageSource newValue);
 		#endregion
 
 		public static DependencyProperty StretchProperty { get; } =

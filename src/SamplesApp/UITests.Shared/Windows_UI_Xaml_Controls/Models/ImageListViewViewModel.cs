@@ -5,7 +5,7 @@ using Uno.UI.Samples.UITests.Helpers;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 {
-	public class ImageListViewViewModel : ViewModelBase
+	internal class ImageListViewViewModel : ViewModelBase
 	{
 		public ImageListViewViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{

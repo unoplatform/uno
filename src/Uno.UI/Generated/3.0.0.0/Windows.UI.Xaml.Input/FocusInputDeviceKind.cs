@@ -2,30 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum FocusInputDeviceKind 
 	{
-		#if false
-		None,
-		#endif
-		#if false
-		Mouse,
-		#endif
-		#if false
-		Touch,
-		#endif
-		#if false
-		Pen,
-		#endif
-		#if false
-		Keyboard,
-		#endif
-		#if false
-		GameController,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Input.FocusInputDeviceKind.None
+		// Skipping already declared field Windows.UI.Xaml.Input.FocusInputDeviceKind.Mouse
+		// Skipping already declared field Windows.UI.Xaml.Input.FocusInputDeviceKind.Touch
+		// Skipping already declared field Windows.UI.Xaml.Input.FocusInputDeviceKind.Pen
+		// Skipping already declared field Windows.UI.Xaml.Input.FocusInputDeviceKind.Keyboard
+		// Skipping already declared field Windows.UI.Xaml.Input.FocusInputDeviceKind.GameController
 	}
 	#endif
 }

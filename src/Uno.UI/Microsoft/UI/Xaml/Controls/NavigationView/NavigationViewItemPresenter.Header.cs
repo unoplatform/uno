@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference NavigationViewItemPresenter.h, commit 6bdf738
+// MUX Reference NavigationViewItemPresenter.h, commit fd22d7f
 
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Animation;
@@ -14,6 +14,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private NavigationViewItemHelper<NavigationViewItemPresenter> m_helper;
 
 		private Grid m_contentGrid = null;
+		private ContentPresenter m_infoBadgePresenter = null;
 		private Grid m_expandCollapseChevron = null;
 
 		private double m_leftIndentation = 0;

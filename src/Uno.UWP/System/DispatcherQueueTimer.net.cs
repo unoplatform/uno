@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.System.Threading;
 
+#if HAS_UNO_WINUI && IS_UNO_UI_DISPATCHING_PROJECT
+namespace Microsoft.UI.Dispatching
+#else
 namespace Windows.System
+#endif
 {
 	partial class DispatcherQueueTimer
 	{

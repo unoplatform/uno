@@ -14,7 +14,7 @@ using Android.Views.InputMethods;
 using Android.Widget;
 using Uno.Disposables;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
@@ -229,6 +229,7 @@ namespace Windows.UI.Xaml.Controls
 			if (_textBoxView != null)
 			{
 				_textBoxView.InputType = types;
+				_textBoxView.SetRawInputType(types);
 
 				if (!types.HasPasswordFlag())
 				{
@@ -312,25 +313,42 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private InputTypes AdjustInputTypes(InputTypes inputType, InputScope inputScope)
+		{
+			inputType = InputScopeHelper.ConvertToCapitalization(inputType, inputScope);
+
+			if (!IsSpellCheckEnabled)
+			{
+				inputType = InputScopeHelper.ConvertToRemoveSuggestions(inputType, ShouldForceDisableSpellCheck);
+			}
+
+			if (AcceptsReturn)
+			{
+				inputType |= InputTypes.TextFlagMultiLine;
+			}
+
+			return inputType;
+		}
+
 		private void UpdateInputScope(InputScope inputScope)
 		{
 			if (_textBoxView != null)
 			{
-				var inputType = InputScopeHelper.ConvertInputScope(inputScope ?? InputScope);
+				var inputType = InputScopeHelper.ConvertInputScope(inputScope);
+				inputType = AdjustInputTypes(inputType, inputScope);
 
-				inputType = InputScopeHelper.ConvertToCapitalization(inputType, inputScope ?? InputScope);
-
-				if (!IsSpellCheckEnabled)
+				if (FeatureConfiguration.TextBox.UseLegacyInputScope)
 				{
-					inputType = InputScopeHelper.ConvertToRemoveSuggestions(inputType, ShouldForceDisableSpellCheck);
+					_textBoxView.InputType = inputType;
 				}
-
-				if (AcceptsReturn)
+				else
 				{
-					inputType |= InputTypes.TextFlagMultiLine;
+					// InputScopes like multi-line works on Android only for InputType property, not SetRawInputType.
+					// For CurrencyAmount (and others), both works but there is a behavioral difference documented in UseLegacyInputScope.
+					// The behavior that matches UWP is achieved by SetRawInputType.
+					_textBoxView.InputType = AdjustInputTypes(InputTypes.ClassText, inputScope);
+					_textBoxView.SetRawInputType(inputType);
 				}
-
-				_textBoxView.InputType = inputType;
 			}
 		}
 
@@ -393,29 +411,37 @@ namespace Windows.UI.Xaml.Controls
 			return style;
 		}
 
-		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e) => UpdateTextBoxViewReadOnly();
+
+		partial void OnIsTabStopChangedPartial() => UpdateTextBoxViewReadOnly();
+
+		private void UpdateTextBoxViewReadOnly()
 		{
-			if (_textBoxView != null)
+			if (_textBoxView == null)
 			{
-				var isReadOnly = IsReadOnly;
+				return;
+			}
 
-				_textBoxView.Focusable = !isReadOnly;
-				_textBoxView.FocusableInTouchMode = !isReadOnly;
-				_textBoxView.Clickable = !isReadOnly;
-				_textBoxView.LongClickable = !isReadOnly;
-				_textBoxView.SetCursorVisible(!isReadOnly);
+			// Both IsReadOnly = true and IsTabStop = false make the control
+			// not receive any input.
+			var isReadOnly = IsReadOnly || !IsTabStop;
 
-				if (isReadOnly)
+			_textBoxView.Focusable = !isReadOnly;
+			_textBoxView.FocusableInTouchMode = !isReadOnly;
+			_textBoxView.Clickable = !isReadOnly;
+			_textBoxView.LongClickable = !isReadOnly;
+			_textBoxView.SetCursorVisible(!isReadOnly);
+
+			if (isReadOnly)
+			{
+				_listener = _textBoxView.KeyListener;
+				_textBoxView.KeyListener = null;
+			}
+			else
+			{
+				if (_listener != null)
 				{
-					_listener = _textBoxView.KeyListener;
-					_textBoxView.KeyListener = null;
-				}
-				else
-				{
-					if (_listener != null)
-					{
-						_textBoxView.KeyListener = _listener;
-					}
+					_textBoxView.KeyListener = _listener;
 				}
 			}
 		}
@@ -443,11 +469,11 @@ namespace Windows.UI.Xaml.Controls
 			//We get the view token early to avoid nullvalues when the view has already been detached
 			var viewWindowToken = _textBoxView.WindowToken;
 
-			_keyboardDisposable.Disposable = CoreDispatcher.Main
+			_keyboardDisposable.Disposable = Uno.UI.Dispatching.CoreDispatcher.Main
 				//The delay is required because the OnFocusChange method is called when the focus is being changed, not when it has changed.
 				//If the focus is moved from one TextBox to another, the CurrentFocus will be null, meaning we would hide the keyboard when we shouldn't.
 				.RunAsync(
-					CoreDispatcherPriority.Normal,
+					Uno.UI.Dispatching.CoreDispatcherPriority.Normal,
 					async () =>
 					{
 						await Task.Delay(TimeSpan.FromMilliseconds(_keyboardAccessDelay));

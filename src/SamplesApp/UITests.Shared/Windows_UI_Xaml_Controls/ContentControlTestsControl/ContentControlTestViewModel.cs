@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
-using Uno.Logging;
 
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
@@ -27,7 +26,7 @@ using ICommand = System.Windows.Input.ICommand;
 
 namespace Uno.UI.Samples.Presentation.SamplePages
 {
-	public class ContentControlTestViewModel : ViewModelBase
+	internal class ContentControlTestViewModel : ViewModelBase
 	{
 		public string Property1 { get; set; } = "Property1";
 		public string Property2 { get; set; } = "Property2";

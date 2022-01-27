@@ -7,9 +7,10 @@ using Android.Graphics;
 using Android.OS;
 using Android.Views;
 using Android.Views.InputMethods;
-using Microsoft.Extensions.Logging;
+
 using Uno.AuthenticationBroker;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Devices.Sensors;
 using Windows.Graphics.Display;

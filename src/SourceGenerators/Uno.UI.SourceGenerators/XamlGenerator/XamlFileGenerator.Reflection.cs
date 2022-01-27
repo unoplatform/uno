@@ -42,7 +42,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.FirstOrDefault()
 				?.Namespace ?? "";
 
-			_clrNamespaces = _knownNamespaces?.UnoGetValueOrDefault(defaultXmlNamespace, new string[0]);
+			_clrNamespaces = _knownNamespaces?.UnoGetValueOrDefault(defaultXmlNamespace, Array.Empty<string>());
 		}
 
 		/// <summary>
@@ -359,7 +359,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Search for the type the clr namespaces registered with the xml namespace
 			if (xamlMember.DeclaringType != null)
 			{
-				var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(xamlMember.DeclaringType.PreferredXamlNamespace, new string[0]);
+				var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(xamlMember.DeclaringType.PreferredXamlNamespace, Array.Empty<string>());
 
 				foreach (var clrNamespace in clrNamespaces)
 				{
@@ -748,7 +748,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				// Remove the namespace conditionals declaration
 				var trimmedNamespace = type.PreferredXamlNamespace.Split('?').First();
-				var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(trimmedNamespace, new string[0]);
+				var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(trimmedNamespace, Array.Empty<string>());
 
 				foreach (var clrNamespace in clrNamespaces)
 				{

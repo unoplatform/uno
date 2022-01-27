@@ -59,5 +59,12 @@ namespace DirectUI
 		{
 			return LessThanOrClose(Math.Abs(a - b), tolerance);
 		}
+
+		// Returns whether or not the double is "close" to 0.  Same as AreClose(double,
+		// 0), but this is faster.
+		public static bool IsZero(double value)
+		{
+			return Math.Abs(value) < 10.0 * double.Epsilon;
+		}
 	}
 }

@@ -1,11 +1,17 @@
 ﻿using System;
 using System.Linq;
 using Windows.UI;
-using Windows.UI.Input;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Samples.Controls;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 {

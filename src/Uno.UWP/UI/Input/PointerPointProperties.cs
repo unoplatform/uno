@@ -1,12 +1,54 @@
 using System.Text;
 
+#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+namespace Microsoft.UI.Input
+#else
 namespace Windows.UI.Input
+#endif
 {
-	public partial class PointerPointProperties 
+	public partial class PointerPointProperties
 	{
 		internal PointerPointProperties()
 		{
 		}
+
+#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+		public PointerPointProperties(Windows.UI.Input.PointerPointProperties properties)
+		{
+			IsPrimary = properties.IsPrimary;
+			IsInRange = properties.IsInRange;
+			IsLeftButtonPressed = properties.IsLeftButtonPressed;
+			IsMiddleButtonPressed = properties.IsMiddleButtonPressed;
+			IsRightButtonPressed = properties.IsRightButtonPressed;
+			IsHorizontalMouseWheel = properties.IsHorizontalMouseWheel;
+			IsXButton1Pressed = properties.IsXButton1Pressed;
+			IsXButton2Pressed = properties.IsXButton2Pressed;
+			IsBarrelButtonPressed = properties.IsBarrelButtonPressed;
+			IsEraser = properties.IsEraser;
+			Pressure = properties.Pressure;
+			PointerUpdateKind = (PointerUpdateKind)properties.PointerUpdateKind;
+		}
+
+		public static explicit operator Windows.UI.Input.PointerPointProperties(Microsoft.UI.Input.PointerPointProperties muxProps)
+		{
+			var props = new Windows.UI.Input.PointerPointProperties();
+
+			props.IsPrimary = muxProps.IsPrimary;
+			props.IsInRange = muxProps.IsInRange;
+			props.IsLeftButtonPressed = muxProps.IsLeftButtonPressed;
+			props.IsMiddleButtonPressed = muxProps.IsMiddleButtonPressed;
+			props.IsRightButtonPressed = muxProps.IsRightButtonPressed;
+			props.IsHorizontalMouseWheel = muxProps.IsHorizontalMouseWheel;
+			props.IsXButton1Pressed = muxProps.IsXButton1Pressed;
+			props.IsXButton2Pressed = muxProps.IsXButton2Pressed;
+			props.IsBarrelButtonPressed = muxProps.IsBarrelButtonPressed;
+			props.IsEraser = muxProps.IsEraser;
+			props.Pressure = muxProps.Pressure;
+			props.PointerUpdateKind = (Windows.UI.Input.PointerUpdateKind)muxProps.PointerUpdateKind;
+
+			return props;
+	}
+#endif
 
 		internal bool HasPressedButton => IsLeftButtonPressed || IsMiddleButtonPressed || IsRightButtonPressed || IsXButton1Pressed || IsXButton2Pressed || IsBarrelButtonPressed;
 

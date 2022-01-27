@@ -148,17 +148,32 @@ function enableSearch() {
         indexReady.promise().done(function () {
 
             $("body").on("query-ready", function () {
-                worker.postMessage({q: query});
+                postSearchQuery(worker, query);
             });
 
-            if (query && (query.length >= 3)) {
-                worker.postMessage({q: query});
-            }
+            postSearchQuery(worker, query);
 
-        }).then(r => r.resolve());
+        });
     }
 
-    // Highlight the searching keywords
+    /**
+     * This function posts the message to the worker if the string has at least
+     * three characters.
+     *
+     * @param worker The search worker used by DocFx (lunr)
+     * @param searchQuery The string to post to the worker.
+     */
+    function postSearchQuery(worker, searchQuery) {
+        if (searchQuery && (searchQuery.length >= 3)) {
+            worker.postMessage({q: `${searchQuery}*`});
+        } else {
+            worker.postMessage({q: ''});
+        }
+    }
+
+    /**
+     *   Highlight the searching keywords
+     */
     function highlightKeywords() {
         const q = url('?q');
         if (q != null) {
@@ -182,9 +197,9 @@ function enableSearch() {
                 return e.key !== 'Enter';
             });
 
-            searchQuery.on("keyup", function () {
+            searchQuery.on("keyup", function (e) {
                 $('#search-results').show();
-                query = $(this).val();
+                query = `${e.target.value}`;
                 $("body").trigger("query-ready");
                 $('#search-results>.search-list').text('Search Results for "' + query + '"');
             }).off("keydown");

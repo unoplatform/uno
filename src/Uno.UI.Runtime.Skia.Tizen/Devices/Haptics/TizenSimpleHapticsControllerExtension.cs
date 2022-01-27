@@ -2,9 +2,9 @@
 
 using System;
 using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
 using Tizen.System;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Windows.Devices.Haptics;
 
 namespace Uno.UI.Runtime.Skia.Tizen.Devices.Haptics

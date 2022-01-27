@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItem.properties.cpp, commit 8f1a682
+// MUX reference NavigationViewItem.properties.cpp, commit fd22d7f
 
 using System.Collections.Generic;
 using Windows.UI.Xaml;
@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Controls;
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class NavigationViewItem
-    {
+	{
 		public double CompactPaneLength
 		{
 			get => (double)GetValue(CompactPaneLengthProperty);
@@ -36,6 +36,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty IconProperty { get; } =
 			DependencyProperty.Register(nameof(Icon), typeof(IconElement), typeof(NavigationViewItem), new FrameworkPropertyMetadata(null, OnIconPropertyChanged));
+
+		public InfoBadge InfoBadge
+		{
+			get => (InfoBadge)GetValue(InfoBadgeProperty);
+			set => SetValue(InfoBadgeProperty, value);
+		}
+
+		public static DependencyProperty InfoBadgeProperty { get; } =
+			DependencyProperty.Register(nameof(InfoBadge), typeof(InfoBadge), typeof(NavigationViewItem), new FrameworkPropertyMetadata(null, OnInfoBadgePropertyChanged));
 
 		public bool IsChildSelected
 		{
@@ -81,7 +90,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty SelectsOnInvokedProperty { get; } =
 			DependencyProperty.Register(nameof(SelectsOnInvoked), typeof(bool), typeof(NavigationViewItem), new FrameworkPropertyMetadata(true));
-		
+
 		private static void OnHasUnrealizedChildrenPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
 			var owner = (NavigationViewItem)sender;
@@ -92,6 +101,12 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var owner = (NavigationViewItem)sender;
 			owner.OnIconPropertyChanged(args);
+		}
+
+		private static void OnInfoBadgePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+		{
+			var owner = (NavigationViewItem)sender;
+			owner.OnInfoBadgePropertyChanged(args);
 		}
 
 		private static void OnIsExpandedPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)

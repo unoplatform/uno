@@ -17,6 +17,7 @@ using FluentAssertions;
 using Windows.UI.Xaml.Controls.Primitives;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI;
+using Windows.UI;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {
@@ -796,10 +797,303 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		}
 
 		[TestMethod]
-		public void When_Brush_And_StringColor()
+		public void When_Event_Handler()
 		{
-			var s = GetContent(nameof(When_Brush_And_StringColor));
+			var s = GetContent(nameof(When_Event_Handler));
+			var r = new When_Event_Handler();
+			Windows.UI.Xaml.Markup.XamlReader.LoadUsingComponent(s, r);
+
+			var button1 = r.FindName("Button1") as Button;
+			button1.RaiseClick();
+			Assert.AreEqual(1, r.Handler1Count);
+
+			var button2 = r.FindName("Button2") as Button;
+			button2.RaiseClick();
+			Assert.AreEqual(1, r.Handler2Count);
+		}
+
+		[TestMethod]
+		public void When_Event_Handler_xBind()
+		{
+			var s = GetContent(nameof(When_Event_Handler_xBind));
+			var r = new When_Event_Handler_xBind();
+			Windows.UI.Xaml.Markup.XamlReader.LoadUsingComponent(s, r);
+
+			var button1 = r.FindName("Button1") as Button;
+			button1.RaiseClick();
+			Assert.AreEqual(1, r.Handler1Count);
+
+			var button2 = r.FindName("Button2") as Button;
+			button2.RaiseClick();
+			Assert.AreEqual(1, r.Handler2Count);
+		}
+
+		[TestMethod]
+		public void When_Color_Thickness_GridLength_As_String()
+		{
+			var s = GetContent(nameof(When_Color_Thickness_GridLength_As_String));
 			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as ContentControl;
+
+			Assert.AreEqual(Windows.UI.Colors.Red, r.Resources["Color01"]);
+			Assert.AreEqual(Windows.UI.Colors.Blue, (r.Resources["scb01"] as SolidColorBrush).Color);
+			Assert.AreEqual(new Thickness(42), r.Resources["thickness"]);
+			Assert.AreEqual(new CornerRadius(42), r.Resources["cornerRadius"]);
+			Assert.AreEqual("TestFamily", (r.Resources["fontFamily"] as FontFamily).Source);
+			Assert.AreEqual(GridLength.FromString("42"), r.Resources["gridLength"]);
+			Assert.AreEqual(Windows.UI.Xaml.Media.Animation.KeyTime.FromTimeSpan(TimeSpan.Parse("1:2:3")), r.Resources["keyTime"]);
+			Assert.AreEqual(new Duration(TimeSpan.Parse("1:2:3")), r.Resources["duration"]);
+			Assert.AreEqual(Matrix.Identity, r.Resources["matrix"]);
+			Assert.AreEqual(Windows.UI.Text.FontWeights.Bold, r.Resources["fontWeight"]);
+
+			Assert.AreEqual(Windows.UI.Colors.Red, ((r.Content as Grid)?.Background as SolidColorBrush).Color);
+		}
+
+		[TestMethod]
+		public void When_Resources_And_Empty()
+		{
+			var s = "<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' > <Grid.Resources ></Grid.Resources ></Grid > ";
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as Grid;
+			Assert.IsNotNull(r.Resources);
+		}
+
+		[TestMethod]
+		public void When_StaticResource_And_NonDependencyProperty()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.Resources["MyIntResource"] = 77;
+			try
+			{
+				var s = GetContent(nameof(When_StaticResource_And_NonDependencyProperty));
+				var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as Page;
+
+				var root = r.FindName("root") as Grid;
+				var inner = root.Children.First() as NonDependencyPropertyAssignable;
+
+				Assert.AreEqual(77, inner.MyProperty);
+			}
+			finally
+			{
+				app.Resources.Remove("MyDoubleResource");
+			}
+
+		}
+
+		[TestMethod]
+		public void When_ThemeResource_And_Setter_And_Theme_Changed()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+			var themeDict = new ResourceDictionary
+			{
+				ThemeDictionaries =
+				{
+					{"Light", new ResourceDictionary
+						{
+							{"MyIntResourceThemed", 244 }
+						}
+					},
+					{"Dark", new ResourceDictionary
+						{
+							{"MyIntResourceThemed", 9 }
+						}
+					},
+				}
+			};
+			app.Resources.MergedDictionaries.Add(themeDict);
+			try
+			{
+				var s = GetContent(nameof(When_ThemeResource_And_Setter_And_Theme_Changed));
+				var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as Page;
+
+				var root = r.FindName("root") as Grid;
+				var inner = root.Children.First() as Button;
+
+				app.HostView.Children.Add(r);
+
+				Assert.AreEqual(ApplicationTheme.Light, app.RequestedTheme);
+				Assert.AreEqual(244, inner.Tag);
+
+				app.SetExplicitRequestedTheme(ApplicationTheme.Dark);
+				Assert.AreEqual(ApplicationTheme.Dark, app.RequestedTheme);
+				Assert.AreEqual(9, inner.Tag);
+			}
+			finally
+			{
+				app.SetExplicitRequestedTheme(null);
+				app.Resources.MergedDictionaries.Remove(themeDict);
+			}
+
+		}
+
+		[TestMethod]
+		public void When_Xmlns_Non_Default()
+		{
+			var xaml = "<NonDefaultXamlNamespace Test=\"42\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
+			var builder = Windows.UI.Xaml.Markup.XamlReader.Load(xaml);
+			if (builder is CreateFromStringFullyQualifiedMethodNameOwner owner)
+			{
+				Assert.AreEqual(42, owner.Test);
+			}
+		}
+
+		[TestMethod]
+		public void When_CreateFromString_Invalid_MethodName()
+		{
+			var xaml = "<CreateFromStringInvalidMethodNameOwner Test=\"8\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
+			Assert.ThrowsException<Uno.Xaml.XamlParseException>(() => Windows.UI.Xaml.Markup.XamlReader.Load(xaml));
+		}
+
+		[TestMethod]
+		public void When_CreateFromString_Non_Qualified_MethodName()
+		{
+			var xaml = "<CreateFromStringNonQualifiedMethodNameOwner Test=\"16\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
+			var builder = Windows.UI.Xaml.Markup.XamlReader.Load(xaml);
+			if (builder is CreateFromStringFullyQualifiedMethodNameOwner owner)
+			{
+				Assert.AreEqual(32, owner.Test.Value);
+			}
+		}
+
+		[TestMethod]
+		public void When_CreateFromString_Non_Static_Method()
+		{
+			var xaml = "<CreateFromStringNonStaticMethodOwner Test=\"4\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
+			Assert.ThrowsException<Uno.Xaml.XamlParseException>(() => Windows.UI.Xaml.Markup.XamlReader.Load(xaml));
+		}
+
+		[TestMethod]
+		public void When_CreateFromString_Private_Static_Method()
+		{
+			var xaml = "<CreateFromStringPrivateStaticMethodOwner Test=\"21\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
+			Assert.ThrowsException<Uno.Xaml.XamlParseException>(() => Windows.UI.Xaml.Markup.XamlReader.Load(xaml));
+		}
+
+		[TestMethod]
+		public void When_CreateFromString_Internal_Static_Method()
+		{
+			var xaml = "<CreateFromStringInternalStaticMethodOwner Test=\"42\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
+			var builder = Windows.UI.Xaml.Markup.XamlReader.Load(xaml);
+			if (builder is CreateFromStringFullyQualifiedMethodNameOwner owner)
+			{
+				Assert.AreEqual(84, owner.Test.Value);
+			}
+		}
+
+		[TestMethod]
+		public void When_CreateFromString_Invalid_Parameters()
+		{
+			var xaml = "<CreateFromStringInvalidParametersOwner Test=\"2\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
+			Assert.ThrowsException<Uno.Xaml.XamlParseException>(() => Windows.UI.Xaml.Markup.XamlReader.Load(xaml));
+		}
+
+		[TestMethod]
+		public void When_CreateFromString_Invalid_Return_Type()
+		{
+			var xaml = "<CreateFromStringInvalidReturnTypeOwner Test=\"1\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
+			// TODO: This should throw XamlParseException too
+			Assert.ThrowsException<ArgumentException>(() => Windows.UI.Xaml.Markup.XamlReader.Load(xaml));
+		}
+
+		[TestMethod]
+		public void When_CreateFromString_Fully_Qualified_MethodName()
+		{
+			var xaml = "<CreateFromStringFullyQualifiedMethodNameOwner Test=\"12\" xmlns=\"using:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
+			var builder = Windows.UI.Xaml.Markup.XamlReader.Load(xaml);
+			if (builder is CreateFromStringFullyQualifiedMethodNameOwner owner)
+			{
+				Assert.AreEqual(24, owner.Test.Value);
+			}
+		}
+		
+		[TestMethod]
+		public void When_xName_Reload()
+		{
+			var s = GetContent(nameof(When_xName_Reload));
+			var SUT = new When_xName_Reload();
+			Windows.UI.Xaml.Markup.XamlReader.LoadUsingComponent(s, SUT);
+
+			var Button1_field_private = SUT.FindName("Button1_field_private") as Button;
+			Assert.IsNotNull(Button1_field_private);
+			Assert.AreEqual(Button1_field_private, SUT.Button1_field_private_Getter);
+
+			var Button1_field_public = SUT.FindName("Button1_field_public") as Button;
+			Assert.IsNotNull(Button1_field_public);
+			Assert.AreEqual(Button1_field_public, SUT.Button1_field_public);
+
+			var Button2_property_private = SUT.FindName("Button2_property_private") as Button;
+			Assert.IsNotNull(Button2_property_private);
+			Assert.AreEqual(Button2_property_private, SUT.Button2_property_private_Getter);
+
+			var Button2_property_public = SUT.FindName("Button2_property_public") as Button;
+			Assert.IsNotNull(Button2_property_public);
+			Assert.AreEqual(Button2_property_public, SUT.Button2_property_public);
+		}
+
+		[TestMethod]
+		public void When_ResourceDictionary_Colors()
+		{
+			var s = GetContent(nameof(When_ResourceDictionary_Colors));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as ResourceDictionary;
+
+			var lightTheme = r.ThemeDictionaries["Light"] as ResourceDictionary;
+			Assert.IsNotNull(lightTheme);
+
+			Assert.AreEqual(Windows.UI.Colors.Red, lightTheme["MaterialPrimaryColor"]);
+
+			var darkTheme = r.ThemeDictionaries["Dark"] as ResourceDictionary;
+			Assert.IsNotNull(darkTheme);
+
+			Assert.AreEqual(Windows.UI.Colors.White, darkTheme["MaterialOnPrimaryColor"]);
+		}
+
+		[TestMethod]
+		public void When_xBind_Simple()
+		{
+			var s = GetContent(nameof(When_xBind_Simple));
+			var r = new When_xBind_Simple();
+			Windows.UI.Xaml.Markup.XamlReader.LoadUsingComponent(s, r);
+
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(r);
+
+			var SUT = r.FindFirstChild<TextBlock>();
+
+			Assert.AreEqual("Sprong", SUT.Text);
+		}
+
+		[TestMethod]
+		public void When_xBind_TwoWay()
+		{
+			var s = GetContent(nameof(When_xBind_TwoWay));
+			var r = new When_xBind_TwoWay();
+			Windows.UI.Xaml.Markup.XamlReader.LoadUsingComponent(s, r);
+
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(r);
+
+			var SUT = r.FindFirstChild<CheckBox>();
+
+			Assert.AreEqual(false, SUT.IsChecked);
+
+			r.MyVM.MyBool = true;
+			Assert.AreEqual(true, SUT.IsChecked);
+		}
+
+		[TestMethod]
+		public void When_xBind_TwoWay_Back()
+		{
+			var s = GetContent(nameof(When_xBind_TwoWay));
+			var r = new When_xBind_TwoWay();
+			Windows.UI.Xaml.Markup.XamlReader.LoadUsingComponent(s, r);
+
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(r);
+
+			var SUT = r.FindFirstChild<CheckBox>();
+
+			Assert.AreEqual(false, SUT.IsChecked);
+
+			SUT.IsChecked = true;
+			Assert.AreEqual(true, r.MyVM.MyBool);
 		}
 
 		private string GetContent(string testName)

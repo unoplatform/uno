@@ -10,17 +10,30 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Uno;
 using Uno.Extensions;
-using Uno.Logging;
 using Uno.UI.Samples.UITests.Helpers;
 
 using ICommand = System.Windows.Input.ICommand;
 using EventHandler = System.EventHandler;
+using System.Collections.ObjectModel;
+
+#if HAS_UNO
+using Uno.Foundation.Logging;
+#else
+using Microsoft.Extensions.Logging;
+using Uno.Logging;
+#endif
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 {
 	[Bindable]
-	public class ListViewViewModel : ViewModelBase
+	internal class ListViewViewModel : ViewModelBase
 	{
+#if HAS_UNO
+		private Uno.Foundation.Logging.Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Factory.CreateLogger(typeof(ListViewViewModel));
+#else
+		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(ListViewViewModel));
+#endif
+
 		private static readonly object[] RandomValues = new object[] { null, new object(), 0, -1, 0, 0.5, 1, "", " ", "test", 'a', ' ', new string[] { "A", "B", "C" }, DateTime.Now };
 		private object[] _randomItems = new object[0];
 		private string _newInput = "1,1,2,2,3,3";
@@ -28,6 +41,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 		private List<string> _singleItemList = new List<string> { "1" };
 		private double _variableWidth = 500d;
 		private string _selectedItem = "3";
+		public ObservableCollection<string> InitialyEmptyStringList { get; } = new ObservableCollection<string>();
 
 		public ListViewViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
@@ -40,6 +54,8 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 		public ICommand DoSomething => GetOrCreateCommand(ExecuteDoSomething);
 		public ICommand VaryWidth => GetOrCreateCommand(ExecuteVaryWidth);
 		public ICommand UpdateWithNewInput => GetOrCreateCommand(ExecuteOnUpdateWithNewInput);
+		public ICommand AddRandomItem => GetOrCreateCommand(ExecuteAddRandomItem);
+		public ICommand RemoveLastItem => GetOrCreateCommand(ExecuteRemoveLastItem);
 
 		public Orientation SelectedOrientation => Orientation.Horizontal;
 
@@ -114,7 +130,20 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 
 		private void ExecuteDoSomething()
 		{
-			this.Log().Error("============= Item Clicked");
+			_log.Error("============= Item Clicked");
+		}
+
+		private void ExecuteAddRandomItem()
+		{
+			this.InitialyEmptyStringList.Add(Guid.NewGuid().ToString());
+		}
+
+		private void ExecuteRemoveLastItem()
+		{
+			if (InitialyEmptyStringList.Count > 0)
+			{
+				this.InitialyEmptyStringList.RemoveAt(this.InitialyEmptyStringList.Count - 1);
+			}
 		}
 
 		private static string[] GetSampleItems()
@@ -146,7 +175,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 		private void ExecuteVaryWidth()
 		{
 			var newWidth = (new Random()).NextDouble() * 100d + 300d;
-			this.Log().Warn($"Changing {nameof(VariableWidth)} to {newWidth}");
+			_log.Warn($"Changing {nameof(VariableWidth)} to {newWidth}");
 			VariableWidth =  newWidth;
 		}
 

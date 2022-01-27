@@ -11,6 +11,10 @@ using Windows.UI.Text;
 using AppKit;
 using Windows.UI;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class TextBlock : FrameworkElement

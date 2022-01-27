@@ -18,12 +18,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 
-#if HAS_UNO
-using Popup = Windows.UI.Xaml.Controls.Popup;
-#else
-using Popup = Windows.UI.Xaml.Controls.Primitives.Popup;
-#endif
-
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]

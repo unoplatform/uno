@@ -206,3 +206,38 @@ The logging behavior can be configured using feature flags:
     Uno.UI.FeatureConfiguration.ApiInformation.NotImplementedLogLevel = LogLevel.Debug; // Raise not implemented usages as Debug messages
     ```
     This can be used to suppress the not implemented output, if it's not useful.
+
+## IOS Unhandled Exception
+
+```Unhandled Exception:
+System.InvalidOperationException: A suitable constructor for type 'Microsoft.Extensions.Options.OptionsMonitor`1[Microsoft.Extensions.Logging.LoggerFilterOptions]' could not be located. Ensure the type is concrete and services are registered for all parameters of a public constructor.
+```
+
+If you are getting the above exception when running on iOS and the Linker Behavior is set to "Link All" it is likely that the IL linker is removing some logging classes.
+See [Linking Xamarin.iOS Apps](https://docs.microsoft.com/en-us/xamarin/ios/deploy-test/linker?tabs=macos)
+
+One option is to use `linkskip` file to exclude the assemblies causing issues.
+Add the following to your `mtouch` arguments:
+
+```
+--linkskip=Uno.Extensions.Logging.OSLog 
+--linkskip=Microsoft.Extensions.Options
+```
+
+The other option is to add a [custom linker definition file](https://docs.microsoft.com/en-us/xamarin/cross-platform/deploy-test/linker)
+
+```
+<linker> 
+  <assembly fullname="YOUR PROJECT ASSEMBLIES" />
+  
+  <assembly fullname="Microsoft.Extensions.Options" />
+
+  <assembly fullname="System.Net.Http" />
+
+  <assembly fullname="System.Core">
+    <!-- This is required by JSon.NET and any expression.Compile caller -->
+    <type fullname="System.Linq.Expressions*" />
+  </assembly>
+</linker>
+```
+

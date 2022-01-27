@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-using Uno.Logging;
 using Uno.Extensions;
 using System;
 using System.Collections.Generic;
@@ -11,6 +10,7 @@ using Uno.Roslyn;
 using Uno.UI.SourceGenerators.XamlGenerator;
 using Uno.UI.SourceGenerators.Helpers;
 using System.Xml;
+using System.Threading;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
@@ -55,6 +55,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			private string? _intermediatePath;
 			private string? _assemblyName;
 			private bool _xamlResourcesTrimming;
+			private CancellationToken _cancellationToken;
 
 			public string[] AnalyzerSuppressions { get; set; } = Array.Empty<string>();
 
@@ -71,6 +72,8 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					{
 						if (isApplication)
 						{
+							_cancellationToken = context.CancellationToken;
+
 							_projectFullPath = context.GetMSBuildPropertyValue("MSBuildProjectFullPath");
 							_projectDirectory = Path.GetDirectoryName(_projectFullPath)
 								?? throw new InvalidOperationException($"MSBuild property MSBuildProjectFullPath value {_projectFullPath} is not valid");
@@ -116,6 +119,10 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						}
 					}
 				}
+				catch (OperationCanceledException)
+				{
+					throw;
+				}
 				catch (Exception e)
 				{
 					string? message = e.Message + e.StackTrace;
@@ -125,7 +132,16 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						message = (e as AggregateException)?.InnerExceptions.Select(ex => ex.Message + e.StackTrace).JoinBy("\r\n");
 					}
 
-					this.Log().Error("Failed to generate type providers.", new Exception("Failed to generate type providers." + message, e));
+#if NETSTANDARD
+					var diagnostic = Diagnostic.Create(
+						XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
+						null,
+						$"Failed to generate type providers. ({e.Message})");
+
+					context.ReportDiagnostic(diagnostic);
+#else
+					Console.WriteLine("Failed to generate type providers.", new Exception("Failed to generate type providers." + message, e));
+#endif
 				}
 			}
 
@@ -156,6 +172,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				writer.AppendLine();
 				writer.AppendLineInvariant("#pragma warning disable 618  // Ignore obsolete members warnings");
 				writer.AppendLineInvariant("#pragma warning disable 1591 // Ignore missing XML comment warnings");
+				writer.AppendLineInvariant("#pragma warning disable Uno0001 // Ignore not implemented members");
 				writer.AppendLineInvariant("using System;");
 				writer.AppendLineInvariant("using System.Linq;");
 				writer.AppendLineInvariant("using System.Diagnostics;");
@@ -258,6 +275,8 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 			private void GenerateType(IndentedStringBuilder writer, INamedTypeSymbol ownerType)
 			{
+				_cancellationToken.ThrowIfCancellationRequested();
+
 				if (_typeMap.ContainsKey(ownerType))
 				{
 					return;
@@ -592,6 +611,8 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					{
 						foreach (var type in _typeMap.Where(k => !k.Key.IsGenericType))
 						{
+							_cancellationToken.ThrowIfCancellationRequested();
+
 							var typeIndexString = $"{type.Value.Index:000}";
 
 							writer.AppendLineInvariant($"case \"{type.Key}\":");
@@ -623,7 +644,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					writer.AppendLineInvariant(@"#if DEBUG");
 					using (writer.BlockInvariant(@"lock(_knownMissingTypes)"))
 					{
-						using (writer.BlockInvariant(@"if(!_knownMissingTypes.Contains(type) && !type.IsGenericType)"))
+						using (writer.BlockInvariant(@"if(bindableType == null && !_knownMissingTypes.Contains(type) && !type.IsGenericType)"))
 						{
 							writer.AppendLineInvariant(@"_knownMissingTypes.Add(type);");
 							writer.AppendLineInvariant(@"Debug.WriteLine($""The Bindable attribute is missing and the type [{{type.FullName}}] is not known by the MetadataProvider. Reflection was used instead of the binding engine and generated static metadata. Add the Bindable attribute to prevent this message and performance issues."");");

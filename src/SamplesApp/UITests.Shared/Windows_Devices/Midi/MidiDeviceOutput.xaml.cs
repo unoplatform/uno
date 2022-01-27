@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable 105 // Disabled until the tree is migrate to WinUI
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UITests.Shared.Helpers;

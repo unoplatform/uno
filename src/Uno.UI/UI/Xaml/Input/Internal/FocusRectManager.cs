@@ -4,8 +4,9 @@
 
 #nullable enable
 
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core.Rendering;
 using Windows.UI.Xaml;

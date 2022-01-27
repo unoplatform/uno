@@ -510,6 +510,53 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			);
 		}
 
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // iOS: https://github.com/unoplatform/uno/issues/6454
+		public void ListView_ListView_Shrinking()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Resizing");
+
+			var addButton = _app.Marked("addButton");
+			_app.WaitForElement(addButton);
+			var removeButton = _app.Marked("removeButton");
+			var heightStack = _app.Marked("heightStack");
+
+			addButton.FastTap();
+			addButton.FastTap();
+			addButton.FastTap();
+
+			float listHeight = _app.GetPhysicalRect(heightStack).GetBottom();
+
+			removeButton.FastTap();
+			removeButton.FastTap();
+			removeButton.FastTap();
+
+			float newListHeight = _app.GetPhysicalRect(heightStack).GetBottom();
+
+			Assert.AreNotEqual(listHeight, newListHeight);
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // iOS: https://github.com/unoplatform/uno/issues/7754
+		public void ListView_ListView_Growing()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Resizing");
+
+			var addButton = _app.Marked("addButton");
+			_app.WaitForElement(addButton);
+			var heightStack = _app.Marked("heightStack");
+
+			float listHeight = _app.GetPhysicalRect(heightStack).GetBottom();
+
+			addButton.FastTap();
+			
+			float newListHeight = _app.GetPhysicalRect(heightStack).GetBottom();
+
+			Assert.AreNotEqual(listHeight, newListHeight);
+		}
+
 		private void ClickCheckBoxAt(int i)
 		{
 			_app.Marked("CheckBox").AtIndex(i).Tap();

@@ -18,9 +18,14 @@ using Uno.Extensions.Specialized;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
-using Microsoft.Extensions.Logging;
+
+using Uno.UI.UI.Xaml.Controls.Layouter;
+
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
@@ -126,7 +131,7 @@ namespace Windows.UI.Xaml.Controls
 				count = GetUngroupedItemsCount(section);
 			}
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Count requested for section {section}, returning {count}");
 			}
@@ -222,7 +227,7 @@ namespace Windows.UI.Xaml.Controls
 						cell.Owner = Owner;
 						selectorItem = Owner?.XamlParent?.GetContainerForIndex(index) as SelectorItem;
 						cell.Content = selectorItem;
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 						{
 							this.Log().Debug($"Creating new view at indexPath={indexPath}.");
 						}
@@ -233,7 +238,7 @@ namespace Windows.UI.Xaml.Controls
 						// which does not automatically sets the parent DependencyObject.
 						selectorItem.SetParentOverride(Owner?.XamlParent?.InternalItemsPanelRoot);
 					}
-					else if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					else if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Reusing view at indexPath={indexPath}, previously bound to {selectorItem.DataContext}.");
 					}
@@ -429,7 +434,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// Note: untested, more may be needed to support zooming. On ScrollContentPresenter we set ViewForZoomingInScrollView (not 
 			// obvious what it would be in the case of a list).
-			Owner.XamlParent?.ScrollViewer?.OnZoomInternal((float)Owner.ZoomScale);
+			Owner.XamlParent?.ScrollViewer?.Presenter?.OnNativeZoom((float)Owner.ZoomScale);
 		}
 #endif
 
@@ -446,7 +451,7 @@ namespace Windows.UI.Xaml.Controls
 			var clampedOffset = shouldReportNegativeOffsets ?
 				Owner.ContentOffset :
 				Owner.ContentOffset.Clamp(CGPoint.Empty, Owner.UpperScrollLimit);
-			Owner.XamlParent?.ScrollViewer?.OnScrollInternal(clampedOffset.X, clampedOffset.Y, isIntermediate: _isInAnimatedScroll);
+			Owner.XamlParent?.ScrollViewer?.Presenter?.OnNativeScroll(clampedOffset.X, clampedOffset.Y, isIntermediate: _isInAnimatedScroll);
 		}
 
 #if !MACCATALYST // Fix on .NET 6 Preview 6 https://github.com/unoplatform/uno/issues/5873
@@ -642,7 +647,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (!_templateCells.TryGetValue(template ?? _nullDataTemplateKey, out identifier))
 			{
-				identifier = new NSString(_templateCache.Count.ToString(CultureInfo.InvariantCulture));
+				identifier = new NSString(_templateCells.Count.ToString(CultureInfo.InvariantCulture));
 				_templateCells[template ?? _nullDataTemplateKey] = identifier;
 
 				Owner.RegisterClassForCell(typeof(ListViewBaseInternalContainer), identifier);
@@ -655,7 +660,7 @@ namespace Windows.UI.Xaml.Controls
 	/// <summary>
 	/// A hidden root item that allows the reuse of ContentControl features.
 	/// </summary>
-	internal class ListViewBaseInternalContainer : UICollectionViewCell
+	internal class ListViewBaseInternalContainer : UICollectionViewCell, ISetLayoutSlots
 	{
 		/// <summary>
 		/// Native constructor, do not use explicitly.
@@ -782,6 +787,31 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
+		/// Fakely propagate the applied Frame of this internal container as the LayoutSlot of the publicly visible container.
+		/// This is required for the UIElement.TransformToVisual to work properly.
+		/// </summary>
+		private void UpdateContentLayoutSlots(Rect frame)
+		{
+			var content = Content;
+			if (content != null)
+			{
+				var layoutSlot = LayoutInformation.GetLayoutSlot(content);
+				var layoutSlotWithMarginsAndAlignments = content.LayoutSlotWithMarginsAndAlignments;
+
+				//The LayoutInformation within ArrangeChild does not take into account the offset relative to the native ListView, so we apply that offset here.
+				//This is needed for TransformToVisual to work
+				layoutSlot.X = frame.X;
+				layoutSlot.Y = frame.Y;
+
+				layoutSlotWithMarginsAndAlignments.X += frame.X;
+				layoutSlotWithMarginsAndAlignments.Y += frame.Y;
+
+				LayoutInformation.SetLayoutSlot(content, layoutSlot);
+				content.LayoutSlotWithMarginsAndAlignments = layoutSlotWithMarginsAndAlignments;
+			}
+		}
+
+		/// <summary>
 		/// Clear the cell's measured size, this allows the static template size to be updated with the correct databound size.
 		/// </summary>
 		internal void ClearMeasuredSize() => _measuredContentSize = null;
@@ -848,7 +878,7 @@ namespace Windows.UI.Xaml.Controls
 						var sizesAreDifferent = frame.Size != layoutAttributes.Frame.Size;
 						if (sizesAreDifferent)
 						{
-							if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+							if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 							{
 								this.Log().Debug($"Adjusting layout attributes for item at {layoutAttributes.IndexPath}({layoutAttributes.RepresentedElementKind}), Content={Content?.Content}. Previous frame={layoutAttributes.Frame}, new frame={frame}.");
 							}
@@ -880,7 +910,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().Error($"Adjusting layout attributes for {layoutAttributes?.IndexPath?.ToString() ?? "[null]"} failed", e);
 			}
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Returning layout attributes for item at {layoutAttributes.IndexPath}({layoutAttributes.RepresentedElementKind}), Content={Content?.Content}, with frame {layoutAttributes.Frame}");
 			}
@@ -918,6 +948,11 @@ namespace Windows.UI.Xaml.Controls
 			if (Content != null)
 			{
 				Layouter.ArrangeChild(Content, new Rect(0, 0, (float)size.Width, (float)size.Height));
+
+				// The item has to be arranged relative to this internal container (at 0,0),
+				// but doing this the LayoutSlot[WithMargins] has been updated, 
+				// so we fakely re-inject the relative position of the item in its parent.
+				UpdateContentLayoutSlots(Frame);
 			}
 		}
 

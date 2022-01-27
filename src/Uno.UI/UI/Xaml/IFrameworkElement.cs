@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Controls;
 using Uno.UI;
 using Windows.Foundation;
+using Windows.UI.Xaml.Controls.Primitives;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -30,6 +31,9 @@ using Font = UIKit.UIFont;
 using CoreGraphics;
 using _Size = Windows.Foundation.Size;
 using Point = Windows.Foundation.Point;
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 #elif __MACOS__
 using AppKit;
 using View = AppKit.NSView;
@@ -38,6 +42,9 @@ using Font = AppKit.NSFont;
 using CoreGraphics;
 using _Size = Windows.Foundation.Size;
 using Point = Windows.Foundation.Point;
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 #elif __WASM__
 using nint = System.Int32;
 using nfloat = System.Double;
@@ -227,7 +234,7 @@ namespace Windows.UI.Xaml
 				// to better match Windows behaviour
 				var content =
 					(e as ContentControl)?.Content as IFrameworkElement ??
-					(e as PopupBase)?.Child as IFrameworkElement;
+					(e as Controls.Primitives.Popup)?.Child as IFrameworkElement;
 
 				if (content != null)
 				{

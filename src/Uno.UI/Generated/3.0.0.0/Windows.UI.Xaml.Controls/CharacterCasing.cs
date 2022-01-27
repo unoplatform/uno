@@ -3,20 +3,11 @@
 namespace Windows.UI.Xaml.Controls
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
-	public   enum CharacterCasing
+	public   enum CharacterCasing 
 	{
-		#if false || false || false || false || false || false || false
-		Normal,
-		#endif
-		#if false || false || false || false || false || false || false
-		Lower,
-		#endif
-		#if false || false || false || false || false || false || false
-		Upper,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Controls.CharacterCasing.Normal
+		// Skipping already declared field Windows.UI.Xaml.Controls.CharacterCasing.Lower
+		// Skipping already declared field Windows.UI.Xaml.Controls.CharacterCasing.Upper
 	}
 	#endif
 }

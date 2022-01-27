@@ -23,6 +23,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			public const string Primitives = Controls + ".Primitives";
 			public const string Text = RootWUINamespace + ".Text";
 			public const string Data = BaseXamlNamespace + ".Data";
+			public const string XamlText = BaseXamlNamespace + ".Text";
 			public const string Documents = BaseXamlNamespace + ".Documents";
 			public const string Media = BaseXamlNamespace + ".Media";
 			public const string MediaAnimation = BaseXamlNamespace + ".Media.Animation";
@@ -43,8 +44,9 @@ namespace Windows.UI.Xaml.Markup.Reader
 				MediaAnimation,
 				RootWUINamespace,
 				BaseXamlNamespace,
-				Data,
+				Text,
 				Documents,
+				XamlText,
 				"System",
 			};
 
@@ -60,6 +62,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				MediaAnimation,
 				Shapes,
 				Text,
+				XamlText,
 			};
 		}
 

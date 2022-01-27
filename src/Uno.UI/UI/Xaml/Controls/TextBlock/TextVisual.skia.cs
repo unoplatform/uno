@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-using Microsoft.Extensions.Logging;
+
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Uno;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
 using Windows.Foundation;
 using Windows.Storage;

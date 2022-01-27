@@ -42,6 +42,7 @@
 		<CompilerVisibleProperty Include="BuildingProject" />
 		<CompilerVisibleProperty Include="DesignTimeBuild" />
 		<CompilerVisibleProperty Include="UnoUISourceGeneratorDebuggerBreak" />
+		<CompilerVisibleProperty Include="IsHotReloadHost" />
 
 		<CompilerVisibleProperty Include="UseWPF" />
 		<CompilerVisibleProperty Include="IsUnoHead" />
@@ -89,8 +90,13 @@
 		  Condition="exists('$(MSBuildThisFileDirectory)..\Uno.UI.SourceGenerators.csproj')">
 
 	<ItemGroup >
-	  <Analyzer Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\*.dll" />
-	  <AdditionalFiles Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\*.dll"/>
+	  <_UnoAnalyzerExclusion Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\Microsoft.CodeAnalysis.*.dll" />
+	  <_UnoAnalyzerExclusion Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\System.*.dll" />
+
+	  <Analyzer Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\*.dll"
+			  Exclude="@(_UnoAnalyzerExclusion)" />
+	  <AdditionalFiles Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\*.dll"
+					 Exclude="@(_UnoAnalyzerExclusion)" />
 	  <!-- generator is automatically included in nuget package, no need to add it here -->
 	</ItemGroup>
   </Target>
@@ -354,7 +360,6 @@
 	  <AdditionalFiles Include="@(ApplicationDefinition)" SourceItemGroup="ApplicationDefinition" />
 	  <AdditionalFiles Include="@(PRIResource)" SourceItemGroup="PRIResource" />
 	  <AdditionalFiles Include="@(TSBindingAssemblySource)" SourceItemGroup="TSBindingAssemblySource" />
-	  <AdditionalFiles Include="@(Analyzer)" SourceItemGroup="Analyzer" />
 
 	  <_AdditionalFilesCleanup Include="@(AdditionalFiles)" />
 	  <AdditionalFiles Remove="@(_AdditionalFilesCleanup)" />
@@ -369,6 +374,8 @@
 	<Message Importance="high"
 		   Condition="'$(UnoUIUseRoslynSourceGenerators)'==''"
 		   Text="Uno.UI is using Uno.SourceGenerators" />
+
+	  <WriteLinesToFile File="$(IntermediateOutputPath)\build-time-generator.touch" />
   </Target>
 
   <Target Name="_RemoveRoslynUnoSourceGeneration" BeforeTargets="CoreCompile" Condition="'$(UnoUIUseRoslynSourceGenerators)'=='false'">
@@ -405,5 +412,23 @@
 	  Condition="$(MSBuildProjectFullPath.Contains('#')) and '$(UnoUIDisable5953Warning)'==''"
 	  Text="The path to your project contains the '#' character, which causes known build issues. Try moving your project to a different location. (See https://github.com/unoplatform/uno/issues/5953 for more details)."/>
   </Target>
+  
+  <Target Name="Roslyn51768Workaround"
+          BeforeTargets="BeforeBuild"
+				  Condition="'$(DisableRoslyn51768Workaround)'==''">
+	<!-- Workaround for https://github.com/dotnet/roslyn/issues/51768 -->
+	<CreateProperty Value="$(IntermediateOutputPath)$(MSBuildProjectName).d$(DesignTimeBuild)-b$(BuildingProject).GeneratedMSBuildEditorConfig.editorconfig">
+	  <Output
+		  TaskParameter="Value"
+		  PropertyName="GeneratedMSBuildEditorConfigFile" />
+	</CreateProperty>
+  </Target>
 
+  <Target Name="_GenerateReloadCookie" BeforeTargets="BeforeCompile" Condition="'$(DefaultLanguageSourceExtension)'=='.cs'">
+		<!-- Generate an empty C# file that OmniSharp can pick up when Uno has marked XAML files as modified -->
+		<WriteLinesToFile File="$(IntermediateOutputPath)\uno.reload.cookie.g.cs" />
+		<ItemGroup>
+			<Compile Include="$(IntermediateOutputPath)\uno.reload.cookie.g.cs" />
+		</ItemGroup>
+  </Target>
 </Project>

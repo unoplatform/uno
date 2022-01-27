@@ -133,9 +133,11 @@ namespace Windows.UI.Xaml
 		{
 			InvalidateArrange();
 
+			// We must reset the flag **BEFORE** doing the actual measure, so the elements are able to re-invalidate themselves
+			_isMeasureValid = true;
+
 			MeasureCore(availableSize);
 			LayoutInformation.SetAvailableSize(this, availableSize);
-			_isMeasureValid = true;
 		}
 
 		internal virtual void MeasureCore(Size availableSize)
@@ -205,8 +207,10 @@ namespace Windows.UI.Xaml
 			// For instance, the EffectiveViewPort computation reads that value to detect slot changes (cf. PropagateEffectiveViewportChange)
 			LayoutInformation.SetLayoutSlot(this, finalRect);
 
-			ArrangeCore(finalRect);
+			// We must reset the flag **BEFORE** doing the actual arrange, so the elements are able to re-invalidate themselves
 			_isArrangeValid = true;
+
+			ArrangeCore(finalRect);
 		}
 
 		partial void HideVisual();

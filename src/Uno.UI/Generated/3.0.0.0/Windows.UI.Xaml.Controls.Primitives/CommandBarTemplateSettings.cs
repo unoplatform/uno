@@ -16,36 +16,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// Skipping already declared property OverflowContentMinWidth
 		// Skipping already declared property OverflowContentMaxWidth
 		// Skipping already declared property EffectiveOverflowButtonVisibility
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double OverflowContentCompactYTranslation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double CommandBarTemplateSettings.OverflowContentCompactYTranslation is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double OverflowContentHiddenYTranslation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double CommandBarTemplateSettings.OverflowContentHiddenYTranslation is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double OverflowContentMinimalYTranslation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double CommandBarTemplateSettings.OverflowContentMinimalYTranslation is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property OverflowContentCompactYTranslation
+		// Skipping already declared property OverflowContentHiddenYTranslation
+		// Skipping already declared property OverflowContentMinimalYTranslation
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.ContentHeight.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.OverflowContentClipRect.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.CommandBarTemplateSettings.OverflowContentMinWidth.get

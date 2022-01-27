@@ -17,8 +17,11 @@ using System.IO;
 using Foundation;
 using Windows.UI;
 using Uno.Extensions;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 
 namespace SampleControl.Presentation
 {
@@ -90,12 +93,12 @@ namespace SampleControl.Presentation
 
 				if (error != null)
 				{
-					this.Log().Error(error.ToString());
+					_log.Error(error.ToString());
 				}
 
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				if (_log.IsEnabled(LogLevel.Debug))
 				{
-					this.Log().Debug($"Wrote screenshot to {filePath}");
+					_log.Debug($"Wrote screenshot to {filePath}");
 				}
 			}
 		}

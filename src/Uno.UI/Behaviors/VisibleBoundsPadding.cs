@@ -6,23 +6,26 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Uno.Collections;
-using Uno.Extensions;
 using Uno.UI.Extensions;
-using Uno.Logging;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Microsoft.Extensions.Logging;
+
 #if XAMARIN_IOS
 using UIKit;
 #elif __MACOS__
 using AppKit;
 #endif
 
-#if IS_UNO
+#if HAS_UNO // Is building using Uno.UI
+using Uno.Collections;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+#endif
+
+#if IS_UNO // Is inside the Uno.UI project
 using _VisibleBoundsPadding = Uno.UI.Behaviors.InternalVisibleBoundsPadding;
 #else
 using Uno.UI.Toolkit.Extensions;
@@ -53,10 +56,12 @@ namespace Uno.UI.Toolkit
 	public static class VisibleBoundsPadding
 #endif
 	{
+#if HAS_UNO // Is building using Uno.UI
 #if IS_UNO
-		private static readonly Lazy<ILogger> _log = new Lazy<ILogger>(() => typeof(InternalVisibleBoundsPadding).Log());
+		private static readonly Logger _log = typeof(InternalVisibleBoundsPadding).Log();
 #else
-		private static readonly Lazy<ILogger> _log = new Lazy<ILogger>(() => typeof(VisibleBoundsPadding).Log());
+		private static readonly Logger _log = typeof(VisibleBoundsPadding).Log();
+#endif
 #endif
 
 		[Flags]
@@ -78,6 +83,9 @@ namespace Uno.UI.Toolkit
 		{
 			get
 			{
+#if WINUI
+				return new();
+#else
 				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
 				var bounds = Window.Current?.Bounds ?? Rect.Empty;
 				var result = new Thickness {
@@ -87,12 +95,15 @@ namespace Uno.UI.Toolkit
 					Bottom = bounds.Bottom - visibleBounds.Bottom
 				};
 
-				if (_log.Value.IsEnabled(LogLevel.Debug))
+#if HAS_UNO
+				if (_log.IsEnabled(LogLevel.Debug))
 				{
-					_log.Value.LogDebug($"WindowPadding={result} bounds={bounds} visibleBounds={visibleBounds}");
+					_log.LogDebug($"WindowPadding={result} bounds={bounds} visibleBounds={visibleBounds}");
 				}
+#endif
 
 				return result;
+#endif
 			}
 		}
 
@@ -103,6 +114,9 @@ namespace Uno.UI.Toolkit
 		{
 			get
 			{
+#if WINUI
+				return new();
+#else
 				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
 
 				if (Window.Current is Window window)
@@ -113,6 +127,7 @@ namespace Uno.UI.Toolkit
 				}
 
 				return visibleBounds;
+#endif
 			}
 		}
 
@@ -134,19 +149,26 @@ namespace Uno.UI.Toolkit
 
 		private static void OnIsPaddingMaskChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
+#if WINUI
+			// VisibleBoundsPadding is disabled for WinUI 3 and up as there's available API for bounds.
+#else
 			if (dependencyObject is FrameworkElement fe)
 			{
 				VisibleBoundsDetails.GetInstance(fe).OnIsPaddingMaskChanged((PaddingMask)args.OldValue, (PaddingMask)args.NewValue);
 			}
 			else
 			{
+#if HAS_UNO // Is building using Uno.UI
 				if (dependencyObject.Log().IsEnabled(LogLevel.Debug))
 				{
 					dependencyObject.Log().LogDebug($"PaddingMask is only supported on FrameworkElement (Found {dependencyObject?.GetType()})");
 				}
+#endif
 			}
+#endif
 		}
 
+#if !WINUI
 		/// <summary>
 		/// If false, ApplicationView.VisibleBounds and Window.Current.Bounds have different aspect ratios (eg portrait vs landscape) which 
 		/// might arise transiently when the screen orientation changes.
@@ -324,12 +346,14 @@ namespace Uno.UI.Toolkit
 
 			private void ApplyPadding(Thickness padding)
 			{
+#if HAS_UNO // Is building using Uno.UI
 				if (Owner is { } owner
 					&& owner.SetPadding(padding)
-					&& _log.Value.IsEnabled(LogLevel.Debug))
+					&& _log.IsEnabled(LogLevel.Debug))
 				{
-					_log.Value.LogDebug($"ApplyPadding={padding}");
+					_log.LogDebug($"ApplyPadding={padding}");
 				}
+#endif
 			}
 
 			internal static VisibleBoundsDetails GetInstance(FrameworkElement element)
@@ -354,5 +378,6 @@ namespace Uno.UI.Toolkit
 					.TransformBounds(new Rect(0, 0, boundsOf.ActualWidth, boundsOf.ActualHeight));
 			}
 		}
+#endif
 	}
 }

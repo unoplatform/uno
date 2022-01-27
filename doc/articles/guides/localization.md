@@ -88,7 +88,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
     Right-click on `fr` > Add > New Item ... > Visual C# > Xaml > Resources File
 1. Add the localization strings for both English and French:
 
-    Open both `Strings\en\Resources.resw` and `Strings\fr\Resources.xaml`, and add these:
+    Open both `Strings\en\Resources.resw` and `Strings\fr\Resources.resw`, and add these:
     Name|Value in en\Resources.resw|Value in fr\Resources.resw
     -|-|-
     MainPage_IntroText.Text|Hello Uno|Bonjour Uno
@@ -104,7 +104,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
         ```cs
         public App()
         {
-            ConfigureFilters(global::Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory);
+            InitializeLogging();
             ChangeStartingLanguage();
 
             this.InitializeComponent();

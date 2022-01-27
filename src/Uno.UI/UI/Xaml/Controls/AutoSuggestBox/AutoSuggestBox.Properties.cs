@@ -66,6 +66,16 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(QueryIconProperty, value);
 		}
 
+		public 
+#if __IOS__ || __MACOS__
+		new
+#endif
+		object Description
+		{
+			get => this.GetValue(DescriptionProperty);
+			set => this.SetValue(DescriptionProperty, value);
+		}
+
 		public static global::Windows.UI.Xaml.DependencyProperty MaxSuggestionListHeightProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"MaxSuggestionListHeight", typeof(double),
@@ -134,6 +144,12 @@ namespace Windows.UI.Xaml.Controls
 			"QueryIcon", typeof(global::Windows.UI.Xaml.Controls.IconElement),
 			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox),
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.IconElement), propertyChangedCallback: (s, e) => (s as AutoSuggestBox)?.UpdateQueryButton()));
+
+		public static global::Windows.UI.Xaml.DependencyProperty DescriptionProperty { get; } =
+			Windows.UI.Xaml.DependencyProperty.Register(
+				nameof(Description), typeof(object),
+				typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox),
+				new FrameworkPropertyMetadata(default(object), propertyChangedCallback: (s, e) => (s as AutoSuggestBox)?.UpdateDescriptionVisibility(false)));
 
 		public event TypedEventHandler<AutoSuggestBox, AutoSuggestBoxSuggestionChosenEventArgs> SuggestionChosen;
 		public event TypedEventHandler<AutoSuggestBox, AutoSuggestBoxTextChangedEventArgs> TextChanged;

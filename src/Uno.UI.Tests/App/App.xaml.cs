@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Uno.UI;
 using Uno.UI.Tests.App.Views;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
@@ -63,8 +64,12 @@ namespace UnitTestsApp
 		/// <returns>The 'running' application.</returns>
 		public static App EnsureApplication()
 		{
-			if (Current == null)
+			if (Current is not App)
 			{
+				// Hot reload callbacks are generated from the XAML because UnoForceHotReloadCodeGen is enabled, but here we disable
+				// hot reload by default. Certain tests explicitly re-enable it.
+				FeatureConfiguration.Xaml.ForceHotReloadDisabled = true;
+
 				var application = new App();
 #if !NETFX_CORE
 				application.InitializationCompleted();

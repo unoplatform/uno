@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 
 namespace Uno.UI.Tests
 {
@@ -111,6 +112,14 @@ namespace Uno.UI.Tests
 			root.Children.Clear();
 			Assert.IsFalse((SUT as IDependencyObjectStoreProvider).Store.AreHardReferencesEnabled);
 			Assert.IsNull(SUT.GetParent());
+		}
+
+		[TestMethod]
+		public void Should_Have_Bindable_Attribute()
+		{
+			// For context, DependencyObjectGenerator used to put the bindable attribute on the wrong type when it's nested.
+			Assert.AreEqual(0, typeof(Given_DependencyObject).GetCustomAttributes(typeof(BindableAttribute), true).Length);
+			Assert.AreEqual(1, typeof(MyObject).GetCustomAttributes(typeof(BindableAttribute), true).Length);
 		}
 
 		public partial class MyObject : DependencyObject

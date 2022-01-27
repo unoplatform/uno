@@ -2,77 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Pickers
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class FileOpenPicker 
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Pickers.PickerViewMode ViewMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PickerViewMode FileOpenPicker.ViewMode is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileOpenPicker", "PickerViewMode FileOpenPicker.ViewMode");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Pickers.PickerLocationId SuggestedStartLocation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PickerLocationId FileOpenPicker.SuggestedStartLocation is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileOpenPicker", "PickerLocationId FileOpenPicker.SuggestedStartLocation");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string SettingsIdentifier
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string FileOpenPicker.SettingsIdentifier is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileOpenPicker", "string FileOpenPicker.SettingsIdentifier");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string CommitButtonText
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string FileOpenPicker.CommitButtonText is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileOpenPicker", "string FileOpenPicker.CommitButtonText");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<string> FileTypeFilter
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<string> FileOpenPicker.FileTypeFilter is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property ViewMode
+		// Skipping already declared property SuggestedStartLocation
+		// Skipping already declared property SettingsIdentifier
+		// Skipping already declared property CommitButtonText
+		// Skipping already declared property FileTypeFilter
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Collections.ValueSet ContinuationData
@@ -93,13 +32,7 @@ namespace Windows.Storage.Pickers
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-		public FileOpenPicker() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileOpenPicker", "FileOpenPicker.FileOpenPicker()");
-		}
-		#endif
+		// Skipping already declared method Windows.Storage.Pickers.FileOpenPicker.FileOpenPicker()
 		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.FileOpenPicker()
 		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.ContinuationData.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -65,7 +65,11 @@ namespace Windows.Storage.Streams
 		public ulong Position => _stream.Position;
 
 		/// <inheritdoc />
-		public ulong Size => _stream.Size;
+		public ulong Size
+		{
+			get => _stream.Size;
+			set => _stream.Size = value;
+		}
 
 		/// <inheritdoc />
 		public IInputStream GetInputStreamAt(ulong position)

@@ -7,7 +7,7 @@ using EventHandler = System.EventHandler;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.Models
 {
-	public class ChatBoxViewModel : ViewModelBase
+	internal class ChatBoxViewModel : ViewModelBase
 	{
 		public ChatBoxViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{			

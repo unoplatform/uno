@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
-using Uno.UI.Tests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -15,6 +14,9 @@ using Windows.UI.Xaml.Data;
 
 namespace Uno.UI.Tests.ItemsControlTests
 {
+#if !IS_UNIT_TESTS
+	[RuntimeTests.RunsOnUIThread]
+#endif
 	[TestClass]
 	public class Given_ItemsControl
 	{
@@ -75,6 +77,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			Assert.AreEqual(0, SUT.Items.Count);
 		}
 
+#if IS_UNIT_TESTS
 		[TestMethod]
 		public void When_TemplatedParent_Before_Loading()
 		{
@@ -106,6 +109,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 
 			Assert.IsNotNull(SUT.ItemsPresenter);
 		}
+#endif
 
 		[TestMethod]
 		public void When_OnItemsSourceChanged()
@@ -158,6 +162,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			Assert.AreEqual(1, count);
 		}
 
+#if IS_UNIT_TESTS
 		[TestMethod]
 		public void When_GroupedCollectionViewSource()
 		{
@@ -166,7 +171,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 
 			var ungrouped = new[] { "Arg", "Aought", "Crab", "Crump", "Dart", "Fish", "Flash", "Fork", "Lion", "Louse", "Lemur" };
 			var groups = ungrouped.GroupBy(s => s.First().ToString()).ToArray();
-			var obsGroups = groups.Select(g => new GroupedObservableCollection<string>(g)).ToArray();
+			var obsGroups = groups.Select(g => new Helpers.GroupedObservableCollection<string>(g)).ToArray();
 			var source = new ObservableCollection<object>(obsGroups);
 
 			var cvs = new CollectionViewSource
@@ -192,6 +197,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			// is present to freeze the behavior.
 			Assert.AreEqual(0, count);
 		}
+#endif
 
 		[TestMethod]
 		public void When_ObservableVectorIntChanged()
@@ -225,7 +231,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 
 			source[0] = 5;
 			// Data template is not recreated because of pooling
-			Assert.AreEqual(4, count);
+			Assert.AreEqual(FrameworkTemplatePool.IsPoolingEnabled ? 4 : 5, count);
 		}
 
 		[TestMethod]
@@ -260,7 +266,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 
 			source[0] = "5";
 			// Data template is not recreated because of pooling
-			Assert.AreEqual(4, count);
+			Assert.AreEqual(FrameworkTemplatePool.IsPoolingEnabled ? 4 : 5, count);
 		}
 
 		[TestMethod]
@@ -301,7 +307,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 
 			source[0] = 5;
 			// Data template is not recreated because of pooling
-			Assert.AreEqual(4, count);
+			Assert.AreEqual(FrameworkTemplatePool.IsPoolingEnabled ? 4 : 5, count);
 			Assert.AreEqual(3, SUT.Items.Count);
 			Assert.AreEqual(3, SUT.ItemsPanelRoot.Children.Count);
 		}
@@ -367,6 +373,90 @@ namespace Uno.UI.Tests.ItemsControlTests
 			Assert.AreEqual(0, listView.Items.Count);
 		}
 
+#if IS_UNIT_TESTS
+		[TestMethod]
+		public async Task When_Collection_Reset()
+		{
+			var count = 0;
+			var panel = new StackPanel();
+
+			var SUT = new ItemsControl()
+			{
+				ItemsPanelRoot = panel,
+				ItemContainerStyle = BuildBasicContainerStyle(),
+				InternalItemsPanelRoot = panel,
+				ItemTemplate = new DataTemplate(() =>
+				{
+					count++;
+					return new Border();
+				})
+			};
+			SUT.ApplyTemplate();
+
+			var c = new Helpers.ObservableCollectionEx<string>();
+			c.Add("One");
+			c.Add("Two");
+			c.Add("Three");
+
+			SUT.ItemsSource = c;
+			Assert.AreEqual(count, 3);
+
+			Assert.AreEqual(SUT.Items.Count, 3);
+
+			using (c.BatchUpdate())
+			{
+				c.Add("Four");
+				c.Add("Five");
+			}
+
+			Assert.AreEqual(SUT.Items.Count, 5);
+			Assert.AreEqual(count, 5);
+			Assert.IsNotNull(SUT.ContainerFromItem("One"));
+			Assert.IsNotNull(SUT.ContainerFromItem("Four"));
+			Assert.IsNotNull(SUT.ContainerFromItem("Five"));
+		}
+#endif
+
+		[TestMethod]
+		public async Task When_Collection_Append()
+		{
+			var count = 0;
+			var panel = new StackPanel();
+
+			var SUT = new ItemsControl()
+			{
+				ItemsPanelRoot = panel,
+				ItemContainerStyle = BuildBasicContainerStyle(),
+				InternalItemsPanelRoot = panel,
+				ItemTemplate = new DataTemplate(() =>
+				{
+					count++;
+					return new Border();
+				})
+			};
+			SUT.ApplyTemplate();
+
+			var c = new ObservableCollection<string>();
+
+			SUT.ItemsSource = c;
+
+			c.Add("One");
+			Assert.AreEqual(count, 1);
+
+			c.Add("Two");
+			Assert.AreEqual(count, 2);
+
+			c.Add("Three");
+			Assert.AreEqual(count, 3);
+
+			Assert.AreEqual(SUT.Items.Count, 3);
+
+			c.Add("Four");
+
+			Assert.AreEqual(SUT.Items.Count, 4);
+			Assert.AreEqual(count, 4);
+		}
+
 		private Style BuildBasicContainerStyle() =>
 			new Style(typeof(Windows.UI.Xaml.Controls.ListViewItem))
 			{
@@ -390,7 +480,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 
 	}
 
-	public class MyItemsControl : ItemsControl
+	public partial class MyItemsControl : ItemsControl
 	{
 		public int OnItemsChangedCallCount { get; private set; }
 		public object ItemsChangedArgs { get; private set; }

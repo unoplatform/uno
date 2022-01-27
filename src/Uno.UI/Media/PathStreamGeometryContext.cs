@@ -10,10 +10,16 @@ using Uno.Extensions;
 #if __IOS__
 using UIKit;
 using Path = UIKit.UIBezierPath;
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 #elif __MACOS__
 using AppKit;
 using Path = AppKit.NSBezierPath;
 using CoreGraphics;
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 #elif __ANDROID__
 using Android.Graphics.Drawables.Shapes;
 using Path = Android.Graphics.Path;
@@ -37,7 +43,7 @@ namespace Uno.Media
 			_owner = owner;
 		}
 
-		public override void BeginFigure(Point startPoint, bool isFilled, bool isClosed)
+		public override void BeginFigure(Point startPoint, bool isFilled)
 		{
 #if __IOS__ || __MACOS__
 			bezierPath.MoveTo(startPoint);

@@ -4,12 +4,12 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Media.Imaging;
 using Uno.Disposables;
 using Windows.Storage.Streams;
 using System.Runtime.InteropServices;
-using Microsoft.Extensions.Logging;
+
 using Windows.UI;
 using Windows.UI.Composition;
 using System.Numerics;
@@ -24,8 +24,10 @@ namespace Windows.UI.Xaml.Controls
 		private CompositionSurfaceBrush _surfaceBrush;
 		private readonly SpriteVisual _imageSprite;
 
+#pragma warning disable CS0067 // not used in skia
 		public event RoutedEventHandler ImageOpened;
 		public event ExceptionRoutedEventHandler ImageFailed;
+#pragma warning restore CS0067
 
 		public Image()
 		{
@@ -33,9 +35,9 @@ namespace Windows.UI.Xaml.Controls
 			Visual.Children.InsertAtTop(_imageSprite);
 		}
 
-		partial void OnSourceChanged(DependencyPropertyChangedEventArgs e)
+		partial void OnSourceChanged(ImageSource newValue)
 		{
-			if (e.NewValue is ImageSource source)
+			if (newValue is ImageSource source)
 			{
 				_sourceDisposable.Disposable = source.Subscribe(img =>
 				{

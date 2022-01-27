@@ -7,8 +7,9 @@ using Android.Content;
 using Android.Media.Midi;
 using Android.Runtime;
 using Android.Service.VR;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Devices.Enumeration;
 

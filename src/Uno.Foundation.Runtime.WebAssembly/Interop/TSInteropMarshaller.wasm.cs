@@ -1,20 +1,19 @@
 ﻿#nullable enable
 // #define TRACE_MEMORY_LAYOUT
 
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
-using Uno.Extensions;
 using Uno.Foundation;
+using Uno.Foundation.Logging;
 
 namespace Uno.Foundation.Interop
 {
 	internal static partial class TSInteropMarshaller
 	{
-		private static readonly Lazy<ILogger> _logger = new Lazy<ILogger>(() => typeof(TSInteropMarshaller).Log());
+		private static readonly Logger _logger = typeof(TSInteropMarshaller).Log();
 
 		public const UnmanagedType LPUTF8Str = (UnmanagedType)48;
 
@@ -27,9 +26,9 @@ namespace Uno.Foundation.Interop
 			var paramStructType = paramStruct.GetType();
 			var paramSize = Marshal.SizeOf(paramStruct);
 
-			if (_logger.Value.IsEnabled(LogLevel.Trace))
+			if (_logger.IsEnabled(LogLevel.Trace))
 			{
-				_logger.Value.LogTrace($"InvokeJS for {memberName}/{paramStructType} (Alloc: {paramSize})");
+				_logger.Trace($"InvokeJS for {memberName}/{paramStructType} (Alloc: {paramSize})");
 			}
 
 			var pParms = Marshal.AllocHGlobal(paramSize);
@@ -45,9 +44,9 @@ namespace Uno.Foundation.Interop
 
 			if (exception != null)
 			{
-				if (_logger.Value.IsEnabled(LogLevel.Error))
+				if (_logger.IsEnabled(LogLevel.Error))
 				{
-					_logger.Value.LogError($"Failed InvokeJS for {memberName}/{paramStructType}: {exception}");
+					_logger.Error($"Failed InvokeJS for {memberName}/{paramStructType}: {exception}");
 				}
 
 				throw exception;
@@ -66,9 +65,9 @@ namespace Uno.Foundation.Interop
 			var returnSize = Marshal.SizeOf(retStructType);
 			var paramSize = Marshal.SizeOf(paramStructType);
 
-			if (_logger.Value.IsEnabled(LogLevel.Trace))
+			if (_logger.IsEnabled(LogLevel.Trace))
 			{
-				_logger.Value.LogTrace($"InvokeJS for {memberName}/{paramStructType}/{retStructType} (paramSize: {paramSize}, returnSize: {returnSize}");
+				_logger.Trace($"InvokeJS for {memberName}/{paramStructType}/{retStructType} (paramSize: {paramSize}, returnSize: {returnSize}");
 			}
 
 			DumpStructureLayout(paramStructType);
@@ -88,9 +87,9 @@ namespace Uno.Foundation.Interop
 			}
 			catch (Exception e)
 			{
-				if (_logger.Value.IsEnabled(LogLevel.Error))
+				if (_logger.IsEnabled(LogLevel.Error))
 				{
-					_logger.Value.LogDebug($"Failed InvokeJS for {memberName}/{paramStructType}: {e}");
+					_logger.Debug($"Failed InvokeJS for {memberName}/{paramStructType}: {e}");
 				}
 				throw;
 			}
@@ -140,9 +139,9 @@ namespace Uno.Foundation.Interop
 				// but we want to propagate the real exception of the allocation!
 				catch (Exception) { }
 
-				if (_logger.Value.IsEnabled(LogLevel.Error))
+				if (_logger.IsEnabled(LogLevel.Error))
 				{
-					_logger.Value.LogDebug($"Failed Allocate {propertySetterName}/{value.Type}: {e}");
+					_logger.Debug($"Failed Allocate {propertySetterName}/{value.Type}: {e}");
 				}
 
 				throw;

@@ -28,7 +28,7 @@ $(document).on('wordpressMenuHasLoaded', function () {
     }
 
     const queryString = window.location.search;
-    
+
     if (queryString) {
         const queryStringComponents = queryString.split('=');
         const searchParam = queryStringComponents.slice(-1)[0];
@@ -42,7 +42,7 @@ $(document).on('wordpressMenuHasLoaded', function () {
 (function () {
     anchors.options = {
         placement: 'right',
-        visible: 'touch',
+        visible: 'hover',
         icon: '#'
     };
     anchors.add('article h2:not(.no-anchor), article h3:not(.no-anchor), article h4:not(.no-anchor)');

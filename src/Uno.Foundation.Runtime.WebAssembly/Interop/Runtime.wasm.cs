@@ -2,21 +2,20 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Linq;
 using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
-using Uno.Extensions;
 using Uno.Foundation.Interop;
 using System.Text;
 using Uno.Diagnostics.Eventing;
-using Microsoft.Extensions.Logging;
-using Uno.Logging;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Foundation.Runtime.WebAssembly.Interop;
+using Uno.Foundation.Logging;
+using System.Globalization;
+using Uno.Foundation.Runtime.WebAssembly.Helpers;
 
 namespace Uno.Foundation
 {
@@ -24,7 +23,7 @@ namespace Uno.Foundation
 	{
 		private static Dictionary<string, IntPtr> MethodMap = new Dictionary<string, IntPtr>();
 
-		private static readonly Lazy<ILogger> _logger = new Lazy<ILogger>(() => typeof(WebAssemblyRuntime).Log());
+		private static readonly Logger _logger = typeof(WebAssemblyRuntime).Log();
 
 		public static bool IsWebAssembly => PlatformHelper.IsWebAssembly;
 
@@ -247,11 +246,11 @@ namespace Uno.Foundation
 			}
 		}
 
-		private static string InnerInvokeJS(String str)
+		private static string InnerInvokeJS(string str)
 		{
-			if (_logger.Value.IsEnabled(LogLevel.Debug))
+			if (_logger.IsEnabled(LogLevel.Debug))
 			{
-				_logger.Value.Debug("InvokeJS:" + str);
+				_logger.Debug("InvokeJS:" + str);
 			}
 
 			string result;
@@ -284,7 +283,13 @@ namespace Uno.Foundation
 			}
 			else
 			{
-				var commandBuilder = new IndentedStringBuilder();
+				var commandBuilder =
+#if DEBUG
+					new IndentedStringBuilder();
+#else
+					new StringBuilder();
+#endif
+
 				commandBuilder.Append("(function() {");
 
 				var parameters = formattable.GetArguments();
@@ -297,15 +302,24 @@ namespace Uno.Foundation
 					{
 						if (!mappedParameters.TryGetValue(jsObject, out var parameterReference))
 						{
+							if (!jsObject.Handle.IsAlive)
+							{
+								throw new InvalidOperationException("JSObjectHandle is invalid.");
+							}
+
 							mappedParameters[jsObject] = parameterReference = $"__parameter_{i}";
-							commandBuilder.AppendLine($"var {parameterReference} = {jsObject.Handle.GetNativeInstance()};");
+							commandBuilder.AppendLine($"const {parameterReference} = {jsObject.Handle.GetNativeInstance()};");
 						}
 
 						parameters[i] = parameterReference;
 					}
 				}
 
+#if DEBUG
 				commandBuilder.AppendFormatInvariant(formattable.Format, parameters);
+#else
+				commandBuilder.AppendFormat(CultureInfo.InvariantCulture, formattable.Format, parameters);
+#endif
 				commandBuilder.Append("return \"ok\"; })();");
 
 				command = commandBuilder.ToString();
@@ -348,7 +362,7 @@ namespace Uno.Foundation
 				"const __f = ()=>",
 				promiseCode,
 				";\nUno.UI.Interop.AsyncInteropHelper.Invoke(",
-				handle.ToStringInvariant(),
+				handle.ToString(CultureInfo.InvariantCulture),
 				", __f);"
 			};
 

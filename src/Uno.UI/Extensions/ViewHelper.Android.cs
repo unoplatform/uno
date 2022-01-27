@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Windows.Foundation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Extensions;
 using Android.App;
 using Windows.UI.Xaml;
@@ -90,7 +90,7 @@ namespace Uno.UI
 				MinLogicalValue = (int.MinValue + 1) / _cachedDensity;
 			}
 
-			if (typeof(ViewHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (typeof(ViewHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				typeof(ViewHelper).Log().DebugFormat("Display Scale is {0}", Scale);
 			}

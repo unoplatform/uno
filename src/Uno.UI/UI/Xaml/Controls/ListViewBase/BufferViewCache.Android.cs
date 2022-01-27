@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using AndroidX.RecyclerView.Widget;
 using Android.Views;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
 
@@ -120,7 +120,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (record?.IsEmpty ?? false)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Information))
 				{
 					this.Log().Info($"Found empty record for request for position {position}.");
 				}
@@ -128,6 +128,7 @@ namespace Windows.UI.Xaml.Controls
 
 			// Else get from intermediate cache if possible
 			var view = GetViewFromIntermediateCache(recycler, position);
+
 			if (view != null)
 			{
 				Layout.TryAttachView(view);
@@ -471,6 +472,10 @@ namespace Windows.UI.Xaml.Controls
 				if (!viewHolder.IsRecyclable)
 				{
 					// This typically means that the item is being animated. In this case we shouldn't stash it away for future use.
+
+					// Return the view to the recycler, otherwise it may subsequently cause an error
+					recycler.RecycleView(view);
+
 					return null;
 				}
 
@@ -538,7 +543,7 @@ namespace Windows.UI.Xaml.Controls
 			if (result != null)
 			{
 				recycler.BindViewToPosition(result.ItemView, displayPosition);
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Returning cached view for position={displayPosition} and view type={type}. {views.Count} cached views remaining.");
 				}
@@ -564,7 +569,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (viewRecord.IsEmpty)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("Discarding empty record.");
 				}

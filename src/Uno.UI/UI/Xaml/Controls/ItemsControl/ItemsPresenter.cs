@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(PaddingProperty, value);
 		}
 
-		public static DependencyProperty PaddingProperty =
+		public static DependencyProperty PaddingProperty { get; } =
 			DependencyProperty.Register(
 				"Padding",
 				typeof(Thickness),
@@ -77,10 +77,20 @@ namespace Windows.UI.Xaml.Controls
 		private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 		{
 			this.InvalidateMeasure();
-			PropagatePadding();
+			PropagateLayoutValues();
 		}
 
 		#endregion
+
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			base.OnPropertyChanged2(args);
+
+			if (args.Property == FrameworkElement.MinHeightProperty || args.Property == FrameworkElement.MinWidthProperty)
+			{
+				PropagateLayoutValues();
+			}
+		}
 
 		/// <summary>
 		/// Indicates whether the ItemsPresenter is actually enclosed in the scrollable area of the 
@@ -132,7 +142,7 @@ namespace Windows.UI.Xaml.Controls
 				AddChild(_itemsPanel);
 #endif
 
-				PropagatePadding();
+				PropagateLayoutValues();
 			}
 
 			this.InvalidateMeasure();
@@ -152,13 +162,15 @@ namespace Windows.UI.Xaml.Controls
 #endif
 		}
 
-		private void PropagatePadding()
+		private void PropagateLayoutValues()
 		{
 #if XAMARIN && !__MACOS__
 			var asListViewBase = _itemsPanel as NativeListViewBase;
 			if (asListViewBase != null)
 			{
 				asListViewBase.Padding = Padding;
+				asListViewBase.ItemsPresenterMinWidth = MinWidth;
+				asListViewBase.ItemsPresenterMinHeight = MinHeight;
 			}
 #endif
 		}

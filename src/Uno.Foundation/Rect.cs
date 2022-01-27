@@ -100,7 +100,23 @@ namespace Windows.Foundation
 
 		public bool IsEmpty => Empty.Equals(this);
 
+		/// <summary>
+		/// This indicates that this rect is equals to the <see cref="Infinite"/>.
+		/// Unlike the <see cref="IsFinite"/>, this **DOES NOT** indicates that the rect is infinite on at least one of its axis.
+		/// </summary>
 		internal bool IsInfinite => Infinite.Equals(this);
+
+		/// <summary>
+		/// This make sure that this rect does not have any infinite value on any of its axis.
+		/// </summary>
+		/// <remarks>This is **NOT** the opposite of <see cref="IsInfinite"/>.</remarks>
+		internal bool IsFinite => !double.IsInfinity(X) && !double.IsInfinity(Y) && !double.IsInfinity(Width) && !double.IsInfinity(Height);
+
+		/// <summary>
+		/// Indicates that this rect does not have any infinite or NaN on any on its axis.
+		/// (I.e. it's a valid rect for standard layouting logic)
+		/// </summary>
+		internal bool IsValid => IsFinite && !double.IsNaN(X) && !double.IsNaN(Y) && !double.IsNaN(Width) && !double.IsNaN(Height);
 
 		internal bool IsUniform => Math.Abs(Left - Top) < Epsilon && Math.Abs(Left - Right) < Epsilon && Math.Abs(Left - Bottom) < Epsilon;
 
@@ -146,7 +162,9 @@ namespace Windows.Foundation
 		public override string ToString() => (string)this;
 
 		internal string ToDebugString()
-			=> IsEmpty ? "--empty--" : FormattableString.Invariant($"{Size.ToDebugString()}@{Location.ToDebugString()}");
+			=> IsEmpty ? "--empty--"
+				: IsInfinite ? "--infinite--"
+				: FormattableString.Invariant($"{Width:F2}x{Height:F2}@{Location.ToDebugString()}");
 
 		/// <summary>
 		/// Provides the size of this rectangle.

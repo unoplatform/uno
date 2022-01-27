@@ -1,9 +1,8 @@
 using Gdk;
 using System;
-using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI.Runtime.Skia;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia.GTK.UI.Core
 {

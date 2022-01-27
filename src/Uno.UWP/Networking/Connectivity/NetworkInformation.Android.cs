@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 using Android;
 using Android.App;
 using Android.Content;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.Networking.Connectivity.Internal;
 using Uno.UI;
 using Windows.Extensions;
@@ -155,7 +156,7 @@ namespace Windows.Networking.Connectivity
 			catch (Exception ex)
 			{
 				// Task delay should never crash, but just to be sure.
-				if (typeof(NetworkInformation).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				if (typeof(NetworkInformation).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 				{
 					typeof(NetworkInformation).Log().LogError($"Could not raise NetworkStatusChanged", ex);
 

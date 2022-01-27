@@ -9,11 +9,12 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Shapes;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
 using Uno.UI;
 using Uno.Disposables;
 using Uno.UI.Xaml;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml
 {
@@ -62,8 +63,8 @@ namespace Windows.UI.Xaml
 			_logDebug = _log.IsEnabled(LogLevel.Debug) ? _log : null;
 		}
 
-		private protected readonly ILogger _log;
-		private protected readonly ILogger _logDebug;
+		private protected readonly Logger _log;
+		private protected readonly Logger _logDebug;
 
 		private static readonly Uri DefaultBaseUri = new Uri("ms-appx://local");
 		public global::System.Uri BaseUri { get; internal set; } = DefaultBaseUri;

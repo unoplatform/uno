@@ -15,20 +15,7 @@ namespace Uno.UI.Tests.DependencyPropertyTests
 		[TestMethod]
 		public void When_DefaultValueProvider_Registered_Provides_Value()
 		{
-			bool GetDefaultValue(DependencyProperty property, out object value)
-			{
-				if (property == DefaultValueProviderSample.TestProperty)
-				{
-					value = 3;
-					return true;
-				}
-
-				value = null;
-				return false;
-			}
-
 			var test = new DefaultValueProviderSample();
-			test.RegisterDefaultValueProvider(GetDefaultValue);
 
 			var value = test.GetPrecedenceSpecificValue(DefaultValueProviderSample.TestProperty, DependencyPropertyValuePrecedences.DefaultValue);
 			Assert.AreEqual(3, value);
@@ -37,20 +24,7 @@ namespace Uno.UI.Tests.DependencyPropertyTests
 		[TestMethod]
 		public void When_DefaultValueProvider_Registered_Other_Property_Not_Affected()
 		{
-			bool GetDefaultValue(DependencyProperty property, out object value)
-			{
-				if (property == DefaultValueProviderSample.TestProperty)
-				{
-					value = 3;
-					return true;
-				}
-
-				value = 42; // Set arbitrary to verify false has effect
-				return false;
-			}
-
 			var test = new DefaultValueProviderSample();
-			test.RegisterDefaultValueProvider(GetDefaultValue);
 
 			var value = test.GetPrecedenceSpecificValue(DefaultValueProviderSample.OtherProperty, DependencyPropertyValuePrecedences.DefaultValue);
 			Assert.AreEqual(0, value);
@@ -59,33 +33,7 @@ namespace Uno.UI.Tests.DependencyPropertyTests
 		[TestMethod]
 		public void When_DefaultValueProvider_Multiple_Registered_Overwrite()
 		{
-			bool GetDefaultValue(DependencyProperty property, out object value)
-			{
-				if (property == DefaultValueProviderSample.TestProperty)
-				{
-					value = 3;
-					return true;
-				}
-
-				value = null;
-				return false;
-			}
-
-			bool GetDefaultValue2(DependencyProperty property, out object value)
-			{
-				if (property == DefaultValueProviderSample.TestProperty)
-				{
-					value = 17;
-					return true;
-				}
-
-				value = null;
-				return false;
-			}
-
-			var test = new DefaultValueProviderSample();
-			test.RegisterDefaultValueProvider(GetDefaultValue);
-			test.RegisterDefaultValueProvider(GetDefaultValue2);
+			var test = new InheritedDefaultValueProviderSample();
 
 			var value = test.GetPrecedenceSpecificValue(DefaultValueProviderSample.TestProperty, DependencyPropertyValuePrecedences.DefaultValue);
 			Assert.AreEqual(17, value);
@@ -94,44 +42,57 @@ namespace Uno.UI.Tests.DependencyPropertyTests
 		[TestMethod]
 		public void When_DefaultValueProvider_Multiple_Registered_Unaffected()
 		{
-			bool GetDefaultValue(DependencyProperty property, out object value)
-			{
-				if (property == DefaultValueProviderSample.TestProperty)
-				{
-					value = 3;
-					return true;
-				}
-
-				value = null;
-				return false;
-			}
-
-			bool GetDefaultValue2(DependencyProperty property, out object value)
-			{
-				if (property == DefaultValueProviderSample.OtherProperty)
-				{
-					value = 17;
-					return true;
-				}
-
-				value = 42;
-				return false;
-			}
-
-			var test = new DefaultValueProviderSample();
-			test.RegisterDefaultValueProvider(GetDefaultValue);
-			test.RegisterDefaultValueProvider(GetDefaultValue2);
+			var test = new InheritedDefaultValueProviderSample2();
 
 			var value = test.GetPrecedenceSpecificValue(DefaultValueProviderSample.TestProperty, DependencyPropertyValuePrecedences.DefaultValue);
 			Assert.AreEqual(3, value); // GetDefaultValue should apply
 		}
 	}
 
-	internal partial class DefaultValueProviderSample : MockDependencyObject
+	internal partial class InheritedDefaultValueProviderSample : DefaultValueProviderSample
+	{
+		internal override bool GetDefaultValue2(DependencyProperty property, out object value)
+		{
+			if (property == DefaultValueProviderSample.TestProperty)
+			{
+				value = 17;
+				return true;
+			}
+
+			return base.GetDefaultValue2(property, out value);
+		}
+	}
+
+	internal partial class InheritedDefaultValueProviderSample2 : DefaultValueProviderSample
+	{
+		internal override bool GetDefaultValue2(DependencyProperty property, out object value)
+		{
+			if (property == DefaultValueProviderSample.OtherProperty)
+			{
+				value = 17;
+				return true;
+			}
+
+			return base.GetDefaultValue2(property, out value);
+		}
+	}
+
+	internal partial class DefaultValueProviderSample : UIElement
 	{
 		public DefaultValueProviderSample()
 		{
 			
+		}
+
+		internal override bool GetDefaultValue2(DependencyProperty property, out object value)
+		{
+			if (property == DefaultValueProviderSample.TestProperty)
+			{
+				value = 3;
+				return true;
+			}
+
+			return base.GetDefaultValue2(property, out value);
 		}
 
 		public int Test

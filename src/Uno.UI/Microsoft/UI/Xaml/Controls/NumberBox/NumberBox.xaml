@@ -92,11 +92,12 @@
                             SelectionHighlightColor="{TemplateBinding SelectionHighlightColor}"
                             TextReadingOrder="{TemplateBinding TextReadingOrder}"
                             PreventKeyboardDisplayOnProgrammaticFocus="{TemplateBinding PreventKeyboardDisplayOnProgrammaticFocus}"
+							contract7Present:Description="{TemplateBinding Description}"
 								 />
                             <!--
 							UNO TODO
 							contract7Present:SelectionFlyout="{TemplateBinding SelectionFlyout}"
-                            contract7Present:Description="{TemplateBinding Description}"-->
+                            -->
 
                         <Popup x:Name="UpDownPopup"
                             Grid.Column="1"

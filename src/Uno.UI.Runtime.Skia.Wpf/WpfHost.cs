@@ -36,6 +36,9 @@ using Uno.UI.Xaml;
 using Uno.UI.Runtime.Skia.Wpf;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Extensions.ApplicationModel.DataTransfer;
+using Windows.System.Profile.Internal;
+using Uno.Extensions.System.Profile;
+using Windows.Storage.Pickers;
 
 namespace Uno.UI.Skia.Platform
 {
@@ -53,6 +56,8 @@ namespace Uno.UI.Skia.Platform
 		private bool ignorePixelScaling;
 		private FocusManager? _focusManager;
 
+		private DisplayInformation _displayInformation;
+
 		static WpfHost()
 		{
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(WpfHost), new WpfFrameworkPropertyMetadata(typeof(WpfHost)));
@@ -64,11 +69,13 @@ namespace Uno.UI.Skia.Platform
 			ApiExtensibility.Register(typeof(IDisplayInformationExtension), o => new WpfDisplayInformationExtension(o));
 			ApiExtensibility.Register(typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension), o => new WpfDragDropExtension(o));
 			ApiExtensibility.Register(typeof(IFileOpenPickerExtension), o => new FileOpenPickerExtension(o));
+			ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new FolderPickerExtension(o));
 			ApiExtensibility.Register(typeof(IFileSavePickerExtension), o => new FileSavePickerExtension(o));
 			ApiExtensibility.Register(typeof(IConnectionProfileExtension), o => new WindowsConnectionProfileExtension(o));
 			ApiExtensibility.Register<TextBoxView>(typeof(ITextBoxViewExtension), o => new TextBoxViewExtension(o));
 			ApiExtensibility.Register(typeof(ILauncherExtension), o => new LauncherExtension(o));
 			ApiExtensibility.Register(typeof(IClipboardExtension), o => new ClipboardExtensions(o));
+			ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), o => new AnalyticsInfoExtension());
 		}
 
 		public static WpfHost Current => _current;
@@ -98,28 +105,6 @@ namespace Uno.UI.Skia.Platform
 				app.Host = this;
 			}
 
-			bool EnqueueNative(DispatcherQueuePriority priority, DispatcherQueueHandler callback)
-			{
-				if (priority == DispatcherQueuePriority.Normal)
-				{
-					dispatcher.BeginInvoke(callback);
-				}
-				else
-				{
-					var p = priority switch
-					{
-						DispatcherQueuePriority.Low => DispatcherPriority.Background,
-						DispatcherQueuePriority.High => DispatcherPriority.Send, // This one is higher than normal
-						_ => DispatcherPriority.Normal
-					};
-					dispatcher.BeginInvoke(p, callback);
-				}
-
-				return true;
-			}
-
-			Windows.System.DispatcherQueue.EnqueueNativeOverride = EnqueueNative;
-
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = d => dispatcher.BeginInvoke(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = dispatcher.CheckAccess;
 
@@ -127,7 +112,7 @@ namespace Uno.UI.Skia.Platform
 
 			WinUI.Window.InvalidateRender += () =>
 			{
-				InvalidateFocusVisual();
+				InvalidateOverlays();
 				InvalidateVisual();
 			};
 
@@ -228,9 +213,15 @@ namespace Uno.UI.Skia.Platform
 
 
 			int width, height;
-			var dpi = VisualTreeHelper.GetDpi(WpfApplication.Current.MainWindow);
-			double dpiScaleX = dpi.DpiScaleX;
-			double dpiScaleY = dpi.DpiScaleY;
+
+			if (_displayInformation == null)
+			{
+				_displayInformation = DisplayInformation.GetForCurrentView();
+			}
+
+			var dpi = _displayInformation.RawPixelsPerViewPixel;
+			double dpiScaleX = dpi;
+			double dpiScaleY = dpi;
 			if (IgnorePixelScaling)
 			{
 				width = (int)ActualWidth;
@@ -268,13 +259,14 @@ namespace Uno.UI.Skia.Platform
 			drawingContext.DrawImage(bitmap, new Rect(0, 0, ActualWidth, ActualHeight));
 		}
 
-		private void InvalidateFocusVisual()
+		private void InvalidateOverlays()
 		{
-			if (_focusManager == null)
-			{
-				_focusManager = VisualTree.GetFocusManagerForElement(Windows.UI.Xaml.Window.Current?.RootElement);
-			}
+			_focusManager ??= VisualTree.GetFocusManagerForElement(Windows.UI.Xaml.Window.Current?.RootElement);
 			_focusManager?.FocusRectManager?.RedrawFocusVisual();
+			if (_focusManager?.FocusedElement is TextBox textBox)
+			{
+				textBox.TextBoxView?.Extension?.InvalidateLayout();
+			}
 		}
 	}
 }

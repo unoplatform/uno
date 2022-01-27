@@ -29,7 +29,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 #endif
 
 		private List<string> _referencedAssemblies = new List<string>();
-		private string[] _searchPaths = new string[0];
+		private string[] _searchPaths = Array.Empty<string>();
 		private DefaultAssemblyResolver? _assemblyResolver;
 
 		[Required]

@@ -23,7 +23,7 @@ namespace UITests.Windows_UI_ViewManagement
 			this.DataContextChanged += UISettingsTests_DataContextChanged;			
         }
 
-		public UISettingsTestsViewModel ViewModel { get; private set; }
+		internal UISettingsTestsViewModel ViewModel { get; private set; }
 
 		private void UISettingsTests_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{
@@ -31,7 +31,7 @@ namespace UITests.Windows_UI_ViewManagement
 		}
 	}
 
-	public class UISettingsTestsViewModel : ViewModelBase
+	internal class UISettingsTestsViewModel : ViewModelBase
 	{
 		private readonly UISettings _uiSettings = new UISettings();
 
