@@ -7,6 +7,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using Windows.UI.Xaml;
+using Windows.UI;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -265,7 +266,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_IsEnabled_Set()
 		{
-			var color = SolidColorBrushHelper.Red;
+			var color = new SolidColorBrush(Colors.Red);
 
 			var textbox = new TextBox
 			{
