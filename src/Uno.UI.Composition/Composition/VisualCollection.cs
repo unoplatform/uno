@@ -21,6 +21,8 @@ namespace Windows.UI.Composition
 
 		public int Count => _visuals.Count;
 
+		internal IList<Visual> InnerList => _visuals;
+
 		public void InsertAbove(Visual newChild, Visual sibling)
 		{
 			var index = _visuals.IndexOf(sibling);

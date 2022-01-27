@@ -12,14 +12,14 @@ public partial class ContainerVisual : Visual
 
 	internal bool IsChildrenRenderOrderDirty { get; set; }
 
-	internal IEnumerable<Visual> GetChildrenInRenderOrder()
+	internal IList<Visual> GetChildrenInRenderOrder()
 	{
 		if (IsChildrenRenderOrderDirty)
 		{
 			ResetRenderOrder();
 		}
 
-		return !_hasCustomRenderOrder ? Children : _childrenInRenderOrder;
+		return !_hasCustomRenderOrder ? Children.InnerList : _childrenInRenderOrder;
 	}
 
 	internal void ResetRenderOrder()
