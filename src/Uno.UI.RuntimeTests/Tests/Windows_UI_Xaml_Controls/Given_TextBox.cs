@@ -261,5 +261,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.Focus(FocusState.Programmatic);
 			Assert.AreEqual(3, textBox.SelectionStart);
 		}
+
+		[TestMethod]
+		public async Task When_IsEnabled_Set()
+		{
+			var textbox = new TextBox
+			{
+				Text = "Original Text",
+				IsEnabled = false
+			};
+
+			var stackPanel = new StackPanel()
+			{
+				Children = { textbox }
+			};
+
+			WindowHelper.WindowContent = stackPanel;
+			await WindowHelper.WaitForLoaded(textbox);
+
+			textbox.Focus(FocusState.Programmatic);
+
+			await WindowHelper.WaitForIdle();
+
+			textbox.IsEnabled = true;
+			Assert.IsTrue(textbox.IsEnabled);
+		}
 	}
 }
