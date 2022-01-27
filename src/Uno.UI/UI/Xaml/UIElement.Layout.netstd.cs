@@ -150,7 +150,6 @@ namespace Windows.UI.Xaml
 		{
 			if (this.GetParent() is UIElement parent)
 			{
-				//parent.InvalidateMeasure();
 				parent.InvalidateMeasurePath();
 			}
 			else if (IsVisualTreeRoot)

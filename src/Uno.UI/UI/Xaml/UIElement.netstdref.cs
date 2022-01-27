@@ -25,6 +25,8 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal bool IsMeasureDirty => false;
 
+		internal bool IsMeasureOrMeasureDirtyPath => false;
+
 		/// <summary>
 		/// Determines if InvalidateArrange has been called
 		/// </summary>

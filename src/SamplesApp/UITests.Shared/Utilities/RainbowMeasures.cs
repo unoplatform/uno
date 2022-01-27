@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Media;
 
 namespace SampleApps.Utilities
 {
-    public class RainbowMeasures : Panel
+    public partial class RainbowMeasures : Panel
     {
         private static readonly IReadOnlyList<Color> _colors = new []{
             Colors.Blue,
