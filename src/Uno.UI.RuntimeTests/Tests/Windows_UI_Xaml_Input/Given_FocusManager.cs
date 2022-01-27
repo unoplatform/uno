@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Private.Infrastructure;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input.TestPages;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 {
@@ -119,7 +117,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			}
 			finally
 			{
-				TestServices.WindowHelper.WindowContent = null;
+				
 			}
 		}
 
@@ -149,7 +147,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			AssertHasFocus(innerControl);
 			Assert.AreEqual(FocusState.Unfocused, outerControl.FocusState);
 
-			TestServices.WindowHelper.WindowContent = null;
+			
 		}
 
 		[TestMethod]
@@ -174,13 +172,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			{
 				frame.Navigate(typeof(TwoButtonSecondPage));
 
-				await ((TwoButtonSecondPage)frame.Content).FinishedLoadingTask;
+				await WaitForLoadedEvent((TwoButtonSecondPage)frame.Content);
 				await TestServices.WindowHelper.WaitForIdle();
 			};
 
 			await AssertNavigationFocusSequence(expectedSequence, navigationAction);
 
-			TestServices.WindowHelper.WindowContent = null;
+			
 		}
 
 		[TestMethod]
@@ -194,7 +192,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			stackPanel.Children.Add(frame);
 			TestServices.WindowHelper.WindowContent = stackPanel;
 			frame.Navigate(typeof(TwoButtonFirstPage));
-			await ((TwoButtonFirstPage)frame.Content).FinishedLoadingTask;
+			await WaitForLoadedEvent((TwoButtonFirstPage)frame.Content);
 			((TwoButtonFirstPage)frame.Content).FocusFirst();
 
 			await TestServices.WindowHelper.WaitForIdle();
@@ -208,12 +206,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			{
 				frame.Navigate(typeof(TwoButtonSecondPage));
 
-				await ((TwoButtonSecondPage)frame.Content).FinishedLoadingTask;
+				await WaitForLoadedEvent((TwoButtonSecondPage)frame.Content);
 			};
 
-			await AssertNavigationFocusSequence(expectedSequence, navigationAction);
-
-			TestServices.WindowHelper.WindowContent = null;
+			await AssertNavigationFocusSequence(expectedSequence, navigationAction);			
 		}
 
 		[TestMethod]
@@ -227,8 +223,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			stackPanel.Children.Add(outerButton);
 			stackPanel.Children.Add(frame);
 			TestServices.WindowHelper.WindowContent = stackPanel;
+
+			await TestServices.WindowHelper.WaitForLoaded(stackPanel);
+
 			frame.Navigate(typeof(TwoButtonFirstPage));
-			await ((TwoButtonFirstPage)frame.Content).FinishedLoadingTask;
+			await WaitForLoadedEvent((TwoButtonFirstPage)frame.Content);
 			outerButton.Focus(FocusState.Programmatic);
 
 			await TestServices.WindowHelper.WaitForIdle();
@@ -242,12 +241,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			{
 				frame.Navigate(typeof(TwoButtonSecondPage));
 
-				await ((TwoButtonSecondPage)frame.Content).FinishedLoadingTask;
+				await WaitForLoadedEvent((TwoButtonSecondPage)frame.Content);
 			};
 
 			await AssertNavigationFocusSequence(expectedSequence, navigationAction);
-
-			TestServices.WindowHelper.WindowContent = null;
 		}
 
 		[TestMethod]
@@ -262,7 +259,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			stackPanel.Children.Add(new ToggleButton() { Name = "OuterButtonAfter" });
 			TestServices.WindowHelper.WindowContent = stackPanel;
 			frame.Navigate(typeof(TwoButtonFirstPage));
-			await ((TwoButtonFirstPage)frame.Content).FinishedLoadingTask;
+			await WaitForLoadedEvent((TwoButtonFirstPage)frame.Content);
 			((TwoButtonFirstPage)frame.Content).FocusFirst();
 
 			await TestServices.WindowHelper.WaitForIdle();
@@ -276,12 +273,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			{
 				frame.Navigate(typeof(TwoButtonSecondPage));
 
-				await ((TwoButtonSecondPage)frame.Content).FinishedLoadingTask;
+				await WaitForLoadedEvent((TwoButtonSecondPage)frame.Content);
 			};
 
 			await AssertNavigationFocusSequence(expectedSequence, navigationAction);
-
-			TestServices.WindowHelper.WindowContent = null;
 		}
 
 		[TestMethod]
@@ -293,7 +288,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			TestServices.WindowHelper.WindowContent = frame;
 			frame.Navigate(typeof(TwoButtonFirstPage));
 			frame.Navigate(typeof(TwoButtonSecondPage));
-			await ((TwoButtonSecondPage)frame.Content).FinishedLoadingTask;
+			await WaitForLoadedEvent((TwoButtonSecondPage)frame.Content);
 			((TwoButtonSecondPage)frame.Content).FocusFirst();
 
 			await TestServices.WindowHelper.WaitForIdle();
@@ -308,13 +303,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			{
 				frame.GoBack();
 
-				await ((TwoButtonFirstPage)frame.Content).FinishedLoadingTask;
+				await WaitForLoadedEvent((TwoButtonFirstPage)frame.Content);
 				await TestServices.WindowHelper.WaitForIdle();
 			};
 
 			await AssertNavigationFocusSequence(expectedSequence, navigationAction);
-
-			TestServices.WindowHelper.WindowContent = null;
 		}
 
 		[TestMethod]
@@ -341,14 +334,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			Func<Task> navigationAction = async () =>
 			{
 				frame.GoBack();
-				await ((TwoButtonFirstPage)frame.Content).FinishedLoadingTask;
+				await WaitForLoadedEvent((TwoButtonFirstPage)frame.Content);
 
 				await TestServices.WindowHelper.WaitForIdle();
 			};
 
-			await AssertNavigationFocusSequence(expectedSequence, navigationAction);
-
-			TestServices.WindowHelper.WindowContent = null;
+			await AssertNavigationFocusSequence(expectedSequence, navigationAction);	
 		}
 
 		[TestMethod]
@@ -376,14 +367,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			Func<Task> navigationAction = async () =>
 			{
 				frame.GoBack();
-				await ((TwoButtonFirstPage)frame.Content).FinishedLoadingTask;
+				await WaitForLoadedEvent((TwoButtonFirstPage)frame.Content);
 
 				await TestServices.WindowHelper.WaitForIdle();
 			};
 
 			await AssertNavigationFocusSequence(expectedSequence, navigationAction);
+		}
 
-			TestServices.WindowHelper.WindowContent = null;
+		private async Task WaitForLoadedEvent(FocusNavigationPage page)
+		{
+			await TestServices.WindowHelper.WaitFor(() => page.LoadedEventFinished);
 		}
 
 		private async Task AssertNavigationFocusSequence(string[] expectedSequence, Func<Task> navigationSequence)
@@ -411,7 +405,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 				FocusManager.GettingFocus += FocusManager_GettingFocus;
 
 				await navigationSequence();
-				
+
 				CollectionAssert.AreEqual(expectedSequence, actualSequence);
 
 			}

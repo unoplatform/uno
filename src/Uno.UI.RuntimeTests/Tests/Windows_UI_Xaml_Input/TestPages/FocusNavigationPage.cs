@@ -5,26 +5,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input.TestPages
 {
 	public partial class FocusNavigationPage : Page
 	{
-		private TaskCompletionSource<object> _loadingTaskCompletionSource =
-			new TaskCompletionSource<object>();
-
 		public FocusNavigationPage()
 		{
 			Loaded += Page_Loaded;
 			Unloaded += Page_Unloaded;
 		}
 
-		public Task FinishedLoadingTask => _loadingTaskCompletionSource.Task;
+		public bool LoadedEventFinished { get; private set; }
 
 		private void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
 		{
-			_loadingTaskCompletionSource.SetResult(null);
+			LoadedEventFinished = true;
 		}
 
 		private void Page_Unloaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
 		{
-			// Reset loading task for next navigation
-			_loadingTaskCompletionSource = new TaskCompletionSource<object>();
+			LoadedEventFinished = false;
 		}
 	}
 }

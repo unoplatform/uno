@@ -461,15 +461,6 @@ namespace Windows.UI.Xaml.Controls
 					));
 		}
 
-		private IDisposable MarkCurrentPageLeaving()
-		{
-			if (Content is Page page)
-			{
-				return Disposable.Create(() => page.IsLeavingFrame = false);
-			}
-			return Disposable.Empty;
-		}
-
 		/// <summary>
 		/// In case the current page contains a focused element,
 		/// we need to move the focus out of the page.
@@ -502,7 +493,7 @@ namespace Windows.UI.Xaml.Controls
 				if (inCurrentPage)
 				{
 					// Set the focus on the next focusable element.
-					focusManager.SetFocusOnNextFocusableElement(FocusState, true);
+					focusManager.SetFocusOnNextFocusableElement(FocusState.Programmatic, true);
 
 					(focusedElement as Control)?.UpdateFocusState(FocusState.Unfocused);
 				}

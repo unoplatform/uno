@@ -99,25 +99,6 @@
 	<ItemGroup>
 		<Compile Include="Tests\Windows_UI_Xaml_Controls\HtmlElementAttributeTests\Given_HtmlElementAttribute.Wasm.cs" />
 	</ItemGroup>
-	
-	
-	<ItemGroup>
-		<Page Update="Tests\Windows_UI_Xaml\Controls\Animation_Leak.xaml">
-		  <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-		</Page>
-		<Page Update="Tests\Windows_UI_Xaml\Controls\ContentDialog_Leak.xaml">
-		  <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-		</Page>
-		<Page Update="Tests\Windows_UI_Xaml\Controls\xLoad_xBind.xaml">
-			<SubType>Designer</SubType>
-		</Page>
-		<Page Update="Tests\Windows_UI_Xaml_Input\TestPages\TwoButtonSecondPage.xaml">
-		  <SubType>Designer</SubType>
-		</Page>
-		<Page Update="Tests\Windows_UI_Xaml_Input\TestPages\TwoButtonFirstPage.xaml">
-		  <SubType>Designer</SubType>
-		</Page>
-	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
