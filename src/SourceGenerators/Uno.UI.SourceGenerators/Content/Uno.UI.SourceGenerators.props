@@ -354,7 +354,6 @@
 	  <AdditionalFiles Include="@(ApplicationDefinition)" SourceItemGroup="ApplicationDefinition" />
 	  <AdditionalFiles Include="@(PRIResource)" SourceItemGroup="PRIResource" />
 	  <AdditionalFiles Include="@(TSBindingAssemblySource)" SourceItemGroup="TSBindingAssemblySource" />
-	  <AdditionalFiles Include="@(Analyzer)" SourceItemGroup="Analyzer" />
 
 	  <_AdditionalFilesCleanup Include="@(AdditionalFiles)" />
 	  <AdditionalFiles Remove="@(_AdditionalFilesCleanup)" />
