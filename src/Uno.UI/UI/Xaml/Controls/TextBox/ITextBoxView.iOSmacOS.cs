@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 		void SetTextNative(string text);
 		void Select(int start, int length);
 
-#if NET6_0_OR_GREATER
+#if NET6_0_OR_GREATER && __IOS__
 		UITextAutocapitalizationType AutocapitalizationType { get; set; }
 		UITextAutocorrectionType AutocorrectionType { get; set; }
 		UIKeyboardType KeyboardType { get; set; }
