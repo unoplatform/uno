@@ -9,9 +9,9 @@
 		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
 
-		<PublishTrimmed>true</PublishTrimmed>
+		<PublishTrimmed>false</PublishTrimmed>
 		
-				<RuntimeIdentifier Condition="'$(TargetFramework)' == 'net6.0-ios'">iossimulator-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="'$(TargetFramework)' == 'net6.0-ios'">iossimulator-x64</RuntimeIdentifier>
 		<RuntimeIdentifier Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
 		<InvariantGlobalization Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">true</InvariantGlobalization>
 
@@ -35,11 +35,11 @@
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net6.0-ios'">
 		<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
+		<PublishTrimmed>true</PublishTrimmed>
 	</PropertyGroup>
 	
 	<PropertyGroup Condition="'$(TargetFramework)'=='net6.0-android'">
 		<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
-		<PublishTrimmed>false</PublishTrimmed>
 		<AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
 	</PropertyGroup>
 
