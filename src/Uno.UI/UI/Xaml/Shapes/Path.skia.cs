@@ -15,9 +15,6 @@ namespace Windows.UI.Xaml.Shapes
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeAbsoluteShape(finalSize, GetPath());
 
-		private SkiaGeometrySource2D? GetPath() => GetSkiaGeometry(Data);
-
-		private SkiaGeometrySource2D? GetSkiaGeometry(Geometry? geometry)
-			=>	geometry?.GetGeometrySource2D();
+		private SkiaGeometrySource2D? GetPath() => Data?.GetGeometrySource2D();
 	}
 }
