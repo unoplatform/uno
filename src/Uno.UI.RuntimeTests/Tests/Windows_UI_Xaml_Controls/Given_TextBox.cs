@@ -286,7 +286,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForIdle();
 
+			Assert.IsFalse(textbox.IsEnabled);
+			Assert.AreNotEqual(textbox.Foreground, color);
+
 			textbox.IsEnabled = true;
+
 			Assert.IsTrue(textbox.IsEnabled);
 			Assert.AreEqual(textbox.Foreground, color);
 		}
