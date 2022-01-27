@@ -164,8 +164,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			if (updateItemSelectedState)
 			{
 				TryUpdateSelectorItemIsSelected(oldSelectedItem, false);
-				if (SelectedValue != selectedItem)
-					TryUpdateSelectorItemIsSelected(selectedItem, true);
+				TryUpdateSelectorItemIsSelected(selectedItem, true);
 			}
 
 			InvokeSelectionChanged(wasSelectionUnset ? new object[] { } : new[] { oldSelectedItem },
