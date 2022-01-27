@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.Devices.Input;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.Testing;
@@ -18,7 +17,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		private const string _sample = "UITests.Windows_UI_Input.PointersTests.NestedHandling";
 
 #if __SKIA__
-		[Ignore]
+		[Microsoft.VisualStudio.TestTools.UnitTesting.Ignore]
 #endif
 		[Test]
 		[AutoRetry]

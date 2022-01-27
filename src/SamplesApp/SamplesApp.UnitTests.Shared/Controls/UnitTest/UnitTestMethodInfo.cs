@@ -13,7 +13,7 @@ namespace Uno.UI.Samples.Tests;
 
 internal record UnitTestMethodInfo
 {
-	private readonly IList<object[]> _dataRows;
+	private readonly List<object[]> _casesParameters;
 	private readonly IList<PointerDeviceType> _injectedPointerTypes;
 
 	public UnitTestMethodInfo(object testClassInstance, MethodInfo method)
@@ -30,13 +30,17 @@ internal record UnitTestMethodInfo
 			.SingleOrDefault()
 			?.ExceptionType;
 
-		_dataRows = method
+		_casesParameters = method
 			.GetCustomAttributes<DataRowAttribute>()
 			.Select(d => d.Data)
 			.ToList();
-		if (_dataRows is { Count: 0 })
+		if (method.GetCustomAttribute<DynamicDataAttribute>() is {} dynamicData)
 		{
-			_dataRows.Add(Array.Empty<object>());
+			_casesParameters.AddRange(dynamicData.GetData(method));
+		}
+		if (_casesParameters is { Count: 0 })
+		{
+			_casesParameters.Add(Array.Empty<object>());
 		}
 
 		_injectedPointerTypes = method
@@ -79,7 +83,7 @@ internal record UnitTestMethodInfo
 
 	public IEnumerable<TestCase> GetCases()
 	{
-		var cases = _dataRows.Select(parameters => new TestCase { Parameters = parameters });
+		var cases = _casesParameters.Select(parameters => new TestCase { Parameters = parameters });
 
 		if (_injectedPointerTypes.Any())
 		{
