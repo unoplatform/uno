@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -17,7 +19,7 @@ internal static class HtmlElementHelper
 	static HtmlElementHelper()
 	{
 		_htmlElementAttribute = GetUnoUIRuntimeWebAssembly().GetType("Uno.UI.Runtime.WebAssembly.HtmlElementAttribute", true);
-		_htmlElementAttributeTagGetter = _htmlElementAttribute.GetProperty("Tag");
+		_htmlElementAttributeTagGetter = _htmlElementAttribute.GetProperty("Tag") ?? throw new InvalidOperationException("Failed to resolve Tag property on HtmlElementAttribute.");
 	}
 
 	private static Assembly GetUnoUIRuntimeWebAssembly()

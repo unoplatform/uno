@@ -23,51 +23,16 @@ namespace Windows.UI.Xaml
 		internal const string DefaultHtmlTag = "div";
 
 		private readonly GCHandle _gcHandle;
+		private readonly WasmConfig _wasmConfig;
 
-		private static class UIElementNativeRegistrar
+		/// <summary>
+		/// Config flags for UIElement specific to WASM platform
+		/// </summary>
+		[Flags]
+		private enum WasmConfig : int
 		{
-			private static readonly Dictionary<Type, int> _classNames = new Dictionary<Type, int>();
-
-			internal static int GetForType(Type type)
-			{
-				if (!_classNames.TryGetValue(type, out var classNamesRegistrationId))
-				{
-					_classNames[type] = classNamesRegistrationId = WindowManagerInterop.RegisterUIElement(type.FullName, GetClassesForType(type).ToArray(), type.Is<FrameworkElement>());
-				}
-
-				return classNamesRegistrationId;
-			}
-
-			private static IEnumerable<string> GetClassesForType(Type type)
-			{
-				while (type != null && type != typeof(object))
-				{
-					yield return type.Name.ToLowerInvariant();
-					type = type.BaseType;
-				}
-			}
-		}
-
-		public Size MeasureView(Size availableSize, bool measureContent = true)
-		{
-			return Uno.UI.Xaml.WindowManagerInterop.MeasureView(HtmlId, availableSize, measureContent);
-		}
-
-		internal Rect GetBBox()
-		{
-			if (!HtmlTagIsSvg)
-			{
-				throw new InvalidOperationException("GetBBox is available only for SVG elements.");
-			}
-
-			return Uno.UI.Xaml.WindowManagerInterop.GetBBox(HtmlId);
-		}
-
-		private Rect GetBoundingClientRect()
-		{
-			var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getBoundingClientRect(" + HtmlId + ");");
-			var sizeParts = sizeString.Split(';');
-			return new Rect(double.Parse(sizeParts[0]), double.Parse(sizeParts[1]), double.Parse(sizeParts[2]), double.Parse(sizeParts[3]));
+			IsExternalElement = 1,
+			IsSvg = 1 << 1,
 		}
 
 		public UIElement() : this(null, false) { }
@@ -85,10 +50,16 @@ namespace Windows.UI.Xaml
 			var tag = HtmlElementHelper.GetHtmlTag(type, htmlTag);
 
 			HtmlTag = tag.Name;
-			HtmlTagIsSvg = isSvg;
-			HtmlTagIsExternallyDefined = tag.IsExternallyDefined;
 			Handle = GCHandle.ToIntPtr(_gcHandle);
 			HtmlId = Handle;
+			if (isSvg)
+			{
+				_wasmConfig |= WasmConfig.IsSvg;
+			}
+			if (tag.IsExternallyDefined)
+			{
+				_wasmConfig |= WasmConfig.IsExternalElement;
+			}
 
 			Uno.UI.Xaml.WindowManagerInterop.CreateContent(
 				htmlId: HtmlId,
@@ -133,9 +104,31 @@ namespace Windows.UI.Xaml
 
 		public string HtmlTag { get; }
 
-		public bool HtmlTagIsSvg { get; }
+		public bool HtmlTagIsSvg => _wasmConfig.HasFlag(WasmConfig.IsSvg);
 
-		internal bool HtmlTagIsExternallyDefined { get; }
+		internal bool HtmlTagIsExternallyDefined => _wasmConfig.HasFlag(WasmConfig.IsExternalElement);
+
+		public Size MeasureView(Size availableSize, bool measureContent = true)
+		{
+			return Uno.UI.Xaml.WindowManagerInterop.MeasureView(HtmlId, availableSize, measureContent);
+		}
+
+		internal Rect GetBBox()
+		{
+			if (!HtmlTagIsSvg)
+			{
+				throw new InvalidOperationException("GetBBox is available only for SVG elements.");
+			}
+
+			return Uno.UI.Xaml.WindowManagerInterop.GetBBox(HtmlId);
+		}
+
+		private Rect GetBoundingClientRect()
+		{
+			var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getBoundingClientRect(" + HtmlId + ");");
+			var sizeParts = sizeString.Split(';');
+			return new Rect(double.Parse(sizeParts[0]), double.Parse(sizeParts[1]), double.Parse(sizeParts[2]), double.Parse(sizeParts[3]));
+		}
 
 		protected internal void SetStyle(string name, string value)
 		{
@@ -660,6 +653,30 @@ namespace Windows.UI.Xaml
 			}
 
 			return new RoutedEventArgs(src);
+		}
+
+		private static class UIElementNativeRegistrar
+		{
+			private static readonly Dictionary<Type, int> _classNames = new Dictionary<Type, int>();
+
+			internal static int GetForType(Type type)
+			{
+				if (!_classNames.TryGetValue(type, out var classNamesRegistrationId))
+				{
+					_classNames[type] = classNamesRegistrationId = WindowManagerInterop.RegisterUIElement(type.FullName, GetClassesForType(type).ToArray(), type.Is<FrameworkElement>());
+				}
+
+				return classNamesRegistrationId;
+			}
+
+			private static IEnumerable<string> GetClassesForType(Type type)
+			{
+				while (type != null && type != typeof(object))
+				{
+					yield return type.Name.ToLowerInvariant();
+					type = type.BaseType;
+				}
+			}
 		}
 	}
 }
