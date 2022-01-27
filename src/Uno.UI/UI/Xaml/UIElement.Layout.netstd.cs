@@ -251,12 +251,12 @@ namespace Windows.UI.Xaml
 			{
 				SetLayoutFlag(LayoutFlag.FirstMeasureDone);
 				isDirty = true;
-
 			}
 
-			while (true)
-			{
+			var remainingTries = MaxLayoutIterations;
 
+			while (--remainingTries > 0)
+			{
 				if (isDirty)
 				{
 					// We must reset the flag **BEFORE** doing the actual measure, so the elements are able to re-invalidate themselves
