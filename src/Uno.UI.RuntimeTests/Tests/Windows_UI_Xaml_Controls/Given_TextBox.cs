@@ -265,10 +265,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_IsEnabled_Set()
 		{
+			var color = SolidColorBrushHelper.Red;
+
 			var textbox = new TextBox
 			{
 				Text = "Original Text",
-				IsEnabled = false
+				IsEnabled = false,
+				Foreground = color
 			};
 
 			var stackPanel = new StackPanel()
@@ -285,6 +288,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			textbox.IsEnabled = true;
 			Assert.IsTrue(textbox.IsEnabled);
+			Assert.AreEqual(textbox.Foreground, color);
 		}
 	}
 }
