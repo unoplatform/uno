@@ -35,11 +35,11 @@ variables:
   windowsScaledPool: 'Windows2022-20211130'
   linuxVMImage: 'ubuntu-latest'
   macOSVMImage: 'macOS-11'
-  macOSVMImage_UITests: 'macOS-10.15'
+  macOSVMImage_UITests: 'macOS-11'
   xCodeRoot: '/Applications/Xcode_13.1.app'
   XamarinSDKVersion: 6_12_7
-  xCodeRoot_iOS_UITests: '/Applications/Xcode_11.5.app'
-  XamarinSDKVersion_iOS_UITests: 6_10_0
+  xCodeRoot_iOS_UITests: '/Applications/Xcode_13.1.app'
+  XamarinSDKVersion_iOS_UITests: 6_12_7
 
 jobs:
 - template: build/ci/.azure-devops-commitsar.yml
