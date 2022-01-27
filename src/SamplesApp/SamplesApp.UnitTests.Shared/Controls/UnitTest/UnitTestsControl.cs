@@ -846,7 +846,7 @@ namespace Uno.UI.Samples.Tests
 					catch (Exception e)
 					{
 						_currentRun.Failed++;
-						ReportTestResult(testName + " Cleanup", TimeSpan.Zero, TestResult.Failed, e, console: consoleRecorder.GetContentAndReset());
+						ReportTestResult(testName + " Cleanup", TimeSpan.Zero, TestResult.Failed, e, console: consoleRecorder?.GetContentAndReset());
 					}
 				}
 
