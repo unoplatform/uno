@@ -386,7 +386,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
+		partial void OnIsEnabledChangedPartial(IsEnabledChangedEventArgs e)
 		{
 			if (_textBoxView != null)
 			{
