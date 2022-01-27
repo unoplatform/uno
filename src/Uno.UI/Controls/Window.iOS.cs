@@ -364,8 +364,11 @@ namespace Uno.UI.Controls
 
 		private bool IsWithinAWebView(UIView view)
 		{
-			return view?.FindSuperviewOfType<UIWebView>(stopAt: this) != null
-				|| view?.FindSuperviewOfType<WKWebView>(stopAt: this) != null;
+			return
+#if !__MACCATALYST__
+				view?.FindSuperviewOfType<UIWebView>(stopAt: this) != null ||
+#endif
+				view?.FindSuperviewOfType<WKWebView>(stopAt: this) != null;
 		}
 
 		private bool IsFocusable(UIView view)

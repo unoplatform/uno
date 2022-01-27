@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-#if __IOS__
+#if __IOS__ && !__MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13931
 using CoreTelephony;
 #endif
 using CoreFoundation;
@@ -155,12 +155,12 @@ namespace Uno.Networking.Connectivity.Internal
             remoteHostReachability.SetNotification(OnChange);
             remoteHostReachability.Schedule(CFRunLoop.Main, CFRunLoop.ModeDefault);
 
-#if __IOS__
+#if __IOS__ && !__MACCATALYST__
             NetworkInformation.CellularData.RestrictionDidUpdateNotifier = new Action<CTCellularDataRestrictedState>(OnRestrictedStateChanged);
 #endif
-        }
+		}
 
-        internal event Action ReachabilityChanged;
+		internal event Action ReachabilityChanged;
 
         void IDisposable.Dispose() => Dispose();
 
@@ -171,19 +171,19 @@ namespace Uno.Networking.Connectivity.Internal
             remoteHostReachability?.Dispose();
             remoteHostReachability = null;
 
-#if __IOS__
+#if __IOS__ && !__MACCATALYST__
 			NetworkInformation.CellularData.RestrictionDidUpdateNotifier = null;
 #endif
-        }
+		}
 
-#if __IOS__
-        void OnRestrictedStateChanged(CTCellularDataRestrictedState state)
+#if __IOS__ && !__MACCATALYST__
+		void OnRestrictedStateChanged(CTCellularDataRestrictedState state)
         {
             ReachabilityChanged?.Invoke();
         }
 #endif
 
-        async void OnChange(NetworkReachabilityFlags flags)
+		async void OnChange(NetworkReachabilityFlags flags)
         {
             // Add in artifical delay so the connection status has time to change
             // else it will return true no matter what.
