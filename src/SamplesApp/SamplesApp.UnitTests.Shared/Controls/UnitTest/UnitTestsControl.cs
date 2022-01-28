@@ -794,7 +794,7 @@ namespace Uno.UI.Samples.Tests
 									_currentRun.CurrentRepeatCount++;
 									canRetry = true;
 
-									RunCleanup(instance, testClassInfo, testName);
+									await RunCleanup(instance, testClassInfo, testName, runsOnUIThread);
 								}
 								else
 								{
@@ -826,7 +826,7 @@ namespace Uno.UI.Samples.Tests
 					}
 				}
 
-				RunCleanup(instance, testClassInfo, testName);
+				await RunCleanup(instance, testClassInfo, testName, runsOnUIThread);
 
 				if (ct.IsCancellationRequested)
 				{
@@ -835,16 +835,28 @@ namespace Uno.UI.Samples.Tests
 				}
 			}
 
-			void RunCleanup(object instance, UnitTestClassInfo testClassInfo, string testName)
+			async Task RunCleanup(object instance, UnitTestClassInfo testClassInfo, string testName, bool runsOnUIThread)
 			{
-				try
+				void Run()
 				{
-					testClassInfo.Cleanup?.Invoke(instance, new object[0]);
+					try
+					{
+						testClassInfo.Cleanup?.Invoke(instance, new object[0]);
+					}
+					catch (Exception e)
+					{
+						_currentRun.Failed++;
+						ReportTestResult(testName + " Cleanup", TimeSpan.Zero, TestResult.Failed, e, console: consoleRecorder?.GetContentAndReset());
+					}
 				}
-				catch (Exception e)
+
+				if (runsOnUIThread)
 				{
-					_currentRun.Failed++;
-					ReportTestResult(testName + " Cleanup", TimeSpan.Zero, TestResult.Failed, e, console: consoleRecorder.GetContentAndReset());
+					await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, Run);
+				}
+				else
+				{
+					Run();
 				}
 			}
 		}

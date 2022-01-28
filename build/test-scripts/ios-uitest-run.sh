@@ -137,6 +137,14 @@ mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nuni
 echo "Current system date"
 date
 
+# export the simulator logs
+export LOG_FILEPATH=$UNO_UITEST_SCREENSHOT_PATH/_logs
+export TMP_LOG_FILEPATH=/tmp/DeviceLog-`date +"%Y%m%d%H%M%S"`.logarchive
+
+mkdir -p $LOG_FILEPATH
+xcrun simctl spawn booted log collect --output $TMP_LOG_FILEPATH
+log show --style syslog $TMP_LOG_FILEPATH > $LOG_FILEPATH/DeviceLog-$UITEST_AUTOMATED_GROUP-`date +"%Y%m%d%H%M%S"`.txt
+
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
