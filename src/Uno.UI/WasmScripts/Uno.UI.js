@@ -4023,8 +4023,10 @@ var Uno;
                 }
                 static async closeAsync(streamId) {
                     var instance = NativeFileWriteStream._streamMap.get(streamId);
-                    await instance._stream.close();
-                    NativeFileWriteStream._streamMap.delete(streamId);
+                    if (instance) {
+                        await instance._stream.close();
+                        NativeFileWriteStream._streamMap.delete(streamId);
+                    }
                     return "";
                 }
                 static async truncateAsync(streamId, length) {
