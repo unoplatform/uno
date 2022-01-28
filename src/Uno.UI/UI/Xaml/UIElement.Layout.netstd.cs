@@ -293,10 +293,12 @@ namespace Windows.UI.Xaml
 					// it will bypass the current element's MeasureOverride()
 					// since it shouldn't produce a different result and it's
 					// just a waste of precious CPU time to call it.
-					var children = GetChildren();
+					var children = GetChildren().GetEnumerator();
 
-					foreach (var child in children)
+					//foreach (var child in children)
+					while(children.MoveNext())
 					{
+						var child = children.Current;
 						// If the child is dirty (or is a path to a dirty descendant child),
 						// We're remeasuring it.
 
