@@ -2,7 +2,6 @@
 using Windows.UI.Xaml.Controls;
 using Uno.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
-using Uno.Logging;
 using Uno.UI.Extensions;
 using System;
 

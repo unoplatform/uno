@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Controls
 	public partial class TextBox : Control
 	{
 		private TextBoxView _textBoxView;
-		
+
 		protected override bool IsDelegatingFocusToTemplateChild() => true; // _textBoxView
 		partial void OnDeleteButtonClickPartial() => FocusTextView();
 		internal bool FocusTextView() => FocusManager.FocusNative(_textBoxView);
@@ -50,6 +50,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				AddHandler(PointerReleasedEvent, (PointerEventHandler)OnHeaderClick, true);
 			}
+
+			SetStyle("cursor", "text");
+		}
+
+		partial void OnTappedPartial()
+		{
+			FocusTextView();
 		}
 
 		private void OnHeaderClick(object sender, object args)
@@ -72,7 +79,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void UpdateFontPartial()
 		{
-			if(_textBoxView == null)
+			if (_textBoxView == null)
 			{
 				return;
 			}
@@ -105,17 +112,27 @@ namespace Windows.UI.Xaml.Controls
 			ApplyEnabled(e.NewValue);
 		}
 
-		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e) => UpdateTextBoxViewIsReadOnly();
+
+		partial void OnIsTabStopChangedPartial() => UpdateTextBoxViewIsReadOnly();
+
+		private void UpdateTextBoxViewIsReadOnly()
 		{
-			if (e.NewValue is bool isReadonly)
+			var isNativeReadOnly = IsReadOnly || !IsTabStop;
+			_textBoxView?.SetIsReadOnly(isNativeReadOnly);
+		}
+
+		partial void OnInputScopeChangedPartial(DependencyPropertyChangedEventArgs e)
+		{
+			if (e.NewValue is InputScope scope)
 			{
-				ApplyIsReadonly(isReadonly);
+				ApplyInputScope(scope);
 			}
 		}
 
 		private void ApplyEnabled(bool? isEnabled = null) => _textBoxView?.SetEnabled(isEnabled ?? IsEnabled);
 
-		private void ApplyIsReadonly(bool? isReadOnly = null) => _textBoxView?.SetIsReadOnly(isReadOnly ?? IsReadOnly);
+		private void ApplyInputScope(InputScope scope) => _textBoxView?.SetInputScope(scope);
 
 		partial void SelectPartial(int start, int length)
 		{

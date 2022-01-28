@@ -4,11 +4,12 @@ using System.Text;
 using Uno.UI;
 using Uno.Extensions;
 using Windows.UI.Xaml.Media;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using System.Globalization;
 using Uno.Disposables;
 using Uno.Foundation;
+using Windows.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -16,6 +17,8 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly TextBox _textBox;
 		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
+
+		private bool _isReadOnly = false;
 
 		public Brush Foreground
 		{
@@ -124,6 +127,13 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void SetIsReadOnly(bool isReadOnly)
 		{
+			if (_isReadOnly == isReadOnly)
+			{
+				// Avoid JS call if the actual value didn't change.
+				return;
+			}
+
+			_isReadOnly = isReadOnly;
 			if (isReadOnly)
 			{
 				SetAttribute("readonly", "readonly");
@@ -132,6 +142,40 @@ namespace Windows.UI.Xaml.Controls
 			{
 				RemoveAttribute("readonly");
 			}
+		}
+
+		internal void SetInputScope(InputScope scope)
+		{
+			// https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inputmode
+			// Allowed html values: none, text (default value), decimal, numeric, tel, search, email, url.
+			var scopeNameValue = scope.GetFirstInputScopeNameValue();
+			var inputmodeValue = scopeNameValue switch
+			{
+				InputScopeNameValue.CurrencyAmount => "decimal",
+				InputScopeNameValue.CurrencyAmountAndSymbol => "decimal",
+
+				InputScopeNameValue.NumericPin => "numeric",
+				InputScopeNameValue.Digits => "numeric",
+				InputScopeNameValue.Number => "numeric",
+				InputScopeNameValue.NumberFullWidth => "numeric",
+				InputScopeNameValue.DateDayNumber => "numeric",
+				InputScopeNameValue.DateMonthNumber => "numeric",
+
+				InputScopeNameValue.TelephoneNumber => "tel",
+				InputScopeNameValue.TelephoneLocalNumber => "tel",
+
+				InputScopeNameValue.Search => "search",
+				InputScopeNameValue.SearchIncremental => "search",
+
+				InputScopeNameValue.EmailNameOrAddress => "email",
+				InputScopeNameValue.EmailSmtpAddress => "email",
+
+				InputScopeNameValue.Url => "url",
+
+				_ => "text"
+			};
+
+			SetAttribute("inputmode", inputmodeValue);
 		}
 
 		public int SelectionStart

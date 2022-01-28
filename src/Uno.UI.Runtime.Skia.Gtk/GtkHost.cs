@@ -4,7 +4,6 @@ using Windows.System;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Helpers.Theming;
-using Uno.Logging;
 using Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.Theming;
 using Windows.UI.Xaml;
 using WUX = Windows.UI.Xaml;
@@ -22,6 +21,11 @@ using Windows.UI.ViewManagement;
 using Windows.Foundation;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.UI.Runtime.Skia.GTK.Extensions.ApplicationModel.DataTransfer;
+using Uno.Foundation.Logging;
+using Windows.System.Profile.Internal;
+using Uno.UI.Runtime.Skia.GTK.System.Profile;
+using Uno.UI.Runtime.Skia.Helpers;
+using Uno.UI.Runtime.Skia.Helpers.Dpi;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -64,12 +68,14 @@ namespace Uno.UI.Runtime.Skia
 			ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new FileOpenPickerExtension(o));
 			ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new FolderPickerExtension(o));
 			ApiExtensibility.Register(typeof(IClipboardExtension), o => new ClipboardExtensions(o));
+			ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), o => new FileSavePickerExtension(o));
+			ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), o => new AnalyticsInfoExtension());
 
 			_isDispatcherThread = true;
 			_window = new Gtk.Window("Uno Host");
 			Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 			if (preferredWindowSize != Size.Empty)
-			{ 
+			{
 				_window.SetDefaultSize((int)preferredWindowSize.Width, (int)preferredWindowSize.Height);
 			}
 			else
@@ -90,15 +96,6 @@ namespace Uno.UI.Runtime.Skia
 				Gtk.Application.Quit();
 			};
 
-			bool EnqueueNative(DispatcherQueuePriority priority, DispatcherQueueHandler callback)
-			{
-				Dispatch(() => callback());
-
-				return true;
-			}
-
-			Windows.System.DispatcherQueue.EnqueueNativeOverride = EnqueueNative;
-
 			void Dispatch(System.Action d)
 			{
 				if (Gtk.Application.EventsPending())
@@ -108,7 +105,7 @@ namespace Uno.UI.Runtime.Skia
 
 				GLib.Idle.Add(delegate
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Trace))
+					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
 						this.Log().Trace($"Iteration");
 					}
@@ -129,16 +126,6 @@ namespace Uno.UI.Runtime.Skia
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 
-			_window.Realized += (s, e) =>
-			{
-				WUX.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(_window.AllocatedWidth, _window.AllocatedHeight));
-			};
-
-			_window.SizeAllocated += (s, e) =>
-			{
-				WUX.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(e.Allocation.Width, e.Allocation.Height));
-			};
-
 			_window.WindowStateEvent += OnWindowStateChanged;
 
 			var overlay = new Overlay();
@@ -150,6 +137,16 @@ namespace Uno.UI.Runtime.Skia
 			overlay.AddOverlay(_fix);
 			_eventBox.Add(overlay);
 			_window.Add(_eventBox);
+
+			_area.Realized += (s, e) =>
+			{
+				WUX.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(_area.AllocatedWidth, _area.AllocatedHeight));
+			};
+
+			_area.SizeAllocated += (s, e) =>
+			{
+				WUX.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(e.Allocation.Width, e.Allocation.Height));
+			};
 
 			/* avoids double invokes at window level */
 			_area.AddEvents((int)GtkCoreWindowExtension.RequestedEvents);
@@ -174,7 +171,7 @@ namespace Uno.UI.Runtime.Skia
 			var winUIApplication = WUX.Application.Current;
 			var winUIWindow = WUX.Window.Current;
 			var newState = args.Event.NewWindowState;
-			var changedState = args.Event.ChangedMask;			
+			var changedState = args.Event.ChangedMask;
 
 			var isVisible =
 				!(newState.HasFlag(Gdk.WindowState.Withdrawn) ||
@@ -221,7 +218,7 @@ namespace Uno.UI.Runtime.Skia
 
 				if (File.Exists(iconPath))
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
+					if (this.Log().IsEnabled(LogLevel.Information))
 					{
 						this.Log().Info($"Loading icon file [{iconPath}] from Package.appxmanifest file");
 					}
@@ -230,7 +227,7 @@ namespace Uno.UI.Runtime.Skia
 				}
 				else
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+					if (this.Log().IsEnabled(LogLevel.Warning))
 					{
 						this.Log().Warn($"Unable to find icon file [{iconPath}] specified in the Package.appxmanifest file.");
 					}

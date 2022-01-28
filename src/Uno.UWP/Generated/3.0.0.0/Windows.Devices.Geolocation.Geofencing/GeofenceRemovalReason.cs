@@ -2,18 +2,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Geolocation.Geofencing
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum GeofenceRemovalReason 
 	{
-		#if false
-		Used,
-		#endif
-		#if false
-		Expired,
-		#endif
+		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.GeofenceRemovalReason.Used
+		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.GeofenceRemovalReason.Expired
 	}
 	#endif
 }

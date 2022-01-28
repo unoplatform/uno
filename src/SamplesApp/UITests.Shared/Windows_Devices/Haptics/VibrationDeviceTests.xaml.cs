@@ -35,10 +35,10 @@ namespace UITests.Windows_Devices.Haptics
 			Model = args.NewValue as VibrationDeviceTestsViewModel;
 		}
 
-		public VibrationDeviceTestsViewModel? Model { get; private set; }
+		internal VibrationDeviceTestsViewModel? Model { get; private set; }
 	}
 
-	public class VibrationDeviceTestsViewModel : ViewModelBase
+	internal class VibrationDeviceTestsViewModel : ViewModelBase
 	{
 		private string _status = string.Empty;
 		private bool _isAvailable;

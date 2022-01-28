@@ -7,6 +7,7 @@ namespace Windows.UI.Xaml.Media
 	#endif
 	public  partial class VisualTreeHelper 
 	{
+		// Skipping already declared method Windows.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(Windows.UI.Xaml.XamlRoot)
 		// Skipping already declared method Windows.UI.Xaml.Media.VisualTreeHelper.GetOpenPopups(Windows.UI.Xaml.Window)
 		// Skipping already declared method Windows.UI.Xaml.Media.VisualTreeHelper.FindElementsInHostCoordinates(Windows.Foundation.Point, Windows.UI.Xaml.UIElement)
 		// Skipping already declared method Windows.UI.Xaml.Media.VisualTreeHelper.FindElementsInHostCoordinates(Windows.Foundation.Rect, Windows.UI.Xaml.UIElement)

@@ -4,7 +4,12 @@ using Windows.Foundation;
 
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
+
+#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+namespace Microsoft.UI.Input
+#else
 namespace Windows.UI.Input
+#endif
 {
 	public partial class ManipulationCompletedEventArgs 
 	{
@@ -35,7 +40,7 @@ namespace Windows.UI.Input
 		/// <remarks>All pointers are expected to have the same <see cref="PointerIdentifier.Type"/>.</remarks>
 		internal PointerIdentifier[] Pointers { get; }
 
-		public PointerDeviceType PointerDeviceType => Pointers[0].Type;
+		public PointerDeviceType PointerDeviceType => (PointerDeviceType)Pointers[0].Type;
 		public Point Position { get; }
 		public ManipulationDelta Cumulative { get; }
 		public ManipulationVelocities Velocities { get; }

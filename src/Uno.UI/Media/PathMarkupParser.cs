@@ -211,7 +211,7 @@ namespace Uno.Media
 			}
 
 			// Uno specific: Extra arguments.
-			_geometryContext.BeginFigure(_currentPoint, true, false);
+			_geometryContext.BeginFigure(_currentPoint, true);
 
 			_beginFigurePoint = _currentPoint;
 

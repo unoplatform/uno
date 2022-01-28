@@ -9,62 +9,10 @@ namespace Windows.UI.Xaml.Documents
 	{
 		// Skipping already declared property NavigateUri
 		// Skipping already declared property UnderlineStyle
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.DependencyObject XYFocusUp
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.DependencyObject)this.GetValue(XYFocusUpProperty);
-			}
-			set
-			{
-				this.SetValue(XYFocusUpProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.DependencyObject XYFocusRight
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.DependencyObject)this.GetValue(XYFocusRightProperty);
-			}
-			set
-			{
-				this.SetValue(XYFocusRightProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.DependencyObject XYFocusLeft
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.DependencyObject)this.GetValue(XYFocusLeftProperty);
-			}
-			set
-			{
-				this.SetValue(XYFocusLeftProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.DependencyObject XYFocusDown
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.DependencyObject)this.GetValue(XYFocusDownProperty);
-			}
-			set
-			{
-				this.SetValue(XYFocusDownProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property XYFocusUp
+		// Skipping already declared property XYFocusRight
+		// Skipping already declared property XYFocusLeft
+		// Skipping already declared property XYFocusDown
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.ElementSoundMode ElementSoundMode
@@ -79,100 +27,13 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy XYFocusUpNavigationStrategy
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)this.GetValue(XYFocusUpNavigationStrategyProperty);
-			}
-			set
-			{
-				this.SetValue(XYFocusUpNavigationStrategyProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy XYFocusRightNavigationStrategy
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)this.GetValue(XYFocusRightNavigationStrategyProperty);
-			}
-			set
-			{
-				this.SetValue(XYFocusRightNavigationStrategyProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy XYFocusLeftNavigationStrategy
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)this.GetValue(XYFocusLeftNavigationStrategyProperty);
-			}
-			set
-			{
-				this.SetValue(XYFocusLeftNavigationStrategyProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy XYFocusDownNavigationStrategy
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)this.GetValue(XYFocusDownNavigationStrategyProperty);
-			}
-			set
-			{
-				this.SetValue(XYFocusDownNavigationStrategyProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.FocusState FocusState
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.FocusState)this.GetValue(FocusStateProperty);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int TabIndex
-		{
-			get
-			{
-				return (int)this.GetValue(TabIndexProperty);
-			}
-			set
-			{
-				this.SetValue(TabIndexProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsTabStop
-		{
-			get
-			{
-				return (bool)this.GetValue(IsTabStopProperty);
-			}
-			set
-			{
-				this.SetValue(IsTabStopProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property XYFocusUpNavigationStrategy
+		// Skipping already declared property XYFocusRightNavigationStrategy
+		// Skipping already declared property XYFocusLeftNavigationStrategy
+		// Skipping already declared property XYFocusDownNavigationStrategy
+		// Skipping already declared property FocusState
+		// Skipping already declared property TabIndex
+		// Skipping already declared property IsTabStop
 		// Skipping already declared property NavigateUriProperty
 		// Skipping already declared property UnderlineStyleProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -183,94 +44,17 @@ namespace Windows.UI.Xaml.Documents
 			typeof(global::Windows.UI.Xaml.Documents.Hyperlink), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ElementSoundMode)));
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty XYFocusDownProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(XYFocusDown), typeof(global::Windows.UI.Xaml.DependencyObject), 
-			typeof(global::Windows.UI.Xaml.Documents.Hyperlink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty XYFocusLeftProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(XYFocusLeft), typeof(global::Windows.UI.Xaml.DependencyObject), 
-			typeof(global::Windows.UI.Xaml.Documents.Hyperlink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty XYFocusRightProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(XYFocusRight), typeof(global::Windows.UI.Xaml.DependencyObject), 
-			typeof(global::Windows.UI.Xaml.Documents.Hyperlink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty XYFocusUpProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(XYFocusUp), typeof(global::Windows.UI.Xaml.DependencyObject), 
-			typeof(global::Windows.UI.Xaml.Documents.Hyperlink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FocusStateProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FocusState), typeof(global::Windows.UI.Xaml.FocusState), 
-			typeof(global::Windows.UI.Xaml.Documents.Hyperlink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.FocusState)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty XYFocusDownNavigationStrategyProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(XYFocusDownNavigationStrategy), typeof(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy), 
-			typeof(global::Windows.UI.Xaml.Documents.Hyperlink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty XYFocusLeftNavigationStrategyProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(XYFocusLeftNavigationStrategy), typeof(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy), 
-			typeof(global::Windows.UI.Xaml.Documents.Hyperlink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty XYFocusRightNavigationStrategyProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(XYFocusRightNavigationStrategy), typeof(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy), 
-			typeof(global::Windows.UI.Xaml.Documents.Hyperlink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty XYFocusUpNavigationStrategyProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(XYFocusUpNavigationStrategy), typeof(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy), 
-			typeof(global::Windows.UI.Xaml.Documents.Hyperlink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsTabStopProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsTabStop), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Documents.Hyperlink), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TabIndexProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TabIndex), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Documents.Hyperlink), 
-			new FrameworkPropertyMetadata(default(int)));
-		#endif
+		// Skipping already declared property XYFocusDownProperty
+		// Skipping already declared property XYFocusLeftProperty
+		// Skipping already declared property XYFocusRightProperty
+		// Skipping already declared property XYFocusUpProperty
+		// Skipping already declared property FocusStateProperty
+		// Skipping already declared property XYFocusDownNavigationStrategyProperty
+		// Skipping already declared property XYFocusLeftNavigationStrategyProperty
+		// Skipping already declared property XYFocusRightNavigationStrategyProperty
+		// Skipping already declared property XYFocusUpNavigationStrategyProperty
+		// Skipping already declared property IsTabStopProperty
+		// Skipping already declared property TabIndexProperty
 		// Skipping already declared method Windows.UI.Xaml.Documents.Hyperlink.Hyperlink()
 		// Forced skipping of method Windows.UI.Xaml.Documents.Hyperlink.Hyperlink()
 		// Forced skipping of method Windows.UI.Xaml.Documents.Hyperlink.NavigateUri.get
@@ -302,13 +86,7 @@ namespace Windows.UI.Xaml.Documents
 		// Forced skipping of method Windows.UI.Xaml.Documents.Hyperlink.GotFocus.remove
 		// Forced skipping of method Windows.UI.Xaml.Documents.Hyperlink.LostFocus.add
 		// Forced skipping of method Windows.UI.Xaml.Documents.Hyperlink.LostFocus.remove
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool Focus( global::Windows.UI.Xaml.FocusState value)
-		{
-			throw new global::System.NotImplementedException("The member bool Hyperlink.Focus(FocusState value) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Documents.Hyperlink.Focus(Windows.UI.Xaml.FocusState)
 		// Forced skipping of method Windows.UI.Xaml.Documents.Hyperlink.IsTabStop.get
 		// Forced skipping of method Windows.UI.Xaml.Documents.Hyperlink.IsTabStop.set
 		// Forced skipping of method Windows.UI.Xaml.Documents.Hyperlink.TabIndex.get
@@ -328,37 +106,7 @@ namespace Windows.UI.Xaml.Documents
 		// Forced skipping of method Windows.UI.Xaml.Documents.Hyperlink.UnderlineStyleProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Documents.Hyperlink.NavigateUriProperty.get
 		// Skipping already declared event Windows.UI.Xaml.Documents.Hyperlink.Click
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.UI.Xaml.RoutedEventHandler GotFocus
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Documents.Hyperlink", "event RoutedEventHandler Hyperlink.GotFocus");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Documents.Hyperlink", "event RoutedEventHandler Hyperlink.GotFocus");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.UI.Xaml.RoutedEventHandler LostFocus
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Documents.Hyperlink", "event RoutedEventHandler Hyperlink.LostFocus");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Documents.Hyperlink", "event RoutedEventHandler Hyperlink.LostFocus");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.Documents.Hyperlink.GotFocus
+		// Skipping already declared event Windows.UI.Xaml.Documents.Hyperlink.LostFocus
 	}
 }

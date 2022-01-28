@@ -7,16 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class ScrollViewer : global::Windows.UI.Xaml.Controls.ContentControl,global::Windows.UI.Xaml.Controls.IScrollAnchorProvider
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.UIElement CurrentAnchor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member UIElement ScrollViewer.CurrentAnchor is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property CurrentAnchor
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsVerticalRailEnabled
@@ -155,26 +146,8 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property VerticalSnapPointsAlignment
 		// Skipping already declared property VerticalScrollMode
 		// Skipping already declared property VerticalScrollBarVisibility
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Visibility ComputedHorizontalScrollBarVisibility
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Visibility)this.GetValue(ComputedHorizontalScrollBarVisibilityProperty);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Visibility ComputedVerticalScrollBarVisibility
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Visibility)this.GetValue(ComputedVerticalScrollBarVisibilityProperty);
-			}
-		}
-		#endif
+		// Skipping already declared property ComputedHorizontalScrollBarVisibility
+		// Skipping already declared property ComputedVerticalScrollBarVisibility
 		// Skipping already declared property ExtentHeight
 		// Skipping already declared property ExtentWidth
 		// Skipping already declared property HorizontalOffset
@@ -314,22 +287,8 @@ namespace Windows.UI.Xaml.Controls
 			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<float>)));
 		#endif
 		// Skipping already declared property BringIntoViewOnFocusChangeProperty
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ComputedHorizontalScrollBarVisibilityProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ComputedHorizontalScrollBarVisibility), typeof(global::Windows.UI.Xaml.Visibility), 
-			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Visibility)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ComputedVerticalScrollBarVisibilityProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ComputedVerticalScrollBarVisibility), typeof(global::Windows.UI.Xaml.Visibility), 
-			typeof(global::Windows.UI.Xaml.Controls.ScrollViewer), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Visibility)));
-		#endif
+		// Skipping already declared property ComputedHorizontalScrollBarVisibilityProperty
+		// Skipping already declared property ComputedVerticalScrollBarVisibilityProperty
 		// Skipping already declared property ExtentHeightProperty
 		// Skipping already declared property ExtentWidthProperty
 		// Skipping already declared property HorizontalOffsetProperty
@@ -519,20 +478,8 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.ZoomSnapPoints.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.ViewChanged.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.ViewChanged.remove
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void ScrollToHorizontalOffset( double offset)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ScrollViewer", "void ScrollViewer.ScrollToHorizontalOffset(double offset)");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void ScrollToVerticalOffset( double offset)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ScrollViewer", "void ScrollViewer.ScrollToVerticalOffset(double offset)");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.ScrollViewer.ScrollToHorizontalOffset(double)
+		// Skipping already declared method Windows.UI.Xaml.Controls.ScrollViewer.ScrollToVerticalOffset(double)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void ZoomToFactor( float factor)

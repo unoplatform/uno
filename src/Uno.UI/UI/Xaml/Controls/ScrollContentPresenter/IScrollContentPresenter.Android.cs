@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Controls
 		bool BringIntoViewOnFocusChange { get; set; }
 
 		void ScrollTo(int x, int y);
+
 		void SmoothScrollTo(int x, int y);
-		IDisposable Pad(Rect occludedRect);
 	}
 }

@@ -7,8 +7,8 @@ using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.UI;
 using Windows.UI.Xaml.Controls.Primitives;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 using System;
 using AndroidX.RecyclerView.Widget;
 using AndroidX.AppCompat.Widget;

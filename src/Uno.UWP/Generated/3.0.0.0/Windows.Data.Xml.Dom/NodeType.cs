@@ -3,9 +3,6 @@
 namespace Windows.Data.Xml.Dom
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
 	public   enum NodeType 
 	{
 		// Skipping already declared field Windows.Data.Xml.Dom.NodeType.Invalid

@@ -9,14 +9,14 @@ using Windows.UI.Xaml.Media;
 using Uno.Collections;
 using Uno.Extensions;
 using Uno.Foundation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.System;
 using System.Reflection;
-using Microsoft.Extensions.Logging;
+
 using Uno.Core.Comparison;
 using Uno.Foundation.Runtime.WebAssembly.Interop;
 
@@ -80,9 +80,6 @@ namespace Windows.UI.Xaml
 
 		public UIElement(string htmlTag, bool isSvg)
 		{
-			_log = this.Log();
-			_logDebug = _log.IsEnabled(LogLevel.Debug) ? _log : null;
-
 			Initialize();
 
 			_gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
@@ -149,14 +146,24 @@ namespace Windows.UI.Xaml
 
 		~UIElement()
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			try
 			{
-				this.Log().Debug($"Collecting UIElement for [{HtmlId}]");
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"Collecting UIElement for [{HtmlId}]");
+				}
+
+				Cleanup();
+
+				Uno.UI.Xaml.WindowManagerInterop.DestroyView(HtmlId);
 			}
-
-			Cleanup();
-
-			Uno.UI.Xaml.WindowManagerInterop.DestroyView(HtmlId);
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
+				{
+					this.Log().Warn($"Collection of UIElement for [{HtmlId}] failed", e);
+				}
+			}
 
 			_gcHandle.Free();
 		}
@@ -353,6 +360,18 @@ namespace Windows.UI.Xaml
 					Math.Floor(rect.X).ToStringInvariant(), "px)"
 				)
 			);
+		}
+
+		internal static UIElement GetElementFromHandle(IntPtr handle)
+		{
+			var gcHandle = GCHandle.FromIntPtr(handle);
+
+			if (gcHandle.IsAllocated && gcHandle.Target is UIElement element)
+			{
+				return element;
+			}
+
+			return null;
 		}
 
 		internal static UIElement GetElementFromHandle(int handle)
@@ -574,6 +593,14 @@ namespace Windows.UI.Xaml
 			}
 
 			return false;
+		}
+
+		public UIElement ReplaceChild(int index, UIElement child)
+		{
+			var previous = _children[index];
+			RemoveChild(previous);
+			AddChild(child, index);
+			return previous;
 		}
 
 		internal void MoveChildTo(int oldIndex, int newIndex)

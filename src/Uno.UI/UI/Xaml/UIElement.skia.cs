@@ -8,9 +8,9 @@ using System.Linq;
 using Windows.UI.Composition;
 using System.Numerics;
 using Windows.Foundation.Metadata;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -22,8 +22,6 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
-		internal Size _unclippedDesiredSize;
-		internal Point _visualOffset;
 		private ContainerVisual _visual;
 		internal double _canvasTop;
 		internal double _canvasLeft;
@@ -31,8 +29,6 @@ namespace Windows.UI.Xaml
 
 		public UIElement()
 		{
-			_log = this.Log();
-			_logDebug = _log.IsEnabled(LogLevel.Debug) ? _log : null;
 			_isFrameworkElement = this is FrameworkElement;
 
 			Initialize();
@@ -87,11 +83,6 @@ namespace Windows.UI.Xaml
 				return _visual;
 			}
 		} 
-
-		/// <summary>
-		/// The origin of the view's bounds relative to its parent.
-		/// </summary>
-		internal Point RelativePosition => _visualOffset;
 
 		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
 
@@ -156,6 +147,15 @@ namespace Windows.UI.Xaml
 			{
 				return false;
 			}
+		}
+
+		internal UIElement ReplaceChild(int index, UIElement child)
+		{
+			var previous = _children[index];
+			RemoveChild(previous);
+			AddChild(child, index);
+
+			return previous;
 		}
 
 		internal void ClearChildren()
@@ -245,7 +245,10 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				this.Log().DebugIfEnabled(() => $"{this}: ArrangeVisual({_currentFinalRect}) -- SKIPPED (no change)");
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"{this}: ArrangeVisual({_currentFinalRect}) -- SKIPPED (no change)");
+				}
 			}
 		}
 

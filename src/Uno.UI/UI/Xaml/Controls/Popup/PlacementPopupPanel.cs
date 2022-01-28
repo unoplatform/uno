@@ -6,9 +6,16 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using Windows.UI.Core;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml.Controls
+
+#if HAS_UNO_WINUI
+using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+#else
+using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
+#endif
+
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	/// <summary>
 	/// This is a base popup panel to calculate the placement near an anchor control.
@@ -72,7 +79,7 @@ namespace Windows.UI.Xaml.Controls
 			Unloaded += (s, e) => Windows.UI.Xaml.Window.Current.SizeChanged -= Current_SizeChanged;
 		}
 
-		private void Current_SizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e)
+		private void Current_SizeChanged(object sender, WindowSizeChangedEventArgs e)
 			=> InvalidateMeasure();
 
 		protected abstract FlyoutPlacementMode PopupPlacement { get; }

@@ -10,7 +10,7 @@ using Windows.UI.Xaml.Controls;
 namespace UITests.Windows_UI_Xaml.FocusTests
 {
 	[Sample("Focus", ViewModelType = typeof(Focus_FocusVisualViewModel))]
-	public sealed partial class Focus_FocusVisual : Page
+	internal sealed partial class Focus_FocusVisual : Page
     {
         public Focus_FocusVisual()
         {
@@ -26,7 +26,7 @@ namespace UITests.Windows_UI_Xaml.FocusTests
 		}
 	}
 
-	public class Focus_FocusVisualViewModel : ViewModelBase
+	internal class Focus_FocusVisualViewModel : ViewModelBase
 	{
 		public Focus_FocusVisualViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{

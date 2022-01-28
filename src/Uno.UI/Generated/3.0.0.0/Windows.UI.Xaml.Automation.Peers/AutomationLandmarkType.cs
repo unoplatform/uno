@@ -2,30 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation.Peers
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum AutomationLandmarkType 
 	{
-		#if false
-		None,
-		#endif
-		#if false
-		Custom,
-		#endif
-		#if false
-		Form,
-		#endif
-		#if false
-		Main,
-		#endif
-		#if false
-		Navigation,
-		#endif
-		#if false
-		Search,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationLandmarkType.None
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationLandmarkType.Custom
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationLandmarkType.Form
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationLandmarkType.Main
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationLandmarkType.Navigation
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationLandmarkType.Search
 	}
 	#endif
 }

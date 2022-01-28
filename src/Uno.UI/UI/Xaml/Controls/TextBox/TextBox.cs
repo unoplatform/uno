@@ -8,7 +8,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
@@ -22,6 +22,15 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Xaml.Input;
+using Uno.Foundation.Logging;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+#else
+using Windows.UI.Input;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -73,7 +82,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public TextBox()
 		{
-			this.RegisterParentChangedCallback(this, OnParentChanged);
+			this.RegisterParentChangedCallbackStrong(this, OnParentChanged);
 
 			DefaultStyleKey = typeof(TextBox);
 			SizeChanged += OnSizeChanged;
@@ -104,7 +113,7 @@ namespace Windows.UI.Xaml.Controls
 			OnFocusStateChanged((FocusState)FocusStateProperty.GetMetadata(GetType()).DefaultValue, FocusState, initial: true);
 			OnVerticalContentAlignmentChanged(VerticalAlignment.Top, VerticalContentAlignment);
 			OnTextCharacterCasingChanged(CreateInitialValueChangerEventArgs(CharacterCasingProperty, CharacterCasingProperty.GetMetadata(GetType()).DefaultValue, CharacterCasing));
-
+			UpdateDescriptionVisibility(true);
 			var buttonRef = _deleteButton?.GetTarget();
 
 			if (buttonRef != null)
@@ -166,6 +175,20 @@ namespace Windows.UI.Xaml.Controls
 
 				this.SetValue(TextProperty, value);
 			}
+		}
+
+		private static string GetFirstLine(string value)
+		{
+			for (int i = 0; i < value.Length; i++)
+			{
+				var c = value[i];
+				if (c == '\r' || c == '\n')
+				{
+					return value.Substring(0, i);
+				}
+			}
+
+			return value;
 		}
 
 		public static DependencyProperty TextProperty { get; } =
@@ -265,6 +288,11 @@ namespace Windows.UI.Xaml.Controls
 				return DependencyProperty.UnsetValue;
 			}
 
+			if (!AcceptsReturn)
+			{
+				baseString = GetFirstLine(baseString);
+			}
+
 			var args = new TextBoxBeforeTextChangingEventArgs(baseString);
 			BeforeTextChanging?.Invoke(this, args);
 			if (args.Cancel)
@@ -272,9 +300,48 @@ namespace Windows.UI.Xaml.Controls
 				return DependencyProperty.UnsetValue;
 			}
 
-			return baseValue;
+			return baseString;
 		}
 
+		#endregion
+
+		#region Description DependencyProperty
+
+		public
+#if __IOS__ || __MACOS__
+		new
+#endif
+		object Description
+		{
+			get => this.GetValue(DescriptionProperty);
+			set => this.SetValue(DescriptionProperty, value);
+		}
+
+		public static DependencyProperty DescriptionProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Description),
+				typeof(object),
+				typeof(TextBox),
+				new FrameworkPropertyMetadata(
+					defaultValue: null,
+					propertyChangedCallback: (s, e) => ((TextBox)s)?.UpdateDescriptionVisibility(false)
+				)
+			);
+
+		private void UpdateDescriptionVisibility(bool initialization)
+		{
+			if (initialization && Description == null)
+			{
+				// Avoid loading DescriptionPresenter element in template if not needed.
+				return;
+			}
+
+			var descriptionPresenter = this.FindName("DescriptionPresenter") as ContentPresenter;
+			if (descriptionPresenter != null)
+			{
+				descriptionPresenter.Visibility = Description != null ? Visibility.Visible : Visibility.Collapsed;
+			}
+		}
 		#endregion
 
 		protected override void OnFontSizeChanged(double oldValue, double newValue)
@@ -404,6 +471,16 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnAcceptsReturnChanged(DependencyPropertyChangedEventArgs e)
 		{
+			if (e.NewValue is false)
+			{
+				var text = Text;
+				var singleLineText = GetFirstLine(text);
+				if (text != singleLineText)
+				{
+					Text = singleLineText;
+				}
+			}
+
 			OnAcceptsReturnChangedPartial(e);
 			UpdateButtonStates();
 		}
@@ -617,11 +694,22 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
+		private protected override void OnIsTabStopChanged(bool oldValue, bool newValue)
+		{
+			base.OnIsTabStopChanged(oldValue, newValue);
+			OnIsTabStopChangedPartial();
+		}
+
+		partial void OnIsTabStopChangedPartial();
+
 		internal override void UpdateFocusState(FocusState focusState)
 		{
 			var oldValue = FocusState;
 			base.UpdateFocusState(focusState);
-			OnFocusStateChanged(oldValue, focusState, initial: false);
+			if (oldValue != focusState)
+			{
+				OnFocusStateChanged(oldValue, focusState, initial: false);
+			}
 		}
 
 		private void OnFocusStateChanged(FocusState oldValue, FocusState newValue, bool initial)
@@ -683,9 +771,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnPointerPressed(args);
 
-			args.Handled = true;
+			if (ShouldFocusOnPointerPressed(args))
+			{
+				Focus(FocusState.Pointer);
+			}
 
-			Focus(FocusState.Pointer);
+			args.Handled = true;
 		}
 
 		/// <inheritdoc />
@@ -693,8 +784,22 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnPointerReleased(args);
 
+			if (!ShouldFocusOnPointerPressed(args))
+			{
+				Focus(FocusState.Pointer);
+			}
+
 			args.Handled = true;
 		}
+
+		protected override void OnTapped(TappedRoutedEventArgs e)
+		{
+			base.OnTapped(e);
+
+			OnTappedPartial();
+		}
+
+		partial void OnTappedPartial();
 
 		/// <inheritdoc />
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
@@ -854,5 +959,18 @@ namespace Windows.UI.Xaml.Controls
 		partial void SelectAllPartial();
 
 		internal override bool CanHaveChildren() => true;
+
+		internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
+		{
+			base.UpdateThemeBindings(updateReason);
+
+			UpdateKeyboardThemePartial();
+		}
+
+		partial void UpdateKeyboardThemePartial();
+
+		private bool ShouldFocusOnPointerPressed(PointerRoutedEventArgs args) =>
+			// For mouse and pen, the TextBox should focus on pointer press, for other input types on release
+			args.Pointer.PointerDeviceType != PointerDeviceType.Touch;
 	}
 }

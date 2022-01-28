@@ -9,7 +9,7 @@ jobs:
 - job: iOS_Build
   displayName: 'iOS Samples App UI Tests (Build)'
 
-  dependsOn: Commitsar
+  dependsOn: Pipeline_Validations
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -36,7 +36,7 @@ jobs:
       XamarinSDKVersion: ${{ parameters.XamarinSDKVersionBuild }}
 
   - bash: |
-      $(build.sourcesdirectory)/build/ios-uitest-build.sh
+      $(build.sourcesdirectory)/build/test-scripts/ios-uitest-build.sh
 
     displayName: Build iOS App for UI Tests
 
@@ -66,9 +66,10 @@ jobs:
     JobName: 'iOS_Automated_Tests_Group_01'
     JobDisplayName: 'iOS Automated Tests Group 01'
     JobTimeoutInMinutes: 60
-    vmImage: ${{ parameters.vmImage }}
+    vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: false
     UITEST_AUTOMATED_GROUP: 1
+    UITEST_ALLOW_RERUN: 'true'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
 
@@ -78,9 +79,10 @@ jobs:
     JobName: 'iOS_Automated_Tests_Group_02'
     JobDisplayName: 'iOS Automated Tests Group 02'
     JobTimeoutInMinutes: 60
-    vmImage: ${{ parameters.vmImage }}
+    vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: false
     UITEST_AUTOMATED_GROUP: 2
+    UITEST_ALLOW_RERUN: 'true'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
 
@@ -90,9 +92,10 @@ jobs:
     JobName: 'iOS_Automated_Tests_Group_03'
     JobDisplayName: 'iOS Automated Tests Group 03'
     JobTimeoutInMinutes: 60
-    vmImage: ${{ parameters.vmImage }}
+    vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: false
     UITEST_AUTOMATED_GROUP: 3
+    UITEST_ALLOW_RERUN: 'true'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
 
@@ -101,10 +104,11 @@ jobs:
     nugetPackages: $(NUGET_PACKAGES)
     JobName: 'iOS_Automated_Tests_Runtime_Tests'
     JobDisplayName: 'iOS Automated Runtime Tests'
-    JobTimeoutInMinutes: 60
-    vmImage: ${{ parameters.vmImage }}
+    JobTimeoutInMinutes: 90
+    vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: false
     UITEST_AUTOMATED_GROUP: 4
+    UITEST_ALLOW_RERUN: 'false'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
 
@@ -115,7 +119,7 @@ jobs:
 #     JobName: 'iOS_Automated_Tests_Benchmarks'
 #     JobDisplayName: 'iOS Automated Benchmarks'
 #     JobTimeoutInMinutes: 40
-#     vmImage: ${{ parameters.vmImage }}
+#     vmImage: ${{ parameters.vmImageTest }}
 #     UITEST_SNAPSHOTS_ONLY: false
 #     UITEST_AUTOMATED_GROUP: Benchmarks
 #     xCodeRoot: ${{ parameters.xCodeRootTest }}
@@ -127,9 +131,10 @@ jobs:
     JobName: 'iOS_Snaphot_Tests_Group_01'
     JobDisplayName: 'iOS Snaphot Tests Group 01'
     JobTimeoutInMinutes: 45
-    vmImage: ${{ parameters.vmImage }}
+    vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: true
     UITEST_SNAPSHOTS_GROUP: 00
+    UITEST_ALLOW_RERUN: 'true'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
 
@@ -138,10 +143,11 @@ jobs:
     nugetPackages: $(NUGET_PACKAGES)
     JobName: 'iOS_Snaphot_Tests_Group_02'
     JobDisplayName: 'iOS Snaphot Tests Group 02'
-    JobTimeoutInMinutes: 45
-    vmImage: ${{ parameters.vmImage }}
+    JobTimeoutInMinutes: 70
+    vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: true
     UITEST_SNAPSHOTS_GROUP: 01
+    UITEST_ALLOW_RERUN: 'true'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
 
@@ -151,9 +157,10 @@ jobs:
     JobName: 'iOS_Snaphot_Tests_Group_03'
     JobDisplayName: 'iOS Snaphot Tests Group 03'
     JobTimeoutInMinutes: 45
-    vmImage: ${{ parameters.vmImage }}
+    vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: true
     UITEST_SNAPSHOTS_GROUP: 02
+    UITEST_ALLOW_RERUN: 'true'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
 
@@ -163,8 +170,9 @@ jobs:
     JobName: 'iOS_Snaphot_Tests_Group_04'
     JobDisplayName: 'iOS Snaphot Tests Group 04'
     JobTimeoutInMinutes: 45
-    vmImage: ${{ parameters.vmImage }}
+    vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: true
     UITEST_SNAPSHOTS_GROUP: 03
+    UITEST_ALLOW_RERUN: 'true'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}

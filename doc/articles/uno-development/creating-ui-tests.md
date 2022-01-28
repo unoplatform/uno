@@ -104,7 +104,7 @@ Running UI Tests in iOS Simulators on macOS requires, as of VS4Mac 8.4, to build
 In a terminal, run the following:
 ``` bash
 cd build
-./local-ios-uitest-run.sh
+./test-scripts/local-ios-uitest-run.sh
 ```
 
 The Uno.UI solution will build, and the UI tests will run. You may need to adjust some of the parameters in the script, such as:

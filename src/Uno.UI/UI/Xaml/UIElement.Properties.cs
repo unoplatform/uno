@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using System.Collections.Generic;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Disposables;
 using System.Linq;
 using Windows.Devices.Input;
@@ -21,7 +21,7 @@ using System;
 using System.Numerics;
 using System.Reflection;
 using Windows.UI.Xaml.Markup;
-using Microsoft.Extensions.Logging;
+
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
 using Uno.UI.Xaml;

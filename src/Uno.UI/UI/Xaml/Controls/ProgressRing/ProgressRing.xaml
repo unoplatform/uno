@@ -8,7 +8,7 @@
 	xmlns:ios="http://uno.ui/ios"
 	xmlns:android="http://uno.ui/android"
 	xmlns:xamarin="http://uno.ui/xamarin"
-	xmlns:wasm="http://uno.ui/xamarin"
+	xmlns:wasm="http://uno.ui/wasm"
 	mc:Ignorable="d xamarin ios android wasm">
 
 

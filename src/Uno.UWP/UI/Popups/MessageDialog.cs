@@ -29,19 +29,9 @@ namespace Windows.UI.Popups
 		/// <param name="title"></param>
 		public MessageDialog(string content, string title)
 		{
-			if (content == null)
-			{
-				throw new ArgumentNullException(nameof(content));
-			}
-
-			if (title == null)
-			{
-				throw new ArgumentNullException(nameof(title));
-			}
-
 			// They can both be empty.
-			Content = content;
-			Title = title;
+			Content = content ?? throw new ArgumentNullException(nameof(content));
+			Title = title ?? throw new ArgumentNullException(nameof(title));
 
 			var collection = new ObservableCollection<IUICommand>();
 			collection.CollectionChanged += (s, e) => this.ValidateCommands();
@@ -50,50 +40,23 @@ namespace Windows.UI.Popups
 		}
 
 #if __ANDROID__ || __IOS__
-
 		public IAsyncOperation<IUICommand> ShowAsync()
 		{
-			VisualTreeHelperProxy.CloseAllPopups();
-
-			var invokedCommand = new TaskCompletionSource<IUICommand>();
+			VisualTreeHelperProxy.CloseAllFlyouts();
 
 			return AsyncOperation.FromTask<IUICommand>(async ct =>
 			{
 				if (CoreDispatcher.Main.HasThreadAccess)
 				{
-					try
-					{
-						ShowInner(ct, invokedCommand);
-					}
-					catch (Exception e)
-					{
-						invokedCommand.TrySetException(e);
-					}
+					return await ShowInner(ct);
 				}
-
 				else
 				{
-					Exception ex = null;
-					await CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, CallShow);
+					var show = default(Task<IUICommand>);
+					await CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () => show = ShowInner(ct));
 
-					if (ex != null)
-					{
-						invokedCommand.TrySetException(ex);
-					}
-
-					void CallShow()
-					{
-						try
-						{
-							ShowInner(ct, invokedCommand);
-						}
-						catch (Exception e)
-						{
-							ex = e;
-						}
-					}
+					return await show;
 				}
-				return await invokedCommand.Task;
 			});
 		}
 #endif

@@ -99,10 +99,6 @@ namespace Windows.ApplicationModel.Resources.Core
 			{
 				throw new global::System.NotSupportedException();
 			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -110,10 +106,6 @@ namespace Windows.ApplicationModel.Resources.Core
 		public global::System.Collections.Generic.ICollection<string> Values
 		{
 			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
 			{
 				throw new global::System.NotSupportedException();
 			}
@@ -168,10 +160,6 @@ namespace Windows.ApplicationModel.Resources.Core
 			{
 				throw new global::System.NotSupportedException();
 			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -179,10 +167,6 @@ namespace Windows.ApplicationModel.Resources.Core
 		public bool IsReadOnly
 		{
 			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
 			{
 				throw new global::System.NotSupportedException();
 			}

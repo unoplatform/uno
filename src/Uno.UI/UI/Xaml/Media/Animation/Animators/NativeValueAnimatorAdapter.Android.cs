@@ -4,7 +4,7 @@ using System.Text;
 using Android.Animation;
 using Android.Views.Animations;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
@@ -38,7 +38,12 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		/// <inheritdoc />
-		public void Dispose() => _adaptee.Dispose();
+		public void Dispose()
+		{
+			// We should never explicitly call Dispose() on native objects (i.e. do NOT invoke _adaptee.Dispose(); here!)
+			// For backward compatibility where Dispose() was not invoked, we are not doing anything here,
+			// but we should most probably Cancel the _adaptee.
+		}
 
 		/// <inheritdoc />
 		public event EventHandler Update

@@ -9,12 +9,16 @@ using static Android.Views.View;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
+using Android.Content;
+using Uno.Disposables;
 
-namespace Windows.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class Popup
 	{
+		private readonly SerialDisposable _disposable = new SerialDisposable();
 		private PopupWindow _popupWindow;
+		private WeakReference<Context> _popupContextReference;
 
 		internal FlyoutPlacementMode Placement { get; set; }
 
@@ -26,7 +30,8 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void InitializeNativePartial()
 		{
-			_popupWindow = new PopupWindow(this, WindowManagerLayoutParams.MatchParent, WindowManagerLayoutParams.MatchParent, true);
+			_popupWindow = new PopupWindow(ApplicationActivity.Instance);
+			_popupContextReference = new WeakReference<Context>(ApplicationActivity.Instance);
 
 			_popupWindow.Width = WindowManagerLayoutParams.MatchParent;
 			_popupWindow.Height = WindowManagerLayoutParams.MatchParent;
@@ -36,6 +41,19 @@ namespace Windows.UI.Xaml.Controls
 			OnIsLightDismissEnabledChanged(false, true);
 
 			_popupWindow.DismissEvent += OnPopupDismissed;
+			_disposable.Disposable = Disposable.Create(() => _popupWindow.DismissEvent -= OnPopupDismissed);
+		}
+
+		private void ReinitializePopupWindowIfContextChanged()
+		{
+			if (_popupWindow != null &&
+				_popupContextReference?.TryGetTarget(out var popupContextReference) == true &&
+				popupContextReference != ApplicationActivity.Instance)
+			{
+				_disposable.Dispose();
+				InitializeNativePartial();
+				OnPopupPanelChangedPartialNative(PopupPanel, PopupPanel);
+			}
 		}
 
 		partial void OnPopupPanelChangedPartialNative(PopupPanel previousPanel, PopupPanel newPanel)
@@ -50,6 +68,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
+			newPanel.IsVisualTreeRoot = true;
 			_popupWindow.ContentView = newPanel;
 
 			UpdatePopupPanelDismissibleBackground(IsLightDismissEnabled);
@@ -62,6 +81,8 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsOpenChangedNative(bool oldIsOpen, bool newIsOpen)
 		{
+			ReinitializePopupWindowIfContextChanged();
+
 			if (newIsOpen)
 			{
 				PopupPanel.Visibility = Visibility.Visible;

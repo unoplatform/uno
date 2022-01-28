@@ -3,6 +3,9 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+
+    <!-- Required for non-net6 CI build -->
+    <LangVersion>9.0</LangVersion>
   </PropertyGroup>
 
 </Project>

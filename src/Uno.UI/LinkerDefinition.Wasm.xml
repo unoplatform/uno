@@ -3,6 +3,9 @@
 	<type fullname="Uno.UI.Wasm.WasmHttpHandler" />
 
 	<type fullname="Windows.UI.Xaml.UIElement" />
+	<type fullname="Windows.UI.Xaml.UIElement">
+	  <method name="OnNativePointerEvent" />
+	</type>
 	<type fullname="Windows.UI.Xaml.Window" />
 	<type fullname="Windows.UI.Xaml.Media.BrushConverter" />
 	<type fullname="Windows.UI.Xaml.Media.ImageSourceConverter" />

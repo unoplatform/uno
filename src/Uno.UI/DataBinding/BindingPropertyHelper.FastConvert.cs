@@ -5,9 +5,9 @@ using Uno.Extensions;
 using System.Globalization;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Text;
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI;
@@ -22,6 +22,16 @@ using Android.Graphics;
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
+#endif
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Text;
+using FontWeights = Windows.UI.Text.FontWeights;
+using FontWeight = Windows.UI.Text.FontWeight;
+#else
+using Windows.UI.Text;
+using FontWeights = Windows.UI.Text.FontWeights;
+using FontWeight = Windows.UI.Text.FontWeight;
 #endif
 
 namespace Uno.UI.DataBinding
@@ -487,9 +497,7 @@ namespace Uno.UI.DataBinding
 		{
 			if (outputType == typeof(Windows.UI.Xaml.Media.Matrix))
 			{
-				var fields = Split(input)
-					.Select(v => double.Parse(v, CultureInfo.InvariantCulture))
-					.ToArray();
+				var fields = GetDoubleValues(input);
 
 				output = new Windows.UI.Xaml.Media.Matrix(fields[0], fields[1], fields[2], fields[3], fields[4], fields[5]);
 				return true;
@@ -502,17 +510,15 @@ namespace Uno.UI.DataBinding
 		{
 			if (outputType == typeof(System.Drawing.PointF))
 			{
-				var fields = Split(input)
-					.Select(v => float.Parse(v, CultureInfo.InvariantCulture))
-					.ToArray();
+				var fields = GetFloatValues(input);
 
-				if (fields?.Length == 2)
+				if (fields.Count == 2)
 				{
 					output = new System.Drawing.PointF(fields[0], fields[1]);
 					return true;
 				}
 
-				if (fields?.Length == 1)
+				if (fields.Count == 1)
 				{
 					output = new System.Drawing.PointF(fields[0], fields[0]);
 					return true;
@@ -526,17 +532,15 @@ namespace Uno.UI.DataBinding
 		{
 			if (outputType == typeof(Windows.Foundation.Point))
 			{
-				var fields = Split(input)
-					.Select(v => double.Parse(v, CultureInfo.InvariantCulture))
-					.ToArray();
+				var fields = GetDoubleValues(input);
 
-				if (fields?.Length == 2)
+				if (fields.Count == 2)
 				{
 					output = new Windows.Foundation.Point(fields[0], fields[1]);
 					return true;
 				}
 
-				if (fields?.Length == 1)
+				if (fields.Count == 1)
 				{
 					output = new Windows.Foundation.Point(fields[0], fields[0]);
 					return true;
@@ -593,8 +597,16 @@ namespace Uno.UI.DataBinding
 						output = TextAlignment.Left;
 						return true;
 
+					case "start":
+						output = TextAlignment.Start;
+						return true;
+
 					case "right":
 						output = TextAlignment.Right;
+						return true;
+
+					case "end":
+						output = TextAlignment.End;
 						return true;
 
 					case "justify":
@@ -996,13 +1008,87 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
-		private static Regex _splitRegex = null;
-
-		static string[] Split(string value)
+		private static List<double> GetDoubleValues(string input)
 		{
-			_splitRegex ??= new Regex(@"\s*,\s*|\s+");
+			var list = new List<double>();
+			var s = input.AsSpan().Trim();
+			while (!s.IsEmpty)
+			{
+				var length = NextDoubleLength(s);
+				list.Add(double.Parse(s.Slice(0, length).ToString(), NumberStyles.Float));
+				s = s.Slice(length);
+				s = EatSeparator(s);
+			}
 
-			return _splitRegex.Split(value);
+			return list;
+		}
+
+		private static List<float> GetFloatValues(string input)
+		{
+			var list = new List<float>();
+			var s = input.AsSpan().Trim();
+			while (!s.IsEmpty)
+			{
+				var length = NextDoubleLength(s);
+				list.Add(float.Parse(s.Slice(0, length).ToString(), NumberStyles.Float));
+				s = s.Slice(length);
+				s = EatSeparator(s);
+			}
+
+			return list;
+		}
+
+		private static ReadOnlySpan<char> EatSeparator(ReadOnlySpan<char> s)
+		{
+			if (s.IsEmpty)
+			{
+				return s;
+			}
+
+			var seenWhitespace = false;
+			var seenComma = false;
+			int i = 0;
+			for (; i < s.Length; i++)
+			{
+				if (char.IsWhiteSpace(s[i]))
+				{
+					seenWhitespace = true;
+				}
+				else if (s[i] == ',')
+				{
+					if (seenComma)
+					{
+						throw new ArgumentException("Comma shouldn't appear twice between two double values.");
+					}
+
+					seenComma = true;
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			Debug.Assert(seenWhitespace || seenComma);
+
+			return s.Slice(i);
+		}
+
+		/// <summary>
+		/// Returns the number of characters containing the next double.
+		/// </summary>
+		private static int NextDoubleLength(ReadOnlySpan<char> s)
+		{
+			int i = 0;
+			for (; i < s.Length; i++)
+			{
+				if (char.IsWhiteSpace(s[i]) || s[i] == ',')
+				{
+					break;
+				}
+			}
+
+			return i;
 		}
 	}
 }

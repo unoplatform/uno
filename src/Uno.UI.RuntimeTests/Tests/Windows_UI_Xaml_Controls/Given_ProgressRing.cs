@@ -22,6 +22,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[TestClass]
 	class Given_ProgressRing
 	{
+#if __SKIA__
+		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
+#endif
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_ProgressRing_Visible()

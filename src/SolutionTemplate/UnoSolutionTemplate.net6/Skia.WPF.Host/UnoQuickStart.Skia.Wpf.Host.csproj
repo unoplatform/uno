@@ -5,11 +5,13 @@
 		<OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
 		<TargetFramework>net6.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Uno.UI.Skia.Wpf" Version="3.1.0-dev.568" />
 		<PackageReference Include="Uno.UI.RemoteControl" Version="3.1.0-dev.568" Condition="'$(Configuration)'=='Debug'" />
+		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="3.0.5" />
 	</ItemGroup>
 
 	<ItemGroup>

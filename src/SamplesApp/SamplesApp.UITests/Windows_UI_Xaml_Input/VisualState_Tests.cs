@@ -120,12 +120,23 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
-		public void TestTextBoxReleaseOut()
+		[ActivePlatforms(Platform.Browser)] // For mouse, focus should be set immediately
+		public void TestTextBoxReleaseOutFocused()
 		{
 			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.TextBox_VisualStates");
 
 			// Note: We don not validateFinalStateScreenShot as we are expecting to finish "focused" so may have the flashing cursor.
 			TestVisualTests("MyTextBox", ReleaseOut, validateFinalStateScreenShot: false, "CommonStates.PointerOver", "CommonStates.Focused");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(/*Platform.Android, */Platform.iOS)] // For touch, focus should be set only when released outside of TextBox
+		public void TestTextBoxReleaseOutUnfocused()
+		{
+			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.TextBox_VisualStates");
+
+			TestVisualTests("MyTextBox", ReleaseOut, validateFinalStateScreenShot: true, "CommonStates.PointerOver", "CommonStates.Normal");
 		}
 
 		[Test]

@@ -8,7 +8,7 @@
 
 |                       | Windows (UWP/WinUI) | Android | iOS  | Wasm | macOS | Skia-GTK (Linux) | Skia-WPF |
 | --------------------- | ------------------- | ------- | ---- | ---- | ----- | -------- | -------- |
-| **Rider for Linux**   | ❌                   | ✔️       | ❌    | ✔️†   | ❌     | ✔️        | ❌        |
+| **Rider for Linux**   | ❌                   | ❌†      | ❌    | ✔️†   | ❌     | ✔️        | ❌        |
 | **Rider for Mac**     | ❌                   | ✔️       | ✔️    | ✔️†   | ✔️     | ✔️†       | ❌        |
 | **Rider for Windows** | ✔️                   | ✔️       | ✔️†   | ✔️†   | ❌     | ✔️        | ✔️        |
 
@@ -34,6 +34,8 @@
 
 * **iOS** on Windows: An attached Mac is needed, the iOS simulator will open on the Mac.
 
+* **Android** on Linux: Xamarin.Android does not natively support linux development. Rider has been capable of Android development on Linux in the past, but [previous directions are considered obsolete.](https://rider-support.jetbrains.com/hc/en-us/articles/360000557259--Obsolete-How-to-develop-Xamarin-Android-applications-on-Linux-with-Rider) As of this comment (3 Nov 2021) [Xamarin Android builds on linux fail](https://github.com/xamarin/xamarin-android).
+
 ## Creating a new Uno Platform project
 
 At this time, there isn't a template for the Rider IDE like there is for Visual Studio, so you can create a new project
@@ -56,9 +58,7 @@ You should now have a folder structure that looks like this:
 ![rider-folder-structure](Assets/quick-start/rider-folder-structure.JPG)
 
 ### Android
-1. Remove the following line from the `YourProject.Droid.csproj` file:  
-`<Target Name="GenerateBuild" DependsOnTargets="SignAndroidPackage" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''" />`
-2. Set Android as your startup project. Run.  
+1. Set Android as your startup project. Run.  
 ![run-android-rider](Assets/quick-start/run-android-rider.JPG)
 
 Note: Whether you're using a physical device or the emulator, the app will install but will not automatically open.

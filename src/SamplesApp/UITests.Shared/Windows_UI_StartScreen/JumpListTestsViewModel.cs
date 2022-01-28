@@ -14,7 +14,7 @@ using EventHandler = System.EventHandler;
 
 namespace UITests.Shared.Windows_UI_StartScreen
 {
-	public class JumpListTestsViewModel : ViewModelBase
+	internal class JumpListTestsViewModel : ViewModelBase
 	{
 		private JumpList _jumpList;
 		private JumpListItem _selectedItem;

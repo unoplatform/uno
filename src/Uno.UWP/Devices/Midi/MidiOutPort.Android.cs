@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 using Android.Content;
 using Android.Media.Midi;
 using Android.Runtime;
-using Microsoft.Extensions.Logging;
+
 using Uno.Devices.Enumeration.Internal;
 using Uno.Devices.Enumeration.Internal.Providers.Midi;
 using Uno.Devices.Midi.Internal;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Devices.Enumeration;
 using Windows.Foundation;

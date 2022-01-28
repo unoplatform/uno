@@ -114,11 +114,17 @@
       "defaultValue": "true",
       "description": "Enables the Skia/Linux Framebuffer platform support project"
     },
-    "vscodeWasm": {
+    "vscode": {
       "type": "parameter",
       "dataType": "bool",
       "defaultValue": "false",
-      "description": "Adds the Visual Studio Code Debugging support files for WebAssembly"
+      "description": "Adds the Visual Studio Code Debugging support files"
+    },
+    "skipRestore": {
+      "type": "parameter",
+      "datatype": "bool",
+      "description": "If specified, skips the automatic restore of the project on create.",
+      "defaultValue": "false"
     }
   },
   "primaryOutputs": [
@@ -151,6 +157,19 @@
     {
       "condition": "skia-linux-fb",
       "path": "UnoQuickStart.Skia.Linux.FrameBuffer\\UnoQuickStart.Skia.Linux.FrameBuffer.csproj"
+    }
+  ],
+  "postActions": [
+    {
+      "condition": "(!skipRestore)",
+      "description": "Restore NuGet packages required by this project",
+      "manualInstructions": [
+        {
+          "text": "Run 'dotnet restore'"
+        }
+      ],
+      "actionId": "210D431B-A78B-4D2F-B762-4ED3E3EA9025",
+      "continueOnError": true
     }
   ],
   "sources": [
@@ -197,7 +216,7 @@
           ]
         },
         {
-          "condition": "(!vscodeWasm)",
+          "condition": "(!vscode)",
           "exclude": [
             ".vscode/**/*"
           ]

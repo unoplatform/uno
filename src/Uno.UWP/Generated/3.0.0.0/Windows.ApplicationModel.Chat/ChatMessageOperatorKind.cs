@@ -2,24 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Chat
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum ChatMessageOperatorKind 
 	{
-		#if false
-		Unspecified,
-		#endif
-		#if false
-		Sms,
-		#endif
-		#if false
-		Mms,
-		#endif
-		#if false
-		Rcs,
-		#endif
+		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageOperatorKind.Unspecified
+		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageOperatorKind.Sms
+		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageOperatorKind.Mms
+		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageOperatorKind.Rcs
 	}
 	#endif
 }

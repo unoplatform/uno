@@ -120,11 +120,12 @@ using Android.OS;
 using Android.Util;
 using Android.Views;
 using Java.Lang;
+using Uno.UI.ViewManagement;
 
 namespace Uno.UI
 {
-	partial class BaseActivity
-	{
+	partial class BaseActivity : IBaseActivityEvents { }
+
 <# 
 	var methodRegex = new Regex(@"(?<modifiers>[\s\w]+)\s+(?<return>[\w\.]+)\s+(?<name>\w+)\((?<parameters>[^\)]*)\)(;(?<nameOverride>.*))?");
 	//var parametersRegex = new Regex(@"")
@@ -136,13 +137,20 @@ namespace Uno.UI
 		.Select(method => 
 		{
 			var match = methodRegex.Match(method);
+
+			var name = match.Groups["name"].Value;
+			var nameOverride = match.Groups["nameOverride"].Value;
+
+			var eventName = string.IsNullOrEmpty(nameOverride) ? name : nameOverride;
+			eventName = eventName.StartsWith("On") ? eventName.Substring(2) : eventName;
 		
 			return new 
 			{
 				modifiers = match.Groups["modifiers"].Value.Trim(),
 				returnType = match.Groups["return"].Value,
-				name = match.Groups["name"].Value,
-				nameOverride = match.Groups["nameOverride"].Value,
+				name = name,
+				eventName = eventName,
+				nameOverride = nameOverride,
 				parameters = match.Groups["parameters"].Value
 			};
 		})
@@ -188,18 +196,21 @@ namespace Uno.UI
 			//type = $"System.Tuple<{string.Join(", ", parameters.Select(p => p.type))}>";
 			//value = $"System.Tuple.Create({string.Join(", ", parameters.Select(p => p.name))})";
 			#>
-			public class <#= name#>EventArgs
+			partial class BaseActivity
 			{
-				public <#= name#>EventArgs(<#= method.parameters #>)
+				public class <#= name#>EventArgs
 				{
+					public <#= name#>EventArgs(<#= method.parameters #>)
+					{
+						<# foreach(var parameter in parameters) { #>
+							<#= char.ToUpper(parameter.name[0]) + parameter.name.Substring(1) #> = <#= parameter.name#>; 
+						<# } #>
+					}
+				
 					<# foreach(var parameter in parameters) { #>
-						<#= char.ToUpper(parameter.name[0]) + parameter.name.Substring(1) #> = <#= parameter.name#>; 
+						public <#= parameter.type #> <#= char.ToUpper(parameter.name[0]) + parameter.name.Substring(1) #> { get; } 
 					<# } #>
 				}
-				
-				<# foreach(var parameter in parameters) { #>
-					public <#= parameter.type #> <#= char.ToUpper(parameter.name[0]) + parameter.name.Substring(1) #> { get; } 
-				<# } #>
 			}
 			<#
 		}
@@ -207,40 +218,62 @@ namespace Uno.UI
 		if(!string.IsNullOrEmpty(type))
 		{
 #>
-			/// <summary>
-			/// Occurs when <see cref="<#= method.name #>"/> is invoked on the activity.
-			/// </summary>
-			public event EventHandler<<#= type #>> <#= name #>;
+			partial class BaseActivity
+			{
+				/// <summary>
+				/// Occurs when <see cref="<#= method.name #>"/> is invoked on the activity.
+				/// </summary>
+				public event EventHandler<<#= type #>> <#= name #>;
+			}
 <#
 		}
 		else
 		{
 #>
-			/// <summary>
-			/// Occurs when <see cref="<#= method.name #>"/> is invoked on the activity.
-			/// </summary>
-			public event EventHandler <#= name #>;
+			partial class BaseActivity
+			{
+				/// <summary>
+				/// Occurs when <see cref="<#= method.name #>"/> is invoked on the activity.
+				/// </summary>
+				public event EventHandler <#= name #>;
+			}
 <#
 		}
 #>
 		
-		
-		<#= method.modifiers.Replace("virtual", "override") #> <#= method.returnType #> <#= method.name #>(<#= method.parameters #>)
+		partial class BaseActivity
 		{
-			var handler = <#= name #>;
-			if (handler != null)
+			<#= method.modifiers.Replace("virtual", "override") #> <#= method.returnType #> <#= method.name #>(<#= method.parameters #>)
 			{
-				handler.Invoke(this, <#= string.IsNullOrEmpty(value) ? "EventArgs.Empty" : value #>);
+				var handler = <#= name #>;
+				if (handler != null)
+				{
+					handler.Invoke(this, <#= string.IsNullOrEmpty(value) ? "EventArgs.Empty" : value #>);
+				}
+
+				_<#= method.eventName #>Handlers?.Invoke(<#= baseParameters #>);
+
+				Inner<#= name#>(<#= baseParameters #>);
+				<#= method.returnType == "void" ? "" : "return" #> base.<#= method.name #>(<#= baseParameters #>);
 			}
 
-			Inner<#= name#>(<#= baseParameters #>);
-			<#= method.returnType == "void" ? "" : "return" #> base.<#= method.name #>(<#= baseParameters #>);
+			partial void Inner<#= name#>(<#= method.parameters #>);
+
+			private Activity<#= method.eventName #>Handler _<#= method.eventName #>Handlers;
+			event Activity<#= method.eventName #>Handler IBaseActivityEvents.<#= method.eventName #>
+			{
+				add
+				{
+					_<#= method.eventName #>Handlers += value;
+				}
+				remove
+				{
+					_<#= method.eventName #>Handlers -= value;
+				}
+			}
 		}
 
-		partial void Inner<#= name#>(<#= method.parameters #>);
 <#
 	} // foreach
 #>
-
-	}
 }

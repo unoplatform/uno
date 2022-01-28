@@ -219,7 +219,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="dependencyProperty"></param>
 		/// <param name="value"></param>
-		private bool GetDefaultValue2(DependencyProperty dependencyProperty, out object? value)
+		internal override bool GetDefaultValue2(DependencyProperty dependencyProperty, out object? value)
 		{
 			var core = DXamlCore.Current;
 			if (dependencyProperty == OnContentProperty)
@@ -234,8 +234,8 @@ namespace Windows.UI.Xaml.Controls
 				value = offString;
 				return true;
 			}
-			value = null;
-			return false;
+
+			return base.GetDefaultValue2(dependencyProperty, out value);
 		}
 
 		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)

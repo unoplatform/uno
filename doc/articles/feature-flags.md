@@ -21,3 +21,7 @@ This can be changed using `Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStyles
 By default, Uno automatically enables accessibility text scaling on iOS and Android devices however to have more control an option has been added to disable text scaling. 
 
 Use `Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor` to control this. 
+
+## Popups
+
+In older versions of Uno Platforms, the `Popup.IsLightDismissEnabled` dependency property defaulted to `true`. In UWP/WinUI and Uno 4.1 and newer, it correctly defaults to `false`. If your code depended on the old behavior, you can set the `Uno.UI.FeatureConfiguration.Popup.EnableLightDismissByDefault` property to `true` to override this.

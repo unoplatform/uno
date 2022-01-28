@@ -10,7 +10,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.UI.Xaml.Controls.Primitives;
 

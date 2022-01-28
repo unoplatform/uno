@@ -13,8 +13,15 @@ namespace Windows.UI.Xaml.Controls
 	/// </summary>
 	internal partial interface IScrollContentPresenter
 	{
-		ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }
-		ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
+		// NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
+		//
+		// This interface is obsolete and should not used anymore.
+		// The logic is being move into the SCP which then re-routes to the INativeScrollContentPresenter
+		// 
+		// NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE 
+
+		ScrollBarVisibility NativeHorizontalScrollBarVisibility { set; }
+		ScrollBarVisibility NativeVerticalScrollBarVisibility { set; }
 
 		bool CanHorizontallyScroll { get; set; }
 		bool CanVerticallyScroll { get; set; }
@@ -28,8 +35,6 @@ namespace Windows.UI.Xaml.Controls
 
 		void OnMinZoomFactorChanged(float newValue);
 		void OnMaxZoomFactorChanged(float newValue);
-
-		Rect MakeVisible(UIElement visual, Rect rectangle);
 	}
 }
 #endif

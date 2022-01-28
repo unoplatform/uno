@@ -1,4 +1,5 @@
-﻿using Windows.UI.Xaml;
+﻿using System;
+using Windows.UI.Xaml;
 
 namespace Uno.UI
 {
@@ -33,6 +34,24 @@ namespace Uno.UI
 
 				Application.UpdateRequestedThemesForResources();
 			}
+		}
+
+		/// <summary>
+		/// Force all {ThemeResource} declarations to reevaluate its bindings.
+		/// </summary>
+		/// <remarks>
+		/// This could be useful if you manually changed the bound values in global
+		/// themed dictionary and you want to reapply them without having to toggle
+		/// dark/light and producing annoying flickering to user.
+		/// 
+		/// Only applications with dynamic color schemes should use this.
+		/// </remarks>
+		public static void ReapplyApplicationTheme()
+			=> Application.Current.OnRequestedThemeChanged();
+
+		public static bool IsLoadableComponent(Uri resource)
+		{
+			return Application.Current?.IsLoadableComponent(resource) ?? false;
 		}
 	}
 }

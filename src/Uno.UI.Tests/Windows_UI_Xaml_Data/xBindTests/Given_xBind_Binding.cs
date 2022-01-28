@@ -888,7 +888,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			var topLevelContent = SUT.FindName("topLevelContent") as FrameworkElement;
 			Assert.AreEqual(Visibility.Collapsed, topLevelContent.Visibility);
 		}
-
+		 
 		[TestMethod]
 		public void When_xLoad_Event()
 		{
@@ -1126,6 +1126,63 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual(42, SUT.tb01.Tag);
 		}
 
+		[TestMethod]
+		public async Task When_Binding_xLoad_Twice()
+		{
+			var SUT = new Binding_xLoad_Twice();
+			Assert.IsNull(SUT.tb01);
+			Assert.IsNull(SUT.tb02);
+
+			Assert.AreEqual(0, SUT.TopLevelVisiblityGetCount);
+			Assert.AreEqual(0, SUT.TopLevelVisiblitySetCount);
+
+			var grid = new Grid();
+			grid.ForceLoaded();
+			grid.Children.Add(SUT);
+
+			Assert.IsNull(SUT.tb01);
+			Assert.IsNull(SUT.tb02);
+
+			Assert.AreEqual(2, SUT.TopLevelVisiblityGetCount);
+			Assert.AreEqual(0, SUT.TopLevelVisiblitySetCount);
+
+			MakeVisible();
+
+			Assert.AreEqual(4, SUT.TopLevelVisiblityGetCount);
+			Assert.AreEqual(1, SUT.TopLevelVisiblitySetCount);
+
+			await MakeInvisible();
+
+			Assert.AreEqual(6, SUT.TopLevelVisiblityGetCount);
+			Assert.AreEqual(2, SUT.TopLevelVisiblitySetCount);
+
+			MakeVisible();
+
+			Assert.AreEqual(8, SUT.TopLevelVisiblityGetCount);
+			Assert.AreEqual(3, SUT.TopLevelVisiblitySetCount);
+
+			await MakeInvisible();
+
+			Assert.AreEqual(10, SUT.TopLevelVisiblityGetCount);
+			Assert.AreEqual(4, SUT.TopLevelVisiblitySetCount);
+
+			void MakeVisible()
+			{
+				SUT.TopLevelVisiblity = true;
+
+				Assert.IsNotNull(SUT.tb01);
+				Assert.IsNotNull(SUT.tb02);
+			}
+
+			async Task MakeInvisible()
+			{
+				SUT.TopLevelVisiblity = false;
+
+				AssertIsNullAsync(() => SUT.tb01);
+				AssertIsNullAsync(() => SUT.tb02);
+			}
+		}
+
 
 		[TestMethod]
 		public async Task When_Binding_xNull()
@@ -1144,21 +1201,38 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual("MMM d <null>", SUT.tb03.Text);
 		}
 
-		private async Task AssertIsNullAsync<T>(Func<T> getter, TimeSpan? timeout = null)
+		private async Task AssertIsNullAsync<T>(Func<T> getter, TimeSpan? timeout = null) where T:class
 		{
+			timeout ??= TimeSpan.FromSeconds(1);
+
 			var sw = Stopwatch.StartNew();
 
-			while (sw.Elapsed < timeout && getter() != null)
+			while (sw.Elapsed < timeout)
 			{
-				await Task.Delay(100);
+				{
+					var value = getter();
+
+					if (value == null)
+					{
+						return;
+					}
+
+					value = null;
+				}
+
+				await Task.Yield();
 
 				// Wait for the ElementNameSubject and ComponentHolder
 				// instances to release their references.
-				GC.Collect();
-				GC.WaitForPendingFinalizers();
+				GC.Collect(2);
+				//GC.WaitForPendingFinalizers();
 			}
 
-			Assert.IsNull(getter());
+			{
+				var value2 = getter();
+				Assert.IsNull(value2);
+				value2 = null;
+			}
 		}
 
 		private async Task AssertIsNoNullAsync<T>(Func<T> getter, TimeSpan? timeout)

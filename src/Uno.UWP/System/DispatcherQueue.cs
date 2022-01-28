@@ -1,7 +1,11 @@
 using System;
-using Windows.UI.Core;
+using Uno.UI.Dispatching;
 
+#if HAS_UNO_WINUI && IS_UNO_UI_DISPATCHING_PROJECT
+namespace Microsoft.UI.Dispatching
+#else
 namespace Windows.System
+#endif
 {
 	public partial class DispatcherQueue
 	{
@@ -47,15 +51,31 @@ namespace Windows.System
 #endif
 		}
 
-#if !HAS_UNO_WINUI
 		public bool TryEnqueue(DispatcherQueueHandler callback)
-		{
-			return TryEnqueue(DispatcherQueuePriority.Normal, callback);
-		}
+			=> TryEnqueue(DispatcherQueuePriority.Normal, callback);
+
 		public bool TryEnqueue(DispatcherQueuePriority priority, DispatcherQueueHandler callback)
 		{
-			return TryEnqueueNative(priority, callback);
+			var p = priority switch
+			{
+				DispatcherQueuePriority.Normal => CoreDispatcherPriority.Normal,
+				DispatcherQueuePriority.High => CoreDispatcherPriority.High,
+				DispatcherQueuePriority.Low => CoreDispatcherPriority.Low,
+				_ => CoreDispatcherPriority.Normal
+			};
+
+			CoreDispatcher.Main.RunAsync(p, () => callback());
+
+			return true;
 		}
+
+		public bool HasThreadAccess
+#if !__WASM__
+			=> CoreDispatcher.Main.HasThreadAccess;
+#else
+			// This check is disabled on WASM until threading support is enabled, since HasThreadAccess is currently user-configured (and defaults to false).
+			=> true;
 #endif
+
 	}
 }

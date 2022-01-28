@@ -2,7 +2,7 @@
 
 using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+
 using Uno.Client;
 using Uno.Disposables;
 using Uno.Extensions;
@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Controls
 				LightDismissOverlayMode = LightDismissOverlayMode.On,
 			};
 
-			ResourceResolver.ApplyResource(_popup, Popup.LightDismissOverlayBackgroundProperty, "ContentDialogLightDismissOverlayBackground", isThemeResourceExtension: true);
+			ResourceResolver.ApplyResource(_popup, Popup.LightDismissOverlayBackgroundProperty, "ContentDialogLightDismissOverlayBackground", isThemeResourceExtension: true, isHotReloadSupported: true);
 
 			_popup.PopupPanel = new ContentDialogPopupPanel(this);
 
@@ -136,7 +136,11 @@ namespace Windows.UI.Xaml.Controls
 					_popup.Child = null;
 					UpdateVisualState();
 					Closed?.Invoke(this, new ContentDialogClosedEventArgs(result));
-					_tcs.SetResult(result);
+
+					// Make sure all clean-up is done before returning result,
+					// to prevent problems when the dialog is reopened synchronously
+					(var tcs, _tcs) = (_tcs, null);
+					DispatcherQueue.TryEnqueue(() => tcs?.TrySetResult(result));
 				}
 				_hiding = false;
 			}

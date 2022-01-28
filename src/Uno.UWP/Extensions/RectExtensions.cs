@@ -54,5 +54,23 @@ namespace Uno.Extensions
 			rect.Intersect(other);
 			return !rect.IsEmpty;
 		}
+
+		/// <summary>
+		/// Gets the shortest distance from the given point to the edges of rect.
+		/// If the rect <see cref="Rect.Contains"/> the point, then distance will be 0.
+		/// </summary>
+		internal static double GetDistance(this Rect rect, Point point)
+		{
+			// Note: cf. Contains comment to understand why we do 'point.X - rect.Width <= rect.X'
+
+			var dx = point.X >= rect.X && point.X - rect.Width <= rect.X
+				? 0 // Point is vertically aligned with rect
+				: Math.Min(Math.Abs(point.X - rect.X), Math.Abs(point.X - rect.Right));
+			var dy = point.Y >= rect.Y && point.Y - rect.Height <= rect.Y
+				? 0 // Point is horizontally aligned with rect
+				: Math.Min(Math.Abs(point.Y - rect.Y), Math.Abs(point.Y - rect.Bottom));
+
+			return Math.Sqrt(Math.Pow(dx, 2) + Math.Pow(dy, 2));
+		}
 	}
 }

@@ -24,7 +24,7 @@ namespace UITests.Shared.Windows_Devices
 		}
 	}
 
-	public class LampTestsViewModel : ViewModelBase
+	internal class LampTestsViewModel : ViewModelBase
 	{
 		private Lamp _lamp = null;
 		private string _lampStatus;

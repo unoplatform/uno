@@ -1,7 +1,8 @@
-// MUX Reference: TabView.cpp, TabView.h, commit a987a18
-
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference TabView.cpp, commit ed31e13
+
+#pragma warning disable 105 // remove when moving to WinUI tree
 
 using System;
 using System.Collections;
@@ -10,6 +11,7 @@ using System.Linq;
 using System.Numerics;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.UI.Helpers.WinUI;
@@ -42,44 +44,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// TODO (WinUI): what is the right number and should this be customizable?
 		private const double c_scrollAmount = 50.0;
 
-		internal const double c_tabShadowDepth = 16.0;
-		internal const string c_tabViewShadowDepthName = "TabViewShadowDepth";
-
-		private const string SR_TabViewAddButtonName = "TabViewAddButtonName";
-		private const string SR_TabViewAddButtonTooltip = "TabViewAddButtonTooltip";
-		private const string SR_TabViewCloseButtonTooltip = "TabViewCloseButtonTooltip";
-		private const string SR_TabViewCloseButtonTooltipWithKA = "TabViewCloseButtonTooltipWithKA";
-		private const string SR_TabViewScrollDecreaseButtonTooltip = "TabViewScrollDecreaseButtonTooltip";
-		private const string SR_TabViewScrollIncreaseButtonTooltip = "TabViewScrollIncreaseButtonTooltip";
-
-		private readonly DispatcherHelper m_dispatcherHelper;
-
-		private ContentPresenter m_tabContentPresenter = null;
-		private ContentPresenter m_rightContentPresenter = null;
-		private ColumnDefinition m_leftContentColumn;
-		private ColumnDefinition m_tabColumn;
-		private ColumnDefinition m_addButtonColumn;
-		private ColumnDefinition m_rightContentColumn;
-		private Button m_addButton;
-		private RepeatButton m_scrollDecreaseButton;
-		private RepeatButton m_scrollIncreaseButton;
-		private ScrollViewer m_scrollViewer;
-		private ItemsPresenter m_itemsPresenter;
-		private Grid m_shadowReceiver;
-		private Grid m_tabContainerGrid;
-		private ListView m_listView;
-		private Size previousAvailableSize;
-
-		private bool m_updateTabWidthOnPointerLeave = false;
-		private string m_tabCloseButtonTooltipText;
-
-		private long m_listViewCanReorderItemsPropertyChangedRevoker;
-		private long m_listViewAllowDropPropertyChangedRevoker;
-
-		private long m_ScrollViewerScrollableWidthPropertyChangedRevoker; // Uno workaround
-
 		public TabView()
 		{
+			// Uno specific: Needs to be initialized here, as field can't use "this"
 			m_dispatcherHelper = new DispatcherHelper(this);
 
 			var items = new ObservableVector<object>();
@@ -87,7 +54,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			SetDefaultStyleKey(this);
 
-			this.Loaded += OnLoaded;
+			Loaded += OnLoaded;
 
 			// KeyboardAccelerator is only available on RS3+
 			if (SharedHelpers.IsRS3OrHigher())
@@ -99,11 +66,11 @@ namespace Microsoft.UI.Xaml.Controls
 				ctrlf4Accel.ScopeOwner = this;
 				KeyboardAccelerators.Add(ctrlf4Accel);
 
-				m_tabCloseButtonTooltipText = ResourceAccessor.GetLocalizedStringResource(SR_TabViewCloseButtonTooltipWithKA);
+				m_tabCloseButtonTooltipText = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_TabViewCloseButtonTooltipWithKA);
 			}
 			else
 			{
-				m_tabCloseButtonTooltipText = ResourceAccessor.GetLocalizedStringResource(SR_TabViewCloseButtonTooltip);
+				m_tabCloseButtonTooltipText = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_TabViewCloseButtonTooltip);
 			}
 
 			// Ctrl+Tab as a KeyboardAccelerator only works on 19H1+
@@ -141,14 +108,26 @@ namespace Microsoft.UI.Xaml.Controls
 			m_addButtonColumn = (ColumnDefinition)GetTemplateChild("AddButtonColumn");
 			m_rightContentColumn = (ColumnDefinition)GetTemplateChild("RightContentColumn");
 
-			var containerGrid = GetTemplateChild("TabContainerGrid") as Grid;
-			if (containerGrid != null)
+			if (GetTemplateChild<Grid>("TabContainerGrid") is Grid containerGrid)
 			{
 				m_tabContainerGrid = containerGrid;
 				containerGrid.PointerExited += OnTabStripPointerExited;
+				m_tabStripPointerExitedRevoker.Disposable = Disposable.Create(() =>
+				{
+					containerGrid.PointerExited -= OnTabStripPointerExited;
+				});
+				containerGrid.PointerEntered += OnTabStripPointerEntered;
+				m_tabStripPointerEnteredRevoker.Disposable = Disposable.Create(() =>
+				{
+					containerGrid.PointerEntered -= OnTabStripPointerEntered;
+				});
 			}
 
-			m_shadowReceiver = (Grid)GetTemplateChild("ShadowReceiver");
+			if (!SharedHelpers.Is21H1OrHigher())
+			{
+				m_shadowReceiver = (Grid)GetTemplateChild("ShadowReceiver");
+			}
+
 
 			ListView GetListView()
 			{
@@ -156,19 +135,53 @@ namespace Microsoft.UI.Xaml.Controls
 				if (listView != null)
 				{
 					listView.Loaded += OnListViewLoaded;
+					m_listViewLoadedRevoker.Disposable = Disposable.Create(() =>
+					{
+						listView.Loaded -= OnListViewLoaded;
+					});
 					listView.SelectionChanged += OnListViewSelectionChanged;
+					m_listViewSelectionChangedRevoker.Disposable = Disposable.Create(() =>
+					{
+						listView.SelectionChanged -= OnListViewSelectionChanged;
+					});
 
 					listView.DragItemsStarting += OnListViewDragItemsStarting;
+					m_listViewDragItemsStartingRevoker.Disposable = Disposable.Create(() =>
+					{
+						listView.DragItemsStarting -= OnListViewDragItemsStarting;
+					});
 					listView.DragItemsCompleted += OnListViewDragItemsCompleted;
+					m_listViewDragItemsCompletedRevoker.Disposable = Disposable.Create(() =>
+					{
+						listView.DragItemsCompleted -= OnListViewDragItemsCompleted;
+					});
 					listView.DragOver += OnListViewDragOver;
+					m_listViewDragOverRevoker.Disposable = Disposable.Create(() =>
+					{
+						listView.DragOver -= OnListViewDragOver;
+					});
 					listView.Drop += OnListViewDrop;
+					m_listViewDropRevoker.Disposable = Disposable.Create(() =>
+					{
+						listView.Drop -= OnListViewDrop;
+					});
 
 					listView.GettingFocus += OnListViewGettingFocus;
+					m_listViewGettingFocusRevoker.Disposable = Disposable.Create(() =>
+					{
+						listView.GettingFocus -= OnListViewGettingFocus;
+					});
 
-					m_listViewCanReorderItemsPropertyChangedRevoker = listView.RegisterPropertyChangedCallback(ListView.CanReorderItemsProperty, OnListViewDraggingPropertyChanged);
-					m_listViewAllowDropPropertyChangedRevoker = listView.RegisterPropertyChangedCallback(UIElement.AllowDropProperty, OnListViewDraggingPropertyChanged);
-
-
+					var canReorderItemsToken = listView.RegisterPropertyChangedCallback(ListView.CanReorderItemsProperty, OnListViewDraggingPropertyChanged);
+					m_listViewCanReorderItemsPropertyChangedRevoker.Disposable = Disposable.Create(() =>
+					{
+						listView.UnregisterPropertyChangedCallback(ListView.CanReorderItemsProperty, canReorderItemsToken);
+					});
+					var allowDropToken = listView.RegisterPropertyChangedCallback(UIElement.AllowDropProperty, OnListViewDraggingPropertyChanged);
+					m_listViewAllowDropPropertyChangedRevoker.Disposable = Disposable.Create(() =>
+					{
+						listView.UnregisterPropertyChangedCallback(UIElement.AllowDropProperty, allowDropToken);
+					});
 				}
 				return listView;
 			}
@@ -182,7 +195,7 @@ namespace Microsoft.UI.Xaml.Controls
 					// Do localization for the add button
 					if (string.IsNullOrEmpty(AutomationProperties.GetName(addButton)))
 					{
-						var addButtonName = ResourceAccessor.GetLocalizedStringResource(SR_TabViewAddButtonName);
+						var addButtonName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_TabViewAddButtonName);
 						AutomationProperties.SetName(addButton, addButtonName);
 					}
 
@@ -190,11 +203,15 @@ namespace Microsoft.UI.Xaml.Controls
 					if (toolTip == null)
 					{
 						ToolTip tooltip = new ToolTip();
-						tooltip.Content = ResourceAccessor.GetLocalizedStringResource(SR_TabViewAddButtonTooltip);
+						tooltip.Content = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_TabViewAddButtonTooltip);
 						ToolTipService.SetToolTip(addButton, tooltip);
 					}
 
 					addButton.Click += OnAddButtonClick;
+					m_addButtonClickRevoker.Disposable = Disposable.Create(() =>
+					{
+						addButton.Click -= OnAddButtonClick;
+					});
 				}
 				return addButton;
 			}
@@ -281,8 +298,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var newItem = args.NewFocusedElement as TabViewItem;
 				if (oldItem != null && newItem != null)
 				{
-					var listView = m_listView;
-					if (listView != null)
+					if (m_listView is { } listView)
 					{
 						bool oldItemIsFromThisTabView = listView.IndexFromContainer(oldItem) != -1;
 						bool newItemIsFromThisTabView = listView.IndexFromContainer(newItem) != -1;
@@ -305,7 +321,10 @@ namespace Microsoft.UI.Xaml.Controls
 								else
 								{
 									// Without TrySetNewFocusedElement, we cannot set focus while it is changing.
-									m_dispatcherHelper.RunAsync(() => CppWinRTHelpers.SetFocus(next, FocusState.Programmatic));
+									m_dispatcherHelper.RunAsync(() =>
+									{
+										CppWinRTHelpers.SetFocus(next, FocusState.Programmatic);
+									});
 								}
 								args.Handled = true;
 							}
@@ -346,8 +365,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (TabItemsSource != null)
 			{
-				var listView = m_listView;
-				if (listView != null)
+				if (m_listView is { } listView)
 				{
 					if (listView.CanReorderItems && listView.AllowDrop)
 					{
@@ -365,8 +383,7 @@ namespace Microsoft.UI.Xaml.Controls
 						// when the original one contains an AddDeleteThemeTransition or ContentThemeTransition instance.
 						bool GetTransitionCollectionHasAddDeleteOrContentThemeTransition(ListView listView)
 						{
-							var itemContainerTransitions = listView.ItemContainerTransitions;
-							if (itemContainerTransitions != null)
+							if (listView.ItemContainerTransitions is { } itemContainerTransitions)
 							{
 								foreach (var transition in itemContainerTransitions)
 								{
@@ -408,50 +425,23 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UnhookEventsAndClearFields()
 		{
-			if (m_listView != null)
-			{
-				m_listView.Loaded -= OnListViewLoaded;
-				m_listView.SelectionChanged -= OnListViewSelectionChanged;
-				m_listView.DragItemsStarting -= OnListViewDragItemsStarting;
-				m_listView.DragItemsCompleted -= OnListViewDragItemsCompleted;
-				m_listView.DragOver -= OnListViewDragOver;
-				m_listView.Drop -= OnListViewDrop;
-				m_listView.GettingFocus -= OnListViewGettingFocus;
-				m_listView.UnregisterPropertyChangedCallback(ListView.CanReorderItemsProperty, m_listViewCanReorderItemsPropertyChangedRevoker);
-				m_listView.UnregisterPropertyChangedCallback(UIElement.AllowDropProperty, m_listViewAllowDropPropertyChangedRevoker);
-			}
-
-			if (m_addButton != null)
-			{
-				m_addButton.Click -= OnAddButtonClick;
-			}
-
-			if (m_itemsPresenter != null)
-			{
-				m_itemsPresenter.SizeChanged -= OnItemsPresenterSizeChanged;
-			}
-
-			if (m_tabContainerGrid != null)
-			{
-				m_tabContainerGrid.PointerExited -= OnTabStripPointerExited;
-			}
-
-			if (m_scrollViewer != null)
-			{
-				m_scrollViewer.Loaded -= OnScrollViewerLoaded;
-				m_scrollViewer.ViewChanged -= OnScrollViewerViewChanged;
-				m_scrollViewer.UnregisterPropertyChangedCallback(ScrollViewer.ScrollableWidthProperty, m_ScrollViewerScrollableWidthPropertyChangedRevoker); // Uno workaround
-			}
-
-			if (m_scrollDecreaseButton != null)
-			{
-				m_scrollDecreaseButton.Click -= OnScrollDecreaseClick;
-			}
-
-			if (m_scrollIncreaseButton != null)
-			{
-				m_scrollIncreaseButton.Click -= OnScrollIncreaseClick;
-			}
+			m_listViewLoadedRevoker.Disposable = null;
+			m_listViewSelectionChangedRevoker.Disposable = null;
+			m_listViewDragItemsStartingRevoker.Disposable = null;
+			m_listViewDragItemsCompletedRevoker.Disposable = null;
+			m_listViewDragOverRevoker.Disposable = null;
+			m_listViewDropRevoker.Disposable = null;
+			m_listViewGettingFocusRevoker.Disposable = null;
+			m_listViewCanReorderItemsPropertyChangedRevoker.Disposable = null;
+			m_listViewAllowDropPropertyChangedRevoker.Disposable = null;
+			m_addButtonClickRevoker.Disposable = null;
+			m_itemsPresenterSizeChangedRevoker.Disposable = null;
+			m_tabStripPointerExitedRevoker.Disposable = null;
+			m_tabStripPointerEnteredRevoker.Disposable = null;
+			m_scrollViewerLoadedRevoker.Disposable = null;
+			m_scrollViewerViewChangedRevoker.Disposable = null;
+			m_scrollDecreaseClickRevoker.Disposable = null;
+			m_scrollIncreaseClickRevoker.Disposable = null;
 
 			m_tabContentPresenter = null;
 			m_rightContentPresenter = null;
@@ -478,8 +468,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// Switch the visual states of all tab items to the correct TabViewWidthMode
 				TabViewItem GetTabViewItem(object item)
 				{
-					var tabViewItem = item as TabViewItem;
-					if (tabViewItem != null)
+					if (item is TabViewItem tabViewItem)
 					{
 						return tabViewItem;
 					}
@@ -501,8 +490,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				TabViewItem GetTabViewItem(object item)
 				{
-					var tabViewItem = item as TabViewItem;
-					if (tabViewItem != null)
+					if (item is TabViewItem tabViewItem)
 					{
 						return tabViewItem;
 					}
@@ -532,17 +520,16 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateTabContent();
 		}
 
-		void OnListViewLoaded(object sender, RoutedEventArgs args)
+		private void OnListViewLoaded(object sender, RoutedEventArgs args)
 		{
-			var listView = m_listView;
-			if (listView != null)
+			if (m_listView is { } listView)
 			{
 				// Now that ListView exists, we can start using its Items collection.
-				var lvItems = listView.Items;
-				if (lvItems != null)
+				if (listView.Items is { } lvItems)
 				{
 					if (listView.ItemsSource == null)
 					{
+						// copy the list, because clearing lvItems may also clear TabItems
 						var itemList = new List<object>();
 
 						foreach (var item in TabItems)
@@ -584,6 +571,10 @@ namespace Microsoft.UI.Xaml.Controls
 					if (itemsPresenter != null)
 					{
 						itemsPresenter.SizeChanged += OnItemsPresenterSizeChanged;
+						m_itemsPresenterSizeChangedRevoker.Disposable = Disposable.Create(() =>
+						{
+							itemsPresenter.SizeChanged -= OnItemsPresenterSizeChanged;
+						});
 					}
 					return itemsPresenter;
 				}
@@ -601,19 +592,28 @@ namespace Microsoft.UI.Xaml.Controls
 					else
 					{
 						scrollViewer.Loaded += OnScrollViewerLoaded;
+						m_scrollViewerLoadedRevoker.Disposable = Disposable.Create(() =>
+						{
+							scrollViewer.Loaded -= OnScrollViewerLoaded;
+						});
 					}
 					// Uno workaround: Since Loaded is called before measure, the increase/decrease button visibility is not initially set
 					// properly unless we subscribe to ScrollableWidth changing.
-					m_ScrollViewerScrollableWidthPropertyChangedRevoker = scrollViewer.RegisterPropertyChangedCallback(
+					var scrollViewerScrollableWidthToken = scrollViewer.RegisterPropertyChangedCallback(
 						ScrollViewer.ScrollableWidthProperty,
 						(_, __) => UpdateScrollViewerDecreaseAndIncreaseButtonsViewState()
 					);
+					m_ScrollViewerScrollableWidthPropertyChangedRevoker.Disposable = Disposable.Create(() =>
+					{
+						scrollViewer.UnregisterPropertyChangedCallback(ScrollViewer.ScrollableWidthProperty, scrollViewerScrollableWidthToken);
+					});
 				}
 			}
 		}
 
-		void OnTabStripPointerExited(object sender, PointerRoutedEventArgs args)
+		private void OnTabStripPointerExited(object sender, PointerRoutedEventArgs args)
 		{
+			m_pointerInTabstrip = false;
 			if (m_updateTabWidthOnPointerLeave)
 			{
 				try
@@ -627,10 +627,14 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private void OnTabStripPointerEntered(object sender, PointerRoutedEventArgs args)
+		{
+			m_pointerInTabstrip = true;
+		}
+
 		private void OnScrollViewerLoaded(object sender, RoutedEventArgs args)
 		{
-			var scrollViewer = m_scrollViewer;
-			if (scrollViewer != null)
+			if (m_scrollViewer is { } scrollViewer)
 			{
 				RepeatButton GetDecreaseButton(ScrollViewer scrollViewer)
 				{
@@ -642,11 +646,15 @@ namespace Microsoft.UI.Xaml.Controls
 						if (toolTip == null)
 						{
 							var tooltip = new ToolTip();
-							tooltip.Content = ResourceAccessor.GetLocalizedStringResource(SR_TabViewScrollDecreaseButtonTooltip);
+							tooltip.Content = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_TabViewScrollDecreaseButtonTooltip);
 							ToolTipService.SetToolTip(decreaseButton, tooltip);
 						}
 
 						decreaseButton.Click += OnScrollDecreaseClick;
+						m_scrollDecreaseClickRevoker.Disposable = Disposable.Create(() =>
+						{
+							decreaseButton.Click -= OnScrollDecreaseClick;
+						});
 					}
 					return decreaseButton;
 				}
@@ -662,23 +670,31 @@ namespace Microsoft.UI.Xaml.Controls
 						if (toolTip == null)
 						{
 							var tooltip = new ToolTip();
-							tooltip.Content = ResourceAccessor.GetLocalizedStringResource(SR_TabViewScrollIncreaseButtonTooltip);
+							tooltip.Content = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_TabViewScrollIncreaseButtonTooltip);
 							ToolTipService.SetToolTip(increaseButton, tooltip);
 						}
 
 						increaseButton.Click += OnScrollIncreaseClick;
+						m_scrollIncreaseClickRevoker.Disposable = Disposable.Create(() =>
+						{
+							increaseButton.Click -= OnScrollIncreaseClick;
+						});
 					}
 					return increaseButton;
 				}
 				m_scrollIncreaseButton = GetIncreaseButton(scrollViewer);
 
 				scrollViewer.ViewChanged += OnScrollViewerViewChanged;
+				m_scrollViewerViewChangedRevoker.Disposable = Disposable.Create(() =>
+				{
+					scrollViewer.ViewChanged -= OnScrollViewerViewChanged;
+				});
 			}
 
 			UpdateTabWidths();
 		}
 
-		void OnScrollViewerViewChanged(object sender, ScrollViewerViewChangedEventArgs args)
+		private void OnScrollViewerViewChanged(object sender, ScrollViewerViewChangedEventArgs args)
 		{
 			UpdateScrollViewerDecreaseAndIncreaseButtonsViewState();
 		}
@@ -796,12 +812,9 @@ namespace Microsoft.UI.Xaml.Controls
 						}
 
 					}
-					// Last item removed, update sizes
-					// The index of the last element is "Size() - 1", but in TabItems, it is already removed.
 					if (TabWidthMode == TabViewWidthMode.Equal)
 					{
-						m_updateTabWidthOnPointerLeave = true;
-						if (args.Index == TabItems.Count)
+						if (!m_pointerInTabstrip || args.Index == TabItems.Count)
 						{
 							UpdateTabWidths(true, false);
 						}
@@ -864,7 +877,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var item = args.Items[0];
 			var tab = FindTabViewItemFromDragItem(item);
-			var myArgs = new TabViewTabDragStartingEventArgs(args.Data, item, tab);
+			var myArgs = new TabViewTabDragStartingEventArgs(args, item, tab);
 
 			TabDragStarting?.Invoke(this, myArgs);
 		}
@@ -883,7 +896,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var item = args.Items[0];
 			var tab = FindTabViewItemFromDragItem(item);
-			var myArgs = new TabViewTabDragCompletedEventArgs(args.DropResult, item, tab);
+			var myArgs = new TabViewTabDragCompletedEventArgs(args, item, tab);
 
 			TabDragCompleted?.Invoke(this, myArgs);
 

@@ -12,7 +12,7 @@ using System.Globalization;
 using System.Linq;
 using Uno.Disposables;
 using System.Text;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
@@ -22,7 +22,7 @@ namespace Uno.UI.DataBinding
 	[DebuggerDisplay("Path={_path} DataContext={_dataContext}")]
 	internal class BindingPath : IDisposable, IValueChangedListener
 	{
-		private static List<PropertyChangedRegistrationHandler> _propertyChangedHandlers = new List<PropertyChangedRegistrationHandler>();
+		private static List<IPropertyChangedRegistrationHandler> _propertyChangedHandlers = new List<IPropertyChangedRegistrationHandler>(2);
 		private readonly string _path;
 
 		private BindingItem? _chain;
@@ -31,13 +31,40 @@ namespace Uno.UI.DataBinding
 		private bool _disposed;
 
 		/// <summary>
-		/// Defines a delegate that will create a registration on the specified <paramref name="dataContext"/>> for the specified <paramref name="propertyName"/>.
+		/// Defines a interface that will allow for the creation of a registration on the specified dataContext
+		/// for the specified propertyName.
 		/// </summary>
-		/// <param name="dataContext">The datacontext to use</param>
-		/// <param name="propertyName">The property in the datacontext</param>
-		/// <param name="onNewValue">The action to execute when a new value is raised</param>
-		/// <returns>A disposable that will cleanup resources.</returns>
-		public delegate IDisposable? PropertyChangedRegistrationHandler(ManagedWeakReference dataContext, string propertyName, Action onNewValue);
+		public interface IPropertyChangedRegistrationHandler
+		{
+			/// <summary>
+			/// Registere a new <see cref="IPropertyChangedValueHandler"/> for the specified property
+			/// </summary>
+			/// <param name="dataContext">The datacontext to use</param>
+			/// <param name="propertyName">The property in the datacontext</param>
+			/// <param name="onNewValue">The action to execute when a new value is raised</param>
+			/// <returns>A disposable that will cleanup resources.</returns>
+			IDisposable? Register(ManagedWeakReference dataContext, string propertyName, IPropertyChangedValueHandler onNewValue);
+		}
+
+		/// <summary>
+		/// PropertyChanged value handler.
+		/// </summary>
+		/// <remarks>
+		/// This is an interface to avoid the use of delegates, and delegates type conversion as
+		/// there are two available signatures. (<see cref="Action"/> and <see cref="DependencyPropertyChangedCallback"/>)
+		/// </remarks>
+		public interface IPropertyChangedValueHandler
+		{
+			/// <summary>
+			/// Process a property changed using the <see cref="DependencyPropertyChangedCallback"/> signature.
+			/// </summary>
+			void NewValue(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args);
+
+			/// <summary>
+			/// Processa a property changed using <see cref="Action"/>-like signature (e.g. for <see cref="BindingItem"/>)
+			/// </summary>
+			void NewValue();
+		}
 
 		/// <summary>
 		/// Provides the new values for the current binding.
@@ -49,7 +76,7 @@ namespace Uno.UI.DataBinding
 
 		static BindingPath()
 		{
-			RegisterPropertyChangedRegistrationHandler(SubscribeToNotifyPropertyChanged);
+			RegisterPropertyChangedRegistrationHandler(new BindingPathPropertyChangedRegistrationHandler());
 		}
 
 		/// <summary>
@@ -122,7 +149,7 @@ namespace Uno.UI.DataBinding
 		/// <remarks>This method exists to provide layer separation,
 		/// when BindingPath is in the presentation layer, and DependencyProperty is in the (some) Views layer.
 		/// </remarks>
-		public static void RegisterPropertyChangedRegistrationHandler(PropertyChangedRegistrationHandler handler)
+		public static void RegisterPropertyChangedRegistrationHandler(IPropertyChangedRegistrationHandler handler)
 		{
 			_propertyChangedHandlers.Add(handler);
 		}
@@ -279,6 +306,15 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
+		/// <summary>
+		/// Property changed registration handler for BindingPath.
+		/// </summary>
+		private class BindingPathPropertyChangedRegistrationHandler : IPropertyChangedRegistrationHandler
+		{
+			public IDisposable? Register(ManagedWeakReference dataContext, string propertyName, IPropertyChangedValueHandler onNewValue)
+				=> SubscribeToNotifyPropertyChanged(dataContext, propertyName, onNewValue);
+		}
+
 		#region Miscs helpers
 		/// <summary>
 		/// Parse the given string path in parts and create the linked list of binding items in head and tail
@@ -374,7 +410,7 @@ namespace Uno.UI.DataBinding
 		/// <summary>
 		/// Subscribes for updates to the INotifyPropertyChanged interface.
 		/// </summary>
-		private static IDisposable? SubscribeToNotifyPropertyChanged(ManagedWeakReference dataContextReference, string propertyName, Action newValueAction)
+		private static IDisposable? SubscribeToNotifyPropertyChanged(ManagedWeakReference dataContextReference, string propertyName, IPropertyChangedValueHandler propertyChangedValueHandler)
 		{
 			// Attach to the Notify property changed events
 			var notify = dataContextReference.Target as System.ComponentModel.INotifyPropertyChanged;
@@ -386,20 +422,21 @@ namespace Uno.UI.DataBinding
 					propertyName = "Item" + propertyName;
 				}
 
-				var newValueActionWeak = Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(null, newValueAction);
+				var newValueActionWeak = Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(null, propertyChangedValueHandler);
 
 				System.ComponentModel.PropertyChangedEventHandler handler = (s, args) =>
 				{
 					if (args.PropertyName == propertyName || string.IsNullOrEmpty(args.PropertyName))
 					{
-						if (typeof(BindingPath).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						if (typeof(BindingPath).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 						{
 							typeof(BindingPath).Log().Debug($"Property changed for {propertyName} on [{dataContextReference.Target?.GetType()}]");
 						}
 
-						if (!newValueActionWeak.IsDisposed)
+						if (!newValueActionWeak.IsDisposed
+						&& newValueActionWeak.Target is IPropertyChangedValueHandler handler)
 						{
-							(newValueActionWeak.Target as Action)?.Invoke();
+							handler.NewValue();
 						}
 					}
 				};
@@ -586,28 +623,7 @@ namespace Uno.UI.DataBinding
 						}
 					}
 
-					_propertyChanged.Disposable =
-							SubscribeToPropertyChanged((previousValue, newValue, shouldRaiseValueChanged) =>
-								{
-									if (_isDataContextChanging && newValue is UnsetValue)
-									{
-										// We're in a "resubscribe" scenario when the DataContext is provided a new non-null value, so we don't need to
-										// pass through the DependencyProperty.UnsetValue.
-										// We simply discard this update.
-										return;
-									}
-
-									if (Next != null)
-									{
-										Next.DataContext = newValue;
-									}
-
-									if (shouldRaiseValueChanged && previousValue != newValue)
-									{
-										RaiseValueChanged(newValue);
-									}
-								}
-							);
+					_propertyChanged.Disposable = SubscribeToPropertyChanged();
 
 					RaiseValueChanged(Value);
 
@@ -625,6 +641,27 @@ namespace Uno.UI.DataBinding
 					RaiseValueChanged(null);
 
 					_propertyChanged.Disposable = null;
+				}
+			}
+
+			private void OnPropertyChanged(object? previousValue, object? newValue, bool shouldRaiseValueChanged)
+			{
+				if (_isDataContextChanging && newValue is UnsetValue)
+				{
+					// We're in a "resubscribe" scenario when the DataContext is provided a new non-null value, so we don't need to
+					// pass through the DependencyProperty.UnsetValue.
+					// We simply discard this update.
+					return;
+				}
+
+				if (Next != null)
+				{
+					Next.DataContext = newValue;
+				}
+
+				if (shouldRaiseValueChanged && previousValue != newValue)
+				{
+					RaiseValueChanged(newValue);
 				}
 			}
 
@@ -682,7 +719,7 @@ namespace Uno.UI.DataBinding
 					}
 					catch (Exception exception)
 					{
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 						{
 							this.Log().Error($"Failed to set the source value for [{PropertyName}]", exception);
 						}
@@ -690,7 +727,7 @@ namespace Uno.UI.DataBinding
 				}
 				else
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().DebugFormat("Setting [{0}] failed because the DataContext is null for. It may have already been collected, or explicitly set to null.", PropertyName);
 					}
@@ -742,7 +779,7 @@ namespace Uno.UI.DataBinding
 					}
 					catch (Exception exception)
 					{
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 						{
 							this.Log().Error($"Failed to get the source value for [{PropertyName}]", exception);
 						}
@@ -752,7 +789,7 @@ namespace Uno.UI.DataBinding
 				}
 				else
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().DebugFormat("Unable to get the source value for [{0}]", PropertyName);
 					}
@@ -784,7 +821,7 @@ namespace Uno.UI.DataBinding
 				}
 				else
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().DebugFormat("Unsetting [{0}] failed because the DataContext is null for. It may have already been collected, or explicitly set to null.", PropertyName);
 					}
@@ -801,34 +838,21 @@ namespace Uno.UI.DataBinding
 			/// </summary>
 			/// <param name="action">The action to execute when new values are raised</param>
 			/// <returns>A disposable to be called when the subscription is disposed.</returns>
-			private IDisposable SubscribeToPropertyChanged(PropertyChangedHandler action)
+			private IDisposable SubscribeToPropertyChanged()
 			{
-				var disposables = new CompositeDisposable((_propertyChangedHandlers.Count * 3));
+				var disposables = new CompositeDisposable(_propertyChangedHandlers.Count);
 
 				for (var i = 0; i < _propertyChangedHandlers.Count; i++)
 				{
 					var handler = _propertyChangedHandlers[i];
-					object? previousValue = default;
 
-					Action? updateProperty = () =>
-					{
-						var newValue = GetSourceValue();
+					var valueHandler = new PropertyChangedValueHandler(this);
 
-						action(previousValue, newValue, shouldRaiseValueChanged: true);
-
-						previousValue = newValue;
-					};
-
-					Action disposeAction = () =>
-					{
-						action(previousValue, DependencyProperty.UnsetValue, shouldRaiseValueChanged: false);
-					};
-
-					var handlerDisposable = handler(_dataContextWeakStorage!, PropertyName, updateProperty);
+					var handlerDisposable = handler.Register(_dataContextWeakStorage!, PropertyName, valueHandler);
 
 					if (handlerDisposable != null)
 					{
-						previousValue = GetSourceValue();
+						valueHandler.PreviousValue = GetSourceValue();
 
 						// We need to keep the reference to the updatePropertyHandler
 						// in this disposable. The reference is attached to the source's
@@ -836,9 +860,14 @@ namespace Uno.UI.DataBinding
 						//
 						// All registrations made by _propertyChangedHandlers are
 						// weak with regards to the delegates that are provided.
-						disposables.Add(() => updateProperty = null);
-						disposables.Add(handlerDisposable);
-						disposables.Add(disposeAction);
+						disposables.Add(() =>
+						{
+							var previousValue = valueHandler.PreviousValue;
+
+							valueHandler = null;
+							handlerDisposable.Dispose();
+							OnPropertyChanged(previousValue, DependencyProperty.UnsetValue, shouldRaiseValueChanged: false);
+						});
 					}
 				}
 
@@ -849,6 +878,43 @@ namespace Uno.UI.DataBinding
 			{
 				_disposed = true;
 				_propertyChanged.Dispose();
+			}
+
+			/// <summary>
+			/// Property changed value handler, used to avoid creating a delegate for processing
+			/// </summary>
+			/// <remarks>
+			/// This class is primarily used to avoid the costs associated with creating, storing and invoking delegates,
+			/// particularly on WebAssembly as of .NET 6 where invoking a delegate requires a context switch from AOT
+			/// to the interpreter.
+			/// </remarks>
+			private class PropertyChangedValueHandler : IPropertyChangedValueHandler, IWeakReferenceProvider
+			{
+				private readonly BindingItem _owner;
+				private readonly ManagedWeakReference _self;
+
+				public PropertyChangedValueHandler(BindingItem owner)
+				{
+					_owner = owner;
+					_self = WeakReferencePool.RentSelfWeakReference(this);
+				}
+
+				public object? PreviousValue { get; set; }
+
+				public ManagedWeakReference WeakReference
+					=> _self;
+
+				public void NewValue()
+				{
+					var newValue = _owner.GetSourceValue();
+
+					_owner.OnPropertyChanged(PreviousValue, newValue, shouldRaiseValueChanged: true);
+
+					PreviousValue = newValue;
+				}
+
+				public void NewValue(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+					=> NewValue();
 			}
 		}
 	}

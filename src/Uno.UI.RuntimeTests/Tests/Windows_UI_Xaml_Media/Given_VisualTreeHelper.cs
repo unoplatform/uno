@@ -20,6 +20,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 	public class Given_VisualTreeHelper
 	{
 #if !NETFX_CORE // Testing internal Uno methods
+#if __SKIA__
+		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
+#endif
 		[TestMethod]
 		[RequiresFullWindow]
 		public async Task When_Nested_In_Native_View()

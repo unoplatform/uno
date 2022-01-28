@@ -3,8 +3,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
@@ -22,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().LogDebug($"ArrangeOverride ContentDialogPopupPanel {finalSize}");
 			}
@@ -37,7 +38,7 @@ namespace Windows.UI.Xaml.Controls
 				var desiredSize = elem.DesiredSize;
 				var rect = CalculateDialogPlacement(desiredSize);
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().LogDebug($"Arranging ContentDialogPopupPanel {desiredSize} to {rect}");
 				}
@@ -70,5 +71,9 @@ namespace Windows.UI.Xaml.Controls
 
 			return finalRect;
 		}
+
+		// The ContentDialog backdrop (aka 'smoke layer') doesn't light-dismiss, but does block pointer interactions. On WinUI this is implemented by adding
+		// a second Popup containing a stretched Rectangle. To keep things simple, we just block pointers from passing from here.
+		internal override bool IsViewHit() => true;
 	}
 }

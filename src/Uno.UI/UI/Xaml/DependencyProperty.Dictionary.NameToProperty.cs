@@ -50,6 +50,9 @@ namespace Windows.UI.Xaml
 			internal int Count => _entries.Count;
 
 			internal void Clear() => _entries.Clear();
+
+			internal void Dispose()
+				=> _entries.Dispose();
 		}
 	}
 }

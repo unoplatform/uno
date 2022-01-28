@@ -21,6 +21,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	[Generator]
 	public class XamlCodeGenerator : ISourceGenerator
 	{
+		private readonly GenerationRunInfoManager _generationRunInfoManager = new GenerationRunInfoManager();
+
 		public void Initialize(GeneratorInitializationContext context)
 		{
 			DependenciesInitializer.Init();
@@ -29,15 +31,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public void Execute(GeneratorExecutionContext context)
 		{
 			// No initialization required for this one
-			//if (!Process.GetCurrentProcess().ProcessName.Equals("devenv", StringComparison.OrdinalIgnoreCase))
+			//if (!Process.GetCurrentProcess().ProcessName.Equals("omnisharp.exe", StringComparison.OrdinalIgnoreCase))
 			//{
 			//	Debugger.Launch();
 			//}
 
 			if (PlatformHelper.IsValidPlatform(context))
 			{
+				_generationRunInfoManager.Update(context);
+
 				var gen = new XamlCodeGeneration(context);
-				var genereratedTrees = gen.Generate();
+				var genereratedTrees = gen.Generate(_generationRunInfoManager.CreateRun());
 
 				foreach (var tree in genereratedTrees)
 				{

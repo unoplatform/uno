@@ -2,45 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CharacterReceivedRoutedEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool Handled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CharacterReceivedRoutedEventArgs.Handled is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.CharacterReceivedRoutedEventArgs", "bool CharacterReceivedRoutedEventArgs.Handled");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  char Character
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member char CharacterReceivedRoutedEventArgs.Character is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Core.CorePhysicalKeyStatus KeyStatus
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CorePhysicalKeyStatus CharacterReceivedRoutedEventArgs.KeyStatus is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Handled
+		// Skipping already declared property Character
+		// Skipping already declared property KeyStatus
 		// Forced skipping of method Windows.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.Character.get
 		// Forced skipping of method Windows.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.KeyStatus.get
 		// Forced skipping of method Windows.UI.Xaml.Input.CharacterReceivedRoutedEventArgs.Handled.get

@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
-using Windows.Devices.Input;
-using Windows.UI.Input;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Uno.UI.Samples.Controls;
 
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace UITests.Windows_UI_Xaml.DragAndDrop
 {

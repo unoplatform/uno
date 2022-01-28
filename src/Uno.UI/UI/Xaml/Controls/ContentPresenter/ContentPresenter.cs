@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Media.Animation;
 using System.Collections;
@@ -13,7 +13,7 @@ using Windows.Foundation;
 using Uno.UI;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
-using Microsoft.Extensions.Logging;
+
 using Uno.UI.Xaml;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -475,7 +475,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(PaddingProperty, value); }
 		}
 
-		public static DependencyProperty PaddingProperty =
+		public static DependencyProperty PaddingProperty { get; } =
 			DependencyProperty.Register(
 				"Padding",
 				typeof(Thickness),
@@ -503,7 +503,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(BorderThicknessProperty, value); }
 		}
 
-		public static DependencyProperty BorderThicknessProperty =
+		public static DependencyProperty BorderThicknessProperty { get; } =
 			DependencyProperty.Register(
 				"BorderThickness",
 				typeof(Thickness),
@@ -529,7 +529,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(BorderBrushProperty, value); }
 		}
 
-		public static DependencyProperty BorderBrushProperty =
+		public static DependencyProperty BorderBrushProperty { get; } =
 			DependencyProperty.Register(
 				"BorderBrush",
 				typeof(Brush),
@@ -552,7 +552,7 @@ namespace Windows.UI.Xaml.Controls
 		private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
 
 		[GeneratedDependencyProperty(ChangedCallback = true)]
-		public static DependencyProperty CornerRadiusProperty = CreateCornerRadiusProperty();
+		public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
 
 		public CornerRadius CornerRadius
 		{
@@ -786,9 +786,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnLoaded();
 
-			ResetDataContextOnFirstLoad();
-
-			SetUpdateTemplate();
+			if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
+			{
+				SetUpdateTemplate();
+			}
 
 			// When the control is loaded, set the TemplatedParent
 			// as it may have been reset during the last unload.
@@ -797,7 +798,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
-		private void ResetDataContextOnFirstLoad()
+		private bool ResetDataContextOnFirstLoad()
 		{
 			if (!_firstLoadResetDone)
 			{
@@ -808,7 +809,11 @@ namespace Windows.UI.Xaml.Controls
 				this.ClearValue(DataContextProperty, DependencyPropertyValuePrecedences.Local);
 
 				TrySetDataContextFromContent(Content);
+
+				return true;
 			}
+
+			return false;
 		}
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
@@ -846,7 +851,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					IsUsingDefaultTemplate = false;
 				}
-			}	
+			}
 
 			if (Content != null
 				&& !(Content is View)
@@ -855,7 +860,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Use basic default root for non-View Content if no template is supplied
 				SetContentTemplateRootToPlaceholder();
-			}			
+			}
 
 			if (ContentTemplateRoot == null && Content is View contentView && dataTemplate == null)
 			{
@@ -868,7 +873,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetContentTemplateRootToPlaceholder()
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat("No ContentTemplate was specified for {0} and content is not a UIView, defaulting to TextBlock.", GetType().Name);
 			}
@@ -1033,9 +1038,9 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
-		internal override void UpdateThemeBindings()
+		internal override void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{
-			base.UpdateThemeBindings();
+			base.UpdateThemeBindings(updateReason);
 			SetDefaultForeground(ForegroundProperty);
 		}
 
@@ -1102,5 +1107,7 @@ namespace Windows.UI.Xaml.Controls
 		private protected override Thickness GetBorderThickness() => BorderThickness;
 
 		internal override bool CanHaveChildren() => true;
+
+		internal override bool IsViewHit() => Border.IsViewHitImpl(this);
 	}
 }

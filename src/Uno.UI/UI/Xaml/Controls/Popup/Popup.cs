@@ -4,14 +4,16 @@ using System.Text;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Markup;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
+using Uno;
+using Uno.UI.DataBinding;
 
-namespace Windows.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	[ContentProperty(Name = "Child")]
-	public partial class Popup : PopupBase
+	public partial class Popup
 	{
 		/// <summary>
 		/// Overrides the default location of this popup (cf. Remarks)
@@ -24,6 +26,19 @@ namespace Windows.UI.Xaml.Controls
 		internal UIElement Anchor { get; set; }
 
 		internal bool IsSubMenu { get; set; }
+
+		internal bool IsForFlyout => AssociatedFlyout != null;
+
+		private ManagedWeakReference _associatedFlyoutWeakRef;
+		internal FlyoutBase AssociatedFlyout
+		{
+			get => _associatedFlyoutWeakRef?.Target as FlyoutBase;
+			set
+			{
+				WeakReferencePool.ReturnWeakReference(this, _associatedFlyoutWeakRef);
+				_associatedFlyoutWeakRef = WeakReferencePool.RentWeakReference(this, value);
+			}
+		}
 
 		/// <summary>
 		/// In WinUI, Popup has IsTabStop set to true by default.
@@ -58,11 +73,21 @@ namespace Windows.UI.Xaml.Controls
 			Initialize();
 		}
 
+		internal override bool GetDefaultValue2(DependencyProperty property, out object defaultValue)
+		{
+			if (property == IsLightDismissEnabledProperty)
+			{
+				defaultValue = FeatureConfiguration.Popup.EnableLightDismissByDefault;
+				return true;
+			}
+			return base.GetDefaultValue2(property, out defaultValue);
+		}
+
 		private void Initialize()
 		{
 			InitializePartial();
 
-				ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "PopupLightDismissOverlayBackground", isThemeResourceExtension: true);
+			ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "PopupLightDismissOverlayBackground", isThemeResourceExtension: true, isHotReloadSupported: true);
 
 			ApplyLightDismissOverlayMode();
 		}
@@ -78,41 +103,11 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(PopupPanelProperty, value);
 		}
 
-		public static DependencyProperty PopupPanelProperty { get ; } =
+		public static DependencyProperty PopupPanelProperty { get; } =
 			DependencyProperty.Register("PopupPanel", typeof(PopupPanel), typeof(Popup), new FrameworkPropertyMetadata(null, (s, e) => ((Popup)s)?.OnPopupPanelChanged((PopupPanel)e.OldValue, (PopupPanel)e.NewValue)));
 
 		private void OnPopupPanelChanged(PopupPanel oldHost, PopupPanel newHost)
 		{
-			// Note: On UWP if the popup is light dismissable, the popup is closed as soon as we get a PointerPressed
-			//		 Controls under the popup does not receive any Pointer event while the popup is open,
-			//		 and when light dismissed they receive the PointerReleased but not the pressed
-
-			if (oldHost != null)
-			{
-				oldHost.PointerPressed -= _handleIfOpenedAndTryDismiss; // Cf. comment about child pressed below
-
-				oldHost.PointerEntered -= _handleIfOpened;
-				oldHost.PointerExited -= _handleIfOpened;
-				oldHost.PointerMoved -= _handleIfOpened;
-				oldHost.PointerReleased -= _handleIfOpened;
-				oldHost.PointerCanceled -= _handleIfOpened;
-				oldHost.PointerCaptureLost -= _handleIfOpened;
-				oldHost.PointerWheelChanged -= _handleIfOpened;
-			}
-
-			if (newHost != null)
-			{
-				newHost.PointerPressed += _handleIfOpenedAndTryDismiss; // Cf. comment about child pressed below
-
-				newHost.PointerEntered += _handleIfOpened;
-				newHost.PointerExited += _handleIfOpened;
-				newHost.PointerMoved += _handleIfOpened;
-				newHost.PointerReleased += _handleIfOpened;
-				newHost.PointerCanceled += _handleIfOpened;
-				newHost.PointerCaptureLost += _handleIfOpened;
-				newHost.PointerWheelChanged += _handleIfOpened;
-			}
-
 			OnPopupPanelChangedPartial(oldHost, newHost);
 
 			ApplyLightDismissOverlayMode();
@@ -120,68 +115,18 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnPopupPanelChangedPartial(PopupPanel previousPanel, PopupPanel newPanel);
 
-		protected override void OnVerticalOffsetChanged(double oldVerticalOffset, double newVerticalOffset)
+		partial void OnVerticalOffsetChangedPartial(double oldVerticalOffset, double newVerticalOffset)
+			=> PopupPanel?.InvalidateMeasure();
+
+		partial void OnHorizontalOffsetChangedPartial(double oldHorizontalOffset, double newHorizontalOffset)
+			=> PopupPanel?.InvalidateMeasure();
+
+		internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
 		{
-			base.OnVerticalOffsetChanged(oldVerticalOffset, newVerticalOffset);
-			PopupPanel?.InvalidateMeasure();
-		}
-
-		protected override void OnHorizontalOffsetChanged(double oldHorizontalOffset, double newHorizontalOffset)
-		{
-			base.OnHorizontalOffsetChanged(oldHorizontalOffset, newHorizontalOffset);
-			PopupPanel?.InvalidateMeasure();
-		}
-
-		private static readonly PointerEventHandler _handleIfOpened = (snd, e) =>
-		{
-			var popup = ((PopupPanel)snd).Popup;
-			if (!popup.IsOpen || !popup.IsLightDismissEnabled)
-			{
-				return;
-			}
-
-			e.Handled = true;
-		};
-		private static readonly PointerEventHandler _handleIfOpenedAndTryDismiss = (snd, e) =>
-		{
-			var popup = ((PopupPanel)snd).Popup;
-			if (!popup.IsOpen || !popup.IsLightDismissEnabled)
-			{
-				return;
-			}
-
-			e.Handled = true;
-
-			if (popup.Child is FrameworkElement content)
-			{
-				var position = e.GetCurrentPoint(content).Position;
-				if (
-					position.X < 0 || position.X > content.ActualWidth
-					               || position.Y < 0 || position.Y > content.ActualHeight)
-				{
-					popup.IsOpen = false;
-				}
-			}
-			else if (popup.Child == null)
-			{
-				popup.Log().Warn($"Dismiss is not supported if the 'Child' is null.");
-			}
-			else
-			{
-				popup.Log().Warn($"Dismiss is not supported if the 'Child' ({popup.Child?.GetType()}) of the 'Popup' is not a 'FrameworkElement'.");
-			}
-
-			// Note: This is not the right way: we should instead listen for the PointerPressed directly on the Child
-			//		 so we should be able to still dismiss the Popup if the background if the Child is `null`.
-			//		 But this would require us to refactor more deeply the Popup which is not the purpose of the current work.
-		};
-
-		internal override void UpdateThemeBindings()
-		{
-			base.UpdateThemeBindings();
+			base.UpdateThemeBindings(updateReason);
 
 			// Ensure bindings are updated on the child, which may be part of an isolated visual tree on some platforms (ie Android).
-			Application.PropagateThemeChanged(Child);
+			Application.PropagateResourcesChanged(Child, updateReason);
 		}
 
 		public LightDismissOverlayMode LightDismissOverlayMode
@@ -238,10 +183,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(LightDismissOverlayBackgroundProperty, value); }
 		}
 
-		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get ; } =
+		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get; } =
 			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(Popup), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
-
-		[Uno.NotImplemented]
-		public bool ShouldConstrainToRootBounds { get; set; }
 	}
 }

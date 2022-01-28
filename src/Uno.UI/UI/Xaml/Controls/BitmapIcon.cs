@@ -55,27 +55,12 @@ namespace Windows.UI.Xaml.Controls
 				typeof(global::Windows.UI.Xaml.Controls.BitmapIcon),
 				new FrameworkPropertyMetadata(true, (s, e) => (s as BitmapIcon)?.OnShowAsMonochromeChanged((bool)e.NewValue)));
 
-		private void OnShowAsMonochromeChanged(bool value) => RefreshImage();
+		private void OnShowAsMonochromeChanged(bool value) => UpdateImageMonochromeColor();
 
 		protected override void OnForegroundChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnForegroundChanged(e);
-			RefreshImage();
-		}
-
-		private void RefreshImage()
-		{
-#if !NET461
 			UpdateImageMonochromeColor();
-
-			if (UriSource != null)
-			{
-				// Force a reload
-				var tmp = UriSource;
-				UriSource = null;
-				UriSource = tmp;
-			}
-#endif
 		}
 
 		private void UpdateImageMonochromeColor()

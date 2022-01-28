@@ -399,8 +399,6 @@ namespace Windows.UI.Xaml.Controls
 
 			Navigated?.Invoke(this, navigationEvent);
 
-			VisualTreeHelper.CloseAllPopups();
-
 			return true;
 		}
 

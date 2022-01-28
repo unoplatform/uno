@@ -44,15 +44,5 @@ namespace Uno.UI.Runtime.Skia
 #pragma warning restore CS0618 // Type or member is obsolete
 			return dpi;
 		}
-
-		public void StartDpiChanged()
-		{
-
-		}
-
-		public void StopDpiChanged()
-		{
-
-		}
 	}
 }

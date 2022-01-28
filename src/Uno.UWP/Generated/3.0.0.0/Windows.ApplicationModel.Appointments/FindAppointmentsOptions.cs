@@ -2,39 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Appointments
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class FindAppointmentsOptions 
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint MaxCount
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint FindAppointmentsOptions.MaxCount is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.FindAppointmentsOptions", "uint FindAppointmentsOptions.MaxCount");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IncludeHidden
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool FindAppointmentsOptions.IncludeHidden is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.FindAppointmentsOptions", "bool FindAppointmentsOptions.IncludeHidden");
-			}
-		}
-		#endif
+		// Skipping already declared property MaxCount
+		// Skipping already declared property IncludeHidden
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IList<string> CalendarIds
@@ -45,23 +19,8 @@ namespace Windows.ApplicationModel.Appointments
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<string> FetchProperties
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<string> FindAppointmentsOptions.FetchProperties is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public FindAppointmentsOptions() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.FindAppointmentsOptions", "FindAppointmentsOptions.FindAppointmentsOptions()");
-		}
-		#endif
+		// Skipping already declared property FetchProperties
+		// Skipping already declared method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.FindAppointmentsOptions()
 		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.FindAppointmentsOptions()
 		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.CalendarIds.get
 		// Forced skipping of method Windows.ApplicationModel.Appointments.FindAppointmentsOptions.FetchProperties.get

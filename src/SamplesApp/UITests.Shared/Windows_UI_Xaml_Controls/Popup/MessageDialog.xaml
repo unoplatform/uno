@@ -14,5 +14,6 @@
 		<Button x:Name="WithTwoCommandsAndTitle">With a title. Two customized commands are added to the dialog.</Button>
 		<Button x:Name="WithThreeCommandsAndTitle">With a title. Three customized commands are added to the dialog.</Button>
 		<Button x:Name="WithEscapedCharacters">Without a title. Message has escapable characters.</Button>
+		<Button x:Name="WithProgrammaticDismissal">With a Title and programmatic dismissal</Button>
 	</StackPanel>
 </Page>

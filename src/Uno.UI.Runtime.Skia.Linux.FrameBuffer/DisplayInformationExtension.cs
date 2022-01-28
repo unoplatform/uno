@@ -21,15 +21,9 @@ namespace Uno.UI.Runtime.Skia
 		public uint ScreenWidthInRawPixels
 			=> (uint)(Renderer?.PixelSize.Width ?? 0);
 
-		public float LogicalDpi
-		{
-			get
-			{
-				return 96.0f;
-			}
-		}
+		public float LogicalDpi => DisplayInformation.BaseDpi;
 
-		public double RawPixelsPerViewPixel => LogicalDpi / 96.0f;
+		public double RawPixelsPerViewPixel => LogicalDpi / DisplayInformation.BaseDpi;
 
 		public ResolutionScale ResolutionScale => (ResolutionScale)(int)(RawPixelsPerViewPixel * 100.0);
 

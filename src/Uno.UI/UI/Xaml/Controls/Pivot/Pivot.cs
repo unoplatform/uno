@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Controls
 #if __WASM__ || __SKIA__
 			//TODO: Workaround for https://github.com/unoplatform/uno/issues/5144
 			//OnApplyTemplate() is comming too late when using bindings
-			SetNeedsUpdateItems();
+			UpdateItems(null);
 #endif
 
 			SynchronizeItems();
@@ -165,6 +165,7 @@ namespace Windows.UI.Xaml.Controls
 
 					if (item is PivotItem pivotItem)
 					{
+						pivotItem.PivotHeaderItem = headerItem;
 						headerItem.Content = pivotItem.Header;
 					}
 					else
@@ -336,8 +337,17 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnSelectedItemPropertyChanged(object oldValue, object newValue)
 		{
-			var removedItems = oldValue == null ? new object[0] : new[] { oldValue };
-			var addedItems = newValue == null ? new object[0] : new[] { newValue };
+			var removedItems = oldValue == null ? Array.Empty<object>() : new[] { oldValue };
+			var addedItems = newValue == null ? Array.Empty<object>() : new[] { newValue };
+
+			if (newValue is PivotItem newItem && newItem.PivotHeaderItem is PivotHeaderItem headerItem)
+			{
+				var newIndex = _staticHeader.Children.IndexOf(headerItem);
+				if (newIndex > -1)
+				{
+					SelectedIndex = newIndex;
+				}
+			}
 
 			OnSelectedItemChangedPartial(oldValue, newValue);
 

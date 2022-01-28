@@ -9,22 +9,23 @@ using Windows.UI.Xaml.Media;
 using Uno.Collections;
 using Uno.Extensions;
 using Uno.Foundation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.System;
 using System.Reflection;
-using Microsoft.Extensions.Logging;
+
 using Uno.Core.Comparison;
 
 namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
-		internal protected readonly ILogger _log;
-		private protected readonly ILogger _logDebug;
+		private static protected readonly Logger _log = typeof(UIElement).Log();
+		private static protected readonly Logger _logDebug = _log.IsEnabled(LogLevel.Debug) ? _log : null;
+		private static protected readonly Logger _logTrace = _log.IsEnabled(LogLevel.Trace) ? _log : null;
 
 		private readonly bool _isFrameworkElement;
 		internal readonly MaterializableList<UIElement> _children = new MaterializableList<UIElement>();

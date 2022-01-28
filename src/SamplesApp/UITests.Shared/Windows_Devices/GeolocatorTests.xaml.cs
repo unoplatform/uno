@@ -23,7 +23,7 @@ namespace UITests.Shared.Windows_Devices
 			this.DataContextChanged += GeolocatorTests_DataContextChanged;
 		}
 
-		public GeolocatorTestsViewModel ViewModel { get; private set; }
+		internal GeolocatorTestsViewModel ViewModel { get; private set; }
 
 		private void GeolocatorTests_DataContextChanged(DependencyObject sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
 		{
@@ -32,7 +32,7 @@ namespace UITests.Shared.Windows_Devices
 	}
 
 	[Bindable]
-	public class GeolocatorTestsViewModel : ViewModelBase
+	internal class GeolocatorTestsViewModel : ViewModelBase
 	{
 		private Geolocator _geolocator = new Geolocator();
 
@@ -47,6 +47,8 @@ namespace UITests.Shared.Windows_Devices
 		public GeolocatorTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
 			PositionStatus = _geolocator.LocationStatus;
+			timeout = TimeSpan.FromSeconds(10);
+			maximumAge = TimeSpan.FromSeconds(15);
 		}
 
 		public Geoposition Geoposition
@@ -58,6 +60,9 @@ namespace UITests.Shared.Windows_Devices
 				RaisePropertyChanged();
 			}
 		}
+
+		public TimeSpan timeout { get; set; }
+		public TimeSpan maximumAge { get; set; }
 
 		public Geoposition TrackedGeoposition
 		{
@@ -95,6 +100,8 @@ namespace UITests.Shared.Windows_Devices
 			set => _geolocator.DesiredAccuracyInMeters = value;
 		}
 
+		
+
 		public PositionStatus PositionStatus
 		{
 			get => _positionStatus;
@@ -104,6 +111,7 @@ namespace UITests.Shared.Windows_Devices
 				RaisePropertyChanged();
 			}
 		}
+
 
 		public string Error
 		{
@@ -122,20 +130,20 @@ namespace UITests.Shared.Windows_Devices
 			GetOrCreateCommand(GetGeoposition);
 
 
-		public Command AttachPositionChangedCommand => new Command((p) =>
+		internal Command AttachPositionChangedCommand => new Command((p) =>
 		{
 			_geolocator.PositionChanged += Geolocator_PositionChanged;
 			PositionChangedAttached = true;
 		});
 
-		public Command DetachPositionChangedCommand => new Command((p) =>
+		internal Command DetachPositionChangedCommand => new Command((p) =>
 		{
 			_geolocator.PositionChanged -= Geolocator_PositionChanged;
 			PositionChangedAttached = false;
 		});
 
 
-		public Command AttachStatusChangedCommand => new Command((p) =>
+		internal Command AttachStatusChangedCommand => new Command((p) =>
 		{
 			_geolocator.StatusChanged += Geolocator_StatusChanged;
 			StatusChangedAttached = true;
@@ -164,7 +172,24 @@ namespace UITests.Shared.Windows_Devices
 		{
 			try
 			{
-				Geoposition = await _geolocator.GetGeopositionAsync();
+				var timeout1 = new TimeSpan(0, 0, timeout.Hours, timeout.Seconds);
+				var maximumAge1 = new TimeSpan(0, 0, maximumAge.Hours, maximumAge.Seconds);
+
+				var startTime = DateTimeOffset.Now;
+
+				Geoposition = await _geolocator.GetGeopositionAsync(maximumAge1, timeout1);
+
+				if(Geoposition.Coordinate.Timestamp < DateTimeOffset.Now - maximumAge)
+				{
+					Error = "Implementation error: Position data is too old";
+				}
+
+				if (startTime < DateTimeOffset.Now - timeout)
+				{
+					Error = "Implementation error: no reaction for TimeOut parameter";
+				}
+
+
 			}
 			catch (Exception ex)
 			{
