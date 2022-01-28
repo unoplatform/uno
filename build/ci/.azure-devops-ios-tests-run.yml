@@ -81,6 +81,7 @@ jobs:
       UITEST_SNAPSHOTS_ONLY: "${{ parameters.UITEST_SNAPSHOTS_ONLY }}"
       UITEST_SNAPSHOTS_GROUP: "${{ parameters.UITEST_SNAPSHOTS_GROUP }}"
       UITEST_AUTOMATED_GROUP: "${{ parameters.UITEST_AUTOMATED_GROUP }}"
+      UITEST_TEST_TIMEOUT: "${{ parameters.UITEST_TEST_TIMEOUT }}"
       UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/ios-uitest-build/SamplesApp.app"
 
   - task: PublishTestResults@2
@@ -107,6 +108,7 @@ jobs:
       UITEST_SNAPSHOTS_ONLY: "${{ parameters.UITEST_SNAPSHOTS_ONLY }}"
       UITEST_SNAPSHOTS_GROUP: "${{ parameters.UITEST_SNAPSHOTS_GROUP }}"
       UITEST_AUTOMATED_GROUP: "${{ parameters.UITEST_AUTOMATED_GROUP }}"
+      UITEST_TEST_TIMEOUT: "${{ parameters.UITEST_TEST_TIMEOUT }}"
       UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/ios-uitest-build/SamplesApp.app"
 
   - task: PublishTestResults@2
