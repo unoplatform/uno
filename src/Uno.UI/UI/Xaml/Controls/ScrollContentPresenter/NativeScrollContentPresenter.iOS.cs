@@ -218,28 +218,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_content != null)
 			{
-				double horizontalMargin = 0;
-				double verticalMargin = 0;
-
-				if (_content is IFrameworkElement frameworkElement)
-				{
-					horizontalMargin = frameworkElement.Margin.Left + frameworkElement.Margin.Right;
-					verticalMargin = frameworkElement.Margin.Top + frameworkElement.Margin.Bottom;
-				}
-
 				size = AdjustSize(size);
 
 				var availableSizeForChild = size;
-				if (!(_content is IFrameworkElement))
-				{
-					// Apply margin if the content is native (otherwise it will apply it itself)
-					availableSizeForChild.Width -= (nfloat)horizontalMargin;
-					availableSizeForChild.Height -= (nfloat)verticalMargin;
-				}
 
+				//No need to add margin at this level. It's already taken care of during the Layouter measuring.
 				_measuredSize = _content.SizeThatFits(availableSizeForChild);
-				_measuredSize.Width += (nfloat)horizontalMargin;
-				_measuredSize.Height += (nfloat)verticalMargin;
 
 				// The dimensions are constrained to the size of the ScrollViewer, if available
 				// otherwise to the size of the child.

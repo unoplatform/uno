@@ -1,0 +1,54 @@
+﻿<Page x:Class="UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Margin_Centered"
+	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	  xmlns:local="using:UITests.Windows_UI_Xaml_Controls.ScrollViewerTests"
+	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	  mc:Ignorable="d"
+	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Grid Margin="30">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+		<Slider x:Name="shapeWidth"
+				Minimum="50"
+				Maximum="450"
+				Value="100" />
+
+		<TextBlock Grid.Row="1">
+			<Run Text="Shape Width :" />
+			<Run Text="{Binding Value, ElementName=shapeWidth}" />
+		</TextBlock>
+
+		<Slider x:Name="shapeHeight"
+				Grid.Row="2"
+				Minimum="50"
+				Maximum="450"
+				Value="340" />
+
+		<TextBlock Grid.Row="3">
+			<Run Text="Shape Height :" />
+			<Run Text="{Binding Value, ElementName=shapeHeight}" />
+		</TextBlock>
+
+		<ScrollViewer Grid.Row="4"
+					  x:Name="scrollviewer"
+					  Width="{Binding Value, ElementName=shapeWidth}"
+					  Height="{Binding Value, ElementName=shapeHeight}"
+					  HorizontalAlignment="Center"
+					  VerticalAlignment="Center"
+					  Background="Orange">
+			<Border Background="Red"
+					Height="300"
+					Width="300"
+					Margin="20" />
+		</ScrollViewer>
+
+	</Grid>
+</Page>
