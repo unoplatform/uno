@@ -8626,7 +8626,7 @@
 		</Properties>
 	</IgnoreSet>
 	
-	<IgnoreSet baseVersion="4.0.11">
+	<IgnoreSet baseVersion="4.0.13">
 		<Assemblies>
 			<Member fullName="Uno" reason="Android 12 support"/>
 			<Member fullName="Uno.Foundation" reason="Android 12 support"/>
