@@ -190,6 +190,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					ScrollViewer = scrollViewer;
 					ScrollViewer.ViewChanged += OnScrollChanged;
+					ScrollViewer.SizeChanged += OnScrollViewerSizeChanged;
 				}
 				else if (parent is ItemsControl itemsControl)
 				{
@@ -222,6 +223,7 @@ namespace Windows.UI.Xaml.Controls
 			if (ScrollViewer != null)
 			{
 				ScrollViewer.ViewChanged -= OnScrollChanged;
+				ScrollViewer.SizeChanged -= OnScrollViewerSizeChanged;
 			}
 
 			ScrollViewer = null;
@@ -262,6 +264,11 @@ namespace Windows.UI.Xaml.Controls
 			UpdateCompleted();
 
 			_lastScrollOffset = ScrollOffset;
+		}
+
+		private void OnScrollViewerSizeChanged(object sender, SizeChangedEventArgs args)
+		{
+			OwnerPanel?.InvalidateMeasure();
 		}
 
 		/// <summary>
