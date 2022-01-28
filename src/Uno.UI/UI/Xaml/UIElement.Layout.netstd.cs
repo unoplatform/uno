@@ -118,7 +118,7 @@ namespace Windows.UI.Xaml
 
 			SetLayoutFlag(LayoutFlag.MeasureDirty);
 
-			if (FeatureConfiguration.UIElement.ReduceMeasureCalls)
+			if (FeatureConfiguration.UIElement.UseInvalidateMeasurePath)
 			{
 				InvalidateParentMeasurePath();
 			}

@@ -507,7 +507,7 @@ namespace Uno.UI
 			/// Call the .MeasureOverride only on element explicitly invalidating
 			/// their measure and when the size changed.
 			/// </summary>
-			public static bool ReduceMeasureCalls { get; set; } = true;
+			public static bool UseInvalidateMeasurePath { get; set; } = true;
 
 			/// <summary>
 			/// [DEPRECATED]

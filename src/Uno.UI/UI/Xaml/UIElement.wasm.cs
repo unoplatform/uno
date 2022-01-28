@@ -395,7 +395,7 @@ namespace Windows.UI.Xaml
 				UpdateDOMProperties();
 			}
 
-			if (FeatureConfiguration.UIElement.ReduceMeasureCalls && this.GetParent() is UIElement parent)
+			if (FeatureConfiguration.UIElement.UseInvalidateMeasurePath && this.GetParent() is UIElement parent)
 			{
 				// Need to invalidate the parent when the visibility changes to ensure its
 				// algorithm is doing its layout properly.
@@ -426,7 +426,7 @@ namespace Windows.UI.Xaml
 				UpdateDOMProperties();
 			}
 
-			if (FeatureConfiguration.UIElement.ReduceMeasureCalls && __Store.Parent is UIElement parent)
+			if (FeatureConfiguration.UIElement.UseInvalidateMeasurePath && __Store.Parent is UIElement parent)
 			{
 				// Need to invalidate the parent when the visibility changes to ensure its
 				// algorithm is doing its layout properly.

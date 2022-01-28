@@ -1629,7 +1629,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __SKIA__ || __WASM__
 				panel.InvalidateMeasure();
 #endif
-				await Task.Delay(10);
+				await Task.Delay(100);
 			}
 
 			var firstContainer = await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(0) as ListViewItem);
