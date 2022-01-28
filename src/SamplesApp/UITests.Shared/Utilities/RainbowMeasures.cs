@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI;
@@ -29,6 +31,7 @@ namespace SampleApps.Utilities
         };
 
         private int _measureIndex = -1;
+        private TaskCompletionSource<object> _waiting;
 
         public RainbowMeasures()
         {
@@ -50,6 +53,20 @@ namespace SampleApps.Utilities
             e.Handled = true;
         }
 
+        internal Task InvalidateAndWaitUntilNextMeasure()
+        {
+	        if (_waiting is not null)
+	        {
+		        throw new InvalidOperationException("Already waiting");
+	        }
+
+	        _waiting = new TaskCompletionSource<object>();
+
+			InvalidateMeasure();
+
+	        return _waiting.Task;
+        }
+
         protected override Size MeasureOverride(Size availableSize)
         {
             Background = new SolidColorBrush(_colors[++_measureIndex % _colors.Count]);
@@ -57,7 +74,14 @@ namespace SampleApps.Utilities
             if (Children.Count > 0 && Children[0] is { } child)
             {
                 child.Measure(availableSize);
-                return child.DesiredSize;
+
+                if (_waiting is { } w)
+                {
+	                w.SetResult(null);
+	                _waiting = null;
+                }
+
+				return child.DesiredSize;
             }
 
             return default;
