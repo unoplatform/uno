@@ -332,6 +332,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // This test not working on iOS (Xamarin.UITest or iOS 15)
 		public void CalendarDatePicker_With_Description()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.CalendarView.CalendarDatePicker_Description", skipInitialScreenshot: true);
