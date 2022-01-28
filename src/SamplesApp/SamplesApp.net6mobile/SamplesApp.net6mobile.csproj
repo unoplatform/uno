@@ -35,7 +35,13 @@
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net6.0-ios'">
 		<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
-		<PublishTrimmed>true</PublishTrimmed>
+
+		<!--
+			Workaround for
+			tools\msbuild\iOS\Xamarin.iOS.Common.After.targets(368,3): error MSB3371: The file "obj\Release\net6.0-ios\iossimulator-x64\linked\Link.semaphore"
+			cannot be created. Could not find a part of the path 'C:\a\1\s\src\SamplesApp\SamplesApp.net6mobile\obj\Release\net6.0-ios\iossimulator-x64\linked\Link.semaphore'.
+		-->
+		<PublishTrimmed>false</PublishTrimmed>
 	</PropertyGroup>
 	
 	<PropertyGroup Condition="'$(TargetFramework)'=='net6.0-android'">
