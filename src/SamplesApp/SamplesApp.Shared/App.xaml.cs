@@ -471,6 +471,10 @@ namespace SamplesApp
 #if __IOS__ || __ANDROID__
 			WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus = true;
 #endif
+#if __IOS__
+			Uno.UI.FeatureConfiguration.DatePicker.UseLegacyStyle = true;
+			Uno.UI.FeatureConfiguration.TimePicker.UseLegacyStyle = true;
+#endif
 		}
 
 
