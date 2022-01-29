@@ -111,7 +111,9 @@ namespace Windows.UI.Xaml.Controls
 
 		public bool HasMarkedText => throw new NotImplementedException();
 
+#if !NET6_0_OR_GREATER // Removed deprecated API
 		public nint ConversationIdentifier => throw new NotImplementedException();
+#endif
 
 		public NSRange MarkedRange => throw new NotImplementedException();
 
@@ -205,9 +207,11 @@ namespace Windows.UI.Xaml.Controls
 			throw new NotImplementedException();
 		}
 
+#if !NET6_0_OR_GREATER // Removed deprecated API
 		public nuint GetCharacterIndex(CGPoint point)
 		{
 			throw new NotImplementedException();
 		}
+#endif
 	}
 }
