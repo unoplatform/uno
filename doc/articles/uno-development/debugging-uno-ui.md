@@ -65,6 +65,7 @@ If this is the case:
 - Make sure to build the app once to populate the nuget cache
 - Rebuild the Uno.UI project (or **Uno.UI.WebAssembly**/**Uno.UI.Skia**) to replace the binaries with your debug ones
 - Rebuild your app and debug your again
+- Make sure that you're debugging the right flavor of Uno (Uno.UI vs. Uno.WinUI). You can debug the WinUI flavor [using this conversion tool](winui-conversion.md).
 
 ## Microsoft Source Link support
 Uno.UI supports [SourceLink](https://github.com/dotnet/sourcelink/) and it now possible to

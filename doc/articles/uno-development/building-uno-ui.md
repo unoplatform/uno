@@ -15,6 +15,20 @@ This article explains how to build Uno.UI locally, for instance if you wish to c
 - Install (**Tools** / **Android** / **Android SDK manager**) all Android SDKs starting from 7.1 (or the Android versions `TargetFrameworks` [list used here](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.BindingHelper.Android/Uno.UI.BindingHelper.Android.csproj))
 - Run [Uno.Check](https://github.com/unoplatform/uno.check) on your dev machine to setup .NET 6 Android/iOS workloads
 
+## Recommended Windows hardware
+
+Loading and building the Uno.UI solution is a resource intensive task. As a result, opening it in Visual Studio 2022 requires a minimum hardware configuration to avoid spending time waiting for builds.
+
+**Minimum configuration:**
+- Intel i7 (8th gen) or equivalent
+- 16 GB of RAM
+- 250GB of Fast SSD
+
+**Optimal configuration:**
+- Intel i9 or equivalent
+- 32 GB of RAM
+- 500GB M2 SSD
+
 ## Building Uno.UI for a single target platform
 
 This is the **recommended** approach to building the Uno.UI solution. It will build a single set of binaries for a particular platform (eg Android, iOS, WebAssembly, etc). 
