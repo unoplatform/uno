@@ -329,14 +329,20 @@ public partial class UIElement : DependencyObject
 			return HitTestability.Collapsed;
 		}
 
-		// If we're not hit (usually means we don't have a Background/Fill), we're invisible. Our children will be visible or not, depending on their state.
-		if (!IsViewHit())
+		// Special case for external html element, we are always considering them as hit testable.
+		if (HtmlTagIsExternallyDefined && !FeatureConfiguration.FrameworkElement.UseLegacyHitTest)
 		{
-			return HitTestability.Invisible;
+			return HitTestability.Visible;
 		}
 
-		// If we're not collapsed or invisible, we can be targeted by hit-testing. This means that we can be the source of pointer events.
-		return HitTestability.Visible;
+		// If we're not collapsed or invisible, we can be targeted by hit-testing. This means that we can be the source of pointer events.		
+		if (IsViewHit())
+		{
+			return HitTestability.Visible; 
+		}
+
+		// If we're not hit (usually means we don't have a Background/Fill), we're invisible. Our children will be visible or not, depending on their state.
+		return HitTestability.Invisible;
 	}
 
 	private protected virtual void OnHitTestVisibilityChanged(HitTestability oldValue, HitTestability newValue)

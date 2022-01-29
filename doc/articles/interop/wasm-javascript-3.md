@@ -102,11 +102,6 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
    
            public FlatpickrView()
            {
-               // XAML behavior: a non-null background is required on an element to be "visible to pointers".
-               // Uno reproduces this behavior, so we must set it here even if we're not using the background.
-               // Not doing this will lead to a `pointer-events: none` CSS style on the control.
-               Background = new SolidColorBrush(Colors.Transparent);
-   
                // Load Flatpickr using JavaScript
                LoadJavaScript();
            }
