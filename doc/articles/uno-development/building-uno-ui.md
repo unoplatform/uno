@@ -16,6 +16,7 @@ This article explains how to build Uno.UI locally, for instance if you wish to c
 - Run [Uno.Check](https://github.com/unoplatform/uno.check) on your dev machine to setup .NET 6 Android/iOS workloads
 
 ## Recommended Windows hardware
+
 Loading and building the Uno.UI solution is a resource intensive task. As a result, opening it in Visual Studio 2022 requires a minimum hardware configuration to avoid spending time waiting for builds.
 
 **Minimum configuration:**
@@ -25,7 +26,7 @@ Loading and building the Uno.UI solution is a resource intensive task. As a resu
 
 **Optimal configuration:**
 - Intel i9 or equivalent
-- 32 GB of RAN
+- 32 GB of RAM
 - 500GB M2 SSD
 
 ## Building Uno.UI for a single target platform
