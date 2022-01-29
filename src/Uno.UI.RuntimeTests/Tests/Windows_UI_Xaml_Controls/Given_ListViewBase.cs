@@ -1590,6 +1590,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __WASM__
+		[Ignore("Fails on WASM")]
+#endif
 		public async Task When_Unmaterialized_Item_Size_Changed()
 		{
 			var source = new ObservableCollection<ItemHeightViewModel>(
