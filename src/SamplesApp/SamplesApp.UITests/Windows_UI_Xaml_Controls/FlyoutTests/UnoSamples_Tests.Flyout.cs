@@ -164,7 +164,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			foreach (var button in testableFlyoutButtons)
 			{
 				// show flyout
-				button.Value.Tap();
+				button.Value.FastTap();
 				using var flyoutOpenedScreenshot = TakeScreenshot($"{majorStepIndex} {button.Key} 0 Opened", ignoreInSnapshotCompare: true);
 
 				// dismiss flyout

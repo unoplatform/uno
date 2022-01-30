@@ -25,7 +25,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 			var myButton = _app.Marked("myButton");
 			var result = _app.Marked("result");
 
-			myButton.Tap();
+			myButton.FastTap();
 
 			_app.WaitForText(result, "Clicked!");
 		}

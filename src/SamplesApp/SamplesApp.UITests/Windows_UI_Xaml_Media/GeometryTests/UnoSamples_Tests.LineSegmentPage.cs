@@ -42,7 +42,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.GeometryTests
 
 			using var before = TakeScreenshot("Before point movement", ignoreInSnapshotCompare: true);
 
-			button.Tap();
+			button.FastTap();
 
 			using var after = TakeScreenshot("After point movement");
 
