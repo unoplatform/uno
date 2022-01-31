@@ -5,6 +5,7 @@ using System;
 using System.Globalization;
 using System.Reflection;
 using Uno.Foundation;
+using Uno.Foundation.Logging;
 
 namespace Windows.System
 {
@@ -22,23 +23,33 @@ namespace Windows.System
 
 		private static void InitializeGCMemoryInfo()
 		{
-			_getGCMemoryInfoMethod = typeof(GC).GetMethod("GetGCMemoryInfo");
-
-			if (_getGCMemoryInfoMethod != null)
+			try
 			{
-				var gcMemoryInfo = Type.GetType("System.GCMemoryInfo");
+				_getGCMemoryInfoMethod = typeof(GC).GetMethod("GetGCMemoryInfo", Array.Empty<Type>());
 
-				if (gcMemoryInfo != null)
+				if (_getGCMemoryInfoMethod != null)
 				{
-					// Use TotalCommittedBytes first, if available.
-					_appMemoryUsageProperty = gcMemoryInfo.GetProperty("TotalCommittedBytes");
+					var gcMemoryInfo = Type.GetType("System.GCMemoryInfo");
 
-					// Use TotalCommittedBytes first, otherwise use HeapSizeBytes (net5).
-					_appMemoryUsageProperty = _appMemoryUsageProperty ?? gcMemoryInfo.GetProperty("HeapSizeBytes");
-					_highMemoryLoadThresholdBytesProperty = gcMemoryInfo.GetProperty("HighMemoryLoadThresholdBytes");
+					if (gcMemoryInfo != null)
+					{
+						// Use TotalCommittedBytes first, if available.
+						_appMemoryUsageProperty = gcMemoryInfo.GetProperty("TotalCommittedBytes");
 
-					IsAvailable = true;
-					return;
+						// Use TotalCommittedBytes first, otherwise use HeapSizeBytes (net5).
+						_appMemoryUsageProperty = _appMemoryUsageProperty ?? gcMemoryInfo.GetProperty("HeapSizeBytes");
+						_highMemoryLoadThresholdBytesProperty = gcMemoryInfo.GetProperty("HighMemoryLoadThresholdBytes");
+
+						IsAvailable = true;
+						return;
+					}
+				}
+			}
+			catch(Exception e)
+			{
+				if (typeof(MemoryManager).Log().IsEnabled(LogLevel.Warning))
+				{
+					typeof(MemoryManager).Log().Warn($"Memory manager failed to initialize. Please report an issue.", e);
 				}
 			}
 
