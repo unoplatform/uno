@@ -49,7 +49,7 @@ namespace UITests.Windows_UI_Xaml.UIElementTests
 			result.Text = "Model 1 created";
 		}
 
-		private UIElement _root;
+		private FrameworkElement _root;
 		private RainbowMeasures[] _leaves;
 		private RainbowMeasures _mostInner;
 
@@ -104,7 +104,7 @@ namespace UITests.Windows_UI_Xaml.UIElementTests
 			{
 				var size = i % modulo + modulo;
 
-				((FrameworkElement)_root).Height = size;
+				_root.Height = size;
 
 				await Task.Yield();
 			}
@@ -117,7 +117,7 @@ namespace UITests.Windows_UI_Xaml.UIElementTests
 			result.Text = $"Resizes took {sw.ElapsedMilliseconds} ms";
 		}
 
-		private (UIElement Root, ICollection<RainbowMeasures> Leaves, RainbowMeasures mostInner) BuildTest1(int dept)
+		private (FrameworkElement Root, ICollection<RainbowMeasures> Leaves, RainbowMeasures mostInner) BuildTest1(int dept)
 		{
 			var root = new RainbowMeasures { Name = $"Root_{dept}" };
 
