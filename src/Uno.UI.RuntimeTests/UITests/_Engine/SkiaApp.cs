@@ -63,6 +63,9 @@ public class SkiaApp
 		}
 	}
 
+	internal QueryResult[] Query(string marked)
+		=> Query(QueryEx.Any.Marked(marked));
+
 	internal QueryResult[] Query(QueryEx query)
 	{
 		var all = TestServices.WindowHelper.WindowContent
