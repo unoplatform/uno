@@ -54,19 +54,19 @@ namespace Windows.UI.Xaml
 		/// Check for one specific layout flag
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private protected bool GetLayoutFlag(LayoutFlag flag) => (_layoutFlags & flag) == flag;
+		private protected bool IsLayoutFlagSet(LayoutFlag flag) => (_layoutFlags & flag) == flag;
 
 		/// <summary>
 		/// Check that at least one of the specified flags is set
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private protected bool GetAnyFlag(LayoutFlag flag) => (_layoutFlags & flag) != 0;
+		private protected bool IsAnyLayoutFlagsSet(LayoutFlag flags) => (_layoutFlags & flags) != 0;
 
 		/// <summary>
 		/// Set one or many flags (set to 1)
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private protected void SetLayoutFlag(LayoutFlag flag) => _layoutFlags |= flag;
+		private protected void SetLayoutFlags(LayoutFlag flags) => _layoutFlags |= flags;
 
 		/// <summary>
 		/// Reset one or many flags (set flag to zero)
@@ -83,25 +83,25 @@ namespace Windows.UI.Xaml
 		internal bool IsMeasureDirty
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => GetLayoutFlag(LayoutFlag.MeasureDirty);
+			get => IsLayoutFlagSet(LayoutFlag.MeasureDirty);
 		}
 
 		internal bool IsMeasureDirtyPath
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => GetLayoutFlag(LayoutFlag.MeasureDirtyPath);
+			get => IsLayoutFlagSet(LayoutFlag.MeasureDirtyPath);
 		}
 
 		internal bool IsMeasureOrMeasureDirtyPath
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => GetAnyFlag(LayoutFlag.MeasureDirty | LayoutFlag.MeasureDirtyPath);
+			get => IsAnyLayoutFlagsSet(LayoutFlag.MeasureDirty | LayoutFlag.MeasureDirtyPath);
 		}
 
 		internal bool IsArrangeDirty
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => GetLayoutFlag(LayoutFlag.ArrangeDirty);
+			get => IsLayoutFlagSet(LayoutFlag.ArrangeDirty);
 		}
 
 		public void InvalidateMeasure()
@@ -116,7 +116,7 @@ namespace Windows.UI.Xaml
 				return; // already dirty
 			}
 
-			SetLayoutFlag(LayoutFlag.MeasureDirty);
+			SetLayoutFlags(LayoutFlag.MeasureDirty);
 
 			if (FeatureConfiguration.UIElement.UseInvalidateMeasurePath)
 			{
@@ -140,7 +140,7 @@ namespace Windows.UI.Xaml
 				return; // Already invalidated
 			}
 
-			SetLayoutFlag(LayoutFlag.MeasureDirtyPath);
+			SetLayoutFlags(LayoutFlag.MeasureDirtyPath);
 
 			InvalidateParentMeasurePath();
 		}
@@ -170,7 +170,7 @@ namespace Windows.UI.Xaml
 				return; // Already dirty
 			}
 
-			SetLayoutFlag(LayoutFlag.ArrangeDirty);
+			SetLayoutFlags(LayoutFlag.ArrangeDirty);
 			if (this.GetParent() is UIElement parent)
 			{
 				parent.InvalidateArrange();
@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml
 
 		public void Measure(Size availableSize)
 		{
-			if (this is not FrameworkElement)
+			if (!_isFrameworkElement)
 			{
 				return; // Only FrameworkElements are measurable
 			}
@@ -200,7 +200,7 @@ namespace Windows.UI.Xaml
 					return;
 				}
 
-				SetLayoutFlag(LayoutFlag.MeasureDirty);
+				SetLayoutFlags(LayoutFlag.MeasureDirty);
 
 				return;
 			}
@@ -240,16 +240,16 @@ namespace Windows.UI.Xaml
 			var isDirty =
 				(availableSize != LastAvailableSize)
 				|| IsMeasureDirty
-				|| !GetLayoutFlag(LayoutFlag.FirstMeasureDone);
+				|| !IsLayoutFlagSet(LayoutFlag.FirstMeasureDone);
 
 			if (!isDirty && !IsMeasureDirtyPath)
 			{
 				return; // Nothing to do
 			}
 
-			if (!GetLayoutFlag(LayoutFlag.FirstMeasureDone))
+			if (!IsLayoutFlagSet(LayoutFlag.FirstMeasureDone))
 			{
-				SetLayoutFlag(LayoutFlag.FirstMeasureDone);
+				SetLayoutFlags(LayoutFlag.FirstMeasureDone);
 				isDirty = true;
 			}
 
@@ -275,6 +275,7 @@ namespace Windows.UI.Xaml
 					catch (Exception ex)
 					{
 						_log.Error($"Error measuring {this}", ex);
+						throw;
 					}
 					finally
 #endif
@@ -333,7 +334,7 @@ namespace Windows.UI.Xaml
 
 		public void Arrange(Rect finalRect)
 		{
-			if (this is not FrameworkElement)
+			if (!_isFrameworkElement)
 			{
 				return;
 			}
