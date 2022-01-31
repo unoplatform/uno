@@ -158,9 +158,9 @@ namespace Uno.Networking.Connectivity.Internal
 #if __IOS__ && !__MACCATALYST__
             NetworkInformation.CellularData.RestrictionDidUpdateNotifier = new Action<CTCellularDataRestrictedState>(OnRestrictedStateChanged);
 #endif
-		}
+        }
 
-		internal event Action ReachabilityChanged;
+        internal event Action ReachabilityChanged;
 
         void IDisposable.Dispose() => Dispose();
 
@@ -172,18 +172,18 @@ namespace Uno.Networking.Connectivity.Internal
             remoteHostReachability = null;
 
 #if __IOS__ && !__MACCATALYST__
-			NetworkInformation.CellularData.RestrictionDidUpdateNotifier = null;
+            NetworkInformation.CellularData.RestrictionDidUpdateNotifier = null;
 #endif
-		}
+        }
 
 #if __IOS__ && !__MACCATALYST__
-		void OnRestrictedStateChanged(CTCellularDataRestrictedState state)
+        void OnRestrictedStateChanged(CTCellularDataRestrictedState state)
         {
             ReachabilityChanged?.Invoke();
         }
 #endif
 
-		async void OnChange(NetworkReachabilityFlags flags)
+        async void OnChange(NetworkReachabilityFlags flags)
         {
             // Add in artifical delay so the connection status has time to change
             // else it will return true no matter what.

@@ -296,7 +296,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 
-			internal void OnNewWindowRequested(WebViewNewWindowRequestedEventArgs args)
+		internal void OnNewWindowRequested(WebViewNewWindowRequestedEventArgs args)
 		{
 			NewWindowRequested?.Invoke(this, args);
 		}
