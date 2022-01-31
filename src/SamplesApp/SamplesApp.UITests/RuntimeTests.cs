@@ -90,7 +90,7 @@ namespace SamplesApp.UITests.Runtime
 			TakeScreenshot("Runtime Tests Results",	ignoreInSnapshotCompare: true);
 		}
 
-		async Task<T> GetWithRetry<T>(string logName, Func<T> getter, int timeoutSeconds = 15)
+		async Task<T> GetWithRetry<T>(string logName, Func<T> getter, int timeoutSeconds = 120)
 		{
 			var sw = Stopwatch.StartNew();
 			Exception lastException = null;
@@ -113,7 +113,7 @@ namespace SamplesApp.UITests.Runtime
 					Console.WriteLine($"{logName} failed with {e.Message}");
 				}
 
-				await Task.Delay(TimeSpan.FromSeconds(.5));
+				await Task.Delay(TimeSpan.FromSeconds(2));
 
 				Console.WriteLine($"{logName} retrying");
 			}
