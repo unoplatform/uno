@@ -201,13 +201,11 @@ namespace Windows.UI.Xaml
 				for (var captureIndex = 0; captureIndex < captures.Count; captureIndex++)
 				{
 					var capture = captures[captureIndex];
-
 					var targets = capture.Targets.ToList();
 
 					for (var targetIndex = 0; targetIndex < targets.Count; targetIndex++)
 					{
 						var target = targets[targetIndex];
-
 						if (target.Element.HasParent(sender))
 						{
 							target.Element.Release(capture, PointerCaptureKind.Any);
@@ -844,7 +842,7 @@ namespace Windows.UI.Xaml
 					// For mouse and pen it's like for WASM, the platform is raising the events in the right sequence,
 					// except that if the event has been flagged as handled (so we are here) native bubbling will stop,
 					// so we have to let managed bubbling occurs and stop it on first element which is still isOver == true.
-					if (ptArgs.Pointer.PointerDeviceType is PointerDeviceType.Touch || ptArgs.IsOver(this))
+					if (ptArgs.Pointer.PointerDeviceType is PointerDeviceType.Touch || ptArgs.IsPointCoordinatesOver(this))
 					{
 						bubblingMode = BubblingMode.NoBubbling;
 					}

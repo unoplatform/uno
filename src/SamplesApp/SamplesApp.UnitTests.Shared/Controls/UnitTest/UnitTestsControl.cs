@@ -788,7 +788,7 @@ namespace Uno.UI.Samples.Tests
 									_currentRun.CurrentRepeatCount++;
 									canRetry = true;
 
-									await RunCleanup(instance, testClassInfo, testName, runsOnUIThread);
+									await RunCleanup(instance, testClassInfo, testName, test.RunsOnUIThread);
 								}
 								else
 								{
@@ -812,7 +812,7 @@ namespace Uno.UI.Samples.Tests
 					}
 				}
 
-				await RunCleanup(instance, testClassInfo, testName, runsOnUIThread);
+				await RunCleanup(instance, testClassInfo, testName, test.RunsOnUIThread);
 
 				if (ct.IsCancellationRequested)
 				{
