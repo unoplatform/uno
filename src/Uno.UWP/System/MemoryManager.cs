@@ -10,7 +10,6 @@ public partial class MemoryManager
 	internal static float HighPressureThreshold { get; set; } = .90f;
 	internal static float MediumPressureThreshold { get; set; } = .70f;
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public static global::Windows.System.AppMemoryUsageLevel AppMemoryUsageLevel
 	{
 		get
