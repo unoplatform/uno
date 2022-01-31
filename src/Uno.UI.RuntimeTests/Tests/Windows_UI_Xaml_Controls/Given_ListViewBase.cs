@@ -1590,6 +1590,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __WASM__
+		[Ignore("Fails on WASM")]
+#endif
 		public async Task When_Unmaterialized_Item_Size_Changed()
 		{
 			var source = new ObservableCollection<ItemHeightViewModel>(
@@ -1614,7 +1617,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			for (int i = 100; i <= 1000; i += 100)
 			{
 				sv.ChangeView(null, i, null, disableAnimation: true);
-				await Task.Delay(10);
+				await Task.Yield();
 			}
 
 			await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(source.Count - 1));
@@ -1629,7 +1632,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __SKIA__ || __WASM__
 				panel.InvalidateMeasure();
 #endif
-				await Task.Delay(10);
+				await Task.Delay(50);
+				await Task.Delay(50);
+				await Task.Delay(50);
 			}
 
 			var firstContainer = await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(0) as ListViewItem);

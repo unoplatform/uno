@@ -102,7 +102,7 @@ namespace Windows.UI.Xaml.Controls
 					// (ie if created in code by new SomeControl())
 					// NOTE: There's a case we currently don't support: if the Content is a DependencyObject but *not* a FrameworkElement, then
 					// the DataContext won't get propagated and any bindings won't get updated.
-					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((ContentControl)s)?.OnContentChanged(e.OldValue, e.NewValue)
 				)
 			);

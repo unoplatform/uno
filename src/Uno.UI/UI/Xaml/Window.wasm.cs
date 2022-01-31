@@ -50,6 +50,13 @@ namespace Windows.UI.Xaml
 			Current?.InnerInvalidateMeasure();
 		}
 
+		internal static void InvalidateArrange()
+		{
+			// Right now, both measure & arrange invalidations
+			// are done in the same loop
+			Current?.InnerInvalidateMeasure();
+		}
+
 		private void InnerInvalidateMeasure()
 		{
 			if (!_invalidateRequested)
@@ -75,17 +82,24 @@ namespace Windows.UI.Xaml
 
 		private void DispatchInvalidateMeasure()
 		{
-			if (_rootVisual != null)
+			if (_rootVisual is null)
+			{
+				return;
+			}
+
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				var sw = Stopwatch.StartNew();
 				_rootVisual.Measure(Bounds.Size);
 				_rootVisual.Arrange(Bounds);
 				sw.Stop();
 
-				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug($"DispatchInvalidateMeasure: {sw.Elapsed}");
-				}
+				this.Log().Debug($"DispatchInvalidateMeasure: {sw.Elapsed}");
+			}
+			else
+			{
+				_rootVisual.Measure(Bounds.Size);
+				_rootVisual.Arrange(Bounds);
 			}
 		}
 
@@ -186,15 +200,7 @@ namespace Windows.UI.Xaml
 
 		private UIElement InternalGetRootElement() => _rootVisual!;
 
-		private static Window InternalGetCurrentWindow()
-		{
-			if (_current == null)
-			{
-				_current = new Window();
-			}
-
-			return _current;
-		}
+		private static Window InternalGetCurrentWindow() => _current ??= new Window();
 
 		internal void UpdateRootAttributes()
 		{

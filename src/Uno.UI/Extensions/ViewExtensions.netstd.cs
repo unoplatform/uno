@@ -103,6 +103,9 @@ namespace Uno.UI
 					.Append(uiElement?.GetElementSpecificDetails())
 					.Append(uiElement?.GetElementGridOrCanvasDetails())
 					.Append(uiElement?.RenderTransform.GetTransformDetails())
+					.Append(uiElement?.IsMeasureDirty is true ? " MEASURE_DIRTY" : "")
+					.Append(uiElement?.IsMeasureDirtyPath is true ? " MEASURE_DIRTY_PATH" : "")
+					.Append(uiElement?.IsArrangeDirty is true ? " ARRANGE_DIRTY" : "")
 					.AppendLine();
 			}
 		}

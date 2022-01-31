@@ -394,6 +394,13 @@ namespace Windows.UI.Xaml
 			{
 				UpdateDOMProperties();
 			}
+
+			if (FeatureConfiguration.UIElement.UseInvalidateMeasurePath && this.GetParent() is UIElement parent)
+			{
+				// Need to invalidate the parent when the visibility changes to ensure its
+				// algorithm is doing its layout properly.
+				parent.InvalidateMeasure();
+			}
 		}
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
@@ -417,6 +424,13 @@ namespace Windows.UI.Xaml
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
 			{
 				UpdateDOMProperties();
+			}
+
+			if (FeatureConfiguration.UIElement.UseInvalidateMeasurePath && this.GetParent() is UIElement parent)
+			{
+				// Need to invalidate the parent when the visibility changes to ensure its
+				// algorithm is doing its layout properly.
+				parent.InvalidateMeasure();
 			}
 		}
 
@@ -476,10 +490,20 @@ namespace Windows.UI.Xaml
 
 			OnChildAdded(child);
 
+			child.ResetLayoutFlags();
+
 			child.InvalidateMeasure();
 
 			// Arrange is required to unset the uno-unarranged CSS class
 			child.InvalidateArrange();
+
+			if (child.IsArrangeDirty && !IsArrangeDirty)
+			{
+				InvalidateArrange();
+			}
+
+			// Force a new measure of this element (the parent of the new child)
+			InvalidateMeasure();
 		}
 
 		public void ClearChildren()
@@ -507,6 +531,8 @@ namespace Windows.UI.Xaml
 			if (childParent != null)
 			{
 				Uno.UI.Xaml.WindowManagerInterop.RemoveView(HtmlId, child.HtmlId);
+
+				child.InvalidateMeasure();
 			}
 		}
 

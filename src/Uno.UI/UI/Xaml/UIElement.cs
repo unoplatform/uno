@@ -547,7 +547,7 @@ namespace Windows.UI.Xaml
 #else
 			for (var i = 0; i < MaxLayoutIterations; i++)
 			{
-				if (root.IsMeasureDirty)
+				if (root.IsMeasureOrMeasureDirtyPath)
 				{
 					root.Measure(bounds.Size);
 				}

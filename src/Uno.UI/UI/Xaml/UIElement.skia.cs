@@ -114,7 +114,7 @@ namespace Windows.UI.Xaml
 			child.SetParent(this);
 			OnAddingChild(child);
 
-			if (index is int actualIndex && actualIndex != _children.Count)
+			if (index is { } actualIndex && actualIndex != _children.Count)
 			{
 				var currentVisual = _children[actualIndex];
 				_children.Insert(actualIndex, child);
@@ -128,6 +128,17 @@ namespace Windows.UI.Xaml
 
 			OnChildAdded(child);
 
+			// Reset to original (invalidated) state
+			child.ResetLayoutFlags();
+
+			child.InvalidateMeasure();
+
+			if (child.IsArrangeDirty && !IsArrangeDirty)
+			{
+				InvalidateArrange();
+			}
+
+			// Force a new measure of this element (the parent of the new child)
 			InvalidateMeasure();
 		}
 
@@ -141,19 +152,25 @@ namespace Windows.UI.Xaml
 			if (_children.Remove(child))
 			{
 				InnerRemoveChild(child);
+
+				// Force a new measure of this element
+				InvalidateMeasure();
+
 				return true;
 			}
-			else
-			{
-				return false;
-			}
+
+			return false;
 		}
 
 		internal UIElement ReplaceChild(int index, UIElement child)
 		{
 			var previous = _children[index];
-			RemoveChild(previous);
-			AddChild(child, index);
+
+			if (!ReferenceEquals(child, previous))
+			{
+				RemoveChild(previous);
+				AddChild(child, index);
+			}
 
 			return previous;
 		}
@@ -197,7 +214,14 @@ namespace Windows.UI.Xaml
 			{
 				LayoutInformation.SetDesiredSize(this, new Size(0, 0));
 				_size = new Size(0, 0);
-			}			
+			}
+
+			if (FeatureConfiguration.UIElement.UseInvalidateMeasurePath && this.GetParent() is UIElement parent)
+			{
+				// Need to invalidate the parent when the visibility changes to ensure its
+				// algorithm is doing its layout properly.
+				parent.InvalidateMeasure();
+			}
 		}
 
 		partial void OnRenderTransformSet()
