@@ -320,7 +320,7 @@ namespace Windows.UI.Xaml
 			CoreApplication.RaiseSuspending(suspendingEventArgs);			
 			var completedSynchronously = suspendingOperation.DeferralManager.EventRaiseCompleted();
 
-#if !__IOS__ && !__ANDROID__ && !__MACOS__
+#if !__IOS__ && !__ANDROID__
 			// Asynchronous suspension is not supported on all targets, warn the user
 			if (!completedSynchronously && this.Log().IsEnabled(LogLevel.Warning))
 			{
@@ -331,7 +331,7 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-#if !__IOS__ && !__ANDROID__ && !__MACOS__
+#if !__IOS__ && !__ANDROID__
 		/// <summary>
 		/// On platforms which don't support asynchronous suspension we indicate that with immediate
 		/// deadline and warning in logs.

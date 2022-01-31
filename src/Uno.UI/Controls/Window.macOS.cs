@@ -643,23 +643,20 @@ namespace Uno.UI.Controls
 				var manager = SystemNavigationManagerPreview.GetForCurrentView();
 				if (!manager.HasConfirmedClose)
 				{
-					manager.OnCloseRequested();
-					if (!manager.HasConfirmedClose)
-					{
-						// Close was either deferred or canceled synchronously.
+					if (!manager.RequestAppClose())
+                    {
 						return false;
-					}
+                    }
 				}
 
-				// closing should continue, perform suspension
-
+				// Closing should continue, perform suspension.
 				if (!Application.Current.Suspended)
 				{
-					Application.Current.OnSuspending();
+					Application.Current.RaiseSuspending();
 					return Application.Current.Suspended;
 				}
 
-				// all prerequisites passed, can safely close
+				// All prerequisites passed, can safely close.
 				return true;
 			}
 		}

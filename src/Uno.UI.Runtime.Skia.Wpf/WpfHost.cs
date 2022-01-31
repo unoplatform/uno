@@ -31,6 +31,7 @@ using WpfApplication = System.Windows.Application;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfControl = System.Windows.Controls.Control;
 using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
+using UnoApplication = Windows.UI.Xaml.Application;
 using Windows.UI.ViewManagement;
 using Uno.UI.Xaml;
 using Uno.UI.Runtime.Skia.Wpf;
@@ -39,6 +40,9 @@ using Uno.Extensions.ApplicationModel.DataTransfer;
 using Windows.System.Profile.Internal;
 using Uno.Extensions.System.Profile;
 using Windows.Storage.Pickers;
+using Uno.UI.Core.Preview;
+using Uno.Extensions.UI.Core.Preview;
+using Windows.UI.Core.Preview;
 
 namespace Uno.UI.Skia.Platform
 {
@@ -76,6 +80,7 @@ namespace Uno.UI.Skia.Platform
 			ApiExtensibility.Register(typeof(ILauncherExtension), o => new LauncherExtension(o));
 			ApiExtensibility.Register(typeof(IClipboardExtension), o => new ClipboardExtensions(o));
 			ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), o => new AnalyticsInfoExtension());
+			ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), o => new SystemNavigationManagerPreviewExtension());
 		}
 
 		public static WpfHost Current => _current;
@@ -119,6 +124,7 @@ namespace Uno.UI.Skia.Platform
 			WpfApplication.Current.Activated += Current_Activated;
 			WpfApplication.Current.Deactivated += Current_Deactivated;
 			WpfApplication.Current.MainWindow.StateChanged += MainWindow_StateChanged;
+			WpfApplication.Current.MainWindow.Closing += MainWindow_Closing;
 
 			Windows.Foundation.Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 			if (preferredWindowSize != Windows.Foundation.Size.Empty)
@@ -129,6 +135,23 @@ namespace Uno.UI.Skia.Platform
 
 			SizeChanged += WpfHost_SizeChanged;
 			Loaded += WpfHost_Loaded;
+		}
+
+		private void MainWindow_Closing(object sender, CancelEventArgs e)
+		{
+			var manager = SystemNavigationManagerPreview.GetForCurrentView();
+			if (!manager.HasConfirmedClose)
+			{
+				if (!manager.RequestAppClose())
+				{
+					e.Cancel = true;
+					return;
+				}
+			}
+
+			// Closing should continue, perform suspension.
+			// TODO: Support async suspension
+			UnoApplication.Current.RaiseSuspending();
 		}
 
 		public override void OnApplyTemplate()
@@ -152,13 +175,13 @@ namespace Uno.UI.Skia.Platform
 			winUIWindow?.OnActivated(Windows.UI.Core.CoreWindowActivationState.Deactivated);
 
 			var application = WinUI.Application.Current;
-			application?.OnEnteredBackground();
+			application?.RaiseEnteredBackground(null);
 		}
 
 		private void Current_Activated(object? sender, EventArgs e)
 		{
 			var application = WinUI.Application.Current;
-			application?.OnLeavingBackground();
+			application?.RaiseLeavingBackground(null);
 
 			var winUIWindow = WinUI.Window.Current;
 			winUIWindow?.OnActivated(Windows.UI.Core.CoreWindowActivationState.CodeActivated);

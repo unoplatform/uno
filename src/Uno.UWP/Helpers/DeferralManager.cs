@@ -29,6 +29,8 @@ internal class DeferralManager<T>
 
 	internal event EventHandler? Completed;
 
+	internal bool CompletedSynchronously { get; set; }
+
 	public T GetDeferral()
 	{
 		_deferralsCount++;
@@ -57,7 +59,11 @@ internal class DeferralManager<T>
 	/// the Completed event.
 	/// </summary>
 	/// <returns>A value indicating whether the deferral completed synchronously.</returns>
-	internal bool EventRaiseCompleted() => DeferralCompleted();
+	internal bool EventRaiseCompleted()
+	{
+		CompletedSynchronously = DeferralCompleted();
+		return CompletedSynchronously;
+	}
 
 	internal Task WhenAllCompletedAsync() => _allDeferralsCompletedCompletionSource.Task;
 
