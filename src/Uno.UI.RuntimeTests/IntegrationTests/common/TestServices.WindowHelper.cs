@@ -100,44 +100,55 @@ namespace Private.Infrastructure
 			/// </remarks>
 			internal static async Task WaitForLoaded(FrameworkElement element)
 			{
-				TaskCompletionSource<bool> cts = new();
-
-				_ = element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+				async Task Do()
 				{
-					try
+					bool IsLoaded()
 					{
-						bool IsLoaded()
+						if (element.ActualHeight == 0 || element.ActualWidth == 0)
 						{
-							if (element.ActualHeight == 0 || element.ActualWidth == 0)
-							{
-								return false;
-							}
-
-							if (element is Control control && control.FindFirstChild<FrameworkElement>(includeCurrent: false) == null)
-							{
-								return false;
-							}
-
-							if (element is ListView listView && listView.Items.Count > 0 && listView.ContainerFromIndex(0) == null)
-							{
-								// If it's a ListView, wait for items to be populated
-								return false;
-							}
-
-							return true;
+							return false;
 						}
 
-						await WaitFor(IsLoaded, message: $"{element} loaded");
+						if (element is Control control && control.FindFirstChild<FrameworkElement>(includeCurrent: false) == null)
+						{
+							return false;
+						}
 
-						cts.TrySetResult(true);
+						if (element is ListView listView && listView.Items.Count > 0 && listView.ContainerFromIndex(0) == null)
+						{
+							// If it's a ListView, wait for items to be populated
+							return false;
+						}
+
+						return true;
 					}
-					catch(Exception e)
+
+					await WaitFor(IsLoaded, message: $"{element} loaded");
+				}
+
+				if (element.Dispatcher.HasThreadAccess)
+				{
+					await Do();
+				}
+				else
+				{
+					TaskCompletionSource<bool> cts = new();
+
+					_ = element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
 					{
-						cts.TrySetException(e);
-					}
-				});
+						try
+						{
 
-				await cts.Task;
+							cts.TrySetResult(true);
+						}
+						catch (Exception e)
+						{
+							cts.TrySetException(e);
+						}
+					});
+
+					await cts.Task;
+				}
 			}
 
 			internal static async Task WaitForRelayouted(FrameworkElement frameworkElement)
