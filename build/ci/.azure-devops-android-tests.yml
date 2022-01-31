@@ -240,7 +240,7 @@ jobs:
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
       # don't fail on failed tests, second run will do it
       # see https://github.com/unoplatform/uno/issues/6714
-      failTaskOnFailedTests: ${{ ne(variables.UITEST_ALLOW_RERUN, 'true') }}
+      failTaskOnFailedTests: ${{ ne(variables.ALLOW_RERUN, 'true') }}
 
   ## Second tests run (https://github.com/unoplatform/uno/issues/6714)
   - bash: |
