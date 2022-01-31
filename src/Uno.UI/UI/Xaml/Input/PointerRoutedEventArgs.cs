@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml.Input
 			return this;
 		}
 
-		internal bool IsOver(UIElement element)
+		internal bool IsPointCoordinatesOver(UIElement element)
 			=> new Rect(default, element.AssignedActualSize).Contains(GetCurrentPoint(element).Position);
 
 		/// <inheritdoc />

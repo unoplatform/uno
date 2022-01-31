@@ -129,6 +129,8 @@ namespace Windows.UI.Core
 
 		internal interface IPointerEventArgs
 		{
+			object OriginalSource { get; }
+
 			PointerIdentifier Pointer { get; }
 
 			PointerPoint GetLocation(object? relativeTo);

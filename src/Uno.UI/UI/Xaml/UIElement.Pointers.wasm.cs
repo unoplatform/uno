@@ -159,7 +159,7 @@ public partial class UIElement : DependencyObject
 
 			switch ((NativePointerEvent)args.Event)
 			{
-				case NativePointerEvent.pointerenter:
+				case NativePointerEvent.pointerover:
 				{
 					// On WASM we do get 'pointerover' event for sub elements,
 					// so we can avoid useless work by validating if the pointer is already flagged as over element.
@@ -169,15 +169,9 @@ public partial class UIElement : DependencyObject
 					break;
 				}
 
-				case NativePointerEvent.pointerleave:
-				{
-					// On WASM we do get 'pointerout' event for sub elements,
-					// so we need to check if pointer is actually still on the element.
-					// In that case we stop bubbling so our parents won't have to check that again.
-					var ptArgs = ToPointerArgs(element, args);
-					stopPropagation = ptArgs.IsOver(element) || element.OnNativePointerExited(ptArgs);
+				case NativePointerEvent.pointerout: // No needs to check IsOver, it's already done in native code
+					stopPropagation = element.OnNativePointerExited(ToPointerArgs(element, args));
 					break;
-				}
 
 				case NativePointerEvent.pointerdown:
 					stopPropagation = element.OnNativePointerDown(ToPointerArgs(element, args, isInContact: true));
@@ -409,7 +403,6 @@ public partial class UIElement : DependencyObject
 		public byte Events; // One or multiple NativePointerEvent
 	}
 
-
 	[TSInteropMessage(Marshaller = CodeGeneration.Enabled, UnMarshaller = CodeGeneration.Disabled)]
 	[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	private struct NativePointerEventArgs
@@ -434,7 +427,7 @@ public partial class UIElement : DependencyObject
 
 		/// <inheritdoc />
 		public override string ToString()
-			=> $"elt={HtmlId}|evt={Event}|id={pointerId}|x={x}|y={x}|ctrl={ctrl}|shift={shift}|bts={buttons}|btUpdate={buttonUpdate}|tyep={typeStr}|srcId={srcHandle}|ts={timestamp}|pres={pressure}|wheelX={wheelDeltaX}|wheelY={wheelDeltaY}";
+			=> $"elt={HtmlId}|evt={(NativePointerEvent)Event}|id={pointerId}|x={x}|y={x}|ctrl={ctrl}|shift={shift}|bts={buttons}|btUpdate={buttonUpdate}|tyep={typeStr}|srcId={srcHandle}|ts={timestamp}|pres={pressure}|wheelX={wheelDeltaX}|wheelY={wheelDeltaY}";
 	}
 
 	[TSInteropMessage(Marshaller = CodeGeneration.Disabled, UnMarshaller = CodeGeneration.Enabled)]
@@ -450,8 +443,8 @@ public partial class UIElement : DependencyObject
 		// WARNING: This enum has a corresponding version in TypeScript!
 
 		// Minimal default pointer required to maintain state
-		pointerenter = 1,
-		pointerleave = 1 << 1,
+		pointerover = 1,
+		pointerout = 1 << 1,
 		pointerdown = 1 << 2,
 		pointerup = 1 << 3,
 		pointercancel = 1 << 4,
@@ -460,6 +453,6 @@ public partial class UIElement : DependencyObject
 		pointermove = 1 << 5,
 		wheel = 1 << 6,
 
-		Defaults = pointerenter | pointerleave | pointerdown | pointerup | pointercancel,
+		Defaults = pointerover | pointerout | pointerdown | pointerup | pointercancel,
 	}
 }

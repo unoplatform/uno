@@ -276,37 +276,46 @@ namespace Windows.UI.Xaml
 
 		#region GestureRecognizer wire-up
 
-				#region Event to RoutedEvent handler adapters
+		#region Event to RoutedEvent handler adapters
 		// Note: For the manipulation and gesture event args, the original source has to be the element that raise the event
 		//		 As those events are bubbling in managed only, the original source will be right one for all.
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartingEventArgs> OnRecognizerManipulationStarting = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
-			that.SafeRaiseEvent(ManipulationStartingEvent, new ManipulationStartingRoutedEventArgs(that, args));
+			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
+
+			that.SafeRaiseEvent(ManipulationStartingEvent, new ManipulationStartingRoutedEventArgs(src, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> OnRecognizerManipulationStarted = (sender,  args) =>
 		{
 			var that = (UIElement)sender.Owner;
-			that.SafeRaiseEvent(ManipulationStartedEvent, new ManipulationStartedRoutedEventArgs(that, sender, args));
+			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
+
+			that.SafeRaiseEvent(ManipulationStartedEvent, new ManipulationStartedRoutedEventArgs(src, sender, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> OnRecognizerManipulationUpdated = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
-			that.SafeRaiseEvent(ManipulationDeltaEvent, new ManipulationDeltaRoutedEventArgs(that, sender, args));
+			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
+
+			that.SafeRaiseEvent(ManipulationDeltaEvent, new ManipulationDeltaRoutedEventArgs(src, sender, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> OnRecognizerManipulationInertiaStarting = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
-			that.SafeRaiseEvent(ManipulationInertiaStartingEvent, new ManipulationInertiaStartingRoutedEventArgs(that, args));
+			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
+
+			that.SafeRaiseEvent(ManipulationInertiaStartingEvent, new ManipulationInertiaStartingRoutedEventArgs(src, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> OnRecognizerManipulationCompleted = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
+			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
 #if NEEDS_IMPLICIT_CAPTURE
 			foreach (var pointer in args.Pointers)
@@ -315,37 +324,44 @@ namespace Windows.UI.Xaml
 			}
 #endif
 
-			that.SafeRaiseEvent(ManipulationCompletedEvent, new ManipulationCompletedRoutedEventArgs(that, args));
+			that.SafeRaiseEvent(ManipulationCompletedEvent, new ManipulationCompletedRoutedEventArgs(src, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, TappedEventArgs> OnRecognizerTapped = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
+			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
+
 			if (args.TapCount == 1)
 			{
-				that.SafeRaiseEvent(TappedEvent, new TappedRoutedEventArgs(that, args));
+				that.SafeRaiseEvent(TappedEvent, new TappedRoutedEventArgs(src, args));
 			}
 			else // i.e. args.TapCount == 2
 			{
-				that.SafeRaiseEvent(DoubleTappedEvent, new DoubleTappedRoutedEventArgs(that, args));
+				that.SafeRaiseEvent(DoubleTappedEvent, new DoubleTappedRoutedEventArgs(src, args));
 			}
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, RightTappedEventArgs> OnRecognizerRightTapped = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
-			that.SafeRaiseEvent(RightTappedEvent, new RightTappedRoutedEventArgs(that, args));
+			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
+
+			that.SafeRaiseEvent(RightTappedEvent, new RightTappedRoutedEventArgs(src, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, HoldingEventArgs> OnRecognizerHolding = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
-			that.SafeRaiseEvent(HoldingEvent, new HoldingRoutedEventArgs(that, args));
+			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
+
+			that.SafeRaiseEvent(HoldingEvent, new HoldingRoutedEventArgs(src, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, DraggingEventArgs> OnRecognizerDragging = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
+
 			that.OnDragStarting(args);
 		};
 		#endregion
@@ -774,7 +790,7 @@ namespace Windows.UI.Xaml
 					break;
 				case RoutedEventFlag.PointerMoved:
 #if __IOS__ || __ANDROID__
-					OnNativePointerMoveWithOverCheck(ptArgs, ptArgs.IsOver(this), BubblingContext.OnManagedBubbling);
+					OnNativePointerMoveWithOverCheck(ptArgs, ptArgs.IsPointCoordinatesOver(this), BubblingContext.OnManagedBubbling);
 #else
 					OnPointerMove(ptArgs, BubblingContext.OnManagedBubbling);
 #endif
@@ -803,7 +819,7 @@ namespace Windows.UI.Xaml
 #if __WASM__
 					// On WASM, the pointer 'exit' is raise by the platform, but here the event has been handled and is bubbling in managed.
 					// We only need to replicate the UWP behavior and stop bubbling as soon as we reach an element which still under the pointer.
-					if (ptArgs.IsOver(this))
+					if (ptArgs.IsPointCoordinatesOver(this))
 					{
 						bubblingMode = BubblingMode.NoBubbling;
 					}
