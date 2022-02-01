@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 // ******************************************************************
-#if false //!HAS_CRIPPLEDREFLECTION
+#if !HAS_CRIPPLEDREFLECTION
 using System;
 using System.Reflection;
 using System.Linq;
@@ -71,7 +71,8 @@ namespace Uno.Reflection
 		/// </remarks>
 		public static Action<object, object> ToCompiledSetValue(RuntimeTypeHandle typeHandle, RuntimeFieldHandle fieldHandle, bool strict)
         {
-            var fieldInfo = FieldInfo.GetFieldFromHandle(fieldHandle, typeHandle);
+#if NET6_0_OR_GREATER
+			var fieldInfo = FieldInfo.GetFieldFromHandle(fieldHandle, typeHandle);
 
             if (fieldInfo.IsStatic || fieldInfo.DeclaringType.IsValueType)
             {
@@ -110,7 +111,10 @@ namespace Uno.Reflection
             il.Emit(OpCodes.Ret);
 
             return method.CreateDelegate(typeof(Action<object, object>)) as Action<object, object>;
-        }
+#else
+			throw new NotSupportedException($"ToCompiledSetValue is not supported on this platform");
+#endif
+		}
 
 		/// <summary>
 		/// Creates a compiled method that will get the value of a field 
@@ -144,6 +148,7 @@ namespace Uno.Reflection
 		/// </remarks>
 		public static Func<object, object> ToCompiledGetValue(RuntimeTypeHandle typeHandle, RuntimeFieldHandle fieldHandle, bool strict)
         {
+#if NET6_0_OR_GREATER
             var fieldInfo = FieldInfo.GetFieldFromHandle(fieldHandle, typeHandle);
 
             if (fieldInfo.IsStatic || fieldInfo.DeclaringType.IsValueType)
@@ -177,7 +182,10 @@ namespace Uno.Reflection
             il.Emit(OpCodes.Ret);
 
             return method.CreateDelegate(typeof(Func<object, object>)) as Func<object, object>;
-        }
-    }
+#else
+			throw new NotSupportedException($"ToCompiledSetValue is not supported on this platform");
+#endif
+		}
+	}
 }
 #endif
