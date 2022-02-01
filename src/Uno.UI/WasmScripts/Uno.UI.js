@@ -4294,6 +4294,9 @@ var Windows;
                 static unSubscribePointerEvents(pParams) {
                     const params = Windows.UI.Xaml.NativePointerSubscriptionParams.unmarshal(pParams);
                     const element = WindowManager.current.getView(params.HtmlId);
+                    if (!element) {
+                        return;
+                    }
                     if (params.Events & NativePointerEvent.pointerenter) {
                         element.removeEventListener("pointerenter", Xaml.UIElement.onPointerEnterReceived);
                     }

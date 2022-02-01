@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 					focusManager.InitialFocus = true;
 
 					TrySetFocusedElement(spFirstFocusableElementDO);
-					
+
 					focusManager.InitialFocus = false;
 				}
 

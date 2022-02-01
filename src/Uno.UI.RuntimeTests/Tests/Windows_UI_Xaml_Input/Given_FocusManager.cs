@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Private.Infrastructure;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input.TestPages;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 {
@@ -58,7 +58,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 					//await TestServices.WindowHelper.WaitForIdle(); //
 					await Task.Delay(50); //
 				}
-				
+
 				initialSuccess.Should().BeTrue("initialSuccess");
 				AssertHasFocus(buttons[0]);
 				await TestServices.WindowHelper.WaitForIdle();
@@ -117,7 +117,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			}
 			finally
 			{
-				TestServices.WindowHelper.WindowContent = null;
+				
 			}
 		}
 
@@ -147,7 +147,272 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			AssertHasFocus(innerControl);
 			Assert.AreEqual(FocusState.Unfocused, outerControl.FocusState);
 
-			TestServices.WindowHelper.WindowContent = null;
+			
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_Page_Navigates_Focus_Without_Outer_Wrapper()
+		{
+			var frame = new Frame();
+			TestServices.WindowHelper.WindowContent = frame;
+			frame.Navigate(typeof(TwoButtonFirstPage));
+			((TwoButtonFirstPage)frame.Content).FocusFirst();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var expectedSequence = new string[]
+			{
+				null,
+				"SecondPageFirstButton"
+			};
+
+			Func<Task> navigationAction = async () =>
+			{
+				frame.Navigate(typeof(TwoButtonSecondPage));
+
+				await WaitForLoadedEvent((TwoButtonSecondPage)frame.Content);
+				await TestServices.WindowHelper.WaitForIdle();
+			};
+
+			await AssertNavigationFocusSequence(expectedSequence, navigationAction);
+
+			
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_Page_Navigates_Focus_With_Outer_Before()
+		{
+			var stackPanel = new StackPanel();
+			var frame = new Frame();
+			stackPanel.Children.Add(new ToggleButton() { Name = "OuterButton" });
+			stackPanel.Children.Add(frame);
+			TestServices.WindowHelper.WindowContent = stackPanel;
+			frame.Navigate(typeof(TwoButtonFirstPage));
+			await WaitForLoadedEvent((TwoButtonFirstPage)frame.Content);
+			((TwoButtonFirstPage)frame.Content).FocusFirst();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var expectedSequence = new string[]
+			{
+				"OuterButton"
+			};
+
+			Func<Task> navigationAction = async () =>
+			{
+				frame.Navigate(typeof(TwoButtonSecondPage));
+
+				await WaitForLoadedEvent((TwoButtonSecondPage)frame.Content);
+			};
+
+			await AssertNavigationFocusSequence(expectedSequence, navigationAction);			
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_Page_Navigates_Focus_Outside_Frame()
+		{
+			var stackPanel = new StackPanel();
+			var frame = new Frame();
+			var outerButton = new ToggleButton() { Name = "OuterButton" };
+			stackPanel.Children.Add(outerButton);
+			stackPanel.Children.Add(frame);
+			TestServices.WindowHelper.WindowContent = stackPanel;
+
+			await TestServices.WindowHelper.WaitForLoaded(stackPanel);
+
+			frame.Navigate(typeof(TwoButtonFirstPage));
+			await WaitForLoadedEvent((TwoButtonFirstPage)frame.Content);
+			outerButton.Focus(FocusState.Programmatic);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Focus should stay on the outer button
+			var expectedSequence = new string[]
+			{
+			};
+
+			Func<Task> navigationAction = async () =>
+			{
+				frame.Navigate(typeof(TwoButtonSecondPage));
+
+				await WaitForLoadedEvent((TwoButtonSecondPage)frame.Content);
+			};
+
+			await AssertNavigationFocusSequence(expectedSequence, navigationAction);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_Page_Navigates_Focus_With_Outer_After()
+		{
+			var stackPanel = new StackPanel();
+			var frame = new Frame();
+			stackPanel.Children.Add(new ToggleButton() { Name = "OuterButton" });
+			stackPanel.Children.Add(frame);
+			stackPanel.Children.Add(new ToggleButton() { Name = "OuterButtonAfter" });
+			TestServices.WindowHelper.WindowContent = stackPanel;
+			frame.Navigate(typeof(TwoButtonFirstPage));
+			await WaitForLoadedEvent((TwoButtonFirstPage)frame.Content);
+			((TwoButtonFirstPage)frame.Content).FocusFirst();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var expectedSequence = new string[]
+			{
+				"OuterButtonAfter"
+			};
+
+			Func<Task> navigationAction = async () =>
+			{
+				frame.Navigate(typeof(TwoButtonSecondPage));
+
+				await WaitForLoadedEvent((TwoButtonSecondPage)frame.Content);
+			};
+
+			await AssertNavigationFocusSequence(expectedSequence, navigationAction);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_Page_Navigates_Back_Without_Outer_Wrapper()
+		{
+			var frame = new Frame();
+			TestServices.WindowHelper.WindowContent = frame;
+			frame.Navigate(typeof(TwoButtonFirstPage));
+			frame.Navigate(typeof(TwoButtonSecondPage));
+			await WaitForLoadedEvent((TwoButtonSecondPage)frame.Content);
+			((TwoButtonSecondPage)frame.Content).FocusFirst();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var expectedSequence = new string[]
+			{
+				null,
+				"FirstPageFirstButton"
+			};
+
+			Func<Task> navigationAction = async () =>
+			{
+				frame.GoBack();
+
+				await WaitForLoadedEvent((TwoButtonFirstPage)frame.Content);
+				await TestServices.WindowHelper.WaitForIdle();
+			};
+
+			await AssertNavigationFocusSequence(expectedSequence, navigationAction);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_Page_Navigates_Back_With_Outer_Before()
+		{
+			var stackPanel = new StackPanel();
+			var frame = new Frame();
+			stackPanel.Children.Add(new ToggleButton() { Name = "OuterButton" });
+			stackPanel.Children.Add(frame);
+			TestServices.WindowHelper.WindowContent = stackPanel;
+			frame.Navigate(typeof(TwoButtonFirstPage));
+			frame.Navigate(typeof(TwoButtonSecondPage));
+			((TwoButtonSecondPage)frame.Content).FocusFirst();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var expectedSequence = new string[]
+			{
+				"OuterButton"
+			};
+
+			Func<Task> navigationAction = async () =>
+			{
+				frame.GoBack();
+				await WaitForLoadedEvent((TwoButtonFirstPage)frame.Content);
+
+				await TestServices.WindowHelper.WaitForIdle();
+			};
+
+			await AssertNavigationFocusSequence(expectedSequence, navigationAction);	
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_Page_Navigates_Back_With_Outer_After()
+		{
+			var stackPanel = new StackPanel();
+			var frame = new Frame();
+			stackPanel.Children.Add(new ToggleButton() { Name = "OuterButton" });
+			stackPanel.Children.Add(frame);
+			stackPanel.Children.Add(new ToggleButton() { Name = "OuterButtonAfter" });
+			TestServices.WindowHelper.WindowContent = stackPanel;
+			frame.Navigate(typeof(TwoButtonFirstPage));
+			frame.Navigate(typeof(TwoButtonSecondPage));
+			((TwoButtonSecondPage)frame.Content).FocusFirst();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var expectedSequence = new string[]
+			{
+				"OuterButtonAfter"
+			};
+
+			Func<Task> navigationAction = async () =>
+			{
+				frame.GoBack();
+				await WaitForLoadedEvent((TwoButtonFirstPage)frame.Content);
+
+				await TestServices.WindowHelper.WaitForIdle();
+			};
+
+			await AssertNavigationFocusSequence(expectedSequence, navigationAction);
+		}
+
+		private async Task WaitForLoadedEvent(FocusNavigationPage page)
+		{
+			await TestServices.WindowHelper.WaitFor(() => page.LoadedEventFinished);
+		}
+
+		private async Task AssertNavigationFocusSequence(string[] expectedSequence, Func<Task> navigationSequence)
+		{
+			var actualSequence = new List<string>();
+			void FocusManager_GettingFocus(object sender, GettingFocusEventArgs e)
+			{
+				if (e.NewFocusedElement is null)
+				{
+					actualSequence.Add(null);
+				}
+				else if (
+					e.NewFocusedElement is FrameworkElement fw &&
+					!string.IsNullOrEmpty(fw.Name))
+				{
+					actualSequence.Add(fw.Name);
+				}
+				else
+				{
+					actualSequence.Add($"[{e.NewFocusedElement.GetType().Name}]");
+				}
+			}
+			try
+			{
+				FocusManager.GettingFocus += FocusManager_GettingFocus;
+
+				await navigationSequence();
+
+				CollectionAssert.AreEqual(expectedSequence, actualSequence);
+
+			}
+			finally
+			{
+				FocusManager.GettingFocus -= FocusManager_GettingFocus;
+			}
 		}
 
 		private void AssertHasFocus(Control control)

@@ -99,7 +99,14 @@ namespace Windows.UI.Xaml
 			{
 				var pNext = pElement.GetUIElementAdjustedParentInternal(true /*public parents only*/);
 
-				if (pNext != null && pNext.Visibility == Visibility.Collapsed)
+				if (pNext?.Visibility == Visibility.Collapsed)
+				{
+					return false;
+				}
+
+				// TODO Uno specific: IsLeaving is not yet implemented on visual tree level,
+				// so we check if the Page is being navigated away from here instead.
+				if (pNext?.IsLeavingFrame == true) 
 				{
 					return false;
 				}
