@@ -68,8 +68,11 @@
 
 		public static async closeAsync(streamId: string): Promise<string> {
 			var instance = NativeFileWriteStream._streamMap.get(streamId);
-			await instance._stream.close();
-			NativeFileWriteStream._streamMap.delete(streamId);
+			if (instance)
+			{
+				await instance._stream.close();
+				NativeFileWriteStream._streamMap.delete(streamId);
+			}
 			return "";
 		}
 
