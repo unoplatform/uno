@@ -24,6 +24,9 @@ namespace Windows.UI.Xaml
 
 		public Size Size => Content?.RenderSize ?? Size.Empty;
 
+		public double RasterizationScale
+			=> global::Windows.Graphics.Display.DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+
 		internal void NotifyChanged()
 		{
 			Changed?.Invoke(this, new XamlRootChangedEventArgs());

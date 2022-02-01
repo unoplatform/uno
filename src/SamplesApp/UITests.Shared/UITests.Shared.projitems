@@ -1025,6 +1025,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\XamlRoot\XamlRoot_Properties.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\NoPhaseBinding_Large.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5155,6 +5159,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\WindowTests\Window_ContentIsFullyVisible.xaml.cs">
       <DependentUpon>Window_ContentIsFullyVisible.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\XamlRoot\XamlRoot_Properties.xaml.cs">
+      <DependentUpon>XamlRoot_Properties.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\NoPhaseBinding_Large.xaml.cs">
       <DependentUpon>NoPhaseBinding_Large.xaml</DependentUpon>
