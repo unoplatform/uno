@@ -22,6 +22,8 @@ namespace Windows.UI.Composition
 
 		// Backing for scroll offsets
 		private Vector2 _anchorPoint = Vector2.Zero;
+		private int _zIndex;
+
 		public Vector2 AnchorPoint
 		{
 			get => _anchorPoint;
@@ -29,6 +31,22 @@ namespace Windows.UI.Composition
 			{
 				_anchorPoint = value;
 				Compositor.InvalidateRender();
+			}
+		}
+
+		internal int ZIndex
+		{
+			get => _zIndex;
+			set
+			{
+				if (_zIndex != value)
+				{
+					_zIndex = value;
+					if (Parent is ContainerVisual containerVisual)
+					{
+						containerVisual.IsChildrenRenderOrderDirty = true;
+					}
+				}
 			}
 		}
 	}

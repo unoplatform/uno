@@ -40,6 +40,8 @@ namespace Windows.UI.Xaml
 			UpdateHitTest();
 		}
 
+		internal bool IsChildrenRenderOrderDirty { get; set; } = true;
+
 		partial void InitializeKeyboard();
 
 		private void OnPropertyChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
@@ -127,6 +129,7 @@ namespace Windows.UI.Xaml
 			}
 
 			OnChildAdded(child);
+			Visual.IsChildrenRenderOrderDirty = true;
 
 			// Reset to original (invalidated) state
 			child.ResetLayoutFlags();
@@ -189,7 +192,11 @@ namespace Windows.UI.Xaml
 		private void InnerRemoveChild(UIElement child)
 		{
 			child.SetParent(null);
-			Visual?.Children.Remove(child.Visual);
+			if (Visual != null)
+			{
+				Visual.Children.Remove(child.Visual);
+				Visual.IsChildrenRenderOrderDirty = true;
+			}
 			OnChildRemoved(child);
 		}
 

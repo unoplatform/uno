@@ -1,11 +1,9 @@
 #nullable enable
 
-using SkiaSharp;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Numerics;
-using Windows.Services.Maps;
+using SkiaSharp;
 using Windows.UI.Core;
 
 namespace Windows.UI.Composition
@@ -49,9 +47,10 @@ namespace Windows.UI.Composition
 
 			if (RootVisual != null)
 			{
-				foreach (var visual in RootVisual.Children)
+				var children = RootVisual.GetChildrenInRenderOrder();
+				for (var i = 0; i < children.Count; i++)
 				{
-					RenderVisual(surface, info, visual);
+					RenderVisual(surface, info, children[i]);
 				}
 			}
 		}
@@ -85,21 +84,13 @@ namespace Windows.UI.Composition
 
 				visual.Render(surface, info);
 
-				switch (visual)
+				if (visual is ContainerVisual containerVisual)
 				{
-					case SpriteVisual spriteVisual:
-						foreach (var inner in spriteVisual.Children)
-						{
-							RenderVisual(surface, info, inner);
-						}
-						break;
-
-					case ContainerVisual containerVisual:
-						foreach (var inner in containerVisual.Children)
-						{
-							RenderVisual(surface, info, inner);
-						}
-						break;
+					var children = containerVisual.GetChildrenInRenderOrder();
+					for (var i = 0; i < children.Count; i++)
+					{
+						RenderVisual(surface, info, children[i]);
+					}
 				}
 
 				surface.Canvas.Restore();
@@ -133,7 +124,7 @@ namespace Windows.UI.Composition
 						throw new InvalidOperationException($"Clipping with source {cpg.Path?.GeometrySource} is not supported");
 					}
 				}
-				else if(geometricClip.Geometry is null)
+				else if (geometricClip.Geometry is null)
 				{
 					// null is nop
 				}
