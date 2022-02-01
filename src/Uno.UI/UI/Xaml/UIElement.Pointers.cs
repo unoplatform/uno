@@ -796,22 +796,6 @@ namespace Windows.UI.Xaml
 				case RoutedEventFlag.PointerReleased:
 					OnPointerUp(ptArgs, BubblingContext.OnManagedBubbling);
 
-#if __IOS__ || __ANDROID__
-					// As the 'exit' is expected to be raised from 'up', if the 'up' event is handled
-					// (so we are bubbling event in managed code ... i.e. we are here),
-					// we do also have to generate (non bubbling) 'exit' to replicate that behavior.
-					// Note: We use the NoBubbling context in order to get the event raised locally (not IsInternal)!
-
-#if __ANDROID__ // On Android we inject 'exit' on 'up' only for touches
-					if (ptArgs.Pointer.PointerDeviceType is PointerDeviceType.Touch)
-#endif
-					{
-						var wasHandled = ptArgs.Handled; // As we use NoBubbling, the OnPointerExited might reset the Handled flag
-						global::System.Diagnostics.Debug.Assert(wasHandled);
-						OnPointerExited(ptArgs, BubblingContext.NoBubbling);
-						ptArgs.Handled = wasHandled;
-					}
-#endif
 					break;
 				case RoutedEventFlag.PointerExited:
 #if __WASM__
@@ -823,7 +807,7 @@ namespace Windows.UI.Xaml
 					}
 					else
 					{
-						OnPointerEnter(ptArgs, BubblingContext.OnManagedBubbling);
+						OnPointerExited(ptArgs, BubblingContext.OnManagedBubbling);
 					}
 #elif UNO_HAS_MANAGED_POINTERS
 					// On Skia and macOS the pointer exit is raised properly by the PointerManager with a "Root"(a.k.a. UpTo) element.
@@ -838,17 +822,17 @@ namespace Windows.UI.Xaml
 					//		 unfortunately, for now, this won't have any impact as parent element will re-create one for the 'up'.
 					bubblingMode = BubblingMode.NoBubbling;
 #elif __ANDROID__
-					// On Android, like for iOS we do generate 'exit' on 'up', but only for touches!
-					// For mouse and pen it's like for WASM, the platform is raising the events in the right sequence,
-					// except that if the event has been flagged as handled (so we are here) native bubbling will stop,
-					// so we have to let managed bubbling occurs and stop it on first element which is still isOver == true.
-					if (ptArgs.Pointer.PointerDeviceType is PointerDeviceType.Touch || ptArgs.IsPointCoordinatesOver(this))
+					// On Android, for touch we are raising the Exit directly from the RootVisual on pointer up in managed only,
+					// so we never have to prevent bubbling.
+					// However for mouse and pen (where we can have native support of over state), the behavior is like for WASM,
+					// we allow bubbling only up to the element that is effectively no longer under the pointer.
+					if (ptArgs.Pointer.PointerDeviceType is not PointerDeviceType.Touch && ptArgs.IsPointCoordinatesOver(this))
 					{
 						bubblingMode = BubblingMode.NoBubbling;
 					}
 					else
 					{
-						OnPointerEnter(ptArgs, BubblingContext.OnManagedBubbling);
+						OnPointerExited(ptArgs, BubblingContext.OnManagedBubbling);
 					}
 #endif
 					break;
@@ -1006,7 +990,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-#if !UNO_HAS_MANAGED_POINTERS // Captures release are handled a root level
+#if !UNO_HAS_MANAGED_POINTERS && !__ANDROID__ // Captures release are handled a root level (RootVisual for Android)
 			// We release the captures on up but only after the released event and processed the gesture
 			// Note: For a "Tap" with a finger the sequence is Up / Exited / Lost, so we let the Exit raise the capture lost
 			// Note: If '!isOver', that means that 'IsCaptured == true' otherwise 'isOverOrCaptured' would have been false.
@@ -1033,7 +1017,7 @@ namespace Windows.UI.Xaml
 				global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessMoved(args);
 			}
 
-#if !UNO_HAS_MANAGED_POINTERS // Captures release are handled a root level
+#if !UNO_HAS_MANAGED_POINTERS && !__ANDROID__ // Captures release are handled a root level (RootVisual for Android)
 			// We release the captures on exit when pointer if not pressed
 			// Note: for a "Tap" with a finger the sequence is Up / Exited / Lost, so the lost cannot be raised on Up
 			if (!IsPressed(args.Pointer))

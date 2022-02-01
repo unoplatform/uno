@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml
 					return OnNativePointerEnter(args);
 				case MotionEventActions.HoverExit when !args.Pointer.IsInContact:
 					// When a mouse button is pressed or pen touches the screen (a.k.a. becomes in contact), we receive an HoverExit before the Down.
-					// We validate here if pointer 'isInContact' (which is the case for HoverExit when mouse button pressed / pen touch  the screen)
+					// We validate here if pointer 'isInContact' (which is the case for HoverExit when mouse button pressed / pen touched the screen)
 					// and we ignore them (as on UWP Exit is raised only when pointer moves out of bounds of the control, no matter the pressed state).
 					// As a side effect we will have to update the hover state on each Move in order to handle the case of press -> move out -> release.
 					return OnNativePointerExited(args);
@@ -136,17 +136,10 @@ namespace Windows.UI.Xaml
 				case MotionEventActions.Down:
 				case MotionEventActions.PointerDown:
 					return OnNativePointerDown(args);
-				case MotionEventActions.Up when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
-				case MotionEventActions.PointerUp when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
-					var handled = OnNativePointerUp(args);
-					// Like for the Down, we manually generate an Exited, but we DON'T REQUEST IT to bubble in managed as it would mean
-					// that parent elements would get the Exit **before** the Release!
-					// Instead we raise it per layer, which means that we won't follow the UWP behavior where the whole tree gets the Released and then the Exited.
-					OnNativePointerExited(args.Reset());
-					return handled;
 				case PointerRoutedEventArgs.StylusWithBarrelUp:
 				case MotionEventActions.Up:
 				case MotionEventActions.PointerUp:
+					// Note: for touch pointer, in the RootVisual we will redispatch this event to raise exit
 					return OnNativePointerUp(args);
 
 				// We get ACTION_DOWN and ACTION_UP only for "left" button, and instead we get a HOVER_MOVE when pressing/releasing the right button of the mouse.
@@ -176,6 +169,13 @@ namespace Windows.UI.Xaml
 					return false;
 			}
 		}
+
+		/// <summary>
+		/// Used by the VisualRoot to redispatch a pointer exit on pointer up
+		/// </summary>
+		/// <param name="args"></param>
+		internal void RedispatchPointerExited(PointerRoutedEventArgs args)
+			=> OnNativePointerExited(args);
 
 		partial void OnManipulationModeChanged(ManipulationModes oldMode, ManipulationModes newMode)
 			=> IsNativeMotionEventsInterceptForbidden = newMode == ManipulationModes.None;

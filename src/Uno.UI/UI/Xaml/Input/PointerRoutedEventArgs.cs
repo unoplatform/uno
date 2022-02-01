@@ -57,9 +57,9 @@ namespace Windows.UI.Xaml.Input
 		/// <summary>
 		/// Reset the internal state in order to re-use that event args to raise another event
 		/// </summary>
-		internal PointerRoutedEventArgs Reset()
+		internal PointerRoutedEventArgs Reset(bool canBubbleNatively = PlatformSupportsNativeBubbling)
 		{
-			CanBubbleNatively = PlatformSupportsNativeBubbling;
+			CanBubbleNatively = canBubbleNatively;
 			Handled = false;
 
 			return this;

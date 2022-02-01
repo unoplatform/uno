@@ -13,6 +13,12 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Input;
 
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+#endif
+
 namespace Uno.UI.Xaml.Core
 {
 	/// <summary>
@@ -27,11 +33,31 @@ namespace Uno.UI.Xaml.Core
 		public RootVisual(CoreServices coreServices)
 		{
 			_coreServices = coreServices ?? throw new System.ArgumentNullException(nameof(coreServices));
-            //Uno specific - flag as VisualTreeRoot for interop with existing logic
+			//Uno specific - flag as VisualTreeRoot for interop with existing logic
 			IsVisualTreeRoot = true;
 #if __WASM__
 			//Uno WASM specific - set tabindex to 0 so the RootVisual is "native focusable"
 			SetAttribute("tabindex", "0");
+#endif
+
+#if __ANDROID__
+			AddHandler(
+				PointerReleasedEvent,
+				new PointerEventHandler((snd, args) =>
+				{
+					// On Android we use the RootVisual to raise the UWP only exit event (in managed only)
+					if (args.Pointer.PointerDeviceType is PointerDeviceType.Touch && args.OriginalSource is UIElement src)
+					{
+						// It's acceptable to use only the OriginalSource on Android:
+						// since the platform has "implicit capture" and captures are propagated to the OS,
+						// the OriginalSource will be the element that has capture (if any).
+
+						src.RedispatchPointerExited(args.Reset(canBubbleNatively: false));
+					}
+
+					ReleaseCaptures(args.Reset(canBubbleNatively: false));
+				}),
+				handledEventsToo: true);
 #endif
 
 			PointerPressed += RootVisual_PointerPressed;
@@ -39,10 +65,10 @@ namespace Uno.UI.Xaml.Core
 			PointerCanceled += RootVisual_PointerCanceled;
 		}
 
-        /// <summary>
-        /// Gets or sets the Visual Tree.
-        /// </summary>
-        internal VisualTree? AssociatedVisualTree { get; set; }
+		/// <summary>
+		/// Gets or sets the Visual Tree.
+		/// </summary>
+		internal VisualTree? AssociatedVisualTree { get; set; }
 
 		internal PopupRoot? AssociatedPopupRoot =>
 			AssociatedVisualTree?.PopupRoot ?? this.GetContext().MainPopupRoot;
@@ -142,5 +168,15 @@ namespace Uno.UI.Xaml.Core
 			_isLeftButtonPressed = false;
 		}
 #endif
+		private void ReleaseCaptures(PointerRoutedEventArgs routedArgs)
+		{
+			if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
+			{
+				foreach (var target in capture.Targets)
+				{
+					target.Element.ReleasePointerCapture(capture.Pointer.UniqueId, kinds: PointerCaptureKind.Any);
+				}
+			}
+		}
 	}
 }
