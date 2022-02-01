@@ -2,24 +2,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-echo "Current system date"
-date
-
-echo "Listing iOS simulators"
-xcrun simctl list devices --json
-
-## Preemptively start the simulator
-/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/Contents/MacOS/Simulator &
-
-## Pre-build the transform tool to get early warnings
-pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
-dotnet build
-popd
-
-cd $BUILD_SOURCESDIRECTORY/build
-
 export NUNIT_VERSION=3.12.0
-mono nuget/nuget.exe install NUnit.ConsoleRunner -Version $NUNIT_VERSION
 
 if [ "$UITEST_SNAPSHOTS_ONLY" == 'true' ];
 then
@@ -92,6 +75,39 @@ fi
 export UNO_UITEST_PLATFORM=iOS
 export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME
 
+export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
+export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-ios-$SCREENSHOTS_FOLDERNAME-${UITEST_SNAPSHOTS_GROUP=automated}-${UITEST_AUTOMATED_GROUP=automated}.txt
+export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
+export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/Release/SamplesApp.UITests.dll
+export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/ios-automated
+export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-ios-automated.xml
+
+if grep -q "invalid-test-for-retry" "$UNO_TESTS_FAILED_LIST"; then
+then
+	# The test results file only contains the re-run marker and no
+	# other test to rerun. We can skip this run.
+	echo "The file $UNO_TESTS_FAILED_LIST does not contain tests to re-run, skipping."
+	exit 0
+fi
+
+echo "Current system date"
+date
+
+echo "Listing iOS simulators"
+xcrun simctl list devices --json
+
+## Preemptively start the simulator
+/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/Contents/MacOS/Simulator &
+
+## Pre-build the transform tool to get early warnings
+pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
+dotnet build
+popd
+
+cd $BUILD_SOURCESDIRECTORY/build
+
+mono nuget/nuget.exe install NUnit.ConsoleRunner -Version $NUNIT_VERSION
+
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
 # Imported app bundle from artifacts is not executable
@@ -100,13 +116,6 @@ chmod -R +x $UNO_UITEST_IOSBUNDLE_PATH
 # Move to the screenshot directory so that the output path is the proper one, as
 # required by Xamarin.UITest
 cd $UNO_UITEST_SCREENSHOT_PATH
-
-export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
-export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-ios-$SCREENSHOTS_FOLDERNAME-${UITEST_SNAPSHOTS_GROUP=automated}-${UITEST_AUTOMATED_GROUP=automated}.txt
-export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
-export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/Release/SamplesApp.UITests.dll
-export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/ios-automated
-export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-ios-automated.xml
 
 ## Build the NUnit configuration file
 echo "--trace=Verbose" > $UNO_TESTS_RESPONSE_FILE

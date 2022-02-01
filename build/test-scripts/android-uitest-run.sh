@@ -3,6 +3,50 @@ set -euo pipefail
 IFS=$'\n\t'
 
 export BUILDCONFIGURATION=Release
+export NUNIT_VERSION=3.12.0
+
+if [ "$UITEST_TEST_MODE_NAME" == 'Snapshots' ];
+then
+	export TEST_FILTERS="namespace == 'SamplesApp.UITests.Snap'"
+	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME-Snap
+
+elif [ "$UITEST_TEST_MODE_NAME" == 'Automated' ];
+then
+	export TEST_FILTERS="\
+		namespace != 'SamplesApp.UITests.Snap' \
+		and class != 'SamplesApp.UITests.Runtime.BenchmarkDotNetTests' \
+		and class != 'SamplesApp.UITests.Runtime.RuntimeTests' \
+		and cat =~ 'testBucket:$UNO_UITEST_BUCKET_ID'
+	";
+
+	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME
+
+elif [ "$UITEST_TEST_MODE_NAME" == 'RuntimeTests' ];
+then
+	export TEST_FILTERS="\
+		class == 'SamplesApp.UITests.Runtime.RuntimeTests' \
+	";
+
+	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME
+fi
+
+export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME
+export UNO_UITEST_PLATFORM=Android
+export UNO_UITEST_ANDROIDAPK_PATH=$BUILD_SOURCESDIRECTORY/build/$SAMPLEAPP_ARTIFACT_NAME/android/uno.platform.unosampleapp-Signed.apk
+export IsUiAutomationMappingEnabled=true
+
+export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
+export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-android-$ANDROID_SIMULATOR_APILEVEL-$SCREENSHOTS_FOLDERNAME-$UNO_UITEST_BUCKET_ID-$TARGETPLATFORM_NAME.txt
+export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
+export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-android-automated-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME.xml
+
+if grep -q "invalid-test-for-retry" "$UNO_TESTS_FAILED_LIST"; then
+then
+	# The test results file only contains the re-run marker and no
+	# other test to rerun. We can skip this run.
+	echo "The file $UNO_TESTS_FAILED_LIST does not contain tests to re-run, skipping."
+	exit 0
+fi
 
 cd $BUILD_SOURCESDIRECTORY/build
 
@@ -77,45 +121,10 @@ $ANDROID_HOME/platform-tools/adb shell settings put global hidden_api_policy 1
 
 echo "Emulator started"
 
-if [ "$UITEST_TEST_MODE_NAME" == 'Snapshots' ];
-then
-	export TEST_FILTERS="namespace == 'SamplesApp.UITests.Snap'"
-	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME-Snap
-
-elif [ "$UITEST_TEST_MODE_NAME" == 'Automated' ];
-then
-	export TEST_FILTERS="\
-		namespace != 'SamplesApp.UITests.Snap' \
-		and class != 'SamplesApp.UITests.Runtime.BenchmarkDotNetTests' \
-		and class != 'SamplesApp.UITests.Runtime.RuntimeTests' \
-		and cat =~ 'testBucket:$UNO_UITEST_BUCKET_ID'
-	";
-
-	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME
-
-elif [ "$UITEST_TEST_MODE_NAME" == 'RuntimeTests' ];
-then
-	export TEST_FILTERS="\
-		class == 'SamplesApp.UITests.Runtime.RuntimeTests' \
-	";
-
-	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME
-fi
-export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME
-export UNO_UITEST_PLATFORM=Android
-export UNO_UITEST_ANDROIDAPK_PATH=$BUILD_SOURCESDIRECTORY/build/$SAMPLEAPP_ARTIFACT_NAME/android/uno.platform.unosampleapp-Signed.apk
-export IsUiAutomationMappingEnabled=true
-
-export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
-export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-android-$ANDROID_SIMULATOR_APILEVEL-$SCREENSHOTS_FOLDERNAME-$UNO_UITEST_BUCKET_ID-$TARGETPLATFORM_NAME.txt
-export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
-export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-android-automated-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME.xml
-
 cp $UNO_UITEST_ANDROIDAPK_PATH $BUILD_ARTIFACTSTAGINGDIRECTORY
 
 cd $BUILD_SOURCESDIRECTORY/build
 
-export NUNIT_VERSION=3.12.0
 mono nuget/NuGet.exe install NUnit.ConsoleRunner -Version $NUNIT_VERSION
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
