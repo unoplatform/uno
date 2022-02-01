@@ -1710,8 +1710,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		public async Task When_List_Given_More_Space()
+		{
+
+			var list = new ListView
+			{
+				ItemsPanel = NoCacheItemsStackPanel,
+				ItemTemplate = FixedSizeItemTemplate,
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemsSource = Enumerable.Range(0,10).Select(i => $"Item {i}").ToArray()
+			};
+			var host = new Grid
+			{
+				Height = 100,
+				Children =
+				{
+					list
+				}
+			};
+
+			WindowHelper.WindowContent = host;
+			await WindowHelper.WaitForLoaded(list);
+
+			Assert.IsNotNull(list.ContainerFromIndex(2));
+			Assert.IsNull(list.ContainerFromIndex(8));
+
+			host.Height = 300;
+
+			await WindowHelper.WaitForNonNull(() => list.ContainerFromIndex(8));
+		}
+
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
 
+
+
+		#region Helper classes
 		private class When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext : System.ComponentModel.INotifyPropertyChanged
 		{
 			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
@@ -1956,4 +1990,5 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 	}
+	#endregion
 }
