@@ -136,10 +136,22 @@ namespace Windows.UI.Xaml
 				case MotionEventActions.Down:
 				case MotionEventActions.PointerDown:
 					return OnNativePointerDown(args);
+				case MotionEventActions.Up when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
+				case MotionEventActions.PointerUp when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
+					// For touch pointer, in the RootVisual we will redispatch this event to raise exit,
+					// but if the event has been handled, we need to raise it after the 'up' has been processed.
+					if (OnNativePointerUp(args))
+					{
+						Uno.UI.Xaml.Core.RootVisual.ProcessPointerUp(args);
+						return true;
+					}
+					else
+					{
+						return false;
+					}
 				case PointerRoutedEventArgs.StylusWithBarrelUp:
 				case MotionEventActions.Up:
 				case MotionEventActions.PointerUp:
-					// Note: for touch pointer, in the RootVisual we will redispatch this event to raise exit
 					return OnNativePointerUp(args);
 
 				// We get ACTION_DOWN and ACTION_UP only for "left" button, and instead we get a HOVER_MOVE when pressing/releasing the right button of the mouse.
@@ -175,7 +187,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="args"></param>
 		internal void RedispatchPointerExited(PointerRoutedEventArgs args)
-			=> OnNativePointerExited(args);
+			=> OnNativePointerExited(args.Reset(canBubbleNatively: false));
 
 		partial void OnManipulationModeChanged(ManipulationModes oldMode, ManipulationModes newMode)
 			=> IsNativeMotionEventsInterceptForbidden = newMode == ManipulationModes.None;

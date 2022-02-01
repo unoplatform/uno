@@ -43,21 +43,12 @@ namespace Uno.UI.Xaml.Core
 #if __ANDROID__
 			AddHandler(
 				PointerReleasedEvent,
-				new PointerEventHandler((snd, args) =>
-				{
-					// On Android we use the RootVisual to raise the UWP only exit event (in managed only)
-					if (args.Pointer.PointerDeviceType is PointerDeviceType.Touch && args.OriginalSource is UIElement src)
-					{
-						// It's acceptable to use only the OriginalSource on Android:
-						// since the platform has "implicit capture" and captures are propagated to the OS,
-						// the OriginalSource will be the element that has capture (if any).
-
-						src.RedispatchPointerExited(args.Reset(canBubbleNatively: false));
-					}
-
-					ReleaseCaptures(args.Reset(canBubbleNatively: false));
-				}),
-				handledEventsToo: true);
+				new PointerEventHandler((snd, args) => ProcessPointerUp(args)),
+				// We don't want handled events, they are forwarded directly by the element that has handled it,
+				// but only ** AFTER ** the up has been fully processed.
+				// This is required to be sure that element process gestures and manipulations before we raise the exit
+				// (e.g. the 'tapped' event on a Button would be fired after the 'exit').
+				handledEventsToo: false); 
 #endif
 
 			PointerPressed += RootVisual_PointerPressed;
@@ -168,7 +159,24 @@ namespace Uno.UI.Xaml.Core
 			_isLeftButtonPressed = false;
 		}
 #endif
-		private void ReleaseCaptures(PointerRoutedEventArgs routedArgs)
+
+#if __ANDROID__
+		internal static void ProcessPointerUp(PointerRoutedEventArgs args)
+		{
+			// On Android we use the RootVisual to raise the UWP only exit event (in managed only)
+			if (args.Pointer.PointerDeviceType is PointerDeviceType.Touch && args.OriginalSource is UIElement src)
+			{
+				// It's acceptable to use only the OriginalSource on Android:
+				// since the platform has "implicit capture" and captures are propagated to the OS,
+				// the OriginalSource will be the element that has capture (if any).
+
+				src.RedispatchPointerExited(args.Reset(canBubbleNatively: false));
+			}
+
+			ReleaseCaptures(args.Reset(canBubbleNatively: false));
+		}
+
+		private static void ReleaseCaptures(PointerRoutedEventArgs routedArgs)
 		{
 			if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
 			{
@@ -178,5 +186,6 @@ namespace Uno.UI.Xaml.Core
 				}
 			}
 		}
+#endif
 	}
 }
