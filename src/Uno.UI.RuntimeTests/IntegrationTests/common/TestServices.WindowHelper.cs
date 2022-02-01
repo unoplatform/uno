@@ -125,7 +125,9 @@ namespace Private.Infrastructure
 
 					await WaitFor(IsLoaded, message: $"{element} loaded");
 				}
-
+#if __WASM__   // Adjust for re-layout failures in When_Inline_Items_SelectedIndex, When_Observable_ItemsSource_And_Added, When_Presenter_Doesnt_Take_Up_All_Space
+				await Do();
+#else
 				if (element.Dispatcher.HasThreadAccess)
 				{
 					await Do();
@@ -149,6 +151,7 @@ namespace Private.Infrastructure
 
 					await cts.Task;
 				}
+#endif
 			}
 
 			internal static async Task WaitForRelayouted(FrameworkElement frameworkElement)
