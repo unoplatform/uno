@@ -3,7 +3,8 @@
 namespace Windows.Storage {
 
 	export class StorageFolder {
-		private static _isInit = false;
+		private static _isInitialized = false;
+		private static _isSynchronizing = false;
 		private static dispatchStorageInitialized: () => number;
 
 		/**
@@ -62,20 +63,14 @@ namespace Windows.Storage {
 			FS.mount(IDBFS, {}, path);
 
 			// Ensure to sync pseudo file system on unload (and periodically for safety)
-			if (!this._isInit) {
+			if (!this._isInitialized) {
+				// Request an initial sync to populate the file system
+				StorageFolder.synchronizeFileSystem(() => StorageFolder.onStorageInitialized());
 
-			// Request an initial sync to populate the file system
-				FS.syncfs(true, err => {
-					if (err) {
-						console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
-					}
-					StorageFolder.onStorageInitialized();
-				});
-
-				window.addEventListener("beforeunload", this.synchronizeFileSystem);
+				window.addEventListener("beforeunload", () => this.synchronizeFileSystem());
 				setInterval(this.synchronizeFileSystem, 10000);
 
-				this._isInit = true;
+				this._isInitialized = true;
 			}
 		}
 
@@ -91,11 +86,23 @@ namespace Windows.Storage {
 		/**
 		 * Synchronize the IDBFS memory cache back to IndexDB
 		 * */
-		private static synchronizeFileSystem(): void {
-			FS.syncfs(err => {
-				if (err) {
-					console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
-			}});
+		private static synchronizeFileSystem(onSynchronized: Function = null): void {
+
+			if (!StorageFolder._isSynchronizing) {
+				StorageFolder._isSynchronizing = true;
+
+				FS.syncfs(err => {
+					StorageFolder._isSynchronizing = false;
+
+					if (onSynchronized) {
+						onSynchronized();
+					}
+
+					if (err) {
+						console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
+					}
+				});
+			}
 		}
 	}
 }
