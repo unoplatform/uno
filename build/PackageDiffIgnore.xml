@@ -8660,6 +8660,9 @@
 			<Member
 				fullName="System.Void Windows.UI.Input.Preview.Injection.InputInjector..ctor()"
 				reason="Not part of the UWP API" />
+			<Member
+				fullName="System.Object Windows.UI.Xaml.RoutedEventArgs.get_OriginalSource()"
+				reason="False positive: added in an internal interface" />
 		</Methods>
 	  <Properties>
 		  <Member
