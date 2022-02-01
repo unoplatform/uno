@@ -37,6 +37,9 @@ namespace Windows.UI.Input
 			TouchConfidence = properties.TouchConfidence;
 			IsCanceled = properties.IsCanceled;
 			PointerUpdateKind = (PointerUpdateKind)properties.PointerUpdateKind;
+			XTilt = properties.XTilt;
+			YTilt = properties.YTilt;
+			MouseWheelDelta = properties.MouseWheelDelta;
 		}
 
 #if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
@@ -60,6 +63,9 @@ namespace Windows.UI.Input
 			props.TouchConfidence = muxProps.TouchConfidence;
 			props.IsCanceled = muxProps.IsCanceled;
 			props.PointerUpdateKind = (Windows.UI.Input.PointerUpdateKind)muxProps.PointerUpdateKind;
+			props.XTilt = muxProps.XTilt;
+			props.YTilt = muxProps.YTilt;
+			props.MouseWheelDelta = muxProps.MouseWheelDelta;
 
 			return props;
 		}
@@ -103,15 +109,15 @@ namespace Windows.UI.Input
 
 		public PointerUpdateKind PointerUpdateKind { get; internal set; }
 
-#if __MACOS__
+		// Supported only on MacOS
+		[NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public float XTilt { get; internal set; } = 0f;
 
+		// Supported only on MacOS
+		[NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public float YTilt { get; internal set; } = 0f;
-#endif
 
-#if __IOS__ || __MACOS__ || __ANDROID__
-		[global::Uno.NotImplemented]
-#endif
+		[NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 		public int MouseWheelDelta { get; internal set; }
 
 		/// <inheritdoc />
