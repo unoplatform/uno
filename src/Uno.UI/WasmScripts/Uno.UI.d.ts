@@ -1029,6 +1029,7 @@ declare namespace Uno.Storage {
 declare namespace Windows.Storage {
     class StorageFolder {
         private static _isInit;
+        private static _isSynchronizing;
         private static dispatchStorageInitialized;
         /**
          * Determine if IndexDB is available, some browsers and modes disable it.

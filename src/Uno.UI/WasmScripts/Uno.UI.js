@@ -3667,12 +3667,7 @@ var Windows;
                 // Ensure to sync pseudo file system on unload (and periodically for safety)
                 if (!this._isInit) {
                     // Request an initial sync to populate the file system
-                    FS.syncfs(true, err => {
-                        if (err) {
-                            console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
-                        }
-                        StorageFolder.onStorageInitialized();
-                    });
+                    StorageFolder.synchronizeFileSystem();
                     window.addEventListener("beforeunload", this.synchronizeFileSystem);
                     setInterval(this.synchronizeFileSystem, 10000);
                     this._isInit = true;
@@ -3689,14 +3684,19 @@ var Windows;
              * Synchronize the IDBFS memory cache back to IndexDB
              * */
             static synchronizeFileSystem() {
-                FS.syncfs(err => {
-                    if (err) {
-                        console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
-                    }
-                });
+                if (!StorageFolder._isSynchronizing) {
+                    StorageFolder._isSynchronizing = true;
+                    FS.syncfs(err => {
+                        StorageFolder._isSynchronizing = false;
+                        if (err) {
+                            console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
+                        }
+                    });
+                }
             }
         }
         StorageFolder._isInit = false;
+        StorageFolder._isSynchronizing = false;
         Storage.StorageFolder = StorageFolder;
     })(Storage = Windows.Storage || (Windows.Storage = {}));
 })(Windows || (Windows = {}));
