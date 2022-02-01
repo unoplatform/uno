@@ -750,11 +750,30 @@ namespace Windows.UI.Xaml.Controls
 
 		public override CGRect Frame
 		{
-			get => base.Frame;
+			get
+			{
+				try
+				{
+					return base.Frame;
+				}
+				catch
+				{
+					Console.WriteLine("ListViewBaseInternalContainer get failed");
+					return CGRect.Empty;
+				}
+			}
+
 			set
 			{
-				base.Frame = value;
-				UpdateContentViewFrame();
+				try
+				{
+					base.Frame = value;
+					UpdateContentViewFrame();
+				}
+				catch
+				{
+					Console.WriteLine("ListViewBaseInternalContainer set failed");
+				}
 			}
 		}
 

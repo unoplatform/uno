@@ -112,7 +112,6 @@ namespace Windows.UI.Xaml.Controls
 		public bool HasMarkedText => throw new NotImplementedException();
 
 		public nint ConversationIdentifier => throw new NotImplementedException();
-
 		public NSRange MarkedRange => throw new NotImplementedException();
 
 		public NSRange SelectedRange => throw new NotImplementedException();

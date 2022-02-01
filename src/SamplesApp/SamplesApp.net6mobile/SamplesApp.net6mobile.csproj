@@ -9,10 +9,9 @@
 		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
 
-		<!-- Error: Optimizing assemblies for size is not supported for the selected publish configuration -->
 		<PublishTrimmed>false</PublishTrimmed>
 		
-				<RuntimeIdentifier Condition="'$(TargetFramework)' == 'net6.0-ios'">iossimulator-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="'$(TargetFramework)' == 'net6.0-ios'">iossimulator-x64</RuntimeIdentifier>
 		<RuntimeIdentifier Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
 		<InvariantGlobalization Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">true</InvariantGlobalization>
 
@@ -33,7 +32,23 @@
 		
 		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>
 	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)'=='net6.0-ios'">
+		<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
+
+		<!--
+			Workaround for
+			tools\msbuild\iOS\Xamarin.iOS.Common.After.targets(368,3): error MSB3371: The file "obj\Release\net6.0-ios\iossimulator-x64\linked\Link.semaphore"
+			cannot be created. Could not find a part of the path 'C:\a\1\s\src\SamplesApp\SamplesApp.net6mobile\obj\Release\net6.0-ios\iossimulator-x64\linked\Link.semaphore'.
+		-->
+		<PublishTrimmed>false</PublishTrimmed>
+	</PropertyGroup>
 	
+	<PropertyGroup Condition="'$(TargetFramework)'=='net6.0-android'">
+		<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
+		<AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
+	</PropertyGroup>
+
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
@@ -85,7 +100,7 @@
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
-		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" PrivateAssets="all" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net6.0-android'">

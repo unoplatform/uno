@@ -8648,10 +8648,21 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Media.Animation.Timeline.add_Completed(System.EventHandler`1&lt;System.Object&gt; value)"
 				reason="Incorrectly marked as removed because removed from an internal interface" />
-			<Member
-				fullName="System.Void Windows.UI.Xaml.Media.Animation.Timeline.remove_Completed(System.EventHandler`1&lt;System.Object&gt; value)"
-				reason="Incorrectly marked as removed because removed from an internal interface" />
+		  <Member
+			  fullName="System.Void Windows.UI.Xaml.Media.Animation.Timeline.remove_Completed(System.EventHandler`1&lt;System.Object&gt; value)"
+			  reason="Incorrectly marked as removed because removed from an internal interface" />
+		  <Member
+			  fullName="System.nint Windows.UI.Xaml.Controls.SecureTextBoxView.get_ConversationIdentifier()"
+			  reason="net6 macos remove deprecated API" />
+		  <Member
+			  fullName="System.nuint Windows.UI.Xaml.Controls.SecureTextBoxView.GetCharacterIndex(CoreGraphics.CGPoint point)"
+			  reason="net6 macos remove deprecated API" />
 		</Methods>
+	  <Properties>
+		  <Member
+			  fullName="System.nint Windows.UI.Xaml.Controls.SecureTextBoxView::ConversationIdentifier()"
+			  reason="net6 macos remove deprecated API" />
+	  </Properties>
 	</IgnoreSet>
 
 	<!--

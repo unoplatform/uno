@@ -16,14 +16,13 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 
 #if XAMARIN_IOS_UNIFIED
+
+#if !__MACCATALYST__  // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
 using MessageUI;
+#endif
 using Foundation;
 using UIKit;
 using CoreGraphics;
-#elif XAMARIN_IOS
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
-using MonoTouch.CoreGraphics;
 #else
 using Foundation;
 using AppKit;
@@ -255,6 +254,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public async Task LaunchMailto(CancellationToken ct, string subject = null, string body = null, string[] to = null, string[] cc = null, string[] bcc = null)
 		{
+#if !__MACCATALYST__  // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
 			if (!MFMailComposeViewController.CanSendMail)
 			{
 				return;
@@ -292,6 +292,7 @@ namespace Windows.UI.Xaml.Controls
 					})
 					.AsTask(CancellationToken.None);
 			}
+#endif
 		}
 #endif
 

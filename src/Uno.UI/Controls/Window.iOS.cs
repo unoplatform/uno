@@ -195,7 +195,7 @@ namespace Uno.UI.Controls
 
 		private void OnKeyboardWillShow(object sender, UIKeyboardEventArgs e)
 		{
-#if !MACCATALYST // Fix on .NET 6 Preview 6 https://github.com/unoplatform/uno/issues/5873
+#if !MACCATALYST && !IOS // Fix on .NET 6 Preview 6 https://github.com/unoplatform/uno/issues/5873
 			var keyboardRect = ((NSValue)e.Notification.UserInfo.ObjectForKey(UIKeyboard.BoundsUserInfoKey)).RectangleFValue;
 			var windowRect = Windows.UI.Xaml.Window.Current.Bounds;
 			_inputPane.OccludedRect = new Rect(0, windowRect.Height - keyboardRect.Height, keyboardRect.Width, keyboardRect.Height);
@@ -364,8 +364,11 @@ namespace Uno.UI.Controls
 
 		private bool IsWithinAWebView(UIView view)
 		{
-			return view?.FindSuperviewOfType<UIWebView>(stopAt: this) != null
-				|| view?.FindSuperviewOfType<WKWebView>(stopAt: this) != null;
+			return
+#if !__MACCATALYST__
+				view?.FindSuperviewOfType<UIWebView>(stopAt: this) != null ||
+#endif
+				view?.FindSuperviewOfType<WKWebView>(stopAt: this) != null;
 		}
 
 		private bool IsFocusable(UIView view)
