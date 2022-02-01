@@ -82,7 +82,7 @@ export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/Samples
 export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/ios-automated
 export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-ios-automated.xml
 
-if grep -q "invalid-test-for-retry" "$UNO_TESTS_FAILED_LIST";
+if [ $(wc -l < "$UNO_TESTS_FAILED_LIST") -ne 1 ];
 then
 	# The test results file only contains the re-run marker and no
 	# other test to rerun. We can skip this run.
