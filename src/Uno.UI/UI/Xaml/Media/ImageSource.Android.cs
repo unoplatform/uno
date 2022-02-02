@@ -166,6 +166,36 @@ namespace Windows.UI.Xaml.Media
 			return false;
 		}
 
+		internal Bitmap OpenFromFile(Android.Widget.ImageView targetImage = null, int? targetWidth = null, int? targetHeight = null)
+		{
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug(this.ToString() + $" Open(tw:{targetWidth}x{targetHeight})");
+			}
+
+			IsImageLoadedToUiDirectly = false;
+
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			options.InJustDecodeBounds = true;
+
+			var targetSize = UseTargetSize && targetWidth != null && targetHeight != null
+				? (global::System.Drawing.Size?)new global::System.Drawing.Size(targetWidth.Value, targetHeight.Value)
+				: null;
+
+			if (FilePath.HasValue())
+			{
+				BitmapFactory.DecodeFile(FilePath, options);
+				if (ValidateIfImageNeedsResize(options))
+				{
+					options.InJustDecodeBounds = false;
+					return _imageData = BitmapFactory.DecodeFile(FilePath, options);
+				}
+				return _imageData = BitmapFactory.DecodeFile(FilePath);
+			}
+
+			return null;
+		}
+
 		internal async Task<Bitmap> Open(CancellationToken ct, Android.Widget.ImageView targetImage = null, int? targetWidth = null, int? targetHeight = null)
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
