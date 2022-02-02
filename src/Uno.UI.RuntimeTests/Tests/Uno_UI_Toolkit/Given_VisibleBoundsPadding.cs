@@ -22,6 +22,9 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Toolkit
 	{
 		[TestMethod]
 		[RequiresFullWindow]
+#if __SKIA__ || __WASM__
+		[Ignore("VisibleBoundsPadding is not working correctly on these platforms - see https://github.com/unoplatform/uno/issues/7978")]
+#endif
 		public async Task When_Mask_All()
 		{
 			using (ScreenHelper.OverrideVisibleBounds(new Thickness(0, 34, 0, 65)))
