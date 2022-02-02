@@ -13,6 +13,7 @@ using Windows.UI.Input.Spatial;
 using ResourceKey = Windows.UI.Xaml.SpecializedResourceDictionary.ResourceKey;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Data;
+using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml
 {
@@ -21,6 +22,7 @@ namespace Windows.UI.Xaml
 		private readonly SpecializedResourceDictionary _values = new SpecializedResourceDictionary();
 		private readonly List<ResourceDictionary> _mergedDictionaries = new List<ResourceDictionary>();
 		private ResourceDictionary _themeDictionaries;
+		private ManagedWeakReference _sourceDictionary;
 
 		/// <summary>
 		/// This event is fired when a key that has value of type <see cref="ResourceDictionary"/> is added or changed in the current <see cref="ResourceDictionary" />
@@ -424,6 +426,11 @@ namespace Windows.UI.Xaml
 			_mergedDictionaries.Clear();
 			_themeDictionaries?.Clear();
 
+			// In a foreign library that uses merged-dict with 'Source=...', there can be multiple instances of res-dict from one single xaml file.
+			// And, the instance referenced in App.xaml may not be the same one used in merged-dict of library-a\textbox.xaml.
+			// In order to ensure the theme updates covers all of them, we need to keep track of this source instance for theme updates before it is lost.
+			_sourceDictionary = WeakReferencePool.RentWeakReference(this, source);
+
 			_values.AddRange(source._values);
 			_mergedDictionaries.AddRange(source._mergedDictionaries);
 			if (source._themeDictionaries != null)
@@ -546,7 +553,7 @@ namespace Windows.UI.Xaml
 		{
 			foreach (var item in _values.Values)
 			{
-				if (item is IDependencyObjectStoreProvider provider && provider.Store.Parent == null)
+				if (item is IDependencyObjectStoreProvider provider)
 				{
 					provider.Store.UpdateResourceBindings(updateReason, containingDictionary: this);
 				}
@@ -555,6 +562,11 @@ namespace Windows.UI.Xaml
 			foreach (var mergedDict in _mergedDictionaries)
 			{
 				mergedDict.UpdateThemeBindings(updateReason);
+			}
+
+			if (_sourceDictionary?.Target is ResourceDictionary target)
+			{
+				target.UpdateThemeBindings(updateReason);
 			}
 		}
 
@@ -595,6 +607,8 @@ namespace Windows.UI.Xaml
 		}
 
 		internal static object GetStaticResourceAliasPassthrough(string resourceKey, XamlParseContext parseContext) => new StaticResourceAliasRedirect(resourceKey, parseContext);
+
+		internal static ResourceKey GetActiveTheme() => Themes.Active;
 
 		internal static void SetActiveTheme(SpecializedResourceDictionary.ResourceKey key)
 			=> Themes.Active = key;
