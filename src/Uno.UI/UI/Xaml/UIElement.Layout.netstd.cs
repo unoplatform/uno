@@ -315,6 +315,8 @@ namespace Windows.UI.Xaml
 						}
 					}
 
+					children.Dispose();
+
 					if (!isDirty)
 					{
 						break;
