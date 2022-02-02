@@ -92,7 +92,7 @@ namespace Windows.UI.Xaml
 		}
 
 		private SuspendingOperation CreateSuspendingOperation() =>
-			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(30), () =>
+			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(0), () =>
 			{
 				Suspended = true;
 				NSApplication.SharedApplication.KeyWindow.PerformClose(null);
@@ -180,18 +180,15 @@ namespace Windows.UI.Xaml
 		{
 			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
 
-			var enteredBackgroundEventArgs = new EnteredBackgroundEventArgs(null);
-			EnteredBackground?.Invoke(this, enteredBackgroundEventArgs);
-			enteredBackgroundEventArgs.DeferralManager.EventRaiseCompleted();
+			RaiseEnteredBackground(null);
 
-			OnSuspending();
+			RaiseSuspending();
 		}
 
 		private void OnLeavingBackground(NSNotification notification)
 		{
-			var leavingBackgroundEventArgs = new LeavingBackgroundEventArgs(null);
-			LeavingBackground?.Invoke(this, leavingBackgroundEventArgs);
-			leavingBackgroundEventArgs.DeferralManager.EventRaiseCompleted();
+			RaiseResuming();
+			RaiseLeavingBackground(null);
 			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
 		}
 

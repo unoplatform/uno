@@ -131,9 +131,6 @@ namespace Windows.UI.Xaml
 		private SuspendingOperation CreateSuspendingOperation() =>
 			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(10), () => _suspended = true);
 
-		public override void WillEnterForeground(UIApplication application)
-			=> OnResuming();
-
 		partial void OnResumingPartial()
 		{
 			if (_suspended)
