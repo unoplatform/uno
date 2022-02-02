@@ -21,6 +21,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Image
 	{
+		private bool _isResized;
 		private bool _isInLayout;
 		private double _sourceImageScale = 1;
 		private Windows.Foundation.Size _sourceImageSize;
@@ -36,11 +37,13 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="isLogicalPixels">indicates that the size of the image source is in logical pixels (this is the case when the source is an URI)</param>
 		internal void UpdateSourceImageSize(Windows.Foundation.Size size, bool isLogicalPixels = false)
 		{
-			if (_sourceImageSize == size)
+			if (_sourceImageSize == size && _isResized)
 			{
+				_isResized = false;
 				return;
 			}
 
+			_isResized = true;
 			_sourceImageSize = isLogicalPixels
 				? size // is logical size already, no conversion needed
 				: size.PhysicalToLogicalPixels();
@@ -202,7 +205,7 @@ namespace Windows.UI.Xaml.Controls
 							return;
 						}
 
-						var dummy = SetSourceUriOrStream(imageSource);
+						SetSourceUriFromFile(imageSource);
 					}
 					else
 					{
@@ -240,6 +243,40 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// If an image doesn't have fixed sizes and is Uniform or None, we must use its aspect ratio to measure it.
 			return (Stretch == Stretch.Uniform || Stretch == Stretch.None) && (double.IsNaN(Width) || double.IsNaN(Height));
+		}
+
+		private void SetSourceUriFromFile(ImageSource newImageSource)
+		{
+			// The Jupiter behavior is to reset the visual right away, displaying nothing
+			// then show the new image. We're rescheduling the work below, so there is going
+			// to be a visual blank displayed.
+			ResetSource();
+
+			try
+			{
+				var disposable = new CancellationDisposable();
+
+				_imageFetchDisposable.Disposable = disposable;
+
+				var bitmap = newImageSource.OpenFromFile(_native, _targetWidth, _targetHeight);
+
+				_native.SetImageBitmap(bitmap);
+
+				if (bitmap != null)
+				{
+					OnImageOpened(newImageSource);
+				}
+				else
+				{
+					OnImageFailed(newImageSource);
+				}
+			}
+			catch (Exception ex)
+			{
+				this.Log().Warn("Image failed to open.", ex);
+
+				OnImageFailed(newImageSource);
+			}
 		}
 
 		private async Task SetSourceUriOrStream(ImageSource newImageSource)
