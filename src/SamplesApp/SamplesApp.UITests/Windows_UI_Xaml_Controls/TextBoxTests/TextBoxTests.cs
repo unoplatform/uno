@@ -875,9 +875,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 		public void TextBox_With_Description()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_Description", skipInitialScreenshot: true);
-			var textBox = _app.WaitForElement("DescriptionTextBox")[0];
+			var textBoxRect = ToPhysicalRect(_app.WaitForElement("DescriptionTextBox")[0].Rect);
 			using var screenshot = TakeScreenshot("TextBox Description", new ScreenshotOptions() { IgnoreInSnapshotCompare = true });
-			ImageAssert.HasColorAt(screenshot, textBox.Rect.X + textBox.Rect.Width / 2, textBox.Rect.Y + textBox.Rect.Height - 150, Color.Red);
+			ImageAssert.HasColorAt(screenshot, textBoxRect.X + textBoxRect.Width / 2, textBoxRect.Y + textBoxRect.Height - 50, Color.Red);
 		}
 
 		[Test]
@@ -885,9 +885,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 		public void PasswordBox_With_Description()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.TextBox.PasswordBox_Description", skipInitialScreenshot: true);
-			var passwordBox = _app.WaitForElement("DescriptionPasswordBox")[0];
+			var passwordBoxRect = ToPhysicalRect(_app.WaitForElement("DescriptionPasswordBox")[0].Rect);
 			using var screenshot = TakeScreenshot("PasswordBox Description", new ScreenshotOptions() { IgnoreInSnapshotCompare = true });
-			ImageAssert.HasColorAt(screenshot, passwordBox.Rect.X + passwordBox.Rect.Width / 2, passwordBox.Rect.Y + passwordBox.Rect.Height - 150, Color.Red);
+			ImageAssert.HasColorAt(screenshot, passwordBoxRect.X + passwordBoxRect.Width / 2, passwordBoxRect.Y + passwordBoxRect.Height - 50, Color.Red);
 		}
 	}
 }
