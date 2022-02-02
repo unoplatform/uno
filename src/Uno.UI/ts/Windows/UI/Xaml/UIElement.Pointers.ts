@@ -3,8 +3,8 @@
 	import HtmlEventDispatchResult = Uno.UI.HtmlEventDispatchResult;
 
 	export enum NativePointerEvent {
-		pointerenter = 1,
-		pointerleave = 1 << 1,
+		pointerover = 1,
+		pointerout = 1 << 1,
 		pointerdown = 1 << 2,
 		pointerup = 1 << 3,
 		pointercancel = 1 << 4,
@@ -19,8 +19,6 @@
 		private static _dispatchPointerEventMethod: any;
 		private static _dispatchPointerEventArgs: number;
 		private static _dispatchPointerEventResult: number;
-
-		private static _isPendingLeaveProcessingEnabled: boolean;
 
 		public static setPointerEventArgs(pArgs: number): void {
 			if (!UIElement._dispatchPointerEventMethod) {
@@ -40,11 +38,11 @@
 			const params = Windows.UI.Xaml.NativePointerSubscriptionParams.unmarshal(pParams);
 			const element = WindowManager.current.getView(params.HtmlId);
 
-			if (params.Events & NativePointerEvent.pointerenter) {
-				element.addEventListener("pointerenter", UIElement.onPointerEnterReceived);
+			if (params.Events & NativePointerEvent.pointerover) {
+				element.addEventListener("pointerover", UIElement.onPointerEventReceived);
 			}
-			if (params.Events & NativePointerEvent.pointerleave) {
-				element.addEventListener("pointerleave", UIElement.onPointerLeaveReceived);
+			if (params.Events & NativePointerEvent.pointerout) {
+				element.addEventListener("pointerout", UIElement.onPointerOutReceived);
 			}
 			if (params.Events & NativePointerEvent.pointerdown) {
 				element.addEventListener("pointerdown", UIElement.onPointerEventReceived);
@@ -71,11 +69,11 @@
 				return;
 			}
 
-			if (params.Events & NativePointerEvent.pointerenter) {
-				element.removeEventListener("pointerenter", UIElement.onPointerEnterReceived);
+			if (params.Events & NativePointerEvent.pointerover) {
+				element.removeEventListener("pointerover", UIElement.onPointerEventReceived);
 			}
-			if (params.Events & NativePointerEvent.pointerleave) {
-				element.removeEventListener("pointerleave", UIElement.onPointerLeaveReceived);
+			if (params.Events & NativePointerEvent.pointerout) {
+				element.removeEventListener("pointerout", UIElement.onPointerOutReceived);
 			}
 			if (params.Events & NativePointerEvent.pointerdown) {
 				element.removeEventListener("pointerdown", UIElement.onPointerEventReceived);
@@ -98,110 +96,20 @@
 			UIElement.dispatchPointerEvent(evt.currentTarget as HTMLElement | SVGElement, evt);
 		}
 
-		private static onPointerEnterReceived(evt: PointerEvent): void {
+		private static onPointerOutReceived(evt: PointerEvent): void {
 			const element = evt.currentTarget as HTMLElement | SVGElement;
-			const e = evt as any;
 
-			if (e.explicitOriginalTarget) { // FF only
-
-				// It happens on FF that when another control which is over the 'element' has been updated, like text or visibility changed,
-				// we receive a pointer enter/leave of an element which is under an element that is capable to handle pointers,
-				// which is unexpected as the "pointerenter" should not bubble.
-				// So we have to validate that this event is effectively due to the pointer entering the control.
-				// We achieve this by browsing up the elements under the pointer (** not the visual tree**) 
-
-				for (let elt of document.elementsFromPoint(evt.pageX, evt.pageY)) {
-					if (elt == element) {
-						// We found our target element, we can raise the event and stop the loop
-						UIElement.onPointerEventReceived(evt);
-						return;
-					}
-
-					let htmlElt = elt as HTMLElement;
-					if (htmlElt.style.pointerEvents != "none") {
-						// This 'htmlElt' is handling the pointers events, this mean that we can stop the loop.
-						// However, if this 'htmlElt' is one of our child it means that the event was legitimate
-						// and we have to raise it for the 'element'.
-						while (htmlElt.parentElement) {
-							htmlElt = htmlElt.parentElement;
-							if (htmlElt == element) {
-								UIElement.onPointerEventReceived(evt);
-								return;
-							}
-						}
-
-						// We found an element this is capable to handle the pointers but which is not one of our child
-						// (probably a sibling which is covering the element). It means that the pointerEnter/Leave should
-						// not have bubble to the element, and we can mute it.
-						return;
-					}
-				}
-			} else {
-				UIElement.onPointerEventReceived(evt);
-			}
-		}
-
-		private static onPointerLeaveReceived(evt: PointerEvent): void {
-			const element = evt.currentTarget as HTMLElement | SVGElement;
-			const e = evt as any;
-
-			if (e.explicitOriginalTarget // FF only
-				&& e.explicitOriginalTarget !== element
-				&& (event as PointerEvent).isOver(element)) {
-
-				// If the event was re-targeted, it's suspicious as the leave event should not bubble
-				// This happens on FF when another control which is over the 'element' has been updated, like text or visibility changed.
-				// So we have to validate that this event is effectively due to the pointer leaving the element.
-				// We achieve that by buffering it until the next few 'pointermove' on document for which we validate the new pointer location.
-
-				// It's common to get a move right after the leave with the same pointer's location,
-				// so we wait up to 3 pointer move before dropping the leave event.
-				let attempt = 3;
-
-				UIElement.ensurePendingLeaveEventProcessing();
-				UIElement.processPendingLeaveEvent = (move: PointerEvent) => {
-					if (!move.isOverDeep(element)) {
-						// Raising deferred pointerleave on element " + element.id);
-						// Note The 'evt.currentTarget' is available only while in the event handler.
-						//		So we manually keep a reference ('element') and explicit dispatch event to it.
-						//		https://developer.mozilla.org/en-US/docs/Web/API/Event/currentTarget
-						UIElement.dispatchPointerEvent(element, evt);
-
-						UIElement.processPendingLeaveEvent = null;
-					} else if (--attempt <= 0) {
-						// Drop deferred pointerleave on element " + element.id);
-
-						UIElement.processPendingLeaveEvent = null;
-					} else {
-						// Requeue deferred pointerleave on element " + element.id);
-					}
-				};
-
-			} else {
-				UIElement.onPointerEventReceived(evt);
-			}
-		}
-
-		private static processPendingLeaveEvent: (evt: PointerEvent) => void;
-
-		/**
-		 * Ensure that any pending leave event are going to be processed (cf @see processPendingLeaveEvent )
-		 */
-		private static ensurePendingLeaveEventProcessing() {
-			if (UIElement._isPendingLeaveProcessingEnabled) {
+			if (evt.isDirectlyOver(element)) {
+				// The 'pointerout' event is bubbling so we get the event when the pointer is going out of a nested element,
+				// but pointer is still over the current element.
+				// So here we check if the event is effectively because the pointer is leaving the bounds of the current element.
+				// If not, we stopPropagation so parent won't have to check it again and again.
+				// Note: We don't have to do that for the "enter" as we anyway maintain the IsOver state in managed.
+				evt.stopPropagation();
 				return;
 			}
 
-			// Register an event listener on move in order to process any pending event (leave).
-			document.addEventListener(
-				"pointermove",
-				evt => {
-					if (UIElement.processPendingLeaveEvent) {
-						UIElement.processPendingLeaveEvent(evt as PointerEvent);
-					}
-				},
-				true); // in the capture phase to get it as soon as possible, and to make sure to respect the events ordering
-			UIElement._isPendingLeaveProcessingEnabled = true;
+			UIElement.onPointerEventReceived(evt);
 		}
 
 		private static dispatchPointerEvent(element: HTMLElement | SVGElement, evt: PointerEvent): void {
@@ -252,10 +160,6 @@
 		//#endregion
 
 		//#region Helpers
-		/**
-		 * pointer event extractor to be used with registerEventOnView
-		 * @param evt
-		 */
 		private static toNativePointerEventArgs(evt: PointerEvent | WheelEvent): Windows.UI.Xaml.NativePointerEventArgs {
 			let src = evt.target as HTMLElement | SVGElement;
 			if (src instanceof SVGElement) {
@@ -331,10 +235,10 @@
 
 		private static toNativeEvent(eventName: string): NativePointerEvent {
 			switch (eventName) {
-				case "pointerenter":
-					return NativePointerEvent.pointerenter;
-				case "pointerleave"  :
-					return NativePointerEvent.pointerleave;
+				case "pointerover":
+					return NativePointerEvent.pointerover;
+				case "pointerout":
+					return NativePointerEvent.pointerout;
 				case "pointerdown"	 :
 					return NativePointerEvent.pointerdown;
 				case "pointerup"	 :

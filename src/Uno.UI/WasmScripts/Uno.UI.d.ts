@@ -578,6 +578,10 @@ declare namespace Uno.UI {
 interface PointerEvent {
     isOver(this: PointerEvent, element: HTMLElement | SVGElement): boolean;
     isOverDeep(this: PointerEvent, element: HTMLElement | SVGElement): boolean;
+    /**
+     * Indicates if the pointer is over the given 'element' and there no other element above it (i.e. given 'element' is top most).
+     */
+    isDirectlyOver(this: PointerEvent, element: HTMLElement | SVGElement): boolean;
 }
 declare namespace Uno.UI.Interop {
     class AsyncInteropHelper {
@@ -1185,8 +1189,8 @@ declare namespace Windows.UI.Xaml {
 }
 declare namespace Windows.UI.Xaml {
     enum NativePointerEvent {
-        pointerenter = 1,
-        pointerleave = 2,
+        pointerover = 1,
+        pointerout = 2,
         pointerdown = 4,
         pointerup = 8,
         pointercancel = 16,
@@ -1197,26 +1201,15 @@ declare namespace Windows.UI.Xaml {
         private static _dispatchPointerEventMethod;
         private static _dispatchPointerEventArgs;
         private static _dispatchPointerEventResult;
-        private static _isPendingLeaveProcessingEnabled;
         static setPointerEventArgs(pArgs: number): void;
         static setPointerEventResult(pArgs: number): void;
         static subscribePointerEvents(pParams: number): void;
         static unSubscribePointerEvents(pParams: number): void;
         private static onPointerEventReceived;
-        private static onPointerEnterReceived;
-        private static onPointerLeaveReceived;
-        private static processPendingLeaveEvent;
-        /**
-         * Ensure that any pending leave event are going to be processed (cf @see processPendingLeaveEvent )
-         */
-        private static ensurePendingLeaveEventProcessing;
+        private static onPointerOutReceived;
         private static dispatchPointerEvent;
         private static _wheelLineSize;
         private static get wheelLineSize();
-        /**
-         * pointer event extractor to be used with registerEventOnView
-         * @param evt
-         */
         private static toNativePointerEventArgs;
         private static toNativeEvent;
     }

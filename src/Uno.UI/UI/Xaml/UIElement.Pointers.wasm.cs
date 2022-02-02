@@ -137,7 +137,7 @@ public partial class UIElement : DependencyObject
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static void OnNativePointerEvent()
 	{
-		var handled = false;
+		var stopPropagation = false;
 		try
 		{
 			_logTrace?.Trace("Receiving native pointer event.");
@@ -159,39 +159,45 @@ public partial class UIElement : DependencyObject
 
 			switch ((NativePointerEvent)args.Event)
 			{
-				case NativePointerEvent.pointerenter:
-					handled = element.OnNativePointerEnter(ToPointerArgs(element, args));
+				case NativePointerEvent.pointerover:
+				{
+					// On WASM we do get 'pointerover' event for sub elements,
+					// so we can avoid useless work by validating if the pointer is already flagged as over element.
+					// If so, we stop bubbling since our parent will do the same!
+					var ptArgs = ToPointerArgs(element, args);
+					stopPropagation = element.IsOver(ptArgs.Pointer) || element.OnNativePointerEnter(ptArgs);
 					break;
+				}
 
-				case NativePointerEvent.pointerleave:
-					handled = element.OnNativePointerExited(ToPointerArgs(element, args));
+				case NativePointerEvent.pointerout: // No needs to check IsOver, it's already done in native code
+					stopPropagation = element.OnNativePointerExited(ToPointerArgs(element, args));
 					break;
 
 				case NativePointerEvent.pointerdown:
-					handled = element.OnNativePointerDown(ToPointerArgs(element, args, isInContact: true));
+					stopPropagation = element.OnNativePointerDown(ToPointerArgs(element, args, isInContact: true));
 					break;
 
 				case NativePointerEvent.pointerup:
-					handled = element.OnNativePointerUp(ToPointerArgs(element, args, isInContact: false));
+					stopPropagation = element.OnNativePointerUp(ToPointerArgs(element, args, isInContact: false));
 					break;
 
 				case NativePointerEvent.pointermove:
-					handled = element.OnNativePointerMove(ToPointerArgs(element, args));
+					stopPropagation = element.OnNativePointerMove(ToPointerArgs(element, args));
 					break;
 
 				case NativePointerEvent.pointercancel:
-					handled = element.OnNativePointerCancel(ToPointerArgs(element, args, isInContact: false), isSwallowedBySystem: true);
+					stopPropagation = element.OnNativePointerCancel(ToPointerArgs(element, args, isInContact: false), isSwallowedBySystem: true);
 					break;
 
 				case NativePointerEvent.wheel:
 					if (args.wheelDeltaX is not 0)
 					{
-						handled |= element.OnNativePointerWheel(ToPointerArgs(element, args, wheel: (true, args.wheelDeltaX), isInContact: null /* maybe */));
+						stopPropagation |= element.OnNativePointerWheel(ToPointerArgs(element, args, wheel: (true, args.wheelDeltaX), isInContact: null /* maybe */));
 					}
 					if (args.wheelDeltaY is not 0)
 					{
 						// Note: Web browser vertical scrolling is the opposite compared to WinUI!
-						handled |= element.OnNativePointerWheel(ToPointerArgs(element, args, wheel: (false, -args.wheelDeltaY), isInContact: null /* maybe */));
+						stopPropagation |= element.OnNativePointerWheel(ToPointerArgs(element, args, wheel: (false, -args.wheelDeltaY), isInContact: null /* maybe */));
 					}
 					break;
 			}
@@ -207,7 +213,7 @@ public partial class UIElement : DependencyObject
 		{
 			_pointerEventResult.Value = new NativePointerEventResult
 			{
-				Result = (byte)(handled
+				Result = (byte)(stopPropagation
 					? HtmlEventDispatchResult.StopPropagation
 					: HtmlEventDispatchResult.Ok)
 			};
@@ -397,7 +403,6 @@ public partial class UIElement : DependencyObject
 		public byte Events; // One or multiple NativePointerEvent
 	}
 
-
 	[TSInteropMessage(Marshaller = CodeGeneration.Enabled, UnMarshaller = CodeGeneration.Disabled)]
 	[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	private struct NativePointerEventArgs
@@ -422,7 +427,7 @@ public partial class UIElement : DependencyObject
 
 		/// <inheritdoc />
 		public override string ToString()
-			=> $"elt={HtmlId}|evt={Event}|id={pointerId}|x={x}|y={x}|ctrl={ctrl}|shift={shift}|bts={buttons}|btUpdate={buttonUpdate}|tyep={typeStr}|srcId={srcHandle}|ts={timestamp}|pres={pressure}|wheelX={wheelDeltaX}|wheelY={wheelDeltaY}";
+			=> $"elt={HtmlId}|evt={(NativePointerEvent)Event}|id={pointerId}|x={x}|y={x}|ctrl={ctrl}|shift={shift}|bts={buttons}|btUpdate={buttonUpdate}|tyep={typeStr}|srcId={srcHandle}|ts={timestamp}|pres={pressure}|wheelX={wheelDeltaX}|wheelY={wheelDeltaY}";
 	}
 
 	[TSInteropMessage(Marshaller = CodeGeneration.Disabled, UnMarshaller = CodeGeneration.Enabled)]
@@ -438,8 +443,8 @@ public partial class UIElement : DependencyObject
 		// WARNING: This enum has a corresponding version in TypeScript!
 
 		// Minimal default pointer required to maintain state
-		pointerenter = 1,
-		pointerleave = 1 << 1,
+		pointerover = 1,
+		pointerout = 1 << 1,
 		pointerdown = 1 << 2,
 		pointerup = 1 << 3,
 		pointercancel = 1 << 4,
@@ -448,6 +453,6 @@ public partial class UIElement : DependencyObject
 		pointermove = 1 << 5,
 		wheel = 1 << 6,
 
-		Defaults = pointerenter | pointerleave | pointerdown | pointerup | pointercancel,
+		Defaults = pointerover | pointerout | pointerdown | pointerup | pointercancel,
 	}
 }

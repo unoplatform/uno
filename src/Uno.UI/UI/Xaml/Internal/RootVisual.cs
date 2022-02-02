@@ -13,6 +13,12 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Input;
 
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+#endif
+
 namespace Uno.UI.Xaml.Core
 {
 	/// <summary>
@@ -27,11 +33,22 @@ namespace Uno.UI.Xaml.Core
 		public RootVisual(CoreServices coreServices)
 		{
 			_coreServices = coreServices ?? throw new System.ArgumentNullException(nameof(coreServices));
-            //Uno specific - flag as VisualTreeRoot for interop with existing logic
+			//Uno specific - flag as VisualTreeRoot for interop with existing logic
 			IsVisualTreeRoot = true;
 #if __WASM__
 			//Uno WASM specific - set tabindex to 0 so the RootVisual is "native focusable"
 			SetAttribute("tabindex", "0");
+#endif
+
+#if __ANDROID__
+			AddHandler(
+				PointerReleasedEvent,
+				new PointerEventHandler((snd, args) => ProcessPointerUp(args)),
+				// We don't want handled events, they are forwarded directly by the element that has handled it,
+				// but only ** AFTER ** the up has been fully processed.
+				// This is required to be sure that element process gestures and manipulations before we raise the exit
+				// (e.g. the 'tapped' event on a Button would be fired after the 'exit').
+				handledEventsToo: false); 
 #endif
 
 			PointerPressed += RootVisual_PointerPressed;
@@ -39,10 +56,10 @@ namespace Uno.UI.Xaml.Core
 			PointerCanceled += RootVisual_PointerCanceled;
 		}
 
-        /// <summary>
-        /// Gets or sets the Visual Tree.
-        /// </summary>
-        internal VisualTree? AssociatedVisualTree { get; set; }
+		/// <summary>
+		/// Gets or sets the Visual Tree.
+		/// </summary>
+		internal VisualTree? AssociatedVisualTree { get; set; }
 
 		internal PopupRoot? AssociatedPopupRoot =>
 			AssociatedVisualTree?.PopupRoot ?? this.GetContext().MainPopupRoot;
@@ -140,6 +157,34 @@ namespace Uno.UI.Xaml.Core
 		private void RootVisual_PointerCanceled(object sender, PointerRoutedEventArgs e)
 		{
 			_isLeftButtonPressed = false;
+		}
+#endif
+
+#if __ANDROID__
+		internal static void ProcessPointerUp(PointerRoutedEventArgs args)
+		{
+			// On Android we use the RootVisual to raise the UWP only exit event (in managed only)
+			if (args.Pointer.PointerDeviceType is PointerDeviceType.Touch && args.OriginalSource is UIElement src)
+			{
+				// It's acceptable to use only the OriginalSource on Android:
+				// since the platform has "implicit capture" and captures are propagated to the OS,
+				// the OriginalSource will be the element that has capture (if any).
+
+				src.RedispatchPointerExited(args.Reset(canBubbleNatively: false));
+			}
+
+			ReleaseCaptures(args.Reset(canBubbleNatively: false));
+		}
+
+		private static void ReleaseCaptures(PointerRoutedEventArgs routedArgs)
+		{
+			if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
+			{
+				foreach (var target in capture.Targets)
+				{
+					target.Element.ReleasePointerCapture(capture.Pointer.UniqueId, kinds: PointerCaptureKind.Any);
+				}
+			}
 		}
 #endif
 	}

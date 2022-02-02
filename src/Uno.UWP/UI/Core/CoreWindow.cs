@@ -24,7 +24,10 @@ namespace Windows.UI.Core
 		private Point? _pointerPosition;
 		private CoreWindowActivationState _lastActivationState;
 
-		internal CoreWindow()
+		internal static CoreWindow GetOrCreateForCurrentThread()
+			=> _current ??= new CoreWindow();
+
+		private CoreWindow()
 		{
 			_current = this;
 			Main ??= this;
@@ -99,7 +102,8 @@ namespace Windows.UI.Core
 			=> KeyboardStateTracker.GetKeyState(virtualKey);
 
 		internal static void SetInvalidateRender(Action invalidateRender)
-			=> _invalidateRender = invalidateRender;
+			// Currently we don't support multi-windowing, so only the first window can set the InvalidateRender
+			=> _invalidateRender ??= invalidateRender;
 
 		internal static void QueueInvalidateRender()
 			=> _invalidateRender?.Invoke();
@@ -125,6 +129,8 @@ namespace Windows.UI.Core
 
 		internal interface IPointerEventArgs
 		{
+			object OriginalSource { get; }
+
 			PointerIdentifier Pointer { get; }
 
 			PointerPoint GetLocation(object? relativeTo);

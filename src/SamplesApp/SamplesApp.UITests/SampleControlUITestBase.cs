@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using Windows.Devices.Input;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using SamplesApp.UITests.Extensions;
@@ -29,6 +31,8 @@ namespace SamplesApp.UITests
 			ValidateAppMode();
 		}
 
+		protected IApp App => _app;
+
 		static SampleControlUITestBase()
 		{
 			AppInitializer.TestEnvironment.AndroidAppName = Constants.AndroidAppName;
@@ -47,6 +51,19 @@ namespace SamplesApp.UITests
 			// and gain some time for the tests.
 			AppInitializer.ColdStartApp();
 		}
+
+		/// <summary>
+		/// Gets the default pointer type for the current platform
+		/// </summary>
+		public PointerDeviceType DefaultPointerType => AppInitializer.GetLocalPlatform() switch
+		{
+			Platform.Browser => PointerDeviceType.Mouse,
+			Platform.iOS => PointerDeviceType.Touch,
+			Platform.Android => PointerDeviceType.Touch,
+			_ => throw new InvalidOperationException($"Unknown platform '{AppInitializer.GetLocalPlatform()}'.")
+		};
+
+		public PointerDeviceType CurrentPointerType => DefaultPointerType; // We cannot change pointer type on this platform
 
 		public void ValidateAppMode()
 		{
@@ -293,6 +310,9 @@ namespace SamplesApp.UITests
 
 			}
 		}
+
+		protected async Task RunAsync(string metadataName, bool waitForSampleControl = true, bool skipInitialScreenshot = false, int sampleLoadTimeout = 5)
+			=> Run(metadataName, waitForSampleControl, skipInitialScreenshot, sampleLoadTimeout);
 
 		protected void Run(string metadataName, bool waitForSampleControl = true, bool skipInitialScreenshot = false, int sampleLoadTimeout = 5)
 		{

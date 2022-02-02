@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
@@ -24,6 +25,7 @@ using Windows.UI.Xaml.Media.Imaging;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 
 #if HAS_UNO_WINUI
@@ -83,7 +85,7 @@ namespace Windows.UI.Xaml
 
 		static partial void InitializePointersStaticPartial();
 
-				#region ManipulationMode (DP)
+		#region ManipulationMode (DP)
 		public static DependencyProperty ManipulationModeProperty { get; } = DependencyProperty.Register(
 			"ManipulationMode",
 			typeof(ManipulationModes),
@@ -111,9 +113,9 @@ namespace Windows.UI.Xaml
 			get => (ManipulationModes)this.GetValue(ManipulationModeProperty);
 			set => this.SetValue(ManipulationModeProperty, value);
 		}
-				#endregion
+		#endregion
 
-				#region CanDrag (DP)
+		#region CanDrag (DP)
 		public static DependencyProperty CanDragProperty { get; } = DependencyProperty.Register(
 			nameof(CanDrag),
 			typeof(bool),
@@ -136,9 +138,9 @@ namespace Windows.UI.Xaml
 			get => (bool)GetValue(CanDragProperty);
 			set => SetValue(CanDragProperty, value);
 		}
-				#endregion
+		#endregion
 
-				#region AllowDrop (DP)
+		#region AllowDrop (DP)
 		public static DependencyProperty AllowDropProperty { get; } = DependencyProperty.Register(
 			nameof(AllowDrop),
 			typeof(bool),
@@ -150,7 +152,7 @@ namespace Windows.UI.Xaml
 			get => (bool)GetValue(AllowDropProperty);
 			set => SetValue(AllowDropProperty, value);
 		}
-				#endregion
+		#endregion
 
 		private /* readonly but partial */ GestureRecognizer _gestures;
 
@@ -199,13 +201,11 @@ namespace Windows.UI.Xaml
 				for (var captureIndex = 0; captureIndex < captures.Count; captureIndex++)
 				{
 					var capture = captures[captureIndex];
-
 					var targets = capture.Targets.ToList();
 
 					for (var targetIndex = 0; targetIndex < targets.Count; targetIndex++)
 					{
 						var target = targets[targetIndex];
-
 						if (target.Element.HasParent(sender))
 						{
 							target.Element.Release(capture, PointerCaptureKind.Any);
@@ -274,37 +274,46 @@ namespace Windows.UI.Xaml
 
 		#region GestureRecognizer wire-up
 
-				#region Event to RoutedEvent handler adapters
+		#region Event to RoutedEvent handler adapters
 		// Note: For the manipulation and gesture event args, the original source has to be the element that raise the event
 		//		 As those events are bubbling in managed only, the original source will be right one for all.
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartingEventArgs> OnRecognizerManipulationStarting = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
-			that.SafeRaiseEvent(ManipulationStartingEvent, new ManipulationStartingRoutedEventArgs(that, args));
+			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
+
+			that.SafeRaiseEvent(ManipulationStartingEvent, new ManipulationStartingRoutedEventArgs(src, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> OnRecognizerManipulationStarted = (sender,  args) =>
 		{
 			var that = (UIElement)sender.Owner;
-			that.SafeRaiseEvent(ManipulationStartedEvent, new ManipulationStartedRoutedEventArgs(that, sender, args));
+			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
+
+			that.SafeRaiseEvent(ManipulationStartedEvent, new ManipulationStartedRoutedEventArgs(src, sender, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> OnRecognizerManipulationUpdated = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
-			that.SafeRaiseEvent(ManipulationDeltaEvent, new ManipulationDeltaRoutedEventArgs(that, sender, args));
+			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
+
+			that.SafeRaiseEvent(ManipulationDeltaEvent, new ManipulationDeltaRoutedEventArgs(src, sender, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> OnRecognizerManipulationInertiaStarting = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
-			that.SafeRaiseEvent(ManipulationInertiaStartingEvent, new ManipulationInertiaStartingRoutedEventArgs(that, args));
+			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
+
+			that.SafeRaiseEvent(ManipulationInertiaStartingEvent, new ManipulationInertiaStartingRoutedEventArgs(src, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> OnRecognizerManipulationCompleted = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
+			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
 #if NEEDS_IMPLICIT_CAPTURE
 			foreach (var pointer in args.Pointers)
@@ -313,37 +322,44 @@ namespace Windows.UI.Xaml
 			}
 #endif
 
-			that.SafeRaiseEvent(ManipulationCompletedEvent, new ManipulationCompletedRoutedEventArgs(that, args));
+			that.SafeRaiseEvent(ManipulationCompletedEvent, new ManipulationCompletedRoutedEventArgs(src, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, TappedEventArgs> OnRecognizerTapped = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
+			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
+
 			if (args.TapCount == 1)
 			{
-				that.SafeRaiseEvent(TappedEvent, new TappedRoutedEventArgs(that, args));
+				that.SafeRaiseEvent(TappedEvent, new TappedRoutedEventArgs(src, args));
 			}
 			else // i.e. args.TapCount == 2
 			{
-				that.SafeRaiseEvent(DoubleTappedEvent, new DoubleTappedRoutedEventArgs(that, args));
+				that.SafeRaiseEvent(DoubleTappedEvent, new DoubleTappedRoutedEventArgs(src, args));
 			}
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, RightTappedEventArgs> OnRecognizerRightTapped = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
-			that.SafeRaiseEvent(RightTappedEvent, new RightTappedRoutedEventArgs(that, args));
+			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
+
+			that.SafeRaiseEvent(RightTappedEvent, new RightTappedRoutedEventArgs(src, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, HoldingEventArgs> OnRecognizerHolding = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
-			that.SafeRaiseEvent(HoldingEvent, new HoldingRoutedEventArgs(that, args));
+			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
+
+			that.SafeRaiseEvent(HoldingEvent, new HoldingRoutedEventArgs(src, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, DraggingEventArgs> OnRecognizerDragging = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
+
 			that.OnDragStarting(args);
 		};
 		#endregion
@@ -747,7 +763,7 @@ namespace Windows.UI.Xaml
 				SafeRaiseEvent(DropEvent, args);
 			}
 		}
-#endregion
+		#endregion
 
 		partial void PrepareManagedPointerEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode)
 		{
@@ -755,23 +771,70 @@ namespace Windows.UI.Xaml
 			switch (routedEvent.Flag)
 			{
 				case RoutedEventFlag.PointerEntered:
-					OnPointerEnter(ptArgs, BubblingContext.OnManagedBubbling);
-					// Entered and Exited are never bubbling, we bubble them only for internal state updates, but event should not be raised
-					bubblingMode = BubblingMode.IgnoreElement;
+					if (IsOver(ptArgs.Pointer))
+					{
+						// If pointer is already flagged as "over",
+						// it's the same on parents and we should just stop bubbling right now.
+						// (Depending of the platform, this might be really common to reach this case.)
+						bubblingMode = BubblingMode.NoBubbling;
+					}
+					else
+					{
+						OnPointerEnter(ptArgs, BubblingContext.OnManagedBubbling);
+					}
 					break;
 				case RoutedEventFlag.PointerPressed:
 					OnPointerDown(ptArgs, BubblingContext.OnManagedBubbling);
 					break;
 				case RoutedEventFlag.PointerMoved:
+#if __IOS__ || __ANDROID__
+					OnNativePointerMoveWithOverCheck(ptArgs, ptArgs.IsPointCoordinatesOver(this), BubblingContext.OnManagedBubbling);
+#else
 					OnPointerMove(ptArgs, BubblingContext.OnManagedBubbling);
+#endif
 					break;
 				case RoutedEventFlag.PointerReleased:
 					OnPointerUp(ptArgs, BubblingContext.OnManagedBubbling);
+
 					break;
 				case RoutedEventFlag.PointerExited:
+#if __WASM__
+					// On WASM, the pointer 'exit' is raise by the platform, but here the event has been handled and is bubbling in managed.
+					// We only need to replicate the UWP behavior and stop bubbling as soon as we reach an element which still under the pointer.
+					if (ptArgs.IsPointCoordinatesOver(this))
+					{
+						bubblingMode = BubblingMode.NoBubbling;
+					}
+					else
+					{
+						OnPointerExited(ptArgs, BubblingContext.OnManagedBubbling);
+					}
+#elif UNO_HAS_MANAGED_POINTERS
+					// On Skia and macOS the pointer exit is raised properly by the PointerManager with a "Root"(a.k.a. UpTo) element.
+					// If we are here, it means that we just have to update private state and let the bubbling algorithm do its job!
+					// Debug.Assert(IsOver(ptArgs.Pointer)); // Fails when fast scrolling samples categories list on Skia
 					OnPointerExited(ptArgs, BubblingContext.OnManagedBubbling);
-					// Entered and Exited are never bubbling, we bubble them only for internal state updates, but event should not be raised
-					bubblingMode = BubblingMode.IgnoreElement;
+#elif __IOS__
+					// On iOS all pointers are handled just like if they were touches by the platform and there isn't any notion of "over".
+					// To compensate that, we are generating 'exit' on native (and managed bubbling, cf. PointerExited) pointer 'up',
+					// so we should never let bubble an 'exit' (the bubbling 'exit' would be raised before the 'up' on parent elements).
+					// Note: If we are here it means that the 'exit' has been flagged as handle ...
+					//		 unfortunately, for now, this won't have any impact as parent element will re-create one for the 'up'.
+					bubblingMode = BubblingMode.NoBubbling;
+#elif __ANDROID__
+					// On Android, for touch we are raising the Exit directly from the RootVisual on pointer up in managed only,
+					// so we never have to prevent bubbling.
+					// However for mouse and pen (where we can have native support of over state), the behavior is like for WASM,
+					// we allow bubbling only up to the element that is effectively no longer under the pointer.
+					if (ptArgs.Pointer.PointerDeviceType is not PointerDeviceType.Touch && ptArgs.IsPointCoordinatesOver(this))
+					{
+						bubblingMode = BubblingMode.NoBubbling;
+					}
+					else
+					{
+						OnPointerExited(ptArgs, BubblingContext.OnManagedBubbling);
+					}
+#endif
 					break;
 				case RoutedEventFlag.PointerCanceled:
 					OnPointerCancel(ptArgs, BubblingContext.OnManagedBubbling);
@@ -840,14 +903,17 @@ namespace Windows.UI.Xaml
 
 		// This is for iOS and Android which are not raising the Exit properly (due to native "implicit capture" when pointer is pressed),
 		// and for which we have to re-compute / update the over state for each move.
-		private bool OnNativePointerMoveWithOverCheck(PointerRoutedEventArgs args, bool isOver)
+		private bool OnNativePointerMoveWithOverCheck(PointerRoutedEventArgs args, bool isOver, BubblingContext ctx = default)
 		{
 			var handledInManaged = false;
 			var isOverOrCaptured = ValidateAndUpdateCapture(args, isOver);
 
+			// Note: The 'ctx' here is for the "Move", not the "WithOverCheck", so we don't use it to update the over state.
+			//		 (i.e. even if the 'move' has been handled and is now flagged as 'IsInternal' -- so event won't be publicly raised unless handledEventToo --,
+			//		 if we are crossing the boundaries of the element we should still raise the enter/exit publicly.)
 			handledInManaged |= SetOver(args, isOver);
 
-			if (isOverOrCaptured)
+			if (!ctx.IsInternal && isOverOrCaptured)
 			{
 				// If this pointer was wrongly dispatched here (out of the bounds and not captured),
 				// we don't raise the 'move' event
@@ -859,7 +925,7 @@ namespace Windows.UI.Xaml
 			if (IsGestureRecognizerCreated)
 			{
 				var gestures = GestureRecognizer;
-				gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), isOverOrCaptured);
+				gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), !ctx.IsInternal || isOverOrCaptured);
 				if (gestures.IsDragging)
 				{
 					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessMoved(args);
@@ -889,8 +955,9 @@ namespace Windows.UI.Xaml
 			{
 				// We need to process only events that were not handled by a child control,
 				// so we should not use them for gesture recognition.
-				GestureRecognizer.ProcessMoveEvents(args.GetIntermediatePoints(this), !ctx.IsInternal || isOverOrCaptured);
-				if (GestureRecognizer.IsDragging)
+				var gestures = GestureRecognizer;
+				gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), !ctx.IsInternal || isOverOrCaptured);
+				if (gestures.IsDragging)
 				{
 					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessMoved(args);
 				}
@@ -923,7 +990,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-#if !UNO_HAS_MANAGED_POINTERS // Captures release are handled a root level
+#if !UNO_HAS_MANAGED_POINTERS && !__ANDROID__ // Captures release are handled a root level (RootVisual for Android)
 			// We release the captures on up but only after the released event and processed the gesture
 			// Note: For a "Tap" with a finger the sequence is Up / Exited / Lost, so we let the Exit raise the capture lost
 			// Note: If '!isOver', that means that 'IsCaptured == true' otherwise 'isOverOrCaptured' would have been false.
@@ -943,14 +1010,14 @@ namespace Windows.UI.Xaml
 			var handledInManaged = false;
 			var isOverOrCaptured = ValidateAndUpdateCapture(args);
 
-			handledInManaged |= SetOver(args, false, muteEvent: ctx.IsInternal || !isOverOrCaptured);
+			handledInManaged |= SetOver(args, false, muteEvent: ctx.IsInternal || !isOverOrCaptured, ctx);
 
 			if (IsGestureRecognizerCreated && GestureRecognizer.IsDragging)
 			{
 				global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessMoved(args);
 			}
 
-#if !UNO_HAS_MANAGED_POINTERS // Captures release are handled a root level
+#if !UNO_HAS_MANAGED_POINTERS && !__ANDROID__ // Captures release are handled a root level (RootVisual for Android)
 			// We release the captures on exit when pointer if not pressed
 			// Note: for a "Tap" with a finger the sequence is Up / Exited / Lost, so the lost cannot be raised on Up
 			if (!IsPressed(args.Pointer))
@@ -1071,7 +1138,7 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		internal bool IsOver(Pointer pointer) => IsPointerOver;
 
-		private bool SetOver(PointerRoutedEventArgs args, bool isOver, bool muteEvent = false)
+		private bool SetOver(PointerRoutedEventArgs args, bool isOver, bool muteEvent = false, BubblingContext ctx = default)
 		{
 			var wasOver = IsPointerOver;
 			IsPointerOver = isOver;
@@ -1085,12 +1152,12 @@ namespace Windows.UI.Xaml
 			if (isOver) // Entered
 			{
 				args.Handled = false;
-				return RaisePointerEvent(PointerEnteredEvent, args);
+				return RaisePointerEvent(PointerEnteredEvent, args, ctx);
 			}
 			else // Exited
 			{
 				args.Handled = false;
-				return RaisePointerEvent(PointerExitedEvent, args);
+				return RaisePointerEvent(PointerExitedEvent, args, ctx);
 			}
 		}
 		#endregion
@@ -1132,7 +1199,7 @@ namespace Windows.UI.Xaml
 
 		private bool IsPressed(uint pointerId) => _pressedPointers.Contains(pointerId);
 
-		private bool SetPressed(PointerRoutedEventArgs args, bool isPressed, bool muteEvent = false)
+		private bool SetPressed(PointerRoutedEventArgs args, bool isPressed, bool muteEvent = false, BubblingContext ctx = default)
 		{
 			var wasPressed = IsPressed(args.Pointer);
 			if (wasPressed == isPressed) // nothing changed
@@ -1150,7 +1217,7 @@ namespace Windows.UI.Xaml
 				}
 
 				args.Handled = false;
-				return RaisePointerEvent(PointerPressedEvent, args);
+				return RaisePointerEvent(PointerPressedEvent, args, ctx);
 			}
 			else // Released
 			{
@@ -1162,7 +1229,7 @@ namespace Windows.UI.Xaml
 				}
 
 				args.Handled = false;
-				return RaisePointerEvent(PointerReleasedEvent, args);
+				return RaisePointerEvent(PointerReleasedEvent, args, ctx);
 			}
 		}
 
@@ -1206,11 +1273,22 @@ namespace Windows.UI.Xaml
 				&& PointerCapture.TryGet(pointer, out var capture)
 				&& capture.IsTarget(this, PointerCaptureKind.Explicit);
 
+		internal bool IsCaptured(Pointer pointer, PointerCaptureKind kinds)
+			=> PointerCapture.TryGet(pointer, out var capture)
+				&& capture.IsTarget(this, kinds);
+
 		public bool CapturePointer(Pointer value)
 		{
 			var pointer = value ?? throw new ArgumentNullException(nameof(value));
 
 			return Capture(pointer, PointerCaptureKind.Explicit, _pendingRaisedEvent.args);
+		}
+
+		private protected bool CapturePointer(Pointer value, PointerCaptureKind kind)
+		{
+			var pointer = value ?? throw new ArgumentNullException(nameof(value));
+
+			return Capture(pointer, kind, _pendingRaisedEvent.args);
 		}
 
 		public void ReleasePointerCapture(Pointer value)

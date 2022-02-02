@@ -6,6 +6,7 @@ namespace Uno.UI.Samples.Tests
 	public class UnitTestEngineConfig
 	{
 		public const int DefaultRepeatCount = 3;
+		public const bool DefaultIsScrollerEnabled = true;
 
 		public static UnitTestEngineConfig Default { get; } = new UnitTestEngineConfig();
 
@@ -16,5 +17,7 @@ namespace Uno.UI.Samples.Tests
 		public bool IsConsoleOutputEnabled { get; set; }
 
 		public bool IsRunningIgnored { get; set; }
+
+		public bool IsScrollerEnabled { get; set; } = DefaultIsScrollerEnabled;
 	}
 }

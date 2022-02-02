@@ -54,6 +54,20 @@ namespace Windows.UI.Xaml.Input
 
 		public Pointer Pointer { get; }
 
+		/// <summary>
+		/// Reset the internal state in order to re-use that event args to raise another event
+		/// </summary>
+		internal PointerRoutedEventArgs Reset(bool canBubbleNatively = PlatformSupportsNativeBubbling)
+		{
+			CanBubbleNatively = canBubbleNatively;
+			Handled = false;
+
+			return this;
+		}
+
+		internal bool IsPointCoordinatesOver(UIElement element)
+			=> new Rect(default, element.AssignedActualSize).Contains(GetCurrentPoint(element).Position);
+
 		/// <inheritdoc />
 		public override string ToString()
 			=> $"PointerRoutedEventArgs({Pointer}@{GetCurrentPoint(null).Position})";

@@ -88,23 +88,6 @@ namespace Windows.UI.Xaml
 				return; // Will also prevent subsequents events
 			}
 
-			/* Note: Here we have a mismatching behavior with UWP, if the events bubble natively we're going to get
-					 (with Ctrl_02 is a child of Ctrl_01):
-							Ctrl_02: Entered
-									 Pressed
-							Ctrl_01: Entered
-									 Pressed
-
-					While on UWP we will get:
-							Ctrl_02: Entered
-							Ctrl_01: Entered
-							Ctrl_02: Pressed
-							Ctrl_01: Pressed
-
-					However, to fix this is would mean that we handle all events in managed code, but this would
-					break lots of control (ScrollViewer) and ability to easily integrate an external component.
-			*/
-
 			try
 			{
 				if (ManipulationMode == ManipulationModes.None)
@@ -127,8 +110,15 @@ namespace Windows.UI.Xaml
 						continue;
 					}
 
-					isHandledOrBubblingInManaged |= OnNativePointerEnter(args);
-					isHandledOrBubblingInManaged |= OnNativePointerDown(args);
+					// We don't have any enter on iOS for touches, so we explicitly generate one on down.
+					// That event args is requested to bubble in managed code only (args.CanBubbleNatively = false),
+					// so we follow the same sequence as UWP (the whole tree gets entered before the pressed),
+					// and we make sure that the event will bubble through the whole tree, no matter if the Pressed event is handle or not.
+					// Note: Parents will also try to raise the "Enter" but they will be silent since the pointer is already considered as pressed.
+					args.CanBubbleNatively = false;
+					OnNativePointerEnter(args);
+
+					isHandledOrBubblingInManaged |= OnNativePointerDown(args.Reset());
 
 					if (isHandledOrBubblingInManaged)
 					{
@@ -190,6 +180,23 @@ namespace Windows.UI.Xaml
 
 		public override void TouchesEnded(NSSet touches, UIEvent evt)
 		{
+			/* Note: Here we have a mismatching behavior with UWP, if the events bubble natively we're going to get
+					 (with Ctrl_02 is a child of Ctrl_01):
+							Ctrl_02: Released
+									 Exited
+							Ctrl_01: Released
+									 Exited
+
+					While on UWP we will get:
+							Ctrl_02: Released
+							Ctrl_01: Released
+							Ctrl_02: Exited
+							Ctrl_01: Exited
+
+					However, to fix this is would mean that we handle all events in managed code, but this would
+					break lots of control (ScrollViewer) and ability to easily integrate an external component.
+			*/
+
 			try
 			{
 				var isHandledOrBubblingInManaged = default(bool);
@@ -215,7 +222,11 @@ namespace Windows.UI.Xaml
 					}
 
 					isHandledOrBubblingInManaged |= OnNativePointerUp(args);
-					isHandledOrBubblingInManaged |= OnNativePointerExited(args);
+
+					// Like for the Down, we manually generate an Exited, but we DON'T REQUEST IT to bubble in managed as it would mean
+					// that parent elements would get the Exit **before** the Release!
+					// Instead we raise it per layer, which means that we won't follow the UWP behavior where the whole tree gets the Released and then the Exited.
+					OnNativePointerExited(args.Reset());
 
 					pt.Release(this);
 				}

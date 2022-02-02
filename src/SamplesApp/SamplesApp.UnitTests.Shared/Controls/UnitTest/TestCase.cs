@@ -1,15 +1,30 @@
-﻿using System;
+﻿#nullable enable
 
-namespace Uno.UI.Samples.Tests
+using System;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Windows.Devices.Input;
+using Uno.Extensions;
+
+namespace Uno.UI.Samples.Tests;
+
+internal record TestCase
 {
-	public sealed partial class UnitTestsControl
+	public object[] Parameters { get; init; } = Array.Empty<object>();
+
+	public PointerDeviceType? Pointer { get; init; }
+
+	/// <inheritdoc />
+	public override string ToString()
 	{
-		private class TestCase
+		var result = $"({Parameters.Select(p => p?.ToString() ?? "<null>").JoinBy(", ")})";
+
+		if (Pointer is {} pt)
 		{
-			public TestResult TestResult { get; set; }
-			public string TestName { get; set; }
-			public TimeSpan Duration { get; set; }
-			public string Message { get; set; }
+			result += $" [{pt}]";
 		}
+
+		return result;
 	}
 }
