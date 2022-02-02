@@ -4,7 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.RuntimeTests.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
+using Windows.UI.ViewManagement;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
@@ -176,6 +180,85 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Closing -= SUT_Closing;
 				SUT.Hide();
 			}
+		}
+
+		[TestMethod]
+#if !__IOS__ && !__ANDROID__
+		[Ignore("Test applies to platforms using software keyboard")]
+#endif
+		public async Task When_Soft_Keyboard_And_VisibleBounds()
+		{
+			var nativeUnsafeArea = ScreenHelper.GetUnsafeArea();
+
+			using (ScreenHelper.OverrideVisibleBounds(new Thickness(0, 38, 0, 72), skipIfHasNativeUnsafeArea: (nativeUnsafeArea.Top + nativeUnsafeArea.Bottom) > 50))
+			{
+				var tb = new TextBox
+				{
+					Height = 1200
+				};
+
+
+				var SUT = new MyContentDialog
+				{
+					Title = "Dialog title",
+					Content = new ScrollViewer
+					{
+						Content = tb
+					},
+					PrimaryButtonText = "Accept",
+					SecondaryButtonText = "Nope"
+				};
+
+				try
+				{
+					await ShowDialog(SUT);
+
+					var originalButtonBounds = SUT.PrimaryButton.GetOnScreenBounds();
+					var originalBackgroundBounds = SUT.BackgroundElement.GetOnScreenBounds();
+					var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+					RectAssert.Contains(visibleBounds, originalButtonBounds);
+
+					var inputPane = InputPane.GetForCurrentView();
+					RectAssert.AreEqual(default, inputPane.OccludedRect); // Soft keyboard should not already be visible
+
+					await FocusTextBoxWithSoftKeyboard(tb);
+
+					var occludedRect = inputPane.OccludedRect;
+					var shiftedButtonBounds = SUT.PrimaryButton.GetOnScreenBounds();
+					var shiftedBackgroundBounds = SUT.BackgroundElement.GetOnScreenBounds();
+
+					NumberAssert.Greater(originalButtonBounds.Bottom, occludedRect.Top); // Button's original position should be occluded, otherwise test is pointless
+					NumberAssert.Greater(originalBackgroundBounds.Bottom, occludedRect.Top); // ditto background
+					NumberAssert.Less(shiftedButtonBounds.Bottom, occludedRect.Top); // Button should be shifted to be visible (along with rest of dialog) while keyboard is open
+					NumberAssert.Less(shiftedBackgroundBounds.Bottom, occludedRect.Top); // ditto background
+					;
+				}
+				finally
+				{
+					SUT.Hide();
+				}
+			}
+		}
+
+		private async Task FocusTextBoxWithSoftKeyboard(TextBox textBox)
+		{
+			var tcs = new TaskCompletionSource<bool>();
+			var inputPane = InputPane.GetForCurrentView();
+			void OnShowing(InputPane sender, InputPaneVisibilityEventArgs args)
+			{
+				tcs.SetResult(true);
+			}
+			try
+			{
+				inputPane.Showing += OnShowing;
+				textBox.Focus(FocusState.Programmatic);
+				await tcs.Task;
+			}
+			finally
+			{
+				inputPane.Showing -= OnShowing;
+			}
+			await WindowHelper.WaitForIdle();
 		}
 
 		private static async Task ShowDialog(MyContentDialog dialog)
