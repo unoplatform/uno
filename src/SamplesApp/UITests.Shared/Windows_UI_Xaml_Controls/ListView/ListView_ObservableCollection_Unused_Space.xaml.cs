@@ -48,8 +48,11 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 			_vm.MyItems.Add("Test 2");
 			await Task.Delay(20);
 
-			HeightTextBlock.Text = TargetListView.ActualHeight.ToString();
-			StatusTextBlock.Text = "Finished";
+			_ = Dispatcher.RunIdleAsync(_ =>
+			{
+				HeightTextBlock.Text = TargetListView.ActualHeight.ToString();
+				StatusTextBlock.Text = "Finished";
+			});
 		}
 
 		public class MyViewModel
