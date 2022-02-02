@@ -228,13 +228,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				await WindowHelper.WaitForLoaded(SUT);
 
-#if __IOS__
-				Assert.AreEqual(4, MeasureCountCarouselPanel.MeasureCount);
-				Assert.AreEqual(2, MeasureCountCarouselPanel.ArrangeCount);
-#else
 				Assert.AreEqual(0, MeasureCountCarouselPanel.MeasureCount);
 				Assert.AreEqual(0, MeasureCountCarouselPanel.ArrangeCount);
-#endif
 
 				SUT.IsDropDownOpen = true;
 
