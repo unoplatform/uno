@@ -201,7 +201,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 				else
 				{
 					var shapeContainer = _app.GetPhysicalRect($"{expectation}Grid");
-					
+
 					ImageAssert.HasColorAt(screenshot, shapeContainer.X + expectation.Offsets[0], shapeContainer.CenterY, expectation.Colors, tolerance: 15);
 					ImageAssert.HasColorAt(screenshot, shapeContainer.CenterX, shapeContainer.Y + expectation.Offsets[1], expectation.Colors, tolerance: 15);
 					ImageAssert.HasColorAt(screenshot, shapeContainer.Right + expectation.Offsets[2], shapeContainer.CenterY, expectation.Colors, tolerance: 15);
@@ -233,6 +233,29 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			ImageAssert.HasColorAt(screenshot, rect2.X, rect2.Y, Color.FromArgb(255, 236, 197, 175), tolerance: 5);
 		}
 
+		[Test]
+		[AutoRetry]
+		public void Shape_StrokeColor_ShouldRerenderWithChange()
+		{
+			Run("UITests.Windows_UI_Xaml_Shapes.Shape_StrokeTest");
+
+			var rect = _app.GetPhysicalRect("TestTarget").ToRectangle();
+			var center = rect.Location + new Size(rect.Size.Width / 2, rect.Size.Height / 2);
+			var initialColor = Color.Red;
+			var invertedColor = Color.FromArgb(255, 0, 255, 255); // UpdateBrushColor: flip (x => x^255) all rgb channels, except alpha
+
+			// check color before
+			using var before = TakeScreenshot("Shape_StrokeTest_Before");
+			ImageAssert.HasColorAt(before, center.X, center.Y, initialColor);
+
+			// update brush color
+			_app.FastTap("UpdateBrushColorButton");
+
+			// check color after
+			using var after = TakeScreenshot("Shape_StrokeTest_After");
+			ImageAssert.HasColorAt(after, center.X, center.Y, invertedColor);
+		}
+
 		private static string GetReddish() =>
 			AppInitializer.GetLocalPlatform() switch
 			{
@@ -244,7 +267,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		private struct ShapeExpectation
 		{
 			public string Name  { get; set; }
-			public int[] Offsets { get; set; } 
+			public int[] Offsets { get; set; }
 			public string Colors { get; set; }
 
 			public override string ToString() => $"{Name}";
