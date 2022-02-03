@@ -235,7 +235,7 @@ jobs:
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(UITEST_TEST_MODE_NAME)/$(UNO_UITEST_BUCKET_ID)/$(TARGETPLATFORM_NAME) Test Run'
+      testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(UITEST_TEST_MODE_NAME)/$(UNO_UITEST_BUCKET_ID)/$(TARGETPLATFORM_NAME) Test Run (ALLOW_RERUN: ${{ eq(variables['ALLOW_RERUN'], 'false') }})'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
       # don't fail on failed tests, second run will do it
