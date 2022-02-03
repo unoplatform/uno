@@ -4868,6 +4868,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return BuildLiteralValue(namedTypeSymbol, value.ToString());
 				}
 
+				if (IsCustomMarkupExtensionType(bindingType.Type))
+				{
+					return GetCustomMarkupExtensionValue(m);
+				}
+
 				// If type specified in the binding was not found, log and return an error message
 				if (!string.IsNullOrEmpty(bindingType.Type.Name))
 				{
