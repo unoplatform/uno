@@ -1433,6 +1433,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\BitmapImage_Cam_Properties.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\BitmapImage_IsPlaying.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5426,6 +5430,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\GridTestsControl\Grid_with_MinWidthColumns.xaml.cs">
       <DependentUpon>Grid_with_MinWidthColumns.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\BitmapImage_Cam_Properties.xaml.cs">
+      <DependentUpon>BitmapImage_Cam_Properties.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\BitmapImage_IsPlaying.xaml.cs">
       <DependentUpon>BitmapImage_IsPlaying.xaml</DependentUpon>
     </Compile>
@@ -7877,6 +7884,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\RedSquare.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\theme-dark\ThemeTestImage.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\theme-light\ThemeTestImage.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\uno-logo.png" />
     <Content Include="$(MSBuildThisFileDirectory)Asset_GetFileFromApplicationUriAsync.xml" />
     <Content Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\BeginTime_MultipleAnimations_Expected.gif" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)EmbeddedResources\LockScreen.png" />

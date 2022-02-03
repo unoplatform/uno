@@ -4,6 +4,8 @@
 	<!-- NOTE: Add permissions in AssemblyInfo.cs -->
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.BLUETOOTH" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.CAMERA" />
 	<application android:label="SamplesApp" android:usesCleartextTraffic="true">
 		<!-- Set an API key locally to test the MapControl - https://developers.google.com/maps/documentation/android-sdk/get-api-key -->
 		<meta-data android:name="com.google.android.geo.API_KEY" android:value="YOUR API KEY" />
