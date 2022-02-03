@@ -31,10 +31,23 @@ namespace UITests.Shared.Windows_System.Power
 			UwpPowerManager.EnergySaverStatusChanged += UwpPowerManager_EnergySaverStatusChanged;
 			UwpPowerManager.RemainingChargePercentChanged += UwpPowerManager_RemainingChargePercentChanged;
 			UwpPowerManager.PowerSupplyStatusChanged += UwpPowerManager_PowerSupplyStatusChanged;
-			BatteryStatusOutput.Text = UwpPowerManager.BatteryStatus.ToString();
-			EnergySaverStatusOuptut.Text = UwpPowerManager.EnergySaverStatus.ToString();
-			RemainingChargePercentOutput.Text = UwpPowerManager.RemainingChargePercent.ToString();
-			PowerSupplyStatusOuptut.Text = UwpPowerManager.PowerSupplyStatus.ToString();
+			BatteryStatusOutput.Text = SafeGetter(() => UwpPowerManager.BatteryStatus.ToString());
+			EnergySaverStatusOuptut.Text = SafeGetter(() => UwpPowerManager.EnergySaverStatus.ToString());
+			RemainingChargePercentOutput.Text = SafeGetter(() => UwpPowerManager.RemainingChargePercent.ToString());
+			PowerSupplyStatusOuptut.Text = SafeGetter(() => UwpPowerManager.PowerSupplyStatus.ToString());
+		}
+
+		private string SafeGetter(Func<string> action)
+		{
+			try
+			{
+				return action();
+			}
+			catch (Exception)
+			{
+				// Ignore
+				return "Not implemented";
+			}
 		}
 
 		private async void UwpPowerManager_PowerSupplyStatusChanged(object sender, object e)

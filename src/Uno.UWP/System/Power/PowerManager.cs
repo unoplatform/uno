@@ -1,4 +1,4 @@
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __IOS__ || __WASM__
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,6 +7,7 @@ namespace Windows.System.Power
 {
 	public partial class PowerManager
 	{
+#if !__WASM__
 		private static object _syncLock = new object();
 
 		private static PowerSupplyStatus? _lastPowerSupplyStatus;
@@ -18,9 +19,10 @@ namespace Windows.System.Power
 		private static EventHandler<object> _energySaverStatusChanged;
 		private static EventHandler<object> _remainingChargePercentChanged;
 		private static EventHandler<object> _batteryStatusChanged;
-
+#endif
 		public static BatteryStatus BatteryStatus => GetBatteryStatus();
 
+#if !__WASM__
 		public static EnergySaverStatus EnergySaverStatus => GetEnergySaverStatus();
 
 		public static PowerSupplyStatus PowerSupplyStatus => GetPowerSupplyStatus();
@@ -173,6 +175,7 @@ namespace Windows.System.Power
 				_energySaverStatusChanged?.Invoke(null, null);
 			}
 		}
+#endif
 	}
 }
 #endif
