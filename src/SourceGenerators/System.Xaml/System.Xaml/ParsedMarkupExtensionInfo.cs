@@ -42,6 +42,17 @@ namespace Uno.Xaml
 		/// - FallbackValue='C,D,E,F'
 		/// </summary>
 		private static Regex BindingMembersRegex = new Regex("[^'\",]+'[^^']+'|[^'\",]+\"[^\"]+\"|[^,]+");
+		private static Regex BalancedMarkupBlockRegex = new Regex(@"
+			# modified from: https://stackoverflow.com/a/7899205
+			{					# First '{'
+				(?:
+					[^{}]|		# Match all non-braces
+					(?<open>{)| # Match '{', and capture into 'open'
+					(?<-open>}) # Match '}', and delete the 'open' capture
+				)+?
+				(?(open)(?!))	# Fails if 'open' stack isn't empty!
+			}					# Last '}'
+		", RegexOptions.IgnorePatternWhitespace);
 
 		Dictionary<XamlMember, object> args = new Dictionary<XamlMember, object>();
 		public Dictionary<XamlMember, object> Arguments
@@ -89,16 +100,24 @@ namespace Uno.Xaml
 
 			var valueWithoutBinding = raw.Substring(idx + 1, raw.Length - idx - 1);
 
-			var vpairs = BindingMembersRegex.Matches(valueWithoutBinding)
-				.Cast<Match>()
-				.Select(m => m.Value.Trim())
+			//var vpairs = BindingMembersRegex.Matches(valueWithoutBinding)
+			//	.Cast<Match>()
+			//	.Select(m => m.Value.Trim())
+			//	.ToList();
+			//if (vpairs.Count == 0)
+			//{
+			//	vpairs.Add(valueWithoutBinding);
+			//}
+
+			var innerMarkups = BalancedMarkupBlockRegex.Matches(valueWithoutBinding)
+				.OfType<Match>(); // needed for net461, netstandard2.0
+			var indexes = IndexOfAll(valueWithoutBinding, ',')
+				// ignore those separators used within inner markups
+				.Where(x => !innerMarkups.Any(y => y.Index <= x && x <= y.Index + y.Length - 1));
+			var vpairs = SplitByIndex(valueWithoutBinding, indexes)
+				.Select(x => x.Trim())
 				.ToList();
 
-			if (vpairs.Count == 0)
-			{
-				vpairs.Add(valueWithoutBinding);
-			}
-			
 			List<string> posPrms = null;
 			XamlMember lastMember = null;
 			foreach (var vpair in vpairs)
@@ -202,6 +221,23 @@ namespace Uno.Xaml
 		static Exception Error(string format, params object[] args)
 		{
 			return new XamlParseException(String.Format(format, args));
+		}
+
+		static IEnumerable<int> IndexOfAll(string x, char value) => x
+			.Select(Tuple.Create<char, int>)
+			.Where(x => x.Item1 == value)
+			.Select(x => x.Item2);
+
+		static IEnumerable<string> SplitByIndex(string x, IEnumerable<int>  indexes)
+		{
+			var previousIndex = 0;
+			foreach (var index in indexes.OrderBy(i => i))
+			{
+				yield return x.Substring(previousIndex, index - previousIndex);
+				previousIndex = index + 1;
+			}
+
+			yield return x.Substring(previousIndex);
 		}
 	}
 }
