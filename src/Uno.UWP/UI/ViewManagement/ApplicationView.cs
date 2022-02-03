@@ -59,7 +59,8 @@ namespace Windows.UI.ViewManagement
 			return true;
 		}
 
-		public Foundation.Rect VisibleBounds { get; private set; }
+		private Rect _visibleBounds;
+		public Foundation.Rect VisibleBounds { get => VisibleBoundsOverride ?? _visibleBounds; private set => _visibleBounds = value; }
 
 		/// <summary>
 		/// All other platforms: equivalent to <see cref="VisibleBounds"/>.
@@ -74,6 +75,16 @@ namespace Windows.UI.ViewManagement
 #else
 			VisibleBounds;
 #endif
+
+		/// <summary>
+		/// If set, overrides the 'real' visible bounds. Used for testing visible bounds-related behavior on devices that have no native '
+		/// unsafe area'.
+		/// </summary>
+		internal Rect? VisibleBoundsOverride
+		{
+			get;
+			set;
+		}
 
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, object> VisibleBoundsChanged;
 
