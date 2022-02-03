@@ -148,7 +148,17 @@ namespace Windows.UI.Xaml.Controls
 
 		public NSRange MarkedRange => throw new NotImplementedException();
 
-		public NSRange SelectedRange => throw new NotImplementedException();
+		public NSRange SelectedRange
+		{
+			get => CurrentEditor?.SelectedRange ?? new NSRange(start: 0, len: 0);
+			set
+			{
+				if (CurrentEditor != null)
+				{
+					CurrentEditor.SelectedRange = value;
+				}
+			}
+		}
 
 		public NSString[] ValidAttributesForMarkedText => null;
 
