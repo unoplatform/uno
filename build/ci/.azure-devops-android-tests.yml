@@ -223,7 +223,8 @@ jobs:
       ## Invert ALLOW_RERUN in a task
       targetType: inline
       script: |
-        if( "${{ parameters.ALLOW_RERUN }}" -eq "false") {
+        Set-PSDebug -Trace 1
+        if( "$(ALLOW_RERUN)" -eq "false") {
           $val = "true"
         } else {
           $val = "false"

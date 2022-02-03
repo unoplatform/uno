@@ -78,6 +78,7 @@ jobs:
       ## Invert UITEST_ALLOW_RERUN in a task
       targetType: inline
       script: |
+        Set-PSDebug -Trace 1
         if( "${{ parameters.UITEST_ALLOW_RERUN }}" -eq "false") {
           $val = "true"
         } else {
