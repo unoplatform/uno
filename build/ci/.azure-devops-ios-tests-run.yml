@@ -72,7 +72,7 @@ jobs:
 
 
   - task: PowerShell@2
-    name: 'Fill Rerun Variable'
+    displayName: 'Fill Rerun Variable'
     inputs:
       ## Expression evaluation for task parameters is not supported
       ## Invert UITEST_ALLOW_RERUN in a task
