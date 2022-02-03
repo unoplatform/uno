@@ -28,6 +28,7 @@ namespace Uno.UI.Skia.Platform
 
 		private static int _currentFrameId;
 		private HwndSource _hwndSource;
+		private PointerEventArgs? _previous;
 
 		// Win32 constants
 		private const int WM_MOUSEWHEEL = 0x020A;
@@ -89,56 +90,12 @@ namespace Uno.UI.Skia.Platform
 		public void ReleasePointerCapture(PointerIdentifier pointer)
 			=> WpfHost.Current.ReleaseMouseCapture();
 
-		private static uint GetNextFrameId()
-			=> (uint)Interlocked.Increment(ref _currentFrameId);
-
-		private static PointerPointProperties BuildPointerProperties(MouseEventArgs args)
-			=> new PointerPointProperties
-			{
-				IsLeftButtonPressed = args.LeftButton == MouseButtonState.Pressed,
-				IsMiddleButtonPressed = args.MiddleButton == MouseButtonState.Pressed,
-				IsRightButtonPressed = args.RightButton == MouseButtonState.Pressed,
-				IsXButton1Pressed = args.XButton1 == MouseButtonState.Pressed,
-				IsXButton2Pressed = args.XButton2 == MouseButtonState.Pressed,
-				IsPrimary = true,
-				IsInRange = true,
-			};
-
-		private static PointerDevice GetPointerDevice(MouseEventArgs args)
-			=> args.Device switch
-			{
-				MouseDevice _ => PointerDevice.For(PointerDeviceType.Mouse),
-				StylusDevice _ => PointerDevice.For(PointerDeviceType.Pen),
-				TouchDevice _ => PointerDevice.For(PointerDeviceType.Touch),
-				_ => PointerDevice.For(PointerDeviceType.Mouse),
-			};
-
-		private VirtualKeyModifiers GetKeyModifiers()
-			=> VirtualKeyModifiers.None;
-
+		#region Native events
 		private void HostOnMouseEnter(object sender, MouseEventArgs args)
 		{
 			try
 			{
-				var position = args.GetPosition(_host);
-				var properties = BuildPointerProperties(args);
-				var modifiers = GetKeyModifiers();
-
-				_ownerEvents.RaisePointerEntered(
-					new PointerEventArgs(
-						new Windows.UI.Input.PointerPoint(
-							frameId: GetNextFrameId(),
-							timestamp: (ulong)(args.Timestamp * TimeSpan.TicksPerMillisecond),
-							device: GetPointerDevice(args),
-							pointerId: 1,
-							rawPosition: new Windows.Foundation.Point(position.X, position.Y),
-							position: new Windows.Foundation.Point(position.X, position.Y),
-							isInContact: properties.HasPressedButton,
-							properties: properties
-						),
-						modifiers
-					)
-				);
+				_ownerEvents.RaisePointerEntered(_previous = BuildPointerArgs(args));
 			}
 			catch (Exception e)
 			{
@@ -150,25 +107,7 @@ namespace Uno.UI.Skia.Platform
 		{
 			try
 			{
-				var position = args.GetPosition(_host);
-				var properties = BuildPointerProperties(args);
-				var modifiers = GetKeyModifiers();
-
-				_ownerEvents.RaisePointerExited(
-					new PointerEventArgs(
-						new Windows.UI.Input.PointerPoint(
-							frameId: GetNextFrameId(),
-							timestamp: (ulong)(args.Timestamp * TimeSpan.TicksPerMillisecond),
-							device: GetPointerDevice(args),
-							pointerId: 1,
-							rawPosition: new Windows.Foundation.Point(position.X, position.Y),
-							position: new Windows.Foundation.Point(position.X, position.Y),
-							isInContact: properties.HasPressedButton,
-							properties: properties
-						),
-						modifiers
-					)
-				);
+				_ownerEvents.RaisePointerExited(_previous = BuildPointerArgs(args));
 			}
 			catch (Exception e)
 			{
@@ -180,25 +119,7 @@ namespace Uno.UI.Skia.Platform
 		{
 			try
 			{
-				var position = args.GetPosition(_host);
-				var properties = BuildPointerProperties(args);
-				var modifiers = GetKeyModifiers();
-
-				_ownerEvents.RaisePointerMoved(
-					new PointerEventArgs(
-						new Windows.UI.Input.PointerPoint(
-							frameId: GetNextFrameId(),
-							timestamp: (ulong)(args.Timestamp * TimeSpan.TicksPerMillisecond),
-							device: GetPointerDevice(args),
-							pointerId: 1,
-							rawPosition: new Windows.Foundation.Point(position.X, position.Y),
-							position: new Windows.Foundation.Point(position.X, position.Y),
-							isInContact: properties.HasPressedButton,
-							properties: properties
-						),
-						modifiers
-					)
-				);
+				_ownerEvents.RaisePointerMoved(_previous = BuildPointerArgs(args));
 			}
 			catch (Exception e)
 			{
@@ -210,25 +131,8 @@ namespace Uno.UI.Skia.Platform
 		{
 			try
 			{
-				var position = args.GetPosition(_host);
-				var properties = BuildPointerProperties(args);
-				var modifiers = GetKeyModifiers();
-
-				_ownerEvents.RaisePointerPressed(
-					new PointerEventArgs(
-						new Windows.UI.Input.PointerPoint(
-							frameId: GetNextFrameId(),
-							timestamp: (ulong)(args.Timestamp * TimeSpan.TicksPerMillisecond),
-							device: GetPointerDevice(args),
-							pointerId: 1,
-							rawPosition: new Windows.Foundation.Point(position.X, position.Y),
-							position: new Windows.Foundation.Point(position.X, position.Y),
-							isInContact: true,
-							properties: properties
-						),
-						modifiers
-					)
-				);
+				// IsInContact: true
+				_ownerEvents.RaisePointerPressed(_previous = BuildPointerArgs(args));
 			}
 			catch (Exception e)
 			{
@@ -240,25 +144,7 @@ namespace Uno.UI.Skia.Platform
 		{
 			try
 			{
-				var position = args.GetPosition(_host);
-				var properties = BuildPointerProperties(args);
-				var keys = GetKeyModifiers();
-
-				_ownerEvents.RaisePointerReleased(
-					new PointerEventArgs(
-						new Windows.UI.Input.PointerPoint(
-							frameId: GetNextFrameId(),
-							timestamp: (ulong)(args.Timestamp * TimeSpan.TicksPerMillisecond),
-							device: GetPointerDevice(args),
-							pointerId: 1,
-							rawPosition: new Windows.Foundation.Point(position.X, position.Y),
-							position: new Windows.Foundation.Point(position.X, position.Y),
-							isInContact: properties.HasPressedButton,
-							properties: properties
-						),
-						keys
-					)
-				);
+				_ownerEvents.RaisePointerReleased(_previous = BuildPointerArgs(args));
 			}
 			catch (Exception e)
 			{
@@ -302,7 +188,8 @@ namespace Uno.UI.Skia.Platform
 						IsPrimary = true,
 						IsInRange = true,
 						MouseWheelDelta = -((int)wparam >> 16) / 40
-					};
+					}.SetUpdateKindFromPrevious(_previous?.CurrentPoint.Properties);
+
 					var modifiers = VirtualKeyModifiers.None;
 					if (keys.HasFlag(MouseModifierKeys.MK_SHIFT))
 					{
@@ -313,21 +200,19 @@ namespace Uno.UI.Skia.Platform
 						modifiers |= VirtualKeyModifiers.Control;
 					}
 
-					_ownerEvents.RaisePointerWheelChanged(
-						new PointerEventArgs(
-							new Windows.UI.Input.PointerPoint(
-								frameId: GetNextFrameId(),
-								timestamp: (ulong)Environment.TickCount,
-								device: PointerDevice.For(PointerDeviceType.Mouse),
-								pointerId: 1,
-								rawPosition: position,
-								position: position,
-								isInContact: properties.HasPressedButton,
-								properties: properties
-							),
-							modifiers
-						)
+					var point = new Windows.UI.Input.PointerPoint(
+						frameId: GetNextFrameId(),
+						timestamp: (ulong)Environment.TickCount,
+						device: PointerDevice.For(PointerDeviceType.Mouse),
+						pointerId: 1,
+						rawPosition: position,
+						position: position,
+						isInContact: properties.HasPressedButton,
+						properties: properties
 					);
+					var ptArgs = new PointerEventArgs(point, modifiers);
+
+					_ownerEvents.RaisePointerWheelChanged(_previous = ptArgs);
 
 					handled = true;
 					break;
@@ -336,5 +221,52 @@ namespace Uno.UI.Skia.Platform
 
 			return IntPtr.Zero;
 		}
+		#endregion
+
+		private PointerEventArgs BuildPointerArgs(MouseEventArgs args)
+		{
+			var position = args.GetPosition(_host);
+			var properties = BuildPointerProperties(args).SetUpdateKindFromPrevious(_previous?.CurrentPoint.Properties);
+			var modifiers = GetKeyModifiers();
+			var point = new Windows.UI.Input.PointerPoint(
+				frameId: GetNextFrameId(),
+				timestamp: (ulong)(args.Timestamp * TimeSpan.TicksPerMillisecond),
+				device: GetPointerDevice(args),
+				pointerId: 1,
+				rawPosition: new Windows.Foundation.Point(position.X, position.Y),
+				position: new Windows.Foundation.Point(position.X, position.Y),
+				isInContact: properties.HasPressedButton,
+				properties: properties
+			);
+
+			return new PointerEventArgs(point, modifiers);
+		}
+
+		private static PointerPointProperties BuildPointerProperties(MouseEventArgs args)
+			=> new()
+			{
+				IsLeftButtonPressed = args.LeftButton == MouseButtonState.Pressed,
+				IsMiddleButtonPressed = args.MiddleButton == MouseButtonState.Pressed,
+				IsRightButtonPressed = args.RightButton == MouseButtonState.Pressed,
+				IsXButton1Pressed = args.XButton1 == MouseButtonState.Pressed,
+				IsXButton2Pressed = args.XButton2 == MouseButtonState.Pressed,
+				IsPrimary = true,
+				IsInRange = true
+			};
+
+		private static uint GetNextFrameId()
+			=> (uint)Interlocked.Increment(ref _currentFrameId);
+
+		private static PointerDevice GetPointerDevice(MouseEventArgs args)
+			=> args.Device switch
+			{
+				MouseDevice _ => PointerDevice.For(PointerDeviceType.Mouse),
+				StylusDevice _ => PointerDevice.For(PointerDeviceType.Pen),
+				TouchDevice _ => PointerDevice.For(PointerDeviceType.Touch),
+				_ => PointerDevice.For(PointerDeviceType.Mouse),
+			};
+
+		private VirtualKeyModifiers GetKeyModifiers()
+			=> VirtualKeyModifiers.None;
 	}
 }
