@@ -1,6 +1,7 @@
 ﻿using Android.Graphics;
 using Android.Text;
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -22,30 +23,19 @@ namespace Uno.UI.Controls
 		private static readonly Action LogCharacterSpacingNotSupported =
 			Actions.CreateOnce(() => typeof(TextPaintPool).Log().Warn("CharacterSpacing is only supported on Android API Level 21+"));
 
-		private class Entry
+		private record Entry(
+			FontWeight FontWeight,
+			FontStyle FontStyle,
+			FontFamily FontFamily,
+			double FontSize,
+			double CharacterSpacing,
+			Windows.UI.Color Foreground,
+			BaseLineAlignment BaseLineAlignment,
+			TextDecorations TextDecorations)
 		{
-			public readonly FontWeight FontWeight;
-			public readonly FontStyle FontStyle;
-			public readonly FontFamily FontFamily;
-			public readonly double FontSize;
-			public readonly double CharacterSpacing;
-			public readonly Windows.UI.Color Foreground;
-			public readonly BaseLineAlignment BaseLineAlignment;
-			public readonly TextDecorations TextDecorations;
-
-			public Entry(FontWeight fontWeight, FontStyle fontStyle, FontFamily fontFamily, double fontSize, double characterSpacing, Windows.UI.Color foreground, BaseLineAlignment baselineAlignment, TextDecorations textDecorations)
-			{
-				FontWeight = fontWeight;
-				FontStyle = fontStyle;
-				FontFamily = fontFamily;
-				FontSize = fontSize;
-				CharacterSpacing = characterSpacing;
-				Foreground = foreground;
-				BaseLineAlignment = baselineAlignment;
-				TextDecorations = textDecorations;
-			}
+			public long Timestamp { get; set; }
 		}
-
+		
 		private class EntryComparer : IEqualityComparer<Entry>
 		{
 			public bool Equals(Entry x, Entry y) =>
@@ -69,7 +59,11 @@ namespace Uno.UI.Controls
 				^ entry.TextDecorations.GetHashCode();
 		}
 
-		private static Dictionary<Entry, TextPaint> _entries = new Dictionary<Entry, TextPaint>(new EntryComparer());
+		private static Dictionary<Entry, TextPaint> _entries = new(new EntryComparer());
+		private static List<Entry> _entriesList = new();
+		private static Stopwatch _entriesTime = Stopwatch.StartNew();
+		private static long _minEntryTimestamp;
+		private const int MaxEntries = 500;
 
 		/// <summary>
 		/// Builds a TextPaint configuration.
@@ -96,9 +90,40 @@ namespace Uno.UI.Controls
 			if (!_entries.TryGetValue(key, out var paint))
 			{
 				_entries.Add(key, paint = InnerBuildPaint(fontWeight, fontStyle, fontFamily, fontSize, characterSpacing, foreground, shader, baselineAlignment, textDecorations));
+				_entriesList.Add(key);
+
+				TryScavenge();
 			}
 
+			key.Timestamp = _entriesTime.ElapsedTicks;
+
 			return paint;
+		}
+
+		private static void TryScavenge()
+		{
+			if(_entriesList.Count > MaxEntries)
+			{
+				var cutoff = ((_entriesTime.ElapsedTicks - _minEntryTimestamp) / 2) + _minEntryTimestamp;
+
+				for (int i = 0; i < _entriesList.Count; i++)
+				{
+					var entry = _entriesList[i];
+
+					if (entry.Timestamp < cutoff)
+					{
+						_entries.Remove(entry);
+						_entriesList.RemoveAt(i--);
+					}
+				}
+
+				_minEntryTimestamp = cutoff;
+
+				if (typeof(TextPaintPool).Log().IsEnabled(LogLevel.Debug))
+				{
+					typeof(TextPaintPool).Log().Debug($"Cleared pool ({_entries.Count} left)");
+				}
+			}
 		}
 
 		private static TextPaint InnerBuildPaint(FontWeight fontWeight, FontStyle fontStyle, FontFamily fontFamily,  double fontSize, double characterSpacing, Color foreground, Shader shader,  BaseLineAlignment baselineAlignment, TextDecorations textDecorations)
