@@ -7,7 +7,6 @@
 using Uno.UI.Extensions;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -18,6 +17,7 @@ using Windows.UI.Xaml.Input;
 using Microsoft.UI.Input;
 #else
 using Windows.Devices.Input;
+using Windows.UI.Input;
 #endif
 
 namespace Uno.UI.Xaml.Core
