@@ -105,6 +105,7 @@ namespace Uno.UI
 					.Append(uiElement?.RenderTransform.GetTransformDetails())
 					.Append(uiElement?.IsMeasureDirty is true ? " MEASURE_DIRTY" : "")
 					.Append(uiElement?.IsMeasureDirtyPath is true ? " MEASURE_DIRTY_PATH" : "")
+					.Append(uiElement?.IsMeasureDirtyPathDisabled is true ? " MEASURE_DIRTY_PATH_DISABLED" : "")
 					.Append(uiElement?.IsArrangeDirty is true ? " ARRANGE_DIRTY" : "")
 					.AppendLine();
 			}
