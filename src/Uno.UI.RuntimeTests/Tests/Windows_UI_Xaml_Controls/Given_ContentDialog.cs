@@ -183,7 +183,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if !__IOS__ && !__ANDROID__
+#if !__ANDROID__ // && !__IOS__ Disabled for iOS https://github.com/unoplatform/uno/issues/7995
 		[Ignore("Test applies to platforms using software keyboard")]
 #endif
 		public async Task When_Soft_Keyboard_And_VisibleBounds()
