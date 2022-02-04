@@ -103,6 +103,10 @@ namespace Uno.UI
 		}
 
 		public static bool GetUseMeasurePathDisabled(FrameworkElement element)
+#if __WASM__ || __SKIA__
 			=> element.IsMeasureDirtyPathDisabled;
+#else
+			=> false; // Not implemented for this platform
+#endif
 	}
 }

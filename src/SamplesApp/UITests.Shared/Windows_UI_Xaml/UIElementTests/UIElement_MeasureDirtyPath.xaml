@@ -12,7 +12,7 @@
 		<StackPanel Spacing="6">
 			<StackPanel Orientation="Horizontal" Spacing="4">
 				<ToggleButton x:Name="optimizeMeasure" Click="changeOptimizeMeasure">Use MEASURE_DIRTY_PATH</ToggleButton>
-				<TextBlock>(Skia & Wasm only)</TextBlock>
+				<TextBlock>(Skia &amp; Wasm only)</TextBlock>
 			</StackPanel>
 			<TextBlock>Root</TextBlock>
 			<Rectangle Width="200" Height="20" Stroke="Black" StrokeThickness="3" IsHitTestVisible="False" x:Name="rect_root" />
