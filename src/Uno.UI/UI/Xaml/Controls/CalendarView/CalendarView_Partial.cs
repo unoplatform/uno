@@ -218,6 +218,8 @@ namespace Windows.UI.Xaml.Controls
 
 			PrepareState();
 			DefaultStyleKey = typeof(CalendarView);
+
+			IsMeasureDirtyPathDisabled = true;
 		}
 
 		~CalendarView()
