@@ -276,7 +276,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 
 				try
 				{
-					stream.FlushAsync();
+					await stream.FlushAsync();
 				}
 				catch (Exception ex)
 				{
