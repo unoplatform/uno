@@ -266,13 +266,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_IsEnabled_Set()
 		{
-			var color = new SolidColorBrush(Colors.Red);
+			var foregroundColor = new SolidColorBrush(Colors.Red);
+			var disabledColor = new SolidColorBrush(Colors.Blue);
 
 			var textbox = new TextBox
 			{
 				Text = "Original Text",
-				IsEnabled = false,
-				Foreground = color
+				Foreground = foregroundColor,
+				Style = TestsResourceHelper.GetResource<Style>("MaterialOutlinedTextBoxStyle"),
+				IsEnabled = false
 			};
 
 			var stackPanel = new StackPanel()
@@ -280,24 +282,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Children = { textbox }
 			};
 
+
 			WindowHelper.WindowContent = stackPanel;
 			await WindowHelper.WaitForLoaded(textbox);
 
-			textbox.Focus(FocusState.Programmatic);
+
+			var contentPresenter = (ScrollViewer)textbox.FindName("ContentElement");
 
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(textbox.IsEnabled);
-
-#if !__SKIA__
-			// Skia disabled VisualState does not update the ForeGround
-			Assert.AreNotEqual(textbox.Foreground, color);
-#endif
+			Assert.AreEqual(contentPresenter.Foreground, disabledColor);
 
 			textbox.IsEnabled = true;
 
 			Assert.IsTrue(textbox.IsEnabled);
-			Assert.AreEqual(textbox.Foreground, color);
+			Assert.AreEqual(contentPresenter.Foreground, foregroundColor);
 		}
 	}
 }

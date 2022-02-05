@@ -308,4 +308,224 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+
+	<!-- Material TextBox -->
+
+	<x:String x:Key="ClearGlyphPathData">M10.661012,7.5689991L7.5990001,10.650999 12.939089,15.997999 7.5990001,21.336999 10.661012,24.405 16.007082,19.065 21.369997,24.405 24.430058,21.336999 24.429081,21.336 19.088991,15.998999 24.429081,10.662001 21.345095,7.5819996 16.007082,12.919001z M15.997072,0C24.828983,0 31.994999,7.1770013 31.994999,15.999998 31.994999,24.826997 24.828007,31.999999 15.997072,31.999999 7.1569835,31.999999 1.5270052E-07,24.826997 0,15.999998 1.5270052E-07,7.1799997 7.1569835,0 15.997072,0z</x:String>
+
+	<Style x:Name="DeleteButtonStyle"
+		   TargetType="Button">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Grid x:Name="ButtonLayoutGrid"
+						  Background="Transparent">
+
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="CommonStates">
+								<VisualState x:Name="Normal" />
+								<VisualState x:Name="PointerOver" />
+								<VisualState x:Name="Pressed" />
+								<VisualState x:Name="Disabled">
+									<VisualState.Setters>
+										<Setter Target="ButtonLayoutGrid.Opacity"
+												Value="0" />
+									</VisualState.Setters>
+								</VisualState>
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+
+						<Path x:Name="GlyphElement"
+							  Data="{StaticResource ClearGlyphPathData}"
+							  Fill="{StaticResource TextBoxIconColorBrush}"
+							  VerticalAlignment="Center"
+							  HorizontalAlignment="Center"
+							  Stretch="Uniform"
+							  Width="16"
+							  Height="16"
+							  AutomationProperties.AccessibilityView="Raw" />
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="MaterialOutlinedTextBoxStyle"
+		   TargetType="TextBox">
+		<Setter Property="Background"
+				Value="Transparent" />
+		<Setter Property="Foreground"
+				Value="#000000" />
+		<Setter Property="PlaceholderForeground"
+				Value="#DEFFFFFF" />
+		<Setter Property="BorderThickness"
+				Value="1" />
+		<Setter Property="BorderBrush"
+				Value="#DEFFFFFF" />
+		<Setter Property="CornerRadius"
+				Value="4" />
+
+		<Setter Property="HorizontalContentAlignment"
+				Value="Left" />
+		<Setter Property="VerticalContentAlignment"
+				Value="Center" />
+		<Setter Property="Padding"
+				Value="12,16" />
+		<Setter Property="MinHeight"
+				Value="50" />
+
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="TextBox">
+					<Grid x:Name="Root"
+						  Background="{TemplateBinding Background}"
+						  BorderBrush="{TemplateBinding BorderBrush}"
+						  BorderThickness="{TemplateBinding BorderThickness}"
+						  CornerRadius="{TemplateBinding CornerRadius}"
+						  Padding="{TemplateBinding Padding}">
+
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="CommonStates">
+								<VisualState x:Name="Normal" />
+								<VisualState x:Name="PointerOver" />
+								<VisualState x:Name="Pressed" />
+
+								<VisualState x:Name="Disabled">
+									<VisualState.Setters>
+										<Setter Target="Root.BorderBrush"
+												Value="#000000" />
+
+										<!-- Important: There is a Test validating this value -->
+										<Setter Target="ContentElement.Foreground"
+												Value="#0000FF" />
+										<!-- In this case the opacity is not applied to the brush -->
+										<Setter Target="ContentElement.Opacity"
+												Value="0.38" />
+										<Setter Target="PlaceholderElement.Foreground"
+												Value="#000000" />
+									</VisualState.Setters>
+								</VisualState>
+
+								<VisualState x:Name="Focused">
+									<VisualState.Setters>
+										<Setter Target="Root.BorderBrush"
+												Value="#5B4CF5" />
+										<Setter Target="PlaceholderElement.Foreground"
+												Value="#5B4CF5" />
+									</VisualState.Setters>
+								</VisualState>
+							</VisualStateGroup>
+							<VisualStateGroup x:Name="ButtonStates">
+								<VisualState x:Name="ButtonVisible">
+									<VisualState.Setters>
+										<Setter Target="DeleteButton.Visibility"
+												Value="Visible" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="ButtonCollapsed" />
+							</VisualStateGroup>
+							<VisualStateGroup x:Name="HeaderStates">
+								<VisualState x:Name="NotEmpty">
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="PlaceholderElement_CompositeTransform"
+														 Storyboard.TargetProperty="TranslateY"
+														 Duration="0:0:0.25"
+														 To="-11" >
+											<DoubleAnimation.EasingFunction>
+												<CubicEase EasingMode="EaseInOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+
+										<!-- ContentElement TranslateY value changing depending if there is a PlaceholderText or not -->
+										<DoubleAnimation Storyboard.TargetName="ContentElement_CompositeTransform"
+														 Storyboard.TargetProperty="TranslateY"
+														 Duration="0:0:0.25">
+											<DoubleAnimation.EasingFunction>
+												<CubicEase EasingMode="EaseInOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+
+										<DoubleAnimation Storyboard.TargetName="PlaceholderElement_CompositeTransform"
+														 Storyboard.TargetProperty="ScaleX"
+														 Duration="0:0:0.25"
+														 To="0.7">
+											<DoubleAnimation.EasingFunction>
+												<CubicEase EasingMode="EaseInOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+
+										<DoubleAnimation Storyboard.TargetName="PlaceholderElement_CompositeTransform"
+														 Storyboard.TargetProperty="ScaleY"
+														 Duration="0:0:0.25"
+														 To="0.7" >
+											<DoubleAnimation.EasingFunction>
+												<CubicEase EasingMode="EaseInOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+									</Storyboard>
+								</VisualState>
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+
+						<ContentPresenter x:Name="IconPresenter"
+										  HorizontalAlignment="Center"
+										  MaxHeight="34"
+										  MaxWidth="34"
+										  MinWidth="25"
+										  Margin="0,0,8,0"
+										  VerticalAlignment="Bottom"
+										  Visibility="Visible" />
+
+						<ScrollViewer x:Name="ContentElement"
+									  Grid.Column="1"
+									  HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+									  HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
+									  IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+									  IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
+									  IsTabStop="False"
+									  IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
+									  VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
+									  VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+									  VerticalAlignment="Bottom"
+									  ZoomMode="Disabled"
+									  AutomationProperties.AccessibilityView="Raw">
+							<ScrollViewer.RenderTransform>
+								<CompositeTransform x:Name="ContentElement_CompositeTransform" />
+							</ScrollViewer.RenderTransform>
+						</ScrollViewer>
+
+						<TextBlock x:Name="PlaceholderElement"
+								   Grid.Column="1"
+								   Foreground="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}}"
+								   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+								   IsHitTestVisible="False"
+								   RenderTransformOrigin="0,0.5"
+								   Text="{TemplateBinding PlaceholderText}"
+								   TextAlignment="{TemplateBinding TextAlignment}"
+								   TextWrapping="{TemplateBinding TextWrapping}"
+								   VerticalAlignment="Top">
+							<TextBlock.RenderTransform>
+								<CompositeTransform x:Name="PlaceholderElement_CompositeTransform" />
+							</TextBlock.RenderTransform>
+						</TextBlock>
+
+						<Button x:Name="DeleteButton"
+								Grid.Column="2"
+								Foreground="{TemplateBinding BorderBrush}"
+								IsTabStop="False"
+								Style="{StaticResource DeleteButtonStyle}"
+								VerticalAlignment="Bottom"
+								Visibility="Collapsed"
+								AutomationProperties.AccessibilityView="Raw" />
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
 </ResourceDictionary>
