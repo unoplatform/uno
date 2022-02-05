@@ -117,7 +117,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.Browser)] // Ignore iOS for timeout using Xamarin.UITest 3.2 (or iOS 15)
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Ignore iOS for timeout using Xamarin.UITest 3.2 (or iOS 15) https://github.com/unoplatform/uno/issues/8013
 		public void ComboBoxTests_Fullscreen_Popup_Generic()
 		{
 			Run("SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.ComboBox_FullScreen_Popup");

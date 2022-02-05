@@ -332,13 +332,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.Browser)] // This test not working on iOS (Xamarin.UITest or iOS 15)
 		public void CalendarDatePicker_With_Description()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.CalendarView.CalendarDatePicker_Description", skipInitialScreenshot: true);
-			var autoSuggestBox = _app.WaitForElement("DescriptionCalendarDatePicker")[0];
+			var autoSuggestBoxRect = ToPhysicalRect(_app.WaitForElement("DescriptionCalendarDatePicker")[0].Rect);
 			using var screenshot = TakeScreenshot("CalendarDatePicker Description", new ScreenshotOptions() { IgnoreInSnapshotCompare = true });
-			ImageAssert.HasColorAt(screenshot, autoSuggestBox.Rect.X + autoSuggestBox.Rect.Width / 2, autoSuggestBox.Rect.Y + autoSuggestBox.Rect.Height - 150, Color.Red);
+			ImageAssert.HasColorAt(screenshot, autoSuggestBoxRect.X + autoSuggestBoxRect.Width / 2, autoSuggestBoxRect.Y + autoSuggestBoxRect.Height - 150, Color.Red);
 		}
 	}
 }

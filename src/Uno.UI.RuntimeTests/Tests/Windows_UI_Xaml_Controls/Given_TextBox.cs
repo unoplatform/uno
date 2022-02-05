@@ -190,7 +190,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if __IOS__
-		[Ignore("Disabled as not working properly. See https://CHANGEME")]
+		[Ignore("Disabled as not working properly. See https://github.com/unoplatform/uno/issues/8016")]
 #endif
 		[TestMethod]
 		public async Task When_SelectionStart_Set()
@@ -228,7 +228,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if __IOS__
-		[Ignore("Disabled as not working properly. See https://CHANGEME")]
+		[Ignore("Disabled as not working properly. See https://github.com/unoplatform/uno/issues/8016")]
 #endif
 		[TestMethod]
 		public async Task When_Focus_Changes_SelectionStart_Preserved()
