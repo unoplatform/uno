@@ -138,12 +138,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private void UpdateCommonStates(ManipulationUpdateKind manipulationUpdate = ManipulationUpdateKind.None)
 		{
-			var state = GetState(IsEnabled, IsSelected, IsPointerOver, _isPressed);
-
 			// On Windows, the pressed state appears only after a few, and won't appear at all if you quickly start to scroll with the finger.
 			// So here we make sure to delay the beginning of a manipulation to match this behavior (and avoid flickering when scrolling)
 			// We also make sure that when user taps (Enter->Pressed->Move*->Release->Exit) on the item, he is able to see the pressed (selected) state.
-			var request = ++_goToStateRequest;
+			var state = GetState(IsEnabled, IsSelected, IsPointerOver, _isPressed);
+			var requestId = ++_goToStateRequest; // Request ID is use to ensure to apply only the last requested state.
 
 			TimeSpan delay; // delay to apply the 'state'
 			bool pause; // should we force a pause after applying the 'state'
@@ -188,7 +187,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				{
 					await Task.Delay(delay);
 
-					if (_goToStateRequest != request)
+					if (_goToStateRequest != requestId
+						// If element has been unloaded (e.g. click on a ComboBoxItem) native animations of the target state won't run.
+						// Then even if on next load we request UpdateCommonStates,
+						// the VSM will determine that state didn't changed and will just ignore the request.
+						// Note: The issue is probably in the VSM to allow a GoToState while not in visual tree,
+						//		 but this is the most common case and teh safest place to patch.
+						|| !IsLoaded)
 					{
 						return;
 					}
