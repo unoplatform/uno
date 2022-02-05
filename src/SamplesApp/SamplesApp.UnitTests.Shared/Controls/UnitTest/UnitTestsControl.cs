@@ -178,6 +178,8 @@ namespace Uno.UI.Samples.Tests
 
 		private async Task ReportMessage(string message, bool isRunning = true)
 		{
+			this.Log().LogInformation(message);
+
 			void Setter()
 			{
 				testFilter.IsEnabled = runButton.IsEnabled = !isRunning || _cts == null; // Disable the testFilter to avoid SIP to re-open
