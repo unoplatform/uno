@@ -47,7 +47,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Helper\PropertyMetadataHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Helper\SampleHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Helper\ThicknessHelper2.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\UnitTest\IsExternalInit.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UnitTest\TestCase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UnitTest\TestCaseResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UnitTest\TestResult.cs" />

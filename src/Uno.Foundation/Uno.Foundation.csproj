@@ -46,6 +46,7 @@
 	<Import Project="Uno.Core.Extensions\Uno.Core.Extensions.props" />
 
 	<ItemGroup>
+	  <UpToDateCheckInput Remove="Extensions\IsExternalInit.cs" />
 	  <UpToDateCheckInput Remove="Extensions\RectExtensions.cs" />
 	</ItemGroup>
 </Project>
