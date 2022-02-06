@@ -23,6 +23,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Suite\SpanBench\SimpleSpanBenchmark.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\BenchmarkDotNetControl.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\BenchmarkDotNetTestsPage.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI\ColorBench\XamlControlsResourcesCreationBenchmark.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml\ResourceDictionaryBench\XamlControlsResourcesCreationBenchmark.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml\ResourceDictionaryBench\XamlControlsResourcesReadBenchmark.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml\ResourceDictionaryBench\XamlControlsResourcesCreationRetrievalBenchmark.cs" />
