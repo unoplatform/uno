@@ -143,14 +143,17 @@ jobs:
       net5_default:
         SITE_SUFFIX: 'net5.0'
         UITEST_AUTOMATED_GROUP: 'Default'
+        UITEST_TEST_TIMEOUT: '120000'
 
       net5_runtimetests:
         SITE_SUFFIX: 'net5.0'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
+        UITEST_TEST_TIMEOUT: '1800000'
 
       net5_benchmarks:
         SITE_SUFFIX: 'net5.0'
         UITEST_AUTOMATED_GROUP: 'Benchmarks'
+        UITEST_TEST_TIMEOUT: '120000'
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -196,6 +199,7 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+      UITEST_TEST_TIMEOUT: "$(UITEST_TEST_TIMEOUT)"
       SITE_SUFFIX: "$(SITE_SUFFIX)"
 
     displayName: 'Running UI Tests'

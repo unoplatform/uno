@@ -21,9 +21,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 		public void PasswordBox_With_Description()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.AutoSuggestBoxTests.AutoSuggestBox_Description", skipInitialScreenshot: true);
-			var autoSuggestBox = _app.WaitForElement("DescriptionAutoSuggestBox")[0];
+			var autoSuggestBoxRect = ToPhysicalRect(_app.WaitForElement("DescriptionAutoSuggestBox")[0].Rect);
 			using var screenshot = TakeScreenshot("AutoSuggestBox Description", new ScreenshotOptions() { IgnoreInSnapshotCompare = true });
-			ImageAssert.HasColorAt(screenshot, autoSuggestBox.Rect.X + autoSuggestBox.Rect.Width / 2, autoSuggestBox.Rect.Y + autoSuggestBox.Rect.Height - 150, Color.Red);
+			ImageAssert.HasColorAt(screenshot, autoSuggestBoxRect.X + autoSuggestBoxRect.Width / 2, autoSuggestBoxRect.Y + autoSuggestBoxRect.Height - 50, Color.Red);
 		}
 	}
 }

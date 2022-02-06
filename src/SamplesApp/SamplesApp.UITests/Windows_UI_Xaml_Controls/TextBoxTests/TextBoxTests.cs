@@ -253,7 +253,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			var previousText = txt.GetDependencyPropertyValue<string>("Text");
 
-			tglReadonly.Tap();
+			tglReadonly.FastTap();
 			_app.EnterText(txt, " Works again!");
 
 			var newText = "";
@@ -276,7 +276,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			using var initial = TakeScreenshot("initial", ignoreInSnapshotCompare: true);
 
 			// Focus the PasswordBox
-			passwordBox.Tap();
+			passwordBox.FastTap();
 
 			// Press the reveal button, and move up (so the ScrollViewer will kick in and cancel the pointer), then release
 			_app.DragCoordinates(passwordBoxRect.X + 10, passwordBoxRect.Right - 10, passwordBoxRect.X - 100, passwordBoxRect.Right - 10);
@@ -323,6 +323,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 		[Test]
 		[AutoRetry]
+		[Timeout(400000)] // Increased iOS timeout for Xamarin.UITest 3.2
+		[Ignore("Failed to find [Pointer] on [FocusState] in last DefocusTextBox invocation: https://github.com/unoplatform/uno/issues/8015")]
 		public void TextBox_No_Text_Entered()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxControl.TextBox_Binding_Null");
@@ -448,7 +450,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 		private void ChangeTextAndAssertBeforeAfter(QueryEx textbox, string initialTextAlignment, string finalText, string finalTextAlignment)
 		{
 			// Focus textbox
-			textbox.Tap();
+			textbox.FastTap();
 
 			// Assert initial state
 			Assert.AreEqual(initialTextAlignment, textbox.GetDependencyPropertyValue("TextAlignment")?.ToString());
@@ -477,14 +479,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			Assert.AreEqual("", lostFocusTextBlock.GetDependencyPropertyValue("Text")?.ToString());
 
 			// Change text and verify text of text blocks
-			textBox1.Tap();
+			textBox1.FastTap();
 			textBox1.ClearText();
 			textBox1.EnterText("Testing text property");
 			Assert.AreEqual("Testing text property", textChangedTextBlock.GetDependencyPropertyValue("Text")?.ToString());
 			Assert.AreEqual("", lostFocusTextBlock.GetDependencyPropertyValue("Text")?.ToString());
 
 			// change focus and assert
-			textBox2.Tap();
+			textBox2.FastTap();
 			Assert.AreEqual("Testing text property", textChangedTextBlock.GetDependencyPropertyValue("Text")?.ToString());
 			Assert.AreEqual("Testing text property", lostFocusTextBlock.GetDependencyPropertyValue("Text")?.ToString());
 		}
@@ -521,14 +523,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			using var screenshot1 = TakeScreenshot("textbox readonly", ignoreInSnapshotCompare: true);
 
 			// remove readonly and focus textbox
-			readonlyToggle.Tap(); // now: unchecked
-			target.Tap();
+			readonlyToggle.FastTap(); // now: unchecked
+			target.FastTap();
 			_app.Wait(seconds: 1); // allow keyboard to fully open
 			using var screenshot2 = TakeScreenshot("textbox focused with keyboard", ignoreInSnapshotCompare: true);
 
 			// reapply readonly and try focus textbox
-			readonlyToggle.Tap(); // now: checked
-			target.Tap();
+			readonlyToggle.FastTap(); // now: checked
+			target.FastTap();
 			_app.Wait(seconds: 1); // allow keyboard to fully open (if ever possible)
 			_app.WaitForElement(target);
 			using var screenshot3 = TakeScreenshot("textbox readonly again", ignoreInSnapshotCompare: true);
@@ -561,11 +563,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			var multilineReadonlyTextRect = target.FirstResult().Rect.ToRectangle();
 
 			// remove readonly
-			readonlyCheckBox.Tap(); // now: unchecked
+			readonlyCheckBox.FastTap(); // now: unchecked
 			var multilineTextRect = target.FirstResult().Rect.ToRectangle();
 
 			// remove multiline
-			multilineCheckBox.Tap(); // now: unchecked
+			multilineCheckBox.FastTap(); // now: unchecked
 			var normalTextRect = target.FirstResult().Rect.ToRectangle();
 
 			multilineTextRect.Height.Should().Be(multilineReadonlyTextRect.Height, because: "toggling IsReadOnly should not affect AcceptsReturn=True(multiline) TextBox.Height");
@@ -583,7 +585,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			var normalCasingTextBox = _app.Marked("NormalCasingTextBox");
 
-			normalCasingTextBox.Tap();
+			normalCasingTextBox.FastTap();
 			normalCasingTextBox.ClearText();
 			normalCasingTextBox.EnterText(text);
 
@@ -601,7 +603,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			var defaultCasingTextBox = _app.Marked("DefaultCasingTextBox");
 
-			defaultCasingTextBox.Tap();
+			defaultCasingTextBox.FastTap();
 			defaultCasingTextBox.ClearText();
 			defaultCasingTextBox.EnterText(text);
 
@@ -619,7 +621,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			var lowerCasingTextBox = _app.Marked("LowerCasingTextBox");
 
-			lowerCasingTextBox.Tap();
+			lowerCasingTextBox.FastTap();
 			lowerCasingTextBox.ClearText();
 			lowerCasingTextBox.EnterText(text);
 
@@ -637,7 +639,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			var upperCasingTextBox = _app.Marked("UpperCasingTextBox");
 
-			upperCasingTextBox.Tap();
+			upperCasingTextBox.FastTap();
 			upperCasingTextBox.ClearText();
 			upperCasingTextBox.EnterText(text);
 
@@ -875,9 +877,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 		public void TextBox_With_Description()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_Description", skipInitialScreenshot: true);
-			var textBox = _app.WaitForElement("DescriptionTextBox")[0];
+			var textBoxRect = ToPhysicalRect(_app.WaitForElement("DescriptionTextBox")[0].Rect);
 			using var screenshot = TakeScreenshot("TextBox Description", new ScreenshotOptions() { IgnoreInSnapshotCompare = true });
-			ImageAssert.HasColorAt(screenshot, textBox.Rect.X + textBox.Rect.Width / 2, textBox.Rect.Y + textBox.Rect.Height - 150, Color.Red);
+			ImageAssert.HasColorAt(screenshot, textBoxRect.X + textBoxRect.Width / 2, textBoxRect.Y + textBoxRect.Height - 50, Color.Red);
 		}
 
 		[Test]
@@ -885,9 +887,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 		public void PasswordBox_With_Description()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.TextBox.PasswordBox_Description", skipInitialScreenshot: true);
-			var passwordBox = _app.WaitForElement("DescriptionPasswordBox")[0];
+			var passwordBoxRect = ToPhysicalRect(_app.WaitForElement("DescriptionPasswordBox")[0].Rect);
 			using var screenshot = TakeScreenshot("PasswordBox Description", new ScreenshotOptions() { IgnoreInSnapshotCompare = true });
-			ImageAssert.HasColorAt(screenshot, passwordBox.Rect.X + passwordBox.Rect.Width / 2, passwordBox.Rect.Y + passwordBox.Rect.Height - 150, Color.Red);
+			ImageAssert.HasColorAt(screenshot, passwordBoxRect.X + passwordBoxRect.Width / 2, passwordBoxRect.Y + passwordBoxRect.Height - 50, Color.Red);
 		}
 	}
 }

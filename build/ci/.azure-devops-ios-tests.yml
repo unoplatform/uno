@@ -65,10 +65,11 @@ jobs:
     nugetPackages: $(NUGET_PACKAGES)
     JobName: 'iOS_Automated_Tests_Group_01'
     JobDisplayName: 'iOS Automated Tests Group 01'
-    JobTimeoutInMinutes: 60
+    JobTimeoutInMinutes: 90
     vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: false
     UITEST_AUTOMATED_GROUP: 1
+    UITEST_TEST_TIMEOUT: '270000'
     UITEST_ALLOW_RERUN: 'true'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
@@ -78,10 +79,11 @@ jobs:
     nugetPackages: $(NUGET_PACKAGES)
     JobName: 'iOS_Automated_Tests_Group_02'
     JobDisplayName: 'iOS Automated Tests Group 02'
-    JobTimeoutInMinutes: 60
+    JobTimeoutInMinutes: 90
     vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: false
     UITEST_AUTOMATED_GROUP: 2
+    UITEST_TEST_TIMEOUT: '270000'
     UITEST_ALLOW_RERUN: 'true'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
@@ -91,10 +93,11 @@ jobs:
     nugetPackages: $(NUGET_PACKAGES)
     JobName: 'iOS_Automated_Tests_Group_03'
     JobDisplayName: 'iOS Automated Tests Group 03'
-    JobTimeoutInMinutes: 60
+    JobTimeoutInMinutes: 90
     vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: false
     UITEST_AUTOMATED_GROUP: 3
+    UITEST_TEST_TIMEOUT: '270000'
     UITEST_ALLOW_RERUN: 'true'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
@@ -107,6 +110,7 @@ jobs:
     JobTimeoutInMinutes: 90
     vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: false
+    UITEST_TEST_TIMEOUT: '3600000'
     UITEST_AUTOMATED_GROUP: 4
     UITEST_ALLOW_RERUN: 'false'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
@@ -134,6 +138,7 @@ jobs:
     vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: true
     UITEST_SNAPSHOTS_GROUP: 00
+    UITEST_TEST_TIMEOUT: '270000'
     UITEST_ALLOW_RERUN: 'true'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
@@ -147,6 +152,7 @@ jobs:
     vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: true
     UITEST_SNAPSHOTS_GROUP: 01
+    UITEST_TEST_TIMEOUT: '270000'
     UITEST_ALLOW_RERUN: 'true'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
@@ -160,6 +166,7 @@ jobs:
     vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: true
     UITEST_SNAPSHOTS_GROUP: 02
+    UITEST_TEST_TIMEOUT: '270000'
     UITEST_ALLOW_RERUN: 'true'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
@@ -173,6 +180,7 @@ jobs:
     vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: true
     UITEST_SNAPSHOTS_GROUP: 03
+    UITEST_TEST_TIMEOUT: '270000'
     UITEST_ALLOW_RERUN: 'true'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}

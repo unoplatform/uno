@@ -26,9 +26,10 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		{
 			Run("UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests.NumberBox_Description", skipInitialScreenshot: true);
 
-			var numberBox = _app.WaitForElement("DescriptionNumberBox")[0];
+			var numberBoxRect = ToPhysicalRect(_app.WaitForElement("DescriptionNumberBox")[0].Rect);
 			using var screenshot = TakeScreenshot("NumberBox Description", new ScreenshotOptions() { IgnoreInSnapshotCompare = true });
-			ImageAssert.HasColorAt(screenshot, numberBox.Rect.X + numberBox.Rect.Width / 2, numberBox.Rect.Y + numberBox.Rect.Height - 150, Color.Red);
+
+			ImageAssert.HasColorAt(screenshot, numberBoxRect.X + numberBoxRect.Width / 2, numberBoxRect.Y + numberBoxRect.Height - 50, Color.Red);
 		}
 	}
 }

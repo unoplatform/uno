@@ -55,6 +55,7 @@ dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site
 ## Build the NUnit configuration file
 echo "--trace=Verbose" > $UNO_TESTS_RESPONSE_FILE
 echo "--result=$UNO_ORIGINAL_TEST_RESULTS" >> $UNO_TESTS_RESPONSE_FILE
+echo "--timeout=$UITEST_TEST_TIMEOUT" >> $UNO_TESTS_RESPONSE_FILE
 
 if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
     echo "--testlist \"$UNO_TESTS_FAILED_LIST\"" >> $UNO_TESTS_RESPONSE_FILE

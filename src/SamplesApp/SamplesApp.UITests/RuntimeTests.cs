@@ -25,7 +25,7 @@ namespace SamplesApp.UITests.Runtime
 
 		[Test]
 		[AutoRetry(tryCount: 1)]
-		[Timeout(1800000)] // Adjust this timeout based on average test run duration
+		// [Timeout(3000000)] // Timeout is now moved to individual platorms runners configuration in CI
 		public async Task RunRuntimeTests()
 		{
 			Run("SamplesApp.Samples.UnitTests.UnitTestsPage");

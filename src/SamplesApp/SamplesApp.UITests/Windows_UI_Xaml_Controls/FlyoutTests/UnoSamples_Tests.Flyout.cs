@@ -164,7 +164,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			foreach (var button in testableFlyoutButtons)
 			{
 				// show flyout
-				button.Value.Tap();
+				button.Value.FastTap();
 				using var flyoutOpenedScreenshot = TakeScreenshot($"{majorStepIndex} {button.Key} 0 Opened", ignoreInSnapshotCompare: true);
 
 				// dismiss flyout
@@ -201,7 +201,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			Run("UITests.Windows_UI_Xaml_Controls.Flyout.Flyout_TemplatedParent");
 
 			var button01 = _app.Marked("button01");
-			var innerTextBlock = _app.Marked("innerTextBlock");
+			var innerTextBlock = new QueryEx(q => q.All().Marked("innerTextBlock"));
 
 			_app.FastTap(button01);
 			_app.WaitForElement(innerTextBlock);

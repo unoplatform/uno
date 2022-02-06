@@ -29,12 +29,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SplitViewTests
 			ImageAssert.HasColorAt(compactScreenshot, targetGridRectangle.Right - 4, targetGridRectangle.CenterY, Color.Blue);
 
 			var toggleButton = _app.Marked("PaneToggle");
-			toggleButton.Tap();
+			toggleButton.FastTap();
 
 			using var expandedScreenshot = TakeScreenshot("Expanded");
 			ImageAssert.HasColorAt(expandedScreenshot, targetGridRectangle.Right - 4, targetGridRectangle.CenterY, Color.Red);
 
-			toggleButton.Tap();
+			toggleButton.FastTap();
 
 			using var compactAgainScreenshot = TakeScreenshot("Compact again");
 			ImageAssert.HasColorAt(compactAgainScreenshot, targetGridRectangle.Right - 4, targetGridRectangle.CenterY, Color.Blue);

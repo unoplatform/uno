@@ -232,11 +232,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			var buttonClickResult = _app.Marked("buttonClickResult");
 			_app.WaitForDependencyPropertyValue(buttonClickResult, "Text", "OnDialogInnerButtonClick");
 
-			var dialogTb = _app.Marked("dialogTb");
+			var dialogTb = new QueryEx(q => q.All().Marked("dialogTb"));
 			_app.FastTap(dialogTb);
 			_app.EnterText("This is some text");
 
-			var dialogTextBinding = _app.Marked("dialogTextBinding");
+			var dialogTextBinding = new QueryEx(q => q.All().Marked("dialogTextBinding"));
 			_app.WaitForDependencyPropertyValue(dialogTextBinding, "Text", "This is some text");
 
 			CurrentTestTakeScreenShot("Secondary Button");

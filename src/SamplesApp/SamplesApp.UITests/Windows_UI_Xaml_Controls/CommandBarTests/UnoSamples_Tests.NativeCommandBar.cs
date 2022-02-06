@@ -25,7 +25,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 			var myButton = _app.Marked("myButton");
 			var result = _app.Marked("result");
 
-			myButton.Tap();
+			myButton.FastTap();
 
 			_app.WaitForText(result, "Clicked!");
 		}
@@ -259,6 +259,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS)]
+		[Ignore("Disabled because image button is not loading properly https://github.com/unoplatform/uno/issues/8014")]
 		public void When_Navigated_CommandBarDisplayCustomBackButtonIcon_NativeFrame()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonImage.CommandBar_Frame");

@@ -108,7 +108,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 
 			_app.WaitForElement(hideToggle);
 
-			hideToggle.Tap();
+			hideToggle.FastTap();
 
 			// normally, as the cursor enter hideToggle's hitbox to press it,
 			// the tooltip will start to appears after 1s (TooltipShowDelay)

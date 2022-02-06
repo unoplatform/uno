@@ -18,6 +18,7 @@ namespace SamplesApp.UITests
 	{
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Disabled on iOS (xamarin.uitest 3.2 or iOS 15) https://github.com/unoplatform/uno/issues/8012
 		public void Keyboard_Textbox_InsideScrollViewer_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.Input_Test_InsideScrollerViewer_Automated");

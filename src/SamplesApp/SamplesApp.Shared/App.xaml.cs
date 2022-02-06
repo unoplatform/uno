@@ -226,7 +226,7 @@ namespace SamplesApp
 
 					while (true)
 					{
-						var delayTask = Task.Delay(TimeSpan.FromSeconds(60));
+						var delayTask = Task.Delay(TimeSpan.FromSeconds(240));
 						var messageTask = dispatcher.RunAsync(CoreDispatcherPriority.High, () => { }).AsTask();
 
 						if (await Task.WhenAny(delayTask, messageTask) == delayTask)
@@ -470,6 +470,10 @@ namespace SamplesApp
 #endif
 #if __IOS__ || __ANDROID__
 			WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus = true;
+#endif
+#if __IOS__
+			Uno.UI.FeatureConfiguration.DatePicker.UseLegacyStyle = true;
+			Uno.UI.FeatureConfiguration.TimePicker.UseLegacyStyle = true;
 #endif
 		}
 

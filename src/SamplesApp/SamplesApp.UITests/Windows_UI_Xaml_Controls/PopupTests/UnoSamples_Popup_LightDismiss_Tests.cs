@@ -33,35 +33,35 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 			Assert.AreEqual(null, fourthPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 
 			// Click on popup button and verify opacity
-			btn4.Tap();
+			btn4.FastTap();
 			Assert.AreEqual("1", firstPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual("1", secondPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual("1", thirdPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual("1", fourthPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 
 			// Click on popup button and verify opacity
-			btn4.Tap();
+			btn4.FastTap();
 			Assert.AreEqual("1", firstPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual("1", secondPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual("1", thirdPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual(null, fourthPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 
 			// Click on popup button and verify opacity
-			btn4.Tap();
+			btn4.FastTap();
 			Assert.AreEqual("1", firstPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual("1", secondPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual(null, thirdPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual(null, fourthPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 
 			// Click on popup button and verify opacity
-			btn4.Tap();
+			btn4.FastTap();
 			Assert.AreEqual("1", firstPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual(null, secondPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual(null, thirdPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual(null, fourthPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 
 			// Click on popup button and verify opacity
-			btn4.Tap();
+			btn4.FastTap();
 			Assert.AreEqual(null, firstPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual(null, secondPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual(null, thirdPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
@@ -88,35 +88,35 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 			Assert.AreEqual(null, fourthPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 
 			// Click on popup button and verify opacity
-			btn4R.Tap();
+			btn4R.FastTap();
 			Assert.AreEqual("1", firstPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual("1", secondPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual("1", thirdPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual("1", fourthPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 
 			// Click on popup button and verify opacity
-			btn4R.Tap();
+			btn4R.FastTap();
 			Assert.AreEqual(null, firstPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual("1", secondPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual("1", thirdPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual("1", fourthPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 
 			// Click on popup button and verify opacity
-			btn4R.Tap();
+			btn4R.FastTap();
 			Assert.AreEqual(null, firstPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual(null, secondPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual("1", thirdPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual("1", fourthPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 
 			// Click on popup button and verify opacity
-			btn4R.Tap();
+			btn4R.FastTap();
 			Assert.AreEqual(null, firstPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual(null, secondPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual(null, thirdPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual("1", fourthPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 
 			// Click on popup button and verify opacity
-			btn4R.Tap();
+			btn4R.FastTap();
 			Assert.AreEqual(null, firstPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual(null, secondPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual(null, thirdPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
@@ -145,7 +145,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 			Assert.AreEqual(null, close5.GetDependencyPropertyValue("Opacity")?.ToString());
 
 			// Click on popup button and verify opacity
-			btn5.Tap();
+			btn5.FastTap();
 			Assert.AreEqual("1", firstPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual("1", secondPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual("1", thirdPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
@@ -153,7 +153,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 			Assert.AreEqual("1", close5.GetDependencyPropertyValue("Opacity")?.ToString());
 
 			// Click on popup button and verify opacity
-			close5.Tap();
+			close5.FastTap();
 			Assert.AreEqual("1", firstPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual("1", secondPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual("1", thirdPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
@@ -161,7 +161,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 			Assert.AreEqual(null, close5.GetDependencyPropertyValue("Opacity")?.ToString());
 
 			// Click on popup button and verify opacity
-			btn5.Tap();
+			btn5.FastTap();
 			Assert.AreEqual("1", firstPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual("1", secondPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual("1", thirdPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
@@ -169,7 +169,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 			Assert.AreEqual(null, close5.GetDependencyPropertyValue("Opacity")?.ToString());
 
 			// Click on popup button and verify opacity
-			btn5.Tap();
+			btn5.FastTap();
 			Assert.AreEqual("1", firstPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual("1", secondPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual(null, thirdPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
@@ -177,7 +177,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 			Assert.AreEqual(null, close5.GetDependencyPropertyValue("Opacity")?.ToString());
 
 			// Click on popup button and verify opacity
-			btn5.Tap();
+			btn5.FastTap();
 			Assert.AreEqual("1", firstPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual(null, secondPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual(null, thirdPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
@@ -185,7 +185,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 			Assert.AreEqual(null, close5.GetDependencyPropertyValue("Opacity")?.ToString());
 
 			// Click on popup button and verify opacity
-			btn5.Tap();
+			btn5.FastTap();
 			Assert.AreEqual(null, firstPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual(null, secondPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());
 			Assert.AreEqual(null, thirdPopupTextBlock.GetDependencyPropertyValue("Opacity")?.ToString());

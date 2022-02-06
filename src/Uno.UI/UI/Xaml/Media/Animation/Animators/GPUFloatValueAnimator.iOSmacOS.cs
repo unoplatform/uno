@@ -202,7 +202,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			ReleaseCoreAnimation();
 		}
 
-		public bool IsRunning => _valueAnimator.IsRunning;
+		public bool IsRunning => _valueAnimator?.IsRunning ?? false;
 
 		public long StartDelay
 		{

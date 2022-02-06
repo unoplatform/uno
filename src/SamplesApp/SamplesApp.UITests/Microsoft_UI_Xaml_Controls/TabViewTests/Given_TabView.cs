@@ -38,7 +38,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 
 				Console.WriteLine("Changing selection.");
 				var lastTab = _app.Marked("LastTab");
-				lastTab.Tap();
+				lastTab.FastTap();
 				//Wait.ForIdle();
 
 				Console.WriteLine("Verify content is displayed for newly selected tab.");
@@ -47,14 +47,14 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 
 				Console.WriteLine("Verify that setting SelectedItem changes selection.");
 				var selectItemButton = _app.Marked("SelectItemButton");
-				selectItemButton.Tap();
+				selectItemButton.FastTap();
 
 				var selectedIndexTextBlock = _app.Marked("SelectedIndexTextBlock");
 				Assert.AreEqual("1", selectedIndexTextBlock.GetText());
 
 				Console.WriteLine("Verify that setting SelectedIndex changes selection.");
 				var selectIndexButton = _app.Marked("SelectIndexButton");
-				selectIndexButton.Tap();
+				selectIndexButton.FastTap();
 				Assert.AreEqual("2", selectedIndexTextBlock.GetText());
 
 				//TODO: Uno UI Test does not support keyboard yet
@@ -82,7 +82,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			{
 				Console.WriteLine("Adding tab.");
 				var addTabButton = _app.Marked("Add New Tab");
-				addTabButton.Tap();
+				addTabButton.FastTap();
 
 				//ElementCache.Refresh();
 				var newTab = _app.Marked("New Tab 1");
@@ -90,7 +90,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 
 				Console.WriteLine("Removing tab.");
 				var removeTabButton = _app.Marked("RemoveTabButton");
-				removeTabButton.Tap();
+				removeTabButton.FastTap();
 
 				//ElementCache.Refresh();
 				newTab = _app.Marked("New Tab 1");
@@ -100,7 +100,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 
 		private bool AreScrollButtonsVisible()
 		{
-			_app.Marked("GetScrollButtonsVisible").Tap();
+			_app.Marked("GetScrollButtonsVisible").FastTap();
 			var scrollButtonsVisible = _app.Marked("ScrollButtonsVisible").GetText();
 			if (scrollButtonsVisible == "True")
 			{
@@ -119,14 +119,14 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 
 		private bool IsScrollIncreaseButtonEnabled()
 		{
-			_app.Marked("GetScrollIncreaseButtonEnabled").Tap();
+			_app.Marked("GetScrollIncreaseButtonEnabled").FastTap();
 			var scrollIncreaseButtonEnabled = _app.Marked("ScrollIncreaseButtonEnabled").GetText();
 			return scrollIncreaseButtonEnabled == "True";
 		}
 
 		private bool IsScrollDecreaseButtonEnabled()
 		{
-			_app.Marked("GetScrollDecreaseButtonEnabled").Tap();
+			_app.Marked("GetScrollDecreaseButtonEnabled").FastTap();
 			var scrollDecreaseButtonEnabled = _app.Marked("ScrollDecreaseButtonEnabled").GetText();
 			return scrollDecreaseButtonEnabled == "True";
 		}
@@ -139,7 +139,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 				Console.WriteLine("Hiding the disabled tab");
 				var disabledTabCheckBox = _app.Marked("IsDisabledTabVisibleCheckBox");
 				Assert.NotNull(disabledTabCheckBox);
-				disabledTabCheckBox.Tap(); // TODO: does this uncheck?
+				disabledTabCheckBox.FastTap(); // TODO: does this uncheck?
 
 				Console.WriteLine("Finding the first tab");
 				var firstTab = _app.Marked("FirstTab");
@@ -160,7 +160,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 
 				Console.WriteLine("Select last tab.");
 				var lastTab = _app.Marked("LastTab");
-				lastTab.Tap();
+				lastTab.FastTap();
 				//Wait.ForIdle();
 				Assert.AreEqual("3", selectedIndexTextBlock.GetText());
 
@@ -186,7 +186,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 
 				var isAddButtonVisibleCheckBox = _app.Marked("IsAddButtonVisibleCheckBox");
 				// TODO: Uncheck
-				isAddButtonVisibleCheckBox.Tap();
+				isAddButtonVisibleCheckBox.FastTap();
 				//Wait.ForIdle();
 
 				//ElementCache.Refresh();
@@ -209,7 +209,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 				PressButtonAndVerifyText("GetTab1ToolTipButton", "Tab1ToolTipTextBlock", "SecondTab");
 
 				var changeShopTextButton = _app.Marked("ChangeShopTextButton");
-				changeShopTextButton.Tap();
+				changeShopTextButton.FastTap();
 
 				Console.WriteLine("If the tab's header changes, the tooltip should update.");
 				PressButtonAndVerifyText("GetTab1ToolTipButton", "Tab1ToolTipTextBlock", "Changed");
@@ -223,13 +223,13 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 
 			{
 				var customTooltipButton = _app.Marked("CustomTooltipButton");
-				customTooltipButton.Tap();
+				customTooltipButton.FastTap();
 
 				Console.WriteLine("If the app updates the tooltip, it should change to their custom one.");
 				PressButtonAndVerifyText("GetTab1ToolTipButton", "Tab1ToolTipTextBlock", "Custom");
 
 				var changeShopTextButton = _app.Marked("ChangeShopTextButton");
-				changeShopTextButton.Tap();
+				changeShopTextButton.FastTap();
 
 				Console.WriteLine("The tooltip should not update if the header changes.");
 				PressButtonAndVerifyText("GetTab1ToolTipButton", "Tab1ToolTipTextBlock", "Custom");
@@ -260,15 +260,15 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 
 			{
 				var sizingPageButton = _app.Marked("TabViewSizingPageButton");
-				sizingPageButton.Tap();
+				sizingPageButton.FastTap();
 				await Task.Delay(200);
 				//ElementCache.Refresh();
 
 				var setSmallWidthButton = _app.Marked("SetSmallWidth");
-				setSmallWidthButton.Tap();
+				setSmallWidthButton.FastTap();
 
 				var getWidthsButton = _app.Marked("GetWidthsButton");
-				getWidthsButton.Tap();
+				getWidthsButton.FastTap();
 
 				var widthEqualText = _app.Marked("WidthEqualText");
 				var widthSizeToContentText = _app.Marked("WidthSizeToContentText");
@@ -277,9 +277,9 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 				Assert.AreEqual("400", widthSizeToContentText.GetText());
 
 				var setLargeWidthButton = _app.Marked("SetLargeWidth");
-				setLargeWidthButton.Tap();
+				setLargeWidthButton.FastTap();
 
-				getWidthsButton.Tap();
+				getWidthsButton.FastTap();
 
 				Assert.AreEqual("700", widthEqualText.GetText());
 				Assert.AreEqual("700", widthSizeToContentText.GetText());
@@ -304,7 +304,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 
 			{
 				var getSecondTabHeaderForegroundButton = _app.Marked("GetSecondTabHeaderForegroundButton");
-				getSecondTabHeaderForegroundButton.Tap();
+				getSecondTabHeaderForegroundButton.FastTap();
 
 				var secondTabHeaderForegroundTextBlock = _app.Marked("SecondTabHeaderForegroundTextBlock");
 
@@ -319,7 +319,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			int pixelTolerance = 10;
 
 			//using (var setup = new TestSetupHelper(new[] { "TabView Tests", "TabViewTabClosingBehaviorButton" }))
-			_app.Marked("TabViewTabClosingBehaviorButton").Tap();
+			_app.Marked("TabViewTabClosingBehaviorButton").FastTap();
 
 			{
 
@@ -336,10 +336,10 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 
 				Console.WriteLine("Leaving the pointer exited area");
 				var readTabViewWidthButton = _app.Marked("GetActualWidthButton");
-				readTabViewWidthButton.Tap();
+				readTabViewWidthButton.FastTap();
 				//Wait.ForIdle();
 
-				readTabViewWidthButton.Tap();
+				readTabViewWidthButton.FastTap();
 				//Wait.ForIdle();
 
 				Console.WriteLine("Verify correct TabView width");
@@ -380,7 +380,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			int pixelTolerance = 10;
 
 			//using (var setup = new TestSetupHelper(new[] { "TabView Tests", "TabViewTabClosingBehaviorButton" }))
-			_app.Marked("TabViewTabClosingBehaviorButton").Tap();
+			_app.Marked("TabViewTabClosingBehaviorButton").FastTap();
 
 			{
 
@@ -392,7 +392,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 				CloseTabAndVerifyWidth("Tab 3", 500, "False;False;");
 
 				var readTabViewWidthButton = _app.Marked("GetActualWidthButton");
-				readTabViewWidthButton.Tap();
+				readTabViewWidthButton.FastTap();
 				//Wait.ForIdle();
 
 				CloseTabAndVerifyWidth("Tab 5", 500, "False;False;");
@@ -401,7 +401,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 
 				Console.WriteLine("Leaving the pointer exited area");
 
-				readTabViewWidthButton.Tap();
+				readTabViewWidthButton.FastTap();
 				//Wait.ForIdle();
 
 				Console.WriteLine("Verify correct TabView width");
@@ -430,7 +430,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 		public void PressButtonAndVerifyText(String buttonName, String textBlockName, String expectedText)
 		{
 			var button = _app.Marked(buttonName);
-			button.Tap();
+			button.FastTap();
 
 			var textBlock = _app.Marked(textBlockName);
 			Assert.AreEqual(expectedText, textBlock.GetText());

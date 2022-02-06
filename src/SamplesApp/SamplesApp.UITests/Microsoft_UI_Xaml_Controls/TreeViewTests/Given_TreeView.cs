@@ -35,7 +35,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				ClickButton("GetItemCount");
 				Assert.AreEqual("1", ReadResult());
 
-				itemRoot.Tap();
+				itemRoot.FastTap();
 
 				// Should be expanded now
 				ClickButton("GetItemCount");
@@ -51,13 +51,13 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 
 				ClickButton("LabelItems");
 
-				itemRoot.Tap();
+				itemRoot.FastTap();
 				ClickButton("GetItemCount");
 				Assert.AreEqual("1", ReadResult());
 
 				ClickButton("LabelItems");
 
-				itemRoot.Tap();
+				itemRoot.FastTap();
 				ClickButton("GetItemCount");
 				Assert.AreEqual("5", ReadResult());
 
@@ -68,13 +68,13 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 
 
 				var root1 = QueryAll("Root.1");
-				root1.Tap();
+				root1.FastTap();
 				ClickButton("GetItemCount");
 				Assert.AreEqual("8", ReadResult());
 
 				// Collapse and expand
-				itemRoot.Tap();
-				itemRoot.Tap();
+				itemRoot.FastTap();
+				itemRoot.FastTap();
 				ClickButton("GetItemCount");
 				Assert.AreEqual("8", ReadResult());
 			}
@@ -104,7 +104,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				ClickButton("GetItemCount");
 				Assert.AreEqual("1", ReadResult());
 
-				ItemRoot.Tap();
+				ItemRoot.FastTap();
 
 				// Should be expanded now
 				Assert.AreEqual("ItemClicked:Root", ReadResult());
@@ -162,7 +162,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 
 				var ItemRoot = LabelFirstItem();
 
-				ItemRoot.Tap();
+				ItemRoot.FastTap();
 
 				// Should be expanded now
 				Assert.AreEqual("ItemClicked:Root", ReadResult());
@@ -218,7 +218,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				// tap button to hide flyout treeview
 				var flyoutButton = QueryAll("TreeViewInFlyout");
 				Assert.IsNotNull(flyoutButton, "Verifying that we found the button");
-				flyoutButton.Tap();
+				flyoutButton.FastTap();
 				//Wait.ForIdle();
 
 				//Click Button to test for crash
@@ -297,7 +297,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				Assert.AreEqual("1", ReadResult());
 
 				var itemRoot = LabelFirstItem();
-				itemRoot.Tap();
+				itemRoot.FastTap();
 				//Wait.ForIdle();
 
 				ClickButton("DisableClickToExpand");
@@ -357,7 +357,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				SetContentMode(isContentMode);
 
 				var ItemRoot = LabelFirstItem();
-				ItemRoot.Tap();
+				ItemRoot.FastTap();
 
 				ClickButton("AddSecondLevelOfNodes");
 				// expand all nodes
@@ -366,12 +366,12 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				Assert.IsNotNull(root0, "Verifying Root.0 is found");
 				var root1 = QueryAll("Root.1");
 				Assert.IsNotNull(root1, "Verifying Root.1 is found");
-				root0.Tap();
+				root0.FastTap();
 
 				// Uno specifc: Ensure the items are labeled properly after expanding
 				ClickButton("LabelItems");
 
-				root1.Tap();
+				root1.FastTap();
 				ClickButton("GetItemCount");
 				Assert.AreEqual("8", ReadResult());
 				ClickButton("LabelItems");
@@ -432,14 +432,14 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 		{
 			{
 				var root = LabelFirstItem(); // TODO: TreeItem
-				root.Tap();
+				root.FastTap();
 				//Wait.ForIdle();
 
 				ClickButton("LabelItems");
 				var root0 = QueryAll("Root.0");
 				Assert.IsNotNull(root0, "Verifying Root.0 is found");
 
-				root0.Tap();
+				root0.FastTap();
 
 				ClickButton("GetSelected");
 				Assert.AreEqual("Selected: Root.0", ReadResult());
@@ -460,14 +460,14 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				SetContentMode(true);
 
 				var root = LabelFirstItem(); // TODO: TreeItem
-				root.Tap();
+				root.FastTap();
 				//Wait.ForIdle();
 
 				ClickButton("LabelItems");
 				var root0 = QueryAll("Root.0");
 				Assert.IsNotNull(root0, "Verifying Root.0 is found");
 
-				root0.Tap();
+				root0.FastTap();
 
 				ClickButton("GetSelected");
 				Assert.AreEqual("Selected: Root.0", ReadResult());
@@ -498,7 +498,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 
 					var node1 = QueryAll("Node 1");
 					Assert.IsNotNull(node1, "Verifying Node 1 is found");
-					node1.Tap();
+					node1.FastTap();
 
 					ClickButton("GetSelected");
 					Assert.AreEqual("Selected: Node 1", ReadResult());
@@ -512,7 +512,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 		{
 			{
 				var itemRoot = LabelFirstItem(); // TODO: TreeItem
-				itemRoot.Tap();
+				itemRoot.FastTap();
 				//Wait.ForIdle();
 
 				ClickButton("AddInheritedTreeViewNode");
@@ -601,16 +601,16 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 				var setSelectedItemButton = QueryAll("SelectRoot2Item");
 				var readResultButton = QueryAll("ReadBindingResult");
 
-				setContentButton.Tap();
+				setContentButton.FastTap();
 				//Wait.ForIdle();
 
-				readResultButton.Tap();
+				readResultButton.FastTap();
 				//Wait.ForIdle();
 				Assert.AreEqual("Root.1;Root.1", ReadResult());
 
-				setSelectedItemButton.Tap();
+				setSelectedItemButton.FastTap();
 				//Wait.ForIdle();
-				readResultButton.Tap();
+				readResultButton.FastTap();
 				//Wait.ForIdle();
 				Assert.AreEqual("Root.2;Root.2", ReadResult());
 			}
@@ -656,7 +656,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 		private void ClickButton(string buttonName)
 		{
 			var button = QueryAll(buttonName);
-			button.Tap();
+			button.FastTap();
 			// Wait.ForIdle();
 		}
 
@@ -680,7 +680,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 		private void TapOutsideFlyout()
 		{
 			var textBlock = QueryAll("Results");
-			textBlock.Tap();
+			textBlock.FastTap();
 		}
 
 		private void TapOnFlyoutTreeViewRootItemChevron()
