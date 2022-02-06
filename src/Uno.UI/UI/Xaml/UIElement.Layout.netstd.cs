@@ -39,6 +39,15 @@ namespace Windows.UI.Xaml
 			FirstMeasureDone = 0b0000_0100,
 
 			/// <summary>
+			/// Means the MeasureDirtyPath is disabled on this element.
+			/// </summary>
+			/// <remarks>
+			/// This flag is copied to children when they are attached, but can be re-enabled afterwards.
+			/// This flag is used during invalidation
+			/// </remarks>
+			MeasureDirtyPathDisabled = 0b0000_1000,
+
+			/// <summary>
 			/// Means the Arrange is dirty on the current element or one of its child
 			/// </summary>
 			ArrangeDirty = 0b0001_0000,
@@ -47,6 +56,11 @@ namespace Windows.UI.Xaml
 		}
 
 		private const LayoutFlag DEFAULT_STARTING_LAYOUTFLAGS = 0;
+		private const LayoutFlag LAYOUT_FLAGS_TO_CLEAR_ON_RESET =
+			LayoutFlag.MeasureDirty |
+			LayoutFlag.MeasureDirtyPath |
+			LayoutFlag.FirstMeasureDone |
+			LayoutFlag.ArrangeDirty;
 
 		private LayoutFlag _layoutFlags = DEFAULT_STARTING_LAYOUTFLAGS;
 
@@ -68,17 +82,30 @@ namespace Windows.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private protected void SetLayoutFlags(LayoutFlag flags) => _layoutFlags |= flags;
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private protected void SetLayoutFlags(LayoutFlag flags, bool state)
+		{
+			if (state)
+			{
+				SetLayoutFlags(flags);
+			}
+			else
+			{
+				ClearLayoutFlags(flags);
+			}
+		}
+
 		/// <summary>
 		/// Reset one or many flags (set flag to zero)
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private protected void ClearLayoutFlags(LayoutFlag flag) => _layoutFlags &= ~flag;
+		private protected void ClearLayoutFlags(LayoutFlag flags) => _layoutFlags &= ~flags;
 
 		/// <summary>
 		/// Reset flags to original state
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private protected void ResetLayoutFlags() => _layoutFlags = DEFAULT_STARTING_LAYOUTFLAGS;
+		private protected void ResetLayoutFlags() => ClearLayoutFlags(LAYOUT_FLAGS_TO_CLEAR_ON_RESET);
 
 		internal bool IsMeasureDirty
 		{
@@ -104,6 +131,15 @@ namespace Windows.UI.Xaml
 			get => IsLayoutFlagSet(LayoutFlag.ArrangeDirty);
 		}
 
+		internal bool IsMeasureDirtyPathDisabled
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => IsLayoutFlagSet(LayoutFlag.MeasureDirtyPathDisabled);
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => SetLayoutFlags(LayoutFlag.MeasureDirtyPathDisabled, value);
+		}
+
 		public void InvalidateMeasure()
 		{
 			if (ShouldInterceptInvalidate)
@@ -118,7 +154,7 @@ namespace Windows.UI.Xaml
 
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
 
-			if (FeatureConfiguration.UIElement.UseInvalidateMeasurePath)
+			if (FeatureConfiguration.UIElement.UseInvalidateMeasurePath && !IsMeasureDirtyPathDisabled)
 			{
 				InvalidateParentMeasurePath();
 			}
@@ -314,6 +350,8 @@ namespace Windows.UI.Xaml
 							}
 						}
 					}
+
+					children.Dispose();
 
 					if (!isDirty)
 					{

@@ -492,7 +492,14 @@ namespace Windows.UI.Xaml
 
 			child.ResetLayoutFlags();
 
-			child.InvalidateMeasure();
+			if (IsMeasureDirtyPathDisabled)
+			{
+				FrameworkElementHelper.SetUseMeasurePathDisabled(child, eager: true, invalidate: true);
+			}
+			else
+			{
+				child.InvalidateMeasure();
+			}
 
 			// Arrange is required to unset the uno-unarranged CSS class
 			child.InvalidateArrange();

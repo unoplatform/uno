@@ -134,7 +134,14 @@ namespace Windows.UI.Xaml
 			// Reset to original (invalidated) state
 			child.ResetLayoutFlags();
 
-			child.InvalidateMeasure();
+			if (IsMeasureDirtyPathDisabled)
+			{
+				FrameworkElementHelper.SetUseMeasurePathDisabled(child); // will invalidate too
+			}
+			else
+			{
+				child.InvalidateMeasure();
+			}
 
 			if (child.IsArrangeDirty && !IsArrangeDirty)
 			{
