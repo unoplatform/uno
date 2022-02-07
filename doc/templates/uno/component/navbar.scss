@@ -269,10 +269,10 @@
   }
 }
 
-.navbar:first-child {
+nav.navbar {
   padding: 10px 15px;
   vertical-align: middle;
-  background: #ffffff;
+  background: #fff;
   position: fixed;
   border-bottom: 1px solid #f4f2f3;
   top: 0;
@@ -308,6 +308,7 @@
   top: 75px;
   width: 100%;
   z-index: 999;
+  background-color: #f8f8f8;
 
   @media only screen and (max-width: 767px) {
     top: 55px;
