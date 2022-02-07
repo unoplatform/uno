@@ -7,10 +7,11 @@ an Uno.UI issue or from an invalid pattern in user code.
 Starting from [Uno.Wasm.Bootstrap](https://github.com/unoplatform/Uno.Wasm.Bootstrap) 3.2, the Xamarin Profiler can be used to profile memory usage. See [this documentation](https://github.com/unoplatform/Uno.Wasm.Bootstrap#memory-profiling) for additional details.
 
 ## Enable Memory instances counter
-In your application, as early as possible in the initialization (generally in the App.xaml.cs
-constructor), add and call the following method:
 
-```
+1. Install the `Uno.Core` NuGet package;
+2. In your application, as early as possible in the initialization (generally in the App.xaml.cs constructor), add and call the following method:
+
+``` csharp
 using Uno.UI.DataBinding;
 using Uno.UI.DataBinding;
 using System.Threading.Tasks;
@@ -58,12 +59,12 @@ private void EnableViewsMemoryStatistics()
 	);
 }
 ```
-You'll also need to add the following logger filter:
-```
+  You'll also need to add the following logger filter:
+```csharp
 builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Information );
 ```
-As well as this package NuGet (you will need to update to the latest Uno.UI nuget version):
-```
+  As well as this package NuGet (you will need to update to the latest Uno.UI nuget version):
+```xaml
 <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.0.13" />
 ```
 
@@ -82,7 +83,7 @@ cross references.
 
 This can happen when a Grid item has a strong field reference to its parent:
 
-```
+```csharp
 var myItem = new Grid(){ Tag = grid };
 grid.Children.Add(myItem);
 ```
