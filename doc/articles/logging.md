@@ -13,6 +13,8 @@ The Uno platform makes use of the Microsoft logging NuGet packages to provide co
 
 The standard Uno template configures logging in the **Shared** project **App.xaml.cs** file.
 
+1. Add the [`Uno.Core`](https://www.nuget.org/packages/Uno.Core/) NuGet package to your platform projects.
+
 1. In the **Shared** project and open the **App.xaml.cs** file.
 
 1. Locate the **App** constructor and note that logging is configured first:
