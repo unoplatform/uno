@@ -1,6 +1,6 @@
 GitHub Issue (If applicable): closes #
 
-<!-- Link to relevant GitHub issue if applicable. All PRs should be associated with an issue (GitHub issue or internal) -->
+<!-- Link to relevant GitHub issue if applicable. All PRs should be associated with an issue (GitHub issue or internal), unless the change is documentation related. -->
 
 ## PR Type
 
