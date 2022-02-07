@@ -14,8 +14,8 @@ namespace Windows.UI.Xaml.Input
 	{
 		public ManipulationCompletedRoutedEventArgs() { }
 
-		internal ManipulationCompletedRoutedEventArgs(UIElement container, ManipulationCompletedEventArgs args)
-			: base(container)
+		internal ManipulationCompletedRoutedEventArgs(UIElement source, UIElement container, ManipulationCompletedEventArgs args)
+			: base(source)
 		{
 			Container = container;
 
