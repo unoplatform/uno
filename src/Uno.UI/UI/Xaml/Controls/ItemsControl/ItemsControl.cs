@@ -965,11 +965,12 @@ namespace Windows.UI.Xaml.Controls
 				{
 					var container = ItemsPanelRoot.Children[args.OldStartingIndex];
 
+					SaveContainersForIndexRepair(args.OldStartingIndex, -args.OldItems.Count);
+
 					ItemsPanelRoot.Children.RemoveAt(args.OldStartingIndex);
 
 					LocalCleanupContainer(container);
 					RequestLayoutPartial();
-					SaveContainersForIndexRepair(args.OldStartingIndex, -args.OldItems.Count);
 					RepairIndices();
 					return;
 				}
