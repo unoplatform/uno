@@ -771,7 +771,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnPointerPressed(args);
 
-			if (ShouldFocusOnPointerPressed(args))
+			if (ShouldFocusOnPointerPressed(args) && CapturePointer(args.Pointer))
 			{
 				Focus(FocusState.Pointer);
 			}
@@ -978,8 +978,10 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsEnabledChangedPartial(IsEnabledChangedEventArgs e);
 
-		private bool ShouldFocusOnPointerPressed(PointerRoutedEventArgs args) =>
-			// For mouse and pen, the TextBox should focus on pointer press, for other input types on release
-			args.Pointer.PointerDeviceType != PointerDeviceType.Touch;
+		private bool ShouldFocusOnPointerPressed(PointerRoutedEventArgs args)
+			// For mouse and pen, the TextBox should focus on pointer press
+			// (and then capture pointer to make sure to handle the whol down->move->up sequence).
+			// For touch we wait for the release to focus (avoid flickering in case of cancel due to scroll for instance).
+			=> args.Pointer.PointerDeviceType != PointerDeviceType.Touch;
 	}
 }

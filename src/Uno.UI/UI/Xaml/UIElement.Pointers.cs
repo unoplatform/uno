@@ -283,7 +283,7 @@ namespace Windows.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
-			that.SafeRaiseEvent(ManipulationStartingEvent, new ManipulationStartingRoutedEventArgs(src, args));
+			that.SafeRaiseEvent(ManipulationStartingEvent, new ManipulationStartingRoutedEventArgs(src, that, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> OnRecognizerManipulationStarted = (sender,  args) =>
@@ -291,7 +291,7 @@ namespace Windows.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
-			that.SafeRaiseEvent(ManipulationStartedEvent, new ManipulationStartedRoutedEventArgs(src, sender, args));
+			that.SafeRaiseEvent(ManipulationStartedEvent, new ManipulationStartedRoutedEventArgs(src, that, sender, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> OnRecognizerManipulationUpdated = (sender, args) =>
@@ -299,7 +299,7 @@ namespace Windows.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
-			that.SafeRaiseEvent(ManipulationDeltaEvent, new ManipulationDeltaRoutedEventArgs(src, sender, args));
+			that.SafeRaiseEvent(ManipulationDeltaEvent, new ManipulationDeltaRoutedEventArgs(src, that, sender, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> OnRecognizerManipulationInertiaStarting = (sender, args) =>
@@ -307,7 +307,7 @@ namespace Windows.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
-			that.SafeRaiseEvent(ManipulationInertiaStartingEvent, new ManipulationInertiaStartingRoutedEventArgs(src, args));
+			that.SafeRaiseEvent(ManipulationInertiaStartingEvent, new ManipulationInertiaStartingRoutedEventArgs(src, that, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> OnRecognizerManipulationCompleted = (sender, args) =>
@@ -322,7 +322,7 @@ namespace Windows.UI.Xaml
 			}
 #endif
 
-			that.SafeRaiseEvent(ManipulationCompletedEvent, new ManipulationCompletedRoutedEventArgs(src, args));
+			that.SafeRaiseEvent(ManipulationCompletedEvent, new ManipulationCompletedRoutedEventArgs(src, that, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, TappedEventArgs> OnRecognizerTapped = (sender, args) =>
@@ -990,7 +990,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-#if !UNO_HAS_MANAGED_POINTERS && !__ANDROID__ // Captures release are handled a root level (RootVisual for Android)
+#if !UNO_HAS_MANAGED_POINTERS && !__ANDROID__ && !__WASM__ // Captures release are handled a root level (RootVisual for Android and WASM)
 			// We release the captures on up but only after the released event and processed the gesture
 			// Note: For a "Tap" with a finger the sequence is Up / Exited / Lost, so we let the Exit raise the capture lost
 			// Note: If '!isOver', that means that 'IsCaptured == true' otherwise 'isOverOrCaptured' would have been false.
@@ -1017,7 +1017,7 @@ namespace Windows.UI.Xaml
 				global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessMoved(args);
 			}
 
-#if !UNO_HAS_MANAGED_POINTERS && !__ANDROID__ // Captures release are handled a root level (RootVisual for Android)
+#if !UNO_HAS_MANAGED_POINTERS && !__ANDROID__ && !__WASM__ // Captures release are handled a root level (RootVisual for Android and WASM)
 			// We release the captures on exit when pointer if not pressed
 			// Note: for a "Tap" with a finger the sequence is Up / Exited / Lost, so the lost cannot be raised on Up
 			if (!IsPressed(args.Pointer))

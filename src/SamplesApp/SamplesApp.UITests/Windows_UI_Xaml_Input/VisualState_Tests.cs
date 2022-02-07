@@ -125,13 +125,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		{
 			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.TextBox_VisualStates");
 
-			// Note: We don not validateFinalStateScreenShot as we are expecting to finish "focused" so may have the flashing cursor.
+			// Note: We do not validateFinalStateScreenShot as we are expecting to finish "focused" so may have the flashing cursor.
 			TestVisualTests("MyTextBox", ReleaseOut, validateFinalStateScreenShot: false, "CommonStates.PointerOver", "CommonStates.Focused");
 		}
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(/*Platform.Android, */Platform.iOS)] // For touch, focus should be set only when released outside of TextBox
+		[ActivePlatforms(/*Platform.Android, */Platform.iOS)] // For touch, focus should be set only when released over the TextBox
 		public void TestTextBoxReleaseOutUnfocused()
 		{
 			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.TextBox_VisualStates");

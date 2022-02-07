@@ -4,6 +4,7 @@
 
 #nullable enable
 
+using System;
 using Uno.UI.Extensions;
 using Windows.Foundation;
 using Windows.UI;
@@ -41,7 +42,7 @@ namespace Uno.UI.Xaml.Core
 			SetAttribute("tabindex", "0");
 #endif
 
-#if __ANDROID__
+#if __ANDROID__ || __WASM__
 			AddHandler(
 				PointerReleasedEvent,
 				new PointerEventHandler((snd, args) => ProcessPointerUp(args)),
@@ -132,9 +133,15 @@ namespace Uno.UI.Xaml.Core
 		// but Uno does not have it on all targets yet.
 		private void RootVisual_PointerReleased(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
 		{
-			if (e.GetCurrentPoint(null).Properties.PointerUpdateKind is PointerUpdateKind.LeftButtonReleased)
+			Console.Error.WriteLine($"Received released bubbling from {e.OriginalSource.GetDebugName()}");
+
+			if (e.GetCurrentPoint(null).Properties.PointerUpdateKind is PointerUpdateKind.LeftButtonReleased
+				&& !PointerCapture.TryGet(e.Pointer, out _))
 			{
 				var element = FocusManager.GetFocusedElement();
+
+				Console.Error.WriteLine($"Removing focus from {element.GetDebugName()}");
+
 				if (element is UIElement uiElement)
 				{
 					uiElement.Unfocus();
@@ -144,9 +151,10 @@ namespace Uno.UI.Xaml.Core
 		}
 #endif
 
-#if __ANDROID__
+#if __ANDROID__ || __WASM__
 		internal static void ProcessPointerUp(PointerRoutedEventArgs args)
 		{
+#if __ANDROID__ // Not needed on WASM as we do have native support of the exit event
 			// On Android we use the RootVisual to raise the UWP only exit event (in managed only)
 			if (args.Pointer.PointerDeviceType is PointerDeviceType.Touch && args.OriginalSource is UIElement src)
 			{
@@ -156,6 +164,7 @@ namespace Uno.UI.Xaml.Core
 
 				src.RedispatchPointerExited(args.Reset(canBubbleNatively: false));
 			}
+#endif
 
 			ReleaseCaptures(args.Reset(canBubbleNatively: false));
 		}
@@ -171,5 +180,5 @@ namespace Uno.UI.Xaml.Core
 			}
 		}
 #endif
-	}
+		}
 }
