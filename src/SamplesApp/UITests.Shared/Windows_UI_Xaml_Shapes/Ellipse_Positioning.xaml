@@ -7,58 +7,128 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
-    <Grid x:Name="RootGrid" Background="Transparent">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="220" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-
-        <Ellipse
-            x:Name="FocusRing"
-            Width="400"
-            Height="400"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Fill="Yellow"
-            IsHitTestVisible="False"
-            Opacity="0.5"
-            Stretch="Uniform"
-            StrokeThickness="0" />
-
-        <Grid Width="220" Height="220">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="250" />
+            <RowDefinition Height="250" />
+        </Grid.RowDefinitions>
+        <Grid x:Name="ExampleARootGrid" Background="Transparent">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="110" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
             <Ellipse
-                x:Name="OuterEllipse_Checked"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Opacity="1"
+                x:Name="ExampleAFocusRing"
+                Width="200"
+                Height="200"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Fill="Yellow"
+                IsHitTestVisible="False"
+                Opacity="0.5"
                 Stretch="Uniform"
-                Stroke="Purple"
-                StrokeThickness="80"
-                UseLayoutRounding="False" />
+                StrokeThickness="0" />
+
+            <Grid Width="110" Height="110">
+
+                <Ellipse
+                    x:Name="ExampleAOuterEllipse_Checked"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Opacity="0.6"
+                    Stretch="Uniform"
+                    Stroke="Purple"
+                    StrokeThickness="40"
+                    UseLayoutRounding="False" />
+
+                <Ellipse
+                    x:Name="ExampleACheckEllipse"
+                    Margin="30"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Fill="Green"
+                    Opacity="0.8"
+                    Stretch="Uniform"
+                    StrokeThickness="0"
+                    UseLayoutRounding="False" />
+
+                <Ellipse
+                    x:Name="ExampleAUncheckEllipse"
+                    Margin="5"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Fill="Red"
+                    Opacity="0.3"
+                    Stretch="Uniform"
+                    Stroke="Blue"
+                    StrokeThickness="5"
+                    UseLayoutRounding="False" />
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
             <Ellipse
-                x:Name="CheckEllipse"
-                Margin="60"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Fill="Green"
-                Opacity="1"
-                Stretch="Uniform"
-                StrokeThickness="0"
-                UseLayoutRounding="False" />
-
-            <Ellipse
-                x:Name="UncheckEllipse"
-                Margin="10"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Fill="Red"
+                x:Name="ExampleBFocusRing"
+                Width="200"
+                Height="200"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Fill="Pink"
+                IsHitTestVisible="False"
                 Opacity="0.3"
                 Stretch="Uniform"
-                Stroke="Blue"
-                StrokeThickness="10"
-                UseLayoutRounding="False" />
+                StrokeThickness="0" />
+
+            <Ellipse
+                x:Name="ExampleBPressRing"
+                Width="200"
+                Height="200"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Fill="Yellow"
+                IsHitTestVisible="False"
+                Opacity="0.4"
+                Stretch="Uniform" />
+
+            <Grid Width="90" Height="90">
+
+                <Ellipse
+                    x:Name="ExampleBOuterEllipse_Checked"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Opacity="0.6"
+                    Stretch="Uniform"
+                    Stroke="Purple"
+                    StrokeThickness="10"
+                    UseLayoutRounding="False" />
+
+                <Ellipse
+                    x:Name="ExampleBOuterEllipse_Unchecked"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Opacity="0.7"
+                    Stretch="Uniform"
+                    Stroke="Green"
+                    StrokeThickness="8"
+                    UseLayoutRounding="False" />
+
+                <Ellipse
+                    x:Name="ExampleBCheckEllipse"
+                    Margin="25"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Fill="Blue"
+                    Opacity="0.3"
+                    Stretch="Uniform"
+                    StrokeThickness="0"
+                    UseLayoutRounding="False" />
+            </Grid>
         </Grid>
     </Grid>
 </Page>
