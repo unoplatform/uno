@@ -1,0 +1,64 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Shapes.Ellipse_Positioning"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Shapes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+    <Grid x:Name="RootGrid" Background="Transparent">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Ellipse
+            x:Name="FocusRing"
+            Width="400"
+            Height="400"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Fill="Yellow"
+            IsHitTestVisible="False"
+            Opacity="0.5"
+            Stretch="Uniform"
+            StrokeThickness="0" />
+
+        <Grid Width="220" Height="220">
+
+            <Ellipse
+                x:Name="OuterEllipse_Checked"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Opacity="1"
+                Stretch="Uniform"
+                Stroke="Purple"
+                StrokeThickness="80"
+                UseLayoutRounding="False" />
+
+            <Ellipse
+                x:Name="CheckEllipse"
+                Margin="60"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Fill="Green"
+                Opacity="1"
+                Stretch="Uniform"
+                StrokeThickness="0"
+                UseLayoutRounding="False" />
+
+            <Ellipse
+                x:Name="UncheckEllipse"
+                Margin="10"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Fill="Red"
+                Opacity="0.3"
+                Stretch="Uniform"
+                Stroke="Blue"
+                StrokeThickness="10"
+                UseLayoutRounding="False" />
+        </Grid>
+    </Grid>
+</Page>
