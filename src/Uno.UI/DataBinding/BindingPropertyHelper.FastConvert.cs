@@ -665,9 +665,9 @@ namespace Uno.UI.DataBinding
 					}
 				}
 
-				var trimmed = input.Trim();
+				var trimmed = IgnoreStartingFromFirstSpaceIgnoreLeading(input);
 
-				if (trimmed == "0" || trimmed == "") // Fast path for zero / empty values (means zero in XAML)
+				if (trimmed == "0" || trimmed.Length == 0) // Fast path for zero / empty values (means zero in XAML)
 				{
 					output = 0d;
 					return true;
@@ -781,9 +781,9 @@ namespace Uno.UI.DataBinding
 					}
 				}
 
-				var trimmed = input.Trim();
+				var trimmed = IgnoreStartingFromFirstSpaceIgnoreLeading(input);
 
-				if (trimmed == "0" || trimmed == "") // Fast path for zero / empty values (means zero in XAML)
+				if (trimmed == "0" || trimmed.Length == 0) // Fast path for zero / empty values (means zero in XAML)
 				{
 					output = 0;
 					return true;
@@ -1089,6 +1089,25 @@ namespace Uno.UI.DataBinding
 			}
 
 			return i;
+		}
+
+		private static string IgnoreStartingFromFirstSpaceIgnoreLeading(string value)
+		{
+			var span = value.AsSpan().TrimStart();
+
+			var firstWhitespace = -1;
+			for (int i = 0; i < span.Length; i++)
+			{
+				if (char.IsWhiteSpace(span[i]))
+				{
+					firstWhitespace = i;
+					break;
+				}
+			}
+
+			return firstWhitespace == -1
+				? value
+				: span.Slice(0, firstWhitespace).ToString();
 		}
 	}
 }
