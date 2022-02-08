@@ -46,11 +46,7 @@ namespace Uno.UI.Xaml.Core
 			AddHandler(
 				PointerReleasedEvent,
 				new PointerEventHandler((snd, args) => ProcessPointerUp(args)),
-				// We don't want handled events, they are forwarded directly by the element that has handled it,
-				// but only ** AFTER ** the up has been fully processed.
-				// This is required to be sure that element process gestures and manipulations before we raise the exit
-				// (e.g. the 'tapped' event on a Button would be fired after the 'exit').
-				handledEventsToo: false); 
+				handledEventsToo: true); 
 #endif
 
 			PointerReleased += RootVisual_PointerReleased;
@@ -156,8 +152,15 @@ namespace Uno.UI.Xaml.Core
 		{
 #if __ANDROID__ // Not needed on WASM as we do have native support of the exit event
 			// On Android we use the RootVisual to raise the UWP only exit event (in managed only)
-			if (args.Pointer.PointerDeviceType is PointerDeviceType.Touch && args.OriginalSource is UIElement src)
+			if (!args.Handled
+				&& args.Pointer.PointerDeviceType is PointerDeviceType.Touch
+				&& args.OriginalSource is UIElement src)
 			{
+				// We don't want handled events, they are forwarded directly by the element that has handled it,
+				// but only ** AFTER ** the up has been fully processed.
+				// This is required to be sure that element process gestures and manipulations before we raise the exit
+				// (e.g. the 'tapped' event on a Button would be fired after the 'exit').
+
 				// It's acceptable to use only the OriginalSource on Android:
 				// since the platform has "implicit capture" and captures are propagated to the OS,
 				// the OriginalSource will be the element that has capture (if any).
