@@ -18,9 +18,14 @@
 		<UseInterpreter Condition="'$(Configuration)' == 'Debug'">True</UseInterpreter>
 
 		<IsUnoHead>true</IsUnoHead>
+
+		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net6.0-ios'">14.2</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">14.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net6.0-android'">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="'$(TargetFramework)'=='net6.0-macos'">10.14</SupportedOSPlatformVersion>
   </PropertyGroup>
 
-	<ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Uno.UI" Version="3.9.0-PullRequest-6463-30655-6463" />
 		<PackageReference Include="Uno.UI.RemoteControl" Version="3.0.0-dev.1447" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="3.0.5" />
@@ -36,6 +41,6 @@
 	<ItemGroup Condition="'$(TargetFramework)'=='net6.0-ios' or '$(TargetFramework)'=='net6.0-maccatalyst'">
 		<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.2.0-dev.2" />
 	</ItemGroup>
-	
+
 	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" />
 </Project>
