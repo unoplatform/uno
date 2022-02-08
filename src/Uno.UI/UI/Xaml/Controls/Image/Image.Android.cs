@@ -205,7 +205,7 @@ namespace Windows.UI.Xaml.Controls
 							return;
 						}
 
-						SetSourceUriFromFile(imageSource);
+						var dummy = SetSourceUriOrStream(imageSource);
 					}
 					else
 					{
@@ -243,40 +243,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// If an image doesn't have fixed sizes and is Uniform or None, we must use its aspect ratio to measure it.
 			return (Stretch == Stretch.Uniform || Stretch == Stretch.None) && (double.IsNaN(Width) || double.IsNaN(Height));
-		}
-
-		private void SetSourceUriFromFile(ImageSource newImageSource)
-		{
-			// The Jupiter behavior is to reset the visual right away, displaying nothing
-			// then show the new image. We're rescheduling the work below, so there is going
-			// to be a visual blank displayed.
-			ResetSource();
-
-			try
-			{
-				var disposable = new CancellationDisposable();
-
-				_imageFetchDisposable.Disposable = disposable;
-
-				var bitmap = newImageSource.OpenFromFile(_native, _targetWidth, _targetHeight);
-
-				_native.SetImageBitmap(bitmap);
-
-				if (bitmap != null)
-				{
-					OnImageOpened(newImageSource);
-				}
-				else
-				{
-					OnImageFailed(newImageSource);
-				}
-			}
-			catch (Exception ex)
-			{
-				this.Log().Warn("Image failed to open.", ex);
-
-				OnImageFailed(newImageSource);
-			}
 		}
 
 		private async Task SetSourceUriOrStream(ImageSource newImageSource)
