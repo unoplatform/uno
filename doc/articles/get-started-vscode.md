@@ -13,6 +13,7 @@ See these sections for information about using Uno Platform with:
     * [.NET 6.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (**version 6.0 (SDK 6.0.100)** or later)
     > Use `dotnet --version` from the terminal to get the version installed.
 * The [Uno Platform Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=unoplatform.vscode) Extension
+* For Windows, install the [GTK+ 3 runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases) (See [this uno-check issue](https://github.com/unoplatform/uno.check/issues/12))
 
 You can use [`uno-check`](https://github.com/unoplatform/uno.check) to make your installation compatible with Uno Platform.
 
