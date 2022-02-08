@@ -84,6 +84,9 @@
 	<ItemsPanelTemplate x:Key="MeasureCountCarouselPanel">
 		<local:MeasureCountCarouselPanel />
 	</ItemsPanelTemplate>
+	<ItemsPanelTemplate x:Key="NonVirtualizingItemsPanel">
+		<StackPanel />
+	</ItemsPanelTemplate>
 	<Style x:Key="ListViewContainerMarginStyle"
 		   TargetType="ListViewItem"
 		   BasedOn="{StaticResource BasicListViewContainerStyle}">
@@ -104,6 +107,11 @@
 		<local:CounterGrid>
 			<TextBlock Text="{Binding}" />
 		</local:CounterGrid>
+	</DataTemplate>
+	<DataTemplate x:Key="ReuseCounterItemTemplate">
+		<local:ReuseCountGrid>
+			<TextBlock Text="{Binding}" />
+		</local:ReuseCountGrid>
 	</DataTemplate>
 	<DataTemplate x:Key="SelectableItemTemplateA">
 		<TextBlock x:Name="TextBlockInTemplate"
