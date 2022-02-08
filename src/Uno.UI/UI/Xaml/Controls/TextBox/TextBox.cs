@@ -969,6 +969,15 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void UpdateKeyboardThemePartial();
 
+		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
+		{
+			base.OnIsEnabledChanged(e);
+			UpdateVisualState();
+			OnIsEnabledChangedPartial(e);
+		}
+
+		partial void OnIsEnabledChangedPartial(IsEnabledChangedEventArgs e);
+
 		private bool ShouldFocusOnPointerPressed(PointerRoutedEventArgs args) =>
 			// For mouse and pen, the TextBox should focus on pointer press, for other input types on release
 			args.Pointer.PointerDeviceType != PointerDeviceType.Touch;

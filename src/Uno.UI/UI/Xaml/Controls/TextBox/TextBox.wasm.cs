@@ -105,10 +105,8 @@ namespace Windows.UI.Xaml.Controls
 			_textBoxView?.SetAttribute("spellcheck", IsSpellCheckEnabled.ToString());
 		}
 
-		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
+		partial void OnIsEnabledChangedPartial(IsEnabledChangedEventArgs e)
 		{
-			base.OnIsEnabledChanged(e);
-
 			ApplyEnabled(e.NewValue);
 		}
 

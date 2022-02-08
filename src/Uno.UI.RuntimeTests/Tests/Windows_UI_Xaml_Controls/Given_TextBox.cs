@@ -7,6 +7,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using Windows.UI.Xaml;
+using Windows.UI;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -266,6 +267,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			textBox.Focus(FocusState.Programmatic);
 			Assert.AreEqual(3, textBox.SelectionStart);
+		}
+
+		[TestMethod]
+		public async Task When_IsEnabled_Set()
+		{
+			var foregroundColor = new SolidColorBrush(Colors.Red);
+			var disabledColor = new SolidColorBrush(Colors.Blue);
+
+			var textbox = new TextBox
+			{
+				Text = "Original Text",
+				Foreground = foregroundColor,
+				Style = TestsResourceHelper.GetResource<Style>("MaterialOutlinedTextBoxStyle"),
+				IsEnabled = false
+			};
+
+			var stackPanel = new StackPanel()
+			{
+				Children = { textbox }
+			};
+
+
+			WindowHelper.WindowContent = stackPanel;
+			await WindowHelper.WaitForLoaded(textbox);
+
+
+			var contentPresenter = (ScrollViewer)textbox.FindName("ContentElement");
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(textbox.IsEnabled);
+			Assert.AreEqual(contentPresenter.Foreground, disabledColor);
+
+			textbox.IsEnabled = true;
+
+			Assert.IsTrue(textbox.IsEnabled);
+			Assert.AreEqual(contentPresenter.Foreground, foregroundColor);
 		}
 	}
 }
