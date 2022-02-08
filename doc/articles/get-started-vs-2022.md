@@ -59,7 +59,7 @@ To easily create a multi-platform application:
 
 ## Create an application from the .NET 6 Mobile Preview solution template
 
-> .NET 6 Mobile support is currently in Preview, following Microsoft's support status. As of Uno 4.1, .NET 6 Mobile Preview 12 and above supported.
+> .NET 6 Mobile support is currently in Preview, following Microsoft's support status. As of Uno 4.1, .NET 6 Mobile Preview 12 and above is supported.
 
 To create a multi-platform application:
 * Create a new C# solution using the **Multi-Platform App (Uno Platform|net6)** template, from Visual Studio's **Start Page**
