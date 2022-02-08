@@ -297,6 +297,82 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
+		#region SetSolidColorBorder
+
+		internal static void SetSolidColorBorder(IntPtr htmlId, string colorHex, string borderWidth)
+		{
+			if (UseJavascriptEval)
+			{
+				var command = "Uno.UI.WindowManager.current.setSolidColorBorder(\"" + htmlId + "\", \"" + WebAssemblyRuntime.EscapeJs(colorHex) + "\", \"" + WebAssemblyRuntime.EscapeJs(borderWidth) + "\")";
+
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerSetSolidColorBorderParams
+				{
+					HtmlId = htmlId,
+					ColorHex = colorHex,
+					Width = borderWidth,
+				};
+
+				TSInteropMarshaller.InvokeJS("Uno:setSolidColorBorderNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetSolidColorBorderParams
+		{
+			public IntPtr HtmlId;
+
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
+			public string ColorHex;
+
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
+			public string Width;
+		}
+
+		#endregion
+
+		#region SetGradientBorder
+
+		internal static void SetGradientBorder(IntPtr htmlId, string borderImage, string borderWidth)
+		{
+			if (UseJavascriptEval)
+			{
+				var command = "Uno.UI.WindowManager.current.setGradientBorder(\"" + htmlId + "\", \"" + WebAssemblyRuntime.EscapeJs(borderImage) + "\", \"" + WebAssemblyRuntime.EscapeJs(borderWidth) + "\")";
+
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerSetGradientBorderParams
+				{
+					HtmlId = htmlId,
+					BorderImage = borderImage,
+					Width = borderWidth,
+				};
+
+				TSInteropMarshaller.InvokeJS("Uno:setGradientBorderNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetGradientBorderParams
+		{
+			public IntPtr HtmlId;
+
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
+			public string BorderImage;
+
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
+			public string Width;
+		}
+
+		#endregion
+
 		#region IsCssFeatureSupported
 
 		internal static bool IsCssFeatureSupported(string supportCondition)

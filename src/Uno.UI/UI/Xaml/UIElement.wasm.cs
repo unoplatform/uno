@@ -145,6 +145,16 @@ namespace Microsoft.UI.Xaml
 			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, styles);
 		}
 
+		protected internal void SetSolidColorBorder(string colorHex, string borderWidth)
+		{
+			Uno.UI.Xaml.WindowManagerInterop.SetSolidColorBorder(HtmlId, colorHex, borderWidth);
+		}
+
+		protected internal void SetGradientBorder(string borderImage, string borderWidth)
+		{
+			Uno.UI.Xaml.WindowManagerInterop.SetGradientBorder(HtmlId, borderImage, borderWidth);
+		}			
+			
 		internal void SetSelectionHighlight(Color backgroundColor, Color foregroundColor)
 		{
 			Uno.UI.Xaml.WindowManagerInterop.SetSelectionHighlight(HtmlId, backgroundColor, foregroundColor);

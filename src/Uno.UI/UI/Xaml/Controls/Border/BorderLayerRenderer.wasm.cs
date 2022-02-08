@@ -75,26 +75,6 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				var borderWidth = $"{thickness.Top.ToStringInvariant()}px {thickness.Right.ToStringInvariant()}px {thickness.Bottom.ToStringInvariant()}px {thickness.Left.ToStringInvariant()}px";
 
-				static void ApplySolidColor(UIElement element, Color color, string borderWidth)
-				{
-					element.SetStyle(
-						("border", ""),
-						("border-style", "solid"),
-						("border-color", color.ToHexString()),
-						("border-width", borderWidth));
-				}
-
-				static void ApplyGradient(UIElement element, GradientBrush gradient, string borderWidth)
-				{
-					var border = gradient.ToCssString(element.RenderSize); // TODO: Reevaluate when size is changing
-					element.SetStyle(
-						("border-style", "solid"),
-						("border-color", ""),
-						("border-image", border),
-						("border-width", borderWidth),
-						("border-image-slice", "1"));
-				}
-
 				switch (brush)
 				{
 					case SolidColorBrush solidColorBrush:
@@ -128,11 +108,7 @@ namespace Windows.UI.Xaml.Shapes
 						break;
 					case AcrylicBrush acrylicBrush:
 						var acrylicFallbackColor = acrylicBrush.FallbackColorWithOpacity;
-						element.SetStyle(
-							("border", ""),
-							("border-style", "solid"),
-							("border-color", acrylicFallbackColor.ToHexString()),
-							("border-width", borderWidth));
+						ApplySolidColor(element, acrylicFallbackColor, borderWidth);
 						break;
 					default:
 						element.ResetStyle("border-style", "border-color", "border-image", "border-width");
@@ -143,7 +119,18 @@ namespace Windows.UI.Xaml.Shapes
 			_border = (brush, thickness);
 		}
 
-		public static void SetAndObserveBackgroundBrush(FrameworkElement element, Brush oldValue, Brush newValue, ref Action brushChanged)
+		private static void ApplySolidColor(UIElement element, Color color, string borderWidth)
+		{
+			element.SetSolidColorBorder(color.ToHexString(), borderWidth);
+		}
+
+		private static void ApplyGradient(UIElement element, GradientBrush gradient, string borderWidth)
+		{
+			var border = gradient.ToCssString(element.RenderSize); // TODO: Reevaluate when size is changing
+			element.SetGradientBorder(border, borderWidth);
+		}
+
+		public static IDisposable SetAndObserveBackgroundBrush(FrameworkElement element, Brush brush)
 		{
 			if (oldValue is AcrylicBrush oldAcrylic)
 			{
