@@ -10,7 +10,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.FluentTheme.Controls
 {
-	internal partial class FauxGradientBottomBorder : ContentControl
+	internal partial class FauxGradientBorderPresenter : ContentControl
 	{
 #if __WASM__ || __IOS__ || __MACOS__
 		private static readonly Dictionary<LinearGradientBrush, SolidColorBrush> _overlayBrushCache = new();
@@ -18,7 +18,7 @@ namespace Uno.UI.FluentTheme.Controls
 		private readonly Border? _displayBorder = null;
 #endif
 
-		public FauxGradientBottomBorder()
+		public FauxGradientBorderPresenter()
 		{
 #if __WASM__ || __IOS__ || __MACOS__
 			HorizontalContentAlignment = HorizontalAlignment.Stretch;
@@ -37,8 +37,8 @@ namespace Uno.UI.FluentTheme.Controls
 			DependencyProperty.Register(
 				nameof(RequestedBorderBrush),
 				typeof(Brush),
-				typeof(FauxGradientBottomBorder),
-				new PropertyMetadata(null, propertyChangedCallback: (s, args) => (s as FauxGradientBottomBorder)?.OnBorderChanged()));
+				typeof(FauxGradientBorderPresenter),
+				new PropertyMetadata(null, propertyChangedCallback: (s, args) => (s as FauxGradientBorderPresenter)?.OnBorderChanged()));
 
 		public Thickness RequestedBorderThickness
 		{
@@ -50,8 +50,8 @@ namespace Uno.UI.FluentTheme.Controls
 			DependencyProperty.Register(
 				nameof(RequestedBorderThickness),
 				typeof(Thickness),
-				typeof(FauxGradientBottomBorder),
-				new PropertyMetadata(default(Thickness), propertyChangedCallback: (s, args) => (s as FauxGradientBottomBorder)?.OnBorderChanged()));
+				typeof(FauxGradientBorderPresenter),
+				new PropertyMetadata(default(Thickness), propertyChangedCallback: (s, args) => (s as FauxGradientBorderPresenter)?.OnBorderChanged()));
 
 		public CornerRadius RequestedCornerRadius
 		{
@@ -63,8 +63,8 @@ namespace Uno.UI.FluentTheme.Controls
 			DependencyProperty.Register(
 				nameof(RequestedCornerRadius),
 				typeof(CornerRadius),
-				typeof(FauxGradientBottomBorder),
-				new PropertyMetadata(CornerRadius.None, propertyChangedCallback: (s, args) => (s as FauxGradientBottomBorder)?.OnBorderChanged()));
+				typeof(FauxGradientBorderPresenter),
+				new PropertyMetadata(CornerRadius.None, propertyChangedCallback: (s, args) => (s as FauxGradientBorderPresenter)?.OnBorderChanged()));
 
 		private void OnBorderChanged()
 		{

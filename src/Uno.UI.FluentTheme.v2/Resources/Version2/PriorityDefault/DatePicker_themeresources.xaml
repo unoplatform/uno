@@ -251,7 +251,7 @@
                                                     contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}"/>
                                                 
                                                 <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
-                                                <ufc:FauxGradientBottomBorder
+                                                <ufc:FauxGradientBorderPresenter
                                                     Grid.Row="1"
                                                     Grid.Column="0"
                                                     Grid.ColumnSpan="2"

@@ -671,7 +671,7 @@
                             MinWidth="{ThemeResource ComboBoxThemeMinWidth}" />
 
                         <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
-                        <ufc:FauxGradientBottomBorder
+                        <ufc:FauxGradientBorderPresenter
                             Grid.Row="1"
                             Grid.Column="0"
                             Grid.ColumnSpan="2"
@@ -1040,7 +1040,7 @@
                             contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}"/>
 
                         <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
-                        <ufc:FauxGradientBottomBorder
+                        <ufc:FauxGradientBorderPresenter
                             RequestedBorderBrush="{Binding ElementName=BorderElement, Path=BorderBrush}"
                             RequestedBorderThickness="{Binding ElementName=BorderElement, Path=BorderThickness}"
                             RequestedCornerRadius="{Binding ElementName=BorderElement, Path=CornerRadius}" />
