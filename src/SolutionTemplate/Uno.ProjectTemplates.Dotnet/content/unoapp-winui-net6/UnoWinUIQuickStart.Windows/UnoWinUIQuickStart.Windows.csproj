@@ -10,8 +10,13 @@
 		<PublishProfile>win10-$(Platform).pubxml</PublishProfile>
 		<UseWinUI>true</UseWinUI>
 		<EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
-		<!-- Bundles the WinAppSDK binaries -->
-		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+	</PropertyGroup>
+	
+	<PropertyGroup>
+		<!-- Bundles the WinAppSDK binaries (Uncomment for unpackaged builds) -->
+		<!-- <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained> -->
+		<!-- This bundles the .NET Core libraries (Uncomment for packaged builds)  -->
+		<SelfContained>true</SelfContained>
 	</PropertyGroup>
 
 	<ItemGroup>
