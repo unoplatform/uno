@@ -236,7 +236,7 @@
                         </ContentPresenter>
 
                         <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
-                        <ufc:FauxGradientBottomBorder
+                        <ufc:FauxGradientBorderPresenter
                             RequestedBorderBrush="{Binding ElementName=ContentPresenter, Path=BorderBrush}"
                             RequestedBorderThickness="{Binding ElementName=ContentPresenter, Path=BorderThickness}"
                             RequestedCornerRadius="{Binding ElementName=ContentPresenter, Path=CornerRadius}" />
