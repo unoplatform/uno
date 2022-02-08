@@ -15,12 +15,11 @@
 	    * A working Mac with Visual Studio for Mac, XCode 8.2 or later installed (for iOS development)
 	    * Google's Android x86 emulators or a physical Android device (for Android development)
 
-    * **ASP**.**NET and web** workload installed, along with .NET Core 2.2 (for WASM development)
+    * **ASP**.**NET and web** workload installed, along with .NET Core 5.0 (for WASM development)
 
     ![visual-studio-installer-web](Assets/quick-start/vs-install-web.png)
     * **.NET Core SDK**
-        * [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1) (**version 3.1.8 (SDK 3.1.402)** or later)
-        * [.NET Core 5.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (**version 5.0 (SDK 5.0.100)** or later)
+        * [.NET Core 5.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (**version 5.0 (SDK 5.0.400)** or later)
 
 For more information about these prerequisites, see [Installing Xamarin](https://docs.microsoft.com/en-us/xamarin/get-started/installation/). For information about connecting Visual Studio to a Mac build host, see [Pair to Mac for Xamarin.iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
 
@@ -37,14 +36,14 @@ For more information about these prerequisites, see [Installing Xamarin](https:/
 ## Create an application from the solution template
 
 To easily create a multi-platform application:
-* Create a new C# solution using the **Cross-Platform App (Uno Platform)** template, from Visual Studio's **Start Page**:
+* Create a new C# solution using the **Multi-Platform App (Uno Platform|Xamarin)** template, from Visual Studio's **Start Page**:
 
 ![new project](Assets/quick-start/vsix-new-project.png)
-* Update to the latest NuGet package named `Uno.UI`. To get the very latest features, check the `pre-release` box.
+* Update to the latest NuGet package named `Uno.UI`. To get the very latest preview features, check the `pre-release` box.
 * To debug the iOS head, select the `Debug|iPhoneSimulator` configuration
-* To debug the Android head, select the `Debug|AnyCPU` configuration
+* To debug the Android head, select the `Debug|Any CPU` configuration
 * To debug the UWP head, select the `Debug|x86` configuration
-* To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctrl+F5** or choose 'Start without debugging' from the menu. Note that **F5** will *not* work because Visual Studio debugging isn't supported. See [here](debugging-wasm.md) for debugging instructions through Chrome.
+* To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctr+F5** or choose `Start without debugging` from the Debug menu. To enable full debugging, see these [debugging instructions](debugging-wasm.md).
 
 ### Make sure XAML Intellisense is enabled
 
@@ -62,7 +61,7 @@ If XAML Intellisense isn't working on a freshly-created project, try the followi
 
 ### Troubleshooting Visual Studio and Uno Platform Installation Issues
 
-You may encounter  installation and/or post-installation Visual Studio issues for which workarounds exist. Please see [Common Issues](https://platform.uno/docs/articles/get-started-wizard.html) we have documented.
+You may encounter installation and/or post-installation Visual Studio issues for which workarounds exist. Please see [Common Issues](https://platform.uno/docs/articles/get-started-wizard.html) we have documented.
 
 If you're not sure whether your environment is correctly configured for Uno Platform development, running the [`uno-check` command-line tool](uno-check.md) should be your first step.
 

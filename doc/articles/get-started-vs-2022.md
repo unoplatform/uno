@@ -44,15 +44,29 @@ Follow the steps indicated by the tool.
 
     ![](Assets/tutorial01/uno-extensions.PNG)
 
-## Create an application from the solution template
+## Create an application from the Xamarin solution template
 
 To easily create a multi-platform application:
-* Create a new C# solution using the **Multi-Platform App (Uno Platform | .NET 6 | UWP)** template, from Visual Studio's **Start Page**:
+* Create a new C# solution using the **Multi-Platform App (Uno Platform|Xamarin)** template, from Visual Studio's **Start Page**:
+
+![new project](Assets/quick-start/vsix-new-project.png)
+* Update to the latest NuGet package named `Uno.UI`. To get the very latest preview features, check the `pre-release` box.
+* To debug the iOS head, select the `Debug|iPhoneSimulator` configuration
+* To debug the Android head, select the `Debug|Any CPU` configuration
+* To debug the UWP head, select the `Debug|x86` configuration
+* To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctr+F5** or choose `Start without debugging` from the Debug menu. To enable full debugging, see these [debugging instructions](debugging-wasm.md).
+
+
+## Create an application from the .NET 6 Mobile Preview solution template
+
+> .NET 6 Mobile support is currently in Preview, following Microsoft's support status. As of Uno 4.1, .NET 6 Mobile Preview 12 and above supported.
+
+To create a multi-platform application:
+* Create a new C# solution using the **Multi-Platform App (Uno Platform|net6)** template, from Visual Studio's **Start Page**
 * Update to the latest NuGet package named `Uno.UI`. To get the very latest features, check the `pre-release` box.
 * To debug the iOS:
     - In the "Debug toolbar" drop down, select framework `net6.0-ios`
     - Select an active device
-    > Note that VS 2022 support for iOS is still a work in progress and may not deploy properly. Deploying to physical devices is not supported as of 17.1 Preview 1.
 * To debug the Android platform:
     - In the "Debug toolbar" drop down, select framework `net6.0-android`
     - Select an active device in "Device" sub-menu
@@ -62,7 +76,7 @@ To easily create a multi-platform application:
 * To run the WebAssembly (Wasm) head:
    - Select **IIS Express** and press **Ctrl+F5** or choose 'Start without debugging' from the menu.
 
-> Debugging the macOS and macCatalyst targets is not supported from Visual Studio on Windows.
+> Debugging either the macOS and macCatalyst targets is not supported from Visual Studio on Windows.
 
 ### Make sure XAML Intellisense is enabled
 
