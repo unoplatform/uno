@@ -871,7 +871,7 @@ namespace Windows.UI.Xaml.Controls
 			=> (scrollable, visibility, mode, managedScrollbar) switch
 			{
 				(_, _, ScrollMode.Disabled, _) => ScrollBarVisibility.Disabled,
-				(0, ScrollBarVisibility.Auto, _, null) => ScrollBarVisibility.Disabled, // If scrollable is 0, the managed scrollbar won't be realized, we prefer to hide the native one until we are sure!
+				(0, ScrollBarVisibility.Auto, _, null) => ScrollBarVisibility.Hidden, // If scrollable is 0, the managed scrollbar won't be realized, we prefer to hide the native one until we are sure!
 				(_, _, _, null) when Uno.UI.Xaml.Controls.ScrollViewer.GetShouldFallBackToNativeScrollBars(this) => visibility,
 				(_, ScrollBarVisibility.Disabled, _, _) => ScrollBarVisibility.Disabled,
 				_ => ScrollBarVisibility.Hidden // If a managed scroll bar was set in the template, native scroll bar has to stay Hidden
