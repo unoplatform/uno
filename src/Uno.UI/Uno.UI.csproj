@@ -157,10 +157,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="UI\Xaml\Media\BorderGradientBrushHelper.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<Compile Include="Mixins\Android\BaseActivity.Callbacks.g.cs" />
 		<Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
 		<Compile Include="Mixins\DependencyPropertyMixins.g.cs" />

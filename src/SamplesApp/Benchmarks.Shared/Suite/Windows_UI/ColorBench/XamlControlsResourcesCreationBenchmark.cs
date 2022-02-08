@@ -1,4 +1,5 @@
-﻿using System;
+﻿#pragma warning disable CS0219 // Variable is assigned but its value is never used
+using System;
 using System.Collections.Generic;
 using System.Text;
 using BenchmarkDotNet.Attributes;
@@ -43,3 +44,4 @@ public class ColorBenchmark
 		var b = _color1.Equals(_color2);
 	}
 }
+#pragma warning restore CS0219 // Variable is assigned but its value is never used

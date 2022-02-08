@@ -1,4 +1,4 @@
-<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="ios android wasm skia" xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives" xmlns:media="using:Microsoft.UI.Xaml.Media" xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)" xmlns:not_win="http://uno.ui/not_win" xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:contract5Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)" xmlns:contract5NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)" xmlns:contract6NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,6)" xmlns:local="using:Windows.UI.Xaml.Controls" xmlns:wasm="http://uno.ui/wasm" xmlns:contract8Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,8)" xmlns:contract14Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,14)" xmlns:uno="using:Uno.UI.Xaml.Controls" xmlns:automation="clr-namespace:Windows.UI.Xaml.Automation" xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals" xmlns:animatedVisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals" xmlns:contract4Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:contract9NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,9)" xmlns:contract12Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,12)" xmlns:contract14NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,14)" xmlns:contract12NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,12)" xmlns:contract8NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,8)" xmlns:netstdref="http://uno.ui/netstdref" xmlns:skia="http://uno.ui/skia" xmlns:primitiveContract7Present="using:Microsoft.UI.Xaml.Controls.Primitives?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract4NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:unouwp="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Uno.WinUI,1)" xmlns:ios="http://uno.ui/ios" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="ios android wasm skia" xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives" xmlns:media="using:Microsoft.UI.Xaml.Media" xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)" xmlns:not_win="http://uno.ui/not_win" xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:ufc="using:Uno.UI.FluentTheme.Controls" xmlns:contract5Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)" xmlns:contract5NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)" xmlns:contract6NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,6)" xmlns:local="using:Windows.UI.Xaml.Controls" xmlns:wasm="http://uno.ui/wasm" xmlns:contract8Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,8)" xmlns:contract14Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,14)" xmlns:uno="using:Uno.UI.Xaml.Controls" xmlns:automation="clr-namespace:Windows.UI.Xaml.Automation" xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals" xmlns:animatedVisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals" xmlns:contract4Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:contract9NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,9)" xmlns:contract12Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,12)" xmlns:contract14NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,14)" xmlns:contract12NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,12)" xmlns:contract8NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,8)" xmlns:netstdref="http://uno.ui/netstdref" xmlns:skia="http://uno.ui/skia" xmlns:primitiveContract7Present="using:Microsoft.UI.Xaml.Controls.Primitives?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract4NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:unouwp="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Uno.WinUI,1)" xmlns:ios="http://uno.ui/ios" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
   <ResourceDictionary.ThemeDictionaries>
     <ResourceDictionary xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="ios android wasm skia" x:Key="Default">
       <SolidColorBrush x:Key="SystemControlTransparentBrush" Color="Transparent" />
@@ -6256,9 +6256,7 @@
     <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
     <Setter Property="Background" Value="{ThemeResource TextControlBackground}" />
     <Setter Property="SelectionHighlightColor" Value="{ThemeResource TextControlSelectionHighlightColor}" />
-    <!-- Uno specific (LinearGradientBrush borders): Use solid border brush -->
-    <win:Setter Property="BorderBrush" Value="{ThemeResource TextControlElevationBorderBrush}" />
-    <not_win:Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource TextControlElevationBorderBrush}" />
     <Setter Property="BorderThickness" Value="{ThemeResource TextControlBorderThemeThickness}" />
     <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
     <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
@@ -6364,10 +6362,6 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
-                    <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
-                    </not_win:ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForegroundDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -6379,10 +6373,9 @@
                 <VisualState x:Name="Normal" />
                 <VisualState x:Name="PointerOver">
                   <Storyboard>
-                    <!-- Uno specific (LinearGradientBrush borders): Avoid changing the border -->
-                    <win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushPointerOver}" />
-                    </win:ObjectAnimationUsingKeyFrames>
+                    </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="Background">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBackgroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -6402,23 +6395,10 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="Background">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBackgroundFocused}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Simulates focused bottom border -->
-                    <win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushFocused}" />
-                    </win:ObjectAnimationUsingKeyFrames>
-                    <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="BorderThickness">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource UnoTextControlBottomBorderFocusedThickness}" />
-                    </not_win:ObjectAnimationUsingKeyFrames>
-                    <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="BorderBrush">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource UnoTextControlBorderOverlayBrushFocused}" />
-                    </not_win:ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderThickness">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderThemeThicknessFocused}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement" Storyboard.TargetProperty="Foreground">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForegroundFocused}" />
-                    </ObjectAnimationUsingKeyFrames>
-                  </Storyboard>
+s                                       <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderThickness"><DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderThemeThicknessFocused}" /></ObjectAnimationUsingKeyFrames><ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement" Storyboard.TargetProperty="Foreground"><DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForegroundFocused}" /></ObjectAnimationUsingKeyFrames></Storyboard>
                 </VisualState>
               </VisualStateGroup>
               <VisualStateGroup x:Name="ButtonStates">
@@ -6447,8 +6427,8 @@
             </Grid.ColumnDefinitions>
             <ContentPresenter x:Name="HeaderContentPresenter" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" FontWeight="Normal" Foreground="{ThemeResource TextControlHeaderForeground}" Margin="{ThemeResource PasswordBoxTopHeaderMargin}" TextWrapping="Wrap" VerticalAlignment="Top" Visibility="Collapsed" x:DeferLoadStrategy="Lazy" />
             <Border x:Name="BorderElement" Grid.Row="1" Grid.Column="0" Grid.RowSpan="1" Grid.ColumnSpan="2" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" MinWidth="{ThemeResource TextControlThemeMinWidth}" MinHeight="{ThemeResource TextControlThemeMinHeight}" />
-            <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border linear gradient shadow -->
-            <not_win:Border x:Name="BottomBorderElement" Grid.Row="1" Grid.Column="0" Grid.RowSpan="1" Grid.ColumnSpan="2" BorderThickness="0,0,0,1" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" BorderBrush="{ThemeResource UnoTextControlElevationBorderOverlayBrush}" />
+            <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
+            <ufc:FauxGradientBottomBorder Grid.Row="1" Grid.Column="0" Grid.RowSpan="1" Grid.ColumnSpan="2" RequestedBorderBrush="{Binding ElementName=BorderElement, Path=BorderBrush}" RequestedBorderThickness="{Binding ElementName=BorderElement, Path=BorderThickness}" RequestedCornerRadius="{Binding ElementName=BorderElement, Path=CornerRadius}" />
             <ScrollViewer x:Name="ContentElement" Grid.Row="1" Grid.Column="0" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}" IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" IsTabStop="False" ZoomMode="Disabled" AutomationProperties.AccessibilityView="Raw" />
             <TextBlock x:Name="PlaceholderTextContentPresenter" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Foreground="{ThemeResource TextControlPlaceholderForeground}" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" Text="{TemplateBinding PlaceholderText}" IsHitTestVisible="False" />
             <ToggleButton x:Name="RevealButton" Grid.Row="1" Grid.Column="1" Style="{StaticResource RevealButtonStyle}" BorderThickness="{TemplateBinding BorderThickness}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" Padding="{ThemeResource HelperButtonThemePadding}" IsTabStop="False" Visibility="Collapsed" FontSize="{TemplateBinding FontSize}" VerticalAlignment="Stretch" Width="30" />
@@ -8991,8 +8971,7 @@
     <Setter Property="PlaceholderForeground" Value="{ThemeResource TextControlPlaceholderForeground}" />
     <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
     <Setter Property="Background" Value="{ThemeResource TextControlBackground}" />
-    <!-- Uno workaround: Workaround for LinearGradientBrush not supported on all targets-->
-    <Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource TextControlBorderBrush}" />
     <Setter Property="SelectionHighlightColor" Value="{ThemeResource TextControlSelectionHighlightColor}" />
     <Setter Property="BorderThickness" Value="{ThemeResource TextControlBorderThemeThickness}" />
     <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -9078,10 +9057,6 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific - simulates bottom border gradient -->
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
-                    </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForegroundDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -9093,10 +9068,9 @@
                 </VisualState>
                 <VisualState x:Name="PointerOver">
                   <Storyboard>
-                    <!-- Uno specific: avoid applying LinearGradientBrush -->
-                    <!--<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
-                                        </ObjectAnimationUsingKeyFrames>-->
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="Background">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBackgroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -9118,15 +9092,8 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="Background">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBackgroundFocused}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific: Simulates focused bottom border -->
-                    <!--<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushFocused}" />
-                                        </ObjectAnimationUsingKeyFrames>-->
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="BorderThickness">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource UnoTextControlBottomBorderFocusedThickness}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="BorderBrush">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource UnoTextControlBorderOverlayBrushFocused}" />
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushFocused}" />
                     </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderThickness">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderThemeThicknessFocused}" />
@@ -9163,8 +9130,8 @@
             </Grid.ColumnDefinitions>
             <ContentPresenter x:Name="HeaderContentPresenter" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" FontWeight="Normal" Foreground="{ThemeResource TextControlHeaderForeground}" Margin="{ThemeResource TextBoxTopHeaderMargin}" TextWrapping="Wrap" VerticalAlignment="Top" Visibility="Collapsed" x:DeferLoadStrategy="Lazy" />
             <Border x:Name="BorderElement" Grid.Row="1" Grid.Column="0" Grid.RowSpan="1" Grid.ColumnSpan="2" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" Control.IsTemplateFocusTarget="True" MinWidth="{TemplateBinding MinWidth}" MinHeight="{TemplateBinding MinHeight}" />
-            <!-- Uno specific: Simulates bottom border linear gradient shadow -->
-            <Border x:Name="BottomBorderElement" Grid.Row="1" Grid.Column="0" Grid.RowSpan="1" Grid.ColumnSpan="2" BorderThickness="0,0,0,1" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" BorderBrush="{ThemeResource UnoTextControlElevationBorderOverlayBrush}" />
+            <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
+            <ufc:FauxGradientBottomBorder Grid.Row="1" Grid.Column="0" Grid.RowSpan="1" Grid.ColumnSpan="2" RequestedBorderBrush="{Binding ElementName=BorderElement, Path=BorderBrush}" RequestedBorderThickness="{Binding ElementName=BorderElement, Path=BorderThickness}" RequestedCornerRadius="{Binding ElementName=BorderElement, Path=CornerRadius}" />
             <ScrollViewer x:Name="ContentElement" Grid.Row="1" Grid.Column="0" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}" IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}" IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}" IsTabStop="False" AutomationProperties.AccessibilityView="Raw" ZoomMode="Disabled" />
             <TextBlock x:Name="PlaceholderTextContentPresenter" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" contract5NotPresent:Foreground="{ThemeResource TextControlPlaceholderForeground}" contract5Present:Foreground="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForeground}}" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" Text="{TemplateBinding PlaceholderText}" TextAlignment="{TemplateBinding TextAlignment}" TextWrapping="{TemplateBinding TextWrapping}" IsHitTestVisible="False" />
             <Button x:Name="DeleteButton" Grid.Row="1" Grid.Column="1" Style="{StaticResource DeleteButtonStyle}" BorderThickness="{TemplateBinding BorderThickness}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" Padding="{ThemeResource HelperButtonThemePadding}" IsTabStop="False" Visibility="Collapsed" AutomationProperties.AccessibilityView="Raw" FontSize="{TemplateBinding FontSize}" Width="30" VerticalAlignment="Stretch" />
@@ -9788,8 +9755,7 @@
     <Setter Property="MinHeight" Value="{ThemeResource TextControlThemeMinHeight}" />
     <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
     <Setter Property="Background" Value="{ThemeResource TextControlBackground}" />
-    <!-- Uno workaround: Workaround for LinearGradientBrush not supported on all targets-->
-    <Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource TextControlBorderBrush}" />
     <Setter Property="SelectionHighlightColor" Value="{ThemeResource TextControlSelectionHighlightColor}" />
     <Setter Property="BorderThickness" Value="{ThemeResource TextControlBorderThemeThickness}" />
     <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -9918,10 +9884,6 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific - simulates bottom border gradient -->
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
-                    </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForegroundDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -9933,10 +9895,6 @@
                 <VisualState x:Name="Normal" />
                 <VisualState x:Name="PointerOver">
                   <Storyboard>
-                    <!-- Uno specific: avoid applying LinearGradientBrush -->
-                    <!--<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
-                                        </ObjectAnimationUsingKeyFrames>-->
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -9959,15 +9917,8 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="Background">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBackgroundFocused}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific: Simulates focused bottom border -->
-                    <!--<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushFocused}" />
-                                        </ObjectAnimationUsingKeyFrames>-->
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="BorderThickness">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource UnoTextControlBottomBorderFocusedThickness}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="BorderBrush">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource UnoTextControlBorderOverlayBrushFocused}" />
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushFocused}" />
                     </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderThickness">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderThemeThicknessFocused}" />
@@ -10009,10 +9960,10 @@
             </Grid.RowDefinitions>
             <Border x:Name="BorderElement" Grid.Row="1" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Grid.ColumnSpan="4" Grid.RowSpan="1" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" />
             <ContentPresenter x:Name="HeaderContentPresenter" x:DeferLoadStrategy="Lazy" Visibility="Collapsed" Grid.Row="0" Foreground="{ThemeResource TextControlHeaderForeground}" Margin="{ThemeResource AutoSuggestBoxTopHeaderMargin}" Grid.ColumnSpan="4" Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" FontWeight="Normal" TextWrapping="Wrap" />
-            <!-- Uno specific: Simulates bottom border linear gradient shadow -->
-            <Border x:Name="BottomBorderElement" Grid.Row="1" Grid.ColumnSpan="4" Grid.RowSpan="1" BorderThickness="0,0,0,1" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" BorderBrush="{ThemeResource UnoTextControlElevationBorderOverlayBrush}" />
+            <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
+            <ufc:FauxGradientBottomBorder Grid.Row="1" Grid.ColumnSpan="4" Grid.RowSpan="1" RequestedBorderBrush="{Binding ElementName=BorderElement, Path=BorderBrush}" RequestedBorderThickness="{Binding ElementName=BorderElement, Path=BorderThickness}" RequestedCornerRadius="{Binding ElementName=BorderElement, Path=CornerRadius}" />
             <ScrollViewer x:Name="ContentElement" Grid.Row="1" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}" IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}" IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" IsTabStop="False" AutomationProperties.AccessibilityView="Raw" ZoomMode="Disabled" />
-            <ContentControl x:Name="PlaceholderTextContentPresenter" Grid.Row="1" Foreground="{ThemeResource TextControlPlaceholderForeground}" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" IsTabStop="False" Grid.ColumnSpan="4" Content="{TemplateBinding PlaceholderText}" IsHitTestVisible="False" />
+            <ContentControl x:Name="PlaceholderTextContentPresenter" Grid.Row="1" Foreground="{ThemeResource TextControlPlaceholderForeground}" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" IsTabStop="False" Grid.ColumnSpan="2" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Content="{TemplateBinding PlaceholderText}" IsHitTestVisible="False" />
             <Button x:Name="DeleteButton" Grid.Row="1" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" Style="{StaticResource DeleteButtonStyle}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{ThemeResource HelperButtonThemePadding}" IsTabStop="False" Grid.Column="1" Visibility="Collapsed" FontSize="{TemplateBinding FontSize}" Width="32" AutomationProperties.AccessibilityView="Raw" VerticalAlignment="Stretch" />
             <Button x:Name="QueryButton" Grid.Row="1" Grid.Column="2" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" Style="{StaticResource QueryButtonStyle}" BorderThickness="{TemplateBinding BorderThickness}" Margin="2,0,0,0" Padding="{ThemeResource HelperButtonThemePadding}" IsTabStop="False" FontSize="{TemplateBinding FontSize}" Width="32" Height="28" VerticalAlignment="Stretch" AutomationProperties.AccessibilityView="Raw" />
             <contract7Present:ContentPresenter x:Name="DescriptionPresenter" Grid.Row="2" Grid.ColumnSpan="4" Content="{TemplateBinding Description}" x:Load="False" Foreground="{ThemeResource SystemControlDescriptionTextForegroundBrush}" AutomationProperties.AccessibilityView="Raw" />
@@ -10029,8 +9980,7 @@
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
     <Setter Property="Background" Value="{ThemeResource TextControlBackground}" />
-    <!-- Uno workaround: Workaround for LinearGradientBrush not supported on all targets-->
-    <Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource TextControlBorderBrush}" />
     <Setter Property="BorderThickness" Value="{ThemeResource TextControlBorderThemeThickness}" />
     <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
     <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
@@ -10078,9 +10028,7 @@
     <Setter Property="Background" Value="{ThemeResource ButtonBackground}" />
     <contract7Present:Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
     <Setter Property="Foreground" Value="{ThemeResource ButtonForeground}" />
-    <!-- Uno specific (LinearGradientBrush borders): Use solid border brush -->
-    <win:Setter Property="BorderBrush" Value="{ThemeResource ButtonBorderBrush}" />
-    <not_win:Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource ButtonBorderBrush}" />
     <Setter Property="BorderThickness" Value="{ThemeResource ButtonBorderThemeThickness}" />
     <contract7NotPresent:Setter Property="Padding" Value="11,5,11,5" />
     <contract7Present:Setter Property="Padding" Value="{StaticResource ButtonPadding}" />
@@ -10104,7 +10052,7 @@
               </contract7Present:ContentPresenter.BackgroundTransition>
             </ContentPresenter>
             <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
-            <not_win:Border x:Name="BottomBorderElement" BorderThickness="0,0,0,1" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" BorderBrush="{ThemeResource UnoElevationBorderOverlayBrush}" />
+            <ufc:FauxGradientBottomBorder RequestedBorderBrush="{Binding ElementName=ContentPresenter, Path=BorderBrush}" RequestedBorderThickness="{Binding ElementName=ContentPresenter, Path=BorderThickness}" RequestedCornerRadius="{Binding ElementName=ContentPresenter, Path=CornerRadius}" />
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">
                 <VisualState x:Name="Normal" />
@@ -10113,10 +10061,9 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonBackgroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Keep the same brush -->
-                    <win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonBorderBrushPointerOver}" />
-                    </win:ObjectAnimationUsingKeyFrames>
+                    </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonForegroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -10133,10 +10080,6 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonBorderBrushPressed}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
-                    <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
-                    </not_win:ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonForegroundPressed}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -10153,10 +10096,6 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonBorderBrushDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
-                    <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
-                    </not_win:ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonForegroundDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -10177,9 +10116,7 @@
     <Setter Property="Foreground" Value="{ThemeResource AccentButtonForeground}" />
     <Setter Property="Background" Value="{ThemeResource AccentButtonBackground}" />
     <contract7Present:Setter Property="BackgroundSizing" Value="OuterBorderEdge" />
-    <!-- Uno specific (LinearGradientBrush borders): Use solid border brush -->
-    <win:Setter Property="BorderBrush" Value="{ThemeResource AccentButtonBorderBrush}" />
-    <not_win:Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorOnAccentDefault}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource AccentButtonBorderBrush}" />
     <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
     <Setter Property="Template">
       <Setter.Value>
@@ -10192,7 +10129,7 @@
               </contract7Present:ContentPresenter.BackgroundTransition>
             </ContentPresenter>
             <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
-            <Border x:Name="BottomBorderElement" BorderThickness="0,0,0,1" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" BorderBrush="{ThemeResource ControlStrokeColorOnAccentSecondaryBrush}" />
+            <ufc:FauxGradientBottomBorder RequestedBorderBrush="{Binding ElementName=ContentPresenter, Path=BorderBrush}" RequestedBorderThickness="{Binding ElementName=ContentPresenter, Path=BorderThickness}" RequestedCornerRadius="{Binding ElementName=ContentPresenter, Path=CornerRadius}" />
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">
                 <VisualState x:Name="Normal" />
@@ -10201,10 +10138,9 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AccentButtonBackgroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Do not change border on pointer over-->
-                    <win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AccentButtonBorderBrushPointerOver}" />
-                    </win:ObjectAnimationUsingKeyFrames>
+                    </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AccentButtonForegroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -10218,10 +10154,6 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AccentButtonBorderBrushPressed}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
-                    <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
-                    </not_win:ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AccentButtonForegroundPressed}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -10235,10 +10167,6 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AccentButtonBorderBrushDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
-                    <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
-                    </not_win:ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AccentButtonForegroundDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -10258,9 +10186,7 @@
     <wasm:Setter Property="CalendarViewStyle" Value="{StaticResource CalendarViewCrippledAnimationStyle}" />
     <Setter Property="Foreground" Value="{ThemeResource CalendarDatePickerForeground}" />
     <Setter Property="Background" Value="{ThemeResource CalendarDatePickerBackground}" />
-    <!-- Uno specific (LinearGradientBrush borders): Use solid border brush -->
-    <win:Setter Property="BorderBrush" Value="{ThemeResource CalendarDatePickerBorderBrush}" />
-    <not_win:Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource CalendarDatePickerBorderBrush}" />
     <Setter Property="BorderThickness" Value="{ThemeResource CalendarDatePickerBorderThemeThickness}" />
     <Setter Property="HorizontalAlignment" Value="Left" />
     <Setter Property="VerticalAlignment" Value="Center" />
@@ -10277,10 +10203,9 @@
                 <VisualState x:Name="Normal" />
                 <VisualState x:Name="PointerOver">
                   <Storyboard>
-                    <!-- Uno specific (LinearGradientBrush borders): Keep the same brush -->
-                    <win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="Background" Storyboard.TargetProperty="BorderBrush">
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Background" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CalendarDatePickerBorderBrushPointerOver}" />
-                    </win:ObjectAnimationUsingKeyFrames>
+                    </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Background" Storyboard.TargetProperty="Background">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CalendarDatePickerBackgroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -10294,10 +10219,6 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Background" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CalendarDatePickerBorderBrushPressed}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
-                    <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
-                    </not_win:ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                 </VisualState>
                 <VisualState x:Name="Disabled">
@@ -10308,10 +10229,6 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Background" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CalendarDatePickerBorderBrushDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
-                    <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
-                    </not_win:ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HeaderContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CalendarDatePickerHeaderForegroundDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -10394,7 +10311,7 @@
             <ContentPresenter x:Name="HeaderContentPresenter" x:DeferLoadStrategy="Lazy" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" Margin="{StaticResource CalendarDatePickerTopHeaderMargin}" TextWrapping="Wrap" VerticalAlignment="Top" Visibility="Collapsed" />
             <Border x:Name="Background" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" Control.IsTemplateFocusTarget="True" MinHeight="32" />
             <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
-            <not_win:Border x:Name="BottomBorderElement" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" BorderThickness="0,0,0,1" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" BorderBrush="{ThemeResource UnoElevationBorderOverlayBrush}" MinHeight="32" />
+            <ufc:FauxGradientBottomBorder Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" MinHeight="32" RequestedBorderBrush="{Binding ElementName=Background, Path=BorderBrush}" RequestedBorderThickness="{Binding ElementName=Background, Path=BorderThickness}" RequestedCornerRadius="{Binding ElementName=Background, Path=CornerRadius}" />
             <TextBlock x:Name="DateText" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Foreground="{ThemeResource CalendarDatePickerTextForeground}" Text="{TemplateBinding PlaceholderText}" Padding="12, 0, 0, 2" VerticalAlignment="Center" />
             <FontIcon x:Name="CalendarGlyph" Grid.Row="1" Grid.Column="2" Glyph="&#xE787;" FontFamily="{ThemeResource SymbolThemeFontFamily}" Foreground="{ThemeResource CalendarDatePickerCalendarGlyphForeground}" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" />
             <contract7Present:ContentPresenter x:Name="DescriptionPresenter" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Content="{TemplateBinding Description}" x:Load="False" Foreground="{ThemeResource SystemControlDescriptionTextForegroundBrush}" AutomationProperties.AccessibilityView="Raw" />
@@ -12272,9 +12189,7 @@
     <Setter Property="PlaceholderForeground" Value="{ThemeResource ComboBoxPlaceHolderForeground}" />
     <Setter Property="Foreground" Value="{ThemeResource ComboBoxForeground}" />
     <Setter Property="Background" Value="{ThemeResource ComboBoxBackground}" />
-    <!-- Uno specific (LinearGradientBrush borders): Use solid border brush -->
-    <win:Setter Property="BorderBrush" Value="{ThemeResource ComboBoxBorderBrush}" />
-    <not_win:Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource ComboBoxBorderBrush}" />
     <Setter Property="BorderThickness" Value="{ThemeResource ComboBoxBorderThemeThickness}" />
     <Setter Property="TabNavigation" Value="Once" />
     <contract7Present:Setter Property="TextBoxStyle" Value="{StaticResource ComboBoxTextBoxStyle}" />
@@ -12326,10 +12241,9 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Background" Storyboard.TargetProperty="Background">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ComboBoxBackgroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Do not change border brush -->
-                    <win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="Background" Storyboard.TargetProperty="BorderBrush">
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Background" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ComboBoxBorderBrushPointerOver}" />
-                    </win:ObjectAnimationUsingKeyFrames>
+                    </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ComboBoxForegroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -12351,10 +12265,6 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Background" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ComboBoxBorderBrushPressed}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
-                    <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
-                    </not_win:ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ComboBoxForegroundPressed}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -12376,10 +12286,6 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Background" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ComboBoxBorderBrushDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
-                    <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
-                    </not_win:ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HeaderContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ComboBoxHeaderForegroundDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -12502,7 +12408,7 @@
             <Border x:Name="HighlightBackground" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="-4" Background="{ThemeResource ComboBoxBackgroundFocused}" BorderBrush="{ThemeResource ComboBoxBackgroundBorderBrushFocused}" BorderThickness="{StaticResource ComboBoxBackgroundBorderThicknessFocused}" contract7Present:CornerRadius="{StaticResource ComboBoxHiglightBorderCornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" Opacity="0" />
             <Border x:Name="Background" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" contract7Present:Translation="0,0,1" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" Control.IsTemplateFocusTarget="True" MinWidth="{ThemeResource ComboBoxThemeMinWidth}" />
             <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
-            <not_win:Border x:Name="BottomBorderElement" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" BorderThickness="0,0,0,1" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" BorderBrush="{ThemeResource UnoElevationBorderOverlayBrush}" />
+            <ufc:FauxGradientBottomBorder Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" RequestedBorderBrush="{Binding ElementName=Background, Path=BorderBrush}" RequestedBorderThickness="{Binding ElementName=Background, Path=BorderThickness}" RequestedCornerRadius="{Binding ElementName=Background, Path=CornerRadius}" />
             <Rectangle x:Name="Pill" Style="{StaticResource ComboBoxItemPill}" Margin="1,0,0,0" Grid.Row="1" Grid.Column="0" Opacity="0">
               <Rectangle.RenderTransform>
                 <CompositeTransform x:Name="PillTransform" ScaleY="1" />
@@ -12716,8 +12622,6 @@
                     <Setter Target="BorderElement.Background" Value="{ThemeResource TextControlBackgroundDisabled}" />
                     <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource TextControlBorderBrushDisabled}" />
                     <Setter Target="ContentElement.Foreground" Value="{ThemeResource TextControlForegroundDisabled}" />
-                    <!-- Uno specific - simulates bottom border gradient -->
-                    <Setter Target="BottomBorderElement.Visibility" Value="Collapsed" />
                     <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue -->
                     <!-- <Setter Target="PlaceholderTextContentPresenter.Foreground" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundDisabled}}" /> -->
                     <Setter Target="PlaceholderTextContentPresenter.Foreground" Value="{ThemeResource TextControlPlaceholderForegroundDisabled}" />
@@ -12726,8 +12630,7 @@
                 <VisualState x:Name="PointerOver">
                   <VisualState.Setters>
                     <Setter Target="BorderElement.Background" Value="{ThemeResource TextControlBackgroundPointerOver}" />
-                    <!-- Uno specific: avoid applying LinearGradientBrush -->
-                    <!-- <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource TextControlBorderBrushPointerOver}" /> -->
+                    <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource TextControlBorderBrushPointerOver}" />
                     <Setter Target="ContentElement.Foreground" Value="{ThemeResource TextControlForegroundPointerOver}" />
                     <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue -->
                     <!-- <Setter Target="PlaceholderTextContentPresenter.Foreground" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundPointerOver}}" /> -->
@@ -12737,10 +12640,7 @@
                 <VisualState x:Name="Focused">
                   <VisualState.Setters>
                     <Setter Target="BorderElement.Background" Value="{ThemeResource TextControlBackgroundFocused}" />
-                    <!-- Uno specific: Simulates focused bottom border -->
-                    <!-- <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource TextControlBorderBrushFocused}" /> -->
-                    <Setter Target="BottomBorderElement.BorderThickness" Value="{ThemeResource UnoTextControlBottomBorderFocusedThickness}" />
-                    <Setter Target="BottomBorderElement.BorderBrush" Value="{ThemeResource UnoTextControlBorderOverlayBrushFocused}" />
+                    <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource TextControlBorderBrushFocused}" />
                     <Setter Target="BorderElement.BorderThickness" Value="{ThemeResource TextControlBorderThemeThicknessFocused}" />
                     <Setter Target="ContentElement.Foreground" Value="{ThemeResource TextControlForegroundFocused}" />
                     <Setter Target="ContentElement.RequestedTheme" Value="Light" />
@@ -12752,8 +12652,8 @@
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
             <Border x:Name="BorderElement" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Control.IsTemplateFocusTarget="True" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" />
-            <!-- Uno specific: Simulates bottom border linear gradient shadow -->
-            <Border x:Name="BottomBorderElement" BorderThickness="0,0,0,1" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" BorderBrush="{ThemeResource UnoTextControlElevationBorderOverlayBrush}" />
+            <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
+            <ufc:FauxGradientBottomBorder RequestedBorderBrush="{Binding ElementName=BorderElement, Path=BorderBrush}" RequestedBorderThickness="{Binding ElementName=BorderElement, Path=BorderThickness}" RequestedCornerRadius="{Binding ElementName=BorderElement, Path=CornerRadius}" />
             <ScrollViewer x:Name="ContentElement" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}" IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}" IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}" IsTabStop="False" ZoomMode="Disabled" AutomationProperties.AccessibilityView="Raw" />
             <TextBlock x:Name="PlaceholderTextContentPresenter" Foreground="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForeground}}" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" Text="{TemplateBinding PlaceholderText}" TextAlignment="{TemplateBinding TextAlignment}" TextWrapping="{TemplateBinding TextWrapping}" IsHitTestVisible="False" />
           </Grid>
@@ -15030,9 +14930,7 @@
     <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
     <Setter Property="Background" Value="{ThemeResource DatePickerButtonBackground}" />
     <Setter Property="Foreground" Value="{ThemeResource DatePickerButtonForeground}" />
-    <!-- Uno specific (LinearGradientBrush borders): Use solid border brush -->
-    <win:Setter Property="BorderBrush" Value="{ThemeResource DatePickerButtonBorderBrush}" />
-    <not_win:Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource DatePickerButtonBorderBrush}" />
     <Setter Property="BorderThickness" Value="{ThemeResource DatePickerBorderThemeThickness}" />
     <Setter Property="HorizontalAlignment" Value="Left" />
     <Setter Property="VerticalAlignment" Value="Center" />
@@ -15061,10 +14959,9 @@
                                 <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                                   <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DatePickerButtonForegroundPointerOver}" />
                                 </ObjectAnimationUsingKeyFrames>
-                                <!-- Uno specific (LinearGradientBrush borders): Keep the same brush -->
-                                <win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                                   <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DatePickerButtonBorderBrushPointerOver}" />
-                                </win:ObjectAnimationUsingKeyFrames>
+                                </ObjectAnimationUsingKeyFrames>
                               </Storyboard>
                             </VisualState>
                             <VisualState x:Name="Pressed">
@@ -15078,10 +14975,6 @@
                                 <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                                   <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DatePickerButtonBorderBrushPressed}" />
                                 </ObjectAnimationUsingKeyFrames>
-                                <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
-                                <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
-                                  <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
-                                </not_win:ObjectAnimationUsingKeyFrames>
                               </Storyboard>
                             </VisualState>
                             <VisualState x:Name="Disabled">
@@ -15095,10 +14988,6 @@
                                 <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                                   <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DatePickerButtonBorderBrushDisabled}" />
                                 </ObjectAnimationUsingKeyFrames>
-                                <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
-                                <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
-                                  <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
-                                </not_win:ObjectAnimationUsingKeyFrames>
                               </Storyboard>
                             </VisualState>
                           </VisualStateGroup>
@@ -15109,7 +14998,7 @@
                         </VisualStateManager.VisualStateGroups>
                         <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Content="{TemplateBinding Content}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" AutomationProperties.AccessibilityView="Raw" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" />
                         <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
-                        <not_win:Border x:Name="BottomBorderElement" BorderThickness="0,0,0,1" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" BorderBrush="{ThemeResource UnoElevationBorderOverlayBrush}" />
+                        <ufc:FauxGradientBottomBorder Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" RequestedBorderBrush="{Binding ElementName=ContentPresenter, Path=BorderBrush}" RequestedBorderThickness="{Binding ElementName=ContentPresenter, Path=BorderThickness}" RequestedCornerRadius="{Binding ElementName=ContentPresenter, Path=CornerRadius}" />
                       </Grid>
                     </ControlTemplate>
                   </Setter.Value>
@@ -18811,8 +18700,7 @@
     <contract7Present:Setter Property="SelectionFlyout" Value="{StaticResource TextControlCommandBarSelectionFlyout}" />
     <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
     <Setter Property="BorderThickness" Value="{ThemeResource TextControlBorderThemeThickness}" />
-    <!-- Uno workaround: Workaround for LinearGradientBrush not supported on all targets-->
-    <Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource TextControlBorderBrush}" />
     <Setter Property="Padding" Value="{ThemeResource TextControlThemePadding}" />
     <Setter Property="Template">
       <Setter.Value>
@@ -19077,10 +18965,6 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific - simulates bottom border gradient -->
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
-                    </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForegroundDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -19093,10 +18977,9 @@
                 </VisualState>
                 <VisualState x:Name="PointerOver">
                   <Storyboard>
-                    <!-- Uno specific: avoid applying LinearGradientBrush -->
-                    <!--<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
-                                        </ObjectAnimationUsingKeyFrames>-->
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="Background">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBackgroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -19120,15 +19003,8 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="Background">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBackgroundFocused}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific: Simulates focused bottom border -->
-                    <!--<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushFocused}" />
-                                        </ObjectAnimationUsingKeyFrames>-->
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="BorderThickness">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource UnoTextControlBottomBorderFocusedThickness}" />
-                    </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="BorderBrush">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource UnoTextControlBorderOverlayBrushFocused}" />
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushFocused}" />
                     </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderThickness">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderThemeThicknessFocused}" />
@@ -19182,8 +19058,8 @@
             </Grid.ColumnDefinitions>
             <ContentPresenter x:Name="HeaderContentPresenter" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" FontWeight="Normal" Foreground="{ThemeResource TextControlHeaderForeground}" Margin="{ThemeResource TextBoxTopHeaderMargin}" TextWrapping="Wrap" VerticalAlignment="Top" Visibility="Collapsed" x:DeferLoadStrategy="Lazy" />
             <Border x:Name="BorderElement" Grid.Row="1" Grid.Column="0" Grid.RowSpan="1" Grid.ColumnSpan="3" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" Control.IsTemplateFocusTarget="True" MinWidth="{TemplateBinding MinWidth}" MinHeight="{TemplateBinding MinHeight}" />
-            <!-- Uno specific: Simulates bottom border linear gradient shadow -->
-            <Border x:Name="BottomBorderElement" Grid.Row="1" Grid.Column="0" Grid.RowSpan="1" Grid.ColumnSpan="3" BorderThickness="0,0,0,1" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" BorderBrush="{ThemeResource UnoTextControlElevationBorderOverlayBrush}" />
+            <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
+            <ufc:FauxGradientBottomBorder Grid.Row="1" Grid.Column="0" Grid.RowSpan="1" Grid.ColumnSpan="3" RequestedBorderBrush="{Binding ElementName=BorderElement, Path=BorderBrush}" RequestedBorderThickness="{Binding ElementName=BorderElement, Path=BorderThickness}" RequestedCornerRadius="{Binding ElementName=BorderElement, Path=CornerRadius}" />
             <ScrollViewer x:Name="ContentElement" Grid.Row="1" Grid.Column="0" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}" IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}" IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}" IsTabStop="False" AutomationProperties.AccessibilityView="Raw" ZoomMode="Disabled" />
             <TextBlock x:Name="PlaceholderTextContentPresenter" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" contract5NotPresent:Foreground="{ThemeResource TextControlPlaceholderForeground}" contract5Present:Foreground="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForeground}}" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" Text="{TemplateBinding PlaceholderText}" TextAlignment="{TemplateBinding TextAlignment}" TextWrapping="{TemplateBinding TextWrapping}" IsHitTestVisible="False" />
             <Button x:Name="DeleteButton" Grid.Row="1" Grid.Column="1" Style="{StaticResource DeleteButtonStyle}" BorderThickness="{TemplateBinding BorderThickness}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" Padding="{ThemeResource HelperButtonThemePadding}" IsTabStop="False" Visibility="Collapsed" AutomationProperties.AccessibilityView="Raw" FontSize="{TemplateBinding FontSize}" HorizontalAlignment="Right" MinWidth="40" VerticalAlignment="Stretch" />
@@ -20703,9 +20579,7 @@
     <Setter Property="Background" Value="{ThemeResource RepeatButtonBackground}" />
     <contract7Present:Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
     <Setter Property="Foreground" Value="{ThemeResource RepeatButtonForeground}" />
-    <!-- Uno specific (LinearGradientBrush borders): Use solid border brush -->
-    <win:Setter Property="BorderBrush" Value="{ThemeResource RepeatButtonBorderBrush}" />
-    <not_win:Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource RepeatButtonBorderBrush}" />
     <Setter Property="BorderThickness" Value="{ThemeResource ButtonBorderThemeThickness}" />
     <contract7NotPresent:Setter Property="Padding" Value="11,5,11,5" />
     <contract7Present:Setter Property="Padding" Value="{StaticResource ButtonPadding}" />
@@ -20729,7 +20603,7 @@
               </contract7Present:ContentPresenter.BackgroundTransition>
             </ContentPresenter>
             <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
-            <not_win:Border x:Name="BottomBorderElement" BorderThickness="0,0,0,1" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" BorderBrush="{ThemeResource UnoElevationBorderOverlayBrush}" />
+            <ufc:FauxGradientBottomBorder RequestedBorderBrush="{Binding ElementName=ContentPresenter, Path=BorderBrush}" RequestedBorderThickness="{Binding ElementName=ContentPresenter, Path=BorderThickness}" RequestedCornerRadius="{Binding ElementName=ContentPresenter, Path=CornerRadius}" />
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">
                 <VisualState x:Name="Normal" />
@@ -20738,10 +20612,9 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBackgroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Keep the same brush -->
-                    <win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBorderBrushPointerOver}" />
-                    </win:ObjectAnimationUsingKeyFrames>
+                    </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonForegroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -20755,10 +20628,6 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBorderBrushPressed}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
-                    <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
-                    </not_win:ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonForegroundPressed}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -20772,10 +20641,6 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBorderBrushDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
-                    <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
-                    </not_win:ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonForegroundDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -21356,9 +21221,7 @@
   <Style x:Key="DefaultSliderStyle" TargetType="Slider">
     <Setter Property="Background" Value="{ThemeResource SliderTrackFill}" />
     <Setter Property="BorderThickness" Value="{ThemeResource SliderBorderThemeThickness}" />
-    <!-- Uno specific (LinearGradientBrush borders): Use solid border brush -->
-    <win:Setter Property="BorderBrush" Value="{ThemeResource SliderThumbBorderBrush}" />
-    <not_win:Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource SliderThumbBorderBrush}" />
     <Setter Property="Foreground" Value="{ThemeResource SliderTrackValueFill}" />
     <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
     <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
@@ -21381,8 +21244,7 @@
                       <!-- Uno specific (LinearGradientBrush borders): Additional Grid as template root needed -->
                       <Grid>
                         <!-- TODO Uno: WinUI uses Margin -1, which causes clipping for us. -->
-                        <!-- Uno specific (LinearGradientBrush borders): Use solid color brush for border -->
-                        <Border Margin="0" Background="{ThemeResource SliderOuterThumbBackground}" BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{ThemeResource SliderThumbCornerRadius}">
+                        <Border Margin="0" Background="{ThemeResource SliderOuterThumbBackground}" BorderBrush="{ThemeResource SliderThumbBorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{ThemeResource SliderThumbCornerRadius}">
                           <Ellipse x:Name="SliderInnerThumb" RenderTransformOrigin="0.5, 0.5" Fill="{TemplateBinding Background}" Width="{ThemeResource SliderInnerThumbWidth}" Height="{ThemeResource SliderInnerThumbHeight}">
                             <Ellipse.RenderTransform>
                               <CompositeTransform />
@@ -22651,9 +22513,7 @@
     <Setter Property="Background" Value="{ThemeResource ToggleButtonBackground}" />
     <contract7Present:Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
     <Setter Property="Foreground" Value="{ThemeResource ToggleButtonForeground}" />
-    <!-- Uno specific (LinearGradientBrush borders): Use solid border brush -->
-    <win:Setter Property="BorderBrush" Value="{ThemeResource ToggleButtonBorderBrush}" />
-    <not_win:Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource ToggleButtonBorderBrush}" />
     <Setter Property="BorderThickness" Value="{ThemeResource ToggleButtonBorderThemeThickness}" />
     <Setter Property="Padding" Value="{StaticResource ButtonPadding}" />
     <Setter Property="HorizontalAlignment" Value="Left" />
@@ -22676,7 +22536,7 @@
               </contract7Present:ContentPresenter.BackgroundTransition>
             </ContentPresenter>
             <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
-            <not_win:Border x:Name="BottomBorderElement" BorderThickness="0,0,0,1" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" BorderBrush="{ThemeResource UnoElevationBorderOverlayBrush}" />
+            <ufc:FauxGradientBottomBorder RequestedBorderBrush="{Binding ElementName=ContentPresenter, Path=BorderBrush}" RequestedBorderThickness="{Binding ElementName=ContentPresenter, Path=BorderThickness}" RequestedCornerRadius="{Binding ElementName=ContentPresenter, Path=CornerRadius}" />
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">
                 <VisualState x:Name="Normal" />
@@ -22685,10 +22545,9 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBackgroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Keep the same brush -->
-                    <win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBorderBrushPointerOver}" />
-                    </win:ObjectAnimationUsingKeyFrames>
+                    </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonForegroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -22702,10 +22561,6 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBorderBrushPressed}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
-                    <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
-                    </not_win:ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonForegroundPressed}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -22719,10 +22574,6 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonForegroundDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
-                    <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
-                    </not_win:ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBorderBrushDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -22737,8 +22588,7 @@
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonForegroundChecked}" />
                     </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
-                      <!-- Uno specific (LinearGradientBrush borders): Use solid color brush-->
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ControlStrokeColorOnAccentDefaultBrush}" />
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBorderBrushChecked}" />
                     </ObjectAnimationUsingKeyFrames>
                     <!-- Uno specific (LinearGradientBrush borders): Adjust color for accent overlay -->
                     <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="BorderBrush">
@@ -22755,13 +22605,8 @@
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBackgroundCheckedPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
-                      <!-- Uno specific (LinearGradientBrush borders): Use solid color brush-->
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ControlStrokeColorOnAccentDefaultBrush}" />
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBorderBrushCheckedPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Adjust color for accent overlay -->
-                    <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="BorderBrush">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ControlStrokeColorOnAccentSecondaryBrush}" />
-                    </not_win:ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonForegroundCheckedPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -22784,10 +22629,6 @@
                     <contract7Present:ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BackgroundSizing">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonCheckedStateBackgroundSizing}" />
                     </contract7Present:ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
-                    <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
-                    </not_win:ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                 </VisualState>
                 <VisualState x:Name="CheckedDisabled">
@@ -22801,10 +22642,6 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBorderBrushCheckedDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
-                    <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
-                    </not_win:ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                 </VisualState>
                 <VisualState x:Name="Indeterminate">
@@ -22816,8 +22653,7 @@
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonForegroundIndeterminate}" />
                     </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
-                      <!-- Uno specific (LinearGradientBrush borders): Use solid color brush-->
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBorderBrushIndeterminate}" />
                     </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                 </VisualState>
@@ -22827,8 +22663,7 @@
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBackgroundIndeterminatePointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
-                      <!-- Uno specific (LinearGradientBrush borders): Use solid color brush-->
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBorderBrushIndeterminatePointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonForegroundIndeterminatePointerOver}" />
@@ -22846,10 +22681,6 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonForegroundIndeterminatePressed}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
-                    <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
-                    </not_win:ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                 </VisualState>
                 <VisualState x:Name="IndeterminateDisabled">
@@ -22863,10 +22694,6 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonBorderBrushIndeterminateDisabled}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
-                    <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
-                    </not_win:ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                 </VisualState>
               </VisualStateGroup>
