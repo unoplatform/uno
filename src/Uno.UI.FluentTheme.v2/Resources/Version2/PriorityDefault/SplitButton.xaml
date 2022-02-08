@@ -267,7 +267,7 @@
                             BorderThickness="{TemplateBinding BorderThickness}"
                             contract7Present:CornerRadius="{TemplateBinding CornerRadius}"/>
                         <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
-                        <ufc:FauxGradientBottomBorder
+                        <ufc:FauxGradientBorderPresenter
                             Grid.ColumnSpan="3"
                             RequestedBorderBrush="{Binding ElementName=Border, Path=BorderBrush}"
                             RequestedBorderThickness="{Binding ElementName=Border, Path=BorderThickness}"

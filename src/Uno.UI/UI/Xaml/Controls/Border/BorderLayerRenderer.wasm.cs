@@ -5,6 +5,7 @@ using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Color = Windows.UI.Color;
 
 using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 using Uno;

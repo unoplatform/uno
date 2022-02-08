@@ -537,7 +537,7 @@
                             MinHeight="{TemplateBinding MinHeight}" />
 
                         <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
-                        <ufc:FauxGradientBottomBorder
+                        <ufc:FauxGradientBorderPresenter
                             Grid.Row="1"
                             Grid.Column="0"
                             Grid.RowSpan="1"

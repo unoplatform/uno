@@ -261,7 +261,7 @@
                             Control.IsTemplateFocusTarget="True"
                             MinHeight="32"/>
                         <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
-                        <ufc:FauxGradientBottomBorder
+                        <ufc:FauxGradientBorderPresenter
                             Grid.Row="1"
                             Grid.Column="1"
                             Grid.ColumnSpan="2"
