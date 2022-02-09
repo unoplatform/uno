@@ -1108,7 +1108,12 @@ namespace Microsoft.UI.Xaml.Controls
 			// What this flag tracks is complicated because of the NavigationView sub items and the m_capturedPointers that are being tracked..
 			// We do this check because PointerCaptureLost can sometimes take the place of PointerReleased events.
 			// In these cases we need to test if the pointer is over the item to maintain the proper state.
-			if (IsOutOfControlBounds(args.GetCurrentPoint(this).Position))
+			if (IsOutOfControlBounds(args.GetCurrentPoint(this).Position)
+#if HAS_UNO
+				// UNO#7150 workaround: pointer can be still within when the events are raised
+				|| (args.Pointer.PointerDeviceType == PointerDeviceType.Touch && !args.Pointer.IsInContact)
+#endif
+				)
 			{
 				m_isPointerOver = false;
 			}
