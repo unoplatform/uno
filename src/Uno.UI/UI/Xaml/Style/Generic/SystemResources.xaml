@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:not_macos="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 					xmlns:local="using:GenericApp.Views.Controls"
@@ -217,7 +218,8 @@
 			<Thickness x:Key="SplitViewRightBorderThemeThickness">1,0,0,0</Thickness>
 			<Thickness x:Key="TextControlBorderThemeThickness">2</Thickness>
 			<Thickness x:Key="TextControlMarginThemeThickness">0,9.5,0,9.5</Thickness>
-			<Thickness x:Key="TextControlThemePadding">10,3,6,5</Thickness>
+			<not_macos:Thickness x:Key="TextControlThemePadding">10,3,6,5</not_macos:Thickness>
+			<macos:Thickness x:Key="TextControlThemePadding">10,8,6,5</macos:Thickness>
 			<Thickness x:Key="HelperButtonThemePadding">0,0,-2,0</Thickness>
 			<Thickness x:Key="TextControlPlaceholderThemePadding">12,5,10,5</Thickness>
 			<Thickness x:Key="TimePickerHeaderThemeMargin">0,0,0,8</Thickness>
@@ -1520,7 +1522,8 @@
 			<Thickness x:Key="SplitViewRightBorderThemeThickness">1,0,0,0</Thickness>
 			<Thickness x:Key="TextControlBorderThemeThickness">2</Thickness>
 			<Thickness x:Key="TextControlMarginThemeThickness">0,9.5,0,9.5</Thickness>
-			<Thickness x:Key="TextControlThemePadding">10,3,6,5</Thickness>
+			<not_macos:Thickness x:Key="TextControlThemePadding">10,3,6,5</not_macos:Thickness>
+			<macos:Thickness x:Key="TextControlThemePadding">10,8,6,5</macos:Thickness>
 			<Thickness x:Key="HelperButtonThemePadding">0,0,-2,0</Thickness>
 			<Thickness x:Key="TextControlPlaceholderThemePadding">12,5,10,5</Thickness>
 			<Thickness x:Key="TimePickerHeaderThemeMargin">0,0,0,8</Thickness>
@@ -2811,7 +2814,8 @@
 			<Thickness x:Key="SplitViewRightBorderThemeThickness">1,0,0,0</Thickness>
 			<Thickness x:Key="TextControlBorderThemeThickness">2</Thickness>
 			<Thickness x:Key="TextControlMarginThemeThickness">0,9.5,0,9.5</Thickness>
-			<Thickness x:Key="TextControlThemePadding">10,3,6,5</Thickness>
+			<not_macos:Thickness x:Key="TextControlThemePadding">10,3,6,5</not_macos:Thickness>
+			<macos:Thickness x:Key="TextControlThemePadding">10,8,6,5</macos:Thickness>
 			<Thickness x:Key="HelperButtonThemePadding">0,0,-2,0</Thickness>
 			<Thickness x:Key="TextControlPlaceholderThemePadding">12,5,10,5</Thickness>
 			<Thickness x:Key="TimePickerHeaderThemeMargin">0,0,0,8</Thickness>
