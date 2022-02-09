@@ -1821,6 +1821,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\SwipeControlTests\SwipeControl_ListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\SwipeControlTests\SwipeControl_ScrollViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\SymbolIconTests\SymbolIcon_Generic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5740,6 +5748,12 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\SwipeControlTests\SwipeControl_Automated.xaml.cs">
       <DependentUpon>SwipeControl_Automated.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\SwipeControlTests\SwipeControl_ListView.xaml.cs">
+      <DependentUpon>SwipeControl_ListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\SwipeControlTests\SwipeControl_ScrollViewer.xaml.cs">
+      <DependentUpon>SwipeControl_ScrollViewer.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\SwipeControlTests\TestCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\SymbolIconTests\SymbolIcon_Generic.xaml.cs">

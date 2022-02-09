@@ -109,8 +109,8 @@ namespace SamplesApp.UITests
 			return AppInitializer.GetLocalPlatform() switch
 			{
 				Platform.Android => rect,
-				Platform.iOS => rect.ApplyScale(app.GetDisplayScreenScaling()),
-				Platform.Browser => rect.ApplyScale(app.GetDisplayScreenScaling()),
+				Platform.iOS => rect.LogicalToPhysicalPixels(app),
+				Platform.Browser => rect,
 				_ => throw new InvalidOperationException("Unknown current platform.")
 			};
 		}
@@ -119,12 +119,13 @@ namespace SamplesApp.UITests
 		{
 			return AppInitializer.GetLocalPlatform() switch
 			{
-				Platform.Android => rect.UnapplyScale(app.GetDisplayScreenScaling()),
+				Platform.Android => rect.PhysicalToLogicalPixels(app),
 				Platform.iOS => rect,
-				Platform.Browser => rect.UnapplyScale(app.GetDisplayScreenScaling()),
+				Platform.Browser => rect,
 				_ => throw new InvalidOperationException("Unknown current platform.")
 			};
 		}
+
 		public static void FastTap(this IApp app, string elementName)
 		{
 			var tapPosition = app.GetRect(elementName);
