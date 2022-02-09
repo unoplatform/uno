@@ -3,7 +3,6 @@
 document.addEventListener(
     "DOMContentLoaded",
     function () {
-        resizeObserver.observe(document.getElementsByClassName("body-content")[0]);
 
         if (iframed) {
             removeNavbar();
