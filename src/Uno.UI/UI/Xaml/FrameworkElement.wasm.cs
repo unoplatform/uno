@@ -213,7 +213,7 @@ namespace Microsoft.UI.Xaml
 			=> (_borderLayerRenderer ??= new BorderLayerRenderer()).SetCornerRadius(this, cornerRadius);
 
 		protected void SetBorder(Thickness thickness, Brush brush, CornerRadius cornerRadius)
-			=> (_borderLayerRenderer ??= new BorderLayerRenderer()).SetBorder(this, thickness, brush, cornerRadius);
+			=> (_borderLayerRenderer ??= new BorderLayerRenderer()).SetBorder(this, brush, thickness, cornerRadius);
 
 		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
 		{
