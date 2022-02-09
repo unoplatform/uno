@@ -71,6 +71,7 @@ jobs:
     UITEST_AUTOMATED_GROUP: 1
     UITEST_TEST_TIMEOUT: '270000'
     UITEST_ALLOW_RERUN: 'true'
+    IGNORE_RERUN_FILE: 'false'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
 
@@ -85,6 +86,7 @@ jobs:
     UITEST_AUTOMATED_GROUP: 2
     UITEST_TEST_TIMEOUT: '270000'
     UITEST_ALLOW_RERUN: 'true'
+    IGNORE_RERUN_FILE: 'false'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
 
@@ -99,6 +101,7 @@ jobs:
     UITEST_AUTOMATED_GROUP: 3
     UITEST_TEST_TIMEOUT: '270000'
     UITEST_ALLOW_RERUN: 'true'
+    IGNORE_RERUN_FILE: 'false'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
 
@@ -113,6 +116,7 @@ jobs:
     UITEST_TEST_TIMEOUT: '3600000'
     UITEST_AUTOMATED_GROUP: 4
     UITEST_ALLOW_RERUN: 'false'
+    IGNORE_RERUN_FILE: 'false'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
 
@@ -140,6 +144,7 @@ jobs:
     UITEST_SNAPSHOTS_GROUP: 00
     UITEST_TEST_TIMEOUT: '270000'
     UITEST_ALLOW_RERUN: 'true'
+    IGNORE_RERUN_FILE: 'false'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
 
@@ -154,6 +159,7 @@ jobs:
     UITEST_SNAPSHOTS_GROUP: 01
     UITEST_TEST_TIMEOUT: '270000'
     UITEST_ALLOW_RERUN: 'true'
+    IGNORE_RERUN_FILE: 'false'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
 
@@ -168,6 +174,7 @@ jobs:
     UITEST_SNAPSHOTS_GROUP: 02
     UITEST_TEST_TIMEOUT: '270000'
     UITEST_ALLOW_RERUN: 'true'
+    IGNORE_RERUN_FILE: 'false'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
 
@@ -182,5 +189,6 @@ jobs:
     UITEST_SNAPSHOTS_GROUP: 03
     UITEST_TEST_TIMEOUT: '270000'
     UITEST_ALLOW_RERUN: 'true'
+    IGNORE_RERUN_FILE: 'false'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
