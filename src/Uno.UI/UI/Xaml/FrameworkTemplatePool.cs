@@ -252,9 +252,16 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Manually return an unused template root to the pool.
 		/// </summary>
-		internal void ReleaseTemplateRoot(View root, FrameworkTemplate template) => OnParentChanged(root, template, args: null);
+		/// <remarks>
+		/// We disable cleaning the elements inside the template root because it may cause problems. It's safe to assume the template root
+		/// is still 'clean' because it was never made available to application code.
+		/// </remarks>
+		internal void ReleaseTemplateRoot(View root, FrameworkTemplate template) => TryReuseTemplateRoot(root, template, null, shouldCleanUpTemplateRoot: false);
 
 		private void OnParentChanged(object instance, object? key, DependencyObjectParentChangedEventArgs? args)
+			=> TryReuseTemplateRoot(instance, key, args?.NewParent, shouldCleanUpTemplateRoot: true);
+
+		private void TryReuseTemplateRoot(object instance, object? key, object? newParent, bool shouldCleanUpTemplateRoot)
 		{
 			if (!IsPoolingEnabled)
 			{
@@ -273,7 +280,7 @@ namespace Windows.UI.Xaml
 
 			var list = GetTemplatePool(key as FrameworkTemplate ?? throw new InvalidOperationException($"Received {key} but expecting {typeof(FrameworkElement)}"));
 
-			if (args?.NewParent == null)
+			if (newParent == null)
 			{
 				if (_trace.IsEnabled)
 				{
@@ -286,7 +293,10 @@ namespace Windows.UI.Xaml
 					provider.Store.Parent = null;
 					provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 				}
-				PropagateOnTemplateReused(instance);
+				if (shouldCleanUpTemplateRoot)
+				{
+					PropagateOnTemplateReused(instance); 
+				}
 
 				var item = instance as View;
 

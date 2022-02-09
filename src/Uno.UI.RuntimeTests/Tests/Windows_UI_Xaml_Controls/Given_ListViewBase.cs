@@ -55,6 +55,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private ItemsPanelTemplate NoCacheItemsStackPanel => _testsResources["NoCacheItemsStackPanel"] as ItemsPanelTemplate;
 
+		private ItemsPanelTemplate NonVirtualizingItemsPanel => _testsResources["NonVirtualizingItemsPanel"] as ItemsPanelTemplate;
+
 		private DataTemplate SelectableItemTemplateA => _testsResources["SelectableItemTemplateA"] as DataTemplate;
 		private DataTemplate SelectableItemTemplateB => _testsResources["SelectableItemTemplateB"] as DataTemplate;
 		private DataTemplate SelectableItemTemplateC => _testsResources["SelectableItemTemplateC"] as DataTemplate;
@@ -67,6 +69,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private DataTemplate SelectableBoundTemplateB => _testsResources["SelectableBoundTemplateB"] as DataTemplate;
 
 		private DataTemplate BoundHeightItemTemplate => _testsResources["BoundHeightItemTemplate"] as DataTemplate;
+
+		private DataTemplate ReuseCounterItemTemplate => _testsResources["ReuseCounterItemTemplate"] as DataTemplate;
 
 		[TestInitialize]
 		public void Init()
@@ -1739,6 +1743,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			host.Height = 300;
 
 			await WindowHelper.WaitForNonNull(() => list.ContainerFromIndex(8));
+		}
+
+		[TestMethod]
+		public async Task When_Pool_Aware_View_In_Item_Template()
+		{
+			using (FeatureConfigurationHelper.UseTemplatePooling())
+			{
+				var initialReuseCount = ReuseCountGrid.GlobalReuseCount;
+				var SUT = new ListView
+				{
+					ItemsSource = Enumerable.Range(1, 4).ToArray(),
+					ItemsPanel = NonVirtualizingItemsPanel,
+					ItemTemplate = ReuseCounterItemTemplate
+				};
+
+				WindowHelper.WindowContent = SUT;
+
+				await WindowHelper.WaitForLoaded(SUT);
+
+				Assert.AreEqual(initialReuseCount, ReuseCountGrid.GlobalReuseCount);
+			}
 		}
 
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
