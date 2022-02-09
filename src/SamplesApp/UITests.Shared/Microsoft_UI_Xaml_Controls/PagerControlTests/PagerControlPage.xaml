@@ -11,7 +11,7 @@
 	xmlns:Windows10FallCreatorsUpdate="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<not_win:Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="12">
+	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="12">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto"/>
 			<ColumnDefinition Width="*"/>
@@ -49,6 +49,19 @@
 					</Style>
 				</muxc:PagerControl.Resources>
 			</muxc:PagerControl>
+			<TextBlock Text="Button state set in XAML test PagerControl"/>
+			<muxc:PagerControl x:Name="TemplateButtonVisibilitySetPager"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Left"
+                NumberOfPages="10"
+                SelectedPageIndex="2"
+                FirstButtonVisibility="Hidden"
+                PreviousButtonVisibility="Hidden"
+                NextButtonVisibility="Hidden"
+                LastButtonVisibility="Hidden"
+                DisplayMode="ButtonPanel"
+                ButtonPanelAlwaysShowFirstLastPageIndex="True"/>
+
 		</StackPanel>
 
 		<ScrollViewer Grid.Column="1" HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Visible">
@@ -117,7 +130,10 @@
 						<Button x:Name="NumberOfPagesSetterButton" Content="Set NumberOfPages to 100" Click="NumberOfPagesSetterButtonClicked"/>
 						<Button x:Name="NumberOfPagesInfinityButton" AutomationProperties.Name="NumberOfPagesInfinityButton" Content="Set NumberOfPages to -1 (aka Infinity mode)" Click="NumberOfPagesInfinityButtonClicked"/>
 						<Button x:Name="IncreaseNumberOfPagesButton" Content="Increase NumberOfPages by 1" Click="IncreaseNumberOfPagesButtonClicked"/>
-
+						<StackPanel Orientation="Horizontal">
+							<Button x:Name="CheckIfButtonsHiddenButton" Content="Check if buttons hidden on last pager" Click="CheckIfButtonsHiddenButtonClicked" AutomationProperties.Name="CheckIfButtonsHiddenButton"/>
+							<TextBlock x:Name="CheckIfButtonsHiddenLabel" AutomationProperties.Name="CheckIfButtonsHiddenLabel"/>
+						</StackPanel>
 					</StackPanel>
 				</Grid>
 				<Grid Grid.Column="1" Margin="5">
@@ -223,7 +239,8 @@
 						<TextBlock Text="{x:Bind TestPager.DisplayMode, Mode=OneWay}" AutomationProperties.Name="DisplayModeTextBlock"/>
 						<StackPanel Orientation="Horizontal">
 							<TextBlock Text="Number Of Pages: " />
-							<TextBlock AutomationProperties.Name="NumberOfPagesTextBlock"  Text="{x:Bind TestPager.NumberOfPages, Mode=OneWay}"/>
+							<!-- Uno specific: Use x:Name for UI tests to get the element. -->
+							<TextBlock x:Name="NumberOfPagesTextBlock" AutomationProperties.Name="NumberOfPagesTextBlock"  Text="{x:Bind TestPager.NumberOfPages, Mode=OneWay}"/>
 						</StackPanel>
 						<StackPanel Orientation="Horizontal">
 							<TextBlock Text="Previous Page: "/>
@@ -243,5 +260,5 @@
 				</Grid>
 			</Grid>
 		</ScrollViewer>
-	</not_win:Grid>
+	</Grid>
 </Page>
