@@ -268,7 +268,7 @@ namespace Uno.Reflection
 				}
 				else
 				{
-#if false // !WINDOWS_PHONE && !NETFX_CORE && !HAS_CRIPPLEDREFLECTION
+#if !HAS_CRIPPLEDREFLECTION
 					return new FieldDescriptor(fieldInfo);
 #else
                     return null;
