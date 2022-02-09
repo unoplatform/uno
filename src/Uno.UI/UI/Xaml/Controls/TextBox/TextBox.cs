@@ -771,7 +771,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnPointerPressed(args);
 
-			if (ShouldFocusOnPointerPressed(args) && CapturePointer(args.Pointer))
+			if (ShouldFocusOnPointerPressed(args)
+				// UWP Captures pointer is not Touch
+				&& CapturePointer(args.Pointer))
 			{
 				Focus(FocusState.Pointer);
 			}

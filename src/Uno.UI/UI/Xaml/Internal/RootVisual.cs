@@ -42,7 +42,7 @@ namespace Uno.UI.Xaml.Core
 			SetAttribute("tabindex", "0");
 #endif
 
-#if __ANDROID__ || __WASM__
+#if __ANDROID__ || __WASM__ || __IOS__
 			AddHandler(
 				PointerReleasedEvent,
 				new PointerEventHandler((snd, args) => ProcessPointerUp(args)),
@@ -129,40 +129,35 @@ namespace Uno.UI.Xaml.Core
 		// but Uno does not have it on all targets yet.
 		private void RootVisual_PointerReleased(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
 		{
-			Console.Error.WriteLine($"Received released bubbling from {e.OriginalSource.GetDebugName()}");
-
 			if (e.GetCurrentPoint(null).Properties.PointerUpdateKind is PointerUpdateKind.LeftButtonReleased
-				&& !PointerCapture.TryGet(e.Pointer, out _))
+				&& !PointerCapture.TryGet(e.Pointer, out _)
+				&& FocusManager.GetFocusedElement() is UIElement uiElement)
 			{
-				var element = FocusManager.GetFocusedElement();
-
-				Console.Error.WriteLine($"Removing focus from {element.GetDebugName()}");
-
-				if (element is UIElement uiElement)
-				{
-					uiElement.Unfocus();
-					e.Handled = true;
-				}
+				uiElement.Unfocus();
+				e.Handled = true;
 			}
 		}
 #endif
 
-#if __ANDROID__ || __WASM__
-		internal static void ProcessPointerUp(PointerRoutedEventArgs args)
+#if __ANDROID__ || __WASM__ || __IOS__
+		internal static void ProcessPointerUp(PointerRoutedEventArgs args, bool isAfterHandledUp = false)
 		{
-#if __ANDROID__ // Not needed on WASM as we do have native support of the exit event
-			// On Android we use the RootVisual to raise the UWP only exit event (in managed only)
-			if (!args.Handled
+#if __ANDROID__ || __IOS__ // Not needed on WASM as we do have native support of the exit event
+			// On Android and iOS we use the RootVisual to raise the UWP only exit event (in managed only)
+
+			// We don't want handled events raised on RootVisual,
+			// instead we wait for the element that handled it to directly forward it to us,
+			// but only ** AFTER ** the up has been fully processed (with isAfterHandledUp = true).
+			// This is required to be sure that element process gestures and manipulations before we raise the exit
+			// (e.g. the 'tapped' event on a Button would be fired after the 'exit').
+			var isUpFullyDispatched = isAfterHandledUp || !args.Handled;
+
+			if (isUpFullyDispatched
 				&& args.Pointer.PointerDeviceType is PointerDeviceType.Touch
 				&& args.OriginalSource is UIElement src)
 			{
-				// We don't want handled events, they are forwarded directly by the element that has handled it,
-				// but only ** AFTER ** the up has been fully processed.
-				// This is required to be sure that element process gestures and manipulations before we raise the exit
-				// (e.g. the 'tapped' event on a Button would be fired after the 'exit').
-
-				// It's acceptable to use only the OriginalSource on Android:
-				// since the platform has "implicit capture" and captures are propagated to the OS,
+				// It's acceptable to use only the OriginalSource on Android and iOS:
+				// since those platforms have "implicit capture" and captures are propagated to the OS,
 				// the OriginalSource will be the element that has capture (if any).
 
 				src.RedispatchPointerExited(args.Reset(canBubbleNatively: false));
@@ -183,5 +178,5 @@ namespace Uno.UI.Xaml.Core
 			}
 		}
 #endif
-		}
+	}
 }
