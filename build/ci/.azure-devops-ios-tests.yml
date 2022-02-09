@@ -132,8 +132,8 @@ jobs:
 - template: .azure-devops-ios-tests-run.yml
   parameters:
     nugetPackages: $(NUGET_PACKAGES)
-    JobName: 'iOS_Snaphot_Tests_Group_01'
-    JobDisplayName: 'iOS Snaphot Tests Group 01'
+    JobName: 'iOS_Snapshot_Tests_Group_01'
+    JobDisplayName: 'iOS Snapshot Tests Group 01'
     JobTimeoutInMinutes: 45
     vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: true
@@ -146,8 +146,8 @@ jobs:
 - template: .azure-devops-ios-tests-run.yml
   parameters:
     nugetPackages: $(NUGET_PACKAGES)
-    JobName: 'iOS_Snaphot_Tests_Group_02'
-    JobDisplayName: 'iOS Snaphot Tests Group 02'
+    JobName: 'iOS_Snapshot_Tests_Group_02'
+    JobDisplayName: 'iOS Snapshot Tests Group 02'
     JobTimeoutInMinutes: 70
     vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: true
@@ -160,8 +160,8 @@ jobs:
 - template: .azure-devops-ios-tests-run.yml
   parameters:
     nugetPackages: $(NUGET_PACKAGES)
-    JobName: 'iOS_Snaphot_Tests_Group_03'
-    JobDisplayName: 'iOS Snaphot Tests Group 03'
+    JobName: 'iOS_Snapshot_Tests_Group_03'
+    JobDisplayName: 'iOS Snapshot Tests Group 03'
     JobTimeoutInMinutes: 45
     vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: true
@@ -174,8 +174,8 @@ jobs:
 - template: .azure-devops-ios-tests-run.yml
   parameters:
     nugetPackages: $(NUGET_PACKAGES)
-    JobName: 'iOS_Snaphot_Tests_Group_04'
-    JobDisplayName: 'iOS Snaphot Tests Group 04'
+    JobName: 'iOS_Snapshot_Tests_Group_04'
+    JobDisplayName: 'iOS Snapshot Tests Group 04'
     JobTimeoutInMinutes: 45
     vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: true
