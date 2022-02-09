@@ -62,39 +62,30 @@ namespace Windows.UI.Xaml.Controls
 
 		internal ScrollViewer ScrollViewer { get; private set; }
 
-		private readonly Dictionary<DependencyObject, object> _containersForIndexRepair = new Dictionary<DependencyObject, object>();
-
 		/// <summary>
 		/// Stores materialized containers starting a given index, so that their
 		/// ItemsControl.IndexForContainerProperty can be updated after the collection changes.		
 		/// </summary>
 		/// <param name="startingIndex">The minimum index of containers we care about.</param>
 		/// <param name="indexChange">How does the index change.</param>
-		private void SaveContainersForIndexRepair(int startingIndex, int indexChange)
+		private void SaveContainersAndRepairIndex(int startingIndex, int indexChange)
 		{
-			_containersForIndexRepair.Clear();
+			Dictionary<DependencyObject, object> _containers = new Dictionary<DependencyObject, object>();
+
 			foreach (var container in MaterializedContainers)
 			{
 				var currentIndex = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);
 				if (currentIndex >= startingIndex)
 				{
 					// we store the index, that should be set after the collection change
-					_containersForIndexRepair.Add(container, currentIndex + indexChange);
+					_containers.Add(container, currentIndex + indexChange);
 				}
 			}
-		}
-
-		/// <summary>
-		/// Sets the indices of stored materialized containers to the appropriate index after
-		/// collection change.
-		/// </summary>
-		private void RepairIndices()
-		{
-			foreach (var containerPair in _containersForIndexRepair)
+			//Modify index only for required containers
+			foreach (var containerPair in _containers)
 			{
 				containerPair.Key.SetValue(ItemsControl.IndexForItemContainerProperty, containerPair.Value);
 			}
-			_containersForIndexRepair.Clear();
 		}
 
 		/// <summary>
@@ -969,8 +960,7 @@ namespace Windows.UI.Xaml.Controls
 
 					LocalCleanupContainer(container);
 					RequestLayoutPartial();
-					SaveContainersForIndexRepair(args.OldStartingIndex, -args.OldItems.Count);
-					RepairIndices();
+					SaveContainersAndRepairIndex(args.OldStartingIndex, -args.OldItems.Count);
 					return;
 				}
 				else if (args.Action == NotifyCollectionChangedAction.Add
@@ -978,8 +968,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					ItemsPanelRoot.Children.Insert(args.NewStartingIndex, (UIElement)LocalCreateContainer(args.NewStartingIndex));
 					RequestLayoutPartial();
-					SaveContainersForIndexRepair(args.NewStartingIndex, args.NewItems.Count);
-					RepairIndices();
+					SaveContainersAndRepairIndex(args.NewStartingIndex, args.NewItems.Count);
 					return;
 				}
 				else if (args.Action == NotifyCollectionChangedAction.Replace
