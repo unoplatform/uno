@@ -21,7 +21,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[SampleControlInfo("Image", "BitmapImageCamProperties")]
+	[Sample]
 	public sealed partial class BitmapImage_Cam_Properties : UserControl
     {
         public BitmapImage_Cam_Properties()
