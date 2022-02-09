@@ -43,7 +43,7 @@ To easily create a multi-platform application:
 * To debug the iOS head, select the `Debug|iPhoneSimulator` configuration
 * To debug the Android head, select the `Debug|Any CPU` configuration
 * To debug the UWP head, select the `Debug|x86` configuration
-* To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctr+F5** or choose `Start without debugging` from the Debug menu. To enable full debugging, see these [debugging instructions](debugging-wasm.md).
+* To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctrl+F5** or choose `Start without debugging` from the Debug menu. To enable full debugging, see these [debugging instructions](debugging-wasm.md).
 
 ### Make sure XAML Intellisense is enabled
 
