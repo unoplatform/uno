@@ -41,7 +41,8 @@ Make sure that the version number is the same as the `Uno.UI` package.
 - The file named `obj\Debug\XXX\g\RemoteControlGenerator\RemoteControl.g.cs` (Xamarin iOS/Android) or the `RemoteControlGenerator\RemoteControl.g.cs` node (Wasm, `net6` or Skia) in the Analyzers node in your project contains the connection information, verify that the information makes sense, particularly the port number.
 - WebAssembly: `Hot Reload fails to start with Mixed Content: The page at XXX was loaded over HTTPS, but attempted to connect to the insecure WebSocket endpoint`. This issue is caused by Visual Studio 2022 enforcing https connections for locally served apps. You can work around this by either:
     - Removing the https endpoint in the `Properties/launchSettings.json` file
-    - Unchecking the `Use SSL` option in the project's Debug launch profiles
+    - Unchecking the `Use SSL` option in the project's Debug launch profiles (in VS 2022 17.0 or earlier)
+    - Removing the https App URL in the project's Debug launch profiles (in VS 2022 17.1 or later)
     - Selecting the project name instead of IISExpress in the toolbar debug icon drop down list
 
 ### Visual Studio 2019/2022
