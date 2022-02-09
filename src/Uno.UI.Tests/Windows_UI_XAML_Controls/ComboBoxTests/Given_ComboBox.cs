@@ -133,13 +133,13 @@ namespace Uno.UI.Tests.ComboBoxTests
 				comboBox.Items.Add(ni);
 			}
 
-			Assert.AreEqual<int>(2, comboBox.SelectedIndex);
+			Assert.AreEqual(2, comboBox.SelectedIndex);
 
 			comboBox.Items.RemoveAt(2);
-			Assert.AreEqual<int>(-1, comboBox.SelectedIndex);
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
 
 			comboBox.SelectedIndex = 4;
-			Assert.AreEqual<string>("Item #5", ((ComboBoxItem)comboBox.SelectedItem).Content.ToString());
+			Assert.AreEqual("Item #5", ((ComboBoxItem)comboBox.SelectedItem).Content.ToString());
 		}
 	}
 }
