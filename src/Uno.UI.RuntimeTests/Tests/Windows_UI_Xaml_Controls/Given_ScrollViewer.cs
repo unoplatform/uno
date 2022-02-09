@@ -218,5 +218,67 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(ContentWidth - PresenterActualWidth, SUT.ScrollableWidth);
 			;
 		}
+
+		[TestMethod]
+		public async Task When_ScrollViewer_Centered_With_Margin_Inside_Tall_Rectangle()
+		{
+			const int ContentHeight = 300;
+			const int ContentMargin = 10;
+			var content = new Border
+			{
+				Width = 300,
+				Height = ContentHeight,
+				Margin = new Thickness(ContentMargin),
+				Background = new SolidColorBrush(Colors.DeepPink)
+			};
+			var SUT = new ScrollViewer
+			{
+				Background = new SolidColorBrush(Colors.Pink),
+				Width = 50,
+				Height = double.NaN,
+				HorizontalAlignment = HorizontalAlignment.Center,
+				VerticalAlignment = VerticalAlignment.Center,
+				Content = content
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForLoaded(content);
+
+			const double ScrollViewerHeight = ContentHeight + 2 * ContentMargin;
+			await WindowHelper.WaitForEqual(ScrollViewerHeight, () => SUT.ActualHeight);
+			Assert.AreEqual(ContentHeight, SUT.ExtentHeight);
+		}
+
+		[TestMethod]
+		public async Task When_ScrollViewer_Centered_With_Margin_Inside_Wide_Rectangle()
+		{
+			const int ContentWidth = 300;
+			const int ContentMargin = 10;
+			var content = new Border
+			{
+				Height = 300,
+				Width = ContentWidth,
+				Margin = new Thickness(ContentMargin),
+				Background = new SolidColorBrush(Colors.DeepPink)
+			};
+			var SUT = new ScrollViewer
+			{
+				Background = new SolidColorBrush(Colors.Pink),
+				Height = 50,
+				Width = double.NaN,
+				HorizontalAlignment = HorizontalAlignment.Center,
+				VerticalAlignment = VerticalAlignment.Center,
+				Content = content
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForLoaded(content);
+
+			const double ScrollViewerWidth = ContentWidth + 2 * ContentMargin;
+			await WindowHelper.WaitForEqual(ScrollViewerWidth, () => SUT.ActualWidth);
+			Assert.AreEqual(ContentWidth, SUT.ExtentWidth);
+		}
 	}
 }
