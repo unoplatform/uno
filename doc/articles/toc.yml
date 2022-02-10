@@ -499,3 +499,11 @@
           href: uno-development/troubleshooting-source-generation.md
         - name: The XAML Trimming phase
           href: uno-development/Uno-UI-XAML-ResourceTrimming.md
+- name: Add-ons
+  items:
+    - name: Figma plugin
+      items:
+        - name: Uno Figma for designers
+          items:
+            - name: Building a simple login page
+              href: figma-plugin/designers/simple-login-page.md
