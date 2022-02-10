@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml
 			Window.ClearFlags(WindowManagerFlags.Fullscreen);
 		}
 
-		private void OnLayoutChanged(Rect statusBar, Rect keyboard, Rect navigationBar)
+		private void OnKeyboardChanged(Rect keyboard)
 		{
 			Xaml.Window.Current?.RaiseNativeSizeChanged();
 			_inputPane.OccludedRect = ViewHelper.PhysicalToLogicalPixels(keyboard);
@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml
 			base.OnCreate(bundle);
 
 			LayoutProvider = new LayoutProvider(this);
-			LayoutProvider.LayoutChanged += OnLayoutChanged;
+			LayoutProvider.KeyboardChanged += OnKeyboardChanged;
 			LayoutProvider.InsetsChanged += OnInsetsChanged;
 
 			RaiseConfigurationChanges();

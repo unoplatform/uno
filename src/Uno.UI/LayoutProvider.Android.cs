@@ -18,15 +18,18 @@ namespace Uno.UI
 {
 	internal class LayoutProvider
 	{
-		public delegate void LayoutChangedListener(Rect statusBar, Rect keyboard, Rect navigationBar);
+		public delegate void KeyboardChangedListener(Rect keyboard);
 		public delegate void InsetsChangedListener(Thickness insets);
 
-		public event LayoutChangedListener LayoutChanged;
+		public event KeyboardChangedListener KeyboardChanged;
 		public event InsetsChangedListener InsetsChanged;
 
 		public Thickness Insets { get; internal set; } = new Thickness(0, 0, 0, 0);
-		public Rect StatusBarRect { get; private set; } = new Rect(0, 0, 0, 0);
 		public Rect KeyboardRect { get; private set; } = new Rect(0, 0, 0, 0);
+
+		/// <summary>
+		/// // Used by legacy visual bounds calculation on devices below API 30. Will always be default value on devices running API 30 and above.
+		/// </summary>
 		public Rect NavigationBarRect { get; private set; } = new Rect(0, 0, 0, 0);
 
 		private readonly Activity _activity;
@@ -57,7 +60,7 @@ namespace Uno.UI
 				Stop();
 
 				_adjustResizeLayoutProvider.Start(view);
-				_adjustNothingLayoutProvider.Start(view);				
+				_adjustNothingLayoutProvider.Start(view);
 			}
 		}
 
@@ -86,7 +89,6 @@ namespace Uno.UI
 
 			var orientation = DisplayInformation.GetForCurrentView().CurrentOrientation;
 
-			StatusBarRect = new Rect(0, 0, realMetrics.WidthPixels, adjustNothingFrame.Top);
 			KeyboardRect = new Rect(0, adjustResizeFrame.Bottom, realMetrics.WidthPixels, adjustNothingFrame.Bottom);
 
 			switch (orientation)
@@ -104,7 +106,7 @@ namespace Uno.UI
 					break;
 			}
 
-			LayoutChanged?.Invoke(StatusBarRect, KeyboardRect, NavigationBarRect);
+			KeyboardChanged?.Invoke(KeyboardRect);
 
 			T Get<T>(Action<T> getter) where T : new()
 			{
