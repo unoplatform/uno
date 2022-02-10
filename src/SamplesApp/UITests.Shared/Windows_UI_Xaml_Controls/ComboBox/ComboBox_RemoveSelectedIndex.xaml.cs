@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 {
-	[Sample]
+	[SampleControlInfo("ComboBox", "ComboBox_RemoveSelectedIndex")]
 	public sealed partial class ComboBox_RemoveSelectedIndex : UserControl
     {
         public ComboBox_RemoveSelectedIndex()
