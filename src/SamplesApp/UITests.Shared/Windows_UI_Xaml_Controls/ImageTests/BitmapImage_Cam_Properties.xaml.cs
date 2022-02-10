@@ -42,7 +42,6 @@ namespace Uno.UI.Samples.UITests.ImageTestsControl
 				}
 				ImageSource source = new BitmapImage(new Uri(photo.Path));
 				ImageViewer.Source = source;
-				//await Task.Delay(50);
 				GetDetails((BitmapImage)source);
 			}
 			catch (Exception ex)
