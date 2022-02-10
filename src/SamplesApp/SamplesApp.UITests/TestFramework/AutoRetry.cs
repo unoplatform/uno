@@ -14,7 +14,7 @@ namespace SamplesApp.UITests.TestFramework
 	/// maximum number of times.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-	public partial class AutoRetryAttribute : NUnitAttribute, IRepeatTest, IWrapSetUpTearDown
+	public partial class AutoRetryAttribute : NUnitAttribute, IRepeatTest
 	{
 		private readonly int _tryCount;
 
