@@ -135,6 +135,7 @@ namespace Windows.UI.Xaml.Input
 			switch (type)
 			{
 				case MotionEventToolType.Finger:
+				case MotionEventToolType.Unknown: // used by Xamarin.UITest
 					props.IsLeftButtonPressed = Pointer.IsInContact;
 					updates = isDown ? _fingerDownUpdates : isUp ? _fingerUpUpdates : _none;
 					// Pressure = .5f => Keeps default as UWP returns .5 for fingers.
@@ -171,15 +172,11 @@ namespace Windows.UI.Xaml.Input
 					props.Pressure = Math.Min(1f, _nativeEvent.GetPressure(_pointerIndex)); // Might exceed 1.0 on Android
 					break;
 
-				case MotionEventToolType.Unknown: // used by Xamarin.UITest
-					props.IsLeftButtonPressed = true;
-					break;
 				default:
 					break;
 			}
 
-			if (Android.OS.Build.VERSION.SdkInt >= BuildVersionCodes.M // ActionButton was introduced with API 23 (https://developer.android.com/reference/android/view/MotionEvent.html#getActionButton())
-				&& updates.TryGetValue(_nativeEvent.ActionButton, out var update))
+			if (updates.TryGetValue(_nativeEvent.ActionButton, out var update))
 			{
 				props.PointerUpdateKind = update;
 			}
