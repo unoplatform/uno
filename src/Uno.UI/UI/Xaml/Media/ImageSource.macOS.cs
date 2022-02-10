@@ -250,7 +250,7 @@ namespace Windows.UI.Xaml.Media
 
 #pragma warning disable CS0618
 				// fallback on the platform's loader
-				using (var data = NSData.FromUrl(url, NSDataReadingOptions.Coordinated, out error))
+				using (var data = NSData.FromUrl(url, NSDataReadingOptions.Mapped, out error))
 #pragma warning restore CS0618
 				{
 					if (error != null)
