@@ -37,6 +37,15 @@ namespace Uno.UI.Xaml.Input
 				//focusChildren = GetFocusChildren<CDOCollection>(static_cast<CTextBlock*>(object));
 				return VisualTreeHelper.GetChildren(textBlock).ToArray();
 			}
+#if __ANDROID__ || __IOS__ // TODO Uno specific: NativeScrollContentPresenter does not return its children
+			else if (dependencyObject is NativeScrollContentPresenter scrollContentPresenter)
+			{
+				if (scrollContentPresenter.Content is DependencyObject child)
+				{
+					return new[] { child };
+				}
+			}
+#endif
 			else if (dependencyObject is UIElement uiElement)
 			{
 				return VisualTreeHelper.GetChildren(uiElement).ToArray();
