@@ -1183,7 +1183,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			}
 		}
 
-
 		[TestMethod]
 		public async Task When_Binding_xNull()
 		{
@@ -1199,6 +1198,20 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			Assert.IsNotNull(SUT.tb03);
 			Assert.AreEqual("MMM d <null>", SUT.tb03.Text);
+		}
+
+		[TestMethod]
+		public async Task When_NullableRecordStruct()
+		{
+			var SUT = new xBind_NullableRecordStruct();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("", SUT.tb1.Text);
+
+			SUT.MyProperty = new xBind_NullableRecordStruct.MyRecord("42");
+
+			Assert.AreEqual("42", SUT.tb1.Text);
 		}
 
 		private async Task AssertIsNullAsync<T>(Func<T> getter, TimeSpan? timeout = null) where T:class

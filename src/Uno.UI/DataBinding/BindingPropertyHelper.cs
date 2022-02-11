@@ -333,7 +333,7 @@ namespace Uno.UI.DataBinding
 						return attachedPropertyGetter.ReturnType;
 					}
 
-					if (type.IsPrimitive && property == "Value")
+					if (type.IsValueType && property == "Value")
 					{
 						// This case is trying assuming that Value for a primitive is used for the case
 						// of a Nullable primitive.
@@ -724,7 +724,7 @@ namespace Uno.UI.DataBinding
 				}
 
 				if (
-					type.IsPrimitive
+					type.IsValueType
 					&& property == "Value"
 				)
 				{
