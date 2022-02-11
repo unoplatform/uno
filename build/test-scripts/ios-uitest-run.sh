@@ -89,7 +89,9 @@ export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/Samples
 export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/ios-automated
 export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-ios-automated.xml
 
-if [ $(wc -l < "$UNO_TESTS_FAILED_LIST") -eq 1 ] && [ "$IGNORE_RERUN_FILE" != "true" ]; then
+UITEST_IGNORE_RERUN_FILE="${UITEST_IGNORE_RERUN_FILE:=false}"
+
+if [ $(wc -l < "$UNO_TESTS_FAILED_LIST") -eq 1 ] && [ "$UITEST_IGNORE_RERUN_FILE" != "true" ]; then
 	# The test results file only contains the re-run marker and no
 	# other test to rerun. We can skip this run.
 	echo "The file $UNO_TESTS_FAILED_LIST does not contain tests to re-run, skipping."
@@ -128,7 +130,7 @@ echo "--trace=Verbose" > $UNO_TESTS_RESPONSE_FILE
 echo "--result=$UNO_ORIGINAL_TEST_RESULTS" >> $UNO_TESTS_RESPONSE_FILE
 echo "--timeout=$UITEST_TEST_TIMEOUT" >> $UNO_TESTS_RESPONSE_FILE
 
-if [ -f "$UNO_TESTS_FAILED_LIST" ] && [ "$IGNORE_RERUN_FILE" != "true" ]; then
+if [ -f "$UNO_TESTS_FAILED_LIST" ] && [ "$UITEST_IGNORE_RERUN_FILE" != "true" ]; then
     echo "--testlist \"$UNO_TESTS_FAILED_LIST\"" >> $UNO_TESTS_RESPONSE_FILE
 else
     echo "--where \"$TEST_FILTERS\"" >> $UNO_TESTS_RESPONSE_FILE
