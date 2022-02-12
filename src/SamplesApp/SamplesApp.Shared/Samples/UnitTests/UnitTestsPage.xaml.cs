@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Controls;
 namespace SamplesApp.Samples.UnitTests
 {
 	[Sample(
-		"_Unit Tests",
+		"Unit Tests",
 		Name = "Unit Tests Runner",
 		Description = "Test bench to run UI tests that does not require interaction (a.k.a. runtime tests)",
 		IgnoreInSnapshotTests = true)]

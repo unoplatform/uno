@@ -418,24 +418,31 @@ namespace SampleControl.Presentation
 			}
 		}
 
+		internal async Task OpenRuntimeTests(CancellationToken ct)
+		{
+			IsSplitVisible = false;
+
+			var testQuery = from category in _categories
+							from sample in category.SamplesContent
+							where sample.ControlType == typeof(SamplesApp.Samples.UnitTests.UnitTestsPage)
+							select sample;
+
+			var runtimeTests = testQuery.FirstOrDefault();
+
+			if (runtimeTests == null)
+			{
+				throw new InvalidOperationException($"Unable to find UnitTestsPage");
+			}
+
+			var content = await UpdateContent(ct, runtimeTests) as FrameworkElement;
+			ContentPhone = content;
+		}
+
 		internal async Task RunRuntimeTests(CancellationToken ct, string testResultsFilePath, Action doneAction = null)
 		{
 			try
 			{
-				var testQuery = from category in _categories
-								from sample in category.SamplesContent
-								where sample.ControlType == typeof(SamplesApp.Samples.UnitTests.UnitTestsPage)
-								select sample;
-
-				var runtimeTests = testQuery.FirstOrDefault();
-
-				if (runtimeTests == null)
-				{
-					throw new InvalidOperationException($"Unable to find UnitTestsPage");
-				}
-
-				var content = await UpdateContent(ct, runtimeTests) as FrameworkElement;
-				ContentPhone = content;
+				await OpenRuntimeTests(ct);
 
 				if (ContentPhone is FrameworkElement fe
 					&& fe.FindName("UnitTestsRootControl") is Uno.UI.Samples.Tests.UnitTestsControl unitTests)
@@ -529,7 +536,7 @@ namespace SampleControl.Presentation
 			var unused = Window.Current.Dispatcher.RunAsync(
 				CoreDispatcherPriority.Normal, async () =>
 				{
-					await Task.Delay(500);
+					await Task.Delay(200);
 
 					if (!currentSearch.IsCancellationRequested)
 					{
