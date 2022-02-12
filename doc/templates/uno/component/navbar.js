@@ -1,38 +1,4 @@
 /**
- * Removes the navbar.
- *
- * Notes: This can be removed once the content has been iframed.
- */
-function removeNavbar() {
-    const navBar = document.querySelector("header > nav");
-    navBar.remove();
-}
-
-/**
- * Adds css rules to fix the space left by the removal of the navbar.
- *
- * Notes: This can be removed once the content has been iframed. The rules need to be added to the sass before removal.
- */
-function fixNavbarSpacing(){
-    var styleElement = document.createElement('style');
-    document.head.appendChild(styleElement);
-
-    var styleSheet = styleElement.sheet;
-
-    styleSheet.insertRule(".subnav {top : 0}");
-    styleSheet.insertRule(".sidefilter {top : 40px}");
-    styleSheet.insertRule(".sidetoc {top : 105px}");
-    styleSheet.insertRule(".body-content .article {margin-top : 50px}");
-    styleSheet.insertRule(".sideaffix {top : 25px}");
-    styleSheet.insertRule("@media only screen and (max-width: 767px) {"
-                                + ".sidenav {top : 35px}}");
-    styleSheet.insertRule("@media only screen and (max-width: 767px){ "
-                                + ".body-content .article {"
-                                + "margin-top: 110px !important;"
-                                + "}");
-}
-
-/**
  * Load the navbar from the uno website
  */
 function initializeNavbar() {

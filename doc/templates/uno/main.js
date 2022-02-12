@@ -4,11 +4,7 @@ document.addEventListener(
     "DOMContentLoaded",
     function () {
 
-        if (iframed) {
-            removeNavbar();
-        } else {
-            initializeNavbar();
-        }
+        initializeNavbar();
 
         document.addEventListener(
             "click",
@@ -19,10 +15,10 @@ document.addEventListener(
                     !t.matches("#navbar .has-children a")
                 )
                     return;
-                e.preventDefault();
+                e.stopImmediatePropagation();
                 t.parentElement.classList.toggle("open");
             },
-            false
+            true
         );
     },
     false

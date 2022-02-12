@@ -8,12 +8,10 @@ renderLinks();
 renderSidebar();
 renderAffix();
 
-if (iframed) {
-    fixNavbarSpacing();
-} else {
-    renderNavbar();
-    renderLogo();
-}
+renderNavbar();
+renderLogo();
+updateLogo()
+updateLogoOnResize();
 renderFooter();
 breakText();
 renderTabs();
