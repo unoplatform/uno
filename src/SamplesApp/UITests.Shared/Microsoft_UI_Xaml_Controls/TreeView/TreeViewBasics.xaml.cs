@@ -3,12 +3,12 @@ using Windows.UI.Xaml.Controls;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.TreeView
 {
-	[SampleControlInfo("TreeView", "TreeViewBasics")]
+	[Sample("TreeView")]
 	public sealed partial class TreeViewBasics : Page
     {
         public TreeViewBasics()
         {
-            this.InitializeComponent();
+            this.InitializeComponent();			
         }
     }
 }
