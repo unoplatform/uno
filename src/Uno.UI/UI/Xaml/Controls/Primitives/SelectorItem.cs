@@ -306,7 +306,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
 		{
 			ManipulationUpdateKind update;
-			if (IsCaptured(args.Pointer, PointerCaptureKind.Implicit))
+			if (IsCaptured(args.Pointer, PointerCaptureKind.Implicit) &&
+				_isPressed)
 			{
 				_isPressed = false;
 
