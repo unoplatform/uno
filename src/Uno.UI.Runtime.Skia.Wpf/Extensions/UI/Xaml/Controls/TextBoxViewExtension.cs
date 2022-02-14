@@ -305,7 +305,7 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			return 0;
 		}
 
-		public void SetForeground(Windows.UI.Xaml.Media.Brush brush)
+		public void UpdateForeground()
 		{
 			var wpfBrush = brush.ToWpfBrush();
 			if (_currentTextBoxInputWidget != null)

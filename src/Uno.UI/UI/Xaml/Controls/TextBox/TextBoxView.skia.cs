@@ -78,7 +78,13 @@ namespace Windows.UI.Xaml.Controls
 		internal void OnForegroundChanged(Brush brush)
 		{
 			DisplayBlock.Foreground = brush;
-			_textBoxExtension?.SetForeground(brush);
+			_textBoxExtension?.UpdateForeground();
+		}
+
+		internal void OnSelectionHighlightColorChanged(SolidColorBrush brush)
+		{
+			DisplayBlock.SelectionHighlightColor = brush;
+			_textBoxExtension?.UpdateSelectionHighlightColor();
 		}
 
 		internal void OnFocusStateChanged(FocusState focusState)

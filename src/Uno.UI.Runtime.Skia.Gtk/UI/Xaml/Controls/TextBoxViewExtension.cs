@@ -6,6 +6,7 @@ using System.Linq;
 using Gtk;
 using Pango;
 using Uno.Disposables;
+using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.GTK.UI.Text;
 using Uno.UI.Xaml.Controls.Extensions;
 using Windows.Foundation.Collections;
@@ -425,7 +426,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			}
 		}
 
-		public void SetForeground(Windows.UI.Xaml.Media.Brush brush)
+		public void UpdateForeground()
 		{
 			if (_currentInputWidget is not null && brush is SolidColorBrush scb)
 			{
@@ -451,6 +452,12 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 				_foregroundCssProvider.Dispose();
 				_foregroundCssProvider = null;
 			}
+		}
+
+		public void UpdateSelectionHighlightColor()
+		{
+			// Selection highlight color change is not supported on GTK currently
+			this.Log().LogWarning("SelectionHighlightColor changes are currently not supported on GTK");
 		}
 	}
 }
