@@ -22,10 +22,12 @@ namespace Windows.UI.Xaml.Controls
 	public partial class Panel : IEnumerable
 	{
 		private SerialDisposable _brushChanged = new SerialDisposable();
-		private readonly BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
+		private readonly BorderLayerRenderer _borderRenderer;
 
 		public Panel()
 		{
+			_borderRenderer = new BorderLayerRenderer(this);
+
 			Initialize();
 
 			Loaded += (s, e) => UpdateBorder();
@@ -41,7 +43,6 @@ namespace Windows.UI.Xaml.Controls
 			if (IsLoaded)
 			{
 				_borderRenderer.UpdateLayer(
-					this,
 					Background,
 					InternalBackgroundSizing,
 					BorderThicknessInternal,
