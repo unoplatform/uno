@@ -13,7 +13,7 @@
     ![visual-studio-installer-xamarin](Assets/quick-start/vs-install-xamarin.png)
     * Starting from VS 2022 17.1 Preview 1, select the **.NET Maui (Preview)** optional component (Installs the .NET 6 Android and iOS workloads)
         * The iOS Remote Simulator installed (for iOS development)
-	    * A working Mac with Visual Studio for Mac, XCode 13.5 Beta or later installed (for iOS development)
+	    * A working Mac with Visual Studio for Mac, Xcode 13.5 Beta or later installed (for iOS development)
 	    * Google's Android x86 emulators or a physical Android device (for Android development)
 
     * **ASP**.**NET and web** workload installed, along with .NET 6.0 (for WASM development)

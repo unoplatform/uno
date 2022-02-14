@@ -1,6 +1,6 @@
 # Building Uno.UI for macOS using Visual Studio for Mac
 
-Building Uno.UI for the MacOS platform using vs4mac requires Visual Studio for Mac 8.1 or later.
+Building Uno.UI for the macOS platform using vs4mac requires Visual Studio for Mac 8.1 or later.
 
 Steps:
 

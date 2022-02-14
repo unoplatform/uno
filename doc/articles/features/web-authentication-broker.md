@@ -10,7 +10,7 @@
 * It is not possible for applications to clear cookies for the authentication server when this one is from another origin. The only way clear cookies is to deploy the app and the authentication server on the same site (sharing the same origin).
 * You can change the size and the initial title of the open window by setting corresponding settings in `WinRTFeatureConfiguration.WebAuthenticationBroker` .
 
-## Usage on iOS & MacOS
+## Usage on iOS & macOS
 
 * The *redirect URI* **MUST** use a custom scheme URI and this scheme must be registered in the `Info.plist` of the application.
 * Default *redirect URI* will be `<scheme>:/authentication-callback`. Ex: `my-app-auth:/authentication-callback`

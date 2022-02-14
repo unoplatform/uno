@@ -12,7 +12,7 @@
 
     *
         * the iOS Remote Simulator installed (for iOS development)
-	    * A working Mac with Visual Studio for Mac, XCode 8.2 or later installed (for iOS development)
+	    * A working Mac with Visual Studio for Mac, Xcode 8.2 or later installed (for iOS development)
 	    * Google's Android x86 emulators or a physical Android device (for Android development)
 
     * **ASP**.**NET and web** workload installed, along with .NET Core 5.0 (for WASM development)
