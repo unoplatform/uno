@@ -19,13 +19,16 @@ namespace Windows.UI.Xaml.Controls
 	/// </remarks>
 	public partial class ContentPresenter : FrameworkElement
 	{
-		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
+		private readonly BorderLayerRenderer _borderRenderer;
+		
 		private Rect? _lastArrangeRect;
 		private Rect _lastGlobalRect;
 		private bool _nativeHostRegistered;
 
 		public ContentPresenter()
 		{
+			_borderRenderer = new BorderLayerRenderer(this);
+
 			InitializeContentPresenter();
 
 			Loaded += (s, e) => RegisterNativeHostSupport();
@@ -97,7 +100,6 @@ namespace Windows.UI.Xaml.Controls
 			if (IsLoaded)
 			{
 				_borderRenderer.UpdateLayer(
-					this,
 					Background,
 					BackgroundSizing,
 					BorderThickness,
