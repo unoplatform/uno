@@ -59,6 +59,12 @@ namespace Windows.UI
 
 		public static bool operator !=(Color color1, Color color2) => !color1.Equals(color2);
 
+		/// <summary>
+		/// Returns value indicating color's luminance.
+		/// Values lower than 0.5 mean dark color, above 0.5 light color.
+		/// </summary>
+		internal double Luminance => (0.299 * R + 0.587 * G + 0.114 * B) / 255;
+
 		internal Color WithOpacity(double opacity) => new Color((byte)(A * opacity), R, G, B);
 
 		internal uint AsUInt32() => _color;

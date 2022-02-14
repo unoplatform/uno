@@ -426,21 +426,6 @@ namespace Uno.UI.Xaml
 			public string[] Pairs;
 		}
 
-		internal static void SetGeneralStyle(string styleId, string cssText)
-		{
-			var stylesStr = WebAssemblyRuntime.EscapeJs(cssText);
-			var command = "Uno.UI.WindowManager.current.setGeneralStyle(\"" + styleId + "\", \"" + stylesStr + "\");";
-
-			WebAssemblyRuntime.InvokeJS(command);
-		}
-
-		internal static void RemoveGeneralStyle(string styleId)
-		{
-			var command = "Uno.UI.WindowManager.current.removeGeneralStyle(\"" + styleId + "\");";
-
-			WebAssemblyRuntime.InvokeJS(command);
-		}
-
 		#endregion
 
 		#region IsCssFeatureSupported

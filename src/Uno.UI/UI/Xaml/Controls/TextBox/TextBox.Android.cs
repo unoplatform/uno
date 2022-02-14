@@ -362,11 +362,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnSelectionHighlightColorChangedPartial(Color color)
+		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush)
 		{
 			if (_textBoxView != null)
 			{
-				_textBoxView.SetHighlightColor(new Android.Graphics.Color(color.R, color.G, color.B, color.A));
+				var color = brush.ColorWithOpacity;
+				_textBoxView.SetHighlightColor(color);
 			}
 		}
 
