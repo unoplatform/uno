@@ -5,6 +5,7 @@ using Uno.UI.Xaml.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using AndroidX.Core.View;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
@@ -49,7 +50,7 @@ namespace Windows.UI.Xaml
 		{
 			base.OnLocalViewRemoved(view);
 
-			if (!(view is UIElement))
+			if (view is not UIElement)
 			{
 				_nativeChildrenCount--;
 			}
@@ -63,9 +64,14 @@ namespace Windows.UI.Xaml
 		/// <param name="view">The view being removed</param>
 		protected override void OnChildViewAdded(View view)
 		{
-			base.OnChildViewAdded(view);
-
-			if(!(view is UIElement))
+			if (view is UIElement uiElement)
+			{
+				uiElement.ResetLayoutFlags();
+				SetLayoutFlags(LayoutFlag.MeasureDirty);
+				uiElement.SetLayoutFlags(LayoutFlag.MeasureDirty);
+				uiElement.IsMeasureDirtyPathDisabled = IsMeasureDirtyPathDisabled;
+			}
+			else
 			{
 				_nativeChildrenCount++;
 			}
@@ -80,15 +86,28 @@ namespace Windows.UI.Xaml
 			InitializePointers();
 		}
 
+		internal bool IsMeasureDirty
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => IsLayoutFlagSet(LayoutFlag.MeasureDirty);
+		}
+
+		internal bool IsFirstMeasureDone
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => IsLayoutFlagSet(LayoutFlag.FirstMeasureDone);
+		}
+
 		/// <summary>
-		/// Determines if InvalidateMeasure has been called
+		/// On Android, the equivalent of the "Dirty Path" is the native
+		/// "Layout Requested" mechanism.
 		/// </summary>
-		internal bool IsMeasureDirty => IsLayoutRequested;
+		internal bool IsMeasureDirtyPath => IsLayoutRequested;
 
 		/// <summary>
 		/// This is for compatibility - not implemented yet on this platform
 		/// </summary>
-		internal bool IsMeasureOrMeasureDirtyPath => IsMeasureDirty;
+		internal bool IsMeasureOrMeasureDirtyPath => IsMeasureDirty || IsLayoutRequested;
 
 		/// <summary>
 		/// Determines if InvalidateArrange has been called

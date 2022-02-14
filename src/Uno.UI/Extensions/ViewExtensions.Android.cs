@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,9 +52,9 @@ namespace Uno.UI
 		/// <typeparam name="T"></typeparam>
 		/// <param name="view"></param>
 		/// <returns>First parent of the view of specified T type.</returns>
-		public static T FindFirstParent<T>(this IViewParent view) where T : class => FindFirstParent<T>(view, includeCurrent: false);
+		public static T? FindFirstParent<T>(this IViewParent view) where T : class => FindFirstParent<T>(view, includeCurrent: false);
 
-		public static T FindFirstParent<T>(this IViewParent view, bool includeCurrent) where T : class => FindFirstParentOfView<T>(view as View, includeCurrent);
+		public static T? FindFirstParent<T>(this IViewParent view, bool includeCurrent) where T : class => FindFirstParentOfView<T>(view as View, includeCurrent);
 
 		/// <summary>
 		/// Return First parent of the view of specified T type.
@@ -61,9 +62,9 @@ namespace Uno.UI
 		/// <typeparam name="T"></typeparam>
 		/// <param name="view"></param>
 		/// <returns>First parent of the view of specified T type.</returns>
-		public static T FindFirstParentOfView<T>(this View childView) where T : class => FindFirstParentOfView<T>(childView, includeCurrent: false);
+		public static T? FindFirstParentOfView<T>(this View? childView) where T : class => FindFirstParentOfView<T>(childView, includeCurrent: false);
 
-		public static T FindFirstParentOfView<T>(this View childView, bool includeCurrent)
+		public static T? FindFirstParentOfView<T>(this View? childView, bool includeCurrent)
 			where T : class
 		{
 			var view = includeCurrent ? childView as IViewParent : null;
@@ -89,7 +90,7 @@ namespace Uno.UI
 		/// <param name="view"></param>
 		/// <param name="predicate">Predicate that will be proved against the parents of type T</param>
 		/// <returns>First parent of the view of specified T type that also holds true with the predicate</returns>
-		public static T FindFirstParent<T>(this IViewParent view, Func<T, bool> predicate)
+		public static T? FindFirstParent<T>(this IViewParent? view, Func<T, bool> predicate)
 			where T : class
 		{
 			view = view?.Parent;
@@ -116,7 +117,10 @@ namespace Uno.UI
 
 			while (parent != null)
 			{
-				yield return parent as View;
+				if (parent is View p)
+				{
+					yield return p;
+				}
 
 				if (parent == view.Parent)
 				{
@@ -177,7 +181,7 @@ namespace Uno.UI
 		/// </summary>
 		/// <param name="group">The <see cref="ViewGroup"/> to search into.</param>
 		/// <returns>A <see cref="View"/> if any, otherwise null.</returns>
-		public static View FindFirstChild(this ViewGroup group)
+		public static View? FindFirstChild(this ViewGroup group)
 		{
 			if (group is IShadowChildrenProvider shadowProvider)
 			{
@@ -208,7 +212,7 @@ namespace Uno.UI
 
 			for (int i = 0; i < count; i++)
 			{
-				yield return group.GetChildAt(i);
+				yield return group.GetChildAt(i)!;
 			}
 		}
 
@@ -221,7 +225,7 @@ namespace Uno.UI
 
 			for (int i = count - 1; i >= 0; i++)
 			{
-				yield return group.GetChildAt(i);
+				yield return group.GetChildAt(i)!;
 			}
 		}
 
@@ -331,7 +335,7 @@ namespace Uno.UI
 		/// <param name="childLevelLimit">Defines the max depth, null if not limit (Should never be used)</param>
 		/// <param name="includeCurrent">Indicates if the current view should also be tested or not.</param>
 		/// <returns></returns>
-		public static T FindFirstChild<T>(this ViewGroup view, int? childLevelLimit = null, bool includeCurrent = true)
+		public static T? FindFirstChild<T>(this ViewGroup view, int? childLevelLimit = null, bool includeCurrent = true)
 			where T : View
 		{
 			return view.FindFirstChild<T>(null, childLevelLimit, includeCurrent);
@@ -346,10 +350,10 @@ namespace Uno.UI
 		/// <param name="childLevelLimit">Defines the max depth, null if not limit (Should never be used)</param>
 		/// <param name="includeCurrent">Indicates if the current view should also be tested or not.</param>
 		/// <returns></returns>
-		public static T FindFirstChild<T>(this ViewGroup view, Func<T, bool> selector, int? childLevelLimit = null, bool includeCurrent = true)
+		public static T? FindFirstChild<T>(this ViewGroup view, Func<T, bool>? selector, int? childLevelLimit = null, bool includeCurrent = true)
 			where T : View
 		{
-			Func<View, bool> childSelector;
+			Func<View?, bool> childSelector;
 			if (selector == null)
 			{
 				childSelector = child => child is T;
@@ -367,7 +371,7 @@ namespace Uno.UI
 
 			var maxDepth = childLevelLimit ?? int.MaxValue;
 
-			return (T)view.EnumerateAllChildren(childSelector, maxDepth).FirstOrDefault();
+			return (T?)view.EnumerateAllChildren(childSelector, maxDepth).FirstOrDefault();
 		}
 
 		/// <summary>
@@ -386,7 +390,7 @@ namespace Uno.UI
 		/// <summary>
 		/// Get the parent view in the visual tree. This may differ from the logical <see cref="FrameworkElement.Parent"/>.
 		/// </summary>
-		public static ViewGroup GetVisualTreeParent(this View child) => child?.Parent as ViewGroup;
+		public static ViewGroup? GetVisualTreeParent(this View child) => child?.Parent as ViewGroup;
 
 		/// <summary>
 		/// Removes a child view from the specified view, and disposes it if the specified view is the owner.
@@ -530,15 +534,15 @@ namespace Uno.UI
 
 		public static Task AnimateAsync(this View view, Animation animation)
 		{
-			var tcs = new TaskCompletionSource<object>();
+			var tcs = new TaskCompletionSource<object?>();
 
-			EventHandler<Animation.AnimationEndEventArgs> onAnimationEnd = null;
-			onAnimationEnd = (s, e) =>
+			void OnAnimationEnd(object s, Animation.AnimationEndEventArgs e)
 			{
-				animation.AnimationEnd -= onAnimationEnd;
+				animation.AnimationEnd -= OnAnimationEnd;
 				tcs.SetResult(null);
-			};
-			animation.AnimationEnd += onAnimationEnd;
+			}
+
+			animation.AnimationEnd += OnAnimationEnd;
 
 			view.StartAnimation(animation);
 
@@ -548,7 +552,7 @@ namespace Uno.UI
 		/// <summary>
 		/// Returns the root of the view's local visual tree.
 		/// </summary>
-		public static ViewGroup GetTopLevelParent(this View view)
+		public static ViewGroup? GetTopLevelParent(this View view)
 		{
 			var current = view as ViewGroup;
 
@@ -570,7 +574,7 @@ namespace Uno.UI
 		/// <summary>
 		/// Displays all the visual descendants of <paramref name="viewGroup"/> for diagnostic purposes. 
 		/// </summary>
-		public static string ShowDescendants(this ViewGroup viewGroup, StringBuilder sb = null, string spacing = "", ViewGroup viewOfInterest = null)
+		public static string ShowDescendants(this ViewGroup viewGroup, StringBuilder? sb = null, string spacing = "", ViewGroup? viewOfInterest = null)
 		{
 			sb ??= new StringBuilder();
 
@@ -588,7 +592,7 @@ namespace Uno.UI
 					{
 						Inner(childViewGroup, s);
 					}
-					else
+					else if (child is { })
 					{
 						AppendView(child, s);
 					}
@@ -623,7 +627,7 @@ namespace Uno.UI
 					.Append(u?.GetElementSpecificDetails())
 					.Append(u?.GetElementGridOrCanvasDetails())
 					.Append(u?.RenderTransform.GetTransformDetails())
-					.Append($" IsLayoutRequested={innerView.IsLayoutRequested}")
+					.Append(u?.GetLayoutDetails())
 					.Append(innerView is TextBlock textBlock ? $" Text=\"{textBlock.Text}\"" : "")
 					.AppendLine();
 			}

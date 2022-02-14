@@ -70,15 +70,11 @@ namespace Uno.UI
 		/// but just for a specific element (and its descendants) in the visual tree.
 		/// </summary>
 		/// <remarks>
-		/// This will have no effect is <see cref="FeatureConfiguration.UIElement.UseInvalidateMeasurePath"/>
+		/// This will have no effect if <see cref="FeatureConfiguration.UIElement.UseInvalidateMeasurePath"/>
 		/// is set to false.
 		/// </remarks>
-#if !(__WASM__ || __SKIA__)
-		[NotImplemented]
-#endif
 		public static void SetUseMeasurePathDisabled(UIElement element, bool state = true, bool eager = true, bool invalidate = true)
 		{
-#if __WASM__ || __SKIA__
 			element.IsMeasureDirtyPathDisabled = state;
 
 			if (eager)
@@ -86,7 +82,7 @@ namespace Uno.UI
 				using var children = element.GetChildren().GetEnumerator();
 				while (children.MoveNext())
 				{
-					if (children.Current is { } child)
+					if (children.Current is FrameworkElement child)
 					{
 						SetUseMeasurePathDisabled(child, state, eager: true, invalidate);
 					}
@@ -97,16 +93,9 @@ namespace Uno.UI
 			{
 				element.InvalidateMeasure();
 			}
-#else
-			// Not implemented for this platform
-#endif
 		}
 
 		public static bool GetUseMeasurePathDisabled(FrameworkElement element)
-#if __WASM__ || __SKIA__
 			=> element.IsMeasureDirtyPathDisabled;
-#else
-			=> false; // Not implemented for this platform
-#endif
 	}
 }

@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region Row Property
-		[GeneratedDependencyProperty(DefaultValue = 0, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallbackName = nameof(OnGenericPropertyChanged))]
+		[GeneratedDependencyProperty(DefaultValue = 0, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AttachedBackingFieldOwner = typeof(UIElement), Attached = true)]
 		public static DependencyProperty RowProperty { get ; } = CreateRowProperty();
 
 		public static int GetRow(View view) => GetRowValue(view);
@@ -140,7 +140,7 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region Column Property
-		[GeneratedDependencyProperty(DefaultValue = 0, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallbackName = nameof(OnGenericPropertyChanged))]
+		[GeneratedDependencyProperty(DefaultValue = 0, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AttachedBackingFieldOwner = typeof(UIElement), Attached = true)]
 		public static DependencyProperty ColumnProperty { get ; } = CreateColumnProperty();
 
 		public static int GetColumn(View view) => GetColumnValue(view);
@@ -149,7 +149,7 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region RowSpan Property
-		[GeneratedDependencyProperty(DefaultValue = 1, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallbackName = nameof(OnGenericPropertyChanged))]
+		[GeneratedDependencyProperty(DefaultValue = 1, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AttachedBackingFieldOwner = typeof(UIElement), Attached = true)]
 		public static DependencyProperty RowSpanProperty { get ; } = CreateRowSpanProperty();
 
 		public static int GetRowSpan(View view) => GetRowSpanValue(view as UIElement);
@@ -166,7 +166,7 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region ColumnSpan Property
-		[GeneratedDependencyProperty(DefaultValue = 1, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, ChangedCallbackName = nameof(OnGenericPropertyChanged))]
+		[GeneratedDependencyProperty(DefaultValue = 1, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, AttachedBackingFieldOwner = typeof(UIElement), Attached = true)]
 		public static DependencyProperty ColumnSpanProperty { get ; } = CreateColumnSpanProperty();
 
 		public static int GetColumnSpan(View view) => GetColumnSpanValue(view as UIElement);
@@ -192,7 +192,9 @@ namespace Windows.UI.Xaml.Controls
 		DependencyProperty.Register(
 			"RowSpacing", typeof(double),
 			typeof(Grid),
-			new FrameworkPropertyMetadata(default(double), OnGenericPropertyChanged));
+			new FrameworkPropertyMetadata(
+				default(double),
+				FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
 		public double ColumnSpacing
 		{
@@ -204,13 +206,8 @@ namespace Windows.UI.Xaml.Controls
 		DependencyProperty.Register(
 			"ColumnSpacing", typeof(double),
 			typeof(Grid),
-			new FrameworkPropertyMetadata(default(double), OnGenericPropertyChanged));
-
-		private static void OnGenericPropertyChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-
-			(dependencyObject as View)?.InvalidateMeasure();
-			(dependencyObject as View)?.InvalidateArrange();
-		}
+			new FrameworkPropertyMetadata(
+				default(double),
+				FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 	}
 }

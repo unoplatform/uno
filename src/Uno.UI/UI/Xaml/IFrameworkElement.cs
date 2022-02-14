@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Controls;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
+using Uno.Foundation.Logging;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -191,29 +192,33 @@ namespace Windows.UI.Xaml
 		{
 			return e.FindName(name) as IFrameworkElement;
 		}
-
+#if !UNO_REFERENCE_API
+		// This extension method is not needed for Skia
+		// nor Wasm, since all elements in visual tree are
+		// of type UIElement
 		public static void InvalidateMeasure(this IFrameworkElement e)
 		{
+			switch (e)
+			{
+				case FrameworkElement fe:
+					fe.InvalidateMeasure();
+					break;
+				case View view:
 #if XAMARIN_ANDROID
-			var UnoViewGroup = e as UnoViewGroup;
-
-			if (UnoViewGroup != null)
-			{
-				// Use a non-virtual version of the RequestLayout method, for performance.
-				UnoViewGroup.RequestLayout();
-			}
-			else
-			{
-				(e as View).RequestLayout();
-			}
+					view.RequestLayout();
 #elif XAMARIN_IOS
-			(e as View).SetNeedsLayout();
+					view.SetNeedsLayout();
 #elif __MACOS__
-			(e as View).NeedsLayout = true;
-#elif __WASM__
-			Window.InvalidateMeasure();
+					view.NeedsLayout = true;
 #endif
+					break;
+
+				default:
+					e.Log().Warn("Calling InvalidateMeasure on a UIElement that is not a FrameworkElement has no effect.");
+					break;
+			}
 		}
+#endif
 
 		public static IFrameworkElement FindName(IFrameworkElement e, IEnumerable<View> subviews, string name)
 		{

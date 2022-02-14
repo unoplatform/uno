@@ -4,6 +4,7 @@ using System.Text;
 using AndroidX.ViewPager.Widget;
 using Android.Views;
 using Windows.Foundation;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.DataBinding;
@@ -11,9 +12,8 @@ using Uno.UI.Controls;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class NativePagedView : ViewPager, DependencyObject, ILayoutConstraints
+	public partial class NativePagedView : ViewPager, DependencyObject, ILayoutConstraints, ILayouterElement
 	{
-		private ILayouter _layouter;
 		private Size _lastLayoutSize;
 
 		public NativePagedView() : base(ContextHelper.Current)
@@ -28,29 +28,49 @@ namespace Windows.UI.Xaml.Controls
 			_layouter = new NativePagedViewLayouter(this);
 		}
 
-		//TODO generated code - but note call of base.OnMeasure
+		private ILayouter _layouter;
+
+		ILayouter ILayouterElement.Layouter => _layouter;
+		Size ILayouterElement.LastAvailableSize => LayoutInformation.GetAvailableSize(this);
+		bool ILayouterElement.IsMeasureDirty => true;
+		bool ILayouterElement.IsFirstMeasureDone => false;
+		bool ILayouterElement.StretchAffectsMeasure => false;
+		bool ILayouterElement.IsMeasureDirtyPathDisabled => true;
+
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 		{
-			var availableSize = ViewHelper.LogicalSizeFromSpec(widthMeasureSpec, heightMeasureSpec);
-
-			if (!double.IsNaN(Width) || !double.IsNaN(Height))
-			{
-				availableSize = new Size(
-					double.IsNaN(Width) ? availableSize.Width : Width,
-					double.IsNaN(Height) ? availableSize.Height : Height
-				);
-			}
-
-			var measuredSize = _layouter.Measure(availableSize);
-
-			//We call ViewPager.OnMeasure here, because it creates the page views.
-			base.OnMeasure(
-				ViewHelper.SpecFromLogicalSize(measuredSize.Width),
-				ViewHelper.SpecFromLogicalSize(measuredSize.Height)
-			);
-
-			IFrameworkElementHelper.OnMeasureOverride(this);
+			((ILayouterElement)this).OnMeasureInternal(widthMeasureSpec, heightMeasureSpec);
 		}
+
+		void ILayouterElement.SetMeasuredDimensionInternal(int width, int height)
+		{
+			SetMeasuredDimension(width, height);
+		}
+
+
+		//TODO generated code - but note call of base.OnMeasure
+		//protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
+		//{
+		//	var availableSize = ViewHelper.LogicalSizeFromSpec(widthMeasureSpec, heightMeasureSpec);
+
+		//	if (!double.IsNaN(Width) || !double.IsNaN(Height))
+		//	{
+		//		availableSize = new Size(
+		//			double.IsNaN(Width) ? availableSize.Width : Width,
+		//			double.IsNaN(Height) ? availableSize.Height : Height
+		//		);
+		//	}
+
+		//	var measuredSize = _layouter.Measure(availableSize);
+
+		//	//We call ViewPager.OnMeasure here, because it creates the page views.
+		//	base.OnMeasure(
+		//		ViewHelper.SpecFromLogicalSize(measuredSize.Width),
+		//		ViewHelper.SpecFromLogicalSize(measuredSize.Height)
+		//	);
+
+		//	IFrameworkElementHelper.OnMeasureOverride(this);
+		//}
 
 		//TODO generated code
 		partial void OnLayoutPartial(bool changed, int left, int top, int right, int bottom)

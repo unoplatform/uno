@@ -9,9 +9,6 @@ using System.Collections.Generic;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Disposables;
-using System.Linq;
-using Windows.Devices.Input;
-using Windows.System;
 using Windows.UI.Xaml.Controls;
 using Uno.UI;
 using Uno;
@@ -296,6 +293,11 @@ namespace Windows.UI.Xaml
 					focusManager?.SetFocusOnNextFocusableElement(focusManager.GetRealFocusStateForFocusedElement(), true);
 				}
 			}
+
+			if (this.GetParent() is UIElement parent)
+			{
+				parent.InvalidateMeasure();
+			}
 		}
 
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue);
@@ -479,7 +481,7 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
-		private const int MaxLayoutIterations = 250;
+		internal const int MaxLayoutIterations = 250;
 
 		public void UpdateLayout()
 		{
@@ -536,7 +538,7 @@ namespace Windows.UI.Xaml
 				for (var i = 0; i < MaxLayoutIterations; i++)
 				{
 					// On Android, Measure and arrange are the same
-					if (root.IsMeasureDirty)
+					if (root.IsMeasureOrMeasureDirtyPath)
 					{
 						root.Measure(bounds.Size);
 						root.Arrange(bounds);
@@ -658,6 +660,7 @@ namespace Windows.UI.Xaml
 		/// Backing property for <see cref="LayoutInformation.GetAvailableSize(UIElement)"/>
 		/// </summary>
 		Size IUIElement.LastAvailableSize { get; set; }
+
 		/// <summary>
 		/// Gets the 'availableSize' of the last Measure
 		/// </summary>
@@ -722,19 +725,22 @@ namespace Windows.UI.Xaml
 
 		public void InvalidateMeasure()
 		{
-			if (this is IFrameworkElement frameworkElement)
-			{
-				IFrameworkElementHelper.InvalidateMeasure(frameworkElement);
-			}
-			else
-			{
-				this.Log().Warn("Calling InvalidateMeasure on a UIElement that is not a FrameworkElement has no effect.");
-			}
+#if XAMARIN_ANDROID
+			// Use a non-virtual version of the RequestLayout method, for performance.
+			base.RequestLayout();
+			SetLayoutFlags(LayoutFlag.MeasureDirty);
+#elif XAMARIN_IOS
+			base.SetNeedsLayout();
+			SetLayoutFlags(LayoutFlag.MeasureDirty);
+#elif __MACOS__
+			(e as View).NeedsLayout = true;
+			SetLayoutFlags(LayoutFlag.MeasureDirty);
+#endif
 
 			OnInvalidateMeasure();
 		}
 
-		internal protected virtual void OnInvalidateMeasure()
+		protected internal virtual void OnInvalidateMeasure()
 		{
 		}
 

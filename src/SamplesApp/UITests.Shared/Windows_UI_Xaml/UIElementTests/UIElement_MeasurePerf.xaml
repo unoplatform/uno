@@ -20,7 +20,6 @@
 			<StackPanel Orientation="Horizontal" Spacing="8">
 				<StackPanel Orientation="Horizontal" Spacing="4">
 					<ToggleButton x:Name="optimizeMeasure" Click="changeOptimizeMeasure">Use MEASURE_DIRTY_PATH</ToggleButton>
-					<TextBlock>(Skia &amp; Wasm only)</TextBlock>
 				</StackPanel>
 				<Button Click="BuildUI1">Build 1</Button>
 				<Button Click="GoTest1">Test Invalidations</Button>

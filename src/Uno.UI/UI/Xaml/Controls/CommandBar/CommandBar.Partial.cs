@@ -263,7 +263,7 @@ namespace Windows.UI.Xaml.Controls
 			GetTemplatePart("SecondaryItemsControl", out m_tpSecondaryItemsControlPart);
 
 #if __ANDROID__
-			Presenter = (this as ViewGroup).FindFirstChild<NativeCommandBarPresenter?>();
+			Presenter = (this as ViewGroup).FindFirstChild<NativeCommandBarPresenter>();
 #elif __IOS__
 			Presenter = this.FindFirstChild<NativeCommandBarPresenter?>();
 #endif

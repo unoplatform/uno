@@ -41,6 +41,9 @@ using View = Windows.UI.Xaml.UIElement;
 namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : UIElement, IFrameworkElement, IFrameworkElementInternal, ILayoutConstraints, IDependencyObjectParse
+#if !UNO_REFERENCE_API
+		, ILayouterElement
+#endif
 	{
 		public static class TraceProvider
 		{
@@ -55,6 +58,12 @@ namespace Windows.UI.Xaml
 
 #if !UNO_REFERENCE_API
 		private FrameworkElementLayouter _layouter;
+
+		ILayouter ILayouterElement.Layouter => _layouter;
+		Size ILayouterElement.LastAvailableSize => LastAvailableSize;
+		bool ILayouterElement.IsMeasureDirty => IsMeasureDirty;
+		bool ILayouterElement.IsFirstMeasureDone => IsFirstMeasureDone;
+		bool ILayouterElement.IsMeasureDirtyPathDisabled => IsMeasureDirtyPathDisabled;
 #else
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 #endif

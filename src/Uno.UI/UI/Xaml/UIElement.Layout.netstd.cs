@@ -20,93 +20,6 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal bool ShouldInterceptInvalidate { get; set; }
 
-		[Flags]
-		private protected enum LayoutFlag : byte
-		{
-			/// <summary>
-			/// Means the Measure is dirty for the current element
-			/// </summary>
-			MeasureDirty = 0b0000_0001,
-
-			/// <summary>
-			/// Means the Measure is dirty on at least one child of this element
-			/// </summary>
-			MeasureDirtyPath = 0b0000_0010,
-
-			/// <summary>
-			/// Indicated the first measure has been done on the element after been connected to parent
-			/// </summary>
-			FirstMeasureDone = 0b0000_0100,
-
-			/// <summary>
-			/// Means the MeasureDirtyPath is disabled on this element.
-			/// </summary>
-			/// <remarks>
-			/// This flag is copied to children when they are attached, but can be re-enabled afterwards.
-			/// This flag is used during invalidation
-			/// </remarks>
-			MeasureDirtyPathDisabled = 0b0000_1000,
-
-			/// <summary>
-			/// Means the Arrange is dirty on the current element or one of its child
-			/// </summary>
-			ArrangeDirty = 0b0001_0000,
-
-			// ArrangeDirtyPath not implemented yet
-		}
-
-		private const LayoutFlag DEFAULT_STARTING_LAYOUTFLAGS = 0;
-		private const LayoutFlag LAYOUT_FLAGS_TO_CLEAR_ON_RESET =
-			LayoutFlag.MeasureDirty |
-			LayoutFlag.MeasureDirtyPath |
-			LayoutFlag.FirstMeasureDone |
-			LayoutFlag.ArrangeDirty;
-
-		private LayoutFlag _layoutFlags = DEFAULT_STARTING_LAYOUTFLAGS;
-
-		/// <summary>
-		/// Check for one specific layout flag
-		/// </summary>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private protected bool IsLayoutFlagSet(LayoutFlag flag) => (_layoutFlags & flag) == flag;
-
-		/// <summary>
-		/// Check that at least one of the specified flags is set
-		/// </summary>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private protected bool IsAnyLayoutFlagsSet(LayoutFlag flags) => (_layoutFlags & flags) != 0;
-
-		/// <summary>
-		/// Set one or many flags (set to 1)
-		/// </summary>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private protected void SetLayoutFlags(LayoutFlag flags) => _layoutFlags |= flags;
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private protected void SetLayoutFlags(LayoutFlag flags, bool state)
-		{
-			if (state)
-			{
-				SetLayoutFlags(flags);
-			}
-			else
-			{
-				ClearLayoutFlags(flags);
-			}
-		}
-
-		/// <summary>
-		/// Reset one or many flags (set flag to zero)
-		/// </summary>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private protected void ClearLayoutFlags(LayoutFlag flags) => _layoutFlags &= ~flags;
-
-		/// <summary>
-		/// Reset flags to original state
-		/// </summary>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private protected void ResetLayoutFlags() => ClearLayoutFlags(LAYOUT_FLAGS_TO_CLEAR_ON_RESET);
-
 		internal bool IsMeasureDirty
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -129,15 +42,6 @@ namespace Windows.UI.Xaml
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => IsLayoutFlagSet(LayoutFlag.ArrangeDirty);
-		}
-
-		internal bool IsMeasureDirtyPathDisabled
-		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => IsLayoutFlagSet(LayoutFlag.MeasureDirtyPathDisabled);
-
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			set => SetLayoutFlags(LayoutFlag.MeasureDirtyPathDisabled, value);
 		}
 
 		public void InvalidateMeasure()
@@ -273,17 +177,19 @@ namespace Windows.UI.Xaml
 
 		private void DoMeasure(Size availableSize)
 		{
+			var isFirstMeasure = !IsLayoutFlagSet(LayoutFlag.FirstMeasureDone);
+
 			var isDirty =
 				(availableSize != LastAvailableSize)
 				|| IsMeasureDirty
-				|| !IsLayoutFlagSet(LayoutFlag.FirstMeasureDone);
+				|| isFirstMeasure;
 
 			if (!isDirty && !IsMeasureDirtyPath)
 			{
 				return; // Nothing to do
 			}
 
-			if (!IsLayoutFlagSet(LayoutFlag.FirstMeasureDone))
+			if (isFirstMeasure)
 			{
 				SetLayoutFlags(LayoutFlag.FirstMeasureDone);
 				isDirty = true;
@@ -351,7 +257,7 @@ namespace Windows.UI.Xaml
 						}
 					}
 
-					children.Dispose();
+					children.Dispose(); // no "using" operator here to prevent an implicit try-catch on Wasm
 
 					if (!isDirty)
 					{

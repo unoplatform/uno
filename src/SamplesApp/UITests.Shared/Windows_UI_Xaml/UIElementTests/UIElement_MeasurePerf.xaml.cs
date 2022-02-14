@@ -121,7 +121,7 @@ namespace UITests.Windows_UI_Xaml.UIElementTests
 		{
 			var root = new RainbowMeasures { Name = $"Root_{dept}" };
 
-			var leaves = new List<RainbowMeasures>();
+			var leaves = new List<RainbowMeasures>((int)wideness.Value);
 			leaves.Add(root);
 
 			var grid = new Grid { Margin = new Thickness(2) };
@@ -149,7 +149,8 @@ namespace UITests.Windows_UI_Xaml.UIElementTests
 
 			RainbowMeasures mostInner;
 
-			if (dept < deptness.Value)
+			var deptnessValue = (int)deptness.Value;
+			if (dept < deptnessValue)
 			{
 				var (subRoot, subChildren, inner) = BuildTest1(dept + 1);
 				grid.Children.Add(subRoot);
