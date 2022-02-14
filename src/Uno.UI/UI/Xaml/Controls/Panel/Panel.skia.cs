@@ -24,6 +24,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public Panel()
 		{
+			_borderRenderer = new BorderLayerRenderer(this);
+
 			Initialize();
 
 			Loaded += (s, e) => UpdateBorder();
@@ -39,7 +41,6 @@ namespace Microsoft.UI.Xaml.Controls
 			if (IsLoaded)
 			{
 				_borderRenderer.UpdateLayer(
-					this,
 					Background,
 					InternalBackgroundSizing,
 					BorderThicknessInternal,

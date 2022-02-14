@@ -21,15 +21,16 @@ namespace Microsoft.UI.Xaml.Controls
 	/// </remarks>
 	public partial class ContentPresenter : FrameworkElement
 	{
-		private static Lazy<INativeElementHostingExtension> _nativeElementHostingExtension = new Lazy<INativeElementHostingExtension>(() => ApiExtensibility.CreateInstance<INativeElementHostingExtension>(typeof(ContentPresenter)));
-
-		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
+		private readonly BorderLayerRenderer _borderRenderer;
+		
 		private Rect? _lastArrangeRect;
 		private Rect _lastGlobalRect;
 		private bool _nativeHostRegistered;
 
 		public ContentPresenter()
 		{
+			_borderRenderer = new BorderLayerRenderer(this);
+
 			InitializeContentPresenter();
 
 			Loaded += (s, e) => RegisterNativeHostSupport();
@@ -101,7 +102,6 @@ namespace Microsoft.UI.Xaml.Controls
 			if (IsLoaded)
 			{
 				_borderRenderer.UpdateLayer(
-					this,
 					Background,
 					BackgroundSizing,
 					BorderThickness,
