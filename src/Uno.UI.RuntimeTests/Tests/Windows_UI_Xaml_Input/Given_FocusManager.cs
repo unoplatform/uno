@@ -117,7 +117,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			}
 			finally
 			{
-				
+
 			}
 		}
 
@@ -147,7 +147,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			AssertHasFocus(innerControl);
 			Assert.AreEqual(FocusState.Unfocused, outerControl.FocusState);
 
-			
+
 		}
 
 		[TestMethod]
@@ -178,7 +178,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 
 			await AssertNavigationFocusSequence(expectedSequence, navigationAction);
 
-			
+
 		}
 
 		[TestMethod]
@@ -209,7 +209,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 				await WaitForLoadedEvent((TwoButtonSecondPage)frame.Content);
 			};
 
-			await AssertNavigationFocusSequence(expectedSequence, navigationAction);			
+			await AssertNavigationFocusSequence(expectedSequence, navigationAction);
 		}
 
 		[TestMethod]
@@ -339,7 +339,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 				await TestServices.WindowHelper.WaitForIdle();
 			};
 
-			await AssertNavigationFocusSequence(expectedSequence, navigationAction);	
+			await AssertNavigationFocusSequence(expectedSequence, navigationAction);
 		}
 
 		[TestMethod]
@@ -373,6 +373,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			};
 
 			await AssertNavigationFocusSequence(expectedSequence, navigationAction);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_ScrollViewer_TryMoveFocus()
+		{
+			var textBox1 = new TextBox();
+			var textBox2 = new TextBox();
+			var stackPanel = new StackPanel()
+			{
+				Children = {
+					textBox1,
+					textBox2
+				}
+			};
+			var button = new Button();
+			var scrollViewer = new ScrollViewer();
+			scrollViewer.Content = stackPanel;
+			var grid = new Grid()
+			{
+				Children =
+				{
+					scrollViewer,
+					button
+				}
+			};
+
+			TestServices.WindowHelper.WindowContent = grid;
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			textBox1.Focus(FocusState.Programmatic);
+
+			var moved = FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
+			var focused = FocusManager.GetFocusedElement();
+
+			Assert.IsTrue(moved);
+			Assert.AreEqual(textBox2, focused);
+
+			moved = FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
+			focused = FocusManager.GetFocusedElement();
+
+			Assert.IsTrue(moved);
+			Assert.AreEqual(button, focused);
 		}
 
 		private async Task WaitForLoadedEvent(FocusNavigationPage page)
