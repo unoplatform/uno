@@ -28,7 +28,7 @@ If you've used the `Reactive Extensions` framework, these names [might be famili
 
 [Extension methods](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods) are used throughout the Uno.UI codebase to add reusable functionality to existing types, particularly types coming from the Xamarin bindings. Extension methods should be defined in a dedicated class, with the naming convention `[TypeName]Extensions.cs`, where `TypeName` is the name of the type either being returned or passed as the `this` parameter.
 
-The [Uno.Core library](https://github.com/unoplatform/Uno.Core) already defines a number of extensions to the standard .Net types, so you should check those first to see if they do what you need.
+The [Uno.Core library](https://github.com/unoplatform/Uno.Core) already defines a number of extensions to the standard .NET types, so you should check those first to see if they do what you need.
 
 When adding a new extension method class, it should typically be marked `internal`, to avoid naming clashes with existing consumer code.
 

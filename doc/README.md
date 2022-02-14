@@ -11,7 +11,7 @@ This folder contains source code for the generation of uno's documentation
 
 Download and install docfx on your computer.
 
-### MacOS
+### macOS
 
 ```
 brew install docfx

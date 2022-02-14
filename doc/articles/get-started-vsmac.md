@@ -56,7 +56,7 @@ Building for WebAssembly takes a few more steps:
 1. Navigate to the url presented by the tool to run your application
 
 ### Video Tutorial
-[![Getting Started Visual Studio Mac Video](Assets/vsmac-cover.JPG)](http://www.youtube.com/watch?v=ESGJr6kHQg0 "")
+[![Getting Started with Visual Studio for Mac video](Assets/vsmac-cover.JPG)](http://www.youtube.com/watch?v=ESGJr6kHQg0 "")
 
 ### Getting Help
 

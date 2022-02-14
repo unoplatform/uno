@@ -4,7 +4,7 @@ This article explores how Uno works in detail, with a focus on information that'
 
 ## What Uno does
 
-Recall that the  Uno Platform is a cross-platform projection of Microsoft's UWP framework (and its upcoming iteration, WinUI). Uno mirrors UWP/WinUI types and supports the UWP/WinUI XAML dialect, as well as handling several additional aspects of the app contract like assets and string resources. Thus it allows app code written for UWP to be built and run on Android, iOS, in the browser via WebAssembly, and on MacOS. (Note that whereas UWP supports authoring app code in C++ as well as C#, Uno only supports C#.)
+Recall that the  Uno Platform is a cross-platform projection of Microsoft's UWP framework (and its upcoming iteration, WinUI). Uno mirrors UWP/WinUI types and supports the UWP/WinUI XAML dialect, as well as handling several additional aspects of the app contract like assets and string resources. Thus it allows app code written for UWP to be built and run on Android, iOS, in the browser via WebAssembly, and on macOS. (Note that whereas UWP supports authoring app code in C++ as well as C#, Uno only supports C#.)
 
 Broadly then, Uno has two jobs to do:
 

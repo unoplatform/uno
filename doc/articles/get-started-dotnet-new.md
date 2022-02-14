@@ -92,7 +92,7 @@ This will automatically add the new project to the existing solution.
 
 For additional information about UI Tests creation, visit the [Uno.UITest](https://github.com/unoplatform/Uno.UITest) documentation.
 
-## Uno Platform WebAssembly support for Xamarin Forms
+## Uno Platform WebAssembly support for Xamarin.Forms
 
 This template is built to enhance an existing Xamarin.Forms application with the [Uno Platform WebAssembly support](https://github.com/unoplatform/Uno.Xamarin.Forms.Platform).
 

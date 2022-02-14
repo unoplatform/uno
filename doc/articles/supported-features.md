@@ -14,7 +14,7 @@
 - Full UWP availability at compile time
   - Allows for the **compilation of open-source libraries** that depend only on UWP and multi-targeted nuget packages
     - **XamlBehaviors library** support
-- MacOS Compilation
+- macOS Compilation
 
 ## Features List
 

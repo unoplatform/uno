@@ -4,7 +4,7 @@
 
 User inputs are usually propagated using `RoutedEvents`. See Uno's [routed events documentation](routed-events.md) to better understand their implementation on Uno.
 
-| Routed Event                  | Android | iOS     | Wasm    | MacOS | Skia WPF | Skia GtK | Tizen |     |
+| Routed Event                  | Android | iOS     | Wasm    | macOS | Skia WPF | Skia GtK | Tizen |     |
 | ----------------------------- | ------- | ------- | ------- | ----- | -------- | -------- | ----- | --- |
 | **_focus events_**
 | `GotFocus`                    | Yes     | Yes (1) | Yes (1) | ?     | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.gotfocus) |

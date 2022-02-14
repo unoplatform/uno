@@ -71,8 +71,8 @@ A new browser window will automatically run your application.
 
 Note: There is no debugging for Wasm within Rider, but you debug using the built in Chrome tools. 
 
-### MacOS
-You will be able to build the MacOS project.  
+### macOS
+You will be able to build the macOS project.  
 ![run-ios-rider](Assets/quick-start/run-ios-rider.JPG)  
 Alternatively, you can use a tool like VNC to run the simulator on a mac.  
 
