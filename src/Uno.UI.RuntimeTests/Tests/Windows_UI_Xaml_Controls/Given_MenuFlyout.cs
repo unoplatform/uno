@@ -150,7 +150,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RequiresFullWindow]
 		public async Task Verify_MenuBarItem_Bounds_Managed_Popups()
 		{
-			using (ConfigHelper.UseManagedPopups())
+			using (FeatureConfigurationHelper.UseManagedPopups())
 			{
 				await Verify_MenuBarItem_Bounds();
 			}
