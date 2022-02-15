@@ -18,10 +18,12 @@ namespace Windows.UI.Xaml.Controls
 	/// </remarks>
 	public partial class ContentPresenter
 	{
-		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
+		private readonly BorderLayerRenderer _borderRenderer;
 
 		public ContentPresenter()
 		{
+			_borderRenderer = new BorderLayerRenderer(this);
+
 			InitializeContentPresenter();
 		}
 
@@ -65,7 +67,6 @@ namespace Windows.UI.Xaml.Controls
 			if (IsLoaded)
 			{
 				_borderRenderer.UpdateLayer(
-					this,
 					Background,
 					BackgroundSizing,
 					BorderThickness,

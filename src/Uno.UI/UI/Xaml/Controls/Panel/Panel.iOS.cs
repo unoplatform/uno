@@ -8,10 +8,12 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Panel
 	{
-		private readonly BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
+		private readonly BorderLayerRenderer _borderRenderer;
 
 		public Panel()
 		{
+			_borderRenderer = new BorderLayerRenderer(this);
+
 			Initialize();
 		}
 
@@ -100,7 +102,6 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				_borderRenderer.UpdateLayer(
-					this,
 					Background,
 					InternalBackgroundSizing,
 					BorderThicknessInternal,
