@@ -30,9 +30,9 @@ using _Image = AppKit.NSImage;
 
 using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Windows.UI.Xaml.Controls
 {
-	internal class BorderLayerRenderer
+	internal partial class BorderLayerRenderer
 	{
 		private LayoutState _currentState;
 
@@ -50,7 +50,6 @@ namespace Windows.UI.Xaml.Shapes
 		/// <param name="backgroundImage">The background image in case of a ImageBrush background</param>
 		/// <returns>An updated BoundsPath if the layer has been created or updated; null if there is no change.</returns>
 		public CGPath UpdateLayer(
-			_View owner,
 			Brush background,
 			BackgroundSizing backgroundSizing,
 			Thickness borderThickness,
@@ -59,7 +58,7 @@ namespace Windows.UI.Xaml.Shapes
 			_Image backgroundImage)
 		{
 			// Bounds is captured to avoid calling twice calls below.
-			var bounds = owner.Bounds;
+			var bounds = _owner.Bounds;
 			var area = new CGRect(0, 0, bounds.Width, bounds.Height);
 
 			var newState = new LayoutState(area, background, backgroundSizing, borderThickness, borderBrush, cornerRadius, backgroundImage);
@@ -68,11 +67,11 @@ namespace Windows.UI.Xaml.Shapes
 			if (!newState.Equals(previousLayoutState))
 			{
 #if __MACOS__
-				owner.WantsLayer = true;
+				_owner.WantsLayer = true;
 #endif
 
 				_layerDisposable.Disposable = null;
-				_layerDisposable.Disposable = InnerCreateLayer(owner as UIElement, owner.Layer, newState);
+				_layerDisposable.Disposable = InnerCreateLayer(_owner.Layer, newState);
 
 				_currentState = newState;
 			}
@@ -235,7 +234,7 @@ namespace Windows.UI.Xaml.Shapes
 						FillColor = _Color.White.CGColor,
 					};
 
-					acrylicBrush.Subscribe(owner, area, backgroundArea, parent, sublayers, ref insertionIndex, fillMask)
+					acrylicBrush.Subscribe(_owner, area, backgroundArea, parent, sublayers, ref insertionIndex, fillMask)
 						.DisposeWith(disposables);
 				}
 				else if (background is XamlCompositionBrushBase unsupportedCompositionBrush)
@@ -309,9 +308,9 @@ namespace Windows.UI.Xaml.Shapes
 					FillColor = _Color.White.CGColor,
 				};
 
-				if (owner != null)
+				if (_owner != null)
 				{
-					owner.ClippingIsSetByCornerRadius = true;
+					_owner.ClippingIsSetByCornerRadius = true;
 				}
 
 				state.BoundsPath = outerPath;
@@ -365,7 +364,7 @@ namespace Windows.UI.Xaml.Shapes
 				}
 				else if (background is AcrylicBrush acrylicBrush)
 				{
-					acrylicBrush.Subscribe(owner, area, backgroundArea, parent, sublayers, ref insertionIndex, fillMask: null);
+					acrylicBrush.Subscribe(_owner, area, backgroundArea, parent, sublayers, ref insertionIndex, fillMask: null);
 				}
 				else if (background is XamlCompositionBrushBase unsupportedCompositionBrush)
 				{
@@ -455,9 +454,9 @@ namespace Windows.UI.Xaml.Shapes
 					sl.Dispose();
 				}
 
-				if (owner != null)
+				if (_owner != null)
 				{
-					owner.ClippingIsSetByCornerRadius = false;
+					_owner.ClippingIsSetByCornerRadius = false;
 				}
 			}
 			);
