@@ -183,7 +183,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[Ignore("Test applies to platforms using software keyboard https://github.com/unoplatform/uno/issues/7995")]
+#if !__ANDROID__  && !__IOS__
+		[Ignore("Test applies to platforms using software keyboard")]
+#endif
 		public async Task When_Soft_Keyboard_And_VisibleBounds()
 		{
 			var nativeUnsafeArea = ScreenHelper.GetUnsafeArea();
@@ -195,13 +197,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					Height = 1200
 				};
 
+				var dummyButton = new Button { Content = "Dummy" };
+
 
 				var SUT = new MyContentDialog
 				{
 					Title = "Dialog title",
 					Content = new ScrollViewer
 					{
-						Content = tb
+						Content = new StackPanel
+						{
+							Children =
+							{
+								dummyButton,
+								tb
+							}
+						}
 					},
 					PrimaryButtonText = "Accept",
 					SecondaryButtonText = "Nope"
@@ -211,13 +222,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				{
 					await ShowDialog(SUT);
 
+					dummyButton.Focus(FocusState.Pointer); // Ensure keyboard is dismissed in case it is initially visible
+
+					var inputPane = InputPane.GetForCurrentView();
+					await WindowHelper.WaitFor(() => inputPane.OccludedRect.Height == 0);
+
 					var originalButtonBounds = SUT.PrimaryButton.GetOnScreenBounds();
 					var originalBackgroundBounds = SUT.BackgroundElement.GetOnScreenBounds();
 					var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
 					RectAssert.Contains(visibleBounds, originalButtonBounds);
-
-					var inputPane = InputPane.GetForCurrentView();
-					RectAssert.AreEqual(default, inputPane.OccludedRect); // Soft keyboard should not already be visible
 
 					await FocusTextBoxWithSoftKeyboard(tb);
 
@@ -237,6 +250,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			}
 		}
+
+#if __ANDROID__
+		[TestMethod]
+		public async Task When_Soft_Keyboard_And_VisibleBounds_Managed()
+		{
+			using (FeatureConfigurationHelper.UseManagedPopups())
+			{
+				await When_Soft_Keyboard_And_VisibleBounds(); 
+			}
+		}
+			#endif
+
 
 		private async Task FocusTextBoxWithSoftKeyboard(TextBox textBox)
 		{

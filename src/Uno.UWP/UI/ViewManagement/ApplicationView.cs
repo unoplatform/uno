@@ -71,14 +71,14 @@ namespace Windows.UI.ViewManagement
 		/// </summary>
 		internal Rect TrueVisibleBounds =>
 #if __ANDROID__
-			_trueVisibleBounds;
+			VisibleBoundsOverride ?? _trueVisibleBounds;
 #else
 			VisibleBounds;
 #endif
 
 		/// <summary>
-		/// If set, overrides the 'real' visible bounds. Used for testing visible bounds-related behavior on devices that have no native '
-		/// unsafe area'.
+		/// If set, overrides the 'real' visible bounds. Used for testing visible bounds-related behavior on devices that have no native
+		/// 'unsafe area'.
 		/// </summary>
 		internal Rect? VisibleBoundsOverride
 		{
