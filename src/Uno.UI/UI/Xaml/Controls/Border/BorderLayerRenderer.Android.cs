@@ -1,36 +1,36 @@
-﻿#nullable enable
 #pragma warning disable 0618 // Used for compatibility with SetBackgroundDrawable and previous API Levels
 
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Graphics.Drawables.Shapes;
 using Android.Views;
-using Uno.Disposables;
 using Uno.Extensions;
-using Uno.UI;
 using Uno.UI.Controls;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Media;
+using System;
+using System.Collections.Generic;
+using Uno.Disposables;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Uno.UI;
+using AndroidX.AppCompat.View;
+using System.Diagnostics;
 using Rect = Windows.Foundation.Rect;
+using Windows.UI.Xaml.Media.Imaging;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
-	partial class BorderLayerRenderer
+	internal partial class BorderLayerRenderer
 	{
 		private const double __opaqueAlpha = 255;
 
-		private LayoutState? _currentState;
+		private LayoutState _currentState;
 
 		private readonly SerialDisposable _layerDisposable = new SerialDisposable();
 		private static readonly float[] _outerRadiiStore = new float[8];
 		private static readonly float[] _innerRadiiStore = new float[8];
-		private static Paint? _strokePaint;
-		private static Paint? _fillPaint;
 
 		/// <summary>
 		/// Updates or creates a sublayer to render a border-like shape.
@@ -43,7 +43,6 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <param name="cornerRadius">The corner radius</param>
 		/// <param name="padding">The padding to apply on the content</param>
 		public void UpdateLayer(
-			FrameworkElement view,
 			Brush background,
 			BackgroundSizing backgroundSizing,
 			Thickness borderThickness,
@@ -52,7 +51,7 @@ namespace Microsoft.UI.Xaml.Controls
 			Thickness padding,
 			bool willUpdateMeasures = false)
 		{
-			var drawArea = new Rect(default, view.LayoutSlotWithMarginsAndAlignments.Size.LogicalToPhysicalPixels());
+			var drawArea = new Rect(default, _owner.LayoutSlotWithMarginsAndAlignments.Size.LogicalToPhysicalPixels());
 			var newState = new LayoutState(drawArea, background, borderThickness, borderBrush, cornerRadius, padding);
 			var previousLayoutState = _currentState;
 
@@ -70,8 +69,8 @@ namespace Microsoft.UI.Xaml.Controls
 				_layerDisposable.Disposable = null;
 			}
 
-			Action? onImageSet = null;
-			var disposable = InnerCreateLayers(view, drawArea, background, backgroundSizing, borderThickness, borderBrush, cornerRadius, () => onImageSet?.Invoke());
+			Action onImageSet = null;
+			var disposable = InnerCreateLayers(drawArea, background, backgroundSizing, borderThickness, borderBrush, cornerRadius, () => onImageSet?.Invoke());
 
 			// Most of the time we immediately dispose the previous layer. In the case where we're using an ImageBrush,
 			// and the backing image hasn't changed, we dispose the previous layer at the moment the new background is applied,
@@ -87,11 +86,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (willUpdateMeasures)
 			{
-				view.RequestLayout();
+				_owner.RequestLayout();
 			}
 			else
 			{
-				view.Invalidate();
+				_owner.Invalidate();
 			}
 
 			_currentState = newState;
@@ -106,8 +105,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_currentState = null;
 		}
 
-		private static IDisposable InnerCreateLayers(
-			BindableView view,
+		private IDisposable InnerCreateLayers(
 			Rect drawArea,
 			Brush background,
 			BackgroundSizing backgroundSizing,
@@ -134,7 +132,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (!fullCornerRadius.IsEmpty)
 			{
-				if ((view as UIElement)?.FrameRoundingAdjustment is { } fra)
+				if (_owner.FrameRoundingAdjustment is { } fra)
 				{
 					drawArea.Height += fra.Height;
 					drawArea.Width += fra.Width;
@@ -146,7 +144,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				using (var backgroundPath = new Path())
 				{
-					backgroundPath.AddRoundRect(adjustedArea.ToRectF(), _innerRadiiStore, Path.Direction.Cw!);
+					backgroundPath.AddRoundRect(adjustedArea.ToRectF(), _innerRadiiStore, Path.Direction.Cw);
 					//We only need to set a background if the drawArea is non-zero
 					if (!drawArea.HasZeroArea())
 					{
@@ -154,54 +152,45 @@ namespace Microsoft.UI.Xaml.Controls
 						{
 							//Copy the path because it will be disposed when we exit the using block
 							var pathCopy = new Path(backgroundPath);
-							var setBackground = DispatchSetImageBrushAsBackground(view, imageBrushBackground, drawArea, onImageSet, pathCopy);
+							var setBackground = DispatchSetImageBrushAsBackground(imageBrushBackground, drawArea, onImageSet, pathCopy);
 							disposables.Add(setBackground);
 						}
 						else if (background is AcrylicBrush acrylicBrush)
 						{
-							var apply = acrylicBrush.Subscribe(view, drawArea, backgroundPath);
+							var apply = acrylicBrush.Subscribe(_owner, drawArea, backgroundPath);
 							disposables.Add(apply);
 						}
 						else
 						{
-							_fillPaint ??= new();
-							if (background is not null)
-							{
-								background.ApplyToFillPaint(drawArea, _fillPaint);
-							}
-							else
-							{
-								_fillPaint.Reset();
-								_fillPaint.Color = Android.Graphics.Color.Transparent;
-							}
-							ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, _fillPaint, backgroundPath)));
+							var fillPaint = background?.GetFillPaint(drawArea) ?? new Paint() { Color = Android.Graphics.Color.Transparent };
+							ExecuteWithNoRelayout(v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, fillPaint, backgroundPath)));
 						}
-						disposables.Add(() => ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(null)));
+						disposables.Add(() => ExecuteWithNoRelayout(v => v.SetBackgroundDrawable(null)));
 					}
 
 					if (borderThickness != Thickness.Empty && borderBrush != null && !(borderBrush is ImageBrush))
 					{
 						//TODO: Handle case when BorderBrush is an ImageBrush
 						// Related Issue: https://github.com/unoplatform/uno/issues/6893
-						_strokePaint ??= new();
-						borderBrush.ApplyToStrokePaint(drawArea, _strokePaint);
-
-						//Create the path for the outer and inner rectangles that will become our border shape							
-						using var borderPath = new Path();
-
-						borderPath.AddRoundRect(drawArea, _outerRadiiStore, Path.Direction.Cw!);
-						borderPath.AddRoundRect(adjustedArea, _innerRadiiStore, Path.Direction.Cw!);
-
-						var overlay = GetOverlayDrawable(
-							_strokePaint,
-							physicalBorderThickness,
-							new global::System.Drawing.Size((int)drawArea.Width, (int)drawArea.Height),
-							borderPath);
-
-						if (overlay != null)
+						using (var strokePaint = new Paint(borderBrush.GetStrokePaint(drawArea)))
 						{
-							overlay.SetBounds(0, 0, view.Width, view.Height);
-							SetOverlay(view, disposables, overlay);
+							//Create the path for the outer and inner rectangles that will become our border shape							
+							using var borderPath = new Path();
+
+							borderPath.AddRoundRect(drawArea, _outerRadiiStore, Path.Direction.Cw);
+							borderPath.AddRoundRect(adjustedArea, _innerRadiiStore, Path.Direction.Cw);
+
+							var overlay = GetOverlayDrawable(
+								strokePaint,
+								physicalBorderThickness,
+								new global::System.Drawing.Size((int)drawArea.Width, (int)drawArea.Height),
+								borderPath);
+
+							if (overlay != null)
+							{
+								overlay.SetBounds(0, 0, _owner.Width, _owner.Height);
+								SetOverlay(disposables, overlay);
+							}
 						}
 					}
 				}
@@ -218,52 +207,35 @@ namespace Microsoft.UI.Xaml.Controls
 
 					if (background is ImageBrush imageBrushBackground)
 					{
-						var setBackground = DispatchSetImageBrushAsBackground(view, imageBrushBackground, drawArea, onImageSet);
+						var setBackground = DispatchSetImageBrushAsBackground(imageBrushBackground, drawArea, onImageSet);
 						disposables.Add(setBackground);
 					}
 					else if (background is AcrylicBrush acrylicBrush)
 					{
-						var apply = acrylicBrush.Subscribe(view, drawArea, backgroundPath);
+						var apply = acrylicBrush.Subscribe(_owner, drawArea, backgroundPath);
 						disposables.Add(apply);
 					}
 					else
 					{
-						_fillPaint ??= new();
-						if (background is not null)
-						{
-							background.ApplyToFillPaint(drawArea, _fillPaint);
-						}
-						else
-						{
-							_fillPaint.Reset();
-							_fillPaint.Color = Android.Graphics.Color.Transparent;
-						}
-						ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, _fillPaint, backgroundPath, antiAlias: false)));
+						var fillPaint = background?.GetFillPaint(drawArea) ?? new Paint() { Color = Android.Graphics.Color.Transparent };
+						ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, fillPaint, backgroundPath, antiAlias: false)));
 					}
-					disposables.Add(() => ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(null)));
+					disposables.Add(() => ExecuteWithNoRelayout(v => v.SetBackgroundDrawable(null)));
 				}
 
 				if (borderThickness != Thickness.Empty && !(borderBrush is ImageBrush))
 				{
 					//TODO: Handle case when BorderBrush is an ImageBrush
 					// Related Issue: https://github.com/unoplatform/uno/issues/6893
-					_strokePaint ??= new();
-					if (borderBrush is not null)
+					using (var strokePaint = borderBrush?.GetStrokePaint(drawArea) ?? new Paint() { Color = Android.Graphics.Color.Transparent })
 					{
-						borderBrush.ApplyToStrokePaint(drawArea, _strokePaint);
-					}
-					else
-					{
-						_strokePaint.Reset();
-						_strokePaint.Color = Android.Graphics.Color.Transparent;
-					}
+						var overlay = GetOverlayDrawable(strokePaint, physicalBorderThickness, new global::System.Drawing.Size(_owner.Width, _owner.Height));
 
-					var overlay = GetOverlayDrawable(_strokePaint, physicalBorderThickness, new global::System.Drawing.Size(view.Width, view.Height));
-
-					if (overlay != null)
-					{
-						overlay.SetBounds(0, 0, view.Width, view.Height);
-						SetOverlay(view, disposables, overlay);
+						if (overlay != null)
+						{
+							overlay.SetBounds(0, 0, _owner.Width, _owner.Height);
+							SetOverlay(disposables, overlay);
+						}
 					}
 				}
 			}
@@ -271,7 +243,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return disposables;
 		}
 
-		private static void SetDrawableAlpha(Drawable drawable, int alpha)
+		private void SetDrawableAlpha(Drawable drawable, int alpha)
 		{
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
 			{
@@ -283,12 +255,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private static void SetOverlay(BindableView view, CompositeDisposable disposables, Drawable overlay)
+		private void SetOverlay(CompositeDisposable disposables, Drawable overlay)
 		{
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
 			{
-				ExecuteWithNoRelayout(view, v => v.Overlay?.Add(overlay));
-				disposables.Add(() => ExecuteWithNoRelayout(view, v => v.Overlay?.Remove(overlay)));
+				ExecuteWithNoRelayout(v => v.Overlay.Add(overlay));
+				disposables.Add(() => ExecuteWithNoRelayout(v => v.Overlay.Remove(overlay)));
 			}
 			else
 			{
@@ -298,7 +270,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				var list = new List<Drawable>();
 
-				var currentBackground = view.Background;
+				var currentBackground = _owner.Background;
 				if (currentBackground != null)
 				{
 					list.Add(currentBackground);
@@ -306,19 +278,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 				list.Add(overlay);
 
-				view.SetBackgroundDrawable(new LayerDrawable(list.ToArray()));
-				disposables.Add(() => view.SetBackgroundDrawable(null));
+				_owner.SetBackgroundDrawable(new LayerDrawable(list.ToArray()));
+				disposables.Add(() => _owner.SetBackgroundDrawable(null));
 			}
 		}
 
-		private static IDisposable DispatchSetImageBrushAsBackground(BindableView view, ImageBrush background, Windows.Foundation.Rect drawArea, Action onImageSet, Path? maskingPath = null)
-		{
+		private IDisposable DispatchSetImageBrushAsBackground(ImageBrush background, Windows.Foundation.Rect drawArea, Action onImageSet, Path maskingPath = null)
+		{ 
 			var disposable = new CompositeDisposable();
 			Dispatch(
-				view.Dispatcher,
+				_owner?.Dispatcher,
 				async ct =>
 					{
-						var bitmapDisposable = await SetImageBrushAsBackground(ct, view, background, drawArea, maskingPath, onImageSet);
+						var bitmapDisposable = await SetImageBrushAsBackground(ct, _owner, background, drawArea, maskingPath, onImageSet);
 						disposable.Add(bitmapDisposable);
 					}
 			)
@@ -328,7 +300,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		//Load bitmap from ImageBrush and set it as a bitmapDrawable background on target view
-		private static async Task<IDisposable> SetImageBrushAsBackground(CancellationToken ct, BindableView view, ImageBrush background, Windows.Foundation.Rect drawArea, Path? maskingPath, Action onImageSet)
+		private async Task<IDisposable> SetImageBrushAsBackground(CancellationToken ct, BindableView view, ImageBrush background, Windows.Foundation.Rect drawArea, Path maskingPath, Action onImageSet)
 		{
 			var bitmap = await background.GetBitmap(ct, drawArea, maskingPath);
 
@@ -343,7 +315,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var bitmapDrawable = new BitmapDrawable(bitmap);
 			SetDrawableAlpha(bitmapDrawable, (int)(background.Opacity * __opaqueAlpha));
-			ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(bitmapDrawable));
+			ExecuteWithNoRelayout(v => v.SetBackgroundDrawable(bitmapDrawable));
 
 			return Disposable.Create(() =>
 			{
@@ -352,30 +324,25 @@ namespace Microsoft.UI.Xaml.Controls
 			});
 		}
 
-		private static void ExecuteWithNoRelayout(BindableView target, Action<BindableView> action)
+		private void ExecuteWithNoRelayout(Action<BindableView> action)
 		{
-			if (target == null)
+			using (_owner.PreventRequestLayout())
 			{
-				throw new ArgumentNullException(nameof(target));
-			}
-
-			using (target.PreventRequestLayout())
-			{
-				action(target);
+				action(_owner);
 			}
 		}
 
-		private static Drawable? GetOverlayDrawable(
+		private static Drawable GetOverlayDrawable(
 			Paint strokePaint,
 			Thickness physicalBorderThickness,
 			global::System.Drawing.Size viewSize,
-			Path? borderPath = null)
+			Path borderPath = null)
 		{
 			if (strokePaint != null)
 			{
 				if (borderPath != null)
 				{
-					borderPath.SetFillType(Path.FillType.EvenOdd!);
+					borderPath.SetFillType(Path.FillType.EvenOdd);
 
 					var drawable = new PaintDrawable();
 
@@ -401,15 +368,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 							var lineDrawable = new PaintDrawable();
 							lineDrawable.Shape = new PathShape(line, viewSize.Width, viewSize.Height);
-							if (lineDrawable.Paint is { } paint)
-							{
-								paint.AntiAlias = false;
-								paint.Color = strokePaint.Color;
-								paint.SetShader(strokePaint.Shader);
-								paint.StrokeWidth = (float)physicalBorderThickness.Top;
-								paint.SetStyle(paintStyleStroke);
-								paint.Alpha = strokePaint.Alpha;
-							}
+							var paint = lineDrawable.Paint;
+							paint.AntiAlias = false;
+							paint.Color = strokePaint.Color;
+							paint.SetShader(strokePaint.Shader);
+							paint.StrokeWidth = (float)physicalBorderThickness.Top;
+							paint.SetStyle(paintStyleStroke);
+							paint.Alpha = strokePaint.Alpha;
 							drawables.Add(lineDrawable);
 						}
 					}
@@ -426,15 +391,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 							var lineDrawable = new PaintDrawable();
 							lineDrawable.Shape = new PathShape(line, viewSize.Width, viewSize.Height);
-							if (lineDrawable.Paint is { } paint)
-							{
-								paint.AntiAlias = false;
-								paint.Color = strokePaint.Color;
-								paint.SetShader(strokePaint.Shader);
-								paint.StrokeWidth = (float)physicalBorderThickness.Right;
-								paint.SetStyle(paintStyleStroke);
-								paint.Alpha = strokePaint.Alpha;
-							}
+							var paint = lineDrawable.Paint;
+							paint.AntiAlias = false;
+							paint.Color = strokePaint.Color;
+							paint.SetShader(strokePaint.Shader);
+							paint.StrokeWidth = (float)physicalBorderThickness.Right;
+							paint.SetStyle(paintStyleStroke);
+							paint.Alpha = strokePaint.Alpha;
 							drawables.Add(lineDrawable);
 						}
 					}
@@ -451,15 +414,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 							var lineDrawable = new PaintDrawable();
 							lineDrawable.Shape = new PathShape(line, viewSize.Width, viewSize.Height);
-							if (lineDrawable.Paint is { } paint)
-							{
-								paint.AntiAlias = false;
-								paint.Color = strokePaint.Color;
-								paint.SetShader(strokePaint.Shader);
-								paint.StrokeWidth = (float)physicalBorderThickness.Bottom;
-								paint.SetStyle(paintStyleStroke);
-								paint.Alpha = strokePaint.Alpha;
-							}
+							var paint = lineDrawable.Paint;
+							paint.AntiAlias = false;
+							paint.Color = strokePaint.Color;
+							paint.SetShader(strokePaint.Shader);
+							paint.StrokeWidth = (float)physicalBorderThickness.Bottom;
+							paint.SetStyle(paintStyleStroke);
+							paint.Alpha = strokePaint.Alpha;
 							drawables.Add(lineDrawable);
 						}
 					}
@@ -476,15 +437,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 							var lineDrawable = new PaintDrawable();
 							lineDrawable.Shape = new PathShape(line, viewSize.Width, viewSize.Height);
-							if (lineDrawable.Paint is { } paint)
-							{
-								paint.AntiAlias = false;
-								paint.Color = strokePaint.Color;
-								paint.SetShader(strokePaint.Shader);
-								paint.StrokeWidth = (float)physicalBorderThickness.Left;
-								paint.SetStyle(paintStyleStroke);
-								paint.Alpha = strokePaint.Alpha;
-							}
+							var paint = lineDrawable.Paint;
+							paint.AntiAlias = false;
+							paint.Color = strokePaint.Color;
+							paint.SetShader(strokePaint.Shader);
+							paint.StrokeWidth = (float)physicalBorderThickness.Left;
+							paint.SetStyle(paintStyleStroke);
+							paint.Alpha = strokePaint.Alpha;
 							drawables.Add(lineDrawable);
 						}
 					}
@@ -496,13 +455,8 @@ namespace Microsoft.UI.Xaml.Controls
 			return null;
 		}
 
-		private static IDisposable Dispatch(CoreDispatcher? dispatcher, Func<CancellationToken, Task> handler)
+		private static IDisposable Dispatch(CoreDispatcher dispatcher, Func<CancellationToken, Task> handler)
 		{
-			if (dispatcher is null)
-			{
-				return Disposable.Empty;
-			}
-
 			var cd = new CancellationDisposable();
 
 			// Execute the non-async part of the loading on the current thread.
@@ -521,8 +475,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			public readonly Windows.Foundation.Rect Area;
 			public readonly Brush Background;
-			public readonly ImageSource? BackgroundImageSource;
-			public readonly Uri? BackgroundImageSourceUri;
+			public readonly ImageSource BackgroundImageSource;
+			public readonly Uri BackgroundImageSourceUri;
 			public readonly Color? BackgroundColor;
 			public readonly Brush BorderBrush;
 			public readonly Color? BorderBrushColor;
@@ -555,7 +509,7 @@ namespace Microsoft.UI.Xaml.Controls
 				BackgroundFallbackColor = (Background as XamlCompositionBrushBase)?.FallbackColor;
 			}
 
-			public bool Equals(LayoutState? other)
+			public bool Equals(LayoutState other)
 			{
 				return other != null
 					&& other.Area == Area

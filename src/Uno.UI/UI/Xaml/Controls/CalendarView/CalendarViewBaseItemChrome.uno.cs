@@ -9,10 +9,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarViewBaseItem
 	{
-#if __ANDROID__ || __IOS__ || __SKIA__ || __WASM__ || __MACOS__
 		private BorderLayerRenderer _borderRenderer;
-#endif
-
 		private Size _lastSize;
 
 		private void Uno_InvalidateRender()
@@ -65,6 +62,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateChrome()
 		{
+			_borderRenderer ??= new BorderLayerRenderer(this);
+
 			// DrawBackground			=> General background for all items
 			// DrawControlBackground	=> Control.Background customized by the apps (can be customized in the element changing event)
 			// DrawDensityBar			=> Not supported yet
@@ -112,9 +111,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 #endif
 
-#if __ANDROID__ || __IOS__ || __SKIA__ || __WASM__ || __MACOS__
 			_borderRenderer?.UpdateLayer(this, background, BackgroundSizing.InnerBorderEdge, borderThickness, borderBrush, cornerRadius, default);
-#endif
 		}
 
 

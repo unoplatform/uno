@@ -21,12 +21,14 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Panel : IEnumerable
 	{
-		private Action _backgroundBrushChanged;
-		private Action _borderBrushChanged;
-		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
+		private readonly SerialDisposable _backgroundBrushChanged = new SerialDisposable();
+		private readonly SerialDisposable _borderBrushChanged = new SerialDisposable();
+		private readonly BorderLayerRenderer _borderRenderer;
 
 		public Panel()
 		{
+			_borderRenderer = new BorderLayerRenderer(this);
+
 			Initialize();
 		}
 
@@ -62,7 +64,6 @@ namespace Microsoft.UI.Xaml.Controls
 			if (IsLoaded)
 			{
 				_borderRenderer.UpdateLayer(
-					this,
 					Background,
 					InternalBackgroundSizing,
 					BorderThicknessInternal,

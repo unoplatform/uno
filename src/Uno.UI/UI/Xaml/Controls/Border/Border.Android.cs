@@ -18,25 +18,14 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Border
 	{
-		private Action _brushChanged;
-		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
+		private SerialDisposable _brushChanged = new SerialDisposable();
+		private BorderLayerRenderer _borderRenderer;
 
 		public Border()
 		{
-		}
+			_borderRenderer = new BorderLayerRenderer(this);
 
-		private protected override void OnLoaded()
-		{
-			base.OnLoaded();
-
-			UpdateBorder();
-		}
-
-		private protected override void OnUnloaded()
-		{
-			base.OnUnloaded();
-
-			_borderRenderer.Clear();
+			this.RegisterLoadActions(UpdateBorder, () => _borderRenderer.Clear());
 		}
 
 		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom, bool localIsLayoutRequested)
@@ -74,7 +63,6 @@ namespace Microsoft.UI.Xaml.Controls
 			if (IsLoaded)
 			{
 				_borderRenderer.UpdateLayer(
-					this,
 					Background,
 					BackgroundSizing,
 					BorderThickness,

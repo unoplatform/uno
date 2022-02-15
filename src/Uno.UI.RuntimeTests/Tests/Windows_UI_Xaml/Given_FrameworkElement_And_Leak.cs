@@ -379,23 +379,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		public void When_BorderLayerRenderer_Leaks()
+		public async Task When_BorderLayerRenderer_Leaks()
 		{
 			var testBrush = new SolidColorBrush(Colors.Red);
 
 			var store = ((IDependencyObjectStoreProvider)testBrush).Store;
 			var property = store.GetPropertyDetails(SolidColorBrush.ColorProperty);
+			property.CallbackManager.Log = true;
 			var originalCount = property.CallbackManager.CallbacksCount;
 			for (int i = 0; i < 15; i++)
 			{
-				TestServices.WindowHelper.WindowContent =
-					new Button()
-					{
-						Content = "Test",
-						Background = testBrush,
-						BorderBrush = testBrush,
-						BorderThickness = new Thickness(2)
-					};
+				var button = new Button()
+				{
+					Content = "Test",
+					Background = testBrush,
+					BorderBrush = testBrush,
+					BorderThickness = new Thickness(2)
+				};
+				TestServices.WindowHelper.WindowContent = button;
+
+				await TestServices.WindowHelper.WaitForLoaded(button);
 			}
 			// Remove the last button
 			TestServices.WindowHelper.WindowContent = new Button();
