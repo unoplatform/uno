@@ -4,4 +4,3 @@ const filtered = 'filtered';
 const show = 'show';
 const hide = 'hide';
 const collapsed = 'collapsed';
-const iframed = window.self !== window.top;

@@ -40,7 +40,7 @@ function styles(done) {
             return '../' + sourcePath;
         })))
         .pipe(concat('main.css'))
-        .pipe(gulpif(isDebug, sourcemaps.write('.', {includeContent: false, sourceRoot: '../'})))
+        .pipe(gulpif(isDebug, sourcemaps.write()))
         .pipe(dest(`${assets}/styles/`))
         .pipe(notify({message: 'CSS complete'}));
 

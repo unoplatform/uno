@@ -93,7 +93,6 @@ function enableSearch() {
 
     // Search factory
     function localSearch() {
-        console.log("using local search");
         const lunrIndex = lunr(function () {
             this.ref('href');
             this.field('title', {boost: 50});
