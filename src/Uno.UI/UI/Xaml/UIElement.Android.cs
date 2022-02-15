@@ -86,28 +86,15 @@ namespace Windows.UI.Xaml
 			InitializePointers();
 		}
 
-		internal bool IsMeasureDirty
-		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => IsLayoutFlagSet(LayoutFlag.MeasureDirty);
-		}
-
-		internal bool IsFirstMeasureDone
-		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => IsLayoutFlagSet(LayoutFlag.FirstMeasureDone);
-		}
-
 		/// <summary>
 		/// On Android, the equivalent of the "Dirty Path" is the native
 		/// "Layout Requested" mechanism.
 		/// </summary>
-		internal bool IsMeasureDirtyPath => IsLayoutRequested;
-
-		/// <summary>
-		/// This is for compatibility - not implemented yet on this platform
-		/// </summary>
-		internal bool IsMeasureOrMeasureDirtyPath => IsMeasureDirty || IsLayoutRequested;
+		internal bool IsMeasureDirtyPath
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => IsLayoutRequested;
+		}
 
 		/// <summary>
 		/// Determines if InvalidateArrange has been called

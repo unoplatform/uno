@@ -20,23 +20,25 @@ internal partial interface ILayouterElement
 	internal bool IsFirstMeasureDone { get; }
 
 	internal bool IsMeasureDirtyPathDisabled { get; }
+}
 
+internal static class LayouterElementExtensions
+{
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private bool DoMeasure(Size availableSize, out Size measuredSizeLogical)
+	internal static bool DoMeasure(this ILayouterElement element, Size availableSize, out Size measuredSizeLogical)
 	{
-		var isFirstMeasure = !IsFirstMeasureDone;
+		var isFirstMeasure = !element.IsFirstMeasureDone;
 
 		var isDirty =
-			(availableSize != LastAvailableSize)
-			|| IsMeasureDirty
+			(availableSize != element.LastAvailableSize)
+			|| element.IsMeasureDirty
 			|| !FeatureConfiguration.UIElement.UseInvalidateMeasurePath
 			|| isFirstMeasure
-			|| IsMeasureDirtyPathDisabled;
+			|| element.IsMeasureDirtyPathDisabled;
 
-		var frameworkElement = this as FrameworkElement;
+		var frameworkElement = element as FrameworkElement;
 		if (frameworkElement is null)
 		{
-			//measuredSizeLogical = LayoutInformation.GetDesiredSize(this);
 			measuredSizeLogical = availableSize;
 		}
 		else if (!isDirty && !frameworkElement.IsMeasureDirtyPath)
@@ -63,17 +65,17 @@ internal partial interface ILayouterElement
 				// The dirty flag is explicitly set on this element
 				try
 				{
-					measuredSizeLogical = Layouter.Measure(availableSize);
+					measuredSizeLogical = element.Layouter.Measure(availableSize);
 					//frameworkElement.InvalidateArrange();
 				}
 				catch (Exception e)
 				{
-					Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
+					Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, element);
 					throw;
 				}
 				finally
 				{
-					LayoutInformation.SetAvailableSize(this, availableSize);
+					LayoutInformation.SetAvailableSize(element, availableSize);
 				}
 
 				return true;
@@ -92,10 +94,14 @@ internal partial interface ILayouterElement
 				// If the child is dirty (or is a path to a dirty descendant child),
 				// We're remeasuring it.
 
-				if (child is UIElement { IsMeasureOrMeasureDirtyPath: true } or { IsLayoutRequested: true })
+				if (child is UIElement { IsMeasureOrMeasureDirtyPath: true }
+#if __ANDROID__
+					or { IsLayoutRequested: true }
+#endif
+					)
 				{
 					var previousDesiredSize = LayoutInformation.GetDesiredSize(child);
-					Layouter.MeasureChild(child, LayoutInformation.GetAvailableSize(child));
+					element.Layouter.MeasureChild(child, LayoutInformation.GetAvailableSize(child));
 					var newDesiredSize = LayoutInformation.GetDesiredSize(child);
 					if (newDesiredSize != previousDesiredSize)
 					{
@@ -107,7 +113,7 @@ internal partial interface ILayouterElement
 
 			if (!isDirty)
 			{
-				measuredSizeLogical = LayoutInformation.GetDesiredSize(this);
+				measuredSizeLogical = LayoutInformation.GetDesiredSize(element);
 				break;
 			}
 		}

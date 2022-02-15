@@ -20,30 +20,6 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal bool ShouldInterceptInvalidate { get; set; }
 
-		internal bool IsMeasureDirty
-		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => IsLayoutFlagSet(LayoutFlag.MeasureDirty);
-		}
-
-		internal bool IsMeasureDirtyPath
-		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => IsLayoutFlagSet(LayoutFlag.MeasureDirtyPath);
-		}
-
-		internal bool IsMeasureOrMeasureDirtyPath
-		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => IsAnyLayoutFlagsSet(LayoutFlag.MeasureDirty | LayoutFlag.MeasureDirtyPath);
-		}
-
-		internal bool IsArrangeDirty
-		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => IsLayoutFlagSet(LayoutFlag.ArrangeDirty);
-		}
-
 		public void InvalidateMeasure()
 		{
 			if (ShouldInterceptInvalidate)

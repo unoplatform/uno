@@ -100,10 +100,11 @@ namespace Uno.UI.Extensions
 
 			sb
 				.Append(uiElement.IsMeasureDirty is true ? " MEASURE_DIRTY" : "")
-#if !__ANDROID__
+#if __ANDROID__
+				.Append(uiElement.IsLayoutRequested ? " [IsLayoutRequested]" : "")
+#elif __IOS__ || __MACOS__
 				.Append(uiElement.IsMeasureDirtyPath is true ? " MEASURE_DIRTY_PATH" : "")
 #else
-				.Append(uiElement.IsLayoutRequested ? " [IsLayoutRequested]" : "")
 #endif
 				.Append(uiElement.IsMeasureDirtyPathDisabled is true ? " MEASURE_DIRTY_PATH_DISABLED" : "")
 				.Append(uiElement.IsArrangeDirty is true ? " ARRANGE_DIRTY" : "");

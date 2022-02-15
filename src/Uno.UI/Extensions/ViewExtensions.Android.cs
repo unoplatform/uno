@@ -536,7 +536,7 @@ namespace Uno.UI
 		{
 			var tcs = new TaskCompletionSource<object?>();
 
-			void OnAnimationEnd(object s, Animation.AnimationEndEventArgs e)
+			void OnAnimationEnd(object? s, Animation.AnimationEndEventArgs? e)
 			{
 				animation.AnimationEnd -= OnAnimationEnd;
 				tcs.SetResult(null);

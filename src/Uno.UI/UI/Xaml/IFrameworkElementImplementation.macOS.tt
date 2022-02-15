@@ -198,10 +198,10 @@ namespace <#= mixin.NamespaceName #>
 			// Resolve the property only once, to avoid paying the cost of the interop.
 			var actualSuperview = Superview;
 
-            if(actualSuperview is FrameworkElement fe)
-            {
-                fe.InvalidateMeasure();
-            }
+			if(actualSuperview is FrameworkElement fe)
+			{
+				fe.InvalidateMeasure();
+			}
 			else if (actualSuperview is IFrameworkElement ife)
 			{
 				ife.InvalidateMeasure();
@@ -236,8 +236,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public virtual string Name
 		{
-            get => GetNameValue();
-            set => SetNameValue(value);
+			get => GetNameValue();
+			set => SetNameValue(value);
 		}
 		#endregion
 
@@ -247,8 +247,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public virtual Thickness Margin
 		{
-            get => GetMarginValue();
-            set => SetMarginValue(value);
+			get => GetMarginValue();
+			set => SetMarginValue(value);
 		}
 		private static Thickness GetMarginDefaultValue() => Thickness.Empty;
 		#endregion
@@ -260,8 +260,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public HorizontalAlignment HorizontalAlignment
 		{
-            get => GetHorizontalAlignmentValue();
-            set => SetHorizontalAlignmentValue(value);
+			get => GetHorizontalAlignmentValue();
+			set => SetHorizontalAlignmentValue(value);
 		}
 		#endregion
 
@@ -272,8 +272,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public VerticalAlignment VerticalAlignment
 		{
-            get => GetVerticalAlignmentValue();
-            set => SetVerticalAlignmentValue(value);
+			get => GetVerticalAlignmentValue();
+			set => SetVerticalAlignmentValue(value);
 		}
 		#endregion
 
@@ -283,8 +283,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public double Width
 		{
-            get => GetWidthValue();
-            set => SetWidthValue(value);
+			get => GetWidthValue();
+			set => SetWidthValue(value);
 		}
 		#endregion
 
@@ -294,8 +294,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public double Height
 		{
-            get => GetHeightValue();
-            set => SetHeightValue(value);
+			get => GetHeightValue();
+			set => SetHeightValue(value);
 		}
 		#endregion
 
@@ -305,8 +305,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public double MinWidth
 		{
-            get => GetMinWidthValue();
-            set => SetMinWidthValue(value);
+			get => GetMinWidthValue();
+			set => SetMinWidthValue(value);
 		}
 		#endregion
 
@@ -316,8 +316,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public double MinHeight
 		{
-            get => GetMinHeightValue();
-            set => SetMinHeightValue(value);
+			get => GetMinHeightValue();
+			set => SetMinHeightValue(value);
 		}
 		#endregion
 
@@ -327,8 +327,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public double MaxWidth
 		{
-            get => GetMaxWidthValue();
-            set => SetMaxWidthValue(value);
+			get => GetMaxWidthValue();
+			set => SetMaxWidthValue(value);
 		}
 		#endregion
 
@@ -338,8 +338,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public double MaxHeight
 		{
-            get => GetMaxHeightValue();
-            set => SetMaxHeightValue(value);
+			get => GetMaxHeightValue();
+			set => SetMaxHeightValue(value);
 		}
 		#endregion
 
@@ -708,7 +708,6 @@ namespace <#= mixin.NamespaceName #>
 			}
 		}
 		#endregion
-
 #endif
 
 #if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
@@ -963,15 +962,15 @@ namespace <#= mixin.NamespaceName #>
 			OnGenericPropertyUpdatedPartial(args);
 
 #if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
-            if(this is FrameworkElement fe)
-            {
-                fe.InvalidateMeasure();
-            }
+			if(this is FrameworkElement fe)
+			{
+				fe.InvalidateMeasure();
+			}
 #else
-            if(this is IFrameworkElement ife)
-            {
-                ife.InvalidateMeasure();
-            }
+			if(this is IFrameworkElement ife)
+			{
+				ife.InvalidateMeasure();
+			}
 #endif
 		}
 
@@ -1017,7 +1016,7 @@ namespace <#= mixin.NamespaceName #>
 
 
 #if !<#= mixin.HasAutomationPeer #> // HasAutomationPeer
-        private AutomationPeer _automationPeer;
+		private AutomationPeer _automationPeer;
 
 		private AutomationPeer OnCreateAutomationPeerOverride()
 		{
@@ -1031,28 +1030,28 @@ namespace <#= mixin.NamespaceName #>
 
 		protected virtual AutomationPeer OnCreateAutomationPeer()
 		{
-		    if (OnCreateAutomationPeerOverride() is AutomationPeer automationPeer)
-		 	{
-		 		return automationPeer;
-		 	}
+			if (OnCreateAutomationPeerOverride() is AutomationPeer automationPeer)
+			{
+				return automationPeer;
+			}
 
-	     	if (AutomationProperties.GetName(this) is string name && !string.IsNullOrEmpty(name))
-		 	{
-		 		return new FrameworkElementAutomationPeer(this);
-		 	}
+			if (AutomationProperties.GetName(this) is string name && !string.IsNullOrEmpty(name))
+			{
+				return new FrameworkElementAutomationPeer(this);
+			}
 
-		 	return null;
+			return null;
 		}
 
 
 		public virtual string GetAccessibilityInnerText() // TODO: internal
 		{
-		 	if (GetAccessibilityInnerTextOverride() is string innerText)
-		 	{
-		 		return innerText;
-		 	}
+			if (GetAccessibilityInnerTextOverride() is string innerText)
+			{
+				return innerText;
+			}
 
-		 	return null;
+			return null;
 		}
 
 		public AutomationPeer GetAutomationPeer() // TODO: internal

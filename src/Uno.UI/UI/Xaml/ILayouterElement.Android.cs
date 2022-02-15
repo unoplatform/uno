@@ -16,7 +16,7 @@ internal partial interface ILayouterElement
 	{
 		var availableSize = ViewHelper.LogicalSizeFromSpec(widthMeasureSpec, heightMeasureSpec);
 
-		DoMeasure(availableSize, out var measuredSizeLogical);
+		this.DoMeasure(availableSize, out var measuredSizeLogical);
 
 		var measuredSize = measuredSizeLogical.LogicalToPhysicalPixels();
 

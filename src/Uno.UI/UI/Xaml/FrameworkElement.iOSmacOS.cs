@@ -34,24 +34,14 @@ namespace Windows.UI.Xaml
 
 		internal CGSize? XamlMeasure(CGSize availableSize)
 		{
-			// If set layout has not been called, we can 
-			// return a previously cached result for the same available size.
-			if (
-				!IsMeasureDirty
-				&& _lastAvailableSize.HasValue
-				&& availableSize == _lastAvailableSize
-			)
+			if (((ILayouterElement)this).XamlMeasureInternal(availableSize, _lastAvailableSize, out var measuredSize))
 			{
-				return _lastMeasure;
+				_lastAvailableSize = availableSize;
+				_lastMeasure = measuredSize;
+				SetLayoutFlags(LayoutFlag.ArrangeDirty);
 			}
 
-			_lastAvailableSize = availableSize;
-			IsMeasureDirty = false;
-
-			var result = _layouter.Measure(SizeFromUISize(availableSize));
-
-			// Result here exclude the margins on the element
-			return _lastMeasure = result.LogicalToPhysicalPixels();
+			return _lastMeasure;
 		}
 
 		/// <summary>

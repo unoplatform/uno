@@ -21,20 +21,7 @@ namespace Windows.UI.Xaml
 
 		public string Name { get; set; }
 
-		/// <summary>
-		/// Determines if InvalidateMeasure has been called
-		/// </summary>
-		internal bool IsMeasureDirty => false;
-
-		/// <summary>
-		/// This is for compatibility - not implemented yet on this platform
-		/// </summary>
-		internal bool IsMeasureOrMeasureDirtyPath => IsMeasureDirty;
-
-		/// <summary>
-		/// Determines if InvalidateArrange has been called
-		/// </summary>
-		internal bool IsArrangeDirty => false;
+		internal bool IsMeasureDirtyPath => false;
 
 		internal bool IsPointerCaptured { get; set; }
 

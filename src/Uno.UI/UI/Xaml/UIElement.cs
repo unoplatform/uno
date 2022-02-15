@@ -730,10 +730,10 @@ namespace Windows.UI.Xaml
 			base.RequestLayout();
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
 #elif XAMARIN_IOS
-			base.SetNeedsLayout();
+			SetNeedsLayout();
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
 #elif __MACOS__
-			(e as View).NeedsLayout = true;
+			base.NeedsLayout = true;
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
 #endif
 
@@ -749,7 +749,7 @@ namespace Windows.UI.Xaml
 		{
 			InvalidateMeasure();
 #if __IOS__ || __MACOS__
-			IsArrangeDirty = true;
+			SetLayoutFlags(LayoutFlag.ArrangeDirty);
 #endif
 		}
 #endif

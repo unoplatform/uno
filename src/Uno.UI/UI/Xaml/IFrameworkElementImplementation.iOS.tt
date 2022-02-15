@@ -192,7 +192,7 @@ namespace <#= mixin.NamespaceName #>
 		}
 
 		partial void SetNeedsLayoutPartial();
-#endif		
+#endif
 
 		public virtual void SetSuperviewNeedsLayout()
 		{
@@ -232,8 +232,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public virtual string Name
 		{
-            get => GetNameValue();
-            set => SetNameValue(value);
+			get => GetNameValue();
+			set => SetNameValue(value);
 		}
 		#endregion
 
@@ -243,8 +243,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public virtual Thickness Margin
 		{
-            get => GetMarginValue();
-            set => SetMarginValue(value);
+			get => GetMarginValue();
+			set => SetMarginValue(value);
 		}
 		private static Thickness GetMarginDefaultValue() => Thickness.Empty;
 		#endregion
@@ -257,11 +257,11 @@ namespace <#= mixin.NamespaceName #>
 		public 
 #if <#= mixin.IsUIControl #> // IsUIControl
 		new
-#endif		
+#endif
 		HorizontalAlignment HorizontalAlignment
 		{
-            get => GetHorizontalAlignmentValue();
-            set => SetHorizontalAlignmentValue(value);
+			get => GetHorizontalAlignmentValue();
+			set => SetHorizontalAlignmentValue(value);
 		}
 		#endregion
 
@@ -276,8 +276,8 @@ namespace <#= mixin.NamespaceName #>
 #endif
 		VerticalAlignment VerticalAlignment
 		{
-            get => GetVerticalAlignmentValue();
-            set => SetVerticalAlignmentValue(value);
+			get => GetVerticalAlignmentValue();
+			set => SetVerticalAlignmentValue(value);
 		}
 		#endregion
 
@@ -287,8 +287,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public double Width
 		{
-            get => GetWidthValue();
-            set => SetWidthValue(value);
+			get => GetWidthValue();
+			set => SetWidthValue(value);
 		}
 		#endregion
 
@@ -298,8 +298,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public double Height
 		{
-            get => GetHeightValue();
-            set => SetHeightValue(value);
+			get => GetHeightValue();
+			set => SetHeightValue(value);
 		}
 		#endregion
 
@@ -309,8 +309,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public double MinWidth
 		{
-            get => GetMinWidthValue();
-            set => SetMinWidthValue(value);
+			get => GetMinWidthValue();
+			set => SetMinWidthValue(value);
 		}
 		#endregion
 
@@ -320,8 +320,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public double MinHeight
 		{
-            get => GetMinHeightValue();
-            set => SetMinHeightValue(value);
+			get => GetMinHeightValue();
+			set => SetMinHeightValue(value);
 		}
 		#endregion
 
@@ -331,8 +331,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public double MaxWidth
 		{
-            get => GetMaxWidthValue();
-            set => SetMaxWidthValue(value);
+			get => GetMaxWidthValue();
+			set => SetMaxWidthValue(value);
 		}
 		#endregion
 
@@ -342,8 +342,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public double MaxHeight
 		{
-            get => GetMaxHeightValue();
-            set => SetMaxHeightValue(value);
+			get => GetMaxHeightValue();
+			set => SetMaxHeightValue(value);
 		}
 		#endregion
 
@@ -402,7 +402,7 @@ namespace <#= mixin.NamespaceName #>
 						// If this FrameworkElement has a native parent, then it probably wasn't measured prior to having its Frame changed.
 						// Set RequiresMeasure flag so that this branch of the visual tree will be measured before being arranged, this is
 						// required for some views (eg Image) to display correctly.
-						IsMeasureDirty = true;
+						ClearLayoutFlags(LayoutFlag.MeasureDirty);
 					}
 #endif
 				}
@@ -859,7 +859,7 @@ namespace <#= mixin.NamespaceName #>
 
 		#endregion
 #endif
-		
+
 		#region Background Dependency Property
 
 		[GeneratedDependencyProperty(DefaultValue = null, Options=FrameworkPropertyMetadataOptions.ValueInheritsDataContext, ChangedCallback = true)]
@@ -966,7 +966,7 @@ namespace <#= mixin.NamespaceName #>
 			return  hitCheck;
 		}
 #endif
-		
+
 		private void OnGenericPropertyUpdated(DependencyPropertyChangedEventArgs args)
 		{
 			OnGenericPropertyUpdatedPartial(args);
@@ -1009,7 +1009,7 @@ namespace <#= mixin.NamespaceName #>
 		{
 				return new global::Foundation.NSString(UIElement.SetDependencyPropertyValueInternal(this, dependencyPropertyNameAndValue) ?? "");
 		}
-		
+
 		#region AutomationPeer
 
 		private AutomationPeer _automationPeer;
@@ -1077,7 +1077,7 @@ namespace <#= mixin.NamespaceName #>
 			get => GetAutomationPeer()?.UpdateAccessibilityElement() ?? false;
 			set => base.IsAccessibilityElement = value;
 		}
-		
+
 		#endregion
 	}
 }
