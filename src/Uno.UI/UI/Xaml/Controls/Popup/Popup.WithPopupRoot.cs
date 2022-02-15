@@ -15,6 +15,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 #if __ANDROID__
 		private bool _useNativePopup = FeatureConfiguration.Popup.UseNativePopup;
+		internal bool UseNativePopup => _useNativePopup;
 #endif
 
 		partial void InitializePartial()
