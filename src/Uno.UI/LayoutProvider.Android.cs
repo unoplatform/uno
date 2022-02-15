@@ -103,7 +103,7 @@ namespace Uno.UI
 
 				var orientation = DisplayInformation.GetForCurrentView().CurrentOrientation;
 
-				KeyboardRect = new Rect(0, adjustResizeFrame.Bottom, realMetrics.WidthPixels, adjustNothingFrame.Bottom);
+				var keyboardRect = new Rect(0, adjustResizeFrame.Bottom, realMetrics.WidthPixels, adjustNothingFrame.Bottom);
 
 				switch (orientation)
 				{
@@ -120,7 +120,7 @@ namespace Uno.UI
 						break;
 				}
 
-				KeyboardChanged?.Invoke(KeyboardRect);
+				KeyboardChanged?.Invoke(keyboardRect);
 
 				T Get<T>(Action<T> getter) where T : new()
 				{
