@@ -380,7 +380,10 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextWrappingChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
-			//TODO : see bug #8178
+			if (_textBoxView != null && e.NewValue is TextWrapping textWrapping)
+			{
+				_textBoxView.SetSingleLine(textWrapping == TextWrapping.NoWrap);
+			}
 		}
 
 		partial void UpdateFontPartial()
