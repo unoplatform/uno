@@ -1,4 +1,4 @@
-﻿namespace Windows.UI.Xaml.Shapes;
+﻿namespace Windows.UI.Xaml.Controls;
 
 internal partial class BorderLayerRenderer
 {
