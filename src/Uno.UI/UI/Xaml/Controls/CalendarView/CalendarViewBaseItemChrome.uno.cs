@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class CalendarViewBaseItem
 	{
-		private readonly BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
+		private BorderLayerRenderer _borderRenderer;
 		private Size _lastSize;
 
 		private void Uno_InvalidateRender()
@@ -62,6 +62,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateChrome()
 		{
+			_borderRenderer ??= new BorderLayerRenderer(this);
+
 			// DrawBackground			=> General background for all items
 			// DrawControlBackground	=> Control.Background customized by the apps (can be customized in the element changing event)
 			// DrawDensityBar			=> Not supported yet
