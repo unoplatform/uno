@@ -399,9 +399,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				TestServices.WindowHelper.WindowContent = button;
 
 				await TestServices.WindowHelper.WaitForLoaded(button);
+				await TestServices.WindowHelper.WaitForIdle();
 			}
 			// Remove the last button
-			TestServices.WindowHelper.WindowContent = new Button();
+			var lastButton = new Button();
+			TestServices.WindowHelper.WindowContent = lastButton;
+
+			await TestServices.WindowHelper.WaitForLoaded(lastButton);
+			await TestServices.WindowHelper.WaitForIdle();
+
 
 			Assert.AreEqual(originalCount, property.CallbackManager.CallbacksCount);
 		}

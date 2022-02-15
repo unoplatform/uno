@@ -20,27 +20,16 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Border
 	{
-		private readonly BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
+		private readonly BorderLayerRenderer _borderRenderer;
 
 		public Border()
 		{
+			_borderRenderer = new BorderLayerRenderer(this);
+
+			this.RegisterLoadActions(() => UpdateBorderLayer(), () => _borderRenderer.Clear());
 		}
 
-		private protected override void OnLoaded()
-		{
-			base.OnLoaded();
-
-			UpdateBorderLayer();
-		}
-
-		private protected override void OnUnloaded()
-		{
-			base.OnUnloaded();
-
-			_borderRenderer.Clear();
-		}
-
-		partial void OnBorderBrushChangedPartial()
+        partial void OnBorderBrushChangedPartial()
 		{
 			UpdateBorderLayer();
 		}
@@ -65,7 +54,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 
-				if (_borderRenderer.UpdateLayer(this, Background, BackgroundSizing, BorderThickness, BorderBrush, CornerRadius, backgroundImage)
+				if (_borderRenderer.UpdateLayer(Background, BackgroundSizing, BorderThickness, BorderBrush, CornerRadius, backgroundImage)
 					is CGPath updated) // UpdateLayer may return null if there is no update
 				{
 					BoundsPath = updated;

@@ -10,10 +10,12 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Page
 	{
-		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
+		private BorderLayerRenderer _borderRenderer;
 
 		private void InitializeBorder()
 		{
+			_borderRenderer = new BorderLayerRenderer(this);
+
 			Loaded += (s, e) => UpdateBorder();
 			Unloaded += (s, e) => _borderRenderer.Clear();
 			LayoutUpdated += (s, e) => UpdateBorder();
@@ -30,7 +32,6 @@ namespace Microsoft.UI.Xaml.Controls
 			if (IsLoaded)
 			{
 				_borderRenderer.UpdateLayer(
-					this,
 					Background,
 					InternalBackgroundSizing,
 					Thickness.Empty,
