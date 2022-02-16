@@ -190,8 +190,10 @@ namespace Uno.UI.Toolkit
 			else
 			{
 #if __WASM__
-				this.SetElevationInternal(Elevation, ShadowColor);
-				this.SetCornerRadius(CornerRadius);
+				// The elevation must be applied on the border, since
+				// it will get the right shape (with rounded corners)
+				_border.SetElevationInternal(Elevation, ShadowColor);
+				_border.CornerRadius = CornerRadius;
 #elif __IOS__ || __MACOS__
 				this.SetElevationInternal(Elevation, ShadowColor, _border.BoundsPath);
 #elif __ANDROID__

@@ -345,7 +345,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var store = ((IDependencyObjectStoreProvider)testBrush).Store;
 			var property = store.GetPropertyDetails(SolidColorBrush.ColorProperty);
-			property.CallbackManager.Log = true;
 			var originalCount = property.CallbackManager.CallbacksCount;
 			for (int i = 0; i < 15; i++)
 			{

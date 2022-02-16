@@ -14,7 +14,7 @@ using Windows.UI.Composition;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Windows.UI.Xaml.Controls
 {
 	internal partial class BorderLayerRenderer
 	{

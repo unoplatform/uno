@@ -160,7 +160,7 @@ internal partial class BorderLayerRenderer
 			_owner.SetGradientBorder(border, borderWidth);
 		}
 
-		void ApplySolidColorBorder(Color color, string borderWidth)
+		void ApplySolidColorBorder(Windows.UI.Color color, string borderWidth)
 		{
 			_owner.SetSolidColorBorder(color.ToHexString(), borderWidth);
 		}
@@ -190,7 +190,7 @@ internal partial class BorderLayerRenderer
 					else
 					{
 						var majorStop = BorderGradientBrushHelper.GetMajorStop(linearGradientBrush);
-						var borderColor = Color.FromArgb((byte)(linearGradientBrush.Opacity * majorStop.Color.A), majorStop.Color.R, majorStop.Color.G, majorStop.Color.B);
+						var borderColor = Windows.UI.Color.FromArgb((byte)(linearGradientBrush.Opacity * majorStop.Color.A), majorStop.Color.R, majorStop.Color.G, majorStop.Color.B);
 
 						ApplySolidColorBorder(borderColor, borderWidth);
 					}

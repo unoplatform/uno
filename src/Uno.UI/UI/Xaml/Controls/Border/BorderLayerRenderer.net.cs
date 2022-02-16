@@ -1,19 +1,17 @@
 ﻿using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Windows.UI.Xaml.Controls;
+
+internal partial class BorderLayerRenderer
 {
-	partial class BorderLayerRenderer
-	{
-		public void UpdateLayer(
-			UIElement element,
-			Brush background,
-			BackgroundSizing backgroundSizing,
-			Thickness borderThickness,
-			Brush borderBrush,
-			CornerRadius cornerRadius,
-			object image)
-		{
-		}
-	}
+    public void UpdateLayer(
+        Brush background,
+        BackgroundSizing backgroundSizing,
+        Thickness borderThickness,
+        Brush borderBrush,
+        CornerRadius cornerRadius,
+        object image)
+    {
+    }
 }
