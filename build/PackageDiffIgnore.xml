@@ -8690,6 +8690,9 @@
 			<Member
 				fullName="System.Void Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs..ctor(System.Action`1&lt;Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs&gt; complete)"
 				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.Devices.Geolocation.Geolocator.WaitForPermissionFromBackground()"
+				reason="Not part of UWP API" />
 
 			<!-- BEGIN .NET 6 RC 1 -->
 			<Member fullName="System.Void UIKit.UIViewExtensions.SetDimensions(UIKit.UIView view, System.Nullable`1&lt;ObjCRuntime.nfloat&gt; width, System.Nullable`1&lt;ObjCRuntime.nfloat&gt; height)" reason="net6 preview 14 breaking changes" />
