@@ -20,18 +20,35 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Panel : IEnumerable
 	{
-		private readonly SerialDisposable _borderBrushChanged = new SerialDisposable();
+		private readonly BorderLayerRenderer _borderRenderer;
 
 		public Panel()
 		{
+			_borderRenderer = new BorderLayerRenderer(this);
+
 			Initialize();
+
+			Loaded += (s, e) => UpdateBorder();
+			Unloaded += (s, e) => _borderRenderer.Clear();
+			LayoutUpdated += (s, e) => UpdateBorder();
 		}
 
 		partial void Initialize();
 
 		partial void UpdateBorder()
 		{
-			SetBorder(BorderThicknessInternal, BorderBrushInternal, CornerRadiusInternal);
+			// Checking for Window avoids re-creating the layer until it is actually used.
+			if (IsLoaded)
+			{
+				_borderRenderer.UpdateLayer(
+					Background,
+					InternalBackgroundSizing,
+					BorderThicknessInternal,
+					BorderBrushInternal,
+					CornerRadiusInternal,
+					null
+				);
+			}
 		}
 
 		protected virtual void OnChildrenChanged()
@@ -46,12 +63,6 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
 		{
-			_borderBrushChanged.Disposable = null;
-			if (newValue?.SupportsAssignAndObserveBrush ?? false)
-			{
-				_borderBrushChanged.Disposable = Brush.AssignAndObserveBrush(newValue, _ => UpdateBorder());
-			}
-
 			UpdateBorder();
 		}
 

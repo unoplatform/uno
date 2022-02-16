@@ -20,7 +20,6 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : UIElement, IFrameworkElement
 	{
-		private SerialDisposable _backgroundSubscription;
 		public T FindFirstParent<T>() where T : class => FindFirstParent<T>(includeCurrent: false);
 
 		public T FindFirstParent<T>(bool includeCurrent) where T : class
@@ -109,18 +108,8 @@ namespace Windows.UI.Xaml
 		}
 
 		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
-			// Warning some controls (eg. CalendarViewBaseItem) takes ownership of the background rendering.
-			// They override the OnBackgroundChanged and explicitly do not invokes that base method.
-			=> SetAndObserveBackgroundBrush(e.NewValue as Brush);
-
-		private protected void SetAndObserveBackgroundBrush(Brush brush)
 		{
-			var subscription = _backgroundSubscription ??= new SerialDisposable();
-
-			subscription.Disposable = null;
-			subscription.Disposable = BorderLayerRenderer.SetAndObserveBackgroundBrush(this, brush);
 		}
-		#endregion
 
 		public int? RenderPhase
 		{
@@ -129,5 +118,7 @@ namespace Windows.UI.Xaml
 		}
 
 		public void ApplyBindingPhase(int phase) => throw new NotImplementedException();
+
+		#endregion
 	}
 }
