@@ -23,8 +23,6 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{
-		private BorderLayerRenderer _borderLayerRenderer;
-
 		bool IFrameworkElementInternal.HasLayouter => true;
 
 		/*
@@ -208,12 +206,6 @@ namespace Microsoft.UI.Xaml
 		internal void ResumeRendering() => throw new NotSupportedException();
 
 		public IEnumerator GetEnumerator() => _children.GetEnumerator();
-
-		protected void SetCornerRadius(CornerRadius cornerRadius)
-			=> (_borderLayerRenderer ??= new BorderLayerRenderer()).SetCornerRadius(this, cornerRadius);
-
-		protected void SetBorder(Thickness thickness, Brush brush, CornerRadius cornerRadius)
-			=> (_borderLayerRenderer ??= new BorderLayerRenderer()).SetBorder(this, brush, thickness, cornerRadius);
 
 		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
 		{
