@@ -10,7 +10,6 @@ using Uno.UI.Extensions;
 using Uno.Extensions;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Input;
-using Uno.Client;
 using Foundation;
 using Uno.Foundation.Logging;
 
