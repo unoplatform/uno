@@ -2,14 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
+using Windows.Foundation;
 using System.Threading.Tasks;
 using CoreLocation;
 using Foundation;
 using Uno.Extensions;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 
 namespace Windows.Devices.Geolocation
@@ -33,7 +30,7 @@ namespace Windows.Devices.Geolocation
 		private void _locationManager_LocationsUpdated(object sender, CLLocationsUpdatedEventArgs e)
 		{
 			BroadcastStatusChanged(PositionStatus.Ready);
-			this._positionChanged?.Invoke(this, new PositionChangedEventArgs(ToGeoposition(e.Locations.Last())));
+			_positionChangedWrapper.Event?.Invoke(this, new PositionChangedEventArgs(ToGeoposition(e.Locations.Last())));
 		}
 
 		partial void StartPositionChanged()

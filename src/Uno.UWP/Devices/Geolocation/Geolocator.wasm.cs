@@ -24,7 +24,7 @@ namespace Windows.Devices.Geolocation
 
 		partial void OnActualDesiredAccuracyInMetersChanged()
 		{
-			if (_positionChanged != null)
+			if (_positionChangedWrapper.Event != null)
 			{
 				//reset position changed watch to apply accuracy
 				StopPositionChanged();
@@ -115,7 +115,7 @@ namespace Windows.Devices.Geolocation
 		[Preserve]
 		public static int DispatchGeoposition(string serializedGeoposition, string requestId)
 		{
-			BroadcastStatus(PositionStatus.Ready); //whenever a location is successfully retrieved, GPS has state of Ready
+			BroadcastStatusChanged(PositionStatus.Ready); //whenever a location is successfully retrieved, GPS has state of Ready
 			var geocoordinate = ParseGeocoordinate(serializedGeoposition);
 			if (_pendingGeopositionRequests.TryRemove(requestId, out var geopositionCompletionSource))
 			{
@@ -140,7 +140,7 @@ namespace Windows.Devices.Geolocation
 						nameof(currentPositionRequestResult),
 						"DispatchError argument must be a serialzied PositionStatus");
 				}
-				BroadcastStatus(positionStatus);
+				BroadcastStatusChanged(positionStatus);
 				switch (positionStatus)
 				{
 					case PositionStatus.NoData:						
