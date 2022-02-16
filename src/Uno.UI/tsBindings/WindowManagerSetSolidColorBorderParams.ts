@@ -3,7 +3,7 @@ class WindowManagerSetSolidColorBorderParams
 {
 	/* Pack=4 */
 	public HtmlId : number;
-	public ColorHex : string;
+	public Color : number;
 	public Width : string;
 	public static unmarshal(pData:number) : WindowManagerSetSolidColorBorderParams
 	{
@@ -14,16 +14,7 @@ class WindowManagerSetSolidColorBorderParams
 		}
 		
 		{
-			const ptr = Module.getValue(pData + 4, "*");
-			if(ptr !== 0)
-			{
-				ret.ColorHex = String(Module.UTF8ToString(ptr));
-			}
-			else
-			
-			{
-				ret.ColorHex = null;
-			}
+			ret.Color = Module.HEAPU32[(pData + 4) >> 2];
 		}
 		
 		{

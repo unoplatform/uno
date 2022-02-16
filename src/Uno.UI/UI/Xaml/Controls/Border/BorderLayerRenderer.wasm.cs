@@ -162,7 +162,7 @@ internal partial class BorderLayerRenderer
 
 		void ApplySolidColorBorder(Windows.UI.Color color, string borderWidth)
 		{
-			_owner.SetSolidColorBorder(color.ToHexString(), borderWidth);
+			_owner.SetSolidColorBorder(color, borderWidth);
 		}
 
 		if (thickness == Thickness.Empty)

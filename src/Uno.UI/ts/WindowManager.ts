@@ -556,14 +556,14 @@ namespace Uno.UI {
 			return true;
 		}
 
-		public setSolidColorBorder(htmlId: number, colorHex: string, width: string) {
+		public setSolidColorBorder(htmlId: number, color: number, width: string) {
 			const element = this.getView(htmlId);
 
 			const elementStyle = element.style;
 
 			elementStyle.setProperty("border", "");
 			elementStyle.setProperty("border-style", "solid");
-			elementStyle.setProperty("border-color", colorHex);
+			elementStyle.setProperty("border-color", this.numberToCssColor(color));
 			elementStyle.setProperty("border-width", width);
 			
 			return true;	
@@ -596,7 +596,7 @@ namespace Uno.UI {
 		public setSolidColorBorderNative(pParams: number): boolean {
 
 			const params = WindowManagerSetSolidColorBorderParams.unmarshal(pParams);
-			return this.setSolidColorBorder(params.HtmlId, params.ColorHex, params.Width);
+			return this.setSolidColorBorder(params.HtmlId, params.Color, params.Width);
 		}
 
 		public setGradientBorder(htmlId: number, borderImage: string, width: string) {
