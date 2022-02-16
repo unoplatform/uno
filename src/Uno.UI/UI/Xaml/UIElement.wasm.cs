@@ -145,9 +145,9 @@ namespace Microsoft.UI.Xaml
 			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, styles);
 		}
 
-		protected internal void SetSolidColorBorder(string colorHex, string borderWidth)
+		protected internal void SetSolidColorBorder(Windows.UI.Color color, string borderWidth)
 		{
-			Uno.UI.Xaml.WindowManagerInterop.SetSolidColorBorder(HtmlId, colorHex, borderWidth);
+			Uno.UI.Xaml.WindowManagerInterop.SetSolidColorBorder(HtmlId, color, borderWidth);
 		}
 
 		protected internal void SetGradientBorder(string borderImage, string borderWidth)
