@@ -10,11 +10,11 @@ using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.Foundation;
 using Windows.UI;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Composition;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Shapes
+namespace Windows.UI.Xaml.Controls
 {
 	internal partial class BorderLayerRenderer
 	{
