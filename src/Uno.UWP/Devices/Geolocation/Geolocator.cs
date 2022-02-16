@@ -19,9 +19,6 @@ namespace Windows.Devices.Geolocation
 		// Using ConcurrentDictionary as concurrent HashSet (https://stackoverflow.com/questions/18922985/concurrent-hashsett-in-net-framework), byte is throwaway
 		private static readonly ConcurrentDictionary<Geolocator, byte> _statusChangedSubscriptions = new ConcurrentDictionary<Geolocator, byte>();
 
-		// Using ConcurrentDictionary as concurrent HashSet (https://stackoverflow.com/questions/18922985/concurrent-hashsett-in-net-framework), byte is throwaway.
-		private static readonly ConcurrentDictionary<Geolocator, byte> _positionChangedSubscriptions = new ConcurrentDictionary<Geolocator, byte>();
-
 		private readonly StartStopEventWrapper<TypedEventHandler<Geolocator, StatusChangedEventArgs>> _statusChangedWrapper;
 		private readonly StartStopEventWrapper<TypedEventHandler<Geolocator, PositionChangedEventArgs>> _positionChangedWrapper;
 
@@ -164,17 +161,6 @@ namespace Windows.Devices.Geolocation
 			foreach (var subscriber in _statusChangedSubscriptions.Keys)
 			{
 				subscriber.OnStatusChanged(positionStatus);
-			}
-		}
-
-		/// <summary>
-		/// Broadcasts position change to all subscribed Geolocator instances
-		/// </summary>
-		private static void BroadcastPositionChanged(Geoposition geoposition)
-		{
-			foreach (var subscriber in _positionChangedSubscriptions.Keys)
-			{
-				subscriber.OnPositionChanged(geoposition);
 			}
 		}
 

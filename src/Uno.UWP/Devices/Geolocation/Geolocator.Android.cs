@@ -1,4 +1,3 @@
-#if __ANDROID__
 #pragma warning disable 67
 
 using System;
@@ -23,16 +22,19 @@ namespace Windows.Devices.Geolocation
 		// (used only in GetGeopositionAsync with parameters, parameterless call can return older location)
 		private const int MaxLocationAgeInSeconds = 60;
 
+		// Using ConcurrentDictionary as concurrent HashSet (https://stackoverflow.com/questions/18922985/concurrent-hashsett-in-net-framework), byte is throwaway.
+		private static readonly ConcurrentDictionary<Geolocator, byte> _positionChangedSubscriptions = new ConcurrentDictionary<Geolocator, byte>();
+
 		private readonly Criteria _locationCriteria = new() { HorizontalAccuracy = Accuracy.Medium };
+
+		private static bool _locationChanged = false;
+		private static Location _location;
 
 		private LocationManager _locationManager;
 		private string _locationProvider;
 
 		private double _movementThreshold = 0;
 		private uint _reportInterval = 1000;
-
-		static bool _locChanged = false;
-		static Location _location;
 
 		partial void PlatformDestruct()
 		{
@@ -163,7 +165,7 @@ namespace Windows.Devices.Geolocation
 			}
 
 			// wait for fix
-			if (await TryWaitForGetGeopositionAsync(timeout, DateTime.Now-maximumAge))
+			if (await TryWaitForGetGeopositionAsync(timeout, DateTime.Now - maximumAge))
 			{
 				// success
 				RemoveUpdates();
@@ -245,11 +247,11 @@ namespace Windows.Devices.Geolocation
 			while (stopwatch.Elapsed < timeout)
 			{
 				await Task.Delay(250);
-				if (_locChanged)
+				if (_locationChanged)
 				{
 					// check if we get current (not obsolete) location
 					if (_location.Time >= earliestDate.ToUnixTimeMilliseconds())
-					{	
+					{
 						stopwatch.Stop();
 						return true;
 					}
@@ -358,7 +360,7 @@ namespace Windows.Devices.Geolocation
 			DateTimeOffset date = DateTimeOffset.FromUnixTimeMilliseconds(location.Time);
 			if (date.AddSeconds(MaxLocationAgeInSeconds) > DateTimeOffset.UtcNow)
 			{// only from last minute (we don't want to get some obsolete location)
-				_locChanged = true;
+				_locationChanged = true;
 				_location = location;
 
 				BroadcastStatusChanged(PositionStatus.Ready);
@@ -396,16 +398,16 @@ namespace Windows.Devices.Geolocation
 			switch (location.Provider)
 			{
 				case LocationManager.NetworkProvider:
-					posSource = PositionSource.Cellular;    // cell, wifi
+					posSource = PositionSource.Cellular; // Cell, Wi-Fi
 					break;
 				case LocationManager.PassiveProvider:
-					posSource = PositionSource.Unknown;  // other apps
+					posSource = PositionSource.Unknown; // Other apps
 					break;
 				case LocationManager.GpsProvider:
 					posSource = PositionSource.Satellite;
 					break;
 				default:
-					// ex.: "fused" - all merged, also e.g. Google Play
+					// Ex.: "fused" - all merged, also e.g. Google Play
 					posSource = PositionSource.Unknown;
 					break;
 			}
@@ -447,4 +449,3 @@ namespace Windows.Devices.Geolocation
 		}
 	}
 }
-#endif
