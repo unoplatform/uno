@@ -259,6 +259,10 @@ namespace Windows.UI.Xaml.Controls
 				unappliedDelta -= scrollIncrement;
 				unappliedDelta = Max(0, unappliedDelta);
 				UpdateLayout(extentAdjustment: sign * -unappliedDelta, isScroll: true);
+
+#if __WASM__ || __SKIA__
+				(ItemsControl as ListViewBase)?.TryLoadMoreItems(LastVisibleIndex);
+#endif
 			}
 			ArrangeElements(_availableSize, ViewportSize);
 			UpdateCompleted();
@@ -817,12 +821,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private Uno.UI.IndexPath GetFirstVisibleIndexPath()
 		{
-			throw new NotImplementedException(); //TODO: FirstVisibleIndex
+			return GetFirstMaterializedLine()?.FirstItem ?? Uno.UI.IndexPath.NotFound;
 		}
 
 		private Uno.UI.IndexPath GetLastVisibleIndexPath()
 		{
-			throw new NotImplementedException(); //TODO: LastVisibleIndex
+			return GetLastMaterializedLine()?.LastItem ?? Uno.UI.IndexPath.NotFound;
 		}
 
 		private IEnumerable<float> GetSnapPointsInner(SnapPointsAlignment alignment)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -30,6 +30,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Data;
 using Uno.UI.RuntimeTests.Extensions;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -1766,9 +1767,114 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		public async Task When_Incremental_Load()
+		{
+			const int BatchSize = 25;
+
+			// setup
+			var container = new Grid { Height = 210, VerticalAlignment = VerticalAlignment.Bottom };
+
+			var list = new ListView
+			{
+				ItemContainerStyle = BasicContainerStyle,
+				ItemTemplate = FixedSizeItemTemplate // height=29
+			};
+			container.Children.Add(list);
+
+			var source = new InfiniteSource<int>(async start =>
+			{
+				await Task.Delay(25);
+				return Enumerable.Range(start, BatchSize).ToArray();
+			});
+			list.ItemsSource = source;
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(list);
+			await Task.Delay(1000);
+			var initial = GetCurrenState();
+
+			// scroll to bottom
+			ScrollBy(list, 10000);
+			await Task.Delay(500);
+			await WindowHelper.WaitForIdle();
+			var firstScroll = GetCurrenState();
+
+			// scroll to bottom
+			ScrollBy(list, 10000);
+			await Task.Delay(500);
+			await WindowHelper.WaitForIdle();
+			var secondScroll = GetCurrenState();
+
+			Assert.AreEqual(BatchSize * 1, initial.LastLoaded, "Should start with first batch loaded.");
+			Assert.AreEqual(BatchSize * 2, firstScroll.LastLoaded, "Should have 2 batches loaded after first scroll.");
+			Assert.IsTrue(initial.LastMaterialized < firstScroll.LastMaterialized, "No extra item materialized after first scroll.");
+			Assert.AreEqual(BatchSize * 3, secondScroll.LastLoaded, "Should have 3 batches loaded after second scroll.");
+			Assert.IsTrue(firstScroll.LastMaterialized < secondScroll.LastMaterialized, "No extra item materialized after second scroll.");
+
+			(int LastLoaded, int LastMaterialized) GetCurrenState() =>
+			(
+				source.LastIndex,
+				Enumerable.Range(0, source.LastIndex).Reverse().FirstOrDefault(x => list.ContainerFromIndex(x) != null)
+			);
+		}
+
+		[TestMethod]
+		public async Task When_Incremental_Load_ShouldStop()
+		{
+			const int BatchSize = 25;
+
+			// setup
+			var container = new Grid { Height = 210, VerticalAlignment = VerticalAlignment.Bottom };
+
+			var list = new ListView
+			{
+				ItemContainerStyle = BasicContainerStyle,
+				ItemTemplate = FixedSizeItemTemplate // height=29
+			};
+			container.Children.Add(list);
+
+			var source = new InfiniteSource<int>(async start =>
+			{
+				await Task.Delay(25);
+				return Enumerable.Range(start, BatchSize).ToArray();
+			});
+			list.ItemsSource = source;
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(list);
+			await Task.Delay(1000);
+			var initial = GetCurrenState();
+
+			// scroll to bottom
+			ScrollBy(list, 10000);
+			await Task.Delay(500);
+			await WindowHelper.WaitForIdle();
+			var firstScroll = GetCurrenState();
+
+			// Has'No'MoreItems
+			source.HasMoreItems = false;
+
+			// scroll to bottom
+			ScrollBy(list, 10000);
+			await Task.Delay(500);
+			await WindowHelper.WaitForIdle();
+			var secondScroll = GetCurrenState();
+
+			Assert.AreEqual(BatchSize * 1, initial.LastLoaded, "Should start with first batch loaded.");
+			Assert.AreEqual(BatchSize * 2, firstScroll.LastLoaded, "Should have 2 batches loaded after first scroll.");
+			Assert.IsTrue(initial.LastMaterialized < firstScroll.LastMaterialized, "No extra item materialized after first scroll.");
+			Assert.AreEqual(BatchSize * 2, secondScroll.LastLoaded, "Should still have 2 batches loaded after first scroll since HasMoreItems was false.");
+			Assert.AreEqual(BatchSize * 2 - 1, secondScroll.LastMaterialized, "Last materialized item should be the last from 2nd batch (50th/index=49).");
+
+			(int LastLoaded, int LastMaterialized) GetCurrenState() =>
+			(
+				source.LastIndex,
+				Enumerable.Range(0, source.LastIndex).Reverse().FirstOrDefault(x => list.ContainerFromIndex(x) != null)
+			);
+		}
+
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
-
-
 
 		#region Helper classes
 		private class When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext : System.ComponentModel.INotifyPropertyChanged
@@ -1852,8 +1958,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			}
 		}
+		#endregion
 	}
 
+	#region Helper classes
 	public partial class OnItemsChangedListView : ListView
 	{
 		public Action ItemsChangedAction = null;
@@ -2014,6 +2122,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				return _dataTemplateA;
 			}
 		}
+	}
+
+	public class InfiniteSource<T> : ObservableCollection<T>, ISupportIncrementalLoading
+	{
+		public delegate Task<T[]> AsyncFetch(int start);
+		public delegate T[] Fetch(int start);
+
+		private readonly AsyncFetch _fetchAsync;
+		private int _start;
+
+		public InfiniteSource(AsyncFetch fetch)
+		{
+			_fetchAsync = fetch;
+			_start = 0;
+		}
+
+		public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
+		{
+			return AsyncInfo.Run(async ct =>
+			{
+				var items = await _fetchAsync(_start);
+				foreach (var item in items)
+				{
+					Add(item);
+				}
+				_start += items.Length;
+
+				return new LoadMoreItemsResult { Count = count };
+			});
+		}
+
+		public bool HasMoreItems { get; set; } = true;
+
+		public int LastIndex => _start;
 	}
 	#endregion
 }
