@@ -44,7 +44,7 @@ namespace Windows.Devices.Geolocation
 		partial void StopPositionChanged()
 		{
 			_positionChangedSubscriptions.TryRemove(_positionChangedRequestId, out var _);
-			var command = $"{JsType}.startPositionWatch(\"{_positionChangedRequestId}\")";
+			var command = $"{JsType}.stopPositionWatch(\"{_positionChangedRequestId}\")";
 			InvokeJS(command);
 		}
 
