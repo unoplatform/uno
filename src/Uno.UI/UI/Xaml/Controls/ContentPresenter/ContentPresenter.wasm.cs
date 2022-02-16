@@ -17,9 +17,17 @@ namespace Windows.UI.Xaml.Controls
 	/// </remarks>
 	public partial class ContentPresenter : FrameworkElement
 	{
+		private readonly BorderLayerRenderer _borderRenderer;
+
 		public ContentPresenter()
 		{
+			_borderRenderer = new BorderLayerRenderer(this);
+
 			InitializeContentPresenter();
+
+			Loaded += (s, e) => UpdateBorder();
+			Unloaded += (s, e) => _borderRenderer.Clear();
+			LayoutUpdated += (s, e) => UpdateBorder();
 		}
 
 		private void SetUpdateTemplate()
@@ -39,12 +47,22 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateCornerRadius(CornerRadius radius)
 		{
-			SetBorder(BorderThickness, BorderBrush, radius);
+			UpdateBorder();
 		}
 
 		private void UpdateBorder()
 		{
-			SetBorder(BorderThickness, BorderBrush, CornerRadius);
+			if (IsLoaded)
+			{
+				_borderRenderer.UpdateLayer(
+					Background,
+					BackgroundSizing,
+					BorderThickness,
+					BorderBrush,
+					CornerRadius,
+					null
+				);
+			}
 		}
 
 		private void ClearBorder()

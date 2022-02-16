@@ -21,18 +21,35 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Panel : IEnumerable
 	{
-		private Action _borderBrushChanged;
+		private readonly BorderLayerRenderer _borderRenderer;
 
 		public Panel()
 		{
+			_borderRenderer = new BorderLayerRenderer(this);
+
 			Initialize();
+
+			Loaded += (s, e) => UpdateBorder();
+			Unloaded += (s, e) => _borderRenderer.Clear();
+			LayoutUpdated += (s, e) => UpdateBorder();
 		}
 
 		partial void Initialize();
 
 		partial void UpdateBorder()
 		{
-			SetBorder(BorderThicknessInternal, BorderBrushInternal, CornerRadiusInternal);
+			// Checking for Window avoids re-creating the layer until it is actually used.
+			if (IsLoaded)
+			{
+				_borderRenderer.UpdateLayer(
+					Background,
+					InternalBackgroundSizing,
+					BorderThicknessInternal,
+					BorderBrushInternal,
+					CornerRadiusInternal,
+					null
+				);
+			}
 		}
 
 		protected virtual void OnChildrenChanged()
@@ -47,8 +64,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
 		{
-			var newOnInvalidateRender = _borderBrushChanged ?? (() => UpdateBorder());
-			Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, newOnInvalidateRender);
+			UpdateBorder();
 		}
 
 		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
