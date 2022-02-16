@@ -257,10 +257,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			using (FeatureConfigurationHelper.UseManagedPopups())
 			{
-				await When_Soft_Keyboard_And_VisibleBounds(); 
+				await When_Soft_Keyboard_And_VisibleBounds();
 			}
 		}
-			#endif
+#endif
 
 
 		private async Task FocusTextBoxWithSoftKeyboard(TextBox textBox)
@@ -275,7 +275,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				inputPane.Showing += OnShowing;
 				textBox.Focus(FocusState.Programmatic);
-				await tcs.Task;
+
+				if ((await Task.WhenAny(tcs.Task, Task.Delay(8000))) != tcs.Task)
+				{
+					throw new InvalidOperationException("Failed to show soft keyboard");
+				}
 			}
 			finally
 			{
