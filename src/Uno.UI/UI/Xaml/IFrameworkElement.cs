@@ -206,6 +206,18 @@ namespace Windows.UI.Xaml
 				case View view:
 #if XAMARIN_ANDROID
 					view.RequestLayout();
+					var parent = view.Parent;
+					while (parent is { })
+					{
+						if (parent is UIElement uie)
+						{
+							uie.InvalidateMeasure();
+							break;
+						}
+
+						parent = parent.Parent;
+					}
+
 #elif XAMARIN_IOS
 					view.SetNeedsLayout();
 #elif __MACOS__

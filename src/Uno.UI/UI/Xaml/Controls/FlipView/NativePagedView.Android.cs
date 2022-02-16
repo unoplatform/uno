@@ -39,38 +39,21 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 		{
-			((ILayouterElement)this).OnMeasureInternal(widthMeasureSpec, heightMeasureSpec);
+			var measuredSize = ((ILayouterElement)this).OnMeasureInternal(widthMeasureSpec, heightMeasureSpec);
+
+			//We call ViewPager.OnMeasure here, because it creates the page views.
+			base.OnMeasure(
+				ViewHelper.SpecFromLogicalSize(measuredSize.Width),
+				ViewHelper.SpecFromLogicalSize(measuredSize.Height)
+			);
+
+			IFrameworkElementHelper.OnMeasureOverride(this);
 		}
 
 		void ILayouterElement.SetMeasuredDimensionInternal(int width, int height)
 		{
 			SetMeasuredDimension(width, height);
 		}
-
-
-		//TODO generated code - but note call of base.OnMeasure
-		//protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
-		//{
-		//	var availableSize = ViewHelper.LogicalSizeFromSpec(widthMeasureSpec, heightMeasureSpec);
-
-		//	if (!double.IsNaN(Width) || !double.IsNaN(Height))
-		//	{
-		//		availableSize = new Size(
-		//			double.IsNaN(Width) ? availableSize.Width : Width,
-		//			double.IsNaN(Height) ? availableSize.Height : Height
-		//		);
-		//	}
-
-		//	var measuredSize = _layouter.Measure(availableSize);
-
-		//	//We call ViewPager.OnMeasure here, because it creates the page views.
-		//	base.OnMeasure(
-		//		ViewHelper.SpecFromLogicalSize(measuredSize.Width),
-		//		ViewHelper.SpecFromLogicalSize(measuredSize.Height)
-		//	);
-
-		//	IFrameworkElementHelper.OnMeasureOverride(this);
-		//}
 
 		//TODO generated code
 		partial void OnLayoutPartial(bool changed, int left, int top, int right, int bottom)

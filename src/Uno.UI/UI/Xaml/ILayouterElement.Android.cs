@@ -1,6 +1,8 @@
 ﻿#nullable enable
 using System;
+using System.Runtime.CompilerServices;
 using Uno.UI;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml;
 
@@ -12,7 +14,8 @@ internal partial interface ILayouterElement
 
 	VerticalAlignment VerticalAlignment { get; }
 
-	internal void OnMeasureInternal(int widthMeasureSpec, int heightMeasureSpec)
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	internal Size OnMeasureInternal(int widthMeasureSpec, int heightMeasureSpec)
 	{
 		var availableSize = ViewHelper.LogicalSizeFromSpec(widthMeasureSpec, heightMeasureSpec);
 
@@ -39,6 +42,8 @@ internal partial interface ILayouterElement
 			(int)measuredSize.Width,
 			(int)measuredSize.Height
 		);
+
+		return measuredSize;
 	}
 
 	internal void SetMeasuredDimensionInternal(int width, int height);

@@ -20,6 +20,8 @@ namespace Windows.UI.Xaml
 
 		public string Name { get; set; }
 
+		internal bool IsMeasureDirtyPath => throw new NotSupportedException("Reference assembly");
+
 		internal bool IsPointerCaptured { get; set; }
 
 		internal bool ShouldInterceptInvalidate { get; set; }

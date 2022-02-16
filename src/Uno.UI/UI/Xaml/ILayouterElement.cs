@@ -29,22 +29,35 @@ internal static class LayouterElementExtensions
 	{
 		var isFirstMeasure = !element.IsFirstMeasureDone;
 
+		// "isDirty" here means this element's MeasureOverride
+		// method NEEDS to be called.
 		var isDirty =
-			(availableSize != element.LastAvailableSize)
-			|| element.IsMeasureDirty
-			|| !FeatureConfiguration.UIElement.UseInvalidateMeasurePath
-			|| isFirstMeasure
-			|| element.IsMeasureDirtyPathDisabled;
+			isFirstMeasure // first time here since attached to parent
+			|| (availableSize != element.LastAvailableSize) // size changed
+			|| element.IsMeasureDirty // .InvalidateMeasure() called
+			|| !FeatureConfiguration.UIElement.UseInvalidateMeasurePath // dirty_path disabled globally
+			|| element.IsMeasureDirtyPathDisabled; // dirty_path disabled locally
 
 		var frameworkElement = element as FrameworkElement;
-		if (frameworkElement is null)
+		if (frameworkElement is null) // native unmanaged element?
 		{
 			measuredSizeLogical = availableSize;
+			isDirty = true;
 		}
-		else if (!isDirty && !frameworkElement.IsMeasureDirtyPath)
+		else if (!isDirty)
 		{
-			measuredSizeLogical = frameworkElement.DesiredSize;
-			return false;
+			if (!frameworkElement.IsMeasureDirtyPath)
+			{
+				// That's a weird case, but we need to return something meaningful.
+				measuredSizeLogical = frameworkElement.DesiredSize;
+				return false;
+			}
+			if (element.GetParent() is not UIElement and not null)
+			{
+				// If the parent if this element is not managed (UIElement),
+				// .MeasureOverride() needs to be called.
+				isDirty = true;
+			}
 		}
 
 		if (isFirstMeasure)
@@ -66,7 +79,6 @@ internal static class LayouterElementExtensions
 				try
 				{
 					measuredSizeLogical = element.Layouter.Measure(availableSize);
-					//frameworkElement.InvalidateArrange();
 				}
 				catch (Exception e)
 				{
@@ -78,27 +90,22 @@ internal static class LayouterElementExtensions
 					LayoutInformation.SetAvailableSize(element, availableSize);
 				}
 
-				return true;
+				return true; // end of isDirty processing
 			}
 
-			// The dirty flag is set on one of the descendents:
-			// it will bypass the current element's MeasureOverride()
+			// The measure dirty flag is set on one of the descendents:
+			// it will bypass the current element's .MeasureOverride()
 			// since it shouldn't produce a different result and it's
 			// just a waste of precious CPU time to call it.
 			using var children = frameworkElement.GetChildren().GetEnumerator();
 
-			//foreach (var child in children)
 			while (children.MoveNext())
 			{
 				var child = children.Current;
 				// If the child is dirty (or is a path to a dirty descendant child),
 				// We're remeasuring it.
 
-				if (child is UIElement { IsMeasureOrMeasureDirtyPath: true }
-#if __ANDROID__
-					or { IsLayoutRequested: true }
-#endif
-					)
+				if (child is UIElement { IsMeasureOrMeasureDirtyPath: true })
 				{
 					var previousDesiredSize = LayoutInformation.GetDesiredSize(child);
 					element.Layouter.MeasureChild(child, LayoutInformation.GetAvailableSize(child));
@@ -109,15 +116,24 @@ internal static class LayouterElementExtensions
 						break;
 					}
 				}
+				else if (child is not UIElement)
+				{
+					isDirty = true;
+					break;
+				}
 			}
 
 			if (!isDirty)
 			{
 				measuredSizeLogical = LayoutInformation.GetDesiredSize(element);
-				break;
+				return true; // end of DIRTY_PATH processing
 			}
+
+			// When the end of the loop is reached here, it means the
+			// DIRTY_PATH process has been _upgraded_ to a standard _isDirty
+			// process instead.
 		}
 
-		return false;
+		return false; // UIElement.MaxLayoutIterations reached. Maybe an exception should be raised instead.
 	}
 }
