@@ -84,6 +84,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private bool _isTopLevelDictionary;
 		private readonly bool _isUnoAssembly;
+		private readonly bool _isUnoFluentAssembly;
 
 		/// <summary>
 		/// True if VisualStateManager children can be set lazily
@@ -227,6 +228,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool skipUserControlsInVisualTree,
 			bool shouldAnnotateGeneratedXaml,
 			bool isUnoAssembly,
+			bool isUnoFluentAssembly,
 			bool isLazyVisualStateManagerEnabled,
 			GeneratorExecutionContext generatorContext,
 			bool xamlResourcesTrimming,
@@ -287,6 +289,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isWasm = isWasm;
 
 			_isUnoAssembly = isUnoAssembly;
+			_isUnoFluentAssembly = isUnoFluentAssembly;
 		}
 
 		/// <summary>
@@ -2758,7 +2761,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var typeName = resource.Type.Name;
 			var symbol = GetType(resource.Type);
 
-			if (resource.Members.Any(HasXNameProperty))
+			if (resource.Members.Any(HasXNameProperty)
+
+				// Disable eager materialization for internal resource dictionaries
+				// where x:Name members are not used
+				&& !_isTopLevelDictionary && !_isUnoAssembly && !_isUnoFluentAssembly)
 			{
 				return false;
 			}

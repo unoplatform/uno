@@ -318,6 +318,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
 									shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
 									isUnoAssembly: IsUnoAssembly,
+									isUnoFluentAssembly: IsUnoFluentAssembly,
 									isLazyVisualStateManagerEnabled: _isLazyVisualStateManagerEnabled,
 									generatorContext: _generatorContext,
 									xamlResourcesTrimming: _xamlResourcesTrimming,
