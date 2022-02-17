@@ -441,17 +441,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Lookup for GlobalStaticResources classes in external assembly
 			// references only, and in Uno.UI itself for generic.xaml-like resources.
 
-			var query = from ext in _metadataHelper.Compilation.ExternalReferences
-						let sym = _metadataHelper.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
-						where sym != null
+			var assembliesQuery =
+				from ext in _metadataHelper.Compilation.ExternalReferences
+				let sym = _metadataHelper.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
+				where sym != null
+				select sym;
+
+			var query = from sym in assembliesQuery
 						from module in sym.Modules
-						from reference in module.ReferencedAssemblies
 
-							// Only consider assemblies that reference Uno.UI
-						where reference.Name == "Uno.UI" || sym.Name == "Uno.UI"
+						// Only consider assemblies that reference Uno.UI
+						where module.ReferencedAssemblies.Any(r => r.Name == "Uno.UI") || sym.Name == "Uno.UI"
 
-						// Don't consider Uno.UI.Fluent assemblies, as they manage their own initialization
-						where reference.Name != "Uno.UI.Fluent" && !reference.Name.StartsWith("Uno.UI.Fluent.v", StringComparison.InvariantCulture)
+						// Don't consider Uno.UI.FluentTheme assemblies, as they manage their own initialization
+						where sym.Name != "Uno.UI.FluentTheme" && !sym.Name.StartsWith("Uno.UI.FluentTheme.v", StringComparison.InvariantCulture)
 
 						from typeName in sym.GlobalNamespace.GetNamespaceTypes()
 						where typeName.Name.EndsWith("GlobalStaticResources")
