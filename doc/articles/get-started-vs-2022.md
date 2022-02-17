@@ -11,12 +11,12 @@
 	* **Mobile development with .NET (Xamarin)** workload installed.
 
     ![visual-studio-installer-xamarin](Assets/quick-start/vs-install-xamarin.png)
-    * Starting from VS 2022 17.1 Preview 1, select the **.NET Maui (Preview)** optional component (Installs the .NET 6 Android and iOS workloads)
+    * Starting from **[Visual Studio 2022 17.2 Preview 1](https://visualstudio.microsoft.com/vs/preview)**, select the **.NET Maui (Preview)** optional component (Installs the .NET 6 Android and iOS workloads)
         * The iOS Remote Simulator installed (for iOS development)
 	    * A working Mac with Visual Studio for Mac, XCode 13.5 Beta or later installed (for iOS development)
 	    * Google's Android x86 emulators or a physical Android device (for Android development)
 
-    * **ASP**.**NET and web** workload installed, along with .NET 6.0 (for WASM development)
+    * **ASP**.**NET and web** workload installed, along with .NET 6.0 (for WebAssembly development)
 
     ![visual-studio-installer-web](Assets/quick-start/vs-install-web.png)
 
@@ -47,7 +47,26 @@ Follow the steps indicated by the tool.
 ## Create an application from the solution template
 
 To easily create a multi-platform application:
+<<<<<<< HEAD
 * Create a new C# solution using the **Multi-Platform App (Uno Platform | .NET 6 | UWP)** template, from Visual Studio's **Start Page**:
+=======
+* Create a new C# solution using the **Multi-Platform App (Uno Platform|Xamarin)** template, from Visual Studio's **Start Page**:
+
+![new project](Assets/quick-start/vsix-new-project.png)
+* Update to the latest NuGet package named `Uno.UI`. To get the very latest preview features, check the `pre-release` box.
+* To debug the iOS head, select the `Debug|iPhoneSimulator` configuration
+* To debug the Android head, select the `Debug|Any CPU` configuration
+* To debug the UWP head, select the `Debug|x86` configuration
+* To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctr+F5** or choose `Start without debugging` from the Debug menu. To enable full debugging, see these [debugging instructions](debugging-wasm.md).
+
+
+## Create an application from the .NET 6 Mobile Preview solution template
+
+> .NET 6 Mobile support is currently in Preview, following Microsoft's support status. As of Uno 4.1, .NET 6 Mobile Preview 13 and above is supported with [Visual Studio 2022 17.2 Preview 1](https://visualstudio.microsoft.com/vs/preview). Previous releases of Visual Studio are not supported.
+
+To create a multi-platform application:
+* Create a new C# solution using the **Multi-Platform App (Uno Platform|net6)** template, from Visual Studio's **Start Page**
+>>>>>>> 836a8ca70 (docs: Update documentation)
 * Update to the latest NuGet package named `Uno.UI`. To get the very latest features, check the `pre-release` box.
 * To debug the iOS:
     - In the "Debug toolbar" drop down, select framework `net6.0-ios`
