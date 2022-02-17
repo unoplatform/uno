@@ -277,6 +277,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				inputPane.Showing += OnShowing;
 				textBox.Focus(FocusState.Programmatic);
 
+				if ((await Task.WhenAny(tcs.Task, Task.Delay(2000))) != tcs.Task)
+				{
+					// If focussing alone doesn't work, try explicitly invoking the keyboard
+					inputPane.TryShow();
+				}
+
 				if ((await Task.WhenAny(tcs.Task, Task.Delay(8000))) != tcs.Task)
 				{
 					throw new InvalidOperationException("Failed to show soft keyboard");
