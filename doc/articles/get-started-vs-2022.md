@@ -11,12 +11,12 @@
 	* **Mobile development with .NET (Xamarin)** workload installed.
 
     ![visual-studio-installer-xamarin](Assets/quick-start/vs-install-xamarin.png)
-    * Starting from VS 2022 17.1 Preview 1, select the **.NET Maui (Preview)** optional component (Installs the .NET 6 Android and iOS workloads)
+    * Starting from **[Visual Studio 2022 17.2 Preview 1](https://visualstudio.microsoft.com/vs/preview)**, select the **.NET Maui (Preview)** optional component (Installs the .NET 6 Android and iOS workloads)
         * The iOS Remote Simulator installed (for iOS development)
 	    * A working Mac with Visual Studio for Mac, Xcode 13.5 Beta or later installed (for iOS development)
 	    * Google's Android x86 emulators or a physical Android device (for Android development)
 
-    * **ASP**.**NET and web** workload installed, along with .NET 6.0 (for WASM development)
+    * **ASP**.**NET and web** workload installed, along with .NET 6.0 (for WebAssembly development)
 
     ![visual-studio-installer-web](Assets/quick-start/vs-install-web.png)
 
@@ -59,7 +59,7 @@ To easily create a multi-platform application:
 
 ## Create an application from the .NET 6 Mobile Preview solution template
 
-> .NET 6 Mobile support is currently in Preview, following Microsoft's support status. As of Uno 4.1, .NET 6 Mobile Preview 12 and above is supported.
+> .NET 6 Mobile support is currently in Preview, following Microsoft's support status. As of Uno 4.1, .NET 6 Mobile Preview 13 and above is supported with [Visual Studio 2022 17.2 Preview 1](https://visualstudio.microsoft.com/vs/preview). Previous releases of Visual Studio are not supported.
 
 To create a multi-platform application:
 * Create a new C# solution using the **Multi-Platform App (Uno Platform|net6)** template, from Visual Studio's **Start Page**

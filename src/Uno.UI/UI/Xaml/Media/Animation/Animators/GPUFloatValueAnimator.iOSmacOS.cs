@@ -401,8 +401,16 @@ namespace Windows.UI.Xaml.Media.Animation
 		private NSValue ToCASkewTransform(float angleX, float angleY)
 		{
 			var matrix = CGAffineTransform.MakeIdentity();
-			matrix.yx = (float)Math.Tan(MathEx.ToRadians(angleY));
-			matrix.xy = (float)Math.Tan(MathEx.ToRadians(angleX));
+			var b = (float)Math.Tan(MathEx.ToRadians(angleY));
+			var c = (float)Math.Tan(MathEx.ToRadians(angleX));
+
+#if NET6_0_OR_GREATER
+			matrix.B = b;
+			matrix.C = c;
+#else
+			matrix.yx = b;
+			matrix.xy = c;
+#endif
 
 			return NSValue.FromCATransform3D(CATransform3D.MakeFromAffine(matrix));
 		}

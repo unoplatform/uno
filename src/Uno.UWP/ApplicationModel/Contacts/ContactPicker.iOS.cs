@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Contacts
 		private async Task<Contact[]> PickContactsAsync(bool multiple, CancellationToken token)
 		{
 			var window = UIApplication.SharedApplication.KeyWindow;
-			var controller = window.RootViewController;
+			var controller = window?.RootViewController;
 			if (controller == null)
 			{
 				throw new InvalidOperationException(

@@ -153,7 +153,13 @@ namespace Windows.UI.Xaml
 
 		partial void ObserveSystemThemeChanges()
 		{
-			NSDistributedNotificationCenter.GetDefaultCenter().AddObserver(
+			NSDistributedNotificationCenter
+#if NET6_0_OR_GREATER
+				.DefaultCenter
+#else
+				.GetDefaultCenter()
+#endif
+				.AddObserver(
 				this,
 				_modeSelector,
 				_themeChangedNotification,

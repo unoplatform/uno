@@ -171,9 +171,9 @@ namespace Uno.AuthenticationBroker
 		private class PresentationContextProviderToSharedKeyWindow : NSObject, IASWebAuthenticationPresentationContextProviding
 		{
 #if __IOS__
-			public UIWindow GetPresentationAnchor(ASWebAuthenticationSession session) => UIApplication.SharedApplication.KeyWindow;
+			public UIWindow GetPresentationAnchor(ASWebAuthenticationSession session) => UIApplication.SharedApplication.KeyWindow!;
 #else
-			public NSWindow GetPresentationAnchor(ASWebAuthenticationSession session) => NSApplication.SharedApplication.KeyWindow;
+			public NSWindow GetPresentationAnchor(ASWebAuthenticationSession session) => NSApplication.SharedApplication.KeyWindow!;
 #endif
 		}
 

@@ -20,7 +20,12 @@ namespace Windows.UI.Xaml.Controls
 		private static DependencyProperty CancelTextIosOverrideProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.MenuFlyoutExtensions", "CancelTextIosOverride");
 
 #pragma warning disable CS0618 // Type or member is obsolete
-		private string LocalizedCancelString => NSBundle.FromIdentifier("com.apple.UIKit").LocalizedString("Cancel", null);
+		private string LocalizedCancelString => NSBundle.FromIdentifier("com.apple.UIKit")
+#if NET6_0_OR_GREATER
+			.GetLocalizedString("Cancel", null);
+#else
+			.LocalizedString("Cancel", null);
+#endif
 #pragma warning restore CS0618 // Type or member is obsolete
 
 		internal protected override void Open()

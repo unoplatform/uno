@@ -1,19 +1,26 @@
 parameters:
-  DotNetVersion: '6.0.200-preview.22055.15'
+  DotNetVersion: '6.0.200'
   UnoCheck_Version: '1.1.0-dev.22'
-  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/4b89f56d8fa3f2cdd980425dcc8cbc4db1249d99/manifests/uno.ui-preview.manifest.json'
+  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/90603a57991621c9998fa66534a14e5bf470acc4/manifests/uno.ui-preview.manifest.json'
 
 steps:
 
   ## Required until .NET 6 installs properly on Windows using UseDotnet
-  - powershell: |
-      $ProgressPreference = 'SilentlyContinue'
-      Invoke-WebRequest -Uri "https://dot.net/v1/dotnet-install.ps1" -OutFile dotnet-install.ps1
-      & .\dotnet-install.ps1 -Version ${{ parameters.DotNetVersion }} -InstallDir "$env:ProgramFiles\dotnet\" -Verbose
-      & dotnet --list-sdks
-    displayName: Install .NET ${{ parameters.DotNetVersion }}
-    errorActionPreference: stop
+  ## using preview builds
+  #- powershell: |
+  #    $ProgressPreference = 'SilentlyContinue'
+  #    Invoke-WebRequest -Uri "https://dot.net/v1/dotnet-install.ps1" -OutFile dotnet-install.ps1
+  #    & .\dotnet-install.ps1 -Version ${{ parameters.DotNetVersion }} -InstallDir "$env:ProgramFiles\dotnet\" -Verbose
+  #    & dotnet --list-sdks
+  #  displayName: Install .NET ${{ parameters.DotNetVersion }}
+  #  errorActionPreference: stop
+  #  retryCountOnTaskFailure: 3
+  - task: UseDotNet@2
+    displayName: 'Use .NET Core SDK ${{ parameters.DotNetVersion }}'
     retryCountOnTaskFailure: 3
+    inputs:
+      packageType: sdk
+      version: ${{ parameters.DotNetVersion }}
 
   - template: jdk-setup.yml
     
