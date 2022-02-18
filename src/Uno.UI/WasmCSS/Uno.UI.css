@@ -257,8 +257,8 @@ input::-ms-clear {
   display: none;
 }
 
-.selection-highlight-color::selection,
-.selection-highlight-color *::selection {
+.selection-highlight::selection,
+.selection-highlight *::selection {
   background: var(--selection-background);
   color: var(--selection-color);
 }

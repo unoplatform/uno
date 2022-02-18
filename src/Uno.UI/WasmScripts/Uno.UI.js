@@ -907,6 +907,20 @@ var Uno;
                 element.style.setProperty("color", this.numberToCssColor(color));
             }
             /**
+             * Sets the element's selection highlight.
+            **/
+            setSelectionHighlight(elementId, backgroundColor, foregroundColor) {
+                const element = this.getView(elementId);
+                element.classList.add("selection-highlight");
+                element.style.setProperty("--selection-background", this.numberToCssColor(backgroundColor));
+                element.style.setProperty("--selection-color", this.numberToCssColor(foregroundColor));
+                return true;
+            }
+            setSelectionHighlightNative(pParam) {
+                const params = WindowManagerSetSelectionHighlightParams.unmarshal(pParam);
+                return this.setSelectionHighlight(params.HtmlId, params.BackgroundColor, params.ForegroundColor);
+            }
+            /**
             * Sets the fill property of the specified element
             */
             setElementFill(elementId, color) {
@@ -5436,6 +5450,22 @@ class WindowManagerSetPropertyParams {
             else {
                 ret.Pairs = null;
             }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetSelectionHighlightParams {
+    static unmarshal(pData) {
+        const ret = new WindowManagerSetSelectionHighlightParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.BackgroundColor = Module.HEAPU32[(pData + 4) >> 2];
+        }
+        {
+            ret.ForegroundColor = Module.HEAPU32[(pData + 8) >> 2];
         }
         return ret;
     }

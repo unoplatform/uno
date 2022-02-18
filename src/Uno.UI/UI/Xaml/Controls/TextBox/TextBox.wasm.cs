@@ -105,7 +105,6 @@ namespace Windows.UI.Xaml.Controls
 				if (brush != null)
 				{
 					var color = brush.ColorWithOpacity;
-					SetCssClasses("selection-highlight-color");
 
 					Windows.UI.Color foregroundColor = Colors.White;
 
@@ -115,13 +114,11 @@ namespace Windows.UI.Xaml.Controls
 						foregroundColor = Colors.Black;
 					}
 
-					SetStyle(
-						("--selection-background", color.ToCssString()),
-						("--selection-color", foregroundColor.ToCssString()));
+					SetSelectionHighlight(color, foregroundColor);
 				}
 				else
 				{
-					UnsetCssClasses("selection-highlight-color");
+					UnsetSelectionHighlight();
 				}
 			}
 		}
