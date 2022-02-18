@@ -99,6 +99,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnBackgroundChanged(e);
 			UpdateHitTest();
+			UpdateBorder();
 		}
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
