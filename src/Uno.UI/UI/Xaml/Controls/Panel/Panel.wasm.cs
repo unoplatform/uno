@@ -94,6 +94,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnBackgroundChanged(e);
 			UpdateHitTest();
+			UpdateBorder();
 		}
 	}
 }

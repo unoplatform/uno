@@ -77,6 +77,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnBackgroundChanged(e);
 			UpdateHitTest();
+			UpdateBorder();
 		}
 	}
 }
