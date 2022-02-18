@@ -76,6 +76,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnBackgroundChanged(e);
 			UpdateHitTest();
+			UpdateBorder();
 		}
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => !(Child is UIElement ue) || ue.RenderTransform == null;
