@@ -3,15 +3,11 @@
 #endif
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Windows.Input;
 
 using Uno.Extensions;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
@@ -21,17 +17,15 @@ using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Uno.UI.Xaml.Input;
 using Uno.Foundation.Logging;
+using Uno.Disposables;
+using Uno.UI.Xaml.Media;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
-using Windows.UI.Input;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
-using Uno.Disposables;
-using Uno.UI.Xaml.Media;
 #endif
 
 namespace Windows.UI.Xaml.Controls
@@ -51,7 +45,7 @@ namespace Windows.UI.Xaml.Controls
 #pragma warning disable CS0067, CS0649
 		private IFrameworkElement _placeHolder;
 		private ContentControl _contentElement;
-		private WeakReference<Button> _deleteButton;		
+		private WeakReference<Button> _deleteButton;
 
 		private readonly SerialDisposable _selectionHighlightColorSubscription = new SerialDisposable();
 #pragma warning restore CS0067, CS0649
@@ -381,8 +375,6 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnForegroundColorChangedPartial(Brush newValue);
 
-
-
 		#region PlaceholderText DependencyProperty
 
 		public string PlaceholderText
@@ -428,7 +420,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				OnSelectionHighlightColorChangedPartial(null);
+				OnSelectionHighlightColorChangedPartial(DefaultBrushes.SelectionHighlightColor);
 			}
 		}
 

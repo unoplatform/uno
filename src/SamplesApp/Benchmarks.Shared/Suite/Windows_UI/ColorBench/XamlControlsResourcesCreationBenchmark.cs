@@ -44,4 +44,3 @@ public class ColorBenchmark
 		var b = _color1.Equals(_color2);
 	}
 }
-#pragma warning restore CS0219
