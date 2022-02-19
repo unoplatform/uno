@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 {
@@ -59,6 +60,27 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 			var button = SUT.FindName("button") as Windows.UI.Xaml.Controls.Button;
 
 			Assert.AreEqual(SUT.PrimaryActionsList.Tag, button.Tag);
+		}
+
+		[TestMethod]
+		public void Binding_ElementName_In_Template_ItemsControl_Nested_Outer()
+		{
+			var SUT = new Binding_ElementName_In_Template_ItemsControl_Nested_Outer();
+
+			SUT.ForceLoaded();
+
+			SUT.PrimaryActionsList.ApplyTemplate();
+
+			SUT.PrimaryActionsList.ItemsSource = new[] { "test" };
+
+			//var control = SUT.PrimaryActionsList.FindName("control") as Binding_ElementName_In_Template_ItemsControl_Nested;
+			//Assert.AreEqual(SUT.Tag, control.Tag);
+
+			var SecondaryActionsList = SUT.FindName("SecondaryActionsList") as ItemsControl;
+			SecondaryActionsList.ItemsSource = new[] { "test" };
+
+			var button = SUT.FindName("button") as Button;
+			Assert.AreEqual(SUT.Tag, button.Tag);
 		}
 
 		[TestMethod]
