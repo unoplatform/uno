@@ -195,6 +195,7 @@ namespace Windows.UI.Xaml.Media
 			var paint = drawable.Paint;
 			paint.Color = fillPaint.Color;
 			paint.SetShader(fillPaint.Shader);
+			paint.AntiAlias = false;
 			return drawable;
 		}
 	}

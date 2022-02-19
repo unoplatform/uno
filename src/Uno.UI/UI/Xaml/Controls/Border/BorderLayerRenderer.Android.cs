@@ -364,6 +364,7 @@ namespace Windows.UI.Xaml.Controls
 							var lineDrawable = new PaintDrawable();
 							lineDrawable.Shape = new PathShape(line, viewSize.Width, viewSize.Height);
 							var paint = lineDrawable.Paint;
+							paint.AntiAlias = false;
 							paint.Color = strokePaint.Color;
 							paint.SetShader(strokePaint.Shader);
 							paint.StrokeWidth = (float)physicalBorderThickness.Top;
@@ -386,6 +387,7 @@ namespace Windows.UI.Xaml.Controls
 							var lineDrawable = new PaintDrawable();
 							lineDrawable.Shape = new PathShape(line, viewSize.Width, viewSize.Height);
 							var paint = lineDrawable.Paint;
+							paint.AntiAlias = false;
 							paint.Color = strokePaint.Color;
 							paint.SetShader(strokePaint.Shader);
 							paint.StrokeWidth = (float)physicalBorderThickness.Right;
@@ -408,6 +410,7 @@ namespace Windows.UI.Xaml.Controls
 							var lineDrawable = new PaintDrawable();
 							lineDrawable.Shape = new PathShape(line, viewSize.Width, viewSize.Height);
 							var paint = lineDrawable.Paint;
+							paint.AntiAlias = false;
 							paint.Color = strokePaint.Color;
 							paint.SetShader(strokePaint.Shader);
 							paint.StrokeWidth = (float)physicalBorderThickness.Bottom;
@@ -430,6 +433,7 @@ namespace Windows.UI.Xaml.Controls
 							var lineDrawable = new PaintDrawable();
 							lineDrawable.Shape = new PathShape(line, viewSize.Width, viewSize.Height);
 							var paint = lineDrawable.Paint;
+							paint.AntiAlias = false;
 							paint.Color = strokePaint.Color;
 							paint.SetShader(strokePaint.Shader);
 							paint.StrokeWidth = (float)physicalBorderThickness.Left;
