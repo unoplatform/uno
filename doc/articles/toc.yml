@@ -304,8 +304,6 @@
           href: features/bluetoothdevice.md
     - name: Uno features
       items:
-        - name: Uno Figma
-          href: getting-started-uno-figma.md
         - name: Uno.UI.Toolkit
           items:
             - name: VisibleBoundsPadding
@@ -503,6 +501,8 @@
   items:
     - name: Figma plugin
       items:
+        - name: Getting Started with Uno Figma
+          href: figma-plugin/getting-started-uno-figma.md
         - name: Uno Figma for designers
           items:
             - name: Building a simple login page
