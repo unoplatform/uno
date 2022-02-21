@@ -13,10 +13,10 @@
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 		<StackPanel Spacing="8" BorderBrush="Black" BorderThickness="2" Padding="4">
-			<Slider Header="Deptness" x:Name="deptness" Minimum="10" Maximum="150" Value="50" />
+			<Slider Header="Deepness" x:Name="deepness" Minimum="10" Maximum="150" Value="50" />
 			<Slider Header="Wideness" x:Name="wideness" Minimum="1" Maximum="300" Value="4" />
 			<Slider Header="Iterations" x:Name="iterations" Minimum="2" Maximum="1000" Value="60" />
-			<TextBlock>Deptness=<Run Text="{Binding Value, ElementName=deptness}" />, Wideness=<Run Text="{Binding Value, ElementName=wideness}" />, Iterations=<Run Text="{Binding Value, ElementName=iterations}" /></TextBlock>
+			<TextBlock>Deepness=<Run Text="{Binding Value, ElementName=deepness}" />, Wideness=<Run Text="{Binding Value, ElementName=wideness}" />, Iterations=<Run Text="{Binding Value, ElementName=iterations}" /></TextBlock>
 			<StackPanel Orientation="Horizontal" Spacing="8">
 				<StackPanel Orientation="Horizontal" Spacing="4">
 					<ToggleButton x:Name="optimizeMeasure" Click="changeOptimizeMeasure">Use MEASURE_DIRTY_PATH</ToggleButton>

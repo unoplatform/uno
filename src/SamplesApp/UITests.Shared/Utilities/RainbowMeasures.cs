@@ -73,7 +73,7 @@ namespace SampleApps.Utilities
 
 			if (Children.Count > 0 && Children[0] is { } child)
 			{
-#if XAMARIN
+#if HAS_UNO
 				MeasureElement(child, availableSize);
 #else
 				child.Measure(availableSize);
@@ -95,7 +95,7 @@ namespace SampleApps.Utilities
 		{
 			if (Children.Count > 0 && Children[0] is { } child)
 			{
-#if XAMARIN
+#if HAS_UNO
 				ArrangeElement(child, new Rect(default, finalSize));
 #else
 				child.Arrange(new Rect(default, finalSize));

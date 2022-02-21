@@ -98,7 +98,7 @@ namespace UITests.Windows_UI_Xaml.UIElementTests
 
 			var loops = (int)iterations.Value;
 
-			var modulo = deptness.Value * 4 + 10;
+			var modulo = deepness.Value * 4 + 10;
 
 			for (var i = 0; i < loops; i++)
 			{
@@ -149,8 +149,8 @@ namespace UITests.Windows_UI_Xaml.UIElementTests
 
 			RainbowMeasures mostInner;
 
-			var deptnessValue = (int)deptness.Value;
-			if (dept < deptnessValue)
+			var deepnessValue = (int)deepness.Value;
+			if (dept < deepnessValue)
 			{
 				var (subRoot, subChildren, inner) = BuildTest1(dept + 1);
 				grid.Children.Add(subRoot);

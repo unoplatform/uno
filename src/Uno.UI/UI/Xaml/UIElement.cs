@@ -296,6 +296,9 @@ namespace Windows.UI.Xaml
 
 			if (this.GetParent() is UIElement parent)
 			{
+				// Sometimes the measure algorithms are using the Visibility
+				// of their children. So we need to make sure they are reevaluated
+				// when visibility changes.
 				parent.InvalidateMeasure();
 			}
 		}

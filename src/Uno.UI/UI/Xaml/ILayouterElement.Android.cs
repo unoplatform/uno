@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Runtime.CompilerServices;
+using Uno.Extensions;
 using Uno.UI;
 using Windows.Foundation;
 
@@ -17,33 +18,40 @@ internal partial interface ILayouterElement
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	internal Size OnMeasureInternal(int widthMeasureSpec, int heightMeasureSpec)
 	{
-		var availableSize = ViewHelper.LogicalSizeFromSpec(widthMeasureSpec, heightMeasureSpec);
-
-		this.DoMeasure(availableSize, out var measuredSizeLogical);
-
-		var measuredSize = measuredSizeLogical.LogicalToPhysicalPixels();
-
-		if (StretchAffectsMeasure)
+		try
 		{
-			if (HorizontalAlignment == HorizontalAlignment.Stretch &&
-			    !double.IsPositiveInfinity(availableSize.Width))
+			var availableSize = ViewHelper.LogicalSizeFromSpec(widthMeasureSpec, heightMeasureSpec);
+
+			this.DoMeasure(availableSize, out var measuredSizeLogical);
+
+			var measuredSize = measuredSizeLogical.LogicalToPhysicalPixels();
+
+			if (StretchAffectsMeasure)
 			{
-				measuredSize.Width = ViewHelper.MeasureSpecGetSize(widthMeasureSpec);
+				if (HorizontalAlignment == HorizontalAlignment.Stretch &&
+				    !double.IsPositiveInfinity(availableSize.Width))
+				{
+					measuredSize.Width = ViewHelper.MeasureSpecGetSize(widthMeasureSpec);
+				}
+
+				if (VerticalAlignment == VerticalAlignment.Stretch && !double.IsPositiveInfinity(availableSize.Height))
+				{
+					measuredSize.Height = ViewHelper.MeasureSpecGetSize(heightMeasureSpec);
+				}
 			}
 
-			if (VerticalAlignment == VerticalAlignment.Stretch && !double.IsPositiveInfinity(availableSize.Height))
-			{
-				measuredSize.Height = ViewHelper.MeasureSpecGetSize(heightMeasureSpec);
-			}
+			// Report our final dimensions.
+			SetMeasuredDimensionInternal(
+				(int)measuredSize.Width,
+				(int)measuredSize.Height
+			);
+
+			return measuredSize;
 		}
-
-		// Report our final dimensions.
-		SetMeasuredDimensionInternal(
-			(int)measuredSize.Width,
-			(int)measuredSize.Height
-		);
-
-		return measuredSize;
+		catch (Exception ex)
+		{
+			Application.Current.RaiseRecoverableUnhandledExceptionOrLog(ex, this);
+		}
 	}
 
 	internal void SetMeasuredDimensionInternal(int width, int height);

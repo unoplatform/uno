@@ -206,6 +206,9 @@ namespace Windows.UI.Xaml
 				case View view:
 #if XAMARIN_ANDROID
 					view.RequestLayout();
+
+					// Invalidate the first "managed" parent to
+					// ensure its .MeasureOverride() gets called
 					var parent = view.Parent;
 					while (parent is { })
 					{
