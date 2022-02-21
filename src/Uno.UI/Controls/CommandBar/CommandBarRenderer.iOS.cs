@@ -215,6 +215,13 @@ namespace Uno.UI.Controls
 				Native.BackIndicatorTransitionMaskImage = backButtonIcon;
 			}
 
+			// Remove 1px "shadow" line from the bottom of UINavigationBar
+			// The legacy customization (iOS12 and lower) to remove this shadow is done in the above switch for Background property
+			if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
+			{
+				appearance.ShadowColor = UIColor.Clear;
+			}
+
 			Native.CompactAppearance = appearance;
 			Native.StandardAppearance = appearance;
 			Native.ScrollEdgeAppearance = appearance;
