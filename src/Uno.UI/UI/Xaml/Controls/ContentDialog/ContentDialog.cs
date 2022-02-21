@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml.Controls
 			Hide(ContentDialogResult.None);
 		}
 
-		private bool Hide(ContentDialogResult result)
+		internal bool Hide(ContentDialogResult result)
 		{
 			void Complete(ContentDialogClosingEventArgs args)
 			{
