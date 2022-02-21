@@ -1,7 +1,8 @@
-﻿# ListViewBase in Uno
+﻿# ListViewBase in Uno Platform
 
-Uno's implementation of ListViewBase supports shared styling and template use with UWP apps, whilst internally delegating to the native 
-list view on each platform for high performance. This document explains how Uno's implementation differs internally from Windows.
+Uno Platform's implementation of ListViewBase supports shared styling and template use with UWP apps, whilst internally delegating to the native list view on Android and iOS for high performance. This document explains how Uno's implementation differs in some details from Windows.
+
+For contributors, [in-depth documentation on the internals of ListView is available](../uno-development/listviewbase-internals.md).
 
 ## Style reuse
 
@@ -155,15 +156,6 @@ ScrollViewer + ScrollContentPresenter.
 |                                                    |   |                                                    |
 +----------------------------------------------------+   +----------------------------------------------------+
 ```
-
-### Internal classes
-
-| Uno class | Android base class | iOS base class | Description |
-| --- | --- | --- | --- |
-| NativeListViewBase | AndroidX.RecyclerView.Widget.RecyclerView | UIKit.UICollectionView | Native list view, parent of item views. |
-| ItemsStackPanelLayout(ItemsWrapGridLayout) | RecyclerView.LayoutManager | UIKit.UICollectionViewLayout | Tells NativeListViewBase how to lay out its items. Bridge for ItemsStackPanel(ItemsWrapGrid). |
-| NativeListViewBaseAdapter(Android), ListViewBaseSource(iOS) | RecyclerView.Adapter | UIKit.UICollectionViewSource | Handles creation and reuse of item views. No direct UWP equivalent. |
-| ScrollingViewCache | RecyclerView.ViewCacheExtension | - | Additional virtualization handling on Android which optimizes scroll performance. |
 
 ### Other differences from UWP
  
