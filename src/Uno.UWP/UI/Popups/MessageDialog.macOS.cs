@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using AppKit;
 using Windows.Foundation;
 
@@ -9,7 +11,7 @@ public partial class MessageDialog
 {
 	private const int FirstButtonResultIndex = 1000;  // Result is a number starting at 1000
 
-	public IAsyncOperation<IUICommand> ShowAsync()
+	private IAsyncOperation<IUICommand> ShowNativeAsync(CancellationToken ct)
 	{
 		var alert = new NSAlert()
 		{

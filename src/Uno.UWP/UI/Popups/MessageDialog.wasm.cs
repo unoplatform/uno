@@ -15,7 +15,7 @@ public partial class MessageDialog
 {
 	private static readonly SemaphoreSlim _viewControllerAccess = new SemaphoreSlim(1, 1);
 
-	public IAsyncOperation<IUICommand> ShowAsync()
+	private IAsyncOperation<IUICommand> ShowNativeAsync(CancellationToken ct)
 	{
 		VisualTreeHelperProxy.CloseAllFlyouts();
 

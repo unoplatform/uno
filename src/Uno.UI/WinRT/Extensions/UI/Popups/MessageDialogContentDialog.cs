@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;
@@ -47,10 +48,10 @@ internal class MessageDialogContentDialog : ContentDialog
 		DefaultButton = (ContentDialogButton)(_messageDialog.DefaultCommandIndex + 1); // ContentDialogButton indexed from 1
 	}
 
-	public new async Task<IUICommand> ShowAsync()
+	public async Task<IUICommand> ShowAsync(CancellationToken ct)
 	{
-		
-		var result = await base.ShowAsync();
+		var result = await base.ShowAsync().AsTask(ct);
+
 		if (result == ContentDialogResult.Primary)
 		{
 			_commands[0].Invoked?.Invoke(_commands[0]);
@@ -63,8 +64,11 @@ internal class MessageDialogContentDialog : ContentDialog
 		}
 		else
 		{
-			_commands[2].Invoked?.Invoke(_commands[2]);
-			return _commands[2];
+			// In case of task cancellation, the "third" button
+			// might not really exist - use last instead.
+			var lastCommand = _commands.Last();
+			lastCommand.Invoked?.Invoke(lastCommand);
+			return lastCommand;
 		}
 	}
 

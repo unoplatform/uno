@@ -15,7 +15,7 @@ public partial class MessageDialog
 {
 	private static readonly SemaphoreSlim _viewControllerAccess = new SemaphoreSlim(1, 1);
 
-	private async Task<IUICommand> ShowInner(CancellationToken ct)
+	private async Task<IUICommand> ShowNativeAsync(CancellationToken ct)
 	{
 		var result = new TaskCompletionSource<IUICommand>();
 		var alertActions = Commands

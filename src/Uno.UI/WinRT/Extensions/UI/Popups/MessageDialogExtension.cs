@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Popups;
 using Windows.UI.Popups.Internal;
@@ -18,9 +19,9 @@ internal class MessageDialogExtension : IMessageDialogExtension
 		_messageDialog = messageDialog ?? throw new ArgumentNullException(nameof(messageDialog));
 	}
 
-	public async Task<IUICommand> ShowAsync()
+	public async Task<IUICommand> ShowAsync(CancellationToken ct)
 	{
 		var contentDialog = new MessageDialogContentDialog(_messageDialog);
-		return await contentDialog.ShowAsync();
+		return await contentDialog.ShowAsync(ct);
 	}
 }

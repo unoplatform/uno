@@ -20,7 +20,7 @@ public partial class MessageDialog
 {
 	const int MaximumCommands = 3;
 
-	private async Task<IUICommand> ShowInner(CancellationToken ct)
+	private async Task<IUICommand> ShowNativeAsync(CancellationToken ct)
 	{
 		// Android recommends placing buttons in this order:
 		//  1) positive (default accept)
@@ -76,11 +76,6 @@ public partial class MessageDialog
 
 	partial void ValidateCommandsNative()
 	{
-		if (!WinRTFeatureConfiguration.MessageDialog.UseNativeDialog)
-		{
-			return;
-		}
-
 		// On Android, providing more than 3 commands will skip all but the first two and the last.
 		// We intercept this bad situation right away.
 		if (this.Commands.Count > MaximumCommands)
