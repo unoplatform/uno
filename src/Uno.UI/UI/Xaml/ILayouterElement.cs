@@ -83,7 +83,7 @@ internal static class LayouterElementExtensions
 				catch (Exception e)
 				{
 					Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, element);
-					throw;
+					return false;
 				}
 				finally
 				{
