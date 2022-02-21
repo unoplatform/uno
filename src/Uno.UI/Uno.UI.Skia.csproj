@@ -111,4 +111,8 @@
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
 	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="WinRT\Extensions\UI\Popups\MessageDialogContentDialog.cs" />
+	</ItemGroup>
 </Project>

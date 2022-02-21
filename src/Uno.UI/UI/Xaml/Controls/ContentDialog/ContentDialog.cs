@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 			DefaultStyleKey = typeof(ContentDialog);
 		}
 
-		private void OnPopupKeyDown(object sender, KeyRoutedEventArgs e)
+		private protected virtual void OnPopupKeyDown(object sender, KeyRoutedEventArgs e)
 		{
 			switch (e.Key)
 			{

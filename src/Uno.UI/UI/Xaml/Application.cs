@@ -38,6 +38,10 @@ using AppKit;
 #else
 using View = Windows.UI.Xaml.UIElement;
 using ViewGroup = Windows.UI.Xaml.UIElement;
+using Uno.Foundation.Extensibility;
+using Windows.UI.Popups.Internal;
+using Windows.UI.Popups;
+using Uno.UI.WinRT.Extensions.UI.Popups;
 #endif
 
 namespace Windows.UI.Xaml
@@ -59,7 +63,14 @@ namespace Windows.UI.Xaml
 			Uno.Helpers.DispatcherTimerProxy.SetDispatcherTimerGetter(() => new DispatcherTimer());
 			Uno.Helpers.VisualTreeHelperProxy.SetCloseAllFlyoutsAction(() => Media.VisualTreeHelper.CloseAllFlyouts());
 
+			RegisterExtensions();
+
 			InitializePartialStatic();
+		}
+
+		private static void RegisterExtensions()
+		{
+			ApiExtensibility.Register<MessageDialog>(typeof(IMessageDialogExtension), dialog => new MessageDialogExtension(dialog));
 		}
 
 		static partial void InitializePartialStatic();
