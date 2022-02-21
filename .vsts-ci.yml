@@ -20,7 +20,7 @@ pr:
     exclude:
     - .dependabot/
     - .github/
-    - '*.md'
+    - doc/*
     - .all-contributorsrc
 
 resources:
