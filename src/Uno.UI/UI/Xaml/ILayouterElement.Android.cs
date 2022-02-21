@@ -51,6 +51,7 @@ internal partial interface ILayouterElement
 		catch (Exception ex)
 		{
 			Application.Current.RaiseRecoverableUnhandledExceptionOrLog(ex, this);
+			return default;
 		}
 	}
 
