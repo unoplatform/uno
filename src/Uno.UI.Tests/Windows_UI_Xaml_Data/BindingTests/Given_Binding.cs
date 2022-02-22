@@ -73,9 +73,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 
 			SUT.PrimaryActionsList.ItemsSource = new[] { "test" };
 
-			//var control = SUT.PrimaryActionsList.FindName("control") as Binding_ElementName_In_Template_ItemsControl_Nested;
-			//Assert.AreEqual(SUT.Tag, control.Tag);
-
 			var SecondaryActionsList = SUT.FindName("SecondaryActionsList") as ItemsControl;
 			SecondaryActionsList.ItemsSource = new[] { "test" };
 
