@@ -89,9 +89,6 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
-			// Don't call base, just update the filling color.
-			_brushChanged.Disposable = Brush.AssignAndObserveBrush(e.NewValue as Brush, c => UpdateBorder(), UpdateBorder);
-
 			UpdateBorder();
 		}
 
