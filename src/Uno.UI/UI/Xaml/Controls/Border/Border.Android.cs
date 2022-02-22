@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if XAMARIN
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
@@ -7,12 +8,19 @@ using System.Linq;
 using Uno.Disposables;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
-using Uno.UI.Helpers;
 
+#if XAMARIN_ANDROID
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 using Android.Views;
+#elif XAMARIN_IOS
+using View = MonoTouch.UIKit.UIView;
+using Color = MonoTouch.UIKit.UIColor;
+using Font = MonoTouch.UIKit.UIFont;
+#else
+using Color = System.Drawing.Color;
+#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -81,9 +89,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
-			// Don't call base, just update the filling color.
-			var newOnInvalidateRender = _brushChanged ?? (() => UpdateBorder());
-			Brush.SetupBrushChanged(e.OldValue as Brush, e.NewValue as Brush, ref _brushChanged, newOnInvalidateRender);
+			UpdateBorder();
 		}
 
 		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs e)
@@ -110,3 +116,4 @@ namespace Microsoft.UI.Xaml.Controls
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 	}
 }
+#endif

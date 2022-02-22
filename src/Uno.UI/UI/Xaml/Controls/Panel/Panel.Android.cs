@@ -1,7 +1,6 @@
 ﻿using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Controls;
-using Uno.UI.Helpers;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -99,8 +98,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
 		{
-			var newOnInvalidateRender = _borderBrushChanged ?? (() => UpdateBorder());
-			Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, newOnInvalidateRender);
+			UpdateBorder();
 		}
 
 		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
@@ -115,9 +113,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
-			// Don't call base, just update the filling color.
-			var newOnInvalidateRender = _backgroundBrushChanged ?? (() => UpdateBorder());
-			Brush.SetupBrushChanged(e.OldValue as Brush, e.NewValue as Brush, ref _backgroundBrushChanged, newOnInvalidateRender);
+			UpdateBorder();
 		}
 
 		protected override void OnBeforeArrange()
