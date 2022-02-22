@@ -303,7 +303,7 @@ namespace Uno.UI.Xaml
 		{
 			if (UseJavascriptEval)
 			{
-				var command = "Uno.UI.WindowManager.current.setSolidColorBorder(\"" + htmlId + "\", \"" + color.ToCssInteger() + "\", \"" + WebAssemblyRuntime.EscapeJs(borderWidth) + "\")";
+				var command = "Uno.UI.WindowManager.current.setSolidColorBorder(" + htmlId + ", \"" + color.ToCssInteger() + "\", \"" + WebAssemblyRuntime.EscapeJs(borderWidth) + "\")";
 
 				WebAssemblyRuntime.InvokeJS(command);
 			}
@@ -340,7 +340,7 @@ namespace Uno.UI.Xaml
 		{
 			if (UseJavascriptEval)
 			{
-				var command = "Uno.UI.WindowManager.current.setGradientBorder(\"" + htmlId + "\", \"" + WebAssemblyRuntime.EscapeJs(borderImage) + "\", \"" + WebAssemblyRuntime.EscapeJs(borderWidth) + "\")";
+				var command = "Uno.UI.WindowManager.current.setGradientBorder(" + htmlId + ", \"" + WebAssemblyRuntime.EscapeJs(borderImage) + "\", \"" + WebAssemblyRuntime.EscapeJs(borderWidth) + "\")";
 
 				WebAssemblyRuntime.InvokeJS(command);
 			}
@@ -368,6 +368,49 @@ namespace Uno.UI.Xaml
 
 			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string Width;
+		}
+
+		#endregion
+
+		#region SetBorderRadius
+
+		internal static void SetBorderRadius(IntPtr htmlId, CornerRadius cornerRadius)
+		{
+			if (UseJavascriptEval)
+			{
+				var topLeft = cornerRadius.TopLeft.ToStringInvariant();
+				var topRight = cornerRadius.TopRight.ToStringInvariant();
+				var bottomLeft = cornerRadius.BottomLeft.ToStringInvariant();
+				var bottomRight = cornerRadius.BottomRight.ToStringInvariant();
+				var command = "Uno.UI.WindowManager.current.setBorderRadius(" + htmlId + ", \"" + topLeft + "\",\"" + topRight + "\",\"" + bottomRight + "\",\"" + bottomLeft + "\")";
+
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerSetBorderRadiusParams
+				{
+					HtmlId = htmlId,
+					TopLeft = cornerRadius.TopLeft,
+					TopRight = cornerRadius.TopRight,
+					BottomLeft = cornerRadius.BottomLeft,
+					BottomRight = cornerRadius.BottomRight,
+				};
+
+				TSInteropMarshaller.InvokeJS("Uno:setBorderRadiusNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 8)]
+		private struct WindowManagerSetBorderRadiusParams
+		{
+			public IntPtr HtmlId;
+
+			public double TopLeft;
+			public double TopRight;
+			public double BottomLeft;
+			public double BottomRight;
 		}
 
 		#endregion
