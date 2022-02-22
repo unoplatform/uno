@@ -29,12 +29,12 @@ namespace Uno.UI
 			Uno.UI.GlobalStaticResources.MasterDictionary;
 #endif
 
-		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionariesByUri = new Dictionary<string, Func<ResourceDictionary>>(StringComparer.InvariantCultureIgnoreCase);
-		private static readonly Dictionary<string, ResourceDictionary> _registeredDictionariesByAssembly = new Dictionary<string, ResourceDictionary>();
+		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionariesByUri = new Dictionary<string, Func<ResourceDictionary>>(StringComparer.OrdinalIgnoreCase);
+		private static readonly Dictionary<string, ResourceDictionary> _registeredDictionariesByAssembly = new Dictionary<string, ResourceDictionary>(StringComparer.Ordinal);
 		/// <summary>
 		/// This is used by hot reload (since converting the file path to a Source is impractical at runtime).
 		/// </summary>
-		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionariesByFilepath = new Dictionary<string, Func<ResourceDictionary>>(StringComparer.InvariantCultureIgnoreCase);
+		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionariesByFilepath = new Dictionary<string, Func<ResourceDictionary>>(StringComparer.OrdinalIgnoreCase);
 
 		private static int _assemblyRef = -1;
 

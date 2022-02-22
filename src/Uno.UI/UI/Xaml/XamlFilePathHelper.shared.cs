@@ -45,8 +45,8 @@ namespace Uno.UI.Xaml
 			return absoluteTargetPath.Replace('\\', '/');
 		}
 
-		internal static bool IsAbsolutePath(string relativeTargetPath) => relativeTargetPath.StartsWith(AppXIdentifier, StringComparison.InvariantCulture)
-			|| relativeTargetPath.StartsWith(MSResourceIdentifier, StringComparison.InvariantCulture);
+		internal static bool IsAbsolutePath(string relativeTargetPath) => relativeTargetPath.StartsWith(AppXIdentifier, StringComparison.Ordinal)
+			|| relativeTargetPath.StartsWith(MSResourceIdentifier, StringComparison.Ordinal);
 
 		internal static string GetWinUIThemeResourceUrl(int version) => string.Format(WinUIThemeResourceURLFormatString, version);
 
