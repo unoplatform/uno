@@ -98,7 +98,6 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
 		{
-			_borderBrushChanged.Disposable = Brush.AssignAndObserveBrush(newValue, _ => UpdateBorder(), UpdateBorder);
 			UpdateBorder();
 		}
 
@@ -114,8 +113,6 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
-			// Don't call base, just update the filling color.
-			_backgroundBrushChanged.Disposable = Brush.AssignAndObserveBrush(e.NewValue as Brush, _ => UpdateBorder(), UpdateBorder);
 			UpdateBorder();
 		}
 
