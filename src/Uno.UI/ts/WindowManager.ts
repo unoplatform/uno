@@ -556,6 +556,30 @@ namespace Uno.UI {
 			return true;
 		}
 
+		public setBorderRadius(htmlId: number, topLeft: string, topRight: string, bottomRight: string, bottomLeft: string) {
+			const element = this.getView(htmlId);
+
+			const elementStyle = element.style;
+
+			elementStyle.setProperty("border-radius", topLeft + "px " + topRight + "px " + bottomRight + "px " + bottomLeft+ "px");
+			elementStyle.setProperty("overflow", "hidden"); // overflow: hidden is required here because the clipping can't do its job when it's non-rectangular.
+
+			return true;
+		}
+
+		/**
+		* Set border radius and overflow.
+		*/
+		public setBorderRadiusNative(pParams: number): boolean {
+			const params = WindowManagerSetBorderRadiusParams.unmarshal(pParams);
+			return this.setBorderRadius(
+				params.HtmlId,
+				params.TopLeft.toFixed(2).toString(),
+				params.TopRight.toFixed(2).toString(),
+				params.BottomRight.toFixed(2).toString(),
+				params.BottomLeft.toFixed(2).toString());
+		}
+
 		public setSolidColorBorder(htmlId: number, color: number, width: string) {
 			const element = this.getView(htmlId);
 
