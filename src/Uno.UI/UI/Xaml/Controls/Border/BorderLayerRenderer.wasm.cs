@@ -118,10 +118,7 @@ internal partial class BorderLayerRenderer
 		}
 		else
 		{
-			var borderRadiusCssString = $"{cornerRadius.TopLeft.ToStringInvariant()}px {cornerRadius.TopRight.ToStringInvariant()}px {cornerRadius.BottomRight.ToStringInvariant()}px {cornerRadius.BottomLeft.ToStringInvariant()}px";
-			_owner.SetStyle(
-				("border-radius", borderRadiusCssString),
-				("overflow", "hidden")); // overflow: hidden is required here because the clipping can't do its job when it's non-rectangular.
+			WindowManagerInterop.SetBorderRadius(_owner.HtmlId, cornerRadius);
 		}
 
 		_currentCornerRadius = cornerRadius;
@@ -223,7 +220,7 @@ internal partial class BorderLayerRenderer
 		{
 			_borderSubscription.Disposable = null;
 		}
-	}	
+	}
 
 	private void RecalculateBrushOnSizeChanged(bool shouldRecalculate)
 	{
