@@ -131,7 +131,7 @@ namespace Windows.Graphics.Display
 					return DisplayOrientations.None;
 				}
 
-				var rotation = windowManager.DefaultDisplay.Rotation;
+				var rotation = _cachedRotation;
 				bool isLandscape;
 				switch (rotation)
 				{
