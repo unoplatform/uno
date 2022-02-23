@@ -131,7 +131,7 @@ namespace Windows.Graphics.Display
 					return DisplayOrientations.None;
 				}
 
-				var rotation = _cachedRotation;
+				var rotation = windowManager.DefaultDisplay.Rotation;
 				bool isLandscape;
 				switch (rotation)
 				{
@@ -146,6 +146,7 @@ namespace Windows.Graphics.Display
 				return isLandscape ? DisplayOrientations.Landscape : DisplayOrientations.Portrait;
 			}
 		}
+
 
 		/// <summary>
 		/// Sets the CurrentOrientation property
@@ -217,7 +218,14 @@ namespace Windows.Graphics.Display
 				return windowService.JavaCast<IWindowManager>();;
 			}
 
-			throw new InvalidOperationException("Failed to get the system Window Service");
+		private DisplayMetrics CreateRealDisplayMetrics()
+		{
+			var displayMetrics = new DisplayMetrics();
+			using (var windowManager = CreateWindowManager())
+			{
+				windowManager.DefaultDisplay.GetRealMetrics(displayMetrics);
+			}
+			return displayMetrics;
 		}
 
 		partial void StartOrientationChanged()
