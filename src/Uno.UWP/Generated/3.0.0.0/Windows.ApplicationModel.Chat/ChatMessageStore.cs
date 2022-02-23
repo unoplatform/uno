@@ -40,14 +40,14 @@ namespace Windows.ApplicationModel.Chat
 		}
 		#endif
 		#if false || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[global::Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Chat.ChatMessageReader GetMessageReader()
 		{
 			throw new global::System.NotImplementedException("The member ChatMessageReader ChatMessageStore.GetMessageReader() is not implemented in Uno.");
 		}
 		#endif
 		#if false || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[global::Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Chat.ChatMessageReader GetMessageReader( global::System.TimeSpan recentTimeLimit)
 		{
 			throw new global::System.NotImplementedException("The member ChatMessageReader ChatMessageStore.GetMessageReader(TimeSpan recentTimeLimit) is not implemented in Uno.");
@@ -168,7 +168,7 @@ namespace Windows.ApplicationModel.Chat
 		}
 		#endif
 		#if false || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[global::Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SaveMessageAsync( global::Windows.ApplicationModel.Chat.ChatMessage chatMessage)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ChatMessageStore.SaveMessageAsync(ChatMessage chatMessage) is not implemented in Uno.");

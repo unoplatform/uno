@@ -132,7 +132,7 @@ namespace Windows.ApplicationModel.Chat
 			if (GetCurrentDefaultSMSapp() == newAppName)
 				return true;
 
-			return false; // zmiana nie zostala dokonana
+			return false; // no change was made
 		}
 
 		internal static bool TryHandleIntent(Android.Content.Intent intent, Android.App.Result resultCode)
