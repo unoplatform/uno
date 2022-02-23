@@ -15,7 +15,7 @@
 	<PropertyGroup>
     <Authors>nventive</Authors>
     <PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
-    <PackageIconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</PackageIconUrl>
+    <PackageIcon>uno.png</PackageIcon>
     <RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
     <Description>This package provides the ability for Uno Platform based apps to use dual screen devices such as the Surface Duo or Neo</Description>
     <Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
@@ -23,7 +23,7 @@
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
-		
+
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 	</PropertyGroup>
@@ -82,4 +82,8 @@
 	<PropertyGroup>
 		<AndroidLinkSkip>Xamarin.AndroidX.Core;Xamarin.AndroidX.RecyclerView;Xamarin.AndroidX.Window;Xamarin.AndroidX.Window.WindowJava;Xamarin.Kotlin.StdLib;Xamarin.KotlinX.Coroutines.Core</AndroidLinkSkip>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include=".\..\Common\uno.png" Pack="true" PackagePath="\" Visible="false"/>
+	</ItemGroup>
 </Project>
