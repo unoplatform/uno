@@ -8,14 +8,14 @@
 		<RuntimeIdentifier Condition="'$(TargetFramework)' == 'net6.0-ios'">iossimulator-x64</RuntimeIdentifier>
 		<RuntimeIdentifier Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
 		<RuntimeIdentifier Condition="'$(TargetFramework)' == 'net6.0-macos'">osx-x64</RuntimeIdentifier>
-		
+
 		<InvariantGlobalization Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">true</InvariantGlobalization>
 
 		<!-- Debugger workaround https://github.com/dotnet/maui-samples/blob/8aa6b8780b12e97b157514c3bdc54bb4a13001cd/HelloMacCatalyst/HelloMacCatalyst.csproj#L7 -->
 		<!-- <MtouchExtraArgs Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">$(MtouchExtraArgs) -setenv:MONO_THREADS_SUSPEND=preemptive</MtouchExtraArgs> -->
 
 		<!-- Required for C# Hot Reload -->
-		<UseInterpreter Condition="'$(Configuration)' == 'Debug'">True</UseInterpreter>
+		<UseInterpreter Condition="'$(Configuration)' == 'Debug' and '$(TargetFramework)' != 'net6.0-maccatalyst'">True</UseInterpreter>
 
 		<IsUnoHead>true</IsUnoHead>
 
@@ -41,6 +41,14 @@
 	<ItemGroup Condition="'$(TargetFramework)'=='net6.0-ios' or '$(TargetFramework)'=='net6.0-maccatalyst'">
 		<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.2.0-dev.2" />
 	</ItemGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)'=='net6.0-maccatalyst'">
+		<!-- Required for unknown crash as of .NET 6 Mobile Preview 13 -->
+		<MtouchExtraArgs>--registrar:static</MtouchExtraArgs>
+
+		<!-- Full globalization is required for Uno -->
+		<InvariantGlobalization>false</InvariantGlobalization>
+	</PropertyGroup>
 
 	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" />
 </Project>
