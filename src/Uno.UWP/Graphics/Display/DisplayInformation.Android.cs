@@ -131,7 +131,7 @@ namespace Windows.Graphics.Display
 					return DisplayOrientations.None;
 				}
 
-				var rotation = _cachedRotation;
+				var rotation = windowManager.DefaultDisplay.Rotation;
 				bool isLandscape;
 				switch (rotation)
 				{
@@ -147,6 +147,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 
+
 		/// <summary>
 		/// Sets the CurrentOrientation property
 		/// </summary>
@@ -158,54 +159,62 @@ namespace Windows.Graphics.Display
 		{
 			using (var windowManager = CreateWindowManager())
 			{
-				int width = _cachedDisplayMetrics.WidthPixels;
-				int height = _cachedDisplayMetrics.HeightPixels;
+				var rotation = windowManager.DefaultDisplay.Rotation;
+				using (var displayMetrics = new DisplayMetrics())
+				{
+#pragma warning disable 618
+					windowManager.DefaultDisplay.GetMetrics(displayMetrics);
+#pragma warning restore 618
 
-				if (width == height)
-				{
-					//square device, can't tell orientation
-					return DisplayOrientations.None;
-				}
+					int width = displayMetrics.WidthPixels;
+					int height = displayMetrics.HeightPixels;
 
-				if (NativeOrientation == DisplayOrientations.Portrait)
-				{
-					switch (_cachedRotation)
+					if (width == height)
 					{
-						case SurfaceOrientation.Rotation0:
-							return DisplayOrientations.Portrait;
-						case SurfaceOrientation.Rotation90:
-							return DisplayOrientations.Landscape;
-						case SurfaceOrientation.Rotation180:
-							return DisplayOrientations.PortraitFlipped;
-						case SurfaceOrientation.Rotation270:
-							return DisplayOrientations.LandscapeFlipped;
-						default:
-							//invalid rotation
-							return DisplayOrientations.None;
+						//square device, can't tell orientation
+						return DisplayOrientations.None;
 					}
-				}
-				else if (NativeOrientation == DisplayOrientations.Landscape)
-				{
-					//device is landscape or square
-					switch (_cachedRotation)
+
+					if (NativeOrientation == DisplayOrientations.Portrait)
 					{
-						case SurfaceOrientation.Rotation0:
-							return DisplayOrientations.Landscape;
-						case SurfaceOrientation.Rotation90:
-							return DisplayOrientations.Portrait;
-						case SurfaceOrientation.Rotation180:
-							return DisplayOrientations.LandscapeFlipped;
-						case SurfaceOrientation.Rotation270:
-							return DisplayOrientations.PortraitFlipped;
-						default:
-							//invalid rotation
-							return DisplayOrientations.None;
+						switch (rotation)
+						{
+							case SurfaceOrientation.Rotation0:
+								return DisplayOrientations.Portrait;
+							case SurfaceOrientation.Rotation90:
+								return DisplayOrientations.Landscape;
+							case SurfaceOrientation.Rotation180:
+								return DisplayOrientations.PortraitFlipped;
+							case SurfaceOrientation.Rotation270:
+								return DisplayOrientations.LandscapeFlipped;
+							default:
+								//invalid rotation
+								return DisplayOrientations.None;
+						}
 					}
-				}
-				else
-				{
-					//fallback
-					return DisplayOrientations.None;
+					else if (NativeOrientation == DisplayOrientations.Landscape)
+					{
+						//device is landscape or square
+						switch (rotation)
+						{
+							case SurfaceOrientation.Rotation0:
+								return DisplayOrientations.Landscape;
+							case SurfaceOrientation.Rotation90:
+								return DisplayOrientations.Portrait;
+							case SurfaceOrientation.Rotation180:
+								return DisplayOrientations.LandscapeFlipped;
+							case SurfaceOrientation.Rotation270:
+								return DisplayOrientations.PortraitFlipped;
+							default:
+								//invalid rotation
+								return DisplayOrientations.None;
+						}
+					}
+					else
+					{
+						//fallback
+						return DisplayOrientations.None;
+					}
 				}
 			}
 		}
@@ -217,7 +226,14 @@ namespace Windows.Graphics.Display
 				return windowService.JavaCast<IWindowManager>();;
 			}
 
-			throw new InvalidOperationException("Failed to get the system Window Service");
+		private DisplayMetrics CreateRealDisplayMetrics()
+		{
+			var displayMetrics = new DisplayMetrics();
+			using (var windowManager = CreateWindowManager())
+			{
+				windowManager.DefaultDisplay.GetRealMetrics(displayMetrics);
+			}
+			return displayMetrics;
 		}
 
 		partial void StartOrientationChanged()
