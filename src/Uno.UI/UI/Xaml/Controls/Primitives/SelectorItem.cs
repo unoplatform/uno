@@ -289,8 +289,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			if (ShouldHandlePressed
 				&& IsItemClickEnabled
 				&& args.GetCurrentPoint(this).Properties.IsLeftButtonPressed
-				&& CapturePointer(args.Pointer, PointerCaptureKind.Implicit))
+				&& CapturePointer(args.Pointer, PointerCaptureKind.Implicit) is not PointerCaptureResult.Failed)
 			{
+				// Note: We do allow PointerCaptureResult.AlreadyCaptured as if element has been flagged as CanDrag
+				//		 (common in ListView that do allow re-ordering ;) ),
+				//		 the pointer might have already been captured for this SelectorItem.
+
 				_isPressed = true;
 			}
 
@@ -306,8 +310,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
 		{
 			ManipulationUpdateKind update;
-			if (IsCaptured(args.Pointer, PointerCaptureKind.Implicit) &&
-				_isPressed)
+			if (_isPressed)
 			{
 				_isPressed = false;
 
