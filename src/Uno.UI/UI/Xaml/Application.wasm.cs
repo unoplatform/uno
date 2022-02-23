@@ -138,7 +138,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal static void DispatchSuspending()
 		{
-			Current?.OnSuspending();
+			Current?.RaiseSuspending();
 		}
 
 		private void ObserveApplicationVisibility()
