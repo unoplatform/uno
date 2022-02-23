@@ -538,8 +538,6 @@ namespace Windows.UI.Xaml
 			if (childParent != null)
 			{
 				Uno.UI.Xaml.WindowManagerInterop.RemoveView(HtmlId, child.HtmlId);
-
-				child.InvalidateMeasure();
 			}
 		}
 
