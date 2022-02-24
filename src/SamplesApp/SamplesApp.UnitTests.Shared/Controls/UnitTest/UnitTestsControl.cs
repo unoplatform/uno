@@ -179,7 +179,7 @@ namespace Uno.UI.Samples.Tests
 		private async Task ReportMessage(string message, bool isRunning = true)
 		{
 #if HAS_UNO
-			Uno.Foundation.Logging.LogExtensionPoint.Log(GetType()).Info(message);
+			_log?.Info(message);
 #endif
 
 			void Setter()
