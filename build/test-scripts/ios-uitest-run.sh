@@ -89,6 +89,9 @@ export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/Samples
 export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/ios-automated
 export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-ios-automated.xml
 
+export UNO_UITEST_SIMULATOR_VERSION="com.apple.CoreSimulator.SimRuntime.iOS-15-2"
+export UNO_UITEST_SIMULATOR_NAME="iPad Pro (12.9-inch) (4th generation)"
+
 UITEST_IGNORE_RERUN_FILE="${UITEST_IGNORE_RERUN_FILE:=false}"
 
 if [ $(wc -l < "$UNO_TESTS_FAILED_LIST") -eq 1 ] && [ "$UITEST_IGNORE_RERUN_FILE" != "true" ]; then
@@ -107,9 +110,9 @@ xcrun simctl list devices --json
 ##
 ## Pre-install the application to avoid https://github.com/microsoft/appcenter/issues/2389
 ##
-export SIMULATOR_ID=`xcrun simctl list -j | jq -r '.devices["com.apple.CoreSimulator.SimRuntime.iOS-15-2"] | .[] | select(.name=="iPad Pro (12.9-inch) (4th generation)") | .udid'`
+export SIMULATOR_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .udid'`
 
-echo "Starting simulator: $SIMULATOR_ID"
+echo "Starting simulator: $SIMULATOR_ID ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
 xcrun simctl boot "$SIMULATOR_ID" || true
 
 echo "Install app on simulator: $SIMULATOR_ID"
