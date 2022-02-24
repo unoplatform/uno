@@ -96,13 +96,18 @@ date
 echo "Listing iOS simulators"
 xcrun simctl list devices --json
 
-## Preemptively start the simulator
-/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/Contents/MacOS/Simulator &
-
 ## Pre-build the transform tool to get early warnings
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 dotnet build
 popd
+
+export SIMULATOR_ID=`xcrun simctl list -j | jq -r '.devices["com.apple.CoreSimulator.SimRuntime.iOS-15-2"] | .[] | select(.name=="iPad Pro (12.9-inch) (4th generation)") | .udid'`
+
+echo "Starting simulator: $SIMULATOR_ID"
+xcrun simctl boot "$SIMULATOR_ID" || true
+
+echo "Install app on simulator: $SIMULATOR_ID"
+xcrun simctl install "$SIMULATOR_ID" "$UNO_UITEST_IOSBUNDLE_PATH"
 
 cd $BUILD_SOURCESDIRECTORY/build
 
@@ -149,10 +154,17 @@ date
 # export the simulator logs
 export LOG_FILEPATH=$UNO_UITEST_SCREENSHOT_PATH/_logs
 export TMP_LOG_FILEPATH=/tmp/DeviceLog-`date +"%Y%m%d%H%M%S"`.logarchive
+export LOG_FILEPATH_FULL=$LOG_FILEPATH/DeviceLog-$UITEST_AUTOMATED_GROUP-`date +"%Y%m%d%H%M%S"`.txt
 
 mkdir -p $LOG_FILEPATH
 xcrun simctl spawn booted log collect --output $TMP_LOG_FILEPATH
-log show --style syslog $TMP_LOG_FILEPATH > $LOG_FILEPATH/DeviceLog-$UITEST_AUTOMATED_GROUP-`date +"%Y%m%d%H%M%S"`.txt
+log show --style syslog $TMP_LOG_FILEPATH > $LOG_FILEPATH_FULL
+
+if grep -Fxq "mini-generic-sharing.c:899" $LOG_FILEPATH_FULL
+then
+	# The application may crash without known cause, add a marker so the job can be restarted in that case.
+    echo "##[error]mini-generic-sharing.c:899 assertion reached (https://github.com/unoplatform/uno/issues/8167)"
+fi
 
 if [ ! -f "$UNO_ORIGINAL_TEST_RESULTS" ]; then
 	echo "ERROR: The test results file $UNO_ORIGINAL_TEST_RESULTS does not exist (did nunit crash ?)"
