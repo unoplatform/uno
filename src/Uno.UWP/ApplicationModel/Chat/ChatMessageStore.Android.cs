@@ -99,7 +99,7 @@ namespace Windows.ApplicationModel.Chat
 
 			Android.Content.Intent intent;
 
-			if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.K)
+			if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.Kitkat)
 			{
 				throw new NotImplementedException("OS.Build SDK is too low (I can work with  API > 18, Android Kitkat or newer).");
 			}
