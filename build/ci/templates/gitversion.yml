@@ -4,6 +4,13 @@ parameters:
 
 steps:
 
+  - task: Cache@2
+    condition: ne('${{parameters.skipCacheDownload}}', 'false')
+    inputs:
+      key: nuget | $(Agent.OS) | $(Agent.JobName)
+      path: $(build.sourcesdirectory)/.git/gitversion_cache
+    displayName: Cached GitVersion
+
   - task: DownloadBuildArtifacts@0
     condition: ne('${{parameters.skipCacheDownload}}', 'true')
     displayName: 'Download GitVersion Cache'
