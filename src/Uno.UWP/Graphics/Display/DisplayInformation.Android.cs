@@ -147,7 +147,6 @@ namespace Windows.Graphics.Display
 			}
 		}
 
-
 		/// <summary>
 		/// Sets the CurrentOrientation property
 		/// </summary>
@@ -218,14 +217,7 @@ namespace Windows.Graphics.Display
 				return windowService.JavaCast<IWindowManager>();;
 			}
 
-		private DisplayMetrics CreateRealDisplayMetrics()
-		{
-			var displayMetrics = new DisplayMetrics();
-			using (var windowManager = CreateWindowManager())
-			{
-				windowManager.DefaultDisplay.GetRealMetrics(displayMetrics);
-			}
-			return displayMetrics;
+			throw new InvalidOperationException("Failed to get the system Window Service");
 		}
 
 		partial void StartOrientationChanged()
