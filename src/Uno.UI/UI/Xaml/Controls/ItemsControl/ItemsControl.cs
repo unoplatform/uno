@@ -6,7 +6,6 @@ using Uno.Extensions;
 using Uno.UI;
 using System.Collections.Specialized;
 using Uno.Disposables;
-using Uno.UI.Controls;
 using Windows.UI.Xaml.Markup;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;
@@ -34,7 +33,6 @@ using AppKit;
 using View = AppKit.NSView;
 using Color = Windows.UI.Color;
 #else
-using Color = System.Drawing.Color;
 using View = Windows.UI.Xaml.UIElement;
 #endif
 
@@ -1274,7 +1272,7 @@ namespace Windows.UI.Xaml.Controls
 			if (IsItemItsOwnContainerOverride(item))
 			{
 				var container = item as DependencyObject;
-				container.SetValue(ItemsControlForItemContainerProperty, new WeakReference<ItemsControl>(this));
+				EnsureContainerItemsControlProperty(container);
 
 				return container;
 			}
@@ -1297,7 +1295,7 @@ namespace Windows.UI.Xaml.Controls
 			var container = GetRootOfItemTemplateAsContainer(template)
 				?? GetContainerForItemOverride();
 
-			container.SetValue(ItemsControlForItemContainerProperty, new WeakReference<ItemsControl>(this));
+			EnsureContainerItemsControlProperty(container);
 
 			return container;
 		}
@@ -1336,11 +1334,15 @@ namespace Windows.UI.Xaml.Controls
 					return null;
 				}
 
-				return item as DependencyObject;
+				var container = item as DependencyObject;
+				EnsureContainerItemsControlProperty(container);
+				return container;
 			}
 
 			var index = IndexFromItem(item);
-			return index == -1 ? null : MaterializedContainers.FirstOrDefault(materializedContainer => Equals(IndexFromContainer(materializedContainer), index));
+			var containerFromIndex = index == -1 ? null : MaterializedContainers.FirstOrDefault(materializedContainer => Equals(IndexFromContainer(materializedContainer), index));
+			EnsureContainerItemsControlProperty(containerFromIndex);
+			return containerFromIndex;
 		}
 
 		public int IndexFromContainer(DependencyObject container)
@@ -1402,7 +1404,9 @@ namespace Windows.UI.Xaml.Controls
 			var item = ItemFromIndex(index);
 			if (IsItemItsOwnContainer(item))
 			{
-				return item as DependencyObject;
+				var itemContainer = item as DependencyObject;
+				EnsureContainerItemsControlProperty(itemContainer);
+				return itemContainer;
 			}
 
 			int adjustedIndex = GetInProgressAdjustedIndex(index);
@@ -1412,7 +1416,21 @@ namespace Windows.UI.Xaml.Controls
 				return null;
 			}
 
-			return ContainerFromIndexInner(adjustedIndex);
+			var containerFromIndex = ContainerFromIndexInner(adjustedIndex);
+			EnsureContainerItemsControlProperty(containerFromIndex);
+			return containerFromIndex;
+		}
+
+		/// <summary>
+		/// Ensures the given container has valid reference to its ItemsControl owner.
+		/// </summary>
+		/// <param name="container">Container.</param>
+		private void EnsureContainerItemsControlProperty(DependencyObject container)
+		{
+			if (container != null)
+			{
+				container.SetValue(ItemsControlForItemContainerProperty, new WeakReference<ItemsControl>(this));
+			}
 		}
 
 		internal virtual DependencyObject ContainerFromIndexInner(int index)
