@@ -147,7 +147,6 @@ namespace Windows.Graphics.Display
 			}
 		}
 
-
 		/// <summary>
 		/// Sets the CurrentOrientation property
 		/// </summary>
@@ -159,15 +158,8 @@ namespace Windows.Graphics.Display
 		{
 			using (var windowManager = CreateWindowManager())
 			{
-				var rotation = windowManager.DefaultDisplay.Rotation;
-				using (var displayMetrics = new DisplayMetrics())
-				{
-#pragma warning disable 618
-					windowManager.DefaultDisplay.GetMetrics(displayMetrics);
-#pragma warning restore 618
-
-					int width = displayMetrics.WidthPixels;
-					int height = displayMetrics.HeightPixels;
+					int width = _cachedDisplayMetrics.WidthPixels;
+					int height = _cachedDisplayMetrics.HeightPixels;
 
 					if (width == height)
 					{
@@ -177,7 +169,7 @@ namespace Windows.Graphics.Display
 
 					if (NativeOrientation == DisplayOrientations.Portrait)
 					{
-						switch (rotation)
+						switch (_cachedRotation)
 						{
 							case SurfaceOrientation.Rotation0:
 								return DisplayOrientations.Portrait;
@@ -195,7 +187,7 @@ namespace Windows.Graphics.Display
 					else if (NativeOrientation == DisplayOrientations.Landscape)
 					{
 						//device is landscape or square
-						switch (rotation)
+						switch (_cachedRotation)
 						{
 							case SurfaceOrientation.Rotation0:
 								return DisplayOrientations.Landscape;
@@ -216,7 +208,6 @@ namespace Windows.Graphics.Display
 						return DisplayOrientations.None;
 					}
 				}
-			}
 		}
 
 		private IWindowManager CreateWindowManager()
@@ -226,14 +217,7 @@ namespace Windows.Graphics.Display
 				return windowService.JavaCast<IWindowManager>();;
 			}
 
-		private DisplayMetrics CreateRealDisplayMetrics()
-		{
-			var displayMetrics = new DisplayMetrics();
-			using (var windowManager = CreateWindowManager())
-			{
-				windowManager.DefaultDisplay.GetRealMetrics(displayMetrics);
-			}
-			return displayMetrics;
+			throw new InvalidOperationException("Failed to get the system Window Service");
 		}
 
 		partial void StartOrientationChanged()
@@ -254,11 +238,18 @@ namespace Windows.Graphics.Display
 			using var windowManager = CreateWindowManager();
 			if (windowManager.DefaultDisplay is { } defaultDisplay)
 			{
-#pragma warning disable CS0618 // GetRealMetrics is obsolete in API 31
-				defaultDisplay.GetRealMetrics(displayMetrics);
-#pragma warning restore CS0618 // GetRealMetrics is obsolete in API 31
 
-				_cachedDisplayMetrics = new DisplayMetricsCache(displayMetrics);
+				if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.S)
+				{
+#pragma warning disable CS0618 // GetRealMetrics is obsolete in API 31
+					defaultDisplay.GetRealMetrics(displayMetrics);
+#pragma warning restore CS0618 // GetRealMetrics is obsolete in API 31
+					_cachedDisplayMetrics = new DisplayMetricsCache(displayMetrics);
+				}
+				else
+				{
+					_cachedDisplayMetrics = new DisplayMetricsCache(windowManager.CurrentWindowMetrics, Android.Content.Res.Resources.System?.Configuration);
+				}
 				_cachedRotation = windowManager.DefaultDisplay.Rotation;
 			}
 			else
@@ -278,6 +269,20 @@ namespace Windows.Graphics.Display
 				WidthPixels = displayMetric.WidthPixels;
 				Xdpi = displayMetric.Xdpi;
 				Ydpi = displayMetric.Ydpi;
+			}
+
+			public DisplayMetricsCache(WindowMetrics windowMetric, Android.Content.Res.Configuration? configuration)
+			{
+				HeightPixels = windowMetric.Bounds.Height();
+				WidthPixels = windowMetric.Bounds.Width();
+				if(configuration != null)
+				{
+					Xdpi = configuration.DensityDpi;
+					Ydpi = configuration.DensityDpi;
+					Density = configuration.DensityDpi/160;
+					ScaledDensity = Density;
+				}
+				DensityDpi = DisplayMetricsDensity.Default; // sorry, I don't know how to convert int to DisplayMetricsDensity enum
 			}
 
 			public float Density { get; }
