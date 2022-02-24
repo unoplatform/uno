@@ -220,20 +220,21 @@ namespace SamplesApp
 				Console.WriteLine("Starting dispatcher WatchDog...");
 
 				var dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
+				var timeout = TimeSpan.FromSeconds(240);
 
 				Task.Run(async () =>
 				{
 
 					while (true)
 					{
-						var delayTask = Task.Delay(TimeSpan.FromSeconds(240));
+						var delayTask = Task.Delay(timeout);
 						var messageTask = dispatcher.RunAsync(CoreDispatcherPriority.High, () => { }).AsTask();
 
 						if (await Task.WhenAny(delayTask, messageTask) == delayTask)
 						{
 							ThreadPool.QueueUserWorkItem(
 								_ => {
-								Console.WriteLine("WatchDog detecting a stall in the dispatcher, terminating the app");
+								Console.WriteLine($"WatchDog detecting a stall in the dispatcher after {timeout}, terminating the app");
 								throw new Exception($"Watchdog failed");
 							});
 						}
@@ -406,6 +407,18 @@ namespace SamplesApp
 #else
 				builder.AddConsole();
 #endif
+
+
+#if !DEBUG
+				// Exclude logs below this level
+				builder.SetMinimumLevel(LogLevel.Information);
+#else
+				// Exclude logs below this level
+				builder.SetMinimumLevel(LogLevel.Debug);
+#endif
+
+				// Runtime Tests control logging
+				builder.AddFilter("Uno.UI.Samples.Tests", LogLevel.Information);
 
 				builder.AddFilter("Uno", LogLevel.Warning);
 				builder.AddFilter("Windows", LogLevel.Warning);
