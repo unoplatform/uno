@@ -40,7 +40,7 @@ using ViewGroup = Windows.UI.Xaml.UIElement;
 namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = "Content")]
-	public partial class ContentPresenter : FrameworkElement, ICustomClippingElement
+	public partial class ContentPresenter : FrameworkElement, ICustomClippingElement, IFrameworkTemplatePoolAware
 	{
 		private bool _firstLoadResetDone;
 		private View _contentTemplateRoot;
@@ -814,6 +814,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			return false;
+		}
+
+		void IFrameworkTemplatePoolAware.OnTemplateRecycled()
+		{
+			// This needs to be cleared on recycle, to prevent
+			// SetUpdateTemplate from being skipped in OnLoaded.
+			_firstLoadResetDone = false;
 		}
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
