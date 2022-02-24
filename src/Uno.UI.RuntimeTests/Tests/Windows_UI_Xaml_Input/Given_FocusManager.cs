@@ -389,8 +389,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			var sourcePage = (ListViewItemPage)frame.Content;
 			await WaitForLoadedEvent(sourcePage);
 
-			await TestServices.WindowHelper.WaitFor(() => sourcePage.List.GetContainerForIndex(0) is not null);
-			var container = sourcePage.List.GetContainerForIndex(0) as ListViewItem;
+			await TestServices.WindowHelper.WaitFor(() => sourcePage.List.ContainerFromIndex(0) is not null);
+			var container = sourcePage.List.ContainerFromIndex(0) as ListViewItem;
 			container.Focus(FocusState.Programmatic);
 
 			await TestServices.WindowHelper.WaitForIdle();
