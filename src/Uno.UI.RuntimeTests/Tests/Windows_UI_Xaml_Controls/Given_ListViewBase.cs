@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
@@ -210,6 +209,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => (si = SUT.ContainerFromItem(source[0]) as SelectorItem) != null);
 
 			Assert.AreEqual("item 1", si.Content);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Item_Parents_Include_ListView()
+		{
+			var SUT = new ListView()
+			{
+				ItemContainerStyle = BasicContainerStyle,
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var source = new[] {
+				new ListViewItem(){ Content = "item 1" },
+				new ListViewItem(){ Content = "item 2" },
+				new ListViewItem(){ Content = "item 3" },
+				new ListViewItem(){ Content = "item 4" },
+			};
+
+			SUT.ItemsSource = source;
+
+			SelectorItem si = null;
+			await WindowHelper.WaitFor(() => (si = SUT.ContainerFromItem(source[0]) as SelectorItem) != null);
+
+			Assert.IsNull(si.Parent);
+			var parent = VisualTreeHelper.GetParent(si);
+			while (parent is not null && parent is not ListView listView)
+			{
+				parent = VisualTreeHelper.GetParent(parent);
+			}
+
+			Assert.IsInstanceOfType(parent, typeof(ListView));
 		}
 
 
@@ -717,6 +751,105 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(3, list.IndexFromContainer(items[3]));
 			Assert.AreEqual(items[1], list.ItemFromContainer(items[1]));
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Own_Container_ContainerFromItem_Owner()
+		{
+			var list = new ListView();
+			var item = new ListViewItem();
+			var items = new ObservableCollection<ListViewItem>()
+			{
+				item,
+			};
+
+			list.ItemsSource = items;
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 1);
+
+			var container = list.ContainerFromItem(item);
+			Assert.AreEqual(list, ItemsControl.ItemsControlFromItemContainer(container));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Own_Container_ContainerFromIndex_Owner()
+		{
+			var list = new ListView();
+			var item = new ListViewItem();
+			var items = new ObservableCollection<ListViewItem>()
+			{
+				item,
+			};
+
+			list.ItemsSource = items;
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 1);
+
+			var container = list.ContainerFromIndex(0);
+			Assert.AreEqual(list, ItemsControl.ItemsControlFromItemContainer(container));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Own_Container_Direct_Owner()
+		{
+			var list = new ListView();
+			var item = new ListViewItem();
+			var items = new ObservableCollection<ListViewItem>()
+			{
+				item,
+			};
+
+			list.ItemsSource = items;
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 1);
+		
+			Assert.AreEqual(list, ItemsControl.ItemsControlFromItemContainer(item));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Not_Own_Container_ContainerFromItem_Owner()
+		{
+			var list = new ListView();			
+			var items = new ObservableCollection<int>()
+			{
+				1,
+			};
+
+			list.ItemsSource = items;
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 1);
+
+			var container = list.ContainerFromItem(items[0]);
+			Assert.AreEqual(list, ItemsControl.ItemsControlFromItemContainer(container));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Not_Own_Container_ContainerFromIndex_Owner()
+		{
+			var list = new ListView();
+			var items = new ObservableCollection<int>()
+			{
+				1,
+			};
+
+			list.ItemsSource = items;
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 1);
+
+			var container = list.ContainerFromIndex(0);
+			Assert.AreEqual(list, ItemsControl.ItemsControlFromItemContainer(container));
+		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -1723,7 +1856,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				ItemsPanel = NoCacheItemsStackPanel,
 				ItemTemplate = FixedSizeItemTemplate,
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemsSource = Enumerable.Range(0,10).Select(i => $"Item {i}").ToArray()
+				ItemsSource = Enumerable.Range(0, 10).Select(i => $"Item {i}").ToArray()
 			};
 			var host = new Grid
 			{
