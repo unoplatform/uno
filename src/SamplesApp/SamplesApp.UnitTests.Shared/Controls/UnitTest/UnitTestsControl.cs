@@ -84,6 +84,8 @@ namespace Uno.UI.Samples.Tests
 			EnableConfigPersistence();
 			OverrideDebugProviderAsserts();
 
+			UpdateContentScroller();
+
 			_applicationView = ApplicationView.GetForCurrentView();
 		}
 
@@ -915,8 +917,15 @@ namespace Uno.UI.Samples.Tests
 			Clipboard.SetContent(data);
 		}
 
-		private void UpdateContentScroller(object sender, RoutedEventArgs e)
+		private void ContentScrollerToggleChanged(object sender, RoutedEventArgs e) => UpdateContentScroller();
+
+		private void UpdateContentScroller()
 		{
+			if (unitTestContentScroller == null || unitTestContentRoot == null)
+			{
+				return;
+			}
+
 			if (contentScroller.IsChecked ?? UnitTestEngineConfig.DefaultIsScrollerEnabled)
 			{
 				unitTestContentScroller.HorizontalScrollMode = ScrollMode.Auto;

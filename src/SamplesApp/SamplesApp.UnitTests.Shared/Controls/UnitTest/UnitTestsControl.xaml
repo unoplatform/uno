@@ -75,8 +75,8 @@
 									IsChecked="True"
 									not_skia:Content="⇲ Content scroll"
 									skia:Content="Content scroll"
-									Checked="UpdateContentScroller"
-									Unchecked="UpdateContentScroller"/>
+									Checked="ContentScrollerToggleChanged"
+									Unchecked="ContentScrollerToggleChanged"/>
 							</StackPanel>
 						</Flyout>
 					</Button.Flyout>
