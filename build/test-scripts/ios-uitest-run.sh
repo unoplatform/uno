@@ -96,18 +96,21 @@ date
 echo "Listing iOS simulators"
 xcrun simctl list devices --json
 
-## Pre-build the transform tool to get early warnings
-pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
-dotnet build
-popd
-
+##
+## Pre-install the application to avoid https://github.com/microsoft/appcenter/issues/2389
+##
 export SIMULATOR_ID=`xcrun simctl list -j | jq -r '.devices["com.apple.CoreSimulator.SimRuntime.iOS-15-2"] | .[] | select(.name=="iPad Pro (12.9-inch) (4th generation)") | .udid'`
 
 echo "Starting simulator: $SIMULATOR_ID"
 xcrun simctl boot "$SIMULATOR_ID" || true
 
 echo "Install app on simulator: $SIMULATOR_ID"
-xcrun simctl install "$SIMULATOR_ID" "$UNO_UITEST_IOSBUNDLE_PATH"
+xcrun simctl install "$SIMULATOR_ID" "$UNO_UITEST_IOSBUNDLE_PATH" || true
+
+## Pre-build the transform tool to get early warnings
+pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
+dotnet build
+popd
 
 cd $BUILD_SOURCESDIRECTORY/build
 
