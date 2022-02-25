@@ -71,16 +71,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		public SelectorItem()
 		{
-			AddHandler(
-				ManipulationStartedEvent,
-				new ManipulationStartedEventHandler((snd, e) =>
-				{
-					// If children are dealing with manipulation (like a SwipeControl),
-					// we don't want to trigger the ItemClick nor the selection,
-					// even if the pointer remained on this SelectorItem during the whole manipulation.
-					_isPressed = false;
-				}),
-				handledEventsToo: true);
+			AddHandler(ManipulationStartedEvent, _onManipulationStarted, handledEventsToo: true);
 		}
 
 		private Selector Selector => ItemsControl.ItemsControlFromItemContainer(this) as Selector;
@@ -284,6 +275,17 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		internal void LegacySetPressed(bool isPressed)
 			=> _pressedOverride = isPressed;
 #endif
+
+		private static readonly ManipulationStartedEventHandler _onManipulationStarted = (snd, _) =>
+		{
+			if (snd is SelectorItem that)
+			{
+				// If children are dealing with manipulation (like a SwipeControl),
+				// we don't want to trigger the ItemClick nor the selection,
+				// even if the pointer remained on this SelectorItem during the whole manipulation.
+				that._isPressed = false;
+			}
+		};
 
 		/// <inheritdoc />
 		protected override void OnPointerEntered(PointerRoutedEventArgs args)
