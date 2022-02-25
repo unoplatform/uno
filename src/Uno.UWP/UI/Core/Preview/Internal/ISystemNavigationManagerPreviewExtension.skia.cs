@@ -1,6 +1,6 @@
 ﻿namespace Uno.UI.Core.Preview;
 
-public interface ISystemNavigationManagerPreviewExtension
+internal interface ISystemNavigationManagerPreviewExtension
 {
 	void RequestNativeAppClose();
 }

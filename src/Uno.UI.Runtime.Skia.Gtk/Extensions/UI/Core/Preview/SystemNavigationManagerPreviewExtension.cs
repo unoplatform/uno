@@ -5,7 +5,7 @@ using Uno.UI.Core.Preview;
 
 namespace Uno.Extensions.UI.Core.Preview;
 
-public class SystemNavigationManagerPreviewExtension : ISystemNavigationManagerPreviewExtension
+internal class SystemNavigationManagerPreviewExtension : ISystemNavigationManagerPreviewExtension
 {
 	private readonly Window _window;
 
