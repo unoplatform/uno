@@ -892,8 +892,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 										using (writer.BlockInvariant("if (__rootInstance is DependencyObject d)", kvp.Value.ReturnType))
 										{
-											writer.AppendLineInvariant("global::Windows.UI.Xaml.NameScope.SetNameScope(d, nameScope);");
-											writer.AppendLineInvariant("nameScope.Owner = d;");
+											using (writer.BlockInvariant("if (global::Windows.UI.Xaml.NameScope.GetNameScope(d) == null)", kvp.Value.ReturnType))
+											{
+												writer.AppendLineInvariant("global::Windows.UI.Xaml.NameScope.SetNameScope(d, nameScope);");
+												writer.AppendLineInvariant("nameScope.Owner = d;");
+											}
+
 											writer.AppendLineInvariant("global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);");
 										}
 
