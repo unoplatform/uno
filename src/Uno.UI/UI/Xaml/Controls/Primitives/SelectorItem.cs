@@ -71,7 +71,16 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		public SelectorItem()
 		{
-
+			AddHandler(
+				ManipulationStartedEvent,
+				new ManipulationStartedEventHandler((snd, e) =>
+				{
+					// If children are dealing with manipulation (like a SwipeControl),
+					// we don't want to trigger the ItemClick nor the selection,
+					// even if the pointer remained on this SelectorItem during the whole manipulation.
+					_isPressed = false;
+				}),
+				handledEventsToo: true);
 		}
 
 		private Selector Selector => ItemsControl.ItemsControlFromItemContainer(this) as Selector;
