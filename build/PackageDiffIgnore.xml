@@ -3810,12 +3810,12 @@
       		<Member
 				fullName="System.String Windows.UI.Color.ToString(System.String format, System.IFormatProvider provider)"
 				reason="Should not be public" />
-      
+
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Media.Geometry..ctor()"
 				reason="Not part of the UWP API" />
 
-			<Member 
+			<Member
 				fullName="System.Void Windows.Devices.Sensors.LightSensor..ctor()"
                 reason="Parameter-less ctor does not exist in UWP"/>
 			<Member
@@ -3830,7 +3830,7 @@
 		<Properties>
 		</Properties>
 	</IgnoreSet>
-	
+
 	<IgnoreSet baseVersion="3.9.7">
 		<Methods>
 			<Member
@@ -3906,7 +3906,7 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Input.InertiaTranslationBehavior..ctor()"
 				reason="Should not be public" />
-			
+
 			<Member
 				fullName="Windows.UI.Xaml.Controls.Primitives.PlacementMode Windows.UI.Xaml.Controls.ToolTipService.GetPlacement(Windows.UI.Xaml.DependencyObject element)"
 				reason="INVALID REMOVE, TO ADJUST" />
@@ -3916,7 +3916,7 @@
 			<Member
 				fullName="System.Object Windows.UI.Xaml.Controls.ToolTipService.GetToolTip(Windows.UI.Xaml.DependencyObject element)"
 				reason="INVALID REMOVE, TO ADJUST" />
-			
+
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Controls.ToolTipService.SetToolTip(Windows.UI.Xaml.DependencyObject element, System.Object value)"
 				reason="INVALID REMOVE, TO ADJUST" />
@@ -3929,7 +3929,7 @@
           <Member
 				fullName="System.Void Windows.Devices.Bluetooth.BluetoothLEAppearance..ctor()"
 				reason="Doesn't exist in UWP" />
-		  
+
 			<Member
 				fullName="System.Boolean Windows.UI.Xaml.Media.Animation.Timeline.NeedsRepeat(System.DateTimeOffset lastBeginTime, System.Int32 replayCount)"
 				reason="Doesn't exist in UWP" />
@@ -3973,7 +3973,7 @@
 		  <!-- BEGIN Uno.Core dependency Removal -->
 		  <Member fullName="Uno.Extensions.ObservableCollectionUpdateResultsExtensions" reason="Uno.Core dependency removal" />
 		  <!-- END Uno.Core dependency Removal -->
-		  
+
 		  <!-- BEGIN Composition relocation -->
 		  <Member fullName="Uno.CompositionConfiguration" reason="Composition API relocation" />
 		  <Member fullName="Windows.UI.Core.UIAsyncOperation" reason="Composition API relocation" />
@@ -4153,7 +4153,7 @@
 		  <Member fullName="Windows.UI.Composition.Desktop.DesktopWindowTarget" reason="Composition API relocation" />
 		  <Member fullName="Windows.UI.Composition.Core.CompositorController" reason="Composition API relocation" />
 		  <!-- END Composition relocation -->
-		  
+
 		  <Member fullName="Microsoft.UI.Xaml.Controls.InfoBarPanel" reason="InfoBarPanel has wrong namespace" />
 		</Types>
 		<Methods>
@@ -7518,13 +7518,13 @@
 		  <!-- END .NET 6 BREAKING CHANGE -->
 
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TabViewItem.set_TabViewTemplateSettings(Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings value)" reason="Setter not public in WinUI" />
-		  
+
 		  <!-- BEGIN Uno.Core dependency Removal -->
 		  <Member fullName="Uno.Threading.FastTaskCompletionSource`1&lt;System.Object&gt; Windows.UI.Core.UIAsyncOperation.get_CompletionSource()" reason="Uno.Core dependency removal" />
 		  <Member fullName="Microsoft.Extensions.Logging.LogLevel Windows.Foundation.Metadata.ApiInformation.get_NotImplementedLogLevel()" reason="Uno.Core dependency removal" />
 		  <Member fullName="System.Void Windows.Foundation.Metadata.ApiInformation.set_NotImplementedLogLevel(Microsoft.Extensions.Logging.LogLevel value)" reason="Uno.Core dependency removal" />
 		  <!-- END Uno.Core dependency Removal -->
-		  
+
 		  <!-- BEGIN Composition Relocation -->
 		  <Member fullName="System.Collections.Generic.IList`1&lt;Windows.UI.Composition.IVisualElement&gt; Windows.UI.WindowManagement.AppWindowFrame.get_DragRegionVisuals()" reason="Composition Relocation" />
 		  <Member fullName="Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview Windows.UI.Input.Inking.Preview.PalmRejectionDelayZonePreview.CreateForVisual(Windows.UI.Composition.Visual inputPanelVisual, Windows.Foundation.Rect inputPanelRect)" reason="Composition Relocation" />
@@ -7538,7 +7538,7 @@
 		  <Member fullName="Windows.UI.Composition.Compositor Windows.Media.Playback.MediaPlayerSurface.get_Compositor()" reason="Composition Relocation" />
 		  <Member fullName="Windows.Graphics.Capture.GraphicsCaptureItem Windows.Graphics.Capture.GraphicsCaptureItem.CreateFromVisual(Windows.UI.Composition.Visual visual)" reason="Composition Relocation" />
 		  <!-- END Composition Relocation -->
-		
+
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TwoPaneView.set_Mode(Microsoft.UI.Xaml.Controls.TwoPaneViewMode value)" reason="This property is get-only in WinUI" />
 		</Methods>
 		<Events>
@@ -8606,7 +8606,7 @@
 			<Member
 				fullName="Windows.UI.Xaml.Controls.ListViewBase Windows.UI.Xaml.Controls.VirtualizingPanelLayout::XamlParent()"
 				reason="Make non-standard property internal" />
-		  
+
 		  <!-- BEGIN .NET 6 BREAKING CHANGE -->
 		  <Member fullName="System.nfloat Uno.UI.ViewHelper::OnePixel()" reason=".NET 6 RTM breaking change" />
 		  <!-- END .NET 6 BREAKING CHANGE -->
@@ -8615,7 +8615,7 @@
 		  <Member fullName="Uno.Threading.FastTaskCompletionSource`1&lt;System.Object&gt; Windows.UI.Core.UIAsyncOperation::CompletionSource()" reason="Uno.Core dependency removal" />
 		  <Member fullName="Microsoft.Extensions.Logging.LogLevel Windows.Foundation.Metadata.ApiInformation::NotImplementedLogLevel()" reason="Uno.Core dependency removal" />
 		  <!-- END Uno.Core dependency Removal -->
-		  
+
 		  <!-- BEGIN Composition Relocation -->
 		  <Member fullName="System.Collections.Generic.IList`1&lt;Windows.UI.Composition.IVisualElement&gt; Windows.UI.WindowManagement.AppWindowFrame::DragRegionVisuals()" reason="Composition Relocation" />
 		  <Member fullName="Windows.UI.Composition.ContainerVisual Windows.UI.Input.Inking.Core.CoreInkPresenterHost::RootVisual()" reason="Composition Relocation" />
@@ -8625,7 +8625,7 @@
 
 		</Properties>
 	</IgnoreSet>
-	
+
 	<IgnoreSet baseVersion="4.0.13">
 		<Assemblies>
 			<Member fullName="Uno" reason="Android 12 support"/>
@@ -8662,6 +8662,9 @@
 				reason="Not part of the UWP API" />
 			<Member
 				fullName="System.Object Windows.UI.Xaml.RoutedEventArgs.get_OriginalSource()"
+				reason="False positive: added in an internal interface" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.FrameworkElement.get_StretchAffectsMeasure()"
 				reason="False positive: added in an internal interface" />
 		</Methods>
 	  <Properties>
