@@ -20,6 +20,9 @@ internal class QueryEx
 	private QueryEx(Func<IEnumerable<QueryResult>, IEnumerable<QueryResult>> query)
 		=> _query = query;
 
+	public QueryEx All()
+		=> this;
+
 	public QueryEx Marked(string marked)
 		=> new (elts => _query(elts).Where(result => result.Element.Name == marked));
 
@@ -34,4 +37,7 @@ internal class QueryEx
 
 	internal IEnumerable<QueryResult> Execute(IEnumerable<QueryResult> elements)
 		=> _query(elements);
+
+	public static implicit operator QueryEx(string marked)
+		=> Any.Marked(marked);
 }

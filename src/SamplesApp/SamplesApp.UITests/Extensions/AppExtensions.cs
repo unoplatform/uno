@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.UITest;
 using Uno.UITest.Helpers;
+using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Extensions
 {
@@ -34,5 +35,14 @@ namespace SamplesApp.UITests.Extensions
 				}
 			}
 		}
+	}
+}
+
+namespace Uno.UITest.Helpers.Queries
+{
+	public static class AppExtensions
+	{
+		public static async Task WaitForDependencyPropertyValueAsync(this IApp app, QueryEx element, string dependencyPropertyName, string value)
+			=> app.WaitForDependencyPropertyValue(element, dependencyPropertyName, value);
 	}
 }

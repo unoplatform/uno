@@ -27,6 +27,12 @@
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Compile Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\TestFramework\ActivePlatformsAttribute.cs">
+			<Link>UITests\_Engine\UnoUITests\ActivePlatformsAttribute.cs</Link>
+		</Compile>
+	</ItemGroup>
+
 	<Import Project="UnitTestsImport.props" />
 	<Import Project="UITestsImport.props" />
 
@@ -70,6 +76,10 @@
 
 	<ItemGroup>
 	  <PRIResource Include="Resources\**\*.resw" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <SourceGeneratorInput Remove="UITests\_Engine\SkiaAppExtensions.cs" />
 	</ItemGroup>
 
 </Project>
