@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 		ILayouter ILayouterElement.Layouter => _layouter;
 		Size ILayouterElement.LastAvailableSize => LayoutInformation.GetAvailableSize(this);
 		bool ILayouterElement.IsMeasureDirty => true;
-		bool ILayouterElement.IsFirstMeasureDone => false;
+		bool ILayouterElement.IsFirstMeasureDoneAndManagedElement => false;
 		bool ILayouterElement.StretchAffectsMeasure => false;
 		bool ILayouterElement.IsMeasureDirtyPathDisabled => true;
 

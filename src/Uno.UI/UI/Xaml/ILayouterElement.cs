@@ -17,7 +17,7 @@ internal partial interface ILayouterElement
 
 	internal bool IsMeasureDirty { get; }
 
-	internal bool IsFirstMeasureDone { get; }
+	internal bool IsFirstMeasureDoneAndManagedElement { get; }
 
 	internal bool IsMeasureDirtyPathDisabled { get; }
 }
@@ -27,7 +27,7 @@ internal static class LayouterElementExtensions
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	internal static bool DoMeasure(this ILayouterElement element, Size availableSize, out Size measuredSizeLogical)
 	{
-		var isFirstMeasure = !element.IsFirstMeasureDone;
+		var isFirstMeasure = !element.IsFirstMeasureDoneAndManagedElement;
 
 		// "isDirty" here means this element's MeasureOverride
 		// method NEEDS to be called.

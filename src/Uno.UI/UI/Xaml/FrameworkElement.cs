@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml
 		ILayouter ILayouterElement.Layouter => _layouter;
 		Size ILayouterElement.LastAvailableSize => LastAvailableSize;
 		bool ILayouterElement.IsMeasureDirty => IsMeasureDirty;
-		bool ILayouterElement.IsFirstMeasureDone => IsFirstMeasureDone;
+		bool ILayouterElement.IsFirstMeasureDoneAndManagedElement => IsFirstMeasureDone;
 		bool ILayouterElement.IsMeasureDirtyPathDisabled => IsMeasureDirtyPathDisabled;
 #else
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
