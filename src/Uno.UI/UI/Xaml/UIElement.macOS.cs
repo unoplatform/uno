@@ -23,6 +23,8 @@ namespace Windows.UI.Xaml
 		{
 			Initialize();
 			InitializePointers();
+
+			UpdateHitTest();
 		}
 
 		/// <summary>
@@ -52,8 +54,15 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
+		{
+			UpdateHitTest();
+		}
+
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
 		{
+			UpdateHitTest();
+
 			var newVisibility = (Visibility)newValue;
 
 			if (base.Hidden != newVisibility.IsHidden())
