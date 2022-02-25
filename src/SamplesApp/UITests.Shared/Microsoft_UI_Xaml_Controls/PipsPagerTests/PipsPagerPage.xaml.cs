@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX reference PipsPagerPage.xaml.cs, commit fc2d862
 
 using System;
 using Windows.UI.Xaml.Controls;
@@ -9,47 +10,46 @@ using PipsPagerButtonVisibility = Microsoft.UI.Xaml.Controls.PipsPagerButtonVisi
 using PipsPagerSelectedIndexChangedEventArgs = Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
-using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 using MUXControlsTestApp.Utilities;
+using Uno.UI.Samples.Controls;
 
 namespace MUXControlsTestApp
 {
 	[Sample("PipsPager", "WinUI")]
 	public sealed partial class PipsPagerPage : Page
-    {
+	{
 		Button previousPageButton;
 		Button nextPageButton;
 		ItemsRepeater repeater;
-		//ItemsRepeater verticalOrientationPipsPagerRepeater;
+		ItemsRepeater verticalOrientationPipsPagerRepeater;
 
 		public List<string> Pictures = new List<string>()
-        {
+		{
+			"Assets/ingredient1.png",
+			"Assets/ingredient2.png",
+			"Assets/ingredient3.png",
+			"Assets/ingredient4.png",
+			"Assets/ingredient5.png",
+			"Assets/ingredient6.png",
+			"Assets/ingredient7.png",
+			"Assets/ingredient8.png",
+		};
 
-            "Assets/ingredient1.png",
-            "Assets/ingredient2.png",
-            "Assets/ingredient3.png",
-            "Assets/ingredient4.png",
-            "Assets/ingredient5.png",
-            "Assets/ingredient6.png",
-            "Assets/ingredient7.png",
-            "Assets/ingredient8.png",
-        };
+		public PipsPagerPage()
+		{
+			this.InitializeComponent();
+			this.Loaded += OnLoad;
+		}
 
-        public PipsPagerPage()
-        {
-            this.InitializeComponent();
-            this.Loaded += OnLoad;
-        }
-
-        private void OnLoad(object sender, RoutedEventArgs args)
-        {
+		private void OnLoad(object sender, RoutedEventArgs args)
+		{
 			var rootPanel = VisualTreeHelper.GetChild(TestPipsPager, 0);
 			previousPageButton = VisualTreeHelper.GetChild(rootPanel, 0) as Button;
 			nextPageButton = VisualTreeHelper.GetChild(rootPanel, 2) as Button;
 			repeater = rootPanel.FindVisualChildByType<ItemsRepeater>();
-			//var rootPanelVerticalPipsPager = VisualTreeHelper.GetChild(TestPipsPagerVerticalOrientation, 0);
-			//verticalOrientationPipsPagerRepeater = rootPanelVerticalPipsPager.FindVisualChildByType<ItemsRepeater>();
+			var rootPanelVerticalPipsPager = VisualTreeHelper.GetChild(TestPipsPagerVerticalOrientation, 0);
+			verticalOrientationPipsPagerRepeater = rootPanelVerticalPipsPager.FindVisualChildByType<ItemsRepeater>();
 
 
 			PreviousPageButtonVisibilityComboBox.SelectionChanged += OnPreviousPageButtonVisibilityChanged;
@@ -86,11 +86,11 @@ namespace MUXControlsTestApp
 				HorizontalOrientationPipsPagerButtonWidthTextBlock.Text = $"{ horizontalOrientationPip.ActualWidth}";
 				HorizontalOrientationPipsPagerButtonHeightTextBlock.Text = $"{horizontalOrientationPip.ActualHeight}";
 			}
-			//if (verticalOrientationPipsPagerRepeater.TryGetElement(1) as FrameworkElement is var verticalOrientationPip && verticalOrientationPip != null)
-			//{
-			//	VerticalOrientationPipsPagerButtonWidthTextBlock.Text = $"{verticalOrientationPip.ActualWidth}";
-			//	VerticalOrientationPipsPagerButtonHeightTextBlock.Text = $"{verticalOrientationPip.ActualHeight}";
-			//}
+			if (verticalOrientationPipsPagerRepeater.TryGetElement(1) as FrameworkElement is var verticalOrientationPip && verticalOrientationPip != null)
+			{
+				VerticalOrientationPipsPagerButtonWidthTextBlock.Text = $"{verticalOrientationPip.ActualWidth}";
+				VerticalOrientationPipsPagerButtonHeightTextBlock.Text = $"{verticalOrientationPip.ActualHeight}";
+			}
 		}
 
 		private void OnRepeaterGotFocus(object sender, RoutedEventArgs e)
@@ -225,7 +225,7 @@ namespace MUXControlsTestApp
 
 		private void GoToExamplesPage(object sender, RoutedEventArgs args)
 		{
-			Frame.Navigate(typeof(PipsPagerExamples));
+			//Frame.Navigate(typeof(PipsPagerExamples));
 		}
 	}
 }

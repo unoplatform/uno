@@ -1,24 +1,25 @@
-﻿using System;
-using Windows.UI.Xaml.Controls;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX reference PipsPagerExamples.xaml.cs, commit 3a84856
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using PipsPagerSelectedIndexChangedEventArgs = Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs;
-using PipsPager = Microsoft.UI.Xaml.Controls.PipsPager;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
 using System.Collections.ObjectModel;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.Foundation;
+using System.Linq;
 using Uno.UI.Samples.Controls;
+using Windows.Foundation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
+using PipsPager = Microsoft.UI.Xaml.Controls.PipsPager;
+using PipsPagerSelectedIndexChangedEventArgs = Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs;
 
 namespace MUXControlsTestApp
 {
-	/// <summary>
-	/// An empty page that can be used on its own or navigated to within a Frame.
-	/// </summary>
 	[Sample("PipsPager", "WinUI")]
 	public sealed partial class PipsPagerExamples : Page
-    {
+	{
 		private int MinRowSpacing = 8;
 		private int TotalNumberOfDisplayedObjects = 50;
 		private double ButtonListPreviousOffset = 0.0;
@@ -50,8 +51,11 @@ namespace MUXControlsTestApp
 			ButtonListPager.NumberOfPages = (int)Math.Ceiling(ButtonListScrollViewer.ExtentHeight / ButtonListScrollViewer.ViewportHeight);
 			SetButtonListRepeaterSize();
 			PersonInfoListScrollViewer = FindInnerScrollViewer(PersonInfoList);
-			PersonInfoListScrollViewer.ViewChanged += PersonInfoList_ViewChanged;
-			PersonInfoListPager.NumberOfPages = (int)Math.Ceiling(PersonInfoListScrollViewer.ExtentHeight / PersonInfoListScrollViewer.ViewportHeight);
+			if (PersonInfoListScrollViewer != null)
+			{
+				PersonInfoListScrollViewer.ViewChanged += PersonInfoList_ViewChanged;
+				PersonInfoListPager.NumberOfPages = (int)Math.Ceiling(PersonInfoListScrollViewer.ExtentHeight / PersonInfoListScrollViewer.ViewportHeight);
+			}
 		}
 
 		private void SetButtonListRepeaterSize()

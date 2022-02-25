@@ -9,78 +9,84 @@ using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation.Provider;
 
-namespace Microsoft.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers;
+
+/// <summary>
+/// Exposes PipsPager types to Microsoft UI Automation.
+/// </summary>
+public partial class PipsPagerAutomationPeer : FrameworkElementAutomationPeer, ISelectionProvider
 {
-	public partial class PipsPagerAutomationPeer : FrameworkElementAutomationPeer, ISelectionProvider
+	private readonly PipsPager _pager;
+
+	/// <summary>
+	/// Initializes a new instance of the PipsPagerAutomationPeer class.
+	/// </summary>
+	/// <param name="owner">The PipsPager control instance to create the peer for.</param>
+	public PipsPagerAutomationPeer(PipsPager owner) : base(owner)
 	{
-		private readonly PipsPager _pager;
+		_pager = owner;
+	}
 
-		public PipsPagerAutomationPeer(PipsPager owner) : base(owner)
+	bool ISelectionProvider.CanSelectMultiple => false;
+
+	bool ISelectionProvider.IsSelectionRequired => true;
+
+	// IAutomationPeerOverrides
+	protected override object GetPatternCore(PatternInterface patternInterface)
+	{
+		if (patternInterface == PatternInterface.Selection)
 		{
-			_pager = owner;
+			return this;
 		}
 
-		bool ISelectionProvider.CanSelectMultiple => false;
+		return base.GetPatternCore(patternInterface);
+	}
 
-		bool ISelectionProvider.IsSelectionRequired => true;
+	protected override string GetClassNameCore() => nameof(PipsPager);
 
-		// IAutomationPeerOverrides
-		protected override object GetPatternCore(PatternInterface patternInterface)
+	protected override string GetNameCore()
+	{
+		string name = base.GetNameCore();
+
+		if (string.IsNullOrEmpty(name))
 		{
-			if (patternInterface == PatternInterface.Selection)
+			var pipsPager = (PipsPager)Owner;
+			if (pipsPager != null)
 			{
-				return this;
+				name = SharedHelpers.TryGetStringRepresentationFromObject(pipsPager.GetValue(AutomationProperties.NameProperty));
 			}
-
-			return base.GetPatternCore(patternInterface);
 		}
 
-		protected override string GetClassNameCore() => nameof(PipsPager);
+		return name;
+	}
 
-		protected override string GetNameCore()
+	protected override AutomationControlType GetAutomationControlTypeCore()
+	{
+		return AutomationControlType.Menu;
+	}
+
+	IRawElementProviderSimple[] ISelectionProvider.GetSelection()
+	{
+		if (_pager is { } pager)
 		{
-			string name = base.GetNameCore();
-
-			if (string.IsNullOrEmpty(name))
+			if (pager.GetSelectedItem() is { } pip)
 			{
-				var pipsPager = (PipsPager)Owner;
-				if (pipsPager != null)
+				if (FrameworkElementAutomationPeer.CreatePeerForElement(pip) is { } peer)
 				{
-					name = SharedHelpers.TryGetStringRepresentationFromObject(pipsPager.GetValue(AutomationProperties.NameProperty));
+					return new[] { ProviderFromPeer(peer) };
 				}
 			}
-
-			return name;
 		}
+		return Array.Empty<IRawElementProviderSimple>();
+	}
 
-		protected override AutomationControlType GetAutomationControlTypeCore()
+	internal void RaiseSelectionChanged(double oldIndex, double newIndex)
+	{
+		if (AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged))
 		{
-			return AutomationControlType.Menu;
-		}
-
-		IRawElementProviderSimple[] ISelectionProvider.GetSelection()
-		{
-			if (_pager is { } pager)
-			{
-				if (pager.GetSelectedItem() is { } pip)
-				{
-					if (FrameworkElementAutomationPeer.CreatePeerForElement(pip) is { } peer)
-					{
-						return new[] { ProviderFromPeer(peer) };
-					}
-				}
-			}
-			return Array.Empty<IRawElementProviderSimple>();
-		}
-
-		internal void RaiseSelectionChanged(double oldIndex, double newIndex)
-		{
-			if (AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged))
-			{
-				RaisePropertyChangedEvent(SelectionPatternIdentifiers.SelectionProperty,
-					oldIndex,
-					newIndex);
-			}
+			RaisePropertyChangedEvent(SelectionPatternIdentifiers.SelectionProperty,
+				oldIndex,
+				newIndex);
 		}
 	}
 }
