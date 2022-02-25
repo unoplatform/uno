@@ -1572,7 +1572,10 @@ namespace Windows.UI.Xaml
 
 			if (ancestor != null && !map.TryGetValue(ancestor, out isAncestor))
 			{
-				while (instance != null)
+				// Max iterations for ancestor lookup
+				var iterations = 1000;
+
+				while (instance != null && iterations-- > 0)
 				{
 #if DEBUG
 					var prevInstance = instance;
@@ -1584,7 +1587,6 @@ namespace Windows.UI.Xaml
 					{
 						if (!hashSet.Contains(instance!))
 						{
-							// Console.WriteLine($"Added other {(instance as FrameworkElement)?.Name}");
 							hashSet.Add(instance);
 						}
 						else
@@ -1597,8 +1599,28 @@ namespace Windows.UI.Xaml
 					if (instance == ancestor)
 					{
 						isAncestor = true;
+						break;
+					}
+				}
+
+				if (iterations < 1)
+				{
+					var level =
+#if DEBUG
+						// Make layout cycles visible in debug builds, until Children.Add
+						// validates for cycles.
+						LogLevel.Error;
+#else
+						// Layout cycles are ignored in this function for release builds.
+						LogLevel.Debug;
+#endif
+
+					if (ancestor.Log().IsEnabled(level))
+					{
+						ancestor.Log().Log(level, $"Possible cycle detected, ignoring ancestor [{ancestor}]");
 					}
 
+					isAncestor = false;
 				}
 
 				map.Set(ancestor, isAncestor);
