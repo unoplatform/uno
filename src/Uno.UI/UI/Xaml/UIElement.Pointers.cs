@@ -1281,10 +1281,10 @@ namespace Windows.UI.Xaml
 		{
 			var pointer = value ?? throw new ArgumentNullException(nameof(value));
 
-			return Capture(pointer, PointerCaptureKind.Explicit, _pendingRaisedEvent.args);
+			return Capture(pointer, PointerCaptureKind.Explicit, _pendingRaisedEvent.args) is PointerCaptureResult.Added;
 		}
 
-		private protected bool CapturePointer(Pointer value, PointerCaptureKind kind)
+		private protected PointerCaptureResult CapturePointer(Pointer value, PointerCaptureKind kind)
 		{
 			var pointer = value ?? throw new ArgumentNullException(nameof(value));
 
@@ -1379,7 +1379,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private bool Capture(Pointer pointer, PointerCaptureKind kind, PointerRoutedEventArgs relatedArgs)
+		private PointerCaptureResult Capture(Pointer pointer, PointerCaptureKind kind, PointerRoutedEventArgs relatedArgs)
 		{
 			if (_localExplicitCaptures == null)
 			{
