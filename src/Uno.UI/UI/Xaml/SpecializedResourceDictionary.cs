@@ -55,13 +55,13 @@ namespace Windows.UI.Xaml
 				{
 					Key = s;
 					TypeKey = null;
-					HashCode = (uint)(s.GetHashCode() ^ TypeKey?.GetHashCode() ?? 0);
+					HashCode = (uint)s.GetHashCode();
 				}
 				else if (key is Type t)
 				{
-					Key = t.ToString();
+					Key = t.FullName;
 					TypeKey = t;
-					HashCode = (uint)(t.GetHashCode() ^ TypeKey?.GetHashCode() ?? 0);
+					HashCode = (uint)t.GetHashCode();
 				}
 				else if (key is ResourceKey)
 				{
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml
 				{
 					Key = key.ToString();
 					TypeKey = null;
-					HashCode = (uint)(key.GetHashCode() ^ TypeKey?.GetHashCode() ?? 0);
+					HashCode = (uint)key.GetHashCode();
 				}
 			}
 
@@ -85,7 +85,7 @@ namespace Windows.UI.Xaml
 			{
 				Key = key;
 				TypeKey = null;
-				HashCode = (uint)(key.GetHashCode() ^ TypeKey?.GetHashCode() ?? 0);
+				HashCode = (uint)key.GetHashCode();
 			}
 
 			/// <summary>
@@ -94,15 +94,15 @@ namespace Windows.UI.Xaml
 			/// <param name="key">A string typed key</param>
 			public ResourceKey(Type key)
 			{
-				Key = key.ToString();
+				Key = key.FullName;
 				TypeKey = key;
-				HashCode = (uint)(key.GetHashCode() ^ TypeKey?.GetHashCode() ?? 0);
+				HashCode = (uint)key.GetHashCode();
 			}
 
 			/// <summary>
 			/// Compares this instance with another ResourceKey instance
 			/// </summary>
-			public bool Equals(ResourceKey other)
+			public bool Equals(in ResourceKey other)
 				=> TypeKey == other.TypeKey && Key == other.Key;
 
 
@@ -300,7 +300,7 @@ namespace Windows.UI.Xaml
 			{
 				Debug.Assert(_entries != null, "expected entries to be != null");
 
-				uint hashCode = (uint)key.HashCode;
+				uint hashCode = key.HashCode;
 				int i = GetBucket(hashCode);
 				Entry[] entries = _entries;
 				uint length = (uint)entries.Length;
