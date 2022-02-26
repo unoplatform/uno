@@ -8664,6 +8664,9 @@
 				fullName="System.Object Windows.UI.Xaml.RoutedEventArgs.get_OriginalSource()"
 				reason="False positive: added in an internal interface" />
 			<Member
+				fullName="System.Void Windows.ApplicationModel.Chat.ChatMessageReader..ctor()"
+				reason="ctor not present in UWP" />
+			<Member
 				fullName="System.Boolean Windows.UI.Xaml.FrameworkElement.get_StretchAffectsMeasure()"
 				reason="False positive: added in an internal interface" />
 		</Methods>
