@@ -239,7 +239,7 @@ namespace Windows.Graphics.Display
 			if (windowManager.DefaultDisplay is { } defaultDisplay)
 			{
 
-				if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.S)
+				if (Android.OS.Build.VERSION.SdkInt <= Android.OS.BuildVersionCodes.R)
 				{
 #pragma warning disable CS0618 // GetRealMetrics is obsolete in API 31
 					defaultDisplay.GetRealMetrics(displayMetrics);
