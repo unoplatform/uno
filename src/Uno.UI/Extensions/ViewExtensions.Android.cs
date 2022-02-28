@@ -386,7 +386,18 @@ namespace Uno.UI
 		/// <summary>
 		/// Get the parent view in the visual tree. This may differ from the logical <see cref="FrameworkElement.Parent"/>.
 		/// </summary>
-		public static ViewGroup GetVisualTreeParent(this View child) => child?.Parent as ViewGroup;
+		public static ViewGroup GetVisualTreeParent(this View child)
+		{
+			var visualParent = child?.Parent as ViewGroup;
+
+			if (visualParent is null &&
+				child is FrameworkElement fe)
+			{
+				visualParent = fe.VisualParent;
+			}
+
+			return visualParent;
+		}
 
 		/// <summary>
 		/// Removes a child view from the specified view, and disposes it if the specified view is the owner.

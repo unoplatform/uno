@@ -178,9 +178,9 @@ namespace Windows.UI.Xaml.Media
 			realParent = reference.GetParent() as DependencyObject;
 #endif
 
-			if (realParent is null && reference is SelectorItem selectorItem)
+			if (realParent is null && reference is _ViewGroup uiElement)
 			{
-				return ItemsControl.ItemsControlFromItemContainer(selectorItem);
+				return uiElement.GetVisualTreeParent() as DependencyObject;
 			}
 
 			return realParent;

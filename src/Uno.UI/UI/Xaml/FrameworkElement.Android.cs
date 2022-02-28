@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// The parent of the <see cref="FrameworkElement"/> in the visual tree, which may differ from its <see cref="Parent"/> (ie if it's a child of a native view).
 		/// </summary>
-		internal IViewParent VisualParent => (this as View).Parent;
+		internal IViewParent NativeVisualParent => (this as View).Parent;
 
 		public FrameworkElement()
 		{
@@ -158,7 +158,7 @@ namespace Windows.UI.Xaml
 			// see StretchAffectsMeasure for details.
 			this.SetValue(
 				StretchAffectsMeasureProperty,
-				!(VisualParent is DependencyObject),
+				!(NativeVisualParent is DependencyObject),
 				DependencyPropertyValuePrecedences.DefaultValue
 			);
 		}

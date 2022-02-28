@@ -173,9 +173,14 @@ namespace Windows.UI.Xaml
 		/// Allows to override the publicly-visible <see cref="Parent"/> without modifying DP propagation.
 		/// </summary>
 		internal DependencyObject LogicalParentOverride { get; set; }
-
-		internal UIElement VisualParent => ((IDependencyObjectStoreProvider)this).Store.Parent as UIElement;
 #endif
+
+		/// <summary>
+		/// Provides the managed visual parent of the element. This property can be overriden for specific
+		/// scenarios, for example in case of SelectorItem, where actual parent is null, but visual parent
+		/// is the list.
+		/// </summary>
+		internal virtual UIElement VisualParent => ((IDependencyObjectStoreProvider)this).Store.Parent as UIElement;
 
 		private bool _isParsing;
 		/// <summary>
