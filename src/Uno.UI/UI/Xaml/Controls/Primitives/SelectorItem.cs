@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private string _currentState;
 		private uint _goToStateRequest;
 		private DateTime _pauseStateUpdateUntil;
-		private bool _isPressed;
+		private bool _canRaiseClickOnPointerRelease;
 
 		public SelectorItem()
 		{
@@ -141,7 +141,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			// On Windows, the pressed state appears only after a few, and won't appear at all if you quickly start to scroll with the finger.
 			// So here we make sure to delay the beginning of a manipulation to match this behavior (and avoid flickering when scrolling)
 			// We also make sure that when user taps (Enter->Pressed->Move*->Release->Exit) on the item, he is able to see the pressed (selected) state.
-			var state = GetState(IsEnabled, IsSelected, IsPointerOver, _isPressed);
+			var state = GetState(IsEnabled, IsSelected, IsPointerOver, _canRaiseClickOnPointerRelease);
 			var requestId = ++_goToStateRequest; // Request ID is use to ensure to apply only the last requested state.
 
 			TimeSpan delay; // delay to apply the 'state'
@@ -283,7 +283,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				// If children are dealing with manipulation (like a SwipeControl),
 				// we don't want to trigger the ItemClick nor the selection,
 				// even if the pointer remained on this SelectorItem during the whole manipulation.
-				that._isPressed = false;
+				that._canRaiseClickOnPointerRelease = false;
 			}
 		};
 
@@ -306,7 +306,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				//		 (common in ListView that do allow re-ordering ;) ),
 				//		 the pointer might have already been captured for this SelectorItem.
 
-				_isPressed = true;
+				_canRaiseClickOnPointerRelease = true;
 			}
 
 			args.Handled = ShouldHandlePressed;
@@ -321,9 +321,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
 		{
 			ManipulationUpdateKind update;
-			if (_isPressed)
+			if (_canRaiseClickOnPointerRelease)
 			{
-				_isPressed = false;
+				_canRaiseClickOnPointerRelease = false;
 
 				update = ManipulationUpdateKind.Clicked;
 				Selector?.OnItemClicked(this);
@@ -347,7 +347,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		protected override void OnPointerExited(PointerRoutedEventArgs args)
 		{
 			// Not like a Button, if the pointer goes out of this item, we abort the ItemClick
-			_isPressed = false;
+			_canRaiseClickOnPointerRelease = false;
 			ReleasePointerCapture(args.Pointer.UniqueId, kinds: PointerCaptureKind.Implicit);
 
 			base.OnPointerExited(args);
@@ -357,7 +357,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// <inheritdoc />
 		protected override void OnPointerCanceled(PointerRoutedEventArgs args)
 		{
-			_isPressed = false;
+			_canRaiseClickOnPointerRelease = false;
 
 			base.OnPointerCanceled(args);
 			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.End);
@@ -366,7 +366,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// <inheritdoc />
 		protected override void OnPointerCaptureLost(PointerRoutedEventArgs args)
 		{
-			_isPressed = false;
+			_canRaiseClickOnPointerRelease = false;
 
 			base.OnPointerCaptureLost(args);
 			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.End);

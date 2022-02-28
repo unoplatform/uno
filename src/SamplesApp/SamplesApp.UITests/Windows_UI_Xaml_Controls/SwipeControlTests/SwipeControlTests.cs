@@ -125,13 +125,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 			await RunAsync("UITests.Windows_UI_Xaml_Controls.SwipeControlTests.SwipeControl_ListView_ItemClick");
 
 			QueryEx sut = "SUT";
-			QueryEx clicked = "LastClicked";
-			QueryEx selected = "LastSelected";
-			QueryEx swiped = "LastSwipeInvoked";
+			QueryEx clicked = new QueryEx(q => q.All().Marked("LastClicked"));
+			QueryEx selected = new QueryEx(q => q.All().Marked("LastSelected"));
+			QueryEx swiped = new QueryEx(q => q.All().Marked("LastSwipeInvoked"));
 
-			var sutRect = App.Query(sut).Single().Rect;
+			var sutRect = App.GetPhysicalRect(sut);
 
-			App.DragCoordinates(sutRect.CenterX, sutRect.Y + 20, sutRect.Right - 10, sutRect.CenterY - 20);
+			App.DragCoordinates(sutRect.X + 100, sutRect.Y + 20, sutRect.Right - 20, sutRect.Y + 20);
 
 			await Task.Delay(1000); // We cannot detect the animation ...
 
@@ -149,13 +149,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 			await RunAsync("UITests.Windows_UI_Xaml_Controls.SwipeControlTests.SwipeControl_ListView_ItemClick");
 
 			QueryEx sut = "SUT";
-			QueryEx clicked = "LastClicked";
-			QueryEx selected = "LastSelected";
-			QueryEx swiped = "LastSwipeInvoked";
+			QueryEx clicked = new QueryEx(q => q.All().Marked("LastClicked"));
+			QueryEx selected = new QueryEx(q => q.All().Marked("LastSelected"));
+			QueryEx swiped = new QueryEx(q => q.All().Marked("LastSwipeInvoked"));
 
-			var sutRect = App.Query(sut).Single().Rect;
+			var sutRect = App.GetPhysicalRect(sut);
 
-			App.TapCoordinates(sutRect.CenterX, sutRect.Y + 20);
+			App.TapCoordinates(sutRect.X + 100, sutRect.Y + 20);
 
 			await Task.Delay(1000); // We cannot detect the animation ...
 
