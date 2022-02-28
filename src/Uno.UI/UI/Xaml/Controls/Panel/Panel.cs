@@ -24,6 +24,8 @@ namespace Windows.UI.Xaml.Controls
 	[Markup.ContentProperty(Name = "Children")]
 	public partial class Panel : FrameworkElement, ICustomClippingElement, IPanel
 	{
+		private readonly BorderLayerRenderer _borderRenderer;
+
 #if NET461 || UNO_REFERENCE_API
 		private new UIElementCollection _children;
 #else
@@ -32,9 +34,16 @@ namespace Windows.UI.Xaml.Controls
 
 		private PanelTransitionHelper _transitionHelper;
 
-		partial void Initialize()
+
+		public Panel()
 		{
+			_borderRenderer = new BorderLayerRenderer(this);
+
 			_children = new UIElementCollection(this);
+
+			Loaded += (s, e) => UpdateBorder();
+			Unloaded += (s, e) => _borderRenderer.Clear();
+			LayoutUpdated += (s, e) => UpdateBorder();
 		}
 
 		private void OnChildrenCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
