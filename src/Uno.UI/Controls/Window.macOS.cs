@@ -46,6 +46,7 @@ namespace Uno.UI.Controls
 
 		private readonly InputPane _inputPane;
 		private WeakReference<NSScrollView> _scrollViewModifiedForKeyboard;
+		private static PointerEventArgs _previous;
 
 		/// <summary>
 		/// ctor.
@@ -101,23 +102,23 @@ namespace Uno.UI.Controls
 				switch (evt.Type)
 				{
 					case NSEventType.MouseEntered:
-						CoreWindowEvents?.RaisePointerEntered(ToPointerArgs(evt, posInWindow));
+						CoreWindowEvents?.RaisePointerEntered(BuildPointerArgs(evt, posInWindow));
 						break;
 
 					case NSEventType.MouseExited:
-						CoreWindowEvents?.RaisePointerExited(ToPointerArgs(evt, posInWindow));
+						CoreWindowEvents?.RaisePointerExited(BuildPointerArgs(evt, posInWindow));
 						break;
 
 					case NSEventType.LeftMouseDown:
 					case NSEventType.OtherMouseDown:
 					case NSEventType.RightMouseDown:
-						CoreWindowEvents?.RaisePointerPressed(ToPointerArgs(evt, posInWindow));
+						CoreWindowEvents?.RaisePointerPressed(BuildPointerArgs(evt, posInWindow));
 						break;
 
 					case NSEventType.LeftMouseUp:
 					case NSEventType.OtherMouseUp:
 					case NSEventType.RightMouseUp:
-						CoreWindowEvents?.RaisePointerReleased(ToPointerArgs(evt, posInWindow));
+						CoreWindowEvents?.RaisePointerReleased(BuildPointerArgs(evt, posInWindow));
 						break;
 
 					case NSEventType.MouseMoved:
@@ -127,11 +128,11 @@ namespace Uno.UI.Controls
 					case NSEventType.TabletPoint:
 					case NSEventType.TabletProximity:
 					case NSEventType.DirectTouch:
-						CoreWindowEvents?.RaisePointerMoved(ToPointerArgs(evt, posInWindow));
+						CoreWindowEvents?.RaisePointerMoved(BuildPointerArgs(evt, posInWindow));
 						break;
 
 					case NSEventType.ScrollWheel:
-						CoreWindowEvents?.RaisePointerWheelChanged(ToPointerArgs(evt, posInWindow));
+						CoreWindowEvents?.RaisePointerWheelChanged(BuildPointerArgs(evt, posInWindow));
 						break;
 				}
 
@@ -154,16 +155,7 @@ namespace Uno.UI.Controls
 
 		internal ICoreWindowEvents CoreWindowEvents { private get; set; }
 
-		private static PointerEventArgs ToPointerArgs(NSEvent nativeEvent, Point posInWindow)
-		{
-			var point = GetPointerPoint(nativeEvent, posInWindow);
-			var modifiers = GetVirtualKeyModifiers(nativeEvent);
-			var args = new PointerEventArgs(point, modifiers);
-
-			return args;
-		}
-
-		private static PointerPoint GetPointerPoint(NSEvent nativeEvent, Point posInWindow)
+		private static PointerEventArgs BuildPointerArgs(NSEvent nativeEvent, Point posInWindow)
 		{
 			var frameId = ToFrameId(nativeEvent.Timestamp);
 			var timestamp = ToTimestamp(nativeEvent.Timestamp);
@@ -173,9 +165,15 @@ namespace Uno.UI.Controls
 				? (uint)nativeEvent.PointingDeviceID()
 				: (uint)1;
 			var isInContact = GetIsInContact(nativeEvent);
-			var properties = GetPointerProperties(nativeEvent, pointerDeviceType);
+			var properties = GetPointerProperties(nativeEvent, pointerDeviceType).SetUpdateKindFromPrevious(_previous?.CurrentPoint.Properties);
+			var modifiers = GetVirtualKeyModifiers(nativeEvent);
 
-			return new PointerPoint(frameId, timestamp, pointerDevice, pointerId, posInWindow, posInWindow, isInContact, properties);
+			var point = new PointerPoint(frameId, timestamp, pointerDevice, pointerId, posInWindow, posInWindow, isInContact, properties);
+			var args = new PointerEventArgs(point, modifiers);
+
+			_previous = args;
+
+			return args;
 		}
 
 		private static PointerPointProperties GetPointerProperties(NSEvent nativeEvent, PointerDeviceType pointerType)

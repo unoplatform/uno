@@ -16,8 +16,8 @@ namespace Windows.UI.Xaml.Input
 
 		public ManipulationStartedRoutedEventArgs() { }
 
-		internal ManipulationStartedRoutedEventArgs(UIElement container, GestureRecognizer recognizer, ManipulationStartedEventArgs args)
-			: base(container)
+		internal ManipulationStartedRoutedEventArgs(UIElement source, UIElement container, GestureRecognizer recognizer, ManipulationStartedEventArgs args)
+			: base(source)
 		{
 			Container = container;
 

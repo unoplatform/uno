@@ -4,6 +4,7 @@
 
 #nullable enable
 
+using System;
 using Uno.UI.Extensions;
 using Windows.Foundation;
 using Windows.UI;
@@ -17,6 +18,7 @@ using Windows.UI.Xaml.Input;
 using Microsoft.UI.Input;
 #else
 using Windows.Devices.Input;
+using Windows.UI.Input;
 #endif
 
 namespace Uno.UI.Xaml.Core
@@ -40,20 +42,12 @@ namespace Uno.UI.Xaml.Core
 			SetAttribute("tabindex", "0");
 #endif
 
-#if __ANDROID__
+#if HAS_UNO
 			AddHandler(
 				PointerReleasedEvent,
 				new PointerEventHandler((snd, args) => ProcessPointerUp(args)),
-				// We don't want handled events, they are forwarded directly by the element that has handled it,
-				// but only ** AFTER ** the up has been fully processed.
-				// This is required to be sure that element process gestures and manipulations before we raise the exit
-				// (e.g. the 'tapped' event on a Button would be fired after the 'exit').
-				handledEventsToo: false); 
+				handledEventsToo: true); 
 #endif
-
-			PointerPressed += RootVisual_PointerPressed;
-			PointerReleased += RootVisual_PointerReleased;
-			PointerCanceled += RootVisual_PointerCanceled;
 		}
 
 		/// <summary>
@@ -126,54 +120,50 @@ namespace Uno.UI.Xaml.Core
 			return finalSize;
 		}
 
-
 #if HAS_UNO
-		// Uno specific: To ensure focus is properly lost when clicking "outside" app's content,
-		// we set focus here. In case UWP, focus is set to the root ScrollViewer instead,
-		// but Uno does not have it on all targets yet.
-		private bool _isLeftButtonPressed = false;
-
-		private void RootVisual_PointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+		internal static void ProcessPointerUp(PointerRoutedEventArgs args, bool isAfterHandledUp = false)
 		{
-			var point = e.GetCurrentPoint(this);
-			_isLeftButtonPressed = point.Properties.IsLeftButtonPressed;
-		}
-
-		private void RootVisual_PointerReleased(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
-		{
-			if (_isLeftButtonPressed)
+			// We don't want handled events raised on RootVisual,
+			// instead we wait for the element that handled it to directly forward it to us,
+			// but only ** AFTER ** the up has been fully processed (with isAfterHandledUp = true).
+			// This is required to be sure that element process gestures and manipulations before we raise the exit
+			// (e.g. the 'tapped' event on a Button would be fired after the 'exit').
+			var isHandled = args.Handled; // Capture here as args might be reset before checked for focus
+			var isUpFullyDispatched = isAfterHandledUp || !isHandled;
+			if (!isUpFullyDispatched)
 			{
-				_isLeftButtonPressed = false;
-				var element = FocusManager.GetFocusedElement();
-				if (element is UIElement uiElement)
-				{
-					uiElement.Unfocus();
-					e.Handled = true;
-				}
+				return;
 			}
-		}
 
+#if __ANDROID__ || __WASM__ || __IOS__
+#if __ANDROID__ || __IOS__ // Not needed on WASM as we do have native support of the exit event
+			// On Android and iOS we use the RootVisual to raise the UWP only exit event (in managed only)
 
-		private void RootVisual_PointerCanceled(object sender, PointerRoutedEventArgs e)
-		{
-			_isLeftButtonPressed = false;
-		}
-#endif
-
-#if __ANDROID__
-		internal static void ProcessPointerUp(PointerRoutedEventArgs args)
-		{
-			// On Android we use the RootVisual to raise the UWP only exit event (in managed only)
-			if (args.Pointer.PointerDeviceType is PointerDeviceType.Touch && args.OriginalSource is UIElement src)
+			if (args.Pointer.PointerDeviceType is PointerDeviceType.Touch
+				&& args.OriginalSource is UIElement src)
 			{
-				// It's acceptable to use only the OriginalSource on Android:
-				// since the platform has "implicit capture" and captures are propagated to the OS,
+				// It's acceptable to use only the OriginalSource on Android and iOS:
+				// since those platforms have "implicit capture" and captures are propagated to the OS,
 				// the OriginalSource will be the element that has capture (if any).
 
 				src.RedispatchPointerExited(args.Reset(canBubbleNatively: false));
 			}
+#endif
+
+			// Uno specific: To ensure focus is properly lost when clicking "outside" app's content,
+			// we set focus here. In case UWP, focus is set to the root ScrollViewer instead,
+			// but Uno does not have it on all targets yet.
+			if (!isHandled // so isAfterHandledUp is false!
+				&& args.GetCurrentPoint(null).Properties.PointerUpdateKind is PointerUpdateKind.LeftButtonReleased
+				&& !PointerCapture.TryGet(args.Pointer, out _)
+				&& FocusManager.GetFocusedElement() is UIElement uiElement)
+			{
+				uiElement.Unfocus();
+				args.Handled = true;
+			}
 
 			ReleaseCaptures(args.Reset(canBubbleNatively: false));
+#endif
 		}
 
 		private static void ReleaseCaptures(PointerRoutedEventArgs routedArgs)

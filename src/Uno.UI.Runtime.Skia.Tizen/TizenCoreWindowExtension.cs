@@ -34,6 +34,8 @@ namespace Uno.UI.Runtime.Skia
 		private readonly GestureLayer _gestureLayer;
 		private readonly UnoCanvas _canvas;
 
+		private PointerEventArgs _previous;
+
 		public CoreCursor PointerCursor
 		{
 			get => new CoreCursor(CoreCursorType.Arrow, 0);
@@ -83,12 +85,12 @@ namespace Uno.UI.Runtime.Skia
 		{
 			try
 			{
-				var properties = BuildProperties(true, false);
+				var properties = BuildProperties(true, false).SetUpdateKindFromPrevious(_previous?.CurrentPoint.Properties);
 				var modifiers = VirtualKeyModifiers.None;
 				var point = GetPoint(data.X2, data.Y2);
 
 				_ownerEvents.RaisePointerMoved(
-					new PointerEventArgs(
+					_previous = new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
 							frameId: GetNextFrameId(),
 							timestamp: Math.Max(data.VerticalSwipeTimestamp, data.HorizontalSwipeTimestamp),
@@ -115,12 +117,12 @@ namespace Uno.UI.Runtime.Skia
 		{
 			try
 			{
-				var properties = BuildProperties(true, false);
+				var properties = BuildProperties(true, false).SetUpdateKindFromPrevious(_previous?.CurrentPoint.Properties);
 				var modifiers = VirtualKeyModifiers.None;
 				var point = GetPoint(data.X, data.Y);
 
 				_ownerEvents.RaisePointerPressed(
-					new PointerEventArgs(
+					_previous = new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
 							frameId: GetNextFrameId(),
 							timestamp: (uint)data.Timestamp,
@@ -145,12 +147,12 @@ namespace Uno.UI.Runtime.Skia
 		{
 			try
 			{
-				var properties = BuildProperties(false, false);
+				var properties = BuildProperties(false, false).SetUpdateKindFromPrevious(_previous?.CurrentPoint.Properties);
 				var modifiers = VirtualKeyModifiers.None;
 				var point = GetPoint(data.X, data.Y);
 
 				_ownerEvents.RaisePointerReleased(
-					new PointerEventArgs(
+					_previous = new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
 							frameId: GetNextFrameId(),
 							timestamp: (uint)data.Timestamp,

@@ -16,8 +16,8 @@ namespace Windows.UI.Xaml.Input
 
 		public ManipulationDeltaRoutedEventArgs() { }
 
-		internal ManipulationDeltaRoutedEventArgs(UIElement container, GestureRecognizer recognizer, ManipulationUpdatedEventArgs args)
-			: base(container)
+		internal ManipulationDeltaRoutedEventArgs(UIElement source, UIElement container, GestureRecognizer recognizer, ManipulationUpdatedEventArgs args)
+			: base(source)
 		{
 			Container = container;
 

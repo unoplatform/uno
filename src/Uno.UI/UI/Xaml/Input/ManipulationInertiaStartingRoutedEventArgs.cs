@@ -13,8 +13,8 @@ namespace Windows.UI.Xaml.Input
 	{
 		public ManipulationInertiaStartingRoutedEventArgs() { }
 
-		internal ManipulationInertiaStartingRoutedEventArgs(UIElement container, ManipulationInertiaStartingEventArgs args)
-			: base(container)
+		internal ManipulationInertiaStartingRoutedEventArgs(UIElement source, UIElement container, ManipulationInertiaStartingEventArgs args)
+			: base(source)
 		{
 			Container = container;
 

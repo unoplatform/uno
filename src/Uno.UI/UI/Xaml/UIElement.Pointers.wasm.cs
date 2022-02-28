@@ -16,6 +16,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Core;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -178,8 +179,17 @@ public partial class UIElement : DependencyObject
 					break;
 
 				case NativePointerEvent.pointerup:
-					stopPropagation = element.OnNativePointerUp(ToPointerArgs(element, args, isInContact: false));
+				{
+					var routedArgs = ToPointerArgs(element, args, isInContact: false);
+					stopPropagation = element.OnNativePointerUp(routedArgs);
+
+					if (stopPropagation)
+					{
+						RootVisual.ProcessPointerUp(routedArgs, isAfterHandledUp: true);
+					}
+
 					break;
+				}
 
 				case NativePointerEvent.pointermove:
 					stopPropagation = element.OnNativePointerMove(ToPointerArgs(element, args));
