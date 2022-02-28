@@ -42,17 +42,24 @@ namespace Windows.UI.Xaml.Controls
 	[ContentProperty(Name = "Content")]
 	public partial class ContentPresenter : FrameworkElement, ICustomClippingElement, IFrameworkTemplatePoolAware
 	{
+		private readonly BorderLayerRenderer _borderRenderer;
+
 		private bool _firstLoadResetDone;
 		private View _contentTemplateRoot;
+
+		public ContentPresenter()
+		{
+			_borderRenderer = new BorderLayerRenderer(this);
+
+			InitializePlatform();
+		}
+
+		partial void InitializePlatform();
 
 		/// <summary>
 		/// Will be set to either the result of ContentTemplateSelector or to ContentTemplate, depending on which is used
 		/// </summary>
 		private DataTemplate _dataTemplateUsedLastUpdate;
-
-		private void InitializeContentPresenter()
-		{
-		}
 
 		/// <summary>
 		/// Indicates if the content should inherit templated parent from the presenter, or its templated parent.

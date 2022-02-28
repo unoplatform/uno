@@ -17,19 +17,6 @@ namespace Windows.UI.Xaml.Controls
 	/// </remarks>
 	public partial class ContentPresenter : FrameworkElement
 	{
-		private readonly BorderLayerRenderer _borderRenderer;
-
-		public ContentPresenter()
-		{
-			_borderRenderer = new BorderLayerRenderer(this);
-
-			InitializeContentPresenter();
-
-			Loaded += (s, e) => UpdateBorder();
-			Unloaded += (s, e) => _borderRenderer.Clear();
-			LayoutUpdated += (s, e) => UpdateBorder();
-		}
-
 		private void SetUpdateTemplate()
 		{
 			UpdateContentTemplateRoot();
