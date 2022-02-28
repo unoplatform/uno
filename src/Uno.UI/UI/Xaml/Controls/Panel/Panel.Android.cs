@@ -20,17 +20,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Panel : IEnumerable
 	{
-		private readonly SerialDisposable _backgroundBrushChanged = new SerialDisposable();
-		private readonly SerialDisposable _borderBrushChanged = new SerialDisposable();
-		private readonly BorderLayerRenderer _borderRenderer;
-
-		public Panel()
-		{
-			_borderRenderer = new BorderLayerRenderer(this);
-
-			Initialize();
-		}
-
 		protected override void OnChildViewAdded(View child)
 		{
 			if (child is IFrameworkElement element)
@@ -42,16 +31,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		partial void Initialize();
-
-		partial void OnLoadedPartial()
-		{
-			UpdateBorder();
-		}
-
-		partial void OnUnloadedPartial()
-		{
-			_borderRenderer.Clear();
-		}
 
 		partial void UpdateBorder()
 		{

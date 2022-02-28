@@ -20,15 +20,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Border
 	{
-		private readonly BorderLayerRenderer _borderRenderer;
-
-		public Border()
-		{
-			_borderRenderer = new BorderLayerRenderer(this);
-
-			this.RegisterLoadActions(() => UpdateBorderLayer(), () => _borderRenderer.Clear());
-		}
-
         partial void OnBorderBrushChangedPartial()
 		{
 			UpdateBorderLayer();

@@ -36,6 +36,12 @@ namespace Microsoft.UI.Xaml.Controls
 	[ContentProperty(Name = nameof(Child))]
 	public partial class Border : FrameworkElement
 	{
+		private readonly BorderLayerRenderer _borderRenderer;
+
+		public Border()
+        {
+			_borderRenderer = new BorderLayerRenderer(this);
+		}
 
 		/// <summary>
 		/// Support for the C# collection initializer style.

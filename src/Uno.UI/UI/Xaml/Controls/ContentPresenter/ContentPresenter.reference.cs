@@ -17,11 +17,6 @@ namespace Microsoft.UI.Xaml.Controls
 	/// </remarks>
 	public partial class ContentPresenter : FrameworkElement
 	{
-		public ContentPresenter()
-		{
-			InitializeContentPresenter();
-		}
-
 		private void SetUpdateTemplate()
 		{
 			UpdateContentTemplateRoot();

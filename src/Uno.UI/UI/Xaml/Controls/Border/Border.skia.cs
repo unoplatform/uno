@@ -19,17 +19,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Border
 	{
-		private readonly BorderLayerRenderer _borderRenderer;
-
-		public Border()
-		{
-			_borderRenderer = new BorderLayerRenderer(this);
-
-			Loaded += (s, e) => UpdateBorder();
-			Unloaded += (s, e) => _borderRenderer.Clear();
-			LayoutUpdated += (s, e) => UpdateBorder();
-		}
-
 		partial void OnChildChangedPartial(View previousValue, View newValue)
 		{
 			if (previousValue != null)

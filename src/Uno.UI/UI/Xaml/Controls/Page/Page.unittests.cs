@@ -10,10 +10,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Page
 	{
-		private void InitializeBorder()
-		{
-		}
-
 		private void UpdateBorder()
 		{
 		}

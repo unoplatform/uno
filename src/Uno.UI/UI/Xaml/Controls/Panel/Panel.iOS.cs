@@ -8,27 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Panel
 	{
-		private readonly BorderLayerRenderer _borderRenderer;
-
-		public Panel()
-		{
-			_borderRenderer = new BorderLayerRenderer(this);
-
-			Initialize();
-		}
-
-		partial void Initialize();
-
-		partial void OnLoadedPartial()
-		{
-			UpdateBackground();
-		}
-
-		partial void OnUnloadedPartial()
-		{
-			_borderRenderer.Clear();
-		}
-
 		public override void SubviewAdded(UIView uiview)
 		{
 			base.SubviewAdded(uiview);

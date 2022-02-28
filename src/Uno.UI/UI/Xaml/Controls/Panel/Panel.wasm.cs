@@ -20,21 +20,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Panel
 	{
-		private readonly BorderLayerRenderer _borderRenderer;
-
-		public Panel()
-		{
-			_borderRenderer = new BorderLayerRenderer(this);
-
-			Initialize();
-
-			Loaded += (s, e) => UpdateBorder();
-			Unloaded += (s, e) => _borderRenderer.Clear();
-			LayoutUpdated += (s, e) => UpdateBorder();
-		}
-
-		partial void Initialize();
-
 		partial void UpdateBorder()
 		{
 			// Checking for Window avoids re-creating the layer until it is actually used.

@@ -26,17 +26,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Border
 	{
-		private SerialDisposable _brushChanged = new SerialDisposable();
-		private BorderLayerRenderer _borderRenderer;
-
-		public Border()
-		{
-			_borderRenderer = new BorderLayerRenderer(this);
-
-			this.RegisterLoadActions(UpdateBorder, () => _borderRenderer.Clear());
-		}
-
-		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom, bool localIsLayoutRequested)
+		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom)
 		{
 			base.OnLayoutCore(changed, left, top, right, bottom, localIsLayoutRequested);
 

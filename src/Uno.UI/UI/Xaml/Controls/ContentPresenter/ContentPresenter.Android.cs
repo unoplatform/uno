@@ -20,14 +20,8 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ContentPresenter
 	{
-		private readonly BorderLayerRenderer _borderRenderer;
-
-		public ContentPresenter()
+		partial void InitializePlatform()
 		{
-			_borderRenderer = new BorderLayerRenderer(this);
-
-			InitializeContentPresenter();
-
 			IFrameworkElementHelper.Initialize(this);
 		}
 

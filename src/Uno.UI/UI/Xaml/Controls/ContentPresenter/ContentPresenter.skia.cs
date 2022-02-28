@@ -21,21 +21,13 @@ namespace Microsoft.UI.Xaml.Controls
 	/// </remarks>
 	public partial class ContentPresenter : FrameworkElement
 	{
-		private readonly BorderLayerRenderer _borderRenderer;
-		
 		private Rect? _lastArrangeRect;
 		private Rect _lastGlobalRect;
 		private bool _nativeHostRegistered;
 
 		public ContentPresenter()
 		{
-			_borderRenderer = new BorderLayerRenderer(this);
-
 			InitializeContentPresenter();
-
-			Loaded += (s, e) => RegisterNativeHostSupport();
-			Unloaded += (s, e) => UnregisterNativeHostSupport();
-			LayoutUpdated += (s, e) => UpdateBorder();
 		}
 
 		private void SetUpdateTemplate()

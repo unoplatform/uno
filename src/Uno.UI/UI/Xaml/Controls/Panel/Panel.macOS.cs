@@ -15,17 +15,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Panel
 	{
-		private readonly BorderLayerRenderer _borderRenderer;
-
-		public Panel()
-		{
-			_borderRenderer = new BorderLayerRenderer(this);
-
-			Initialize();
-		}
-
-		partial void Initialize();
-
 		public override void DidAddSubview(NSView nsView)
 		{
 			base.DidAddSubview(nsView);

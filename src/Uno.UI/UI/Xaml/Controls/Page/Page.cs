@@ -8,9 +8,11 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Page : UserControl
 	{
+		private readonly BorderLayerRenderer _borderRenderer;
+
 		public Page()
 		{
-			InitializeBorder();
+			_borderRenderer = new BorderLayerRenderer(this);
 		}
 
 		protected internal virtual void OnNavigatedFrom(NavigationEventArgs e) { }

@@ -25,6 +25,8 @@ namespace Microsoft.UI.Xaml.Controls
 		, ICustomClippingElement
 #endif
 	{
+		private readonly BorderLayerRenderer _borderRenderer;
+
 #if IS_UNIT_TESTS || UNO_REFERENCE_API
 		private new UIElementCollection _children;
 #else
@@ -33,9 +35,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private PanelTransitionHelper _transitionHelper;
 
-		partial void Initialize()
+
+		public Panel()
 		{
+			_borderRenderer = new BorderLayerRenderer(this);
+
 			_children = new UIElementCollection(this);
+
+			Loaded += (s, e) => UpdateBorder();
+			Unloaded += (s, e) => _borderRenderer.Clear();
+			LayoutUpdated += (s, e) => UpdateBorder();
 		}
 
 		private void OnChildrenCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

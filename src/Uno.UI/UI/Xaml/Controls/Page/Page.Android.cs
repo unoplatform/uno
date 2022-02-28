@@ -20,17 +20,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Page
 	{
-		private BorderLayerRenderer _borderRenderer;
-
-		private void InitializeBorder()
-		{
-			_borderRenderer ??= new BorderLayerRenderer(this);
-
-			Loaded += (s, e) => UpdateBorder();
-			Unloaded += (s, e) => _borderRenderer.Clear();
-			LayoutUpdated += (s, e) => UpdateBorder();
-		}
-
 		private void UpdateBorder()
 		{
 			UpdateBorder(false);
