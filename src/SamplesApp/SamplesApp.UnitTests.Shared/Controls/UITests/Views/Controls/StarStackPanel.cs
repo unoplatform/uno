@@ -421,8 +421,7 @@ namespace Uno.UI.Samples.Controls
 
 		private static void InvalidateLayoutOnChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			var panel = d as StarStackPanel;
-			if (panel == null)
+			if (d is not StarStackPanel panel)
 			{
 				return;
 			}

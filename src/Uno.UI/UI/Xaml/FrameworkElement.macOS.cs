@@ -47,8 +47,8 @@ namespace Windows.UI.Xaml
 
 			if (!IsMeasureDirty)
 			{
-				IsArrangeDirty = true;
-				IsMeasureDirty = true;
+				InvalidateMeasure();
+				InvalidateArrange();
 
 				if (Parent is FrameworkElement fe)
 				{
@@ -90,8 +90,8 @@ namespace Windows.UI.Xaml
 			finally
 			{
 				_inLayoutSubviews = false;
-				IsMeasureDirty = false;
-				IsArrangeDirty = false;
+
+				ClearLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.ArrangeDirty);
 			}
 		}
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using CoreAnimation;
 using CoreGraphics;
 using Foundation;
@@ -31,26 +32,16 @@ namespace Windows.UI.Xaml
 			InitializePointers();
 		}
 
-		/// <summary>
-		/// Determines if InvalidateMeasure has been called
-		/// </summary>
-		internal bool IsMeasureDirty { get; private protected set; }
-
-		/// <summary>
-		/// This is for compatibility - not implemented yet on this platform
-		/// </summary>
-		internal bool IsMeasureOrMeasureDirtyPath => IsMeasureDirty;
-
-		/// <summary>
-		/// Determines if InvalidateArrange has been called
-		/// </summary>
-		internal bool IsArrangeDirty { get; private protected set; }
+		internal bool IsMeasureDirtyPath
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => false; // Not implemented on iOS yet
+		}
 
 		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
 
 		partial void ApplyNativeClip(Rect rect)
 		{
-
 			if (rect.IsEmpty
 				|| double.IsPositiveInfinity(rect.X)
 				|| double.IsPositiveInfinity(rect.Y)
@@ -83,21 +74,25 @@ namespace Windows.UI.Xaml
 
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
 		{
-			var newVisibility = (Visibility)newValue;
+			var isNewVisibilityHidden = newValue.IsHidden();
 
-			if (base.Hidden != newVisibility.IsHidden())
+			if (base.Hidden == isNewVisibilityHidden)
 			{
-				base.Hidden = newVisibility.IsHidden();
-				InvalidateMeasure();
-
-				if (newVisibility == Visibility.Visible)
-				{
-					// This recursively invalidates the layout of all subviews
-					// to ensure LayoutSubviews is called and views get updated.
-					// Failing to do this can cause some views to remain collapsed.
-					SetSubviewsNeedLayout();
-				}
+				return;
 			}
+
+			base.Hidden = isNewVisibilityHidden;
+			InvalidateMeasure();
+
+			if (isNewVisibilityHidden)
+			{
+				return;
+			}
+
+			// This recursively invalidates the layout of all subviews
+			// to ensure LayoutSubviews is called and views get updated.
+			// Failing to do this can cause some views to remain collapsed.
+			SetSubviewsNeedLayout();
 		}
 
 		public override bool Hidden
