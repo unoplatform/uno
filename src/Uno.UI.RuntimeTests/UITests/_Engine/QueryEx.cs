@@ -7,7 +7,7 @@ using Uno.UI.Extensions;
 
 namespace Uno.UITest.Helpers.Queries;
 
-internal class QueryEx
+public class QueryEx : IAppQuery
 {
 	private readonly Func<IEnumerable<QueryResult>, IEnumerable<QueryResult>> _query;
 
@@ -16,6 +16,10 @@ internal class QueryEx
 
 	public QueryEx(Func<QueryEx, QueryEx> query)
 		=> _query = elts => query(Any)._query(elts);
+
+	public QueryEx(Func<IAppQuery, IAppQuery> query)
+		=> _query = elts => ((QueryEx)query(Any))._query(elts);
+
 
 	private QueryEx(Func<IEnumerable<QueryResult>, IEnumerable<QueryResult>> query)
 		=> _query = query;
@@ -35,6 +39,7 @@ internal class QueryEx
 			.OfType<FrameworkElement>()
 			.Select(elt => new QueryResult(elt)));
 
+	IEnumerable<QueryResult> IAppQuery.Execute(IEnumerable<QueryResult> elements) => Execute(elements);
 	internal IEnumerable<QueryResult> Execute(IEnumerable<QueryResult> elements)
 		=> _query(elements);
 

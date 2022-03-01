@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
@@ -18,6 +17,9 @@ namespace SamplesApp.UITests.Extensions
 		private static float? _scaling;
 		public static float GetDisplayScreenScaling(this IApp app)
 		{
+#if IS_RUNTIME_UI_TESTS
+			return 1f;
+#else
 			return _scaling ?? (float)(_scaling = GetScaling());
 
 			float GetScaling()
@@ -34,15 +36,7 @@ namespace SamplesApp.UITests.Extensions
 					return 1f;
 				}
 			}
+#endif
 		}
-	}
-}
-
-namespace Uno.UITest.Helpers.Queries
-{
-	public static class AppExtensions
-	{
-		public static async Task WaitForDependencyPropertyValueAsync(this IApp app, QueryEx element, string dependencyPropertyName, string value)
-			=> app.WaitForDependencyPropertyValue(element, dependencyPropertyName, value);
 	}
 }

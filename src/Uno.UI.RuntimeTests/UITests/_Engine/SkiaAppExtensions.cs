@@ -1,29 +1,32 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.UITest.Helpers.Queries;
 
 namespace Uno.UITest.Helpers.Queries;
 
 internal static class SkiaAppExtensions
 {
-	public static async Task WaitForDependencyPropertyValueAsync(this SkiaApp app, QueryEx element, string dependencyPropertyName, string value)
-	{
-		const int interval = 25;
-		const int attemps = 3000 / interval;
+	// This class contains compatibility method to match the Uno.UITest.IApp contract.
+	// Those methods are directly on the IApp interface but are not expected to be imported on the refreshed
+	// IAppQuery interface of runtime tests (where we try to keep only the core versions like 'Query' and 'xxxxCoordinates').
 
-		for (var i = 0; i < attemps; i++)
-		{
-			var actual = element.GetDependencyPropertyValue<string>(dependencyPropertyName);
-			if (actual?.Equals(value) ?? value is null)
-			{
-				return;
-			}
+	public static QueryEx Marked(this IApp app, string elementName)
+		=> new(q => q.Marked(elementName));
 
-			await Task.Delay(interval);
-		}
+	public static void Tap(this IApp app, string elementName)
+		=> app.Marked(elementName).Tap();
 
-		Assert.Fail($"Failed to get '{value}' for '{dependencyPropertyName}'.");
-	}
+	// WARNING: Those version does not wait on runtime UI tests ...
+	// TODO: We need to create async versions (and remove those!).
+	public static IEnumerable<QueryResult> WaitForElement(this IApp app, string elementName)
+		=> app.Query(q => q.Marked(elementName));
+
+	public static IEnumerable<QueryResult> WaitForElement(this IApp app, QueryEx query)
+		=> app.Query(query);
+
+	public static IEnumerable<QueryResult> WaitForElement(this IApp app, Func<IAppQuery, IAppQuery> query)
+		=> app.Query(query);
+
+	
 }
