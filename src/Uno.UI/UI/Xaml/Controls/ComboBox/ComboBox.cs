@@ -1,29 +1,18 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Input;
-using Uno.Client;
-using System.Collections;
-using Uno.UI.Controls;
-using Uno.Extensions;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 using Uno.UI;
-using System.Linq;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Data;
 
 
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;
-using Windows.UI.Core;
 #if __ANDROID__
 using Android.Views;
 using _View = Android.Views.View;
@@ -35,6 +24,7 @@ using AppKit;
 using _View = AppKit.NSView;
 #else
 using _View = Windows.UI.Xaml.FrameworkElement;
+using Windows.System;
 #endif
 
 #if HAS_UNO_WINUI
@@ -488,6 +478,35 @@ namespace Windows.UI.Xaml.Controls
 
 			// On UWP ComboBox does handle the released event.
 			args.Handled = true;
+		}
+
+		protected override void OnKeyDown(KeyRoutedEventArgs args)
+		{
+			args.Handled = TryHandleKeyDown(args);
+
+			base.OnKeyDown(args);
+		}
+
+		internal bool TryHandleKeyDown(KeyRoutedEventArgs args)
+		{
+			if (args.Key == VirtualKey.Enter ||
+				args.Key == VirtualKey.Space)
+			{
+				if (!IsDropDownOpen)
+				{
+					IsDropDownOpen = true;
+					return true;
+				}
+			}
+			else if (args.Key == VirtualKey.Escape)
+			{
+				if (IsDropDownOpen)
+				{
+					IsDropDownOpen = false;
+					return true;
+				}
+			}
+			return false;
 		}
 
 		/// <summary>
