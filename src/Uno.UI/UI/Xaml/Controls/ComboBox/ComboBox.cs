@@ -9,10 +9,10 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 using Uno.UI;
 using Windows.UI.Xaml.Data;
-
-
+using Windows.System;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;
+
 #if __ANDROID__
 using Android.Views;
 using _View = Android.Views.View;
@@ -24,7 +24,6 @@ using AppKit;
 using _View = AppKit.NSView;
 #else
 using _View = Windows.UI.Xaml.FrameworkElement;
-using Windows.System;
 #endif
 
 #if HAS_UNO_WINUI
@@ -482,13 +481,21 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
-			args.Handled = TryHandleKeyDown(args);
-
 			base.OnKeyDown(args);
+
+			if (!args.Handled)
+			{
+				args.Handled = TryHandleKeyDown(args, null);
+			}
 		}
 
-		internal bool TryHandleKeyDown(KeyRoutedEventArgs args)
+		internal bool TryHandleKeyDown(KeyRoutedEventArgs args, ComboBoxItem? focusedContainer)
 		{
+			if (!IsEnabled)
+			{
+				return false;
+			}
+
 			if (args.Key == VirtualKey.Enter ||
 				args.Key == VirtualKey.Space)
 			{
@@ -516,20 +523,66 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else if (args.Key == VirtualKey.Down)
 			{
-				if (SelectedIndex < (NumberOfItems - 1))
+				if (IsDropDownOpen)
 				{
-					SelectedIndex++;
+					return TryMoveKeyboardFocus(+1, focusedContainer);
+				}
+				else
+				{
+					if (IsIndexValid(SelectedIndex + 1))
+					{
+						SelectedIndex = SelectedIndex + 1;
+						return true;
+					}
 				}
 			}
 			else if (args.Key == VirtualKey.Up)
 			{
-				if (SelectedIndex > 0)
+				if (IsDropDownOpen)
 				{
-					SelectedIndex -= 1;
+					return TryMoveKeyboardFocus(-1, focusedContainer);
+				}
+				else
+				{
+					if (IsIndexValid(SelectedIndex - 1))
+					{
+						SelectedIndex = SelectedIndex - 1;
+						return true;
+					}
 				}
 			}
 			return false;
 		}
+
+		private bool TryMoveKeyboardFocus(int offset, ComboBoxItem? focusedContainer)
+		{
+			var focusedIndex = SelectedIndex;
+			if (focusedContainer != null)
+			{
+				focusedIndex = IndexFromContainer(focusedContainer);
+			}
+
+			var index = focusedIndex += offset;
+			if (!IsIndexValid(index))
+			{
+				return false;
+			}
+
+			var container = ContainerFromIndex(index);
+			if (container is not ComboBoxItem item)
+			{
+				return false;
+			}
+
+			item.StartBringIntoView(new BringIntoViewOptions()
+			{
+				AnimationDesired = false
+			});
+			item.Focus(FocusState.Keyboard);
+			return true;
+		}
+
+		private bool IsIndexValid(int index) => index >= 0 && index < NumberOfItems;
 
 		/// <summary>
 		/// Stretches the opened Popup horizontally, and uses the VerticalAlignment

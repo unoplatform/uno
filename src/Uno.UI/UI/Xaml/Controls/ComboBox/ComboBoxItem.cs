@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Controls
 				if (!args.Handled)
 				{
 					// Fallback to combobox keydown handling
-					args.Handled = comboBox.TryHandleKeyDown(args);
+					args.Handled = comboBox.TryHandleKeyDown(args, this);
 				}
 			}
 
