@@ -128,6 +128,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresFullWindow]
 		public async Task When_ScrollViewer_Resized()
 		{
 			var content = new Border
@@ -142,8 +143,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var container = new Border {Child = sut};
 
 			WindowHelper.WindowContent = container;
-
-			await WindowHelper.WaitForLoaded(content);
 
 			using var _ = new AssertionScope();
 
