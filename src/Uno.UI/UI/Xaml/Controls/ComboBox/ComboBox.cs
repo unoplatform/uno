@@ -492,7 +492,15 @@ namespace Windows.UI.Xaml.Controls
 			if (args.Key == VirtualKey.Enter ||
 				args.Key == VirtualKey.Space)
 			{
-				if (!IsDropDownOpen)
+				if (IsDropDownOpen)
+				{
+					if (SelectedIndex > -1)
+					{
+						IsDropDownOpen = false;
+						return true;
+					}
+				}
+				else
 				{
 					IsDropDownOpen = true;
 					return true;
@@ -504,6 +512,20 @@ namespace Windows.UI.Xaml.Controls
 				{
 					IsDropDownOpen = false;
 					return true;
+				}
+			}
+			else if (args.Key == VirtualKey.Down)
+			{
+				if (SelectedIndex < (NumberOfItems - 1))
+				{
+					SelectedIndex++;
+				}
+			}
+			else if (args.Key == VirtualKey.Up)
+			{
+				if (SelectedIndex > 0)
+				{
+					SelectedIndex -= 1;
 				}
 			}
 			return false;
