@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI.Services;
@@ -188,50 +189,12 @@ namespace Windows.UI.Xaml
 
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 		{
-			try
-			{
-				var availableSize = ViewHelper.LogicalSizeFromSpec(widthMeasureSpec, heightMeasureSpec);
+			((ILayouterElement)this).OnMeasureInternal(widthMeasureSpec, heightMeasureSpec);
+		}
 
-				var measuredSizelogical = _layouter.Measure(availableSize);
-
-				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-				{
-					this.Log().DebugFormat(
-						"[{0}/{1}] OnMeasure1({2}, {3}) (parent: {4}/{5})",
-						GetType(),
-						Name,
-						measuredSizelogical.Width,
-						measuredSizelogical.Height,
-						ViewHelper.MeasureSpecGetSize(widthMeasureSpec),
-						ViewHelper.MeasureSpecGetSize(heightMeasureSpec)
-					);
-				}
-
-				var measuredSize = measuredSizelogical.LogicalToPhysicalPixels();
-
-				if (StretchAffectsMeasure)
-				{
-					if (HorizontalAlignment == HorizontalAlignment.Stretch && !double.IsPositiveInfinity(availableSize.Width))
-					{
-						measuredSize.Width = ViewHelper.MeasureSpecGetSize(widthMeasureSpec);
-					}
-
-					if (VerticalAlignment == VerticalAlignment.Stretch && !double.IsPositiveInfinity(availableSize.Height))
-					{
-						measuredSize.Height = ViewHelper.MeasureSpecGetSize(heightMeasureSpec);
-					}
-				}
-
-				// Report our final dimensions.
-				SetMeasuredDimension(
-					(int)measuredSize.Width,
-					(int)measuredSize.Height
-				);
-			}
-			catch(Exception e)
-			{
-				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
-			}
+		void ILayouterElement.SetMeasuredDimensionInternal(int width, int height)
+		{
+			SetMeasuredDimension(width, height);
 		}
 
 		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom)

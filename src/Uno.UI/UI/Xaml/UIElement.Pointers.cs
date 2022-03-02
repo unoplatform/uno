@@ -283,7 +283,7 @@ namespace Windows.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
-			that.SafeRaiseEvent(ManipulationStartingEvent, new ManipulationStartingRoutedEventArgs(src, args));
+			that.SafeRaiseEvent(ManipulationStartingEvent, new ManipulationStartingRoutedEventArgs(src, that, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> OnRecognizerManipulationStarted = (sender,  args) =>
@@ -291,7 +291,7 @@ namespace Windows.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
-			that.SafeRaiseEvent(ManipulationStartedEvent, new ManipulationStartedRoutedEventArgs(src, sender, args));
+			that.SafeRaiseEvent(ManipulationStartedEvent, new ManipulationStartedRoutedEventArgs(src, that, sender, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> OnRecognizerManipulationUpdated = (sender, args) =>
@@ -299,7 +299,7 @@ namespace Windows.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
-			that.SafeRaiseEvent(ManipulationDeltaEvent, new ManipulationDeltaRoutedEventArgs(src, sender, args));
+			that.SafeRaiseEvent(ManipulationDeltaEvent, new ManipulationDeltaRoutedEventArgs(src, that, sender, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> OnRecognizerManipulationInertiaStarting = (sender, args) =>
@@ -307,7 +307,7 @@ namespace Windows.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			var src = CoreWindow.GetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
-			that.SafeRaiseEvent(ManipulationInertiaStartingEvent, new ManipulationInertiaStartingRoutedEventArgs(src, args));
+			that.SafeRaiseEvent(ManipulationInertiaStartingEvent, new ManipulationInertiaStartingRoutedEventArgs(src, that, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> OnRecognizerManipulationCompleted = (sender, args) =>
@@ -322,7 +322,7 @@ namespace Windows.UI.Xaml
 			}
 #endif
 
-			that.SafeRaiseEvent(ManipulationCompletedEvent, new ManipulationCompletedRoutedEventArgs(src, args));
+			that.SafeRaiseEvent(ManipulationCompletedEvent, new ManipulationCompletedRoutedEventArgs(src, that, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, TappedEventArgs> OnRecognizerTapped = (sender, args) =>
@@ -798,35 +798,36 @@ namespace Windows.UI.Xaml
 
 					break;
 				case RoutedEventFlag.PointerExited:
-#if __WASM__
-					// On WASM, the pointer 'exit' is raise by the platform, but here the event has been handled and is bubbling in managed.
-					// We only need to replicate the UWP behavior and stop bubbling as soon as we reach an element which still under the pointer.
-					if (ptArgs.IsPointCoordinatesOver(this))
-					{
-						bubblingMode = BubblingMode.NoBubbling;
-					}
-					else
-					{
-						OnPointerExited(ptArgs, BubblingContext.OnManagedBubbling);
-					}
-#elif UNO_HAS_MANAGED_POINTERS
-					// On Skia and macOS the pointer exit is raised properly by the PointerManager with a "Root"(a.k.a. UpTo) element.
+					// Here the pointer has crossed the boundaries of an element and the event is bubbling in managed code
+					// (either because there is no native bubbling, either because is has been handled).
+					// On UWP, the 'exit' is bubbling/raised only on elements where the pointer is effectively no longer "over" it.
+#if UNO_HAS_MANAGED_POINTERS
+					// On Skia and macOS the pointer exit is raised properly by the PointerManager with a "Root" (a.k.a. UpTo) element.
 					// If we are here, it means that we just have to update private state and let the bubbling algorithm do its job!
 					// Debug.Assert(IsOver(ptArgs.Pointer)); // Fails when fast scrolling samples categories list on Skia
 					OnPointerExited(ptArgs, BubblingContext.OnManagedBubbling);
-#elif __IOS__
+#else
+#if __IOS__
 					// On iOS all pointers are handled just like if they were touches by the platform and there isn't any notion of "over".
-					// To compensate that, we are generating 'exit' on native (and managed bubbling, cf. PointerExited) pointer 'up',
-					// so we should never let bubble an 'exit' (the bubbling 'exit' would be raised before the 'up' on parent elements).
-					// Note: If we are here it means that the 'exit' has been flagged as handle ...
-					//		 unfortunately, for now, this won't have any impact as parent element will re-create one for the 'up'.
-					bubblingMode = BubblingMode.NoBubbling;
-#elif __ANDROID__
-					// On Android, for touch we are raising the Exit directly from the RootVisual on pointer up in managed only,
-					// so we never have to prevent bubbling.
-					// However for mouse and pen (where we can have native support of over state), the behavior is like for WASM,
-					// we allow bubbling only up to the element that is effectively no longer under the pointer.
-					if (ptArgs.Pointer.PointerDeviceType is not PointerDeviceType.Touch && ptArgs.IsPointCoordinatesOver(this))
+					// So we can consider pointer over as soon as is touching the screen while being within element bounds.
+					var isOver = ptArgs.Pointer.IsInContact && ptArgs.IsPointCoordinatesOver(this);
+#else // __WASM__ || __ANDROID__
+					// On WASM the pointer 'exit' is raise by the platform for all pointer types,
+					// while on Android they are raised only for mouses and pens (i.e. not for touch).
+					// (For touch on Android we are "re-dispatching exit" in managed code only (i.e. we will pass here)
+					// when we receive the 'up' in the 'RootVisual' or after having completed bubbling of the 'up' it in managed code).
+					// For both platforms, we validate that the pointer is effectively within the element bounds,
+					// with an exception for touch which has no notion of "over": if not "in contact" (i.e. no longer touching the screen),
+					// no matter the location, we consider the pointer has out.
+
+					var isOver = (ptArgs.Pointer.PointerDeviceType, ptArgs.Pointer.IsInContact) switch
+					{
+						(PointerDeviceType.Touch, false) => false,
+						_ => ptArgs.IsPointCoordinatesOver(this),
+					};
+#endif
+
+					if (isOver)
 					{
 						bubblingMode = BubblingMode.NoBubbling;
 					}
@@ -990,7 +991,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-#if !UNO_HAS_MANAGED_POINTERS && !__ANDROID__ // Captures release are handled a root level (RootVisual for Android)
+#if !UNO_HAS_MANAGED_POINTERS && !__ANDROID__ && !__WASM__ // Captures release are handled a root level (RootVisual for Android and WASM)
 			// We release the captures on up but only after the released event and processed the gesture
 			// Note: For a "Tap" with a finger the sequence is Up / Exited / Lost, so we let the Exit raise the capture lost
 			// Note: If '!isOver', that means that 'IsCaptured == true' otherwise 'isOverOrCaptured' would have been false.
@@ -1017,7 +1018,7 @@ namespace Windows.UI.Xaml
 				global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessMoved(args);
 			}
 
-#if !UNO_HAS_MANAGED_POINTERS && !__ANDROID__ // Captures release are handled a root level (RootVisual for Android)
+#if !UNO_HAS_MANAGED_POINTERS && !__ANDROID__ && !__WASM__ // Captures release are handled a root level (RootVisual for Android and WASM)
 			// We release the captures on exit when pointer if not pressed
 			// Note: for a "Tap" with a finger the sequence is Up / Exited / Lost, so the lost cannot be raised on Up
 			if (!IsPressed(args.Pointer))

@@ -82,12 +82,18 @@ namespace Windows.UI.Xaml.Input
 			};
 
 		private PointerPointProperties GetProperties()
-			=> new PointerPointProperties()
+			=> new()
 			{
 				IsPrimary = true,
 				IsInRange = Pointer.IsInRange,
 				IsLeftButtonPressed = Pointer.IsInContact,
-				Pressure = (float)(_nativeTouch.Force / _nativeTouch.MaximumPossibleForce)
+				Pressure = (float)(_nativeTouch.Force / _nativeTouch.MaximumPossibleForce),
+				PointerUpdateKind = _nativeTouch.Phase switch
+				{
+					UITouchPhase.Began => PointerUpdateKind.LeftButtonPressed,
+					UITouchPhase.Ended => PointerUpdateKind.LeftButtonReleased,
+					_ => PointerUpdateKind.Other
+				}
 			};
 
 		#region Misc static helpers

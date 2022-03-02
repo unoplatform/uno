@@ -1,4 +1,5 @@
-﻿using Windows.Foundation;
+﻿using System.Runtime.CompilerServices;
+using Windows.Foundation;
 using Uno.Collections;
 
 namespace Windows.UI.Xaml.Controls.Primitives
@@ -55,6 +56,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		internal static Size GetDesiredSize(UIElement element)
 			=> element.DesiredSize;
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static Size GetDesiredSize(object view)
 		{
 			switch (view)

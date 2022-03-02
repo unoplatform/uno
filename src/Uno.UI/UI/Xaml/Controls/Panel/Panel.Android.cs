@@ -34,12 +34,12 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnChildViewAdded(View child)
 		{
-			var element = child as IFrameworkElement;
-
-			if (element != null)
+			if (child is IFrameworkElement element)
 			{
 				OnChildAdded(element);
 			}
+
+			base.OnChildViewAdded(child);
 		}
 
 		partial void Initialize();

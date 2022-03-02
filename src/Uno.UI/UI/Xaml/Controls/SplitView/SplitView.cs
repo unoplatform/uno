@@ -52,7 +52,8 @@ namespace Windows.UI.Xaml.Controls
 				"CompactPaneLength",
 				typeof(double), typeof(SplitView),
 				new FrameworkPropertyMetadata(
-					(double)48,
+					defaultValue: (double)48,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((SplitView)s)?.OnCompactPaneLengthChanged(e)
 				)
 			);
@@ -78,7 +79,8 @@ namespace Windows.UI.Xaml.Controls
 				typeof(UIElement),
 				typeof(SplitView),
 				new FrameworkPropertyMetadata(
-					null,
+					defaultValue: null,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((SplitView)s)?.OnContentChanged(e)
 				)
 			);
@@ -104,7 +106,8 @@ namespace Windows.UI.Xaml.Controls
 				typeof(UIElement),
 				typeof(SplitView),
 				new FrameworkPropertyMetadata(
-					null,
+					defaultValue: null,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((SplitView)s)?.OnPaneChanged(e)
 				)
 			);
@@ -129,7 +132,8 @@ namespace Windows.UI.Xaml.Controls
 				typeof(SplitViewDisplayMode),
 				typeof(SplitView),
 				new FrameworkPropertyMetadata(
-					SplitViewDisplayMode.Overlay,
+					defaultValue: SplitViewDisplayMode.Overlay,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((SplitView)s)?.OnDisplayModeChanged(e)
 				)
 			);
@@ -157,6 +161,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(SplitView),
 				new FrameworkPropertyMetadata(
 					false,
+
 					(s, e) => ((SplitView)s)?.OnIsPaneOpenChanged(e)
 				)
 			);
@@ -182,7 +187,8 @@ namespace Windows.UI.Xaml.Controls
 				typeof(double),
 				typeof(SplitView),
 				new FrameworkPropertyMetadata(
-					(double)320,
+					defaultValue: (double)320,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((SplitView)s)?.OnOpenPaneLengthChanged(e)
 				)
 			);
@@ -269,6 +275,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#endregion
+
+		protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);
 
 		protected override void OnApplyTemplate()
 		{

@@ -103,16 +103,31 @@ namespace Windows.UI.Xaml.Controls
 
 		//CDefinitionBase GetColumnNoRef(CUIElement pChild);
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		void SetGridFlags(GridFlags mask)
 		{
 			m_gridFlags |= mask;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		bool TrySetGridFlags(GridFlags mask)
+		{
+			if (HasGridFlags(mask))
+			{
+				return false;
+			}
+
+			m_gridFlags |= mask;
+			return true;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		void ClearGridFlags(GridFlags mask)
 		{
 			m_gridFlags &= ~mask;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		bool HasGridFlags(GridFlags mask)
 		{
 			return (m_gridFlags & mask) == mask;
@@ -262,8 +277,10 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void InvalidateDefinitions()
 		{
-			SetGridFlags(GridFlags.DefinitionsChanged);
-			InvalidateMeasure();
+			if (TrySetGridFlags(GridFlags.DefinitionsChanged))
+			{
+				InvalidateMeasure();
+			}
 		}
 
 		// public

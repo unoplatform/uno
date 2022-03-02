@@ -9,6 +9,7 @@ using UIKit;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+using Uno.UI.Xaml.Core;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -223,10 +224,15 @@ namespace Windows.UI.Xaml
 
 					isHandledOrBubblingInManaged |= OnNativePointerUp(args);
 
-					// Like for the Down, we manually generate an Exited, but we DON'T REQUEST IT to bubble in managed as it would mean
-					// that parent elements would get the Exit **before** the Release!
-					// Instead we raise it per layer, which means that we won't follow the UWP behavior where the whole tree gets the Released and then the Exited.
-					OnNativePointerExited(args.Reset());
+					if (isHandledOrBubblingInManaged)
+					{
+						// Like for the Down, we need to manually generate an Exited.
+						// This is expected to be done by the RootVisual, except if the "up" has been handled
+						// (in order to ensure the "up" has been fully processed, including gesture recognition).
+						// In that case we need to sent it by our-own directly from teh element that has handled the event.
+
+						RootVisual.ProcessPointerUp(args, isAfterHandledUp: true);
+					}
 
 					pt.Release(this);
 				}
@@ -278,6 +284,13 @@ namespace Windows.UI.Xaml
 				Application.Current.RaiseRecoverableUnhandledException(e);
 			}
 		}
+
+		/// <summary>
+		/// Used by the VisualRoot to redispatch a pointer exit on pointer up
+		/// </summary>
+		/// <param name="args"></param>
+		internal void RedispatchPointerExited(PointerRoutedEventArgs args)
+			=> OnNativePointerExited(args.Reset(canBubbleNatively: false));
 		#endregion
 
 		#region TouchesManager (Alter the parents native scroll view to make sure to receive all touches)

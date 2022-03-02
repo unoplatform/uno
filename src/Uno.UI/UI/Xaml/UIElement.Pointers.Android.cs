@@ -142,7 +142,7 @@ namespace Windows.UI.Xaml
 					// but if the event has been handled, we need to raise it after the 'up' has been processed.
 					if (OnNativePointerUp(args))
 					{
-						Uno.UI.Xaml.Core.RootVisual.ProcessPointerUp(args);
+						Uno.UI.Xaml.Core.RootVisual.ProcessPointerUp(args, isAfterHandledUp: true);
 						return true;
 					}
 					else

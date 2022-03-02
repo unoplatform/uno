@@ -34,8 +34,7 @@ namespace Windows.UI.Xaml
 				base.SetNeedsLayout();
 			}
 
-			IsMeasureDirty = true;
-			IsArrangeDirty = true;
+			SetLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.ArrangeDirty);
 
 			SetSuperviewNeedsLayout();
 		}
@@ -60,38 +59,42 @@ namespace Windows.UI.Xaml
 						XamlMeasure(Bounds.Size.Add(Margin));
 					}
 
-					OnBeforeArrange();
-
-					Rect finalRect;
-					var parent = Superview;
-					if (parent is UIElement
-						|| parent is ISetLayoutSlots
-						// In the case of ListViewItem inside native list, its parent's parent is ListViewBaseInternalContainer
-						|| parent?.Superview is ISetLayoutSlots
-					)
+					if (IsArrangeDirty)
 					{
-						finalRect = LayoutSlotWithMarginsAndAlignments;
+						ClearLayoutFlags(LayoutFlag.ArrangeDirty);
+
+						OnBeforeArrange();
+
+						Rect finalRect;
+						var parent = Superview;
+						if (parent is UIElement
+						    || parent is ISetLayoutSlots
+						    // In the case of ListViewItem inside native list, its parent's parent is ListViewBaseInternalContainer
+						    || parent?.Superview is ISetLayoutSlots
+						   )
+						{
+							finalRect = LayoutSlotWithMarginsAndAlignments;
+						}
+						else
+						{
+							// Here the "arrange" is coming from a native element,
+							// so we convert those measurements to logical ones.
+							finalRect = RectFromUIRect(Frame);
+
+							// We also need to set the LayoutSlot as it was not by the parent.
+							// Note: This is only an approximation of the LayoutSlot as margin and alignment might already been applied at this point.
+							LayoutInformation.SetLayoutSlot(this, finalRect);
+							LayoutSlotWithMarginsAndAlignments = finalRect;
+						}
+
+						_layouter.Arrange(finalRect);
+
+						OnAfterArrange();
 					}
-					else
-					{
-						// Here the "arrange" is coming from a native element,
-						// so we convert those measurements to logical ones.
-						finalRect = RectFromUIRect(Frame);
-
-						// We also need to set the LayoutSlot as it was not by the parent.
-						// Note: This is only an approximation of the LayoutSlot as margin and alignment might already been applied at this point.
-						LayoutInformation.SetLayoutSlot(this, finalRect);
-						LayoutSlotWithMarginsAndAlignments = finalRect;
-					}
-
-					_layouter.Arrange(finalRect);
-
-					OnAfterArrange();
 				}
 				finally
 				{
 					_inLayoutSubviews = false;
-					IsArrangeDirty = false;
 				}
 			}
 			catch (Exception e)
