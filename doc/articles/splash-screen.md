@@ -170,7 +170,7 @@ This article covers how to add a splash screen to your application.
 
 1. In the `.WASM` project, navigate to `WasmScripts/AppManifest.js` 
 
-1. Add your splash screen image
+2. Add your splash screen image
 
     ```js
     var UnoAppManifest = {
@@ -182,6 +182,10 @@ This article covers how to add a splash screen to your application.
 
     > [!NOTE]
     > Currently, you need to set an explicit scale for the splash screen image.
+
+The `splashScreenColor` property allows you to set the background color for the splash screen. If you want to make the splash screen theme-aware, you can omit this property or set it to `"transparent"`.
+
+If you use the theme-aware splash screen background, you can also set the `darkThemeBackgroundColor` and `lightThemeBackgroundColor` properties to adjust the background color for each theme. Default values are `"#202020"` for dark theme and `"#F3F3F3"` for light theme.
 
 ## Table of scales
 
