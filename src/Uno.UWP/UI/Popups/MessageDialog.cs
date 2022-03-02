@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno;
@@ -117,23 +115,24 @@ public sealed partial class MessageDialog
 			throw new InvalidOperationException("MessageDialog extension is not registered");
 		}
 
-		return await extension.ShowAsync();
+		return await extension.ShowAsync(ct);
 	}
 
 	private void ValidateCommands()
 	{
+#if __IOS__ || __MACOS__ || __ANDROID__
 		if (WinRTFeatureConfiguration.MessageDialog.UseNativeDialog)
 		{
 			ValidateCommandsNative();
+			return;
 		}
-		else
+#endif
+
+		if (Commands.Count > 3)
 		{
-			if (Commands.Count > 3)
-			{
-				this.Log().LogError(
-					"Maximum of 3 commands is allowed. Further commands will not be displayed. " +
-					"On WinUI/UWP adding more commands will cause an exception.");
-			}
+			this.Log().LogError(
+				"Maximum of 3 commands is allowed. Further commands will not be displayed. " +
+				"On WinUI/UWP adding more commands will cause an exception.");
 		}
 	}
 

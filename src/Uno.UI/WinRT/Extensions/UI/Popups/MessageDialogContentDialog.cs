@@ -12,7 +12,7 @@ using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.WinRT.Extensions.UI.Popups;
 
-internal class MessageDialogContentDialog : ContentDialog
+internal partial class MessageDialogContentDialog : ContentDialog
 {
 	private readonly MessageDialog _messageDialog;
 	private readonly List<IUICommand> _commands;
@@ -23,9 +23,10 @@ internal class MessageDialogContentDialog : ContentDialog
 		DefaultStyleKey = typeof(ContentDialog);
 		_messageDialog = messageDialog ?? throw new ArgumentNullException(nameof(messageDialog));
 
-		if (Application.Current.Resources.ContainsKey("DefaultContentDialogStyle"))
+		// WinUI provides a modern style for ContentDialog, which is not applied automatically - force it
+		if (Application.Current.Resources.TryGetValue("DefaultContentDialogStyle", out var resource) && resource is Style winUIStyle)
 		{
-			Style = (Style)Application.Current.Resources["DefaultContentDialogStyle"];
+			Style = winUIStyle;
 		}
 
 		_commands = _messageDialog.Commands.ToList();

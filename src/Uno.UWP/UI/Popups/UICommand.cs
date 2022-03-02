@@ -9,6 +9,8 @@ namespace Windows.UI.Popups;
 /// </summary>
 public sealed partial class UICommand : IUICommand
 {
+	private string _label = "";
+
 	/// <summary>
 	/// Creates a new instance of the UICommand class.
 	/// </summary>
@@ -64,5 +66,9 @@ public sealed partial class UICommand : IUICommand
 	/// <summary>
 	/// Gets or sets the label for the command.
 	/// </summary>
-	public string Label { get; set; }
+	public string Label
+	{
+		get => _label;
+		set => _label = value ?? throw new ArgumentNullException(nameof(value));
+	}
 }

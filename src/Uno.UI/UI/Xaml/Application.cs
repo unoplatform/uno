@@ -14,6 +14,10 @@ using Uno.Extensions;
 using System.Collections.Generic;
 using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Data;
+using Uno.Foundation.Extensibility;
+using Windows.UI.Popups.Internal;
+using Windows.UI.Popups;
+using Uno.UI.WinRT.Extensions.UI.Popups;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -38,10 +42,6 @@ using AppKit;
 #else
 using View = Windows.UI.Xaml.UIElement;
 using ViewGroup = Windows.UI.Xaml.UIElement;
-using Uno.Foundation.Extensibility;
-using Windows.UI.Popups.Internal;
-using Windows.UI.Popups;
-using Uno.UI.WinRT.Extensions.UI.Popups;
 #endif
 
 namespace Windows.UI.Xaml
