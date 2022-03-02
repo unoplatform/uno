@@ -12,7 +12,6 @@ namespace Uno.Extensions.Storage.Pickers
 	internal class FolderPickerExtension : IFolderPickerExtension
 	{
 		private readonly FolderPicker _picker;
-		private WndProc _callback;
 
 		public Guid? SuggestedStartLocation { get; private set; }
 
@@ -40,9 +39,9 @@ namespace Uno.Extensions.Storage.Pickers
 			NativeMethods.BROWSEINFO pbi = new NativeMethods.BROWSEINFO();
 			pbi.ulFlags = 0x41; //BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE
 			pbi.pszDisplayName = new string('\0', NativeMethods.MAX_PATH);
-			_callback = new WndProc(FolderBrowserDialog_BrowseCallbackProc);
-			var cp = Marshal.GetFunctionPointerForDelegate(_callback);
-			GC.KeepAlive(_callback);
+			var callback = new WndProc(FolderBrowserDialog_BrowseCallbackProc);
+			var cp = Marshal.GetFunctionPointerForDelegate(callback);
+			GC.KeepAlive(callback);
 			pbi.lpfn = cp;
 			IntPtr pidl = NativeMethods.SHBrowseForFolder(ref pbi);
 			if (pidl != IntPtr.Zero)
@@ -116,7 +115,7 @@ namespace Uno.Extensions.Storage.Pickers
 			private const uint BFFM_SETSELECTIONW = (WM_USER + 103);
 			internal const uint BFFM_ENABLEOK = (WM_USER + 101);
 			internal const uint BFFM_SETOKTEXT = (WM_USER + 105);
-			internal static uint BFFM_SETSELECTION = Marshal.SystemDefaultCharSize == 1
+			internal readonly static uint BFFM_SETSELECTION = Marshal.SystemDefaultCharSize == 1
 				? BFFM_SETSELECTIONA
 				: BFFM_SETSELECTIONW;
 			internal const int MAX_PATH = 260;
