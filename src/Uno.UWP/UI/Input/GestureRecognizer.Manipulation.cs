@@ -366,12 +366,6 @@ namespace Windows.UI.Input
 							new ManipulationUpdatedEventArgs(_currents.Identifiers, position, cumulative, cumulative, ManipulationVelocities.Empty, isInertial: false, _contacts.onStart, _contacts.current));
 						break;
 
-					case ManipulationState.Started when IsDragManipulation:
-						_recognizer.Dragging?.Invoke(
-							_recognizer,
-							new DraggingEventArgs(_currents.Pointer1, DraggingState.Continuing, _contacts.onStart));
-						break;
-
 					case ManipulationState.Started when pointerRemoved && ShouldStartInertia(velocities):
 						_state = ManipulationState.Inertia;
 						_inertia = new InertiaProcessor(this, position, cumulative, velocities);
@@ -391,6 +385,12 @@ namespace Windows.UI.Input
 					// It's however the right behavior in case of drag conflicting with manipulation (which is not supported by Uno).
 					case ManipulationState.Inertia when !_inertia!.IsRunning:
 						Complete();
+						break;
+
+					case ManipulationState.Started when IsDragManipulation:
+						_recognizer.Dragging?.Invoke(
+							_recognizer,
+							new DraggingEventArgs(_currents.Pointer1, DraggingState.Continuing, _contacts.onStart));
 						break;
 
 					case ManipulationState.Started when pointerAdded:
