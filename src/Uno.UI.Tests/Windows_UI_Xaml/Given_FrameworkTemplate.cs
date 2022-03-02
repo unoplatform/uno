@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -71,6 +72,47 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual(1, TemplateCreated);
 			Assert.AreEqual(1, _created.Count);
 			Assert.AreEqual(1, _created[0].TemplateRecycled);
+		}
+
+		[TestMethod]
+		public void When_ContentPresenter_Recylced()
+		{
+			_mockProvider.CanUseMemoryManager = false;
+			
+			var SUT = new ContentControl();
+			SUT.Content = "asd";
+
+			var root = new Grid();
+			root.ForceLoaded();
+			root.Children.Add(SUT);
+
+			var templateCreatedCount = 0;
+			var flagValues = new List<bool>();
+			var template = new ControlTemplate(() =>
+			{
+				var presenter = new ContentPresenter();
+				presenter.Loaded += (s, e) =>
+				{
+					var field = presenter.GetType().GetField("_firstLoadResetDone", BindingFlags.NonPublic | BindingFlags.Instance)
+						?? throw new MissingFieldException("_firstLoadResetDone no longer exist on ContentPresenter.");
+					flagValues.Add((bool)field.GetValue(presenter));
+				};
+				templateCreatedCount++;
+
+				return presenter;
+			});
+
+			// first load
+			SUT.Template = template;
+			Assert.AreEqual(1, templateCreatedCount);
+			Assert.AreEqual(1, flagValues.Count);
+
+			// recycle & reload
+			SUT.Template = null;
+			SUT.Template = template;
+			Assert.AreEqual(1, templateCreatedCount);
+			Assert.AreEqual(2, flagValues.Count);
+			Assert.AreEqual(flagValues[1], false);
 		}
 
 		[TestMethod]
