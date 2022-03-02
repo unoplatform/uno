@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -16,7 +15,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SampleControl.Presentation;
 using Uno.Disposables;
 using Uno.Extensions;
-using Uno.UI.RuntimeTests;
 using Uno.Testing;
 using Uno.UI.Samples.Helper;
 using Windows.UI;
@@ -73,7 +71,6 @@ namespace Uno.UI.Samples.Tests
 				getContent: () => unitTestContentRoot.Content as UIElement,
 				setContent: elt =>
 				{
-					unitTestContentScroller.ChangeView(0, 0, 1, disableAnimation: true);
 					unitTestContentRoot.Content = elt;
 				}
 			);
@@ -83,8 +80,6 @@ namespace Uno.UI.Samples.Tests
 			SampleChooserViewModel.Instance.SampleChanging += OnSampleChanging;
 			EnableConfigPersistence();
 			OverrideDebugProviderAsserts();
-
-			UpdateContentScroller();
 
 			_applicationView = ApplicationView.GetForCurrentView();
 		}
@@ -416,7 +411,6 @@ namespace Uno.UI.Samples.Tests
 
 					consoleOutput.IsChecked = config.IsConsoleOutputEnabled;
 					runIgnored.IsChecked = config.IsRunningIgnored;
-					contentScroller.IsChecked = config.IsScrollerEnabled;
 					retry.IsChecked = config.Attempts > 1;
 					testFilter.Text = string.Join(";", config.Filters);
 				}
@@ -437,8 +431,6 @@ namespace Uno.UI.Samples.Tests
 			runIgnored.Unchecked += (snd, e) => StoreConfig();
 			retry.Checked += (snd, e) => StoreConfig();
 			retry.Unchecked += (snd, e) => StoreConfig();
-			contentScroller.Checked += (snd, e) => StoreConfig();
-			contentScroller.Unchecked += (snd, e) => StoreConfig();
 			testFilter.TextChanged += (snd, e) => StoreConfig();
 
 			void StoreConfig()
@@ -452,7 +444,6 @@ namespace Uno.UI.Samples.Tests
 		{
 			var isConsoleOutput = consoleOutput.IsChecked ?? false;
 			var isRunningIgnored = runIgnored.IsChecked ?? false;
-			var isScrollerEnable = contentScroller.IsChecked ?? UnitTestEngineConfig.DefaultIsScrollerEnabled;
 			var attempts = (retry.IsChecked ?? true) ? UnitTestEngineConfig.DefaultRepeatCount : 1;
 			var filter = testFilter.Text.Trim();
 			if (string.IsNullOrEmpty(filter))
@@ -465,7 +456,6 @@ namespace Uno.UI.Samples.Tests
 				Filters = filter?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>(),
 				IsConsoleOutputEnabled = isConsoleOutput,
 				IsRunningIgnored = isRunningIgnored,
-				IsScrollerEnabled = isScrollerEnable,
 				Attempts = attempts,
 			};
 		}
@@ -867,7 +857,7 @@ namespace Uno.UI.Samples.Tests
 				   where type.GetTypeInfo().GetCustomAttribute(typeof(TestClassAttribute)) != null
 				   orderby type.Name
 				   let info = BuildType(type)
-				   where info.Type is {}
+				   where info.Type is { }
 				   select info;
 		}
 
@@ -915,41 +905,6 @@ namespace Uno.UI.Samples.Tests
 			data.SetText(NUnitTestResultsDocument);
 
 			Clipboard.SetContent(data);
-		}
-
-		private void ContentScrollerToggleChanged(object sender, RoutedEventArgs e) => UpdateContentScroller();
-
-		private void UpdateContentScroller()
-		{
-			if (unitTestContentScroller == null || unitTestContentRoot == null)
-			{
-				return;
-			}
-
-			if (contentScroller.IsChecked ?? UnitTestEngineConfig.DefaultIsScrollerEnabled)
-			{
-				unitTestContentScroller.HorizontalScrollMode = ScrollMode.Auto;
-				unitTestContentScroller.VerticalScrollMode = ScrollMode.Auto;
-				unitTestContentScroller.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
-				unitTestContentScroller.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-
-				unitTestContentRoot.MinWidth = 1600;
-				unitTestContentRoot.MinHeight = 1600;
-				unitTestContentRoot.HorizontalContentAlignment = HorizontalAlignment.Center;
-				unitTestContentRoot.VerticalAlignment = VerticalAlignment.Center;
-			}
-			else
-			{
-				unitTestContentScroller.HorizontalScrollMode = ScrollMode.Disabled;
-				unitTestContentScroller.VerticalScrollMode = ScrollMode.Disabled;
-				unitTestContentScroller.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
-				unitTestContentScroller.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
-
-				unitTestContentRoot.MinWidth = double.NaN;
-				unitTestContentRoot.MinHeight = double.NaN;
-				unitTestContentRoot.HorizontalContentAlignment = HorizontalAlignment.Left;
-				unitTestContentRoot.VerticalAlignment = VerticalAlignment.Top;
-			}
 		}
 	}
 }
