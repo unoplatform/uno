@@ -118,16 +118,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS | Platform.Android)]
+		[ActivePlatforms(Platform.iOS)] // Swipe possible only with Touch in release
 		[InjectedPointer(PointerDeviceType.Touch)]
 		public async Task When_SwipeInListView_Then_TriggerOnlySwipeItem()
 		{
 			await RunAsync("UITests.Windows_UI_Xaml_Controls.SwipeControlTests.SwipeControl_ListView_ItemClick");
 
 			QueryEx sut = "SUT";
-			QueryEx clicked = new QueryEx(q => q.All().Marked("LastClicked"));
-			QueryEx selected = new QueryEx(q => q.All().Marked("LastSelected"));
-			QueryEx swiped = new QueryEx(q => q.All().Marked("LastSwipeInvoked"));
+			QueryEx clicked = "LastClicked";
+			QueryEx selected = "LastSelected";
+			QueryEx swiped = "LastSwipeInvoked";
 
 			var sutRect = App.GetPhysicalRect(sut);
 
@@ -142,16 +142,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS | Platform.Android)] // Swipe possible with Touch in release
+		[ActivePlatforms(Platform.iOS | Platform.Android)] // Swipe possible only with Touch in release
 		[InjectedPointer(PointerDeviceType.Touch)]
 		public async Task When_TapInListView_Then_TriggerClickAndSelection()
 		{
 			await RunAsync("UITests.Windows_UI_Xaml_Controls.SwipeControlTests.SwipeControl_ListView_ItemClick");
 
 			QueryEx sut = "SUT";
-			QueryEx clicked = new QueryEx(q => q.All().Marked("LastClicked"));
-			QueryEx selected = new QueryEx(q => q.All().Marked("LastSelected"));
-			QueryEx swiped = new QueryEx(q => q.All().Marked("LastSwipeInvoked"));
+			QueryEx clicked = "LastClicked";
+			QueryEx selected = "LastSelected";
+			QueryEx swiped = "LastSwipeInvoked";
 
 			var sutRect = App.GetPhysicalRect(sut);
 

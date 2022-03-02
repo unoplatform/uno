@@ -20,7 +20,7 @@
 
 		<ListView
 			x:Name="SUT"
-			ItemsSource="0123456789"
+			ItemsSource="012"
 			IsItemClickEnabled="True"
 			ItemClick="ItemClicked"
 			SelectionChanged="ItemSelected">
