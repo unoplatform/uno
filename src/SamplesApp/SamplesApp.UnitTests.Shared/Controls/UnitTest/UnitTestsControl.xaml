@@ -13,7 +13,8 @@
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
-			<RowDefinition Height="0" x:Name="failedTestDetailsRow" /><!--Will be set to height = 100 if any exception-->
+			<RowDefinition Height="0" x:Name="failedTestDetailsRow" />
+			<!--Will be set to height = 100 if any exception-->
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
@@ -70,13 +71,6 @@
 									IsChecked="True"
 									not_skia:Content="➰ Auto retry"
 									skia:Content="Auto retry" />
-								<ToggleButton
-									x:Name="contentScroller"
-									IsChecked="True"
-									not_skia:Content="⇲ Content scroll"
-									skia:Content="Content scroll"
-									Checked="UpdateContentScroller"
-									Unchecked="UpdateContentScroller"/>
 							</StackPanel>
 						</Flyout>
 					</Button.Flyout>
@@ -186,16 +180,11 @@
 			ManipulationMode="TranslateX"
 			ManipulationDelta="UpdateOuputSize"/>
 
-		<ScrollViewer
+		<ContentControl
+			x:Name="unitTestContentRoot"
 			Grid.Column="2"
 			Grid.RowSpan="4"
-			x:Name="unitTestContentScroller">
-			<ContentControl
-				x:Name="unitTestContentRoot"
-					HorizontalContentAlignment="Center"
-				VerticalAlignment="Center"
-				MinWidth="1600"
-				MinHeight="1600" />
-		</ScrollViewer>
+			HorizontalContentAlignment="Left"
+			VerticalAlignment="Top" />
 	</Grid>
 </UserControl>
