@@ -11,6 +11,8 @@ using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
+using FluentAssertions;
+using FluentAssertions.Execution;
 
 namespace Uno.UI.Tests.ItemsControlTests
 {
@@ -133,6 +135,112 @@ namespace Uno.UI.Tests.ItemsControlTests
 			};
 			
 			Assert.AreEqual(1, count);
+		}
+
+		[TestMethod]
+		public void When_OnItemsSourceChanged_AfterRemove_ThenIndexesAreRecalculated()
+		{
+			void Operation(ObservableCollection<string> list)
+			{
+				list.RemoveAt(1);
+			}
+
+			CheckItemsSourceChanged(Operation);
+		}
+
+		[TestMethod]
+		public void When_OnItemsSourceChanged_AfterInsert_ThenIndexesAreRecalculated()
+		{
+			void Operation(ObservableCollection<string> list)
+			{
+				list.Insert(2, "new item");
+			}
+
+			CheckItemsSourceChanged(Operation);
+		}
+
+		[TestMethod]
+		public void When_OnItemsSourceChanged_AfterAdd_ThenIndexesAreRecalculated()
+		{
+			void Operation(ObservableCollection<string> list)
+			{
+				list.Add("new item at the end");
+			}
+
+			CheckItemsSourceChanged(Operation);
+		}
+
+		[TestMethod]
+		public void When_OnItemsSourceChanged_AfterClear_ThenIndexesAreRecalculated()
+		{
+			void Operation(ObservableCollection<string> list)
+			{
+				list.Clear();
+			}
+
+			CheckItemsSourceChanged(Operation);
+		}
+
+		[TestMethod]
+		public void When_OnItemsSourceChanged_AfterMove_ThenIndexesAreRecalculated()
+		{
+			void Operation(ObservableCollection<string> list)
+			{
+				list.Move(1, 3);
+			}
+
+			CheckItemsSourceChanged(Operation);
+		}
+
+		[TestMethod]
+		public void When_OnItemsSourceChanged_AfterReplace_ThenIndexesAreRecalculated()
+		{
+			void Operation(ObservableCollection<string> list)
+			{
+				list[1] = "new index 1";
+			}
+
+			CheckItemsSourceChanged(Operation);
+		}
+
+		private static void CheckItemsSourceChanged(Action<ObservableCollection<string>> operation)
+		{
+			var source = new ObservableCollection<string>();
+
+			source.Add("item 0");
+			source.Add("item 1");
+			source.Add("item 2");
+			source.Add("item 3");
+			source.Add("item 4");
+
+			var panel = new StackPanel();
+			var sut = new ItemsControl
+			{
+				ItemsPanelRoot = panel,
+				InternalItemsPanelRoot = panel,
+				ItemTemplate = new DataTemplate(() => { return new Border(); }),
+				ItemsSource = source
+			};
+
+			using var _ = new AssertionScope();
+
+			CheckIndexes();
+
+			operation(source);
+
+			CheckIndexes();
+
+			void CheckIndexes()
+			{
+				panel.Children­.Should().HaveCount(source.Count);
+
+				for (var i = 0; i < panel.Children.Count; i++)
+				{
+					var child = panel.Children[i];
+					var index = child.GetValue(ItemsControl.IndexForItemContainerProperty);
+					index.Should().Be(i);
+				}
+			}
 		}
 
 		[TestMethod]

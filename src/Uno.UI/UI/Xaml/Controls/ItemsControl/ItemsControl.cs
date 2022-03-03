@@ -995,6 +995,18 @@ namespace Windows.UI.Xaml.Controls
 				if (container is DependencyObject doContainer)
 				{
 					CleanUpContainer(doContainer);
+					doContainer.ClearValue(IndexForItemContainerProperty);
+				}
+			}
+
+			void ReassignIndexes(int startingIndex)
+			{
+				var children = ItemsPanelRoot.Children;
+				var count = children.Count;
+				for (var i = startingIndex; i<count; i++)
+				{
+					var container = children[i];
+					container.SetValue(IndexForItemContainerProperty, i);
 				}
 			}
 
@@ -1014,28 +1026,33 @@ namespace Windows.UI.Xaml.Controls
 				else if (args.Action == NotifyCollectionChangedAction.Remove
 					&& args.OldItems.Count == 1)
 				{
-					var container = ItemsPanelRoot.Children[args.OldStartingIndex];
+					var index = args.OldStartingIndex;
+					var container = ItemsPanelRoot.Children[index];
 
-					ItemsPanelRoot.Children.RemoveAt(args.OldStartingIndex);
+					ItemsPanelRoot.Children.RemoveAt(index);
 
 					LocalCleanupContainer(container);
+					ReassignIndexes(index);
 					RequestLayoutPartial();
 					return;
 				}
 				else if (args.Action == NotifyCollectionChangedAction.Add
 					&& args.NewItems.Count == 1)
 				{
-					ItemsPanelRoot.Children.Insert(args.NewStartingIndex, (UIElement)LocalCreateContainer(args.NewStartingIndex));
+					var index = args.NewStartingIndex;
+					ItemsPanelRoot.Children.Insert(index, (UIElement)LocalCreateContainer(index));
+					ReassignIndexes(index+1);
 					RequestLayoutPartial();
 					return;
 				}
 				else if (args.Action == NotifyCollectionChangedAction.Replace
 					&& args.NewItems.Count == 1)
 				{
-					var container = ItemsPanelRoot.Children[args.NewStartingIndex];
+					var index = args.NewStartingIndex;
+					var container = ItemsPanelRoot.Children[index];
 					LocalCleanupContainer(container);
 
-					ItemsPanelRoot.Children[args.NewStartingIndex] = (UIElement)LocalCreateContainer(args.NewStartingIndex);
+					ItemsPanelRoot.Children[index] = (UIElement)LocalCreateContainer(index);
 					RequestLayoutPartial();
 					return;
 				}
