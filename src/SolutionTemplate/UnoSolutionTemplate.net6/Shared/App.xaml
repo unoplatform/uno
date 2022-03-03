@@ -4,8 +4,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:$ext_safeprojectname$">
 	
-	<Application.Resources>
-		<XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
-	</Application.Resources>
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+                <!-- Add resource dictionaries here -->                
+            </ResourceDictionary.MergedDictionaries>
+            <!-- Add resources here -->
+        </ResourceDictionary>
+    </Application.Resources>
 
 </Application>
