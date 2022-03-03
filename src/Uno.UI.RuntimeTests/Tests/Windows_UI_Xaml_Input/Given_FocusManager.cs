@@ -378,6 +378,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+		public async Task When_Page_Navigates_From_Page_ListViewItem()
+		{
+			var stackPanel = new StackPanel();
+			var frame = new Frame();
+			stackPanel.Children.Add(frame);
+			stackPanel.Children.Add(new ToggleButton() { Name = "OuterButtonAfter" });
+			TestServices.WindowHelper.WindowContent = stackPanel;
+			frame.Navigate(typeof(ListViewItemPage));
+			var sourcePage = (ListViewItemPage)frame.Content;
+			await WaitForLoadedEvent(sourcePage);
+
+			await TestServices.WindowHelper.WaitFor(() => sourcePage.List.ContainerFromIndex(0) is not null);
+			var container = sourcePage.List.ContainerFromIndex(0) as ListViewItem;
+			container.Focus(FocusState.Programmatic);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var expectedSequence = new string[]
+			{
+				"OuterButtonAfter"
+			};
+
+			Func<Task> navigationAction = async () =>
+			{
+				frame.Navigate(typeof(TwoButtonSecondPage));
+				await WaitForLoadedEvent((TwoButtonSecondPage)frame.Content);
+
+				await TestServices.WindowHelper.WaitForIdle();
+			};
+
+			await AssertNavigationFocusSequence(expectedSequence, navigationAction);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
 		public async Task When_ScrollViewer_TryMoveFocus()
 		{
 			var textBox1 = new TextBox();

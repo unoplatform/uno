@@ -126,7 +126,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				// for android, the above line returns the absolute coordinates of anchor on the screen
 				// because the parent view of this PopupPanel is a PopupWindow and GetLocationInWindow will be (0,0)
 				// therefore, we need to make the relative adjustment
-				if (this.VisualParent is Android.Views.View view)
+				if (this.NativeVisualParent is Android.Views.View view)
 				{
 					var windowLocation = Point.From(view.GetLocationInWindow);
 					var screenLocation = Point.From(view.GetLocationOnScreen);

@@ -488,7 +488,13 @@ namespace Windows.UI.Xaml.Controls
 					return;
 				}
 
-				var inCurrentPage = focusedElement.GetParents().Any(p => p == this);
+				var parent = VisualTreeHelper.GetParent(focusedElement);
+				while (parent is not null && parent != this)
+				{
+					parent = VisualTreeHelper.GetParent(parent);
+				}
+
+				var inCurrentPage = parent == this;
 
 				if (inCurrentPage)
 				{

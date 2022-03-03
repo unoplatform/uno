@@ -19,6 +19,7 @@ using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
+using Uno.UI.Xaml.Core;
 
 #if __IOS__
 using UIKit;
@@ -169,12 +170,20 @@ namespace Windows.UI.Xaml.Media
 
 		public static DependencyObject/* ? */ GetParent(DependencyObject reference)
 		{
+			DependencyObject realParent = null;
 #if XAMARIN
-			return (reference as _ViewGroup)?
+			realParent = (reference as _ViewGroup)?
 				.FindFirstParent<DependencyObject>();
 #else
-			return reference.GetParent() as DependencyObject;
+			realParent = reference.GetParent() as DependencyObject;
 #endif
+
+			if (realParent is null && reference is _ViewGroup uiElement)
+			{
+				return uiElement.GetVisualTreeParent() as DependencyObject;
+			}
+
+			return realParent;
 		}
 
 		internal static void CloseAllPopups()

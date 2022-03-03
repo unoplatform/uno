@@ -15,8 +15,6 @@ namespace Windows.UI.Xaml
 
 		internal List<View> _children = new List<View>();
 
-		internal UIElement VisualParent => ((IDependencyObjectStoreProvider)this).Store.Parent as UIElement;
-
 		internal bool ShouldInterceptInvalidate { get; set; }
 
 		internal void UpdateHitTest() { }
