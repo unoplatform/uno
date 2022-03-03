@@ -4,6 +4,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)">
+
+    <!-- Uno specific changes to workaround #8214
+        - replaced ColorAnimationUsingKeyFrames with ObjectAnimationUsingKeyFrames that targets the brush instead
+        - replaced certain color resources due to above  -->
+
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Default">
             <x:Double x:Key="RadioButtonBorderThemeThickness">1</x:Double>
@@ -21,9 +26,9 @@
             <StaticResource x:Key="RadioButtonBorderBrushDisabled" ResourceKey="ControlFillColorTransparentBrush" />
 
             <StaticResource x:Key="RadioButtonOuterEllipseStroke" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
-            <StaticResource x:Key="RadioButtonOuterEllipseStrokePointerOver" ResourceKey="ControlStrongStrokeColorDefault" />
-            <StaticResource x:Key="RadioButtonOuterEllipseStrokePressed" ResourceKey="ControlStrongStrokeColorDisabled" />
-            <StaticResource x:Key="RadioButtonOuterEllipseStrokeDisabled" ResourceKey="ControlStrongStrokeColorDisabled" />
+            <!-- <StaticResource x:Key="RadioButtonOuterEllipseStrokePointerOver" ResourceKey="ControlStrongStrokeColorDefault" /> -->
+            <!-- <StaticResource x:Key="RadioButtonOuterEllipseStrokePressed" ResourceKey="ControlStrongStrokeColorDisabled" /> -->
+            <!-- <StaticResource x:Key="RadioButtonOuterEllipseStrokeDisabled" ResourceKey="ControlStrongStrokeColorDisabled" /> -->
             <StaticResource x:Key="RadioButtonOuterEllipseFill" ResourceKey="ControlAltFillColorSecondaryBrush" />
             <StaticResource x:Key="RadioButtonOuterEllipseFillPointerOver" ResourceKey="ControlAltFillColorTertiaryBrush" />
             <StaticResource x:Key="RadioButtonOuterEllipseFillPressed" ResourceKey="ControlAltFillColorQuarternaryBrush" />
@@ -31,11 +36,11 @@
             <StaticResource x:Key="RadioButtonOuterEllipseCheckedStroke" ResourceKey="AccentFillColorDefaultBrush" />
             <StaticResource x:Key="RadioButtonOuterEllipseCheckedStrokePointerOver" ResourceKey="AccentFillColorSecondaryBrush" />
             <StaticResource x:Key="RadioButtonOuterEllipseCheckedStrokePressed" ResourceKey="AccentFillColorTertiaryBrush" />
-            <StaticResource x:Key="RadioButtonOuterEllipseCheckedStrokeDisabled" ResourceKey="AccentFillColorDisabled" />
+            <!-- <StaticResource x:Key="RadioButtonOuterEllipseCheckedStrokeDisabled" ResourceKey="AccentFillColorDisabled" /> -->
             <StaticResource x:Key="RadioButtonOuterEllipseCheckedFill" ResourceKey="AccentFillColorDefaultBrush" />
             <StaticResource x:Key="RadioButtonOuterEllipseCheckedFillPointerOver" ResourceKey="AccentFillColorSecondaryBrush" />
             <StaticResource x:Key="RadioButtonOuterEllipseCheckedFillPressed" ResourceKey="AccentFillColorTertiaryBrush" />
-            <StaticResource x:Key="RadioButtonOuterEllipseCheckedFillDisabled" ResourceKey="AccentFillColorDisabled" />
+            <!-- <StaticResource x:Key="RadioButtonOuterEllipseCheckedFillDisabled" ResourceKey="AccentFillColorDisabled" /> -->
             <StaticResource x:Key="RadioButtonCheckGlyphFill" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
             <StaticResource x:Key="RadioButtonCheckGlyphFillPointerOver" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
             <StaticResource x:Key="RadioButtonCheckGlyphFillPressed" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
@@ -48,6 +53,13 @@
             <StaticResource x:Key="RadioButtonCheckGlyphStrokeCheckedPointerOver" ResourceKey="AccentControlElevationBorderBrush" />
             <StaticResource x:Key="RadioButtonCheckGlyphStrokeCheckedPressed" ResourceKey="AccentControlElevationBorderBrush" />
             <StaticResource x:Key="RadioButtonCheckGlyphStrokeCheckedDisabled" ResourceKey="ControlElevationBorderBrush" />
+
+            <!-- Uno specific: replaced cetain color resources with brushes due changes in VisualState -->
+            <StaticResource x:Key="RadioButtonOuterEllipseStrokePointerOver" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
+            <StaticResource x:Key="RadioButtonOuterEllipseStrokePressed" ResourceKey="ControlStrongStrokeColorDisabledBrush" />
+            <StaticResource x:Key="RadioButtonOuterEllipseStrokeDisabled" ResourceKey="ControlStrongStrokeColorDisabledBrush" />
+            <StaticResource x:Key="RadioButtonOuterEllipseCheckedStrokeDisabled" ResourceKey="AccentFillColorDisabledBrush" />
+            <StaticResource x:Key="RadioButtonOuterEllipseCheckedFillDisabled" ResourceKey="AccentFillColorDisabledBrush" />
 
             <!-- Legacy Brushes -->
             <SolidColorBrush x:Key="RadioButtonBackgroundThemeBrush" Color="#CCFFFFFF" />
@@ -84,7 +96,7 @@
             <StaticResource x:Key="RadioButtonOuterEllipseStroke" ResourceKey="SystemControlForegroundBaseMediumBrush" />
             <StaticResource x:Key="RadioButtonOuterEllipseStrokePointerOver" ResourceKey="SystemColorHighlightColorBrush" />
             <StaticResource x:Key="RadioButtonOuterEllipseStrokePressed" ResourceKey="SystemColorHighlightTextColorBrush" />
-            <StaticResource x:Key="RadioButtonOuterEllipseStrokeDisabled" ResourceKey="SystemColorGrayTextColor" />
+            <!-- <StaticResource x:Key="RadioButtonOuterEllipseStrokeDisabled" ResourceKey="SystemColorGrayTextColor" /> -->
             <StaticResource x:Key="RadioButtonOuterEllipseFill" ResourceKey="SystemColorButtonFaceColorBrush" />
             <StaticResource x:Key="RadioButtonOuterEllipseFillPointerOver" ResourceKey="SystemColorHighlightTextColorBrush" />
             <StaticResource x:Key="RadioButtonOuterEllipseFillPressed" ResourceKey="SystemColorHighlightTextColorBrush" />
@@ -92,7 +104,7 @@
             <StaticResource x:Key="RadioButtonOuterEllipseCheckedStroke" ResourceKey="SystemControlHighlightAccentBrush" />
             <StaticResource x:Key="RadioButtonOuterEllipseCheckedStrokePointerOver" ResourceKey="SystemColorButtonTextColorBrush" />
             <StaticResource x:Key="RadioButtonOuterEllipseCheckedStrokePressed" ResourceKey="SystemColorButtonFaceColorBrush" />
-            <StaticResource x:Key="RadioButtonOuterEllipseCheckedStrokeDisabled" ResourceKey="SystemColorGrayTextColor" />
+            <!-- <StaticResource x:Key="RadioButtonOuterEllipseCheckedStrokeDisabled" ResourceKey="SystemColorGrayTextColor" /> -->
             <StaticResource x:Key="RadioButtonOuterEllipseCheckedFill" ResourceKey="SystemControlHighlightAltTransparentBrush" />
             <StaticResource x:Key="RadioButtonOuterEllipseCheckedFillPointerOver" ResourceKey="SystemColorButtonFaceColorBrush" />
             <StaticResource x:Key="RadioButtonOuterEllipseCheckedFillPressed" ResourceKey="SystemColorButtonFaceColorBrush" />
@@ -124,6 +136,10 @@
             <SolidColorBrush x:Key="RadioButtonPressedBackgroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
             <SolidColorBrush x:Key="RadioButtonPressedBorderThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
             <SolidColorBrush x:Key="RadioButtonPressedForegroundThemeBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+
+            <!-- Uno specific: replaced cetain color resources with brushes due changes in VisualState -->
+            <StaticResource x:Key="RadioButtonOuterEllipseStrokeDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
+            <StaticResource x:Key="RadioButtonOuterEllipseCheckedStrokeDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
             <x:Double x:Key="RadioButtonBorderThemeThickness">1</x:Double>
@@ -141,9 +157,9 @@
             <StaticResource x:Key="RadioButtonBorderBrushDisabled" ResourceKey="ControlFillColorTransparentBrush" />
 
             <StaticResource x:Key="RadioButtonOuterEllipseStroke" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
-            <StaticResource x:Key="RadioButtonOuterEllipseStrokePointerOver" ResourceKey="ControlStrongStrokeColorDefault" />
-            <StaticResource x:Key="RadioButtonOuterEllipseStrokePressed" ResourceKey="ControlStrongStrokeColorDisabled" />
-            <StaticResource x:Key="RadioButtonOuterEllipseStrokeDisabled" ResourceKey="ControlStrongStrokeColorDisabled" />
+            <!-- <StaticResource x:Key="RadioButtonOuterEllipseStrokePointerOver" ResourceKey="ControlStrongStrokeColorDefault" /> -->
+            <!-- <StaticResource x:Key="RadioButtonOuterEllipseStrokePressed" ResourceKey="ControlStrongStrokeColorDisabled" /> -->
+            <!-- <StaticResource x:Key="RadioButtonOuterEllipseStrokeDisabled" ResourceKey="ControlStrongStrokeColorDisabled" /> -->
             <StaticResource x:Key="RadioButtonOuterEllipseFill" ResourceKey="ControlAltFillColorSecondaryBrush" />
             <StaticResource x:Key="RadioButtonOuterEllipseFillPointerOver" ResourceKey="ControlAltFillColorTertiaryBrush" />
             <StaticResource x:Key="RadioButtonOuterEllipseFillPressed" ResourceKey="ControlAltFillColorQuarternaryBrush" />
@@ -151,11 +167,11 @@
             <StaticResource x:Key="RadioButtonOuterEllipseCheckedStroke" ResourceKey="AccentFillColorDefaultBrush" />
             <StaticResource x:Key="RadioButtonOuterEllipseCheckedStrokePointerOver" ResourceKey="AccentFillColorSecondaryBrush" />
             <StaticResource x:Key="RadioButtonOuterEllipseCheckedStrokePressed" ResourceKey="AccentFillColorTertiaryBrush" />
-            <StaticResource x:Key="RadioButtonOuterEllipseCheckedStrokeDisabled" ResourceKey="AccentFillColorDisabled" />
+            <!-- <StaticResource x:Key="RadioButtonOuterEllipseCheckedStrokeDisabled" ResourceKey="AccentFillColorDisabled" /> -->
             <StaticResource x:Key="RadioButtonOuterEllipseCheckedFill" ResourceKey="AccentFillColorDefaultBrush" />
             <StaticResource x:Key="RadioButtonOuterEllipseCheckedFillPointerOver" ResourceKey="AccentFillColorSecondaryBrush" />
             <StaticResource x:Key="RadioButtonOuterEllipseCheckedFillPressed" ResourceKey="AccentFillColorTertiaryBrush" />
-            <StaticResource x:Key="RadioButtonOuterEllipseCheckedFillDisabled" ResourceKey="AccentFillColorDisabled" />
+            <!-- <StaticResource x:Key="RadioButtonOuterEllipseCheckedFillDisabled" ResourceKey="AccentFillColorDisabled" /> -->
             <StaticResource x:Key="RadioButtonCheckGlyphFill" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
             <StaticResource x:Key="RadioButtonCheckGlyphFillPointerOver" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
             <StaticResource x:Key="RadioButtonCheckGlyphFillPressed" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
@@ -168,6 +184,14 @@
             <StaticResource x:Key="RadioButtonCheckGlyphStrokeCheckedPointerOver" ResourceKey="AccentControlElevationBorderBrush" />
             <StaticResource x:Key="RadioButtonCheckGlyphStrokeCheckedPressed" ResourceKey="AccentControlElevationBorderBrush" />
             <StaticResource x:Key="RadioButtonCheckGlyphStrokeCheckedDisabled" ResourceKey="ControlElevationBorderBrush" />
+
+            <!-- Uno specific: replaced cetain color resources with brushes due changes in VisualState -->
+            <StaticResource x:Key="RadioButtonOuterEllipseStrokePointerOver" ResourceKey="ControlStrongStrokeColorDefaultBrush" />
+            <StaticResource x:Key="RadioButtonOuterEllipseStrokePressed" ResourceKey="ControlStrongStrokeColorDisabledBrush" />
+            <StaticResource x:Key="RadioButtonOuterEllipseStrokeDisabled" ResourceKey="ControlStrongStrokeColorDisabledBrush" />
+            <StaticResource x:Key="RadioButtonOuterEllipseCheckedStrokeDisabled" ResourceKey="AccentFillColorDisabledBrush" />
+            <StaticResource x:Key="RadioButtonOuterEllipseCheckedFillDisabled" ResourceKey="AccentFillColorDisabledBrush" />
+
             <!-- Legacy Brushes -->
             <SolidColorBrush x:Key="RadioButtonBackgroundThemeBrush" Color="#CCFFFFFF" />
             <SolidColorBrush x:Key="RadioButtonBorderThemeBrush" Color="#45000000" />
@@ -251,12 +275,21 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="BorderBrush">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RadioButtonBorderBrushPointerOver}" />
                                         </ObjectAnimationUsingKeyFrames>
+                                        <!-- Uno specific: replaced ColorAnimationUsingKeyFrames with ObjectAnimationUsingKeyFrames that targets the brush instead -->
+                                        <!--
                                         <ColorAnimationUsingKeyFrames Storyboard.TargetName="OuterEllipse" Storyboard.TargetProperty="(Shape.Stroke).(SolidColorBrush.Color)">
                                             <LinearColorKeyFrame KeyTime="{StaticResource ControlFasterAnimationDuration}" Value="{ThemeResource RadioButtonOuterEllipseStrokePointerOver}" />
                                         </ColorAnimationUsingKeyFrames>
                                         <ColorAnimationUsingKeyFrames Storyboard.TargetName="OuterEllipse" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
                                             <LinearColorKeyFrame KeyTime="{StaticResource ControlFasterAnimationDuration}" Value="{Binding Color, Source={ThemeResource RadioButtonOuterEllipseFillPointerOver}}" />
                                         </ColorAnimationUsingKeyFrames>
+                                        -->
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OuterEllipse" Storyboard.TargetProperty="Stroke">
+                                            <DiscreteObjectKeyFrame KeyTime="{StaticResource ControlFasterAnimationDuration}" Value="{ThemeResource RadioButtonOuterEllipseStrokePointerOver}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OuterEllipse" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="{StaticResource ControlFasterAnimationDuration}" Value="{ThemeResource RadioButtonOuterEllipseFillPointerOver}" />
+                                        </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames  Storyboard.TargetName="CheckOuterEllipse" Storyboard.TargetProperty="Stroke">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RadioButtonOuterEllipseCheckedStrokePointerOver}" />
                                         </ObjectAnimationUsingKeyFrames>
@@ -288,12 +321,21 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="BorderBrush">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RadioButtonBorderBrushPressed}" />
                                         </ObjectAnimationUsingKeyFrames>
-                                        <ColorAnimationUsingKeyFrames  Storyboard.TargetName="OuterEllipse" Storyboard.TargetProperty="(Shape.Stroke).(SolidColorBrush.Color)">
-                                            <LinearColorKeyFrame  KeyTime="{StaticResource ControlFasterAnimationDuration}" Value="{ThemeResource RadioButtonOuterEllipseStrokePressed}" />
+                                        <!-- Uno specific: replaced ColorAnimationUsingKeyFrames with ObjectAnimationUsingKeyFrames that targets the brush instead -->
+                                        <!--
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="OuterEllipse" Storyboard.TargetProperty="(Shape.Stroke).(SolidColorBrush.Color)">
+                                            <LinearColorKeyFrame KeyTime="{StaticResource ControlFasterAnimationDuration}" Value="{ThemeResource RadioButtonOuterEllipseStrokePressed}" />
                                         </ColorAnimationUsingKeyFrames>
                                         <ColorAnimationUsingKeyFrames Storyboard.TargetName="OuterEllipse" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
                                             <LinearColorKeyFrame KeyTime="{StaticResource ControlFasterAnimationDuration}" Value="{Binding Color, Source={ThemeResource RadioButtonOuterEllipseFillPressed}}" />
                                         </ColorAnimationUsingKeyFrames>
+                                        -->
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OuterEllipse" Storyboard.TargetProperty="Stroke">
+                                            <DiscreteObjectKeyFrame KeyTime="{StaticResource ControlFasterAnimationDuration}" Value="{ThemeResource RadioButtonOuterEllipseStrokePressed}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OuterEllipse" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="{StaticResource ControlFasterAnimationDuration}" Value="{ThemeResource RadioButtonOuterEllipseFillPressed}" />
+                                        </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames  Storyboard.TargetName="CheckOuterEllipse" Storyboard.TargetProperty="Stroke">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RadioButtonOuterEllipseCheckedStrokePressed}" />
                                         </ObjectAnimationUsingKeyFrames>
@@ -334,18 +376,33 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="BorderBrush">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RadioButtonBorderBrushDisabled}" />
                                         </ObjectAnimationUsingKeyFrames>
-                                        <ColorAnimationUsingKeyFrames  Storyboard.TargetName="OuterEllipse" Storyboard.TargetProperty="(Shape.Stroke).(SolidColorBrush.Color)">
-                                            <LinearColorKeyFrame  KeyTime="{StaticResource ControlFasterAnimationDuration}" Value="{ThemeResource RadioButtonOuterEllipseStrokeDisabled}" />
+                                        <!-- Uno specific: replaced ColorAnimationUsingKeyFrames with ObjectAnimationUsingKeyFrames that targets the brush instead -->
+                                        <!--
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="OuterEllipse" Storyboard.TargetProperty="(Shape.Stroke).(SolidColorBrush.Color)">
+                                            <LinearColorKeyFrame KeyTime="{StaticResource ControlFasterAnimationDuration}" Value="{ThemeResource RadioButtonOuterEllipseStrokeDisabled}" />
                                         </ColorAnimationUsingKeyFrames>
                                         <ColorAnimationUsingKeyFrames Storyboard.TargetName="OuterEllipse" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
                                             <LinearColorKeyFrame KeyTime="{StaticResource ControlFasterAnimationDuration}" Value="{Binding Color, Source={ThemeResource RadioButtonOuterEllipseFillDisabled}}" />
                                         </ColorAnimationUsingKeyFrames>
-                                        <ColorAnimationUsingKeyFrames  Storyboard.TargetName="CheckOuterEllipse" Storyboard.TargetProperty="(Shape.Stroke).(SolidColorBrush.Color)">
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetName="CheckOuterEllipse" Storyboard.TargetProperty="(Shape.Stroke).(SolidColorBrush.Color)">
                                             <LinearColorKeyFrame KeyTime="{StaticResource ControlFasterAnimationDuration}" Value="{ThemeResource RadioButtonOuterEllipseCheckedStrokeDisabled}" />
                                         </ColorAnimationUsingKeyFrames>
                                         <ColorAnimationUsingKeyFrames Storyboard.TargetName="CheckOuterEllipse" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
                                             <LinearColorKeyFrame KeyTime="{StaticResource ControlFasterAnimationDuration}" Value="{ThemeResource RadioButtonOuterEllipseCheckedFillDisabled}" />
                                         </ColorAnimationUsingKeyFrames>
+                                        -->
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OuterEllipse" Storyboard.TargetProperty="Stroke">
+                                            <DiscreteObjectKeyFrame KeyTime="{StaticResource ControlFasterAnimationDuration}" Value="{ThemeResource RadioButtonOuterEllipseStrokeDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OuterEllipse" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="{StaticResource ControlFasterAnimationDuration}" Value="{ThemeResource RadioButtonOuterEllipseFillDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckOuterEllipse" Storyboard.TargetProperty="Stroke">
+                                            <DiscreteObjectKeyFrame KeyTime="{StaticResource ControlFasterAnimationDuration}" Value="{ThemeResource RadioButtonOuterEllipseCheckedStrokeDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckOuterEllipse" Storyboard.TargetProperty="Fill">
+                                            <DiscreteObjectKeyFrame KeyTime="{StaticResource ControlFasterAnimationDuration}" Value="{ThemeResource RadioButtonOuterEllipseCheckedFillDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckGlyph" Storyboard.TargetProperty="Fill">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RadioButtonCheckGlyphFillDisabled}" />
                                         </ObjectAnimationUsingKeyFrames>
