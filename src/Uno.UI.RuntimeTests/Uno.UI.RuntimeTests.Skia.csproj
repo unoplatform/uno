@@ -13,6 +13,7 @@
 		
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
+		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
 	</PropertyGroup>
 
 	<!--Workaround to prevent build to fail because the project has too many dependencies when checking support libraries versions. 
@@ -25,6 +26,15 @@
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\TestFramework\ActivePlatformsAttribute.cs">
+			<Link>UITests\_Engine\UnoUITests\ActivePlatformsAttribute.cs</Link>
+		</Compile>
+		<Compile Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\**\Extensions\*.cs">
+			<Link>UITests\_Engine\SamplesAppUITests\%(RecursiveDir)%(FileName)%(Extension)</Link>
+		</Compile>
 	</ItemGroup>
 
 	<Import Project="UnitTestsImport.props" />
@@ -70,6 +80,22 @@
 
 	<ItemGroup>
 	  <PRIResource Include="Resources\**\*.resw" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <SourceGeneratorInput Remove="UITests\_Engine\SkiaAppExtensions.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="UITests\_Engine\SamplesAppUITests\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <SourceGeneratorInput Remove="UITests\_Engine\IAppRect.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <SourceGeneratorInput Remove="UITests\_Engine\UnoUITests\Helpers\QueryExtensions.async.cs" />
 	</ItemGroup>
 
 </Project>

@@ -7,12 +7,16 @@ using SamplesApp.UITests.Extensions;
 using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
+
+#if !IS_RUNTIME_UI_TESTS
 using Uno.UITests.Helpers;
+#endif
 
 namespace SamplesApp.UITests
 {
 	public static class QueryExtensions
 	{
+#if !IS_RUNTIME_UI_TESTS
 		/// <summary>
 		/// Wait for element to have the expected value for its Text property.
 		/// </summary>
@@ -28,6 +32,33 @@ namespace SamplesApp.UITests
 			app.WaitForElement(element, timeout: timeout);
 			app.WaitForText(element, expectedText);
 		}
+
+		/// <summary>
+		/// Wait for the named element to have received focus (ie after being tapped).
+		/// </summary>
+		public static void WaitForFocus(this IApp app, string elementName)
+		{
+			var element = app.Marked(elementName);
+			app.WaitForElement(element);
+			app.WaitForDependencyPropertyValue(element, "FocusState", "Pointer");
+		}
+
+		/// <summary>
+		/// Calls the <see cref="IApp.WaitForElement(string, string, TimeSpan?, TimeSpan?, TimeSpan?)"/> method with a timeout message that specifies
+		/// the element name, which is useful when multiple elements are waited upon in the same test.
+		/// </summary>
+		public static IAppResult[] WaitForElementWithMessage(this IApp app, string elementName, string additionalMessage = null)
+		{
+			var timeoutMessage = $"Timed out waiting for element '{elementName}'";
+
+			if (additionalMessage != null)
+			{
+				timeoutMessage = $"{timeoutMessage} - {additionalMessage}";
+			}
+
+			return app.WaitForElement(elementName, timeoutMessage: timeoutMessage);
+		}
+#endif
 
 		/// <summary>
 		/// Get the value of the Text property for an element.
@@ -106,6 +137,9 @@ namespace SamplesApp.UITests
 		// ************************
 		private static IAppRect ToPhysicalRect(IApp app, IAppRect rect)
 		{
+#if IS_RUNTIME_UI_TESTS
+			return rect;
+#else
 			return AppInitializer.GetLocalPlatform() switch
 			{
 				Platform.Android => rect,
@@ -113,10 +147,14 @@ namespace SamplesApp.UITests
 				Platform.Browser => rect,
 				_ => throw new InvalidOperationException("Unknown current platform.")
 			};
+#endif
 		}
 
 		private static IAppRect ToLogicalRect(IApp app, IAppRect rect)
 		{
+#if IS_RUNTIME_UI_TESTS
+			return rect;
+#else
 			return AppInitializer.GetLocalPlatform() switch
 			{
 				Platform.Android => rect.PhysicalToLogicalPixels(app),
@@ -124,6 +162,7 @@ namespace SamplesApp.UITests
 				Platform.Browser => rect,
 				_ => throw new InvalidOperationException("Unknown current platform.")
 			};
+#endif
 		}
 
 		public static void FastTap(this IApp app, string elementName)
@@ -148,32 +187,6 @@ namespace SamplesApp.UITests
 		{
 			Helpers.App.FastTap(query);
 			return query;
-		}
-
-		/// <summary>
-		/// Wait for the named element to have received focus (ie after being tapped).
-		/// </summary>
-		public static void WaitForFocus(this IApp app, string elementName)
-		{
-			var element = app.Marked(elementName);
-			app.WaitForElement(element);
-			app.WaitForDependencyPropertyValue(element, "FocusState", "Pointer");
-		}
-
-		/// <summary>
-		/// Calls the <see cref="IApp.WaitForElement(string, string, TimeSpan?, TimeSpan?, TimeSpan?)"/> method with a timeout message that specifies
-		/// the element name, which is useful when multiple elements are waited upon in the same test.
-		/// </summary>
-		public static IAppResult[] WaitForElementWithMessage(this IApp app, string elementName, string additionalMessage = null)
-		{
-			var timeoutMessage = $"Timed out waiting for element '{elementName}'";
-
-			if (additionalMessage != null)
-			{
-				timeoutMessage = $"{timeoutMessage} - {additionalMessage}";
-			}
-
-			return app.WaitForElement(elementName, timeoutMessage: timeoutMessage);
 		}
 	}
 }

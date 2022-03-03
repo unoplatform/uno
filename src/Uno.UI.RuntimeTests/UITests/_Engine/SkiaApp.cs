@@ -16,7 +16,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace Uno.UITest;
 
-public class SkiaApp
+public class SkiaApp : IApp
 {
 	private readonly InputInjector _input;
 
@@ -63,10 +63,12 @@ public class SkiaApp
 		}
 	}
 
+	QueryResult[] IApp.Query(string marked) => Query(marked);
 	internal QueryResult[] Query(string marked)
 		=> Query(QueryEx.Any.Marked(marked));
 
-	internal QueryResult[] Query(QueryEx query)
+	QueryResult[] IApp.Query(IAppQuery query) => Query(query);
+	internal QueryResult[] Query(IAppQuery query)
 	{
 		var all = TestServices.WindowHelper.WindowContent
 			.GetAllChildren(includeCurrent: true)
@@ -76,7 +78,8 @@ public class SkiaApp
 		return query.Execute(all).ToArray();
 	}
 
-	internal QueryResult[] Query(Func<QueryEx, QueryEx> query)
+	QueryResult[] IApp.Query(Func<IAppQuery, IAppQuery> query) => Query(query);
+	internal QueryResult[] Query(Func<IAppQuery, IAppQuery> query)
 	{
 		var all = TestServices.WindowHelper.WindowContent
 			.GetAllChildren(includeCurrent: true)
