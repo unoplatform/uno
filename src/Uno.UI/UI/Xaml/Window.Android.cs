@@ -261,6 +261,7 @@ namespace Windows.UI.Xaml
 			return logicalStatusBarHeight;
 		}
 
+		// Used by legacy visual bounds calculation on <API 30 devices
 		private double GetLogicalNavigationBarSizeExcluded()
 		{
 			var orientation = DisplayInformation.GetForCurrentView().CurrentOrientation;

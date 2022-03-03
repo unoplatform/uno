@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				var desiredSize = elem.DesiredSize;
-				var rect = CalculateDialogPlacement(desiredSize);
+				var rect = CalculateDialogPlacement(desiredSize, finalSize);
 
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
@@ -71,25 +71,23 @@ namespace Windows.UI.Xaml.Controls
 			return availableSize;
 		}
 
-		private Rect CalculateDialogPlacement(Size desiredSize)
+		private Rect CalculateDialogPlacement(Size desiredSize, Size finalSize)
 		{
 			var visibleBounds = ApplicationView.GetForCurrentView().TrueVisibleBounds;
 
+			var maximumWidth = Math.Min(visibleBounds.Width, finalSize.Width);
+			var maximumHeight = Math.Min(visibleBounds.Height, finalSize.Height);
+
 			// Make sure the desiredSize fits in visibleBounds
-			if (desiredSize.Width > visibleBounds.Width)
-			{
-				desiredSize.Width = visibleBounds.Width;
-			}
-			if (desiredSize.Height > visibleBounds.Height)
-			{
-				desiredSize.Height = visibleBounds.Height;
-			}
+			var actualWidth = Math.Min(desiredSize.Width, maximumWidth);
+			var actualHeight = Math.Min(desiredSize.Height, maximumHeight);
 
-			var finalPosition = new Point(
-						x: (visibleBounds.Width - desiredSize.Width) / 2.0,
-						y: (visibleBounds.Height - desiredSize.Height) / 2.0);
-
-			var finalRect = new Rect(finalPosition, desiredSize);
+			var finalRect = new Rect(
+				(maximumWidth - actualWidth) / 2,
+				(maximumHeight - actualHeight) / 2,
+				actualWidth,
+				actualHeight
+			);
 
 			return finalRect;
 		}
