@@ -394,6 +394,9 @@ namespace Uno.UI
 		{
 			var visualParent = child?.Parent as ViewGroup;
 
+			// In edge cases, the native Parent is null,
+			// for example for list items. For those situations
+			// we use our managed visual parent instead.
 			if (visualParent is null &&
 				child is FrameworkElement fe)
 			{

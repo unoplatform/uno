@@ -291,6 +291,9 @@ namespace AppKit
 		{
 			var visualParent = child?.Superview;
 
+			// In edge cases, the native Superview is null,
+			// for example for list items. For those situations
+			// we use our managed visual parent instead.
 			if (visualParent is null &&
 				child is FrameworkElement fw)
 			{
