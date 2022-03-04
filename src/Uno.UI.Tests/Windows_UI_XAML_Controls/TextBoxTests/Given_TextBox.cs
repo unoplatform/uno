@@ -141,6 +141,59 @@ namespace Uno.UI.Tests.TextBoxTests
 			Assert.AreEqual("Hello", textBox.Text);
 		}
 
+		[TestMethod]
+		public void When_SelectedText_StartZero()
+		{
+			var sut = new TextBox();
+			sut.Text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+			sut.SelectionStart = 0;
+			sut.SelectionLength = 0;
+			sut.SelectedText = "1234";
+
+			Assert.AreEqual("1234ABCDEFGHIJKLMNOPQRSTUVWXYZ", sut.Text);
+		}
+
+		[TestMethod]
+		public void When_SelectedText_EndOfText()
+		{
+			var sut = new TextBox();
+			sut.Text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+			sut.SelectionStart = 26;
+			sut.SelectedText = "1234";
+
+			Assert.AreEqual("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234", sut.Text);
+		}
+
+		[TestMethod]
+		public void When_SelectedText_MiddleOfText()
+		{
+			var sut = new TextBox();
+			sut.Text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+			sut.SelectionStart = 2;
+			sut.SelectionLength = 22;
+			sut.SelectedText = "1234";
+
+			Assert.AreEqual("AB1234YZ", sut.Text);
+		}
+
+		[TestMethod]
+		public void When_SelectedText_AllTextToEmpty()
+		{
+			var sut = new TextBox();
+			sut.Text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+			sut.SelectionStart = 0;
+			sut.SelectionLength = 26;
+			sut.SelectedText = String.Empty;
+
+			Assert.AreEqual(String.Empty, sut.Text);
+			Assert.AreEqual(0, sut.SelectionStart);
+			Assert.AreEqual(0, sut.SelectionLength);
+		}
+
 		public class MySource : System.ComponentModel.INotifyPropertyChanged
 		{
 			private string _sourceText;
