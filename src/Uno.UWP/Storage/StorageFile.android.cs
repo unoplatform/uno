@@ -30,7 +30,7 @@ namespace Windows.Storage
 				throw new InvalidOperationException("Uri is not using the ms-appx scheme");
 			}
 
-			var path = AndroidResourceNameEncoder.EncodeResourcePath(uri.PathAndQuery.TrimStart(new char[] { '/' }));
+			var path = AndroidResourceNameEncoder.EncodeResourcePath(Uri.UnescapeDataString(uri.PathAndQuery).TrimStart(new char[] { '/' }));
 
 			// Read the contents of our asset
 			var assets = global::Android.App.Application.Context.Assets;

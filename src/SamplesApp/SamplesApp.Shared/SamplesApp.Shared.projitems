@@ -57,6 +57,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\wide310x150logo.scale-200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\nodpi-validationresource.jpeg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\BackArrow.scale-300.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Asset With Spaces.svg" />
   </ItemGroup>
   <ItemGroup>
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en-US\Resources.resw" />
