@@ -10,7 +10,6 @@
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<Authors>nventive</Authors>
-		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
 		<PackageIconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</PackageIconUrl>
 		<PackageIcon>uno.png</PackageIcon>
 		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
@@ -20,12 +19,12 @@
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Gtk</PackageId>
 
 		<RootNamespace>Uno.UI.Runtime.Skia</RootNamespace>
-	
+
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
+		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" Visible="false"/>
 	</ItemGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />

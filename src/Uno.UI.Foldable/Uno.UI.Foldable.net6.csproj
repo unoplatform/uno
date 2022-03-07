@@ -22,10 +22,11 @@
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
 	
+
 	<PropertyGroup>
     <Authors>nventive</Authors>
     <PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
-    <PackageIconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</PackageIconUrl>
+    <PackageIcon>uno.png</PackageIcon>
     <RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
     <Description>This package provides the ability for Uno Platform based apps to use dual screen devices such as the Surface Duo or Neo</Description>
     <Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
@@ -66,4 +67,8 @@
 		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
 		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
+
+	<ItemGroup>
+		<None Include=".\..\Common\uno.png" Pack="true" PackagePath="\" Visible="false"/>
+	</ItemGroup>
 </Project>
