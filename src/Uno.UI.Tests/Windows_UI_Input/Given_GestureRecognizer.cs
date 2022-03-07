@@ -44,18 +44,45 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		}
 
 		[TestMethod]
-		public void Tapped_Duration()
+		public void Tapped_Duration_Mouse()
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Tap };
 			var taps = new List<TappedEventArgs>();
 			sut.Tapped += (snd, e) => taps.Add(e);
 
-			sut.ProcessDownEvent(25, 25);
+			sut.ProcessDownEvent(25, 25, device: PointerDeviceType.Mouse);
 			taps.Should().BeEmpty();
 
-			sut.CanBeDoubleTap(GetPoint(28, 28)).Should().BeFalse();
-			sut.ProcessUpEvent(27, 27, ts: long.MaxValue); // No matter the duration
-			taps.Should().BeEquivalentTo(Tap(25, 25));
+			sut.ProcessUpEvent(27, 27, device: PointerDeviceType.Mouse, ts: long.MaxValue); // No matter the duration for mouse
+			taps.Should().BeEquivalentTo(Tap(25, 25, device: PointerDeviceType.Mouse));
+		}
+
+		[TestMethod]
+		public void Tapped_Duration_Touch()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Tap };
+			var taps = new List<TappedEventArgs>();
+			sut.Tapped += (snd, e) => taps.Add(e);
+
+			sut.ProcessDownEvent(25, 25, device: PointerDeviceType.Touch);
+			taps.Should().BeEmpty();
+
+			sut.ProcessUpEvent(27, 27, device: PointerDeviceType.Touch, ts: GestureRecognizer.HoldMinDelayTicks + 10);
+			taps.Should().BeEmpty();
+		}
+
+		[TestMethod]
+		public void Tapped_Duration_Pen()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Tap };
+			var taps = new List<TappedEventArgs>();
+			sut.Tapped += (snd, e) => taps.Add(e);
+
+			sut.ProcessDownEvent(25, 25, device: PointerDeviceType.Pen);
+			taps.Should().BeEmpty();
+
+			sut.ProcessUpEvent(27, 27, device: PointerDeviceType.Pen, ts: GestureRecognizer.HoldMinDelayTicks + 10);
+			taps.Should().BeEmpty();
 		}
 
 		[TestMethod]
@@ -137,15 +164,14 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			var taps = new List<TappedEventArgs>();
 			sut.Tapped += (snd, e) => taps.Add(e);
 
-			sut.ProcessDownEvent(25, 25);
+			sut.ProcessDownEvent(25, 25, device: PointerDeviceType.Mouse);
 			taps.Should().BeEmpty();
 
-			sut.ProcessMoveEvent(26, 26);
-
+			sut.ProcessMoveEvent(26, 26, device: PointerDeviceType.Mouse);
 
 			sut.CanBeDoubleTap(GetPoint(28, 28)).Should().BeFalse();
-			sut.ProcessUpEvent(GetPoint(27, 27, ts: long.MaxValue)); // No matter the duration
-			taps.Should().BeEquivalentTo(Tap(25, 25));
+			sut.ProcessUpEvent(GetPoint(27, 27, device: PointerDeviceType.Mouse, ts: long.MaxValue)); // No matter the duration
+			taps.Should().BeEquivalentTo(Tap(25, 25, device: PointerDeviceType.Mouse));
 		}
 
 		[TestMethod]

@@ -34,7 +34,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 
 			var clickMode = ClickMode.Hover;
 
-			var dataViewModel = new ButtonEventsDataViewModel("Tapped", "On UWP, TAP will be raised when the pointer is both pressed and released over the button and the pointer didn't moved significantly while being pressed. For touch input, the release must occur within approximately 1 second after the press otherwise TAP will not be raised.");
+			var dataViewModel = new ButtonEventsDataViewModel("Tapped", "On UWP, TAP will be raised when the pointer is both pressed and released over the button and the pointer didn't moved significantly while being pressed. For touch and pen input, the release must occur within approximately 1 second after the press otherwise TAP will not be raised.");
 			var testBtn = new Windows.UI.Xaml.Controls.Button() { Content = "ON TAP", ClickMode = clickMode };
 			testBtn.HorizontalAlignment = HorizontalAlignment.Stretch;
 			testBtn.VerticalAlignment = VerticalAlignment.Stretch;
