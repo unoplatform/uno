@@ -2240,9 +2240,18 @@ namespace Windows.UI.Xaml.Controls
 			_pendingReorder = null;
 
 			ViewCache.RemoveReorderingItem();
-			// We need a full refresh to properly re-arrange all items at their right location,
-			// ignoring the temp location of the dragged / reordered item.
-			RecycleLayout();
+
+			if (FeatureConfiguration.NativeListViewBase.ForceRecycleOnDrop)
+			{
+				// We need a full refresh to properly re-arrange all items at their right location,
+				// ignoring the temp location of the dragged / reordered item.
+				// Since https://github.com/unoplatform/uno/pull/8227 a full recycle pass seems to be no longer required.
+				RecycleLayout();
+			}
+			else
+			{
+				RequestLayout();
+			}
 		}
 
 		protected bool ShouldInsertReorderingView(GeneratorDirection direction, double physicalExtentOffset)
