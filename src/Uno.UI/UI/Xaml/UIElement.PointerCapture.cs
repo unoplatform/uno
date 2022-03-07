@@ -33,6 +33,25 @@ namespace Windows.UI.Xaml
 			Any = Explicit | Implicit,
 		}
 
+		internal enum PointerCaptureResult
+		{
+			/// <summary>
+			/// The capture has been added for the given element.
+			/// </summary>
+			Added,
+
+			/// <summary>
+			/// The pointer has already been captured with the same kind by the given element.
+			/// </summary>
+			AlreadyCaptured,
+
+			/// <summary>
+			/// The pointer has already been captured by another element,
+			/// or it cannot be captured at this time (pointer not pressed).
+			/// </summary>
+			Failed,
+		}
+
 		private protected class PointerCapture
 		{
 			private static readonly IDictionary<PointerIdentifier, PointerCapture> _actives = new Dictionary<PointerIdentifier, PointerCapture>(EqualityComparer<PointerIdentifier>.Default);
@@ -101,7 +120,7 @@ namespace Windows.UI.Xaml
 					.Values
 					.Where(target => (target.Kind & kinds) != PointerCaptureKind.None);
 
-			public bool TryAddTarget(UIElement element, PointerCaptureKind kind, PointerRoutedEventArgs relatedArgs = null)
+			public PointerCaptureResult TryAddTarget(UIElement element, PointerCaptureKind kind, PointerRoutedEventArgs relatedArgs = null)
 			{
 				global::System.Diagnostics.Debug.Assert(
 					kind == PointerCaptureKind.Explicit || kind == PointerCaptureKind.Implicit,
@@ -117,7 +136,7 @@ namespace Windows.UI.Xaml
 					// Validate if the requested kind is not already handled
 					if (target.Kind.HasFlag(kind))
 					{
-						return false;
+						return PointerCaptureResult.AlreadyCaptured;
 					}
 					else
 					{
@@ -156,7 +175,7 @@ namespace Windows.UI.Xaml
 				// Make sure that this capture is effective
 				EnsureEffectiveCaptureState();
 
-				return true;
+				return PointerCaptureResult.Added;
 			}
 
 			/// <summary>
