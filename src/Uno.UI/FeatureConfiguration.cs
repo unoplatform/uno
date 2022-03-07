@@ -326,6 +326,15 @@ namespace Uno.UI
 			/// from crashing when pressured: Tmp detached view should be removed from RecyclerView before it can be recycled
 			/// </summary>
 			public static bool RemoveItemAnimator = true;
+
+			/// <summary>
+			/// Indicates if a full recycling pass should be achieved on drop (re-order) on a ListView instead of a simple layout pass.
+			/// </summary>
+			/// <remarks>
+			/// This flag should be kept to 'false' if you turned <see cref="RemoveItemAnimator"/> to 'false'.
+			/// Forcing a recycling pass with ItemAnimator is known to cause a flicker of the whole list.
+			/// </remarks>
+			public static bool ForceRecycleOnDrop = false;
 		}
 #endif
 
