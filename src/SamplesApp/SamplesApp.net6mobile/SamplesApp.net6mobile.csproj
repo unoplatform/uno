@@ -63,7 +63,7 @@
 
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net6.0-android'">
-		<PackageReference Include="Xamarin.Google.Android.Material" Version="1.4.0.4" />
+		<PackageReference Include="Xamarin.Google.Android.Material" Version="1.5.0" />
 		<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.35" />
 	</ItemGroup>
 
