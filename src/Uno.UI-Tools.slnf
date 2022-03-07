@@ -6,6 +6,7 @@
       "ResourceConverter\\ResourceConverter.csproj",
       "T4Generator\\T4Generator.csproj",
       "UWPUsageStatsGenerator\\UWPUsageStatsGenerator.csproj",
+      "Uno.ReferenceImplComparer\\Uno.ReferenceImplComparer.csproj",
       "Uno.UI.AssemblyComparer\\Uno.UI.AssemblyComparer.csproj",
       "Uno.UI.TestComparer\\Uno.UI.TestComparer.csproj",
       "Uno.UWPSyncGenerator.Reference\\Uno.UWPSyncGenerator.Reference.csproj",
