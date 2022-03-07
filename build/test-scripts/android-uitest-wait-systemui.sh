@@ -35,7 +35,7 @@ if [ $ANDROID_SIMULATOR_APILEVEL -gt 25 ];
 then
 retry 3 "$ANDROID_HOME/platform-tools/adb" wait-for-device shell 'echo "emulator is attached, wait boot completated"; while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]] && [[ "$SECONDS" -lt 300 ]]; do sleep 1; done; input keyevent 82; echo "boot is completated."'
 else
-retry 3 "$ANDROID_HOME/platform-tools/adb" wait-for-device shell 'echo "emulator is attached, wait boot completated"; while [[ -z $(getprop sys.boot_completed) ]] && [[ "$SECONDS" -lt 300 ]]; do sleep 1; done; input keyevent 82; echo "boot is completated."'
+retry 3 "$ANDROID_HOME/platform-tools/adb" wait-for-device shell 'echo "emulator is attached, wait for boot completion"; while [[ -z $(getprop sys.boot_completed) ]] && [[ "$SECONDS" -lt 300 ]]; do sleep 1; done; input keyevent 82; echo "boot is complete."'
 fi
 
 # Wait for com.android.systemui to become available,
