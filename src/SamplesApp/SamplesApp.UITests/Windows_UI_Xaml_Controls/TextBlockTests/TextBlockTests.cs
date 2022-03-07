@@ -556,7 +556,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 			textBlockRect.Y.Should().Be(textBoxRect.Y);
 
 			const float expectedHeight = 164f;
-			const float precision = 22f; // On iOS he result is 148 and MacOS it's 146
+			const float precision = 26f; // On iOS he result is 148 and MacOS it's 146
 			textBlockHeight.Should().BeApproximately(expectedHeight, precision);
 			textBoxHeight.Should().BeApproximately(expectedHeight, precision);
 		}
