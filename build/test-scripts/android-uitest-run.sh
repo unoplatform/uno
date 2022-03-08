@@ -103,14 +103,14 @@ then
 	nohup $ANDROID_HOME/emulator/emulator -avd "$AVD_NAME" -skin 1280x800 -memory 2048 -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim > /dev/null 2>&1 &
 
 	# Wait for the emulator to finish booting
-	source $BUILD_SOURCESDIRECTORY/build/test-scripts/android-uitest-wait-systemui.sh 500
+	source $BUILD_SOURCESDIRECTORY/build/test-scripts/android-uitest-wait-systemui.sh
 
 else
 	# Restart the emulator to avoid running first-time tasks
 	$ANDROID_HOME/platform-tools/adb reboot
 
 	# Wait for the emulator to finish booting
-	source $BUILD_SOURCESDIRECTORY/build/test-scripts/android-uitest-wait-systemui.sh 500
+	source $BUILD_SOURCESDIRECTORY/build/test-scripts/android-uitest-wait-systemui.sh
 fi
 
 # list active devices
