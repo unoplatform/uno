@@ -70,7 +70,6 @@
     "Microsoft.VisualStudio.ComponentGroup.MSIX.Packaging",
     "Microsoft.VisualStudio.Workload.ManagedDesktop",
     "Microsoft.VisualStudio.Component.Windows10SDK.18362",
-    "Microsoft.VisualStudio.Component.Windows10SDK.17763",
     "Microsoft.Component.NetFX.Native",
     "Microsoft.VisualStudio.ComponentGroup.UWP.NetCoreAndStandard",
     "Microsoft.VisualStudio.Component.Graphics",

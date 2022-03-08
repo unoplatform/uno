@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE // Disabled on UWP for now because 17763 doesn't support WinUI 2.x
+﻿#if !NETFX_CORE // Disabled on UWP for now because 18362 doesn't support WinUI 2.x
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -322,7 +322,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 		/// </summary>
 		private IDisposable UseDarkTheme() => ThemeHelper.UseDarkTheme();
 
-#if !NETFX_CORE // Disabled on UWP for now because 17763 doesn't support WinUI 2.x
+#if !NETFX_CORE // Disabled on UWP for now because 18362 doesn't support WinUI 2.x
 		/// <summary>
 		/// Ensure Fluent styles are available for the course of a single test.
 		/// </summary>

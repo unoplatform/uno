@@ -215,7 +215,7 @@
 * [#1559] [#1167] Wasm: make the IsEnabled property inheritable.
 * Full support of pointer events cf. [routed events documentation](../articles/features/routed-events.md)
 * Add support of manipulation events cf. [routed events documentation](../articles/features/routed-events.md)
-* Update CheckBox style to 10.0.17763
+* Update CheckBox style to 10.0.18362
 * Adds the support for `AutomationProperties.AutomationId`
 * [#1328](https://github.com/unoplatform/uno/issues/1328) Basic ProgressRing implementation for WASM
 * Add support for `Windows.UI.Xaml.Controls.Primitives.LayoutInformation.GetAvailableSize`
@@ -574,7 +574,7 @@
  * [Wasm] Fix `ListView` recycling when the `XamlParent` is not available for `AutoSuggestBox`
  * 147405 Fix NRE on some MediaTransportControl controls
  * #139 Update Uno.SourceGenerationTasks to improve build performance
- * Update `Uno.UI.Toolkit` base UWP sdk to 17763
+ * Update `Uno.UI.Toolkit` base UWP sdk to 18362
  * [Wasm] Fixes items measured after being removed from their parent appear in the visual tree, on top of every other items.
  * [Wasm] Fixes lements may not be removed form the global active DOM elements tracking map
  * [Wasm] Disable the root element scrolling (bounce) on touch devices
@@ -590,7 +590,7 @@
 
 ### Features
 * [Wasm] Improve general performance and memory pressure by removing Javascript interop evaluations.
-* Add support for Windows 10 SDK 17763 (1809)
+* Add support for Windows 10 SDK 18362 (1809)
 * Improve the Uno.UI solution memory consumption for Android targets
 * Add support for GridLength conversion from double
 * Raise exceptions on missing styles in debug configuration

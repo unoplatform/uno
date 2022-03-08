@@ -27,7 +27,7 @@ jobs:
 
   - template: templates/gitversion.yml
 
-  - powershell: .\build\Install-WindowsSdkISO.ps1 17763
+  - powershell: .\build\Install-WindowsSdkISO.ps1 18362
     displayName: Insider SDK
 
   - task: MSBuild@1
