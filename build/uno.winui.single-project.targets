@@ -48,7 +48,7 @@
 	<AndroidProjectFolder Condition=" '$(AndroidProjectFolder)' == '' ">Android\</AndroidProjectFolder>
 	<AndroidManifest>$(AndroidProjectFolder)AndroidManifest.xml</AndroidManifest>
 	<MonoAndroidResourcePrefix>$(AndroidProjectFolder)Resources</MonoAndroidResourcePrefix>
-	<MonoAndroidAssetsPrefix>$(AndroidProjectFolder)Assets</MonoAndroidAssetsPrefix>
+	<MonoAndroidAssetsPrefix>$(AndroidProjectFolder)Assets;Assets</MonoAndroidAssetsPrefix>
 
 	<!-- iOS -->
 	<EnableDefaultiOSItems>false</EnableDefaultiOSItems>
