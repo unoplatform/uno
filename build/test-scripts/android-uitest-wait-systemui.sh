@@ -1,21 +1,9 @@
 #!/usr/bin/env bash
-BOOT_TIMEOUT=$1
+
 retry() {
-    local -r -i max_attempts="$1";shift 1
+    local -r -i max_attempts="$1"; shift
     local -i attempt_num=1
-    local -a COMMANDS=( timeout $BOOT_TIMEOUT )
-
-    while (( "$#" )); do
-        local arg="$1";
-        if [[ "$arg" = *" "* ]]; then
-            COMMANDS+=( $( printf "\''%s'\'" "$arg" ) )
-        else
-            COMMANDS+=( "$arg" )
-        fi
-        shift
-    done
-
-    until "${COMMANDS[@]}"
+    until "$@"
     do
         if ((attempt_num==max_attempts))
         then
@@ -29,13 +17,13 @@ retry() {
 }
 
 echo ""
-echo "[Waiting for device to boot] timeout $BOOT_TIMEOUT sec"
+echo "[Waiting for device to boot]"
 
 if [ $ANDROID_SIMULATOR_APILEVEL -gt 25 ];
-then
-retry 3 "$ANDROID_HOME/platform-tools/adb" wait-for-device shell 'echo "emulator is attached, wait for boot completion"; while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]] && [[ "$SECONDS" -lt 300 ]]; do sleep 1; done; input keyevent 82; echo "boot is complete."'
+then 
+retry 3 $ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; [[ "$SECONDS" -lt 300 ]]; do sleep 1; done; input keyevent 82'
 else
-retry 3 "$ANDROID_HOME/platform-tools/adb" wait-for-device shell 'echo "emulator is attached, wait for boot completion"; while [[ -z $(getprop sys.boot_completed) ]] && [[ "$SECONDS" -lt 300 ]]; do sleep 1; done; input keyevent 82; echo "boot is complete."'
+retry 3 $ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; [[ "$SECONDS" -lt 300 ]]; do sleep 1; done; input keyevent 82'
 fi
 
 # Wait for com.android.systemui to become available,
@@ -51,7 +39,7 @@ START_TIME=$SECONDS
 while [[ -z ${LAUNCHER_READY} ]]; do
 
     if [ $ANDROID_SIMULATOR_APILEVEL -ge 29 ];
-    then
+    then 
     UI_FOCUS=`$ANDROID_HOME/platform-tools/adb shell dumpsys window 2>/dev/null | grep -E 'mCurrentFocus|mFocusedApp'`
     else
     UI_FOCUS=`$ANDROID_HOME/platform-tools/adb shell dumpsys window windows 2>/dev/null | grep -i mCurrentFocus`
@@ -84,9 +72,9 @@ while [[ -z ${LAUNCHER_READY} ]]; do
         echo "Waiting for launcher..."
         sleep 3
 
-        # For some reason the messaging app can be brought up in front
-        # (DEBUG) Current focus:   mCurrentFocus=Window{1170051 u0 com.google.android.apps.messaging/com.google.android.apps.messaging.ui.ConversationListActivity}
-        # Try bringing back the home screen to check on the launcher.
+		# For some reason the messaging app can be brought up in front
+		# (DEBUG) Current focus:   mCurrentFocus=Window{1170051 u0 com.google.android.apps.messaging/com.google.android.apps.messaging.ui.ConversationListActivity}
+		# Try bringing back the home screen to check on the launcher.
         $ANDROID_HOME/platform-tools/adb shell input keyevent KEYCODE_HOME
     ;;
     esac
