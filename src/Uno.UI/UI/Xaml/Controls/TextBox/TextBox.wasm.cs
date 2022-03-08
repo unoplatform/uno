@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
-
+		
 		partial void InitializePropertiesPartial()
 		{
 			if (_header != null)
@@ -57,6 +57,21 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnTappedPartial()
 		{
 			FocusTextView();
+		}
+
+
+		private void ResetCaret()
+		{
+
+			this.SelectionStart = 0;
+			this.SelectionLength = 0;
+
+			if (_textBoxView != null)
+			{
+				_textBoxView.SelectionStart = 0;
+				_textBoxView.SelectionEnd = 0;
+
+			}
 		}
 
 		private void OnHeaderClick(object sender, object args)
