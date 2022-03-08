@@ -10,8 +10,8 @@ namespace Windows.Globalization.NumberFormatting
 		private readonly FormatterHelper _formatterHelper;
 		private readonly NumeralSystemTranslator _translator;
 		private readonly string _symbol = CultureInfo.InvariantCulture.NumberFormat.PercentSymbol;
-		private readonly double _formatCoefficient = 100d;
-		private readonly double _parseCoefficient = 0.01;
+		private const int _pow10 = 2;
+		private const double _parseCoefficient = 0.01;
 
 		public PercentFormatter()
 		{
@@ -65,7 +65,9 @@ namespace Windows.Globalization.NumberFormatting
 			}
 			else
 			{
-				formatted = _formatterHelper.FormatDoubleCore(value * _formatCoefficient);
+				// due to accuracy precision "MultiplyByPow10" is used for multiplication
+				value = value.MultiplyByPow10(_pow10);
+				formatted = _formatterHelper.FormatDoubleCore(value);
 			}
 
 			formatted = _translator.TranslateNumerals($"{formatted}{_symbol}");
