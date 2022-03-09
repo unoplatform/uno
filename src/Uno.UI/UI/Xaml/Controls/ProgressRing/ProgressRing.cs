@@ -1,4 +1,3 @@
-#if XAMARIN || UNO_REFERENCE_API
 using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -14,7 +13,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			DefaultStyleKey = typeof(ProgressRing);
 		}
-
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether the <see cref="ProgressRing"/> is showing progress.
@@ -45,8 +43,6 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsActiveChangedPartial(bool isActive);
 
-#if !UNO_REFERENCE_API && !__MACOS__ && !__NETSTD_REFERENCE__
-
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
@@ -64,7 +60,6 @@ namespace Windows.UI.Xaml.Controls
 
 			OnUnloadedPartial();
 		}
-#endif
 
 		public Primitives.ProgressRingTemplateSettings TemplateSettings
 		{
@@ -84,4 +79,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-#endif

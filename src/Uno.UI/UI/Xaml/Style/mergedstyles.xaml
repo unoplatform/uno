@@ -12498,12 +12498,12 @@
     </Setter>
   </Style>
   <!--origin: UI\Xaml\Controls\ProgressRing\ProgressRing.xaml-->
-  <wasm:Style x:Key="ProgressRingEllipseStyle" TargetType="Ellipse">
+  <Style x:Key="ProgressRingEllipseStyle" TargetType="Ellipse">
     <Setter Property="Opacity" Value="0" />
     <Setter Property="HorizontalAlignment" Value="Left" />
     <Setter Property="VerticalAlignment" Value="Top" />
-  </wasm:Style>
-  <wasm:Style TargetType="ProgressRing">
+  </Style>
+  <Style TargetType="ProgressRing">
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="Foreground" Value="{ThemeResource SystemControlHighlightAccentBrush}" />
     <Setter Property="IsHitTestVisible" Value="False" />
@@ -12677,8 +12677,8 @@
         </ControlTemplate>
       </Setter.Value>
     </Setter>
-  </wasm:Style>
-  <android:Style TargetType="ProgressRing">
+  </Style>
+  <android:Style TargetType="ProgressRing" x:Key="NativeProgressRingStyle">
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="ProgressRing">
@@ -12687,7 +12687,7 @@
       </Setter.Value>
     </Setter>
   </android:Style>
-  <ios:Style TargetType="ProgressRing">
+  <ios:Style TargetType="ProgressRing" x:Key="NativeProgressRingStyle">
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="ProgressRing">
