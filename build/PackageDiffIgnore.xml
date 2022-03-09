@@ -8673,7 +8673,18 @@
 			  reason="net6 macos remove deprecated API" />
 	  </Properties>
 	</IgnoreSet>
-
+	  
+	<IgnoreSet baseVersion="4.1.8">
+		<Assemblies>
+		</Assemblies>
+		<Methods>
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.FrameworkElement.get_StretchAffectsMeasure()"
+				reason="False positive: added in an internal interface" />
+		</Methods>
+	  	<Properties>
+	 	</Properties>
+	</IgnoreSet>
 	<!--
 	Supported nodes (please keep at the bottom of this file):
 	<IgnoreSet baseVersion="0.0.0">
