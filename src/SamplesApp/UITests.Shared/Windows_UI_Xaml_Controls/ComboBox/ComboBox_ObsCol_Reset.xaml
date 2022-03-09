@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="UITests.Windows_UI_Xaml_Controls.ComboBox.ComboBox_ObsCol_Reset"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Windows_UI_Xaml_Controls.ComboBox"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d"
+			 d:DesignHeight="300"
+			 d:DesignWidth="400">
+
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<StackPanel x:Name="ButtonPanel" Grid.Column="0">
+			<TextBlock Text="Reset source to:" />
+			<Button x:Name="ResetSource_A15" Content="A15" />
+			<Button x:Name="ResetSource_B7" Content="B5" />
+			<Button x:Name="ResetSource_C11" Content="C11" />
+		</StackPanel>
+		<ComboBox Grid.Column="1"
+				  x:Name="TestComboBox"
+				  ItemsSource="{Binding}">
+			<ComboBox.ItemTemplate>
+				<DataTemplate>
+					<TextBlock x:Name="ComBoxItemContent" Text="{Binding}" />
+				</DataTemplate>
+			</ComboBox.ItemTemplate>
+		</ComboBox>
+
+		<StackPanel Grid.ColumnSpan="2" Grid.Row="1">
+			<TextBlock Text="The source is updated when pressed. Just select any item and/or scoll to see the problem." />
+			<TextBlock Text="To see mixed elements: pick a source with greater number of elements (digits), select any item in it, pick a source with lesser number of elements." TextWrapping="WrapWholeWords" />
+		</StackPanel>
+	</Grid>
+</UserControl>

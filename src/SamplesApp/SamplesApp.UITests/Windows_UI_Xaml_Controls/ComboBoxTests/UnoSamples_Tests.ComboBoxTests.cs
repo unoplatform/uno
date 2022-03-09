@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Linq;
 using NUnit.Framework;
@@ -282,9 +282,50 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 		public void ComboBox_With_Description()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ComboBox.ComboBox_Description", skipInitialScreenshot: true);
-			var comboBox = _app.WaitForElement("DescriptionComboBox")[0];			
+			var comboBox = _app.WaitForElement("DescriptionComboBox")[0];
 			using var screenshot = TakeScreenshot("ComboBox Description", new ScreenshotOptions() { IgnoreInSnapshotCompare = true });
 			ImageAssert.HasColorAt(screenshot, comboBox.Rect.X + comboBox.Rect.Width / 2, comboBox.Rect.Y + comboBox.Rect.Height - 150, Color.Red);
+		}
+
+		[Test]
+		//[AutoRetry]
+		[AutoRetry(tryCount: 1)]
+		//[ActivePlatforms(Platform.iOS, Platform.Android)] // Disabled on wasm due to #7485
+		public void ComboBox_ObsCol_Reset()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ComboBox.ComboBox_ObsCol_Reset", skipInitialScreenshot: true);
+
+			var combo = _app.Marked("TestComboBox");
+			var button = _app.Marked("ResetSource_B7");
+
+			// open/close combobox popup to materialize the items
+			combo.FastTap();
+			combo.FastTap();
+
+			// reset source, and open the combobox popup again
+			button.FastTap();
+			combo.FastTap();
+
+			// check items are updated
+			var items = AppInitializer.GetLocalPlatform() == Platform.Browser
+				? _app.WaitForElement("ComBoxItemContent").Select(x => x.Text).ToArray()
+				: _app.WaitForElement("ComBoxItemContent")
+					.Select((_, i) => _app.Marked("ComBoxItemContent").AtIndex(i))
+					.Select(x => x.GetDependencyPropertyValue<string>("Text"))
+					.ToArray();
+
+			// on android, the `items` would contains
+			// - the rendered ones (within scrollviewer viewport) only; plus,
+			// - a duplicate from selected item (from ComboBox ContentPresenter Content)
+			// so, we only want to test the first few, which is enough for now.
+			var itemCountToCompare = AppInitializer.GetLocalPlatform() != Platform.Android
+				? int.MaxValue : 5;
+
+			Assert.AreEqual(
+				string.Join(", ", Enumerable.Range(0, 7).Take(itemCountToCompare).Select(x => $"B{x}")),
+				string.Join(", ", items.Take(itemCountToCompare)),
+				"ComboBox popup items are not updated: " + string.Join(", ", items)
+			);
 		}
 
 		public void ComboBoxTests_PlaceholderText_Impl(string targetName, int selectionIndex, Action<QueryEx> selectionValidation)
