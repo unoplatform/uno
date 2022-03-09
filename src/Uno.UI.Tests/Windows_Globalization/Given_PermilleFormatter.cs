@@ -13,8 +13,8 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(double.NaN, "NaN")]
 		public void When_FormatSpecialDouble(double value, string expected)
 		{
-			var formatter = new PermilleFormatter();
-			var actual = formatter.FormatDouble(value);
+			var sut = new PermilleFormatter();
+			var actual = sut.FormatDouble(value);
 
 			Assert.AreEqual(expected, actual);
 		}
@@ -33,11 +33,11 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(-0d, 3, 1, "000.0‰")]
 		public void When_FormatDouble(double value, int integerDigits, int fractionDigits, string expected)
 		{
-			var formatter = new PermilleFormatter();
-			formatter.IntegerDigits = integerDigits;
-			formatter.FractionDigits = fractionDigits;
+			var sut = new PermilleFormatter();
+			sut.IntegerDigits = integerDigits;
+			sut.FractionDigits = fractionDigits;
 
-			var formatted = formatter.FormatDouble(value);
+			var formatted = sut.FormatDouble(value);
 			Assert.AreEqual(expected, formatted);
 		}
 
@@ -49,12 +49,12 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(1.2340, 6, 0, "001,234‰")]
 		public void When_FormatDoubleWithIsGroupSetTrue(double value, int integerDigits, int fractionDigits, string expected)
 		{
-			var formatter = new PermilleFormatter();
-			formatter.IntegerDigits = integerDigits;
-			formatter.FractionDigits = fractionDigits;
-			formatter.IsGrouped = true;
+			var sut = new PermilleFormatter();
+			sut.IntegerDigits = integerDigits;
+			sut.FractionDigits = fractionDigits;
+			sut.IsGrouped = true;
 
-			var formatted = formatter.FormatDouble(value);
+			var formatted = sut.FormatDouble(value);
 			Assert.AreEqual(expected, formatted);
 		}
 
@@ -65,12 +65,12 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(3, 1, "-000.0‰")]
 		public void When_FormatDoubleMinusZeroWithIsZeroSignedSetTrue(int integerDigits, int fractionDigits, string expected)
 		{
-			var formatter = new PermilleFormatter();
-			formatter.IntegerDigits = integerDigits;
-			formatter.FractionDigits = fractionDigits;
-			formatter.IsZeroSigned = true;
+			var sut = new PermilleFormatter();
+			sut.IntegerDigits = integerDigits;
+			sut.FractionDigits = fractionDigits;
+			sut.IsZeroSigned = true;
 
-			var formatted = formatter.FormatDouble(-0d);
+			var formatted = sut.FormatDouble(-0d);
 			Assert.AreEqual(expected, formatted);
 		}
 
@@ -81,12 +81,12 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(3, 1, "000.0‰")]
 		public void When_FormatDoubleZeroWithIsZeroSignedSetTrue(int integerDigits, int fractionDigits, string expected)
 		{
-			var formatter = new PermilleFormatter();
-			formatter.IntegerDigits = integerDigits;
-			formatter.FractionDigits = fractionDigits;
-			formatter.IsZeroSigned = true;
+			var sut = new PermilleFormatter();
+			sut.IntegerDigits = integerDigits;
+			sut.FractionDigits = fractionDigits;
+			sut.IsZeroSigned = true;
 
-			var formatted = formatter.FormatDouble(0d);
+			var formatted = sut.FormatDouble(0d);
 			Assert.AreEqual(expected, formatted);
 		}
 
@@ -94,12 +94,12 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(0.001d, "1.‰")]
 		public void When_FormatDoubleWithIsDecimalPointerAlwaysDisplayedSetTrue(double value, string expected)
 		{
-			var formatter = new PermilleFormatter();
-			formatter.IsDecimalPointAlwaysDisplayed = true;
-			formatter.FractionDigits = 0;
-			formatter.IntegerDigits = 0;
+			var sut = new PermilleFormatter();
+			sut.IsDecimalPointAlwaysDisplayed = true;
+			sut.FractionDigits = 0;
+			sut.IntegerDigits = 0;
 
-			var formatted = formatter.FormatDouble(value);
+			var formatted = sut.FormatDouble(value);
 			Assert.AreEqual(expected, formatted);
 		}
 
@@ -111,23 +111,23 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(0.0123d, 4, 1, 0, "12.30‰")]
 		public void When_FormatDoubleWithSpecificSignificantDigits(double value, int significantDigits, int integerDigits, int fractionDigits, string expected)
 		{
-			var formatter = new PermilleFormatter();
-			formatter.SignificantDigits = significantDigits;
-			formatter.IntegerDigits = integerDigits;
-			formatter.FractionDigits = fractionDigits;
+			var sut = new PermilleFormatter();
+			sut.SignificantDigits = significantDigits;
+			sut.IntegerDigits = integerDigits;
+			sut.FractionDigits = fractionDigits;
 
-			var formatted = formatter.FormatDouble(value);
+			var formatted = sut.FormatDouble(value);
 			Assert.AreEqual(expected, formatted);
 		}
 
 		[TestMethod]
 		public void When_FormatDoubleUsingIncrementNumberRounder()
 		{
-			var formatter = new PermilleFormatter();
+			var sut = new PermilleFormatter();
 			IncrementNumberRounder rounder = new IncrementNumberRounder();
 			rounder.Increment = 0.5;
-			formatter.NumberRounder = rounder;
-			var formatted = formatter.FormatDouble(1.8);
+			sut.NumberRounder = rounder;
+			var formatted = sut.FormatDouble(1.8);
 
 			Assert.AreEqual("2000.00‰", formatted);
 		}
@@ -135,11 +135,11 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[TestMethod]
 		public void When_FormatDoubleUsingSignificantDigitsNumberRounder()
 		{
-			var formatter = new PermilleFormatter();
+			var sut = new PermilleFormatter();
 			SignificantDigitsNumberRounder rounder = new SignificantDigitsNumberRounder();
 			rounder.SignificantDigits = 1;
-			formatter.NumberRounder = rounder;
-			var formatted = formatter.FormatDouble(1.8);
+			sut.NumberRounder = rounder;
+			var formatted = sut.FormatDouble(1.8);
 
 			Assert.AreEqual("2000.00‰", formatted);
 		}
@@ -147,16 +147,16 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[TestMethod]
 		public void When_Initialize()
 		{
-			var formatter = new PermilleFormatter();
+			var sut = new PermilleFormatter();
 
-			Assert.AreEqual(0, formatter.SignificantDigits);
-			Assert.AreEqual(1, formatter.IntegerDigits);
-			Assert.AreEqual(2, formatter.FractionDigits);
-			Assert.AreEqual(false, formatter.IsGrouped);
-			Assert.AreEqual(false, formatter.IsZeroSigned);
-			Assert.AreEqual(false, formatter.IsDecimalPointAlwaysDisplayed);
-			Assert.AreEqual("en-US", formatter.ResolvedLanguage);
-			Assert.IsNull(formatter.NumberRounder);
+			Assert.AreEqual(0, sut.SignificantDigits);
+			Assert.AreEqual(1, sut.IntegerDigits);
+			Assert.AreEqual(2, sut.FractionDigits);
+			Assert.AreEqual(false, sut.IsGrouped);
+			Assert.AreEqual(false, sut.IsZeroSigned);
+			Assert.AreEqual(false, sut.IsDecimalPointAlwaysDisplayed);
+			Assert.AreEqual("en-US", sut.ResolvedLanguage);
+			Assert.IsNull(sut.NumberRounder);
 			/*
 				FractionDigits	2	int
 				GeographicRegion	"US"	string
@@ -185,10 +185,10 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("0‰", 0d)]
 		public void When_ParseDouble(string value, double? expected)
 		{
-			var formatter = new PermilleFormatter();
-			formatter.FractionDigits = 2;
+			var sut = new PermilleFormatter();
+			sut.FractionDigits = 2;
 
-			var actual = formatter.ParseDouble(value);
+			var actual = sut.ParseDouble(value);
 			Assert.AreEqual(expected, actual);
 		}
 
@@ -198,11 +198,11 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("12,34.2‰", null)]
 		public void When_ParseDoubleAndIsGroupSetTrue(string value, double? expected)
 		{
-			var formatter = new PermilleFormatter();
-			formatter.FractionDigits = 2;
-			formatter.IsGrouped = true;
+			var sut = new PermilleFormatter();
+			sut.FractionDigits = 2;
+			sut.IsGrouped = true;
 
-			var actual = formatter.ParseDouble(value);
+			var actual = sut.ParseDouble(value);
 			Assert.AreEqual(expected, actual);
 		}
 
@@ -211,19 +211,19 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("1.‰", 0.001)]
 		public void When_ParseDoubleAndIsDecimalPointAlwaysDisplayedSetTrue(string value, double? expected)
 		{
-			var formatter = new PermilleFormatter();
-			formatter.FractionDigits = 2;
-			formatter.IsDecimalPointAlwaysDisplayed = true;
+			var sut = new PermilleFormatter();
+			sut.FractionDigits = 2;
+			sut.IsDecimalPointAlwaysDisplayed = true;
 
-			var actual = formatter.ParseDouble(value);
+			var actual = sut.ParseDouble(value);
 			Assert.AreEqual(expected, actual);
 		}
 
 		[TestMethod]
 		public void When_ParseDoubleMinusZero()
 		{
-			var formatter = new PermilleFormatter();
-			var actual = formatter.ParseDouble("-0‰");
+			var sut = new PermilleFormatter();
+			var actual = sut.ParseDouble("-0‰");
 			bool isNegative = false;
 
 			if (actual.HasValue)
@@ -272,22 +272,22 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("Vaii")]
 		public void When_ParseDoubleUsingSpeceficNumeralSystem(string numeralSystem)
 		{
-			var formatter = new PermilleFormatter();
-			formatter.NumeralSystem = numeralSystem;
+			var sut = new PermilleFormatter();
+			sut.NumeralSystem = numeralSystem;
 
 			var translator = new NumeralSystemTranslator { NumeralSystem = numeralSystem };
 			var translated = translator.TranslateNumerals("1234567.89‰");
 
-			var actual = formatter.ParseDouble(translated);
+			var actual = sut.ParseDouble(translated);
 			Assert.AreEqual(1234.56789, actual);
 		}
 
 		[TestMethod]
 		public void When_ParseNotValidDouble()
 		{
-			var formatter = new PermilleFormatter();
+			var sut = new PermilleFormatter();
 
-			var actual = formatter.ParseDouble("a12‰");
+			var actual = sut.ParseDouble("a12‰");
 			Assert.AreEqual(null, actual);
 		}
 	}
