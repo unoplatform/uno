@@ -359,6 +359,75 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_Full_Collection_Reset()
+		{
+			var SUT = new ComboBox();
+			SUT.ItemTemplate = new DataTemplate(() => {
+
+				var tb = new TextBlock();
+				tb.SetBinding(TextBlock.TextProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });
+				tb.SetBinding(TextBlock.NameProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });
+
+				return tb;
+			});
+
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+
+				var c = new MyObservableCollection<ItemModel>();
+				c.Add(new ItemModel { Text = "One" });
+				c.Add(new ItemModel { Text = "Two" });
+				c.Add(new ItemModel { Text = "Three" });
+
+				SUT.ItemsSource = c;
+
+				await WindowHelper.WaitForIdle();
+				SUT.IsDropDownOpen = true;
+
+				await WindowHelper.WaitForIdle();
+				SUT.IsDropDownOpen = false;
+
+				Assert.AreEqual(SUT.Items.Count, 3);
+
+				using (c.BatchUpdate())
+				{
+					c.Clear();
+					c.Add(new ItemModel { Text = "Five" });
+					c.Add(new ItemModel { Text = "Six" });
+					c.Add(new ItemModel { Text = "Seven" });
+				}
+
+				SUT.IsDropDownOpen = true;
+
+				// Items are materialized when the popup is opened
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(3, SUT.Items.Count);
+				Assert.IsNotNull(SUT.ContainerFromItem(c[0]));
+				Assert.IsNotNull(SUT.ContainerFromItem(c[1]));
+				Assert.IsNotNull(SUT.ContainerFromItem(c[2]));
+
+				Assert.IsNotNull(SUT.FindName("Seven"));
+				Assert.IsNotNull(SUT.FindName("Five"));
+				Assert.IsNotNull(SUT.FindName("Six"));
+			}
+			finally
+			{
+				SUT.IsDropDownOpen = false;
+			}
+		}
+#endif
+
+		public class ItemModel
+		{
+			public string Text { get; set; }
+
+			public override string ToString() => Text;
+		}
+
 		public class MyObservableCollection<TType> : ObservableCollection<TType>
 		{
 			private int _batchUpdateCount;
