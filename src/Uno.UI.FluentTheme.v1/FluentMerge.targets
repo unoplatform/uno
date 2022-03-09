@@ -1,41 +1,37 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project>
-  <PropertyGroup>
+	<PropertyGroup>
 	<ThemesExclusion>$(MSBuildThisFileDirectory)Resources\**\*.xaml</ThemesExclusion>
-  </PropertyGroup>
-  
-  <UsingTask TaskName="BatchMergeXaml" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" />
+	</PropertyGroup>
 
-  <!-- This task is temporarily placed in debug configuration to avoid parallel build concurrency issues -->
-  <Target Name="GenerateThemeResourceV1File" BeforeTargets="BeforeBuild" Outputs="themeresources_v1.xaml" Condition="'$(Configuration)'=='Debug'">
+	<PropertyGroup>
+		<_Uno_XamlMerge_Task_Version>1.1.0-dev.3</_Uno_XamlMerge_Task_Version>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<XamlMergeOutputFile>$(MSBuildThisFileDirectory)themeresources_v1.xaml</XamlMergeOutputFile>
+	</PropertyGroup>
+
 	<ItemGroup>
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\TeachingTip.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\TeachingTip_themeresources.xaml" />
-      <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\PipsPager.xaml" />
-      <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\PipsPager_themeresources.xaml" />
-      <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\ProgressRing.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\ScrollViewer.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\ScrollViewer_themeresources.xaml" />
-	  <!-- UNO TODO Fails to display correctly for multiple reasons, including https://github.com/unoplatform/uno/issues/325 but also undiagnosed issues -->
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\SplitView_themeresources.xaml" />
-	  <!-- The excluded files can be restored as the types are made available in Uno.		  
-		  Note: The ProgressRing style can be restored once determinate mode is implemented. https://github.com/unoplatform/uno/issues/3604 -->
-	  <WinUIStylePage
-		  Include="$(MSBuildThisFileDirectory)Resources\Version1\**\*.xaml" />
-	  <WinUIStylePage
-		  Remove="@(ExcludedTemplates)" />
+		<PackageReference Include="Uno.XamlMerge.Task" Version="$(_Uno_XamlMerge_Task_Version)" />
 	</ItemGroup>
 
-	<Message Importance="high" Text="Generating theme resources XAML file " />
-	<MakeDir Directories="$(IntermediateOutputPath)\Version1" />
-	<BatchMergeXaml
-	  Pages="@(WinUIStylePage)"
-	  MergedXamlFile="themeresources_v1.xaml"
-	  TlogReadFilesOutputPath="$(IntermediateOutputPath)\Version1\GenerateThemeResourceFile.read.1u.tlog"
-	  TlogWriteFilesOutputPath="$(IntermediateOutputPath)\Version1\GenerateThemeResourceFile.write.1u.tlog" />
-	<Message Text="Theme resources XAML file was generated" />
-  </Target>
+	<ItemGroup>
+		<ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />
+		<ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\TeachingTip.xaml" />
+		<ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\TeachingTip_themeresources.xaml" />
+		<ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\PipsPager.xaml" />
+		<ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\PipsPager_themeresources.xaml" />
+		<ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\ProgressRing.xaml" />
+		<ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\ScrollViewer.xaml" />
+		<ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\ScrollViewer_themeresources.xaml" />
+		<!-- UNO TODO Fails to display correctly for multiple reasons, including https://github.com/unoplatform/uno/issues/325 but also undiagnosed issues -->
+		<ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\SplitView_themeresources.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version1\**\*.xaml" Exclude="@(ExcludedTemplatesV2)" />
+	</ItemGroup>
 
   <Choose>
 	<When Condition="'$(TargetFramework)'=='net461'">
@@ -68,5 +64,8 @@
   </PropertyGroup>
 
   <Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+
+	<Import Project="$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)\build\Uno.XamlMerge.Task.targets"
+			Condition="'$(TargetFramework)' == '' and '$(TargetFrameworks)'!='' and exists('$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)')" />
 
 </Project>

@@ -3,8 +3,18 @@
   <PropertyGroup>
 	<ThemesExclusion>$(MSBuildThisFileDirectory)Resources\**\*.xaml</ThemesExclusion>
   </PropertyGroup>
-  
-  <UsingTask TaskName="BatchMergeXaml" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" />
+
+  <PropertyGroup>
+    <_Uno_XamlMerge_Task_Version>1.1.0-dev.3</_Uno_XamlMerge_Task_Version>
+  </PropertyGroup>
+
+  <PropertyGroup>
+	  <XamlMergeOutputFile>$(MSBuildThisFileDirectory)themeresources_v2.xaml</XamlMergeOutputFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+      <PackageReference Include="Uno.XamlMerge.Task" Version="$(_Uno_XamlMerge_Task_Version)" />
+  </ItemGroup>
 
   <!-- This task is temporarily placed in debug configuration to avoid parallel build concurrency issues -->
   <Target Name="GenerateThemeResourceV2File" BeforeTargets="BeforeBuild" Outputs="themeresources_v2.xaml" Condition="'$(Configuration)'=='Debug'">
@@ -24,15 +34,9 @@
 		  Remove="@(ExcludedTemplatesV2)" />
     </ItemGroup>
 
-    <Message Importance="high" Text="Generating theme resources XAML file " />
-    <MakeDir Directories="$(IntermediateOutputPath)\Version2" />
-    <BatchMergeXaml
-	  Pages="@(WinUIStylePageV2)"
-	  MergedXamlFile="themeresources_v2.xaml"
-	  TlogReadFilesOutputPath="$(IntermediateOutputPath)\Version2\GenerateThemeResourceFile.read.1u.tlog"
-	  TlogWriteFilesOutputPath="$(IntermediateOutputPath)\Version2\GenerateThemeResourceFile.write.1u.tlog" />
-    <Message Text="Theme resources XAML file was generated" />
-  </Target>
+	<ItemGroup>
+	  <XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version2\**\*.xaml" Exclude="@(ExcludedTemplatesV2)" />
+    </ItemGroup>
 
   <Choose>
 	<When Condition="'$(TargetFramework)'=='net461'">
@@ -65,5 +69,8 @@
   </PropertyGroup>
 
   <Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+
+  <Import Project="$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)\build\Uno.XamlMerge.Task.targets"
+          Condition="'$(TargetFramework)' == '' and '$(TargetFrameworks)'!='' and exists('$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)')" />
 
 </Project>
