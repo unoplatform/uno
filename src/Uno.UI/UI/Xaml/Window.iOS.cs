@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml
 			_window = new Uno.UI.Controls.Window();
 
 			_mainController = ViewControllerGenerator?.Invoke() ?? new RootViewController();
-			_mainController.View.BackgroundColor = UIColor.White;
+			_mainController.View.BackgroundColor = UIColor.Clear;
 			_mainController.NavigationBarHidden = true;
 			
 			ObserveOrientationAndSize();
