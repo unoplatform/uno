@@ -3499,12 +3499,12 @@ var Windows;
                 FS.mkdir(path);
                 FS.mount(IDBFS, {}, path);
                 // Ensure to sync pseudo file system on unload (and periodically for safety)
-                if (!this._isInit) {
+                if (!this._isInitialized) {
                     // Request an initial sync to populate the file system
-                    StorageFolder.synchronizeFileSystem();
-                    window.addEventListener("beforeunload", this.synchronizeFileSystem);
+                    StorageFolder.synchronizeFileSystem(true, () => StorageFolder.onStorageInitialized());
+                    window.addEventListener("beforeunload", () => this.synchronizeFileSystem(false));
                     setInterval(this.synchronizeFileSystem, 10000);
-                    this._isInit = true;
+                    this._isInitialized = true;
                 }
             }
             static onStorageInitialized() {
@@ -3515,13 +3515,18 @@ var Windows;
                 StorageFolder.dispatchStorageInitialized();
             }
             /**
-             * Synchronize the IDBFS memory cache back to IndexDB
+             * Synchronize the IDBFS memory cache back to IndexedDB
+             * populate: requests the filesystem to be popuplated from the IndexedDB
+             * onSynchronized: function invoked when the synchronization finished
              * */
-            static synchronizeFileSystem() {
+            static synchronizeFileSystem(populate, onSynchronized = null) {
                 if (!StorageFolder._isSynchronizing) {
                     StorageFolder._isSynchronizing = true;
-                    FS.syncfs(err => {
+                    FS.syncfs(populate, err => {
                         StorageFolder._isSynchronizing = false;
+                        if (onSynchronized) {
+                            onSynchronized();
+                        }
                         if (err) {
                             console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
                         }
@@ -3529,7 +3534,7 @@ var Windows;
                 }
             }
         }
-        StorageFolder._isInit = false;
+        StorageFolder._isInitialized = false;
         StorageFolder._isSynchronizing = false;
         Storage.StorageFolder = StorageFolder;
     })(Storage = Windows.Storage || (Windows.Storage = {}));
