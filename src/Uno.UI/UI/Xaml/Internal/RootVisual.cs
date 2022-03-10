@@ -5,6 +5,7 @@
 #nullable enable
 
 using System;
+using System.Linq;
 using Uno.UI.Extensions;
 using Windows.Foundation;
 using Windows.UI;
@@ -170,7 +171,7 @@ namespace Uno.UI.Xaml.Core
 		{
 			if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
 			{
-				foreach (var target in capture.Targets)
+				foreach (var target in capture.Targets.ToList())
 				{
 					target.Element.ReleasePointerCapture(capture.Pointer.UniqueId, kinds: PointerCaptureKind.Any);
 				}
