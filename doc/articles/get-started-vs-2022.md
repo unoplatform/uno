@@ -3,7 +3,7 @@
 > This section is covering releases of .NET 6 and Visual Studio 2022. It is a work in progress.
 
 ## Prerequisites
-* [**Visual Studio 2022 7.0 or later**](https://visualstudio.microsoft.com/), with:
+* [**Visual Studio 2022 17.0 or later**](https://visualstudio.microsoft.com/), with:
     * **Universal Windows Platform** workload installed.
 
     ![visual-studio-installer-uwp](Assets/quick-start/vs-install-uwp.png)
