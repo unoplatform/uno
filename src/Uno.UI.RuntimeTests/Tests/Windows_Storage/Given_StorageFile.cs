@@ -323,6 +323,22 @@ namespace Uno.UI.RuntimeTests.Tests
 			}
 		}
 
+		[TestMethod]
+		public async Task When_Open_By_Encoded_URI_With_Space()
+		{ 
+			var uri = new Uri($"ms-appx:///Assets/Asset With Spaces.svg"); 
+
+			try
+			{				 
+				var file = await (await StorageFile.GetFileFromApplicationUriAsync(uri)).OpenReadAsync();
+				Assert.IsNotNull(file);
+			}
+			catch(Exception ex)
+			{
+				Assert.Fail("URI was not decoded " + ex.Message);
+			}
+		}
+
 		private string GetRandomFilePath()
 			=> Path.Combine(ApplicationData.Current.LocalFolder.Path, $"{Guid.NewGuid()}.txt");
 
@@ -332,7 +348,7 @@ namespace Uno.UI.RuntimeTests.Tests
 			Directory.CreateDirectory(path);
 			return path;
 		}
-
+		
 		public async Task<StorageFile> GetFile(string filePath)
 			=> await StorageFile.GetFileFromPathAsync(filePath);
 	}
