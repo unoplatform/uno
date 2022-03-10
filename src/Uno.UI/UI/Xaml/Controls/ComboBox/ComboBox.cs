@@ -444,6 +444,9 @@ namespace Windows.UI.Xaml.Controls
 			var args = new RoutedEventArgs() { OriginalSource = this };
 			if (newIsDropDownOpen)
 			{
+				// Force a refresh of the popup's ItemPresenter
+				Refresh();
+
 				OnDropDownOpened(args);
 
 				RestoreSelectedItem();
