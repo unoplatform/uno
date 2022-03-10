@@ -7,11 +7,12 @@ namespace Windows.Globalization.NumberFormatting
 {
 	public partial class PercentFormatter : INumberFormatterOptions, INumberFormatter, INumberFormatter2, INumberParser, ISignificantDigitsOption, INumberRounderOption, ISignedZeroOption
 	{
+		private const int Pow10 = 2;
+		private const double ParseCoefficient = 0.01;
+
 		private readonly FormatterHelper _formatterHelper;
 		private readonly NumeralSystemTranslator _translator;
 		private readonly string _symbol = CultureInfo.InvariantCulture.NumberFormat.PercentSymbol;
-		private const int _pow10 = 2;
-		private const double _parseCoefficient = 0.01;
 
 		public PercentFormatter()
 		{
@@ -66,7 +67,7 @@ namespace Windows.Globalization.NumberFormatting
 			else
 			{
 				// due to accuracy precision "MultiplyByPow10" is used for multiplication
-				value = value.MultiplyByPow10(_pow10);
+				value = value.MultiplyByPow10(Pow10);
 				formatted = _formatterHelper.FormatDoubleCore(value);
 			}
 
@@ -92,7 +93,7 @@ namespace Windows.Globalization.NumberFormatting
 				return null;
 			}
 
-			return result * _parseCoefficient;
+			return result * ParseCoefficient;
 		}
 	}
 }
