@@ -1168,6 +1168,21 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (updateSelection)
 			{
+				var indicatorTarget = nvi;
+
+				// Move indicator to topmost collapsed parent
+				var parent = GetParentNavigationViewItemForContainer(nvi);
+				while (parent != null)
+				{
+					if (!parent.IsExpanded)
+					{
+						indicatorTarget = parent;
+					}
+					parent = GetParentNavigationViewItemForContainer(parent);
+				}
+				
+				AnimateSelectionChanged(indicatorTarget);
+
 				CloseFlyoutIfRequired(nvi);
 			}
 		}
@@ -1390,7 +1405,10 @@ namespace Microsoft.UI.Xaml.Controls
 				// TODO: Uno specific - remove when #4689 is fixed
 				// This ensures the item is properly initialized and the selected item is displayed
 				nvibImpl.Reinitialize();
-				AnimateSelectionChanged(SelectedItem);
+				if (SelectedItem != null && m_activeIndicator == null)
+				{
+					AnimateSelectionChanged(SelectedItem);
+				}
 #endif
 			}
 		}
