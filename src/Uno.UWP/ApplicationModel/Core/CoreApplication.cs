@@ -64,18 +64,7 @@ public partial class CoreApplication
 
 	public static CoreApplicationView MainView => _currentView;
 
-	public static IReadOnlyList<CoreApplicationView> Views
-	{
-		get
-		{
-			if (_views == null)
-			{
-				_views = new List<CoreApplicationView> { _currentView };
-			}
-
-			return _views;
-		}
-	}
+	public static IReadOnlyList<CoreApplicationView> Views => _views ??= new List<CoreApplicationView>() { _currentView };
 
 	/// <summary>
 	/// This property is kept in sync with the Application.RequestedTheme to enable

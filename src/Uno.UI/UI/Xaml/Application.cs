@@ -274,10 +274,18 @@ namespace Windows.UI.Xaml
 			if (!_isInBackground)
 			{
 				_isInBackground = true;
-				var enteredEventArgs = new EnteredBackgroundEventArgs(null);
+				var enteredEventArgs = new EnteredBackgroundEventArgs(onComplete);
 				EnteredBackground?.Invoke(this, enteredEventArgs);
 				CoreApplication.RaiseEnteredBackground(enteredEventArgs);
-				enteredEventArgs.DeferralManager.EventRaiseCompleted();
+				var completedSynchronously = enteredEventArgs.DeferralManager.EventRaiseCompleted();
+
+				// Asynchronous suspension is not supported
+				if (!completedSynchronously && this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().LogWarning(
+						"Asynchronous entered background completion is not supported yet. " +
+						"Long running operations may be terminated prematurely.");
+				}
 			}
 			else
 			{
@@ -290,10 +298,18 @@ namespace Windows.UI.Xaml
 			if (_isInBackground)
 			{
 				_isInBackground = false;
-				var leavingEventArgs = new LeavingBackgroundEventArgs(null);
+				var leavingEventArgs = new LeavingBackgroundEventArgs(onComplete);
 				LeavingBackground?.Invoke(this, leavingEventArgs);
 				CoreApplication.RaiseLeavingBackground(leavingEventArgs);
-				leavingEventArgs.DeferralManager.EventRaiseCompleted();
+				var completedSynchronously = leavingEventArgs.DeferralManager.EventRaiseCompleted();
+
+				// Asynchronous suspension is not supported
+				if (!completedSynchronously && this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().LogWarning(
+						"Asynchronous leaving background completion is not supported yet. " +
+						"Application may resume before the operation completes.");
+				}
 			}
 			else
 			{

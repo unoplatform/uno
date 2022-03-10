@@ -95,7 +95,6 @@ namespace Windows.UI.Xaml
 			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(0), () =>
 			{
 				Suspended = true;
-				NSApplication.SharedApplication.KeyWindow.PerformClose(null);
 			});
 
 		/// <summary>
@@ -173,7 +172,7 @@ namespace Windows.UI.Xaml
 			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationHiddenNotification, OnEnteredBackground);
 			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationShownNotification, OnLeavingBackground);
 			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationActivatedNotification, OnActivated);
-			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationDeactivatedNotification, OnDeactivated);
+			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationDeactivatedNotification, OnDeactivated);			
 		}
 
 		private void OnEnteredBackground(NSNotification notification)
@@ -181,15 +180,12 @@ namespace Windows.UI.Xaml
 			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
 
 			RaiseEnteredBackground(null);
-
-			RaiseSuspending();
 		}
 
 		private void OnLeavingBackground(NSNotification notification)
 		{
 			RaiseResuming();
-			RaiseLeavingBackground(null);
-			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
+			RaiseLeavingBackground(() => Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true));
 		}
 
 		private void OnActivated(NSNotification notification)

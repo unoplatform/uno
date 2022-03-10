@@ -6,11 +6,17 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 using SkiaSharp;
+using Uno.ApplicationModel.DataTransfer;
+using Uno.Extensions.ApplicationModel.DataTransfer;
+using Uno.Extensions.Networking.Connectivity;
 using Uno.Extensions.Storage.Pickers;
+using Uno.Extensions.System;
+using Uno.Extensions.System.Profile;
+using Uno.Extensions.UI.Core.Preview;
 using Uno.Foundation.Extensibility;
 using Uno.Helpers.Theming;
+using Uno.UI.Core.Preview;
 using Uno.UI.Runtime.Skia.Wpf;
 using Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helper.Theming;
 using Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls;
@@ -18,31 +24,19 @@ using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Core;
 using Windows.Graphics.Display;
-using Windows.System;
 using Windows.Networking.Connectivity;
+using Windows.Storage.Pickers;
+using Windows.System.Profile.Internal;
+using Windows.UI.Core.Preview;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using UnoApplication = Windows.UI.Xaml.Application;
 using WinUI = Windows.UI.Xaml;
-using Uno.UI.Xaml.Controls.Extensions;
-using Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls;
-using Uno.Extensions.System;
-using Uno.Extensions.Networking.Connectivity;
 using WpfApplication = System.Windows.Application;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfControl = System.Windows.Controls.Control;
 using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
-using UnoApplication = Windows.UI.Xaml.Application;
-using Windows.UI.ViewManagement;
-using Uno.UI.Xaml;
-using Uno.UI.Runtime.Skia.Wpf;
-using Uno.ApplicationModel.DataTransfer;
-using Uno.Extensions.ApplicationModel.DataTransfer;
-using Windows.System.Profile.Internal;
-using Uno.Extensions.System.Profile;
-using Windows.Storage.Pickers;
-using Uno.UI.Core.Preview;
-using Uno.Extensions.UI.Core.Preview;
-using Windows.UI.Core.Preview;
 
 namespace Uno.UI.Skia.Platform
 {
@@ -59,6 +53,7 @@ namespace Uno.UI.Skia.Platform
 		private WriteableBitmap bitmap;
 		private bool ignorePixelScaling;
 		private FocusManager? _focusManager;
+		private bool _isVisible = true;
 
 		private DisplayInformation _displayInformation;
 
@@ -150,7 +145,6 @@ namespace Uno.UI.Skia.Platform
 			}
 
 			// Closing should continue, perform suspension.
-			// TODO: Support async suspension
 			UnoApplication.Current.RaiseSuspending();
 		}
 
@@ -165,24 +159,30 @@ namespace Uno.UI.Skia.Platform
 		{
 			var wpfWindow = WpfApplication.Current.MainWindow;
 			var winUIWindow = WinUI.Window.Current;
-			var isVisible = wpfWindow.WindowState != WindowState.Minimized;
-			winUIWindow.OnVisibilityChanged(isVisible);
+			var application = WinUI.Application.Current;
+			var wasVisible = _isVisible;
+
+			_isVisible = wpfWindow.WindowState != WindowState.Minimized;
+
+			if (wasVisible && !_isVisible)
+			{
+				winUIWindow.OnVisibilityChanged(false);
+				application?.RaiseEnteredBackground(null);
+			}
+			else if (!wasVisible && _isVisible)
+			{
+				application?.RaiseLeavingBackground(() => winUIWindow?.OnVisibilityChanged(true));
+			}
 		}
 
 		private void Current_Deactivated(object? sender, EventArgs e)
 		{
 			var winUIWindow = WinUI.Window.Current;
 			winUIWindow?.OnActivated(Windows.UI.Core.CoreWindowActivationState.Deactivated);
-
-			var application = WinUI.Application.Current;
-			application?.RaiseEnteredBackground(null);
 		}
 
 		private void Current_Activated(object? sender, EventArgs e)
 		{
-			var application = WinUI.Application.Current;
-			application?.RaiseLeavingBackground(null);
-
 			var winUIWindow = WinUI.Window.Current;
 			winUIWindow?.OnActivated(Windows.UI.Core.CoreWindowActivationState.CodeActivated);
 		}

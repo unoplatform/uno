@@ -213,8 +213,7 @@ namespace Uno.UI.Runtime.Skia
 			{
 				if (isVisible)
 				{
-					winUIApplication?.RaiseLeavingBackground(null);
-					winUIWindow?.OnVisibilityChanged(true);
+					winUIApplication?.RaiseLeavingBackground(() => winUIWindow?.OnVisibilityChanged(true));					
 				}
 				else
 				{

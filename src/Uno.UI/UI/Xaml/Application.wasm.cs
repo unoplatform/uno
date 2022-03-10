@@ -66,19 +66,17 @@ namespace Windows.UI.Xaml
 			var window = Windows.UI.Xaml.Window.Current;
 			if (isVisible)
 			{
-				var leavingEventArgs = new LeavingBackgroundEventArgs(() => { });
-				application?.LeavingBackground?.Invoke(application, leavingEventArgs);
-				leavingEventArgs.DeferralManager.EventRaiseCompleted();
-				window?.OnVisibilityChanged(true);
-				window?.OnActivated(CoreWindowActivationState.CodeActivated);
+				application?.RaiseLeavingBackground(()=>
+				{
+					window?.OnVisibilityChanged(true);
+					window?.OnActivated(CoreWindowActivationState.CodeActivated);
+				});
 			}
 			else
 			{
 				window?.OnActivated(CoreWindowActivationState.Deactivated);
 				window?.OnVisibilityChanged(false);
-				var enteredEventArgs = new EnteredBackgroundEventArgs(() => { });
-				application?.EnteredBackground?.Invoke(application, enteredEventArgs);
-				enteredEventArgs.DeferralManager.EventRaiseCompleted();
+				application?.RaiseEnteredBackground(null);
 			}
 
 			return 0;
