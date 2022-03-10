@@ -283,6 +283,21 @@ public partial class UIElement : DependencyObject
 	}
 	#endregion
 
+	#region
+
+	partial void OnManipulationModeChanged(ManipulationModes _, ManipulationModes newMode)
+	{
+		if (newMode is ManipulationModes.None or ManipulationModes.System)
+		{
+			ResetStyle("touch-action");
+		}
+		else
+		{
+			// 'none' here means that the browser is not allowed to steal pointer for it's own manipulations
+			SetStyle("touch-action", "none");
+		}
+	}
+
 	#region Capture
 	partial void CapturePointerNative(Pointer pointer)
 	{
