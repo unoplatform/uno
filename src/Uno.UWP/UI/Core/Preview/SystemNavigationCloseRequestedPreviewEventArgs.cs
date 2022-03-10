@@ -7,7 +7,7 @@ namespace Windows.UI.Core.Preview;
 
 public partial class SystemNavigationCloseRequestedPreviewEventArgs
 {
-	public SystemNavigationCloseRequestedPreviewEventArgs(Action<SystemNavigationCloseRequestedPreviewEventArgs> complete)
+	internal SystemNavigationCloseRequestedPreviewEventArgs(Action<SystemNavigationCloseRequestedPreviewEventArgs> complete)
 	{
 		DeferralManager = new(h => new Deferral(h));
 		DeferralManager.Completed += (s, e) => complete?.Invoke(this);
