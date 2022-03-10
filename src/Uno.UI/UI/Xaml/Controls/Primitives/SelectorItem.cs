@@ -387,6 +387,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private protected override void ChangeVisualState(bool useTransitions)
 		{
+			// !!!!!! WARNING: This method is actually not used (at least on skia and wasm) !!!!!!
+			// cf. UpdateCommonStates instead ...
+
 			base.ChangeVisualState(useTransitions);
 
 			if (IsListViewBaseItem)
