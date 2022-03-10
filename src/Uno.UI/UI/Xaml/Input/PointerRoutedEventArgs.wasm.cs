@@ -29,6 +29,7 @@ namespace Windows.UI.Xaml.Input
 			PointerDeviceType pointerType,
 			Point absolutePosition,
 			bool isInContact,
+			bool isInRange,
 			WindowManagerInterop.HtmlPointerButtonsState buttons,
 			WindowManagerInterop.HtmlPointerButtonUpdate buttonUpdate,
 			VirtualKeyModifiers keys,
@@ -45,7 +46,7 @@ namespace Windows.UI.Xaml.Input
 			_wheel = wheel;
 
 			FrameId = ToFrameId(timestamp);
-			Pointer = new Pointer(pointerId, pointerType, isInContact, isInRange: true);
+			Pointer = new Pointer(pointerId, pointerType, isInContact, isInRange);
 			KeyModifiers = keys;
 			OriginalSource = source;
 		}

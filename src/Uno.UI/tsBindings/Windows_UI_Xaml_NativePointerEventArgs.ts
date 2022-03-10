@@ -13,12 +13,13 @@ namespace Windows.UI.Xaml
 		public shift : boolean;
 		public buttons : number;
 		public buttonUpdate : number;
-		public typeStr : string;
+		public deviceType : number;
 		public srcHandle : number;
 		public timestamp : number;
 		public pressure : number;
 		public wheelDeltaX : number;
 		public wheelDeltaY : number;
+		public hasRelatedTarget : boolean;
 		public marshal(pData:number)
 		{
 			Module.setValue(pData + 0, this.HtmlId, "*");
@@ -30,18 +31,13 @@ namespace Windows.UI.Xaml
 			Module.setValue(pData + 36, this.shift, "i32");
 			Module.setValue(pData + 40, this.buttons, "i32");
 			Module.setValue(pData + 44, this.buttonUpdate, "i32");
-			
-			{
-				const stringLength = lengthBytesUTF8(this.typeStr);
-				const pString = Module._malloc(stringLength + 1);
-				stringToUTF8(this.typeStr, pString, stringLength + 1);
-				Module.setValue(pData + 48, pString, "*");
-			}
+			Module.setValue(pData + 48, this.deviceType, "i32");
 			Module.setValue(pData + 52, this.srcHandle, "i32");
 			Module.setValue(pData + 56, this.timestamp, "double");
 			Module.setValue(pData + 64, this.pressure, "double");
 			Module.setValue(pData + 72, this.wheelDeltaX, "double");
 			Module.setValue(pData + 80, this.wheelDeltaY, "double");
+			Module.setValue(pData + 88, this.hasRelatedTarget, "i32");
 		}
 	}
 }

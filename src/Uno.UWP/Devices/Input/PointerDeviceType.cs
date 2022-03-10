@@ -6,6 +6,8 @@ namespace Windows.Devices.Input
 {
 	public enum PointerDeviceType
 	{
+		// WARNING: This enum has a corresponding version in TypeScript!
+
 		/// <summary>
 		/// A touch-enabled device
 		/// </summary>

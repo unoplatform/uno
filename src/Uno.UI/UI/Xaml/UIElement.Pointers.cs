@@ -820,7 +820,9 @@ namespace Windows.UI.Xaml
 					// with an exception for touch which has no notion of "over": if not "in contact" (i.e. no longer touching the screen),
 					// no matter the location, we consider the pointer has out.
 
-					var isOver = (ptArgs.Pointer.PointerDeviceType, ptArgs.Pointer.IsInContact) switch
+					// TODO: Once IsInRange has been implemented on all platform, we can simplify this condition to something like
+					//		 ptArgs.Pointer.IsInRange && ptArgs.IsPointCoordinatesOver(this) (and probably share it on all platforms).
+					var isOver = ptArgs.Pointer.IsInRange && (ptArgs.Pointer.PointerDeviceType, ptArgs.Pointer.IsInContact) switch
 					{
 						(PointerDeviceType.Touch, false) => false,
 						_ => ptArgs.IsPointCoordinatesOver(this),
