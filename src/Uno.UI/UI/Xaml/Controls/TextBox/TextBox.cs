@@ -694,6 +694,26 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
+		public string SelectedText
+		{
+			get => ((string)this.GetValue(TextProperty)).Substring(SelectionStart, SelectionLength);
+			set
+			{
+				if (value == null)
+				{
+					throw new ArgumentNullException();
+				}
+
+				var actual = (string)this.GetValue(TextProperty); 
+				actual = actual.Remove(SelectionStart, SelectionLength);
+				actual = actual.Insert(SelectionStart, value);
+
+				this.SetValue(TextProperty, actual);
+
+				SelectionLength = value.Length;
+			}
+		}
+
 		private protected override void OnIsTabStopChanged(bool oldValue, bool newValue)
 		{
 			base.OnIsTabStopChanged(oldValue, newValue);

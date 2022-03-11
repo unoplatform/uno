@@ -305,5 +305,86 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(textbox.IsEnabled);
 			Assert.AreEqual(contentPresenter.Foreground, foregroundColor);
 		}
+
+		[TestMethod]
+		public async Task When_SelectedText_StartZero()
+		{
+			var textBox = new TextBox
+			{
+				Text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+			};
+
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+
+			textBox.Focus(FocusState.Programmatic);
+
+			textBox.SelectionStart = 0;
+			textBox.SelectionLength = 0;
+			textBox.SelectedText = "1234";
+
+			Assert.AreEqual("1234ABCDEFGHIJKLMNOPQRSTUVWXYZ", textBox.Text);
+		}
+
+		[TestMethod]
+		public async Task When_SelectedText_EndOfText()
+		{
+			var textBox = new TextBox
+			{
+				Text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+			};
+
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+
+			textBox.Focus(FocusState.Programmatic);
+
+			textBox.SelectionStart = 26;
+			textBox.SelectedText = "1234";
+
+			Assert.AreEqual("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234", textBox.Text);
+		}
+
+		[TestMethod]
+		public async Task When_SelectedText_MiddleOfText()
+		{
+			var textBox = new TextBox
+			{
+				Text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+			};
+
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+
+			textBox.Focus(FocusState.Programmatic);
+
+			textBox.SelectionStart = 2;
+			textBox.SelectionLength = 22;
+			textBox.SelectedText = "1234";
+
+			Assert.AreEqual("AB1234YZ", textBox.Text);
+		}
+
+		[TestMethod]
+		public async Task When_SelectedText_AllTextToEmpty()
+		{
+			var textBox = new TextBox
+			{
+				Text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+			};
+
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+
+			textBox.Focus(FocusState.Programmatic);
+
+			textBox.SelectionStart = 0;
+			textBox.SelectionLength = 26;
+			textBox.SelectedText = String.Empty;
+
+			Assert.AreEqual(String.Empty, textBox.Text);
+			Assert.AreEqual(0, textBox.SelectionStart);
+			Assert.AreEqual(0, textBox.SelectionLength);
+		}
 	}
 }
