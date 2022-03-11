@@ -40,12 +40,6 @@ namespace Windows.UI.Xaml
 
 			UpdateHitTest();
 		}
-
-		public Vector3 Translation
-		{
-			get { return _translation; }
-			set { _translation = value; }
-		}
 		
 		internal bool IsChildrenRenderOrderDirty { get; set; } = true;
 
@@ -62,7 +56,6 @@ namespace Windows.UI.Xaml
 				_canvasLeft = (double)args.NewValue;
 			}
 		}
-
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
