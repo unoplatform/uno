@@ -32,10 +32,10 @@ This control works on all platforms and uses the native progress ring control by
 
 ### Native styles
 
-On Android and iOS you can apply native styles to the WUX `ProgressRing` to render it using native progress ring controls on those platforms by applying the `"NativeProgressRingStyle"`, for example:
+On Android and iOS the WUX `ProgressRing` uses native controls by default (`UIActivityIndicatorView` on iOS and `ProgressBar` on Android). To use the UWP rendering on these targets, you can explicitly apply `DefaultWuxProgressRingStyle`:
 
 ```xaml
-<android:ProgressRing Style="{StaticResource NativeProgressRingStyle}" />
+<ProgressRing Style="{StaticResource DefaultWuxProgressRingStyle}" />
 ```
 
 ## Platform-specific usage
