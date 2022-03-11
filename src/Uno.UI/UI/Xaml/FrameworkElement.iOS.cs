@@ -41,12 +41,6 @@ namespace Windows.UI.Xaml
 
 		public override void LayoutSubviews()
 		{
-			if (Visibility == Visibility.Collapsed)
-			{
-				// //Don't layout collapsed views
-				return;
-			}
-
 			try
 			{
 				try
@@ -56,10 +50,11 @@ namespace Windows.UI.Xaml
 					if (IsMeasureDirty)
 					{
 						// Add back the Margin (which is normally 'outside' the view's bounds) - the layouter will subtract it again
-						XamlMeasure(Bounds.Size.Add(Margin));
+						var availableSizeWithMargins = Bounds.Size.Add(Margin);
+						XamlMeasure(availableSizeWithMargins);
 					}
 
-					if (IsArrangeDirty)
+					//if (IsArrangeDirty) // commented until the MEASURE_DIRTY_PATH is properly implemented for iOS
 					{
 						ClearLayoutFlags(LayoutFlag.ArrangeDirty);
 

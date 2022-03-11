@@ -156,11 +156,15 @@ namespace Windows.UI.Xaml
 			var isFirstMeasure = !IsLayoutFlagSet(LayoutFlag.FirstMeasureDone);
 
 			var isDirty =
-				(availableSize != LastAvailableSize)
+				isFirstMeasure
+				|| (availableSize != LastAvailableSize)
 				|| IsMeasureDirty
-				|| isFirstMeasure;
+				|| !FeatureConfiguration.UIElement.UseInvalidateMeasurePath // dirty_path disabled globally
+				|| IsMeasureDirtyPathDisabled;
 
-			if (!isDirty && !IsMeasureDirtyPath)
+			var isMeasureDirtyPath = IsMeasureDirtyPath;
+
+			if (!isDirty && !isMeasureDirtyPath)
 			{
 				return; // Nothing to do
 			}
@@ -168,7 +172,6 @@ namespace Windows.UI.Xaml
 			if (isFirstMeasure)
 			{
 				SetLayoutFlags(LayoutFlag.FirstMeasureDone);
-				isDirty = true;
 			}
 
 			var remainingTries = MaxLayoutIterations;
@@ -178,7 +181,6 @@ namespace Windows.UI.Xaml
 				if (isDirty)
 				{
 					// We must reset the flag **BEFORE** doing the actual measure, so the elements are able to re-invalidate themselves
-
 					ClearLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.MeasureDirtyPath);
 
 					// The dirty flag is explicitly set on this element
@@ -204,46 +206,42 @@ namespace Windows.UI.Xaml
 					break;
 				}
 
-				if (IsMeasureDirtyPath)
+				// isMeasureDirtyPath is always true here
+				ClearLayoutFlags(LayoutFlag.MeasureDirtyPath);
+
+				// The dirty flag is set on one of the descendents:
+				// it will bypass the current element's MeasureOverride()
+				// since it shouldn't produce a different result and it's
+				// just a waste of precious CPU time to call it.
+				var children = GetChildren().GetEnumerator();
+
+				//foreach (var child in children)
+				while(children.MoveNext())
 				{
-					ClearLayoutFlags(LayoutFlag.MeasureDirtyPath);
-
-					// The dirty flag is set on one of the descendents:
-					// it will bypass the current element's MeasureOverride()
-					// since it shouldn't produce a different result and it's
-					// just a waste of precious CPU time to call it.
-					var children = GetChildren().GetEnumerator();
-
-					//foreach (var child in children)
-					while(children.MoveNext())
+					if (children.Current is { IsMeasureOrMeasureDirtyPath: true } child)
 					{
-						var child = children.Current;
 						// If the child is dirty (or is a path to a dirty descendant child),
 						// We're remeasuring it.
 
-						if (child.IsMeasureOrMeasureDirtyPath)
+						var previousDesiredSize = child.DesiredSize;
+						child.Measure(child.LastAvailableSize);
+						if (child.DesiredSize != previousDesiredSize)
 						{
-							var previousDesiredSize = child.DesiredSize;
-							child.Measure(child.LastAvailableSize);
-							if (child.DesiredSize != previousDesiredSize)
-							{
-								isDirty = true;
-								break;
-							}
+							isDirty = true;
+							break;
 						}
 					}
-
-					children.Dispose(); // no "using" operator here to prevent an implicit try-catch on Wasm
-
-					if (!isDirty)
-					{
-						break;
-					}
 				}
-				else
+
+				children.Dispose(); // no "using" operator here to prevent an implicit try-catch on Wasm
+
+				if (isDirty)
 				{
-					break;
+					Console.WriteLine($"{this}: Looping for measure, {remainingTries} tries remaining...");
+					continue;
 				}
+
+				break;
 			}
 		}
 
