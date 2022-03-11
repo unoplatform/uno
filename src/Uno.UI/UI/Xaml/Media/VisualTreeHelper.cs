@@ -20,6 +20,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI.Xaml.Core;
+using Uno.Equality;
 
 #if __IOS__
 using UIKit;
@@ -41,14 +42,22 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class VisualTreeHelper
 	{
-		private static readonly List<WeakReference<IPopup>> _openPopups = new List<WeakReference<IPopup>>();
+		private static readonly WeakReferenceEqualityComparer<IPopup> _openPopupsEqualityComparer = new();
+		private static readonly List<WeakReference<IPopup>> _openPopups = new();
 
 		internal static IDisposable RegisterOpenPopup(IPopup popup)
 		{
-			var weakPopup = new WeakReference<IPopup>(popup);
+			var popupRegistration = _openPopups.FirstOrDefault(
+				p => WeakReferenceExtensions.GetTarget(p) == popup);
 
-			_openPopups.AddDistinct(weakPopup);
-			return Disposable.Create(() => _openPopups.Remove(weakPopup));
+			if (popupRegistration is null)
+			{
+				popupRegistration = new WeakReference<IPopup>(popup);
+
+				_openPopups.Add(popupRegistration);
+			}
+
+			return Disposable.Create(() => _openPopups.Remove(popupRegistration));
 		}
 
 		[Uno.NotImplemented]
