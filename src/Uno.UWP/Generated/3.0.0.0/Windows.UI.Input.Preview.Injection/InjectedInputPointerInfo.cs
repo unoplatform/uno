@@ -2,26 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input.Preview.Injection
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial struct InjectedInputPointerInfo 
 	{
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.InjectedInputPointerInfo()
-		#if false
-		public  uint PointerId;
-		#endif
-		#if false
-		public  global::Windows.UI.Input.Preview.Injection.InjectedInputPointerOptions PointerOptions;
-		#endif
-		#if false
-		public  global::Windows.UI.Input.Preview.Injection.InjectedInputPoint PixelLocation;
-		#endif
-		#if false
-		public  uint TimeOffsetInMilliseconds;
-		#endif
-		#if false
-		public  ulong PerformanceCount;
-		#endif
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.PointerId
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.PointerOptions
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.PixelLocation
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.TimeOffsetInMilliseconds
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo.PerformanceCount
 	}
 }

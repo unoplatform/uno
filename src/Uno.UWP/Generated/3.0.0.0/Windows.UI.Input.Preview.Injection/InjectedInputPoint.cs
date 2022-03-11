@@ -2,17 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input.Preview.Injection
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial struct InjectedInputPoint 
 	{
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPoint.InjectedInputPoint()
-		#if false
-		public  int PositionX;
-		#endif
-		#if false
-		public  int PositionY;
-		#endif
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPoint.PositionX
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPoint.PositionY
 	}
 }

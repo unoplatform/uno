@@ -7,26 +7,8 @@ namespace Windows.System.Profile
 	#endif
 	public static partial class AnalyticsInfo 
 	{
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public static string DeviceForm
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AnalyticsInfo.DeviceForm is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.System.Profile.AnalyticsVersionInfo VersionInfo
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AnalyticsVersionInfo AnalyticsInfo.VersionInfo is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property DeviceForm
+		// Skipping already declared property VersionInfo
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyDictionary<string, string>> GetSystemPropertiesAsync( global::System.Collections.Generic.IEnumerable<string> attributeNames)
