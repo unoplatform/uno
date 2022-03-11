@@ -838,7 +838,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private static readonly char[] ResourceInvalidCharacters = new[] { '.', '-' };
+		private static readonly char[] ResourceInvalidCharacters = new[] { '.', '-', ':' };
 
 		private static string? SanitizeResourceName(string? name)
 		{
@@ -3535,6 +3535,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						CurrentScope.XBindExpressions.Add(bind);
 
 						var eventTarget = XBindExpressionParser.RestoreSinglePath(bind.Members.First().Value?.ToString());
+
+						if(eventTarget == null)
+						{
+							throw new InvalidOperationException("x:Bind event path cannot by empty");
+						}
+
+						var parts = eventTarget.Split('.').ToList();
+						var isStaticTarget = parts.FirstOrDefault()?.Contains(":") ?? false;
+
+						eventTarget = RewriteNamespaces(eventTarget);
+
 						// x:Bind to second-level method generates invalid code
 						// sanitizing member.Member.Name so that "ViewModel.SearchBreeds" becomes "ViewModel_SearchBreeds"
 						var sanitizedEventTarget = SanitizeResourceName(eventTarget);
@@ -3547,11 +3558,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									ITypeSymbol? currentType = sourceType;
 
-									var parts = eventTarget.Split('.');
-
-									for (var i = 0; i < parts.Length - 1; i++)
+									if (isStaticTarget)
 									{
-										var next = currentType.GetAllMembersWithName(parts[i]).FirstOrDefault();
+										// First part is a type for static method binding and should
+										// overide the original source type
+										currentType = GetType(RewriteNamespaces(parts[0]));
+										parts.RemoveAt(0);
+									}
+
+									for (var i = 0; i < parts.Count - 1; i++)
+									{
+										var next = currentType.GetAllMembersWithName(RewriteNamespaces(parts[i])).FirstOrDefault();
 
 										currentType = next switch
 										{
@@ -3623,7 +3640,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							//
 							writer.AppendLineInvariant($"var {member.Member.Name}_{sanitizedEventTarget}_That = {targetContext.weakReference};");
 
-							writer.AppendLineInvariant($"/* first level targetMethod:{targetContext.targetMethod} */ {closureName}.{member.Member.Name} += ({parms}) => ({targetContext.target})?.{eventTarget}({xBindParams});");
+							writer.AppendLineInvariant($"/* first level targetMethod:{targetContext.targetMethod} */ {closureName}.{member.Member.Name} += ({parms}) => ");
+
+							if (isStaticTarget)
+							{
+								writer.AppendLineInvariant($"{eventTarget}({xBindParams});");
+							}
+							else
+							{
+								writer.AppendLineInvariant($"({targetContext.target})?.{eventTarget}({xBindParams});");
+							}
 						}
 
 						writer.AppendLineInvariant($";");

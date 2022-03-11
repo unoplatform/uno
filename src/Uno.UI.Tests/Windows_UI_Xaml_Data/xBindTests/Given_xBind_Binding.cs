@@ -737,6 +737,29 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
+		public void When_Static_Event()
+		{
+			var SUT = new Binding_Static_Event();
+
+			SUT.ForceLoaded();
+
+			var checkBox = SUT.FindName("myCheckBox") as CheckBox;
+
+			Assert.AreEqual(0, Binding_Static_Event_Class.CheckedRaised);
+			Assert.AreEqual(0, Binding_Static_Event_Class.UncheckedRaised);
+
+			checkBox.IsChecked = true;
+
+			Assert.AreEqual(1, Binding_Static_Event_Class.CheckedRaised);
+			Assert.AreEqual(0, Binding_Static_Event_Class.UncheckedRaised);
+
+			checkBox.IsChecked = false;
+
+			Assert.AreEqual(1, Binding_Static_Event_Class.CheckedRaised);
+			Assert.AreEqual(1, Binding_Static_Event_Class.UncheckedRaised);
+		}
+
+		[TestMethod]
 		public void When_Event_Nested()
 		{
 			var SUT = new Binding_Event_Nested();
@@ -784,6 +807,33 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			Assert.AreEqual(1, dc.CheckedRaised);
 			Assert.AreEqual(1, dc.UncheckedRaised);
+		}
+
+
+		[TestMethod]
+		public void When_Static_Event_DataTemplate()
+		{
+			var SUT = new Binding_Static_Event_DataTemplate();
+
+			SUT.ForceLoaded();
+
+			var root = SUT.FindName("root") as FrameworkElement;
+			root.DataContext = new object();
+
+			var checkBox = SUT.FindName("myCheckBox") as CheckBox;
+
+			Assert.AreEqual(0, Binding_Static_Event_DataTemplate_Model_Class.CheckedRaised);
+			Assert.AreEqual(0, Binding_Static_Event_DataTemplate_Model_Class.UncheckedRaised);
+
+			checkBox.IsChecked = true;
+
+			Assert.AreEqual(1, Binding_Static_Event_DataTemplate_Model_Class.CheckedRaised);
+			Assert.AreEqual(0, Binding_Static_Event_DataTemplate_Model_Class.UncheckedRaised);
+
+			checkBox.IsChecked = false;
+
+			Assert.AreEqual(1, Binding_Static_Event_DataTemplate_Model_Class.CheckedRaised);
+			Assert.AreEqual(1, Binding_Static_Event_DataTemplate_Model_Class.UncheckedRaised);
 		}
 
 		[TestMethod]
