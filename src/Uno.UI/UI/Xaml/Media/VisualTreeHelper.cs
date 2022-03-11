@@ -144,6 +144,7 @@ namespace Windows.UI.Xaml.Media
 			return _openPopups
 				.Select(WeakReferenceExtensions.GetTarget)
 				.OfType<Popup>()
+				.Distinct()
 				.ToList()
 				.AsReadOnly();
 		}
@@ -153,6 +154,7 @@ namespace Windows.UI.Xaml.Media
 			return _openPopups
 				.Select(WeakReferenceExtensions.GetTarget)
 				.OfType<Popup>()
+				.Distinct()
 				.Where(p => p.IsForFlyout)
 				.ToList().AsReadOnly();
 		}

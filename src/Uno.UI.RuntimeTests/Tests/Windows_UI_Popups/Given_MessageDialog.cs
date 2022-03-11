@@ -10,16 +10,14 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
+using System.Linq;
+using Uno.UI.WinRT.Extensions.UI.Popups;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 {
 	[TestClass]
 	public class Given_MessageDialog
 	{
-#if !__WASM__
-#if __SKIA__
-		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
-#endif
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task Should_Close_Open_Flyouts()
@@ -28,23 +26,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 			var flyout = new Flyout();
 			FlyoutBase.SetAttachedFlyout(button, flyout);
 			WindowHelper.WindowContent = button;
-			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopups(Window.Current).Count);
+			Assert.AreEqual(0, GetNonMessageDialogPopupsCount());
 			FlyoutBase.ShowAttachedFlyout(button);
-			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopups(Window.Current).Count);
+			Assert.AreEqual(1, GetNonMessageDialogPopupsCount());
 			var messageDialog = new MessageDialog("Should_Close_Open_Popups");
 			var asyncOperation = messageDialog.ShowAsync();
-			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopups(Window.Current).Count);
+			Assert.AreEqual(0, GetNonMessageDialogPopupsCount());
 			asyncOperation.Cancel();
 		}
 
-#if __SKIA__
-		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
-#endif
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task Should_Not_Close_Open_ContentDialogs()
 		{
-			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopups(Window.Current).Count);
+			Assert.AreEqual(0, GetNonMessageDialogPopupsCount());
 
 			var contentDialog = new ContentDialog
 			{
@@ -54,21 +49,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 
 			contentDialog.ShowAsync();
 
-			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopups(Window.Current).Count);
+			Assert.AreEqual(1, GetNonMessageDialogPopupsCount());
 
 			var messageDialog = new MessageDialog("Hello");
 			var asyncOperation = messageDialog.ShowAsync();
-			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopups(Window.Current).Count);
+			Assert.AreEqual(1, GetNonMessageDialogPopupsCount());
 			contentDialog.Hide();
 			asyncOperation.Cancel();
 		}
-#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __WASM__ || __SKIA__
-		[Ignore("Message dialog not implemented  https://github.com/unoplatform/uno/issues/7271")]
-#endif
 		public async Task When_Cancel_Then_CloseDialog()
 		{
 			var messageDialog = new MessageDialog("When_Cancel_Then_CloseDialog");
@@ -87,6 +78,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(AsyncStatus.Canceled, asyncOperation.Status);
+		}
+
+		private int GetNonMessageDialogPopupsCount()
+		{
+			var popups = VisualTreeHelper.GetOpenPopups(Window.Current);
+#if HAS_UNO
+			return popups.Count(p => p.Child is not MessageDialogContentDialog);
+#else
+			return popups.Count();
+#endif
 		}
 	}
 }

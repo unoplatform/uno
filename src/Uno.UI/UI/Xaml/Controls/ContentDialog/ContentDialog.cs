@@ -227,7 +227,14 @@ namespace Windows.UI.Xaml.Controls
 
 				_tcs = new TaskCompletionSource<ContentDialogResult>();
 
-				return await _tcs.Task;
+				using (ct.Register(() =>
+				{
+					_tcs.TrySetCanceled();
+					Hide();
+				}))
+				{
+					return await _tcs.Task;
+				}
 			});
 
 		public event TypedEventHandler<ContentDialog, ContentDialogClosedEventArgs> Closed;
