@@ -1,4 +1,4 @@
-﻿using Uno.Extensions;
+using Uno.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,7 +15,7 @@ using System.Diagnostics;
 namespace Windows.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = "Children")]
-	public sealed partial class Storyboard : Timeline, ITimeline, IAdditionalChildrenProvider, IThemeChangeAware, ITimelineListener
+	public sealed partial class Storyboard : Timeline, ITimeline, IAdditionalChildrenProvider, ITimelineListener
 	{
 		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private EventActivity _traceActivity;
@@ -364,7 +364,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		IEnumerable<DependencyObject> IAdditionalChildrenProvider.GetAdditionalChildObjects() => Children;
 
-		void IThemeChangeAware.OnThemeChanged()
+		private protected override void OnThemeChanged()
 		{
 			if (State == TimelineState.Filling)
 			{
