@@ -9,7 +9,7 @@
 namespace Windows.UI.Xaml {
 	import WindowManager = Uno.UI.WindowManager;
 	import HtmlEventDispatchResult = Uno.UI.HtmlEventDispatchResult;
-	import PointerDeviceType = Devices.Input.PointerDeviceType;
+	import PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 
 	export enum NativePointerEvent {
 		pointerover = 1,
