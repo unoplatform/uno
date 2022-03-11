@@ -11,7 +11,9 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using System.Linq;
+#if HAS_UNO
 using Uno.UI.WinRT.Extensions.UI.Popups;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 {

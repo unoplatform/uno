@@ -231,7 +231,11 @@ namespace Windows.UI.Xaml.Controls
 				{
 					_tcs.TrySetCanceled();
 					Hide();
-				}))
+				}
+#if !__WASM__ // WASM lacks threading support
+					, useSynchronizationContext: true
+#endif
+					))
 				{
 					return await _tcs.Task;
 				}
