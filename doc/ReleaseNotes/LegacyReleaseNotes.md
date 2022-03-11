@@ -215,7 +215,7 @@
 * [#1559] [#1167] Wasm: make the IsEnabled property inheritable.
 * Full support of pointer events cf. [routed events documentation](../articles/features/routed-events.md)
 * Add support of manipulation events cf. [routed events documentation](../articles/features/routed-events.md)
-* Update CheckBox style to 10.0.18362
+* Update CheckBox style to 10.0.17763
 * Adds the support for `AutomationProperties.AutomationId`
 * [#1328](https://github.com/unoplatform/uno/issues/1328) Basic ProgressRing implementation for WASM
 * Add support for `Windows.UI.Xaml.Controls.Primitives.LayoutInformation.GetAvailableSize`
@@ -590,7 +590,7 @@
 
 ### Features
 * [Wasm] Improve general performance and memory pressure by removing Javascript interop evaluations.
-* Add support for Windows 10 SDK 18362 (1809)
+* Add support for Windows 10 SDK 17763 (1809)
 * Improve the Uno.UI solution memory consumption for Android targets
 * Add support for GridLength conversion from double
 * Raise exceptions on missing styles in debug configuration

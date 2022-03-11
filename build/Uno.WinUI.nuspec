@@ -614,6 +614,9 @@
 	<file src="uno.winui.win.targets" target="buildTransitive\uap10.0.16299\uno.winui.targets" />
 	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\uap10.0.16299" />
 
+	<file src="uno.winui.win.targets" target="buildTransitive\uap10.0.17763\uno.winui.targets" />
+	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\uap10.0.17763" />
+
 	<file src="uno.winui.win.targets" target="buildTransitive\uap10.0.18362\uno.winui.targets" />
 	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\uap10.0.18362" />
 
