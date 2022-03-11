@@ -29,12 +29,12 @@ namespace UITests.Windows_UI_Core
 		private async void CloseRequestedTests_CloseRequested(object sender, SystemNavigationCloseRequestedPreviewEventArgs e)
 		{
 			var deferral = e.GetDeferral();
-			var dialog = new MessageDialog("Are you sure you want to exit?", "Exit");
-			var confirmCommand = new UICommand("Yes");
-			var cancelCommand = new UICommand("No");
-			dialog.Commands.Add(confirmCommand);
-			dialog.Commands.Add(cancelCommand);
-			if (await dialog.ShowAsync() == cancelCommand)
+			var dialog = new ContentDialog();
+			dialog.Title = "Exit";
+			dialog.Content = "Are you sure you want to exit?";
+			dialog.PrimaryButtonText = "Yes";
+			dialog.SecondaryButtonText = "No";
+			if (await dialog.ShowAsync() != ContentDialogResult.Primary)
 			{
 				//cancel close by handling the event
 				e.Handled = true;

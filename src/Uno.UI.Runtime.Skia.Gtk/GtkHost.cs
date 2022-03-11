@@ -1,31 +1,32 @@
 ﻿using System;
 using System.IO;
-using Windows.System;
-using Uno.Extensions;
-using Uno.Foundation.Extensibility;
-using Uno.Helpers.Theming;
-using Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.Theming;
-using Windows.UI.Xaml;
-using WUX = Windows.UI.Xaml;
-using Uno.UI.Xaml.Controls.Extensions;
-using Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls;
 using Gtk;
-using Uno.UI.Runtime.Skia.GTK.Extensions.Helpers;
-using Uno.Extensions.System;
-using Uno.UI.Runtime.Skia.GTK.Extensions.System;
-using Uno.UI.Runtime.Skia.GTK.UI.Core;
-using Uno.Extensions.Storage.Pickers;
-using Windows.Storage.Pickers;
-using Windows.UI.ViewManagement;
-using Windows.Foundation;
 using Uno.ApplicationModel.DataTransfer;
-using Uno.UI.Runtime.Skia.GTK.Extensions.ApplicationModel.DataTransfer;
+using Uno.Extensions;
+using Uno.Extensions.Storage.Pickers;
+using Uno.Extensions.System;
+using Uno.Extensions.UI.Core.Preview;
+using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
-using Windows.System.Profile.Internal;
+using Uno.Helpers.Theming;
+using Uno.UI.Core.Preview;
+using Uno.UI.Runtime.Skia.GTK.Extensions.ApplicationModel.DataTransfer;
+using Uno.UI.Runtime.Skia.GTK.Extensions.Helpers;
+using Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.Theming;
+using Uno.UI.Runtime.Skia.GTK.Extensions.System;
+using Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia.GTK.System.Profile;
-using Uno.UI.Runtime.Skia.Helpers;
-using Uno.UI.Runtime.Skia.Helpers.Dpi;
+using Uno.UI.Runtime.Skia.GTK.UI.Core;
+using Uno.UI.Xaml.Controls.Extensions;
+using Windows.Foundation;
+using Windows.Storage.Pickers;
+using Windows.System.Profile.Internal;
+using Windows.UI.Core.Preview;
+using Windows.UI.ViewManagement;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using UnoApplication = Windows.UI.Xaml.Application;
+using WUX = Windows.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -70,6 +71,7 @@ namespace Uno.UI.Runtime.Skia
 			ApiExtensibility.Register(typeof(IClipboardExtension), o => new ClipboardExtensions(o));
 			ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), o => new FileSavePickerExtension(o));
 			ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), o => new AnalyticsInfoExtension());
+			ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), o => new SystemNavigationManagerPreviewExtension(_window));
 
 			_isDispatcherThread = true;
 			_window = new Gtk.Window("Uno Host");
@@ -91,10 +93,7 @@ namespace Uno.UI.Runtime.Skia
 				Cursors.Reload();
 			};
 
-			_window.DeleteEvent += delegate
-			{
-				Gtk.Application.Quit();
-			};
+			_window.DeleteEvent += WindowClosing;
 
 			void Dispatch(System.Action d)
 			{
@@ -166,6 +165,27 @@ namespace Uno.UI.Runtime.Skia
 			Gtk.Application.Run();
 		}
 
+		private void WindowClosing(object sender, DeleteEventArgs args)
+		{
+			var manager = SystemNavigationManagerPreview.GetForCurrentView();
+			if (!manager.HasConfirmedClose)
+			{
+				if (!manager.RequestAppClose())
+				{
+					// App closing was prevented, handle event
+					args.RetVal = true;
+					return;
+				}
+			}
+
+			// Closing should continue, perform suspension.
+			UnoApplication.Current.RaiseSuspending();
+
+			// All prerequisites passed, can safely close.
+			args.RetVal = false;
+			Gtk.Main.Quit();
+		}
+
 		private void OnWindowStateChanged(object o, WindowStateEventArgs args)
 		{
 			var winUIApplication = WUX.Application.Current;
@@ -193,13 +213,12 @@ namespace Uno.UI.Runtime.Skia
 			{
 				if (isVisible)
 				{
-					winUIApplication?.OnLeavingBackground();
-					winUIWindow?.OnVisibilityChanged(true);
+					winUIApplication?.RaiseLeavingBackground(() => winUIWindow?.OnVisibilityChanged(true));					
 				}
 				else
 				{
 					winUIWindow?.OnVisibilityChanged(false);
-					winUIApplication?.OnEnteredBackground();
+					winUIApplication?.RaiseEnteredBackground(null);
 				}
 			}
 

@@ -269,26 +269,57 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal void OnEnteredBackground()
+		internal void RaiseEnteredBackground(Action onComplete)
 		{
 			if (!_isInBackground)
 			{
 				_isInBackground = true;
-				EnteredBackground?.Invoke(this, new EnteredBackgroundEventArgs());
+				var enteredEventArgs = new EnteredBackgroundEventArgs(onComplete);
+				EnteredBackground?.Invoke(this, enteredEventArgs);
+				CoreApplication.RaiseEnteredBackground(enteredEventArgs);
+				var completedSynchronously = enteredEventArgs.DeferralManager.EventRaiseCompleted();
+
+				// Asynchronous suspension is not supported
+				if (!completedSynchronously && this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().LogWarning(
+						"Asynchronous entered background completion is not supported yet. " +
+						"Long running operations may be terminated prematurely.");
+				}
+			}
+			else
+			{
+				onComplete?.Invoke();
 			}
 		}
 
-		internal void OnLeavingBackground()
+		internal void RaiseLeavingBackground(Action onComplete)
 		{
 			if (_isInBackground)
 			{
 				_isInBackground = false;
-				LeavingBackground?.Invoke(this, new LeavingBackgroundEventArgs());
+				var leavingEventArgs = new LeavingBackgroundEventArgs(onComplete);
+				LeavingBackground?.Invoke(this, leavingEventArgs);
+				CoreApplication.RaiseLeavingBackground(leavingEventArgs);
+				var completedSynchronously = leavingEventArgs.DeferralManager.EventRaiseCompleted();
+
+				// Asynchronous suspension is not supported
+				if (!completedSynchronously && this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().LogWarning(
+						"Asynchronous leaving background completion is not supported yet. " +
+						"Application may resume before the operation completes.");
+				}
+			}
+			else
+			{
+				onComplete?.Invoke();
 			}
 		}
 
-		internal void OnResuming()
+		internal void RaiseResuming()
 		{
+			Resuming?.Invoke(null, null);
 			CoreApplication.RaiseResuming();
 
 			OnResumingPartial();
@@ -296,15 +327,34 @@ namespace Windows.UI.Xaml
 
 		partial void OnResumingPartial();
 
-		internal void OnSuspending()
+		internal void RaiseSuspending()
 		{
-			var suspendingEventArgs = new SuspendingEventArgs(new SuspendingOperation(DateTime.Now.AddSeconds(30)));
-			CoreApplication.RaiseSuspending(suspendingEventArgs);
+			var suspendingOperation = CreateSuspendingOperation();
+			var suspendingEventArgs = new SuspendingEventArgs(suspendingOperation);
 
-			OnSuspendingPartial();
+			Suspending?.Invoke(this, suspendingEventArgs);
+			CoreApplication.RaiseSuspending(suspendingEventArgs);			
+			var completedSynchronously = suspendingOperation.DeferralManager.EventRaiseCompleted();
+
+#if !__IOS__ && !__ANDROID__
+			// Asynchronous suspension is not supported on all targets, warn the user
+			if (!completedSynchronously && this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning(
+					"This platform does not support asynchronous Suspending deferral. " +
+					"Code executed after the of the method called by Suspending may not get executed.");
+			}
+#endif
 		}
 
-		partial void OnSuspendingPartial();
+#if !__IOS__ && !__ANDROID__ && !__MACOS__
+		/// <summary>
+		/// On platforms which don't support asynchronous suspension we indicate that with immediate
+		/// deadline and warning in logs.
+		/// </summary>
+		private SuspendingOperation CreateSuspendingOperation() =>
+			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(0), null);
+#endif
 
 		protected virtual void OnWindowCreated(global::Windows.UI.Xaml.WindowCreatedEventArgs args)
 		{

@@ -91,18 +91,11 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		partial void OnSuspendingPartial()
-		{
-			var operation = new SuspendingOperation(DateTime.Now.AddSeconds(30), () =>
+		private SuspendingOperation CreateSuspendingOperation() =>
+			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(0), () =>
 			{
 				Suspended = true;
-				NSApplication.SharedApplication.KeyWindow.PerformClose(null);
 			});
-
-			Suspending?.Invoke(this, new SuspendingEventArgs(operation));
-
-			operation.EventRaiseCompleted();
-		}
 
 		/// <summary>
 		/// This method enables UI Tests to get the output path
@@ -179,21 +172,20 @@ namespace Windows.UI.Xaml
 			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationHiddenNotification, OnEnteredBackground);
 			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationShownNotification, OnLeavingBackground);
 			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationActivatedNotification, OnActivated);
-			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationDeactivatedNotification, OnDeactivated);
+			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationDeactivatedNotification, OnDeactivated);			
 		}
 
 		private void OnEnteredBackground(NSNotification notification)
 		{
 			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
-			EnteredBackground?.Invoke(this, new EnteredBackgroundEventArgs());
 
-			OnSuspending();
+			RaiseEnteredBackground(null);
 		}
 
 		private void OnLeavingBackground(NSNotification notification)
 		{
-			LeavingBackground?.Invoke(this, new LeavingBackgroundEventArgs());
-			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
+			RaiseResuming();
+			RaiseLeavingBackground(() => Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true));
 		}
 
 		private void OnActivated(NSNotification notification)

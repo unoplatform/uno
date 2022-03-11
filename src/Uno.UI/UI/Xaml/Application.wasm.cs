@@ -66,15 +66,17 @@ namespace Windows.UI.Xaml
 			var window = Windows.UI.Xaml.Window.Current;
 			if (isVisible)
 			{
-				application?.LeavingBackground?.Invoke(application, new LeavingBackgroundEventArgs());
-				window?.OnVisibilityChanged(true);
-				window?.OnActivated(CoreWindowActivationState.CodeActivated);
+				application?.RaiseLeavingBackground(()=>
+				{
+					window?.OnVisibilityChanged(true);
+					window?.OnActivated(CoreWindowActivationState.CodeActivated);
+				});
 			}
 			else
 			{
 				window?.OnActivated(CoreWindowActivationState.Deactivated);
 				window?.OnVisibilityChanged(false);
-				application?.EnteredBackground?.Invoke(application, new EnteredBackgroundEventArgs());
+				application?.RaiseEnteredBackground(null);
 			}
 
 			return 0;
@@ -134,21 +136,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal static void DispatchSuspending()
 		{
-			Current?.OnSuspending();
-		}
-
-		partial void OnSuspendingPartial()
-		{
-			var completed = false;
-			var operation = new SuspendingOperation(DateTime.Now.AddSeconds(0), () => completed = true);
-
-			Suspending?.Invoke(this, new SuspendingEventArgs(operation));
-			operation.EventRaiseCompleted();
-
-			if (!completed && this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().LogWarning($"This platform does not support asynchronous Suspending deferral. Code executed after the of the method called by Suspending may not get executed.");
-			}
+			Current?.RaiseSuspending();
 		}
 
 		private void ObserveApplicationVisibility()

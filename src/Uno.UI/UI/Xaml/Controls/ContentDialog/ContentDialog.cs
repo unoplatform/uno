@@ -148,16 +148,9 @@ namespace Windows.UI.Xaml.Controls
 
 			Closing?.Invoke(this, closingArgs);
 
-			if (!closingArgs.IsDeferred)
-			{
-				Complete(closingArgs);
-			}
-			else
-			{
-				closingArgs.EventRaiseCompleted();
-			}
+			var completedSynchronously = closingArgs.DeferralManager.EventRaiseCompleted();
 
-			return !closingArgs.Cancel;
+			return completedSynchronously && !closingArgs.Cancel;
 		}
 
 		protected override void OnApplyTemplate()

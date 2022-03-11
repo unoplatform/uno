@@ -3,6 +3,7 @@ using System;
 using Android.Content.Res;
 using Android.OS;
 using Uno.UI.Extensions;
+using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -35,10 +36,12 @@ namespace Windows.UI.Xaml
 			Resuming?.Invoke(null, null);
 		}
 
-		partial void OnSuspendingPartial()
-		{
-			Suspending?.Invoke(this, new Windows.ApplicationModel.SuspendingEventArgs(new Windows.ApplicationModel.SuspendingOperation(DateTime.Now.AddSeconds(30))));
-		}
+		/// <remarks>
+		/// The 5 second timeout seems to be the safest timeout for suspension activities.
+		/// See - https://stackoverflow.com/a/3987733/732221
+		/// </remarks>
+		private SuspendingOperation CreateSuspendingOperation() =>
+			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(5), null);
 
 		public void Exit()
 		{

@@ -9,7 +9,6 @@ using ObjCRuntime;
 using Windows.Graphics.Display;
 using Uno.UI.Services;
 using Uno.Extensions;
-
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 
@@ -129,17 +128,8 @@ namespace Windows.UI.Xaml
 			_preventSecondaryActivationHandling = false;
 		}
 
-		partial void OnSuspendingPartial()
-		{
-			var operation = new SuspendingOperation(DateTime.Now.AddSeconds(10));
-
-			Suspending?.Invoke(this, new SuspendingEventArgs(operation));
-
-			_suspended = true;
-		}
-
-		public override void WillEnterForeground(UIApplication application)
-			=> OnResuming();
+		private SuspendingOperation CreateSuspendingOperation() =>
+			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(10), () => _suspended = true);
 
 		partial void OnResumingPartial()
 		{
@@ -233,15 +223,14 @@ namespace Windows.UI.Xaml
 		private void OnEnteredBackground(NSNotification notification)
 		{
 			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
-			EnteredBackground?.Invoke(this, new EnteredBackgroundEventArgs());
 
-			OnSuspending();
+			RaiseEnteredBackground(() => RaiseSuspending());
 		}
 
 		private void OnLeavingBackground(NSNotification notification)
-		{			
-			LeavingBackground?.Invoke(this, new LeavingBackgroundEventArgs());
-			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
+		{
+			RaiseResuming();
+			RaiseLeavingBackground(() => Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true));
 		}
 
 		private void OnActivated(NSNotification notification)

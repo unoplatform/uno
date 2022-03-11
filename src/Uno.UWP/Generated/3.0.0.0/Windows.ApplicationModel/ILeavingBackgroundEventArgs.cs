@@ -7,7 +7,7 @@ namespace Windows.ApplicationModel
 	#endif
 	public  partial interface ILeavingBackgroundEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false || false || false || false || false || false || false
 		global::Windows.Foundation.Deferral GetDeferral();
 		#endif
 	}

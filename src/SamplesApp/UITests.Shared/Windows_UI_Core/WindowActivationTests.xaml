@@ -14,6 +14,7 @@
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 		<StackPanel Padding="12" Spacing="8">
+			<ToggleSwitch IsOn="{x:Bind Model.SimulateDeferrals, Mode=TwoWay}" OnContent="Simulate deferrals" OffContent="Simulate deferrals" />
 			<TextBlock Text="CoreWindow activation state" />
 			<TextBlock FontSize="30" Text="{x:Bind Model.CoreWindowActivationState, Mode=OneWay}" />
 			<TextBlock Text="CoreWindow activation mode" />
@@ -23,6 +24,7 @@
 			<TextBlock Text="Last change" />
 			<TextBlock Text="{x:Bind Model.ChangeTime, Mode=OneWay}" />
 			<Button Command="{x:Bind Model.ClearHistoryCommand}"  Content="Clear event history" />
+			<Button Command="{x:Bind Model.CopyToClipboardCommand}"  Content="Copy to clipboard" />
 		</StackPanel>
 		<ListView Grid.Row="1" ItemsSource="{x:Bind Model.History, Mode=OneWay}" />
 	</Grid>

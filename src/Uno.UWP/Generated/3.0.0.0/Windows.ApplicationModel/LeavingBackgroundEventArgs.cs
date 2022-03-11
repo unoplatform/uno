@@ -7,13 +7,13 @@ namespace Windows.ApplicationModel
 	#endif
 	public  partial class LeavingBackgroundEventArgs : global::Windows.ApplicationModel.ILeavingBackgroundEventArgs
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
 			throw new global::System.NotImplementedException("The member Deferral LeavingBackgroundEventArgs.GetDeferral() is not implemented in Uno.");
 		}
-		#endif
+#endif
 		// Processing: Windows.ApplicationModel.ILeavingBackgroundEventArgs
 	}
 }

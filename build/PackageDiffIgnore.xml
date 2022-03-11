@@ -8681,6 +8681,15 @@
 			<Member
 				fullName="System.Boolean Windows.UI.Xaml.FrameworkElement.get_StretchAffectsMeasure()"
 				reason="False positive: added in an internal interface" />
+			<Member
+				fullName="System.Void Windows.UI.Core.Preview.SystemNavigationManagerPreview..ctor()"
+				reason="Not public in UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs..ctor()"
+				reason="Not public in UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs..ctor(System.Action`1&lt;Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs&gt; complete)"
+				reason="Should not be public" />
 		</Methods>
 	  	<Properties>
 	 	</Properties>
