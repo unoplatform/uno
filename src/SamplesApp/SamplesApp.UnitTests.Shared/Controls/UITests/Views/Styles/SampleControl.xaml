@@ -30,7 +30,7 @@
 							<StackPanel Background="{StaticResource Color08Brush}"
 													u:StarStackPanel.Size="Auto"
 													Padding="10,0">
-								<TextBlock Text="DESCRIPTION"
+								<TextBlock Text="Description"
 											 Style="{StaticResource Typo03}"
 											 Margin="0,10,0,5" />
 								<TextBlock Text="{TemplateBinding SampleDescription}"

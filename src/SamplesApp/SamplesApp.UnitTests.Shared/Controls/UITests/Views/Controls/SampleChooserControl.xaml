@@ -44,14 +44,9 @@
 			<!-- Styles -->
 			<Style x:Key="BaseTitleGridContainerStyle"
 				   TargetType="Grid">
-				<Setter Property="BorderBrush"
-						Value="{StaticResource Color05Brush}" />
-				<Setter Property="BorderThickness"
-						Value="0,0,0,1" />
+				<Setter Property="Padding" Value="8" />
 				<Setter Property="Background"
-						Value="{StaticResource ApplicationPageBackgroundThemeBrush}" />
-				<Setter Property="Height"
-								Value="50" />
+						Value="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
 			</Style>
 
 			<Style x:Key="BaseTitleContainerStyle"
@@ -80,14 +75,10 @@
 
 			<Style x:Key="TemplateContainerStyle"
 				   TargetType="Border">
-				<Setter Property="BorderBrush"
-						Value="{StaticResource Color05Brush}" />
-				<Setter Property="BorderThickness"
-						Value="0,0,0,1" />
 				<Setter Property="Margin"
-						Value="10,0,0,0" />
+						Value="8,0,8,0" />
 				<Setter Property="Padding"
-						Value="0,10,10,10" />
+						Value="8" />
 				<Setter Property="MinHeight"
 						Value="40" />
 			</Style>
@@ -96,13 +87,21 @@
 			<DataTemplate x:Key="CategoriesTemplate">
 				<Border Style="{StaticResource TemplateContainerStyle}">
 					<u:StarStackPanel Orientation="Horizontal"
-									  Sizes="*,Auto">
+									  Sizes="*,Auto,Auto">
 						<TextBlock Style="{StaticResource Typo02}"
 								   VerticalAlignment="Center"
 								   TextWrapping="NoWrap">
-							<Run Text="{Binding Category}" /> (<Run Text="{Binding Count}" />)
+							<Run Text="{Binding Category}" />
 						</TextBlock>
 
+						<TextBlock
+							FontSize="10"
+							Margin="0,0,8,0"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center"
+							TextLineBounds="Tight"
+							Opacity="0.5"
+							Text="{Binding Count}" />
 						<u:PathControl Style="{StaticResource Icon_Chevron}"
 									   VerticalContentAlignment="Center"
 									   HorizontalContentAlignment="Right" />
@@ -181,10 +180,7 @@
 						<RowDefinition Height="*" />
 					</Grid.RowDefinitions>
 
-					<TextBox Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-							 Style="{StaticResource SearchTextBoxStyle}"
-							 PlaceholderText="Search"
-							 Margin="8" />
+
 
 					<ListView Grid.Row="1"
 							  ItemsSource="{Binding FilteredSamples}"
@@ -272,6 +268,10 @@
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
 
 					<!-- Runtime tests button -->
 					<Button Style="{StaticResource IconButtonStyle}"
@@ -285,7 +285,7 @@
 					<!-- Title -->
 					<TextBlock
 						Grid.Column="1"
-						Style="{StaticResource Typo03}"
+						Style="{StaticResource PaneHeadingStyle}"
 						VerticalAlignment="Center"
 						HorizontalAlignment="Center"
 						Text="Library" />
@@ -300,6 +300,13 @@
 						<u:PathControl Style="{StaticResource Icon_RunAll}"
 									   Margin="5,0" />
 					</Button>
+					<TextBox
+						Grid.Row="1"
+						Grid.ColumnSpan="3"
+						Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+						Style="{StaticResource SearchTextBoxStyle}"
+						PlaceholderText="Search"
+						 />
 				</Grid>
 				<ContentControl ContentTemplate="{StaticResource CategoriesList}"
 								Grid.Row="1"
@@ -321,7 +328,7 @@
 				<!--FAVORITES-->
 				<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
 					  Visibility="{Binding FavoritesVisibility, Converter={StaticResource TrueToVisible}}">
-					<TextBlock Style="{StaticResource Typo03}"
+					<TextBlock Style="{StaticResource PaneHeadingStyle}"
 							   VerticalAlignment="Center"
 							   HorizontalAlignment="Center"
 							   Text="Favorites" />
@@ -335,7 +342,7 @@
 				<!--RECENTS-->
 				<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
 					  Visibility="{Binding RecentsVisibility, Converter={StaticResource TrueToVisible}}">
-					<TextBlock Style="{StaticResource Typo03}"
+					<TextBlock Style="{StaticResource PaneHeadingStyle}"
 							   VerticalAlignment="Center"
 							   HorizontalAlignment="Center"
 							   Text="Recents" />
@@ -362,13 +369,12 @@
 
 				<!--NAVIGATION BUTTONS-->
 				<Border Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-
-						BorderThickness="0,1,0,0"
+						Padding="4"
+						Height="60"
 						BorderBrush="{StaticResource Color05Brush}"
-						Height="50"
 						Grid.Row="2">
 					<u:StarStackPanel VerticalAlignment="Stretch"
-									  Sizes="*,*,*,*"
+									  Sizes="*,*,*"
 									  Orientation="Horizontal">
 						<!--Button foreground has to be set by converter instead of Button's visual state
 							because path foreground doesn't change through visual states.-->
@@ -384,7 +390,7 @@
 											   Margin="{StaticResource NavIconMargin}" />
 								<TextBlock Style="{StaticResource Typo06}"
 										   VerticalAlignment="Bottom"
-										   Text="LIBRARY" />
+										   Text="Samples" />
 							</Grid>
 						</RadioButton>
 
@@ -400,7 +406,7 @@
 											   Margin="{StaticResource NavIconMargin}" />
 								<TextBlock Style="{StaticResource Typo06}"
 										   VerticalAlignment="Bottom"
-										   Text="FAVS" />
+										   Text="Favorites" />
 							</Grid>
 						</RadioButton>
 
@@ -416,24 +422,7 @@
 											   Margin="{StaticResource NavIconMargin}" />
 								<TextBlock Style="{StaticResource Typo06}"
 										   VerticalAlignment="Bottom"
-										   Text="RECENTS" />
-							</Grid>
-						</RadioButton>
-
-						<RadioButton GroupName="SelectedSectionPhone"
-									 Style="{StaticResource SampleChooserNavRadioButtonStyle}"
-									 VerticalContentAlignment="Stretch"
-									 Foreground="{Binding SearchSelected, Converter={StaticResource TabActiveColorForeground}}"
-									 IsChecked="{Binding SearchSelected, Mode=TwoWay}"
-									 Command="{Binding ShowNewSectionCommand}"
-									 CommandParameter="Search">
-							<Grid VerticalAlignment="Stretch">
-								<u:PathControl Style="{StaticResource Icon_Section_Search}"
-											   VerticalAlignment="Top"
-											   Margin="{StaticResource NavIconMargin}" />
-								<TextBlock Style="{StaticResource Typo06}"
-										   VerticalAlignment="Bottom"
-										   Text="SEARCH" />
+										   Text="Recents" />
 							</Grid>
 						</RadioButton>
 					</u:StarStackPanel>
@@ -549,7 +538,7 @@
 					</Button>
 
 					<!-- Fluent styles check box -->
-					<CheckBox Content="FL"
+					<CheckBox Content="Use Fluent"
 							  Grid.Column="8"
 							  IsChecked="{Binding UseFluentStyles, Mode=TwoWay}"
 							  Style="{x:Null}"/>
