@@ -27,6 +27,8 @@ using System.Threading.Tasks;
 using System.Threading;
 using Windows.Foundation;
 using Uno.UI;
+using Windows.UI.Xaml.Input;
+using Windows.System;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -42,6 +44,7 @@ namespace Windows.UI.Xaml.Controls
 		private bool IsSelectionMultiple => SelectionMode == ListViewSelectionMode.Multiple || SelectionMode == ListViewSelectionMode.Extended;
 		private bool _modifyingSelectionInternally;
 		private readonly List<object> _oldSelectedItems = new List<object>();
+
 		/// <summary>
 		/// Whether an incremental data loading request is currently under way.
 		/// </summary>
@@ -68,6 +71,92 @@ namespace Windows.UI.Xaml.Controls
 				TryLoadFirstItem();
 			}
 			return base.ArrangeOverride(finalSize);
+		}
+
+		protected override void OnKeyDown(KeyRoutedEventArgs args)
+		{
+			base.OnKeyDown(args);
+
+			if (!args.Handled)
+			{
+				args.Handled = TryHandleKeyDown(args);
+			}
+		}
+
+		internal bool TryHandleKeyDown(KeyRoutedEventArgs args)
+		{
+			if (!IsEnabled)
+			{
+				return false;
+			}
+
+			var focusedContainer = FocusManager.GetFocusedElement() as SelectorItem;
+
+			if (args.Key == VirtualKey.Enter ||
+				args.Key == VirtualKey.Space)
+			{
+				// Invoke focused
+				if (focusedContainer != null)
+				{
+					OnItemClicked(focusedContainer);
+				}
+			}
+			else if (args.Key == VirtualKey.Down)
+			{
+				return TryMoveKeyboardFocusAndSelection(+1, focusedContainer);
+			}
+			else if (args.Key == VirtualKey.Up)
+			{
+				return TryMoveKeyboardFocusAndSelection(-1, focusedContainer);
+			}
+			return false;
+		}
+
+		private bool TryMoveKeyboardFocusAndSelection(int offset, SelectorItem focusedContainer)
+		{
+			var focusedIndex = SelectedIndex;
+			if (focusedContainer != null)
+			{
+				focusedIndex = IndexFromContainer(focusedContainer);
+			}
+
+			var index = focusedIndex + offset;
+			if (!IsIndexValid(index))
+			{
+				return false;
+			}
+
+			// If selection mode is single, moving focus also selects the item
+			if (SelectionMode == ListViewSelectionMode.Single)
+			{
+				SelectedIndex = index;
+			}
+
+			var container = ContainerFromIndex(index);
+			if (container is not SelectorItem item)
+			{
+				return false;
+			}
+
+			item.StartBringIntoView(new BringIntoViewOptions()
+			{
+				AnimationDesired = false
+			});
+			item.Focus(FocusState.Keyboard);
+			return true;
+		}
+
+		private bool IsIndexValid(int index) => index >= 0 && index < NumberOfItems;
+
+		private int GetFocusedItemIndex()
+		{
+			var focusedItem = FocusManager.GetFocusedElement() as SelectorItem;
+			if (focusedItem != null)
+			{
+				return IndexFromContainer(focusedItem);
+			}
+
+			return -1;
 		}
 
 		private void OnSelectedItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
