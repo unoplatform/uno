@@ -2418,6 +2418,21 @@ var Windows;
 (function (Windows) {
     var Devices;
     (function (Devices) {
+        var Input;
+        (function (Input) {
+            let PointerDeviceType;
+            (function (PointerDeviceType) {
+                PointerDeviceType[PointerDeviceType["Touch"] = 0] = "Touch";
+                PointerDeviceType[PointerDeviceType["Pen"] = 1] = "Pen";
+                PointerDeviceType[PointerDeviceType["Mouse"] = 2] = "Mouse";
+            })(PointerDeviceType = Input.PointerDeviceType || (Input.PointerDeviceType = {}));
+        })(Input = Devices.Input || (Devices.Input = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
         var Midi;
         (function (Midi) {
             class MidiInPort {
@@ -4267,20 +4282,6 @@ var Windows;
     })(UI = Windows.UI || (Windows.UI = {}));
 })(Windows || (Windows = {}));
 var Windows;
-(function (Windows) {
-    var Devices;
-    (function (Devices) {
-        var Input;
-        (function (Input) {
-            let PointerDeviceType;
-            (function (PointerDeviceType) {
-                PointerDeviceType[PointerDeviceType["Touch"] = 0] = "Touch";
-                PointerDeviceType[PointerDeviceType["Pen"] = 1] = "Pen";
-                PointerDeviceType[PointerDeviceType["Mouse"] = 2] = "Mouse";
-            })(PointerDeviceType = Input.PointerDeviceType || (Input.PointerDeviceType = {}));
-        })(Input = Devices.Input || (Devices.Input = {}));
-    })(Devices = Windows.Devices || (Windows.Devices = {}));
-})(Windows || (Windows = {}));
 (function (Windows) {
     var UI;
     (function (UI) {

@@ -1,12 +1,4 @@
-﻿namespace Windows.Devices.Input {
-	export enum PointerDeviceType {
-		Touch = 0,
-		Pen = 1,
-		Mouse = 2,
-	}
-}
-
-namespace Windows.UI.Xaml {
+﻿namespace Windows.UI.Xaml {
 	import WindowManager = Uno.UI.WindowManager;
 	import HtmlEventDispatchResult = Uno.UI.HtmlEventDispatchResult;
 	import PointerDeviceType = Windows.Devices.Input.PointerDeviceType;

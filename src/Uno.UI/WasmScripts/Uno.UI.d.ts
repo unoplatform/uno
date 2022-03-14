@@ -742,6 +742,13 @@ declare namespace Windows.Devices.Geolocation {
         private static getAccurateCurrentPosition;
     }
 }
+declare module Windows.Devices.Input {
+    enum PointerDeviceType {
+        Touch = 0,
+        Pen = 1,
+        Mouse = 2
+    }
+}
 declare namespace Windows.Devices.Midi {
     class MidiInPort {
         private static dispatchMessage;
@@ -1187,13 +1194,6 @@ declare namespace Windows.UI.Xaml {
     enum ApplicationTheme {
         Light = "Light",
         Dark = "Dark"
-    }
-}
-declare namespace Windows.Devices.Input {
-    enum PointerDeviceType {
-        Touch = 0,
-        Pen = 1,
-        Mouse = 2
     }
 }
 declare namespace Windows.UI.Xaml {

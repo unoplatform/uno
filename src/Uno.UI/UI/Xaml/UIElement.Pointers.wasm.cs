@@ -254,15 +254,21 @@ public partial class UIElement : DependencyObject
 		var src = GetElementFromHandle(args.srcHandle) ?? (UIElement)snd;
 		var position = new Point(args.x, args.y);
 		var isInContact = args.buttons != 0;
-		var isInRange = args.Event is cancel ? false
-			: (args.Event & exitOrUp) != 0 ? pointerType switch
-				{
-					PointerDeviceType.Mouse => true, // Mouse is always in range (unless for 'cancel' eg. if it was unplugged from computer)
-					PointerDeviceType.Touch => false, // If we get a pointer out for touch, it means that pointer left the screen (pt up - a.k.a. Implicit capture)
-					PointerDeviceType.Pen => args.hasRelatedTarget, // If the relatedTarget is null it means pointer left the detection range ... but only for out event!
-					_ => !isInContact // Safety!
-				}
-			: true;
+		var isInRange = true;
+		if (args.Event is cancel)
+		{
+			isInRange = false;
+		}
+		else if ((args.Event & exitOrUp) != 0)
+		{
+			isInRange = pointerType switch
+			{
+				PointerDeviceType.Mouse => true, // Mouse is always in range (unless for 'cancel' eg. if it was unplugged from computer)
+				PointerDeviceType.Touch => false, // If we get a pointer out for touch, it means that pointer left the screen (pt up - a.k.a. Implicit capture)
+				PointerDeviceType.Pen => args.hasRelatedTarget, // If the relatedTarget is null it means pointer left the detection range ... but only for out event!
+				_ => !isInContact // Safety!
+			};
+		}
 		var keyModifiers = VirtualKeyModifiers.None;
 		if (args.ctrl) keyModifiers |= VirtualKeyModifiers.Control;
 		if (args.shift) keyModifiers |= VirtualKeyModifiers.Shift;
