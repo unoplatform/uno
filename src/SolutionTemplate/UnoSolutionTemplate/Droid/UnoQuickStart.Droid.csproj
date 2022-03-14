@@ -44,11 +44,13 @@
 		<WarningLevel>4</WarningLevel>
 		<AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
 		<AndroidLinkMode>SdkOnly</AndroidLinkMode>
-		<AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
+		<AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
 		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
 		<AotAssemblies>true</AotAssemblies>
 		<EnableLLVM>true</EnableLLVM>
 		<AndroidEnableSGenConcurrent>true</AndroidEnableSGenConcurrent>
+		<AndroidPackageFormat>aab</AndroidPackageFormat>
+		<AndroidEnableProfiledAot>true</AndroidEnableProfiledAot>
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="Mono.Android" />
