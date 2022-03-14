@@ -26,7 +26,6 @@ using System.Text;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
-using Uno.UI.Xaml.Media;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Composition;
 using Windows.Graphics.Display;
@@ -197,7 +196,7 @@ namespace Windows.UI.Xaml
 				if (_translation != value)
 				{
 					_translation = value;
-					ThemeShadowManager.UpdateShadow(this);
+					UpdateShadow();
 				}
 			}
 		}
@@ -223,7 +222,7 @@ namespace Windows.UI.Xaml
 		{
 			if (dependencyObject is UIElement uiElement)
 			{
-				ThemeShadowManager.UpdateShadow(uiElement);
+				uiElement.UpdateShadow();
 			}
 		}
 
