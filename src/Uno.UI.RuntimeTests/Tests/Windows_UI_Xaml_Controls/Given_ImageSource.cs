@@ -64,7 +64,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ImageSource imageSource = "mysceheme:///Assets/File.png";
 			var actual = ((BitmapImage)imageSource).UriSource.ToString();
 			Assert.AreEqual("mysceheme:///Assets/File.png", actual);
-		}
+		} 
 	}
 }
 #endif
