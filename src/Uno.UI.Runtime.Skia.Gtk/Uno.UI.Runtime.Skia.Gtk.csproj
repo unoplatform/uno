@@ -5,7 +5,7 @@
 	</PropertyGroup>
 
 	<Import Project="../netcore-build.props" />
-	<Import Project="../targetframework-override.props" />
+	<!--<Import Project="../targetframework-override.props" />-->
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
@@ -21,6 +21,8 @@
 		<RootNamespace>Uno.UI.Runtime.Skia</RootNamespace>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+	
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -31,7 +33,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
-		<!--<PackageReference Include="SkiaSharp.Views" />-->
+		<PackageReference Include="Silk.NET.OpenGL" Version="2.13.0" />
 	</ItemGroup>
 
 	<ItemGroup>

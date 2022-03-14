@@ -9,7 +9,7 @@ namespace Windows.UI.Composition
 {
 	public partial class Visual : global::Windows.UI.Composition.CompositionObject
 	{
-		internal virtual void Render(SKSurface surface, SKImageInfo info)
+		internal virtual void Render(SKSurface surface)
 		{
 
 		}

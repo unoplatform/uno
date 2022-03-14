@@ -41,7 +41,7 @@ namespace Windows.UI.Composition
 
 		internal float CurrentOpacity => _currentOpacity;
 
-		internal void Render(SKSurface surface, SKImageInfo info)
+		internal void Render(SKSurface surface)
 		{
 			_isDirty = false;
 
@@ -50,12 +50,12 @@ namespace Windows.UI.Composition
 				var children = RootVisual.GetChildrenInRenderOrder();
 				for (var i = 0; i < children.Count; i++)
 				{
-					RenderVisual(surface, info, children[i]);
+					RenderVisual(surface, children[i]);
 				}
 			}
 		}
 
-		private void RenderVisual(SKSurface surface, SKImageInfo info, Visual visual)
+		private void RenderVisual(SKSurface surface, Visual visual)
 		{
 			if (visual.Opacity != 0 && visual.IsVisible)
 			{
@@ -82,14 +82,14 @@ namespace Windows.UI.Composition
 
 				using var opacityDisposable = PushOpacity(visual.Opacity);
 
-				visual.Render(surface, info);
+				visual.Render(surface);
 
 				if (visual is ContainerVisual containerVisual)
 				{
 					var children = containerVisual.GetChildrenInRenderOrder();
 					for (var i = 0; i < children.Count; i++)
 					{
-						RenderVisual(surface, info, children[i]);
+						RenderVisual(surface, children[i]);
 					}
 				}
 
