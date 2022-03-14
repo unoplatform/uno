@@ -68,10 +68,7 @@ namespace Uno.UI.Runtime.Skia
 
 		private void UnoGLDrawingArea_Render(object o, RenderArgs args)
 		{
-			var sw = Stopwatch.StartNew();
-
 			args.Context.MakeCurrent();
-
 
 			// create the contexts if not done already
 			if (_grContext == null)
@@ -110,8 +107,6 @@ namespace Uno.UI.Runtime.Skia
 				// create the surface
 				_surface?.Dispose();
 				_surface = SKSurface.Create(_grContext, _renderTarget, surfaceOrigin, colorType);
-
-				Console.WriteLine($"Recreated surfaces: {w}x{h} Samples:{samples} colorType:{colorType}");
 			}
 
 			using (new SKAutoCanvasRestore(_surface.Canvas, true))
@@ -127,8 +122,6 @@ namespace Uno.UI.Runtime.Skia
 			_surface.Canvas.Flush();
 
 			_gl.Flush();
-			sw.Stop();
-			Console.WriteLine($"Frame: {sw.Elapsed}");
 		}
 
 		private void OnDpiChanged(DisplayInformation sender, object args) =>
@@ -146,11 +139,14 @@ namespace Uno.UI.Runtime.Skia
 
 		public void TakeScreenshot(string filePath)
 		{
-			using Stream memStream = File.Open(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
+			if (_surface != null)
+			{
+				using Stream memStream = File.Open(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
 
-			var image = _surface.Snapshot();
-			var pngData = image.Encode();
-			pngData.SaveTo(memStream);
+				var image = _surface.Snapshot();
+				var pngData = image.Encode();
+				pngData.SaveTo(memStream);
+			}
 		}
 
 		private void UpdateDpi() => _dpi = (float)_displayInformation.RawPixelsPerViewPixel;
