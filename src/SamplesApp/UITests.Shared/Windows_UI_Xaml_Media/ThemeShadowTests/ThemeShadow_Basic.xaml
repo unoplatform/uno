@@ -41,7 +41,7 @@
             Shadow="{StaticResource SharedShadow}"
             Translation="0,0,0" />
 
-        <TextBlock Text="0" />
+		<TextBlock Text="Rectangle, Z=0" />
 
         <Rectangle
             Grid.Column="1"
@@ -52,38 +52,38 @@
             Shadow="{StaticResource SharedShadow}"
             Translation="0,0,8" />
 
-        <TextBlock Grid.Column="1" Text="8" />
+		<TextBlock Grid.Column="1" Text="Rectangle, Z=8" />
 
 
-        <Rectangle
+		<Border
             Grid.Row="1"
             Grid.Column="0"
             Margin="40"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            Fill="Turquoise"
+            Background="Turquoise"
             Shadow="{StaticResource SharedShadow}"
             Translation="0,0,16" />
 
         <TextBlock
             Grid.Row="1"
             Grid.Column="0"
-            Text="16" />
+            Text="Border, Z=16" />
 
-        <Rectangle
+        <Border
             Grid.Row="1"
             Grid.Column="1"
             Margin="40"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            Fill="Turquoise"
+            Background="Turquoise"
             Shadow="{StaticResource SharedShadow}"
             Translation="0,0,32" />
 
         <TextBlock
             Grid.Row="1"
             Grid.Column="1"
-            Text="32" />
+            Text="Border, Z=32" />
 
     </Grid>
 </Page>
