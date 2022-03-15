@@ -541,7 +541,7 @@ namespace Windows.UI.Xaml
 				for (var i = 0; i < MaxLayoutIterations; i++)
 				{
 					// On Android, Measure and arrange are the same
-					if (root.IsMeasureOrMeasureDirtyPath)
+					if (root.IsMeasureDirtyOrMeasureDirtyPath)
 					{
 						root.Measure(bounds.Size);
 						root.Arrange(bounds);
@@ -554,7 +554,7 @@ namespace Windows.UI.Xaml
 #else
 			for (var i = 0; i < MaxLayoutIterations; i++)
 			{
-				if (root.IsMeasureOrMeasureDirtyPath)
+				if (root.IsMeasureDirtyOrMeasureDirtyPath)
 				{
 					root.Measure(bounds.Size);
 				}

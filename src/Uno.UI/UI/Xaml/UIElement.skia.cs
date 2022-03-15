@@ -143,13 +143,19 @@ namespace Windows.UI.Xaml
 				child.InvalidateMeasure();
 			}
 
-			if (child.IsArrangeDirty && !IsArrangeDirty)
+			if (IsArrangeDirtyPathDisabled)
 			{
-				InvalidateArrange();
+				FrameworkElementHelper.SetUseArrangePathDisabled(child); // will invalidate too
+			}
+			else if (child.IsArrangeDirty && !IsArrangeDirty)
+			{
+				child.InvalidateArrange();
 			}
 
 			// Force a new measure of this element (the parent of the new child)
 			InvalidateMeasure();
+			InvalidateArrange();
+
 		}
 
 		internal void MoveChildTo(int oldIndex, int newIndex)

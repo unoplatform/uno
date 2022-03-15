@@ -514,9 +514,15 @@ namespace Uno.UI
 		{
 			/// <summary>
 			/// Call the .MeasureOverride only on element explicitly invalidating
-			/// their measure and when the size changed.
+			/// their measure and when the available size is changing.
 			/// </summary>
 			public static bool UseInvalidateMeasurePath { get; set; } = true;
+
+			/// <summary>
+			/// Call the .ArrangeOverride only on element explicitly invalidating
+			/// their arrange and when the final rect is changing.
+			/// </summary>
+			public static bool UseInvalidateArrangePath { get; set; } = true;
 
 			/// <summary>
 			/// [DEPRECATED]

@@ -107,6 +107,7 @@ namespace Uno.UI.Extensions
 #else
 #endif
 				.Append(uiElement.IsMeasureDirtyPathDisabled is true ? " MEASURE_DIRTY_PATH_DISABLED" : "")
+				.Append(uiElement.IsArrangeDirtyPathDisabled is true ? " ARRANGE_DIRTY_PATH_DISABLED" : "")
 				.Append(uiElement.IsArrangeDirty is true ? " ARRANGE_DIRTY" : "");
 
 			return sb.ToString();
