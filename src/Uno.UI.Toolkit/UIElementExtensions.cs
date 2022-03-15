@@ -9,7 +9,6 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
-using Uno.UI.Composition.Composition;
 
 #if HAS_UNO
 using Uno.Extensions;
@@ -26,6 +25,10 @@ using CoreGraphics;
 
 #if NET6_0_OR_GREATER && (__IOS__ || __MACOS__)
 using ObjCRuntime;
+#endif
+
+#if __SKIA__
+using Uno.UI.Composition.Composition;
 #endif
 
 namespace Uno.UI.Toolkit
