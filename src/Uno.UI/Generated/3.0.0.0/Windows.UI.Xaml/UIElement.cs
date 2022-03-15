@@ -929,7 +929,7 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.UIElement.DragStarting.remove
 		// Forced skipping of method Windows.UI.Xaml.UIElement.DropCompleted.add
 		// Forced skipping of method Windows.UI.Xaml.UIElement.DropCompleted.remove
-		// Skipping already declared method Windows.UI.Xaml.UIElement.StartDragAsync(Windows.UI.Input.PointerPoint)
+		// Forced skipping of method Windows.UI.Xaml.UIElement.StartDragAsync(Windows.UI.Input.PointerPoint)
 		// Forced skipping of method Windows.UI.Xaml.UIElement.ContextFlyout.get
 		// Forced skipping of method Windows.UI.Xaml.UIElement.ContextFlyout.set
 		// Forced skipping of method Windows.UI.Xaml.UIElement.ExitDisplayModeOnAccessKeyInvoked.get

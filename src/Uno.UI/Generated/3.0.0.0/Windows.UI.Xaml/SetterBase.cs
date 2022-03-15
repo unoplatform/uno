@@ -1,7 +1,5 @@
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
-using System;
-
 namespace Windows.UI.Xaml
 {
 	#if false || false || false || false || false || false || false
@@ -9,5 +7,7 @@ namespace Windows.UI.Xaml
 	#endif
 	public  partial class SetterBase : global::Windows.UI.Xaml.DependencyObject
 	{
+		// Skipping already declared property IsSealed
+		// Forced skipping of method Windows.UI.Xaml.SetterBase.IsSealed.get
 	}
 }

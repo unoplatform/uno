@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		// Skipping already declared property Description		
+		// Skipping already declared property Description
 		// Skipping already declared property AutoMaximizeSuggestionAreaProperty
 		// Skipping already declared property HeaderProperty
 		// Skipping already declared property IsSuggestionListOpenProperty
@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property TextProperty
 		// Skipping already declared property UpdateTextOnSelectProperty
 		// Skipping already declared property QueryIconProperty
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty LightDismissOverlayModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(

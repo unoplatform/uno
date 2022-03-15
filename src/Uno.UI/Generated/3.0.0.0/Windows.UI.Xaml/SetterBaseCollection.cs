@@ -7,7 +7,8 @@ namespace Windows.UI.Xaml
 	#endif
 	public  partial class SetterBaseCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.SetterBase>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.SetterBase>
 	{
-
+		// Skipping already declared property Size
+		// Skipping already declared property IsSealed
 		// Skipping already declared method Windows.UI.Xaml.SetterBaseCollection.SetterBaseCollection()
 		// Forced skipping of method Windows.UI.Xaml.SetterBaseCollection.SetterBaseCollection()
 		// Forced skipping of method Windows.UI.Xaml.SetterBaseCollection.IsSealed.get
