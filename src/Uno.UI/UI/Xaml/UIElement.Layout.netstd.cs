@@ -115,6 +115,7 @@ namespace Windows.UI.Xaml
 			InvalidateParentArrangeDirtyPath();
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void InvalidateParentArrangeDirtyPath()
 		{
 			if (this.GetParent() is UIElement parent)
@@ -181,6 +182,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void DoMeasure(Size availableSize)
 		{
 			var isFirstMeasure = !IsLayoutFlagSet(LayoutFlag.FirstMeasureDone);
@@ -332,6 +334,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void DoArrange(Rect finalRect)
 		{
 			var isFirstArrange = !IsLayoutFlagSet(LayoutFlag.FirstArrangeDone);
@@ -423,8 +426,6 @@ namespace Windows.UI.Xaml
 
 		partial void HideVisual();
 		partial void ShowVisual();
-
-		
 
 		internal virtual void ArrangeCore(Rect finalRect)
 		{
