@@ -21,6 +21,7 @@ using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI.Xaml.Core;
 using Uno.Equality;
+using Uno.UI.DataBinding;
 
 #if __IOS__
 using UIKit;
@@ -42,17 +43,16 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class VisualTreeHelper
 	{
-		private static readonly WeakReferenceEqualityComparer<IPopup> _openPopupsEqualityComparer = new();
-		private static readonly List<WeakReference<IPopup>> _openPopups = new();
+		private static readonly List<ManagedWeakReference> _openPopups = new();
 
 		internal static IDisposable RegisterOpenPopup(IPopup popup)
 		{
 			var popupRegistration = _openPopups.FirstOrDefault(
-				p => WeakReferenceExtensions.GetTarget(p) == popup);
+				p => !p.IsDisposed && p.Target == popup);
 
 			if (popupRegistration is null)
 			{
-				popupRegistration = new WeakReference<IPopup>(popup);
+				popupRegistration = WeakReferencePool.RentWeakReference(popup, popup);
 
 				_openPopups.Add(popupRegistration);
 			}
@@ -151,7 +151,8 @@ namespace Windows.UI.Xaml.Media
 		public static IReadOnlyList<Popup> GetOpenPopups(Window window)
 		{
 			return _openPopups
-				.Select(WeakReferenceExtensions.GetTarget)
+				.Where(p => !p.IsDisposed)
+				.Select(p => p.Target)
 				.OfType<Popup>()
 				.Distinct()
 				.ToList()
@@ -161,7 +162,8 @@ namespace Windows.UI.Xaml.Media
 		private static IReadOnlyList<Popup> GetOpenFlyoutPopups()
 		{
 			return _openPopups
-				.Select(WeakReferenceExtensions.GetTarget)
+				.Where(p => !p.IsDisposed)
+				.Select(p => p.Target)
 				.OfType<Popup>()
 				.Distinct()
 				.Where(p => p.IsForFlyout)
