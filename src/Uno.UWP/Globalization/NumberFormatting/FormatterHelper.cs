@@ -50,7 +50,7 @@ namespace Uno.Globalization.NumberFormatting
 		public string FormatZero(double value)
 		{
 			var result = FormatZeroCore();
-			var isNegative = BitConverter.DoubleToInt64Bits(value) < 0;
+			var isNegative = value.IsNegative();
 
 			if (IsZeroSigned && isNegative)
 			{

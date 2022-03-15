@@ -2,10 +2,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Globalization.NumberFormatting
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class CurrencyFormatter : global::Windows.Globalization.NumberFormatting.INumberParser,global::Windows.Globalization.NumberFormatting.INumberFormatter2,global::Windows.Globalization.NumberFormatting.INumberFormatter,global::Windows.Globalization.NumberFormatting.INumberFormatterOptions,global::Windows.Globalization.NumberFormatting.ISignificantDigitsOption,global::Windows.Globalization.NumberFormatting.INumberRounderOption,global::Windows.Globalization.NumberFormatting.ISignedZeroOption
+	public partial class CurrencyFormatter : global::Windows.Globalization.NumberFormatting.INumberParser,global::Windows.Globalization.NumberFormatting.INumberFormatter2,global::Windows.Globalization.NumberFormatting.INumberFormatter,global::Windows.Globalization.NumberFormatting.INumberFormatterOptions,global::Windows.Globalization.NumberFormatting.ISignificantDigitsOption,global::Windows.Globalization.NumberFormatting.INumberRounderOption,global::Windows.Globalization.NumberFormatting.ISignedZeroOption
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -21,90 +21,9 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Globalization.NumberFormatting.CurrencyFormatterMode Mode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CurrencyFormatterMode CurrencyFormatter.Mode is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.NumberFormatting.CurrencyFormatter", "CurrencyFormatterMode CurrencyFormatter.Mode");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string NumeralSystem
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CurrencyFormatter.NumeralSystem is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.NumberFormatting.CurrencyFormatter", "string CurrencyFormatter.NumeralSystem");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsGrouped
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CurrencyFormatter.IsGrouped is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.NumberFormatting.CurrencyFormatter", "bool CurrencyFormatter.IsGrouped");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsDecimalPointAlwaysDisplayed
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CurrencyFormatter.IsDecimalPointAlwaysDisplayed is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.NumberFormatting.CurrencyFormatter", "bool CurrencyFormatter.IsDecimalPointAlwaysDisplayed");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int IntegerDigits
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int CurrencyFormatter.IntegerDigits is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.NumberFormatting.CurrencyFormatter", "int CurrencyFormatter.IntegerDigits");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int FractionDigits
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int CurrencyFormatter.FractionDigits is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.NumberFormatting.CurrencyFormatter", "int CurrencyFormatter.FractionDigits");
-			}
-		}
-		#endif
+		
+		
+		
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string GeographicRegion
@@ -125,75 +44,8 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string ResolvedLanguage
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string CurrencyFormatter.ResolvedLanguage is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<string> Languages
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> CurrencyFormatter.Languages is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Globalization.NumberFormatting.INumberRounder NumberRounder
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member INumberRounder CurrencyFormatter.NumberRounder is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.NumberFormatting.CurrencyFormatter", "INumberRounder CurrencyFormatter.NumberRounder");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsZeroSigned
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CurrencyFormatter.IsZeroSigned is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.NumberFormatting.CurrencyFormatter", "bool CurrencyFormatter.IsZeroSigned");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int SignificantDigits
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int CurrencyFormatter.SignificantDigits is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.NumberFormatting.CurrencyFormatter", "int CurrencyFormatter.SignificantDigits");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public CurrencyFormatter( string currencyCode) 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.NumberFormatting.CurrencyFormatter", "CurrencyFormatter.CurrencyFormatter(string currencyCode)");
-		}
-		#endif
+		
+		
 		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.CurrencyFormatter(string)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -235,13 +87,6 @@ namespace Windows.Globalization.NumberFormatting
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Format( double value)
-		{
-			throw new global::System.NotImplementedException("The member string CurrencyFormatter.Format(double value) is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string FormatInt( long value)
 		{
 			throw new global::System.NotImplementedException("The member string CurrencyFormatter.FormatInt(long value) is not implemented in Uno.");
@@ -252,13 +97,6 @@ namespace Windows.Globalization.NumberFormatting
 		public  string FormatUInt( ulong value)
 		{
 			throw new global::System.NotImplementedException("The member string CurrencyFormatter.FormatUInt(ulong value) is not implemented in Uno.");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string FormatDouble( double value)
-		{
-			throw new global::System.NotImplementedException("The member string CurrencyFormatter.FormatDouble(double value) is not implemented in Uno.");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -275,22 +113,9 @@ namespace Windows.Globalization.NumberFormatting
 			throw new global::System.NotImplementedException("The member ulong? CurrencyFormatter.ParseUInt(string text) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double? ParseDouble( string text)
-		{
-			throw new global::System.NotImplementedException("The member double? CurrencyFormatter.ParseDouble(string text) is not implemented in Uno.");
-		}
-		#endif
 		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.Mode.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.Mode.set
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void ApplyRoundingForCurrency( global::Windows.Globalization.NumberFormatting.RoundingAlgorithm roundingAlgorithm)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.NumberFormatting.CurrencyFormatter", "void CurrencyFormatter.ApplyRoundingForCurrency(RoundingAlgorithm roundingAlgorithm)");
-		}
-		#endif
+		
 		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.SignificantDigits.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.SignificantDigits.set
 		// Forced skipping of method Windows.Globalization.NumberFormatting.CurrencyFormatter.NumberRounder.get
