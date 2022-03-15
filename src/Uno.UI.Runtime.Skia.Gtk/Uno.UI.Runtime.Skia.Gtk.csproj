@@ -5,7 +5,6 @@
 	</PropertyGroup>
 
 	<Import Project="../netcore-build.props" />
-	<!--<Import Project="../targetframework-override.props" />-->
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
