@@ -117,13 +117,13 @@
       <StaticResource x:Key="NavigationViewButtonForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
       <StaticResource x:Key="NavigationViewButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
       <StaticResource x:Key="NumberBoxPopupIndicatorForeground" ResourceKey="SystemControlForegroundBaseMediumBrush" />
-      <StaticResource x:Key="PagerControlSelectionIndicatorForeground" ResourceKey="SystemControlForegroundAccentBrush" />
-      <StaticResource x:Key="PagerControlPageNavigationButtonBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
-      <StaticResource x:Key="PagerControlPageNavigationButtonBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
-      <StaticResource x:Key="PagerControlPageNavigationButtonBackgroundDisabled" ResourceKey="SystemControlDisabledTransparentBrush" />
-      <StaticResource x:Key="PagerControlPageNavigationButtonForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-      <StaticResource x:Key="PagerControlPageNavigationButtonForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-      <StaticResource x:Key="PagerControlPageNavigationButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+      <StaticResource x:Key="PagerControlSelectionIndicatorForeground" ResourceKey="AccentFillColorDefaultBrush" />
+      <StaticResource x:Key="PagerControlPageNavigationButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+      <StaticResource x:Key="PagerControlPageNavigationButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
+      <StaticResource x:Key="PagerControlPageNavigationButtonBackgroundDisabled" ResourceKey="SubtleFillColorDisabledBrush" />
+      <StaticResource x:Key="PagerControlPageNavigationButtonForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="PagerControlPageNavigationButtonForegroundPressed" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="PagerControlPageNavigationButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
       <CornerRadius x:Key="ControlCornerRadius">2,2,2,2</CornerRadius>
       <CornerRadius x:Key="OverlayCornerRadius">4,4,4,4</CornerRadius>
       <Color x:Key="SystemControlErrorBackgroundColor">#33FFFFFF</Color>
@@ -893,13 +893,13 @@
       <StaticResource x:Key="NavigationViewButtonForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
       <StaticResource x:Key="NavigationViewButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
       <StaticResource x:Key="NumberBoxPopupIndicatorForeground" ResourceKey="SystemControlForegroundBaseMediumBrush" />
-      <StaticResource x:Key="PagerControlSelectionIndicatorForeground" ResourceKey="SystemControlForegroundAccentBrush" />
-      <StaticResource x:Key="PagerControlPageNavigationButtonBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
-      <StaticResource x:Key="PagerControlPageNavigationButtonBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
-      <StaticResource x:Key="PagerControlPageNavigationButtonBackgroundDisabled" ResourceKey="SystemControlDisabledTransparentBrush" />
-      <StaticResource x:Key="PagerControlPageNavigationButtonForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-      <StaticResource x:Key="PagerControlPageNavigationButtonForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
-      <StaticResource x:Key="PagerControlPageNavigationButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+      <StaticResource x:Key="PagerControlSelectionIndicatorForeground" ResourceKey="AccentFillColorDefaultBrush" />
+      <StaticResource x:Key="PagerControlPageNavigationButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+      <StaticResource x:Key="PagerControlPageNavigationButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
+      <StaticResource x:Key="PagerControlPageNavigationButtonBackgroundDisabled" ResourceKey="SubtleFillColorDisabledBrush" />
+      <StaticResource x:Key="PagerControlPageNavigationButtonForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="PagerControlPageNavigationButtonForegroundPressed" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="PagerControlPageNavigationButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
       <CornerRadius x:Key="ControlCornerRadius">2,2,2,2</CornerRadius>
       <CornerRadius x:Key="OverlayCornerRadius">4,4,4,4</CornerRadius>
       <Color x:Key="SystemControlErrorBackgroundColor">#29C50500</Color>
@@ -5453,10 +5453,11 @@
     <Setter Property="HorizontalContentAlignment" Value="Center" />
     <Setter Property="VerticalContentAlignment" Value="Center" />
     <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+    <contract7Present:Setter Property="CornerRadius" Value="{StaticResource ControlCornerRadius}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="Button">
-          <Grid x:Name="RootGrid" Background="{TemplateBinding Background}">
+          <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{StaticResource ControlCornerRadius}">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">
                 <VisualState x:Name="Normal" />

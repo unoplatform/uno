@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable CS0169
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
