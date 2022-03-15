@@ -157,9 +157,9 @@ namespace Windows.UI.Input
 				var recognized = TryRecognizeRightTap() // We check right tap first as for touch a right tap is a press and hold of the finger :)
 					|| TryRecognizeTap();
 
-				if (!recognized && _recognizer._log.IsEnabled(LogLevel.Information))
+				if (!recognized && _recognizer._log.IsEnabled(LogLevel.Debug))
 				{
-					_recognizer._log.Info("No gesture recognized");
+					_recognizer._log.Debug("No gesture recognized");
 				}
 			}
 

@@ -70,10 +70,6 @@ public partial class UIElement : DependencyObject
 		// Add optional events
 		switch (routedEvent.Flag)
 		{
-			case RoutedEventFlag.PointerMoved when !_subscribedNativeEvents.HasFlag(NativePointerEvent.pointermove):
-				events |= NativePointerEvent.pointermove;
-				break;
-
 			case RoutedEventFlag.PointerWheelChanged when !_subscribedNativeEvents.HasFlag(NativePointerEvent.wheel):
 				events |= NativePointerEvent.wheel;
 				break;
@@ -170,17 +166,17 @@ public partial class UIElement : DependencyObject
 					break;
 				}
 
-				case NativePointerEvent.pointerout: // No needs to check IsOver, it's already done in native code
+				case NativePointerEvent.pointerout: // No needs to check IsOver (leaving vs. bubbling), it's already done in native code
 					stopPropagation = element.OnNativePointerExited(ToPointerArgs(element, args));
 					break;
 
 				case NativePointerEvent.pointerdown:
-					stopPropagation = element.OnNativePointerDown(ToPointerArgs(element, args, isInContact: true));
+					stopPropagation = element.OnNativePointerDown(ToPointerArgs(element, args));
 					break;
 
 				case NativePointerEvent.pointerup:
 				{
-					var routedArgs = ToPointerArgs(element, args, isInContact: false);
+					var routedArgs = ToPointerArgs(element, args);
 					stopPropagation = element.OnNativePointerUp(routedArgs);
 
 					if (stopPropagation)
@@ -192,22 +188,37 @@ public partial class UIElement : DependencyObject
 				}
 
 				case NativePointerEvent.pointermove:
-					stopPropagation = element.OnNativePointerMove(ToPointerArgs(element, args));
+				{
+					var ptArgs = ToPointerArgs(element, args);
+
+					// We do have "implicit capture" for touch and pen on chromium browsers, they won't raise 'pointerout' once in contact,
+					// this means that we need to validate the isOver to raise enter and exit like on UWP.
+					var needsToCheckIsOver = ptArgs.Pointer.PointerDeviceType switch
+					{
+						PointerDeviceType.Touch => ptArgs.Pointer.IsInRange, // If pointer no longer in range, isOver is always false
+						PointerDeviceType.Pen => ptArgs.Pointer.IsInContact, // We can ignore check when only hovering elements, browser does its job in that case
+						PointerDeviceType.Mouse => PointerCapture.TryGet(ptArgs.Pointer, out _), // Browser won't raise pointerenter/out as soon has we have an active capture
+						_ => true // For safety
+					};
+					stopPropagation = needsToCheckIsOver
+						? element.OnNativePointerMoveWithOverCheck(ptArgs, isOver: ptArgs.IsPointCoordinatesOver(element))
+						: element.OnNativePointerMove(ptArgs);
 					break;
+				}
 
 				case NativePointerEvent.pointercancel:
-					stopPropagation = element.OnNativePointerCancel(ToPointerArgs(element, args, isInContact: false), isSwallowedBySystem: true);
+					stopPropagation = element.OnNativePointerCancel(ToPointerArgs(element, args), isSwallowedBySystem: true);
 					break;
 
 				case NativePointerEvent.wheel:
 					if (args.wheelDeltaX is not 0)
 					{
-						stopPropagation |= element.OnNativePointerWheel(ToPointerArgs(element, args, wheel: (true, args.wheelDeltaX), isInContact: null /* maybe */));
+						stopPropagation |= element.OnNativePointerWheel(ToPointerArgs(element, args, wheel: (true, args.wheelDeltaX)));
 					}
 					if (args.wheelDeltaY is not 0)
 					{
 						// Note: Web browser vertical scrolling is the opposite compared to WinUI!
-						stopPropagation |= element.OnNativePointerWheel(ToPointerArgs(element, args, wheel: (false, -args.wheelDeltaY), isInContact: null /* maybe */));
+						stopPropagation |= element.OnNativePointerWheel(ToPointerArgs(element, args, wheel: (false, -args.wheelDeltaY)));
 					}
 					break;
 			}
@@ -233,13 +244,31 @@ public partial class UIElement : DependencyObject
 	private static PointerRoutedEventArgs ToPointerArgs(
 		UIElement snd,
 		NativePointerEventArgs args,
-		bool? isInContact = null,
 		(bool isHorizontalWheel, double delta) wheel = default)
 	{
+		const int cancel = (int)NativePointerEvent.pointercancel;
+		const int exitOrUp = (int)(NativePointerEvent.pointerout | NativePointerEvent.pointerup);
+
 		var pointerId = (uint)args.pointerId;
+		var pointerType = (PointerDeviceType)args.deviceType;
 		var src = GetElementFromHandle(args.srcHandle) ?? (UIElement)snd;
 		var position = new Point(args.x, args.y);
-		var pointerType = ConvertPointerTypeString(args.typeStr);
+		var isInContact = args.buttons != 0;
+		var isInRange = true;
+		if (args.Event is cancel)
+		{
+			isInRange = false;
+		}
+		else if ((args.Event & exitOrUp) != 0)
+		{
+			isInRange = pointerType switch
+			{
+				PointerDeviceType.Mouse => true, // Mouse is always in range (unless for 'cancel' eg. if it was unplugged from computer)
+				PointerDeviceType.Touch => false, // If we get a pointer out for touch, it means that pointer left the screen (pt up - a.k.a. Implicit capture)
+				PointerDeviceType.Pen => args.hasRelatedTarget, // If the relatedTarget is null it means pointer left the detection range ... but only for out event!
+				_ => !isInContact // Safety!
+			};
+		}
 		var keyModifiers = VirtualKeyModifiers.None;
 		if (args.ctrl) keyModifiers |= VirtualKeyModifiers.Control;
 		if (args.shift) keyModifiers |= VirtualKeyModifiers.Shift;
@@ -249,7 +278,8 @@ public partial class UIElement : DependencyObject
 			pointerId,
 			pointerType,
 			position,
-			isInContact ?? ((UIElement)snd).IsPressed(pointerId),
+			isInContact,
+			isInRange,
 			(WindowManagerInterop.HtmlPointerButtonsState)args.buttons,
 			(WindowManagerInterop.HtmlPointerButtonUpdate)args.buttonUpdate,
 			keyModifiers,
@@ -257,54 +287,32 @@ public partial class UIElement : DependencyObject
 			wheel,
 			src);
 	}
-
-	private static PointerDeviceType ConvertPointerTypeString(string typeStr)
-	{
-		PointerDeviceType type;
-		switch (typeStr.ToUpper())
-		{
-			case "MOUSE":
-			default:
-				type = PointerDeviceType.Mouse;
-				break;
-			// Note: As of 2019-11-28, once pen pressed events pressed/move/released are reported as TOUCH on Firefox
-			//		 https://bugzilla.mozilla.org/show_bug.cgi?id=1449660
-			case "PEN":
-				type = PointerDeviceType.Pen;
-				break;
-			case "TOUCH":
-				type = PointerDeviceType.Touch;
-				break;
-		}
-
-		return type;
-	}
 	#endregion
 
-	#region Capture
 	partial void OnManipulationModeChanged(ManipulationModes _, ManipulationModes newMode)
-		=> SetStyle("touch-action", newMode == ManipulationModes.None ? "none" : "auto");
+	{
+		if (newMode is ManipulationModes.None or ManipulationModes.System)
+		{
+			ResetStyle("touch-action");
+		}
+		else
+		{
+			// 'none' here means that the browser is not allowed to steal pointer for it's own manipulations
+			SetStyle("touch-action", "none");
+		}
+	}
 
+	#region Capture
 	partial void CapturePointerNative(Pointer pointer)
 	{
 		var command = "Uno.UI.WindowManager.current.setPointerCapture(" + HtmlId + ", " + pointer.PointerId + ");";
 		WebAssemblyRuntime.InvokeJS(command);
-
-		if (pointer.PointerDeviceType != PointerDeviceType.Mouse)
-		{
-			SetStyle("touch-action", "none");
-		}
 	}
 
 	partial void ReleasePointerNative(Pointer pointer)
 	{
 		var command = "Uno.UI.WindowManager.current.releasePointerCapture(" + HtmlId + ", " + pointer.PointerId + ");";
 		WebAssemblyRuntime.InvokeJS(command);
-
-		if (pointer.PointerDeviceType != PointerDeviceType.Mouse && ManipulationMode != ManipulationModes.None)
-		{
-			SetStyle("touch-action", "auto");
-		}
 	}
 	#endregion
 
@@ -368,20 +376,14 @@ public partial class UIElement : DependencyObject
 
 	private void ApplyHitTestVisibility(HitTestability value)
 	{
-		if (value == HitTestability.Visible)
-		{
-			// By default, elements have 'pointer-event' set to 'auto' (see Uno.UI.css .uno-uielement class).
-			// This means that they can be the target of hit-testing and will raise pointer events when interacted with.
-			// This is aligned with HitTestVisibilityProperty's default value of Visible.
-			WindowManagerInterop.SetPointerEvents(HtmlId, true);
-		}
-		else
-		{
-			// If HitTestVisibilityProperty is calculated to Invisible or Collapsed,
-			// we don't want to be the target of hit-testing and raise any pointer events.
-			// This is done by setting 'pointer-events' to 'none'.
-			WindowManagerInterop.SetPointerEvents(HtmlId, false);
-		}
+		// By default, elements have 'pointer-event' set to 'none' (see Uno.UI.css .uno-uielement class)
+		// which is aligned with HitTestVisibilityProperty's default value of Visible.
+		// If HitTestVisibilityProperty is calculated to Invisible or Collapsed,
+		// we don't want to be the target of hit-testing and raise any pointer events.
+		// This is done by setting 'pointer-events' to 'none'.
+		// However setting it to 'none' will allow pointer event to pass through the element (a.k.a. Invisible)
+
+		WindowManagerInterop.SetPointerEvents(HtmlId, value is HitTestability.Visible);
 
 		if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
 		{
@@ -428,16 +430,17 @@ public partial class UIElement : DependencyObject
 		public bool shift;
 		public int buttons;
 		public int buttonUpdate;
-		public string typeStr;
+		public int deviceType;
 		public int srcHandle;
 		public double timestamp;
 		public double pressure;
 		public double wheelDeltaX;
 		public double wheelDeltaY;
+		public bool hasRelatedTarget;
 
 		/// <inheritdoc />
 		public override string ToString()
-			=> $"elt={HtmlId}|evt={(NativePointerEvent)Event}|id={pointerId}|x={x}|y={x}|ctrl={ctrl}|shift={shift}|bts={buttons}|btUpdate={buttonUpdate}|tyep={typeStr}|srcId={srcHandle}|ts={timestamp}|pres={pressure}|wheelX={wheelDeltaX}|wheelY={wheelDeltaY}";
+			=> $"elt={HtmlId}|evt={(NativePointerEvent)Event}|id={pointerId}|x={x}|y={x}|ctrl={ctrl}|shift={shift}|bts={buttons}|btUpdate={buttonUpdate}|type={(PointerDeviceType)deviceType}|srcId={srcHandle}|ts={timestamp}|pres={pressure}|wheelX={wheelDeltaX}|wheelY={wheelDeltaY}|relTarget={hasRelatedTarget}";
 	}
 
 	[TSInteropMessage(Marshaller = CodeGeneration.Disabled, UnMarshaller = CodeGeneration.Enabled)]
@@ -458,11 +461,11 @@ public partial class UIElement : DependencyObject
 		pointerdown = 1 << 2,
 		pointerup = 1 << 3,
 		pointercancel = 1 << 4,
+		pointermove = 1 << 5, // Required since when pt is captured, isOver will be maintained by the moveWithOverCheck
 
 		// Optional pointer events
-		pointermove = 1 << 5,
 		wheel = 1 << 6,
 
-		Defaults = pointerover | pointerout | pointerdown | pointerup | pointercancel,
+		Defaults = pointerover | pointerout | pointerdown | pointerup | pointercancel | pointermove,
 	}
 }

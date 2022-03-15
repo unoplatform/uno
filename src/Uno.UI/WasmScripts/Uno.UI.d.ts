@@ -742,6 +742,13 @@ declare namespace Windows.Devices.Geolocation {
         private static getAccurateCurrentPosition;
     }
 }
+declare module Windows.Devices.Input {
+    enum PointerDeviceType {
+        Touch = 0,
+        Pen = 1,
+        Mouse = 2
+    }
+}
 declare namespace Windows.Devices.Midi {
     class MidiInPort {
         private static dispatchMessage;
@@ -1014,7 +1021,7 @@ declare namespace Uno.Storage {
 }
 declare namespace Windows.Storage {
     class StorageFolder {
-        private static _isInit;
+        private static _isInitialized;
         private static _isSynchronizing;
         private static dispatchStorageInitialized;
         /**
@@ -1031,7 +1038,9 @@ declare namespace Windows.Storage {
         static setupStorage(path: string): void;
         private static onStorageInitialized;
         /**
-         * Synchronize the IDBFS memory cache back to IndexDB
+         * Synchronize the IDBFS memory cache back to IndexedDB
+         * populate: requests the filesystem to be popuplated from the IndexedDB
+         * onSynchronized: function invoked when the synchronization finished
          * */
         private static synchronizeFileSystem;
     }
@@ -1212,6 +1221,7 @@ declare namespace Windows.UI.Xaml {
         private static get wheelLineSize();
         private static toNativePointerEventArgs;
         private static toNativeEvent;
+        private static toPointerDeviceType;
     }
 }
 declare namespace Windows.UI.Xaml {
@@ -1598,12 +1608,13 @@ declare namespace Windows.UI.Xaml {
         shift: boolean;
         buttons: number;
         buttonUpdate: number;
-        typeStr: string;
+        deviceType: number;
         srcHandle: number;
         timestamp: number;
         pressure: number;
         wheelDeltaX: number;
         wheelDeltaY: number;
+        hasRelatedTarget: boolean;
         marshal(pData: number): void;
     }
 }

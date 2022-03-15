@@ -1,6 +1,7 @@
 ﻿namespace Windows.UI.Xaml {
 	import WindowManager = Uno.UI.WindowManager;
 	import HtmlEventDispatchResult = Uno.UI.HtmlEventDispatchResult;
+	import PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 
 	export enum NativePointerEvent {
 		pointerover = 1,
@@ -99,12 +100,15 @@
 		private static onPointerOutReceived(evt: PointerEvent): void {
 			const element = evt.currentTarget as HTMLElement | SVGElement;
 
-			if (evt.isDirectlyOver(element)) {
+			if (evt.relatedTarget && evt.isDirectlyOver(element)) {
 				// The 'pointerout' event is bubbling so we get the event when the pointer is going out of a nested element,
 				// but pointer is still over the current element.
 				// So here we check if the event is effectively because the pointer is leaving the bounds of the current element.
 				// If not, we stopPropagation so parent won't have to check it again and again.
 				// Note: We don't have to do that for the "enter" as we anyway maintain the IsOver state in managed.
+				// Note: If relatedTarget is null it means that pointer is no longer on the app at all
+				//		 (alt + tab for mouse, finger removed from screen, pen out of detection range)
+				//		 If so, we have to forward the exit in all cases.
 				evt.stopPropagation();
 				return;
 			}
@@ -186,11 +190,11 @@
 				src = src.parentElement;
 			}
 
-			let pointerId: number, pointerType: string, pressure: number;
+			let pointerId: number, pointerType: PointerDeviceType, pressure: number;
 			let wheelDeltaX: number, wheelDeltaY: number;
 			if (evt instanceof WheelEvent) {
 				pointerId = (evt as any).mozInputSource ? 0 : 1; // Try to match the mouse pointer ID 0 for FF, 1 for others
-				pointerType = "mouse";
+				pointerType = PointerDeviceType.Mouse;
 				pressure = 0.5; // like WinUI
 				wheelDeltaX = evt.deltaX;
 				wheelDeltaY = evt.deltaY;
@@ -208,7 +212,7 @@
 				}
 			} else {
 				pointerId = evt.pointerId;
-				pointerType = evt.pointerType;
+				pointerType = UIElement.toPointerDeviceType(evt.pointerType);
 				pressure = evt.pressure;
 				wheelDeltaX = 0;
 				wheelDeltaY = 0;
@@ -221,9 +225,10 @@
 			args.y = evt.clientY;
 			args.ctrl = evt.ctrlKey;
 			args.shift = evt.shiftKey;
+			args.hasRelatedTarget = evt.relatedTarget !== null;
 			args.buttons = evt.buttons;
 			args.buttonUpdate = evt.button;
-			args.typeStr = pointerType;
+			args.deviceType = pointerType;
 			args.srcHandle = Number(srcHandle);
 			args.timestamp = evt.timeStamp;
 			args.pressure = pressure;
@@ -251,6 +256,20 @@
 					return NativePointerEvent.wheel;
 				default:
 					return undefined;
+			}
+		}
+
+		private static toPointerDeviceType(type: string): PointerDeviceType {
+			switch (type) {
+				case "touch":
+					return PointerDeviceType.Touch;
+				case "pen":
+					// Note: As of 2019-11-28, once pen pressed events pressed/move/released are reported as TOUCH on Firefox
+					//		 https://bugzilla.mozilla.org/show_bug.cgi?id=1449660
+					return PointerDeviceType.Pen;
+				case "mouse":
+				default:
+					return PointerDeviceType.Mouse;
 			}
 		}
 		//#endregion

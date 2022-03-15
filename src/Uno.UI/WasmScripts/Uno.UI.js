@@ -2418,6 +2418,21 @@ var Windows;
 (function (Windows) {
     var Devices;
     (function (Devices) {
+        var Input;
+        (function (Input) {
+            let PointerDeviceType;
+            (function (PointerDeviceType) {
+                PointerDeviceType[PointerDeviceType["Touch"] = 0] = "Touch";
+                PointerDeviceType[PointerDeviceType["Pen"] = 1] = "Pen";
+                PointerDeviceType[PointerDeviceType["Mouse"] = 2] = "Mouse";
+            })(PointerDeviceType = Input.PointerDeviceType || (Input.PointerDeviceType = {}));
+        })(Input = Devices.Input || (Devices.Input = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
         var Midi;
         (function (Midi) {
             class MidiInPort {
@@ -3499,12 +3514,12 @@ var Windows;
                 FS.mkdir(path);
                 FS.mount(IDBFS, {}, path);
                 // Ensure to sync pseudo file system on unload (and periodically for safety)
-                if (!this._isInit) {
+                if (!this._isInitialized) {
                     // Request an initial sync to populate the file system
-                    StorageFolder.synchronizeFileSystem();
-                    window.addEventListener("beforeunload", this.synchronizeFileSystem);
+                    StorageFolder.synchronizeFileSystem(true, () => StorageFolder.onStorageInitialized());
+                    window.addEventListener("beforeunload", () => this.synchronizeFileSystem(false));
                     setInterval(this.synchronizeFileSystem, 10000);
-                    this._isInit = true;
+                    this._isInitialized = true;
                 }
             }
             static onStorageInitialized() {
@@ -3515,13 +3530,18 @@ var Windows;
                 StorageFolder.dispatchStorageInitialized();
             }
             /**
-             * Synchronize the IDBFS memory cache back to IndexDB
+             * Synchronize the IDBFS memory cache back to IndexedDB
+             * populate: requests the filesystem to be popuplated from the IndexedDB
+             * onSynchronized: function invoked when the synchronization finished
              * */
-            static synchronizeFileSystem() {
+            static synchronizeFileSystem(populate, onSynchronized = null) {
                 if (!StorageFolder._isSynchronizing) {
                     StorageFolder._isSynchronizing = true;
-                    FS.syncfs(err => {
+                    FS.syncfs(populate, err => {
                         StorageFolder._isSynchronizing = false;
+                        if (onSynchronized) {
+                            onSynchronized();
+                        }
                         if (err) {
                             console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
                         }
@@ -3529,7 +3549,7 @@ var Windows;
                 }
             }
         }
-        StorageFolder._isInit = false;
+        StorageFolder._isInitialized = false;
         StorageFolder._isSynchronizing = false;
         Storage.StorageFolder = StorageFolder;
     })(Storage = Windows.Storage || (Windows.Storage = {}));
@@ -4269,6 +4289,7 @@ var Windows;
         (function (Xaml) {
             var WindowManager = Uno.UI.WindowManager;
             var HtmlEventDispatchResult = Uno.UI.HtmlEventDispatchResult;
+            var PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
             let NativePointerEvent;
             (function (NativePointerEvent) {
                 NativePointerEvent[NativePointerEvent["pointerover"] = 1] = "pointerover";
@@ -4351,12 +4372,15 @@ var Windows;
                 }
                 static onPointerOutReceived(evt) {
                     const element = evt.currentTarget;
-                    if (evt.isDirectlyOver(element)) {
+                    if (evt.relatedTarget && evt.isDirectlyOver(element)) {
                         // The 'pointerout' event is bubbling so we get the event when the pointer is going out of a nested element,
                         // but pointer is still over the current element.
                         // So here we check if the event is effectively because the pointer is leaving the bounds of the current element.
                         // If not, we stopPropagation so parent won't have to check it again and again.
                         // Note: We don't have to do that for the "enter" as we anyway maintain the IsOver state in managed.
+                        // Note: If relatedTarget is null it means that pointer is no longer on the app at all
+                        //		 (alt + tab for mouse, finger removed from screen, pen out of detection range)
+                        //		 If so, we have to forward the exit in all cases.
                         evt.stopPropagation();
                         return;
                     }
@@ -4428,7 +4452,7 @@ var Windows;
                     let wheelDeltaX, wheelDeltaY;
                     if (evt instanceof WheelEvent) {
                         pointerId = evt.mozInputSource ? 0 : 1; // Try to match the mouse pointer ID 0 for FF, 1 for others
-                        pointerType = "mouse";
+                        pointerType = PointerDeviceType.Mouse;
                         pressure = 0.5; // like WinUI
                         wheelDeltaX = evt.deltaX;
                         wheelDeltaY = evt.deltaY;
@@ -4446,7 +4470,7 @@ var Windows;
                     }
                     else {
                         pointerId = evt.pointerId;
-                        pointerType = evt.pointerType;
+                        pointerType = Xaml.UIElement.toPointerDeviceType(evt.pointerType);
                         pressure = evt.pressure;
                         wheelDeltaX = 0;
                         wheelDeltaY = 0;
@@ -4458,9 +4482,10 @@ var Windows;
                     args.y = evt.clientY;
                     args.ctrl = evt.ctrlKey;
                     args.shift = evt.shiftKey;
+                    args.hasRelatedTarget = evt.relatedTarget !== null;
                     args.buttons = evt.buttons;
                     args.buttonUpdate = evt.button;
-                    args.typeStr = pointerType;
+                    args.deviceType = pointerType;
                     args.srcHandle = Number(srcHandle);
                     args.timestamp = evt.timeStamp;
                     args.pressure = pressure;
@@ -4486,6 +4511,19 @@ var Windows;
                             return NativePointerEvent.wheel;
                         default:
                             return undefined;
+                    }
+                }
+                static toPointerDeviceType(type) {
+                    switch (type) {
+                        case "touch":
+                            return PointerDeviceType.Touch;
+                        case "pen":
+                            // Note: As of 2019-11-28, once pen pressed events pressed/move/released are reported as TOUCH on Firefox
+                            //		 https://bugzilla.mozilla.org/show_bug.cgi?id=1449660
+                            return PointerDeviceType.Pen;
+                        case "mouse":
+                        default:
+                            return PointerDeviceType.Mouse;
                     }
                 }
             }
@@ -5876,17 +5914,13 @@ var Windows;
                     Module.setValue(pData + 36, this.shift, "i32");
                     Module.setValue(pData + 40, this.buttons, "i32");
                     Module.setValue(pData + 44, this.buttonUpdate, "i32");
-                    {
-                        const stringLength = lengthBytesUTF8(this.typeStr);
-                        const pString = Module._malloc(stringLength + 1);
-                        stringToUTF8(this.typeStr, pString, stringLength + 1);
-                        Module.setValue(pData + 48, pString, "*");
-                    }
+                    Module.setValue(pData + 48, this.deviceType, "i32");
                     Module.setValue(pData + 52, this.srcHandle, "i32");
                     Module.setValue(pData + 56, this.timestamp, "double");
                     Module.setValue(pData + 64, this.pressure, "double");
                     Module.setValue(pData + 72, this.wheelDeltaX, "double");
                     Module.setValue(pData + 80, this.wheelDeltaY, "double");
+                    Module.setValue(pData + 88, this.hasRelatedTarget, "i32");
                 }
             }
             Xaml.NativePointerEventArgs = NativePointerEventArgs;
