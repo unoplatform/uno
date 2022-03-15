@@ -139,5 +139,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("ms-appx:///Assets/StoreLogo.png", targetNullValueSource.UriSource.ToString());
 #endif
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Image_Is_Loaded_From_URL()
+		{
+			string decoded_url = "https://nv-assets.azurewebsites.net/tests/images/image with spaces.jpg";
+			var img = new Image();
+			var SUT = new BitmapImage(new Uri(decoded_url));
+			img.Source = SUT;
+
+			TestServices.WindowHelper.WindowContent = img;
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitFor(() => img.ActualHeight > 0, 3000);
+
+			Assert.IsTrue(img.ActualHeight > 0);			
+		}
 	}
 }
