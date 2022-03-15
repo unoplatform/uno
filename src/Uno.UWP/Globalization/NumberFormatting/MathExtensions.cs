@@ -1,56 +1,70 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 
-namespace Windows.Globalization.NumberFormatting
+namespace Uno.Globalization.NumberFormatting;
+
+internal static class MathExtensions
 {
-	internal static class MathExtensions
+	public static int GetLength(this int input)
 	{
-		public static int GetLength(this int input)
+		if (input == 0)
 		{
-			if (input == 0)
-			{
-				return 1;
-			}
-
-			return (int)Math.Floor(Math.Log10(Math.Abs(input))) + 1;
+			return 1;
 		}
 
-		public static double MultiplyByPow10(this double value, int pow10)
+		return (int)Math.Floor(Math.Log10(Math.Abs(input))) + 1;
+	}
+
+	public static double MultiplyByPow10(this double value, int pow10)
+	{
+		if (double.IsInfinity(value))
 		{
-			if (double.IsInfinity(value))
-			{
-				return value;
-			}
+			return value;
+		}
 
-			if (double.IsNaN(value))
-			{
-				return value;
-			}
+		if (double.IsNaN(value))
+		{
+			return value;
+		}
 
-			var numberDecimalSeparator = CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator;
-			var text = value.ToString(CultureInfo.InvariantCulture);
-			var indexOfSeperator = text.IndexOf(numberDecimalSeparator, StringComparison.Ordinal);
+		var numberDecimalSeparator = CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator;
+		var text = value.ToString(CultureInfo.InvariantCulture);
+		var indexOfSeperator = text.IndexOf(numberDecimalSeparator, StringComparison.Ordinal);
 
-			if (indexOfSeperator == -1)
-			{
-				var part = new string(Enumerable.Repeat('0', pow10).ToArray());
-				return double.Parse($"{text}{part}", CultureInfo.InvariantCulture);
-			}
+		if (indexOfSeperator == -1)
+		{
+			var stringBuilder = new StringBuilder();
+			stringBuilder.Append(text);
+			stringBuilder.Append('0', pow10);
+			return double.Parse(stringBuilder.ToString(), CultureInfo.InvariantCulture);
+		}
 
-			var fractionLength = text.Length - indexOfSeperator - numberDecimalSeparator.Length;
-			var diff = fractionLength - pow10;
+		var fractionLength = text.Length - indexOfSeperator - numberDecimalSeparator.Length;
+		var diff = fractionLength - pow10;
 
-			if (diff <= 0)
-			{
-				var part = new string(Enumerable.Repeat('0', -diff).ToArray());
-				return double.Parse($"{text.Remove(indexOfSeperator, numberDecimalSeparator.Length)}{part}", CultureInfo.InvariantCulture);
-			}
+		if (diff <= 0)
+		{
+			var stringBuilder = new StringBuilder();
+			stringBuilder.Append(text);
+			stringBuilder.Remove(indexOfSeperator, numberDecimalSeparator.Length);
+			stringBuilder.Append('0', -diff);
+			return double.Parse(stringBuilder.ToString(), CultureInfo.InvariantCulture);
+		}
+		else
+		{
+			var stringBuilder = new StringBuilder();
+			stringBuilder.Append(text, 0, indexOfSeperator);
+			stringBuilder.Append(text, indexOfSeperator + numberDecimalSeparator.Length, pow10);
+			stringBuilder.Append(numberDecimalSeparator);
 
-			var integerPart = text.Substring(0, indexOfSeperator);
-			var integerNewPart = text.Substring(indexOfSeperator + numberDecimalSeparator.Length, pow10);
-			var newFractionPart = text.Substring(indexOfSeperator + numberDecimalSeparator.Length + pow10);
-			return double.Parse($"{integerPart}{integerNewPart}{numberDecimalSeparator}{newFractionPart}", CultureInfo.InvariantCulture);
+			var startIndex = indexOfSeperator + numberDecimalSeparator.Length + pow10;
+			stringBuilder.Append(text, startIndex, text.Length - startIndex);
+
+			return double.Parse(stringBuilder.ToString(), CultureInfo.InvariantCulture);
 		}
 	}
 }
