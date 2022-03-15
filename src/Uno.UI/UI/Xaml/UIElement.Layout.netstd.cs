@@ -237,7 +237,6 @@ namespace Windows.UI.Xaml
 
 				if (isDirty)
 				{
-					Console.WriteLine($"{this}: Looping for measure, {remainingTries} tries remaining...");
 					continue;
 				}
 
