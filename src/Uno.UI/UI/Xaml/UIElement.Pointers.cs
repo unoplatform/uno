@@ -855,7 +855,7 @@ namespace Windows.UI.Xaml
 		{
 			// We override the isOver for the relevancy check as we will update it right after.
 			var isOverOrCaptured = ValidateAndUpdateCapture(args, isOver: true);
-			var handledInManaged = SetOver(args, true, muteEvent: ctx.IsInternal || !isOverOrCaptured);
+			var handledInManaged = SetOver(args, true, muteEvent: ctx.IsInternal || !isOverOrCaptured, ctx, isEnterExit: true);
 
 			return handledInManaged;
 		}
@@ -1013,7 +1013,7 @@ namespace Windows.UI.Xaml
 			var handledInManaged = false;
 			var isOverOrCaptured = ValidateAndUpdateCapture(args);
 
-			handledInManaged |= SetOver(args, false, muteEvent: ctx.IsInternal || !isOverOrCaptured, ctx);
+			handledInManaged |= SetOver(args, false, muteEvent: ctx.IsInternal || !isOverOrCaptured, ctx, isEnterExit: true);
 
 			if (IsGestureRecognizerCreated && GestureRecognizer.IsDragging)
 			{
@@ -1141,15 +1141,20 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		internal bool IsOver(Pointer pointer) => IsPointerOver;
 
-		private bool SetOver(PointerRoutedEventArgs args, bool isOver, bool muteEvent = false, BubblingContext ctx = default)
+		private bool SetOver(PointerRoutedEventArgs args, bool isOver, bool muteEvent = false, BubblingContext ctx = default, bool isEnterExit = false)
 		{
 			var wasOver = IsPointerOver;
 			IsPointerOver = isOver;
 
-			if (muteEvent
-				|| wasOver == isOver) // nothing changed
+			var hasNotChanged = wasOver == isOver;
+			if ((muteEvent || hasNotChanged) && (!isEnterExit || ctx.IsInternal))
 			{
 				return false;
+			}
+
+			if (hasNotChanged)
+			{
+				ctx = ctx.WithMode(BubblingMode.IgnoreElement);
 			}
 
 			if (isOver) // Entered
