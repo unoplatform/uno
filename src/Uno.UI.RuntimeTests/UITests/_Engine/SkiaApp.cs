@@ -18,9 +18,12 @@ namespace Uno.UITest;
 
 public class SkiaApp : IApp
 {
+	private static SkiaApp? _current; // Make sure to not create multiple instances of the app (with a single InputInjector instance)!
+	internal static SkiaApp Current => _current ??= new();
+
 	private readonly InputInjector _input;
 
-	public SkiaApp()
+	private SkiaApp()
 	{
 		_input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Cannot create input injector");
 
@@ -89,6 +92,12 @@ public class SkiaApp : IApp
 		return query(QueryEx.Any).Execute(all).ToArray();
 	}
 
+	public void CleanupPointers()
+	{
+		InjectMouseInput(MouseReleaseAny());
+		InjectMouseInput(MouseMoveTo(0, 0));
+	}
+
 	public IDisposable SetPointer(PointerDeviceType type)
 	{
 		var previous = CurrentPointerType;
@@ -138,6 +147,13 @@ public class SkiaApp : IApp
 				_input.UninitializeTouchInjection();
 				break;
 
+			case PointerDeviceType.Mouse:
+				InjectMouseInput(MouseReleaseAny());
+				InjectMouseInput(MouseMoveTo(x, y));
+				InjectMouseInput(MousePress());
+				InjectMouseInput(MouseRelease());
+				break;
+
 			default:
 				throw NotSupported();
 		}
@@ -168,6 +184,7 @@ public class SkiaApp : IApp
 								| InjectedInputPointerOptions.FirstButton
 								| InjectedInputPointerOptions.PointerDown
 								| InjectedInputPointerOptions.InContact
+								| InjectedInputPointerOptions.InRange
 						}
 					};
 
@@ -188,6 +205,7 @@ public class SkiaApp : IApp
 								PointerOptions = InjectedInputPointerOptions.Update
 									| InjectedInputPointerOptions.FirstButton
 									| InjectedInputPointerOptions.InContact
+									| InjectedInputPointerOptions.InRange
 							}
 						};
 					}
@@ -208,10 +226,107 @@ public class SkiaApp : IApp
 				}
 				break;
 
+			case PointerDeviceType.Mouse:
+				InjectMouseInput(MouseReleaseAny());
+				InjectMouseInput(MouseMoveTo(fromX, fromY));
+				InjectMouseInput(MousePress());
+				InjectMouseInput(MouseMoveTo(toX, toY));
+				InjectMouseInput(MouseRelease());
+				break;
+
 			default:
 				throw NotSupported();
 		}
 	}
+
+	private InjectedInputMouseInfo MousePress()
+		=> new()
+		{
+			TimeOffsetInMilliseconds = 1,
+			MouseOptions = InjectedInputMouseOptions.LeftDown,
+		};
+
+	private InjectedInputMouseInfo MouseRelease()
+		=> new()
+		{
+			TimeOffsetInMilliseconds = 1,
+			MouseOptions = InjectedInputMouseOptions.LeftUp,
+		};
+
+	private InjectedInputMouseInfo? MouseReleaseAny()
+	{
+		var current = _input.Mouse;
+		var options = default(InjectedInputMouseOptions);
+		if (current.Properties.IsLeftButtonPressed)
+		{
+			options |= InjectedInputMouseOptions.LeftUp;
+		}
+		if (current.Properties.IsMiddleButtonPressed)
+		{
+			options |= InjectedInputMouseOptions.MiddleUp;
+		}
+		if (current.Properties.IsRightButtonPressed)
+		{
+			options |= InjectedInputMouseOptions.RightUp;
+		}
+		if (current.Properties.IsXButton1Pressed)
+		{
+			options |= InjectedInputMouseOptions.XUp;
+		}
+
+		return options is default(InjectedInputMouseOptions)
+			? null
+			: new()
+			{
+				TimeOffsetInMilliseconds = 1,
+				MouseOptions = options
+			};
+	}
+
+	private InjectedInputMouseInfo MoveMouseBy(int deltaX, int deltaY)
+		=>new()
+		{
+			DeltaX = deltaX,
+			DeltaY = deltaY,
+			TimeOffsetInMilliseconds = 1,
+			MouseOptions = InjectedInputMouseOptions.MoveNoCoalesce,
+		};
+
+	private IEnumerable<InjectedInputMouseInfo> MouseMoveTo(double x, double y, int? steps = null)
+	{
+		var current = _input.Mouse;
+		var deltaX = x - current.Position.X;
+		var deltaY = y - current.Position.Y;
+
+		steps ??= (int)Math.Min(Math.Max(Math.Abs(deltaX), Math.Abs(deltaY)), 512);
+		if (steps is 0)
+		{
+			yield break;
+		}
+
+		var stepX = (int)Math.Ceiling(deltaX / steps.Value);
+		var stepY = (int)Math.Ceiling(deltaY / steps.Value);
+
+		for (var step = 0; step <= steps; step++)
+		{
+			if (Math.Abs(_input.Mouse.Position.X - x) < 1)
+			{
+				stepX = 0;
+			}
+			if (Math.Abs(_input.Mouse.Position.Y - y) < 1)
+			{
+				stepY = 0;
+			}
+
+			yield return MoveMouseBy(stepX, stepY);
+		}
+	}
+
+	private void InjectMouseInput(IEnumerable<InjectedInputMouseInfo> input)
+		=> _input.InjectMouseInput(input.Where(i => i is not null));
+
+	private void InjectMouseInput(params InjectedInputMouseInfo[] input)
+		=> _input.InjectMouseInput(input.Where(i => i is not null));
 
 	private Exception NotSupported([CallerMemberName] string operation = null)
 		=> new NotSupportedException($"'{operation}' with type '{CurrentPointerType}' is not supported yet on this platform. Feel free to contribute!");

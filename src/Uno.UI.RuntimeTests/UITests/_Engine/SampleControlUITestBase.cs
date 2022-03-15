@@ -13,9 +13,7 @@ namespace SamplesApp.UITests;
 // Note: All tests that are inheriting from this base class will run on UI thread.
 public class SampleControlUITestBase : IInjectPointers
 {
-	private SkiaApp? _app;
-
-	protected SkiaApp App => _app ??= new();
+	protected SkiaApp App => SkiaApp.Current;
 
 	/// <summary>
 	/// Gets the default pointer type for the current platform
@@ -28,6 +26,9 @@ public class SampleControlUITestBase : IInjectPointers
 	{
 		await App.RunAsync(metadataName);
 	}
+
+	void IInjectPointers.CleanupPointers()
+		=> App.CleanupPointers();
 
 	/// <inheritdoc />
 	public IDisposable SetPointer(PointerDeviceType type)

@@ -83,12 +83,19 @@ public partial class InjectedInputMouseInfo
 			properties.MouseWheelDelta = DeltaX;
 			properties.IsHorizontalMouseWheel = true;
 		}
+		else if (MouseOptions.HasFlag(InjectedInputMouseOptions.Move) || MouseOptions.HasFlag(InjectedInputMouseOptions.MoveNoCoalesce))
+		{
+			properties.MouseWheelDelta = default;
+			properties.IsHorizontalMouseWheel = false;
+
+			// Should we use MouseData ??? But How to discriminate between X and Y moves?
+			position.X += DeltaX;
+			position.Y += DeltaY;
+		}
 		else
 		{
 			properties.MouseWheelDelta = default;
 			properties.IsHorizontalMouseWheel = false;
-			position.X += DeltaX;
-			position.Y += DeltaY;
 		}
 
 		properties.PointerUpdateKind = update;
@@ -97,10 +104,10 @@ public partial class InjectedInputMouseInfo
 			state.FrameId + TimeOffsetInMilliseconds,
 			state.Timestamp + TimeOffsetInMilliseconds,
 			PointerDevice.For(PointerDeviceType.Mouse),
-			1,
+			uint.MaxValue - 42, // Try to avoid conflict with the real mouse pointer
 			position,
 			position,
-			isInContact: true, // Always true for mouse
+			isInContact: properties.HasPressedButton,
 			properties);
 
 		return new PointerEventArgs(point, default);

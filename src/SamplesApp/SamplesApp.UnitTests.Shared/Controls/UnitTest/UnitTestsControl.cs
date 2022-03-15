@@ -697,9 +697,15 @@ namespace Uno.UI.Samples.Tests
 							{
 								await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 								{
+									if (instance is IInjectPointers pointersInjector)
+									{
+										pointersInjector.CleanupPointers();
+									}
+
 									if (testCase.Pointer is { } pt)
 									{
 										var ptSubscription = (instance as IInjectPointers ?? throw new InvalidOperationException("test class does not supports pointer selection.")).SetPointer(pt);
+
 										cleanupActions.Add(async _ => ptSubscription.Dispose());
 									}
 
