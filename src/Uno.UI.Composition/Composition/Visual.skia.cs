@@ -1,9 +1,8 @@
 #nullable enable
 
-#if !__IOS__
 using System.Numerics;
-using System;
 using SkiaSharp;
+using Uno.UI.Composition.Composition;
 
 namespace Windows.UI.Composition
 {
@@ -49,6 +48,7 @@ namespace Windows.UI.Composition
 				}
 			}
 		}
+
+		internal ShadowState? ShadowState { get; set; }
 	}
 }
-#endif

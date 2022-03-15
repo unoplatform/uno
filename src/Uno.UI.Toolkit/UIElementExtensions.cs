@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
+using Uno.UI.Composition.Composition;
 
 #if HAS_UNO
 using Uno.Extensions;
@@ -142,6 +143,23 @@ namespace Uno.UI.Toolkit
 					uiElement.UnsetCssClasses("noclip");
 				}
 			}
+#elif __SKIA__
+			if (element is UIElement uiElement)
+			{
+				var visual = uiElement.Visual;
+
+				const float SHADOW_SIGMA_X_MODIFIER = 1f / 3.5f;
+				const float SHADOW_SIGMA_Y_MODIFIER = 1f / 3.5f;
+				float x = 0.3f;
+				float y = 0.92f * 0.5f;
+
+				var dx = (float)elevation * x;
+				var dy = (float)elevation * y;
+				var sigmaX = (float)elevation * SHADOW_SIGMA_X_MODIFIER;
+				var sigmaY = (float)elevation * SHADOW_SIGMA_Y_MODIFIER;
+				var shadow = new ShadowState(dx, dy, sigmaX, sigmaY, shadowColor);
+				visual.ShadowState = shadow;
+			}
 #elif NETFX_CORE || NETCOREAPP
 			if (element is UIElement uiElement)
 			{
@@ -213,7 +231,7 @@ namespace Uno.UI.Toolkit
 				ElementCompositionPreview.SetElementChildVisual(uiHost, spriteVisual);
 			}
 #endif
-				}
+		}
 
 #endregion
 

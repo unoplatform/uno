@@ -59,7 +59,14 @@ namespace Windows.UI.Composition
 		{
 			if (visual.Opacity != 0 && visual.IsVisible)
 			{
-				surface.Canvas.Save();
+				if (visual.ShadowState is { } shadow)
+				{
+					surface.Canvas.SaveLayer(shadow.Paint);
+				}
+				else
+				{
+					surface.Canvas.Save();
+				}
 
 				var visualMatrix = surface.Canvas.TotalMatrix;
 
