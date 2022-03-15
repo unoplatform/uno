@@ -31,7 +31,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		[AutoRetry]
 		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		[InjectedPointer(PointerDeviceType.Touch)]
-		public async Task When_PressOnNestedReleaseOnContainer_Touch()
+		public async Task When_PressOnNestedAndReleaseOnContainer_Touch()
 		{
 			await RunAsync(_sample);
 
@@ -61,7 +61,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)]
 		[InjectedPointer(PointerDeviceType.Mouse)]
-		public async Task When_PressOnNestedReleaseOnContainer_Mouse()
+		public async Task When_PressOnNestedAndReleaseOnContainer_Mouse()
 		{
 			await RunAsync(_sample);
 
@@ -81,6 +81,65 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 				new("NESTED", "Exited", _inRange, _inContact),
 				new("INTERMEDIATE", "Exited", _inRange, _inContact),
 				new("CONTAINER", "Released", _inRange, _notInContact)
+			};
+
+			actual.Should().BeEquivalentTo(expected);
+		}
+
+		[Test]
+		[AutoRetry]
+#if !__SKIA__
+		[Ignore("Does not work due to the 'implicit capture'")]
+#endif
+		[InjectedPointer(PointerDeviceType.Touch)]
+		public async Task When_PressOnContainerAndReleaseOnNested_Touch()
+		{
+			await RunAsync(_sample);
+
+			var target = App.WaitForElement("_container").Single().Rect;
+			App.DragCoordinates(target.Left + 10, target.CenterY, target.CenterX, target.CenterY);
+
+			var result = App.Marked("_result").GetDependencyPropertyValue<string>("Text");
+			var actual = Parse(result);
+			var expected = new Expected[]
+			{
+				new("CONTAINER", "Entered", _inRange, _inContact),
+				new("CONTAINER", "Pressed", _inRange, _inContact),
+				new("NESTED", "Entered", _inRange, _inContact),
+				new("INTERMEDIATE", "Entered", _inRange, _inContact),
+				new("NESTED", "Released", _notInRange, _notInContact),
+				new("INTERMEDIATE", "Released", _notInRange, _notInContact),
+				new("CONTAINER", "Released", _notInRange, _notInContact),
+				new("NESTED", "Exited", _notInRange, _notInContact),
+				new("INTERMEDIATE", "Exited", _notInRange, _notInContact),
+				new("CONTAINER", "Exited", _notInRange, _notInContact),
+			};
+
+			actual.Should().BeEquivalentTo(expected);
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)]
+		[InjectedPointer(PointerDeviceType.Mouse)]
+		public async Task When_PressOnContainerAndReleaseOnNested_Mouse()
+		{
+			await RunAsync(_sample);
+
+			var target = App.WaitForElement("_container").Single().Rect;
+			App.DragCoordinates(target.Left + 10, target.CenterY, target.CenterX, target.CenterY);
+
+			var result = App.Marked("_result").GetDependencyPropertyValue<string>("Text");
+			var actual = Parse(result);
+			var expected = new Expected[]
+			{
+				new("CONTAINER", "Entered", _inRange, _notInContact),
+				new("CONTAINER", "Pressed", _inRange, _inContact),
+				new("NESTED", "Entered", _inRange, _inContact),
+				new("INTERMEDIATE", "Entered", _inRange, _inContact),
+				new("NESTED", "Released", _inRange, _notInContact),
+				new("INTERMEDIATE", "Released", _inRange, _notInContact),
+				new("CONTAINER", "Released", _inRange, _notInContact),
 			};
 
 			actual.Should().BeEquivalentTo(expected);

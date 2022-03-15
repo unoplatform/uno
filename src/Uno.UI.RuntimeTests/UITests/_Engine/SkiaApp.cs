@@ -304,21 +304,24 @@ public class SkiaApp : IApp
 			yield break;
 		}
 
-		var stepX = (int)Math.Ceiling(deltaX / steps.Value);
-		var stepY = (int)Math.Ceiling(deltaY / steps.Value);
+		var stepX = deltaX / steps.Value;
+		var stepY = deltaY / steps.Value;
 
-		for (var step = 0; step <= steps; step++)
+		stepX = stepX is > 0 ? Math.Ceiling(stepX) : Math.Floor(stepX);
+		stepY = stepY is > 0 ? Math.Ceiling(stepY) : Math.Floor(stepY);
+
+		for (var step = 0; step <= steps && (stepX is not 0 || stepY is not 0); step++)
 		{
-			if (Math.Abs(_input.Mouse.Position.X - x) < 1)
+			yield return MoveMouseBy((int)stepX, (int)stepY);
+
+			if (Math.Abs(_input.Mouse.Position.X - x) < stepX)
 			{
 				stepX = 0;
 			}
-			if (Math.Abs(_input.Mouse.Position.Y - y) < 1)
+			if (Math.Abs(_input.Mouse.Position.Y - y) < stepY)
 			{
 				stepY = 0;
 			}
-
-			yield return MoveMouseBy(stepX, stepY);
 		}
 	}
 
