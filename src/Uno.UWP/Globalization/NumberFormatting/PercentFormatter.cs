@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 using Uno.Globalization.NumberFormatting;
 
 namespace Windows.Globalization.NumberFormatting;
@@ -86,7 +87,9 @@ public partial class PercentFormatter : INumberFormatterOptions, INumberFormatte
 			return null;
 		}
 
-		text = text.Substring(0, text.Length - _symbol.Length);
+		var stringBuilder = new StringBuilder();
+		stringBuilder.Append(text, 0, text.Length - _symbol.Length);
+		text = stringBuilder.ToString();
 
 		var result = _formatterHelper.ParseDoubleCore(text);
 

@@ -2,7 +2,7 @@
 
 using System;
 using System.Globalization;
-using System.Linq;
+using System.Text;
 using Windows.Globalization.NumberFormatting;
 
 namespace Uno.Globalization.NumberFormatting;
@@ -70,55 +70,61 @@ internal partial class FormatterHelper : ISignificantDigitsOption, ISignedZeroOp
 			return "0";
 		}
 
-		var integerPart = new string('0', IntegerDigits);
-		var fractionPart = new string('0', FractionDigits);
+		var stringBuilder = new StringBuilder();
+		stringBuilder.Append('0', IntegerDigits);
 
 		if (!IsDecimalPointAlwaysDisplayed &&
 			FractionDigits == 0)
 		{
-			return integerPart;
+			return stringBuilder.ToString();
 		}
 
-		return $"{integerPart}{CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator}{fractionPart}";
+		stringBuilder.Append(CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator);
+		stringBuilder.Append('0', FractionDigits);
+		return stringBuilder.ToString();
 	}
 
 	public string FormatDoubleCore(double value)
 	{
-		var formattedFractionPart = FormatFractionPart(value);
-		var formattedIntegerPart = FormatIntegerPart(value);
-		var formatted = formattedIntegerPart + formattedFractionPart;
+		var stringBuilder = new StringBuilder();
 
-		if (IsDecimalPointAlwaysDisplayed &&
-			formattedFractionPart == string.Empty)
-		{
-			formatted += CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator;
-		}
+		AppendFormattedIntegerPart(value, stringBuilder);
+		AppendFormattedFractionPart(value, stringBuilder);
 
-		return formatted;
+		return stringBuilder.ToString();
 	}
 
-	public string FormatIntegerPart(double value)
+	public void AppendFormattedIntegerPart(double value, StringBuilder stringBuilder)
 	{
 		var integerPart = (int)Math.Truncate(value);
 
 		if (integerPart == 0 &&
 			IntegerDigits == 0)
 		{
-			return string.Empty;
+			return;
 		}
 		else if (IsGrouped)
 		{
-			var zeros = new string(Enumerable.Repeat('0', IntegerDigits - 1).ToArray());
-			var format = string.Concat(zeros, ",0");
-			return integerPart.ToString(format, CultureInfo.InvariantCulture);
+			var formatBuilder = new StringBuilder();
+			formatBuilder.Append("{0:");
+			formatBuilder.Append('0', IntegerDigits - 1);
+			formatBuilder.Append(",0");
+			formatBuilder.Append("}");
+			var format = formatBuilder.ToString();
+			stringBuilder.AppendFormat(CultureInfo.InvariantCulture, format, integerPart);
 		}
 		else
 		{
-			return integerPart.ToString($"D{IntegerDigits}", CultureInfo.InvariantCulture);
+			var formatBuilder = new StringBuilder();
+			formatBuilder.Append("{0:D");
+			formatBuilder.Append(IntegerDigits);
+			formatBuilder.Append("}");
+			var format = formatBuilder.ToString();
+			stringBuilder.AppendFormat(CultureInfo.InvariantCulture, format, integerPart);
 		}
 	}
 
-	public string FormatFractionPart(double value)
+	private void AppendFormattedFractionPart(double value, StringBuilder stringBuilder)
 	{
 		var numberDecimalSeparator = CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator;
 
@@ -130,16 +136,14 @@ internal partial class FormatterHelper : ISignificantDigitsOption, ISignedZeroOp
 		var formattedFractionPart = needZeros ? value.ToString($"F{fractionDigits}", CultureInfo.InvariantCulture) : value.ToString(CultureInfo.InvariantCulture);
 		var indexOfDecimalSeperator = formattedFractionPart.LastIndexOf(numberDecimalSeparator, StringComparison.Ordinal);
 
-		if (indexOfDecimalSeperator == -1)
+		if (indexOfDecimalSeperator != -1)
 		{
-			formattedFractionPart = string.Empty;
+			stringBuilder.Append(formattedFractionPart, indexOfDecimalSeperator, formattedFractionPart.Length - indexOfDecimalSeperator);
 		}
-		else
+		else if(IsDecimalPointAlwaysDisplayed)
 		{
-			formattedFractionPart = formattedFractionPart.Substring(indexOfDecimalSeperator);
+			stringBuilder.Append(CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator);
 		}
-
-		return formattedFractionPart;
 	}
 
 	public bool HasInvalidGroupSize(string text)

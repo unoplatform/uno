@@ -3,6 +3,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 
 namespace Uno.Globalization.NumberFormatting;
 
@@ -36,8 +37,10 @@ internal static class MathExtensions
 
 		if (indexOfSeperator == -1)
 		{
-			var part = new string(Enumerable.Repeat('0', pow10).ToArray());
-			return double.Parse($"{text}{part}", CultureInfo.InvariantCulture);
+			var stringBuilder = new StringBuilder();
+			stringBuilder.Append(text);
+			stringBuilder.Append('0', pow10);
+			return double.Parse(stringBuilder.ToString(), CultureInfo.InvariantCulture);
 		}
 
 		var fractionLength = text.Length - indexOfSeperator - numberDecimalSeparator.Length;
@@ -45,13 +48,23 @@ internal static class MathExtensions
 
 		if (diff <= 0)
 		{
-			var part = new string(Enumerable.Repeat('0', -diff).ToArray());
-			return double.Parse($"{text.Remove(indexOfSeperator, numberDecimalSeparator.Length)}{part}", CultureInfo.InvariantCulture);
+			var stringBuilder = new StringBuilder();
+			stringBuilder.Append(text);
+			stringBuilder.Remove(indexOfSeperator, numberDecimalSeparator.Length);
+			stringBuilder.Append('0', -diff);
+			return double.Parse(stringBuilder.ToString(), CultureInfo.InvariantCulture);
 		}
+		else
+		{
+			var stringBuilder = new StringBuilder();
+			stringBuilder.Append(text, 0, indexOfSeperator);
+			stringBuilder.Append(text, indexOfSeperator + numberDecimalSeparator.Length, pow10);
+			stringBuilder.Append(numberDecimalSeparator);
 
-		var integerPart = text.Substring(0, indexOfSeperator);
-		var integerNewPart = text.Substring(indexOfSeperator + numberDecimalSeparator.Length, pow10);
-		var newFractionPart = text.Substring(indexOfSeperator + numberDecimalSeparator.Length + pow10);
-		return double.Parse($"{integerPart}{integerNewPart}{numberDecimalSeparator}{newFractionPart}", CultureInfo.InvariantCulture);
+			var startIndex = indexOfSeperator + numberDecimalSeparator.Length + pow10;
+			stringBuilder.Append(text, startIndex, text.Length - startIndex);
+
+			return double.Parse(stringBuilder.ToString(), CultureInfo.InvariantCulture);
+		}
 	}
 }

@@ -58,7 +58,7 @@ public partial class NumeralSystemTranslator
 			ExceptionHelper.ThrowNullReferenceException(nameof(languages));
 		}
 
-		if (!languages.Any())
+		if (!languages!.Any())
 		{
 			ExceptionHelper.ThrowArgumentException(nameof(languages));
 		}
