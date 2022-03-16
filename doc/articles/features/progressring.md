@@ -1,6 +1,6 @@
 # ProgressRing
 
-There are 2 implementation of the `ProgressRing` control available in Uno:
+There are two implementations of the `ProgressRing` control available in Uno:
 
 Uno Platform provides two versions of the `ProgressRing` control:
 
@@ -21,18 +21,18 @@ For non-Skia targets the MUX `ProgressRing` is the recommended control. On Skia 
 
 This version comes with [WinUI 2.x and WinUI 3](https://docs.microsoft.com/en-us/windows/apps/winui/winui2/release-notes/winui-2.4#progressring) and is using an `<AnimatedVisualPlayer />` in its Control Template. It is also designed to be a replacement for the legacy version, where a custom template should work unchanged with this control.
 
-**IMPORTANT**: To use the refreshed visual style, you must add a reference to `Uno.UI.Lottie` package to your projects or the ring will not be displayed.
+**IMPORTANT**: To use the refreshed visual style, you must reference the `Uno.UI.Lottie` package in your projects, or the ring will not be displayed.
 
 ## Using the `Windows.UI.Xaml.Controls.ProgressRing`
 ![WUX `ProgressRing`](../Assets/features/progressring/wuxprogressring.png)
 
 This control works on all platforms and uses the native progress ring control by default, with the exception of Wasm where there is no native progress ring control.
 
-**Note:** In WinUI-based Uno Platform apps this controls is in the `Uno.UI.Controls.Legacy` namespace instead.
+**Note:** In WinUI-based Uno Platform apps, this control is in the `Uno.UI.Controls.Legacy` namespace instead.
 
 ### Native styles
 
-On Android and iOS the WUX `ProgressRing` uses native controls by default (`UIActivityIndicatorView` on iOS and `ProgressBar` on Android). To use the UWP rendering on these targets, you can explicitly apply `DefaultWuxProgressRingStyle`:
+On Android and iOS, the WUX `ProgressRing` uses native controls by default (`UIActivityIndicatorView` on iOS and `ProgressBar` on Android). To use the UWP rendering on these targets, you can explicitly apply the `DefaultWuxProgressRingStyle` Style:
 
 ```xaml
 <ProgressRing Style="{StaticResource DefaultWuxProgressRingStyle}" />
