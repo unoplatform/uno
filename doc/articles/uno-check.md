@@ -1,8 +1,10 @@
 # Troubleshoot your environment with uno-check
 
-If you're having trouble building an Uno Platform project and your dev environment might be the cause, the first thing you should do is run `uno-check`. 
+If you're having trouble building an Uno Platform project and your dev environment might be the cause, the first thing you should do is run [`uno-check`](https://github.com/unoplatform/uno.check).
 
-`uno-check` is a dotnet command-line tool that runs a suite of automated check-ups on your dev environment, making sure you have all the prerequisites installed to successfully develop an Uno Platform application. If it finds something missing, out of date, or misconfigured, it will either offer to automatically fix it, or else direct you to instructions to manually fix the problem.
+`uno-check` is a dotnet command-line tool that runs a suite of automated check-ups on your dev environment, making sure you have all the prerequisites installed to successfully develop an Uno Platform application. The tool is available on Windows, Linux and macOS.
+
+If it finds something missing, out of date, or misconfigured, it will either offer to automatically fix it, or else direct you to instructions to manually fix the problem.
 
 ![The uno-check tool running](Assets/uno-check-running.gif)
 
@@ -14,7 +16,11 @@ If you're having trouble building an Uno Platform project and your dev environme
 
 3. Install the tool by running the following command from the command prompt:
     ```
-    dotnet tool install --global Uno.Check
+    dotnet tool install -g uno.check
+    ```
+    To update the tool, if you already have an existing one:
+    ```
+    dotnet tool update -g uno.check
     ```
 
 4. Run the tool from the command prompt with the following command:
@@ -27,7 +33,16 @@ If you're having trouble building an Uno Platform project and your dev environme
 
 6. Once `uno-check` gives you the green light, you can [get started](https://platform.uno/docs/articles/get-started.html)!
 
-## Additional settings
+## Troubleshooting
+
+If you run into problems with uno-check, you should generally try the following:
+
+1. Update the tool to the latest version: `dotnet tool update -g uno.check --source https://api.nuget.org/v3/index.json`
+2. Run with `uno-check --force-dotnet` to ensure the workload repair/update/install commands run regardless of if uno-check thinks the workload versions look good
+3. If you have errors still, it may help to run the [Clean-Old-DotNet6-Previews.ps1](https://github.com/unoplatform/uno.check/blob/main/Clean-Old-DotNet6-Previews.ps1) script to remove old SDK Packs, templates, or otherwise old cached preview files that might be causing the problem.  Try running `uno-check --force-dotnet` again after this step.
+4. Finally, if you have problems, run with `--verbose` flag and capture the output and add it to a new issue.
+
+## Command line arguments
 
 The following command line arguments can be used to customise the tool's behavior.
 
@@ -85,7 +100,7 @@ If you're running on CI you may want to run without any required input with the 
 uno-check --non-interactive
 ```
 
-### `-d`, `--dev` Dev Manifest feed
+### `--preview` Preview Manifest feed
 
 This uses a more frequently updated manifest with newer versions of things more often. If you use the prerelease versions of Uno.UI NuGet packages, you should use this flag.
 
