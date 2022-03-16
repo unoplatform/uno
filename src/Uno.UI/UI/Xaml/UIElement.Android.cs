@@ -102,6 +102,15 @@ namespace Windows.UI.Xaml
 		internal bool IsArrangeDirty => IsLayoutRequested;
 
 		/// <summary>
+		/// Not implemented yet on this platform.
+		/// </summary>
+		internal bool IsArrangeDirtyPath
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => false;
+		}
+
+		/// <summary>
 		/// Gets the **logical** frame (a.k.a. 'finalRect') of the element while it's being arranged by a managed parent.
 		/// </summary>
 		/// <remarks>Used to keep "double" precision of arrange phase.</remarks>

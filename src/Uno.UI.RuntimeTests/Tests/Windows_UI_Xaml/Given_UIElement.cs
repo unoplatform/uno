@@ -1,4 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿#if __NETSTD__
+#define MEASURE_DIRTY_PATH_AVAILABLE
+#define ARRANGE_DIRTY_PATH_AVAILABLE
+#elif __ANDROID__
+#define MEASURE_DIRTY_PATH_AVAILABLE
+#endif
+
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI.Xaml.Controls;
@@ -8,6 +15,8 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Shapes;
 using System;
 using Windows.UI.Xaml.Media;
+using FluentAssertions;
+using FluentAssertions.Execution;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -241,6 +250,193 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await TestServices.WindowHelper.WaitForEqual(313, () => LayoutInformation.GetAvailableSize(noConstraintsBorder).Height);
 			var maxHeightAvailableSize = LayoutInformation.GetAvailableSize(maxHeightBorder);
 			Assert.AreEqual(313, maxHeightAvailableSize.Height, delta: 1); // Should return unmodified measure size, ignoring constraints like MaxHeight
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !MEASURE_DIRTY_PATH_AVAILABLE
+		[Ignore("Not supported on this platform")]
+#endif
+		public async Task When_InvalidatingMeasureExplicitly()
+		{
+			var (ctl1, ctl2, ctl3) = await SetupMeasureArrangeTest();
+
+			ctl2.InvalidateMeasure();
+
+			await TestServices.WindowHelper.WaitFor(() => ctl2.MeasureCount > 1);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			using var _ = new AssertionScope();
+
+			ctl1.MeasureCount.Should().Be(1);
+			ctl2.MeasureCount.Should().Be(2);
+			ctl3.MeasureCount.Should().Be(1);
+
+#if ARRANGE_DIRTY_PATH_AVAILABLE
+			ctl1.ArrangeCount.Should().Be(1);
+			ctl2.ArrangeCount.Should().BeInRange(1, 2); // both are acceptable, depends on the capabilities of the platform
+			ctl3.ArrangeCount.Should().Be(1);
+#endif
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !ARRANGE_DIRTY_PATH_AVAILABLE
+		[Ignore("Not supported on this platform")]
+#endif
+		public async Task When_InvalidatingArrangeExplicitly()
+		{
+			var (ctl1, ctl2, ctl3) = await SetupMeasureArrangeTest();
+
+			ctl2.InvalidateArrange();
+
+			await TestServices.WindowHelper.WaitFor(() => ctl2.ArrangeCount > 1);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			using var _ = new AssertionScope();
+
+			ctl1.MeasureCount.Should().Be(1);
+			ctl2.MeasureCount.Should().Be(1);
+			ctl3.MeasureCount.Should().Be(1);
+
+			ctl1.ArrangeCount.Should().Be(1);
+			ctl2.ArrangeCount.Should().Be(2);
+			ctl3.ArrangeCount.Should().Be(1);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !(MEASURE_DIRTY_PATH_AVAILABLE && ARRANGE_DIRTY_PATH_AVAILABLE)
+		[Ignore("Not supported on this platform")]
+#endif
+		public async Task When_InvalidatingMeasureAndArrangeByChangingSize()
+		{
+			var (ctl1, ctl2, ctl3) = await SetupMeasureArrangeTest();
+
+			ctl2.Width = 200;
+
+			await TestServices.WindowHelper.WaitFor(() => ctl2.ArrangeCount > 1);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			using var _ = new AssertionScope();
+
+			// Everything should be remeasured & rearranged
+			ctl1.MeasureCount.Should().Be(2);
+			ctl2.MeasureCount.Should().Be(2);
+			ctl3.MeasureCount.Should().Be(2);
+
+			ctl1.ArrangeCount.Should().Be(2);
+			ctl2.ArrangeCount.Should().Be(2);
+			ctl3.ArrangeCount.Should().BeInRange(1, 2); // both are acceptable, depends on the capabilities of the platform
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !(MEASURE_DIRTY_PATH_AVAILABLE && ARRANGE_DIRTY_PATH_AVAILABLE)
+		[Ignore("Not supported on this platform")]
+#endif
+		public async Task When_InvalidatingMeasureAndArrangeByChangingSizeTwice()
+		{
+			var (ctl1, ctl2, ctl3) = await SetupMeasureArrangeTest();
+
+			ctl2.Width = 200;
+			ctl3.Width = 200;
+
+			await TestServices.WindowHelper.WaitFor(() => ctl2.ArrangeCount > 1);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			using (var _ = new AssertionScope("First pass"))
+			{
+				// Everything should be remeasured & rearranged
+
+				ctl1.MeasureCount.Should().Be(2);
+				ctl2.MeasureCount.Should().Be(2);
+				ctl3.MeasureCount.Should().Be(2);
+
+				ctl1.ArrangeCount.Should().Be(2);
+				ctl2.ArrangeCount.Should().Be(2);
+				ctl3.ArrangeCount.Should().Be(2);
+			}
+
+			ctl3.Width = 50;
+
+			await TestServices.WindowHelper.WaitFor(() => ctl2.ArrangeCount > 2);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			using (var _ = new AssertionScope("Second pass"))
+			{
+				// "ctl1" should be untouched
+
+				ctl1.MeasureCount.Should().Be(2);
+				ctl2.MeasureCount.Should().Be(3);
+				ctl3.MeasureCount.Should().Be(3);
+
+				ctl1.ArrangeCount.Should().Be(2);
+				ctl2.ArrangeCount.Should().Be(3);
+				ctl3.ArrangeCount.Should().Be(3);
+			}
+		}
+
+		private static async Task<(MeasureAndArrangeCounter, MeasureAndArrangeCounter, MeasureAndArrangeCounter)> SetupMeasureArrangeTest()
+		{
+			var ctl1 = new MeasureAndArrangeCounter
+			{
+				Background = SolidColorBrushHelper.Yellow,
+				Margin = new Thickness(20)
+			};
+			var ctl2 = new MeasureAndArrangeCounter
+			{
+				Background = SolidColorBrushHelper.DarkRed,
+				Margin = new Thickness(20)
+			};
+			var ctl3 = new MeasureAndArrangeCounter
+			{
+				Background = SolidColorBrushHelper.Cornsilk,
+				Margin = new Thickness(20),
+				Width = 100,
+				Height = 100
+			};
+
+			ctl1.Children.Add(ctl2);
+			ctl2.Children.Add(ctl3);
+
+			TestServices.WindowHelper.WindowContent = ctl1;
+
+			await TestServices.WindowHelper.WaitForLoaded(ctl3);
+
+			using var _ = new AssertionScope("Setup");
+
+			ctl1.MeasureCount.Should().Be(1);
+			ctl2.MeasureCount.Should().Be(1);
+			ctl3.MeasureCount.Should().Be(1);
+
+			ctl1.ArrangeCount.Should().Be(1);
+			ctl2.ArrangeCount.Should().Be(1);
+			ctl3.ArrangeCount.Should().Be(1);
+
+			return (ctl1, ctl2, ctl3);
+		}
+
+		private partial class MeasureAndArrangeCounter : Panel
+		{
+			internal int MeasureCount;
+			internal int ArrangeCount;
+			protected override Size MeasureOverride(Size availableSize)
+			{
+				MeasureCount++;
+				return base.MeasureOverride(availableSize);
+			}
+
+			protected override Size ArrangeOverride(Size finalSize)
+			{
+				ArrangeCount++;
+				return base.ArrangeOverride(finalSize);
+			}
 		}
 	}
 
