@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Globalization.NumberFormatting;
 
@@ -7,7 +9,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 	[TestClass]
 	public class Given_CurrencyFormatter
 	{
-		private readonly string _currencyCode = "USD";
+		private const string USDCurrencyCode = "USD";
 
 		[DataTestMethod]
 		[DataRow(double.PositiveInfinity, "∞")]
@@ -15,7 +17,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(double.NaN, "NaN")]
 		public void When_FormatSpecialDouble(double value, string expected)
 		{
-			var sut = new CurrencyFormatter(_currencyCode);
+			var sut = new CurrencyFormatter(USDCurrencyCode);
 			var actual = sut.FormatDouble(value);
 
 			Assert.AreEqual(expected, actual);
@@ -36,7 +38,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(-0d, 3, 1, "$000.0")]
 		public void When_FormatDouble(double value, int integerDigits, int fractionDigits, string expected)
 		{
-			var sut = new CurrencyFormatter(_currencyCode);
+			var sut = new CurrencyFormatter(USDCurrencyCode);
 			sut.IntegerDigits = integerDigits;
 			sut.FractionDigits = fractionDigits;
 
@@ -52,7 +54,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(1234.0, 6, 0, "$001,234")]
 		public void When_FormatDoubleWithIsGroupSetTrue(double value, int integerDigits, int fractionDigits, string expected)
 		{
-			var sut = new CurrencyFormatter(_currencyCode);
+			var sut = new CurrencyFormatter(USDCurrencyCode);
 			sut.IntegerDigits = integerDigits;
 			sut.FractionDigits = fractionDigits;
 			sut.IsGrouped = true;
@@ -68,7 +70,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(3, 1, "($000.0)")]
 		public void When_FormatDoubleMinusZeroWithIsZeroSignedSetTrue(int integerDigits, int fractionDigits, string expected)
 		{
-			var sut = new CurrencyFormatter(_currencyCode);
+			var sut = new CurrencyFormatter(USDCurrencyCode);
 			sut.IntegerDigits = integerDigits;
 			sut.FractionDigits = fractionDigits;
 			sut.IsZeroSigned = true;
@@ -84,7 +86,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(3, 1, "$000.0")]
 		public void When_FormatDoubleZeroWithIsZeroSignedSetTrue(int integerDigits, int fractionDigits, string expected)
 		{
-			var sut = new CurrencyFormatter(_currencyCode);
+			var sut = new CurrencyFormatter(USDCurrencyCode);
 			sut.IntegerDigits = integerDigits;
 			sut.FractionDigits = fractionDigits;
 			sut.IsZeroSigned = true;
@@ -97,7 +99,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(1d, "$1.")]
 		public void When_FormatDoubleWithIsDecimalPointerAlwaysDisplayedSetTrue(double value, string expected)
 		{
-			var sut = new CurrencyFormatter(_currencyCode);
+			var sut = new CurrencyFormatter(USDCurrencyCode);
 			sut.IsDecimalPointAlwaysDisplayed = true;
 			sut.FractionDigits = 0;
 			sut.IntegerDigits = 0;
@@ -114,7 +116,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(12.3d, 4, 1, 0, "$12.30")]
 		public void When_FormatDoubleWithSpecificSignificantDigits(double value, int significantDigits, int integerDigits, int fractionDigits, string expected)
 		{
-			var sut = new CurrencyFormatter(_currencyCode);
+			var sut = new CurrencyFormatter(USDCurrencyCode);
 			sut.SignificantDigits = significantDigits;
 			sut.IntegerDigits = integerDigits;
 			sut.FractionDigits = fractionDigits;
@@ -126,7 +128,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[TestMethod]
 		public void When_FormatDoubleUsingIncrementNumberRounder()
 		{
-			var sut = new CurrencyFormatter(_currencyCode);
+			var sut = new CurrencyFormatter(USDCurrencyCode);
 			IncrementNumberRounder rounder = new IncrementNumberRounder();
 			rounder.Increment = 0.5;
 			sut.NumberRounder = rounder;
@@ -138,7 +140,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[TestMethod]
 		public void When_FormatDoubleUsingSignificantDigitsNumberRounder()
 		{
-			var sut = new CurrencyFormatter(_currencyCode);
+			var sut = new CurrencyFormatter(USDCurrencyCode);
 			SignificantDigitsNumberRounder rounder = new SignificantDigitsNumberRounder();
 			rounder.SignificantDigits = 1;
 			sut.NumberRounder = rounder;
@@ -150,7 +152,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[TestMethod]
 		public void When_FormatDoubleWithUseCurrencyCodeMode()
 		{
-			var sut = new CurrencyFormatter(_currencyCode);
+			var sut = new CurrencyFormatter(USDCurrencyCode);
 			sut.Mode = CurrencyFormatterMode.UseCurrencyCode;
 			var actual = sut.FormatDouble(1.8);
 
@@ -160,12 +162,15 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[TestMethod]
 		public void When_FormatDoubleAndApplyFor()
 		{
-			var sut = new CurrencyFormatter(_currencyCode);
+			var sut = new CurrencyFormatter(USDCurrencyCode);
 			var algorithm = RoundingAlgorithm.RoundHalfAwayFromZero;
 			sut.ApplyRoundingForCurrency(algorithm);
 			var actual = sut.FormatDouble(1.8);
 
-			var rounder = sut.NumberRounder as IncrementNumberRounder;
+			if (sut.NumberRounder is not IncrementNumberRounder rounder)
+			{
+				throw new Exception("NumberRounder should be of type IncrementNumberRounder");
+			}
 
 			Assert.AreEqual(algorithm, rounder.RoundingAlgorithm);
 			Assert.AreEqual("$1.80", actual);
@@ -174,7 +179,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[TestMethod]
 		public void When_Initialize()
 		{
-			var sut = new CurrencyFormatter(_currencyCode);
+			var sut = new CurrencyFormatter(USDCurrencyCode);
 
 			Assert.AreEqual(0, sut.SignificantDigits);
 			Assert.AreEqual(1, sut.IntegerDigits);
@@ -443,7 +448,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[TestMethod]
 		public void When_FormatDoubleWithSpecialCurrencyCodeAndDifferentNumeralSystem()
 		{
-			var sut = new CurrencyFormatter(_currencyCode);
+			var sut = new CurrencyFormatter(USDCurrencyCode);
 			sut.NumeralSystem = "ArabExt";
 			var actual = sut.FormatDouble(1d);
 			Assert.AreEqual("$۱٫۰۰", actual);
@@ -452,7 +457,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[TestMethod]
 		public void When_ParseDouble()
 		{
-			var sut = new CurrencyFormatter(_currencyCode);
+			var sut = new CurrencyFormatter(USDCurrencyCode);
 			var value = sut.ParseDouble("$1.00");
 
 			Assert.AreEqual(1d, value);
@@ -461,7 +466,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[TestMethod]
 		public void When_ParseDoubleWithCurrencyCodeMode()
 		{
-			var sut = new CurrencyFormatter(_currencyCode);
+			var sut = new CurrencyFormatter(USDCurrencyCode);
 			sut.Mode = CurrencyFormatterMode.UseCurrencyCode;
 			var value = sut.ParseDouble("USD 1.00");
 
@@ -471,7 +476,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[TestMethod]
 		public void When_ParseDoubleNotValid()
 		{
-			var sut = new CurrencyFormatter(_currencyCode);
+			var sut = new CurrencyFormatter(USDCurrencyCode);
 			var value = sut.ParseDouble("1.00");
 
 			Assert.IsNull(value);

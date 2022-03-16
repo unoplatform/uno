@@ -1,9 +1,11 @@
-﻿using System;
+﻿#nullable enable
 
 namespace Uno.Globalization.NumberFormatting;
 
 internal static class NumeralSystemTranslatorHelper
 {
+	public static readonly char[] EmptyDigits = new char[0];
+
 	private static readonly char[] ArabDigits = new char[] { '\u0660', '\u0661', '\u0662', '\u0663', '\u0664', '\u0665', '\u0666', '\u0667', '\u0668', '\u0669' };
 	private static readonly char[] ArabExtDigits = new char[] { '\u06F0', '\u06F1', '\u06F2', '\u06F3', '\u06F4', '\u06F5', '\u06F6', '\u06F7', '\u06F8', '\u06F9' };
 	private static readonly char[] BaliDigits = new char[] { '\u1B50', '\u1B51', '\u1B52', '\u1B53', '\u1B54', '\u1B55', '\u1B56', '\u1B57', '\u1B58', '\u1B59' };
@@ -3475,8 +3477,7 @@ internal static class NumeralSystemTranslatorHelper
 			case "Vaii":
 				return VaiiDigits;
 			default:
-				ExceptionHelper.ThrowArgumentException(nameof(numeralSystem));
-				return null;
+				return EmptyDigits;
 		}
 	}
 

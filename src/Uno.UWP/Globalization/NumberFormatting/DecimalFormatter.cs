@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
+using System.Collections.Generic;
 using Uno.Globalization.NumberFormatting;
 
 namespace Windows.Globalization.NumberFormatting;
@@ -32,7 +34,7 @@ public partial class DecimalFormatter : INumberFormatterOptions, INumberFormatte
 
 	public int FractionDigits { get => _formatterHelper.FractionDigits; set => _formatterHelper.FractionDigits = value; }
 
-	public INumberRounder NumberRounder { get; set; }
+	public INumberRounder? NumberRounder { get; set; }
 
 	public bool IsZeroSigned { get => _formatterHelper.IsZeroSigned; set => _formatterHelper.IsZeroSigned = value; }
 

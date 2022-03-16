@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using Uno;
 using Uno.Globalization.NumberFormatting;

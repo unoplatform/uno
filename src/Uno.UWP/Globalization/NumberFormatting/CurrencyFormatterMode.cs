@@ -1,4 +1,6 @@
-﻿namespace Windows.Globalization.NumberFormatting;
+﻿#nullable enable
+
+namespace Windows.Globalization.NumberFormatting;
 
 public enum CurrencyFormatterMode
 {

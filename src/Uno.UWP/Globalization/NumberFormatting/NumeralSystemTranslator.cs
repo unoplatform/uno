@@ -1,6 +1,7 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using Uno.Globalization.NumberFormatting;
 
@@ -11,7 +12,7 @@ public partial class NumeralSystemTranslator
 	private const string NumeralSystemParameterName = "numeralSystem";
 
 	private readonly static string[] _defaultLanguages = { "en-US" };
-	private string _numeralSystem;
+	private string _numeralSystem = "Latn";
 
 	public NumeralSystemTranslator() : this(_defaultLanguages)
 	{
@@ -62,7 +63,7 @@ public partial class NumeralSystemTranslator
 			ExceptionHelper.ThrowArgumentException(nameof(languages));
 		}
 
-		foreach (var language in languages)
+		foreach (var language in languages!)
 		{
 			if (string.IsNullOrEmpty(NumeralSystemTranslatorHelper.GetNumeralSystem(language)))
 			{
@@ -75,7 +76,7 @@ public partial class NumeralSystemTranslator
 	{
 		var digitsSource = NumeralSystemTranslatorHelper.GetDigitsSource(NumeralSystem);
 
-		if (digitsSource is null)
+		if (digitsSource == NumeralSystemTranslatorHelper.EmptyDigits)
 		{
 			ExceptionHelper.ThrowArgumentException(NumeralSystemParameterName);
 		}

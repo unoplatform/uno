@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace Windows.Globalization.NumberFormatting;
 
 public enum RoundingAlgorithm

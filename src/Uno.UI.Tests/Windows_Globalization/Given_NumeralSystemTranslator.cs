@@ -1,4 +1,5 @@
-﻿
+﻿#nullable enable
+
 using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -29,22 +30,6 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.ThrowsException<ArgumentException>(() => sut.NumeralSystem = numeralSystem);
 		}
 
-		[TestMethod]
-		public void When_NumeralSystemIsNull_Then_Throw()
-		{
-			try
-			{
-				new NumeralSystemTranslator { NumeralSystem = null };
-			}
-			catch (Exception ex)
-			{
-				Assert.AreEqual("Value cannot be null.", ex.Message);
-			}
-
-			Assert.ThrowsException<ArgumentNullException>(() => new NumeralSystemTranslator { NumeralSystem = null });
-		}
-
-
 		[DataTestMethod]
 		[DataRow(new string[0])]
 		[DataRow(new string[] { "abcd" })]
@@ -61,20 +46,6 @@ namespace Uno.UI.Tests.Windows_Globalization
 			}
 			
 			Assert.ThrowsException<ArgumentException>(() => new NumeralSystemTranslator(languages));
-		}
-
-		[TestMethod]
-		public void When_LanguagesIsNull_Then_Throw()
-		{
-			try
-			{
-				new NumeralSystemTranslator(null);
-			}
-			catch (Exception ex)
-			{
-				Assert.AreEqual("Invalid pointer\r\n\r\nlanguages", ex.Message);
-			}
-			Assert.ThrowsException<NullReferenceException>(() => new NumeralSystemTranslator(null));
 		}
 
 		[DataTestMethod]

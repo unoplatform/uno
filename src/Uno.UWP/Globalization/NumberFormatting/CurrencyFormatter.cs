@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using Uno.Globalization.NumberFormatting;
 
@@ -10,7 +12,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 
 	private readonly FormatterHelper _formatterHelper;
 	private readonly NumeralSystemTranslator _translator;
-	private readonly CurrencyData _currencyData;
+	private readonly CurrencyData _currencyData = CurrencyData.Empty;
 
 	public CurrencyFormatter(string currencyCode)
 	{
@@ -19,7 +21,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 
 		var currencyData = CurrencyData.GetCurrencyData(currencyCode);
 
-		if (currencyData is null)
+		if (currencyData == CurrencyData.Empty)
 		{
 			ExceptionHelper.ThrowArgumentException(nameof(currencyCode));
 		}
@@ -48,7 +50,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 
 	public int FractionDigits { get => _formatterHelper.FractionDigits; set => _formatterHelper.FractionDigits = value; }
 
-	public INumberRounder NumberRounder { get; set; }
+	public INumberRounder? NumberRounder { get; set; }
 
 	public bool IsZeroSigned { get => _formatterHelper.IsZeroSigned; set => _formatterHelper.IsZeroSigned = value; }
 

@@ -1,13 +1,17 @@
-﻿namespace Uno.Globalization.NumberFormatting;
+﻿#nullable enable
+
+namespace Uno.Globalization.NumberFormatting;
 
 internal class CurrencyData
 {
 	public int DefaultFractionDigits { get; set; }
-	public string CurrencyCode { get; set; }
-	public string Symbol { get; set; }
+	public string CurrencyCode { get; set; } = "";
+	public string Symbol { get; set; } = "";
 	public bool IsSymbolAfterNumber { get; set; }
 
 	#region Initialize
+	public static readonly CurrencyData Empty = new CurrencyData();
+
 	private static readonly CurrencyData _allCurrencyData = new CurrencyData { CurrencyCode = "ALL", Symbol = "Lek", DefaultFractionDigits = 2 };
 	private static readonly CurrencyData _afnCurrencyData = new CurrencyData { CurrencyCode = "AFN", Symbol = "؋", DefaultFractionDigits = 2 };
 	private static readonly CurrencyData _arsCurrencyData = new CurrencyData { CurrencyCode = "ARS", Symbol = "ARS ", DefaultFractionDigits = 2 };
@@ -345,9 +349,8 @@ internal class CurrencyData
 				return _yerCurrencyData;
 			case "ZWD":
 				return _zwdCurrencyData;
-
 			default:
-				return null;
+				return Empty;
 		}
 	}
 }

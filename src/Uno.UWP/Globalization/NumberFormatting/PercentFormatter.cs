@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Uno.Globalization.NumberFormatting;
@@ -38,7 +40,7 @@ public partial class PercentFormatter : INumberFormatterOptions, INumberFormatte
 
 	public int FractionDigits { get => _formatterHelper.FractionDigits; set => _formatterHelper.FractionDigits = value; }
 
-	public INumberRounder NumberRounder { get; set; }
+	public INumberRounder? NumberRounder { get; set; }
 
 	public bool IsZeroSigned { get => _formatterHelper.IsZeroSigned; set => _formatterHelper.IsZeroSigned = value; }
 

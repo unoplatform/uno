@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Globalization.NumberFormatting;
 

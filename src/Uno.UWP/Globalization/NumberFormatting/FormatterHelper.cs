@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Globalization;
 using System.Linq;
 using Windows.Globalization.NumberFormatting;
@@ -43,7 +45,7 @@ internal partial class FormatterHelper : ISignificantDigitsOption, ISignedZeroOp
 			return false;
 		}
 
-		text = null;
+		text = "";
 		return true;
 	}
 
