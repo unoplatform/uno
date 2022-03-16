@@ -10,31 +10,31 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			int index = 0;
 			//int expectedVisualStatesSize = 6;
-			int expectedVisualStatesSize = 1; // See Uno TODO below
+			int expectedVisualStatesSize = 2; // See Uno TODO below
 
 			var validVisualStates = new string[expectedVisualStatesSize];
 
 			// Uno TODO: use this method for all visual states. For now it's only used for dragging states.
 
-			//// Focus States
-			//if (FocusState.Unfocused != criteria.focusState && criteria.isEnabled)
-			//{
-			//	if (FocusState.Pointer == criteria.focusState)
-			//	{
-			//		validVisualStates[index] = "PointerFocused";
-			//	}
-			//	else
-			//	{
-			//		validVisualStates[index] = "Focused";
-			//	}
-			//}
+			// Focus States
+			if (FocusState.Unfocused != criteria.focusState && criteria.isEnabled)
+			{
+				if (FocusState.Pointer == criteria.focusState)
+				{
+					validVisualStates[index] = "PointerFocused";
+				}
+				else
+				{
+					validVisualStates[index] = "Focused";
+				}
+			}
 
-			//else
-			//{
-			//	validVisualStates[index] = "Unfocused";
-			//}
+			else
+			{
+				validVisualStates[index] = "Unfocused";
+			}
 
-			//++index;
+			++index;
 
 			//// Multi-Select States
 			//if (criteria.isMultiSelect)
