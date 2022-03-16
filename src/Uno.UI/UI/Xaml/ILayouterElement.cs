@@ -41,7 +41,6 @@ internal static class LayouterElementExtensions
 		var frameworkElement = element as FrameworkElement;
 		if (frameworkElement is null) // native unmanaged element?
 		{
-			measuredSizeLogical = availableSize;
 			isDirty = true;
 		}
 		else if (!isDirty)
