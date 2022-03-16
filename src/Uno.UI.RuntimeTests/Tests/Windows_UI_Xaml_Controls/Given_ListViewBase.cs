@@ -715,6 +715,267 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForEqual(181, () => GetTop(list.ContainerFromItem(18) as ListViewItem, container), tolerance: 2);
 		}
 
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SmallExtent_And_Large_List_Scroll_To_End_Full_Size()
+		{
+			var materialized = 0;
+			var container = new Grid { Height = 100, Width=100 };
+
+			var list = new ListView
+			{
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = new DataTemplate(() => {
+
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+					var border = new Border() {
+						Height = 100,
+						Child = tb
+					};
+
+					materialized++;
+
+					return border;
+				})
+			};
+			container.Children.Add(list);
+
+			var source = new ObservableCollection<int>(Enumerable.Range(0, 50));
+			list.ItemsSource = source;
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForIdle();
+
+			ScrollBy(list, 1000000); // Scroll to end
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(3, materialized);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SmallExtent_And_Large_List_Scroll_To_End_Half_Size()
+		{
+			var materialized = 0;
+			var container = new Grid { Height = 100, Width = 100 };
+
+			var list = new ListView
+			{
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = new DataTemplate(() => {
+
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+					var border = new Border()
+					{
+						Height = 50,
+						Child = tb
+					};
+
+					materialized++;
+
+					return border;
+				})
+			};
+			container.Children.Add(list);
+
+			var source = new ObservableCollection<int>(Enumerable.Range(0, 50));
+			list.ItemsSource = source;
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForIdle();
+
+			ScrollBy(list, 1000000); // Scroll to end
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(4, materialized);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SmallExtent_And_Large_List_Scroll_To_End_And_Back_Half_Size()
+		{
+			var materialized = 0;
+			var dataContextChanged = 0;
+			var container = new Grid { Height = 100, Width = 100 };
+
+			var list = new ListView
+			{
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = new DataTemplate(() => {
+
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+					var border = new Border()
+					{
+						Height = 50,
+						Child = tb
+					};
+					tb.RegisterPropertyChangedCallback(FrameworkElement.DataContextProperty, (s, e) => dataContextChanged++);
+
+					materialized++;
+
+					return border;
+				})
+			};
+			container.Children.Add(list);
+
+			var source = new ObservableCollection<int>(Enumerable.Range(0, 50));
+			list.ItemsSource = source;
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForIdle();
+
+			using var scope = new AssertionScope();
+
+			var scroll = list.FindFirstChild<ScrollViewer>();
+			Assert.IsNotNull(scroll);
+
+			dataContextChanged.Should().BeLessThan(5, $"dataContextChanged {dataContextChanged}");
+
+			ScrollBy(list, scroll.ExtentHeight / 2); // Scroll to middle
+
+			await WindowHelper.WaitForIdle();
+
+			materialized.Should().BeLessThan(8, $"materialized {materialized}");
+			dataContextChanged.Should().BeLessThan(10, $"dataContextChanged {dataContextChanged}");
+
+			ScrollBy(list, scroll.ExtentHeight / 4); // Scroll to Quarter
+
+			await WindowHelper.WaitForIdle();
+
+			materialized.Should().BeLessThan(8, $"materialized {materialized}");
+			dataContextChanged.Should().BeLessThan(15, $"dataContextChanged {dataContextChanged}");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SmallExtent_And_Very_Large_List_Scroll_To_End_And_Back_Half_Size()
+		{
+			var materialized = 0;
+			var container = new Grid { Height = 100, Width = 100 };
+
+			var list = new ListView
+			{
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = new DataTemplate(() => {
+
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+					var border = new Border()
+					{
+						Height = 50,
+						Child = tb
+					};
+
+					materialized++;
+
+					return border;
+				})
+			};
+			container.Children.Add(list);
+
+			var source = new ObservableCollection<int>(Enumerable.Range(0, 500));
+			list.ItemsSource = source;
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForIdle();
+
+			using var scope = new AssertionScope();
+
+			var scroll = list.FindFirstChild<ScrollViewer>();
+			Assert.IsNotNull(scroll);
+
+			ScrollBy(list, scroll.ExtentHeight / 2); // Scroll to middle
+
+			await WindowHelper.WaitForIdle();
+
+			materialized.Should().BeLessThan(10, $"materialized {materialized}");
+
+			ScrollBy(list, scroll.ExtentHeight / 4); // Scroll to Quarter
+
+			await WindowHelper.WaitForIdle();
+
+			materialized.Should().BeLessThan(10, $"materialized {materialized}");
+		}
+
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_LargeExtent_And_Very_Large_List_Scroll_To_End_And_Back_Half_Size()
+		{
+			const int ElementHeight = 50;
+			var materialized = 0;
+			var dataContextChanged = 0;
+			var container = new Grid { Height = 300, Width = 300 };
+
+			var list = new ListView
+			{
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = new DataTemplate(() => {
+
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+					var border = new Border()
+					{
+						Height = ElementHeight,
+						Child = tb
+					};
+					tb.RegisterPropertyChangedCallback(FrameworkElement.DataContextProperty, (s, e) => dataContextChanged++);
+
+					materialized++;
+
+					return border;
+				})
+			};
+			container.Children.Add(list);
+
+			var source = new ObservableCollection<int>(Enumerable.Range(0, 500));
+			list.ItemsSource = source;
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForIdle();
+
+			using var scope = new AssertionScope();
+
+			var scroll = list.FindFirstChild<ScrollViewer>();
+			Assert.IsNotNull(scroll);
+			dataContextChanged.Should().BeLessThan(10, $"dataContextChanged {materialized}");
+
+			ScrollBy(list, ElementHeight);
+
+			await WindowHelper.WaitForIdle();
+
+			materialized.Should().BeLessThan(12, $"materialized {materialized}");
+			dataContextChanged.Should().BeLessThan(11, $"dataContextChanged {materialized}");
+
+			ScrollBy(list, ElementHeight * 3);
+
+			await WindowHelper.WaitForIdle();
+
+			materialized.Should().BeLessThan(14, $"materialized {materialized}");
+			dataContextChanged.Should().BeLessThan(13, $"dataContextChanged {materialized}");
+
+			ScrollBy(list, scroll.ExtentHeight / 2); // Scroll to middle
+
+			await WindowHelper.WaitForIdle();
+
+			materialized.Should().BeLessThan(14, $"materialized {materialized}");
+			dataContextChanged.Should().BeLessThan(25, $"dataContextChanged {materialized}");
+
+			ScrollBy(list, scroll.ExtentHeight / 4); // Scroll to Quarter
+
+			await WindowHelper.WaitForIdle();
+
+			materialized.Should().BeLessThan(14, $"materialized {materialized}");
+			dataContextChanged.Should().BeLessThan(35, $"dataContextChanged {materialized}");
+		}
+#endif
+
 		private static double GetTop(FrameworkElement element, FrameworkElement container)
 		{
 			if (element == null)
