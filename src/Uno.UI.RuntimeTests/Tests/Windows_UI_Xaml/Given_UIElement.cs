@@ -386,17 +386,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		{
 			var ctl1 = new MeasureAndArrangeCounter
 			{
-				Background = SolidColorBrushHelper.Yellow,
+				Background = new SolidColorBrush(Windows.UI.Colors.Yellow),
 				Margin = new Thickness(20)
 			};
 			var ctl2 = new MeasureAndArrangeCounter
 			{
-				Background = SolidColorBrushHelper.DarkRed,
+				Background = new SolidColorBrush(Windows.UI.Colors.DarkRed),
 				Margin = new Thickness(20)
 			};
 			var ctl3 = new MeasureAndArrangeCounter
 			{
-				Background = SolidColorBrushHelper.Cornsilk,
+				Background = new SolidColorBrush(Windows.UI.Colors.Cornsilk),
 				Margin = new Thickness(20),
 				Width = 100,
 				Height = 100
@@ -438,6 +438,57 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				return base.ArrangeOverride(finalSize);
 			}
 		}
+
+#if !NETFX_CORE
+		[TestMethod]
+		public void MeasureDirtyTest()
+		{
+			var sut = new Grid();
+			sut.Children.Add(new MeasureAndArrangeCounter());
+
+			using var x = new AssertionScope();
+
+			using (_ = new AssertionScope("Before Measure"))
+			{
+				sut.IsFirstMeasureDone.Should().BeFalse("IsFirstMeasureDone");
+				sut.IsMeasureDirty.Should().BeTrue("IsMeasureDirty");
+				sut.IsMeasureDirtyPath.Should().BeTrue("IsMeasureDirtyPath");
+			}
+
+			sut.Measure(new Size(100, 100));
+
+			using (_ = new AssertionScope("After Measure"))
+			{
+				sut.IsFirstMeasureDone.Should().BeTrue("IsFirstMeasureDone");
+				sut.IsMeasureDirty.Should().BeFalse("IsMeasureDirty");
+				sut.IsMeasureDirtyPath.Should().BeFalse("IsMeasureDirtyPath");
+			}
+		}
+
+
+		[TestMethod]
+		public void ArrangeDirtyTest()
+		{
+			var sut = new Grid();
+			sut.Children.Add(new MeasureAndArrangeCounter());
+
+			sut.Measure(new Size(100, 100));
+
+			using var x = new AssertionScope();
+
+			using (_ = new AssertionScope("Before Arrange"))
+			{
+				sut.IsArrangeDirty.Should().BeTrue("IsArrangeDirty");
+			}
+
+			sut.Arrange(new Rect(0, 0, 100, 100));
+			using (_ = new AssertionScope("After Arrange"))
+			{
+				sut.IsArrangeDirty.Should().BeFalse("IsArrangeDirty");
+				sut.IsArrangeDirtyPath.Should().BeFalse("IsArrangeDirtyPath");
+			}
+		}
+#endif
 	}
 
 	internal partial class When_UpdateLayout_Then_ReentrancyNotAllowed_Element : FrameworkElement

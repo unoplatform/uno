@@ -308,7 +308,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var sv = listViewBase.FindFirstChild<ScrollViewer>();
 			Assert.IsNotNull(sv);
-			sv.ChangeView(null, scrollBy, null);
+			sv.ChangeView(null, scrollBy, null, disableAnimation: true);
 		}
 
 		private static async Task ScrollByInIncrements(ListViewBase listViewBase, double scrollBy)

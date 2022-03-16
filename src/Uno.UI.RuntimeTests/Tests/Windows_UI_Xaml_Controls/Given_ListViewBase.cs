@@ -680,9 +680,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __IOS__
-		[Ignore("Test is flaky on iOS")]
-#endif
+		[Ignore("Test is flaky")]
 		public async Task When_Scrolled_To_End_And_Last_Item_Removed()
 		{
 			var container = new Grid { Height = 210 };
