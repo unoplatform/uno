@@ -90,6 +90,14 @@ Here are some tips when building the Uno solution and failures happen:
 
 ## Other build-related topics 
 
+### Building the reference assemblies for Skia and WebAssembly
+
+Skia and WebAssembly use a custom bait-and-switch technique for assemblies for which the `netstandard2.0` target framework assemblies (called reference assemblies) found in nuget packages (`lib` folder) are only used for building applications. At the end of a head build, those referene assemblies are replaced by public API compatible assemblies located in the `uno-runtime` folder of nuget packages.
+
+When developing a feature using solution filters, if new public APIs are added, building the Uno.UI solution will not update the reference assemblies, causing applications or libraries using the overriden nuget cache to be unable to use those newly added APIs.
+
+In order to update those reference assemblies, set `<UnoTargetFrameworkOverride>netstandard2.0</UnoTargetFrameworkOverride>`, then open either the android or iOS solution filters, then build the `Uno.UI` project (and only this one, the other projects in the solution will fail to build). Doing this will generate the proper assemblies with the new APIs to be used in application or libraries using the cache override.
+
 ### Using the Package Diff tool
 
 Refer to the [guidelines for breaking changes](../contributing/guidelines/breaking-changes.md) document.
