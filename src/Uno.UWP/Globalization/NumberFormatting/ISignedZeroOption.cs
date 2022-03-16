@@ -1,7 +1,6 @@
-namespace Windows.Globalization.NumberFormatting
+namespace Windows.Globalization.NumberFormatting;
+
+public partial interface ISignedZeroOption
 {
-	public partial interface ISignedZeroOption
-	{
-		bool IsZeroSigned { get; set; }
-	}
+	bool IsZeroSigned { get; set; }
 }

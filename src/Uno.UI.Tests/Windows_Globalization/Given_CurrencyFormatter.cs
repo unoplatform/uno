@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Globalization.NumberFormatting;
 
 namespace Uno.UI.Tests.Windows_Globalization
@@ -474,6 +475,20 @@ namespace Uno.UI.Tests.Windows_Globalization
 			var value = sut.ParseDouble("1.00");
 
 			Assert.IsNull(value);
+		}
+
+		[TestMethod]
+		public void When_CurrencyCodeIsNotValid()
+		{
+			try
+			{
+				_ = new CurrencyFormatter("irr");
+			}
+			catch (Exception ex)
+			{
+				Assert.AreEqual("The parameter is incorrect.\r\n\r\ncurrencyCode", ex.Message);
+			}
+			Assert.ThrowsException<ArgumentException>(() => new CurrencyFormatter("irr"));
 		}
 	}
 }

@@ -16,12 +16,31 @@ namespace Uno.UI.Tests.Windows_Globalization
 		public void When_NumeralSystemIsInvalid_Then_Throw(string numeralSystem)
 		{
 			var sut = new NumeralSystemTranslator();
+
+			try
+			{
+				sut.NumeralSystem = numeralSystem;
+			}
+			catch (Exception ex)
+			{
+				Assert.AreEqual("The parameter is incorrect.\r\n\r\nnumeralSystem", ex.Message);
+			}
+			
 			Assert.ThrowsException<ArgumentException>(() => sut.NumeralSystem = numeralSystem);
 		}
 
 		[TestMethod]
 		public void When_NumeralSystemIsNull_Then_Throw()
 		{
+			try
+			{
+				new NumeralSystemTranslator { NumeralSystem = null };
+			}
+			catch (Exception ex)
+			{
+				Assert.AreEqual("Value cannot be null.", ex.Message);
+			}
+
 			Assert.ThrowsException<ArgumentNullException>(() => new NumeralSystemTranslator { NumeralSystem = null });
 		}
 
@@ -32,12 +51,29 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(new string[] { "en-US", "abcd" })]
 		public void When_LanguagesIsInvalid_Then_Throw(IEnumerable<string> languages)
 		{
+			try
+			{
+				new NumeralSystemTranslator(languages);
+			}
+			catch (Exception ex)
+			{
+				Assert.AreEqual("The parameter is incorrect.\r\n\r\nlanguages", ex.Message);
+			}
+			
 			Assert.ThrowsException<ArgumentException>(() => new NumeralSystemTranslator(languages));
 		}
 
 		[TestMethod]
 		public void When_LanguagesIsNull_Then_Throw()
 		{
+			try
+			{
+				new NumeralSystemTranslator(null);
+			}
+			catch (Exception ex)
+			{
+				Assert.AreEqual("Invalid pointer\r\n\r\nlanguages", ex.Message);
+			}
 			Assert.ThrowsException<NullReferenceException>(() => new NumeralSystemTranslator(null));
 		}
 

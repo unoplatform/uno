@@ -1,8 +1,7 @@
-﻿namespace Windows.Globalization.NumberFormatting
+﻿namespace Windows.Globalization.NumberFormatting;
+
+public enum CurrencyFormatterMode
 {
-	public enum CurrencyFormatterMode
-	{
-		UseSymbol = 0,
-		UseCurrencyCode = 1,
-	}
+	UseSymbol = 0,
+	UseCurrencyCode = 1,
 }

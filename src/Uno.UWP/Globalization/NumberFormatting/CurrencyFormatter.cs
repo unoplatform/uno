@@ -2,159 +2,157 @@
 using System.Collections.Generic;
 using Uno.Globalization.NumberFormatting;
 
-namespace Windows.Globalization.NumberFormatting
+namespace Windows.Globalization.NumberFormatting;
+
+public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumberFormatter, INumberFormatterOptions, ISignificantDigitsOption, INumberRounderOption, ISignedZeroOption
 {
-	public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumberFormatter, INumberFormatterOptions, ISignificantDigitsOption, INumberRounderOption, ISignedZeroOption
+	private const char NoBreakSpaceChar = ' ';
+
+	private readonly FormatterHelper _formatterHelper;
+	private readonly NumeralSystemTranslator _translator;
+	private readonly CurrencyData _currencyData;
+
+	public CurrencyFormatter(string currencyCode)
 	{
-		private const char NoBreakSpaceChar = ' ';
+		_formatterHelper = new FormatterHelper();
+		_translator = new NumeralSystemTranslator();
 
-		private readonly FormatterHelper _formatterHelper;
-		private readonly NumeralSystemTranslator _translator;
+		var currencyData = CurrencyData.GetCurrencyData(currencyCode);
 
-		private CurrencyData _currencyData;
-		
-		public CurrencyFormatter(string currencyCode)
+		if (currencyData is null)
 		{
-			_formatterHelper = new FormatterHelper();
-			_translator = new NumeralSystemTranslator();
-
-			var currencyData = CurrencyData.GetCurrencyData(currencyCode);
-
-			if (currencyData is null)
-			{
-				throw new ArgumentException($"The parameter is incorrect.\r\n\r\n{currencyCode}");
-			}
-
-			_currencyData = currencyData;
-			FractionDigits = currencyData.DefaultFractionDigits;
+			ExceptionHelper.ThrowArgumentException(nameof(currencyCode));
 		}
 
-		public CurrencyFormatterMode Mode { get; set; }
+		_currencyData = currencyData;
+		FractionDigits = currencyData.DefaultFractionDigits;
+	}
 
-		public bool IsDecimalPointAlwaysDisplayed { get => _formatterHelper.IsDecimalPointAlwaysDisplayed; set => _formatterHelper.IsDecimalPointAlwaysDisplayed = value; }
+	public CurrencyFormatterMode Mode { get; set; }
 
-		public int IntegerDigits { get => _formatterHelper.IntegerDigits; set => _formatterHelper.IntegerDigits = value; }
+	public bool IsDecimalPointAlwaysDisplayed { get => _formatterHelper.IsDecimalPointAlwaysDisplayed; set => _formatterHelper.IsDecimalPointAlwaysDisplayed = value; }
 
-		public bool IsGrouped { get => _formatterHelper.IsGrouped; set => _formatterHelper.IsGrouped = value; }
+	public int IntegerDigits { get => _formatterHelper.IntegerDigits; set => _formatterHelper.IntegerDigits = value; }
 
-		public string NumeralSystem
+	public bool IsGrouped { get => _formatterHelper.IsGrouped; set => _formatterHelper.IsGrouped = value; }
+
+	public string NumeralSystem
+	{
+		get => _translator.NumeralSystem;
+		set => _translator.NumeralSystem = value;
+	}
+
+	public IReadOnlyList<string> Languages => _translator.Languages;
+
+	public string ResolvedLanguage => _translator.ResolvedLanguage;
+
+	public int FractionDigits { get => _formatterHelper.FractionDigits; set => _formatterHelper.FractionDigits = value; }
+
+	public INumberRounder NumberRounder { get; set; }
+
+	public bool IsZeroSigned { get => _formatterHelper.IsZeroSigned; set => _formatterHelper.IsZeroSigned = value; }
+
+	public int SignificantDigits { get => _formatterHelper.SignificantDigits; set => _formatterHelper.SignificantDigits = value; }
+
+	public string Format(double value) => FormatDouble(value);
+
+	public string FormatDouble(double value)
+	{
+		if (!_formatterHelper.TryValidate(value, out string text))
 		{
-			get => _translator.NumeralSystem;
-			set => _translator.NumeralSystem = value;
+			return text;
 		}
 
-		public IReadOnlyList<string> Languages => _translator.Languages;
-
-		public string ResolvedLanguage => _translator.ResolvedLanguage;
-
-		public int FractionDigits { get => _formatterHelper.FractionDigits; set => _formatterHelper.FractionDigits = value; }
-
-		public INumberRounder NumberRounder { get; set; }
-
-		public bool IsZeroSigned { get => _formatterHelper.IsZeroSigned; set => _formatterHelper.IsZeroSigned = value; }
-
-		public int SignificantDigits { get => _formatterHelper.SignificantDigits; set => _formatterHelper.SignificantDigits = value; }
-
-		public string Format(double value) => FormatDouble(value);
-
-		public string FormatDouble(double value)
+		if (NumberRounder != null)
 		{
-			if (!_formatterHelper.TryValidate(value, out string text))
-			{
-				return text;
-			}
+			value = NumberRounder.RoundDouble(value);
+		}
 
-			if (NumberRounder != null)
-			{
-				value = NumberRounder.RoundDouble(value);
-			}
+		string formatted = string.Empty;
+		bool needParentheses = false;
 
-			string formatted = string.Empty;
-			bool needParentheses = false;
-
-			if (value == 0d)
+		if (value == 0d)
+		{
+			if (IsZeroSigned && value.IsNegative())
 			{
-				if (IsZeroSigned && value.IsNegative())
-				{
-					formatted = _formatterHelper.FormatZeroCore();
-					needParentheses = true;
-				}
-				else
-				{
-					formatted = _formatterHelper.FormatZero(value);
-				}
+				formatted = _formatterHelper.FormatZeroCore();
+				needParentheses = true;
 			}
 			else
 			{
-				if (value.IsNegative())
-				{
-					value = -value;
-					needParentheses = true;
-				}
-
-				formatted = _formatterHelper.FormatDoubleCore(value);
+				formatted = _formatterHelper.FormatZero(value);
 			}
-
-			switch (Mode)
-			{
-				case CurrencyFormatterMode.UseSymbol:
-					formatted = $"{_currencyData.Symbol}{formatted}";
-					break;
-				case CurrencyFormatterMode.UseCurrencyCode:
-					formatted = $"{_currencyData.CurrencyCode}{NoBreakSpaceChar}{formatted}";
-					break;
-			}
-
-			formatted = _translator.TranslateNumerals(formatted);
-
-			if (needParentheses)
-			{
-				formatted = $"({formatted})";
-			}
-
-			return formatted;
 		}
-
-		public double? ParseDouble(string text)
+		else
 		{
-			text = _translator.TranslateBackNumerals(text);
-
-			var startWith = "";
-
-			switch (Mode)
+			if (value.IsNegative())
 			{
-				case CurrencyFormatterMode.UseSymbol:
-					startWith = _currencyData.Symbol;
-					break;
-				case CurrencyFormatterMode.UseCurrencyCode:
-					startWith = $"{_currencyData.CurrencyCode}{NoBreakSpaceChar}";
-					break;
+				value = -value;
+				needParentheses = true;
 			}
 
-			if (!text.StartsWith(startWith, StringComparison.Ordinal))
-			{
-				return null;
-			}
-
-			text = text.Substring(startWith.Length);
-
-			var result = _formatterHelper.ParseDoubleCore(text);
-
-			if (!result.HasValue)
-			{
-				return null;
-			}
-
-			return result;
+			formatted = _formatterHelper.FormatDoubleCore(value);
 		}
 
-		public void ApplyRoundingForCurrency(RoundingAlgorithm roundingAlgorithm)
+		switch (Mode)
 		{
-			NumberRounder = new IncrementNumberRounder
-			{
-				RoundingAlgorithm = roundingAlgorithm,
-				Increment = Math.Pow(10, -_currencyData.DefaultFractionDigits)
-			};
+			case CurrencyFormatterMode.UseSymbol:
+				formatted = $"{_currencyData.Symbol}{formatted}";
+				break;
+			case CurrencyFormatterMode.UseCurrencyCode:
+				formatted = $"{_currencyData.CurrencyCode}{NoBreakSpaceChar}{formatted}";
+				break;
 		}
+
+		formatted = _translator.TranslateNumerals(formatted);
+
+		if (needParentheses)
+		{
+			formatted = $"({formatted})";
+		}
+
+		return formatted;
+	}
+
+	public double? ParseDouble(string text)
+	{
+		text = _translator.TranslateBackNumerals(text);
+
+		var startWith = "";
+
+		switch (Mode)
+		{
+			case CurrencyFormatterMode.UseSymbol:
+				startWith = _currencyData.Symbol;
+				break;
+			case CurrencyFormatterMode.UseCurrencyCode:
+				startWith = $"{_currencyData.CurrencyCode}{NoBreakSpaceChar}";
+				break;
+		}
+
+		if (!text.StartsWith(startWith, StringComparison.Ordinal))
+		{
+			return null;
+		}
+
+		text = text.Substring(startWith.Length);
+
+		var result = _formatterHelper.ParseDoubleCore(text);
+
+		if (!result.HasValue)
+		{
+			return null;
+		}
+
+		return result;
+	}
+
+	public void ApplyRoundingForCurrency(RoundingAlgorithm roundingAlgorithm)
+	{
+		NumberRounder = new IncrementNumberRounder
+		{
+			RoundingAlgorithm = roundingAlgorithm,
+			Increment = Math.Pow(10, -_currencyData.DefaultFractionDigits)
+		};
 	}
 }

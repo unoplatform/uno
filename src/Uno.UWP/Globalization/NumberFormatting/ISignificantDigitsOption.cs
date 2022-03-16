@@ -1,7 +1,6 @@
-namespace Windows.Globalization.NumberFormatting
+namespace Windows.Globalization.NumberFormatting;
+
+public partial interface ISignificantDigitsOption
 {
-	public partial interface ISignificantDigitsOption
-	{
-		int SignificantDigits { get; set; }
-	}
+	int SignificantDigits { get; set; }
 }
