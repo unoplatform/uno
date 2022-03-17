@@ -1,7 +1,7 @@
 parameters:
-  DotNetVersion: '6.0.200'
+  DotNetVersion: '6.0.300-preview.22154.4'
   UnoCheck_Version: '1.1.0-dev.22'
-  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/90603a57991621c9998fa66534a14e5bf470acc4/manifests/uno.ui-preview.manifest.json'
+  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/d14571a546b55f58e51e392c04cf098168d6fe2d/manifests/uno.ui-preview.manifest.json'
 
 steps:
 
@@ -21,6 +21,7 @@ steps:
     inputs:
       packageType: sdk
       version: ${{ parameters.DotNetVersion }}
+      includePreviewVersions: true
 
   - template: jdk-setup.yml
     
