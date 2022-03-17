@@ -10,7 +10,6 @@
     d:DesignWidth="400">
 	<UserControl.Resources>
 		<Style x:Key="NavigationListViewItemStyle" TargetType="ListViewItem">
-            <!--<Setter Property="extensions:FrameworkElementExtensions.Cursor" Value="Hand" />-->
             <Setter Property="AllowDrop" Value="False" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="Transparent" />
@@ -38,21 +37,6 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="{TemplateBinding CornerRadius}">
-                            <!--<material:Ripple x:Name="ContentPresenter"
-                                         Padding="{TemplateBinding Padding}"
-                                         HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                         VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                         Content="{TemplateBinding Content}"
-                                         ContentTemplate="{TemplateBinding ContentTemplate}"
-                                         ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
-                                         ContentTransitions="{TemplateBinding ContentTransitions}"
-                                         Feedback="{ThemeResource PrimaryHueMidBrush}"
-                                         FeedbackOpacity="{StaticResource MaterialPressedOpacity}"
-                                         FontFamily="{TemplateBinding FontFamily}"
-                                         FontSize="{TemplateBinding FontSize}"
-                                         FontWeight="{TemplateBinding FontWeight}"
-                                         Foreground="{TemplateBinding Foreground}"
-                                         IsTabStop="False" />-->
                             <ContentPresenter
                                 x:Name="ContentPresenter"
                                 Padding="{TemplateBinding Padding}"

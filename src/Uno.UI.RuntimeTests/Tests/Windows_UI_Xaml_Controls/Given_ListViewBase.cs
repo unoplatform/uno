@@ -29,6 +29,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Data;
 using Uno.UI.RuntimeTests.Extensions;
+using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -43,6 +44,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private Style ContainerMarginStyle => _testsResources["ListViewContainerMarginStyle"] as Style;
 
 		private Style NoSpaceContainerStyle => _testsResources["NoExtraSpaceListViewContainerStyle"] as Style;
+
+		private Style FocusableContainerStyle => _testsResources["FocusableListViewItemStyle"] as Style;
 
 		private DataTemplate TextBlockItemTemplate => _testsResources["TextBlockItemTemplate"] as DataTemplate;
 
@@ -808,7 +811,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
 			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 1);
-		
+
 			Assert.AreEqual(list, ItemsControl.ItemsControlFromItemContainer(item));
 		}
 
@@ -816,7 +819,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_Not_Own_Container_ContainerFromItem_Owner()
 		{
-			var list = new ListView();			
+			var list = new ListView();
 			var items = new ObservableCollection<int>()
 			{
 				1,
@@ -1897,6 +1900,102 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				Assert.AreEqual(initialReuseCount, ReuseCountGrid.GlobalReuseCount);
 			}
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
+		public async Task When_Focus_Tab()
+		{
+			var stack = new StackPanel();
+			stack.Add(new Button() { Content = "Before" });
+			var SUT = new ListView()
+			{
+				TabNavigation = KeyboardNavigationMode.Local,
+				Height = 400,
+				ItemContainerStyle = FocusableContainerStyle,
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+			stack.Add(SUT);
+			stack.Add(new Button() { Content = "After" });
+
+			var item1 = new ListViewItem() { Content = "item 1" };
+			var item2 = new ListViewItem() { Content = "item 2" };
+
+			SUT.Items.Add(item1);
+			SUT.Items.Add(item2);
+
+			WindowHelper.WindowContent = stack;
+
+			await WindowHelper.WaitForIdle();
+
+			item1.Focus(FocusState.Keyboard);
+			var success = FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
+			Assert.IsTrue(success);
+
+			var focused = FocusManager.GetFocusedElement();
+			Assert.AreEqual(item2, focused);
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
+		public async Task When_Focus_Shift_Tab()
+		{
+			var stack = new StackPanel();
+			stack.Add(new Button() { Content = "Before" });
+			var SUT = new ListView()
+			{
+				TabNavigation = KeyboardNavigationMode.Local,
+				Height = 400,
+				ItemContainerStyle = FocusableContainerStyle,
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+			stack.Add(SUT);
+			stack.Add(new Button() { Content = "After" });
+
+			var item1 = new ListViewItem() { Content = "item 1" };
+			var item2 = new ListViewItem() { Content = "item 2" };
+
+			SUT.Items.Add(item1);
+			SUT.Items.Add(item2);
+
+			WindowHelper.WindowContent = stack;
+
+			await WindowHelper.WaitForIdle();
+
+			item2.Focus(FocusState.Keyboard);
+			var success = FocusManager.TryMoveFocus(FocusNavigationDirection.Previous);
+			Assert.IsTrue(success);
+
+			var focused = FocusManager.GetFocusedElement();
+			Assert.AreEqual(item1, focused);
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
+		public async Task When_Item_Focus_VisualState()
+		{
+			var SUT = new ListView()
+			{
+				TabNavigation = KeyboardNavigationMode.Local,
+				Height = 400,
+				ItemContainerStyle = FocusableContainerStyle,
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+			var item1 = new ListViewItem() { Content = "item 1" };
+			SUT.Items.Add(item1);
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+
+			item1.Focus(FocusState.Keyboard);
+			VisualState state = null;
+			await WindowHelper.WaitForNonNull(() => state = VisualStateManager.GetCurrentState(item1, "FocusStates"));
+
+			Assert.AreEqual("Focused", state?.Name);
 		}
 
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;

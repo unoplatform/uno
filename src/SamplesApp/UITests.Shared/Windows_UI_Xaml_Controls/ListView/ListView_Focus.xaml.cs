@@ -20,7 +20,6 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 			for (int i = 0; i < 3; i++)
 			{
 				var item = new ListViewFocusViewModelItem { Label = $"Test{i}" };
-				//item.Items.Add(new TestViewModelItem { Label = "Loading..." });
 				ViewModel.Items.Add(item);
 			}
 			ViewModel.SelectedItem = ViewModel.Items[0];
