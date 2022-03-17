@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -16,16 +18,18 @@ using Uno.UITest.Helpers.Queries;
 
 namespace Uno.UITest;
 
-public class SkiaApp : IApp
+public partial class SkiaApp : IApp
 {
 	private static SkiaApp? _current; // Make sure to not create multiple instances of the app (with a single InputInjector instance)!
 	internal static SkiaApp Current => _current ??= new();
 
 	private readonly InputInjector _input;
+	private MouseHelper Mouse { get; }
 
 	private SkiaApp()
 	{
 		_input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Cannot create input injector");
+		Mouse = new MouseHelper(_input);
 
 		CurrentPointerType = DefaultPointerType;
 
@@ -94,8 +98,8 @@ public class SkiaApp : IApp
 
 	public void CleanupPointers()
 	{
-		InjectMouseInput(MouseReleaseAny());
-		InjectMouseInput(MouseMoveTo(0, 0));
+		InjectMouseInput(Mouse.ReleaseAny());
+		InjectMouseInput(Mouse.MoveTo(0, 0));
 	}
 
 	public IDisposable SetPointer(PointerDeviceType type)
@@ -148,10 +152,10 @@ public class SkiaApp : IApp
 				break;
 
 			case PointerDeviceType.Mouse:
-				InjectMouseInput(MouseReleaseAny());
-				InjectMouseInput(MouseMoveTo(x, y));
-				InjectMouseInput(MousePress());
-				InjectMouseInput(MouseRelease());
+				InjectMouseInput(Mouse.ReleaseAny());
+				InjectMouseInput(Mouse.MoveTo(x, y));
+				InjectMouseInput(Mouse.Press());
+				InjectMouseInput(Mouse.Release());
 				break;
 
 			default:
@@ -227,11 +231,11 @@ public class SkiaApp : IApp
 				break;
 
 			case PointerDeviceType.Mouse:
-				InjectMouseInput(MouseReleaseAny());
-				InjectMouseInput(MouseMoveTo(fromX, fromY));
-				InjectMouseInput(MousePress());
-				InjectMouseInput(MouseMoveTo(toX, toY));
-				InjectMouseInput(MouseRelease());
+				InjectMouseInput(Mouse.ReleaseAny());
+				InjectMouseInput(Mouse.MoveTo(fromX, fromY));
+				InjectMouseInput(Mouse.Press());
+				InjectMouseInput(Mouse.MoveTo(toX, toY));
+				InjectMouseInput(Mouse.Release());
 				break;
 
 			default:
@@ -239,97 +243,11 @@ public class SkiaApp : IApp
 		}
 	}
 
-	private InjectedInputMouseInfo MousePress()
-		=> new()
-		{
-			TimeOffsetInMilliseconds = 1,
-			MouseOptions = InjectedInputMouseOptions.LeftDown,
-		};
+	private void InjectMouseInput(IEnumerable<InjectedInputMouseInfo?> input)
+		=> _input.InjectMouseInput(input.Where(i => i is not null).Cast<InjectedInputMouseInfo>());
 
-	private InjectedInputMouseInfo MouseRelease()
-		=> new()
-		{
-			TimeOffsetInMilliseconds = 1,
-			MouseOptions = InjectedInputMouseOptions.LeftUp,
-		};
-
-	private InjectedInputMouseInfo? MouseReleaseAny()
-	{
-		var current = _input.Mouse;
-		var options = default(InjectedInputMouseOptions);
-		if (current.Properties.IsLeftButtonPressed)
-		{
-			options |= InjectedInputMouseOptions.LeftUp;
-		}
-		if (current.Properties.IsMiddleButtonPressed)
-		{
-			options |= InjectedInputMouseOptions.MiddleUp;
-		}
-		if (current.Properties.IsRightButtonPressed)
-		{
-			options |= InjectedInputMouseOptions.RightUp;
-		}
-		if (current.Properties.IsXButton1Pressed)
-		{
-			options |= InjectedInputMouseOptions.XUp;
-		}
-
-		return options is default(InjectedInputMouseOptions)
-			? null
-			: new()
-			{
-				TimeOffsetInMilliseconds = 1,
-				MouseOptions = options
-			};
-	}
-
-	private InjectedInputMouseInfo MoveMouseBy(int deltaX, int deltaY)
-		=>new()
-		{
-			DeltaX = deltaX,
-			DeltaY = deltaY,
-			TimeOffsetInMilliseconds = 1,
-			MouseOptions = InjectedInputMouseOptions.MoveNoCoalesce,
-		};
-
-	private IEnumerable<InjectedInputMouseInfo> MouseMoveTo(double x, double y, int? steps = null)
-	{
-		var current = _input.Mouse;
-		var deltaX = x - current.Position.X;
-		var deltaY = y - current.Position.Y;
-
-		steps ??= (int)Math.Min(Math.Max(Math.Abs(deltaX), Math.Abs(deltaY)), 512);
-		if (steps is 0)
-		{
-			yield break;
-		}
-
-		var stepX = deltaX / steps.Value;
-		var stepY = deltaY / steps.Value;
-
-		stepX = stepX is > 0 ? Math.Ceiling(stepX) : Math.Floor(stepX);
-		stepY = stepY is > 0 ? Math.Ceiling(stepY) : Math.Floor(stepY);
-
-		for (var step = 0; step <= steps && (stepX is not 0 || stepY is not 0); step++)
-		{
-			yield return MoveMouseBy((int)stepX, (int)stepY);
-
-			if (Math.Abs(_input.Mouse.Position.X - x) < stepX)
-			{
-				stepX = 0;
-			}
-			if (Math.Abs(_input.Mouse.Position.Y - y) < stepY)
-			{
-				stepY = 0;
-			}
-		}
-	}
-
-	private void InjectMouseInput(IEnumerable<InjectedInputMouseInfo> input)
-		=> _input.InjectMouseInput(input.Where(i => i is not null));
-
-	private void InjectMouseInput(params InjectedInputMouseInfo[] input)
-		=> _input.InjectMouseInput(input.Where(i => i is not null));
+	private void InjectMouseInput(params InjectedInputMouseInfo?[] input)
+		=> _input.InjectMouseInput(input.Where(i => i is not null).Cast<InjectedInputMouseInfo>());
 
 	private Exception NotSupported([CallerMemberName] string operation = null)
 		=> new NotSupportedException($"'{operation}' with type '{CurrentPointerType}' is not supported yet on this platform. Feel free to contribute!");

@@ -97,7 +97,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			await RunAsync(_sample);
 
 			var target = App.WaitForElement("_container").Single().Rect;
-			App.DragCoordinates(target.Left + 10, target.CenterY, target.CenterX, target.CenterY);
+			App.DragCoordinates(target.X + 10, target.CenterY, target.CenterX, target.CenterY);
 
 			var result = App.Marked("_result").GetDependencyPropertyValue<string>("Text");
 			var actual = Parse(result);
@@ -127,7 +127,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			await RunAsync(_sample);
 
 			var target = App.WaitForElement("_container").Single().Rect;
-			App.DragCoordinates(target.Left + 10, target.CenterY, target.CenterX, target.CenterY);
+			App.DragCoordinates(target.X + 10, target.CenterY, target.CenterX, target.CenterY);
 
 			var result = App.Marked("_result").GetDependencyPropertyValue<string>("Text");
 			var actual = Parse(result);

@@ -82,20 +82,4 @@
 	  <PRIResource Include="Resources\**\*.resw" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <SourceGeneratorInput Remove="UITests\_Engine\SkiaAppExtensions.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="UITests\_Engine\SamplesAppUITests\" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <SourceGeneratorInput Remove="UITests\_Engine\IAppRect.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <SourceGeneratorInput Remove="UITests\_Engine\UnoUITests\Helpers\QueryExtensions.async.cs" />
-	</ItemGroup>
-
 </Project>
