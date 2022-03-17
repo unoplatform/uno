@@ -217,7 +217,11 @@ namespace Windows.UI.Xaml.Controls
 					{
 						base.InsertItems(indexPaths);
 					}
+#if NET6_0_OR_GREATER
+					catch (Exception e)
+#else
 					catch (MonoTouchException e)
+#endif
 					{
 						this.Log().Error("Error when updating collection", e);
 					}
@@ -241,7 +245,11 @@ namespace Windows.UI.Xaml.Controls
 					{
 						base.InsertSections(sections);
 					}
+#if NET6_0_OR_GREATER
+					catch (Exception e)
+#else
 					catch (MonoTouchException e)
+#endif
 					{
 						this.Log().Error("Error when updating collection", e);
 					}
@@ -265,7 +273,11 @@ namespace Windows.UI.Xaml.Controls
 					{
 						base.DeleteItems(indexPaths);
 					}
+#if NET6_0_OR_GREATER
+					catch (Exception e)
+#else
 					catch (MonoTouchException e)
+#endif
 					{
 						this.Log().Error("Error when updating collection", e);
 					}
@@ -289,7 +301,11 @@ namespace Windows.UI.Xaml.Controls
 					{
 						base.DeleteSections(sections);
 					}
+#if NET6_0_OR_GREATER
+					catch (Exception e)
+#else
 					catch (MonoTouchException e)
+#endif
 					{
 						this.Log().Error("Error when updating collection", e);
 					}
