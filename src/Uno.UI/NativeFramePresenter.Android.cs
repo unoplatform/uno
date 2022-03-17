@@ -129,15 +129,26 @@ namespace Uno.UI.Controls
 						await newPage.AnimateAsync(GetEnterAnimation());
 						newPage.ClearAnimation();
 					}
-					if (FeatureConfiguration.NativeFramePresenter.AndroidUnloadInactivePages && oldPage != null)
+					if (oldPage is not null)
 					{
-						_pageStack.Children.Remove(oldPage);
+						if (FeatureConfiguration.NativeFramePresenter.AndroidUnloadInactivePages)
+						{
+							_pageStack.Children.Remove(oldPage);
+						}
+						else
+						{
+							oldPage.Visibility = Visibility.Collapsed;
+						}
 					}
 					break;
 				case NavigationMode.Back:
 					if (FeatureConfiguration.NativeFramePresenter.AndroidUnloadInactivePages)
 					{
 						_pageStack.Children.Insert(0, newPage);
+					}
+					else
+					{
+						newPage.Visibility = Visibility.Visible;
 					}
 					if (GetIsAnimated(oldEntry))
 					{
