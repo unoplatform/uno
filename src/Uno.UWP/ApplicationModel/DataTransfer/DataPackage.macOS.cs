@@ -14,6 +14,10 @@ using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
 
+#if NET6_0_OR_GREATER
+using NSDraggingInfo = AppKit.INSDraggingInfo;
+#endif
+
 namespace Windows.ApplicationModel.DataTransfer
 {
 	public partial class DataPackage
@@ -222,7 +226,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		/// Creates a new <see cref="DataPackageView"/> from the native drag and drop data.
 		/// </summary>
 		/// <returns>A new <see cref="DataPackageView"/> representing the native drag and drop data.</returns>
-		internal static DataPackageView CreateFromNativeDragDropData(NSDraggingInfo draggingInfo)
+		internal static DataPackageView CreateFromNativeDragDropData(INSDraggingInfo draggingInfo)
 		{
 			return GetFromNative(draggingInfo.DraggingPasteboard);
 		}

@@ -15,6 +15,11 @@ using Windows.UI.Xaml.Input;
 using Point = Windows.Foundation.Point;
 using UIElement = Windows.UI.Xaml.UIElement;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+using NSDraggingInfo = AppKit.INSDraggingInfo;
+#endif
+
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
 	internal class MacOSDragDropExtension : IDragDropExtension

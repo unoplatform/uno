@@ -15,7 +15,7 @@ using _Color = UIKit.UIColor;
 using NativePath = CoreGraphics.CGPath;
 #if NET6_0_OR_GREATER
 using ObjCRuntime;
-using NativeSingle = ObjCRuntime.nfloat;
+using NativeSingle = System.Runtime.InteropServices.NFloat;
 #else
 using NativeSingle = System.nfloat;
 #endif
@@ -25,7 +25,7 @@ using _Color = AppKit.NSColor;
 using NativePath = CoreGraphics.CGPath;
 #if NET6_0_OR_GREATER
 using ObjCRuntime;
-using NativeSingle = ObjCRuntime.nfloat;
+using NativeSingle = System.Runtime.InteropServices.NFloat;
 #else
 using NativeSingle = System.nfloat;
 #endif
