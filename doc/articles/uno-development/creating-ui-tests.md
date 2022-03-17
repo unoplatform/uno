@@ -29,7 +29,7 @@ UI tests contribute significantly to the CI build time, and for many purposes a 
 > Running the UI tests won't automatically rebuild the SamplesApp. If you add or modify samples, make sure to re-deploy the SamplesApp before you try to run UI tests against your modifications.
 
 ### Troubleshooting 
-- For Android, ensure that your system-level environment variables `JAVA_HOME` and `ANDROID_HOME` are set to the same values as the ones set in Visual Studio's Xamarin Android options panel. Note that you may need restart visual studio once the variables have been set. You may need to set these values if you get this message when running tests:
+- For Android, ensure that your system-level environment variables `JAVA_HOME` and `ANDROID_HOME` are set to the same values as the ones set in Visual Studio's Xamarin Android options panel. Note that you may need to restart Visual Studio once the variables have been set. You may need to set these values if you get this message when running tests:
    ```
    Failed to execute: C:\Program Files\Android\Jdk\microsoft_dist_openjdk_1.8.0.25\bin\keytool.exe -J-Duser.language=en -list -v -alias androiddebugkey -keystore
    ```
