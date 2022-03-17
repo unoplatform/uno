@@ -718,6 +718,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
+#if __IOS__ || __ANDROID__
+		[Ignore("Disabled because of animated scrolling, even when explicitly requested.")]
+#endif
 		public async Task When_SmallExtent_And_Large_List_Scroll_To_End_Full_Size()
 		{
 			var materialized = 0;
@@ -757,6 +760,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __IOS__ || __ANDROID__
+		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
+#endif
 		public async Task When_SmallExtent_And_Large_List_Scroll_To_End_Half_Size()
 		{
 			var materialized = 0;
@@ -797,6 +803,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __IOS__ || __ANDROID__
+		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
+#endif
 		public async Task When_SmallExtent_And_Large_List_Scroll_To_End_And_Back_Half_Size()
 		{
 			var materialized = 0;
@@ -854,6 +863,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __IOS__ || __ANDROID__
+		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
+#endif
 		public async Task When_SmallExtent_And_Very_Large_List_Scroll_To_End_And_Back_Half_Size()
 		{
 			var materialized = 0;
@@ -906,6 +918,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __IOS__ || __ANDROID__
+		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
+#endif
 		public async Task When_LargeExtent_And_Very_Large_List_Scroll_To_End_And_Back_Half_Size()
 		{
 			const int ElementHeight = 50;
@@ -944,35 +959,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var scroll = list.FindFirstChild<ScrollViewer>();
 			Assert.IsNotNull(scroll);
-			dataContextChanged.Should().BeLessThan(10, $"dataContextChanged {materialized}");
+			dataContextChanged.Should().BeLessThan(10, $"dataContextChanged {dataContextChanged}");
 
 			ScrollBy(list, ElementHeight);
 
 			await WindowHelper.WaitForIdle();
 
 			materialized.Should().BeLessThan(12, $"materialized {materialized}");
-			dataContextChanged.Should().BeLessThan(11, $"dataContextChanged {materialized}");
+			dataContextChanged.Should().BeLessThan(11, $"dataContextChanged {dataContextChanged}");
 
 			ScrollBy(list, ElementHeight * 3);
 
 			await WindowHelper.WaitForIdle();
 
 			materialized.Should().BeLessThan(14, $"materialized {materialized}");
-			dataContextChanged.Should().BeLessThan(13, $"dataContextChanged {materialized}");
+			dataContextChanged.Should().BeLessThan(13, $"dataContextChanged {dataContextChanged}");
 
 			ScrollBy(list, scroll.ExtentHeight / 2); // Scroll to middle
 
 			await WindowHelper.WaitForIdle();
 
 			materialized.Should().BeLessThan(14, $"materialized {materialized}");
-			dataContextChanged.Should().BeLessThan(25, $"dataContextChanged {materialized}");
+			dataContextChanged.Should().BeLessThan(25, $"dataContextChanged {dataContextChanged}");
 
 			ScrollBy(list, scroll.ExtentHeight / 4); // Scroll to Quarter
 
 			await WindowHelper.WaitForIdle();
 
 			materialized.Should().BeLessThan(14, $"materialized {materialized}");
-			dataContextChanged.Should().BeLessThan(35, $"dataContextChanged {materialized}");
+			dataContextChanged.Should().BeLessThan(35, $"dataContextChanged {dataContextChanged}");
 		}
 #endif
 
