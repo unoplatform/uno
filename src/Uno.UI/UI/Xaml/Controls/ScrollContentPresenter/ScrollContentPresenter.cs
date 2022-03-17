@@ -60,10 +60,17 @@ namespace Windows.UI.Xaml.Controls
 
 		private ScrollViewer Scroller => ScrollOwner as ScrollViewer;
 
-#if __WASM__
 		bool _forceChangeToCurrentView;
 
+#if __WASM__
 		bool IScrollContentPresenter.ForceChangeToCurrentView
+		{
+			get => _forceChangeToCurrentView;
+			set => _forceChangeToCurrentView = value;
+		}
+
+#elif __SKIA__
+		internal bool ForceChangeToCurrentView
 		{
 			get => _forceChangeToCurrentView;
 			set => _forceChangeToCurrentView = value;
