@@ -57,7 +57,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			Console.WriteLine("Assert that incrementing after typing in a value validates the text first.");
 			var inputBox = numBox.Descendant().Marked("InputBox");
 			inputBox.FastTap();
-			Thread.Sleep(1);
+			Thread.Sleep(200);
 			_app.EnterText("50");
 			_app.PressEnter();
 			upButton.FastTap();
