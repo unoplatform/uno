@@ -751,7 +751,12 @@ var Uno;
                 for (let i = 0; i < params.Pairs_Length; i += 2) {
                     const key = pairs[i];
                     const value = pairs[i + 1];
-                    elementStyle.setProperty(key, value);
+                    if (this.isStyleFontFamily(key)) {
+                        elementStyle.setProperty(key, this.addQuotationMarks(value));
+                    }
+                    else {
+                        elementStyle.setProperty(key, value);
+                    }
                 }
                 return true;
             }
@@ -1765,6 +1770,39 @@ var Uno;
             }
             selectInputRange(elementId, start, length) {
                 this.getView(elementId).setSelectionRange(start, start + length);
+            }
+            /**
+            * Check if style is FontFamily
+            */
+            isStyleFontFamily(style) {
+                return style.toLowerCase() == "font-family";
+            }
+            /**
+             * Define if the fontName needs add quotation marks.
+            */
+            needQuotationMarks(fontName) {
+                var myArray = fontName.split(" ");
+                var _needQuotationMarks = false;
+                for (const word in myArray) {
+                    let isnum = /^\d+$/.test(word.substring(0, 1));
+                    if (isnum) {
+                        _needQuotationMarks = true;
+                        break;
+                    }
+                }
+                return _needQuotationMarks;
+            }
+            /**
+            * Add quotation marks on fontName if is necessary.
+            */
+            addQuotationMarks(fontName) {
+                var _needQuotationMarks = this.needQuotationMarks(fontName);
+                if (_needQuotationMarks) {
+                    return "'" + fontName + "'";
+                }
+                else {
+                    return fontName;
+                }
             }
         }
         WindowManager._isHosted = false;
@@ -3499,12 +3537,12 @@ var Windows;
                 FS.mkdir(path);
                 FS.mount(IDBFS, {}, path);
                 // Ensure to sync pseudo file system on unload (and periodically for safety)
-                if (!this._isInit) {
+                if (!this._isInitialized) {
                     // Request an initial sync to populate the file system
-                    StorageFolder.synchronizeFileSystem();
-                    window.addEventListener("beforeunload", this.synchronizeFileSystem);
+                    StorageFolder.synchronizeFileSystem(true, () => StorageFolder.onStorageInitialized());
+                    window.addEventListener("beforeunload", () => this.synchronizeFileSystem(false));
                     setInterval(this.synchronizeFileSystem, 10000);
-                    this._isInit = true;
+                    this._isInitialized = true;
                 }
             }
             static onStorageInitialized() {
@@ -3515,13 +3553,18 @@ var Windows;
                 StorageFolder.dispatchStorageInitialized();
             }
             /**
-             * Synchronize the IDBFS memory cache back to IndexDB
+             * Synchronize the IDBFS memory cache back to IndexedDB
+             * populate: requests the filesystem to be popuplated from the IndexedDB
+             * onSynchronized: function invoked when the synchronization finished
              * */
-            static synchronizeFileSystem() {
+            static synchronizeFileSystem(populate, onSynchronized = null) {
                 if (!StorageFolder._isSynchronizing) {
                     StorageFolder._isSynchronizing = true;
-                    FS.syncfs(err => {
+                    FS.syncfs(populate, err => {
                         StorageFolder._isSynchronizing = false;
+                        if (onSynchronized) {
+                            onSynchronized();
+                        }
                         if (err) {
                             console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
                         }
@@ -3529,7 +3572,7 @@ var Windows;
                 }
             }
         }
-        StorageFolder._isInit = false;
+        StorageFolder._isInitialized = false;
         StorageFolder._isSynchronizing = false;
         Storage.StorageFolder = StorageFolder;
     })(Storage = Windows.Storage || (Windows.Storage = {}));

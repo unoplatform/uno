@@ -565,8 +565,12 @@ namespace Uno.UI {
 			for (let i = 0; i < params.Pairs_Length; i += 2) {
 				const key = pairs[i];
 				const value = pairs[i + 1];
-
-				elementStyle.setProperty(key, value);
+				if (this.isStyleFontFamily(key)) {
+					elementStyle.setProperty(key, this.addQuotationMarks(value));
+				}
+				else {
+					elementStyle.setProperty(key, value);
+				}
 			}
 
 			return true;
@@ -1876,6 +1880,41 @@ namespace Uno.UI {
 			(this.getView(elementId) as HTMLInputElement).setSelectionRange(start, start + length);
 		}
 
+		/**
+		* Check if style is FontFamily
+		*/
+		public isStyleFontFamily(style: string): boolean {
+			return style.toLowerCase() == "font-family";
+		}
+
+		/**
+		 * Define if the fontName needs add quotation marks.
+		*/
+		public needQuotationMarks(fontName: string): boolean {
+			const myArray = fontName.split(" ");
+			let _needQuotationMarks = false;
+			for (var word in myArray) {
+				const isnum = /^\d+$/.test(word.substring(0, 1));
+				if (isnum) {
+					_needQuotationMarks = true;
+					break;
+				}
+			}
+			return _needQuotationMarks;
+		}
+
+		/**
+		* Add quotation marks on fontName if is necessary.
+		*/
+		public addQuotationMarks(fontName: string): string {
+			let _needQuotationMarks = this.needQuotationMarks(fontName);
+			if (_needQuotationMarks) {
+				return "'" + fontName + "'";
+			}
+			else {
+				return fontName;
+			}
+		}
 	}
 
 	if (typeof define === "function") {

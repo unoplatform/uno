@@ -573,6 +573,18 @@ declare namespace Uno.UI {
         setCursor(cssCursor: string): string;
         getNaturalImageSize(imageUrl: string): Promise<string>;
         selectInputRange(elementId: number, start: number, length: number): void;
+        /**
+        * Check if style is FontFamily
+        */
+        isStyleFontFamily(style: string): boolean;
+        /**
+         * Define if the fontName needs add quotation marks.
+        */
+        needQuotationMarks(fontName: string): boolean;
+        /**
+        * Add quotation marks on fontName if is necessary.
+        */
+        addQuotationMarks(fontName: string): string;
     }
 }
 interface PointerEvent {
@@ -1014,7 +1026,7 @@ declare namespace Uno.Storage {
 }
 declare namespace Windows.Storage {
     class StorageFolder {
-        private static _isInit;
+        private static _isInitialized;
         private static _isSynchronizing;
         private static dispatchStorageInitialized;
         /**
@@ -1031,7 +1043,9 @@ declare namespace Windows.Storage {
         static setupStorage(path: string): void;
         private static onStorageInitialized;
         /**
-         * Synchronize the IDBFS memory cache back to IndexDB
+         * Synchronize the IDBFS memory cache back to IndexedDB
+         * populate: requests the filesystem to be popuplated from the IndexedDB
+         * onSynchronized: function invoked when the synchronization finished
          * */
         private static synchronizeFileSystem;
     }
