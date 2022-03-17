@@ -5,6 +5,8 @@ using System.Text.RegularExpressions;
 using Windows.Foundation.Metadata;
 using Windows.Globalization.NumberFormatting;
 
+// MUX Reference NumberBoxParser.cpp, commit 113f81e84367cba671077babd9ab3bd1610cbd55
+
 namespace Microsoft.UI.Xaml.Controls
 {
 	internal class NumberBoxParser

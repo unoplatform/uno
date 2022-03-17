@@ -1,8 +1,10 @@
-using System;
+using Uno.UI.Helpers.WinUI;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation.Provider;
+
+// MUX Reference NumberBoxAutomationPeer.cpp, commit 9052972906c8a0a1b6cb5d5c61b27d6d27cd7f11
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -26,12 +28,29 @@ namespace Microsoft.UI.Xaml.Controls
 			return base.GetPatternCore(patternInterface);
 		}
 
+		protected override string GetClassNameCore()
+		{
+			return nameof(NumberBox);
+		}
+
+		protected override string GetNameCore()
+		{
+			var name = base.GetNameCore();
+
+			if (string.IsNullOrEmpty(name))
+			{
+				name = SharedHelpers.TryGetStringRepresentationFromObject(_owner.Header);
+			}
+
+			return name;
+		}
+
 		protected override AutomationControlType GetAutomationControlTypeCore()
 		{
 			return AutomationControlType.Spinner;
 		}
 
-		NumberBox GetImpl()
+		private NumberBox GetImpl()
 		{
 			return _owner;
 		}
