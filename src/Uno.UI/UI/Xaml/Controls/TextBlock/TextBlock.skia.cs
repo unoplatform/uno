@@ -19,8 +19,8 @@ namespace Windows.UI.Xaml.Controls
 	partial class TextBlock : FrameworkElement
 	{
 		private readonly TextVisual _textVisual;
-		private readonly SerialDisposable _foregroundColorChanged = new SerialDisposable();
-		private readonly SerialDisposable _foregroundOpacityChanged = new SerialDisposable();
+
+		internal CompositionBrush ForegroundCompositionBrush;
 
 		public Size _lastMeasure;
 		private Size _lastDesiredSize;
@@ -35,30 +35,6 @@ namespace Windows.UI.Xaml.Controls
 		private int GetCharacterIndexAtPoint(Point point)
 		{
 			throw new NotSupportedException();
-		}
-
-		partial void OnForegroundChangedPartial()
-		{
-			var colorBrush = Foreground as SolidColorBrush;
-
-			if (colorBrush != null)
-			{
-				_foregroundColorChanged.Disposable = colorBrush.RegisterDisposablePropertyChangedCallback(
-					SolidColorBrush.ColorProperty,
-					(s, colorArg) => _textVisual.UpdateForeground()
-				);
-				_foregroundOpacityChanged.Disposable = colorBrush.RegisterDisposablePropertyChangedCallback(
-					SolidColorBrush.OpacityProperty,
-					(s, _) => _textVisual.UpdateForeground()
-				);
-			}
-			else
-			{
-				_foregroundColorChanged.Disposable = null;
-				_foregroundOpacityChanged.Disposable = null;
-			}
-
-			_textVisual.UpdateForeground();
 		}
 
 		protected override Size MeasureOverride(Size availableSize)

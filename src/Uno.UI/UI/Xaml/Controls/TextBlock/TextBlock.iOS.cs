@@ -11,6 +11,7 @@ using CoreGraphics;
 using Windows.UI.Text;
 using Uno.UI;
 using Windows.UI;
+using CoreAnimation;
 
 #if NET6_0_OR_GREATER
 using ObjCRuntime;
@@ -61,6 +62,7 @@ namespace Windows.UI.Xaml.Controls
 		public override void Draw(CGRect rect)
 		{
 			_drawRect = GetDrawRect(rect);
+
 			if (UseLayoutManager)
 			{
 				_layoutManager?.DrawGlyphs(new NSRange(0, (nint)_layoutManager.NumberOfGlyphs), _drawRect.Location);
@@ -213,7 +215,6 @@ namespace Windows.UI.Xaml.Controls
 			var font = UIFontHelper.TryGetFont((float)FontSize, FontWeight, FontStyle, FontFamily);
 
 			attributes.Font = font;
-			attributes.ForegroundColor = Brush.GetColorWithOpacity(Foreground, Colors.Transparent);
 
 			if (TextDecorations != TextDecorations.None)
 			{
@@ -265,6 +266,14 @@ namespace Windows.UI.Xaml.Controls
 				attributes.KerningAdjustment = (CharacterSpacing / 1000f) * 12;
 			}
 
+			// Foreground checks should be kept at the end since we **may** use the attributes to calculate text size
+			// for gradient brushes.
+			// TODO: Support other brushes (e.g. gradients):
+			if (Brush.TryGetColorWithOpacity(Foreground, out var color))
+			{
+				attributes.ForegroundColor = color;
+			}
+
 			return attributes;
 		}
 
@@ -299,7 +308,7 @@ namespace Windows.UI.Xaml.Controls
 				_textContainer.LineFragmentPadding = 0;
 				_textContainer.LineBreakMode = GetLineBreakMode();
 				_textContainer.MaximumNumberOfLines = (nuint)GetLines();
-				
+
 				// Configure layoutManager
 				_layoutManager = new NSLayoutManager();
 				_layoutManager.AddTextContainer(_textContainer);

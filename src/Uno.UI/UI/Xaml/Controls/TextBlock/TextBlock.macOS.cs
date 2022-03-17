@@ -224,7 +224,6 @@ namespace Windows.UI.Xaml.Controls
 			var font = NSFontHelper.TryGetFont((float)FontSize, FontWeight, FontStyle, FontFamily);
 
 			attributes.Font = font;
-			attributes.ForegroundColor = Brush.GetColorWithOpacity(Foreground, Colors.Transparent).Value;
 
 			if (TextDecorations != TextDecorations.None)
 			{
@@ -274,6 +273,14 @@ namespace Windows.UI.Xaml.Controls
 			{
 				//CharacterSpacing is in 1/1000 of an em, iOS KerningAdjustment is in points. 1 em = 12 points
 				attributes.KerningAdjustment = (CharacterSpacing / 1000f) * 12;
+			}
+
+			// Foreground checks should be kept at the end since we **may** use the attributes to calculate text size
+			// for gradient brushes.
+			// TODO: Support other brushes (e.g. gradients):
+			if (Brush.TryGetColorWithOpacity(Foreground, out var color))
+			{
+				attributes.ForegroundColor = color;
 			}
 
 			return attributes;

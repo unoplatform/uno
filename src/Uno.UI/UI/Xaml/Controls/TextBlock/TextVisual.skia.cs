@@ -74,14 +74,17 @@ namespace Windows.UI.Composition
 		{
 			_owner = owner;
 
-			_paint = new SKPaint
-			{
-				TextEncoding = SKTextEncoding.Utf16,
-				IsStroke = false,
-				IsAntialias = true,
-				LcdRenderText = true,
-				SubpixelText = true
-			};
+			_paint = new SKPaint();
+			ResetPaint();
+		}
+
+		private void ResetPaint()
+		{
+			_paint.TextEncoding = SKTextEncoding.Utf16;
+			_paint.IsStroke = false;
+			_paint.IsAntialias = true;
+			_paint.LcdRenderText = true;
+			_paint.SubpixelText = true;
 		}
 
 		internal Size Measure(Size availableSize)
@@ -123,17 +126,15 @@ namespace Windows.UI.Composition
 			return new Size(size.Width, size.Height);
 		}
 
-		public void UpdateForeground()
+		private void UpdateForeground(SKRect bounds)
 		{
-			switch (_owner.Foreground)
+			if (_owner.ForegroundCompositionBrush == null)
 			{
-				case SolidColorBrush scb:
-					_paint.Color = new SKColor(
-						red: scb.Color.R,
-						green: scb.Color.G,
-						blue: scb.Color.B,
-						alpha: (byte)(scb.Color.A * Compositor.CurrentOpacity));
-					break;
+				ResetPaint();
+			}
+			else
+			{
+				_owner.ForegroundCompositionBrush.UpdatePaint(_paint, bounds);
 			}
 		}
 
@@ -141,7 +142,11 @@ namespace Windows.UI.Composition
 		{
 			if (!string.IsNullOrEmpty(_owner.Text))
 			{
-				UpdateForeground();
+				UpdateForeground(new SKRect(
+					left: Offset.X,
+					top: Offset.Y,
+					right: Offset.X + Size.X,
+					bottom: Offset.Y + Size.Y));
 
 				var metrics = _paint.FontMetrics;
 				var descent = metrics.Descent;
@@ -149,7 +154,7 @@ namespace Windows.UI.Composition
 
 				var lineHeight = descent - ascent;
 
-				_textLines ??= new[] {_owner.Text};
+				_textLines ??= new[] { _owner.Text };
 
 				var y = -ascent;
 

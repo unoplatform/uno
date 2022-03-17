@@ -136,9 +136,15 @@ namespace Uno.UI.Controls
 			paint.TextSize = paintSpecs.textSize;
 			paint.UnderlineText = (textDecorations & TextDecorations.Underline) == TextDecorations.Underline;
 			paint.StrikeThruText = (textDecorations & TextDecorations.Strikethrough) == TextDecorations.Strikethrough;
+
+			// SetShader and Color doesn't seem to work together on Android.
 			if (shader != null)
 			{
 				paint.SetShader(shader);
+			}
+			else
+			{
+				paint.Color = foreground;
 			}
 
 			if (baselineAlignment == BaseLineAlignment.Superscript)
@@ -158,7 +164,6 @@ namespace Uno.UI.Controls
 			var typefaceStyle = TypefaceStyleHelper.GetTypefaceStyle(fontStyle, fontWeight);
 			var typeface = FontHelper.FontFamilyToTypeFace(fontFamily, fontWeight, typefaceStyle);
 			paint.SetTypeface(typeface);
-			paint.Color = foreground;
 
 			return paint;
 		}
