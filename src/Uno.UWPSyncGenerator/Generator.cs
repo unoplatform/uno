@@ -126,6 +126,7 @@ namespace Uno.UWPSyncGenerator
 
 			List<string> excludeNamespaces = new List<string>();
 			List<string> includeNamespaces = new List<string>();
+
 #if !HAS_UNO_WINUI
 			// For UWP compilation we need to ignore these namespaces when not explicitly generating
 			// for related projects.

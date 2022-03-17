@@ -56,5 +56,12 @@ namespace Windows.Devices.Display.Core
 			throw new global::System.NotImplementedException("The member bool DisplayDevice.IsCapabilitySupported(DisplayDeviceCapability capability) is not implemented in Uno.");
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Devices.Display.Core.DisplayScanout CreateSimpleScanoutWithDirtyRectsAndOptions( global::Windows.Devices.Display.Core.DisplaySource source,  global::Windows.Devices.Display.Core.DisplaySurface surface,  uint subresourceIndex,  uint syncInterval,  global::System.Collections.Generic.IEnumerable<global::Windows.Graphics.RectInt32> dirtyRects,  global::Windows.Devices.Display.Core.DisplayScanoutOptions options)
+		{
+			throw new global::System.NotImplementedException("The member DisplayScanout DisplayDevice.CreateSimpleScanoutWithDirtyRectsAndOptions(DisplaySource source, DisplaySurface surface, uint subresourceIndex, uint syncInterval, IEnumerable<RectInt32> dirtyRects, DisplayScanoutOptions options) is not implemented in Uno.");
+		}
+		#endif
 	}
 }

@@ -37,8 +37,30 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  double? GeometricDilutionOfPrecision
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double? GeocoordinateSatelliteData.GeometricDilutionOfPrecision is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  double? TimeDilutionOfPrecision
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double? GeocoordinateSatelliteData.TimeDilutionOfPrecision is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.PositionDilutionOfPrecision.get
 		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.HorizontalDilutionOfPrecision.get
 		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.VerticalDilutionOfPrecision.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.GeometricDilutionOfPrecision.get
+		// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.TimeDilutionOfPrecision.get
 	}
 }
