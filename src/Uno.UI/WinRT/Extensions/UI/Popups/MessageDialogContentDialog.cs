@@ -65,8 +65,7 @@ internal partial class MessageDialogContentDialog : ContentDialog
 		}
 		else
 		{
-			// In case of task cancellation, the "third" button
-			// might not really exist - use last instead.
+			// Always use the "last" command as fallback
 			var lastCommand = _commands.Last();
 			lastCommand.Invoked?.Invoke(lastCommand);
 			return lastCommand;
