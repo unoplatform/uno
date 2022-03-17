@@ -232,7 +232,13 @@ namespace Windows.UI.Composition.Interactions
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.ScaleSourceMode.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.ScaleSourceMode.set
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.Source.get
-		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.TryRedirectForManipulation(Windows.UI.Input.PointerPoint)
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  void TryRedirectForManipulation( global::Windows.UI.Input.PointerPoint pointerPoint)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "void VisualInteractionSource.TryRedirectForManipulation(PointerPoint pointerPoint)");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.DeltaPosition.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.DeltaScale.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.Position.get

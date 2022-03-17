@@ -130,17 +130,18 @@ namespace Uno.UWPSyncGenerator
 #if !HAS_UNO_WINUI
 			// For UWP compilation we need to ignore these namespaces when not explicitly generating
 			// for related projects.
-			excludeNamespaces.Add("Windows.UI.Dispatching");
-			excludeNamespaces.Add("Windows.UI.Composition");
 			if (baseName == "Uno.UI.Dispatching")
 			{
-				excludeNamespaces.Clear();
 				includeNamespaces.Add("Windows.UI.Dispatching");
 			}
-			if (baseName == "Uno.UI.Composition")
+			else if (baseName == "Uno.UI.Composition")
 			{
-				excludeNamespaces.Clear();
 				includeNamespaces.Add("Windows.UI.Composition");
+			}
+			else
+			{
+				excludeNamespaces.Add("Windows.UI.Dispatching");
+				excludeNamespaces.Add("Windows.UI.Composition");
 			}
 #endif
 
@@ -1176,6 +1177,7 @@ namespace Uno.UWPSyncGenerator
 				}
 			}
 
+#if HAS_UNO_WINUI
 			if (method.ContainingType.Name == "SwapChainPanel")
 			{
 				switch (method.Name)
@@ -1215,6 +1217,7 @@ namespace Uno.UWPSyncGenerator
 						return true;
 				}
 			}
+#endif
 
 			if (method.ContainingType.Name == "GraphicsCaptureItem")
 			{
