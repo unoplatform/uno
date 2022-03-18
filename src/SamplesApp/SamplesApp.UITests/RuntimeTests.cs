@@ -46,6 +46,12 @@ namespace SamplesApp.UITests.Runtime
 
 			_app.WaitForElement(runButton);
 
+			if (Environment.GetEnvironmentVariable(TestResultsOutputFilePath) is { } path)
+			{
+				// Used to disable showing the test output visually
+				unitTestsControl.SetDependencyPropertyValue("IsRunningOnCI", "true");
+			}
+
 			_app.FastTap(runButton);
 
 			var lastChange = DateTimeOffset.Now;

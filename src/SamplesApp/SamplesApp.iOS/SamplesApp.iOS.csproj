@@ -28,8 +28,9 @@
     <MtouchArch>x86_64</MtouchArch>
     <MtouchLink>None</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
-    <MtouchExtraArgs>--dlsym:Microsoft.Win32.Registry.dll --xml=./LinkerExclusions.xml --linkskip=$(AssemblyName) --setenv=MONO_GC_PARAMS=soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
+    <MtouchExtraArgs>--dlsym:Microsoft.Win32.Registry.dll --xml=./LinkerExclusions.xml --linkskip=$(AssemblyName) --setenv=MONO_GC_PARAMS=soft-heap-limit=1024m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchEnableSGenConc>true</MtouchEnableSGenConc>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -41,7 +42,8 @@
     <MtouchLink>None</MtouchLink>
     <MtouchArch>x86_64</MtouchArch>
     <ConsolePause>false</ConsolePause>
-    <MtouchExtraArgs>--dlsym:Microsoft.Win32.Registry.dll --xml=./LinkerExclusions.xml --linkskip=$(AssemblyName) --setenv=MONO_GC_PARAMS=soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
+    <MtouchExtraArgs>--dlsym:Microsoft.Win32.Registry.dll --xml=./LinkerExclusions.xml --linkskip=$(AssemblyName) --setenv=MONO_GC_PARAMS=soft-heap-limit=1024m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
+    <MtouchEnableSGenConc>true</MtouchEnableSGenConc>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -145,8 +147,8 @@
     </PackageReference>
     <PackageReference Include="Uno.BenchmarkDotNet" Version="0.11.7-develop" />
     <PackageReference Include="Uno.BenchmarkDotNet.Annotations" Version="0.11.7-develop" />
-		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
-		<PackageReference Include="System.Reflection.Emit" Version="4.6.0">
+    <PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
+    <PackageReference Include="System.Reflection.Emit" Version="4.6.0">
       <ExcludeAssets>all</ExcludeAssets>
     </PackageReference>
   </ItemGroup>
@@ -205,15 +207,15 @@
       <Project>{58C0CBAB-2619-4F58-BC41-5C74DBE31261}</Project>
       <Name>Uno</Name>
     </ProjectReference>
-		<ProjectReference Include="..\..\Uno.UI.Composition\Uno.UI.Composition.csproj">
-			<Project>{39c20ebb-59d8-43e5-9cf6-390521c0c82a}</Project>
-			<Name>Uno.UI.Composition</Name>
-		</ProjectReference>
-		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.csproj">
-			<Project>{ac6e2bd5-3902-46f4-8ea9-9bef09d8b39c}</Project>
-			<Name>Uno.UI.Dispatching</Name>
-		</ProjectReference>
-	</ItemGroup>
+    <ProjectReference Include="..\..\Uno.UI.Composition\Uno.UI.Composition.csproj">
+      <Project>{39c20ebb-59d8-43e5-9cf6-390521c0c82a}</Project>
+      <Name>Uno.UI.Composition</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.csproj">
+      <Project>{ac6e2bd5-3902-46f4-8ea9-9bef09d8b39c}</Project>
+      <Name>Uno.UI.Dispatching</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
   <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
   <Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
