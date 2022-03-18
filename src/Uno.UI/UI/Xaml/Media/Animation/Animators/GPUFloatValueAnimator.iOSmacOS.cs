@@ -408,8 +408,10 @@ namespace Windows.UI.Xaml.Media.Animation
 			matrix.B = b;
 			matrix.C = c;
 #else
+#pragma warning disable CS0618
 			matrix.yx = b;
 			matrix.xy = c;
+#pragma warning restore CS0618
 #endif
 
 			return NSValue.FromCATransform3D(CATransform3D.MakeFromAffine(matrix));
