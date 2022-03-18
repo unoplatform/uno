@@ -167,14 +167,14 @@ mkdir -p $LOG_FILEPATH
 xcrun simctl spawn booted log collect --output $TMP_LOG_FILEPATH
 log show --style syslog $TMP_LOG_FILEPATH > $LOG_FILEPATH_FULL
 
-if grep -Fxq "mini-generic-sharing.c:899" $LOG_FILEPATH_FULL
+if grep -xFe "mini-generic-sharing.c:899" $LOG_FILEPATH_FULL
 then
 	# The application may crash without known cause, add a marker so the job can be restarted in that case.
     echo "##[error]mini-generic-sharing.c:899 assertion reached (https://github.com/unoplatform/uno/issues/8167)"
 fi
 
 if [ ! -f "$UNO_ORIGINAL_TEST_RESULTS" ]; then
-	echo "ERROR: The test results file $UNO_ORIGINAL_TEST_RESULTS does not exist (did nunit crash ?)"
+	echo "##[error]ERROR: The test results file $UNO_ORIGINAL_TEST_RESULTS does not exist (did nunit crash ?)"
 	return 1
 fi
 
