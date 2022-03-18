@@ -10,6 +10,14 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 {
 	public partial class NumberBoxTests : SampleControlUITestBase
 	{
+		private void EnterTextInNumberBox(QueryEx numberBox, string text)
+		{
+			var inputBox = numberBox.Descendant().Marked("InputBox");
+			inputBox.FastTap();
+			_app.WaitForFocus(inputBox);
+			_app.EnterText(text);
+		}
+
 		[Test]
 		[AutoRetry]
 		public void UpDownTest()
@@ -55,10 +63,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			Assert.AreEqual(100, numBox.GetDependencyPropertyValue<double>("Value"));
 
 			Console.WriteLine("Assert that incrementing after typing in a value validates the text first.");
-			var inputBox = numBox.Descendant().Marked("InputBox");
-			inputBox.FastTap();
-			Thread.Sleep(200);
-			_app.EnterText("50");
+			EnterTextInNumberBox(numBox, "50");
 			_app.PressEnter();
 			upButton.FastTap();
 			Assert.AreEqual(55, numBox.GetDependencyPropertyValue<double>("Value"));
@@ -106,8 +111,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			Assert.AreEqual(0, numBox.GetDependencyPropertyValue<double>("Value"));
 
 			Console.Write("Assert that typing '123' in the NumberBox changes the value to 100");
-			numBox.ClearText();
-			numBox.EnterText("123");
+			EnterTextInNumberBox(numBox, "123");
 			_app.PressEnter();
 
 			Assert.AreEqual(100, numBox.GetDependencyPropertyValue<double>("Value"));

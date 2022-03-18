@@ -45,8 +45,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			_app.FastTap("MaxCheckBox");
 			_app.Marked("CustomFormatterButton").FastTap();
 
-			numBox.ClearText();
-			numBox.EnterText("۱٫۷");
+			EnterTextInNumberBox(numBox, "۱٫۷");
 			_app.PressEnter();
 			_app.PressEnter();
 
