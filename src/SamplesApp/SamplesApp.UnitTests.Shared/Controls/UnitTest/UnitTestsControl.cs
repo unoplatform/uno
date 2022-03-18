@@ -106,6 +106,16 @@ namespace Uno.UI.Samples.Tests
 			SampleChooserViewModel.Instance.SampleChanging -= OnSampleChanging;
 		}
 
+		public bool IsRunningOnCI
+		{
+			get { return (bool)GetValue(IsRunningOnCIProperty); }
+			set { SetValue(IsRunningOnCIProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for IsRunningOnCI.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty IsRunningOnCIProperty =
+			DependencyProperty.Register("IsRunningOnCI", typeof(bool), typeof(UnitTestsControl), new PropertyMetadata(false));
+
 		public string NUnitTestResultsDocument
 		{
 			get => (string)GetValue(NUnitTestResultsDocumentProperty);
@@ -182,9 +192,13 @@ namespace Uno.UI.Samples.Tests
 			void Setter()
 			{
 				testFilter.IsEnabled = runButton.IsEnabled = !isRunning || _cts == null; // Disable the testFilter to avoid SIP to re-open
-#if !DEBUG // Improves perf on CI by not re-rendering the whole test result live during tests
-				testResults.Visibility = Visibility.Collapsed;
-#endif
+
+				if (IsRunningOnCI)
+				{
+					// Improves perf on CI by not re-rendering the whole test result live during tests
+					testResults.Visibility = Visibility.Collapsed;
+				}
+
 				stopButton.IsEnabled = _cts != null && !_cts.IsCancellationRequested || !isRunning;
 				RunningStateForUITest = runningState.Text = isRunning ? "Running" : "Finished";
 				runStatus.Text = message;
@@ -225,16 +239,19 @@ namespace Uno.UI.Samples.Tests
 				Windows.UI.Core.CoreDispatcherPriority.Normal,
 				() =>
 				{
-					var testResultBlock = new TextBlock()
+					if (!IsRunningOnCI)
 					{
-						Text = $"{testClass.Name} ({testClass.Assembly.GetName().Name})",
-						Foreground = new SolidColorBrush(Colors.White),
-						FontSize = 16d,
-						IsTextSelectionEnabled = true
-					};
+						var testResultBlock = new TextBlock()
+						{
+							Text = $"{testClass.Name} ({testClass.Assembly.GetName().Name})",
+							Foreground = new SolidColorBrush(Colors.White),
+							FontSize = 16d,
+							IsTextSelectionEnabled = true
+						};
 
-					testResults.Children.Add(testResultBlock);
-					testResultBlock.StartBringIntoView();
+						testResults.Children.Add(testResultBlock);
+						testResultBlock.StartBringIntoView();
+					}
 				}
 			);
 		}
@@ -303,8 +320,11 @@ namespace Uno.UI.Samples.Tests
 					testResultBlock.Inlines.Add(new Run { Text = "\nOUT>" + console, Foreground = new SolidColorBrush(Colors.Gray) });
 				}
 
-				testResults.Children.Add(testResultBlock);
-				testResultBlock.StartBringIntoView();
+				if (!IsRunningOnCI)
+				{
+					testResults.Children.Add(testResultBlock);
+					testResultBlock.StartBringIntoView();
+				}
 
 				if (testResult == TestResult.Error || testResult == TestResult.Failed)
 				{
@@ -568,7 +588,10 @@ namespace Uno.UI.Samples.Tests
 				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
 					testFilter.IsEnabled = runButton.IsEnabled = true; // Disable the testFilter to avoid SIP to re-open
-					testResults.Visibility = Visibility.Visible;
+					if (!IsRunningOnCI)
+					{
+						testResults.Visibility = Visibility.Visible;
+					}
 					stopButton.IsEnabled = false;
 				});
 			}
