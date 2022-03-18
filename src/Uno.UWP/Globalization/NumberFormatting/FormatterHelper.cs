@@ -96,27 +96,25 @@ internal partial class FormatterHelper : ISignificantDigitsOption, ISignedZeroOp
 		{
 			return;
 		}
-		else if (IsGrouped)
+
+		var formatBuilder = StringBuilderPool.Instance.StringBuilder2;
+
+		if (IsGrouped)
 		{
-			var formatBuilder = StringBuilderPool.Instance.Get();
 			formatBuilder.Append("{0:");
 			formatBuilder.Append('0', IntegerDigits - 1);
-			formatBuilder.Append(",0");
-			formatBuilder.Append("}");
-			var format = formatBuilder.ToString();
-			StringBuilderPool.Instance.Return(formatBuilder);
-			stringBuilder.AppendFormat(CultureInfo.InvariantCulture, format, integerPart);
+			formatBuilder.Append(",0}");
 		}
 		else
 		{
-			var formatBuilder = StringBuilderPool.Instance.Get();
 			formatBuilder.Append("{0:D");
 			formatBuilder.Append(IntegerDigits);
 			formatBuilder.Append("}");
-			var format = formatBuilder.ToString();
-			StringBuilderPool.Instance.Return(formatBuilder);
-			stringBuilder.AppendFormat(CultureInfo.InvariantCulture, format, integerPart);
 		}
+
+		var format = formatBuilder.ToString();
+		formatBuilder.Clear();
+		stringBuilder.AppendFormat(CultureInfo.InvariantCulture, format, integerPart);
 	}
 
 	private void AppendFormatFractionPart(double value, StringBuilder stringBuilder)

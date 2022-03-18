@@ -55,7 +55,7 @@ public partial class DecimalFormatter : INumberFormatterOptions, INumberFormatte
 		}
 
 		
-		var stringBuilder = StringBuilderPool.Instance.Get();
+		var stringBuilder = StringBuilderPool.Instance.StringBuilder1;
 
 		if (value == 0d)
 		{
@@ -69,7 +69,7 @@ public partial class DecimalFormatter : INumberFormatterOptions, INumberFormatte
 		_translator.TranslateNumerals(stringBuilder);
 		var formatted = stringBuilder.ToString();
 
-		StringBuilderPool.Instance.Return(stringBuilder);
+		stringBuilder.Clear();
 		return formatted;
 	}
 

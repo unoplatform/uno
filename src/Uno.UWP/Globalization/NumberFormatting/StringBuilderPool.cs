@@ -1,45 +1,24 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Text;
+using System.Threading;
 
 namespace Uno.Globalization.NumberFormatting;
 
-internal class StringBuilderPool
+internal class StringBuilderPool : IDisposable
 {
-	private StringBuilder[] _items;
+	private ThreadLocal<StringBuilder> _stringBuilder1Storage = new ThreadLocal<StringBuilder>(() => new StringBuilder());
+	private ThreadLocal<StringBuilder> _stringBuilder2Storage = new ThreadLocal<StringBuilder>(() => new StringBuilder());
+
+	public StringBuilder StringBuilder1 => _stringBuilder1Storage.Value!;
+	public StringBuilder StringBuilder2 => _stringBuilder2Storage.Value!;
 
 	public static StringBuilderPool Instance { get; } = new StringBuilderPool();
 
-	public StringBuilderPool()
+	public void Dispose()
 	{
-		_items = new StringBuilder[Environment.ProcessorCount * 2];
-	}
-
-	public StringBuilder Get()
-	{
-		for (int i = 0; i < _items.Length; i++)
-		{
-			var val = _items[i];
-			if (val != null)
-			{
-				_items[i] = null;
-				return val;
-			}
-		}
-
-		return new StringBuilder();
-	}
-
-	public void Return(StringBuilder obj)
-	{
-		obj.Clear();
-
-		for (int i = 0; i < _items.Length; i++)
-		{
-			if (_items[i] == null)
-			{
-				_items[i] = obj;
-				return;
-			}
-		}
+		_stringBuilder1Storage.Dispose();
+		_stringBuilder2Storage.Dispose();
 	}
 }

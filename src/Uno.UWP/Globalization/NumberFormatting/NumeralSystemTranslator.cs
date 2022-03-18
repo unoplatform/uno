@@ -75,13 +75,13 @@ public partial class NumeralSystemTranslator
 
 	public string TranslateNumerals(string value)
 	{
-		var stringBuilder = StringBuilderPool.Instance.Get();
+		var stringBuilder = StringBuilderPool.Instance.StringBuilder1;
 		stringBuilder.Append(value);
 
 		TranslateNumerals(stringBuilder);
 		var translated = stringBuilder.ToString();
 
-		StringBuilderPool.Instance.Return(stringBuilder);
+		stringBuilder.Clear();
 		return translated;
 	}
 
@@ -194,12 +194,12 @@ public partial class NumeralSystemTranslator
 
 	public string TranslateBackNumerals(string value)
 	{
-		var stringBuilder = StringBuilderPool.Instance.Get();
+		var stringBuilder = StringBuilderPool.Instance.StringBuilder1;
 		stringBuilder.Append(value);
 		TranslateBackNumerals(stringBuilder);
 
 		var translated = stringBuilder.ToString();
-		StringBuilderPool.Instance.Return(stringBuilder);
+		stringBuilder.Clear();
 		return translated;
 	}
 

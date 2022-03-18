@@ -61,7 +61,7 @@ public partial class PercentFormatter : INumberFormatterOptions, INumberFormatte
 			value = NumberRounder.RoundDouble(value);
 		}
 
-		var stringBuilder = StringBuilderPool.Instance.Get();
+		var stringBuilder = StringBuilderPool.Instance.StringBuilder1;
 
 		if (value == 0d)
 		{
@@ -78,7 +78,7 @@ public partial class PercentFormatter : INumberFormatterOptions, INumberFormatte
 		_translator.TranslateNumerals(stringBuilder);
 
 		var formatted = stringBuilder.ToString();
-		StringBuilderPool.Instance.Return(stringBuilder);
+		stringBuilder.Clear();
 		return formatted;
 	}
 
@@ -91,10 +91,10 @@ public partial class PercentFormatter : INumberFormatterOptions, INumberFormatte
 			return null;
 		}
 
-		var stringBuilder = StringBuilderPool.Instance.Get();
+		var stringBuilder = StringBuilderPool.Instance.StringBuilder1;
 		stringBuilder.Append(text, 0, text.Length - _symbol.Length);
 		text = stringBuilder.ToString();
-		StringBuilderPool.Instance.Return(stringBuilder);
+		stringBuilder.Clear();
 
 		var result = _formatterHelper.ParseDouble(text);
 

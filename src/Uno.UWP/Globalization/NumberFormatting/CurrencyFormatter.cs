@@ -73,7 +73,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 		}
 
 		bool needParentheses = false;
-		var stringBuilder = StringBuilderPool.Instance.Get();
+		var stringBuilder = StringBuilderPool.Instance.StringBuilder1;
 
 		switch (Mode)
 		{
@@ -119,7 +119,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 
 		var formatted = stringBuilder.ToString();
 
-		StringBuilderPool.Instance.Return(stringBuilder);
+		stringBuilder.Clear();
 		return formatted;
 	}
 
@@ -142,7 +142,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 			return null;
 		}
 
-		var stringBuilder = StringBuilderPool.Instance.Get();
+		var stringBuilder = StringBuilderPool.Instance.StringBuilder1;
 
 		try
 		{
@@ -160,7 +160,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 		}
 		finally
 		{
-			StringBuilderPool.Instance.Return(stringBuilder);
+			stringBuilder.Clear();
 		}
 	}
 
