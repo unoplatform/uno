@@ -61,20 +61,24 @@ public partial class PercentFormatter : INumberFormatterOptions, INumberFormatte
 			value = NumberRounder.RoundDouble(value);
 		}
 
-		string formatted = string.Empty;
+		var stringBuilder = StringBuilderPool.Instance.Get();
 
 		if (value == 0d)
 		{
-			formatted = _formatterHelper.FormatZero(value);
+			_formatterHelper.AppendFormatZero(value, stringBuilder);
 		}
 		else
 		{
 			// due to accuracy precision "MultiplyByPow10" is used for multiplication
 			value = value.MultiplyByPow10(Pow10);
-			formatted = _formatterHelper.FormatDoubleCore(value);
+			_formatterHelper.AppendFormatDouble(value, stringBuilder);
 		}
 
-		formatted = _translator.TranslateNumerals($"{formatted}{_symbol}");
+		stringBuilder.Append(_symbol);
+		_translator.TranslateNumerals(stringBuilder);
+
+		var formatted = stringBuilder.ToString();
+		StringBuilderPool.Instance.Return(stringBuilder);
 		return formatted;
 	}
 
@@ -87,11 +91,12 @@ public partial class PercentFormatter : INumberFormatterOptions, INumberFormatte
 			return null;
 		}
 
-		var stringBuilder = new StringBuilder();
+		var stringBuilder = StringBuilderPool.Instance.Get();
 		stringBuilder.Append(text, 0, text.Length - _symbol.Length);
 		text = stringBuilder.ToString();
+		StringBuilderPool.Instance.Return(stringBuilder);
 
-		var result = _formatterHelper.ParseDoubleCore(text);
+		var result = _formatterHelper.ParseDouble(text);
 
 		if (!result.HasValue)
 		{

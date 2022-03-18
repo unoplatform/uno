@@ -49,52 +49,45 @@ internal partial class FormatterHelper : ISignificantDigitsOption, ISignedZeroOp
 		return true;
 	}
 
-	public string FormatZero(double value)
+	public void AppendFormatZero(double value, StringBuilder stringBuilder)
 	{
-		var result = FormatZeroCore();
 		var isNegative = value.IsNegative();
 
 		if (IsZeroSigned && isNegative)
 		{
-			result = $"{CultureInfo.InvariantCulture.NumberFormat.NegativeSign}{result}";
+			stringBuilder.Append(CultureInfo.InvariantCulture.NumberFormat.NegativeSign);
 		}
 
-		return result;
+		AppendFormatZero(stringBuilder);
 	}
 
-	public string FormatZeroCore()
+	public void AppendFormatZero(StringBuilder stringBuilder)
 	{
 		if (FractionDigits == 0 &&
 			IntegerDigits == 0)
 		{
-			return "0";
+			stringBuilder.Append("0");
 		}
 
-		var stringBuilder = new StringBuilder();
 		stringBuilder.Append('0', IntegerDigits);
 
 		if (!IsDecimalPointAlwaysDisplayed &&
 			FractionDigits == 0)
 		{
-			return stringBuilder.ToString();
+			return;
 		}
 
 		stringBuilder.Append(CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator);
 		stringBuilder.Append('0', FractionDigits);
-		return stringBuilder.ToString();
 	}
 
-	public string FormatDoubleCore(double value)
+	public void AppendFormatDouble(double value, StringBuilder stringBuilder)
 	{
-		var stringBuilder = new StringBuilder();
-
-		AppendFormattedIntegerPart(value, stringBuilder);
-		AppendFormattedFractionPart(value, stringBuilder);
-
-		return stringBuilder.ToString();
+		AppendFormatIntegerPart(value, stringBuilder);
+		AppendFormatFractionPart(value, stringBuilder);
 	}
 
-	public void AppendFormattedIntegerPart(double value, StringBuilder stringBuilder)
+	private void AppendFormatIntegerPart(double value, StringBuilder stringBuilder)
 	{
 		var integerPart = (int)Math.Truncate(value);
 
@@ -105,26 +98,28 @@ internal partial class FormatterHelper : ISignificantDigitsOption, ISignedZeroOp
 		}
 		else if (IsGrouped)
 		{
-			var formatBuilder = new StringBuilder();
+			var formatBuilder = StringBuilderPool.Instance.Get();
 			formatBuilder.Append("{0:");
 			formatBuilder.Append('0', IntegerDigits - 1);
 			formatBuilder.Append(",0");
 			formatBuilder.Append("}");
 			var format = formatBuilder.ToString();
+			StringBuilderPool.Instance.Return(formatBuilder);
 			stringBuilder.AppendFormat(CultureInfo.InvariantCulture, format, integerPart);
 		}
 		else
 		{
-			var formatBuilder = new StringBuilder();
+			var formatBuilder = StringBuilderPool.Instance.Get();
 			formatBuilder.Append("{0:D");
 			formatBuilder.Append(IntegerDigits);
 			formatBuilder.Append("}");
 			var format = formatBuilder.ToString();
+			StringBuilderPool.Instance.Return(formatBuilder);
 			stringBuilder.AppendFormat(CultureInfo.InvariantCulture, format, integerPart);
 		}
 	}
 
-	private void AppendFormattedFractionPart(double value, StringBuilder stringBuilder)
+	private void AppendFormatFractionPart(double value, StringBuilder stringBuilder)
 	{
 		var numberDecimalSeparator = CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator;
 
@@ -146,7 +141,7 @@ internal partial class FormatterHelper : ISignificantDigitsOption, ISignedZeroOp
 		}
 	}
 
-	public bool HasInvalidGroupSize(string text)
+	private bool HasInvalidGroupSize(string text)
 	{
 		var numberFormat = CultureInfo.InvariantCulture.NumberFormat;
 		var decimalSeperatorIndex = text.LastIndexOf(numberFormat.NumberDecimalSeparator, StringComparison.Ordinal);
@@ -184,7 +179,7 @@ internal partial class FormatterHelper : ISignificantDigitsOption, ISignedZeroOp
 		return false;
 	}
 
-	public double? ParseDoubleCore(string text)
+	public double? ParseDouble(string text)
 	{
 		if (text.IndexOf(" ", StringComparison.Ordinal) != -1)
 		{

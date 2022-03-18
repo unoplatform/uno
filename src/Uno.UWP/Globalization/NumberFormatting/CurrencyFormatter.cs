@@ -13,6 +13,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 	private readonly FormatterHelper _formatterHelper;
 	private readonly NumeralSystemTranslator _translator;
 	private readonly CurrencyData _currencyData = CurrencyData.Empty;
+	private readonly string _startWithInCurrencyCodeMode;
 
 	public CurrencyFormatter(string currencyCode)
 	{
@@ -28,6 +29,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 
 		_currencyData = currencyData;
 		FractionDigits = currencyData.DefaultFractionDigits;
+		_startWithInCurrencyCodeMode = $"{_currencyData.CurrencyCode}{NoBreakSpaceChar}";
 	}
 
 	public CurrencyFormatterMode Mode { get; set; }
@@ -70,19 +72,30 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 			value = NumberRounder.RoundDouble(value);
 		}
 
-		string formatted = string.Empty;
 		bool needParentheses = false;
+		var stringBuilder = StringBuilderPool.Instance.Get();
+
+		switch (Mode)
+		{
+			case CurrencyFormatterMode.UseSymbol:
+				stringBuilder.Append(_currencyData.Symbol);
+				break;
+			case CurrencyFormatterMode.UseCurrencyCode:
+				stringBuilder.Append(_currencyData.CurrencyCode);
+				stringBuilder.Append(NoBreakSpaceChar);
+				break;
+		}
 
 		if (value == 0d)
 		{
 			if (IsZeroSigned && value.IsNegative())
 			{
-				formatted = _formatterHelper.FormatZeroCore();
+				_formatterHelper.AppendFormatZero(stringBuilder);
 				needParentheses = true;
 			}
 			else
 			{
-				formatted = _formatterHelper.FormatZero(value);
+				_formatterHelper.AppendFormatZero(value, stringBuilder);
 			}
 		}
 		else
@@ -93,33 +106,25 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 				needParentheses = true;
 			}
 
-			formatted = _formatterHelper.FormatDoubleCore(value);
+			_formatterHelper.AppendFormatDouble(value, stringBuilder);
 		}
 
-		switch (Mode)
-		{
-			case CurrencyFormatterMode.UseSymbol:
-				formatted = $"{_currencyData.Symbol}{formatted}";
-				break;
-			case CurrencyFormatterMode.UseCurrencyCode:
-				formatted = $"{_currencyData.CurrencyCode}{NoBreakSpaceChar}{formatted}";
-				break;
-		}
-
-		formatted = _translator.TranslateNumerals(formatted);
+		_translator.TranslateNumerals(stringBuilder);
 
 		if (needParentheses)
 		{
-			formatted = $"({formatted})";
+			stringBuilder.Insert(0, '(');
+			stringBuilder.Append(')');
 		}
 
+		var formatted = stringBuilder.ToString();
+
+		StringBuilderPool.Instance.Return(stringBuilder);
 		return formatted;
 	}
 
 	public double? ParseDouble(string text)
 	{
-		text = _translator.TranslateBackNumerals(text);
-
 		var startWith = "";
 
 		switch (Mode)
@@ -128,7 +133,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 				startWith = _currencyData.Symbol;
 				break;
 			case CurrencyFormatterMode.UseCurrencyCode:
-				startWith = $"{_currencyData.CurrencyCode}{NoBreakSpaceChar}";
+				startWith = _startWithInCurrencyCodeMode;
 				break;
 		}
 
@@ -137,16 +142,26 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 			return null;
 		}
 
-		text = text.Substring(startWith.Length);
+		var stringBuilder = StringBuilderPool.Instance.Get();
 
-		var result = _formatterHelper.ParseDoubleCore(text);
-
-		if (!result.HasValue)
+		try
 		{
-			return null;
-		}
+			stringBuilder.Append(text, startWith.Length, text.Length - startWith.Length);
+			_translator.TranslateBackNumerals(stringBuilder);
+			text = stringBuilder.ToString();
+			var result = _formatterHelper.ParseDouble(text);
 
-		return result;
+			if (!result.HasValue)
+			{
+				return null;
+			}
+
+			return result;
+		}
+		finally
+		{
+			StringBuilderPool.Instance.Return(stringBuilder);
+		}
 	}
 
 	public void ApplyRoundingForCurrency(RoundingAlgorithm roundingAlgorithm)

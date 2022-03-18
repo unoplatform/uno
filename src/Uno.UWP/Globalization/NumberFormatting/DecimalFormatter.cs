@@ -54,25 +54,29 @@ public partial class DecimalFormatter : INumberFormatterOptions, INumberFormatte
 			value = NumberRounder.RoundDouble(value);
 		}
 
-		string formatted = string.Empty;
+		
+		var stringBuilder = StringBuilderPool.Instance.Get();
 
 		if (value == 0d)
 		{
-			formatted = _formatterHelper.FormatZero(value);
+			_formatterHelper.AppendFormatZero(value, stringBuilder);
 		}
 		else
 		{
-			formatted = _formatterHelper.FormatDoubleCore(value);
+			_formatterHelper.AppendFormatDouble(value, stringBuilder);
 		}
 
-		formatted = _translator.TranslateNumerals(formatted);
+		_translator.TranslateNumerals(stringBuilder);
+		var formatted = stringBuilder.ToString();
+
+		StringBuilderPool.Instance.Return(stringBuilder);
 		return formatted;
 	}
 
 	public double? ParseDouble(string text)
 	{
 		text = _translator.TranslateBackNumerals(text);
-		return _formatterHelper.ParseDoubleCore(text);
+		return _formatterHelper.ParseDouble(text);
 	}
 
 }
