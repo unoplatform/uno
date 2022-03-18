@@ -141,7 +141,7 @@ namespace Windows.UI.Composition
 			}
 		}
 
-		internal override void Render(SKSurface surface, SKImageInfo info)
+		internal override void Render(SKSurface surface)
 		{
 			if (!string.IsNullOrEmpty(_owner.Text))
 			{

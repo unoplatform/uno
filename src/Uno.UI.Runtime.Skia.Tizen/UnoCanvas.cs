@@ -45,7 +45,7 @@ namespace Uno.UI.Runtime.Skia
 			var scale = (float)ScalingInfo.ScalingFactor;
 			e.Surface.Canvas.Scale(scale);
 
-			WUX.Window.Current.Compositor.Render(e.Surface, e.Info);
+			WUX.Window.Current.Compositor.Render(e.Surface);
 		}
 	}
 }

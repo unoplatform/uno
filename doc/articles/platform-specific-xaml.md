@@ -105,7 +105,7 @@ The pre-defined prefixes are listed below:
 | `ios`         | iOS                                | Windows, Android, web, macOS, Skia | `http://uno.ui/ios`                                          | yes                    |
 | `wasm`        | web                                | Windows, Android, iOS, macOS, Skia | `http://uno.ui/wasm`                                         | yes                    |
 | `macos`       | macOS                              | Windows, Android, iOS, web, Skia   | `http://uno.ui/macos`                                        | yes                    |
-| `skia`        | Skia                               | Windows, Android, iOS, web, macOs  | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
+| `skia`        | Skia                               | Windows, Android, iOS, web, macOS  | `http://uno.ui/skia` 										 | yes                     |
 | `not_android` | Windows, iOS, web, macOS, Skia     | Android                            | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
 | `not_ios`     | Windows, Android, web, macOS, Skia | iOS                                | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
 | `not_wasm`    | Windows, Android, iOS, macOS, Skia | web                                | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
