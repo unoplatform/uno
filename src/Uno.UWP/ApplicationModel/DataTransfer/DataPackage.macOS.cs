@@ -226,7 +226,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		/// Creates a new <see cref="DataPackageView"/> from the native drag and drop data.
 		/// </summary>
 		/// <returns>A new <see cref="DataPackageView"/> representing the native drag and drop data.</returns>
-		internal static DataPackageView CreateFromNativeDragDropData(INSDraggingInfo draggingInfo)
+		internal static DataPackageView CreateFromNativeDragDropData(NSDraggingInfo draggingInfo)
 		{
 			return GetFromNative(draggingInfo.DraggingPasteboard);
 		}
