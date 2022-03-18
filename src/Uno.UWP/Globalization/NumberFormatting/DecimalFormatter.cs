@@ -55,7 +55,7 @@ public partial class DecimalFormatter : INumberFormatterOptions, INumberFormatte
 		}
 
 		
-		var stringBuilder = StringBuilderPool.Instance.StringBuilder1;
+		var stringBuilder = StringBuildersContainer.Instance.StringBuilder1;
 
 		if (value == 0d)
 		{

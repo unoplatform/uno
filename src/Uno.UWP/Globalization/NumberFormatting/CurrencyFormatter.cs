@@ -73,7 +73,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 		}
 
 		bool needParentheses = false;
-		var stringBuilder = StringBuilderPool.Instance.StringBuilder1;
+		var stringBuilder = StringBuildersContainer.Instance.StringBuilder1;
 
 		switch (Mode)
 		{
@@ -142,7 +142,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 			return null;
 		}
 
-		var stringBuilder = StringBuilderPool.Instance.StringBuilder1;
+		var stringBuilder = StringBuildersContainer.Instance.StringBuilder1;
 
 		try
 		{

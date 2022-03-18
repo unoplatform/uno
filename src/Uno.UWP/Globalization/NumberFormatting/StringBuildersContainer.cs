@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace Uno.Globalization.NumberFormatting;
 
-internal class StringBuilderPool : IDisposable
+internal class StringBuildersContainer : IDisposable
 {
 	private ThreadLocal<StringBuilder> _stringBuilder1Storage = new ThreadLocal<StringBuilder>(() => new StringBuilder());
 	private ThreadLocal<StringBuilder> _stringBuilder2Storage = new ThreadLocal<StringBuilder>(() => new StringBuilder());
@@ -14,7 +14,7 @@ internal class StringBuilderPool : IDisposable
 	public StringBuilder StringBuilder1 => _stringBuilder1Storage.Value!;
 	public StringBuilder StringBuilder2 => _stringBuilder2Storage.Value!;
 
-	public static StringBuilderPool Instance { get; } = new StringBuilderPool();
+	public static StringBuildersContainer Instance { get; } = new StringBuildersContainer();
 
 	public void Dispose()
 	{

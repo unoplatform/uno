@@ -75,7 +75,7 @@ public partial class NumeralSystemTranslator
 
 	public string TranslateNumerals(string value)
 	{
-		var stringBuilder = StringBuilderPool.Instance.StringBuilder1;
+		var stringBuilder = StringBuildersContainer.Instance.StringBuilder1;
 		stringBuilder.Append(value);
 
 		TranslateNumerals(stringBuilder);
@@ -194,7 +194,7 @@ public partial class NumeralSystemTranslator
 
 	public string TranslateBackNumerals(string value)
 	{
-		var stringBuilder = StringBuilderPool.Instance.StringBuilder1;
+		var stringBuilder = StringBuildersContainer.Instance.StringBuilder1;
 		stringBuilder.Append(value);
 		TranslateBackNumerals(stringBuilder);
 

@@ -97,7 +97,7 @@ internal partial class FormatterHelper : ISignificantDigitsOption, ISignedZeroOp
 			return;
 		}
 
-		var formatBuilder = StringBuilderPool.Instance.StringBuilder2;
+		var formatBuilder = StringBuildersContainer.Instance.StringBuilder2;
 
 		if (IsGrouped)
 		{
