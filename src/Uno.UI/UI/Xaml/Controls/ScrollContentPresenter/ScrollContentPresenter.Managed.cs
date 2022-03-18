@@ -79,14 +79,22 @@ namespace Windows.UI.Xaml.Controls
 		private bool _canHorizontallyScroll;
 		public bool CanHorizontallyScroll
 		{
-			get => _canHorizontallyScroll || _forceChangeToCurrentView;
+			get => _canHorizontallyScroll
+#if __SKIA__
+			|| _forceChangeToCurrentView
+#endif
+			;
 			set => _canHorizontallyScroll = value;
 		}
 
 		private bool _canVerticallyScroll;
 		public bool CanVerticallyScroll
 		{
-			get => _canVerticallyScroll || _forceChangeToCurrentView;
+			get => _canVerticallyScroll
+#if __SKIA__
+			|| _forceChangeToCurrentView
+#endif
+			;
 			set => _canVerticallyScroll = value;
 		}
 
