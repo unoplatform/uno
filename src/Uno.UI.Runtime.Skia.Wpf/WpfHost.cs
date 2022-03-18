@@ -273,7 +273,7 @@ namespace Uno.UI.Skia.Platform
 			{
 				surface.Canvas.Clear(SKColors.White);
 				surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
-				WinUI.Window.Current.Compositor.Render(surface, info);
+				WinUI.Window.Current.Compositor.Render(surface);
 			}
 
 			// draw the bitmap to the screen
