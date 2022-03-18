@@ -282,6 +282,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				attributes.ForegroundColor = color;
 			}
+			else
+			{
+				attributes.ForegroundColor = Colors.Transparent;
+			}
 
 			return attributes;
 		}
