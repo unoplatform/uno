@@ -20,7 +20,6 @@ using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI.Xaml.Core;
-using Uno.Equality;
 using Uno.UI.DataBinding;
 
 #if __IOS__
@@ -47,6 +46,8 @@ namespace Windows.UI.Xaml.Media
 
 		internal static IDisposable RegisterOpenPopup(IPopup popup)
 		{
+			CleanupPopupReferences();
+
 			var popupRegistration = _openPopups.FirstOrDefault(
 				p => !p.IsDisposed && p.Target == popup);
 
@@ -58,6 +59,17 @@ namespace Windows.UI.Xaml.Media
 			}
 
 			return Disposable.Create(() => _openPopups.Remove(popupRegistration));
+		}
+
+		private static void CleanupPopupReferences()
+		{
+			for (int i = _openPopups.Count - 1; i >= 0; i--)
+			{
+				if (_openPopups[i].IsDisposed || _openPopups[i].Target is null)
+				{
+					_openPopups.RemoveAt(i);
+				}
+			}
 		}
 
 		[Uno.NotImplemented]
@@ -150,6 +162,8 @@ namespace Windows.UI.Xaml.Media
 
 		public static IReadOnlyList<Popup> GetOpenPopups(Window window)
 		{
+			CleanupPopupReferences();
+
 			return _openPopups
 				.Where(p => !p.IsDisposed)
 				.Select(p => p.Target)
@@ -161,6 +175,8 @@ namespace Windows.UI.Xaml.Media
 
 		private static IReadOnlyList<Popup> GetOpenFlyoutPopups()
 		{
+			CleanupPopupReferences();
+
 			return _openPopups
 				.Where(p => !p.IsDisposed)
 				.Select(p => p.Target)
@@ -659,7 +675,7 @@ namespace Windows.UI.Xaml.Media
 			}
 #endif
 		}
-#endregion
+		#endregion
 
 		internal struct Branch
 		{
