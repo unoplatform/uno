@@ -177,17 +177,17 @@ log show --style syslog $TMP_LOG_FILEPATH > $LOG_FILEPATH_FULL
 if grep -xFe "mini-generic-sharing.c:899" $LOG_FILEPATH_FULL
 then
 	# The application may crash without known cause, add a marker so the job can be restarted in that case.
-    echo "##[error]mini-generic-sharing.c:899 assertion reached (https://github.com/unoplatform/uno/issues/8167)"
+    echo "##[error]UNOBLD001: mini-generic-sharing.c:899 assertion reached (https://github.com/unoplatform/uno/issues/8167)"
 fi
 
-if grep -xFe "System.Exception: Watchdog failed" $LOG_FILEPATH_FULL
+if grep -xFe "Unhandled managed exception: Watchdog failed" $LOG_FILEPATH_FULL
 then
 	# The application UI thread stalled
-    echo "##[error]Unknown failure, UI Thread Watchdog failed"
+    echo "##[error]UNOBLD002: Unknown failure, UI Thread Watchdog failed"
 fi
 
 if [ ! -f "$UNO_ORIGINAL_TEST_RESULTS" ]; then
-	echo "##[error]ERROR: The test results file $UNO_ORIGINAL_TEST_RESULTS does not exist (did nunit crash ?)"
+	echo "##[error]UNOBLD003: ERROR: The test results file $UNO_ORIGINAL_TEST_RESULTS does not exist (did nunit crash ?)"
 	return 1
 fi
 
