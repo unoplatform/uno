@@ -180,6 +180,12 @@ then
     echo "##[error]mini-generic-sharing.c:899 assertion reached (https://github.com/unoplatform/uno/issues/8167)"
 fi
 
+if grep -xFe "System.Exception: Watchdog failed" $LOG_FILEPATH_FULL
+then
+	# The application UI thread stalled
+    echo "##[error]Unknown failure, UI Thread Watchdog failed"
+fi
+
 if [ ! -f "$UNO_ORIGINAL_TEST_RESULTS" ]; then
 	echo "##[error]ERROR: The test results file $UNO_ORIGINAL_TEST_RESULTS does not exist (did nunit crash ?)"
 	return 1
