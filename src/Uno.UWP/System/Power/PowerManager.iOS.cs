@@ -19,7 +19,7 @@ namespace Windows.System.Power
 		private static readonly UIDevice _device;
 		private static readonly bool _isSimulator;
 
-		static PowerManager()
+		static partial void InitializePlatform()
 		{
 			_device = UIDevice.CurrentDevice;
 			_isSimulator = _device.Model?
