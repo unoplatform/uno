@@ -112,6 +112,7 @@ internal class PowerManagerTestsViewModel : ViewModelBase
 		{
 			if (value)
 			{
+				UwpPowerManager.BatteryStatusChanged += UwpPowerManager_BatteryStatusChanged;
 				_batteryStatusChangedSubscription.Disposable = Disposable.Create(() =>
 					UwpPowerManager.BatteryStatusChanged -= UwpPowerManager_BatteryStatusChanged);
 			}
@@ -131,6 +132,7 @@ internal class PowerManagerTestsViewModel : ViewModelBase
 		{
 			if (value)
 			{
+				UwpPowerManager.EnergySaverStatusChanged += UwpPowerManager_EnergySaverStatusChanged;
 				_energySaverStatusChangedSubscription.Disposable = Disposable.Create(() =>
 					UwpPowerManager.EnergySaverStatusChanged -= UwpPowerManager_EnergySaverStatusChanged);
 			}
@@ -150,6 +152,7 @@ internal class PowerManagerTestsViewModel : ViewModelBase
 		{
 			if (value)
 			{
+				UwpPowerManager.PowerSupplyStatusChanged += UwpPowerManager_PowerSupplyStatusChanged;
 				_powerSupplyStatusChangedSubscription.Disposable = Disposable.Create(() =>
 					UwpPowerManager.PowerSupplyStatusChanged -= UwpPowerManager_PowerSupplyStatusChanged);
 			}
@@ -169,6 +172,7 @@ internal class PowerManagerTestsViewModel : ViewModelBase
 		{
 			if (value)
 			{
+				UwpPowerManager.RemainingChargePercentChanged += UwpPowerManager_RemainingChargePercentChanged;
 				_remainingChargePercentChangedSubscription.Disposable = Disposable.Create(() =>
 					UwpPowerManager.RemainingChargePercentChanged -= UwpPowerManager_RemainingChargePercentChanged);
 			}
@@ -188,6 +192,7 @@ internal class PowerManagerTestsViewModel : ViewModelBase
 		{
 			if (value)
 			{
+				UwpPowerManager.RemainingDischargeTimeChanged += UwpPowerManager_RemainingDischargeTimeChanged;
 				_remainingDischargeTimeChangedSubscription.Disposable = Disposable.Create(() =>
 					UwpPowerManager.RemainingDischargeTimeChanged -= UwpPowerManager_RemainingDischargeTimeChanged);
 			}

@@ -1,5 +1,12 @@
 ﻿declare class BatteryManager {
 	charging: boolean;
+	level: number;
+	dischargingTime: number;
+
+	addEventListener(
+		type: "chargingchange" | "dischargingtimechange" | "levelchange",
+		listener: (this: this, ev: Event) => any,
+		useCapture?: boolean): void;
 }
 
 interface Navigator {
@@ -12,10 +19,18 @@ namespace Windows.System.Power {
 	export class PowerManager {
 
 		private static battery: BatteryManager;
+		private static dispatchChargingChanged: () => number;
+		private static dispatchRemainingChargePercentChanged: () => number;
+		private static dispatchRemainingDischargeTimeChanged: () => number;
 
 		public static async initializeAsync(): Promise<string> {
 			if (!PowerManager.battery) {
 				PowerManager.battery = await navigator.getBattery();
+
+				// TODO: Subscribe only when requested
+				PowerManager.battery.addEventListener("chargingchange", PowerManager.onChargingChange);
+				PowerManager.battery.addEventListener("dischargingtimechange", PowerManager.onDischargingTimeChange);
+				PowerManager.battery.addEventListener("levelchange", PowerManager.onLevelChange);
 			}
 
 			return null;
@@ -27,6 +42,60 @@ namespace Windows.System.Power {
 			}
 
 			return "Idle";
+		}
+
+		public static getPowerSupplyStatus(): string {
+			if (PowerManager.battery) {
+				return PowerManager.battery.charging ? "Adequate" : "NotPresent";
+			}
+
+			return "NotPresent";
+		}
+
+		public static getRemainingChargePercent(): number {
+			if (PowerManager.battery) {
+				return PowerManager.battery.level;
+			}
+
+			return 1.0;
+		}
+
+		public static getRemainingDischargeTime(): number {
+			if (PowerManager.battery) {
+				const dischargingTime = PowerManager.battery.dischargingTime;
+				if (Number.isFinite(dischargingTime)) {
+					return dischargingTime;
+				}
+			}
+
+			return -1;
+		}
+
+		private static onChargingChange() {
+			if (!PowerManager.dispatchChargingChanged) {
+				PowerManager.dispatchChargingChanged =
+					(<any>Module).mono_bind_static_method(
+						"[Uno] Windows.System.Power.PowerManager:DispatchChargingChanged");
+			}
+			PowerManager.dispatchChargingChanged();
+		}
+
+		private static onDischargingTimeChange() {
+			if (!PowerManager.dispatchRemainingDischargeTimeChanged) {
+				PowerManager.dispatchRemainingDischargeTimeChanged =
+					(<any>Module).mono_bind_static_method(
+						"[Uno] Windows.System.Power.PowerManager:DispatchRemainingDischargeTimeChanged");
+			}
+			PowerManager.dispatchRemainingDischargeTimeChanged();
+		}
+
+		private static onLevelChange() {
+			if (!PowerManager.dispatchRemainingChargePercentChanged) {
+				PowerManager.dispatchRemainingChargePercentChanged =
+					(<any>Module).mono_bind_static_method(
+						"[Uno] Windows.System.Power.PowerManager:DispatchRemainingChargePercentChanged");
+			}
+			PowerManager.dispatchRemainingChargePercentChanged();
 		}
 	}
 }

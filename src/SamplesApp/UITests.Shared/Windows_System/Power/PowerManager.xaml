@@ -9,7 +9,7 @@
 	d:DesignHeight="2000"
 	d:DesignWidth="400">
 
-	<Grid RowSpacing="8" Padding="20">
+	<Grid RowSpacing="4" Padding="12">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
