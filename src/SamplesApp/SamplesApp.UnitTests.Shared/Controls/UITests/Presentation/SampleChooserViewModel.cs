@@ -893,7 +893,16 @@ description: {sample.Description}";
 
 			if (newContent.ViewModelType != null)
 			{
-				var vm = Activator.CreateInstance(newContent.ViewModelType, container.Dispatcher);
+				var constructors = newContent.ViewModelType.GetConstructors();
+				object vm;
+				if (constructors.Any(c => c.GetParameters().Length == 1))
+				{
+					vm = Activator.CreateInstance(newContent.ViewModelType, container.Dispatcher);
+				}
+				else
+				{
+					vm = Activator.CreateInstance(newContent.ViewModelType);
+				}
 				container.DataContext = vm;
 
 				if (vm is IDisposable disposable)
