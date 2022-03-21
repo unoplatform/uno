@@ -20,9 +20,8 @@
     <AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
     <ResourcesDirectory>..\SamplesApp.Shared\Strings</ResourcesDirectory>
     <AndroidUseAapt2>true</AndroidUseAapt2>
-		
-		<!-- Workaround for https://github.com/xamarin/xamarin-android/issues/6480 -->
-		<AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
+    <!-- Workaround for https://github.com/xamarin/xamarin-android/issues/6480 -->
+    <AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
   </PropertyGroup>
   <PropertyGroup>
     <IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
@@ -42,10 +41,13 @@
     <EnableLLVM>false</EnableLLVM>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
     <MandroidI18n />
-    <AndroidSupportedAbis>armeabi-v7a;x86;arm64-v8a</AndroidSupportedAbis>
+    <AndroidSupportedAbis>armeabi-v7a;x86;x86_64;arm64-v8a</AndroidSupportedAbis>
     <AndroidPackageFormat>apk</AndroidPackageFormat>
     <AndroidUseAapt2>true</AndroidUseAapt2>
+    <!-- Workaround for https://github.com/xamarin/xamarin-android/issues/6480 -->
+    <AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
+    <BundleAssemblies>false</BundleAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -62,7 +64,7 @@
     <EnableLLVM>false</EnableLLVM>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
     <BundleAssemblies>false</BundleAssemblies>
-    <AndroidSupportedAbis>armeabi-v7a;x86;arm64-v8a</AndroidSupportedAbis>
+    <AndroidSupportedAbis>armeabi-v7a;x86;x86_64;arm64-v8a</AndroidSupportedAbis>
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
     <AndroidEnableSGenConcurrent>true</AndroidEnableSGenConcurrent>
   </PropertyGroup>
@@ -243,6 +245,9 @@
       <_MyMdpiAsset>%(_myFilteredGroup.LogicalName)</_MyMdpiAsset>
     </PropertyGroup>
     <Error Condition="!$(_MyMdpiAsset.Contains('-nodpi'))" Text="The file nodpi-validationresource.jpeg does not exist under drawable-nodpi directory" />
+  </Target>
+  <Target Name="_ValidateAndroidSupportedAbis" BeforeTargets="BeforeBuild">
+    <Error Condition="'$(AndroidSupportedAbis)' != 'armeabi-v7a;x86;x86_64;arm64-v8a'" Text="The target list isn't correct, it must be 'armeabi-v7a;x86;x86_64;arm64-v8a'" />
   </Target>
   <Target Name="_FilterInvalidMacOSmsorlibReference" BeforeTargets="BeforeBuild">
     <!--Condition="$([MSBuild]::IsOsPlatform('OSX'))"-->
