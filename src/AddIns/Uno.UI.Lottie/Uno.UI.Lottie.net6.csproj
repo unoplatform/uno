@@ -45,22 +45,22 @@
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-android'">
 		<PackageReference Include="Com.Airbnb.Android.Lottie" Version="4.1.0" PrivateAssets="none" />
-		<PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-ios'">
 		<!--<PackageReference Include="Com.Airbnb.iOS.Lottie" Version="2.5.11" PrivateAssets="none" />-->
-		<PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">
 		<!--<PackageReference Include="Com.Airbnb.iOS.Lottie" Version="2.5.11" PrivateAssets="none" />-->
-		<PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
 	</ItemGroup>
 	
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-macos'">
 		<!--<PackageReference Include="Com.Airbnb.iOS.Lottie" Version="2.5.11" PrivateAssets="none" />-->
-		<PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />

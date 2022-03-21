@@ -132,7 +132,7 @@
       <Version>6.2.8</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.3</Version>
+      <Version>10.0.3</Version>
     </PackageReference>
     <PackageReference Include="Uno.CodeGen">
       <Version>1.34.0</Version>
