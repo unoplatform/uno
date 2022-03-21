@@ -1,4 +1,5 @@
 ﻿#if __ANDROID__
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,12 @@ namespace Windows.UI.Notifications
 
 		public ToastNotifier()
 		{
-			_notificationManager = Android.App.NotificationManager.FromContext(Android.App.Application.Context);
+			var notifManager = Android.App.NotificationManager.FromContext(Android.App.Application.Context);
+			if(notifManager is null)
+			{
+				throw new InvalidOperationException("ToastNotifier: cannot get _notificationManager");
+			}
+			_notificationManager = notifManager;
 
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O)
 			{   // none of this strings would be visible for user
@@ -28,13 +34,23 @@ namespace Windows.UI.Notifications
 
 		private string ConvertToastTextToString(string toasttext)
 		{
+			var uri = Android.Net.Uri.Parse(toasttext);
+			if(uri is null)
+			{
+				throw new ArgumentException("ToastNotifier:ConvertToastTextToString, toastText cannot be converted to Uri");
+			}
 			// "When using the "ms-resource" prefix, the string identifier is referenced in the app's Resources.resw file."
-			if (!toasttext.StartsWith("ms-resource:"))
+			if (uri.Scheme == "ms-resource")
 			{
 				return toasttext;
 			}
 
-			toasttext = toasttext.Substring("ms-resource:".Length); // skipping prefix, and look for resource
+			var resName = uri.SchemeSpecificPart;
+			if (resName is null)
+			{
+				throw new ArgumentException("ToastNotifier:ConvertToastTextToString, empty SchemeSpecificPart (within Scheme ms-resource)");
+			}
+			toasttext = resName; 
 			var retVal = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView()?.GetString(toasttext);
 			if (retVal is null)
 			{   // we have no such string
@@ -69,8 +85,23 @@ namespace Windows.UI.Notifications
 			else
 			{
 				// try another method - using more resources (CPU and memory), as Intent is involved
-				Android.Content.Intent intent = Android.App.Application.Context.PackageManager.GetLaunchIntentForPackage(Android.App.Application.Context.PackageName);
-				Android.Content.PM.ResolveInfo resolveInfo = Android.App.Application.Context.PackageManager.ResolveActivity(intent, Android.Content.PM.PackageInfoFlags.MatchDefaultOnly);
+				var context = Android.App.Application.Context;
+				if (context?.PackageName is null)
+				{
+					throw new InvalidOperationException("ToastNotifier:GetIconId, Context.PackageName is null");
+				}
+
+				var intent = context.PackageManager?.GetLaunchIntentForPackage(context.PackageName);
+				if (intent is null)
+				{
+					throw new InvalidOperationException("ToastNotifier:GetIconId, GetLaunchIntentForPackage is null");
+				}
+
+				var resolveInfo = context.PackageManager?.ResolveActivity(intent, Android.Content.PM.PackageInfoFlags.MatchDefaultOnly);
+				if (resolveInfo is null)
+				{
+					throw new InvalidOperationException("ToastNotifier:GetIconId, ResolveActivity is null");
+				}
 				iconId = resolveInfo.IconResource;
 			}
 
@@ -121,7 +152,7 @@ namespace Windows.UI.Notifications
 				else
 				{ // since API 16, we can try to emulate multiline toast's text
 					var msgLines = toastText.ToString().Split("\n");
-					if (msgLines.Count() < 2)
+					if (msgLines.Length < 2)
 					{
 						// single line of text
 						builder.SetContentText(toastText.ToString());
@@ -178,7 +209,12 @@ namespace Windows.UI.Notifications
 
 		private Android.App.PendingIntent CreateToastIntent(string packageName, XmlDocument xmlDoc)
 		{
-			var intentAction = Android.App.Application.Context.PackageManager.GetLaunchIntentForPackage(packageName);
+			var intentAction = Android.App.Application.Context?.PackageManager?.GetLaunchIntentForPackage(packageName);
+			if (intentAction is null)
+			{
+				throw new InvalidOperationException("ToastNotifier:GetIconId, ResolveActivity is null");
+			}
+
 			intentAction.SetPackage(packageName);
 			// according to doc:
 			// The name must include a package prefix, for example the app com.android.contacts would use names like "com.android.contacts.ShowAll"
@@ -205,8 +241,13 @@ namespace Windows.UI.Notifications
 			intentAction.SetData(data);
 
 			// 12345: arbitrary number, it can be any value (as it is not used in Uno code anywhere)
-			return Android.App.PendingIntent.GetActivity(Android.App.Application.Context, 12345, intentAction, 0); // 12345=requestCode
+			var retVal = Android.App.PendingIntent.GetActivity(Android.App.Application.Context, 12345, intentAction, 0); // 12345=requestCode
+			if (retVal is null)
+			{
+				throw new InvalidOperationException("ToastNotifier:CreateToastIntent, GetActivity is null");
+			}
 
+			return retVal;
 		}
 
 
@@ -222,7 +263,13 @@ namespace Windows.UI.Notifications
 			xmlDoc.LoadXml(notification.Content.GetXml());
 
 			// packageName is used in GetIconId and to create launch intent
-			string packageName = Android.App.Application.Context.PackageName;
+			var context = Android.App.Application.Context;
+			if (context.PackageName is null)
+			{
+				throw new InvalidOperationException("ToastNotifier:Show, Context is null");
+			}
+
+			string packageName = context.PackageName;
 
 			// extract <text> nodes from XML 
 			SetToastTexts(builder, xmlDoc);
