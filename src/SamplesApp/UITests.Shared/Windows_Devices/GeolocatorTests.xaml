@@ -15,7 +15,7 @@
 		<valueconverters:BoolNegationValueConverter x:Key="BoolNegation" />
 	</UserControl.Resources>
 
-	<ScrollViewer x:Name="RootView">
+	<ScrollViewer x:Name="RootView" Padding="20">
 		<StackPanel>
 			<Button Command="{x:Bind ViewModel.RequestAccessCommand}">Request access</Button>
 			<TextBlock>
