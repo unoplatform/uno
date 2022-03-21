@@ -47,8 +47,8 @@ namespace UITests.Windows_UI_Notifications
 			}
 			sXml = sXml + "</text></binding></visual>";
 			var oXml = new Windows.Data.Xml.Dom.XmlDocument();
-			oXml.LoadXml("<toast>" + sXml + "</toast>");
-
+			oXml.LoadXml("<toast launch=\"" + uiToastLaunchArg.Text + "\"> " + sXml + "</toast>");
+			
 			try
 			{
 				var oToast = new Windows.UI.Notifications.ToastNotification(oXml);

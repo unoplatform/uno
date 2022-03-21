@@ -34,7 +34,7 @@ namespace Windows.UI.Notifications
 				return toasttext;
 			}
 
-			toasttext = toasttext.Substring(12); // skipping prefix "ms-resource:"
+			toasttext = toasttext.Substring("ms-resource:".Length); // skipping prefix, and look for resource
 			var retVal = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView()?.GetString(toasttext);
 			if (retVal is null)
 			{   // we have no such string
@@ -59,8 +59,7 @@ namespace Windows.UI.Notifications
 
 		private int GetIconId(string packageName)
 		{
-			Android.Content.PM.ApplicationInfo info = null;
-			info = Android.App.Application.Context?.ApplicationContext?.PackageManager?.GetApplicationInfo(packageName, 0);
+			var info = Android.App.Application.Context?.ApplicationContext?.PackageManager?.GetApplicationInfo(packageName, 0);
 
 			int iconId;
 			if (info != null)
@@ -83,22 +82,22 @@ namespace Windows.UI.Notifications
 		private void SetToastTexts(Android.App.Notification.Builder builder, XmlDocument xmlDoc)
 		{
 			string toastTitleText = "";
-			string toastText = "";
+			StringBuilder toastText = new StringBuilder("");
 
 			var childToast = xmlDoc.GetElementsByTagName("text");
 			if (childToast.Count > 0)
 			{
 				// first text - bigger text (title)
-				toastTitleText = ConvertToastTextToString(childToast.Item(0).InnerText);
+				toastTitleText = ConvertToastTextToString(childToast[0].InnerText);
 
 				if (childToast.Count > 1)
 				{
-					toastText = ConvertToastTextToString(childToast.Item(1).InnerText);
+					toastText.Append(ConvertToastTextToString(childToast[1].InnerText));
 
-					for (int loopCnt = 2; loopCnt < childToast.Count; loopCnt++)
+					for (int childIndex = 2; childIndex < childToast.Count; childIndex++)
 					{   // in most scenarios, this loop will never iterate
 						// separate lines with space and \n: \n as line splitting for newer Android, space - for older
-						toastText = toastText + " \n" + ConvertToastTextToString(childToast.Item(loopCnt).InnerText);
+						toastText.Append(" \n" + ConvertToastTextToString(childToast[childIndex].InnerText));
 					}
 				}
 			}
@@ -111,28 +110,28 @@ namespace Windows.UI.Notifications
 				builder.SetContentTitle(toastTitleText);
 			}
 
-			if (!string.IsNullOrEmpty(toastText))
+			if (toastText.Length > 0)
 			{ // Android toasts doesn't support new line character in standard toasts
 
 				if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.JellyBean)
 				{
 					// too old Android... we can't do anything with it
-					builder.SetContentText(toastText);
+					builder.SetContentText(toastText.ToString());
 				}
 				else
 				{ // since API 16, we can try to emulate multiline toast's text
-					var msgLines = toastText.Split("\n");
+					var msgLines = toastText.ToString().Split("\n");
 					if (msgLines.Count() < 2)
 					{
 						// single line of text
-						builder.SetContentText(toastText);
+						builder.SetContentText(toastText.ToString());
 					}
 					else
 					{
 						if (msgLines.Count() > 6)
 						{
 							// too many lines for InboxStyle - show in expandable form
-							var expandableToast = new Android.App.Notification.BigTextStyle().BigText(toastText);
+							var expandableToast = new Android.App.Notification.BigTextStyle().BigText(toastText.ToString());
 							builder.SetStyle(expandableToast);
 						}
 						else
@@ -149,7 +148,7 @@ namespace Windows.UI.Notifications
 					}
 				}
 
-				builder.SetContentText(toastText);
+				builder.SetContentText(toastText.ToString());
 			}
 		}
 
@@ -190,7 +189,7 @@ namespace Windows.UI.Notifications
 			var childToast = xmlDoc.GetElementsByTagName("toast");
 			if (childToast.Count == 1)
 			{
-				var childLaunch = childToast.Item(0)?.Attributes?.GetNamedItem("launch");
+				var childLaunch = childToast[0]?.Attributes?.GetNamedItem("launch");
 				if (childLaunch != null)
 				{
 					toastArgument = childLaunch.Value;
@@ -232,7 +231,7 @@ namespace Windows.UI.Notifications
 			int iconId = GetIconId(packageName);
 			if (iconId == 0)
 			{
-				throw new ArgumentException("ToastNotifier: cannot get iconId, probably you didn't set icon in Android manifest file");
+				throw new InvalidOperationException("ToastNotifier: Unable to get application default Icon, make sure to set one in Android manifest file (application/@android:icon)");
 			}
 			builder.SetSmallIcon(iconId);
 
