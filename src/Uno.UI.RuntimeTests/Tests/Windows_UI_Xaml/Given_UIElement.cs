@@ -439,7 +439,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 
-#if !NETFX_CORE
+#if !(NETFX_CORE || __ANDROID__) // On Android, the "Dirty" is a projection of the platform and can't be tested using those tests
 		[TestMethod]
 		public void MeasureDirtyTest()
 		{

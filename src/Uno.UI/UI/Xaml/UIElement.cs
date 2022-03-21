@@ -558,7 +558,7 @@ namespace Windows.UI.Xaml
 				{
 					root.Measure(bounds.Size);
 				}
-				else if (root.IsArrangeDirty)
+				else if (root.IsArrangeDirtyOrArrangeDirtyPath)
 				{
 					root.Arrange(bounds);
 				}

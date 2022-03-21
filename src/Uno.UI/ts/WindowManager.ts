@@ -1481,7 +1481,7 @@ namespace Uno.UI {
 			const opts = <ScrollToOptions>({
 				left: params.HasLeft ? params.Left : undefined,
 				top: params.HasTop ? params.Top : undefined,
-				behavior: <ScrollBehavior>(params.DisableAnimation ? "auto" : "smooth")
+				behavior: <ScrollBehavior>(params.DisableAnimation ? "instant" : "smooth")
 			});
 
 			elt.scrollTo(opts);

@@ -252,6 +252,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __WASM__
+		[Ignore("Test is flaky")]
+#endif
 		public async Task When_ItemsPresenter_MinHeight()
 		{
 			var SUT = new ListView
@@ -275,7 +278,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(container);
 			var initialRect = container.GetRelativeBounds(SUT);
 			const double HeightOfTwoItems = 29 * 2;
-			Assert.AreEqual(HeightOfTwoItems, initialRect.Y, 1);
+			Assert.AreEqual(HeightOfTwoItems, initialRect.Y, 1, "HeightOfTwoItems");
 
 			await Task.Delay(2000);
 			var sv = SUT.FindFirstChild<ScrollViewer>();
@@ -292,7 +295,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForEqual(40, InitialScroll);
 
 			var rectScrolledPartial = container.GetRelativeBounds(SUT);
-			Assert.AreEqual(HeightOfTwoItems - 40, rectScrolledPartial.Y, 1);
+			Assert.AreEqual(HeightOfTwoItems - 40, rectScrolledPartial.Y, 1, "HeightOfTwoItems - 40");
 
 			await ScrollByInIncrements(SUT, 200);
 			const double MaxPossibleScroll = 310 - 250;
@@ -308,7 +311,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var sv = listViewBase.FindFirstChild<ScrollViewer>();
 			Assert.IsNotNull(sv);
-			sv.ChangeView(null, scrollBy, null, disableAnimation: true);
+			sv.ChangeView(null, scrollBy, null);
 		}
 
 		private static async Task ScrollByInIncrements(ListViewBase listViewBase, double scrollBy)

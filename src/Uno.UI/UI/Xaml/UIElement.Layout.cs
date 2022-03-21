@@ -81,6 +81,17 @@ namespace Windows.UI.Xaml
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => IsAnyLayoutFlagsSet(LayoutFlag.ArrangeDirty | LayoutFlag.ArrangeDirtyPath);
 		}
+
+		/// <summary>
+		/// If the first arrange has been done since the control
+		/// is connected to its parent
+		/// </summary>
+		internal bool IsFirstArrangeDone
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => IsLayoutFlagSet(LayoutFlag.FirstArrangeDone);
+		}
+
 #else
 		/// <summary>
 		/// This is for compatibility - not implemented yet on this platform

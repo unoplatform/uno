@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml
 			{
 				FrameworkElementHelper.SetUseArrangePathDisabled(child); // will invalidate too
 			}
-			else if (child.IsArrangeDirty && !IsArrangeDirty)
+			else
 			{
 				child.InvalidateArrange();
 			}
