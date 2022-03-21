@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Android.Locations;
 using Android.OS;
 using Android.Runtime;
+using Uno.Disposables;
 using Uno.Extensions;
 using Windows.ApplicationModel.Core;
 using Windows.Extensions;
@@ -34,12 +35,15 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 	private LocationManager? _locationManager;
 	private string? _locationProvider;
 
+	private readonly SerialDisposable _resumingSubscription = new SerialDisposable();
+
 	private double _movementThreshold = 0;
 	private uint _reportInterval = 1000;
 
 	partial void PlatformDestruct()
 	{
 		RemoveUpdates();
+		_resumingSubscription.Disposable = null;
 		_locationManager?.Dispose();
 	}
 
@@ -158,14 +162,17 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 		_reportInterval = 1000;
 		_movementThreshold = 0;
 
-		RequestUpdates();
+		RestartUpdates();
 
 		BroadcastStatusChanged(PositionStatus.Initializing);
 
 		var bestLocation = TryGetCachedGeoposition(maximumAge);
 		if (bestLocation != null)
 		{
-			RemoveUpdates();
+			if (_positionChangedWrapper.Event == null)
+			{
+				RemoveUpdates();
+			}
 			BroadcastStatusChanged(PositionStatus.Ready);
 			return bestLocation.ToGeoPosition();
 		}
@@ -174,14 +181,20 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 		if (await TryWaitForGetGeopositionAsync(timeout, DateTime.Now - maximumAge))
 		{
 			// success
-			RemoveUpdates();
+			if (_positionChangedWrapper.Event == null)
+			{
+				RemoveUpdates();
+			}
 			BroadcastStatusChanged(PositionStatus.Ready);
 			return _location?.ToGeoPosition();
 		}
 
 		// timeout
 		BroadcastStatusChanged(PositionStatus.Disabled);
-		RemoveUpdates();
+		if (_positionChangedWrapper.Event == null)
+		{
+			RemoveUpdates();
+		}
 		throw new TimeoutException("Timeout in GetGeopositionAsync(TimeSpan,TimeSpan)");
 	}
 
@@ -195,14 +208,15 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 				return;
 			}
 			_locationManager.RequestLocationUpdates(_locationProvider, 0, 0, this);
-			CoreApplication.Resuming -= CoreApplication_Resuming;
+			_resumingSubscription.Disposable = null;
 		}
 	}
 
 	internal void WaitForPermissionFromBackground()
 	{
-		CoreApplication.Resuming -= CoreApplication_Resuming;
+		_resumingSubscription.Disposable = null;
 		CoreApplication.Resuming += CoreApplication_Resuming;
+		_resumingSubscription.Disposable = Disposable.Create(() => CoreApplication.Resuming -= CoreApplication_Resuming);
 	}
 
 	private void CoreApplication_Resuming(object? sender, object? e)
@@ -246,7 +260,12 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 		return locationManager;
 	}
 
-	partial void StartPositionChanged() => _positionChangedSubscriptions.TryAdd(this, 0);
+	partial void StartPositionChanged()
+	{
+		_positionChangedSubscriptions.TryAdd(this, 0);
+		TryInitialize();
+		RestartUpdates();
+	}
 
 	partial void StopPositionChanged() => _positionChangedSubscriptions.TryRemove(this, out var _);
 

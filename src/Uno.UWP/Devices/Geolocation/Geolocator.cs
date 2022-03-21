@@ -38,8 +38,8 @@ namespace Windows.Devices.Geolocation
 				StopStatusChanged,
 				_syncLock);
 			_positionChangedWrapper = new StartStopEventWrapper<TypedEventHandler<Geolocator, PositionChangedEventArgs>>(
-				StartStatusChanged,
-				StopStatusChanged,
+				StartPositionChanged,
+				StopPositionChanged,
 				_syncLock);
 
 			PlatformInitialize();

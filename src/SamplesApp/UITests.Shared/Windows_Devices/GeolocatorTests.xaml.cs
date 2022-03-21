@@ -1,4 +1,5 @@
 ﻿using System;
+using Uno.Disposables;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.Devices.Geolocation;
@@ -46,6 +47,12 @@ namespace UITests.Shared.Windows_Devices
 			PositionStatus = _geolocator.LocationStatus;
 			timeout = TimeSpan.FromSeconds(10);
 			maximumAge = TimeSpan.FromSeconds(15);
+
+			Disposables.Add(Disposable.Create(() =>
+			{
+				_geolocator.PositionChanged -= Geolocator_PositionChanged;
+				_geolocator.StatusChanged -= Geolocator_StatusChanged;
+			}));
 		}
 
 		public Geoposition Geoposition
