@@ -519,7 +519,7 @@ namespace Uno.UI
 			public static bool UseInvalidateMeasurePath { get; set; } = true;
 
 			/// <summary>
-			/// Call the .ArrangeOverride only on element explicitly invalidating
+			/// Call the .ArrangeOverride only on elements explicitly invalidating
 			/// their arrange and when the final rect is changing.
 			/// </summary>
 			public static bool UseInvalidateArrangePath { get; set; } = true;
