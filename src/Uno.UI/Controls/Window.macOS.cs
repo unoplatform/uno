@@ -28,6 +28,7 @@ using Point = Windows.Foundation.Point;
 
 #if NET6_0_OR_GREATER
 using ObjCRuntime;
+using NSDraggingInfo = AppKit.INSDraggingInfo;
 #endif
 
 namespace Uno.UI.Controls
@@ -488,7 +489,7 @@ namespace Uno.UI.Controls
 		/// <param name="draggingInfo">Information about the dragging session from the sender.</param>
 		/// <returns>True if the destination accepts the drag operation; otherwise, false. </returns>
 		[Export("prepareForDragOperation:")] // Do not remove
-		internal virtual bool PrepareForDragOperation(AppKit.NSDraggingInfo draggingInfo)
+		internal virtual bool PrepareForDragOperation(NSDraggingInfo draggingInfo)
 		{
 			// Always return true as UWP doesn't really have an equivalent step.
 			// Drop is accepted within DraggingEntered (drag entered event in UWP).
