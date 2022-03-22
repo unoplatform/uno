@@ -1,10 +1,12 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference NumberBox.cpp, commit 8d856a3c9393d13d9d49a20d5cde984d1f5b397a
+
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation.Provider;
-
-// MUX Reference NumberBoxAutomationPeer.cpp, commit 9052972906c8a0a1b6cb5d5c61b27d6d27cd7f11
 
 namespace Microsoft.UI.Xaml.Controls
 {

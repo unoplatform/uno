@@ -1,5 +1,7 @@
 #pragma warning disable 109 // Member does not hide an inherited member; new keyword is not required
 
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference NumberBox.properties.cpp, commit 7c3ba16da9e273c73169c062cc803868695fa864
 
 using Windows.Globalization.NumberFormatting;
