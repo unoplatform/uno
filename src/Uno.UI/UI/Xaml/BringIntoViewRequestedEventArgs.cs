@@ -23,7 +23,7 @@ public partial class BringIntoViewRequestedEventArgs : RoutedEventArgs
 	/// Gets the requested horizontal alignment ratio which controls the alignment
 	/// of the vertical axis of the TargetRect with respect to the vertical axis of the viewport.
 	/// </summary>
-	public double HorizontalAlignmentRatio { get; }
+	public double HorizontalAlignmentRatio { get; internal set; }
 
 	/// <summary>
 	/// Gets or sets the horizontal distance to add to the viewport-relative
@@ -45,7 +45,7 @@ public partial class BringIntoViewRequestedEventArgs : RoutedEventArgs
 	/// Gets the requested vertical alignment ratio which controls the alignment
 	/// of the horizontal axis of the TargetRect with respect to the horizontal axis of the viewport.
 	/// </summary>
-	public double VerticalAlignmentRatio { get; }
+	public double VerticalAlignmentRatio { get; internal set; }
 
 	/// <summary>
 	/// Gets or sets the vertical distance to add to the viewport-relative

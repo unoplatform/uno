@@ -9,6 +9,14 @@ namespace Windows.UI.Xaml;
 public partial class UIElement
 {
 	/// <summary>
+	/// Called before the BringIntoViewRequested event occurs.
+	/// </summary>
+	/// <param name="e">Event args.</param>
+	protected virtual void OnBringIntoViewRequested(BringIntoViewRequestedEventArgs e)
+	{
+	}
+
+	/// <summary>
 	/// Initiates a request to the XAML framework to bring the element into view within any scrollable regions it is contained within.
 	/// </summary>
 	public void StartBringIntoView()
@@ -56,20 +64,19 @@ public partial class UIElement
 			targetRect = new Rect(0, 0, RenderSize.Width, RenderSize.Height);
 		}
 
-#if __IOS__ || __ANDROID__
-		Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+
+		var args = new BringIntoViewRequestedEventArgs()
 		{
-			// This currently doesn't support nested scrolling.
-			// This currently doesn't support BringIntoViewOptions.AnimationDesired.
-			var scrollContentPresenter = this.FindFirstParent<ScrollContentPresenter>();
-			scrollContentPresenter?.MakeVisible(this, options.TargetRect ?? Rect.Empty);
-		});
-#else
-		Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-		{
-			var scrollContentPresenter = this.FindFirstParent<ScrollContentPresenter>();
-			scrollContentPresenter?.MakeVisible(this, options.TargetRect ?? Rect.Empty);
-		});
-#endif
+			AnimationDesired = options.AnimationDesired,
+			HorizontalOffset = options.HorizontalOffset,
+			VerticalOffset = options.VerticalOffset,
+			HorizontalAlignmentRatio = options.HorizontalAlignmentRatio,
+			VerticalAlignmentRatio = options.VerticalAlignmentRatio,
+			TargetRect = targetRect,
+			OriginalSource = this,
+			TargetElement = this,
+		};
+
+		RaiseEvent(BringIntoViewRequestedEvent, args);
 	}
 }
