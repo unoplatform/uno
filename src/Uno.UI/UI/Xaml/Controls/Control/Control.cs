@@ -224,7 +224,7 @@ namespace Windows.UI.Xaml.Controls
 			// registered first in event handlers.
 			// https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.control.onpointerpressed#remarks
 
-			var implementedEvents = GetImplementedRoutedEvents(GetType());
+			var implementedEvents = GetImplementedRoutedEvents();
 
 			if (implementedEvents.HasFlag(RoutedEventFlag.PointerPressed))
 			{
@@ -980,9 +980,6 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly RoutedEventHandler OnLostFocusHandler =
 			(object sender, RoutedEventArgs args) => ((Control)sender).OnLostFocus(args);
 
-		private static readonly Dictionary<Type, RoutedEventFlag> ImplementedRoutedEvents
-			= new Dictionary<Type, RoutedEventFlag>();
-
 		private static readonly Type[] _pointerArgsType = new[] { typeof(PointerRoutedEventArgs) };
 		private static readonly Type[] _tappedArgsType = new[] { typeof(TappedRoutedEventArgs) };
 		private static readonly Type[] _doubleTappedArgsType = new[] { typeof(DoubleTappedRoutedEventArgs) };
@@ -997,24 +994,11 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly Type[] _manipInertiaArgsType = new[] { typeof(ManipulationInertiaStartingRoutedEventArgs) };
 		private static readonly Type[] _manipCompletedArgsType = new[] { typeof(ManipulationCompletedRoutedEventArgs) };
 
-		protected static RoutedEventFlag GetImplementedRoutedEvents(Type type)
+		private protected override RoutedEventFlag EvaluateImplementedRoutedEvents()
 		{
-			// TODO: GetImplementedRoutedEvents() should be evaluated at compile-time
-			// and the result placed in a partial file.
+			var result = base.EvaluateImplementedRoutedEvents();
 
-			if (ImplementedRoutedEvents.TryGetValue(type, out var result))
-			{
-				return result;
-			}
-
-			result = RoutedEventFlag.None;
-
-			var baseClass = type.BaseType;
-			if (baseClass == null || type == typeof(Control) || type == typeof(UIElement))
-			{
-				return result;
-			}
-
+			var type = GetType();
 			if (GetIsEventOverrideImplemented(type, nameof(OnPointerPressed), _pointerArgsType))
 			{
 				result |= RoutedEventFlag.PointerPressed;
@@ -1140,7 +1124,7 @@ namespace Windows.UI.Xaml.Controls
 				result |= RoutedEventFlag.GotFocus;
 			}
 
-			return ImplementedRoutedEvents[type] = result;
+			return result;
 		}
 
 		private static bool GetIsEventOverrideImplemented(Type type, string name, Type[] args)

@@ -39,10 +39,18 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IXUidProvider, IUIElement
 	{
+		private static readonly Dictionary<Type, RoutedEventFlag> ImplementedRoutedEvents
+			= new Dictionary<Type, RoutedEventFlag>();
+
+		private static readonly TypedEventHandler<UIElement, BringIntoViewRequestedEventArgs> OnBringIntoViewRequestedHandler =
+			(UIElement sender, BringIntoViewRequestedEventArgs args) => sender.OnBringIntoViewRequested(args);
+
+		private static readonly Type[] _bringIntoViewRequestedArgs = new[] { typeof(BringIntoViewRequestedEventArgs) };
+
 		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
 		private XamlRoot _xamlRoot = null;
 		private string _uid;
-
+		
 		//private protected virtual void PrepareState() 
 		//{
 		//	// This is part of the WinUI internal API and is invoked at the end of DXamlCore.GetPeerPrivate
@@ -74,6 +82,76 @@ namespace Windows.UI.Xaml
 
 		private void Initialize()
 		{
+			SubscribeToOverridenRoutedEvents();
+		}
+
+		private void SubscribeToOverridenRoutedEvents()
+		{
+			// Overridden Events are registered from constructor to ensure they are
+			// registered first in event handlers.
+			// https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.control.onpointerpressed#remarks
+
+			var implementedEvents = GetImplementedRoutedEvents();
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.BringIntoViewRequested))
+			{
+				BringIntoViewRequested += OnBringIntoViewRequestedHandler;
+			}
+		}
+
+		protected RoutedEventFlag GetImplementedRoutedEvents()
+		{
+			// TODO: GetImplementedRoutedEvents() should be evaluated at compile-time
+			// and the result placed in a partial file.
+			var type = GetType();
+
+			if (ImplementedRoutedEvents.TryGetValue(type, out var result))
+			{
+				return result;
+			}
+
+			RoutedEventFlag implementedRoutedEvents;
+
+			var baseClass = type.BaseType;
+			if (baseClass == null || type == typeof(Control) || type == typeof(UIElement))
+			{
+				implementedRoutedEvents = RoutedEventFlag.None;
+			}
+			else
+			{
+				implementedRoutedEvents = EvaluateImplementedRoutedEvents();
+			}
+
+			return ImplementedRoutedEvents[type] = implementedRoutedEvents;
+		}
+
+		private protected virtual RoutedEventFlag EvaluateImplementedRoutedEvents()
+		{
+			var type = GetType();
+
+			RoutedEventFlag result = RoutedEventFlag.None;
+
+			if (GetIsEventOverrideImplemented(type, nameof(OnBringIntoViewRequested), _bringIntoViewRequestedArgs))
+			{
+				result |= RoutedEventFlag.BringIntoViewRequested;
+			}
+
+			return result;
+		}
+
+		private static bool GetIsEventOverrideImplemented(Type type, string name, Type[] args)
+		{
+			var method = type
+				.GetMethod(
+					name,
+					BindingFlags.NonPublic | BindingFlags.Instance,
+					null,
+					args,
+					null);
+
+			return method != null
+				&& method.IsVirtual
+				&& method.DeclaringType != typeof(UIElement);
 		}
 
 		private protected virtual bool IsTabStopDefaultValue => false;
