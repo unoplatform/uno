@@ -36,7 +36,7 @@ namespace Uno.UI.Xaml
 		LosingFocus = 1UL << 26,
 		LostFocus = 1UL << 27,
 		NoFocusCandidateFound = 1UL << 28,
-		// BringIntoViewRequested = 1UL << 29, => Reserved for future usage 
+		BringIntoViewRequested = 1UL << 29,
 
 		// Drag and drop
 		DragStarting = 1UL << 32, // this is actually not a RoutedEvent
