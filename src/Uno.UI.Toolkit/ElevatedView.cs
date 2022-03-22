@@ -186,22 +186,23 @@ namespace Uno.UI.Toolkit
 
 			if (Background == null)
 			{
-				this.SetElevation(0, default);
+				ElevationHelper.SetElevation(this, 0, default);
 			}
 			else
 			{
 #if __WASM__
-				this.SetElevation(Elevation, ShadowColor);
+				ElevationHelper.SetElevation(this, Elevation, ShadowColor);
 				this.SetCornerRadius(CornerRadius);
 #elif __IOS__ || __MACOS__
-				this.SetElevation(Elevation, ShadowColor, _border.BoundsPath);
+				ElevationHelper.SetElevation(this, Elevation, ShadowColor, _border.BoundsPath);
 #elif __ANDROID__
-				_invalidateShadow = true;
-				((ViewGroup)this).Invalidate();
+				// The elevation must be applied on the border, since
+				// it will get the right shape (with rounded corners)
+				ElevationHelper.SetElevation(_border, Elevation, ShadowColor);
 #elif __SKIA__
-				this.SetElevationInternal(Elevation, ShadowColor);
+				ElevationHelper.SetElevation(this, Elevation, ShadowColor);
 #elif (NETFX_CORE || NETCOREAPP) && !HAS_UNO
-				_border.SetElevation(Elevation, ShadowColor, _shadowHost as DependencyObject, CornerRadius);
+				ElevationHelper.SetElevation(_border, Elevation, ShadowColor, _shadowHost as DependencyObject, CornerRadius);
 #endif
 			}
 		}
