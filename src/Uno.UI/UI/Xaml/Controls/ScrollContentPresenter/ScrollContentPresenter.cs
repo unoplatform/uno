@@ -165,6 +165,34 @@ namespace Windows.UI.Xaml.Controls
 			return finalSize;
 		}
 
+#if !__ANDROID__ && !__IOS__
+		public Rect MakeVisible(UIElement visual, Rect rectangle)
+		{
+			if (visual is FrameworkElement fe && Scroller is not null)
+			{
+				var scrollRect = new Rect(
+					0,
+					0,
+					ActualWidth,
+					ActualHeight
+				);
+
+				var visualPoint = visual.TransformToVisual(this).TransformPoint(new Point());
+				var visualRect = new Rect(visualPoint, new Size(fe.ActualWidth, fe.ActualHeight));
+
+				var deltaX = Math.Min(visualRect.Left - scrollRect.Left, Math.Max(0, visualRect.Right - scrollRect.Right));
+				var deltaY = Math.Min(visualRect.Top - scrollRect.Top, Math.Max(0, visualRect.Bottom - scrollRect.Bottom));
+
+				var targetOffsetX = Scroller.HorizontalOffset + deltaX;
+				var targetOffsetY = Scroller.VerticalOffset + deltaY;
+				Scroller.ScrollToHorizontalOffset(targetOffsetX);
+				Scroller.ScrollToVerticalOffset(targetOffsetY);
+			}
+
+			return rectangle;
+		}
+#endif
+
 		internal override bool IsViewHit()
 			=> true;
 #elif __IOS__ // Note: No __ANDROID__, the ICustomScrollInfo support is made directly in the NativeScrollContentPresenter

@@ -29,6 +29,7 @@ using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using System.Runtime.CompilerServices;
 using Windows.Graphics.Display;
+using Uno.UI.Extensions;
 
 #if __IOS__
 using UIKit;
@@ -756,24 +757,6 @@ namespace Windows.UI.Xaml
 #endif
 		}
 #endif
-
-		public void StartBringIntoView()
-		{
-			StartBringIntoView(new BringIntoViewOptions());
-		}
-
-		public void StartBringIntoView(BringIntoViewOptions options)
-		{
-#if __IOS__ || __ANDROID__
-			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-			{
-				// This currently doesn't support nested scrolling.
-				// This currently doesn't support BringIntoViewOptions.AnimationDesired.
-				var scrollContentPresenter = this.FindFirstParent<ScrollContentPresenter>();
-				scrollContentPresenter?.MakeVisible(this, options.TargetRect ?? Rect.Empty);
-			});
-#endif
-		}
 
 		internal virtual bool IsViewHit() => true;
 
