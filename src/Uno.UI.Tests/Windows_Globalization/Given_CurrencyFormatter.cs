@@ -11,6 +11,12 @@ namespace Uno.UI.Tests.Windows_Globalization
 	{
 		private const string USDCurrencyCode = "USD";
 
+		[ClassInitialize]
+		public static void ClassInit(TestContext context)
+		{
+			Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = "en-us";
+		}
+
 		[DataTestMethod]
 		[DataRow(double.PositiveInfinity, "∞")]
 		[DataRow(double.NegativeInfinity, "-∞")]
