@@ -162,7 +162,7 @@ The code to retrieve the access token is encapsulated within the a class **Ident
    * PrivateNetwork
    * Shared User Certificates
 
-1. The Web Assembly linker can be overly aggressive when it comes to trimming the linked code-base to minimize the application size. To ensure the code for the **IdentityModel** and **System.Text.Json** packages are not removed, open the **LinkerConfig.xml** file in the **WASM** project.
+1. The WebAssembly linker can be overly aggressive when it comes to trimming the linked code-base to minimize the application size. To ensure the code for the **IdentityModel** and **System.Text.Json** packages are not removed, open the **LinkerConfig.xml** file in the **WASM** project.
 
 1. Update the **LinkerConfig.xml** file to match the following:
 

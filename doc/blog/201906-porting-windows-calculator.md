@@ -2,7 +2,7 @@
 
 A few months ago, Microsoft [open sourced the Windows Calculator](https://blogs.windows.com/buildingapps/2019/03/06/announcing-the-open-sourcing-of-windows-calculator/), the very Calculator that ships with Windows 10.
 
-We decided to [port it to C# and the Uno Platform](https://github.com/unoplatform/calculator), so that iOS and Android users could use it, but also use it from the Web using Web Assembly. Why – well that’s what we at Uno Platform do 😊 – enable the same C# and XAML code to run on the Web, Mobile and Desktop.
+We decided to [port it to C# and the Uno Platform](https://github.com/unoplatform/calculator), so that iOS and Android users could use it, but also use it from the Web using WebAssembly. Why – well that’s what we at Uno Platform do 😊 – enable the same C# and XAML code to run on the Web, Mobile and Desktop.
 
 You can use it today on:
 - [Apple App Store](https://bit.ly/calc-ios)
