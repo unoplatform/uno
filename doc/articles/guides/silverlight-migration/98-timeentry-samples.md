@@ -22,7 +22,7 @@ There are 3 solutions:
 * **TimeEntryUno** - this is the Uno client solution (VS 2019)
   * **TimeEntryUno.Shared** - the shared source project
   * **TimeEntryUno.Uwp** - the UWP head
-  * **TimeEntryUno.Wasm** - the web assembly head
+  * **TimeEntryUno.Wasm** - the WebAssembly head
 * **TimeEntryServices** - this is the web services solution for **TimeEntryUno** (VS 2019)
   * **IdentityServer** - a .NET Core 3.1 project hosting IdentityServer4
   * **TimeEntryApi** - a .NET 5 WebApi project hosting the app business services

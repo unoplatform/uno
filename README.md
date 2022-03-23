@@ -41,7 +41,7 @@ For a larger example and features demo:
 * Dev loop:
     * Develop on Windows first using Visual Studio
     * [XAML Hot Reload](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) for live XAML edition on each keystroke
-    * [C# Hot Reload](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp) on Windows (VS2022), Linux and mac (VS Code)
+    * [C# Hot Reload](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp) on Windows (VS2022), Linux and macOS (VS Code)
     * Validate on other platforms as late as possible
     * Develop in VS Code, Codespaces or GitPod
     * XAML Hot Reload for WebAssembly, Linux, iOS and Android
@@ -208,4 +208,4 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-💖 Thank-you.
+💖 Thank you.
