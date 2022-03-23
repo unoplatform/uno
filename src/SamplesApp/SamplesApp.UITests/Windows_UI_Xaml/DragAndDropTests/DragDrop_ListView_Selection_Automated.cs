@@ -33,14 +33,14 @@ public partial class DragDrop_ListView_Selection_Automated : SampleControlUITest
 		mode.SetDependencyPropertyValue("SelectedValue", "Single");
 
 		var sutBounds = _app.Query(sut).Single().Rect;
-		var x = sutBounds.X + 100;
+		var x = sutBounds.X + 50;
 		float Item(int index) => this.Item(sutBounds, index, itemHeight);
 
-		// Select "Item #5"
+		// Select "Item #6"
 		App.TapCoordinates(x, Item(5));
 		var afterSelect = TakeScreenshot("Item_5_Selected");
 
-		// Reorder "Item #5" to position 2
+		// Reorder "Item #6" to position 3
 		App.DragCoordinates(x, Item(5), x, Item(2));
 		var afterReorder = TakeScreenshot("Item_5_selected_at_position_2");
 
@@ -70,14 +70,14 @@ public partial class DragDrop_ListView_Selection_Automated : SampleControlUITest
 		mode.SetDependencyPropertyValue("SelectedValue", "Single");
 
 		var sutBounds = _app.Query(sut).Single().Rect;
-		var x = sutBounds.X + 100;
+		var x = sutBounds.X + 50;
 		float Item(int index) => this.Item(sutBounds, index, itemHeight);
 
-		// Select "Item #2"
+		// Select "Item #3"
 		App.TapCoordinates(x, Item(2));
 		var afterSelect = TakeScreenshot("Item_2_Selected");
 
-		// Reorder "Item #2" to position 5
+		// Reorder "Item #3" to position 6
 		App.DragCoordinates(x, Item(2), x, Item(5));
 		var afterReorder = TakeScreenshot("Item_2_selected_at_position_5");
 
