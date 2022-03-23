@@ -19,6 +19,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public const string BaseXamlNamespace = "Windows.UI.Xaml";
 		public const string UnoXamlNamespace = "Windows.UI.Xaml";
 
+		public const string UnoUIXamlNamespace = "Uno.UI.Xaml";
+
 		public const int MaxFluentResourcesVersion = 2;
 
 		public static class Namespaces
@@ -128,6 +130,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// MarkupExtension
 			public const string MarkupExtension = Markup + ".MarkupExtension";
 			public const string IMarkupExtensionOverrides = Markup + ".IMarkupExtensionOverrides";
+
+			// Routed events
+			public const string RoutedEventFlag = UnoUIXamlNamespace + ".RoutedEventFlag";
+			public const string 
 		}
 	}
 }
