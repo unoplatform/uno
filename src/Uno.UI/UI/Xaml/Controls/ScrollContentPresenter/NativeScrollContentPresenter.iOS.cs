@@ -530,7 +530,8 @@ namespace Windows.UI.Xaml.Controls
 			if (this.GetParent() is UIElement parent)
 			{
 				// canBubbleNatively: true => We let native bubbling occur properly as it's never swallowed by system
-				//							  but blocking it would be breaking in lot of aspects.
+				//							  but blocking it would be breaking in lot of aspects
+				//							  (e.g. it would prevent all sub-sequent events for the given pointer).
 
 				_touchTarget = parent;
 				_touchTarget.TouchesBegan(touches, evt, canBubbleNatively: true); 
@@ -542,7 +543,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.TouchesMoved(touches, evt);
 
-			// canBubbleNatively: false => system might silently swallow pointer after few moves so we prefer to bubble in managed.
+			// canBubbleNatively: false => The system might silently swallow pointers after a few moves so we prefer to bubble in managed.
 			_touchTarget?.TouchesMoved(touches, evt, canBubbleNatively: false);
 		}
 

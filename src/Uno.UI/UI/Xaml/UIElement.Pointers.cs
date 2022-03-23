@@ -881,7 +881,7 @@ namespace Windows.UI.Xaml
 			if (!isOverOrCaptured)
 			{
 				// We receive this event due to implicit capture, just ignore it locally and let is bubble
-				// note: If bubbling in managed then we are going to ignore element anyway as ctx is flagged as IsInternal.
+				// note: If bubbling in managed then we are going to ignore the element anyway as ctx is flagged as IsInternal.
 				// note 2: This case is actually impossible (no implicit capture on down)!
 				ctx = ctx.WithMode(ctx.Mode | BubblingMode.IgnoreElement);
 			}
@@ -1000,7 +1000,7 @@ namespace Windows.UI.Xaml
 			if (!isOverOrCaptured)
 			{
 				// We receive this event due to implicit capture, just ignore it locally and let is bubble
-				// note: If bubbling in managed then we are going to ignore element anyway as ctx is flagged as IsInternal.
+				// note: If bubbling in managed then we are going to ignore the element anyway as ctx is flagged as IsInternal.
 				ctx = ctx.WithMode(ctx.Mode | BubblingMode.IgnoreElement);
 			}
 
