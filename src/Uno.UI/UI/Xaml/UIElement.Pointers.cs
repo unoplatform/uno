@@ -218,7 +218,7 @@ namespace Windows.UI.Xaml
 			{
 				elt.Release(PointerCaptureKind.Any);
 				elt.ClearPressed();
-				elt.SetOver(null, false, muteEvent: true);
+				elt.SetOver(null, false, ctx: BubblingContext.NoBubbling);
 				elt.ClearDragOver();
 			}
 		};
@@ -229,7 +229,7 @@ namespace Windows.UI.Xaml
 			{
 				elt.Release(PointerCaptureKind.Any);
 				elt.ClearPressed();
-				elt.SetOver(null, false, muteEvent: true);
+				elt.SetOver(null, false, ctx: BubblingContext.NoBubbling);
 				elt.ClearDragOver();
 			}
 		};
@@ -855,7 +855,15 @@ namespace Windows.UI.Xaml
 		{
 			// We override the isOver for the relevancy check as we will update it right after.
 			var isOverOrCaptured = ValidateAndUpdateCapture(args, isOver: true);
-			var handledInManaged = SetOver(args, true, muteEvent: ctx.IsInternal || !isOverOrCaptured, ctx, isEnterExit: true);
+			if (!isOverOrCaptured)
+			{
+				// We receive this event due to implicit capture, just ignore it locally and let is bubble
+				// note: If bubbling in managed then we are going to ignore element anyway as ctx is flagged as IsInternal.
+				// note 2: This case is actually impossible (when implicitly captured, we don't receive native enter)!
+				ctx = ctx.WithMode(ctx.Mode | BubblingMode.IgnoreElement);
+			}
+
+			var handledInManaged = SetOver(args, true, ctx);
 
 			return handledInManaged;
 		}
@@ -874,7 +882,7 @@ namespace Windows.UI.Xaml
 			{
 				// We receive this event due to implicit capture, just ignore it locally and let is bubble
 				// note: If bubbling in managed then we are going to ignore element anyway as ctx is flagged as IsInternal.
-				// note 2: This case is actually impossible!
+				// note 2: This case is actually impossible (no implicit capture on down)!
 				ctx = ctx.WithMode(ctx.Mode | BubblingMode.IgnoreElement);
 			}
 
@@ -922,7 +930,13 @@ namespace Windows.UI.Xaml
 			// Note: The 'ctx' here is for the "Move", not the "WithOverCheck", so we don't use it to update the over state.
 			//		 (i.e. even if the 'move' has been handled and is now flagged as 'IsInternal' -- so event won't be publicly raised unless handledEventToo --,
 			//		 if we are crossing the boundaries of the element we should still raise the enter/exit publicly.)
-			handledInManaged |= SetOver(args, isOver);
+			if (IsOver(args.Pointer) != isOver)
+			{
+				var argsWasHandled = args.Handled;
+				args.Handled = false;
+				handledInManaged |= SetOver(args, isOver, BubblingContext.Bubble);
+				args.Handled = argsWasHandled;
+			}
 
 			if (!ctx.IsInternal && isOverOrCaptured)
 			{
@@ -1026,8 +1040,15 @@ namespace Windows.UI.Xaml
 		{
 			var handledInManaged = false;
 			var isOverOrCaptured = ValidateAndUpdateCapture(args);
+			if (!isOverOrCaptured)
+			{
+				// We receive this event due to implicit capture, just ignore it locally and let is bubble
+				// note: If bubbling in managed then we are going to ignore element anyway as ctx is flagged as IsInternal.
+				// note 2: This case is actually impossible (when implicitly captured, we don't receive native exit)!
+				ctx = ctx.WithMode(ctx.Mode | BubblingMode.IgnoreElement);
+			}
 
-			handledInManaged |= SetOver(args, false, muteEvent: ctx.IsInternal || !isOverOrCaptured, ctx, isEnterExit: true);
+			handledInManaged |= SetOver(args, false, ctx);
 
 			if (IsGestureRecognizerCreated && GestureRecognizer.IsDragging)
 			{
@@ -1066,7 +1087,7 @@ namespace Windows.UI.Xaml
 			// When a pointer is cancelled / swallowed by the system, we don't even receive "Released" nor "Exited"
 			// We update only local state as the Cancel is bubbling itself
 			SetPressed(args, false, ctx: BubblingContext.NoBubbling);
-			SetOver(args, false, muteEvent: true);
+			SetOver(args, false, ctx: BubblingContext.NoBubbling);
 
 			if (IsGestureRecognizerCreated)
 			{
@@ -1109,6 +1130,14 @@ namespace Windows.UI.Xaml
 		private static (UIElement sender, RoutedEvent @event, PointerRoutedEventArgs args) _pendingRaisedEvent;
 		private bool RaisePointerEvent(RoutedEvent evt, PointerRoutedEventArgs args, BubblingContext ctx = default)
 		{
+			if (ctx.IsInternal)
+			{
+				// If the event has been flagged as internal it means that it's bubbling in managed code,
+				// so the RaiseEvent won't do anything. This check only avoids a potentially costly try/finally.
+				// NOte: We return 'args.Handled' just like the RaiseEvent would do, but it's expected to not be used in that case.
+				return args.Handled;
+			}
+
 			try
 			{
 				_pendingRaisedEvent = (this, evt, args);
@@ -1129,9 +1158,9 @@ namespace Windows.UI.Xaml
 				_pendingRaisedEvent = (null, null, null);
 			}
 		}
-#endregion
+		#endregion
 
-#region Pointer over state (Updated by the partial API OnNative***, should not be updated externaly)
+		#region Pointer over state (Updated by the partial API OnNative***, should not be updated externaly)
 		/// <summary>
 		/// Indicates if a pointer (no matter the pointer) is currently over the element (i.e. OverState)
 		/// WARNING: This might not be maintained for all controls, cf. remarks.
@@ -1156,37 +1185,45 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		internal bool IsOver(Pointer pointer) => IsPointerOver;
 
-		private bool SetOver(PointerRoutedEventArgs args, bool isOver, bool muteEvent = false, BubblingContext ctx = default, bool isEnterExit = false)
+		private bool SetOver(PointerRoutedEventArgs args, bool isOver, BubblingContext ctx)
 		{
 			var wasOver = IsPointerOver;
 			IsPointerOver = isOver;
 
 			var hasNotChanged = wasOver == isOver;
-			if ((muteEvent || hasNotChanged) && (!isEnterExit || ctx.IsInternal))
+			if (hasNotChanged && ctx.IsInternal)
 			{
+				// Already bubbling in managed, and didn't changed, nothing to do!
 				return false;
 			}
 
 			if (hasNotChanged)
 			{
-				ctx = ctx.WithMode(BubblingMode.IgnoreElement);
+				// Unlike up/down we have to locally raise the enter/exit only if something has changed!
+				//
+				// Note: But even if the state didn't changed locally (hasNotChanged),
+				//		 we still raise propagate the event to parents so they can updates their internal state.
+				//		 If 'isOver==true', it's only for safety as parent should never be flagged as not hovered if we are,
+				//		 and if 'isOver==false' this will ensure that parents are up-to-date.
+				// Note: Unlike up/down we should not get this due to an "implicit capture" (iOS, Android, WASM-touch),
+				//		 as we don't get any native enter/exit in that case.
+
+				ctx = ctx.WithMode(ctx.Mode | BubblingMode.IgnoreElement);
 			}
 
 			if (isOver) // Entered
 			{
-				args.Handled = false;
 				return RaisePointerEvent(PointerEnteredEvent, args, ctx);
 			}
 			else // Exited
 			{
-				args.Handled = false;
 				return RaisePointerEvent(PointerExitedEvent, args, ctx);
 			}
 		}
-#endregion
+		#endregion
 
-#region Pointer pressed state (Updated by the partial API OnNative***, should not be updated externaly)
-		private readonly HashSet<uint> _pressedPointers = new HashSet<uint>();
+		#region Pointer pressed state (Updated by the partial API OnNative***, should not be updated externaly)
+		private readonly HashSet<uint> _pressedPointers = new();
 
 		/// <summary>
 		/// Indicates if a pointer was pressed while over the element (i.e. PressedState).
@@ -1246,7 +1283,6 @@ namespace Windows.UI.Xaml
 					_pressedPointers.Add(args.Pointer.PointerId);
 				}
 
-				args.Handled = false;
 				return RaisePointerEvent(PointerPressedEvent, args, ctx);
 			}
 			else // Released
@@ -1256,15 +1292,14 @@ namespace Windows.UI.Xaml
 					_pressedPointers.Remove(args.Pointer.PointerId);
 				}
 
-				args.Handled = false;
 				return RaisePointerEvent(PointerReleasedEvent, args, ctx);
 			}
 		}
 
 		private void ClearPressed() => _pressedPointers.Clear();
-#endregion
+		#endregion
 
-#region Pointer capture state (Updated by the partial API OnNative***, should not be updated externaly)
+		#region Pointer capture state (Updated by the partial API OnNative***, should not be updated externaly)
 		/*
 		 * About pointer capture
 		 *
@@ -1278,7 +1313,7 @@ namespace Windows.UI.Xaml
 
 		private List<Pointer> _localExplicitCaptures;
 
-#region Capture public (and internal) API ==> This manages only Explicit captures
+		#region Capture public (and internal) API ==> This manages only Explicit captures
 		public static DependencyProperty PointerCapturesProperty { get; } = DependencyProperty.Register(
 			"PointerCaptures",
 			typeof(IReadOnlyList<Pointer>),
@@ -1356,7 +1391,7 @@ namespace Windows.UI.Xaml
 
 			Release(PointerCaptureKind.Explicit);
 		}
-#endregion
+		#endregion
 
 		partial void CapturePointerNative(Pointer pointer);
 		partial void ReleasePointerNative(Pointer pointer);
@@ -1455,9 +1490,9 @@ namespace Windows.UI.Xaml
 			relatedArgs.Handled = false;
 			return RaisePointerEvent(PointerCaptureLostEvent, relatedArgs);
 		}
-#endregion
+		#endregion
 
-#region Drag state (Updated by the RaiseDrag***, should not be updated externaly)
+		#region Drag state (Updated by the RaiseDrag***, should not be updated externaly)
 		private HashSet<long> _draggingOver;
 
 		/// <summary>
@@ -1489,6 +1524,6 @@ namespace Windows.UI.Xaml
 		{
 			_draggingOver?.Clear();
 		}
-#endregion
+		#endregion
 	}
 }
