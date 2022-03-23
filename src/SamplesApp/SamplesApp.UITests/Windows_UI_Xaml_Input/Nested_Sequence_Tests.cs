@@ -59,7 +59,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Browser)]
+#if !__SKIA__
+		[Ignore("Inputs simulated by selenium are directly appreaing at the start location and wrongly inserting an exit.")]
+		//[ActivePlatforms(Platform.Browser)]
+#endif
 		[InjectedPointer(PointerDeviceType.Mouse)]
 		public async Task When_PressOnNestedAndReleaseOnContainer_Mouse()
 		{
