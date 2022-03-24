@@ -17,5 +17,12 @@ partial class WinRTFeatureConfiguration
 			#else
 				false;
 			#endif
+
+		/// <summary>
+		/// Allows overriding the style used by the ContentDialog
+		/// which displays the MessageDialog. Should be set to a name (Key)
+		/// of a Application-level ContentDialog style resource.
+		/// </summary>
+		public static string StyleOverride { get; set; }
 	}
 }
