@@ -46,7 +46,6 @@ namespace Uno.UI.Xaml.Core
 			SetAttribute("tabindex", "0");
 #endif
 
-#if HAS_UNO
 			AddHandler(
 				PointerPressedEvent,
 				new PointerEventHandler((snd, args) => ProcessPointerDown(args)),
@@ -55,7 +54,6 @@ namespace Uno.UI.Xaml.Core
 				PointerReleasedEvent,
 				new PointerEventHandler((snd, args) => ProcessPointerUp(args)),
 				handledEventsToo: true);
-#endif
 		}
 
 		/// <summary>
@@ -128,7 +126,6 @@ namespace Uno.UI.Xaml.Core
 			return finalSize;
 		}
 
-#if HAS_UNO
 		// As focus event are either async or cancellable,
 		// the FocusManager will explicitly notify us instead of listing to its events
 		internal static void NotifyFocusChanged()
@@ -157,7 +154,6 @@ namespace Uno.UI.Xaml.Core
 				return;
 			}
 
-#if __ANDROID__ || __WASM__ || __IOS__ || __SKIA__
 #if __ANDROID__ || __IOS__ // Not needed on WASM as we do have native support of the exit event
 			// On Android and iOS we use the RootVisual to raise the UWP only exit event (in managed only)
 
@@ -186,7 +182,6 @@ namespace Uno.UI.Xaml.Core
 			}
 
 			ReleaseCaptures(args.Reset(canBubbleNatively: false));
-#endif
 		}
 
 		private static void ReleaseCaptures(PointerRoutedEventArgs routedArgs)
@@ -199,6 +194,5 @@ namespace Uno.UI.Xaml.Core
 				}
 			}
 		}
-#endif
 	}
 }
