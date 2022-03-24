@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -57,7 +59,7 @@ namespace SamplesApp.UITests.TestFramework
 			=> this with { Values = new[,] { { color } } };
 
 		public ExpectedPixels Pixel(string color)
-			=> Pixel(GetColorFromString(color));
+			=> this with { Values = new[,] { { GetColorFromString(color) } } };
 
 		public ExpectedPixels Pixels(string[,] pixels)
 		{
@@ -113,13 +115,18 @@ namespace SamplesApp.UITests.TestFramework
 			=> this with { Tolerance = Tolerance.WithOffset(x, y) };
 
 		public ExpectedPixels Or(ExpectedPixels alternative)
-			=> this with { Alternatives = Alternatives.Concat(alternative.GetAllPossibilities()).ToArray() };
-
-		public ExpectedPixels OrPixel(string alternativeColor)
-			=> Or(Pixel(alternativeColor) with { Alternatives = Array.Empty<ExpectedPixels>() });
+			=> this with
+			{
+				Alternatives = Alternatives is null
+					? alternative.GetAllPossibilities().ToArray()
+					: Alternatives.Concat(alternative.GetAllPossibilities()).ToArray()
+			};
 
 		public ExpectedPixels OrPixel(Color alternativeColor)
-			=> Or(Pixel(alternativeColor) with { Alternatives = Array.Empty<ExpectedPixels>() });
+			=> Or(this with { Values = new[,] { { alternativeColor } }, Alternatives = null });
+
+		public ExpectedPixels OrPixel(string alternativeColor)
+			=> Or(this with { Values = new[,] { { GetColorFromString(alternativeColor) } }, Alternatives = null });
 		#endregion
 
 		private ExpectedPixels(
@@ -155,7 +162,7 @@ namespace SamplesApp.UITests.TestFramework
 
 		public PixelTolerance Tolerance { get; init; } = PixelTolerance.None;
 
-		public ExpectedPixels[] Alternatives { get; init; } = Array.Empty<ExpectedPixels>();
+		public ExpectedPixels[]? Alternatives { get; init; } = Array.Empty<ExpectedPixels>();
 
 		public IEnumerable<ExpectedPixels> GetAllPossibilities()
 		{
