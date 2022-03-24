@@ -266,7 +266,7 @@ namespace Windows.UI.Xaml.Controls
 			_templateApplied = true;
 #if HAS_UNO
 			// Uno specific: Apply shadow instead of Translation
-			m_tpBackgroundElementPart.SetElevation(30, Color.FromArgb(100, 0, 0, 0));
+			ElevationHelper.SetElevation(m_tpBackgroundElementPart, 30, Color.FromArgb(100, 0, 0, 0));
 #endif
 		}
 
