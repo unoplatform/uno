@@ -46,11 +46,11 @@ public partial class DragDrop_ListView_Selection_Automated : SampleControlUITest
 
 		ImageAssert.HasColorAt(afterSelect, x, Item(2), Color.White);
 		ImageAssert.HasColorAt(afterSelect, x, Item(4), Color.White);
-		ImageAssert.HasColorAt(afterSelect, x, Item(5), Color.Red);
+		ImageAssert.HasPixels(afterSelect, ExpectedPixels.At(x, Item(5)).Pixel(Color.Red).OrPixel("#FFFF00").OrPixel("#FFA000C0")); // Any selected stateColor.Red);
 		ImageAssert.HasColorAt(afterSelect, x, Item(6), Color.White);
 
 		ImageAssert.HasColorAt(afterReorder, x, Item(1), Color.White);
-		ImageAssert.HasColorAt(afterReorder, x, Item(2), Color.Red);
+		ImageAssert.HasPixels(afterReorder, ExpectedPixels.At(x, Item(2)).Pixel(Color.Red).OrPixel("#FFFF00").OrPixel("#FFA000C0")); // Any selected state
 		ImageAssert.HasColorAt(afterReorder, x, Item(3), Color.White);
 		ImageAssert.HasColorAt(afterReorder, x, Item(5), Color.White);
 	}
