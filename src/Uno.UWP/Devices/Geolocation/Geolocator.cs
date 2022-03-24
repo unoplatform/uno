@@ -34,12 +34,12 @@ namespace Windows.Devices.Geolocation
 		public Geolocator()
 		{
 			_statusChangedWrapper = new StartStopEventWrapper<TypedEventHandler<Geolocator, StatusChangedEventArgs>>(
-				StartStatusChanged,
-				StopStatusChanged,
+				() => StartStatusChanged(),
+				() => StopStatusChanged(),
 				_syncLock);
 			_positionChangedWrapper = new StartStopEventWrapper<TypedEventHandler<Geolocator, PositionChangedEventArgs>>(
-				StartPositionChanged,
-				StopPositionChanged,
+				() => StartPositionChanged(),
+				() => StopPositionChanged(),
 				_syncLock);
 
 			PlatformInitialize();
