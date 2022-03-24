@@ -226,6 +226,23 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+
+		private void UpdateShadow()
+		{
+			if (Shadow == null || Translation.Z <= 0)
+			{
+				UnsetShadow();
+			}
+			else
+			{
+				SetShadow();
+			}
+		}
+
+		partial void SetShadow();
+
+		partial void UnsetShadow();
+
 		internal Size AssignedActualSize { get; set; }
 
 		internal bool IsLeavingFrame { get; set; }
