@@ -349,6 +349,12 @@ namespace SamplesApp.UITests.TestFramework
 			{
 				report.AppendLine($"{pixels.Name}:");
 
+				if (pixels.Values is null)
+				{
+					report.AppendLine("INVALID EXPECTATION: No pixels defined.");
+					continue;
+				}
+
 				bool isSuccess;
 				switch (pixels.Tolerance.OffsetKind)
 				{

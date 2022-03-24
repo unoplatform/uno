@@ -122,6 +122,22 @@ namespace SamplesApp.UITests.TestFramework
 			=> Or(Pixel(alternativeColor) with { Alternatives = Array.Empty<ExpectedPixels>() });
 		#endregion
 
+		private ExpectedPixels(
+			string name,
+			Point location,
+			Point? sourceLocation,
+			Color[,] pixels,
+			PixelTolerance tolerance,
+			ExpectedPixels[] alternatives)
+		{
+			Name = name;
+			Location = location;
+			SourceLocation = sourceLocation;
+			Values = pixels ?? new Color[0, 0];
+			Tolerance = tolerance;
+			Alternatives = alternatives ?? Array.Empty<ExpectedPixels>();
+		}
+
 		public string Name { get; init; }
 
 		/// <summary>
@@ -144,9 +160,12 @@ namespace SamplesApp.UITests.TestFramework
 		public IEnumerable<ExpectedPixels> GetAllPossibilities()
 		{
 			yield return this;
-			foreach (var alternative in Alternatives)
+			if (Alternatives is not null)
 			{
-				yield return alternative;
+				foreach (var alternative in Alternatives)
+				{
+					yield return alternative;
+				}
 			}
 		}
 
