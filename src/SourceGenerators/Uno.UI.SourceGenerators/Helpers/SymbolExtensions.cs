@@ -1,11 +1,11 @@
 ﻿#nullable enable
 
-using Microsoft.CodeAnalysis;
-using Uno.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.CodeAnalysis;
+using Uno.Extensions;
 
 namespace Microsoft.CodeAnalysis
 {
@@ -117,7 +117,7 @@ namespace Microsoft.CodeAnalysis
 				TypeKind.Struct => "struct ",
 				_ => throw new ArgumentException($"Unexpected type kind {namedTypeSymbol.TypeKind}")
 			};
-			
+
 			var declarationIdentifier = namedTypeSymbol.ToDisplayString(s_format);
 
 			return $"{abstractKeyword}{staticKeyword}partial {typeKeyword}{declarationIdentifier}";
@@ -580,6 +580,7 @@ namespace Microsoft.CodeAnalysis
 			=> attribute.FindNamedArg(argName) is { IsNull: false, Kind: TypedConstantKind.Enum } arg && arg.Type!.Name == typeof(T).Name
 				? (T)arg.Value!
 				: default(T?);
+
 		public static bool IsSameAssemblyOrHasFriendAccessTo(this IAssemblySymbol assembly, IAssemblySymbol toAssembly)
 		{
 			return
