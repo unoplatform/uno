@@ -135,6 +135,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(container0, containerItem);
 		}
 
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task ContainerIndicesAreUpdated_OnRemoveAndAdd()
+		{
+			var source = new ObservableCollection<string>(Enumerable.Range(0, 5).Select(i => $"Item #{i}"));
+			var SUT = new ListView { ItemsSource = source };
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
+
+			SUT.MaterializedContainers.Should().HaveCount(5);
+
+			var originalIndicies = SUT.MaterializedContainers
+				.Select(container => (
+					item: (container as ContentControl)?.Content?.ToString(),
+					index: container.GetValue(ItemsControl.IndexForItemContainerProperty)))
+				.OrderBy(entry => entry.index)
+				.ToArray();
+
+			var item2 = source[2];
+			source.RemoveAt(2);
+			source.Insert(3, item2);
+
+			// Note: we don't let the LV the opportunity to be measured, indices should have been updated right away.
+			var updatedIndices = SUT.MaterializedContainers
+				.Select(container => (
+					item: (container as ContentControl)?.Content?.ToString(),
+					index: container.GetValue(ItemsControl.IndexForItemContainerProperty)))
+				.OrderBy(entry => entry.index)
+				.ToArray();
+
+			originalIndicies.Should().BeEquivalentTo(new (object item, int index)[]
+			{
+				("Item #0", 0),
+				("Item #1", 1),
+				("Item #2", 2),
+				("Item #3", 3),
+				("Item #4", 4),
+			});
+
+			updatedIndices.Should().BeEquivalentTo(new (object item, int index)[]
+			{
+				("Item #0", 0),
+				("Item #1", 1),
+				("Item #3", 2),
+				("Item #2", 3),
+				("Item #4", 4),
+			});
+		}
+#endif
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public void InvalidSelectionChangeInvalidPrevious()
