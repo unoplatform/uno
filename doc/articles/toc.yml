@@ -234,6 +234,8 @@
           href: controls/Popup.md
         - name: ProgressRing
           href: features/progressring.md
+        - name: ScrollViewer
+          href: controls/ScrollViewer.md          
         - name: TextBox
           href: controls/TextBox.md
         - name: TimePicker
