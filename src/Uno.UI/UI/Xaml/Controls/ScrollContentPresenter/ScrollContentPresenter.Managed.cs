@@ -84,6 +84,10 @@ namespace Windows.UI.Xaml.Controls
 
 		public double VerticalOffset { get; private set; }
 
+		public double ExtentHeight { get; internal set; }
+
+		public double ExtentWidth { get; internal set; }
+
 		internal Size ScrollBarSize => new Size(0, 0);
 
 		internal Size? CustomContentExtent => null;
