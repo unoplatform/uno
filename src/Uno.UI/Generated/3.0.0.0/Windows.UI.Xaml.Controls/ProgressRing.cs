@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class ProgressRing 
 	{
-		#if false || false || NET461 || false || false || false || false
+		#if false || false || false || false || false || false || false
 		[global::Uno.NotImplemented("NET461")]
 		public  bool IsActive
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false || false || false
+		#if false || false || false || false || false || false || false
 		[global::Uno.NotImplemented("NET461")]
 		public  global::Windows.UI.Xaml.Controls.Primitives.ProgressRingTemplateSettings TemplateSettings
 		{
@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false || false || false
+		#if false || false || false || false || false || false || false
 		[global::Uno.NotImplemented("NET461")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsActiveProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(

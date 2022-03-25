@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 			DefaultStyleKey = typeof(ContentDialog);
 		}
 
-		private void OnPopupKeyDown(object sender, KeyRoutedEventArgs e)
+		private protected virtual void OnPopupKeyDown(object sender, KeyRoutedEventArgs e)
 		{
 			switch (e.Key)
 			{
@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml.Controls
 			Hide(ContentDialogResult.None);
 		}
 
-		private bool Hide(ContentDialogResult result)
+		internal bool Hide(ContentDialogResult result)
 		{
 			void Complete(ContentDialogClosingEventArgs args)
 			{
@@ -227,7 +227,18 @@ namespace Windows.UI.Xaml.Controls
 
 				_tcs = new TaskCompletionSource<ContentDialogResult>();
 
-				return await _tcs.Task;
+				using (ct.Register(() =>
+				{
+					_tcs.TrySetCanceled();
+					Hide();
+				}
+#if !__WASM__ // WASM lacks threading support
+					, useSynchronizationContext: true
+#endif
+					))
+				{
+					return await _tcs.Task;
+				}
 			});
 
 		public event TypedEventHandler<ContentDialog, ContentDialogClosedEventArgs> Closed;

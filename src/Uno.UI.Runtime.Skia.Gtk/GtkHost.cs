@@ -27,6 +27,10 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using UnoApplication = Windows.UI.Xaml.Application;
 using WUX = Windows.UI.Xaml;
+using Uno.UI.Runtime.Skia.GTK.System.Profile;
+using Uno.UI.Runtime.Skia.Helpers;
+using Uno.UI.Runtime.Skia.Helpers.Dpi;
+using System.Runtime.InteropServices;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -41,12 +45,17 @@ namespace Uno.UI.Runtime.Skia
 		private readonly Func<WUX.Application> _appBuilder;
 		private static Gtk.Window _window;
 		private static Gtk.EventBox _eventBox;
-		private UnoDrawingArea _area;
+		private Widget _area;
 		private Fixed _fix;
 		private GtkDisplayInformationExtension _displayInformationExtension;
 
 		public static Gtk.Window Window => _window;
 		public static Gtk.EventBox EventBox => _eventBox;
+
+		public RenderSurfaceType RenderSurfaceType { get; set; }
+			= RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
+				? RenderSurfaceType.Software // OpenGL support on macOS is currently broken
+				: RenderSurfaceType.OpenGL;
 
 		public GtkHost(Func<WUX.Application> appBuilder, string[] args)
 		{
@@ -130,12 +139,17 @@ namespace Uno.UI.Runtime.Skia
 			var overlay = new Overlay();
 
 			_eventBox = new EventBox();
-			_area = new UnoDrawingArea();
+			_area = BuildRenderSurfaceType();
 			_fix = new Fixed();
 			overlay.Add(_area);
 			overlay.AddOverlay(_fix);
 			_eventBox.Add(overlay);
 			_window.Add(_eventBox);
+
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().Info($"Using {RenderSurfaceType} rendering");
+			}
 
 			_area.Realized += (s, e) =>
 			{
@@ -185,6 +199,14 @@ namespace Uno.UI.Runtime.Skia
 			args.RetVal = false;
 			Gtk.Main.Quit();
 		}
+
+		private Widget BuildRenderSurfaceType()
+			=> RenderSurfaceType switch
+			{
+				RenderSurfaceType.Software => new SoftwareRenderSurface(),
+				RenderSurfaceType.OpenGL => new GLRenderSurface(),
+				_ => throw new InvalidOperationException($"Unsupported RenderSurfaceType {RenderSurfaceType}")
+			};
 
 		private void OnWindowStateChanged(object o, WindowStateEventArgs args)
 		{
@@ -258,7 +280,10 @@ namespace Uno.UI.Runtime.Skia
 
 		public void TakeScreenshot(string filePath)
 		{
-			_area.TakeScreenshot(filePath);
+			if (_area is IRenderSurface renderSurface)
+			{
+				renderSurface.TakeScreenshot(filePath);
+			}
 		}
 
 		private void SetupTheme()

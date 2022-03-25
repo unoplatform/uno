@@ -25,3 +25,7 @@ Use `Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor` to control this.
 ## Popups
 
 In older versions of Uno Platforms, the `Popup.IsLightDismissEnabled` dependency property defaulted to `true`. In UWP/WinUI and Uno 4.1 and newer, it correctly defaults to `false`. If your code depended on the old behavior, you can set the `Uno.UI.FeatureConfiguration.Popup.EnableLightDismissByDefault` property to `true` to override this.
+
+## MessageDialog
+
+By default, `MessageDialog` in Uno Platform targets displays using `ContentDialog`, to ensure consistent functionality and appearance across platforms. If you prefer to display it using native dialogs on iOS, Android, macOS, and WASM, you can set the `WinRTFeatureConfiguration.MessageDialog.UseNativeDialog` flag to `true`. Beware that some features may be missing for the native implementations.

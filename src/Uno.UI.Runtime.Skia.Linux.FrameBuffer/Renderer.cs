@@ -67,7 +67,7 @@ namespace Uno.UI.Runtime.Skia
 
 				surface.Canvas.Scale((float)dpi);
 
-				WUX.Window.Current.Compositor.Render(surface, info);
+				WUX.Window.Current.Compositor.Render(surface);
 
 				_fbDev.VSync();
 				Libc.memcpy(_fbDev.BufferAddress, bitmap.GetPixels(out _), new IntPtr(_fbDev.RowBytes * height));

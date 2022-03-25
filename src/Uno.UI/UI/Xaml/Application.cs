@@ -14,6 +14,10 @@ using Uno.Extensions;
 using System.Collections.Generic;
 using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Data;
+using Uno.Foundation.Extensibility;
+using Windows.UI.Popups.Internal;
+using Windows.UI.Popups;
+using Uno.UI.WinRT.Extensions.UI.Popups;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -59,7 +63,14 @@ namespace Windows.UI.Xaml
 			Uno.Helpers.DispatcherTimerProxy.SetDispatcherTimerGetter(() => new DispatcherTimer());
 			Uno.Helpers.VisualTreeHelperProxy.SetCloseAllFlyoutsAction(() => Media.VisualTreeHelper.CloseAllFlyouts());
 
+			RegisterExtensions();
+
 			InitializePartialStatic();
+		}
+
+		private static void RegisterExtensions()
+		{
+			ApiExtensibility.Register<MessageDialog>(typeof(IMessageDialogExtension), dialog => new MessageDialogExtension(dialog));
 		}
 
 		static partial void InitializePartialStatic();

@@ -1,15 +1,25 @@
-
 using Windows.UI.Xaml;
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Windows.UI.Xaml.Controls.Primitives;
+
+/// <summary>
+/// Provides calculated values that can be referenced as TemplatedParent sources
+/// when defining templates for a ProgressRing control. Not intended for general use.
+/// </summary>
+public partial class ProgressRingTemplateSettings : DependencyObject
 {
-	//TODO: Fully implement this class, matching UWP https://github.com/unoplatform/uno/issues/1872
-	public partial class ProgressRingTemplateSettings : DependencyObject
-	{
-		public double EllipseDiameter { get; set; }
+	/// <summary>
+	/// Gets the template-defined diameter of the "Ellipse" element that is animated in a templated ProgressRing.
+	/// </summary>
+	public double EllipseDiameter { get; set; }
 
-		public Thickness EllipseOffset { get; set; }
+	/// <summary>
+	/// Gets the template-defined offset position of the "Ellipse" element that is animated in a templated ProgressRing.
+	/// </summary>
+	public Thickness EllipseOffset { get; set; }
 
-		public double MaxSideLength { get; set; }
-	}
+	/// <summary>
+	/// Gets the maximum bounding size of the progress ring as rendered.
+	/// </summary>
+	public double MaxSideLength { get; set; }
 }

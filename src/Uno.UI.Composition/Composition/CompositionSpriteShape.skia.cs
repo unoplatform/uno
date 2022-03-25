@@ -9,7 +9,7 @@ namespace Windows.UI.Composition
 		private SKPaint? _strokePaint;
 		private SKPaint? _fillPaint;
 
-		internal override void Render(SKSurface surface, SKImageInfo info)
+		internal override void Render(SKSurface surface)
 		{
 			SkiaGeometrySource2D? geometrySource = Geometry?.BuildGeometry() as SkiaGeometrySource2D;
 

@@ -554,7 +554,7 @@ namespace Windows.UI.Xaml.Controls
 
 					// Because new items are added, the containers for existing items with higher indices
 					// will be moved, and we must make sure to increase their indices
-					SaveContainersForIndexRepair(args.NewStartingIndex, args.NewItems.Count);
+					SaveContainersBeforeAddForIndexRepair(args.NewItems, args.NewStartingIndex, args.NewItems.Count);
 					AddItems(args.NewStartingIndex, args.NewItems.Count, section);
 					RepairIndices();
 
@@ -572,7 +572,7 @@ namespace Windows.UI.Xaml.Controls
 						this.Log().Debug($"Deleting {args.OldItems.Count} items starting at {args.OldStartingIndex}");
 					}
 
-					SaveContainersForIndexRepair(args.OldStartingIndex, -args.OldItems.Count);
+					SaveContainersBeforeRemoveForIndexRepair(args.OldStartingIndex, args.OldItems.Count);
 					RemoveItems(args.OldStartingIndex, args.OldItems.Count, section);
 					RepairIndices();
 
@@ -613,16 +613,55 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="startingIndex">The minimum index of containers we care about.</param>
 		/// <param name="indexChange">How does the index change.</param>
-		private void SaveContainersForIndexRepair(int startingIndex, int indexChange)
+		private void SaveContainersBeforeAddForIndexRepair(IList addedItems, int startingIndex, int indexChange)
 		{
 			_containersForIndexRepair.Clear();
 			foreach (var container in MaterializedContainers)
 			{
 				var currentIndex = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);
-				if (currentIndex >= startingIndex)
+				if (currentIndex is -1 && container is ContentControl ctrl)
+				{
+					var offset = addedItems.IndexOf(ctrl.Content);
+					if (offset >= 0)
+					{
+						_containersForIndexRepair.Add(container, startingIndex + offset);
+					}
+				}
+				else if (currentIndex >= startingIndex)
 				{
 					// we store the index, that should be set after the collection change
 					_containersForIndexRepair.Add(container, currentIndex + indexChange);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Stores materialized containers starting a given index, so that their
+		/// ItemsControl.IndexForContainerProperty can be updated after the collection changes.		
+		/// </summary>
+		/// <param name="startingIndex">The minimum index of containers we care about.</param>
+		/// <param name="indexChange">How does the index change.</param>
+		private void SaveContainersBeforeRemoveForIndexRepair(int startingIndex, int indexChange)
+		{
+			_containersForIndexRepair.Clear();
+
+			var firstRemainingIndex = startingIndex + indexChange;
+			foreach (var container in MaterializedContainers)
+			{
+				var currentIndex = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);
+				if (currentIndex < startingIndex)
+				{
+					continue;
+				}
+
+				if (currentIndex < firstRemainingIndex)
+				{
+					_containersForIndexRepair.Add(container, -1);
+				}
+				else
+				{
+					// we store the index, that should be set after the collection change
+					_containersForIndexRepair.Add(container, currentIndex - indexChange);
 				}
 			}
 		}

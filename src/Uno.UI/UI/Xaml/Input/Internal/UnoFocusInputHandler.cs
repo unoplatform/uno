@@ -107,7 +107,12 @@ namespace Uno.UI.Xaml.Input
 				focusCandidateFound |= directionalFocusInfo.FocusCandidateFound;
 				directionalFocusEnabled |= directionalFocusInfo.DirectionalFocusEnabled;
 
-				if (!focusCandidateFound && directionalFocusInfo.ShouldBubble)
+				if (!directionalFocusInfo.ShouldBubble)
+				{
+					break;
+				}
+
+				if (!focusCandidateFound)
 				{
 					source = source.GetParent() as DependencyObject;
 				}
