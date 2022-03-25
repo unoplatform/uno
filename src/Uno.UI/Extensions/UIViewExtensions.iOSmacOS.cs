@@ -136,7 +136,7 @@ namespace AppKit
 				{
 					var t = v as T;
 					return t != null && selector(t);
-				};
+				}; 
 			}
 
 			if (includeCurrent

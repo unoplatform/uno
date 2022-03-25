@@ -701,7 +701,7 @@ namespace Windows.UI.Xaml
 			// [11] A parent is defined?
 			if (parent == null)
 			{
-				return true; // [12] processing finished
+				return isHandled; // [12] processing finished
 			}
 
 			// [13] Raise on parent
@@ -785,7 +785,7 @@ namespace Windows.UI.Xaml
 		{
 			public static readonly BubblingContext Bubble = default;
 
-			public static readonly BubblingContext NoBubbling = new BubblingContext { Mode = BubblingMode.NoBubbling };
+			public static readonly BubblingContext NoBubbling = new() { Mode = BubblingMode.NoBubbling };
 
 			/// <summary>
 			/// When bubbling in managed code, the <see cref="UIElement.RaiseEvent"/> will take care to raise the event on each parent,
@@ -793,10 +793,10 @@ namespace Windows.UI.Xaml
 			/// This value is used to flag events that are sent to element to maintain their internal state,
 			/// but which are not meant to initiate a new event bubbling (a.k.a. invoke the "RaiseEvent" again)
 			/// </summary>
-			public static readonly BubblingContext OnManagedBubbling = new BubblingContext { Mode = BubblingMode.NoBubbling, IsInternal = true };
+			public static readonly BubblingContext OnManagedBubbling = new() { Mode = BubblingMode.NoBubbling, IsInternal = true };
 
 			public static BubblingContext BubbleUpTo(UIElement root)
-				=> new BubblingContext { Root = root };
+				=> new() { Root = root };
 
 			/// <summary>
 			/// The mode to use for bubbling
@@ -819,7 +819,7 @@ namespace Windows.UI.Xaml
 			/// </remarks>
 			public bool IsInternal { get; set; }
 
-			public BubblingContext WithMode(BubblingMode mode) => new BubblingContext
+			public BubblingContext WithMode(BubblingMode mode) => new()
 			{
 				Mode = mode,
 				Root = Root,
