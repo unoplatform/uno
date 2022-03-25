@@ -5,6 +5,7 @@
     xmlns:local="using:UITests.Windows_UI_Xaml.UIElementTests"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:mux="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -15,8 +16,8 @@
 		</Grid.RowDefinitions>
 		<Button Click="BringItemIntoView_Click">Bring into view</Button>
 		<ScrollViewer Height="300" Background="Yellow" Padding="20" Grid.Row="1">
-			<ScrollViewer Height="150" Background="Blue" Margin="0,500,0,0" Padding="20">
-				<Border x:Name="Item" Background="Red" Width="100" Height="100" Margin="0,500,0,0" />
+			<ScrollViewer Height="200" Background="Blue" Margin="0,400,0,0" Padding="20">
+				<Border x:Name="Item" Background="Red" Width="100" Height="100" Margin="0,600,0,0" />
 			</ScrollViewer>
 		</ScrollViewer>
 	</Grid>

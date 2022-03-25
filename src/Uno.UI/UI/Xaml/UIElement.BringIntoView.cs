@@ -1,8 +1,5 @@
 ﻿using System;
-using Uno.UI.Extensions;
 using Windows.Foundation;
-using Windows.UI.Core;
-using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml;
 
@@ -40,15 +37,7 @@ public partial class UIElement
 			throw new ArgumentNullException(nameof(options));
 		}
 
-		var isHorizontalRatioValid =
-			double.IsNaN(options.HorizontalAlignmentRatio) ||
-			(options.HorizontalAlignmentRatio >= 0 && options.HorizontalAlignmentRatio <= 1);
-
-		var isVerRatioValid =
-			double.IsNaN(options.HorizontalAlignmentRatio) ||
-			(options.HorizontalAlignmentRatio >= 0 && options.HorizontalAlignmentRatio <= 1);
-
-		if (!IsLoaded && Visibility == Visibility.Visible)
+		if (Visibility == Visibility.Collapsed || this is FrameworkElement { IsLoaded: false })
 		{
 			// Element must be loaded and visible for bring into view.
 			return;

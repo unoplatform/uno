@@ -965,6 +965,9 @@ namespace Windows.UI.Xaml
 				case TypedEventHandler<UIElement, LosingFocusEventArgs> losingFocusHandler:
 					losingFocusHandler(this, (LosingFocusEventArgs)args);
 					break;
+				case TypedEventHandler<UIElement, BringIntoViewRequestedEventArgs> bringIntoViewRequestedHandler:
+					bringIntoViewRequestedHandler(this, (BringIntoViewRequestedEventArgs)args);
+					break;
 				default:
 					this.Log().Error($"The handler type {handler.GetType()} has not been registered for RoutedEvent");
 					break;
