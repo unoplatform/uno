@@ -97,5 +97,38 @@ namespace Uno.UI
 
 		public static bool GetUseMeasurePathDisabled(FrameworkElement element)
 			=> element.IsMeasureDirtyPathDisabled;
+
+		/// <summary>
+		/// This is the equivalent of <see cref="FeatureConfiguration.UIElement.UseInvalidateArrangePath"/>
+		/// but just for a specific element (and its descendants) in the visual tree.
+		/// </summary>
+		/// <remarks>
+		/// This will have no effect if <see cref="FeatureConfiguration.UIElement.UseInvalidateArrangePath"/>
+		/// is set to false.
+		/// </remarks>
+		public static void SetUseArrangePathDisabled(UIElement element, bool state = true, bool eager = true, bool invalidate = true)
+		{
+			element.IsArrangeDirtyPathDisabled = state;
+
+			if (eager)
+			{
+				using var children = element.GetChildren().GetEnumerator();
+				while (children.MoveNext())
+				{
+					if (children.Current is FrameworkElement child)
+					{
+						SetUseArrangePathDisabled(child, state, eager: true, invalidate);
+					}
+				}
+			}
+
+			if (invalidate)
+			{
+				element.InvalidateArrange();
+			}
+		}
+
+		public static bool GetUseArrangePathDisabled(FrameworkElement element)
+			=> element.IsArrangeDirtyPathDisabled;
 	}
 }

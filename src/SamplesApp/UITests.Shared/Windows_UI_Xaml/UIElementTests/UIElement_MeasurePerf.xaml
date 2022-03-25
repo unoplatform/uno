@@ -18,9 +18,8 @@
 			<Slider Header="Iterations" x:Name="iterations" Minimum="2" Maximum="1000" Value="60" />
 			<TextBlock>Deepness=<Run Text="{Binding Value, ElementName=deepness}" />, Wideness=<Run Text="{Binding Value, ElementName=wideness}" />, Iterations=<Run Text="{Binding Value, ElementName=iterations}" /></TextBlock>
 			<StackPanel Orientation="Horizontal" Spacing="8">
-				<StackPanel Orientation="Horizontal" Spacing="4">
-					<ToggleButton x:Name="optimizeMeasure" Click="changeOptimizeMeasure">Use MEASURE_DIRTY_PATH</ToggleButton>
-				</StackPanel>
+				<ToggleButton x:Name="optimizeMeasure" Click="changeOptimizeMeasure">Use MEASURE_DIRTY_PATH</ToggleButton>
+				<ToggleButton x:Name="optimizeArrange" Click="changeOptimizeMeasure">Use ARRANGE_DIRTY_PATH</ToggleButton>
 				<Button Click="BuildUI1">Build 1</Button>
 				<Button Click="GoTest1">Test Invalidations</Button>
 				<Button Click="GoTest2">Test Resizes</Button>

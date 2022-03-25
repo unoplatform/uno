@@ -638,6 +638,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_CollectionViewSource_In_Xaml()
 		{
 			var page = new ListViewCollectionViewSourcePage();
@@ -734,9 +735,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __IOS__
-		[Ignore("Test is flaky on iOS")]
+#if __NETSTD__
+		[Ignore("This test is flaky on netstd platforms")]
 #endif
+		[RunsOnUIThread]
 		public async Task When_Scrolled_To_End_And_Last_Item_Removed()
 		{
 			var container = new Grid { Height = 210 };
@@ -810,7 +812,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(3, materialized);
+			materialized.Should().BeLessThan(5);
 		}
 
 		[TestMethod]

@@ -34,6 +34,12 @@ namespace Windows.UI.Xaml
 			get => false; // Not implemented on macOS yet
 		}
 
+		internal bool IsArrangeDirtyPath
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => false; // Not implemented on macOS yet
+		}
+
 		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)

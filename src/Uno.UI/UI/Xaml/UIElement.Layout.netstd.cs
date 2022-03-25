@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml
 
 			if (FeatureConfiguration.UIElement.UseInvalidateMeasurePath && !IsMeasureDirtyPathDisabled)
 			{
-				InvalidateParentMeasurePath();
+				InvalidateParentMeasureDirtyPath();
 			}
 			else
 			{
@@ -49,24 +49,24 @@ namespace Windows.UI.Xaml
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void InvalidateMeasurePath()
+		private void InvalidateMeasureDirtyPath()
 		{
-			if(IsMeasureOrMeasureDirtyPath)
+			if(IsMeasureDirtyOrMeasureDirtyPath)
 			{
 				return; // Already invalidated
 			}
 
 			SetLayoutFlags(LayoutFlag.MeasureDirtyPath);
 
-			InvalidateParentMeasurePath();
+			InvalidateParentMeasureDirtyPath();
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal void InvalidateParentMeasurePath()
+		internal void InvalidateParentMeasureDirtyPath()
 		{
 			if (this.GetParent() is UIElement parent)
 			{
-				parent.InvalidateMeasurePath();
+				parent.InvalidateMeasureDirtyPath();
 			}
 			else if (IsVisualTreeRoot)
 			{
@@ -87,9 +87,40 @@ namespace Windows.UI.Xaml
 			}
 
 			SetLayoutFlags(LayoutFlag.ArrangeDirty);
+
+			if (FeatureConfiguration.UIElement.UseInvalidateArrangePath && !IsArrangeDirtyPathDisabled)
+			{
+				InvalidateParentArrangeDirtyPath();
+			}
+			else
+			{
+				(this.GetParent() as UIElement)?.InvalidateArrange();
+				if (IsVisualTreeRoot)
+				{
+					Window.InvalidateArrange();
+				}
+			}
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void InvalidateArrangeDirtyPath()
+		{
+			if (IsArrangeDirtyOrArrangeDirtyPath)
+			{
+				return; // Already invalidated
+			}
+
+			SetLayoutFlags(LayoutFlag.ArrangeDirtyPath);
+
+			InvalidateParentArrangeDirtyPath();
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void InvalidateParentArrangeDirtyPath()
+		{
 			if (this.GetParent() is UIElement parent)
 			{
-				parent.InvalidateArrange();
+				parent.InvalidateArrangeDirtyPath();
 			}
 			else
 			{
@@ -151,6 +182,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void DoMeasure(Size availableSize)
 		{
 			var isFirstMeasure = !IsLayoutFlagSet(LayoutFlag.FirstMeasureDone);
@@ -218,7 +250,7 @@ namespace Windows.UI.Xaml
 				//foreach (var child in children)
 				while(children.MoveNext())
 				{
-					if (children.Current is { IsMeasureOrMeasureDirtyPath: true } child)
+					if (children.Current is { IsMeasureDirtyOrMeasureDirtyPath: true } child)
 					{
 						// If the child is dirty (or is a path to a dirty descendant child),
 						// We're remeasuring it.
@@ -268,7 +300,7 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			if (!IsArrangeDirty && finalRect == LayoutSlot)
+			if (!IsArrangeDirtyOrArrangeDirtyPath && finalRect == LayoutSlot)
 			{
 				return; // Calling Arrange would be a waste of CPU time here.
 			}
@@ -302,25 +334,88 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void DoArrange(Rect finalRect)
 		{
-			ShowVisual();
+			var isFirstArrange = !IsLayoutFlagSet(LayoutFlag.FirstArrangeDone);
 
-			// We must store the updated slot before natively arranging the element,
-			// so the updated value can be read by indirect code that is being invoked on arrange.
-			// For instance, the EffectiveViewPort computation reads that value to detect slot changes (cf. PropagateEffectiveViewportChange)
-			LayoutInformation.SetLayoutSlot(this, finalRect);
+			var isDirty =
+				isFirstArrange
+				|| IsArrangeDirty
+				|| finalRect != LayoutSlot;
 
-			// We must reset the flag **BEFORE** doing the actual arrange, so the elements are able to re-invalidate themselves
-			ClearLayoutFlags(LayoutFlag.ArrangeDirty);
+			if (!isDirty && !IsArrangeDirtyPath)
+			{
+				return; // Nothing do to
+			}
 
-			ArrangeCore(finalRect);
+			var remainingTries = MaxLayoutIterations;
+
+			while (--remainingTries > 0)
+			{
+				if (IsMeasureDirtyOrMeasureDirtyPath)
+				{
+					DoMeasure(LastAvailableSize);
+				}
+
+				if (isDirty)
+				{
+					ShowVisual();
+
+					// We must store the updated slot before natively arranging the element,
+					// so the updated value can be read by indirect code that is being invoked on arrange.
+					// For instance, the EffectiveViewPort computation reads that value to detect slot changes (cf. PropagateEffectiveViewportChange)
+					LayoutInformation.SetLayoutSlot(this, finalRect);
+
+					// We must reset the flag **BEFORE** doing the actual arrange, so the elements are able to re-invalidate themselves
+					ClearLayoutFlags(LayoutFlag.ArrangeDirty | LayoutFlag.ArrangeDirtyPath);
+
+					ArrangeCore(finalRect);
+
+					SetLayoutFlags(LayoutFlag.FirstArrangeDone);
+
+					break;
+				}
+				else if (IsArrangeDirtyPath)
+				{
+					ClearLayoutFlags(LayoutFlag.ArrangeDirtyPath);
+
+					var children = GetChildren().GetEnumerator();
+
+					while (children.MoveNext())
+					{
+						var child = children.Current;
+
+						if (child is { IsArrangeDirtyOrArrangeDirtyPath: true })
+						{
+							var previousRenderSize = child.RenderSize;
+							child.Arrange(child.LayoutSlot);
+
+							if (child.RenderSize != previousRenderSize)
+							{
+								isDirty = true;
+								break;
+							}
+						}
+					}
+
+					children.Dispose(); // no "using" operator here to prevent an implicit try-catch on Wasm
+
+					if (!isDirty)
+					{
+						break;
+					}
+				}
+				else
+				{
+					break;
+				}
+			}
+
 		}
 
 		partial void HideVisual();
 		partial void ShowVisual();
-
-		
 
 		internal virtual void ArrangeCore(Rect finalRect)
 		{
