@@ -441,6 +441,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 #if !(NETFX_CORE || __ANDROID__) // On Android, the "Dirty" is a projection of the platform and can't be tested using those tests
 		[TestMethod]
+		[RunsOnUIThread]
 		public void MeasureDirtyTest()
 		{
 			var sut = new Grid();
@@ -467,6 +468,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public void ArrangeDirtyTest()
 		{
 			var sut = new Grid();
