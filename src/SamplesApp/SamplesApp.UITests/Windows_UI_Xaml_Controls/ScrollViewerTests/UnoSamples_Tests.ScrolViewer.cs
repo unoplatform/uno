@@ -161,7 +161,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android | Platform.Browser)] // no iOS: https://github.com/unoplatform/uno/issues/8213
 		public void ScrollViewer_Margin()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Margin");
