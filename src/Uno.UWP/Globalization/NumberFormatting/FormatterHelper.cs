@@ -97,7 +97,7 @@ internal partial class FormatterHelper : ISignificantDigitsOption, ISignedZeroOp
 			return;
 		}
 
-		var formatBuilder = StringBuildersContainer.Instance.StringBuilder2;
+		var formatBuilder = StringBuilderCache.Acquire();
 
 		if (IsGrouped)
 		{
@@ -112,8 +112,7 @@ internal partial class FormatterHelper : ISignificantDigitsOption, ISignedZeroOp
 			formatBuilder.Append("}");
 		}
 
-		var format = formatBuilder.ToString();
-		formatBuilder.Clear();
+		var format = StringBuilderCache.GetStringAndRelease(formatBuilder);
 		stringBuilder.AppendFormat(CultureInfo.InvariantCulture, format, integerPart);
 	}
 

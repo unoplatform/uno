@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System.Collections.Generic;
+using System.Text;
 using Uno.Globalization.NumberFormatting;
 
 namespace Windows.Globalization.NumberFormatting;
@@ -55,7 +56,7 @@ public partial class DecimalFormatter : INumberFormatterOptions, INumberFormatte
 		}
 
 		
-		var stringBuilder = StringBuildersContainer.Instance.StringBuilder1;
+		var stringBuilder = StringBuilderCache.Acquire();
 
 		if (value == 0d)
 		{
@@ -67,9 +68,7 @@ public partial class DecimalFormatter : INumberFormatterOptions, INumberFormatte
 		}
 
 		_translator.TranslateNumerals(stringBuilder);
-		var formatted = stringBuilder.ToString();
-
-		stringBuilder.Clear();
+		var formatted = StringBuilderCache.GetStringAndRelease(stringBuilder);
 		return formatted;
 	}
 
