@@ -349,23 +349,13 @@ namespace Windows.UI.Xaml
 				return; // Nothing do to
 			}
 
-			if (IsMeasureDirtyOrMeasureDirtyPath)
-			{
-				return; // Measure in invalidated: too soon to arrange.
-			}
-
-			if (isFirstArrange)
-			{
-				SetLayoutFlags(LayoutFlag.FirstArrangeDone);
-			}
-
 			var remainingTries = MaxLayoutIterations;
 
 			while (--remainingTries > 0)
 			{
 				if (IsMeasureDirtyOrMeasureDirtyPath)
 				{
-					return; // Measure in invalidated: too soon to arrange.
+					DoMeasure(LastAvailableSize);
 				}
 
 				if (isDirty)

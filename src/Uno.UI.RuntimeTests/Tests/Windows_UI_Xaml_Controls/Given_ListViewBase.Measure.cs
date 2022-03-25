@@ -23,6 +23,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public partial class Given_ListViewBase
 	{
 		[TestMethod]
+		[RunsOnUIThread]
 #if __IOS__ || __ANDROID__
 		[Ignore("ListView only supports HorizontalAlignment.Stretch - https://github.com/unoplatform/uno/issues/1133")]
 #endif
@@ -58,6 +59,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 #if __IOS__ || __ANDROID__
 		[Ignore("ListView only supports HorizontalAlignment.Stretch - https://github.com/unoplatform/uno/issues/1133")]
 #endif
@@ -100,6 +102,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __IOS__ || __ANDROID__
 		[Ignore("ListView only supports HorizontalAlignment.Stretch - https://github.com/unoplatform/uno/issues/1133")]
 #endif
+		[RunsOnUIThread]
 		public async Task When_Item_Margins()
 		{
 			var SUT = new ListView
@@ -119,6 +122,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_Item_Changes_Measure_Count()
 		{
 			var template = (DataTemplate)_testsResources["When_Item_Changes_Measure_Count_Template"];
@@ -159,6 +163,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_Available_Breadth_Changes()
 		{
 			var template = (DataTemplate)_testsResources["When_Available_Breadth_Changes_Template"];
@@ -193,6 +198,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_Item_Margins_And_Scrolled()
 		{
 			var SUT = new ListView
@@ -252,6 +258,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 #if __WASM__
 		[Ignore("Test is flaky")]
 #endif
