@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Controls
 		public event DragItemsStartingEventHandler DragItemsStarting;
 		public event TypedEventHandler<ListViewBase, DragItemsCompletedEventArgs> DragItemsCompleted;
 
-		protected bool _isProcessingReorder;
+		private bool _isProcessingReorder;
 
 		#region CanReorderItems (DP)
 		public static DependencyProperty CanReorderItemsProperty { get; } = DependencyProperty.Register(
