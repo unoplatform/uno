@@ -188,8 +188,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void OnReorderDragUpdated(object sender, _DragEventArgs dragEventArgs)
 		{
-			var that = sender as ListView;
-			var src = dragEventArgs.DataView.FindRawData(ReorderOwnerFormatId) as ListView;
+			var that = sender as ListViewBase;
+			var src = dragEventArgs.DataView.FindRawData(ReorderOwnerFormatId) as ListViewBase;
 			var item = dragEventArgs.DataView.FindRawData(ReorderItemFormatId);
 			var container = dragEventArgs.DataView.FindRawData(ReorderContainerFormatId) as FrameworkElement; // TODO: This might have changed/been recycled if scrolled 
 			if (that is null || src is null || item is null || container is null || src != that)
@@ -220,8 +220,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void OnReorderDragLeave(object sender, _DragEventArgs dragEventArgs)
 		{
-			var that = sender as ListView;
-			var src = dragEventArgs.DataView.FindRawData(ReorderOwnerFormatId) as ListView;
+			var that = sender as ListViewBase;
+			var src = dragEventArgs.DataView.FindRawData(ReorderOwnerFormatId) as ListViewBase;
 			if (that is null || src != that)
 			{
 				if (dragEventArgs.Log().IsEnabled(LogLevel.Warning)) dragEventArgs.Log().Warn("Invalid reorder event.");
@@ -235,11 +235,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void OnReorderCompleted(object sender, _DragEventArgs dragEventArgs)
 		{
-			var that = sender as ListView;
+			var that = sender as ListViewBase;
 
 			that?.SetPendingAutoPanVelocity(PanVelocity.Stationary);
 
-			var src = dragEventArgs.DataView.FindRawData(ReorderOwnerFormatId) as ListView;
+			var src = dragEventArgs.DataView.FindRawData(ReorderOwnerFormatId) as ListViewBase;
 			var item = dragEventArgs.DataView.FindRawData(ReorderItemFormatId);
 			var container = dragEventArgs.DataView.FindRawData(ReorderContainerFormatId) as FrameworkElement; // TODO: This might have changed/been recycled if scrolled 
 			if (that is null || src is null || item is null || container is null || src != that)
