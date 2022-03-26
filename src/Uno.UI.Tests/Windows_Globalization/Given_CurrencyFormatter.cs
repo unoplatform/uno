@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Globalization.NumberFormatting;
 
 namespace Uno.UI.Tests.Windows_Globalization
@@ -195,20 +194,6 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.AreEqual(false, sut.IsDecimalPointAlwaysDisplayed);
 			Assert.AreEqual("en-US", sut.ResolvedLanguage);
 			Assert.IsNull(sut.NumberRounder);
-			/*
-				FractionDigits	2	int
-				GeographicRegion	"US"	string
-				IntegerDigits	1	int
-				IsDecimalPointAlwaysDisplayed	false	bool
-				IsGrouped	false	bool
-				IsZeroSigned	false	bool
-				NumberRounder	null	WindoGlobalization.NumberFormatting.INumberRounder
-				NumeralSystem	"Latn"	string
-				ResolvedGeographicRegion	"ZZ"	string
-				ResolvedLanguage	"en-US"	string
-				SignificantDigits	0	int
-
-			 */
 		}
 
 

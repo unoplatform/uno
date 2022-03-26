@@ -15,6 +15,10 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 	private const char OpenPatternSymbol = '(';
 	private const char ClosePatternSymbol = ')';
 	private const char SpaceSymbol = ' ';
+	private const string EscapedOpenPatternSymbol = @"\(";
+	private const string EscapedClosePatternSymbol = @"\)";
+	private const string NumberPattern = $"(?<{ValueCaptureingGroupName}>[0-9.]*)";
+	private const string ValueCaptureingGroupName = "value";
 	private readonly FormatterHelper _formatterHelper;
 	private readonly NumeralSystemTranslator _translator;
 	private readonly CurrencyData _currencyData = CurrencyData.Empty;
@@ -23,6 +27,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 	private CurrencyFormatterMode _mode;
 	private int _positivePattern = -1;
 	private int _negativePattern = -1;
+	private string _escapedCurrencySymbol;
 	private Regex _positiveRegex;
 	private Regex _negativeRegex;
 
@@ -44,6 +49,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 
 		_negativeRegex = CreateNegativeNumberRegex();
 		_positiveRegex = CreatePositiveNumberRegex();
+		_escapedCurrencySymbol = GetEscapedCurrencySymbol();
 	}
 
 	public CurrencyFormatterMode Mode
@@ -59,6 +65,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 			_mode = value;
 			_negativeRegex = CreateNegativeNumberRegex();
 			_positiveRegex = CreatePositiveNumberRegex();
+			_escapedCurrencySymbol = GetEscapedCurrencySymbol();
 		}
 	}
 
@@ -126,10 +133,10 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 			switch (Mode)
 			{
 				case CurrencyFormatterMode.UseSymbol:
-					formatted = FormatNegativeWithSymbol(formatted);
+					formatted = FormatSymbolModeNegative(formatted);
 					break;
 				case CurrencyFormatterMode.UseCurrencyCode:
-					formatted = FormatNegativeWithCurrencyCode(formatted);
+					formatted = FormatCurrencyCodeModeNegativeNumber(formatted);
 					break;
 				default:
 					break;
@@ -140,10 +147,10 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 			switch (Mode)
 			{
 				case CurrencyFormatterMode.UseSymbol:
-					formatted = FormatPositiveWithSymbol(formatted);
+					formatted = FormatSymbolModePositiveNumber(formatted);
 					break;
 				case CurrencyFormatterMode.UseCurrencyCode:
-					formatted = FormatPositiveWithCurrencyCode(formatted);
+					formatted = FormatCurrencyCodeModePositiveNumber(formatted);
 					break;
 				default:
 					break;
@@ -153,7 +160,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 		return formatted;
 	}
 
-	private string FormatNegativeWithCurrencyCode(string text)
+	private string FormatCurrencyCodeModeNegativeNumber(string text)
 	{
 		var symbol = _currencyData.CurrencyCode;
 		var negativeSign = CultureInfo.CurrentCulture.NumberFormat.NegativeSign;
@@ -229,7 +236,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 		return StringBuilderCache.GetStringAndRelease(stringBuilder);
 	}
 
-	private string FormatNegativeWithSymbol(string text)
+	private string FormatSymbolModeNegative(string text)
 	{
 		var symbol = _currencyData.Symbol;
 		var negativeSign = CultureInfo.CurrentCulture.NumberFormat.NegativeSign;
@@ -337,7 +344,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 		return StringBuilderCache.GetStringAndRelease(stringBuilder);
 	}
 
-	private string FormatPositiveWithCurrencyCode(string text)
+	private string FormatCurrencyCodeModePositiveNumber(string text)
 	{
 		var symbol = _currencyData.CurrencyCode;
 		var pattern = CultureInfo.CurrentCulture.NumberFormat.CurrencyPositivePattern;
@@ -365,7 +372,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 		return StringBuilderCache.GetStringAndRelease(stringBuilder);
 	}
 
-	private string FormatPositiveWithSymbol(string text)
+	private string FormatSymbolModePositiveNumber(string text)
 	{
 		var symbol = _currencyData.Symbol;
 		var pattern = CultureInfo.CurrentCulture.NumberFormat.CurrencyPositivePattern;
@@ -401,27 +408,24 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 
 	public double? ParseDouble(string text)
 	{
-		var startWith = "";
+		text = _translator.TranslateBackNumerals(text);
 
-		switch (Mode)
+		var isNegative = false;
+
+		if (TryMatchPositiveNumber(text, out string positiveNumber))
 		{
-			case CurrencyFormatterMode.UseSymbol:
-				startWith = _currencyData.Symbol;
-				break;
-			case CurrencyFormatterMode.UseCurrencyCode:
-				startWith = _startWithInCurrencyCodeMode;
-				break;
+			text = positiveNumber;
 		}
-
-		if (!text.StartsWith(startWith, StringComparison.Ordinal))
+		else if (TryMatchNegativeNumber(text, out string negativeNumber))
+		{
+			text = negativeNumber;
+			isNegative = true;
+		}
+		else
 		{
 			return null;
 		}
 
-		var stringBuilder = StringBuilderCache.Acquire();
-		stringBuilder.Append(text, startWith.Length, text.Length - startWith.Length);
-		_translator.TranslateBackNumerals(stringBuilder);
-		text = StringBuilderCache.GetStringAndRelease(stringBuilder);
 		var result = _formatterHelper.ParseDouble(text);
 
 		if (!result.HasValue)
@@ -429,8 +433,12 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 			return null;
 		}
 
-		return result;
+		if (isNegative)
+		{
+			result = -result;
+		}
 
+		return result;
 	}
 
 	private bool TryMatchNegativeNumber(string text, out string value)
@@ -442,21 +450,213 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 			_negativeRegex = CreateNegativeNumberRegex();
 		}
 
-		return false;
+		var match = _negativeRegex.Match(text);
+
+		if (match.Success)
+		{
+			value = match.Groups[ValueCaptureingGroupName].Value;
+		}
+		else
+		{
+			value = string.Empty;
+		}
+
+		return match.Success;
+	}
+
+	private bool TryMatchPositiveNumber(string text, out string value)
+	{
+		var pattern = CultureInfo.CurrentCulture.NumberFormat.CurrencyPositivePattern;
+
+		if (pattern != _positivePattern)
+		{
+			_positiveRegex = CreatePositiveNumberRegex();
+		}
+
+		var match = _positiveRegex.Match(text);
+
+		if (match.Success)
+		{
+			value = match.Groups[ValueCaptureingGroupName].Value;
+		}
+		else
+		{
+			value = string.Empty;
+		}
+
+		return match.Success;
 	}
 
 	private Regex CreateNegativeNumberRegex()
 	{
 		var pattern = "";
 
+		switch (Mode)
+		{
+			case CurrencyFormatterMode.UseSymbol:
+				pattern = GetSymbolModeNegativeNumberPattern();
+				break;
+			case CurrencyFormatterMode.UseCurrencyCode:
+				pattern = GetCurrencyCodeModeNegativeNumberPattern();
+				break;
+			default:
+				break;
+		}
+
 		return new Regex(pattern);
+	}
+
+	private string GetCurrencyCodeModeNegativeNumberPattern()
+	{
+		var patternNumber = CultureInfo.CurrentCulture.NumberFormat.CurrencyNegativePattern;
+		var negativeSign = CultureInfo.CurrentCulture.NumberFormat.NegativeSign;
+		var spacePattern = $"[\\s{NoBreakSpaceChar}]";
+
+		switch (patternNumber)
+		{
+			case 0:
+			case 14:
+				return $"{EscapedOpenPatternSymbol}{_escapedCurrencySymbol}{spacePattern}{NumberPattern}{EscapedClosePatternSymbol}";
+			case 1:
+			case 9:
+				return $"{negativeSign}{_escapedCurrencySymbol}{spacePattern}{NumberPattern}";
+			case 2:
+			case 12:
+				return $"{_escapedCurrencySymbol}{spacePattern}{negativeSign}{NumberPattern}";
+			case 3:
+			case 11:
+				return $"{_escapedCurrencySymbol}{spacePattern}{NumberPattern}{negativeSign}";
+			case 4:
+			case 15:
+				return $"{EscapedOpenPatternSymbol}{NumberPattern}{spacePattern}{_escapedCurrencySymbol}{EscapedClosePatternSymbol}";
+			case 5:
+			case 8:
+				return $"{negativeSign}{NumberPattern}{spacePattern}{_escapedCurrencySymbol}";
+			case 6:
+			case 13:
+				return $"{NumberPattern}{negativeSign}{spacePattern}{_escapedCurrencySymbol}";
+			case 7:
+			case 10:
+				return $"{NumberPattern}{spacePattern}{_escapedCurrencySymbol}{negativeSign}";
+			default:
+				return string.Empty;
+		}
+	}
+
+	private string GetSymbolModeNegativeNumberPattern()
+	{
+		var patternNumber = CultureInfo.CurrentCulture.NumberFormat.CurrencyNegativePattern;
+		var negativeSign = CultureInfo.CurrentCulture.NumberFormat.NegativeSign;
+		var spacePattern = "\\s";
+
+		switch (patternNumber)
+		{
+			case 0:
+				return $"{EscapedOpenPatternSymbol}{_escapedCurrencySymbol}{spacePattern}{NumberPattern}{EscapedClosePatternSymbol}";
+			case 1:
+				return $"{negativeSign}{_escapedCurrencySymbol}{spacePattern}{NumberPattern}";
+			case 2:
+				return $"{_escapedCurrencySymbol}{spacePattern}{negativeSign}{NumberPattern}";
+			case 3:
+				return $"{_escapedCurrencySymbol}{spacePattern}{NumberPattern}{negativeSign}";
+			case 4:
+				return $"{EscapedOpenPatternSymbol}{NumberPattern}{spacePattern}{_escapedCurrencySymbol}{EscapedClosePatternSymbol}";
+			case 5:
+				return $"{negativeSign}{NumberPattern}{spacePattern}{_escapedCurrencySymbol}";
+			case 6:
+				return $"{NumberPattern}{negativeSign}{spacePattern}{_escapedCurrencySymbol}";
+			case 7:
+				return $"{NumberPattern}{spacePattern}{_escapedCurrencySymbol}{negativeSign}";
+			case 8:
+				return $"{negativeSign}{NumberPattern}{_escapedCurrencySymbol}";
+			case 9:
+				return $"{negativeSign}{_escapedCurrencySymbol}{NumberPattern}";
+			case 10:
+				return $"{NumberPattern}{_escapedCurrencySymbol}{negativeSign}";
+			case 11:
+				return $"{_escapedCurrencySymbol}{NumberPattern}{negativeSign}";
+			case 12:
+				return $"{_escapedCurrencySymbol}{spacePattern}{NumberPattern}";
+			case 13:
+				return $"{NumberPattern}{negativeSign}{_escapedCurrencySymbol}";
+			case 14:
+				return $"{EscapedOpenPatternSymbol}{_escapedCurrencySymbol}{NumberPattern}{EscapedClosePatternSymbol}";
+			case 15:
+				return $"{EscapedOpenPatternSymbol}{NumberPattern}{_escapedCurrencySymbol}{EscapedClosePatternSymbol}";
+			default:
+				return string.Empty;
+		}
 	}
 
 	private Regex CreatePositiveNumberRegex()
 	{
 		var pattern = "";
 
+		switch (Mode)
+		{
+			case CurrencyFormatterMode.UseSymbol:
+				pattern = GetSymbolModePositiveNumberPattern();
+				break;
+			case CurrencyFormatterMode.UseCurrencyCode:
+				pattern = GetCurrencyCodeModePositiveNumberPattern();
+				break;
+			default:
+				break;
+		}
+
 		return new Regex(pattern);
+	}
+
+	private string GetCurrencyCodeModePositiveNumberPattern()
+	{
+		var patternNumber = CultureInfo.CurrentCulture.NumberFormat.CurrencyPositivePattern;
+		var spacePattern = $"[\\s{NoBreakSpaceChar}]";
+
+		switch (patternNumber)
+		{
+
+			case 0:
+			case 2:
+				return $"{_escapedCurrencySymbol}{spacePattern}{NumberPattern}";
+			case 1:
+			case 3:
+				return $"{NumberPattern}{spacePattern}{_escapedCurrencySymbol}";
+			default:
+				return string.Empty;
+		}
+	}
+
+	private string GetSymbolModePositiveNumberPattern()
+	{
+		var patternNumber = CultureInfo.CurrentCulture.NumberFormat.CurrencyPositivePattern;
+		var spacePattern = "\\s";
+
+		switch (patternNumber)
+		{
+			case 0:
+				return $"{_escapedCurrencySymbol}{NumberPattern}";
+			case 1:
+				return $"{NumberPattern}{_escapedCurrencySymbol}";
+			case 2:
+				return $"{_escapedCurrencySymbol}{spacePattern}{NumberPattern}";
+			case 3:
+				return $"{NumberPattern}{spacePattern}{_escapedCurrencySymbol}";
+			default:
+				return string.Empty;
+		}
+	}
+
+	private string GetEscapedCurrencySymbol()
+	{
+		switch (Mode)
+		{
+			case CurrencyFormatterMode.UseSymbol:
+				return Regex.Escape(_currencyData.Symbol);
+			case CurrencyFormatterMode.UseCurrencyCode:
+				return Regex.Escape(_currencyData.CurrencyCode);
+			default:
+				return string.Empty;
+		}
 	}
 
 	public void ApplyRoundingForCurrency(RoundingAlgorithm roundingAlgorithm)
