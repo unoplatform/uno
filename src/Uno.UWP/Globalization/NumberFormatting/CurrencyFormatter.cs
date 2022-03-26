@@ -117,7 +117,12 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 
 		if (value == 0d)
 		{
-			_formatterHelper.AppendFormatZero(value, stringBuilder);
+			_formatterHelper.AppendFormatZero(stringBuilder);
+
+			if (!IsZeroSigned)
+			{
+				isNegative = false;
+			}
 		}
 		else
 		{
