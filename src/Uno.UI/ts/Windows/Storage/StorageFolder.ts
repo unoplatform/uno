@@ -29,6 +29,17 @@ namespace Windows.Storage {
 			for (var i = 0; i < params.Paths.length; i++) {
 				this.setupStorage(params.Paths[i])
 			}
+
+			// Ensure to sync pseudo file system on unload (and periodically for safety)
+			if (!this._isInitialized) {
+				// Request an initial sync to populate the file system
+				StorageFolder.synchronizeFileSystem(true, () => StorageFolder.onStorageInitialized());
+
+				window.addEventListener("beforeunload", () => this.synchronizeFileSystem(false));
+				setInterval(() => this.synchronizeFileSystem(false), 10000);
+
+				this._isInitialized = true;
+			}
 		}
 
 		/**
@@ -61,17 +72,6 @@ namespace Windows.Storage {
 			FS.mkdir(path);
 
 			FS.mount(IDBFS, {}, path);
-
-			// Ensure to sync pseudo file system on unload (and periodically for safety)
-			if (!this._isInitialized) {
-				// Request an initial sync to populate the file system
-				StorageFolder.synchronizeFileSystem(true, () => StorageFolder.onStorageInitialized());
-
-				window.addEventListener("beforeunload", () => this.synchronizeFileSystem(false));
-				setInterval(this.synchronizeFileSystem, 10000);
-
-				this._isInitialized = true;
-			}
 		}
 
 		private static onStorageInitialized() {
