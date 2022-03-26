@@ -63,13 +63,17 @@ function initializeNavbar() {
 
 /**
  * Changes the logo on resize
- */
+*/
+
 function updateLogo() {
     const curWidth = window.innerWidth;
+    const headerLogo = document.getElementById('logo');
     if (curWidth < 980) {
-        $('#logo').attr('src', '../images/UnoLogoSmall.png');
+        const mobileLogo = new URL('UnoLogoSmall.png', headerLogo.src).href;
+        headerLogo.src = mobileLogo;
     } else {
-        $('#logo').attr('src', '../images/uno-logo.svg');
+        const deskLogo = new URL('uno-logo.svg', headerLogo.src).href;
+        headerLogo.src = deskLogo;
     }
 }
 
