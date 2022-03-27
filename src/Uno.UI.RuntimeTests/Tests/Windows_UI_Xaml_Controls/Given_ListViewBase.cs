@@ -29,6 +29,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Data;
 using Uno.UI.RuntimeTests.Extensions;
+using Windows.UI.Xaml.Input;
 using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -44,6 +45,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private Style ContainerMarginStyle => _testsResources["ListViewContainerMarginStyle"] as Style;
 
 		private Style NoSpaceContainerStyle => _testsResources["NoExtraSpaceListViewContainerStyle"] as Style;
+
+		private Style FocusableContainerStyle => _testsResources["FocusableListViewItemStyle"] as Style;
 
 		private DataTemplate TextBlockItemTemplate => _testsResources["TextBlockItemTemplate"] as DataTemplate;
 
@@ -1141,7 +1144,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
 			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 1);
-		
+
 			Assert.AreEqual(list, ItemsControl.ItemsControlFromItemContainer(item));
 		}
 
@@ -1149,7 +1152,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_Not_Own_Container_ContainerFromItem_Owner()
 		{
-			var list = new ListView();			
+			var list = new ListView();
 			var items = new ObservableCollection<int>()
 			{
 				1,
@@ -2232,7 +2235,107 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if __SKIA__ || __WASM__
 		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
+		public async Task When_Focus_Tab()
+		{
+			var stack = new StackPanel();
+			stack.Children.Add(new Button() { Content = "Before" });
+			var SUT = new ListView()
+			{
+				TabNavigation = KeyboardNavigationMode.Local,
+				Height = 400,
+				ItemContainerStyle = FocusableContainerStyle,
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+			stack.Children.Add(SUT);
+			stack.Children.Add(new Button() { Content = "After" });
+
+			var item1 = new ListViewItem() { Content = "item 1" };
+			var item2 = new ListViewItem() { Content = "item 2" };
+
+			SUT.Items.Add(item1);
+			SUT.Items.Add(item2);
+
+			WindowHelper.WindowContent = stack;
+
+			await WindowHelper.WaitForIdle();
+
+			item1.Focus(FocusState.Keyboard);
+			var success = FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
+			Assert.IsTrue(success);
+
+			var focused = FocusManager.GetFocusedElement();
+			Assert.AreEqual(item2, focused);
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
+		public async Task When_Focus_Shift_Tab()
+		{
+			var stack = new StackPanel();
+			stack.Children.Add(new Button() { Content = "Before" });
+			var SUT = new ListView()
+			{
+				TabNavigation = KeyboardNavigationMode.Local,
+				Height = 400,
+				ItemContainerStyle = FocusableContainerStyle,
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+			stack.Children.Add(SUT);
+			stack.Children.Add(new Button() { Content = "After" });
+
+			var item1 = new ListViewItem() { Content = "item 1" };
+			var item2 = new ListViewItem() { Content = "item 2" };
+
+			SUT.Items.Add(item1);
+			SUT.Items.Add(item2);
+
+			WindowHelper.WindowContent = stack;
+
+			await WindowHelper.WaitForIdle();
+
+			item2.Focus(FocusState.Keyboard);
+			var success = FocusManager.TryMoveFocus(FocusNavigationDirection.Previous);
+			Assert.IsTrue(success);
+
+			var focused = FocusManager.GetFocusedElement();
+			Assert.AreEqual(item1, focused);
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
+		public async Task When_Item_Focus_VisualState()
+		{
+			var SUT = new ListView()
+			{
+				TabNavigation = KeyboardNavigationMode.Local,
+				Height = 400,
+				ItemContainerStyle = FocusableContainerStyle,
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+			var item1 = new ListViewItem() { Content = "item 1" };
+			SUT.Items.Add(item1);
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+
+			item1.Focus(FocusState.Keyboard);
+			VisualState state = null;
+			await WindowHelper.WaitForNonNull(() => state = VisualStateManager.GetCurrentState(item1, "FocusStates"));
+
+			Assert.AreEqual("Focused", state?.Name);
+		}
+#endif
+
+		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
 		public async Task When_Incremental_Load()
 		{
 			const int BatchSize = 25;
@@ -2341,7 +2444,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
 
-		#region Helper classes
+#region Helper classes
 		private class When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext : System.ComponentModel.INotifyPropertyChanged
 		{
 			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
@@ -2368,23 +2471,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
-			#region SelectedItem
+#region SelectedItem
 			private object _selectedItem;
 			public object SelectedItem
 			{
 				get => _selectedItem;
 				set => RaiseAndSetIfChanged(ref _selectedItem, value);
 			}
-			#endregion
-			#region SelectedValue
+#endregion
+#region SelectedValue
 			private object _selectedValue;
 			public object SelectedValue
 			{
 				get => _selectedValue;
 				set => RaiseAndSetIfChanged(ref _selectedValue, value);
 			}
-			#endregion
-			#region SelectedIndex
+#endregion
+#region SelectedIndex
 			private int _selectedIndex;
 
 			public int SelectedIndex
@@ -2392,7 +2495,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				get => _selectedIndex;
 				set => RaiseAndSetIfChanged(ref _selectedIndex, value);
 			}
-			#endregion
+#endregion
 
 			protected void RaiseAndSetIfChanged<T>(ref T backingField, T value, [CallerMemberName] string propertyName = null)
 			{
@@ -2423,10 +2526,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			}
 		}
-		#endregion
+#endregion
 	}
 
-	#region Helper classes
+#region Helper classes
 	public partial class OnItemsChangedListView : ListView
 	{
 		public Action ItemsChangedAction = null;
@@ -2622,5 +2725,5 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		public int LastIndex => _start;
 	}
-	#endregion
+#endregion
 }

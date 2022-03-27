@@ -536,4 +536,87 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+	<Style x:Key="FocusableListViewItemStyle" TargetType="ListViewItem">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ListViewItem">
+					<Border
+                          x:Name="Border"
+                          Margin="{TemplateBinding Margin}"
+                          Background="{TemplateBinding Background}"
+                          BorderBrush="{TemplateBinding BorderBrush}"
+                          BorderThickness="{TemplateBinding BorderThickness}"
+                          CornerRadius="{TemplateBinding CornerRadius}">
+						<ContentPresenter
+                              x:Name="ContentPresenter"
+                              Padding="{TemplateBinding Padding}"
+                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                              Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                              ContentTransitions="{TemplateBinding ContentTransitions}"
+                              FontFamily="{TemplateBinding FontFamily}"
+                              FontSize="{TemplateBinding FontSize}"
+                              FontWeight="{TemplateBinding FontWeight}"
+                              Foreground="{TemplateBinding Foreground}" />
+
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="CommonStates">
+								<VisualState x:Name="Normal" />
+								<VisualState x:Name="Disabled">
+									<VisualState.Setters>
+										<Setter Target="Border.Opacity" Value="0.56" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="PointerOver">
+									<VisualState.Setters>
+										<Setter Target="ContentPresenter.Foreground" Value="#00809B" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="PointerOverSelected">
+									<VisualState.Setters>
+										<Setter Target="Border.Background" Value="#E4F1F4" />
+										<Setter Target="ContentPresenter.Foreground" Value="#00809B" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="PointerOverPressed">
+									<VisualState.Setters>
+										<Setter Target="Border.Background" Value="#E4F1F4" />
+										<Setter Target="ContentPresenter.Foreground" Value="#00809B" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="Pressed">
+									<VisualState.Setters>
+										<Setter Target="Border.Background" Value="#E4F1F4" />
+										<Setter Target="ContentPresenter.Foreground" Value="#00809B" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="PressedSelected">
+									<VisualState.Setters>
+										<Setter Target="Border.Background" Value="#E4F1F4" />
+										<Setter Target="ContentPresenter.Foreground" Value="#00809B" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="Selected">
+									<VisualState.Setters>
+										<Setter Target="Border.Background" Value="#E4F1F4" />
+										<Setter Target="ContentPresenter.Foreground" Value="#00809B" />
+									</VisualState.Setters>
+								</VisualState>
+							</VisualStateGroup>
+							<VisualStateGroup x:Name="FocusStates">
+								<VisualState x:Name="Focused">
+									<VisualState.Setters>
+										<Setter Target="ContentPresenter.Foreground" Value="#00809B" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="Unfocused" />
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
 </ResourceDictionary>

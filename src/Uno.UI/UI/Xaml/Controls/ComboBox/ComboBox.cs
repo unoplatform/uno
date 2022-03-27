@@ -565,7 +565,7 @@ namespace Windows.UI.Xaml.Controls
 				focusedIndex = IndexFromContainer(focusedContainer);
 			}
 
-			var index = focusedIndex += offset;
+			var index = focusedIndex + offset;
 			if (!IsIndexValid(index))
 			{
 				return false;
