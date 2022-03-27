@@ -490,7 +490,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY)
 		{
-			var parent = this.GetParent();
+			var parent = VisualTreeHelper.GetParent(this);
 			switch (parent)
 			{
 				case UIElement elt:
