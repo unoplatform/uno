@@ -1,12 +1,17 @@
-﻿using Windows.Foundation;
+﻿using Uno.UI.Xaml.Input;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml;
 
 /// <summary>
 /// Provides data for the UIElement.BringIntoViewRequested event.
 /// </summary>
-public partial class BringIntoViewRequestedEventArgs : RoutedEventArgs
+public partial class BringIntoViewRequestedEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs
 {
+	internal BringIntoViewRequestedEventArgs()
+	{
+	}
+
 	/// <summary>
 	/// Gets or sets a value that specifies whether the scrolling should be animated.
 	/// </summary>
@@ -18,6 +23,12 @@ public partial class BringIntoViewRequestedEventArgs : RoutedEventArgs
 	/// from handling the same event again.
 	/// </summary>
 	public bool Handled { get; set; }
+
+	bool IHandleableRoutedEventArgs.Handled
+	{
+		get => Handled;
+		set => Handled = value;
+	}
 
 	/// <summary>
 	/// Gets the requested horizontal alignment ratio which controls the alignment

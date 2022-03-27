@@ -80,12 +80,13 @@ namespace Uno.UI.Xaml
 			  RoutedEventFlag.KeyDown
 			| RoutedEventFlag.KeyUp;
 
-		private const RoutedEventFlag _isFocus = // 0b0000_0000_0000_0000___0000_0000_0000_0000___0011_1111_0000_0000___0000_0000_0000_0000
+		private const RoutedEventFlag _isFocus = // 0b0000_0000_0000_0000___0000_0000_0000_0000___0111_1111_0000_0000___0000_0000_0000_0000
 			  RoutedEventFlag.GotFocus
 			| RoutedEventFlag.LostFocus
 			| RoutedEventFlag.GettingFocus
 			| RoutedEventFlag.LosingFocus
-			| RoutedEventFlag.NoFocusCandidateFound;
+			| RoutedEventFlag.NoFocusCandidateFound
+			| RoutedEventFlag.BringIntoViewRequested;
 
 		private const RoutedEventFlag _isDragAndDrop = // 0b0000_0000_0000_0000___0000_0000_0011_1111___0000_0000_0000_0000___0000_0000_0000_0000;
 			  RoutedEventFlag.DragStarting

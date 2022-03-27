@@ -58,11 +58,26 @@ namespace Windows.UI.Xaml.Controls
 
 		private ScrollViewer Scroller => ScrollOwner as ScrollViewer;
 
+		internal object ManagedContent
+		{
+			get
+			{
+#if __ANDROID__ || __IOS__
+				if (Content is NativeScrollContentPresenter nativePresenter)
+				{
+					return nativePresenter.Content;
+				}
+#endif
+
+				return Content;
+			}
+		}
+
 		protected override void OnBringIntoViewRequested(BringIntoViewRequestedEventArgs args)
 		{
 			base.OnBringIntoViewRequested(args);
 
-			UIElement content = Content as UIElement;
+			UIElement content = ManagedContent as UIElement;
 
 			if (args.Handled ||
 				args.TargetElement == this ||
@@ -404,9 +419,9 @@ namespace Windows.UI.Xaml.Controls
 			return this.IsHeightConstrainedSimple() ?? (Parent as ILayoutConstraints)?.IsHeightConstrained(this) ?? false;
 		}
 
-		public double ViewportHeight => DesiredSize.Height;
+		public double ViewportHeight => (DesiredSize.Height - Margin.Top - Margin.Bottom);
 
-		public double ViewportWidth => DesiredSize.Width;
+		public double ViewportWidth => (DesiredSize.Width - Margin.Left - Margin.Right);
 
 #if UNO_HAS_MANAGED_SCROLL_PRESENTER || __WASM__
 		protected override Size MeasureOverride(Size availableSize)
