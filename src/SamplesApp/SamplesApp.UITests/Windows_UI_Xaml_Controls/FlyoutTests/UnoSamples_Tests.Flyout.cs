@@ -32,7 +32,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			//_app.WaitForElement(_app.Marked("BottomFlyout"));
 			//var flyoutRect = _app.Marked("BottomFlyout").FirstResult().Rect;
 
-			//// Assert initial state 
+			//// Assert initial state
 			//Assert.AreEqual("0", flyoutRect.X.ToString());
 		}
 
@@ -55,7 +55,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 			_app.FastTap(dataBoundButton);
 			Assert.AreEqual("Button was clicked", dataBoundText.GetText());
-			
+
 			_app.TapCoordinates(10, 100);
 		}
 
@@ -151,6 +151,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 				"BottomFlyoutButton",
 				"TopFlyoutButton",
 				//"FullFlyoutButton", // unclosable without native back button/gesture
+				//"FullFlyoutButtonNoConstraint", // unclosable without native back button/gesture
 				"CenteredFullFlyoutButton",
 				//"FullOverlayFlyoutButton", // unclosable without native back button/gesture
 				"WithOffsetFlyoutButton",
