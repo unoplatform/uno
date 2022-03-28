@@ -296,12 +296,13 @@ namespace Windows.UI.Xaml
 			{
 				LayoutInformation.SetLayoutSlot(this, finalRect);
 				HideVisual();
-				ClearLayoutFlags(LayoutFlag.ArrangeDirty);
+				ClearLayoutFlags(LayoutFlag.ArrangeDirty | LayoutFlag.ArrangeDirtyPath);
 				return;
 			}
 
 			if (!IsArrangeDirtyOrArrangeDirtyPath && finalRect == LayoutSlot)
 			{
+				ClearLayoutFlags(LayoutFlag.ArrangeDirty | LayoutFlag.ArrangeDirtyPath);
 				return; // Calling Arrange would be a waste of CPU time here.
 			}
 
