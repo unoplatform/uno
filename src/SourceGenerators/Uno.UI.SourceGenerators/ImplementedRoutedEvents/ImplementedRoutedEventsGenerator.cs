@@ -7,6 +7,7 @@ using Uno.UI.SourceGenerators.Helpers;
 using System.Collections.Generic;
 using Uno.Extensions;
 using Uno.UI.SourceGenerators.XamlGenerator;
+using Uno.UI.SourceGenerators.Helpers;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
@@ -231,14 +232,17 @@ public class ImplementedRoutedEventsGenerator : ISourceGenerator
 
 		private static void WriteClass(IIndentedStringBuilder builder, INamedTypeSymbol type, IEnumerable<string> routedEventFlags)
 		{
-			using (builder.BlockInvariant($"partial class {type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)}"))
+			// TODO MZ: Handle generics
+			using (builder.GenerateNestingContainers(type))
 			{
-				builder.AppendLineInvariant("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
-				builder.AppendLineInvariant("private static global::Uno.UI.Xaml.RoutedEventFlag __uno_ImplementedRoutedEvents = global::Uno.UI.UIElementGenerated.RegisterImplementedRoutedEvents(");
-				// TODO MZ: Handle generics
-				builder.AppendLineInvariant($"typeof({type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)}), ");
-				builder.AppendLineInvariant($"{string.Join(" | ", routedEventFlags)}");
-				builder.AppendLineInvariant(");");
+				using (builder.BlockInvariant($"partial class {type.Name}"))
+				{
+					builder.AppendLineInvariant("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
+					builder.AppendLineInvariant("private static global::Uno.UI.Xaml.RoutedEventFlag __uno_ImplementedRoutedEvents = global::Uno.UI.UIElementGenerated.RegisterImplementedRoutedEvents(");
+					builder.AppendLineInvariant($"typeof({type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)}), ");
+					builder.AppendLineInvariant($"{string.Join(" | ", routedEventFlags)}");
+					builder.AppendLineInvariant(");");
+				}
 			}
 		}
 

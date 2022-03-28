@@ -125,7 +125,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 						using (builder.BlockInvariant($"namespace {typeSymbol.ContainingNamespace}"))
 						{
-							using (GenerateNestingContainers(builder, typeSymbol))
+							using (builder.GenerateNestingContainers(typeSymbol))
 							{
 								using (builder.BlockInvariant($"partial class {typeSymbol.Name}"))
 								{
@@ -153,7 +153,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						{
 							using (builder.BlockInvariant($"namespace {backingFieldType.Key.ContainingNamespace}"))
 							{
-								using (GenerateNestingContainers(builder, backingFieldType.Key))
+								using (builder.GenerateNestingContainers(backingFieldType.Key))
 								{
 									using (builder.BlockInvariant($"partial class {backingFieldType.Key.Name}"))
 									{
@@ -223,7 +223,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				{
 					if (localCache)
 					{
-						if(!attachedBackingFieldOwner.HasValue)
+						if (!attachedBackingFieldOwner.HasValue)
 						{
 							builder.AppendLineInvariant($"#error local cache methods must have AttachedBackingFieldOwner set");
 							return;
@@ -332,7 +332,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 				var propertySymbol = ownerType.GetProperties().FirstOrDefault(m => m.Name == propertyName);
 
-				if(propertySymbol == null)
+				if (propertySymbol == null)
 				{
 					builder.AppendLineInvariant($"#error unable to find property {propertyName} on {ownerType}");
 					return;
@@ -514,22 +514,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				{
 					builder.AppendLineInvariant($"\t\t, options: (global::Windows.UI.Xaml.FrameworkPropertyMetadataOptions){metadataOptions}");
 				}
-			}
-
-			private IDisposable GenerateNestingContainers(IndentedStringBuilder builder, INamedTypeSymbol? typeSymbol)
-			{
-				var disposables = new List<IDisposable>();
-
-				var currentSymbol = typeSymbol;
-
-				while (currentSymbol?.ContainingType != null)
-				{
-					disposables.Add(builder.BlockInvariant($"partial class {typeSymbol?.ContainingType.Name}"));
-
-					currentSymbol = currentSymbol?.ContainingType;
-				}
-
-				return new DisposableAction(() => disposables.ForEach(d => d.Dispose()));
 			}
 		}
 	}

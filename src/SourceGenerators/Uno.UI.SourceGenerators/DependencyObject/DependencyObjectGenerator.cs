@@ -157,7 +157,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 					using (builder.BlockInvariant($"namespace {typeSymbol.ContainingNamespace}"))
 					{
-						using (GenerateNestingContainers(builder, typeSymbol))
+						using (builder.GenerateNestingContainers(typeSymbol))
 						{
 							if (_bindableAttributeSymbol != null && typeSymbol.FindAttribute(_bindableAttributeSymbol) == null)
 							{
@@ -176,20 +176,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 					_context.AddSource(HashBuilder.BuildIDFromSymbol(typeSymbol), builder.ToString());
 				}
-			}
-
-			private IDisposable GenerateNestingContainers(IndentedStringBuilder builder, INamedTypeSymbol? typeSymbol)
-			{
-				var disposables = new List<IDisposable>();
-
-				while (typeSymbol?.ContainingType != null)
-				{
-					disposables.Add(builder.BlockInvariant($"partial class {typeSymbol?.ContainingType.Name}"));
-
-					typeSymbol = typeSymbol?.ContainingType;
-				}
-
-				return new DisposableAction(() => disposables.ForEach(d => d.Dispose()));
 			}
 
 			private void GenerateIBinderImplementation(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
