@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using Uno.Extensions;
+using Uno.UI.SourceGenerators.XamlGenerator;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
@@ -31,19 +32,18 @@ namespace Uno.UI.SourceGenerators.ImplementedRoutedEvents
 		{
 			if (!DesignTimeHelper.IsDesignTime(context))
 			{
-				var controlSymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.Controls.Control");
-				if (controlSymbol is null)
+				var uiElementSymbol = context.Compilation.GetTypeByMetadataName(XamlConstants.Types.UIElement);
+				if (uiElementSymbol is null)
 				{
 					return;
 				}
 
-				var getImplementedRoutedEventsSymbol = controlSymbol.GetMembers(GetImplementedRoutedEventsMethodName).SingleOrDefault(m => m.Kind == SymbolKind.Method) as IMethodSymbol;
+				var getImplementedRoutedEventsSymbol = uiElementSymbol
+					.GetMembers(GetImplementedRoutedEventsMethodName)
+					.OfType<IMethodSymbol>()
+					.FirstOrDefault();
+
 				if (getImplementedRoutedEventsSymbol is null)
-				{
-					return;
-				}
-
-				if (!getImplementedRoutedEventsSymbol.ContainingAssembly.IsSameAssemblyOrHasFriendAccessTo(context.Compilation.Assembly))
 				{
 					return;
 				}
@@ -65,7 +65,7 @@ namespace Uno.UI.SourceGenerators.ImplementedRoutedEvents
 			{
 				_context = context;
 				_getImplementedRoutedEvents = getImplementedRoutedEventsSymbol;
-				var pointerRoutedEventArgs = GetRequiredTypeByMetadataName("Windows.UI.Xaml.Input.PointerRoutedEventArgs", context.Compilation);
+				var pointerRoutedEventArgs = GetRequiredTypeByMetadataName(XamlConstants.Types.PointerRoutedEventArgs);
 				_events.Add("OnPointerPressed", pointerRoutedEventArgs);
 				_events.Add("OnPointerReleased", pointerRoutedEventArgs);
 				_events.Add("OnPointerEntered", pointerRoutedEventArgs);
@@ -75,51 +75,54 @@ namespace Uno.UI.SourceGenerators.ImplementedRoutedEvents
 				_events.Add("OnPointerCaptureLost", pointerRoutedEventArgs);
 				_events.Add("OnPointerWheelChanged", pointerRoutedEventArgs);
 
-				var manipulationStartingRoutedEventArgs = GetRequiredTypeByMetadataName("Windows.UI.Xaml.Input.ManipulationStartingRoutedEventArgs", context.Compilation);
+				var manipulationStartingRoutedEventArgs = GetRequiredTypeByMetadataName(XamlConstants.Types.ManipulationStartingRoutedEventArgs);
 				_events.Add("OnManipulationStarting", manipulationStartingRoutedEventArgs);
 
-				var manipulationStartedRoutedEventArgs = GetRequiredTypeByMetadataName("Windows.UI.Xaml.Input.ManipulationStartedRoutedEventArgs", context.Compilation);
+				var manipulationStartedRoutedEventArgs = GetRequiredTypeByMetadataName(XamlConstants.Types.ManipulationStartedRoutedEventArgs);
 				_events.Add("OnManipulationStarted", manipulationStartedRoutedEventArgs);
 
-				var manipulationDeltaRoutedEventArgs = GetRequiredTypeByMetadataName("Windows.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs", context.Compilation);
+				var manipulationDeltaRoutedEventArgs = GetRequiredTypeByMetadataName(XamlConstants.Types.ManipulationDeltaRoutedEventArgs);
 				_events.Add("OnManipulationDelta", manipulationDeltaRoutedEventArgs);
 
-				var manipulationInertiaStartingRoutedEventArgs = GetRequiredTypeByMetadataName("Windows.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs", context.Compilation);
+				var manipulationInertiaStartingRoutedEventArgs = GetRequiredTypeByMetadataName(XamlConstants.Types.ManipulationInertiaStartingRoutedEventArgs);
 				_events.Add("OnManipulationInertiaStarting", manipulationInertiaStartingRoutedEventArgs);
 
-				var manipulationCompletedRoutedEventArgs = GetRequiredTypeByMetadataName("Windows.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs", context.Compilation);
+				var manipulationCompletedRoutedEventArgs = GetRequiredTypeByMetadataName(XamlConstants.Types.ManipulationCompletedRoutedEventArgs);
 				_events.Add("OnManipulationCompleted", manipulationCompletedRoutedEventArgs);
 
-				var tappedRoutedEventArgs = GetRequiredTypeByMetadataName("Windows.UI.Xaml.Input.TappedRoutedEventArgs", context.Compilation);
+				var tappedRoutedEventArgs = GetRequiredTypeByMetadataName(XamlConstants.Types.TappedRoutedEventArgs);
 				_events.Add("OnTapped", tappedRoutedEventArgs);
 
-				var doubleTappedRoutedEventArgs = GetRequiredTypeByMetadataName("Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs", context.Compilation);
+				var doubleTappedRoutedEventArgs = GetRequiredTypeByMetadataName(XamlConstants.Types.DoubleTappedRoutedEventArgs);
 				_events.Add("OnDoubleTapped", doubleTappedRoutedEventArgs);
 
-				var rightTappedRoutedEventArgs = GetRequiredTypeByMetadataName("Windows.UI.Xaml.Input.RightTappedRoutedEventArgs", context.Compilation);
+				var rightTappedRoutedEventArgs = GetRequiredTypeByMetadataName(XamlConstants.Types.RightTappedRoutedEventArgs);
 				_events.Add("OnRightTapped", rightTappedRoutedEventArgs);
 
-				var holdingRoutedEventArgs = GetRequiredTypeByMetadataName("Windows.UI.Xaml.Input.HoldingRoutedEventArgs", context.Compilation);
+				var holdingRoutedEventArgs = GetRequiredTypeByMetadataName(XamlConstants.Types.HoldingRoutedEventArgs);
 				_events.Add("OnHolding", holdingRoutedEventArgs);
 
-				var dragEventArgs = GetRequiredTypeByMetadataName("Windows.UI.Xaml.DragEventArgs", context.Compilation);
+				var dragEventArgs = GetRequiredTypeByMetadataName(XamlConstants.Types.DragEventArgs);
 				_events.Add("OnDragEnter", dragEventArgs);
 				_events.Add("OnDragOver", dragEventArgs);
 				_events.Add("OnDragLeave", dragEventArgs);
 				_events.Add("OnDrop", dragEventArgs);
 
-				var keyRoutedEventArgs = GetRequiredTypeByMetadataName("Windows.UI.Xaml.Input.KeyRoutedEventArgs", context.Compilation);
+				var keyRoutedEventArgs = GetRequiredTypeByMetadataName(XamlConstants.Types.KeyRoutedEventArgs);
 				_events.Add("OnKeyDown", keyRoutedEventArgs);
 				_events.Add("OnKeyUp", keyRoutedEventArgs);
 
-				var routedEventArgs = GetRequiredTypeByMetadataName("Windows.UI.Xaml.RoutedEventArgs", context.Compilation);
+				var routedEventArgs = GetRequiredTypeByMetadataName(XamlConstants.Types.RoutedEventArgs);
 				_events.Add("OnLostFocus", routedEventArgs);
 				_events.Add("OnGotFocus", routedEventArgs);
+
+				var bringIntoViewRequestedEventArgs = GetRequiredTypeByMetadataName(XamlConstants.Types.BringIntoViewRequestedEventArgs);
+				_events.Add("OnBringIntoViewRequested", bringIntoViewRequestedEventArgs);
 			}
 
-			private static INamedTypeSymbol GetRequiredTypeByMetadataName(string fullyQualifiedMetadataName, Compilation compilation)
+			private INamedTypeSymbol GetRequiredTypeByMetadataName(string fullyQualifiedMetadataName)
 			{
-				var type = compilation.GetTypeByMetadataName(fullyQualifiedMetadataName);
+				var type = _context.Compilation.GetTypeByMetadataName(fullyQualifiedMetadataName);
 				return type ?? throw new InvalidOperationException($"The type '{fullyQualifiedMetadataName}' is not found.");
 			}
 
