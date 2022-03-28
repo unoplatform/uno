@@ -10,7 +10,7 @@ using SamplesApp.UITests.TestFramework;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Media.RevealBrushTests
 {
 	[TestFixture]
-	class RevealBrush_Tests : SampleControlUITestBase
+	partial class RevealBrush_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

@@ -13,7 +13,8 @@ using Query = System.Func<Uno.UITest.IAppQuery, Uno.UITest.IAppQuery>;
 
 namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 {
-	[ActivePlatforms(Platform.iOS)]
+	[Ignore("https://github.com/unoplatform/uno/issues/195")]
+	// [ActivePlatforms(Platform.iOS)]
 	public partial class Given_TreeView : SampleControlUITestBase
 	{
 		// Many UI tests were skipped as required UI test features are not supported in Uno

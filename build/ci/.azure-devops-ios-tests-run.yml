@@ -5,8 +5,9 @@ parameters:
   JobName: ''
   JobTimeoutInMinutes: ''
   JobDisplayName: ''
-  UITEST_SNAPSHOTS_ONLY: ''
+  UITEST_TEST_MODE_NAME: ''
   UITEST_SNAPSHOTS_GROUP: ''
+  UNO_UITEST_BUCKET_ID: ''
   UITEST_ALLOW_RERUN: ''
   nugetPackages: ''
 
@@ -95,9 +96,9 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
-      UITEST_SNAPSHOTS_ONLY: "${{ parameters.UITEST_SNAPSHOTS_ONLY }}"
+      UITEST_TEST_MODE_NAME: "${{ parameters.UITEST_TEST_MODE_NAME }}"
       UITEST_SNAPSHOTS_GROUP: "${{ parameters.UITEST_SNAPSHOTS_GROUP }}"
-      UITEST_AUTOMATED_GROUP: "${{ parameters.UITEST_AUTOMATED_GROUP }}"
+      UNO_UITEST_BUCKET_ID: "${{ parameters.UNO_UITEST_BUCKET_ID }}"
       UITEST_TEST_TIMEOUT: "${{ parameters.UITEST_TEST_TIMEOUT }}"
       UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/ios-uitest-build/SamplesApp.app"
 
@@ -117,7 +118,7 @@ jobs:
       $(build.sourcesdirectory)/build/test-scripts/ios-uitest-run.sh
 
     displayName: Run iOS Simulator Tests (re-run)
-    condition: eq(variables.UITEST_ALLOW_RERUN, 'true')
+    condition: eq('${{ parameters.UITEST_ALLOW_RERUN }}', 'true')
 
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
@@ -129,7 +130,7 @@ jobs:
       UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/ios-uitest-build/SamplesApp.app"
 
   - task: PublishTestResults@2
-    condition: eq(variables.UITEST_ALLOW_RERUN, 'true')
+    condition: eq('${{ parameters.UITEST_ALLOW_RERUN }}', 'true')
     inputs:
       testRunTitle: 'iOS Test Run ($(Agent.JobName))'
       testResultsFormat: 'NUnit'
