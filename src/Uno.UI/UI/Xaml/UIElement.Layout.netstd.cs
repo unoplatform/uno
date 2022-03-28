@@ -288,11 +288,15 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
+			var firstArrangeDone = IsFirstArrangeDone;
+
 			if (Visibility == Visibility.Collapsed
 				// If the layout is clipped, and the arranged size is empty, we can skip arranging children
 				// This scenario is particularly important for the Canvas which always sets its desired size
 				// zero, even after measuring its children.
-				|| (finalRect == default && (this is not ICustomClippingElement clipElement || clipElement.AllowClippingToLayoutSlot)))
+				|| (firstArrangeDone
+					&& finalRect == default
+					&& (this is not ICustomClippingElement clipElement || clipElement.AllowClippingToLayoutSlot)))
 			{
 				LayoutInformation.SetLayoutSlot(this, finalRect);
 				HideVisual();
@@ -300,7 +304,7 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			if (!IsArrangeDirtyOrArrangeDirtyPath && finalRect == LayoutSlot)
+			if (firstArrangeDone && !IsArrangeDirtyOrArrangeDirtyPath && finalRect == LayoutSlot)
 			{
 				ClearLayoutFlags(LayoutFlag.ArrangeDirty | LayoutFlag.ArrangeDirtyPath);
 				return; // Calling Arrange would be a waste of CPU time here.

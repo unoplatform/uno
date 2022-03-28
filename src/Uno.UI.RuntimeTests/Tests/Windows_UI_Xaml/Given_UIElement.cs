@@ -280,6 +280,68 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 		}
 
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(0d)]
+		[DataRow(-1d)]
+		[DataRow(0.001d)]
+		[DataRow(0.1d)]
+		[DataRow(100d)]
+		public async Task When_InvalidatingMeasureThenMeasure(double size)
+		{
+			var sut = new MeasureAndArrangeCounter();
+
+			sut.IsMeasureDirty.Should().BeFalse();
+
+			sut.InvalidateMeasure();
+
+			sut.IsMeasureDirty.Should().BeTrue();
+			sut.IsMeasureDirtyPath.Should().BeFalse();
+			sut.IsMeasureDirtyOrMeasureDirtyPath.Should().BeTrue();
+
+			sut.Measure(new Size(size, size));
+
+			sut.IsMeasureDirtyOrMeasureDirtyPath.Should().BeFalse();
+			sut.MeasureCount.Should().Be(1);
+			sut.ArrangeCount.Should().Be(0);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(0d)]
+		[DataRow(-1d)]
+		[DataRow(0.001d)]
+		[DataRow(0.1d)]
+		[DataRow(100d)]
+		public async Task When_InvalidatingArrangeThenMeasureAndArrange(double size)
+		{
+			var sut = new MeasureAndArrangeCounter();
+
+			sut.IsMeasureDirtyOrMeasureDirtyPath.Should().BeFalse();
+			sut.IsArrangeDirtyOrArrangeDirtyPath.Should().BeFalse();
+
+			sut.InvalidateMeasure();
+			sut.InvalidateArrange();
+
+			sut.IsMeasureDirty.Should().BeTrue();
+			sut.IsMeasureDirtyPath.Should().BeFalse();
+			sut.IsMeasureDirtyOrMeasureDirtyPath.Should().BeTrue();
+			sut.IsArrangeDirtyOrArrangeDirtyPath.Should().BeTrue();
+
+			sut.MeasureCount.Should().Be(0);
+			sut.ArrangeCount.Should().Be(0);
+
+			sut.Measure(new Size(size, size));
+			sut.Arrange(new Rect(0, 0, size, size));
+
+			sut.IsMeasureDirtyOrMeasureDirtyPath.Should().BeFalse();
+			sut.IsArrangeDirtyOrArrangeDirtyPath.Should().BeFalse();
+			sut.MeasureCount.Should().Be(1);
+			sut.ArrangeCount.Should().Be(1);
+		}
+#endif
+
 		[TestMethod]
 		[RunsOnUIThread]
 #if !ARRANGE_DIRTY_PATH_AVAILABLE
