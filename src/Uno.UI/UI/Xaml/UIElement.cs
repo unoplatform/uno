@@ -39,9 +39,6 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IXUidProvider, IUIElement
 	{
-		private static readonly Dictionary<Type, RoutedEventFlag> ImplementedRoutedEvents
-			= new Dictionary<Type, RoutedEventFlag>();
-
 		private static readonly TypedEventHandler<UIElement, BringIntoViewRequestedEventArgs> OnBringIntoViewRequestedHandler =
 			(UIElement sender, BringIntoViewRequestedEventArgs args) => sender.OnBringIntoViewRequested(args);
 
@@ -124,8 +121,8 @@ namespace Windows.UI.Xaml
 					implementedRoutedEvents |= Control.EvaluateImplementedControlRoutedEvents(type);
 				}
 			}
-
-			return ImplementedRoutedEvents[type] = implementedRoutedEvents;
+			
+			return implementedRoutedEvents;
 		}
 
 		internal static RoutedEventFlag EvaluateImplementedUIElementRoutedEvents(Type type)
