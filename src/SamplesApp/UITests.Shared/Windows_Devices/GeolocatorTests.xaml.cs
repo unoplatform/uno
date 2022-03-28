@@ -130,20 +130,20 @@ namespace UITests.Shared.Windows_Devices
 			GetOrCreateCommand(GetGeoposition);
 
 
-		internal Command AttachPositionChangedCommand => new Command((p) =>
+		public Command AttachPositionChangedCommand => new Command((p) =>
 		{
 			_geolocator.PositionChanged += Geolocator_PositionChanged;
 			PositionChangedAttached = true;
 		});
 
-		internal Command DetachPositionChangedCommand => new Command((p) =>
+		public Command DetachPositionChangedCommand => new Command((p) =>
 		{
 			_geolocator.PositionChanged -= Geolocator_PositionChanged;
 			PositionChangedAttached = false;
 		});
 
 
-		internal Command AttachStatusChangedCommand => new Command((p) =>
+		public Command AttachStatusChangedCommand => new Command((p) =>
 		{
 			_geolocator.StatusChanged += Geolocator_StatusChanged;
 			StatusChangedAttached = true;
