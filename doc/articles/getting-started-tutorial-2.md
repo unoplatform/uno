@@ -24,7 +24,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 
     ![](Assets/tutorial01/newproject1.PNG)
 
-1. Search for the `Uno` templates, select the `Cross-Platform App (Uno Platform)` then click `Next`.
+1. Search for the `Uno` templates, select the `Multi-Platform App (Uno Platform|Xamarin)` then click `Next`.
 
     ![](Assets/tutorial01/newproject2.PNG)
 
