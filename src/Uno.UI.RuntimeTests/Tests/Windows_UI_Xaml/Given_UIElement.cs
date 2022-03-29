@@ -280,7 +280,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 		}
 
-#if HAS_UNO
+#if __WASM__ || __SKIA__
 		[TestMethod]
 		[RunsOnUIThread]
 		[DataRow(0d)]
