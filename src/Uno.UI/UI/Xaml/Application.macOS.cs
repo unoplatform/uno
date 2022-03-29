@@ -87,7 +87,17 @@ namespace Windows.UI.Xaml
 			}
 			if (!handled)
 			{
-				OnLaunched(new LaunchActivatedEventArgs());
+				var argumentsString = "";
+				if (NSProcessInfo.ProcessInfo?.Arguments is { } processArguments)
+				{
+					// First argument is just executable path
+					if (processArguments.Length > 1)
+					{
+						argumentsString = string.Join(" ", processArguments.Skip(1));
+					}
+				}
+
+				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, argumentsString));
 			}
 		}
 
