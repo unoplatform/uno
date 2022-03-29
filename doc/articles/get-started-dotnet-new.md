@@ -108,7 +108,7 @@ To use it:
 1. Open or Reload the solution in Visual Studio 
 1. Set the Wasm project as the startup project 
 1. Open the **Nuget Package manager** for the Wasm project and update the `Uno.Xamarin.Forms.Platform` project to the latest **stable** package 
-1. Run the app using **Ctrl+F5** (without the Visual Studio debugger), and you�re good to go!
+1. Run the app using **Ctrl+F5** (without the Visual Studio debugger), and you are good to go!
 
 ## Uno Platform Blank Application (.NET 6 - Preview)
 
