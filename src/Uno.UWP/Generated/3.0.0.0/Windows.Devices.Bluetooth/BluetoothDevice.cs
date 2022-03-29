@@ -141,13 +141,6 @@ namespace Windows.Devices.Bluetooth
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.SdpRecordsChanged.remove
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.ConnectionStatusChanged.add
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.ConnectionStatusChanged.remove
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothDevice", "void BluetoothDevice.Dispose()");
-		}
-		#endif
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.DeviceInformation.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.DeviceAccessInformation.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -187,6 +180,13 @@ namespace Windows.Devices.Bluetooth
 		#endif
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.BluetoothDeviceId.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.WasSecureConnectionUsedForPairing.get
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothDevice", "void BluetoothDevice.Dispose()");
+		}
+		#endif
 		// Skipping already declared method Windows.Devices.Bluetooth.BluetoothDevice.GetDeviceSelectorFromPairingState(bool)
 		// Skipping already declared method Windows.Devices.Bluetooth.BluetoothDevice.GetDeviceSelectorFromConnectionStatus(Windows.Devices.Bluetooth.BluetoothConnectionStatus)
 		// Skipping already declared method Windows.Devices.Bluetooth.BluetoothDevice.GetDeviceSelectorFromDeviceName(string)

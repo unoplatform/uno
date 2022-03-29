@@ -46,6 +46,13 @@ namespace Windows.UI.Composition
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Composition.ICompositionSurface> CaptureAsync( global::Windows.UI.Composition.Visual captureVisual,  global::Windows.Graphics.SizeInt32 size,  global::Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat,  global::Windows.Graphics.DirectX.DirectXAlphaMode alphaMode,  float sdrBoost)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ICompositionSurface> CompositionGraphicsDevice.CaptureAsync(Visual captureVisual, SizeInt32 size, DirectXPixelFormat pixelFormat, DirectXAlphaMode alphaMode, float sdrBoost) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Composition.CompositionGraphicsDevice, global::Windows.UI.Composition.RenderingDeviceReplacedEventArgs> RenderingDeviceReplaced
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

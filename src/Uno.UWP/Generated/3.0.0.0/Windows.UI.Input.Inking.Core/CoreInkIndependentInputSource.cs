@@ -17,6 +17,20 @@ namespace Windows.UI.Input.Inking.Core
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Core.CoreCursor PointerCursor
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreCursor CoreInkIndependentInputSource.PointerCursor is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource", "CoreCursor CoreInkIndependentInputSource.PointerCursor");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerEntering.add
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerEntering.remove
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerHovering.add
@@ -32,6 +46,8 @@ namespace Windows.UI.Input.Inking.Core
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerLost.add
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerLost.remove
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.InkPresenter.get
+		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerCursor.get
+		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerCursor.set
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource Create( global::Windows.UI.Input.Inking.InkPresenter inkPresenter)

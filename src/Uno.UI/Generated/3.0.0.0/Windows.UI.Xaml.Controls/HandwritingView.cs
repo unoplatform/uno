@@ -61,6 +61,48 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  bool IsSwitchToKeyboardEnabled
+		{
+			get
+			{
+				return (bool)this.GetValue(IsSwitchToKeyboardEnabledProperty);
+			}
+			set
+			{
+				this.SetValue(IsSwitchToKeyboardEnabledProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  bool IsCommandBarOpen
+		{
+			get
+			{
+				return (bool)this.GetValue(IsCommandBarOpenProperty);
+			}
+			set
+			{
+				this.SetValue(IsCommandBarOpenProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Core.CoreInputDeviceTypes InputDeviceTypes
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreInputDeviceTypes HandwritingView.InputDeviceTypes is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.HandwritingView", "CoreInputDeviceTypes HandwritingView.InputDeviceTypes");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty AreCandidatesEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(AreCandidatesEnabled), typeof(bool), 
@@ -90,6 +132,22 @@ namespace Windows.UI.Xaml.Controls
 			nameof(PlacementTarget), typeof(global::Windows.UI.Xaml.UIElement), 
 			typeof(global::Windows.UI.Xaml.Controls.HandwritingView), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty IsCommandBarOpenProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(IsCommandBarOpen), typeof(bool), 
+			typeof(global::Windows.UI.Xaml.Controls.HandwritingView), 
+			new FrameworkPropertyMetadata(default(bool)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty IsSwitchToKeyboardEnabledProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(IsSwitchToKeyboardEnabled), typeof(bool), 
+			typeof(global::Windows.UI.Xaml.Controls.HandwritingView), 
+			new FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -124,6 +182,32 @@ namespace Windows.UI.Xaml.Controls
 			throw new global::System.NotImplementedException("The member bool HandwritingView.TryOpen() is not implemented in Uno.");
 		}
 		#endif
+		// Forced skipping of method Windows.UI.Xaml.Controls.HandwritingView.IsSwitchToKeyboardEnabled.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.HandwritingView.IsSwitchToKeyboardEnabled.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.HandwritingView.IsCommandBarOpen.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.HandwritingView.IsCommandBarOpen.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.HandwritingView.InputDeviceTypes.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.HandwritingView.InputDeviceTypes.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.HandwritingView.CandidatesChanged.add
+		// Forced skipping of method Windows.UI.Xaml.Controls.HandwritingView.CandidatesChanged.remove
+		// Forced skipping of method Windows.UI.Xaml.Controls.HandwritingView.TextSubmitted.add
+		// Forced skipping of method Windows.UI.Xaml.Controls.HandwritingView.TextSubmitted.remove
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::System.Collections.Generic.IReadOnlyList<string> GetCandidates( uint candidatesSessionId)
+		{
+			throw new global::System.NotImplementedException("The member IReadOnlyList<string> HandwritingView.GetCandidates(uint candidatesSessionId) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  void SelectCandidate( uint candidatesSessionId,  uint selectedCandidateIndex)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.HandwritingView", "void HandwritingView.SelectCandidate(uint candidatesSessionId, uint selectedCandidateIndex)");
+		}
+		#endif
+		// Forced skipping of method Windows.UI.Xaml.Controls.HandwritingView.IsSwitchToKeyboardEnabledProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.HandwritingView.IsCommandBarOpenProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.HandwritingView.PlacementTargetProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.HandwritingView.PlacementAlignmentProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.HandwritingView.IsOpenProperty.get
@@ -157,6 +241,38 @@ namespace Windows.UI.Xaml.Controls
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.HandwritingView", "event TypedEventHandler<HandwritingView, HandwritingPanelOpenedEventArgs> HandwritingView.Opened");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.HandwritingView, global::Windows.UI.Xaml.Controls.HandwritingViewCandidatesChangedEventArgs> CandidatesChanged
+		{
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.HandwritingView", "event TypedEventHandler<HandwritingView, HandwritingViewCandidatesChangedEventArgs> HandwritingView.CandidatesChanged");
+			}
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.HandwritingView", "event TypedEventHandler<HandwritingView, HandwritingViewCandidatesChangedEventArgs> HandwritingView.CandidatesChanged");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.HandwritingView, global::Windows.UI.Xaml.Controls.HandwritingViewTextSubmittedEventArgs> TextSubmitted
+		{
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.HandwritingView", "event TypedEventHandler<HandwritingView, HandwritingViewTextSubmittedEventArgs> HandwritingView.TextSubmitted");
+			}
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.HandwritingView", "event TypedEventHandler<HandwritingView, HandwritingViewTextSubmittedEventArgs> HandwritingView.TextSubmitted");
 			}
 		}
 		#endif

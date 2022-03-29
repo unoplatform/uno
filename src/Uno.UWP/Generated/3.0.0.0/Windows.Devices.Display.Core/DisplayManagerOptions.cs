@@ -12,6 +12,9 @@ namespace Windows.Devices.Display.Core
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		EnforceSourceOwnership = 1,
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		VirtualRefreshRateAware = 2,
+		#endif
 	}
 	#endif
 }
