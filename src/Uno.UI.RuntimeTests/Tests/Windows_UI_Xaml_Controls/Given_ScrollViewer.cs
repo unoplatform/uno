@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Private.Infrastructure;
-using static Private.Infrastructure.TestServices;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Shapes;
-using Windows.UI.Xaml.Media;
-using Windows.UI;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Windows.UI;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -44,7 +39,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				HorizontalScrollMode = ScrollMode.Disabled,
 				Height = 100,
 				Width = 100,
-				Content = new Border {Height = 200, Width = 50}
+				Content = new Border { Height = 200, Width = 50 }
 			};
 			WindowHelper.WindowContent = sut;
 
@@ -138,9 +133,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Background = new SolidColorBrush(Colors.Cyan)
 			};
 
-			var sut = new ScrollViewer {Content = content};
+			var sut = new ScrollViewer { Content = content };
 
-			var container = new Border {Child = sut};
+			var container = new Border { Child = sut };
 
 			WindowHelper.WindowContent = container;
 
@@ -247,8 +242,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			const double ScrollViewerHeight = ContentHeight + 2 * ContentMargin;
 			await WindowHelper.WaitForEqual(ScrollViewerHeight, () => SUT.ActualHeight);
 
-// Issue needs to be fixed first for WASM for Right and Bottom Margin missing
-// Details here: https://github.com/unoplatform/uno/issues/7000
+			// Issue needs to be fixed first for WASM for Right and Bottom Margin missing
+			// Details here: https://github.com/unoplatform/uno/issues/7000
 #if !__WASM__
 			Assert.AreEqual(ScrollViewerHeight, SUT.ExtentHeight);
 #endif
@@ -283,11 +278,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			const double ScrollViewerWidth = ContentWidth + 2 * ContentMargin;
 			await WindowHelper.WaitForEqual(ScrollViewerWidth, () => SUT.ActualWidth);
 
-// Issue needs to be fixed first for WASM for Right and Bottom Margin missing
-// Details here: https://github.com/unoplatform/uno/issues/7000
+			// Issue needs to be fixed first for WASM for Right and Bottom Margin missing
+			// Details here: https://github.com/unoplatform/uno/issues/7000
 #if !__WASM__
 			Assert.AreEqual(ScrollViewerWidth, SUT.ExtentWidth);
 #endif
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_Direct_Content_BringIntoView()
+		{
+			var scrollViewer = new ScrollViewer()
+			{
+				Height = 200,
+				Width = 200
+			};
+			var rectangle = new Border()
+			{
+				Background = new SolidColorBrush(Colors.Red),
+				Margin = new Thickness(0, 500, 0, 0),
+				Width = 100,
+				Height = 100
+			};
+			scrollViewer.Content = rectangle;
+			WindowHelper.WindowContent = scrollViewer;
+			await WindowHelper.WaitForLoaded(scrollViewer);
+			bool viewChanged = false;
+			scrollViewer.ViewChanged += (s, e) =>
+			{
+				viewChanged = true;
+			};
+
+			rectangle.StartBringIntoView(new BringIntoViewOptions() { AnimationDesired = false });
+
+			await WindowHelper.WaitFor(() => viewChanged);
+
+			Assert.AreEqual(400, scrollViewer.VerticalOffset, 5);
 		}
 	}
 }
