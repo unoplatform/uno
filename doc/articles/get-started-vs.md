@@ -1,4 +1,4 @@
-# Get Started on Visual Studio 
+# Get Started on Visual Studio 2019
 
 ## Prerequisites
 * [**Visual Studio 2019 16.3 or later**](https://visualstudio.microsoft.com/), with:
@@ -39,7 +39,8 @@ To easily create a multi-platform application:
 * Create a new C# solution using the **Multi-Platform App (Uno Platform|Xamarin)** template, from Visual Studio's **Start Page**:
 
 ![new project](Assets/quick-start/vsix-new-project.png)
-* Update to the latest NuGet package named `Uno.UI`. To get the very latest preview features, check the `pre-release` box.
+* Right click on the Solution and select `Manage NuGet Packages for Solution` from the context menu.
+* Update to the latest NuGet package named `Uno.UI`. To get the very latest preview features, check the `Include prerelease` box.
 * To debug the iOS head, select the `Debug|iPhoneSimulator` configuration
 * To debug the Android head, select the `Debug|Any CPU` configuration
 * To debug the UWP head, select the `Debug|x86` configuration

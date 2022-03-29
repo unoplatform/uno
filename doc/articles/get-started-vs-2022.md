@@ -50,7 +50,8 @@ To easily create a multi-platform application:
 * Create a new C# solution using the **Multi-Platform App (Uno Platform|Xamarin)** template, from Visual Studio's **Start Page**:
 
 ![new project](Assets/quick-start/vsix-new-project.png)
-* Update to the latest NuGet package named `Uno.UI`. To get the very latest preview features, check the `pre-release` box.
+* Right click on the Solution and select `Manage NuGet Packages for Solution` from the context menu.
+* Update to the latest NuGet package named `Uno.UI`. To get the very latest preview features, check the `Include prerelease` box.
 * To debug the iOS head, select the `Debug|iPhoneSimulator` configuration
 * To debug the Android head, select the `Debug|Any CPU` configuration
 * To debug the UWP head, select the `Debug|x86` configuration
@@ -69,7 +70,8 @@ uno-check --pre
 
 To create a multi-platform application:
 * Create a new C# solution using the **Multi-Platform App (Uno Platform|net6)** template, from Visual Studio's **Start Page**
-* Update to the latest NuGet package named `Uno.UI`. To get the very latest features, check the `pre-release` box.
+* Right click on the Solution and select `Manage NuGet Packages for Solution` from the context menu.
+* Update to the latest NuGet package named `Uno.UI`. To get the very latest preview features, check the `Include prerelease` box.
 * To debug the iOS:
     - In the "Debug toolbar" drop down, select framework `net6.0-ios`
     - Select an active device
