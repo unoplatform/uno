@@ -120,7 +120,7 @@ Note that C# Hot Reload is not available when running with the debugger. In orde
 ### Other snippets
     * `rd` creates a new `RowDefinition`
     * `cd` creates a new `ColumnDefinition`
-    * `tag` creates a new XAML tag
+    * `tag` creates a new `Grid` XAML tag
     * `set` creates a new `Style` setter
     * `ctag` creates a new `TextBlock` close XAML tag
 
