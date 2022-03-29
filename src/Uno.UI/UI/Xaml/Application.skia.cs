@@ -82,7 +82,7 @@ namespace Windows.UI.Xaml
 
 				InitializationCompleted();
 
-				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, string.Join(";", _args)));
+				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, string.Join(" ", _args)));
 			}
 		}
 
