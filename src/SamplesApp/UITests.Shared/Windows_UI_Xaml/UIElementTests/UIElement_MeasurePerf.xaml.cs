@@ -23,15 +23,18 @@ namespace UITests.Windows_UI_Xaml.UIElementTests
 
 #if !NETFX_CORE
 			bool originalUseInvalidateMeasurePath = FeatureConfiguration.UIElement.UseInvalidateMeasurePath;
+			bool originalUseInvalidateArrangePath = FeatureConfiguration.UIElement.UseInvalidateArrangePath;
 
 			Loaded += (_, _) =>
 			{
 				optimizeMeasure.IsChecked = FeatureConfiguration.UIElement.UseInvalidateMeasurePath;
+				optimizeArrange.IsChecked = FeatureConfiguration.UIElement.UseInvalidateArrangePath;
 			};
 
 			Unloaded += (_, _) =>
 			{
 				FeatureConfiguration.UIElement.UseInvalidateMeasurePath = originalUseInvalidateMeasurePath;
+				FeatureConfiguration.UIElement.UseInvalidateArrangePath = originalUseInvalidateArrangePath;
 			};
 #endif
 		}
@@ -196,6 +199,15 @@ namespace UITests.Windows_UI_Xaml.UIElementTests
 			else
 			{
 				FeatureConfiguration.UIElement.UseInvalidateMeasurePath = false;
+			}
+
+			if (optimizeArrange.IsChecked is true)
+			{
+				FeatureConfiguration.UIElement.UseInvalidateArrangePath = true;
+			}
+			else
+			{
+				FeatureConfiguration.UIElement.UseInvalidateArrangePath = false;
 			}
 #endif
 		}

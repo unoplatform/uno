@@ -28,6 +28,8 @@ namespace Windows.UI.Xaml.Controls
 		public event DragItemsStartingEventHandler DragItemsStarting;
 		public event TypedEventHandler<ListViewBase, DragItemsCompletedEventArgs> DragItemsCompleted;
 
+		protected bool _isProcessingReorder;
+
 		#region CanReorderItems (DP)
 		public static DependencyProperty CanReorderItemsProperty { get; } = DependencyProperty.Register(
 			nameof(CanReorderItems),
@@ -299,54 +301,60 @@ namespace Windows.UI.Xaml.Controls
 					return;
 				}
 
-				int newIndex;
-				if (updatedIndex.Value.Row == int.MaxValue)
+				try
 				{
-					// I.e. we are at the end, there is no items below
-					newIndex = count - 1;
-				}
-				else
-				{
-					newIndex = that.GetIndexFromIndexPath(updatedIndex.Value);
+					that._isProcessingReorder = true;
+
+					int newIndex;
+					if (updatedIndex.Value.Row == int.MaxValue)
+					{
+						// I.e. we are at the end, there is no items below
+						newIndex = count - 1;
+					}
+					else
+					{
+						newIndex = that.GetIndexFromIndexPath(updatedIndex.Value);
 #if !__IOS__ // This correction doesn't apply on iOS
-					if (indexOfDraggedItem < newIndex)
-					{
-						// If we've moved items down, we have to take in consideration that the updatedIndex
-						// is already assuming that the item has been removed, so it's offsetted by 1.
-						newIndex--;
-					}
+						if (indexOfDraggedItem < newIndex)
+						{
+							// If we've moved items down, we have to take in consideration that the updatedIndex
+							// is already assuming that the item has been removed, so it's offsetted by 1.
+							newIndex--;
+						}
 #endif
+					}
+
+					// When moving more than one item (multi-select), we keep their actual order in the list, no matter which one was dragged.
+					movedItems.Sort((it1, it2) => indexOf(it1).CompareTo(indexOf(it2)));
+
+					for (var i = 0; i < movedItems.Count; i++)
+					{
+						var movedItem = movedItems[i];
+						var oldIndex = indexOf(movedItem);
+
+						if (oldIndex < 0 || oldIndex == newIndex)
+						{
+							continue; // Item removed or already at the right place, nothing to do.
+						}
+
+						var restoreSelection = that.SelectedIndex == oldIndex;
+
+						mv(oldIndex, newIndex);
+
+						if (restoreSelection)
+						{
+							that.SelectedIndex = newIndex;
+						}
+
+						if (oldIndex > newIndex)
+						{
+							newIndex++;
+						}
+					}
 				}
-
-				// When moving more than one item (multi-select), we keep their actual order in the list, no matter which one was dragged.
-				movedItems.Sort((it1, it2) => indexOf(it1).CompareTo(indexOf(it2)));
-
-				for (var i = 0; i < movedItems.Count; i++)
+				finally
 				{
-					var movedItem = movedItems[i];
-					var oldIndex = indexOf(movedItem);
-
-					if (oldIndex < 0 || oldIndex == newIndex)
-					{
-						continue; // Item removed or already at the right place, nothing to do.
-					}
-
-					var restoreSelection = that.SelectedIndex == oldIndex;
-
-					mv(oldIndex, newIndex);
-
-					if (restoreSelection)
-					{
-						// This is a workaround for https://github.com/unoplatform/uno/issues/4741
-						container.SetValue(IndexForItemContainerProperty, newIndex);
-
-						that.SelectedIndex = newIndex;
-					}
-
-					if (oldIndex > newIndex)
-					{
-						newIndex++;
-					}
+					that._isProcessingReorder = false;
 				}
 			}
 		}

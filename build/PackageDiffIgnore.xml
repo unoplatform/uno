@@ -8674,7 +8674,7 @@
 	  </Properties>
 	</IgnoreSet>
 	  
-	<IgnoreSet baseVersion="4.1.8">
+	<IgnoreSet baseVersion="4.1.9">
 		<Assemblies>
 		</Assemblies>
 		<Methods>
@@ -8693,6 +8693,9 @@
 			<Member
 				fullName="System.Void Windows.Devices.Geolocation.Geolocator.WaitForPermissionFromBackground()"
 				reason="Not part of UWP API" />
+			<Member
+				fullName="System.Void Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent..ctor()"
+				reason="Does not exist in UWP" />
 
 			<!-- BEGIN .NET 6 RC 1 -->
 			<Member fullName="System.Void UIKit.UIViewExtensions.SetDimensions(UIKit.UIView view, System.Nullable`1&lt;ObjCRuntime.nfloat&gt; width, System.Nullable`1&lt;ObjCRuntime.nfloat&gt; height)" reason="net6 preview 14 breaking changes" />
@@ -8780,120 +8783,3 @@
 	-->
   </IgnoreSets>
 </DiffIgnore>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

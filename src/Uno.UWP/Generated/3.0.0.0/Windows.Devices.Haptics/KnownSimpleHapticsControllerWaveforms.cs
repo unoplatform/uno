@@ -12,6 +12,116 @@ namespace Windows.Devices.Haptics
 		// Skipping already declared property Press
 		// Skipping already declared property Release
 		// Skipping already declared property RumbleContinuous
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static ushort BrushContinuous
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.BrushContinuous is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static ushort ChiselMarkerContinuous
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.ChiselMarkerContinuous is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static ushort EraserContinuous
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.EraserContinuous is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static ushort Error
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.Error is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static ushort GalaxyPenContinuous
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.GalaxyPenContinuous is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static ushort Hover
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.Hover is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static ushort InkContinuous
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.InkContinuous is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static ushort MarkerContinuous
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.MarkerContinuous is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static ushort PencilContinuous
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.PencilContinuous is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static ushort Success
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ushort KnownSimpleHapticsControllerWaveforms.Success is not implemented in Uno.");
+			}
+		}
+		#endif
+		// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.BrushContinuous.get
+		// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.ChiselMarkerContinuous.get
+		// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.EraserContinuous.get
+		// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.Error.get
+		// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.GalaxyPenContinuous.get
+		// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.Hover.get
+		// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.InkContinuous.get
+		// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.MarkerContinuous.get
+		// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.PencilContinuous.get
+		// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.Success.get
 		// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.Click.get
 		// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.BuzzContinuous.get
 		// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.RumbleContinuous.get

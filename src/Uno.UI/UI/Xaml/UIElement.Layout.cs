@@ -2,6 +2,7 @@
 // "Managed Measure Dirty Path" means it's the responsibility of the
 // managed code (Uno) to walk the tree and do the measure phase.
 #define IMPLEMENTS_MANAGED_MEASURE_DIRTY_PATH
+#define IMPLEMENTS_MANAGED_ARRANGE_DIRTY_PATH
 #endif
 using System;
 using System.Runtime.CompilerServices;
@@ -31,7 +32,7 @@ namespace Windows.UI.Xaml
 #endif
 
 #if IMPLEMENTS_MANAGED_MEASURE_DIRTY_PATH
-		internal bool IsMeasureOrMeasureDirtyPath
+		internal bool IsMeasureDirtyOrMeasureDirtyPath
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => IsAnyLayoutFlagsSet(LayoutFlag.MeasureDirty | LayoutFlag.MeasureDirtyPath);
@@ -40,7 +41,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// This is for compatibility - not implemented yet on this platform
 		/// </summary>
-		internal bool IsMeasureOrMeasureDirtyPath
+		internal bool IsMeasureDirtyOrMeasureDirtyPath
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => IsMeasureDirty || IsMeasureDirtyPath;
@@ -68,6 +69,40 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
+#if IMPLEMENTS_MANAGED_ARRANGE_DIRTY_PATH
+		internal bool IsArrangeDirtyPath
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => IsAnyLayoutFlagsSet(LayoutFlag.ArrangeDirtyPath);
+		}
+
+		internal bool IsArrangeDirtyOrArrangeDirtyPath
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => IsAnyLayoutFlagsSet(LayoutFlag.ArrangeDirty | LayoutFlag.ArrangeDirtyPath);
+		}
+
+		/// <summary>
+		/// If the first arrange has been done since the control
+		/// is connected to its parent
+		/// </summary>
+		internal bool IsFirstArrangeDone
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => IsLayoutFlagSet(LayoutFlag.FirstArrangeDone);
+		}
+
+#else
+		/// <summary>
+		/// This is for compatibility - not implemented yet on this platform
+		/// </summary>
+		internal bool IsArrangeDirtyOrArrangeDirtyPath
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => IsArrangeDirty || IsArrangeDirtyPath;
+		}
+#endif
+
 		[Flags]
 		internal enum LayoutFlag : byte
 		{
@@ -84,7 +119,7 @@ namespace Windows.UI.Xaml
 #endif
 
 			/// <summary>
-			/// Indicated the first measure has been done on the element after been connected to parent
+			/// Indicates that first measure has been done on the element after been connected to parent
 			/// </summary>
 			FirstMeasureDone = 0b0000_0100,
 
@@ -104,7 +139,27 @@ namespace Windows.UI.Xaml
 			ArrangeDirty = 0b0001_0000,
 #endif
 
-			// ArrangeDirtyPath not implemented yet
+#if IMPLEMENTS_MANAGED_ARRANGE_DIRTY_PATH
+			/// <summary>
+			/// Means the Arrange is dirty on at least one child of this element
+			/// </summary>
+			ArrangeDirtyPath = 0b0010_0000,
+
+			/// <summary>
+			/// Indicates that first arrange has been done on the element and we can use the
+			/// LayoutInformation.GetLayoutSlot() to get previous finalRect
+			/// </summary>
+			FirstArrangeDone = 0b0100_0000,
+#endif
+
+			/// <summary>
+			/// Means the MeasureDirtyPath is disabled on this element.
+			/// </summary>
+			/// <remarks>
+			/// This flag is copied to children when they are attached, but can be re-enabled afterwards.
+			/// This flag is used during invalidation
+			/// </remarks>
+			ArrangeDirtyPathDisabled = 0b1000_0000,
 		}
 
 		private const LayoutFlag DEFAULT_STARTING_LAYOUTFLAGS = 0;
@@ -115,6 +170,10 @@ namespace Windows.UI.Xaml
 #endif
 #if !__ANDROID__
 			LayoutFlag.ArrangeDirty |
+#endif
+#if IMPLEMENTS_MANAGED_ARRANGE_DIRTY_PATH
+			LayoutFlag.ArrangeDirtyPath |
+			LayoutFlag.FirstArrangeDone |
 #endif
 			LayoutFlag.FirstMeasureDone;
 
@@ -172,6 +231,13 @@ namespace Windows.UI.Xaml
 			set => SetLayoutFlags(LayoutFlag.MeasureDirtyPathDisabled, value);
 		}
 
+		internal bool IsArrangeDirtyPathDisabled
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => IsLayoutFlagSet(LayoutFlag.ArrangeDirtyPathDisabled);
 
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			set => SetLayoutFlags(LayoutFlag.ArrangeDirtyPathDisabled, value);
+		}
 	}
 }

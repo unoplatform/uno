@@ -9,7 +9,7 @@ body {
   overflow: hidden;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
   /*
-    Disable **browsers** touche (and pen) manipulations support.
+    Disable **browsers** touch (and pen) manipulations support.
     Remarks: This has no relation with the UIElement.ManipulationMode which are handled in managed code.
              It only ensures that uno will always get ALL pointer events instead of being stolen by the browser for its internal gesture detection.
              This will also disable left and right swipe gesture to navigate through browser's history.

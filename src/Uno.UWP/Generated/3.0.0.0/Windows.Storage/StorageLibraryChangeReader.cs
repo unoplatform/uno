@@ -21,5 +21,12 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncAction StorageLibraryChangeReader.AcceptChangesAsync() is not implemented in Uno.");
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  ulong GetLastChangeId()
+		{
+			throw new global::System.NotImplementedException("The member ulong StorageLibraryChangeReader.GetLastChangeId() is not implemented in Uno.");
+		}
+		#endif
 	}
 }

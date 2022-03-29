@@ -22,7 +22,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			public const string Pressed = "Pressed";
 			public const string OverSelected = "PointerOverSelected"; // "SelectedPointerOver" for ListBoxItem, ComboBoxItem and PivotHeaderItem
 			public const string PressedSelected = "PressedSelected"; // "SelectedPressed" for ListBoxItem, ComboBoxItem and PivotHeaderItem
-
 			// On ListViewItem and GridViewItem we also have this state declared in default style,
 			// however it seems to never been activated
 			// public const string OverPressed = "PointerOverPressed";
@@ -372,6 +371,18 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			base.OnPointerCaptureLost(args);
 			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.End);
+		}
+
+		protected override void OnGotFocus(RoutedEventArgs e)
+		{
+			base.OnGotFocus(e);
+			ChangeVisualState(true);
+		}
+
+		protected override void OnLostFocus(RoutedEventArgs e)
+		{
+			base.OnLostFocus(e);
+			ChangeVisualState(true);
 		}
 
 		private IDisposable InterceptSetNeedsLayout()

@@ -18,8 +18,8 @@
   <ItemGroup>
 	<PackageReference Update="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.9" />
 	<!-- Keep aligned with MSBuild extras' default ExtrasUwpMetaPackageVersion -->
-	<PackageReference Update="Uno.SourceGenerationTasks" Version="4.1.0-dev.7" />
-	<PackageReference Update="Uno.SourceGeneration" Version="4.1.0-dev.7" />
+	<PackageReference Update="Uno.SourceGenerationTasks" Version="4.0.2" />
+	<PackageReference Update="Uno.SourceGeneration" Version="4.0.2" />
 	<PackageReference Update="Uno.Core.Extensions" Version="4.0.1" />
 	<PackageReference Update="Uno.Core.Extensions.Logging" Version="4.0.1" />
 	<PackageReference Update="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
@@ -35,7 +35,7 @@
 	<PackageReference Update="System.Memory" Version="4.5.4" />
 	<PackageReference Update="Uno.Wasm.WebSockets" Version="1.1.0" />
 	<PackageReference Update="Microsoft.TypeScript.MSBuild" Version="4.3.5" />
-	<PackageReference Update="NUnit" Version="3.13.2" />
+	<PackageReference Update="NUnit" Version="3.13.3" />
 	<PackageReference Update="NUnit3TestAdapter" Version="4.2.1" />
 	<PackageReference Update="Uno.UITest" Version="1.1.0-dev.32" />
 	<PackageReference Update="Uno.UITest.Selenium" Version="1.1.0-dev.24" />

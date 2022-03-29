@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.UI;
@@ -39,16 +39,27 @@ namespace Windows.UI.Xaml.Media.Animation
 			"KeyFrames",
 			typeof(ColorKeyFrameCollection),
 			typeof(ColorAnimationUsingKeyFrames),
-			new FrameworkPropertyMetadata(default(ColorKeyFrameCollection)));
+			new FrameworkPropertyMetadata(default(ColorKeyFrameCollection), OnKeyFramesChanged));
 		public ColorKeyFrameCollection KeyFrames
 		{
 			get => (ColorKeyFrameCollection)GetValue(KeyFramesProperty);
 			set => SetValue(KeyFramesProperty, value);
 		}
+		private static void OnKeyFramesChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+		{
+			if (sender is ColorAnimationUsingKeyFrames owner)
+			{
+				(e.OldValue as ColorKeyFrameCollection)?.SetParent(null);
+
+				// The parent must always be set, so that items in the collection can use that to walk up the visual tree.
+				// This is needed when updating the resource bindings that point to local resources (for example, from Page.Resources).
+				(e.NewValue as ColorKeyFrameCollection)?.SetParent(owner);
+			}
+		}
 
 		public ColorAnimationUsingKeyFrames()
 		{
-			KeyFrames = new ColorKeyFrameCollection(this, isAutoPropertyInheritanceEnabled: false);
+			KeyFrames = new ColorKeyFrameCollection();
 		}
 
 		internal override TimeSpan GetCalculatedDuration()
@@ -335,6 +346,11 @@ namespace Windows.UI.Xaml.Media.Animation
 			return default;
 		}
 
+		private ColorOffset? FindFinalValue()
+		{
+			return (ColorOffset?)KeyFrames.OrderBy(x => x.KeyTime)?.LastOrDefault()?.Value;
+		}
+
 		/// <summary>
 		/// Replay this animation.
 		/// </summary>
@@ -386,6 +402,12 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 
 			base.Dispose(disposing);
+		}
+
+		private protected override void OnThemeChanged()
+		{
+			// Value may have changed
+			_finalValue = FindFinalValue() ?? default;
 		}
 
 		partial void OnFrame(IValueAnimator currentAnimator);
