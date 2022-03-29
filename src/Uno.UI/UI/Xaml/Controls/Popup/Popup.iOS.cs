@@ -1,15 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using CoreGraphics;
-using Uno.Extensions;
 using UIKit;
-using System.Linq;
-using System.Drawing;
-using Windows.UI.Xaml.Input;
-using Uno.Disposables;
-using Windows.UI.Xaml.Media;
-using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
@@ -97,7 +86,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private void UnregisterPopupPanelChild(UIElement child = null)
 		{
-			PopupPanel.Children.Remove(child ?? Child);
+			// If the popup is closed immediately after opening,
+			// it might not have time to load and the PopupPanel
+			// could be null.
+			PopupPanel?.Children.Remove(child ?? Child);
 		}
 
 		partial void OnUnloadedPartial()
