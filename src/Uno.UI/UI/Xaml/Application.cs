@@ -449,7 +449,7 @@ namespace Windows.UI.Xaml
 		private static string GetCommandLineArgsWithoutExecutable()
 		{
 			var args = Environment.GetCommandLineArgs();
-			if (args.Length < 1)
+			if (args.Length <= 1)
 			{
 				return "";
 			}

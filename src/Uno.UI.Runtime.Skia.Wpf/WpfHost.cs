@@ -85,19 +85,15 @@ namespace Uno.UI.Skia.Platform
 		/// <summary>
 		/// Creates a WpfHost element to host a Uno-Skia into a WPF application.
 		/// </summary>
+		/// <param name="appBuilder">App builder.</param>
+		/// <param name="args">Deprecated, value ignored.</param>		
 		/// <remarks>
-		/// If args are omitted, those from Environment.GetCommandLineArgs() will be used.
+		/// Args are obsolete and will be removed in the future. Environment.CommandLine is used instead
+		/// to fill LaunchEventArgs.Arguments.
 		/// </remarks>
 		public WpfHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder, string[] args = null)
 		{
 			_current = this;
-
-			var commandLineArgs = Environment.CommandLine;
-						
-			args ??= Environment
-				.GetCommandLineArgs()
-				.Skip(1)
-				.ToArray();
 
 			designMode = DesignerProperties.GetIsInDesignMode(this);
 

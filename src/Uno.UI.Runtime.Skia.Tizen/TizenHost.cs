@@ -44,16 +44,14 @@ namespace Uno.UI.Runtime.Skia
 		private readonly TizenApplication _tizenApplication;
 		private readonly Func<WinUI.Application> _appBuilder;
 		private readonly TizenWindow _window;
-		private readonly string[] _args;
 
 		public static TizenHost Current => _current;
 
 		/// <summary>
-		/// Creates a WpfHost element to host a Uno-Skia into a WPF application.
+		/// Creates a host for a Uno Skia Tizen application.
 		/// </summary>
-		/// <remarks>
-		/// If args are omitted, those from Environment.GetCommandLineArgs() will be used.
-		/// </remarks>
+		/// <param name="appBuilder">App builder.</param>
+		/// <param name="args">Arguments.</param>		
 		public TizenHost(Func<WinUI.Application> appBuilder, string[]? args = null)
 		{
 			Elementary.Initialize();
@@ -62,13 +60,12 @@ namespace Uno.UI.Runtime.Skia
 			_current = this;
 
 			_appBuilder = appBuilder;
-			_args = args;
 
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = (d) => EcoreMainloop.PostAndWakeUp(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => EcoreMainloop.IsMainThread;
 
 			_tizenApplication = new TizenApplication(this);
-			_tizenApplication.Run(_args);
+			_tizenApplication.Run(args);
 		}
 
 		public void Run()
