@@ -76,6 +76,7 @@ internal class DeferralManager<T>
 			{
 				CompletedSynchronously = true;
 			}
+
 			Completed?.Invoke(this, EventArgs.Empty);
 			_allDeferralsCompletedCompletionSource.TrySetResult(null);
 		}

@@ -26,6 +26,9 @@ namespace Windows.Foundation
 
 		public void Close() => Complete();
 
+		/// <summary>
+		/// Completes the deferral (calls <see cref="Complete" />).
+		/// </summary>
 		public void Dispose() => Complete();
 	}
 }
