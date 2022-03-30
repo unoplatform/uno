@@ -92,6 +92,8 @@ namespace Uno.UI.Skia.Platform
 		{
 			_current = this;
 
+			var commandLineArgs = Environment.CommandLine;
+						
 			args ??= Environment
 				.GetCommandLineArgs()
 				.Skip(1)
@@ -108,7 +110,7 @@ namespace Uno.UI.Skia.Platform
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = d => dispatcher.BeginInvoke(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = dispatcher.CheckAccess;
 
-			WinUI.Application.Start(CreateApp, args);
+			WinUI.Application.StartWithArguments(CreateApp);
 
 			WinUI.Window.InvalidateRender += () =>
 			{

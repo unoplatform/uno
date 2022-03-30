@@ -172,7 +172,7 @@ namespace Uno.UI.Runtime.Skia
 				app.Host = this;
 			}
 
-			WUX.Application.Start(CreateApp, _args);
+			WUX.Application.StartWithArguments(CreateApp);
 
 			UpdateWindowPropertiesFromPackage();
 

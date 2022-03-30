@@ -88,13 +88,11 @@ namespace Windows.UI.Xaml
 			if (!handled)
 			{
 				var argumentsString = "";
-				if (NSProcessInfo.ProcessInfo?.Arguments is { } processArguments)
+				
+				// First argument is just executable path
+				if (NSProcessInfo.ProcessInfo?.Arguments is { Length: > 1} processArguments)
 				{
-					// First argument is just executable path
-					if (processArguments.Length > 1)
-					{
-						argumentsString = string.Join(" ", processArguments.Skip(1));
-					}
+					argumentsString = GetCommandLineArgsWithoutExecutable();
 				}
 
 				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, argumentsString));

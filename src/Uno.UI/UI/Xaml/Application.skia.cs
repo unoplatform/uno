@@ -15,13 +15,13 @@ using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.Foundation.Extensibility;
 
-
 namespace Windows.UI.Xaml
 {
 	public partial class Application : IApplicationEvents
 	{
 		private static bool _startInvoked = false;
-		private static string[] _args;
+		private static string _arguments = "";
+
 		private readonly IApplicationExtension? _applicationExtension;
 
 		internal ISkiaHost? Host { get; set; }
@@ -41,9 +41,9 @@ namespace Windows.UI.Xaml
 			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
 		}
 
-		internal static void Start(global::Windows.UI.Xaml.ApplicationInitializationCallback callback, string[] args)
+		internal static void StartWithArguments(global::Windows.UI.Xaml.ApplicationInitializationCallback callback)
 		{
-			_args = args;
+			_arguments = GetCommandLineArgsWithoutExecutable();
 			Start(callback);
 		}
 
@@ -82,7 +82,7 @@ namespace Windows.UI.Xaml
 
 				InitializationCompleted();
 
-				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, string.Join(" ", _args)));
+				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, _arguments));
 			}
 		}
 

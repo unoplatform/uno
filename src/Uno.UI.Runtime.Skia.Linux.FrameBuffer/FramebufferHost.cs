@@ -55,7 +55,7 @@ namespace Uno.UI.Runtime.Skia
 			_renderer = new Renderer();
 			_displayInformationExtension!.Renderer = _renderer;
 
-			WUX.Application.Start(CreateApp, _args);
+			WUX.Application.StartWithArguments(CreateApp);
 		}
 	}
 }

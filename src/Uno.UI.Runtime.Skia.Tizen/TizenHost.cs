@@ -54,7 +54,7 @@ namespace Uno.UI.Runtime.Skia
 		/// <remarks>
 		/// If args are omitted, those from Environment.GetCommandLineArgs() will be used.
 		/// </remarks>
-		public TizenHost(Func<WinUI.Application> appBuilder, string[] args = null)
+		public TizenHost(Func<WinUI.Application> appBuilder, string[]? args = null)
 		{
 			Elementary.Initialize();
 			Elementary.ThemeOverlay();
@@ -63,12 +63,6 @@ namespace Uno.UI.Runtime.Skia
 
 			_appBuilder = appBuilder;
 			_args = args;
-
-
-			_args ??= Environment
-				.GetCommandLineArgs()
-				.Skip(1)
-				.ToArray();
 
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = (d) => EcoreMainloop.PostAndWakeUp(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => EcoreMainloop.IsMainThread;
@@ -101,7 +95,7 @@ namespace Uno.UI.Runtime.Skia
 				new Windows.Foundation.Size(
 					_tizenApplication.Window.ScreenSize.Width,
 					_tizenApplication.Window.ScreenSize.Height));
-			WinUI.Application.Start(CreateApp, _args);
+			WinUI.Application.StartWithArguments(CreateApp);
 		}
 	}
 }

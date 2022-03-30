@@ -445,5 +445,35 @@ namespace Windows.UI.Xaml
 				}
 			}
 		}
+
+		private static string GetCommandLineArgsWithoutExecutable()
+		{
+			var args = Environment.GetCommandLineArgs();
+			if (args.Length < 1)
+			{
+				return "";
+			}
+
+			// The first "argument" is actually application name, needs to be removed.
+			// May be wrapped in quotes.
+
+			var executable = args[0];
+			var rawCmd = Environment.CommandLine;
+
+			var index = rawCmd.IndexOf(executable);
+			if (index == 0)
+			{
+				rawCmd = rawCmd.Substring(executable.Length);
+			}
+			else if (index == 1)
+			{
+				// The executable is wrapped in quotes
+				rawCmd = rawCmd.Substring(executable.Length + 2);
+			}
+
+			// The whitespace on the start side of Arguments
+			// in UWP is trimmed whereas the ending is not.
+			return rawCmd.TrimStart();
+		}
 	}
 }
