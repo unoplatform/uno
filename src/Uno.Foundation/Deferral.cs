@@ -24,6 +24,8 @@ namespace Windows.Foundation
 		/// </summary>
 		public void Complete() => _handler?.Invoke();
 
-		public void Close() { }
+		public void Close() => Complete();
+
+		public void Dispose() => Complete();
 	}
 }
