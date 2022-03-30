@@ -71,7 +71,7 @@ namespace SamplesApp
 
 			ConfigureFeatureFlags();
 
-			AssertIssue1790();
+			//AssertIssue1790();
 
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;

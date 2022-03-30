@@ -53,7 +53,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /p:Configuration=Debug /detailedsummary /bl:$(build.artifactstagingdirectory)/build-macos.binlog
+      msbuildArguments: /r /p:Configuration=Release /p:EnableCodeSigning=false /p:UseHardenedRuntime=false /detailedsummary /bl:$(build.artifactstagingdirectory)/build-macos.binlog
       clean: false
       maximumCpuCount: true
       restoreNugetPackages: false
@@ -63,7 +63,7 @@ jobs:
   - task: CopyFiles@2
     displayName: 'Copy macOS artifacts'
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.macOS/bin/Debug
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.macOS/bin/Release
       Contents: '**/*.*'
       TargetFolder: $(build.artifactstagingdirectory)
       CleanTargetFolder: false
@@ -99,7 +99,6 @@ jobs:
 
   - bash: |
         cd $(build.sourcesdirectory)/build/uno-macos-artifacts
-        codesign --force --deep --sign - ./SamplesApp.macOS.app
         sudo chmod -R 755 ./SamplesApp.macOS.app
         open -n ./SamplesApp.macOS.app --args --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/macos-screenshots
 
