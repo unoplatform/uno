@@ -384,6 +384,16 @@ namespace Uno.UWPSyncGenerator
 				return defines.Where(d => !string.IsNullOrEmpty(d)).Select(d => $"\"{d}\"").JoinBy(", ");
 			}
 
+			public bool IsNotImplementedInAllPlatforms()
+				=> IsNotDefinedByUno(AndroidSymbol) &&
+					IsNotDefinedByUno(IOSSymbol) &&
+					IsNotDefinedByUno(net461ymbol) &&
+					IsNotDefinedByUno(WasmSymbol) &&
+					IsNotDefinedByUno(SkiaSymbol) &&
+					IsNotDefinedByUno(NetStdReferenceSymbol) &&
+					MacOSSymbol == null;
+
+
 			private static bool IsNotDefinedByUno(ISymbol symbol)
 			{
 				if (symbol == null) { return true; }
@@ -884,7 +894,7 @@ namespace Uno.UWPSyncGenerator
 			{
 				types.AppendIf(b);
 
-				var IMethodSymbol = type.GetMembers().OfType<IMethodSymbol>().First(m => m.Name == "Invoke");
+				var IMethodSymbol = type.GetMembers("Invoke").OfType<IMethodSymbol>().First();
 				var members = string.Join(", ", IMethodSymbol.Parameters.Select(p => $"{SanitizeType(p.Type)} {SanitizeParameter(p.Name)}"));
 
 				b.AppendLineInvariant($"public delegate {SanitizeType(IMethodSymbol.ReturnType)} {type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)}({members});");
