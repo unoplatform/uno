@@ -24,6 +24,10 @@
       <method name="DispatchSystemThemeChange" />
       <method name="DispatchVisibilityChange" />
 	</type>
+
+	<type fullname="Uno.UI.Xaml.Controls.SystemFocusVisual">
+		<method name="DispatchNativePositionChange" />
+	</type>
   </assembly>
 
   <assembly fullname="Uno">
