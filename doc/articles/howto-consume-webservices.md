@@ -38,7 +38,7 @@ In this task you will create a simple Single Page App with the Uno Platform. Thi
 
     ![Visual Studio new project dialog searching for Uno](Assets/how-to-webservice/newproject2.PNG)
 
-1. In the filtered list of templates, select **Cross-Platform App (Uno Platform)** and then click **Next**.
+1. In the filtered list of templates, select **Multi-Platform App (Uno Platform|Xamarin)** and then click **Next**.
 
 1. In the **Configure your new project** window, set the **Project name** to **TheCatApiClient**, choose where you would like to save your project and click the **Create** button.
 
@@ -651,7 +651,7 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
     }
     ```
 
-    > ![Note]
+    > ![NOTE]
     > As **WASM** is currently single-threaded, the **Uno.WASM** implementation of `Dispatcher.HasThreadAccess` always returns `false` by default. This default has been chosen to prevent live-locking for certain frameworks that expect a multi-threaded environment. This app overrides that default WASM behavior here via conditional compilation and always invokes the callback directly on WASM.
 
     In XAML applications, control bindings should only be updated on the UI thread, therefore this code uses the value of **hasThreadAccess** to determine if the callback can be directly invoked. If not, the **Dispatcher.RunAsync** method is used to execute the callback asynchronously on the UI Thread. This method is used when setting properties and whenever bound collections are updated, to ensure the collection views (such as GridView, ListView, etc.) are updated.
