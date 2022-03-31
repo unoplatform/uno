@@ -10,11 +10,11 @@ You can review [the Azure documentation](https://docs.microsoft.com/en-us/azure/
 Here is how to publish an app from GitHub, using Uno Platform:
 -	In a new repository, create a Uno Platform app using the following command:
     ```
-    cd src
+    cd <repository-name>
     dotnet new -i Uno.ProjectTemplates.Dotnet
     dotnet new unoapp -o MyApp
     ```
--	If the <TargetFramework> value in the `MyApp.Wasm.csproj` is not `net5.0`, [follow the upgrading steps provided here](https://github.com/unoplatform/uno/blob/master/doc/articles/migrating-from-previous-releases.md#migrating-webassembly-projects-to-net-5).
+-	If the <TargetFramework> value in the `MyApp.Wasm.csproj` for `TargetFramework` is not `net5.0`, [follow the upgrading steps provided here](https://github.com/unoplatform/uno/blob/master/doc/articles/migrating-from-previous-releases.md#migrating-webassembly-projects-to-net-5).
 -	If in the `MyApp.Wasm\wwwroot`, you find a `web.config` file, delete it. This will enable brotli compression in Azure Static Web Apps.
 -	Search for [Static Web Apps (Preview)](https://portal.azure.com/#create/Microsoft.StaticApp) in the Azure Portal
 -	Fill the required fields in the creation form:
