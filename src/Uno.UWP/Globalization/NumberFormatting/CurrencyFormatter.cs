@@ -138,7 +138,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 			switch (Mode)
 			{
 				case CurrencyFormatterMode.UseSymbol:
-					formatted = FormatSymbolModeNegative(formatted);
+					formatted = FormatSymbolModeNegativeNumber(formatted);
 					break;
 				case CurrencyFormatterMode.UseCurrencyCode:
 					formatted = FormatCurrencyCodeModeNegativeNumber(formatted);
@@ -241,7 +241,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 		return StringBuilderCache.GetStringAndRelease(stringBuilder);
 	}
 
-	private string FormatSymbolModeNegative(string text)
+	private string FormatSymbolModeNegativeNumber(string text)
 	{
 		var symbol = _currencyData.Symbol;
 		var negativeSign = CultureInfo.CurrentCulture.NumberFormat.NegativeSign;
