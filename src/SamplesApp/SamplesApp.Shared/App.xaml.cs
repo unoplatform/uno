@@ -328,10 +328,7 @@ namespace SamplesApp
 			if (!string.IsNullOrEmpty(launchActivatedEventArgs.Arguments))
 			{
 				var dlg = new MessageDialog(launchActivatedEventArgs.Arguments, "Launch arguments");
-				if (ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog", nameof(MessageDialog.ShowAsync)))
-				{
-					await dlg.ShowAsync();
-				}
+				await dlg.ShowAsync();
 			}
 		}
 
