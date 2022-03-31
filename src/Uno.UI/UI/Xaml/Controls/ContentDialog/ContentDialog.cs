@@ -299,6 +299,7 @@ namespace Windows.UI.Xaml.Controls
 		private void UnregisterEvents()
 		{
 			_subscriptions.Disposable = null;
+			_templateSubscriptions.Disposable = null;
 		}
 
 		private void RegisterEvents()
