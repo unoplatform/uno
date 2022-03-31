@@ -89,6 +89,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
 1. Add the localization strings for both English and French:
 
     Open both `Strings\en\Resources.resw` and `Strings\fr\Resources.resw`, and add these:
+<<<<<<< HEAD
     
     |Name|Value in en\Resources.resw|Value in fr\Resources.resw|
     |-|-|-|
@@ -96,6 +97,14 @@ This guide will walk you through the necessary steps to localize an Uno Platform
     |MainPage_CodeBehindString|String from code-behind|Texte provenant du code-behind|
     > Note: Be sure to hit Ctrl+S for both files, to save the changes.
     
+=======
+    Name|Value in en\Resources.resw|Value in fr\Resources.resw
+    -|-|-
+    MainPage_IntroText.Text|Hello Uno|Bonjour Uno
+    MainPage_CodeBehindString|String from code-behind|Texte provenant du code-behind
+    > Note:
+    > Be sure to hit Ctrl+S for both files, to save the changes.
+>>>>>>> docs: update tutorials for current Uno version
 1. You can now try to run the app.
 
     The "Hello World" text should be replaced with "Hello Uno", or "Bonjour Uno" if the targeted environment is on French culture.
