@@ -88,19 +88,19 @@ This guide will walk you through the necessary steps to set up and use the [`Uno
                 </StackPanel>
             </ScrollViewer>
         </Grid>
-    <Page>
+    </Page>
     ```
 
 > [!TIP]
 > You can find the style names using these methods:
-> - "Feature" section of Uno.Themes README: https://github.com/unoplatform/Uno.Themes#features
-> - Going through the source code of control styles: https://github.com/unoplatform/Uno.Themes/tree/master/src/library/Uno.Cupertino/Styles/Controls
+> - "Feature" section of Uno.Themes README [here](https://github.com/unoplatform/Uno.Themes#features)
+> - Going through the [source code](https://github.com/unoplatform/Uno.Themes/tree/master/src/library/Uno.Cupertino/Styles/Controls) of control styles
 > - Check out the [Uno.Gallery web app](https://gallery.platform.uno/) (Click on the `<>` button to view xaml source)
 
 ### Section 3: Overriding Color Palette
 1. Create the nested folders `Styles\` and then `Styles\Application\` under the `.Shared` project
 1. Add a new Resource Dictionary `ColorPaletteOverride.xaml` under `Styles\Application\`
-1. Replace the content of that `ResourceDictionary` with the source from: https://github.com/unoplatform/Uno.Themes/blob/master/src/library/Uno.Cupertino/Styles/Application/ColorPalette.xaml
+1. Replace the content of that `ResourceDictionary` with the source from [here](https://github.com/unoplatform/Uno.Themes/blob/master/src/library/Uno.Cupertino/Styles/Application/ColorPalette.xaml)
 1. Make a few changes to the colors:
     > Here we are replacing the last 2 characters with 00, essentially dropping the blue-channel
     ```xml
@@ -126,9 +126,8 @@ This guide will walk you through the necessary steps to set up and use the [`Uno
 			<ResourceDictionary.MergedDictionaries>
 				<!-- ... -->
 
-	-			<CupertinoColors xmlns="using:Uno.Cupertino" />
-	+			<CupertinoColors xmlns="using:Uno.Cupertino" 
-   +                            OverrideSource=ms-appx:///Styles/Application/ColorPaletteOverride.xaml" />
+                <CupertinoColors xmlns="using:Uno.Cupertino" 
+                                 OverrideSource="ms-appx:///Styles/Application/ColorPaletteOverride.xaml" />
 				<CupertinoResources xmlns="using:Uno.Cupertino" />
 
 				<!-- ... -->
@@ -164,7 +163,7 @@ By default, Uno.Cupertino will attempt to apply a FontFamily with a name of `SF 
 
             <!-- Load Cupertino Font with OverrideSource -->
             <CupertinoFonts xmlns="using:Uno.Cupertino"
-                            OverrideSource="ms-appx:///CupertinoFontsOverride.xaml" />
+                        OverrideSource="ms-appx:///Styles/Application/CupertinoFontsOverride.xaml" />
             
             <!-- Load the Cupertino control resources -->
             <CupertinoResources xmlns="using:Uno.Cupertino" />
