@@ -638,11 +638,7 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
     }
     ```
 
-<<<<<<< HEAD
     > [!NOTE]
-=======
-    > ![NOTE]
->>>>>>> docs: update tutorials for current Uno version
     > As **WASM** is currently single-threaded, the **Uno.WASM** implementation of `Dispatcher.HasThreadAccess` always returns `false` by default. This default has been chosen to prevent live-locking for certain frameworks that expect a multi-threaded environment. This app overrides that default WASM behavior here via conditional compilation and always invokes the callback directly on WASM.
 
     In XAML applications, control bindings should only be updated on the UI thread, therefore this code uses the value of **hasThreadAccess** to determine if the callback can be directly invoked. If not, the **Dispatcher.RunAsync** method is used to execute the callback asynchronously on the UI Thread. This method is used when setting properties and whenever bound collections are updated, to ensure the collection views (such as GridView, ListView, etc.) are updated.
