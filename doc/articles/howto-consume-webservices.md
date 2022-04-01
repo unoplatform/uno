@@ -346,8 +346,7 @@ In this task, you will create a number of classes that demonstrate how to use th
     // Insert static constructor below here
     static WebApiBase()
     {
-        var innerHandler = new HttpClientHandler();
-        _client = new HttpClient(innerHandler);
+        _client = new HttpClient();
     }
     ```
 
@@ -421,8 +420,7 @@ In this task, you will create a number of classes that demonstrate how to use th
             // Insert static constructor below here
             static WebApiBase()
             {
-                var innerHandler = new HttpClientHandler();
-                _client = new HttpClient(innerHandler);
+                _client = new HttpClient();
             }
 
             // Insert CreateRequestMessage method below here
