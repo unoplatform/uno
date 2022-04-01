@@ -22,7 +22,6 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 	private readonly FormatterHelper _formatterHelper;
 	private readonly NumeralSystemTranslator _translator;
 	private readonly CurrencyData _currencyData = CurrencyData.Empty;
-	private readonly string _startWithInCurrencyCodeMode;
 
 	private CurrencyFormatterMode _mode;
 	private int _positivePattern = -1;
@@ -45,7 +44,6 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 
 		_currencyData = currencyData;
 		FractionDigits = currencyData.DefaultFractionDigits;
-		_startWithInCurrencyCodeMode = $"{_currencyData.CurrencyCode}{NoBreakSpaceChar}";
 
 		_negativeRegex = CreateNegativeNumberRegex();
 		_positiveRegex = CreatePositiveNumberRegex();
@@ -135,30 +133,26 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 
 		if (isNegative)
 		{
-			switch (Mode)
+			if (_currencyData.AlwaysUseCurrencyCode ||
+				Mode == CurrencyFormatterMode.UseCurrencyCode)
 			{
-				case CurrencyFormatterMode.UseSymbol:
-					formatted = FormatSymbolModeNegativeNumber(formatted);
-					break;
-				case CurrencyFormatterMode.UseCurrencyCode:
-					formatted = FormatCurrencyCodeModeNegativeNumber(formatted);
-					break;
-				default:
-					break;
+				formatted = FormatCurrencyCodeModeNegativeNumber(formatted);
+			}
+			else
+			{
+				formatted = FormatSymbolModeNegativeNumber(formatted);
 			}
 		}
 		else
 		{
-			switch (Mode)
+			if (_currencyData.AlwaysUseCurrencyCode ||
+				Mode == CurrencyFormatterMode.UseCurrencyCode)
 			{
-				case CurrencyFormatterMode.UseSymbol:
-					formatted = FormatSymbolModePositiveNumber(formatted);
-					break;
-				case CurrencyFormatterMode.UseCurrencyCode:
-					formatted = FormatCurrencyCodeModePositiveNumber(formatted);
-					break;
-				default:
-					break;
+				formatted = FormatCurrencyCodeModePositiveNumber(formatted);
+			}
+			else
+			{
+				formatted = FormatSymbolModePositiveNumber(formatted);
 			}
 		}
 
@@ -185,11 +179,6 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 				break;
 			case 1:
 			case 9:
-				stringBuilder.Append(negativeSign);
-				stringBuilder.Append(symbol);
-				stringBuilder.Append(spaceSymbol);
-				stringBuilder.Append(text);
-				break;
 			case 2:
 			case 12:
 				stringBuilder.Append(symbol);
@@ -221,17 +210,12 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 				break;
 			case 6:
 			case 13:
-				stringBuilder.Append(text);
-				stringBuilder.Append(negativeSign);
-				stringBuilder.Append(spaceSymbol);
-				stringBuilder.Append(symbol);
-				break;
 			case 7:
 			case 10:
 				stringBuilder.Append(text);
+				stringBuilder.Append(negativeSign);
 				stringBuilder.Append(spaceSymbol);
 				stringBuilder.Append(symbol);
-				stringBuilder.Append(negativeSign);
 				break;
 
 			default:
@@ -247,6 +231,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 		var negativeSign = CultureInfo.CurrentCulture.NumberFormat.NegativeSign;
 		var pattern = CultureInfo.CurrentCulture.NumberFormat.CurrencyNegativePattern;
 		var stringBuilder = StringBuilderCache.Acquire();
+		var spaceSymbol = NoBreakSpaceChar;
 
 		switch (pattern)
 		{
@@ -295,50 +280,50 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 			case 8:
 				stringBuilder.Append(negativeSign);
 				stringBuilder.Append(text);
-				stringBuilder.Append(SpaceSymbol);
+				stringBuilder.Append(spaceSymbol);
 				stringBuilder.Append(symbol);
 				break;
 			case 9:
 				stringBuilder.Append(negativeSign);
 				stringBuilder.Append(symbol);
-				stringBuilder.Append(SpaceSymbol);
+				stringBuilder.Append(spaceSymbol);
 				stringBuilder.Append(text);
 				break;
 			case 10:
 				stringBuilder.Append(text);
-				stringBuilder.Append(SpaceSymbol);
+				stringBuilder.Append(spaceSymbol);
 				stringBuilder.Append(symbol);
 				stringBuilder.Append(negativeSign);
 				break;
 			case 11:
 				stringBuilder.Append(symbol);
-				stringBuilder.Append(SpaceSymbol);
+				stringBuilder.Append(spaceSymbol);
 				stringBuilder.Append(text);
 				stringBuilder.Append(negativeSign);
 				break;
 			case 12:
 				stringBuilder.Append(symbol);
-				stringBuilder.Append(SpaceSymbol);
+				stringBuilder.Append(spaceSymbol);
 				stringBuilder.Append(negativeSign);
 				stringBuilder.Append(text);
 				break;
 			case 13:
 				stringBuilder.Append(text);
 				stringBuilder.Append(negativeSign);
-				stringBuilder.Append(SpaceSymbol);
+				stringBuilder.Append(spaceSymbol);
 				stringBuilder.Append(symbol);
 				break;
 			case 14:
 				stringBuilder.Append(OpenPatternSymbol);
 				stringBuilder.Append(symbol);
-				stringBuilder.Append(SpaceSymbol);
+				stringBuilder.Append(spaceSymbol);
 				stringBuilder.Append(text);
 				stringBuilder.Append(ClosePatternSymbol);
 				break;
 			case 15:
 				stringBuilder.Append(OpenPatternSymbol);
 				stringBuilder.Append(text);
-				stringBuilder.Append(SpaceSymbol);
+				stringBuilder.Append(spaceSymbol);
 				stringBuilder.Append(symbol);
 				stringBuilder.Append(ClosePatternSymbol);
 				break;
@@ -381,7 +366,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 	{
 		var symbol = _currencyData.Symbol;
 		var pattern = CultureInfo.CurrentCulture.NumberFormat.CurrencyPositivePattern;
-		var spaceSymbol = SpaceSymbol;
+		var spaceSymbol = NoBreakSpaceChar;
 		var stringBuilder = StringBuilderCache.Acquire();
 
 		switch (pattern)
@@ -494,18 +479,16 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 
 	private Regex CreateNegativeNumberRegex()
 	{
-		var pattern = "";
+		string pattern;
 
-		switch (Mode)
+		if (_currencyData.AlwaysUseCurrencyCode ||
+			Mode == CurrencyFormatterMode.UseCurrencyCode)
 		{
-			case CurrencyFormatterMode.UseSymbol:
-				pattern = GetSymbolModeNegativeNumberPattern();
-				break;
-			case CurrencyFormatterMode.UseCurrencyCode:
-				pattern = GetCurrencyCodeModeNegativeNumberPattern();
-				break;
-			default:
-				break;
+			pattern = GetCurrencyCodeModeNegativeNumberPattern();
+		}
+		else
+		{
+			pattern = GetSymbolModeNegativeNumberPattern();
 		}
 
 		return new Regex(pattern);
@@ -524,7 +507,6 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 				return $"{EscapedOpenPatternSymbol}{_escapedCurrencySymbol}{spacePattern}{NumberPattern}{EscapedClosePatternSymbol}";
 			case 1:
 			case 9:
-				return $"{negativeSign}{_escapedCurrencySymbol}{spacePattern}{NumberPattern}";
 			case 2:
 			case 12:
 				return $"{_escapedCurrencySymbol}{spacePattern}{negativeSign}{NumberPattern}";
@@ -539,10 +521,9 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 				return $"{negativeSign}{NumberPattern}{spacePattern}{_escapedCurrencySymbol}";
 			case 6:
 			case 13:
-				return $"{NumberPattern}{negativeSign}{spacePattern}{_escapedCurrencySymbol}";
 			case 7:
 			case 10:
-				return $"{NumberPattern}{spacePattern}{_escapedCurrencySymbol}{negativeSign}";
+				return $"{NumberPattern}{negativeSign}{spacePattern}{_escapedCurrencySymbol}";
 			default:
 				return string.Empty;
 		}
@@ -552,7 +533,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 	{
 		var patternNumber = CultureInfo.CurrentCulture.NumberFormat.CurrencyNegativePattern;
 		var negativeSign = CultureInfo.CurrentCulture.NumberFormat.NegativeSign;
-		var spacePattern = "\\s";
+		var spacePattern = $"[\\s{NoBreakSpaceChar}]";
 
 		switch (patternNumber)
 		{
@@ -595,18 +576,16 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 
 	private Regex CreatePositiveNumberRegex()
 	{
-		var pattern = "";
+		string pattern;
 
-		switch (Mode)
+		if (_currencyData.AlwaysUseCurrencyCode ||
+			Mode == CurrencyFormatterMode.UseCurrencyCode)
 		{
-			case CurrencyFormatterMode.UseSymbol:
-				pattern = GetSymbolModePositiveNumberPattern();
-				break;
-			case CurrencyFormatterMode.UseCurrencyCode:
-				pattern = GetCurrencyCodeModePositiveNumberPattern();
-				break;
-			default:
-				break;
+			pattern = GetCurrencyCodeModePositiveNumberPattern();
+		}
+		else
+		{
+			pattern = GetSymbolModePositiveNumberPattern();
 		}
 
 		return new Regex(pattern);
@@ -634,7 +613,7 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 	private string GetSymbolModePositiveNumberPattern()
 	{
 		var patternNumber = CultureInfo.CurrentCulture.NumberFormat.CurrencyPositivePattern;
-		var spacePattern = "\\s";
+		var spacePattern = $"[\\s{NoBreakSpaceChar}]";
 
 		switch (patternNumber)
 		{

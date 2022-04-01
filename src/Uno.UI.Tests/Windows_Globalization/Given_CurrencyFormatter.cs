@@ -196,6 +196,17 @@ public class Given_CurrencyFormatter
 	}
 
 	[TestMethod]
+	public void When_FormatNegativeDoubleWithUseCurrencyCodeMode()
+	{
+		var sut = new CurrencyFormatter(USDCurrencyCode);
+		sut.Mode = CurrencyFormatterMode.UseCurrencyCode;
+		var actual = sut.FormatDouble(-1.8);
+		var expected = FormatCurrencyCodeModeNegativeNumber("1.80", USDCurrencyCode);
+
+		Assert.AreEqual(expected, actual);
+	}
+
+	[TestMethod]
 	public void When_FormatDoubleAndApplyFor()
 	{
 		var sut = new CurrencyFormatter(USDCurrencyCode);
@@ -238,34 +249,34 @@ public class Given_CurrencyFormatter
 	[DataRow("AMD", "1.00", "֏")]
 	[DataRow("ANG", "1.00", "NAƒ")]
 	[DataRow("AOA", "1.00", "Kz")]
-	[DataRow("ARS", "1.00", "ARS ")]
-	[DataRow("AUD", "1.00", "AUD ")]
+	[DataRow("ARS", "1.00", "ARS")]
+	[DataRow("AUD", "1.00", "AUD")]
 	[DataRow("AWG", "1.00", "ƒ")]
 	[DataRow("AZN", "1.00", "₼")]
 	[DataRow("BAM", "1.00", "KM")]
-	[DataRow("BBD", "1.00", "BBD ")]
+	[DataRow("BBD", "1.00", "BBD")]
 	[DataRow("BDT", "1.00", "৳")]
 	[DataRow("BGN", "1.00", "лв.")]
 	[DataRow("BHD", "1.000", "د.ب.‏")]
 	[DataRow("BIF", "1", "FBu")]
-	[DataRow("BMD", "1.00", "BMD ")]
-	[DataRow("BND", "1.00", "BND ")]
+	[DataRow("BMD", "1.00", "BMD")]
+	[DataRow("BND", "1.00", "BND")]
 	[DataRow("BOB", "1.00", "Bs.")]
 	[DataRow("BRL", "1.00", "R$")]
-	[DataRow("BSD", "1.00", "BSD ")]
+	[DataRow("BSD", "1.00", "BSD")]
 	[DataRow("BTN", "1.00", "Nu.")]
 	[DataRow("BWP", "1.00", "P")]
 	[DataRow("BYR", "1", "Br")]
 	[DataRow("BZD", "1.00", "BZ$")]
-	[DataRow("CAD", "1.00", "CAD ")]
+	[DataRow("CAD", "1.00", "CAD")]
 	[DataRow("CDF", "1.00", "FC")]
 	[DataRow("CHF", "1.00", "CHF")]
-	[DataRow("CLP", "1", "CLP ")]
+	[DataRow("CLP", "1", "CLP")]
 	[DataRow("CNY", "1.00", "¥")]
-	[DataRow("COP", "1.00", "COP ")]
+	[DataRow("COP", "1.00", "COP")]
 	[DataRow("CRC", "1.00", "₡")]
-	[DataRow("CUP", "1.00", "CUP ")]
-	[DataRow("CVE", "1.00", "CVE ")]
+	[DataRow("CUP", "1.00", "CUP")]
+	[DataRow("CVE", "1.00", "CVE")]
 	[DataRow("CZK", "1.00", "Kč")]
 	[DataRow("DJF", "1", "Fdj")]
 	[DataRow("DKK", "1.00", "kr.")]
@@ -275,7 +286,7 @@ public class Given_CurrencyFormatter
 	[DataRow("ERN", "1.00", "Nfk")]
 	[DataRow("ETB", "1.00", "Br")]
 	[DataRow("EUR", "1.00", "€")]
-	[DataRow("FJD", "1.00", "FJD ")]
+	[DataRow("FJD", "1.00", "FJD")]
 	[DataRow("FKP", "1.00", "£")]
 	[DataRow("GBP", "1.00", "£")]
 	[DataRow("GEL", "1.00", "₾")]
@@ -284,8 +295,8 @@ public class Given_CurrencyFormatter
 	[DataRow("GMD", "1.00", "D")]
 	[DataRow("GNF", "1", "FG")]
 	[DataRow("GTQ", "1.00", "Q")]
-	[DataRow("GYD", "1.00", "GYD ")]
-	[DataRow("HKD", "1.00", "HKD ")]
+	[DataRow("GYD", "1.00", "GYD")]
+	[DataRow("HKD", "1.00", "HKD")]
 	[DataRow("RON", "1.00", "lei")]
 	[DataRow("HRK", "1.00", "kn")]
 	[DataRow("HTG", "1.00", "G")]
@@ -306,12 +317,12 @@ public class Given_CurrencyFormatter
 	[DataRow("KPW", "1.00", "₩")]
 	[DataRow("KRW", "1", "₩")]
 	[DataRow("KWD", "1.000", "د.ك.‏")]
-	[DataRow("KYD", "1.00", "KYD ")]
+	[DataRow("KYD", "1.00", "KYD")]
 	[DataRow("KZT", "1.00", "₸")]
 	[DataRow("LAK", "1.00", "₭")]
 	[DataRow("LBP", "1.00", "ل.ل.‏")]
 	[DataRow("LKR", "1.00", "Rs")]
-	[DataRow("LRD", "1.00", "LRD ")]
+	[DataRow("LRD", "1.00", "LRD")]
 	[DataRow("LSL", "1.00", "L")]
 	[DataRow("LTL", "1.00", "Lt")]
 	[DataRow("LVL", "1.00", "Ls")]
@@ -327,15 +338,15 @@ public class Given_CurrencyFormatter
 	[DataRow("MUR", "1.00", "₨")]
 	[DataRow("MVR", "1.00", "ރ.")]
 	[DataRow("MWK", "1.00", "MK")]
-	[DataRow("MXN", "1.00", "MXN ")]
+	[DataRow("MXN", "1.00", "MXN")]
 	[DataRow("MYR", "1.00", "RM")]
 	[DataRow("MZN", "1.00", "MT")]
-	[DataRow("NAD", "1.00", "NAD ")]
+	[DataRow("NAD", "1.00", "NAD")]
 	[DataRow("NGN", "1.00", "₦")]
 	[DataRow("NIO", "1.00", "C$")]
 	[DataRow("NOK", "1.00", "kr")]
 	[DataRow("NPR", "1.00", "रु")]
-	[DataRow("NZD", "1.00", "NZD ")]
+	[DataRow("NZD", "1.00", "NZD")]
 	[DataRow("OMR", "1.000", "ر.ع.‏")]
 	[DataRow("PAB", "1.00", "B/.")]
 	[DataRow("PEN", "1.00", "S/")]
@@ -349,15 +360,15 @@ public class Given_CurrencyFormatter
 	[DataRow("RUB", "1.00", "₽")]
 	[DataRow("RWF", "1", "RF")]
 	[DataRow("SAR", "1.00", "ر.س.‏")]
-	[DataRow("SBD", "1.00", "SBD ")]
+	[DataRow("SBD", "1.00", "SBD")]
 	[DataRow("SCR", "1.00", "SR")]
 	[DataRow("SDG", "1.00", "£")]
 	[DataRow("SEK", "1.00", "kr")]
-	[DataRow("SGD", "1.00", "SGD ")]
+	[DataRow("SGD", "1.00", "SGD")]
 	[DataRow("SHP", "1.00", "£")]
 	[DataRow("SLL", "1.00", "Le")]
 	[DataRow("SOS", "1.00", "S")]
-	[DataRow("SRD", "1.00", "SRD ")]
+	[DataRow("SRD", "1.00", "SRD")]
 	[DataRow("STD", "1.00", "Db")]
 	[DataRow("SYP", "1.00", "ل.س.‏")]
 	[DataRow("SZL", "1.00", "L")]
@@ -378,11 +389,12 @@ public class Given_CurrencyFormatter
 	[DataRow("VEF", "1.00", "Bs.F.")]
 	[DataRow("VND", "1", "₫")]
 	[DataRow("VUV", "1", "VT")]
-	[DataRow("WST", "1.00", "WST ")]
+	[DataRow("WST", "1.00", "WST")]
 	[DataRow("XAF", "1", "FCFA")]
 	[DataRow("XCD", "1.00", "EC$")]
 	[DataRow("XOF", "1", "CFA")]
 	[DataRow("XPF", "1", "F")]
+	[DataRow("XXX", "1", "")]
 	[DataRow("YER", "1.00", "ر.ي.‏")]
 	[DataRow("ZAR", "1.00", "R")]
 	[DataRow("ZMW", "1.00", "K")]
@@ -393,11 +405,29 @@ public class Given_CurrencyFormatter
 	[DataRow("VES", "1.00", "Bs.S")]
 	[DataRow("MRU", "1.00", "UM")]
 
+
 	public void When_FormatDoubleWithSpecialCurrencyCode(string currencyCode, string text, string symbol)
 	{
 		var sut = new CurrencyFormatter(currencyCode);
+		sut.Mode = CurrencyFormatterMode.UseSymbol;
 		var actual = sut.FormatDouble(1d);
-		var expected = FormatSymbolModePositiveNumber(text, symbol);
+		string expected;
+
+		var alwaysUseCurrencyCode = currencyCode == symbol;
+
+		if (currencyCode == "CHF")
+		{
+			alwaysUseCurrencyCode = false;
+		}
+
+		if (alwaysUseCurrencyCode)
+		{
+			expected = FormatCurrencyCodeModePositiveNumber(text, currencyCode);
+		}
+		else
+		{
+			expected = FormatSymbolModePositiveNumber(text, symbol);
+		}
 
 		Assert.AreEqual(expected, actual);
 	}
@@ -555,6 +585,7 @@ public class Given_CurrencyFormatter
 	[DataRow("XCD", "1.00")]
 	[DataRow("XOF", "1")]
 	[DataRow("XPF", "1")]
+	[DataRow("XXX", "1")]
 	[DataRow("YER", "1.00")]
 	[DataRow("ZAR", "1.00")]
 	[DataRow("ZMW", "1.00")]
@@ -564,6 +595,7 @@ public class Given_CurrencyFormatter
 	[DataRow("STN", "1.00")]
 	[DataRow("VES", "1.00")]
 	[DataRow("MRU", "1.00")]
+
 	public void When_FormatDoubleWithSpecialCurrencyCodeAndCurrencyCodeMode(string currencyCode, string text)
 	{
 		var sut = new CurrencyFormatter(currencyCode);
@@ -652,11 +684,6 @@ public class Given_CurrencyFormatter
 				break;
 			case 1:
 			case 9:
-				stringBuilder.Append(negativeSign);
-				stringBuilder.Append(symbol);
-				stringBuilder.Append(spaceSymbol);
-				stringBuilder.Append(text);
-				break;
 			case 2:
 			case 12:
 				stringBuilder.Append(symbol);
@@ -688,17 +715,12 @@ public class Given_CurrencyFormatter
 				break;
 			case 6:
 			case 13:
-				stringBuilder.Append(text);
-				stringBuilder.Append(negativeSign);
-				stringBuilder.Append(spaceSymbol);
-				stringBuilder.Append(symbol);
-				break;
 			case 7:
 			case 10:
 				stringBuilder.Append(text);
+				stringBuilder.Append(negativeSign);
 				stringBuilder.Append(spaceSymbol);
 				stringBuilder.Append(symbol);
-				stringBuilder.Append(negativeSign);
 				break;
 
 			default:
@@ -713,6 +735,7 @@ public class Given_CurrencyFormatter
 		var negativeSign = CultureInfo.CurrentCulture.NumberFormat.NegativeSign;
 		var pattern = CultureInfo.CurrentCulture.NumberFormat.CurrencyNegativePattern;
 		var stringBuilder = new StringBuilder();
+		var spaceSymbol = NoBreakSpaceChar;
 
 		switch (pattern)
 		{
@@ -761,50 +784,50 @@ public class Given_CurrencyFormatter
 			case 8:
 				stringBuilder.Append(negativeSign);
 				stringBuilder.Append(text);
-				stringBuilder.Append(SpaceSymbol);
+				stringBuilder.Append(spaceSymbol);
 				stringBuilder.Append(symbol);
 				break;
 			case 9:
 				stringBuilder.Append(negativeSign);
 				stringBuilder.Append(symbol);
-				stringBuilder.Append(SpaceSymbol);
+				stringBuilder.Append(spaceSymbol);
 				stringBuilder.Append(text);
 				break;
 			case 10:
 				stringBuilder.Append(text);
-				stringBuilder.Append(SpaceSymbol);
+				stringBuilder.Append(spaceSymbol);
 				stringBuilder.Append(symbol);
 				stringBuilder.Append(negativeSign);
 				break;
 			case 11:
 				stringBuilder.Append(symbol);
-				stringBuilder.Append(SpaceSymbol);
+				stringBuilder.Append(spaceSymbol);
 				stringBuilder.Append(text);
 				stringBuilder.Append(negativeSign);
 				break;
 			case 12:
 				stringBuilder.Append(symbol);
-				stringBuilder.Append(SpaceSymbol);
+				stringBuilder.Append(spaceSymbol);
 				stringBuilder.Append(negativeSign);
 				stringBuilder.Append(text);
 				break;
 			case 13:
 				stringBuilder.Append(text);
 				stringBuilder.Append(negativeSign);
-				stringBuilder.Append(SpaceSymbol);
+				stringBuilder.Append(spaceSymbol);
 				stringBuilder.Append(symbol);
 				break;
 			case 14:
 				stringBuilder.Append(OpenPatternSymbol);
 				stringBuilder.Append(symbol);
-				stringBuilder.Append(SpaceSymbol);
+				stringBuilder.Append(spaceSymbol);
 				stringBuilder.Append(text);
 				stringBuilder.Append(ClosePatternSymbol);
 				break;
 			case 15:
 				stringBuilder.Append(OpenPatternSymbol);
 				stringBuilder.Append(text);
-				stringBuilder.Append(SpaceSymbol);
+				stringBuilder.Append(spaceSymbol);
 				stringBuilder.Append(symbol);
 				stringBuilder.Append(ClosePatternSymbol);
 				break;
@@ -845,7 +868,7 @@ public class Given_CurrencyFormatter
 	private string FormatSymbolModePositiveNumber(string text, string symbol)
 	{
 		var pattern = CultureInfo.CurrentCulture.NumberFormat.CurrencyPositivePattern;
-		var spaceSymbol = SpaceSymbol;
+		var spaceSymbol = NoBreakSpaceChar;
 		var stringBuilder = new StringBuilder();
 
 		switch (pattern)
