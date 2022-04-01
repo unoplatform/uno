@@ -36,7 +36,7 @@
 		<!-- Message -->
 		<TextBlock x:Name="TextBoxMessage"
 							 Grid.Row="1"
-							 Text="Tesing KeyBoard Behaviour"
+							 Text="Testing KeyBoard Behaviour"
 							 Margin="16"/>
 
 		<!-- SingleTextBox -->
