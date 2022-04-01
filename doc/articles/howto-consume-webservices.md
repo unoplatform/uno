@@ -346,17 +346,10 @@ In this task, you will create a number of classes that demonstrate how to use th
     // Insert static constructor below here
     static WebApiBase()
     {
-    #if __WASM__
-        var innerHandler = new Uno.UI.Wasm.WasmHttpHandler();
-    #else
         var innerHandler = new HttpClientHandler();
-    #endif
         _client = new HttpClient(innerHandler);
     }
     ```
-
-    > [!IMPORTANT]
-    > The WebAssembly version of the application requires an alternative implementation of **HttpMessageHandler**, therefore the `#if __WASM__` preprocessor directive ensures that **Uno.UI.Wasm.WasmHttpHandler** is used, rather than **HttpClientHandler**.
 
     To facilitate the re-use of the single **HttpClient** instance, you will use instances of the **HttpRequestMessage** class to represent each request, rather than directly setting the **BaseAddress** and **DefaultRequestHeader** properties on the single **HttpClient** instance. This provides a thread-safe, reusable way of making multiple requests with the single **HttpClient** instance.
 
@@ -428,11 +421,7 @@ In this task, you will create a number of classes that demonstrate how to use th
             // Insert static constructor below here
             static WebApiBase()
             {
-    #if __WASM__
-                var innerHandler = new Uno.UI.Wasm.WasmHttpHandler();
-    #else
                 var innerHandler = new HttpClientHandler();
-    #endif
                 _client = new HttpClient(innerHandler);
             }
 
@@ -1131,8 +1120,6 @@ In this task you will create the XAML for the UI and implement the bindings for 
 
     ![WebAssembly Search UI preview](Assets/how-to-webservice/wasm-ui-preview.png)
 
-    This validates that your code uses **Uno.UI.Wasm.WasmHttpHandler** for Wasm, rather than **HttpClientHandler**.
-
     Here is how the app looks running in the iPhone and Android simulators:
 
     ![Application running on iPhone and Android simulators](Assets/how-to-webservice/app-running-simulators.png)
@@ -1823,7 +1810,6 @@ In this how-to, you built a multi-platform application that leverages web servic
 * Registered and obtained a key for The Cat API web service.
 * Built a number of data models that utilize JSON serialization
 * Built a web service base class that supports REST service operations and then implemented a number of services that derived from it
-  * You will have noted that WASM requires the use of `Uno.UI.Wasm.WasmHttpHandler()` rather than the default `HttpClientHandler`
 * Leveraged the services in a view-model
   * You built a base class that uses the dispatcher to ensure bound properties are updated on the UI thread
 * Built a XAML UI that utilizes the view-model
