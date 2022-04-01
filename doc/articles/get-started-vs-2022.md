@@ -52,6 +52,10 @@ To easily create a multi-platform application:
 ![new project](Assets/quick-start/vsix-new-project.png)
 * Right click on the Solution and select `Manage NuGet Packages for Solution` from the context menu.
 * Update to the latest NuGet package named `Uno.UI`. To get the very latest preview features, check the `Include prerelease` box.
+* Update the follow NuGet packages to the latest:
+  - `Uno.UI`
+  - `Uno.UI.WebAssembly`
+  - `Uno.UI.Skia.Gtk`, `Uno.UI.Skia.Wpf`, `Uno.UI.Skia.Tizen`, `Uno.UI.Skia.Linux.FrameBuffer`
 * To debug the iOS head, select the `Debug|iPhoneSimulator` configuration
 * To debug the Android head, select the `Debug|Any CPU` configuration
 * To debug the UWP head, select the `Debug|x86` configuration

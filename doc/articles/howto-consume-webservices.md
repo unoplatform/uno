@@ -257,7 +257,7 @@ The primary objective of this tutorial is to demonstrate how to implement a REST
     using System;
     using System.Text.Json.Serialization;
 
-    namespace TheCatApiClient.Shared.Models.DataModels
+    namespace TheCatApiClient.Models.DataModels
     {
         public partial class Breed
         {
@@ -305,7 +305,7 @@ In this task, you will create a number of classes that demonstrate how to use th
     using System.Threading.Tasks;
     using Uno.Extensions.Specialized;
 
-    namespace TheCatApiClient.Shared.WebServices
+    namespace TheCatApiClient.WebServices
     {
         public abstract class WebApiBase
         {
@@ -418,7 +418,7 @@ In this task, you will create a number of classes that demonstrate how to use th
     using System.Threading.Tasks;
     using Uno.Extensions.Specialized;
 
-    namespace TheCatApiClient.Shared.WebServices
+    namespace TheCatApiClient.WebServices
     {
         public abstract class WebApiBase
         {
@@ -488,9 +488,9 @@ In this task, you will create a number of classes that demonstrate how to use th
     using System.Net;
     using System.Text.Json;
     using System.Threading.Tasks;
-    using TheCatApiClient.Shared.Models.DataModels;
+    using TheCatApiClient.Models.DataModels;
 
-    namespace TheCatApiClient.Shared.WebServices
+    namespace TheCatApiClient.WebServices
     {
         public class BreedSearchApi : WebApiBase
         {
@@ -550,7 +550,7 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
     using Windows.ApplicationModel.Core;
     using Windows.UI.Core;
 
-    namespace TheCatApiClient.Shared.Models.ViewModels
+    namespace TheCatApiClient.Models.ViewModels
     {
         public abstract class DispatchedBindableBase : INotifyPropertyChanged
         {
@@ -651,7 +651,7 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
     }
     ```
 
-    > ![NOTE]
+    > [!NOTE]
     > As **WASM** is currently single-threaded, the **Uno.WASM** implementation of `Dispatcher.HasThreadAccess` always returns `false` by default. This default has been chosen to prevent live-locking for certain frameworks that expect a multi-threaded environment. This app overrides that default WASM behavior here via conditional compilation and always invokes the callback directly on WASM.
 
     In XAML applications, control bindings should only be updated on the UI thread, therefore this code uses the value of **hasThreadAccess** to determine if the callback can be directly invoked. If not, the **Dispatcher.RunAsync** method is used to execute the callback asynchronously on the UI Thread. This method is used when setting properties and whenever bound collections are updated, to ensure the collection views (such as GridView, ListView, etc.) are updated.
@@ -667,7 +667,7 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
     using Windows.ApplicationModel.Core;
     using Windows.UI.Core;
 
-    namespace TheCatApiClient.Shared.Models.ViewModels
+    namespace TheCatApiClient.Models.ViewModels
     {
         public abstract class DispatchedBindableBase : INotifyPropertyChanged
         {
@@ -716,6 +716,8 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
 
 In this task you will build the view-model that implements a simple breed search feature using the base class and web service client you just implemented.
 
+1. In the **TheCatApiClient.Shared** project, right-click the **Models\ViewModels** folder, select **Add** and click **Class...**
+
 1. On the **Add New Item** dialog, in the **Name** field, enter **MainViewModel.cs**
 
 1. In the editor, replace the content of the **MainViewModel.cs** class with the following:
@@ -723,11 +725,11 @@ In this task you will build the view-model that implements a simple breed search
     ```csharp
     using System.Collections.ObjectModel;
     using System.Linq;
-    using TheCatApiClient.Shared.Models.DataModels;
-    using TheCatApiClient.Shared.WebServices;
+    using TheCatApiClient.Models.DataModels;
+    using TheCatApiClient.WebServices;
     using Uno.Extensions.Specialized;
 
-    namespace TheCatApiClient.Shared.Models.ViewModels
+    namespace TheCatApiClient.Models.ViewModels
     {
         public class MainViewModel : DispatchedBindableBase
         {
@@ -751,7 +753,7 @@ In this task you will build the view-model that implements a simple breed search
     ```csharp
     // Insert variables below here
     private bool _isBusy;
-    private string _searchTerm;
+    private string _searchTerm = string.Empty;
     private ObservableCollection<Breed> _searchResults = new ObservableCollection<Breed>();
     private BreedSearchApi _breedSearchApi = new BreedSearchApi();
     ```
@@ -825,17 +827,17 @@ In this task you will build the view-model that implements a simple breed search
 
     ```csharp
     using System.Linq;
-    using TheCatApiClient.Shared.Models.DataModels;
-    using TheCatApiClient.Shared.WebServices;
+    using TheCatApiClient.Models.DataModels;
+    using TheCatApiClient.WebServices;
     using Uno.Extensions.Specialized;
 
-    namespace TheCatApiClient.Shared.Models.ViewModels
+    namespace TheCatApiClient.Models.ViewModels
     {
         public class MainViewModel : BaseViewModel
         {
             // Insert member variables below here
             private bool _isBusy;
-            private string _searchTerm;
+            private string _searchTerm = string.Empty;
             private ObservableCollection<Breed> _searchResults = new ObservableCollection<Breed>();
             private BreedSearchApi _breedSearchApi = new BreedSearchApi();
 
@@ -910,8 +912,8 @@ In this task you will create the XAML for the UI and implement the bindings for 
         xmlns:local="using:TheCatApiClient"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-        xmlns:viewmodels="using:TheCatApiClient.Shared.Models.ViewModels" 
-        xmlns:datamodels="using:TheCatApiClient.Shared.Models.DataModels"
+        xmlns:viewmodels="using:TheCatApiClient.Models.ViewModels" 
+        xmlns:datamodels="using:TheCatApiClient.Models.DataModels"
         xmlns:toolkit="using:Uno.UI.Toolkit"
         mc:Ignorable="d"
         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -955,8 +957,8 @@ In this task you will create the XAML for the UI and implement the bindings for 
     ```xml
     <Page
         ...
-        xmlns:viewmodels="using:TheCatApiClient.Shared.Models.ViewModels" 
-        xmlns:datamodels="using:TheCatApiClient.Shared.Models.DataModels"
+        xmlns:viewmodels="using:TheCatApiClient.Models.ViewModels" 
+        xmlns:datamodels="using:TheCatApiClient.Models.DataModels"
         xmlns:toolkit="using:Uno.UI.Toolkit"
         ...
     >
@@ -1056,7 +1058,7 @@ In this task you will create the XAML for the UI and implement the bindings for 
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <!-- ROW 0 - Title -->
-            <TextBlock Text="{x:Bind ViewModel.Title}" Style="{StaticResource HeaderTextBlockStyle}" />
+            <TextBlock Text="The Cat API Client" Style="{StaticResource HeaderTextBlockStyle}" />
 
             <!-- ROW 1 - Search Box -->
             <AutoSuggestBox Grid.Row="1" PlaceholderText="Search for breed" QueryIcon="Find" 
@@ -1081,7 +1083,7 @@ In this task you will create the XAML for the UI and implement the bindings for 
             </GridView>
 
             <!-- ROW 3 - Favorites Title -->
-            <TextBlock Grid.Row="3" Text="{x:Bind ViewModel.Subtitle}" Style="{StaticResource SubheaderTextBlockStyle}" />
+            <TextBlock Grid.Row="3" Text="Favorites" Style="{StaticResource SubheaderTextBlockStyle}" />
 
             <!-- ROW 4 - Favorites -->
 
