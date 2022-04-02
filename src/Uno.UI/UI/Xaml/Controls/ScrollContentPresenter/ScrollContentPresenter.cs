@@ -9,6 +9,7 @@ using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Foundation;
+using Uno.UI;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
@@ -104,61 +105,20 @@ namespace Windows.UI.Xaml.Controls
 			return this.IsHeightConstrainedSimple() ?? (Parent as ILayoutConstraints)?.IsHeightConstrained(this) ?? false;
 		}
 
-		public double ExtentHeight
-		{
-			get
-			{
-				if (Content is FrameworkElement fe)
-				{
-					var explicitHeight = fe.Height;
-					if (!explicitHeight.IsNaN())
-					{
-						return explicitHeight;
-					}
-					var canUseActualHeightAsExtent =
-						ActualHeight > 0 &&
-						fe.VerticalAlignment == VerticalAlignment.Stretch;
-
-					return canUseActualHeightAsExtent ? fe.ActualHeight : fe.DesiredSize.Height;
-				}
-
-				return 0d;
-			}
-		}
-
-		public double ExtentWidth
-		{
-			get
-			{
-				if (Content is FrameworkElement fe)
-				{
-					var explicitWidth = fe.Width;
-					if (!explicitWidth.IsNaN())
-					{
-						return explicitWidth;
-					}
-
-					var canUseActualWidthAsExtent =
-						ActualWidth > 0 &&
-						fe.HorizontalAlignment == HorizontalAlignment.Stretch;
-
-					return canUseActualWidthAsExtent ? fe.ActualWidth : fe.DesiredSize.Width;
-				}
-
-				return 0d;
-			}
-		}
-
 		public double ViewportHeight => DesiredSize.Height;
 
 		public double ViewportWidth => DesiredSize.Width;
 
 #if UNO_HAS_MANAGED_SCROLL_PRESENTER || __WASM__
-		protected override Size MeasureOverride(Size size)
+		protected override Size MeasureOverride(Size availableSize)
 		{
 			if (Content is UIElement child)
 			{
-				var slotSize = size;
+				var (minSize, maxSize) = Scroller.GetMinMax();
+
+				var slotSize = availableSize
+					.AtMost(maxSize)
+					.AtLeast(minSize);
 
 				if (CanVerticallyScroll)
 				{
@@ -177,8 +137,8 @@ namespace Windows.UI.Xaml.Controls
 				(child as ICustomScrollInfo)?.ApplyViewport(ref desired);
 
 				return new Size(
-					Math.Min(size.Width, desired.Width),
-					Math.Min(size.Height, desired.Height)
+					Math.Min(slotSize.Width, desired.Width),
+					Math.Min(slotSize.Height, desired.Height)
 				);
 			}
 
