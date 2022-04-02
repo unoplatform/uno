@@ -4,35 +4,16 @@ using System.Text;
 
 namespace Windows.Devices.Power
 {
-	public partial class BatteryReport
+	public sealed partial class BatteryReport
 	{
-		public int? ChargeRateInMilliwatts;
-		public int? DesignCapacityInMilliwattHours;
-		public int? FullChargeCapacityInMilliwattHours;
-		public int? RemainingCapacityInMilliwattHours;
-		public Windows.System.Power.BatteryStatus Status;
+		public int? ChargeRateInMilliwatts { get; }
+		public int? DesignCapacityInMilliwattHours { get; }
+		public int? FullChargeCapacityInMilliwattHours { get; }
+		public int? RemainingCapacityInMilliwattHours { get; }
+		public System.Power.BatteryStatus Status { get; }
 
-		private Windows.System.Power.BatteryStatus UWPstatusFromAndroStatus(int status)
-		{
-			switch (status)
-			{
-				case 1: // BATTERY_STATUS_UNKNOWN
-					return System.Power.BatteryStatus.Idle;
-				case 2: // BATTERY_STATUS_CHARGING
-					return System.Power.BatteryStatus.Charging;
-				case 3: // BATTERY_STATUS_DISCHARGING
-					return System.Power.BatteryStatus.Discharging;
-				case 4: // BATTERY_STATUS_NOT_CHARGING
-					return System.Power.BatteryStatus.Idle;
-				case 5: // BATTERY_STATUS_FULL
-					return System.Power.BatteryStatus.Idle;
-			}
 
-			// either OS is changed, or cannot get ExtraStatus (status == -1)
-			return System.Power.BatteryStatus.NotPresent;
-		}
-
-		public BatteryReport()
+		internal BatteryReport()
 		{
 			// values are current for object creation
 
@@ -90,6 +71,25 @@ namespace Windows.Devices.Power
 
 			// UWP doc says: Some battery controllers might return the same value as FullChargeCapacityInMilliwattHours or return no value at all.
 			DesignCapacityInMilliwattHours = FullChargeCapacityInMilliwattHours;
+		}
+		private Windows.System.Power.BatteryStatus UWPstatusFromAndroStatus(int status)
+		{
+			switch (status)
+			{
+				case 1: // BATTERY_STATUS_UNKNOWN
+					return System.Power.BatteryStatus.Idle;
+				case 2: // BATTERY_STATUS_CHARGING
+					return System.Power.BatteryStatus.Charging;
+				case 3: // BATTERY_STATUS_DISCHARGING
+					return System.Power.BatteryStatus.Discharging;
+				case 4: // BATTERY_STATUS_NOT_CHARGING
+					return System.Power.BatteryStatus.Idle;
+				case 5: // BATTERY_STATUS_FULL
+					return System.Power.BatteryStatus.Idle;
+			}
+
+			// either OS is changed, or cannot get ExtraStatus (status == -1)
+			return System.Power.BatteryStatus.NotPresent;
 		}
 	}
 }

@@ -6,12 +6,12 @@ namespace Windows.Devices.Power
 {
 	public partial class Battery
 	{
-		public static Windows.Devices.Power.Battery AggregateBattery()
+		public static Battery AggregateBattery()
 		{
 			return new Battery();
 		}
 
-		public Windows.Devices.Power.BatteryReport GetReport()
+		public BatteryReport GetReport()
 		{
 			return new BatteryReport();
 		}
