@@ -35,14 +35,15 @@ using RecyclingElementFactory = Microsoft.UI.Xaml.Controls.RecyclingElementFacto
 using RecyclePool = Microsoft.UI.Xaml.Controls.RecyclePool;
 using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
 using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
+using Uno.UI.RuntimeTests;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
+	[RequiresFullWindow]
 	public class ViewManagerTests : MUXApiTestBase
 	{
 		[TestMethod]
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 		public void CanQueryElementFactory()
 		{
 			RunOnUIThread.Execute(() =>
@@ -58,7 +59,14 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				// Our layout will query the size though once for every layout pass.
 				// The first layout pass is a bit special because we don't have a viewport and
 				// we will invalidate measure when we get one after the first arrange pass.
-				dataSource.ValidateGetSizeCalls(1); // GetSize calls are cached by ItemsSourceView.
+#if HAS_UNO
+				// Uno specific: We perform an additional Count when DataContext
+				// is propagated to children of ItemsRepeater, as we go through the
+				// items in the data source via IList and for-loop. See DependencyObjectStore.Binder.cs
+				// ApplyChildrenBindable method.
+				var unoGetSizeCallAdjustment = 1;
+#endif
+				dataSource.ValidateGetSizeCalls(1 + unoGetSizeCallAdjustment); // GetSize calls are cached by ItemsSourceView.
 				elementFactory.ValidateRecycleElementCalls();
 
 				data.Add("Item #1");
@@ -256,9 +264,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __ANDROID__ || __SKIA__ || __MACOS__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
 		public void CanChangeFocusAfterUniqueIdReset()
 		{
 			var data = new WinRTCollection(Enumerable.Range(0, 2).Select(i => string.Format("Item #{0}", i)));
@@ -299,9 +304,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__ || __MACOS__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
 		public void ValidateElementEvents()
 		{
 			CustomItemsSource dataSource = null;
@@ -369,9 +371,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__ || __MACOS__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
 		public void ValidateElementIndexChangedEventOnStableReset()
 		{
 			CustomItemsSource dataSource = null;
@@ -437,7 +436,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 		public void ValidateGetElementAtCachingForLayout()
 		{
 			List<int> data = Enumerable.Range(0, 15).ToList();
@@ -558,7 +556,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 		public void CanResetLayoutAfterUniqueIdReset()
 		{
 			var data = new WinRTCollection(Enumerable.Range(0, 2).Select(i => string.Format("Item #{0}", i)));
