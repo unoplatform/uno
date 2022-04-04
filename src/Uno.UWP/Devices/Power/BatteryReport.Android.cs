@@ -1,6 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
+using AndroidBatteryStatus = Android.OS.BatteryStatus;
+using UwpBatteryStatus = Windows.System.Power.BatteryStatus;
+
 
 namespace Windows.Devices.Power
 {
@@ -10,7 +11,7 @@ namespace Windows.Devices.Power
 		public int? DesignCapacityInMilliwattHours { get; }
 		public int? FullChargeCapacityInMilliwattHours { get; }
 		public int? RemainingCapacityInMilliwattHours { get; }
-		public System.Power.BatteryStatus Status { get; }
+		public UwpBatteryStatus Status { get; }
 
 
 		internal BatteryReport()
@@ -23,11 +24,11 @@ namespace Windows.Devices.Power
 			// since API 5, so we don't have to check OS level
 			if (!batteryStatus.GetBooleanExtra(Android.OS.BatteryManager.ExtraPresent, false))
 			{
-				Status = System.Power.BatteryStatus.NotPresent;
+				Status = UwpBatteryStatus.NotPresent;
 				return;
 			}
 
-			Status = UWPstatusFromAndroStatus(batteryStatus.GetIntExtra(Android.OS.BatteryManager.ExtraStatus, -1));
+			Status = UwpStatusFromAndroidStatus(batteryStatus.GetIntExtra(Android.OS.BatteryManager.ExtraStatus, -1));
 
 
 			if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.Lollipop)
@@ -72,24 +73,24 @@ namespace Windows.Devices.Power
 			// UWP doc says: Some battery controllers might return the same value as FullChargeCapacityInMilliwattHours or return no value at all.
 			DesignCapacityInMilliwattHours = FullChargeCapacityInMilliwattHours;
 		}
-		private Windows.System.Power.BatteryStatus UWPstatusFromAndroStatus(int status)
+		private UwpBatteryStatus UwpStatusFromAndroidStatus(int status)
 		{
 			switch (status)
 			{
-				case 1: // BATTERY_STATUS_UNKNOWN
-					return System.Power.BatteryStatus.Idle;
-				case 2: // BATTERY_STATUS_CHARGING
-					return System.Power.BatteryStatus.Charging;
-				case 3: // BATTERY_STATUS_DISCHARGING
-					return System.Power.BatteryStatus.Discharging;
-				case 4: // BATTERY_STATUS_NOT_CHARGING
-					return System.Power.BatteryStatus.Idle;
-				case 5: // BATTERY_STATUS_FULL
-					return System.Power.BatteryStatus.Idle;
+				case (int)AndroidBatteryStatus.Unknown: 
+					return UwpBatteryStatus.NotPresent;
+				case (int)AndroidBatteryStatus.Charging: 
+					return UwpBatteryStatus.Charging;
+				case (int)AndroidBatteryStatus.Discharging: 
+					return UwpBatteryStatus.Discharging;
+				case (int)AndroidBatteryStatus.NotCharging: 
+					return UwpBatteryStatus.Idle;
+				case (int)AndroidBatteryStatus.Full: 
+					return UwpBatteryStatus.Idle;
 			}
 
-			// either OS is changed, or cannot get ExtraStatus (status == -1)
-			return System.Power.BatteryStatus.NotPresent;
+			// either OS is changed (new values, not known while writing this code), or cannot get ExtraStatus (status == -1)
+			return UwpBatteryStatus.NotPresent;
 		}
 	}
 }
