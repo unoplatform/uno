@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
+using Windows.Foundation;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -316,6 +317,100 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => viewChanged);
 
 			Assert.AreEqual(400, scrollViewer.VerticalOffset, 5);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_Nested_Scroll_BringIntoView()
+		{
+			var outerScrollViewer = new ScrollViewer()
+			{
+				Background = new SolidColorBrush(Colors.Yellow),
+				Height = 300,
+				Width = 200,
+				Padding = new Thickness(20, 20, 20, 20)
+			};
+
+			var innerScrollViewer = new ScrollViewer()
+			{
+				Background = new SolidColorBrush(Colors.Blue),
+				Height = 200,
+				Margin = new Thickness(0, 400, 0, 0),
+				Padding = new Thickness(20, 20, 20, 20)
+			};
+
+			var item = new Border()
+			{
+				Background = new SolidColorBrush(Colors.Red),
+				Margin = new Thickness(0, 600, 0, 0),
+				Width = 100,
+				Height = 100
+			};
+
+			innerScrollViewer.Content = item;
+			outerScrollViewer.Content = innerScrollViewer;
+			WindowHelper.WindowContent = outerScrollViewer;
+			await WindowHelper.WaitForLoaded(outerScrollViewer);
+
+			bool outerViewChanged = false;
+
+			item.BringIntoViewRequested += (s, e) =>
+			{
+				Assert.AreEqual(false, e.AnimationDesired);
+				Assert.AreEqual(false, e.Handled);
+				Assert.IsTrue(double.IsNaN(e.HorizontalAlignmentRatio));
+				Assert.IsTrue(double.IsNaN(e.VerticalAlignmentRatio));
+				Assert.AreEqual(0, e.HorizontalOffset);
+				Assert.AreEqual(0, e.VerticalOffset);
+				Assert.AreEqual(item, e.OriginalSource);
+				Assert.AreEqual(item, e.TargetElement);
+				Assert.AreEqual(new Rect(0, 0, 100, 100), e.TargetRect);
+			};
+
+			innerScrollViewer.BringIntoViewRequested += (s, e) =>
+			{
+				Assert.AreEqual(false, e.AnimationDesired);
+				Assert.AreEqual(false, e.Handled);
+				Assert.IsTrue(double.IsNaN(e.HorizontalAlignmentRatio));
+				Assert.IsTrue(double.IsNaN(e.VerticalAlignmentRatio));
+				Assert.AreEqual(0, e.HorizontalOffset);
+				Assert.AreEqual(0, e.VerticalOffset);
+#if HAS_UNO // These values differ slightly from ScrollViewer's due to the fact that our implementation is based on the newer ScrollView control
+				Assert.AreEqual(item, e.OriginalSource);
+				Assert.AreEqual(innerScrollViewer.Presenter, e.TargetElement);
+				Assert.AreEqual(new Rect(0, 60, 100, 100), e.TargetRect);
+#endif
+			};
+
+			outerScrollViewer.BringIntoViewRequested += (s, e) =>
+			{
+				Assert.AreEqual(false, e.AnimationDesired);
+				Assert.AreEqual(false, e.Handled);
+				Assert.IsTrue(double.IsNaN(e.HorizontalAlignmentRatio));
+				Assert.IsTrue(double.IsNaN(e.VerticalAlignmentRatio));
+				Assert.AreEqual(0, e.HorizontalOffset);
+				Assert.AreEqual(0, e.VerticalOffset);
+#if HAS_UNO // These values differ slightly from ScrollViewer's due to the fact that our implementation is based on the newer ScrollView control
+				Assert.AreEqual(item, e.OriginalSource);
+				Assert.AreEqual(outerScrollViewer.Presenter, e.TargetElement);
+				Assert.AreEqual(new Rect(20, 160, 100, 100), e.TargetRect);
+#endif
+			};
+
+			outerScrollViewer.ViewChanged += (s, e) =>
+			{
+				outerViewChanged = true;
+			};
+
+			item.StartBringIntoView(new BringIntoViewOptions() { AnimationDesired = false });
+
+			await WindowHelper.WaitFor(() => outerViewChanged);
+
+			Assert.AreEqual(0, innerScrollViewer.HorizontalOffset);
+			Assert.AreEqual(540, innerScrollViewer.VerticalOffset);
+			Assert.AreEqual(0, outerScrollViewer.HorizontalOffset);
+			Assert.AreEqual(320, outerScrollViewer.VerticalOffset);
 		}
 	}
 }
