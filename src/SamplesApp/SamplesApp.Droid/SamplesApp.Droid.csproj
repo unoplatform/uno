@@ -16,12 +16,10 @@
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <TargetFrameworkVersion>v12.0</TargetFrameworkVersion>
-    <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
     <ResourcesDirectory>..\SamplesApp.Shared\Strings</ResourcesDirectory>
     <AndroidUseAapt2>true</AndroidUseAapt2>
-
     <!-- Workaround for https://github.com/xamarin/xamarin-android/issues/6480 -->
     <AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
   </PropertyGroup>
