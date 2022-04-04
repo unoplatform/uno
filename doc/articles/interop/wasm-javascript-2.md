@@ -9,7 +9,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 2. Click `Create a new project`
 
    ![Create new project](assets/image-20200325113112235.png)
-3. **Search for "Uno"** and pick `Cross-Platform App (Uno Platform)`.
+3. **Search for "Uno"** and pick `Multi-Platform App (Uno Platform|Xamarin)`.
 
    ![Search for Uno](assets/image-20200325113532758.png)
    Select it and click `Next`.
@@ -164,6 +164,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
    > For the Uno Wasm Bootstrapper to take those files automatically and load them with the application, they have to be put as embedded resources. A future version of Uno may remove this requirement.
 7. Compile & run
 8. Once loaded, press F12 and go into the `Sources` tab. Both `prism.js` & `prism.css` files should be loaded this time.
+
    ![Prism Loaded in browser](assets/image-20200414143931953.png)
 ## 4. Invoke JavaScript from Managed Code
 🎯  In this section, PrismJS is used from the app.

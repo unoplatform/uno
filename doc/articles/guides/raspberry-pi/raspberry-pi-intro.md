@@ -104,8 +104,6 @@ Once you're finished, you should be able to run the following to check your .NET
 
 Next we can add the Uno Platform Project Templates to our .NET Installation;
 
-`dotnet new --install Uno.ProjectTemplates.Dotnet::3.11.0-dev.348`
-Or once Uno Platform 3.11 or later is out, you can use :
 `dotnet new --install Uno.ProjectTemplates.Dotnet`
 
 ![Install Uno Templates](images/05_install-uno-templates.png)
@@ -118,7 +116,7 @@ Once the templates are installed, you can scroll back up and see the list of Uno
 
 Now we have the moving parts installed on our Pi, we can spin up a brand new Uno solution with the following command;
 
-`dotnet new UnoApp -o unoapp1 -ios=false -android=false -macos=false -wasm=false -skia-wpf=false -st=false && cd unoapp1`
+`dotnet new UnoApp -o unoapp1 -ios=false -android=false -macos=false -wasm=false -skia-wpf=false -skia-tizen=false && cd unoapp1`
 
 You should now find yourself in the solution directory for your new Uno App. If we have a look at the folder contents with;
 
@@ -193,7 +191,7 @@ You can copy the contents of the `bin\linux-arm\publish` directory to your Pi in
 
 You then need to navigate to the directory where you've copied the files and make the main application executable with;
 
-`chmod +x unoapp1.Skia.GTK`
+`chmod +x unoapp1.Skia.Gtk`
 
 Don't forget that, if you've just dialled in you'll need to give access to the Display;
 
