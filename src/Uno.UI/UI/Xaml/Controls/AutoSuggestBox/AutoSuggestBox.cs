@@ -300,7 +300,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			_textBox.Text = Text;
+			_textBox.Text = Text ?? string.Empty;
 		}
 
 		private void OnSuggestionListItemClick(object sender, ItemClickEventArgs e)

@@ -56,6 +56,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.IsSuggestionListOpen.Should().BeTrue();
 		}
 #endif
+		[TestMethod]
+		public async Task When_Text_IsNull()
+		{
+			var sut = new AutoSuggestBox();
+
+			WindowHelper.WindowContent = sut;
+
+			await WindowHelper.WaitForIdle();
+
+			sut.Text = null;
+
+			var textBox = (TextBox)sut.GetTemplateChild<TextBox>("TextBox");
+
+			textBox.Text.Should().BeEmpty();
+		}
+
 
 		[TestMethod]
 		public async Task When_Typing_Should_Keep_Focus()
