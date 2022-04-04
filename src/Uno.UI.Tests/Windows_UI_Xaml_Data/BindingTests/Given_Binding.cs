@@ -131,5 +131,25 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 
 			Assert.AreEqual(SUT.topLevel.Tag, tb.Text);
 		}
+
+		[TestMethod]
+		public void When_Xaml_Object_With_Common_Properties()
+		{
+			var SUT = new Binding_Xaml_Object_With_Common_Properties();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("42", SUT.topLevel.Text);
+		}
+
+		[TestMethod]
+		public void When_Xaml_Object_With_Xaml_Object_Properties()
+		{
+			var SUT = new Binding_Xaml_Object_With_Xaml_Object_Properties();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("42", SUT.topLevel.Text);
+		}
 	}
 }

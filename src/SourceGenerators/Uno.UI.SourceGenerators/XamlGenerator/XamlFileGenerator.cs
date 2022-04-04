@@ -4894,7 +4894,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (bindingType.Type.Name == "RelativeSource")
 				{
-					var resourceName = bindingType.Members.First().Value?.ToString();
+					var firstMember = bindingType.Members.First();
+					var resourceName = firstMember.Value?.ToString();
+					if (resourceName == null)
+					{
+						resourceName = firstMember.Objects.SingleOrDefault()?.Members?.SingleOrDefault()?.Value?.ToString();
+					}
 
 					return $"new RelativeSource(RelativeSourceMode.{resourceName})";
 				}
@@ -4904,63 +4909,80 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return "null";
 				}
 
-				if (m.Member.Name == "TargetNullValue" && FindType(bindingType.Type) is INamedTypeSymbol namedTypeSymbol &&
-					m.Objects.SingleOrDefault()?.Members?.SingleOrDefault()?.Value is { } value)
-				{
-					return BuildLiteralValue(namedTypeSymbol, value.ToString());
-				}
-
 				if (IsCustomMarkupExtensionType(bindingType.Type))
 				{
 					return GetCustomMarkupExtensionValue(m);
 				}
 
-				// If type specified in the binding was not found, log and return an error message
-				if (!string.IsNullOrEmpty(bindingType.Type.Name))
+				if (memberName == "Converter" &&
+					m.Objects.SingleOrDefault() is XamlObjectDefinition { } converterObjectDefinition)
 				{
-					var message = $"#Error // {bindingType.Type.Name} could not be found.";
-
-					return message;
-				}
-
-				return "#Error";
-			}
-			else
-			{
-
-				var value = BuildLiteralValue(m, GetPropertyType("Binding", memberName));
-
-				if (memberName == "Path")
-				{
-					value = RewriteAttachedPropertyPath(value);
-				}
-				else if (memberName == "ElementName")
-				{
-					if (m.Value == null)
+					var fullTypeName = converterObjectDefinition.Type.Name;
+					var knownType = FindType(converterObjectDefinition.Type);
+					if (knownType == null && converterObjectDefinition.Type.PreferredXamlNamespace.StartsWith("using:"))
 					{
-						throw new InvalidOperationException($"The property ElementName cannot be empty");
+						fullTypeName = converterObjectDefinition.Type.PreferredXamlNamespace.TrimStart("using:") + "." + converterObjectDefinition.Type.Name;
+					}
+					if (knownType != null)
+					{
+						// Override the using with the type that was found in the list of loaded assemblies
+						fullTypeName = knownType.ToDisplayString();
 					}
 
-					// Skip the literal value, use the elementNameSubject instead
-					string elementName = m.Value.ToString() ?? "";
-					value = "_" + elementName + "Subject";
-					// Track referenced ElementNames
-					CurrentScope.ReferencedElementNames.Add(elementName);
+					return $"new {GetGlobalizedTypeName(fullTypeName)}()";
 				}
-				else if (memberName == "FallbackValue"
-					|| (memberName == "TargetNullValue"
-						&& m.Owner != null
-						&& m.Owner.Members.None(otherMember => otherMember.Member.Name == "Converter")))
+
+				if (FindType(bindingType.Type) is INamedTypeSymbol namedTypeSymbol &&
+					m.Objects.SingleOrDefault()?.Members?.SingleOrDefault() is XamlMemberDefinition { } innerMember)
 				{
-					// FallbackValue can match the type of the property being bound.
-					// TargetNullValue possibly doesn't match the type of the property being bound,
-					// if there is a converter
-					value = BuildLiteralValue(m, propertyType);
+					m = innerMember;
+				}
+				else
+				{
+					// If type specified in the binding was not found, log and return an error message
+					if (!string.IsNullOrEmpty(bindingType.Type.Name))
+					{
+						var message = $"null\r\n#error Invalid binding: {bindingType.Type.Name} could not be found.\r\n";
+
+						return message;
+					}
+
+					return $"null\r\n#error Invalid binding. Location: ({m.LineNumber}, {m.LinePosition})\r\n";
+				}
+			}
+
+			var value = BuildLiteralValue(m, GetPropertyType("Binding", memberName));
+
+			if (memberName == "Path")
+			{
+				value = RewriteAttachedPropertyPath(value);
+			}
+			else if (memberName == "ElementName")
+			{
+				if (m.Value == null)
+				{
+					throw new InvalidOperationException($"The property ElementName cannot be empty");
 				}
 
-
-				return value;
+				// Skip the literal value, use the elementNameSubject instead
+				string elementName = m.Value.ToString() ?? "";
+				value = "_" + elementName + "Subject";
+				// Track referenced ElementNames
+				CurrentScope.ReferencedElementNames.Add(elementName);
 			}
+			else if (memberName == "FallbackValue"
+				|| (memberName == "TargetNullValue"
+					&& m.Owner != null
+					&& m.Owner.Members.None(otherMember => otherMember.Member.Name == "Converter")))
+			{
+				// FallbackValue can match the type of the property being bound.
+				// TargetNullValue possibly doesn't match the type of the property being bound,
+				// if there is a converter
+				value = BuildLiteralValue(m, propertyType);
+			}
+
+
+			return value;
 		}
 
 		private string RewriteAttachedPropertyPath(string value)
