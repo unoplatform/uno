@@ -452,12 +452,11 @@ namespace Windows.UI.Xaml
 					}
 				}
 
-				// TODO: Valid?
-				//if (elt.IsScrollPort) // Managed SCP or custom scroller
-				//{
-				//	offsetX -= elt.ScrollOffsets.X;
-				//	offsetY -= elt.ScrollOffsets.Y;
-				//}
+				if (elt.IsScrollPort && elt != from) // Managed SCP or custom scroller
+				{
+					offsetX -= elt.ScrollOffsets.X;
+					offsetY -= elt.ScrollOffsets.Y;
+				}
 #endif
 
 				logInfoString?.Append($"{elt}: ({offsetX}, {offsetY}), ");
