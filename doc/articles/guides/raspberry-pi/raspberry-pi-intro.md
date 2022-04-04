@@ -2,26 +2,19 @@
 
 ![Uno Hello World](images/00_uno-hello-world.jpg)
 
-In this series of guides, we'll build a cloud connected Raspberry Pi GUI app to perform some straightforward GPIO (General Purpose Input Output) operations.
-
-1. Introduction and Getting Started (this article)
-2. [GPIO Control](raspberry-pi-gpio.md)
-3. [Connecting to an Azure IoT Hub](raspberry-pi-azure.md)
 
 ## Prerequisites
 
-For this series of guides, you'll need various pieces of hardware and an Azure Account;
+For this guide, you'll need various pieces of hardware and an Azure Account;
 
 - Raspberry Pi 3b+ and above (I'll be using a [4Gb Pi 4](https://shop.pimoroni.com/products/raspberry-pi-4?variant=29157087445075)) 
 - [Raspberry Pi Power Supply](https://shop.pimoroni.com/products/universal-usb-c-power-supply-5-1v-3a)
 - [16GB SD Card](https://amzn.to/2YAI07e)
-- Optional: Keyboard and mouse
-- SSH Client (Both Windows and Mac have a built in ssh client)
+- SSH Client like [PuTTY](https://putty.org/)(Both Windows and Mac have a built in ssh client)
 - Code Editor - [Visual Studio Code](https://code.visualstudio.com)
-- [Jumper Cables, Breadboard, 220 Ohm Resistors, Assorted LEDs](https://amzn.to/3uYybMu)
-- [Microsoft Azure Account](https://portal.azure.com)
-- Optional: [LCD Touchscreen](https://amzn.to/3uYSXvt)
-- [VNC Viewer](https://www.realvnc.com/en/connect/download/viewer/)
+- Choose the two following options:
+  - [LCD Touchscreen](https://amzn.to/3uYSXvt), Keyboard and mouse
+  - OR [VNC Viewer](https://www.realvnc.com/en/connect/download/viewer/)
 
 ## What we'll be doing
 
@@ -45,7 +38,7 @@ There will be a series of steps involved in this;
 
 Before we go anywhere, let's make sure we can dial in to our Raspberry Pi.
 
-You may need to do this part with a Keyboard, a Mouse and Monitor of course, unless you enabled SSH the SD card before you installed Raspberry Pi OS.
+You may need to do this part with a Keyboard, a Mouse and Monitor of course, unless you enabled SSH on the SD card before you installed Raspberry Pi OS.
 
 Firstly, make sure that your Pi is connected to the same network.
 
@@ -139,7 +132,7 @@ Then we have four directories;
 
 The directory we're interested in is the `unoapp1.Skia.Gtk` directory. This directory contains the project which we'll build and run on the Raspberry Pi.
 
-It actually includes the build outputs from the `unoapp1.Shared` and `unoaddp1.Skia.Linux.FrameBuffer` projects too, and in the next tutorial, we'll dive in to those in a bit more detail.
+It actually includes the build outputs from the `unoapp1.Shared` and `unoapp1.Skia.Linux.FrameBuffer` projects too, and in the next tutorial, we'll dive in to those in a bit more detail.
 
 ## Give the SSH Session access to use the display
 
@@ -212,8 +205,6 @@ I've created a blog post around how you can actually automate Building, Deployin
 ## Wrap Up
 
 With that, we've gotten our first Hello World application up and running on the Raspberry Pi.
-
-In the next guide, we'll look at how we can create a UI and some code to control the GPIO on the Raspberry Pi to read the status of Buttons and turn on and off LEDs.
 
 Thanks.
 
