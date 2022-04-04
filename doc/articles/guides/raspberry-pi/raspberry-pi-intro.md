@@ -197,6 +197,10 @@ Don't forget that, if you've just dialled in you'll need to give access to the D
 
 `export DISPLAY=:0`
 
+If you are using a 64-bit version of the Raspberry Pi OS, you need to run the following commands to be able to run 32-bit executable :
+`$ sudo apt-get install ia32-libs-multiarch`
+`$ sudo apt-get install ia32-libs`
+
 You can then run the application with;
 
 `./unoapp1.Skia.Gtk`
