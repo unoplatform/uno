@@ -8703,7 +8703,7 @@
 				fullName="System.Void Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent..ctor()"
 				reason="Does not exist in UWP" />
 			<Member
-				fullName="Windows.ApplicationModel.Contacts.ContactReader..ctor()"
+				fullName="System.Void Windows.ApplicationModel.Contacts.ContactReader..ctor()"
 				reason="Does not exist in UWP" />
 
 			<Member
