@@ -246,7 +246,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			const double ScrollViewerHeight = ContentHeight + 2 * ContentMargin;
 			await WindowHelper.WaitForEqual(ScrollViewerHeight, () => SUT.ActualHeight);
-			Assert.AreEqual(ContentHeight, SUT.ExtentHeight);
+
+// Issue needs to be fixed first for WASM for Right and Bottom Margin missing
+// Details here: https://github.com/unoplatform/uno/issues/7000
+#if !__WASM__
+			Assert.AreEqual(ScrollViewerHeight, SUT.ExtentHeight);
+#endif
 		}
 
 		[TestMethod]
@@ -277,7 +282,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			const double ScrollViewerWidth = ContentWidth + 2 * ContentMargin;
 			await WindowHelper.WaitForEqual(ScrollViewerWidth, () => SUT.ActualWidth);
-			Assert.AreEqual(ContentWidth, SUT.ExtentWidth);
+
+// Issue needs to be fixed first for WASM for Right and Bottom Margin missing
+// Details here: https://github.com/unoplatform/uno/issues/7000
+#if !__WASM__
+			Assert.AreEqual(ScrollViewerWidth, SUT.ExtentWidth);
+#endif
 		}
 	}
 }

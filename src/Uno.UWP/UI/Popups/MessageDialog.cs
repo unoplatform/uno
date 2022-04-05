@@ -103,7 +103,7 @@ public sealed partial class MessageDialog
 
 	private async Task<IUICommand> ShowInnerAsync(CancellationToken ct)
 	{
-#if __IOS__ || __MACOS__ || __ANDROID__
+#if __IOS__ || __MACOS__ || __ANDROID__ || __WASM__
 		if (WinRTFeatureConfiguration.MessageDialog.UseNativeDialog)
 		{
 			return await ShowNativeAsync(ct);

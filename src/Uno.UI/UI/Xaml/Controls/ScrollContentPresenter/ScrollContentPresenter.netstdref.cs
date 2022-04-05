@@ -18,6 +18,10 @@ namespace Windows.UI.Xaml.Controls
 
 		public bool CanVerticallyScroll { get; set; }
 
+		public double ExtentHeight { get; internal set; }
+
+		public double ExtentWidth { get; internal set; }
+
 		internal ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
 
 		internal ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }

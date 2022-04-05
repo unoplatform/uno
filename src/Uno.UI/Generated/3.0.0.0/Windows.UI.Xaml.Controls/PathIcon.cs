@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 	#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-	[global::Uno.NotImplemented]
+	[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 	#endif
 	public  partial class PathIcon : global::Windows.UI.Xaml.Controls.IconElement
 	{

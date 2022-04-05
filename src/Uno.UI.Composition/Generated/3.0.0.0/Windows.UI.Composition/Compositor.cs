@@ -37,6 +37,16 @@ namespace Windows.UI.Composition
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.System.DispatcherQueue DispatcherQueue
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DispatcherQueue Compositor.DispatcherQueue is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static float MaxGlobalPlaybackRate
 		{
 			get
@@ -393,6 +403,42 @@ namespace Windows.UI.Composition
 		public  global::Windows.UI.Composition.CompositionVisualSurface CreateVisualSurface()
 		{
 			throw new global::System.NotImplementedException("The member CompositionVisualSurface Compositor.CreateVisualSurface() is not implemented in Uno.");
+		}
+		#endif
+		// Forced skipping of method Windows.UI.Composition.Compositor.DispatcherQueue.get
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Composition.AnimationPropertyInfo CreateAnimationPropertyInfo()
+		{
+			throw new global::System.NotImplementedException("The member AnimationPropertyInfo Compositor.CreateAnimationPropertyInfo() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Composition.RectangleClip CreateRectangleClip()
+		{
+			throw new global::System.NotImplementedException("The member RectangleClip Compositor.CreateRectangleClip() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Composition.RectangleClip CreateRectangleClip( float left,  float top,  float right,  float bottom)
+		{
+			throw new global::System.NotImplementedException("The member RectangleClip Compositor.CreateRectangleClip(float left, float top, float right, float bottom) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Composition.RectangleClip CreateRectangleClip( float left,  float top,  float right,  float bottom,  global::System.Numerics.Vector2 topLeftRadius,  global::System.Numerics.Vector2 topRightRadius,  global::System.Numerics.Vector2 bottomRightRadius,  global::System.Numerics.Vector2 bottomLeftRadius)
+		{
+			throw new global::System.NotImplementedException("The member RectangleClip Compositor.CreateRectangleClip(float left, float top, float right, float bottom, Vector2 topLeftRadius, Vector2 topRightRadius, Vector2 bottomRightRadius, Vector2 bottomLeftRadius) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Composition.CompositionBackdropBrush TryCreateBlurredWallpaperBackdropBrush()
+		{
+			throw new global::System.NotImplementedException("The member CompositionBackdropBrush Compositor.TryCreateBlurredWallpaperBackdropBrush() is not implemented in Uno.");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

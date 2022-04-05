@@ -37,6 +37,13 @@ namespace Windows.Graphics.Printing.Workflow
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  void AbortPrintFlow( global::Windows.Graphics.Printing.Workflow.PrintWorkflowJobAbortReason reason)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration", "void PrintWorkflowConfiguration.AbortPrintFlow(PrintWorkflowJobAbortReason reason)");
+		}
+		#endif
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration.SourceAppDisplayName.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration.JobTitle.get
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration.SessionId.get

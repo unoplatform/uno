@@ -107,6 +107,8 @@ namespace Uno.UWPSyncGenerator
 
 			var unoUINamespaces = new[] {
 				"Windows.UI.Xaml",
+				"Windows.UI.Composition",
+				"Windows.UI.Dispatching",
 #if HAS_UNO_WINUI
 				"Microsoft.Foundation",
 				"Microsoft.UI.Xaml",
@@ -122,6 +124,27 @@ namespace Uno.UWPSyncGenerator
 #endif
 			};
 
+			List<string> excludeNamespaces = new List<string>();
+			List<string> includeNamespaces = new List<string>();
+
+#if !HAS_UNO_WINUI
+			// For UWP compilation we need to ignore these namespaces when not explicitly generating
+			// for related projects.
+			if (baseName == "Uno.UI.Dispatching")
+			{
+				includeNamespaces.Add("Windows.UI.Dispatching");
+			}
+			else if (baseName == "Uno.UI.Composition")
+			{
+				includeNamespaces.Add("Windows.UI.Composition");
+			}
+			else
+			{
+				excludeNamespaces.Add("Windows.UI.Dispatching");
+				excludeNamespaces.Add("Windows.UI.Composition");
+			}
+#endif
+
 			var q = from asm in origins
 					where asm.Name == sourceAssembly
 					from targetType in GetNamespaceTypes(asm.Modules.First().GlobalNamespace)
@@ -132,6 +155,8 @@ namespace Uno.UWPSyncGenerator
 						(baseName == "Uno.UI" || baseName == "Uno.UI.Dispatching" || baseName == "Uno.UI.Composition")
 						&& unoUINamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n))
 					)
+					where !excludeNamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n))
+					where (includeNamespaces.Count == 0) || includeNamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n))
 					group targetType by targetType.ContainingNamespace into namespaces
 					orderby namespaces.Key.MetadataName
 					select new
@@ -358,6 +383,16 @@ namespace Uno.UWPSyncGenerator
 
 				return defines.Where(d => !string.IsNullOrEmpty(d)).Select(d => $"\"{d}\"").JoinBy(", ");
 			}
+
+			public bool IsNotImplementedInAllPlatforms()
+				=> IsNotDefinedByUno(AndroidSymbol) &&
+					IsNotDefinedByUno(IOSSymbol) &&
+					IsNotDefinedByUno(net461ymbol) &&
+					IsNotDefinedByUno(WasmSymbol) &&
+					IsNotDefinedByUno(SkiaSymbol) &&
+					IsNotDefinedByUno(NetStdReferenceSymbol) &&
+					MacOSSymbol == null;
+
 
 			private static bool IsNotDefinedByUno(ISymbol symbol)
 			{
@@ -859,7 +894,7 @@ namespace Uno.UWPSyncGenerator
 			{
 				types.AppendIf(b);
 
-				var IMethodSymbol = type.GetMembers().OfType<IMethodSymbol>().First(m => m.Name == "Invoke");
+				var IMethodSymbol = type.GetMembers("Invoke").OfType<IMethodSymbol>().First();
 				var members = string.Join(", ", IMethodSymbol.Parameters.Select(p => $"{SanitizeType(p.Type)} {SanitizeParameter(p.Name)}"));
 
 				b.AppendLineInvariant($"public delegate {SanitizeType(IMethodSymbol.ReturnType)} {type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)}({members});");
@@ -1152,6 +1187,7 @@ namespace Uno.UWPSyncGenerator
 				}
 			}
 
+#if HAS_UNO_WINUI
 			if (method.ContainingType.Name == "SwapChainPanel")
 			{
 				switch (method.Name)
@@ -1191,6 +1227,7 @@ namespace Uno.UWPSyncGenerator
 						return true;
 				}
 			}
+#endif
 
 			if (method.ContainingType.Name == "GraphicsCaptureItem")
 			{

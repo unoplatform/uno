@@ -7,6 +7,11 @@ namespace Windows.Globalization.NumberFormatting
 	#endif
 	public  partial class DecimalFormatter : global::Windows.Globalization.NumberFormatting.INumberFormatterOptions,global::Windows.Globalization.NumberFormatting.INumberFormatter,global::Windows.Globalization.NumberFormatting.INumberFormatter2,global::Windows.Globalization.NumberFormatting.INumberParser,global::Windows.Globalization.NumberFormatting.ISignificantDigitsOption,global::Windows.Globalization.NumberFormatting.INumberRounderOption,global::Windows.Globalization.NumberFormatting.ISignedZeroOption
 	{
+		// Skipping already declared property IsDecimalPointAlwaysDisplayed
+		// Skipping already declared property IntegerDigits
+		// Skipping already declared property IsGrouped
+		// Skipping already declared property NumeralSystem
+		// Skipping already declared property FractionDigits
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string GeographicRegion
@@ -17,7 +22,7 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 		#endif
-		
+		// Skipping already declared property Languages
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string ResolvedGeographicRegion
@@ -28,8 +33,10 @@ namespace Windows.Globalization.NumberFormatting
 			}
 		}
 		#endif
-		
-		
+		// Skipping already declared property ResolvedLanguage
+		// Skipping already declared property NumberRounder
+		// Skipping already declared property IsZeroSigned
+		// Skipping already declared property SignificantDigits
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public DecimalFormatter( global::System.Collections.Generic.IEnumerable<string> languages,  string geographicRegion) 
@@ -38,6 +45,7 @@ namespace Windows.Globalization.NumberFormatting
 		}
 		#endif
 		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.DecimalFormatter(System.Collections.Generic.IEnumerable<string>, string)
+		// Skipping already declared method Windows.Globalization.NumberFormatting.DecimalFormatter.DecimalFormatter()
 		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.DecimalFormatter()
 		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.Languages.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.GeographicRegion.get
@@ -67,6 +75,7 @@ namespace Windows.Globalization.NumberFormatting
 			throw new global::System.NotImplementedException("The member string DecimalFormatter.Format(ulong value) is not implemented in Uno.");
 		}
 		#endif
+		// Skipping already declared method Windows.Globalization.NumberFormatting.DecimalFormatter.Format(double)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string FormatInt( long value)
@@ -81,6 +90,7 @@ namespace Windows.Globalization.NumberFormatting
 			throw new global::System.NotImplementedException("The member string DecimalFormatter.FormatUInt(ulong value) is not implemented in Uno.");
 		}
 		#endif
+		// Skipping already declared method Windows.Globalization.NumberFormatting.DecimalFormatter.FormatDouble(double)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  long? ParseInt( string text)
@@ -95,6 +105,7 @@ namespace Windows.Globalization.NumberFormatting
 			throw new global::System.NotImplementedException("The member ulong? DecimalFormatter.ParseUInt(string text) is not implemented in Uno.");
 		}
 		#endif
+		// Skipping already declared method Windows.Globalization.NumberFormatting.DecimalFormatter.ParseDouble(string)
 		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.SignificantDigits.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.SignificantDigits.set
 		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.NumberRounder.get
