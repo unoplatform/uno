@@ -1,4 +1,5 @@
-﻿
+﻿#nullable enable 
+
 using AndroidBatteryStatus = Android.OS.BatteryStatus;
 using UwpBatteryStatus = Windows.System.Power.BatteryStatus;
 
@@ -20,6 +21,11 @@ namespace Windows.Devices.Power
 
 			var ifilter = new Android.Content.IntentFilter(Android.Content.Intent.ActionBatteryChanged);
 			var batteryStatus = Android.App.Application.Context.RegisterReceiver(null, ifilter);
+			if(batteryStatus is null)
+			{
+				Status = UwpBatteryStatus.NotPresent;
+				return;
+			}
 
 			// since API 5, so we don't have to check OS level
 			if (!batteryStatus.GetBooleanExtra(Android.OS.BatteryManager.ExtraPresent, false))
@@ -30,10 +36,9 @@ namespace Windows.Devices.Power
 
 			Status = UwpStatusFromAndroidStatus(batteryStatus.GetIntExtra(Android.OS.BatteryManager.ExtraStatus, -1));
 
-
 			if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.Lollipop)
 			{
-				// this probably doesn't happen, but anyway we can try set some values...
+				// this probably doesn't happen, but anyway we can try to set some values...
 
 				// since API 5
 				int level = batteryStatus.GetIntExtra(Android.OS.BatteryManager.ExtraLevel, 1);
@@ -49,7 +54,12 @@ namespace Windows.Devices.Power
 			// now, we have API 21+, so we have more values
 			int voltage = batteryStatus.GetIntExtra(Android.OS.BatteryManager.ExtraVoltage, 0);
 
-			var batteryManager = (Android.OS.BatteryManager)Android.App.Application.Context.GetSystemService(Android.Content.Context.BatteryService);
+			using var batteryManager = (Android.OS.BatteryManager?)Android.App.Application.Context.GetSystemService(Android.Content.Context.BatteryService);
+			if (batteryManager is null)
+			{
+				Status = UwpBatteryStatus.NotPresent;
+				return;
+			}
 			int currentMicroAmps = batteryManager.GetIntProperty((int)Android.OS.BatteryProperty.CurrentNow);   // Instantaneous battery current in microamperes, as an integer.
 			int chargeCounterMicroAmpHr = batteryManager.GetIntProperty((int)Android.OS.BatteryProperty.ChargeCounter); // Battery capacity in microampere-hours, as an integer.
 			long energyCounterNanoWattHr = batteryManager.GetLongProperty((int)Android.OS.BatteryProperty.EnergyCounter); // Battery remaining energy in nanowatt-hours, as a long integer.
@@ -75,22 +85,16 @@ namespace Windows.Devices.Power
 		}
 		private UwpBatteryStatus UwpStatusFromAndroidStatus(int status)
 		{
-			switch (status)
+			return status switch
 			{
-				case (int)AndroidBatteryStatus.Unknown: 
-					return UwpBatteryStatus.NotPresent;
-				case (int)AndroidBatteryStatus.Charging: 
-					return UwpBatteryStatus.Charging;
-				case (int)AndroidBatteryStatus.Discharging: 
-					return UwpBatteryStatus.Discharging;
-				case (int)AndroidBatteryStatus.NotCharging: 
-					return UwpBatteryStatus.Idle;
-				case (int)AndroidBatteryStatus.Full: 
-					return UwpBatteryStatus.Idle;
-			}
-
-			// either OS is changed (new values, not known while writing this code), or cannot get ExtraStatus (status == -1)
-			return UwpBatteryStatus.NotPresent;
+				(int)AndroidBatteryStatus.Unknown => UwpBatteryStatus.NotPresent,
+				(int)AndroidBatteryStatus.Charging => UwpBatteryStatus.Charging,
+				(int)AndroidBatteryStatus.Discharging => UwpBatteryStatus.Discharging,
+				(int)AndroidBatteryStatus.NotCharging => UwpBatteryStatus.Idle,
+				(int)AndroidBatteryStatus.Full => UwpBatteryStatus.Idle,
+				// last case: either OS is changed (new values, not known while writing this code), or cannot get ExtraStatus (status == -1)
+				_ => UwpBatteryStatus.NotPresent
+			};
 		}
 	}
 }

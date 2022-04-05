@@ -1,14 +1,13 @@
 ﻿
+#nullable enable
+
 namespace Windows.Devices.Power
 {
 	public partial class Battery
 	{
 		public static Battery AggregateBattery => new Battery();
 
-		public BatteryReport GetReport()
-		{
-			return new BatteryReport();
-		}
+		public BatteryReport GetReport() => new BatteryReport();
 
 	}
 }
