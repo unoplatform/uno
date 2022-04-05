@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Windows.Devices.Bluetooth.Advertisement
 {
@@ -8,6 +9,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		public  BluetoothLEAdvertisementFlags? Flags { get; set; }
 		public  IList<BluetoothLEAdvertisementDataSection> DataSections { get; internal set; }
 		public  IList<BluetoothLEManufacturerData> ManufacturerData { get; internal set; }
+		public IList<Guid> ServiceUuids { get; internal set; }
 	}
 
 }
