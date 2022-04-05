@@ -1,4 +1,5 @@
-﻿#if __ANDROID__
+﻿
+#if __ANDROID__
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,12 @@ namespace Windows.ApplicationModel.Appointments
 			=> ShowTimeFrameAsyncTask(timeToShow, duration).AsAsyncAction();
 		private static async Task ShowTimeFrameAsyncTask(DateTimeOffset timeToShow, TimeSpan duration)
 		{
-			Android.Net.Uri.Builder builder = Android.Provider.CalendarContract.ContentUri.BuildUpon();
+			var builder = Android.Provider.CalendarContract.ContentUri?.BuildUpon();
+			if (builder == null)
+			{
+				throw new NullReferenceException("Windows.ApplicationModel.Appointments.AppointmentStore.FindAppointmentsAsyncTask, builder is null (impossible)");
+			}
+
 			builder.AppendPath("time");
 			Android.Content.ContentUris.AppendId(builder, timeToShow.ToUniversalTime().ToUnixTimeMilliseconds());
 			var intent = new Android.Content.Intent(Android.Content.Intent.ActionView).SetData(builder.Build());
@@ -50,6 +56,7 @@ namespace Windows.ApplicationModel.Appointments
 			{
 				if (!await Windows.Extensions.PermissionsHelper.TryGetPermission(CancellationToken.None, requiredPermission))
 				{
+					// it returns null, so it is not AppointmentStore; and UWP defined this as AppointmentStore.
 					return null;
 				}
 			}
