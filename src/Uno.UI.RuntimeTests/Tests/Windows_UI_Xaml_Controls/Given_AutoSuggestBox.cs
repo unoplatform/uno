@@ -67,7 +67,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			sut.Text = null;
 
-			var textBox = (TextBox)sut.GetTemplateChild<TextBox>("TextBox");
+			var textBox = (TextBox)sut.GetTemplateChild("TextBox") as TextBox;
 
 			textBox.Text.Should().BeEmpty();
 		}
