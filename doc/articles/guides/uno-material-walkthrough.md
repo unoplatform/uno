@@ -52,9 +52,7 @@ This guide will walk you through the necessary steps to setup and to use the [`U
 ## Step-by-steps
 ### Section 1: Setup Uno.Material
 1. Create a new Uno Platform application, following the instructions [here](../get-started.md).
-1. Add NuGet package `Uno.Material` to each of project heads by:
-    > [!NOTE]
-    > You may have to check the `[x] Include Prerelease` to find this package, as there are currently no stable release.
+1. Add NuGet package `Uno.Material` to each of project heads:
 
     > [!NOTE]
     > The project heads refer to the projects targeted to a specific platforms:

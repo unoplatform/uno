@@ -51,7 +51,6 @@ To easily create a multi-platform application:
 
 ![new project](Assets/quick-start/vsix-new-project.png)
 * Right click on the Solution and select `Manage NuGet Packages for Solution` from the context menu.
-* Update to the latest NuGet package named `Uno.UI`. To get the very latest preview features, check the `Include prerelease` box.
 * Update the follow NuGet packages to the latest:
   - `Uno.UI`
   - `Uno.UI.WebAssembly`
@@ -75,7 +74,7 @@ uno-check --pre
 To create a multi-platform application:
 * Create a new C# solution using the **Multi-Platform App (Uno Platform|net6)** template, from Visual Studio's **Start Page**
 * Right click on the Solution and select `Manage NuGet Packages for Solution` from the context menu.
-* Update to the latest NuGet package named `Uno.UI`. To get the very latest preview features, check the `Include prerelease` box.
+* Update to the latest NuGet package named `Uno.UI`.
 * To debug the iOS:
     - In the "Debug toolbar" drop down, select framework `net6.0-ios`
     - Select an active device
