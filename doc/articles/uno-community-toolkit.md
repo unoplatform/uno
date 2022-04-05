@@ -92,7 +92,6 @@ These package ids are for Uno (ie non-Windows) projects. For UWP and WinUI 3 pro
    In C#:  
     ```using Microsoft.Toolkit.Uwp;```
 
-3. Implement the control.
 
 ## Task 2 - Add the DataGrid Control 
 

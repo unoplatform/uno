@@ -34,7 +34,7 @@ Restart Visual Studio.
    
 Note: You will not be able to build the UWP and WPF projects on a Mac. All changes to this project must be made on Windows.
 
-## Create a other projects types using the command line
+## Create other projects types using the command line
 
 You can create a new Uno Platfom solution with the following terminal command:
     ```bash
