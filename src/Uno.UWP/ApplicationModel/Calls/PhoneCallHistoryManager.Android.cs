@@ -24,16 +24,16 @@ namespace Windows.ApplicationModel.Calls
 
 			if(accessType == PhoneCallHistoryStoreAccessType.AppEntriesReadWrite)
 			{   // should not happen, as this option is defined as NotImplemented in enum
-				throw new NotImplementedException();
+				throw new NotSupportedException("PhoneCallHistoryManager.RequestStoreAsyncTask, accessType AppEntriesReadWrite is not implemented for Android");
 			}
 
 
-			var _histStore = new PhoneCallHistoryStore();
+			var historyStore = new PhoneCallHistoryStore();
 
 			// below API 16 (JellyBean), permission are granted
 			if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.JellyBean)
 			{
-				return _histStore;
+				return historyStore;
 			}
 
 			// since API 29, we should do something more:
@@ -41,8 +41,8 @@ namespace Windows.ApplicationModel.Calls
 
 			// do we have declared this permission in Manifest?
 			// it could be also Coarse, without GPS
-			Android.Content.Context context = Android.App.Application.Context;
-			Android.Content.PM.PackageInfo packageInfo =
+			var context = Android.App.Application.Context;
+			var packageInfo =
 				context.PackageManager.GetPackageInfo(context.PackageName, Android.Content.PM.PackageInfoFlags.Permissions);
 			var requestedPermissions = packageInfo?.RequestedPermissions;
 			if (requestedPermissions is null)
@@ -85,57 +85,14 @@ namespace Windows.ApplicationModel.Calls
 			}
 
 			if (requestPermission.Count < 1)
-				return _histStore;
+				return historyStore;
 
-			// in my tests, this ends with ERROR!! about null object reference inside TryGetPermission, on second call
 			foreach (var sPerm in requestPermission)
+			{
 				await Windows.Extensions.PermissionsHelper.TryGetPermission(CancellationToken.None, sPerm);
+			}
 
-			// system dialog asking for permission
-
-			// this code would not compile here - but it compile in your own app.
-			// to be compiled inside Uno, it has to be splitted into layers
-			//	var tcs = new TaskCompletionSource<Uno.UI.BaseActivity.RequestPermissionsResultWithResultsEventArgs>();
-
-			//	void handler(object sender, Uno.UI.BaseActivity.RequestPermissionsResultWithResultsEventArgs e)
-			//	{
-
-			//		if (e.RequestCode == 1)
-			//		{
-			//			tcs.TrySetResult(e);
-			//		}
-			//	}
-
-			//	var current = Uno.UI.BaseActivity.Current;
-
-			//	try
-			//	{
-			//		current.RequestPermissionsResultWithResults += handler;
-
-			//		ActivityCompat.RequestPermissions(Uno.UI.BaseActivity.Current, requestPermission.ToArray(), 1);
-
-			//		var result = await tcs.Task;
-			//		if (result.GrantResults.Length < 1)
-			//			return null;
-			//              foreach(var oItem in result.GrantResults)
-			//              {
-			//                  if (oItem == Android.Content.PM.Permission.Denied)
-			//                      return null;
-			//              }
-			//		return _histStore;
-
-			//	}
-			//	finally
-			//	{
-			//		current.RequestPermissionsResultWithResults -= handler;
-			//	}
-
-
-			//	return Windows.Devices.Geolocation.GeolocationAccessStatus.Denied;
-
-			//}
-
-			return _histStore;
+			return historyStore;
 		}
 
 		public static IAsyncOperation<PhoneCallHistoryStore> RequestStoreAsync(PhoneCallHistoryStoreAccessType accessType) => RequestStoreAsyncTask(accessType).AsAsyncOperation<PhoneCallHistoryStore>();
