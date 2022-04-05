@@ -33,7 +33,9 @@ You can develop Uno Platform applications on Windows, macOS, or Linux. Supported
 
 Much like the new UI technologies from Microsoft, Uno Platform doesn’t support creation of new applications using VB.NET.
 
-If you have an existing VB.NET application which you would like to port/modernize for cross-platform scenarios with Uno Platform, you should be able to reuse all of your VB.NET business logic, packaged as NET standard libraries into a new Uno Platform app where only the new UI code would be defined in XAML with some glue in C#. Additionally, If you’d like to move any of your VB.NET code to C# you may be able to use automated tools such as https://converter.telerik.com
+If you have an existing VB.NET application which you would like to port/modernize for cross-platform scenarios with Uno Platform, you should be able to reuse all of your VB.NET business logic, packaged as NET standard libraries into a new Uno Platform app where only the new UI code would be defined in XAML with some glue in C#.
+To be exact, add "Class Library" VB project (not "Class Library (.Net Framework)", and not "Class Library (Universal Windows)"). When you want to use this library for UWP app compatible with phones (i.e., app that works on Windows Phones as Lumia), you have to change Target Framework to ".Net Standard 1.4" (in Project:Properties), as this is last .Net Standard that can be used with projects targetting Windows 10 15063. If you are targetting Windows 10 16299+, use .Net Standard 2.0. Then, in Uno heads for all platforms, add reference to this library (simplest way is to right click on "References" nodes inside these heads). You can use same Class Library also in your original, VB project. The same Class Library can also be used MAUI project, if you ever decide to port app from Uno to MAUI.
+Additionally, If you’d like to move any of your VB.NET code to C# you may be able to use automated tools such as https://converter.telerik.com
 
 The best course of action is to do a POC and our team is happy to assist you in validating Uno Platform’s fit. Please [contact us](https://platform.uno/contact) with any queries.
 
