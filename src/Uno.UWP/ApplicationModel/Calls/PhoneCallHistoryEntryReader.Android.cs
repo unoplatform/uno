@@ -1,4 +1,6 @@
-﻿#if __ANDROID__
+﻿#nullable enable 
+
+#if __ANDROID__
 
 using System;
 using System.Collections.Generic;
@@ -14,18 +16,34 @@ namespace Windows.ApplicationModel.Calls
 	{
 		// <uses-permission android:name="android.permission.READ_CONTACTS">  ? A nie calllog?
 
-		private Android.Database.ICursor _cursor = null;
+		private Android.Database.ICursor? _cursor = null;
 
 		public PhoneCallHistoryEntryReader()
 		{
-			Android.Content.ContentResolver cr = Android.App.Application.Context.ContentResolver;
+			var cr = Android.App.Application.Context.ContentResolver;
+			if(cr is null)
+			{
+				throw new NullReferenceException("Windows.ApplicationModel.Calls.PhoneCallHistoryEntryReader.ctor, ContentResolver is null (impossible)");
+			}
 
-			_cursor = cr.Query(Android.Provider.CallLog.Calls.ContentUri,
+			var oUri = Android.Provider.CallLog.Calls.ContentUri;
+			if (oUri is null)
+			{
+				throw new NullReferenceException("Windows.ApplicationModel.Calls.PhoneCallHistoryEntryReader.ctor, ContentUri is null (impossible)");
+			}
+
+
+			_cursor = cr.Query(oUri,
 									null, 
 									null,
 									null,
-									Android.Provider.CallLog.Calls.DefaultSortOrder);	// == date DESC
-			if(!_cursor.MoveToFirst())
+									Android.Provider.CallLog.Calls.DefaultSortOrder);   // == date DESC
+			if (_cursor is null)
+			{
+				throw new NullReferenceException("Windows.ApplicationModel.Calls.PhoneCallHistoryEntryReader.ctor, _cursor is null (impossible)");
+			}
+
+			if (!_cursor.MoveToFirst())
 			{
 				_cursor.Dispose();
 				_cursor = null;
@@ -44,6 +62,7 @@ namespace Windows.ApplicationModel.Calls
 
 
 		public IAsyncOperation<IReadOnlyList<PhoneCallHistoryEntry>> ReadBatchAsync() => ReadBatchAsyncTask().AsAsyncOperation<IReadOnlyList<PhoneCallHistoryEntry>>();
+
 		private async Task<IReadOnlyList<PhoneCallHistoryEntry>> ReadBatchAsyncTask()
 		{
 
