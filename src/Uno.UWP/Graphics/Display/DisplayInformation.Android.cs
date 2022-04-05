@@ -340,25 +340,28 @@ namespace Windows.Graphics.Display
 				if (DPI == 480) return DisplayMetricsDensity.Xxhigh;
 				if (DPI == 640) return DisplayMetricsDensity.Xxxhigh;
 
-				if (DPI == 213) return DisplayMetricsDensity.Tv;
+					213 => DisplayMetricsDensity.Tv,
 
-				if (DPI < 120) return DisplayMetricsDensity.Low;
-				if (DPI < 160) return DisplayMetricsDensity.D140;
-				if (DPI < 180) return DisplayMetricsDensity.D180;
-				if (DPI < 200) return DisplayMetricsDensity.D200;
-				if (DPI < 220) return DisplayMetricsDensity.D220;
-				if (DPI < 260) return DisplayMetricsDensity.D260;
-				if (DPI < 280) return DisplayMetricsDensity.D280;
-				if (DPI < 300) return DisplayMetricsDensity.D300;
-				if (DPI < 340) return DisplayMetricsDensity.D340;
-				if (DPI < 360) return DisplayMetricsDensity.D360;
-				if (DPI < 400) return DisplayMetricsDensity.D400;
-				if (DPI < 420) return DisplayMetricsDensity.D420;
-				if (DPI < 440) return DisplayMetricsDensity.D440;
-				if (DPI < 450) return DisplayMetricsDensity.D450;
-				if (DPI < 560) return DisplayMetricsDensity.D560;
+					< 120 => DisplayMetricsDensity.Low,
+					< 160 => DisplayMetricsDensity.D140,
+					< 180 => DisplayMetricsDensity.D180,
+					< 200 => DisplayMetricsDensity.D200,
+					< 220 => DisplayMetricsDensity.D220,
+					< 260 => DisplayMetricsDensity.D220,
+					< 280 => DisplayMetricsDensity.D280,
 
-				return DisplayMetricsDensity.D600;
+					< 300 => DisplayMetricsDensity.D300,
+					< 340 => DisplayMetricsDensity.D340,
+					< 360 => DisplayMetricsDensity.D360,
+					< 400 => DisplayMetricsDensity.D400,
+					< 420 => DisplayMetricsDensity.D420,
+					< 440 => DisplayMetricsDensity.D440,
+					< 450 => DisplayMetricsDensity.D450,
+					< 560 => DisplayMetricsDensity.D560,
+
+					_ => DisplayMetricsDensity.D600
+				};
+
 			}
 
 		}
