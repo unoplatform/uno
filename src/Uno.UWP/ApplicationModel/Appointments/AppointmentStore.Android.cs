@@ -23,10 +23,10 @@ namespace Windows.ApplicationModel.Appointments
 				switch (column)
 				{
 					case "Appointment.AllDay":
-						androColumns.Add(Android.Provider.CalendarContract.EventsColumns.AllDay);
+						androColumns.Add(Android.Provider.CalendarContract.IEventsColumns.AllDay);
 						break;
 					case "Appointment.Location":
-						androColumns.Add(Android.Provider.CalendarContract.EventsColumns.EventLocation);
+						androColumns.Add(Android.Provider.CalendarContract.IEventsColumns.EventLocation);
 						break;
 					case "Appointment.StartTime":
 						_StartTimeRequested = true;
@@ -35,13 +35,13 @@ namespace Windows.ApplicationModel.Appointments
 						_DurationRequested = true;
 						break;
 					case "Appointment.Subject":
-						androColumns.Add(Android.Provider.CalendarContract.EventsColumns.Title);
+						androColumns.Add(Android.Provider.CalendarContract.IEventsColumns.Title);
 						break;
 					case "Appointment.Organizer":
-						androColumns.Add(Android.Provider.CalendarContract.EventsColumns.Organizer);
+						androColumns.Add(Android.Provider.CalendarContract.IEventsColumns.Organizer);
 						break;
 					case "Appointment.Details":
-						androColumns.Add(Android.Provider.CalendarContract.EventsColumns.Description);
+						androColumns.Add(Android.Provider.CalendarContract.IEventsColumns.Description);
 						break;
 				}
 			}
@@ -71,7 +71,7 @@ namespace Windows.ApplicationModel.Appointments
 
 			var androColumns = UWP2AndroColumnNames(options.FetchProperties);
 			// some 'system columns' columns, cannot be switched off
-			androColumns.Add(Android.Provider.CalendarContract.EventsColumns.CalendarId);
+			androColumns.Add(Android.Provider.CalendarContract.IEventsColumns.CalendarId);
 			androColumns.Add("_id");
 			androColumns.Add(Android.Provider.CalendarContract.Instances.Begin);    // for sort
 			androColumns.Add(Android.Provider.CalendarContract.Instances.End);    // we need this, as Android sometimes has NULL duration, and it should be reconstructed from start/end
@@ -97,14 +97,14 @@ namespace Windows.ApplicationModel.Appointments
 
 			// optimization
 			int _colAllDay, _colLocation, _colStartTime, _colSubject, _colOrganizer, _colDetails, _colCalId, _colId, _colEndTime;
-			_colAllDay = _cursor.GetColumnIndex(Android.Provider.CalendarContract.EventsColumns.AllDay);
-			_colLocation = _cursor.GetColumnIndex(Android.Provider.CalendarContract.EventsColumns.EventLocation);
+			_colAllDay = _cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.AllDay);
+			_colLocation = _cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.EventLocation);
 			_colStartTime = _cursor.GetColumnIndex(Android.Provider.CalendarContract.Instances.Begin);
 			_colEndTime = _cursor.GetColumnIndex(Android.Provider.CalendarContract.Instances.End);
-			_colSubject = _cursor.GetColumnIndex(Android.Provider.CalendarContract.EventsColumns.Title);
-			_colOrganizer = _cursor.GetColumnIndex(Android.Provider.CalendarContract.EventsColumns.Organizer);
-			_colDetails = _cursor.GetColumnIndex(Android.Provider.CalendarContract.EventsColumns.Description);
-			_colCalId = _cursor.GetColumnIndex(Android.Provider.CalendarContract.EventsColumns.CalendarId);
+			_colSubject = _cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.Title);
+			_colOrganizer = _cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.Organizer);
+			_colDetails = _cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.Description);
+			_colCalId = _cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.CalendarId);
 			_colId = _cursor.GetColumnIndex("_id");
 
 
