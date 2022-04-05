@@ -75,7 +75,7 @@ reg ADD HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem /v LongPa
 #### "Missing value for TargetPlatformWinMDLocation property" when adding a project reference
 This issue is caused by [VS 2019 support for SDK-Style projects](https://developercommunity.visualstudio.com/content/problem/1170010/missing-value-for-targetplatformwinmdlocation-prop.html).
 
-To add a reference change the list of `<TargetFramework>` to place `netstandard2.0` at the first position in the project you are trying to adding the reference to.
+To add a reference change the list of `<TargetFramework>` to place `netstandard2.0` at the first position in the project you are trying to add the reference to.
 
 #### Build fails with `error : Error reading response`
 In general, this error happens when the XAML parser detects a syntax error. Fixing the error generally fixes the build.

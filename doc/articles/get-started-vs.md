@@ -1,4 +1,4 @@
-# Get Started on Visual Studio 2019
+# Get Started on Visual Studio
 
 ## Prerequisites
 * [**Visual Studio 2019 16.3 or later**](https://visualstudio.microsoft.com/), with:
@@ -40,7 +40,7 @@ To easily create a multi-platform application:
 
 ![new project](Assets/quick-start/vsix-new-project.png)
 * Right click on the Solution and select `Manage NuGet Packages for Solution` from the context menu.
-* Update to the latest NuGet package named `Uno.UI`. To get the very latest preview features, check the `Include prerelease` box.
+* Update to the latest NuGet package named `Uno.UI`.
 * To debug the iOS head, select the `Debug|iPhoneSimulator` configuration
 * To debug the Android head, select the `Debug|Any CPU` configuration
 * To debug the UWP head, select the `Debug|x86` configuration
