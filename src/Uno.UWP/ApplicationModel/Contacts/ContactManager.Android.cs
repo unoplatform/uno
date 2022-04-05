@@ -13,7 +13,6 @@ namespace Windows.ApplicationModel.Contacts
 {
 	public partial class ContactManager
 	{
-
 		public static IAsyncOperation<ContactStore> RequestStoreAsync() => RequestStoreAsync(ContactStoreAccessType.AllContactsReadOnly);
 
 		public static IAsyncOperation<ContactStore> RequestStoreAsync(ContactStoreAccessType accessType) => RequestStoreAsyncTask(accessType).AsAsyncOperation<ContactStore>();
@@ -44,7 +43,6 @@ namespace Windows.ApplicationModel.Contacts
 			}
 
 			return null;
-
 		}
 	}
 }
