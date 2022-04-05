@@ -8679,6 +8679,9 @@
 		</Assemblies>
 		<Methods>
 			<Member
+				fullName="System.Void Windows.Devices.Power.BatteryReport..ctor()"
+				reason="not public in UWP"/>
+			<Member
 				fullName="System.Boolean Windows.UI.Xaml.FrameworkElement.get_StretchAffectsMeasure()"
 				reason="False positive: added in an internal interface" />
 			<Member
