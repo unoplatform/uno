@@ -1,4 +1,5 @@
-﻿
+﻿#nullable enable
+
 namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 {
 	public enum GattCommunicationStatus
@@ -8,5 +9,4 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		ProtocolError = 2,
 		AccessDenied = 3,
 	}
-
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,6 +14,13 @@ namespace Windows.Devices.Bluetooth
 		public BluetoothConnectionStatus ConnectionStatus { get; internal set; }
 		public string Name { get; internal set; }
 		public BluetoothLEAppearance Appearance { get; internal set; }
+
+		private BluetoothLEDevice(string name, BluetoothLEAppearance appearance)
+		{
+			// dummy for Error CS8618  Non-nullable property 'Value' must contain a non-null value when exiting constructor. Consider declaring the property as nullable.
+			Name = name;
+			Appearance = appearance;
+		}
 
 		#region "device selectors"
 

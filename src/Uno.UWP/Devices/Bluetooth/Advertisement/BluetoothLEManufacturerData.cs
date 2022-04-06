@@ -1,4 +1,5 @@
-﻿
+﻿#nullable enable
+
 namespace Windows.Devices.Bluetooth.Advertisement
 {
 	public partial class BluetoothLEManufacturerData

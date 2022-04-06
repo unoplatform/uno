@@ -1,4 +1,5 @@
-﻿
+﻿#nullable enable
+
 using System;
 
 namespace Windows.Devices.Bluetooth.GenericAttributeProfile
