@@ -5062,7 +5062,47 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							if (IsInitializableCollection(member.Member))
 							{
-								writer.AppendLineInvariant("// Empty collection");
+								// New grid succinct syntax.
+								if (member.Owner?.Type.Name == "Grid" &&
+									member.Owner?.Type.PreferredXamlNamespace == XamlConstants.PresentationXamlXmlNamespace &&
+									(member.Member.Name == "ColumnDefinitions" || member.Member.Name == "RowDefinitions") &&
+									member.Member.PreferredXamlNamespace == XamlConstants.PresentationXamlXmlNamespace &&
+									member.Value is string definitions)
+								{
+									using (writer.BlockInvariant($"{fullValueSetter} = "))
+									{
+										var propertyName = member.Member.Name == "ColumnDefinitions"
+											? "Width"
+											: "Height";
+										var definitionType = new XamlType(
+											unknownTypeNamespace: XamlConstants.PresentationXamlXmlNamespace,
+											unknownTypeName: member.Member.Name == "ColumnDefinitions"
+												? "ColumnDefinition"
+												: "RowDefinition",
+											list: new List<XamlType>(),
+											xamlSchemaContext: new XamlSchemaContext());
+
+										var values = definitions
+											.Split(',')
+											.Select(static definition => definition.Trim())
+											.ToArray();
+
+										foreach (var value in values)
+										{
+											using (writer.BlockInvariant("new {0}", GetGlobalizedTypeName(definitionType)))
+											{
+												writer.AppendLineInvariant("{0} = {1}", propertyName, BuildGridLength(value));
+											}
+
+											writer.AppendLineInvariant(",");
+										}
+									}
+									writer.AppendLineInvariant(",");
+								}
+								else
+								{
+									writer.AppendLineInvariant("// Empty collection");
+								}
 							}
 							else
 							{
