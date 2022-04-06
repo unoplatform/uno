@@ -11,8 +11,8 @@ namespace Microsoft.UI.Xaml.Controls;
 
 internal class CustomProperty : ICustomProperty
 {
-	private Func<object, object>? _getter;
-	private Action<object, object>? _setter;
+	private readonly Func<object, object>? _getter;
+	private readonly Action<object, object>? _setter;
 
 	public CustomProperty(string name, Type type, Func<object, object> getter, Action<object, object> setter)
 	{
@@ -20,11 +20,13 @@ internal class CustomProperty : ICustomProperty
 		Type = type;
 		_getter = getter;
 		_setter = setter;
+		CanRead = _getter != null;
+		CanWrite = _setter != null;
 	}
 
-	public bool CanRead => _getter != null;
+	public bool CanRead { get; }
 
-	public bool CanWrite => _setter != null;
+	public bool CanWrite { get; }
 
 	public string Name { get; }
 
