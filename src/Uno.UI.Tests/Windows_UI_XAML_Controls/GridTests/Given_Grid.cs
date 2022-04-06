@@ -1528,32 +1528,5 @@ namespace Uno.UI.Tests.GridTests
 				new ColumnDefinition { Width = new GridLength(300, GridUnitType.Pixel) },
 			});
 		}
-
-		[TestMethod]
-		public void When_Grid_Uses_Both_Syntaxes()
-		{
-			using var _ = new AssertionScope();
-			var SUT = new Grid_Uses_Both_Syntaxes();
-
-			SUT.ForceLoaded();
-			
-			SUT.grid.Should().NotBeNull();
-			SUT.grid.RowDefinitions.Should().BeEquivalentTo(new[]
-			{
-				new RowDefinition { Height = new GridLength(1, GridUnitType.Star) },
-				new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) },
-				new RowDefinition { Height = new GridLength(25, GridUnitType.Pixel) },
-				new RowDefinition { Height = new GridLength(14, GridUnitType.Pixel) },
-				new RowDefinition { Height = new GridLength(20, GridUnitType.Pixel) },
-			});
-			SUT.grid.ColumnDefinitions.Should().BeEquivalentTo(new[]
-			{
-				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-				new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },
-				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) },
-				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-				new ColumnDefinition { Width = new GridLength(300, GridUnitType.Pixel) },
-			});
-		}
 	}
 }
