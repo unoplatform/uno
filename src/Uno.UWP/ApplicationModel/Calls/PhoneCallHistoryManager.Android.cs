@@ -78,7 +78,7 @@ namespace Windows.ApplicationModel.Calls
 				}
 			}
 
-			List<string> requestPermission = new List<string>();
+			List<string> requestPermission = new ();
 
 			// check what permission should be granted
 			if (! await Windows.Extensions.PermissionsHelper.CheckPermission(CancellationToken.None, Android.Manifest.Permission.ReadCallLog))
