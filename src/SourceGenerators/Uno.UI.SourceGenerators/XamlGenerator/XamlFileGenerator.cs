@@ -2269,6 +2269,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								writer.AppendLineInvariant($"{setterPrefix}Color = {BuildColor(content)}");
 							}
 						}
+						// New WinUI assigned ContentProperty syntax
+						else if (
+							(IsType(topLevelControl.Type, XamlConstants.Types.RowDefinition) ||
+							IsType(topLevelControl.Type, XamlConstants.Types.ColumnDefinition)) &&
+							implicitContentChild.Value is string content &&
+							!content.IsNullOrWhiteSpace())
+						{
+							var propertyName = topLevelControl.Type.Name == "ColumnDefinition"
+								? "Width"
+								: "Height";
+
+							writer.AppendLineInvariant("{0} = {1}", propertyName, BuildGridLength(content));
+						}
 						else if (IsInitializableCollection(topLevelControl))
 						{
 							var elementType = FindType(topLevelControl.Type);
