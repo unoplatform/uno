@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml
 			return result;
 		}
 
-		private static bool GetIsEventOverrideImplemented(Type type, string name, Type[] args)
+		private protected static bool GetIsEventOverrideImplemented(Type type, string name, Type[] args)
 		{
 			var method = type
 				.GetMethod(
@@ -151,7 +151,8 @@ namespace Windows.UI.Xaml
 
 			return method != null
 				&& method.IsVirtual
-				&& method.DeclaringType != typeof(UIElement);
+				&& method.DeclaringType != typeof(UIElement)
+				&& method.DeclaringType != typeof(Control);
 		}
 
 		private protected virtual bool IsTabStopDefaultValue => false;

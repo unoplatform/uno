@@ -1127,21 +1127,6 @@ namespace Windows.UI.Xaml.Controls
 			return result;
 		}
 
-		private static bool GetIsEventOverrideImplemented(Type type, string name, Type[] args)
-		{
-			var method = type
-				.GetMethod(
-					name,
-					BindingFlags.NonPublic | BindingFlags.Instance,
-					null,
-					args,
-					null);
-
-			return method != null
-				&& method.IsVirtual
-				&& method.DeclaringType != typeof(Control);
-		}
-
 		/// <summary>
 		/// Duplicates the SetDefaultStyleKey() helper method from WinUI code.
 		/// </summary>
