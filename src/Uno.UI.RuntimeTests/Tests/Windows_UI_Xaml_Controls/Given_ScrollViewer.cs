@@ -378,7 +378,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(0, e.VerticalOffset);
 #if HAS_UNO // These values differ slightly from ScrollViewer's due to the fact that our implementation is based on the newer ScrollView control
 				Assert.AreEqual(item, e.OriginalSource);
-				Assert.AreEqual(innerScrollViewer.Presenter, e.TargetElement);
+				Assert.AreEqual(innerScrollViewer, e.TargetElement);
 				Assert.AreEqual(new Rect(0, 60, 100, 100), e.TargetRect);
 #endif
 			};
@@ -393,7 +393,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(0, e.VerticalOffset);
 #if HAS_UNO // These values differ slightly from ScrollViewer's due to the fact that our implementation is based on the newer ScrollView control
 				Assert.AreEqual(item, e.OriginalSource);
-				Assert.AreEqual(outerScrollViewer.Presenter, e.TargetElement);
+				Assert.AreEqual(outerScrollViewer, e.TargetElement);
 				Assert.AreEqual(new Rect(20, 160, 100, 100), e.TargetRect);
 #endif
 			};
