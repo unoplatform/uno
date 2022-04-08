@@ -100,7 +100,7 @@ namespace Windows.UI.Xaml.Controls
 			double appliedOffsetY = 0.0;
 			var viewportWidth = ViewportWidth;
 			var viewportHeight = ViewportHeight;
-			var zoomFactor = Scroller.ZoomFactor;				
+			var zoomFactor = Scroller.ZoomFactor;
 
 			// Compute the target offsets based on the provided BringIntoViewRequestedEventArgs.
 			ComputeBringIntoViewTargetOffsets(
@@ -158,7 +158,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Next bring a portion of this ScrollPresenter into view.
 				args.TargetRect = nextTargetRect;
-				args.TargetElement = this;
+				args.TargetElement = Scroller;
 				args.HorizontalOffset = args.HorizontalOffset - appliedOffsetX;
 				args.VerticalOffset = args.VerticalOffset - appliedOffsetY;
 			}
@@ -208,7 +208,7 @@ namespace Windows.UI.Xaml.Controls
 				// Account for the horizontal alignment ratio
 				MUX_ASSERT(requestEventArgs.HorizontalAlignmentRatio >= 0.0 && requestEventArgs.HorizontalAlignmentRatio <= 1.0);
 
-				
+
 				targetX += (targetWidth - viewportWidth / zoomFactor) * requestEventArgs.HorizontalAlignmentRatio;
 				targetWidth = viewportWidth / zoomFactor;
 			}
@@ -358,12 +358,26 @@ namespace Windows.UI.Xaml.Controls
 			MUX_ASSERT(content != null);
 
 			FrameworkElement contentAsFE = content as FrameworkElement;
+
 			GeneralTransform transform = descendant.TransformToVisual(content);
 			Thickness contentMargin = new Thickness();
 
+			// TODO Uno specific: We need to add presenter padding, as it is not accounted
+			// for when bringing into view nested ScrollViewer.
+			// This is not happening in the WinUI ScrollView control,
+			// but matches our ScrollViewer requirements.
+			if (descendant is ScrollViewer sv)
+			{
+				contentMargin = sv.Presenter.Margin;
+			}
+
 			if (contentAsFE != null)
 			{
-				contentMargin = contentAsFE.Margin;
+				contentMargin = new Thickness(
+					contentMargin.Left + contentAsFE.Margin.Left,
+					contentMargin.Top + contentAsFE.Margin.Top,
+					contentMargin.Right + contentAsFE.Margin.Right,
+					contentMargin.Bottom + contentAsFE.Margin.Bottom);
 			}
 
 			return transform.TransformBounds(
