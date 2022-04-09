@@ -13,10 +13,14 @@ namespace Windows.UI.Xaml.Controls
 	{
 		CGPoint UpperScrollLimit { get; }
 
-		void SetContentOffset(CGPoint contentOffset, bool animated);
+		CGPoint ContentOffset { get; }
+
+		void ApplyContentOffset(CGPoint contentOffset, bool animated);
 
 #if __IOS__
-		void SetZoomScale(nfloat scale, bool animated);
+		nfloat ZoomScale { get; }
+
+		void ApplyZoomScale(nfloat scale, bool animated);
 #endif
 	}
 }

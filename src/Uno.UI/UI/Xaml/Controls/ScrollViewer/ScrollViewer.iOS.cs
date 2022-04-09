@@ -86,7 +86,19 @@ namespace Windows.UI.Xaml.Controls
 				var desiredOffsets = new Windows.Foundation.Point(horizontalOffset ?? HorizontalOffset, verticalOffset ?? VerticalOffset);
 				var clampedOffsets = new Windows.Foundation.Point(MathEx.Clamp(desiredOffsets.X, 0, limit.X), MathEx.Clamp(desiredOffsets.Y, 0, limit.Y));
 
+				var contentOffsetChange =
+					(horizontalOffset != null && _scrollableContainer.ContentOffset.X != horizontalOffset) ||
+					(verticalOffset != null && _scrollableContainer.ContentOffset.Y != verticalOffset);
+
+				var zoomFactorChange = zoomFactor != null && _scrollableContainer.ZoomScale != zoomFactor;
+
 				var success = desiredOffsets == clampedOffsets;
+
+				if (zoomFactor is { } zoom && zoom != _scrollableContainer.ZoomScale)
+				{
+					_scrollableContainer.ApplyZoomScale(zoom, !disableAnimation);
+				}
+
 				if (!success && IsArrangeDirty)
 				{
 					// If the the requested offsets are out-of - bounds, but we actually does have our final bounds yet,
@@ -94,16 +106,11 @@ namespace Windows.UI.Xaml.Controls
 					// This is needed to allow a ScrollTo before the SV has been layouted.
 
 					_pendingChangeView = (horizontalOffset, verticalOffset, disableAnimation);
-					_scrollableContainer.SetContentOffset(desiredOffsets, !disableAnimation);
+					_scrollableContainer.ApplyContentOffset(desiredOffsets, !disableAnimation);
 				}
 				else
 				{
-					_scrollableContainer.SetContentOffset(clampedOffsets, !disableAnimation);
-				}
-
-				if(zoomFactor is { } zoom)
-				{
-					ChangeViewZoom(zoom, disableAnimation);
+					_scrollableContainer.ApplyContentOffset(clampedOffsets, !disableAnimation);
 				}
 
 				// Return true if successfully scrolled to asked offsets
@@ -128,11 +135,6 @@ namespace Windows.UI.Xaml.Controls
 					_presenter?.OnMaxZoomFactorChanged(MaxZoomFactor);
 					break;
 			}
-		}
-
-		private void ChangeViewZoom(float zoomFactor, bool disableAnimation)
-		{
-			_scrollableContainer?.SetZoomScale(zoomFactor, animated: !disableAnimation);
 		}
 
 		private void UpdateZoomedContentAlignment()
