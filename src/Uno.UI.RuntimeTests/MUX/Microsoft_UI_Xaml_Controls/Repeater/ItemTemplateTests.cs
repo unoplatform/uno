@@ -109,9 +109,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 		// Validate data context propagation and template selection
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
 		public void ValidateBindingAndTemplateSelection()
 		{
 			RunOnUIThread.Execute(() =>
@@ -172,9 +169,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
 		public void ValidateCustomRecyclingElementFactory()
 		{
 			RunOnUIThread.Execute(() =>
@@ -221,9 +215,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
 		public void ValidateRecyclingElementFactoryWithSingleTemplate()
 		{
 			RunOnUIThread.Execute(() =>
@@ -273,9 +264,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
 		public void ValidateDataTemplateAsItemTemplate()
 		{
 			RunOnUIThread.Execute(() =>
@@ -319,9 +307,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
 		public void ValidateDataTemplateSelectorAsItemTemplate()
 		{
 			RunOnUIThread.Execute(() =>
@@ -412,7 +397,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 		public void ValidateCorrectSizeWhenEmptyDataTemplateInSelector()
 		{
 			RunOnUIThread.Execute(() =>
@@ -467,7 +451,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 		public void ValidateReyclingElementFactoryWithNoTemplate()
 		{
 			RunOnUIThread.Execute(() =>
@@ -477,7 +460,13 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					RecyclePool = new RecyclePool()
 				};
 
-				Verify.Throws<COMException>(delegate
+				Verify.Throws<
+#if HAS_UNO // Uno throws a more specific exception
+					InvalidOperationException
+#else
+					COMException
+#endif
+				>(delegate
 				{
 					var context = (ElementFactoryGetArgs)RepeaterTestHooks.CreateRepeaterElementFactoryGetArgs();
 					context.Parent = null;
@@ -490,9 +479,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 		// Validate ability to create and use a view generator from scratch
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
 		public void ValidateCustomElementFactory()
 		{
 			RunOnUIThread.Execute(() =>
@@ -527,9 +513,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
 		public void ValidateTemplateSwitchingRefreshesElementsVirtualizingLayout()
 		{
 			RunOnUIThread.Execute(() =>
@@ -589,9 +572,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
 		public void ValidateNullItemTemplateAndContainerInItems()
 		{
 			RunOnUIThread.Execute(() =>
@@ -625,9 +605,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
 		public void VerifySelectTemplateLayoutFallback()
 		{
 			RunOnUIThread.Execute(() =>
@@ -676,7 +653,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
-#if UNO_REFERENCE_API // https://github.com/unoplatform/uno/issues/4529
 		[TestMethod]
 		public void VerifyNullTemplateGivesMeaningfullError()
 		{
@@ -707,7 +683,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				Content = null;
 			});
 		}
-#endif
 
 		private ItemsRepeaterScrollHost CreateAndInitializeRepeater(
 			object itemsSource,
