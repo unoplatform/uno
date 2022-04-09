@@ -26,6 +26,10 @@ namespace Windows.UI.Xaml.Controls
 
 		Size? IScrollContentPresenter.CustomContentExtent => NativePanel?.ContentSize;
 
+		CGPoint IUIScrollView.ContentOffset => NativePanel?.ContentOffset ?? default(CGPoint);
+
+		nfloat IUIScrollView.ZoomScale => NativePanel?.ZoomScale ?? default(nfloat);
+
 		public void SetContentOffset(CGPoint contentOffset, bool animated)
 		{
 			NativePanel?.SetContentOffset(contentOffset, animated);

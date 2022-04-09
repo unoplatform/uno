@@ -43,6 +43,11 @@ namespace Windows.UI.Xaml.Controls
 		private bool _isInAnimatedScroll;
 
 		CGPoint IUIScrollView.UpperScrollLimit => UpperScrollLimit;
+
+		CGPoint IUIScrollView.ContentOffset => ContentOffset;
+
+		nfloat IUIScrollView.ZoomScale => ZoomScale;
+
 		internal CGPoint UpperScrollLimit
 		{
 			get

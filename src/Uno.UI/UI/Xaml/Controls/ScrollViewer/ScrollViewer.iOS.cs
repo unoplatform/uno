@@ -87,6 +87,12 @@ namespace Windows.UI.Xaml.Controls
 				var clampedOffsets = new Windows.Foundation.Point(MathEx.Clamp(desiredOffsets.X, 0, limit.X), MathEx.Clamp(desiredOffsets.Y, 0, limit.Y));
 
 				var success = desiredOffsets == clampedOffsets;
+
+				if (zoomFactor is { } zoom && zoom != _scrollableContainer.ZoomScale)
+				{
+					ChangeViewZoom(zoom, !disableAnimation);
+				}
+
 				if (!success && IsArrangeDirty)
 				{
 					// If the the requested offsets are out-of - bounds, but we actually does have our final bounds yet,
@@ -99,11 +105,6 @@ namespace Windows.UI.Xaml.Controls
 				else
 				{
 					_scrollableContainer.SetContentOffset(clampedOffsets, !disableAnimation);
-				}
-
-				if(zoomFactor is { } zoom)
-				{
-					ChangeViewZoom(zoom, disableAnimation);
 				}
 
 				// Return true if successfully scrolled to asked offsets
