@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml
 		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
 		private XamlRoot _xamlRoot = null;
 		private string _uid;
-		
+
 		//private protected virtual void PrepareState() 
 		//{
 		//	// This is part of the WinUI internal API and is invoked at the end of DXamlCore.GetPeerPrivate
@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml
 			// registered first in event handlers.
 			// https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.control.onpointerpressed#remarks
 
-			var implementedEvents = GetImplementedRoutedEvents();
+			var implementedEvents = GetImplementedRoutedEventsForType(GetType());
 
 			if (implementedEvents.HasFlag(RoutedEventFlag.BringIntoViewRequested))
 			{
@@ -99,12 +99,10 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		protected RoutedEventFlag GetImplementedRoutedEvents()
+		internal static RoutedEventFlag GetImplementedRoutedEventsForType(Type type)
 		{
 			// TODO: GetImplementedRoutedEvents() should be evaluated at compile-time
 			// and the result placed in a partial file.
-			var type = GetType();
-
 			if (ImplementedRoutedEvents.TryGetValue(type, out var result))
 			{
 				return result;
@@ -119,16 +117,19 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				implementedRoutedEvents = EvaluateImplementedRoutedEvents();
+				implementedRoutedEvents = EvaluateImplementedUIElementRoutedEvents(type);
+
+				if (typeof(Control).IsAssignableFrom(type))
+				{
+					implementedRoutedEvents |= Control.EvaluateImplementedControlRoutedEvents(type);
+				}
 			}
 
 			return ImplementedRoutedEvents[type] = implementedRoutedEvents;
 		}
 
-		private protected virtual RoutedEventFlag EvaluateImplementedRoutedEvents()
+		internal static RoutedEventFlag EvaluateImplementedUIElementRoutedEvents(Type type)
 		{
-			var type = GetType();
-
 			RoutedEventFlag result = RoutedEventFlag.None;
 
 			if (GetIsEventOverrideImplemented(type, nameof(OnBringIntoViewRequested), _bringIntoViewRequestedArgs))

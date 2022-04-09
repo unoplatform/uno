@@ -224,7 +224,7 @@ namespace Windows.UI.Xaml.Controls
 			// registered first in event handlers.
 			// https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.control.onpointerpressed#remarks
 
-			var implementedEvents = GetImplementedRoutedEvents();
+			var implementedEvents = GetImplementedRoutedEventsForType(GetType());
 
 			if (implementedEvents.HasFlag(RoutedEventFlag.PointerPressed))
 			{
@@ -994,11 +994,13 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly Type[] _manipInertiaArgsType = new[] { typeof(ManipulationInertiaStartingRoutedEventArgs) };
 		private static readonly Type[] _manipCompletedArgsType = new[] { typeof(ManipulationCompletedRoutedEventArgs) };
 
-		private protected override RoutedEventFlag EvaluateImplementedRoutedEvents()
-		{
-			var result = base.EvaluateImplementedRoutedEvents();
+		// TODO: GetImplementedRoutedEvents method can be removed as a breaking change.
+		protected RoutedEventFlag GetImplementedRoutedEvents(Type type) => GetImplementedRoutedEventsForType(type);
 
-			var type = GetType();
+		internal static RoutedEventFlag EvaluateImplementedControlRoutedEvents(Type type)
+		{
+			var result = RoutedEventFlag.None;
+
 			if (GetIsEventOverrideImplemented(type, nameof(OnPointerPressed), _pointerArgsType))
 			{
 				result |= RoutedEventFlag.PointerPressed;
