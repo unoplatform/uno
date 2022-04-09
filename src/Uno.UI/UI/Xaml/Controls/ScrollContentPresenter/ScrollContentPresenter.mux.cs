@@ -18,7 +18,7 @@ public partial class ScrollContentPresenter
 	{
 		base.OnBringIntoViewRequested(args);
 
-		UIElement content = ManagedContent as UIElement;
+		UIElement content = RealContent as UIElement;
 
 		if (args.Handled ||
 			args.TargetElement == this ||

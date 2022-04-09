@@ -92,6 +92,8 @@ namespace Windows.UI.Xaml.Controls
 
 		internal Size? CustomContentExtent => null;
 
+		private object RealContent => Content;
+
 		partial void InitializePartial()
 		{
 #if __SKIA__

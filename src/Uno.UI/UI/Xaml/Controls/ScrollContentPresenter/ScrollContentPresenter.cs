@@ -54,22 +54,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endregion
 
-		private ScrollViewer Scroller => ScrollOwner as ScrollViewer;
-
-		internal object ManagedContent
-		{
-			get
-			{
-#if __ANDROID__ || __IOS__
-				if (Content is NativeScrollContentPresenter nativePresenter)
-				{
-					return nativePresenter.Content;
-				}
-#endif
-
-				return Content;
-			}
-		}		
+		private ScrollViewer Scroller => ScrollOwner as ScrollViewer;	
 
 #if __WASM__
 		bool _forceChangeToCurrentView;
@@ -116,9 +101,29 @@ namespace Windows.UI.Xaml.Controls
 			return this.IsHeightConstrainedSimple() ?? (Parent as ILayoutConstraints)?.IsHeightConstrained(this) ?? false;
 		}
 
-		public double ViewportHeight => (DesiredSize.Height - Margin.Top - Margin.Bottom);
+		public double ViewportHeight
+		{
+			get
+			{
+#if !__WASM__
+				return DesiredSize.Height - Margin.Top - Margin.Bottom;
+#else // Issue needs to be fixed first for WASM for Right and Bottom Margin missing https://github.com/unoplatform/uno/issues/7000
+				return DesiredSize.Height - Margin.Top;
+#endif
+			}
+		}
 
-		public double ViewportWidth => (DesiredSize.Width - Margin.Left - Margin.Right);
+		public double ViewportWidth
+		{
+			get
+			{
+#if !__WASM__
+				return DesiredSize.Width - Margin.Left - Margin.Right;
+#else // Issue needs to be fixed first for WASM for Right and Bottom Margin missing https://github.com/unoplatform/uno/issues/7000
+				return DesiredSize.Width - Margin.Left;
+#endif
+			}
+		}
 
 #if UNO_HAS_MANAGED_SCROLL_PRESENTER || __WASM__
 		protected override Size MeasureOverride(Size availableSize)
