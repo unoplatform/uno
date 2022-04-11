@@ -34,23 +34,15 @@ namespace Windows.UI.Notifications
 
 		private string ConvertToastTextToString(string toasttext)
 		{
-			var uri = Android.Net.Uri.Parse(toasttext);
-			if(uri is null)
-			{
-				throw new ArgumentException("ToastNotifier:ConvertToastTextToString, toastText cannot be converted to Uri");
-			}
-			// "When using the "ms-resource" prefix, the string identifier is referenced in the app's Resources.resw file."
-			if (uri.Scheme == "ms-resource")
+			// this is simple text, e.g. "dummy" or "1"
+			if (!toasttext.StartsWith("ms-resource:"))
 			{
 				return toasttext;
 			}
 
-			var resName = uri.SchemeSpecificPart;
-			if (resName is null)
-			{
-				throw new ArgumentException("ToastNotifier:ConvertToastTextToString, empty SchemeSpecificPart (within Scheme ms-resource)");
-			}
-			toasttext = resName; 
+			// it is text with prefix, directing us to resources
+			toasttext = toasttext.Substring("ms-resource:".Length);
+
 			var retVal = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView()?.GetString(toasttext);
 			if (retVal is null)
 			{   // we have no such string
@@ -113,7 +105,7 @@ namespace Windows.UI.Notifications
 		private void SetToastTexts(Android.App.Notification.Builder builder, XmlDocument xmlDoc)
 		{
 			string toastTitleText = "";
-			StringBuilder toastText = new StringBuilder("");
+			StringBuilder toastText = new ("");
 
 			var childToast = xmlDoc.GetElementsByTagName("text");
 			if ((childToast != null) && childToast.Count > 0)
@@ -159,7 +151,7 @@ namespace Windows.UI.Notifications
 					}
 					else
 					{
-						if (msgLines.Count() > 6)
+						if (msgLines.Length > 6)
 						{
 							// too many lines for InboxStyle - show in expandable form
 							var expandableToast = new Android.App.Notification.BigTextStyle().BigText(toastText.ToString());
