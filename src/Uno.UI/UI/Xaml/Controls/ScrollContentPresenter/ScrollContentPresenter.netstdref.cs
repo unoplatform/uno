@@ -25,5 +25,7 @@ namespace Windows.UI.Xaml.Controls
 		internal ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
 
 		internal ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }
+
+		private object RealContent { get; set; }
 	}
 }
