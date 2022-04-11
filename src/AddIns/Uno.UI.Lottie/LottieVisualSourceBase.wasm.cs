@@ -99,8 +99,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				}
 				else
 				{
-					var _isAbsolute = IsAbsolute
-					if((bool)_isAbsolute)
+					Uri _result = null;
+					if(TryCreate (UriSource.toString(), UriKind.Absolute, out _result);)
 					{
 						var documentPath = Windows.Storage.Helpers.AssetsPathBuilder.BuildAssetUri(UriSource);
 					}
