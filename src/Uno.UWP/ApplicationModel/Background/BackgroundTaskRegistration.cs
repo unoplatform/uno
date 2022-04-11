@@ -1,4 +1,4 @@
-﻿
+﻿#nullable enable
 
 namespace Windows.ApplicationModel.Background
 {
@@ -7,5 +7,13 @@ namespace Windows.ApplicationModel.Background
 	{
 		public string Name { get; internal set; }
 		public IBackgroundTrigger Trigger { get; internal set; }
+
+		internal BackgroundTaskRegistration(string name, IBackgroundTrigger trigger)
+		{
+			Name = name;
+			Trigger = trigger;
+		}
+
 	}
+
 }
