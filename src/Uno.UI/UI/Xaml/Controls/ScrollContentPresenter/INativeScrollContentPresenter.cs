@@ -11,6 +11,9 @@ namespace Windows.UI.Xaml.Controls
 		bool CanHorizontallyScroll { get; set; }
 		bool CanVerticallyScroll { get; set; }
 
+		double ExtentWidth { get; set; }
+		double ExtentHeight { get; set; }
+
 		object Content { get; set; }
 
 		bool Set(

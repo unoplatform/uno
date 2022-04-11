@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using SamplesApp.UITests._Utils;
 using SamplesApp.UITests.TestFramework;
 using SamplesApp.UITests.Windows_UI_Xaml_Controls.FrameworkElementTests;
 using Uno.UITest.Helpers;
@@ -219,6 +220,48 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 			using var screenshot = TakeScreenshot("Screenshot");
 
 			ImageAssert.HasColorAt(screenshot, textBoxRect.CenterX, textBoxRect.CenterY, Color.FromArgb(0, 255, 0));
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android)]
+		public void Border_AntiAlias()
+		{
+			const string firstRectBlueish = "#ffd8d8ff";
+			const string secondRectBlueish = "#ff9e9eff";
+
+			Run("UITests.Windows_UI_Xaml_Controls.BorderTests.BorderAntiAlias");
+
+			var firstBorderRect = _app.GetPhysicalRect("firstBorder");
+			var secondBorderRect = _app.GetPhysicalRect("secondBorder");
+			
+			using var screenshot = TakeScreenshot(nameof(Border_AntiAlias));
+
+			ImageAssert.HasColorInRectangle(
+					screenshot,
+					firstBorderRect.ToRectangle(),
+					ColorCodeParser.Parse(firstRectBlueish)
+				);
+
+			ImageAssert.HasPixels(
+					screenshot,
+					ExpectedPixels
+						.At($"top-left", secondBorderRect.X, secondBorderRect.Y)
+						.WithPixelTolerance(1, 1)
+						.Pixel(secondRectBlueish),
+					ExpectedPixels
+						.At($"top-right", secondBorderRect.Right, secondBorderRect.Y)
+						.WithPixelTolerance(1, 1)
+						.Pixel(secondRectBlueish),
+					ExpectedPixels
+						.At($"bottom-right", secondBorderRect.Right, secondBorderRect.Bottom)
+						.WithPixelTolerance(1, 1)
+						.Pixel(secondRectBlueish),
+					ExpectedPixels
+						.At($"bottom-left", secondBorderRect.X, secondBorderRect.Bottom)
+						.WithPixelTolerance(1, 1)
+						.Pixel(secondRectBlueish)
+				);
 		}
 
 		private void SetBorderProperty(string borderName, string propertyName, string value)

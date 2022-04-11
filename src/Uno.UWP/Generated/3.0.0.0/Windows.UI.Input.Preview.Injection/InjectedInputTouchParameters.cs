@@ -2,22 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input.Preview.Injection
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::System.FlagsAttribute]
 	public   enum InjectedInputTouchParameters : uint
 	{
-		#if false
-		None = 0,
-		#endif
-		#if false
-		Contact = 1,
-		#endif
-		#if false
-		Orientation = 2,
-		#endif
-		#if false
-		Pressure = 4,
-		#endif
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputTouchParameters.None
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputTouchParameters.Contact
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputTouchParameters.Orientation
+		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputTouchParameters.Pressure
 	}
 	#endif
 }

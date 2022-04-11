@@ -3,7 +3,7 @@
 namespace Windows.Foundation.Collections
 {
 	#if false || false || NET461 || false || false || false || false
-	[global::Uno.NotImplemented]
+	[global::Uno.NotImplemented("NET461")]
 	#endif
 	public  partial class ValueSet : global::Windows.Foundation.Collections.IPropertySet,global::Windows.Foundation.Collections.IObservableMap<string, object>,global::System.Collections.Generic.IDictionary<string, object>,global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>>
 	{

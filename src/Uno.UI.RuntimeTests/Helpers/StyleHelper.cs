@@ -69,7 +69,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 		/// </summary>
 		public static IDisposable UseFluentStyles()
 		{
-#if NETFX_CORE // Disabled on UWP for now because 17763 doesn't support WinUI 2.x; Fluent resources are used by default in SamplesApp.UWP
+#if NETFX_CORE // Disabled on UWP for now because 18362 doesn't support WinUI 2.x; Fluent resources are used by default in SamplesApp.UWP
 			return null;
 #else
 			var resources = Application.Current.Resources;

@@ -3,7 +3,7 @@
 namespace Windows.Networking.Connectivity
 {
 	#if false || false || NET461 || false || false || false || false
-	[global::Uno.NotImplemented]
+	[global::Uno.NotImplemented("NET461")]
 	#endif
 	public  partial class ConnectionProfile 
 	{

@@ -20,6 +20,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI.Xaml.Core;
+using Uno.UI.DataBinding;
 
 #if __IOS__
 using UIKit;
@@ -41,14 +42,34 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class VisualTreeHelper
 	{
-		private static readonly List<WeakReference<IPopup>> _openPopups = new List<WeakReference<IPopup>>();
+		private static readonly List<ManagedWeakReference> _openPopups = new();
 
 		internal static IDisposable RegisterOpenPopup(IPopup popup)
 		{
-			var weakPopup = new WeakReference<IPopup>(popup);
+			CleanupPopupReferences();
 
-			_openPopups.AddDistinct(weakPopup);
-			return Disposable.Create(() => _openPopups.Remove(weakPopup));
+			var popupRegistration = _openPopups.FirstOrDefault(
+				p => !p.IsDisposed && p.Target == popup);
+
+			if (popupRegistration is null)
+			{
+				popupRegistration = WeakReferencePool.RentWeakReference(popup, popup);
+
+				_openPopups.Add(popupRegistration);
+			}
+
+			return Disposable.Create(() => _openPopups.Remove(popupRegistration));
+		}
+
+		private static void CleanupPopupReferences()
+		{
+			for (int i = _openPopups.Count - 1; i >= 0; i--)
+			{
+				if (_openPopups[i].IsDisposed || _openPopups[i].Target is null)
+				{
+					_openPopups.RemoveAt(i);
+				}
+			}
 		}
 
 		[Uno.NotImplemented]
@@ -141,18 +162,26 @@ namespace Windows.UI.Xaml.Media
 
 		public static IReadOnlyList<Popup> GetOpenPopups(Window window)
 		{
+			CleanupPopupReferences();
+
 			return _openPopups
-				.Select(WeakReferenceExtensions.GetTarget)
+				.Where(p => !p.IsDisposed)
+				.Select(p => p.Target)
 				.OfType<Popup>()
+				.Distinct()
 				.ToList()
 				.AsReadOnly();
 		}
 
 		private static IReadOnlyList<Popup> GetOpenFlyoutPopups()
 		{
+			CleanupPopupReferences();
+
 			return _openPopups
-				.Select(WeakReferenceExtensions.GetTarget)
+				.Where(p => !p.IsDisposed)
+				.Select(p => p.Target)
 				.OfType<Popup>()
+				.Distinct()
 				.Where(p => p.IsForFlyout)
 				.ToList().AsReadOnly();
 		}
@@ -646,7 +675,7 @@ namespace Windows.UI.Xaml.Media
 			}
 #endif
 		}
-#endregion
+		#endregion
 
 		internal struct Branch
 		{

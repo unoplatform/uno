@@ -118,14 +118,7 @@
             - name: Part 3
               href: interop/wasm-javascript-3.md
         - name: Deploy to Raspberry Pi
-          topicHref: guides/raspberry-pi/raspberry-pi-intro.md
-          items:
-            - name: Get Started
-              href: guides/raspberry-pi/raspberry-pi-intro.md
-            - name: Create a GPIO control interface
-              href: guides/raspberry-pi/raspberry-pi-gpio.md
-            - name: Connect to Azure IoT
-              href: guides/raspberry-pi/raspberry-pi-azure.md
+          href: guides/raspberry-pi/raspberry-pi-intro.md
     - name: Other examples
       items:
         - name: Uno.Samples
@@ -234,6 +227,8 @@
           href: controls/Popup.md
         - name: ProgressRing
           href: features/progressring.md
+        - name: ScrollViewer
+          href: controls/ScrollViewer.md          
         - name: TextBox
           href: controls/TextBox.md
         - name: TimePicker
@@ -324,6 +319,10 @@
           items:
             - name: Overview
               href: features/uno-cupertino.md
+        - name: Working with the Skia+GTK head
+          href: features/using-skia-gtk.md
+        - name: Working with the Linux Framebuffer support
+          href: features/using-linux-framebuffer.md
         - name: Fluent icon font
           href: uno-fluent-assets.md
         - name: Lottie animations
@@ -334,8 +333,6 @@
           href: features/working-with-cookies.md
         - name: Using pointer cursors
           href: features/cursors.md
-        - name: Linux Framebuffer Support
-          href: features/using-linux-framebuffer.md
     - name: Core functionality
       items:
         - name: Logging

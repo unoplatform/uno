@@ -21,6 +21,8 @@
 		<AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
 		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
 		<ResourcesDirectory>..\$ext_safeprojectname$.Shared\Strings</ResourcesDirectory>
+		<!-- Workaround for https://github.com/xamarin/xamarin-android/issues/6480 -->
+		<AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<DebugSymbols>true</DebugSymbols>
@@ -32,6 +34,11 @@
 		<WarningLevel>4</WarningLevel>
 		<AndroidUseSharedRuntime>True</AndroidUseSharedRuntime>
 		<AndroidLinkMode>None</AndroidLinkMode>
+		<AndroidSupportedAbis>armeabi-v7a;x86;x86_64;arm64-v8a</AndroidSupportedAbis>
+		<!-- Workaround for https://github.com/xamarin/xamarin-android/issues/6480 -->
+		<AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
+		<AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
+		<BundleAssemblies>false</BundleAssemblies>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
 		<DebugType>portable</DebugType>
@@ -49,6 +56,8 @@
 		<AotAssemblies>true</AotAssemblies>
 		<EnableLLVM>true</EnableLLVM>
 		<AndroidEnableSGenConcurrent>true</AndroidEnableSGenConcurrent>
+		<AndroidSupportedAbis>armeabi-v7a;x86;x86_64;arm64-v8a</AndroidSupportedAbis>
+		<BundleAssemblies>false</BundleAssemblies>
 		<AndroidPackageFormat>aab</AndroidPackageFormat>
 		<AndroidEnableProfiledAot>true</AndroidEnableProfiledAot>
 	</PropertyGroup>

@@ -11,7 +11,26 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ListViewBase
 	{
-		private int PageSize => throw new NotImplementedException();
+		private int PageSize
+		{
+			get
+			{
+				if (VirtualizingPanel is null)
+				{
+					return 0;
+				}
+
+				var layouter = VirtualizingPanel.GetLayouter();
+				var firstVisibleIndex = layouter.FirstVisibleIndex;
+				var lastVisibleIndex = layouter.LastVisibleIndex;
+				if (lastVisibleIndex == -1)
+				{
+					return 0;
+				}
+
+				return lastVisibleIndex - firstVisibleIndex + 1;
+			}
+		}
 
 		private void AddItems(int firstItem, int count, int section)
 		{
@@ -56,7 +75,10 @@ namespace Windows.UI.Xaml.Controls
 
 		private void TryLoadMoreItems()
 		{
-			//TODO: ISupportIncrementalLoading
+			if (VirtualizingPanel.GetLayouter() is { } layouter)
+			{
+				TryLoadMoreItems(layouter.LastVisibleIndex);
+			}
 		}
 	}
 }

@@ -239,7 +239,7 @@ namespace Windows.UI.Xaml.Media
 
 		private void DownloadUsingPlatformDownloader()
 		{
-			using (var url = new NSUrl(WebUri.OriginalString))
+			using (var url = new NSUrl(WebUri.AbsoluteUri))
 			{
 				NSError error;
 

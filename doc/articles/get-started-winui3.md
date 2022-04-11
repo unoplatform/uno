@@ -28,6 +28,22 @@ Uno Platform apps can be created in both UWP-compatible (`Windows.UI.Xaml`, also
     ![Preview Feature screenshot](Assets/preview-feature-winui-3-tooling.png)
 5. To debug the WinUI 3 Desktop project, set `[MyAppName].Windows.Package` as the startup project, set the Solution Platform to `x86`, and run the application.
 
+## Create a new app with .NET 6
+
+1. Create a folder for your app.
+2. From a command-line prompt at that folder location, run the following command:
+    ```shell
+    dotnet new unoapp-winui-net6 -o MyUnoApp
+    ```
+3. To debug the WinUI 3 Desktop project, set `[MyAppName].Windows` as the startup project, set the Solution Platform to `x86`, and run the application.
+
+Note that this project template comes with two packaging flavors (packaged or unpackaged). Depending on the one you will choose, you'll need to [adjust these properties](https://github.com/unoplatform/uno/blob/d2e1e454f52e82cd31da2719b5d1aad2a4c8c9e8/src/SolutionTemplate/Uno.ProjectTemplates.Dotnet/content/unoapp-winui-net6/UnoWinUIQuickStart.Windows/UnoWinUIQuickStart.Windows.csproj#L15-L20) (`WindowsAppSDKSelfContained` or `SelfContained`).
+
+If the application is started in an mismatched configuration, you'll get this runtime error:
+```
+System.DllNotFoundException: 'Unable to load DLL 'Microsoft.ui.xaml.dll' or one of its dependencies: The specified module could not be found.
+```
+
 ## Further reading
 
  * [WinUI 3, UWP, and Uno Platform](uwp-vs-winui3.md)

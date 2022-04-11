@@ -5,6 +5,7 @@
 #nullable enable
 
 using System;
+using System.Linq;
 using Uno.UI.Extensions;
 using Windows.Foundation;
 using Windows.UI;
@@ -32,6 +33,9 @@ namespace Uno.UI.Xaml.Core
 	{
 		private readonly CoreServices _coreServices;
 
+		[ThreadStatic]
+		private static bool _canUnFocusOnNextLeftPointerRelease = true;
+
 		public RootVisual(CoreServices coreServices)
 		{
 			_coreServices = coreServices ?? throw new System.ArgumentNullException(nameof(coreServices));
@@ -42,12 +46,14 @@ namespace Uno.UI.Xaml.Core
 			SetAttribute("tabindex", "0");
 #endif
 
-#if HAS_UNO
+			AddHandler(
+				PointerPressedEvent,
+				new PointerEventHandler((snd, args) => ProcessPointerDown(args)),
+				handledEventsToo: true);
 			AddHandler(
 				PointerReleasedEvent,
 				new PointerEventHandler((snd, args) => ProcessPointerUp(args)),
-				handledEventsToo: true); 
-#endif
+				handledEventsToo: true);
 		}
 
 		/// <summary>
@@ -120,7 +126,20 @@ namespace Uno.UI.Xaml.Core
 			return finalSize;
 		}
 
-#if HAS_UNO
+		// As focus event are either async or cancellable,
+		// the FocusManager will explicitly notify us instead of listing to its events
+		internal static void NotifyFocusChanged()
+			=> _canUnFocusOnNextLeftPointerRelease = false;
+
+		private static void ProcessPointerDown(PointerRoutedEventArgs args)
+		{
+			if (!args.Handled
+				&& args.GetCurrentPoint(null).Properties.PointerUpdateKind is PointerUpdateKind.LeftButtonPressed)
+			{
+				_canUnFocusOnNextLeftPointerRelease = true;
+			}
+		}
+
 		internal static void ProcessPointerUp(PointerRoutedEventArgs args, bool isAfterHandledUp = false)
 		{
 			// We don't want handled events raised on RootVisual,
@@ -135,7 +154,6 @@ namespace Uno.UI.Xaml.Core
 				return;
 			}
 
-#if __ANDROID__ || __WASM__ || __IOS__
 #if __ANDROID__ || __IOS__ // Not needed on WASM as we do have native support of the exit event
 			// On Android and iOS we use the RootVisual to raise the UWP only exit event (in managed only)
 
@@ -154,6 +172,7 @@ namespace Uno.UI.Xaml.Core
 			// we set focus here. In case UWP, focus is set to the root ScrollViewer instead,
 			// but Uno does not have it on all targets yet.
 			if (!isHandled // so isAfterHandledUp is false!
+				&& _canUnFocusOnNextLeftPointerRelease
 				&& args.GetCurrentPoint(null).Properties.PointerUpdateKind is PointerUpdateKind.LeftButtonReleased
 				&& !PointerCapture.TryGet(args.Pointer, out _)
 				&& FocusManager.GetFocusedElement() is UIElement uiElement)
@@ -163,19 +182,17 @@ namespace Uno.UI.Xaml.Core
 			}
 
 			ReleaseCaptures(args.Reset(canBubbleNatively: false));
-#endif
 		}
 
 		private static void ReleaseCaptures(PointerRoutedEventArgs routedArgs)
 		{
 			if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
 			{
-				foreach (var target in capture.Targets)
+				foreach (var target in capture.Targets.ToList())
 				{
 					target.Element.ReleasePointerCapture(capture.Pointer.UniqueId, kinds: PointerCaptureKind.Any);
 				}
 			}
 		}
-#endif
 	}
 }

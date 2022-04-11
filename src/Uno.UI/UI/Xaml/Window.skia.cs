@@ -249,19 +249,16 @@ namespace Windows.UI.Xaml
 			var popupPanel = popup.PopupPanel;
 			PopupRoot.Children.Add(popupPanel);
 
-			return new CompositeDisposable(
-				Disposable.Create(() =>
+			return Disposable.Create(() =>
+			{
+
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
+					this.Log().Debug($"Closing popup");
+				}
 
-					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-					{
-						this.Log().Debug($"Closing popup");
-					}
-
-					PopupRoot.Children.Remove(popupPanel);
-				}),
-				VisualTreeHelper.RegisterOpenPopup(popup)
-			);
+				PopupRoot.Children.Remove(popupPanel);
+			});
 		}
 	}
 }

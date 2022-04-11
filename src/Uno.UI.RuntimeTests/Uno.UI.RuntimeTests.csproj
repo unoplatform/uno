@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;xamarinios10;monoandroid12.0;xamarinmac20;uap10.0.17763</TargetFrameworks>
-		<TargetFrameworksCI>netstandard2.0;xamarinios10;monoandroid11.0;monoandroid12.0;xamarinmac20;uap10.0.17763</TargetFrameworksCI>
+		<TargetFrameworks>netstandard2.0;xamarinios10;monoandroid12.0;xamarinmac20;uap10.0.18362</TargetFrameworks>
+		<TargetFrameworksCI>netstandard2.0;xamarinios10;monoandroid11.0;monoandroid12.0;xamarinmac20;uap10.0.18362</TargetFrameworksCI>
 
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
@@ -62,7 +62,7 @@
 		<Reference Include="System.json" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.17763'">
+	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.18362'">
 		<PackageReference Include="System.Numerics.Vectors" Version="4.3.0" />
 		<PackageReference Include="Microsoft.UI.Xaml" Version="2.7.0-prerelease.210816001" />
 		
@@ -75,7 +75,7 @@
 		<!-- We remove Unit tests imported from MUX on UAP as they are usualy heavily relying on internal classes.-->
 		<Compile Remove="$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.cs" />
 	</ItemGroup>
-	<PropertyGroup Condition="'$(TargetFramework)'=='uap10.0.17763'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='uap10.0.18362'">
 		<!--SkipMicrosoftUIXamlCheckTargetPlatformVersion is required for Microsoft.UI.Xaml as we only validate compilation on UAP-->
 		<SkipMicrosoftUIXamlCheckTargetPlatformVersion>true</SkipMicrosoftUIXamlCheckTargetPlatformVersion>
 		<DefineConstants>$(DefineConstants);WINDOWS_UWP</DefineConstants>

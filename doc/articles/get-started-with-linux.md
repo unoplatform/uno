@@ -116,7 +116,7 @@ Now let's run the application:
     ```
 - Install the `dotnet new` templates:
     ```bash
-    dotnet new -i Uno.ProjectTemplates.Dotnet::3.1-dev*
+    dotnet new -i Uno.ProjectTemplates.Dotnet
     ```
 - Then create a new project using:
     ```bash

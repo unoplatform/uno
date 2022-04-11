@@ -260,9 +260,9 @@ namespace Windows.UI.Xaml.Media
 			if (ct.IsCancellationRequested)
 			{
 				return;
-			}
+			} 
 
-			using (var url = new NSUrl(WebUri.OriginalString))
+			using (var url = new NSUrl(WebUri.AbsoluteUri))
 			{
 				using (var request = NSUrlRequest.FromUrl(url))
 				{

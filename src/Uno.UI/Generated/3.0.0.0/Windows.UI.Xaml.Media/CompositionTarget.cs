@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Media
 {
 	#if false || false || NET461 || false || false || false || __MACOS__
-	[global::Uno.NotImplemented]
+	[global::Uno.NotImplemented("NET461", "__MACOS__")]
 	#endif
 	public  partial class CompositionTarget 
 	{

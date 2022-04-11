@@ -11,6 +11,8 @@ While it is easier to create apps using Uno Platform on Windows, you can also cr
     * [.NET Core 5.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (**version 5.0 (SDK 5.0.100)** or later)
 * [**GTK+3**](https://formulae.brew.sh/formula/gtk+3) for running the Skia/GTK projects
 
+Once the dependencies are installed, you'll need to run [**uno-check**](uno-check.md) to ensure that your environment is properly configured.
+
 ## Installing the dotnet new templates
 In order to create a new Uno Project, you'll need to install the [`dotnet new` Uno Platform templates](get-started-dotnet-new.md).
 
@@ -32,7 +34,7 @@ Restart Visual Studio.
    
 Note: You will not be able to build the UWP and WPF projects on a Mac. All changes to this project must be made on Windows.
 
-## Create a other projects types using the command line
+## Create other projects types using the command line
 
 You can create a new Uno Platfom solution with the following terminal command:
     ```bash

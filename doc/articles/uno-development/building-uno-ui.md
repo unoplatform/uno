@@ -10,8 +10,7 @@ This article explains how to build Uno.UI locally, for instance if you wish to c
     - `MAUI Preview` (In VS 2022 17.1 Preview 1 or later, for .NET 6 Android/iOS support)
     - `ASP.NET and Web Development`
     - `.NET Core cross-platform development`
-    - `UWP Development`, install all recent UWP SDKs, starting from 10.0.17763 (or above or equal to `TargetPlatformVersion` line [in this file](https://github.com/unoplatform/uno/blob/master/src/Uno.CrossTargetting.props))
-      - Starting from VS 2022, the Windows SDK 10.0.17763 is not available from the installer. Use the [Microsoft Archive](https://developer.microsoft.com/en-us/windows/downloads/sdk-archive/) instead.
+    - `UWP Development`, install all recent UWP SDKs, starting from 10.0.18362 (or above or equal to `TargetPlatformVersion` line [in this file](https://github.com/unoplatform/uno/blob/master/src/Uno.CrossTargetting.props))
 - Install (**Tools** / **Android** / **Android SDK manager**) all Android SDKs starting from 7.1 (or the Android versions `TargetFrameworks` [list used here](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.BindingHelper.Android/Uno.UI.BindingHelper.Android.csproj))
 - Run [Uno.Check](https://github.com/unoplatform/uno.check) on your dev machine to setup .NET 6 Android/iOS workloads
 
@@ -87,9 +86,17 @@ Here are some tips when building the Uno solution and failures happen:
 - Try to close VS 2022, delete the `src/.vs` folder, then try rebuilding the solution
 - If the `.vs` deletion did not help, run `git clean -fdx` (after having closed visual studio) before building again
 - Make sure to have a valid `UnoTargetFrameworkOverride` which matches your solution filter
-- Make sure to have the Windows SDK `17763` installed
+- Make sure to have the Windows SDK `18362` installed
 
 ## Other build-related topics 
+
+### Building the reference assemblies for Skia and WebAssembly
+
+Skia and WebAssembly use a custom bait-and-switch technique for assemblies for which the `netstandard2.0` target framework assemblies (called reference assemblies) found in nuget packages (`lib` folder) are only used for building applications. At the end of a head build, those referene assemblies are replaced by public API compatible assemblies located in the `uno-runtime` folder of nuget packages.
+
+When developing a feature using solution filters, if new public APIs are added, building the Uno.UI solution will not update the reference assemblies, causing applications or libraries using the overriden nuget cache to be unable to use those newly added APIs.
+
+In order to update those reference assemblies, set `<UnoTargetFrameworkOverride>netstandard2.0</UnoTargetFrameworkOverride>`, then open either the android or iOS solution filters, then build the `Uno.UI` project (and only this one, the other projects in the solution will fail to build). Doing this will generate the proper assemblies with the new APIs to be used in application or libraries using the cache override.
 
 ### Using the Package Diff tool
 

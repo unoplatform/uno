@@ -11,7 +11,7 @@ using System.Diagnostics;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
-	public partial class Timeline : DependencyObject, ITimeline
+	public partial class Timeline : DependencyObject, ITimeline, IThemeChangeAware
 	{
 		private WeakReference<DependencyObject> _targetElement;
 		private BindingPath _propertyInfo;
@@ -413,6 +413,10 @@ namespace Windows.UI.Xaml.Media.Animation
 			Dispose(true);
 			GC.SuppressFinalize(this);
 		}
+
+		void IThemeChangeAware.OnThemeChanged() => OnThemeChanged();
+
+		private protected virtual void OnThemeChanged() { }
 
 		~Timeline()
 		{

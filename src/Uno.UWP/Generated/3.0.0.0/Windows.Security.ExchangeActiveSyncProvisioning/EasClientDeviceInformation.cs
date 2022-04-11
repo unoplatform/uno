@@ -7,93 +7,15 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 	#endif
 	public  partial class EasClientDeviceInformation 
 	{
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  string FriendlyName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string EasClientDeviceInformation.FriendlyName is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::System.Guid Id
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid EasClientDeviceInformation.Id is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  string OperatingSystem
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string EasClientDeviceInformation.OperatingSystem is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  string SystemManufacturer
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string EasClientDeviceInformation.SystemManufacturer is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  string SystemProductName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string EasClientDeviceInformation.SystemProductName is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  string SystemSku
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string EasClientDeviceInformation.SystemSku is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  string SystemFirmwareVersion
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string EasClientDeviceInformation.SystemFirmwareVersion is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  string SystemHardwareVersion
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string EasClientDeviceInformation.SystemHardwareVersion is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public EasClientDeviceInformation() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation", "EasClientDeviceInformation.EasClientDeviceInformation()");
-		}
-		#endif
+		// Skipping already declared property FriendlyName
+		// Skipping already declared property Id
+		// Skipping already declared property OperatingSystem
+		// Skipping already declared property SystemManufacturer
+		// Skipping already declared property SystemProductName
+		// Skipping already declared property SystemSku
+		// Skipping already declared property SystemFirmwareVersion
+		// Skipping already declared property SystemHardwareVersion
+		// Skipping already declared method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.EasClientDeviceInformation()
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.EasClientDeviceInformation()
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.Id.get
 		// Forced skipping of method Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.OperatingSystem.get

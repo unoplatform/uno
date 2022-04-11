@@ -22,9 +22,9 @@ namespace Windows.UI.Composition
 			Brush?.UpdatePaint(_paint, new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y));
 		}
 
-		internal override void Render(SKSurface surface, SKImageInfo info)
+		internal override void Render(SKSurface surface)
 		{
-			base.Render(surface, info);
+			base.Render(surface);
 
 			surface.Canvas.Save();
 

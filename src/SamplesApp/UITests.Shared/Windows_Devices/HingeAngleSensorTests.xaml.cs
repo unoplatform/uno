@@ -70,13 +70,13 @@ namespace UITests.Shared.Windows_Devices
 				}));
 			}
 
-			internal Command AttachReadingChangedCommand => new Command((p) =>
+			public Command AttachReadingChangedCommand => GetOrCreateCommand(() =>
 			{
 				_hinge.ReadingChanged += HingeAngleSensor_ReadingChanged;
 				ReadingChangedAttached = true;
 			});
 
-			internal Command DetachReadingChangedCommand => new Command((p) =>
+			public Command DetachReadingChangedCommand => GetOrCreateCommand(() =>
 			{
 				_hinge.ReadingChanged -= HingeAngleSensor_ReadingChanged;
 				ReadingChangedAttached = false;

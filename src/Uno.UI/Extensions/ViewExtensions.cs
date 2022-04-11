@@ -99,15 +99,19 @@ namespace Uno.UI.Extensions
 			var sb = new StringBuilder();
 
 			sb
-				.Append(uiElement.IsMeasureDirty is true ? " MEASURE_DIRTY" : "")
-#if __ANDROID__
-				.Append(uiElement.IsLayoutRequested ? " [IsLayoutRequested]" : "")
-#elif __IOS__ || __MACOS__
-				.Append(uiElement.IsMeasureDirtyPath is true ? " MEASURE_DIRTY_PATH" : "")
-#else
+				.Append(uiElement.IsMeasureDirtyPathDisabled ? " MEASURE_DIRTY_PATH_DISABLED" : "")
+				.Append(uiElement.IsMeasureDirtyPath ? " MEASURE_DIRTY_PATH" : "")
+				.Append(uiElement.IsMeasureDirty ? " MEASURE_DIRTY" : "")
+#if __WASM__ || __SKIA__ || __IOS__ || __ANDROID__
+				.Append(!uiElement.IsFirstMeasureDone ? " NEVER_MEASURED" : "")
 #endif
-				.Append(uiElement.IsMeasureDirtyPathDisabled is true ? " MEASURE_DIRTY_PATH_DISABLED" : "")
-				.Append(uiElement.IsArrangeDirty is true ? " ARRANGE_DIRTY" : "");
+				.Append(uiElement.IsArrangeDirtyPathDisabled ? " ARRANGE_DIRTY_PATH_DISABLED" : "")
+				.Append(uiElement.IsArrangeDirtyPath ? " ARRANGE_DIRTY_PATH" : "")
+				.Append(uiElement.IsArrangeDirty ? " ARRANGE_DIRTY" : "")
+#if __WASM__ || __SKIA__
+				.Append(!uiElement.IsFirstArrangeDone ? " NEVER_ARRANGED" : "")
+#endif
+				;
 
 			return sb.ToString();
 		}

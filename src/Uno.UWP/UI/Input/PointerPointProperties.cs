@@ -71,6 +71,9 @@ namespace Windows.UI.Input
 		}
 #endif
 
+		/// <summary>
+		/// This is actually equivalent to pointer.IsInContact
+		/// </summary>
 		internal bool HasPressedButton => IsLeftButtonPressed || IsMiddleButtonPressed || IsRightButtonPressed || IsXButton1Pressed || IsXButton2Pressed || IsBarrelButtonPressed;
 
 		public bool IsPrimary { get; internal set; }

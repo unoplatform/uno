@@ -75,6 +75,13 @@ namespace Windows.UI.Input.Inking
 		// Forced skipping of method Windows.UI.Input.Inking.PenAndInkSettings.IsTouchHandwritingEnabled.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  void SetPenHandedness( global::Windows.UI.Input.Inking.PenHandedness value)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.PenAndInkSettings", "void PenAndInkSettings.SetPenHandedness(PenHandedness value)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Input.Inking.PenAndInkSettings GetDefault()
 		{
 			throw new global::System.NotImplementedException("The member PenAndInkSettings PenAndInkSettings.GetDefault() is not implemented in Uno.");

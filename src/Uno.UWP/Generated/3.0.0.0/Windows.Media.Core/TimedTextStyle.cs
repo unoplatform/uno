@@ -23,15 +23,29 @@ namespace Windows.Media.Core
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Core.TimedTextDouble OutlineRadius
+		public  bool IsBackgroundAlwaysShown
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextDouble TimedTextStyle.OutlineRadius is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool TimedTextStyle.IsBackgroundAlwaysShown is not implemented in Uno.");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextStyle", "TimedTextDouble TimedTextStyle.OutlineRadius");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextStyle", "bool TimedTextStyle.IsBackgroundAlwaysShown");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Color OutlineColor
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Color TimedTextStyle.OutlineColor is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextStyle", "Color TimedTextStyle.OutlineColor");
 			}
 		}
 		#endif
@@ -46,6 +60,20 @@ namespace Windows.Media.Core
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextStyle", "Color TimedTextStyle.Foreground");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Media.Core.TimedTextWeight FontWeight
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimedTextWeight TimedTextStyle.FontWeight is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextStyle", "TimedTextWeight TimedTextStyle.FontWeight");
 			}
 		}
 		#endif
@@ -79,15 +107,15 @@ namespace Windows.Media.Core
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Name
+		public  string FontFamily
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TimedTextStyle.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string TimedTextStyle.FontFamily is not implemented in Uno.");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextStyle", "string TimedTextStyle.Name");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextStyle", "string TimedTextStyle.FontFamily");
 			}
 		}
 		#endif
@@ -107,34 +135,6 @@ namespace Windows.Media.Core
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Core.TimedTextWeight FontWeight
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimedTextWeight TimedTextStyle.FontWeight is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextStyle", "TimedTextWeight TimedTextStyle.FontWeight");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string FontFamily
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string TimedTextStyle.FontFamily is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextStyle", "string TimedTextStyle.FontFamily");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Core.TimedTextDouble OutlineThickness
 		{
 			get
@@ -149,29 +149,29 @@ namespace Windows.Media.Core
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsBackgroundAlwaysShown
+		public  global::Windows.Media.Core.TimedTextDouble OutlineRadius
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TimedTextStyle.IsBackgroundAlwaysShown is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedTextDouble TimedTextStyle.OutlineRadius is not implemented in Uno.");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextStyle", "bool TimedTextStyle.IsBackgroundAlwaysShown");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextStyle", "TimedTextDouble TimedTextStyle.OutlineRadius");
 			}
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Color OutlineColor
+		public  string Name
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color TimedTextStyle.OutlineColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string TimedTextStyle.Name is not implemented in Uno.");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextStyle", "Color TimedTextStyle.OutlineColor");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextStyle", "string TimedTextStyle.Name");
 			}
 		}
 		#endif
@@ -233,6 +233,54 @@ namespace Windows.Media.Core
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  bool IsTextCombined
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool TimedTextStyle.IsTextCombined is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextStyle", "bool TimedTextStyle.IsTextCombined");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  double FontAngleInDegrees
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member double TimedTextStyle.FontAngleInDegrees is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextStyle", "double TimedTextStyle.FontAngleInDegrees");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Media.Core.TimedTextBouten Bouten
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimedTextBouten TimedTextStyle.Bouten is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Media.Core.TimedTextRuby Ruby
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimedTextRuby TimedTextStyle.Ruby is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public TimedTextStyle() 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextStyle", "TimedTextStyle.TimedTextStyle()");
@@ -271,5 +319,11 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.TimedTextStyle.IsLineThroughEnabled.set
 		// Forced skipping of method Windows.Media.Core.TimedTextStyle.IsOverlineEnabled.get
 		// Forced skipping of method Windows.Media.Core.TimedTextStyle.IsOverlineEnabled.set
+		// Forced skipping of method Windows.Media.Core.TimedTextStyle.Ruby.get
+		// Forced skipping of method Windows.Media.Core.TimedTextStyle.Bouten.get
+		// Forced skipping of method Windows.Media.Core.TimedTextStyle.IsTextCombined.get
+		// Forced skipping of method Windows.Media.Core.TimedTextStyle.IsTextCombined.set
+		// Forced skipping of method Windows.Media.Core.TimedTextStyle.FontAngleInDegrees.get
+		// Forced skipping of method Windows.Media.Core.TimedTextStyle.FontAngleInDegrees.set
 	}
 }

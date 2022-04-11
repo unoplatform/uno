@@ -145,6 +145,10 @@ namespace Windows.UI.Xaml.Controls
 
 		public double VerticalOffset { get; private set; }
 
+		public double ExtentHeight { get; internal set; }
+
+		public double ExtentWidth { get; internal set; }
+
 		Size? IScrollContentPresenter.CustomContentExtent => null;
 
 		private protected override void OnLoaded()

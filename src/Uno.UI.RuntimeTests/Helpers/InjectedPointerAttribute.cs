@@ -30,5 +30,7 @@ public class InjectedPointerAttribute : Attribute
 
 public interface IInjectPointers
 {
+	public void CleanupPointers();
+
 	public IDisposable SetPointer(PointerDeviceType type);
 }

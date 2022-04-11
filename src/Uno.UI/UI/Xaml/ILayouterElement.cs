@@ -41,7 +41,6 @@ internal static class LayouterElementExtensions
 		var frameworkElement = element as FrameworkElement;
 		if (frameworkElement is null) // native unmanaged element?
 		{
-			measuredSizeLogical = availableSize;
 			isDirty = true;
 		}
 		else if (!isDirty)
@@ -105,7 +104,7 @@ internal static class LayouterElementExtensions
 				// If the child is dirty (or is a path to a dirty descendant child),
 				// We're remeasuring it.
 
-				if (child is UIElement { IsMeasureOrMeasureDirtyPath: true })
+				if (child is UIElement { IsMeasureDirtyOrMeasureDirtyPath: true })
 				{
 					var previousDesiredSize = LayoutInformation.GetDesiredSize(child);
 					element.Layouter.MeasureChild(child, LayoutInformation.GetAvailableSize(child));

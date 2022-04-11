@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Windows.Input;
+using Uno.Disposables;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.Devices.Geolocation;
@@ -10,7 +9,6 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 
 using ICommand = System.Windows.Input.ICommand;
-using EventHandler = System.EventHandler;
 
 namespace UITests.Shared.Windows_Devices
 {
@@ -49,6 +47,12 @@ namespace UITests.Shared.Windows_Devices
 			PositionStatus = _geolocator.LocationStatus;
 			timeout = TimeSpan.FromSeconds(10);
 			maximumAge = TimeSpan.FromSeconds(15);
+
+			Disposables.Add(Disposable.Create(() =>
+			{
+				_geolocator.PositionChanged -= Geolocator_PositionChanged;
+				_geolocator.StatusChanged -= Geolocator_StatusChanged;
+			}));
 		}
 
 		public Geoposition Geoposition
@@ -100,7 +104,7 @@ namespace UITests.Shared.Windows_Devices
 			set => _geolocator.DesiredAccuracyInMeters = value;
 		}
 
-		
+
 
 		public PositionStatus PositionStatus
 		{
@@ -129,27 +133,26 @@ namespace UITests.Shared.Windows_Devices
 		public ICommand GetGeopositionCommand =>
 			GetOrCreateCommand(GetGeoposition);
 
-
-		internal Command AttachPositionChangedCommand => new Command((p) =>
+		public Command AttachPositionChangedCommand => GetOrCreateCommand(() =>
 		{
 			_geolocator.PositionChanged += Geolocator_PositionChanged;
 			PositionChangedAttached = true;
 		});
 
-		internal Command DetachPositionChangedCommand => new Command((p) =>
+		public Command DetachPositionChangedCommand => GetOrCreateCommand(() =>
 		{
 			_geolocator.PositionChanged -= Geolocator_PositionChanged;
 			PositionChangedAttached = false;
 		});
 
 
-		internal Command AttachStatusChangedCommand => new Command((p) =>
+		public Command AttachStatusChangedCommand => GetOrCreateCommand(() =>
 		{
 			_geolocator.StatusChanged += Geolocator_StatusChanged;
 			StatusChangedAttached = true;
 		});
 
-		public Command DetachStatusChangedCommand => new Command((p) =>
+		public Command DetachStatusChangedCommand => GetOrCreateCommand(() =>
 		{
 			_geolocator.StatusChanged -= Geolocator_StatusChanged;
 			StatusChangedAttached = false;
@@ -179,7 +182,7 @@ namespace UITests.Shared.Windows_Devices
 
 				Geoposition = await _geolocator.GetGeopositionAsync(maximumAge1, timeout1);
 
-				if(Geoposition.Coordinate.Timestamp < DateTimeOffset.Now - maximumAge)
+				if (Geoposition.Coordinate.Timestamp < DateTimeOffset.Now - maximumAge)
 				{
 					Error = "Implementation error: Position data is too old";
 				}

@@ -1,6 +1,8 @@
 ﻿#nullable enable
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+using Windows.Foundation;
 using CoreGraphics;
 using Uno.UI;
 
@@ -8,9 +10,10 @@ namespace Windows.UI.Xaml;
 
 internal partial interface ILayouterElement
 {
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	internal bool XamlMeasureInternal(
-		CGSize availableSize,
-		CGSize? lastAvailableSize,
+		Size availableSize,
+		Size? lastAvailableSize,
 		out CGSize measuredSize)
 	{
 		if (IsMeasureDirty || availableSize != lastAvailableSize)

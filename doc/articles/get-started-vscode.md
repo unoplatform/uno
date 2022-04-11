@@ -115,22 +115,23 @@ Note that C# Hot Reload is not available when running with the debugger. In orde
 
 ### Adding a new ResourceDictionary
     1. In the MyApp.Shared folder, create a new file named `ResourceDictionary1.xaml`
-    2. Type `resourcedic` then press they `tab` key to add the page markup
+    2. Type `resourcedict` then press they `tab` key to add the page markup
 
 ### Other snippets
     * `rd` creates a new `RowDefinition`
     * `cd` creates a new `ColumnDefinition`
     * `tag` creates a new XAML tag
     * `set` creates a new `Style` setter
-    * `ctag` creates a new close XAML tag
+    * `ctag` creates a new `TextBlock` close XAML tag
 
 ## Updating an existing application to work with VS Code
 
 An existing application needs additional changes to be debugged properly.
 
 1. At the root of the workspace, create a folder named `.vscode`
-2. Inside this folder, create a file named `launch.json` and copy the [contents of this file](https://github.com/unoplatform/uno/blob/5b9d4b7/src/SolutionTemplate/Uno.ProjectTemplates.Dotnet/content/unoapp-net6/.vscode/launch.json).
-3. Inside this folder, create a file named `tasks.json` and copy the [contents of this file](https://github.com/unoplatform/uno/blob/5b9d4b725459dbc4d684f47db1485d84579b443b/src/SolutionTemplate/Uno.ProjectTemplates.Dotnet/content/unoapp-net6/.vscode/tasks.json).
+2. Inside this folder, create a file named `launch.json` and copy the [contents of this file](https://github.com/unoplatform/uno/blob/master/src/SolutionTemplate/Uno.ProjectTemplates.Dotnet/content/unoapp-net6/.vscode/launch.json).
+3. Replace all instances of `UnoQuickStart` with your application's name in `launch.json`.
+4. Inside this folder, create a file named `tasks.json` and copy the [contents of this file](https://github.com/unoplatform/uno/blob/master/src/SolutionTemplate/Uno.ProjectTemplates.Dotnet/content/unoapp-net6/.vscode/tasks.json).
 
 ### Known limitations for Code support
 - C# Debugging is not supported when running in a remote Linux Container, Code Spaces or GitPod.

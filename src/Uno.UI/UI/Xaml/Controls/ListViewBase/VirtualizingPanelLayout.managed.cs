@@ -19,6 +19,7 @@ using System.Collections.Specialized;
 using Uno.UI.Xaml.Controls;
 using DirectUI;
 using Uno.Foundation.Logging;
+using System.Diagnostics;
 #if __MACOS__
 using AppKit;
 #elif __IOS__
@@ -236,10 +237,37 @@ namespace Windows.UI.Xaml.Controls
 			{
 				this.Log().LogDebug($"Calling {GetMethodTag()} _lastScrollOffset={_lastScrollOffset} ScrollOffset={ScrollOffset}");
 			}
+
 			var delta = ScrollOffset - _lastScrollOffset;
 			var sign = Sign(delta);
 			var unappliedDelta = Abs(delta);
 			var fillDirection = sign > 0 ? Forward : Backward;
+			var isLargeScroll = Abs(delta) > ViewportExtent;
+
+			if (isLargeScroll)
+			{
+				// In this case, a majority of the materialized items are
+                // removed, let's clear everything and materialize from the
+				// new position.
+
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"Large scroll Abs(delta):{Abs(delta)} AvailableBreadth:{AvailableBreadth}");
+				}
+
+				// Force the layout update below
+				unappliedDelta = 1;
+
+				// We know that the scroll is outside the available
+				// breath, so all lines can be recycled
+				ClearLines();
+
+				// Set the seed start to use the approximate position of
+				// the line based on the average line height.
+				var index = (int)(ScrollOffset / _averageLineHeight);
+				_dynamicSeedStart = ScrollOffset - _averageLineHeight;
+				_dynamicSeedIndex = Uno.UI.IndexPath.FromRowSection(index - sign, 0);
+			}
 
 			while (unappliedDelta > 0)
 			{
@@ -259,9 +287,21 @@ namespace Windows.UI.Xaml.Controls
 				unappliedDelta -= scrollIncrement;
 				unappliedDelta = Max(0, unappliedDelta);
 				UpdateLayout(extentAdjustment: sign * -unappliedDelta, isScroll: true);
+
+#if __WASM__ || __SKIA__
+				(ItemsControl as ListViewBase)?.TryLoadMoreItems(LastVisibleIndex);
+#endif
 			}
+
 			ArrangeElements(_availableSize, ViewportSize);
 			UpdateCompleted();
+
+			if (isLargeScroll)
+			{
+				// Request the panel to remeasure children as we've
+				// reused all the lines.
+				OwnerPanel.InvalidateMeasure();
+			}
 
 			_lastScrollOffset = ScrollOffset;
 		}
@@ -337,6 +377,18 @@ namespace Windows.UI.Xaml.Controls
 			_availableSize = finalSize;
 			var adjustedVisibleWindow = ViewportSize;
 			ArrangeElements(finalSize, adjustedVisibleWindow);
+
+			if (_generator != null && _averageLineHeight > 0)
+			{
+				var cacheLimit = (int)(ViewportExtent / _averageLineHeight) * 2;
+
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"Setting cache limit {cacheLimit}");
+				}
+
+				_generator.CacheLimit = cacheLimit;
+			}
 
 			return EstimatePanelSize(isMeasure: false);
 		}
@@ -817,12 +869,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private Uno.UI.IndexPath GetFirstVisibleIndexPath()
 		{
-			throw new NotImplementedException(); //TODO: FirstVisibleIndex
+			return GetFirstMaterializedLine()?.FirstItem ?? Uno.UI.IndexPath.NotFound;
 		}
 
 		private Uno.UI.IndexPath GetLastVisibleIndexPath()
 		{
-			throw new NotImplementedException(); //TODO: LastVisibleIndex
+			return GetLastMaterializedLine()?.LastItem ?? Uno.UI.IndexPath.NotFound;
 		}
 
 		private IEnumerable<float> GetSnapPointsInner(SnapPointsAlignment alignment)

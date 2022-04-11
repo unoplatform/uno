@@ -1,4 +1,6 @@
-﻿using System;
+﻿// #define TRACE_NATIVE_POINTER_EVENTS
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,7 +85,18 @@ namespace Windows.UI.Xaml
 
 		#region Native touch handling (i.e. source of the pointer / gesture events)
 		public override void TouchesBegan(NSSet touches, UIEvent evt)
+			=> TouchesBegan(touches, evt, canBubbleNatively: true);
+
+		/// <summary>
+		/// WARNING: canBubbleNatively=false on TouchesBegan has MAJOR impact regarding future events, use precautiously!
+		/// (cf. remarks in the method)
+		/// </summary>
+		internal void TouchesBegan(NSSet touches, UIEvent evt, bool canBubbleNatively)
 		{
+#if TRACE_NATIVE_POINTER_EVENTS
+			Console.WriteLine($"{this.GetDebugIdentifier()} [TOUCHES_BEGAN] enabled:{ArePointersEnabled}");
+#endif
+
 			if (!ArePointersEnabled)
 			{
 				return; // Will also prevent subsequents events
@@ -101,7 +114,7 @@ namespace Windows.UI.Xaml
 				foreach (UITouch touch in touches)
 				{
 					var pt = TransientNativePointer.Get(this, touch);
-					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this);
+					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this) { CanBubbleNatively = canBubbleNatively };
 
 					// We set the DownArgs only for the top most element (a.k.a. OriginalSource)
 					pt.DownArgs ??= args;
@@ -139,7 +152,10 @@ namespace Windows.UI.Xaml
 				 */
 
 				// Continue native bubbling up of the event
-				base.TouchesBegan(touches, evt);
+				if (canBubbleNatively)
+				{
+					base.TouchesBegan(touches, evt);
+				}
 			}
 			catch (Exception e)
 			{
@@ -148,14 +164,21 @@ namespace Windows.UI.Xaml
 		}
 
 		public override void TouchesMoved(NSSet touches, UIEvent evt)
+			=> TouchesMoved(touches, evt, canBubbleNatively: true);
+
+		internal void TouchesMoved(NSSet touches, UIEvent evt, bool canBubbleNatively)
 		{
+#if TRACE_NATIVE_POINTER_EVENTS
+			Console.WriteLine($"{this.GetDebugIdentifier()} [TOUCHES_MOVED]");
+#endif
+
 			try
 			{
 				var isHandledOrBubblingInManaged = default(bool);
 				foreach (UITouch touch in touches)
 				{
 					var pt = TransientNativePointer.Get(this, touch);
-					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this);
+					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this) { CanBubbleNatively = canBubbleNatively };
 					var isPointerOver = touch.IsTouchInView(this);
 
 					// This is acceptable to keep that flag in a kind-of static way, since iOS do "implicit captures",
@@ -167,7 +190,7 @@ namespace Windows.UI.Xaml
 					isHandledOrBubblingInManaged |= OnNativePointerMoveWithOverCheck(args, isPointerOver);
 				}
 
-				if (!isHandledOrBubblingInManaged)
+				if (canBubbleNatively && !isHandledOrBubblingInManaged)
 				{
 					// Continue native bubbling up of the event
 					base.TouchesMoved(touches, evt);
@@ -180,7 +203,14 @@ namespace Windows.UI.Xaml
 		}
 
 		public override void TouchesEnded(NSSet touches, UIEvent evt)
+			=> TouchesEnded(touches, evt, canBubbleNatively: true);
+
+		internal void TouchesEnded(NSSet touches, UIEvent evt, bool canBubbleNatively)
 		{
+#if TRACE_NATIVE_POINTER_EVENTS
+			Console.WriteLine($"{this.GetDebugIdentifier()} [TOUCHES_ENDED]");
+#endif
+
 			/* Note: Here we have a mismatching behavior with UWP, if the events bubble natively we're going to get
 					 (with Ctrl_02 is a child of Ctrl_01):
 							Ctrl_02: Released
@@ -204,7 +234,7 @@ namespace Windows.UI.Xaml
 				foreach (UITouch touch in touches)
 				{
 					var pt = TransientNativePointer.Get(this, touch);
-					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this);
+					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this) { CanBubbleNatively = canBubbleNatively };
 
 					if (!pt.HadMove)
 					{
@@ -218,7 +248,7 @@ namespace Windows.UI.Xaml
 						// Note: In case of multi-touch we might raise it unnecessarily, but it won't have any negative impact.
 						// Note: We do not consider the result of that move for the 'isHandledOrBubblingInManaged'
 						//		 as it's kind of un-related to the 'up' itself.
-						var mixedArgs = new PointerRoutedEventArgs(previous: pt.DownArgs, current: args);
+						var mixedArgs = new PointerRoutedEventArgs(previous: pt.DownArgs, current: args) { CanBubbleNatively = canBubbleNatively };
 						OnNativePointerMove(mixedArgs);
 					}
 
@@ -237,7 +267,7 @@ namespace Windows.UI.Xaml
 					pt.Release(this);
 				}
 
-				if (!isHandledOrBubblingInManaged)
+				if (canBubbleNatively && !isHandledOrBubblingInManaged)
 				{
 					// Continue native bubbling up of the event
 					base.TouchesEnded(touches, evt);
@@ -252,14 +282,21 @@ namespace Windows.UI.Xaml
 		}
 
 		public override void TouchesCancelled(NSSet touches, UIEvent evt)
+			=> TouchesCancelled(touches, evt, canBubbleNatively: true);
+
+		internal void TouchesCancelled(NSSet touches, UIEvent evt, bool canBubbleNatively)
 		{
+#if TRACE_NATIVE_POINTER_EVENTS
+			Console.WriteLine($"{this.GetDebugIdentifier()} [TOUCHES_CANCELLED]");
+#endif
+
 			try
 			{
 				var isHandledOrBubblingInManaged = default(bool);
 				foreach (UITouch touch in touches)
 				{
 					var pt = TransientNativePointer.Get(this, touch);
-					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this);
+					var args = new PointerRoutedEventArgs(pt.Id, touch, evt, this) { CanBubbleNatively = canBubbleNatively };
 
 					// Note: We should have raise either PointerCaptureLost or PointerCancelled here depending of the reason which
 					//		 drives the system to bubble a lost. However we don't have this kind of information on iOS, and it's
@@ -271,7 +308,7 @@ namespace Windows.UI.Xaml
 					pt.Release(this);
 				}
 
-				if (!isHandledOrBubblingInManaged)
+				if (canBubbleNatively && !isHandledOrBubblingInManaged)
 				{
 					// Continue native bubbling up of the event
 					base.TouchesCancelled(touches, evt);

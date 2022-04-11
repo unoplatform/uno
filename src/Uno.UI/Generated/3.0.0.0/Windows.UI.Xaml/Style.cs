@@ -7,5 +7,20 @@ namespace Windows.UI.Xaml
 	#endif
 	public  partial class Style : global::Windows.UI.Xaml.DependencyObject
 	{
+		// Skipping already declared property TargetType
+		// Skipping already declared property BasedOn
+		// Skipping already declared property IsSealed
+		// Skipping already declared property Setters
+		// Skipping already declared method Windows.UI.Xaml.Style.Style(System.Type)
+		// Forced skipping of method Windows.UI.Xaml.Style.Style(System.Type)
+		// Skipping already declared method Windows.UI.Xaml.Style.Style()
+		// Forced skipping of method Windows.UI.Xaml.Style.Style()
+		// Forced skipping of method Windows.UI.Xaml.Style.IsSealed.get
+		// Forced skipping of method Windows.UI.Xaml.Style.Setters.get
+		// Forced skipping of method Windows.UI.Xaml.Style.TargetType.get
+		// Forced skipping of method Windows.UI.Xaml.Style.TargetType.set
+		// Forced skipping of method Windows.UI.Xaml.Style.BasedOn.get
+		// Forced skipping of method Windows.UI.Xaml.Style.BasedOn.set
+		// Skipping already declared method Windows.UI.Xaml.Style.Seal()
 	}
 }

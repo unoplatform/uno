@@ -101,10 +101,12 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
 
 		private void CustomFormatterButton_Click(object sender, RoutedEventArgs e)
 		{
-			List<string> languages = new List<string>() { "fr-FR" };
-			DecimalFormatter formatter = new DecimalFormatter(languages, "FR");
+			DecimalFormatter formatter = new DecimalFormatter();
 			formatter.IntegerDigits = 1;
 			formatter.FractionDigits = 2;
+			formatter.NumeralSystem = "ArabExt";
+			formatter.NumberRounder = new IncrementNumberRounder { Increment = 0.25 };
+
 			TestNumberBox.NumberFormatter = formatter;
 		}
 

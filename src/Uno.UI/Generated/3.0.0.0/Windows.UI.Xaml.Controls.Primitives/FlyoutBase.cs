@@ -78,16 +78,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsOpen
-		{
-			get
-			{
-				return (bool)this.GetValue(IsOpenProperty);
-			}
-		}
-		#endif
+		// Skipping already declared property IsOpen
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.XamlRoot XamlRoot
@@ -170,14 +161,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsOpenProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsOpen), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
+		// Skipping already declared property IsOpenProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty ShowModeProperty { get; } = 

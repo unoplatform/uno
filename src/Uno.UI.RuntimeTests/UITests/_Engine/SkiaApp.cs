@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -16,13 +18,18 @@ using Uno.UITest.Helpers.Queries;
 
 namespace Uno.UITest;
 
-public class SkiaApp : IApp
+public partial class SkiaApp : IApp
 {
-	private readonly InputInjector _input;
+	private static SkiaApp? _current; // Make sure to not create multiple instances of the app (with a single InputInjector instance)!
+	internal static SkiaApp Current => _current ??= new();
 
-	public SkiaApp()
+	private readonly InputInjector _input;
+	private MouseHelper Mouse { get; }
+
+	private SkiaApp()
 	{
 		_input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Cannot create input injector");
+		Mouse = new MouseHelper(_input);
 
 		CurrentPointerType = DefaultPointerType;
 
@@ -89,6 +96,12 @@ public class SkiaApp : IApp
 		return query(QueryEx.Any).Execute(all).ToArray();
 	}
 
+	public void CleanupPointers()
+	{
+		InjectMouseInput(Mouse.ReleaseAny());
+		InjectMouseInput(Mouse.MoveTo(0, 0));
+	}
+
 	public IDisposable SetPointer(PointerDeviceType type)
 	{
 		var previous = CurrentPointerType;
@@ -138,6 +151,13 @@ public class SkiaApp : IApp
 				_input.UninitializeTouchInjection();
 				break;
 
+			case PointerDeviceType.Mouse:
+				InjectMouseInput(Mouse.ReleaseAny());
+				InjectMouseInput(Mouse.MoveTo(x, y));
+				InjectMouseInput(Mouse.Press());
+				InjectMouseInput(Mouse.Release());
+				break;
+
 			default:
 				throw NotSupported();
 		}
@@ -168,6 +188,7 @@ public class SkiaApp : IApp
 								| InjectedInputPointerOptions.FirstButton
 								| InjectedInputPointerOptions.PointerDown
 								| InjectedInputPointerOptions.InContact
+								| InjectedInputPointerOptions.InRange
 						}
 					};
 
@@ -188,6 +209,7 @@ public class SkiaApp : IApp
 								PointerOptions = InjectedInputPointerOptions.Update
 									| InjectedInputPointerOptions.FirstButton
 									| InjectedInputPointerOptions.InContact
+									| InjectedInputPointerOptions.InRange
 							}
 						};
 					}
@@ -208,10 +230,24 @@ public class SkiaApp : IApp
 				}
 				break;
 
+			case PointerDeviceType.Mouse:
+				InjectMouseInput(Mouse.ReleaseAny());
+				InjectMouseInput(Mouse.MoveTo(fromX, fromY));
+				InjectMouseInput(Mouse.Press());
+				InjectMouseInput(Mouse.MoveTo(toX, toY));
+				InjectMouseInput(Mouse.Release());
+				break;
+
 			default:
 				throw NotSupported();
 		}
 	}
+
+	private void InjectMouseInput(IEnumerable<InjectedInputMouseInfo?> input)
+		=> _input.InjectMouseInput(input.Where(i => i is not null).Cast<InjectedInputMouseInfo>());
+
+	private void InjectMouseInput(params InjectedInputMouseInfo?[] input)
+		=> _input.InjectMouseInput(input.Where(i => i is not null).Cast<InjectedInputMouseInfo>());
 
 	private Exception NotSupported([CallerMemberName] string operation = null)
 		=> new NotSupportedException($"'{operation}' with type '{CurrentPointerType}' is not supported yet on this platform. Feel free to contribute!");

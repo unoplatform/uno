@@ -5,7 +5,7 @@ namespace Windows.Storage
 	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class ApplicationData 
+	public  partial class ApplicationData : global::System.IDisposable
 	{
 		#if false || false || NET461 || false || false || false || false
 		[global::Uno.NotImplemented("NET461")]
@@ -160,6 +160,13 @@ namespace Windows.Storage
 		}
 		#endif
 		// Forced skipping of method Windows.Storage.ApplicationData.SharedLocalFolder.get
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationData", "void ApplicationData.Dispose()");
+		}
+		#endif
 		#if false || false || NET461 || false || false || false || false
 		[global::Uno.NotImplemented("NET461")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.ApplicationData> GetForUserAsync( global::Windows.System.User user)
@@ -184,5 +191,6 @@ namespace Windows.Storage
 			}
 		}
 		#endif
+		// Processing: System.IDisposable
 	}
 }

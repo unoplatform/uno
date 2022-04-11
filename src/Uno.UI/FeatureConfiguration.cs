@@ -209,7 +209,7 @@ namespace Uno.UI
 			/// or native visual tree traversal.
 			/// </summary>
 			/// <remarks>
-			/// This setting impacts significantly the loading performance of controls on Web Assembly.
+			/// This setting impacts significantly the loading performance of controls on WebAssembly.
 			/// Setting it to true avoids the use of costly JavaScript->C# interop.
 			/// </remarks>
 			public static bool WasmUseManagedLoadedUnloaded { get; set; } = true;
@@ -514,9 +514,15 @@ namespace Uno.UI
 		{
 			/// <summary>
 			/// Call the .MeasureOverride only on element explicitly invalidating
-			/// their measure and when the size changed.
+			/// their measure and when the available size is changing.
 			/// </summary>
 			public static bool UseInvalidateMeasurePath { get; set; } = true;
+
+			/// <summary>
+			/// Call the .ArrangeOverride only on elements explicitly invalidating
+			/// their arrange and when the final rect is changing.
+			/// </summary>
+			public static bool UseInvalidateArrangePath { get; set; } = true;
 
 			/// <summary>
 			/// [DEPRECATED]

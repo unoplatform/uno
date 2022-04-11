@@ -22,6 +22,8 @@ namespace Windows.UI.Xaml
 
 		internal bool IsMeasureDirtyPath => throw new NotSupportedException("Reference assembly");
 
+		internal bool IsArrangeDirtyPath => throw new NotSupportedException("Reference assembly");
+
 		internal bool IsPointerCaptured { get; set; }
 
 		internal bool ShouldInterceptInvalidate { get; set; }

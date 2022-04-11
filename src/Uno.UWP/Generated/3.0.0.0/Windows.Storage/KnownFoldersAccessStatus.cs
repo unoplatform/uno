@@ -20,6 +20,9 @@ namespace Windows.Storage
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Allowed = 4,
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		AllowedPerAppFolder = 5,
+		#endif
 	}
 	#endif
 }

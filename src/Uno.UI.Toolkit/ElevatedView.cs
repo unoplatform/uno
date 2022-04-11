@@ -197,6 +197,8 @@ namespace Uno.UI.Toolkit
 				// The elevation must be applied on the border, since
 				// it will get the right shape (with rounded corners)
 				_border.SetElevationInternal(Elevation, ShadowColor);
+#elif __SKIA__
+				this.SetElevationInternal(Elevation, ShadowColor);
 #elif NETFX_CORE || NETCOREAPP
 				_border.SetElevationInternal(Elevation, ShadowColor, _shadowHost as DependencyObject, CornerRadius);
 #endif

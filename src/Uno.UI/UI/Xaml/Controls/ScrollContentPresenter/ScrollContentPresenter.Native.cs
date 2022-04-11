@@ -84,6 +84,30 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
+
+		public double ExtentHeight
+		{
+			get => Native?.ExtentHeight ?? 0;
+			set
+			{
+				if (Native is { } native)
+				{
+					native.ExtentHeight = 0;
+				}
+			}
+		}
+
+		public double ExtentWidth
+		{
+			get => Native?.ExtentWidth ?? 0;
+			set
+			{
+				if (Native is { } native)
+				{
+					native.ExtentWidth = 0;
+				}
+			}
+		}
 		#endregion
 
 		#region Native SCP to SCP

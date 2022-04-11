@@ -1,15 +1,14 @@
 #nullable enable
 
-#if !__IOS__
 using System.Numerics;
-using System;
 using SkiaSharp;
+using Uno.UI.Composition.Composition;
 
 namespace Windows.UI.Composition
 {
 	public partial class Visual : global::Windows.UI.Composition.CompositionObject
 	{
-		internal virtual void Render(SKSurface surface, SKImageInfo info)
+		internal virtual void Render(SKSurface surface)
 		{
 
 		}
@@ -49,6 +48,7 @@ namespace Windows.UI.Composition
 				}
 			}
 		}
+
+		internal ShadowState? ShadowState { get; set; }
 	}
 }
-#endif

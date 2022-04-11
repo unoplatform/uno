@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Controls
 	/// An Uno-only class which allows the <see cref="ScrollViewer"/> within a <see cref="ListViewBase"/> template
 	/// to host a native collection view. 
 	/// </summary>
-	public sealed partial class ListViewBaseScrollContentPresenter : ScrollContentPresenter, IScrollContentPresenter, INativeScrollContentPresenter
+	public sealed partial class ListViewBaseScrollContentPresenter : ScrollContentPresenter, INativeScrollContentPresenter
 	{
 		public ListViewBaseScrollContentPresenter()
 		{
@@ -67,6 +67,20 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get => NativePanel?.VerticalScrollBarVisibility != ScrollBarVisibility.Disabled;
 			set { }
+		}
+
+		private double _extentWidth;
+		double INativeScrollContentPresenter.ExtentWidth
+		{
+			get => _extentWidth;
+			set => _extentWidth = value;
+		}
+
+		private double _extentHeight;
+		double INativeScrollContentPresenter.ExtentHeight
+		{
+			get => _extentHeight;
+			set => _extentHeight = value;
 		}
 
 		internal NativeListViewBase NativePanel => (Content as ItemsPresenter)?.Panel as NativeListViewBase;

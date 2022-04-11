@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 	#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-	[global::Uno.NotImplemented]
+	[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	#endif
 	public  partial class MediaTransportControls : global::Windows.UI.Xaml.Controls.Control
 	{

@@ -8674,7 +8674,7 @@
 	  </Properties>
 	</IgnoreSet>
 	  
-	<IgnoreSet baseVersion="4.1.8">
+	<IgnoreSet baseVersion="4.1.9">
 		<Assemblies>
 		</Assemblies>
 		<Methods>
@@ -8690,9 +8690,77 @@
 			<Member
 				fullName="System.Void Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs..ctor(System.Action`1&lt;Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs&gt; complete)"
 				reason="Should not be public" />
+			<Member
+				fullName="System.Void Windows.Devices.Geolocation.Geolocator.WaitForPermissionFromBackground()"
+				reason="Not part of UWP API" />
+			<Member
+				fullName="System.Void Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent..ctor()"
+				reason="Does not exist in UWP" />
+
+			<!-- BEGIN .NET 6 RC 1 -->
+			<Member fullName="System.Void UIKit.UIViewExtensions.SetDimensions(UIKit.UIView view, System.Nullable`1&lt;ObjCRuntime.nfloat&gt; width, System.Nullable`1&lt;ObjCRuntime.nfloat&gt; height)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="ObjCRuntime.nfloat UIKit.UIViewExtensions.StackSubViews(UIKit.UIView thisView)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="ObjCRuntime.nfloat UIKit.UIViewExtensions.StackSubViews(UIKit.UIView thisView, System.Single topPadding, System.Single spaceBetweenElements)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="ObjCRuntime.nfloat UIKit.UIViewExtensions.GetNativeAlpha(UIKit.UIView view)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.SetZoomScale(ObjCRuntime.nfloat scale, System.Boolean animated)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="ObjCRuntime.nfloat Windows.UI.Xaml.Controls.VirtualizingPanelLayout.LayoutItemsInGroup(System.Int32 group, ObjCRuntime.nfloat availableBreadth, CoreGraphics.CGRect&amp; frame, System.Boolean createLayoutInfo, System.Collections.Generic.Dictionary`2&lt;Foundation.NSIndexPath,System.Nullable`1&lt;CoreGraphics.CGSize&gt;&gt; oldItemSizes)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.VirtualizingPanelLayout.UpdateLayoutAttributesForGroupHeader(UIKit.UICollectionViewLayoutAttributes groupHeaderLayout, ObjCRuntime.nfloat extentDifference, System.Boolean applyOffsetToThis)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="CoreGraphics.CGRect Windows.UI.Xaml.Controls.VirtualizingPanelLayout.AdjustExtentOffset(CoreGraphics.CGRect frame, ObjCRuntime.nfloat adjustment)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="CoreGraphics.CGPoint Windows.UI.Xaml.Controls.VirtualizingPanelLayout.AdjustExtentOffset(CoreGraphics.CGPoint point, ObjCRuntime.nfloat adjustment)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="ObjCRuntime.nfloat Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetExtentStart(CoreGraphics.CGRect frame)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="ObjCRuntime.nfloat Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetExtentEnd(CoreGraphics.CGRect frame)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="ObjCRuntime.nfloat Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetBreadth(CoreGraphics.CGSize size)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="ObjCRuntime.nfloat Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetBreadthStart(CoreGraphics.CGRect frame)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="ObjCRuntime.nfloat Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetBreadthEnd(CoreGraphics.CGRect frame)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.VirtualizingPanelLayout.SetBreadthStart(CoreGraphics.CGRect&amp; frame, ObjCRuntime.nfloat breadthStart)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.VirtualizingPanelLayout.SetBreadth(CoreGraphics.CGRect&amp; frame, ObjCRuntime.nfloat breadth)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.VirtualizingPanelLayout.SetExtentStart(CoreGraphics.CGRect&amp; frame, ObjCRuntime.nfloat extentStart)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.VirtualizingPanelLayout.SetExtent(CoreGraphics.CGSize&amp; size, ObjCRuntime.nfloat extent)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="CoreGraphics.CGPoint Windows.UI.Xaml.Controls.VirtualizingPanelLayout.SetExtentOffset(CoreGraphics.CGPoint point, ObjCRuntime.nfloat newOffset)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="ObjCRuntime.nfloat Uno.UI.ViewHelper.get_OnePixel()" reason="net6 preview 14 breaking changes" />
+			<Member fullName="ObjCRuntime.nfloat Uno.UI.ViewHelper.GetConvertedPixel(System.Single thickness)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="ObjCRuntime.nfloat Uno.UI.ViewHelper.StackSubViews(System.Collections.Generic.IEnumerable`1&lt;UIKit.UIView&gt; views)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="ObjCRuntime.nfloat Uno.UI.ViewHelper.StackSubViews(UIKit.UIView thisView, System.Single topPadding, System.Single spaceBetweenElements)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.IncrementX(CoreGraphics.CGRect thisCGRect, ObjCRuntime.nfloat delta)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.IncrementY(CoreGraphics.CGRect thisCGRect, ObjCRuntime.nfloat delta)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.SetX(CoreGraphics.CGRect thisCGRect, ObjCRuntime.nfloat value)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.SetY(CoreGraphics.CGRect thisCGRect, ObjCRuntime.nfloat value)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.SetBottom(CoreGraphics.CGRect thisCGRect, ObjCRuntime.nfloat value)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.SetRight(CoreGraphics.CGRect thisCGRect, ObjCRuntime.nfloat value)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.SetRightRespectWidth(CoreGraphics.CGRect thisCGRect, ObjCRuntime.nfloat value)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.SetHorizontalCenter(CoreGraphics.CGRect thisCGRect, ObjCRuntime.nfloat value)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.SetVerticalCenter(CoreGraphics.CGRect thisCGRect, ObjCRuntime.nfloat value)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.Shrink(CoreGraphics.CGRect thisCGRect, ObjCRuntime.nfloat numberOfPixels)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.Shrink(CoreGraphics.CGRect thisCGRect, ObjCRuntime.nfloat left, ObjCRuntime.nfloat top, ObjCRuntime.nfloat right, ObjCRuntime.nfloat bottom)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.IncrementHeight(CoreGraphics.CGRect thisCGRect, ObjCRuntime.nfloat delta)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.IncrementWidth(CoreGraphics.CGRect thisCGRect, ObjCRuntime.nfloat delta)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.SetWidth(CoreGraphics.CGRect thisCGRect, ObjCRuntime.nfloat value)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.SetHeight(CoreGraphics.CGRect thisCGRect, ObjCRuntime.nfloat value)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="ObjCRuntime.nfloat Uno.UI.Extensions.CGRectExtensions.GetXOrY(CoreGraphics.CGRect rect, System.Int32 axisIndex)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="ObjCRuntime.nfloat Uno.UI.Extensions.CGRectExtensions.GetWidthOrHeight(CoreGraphics.CGRect rect, System.Int32 axisIndex)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="CoreGraphics.CGRect Uno.UI.Extensions.CGRectExtensions.SetXOrY(CoreGraphics.CGRect rect, System.Int32 axisIndex, ObjCRuntime.nfloat newXYValue)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="ObjCRuntime.nfloat Uno.UI.Extensions.CGPointExtensions.GetXOrY(CoreGraphics.CGPoint point, System.Int32 axisIndex)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="T Uno.UI.Extensions.UIViewPositioningExtensions.SetY(T thisView, ObjCRuntime.nfloat value)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="System.Void AppKit.UIViewExtensions.SetDimensions(AppKit.NSView view, System.Nullable`1&lt;ObjCRuntime.nfloat&gt; width, System.Nullable`1&lt;ObjCRuntime.nfloat&gt; height)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="ObjCRuntime.nfloat AppKit.UIViewExtensions.StackSubViews(AppKit.NSView thisView)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="ObjCRuntime.nfloat AppKit.UIViewExtensions.StackSubViews(AppKit.NSView thisView, System.Single topPadding, System.Single spaceBetweenElements)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="ObjCRuntime.nfloat AppKit.UIViewExtensions.GetNativeAlpha(AppKit.NSView view)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="ObjCRuntime.nfloat Uno.UI.ViewHelper.StackSubViews(System.Collections.Generic.IEnumerable`1&lt;AppKit.NSView&gt; views)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="ObjCRuntime.nfloat Uno.UI.ViewHelper.StackSubViews(AppKit.NSView thisView, System.Single topPadding, System.Single spaceBetweenElements)" reason="net6 preview 14 breaking changes" />
+			<Member fullName="ObjCRuntime.nfloat Uno.UI.Extensions.FontWeightExtensions.ToNSFontWeight(Windows.UI.Text.FontWeight fontWeight)" reason="net6 preview 14 breaking changes" />
+			<!-- END .NET 6 RC 1 -->
 		</Methods>
-	  	<Properties>
-	 	</Properties>
+		<Properties>
+			<!-- BEGIN .NET 6 RC 1 -->
+			<Member fullName="ObjCRuntime.nfloat Uno.UI.ViewHelper::OnePixel()" reason="net6 preview 14 breaking changes" />
+			<!-- END .NET 6 RC 1 -->
+		</Properties>
+		<Fields>
+			<!-- BEGIN .NET 6 RC 1 -->
+			<Member fullName="System.Collections.Generic.Dictionary`2&lt;System.Int32,ObjCRuntime.nfloat&gt; Windows.UI.Xaml.Controls.VirtualizingPanelLayout::_sectionEnd" reason="net6 preview 14 breaking changes" />
+			<Member fullName="ObjCRuntime.nfloat Uno.UI.ViewHelper::MainScreenScale" reason="net6 preview 14 breaking changes" />
+			<!-- END .NET 6 RC 1 -->
+		</Fields>
 	</IgnoreSet>
 	<!--
 	Supported nodes (please keep at the bottom of this file):

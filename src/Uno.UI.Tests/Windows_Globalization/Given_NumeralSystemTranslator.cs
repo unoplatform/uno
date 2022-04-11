@@ -15,8 +15,8 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("Arab ")]
 		public void When_NumeralSystemIsInvalid_Then_Throw(string numeralSystem)
 		{
-			NumeralSystemTranslator numeralSystemTranslator = new NumeralSystemTranslator();
-			Assert.ThrowsException<ArgumentException>(() => numeralSystemTranslator.NumeralSystem = numeralSystem);
+			var sut = new NumeralSystemTranslator();
+			Assert.ThrowsException<ArgumentException>(() => sut.NumeralSystem = numeralSystem);
 		}
 
 		[TestMethod]
@@ -892,9 +892,9 @@ namespace Uno.UI.Tests.Windows_Globalization
 #endregion
 		public void When_UsingLanguage_Then_InitializeCorrectly(string languageTag, string numeralSystem, string resolveLanguage)
 		{
-			var numeralSystemTranslator = new NumeralSystemTranslator(new string[] { languageTag });
-			Assert.AreEqual(numeralSystem, numeralSystemTranslator.NumeralSystem);
-			Assert.AreEqual(resolveLanguage, numeralSystemTranslator.ResolvedLanguage);
+			var sut = new NumeralSystemTranslator(new string[] { languageTag });
+			Assert.AreEqual(numeralSystem, sut.NumeralSystem);
+			Assert.AreEqual(resolveLanguage, sut.ResolvedLanguage);
 		}
 
 		[DataTestMethod]
@@ -915,9 +915,9 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("1,234% ,567,890.12", "١٬٢٣٤\u066a ٬٥٦٧٬٨٩٠٫١٢")]
 		public void When_NumeralSystemIsArab(string value, string expected)
 		{
-			NumeralSystemTranslator numeralSystemTranslator = new NumeralSystemTranslator();
-			numeralSystemTranslator.NumeralSystem = "Arab";
-			var translated = numeralSystemTranslator.TranslateNumerals(value);
+			var sut = new NumeralSystemTranslator();
+			sut.NumeralSystem = "Arab";
+			var translated = sut.TranslateNumerals(value);
 			Assert.AreEqual(expected, translated);
 		}
 
@@ -1571,9 +1571,9 @@ namespace Uno.UI.Tests.Windows_Globalization
 
 		public void When_NumeralSystemIsSpecific(string value, string expected, string numeralSystem)
 		{
-			NumeralSystemTranslator numeralSystemTranslator = new NumeralSystemTranslator();
-			numeralSystemTranslator.NumeralSystem = numeralSystem;
-			var translated = numeralSystemTranslator.TranslateNumerals(value);
+			var sut = new NumeralSystemTranslator();
+			sut.NumeralSystem = numeralSystem;
+			var translated = sut.TranslateNumerals(value);
 			Assert.AreEqual(expected, translated);
 		}
 
@@ -1617,10 +1617,10 @@ namespace Uno.UI.Tests.Windows_Globalization
 
 		public void When_NumeralSystemCaseIsNotStandard(string numeralSystem, string expected)
 		{
-			NumeralSystemTranslator numeralSystemTranslator = new NumeralSystemTranslator();
-			numeralSystemTranslator.NumeralSystem = numeralSystem;
+			var sut = new NumeralSystemTranslator();
+			sut.NumeralSystem = numeralSystem;
 
-			Assert.AreEqual(expected, numeralSystemTranslator.NumeralSystem);
+			Assert.AreEqual(expected, sut.NumeralSystem);
 		}
 	}
 }
