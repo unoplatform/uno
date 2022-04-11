@@ -1025,6 +1025,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 						Margin = new Thickness(margin),
 						BorderBrush = new SolidColorBrush(Colors.Red),
 						BorderThickness = new Thickness(border),
+						Background = new SolidColorBrush(Colors.Pink),
 						Width = 300,
 						Height = 300,
 						HorizontalAlignment = hAlign,
@@ -1044,7 +1045,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				sv.ChangeView(offset.x, offset.y, zoomFactor: null, disableAnimation: true);
 
 				await RetryAssert(
-					$"scrolled to ({offset.x},{offset.y})",
+					$"after scrolled to ({offset.x},{offset.y}), actual rect is ",
 					() =>
 					{
 						var expected = new Rect(margin - offset.x, margin - offset.y, sut.Width, sut.Height);

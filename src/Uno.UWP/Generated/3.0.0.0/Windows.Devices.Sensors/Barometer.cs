@@ -3,7 +3,7 @@
 namespace Windows.Devices.Sensors
 {
 	#if false || false || false || false || __SKIA__ || __NETSTD_REFERENCE__ || false
-	[global::Uno.NotImplemented]
+	[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 	#endif
 	public  partial class Barometer 
 	{

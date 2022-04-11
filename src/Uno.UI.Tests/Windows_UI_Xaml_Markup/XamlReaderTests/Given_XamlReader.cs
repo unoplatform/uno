@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI;
 using Windows.UI;
+using System.Text.RegularExpressions;
 using FluentAssertions.Execution;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
@@ -1176,6 +1177,91 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 
 			SUT.IsChecked = true;
 			Assert.AreEqual(true, r.MyVM.MyBool);
+		}
+
+		[TestMethod]
+		public void When_Collection_Implicit_Add_Item()
+		{
+			var SUT = LoadXaml<SwipeItems>(@"
+				<SwipeItems>
+					<SwipeItem Text='asd' />
+				</SwipeItems>
+			");
+
+			Assert.AreEqual(1, SUT.Count);
+			Assert.AreEqual("asd", SUT[0].Text);
+		}
+
+		[TestMethod]
+		public void When_Collection_Property_Nest_Collection()
+		{
+			var SUT = LoadXaml<SwipeControl>(@"
+				<SwipeControl>
+					<SwipeControl.LeftItems>
+						<SwipeItems Mode='Execute'>
+							<SwipeItem Text='asd' />
+						</SwipeItems>
+					</SwipeControl.LeftItems>
+				</SwipeControl>
+			");
+
+			Assert.IsNotNull(SUT.LeftItems);
+			Assert.AreEqual(SwipeMode.Execute, SUT.LeftItems.Mode); // check we are using the very same collection in the xaml, and not a new instance
+			Assert.AreEqual(1, SUT.LeftItems.Count);
+			Assert.AreEqual("asd", SUT.LeftItems[0].Text);
+		}
+
+		[TestMethod]
+		public void When_Collection_Property_Nest_Multiple_Collections()
+		{
+			var SUT = LoadXaml<SwipeControl>(@"
+				<SwipeControl>
+					<SwipeControl.LeftItems>
+						<!-- This is actually allowed, however only the last will be kept -->
+						<SwipeItems>
+							<SwipeItem Text='asd' />
+						</SwipeItems>
+						<SwipeItems Mode='Execute'>
+							<SwipeItem Text='qwe' />
+						</SwipeItems>
+					</SwipeControl.LeftItems>
+				</SwipeControl>
+			");
+
+			Assert.IsNotNull(SUT.LeftItems);
+			Assert.AreEqual(SwipeMode.Execute, SUT.LeftItems.Mode); // check we are using the very same collection in the xaml, and not a new instance
+			Assert.AreEqual(1, SUT.LeftItems.Count);
+			Assert.AreEqual("qwe", SUT.LeftItems[0].Text);
+		}
+		
+		/// <summary>
+		/// XamlReader.Load the xaml and type-check result.
+		/// </summary>
+		/// <param name="sanitizedXaml">Xaml with single or double quots</param>
+		/// <param name="defaultXmlns">The default xmlns to inject; use null to not inject one.</param>
+		private T LoadXaml<T>(string sanitizedXaml, string defaultXmlns = "http://schemas.microsoft.com/winfx/2006/xaml/presentation") where T : class =>
+			LoadXaml<T>(sanitizedXaml, new Dictionary<string, string>{ [string.Empty] = defaultXmlns });
+
+		/// <summary>
+		/// XamlReader.Load the xaml and type-check result.
+		/// </summary>
+		/// <param name="sanitizedXaml">Xaml with single or double quots</param>
+		/// <param name="xmlnses">Xmlns to inject; use string.Empty for the default xmlns' key</param>
+		private T LoadXaml<T>(string xaml, Dictionary<string, string> xmlnses) where T : class
+		{
+			var injection = " " + string.Join(" ", xmlnses
+				.Where(x => x.Value != null)
+				.Select(x => $"xmlns{(string.IsNullOrEmpty(x.Key) ? "" : $":{x.Key}")}='{x.Value}'")
+			);
+
+			xaml = new Regex(@"(?=\\?>)").Replace(xaml, injection, 1);
+			xaml = xaml.Replace('\'', '"');
+
+			var result = Windows.UI.Xaml.Markup.XamlReader.Load(xaml);
+			Assert.IsNotNull(result, "XamlReader.Load returned null");
+			Assert.IsInstanceOfType(result, typeof(T), "XamlReader.Load did not return the expected type");
+
+			return (T)result;
 		}
 
 		private string GetContent(string testName)

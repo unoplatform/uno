@@ -54,11 +54,13 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		partial void TrimOverscroll(Orientation orientation)
 		{
-			if (_presenter is ContentPresenter presenter && presenter.Content is FrameworkElement presenterContent)
+			if (_presenter is not null)
 			{
-				var presenterViewportSize = GetActualExtent(presenter, orientation);
-				var contentExtent = GetActualExtent(presenterContent, orientation);
-				var offset = GetOffsetForOrientation(orientation);
+				var (contentExtent, presenterViewportSize, offset) = orientation switch
+				{
+					Orientation.Vertical => (ExtentHeight, ViewportHeight, VerticalOffset),
+					_ => (ExtentWidth, ViewportWidth, HorizontalOffset),
+				};
 				var viewportEnd = offset + presenterViewportSize;
 				var overscroll = contentExtent - viewportEnd;
 				if (offset > 0 && overscroll < -0.5)
@@ -67,9 +69,6 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
-
-		private double GetOffsetForOrientation(Orientation orientation)
-			=> orientation == Orientation.Horizontal ? HorizontalOffset : VerticalOffset;
 
 		private void ChangeViewForOrientation(Orientation orientation, double scrollAdjustment)
 		{
@@ -82,8 +81,5 @@ namespace Windows.UI.Xaml.Controls
 				ChangeView(HorizontalOffset + scrollAdjustment, null, null, disableAnimation: true);
 			}
 		}
-
-		private static double GetActualExtent(FrameworkElement element, Orientation orientation)
-			=> orientation == Orientation.Horizontal ? element.ActualWidth : element.ActualHeight;
 	}
 }

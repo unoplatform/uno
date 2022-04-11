@@ -271,6 +271,12 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					ProcessSpan(control, span, member, rootInstance);
 				}
+				else if (member.Member.Name == "_UnknownContent"
+					&& TypeResolver.FindContentProperty(TypeResolver.FindType(control.Type)) == null
+					&& TypeResolver.IsCollectionOrListType(TypeResolver.FindType(control.Type)))
+				{
+					AddCollectionItems(instance, member.Objects, rootInstance);
+				}
 				else if (GetMemberProperty(control, member) is PropertyInfo propertyInfo)
 				{
 					if (member.Objects.None())
@@ -574,10 +580,21 @@ namespace Windows.UI.Xaml.Markup.Reader
 						addMethod.Invoke(propertyInstance, new[] { resourceKey ?? resourceTargetType, item });
 					}
 				}
-				else if (TypeResolver.IsNewableProperty(propertyInfo, out var collectionType))
+				else if (propertyInfo.SetMethod?.IsPublic == true &&
+					member.Objects.Select(x => x.Type).Distinct().All(x => TypeResolver.FindType(x).Is(propertyInfo.PropertyType)))
 				{
-					var collection = Activator.CreateInstance(collectionType!);
+					// It is actually valid to have multiple nested collection containers under a property, however only the last will be kept.
+					foreach (var child in member.Objects)
+					{
+						var collection = LoadObject(child, rootInstance: rootInstance);
 
+						GetPropertySetter(propertyInfo).Invoke(instance, new[] { collection });
+					}
+				}
+				else if (propertyInfo.SetMethod?.IsPublic == true
+					&& TypeResolver.IsNewableType(propertyInfo.PropertyType))
+				{
+					var collection = Activator.CreateInstance(propertyInfo.PropertyType);
 					AddCollectionItems(collection!, member.Objects, rootInstance);
 
 					GetPropertySetter(propertyInfo).Invoke(instance, new[] { collection });
@@ -929,7 +946,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 						.Where(m => m.Name == "set_Item")
 						.FirstOrDefault(m => m.GetParameters() is { Length: 1 } p
 							&& (item?.GetType() ?? typeof(object)).Is(p[0].ParameterType))
-						?? throw new InvalidOperationException($"The type does {collectionInstance.GetType()} contains an Add({item?.GetType()}) method");
+						?? throw new InvalidOperationException($"The type {collectionInstance.GetType()} does not contains an Add({item?.GetType()}) method");
 				}
 
 				addMethodInfo.Invoke(collectionInstance, new[] { item });
@@ -952,11 +969,22 @@ namespace Windows.UI.Xaml.Markup.Reader
 						.Where(m => m.Name == "Add")
 						.FirstOrDefault(m => m.GetParameters() is { Length: 1 } p
 							&& (item?.GetType() ?? typeof(object)).Is(p[0].ParameterType))
-						?? throw new InvalidOperationException($"The type does {collectionInstance.GetType()} contains an Add({item?.GetType()}) method");
+						?? throw new InvalidOperationException($"The type {collectionInstance.GetType()} does not contains an Add({item?.GetType()}) method");
 				}
 
 				addMethodInfo.Invoke(collectionInstance, new[] { item });
 			}
+		}
+
+		private MethodInfo? FindAddMethod(object collectionInstance, Type? itemType)
+		{
+			return collectionInstance.GetType()
+				.GetMethods(BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public)
+				.Where(m => m.Name == "Add")
+				.FirstOrDefault(m =>
+					m.GetParameters() is { Length: 1 } p &&
+					(itemType ?? typeof(object)).Is(p[0].ParameterType)
+				);
 		}
 
 		private object? GetResourceKey(XamlObjectDefinition child) =>

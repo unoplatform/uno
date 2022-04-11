@@ -3,7 +3,7 @@
 namespace Windows.Phone.Devices.Notification
 {
 	#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
+	[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	#endif
 	public  partial class VibrationDevice 
 	{

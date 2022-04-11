@@ -23,6 +23,20 @@ namespace Windows.System
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  bool IsEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool AppUriHandlerHost.IsEnabled is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppUriHandlerHost", "bool AppUriHandlerHost.IsEnabled");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public AppUriHandlerHost( string name) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppUriHandlerHost", "AppUriHandlerHost.AppUriHandlerHost(string name)");
@@ -39,5 +53,7 @@ namespace Windows.System
 		// Forced skipping of method Windows.System.AppUriHandlerHost.AppUriHandlerHost()
 		// Forced skipping of method Windows.System.AppUriHandlerHost.Name.get
 		// Forced skipping of method Windows.System.AppUriHandlerHost.Name.set
+		// Forced skipping of method Windows.System.AppUriHandlerHost.IsEnabled.get
+		// Forced skipping of method Windows.System.AppUriHandlerHost.IsEnabled.set
 	}
 }

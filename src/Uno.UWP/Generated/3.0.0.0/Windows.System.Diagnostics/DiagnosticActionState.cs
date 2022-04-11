@@ -23,6 +23,9 @@ namespace Windows.System.Diagnostics
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		VerifyingResolution = 5,
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		Executing = 6,
+		#endif
 	}
 	#endif
 }

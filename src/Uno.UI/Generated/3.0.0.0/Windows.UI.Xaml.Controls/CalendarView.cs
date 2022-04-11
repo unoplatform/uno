@@ -7,57 +7,391 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class CalendarView : global::Windows.UI.Xaml.Controls.Control
 	{
-		// Skipping already declared property HorizontalFirstOfMonthLabelAlignment
-		// Skipping already declared property HorizontalDayItemAlignment
-		// Skipping already declared property FocusBorderBrush
-		// Skipping already declared property FirstOfYearDecadeLabelFontWeight
-		// Skipping already declared property FirstOfYearDecadeLabelFontStyle
-		// Skipping already declared property MonthYearItemFontFamily
-		// Skipping already declared property FirstOfYearDecadeLabelFontFamily
 		// Skipping already declared property FirstOfMonthLabelFontWeight
 		// Skipping already declared property FirstOfMonthLabelFontStyle
 		// Skipping already declared property FirstOfMonthLabelFontSize
 		// Skipping already declared property FirstOfMonthLabelFontFamily
 		// Skipping already declared property FirstDayOfWeek
-		// Skipping already declared property BlackoutForeground
+		// Skipping already declared property DisplayMode
 		// Skipping already declared property DayOfWeekFormat
 		// Skipping already declared property DayItemFontWeight
-		// Skipping already declared property DayItemFontStyle
+		// Skipping already declared property IsTodayHighlighted
 		// Skipping already declared property DayItemFontSize
 		// Skipping already declared property DayItemFontFamily
-		// Skipping already declared property SelectedPressedBorderBrush
+		// Skipping already declared property CalendarViewDayItemStyle
 		// Skipping already declared property CalendarItemForeground
 		// Skipping already declared property CalendarItemBorderThickness
 		// Skipping already declared property CalendarItemBorderBrush
 		// Skipping already declared property CalendarItemBackground
 		// Skipping already declared property CalendarIdentifier
-		// Skipping already declared property DisplayMode
-		// Skipping already declared property HoverBorderBrush
-		// Skipping already declared property PressedBorderBrush
-		// Skipping already declared property VerticalDayItemAlignment
-		// Skipping already declared property TodayForeground
-		// Skipping already declared property TodayFontWeight
-		// Skipping already declared property SelectionMode
-		// Skipping already declared property CalendarViewDayItemStyle
-		// Skipping already declared property SelectedHoverBorderBrush
-		// Skipping already declared property SelectedForeground
-		// Skipping already declared property SelectedBorderBrush
-		// Skipping already declared property PressedForeground
-		// Skipping already declared property VerticalFirstOfMonthLabelAlignment
-		// Skipping already declared property OutOfScopeForeground
 		// Skipping already declared property OutOfScopeBackground
+		// Skipping already declared property BlackoutForeground
+		// Skipping already declared property FirstOfYearDecadeLabelFontFamily
 		// Skipping already declared property NumberOfWeeksInView
 		// Skipping already declared property MonthYearItemFontWeight
 		// Skipping already declared property MonthYearItemFontStyle
 		// Skipping already declared property MonthYearItemFontSize
-		// Skipping already declared property FirstOfYearDecadeLabelFontSize
+		// Skipping already declared property MonthYearItemFontFamily
 		// Skipping already declared property MinDate
 		// Skipping already declared property MaxDate
-		// Skipping already declared property IsTodayHighlighted
+		// Skipping already declared property OutOfScopeForeground
 		// Skipping already declared property IsOutOfScopeEnabled
 		// Skipping already declared property IsGroupLabelVisible
+		// Skipping already declared property HoverBorderBrush
+		// Skipping already declared property HorizontalFirstOfMonthLabelAlignment
+		// Skipping already declared property HorizontalDayItemAlignment
+		// Skipping already declared property FocusBorderBrush
+		// Skipping already declared property FirstOfYearDecadeLabelFontWeight
+		// Skipping already declared property FirstOfYearDecadeLabelFontStyle
+		// Skipping already declared property FirstOfYearDecadeLabelFontSize
+		// Skipping already declared property DayItemFontStyle
+		// Skipping already declared property VerticalFirstOfMonthLabelAlignment
+		// Skipping already declared property VerticalDayItemAlignment
+		// Skipping already declared property TodayForeground
+		// Skipping already declared property TodayFontWeight
+		// Skipping already declared property SelectionMode
+		// Skipping already declared property SelectedPressedBorderBrush
+		// Skipping already declared property SelectedHoverBorderBrush
+		// Skipping already declared property SelectedForeground
+		// Skipping already declared property SelectedBorderBrush
+		// Skipping already declared property PressedForeground
+		// Skipping already declared property PressedBorderBrush
 		// Skipping already declared property SelectedDates
 		// Skipping already declared property TemplateSettings
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.Media.Brush CalendarItemHoverBackground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(CalendarItemHoverBackgroundProperty);
+			}
+			set
+			{
+				this.SetValue(CalendarItemHoverBackgroundProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.Media.Brush CalendarItemDisabledBackground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(CalendarItemDisabledBackgroundProperty);
+			}
+			set
+			{
+				this.SetValue(CalendarItemDisabledBackgroundProperty, value);
+			}
+		}
+		#endif
+		// Skipping already declared property CalendarItemCornerRadius
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.Media.Brush BlackoutStrikethroughBrush
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(BlackoutStrikethroughBrushProperty);
+			}
+			set
+			{
+				this.SetValue(BlackoutStrikethroughBrushProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.Media.Brush BlackoutBackground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(BlackoutBackgroundProperty);
+			}
+			set
+			{
+				this.SetValue(BlackoutBackgroundProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.Media.Brush CalendarItemPressedBackground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(CalendarItemPressedBackgroundProperty);
+			}
+			set
+			{
+				this.SetValue(CalendarItemPressedBackgroundProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.Media.Brush TodaySelectedInnerBorderBrush
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(TodaySelectedInnerBorderBrushProperty);
+			}
+			set
+			{
+				this.SetValue(TodaySelectedInnerBorderBrushProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.Media.Brush TodayPressedBackground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(TodayPressedBackgroundProperty);
+			}
+			set
+			{
+				this.SetValue(TodayPressedBackgroundProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.Media.Brush TodayHoverBackground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(TodayHoverBackgroundProperty);
+			}
+			set
+			{
+				this.SetValue(TodayHoverBackgroundProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.Media.Brush TodayDisabledBackground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(TodayDisabledBackgroundProperty);
+			}
+			set
+			{
+				this.SetValue(TodayDisabledBackgroundProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.Media.Brush TodayBlackoutForeground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(TodayBlackoutForegroundProperty);
+			}
+			set
+			{
+				this.SetValue(TodayBlackoutForegroundProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.Media.Brush TodayBlackoutBackground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(TodayBlackoutBackgroundProperty);
+			}
+			set
+			{
+				this.SetValue(TodayBlackoutBackgroundProperty, value);
+			}
+		}
+		#endif
+		// Skipping already declared property TodayBackground
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.Media.Brush SelectedPressedForeground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(SelectedPressedForegroundProperty);
+			}
+			set
+			{
+				this.SetValue(SelectedPressedForegroundProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.Media.Brush SelectedHoverForeground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(SelectedHoverForegroundProperty);
+			}
+			set
+			{
+				this.SetValue(SelectedHoverForegroundProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.Media.Brush SelectedDisabledForeground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(SelectedDisabledForegroundProperty);
+			}
+			set
+			{
+				this.SetValue(SelectedDisabledForegroundProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.Media.Brush SelectedDisabledBorderBrush
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(SelectedDisabledBorderBrushProperty);
+			}
+			set
+			{
+				this.SetValue(SelectedDisabledBorderBrushProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.Media.Brush OutOfScopePressedForeground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(OutOfScopePressedForegroundProperty);
+			}
+			set
+			{
+				this.SetValue(OutOfScopePressedForegroundProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.Media.Brush OutOfScopeHoverForeground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(OutOfScopeHoverForegroundProperty);
+			}
+			set
+			{
+				this.SetValue(OutOfScopeHoverForegroundProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.Thickness MonthYearItemMargin
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Thickness)this.GetValue(MonthYearItemMarginProperty);
+			}
+			set
+			{
+				this.SetValue(MonthYearItemMarginProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.Thickness FirstOfYearDecadeLabelMargin
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Thickness)this.GetValue(FirstOfYearDecadeLabelMarginProperty);
+			}
+			set
+			{
+				this.SetValue(FirstOfYearDecadeLabelMarginProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.Thickness FirstOfMonthLabelMargin
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Thickness)this.GetValue(FirstOfMonthLabelMarginProperty);
+			}
+			set
+			{
+				this.SetValue(FirstOfMonthLabelMarginProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.Media.Brush DisabledForeground
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Brush)this.GetValue(DisabledForegroundProperty);
+			}
+			set
+			{
+				this.SetValue(DisabledForegroundProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.Thickness DayItemMargin
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Thickness)this.GetValue(DayItemMarginProperty);
+			}
+			set
+			{
+				this.SetValue(DayItemMarginProperty, value);
+			}
+		}
+		#endif
+		// Skipping already declared property IsOutOfScopeEnabledProperty
+		// Skipping already declared property IsTodayHighlightedProperty
+		// Skipping already declared property MaxDateProperty
+		// Skipping already declared property MinDateProperty
+		// Skipping already declared property MonthYearItemFontFamilyProperty
+		// Skipping already declared property MonthYearItemFontSizeProperty
+		// Skipping already declared property MonthYearItemFontStyleProperty
+		// Skipping already declared property MonthYearItemFontWeightProperty
+		// Skipping already declared property NumberOfWeeksInViewProperty
+		// Skipping already declared property FirstDayOfWeekProperty
+		// Skipping already declared property OutOfScopeBackgroundProperty
+		// Skipping already declared property OutOfScopeForegroundProperty
+		// Skipping already declared property PressedBorderBrushProperty
+		// Skipping already declared property PressedForegroundProperty
+		// Skipping already declared property SelectedBorderBrushProperty
+		// Skipping already declared property SelectedForegroundProperty
+		// Skipping already declared property SelectedHoverBorderBrushProperty
+		// Skipping already declared property SelectedPressedBorderBrushProperty
+		// Skipping already declared property SelectionModeProperty
+		// Skipping already declared property TemplateSettingsProperty
+		// Skipping already declared property TodayFontWeightProperty
+		// Skipping already declared property TodayForegroundProperty
+		// Skipping already declared property VerticalDayItemAlignmentProperty
+		// Skipping already declared property VerticalFirstOfMonthLabelAlignmentProperty
 		// Skipping already declared property BlackoutForegroundProperty
 		// Skipping already declared property CalendarIdentifierProperty
 		// Skipping already declared property CalendarItemBackgroundProperty
@@ -71,7 +405,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property DayItemFontWeightProperty
 		// Skipping already declared property DayOfWeekFormatProperty
 		// Skipping already declared property DisplayModeProperty
-		// Skipping already declared property FirstDayOfWeekProperty
+		// Skipping already declared property SelectedDatesProperty
 		// Skipping already declared property FirstOfMonthLabelFontFamilyProperty
 		// Skipping already declared property FirstOfMonthLabelFontSizeProperty
 		// Skipping already declared property FirstOfMonthLabelFontStyleProperty
@@ -85,30 +419,184 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property HorizontalFirstOfMonthLabelAlignmentProperty
 		// Skipping already declared property HoverBorderBrushProperty
 		// Skipping already declared property IsGroupLabelVisibleProperty
-		// Skipping already declared property IsOutOfScopeEnabledProperty
-		// Skipping already declared property IsTodayHighlightedProperty
-		// Skipping already declared property MaxDateProperty
-		// Skipping already declared property MinDateProperty
-		// Skipping already declared property MonthYearItemFontFamilyProperty
-		// Skipping already declared property MonthYearItemFontSizeProperty
-		// Skipping already declared property MonthYearItemFontStyleProperty
-		// Skipping already declared property MonthYearItemFontWeightProperty
-		// Skipping already declared property NumberOfWeeksInViewProperty
-		// Skipping already declared property OutOfScopeBackgroundProperty
-		// Skipping already declared property OutOfScopeForegroundProperty
-		// Skipping already declared property PressedBorderBrushProperty
-		// Skipping already declared property PressedForegroundProperty
-		// Skipping already declared property SelectedBorderBrushProperty
-		// Skipping already declared property SelectedDatesProperty
-		// Skipping already declared property SelectedForegroundProperty
-		// Skipping already declared property SelectedHoverBorderBrushProperty
-		// Skipping already declared property SelectedPressedBorderBrushProperty
-		// Skipping already declared property SelectionModeProperty
-		// Skipping already declared property TemplateSettingsProperty
-		// Skipping already declared property TodayFontWeightProperty
-		// Skipping already declared property TodayForegroundProperty
-		// Skipping already declared property VerticalDayItemAlignmentProperty
-		// Skipping already declared property VerticalFirstOfMonthLabelAlignmentProperty
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty BlackoutBackgroundProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(BlackoutBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty BlackoutStrikethroughBrushProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(BlackoutStrikethroughBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+		#endif
+		// Skipping already declared property CalendarItemCornerRadiusProperty
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty CalendarItemDisabledBackgroundProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(CalendarItemDisabledBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty CalendarItemHoverBackgroundProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(CalendarItemHoverBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty CalendarItemPressedBackgroundProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(CalendarItemPressedBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty DayItemMarginProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(DayItemMargin), typeof(global::Windows.UI.Xaml.Thickness), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty DisabledForegroundProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(DisabledForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty FirstOfMonthLabelMarginProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(FirstOfMonthLabelMargin), typeof(global::Windows.UI.Xaml.Thickness), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty MonthYearItemMarginProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(MonthYearItemMargin), typeof(global::Windows.UI.Xaml.Thickness), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty OutOfScopeHoverForegroundProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(OutOfScopeHoverForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty OutOfScopePressedForegroundProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(OutOfScopePressedForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedDisabledBorderBrushProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(SelectedDisabledBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedDisabledForegroundProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(SelectedDisabledForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedHoverForegroundProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(SelectedHoverForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedPressedForegroundProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(SelectedPressedForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+		#endif
+		// Skipping already declared property TodayBackgroundProperty
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty TodayBlackoutBackgroundProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(TodayBlackoutBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty TodayBlackoutForegroundProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(TodayBlackoutForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty TodayDisabledBackgroundProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(TodayDisabledBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty TodayHoverBackgroundProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(TodayHoverBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty TodayPressedBackgroundProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(TodayPressedBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty TodaySelectedInnerBorderBrushProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(TodaySelectedInnerBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty FirstOfYearDecadeLabelMarginProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(FirstOfYearDecadeLabelMargin), typeof(global::Windows.UI.Xaml.Thickness), 
+			typeof(global::Windows.UI.Xaml.Controls.CalendarView), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
+		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.CalendarView.CalendarView()
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.CalendarView()
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.CalendarIdentifier.get
@@ -217,6 +705,78 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.SelectedDatesChanged.remove
 		// Skipping already declared method Windows.UI.Xaml.Controls.CalendarView.SetDisplayDate(System.DateTimeOffset)
 		// Skipping already declared method Windows.UI.Xaml.Controls.CalendarView.SetYearDecadeDisplayDimensions(int, int)
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.SelectedDisabledBorderBrush.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.SelectedDisabledBorderBrush.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.TodaySelectedInnerBorderBrush.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.TodaySelectedInnerBorderBrush.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.BlackoutStrikethroughBrush.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.BlackoutStrikethroughBrush.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.BlackoutBackground.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.BlackoutBackground.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.CalendarItemHoverBackground.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.CalendarItemHoverBackground.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.CalendarItemPressedBackground.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.CalendarItemPressedBackground.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.CalendarItemDisabledBackground.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.CalendarItemDisabledBackground.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.TodayBackground.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.TodayBackground.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.TodayBlackoutBackground.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.TodayBlackoutBackground.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.TodayHoverBackground.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.TodayHoverBackground.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.TodayPressedBackground.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.TodayPressedBackground.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.TodayDisabledBackground.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.TodayDisabledBackground.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.TodayBlackoutForeground.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.TodayBlackoutForeground.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.SelectedHoverForeground.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.SelectedHoverForeground.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.SelectedPressedForeground.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.SelectedPressedForeground.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.SelectedDisabledForeground.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.SelectedDisabledForeground.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.OutOfScopeHoverForeground.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.OutOfScopeHoverForeground.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.OutOfScopePressedForeground.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.OutOfScopePressedForeground.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.DisabledForeground.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.DisabledForeground.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.DayItemMargin.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.DayItemMargin.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.MonthYearItemMargin.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.MonthYearItemMargin.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.FirstOfMonthLabelMargin.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.FirstOfMonthLabelMargin.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.FirstOfYearDecadeLabelMargin.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.FirstOfYearDecadeLabelMargin.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.CalendarItemCornerRadius.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.CalendarItemCornerRadius.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.SelectedDisabledBorderBrushProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.TodaySelectedInnerBorderBrushProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.BlackoutStrikethroughBrushProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.BlackoutBackgroundProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.CalendarItemHoverBackgroundProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.CalendarItemPressedBackgroundProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.CalendarItemDisabledBackgroundProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.TodayBackgroundProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.TodayBlackoutBackgroundProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.TodayHoverBackgroundProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.TodayPressedBackgroundProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.TodayDisabledBackgroundProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.TodayBlackoutForegroundProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.SelectedHoverForegroundProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.SelectedPressedForegroundProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.SelectedDisabledForegroundProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.OutOfScopeHoverForegroundProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.OutOfScopePressedForegroundProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.DisabledForegroundProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.DayItemMarginProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.MonthYearItemMarginProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.FirstOfMonthLabelMarginProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.FirstOfYearDecadeLabelMarginProperty.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.CalendarItemCornerRadiusProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.CalendarIdentifierProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.DayOfWeekFormatProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarView.IsGroupLabelVisibleProperty.get

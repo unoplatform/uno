@@ -66,7 +66,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
             </StackPanel>
         </Page>
         ```
-        > note:
+        > Note:
         > - The [`x:Name`](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/x-name-attribute) is used to make the element accessible from the code-behind with that same name.
         > - The [`x:Uid`](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/x-uid-directive) is used for localization.
         To localize a property, you need to add a string resource in each resource file using its `x:Uid` followed by a dot (`.`) and then the property name. eg: `MainPage_IntroText.Text`
@@ -89,11 +89,13 @@ This guide will walk you through the necessary steps to localize an Uno Platform
 1. Add the localization strings for both English and French:
 
     Open both `Strings\en\Resources.resw` and `Strings\fr\Resources.resw`, and add these:
-    Name|Value in en\Resources.resw|Value in fr\Resources.resw
-    -|-|-
-    MainPage_IntroText.Text|Hello Uno|Bonjour Uno
-    MainPage_CodeBehindString|String from code-behind|Texte provenant du code-behind
-    > note: Be sure to hit Ctrl+S for both files, to save the changes.
+    
+    |Name|Value in en\Resources.resw|Value in fr\Resources.resw|
+    |-|-|-|
+    |MainPage_IntroText.Text|Hello Uno|Bonjour Uno|
+    |MainPage_CodeBehindString|String from code-behind|Texte provenant du code-behind|
+    > Note: Be sure to hit Ctrl+S for both files, to save the changes.
+    
 1. You can now try to run the app.
 
     The "Hello World" text should be replaced with "Hello Uno", or "Bonjour Uno" if the targeted environment is on French culture.
