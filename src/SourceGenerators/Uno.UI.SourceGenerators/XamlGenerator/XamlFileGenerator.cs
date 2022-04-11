@@ -2269,7 +2269,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								writer.AppendLineInvariant($"{setterPrefix}Color = {BuildColor(content)}");
 							}
 						}
-						// New WinUI assigned ContentProperty syntax
+						// WinUI assigned ContentProperty syntax
 						else if (
 							(IsType(topLevelControl.Type, XamlConstants.Types.RowDefinition) ||
 							IsType(topLevelControl.Type, XamlConstants.Types.ColumnDefinition)) &&
@@ -5075,7 +5075,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							if (IsInitializableCollection(member.Member))
 							{
-								// New grid succinct syntax.
+								// WinUI Grid succinct syntax
 								if (member.Owner?.Type.Name == "Grid" &&
 									member.Owner?.Type.PreferredXamlNamespace == XamlConstants.PresentationXamlXmlNamespace &&
 									(member.Member.Name == "ColumnDefinitions" || member.Member.Name == "RowDefinitions") &&

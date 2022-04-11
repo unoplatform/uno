@@ -280,7 +280,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 							|| IsResourcesProperty(propertyInfo)
 						)
 						{
-							// New grid succinct syntax.
+							// WinUI Grid succinct syntax
 							if (instance is Grid grid &&
 								(member.Member.Name == "ColumnDefinitions" || member.Member.Name == "RowDefinitions") &&
 								member.Member.PreferredXamlNamespace == XamlConstants.PresentationXamlXmlNamespace &&
