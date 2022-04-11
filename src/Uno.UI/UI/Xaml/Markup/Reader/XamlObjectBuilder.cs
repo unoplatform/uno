@@ -280,7 +280,40 @@ namespace Windows.UI.Xaml.Markup.Reader
 							|| IsResourcesProperty(propertyInfo)
 						)
 						{
-							// Empty collection
+							// New grid succinct syntax.
+							if (instance is Grid grid &&
+								(member.Member.Name == "ColumnDefinitions" || member.Member.Name == "RowDefinitions") &&
+								member.Member.PreferredXamlNamespace == XamlConstants.PresentationXamlXmlNamespace &&
+								member.Value is string definitions)
+							{
+								var values = definitions
+									.Split(',')
+									.Select(static definition => definition.Trim())
+									.ToArray();
+
+								foreach (var value in values)
+								{
+									var gridLength = GridLength.ParseGridLength(value).FirstOrDefault();
+									if (member.Member.Name == "ColumnDefinitions")
+									{
+										grid.ColumnDefinitions.Add(new ColumnDefinition
+										{
+											Width = gridLength,
+										});
+									}
+									else
+									{
+										grid.RowDefinitions.Add(new RowDefinition
+										{
+											Height = gridLength,
+										});
+									}
+								}
+							}
+							else
+							{
+								// Empty collection
+							}
 						}
 						else
 						{
