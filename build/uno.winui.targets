@@ -63,7 +63,7 @@
 		<UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlHost" />
 		<UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlProcessorsPath" />
 	</ItemGroup>
-  
+
 	<!-- List of packages that provide an uno-runtime folder -->
 	<ItemGroup>
 		<UnoRuntimeEnabledPackage Include="Uno.UI" PackageBasePath="$(MSBuildThisFileDirectory).." Condition="'$(MSBuildThisFile)'=='uno.ui.targets'" />
@@ -183,24 +183,24 @@
              ContinueOnError="true" />
 	</Target>
 
-  <Target Name="ValidateUnoUIAndroid" BeforeTargets="BeforeBuild" Condition="'$(AndroidApplication)'!='' and '$(TargetFrameworkVersion)'!=''">
+	<Target Name="ValidateUnoUIAndroid" BeforeTargets="BeforeBuild" Condition="'$(AndroidApplication)'!='' and '$(TargetFrameworkVersion)'!=''">
 
-	<PropertyGroup Condition="'$(NETCoreAppMaximumVersion)'!='' and '$(NETCoreAppMaximumVersion)'&gt;='6.0'">
-	  <UnoUIMinAndroidSDKVersion>30</UnoUIMinAndroidSDKVersion>
-	  <_CurrentTrimmedAndroidSDLVersion>$(_AndroidApiLevel)</_CurrentTrimmedAndroidSDLVersion>
-	</PropertyGroup>
+		<PropertyGroup Condition="'$(NETCoreAppMaximumVersion)'!='' and '$(NETCoreAppMaximumVersion)'&gt;='6.0'">
+			<UnoUIMinAndroidSDKVersion>30</UnoUIMinAndroidSDKVersion>
+			<_CurrentTrimmedAndroidSDLVersion>$(_AndroidApiLevel)</_CurrentTrimmedAndroidSDLVersion>
+		</PropertyGroup>
 
-	<PropertyGroup Condition="$(TargetFramework.ToLowerInvariant().StartsWith('monoandroid')) or '$(ProjectTypeGuids)'=='{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}'">
-	  <UnoUIMinAndroidSDKVersion>11.0</UnoUIMinAndroidSDKVersion>
-	  <_CurrentTrimmedAndroidSDLVersion>$(TargetFrameworkVersion.Substring(1))</_CurrentTrimmedAndroidSDLVersion>
-	</PropertyGroup>
+		<PropertyGroup Condition="$(TargetFramework.ToLowerInvariant().StartsWith('monoandroid')) or '$(ProjectTypeGuids)'=='{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}'">
+			<UnoUIMinAndroidSDKVersion>11.0</UnoUIMinAndroidSDKVersion>
+			<_CurrentTrimmedAndroidSDLVersion>$(TargetFrameworkVersion.Substring(1))</_CurrentTrimmedAndroidSDLVersion>
+		</PropertyGroup>
 
-	<Error Text="This version of the Android SDK ($(_CurrentTrimmedAndroidSDLVersion)) is not supported by Uno Platform. You must change the &quot;Compile using Android version:&quot; field in the android project property with at least version $(UnoUIMinAndroidSDKVersion)."
-				 Condition="'$(_CurrentTrimmedAndroidSDLVersion)' &lt; '$(UnoUIMinAndroidSDKVersion)'" />
-  </Target>
+		<Error Text="This version of the Android SDK ($(_CurrentTrimmedAndroidSDLVersion)) is not supported by Uno Platform. You must change the &quot;Compile using Android version:&quot; field in the android project property with at least version $(UnoUIMinAndroidSDKVersion)."
+					 Condition="'$(_CurrentTrimmedAndroidSDLVersion)' &lt; '$(UnoUIMinAndroidSDKVersion)'" />
+	</Target>
 
-  <Import Project="uno.winui.cross-runtime.targets" />
-  <Import Project="uno.winui.single-project.targets" />
-  <Import Project="uno.winui.runtime-replace.targets" />
+	<Import Project="uno.winui.cross-runtime.targets" />
+	<Import Project="uno.winui.single-project.targets" />
+	<Import Project="uno.winui.runtime-replace.targets" />
 
 </Project>
