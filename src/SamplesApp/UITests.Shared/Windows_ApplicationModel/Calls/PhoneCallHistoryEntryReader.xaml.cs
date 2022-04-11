@@ -17,11 +17,11 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.ApplicationModel.Calls;
 
-namespace UITests.Windows_ApplicationModel.Calls
+namespace UITests.Shared.Windows_ApplicationModel.Calls
 {
 	[SampleControlInfo("Windows_ApplicationModel.Calls", "ContactReader")]
 
-	public sealed partial class ContactReader : Page
+	public sealed partial class ContactReader : UserControl
 	{
 
 		public ContactReader()
