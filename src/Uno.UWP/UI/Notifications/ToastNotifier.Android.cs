@@ -111,16 +111,16 @@ namespace Windows.UI.Notifications
 			if ((childToast != null) && childToast.Count > 0)
 			{
 				// first text - bigger text (title)
-				toastTitleText = ConvertToastTextToString(childToast![0]!.InnerText);
+				toastTitleText = ConvertToastTextToString(childToast[0]!.InnerText);
 
 				if (childToast.Count > 1)
 				{
-					toastText.Append(ConvertToastTextToString(childToast![1]!.InnerText));
+					toastText.Append(ConvertToastTextToString(childToast[1]!.InnerText));
 
 					for (int childIndex = 2; childIndex < childToast.Count; childIndex++)
 					{   // in most scenarios, this loop will never iterate
 						// separate lines with space and \n: \n as line splitting for newer Android, space - for older
-						toastText.Append(" \n" + ConvertToastTextToString(childToast![childIndex]!.InnerText!));
+						toastText.Append(" \n" + ConvertToastTextToString(childToast[childIndex]!.InnerText!));
 					}
 				}
 			}
