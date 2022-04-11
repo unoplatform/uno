@@ -227,6 +227,8 @@ c.SetClosedState(false);
 }, global::Windows.UI.Xaml.Media.FillRule.EvenOdd)", generatedCode);
 		}
 
+#if !NET6_0_OR_GREATER
+
 		[TestMethod]
 		public void Boolean_Should_Be_Read_From_The_Next_Non_Whitespace_Character_Only()
 		{
@@ -282,5 +284,7 @@ c.BezierTo(new global::Windows.Foundation.Point(27.067, 4.286), new global::Wind
 c.SetClosedState(false);
 }, global::Windows.UI.Xaml.Media.FillRule.EvenOdd)", generatedCode);
 		}
+
+#endif
 	}
 }
