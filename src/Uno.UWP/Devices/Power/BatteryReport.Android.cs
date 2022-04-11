@@ -17,8 +17,9 @@ namespace Windows.Devices.Power
 
 		internal BatteryReport()
 		{
-			// values are current for object creation
+			//  battery values are current for object creation
 
+			// using info from https://developer.android.com/training/monitoring-device-state/battery-monitoring
 			var ifilter = new Android.Content.IntentFilter(Android.Content.Intent.ActionBatteryChanged);
 			var batteryStatus = Android.App.Application.Context.RegisterReceiver(null, ifilter);
 			if(batteryStatus is null)
