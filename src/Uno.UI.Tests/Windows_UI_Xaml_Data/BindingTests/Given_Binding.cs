@@ -153,7 +153,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 			binding.Should().NotBeNull();
 			binding.Path.Should().NotBeNull();
 			binding.Path.Path.Should().Be("Tag");
-			// It looks like a bug
+			// https://github.com/unoplatform/uno/issues/8532
 			//binding.ElementName.Should().BeOfType<ElementNameSubject>().Which.Name.Should().Be("topLevel");
 			binding.ElementName.Should().BeOfType<ElementNameSubject>();
 			binding.Converter.Should().NotBeNull();
