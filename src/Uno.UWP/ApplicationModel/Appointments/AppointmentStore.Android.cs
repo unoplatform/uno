@@ -92,32 +92,32 @@ namespace Windows.ApplicationModel.Appointments
 				throw new NullReferenceException("Windows.ApplicationModel.Appointments.AppointmentStore.FindAppointmentsAsyncTask, _contentResolver is null (impossible)");
 			}
 
-			using var _cursor = _contentResolver?.Query(oUri,
+			using var cursor = _contentResolver?.Query(oUri,
 									androColumns.ToArray(),  // columns in result
 									null,   // where
 									null,   // where params
 									sortMode);
 			
-			if (_cursor is null || _cursor.IsAfterLast)
+			if (cursor is null || cursor.IsAfterLast)
 			{
 				return entriesList;
 			}
 
-			if (!_cursor.MoveToFirst())
+			if (!cursor.MoveToFirst())
 			{
 				return entriesList;
 			}
 
 			// optimization
-			int _colAllDay = _cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.AllDay);
-			int _colLocation = _cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.EventLocation);
-			int _colStartTime = _cursor.GetColumnIndex(Android.Provider.CalendarContract.Instances.Begin);
-			int _colEndTime = _cursor.GetColumnIndex(Android.Provider.CalendarContract.Instances.End);
-			int _colSubject = _cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.Title);
-			int _colOrganizer = _cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.Organizer);
-			int _colDetails = _cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.Description);
-			int _colCalId = _cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.CalendarId);
-			int _colId = _cursor.GetColumnIndex("_id");
+			int _colAllDay = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.AllDay);
+			int _colLocation = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.EventLocation);
+			int _colStartTime = cursor.GetColumnIndex(Android.Provider.CalendarContract.Instances.Begin);
+			int _colEndTime = cursor.GetColumnIndex(Android.Provider.CalendarContract.Instances.End);
+			int _colSubject = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.Title);
+			int _colOrganizer = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.Organizer);
+			int _colDetails = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.Description);
+			int _colCalId = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.CalendarId);
+			int _colId = cursor.GetColumnIndex("_id");
 
 
 			// reading...
@@ -127,58 +127,58 @@ namespace Windows.ApplicationModel.Appointments
 				var entry = new Appointment();
 
 				// two properties always present in result
-				entry.CalendarId = _cursor.GetString(_colCalId);
-				entry.LocalId = _cursor.GetString(_colId);
+				entry.CalendarId = cursor.GetString(_colCalId);
+				entry.LocalId = cursor.GetString(_colId);
 
 				// rest of properties can be switched off (absent in result set)
 				if (_colAllDay > -1)
 				{
-					entry.AllDay = (_cursor.GetInt(_colAllDay) == 1);
+					entry.AllDay = (cursor.GetInt(_colAllDay) == 1);
 				}
 				if (_colDetails > -1)
 				{
-					entry.Details = _cursor.GetString(_colDetails);
+					entry.Details = cursor.GetString(_colDetails);
 				}
 				if (_colLocation > -1)
 				{
-					entry.Location = _cursor.GetString(_colLocation);
+					entry.Location = cursor.GetString(_colLocation);
 				}
 
 				if (_startTimeRequested)
 				{
-					entry.StartTime = DateTimeOffset.FromUnixTimeMilliseconds(_cursor.GetLong(_colStartTime));
+					entry.StartTime = DateTimeOffset.FromUnixTimeMilliseconds(cursor.GetLong(_colStartTime));
 				}
 
 				if (_durationRequested)
 				{
 					// calculate duration from start/end, as Android Duration field sometimes is null, and is in hard to parse RFC2445 format 
-					long startTime = _cursor.GetLong(_colStartTime);
-					long endTime = _cursor.GetLong(_colEndTime);
+					long startTime = cursor.GetLong(_colStartTime);
+					long endTime = cursor.GetLong(_colEndTime);
 					entry.Duration = TimeSpan.FromMilliseconds(endTime - startTime);
 				}
 
 
 				if (_colSubject > -1)
 				{
-					entry.Subject = _cursor.GetString(_colSubject);
+					entry.Subject = cursor.GetString(_colSubject);
 				}
 
 				if (_colOrganizer > -1)
 				{
 					var organ = new AppointmentOrganizer();
-					organ.Address = _cursor.GetString(_colOrganizer);
+					organ.Address = cursor.GetString(_colOrganizer);
 					entry.Organizer = organ;
 				}
 
 				entriesList.Add(entry);
 
-				if (!_cursor.MoveToNext())
+				if (!cursor.MoveToNext())
 				{
 					break;
 				}
 			}
 
-			_cursor.Close();
+			cursor.Close();
 
 			return entriesList;
 
