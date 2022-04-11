@@ -271,6 +271,23 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					ProcessSpan(control, span, member, rootInstance);
 				}
+				// WinUI assigned ContentProperty syntax
+				else if (
+					instance is ColumnDefinition columnDefinition &&
+					member.Member.Name == "_UnknownContent" &&
+					member.Value is string columnDefinitionContent &&
+					!string.IsNullOrWhiteSpace(columnDefinitionContent))
+				{
+					columnDefinition.Width = GridLength.ParseGridLength(columnDefinitionContent.Trim()).FirstOrDefault();
+				}
+				else if (
+					instance is RowDefinition rowDefinition &&
+					member.Member.Name == "_UnknownContent" &&
+					member.Value is string rowDefinitionContent &&
+					!string.IsNullOrWhiteSpace(rowDefinitionContent))
+				{
+					rowDefinition.Height = GridLength.ParseGridLength(rowDefinitionContent.Trim()).FirstOrDefault();
+				}
 				else if (member.Member.Name == "_UnknownContent"
 					&& TypeResolver.FindContentProperty(TypeResolver.FindType(control.Type)) == null
 					&& TypeResolver.IsCollectionOrListType(TypeResolver.FindType(control.Type)))
@@ -1008,7 +1025,6 @@ namespace Windows.UI.Xaml.Markup.Reader
 			if (member.Member.Name == "_UnknownContent")
 			{
 				var property = TypeResolver.FindContentProperty(TypeResolver.FindType(control.Type));
-
 				if (property == null)
 				{
 					throw new InvalidOperationException($"Implicit content is not supported on {control.Type}");
