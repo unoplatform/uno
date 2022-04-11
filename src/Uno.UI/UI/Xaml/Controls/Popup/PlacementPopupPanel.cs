@@ -285,6 +285,66 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				this.Log().LogDebug($"Calculated placement, finalRect={finalRect}");
 			}
+
+			// Clamp the final rect to be within visible bounds. This can happen for example
+			// when the user is trying to show a flyout at Window.Current.Content - which will
+			// match Top position, which would be outside the visible bounds (negative Y).
+			// We nudge the position according to the FlowDirection (so in case the popup
+			// does not fit, the "start of sentences" are ideally visible.
+
+			if (finalRect.Bottom > visibleBounds.Bottom)
+			{
+				finalRect = new Rect(
+					finalRect.Left,
+					visibleBounds.Bottom - finalRect.Height,
+					finalRect.Width,
+					finalRect.Height);
+			}
+
+			if (finalRect.Top < visibleBounds.Top)
+			{
+				finalRect = new Rect(
+					finalRect.Left,
+					visibleBounds.Top,
+					finalRect.Width,
+					finalRect.Height);
+			}
+
+			void NudgeLeft()
+			{
+				if (finalRect.Left < visibleBounds.Left)
+				{
+					finalRect = new Rect(
+						visibleBounds.Left,
+						finalRect.Top,
+						finalRect.Width,
+						finalRect.Height);
+				}
+			}
+
+			void NudgeRight()
+			{
+				if (finalRect.Right > visibleBounds.Right)
+				{
+					finalRect = new Rect(
+						visibleBounds.Right - finalRect.Width,
+						finalRect.Top,
+						finalRect.Width,
+						finalRect.Height);
+				}
+			}
+
+			if (FlowDirection == FlowDirection.LeftToRight)
+			{
+				NudgeRight();
+				NudgeLeft();
+			}
+			else
+			{
+				NudgeLeft();
+				NudgeRight();
+			}
+
 			return finalRect;
 		}
 
