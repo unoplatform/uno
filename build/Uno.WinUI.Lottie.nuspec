@@ -28,17 +28,17 @@
 	  </group>
 	  <group targetFramework="net6.0-ios">
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-		<dependency id="Com.Airbnb.iOS.Lottie" version="2.5.11" />
+		<!--<dependency id="Com.Airbnb.iOS.Lottie" version="2.5.11" /> Disabled until net6 apple targets can support lottie properly -->
 		<dependency id="System.Json" version="4.7.1" />
 	  </group>
 	  <group targetFramework="net6.0-maccatalyst">
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-		<dependency id="Com.Airbnb.iOS.Lottie" version="2.5.11" />
+		<!--<dependency id="Com.Airbnb.iOS.Lottie" version="2.5.11" /> Disabled until net6 apple targets can support lottie properly -->
 		<dependency id="System.Json" version="4.7.1" />
 	  </group>
 	  <group targetFramework="net6.0-macos">
 		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-		<dependency id="Com.Airbnb.iOS.Lottie" version="2.5.11" />
+		<!--<dependency id="Com.Airbnb.iOS.Lottie" version="2.5.11" /> Disabled until net6 apple targets can support lottie properly -->
 		<dependency id="System.Json" version="4.7.1" />
 	  </group>
 	  <group targetFramework="xamarinios10">

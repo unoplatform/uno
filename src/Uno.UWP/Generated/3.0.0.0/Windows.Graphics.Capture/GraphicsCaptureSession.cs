@@ -23,6 +23,20 @@ namespace Windows.Graphics.Capture
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  bool IsBorderRequired
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool GraphicsCaptureSession.IsBorderRequired is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Capture.GraphicsCaptureSession", "bool GraphicsCaptureSession.IsBorderRequired");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void StartCapture()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Capture.GraphicsCaptureSession", "void GraphicsCaptureSession.StartCapture()");
@@ -30,6 +44,8 @@ namespace Windows.Graphics.Capture
 		#endif
 		// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.IsCursorCaptureEnabled.get
 		// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.IsCursorCaptureEnabled.set
+		// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.IsBorderRequired.get
+		// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.IsBorderRequired.set
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void Dispose()

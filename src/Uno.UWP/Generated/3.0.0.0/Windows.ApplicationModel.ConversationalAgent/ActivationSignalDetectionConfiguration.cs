@@ -5,7 +5,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class ActivationSignalDetectionConfiguration 
+	public  partial class ActivationSignalDetectionConfiguration : global::System.IDisposable
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -84,6 +84,16 @@ namespace Windows.ApplicationModel.ConversationalAgent
 			get
 			{
 				throw new global::System.NotImplementedException("The member uint ActivationSignalDetectionConfiguration.TrainingStepsRemaining is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  uint TrainingStepCompletionMaxAllowedTime
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint ActivationSignalDetectionConfiguration.TrainingStepCompletionMaxAllowedTime is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -197,6 +207,42 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration", "void ActivationSignalDetectionConfiguration.Dispose()");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationSetModelDataResult SetModelDataWithResult( string dataType,  global::Windows.Storage.Streams.IInputStream data)
+		{
+			throw new global::System.NotImplementedException("The member ActivationSignalDetectionConfigurationSetModelDataResult ActivationSignalDetectionConfiguration.SetModelDataWithResult(string dataType, IInputStream data) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationSetModelDataResult> SetModelDataWithResultAsync( string dataType,  global::Windows.Storage.Streams.IInputStream data)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ActivationSignalDetectionConfigurationSetModelDataResult> ActivationSignalDetectionConfiguration.SetModelDataWithResultAsync(string dataType, IInputStream data) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationStateChangeResult> SetEnabledWithResultAsync( bool value)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ActivationSignalDetectionConfigurationStateChangeResult> ActivationSignalDetectionConfiguration.SetEnabledWithResultAsync(bool value) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationStateChangeResult SetEnabledWithResult( bool value)
+		{
+			throw new global::System.NotImplementedException("The member ActivationSignalDetectionConfigurationStateChangeResult ActivationSignalDetectionConfiguration.SetEnabledWithResult(bool value) is not implemented in Uno.");
+		}
+		#endif
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.TrainingStepCompletionMaxAllowedTime.get
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration, global::Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityChangedEventArgs> AvailabilityChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -211,5 +257,6 @@ namespace Windows.ApplicationModel.ConversationalAgent
 			}
 		}
 		#endif
+		// Processing: System.IDisposable
 	}
 }

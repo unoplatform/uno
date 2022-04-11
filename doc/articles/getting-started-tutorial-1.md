@@ -25,7 +25,7 @@ Also, you will learn how to run your applications on all platforms supported by 
 
     ![](Assets/tutorial01/newproject1.PNG)
 
-2. Search for the `Uno` templates, select the `Cross-Platform App (Uno Platform)` then click `Next`.  
+2. Search for the `Uno` templates, select the `Multi-Platform App (Uno Platform|Xamarin)` then click `Next`.  
 
     ![](Assets/tutorial01/newproject2.PNG)
 

@@ -91,6 +91,26 @@ namespace Windows.ApplicationModel.ConversationalAgent
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  string DetectorId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ConversationalAgentSignal.DetectorId is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectorKind DetectorKind
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ActivationSignalDetectorKind ConversationalAgentSignal.DetectorKind is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.IsSignalVerificationRequired.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.IsSignalVerificationRequired.set
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.SignalId.get
@@ -103,5 +123,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.SignalStart.set
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.SignalEnd.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.SignalEnd.set
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.DetectorId.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.DetectorKind.get
 	}
 }

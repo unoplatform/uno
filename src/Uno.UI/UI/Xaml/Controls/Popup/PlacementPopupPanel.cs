@@ -11,8 +11,10 @@ using Uno.Foundation.Logging;
 
 #if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+using XamlWindow = Microsoft.UI.Xaml.Window;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
+using XamlWindow = Windows.UI.Xaml.Window;
 #endif
 
 namespace Windows.UI.Xaml.Controls.Primitives
@@ -191,10 +193,39 @@ namespace Windows.UI.Xaml.Controls.Primitives
 							y: anchorRect.Top + halfAnchorHeight - halfChildHeight);
 						break;
 					case FlyoutBase.MajorPlacementMode.Full:
+#if __IOS__ || __ANDROID__
+						// The status bar should remain visible. On droid, this panel is placed beneath the status bar.
+						desiredSize = new Size(
+							ActualWidth,
+							ActualHeight
+#if __IOS__
+							// On iOS, this panel will cover the status bar, so we have to substract it out.
+							- visibleBounds.Y
+#endif
+						).AtMost(maxSize);
+#else
 						desiredSize = visibleBounds.Size.AtMost(maxSize);
+#endif
 						finalPosition = new Point(
-							x: (visibleBounds.Width - desiredSize.Width) / 2.0,
-							y: (visibleBounds.Height - desiredSize.Height) / 2.0);
+							x: FindOptimalOffset(desiredSize.Width, visibleBounds.X, visibleBounds.Width, ActualWidth),
+							y: FindOptimalOffset(desiredSize.Height, visibleBounds.Y, visibleBounds.Height, ActualHeight));
+
+						double FindOptimalOffset(double length, double visibleOffset, double visibleLength, double constraint)
+						{
+							// Center the flyout inside the first area that fits: within visible bounds, below status bar, the screen
+							if (visibleLength >= length)
+							{
+								return visibleOffset + (visibleLength - length) / 2;
+							}
+							if (constraint - visibleOffset >= length)
+							{
+								return visibleOffset + ((constraint - visibleOffset) - length) / 2;
+							}
+							else
+							{
+								return (constraint - length) / 2;
+							}
+						}
 						break;
 					default: // Other unsupported placements
 						finalPosition = new Point(

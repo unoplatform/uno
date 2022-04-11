@@ -18,7 +18,7 @@ This code uses the _IdentityServer_ demonstration endpoint with the following pa
 
 | Field     | Value                                     |
 | --------- | ----------------------------------------- |
-| Authority | `https://demo.itentityserver.io`          |
+| Authority | `https://demo.duendesoftware.com/`        |
 | ClientId  | `interactive.confidential`                |
 | Secret    | `secret`                                  |
 | Scopes    | `openid profile email api offline_access` |
@@ -86,25 +86,37 @@ There's nothing special for UWP. Any return Uri will work.  You can force it to 
 
 **WebAssembly**
 
-There's nothing special for UWP. The default _return Uri_ of the platform (`WebAuthenticationBroker.GetCurrentApplicationCallbackUri()`) will work with this sample and will default to `<origin>/authentication-callback`. It should be something like `http://localhost:5000/authentication-callback` when running locally using Kestrel.
+There's nothing special for WASM. The default _return Uri_ of the platform (`WebAuthenticationBroker.GetCurrentApplicationCallbackUri()`) will work with this sample and will default to `<origin>/authentication-callback`. It should be something like `http://localhost:5000/authentication-callback` when running locally using Kestrel.
 
-## Step 4 - Prepare the UI
+## Step 3 - Prepare the UI
 
-Add the following button in your application:
+Add the following lines in your application, in `[Project-name].Shared.MainPage.xaml`:
 
 ``` xml
-<StackPanel Orientation="Horizontal" Spacing="5">
-	<Button Click="SignIn_Clicked" x:Name="btnSignin" IsEnabled="False">Sign In</Button>
-    <Button Click="SignOut_Clicked" x:Name="btnSignout" IsEnabled="False">Sign Out</Button>
-</StackPanel>
+
+<!--Add this line with the other dependencies-->
+xmlns:toolkit="using:Uno.UI.Toolkit"
+
+<!--This will replace the initial Grid-->
+<Border toolkit:VisibleBoundsPadding.PaddingMask="All">
+        <StackPanel Spacing="10" Margin="10">
+            <StackPanel Orientation="Horizontal" Spacing="5">
+                <Button Click="SignIn_Clicked" x:Name="btnSignin" IsEnabled="False">Sign In</Button>
+                <Button Click="SignOut_Clicked" x:Name="btnSignout" IsEnabled="False">Sign Out</Button>
+            </StackPanel>
+            <TextBlock x:Name="txtAuthResult" />
+        </StackPanel>
+    </Border>
 ```
 
-## Step 5 - Prepare the Requesting Code
+## Step 4 - Prepare the Requesting Code
 
 Add the following code to the main page of your application:
 
 ``` csharp
-// Put this code in class of the MainPage.xaml.cs
+//add this namespace on top of the class
+using IdentityModel.OidcClient;
+// Put this code in the class of MainPage.xaml.cs
 
 public MainPage()
 {
@@ -123,14 +135,12 @@ private async void PrepareClient()
 	// Create options for endpoint discovery
 	var options = new OidcClientOptions
 	{
-		Authority = "https://demo.identityserver.io",
+		Authority = "https://demo.duendesoftware.com/",
 		ClientId = "interactive.confidential",
 		ClientSecret = "secret",
 		Scope = "openid profile email api offline_access",
 		RedirectUri = redirectUri,
 		PostLogoutRedirectUri = redirectUri,
-		ResponseMode = OidcClientOptions.AuthorizeResponseMode.Redirect,
-		Flow = OidcClientOptions.AuthenticationFlow.AuthorizationCode
 	};
 
     // Create the client. In production application, this is often created and stored
@@ -152,7 +162,7 @@ private async void PrepareClient()
 }
 ```
 
-## Step 6 - Proceed to Authentication
+## Step 5 - Proceed to Authentication
 
 Add following button handlers:
 
@@ -167,6 +177,7 @@ private async void SignIn_Clicked(object sender, RoutedEventArgs e)
  
 	if(userResult.ResponseStatus != WebAuthenticationStatus.Success)
     {
+		txtAuthResult.Text = "Canceled";
         // Error or user cancellation
         return;
     }
@@ -179,6 +190,7 @@ private async void SignIn_Clicked(object sender, RoutedEventArgs e)
     {
         var errorMessage = authenticationResult.Error;
         // TODO: do something with error message
+		txtAuthResult.Text = $"Error {errorMessage}";
         return;
     }
 
@@ -187,6 +199,7 @@ private async void SignIn_Clicked(object sender, RoutedEventArgs e)
  	var refreshToken = authenticationResult.RefreshToken;
 
 	// TODO: make something useful with the tokens
+	txtAuthResult.Text = $"Success, token is {token}";
 }
 
 private async void SignOut_Clicked(object sender, RoutedEventArgs e)
@@ -197,7 +210,7 @@ private async void SignOut_Clicked(object sender, RoutedEventArgs e)
 }
 ```
 
-## Step 7 - Finalize & Compile
+## Step 6 - Finalize & Compile
 
 **IMPORTANT FOR WEBASSEMBLY**
 

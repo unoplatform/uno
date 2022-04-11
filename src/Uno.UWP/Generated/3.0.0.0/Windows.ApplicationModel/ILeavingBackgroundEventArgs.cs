@@ -7,8 +7,6 @@ namespace Windows.ApplicationModel
 	#endif
 	public  partial interface ILeavingBackgroundEventArgs 
 	{
-		#if false || false || false || false || false || false || false
-		global::Windows.Foundation.Deferral GetDeferral();
-		#endif
+		// Skipping already declared method Windows.ApplicationModel.ILeavingBackgroundEventArgs.GetDeferral()
 	}
 }

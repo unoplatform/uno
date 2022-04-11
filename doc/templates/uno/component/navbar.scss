@@ -260,6 +260,9 @@
 
 #navbar {
   @media (max-width: 979px) {
+
+    overflow: auto !important;
+    
     position: fixed;
     width: 100%;
     margin: 0;

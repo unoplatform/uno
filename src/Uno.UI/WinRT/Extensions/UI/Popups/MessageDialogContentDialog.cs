@@ -23,10 +23,12 @@ internal partial class MessageDialogContentDialog : ContentDialog
 		DefaultStyleKey = typeof(ContentDialog);
 		_messageDialog = messageDialog ?? throw new ArgumentNullException(nameof(messageDialog));
 
-		// WinUI provides a modern style for ContentDialog, which is not applied automatically - force it
-		if (Application.Current.Resources.TryGetValue("DefaultContentDialogStyle", out var resource) && resource is Style winUIStyle)
-		{
-			Style = winUIStyle;
+		var styleOverriden = TryApplyStyle(WinRTFeatureConfiguration.MessageDialog.StyleOverride);
+		if (!styleOverriden)
+        {
+			// WinUI provides a modern style for ContentDialog, which is not applied automatically.
+			// Force apply it if available.
+			TryApplyStyle("DefaultContentDialogStyle");
 		}
 
 		_commands = _messageDialog.Commands.ToList();
@@ -47,6 +49,19 @@ internal partial class MessageDialogContentDialog : ContentDialog
 		CloseButtonText = _commands.Count > 2 ? _commands[2].Label : null;
 
 		DefaultButton = (ContentDialogButton)(_messageDialog.DefaultCommandIndex + 1); // ContentDialogButton indexed from 1
+	}
+
+	private bool TryApplyStyle(string resourceKey)
+	{
+		if (!string.IsNullOrEmpty(resourceKey) &&
+			Application.Current.Resources.TryGetValue(resourceKey, out var resource) &&
+			resource is Style style)
+		{
+			Style = style;
+			return true;
+		}
+
+		return false;
 	}
 
 	public async Task<IUICommand> ShowAsync(CancellationToken ct)

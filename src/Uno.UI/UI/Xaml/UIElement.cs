@@ -552,7 +552,7 @@ namespace Windows.UI.Xaml
 					}
 				}
 #else
-			for (var i = 0; i < MaxLayoutIterations; i++)
+			for (var i = MaxLayoutIterations; i > 0; i--)
 			{
 				if (root.IsMeasureDirtyOrMeasureDirtyPath)
 				{

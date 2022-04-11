@@ -28,4 +28,26 @@ In older versions of Uno Platforms, the `Popup.IsLightDismissEnabled` dependency
 
 ## MessageDialog
 
-By default, `MessageDialog` in Uno Platform targets displays using `ContentDialog`, to ensure consistent functionality and appearance across platforms. If you prefer to display it using native dialogs on iOS, Android, macOS, and WASM, you can set the `WinRTFeatureConfiguration.MessageDialog.UseNativeDialog` flag to `true`. Beware that some features may be missing for the native implementations.
+By default, `MessageDialog` in Uno Platform targets displays using `ContentDialog` on WebAssembly and Skia, whereas it uses native dialog UI on Android, iOS and macOS. The native dialogs are familiar to the users of the target platform, whereas the `ContentDialog` version offers the same UI on all targets. The  `WinRTFeatureConfiguration.MessageDialog.UseNativeDialog` flag allows you to either disable or enable the use of native dialog UI. The default value of the flag depends on the target platform and changing the value of the flag on Skia has no effect (only `ContentDialog` version is available there):
+
+| Feature        | Android | iOS | macOS | WASM | Skia |
+|----------------|---------|-----|-------|------| --- |
+| Default value of `UseNativeDialog`     | `true` | `true` |  `true`   | `false` | `false` |
+| Native version available     | ✅ | ✅ |  ✅   | ✅(*) | ❌ |
+| `ContentDialog` version available     | ✅ | ✅ |  ✅   | ✅ | ✅ |
+
+(*) Native WebAssembly implementation uses `alert()` and is very limited.
+
+When `ContentDialog` version is used, it uses the default `ContentDialog` style. If you want to customize the UI, you can declare your own `Style` on the application resource level and then set the `StyleOverride` flag to the resource key:
+
+```xaml
+<Application.Resources>
+    <Style x:Key="CustomMessageDialogStyle" TargetType="ContentDialog">
+    ...
+    </Style>
+</Application.Resources>
+```
+
+```c#
+WinRTFeatureConfiguration.MessageDialog.StyleOverride = "CustomMessageDialogStyle";
+```
