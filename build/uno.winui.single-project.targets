@@ -98,4 +98,22 @@
   </ItemGroup>
 
 
+	<!-- Additional capabilities to enable XAML Intellisense for non UWP/WinUI native projects -->
+	<ItemGroup Condition="'$(BuildingInsideVisualStudio)'=='true'">
+		<AvailableItemName Include="PRIResource" />
+		<AvailableItemName Include="AppxManifest" />
+		<AvailableItemName Include="ApplicationDefinition" />
+		<AvailableItemName Include="Page" />
+		<AvailableItemName Include="DesignData" />
+		<AvailableItemName Include="DesignDataWithDesignTimeCreatableTypes" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectCapability Include="WindowsXaml"/>
+		<ProjectCapability Include="WindowsXamlPage"/>
+		<ProjectCapability Include="WindowsXamlCodeBehind"/>
+		<ProjectCapability Include="WindowsXamlResourceDictionary"/>
+		<ProjectCapability Include="WindowsXamlUserControl"/>
+		<ProjectCapability Include="WindowsUniversalMultiViews"/>
+	</ItemGroup>
 </Project>
