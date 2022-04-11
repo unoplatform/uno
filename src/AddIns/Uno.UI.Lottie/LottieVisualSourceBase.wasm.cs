@@ -99,7 +99,15 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				}
 				else
 				{
-					var documentPath = Windows.Storage.Helpers.AssetsPathBuilder.BuildAssetUri(UriSource?.PathAndQuery);
+					var _isAbsolute = IsAbsolute
+					if((bool)_isAbsolute)
+					{
+						var documentPath = Windows.Storage.Helpers.AssetsPathBuilder.BuildAssetUri(UriSource);
+					}
+					else
+					{
+						var documentPath = Windows.Storage.Helpers.AssetsPathBuilder.BuildAssetUri(UriSource?.PathAndQuery);
+					}
 					_domLoaded = false;
 
 					js = new[]
