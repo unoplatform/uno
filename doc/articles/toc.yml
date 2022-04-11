@@ -203,6 +203,8 @@
           href: features/using-winui2.md
         - name: x:Bind
           href: features/windows-ui-xaml-xbind.md
+        - name: Succinct syntax
+          href: features/windows-ui-succinct-syntax.md
     - name: WinUI controls
       items:
         - name: ComboBox
