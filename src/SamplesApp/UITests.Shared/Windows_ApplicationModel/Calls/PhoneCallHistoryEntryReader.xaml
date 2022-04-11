@@ -1,0 +1,19 @@
+﻿<Page
+    x:Class="UITests.Windows_ApplicationModel.Calls.PhoneCallHistoryEntryReader"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_ApplicationModel.Calls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+	<StackPanel Padding="20">
+		<Button Click="getCallLog_Click">Get call log</Button>
+		<TextBlock Text="" Foreground="Red" Name="uiErrorMsg"/>
+		<TextBlock Text="" Name="uiOkMsg"/>
+		<TextBlock Name="uiLastNumber" />
+		<TextBlock Name="uiLastDate"/>
+		<TextBlock Name="uiDuration"/>
+	</StackPanel>
+</Page>

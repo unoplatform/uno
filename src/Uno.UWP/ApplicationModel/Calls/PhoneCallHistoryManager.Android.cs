@@ -1,4 +1,5 @@
-﻿
+﻿#nullable enable
+
 #if __ANDROID__
 
 
@@ -16,7 +17,7 @@ namespace Windows.ApplicationModel.Calls
 	public partial class PhoneCallHistoryManager
 	{
 
-		private static async Task<PhoneCallHistoryStore> RequestStoreAsyncTask(PhoneCallHistoryStoreAccessType accessType)
+		private static async Task<PhoneCallHistoryStore?> RequestStoreAsyncTask(PhoneCallHistoryStoreAccessType accessType)
 		{
 			// UWP: AppEntriesReadWrite, AllEntriesLimitedReadWrite, AllEntriesReadWrite
 			// Android: Manifest has READ_CALL_LOG and WRITE_CALL_LOG, no difference between app/limited/full
@@ -110,7 +111,7 @@ namespace Windows.ApplicationModel.Calls
 			return historyStore;
 		}
 
-		public static IAsyncOperation<PhoneCallHistoryStore> RequestStoreAsync(PhoneCallHistoryStoreAccessType accessType) => RequestStoreAsyncTask(accessType).AsAsyncOperation<PhoneCallHistoryStore>();
+		public static IAsyncOperation<PhoneCallHistoryStore?> RequestStoreAsync(PhoneCallHistoryStoreAccessType accessType) => RequestStoreAsyncTask(accessType).AsAsyncOperation<PhoneCallHistoryStore?>();
 	}
 }
 
