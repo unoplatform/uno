@@ -37,19 +37,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			get => (Uri)GetValue(UriSourceProperty);
 			set => SetValue(UriSourceProperty, value);
 		}
-
-		public static DependencyProperty IsAbsoluteProperty { get ; } = DependencyProperty.Register(
-			nameof(IsAbsolute),
-			typeof(bool),
-			typeof(LottieVisualSourceBase),
-			new FrameworkPropertyMetadata(false);
-
-		public bool IsAbsolute
-		{
-			get => (bool)GetValue(IsAbsoluteProperty);
-			set => SetValue(IsAbsoluteProperty, value);
-		}
-
+		
 		public static DependencyProperty OptionsProperty { get ; } = DependencyProperty.Register(
 			"Options", typeof(LottieVisualOptions), typeof(LottieVisualSourceBase), new FrameworkPropertyMetadata(LottieVisualOptions.None));
 
