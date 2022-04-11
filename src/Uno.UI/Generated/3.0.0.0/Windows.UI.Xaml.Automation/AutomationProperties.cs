@@ -168,6 +168,29 @@ namespace Windows.UI.Xaml.Automation
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.DependencyProperty AutomationControlTypeProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
+			"AutomationControlType", typeof(global::Windows.UI.Xaml.Automation.Peers.AutomationControlType), 
+			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Automation.Peers.AutomationControlType)));
+		#endif
+		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.AutomationControlTypeProperty.get
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Xaml.Automation.Peers.AutomationControlType GetAutomationControlType( global::Windows.UI.Xaml.UIElement element)
+		{
+			return (global::Windows.UI.Xaml.Automation.Peers.AutomationControlType)element.GetValue(AutomationControlTypeProperty);
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static void SetAutomationControlType( global::Windows.UI.Xaml.UIElement element,  global::Windows.UI.Xaml.Automation.Peers.AutomationControlType value)
+		{
+			element.SetValue(AutomationControlTypeProperty, value);
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.IsDialogProperty.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

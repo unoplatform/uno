@@ -67,6 +67,17 @@ namespace Windows.Media.Audio
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static string DTSXForHomeTheater
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string SpatialAudioFormatSubtype.DTSXForHomeTheater is not implemented in Uno.");
+			}
+		}
+		#endif
+		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.DTSXForHomeTheater.get
 		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.WindowsSonic.get
 		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.DolbyAtmosForHeadphones.get
 		// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.DolbyAtmosForHomeTheater.get

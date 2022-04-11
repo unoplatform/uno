@@ -27,9 +27,5 @@ namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 			this.InitializeComponent();
 		}
 
-		private void OnCommandBarButtonClick(object sender, RoutedEventArgs args)
-		{
-			var _ = new Windows.UI.Popups.MessageDialog("CommandBar Button Clicked").ShowAsync();
-		}
 	}
 }

@@ -721,9 +721,11 @@ namespace Windows.UI.Xaml.Controls
 			else if (Content is FrameworkElement fe)
 			{
 				var explicitHeight = fe.Height;
+				var extentHeight = 0d;
+				var extentWidth = 0d;
 				if (explicitHeight.IsFinite())
 				{
-					ExtentHeight = explicitHeight;
+					extentHeight = explicitHeight;
 				}
 				else
 				{
@@ -731,13 +733,22 @@ namespace Windows.UI.Xaml.Controls
 						fe.ActualHeight > 0 &&
 						fe.VerticalAlignment == VerticalAlignment.Stretch;
 
-					ExtentHeight = canUseActualHeightAsExtent ? fe.ActualHeight : fe.DesiredSize.Height;
+					extentHeight = canUseActualHeightAsExtent ? fe.ActualHeight : fe.DesiredSize.Height;
 				}
+
+#if __WASM__
+				// Issue needs to be fixed first for WASM for Bottom Margin missing
+				// Details here: https://github.com/unoplatform/uno/issues/7000
+				ExtentHeight = extentHeight + fe.Margin.Top;
+#else
+				ExtentHeight = extentHeight + fe.Margin.Top + fe.Margin.Bottom;
+#endif
+
 
 				var explicitWidth = fe.Width;
 				if (explicitWidth.IsFinite())
 				{
-					ExtentWidth = explicitWidth;
+					extentWidth = explicitWidth;
 				}
 				else
 				{
@@ -745,8 +756,16 @@ namespace Windows.UI.Xaml.Controls
 						fe.ActualWidth > 0 &&
 						fe.HorizontalAlignment == HorizontalAlignment.Stretch;
 
-					ExtentWidth = canUseActualWidthAsExtent ? fe.ActualWidth : fe.DesiredSize.Width;
+					extentWidth = canUseActualWidthAsExtent ? fe.ActualWidth : fe.DesiredSize.Width;
 				}
+
+#if __WASM__
+				// Issue needs to be fixed first for WASM for Right Margin missing
+				// Details here: https://github.com/unoplatform/uno/issues/7000
+				ExtentWidth = extentWidth + fe.Margin.Left;
+#else
+				ExtentWidth = extentWidth + fe.Margin.Left + fe.Margin.Right;
+#endif
 			}
 			else
 			{
@@ -754,19 +773,30 @@ namespace Windows.UI.Xaml.Controls
 				ExtentWidth = 0;
 			}
 
-			ScrollableHeight = Math.Max(ExtentHeight - ViewportHeight, 0);
+			var scrollableHeight = Math.Max(ExtentHeight - ViewportHeight, 0);
 			// On Skia, the ExtentHeight can include a rounding error, which may cause
 			// unwanted ScrollBar to pop in and out of existence.
-			if (ScrollableHeight < 0.1)
+			if (scrollableHeight < 0.1)
 			{
-				ScrollableHeight = 0;
+				scrollableHeight = 0;
 			}
-			ScrollableWidth = Math.Max(ExtentWidth - ViewportWidth, 0);
+
+			ScrollableHeight = scrollableHeight;
+
+			var scrollableWidth = Math.Max(ExtentWidth - ViewportWidth, 0);
 			// On Skia, the ExtentWidth can include a rounding error, which may cause
 			// unwanted ScrollBar to pop in and out of existence.
-			if (ScrollableWidth < 0.1)
+			if (scrollableWidth < 0.1)
 			{
-				ScrollableWidth = 0;
+				scrollableWidth = 0;
+			}
+
+			ScrollableWidth = scrollableWidth;
+
+			if (Presenter is not null)
+			{
+				Presenter.ExtentHeight = ExtentHeight;
+				Presenter.ExtentWidth = ExtentWidth;
 			}
 
 			UpdateComputedVerticalScrollability(invalidate: false);
@@ -977,7 +1007,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		#region Content and TemplatedParent forwarding to the ScrollContentPresenter
+#region Content and TemplatedParent forwarding to the ScrollContentPresenter
 		protected override void OnContentChanged(object? oldValue, object? newValue)
 		{
 			if (oldValue is not null && !ReferenceEquals(oldValue, newValue))
@@ -1067,9 +1097,9 @@ namespace Windows.UI.Xaml.Controls
 				provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 			}
 		}
-		#endregion
+#endregion
 
-		#region Managed scroll bars support
+#region Managed scroll bars support
 		private bool _isTemplateApplied;
 		private ScrollBar? _verticalScrollbar;
 		private ScrollBar? _horizontalScrollbar;
@@ -1234,7 +1264,7 @@ namespace Windows.UI.Xaml.Controls
 				disableAnimation: immediate,
 				shouldSnap: true);
 		}
-		#endregion
+#endregion
 
 		// Presenter to Control, i.e. OnPresenterScrolled
 		internal void OnPresenterScrolled(double horizontalOffset, double verticalOffset, bool isIntermediate)
@@ -1286,7 +1316,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateZoomedContentAlignment();
 		}
 
-		#region Deferred update (i.e. ViewChanged) support
+#region Deferred update (i.e. ViewChanged) support
 		private bool _hasPendingUpdate;
 		private double _pendingHorizontalOffset;
 		private double _pendingVerticalOffset;
@@ -1321,9 +1351,9 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void UpdatePartial(bool isIntermediate);
-		#endregion
+#endregion
 
-		#region SnapPoints enforcement
+#region SnapPoints enforcement
 		private DispatcherQueueTimer? _snapPointsTimer;
 		private double? _horizontalOffsetForSnapPoints;
 		private double? _verticalOffsetForSnapPoints;
@@ -1350,7 +1380,7 @@ namespace Windows.UI.Xaml.Controls
 			_horizontalOffsetForSnapPoints = null;
 			_verticalOffsetForSnapPoints = null;
 		}
-		#endregion
+#endregion
 
 		public void ScrollToHorizontalOffset(double offset)
 			=> ChangeView(offset, null, null, false);
@@ -1427,7 +1457,7 @@ namespace Windows.UI.Xaml.Controls
 			return ChangeViewNative(horizontalOffset, verticalOffset, zoomFactor, disableAnimation);
 		}
 
-		#region Scroll indicators visual states (Managed scroll bars only)
+#region Scroll indicators visual states (Managed scroll bars only)
 
 		private static readonly TimeSpan _indicatorResetDelay = FeatureConfiguration.ScrollViewer.DefaultAutoHideDelay ?? TimeSpan.FromSeconds(4);
 		private static readonly bool _indicatorResetDisabled = _indicatorResetDelay == TimeSpan.MaxValue;
@@ -1534,6 +1564,6 @@ namespace Windows.UI.Xaml.Controls
 				VisualStateManager.GoToState(this, VisualStates.ScrollBarsSeparator.Collapsed, true);
 			}
 		}
-		#endregion
+#endregion
 	}
 }

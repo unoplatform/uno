@@ -12,6 +12,7 @@ renderNavbar();
 renderLogo();
 updateLogo()
 updateLogoOnResize();
+updateNavbarHeightOnResize()
 renderFooter();
 breakText();
 renderTabs();

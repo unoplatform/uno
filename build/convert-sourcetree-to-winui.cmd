@@ -16,7 +16,7 @@ dotnet run %myvar%\..
 popd
 msbuild Uno.UI.Build.csproj "/p:CombinedConfiguration=Release|AnyCPU;BUILD_BUILDNUMBER=test_test_8888" /m /t:RunAPISyncTool /clp:PerformanceSummary;Summary /bl
 pause
-END
+goto end
 :errorci
   echo Your system has the Platform environment variable to %Platform%, which is known to break some msbuild projects.
   exit /B 1
@@ -27,4 +27,5 @@ END
   If /I '%result%' == '2' (set Platform=)
   If /I '%result%' == '3' (exit /B 1)
   goto convert
+:end
 endlocal

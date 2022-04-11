@@ -105,6 +105,16 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Holographic.HolographicDepthReprojectionMethod> SupportedDepthReprojectionMethods
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<HolographicDepthReprojectionMethod> HolographicViewConfiguration.SupportedDepthReprojectionMethods is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.NativeRenderTargetSize.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.RenderTargetSize.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -123,5 +133,6 @@ namespace Windows.Graphics.Holographic
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.Display.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.IsEnabled.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.IsEnabled.set
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.SupportedDepthReprojectionMethods.get
 	}
 }

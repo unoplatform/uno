@@ -65,13 +65,13 @@ namespace UITests.Shared.Windows_Devices
             }));
         }
 
-		internal Command AttachReadingChangedCommand => new Command((p) =>
+		public Command AttachReadingChangedCommand => new Command((p) =>
         {
             _magnetometer.ReadingChanged += Magnetometer_ReadingChanged;
             ReadingChangedAttached = true;
         });
 
-		internal Command DetachReadingChangedCommand => new Command((p) =>
+		public Command DetachReadingChangedCommand => new Command((p) =>
         {
             _magnetometer.ReadingChanged -= Magnetometer_ReadingChanged;
             ReadingChangedAttached = false;

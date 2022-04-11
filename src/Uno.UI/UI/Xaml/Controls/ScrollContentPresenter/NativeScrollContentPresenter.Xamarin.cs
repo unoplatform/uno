@@ -50,6 +50,20 @@ namespace Windows.UI.Xaml.Controls
 			set { }
 		}
 
+		private double _extentWidth;
+		double INativeScrollContentPresenter.ExtentWidth
+		{
+			get => _extentWidth;
+			set => _extentWidth = value;
+		}
+
+		private double _extentHeight;
+		double INativeScrollContentPresenter.ExtentHeight
+		{
+			get => _extentHeight;
+			set => _extentHeight = value;
+		}
+
 		public object Content
 		{
 			get => _content;
