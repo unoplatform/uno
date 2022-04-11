@@ -11,7 +11,7 @@ namespace Windows.ApplicationModel.Contacts
 {
 	public partial class ContactReader
 	{
-		internal ContactQueryOptions _queryOptions;
+		private ContactQueryOptions _queryOptions;
 		private Android.Database.ICursor? _cursor = null;
 		private Android.Content.ContentResolver? _contentResolver = null;
 
@@ -39,11 +39,11 @@ namespace Windows.ApplicationModel.Contacts
 						Android.Net.Uri.Encode(options.SearchText));
 					break;
 				default:
-					oUri = Android.Provider.ContactsContract.Contacts.ContentUri; 
+					oUri = Android.Provider.ContactsContract.Contacts.ContentUri;
 					break;
 			}
 
-			if(oUri is null)
+			if (oUri is null)
 			{
 				throw new NullReferenceException("Windows.ApplicationModel.Contacts.ContactReader.ctor, oUri is null (impossible)");
 			}
@@ -57,7 +57,7 @@ namespace Windows.ApplicationModel.Contacts
 			_cursor = _contentResolver.Query(oUri,
 									new string[] { columnIdName, "display_name" },  // which columns
 									null,   // where
-									null,   
+									null,
 									null);   // == date DESC
 			if (_cursor is null)
 			{
@@ -73,7 +73,7 @@ namespace Windows.ApplicationModel.Contacts
 
 		~ContactReader()
 		{
-			if(_cursor != null)
+			if (_cursor != null)
 			{
 				_cursor.Dispose();
 				_cursor = null;
@@ -99,24 +99,10 @@ namespace Windows.ApplicationModel.Contacts
 			}
 
 
-			var desiredFields = _queryOptions.DesiredFields;
-			// default value (==None) treat as "all"
-			if (desiredFields == ContactQueryDesiredFields.None)
-			{
-				desiredFields = ContactQueryDesiredFields.EmailAddress | ContactQueryDesiredFields.PhoneNumber | ContactQueryDesiredFields.PostalAddress;
-			}
-
 			// add fields we search by
-			if (_queryOptions.SearchFields.HasFlag(ContactQuerySearchFields.Email))
-			{
-				desiredFields |= ContactQueryDesiredFields.EmailAddress;
-			}
-			if (_queryOptions.SearchFields.HasFlag(ContactQuerySearchFields.Phone))
-			{
-				desiredFields |= ContactQueryDesiredFields.PhoneNumber;
-			}
+			var desiredFields = CanonizeDesiredFields(_queryOptions.DesiredFields, _queryOptions.SearchFields);
 
-			for (int pageGuard = 100; pageGuard > 0 ; pageGuard--)
+			for (int pageGuard = 100; pageGuard > 0; pageGuard--)
 			{
 				var entry = new Contact();
 				int contactId = _cursor.GetInt(0);  // we defined columns while opening cursor, so we know what data is in which columns
@@ -139,7 +125,7 @@ namespace Windows.ApplicationModel.Contacts
 
 				if (!searchFound && _queryOptions.SearchFields.HasFlag(ContactQuerySearchFields.Name))
 				{
-					if (entry.DisplayName.Contains(_queryOptions.SearchText))
+					if (entry.DisplayNameOverride.Contains(_queryOptions.SearchText))
 					{
 						searchFound = true;
 					}
@@ -257,7 +243,7 @@ namespace Windows.ApplicationModel.Contacts
 						// we defined columns while opening cursor, so we know what data is in which columns						itemEntry.Kind = subCursor.GetInt(1) switch
 						itemEntry.Kind = subCursor.GetInt(1) switch
 						{
-							1 => ContactEmailKind.Personal,	// TYPE_HOME
+							1 => ContactEmailKind.Personal, // TYPE_HOME
 							2 => ContactEmailKind.Work,
 							_ => ContactEmailKind.Other     // TYPE_MOBILE, TYPE_OTHER
 						};
@@ -296,8 +282,8 @@ namespace Windows.ApplicationModel.Contacts
 					if (subCursor.MoveToNext())
 					{
 						// we defined columns while opening cursor, so we know what data is in which columns
-						entry.MiddleName = subCursor.GetString(4) ?? "";     
-						entry.LastName = subCursor.GetString(2) ?? ""; 
+						entry.MiddleName = subCursor.GetString(4) ?? "";
+						entry.LastName = subCursor.GetString(2) ?? "";
 						entry.FirstName = subCursor.GetString(1) ?? "";
 						entry.HonorificNamePrefix = subCursor.GetString(3) ?? "";
 						entry.HonorificNameSuffix = subCursor.GetString(5) ?? "";
@@ -394,7 +380,7 @@ namespace Windows.ApplicationModel.Contacts
 
 				entriesList.Add(entry);
 
-				if(!_cursor.MoveToNext())
+				if (!_cursor.MoveToNext())
 				{
 					_cursor.Close();
 					_cursor.Dispose();
@@ -406,6 +392,29 @@ namespace Windows.ApplicationModel.Contacts
 
 			return entriesList;
 		}
+
+		private ContactQueryDesiredFields CanonizeDesiredFields(ContactQueryDesiredFields queryDesiredFields, ContactQuerySearchFields searchFields)
+		{
+			var desiredFields = queryDesiredFields;
+			// default value (==None) treat as "all"
+			if (desiredFields == ContactQueryDesiredFields.None)
+			{
+				desiredFields = ContactQueryDesiredFields.EmailAddress | ContactQueryDesiredFields.PhoneNumber | ContactQueryDesiredFields.PostalAddress;
+			}
+
+			// add fields we search by
+			if (searchFields.HasFlag(ContactQuerySearchFields.Email))
+			{
+				desiredFields |= ContactQueryDesiredFields.EmailAddress;
+			}
+			if (searchFields.HasFlag(ContactQuerySearchFields.Phone))
+			{
+				desiredFields |= ContactQueryDesiredFields.PhoneNumber;
+			}
+
+			return desiredFields;
+		}
+
 	}
 }
 

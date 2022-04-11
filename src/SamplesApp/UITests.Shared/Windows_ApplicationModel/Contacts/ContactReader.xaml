@@ -1,0 +1,19 @@
+﻿<Page
+    x:Class="UITests.Windows_ApplicationModel.Contacts.ContactReader"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_ApplicationModel.Contacts"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+	<StackPanel Padding="20">
+		<Button Click="getContacts_Click">Get contact</Button>
+		<TextBlock Text="" Foreground="Red" Name="uiErrorMsg"/>
+		<TextBlock Text="" Name="uiOkMsg"/>
+		<TextBlock Name="uiFullName" />
+		<TextBlock Name="uiPhone"/>
+		<TextBlock Name="uiEmail"/>
+	</StackPanel>
+</Page>
