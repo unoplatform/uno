@@ -4,12 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml.Markup;
 
 namespace Windows.UI.Xaml.Controls
 {
 	[DebuggerDisplay("{DebugDisplay,nq}")]
-	[ContentProperty(Name = "Content")]
 	public partial class RowDefinition : DefinitionBase, DependencyObject
 	{
 		public RowDefinition()
@@ -22,21 +20,6 @@ namespace Windows.UI.Xaml.Controls
 		internal void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
 			InvalidateDefinition();
-		}
-
-		// New WinUI assigned ContentProperty syntax
-		public virtual object Content
-		{
-			set
-			{
-				if (value is not string stringValue ||
-					string.IsNullOrWhiteSpace(stringValue))
-				{
-					return;
-				}
-
-				Height = GridLength.ParseGridLength(stringValue.Trim()).FirstOrDefault();
-			}
 		}
 
 		#region Height DependencyProperty
