@@ -120,7 +120,7 @@ namespace Windows.UI.Notifications
 					for (int childIndex = 2; childIndex < childToast.Count; childIndex++)
 					{   // in most scenarios, this loop will never iterate
 						// separate lines with space and \n: \n as line splitting for newer Android, space - for older
-						toastText.Append(" \n" + ConvertToastTextToString(childToast[childIndex]!.InnerText!));
+						toastText.Append(" \n" + ConvertToastTextToString(childToast[childIndex].InnerText!));
 					}
 				}
 			}
@@ -220,7 +220,7 @@ namespace Windows.UI.Notifications
 				var childLaunch = childToast[0]?.Attributes?.GetNamedItem("launch");
 				if (childLaunch != null)
 				{
-					toastArgument = childLaunch!.Value!;
+					toastArgument = childLaunch.Value!;
 				}
 			}
 
