@@ -99,12 +99,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				}
 				else
 				{
-					Uri _result = null;
-					var documentPath = string.Empty()
-					
-					Uri.TryCreate(UriSource.ToString(), UriKind.Absolute, out _result);
+					var documentPath = string.Empty();
 
-					if(_result != null)
+					if(Uri.TryCreate(UriSource.ToString(), UriKind.Absolute, out var result))
 					{
 						documentPath = Windows.Storage.Helpers.AssetsPathBuilder.BuildAssetUri(UriSource);
 					}
