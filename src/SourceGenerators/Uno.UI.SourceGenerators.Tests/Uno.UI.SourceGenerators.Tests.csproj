@@ -4,6 +4,8 @@
 		<TargetFrameworks>net461;net6.0</TargetFrameworks>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<NoWarn>$(NoWarn);NU1608</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup Label="GlobalUsings">
@@ -36,8 +38,17 @@
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.1.0" />
-		<PackageReference Include="Uno.UI" Version="4.1.9" />
+		<PackageReference Include="Uno.UI" Version="4.1.9" Aliases="UnoAlias" />
 	</ItemGroup>
+
+	<Target Name="DisableUnoAnalyzersAndGenerators" BeforeTargets="CoreCompile" Condition="'$(TargetFramework)' == 'net6.0'">
+		<ItemGroup>
+			<Analyzer Remove="@(Analyzer)"
+								Condition="$([System.String]::new('%(FullPath)').Contains('uno.ui'))"/>
+			<Analyzer Remove="@(Analyzer)"
+								Condition="'%(Filename)' == 'System.Text.Json.SourceGeneration'"/>
+		</ItemGroup>
+	</Target>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj" />
