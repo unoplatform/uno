@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using UwpChat = Windows.ApplicationModel.Chat;
+using AndroidChat = Android.Provider.Telephony;
 
 namespace Windows.ApplicationModel.Chat
 {
@@ -15,54 +17,37 @@ namespace Windows.ApplicationModel.Chat
 
 		public ChatMessageReader GetMessageReader() => new ChatMessageReader(new TimeSpan(36500, 0, 0, 0));
 		public ChatMessageReader GetMessageReader(TimeSpan recentTimeLimit) => new ChatMessageReader(recentTimeLimit);
-		public IAsyncAction SaveMessageAsync(Windows.ApplicationModel.Chat.ChatMessage chatMessage)
+		public IAsyncAction SaveMessageAsync(UwpChat.ChatMessage chatMessage)
 			=> SaveMessageAsyncTaskProxy(chatMessage).AsAsyncAction();
 
-		internal static string TextBasedSmsColumns(string name)
+		internal static string AndroidTextBasedSmsColumns(string name)
 		{
-			switch (name)
+			return name switch
 			{ // two versions. Google doesn't change Android API, but Xamarin Android has.
 #if __ANDROID_11__
-				case "Body":
-					return Android.Provider.Telephony.ITextBasedSmsColumns.Body;
-				case "Type":
-					return Android.Provider.Telephony.ITextBasedSmsColumns.Type;
-				case "Read":
-					return Android.Provider.Telephony.ITextBasedSmsColumns.Read;
-				case "Seen":
-					return Android.Provider.Telephony.ITextBasedSmsColumns.Seen;
-				case "Status":
-					return Android.Provider.Telephony.ITextBasedSmsColumns.Status;
-				case "Address":
-					return Android.Provider.Telephony.ITextBasedSmsColumns.Address;
-				case "Date":
-					return Android.Provider.Telephony.ITextBasedSmsColumns.Date;
-				case "DateSent":
-					return Android.Provider.Telephony.ITextBasedSmsColumns.DateSent;
+				"Body" => AndroidChat.ITextBasedSmsColumns.Body,
+				"Type" => AndroidChat.ITextBasedSmsColumns.Type,
+				"Read" => AndroidChat.ITextBasedSmsColumns.Read,
+				"Seen" => AndroidChat.ITextBasedSmsColumns.Seen,
+				"Status" => AndroidChat.ITextBasedSmsColumns.Status,
+				"Address" => AndroidChat.ITextBasedSmsColumns.Address,
+				"Date" => AndroidChat.ITextBasedSmsColumns.Date,
+				"DateSent" => AndroidChat.ITextBasedSmsColumns.DateSent,
 #else
-				case "Body":
-					return Android.Provider.Telephony.TextBasedSmsColumns.Body;
-				case "Type":
-					return Android.Provider.Telephony.TextBasedSmsColumns.Type;
-				case "Read":
-					return Android.Provider.Telephony.TextBasedSmsColumns.Read;
-				case "Seen":
-					return Android.Provider.Telephony.TextBasedSmsColumns.Seen;
-				case "Status":
-					return Android.Provider.Telephony.TextBasedSmsColumns.Status;
-				case "Address":
-					return Android.Provider.Telephony.TextBasedSmsColumns.Address;
-				case "Date":
-					return Android.Provider.Telephony.TextBasedSmsColumns.Date;
-				case "DateSent":
-					return Android.Provider.Telephony.TextBasedSmsColumns.DateSent;
+				"Body" => AndroidChat.TextBasedSmsColumns.Body,
+				"Type" => AndroidChat.TextBasedSmsColumns.Type,
+				"Read" => AndroidChat.TextBasedSmsColumns.Read,
+				"Seen" => AndroidChat.TextBasedSmsColumns.Seen,
+				"Status" => AndroidChat.TextBasedSmsColumns.Status,
+				"Address" => AndroidChat.TextBasedSmsColumns.Address,
+				"Date" => AndroidChat.TextBasedSmsColumns.Date,
+				"DateSent" => AndroidChat.TextBasedSmsColumns.DateSent,
 #endif
-				default:
-					throw new ArgumentException("TextBasedSmsColumns called with unknown column name");
-			}
+				_ => throw new ArgumentException($"TextBasedSmsColumns called with unknown column name ({name})"),
+			};
 		}
 
-#region Changing default SMS app
+		#region Changing default SMS app
 
 		internal const int RequestCode = 7001;
 		private static string _previousDefaultApp = "";
@@ -71,8 +56,8 @@ namespace Windows.ApplicationModel.Chat
 		private string GetCurrentDefaultSMSapp()
 		{
 			var context = Android.App.Application.Context;
-			string? appName =  Android.Provider.Telephony.Sms.GetDefaultSmsPackage(context);
-			if(appName is null)
+			string? appName = AndroidChat.Sms.GetDefaultSmsPackage(context);
+			if (appName is null)
 			{
 				return "";
 			}
@@ -92,7 +77,7 @@ namespace Windows.ApplicationModel.Chat
 				throw new InvalidOperationException("Application activity is not yet set, SwitchDefaultSMSapp called too early.");
 			}
 
-			if(GetCurrentDefaultSMSapp() == newAppName)
+			if (GetCurrentDefaultSMSapp() == newAppName)
 			{
 				return true;
 			}
@@ -108,8 +93,8 @@ namespace Windows.ApplicationModel.Chat
 			{
 				// works since API 19 (Kitkat, October 2013) till API 28
 				// https://developer.android.com/reference/android/provider/Telephony.Sms.Intents
-				intent = new Android.Content.Intent(Android.Provider.Telephony.Sms.Intents.ActionChangeDefault);
-				intent.PutExtra(Android.Provider.Telephony.Sms.Intents.ExtraPackageName, newAppName);
+				intent = new Android.Content.Intent(AndroidChat.Sms.Intents.ActionChangeDefault);
+				intent.PutExtra(AndroidChat.Sms.Intents.ExtraPackageName, newAppName);
 
 			}
 			else
@@ -118,7 +103,7 @@ namespace Windows.ApplicationModel.Chat
 				// below should work (in Android), but doesn't work in Xamarin
 				// var intent = Android.App.Roles.RoleManager.createRequestRoleIntent(roleName);
 
-				throw new InvalidOperationException("Android Q+ and Mono/Xamarin API definition mismatch.");
+				throw new NotSupportedException("Android Q+ and Mono/Xamarin API definition mismatch.");
 
 			}
 
@@ -130,7 +115,9 @@ namespace Windows.ApplicationModel.Chat
 
 			// check result (switch successful?)
 			if (GetCurrentDefaultSMSapp() == newAppName)
+			{
 				return true;
+			}
 
 			return false; // no change was made
 		}
@@ -178,7 +165,7 @@ namespace Windows.ApplicationModel.Chat
 				_previousDefaultApp = currSmsApp;
 
 				string? myAppName = context.PackageName;
-				if(myAppName is null)
+				if (myAppName is null)
 				{
 					throw new InvalidOperationException("context.PackageName cannot be null!");
 				}
@@ -189,9 +176,13 @@ namespace Windows.ApplicationModel.Chat
 			else
 			{
 				if (string.IsNullOrEmpty(_previousDefaultApp))
+				{
 					return false;   // error: probably cant happen
+				}
 				if (_previousDefaultApp == context.PackageName)
+				{
 					return true;    // if previous app is this app, we have nothing to do
+				}
 
 				return await SwitchDefaultSMSapp(_previousDefaultApp);
 
@@ -202,7 +193,7 @@ namespace Windows.ApplicationModel.Chat
 
 		#endregion
 
-		private async Task SaveMessageAsyncTaskProxy(Windows.ApplicationModel.Chat.ChatMessage chatMessage)
+		private async Task SaveMessageAsyncTaskProxy(UwpChat.ChatMessage chatMessage)
 		{ // do not block calling thread 
 			await Task.Run(() => SaveMessageAsyncTask(chatMessage));
 		}
@@ -213,12 +204,12 @@ namespace Windows.ApplicationModel.Chat
 		///  See https://android-developers.googleblog.com/2013/10/getting-your-sms-apps-ready-for-kitkat.html
 		///  For switching default SMS app, you can use ChatMessageStore.SwitchDefaultSMSapp method.
 		/// </summary>
-		private async Task SaveMessageAsyncTask(Windows.ApplicationModel.Chat.ChatMessage chatMessage)
+		private async Task SaveMessageAsyncTask(UwpChat.ChatMessage chatMessage)
 		{
 			// https://android.googlesource.com/platform/frameworks/opt/telephony/+/f39de086fddea9e9f6b8c56b04d8dd38a84237db/src/java/android/provider/Telephony.java
 
 			// 1. maybe test permission (for write)?
-			var currSmsApp = Android.Provider.Telephony.Sms.GetDefaultSmsPackage(Android.App.Application.Context);
+			var currSmsApp = AndroidChat.Sms.GetDefaultSmsPackage(Android.App.Application.Context);
 			if (currSmsApp != Android.App.Application.Context.PackageName)
 			{
 				throw new UnauthorizedAccessException("ChatMessageStore: only app selected as default SMS app can write do SMS store");
@@ -227,57 +218,57 @@ namespace Windows.ApplicationModel.Chat
 			// 2. new SMS
 			Android.Content.ContentValues newSMS = new Android.Content.ContentValues();
 
-			newSMS.Put(TextBasedSmsColumns("Body"), chatMessage.Body);
+			newSMS.Put(AndroidTextBasedSmsColumns("Body"), chatMessage.Body);
 			if (chatMessage.IsIncoming)
 			{
-				newSMS.Put(TextBasedSmsColumns("Type"), 1);
-				newSMS.Put(TextBasedSmsColumns("Read"), chatMessage.IsRead ? 1 : 0);
-				newSMS.Put(TextBasedSmsColumns("Seen"), chatMessage.IsSeen ? 1 : 0);
-				newSMS.Put(TextBasedSmsColumns("Status"), (int)Android.Provider.SmsStatus.None);
-				newSMS.Put(TextBasedSmsColumns("Address"), chatMessage.From);
+				newSMS.Put(AndroidTextBasedSmsColumns("Type"), 1);
+				newSMS.Put(AndroidTextBasedSmsColumns("Read"), chatMessage.IsRead ? 1 : 0);
+				newSMS.Put(AndroidTextBasedSmsColumns("Seen"), chatMessage.IsSeen ? 1 : 0);
+				newSMS.Put(AndroidTextBasedSmsColumns("Status"), (int)Android.Provider.SmsStatus.None);
+				newSMS.Put(AndroidTextBasedSmsColumns("Address"), chatMessage.From);
 			}
 			else
 			{
-				newSMS.Put(TextBasedSmsColumns("Read"), 1);
-				newSMS.Put(TextBasedSmsColumns("Seen"), 1);
+				newSMS.Put(AndroidTextBasedSmsColumns("Read"), 1);
+				newSMS.Put(AndroidTextBasedSmsColumns("Seen"), 1);
 
 				if (chatMessage.Recipients.Count > 0)
 				{
-					newSMS.Put(TextBasedSmsColumns("Address"), chatMessage.Recipients.ElementAt(0));
+					newSMS.Put(AndroidTextBasedSmsColumns("Address"), chatMessage.Recipients.ElementAt(0));
 				}
 
 				switch (chatMessage.Status)
 				{
-					case Windows.ApplicationModel.Chat.ChatMessageStatus.ReceiveDownloadFailed:
-					case Windows.ApplicationModel.Chat.ChatMessageStatus.SendFailed:
-						newSMS.Put(TextBasedSmsColumns("Status"), (int)Android.Provider.SmsStatus.Failed);
-						newSMS.Put(TextBasedSmsColumns("Type"), 4);
+					case UwpChat.ChatMessageStatus.ReceiveDownloadFailed:
+					case UwpChat.ChatMessageStatus.SendFailed:
+						newSMS.Put(AndroidTextBasedSmsColumns("Status"), (int)Android.Provider.SmsStatus.Failed);
+						newSMS.Put(AndroidTextBasedSmsColumns("Type"), 4);
 						break;
-					case Windows.ApplicationModel.Chat.ChatMessageStatus.Sent:
-						newSMS.Put(TextBasedSmsColumns("Status"), (int)Android.Provider.SmsStatus.Complete);
-						newSMS.Put(TextBasedSmsColumns("Type"), 2);
+					case UwpChat.ChatMessageStatus.Sent:
+						newSMS.Put(AndroidTextBasedSmsColumns("Status"), (int)Android.Provider.SmsStatus.Complete);
+						newSMS.Put(AndroidTextBasedSmsColumns("Type"), 2);
 						break;
 					default:
-						newSMS.Put(TextBasedSmsColumns("Status"), (int)Android.Provider.SmsStatus.Pending);
-						newSMS.Put(TextBasedSmsColumns("Type"), 4);
+						newSMS.Put(AndroidTextBasedSmsColumns("Status"), (int)Android.Provider.SmsStatus.Pending);
+						newSMS.Put(AndroidTextBasedSmsColumns("Type"), 4);
 						break;
 				}
 			}
 
 			long msecs = chatMessage.LocalTimestamp.ToUnixTimeMilliseconds();
-			newSMS.Put(TextBasedSmsColumns("Date"), msecs);
+			newSMS.Put(AndroidTextBasedSmsColumns("Date"), msecs);
 			msecs = chatMessage.NetworkTimestamp.ToUnixTimeMilliseconds();
-			newSMS.Put(TextBasedSmsColumns("DateSent"), msecs);
+			newSMS.Put(AndroidTextBasedSmsColumns("DateSent"), msecs);
 
 			// 3. insert into Uri
 			var context = Android.App.Application.Context;
-			if(context.ContentResolver is null)
+			if (context.ContentResolver is null)
 			{
 				throw new InvalidOperationException("context.ContentResolver cannot be null!");
 
 			}
 			Android.Content.ContentResolver cr = context.ContentResolver;
-			Android.Net.Uri? contentUri = Android.Provider.Telephony.Sms.ContentUri;
+			Android.Net.Uri? contentUri = AndroidChat.Sms.ContentUri;
 			if (contentUri is null)
 			{
 				throw new InvalidOperationException("Telephony.Sms.ContentUri cannot be null!");

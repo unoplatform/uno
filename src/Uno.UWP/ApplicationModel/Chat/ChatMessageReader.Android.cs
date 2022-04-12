@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using UwpChat = Windows.ApplicationModel.Chat;
+using AndroidChat = Android.Provider.Telephony;
 
 namespace Windows.ApplicationModel.Chat
 {
@@ -19,20 +21,20 @@ namespace Windows.ApplicationModel.Chat
 		internal ChatMessageReader(TimeSpan range)
 		{
 			_range = range;
-			Android.Content.ContentResolver cr = Android.App.Application.Context.ContentResolver;
+			var cr = Android.App.Application.Context.ContentResolver;
 
-			_cursor = cr.Query(Android.Provider.Telephony.Sms.ContentUri, null, null, null, Android.Provider.Telephony.Sms.DefaultSortOrder);
+			_cursor = cr.Query(AndroidChat.Sms.ContentUri, null, null, null, AndroidChat.Sms.DefaultSortOrder);
 
 			if (_cursor.MoveToFirst())
 			{ // runtime optimizations
 
-				_colBody = _cursor.GetColumnIndex(ChatMessageStore.TextBasedSmsColumns("Body"));
-				_colTime = _cursor.GetColumnIndex(ChatMessageStore.TextBasedSmsColumns("Date")); //int
-				_colInOut = _cursor.GetColumnIndex(ChatMessageStore.TextBasedSmsColumns("Type")); // 1:inbox, 4:outbox, 2:sent, ...
-				_colRead = _cursor.GetColumnIndex(ChatMessageStore.TextBasedSmsColumns("Read")); // int (bool)
-				_colAddr = _cursor.GetColumnIndex(ChatMessageStore.TextBasedSmsColumns("Address"));
-				_colSeen = _cursor.GetColumnIndex(ChatMessageStore.TextBasedSmsColumns("Seen")); // int (bool)
-				_colStatus = _cursor.GetColumnIndex(ChatMessageStore.TextBasedSmsColumns("Status")); // int (bool)
+				_colBody = _cursor.GetColumnIndex(ChatMessageStore.AndroidTextBasedSmsColumns("Body"));
+				_colTime = _cursor.GetColumnIndex(ChatMessageStore.AndroidTextBasedSmsColumns("Date")); //int
+				_colInOut = _cursor.GetColumnIndex(ChatMessageStore.AndroidTextBasedSmsColumns("Type")); // 1:inbox, 4:outbox, 2:sent, ...
+				_colRead = _cursor.GetColumnIndex(ChatMessageStore.AndroidTextBasedSmsColumns("Read")); // int (bool)
+				_colAddr = _cursor.GetColumnIndex(ChatMessageStore.AndroidTextBasedSmsColumns("Address"));
+				_colSeen = _cursor.GetColumnIndex(ChatMessageStore.AndroidTextBasedSmsColumns("Seen")); // int (bool)
+				_colStatus = _cursor.GetColumnIndex(ChatMessageStore.AndroidTextBasedSmsColumns("Status")); // int (bool)
 
 /* column numbers, as seen by me on my tablet:
 		0: _id
@@ -53,6 +55,7 @@ namespace Windows.ApplicationModel.Chat
 
 			}
 		}
+
 		~ChatMessageReader()
 		{
 			if (_cursor != null)
@@ -61,12 +64,12 @@ namespace Windows.ApplicationModel.Chat
 			}
 		}
 
-		public IAsyncOperation<IReadOnlyList<Windows.ApplicationModel.Chat.ChatMessage>> ReadBatchAsync()
-			=> ReadBatchAsyncTask().AsAsyncOperation<IReadOnlyList<Windows.ApplicationModel.Chat.ChatMessage>>();
+		public IAsyncOperation<IReadOnlyList<UwpChat.ChatMessage>> ReadBatchAsync()
+			=> ReadBatchAsyncTask().AsAsyncOperation<IReadOnlyList<UwpChat.ChatMessage>>();
 
-		public async Task<IReadOnlyList<Windows.ApplicationModel.Chat.ChatMessage>> ReadBatchAsyncTask()
+		public async Task<IReadOnlyList<UwpChat.ChatMessage>> ReadBatchAsyncTask()
 		{
-			var entriesList = new List<Windows.ApplicationModel.Chat.ChatMessage>();
+			var entriesList = new List<UwpChat.ChatMessage>();
 
 			if (_cursor is null || _cursor.IsAfterLast)
 			{
@@ -75,10 +78,10 @@ namespace Windows.ApplicationModel.Chat
 
 			for (int pageGuard = 100; pageGuard > 0; pageGuard--)
 			{
-				var entry = new Windows.ApplicationModel.Chat.ChatMessage();
+				var entry = new UwpChat.ChatMessage();
 
-				entry.MessageKind = Windows.ApplicationModel.Chat.ChatMessageKind.Standard;
-				entry.MessageOperatorKind = Windows.ApplicationModel.Chat.ChatMessageOperatorKind.Sms;
+				entry.MessageKind = UwpChat.ChatMessageKind.Standard;
+				entry.MessageOperatorKind = UwpChat.ChatMessageOperatorKind.Sms;
 
 				entry.Body = _cursor.GetString(_colBody);
 				entry.IsIncoming = _cursor.GetInt(_colInOut) == 1;
@@ -90,7 +93,7 @@ namespace Windows.ApplicationModel.Chat
 				{
 					entry.IsRead = _cursor.GetInt(_colRead) != 0;
 					entry.IsSeen = _cursor.GetInt(_colSeen) != 0;
-					entry.Status = Windows.ApplicationModel.Chat.ChatMessageStatus.Received;
+					entry.Status = UwpChat.ChatMessageStatus.Received;
 				}
 				else
 				{
@@ -100,13 +103,13 @@ namespace Windows.ApplicationModel.Chat
 					{
 						case (int)Android.Provider.SmsStatus.Complete:
 						case (int)Android.Provider.SmsStatus.None:
-							entry.Status = Windows.ApplicationModel.Chat.ChatMessageStatus.Sent;
+							entry.Status = UwpChat.ChatMessageStatus.Sent;
 							break;
 						case (int)Android.Provider.SmsStatus.Failed:
-							entry.Status = Windows.ApplicationModel.Chat.ChatMessageStatus.SendFailed;
+							entry.Status = UwpChat.ChatMessageStatus.SendFailed;
 							break;
 						case (int)Android.Provider.SmsStatus.Pending:
-							entry.Status = Windows.ApplicationModel.Chat.ChatMessageStatus.Sending;
+							entry.Status = UwpChat.ChatMessageStatus.Sending;
 							break;
 					}
 				}
