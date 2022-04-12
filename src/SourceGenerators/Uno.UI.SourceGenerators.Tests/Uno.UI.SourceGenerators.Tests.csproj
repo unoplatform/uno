@@ -38,7 +38,7 @@
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.1.0" />
-		<PackageReference Include="Uno.UI" Version="4.1.9" Aliases="UnoAlias" />
+		<PackageReference Include="Uno.UI" Version="4.1.9" Aliases="UnoAlias" IncludeAssets="compile;runtime" />
 	</ItemGroup>
 
 	<Target Name="DisableUnoAnalyzersAndGenerators" BeforeTargets="CoreCompile" Condition="'$(TargetFramework)' == 'net6.0'">
