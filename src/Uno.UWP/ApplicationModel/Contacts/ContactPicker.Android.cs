@@ -71,9 +71,9 @@ namespace Windows.ApplicationModel.Contacts
 			return contact;
 		}
 
-		private static void ReadStructuredName(Contact contact, string lookupKey, ContentResolver contentResolver)
+		internal static void ReadStructuredName(Contact contact, string lookupKey, ContentResolver contentResolver)
 		{
-			var contactWhere = "lookup = ? AND " + "mimetype = ?";
+			var contactWhere = "lookup = ? AND mimetype = ?";
 			var contactWhereParams = new[] { lookupKey, ContactsContract.CommonDataKinds.StructuredName.ContentItemType };
 			if (ContactsContract.Data.ContentUri != null)
 			{
@@ -95,6 +95,8 @@ namespace Windows.ApplicationModel.Contacts
 
 					contact.YomiGivenName = GetColumn(cursor, ContactsContract.CommonDataKinds.StructuredName.PhoneticGivenName);
 					contact.YomiFamilyName = GetColumn(cursor, ContactsContract.CommonDataKinds.StructuredName.PhoneticFamilyName);
+
+					contact.DisplayNameOverride = GetColumn(cursor, ContactsContract.CommonDataKinds.StructuredName.DisplayName);
 				}
 			}
 		}
@@ -155,7 +157,7 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 
-		private static void ReadPhones(Contact contact, string lookupKey, ContentResolver contentResolver)
+		internal static void ReadPhones(Contact contact, string lookupKey, ContentResolver contentResolver)
 		{
 			var phonesWhere = "lookup = ?";
 			var phonesWhereParams = new[]
@@ -201,7 +203,7 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 
-		private static void ReadEmails(Contact contact, string lookupKey, ContentResolver contentResolver)
+		internal static void ReadEmails(Contact contact, string lookupKey, ContentResolver contentResolver)
 		{
 			var emailsWhere = "lookup = ?";
 			var emailsWhereParams = new[]
@@ -246,7 +248,7 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 
-		private static void ReadAddresses(Contact contact, string lookupKey, ContentResolver contentResolver)
+		internal static void ReadAddresses(Contact contact, string lookupKey, ContentResolver contentResolver)
 		{
 			var addressesWhere = "lookup = ?";
 			var addressesWhereParams = new[]
