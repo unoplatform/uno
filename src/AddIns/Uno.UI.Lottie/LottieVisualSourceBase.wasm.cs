@@ -101,7 +101,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				{
 					var documentPath = string.Empty;
 				
-
 					if(UriSource.Scheme.Equals("http") || UriSource.Scheme.Equals("https"))
 					{
 						documentPath = UriSource.ToString();
