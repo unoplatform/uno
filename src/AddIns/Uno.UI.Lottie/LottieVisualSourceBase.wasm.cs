@@ -99,17 +99,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				}
 				else
 				{
-					var documentPath = string.Empty;
-				
+					var documentPath = UriSource.Scheme.Equals("http") || UriSource.Scheme.Equals("https")
+					? UriSource.OriginalString
+					: Windows.Storage.Helpers.AssetsPathBuilder.BuildAssetUri(UriSource?.PathAndQuery);
 
-					if(UriSource.Scheme.Equals("http") || UriSource.Scheme.Equals("https"))
-					{
-						documentPath = UriSource.ToString();
-					}
-					else
-					{
-						documentPath = Windows.Storage.Helpers.AssetsPathBuilder.BuildAssetUri(UriSource?.PathAndQuery);
-					}
 					_domLoaded = false;
 
 					js = new[]
