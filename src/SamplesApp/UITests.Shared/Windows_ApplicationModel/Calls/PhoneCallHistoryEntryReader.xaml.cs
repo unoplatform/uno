@@ -82,7 +82,7 @@ namespace UITests.Shared.Windows_ApplicationModel.Calls
 			uiLastDate.Text = entry.StartTime.ToString();
 			if (entry.Duration.HasValue)
 			{
-				uiDuration.Text = entry.Duration.ToString("mm:ss");
+				uiDuration.Text = entry.Duration.Value.ToString("mm:ss");
 			}
 			else
 			{
