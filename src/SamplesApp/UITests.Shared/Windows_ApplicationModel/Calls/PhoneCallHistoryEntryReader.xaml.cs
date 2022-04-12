@@ -24,7 +24,7 @@ namespace UITests.Shared.Windows_ApplicationModel.Calls
 	public sealed partial class PhoneCallHistoryEntryReader : UserControl
 	{
 
-		public ContactReader()
+		public PhoneCallHistoryEntryReader()
 		{
 			this.InitializeComponent();
 		}
