@@ -26,12 +26,12 @@ internal static class XamlCodeGeneratorHelper
 
 		var baseGlobalOptions = new Dictionary<string, string>
 		{
-			{ "build_property.MSBuildProjectFullPath", folder },
-			{ "build_property.RootNamespace", "RandomNamespace" },
+			["build_property.MSBuildProjectFullPath"] = folder,
+			["build_property.RootNamespace"] = "RandomNamespace",
 		};
 		var baseAdditionalTextOptions = new Dictionary<string, string>
 		{
-			{ "build_metadata.AdditionalFiles.SourceItemGroup", "Page" },
+			["build_metadata.AdditionalFiles.SourceItemGroup"] = "Page",
 		};
 		if (globalOptions != null)
 		{
