@@ -19,20 +19,6 @@ internal static class ISourceGeneratorExtensions
 		var unoFolder = Path.GetDirectoryName(typeof(ApplicationHelper).Assembly.Location) ?? string.Empty;
 		var compilation = (Compilation)CSharpCompilation.Create(
 			assemblyName: "Tests",
-			syntaxTrees: new[]
-			{
-				CSharpSyntaxTree.ParseText(@"
-namespace RandomNamespace
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-        }
-    }
-}
-", cancellationToken: cancellationToken),
-			},
 			references: new[]
 			{
 				MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
@@ -43,7 +29,8 @@ namespace RandomNamespace
 				MetadataReference.CreateFromFile(Path.Combine(unoFolder, "Uno.Foundation.dll")),
 				MetadataReference.CreateFromFile(Path.Combine(unoFolder, "Uno.UI.dll")),
 				MetadataReference.CreateFromFile(Path.Combine(unoFolder, "Uno.UI.Composition.dll")),
-			})
+			},
+			options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
 			.AddSyntaxTrees(syntaxTrees);
 
 		var driver = CSharpGeneratorDriver
