@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Uno.UI.SourceGenerators.XamlGenerator;
 
-namespace Uno.UI.SourceGenerators.IntegrationTests;
+namespace Uno.UI.SourceGenerators.Tests;
 
 internal static class XamlCodeGeneratorHelper
 {
@@ -13,6 +13,7 @@ internal static class XamlCodeGeneratorHelper
 		string subFolder,
 		Dictionary<string, string>? globalOptions = null,
 		Dictionary<string, string>? additionalTextOptions = null,
+		string[]? preprocessorSymbols = null,
 		[CallerMemberName] string testName = "",
 		CancellationToken cancellationToken = default)
 	{
@@ -33,6 +34,7 @@ internal static class XamlCodeGeneratorHelper
 		{
 			["build_metadata.AdditionalFiles.SourceItemGroup"] = "Page",
 		};
+		var basePreprocessorSymbols = new List<string>();
 		if (globalOptions != null)
 		{
 			foreach (var pair in globalOptions)
@@ -47,20 +49,24 @@ internal static class XamlCodeGeneratorHelper
 				baseAdditionalTextOptions[pair.Key] = pair.Value;
 			}
 		}
+		if (preprocessorSymbols != null)
+		{
+			basePreprocessorSymbols.AddRange(preprocessorSymbols);
+		}
 		var options = new DictionaryAnalyzerConfigOptionsProvider(
 			globalOptions: baseGlobalOptions,
 			additionalTextOptions: new Dictionary<string, Dictionary<string, string>>
 			{
-				{
-					xaml.Path,
-					baseAdditionalTextOptions
-				},
+				[xaml.Path] = baseAdditionalTextOptions,
 			});
 
 		var (generator, diagnostics) = await new XamlCodeGenerator().RunAsync(
 			options,
-			syntaxTrees: new[] { CSharpSyntaxTree.ParseText(cs, cancellationToken: cancellationToken) },
+			syntaxTrees: new[] { CSharpSyntaxTree.ParseText(
+				text: cs,
+				cancellationToken: cancellationToken) },
 			additionalTexts: new[] { xaml },
+			preprocessorSymbols: basePreprocessorSymbols,
 			cancellationToken);
 		var runResult = generator.GetRunResult();
 

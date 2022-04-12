@@ -1,5 +1,5 @@
 ﻿#if NET6_0_OR_GREATER
-namespace Uno.UI.SourceGenerators.IntegrationTests.Windows_UI_Xaml_Controls.GridTests;
+namespace Uno.UI.SourceGenerators.Tests.Windows_UI_Xaml_Controls.GridTests;
 
 using static XamlCodeGeneratorHelper;
 

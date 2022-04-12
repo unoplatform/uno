@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-namespace Uno.UI.SourceGenerators.IntegrationTests;
+namespace Uno.UI.SourceGenerators.Tests;
 
 public sealed class FileAdditionalText : AdditionalText
 {

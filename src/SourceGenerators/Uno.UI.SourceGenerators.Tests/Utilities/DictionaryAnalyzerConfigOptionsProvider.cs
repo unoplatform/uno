@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Uno.UI.SourceGenerators.IntegrationTests;
+namespace Uno.UI.SourceGenerators.Tests;
 
 internal class DictionaryAnalyzerConfigOptionsProvider : AnalyzerConfigOptionsProvider
 {
