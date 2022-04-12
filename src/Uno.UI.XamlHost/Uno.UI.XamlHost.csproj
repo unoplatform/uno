@@ -1,0 +1,82 @@
+<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+  
+  <PropertyGroup>
+    <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid12.0;netstandard2.0;net461</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid12.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+  </PropertyGroup>
+	
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<AssemblyName>Uno.UI.XamlHost</AssemblyName>
+		<RootNamespace>Uno.UI.XamlHost</RootNamespace>
+		<DefineConstants>$(DefineConstants);XAMARIN;IS_UNO;IS_UNO_UI_XamlHost_PROJECT</DefineConstants>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
+		<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
+
+		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
+		<GenerateLibraryLayout>true</GenerateLibraryLayout>
+		
+		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<Deterministic>true</Deterministic>
+		
+		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Reference</UnoRuntimeIdentifier>
+
+		<!--
+		Use to avoid namespace conflicts with the default namespace of this
+		assembly, for non-fully qualified types in System and Windows.System
+		-->
+		<AndroidResgenNamespace>Uno.UI.XamlHost</AndroidResgenNamespace>
+	</PropertyGroup>
+
+	<Import Project="..\Uno.CrossTargetting.props" />
+	
+	<ItemGroup>
+		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="System.Memory" Version="4.5.2" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFramework)'=='xamarinmac20'">
+		<Reference Include="System.Numerics" />
+		<Reference Include="System.Numerics.Vectors" />
+		<Reference Include="System.Memory" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.csproj" />
+	</ItemGroup>
+
+	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
+
+	<Target Name="VS16Mac_RemoveSystemMemory" BeforeTargets="ResolveAssemblyReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and $([MSBuild]::IsOsPlatform('OSX'))">
+		<!--
+				VS4Mac seems to process System.Memory differently, and removes
+				the System.Memory local reference if the package is transitively referenced.
+				We remove the Reference added by the nuget targets so that ResolveAssemblyReferences
+				is properly adding the local System.Memory to the Reference item group.
+		-->
+		<ItemGroup>
+			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Memory'" />
+			<Reference Remove="@(_ReferenceToRemove)" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac))">
+		<ItemGroup>
+			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
+			<ReferencePath Remove="@(_ReferencePathToRemove)" />
+		</ItemGroup>
+	</Target>
+
+</Project>

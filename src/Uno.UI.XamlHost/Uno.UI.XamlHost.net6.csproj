@@ -1,0 +1,61 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0-android;net6.0-ios</TargetFrameworks>
+		<TargetFrameworksCI>net6.0-android;net6.0-ios</TargetFrameworksCI>
+
+		<TargetFrameworks>$(TargetFrameworks);net6.0-maccatalyst;net6.0-macos</TargetFrameworks>
+		<TargetFrameworksCI>$(TargetFrameworks);net6.0-maccatalyst;net6.0-macos</TargetFrameworksCI>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<AssemblyName>Uno.UI.XamlHost</AssemblyName>
+		<RootNamespace>Uno.UI.XamlHost</RootNamespace>
+		<DefineConstants>$(DefineConstants);XAMARIN;IS_UNO;IS_UNO_UI_XamlHost_PROJECT</DefineConstants>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
+		<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
+
+		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
+		<GenerateLibraryLayout>true</GenerateLibraryLayout>
+		
+		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<Deterministic>true</Deterministic>
+
+		<!--
+		Use to avoid namespace conflicts with the default namespace of this
+		assembly, for non-fully qualified types in System and Windows.System
+		-->
+		<AndroidResgenNamespace>Uno.UI.XamlHost</AndroidResgenNamespace>
+		
+		<UnoSourceGeneratorCaptureGenerationHostOutput>true</UnoSourceGeneratorCaptureGenerationHostOutput>
+	</PropertyGroup>
+
+	<Import Project="..\Uno.CrossTargetting.props" />
+	
+	<ItemGroup>
+		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-android'">
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
+		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
+		<PackageReference Include="Xamarin.AndroidX.Fragment" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.net6.csproj" />
+	</ItemGroup>
+</Project>

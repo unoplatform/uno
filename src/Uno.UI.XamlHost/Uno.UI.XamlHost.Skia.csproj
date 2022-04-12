@@ -1,0 +1,48 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+	</PropertyGroup>
+
+	<Import Project="../netcore-build.props" />
+	<Import Project="../targetframework-override.props" />
+
+	<PropertyGroup>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<AssemblyName>Uno.UI.XamlHost</AssemblyName>
+		<DefineConstants>$(DefineConstants);IS_UNO_UI_XamlHost_PROJECT</DefineConstants>
+  </PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<RootNamespace>Uno.UI.XamlHost</RootNamespace>
+		<DefineConstants>$(DefineConstants);XAMARIN;IS_UNO</DefineConstants>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
+		<GenerateLibraryLayout>true</GenerateLibraryLayout>
+		
+		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<Deterministic>true</Deterministic>
+
+		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
+		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
+	</PropertyGroup>
+
+	<Import Project="..\Uno.CrossTargetting.props" />
+	
+	<ItemGroup>
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
+		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
+	</ItemGroup>
+
+</Project>
