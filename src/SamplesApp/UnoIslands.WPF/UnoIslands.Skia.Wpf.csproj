@@ -1,0 +1,80 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras">
+	<PropertyGroup>
+		<TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
+		
+		<!--
+		Enable implicit dotnet runtime forward rolling, as a net5
+		project may run with net6 only SDK installed
+		-->
+		<RollForward>Major</RollForward>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
+	<Import Project="../../netcore-build-windows.props" />
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<UseWPF>true</UseWPF>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='net472'">
+		<Reference Include="System" />
+		<Reference Include="System.Data" />
+		<Reference Include="System.Xml" />
+		<Reference Include="Microsoft.CSharp" />
+		<Reference Include="System.Core" />
+		<Reference Include="System.Xml.Linq" />
+		<Reference Include="System.Data.DataSetExtensions" />
+		<Reference Include="System.Net.Http" />
+		<Reference Include="System.Xaml">
+			<RequiredTargetFramework>4.0</RequiredTargetFramework>
+		</Reference>
+		<Reference Include="WindowsBase" />
+		<Reference Include="PresentationCore" />
+		<Reference Include="PresentationFramework" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
+		<PackageReference Include="SkiaSharp.Views.WPF" Version="2.80.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\SourceGenerators\System.Xaml\Uno.Xaml.csproj">
+			<Project>{6ffac28c-aced-4ba1-954d-7e720b035928}</Project>
+			<Name>Uno.Xaml</Name>
+			<Aliases>unoxaml</Aliases>
+		</ProjectReference>
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Skia.csproj">
+			<Project>{9f2268e0-49cc-43e6-a59f-5f5219349545}</Project>
+			<Name>Uno.Foundation.Skia</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Wpf\Uno.UI.Runtime.Skia.Wpf.csproj">
+			<Project>{dd7daec9-8f20-440a-81cd-8ed00dbc96d5}</Project>
+			<Name>Uno.UI.Runtime.Skia.Wpf</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj">
+			<Project>{2d066b5f-f67e-469c-abc6-5c3fcb8dda7a}</Project>
+			<Name>Uno.UI.Skia</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\..\Uno.UWP\Uno.Skia.csproj">
+			<Project>{e2985032-e07e-4d8b-b716-8c96bb519ae3}</Project>
+			<Name>Uno.Skia</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\UnoIslands.Skia\UnoIslands.Skia.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Properties\Resources.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	  </Compile>
+	</ItemGroup>
+
+	<Import Project="..\..\..\build\*.Skia.Wpf.props" />
+	<Import Project="..\..\..\build\*.Skia.Wpf.targets" />
+
+</Project>

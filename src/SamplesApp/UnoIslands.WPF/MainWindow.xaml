@@ -1,0 +1,22 @@
+﻿<Window x:Class="UnoIslands.WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UnoIslands.WPF"
+		xmlns:xamlHost="clr-namespace:Uno.UI.Wpf.XamlHost;assembly=Uno.UI.Runtime.Skia.Wpf"
+		mc:Ignorable="d"
+        Title="Uno with Skia# Backend" Height="450" Width="800">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<Button Content="Hello WPF!" />
+		<xamlHost:UnoXamlHost Grid.Row="1"  InitialTypeName="UnoIslands.MainPage" />
+		<Button Content="Hello WPF!" Grid.Row="2" />
+		<xamlHost:UnoXamlHost Grid.Row="3"  InitialTypeName="UnoIslands.SecondPage" />
+	</Grid>
+</Window>
