@@ -19,7 +19,7 @@ using uwpContacts = Windows.ApplicationModel.Contacts;
 
 namespace UITests.Windows_ApplicationModel.Contacts
 {
-	[SampleControlInfo("Windows_ApplicationModel.Contacts", "ContactReader")]
+	[SampleControlInfo("Windows.ApplicationModel.Contacts", "ContactReader")]
 
 	public sealed partial class ContactReader : Page
     {
