@@ -55,10 +55,10 @@ namespace Windows.ApplicationModel.Contacts
 			}
 
 			_cursor = _contentResolver.Query(oUri,
-									new string[] { columnIdName, "display_name" },  // which columns
-									null,   // where
-									null,
-									null);   // == date DESC
+								new string[] { columnIdName, "display_name" },  // which columns
+								null,   // where
+								null,
+								null);   // == date DESC
 			if (_cursor is null)
 			{
 				throw new NullReferenceException("Windows.ApplicationModel.Contacts.ContactReader.ctor, _cursor is null (impossible)");
