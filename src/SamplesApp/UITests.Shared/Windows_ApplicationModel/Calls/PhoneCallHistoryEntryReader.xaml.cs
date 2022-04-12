@@ -16,12 +16,12 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.ApplicationModel.Calls;
-
+          
 namespace UITests.Shared.Windows_ApplicationModel.Calls
 {
 	[SampleControlInfo("Windows_ApplicationModel.Calls", "ContactReader")]
 
-	public sealed partial class ContactReader : UserControl
+	public sealed partial class PhoneCallHistoryEntryReader : UserControl
 	{
 
 		public ContactReader()
