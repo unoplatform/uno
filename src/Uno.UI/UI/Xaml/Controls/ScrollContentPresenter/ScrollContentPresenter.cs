@@ -62,8 +62,15 @@ namespace Windows.UI.Xaml.Controls
 
 #if __WASM__
 		bool _forceChangeToCurrentView;
-
 		bool IScrollContentPresenter.ForceChangeToCurrentView
+		{
+			get => _forceChangeToCurrentView;
+			set => _forceChangeToCurrentView = value;
+		}
+
+#elif __SKIA__
+		bool _forceChangeToCurrentView;
+		internal bool ForceChangeToCurrentView
 		{
 			get => _forceChangeToCurrentView;
 			set => _forceChangeToCurrentView = value;

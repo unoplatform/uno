@@ -15,9 +15,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public class Given_FlipView
 	{
 		[TestMethod]
-#if !__IOS__ && !__ANDROID__ && !__WASM__
-		[Ignore] // Test fails on Skia: https://github.com/unoplatform/uno/issues/7671
-#endif
 		public async Task When_Observable_ItemsSource_And_Added()
 		{
 			var itemsSource = new ObservableCollection<string>();

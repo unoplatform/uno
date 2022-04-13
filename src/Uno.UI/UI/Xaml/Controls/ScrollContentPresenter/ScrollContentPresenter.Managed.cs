@@ -75,10 +75,28 @@ namespace Windows.UI.Xaml.Controls
 		const double ScrollViewerMinHeightToReflowAroundOcclusions = 32.0f;
 
 		private /*readonly - partial*/ IScrollStrategy _strategy;
-		
-		public bool CanHorizontallyScroll { get; set; }
 
-		public bool CanVerticallyScroll { get; set; }
+		private bool _canHorizontallyScroll;
+		public bool CanHorizontallyScroll
+		{
+			get => _canHorizontallyScroll
+#if __SKIA__
+			|| _forceChangeToCurrentView
+#endif
+			;
+			set => _canHorizontallyScroll = value;
+		}
+
+		private bool _canVerticallyScroll;
+		public bool CanVerticallyScroll
+		{
+			get => _canVerticallyScroll
+#if __SKIA__
+			|| _forceChangeToCurrentView
+#endif
+			;
+			set => _canVerticallyScroll = value;
+		}
 
 		public double HorizontalOffset { get; private set; }
 

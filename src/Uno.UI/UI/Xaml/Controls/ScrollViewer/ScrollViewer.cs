@@ -942,7 +942,7 @@ namespace Windows.UI.Xaml.Controls
 
 			_isTemplateApplied = _presenter != null;
 
-#if __WASM__
+#if __WASM__ || __SKIA__
 			if (_presenter != null && ForceChangeToCurrentView)
 			{
 				_presenter.ForceChangeToCurrentView = ForceChangeToCurrentView;
