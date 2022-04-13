@@ -136,7 +136,20 @@ namespace Windows.UI.Xaml.Controls
 			internal set => SetValue(DisplayModeProperty, value);
 		}
 
-		public IList<object> MenuItems => (IList<object>)GetValue(MenuItemsProperty);
+		public IList<object> MenuItems
+		{
+			get
+			{
+				var collection = GetValue(MenuItemsProperty) as IList<object>;
+
+				if(collection is null)
+                {
+					collection = new List<object>();
+                }
+
+				return collection;
+			}
+		}
 
 		public object SettingsItem => (object)GetValue(SettingsItemProperty);
 
