@@ -995,7 +995,7 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly Type[] _manipCompletedArgsType = new[] { typeof(ManipulationCompletedRoutedEventArgs) };
 
 		// TODO: GetImplementedRoutedEvents method can be removed as a breaking change.
-		protected RoutedEventFlag GetImplementedRoutedEvents(Type type) => GetImplementedRoutedEventsForType(type);
+		protected static RoutedEventFlag GetImplementedRoutedEvents(Type type) => GetImplementedRoutedEventsForType(type);
 
 		internal static RoutedEventFlag EvaluateImplementedControlRoutedEvents(Type type)
 		{

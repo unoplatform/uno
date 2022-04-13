@@ -15,10 +15,14 @@ namespace Windows.UI.Xaml.Controls
 
 		CGPoint ContentOffset { get; }
 
+		void SetContentOffset(CGPoint contentOffset, bool animated);
+
 		void ApplyContentOffset(CGPoint contentOffset, bool animated);
 
 #if __IOS__
 		nfloat ZoomScale { get; }
+
+		void SetZoomScale(nfloat scale, bool animated);
 
 		void ApplyZoomScale(nfloat scale, bool animated);
 #endif

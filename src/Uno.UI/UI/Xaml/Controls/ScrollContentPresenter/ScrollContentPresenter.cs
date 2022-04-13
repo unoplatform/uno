@@ -2,9 +2,6 @@
 using System;
 using Windows.Foundation;
 using Uno.UI;
-using Uno.UI.Helpers.WinUI;
-using Uno.Extensions;
-using Windows.UI.Xaml.Media;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
@@ -54,7 +51,22 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endregion
 
-		private ScrollViewer Scroller => ScrollOwner as ScrollViewer;	
+		private ScrollViewer Scroller => ScrollOwner as ScrollViewer;
+
+		public Rect MakeVisible(UIElement visual, Rect rectangle)
+		{
+			// Simulate a BringIntoView request
+			var args = new BringIntoViewRequestedEventArgs()
+			{
+				AnimationDesired = true,
+				TargetRect = rectangle,
+				TargetElement = visual,
+				OriginalSource = visual
+			};
+			OnBringIntoViewRequested(args);
+
+			return args.TargetRect;
+		}
 
 #if __WASM__
 		bool _forceChangeToCurrentView;

@@ -86,17 +86,11 @@ namespace Windows.UI.Xaml.Controls
 				var desiredOffsets = new Windows.Foundation.Point(horizontalOffset ?? HorizontalOffset, verticalOffset ?? VerticalOffset);
 				var clampedOffsets = new Windows.Foundation.Point(MathEx.Clamp(desiredOffsets.X, 0, limit.X), MathEx.Clamp(desiredOffsets.Y, 0, limit.Y));
 
-				var contentOffsetChange =
-					(horizontalOffset != null && _scrollableContainer.ContentOffset.X != horizontalOffset) ||
-					(verticalOffset != null && _scrollableContainer.ContentOffset.Y != verticalOffset);
-
-				var zoomFactorChange = zoomFactor != null && _scrollableContainer.ZoomScale != zoomFactor;
-
 				var success = desiredOffsets == clampedOffsets;
 
-				if (zoomFactor is { } zoom && zoom != _scrollableContainer.ZoomScale)
+				if (zoomFactor is { } zoom && _scrollableContainer.ZoomScale != zoom)
 				{
-					_scrollableContainer.ApplyZoomScale(zoom, !disableAnimation);
+					_scrollableContainer.ApplyZoomScale(zoomFactor!.Value, !disableAnimation);
 				}
 
 				if (!success && IsArrangeDirty)
