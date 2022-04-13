@@ -35,6 +35,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private object RealContent => Content;
+		
 		private void TryRegisterEvents(ScrollBarVisibility visibility)
 		{
 			if (
@@ -197,6 +199,16 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_pendingScrollTo.HasValue)
 			{
+				if (disableAnimation)
+				{
+					// Ensure offset values match native ones if animation is disabled
+					// as the scroll event may occur only asynchronously
+					// while the values are already set properly.
+					HorizontalOffset = GetNativeHorizontalOffset();
+					VerticalOffset = GetNativeVerticalOffset();
+					ScrollOffsets = new Point(HorizontalOffset, VerticalOffset);
+				}
+
 				// The scroll to was not processed by the native SCP, we need to re-request ScrollTo a bit later.
 				// This happen has soon as the native SCP element is not in a valid state (like un-arranged or hidden).
 
@@ -226,7 +238,7 @@ namespace Windows.UI.Xaml.Controls
 							horizontalOffset ?? nativeHorizontalOffset,
 							verticalOffset ?? nativeVerticalOffset,
 							isIntermediate: false
-						); 
+						);
 					}
 				}
 			}

@@ -1,13 +1,5 @@
-﻿using Uno.Extensions;
-using Uno.Foundation.Logging;
-using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+﻿using Uno.UI.DataBinding;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Uno.Disposables;
-using System.Runtime.CompilerServices;
-using System.Text;
 using Windows.Foundation;
 using Uno.UI;
 #if XAMARIN_ANDROID
@@ -38,6 +30,7 @@ namespace Windows.UI.Xaml.Controls
 
 			InitializeScrollContentPresenter();
 		}
+
 		partial void InitializePartial();
 
 		#region ScrollOwner
@@ -59,6 +52,21 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		private ScrollViewer Scroller => ScrollOwner as ScrollViewer;
+
+		public Rect MakeVisible(UIElement visual, Rect rectangle)
+		{
+			// Simulate a BringIntoView request
+			var args = new BringIntoViewRequestedEventArgs()
+			{
+				AnimationDesired = true,
+				TargetRect = rectangle,
+				TargetElement = visual,
+				OriginalSource = visual
+			};
+			OnBringIntoViewRequested(args);
+
+			return args.TargetRect;
+		}
 
 #if __WASM__
 		bool _forceChangeToCurrentView;
@@ -112,9 +120,9 @@ namespace Windows.UI.Xaml.Controls
 			return this.IsHeightConstrainedSimple() ?? (Parent as ILayoutConstraints)?.IsHeightConstrained(this) ?? false;
 		}
 
-		public double ViewportHeight => DesiredSize.Height;
+		public double ViewportHeight => DesiredSize.Height - Margin.Top - Margin.Bottom;
 
-		public double ViewportWidth => DesiredSize.Width;
+		public double ViewportWidth => DesiredSize.Width - Margin.Left - Margin.Right;
 
 #if UNO_HAS_MANAGED_SCROLL_PRESENTER || __WASM__
 		protected override Size MeasureOverride(Size availableSize)

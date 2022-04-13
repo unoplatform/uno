@@ -43,6 +43,11 @@ namespace Windows.UI.Xaml.Controls
 		private bool _isInAnimatedScroll;
 
 		CGPoint IUIScrollView.UpperScrollLimit => UpperScrollLimit;
+
+		CGPoint IUIScrollView.ContentOffset => ContentOffset;
+
+		nfloat IUIScrollView.ZoomScale => ZoomScale;
+
 		internal CGPoint UpperScrollLimit
 		{
 			get
@@ -158,6 +163,30 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		void IUIScrollView.ApplyZoomScale(nfloat scale, bool animated)
+		{
+			if (!animated)
+			{
+				ZoomScale = scale;
+			}
+			else
+			{
+				base.SetZoomScale(scale, true);
+			}
+		}
+
+		void IUIScrollView.ApplyContentOffset(CGPoint contentOffset, bool animated)
+		{
+			if (!animated)
+			{
+				ContentOffset = contentOffset;
+			}
+			else
+			{
+				base.SetContentOffset(contentOffset, true);
+			}
+		}
+
 		partial void OnContentChanged(UIView previousView, UIView newView)
 		{
 			// If Content is a view it may have already been set as Content somewhere else in certain scenarios
@@ -166,7 +195,7 @@ namespace Windows.UI.Xaml.Controls
 				previousView.RemoveFromSuperview();
 			}
 
-            // Ensure we're working with an empty view, in case previously removed views were missed.
+			// Ensure we're working with an empty view, in case previously removed views were missed.
 			while (Subviews.Length > 0)
 			{
 				Subviews[0].RemoveFromSuperview();
@@ -534,7 +563,7 @@ namespace Windows.UI.Xaml.Controls
 				//							  (e.g. it would prevent all sub-sequent events for the given pointer).
 
 				_touchTarget = parent;
-				_touchTarget.TouchesBegan(touches, evt, canBubbleNatively: true); 
+				_touchTarget.TouchesBegan(touches, evt, canBubbleNatively: true);
 			}
 		}
 

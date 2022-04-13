@@ -2,17 +2,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
-
-using Uno;
 using Uno.Extensions;
+using System.Reflection;
+using Uno;
 using Uno.Foundation.Logging;
-using Uno.UI;
 using Uno.UI.Core;
 using Uno.UI.Extensions;
+using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
@@ -149,6 +148,11 @@ namespace Windows.UI.Xaml
 
 		public static RoutedEvent NoFocusCandidateFoundEvent { get; } = new RoutedEvent(RoutedEventFlag.NoFocusCandidateFound);
 
+		/// <summary>
+		/// Gets the identifier for the BringIntoViewRequested routed event.
+		/// </summary>
+		public static RoutedEvent BringIntoViewRequestedEvent { get; } = new RoutedEvent(RoutedEventFlag.BringIntoViewRequested);
+
 		private struct RoutedEventHandlerInfo
 		{
 			internal RoutedEventHandlerInfo(object handler, bool handledEventsToo)
@@ -265,6 +269,15 @@ namespace Windows.UI.Xaml
 		{
 			add => AddHandler(NoFocusCandidateFoundEvent, value, false);
 			remove => RemoveHandler(NoFocusCandidateFoundEvent, value);
+		}
+
+		/// <summary>
+		/// Occurs when StartBringIntoView is called on this element or one of its descendants.
+		/// </summary>
+		public event TypedEventHandler<UIElement, BringIntoViewRequestedEventArgs> BringIntoViewRequested
+		{
+			add => AddHandler(BringIntoViewRequestedEvent, value, false);
+			remove => RemoveHandler(BringIntoViewRequestedEvent, value);
 		}
 
 		public event PointerEventHandler PointerCanceled
@@ -955,6 +968,9 @@ namespace Windows.UI.Xaml
 					break;
 				case TypedEventHandler<UIElement, LosingFocusEventArgs> losingFocusHandler:
 					losingFocusHandler(this, (LosingFocusEventArgs)args);
+					break;
+				case TypedEventHandler<UIElement, BringIntoViewRequestedEventArgs> bringIntoViewRequestedHandler:
+					bringIntoViewRequestedHandler(this, (BringIntoViewRequestedEventArgs)args);
 					break;
 				default:
 					this.Log().Error($"The handler type {handler.GetType()} has not been registered for RoutedEvent");

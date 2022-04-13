@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using CoreGraphics;
+using UIKit;
 using Uno.Extensions;
-
 using Uno.Foundation.Logging;
 using Windows.Foundation;
-using UIKit;
 
 #if NET6_0_OR_GREATER
 using ObjCRuntime;
@@ -25,6 +24,44 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		Size? IScrollContentPresenter.CustomContentExtent => NativePanel?.ContentSize;
+
+		CGPoint IUIScrollView.ContentOffset => NativePanel?.ContentOffset ?? default(CGPoint);
+
+		nfloat IUIScrollView.ZoomScale => NativePanel?.ZoomScale ?? default(nfloat);
+
+		void IUIScrollView.ApplyZoomScale(nfloat scale, bool animated)
+		{
+			if (NativePanel == null)
+			{
+				return;
+			}
+
+			if (animated)
+			{
+				NativePanel.SetZoomScale(scale, animated);
+			}
+			else
+			{
+				NativePanel.ZoomScale = scale;
+			}
+		}
+
+		void IUIScrollView.ApplyContentOffset(CGPoint contentOffset, bool animated)
+		{
+			if (NativePanel == null)
+			{
+				return;
+			}
+
+			if (animated)
+			{
+				NativePanel.SetContentOffset(contentOffset, animated);
+			}
+			else
+			{
+				NativePanel.ContentOffset = contentOffset;
+			}
+		}
 
 		public void SetContentOffset(CGPoint contentOffset, bool animated)
 		{
