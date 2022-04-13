@@ -6,7 +6,7 @@ using System;
 using windows = Windows;
 using WUX = Windows.UI.Xaml;
 
-namespace Microsoft.Toolkit.Win32.UI.XamlHost
+namespace Uno.UI.Wpf.XamlHost
 {
 	/// <summary>
 	/// Provides factory methods for type registered with <seealso cref="WUX.Application"/>
@@ -35,7 +35,8 @@ namespace Microsoft.Toolkit.Win32.UI.XamlHost
 			var xamlRootMetadataProvider = windows.UI.Xaml.Application.Current as windows.UI.Xaml.Markup.IXamlMetadataProvider;
 			if (xamlRootMetadataProvider != null)
 			{
-				xamlType = xamlRootMetadataProvider.GetXamlType(xamlTypeName);
+				//TODO:MZ: This is a temporary workaround
+				//xamlType = xamlRootMetadataProvider.GetXamlType(xamlTypeName);
 			}
 
 			systemType = FindBuiltInType(xamlTypeName);

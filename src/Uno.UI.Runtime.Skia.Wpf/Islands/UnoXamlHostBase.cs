@@ -5,15 +5,15 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
-using Microsoft.Toolkit.Win32.UI.XamlHost;
+using Uno.UI.XamlHost;
 using WUX = Windows.UI.Xaml;
 
-namespace Microsoft.Toolkit.Wpf.UI.XamlHost
+namespace Uno.UI.Wpf.XamlHost
 {
     /// <summary>
     /// UnoXamlHost control hosts UWP XAML content inside the Windows Presentation Foundation
     /// </summary>
-    abstract partial class UnoXamlHostBase : HwndHost
+    abstract partial class UnoXamlHostBase
     {
         /// <summary>
         /// An instance of <seealso cref="IXamlMetadataContainer"/>. Required to
@@ -49,58 +49,58 @@ namespace Microsoft.Toolkit.Wpf.UI.XamlHost
         /// </summary>
         public event EventHandler ChildChanged;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UnoXamlHostBase"/> class.
-        /// </summary>
-        /// <remarks>
-        /// Default constructor is required for use in WPF markup. When the default constructor is called,
-        /// object properties have not been set. Put WPF logic in OnInitialized.
-        /// </remarks>
-        public UnoXamlHostBase()
-        {
-            // Create DesktopWindowXamlSource, host for UWP XAML content
-            _xamlSource = new WUX.Hosting.DesktopWindowXamlSource();
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UnoXamlHostBase"/> class.
+		/// </summary>
+		/// <remarks>
+		/// Default constructor is required for use in WPF markup. When the default constructor is called,
+		/// object properties have not been set. Put WPF logic in OnInitialized.
+		/// </remarks>
+		public UnoXamlHostBase()
+		{
+			// Create DesktopWindowXamlSource, host for UWP XAML content
+			_xamlSource = new WUX.Hosting.DesktopWindowXamlSource();
 
-            // Hook DesktopWindowXamlSource OnTakeFocus event for Focus processing
-            _xamlSource.TakeFocusRequested += OnTakeFocusRequested;
-        }
+			// Hook DesktopWindowXamlSource OnTakeFocus event for Focus processing
+			_xamlSource.TakeFocusRequested += OnTakeFocusRequested;
+		}			
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UnoXamlHostBase"/> class.
-        /// </summary>
-        /// <remarks>
-        /// Constructor is required for use in WPF markup. When the default constructor is called,
-        /// object properties have not been set. Put WPF logic in OnInitialized.
-        /// </remarks>
-        /// <param name="typeName">UWP XAML Type name</param>
-        public UnoXamlHostBase(string typeName)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UnoXamlHostBase"/> class.
+		/// </summary>
+		/// <remarks>
+		/// Constructor is required for use in WPF markup. When the default constructor is called,
+		/// object properties have not been set. Put WPF logic in OnInitialized.
+		/// </remarks>
+		/// <param name="typeName">UWP XAML Type name</param>
+		public UnoXamlHostBase(string typeName)
             : this()
         {
-            ChildInternal = UWPTypeFactory.CreateXamlContentByType(typeName);
+            ChildInternal = UnoTypeFactory.CreateXamlContentByType(typeName);
             ChildInternal.SetWrapper(this);
         }
 
-        /// <summary>
-        /// Gets the current instance of <seealso cref="XamlApplication"/>
-        /// </summary>
-        protected static IXamlMetadataContainer MetadataContainer
-        {
-            get
-            {
-                return _metadataContainer;
-            }
-        }
+		/// <summary>
+		/// Gets the current instance of <seealso cref="XamlApplication"/>
+		/// </summary>
+		protected static IXamlMetadataContainer MetadataContainer
+		{
+			get
+			{
+				return _metadataContainer;
+			}
+		}
 
-        /// <summary>
-        /// Binds this wrapper object's exposed WPF DependencyProperty with the wrapped UWP object's DependencyProperty
-        /// for what effectively works as a regular one- or two-way binding.
-        /// </summary>
-        /// <param name="propertyName">the registered name of the dependency property</param>
-        /// <param name="wpfProperty">the DependencyProperty of the wrapper</param>
-        /// <param name="uwpProperty">the related DependencyProperty of the UWP control</param>
-        /// <param name="converter">a converter, if one's needed</param>
-        /// <param name="direction">indicates that the binding should be one or two directional.  If one way, the Uwp control is only updated from the wrapper.</param>
-        public void Bind(string propertyName, System.Windows.DependencyProperty wpfProperty, WUX.DependencyProperty uwpProperty, object converter = null, System.ComponentModel.BindingDirection direction = System.ComponentModel.BindingDirection.TwoWay)
+		/// <summary>
+		/// Binds this wrapper object's exposed WPF DependencyProperty with the wrapped UWP object's DependencyProperty
+		/// for what effectively works as a regular one- or two-way binding.
+		/// </summary>
+		/// <param name="propertyName">the registered name of the dependency property</param>
+		/// <param name="wpfProperty">the DependencyProperty of the wrapper</param>
+		/// <param name="uwpProperty">the related DependencyProperty of the UWP control</param>
+		/// <param name="converter">a converter, if one's needed</param>
+		/// <param name="direction">indicates that the binding should be one or two directional.  If one way, the Uwp control is only updated from the wrapper.</param>
+		public void Bind(string propertyName, System.Windows.DependencyProperty wpfProperty, WUX.DependencyProperty uwpProperty, object converter = null, System.ComponentModel.BindingDirection direction = System.ComponentModel.BindingDirection.TwoWay)
         {
             if (direction == System.ComponentModel.BindingDirection.TwoWay)
             {
@@ -126,8 +126,9 @@ namespace Microsoft.Toolkit.Wpf.UI.XamlHost
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
+			InitializeHost();
 
-            if (_childInternal != null)
+			if (_childInternal != null)
             {
                 SetContent();
             }
@@ -199,36 +200,37 @@ namespace Microsoft.Toolkit.Wpf.UI.XamlHost
 
         private System.Windows.Window _parentWindow;
 
-        /// <summary>
-        /// Creates <see cref="WUX.Application" /> object, wrapped <see cref="WUX.Hosting.DesktopWindowXamlSource" /> instance; creates and
-        /// sets root UWP XAML element on <see cref="WUX.Hosting.DesktopWindowXamlSource" />.
-        /// </summary>
-        /// <param name="hwndParent">Parent window handle</param>
-        /// <returns>Handle to XAML window</returns>
-        protected override HandleRef BuildWindowCore(HandleRef hwndParent)
-        {
-            this._parentWindow = System.Windows.Window.GetWindow(this);
-            if (_parentWindow != null)
-            {
-                _parentWindow.Closed += this.OnParentClosed;
-            }
+   //     /// <summary>
+   //     /// Creates <see cref="WUX.Application" /> object, wrapped <see cref="WUX.Hosting.DesktopWindowXamlSource" /> instance; creates and
+   //     /// sets root UWP XAML element on <see cref="WUX.Hosting.DesktopWindowXamlSource" />.
+   //     /// </summary>
+   //     /// <param name="hwndParent">Parent window handle</param>
+   //     /// <returns>Handle to XAML window</returns>
+   //     protected override HandleRef BuildWindowCore(HandleRef hwndParent)
+   //     {
+			//return default;
+   //         //this._parentWindow = System.Windows.Window.GetWindow(this);
+   //         //if (_parentWindow != null)
+   //         //{
+   //         //    _parentWindow.Closed += this.OnParentClosed;
+   //         //}
 
-            ComponentDispatcher.ThreadFilterMessage += this.OnThreadFilterMessage;
+   //         //ComponentDispatcher.ThreadFilterMessage += this.OnThreadFilterMessage;
 
-            // 'EnableMouseInPointer' is called by the WindowsXamlManager during initialization. No need
-            // to call it directly here.
+   //         //// 'EnableMouseInPointer' is called by the WindowsXamlManager during initialization. No need
+   //         //// to call it directly here.
 
-            // Create DesktopWindowXamlSource instance
-            var desktopWindowXamlSourceNative = _xamlSource.GetInterop<IDesktopWindowXamlSourceNative>();
+   //         //// Create DesktopWindowXamlSource instance
+   //         //var desktopWindowXamlSourceNative = _xamlSource.GetInterop<IDesktopWindowXamlSourceNative>();
 
-            // Associate the window where UWP XAML will display content
-            desktopWindowXamlSourceNative.AttachToWindow(hwndParent.Handle);
+   //         //// Associate the window where UWP XAML will display content
+   //         //desktopWindowXamlSourceNative.AttachToWindow(hwndParent.Handle);
 
-            var windowHandle = desktopWindowXamlSourceNative.WindowHandle;
+   //         //var windowHandle = desktopWindowXamlSourceNative.WindowHandle;
 
-            // Overridden function must return window handle of new target window (DesktopWindowXamlSource's Window)
-            return new HandleRef(this, windowHandle);
-        }
+   //         //// Overridden function must return window handle of new target window (DesktopWindowXamlSource's Window)
+   //         //return new HandleRef(this, windowHandle);
+   //     }
 
         /// <summary>
         /// The default implementation of SetContent applies ChildInternal to desktopWindowXamSource.Content.
@@ -250,76 +252,76 @@ namespace Microsoft.Toolkit.Wpf.UI.XamlHost
         /// <param name="e">Parameter args is ignored</param>
         private void OnParentClosed(object sender, EventArgs e)
         {
-            this.Dispose(true);
+            //this.Dispose(true);
         }
 
-        /// <summary>
-        /// WPF framework request to destroy control window.  Cleans up the HwndIslandSite created by DesktopWindowXamlSource
-        /// </summary>
-        /// <param name="hwnd">Handle of window to be destroyed</param>
-        protected override void DestroyWindowCore(HandleRef hwnd)
-        {
-            Dispose(true);
-        }
+        ///// <summary>
+        ///// WPF framework request to destroy control window.  Cleans up the HwndIslandSite created by DesktopWindowXamlSource
+        ///// </summary>
+        ///// <param name="hwnd">Handle of window to be destroyed</param>
+        //protected override void DestroyWindowCore(HandleRef hwnd)
+        //{
+        //    Dispose(true);
+        //}
 
-        /// <summary>
-        /// UnoXamlHost Dispose
-        /// </summary>
-        /// <param name="disposing">Is disposing?</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && !this.IsDisposed)
-            {
-                var currentRoot = (WUX.FrameworkElement)ChildInternal;
-                if (currentRoot != null)
-                {
-                    currentRoot.SizeChanged -= XamlContentSizeChanged;
-                }
+        ///// <summary>
+        ///// UnoXamlHost Dispose
+        ///// </summary>
+        ///// <param name="disposing">Is disposing?</param>
+        //protected override void Dispose(bool disposing)
+        //{
+        //    if (disposing && !this.IsDisposed)
+        //    {
+        //        var currentRoot = (WUX.FrameworkElement)ChildInternal;
+        //        if (currentRoot != null)
+        //        {
+        //            currentRoot.SizeChanged -= XamlContentSizeChanged;
+        //        }
 
-                // Free any other managed objects here.
-                ComponentDispatcher.ThreadFilterMessage -= this.OnThreadFilterMessage;
-                ChildInternal = null;
-                if (_xamlSource != null)
-                {
-                    _xamlSource.TakeFocusRequested -= OnTakeFocusRequested;
-                }
+        //        // Free any other managed objects here.
+        //        ComponentDispatcher.ThreadFilterMessage -= this.OnThreadFilterMessage;
+        //        ChildInternal = null;
+        //        if (_xamlSource != null)
+        //        {
+        //            _xamlSource.TakeFocusRequested -= OnTakeFocusRequested;
+        //        }
 
-                if (_parentWindow != null)
-                {
-                    _parentWindow.Closed -= this.OnParentClosed;
-                    _parentWindow = null;
-                }
-            }
+        //        if (_parentWindow != null)
+        //        {
+        //            _parentWindow.Closed -= this.OnParentClosed;
+        //            _parentWindow = null;
+        //        }
+        //    }
 
-            // Free any unmanaged objects here.
-            if (_xamlSource != null && !this.IsDisposed)
-            {
-                _xamlSource.Dispose();
-            }
+        //    // Free any unmanaged objects here.
+        //    if (_xamlSource != null && !this.IsDisposed)
+        //    {
+        //        _xamlSource.Dispose();
+        //    }
 
-            // BUGBUG: CoreInputSink cleanup is failing when explicitly disposing
-            // WindowsXamlManager.  Add dispose call back when that bug is fixed in 19h1.
-            this.IsDisposed = true;
+        //    // BUGBUG: CoreInputSink cleanup is failing when explicitly disposing
+        //    // WindowsXamlManager.  Add dispose call back when that bug is fixed in 19h1.
+        //    this.IsDisposed = true;
 
-            // Call base class implementation.
-            base.Dispose(disposing);
-        }
+        //    // Call base class implementation.
+        //    base.Dispose(disposing);
+        //}
 
-        protected override System.IntPtr WndProc(System.IntPtr hwnd, int msg, System.IntPtr wParam, System.IntPtr lParam, ref bool handled)
-        {
-            const int WM_GETOBJECT = 0x003D;
-            switch (msg)
-            {
-                // We don't want HwndHost to handle the WM_GETOBJECT.
-                // Instead we want to let the HwndIslandSite's WndProc get it
-                // So return handled = false and don't let the base class do
-                // anything on that message.
-                case WM_GETOBJECT:
-                    handled = false;
-                    return System.IntPtr.Zero;
-            }
+        //protected override System.IntPtr WndProc(System.IntPtr hwnd, int msg, System.IntPtr wParam, System.IntPtr lParam, ref bool handled)
+        //{
+        //    const int WM_GETOBJECT = 0x003D;
+        //    switch (msg)
+        //    {
+        //        // We don't want HwndHost to handle the WM_GETOBJECT.
+        //        // Instead we want to let the HwndIslandSite's WndProc get it
+        //        // So return handled = false and don't let the base class do
+        //        // anything on that message.
+        //        case WM_GETOBJECT:
+        //            handled = false;
+        //            return System.IntPtr.Zero;
+        //    }
 
-            return base.WndProc(hwnd, msg, wParam, lParam, ref handled);
-        }
+        //    return base.WndProc(hwnd, msg, wParam, lParam, ref handled);
+        //}
     }
 }

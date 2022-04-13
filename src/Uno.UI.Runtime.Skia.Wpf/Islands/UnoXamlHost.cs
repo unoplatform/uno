@@ -7,18 +7,28 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using WUX = Windows.UI.Xaml;
 
-namespace Microsoft.Toolkit.Wpf.UI.XamlHost
+namespace Uno.UI.Wpf.XamlHost
 {
     /// <summary>
     /// UnoXamlHost control hosts UWP XAML content inside the Windows Presentation Foundation
     /// </summary>
-    partial class UnoXamlHost : UnoXamlHostBase
+    public partial class UnoXamlHost : UnoXamlHostBase
     {
-        /// <summary>
-        /// Gets or sets the root UWP XAML element displayed in the WPF control instance.
-        /// </summary>
-        /// <remarks>This UWP XAML element is the root element of the wrapped DesktopWindowXamlSource.</remarks>
-        [Browsable(true)]
+		public UnoXamlHost()
+		{
+			this.Loaded += OnLoaded;
+		}
+
+		private void OnLoaded(object sender, System.Windows.RoutedEventArgs e)
+		{
+			Child = CreateXamlContent();
+		}
+
+		/// <summary>
+		/// Gets or sets the root UWP XAML element displayed in the WPF control instance.
+		/// </summary>
+		/// <remarks>This UWP XAML element is the root element of the wrapped DesktopWindowXamlSource.</remarks>
+		[Browsable(true)]
         public WUX.UIElement Child
         {
             get => ChildInternal;

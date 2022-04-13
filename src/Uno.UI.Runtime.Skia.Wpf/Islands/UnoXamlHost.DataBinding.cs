@@ -5,10 +5,9 @@
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows;
-using Microsoft.Toolkit.Win32.UI.XamlHost;
 using WUX = Windows.UI.Xaml;
 
-namespace Microsoft.Toolkit.Wpf.UI.XamlHost
+namespace Uno.UI.Wpf.XamlHost
 {
     /// <summary>
     /// UnoXamlHost control hosts UWP XAML content inside the Windows Presentation Foundation
@@ -54,30 +53,30 @@ namespace Microsoft.Toolkit.Wpf.UI.XamlHost
             return content;
         }
 
-        /// <summary>
-        /// Creates <see cref="WUX.Application" /> object, wrapped <see cref="WUX.Hosting.DesktopWindowXamlSource" /> instance; creates and
-        /// sets root UWP XAML element on DesktopWindowXamlSource.
-        /// </summary>
-        /// <param name="hwndParent">Parent window handle</param>
-        /// <returns>Handle to XAML window</returns>
-        protected override HandleRef BuildWindowCore(HandleRef hwndParent)
-        {
-            // Create and set initial root UWP XAML content
-            if (!string.IsNullOrEmpty(InitialTypeName) && Child == null)
-            {
-                Child = CreateXamlContent();
-                var frameworkElement = Child as WUX.FrameworkElement;
+        ///// <summary>
+        ///// Creates <see cref="WUX.Application" /> object, wrapped <see cref="WUX.Hosting.DesktopWindowXamlSource" /> instance; creates and
+        ///// sets root UWP XAML element on DesktopWindowXamlSource.
+        ///// </summary>
+        ///// <param name="hwndParent">Parent window handle</param>
+        ///// <returns>Handle to XAML window</returns>
+        //protected override HandleRef BuildWindowCore(HandleRef hwndParent)
+        //{
+        //    // Create and set initial root UWP XAML content
+        //    if (!string.IsNullOrEmpty(InitialTypeName) && Child == null)
+        //    {
+        //        Child = CreateXamlContent();
+        //        var frameworkElement = Child as WUX.FrameworkElement;
 
-                // Default to stretch : UWP XAML content will conform to the size of UnoXamlHost
-                if (frameworkElement != null)
-                {
-                    frameworkElement.HorizontalAlignment = WUX.HorizontalAlignment.Stretch;
-                    frameworkElement.VerticalAlignment = WUX.VerticalAlignment.Stretch;
-                }
-            }
+        //        // Default to stretch : UWP XAML content will conform to the size of UnoXamlHost
+        //        if (frameworkElement != null)
+        //        {
+        //            frameworkElement.HorizontalAlignment = WUX.HorizontalAlignment.Stretch;
+        //            frameworkElement.VerticalAlignment = WUX.VerticalAlignment.Stretch;
+        //        }
+        //    }
 
-            return base.BuildWindowCore(hwndParent);
-        }
+        //    return base.BuildWindowCore(hwndParent);
+        //}
 
         /// <summary>
         /// Set data context on <seealso cref="Child"/> when it has changed.

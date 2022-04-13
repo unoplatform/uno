@@ -7,7 +7,7 @@ using System.Windows;
 using windows = Windows;
 using WUX = Windows.UI.Xaml;
 
-namespace Microsoft.Toolkit.Wpf.UI.XamlHost
+namespace Uno.UI.Wpf.XamlHost
 {
     /// <summary>
     /// Integrates UWP XAML in to WPF's layout system
@@ -66,12 +66,13 @@ namespace Microsoft.Toolkit.Wpf.UI.XamlHost
                 return false;
             }
 
-            if (WUX.Media.VisualTreeHelper.GetParent(_xamlSource.Content) == null)
-            {
-                // If there's no parent to this content, it's not "live" or "loaded" in the tree yet.
-                // Performing a measure or arrange in this state may cause unexpected results.
-                return false;
-            }
+			//TODO: What should be the parent?
+            //if (WUX.Media.VisualTreeHelper.GetParent(_xamlSource.Content) == null)
+            //{
+            //    // If there's no parent to this content, it's not "live" or "loaded" in the tree yet.
+            //    // Performing a measure or arrange in this state may cause unexpected results.
+            //    return false;
+            //}
 
             return true;
         }

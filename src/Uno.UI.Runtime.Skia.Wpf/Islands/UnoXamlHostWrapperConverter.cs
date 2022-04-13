@@ -8,7 +8,7 @@ using System.Windows.Data;
 using Windows.UI.Xaml;
 using windows = Windows;
 
-namespace Microsoft.Toolkit.Wpf.UI.XamlHost
+namespace Uno.UI.Wpf.XamlHost
 {
     /// <summary>
     /// Dual interface (<see cref="IValueConverter"/> and <see cref="windows.UI.Xaml.Data.IValueConverter"/>),

@@ -1,0 +1,201 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using Uno.UI.Skia.Platform;
+using Uno.UI.XamlHost;
+using WUX = Windows.UI.Xaml;
+
+namespace Uno.UI.Wpf.XamlHost
+{
+    /// <summary>
+    /// MetadataProviderDiscovery is responsible for loading all metadata providers for custom UWP XAML
+    /// types.  In this implementation, reflection is used at runtime to probe for metadata providers in
+    /// the working directory, allowing any type that includes metadata (compiled in to a .NET framework
+    /// assembly) to be used without explicit metadata handling by the application developer.  This
+    /// internal class will be amended or removed when additional type loading support is available.
+    /// </summary>
+    internal static class MetadataProviderDiscovery
+    {
+        private static readonly List<Type> FilteredTypes = new List<Type>
+        {
+            typeof(XamlApplication),
+            typeof(WUX.Markup.IXamlMetadataProvider)
+        };
+
+        /// <summary>
+        /// Probes working directory for all available metadata providers
+        /// </summary>
+        /// <returns>List of UWP XAML metadata providers</returns>
+        internal static IEnumerable<WUX.Markup.IXamlMetadataProvider> DiscoverMetadataProviders()
+        {
+            // Get all assemblies loaded in app domain and placed side-by-side from all DLL and EXE
+            var loadedAssemblies = GetAssemblies();
+#if NET462
+            var uniqueAssemblies = new HashSet<Assembly>(loadedAssemblies, EqualityComparerFactory<Assembly>.CreateComparer(
+                a => a.GetName().FullName.GetHashCode(),
+                (a, b) => a.GetName().FullName.Equals(b.GetName().FullName, StringComparison.OrdinalIgnoreCase)));
+#else
+            var uniqueAssemblies = new HashSet<Assembly>(loadedAssemblies, EqualityComparerFactory<Assembly>.CreateComparer(
+                a => a.GetName().FullName.GetHashCode(StringComparison.InvariantCulture),
+                (a, b) => a.GetName().FullName.Equals(b.GetName().FullName, StringComparison.OrdinalIgnoreCase)));
+#endif
+
+            // Load all types loadable from the assembly, ignoring any types that could not be resolved due to an issue in the dependency chain
+            foreach (var assembly in uniqueAssemblies)
+            {
+                foreach (var provider in LoadTypesFromAssembly(assembly))
+                {
+                    yield return provider;
+
+                    if (typeof(WUX.Application).IsAssignableFrom(provider.GetType()))
+                    {
+                        System.Diagnostics.Debug.WriteLine("Xaml application has been created");
+                        yield break;
+                    }
+                }
+            }
+        }
+
+        private static IEnumerable<Assembly> GetAssemblies()
+        {
+            yield return Assembly.GetExecutingAssembly();
+
+            // Get assemblies already loaded in the current app domain
+            foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                yield return a;
+            }
+
+            // Reflection-based runtime metadata probing
+            var currentDirectory = new FileInfo(typeof(MetadataProviderDiscovery).Assembly.Location).Directory;
+
+            foreach (var assembly in GetAssemblies(currentDirectory, "*.exe"))
+            {
+                yield return assembly;
+            }
+
+            foreach (var assembly in GetAssemblies(currentDirectory, "*.dll"))
+            {
+                yield return assembly;
+            }
+        }
+
+        private static IEnumerable<Assembly> GetAssemblies(DirectoryInfo folder, string fileFilter)
+        {
+            foreach (var file in folder.EnumerateFiles(fileFilter))
+            {
+                Assembly a = null;
+
+                try
+                {
+                    a = Assembly.LoadFrom(file.FullName);
+                }
+                catch (FileLoadException)
+                {
+                    // These exceptions are expected
+                }
+                catch (BadImageFormatException)
+                {
+                    // DLL is not loadable by CLR (e.g. Native)
+                }
+
+                if (a != null)
+                {
+                    yield return a;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Loads all types from the specified assembly and caches metadata providers
+        /// </summary>
+        /// <param name="assembly">Target assembly to load types from</param>
+        /// <returns>The set of <seealso cref="WUX.Markup.IXamlMetadataProvider"/> found</returns>
+        private static IEnumerable<WUX.Markup.IXamlMetadataProvider> LoadTypesFromAssembly(Assembly assembly)
+        {
+            // Load types inside the executing assembly
+            foreach (var type in GetLoadableTypes(assembly))
+            {
+                // TODO: More type checking here
+                // Not interface, not abstract, not generic, etc.
+                if (typeof(WUX.Markup.IXamlMetadataProvider).IsAssignableFrom(type))
+                {
+					WUX.Application application = null;
+					//TODO:MZ: Improve
+					var host = new WpfIslandsHost(
+						System.Windows.Application.Current.MainWindow.Dispatcher,
+						() => application = (WUX.Application)Activator.CreateInstance(type),
+						null);
+                    var provider = (WUX.Markup.IXamlMetadataProvider)application;
+                    yield return provider;
+                }
+            }
+        }
+
+        // Algorithm from StackOverflow answer here:
+        // http://stackoverflow.com/questions/7889228/how-to-prevent-reflectiontypeloadexception-when-calling-assembly-gettypes
+        private static IEnumerable<Type> GetLoadableTypes(Assembly assembly)
+        {
+            if (assembly == null)
+            {
+                throw new ArgumentNullException(nameof(assembly));
+            }
+
+            try
+            {
+                var asmTypes = assembly.DefinedTypes
+                    .Select(t => t.AsType());
+                var filteredTypes = asmTypes.Where(t => !FilteredTypes.Contains(t));
+                return filteredTypes;
+            }
+            catch (ReflectionTypeLoadException)
+            {
+                return Enumerable.Empty<Type>();
+            }
+            catch (FileLoadException)
+            {
+                return Enumerable.Empty<Type>();
+            }
+        }
+
+        private static class EqualityComparerFactory<T>
+        {
+            private class MyComparer : IEqualityComparer<T>
+            {
+                private readonly Func<T, int> _getHashCodeFunc;
+                private readonly Func<T, T, bool> _equalsFunc;
+
+                public MyComparer(Func<T, int> getHashCodeFunc, Func<T, T, bool> equalsFunc)
+                {
+                    _getHashCodeFunc = getHashCodeFunc;
+                    _equalsFunc = equalsFunc;
+                }
+
+                public bool Equals(T x, T y) => _equalsFunc(x, y);
+
+                public int GetHashCode(T obj) => _getHashCodeFunc(obj);
+            }
+
+            public static IEqualityComparer<T> CreateComparer(Func<T, int> getHashCodeFunc, Func<T, T, bool> equalsFunc)
+            {
+                if (getHashCodeFunc == null)
+                {
+                    throw new ArgumentNullException(nameof(getHashCodeFunc));
+                }
+
+                if (equalsFunc == null)
+                {
+                    throw new ArgumentNullException(nameof(equalsFunc));
+                }
+
+                return new MyComparer(getHashCodeFunc, equalsFunc);
+            }
+        }
+    }
+}

@@ -5,7 +5,7 @@
 using System;
 using windows = Windows;
 
-namespace Microsoft.Toolkit.Wpf.UI.XamlHost
+namespace Uno.UI.Wpf.XamlHost
 {
     /// <summary>
     /// Extensions for use with UWP UIElement objects wrapped by the UnoXamlHostBaseExt

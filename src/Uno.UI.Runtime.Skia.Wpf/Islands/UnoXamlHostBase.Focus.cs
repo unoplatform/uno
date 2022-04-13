@@ -5,16 +5,15 @@
 using System;
 using System.Collections.Generic;
 using System.Windows;
-using Microsoft.Toolkit.Win32.UI.XamlHost;
 using WF = Windows.Foundation;
 using WUX = Windows.UI.Xaml;
 
-namespace Microsoft.Toolkit.Wpf.UI.XamlHost
+namespace Uno.UI.Wpf.XamlHost
 {
     /// <summary>
     /// Focus and Keyboard handling for Focus integration with UWP XAML
     /// </summary>
-    partial class UnoXamlHostBase
+    public partial class UnoXamlHostBase
     {
         /// <summary>
         /// Dictionary that maps WPF (host framework) FocusNavigationDirection to UWP XAML XxamlSourceFocusNavigationReason
@@ -69,43 +68,43 @@ namespace Microsoft.Toolkit.Wpf.UI.XamlHost
             }
         }
 
-        /// <summary>
-        /// Process Tab from host framework
-        /// </summary>
-        /// <param name="request"><see cref="System.Windows.Input.TraversalRequest"/> that contains requested navigation direction</param>
-        /// <returns>Did handle tab</returns>
-        protected override bool TabIntoCore(System.Windows.Input.TraversalRequest request)
-        {
-            if (_xamlSource.HasFocus && !_onTakeFocusRequested)
-            {
-                return false; // If we have focus already, then we dont need to NavigateFocus
-            }
+        ///// <summary>
+        ///// Process Tab from host framework
+        ///// </summary>
+        ///// <param name="request"><see cref="System.Windows.Input.TraversalRequest"/> that contains requested navigation direction</param>
+        ///// <returns>Did handle tab</returns>
+        //protected override bool TabIntoCore(System.Windows.Input.TraversalRequest request)
+        //{
+        //    if (_xamlSource.HasFocus && !_onTakeFocusRequested)
+        //    {
+        //        return false; // If we have focus already, then we dont need to NavigateFocus
+        //    }
 
-            // Bug 17544829: Focus is wrong if the previous element is in a different FocusScope than the UnoXamlHost element.
-            var focusedElement = System.Windows.Input.FocusManager.GetFocusedElement(
-                System.Windows.Input.FocusManager.GetFocusScope(this)) as FrameworkElement;
+        //    // Bug 17544829: Focus is wrong if the previous element is in a different FocusScope than the UnoXamlHost element.
+        //    var focusedElement = System.Windows.Input.FocusManager.GetFocusedElement(
+        //        System.Windows.Input.FocusManager.GetFocusScope(this)) as FrameworkElement;
 
-            var origin = BoundsRelativeTo(focusedElement, this);
-            var reason = MapDirectionToReason[request.FocusNavigationDirection];
-            if (_lastFocusRequest == Guid.Empty)
-            {
-                _lastFocusRequest = Guid.NewGuid();
-            }
+        //    var origin = BoundsRelativeTo(focusedElement, this);
+        //    var reason = MapDirectionToReason[request.FocusNavigationDirection];
+        //    if (_lastFocusRequest == Guid.Empty)
+        //    {
+        //        _lastFocusRequest = Guid.NewGuid();
+        //    }
 
-            var sourceFocusNavigationRequest = new WUX.Hosting.XamlSourceFocusNavigationRequest(reason, origin, _lastFocusRequest);
-            try
-            {
-                var result = _xamlSource.NavigateFocus(sourceFocusNavigationRequest);
+        //    var sourceFocusNavigationRequest = new WUX.Hosting.XamlSourceFocusNavigationRequest(reason, origin, _lastFocusRequest);
+        //    try
+        //    {
+        //        var result = _xamlSource.NavigateFocus(sourceFocusNavigationRequest);
 
-                // Returning true indicates that focus moved.  This will cause the HwndHost to
-                // move focus to the source’s hwnd (call SetFocus Win32 API)
-                return result.WasFocusMoved;
-            }
-            finally
-            {
-                _lastFocusRequest = Guid.Empty;
-            }
-        }
+        //        // Returning true indicates that focus moved.  This will cause the HwndHost to
+        //        // move focus to the source’s hwnd (call SetFocus Win32 API)
+        //        return result.WasFocusMoved;
+        //    }
+        //    finally
+        //    {
+        //        _lastFocusRequest = Guid.Empty;
+        //    }
+        //}
 
         /// <summary>
         /// Transform bounds relative to FrameworkElement
@@ -181,16 +180,16 @@ namespace Microsoft.Toolkit.Wpf.UI.XamlHost
                 return;
             }
 
-            var desktopWindowXamlSourceNative = _xamlSource.GetInterop<IDesktopWindowXamlSourceNative2>();
-            if (desktopWindowXamlSourceNative != null)
-            {
-                handled = desktopWindowXamlSourceNative.PreTranslateMessage(msg);
-            }
+            //var desktopWindowXamlSourceNative = _xamlSource.GetInterop<IDesktopWindowXamlSourceNative2>();
+            //if (desktopWindowXamlSourceNative != null)
+            //{
+            //    handled = desktopWindowXamlSourceNative.PreTranslateMessage(msg);
+            //}
         }
 
-        protected override bool HasFocusWithinCore()
-        {
-            return _xamlSource.HasFocus;
-        }
+        //protected override bool HasFocusWithinCore()
+        //{
+        //    return _xamlSource.HasFocus;
+        //}
     }
 }
