@@ -251,7 +251,7 @@ namespace Windows.UI.Xaml
 		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
 		{
 			LayoutSlotWithMarginsAndAlignments =
-				VisualTreeHelper.GetParent(this) is UIElement parent
+				VisualTreeHelper.GetParent(this) is UIElement parent && parent is not RootVisual
 					? finalRect.DeflateBy(parent.GetBorderThickness())
 					: finalRect;
 
