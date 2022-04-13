@@ -133,7 +133,6 @@ namespace UITests.Shared.Windows_Devices
 		public ICommand GetGeopositionCommand =>
 			GetOrCreateCommand(GetGeoposition);
 
-
 		public Command AttachPositionChangedCommand => GetOrCreateCommand(() =>
 		{
 			_geolocator.PositionChanged += Geolocator_PositionChanged;
