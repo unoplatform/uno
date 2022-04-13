@@ -106,30 +106,31 @@ namespace UnoSolutionTemplate.Wizard
 
 		private void SetStartupProject()
 		{
-			if (_dte?.Solution.SolutionBuild is SolutionBuild2 val)
+			try
 			{
-				try
+				if (_dte?.Solution.SolutionBuild is SolutionBuild2 val)
 				{
-					var uwpProject = GetAllProjects().FirstOrDefault(s => s.Name.EndsWith(".UWP", StringComparison.OrdinalIgnoreCase));
+						var uwpProject = GetAllProjects().FirstOrDefault(s => s.Name.EndsWith(".UWP", StringComparison.OrdinalIgnoreCase));
 
-					if (uwpProject is { })
-					{
-						val.StartupProjects = uwpProject.UniqueName;
-					}
+						if (uwpProject is { })
+						{
+							val.StartupProjects = uwpProject.UniqueName;
+						}
 
-					var x86Config = val.SolutionConfigurations
-						.Cast<SolutionConfiguration2>()
-						.FirstOrDefault(c => c.Name == "Debug" && c.PlatformName == "x86");
+						var x86Config = val.SolutionConfigurations
+							.Cast<SolutionConfiguration2>()
+							.FirstOrDefault(c => c.Name == "Debug" && c.PlatformName == "x86");
 
-					x86Config?.Activate();
+						x86Config?.Activate();
 				}
-				catch (Exception)
+				else
 				{
+					// Unable to set the startup project when running from RunFinished since VS 2022 17.2 Preview 2
+					// throw new InvalidOperationException();
 				}
 			}
-			else
+			catch (Exception)
 			{
-				throw new InvalidOperationException();
 			}
 		}
 
