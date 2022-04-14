@@ -246,7 +246,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			_app.FastTap(windowButton);
 
 			var result = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
-			ImageAssert.HasColorAt(result, result.Width / 2, 50, Color.Red);
+			ImageAssert.HasColorAt(result, result.Width / 2, 150, Color.Red);
 		}
 	}
 }
