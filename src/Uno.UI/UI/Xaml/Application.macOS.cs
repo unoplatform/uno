@@ -87,7 +87,9 @@ namespace Windows.UI.Xaml
 			}
 			if (!handled)
 			{
-				OnLaunched(new LaunchActivatedEventArgs());
+				var argumentsString = GetCommandLineArgsWithoutExecutable();
+
+				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, argumentsString));
 			}
 		}
 

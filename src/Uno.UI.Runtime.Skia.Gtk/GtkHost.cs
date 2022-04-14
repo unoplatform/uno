@@ -41,7 +41,6 @@ namespace Uno.UI.Runtime.Skia
 		[ThreadStatic]
 		private static bool _isDispatcherThread = false;
 
-		private readonly string[] _args;
 		private readonly Func<WUX.Application> _appBuilder;
 		private static Gtk.Window _window;
 		private static Gtk.EventBox _eventBox;
@@ -57,9 +56,17 @@ namespace Uno.UI.Runtime.Skia
 				? RenderSurfaceType.Software // OpenGL support on macOS is currently broken
 				: RenderSurfaceType.OpenGL;
 
+		/// <summary>
+		/// Creates a host for a Uno Skia GTK application.
+		/// </summary>
+		/// <param name="appBuilder">App builder.</param>
+		/// <param name="args">Deprecated, value ignored.</param>
+		/// <remarks>
+		/// Args are obsolete and will be removed in the future. Environment.CommandLine is used instead
+		/// to fill LaunchEventArgs.Arguments.
+		/// </remarks>
 		public GtkHost(Func<WUX.Application> appBuilder, string[] args)
 		{
-			_args = args;
 			_appBuilder = appBuilder;
 		}
 
@@ -172,7 +179,7 @@ namespace Uno.UI.Runtime.Skia
 				app.Host = this;
 			}
 
-			WUX.Application.Start(CreateApp, _args);
+			WUX.Application.StartWithArguments(CreateApp);
 
 			UpdateWindowPropertiesFromPackage();
 

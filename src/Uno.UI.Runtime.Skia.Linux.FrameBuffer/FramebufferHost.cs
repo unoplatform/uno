@@ -13,15 +13,22 @@ namespace Uno.UI.Runtime.Skia
 		[ThreadStatic]
 		private static bool _isDispatcherThread = false;
 
-		private string[] _args;
 		private Func<Application> _appBuilder;
 		private readonly EventLoop _eventLoop;
 		private Renderer? _renderer;
 		private DisplayInformationExtension? _displayInformationExtension;
 
+		/// <summary>
+		/// Creates a host for a Uno Skia FrameBuffer application.
+		/// </summary>
+		/// <param name="appBuilder">App builder.</param>
+		/// <param name="args">Deprecated, value ignored.</param>		
+		/// <remarks>
+		/// Args are obsolete and will be removed in the future. Environment.CommandLine is used instead
+		/// to fill LaunchEventArgs.Arguments.
+		/// </remarks>
 		public FrameBufferHost(Func<WUX.Application> appBuilder, string[] args)
 		{
-			_args = args;
 			_appBuilder = appBuilder;
 
 			_eventLoop = new EventLoop();
@@ -55,7 +62,7 @@ namespace Uno.UI.Runtime.Skia
 			_renderer = new Renderer();
 			_displayInformationExtension!.Renderer = _renderer;
 
-			WUX.Application.Start(CreateApp, _args);
+			WUX.Application.StartWithArguments(CreateApp);
 		}
 	}
 }
