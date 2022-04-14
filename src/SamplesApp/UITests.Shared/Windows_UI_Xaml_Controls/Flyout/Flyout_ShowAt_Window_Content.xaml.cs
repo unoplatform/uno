@@ -1,10 +1,11 @@
 ﻿using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace UITests.Windows_UI_Xaml_Controls.Flyout
+namespace UITests.Windows_UI_Xaml_Controls.FlyoutTests
 {
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
@@ -15,34 +16,34 @@ namespace UITests.Windows_UI_Xaml_Controls.Flyout
 		public Flyout_ShowAt_Window_Content()
 		{
 			this.InitializeComponent();
-
-			Button button = new Button
-			{
-				Content = "Show at Window",
-				Tag = Window.Current.Content,
-			};
-			Button button2 = new Button
-			{
-				Content = "Show at this button",				
-			};
-			button2.Tag = button2;
-
-			var stackPanel = new StackPanel();
-			stackPanel.Margin = new Thickness(60);
-			stackPanel.Children.Add(button);
-			stackPanel.Children.Add(button2);
-			button.Click += Button_Click;
-			button2.Click += Button_Click;
-
-			Content = stackPanel;
 		}
 
-		private void Button_Click(object sender, RoutedEventArgs e)
+		private void ButtonButton_Click(object sender, RoutedEventArgs e)
 		{
 			Windows.UI.Xaml.Controls.Flyout flyout = new Windows.UI.Xaml.Controls.Flyout();
-			flyout.Content = new TextBlock { Text = "Hi there" };
+			flyout.Content =
+				new Border()
+				{
+					Width = 300,
+					Height = 300,
+					Background = new SolidColorBrush(Windows.UI.Colors.Red),
+				};
 
-			flyout.ShowAt(((Button)sender).Tag as FrameworkElement);
+			flyout.ShowAt((Button)sender);
+		}
+
+		private void WindowButton_Click(object sender, RoutedEventArgs e)
+		{
+			Windows.UI.Xaml.Controls.Flyout flyout = new Windows.UI.Xaml.Controls.Flyout();
+			flyout.Content =
+				new Border()
+				{
+					Width = 300,
+					Height = 300,
+					Background = new SolidColorBrush(Windows.UI.Colors.Red),
+				};
+
+			flyout.ShowAt(Window.Current.Content as FrameworkElement);
 		}
 	}
 }
