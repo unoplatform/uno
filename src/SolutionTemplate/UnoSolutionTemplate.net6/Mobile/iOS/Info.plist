@@ -49,7 +49,15 @@
 	<string>Portrait</string>
 	<key>UILaunchImageSize</key>
 	<string>{320, 568}</string>
+	<key>XSAppIconAssets</key>
+	<string>Media.xcassets/AppIcons.appiconset</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<!--
+	Adjust this to your application's encryption usage.
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	-->
   </dict>
 </plist>
