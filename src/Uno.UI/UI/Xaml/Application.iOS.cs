@@ -11,6 +11,8 @@ using Uno.UI.Services;
 using Uno.Extensions;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
+using System.Globalization;
+using System.Threading;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -31,6 +33,7 @@ namespace Windows.UI.Xaml
 		public Application()
 		{
 			Current = this;
+			SetCurrentLanguage();
 			ResourceHelper.ResourcesService = new ResourcesService(new[] { NSBundle.MainBundle });
 
 			SubscribeBackgroundNotifications();
@@ -241,6 +244,28 @@ namespace Windows.UI.Xaml
 		private void OnDeactivated(NSNotification notification)
 		{
 			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
+		}
+
+		private void SetCurrentLanguage()
+		{
+#if NET6_0_OR_GREATER
+			// net6.0-iOS does not automatically set the thread and culture info
+			// https://github.com/xamarin/xamarin-macios/issues/14740
+			var language = NSLocale.PreferredLanguages.ElementAtOrDefault(0);
+
+			try
+			{
+				var cultureInfo = CultureInfo.CreateSpecificCulture(language);
+				CultureInfo.CurrentUICulture = cultureInfo;
+				CultureInfo.CurrentCulture = cultureInfo;
+				Thread.CurrentThread.CurrentCulture = cultureInfo;
+				Thread.CurrentThread.CurrentUICulture = cultureInfo;
+			}
+			catch (Exception ex)
+			{
+				this.Log().Error($"Failed to set current culture for language: {language}", ex);
+			}
+#endif
 		}
 	}
 }
