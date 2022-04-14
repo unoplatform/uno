@@ -25,6 +25,10 @@ namespace Windows.UI.Xaml
 
 		private List<WeakEventHelper.GenericEventHandler> _sizeChangedHandlers = new List<WeakEventHelper.GenericEventHandler>();
 
+#if HAS_UNO_WINUI
+		public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; } = global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+#endif
+
 #pragma warning disable 67
 		/// <summary>
 		/// Occurs when the window has successfully been activated.
