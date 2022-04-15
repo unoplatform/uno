@@ -70,7 +70,7 @@ namespace Windows.ApplicationModel.Chat
 		///  To be "candidate" for default SMS app, your app must define several services/activities.
 		///  See https://stackoverflow.com/questions/21720657/how-to-set-my-sms-app-default-in-android-kitkat
 		/// </summary>
-		public async Task<bool> SwitchDefaultSMSapp(string newAppName)
+		public async Task<bool> SwitchDefaultSMSappAsync(string newAppName)
 		{
 			if (!(Uno.UI.ContextHelper.Current is Android.App.Activity appActivity))
 			{
@@ -92,16 +92,17 @@ namespace Windows.ApplicationModel.Chat
 			if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.Q)
 			{
 				// works since API 19 (Kitkat, October 2013) till API 28
-				// https://developer.android.com/reference/android/provider/Telephony.Sms.Intents
+				// https://developer.android.com/reference/android/provider/Telephony.Sms.Intents#ACTION_CHANGE_DEFAULT
 				intent = new Android.Content.Intent(AndroidChat.Sms.Intents.ActionChangeDefault);
 				intent.PutExtra(AndroidChat.Sms.Intents.ExtraPackageName, newAppName);
 
 			}
 			else
 			{
-				//string roleName = Android.App.Roles.RoleManager.RoleSms;
-				// below should work (in Android), but doesn't work in Xamarin
-				// var intent = Android.App.Roles.RoleManager.createRequestRoleIntent(roleName);
+				// string roleName = Android.App.Roles.RoleManager.RoleSms;
+				// below should work (in Android), but doesn't work in Xamarin -
+				// https://docs.microsoft.com/en-us/dotnet/api/android.app.roles.rolemanager.createrequestroleintent
+				// intent = Android.App.Roles.RoleManager.CreateRequestRoleIntent(roleName);
 
 				throw new NotSupportedException("Android Q+ and Mono/Xamarin API definition mismatch.");
 
@@ -170,7 +171,7 @@ namespace Windows.ApplicationModel.Chat
 					throw new InvalidOperationException("context.PackageName cannot be null!");
 				}
 
-				return await SwitchDefaultSMSapp(myAppName);
+				return await SwitchDefaultSMSappAsync(myAppName);
 
 			}
 			else
@@ -184,7 +185,7 @@ namespace Windows.ApplicationModel.Chat
 					return true;    // if previous app is this app, we have nothing to do
 				}
 
-				return await SwitchDefaultSMSapp(_previousDefaultApp);
+				return await SwitchDefaultSMSappAsync(_previousDefaultApp);
 
 			}
 		}
