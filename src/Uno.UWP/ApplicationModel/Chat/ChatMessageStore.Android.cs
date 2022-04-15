@@ -18,7 +18,7 @@ namespace Windows.ApplicationModel.Chat
 		public ChatMessageReader GetMessageReader() => new ChatMessageReader(new TimeSpan(36500, 0, 0, 0));
 		public ChatMessageReader GetMessageReader(TimeSpan recentTimeLimit) => new ChatMessageReader(recentTimeLimit);
 		public IAsyncAction SaveMessageAsync(UwpChat.ChatMessage chatMessage)
-			=> SaveMessageAsyncTaskProxy(chatMessage).AsAsyncAction();
+			=> SaveMessageAsyncTaskProxyAsync(chatMessage).AsAsyncAction();
 
 		internal static string AndroidTextBasedSmsColumns(string name)
 		{
@@ -99,13 +99,12 @@ namespace Windows.ApplicationModel.Chat
 			}
 			else
 			{
-				// string roleName = Android.App.Roles.RoleManager.RoleSms;
 				// below should work (in Android), but doesn't work in Xamarin -
 				// https://docs.microsoft.com/en-us/dotnet/api/android.app.roles.rolemanager.createrequestroleintent
-				// intent = Android.App.Roles.RoleManager.CreateRequestRoleIntent(roleName);
-
 				throw new NotSupportedException("Android Q+ and Mono/Xamarin API definition mismatch.");
 
+				// string roleName = Android.App.Roles.RoleManager.RoleSms;
+				// intent = Android.App.Roles.RoleManager.CreateRequestRoleIntent(roleName);
 			}
 
 			_currentSwitchSMSappRequest = new TaskCompletionSource<Android.Content.Intent?>();
@@ -147,7 +146,7 @@ namespace Windows.ApplicationModel.Chat
 		///  To be "candidate" for default SMS app, your app must define several services/activities.
 		///  See https://stackoverflow.com/questions/21720657/how-to-set-my-sms-app-default-in-android-kitkat
 		/// </summary>
-		public async Task<bool> SwitchDefaultSMSapp(bool toThisApp)
+		public async Task<bool> SwitchDefaultSMSappAsync(bool toThisApp)
 		{
 			// https://android-developers.googleblog.com/2013/10/getting-your-sms-apps-ready-for-kitkat.html
 			var context = Android.App.Application.Context;
@@ -194,9 +193,9 @@ namespace Windows.ApplicationModel.Chat
 
 		#endregion
 
-		private async Task SaveMessageAsyncTaskProxy(UwpChat.ChatMessage chatMessage)
+		private async Task SaveMessageAsyncTaskProxyAsync(UwpChat.ChatMessage chatMessage)
 		{ // do not block calling thread 
-			await Task.Run(() => SaveMessageAsyncTask(chatMessage));
+			await Task.Run(() => SaveMessageAsyncTaskAsync(chatMessage));
 		}
 
 		/// <summary>
@@ -205,7 +204,7 @@ namespace Windows.ApplicationModel.Chat
 		///  See https://android-developers.googleblog.com/2013/10/getting-your-sms-apps-ready-for-kitkat.html
 		///  For switching default SMS app, you can use ChatMessageStore.SwitchDefaultSMSapp method.
 		/// </summary>
-		private async Task SaveMessageAsyncTask(UwpChat.ChatMessage chatMessage)
+		private async Task SaveMessageAsyncTaskAsync(UwpChat.ChatMessage chatMessage)
 		{
 			// https://android.googlesource.com/platform/frameworks/opt/telephony/+/f39de086fddea9e9f6b8c56b04d8dd38a84237db/src/java/android/provider/Telephony.java
 

@@ -8791,6 +8791,9 @@
 
 		<Methods>
 			<Member
+				fullName="System.Void Windows.ApplicationModel.Chat.ChatMessageReader..ctor()"
+				reason="Does not exist in UWP" />
+			<Member
 				fullName="System.Void Windows.Devices.Power.BatteryReport..ctor()"
 				reason="Does not exist in UWP" />
 			<!-- BEGIN Bluetooth API -->
