@@ -44,13 +44,13 @@ namespace Windows.ApplicationModel.Calls
 			var packageManager = context.PackageManager;
 			if (packageManager is null)
 			{
-				throw new NullReferenceException("Windows.ApplicationModel.Calls.PhoneCallHistoryManager.RequestStoreAsyncTask, PackageManager is null (impossible)");
+				throw new InvalidOperationException("Windows.ApplicationModel.Calls.PhoneCallHistoryManager.RequestStoreAsyncTask, PackageManager is null (impossible)");
 			}
 
 			var packageName = context.PackageName;
 			if(packageName is null)
 			{
-				throw new NullReferenceException("Windows.ApplicationModel.Calls.PhoneCallHistoryManager.RequestStoreAsyncTask, PackageName is null (impossible)");
+				throw new InvalidOperationException("Windows.ApplicationModel.Calls.PhoneCallHistoryManager.RequestStoreAsyncTask, PackageName is null (impossible)");
 			}
 			var packageInfo =
 				packageManager.GetPackageInfo(packageName, Android.Content.PM.PackageInfoFlags.Permissions);

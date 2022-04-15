@@ -14,7 +14,6 @@ namespace Windows.ApplicationModel.Calls
 	// https://developer.samsung.com/galaxy/others/calllogs-in-android
 	public partial class PhoneCallHistoryEntryReader
 	{
-		// <uses-permission android:name="android.permission.READ_CONTACTS">  ? A nie calllog?
 
 		private Android.Database.ICursor? _cursor = null;
 
@@ -23,13 +22,13 @@ namespace Windows.ApplicationModel.Calls
 			var cr = Android.App.Application.Context.ContentResolver;
 			if(cr is null)
 			{
-				throw new NullReferenceException("Windows.ApplicationModel.Calls.PhoneCallHistoryEntryReader.ctor, ContentResolver is null (impossible)");
+				throw new InvalidOperationException("Windows.ApplicationModel.Calls.PhoneCallHistoryEntryReader.ctor, ContentResolver is null (impossible)");
 			}
 
 			var oUri = Android.Provider.CallLog.Calls.ContentUri;
 			if (oUri is null)
 			{
-				throw new NullReferenceException("Windows.ApplicationModel.Calls.PhoneCallHistoryEntryReader.ctor, ContentUri is null (impossible)");
+				throw new InvalidOperationException("Windows.ApplicationModel.Calls.PhoneCallHistoryEntryReader.ctor, ContentUri is null (impossible)");
 			}
 
 
@@ -40,7 +39,7 @@ namespace Windows.ApplicationModel.Calls
 									Android.Provider.CallLog.Calls.DefaultSortOrder);   // == date DESC
 			if (_cursor is null)
 			{
-				throw new NullReferenceException("Windows.ApplicationModel.Calls.PhoneCallHistoryEntryReader.ctor, _cursor is null (impossible)");
+				throw new InvalidOperationException("Windows.ApplicationModel.Calls.PhoneCallHistoryEntryReader.ctor, _cursor is null (impossible)");
 			}
 
 			if (!_cursor.MoveToFirst())

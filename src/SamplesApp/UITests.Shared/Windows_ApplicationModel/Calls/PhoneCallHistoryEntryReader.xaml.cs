@@ -19,7 +19,7 @@ using Windows.ApplicationModel.Calls;
           
 namespace UITests.Shared.Windows_ApplicationModel.Calls
 {
-	[SampleControlInfo("Windows_ApplicationModel.Calls", "ContactReader")]
+	[SampleControlInfo("Windows.ApplicationModel.Calls", "ContactReader")]
 
 	public sealed partial class PhoneCallHistoryEntryReader : UserControl
 	{
@@ -40,7 +40,7 @@ namespace UITests.Shared.Windows_ApplicationModel.Calls
 			Windows.ApplicationModel.Calls.PhoneCallHistoryStore oCallHist;
 			try
 			{
-				oCallHist = await Windows.ApplicationModel.Calls.PhoneCallHistoryManager.RequestStoreAsync(Windows.ApplicationModel.Calls.PhoneCallHistoryStoreAccessType.AllEntriesLimitedReadWrite);
+				oCallHist = await Windows.ApplicationModel.Calls.PhoneCallHistoryManager.RequestStoreAsync(Windows.ApplicationModel.Calls.PhoneCallHistoryStoreAccessType. .AllEntriesLimitedReadWrite);
 			}
 			catch (Exception ex)
 			{
