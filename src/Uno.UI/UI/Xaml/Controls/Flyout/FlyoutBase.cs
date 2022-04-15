@@ -325,7 +325,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						throw new ArgumentException("Invalid flyout position");
 					}
 
-					// UNO TODO: clamp position within contentRect
+					var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+					positionValue = new Point(
+						positionValue.X.Clamp(visibleBounds.Left, visibleBounds.Right),
+						positionValue.Y.Clamp(visibleBounds.Top, visibleBounds.Bottom));
 
 					SetTargetPosition(positionValue);
 				}

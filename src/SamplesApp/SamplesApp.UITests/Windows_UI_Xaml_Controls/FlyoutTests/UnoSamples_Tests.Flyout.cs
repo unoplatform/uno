@@ -233,5 +233,20 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 			_app.FastTap(closeButton);
 		}
+
+		[Test]
+		[AutoRetry]
+		public void Flyout_ShowAt_Window_Content()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.FlyoutTests.Flyout_ShowAt_Window_Content");
+
+			var windowButton = _app.Marked("WindowButton");
+
+			_app.WaitForElement(windowButton);
+			_app.FastTap(windowButton);
+
+			using var result = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
+			ImageAssert.HasColorAt(result, result.Width / 2, 150, Color.Red);
+		}
 	}
 }

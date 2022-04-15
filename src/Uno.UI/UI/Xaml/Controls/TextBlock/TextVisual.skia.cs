@@ -139,7 +139,7 @@ namespace Windows.UI.Composition
 
 		internal override void Render(SKSurface surface)
 		{
-			if (!string.IsNullOrEmpty(_owner.Text))
+			if (!string.IsNullOrEmpty(_owner.Text) && Size != default)
 			{
 				UpdateForeground();
 

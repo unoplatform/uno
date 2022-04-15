@@ -285,6 +285,48 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				this.Log().LogDebug($"Calculated placement, finalRect={finalRect}");
 			}
+
+			// Ensure the popup is not positioned fully beyond visible bounds.
+			// This can happen for example when the user is trying to show a flyout at
+			// Window.Current.Content - which will match Top position, which would be outside
+			// the visible bounds (negative Y).
+
+			if (finalRect.Bottom < visibleBounds.Top)
+			{
+				finalRect = new Rect(
+					finalRect.Left,
+					visibleBounds.Top,
+					finalRect.Width,
+					finalRect.Height);
+			}
+
+			if (finalRect.Top > visibleBounds.Bottom)
+			{
+				finalRect = new Rect(
+					finalRect.Left,
+					visibleBounds.Bottom - finalRect.Height,
+					finalRect.Width,
+					finalRect.Height);
+			}
+
+			if (finalRect.Right < visibleBounds.Left)
+			{
+				finalRect = new Rect(
+					visibleBounds.Left,
+					finalRect.Top,
+					finalRect.Width,
+					finalRect.Height);
+			}
+
+			if (finalRect.Left > visibleBounds.Right)
+			{
+				finalRect = new Rect(
+					visibleBounds.Right - finalRect.Width,
+					finalRect.Top,
+					finalRect.Width,
+					finalRect.Height);
+			}
+
 			return finalRect;
 		}
 
