@@ -8693,6 +8693,9 @@
 			<Member
 				fullName="System.Void Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent..ctor()"
 				reason="Does not exist in UWP" />
+			<Member
+				fullName="System.Void Windows.Devices.Bluetooth.BluetoothLEDevice..ctor()"
+				reason="Does not exist in UWP" />
 
 			<!-- BEGIN .NET 6 RC 1 -->
 			<Member fullName="System.Void UIKit.UIViewExtensions.SetDimensions(UIKit.UIView view, System.Nullable`1&lt;ObjCRuntime.nfloat&gt; width, System.Nullable`1&lt;ObjCRuntime.nfloat&gt; height)" reason="net6 preview 14 breaking changes" />
