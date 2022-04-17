@@ -1,15 +1,33 @@
-﻿namespace Windows.UI.Xaml.Hosting;
+﻿using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Islands;
+using Windows.UI.Xaml.Controls;
+
+namespace Windows.UI.Xaml.Hosting;
 
 public partial class DesktopWindowXamlSource : global::System.IDisposable
 {
-	public global::Windows.UI.Xaml.UIElement Content { get; set; }
+	private XamlIslandRoot _root;
+
+	public global::Windows.UI.Xaml.UIElement Content
+	{
+		get => _root?.ContentRoot.VisualTree.PublicRootVisual;
+		set
+		{
+			if (_root is null)
+			{
+				_root = new XamlIslandRoot(CoreServices.Instance);
+			}
+			_root.SetPublicRootVisual(value);
+		}
+	}	
 
 	public bool HasFocus => false;
 
 	public DesktopWindowXamlSource()
 	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Hosting.DesktopWindowXamlSource", "DesktopWindowXamlSource.DesktopWindowXamlSource()");
+		
 	}
+
 	public global::Windows.UI.Xaml.Hosting.XamlSourceFocusNavigationResult NavigateFocus(global::Windows.UI.Xaml.Hosting.XamlSourceFocusNavigationRequest request)
 	{
 		return null;
