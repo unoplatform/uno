@@ -1,15 +1,12 @@
-﻿using Microsoft.CodeAnalysis;
+﻿#if NET6_0_OR_GREATER
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Uno.UI.SourceGenerators.Tests;
 
 internal class DictionaryAnalyzerConfigOptionsProvider : AnalyzerConfigOptionsProvider
 {
-#if NET6_0_OR_GREATER
 	public override AnalyzerConfigOptions GlobalOptions { get; }
-#else
-	public AnalyzerConfigOptions GlobalOptions { get; }
-#endif
 	public Dictionary<string, Dictionary<string, string>> TreeOptions { get; }
     public Dictionary<string, Dictionary<string, string>> AdditionalTextOptions { get; }
 
@@ -33,3 +30,4 @@ internal class DictionaryAnalyzerConfigOptionsProvider : AnalyzerConfigOptionsPr
         return new DictionaryAnalyzerConfigOptions(AdditionalTextOptions[textFile.Path]);
     }
 }
+#endif

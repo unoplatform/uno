@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿#if NET6_0_OR_GREATER
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
 namespace Uno.UI.SourceGenerators.Tests;
@@ -20,3 +21,4 @@ public sealed class FileAdditionalText : AdditionalText
         return SourceText.From(Text);
     }
 }
+#endif
