@@ -354,14 +354,6 @@
   
   <Target Name="_InjectAdditionalFiles" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;GenerateMSBuildEditorConfigFileCore" DependsOnTargets="_FillSourceGeneratorItemGroups">
 
-    <ItemGroup Label="Include new additional files">
-      <_ExistingAdditionalFiles Include="%(AdditionalFiles.FullPath)" />
-      <AdditionalFiles Include="%(Page.FullPath)" SourceItemGroup="Page" Exclude="@(_ExistingAdditionalFiles)" />
-      <AdditionalFiles Include="%(ApplicationDefinition.FullPath)" SourceItemGroup="ApplicationDefinition" Exclude="@(_ExistingAdditionalFiles)" />
-      <AdditionalFiles Include="%(PRIResource.FullPath)" SourceItemGroup="PRIResource" Exclude="@(_ExistingAdditionalFiles)" />
-      <AdditionalFiles Include="%(TSBindingAssemblySource.FullPath)" SourceItemGroup="TSBindingAssemblySource" Exclude="@(_ExistingAdditionalFiles)" />
-    </ItemGroup>
-    
     <PropertyGroup>
       <_Pages>@(Page)</_Pages>
       <_ApplicationDefinitions>@(ApplicationDefinition)</_ApplicationDefinitions>
@@ -374,6 +366,14 @@
       <AdditionalFiles SourceItemGroup="ApplicationDefinition" Condition="$([System.String]::new($(_ApplicationDefinitions)).Contains(%(AdditionalFiles.FullPath)))" />
       <AdditionalFiles SourceItemGroup="PRIResource" Condition="$([System.String]::new($(_PRIResources)).Contains(%(AdditionalFiles.FullPath)))" />
       <AdditionalFiles SourceItemGroup="TSBindingAssemblySource" Condition="$([System.String]::new($(_TSBindingAssemblySources)).Contains(%(AdditionalFiles.FullPath)))" />
+    </ItemGroup>
+      
+    <ItemGroup Label="Include new additional files">
+      <_ExistingAdditionalFiles Include="%(AdditionalFiles.FullPath)" />
+      <AdditionalFiles Include="%(Page.FullPath)" SourceItemGroup="Page" Exclude="@(_ExistingAdditionalFiles)" />
+      <AdditionalFiles Include="%(ApplicationDefinition.FullPath)" SourceItemGroup="ApplicationDefinition" Exclude="@(_ExistingAdditionalFiles)" />
+      <AdditionalFiles Include="%(PRIResource.FullPath)" SourceItemGroup="PRIResource" Exclude="@(_ExistingAdditionalFiles)" />
+      <AdditionalFiles Include="%(TSBindingAssemblySource.FullPath)" SourceItemGroup="TSBindingAssemblySource" Exclude="@(_ExistingAdditionalFiles)" />
     </ItemGroup>
 	
   </Target>
