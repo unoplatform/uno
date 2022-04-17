@@ -7,7 +7,7 @@ using System.Windows;
 using windows = Windows;
 using WUX = Windows.UI.Xaml;
 
-namespace Uno.UI.Wpf.XamlHost
+namespace Uno.UI.XamlHost.Skia.Wpf
 {
     /// <summary>
     /// Integrates UWP XAML in to WPF's layout system
@@ -66,7 +66,7 @@ namespace Uno.UI.Wpf.XamlHost
                 return false;
             }
 
-			//TODO: What should be the parent?
+			//TODO:MZ: What should be the parent?
             //if (WUX.Media.VisualTreeHelper.GetParent(_xamlSource.Content) == null)
             //{
             //    // If there's no parent to this content, it's not "live" or "loaded" in the tree yet.

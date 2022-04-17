@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using WUX = Windows.UI.Xaml;
 
-namespace Uno.UI.Wpf.XamlHost
+namespace Uno.UI.XamlHost.Skia.Wpf
 {
     /// <summary>
     /// UnoXamlHost control hosts UWP XAML content inside the Windows Presentation Foundation
@@ -16,7 +16,13 @@ namespace Uno.UI.Wpf.XamlHost
     {
 		public UnoXamlHost()
 		{
+			this.DataContextChanged += UnoXamlHost_DataContextChanged;
 			this.Loaded += OnLoaded;
+		}
+
+		private void UnoXamlHost_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+		{
+			PropagateDataContext();
 		}
 
 		private void OnLoaded(object sender, System.Windows.RoutedEventArgs e)

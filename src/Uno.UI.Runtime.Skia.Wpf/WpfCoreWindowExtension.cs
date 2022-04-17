@@ -58,16 +58,16 @@ namespace Uno.UI.Skia.Platform
 		{
 			_ownerEvents = (ICoreWindowEvents)owner;
 
-			_host = WpfHost.Current;
+			//_host = WpfHost.Current;
 
-			_host.MouseEnter += HostOnMouseEnter;
-			_host.MouseLeave += HostOnMouseLeave;
-			_host.MouseMove += HostOnMouseMove;
-			_host.MouseDown += HostOnMouseDown;
-			_host.MouseUp += HostOnMouseUp;
+			//_host.MouseEnter += HostOnMouseEnter;
+			//_host.MouseLeave += HostOnMouseLeave;
+			//_host.MouseMove += HostOnMouseMove;
+			//_host.MouseDown += HostOnMouseDown;
+			//_host.MouseUp += HostOnMouseUp;
 
-			// Hook for native events
-			_host.Loaded += HookNative;
+			//// Hook for native events
+			//_host.Loaded += HookNative;
 
 			void HookNative(object sender, RoutedEventArgs e)
 			{

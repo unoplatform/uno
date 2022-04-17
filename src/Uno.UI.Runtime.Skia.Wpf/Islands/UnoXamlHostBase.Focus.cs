@@ -8,7 +8,7 @@ using System.Windows;
 using WF = Windows.Foundation;
 using WUX = Windows.UI.Xaml;
 
-namespace Uno.UI.Wpf.XamlHost
+namespace Uno.UI.XamlHost.Skia.Wpf
 {
     /// <summary>
     /// Focus and Keyboard handling for Focus integration with UWP XAML

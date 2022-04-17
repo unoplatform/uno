@@ -38,7 +38,7 @@ using WpfCanvas = global::System.Windows.Controls.Canvas;
 using WpfControl = global::System.Windows.Controls.Control;
 using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
 
-namespace Uno.UI.Wpf.XamlHost
+namespace Uno.UI.XamlHost.Skia.Wpf
 {
 	/// <summary>
 	/// UnoXamlHost control hosts UWP XAML content inside the Windows Presentation Foundation
@@ -68,6 +68,11 @@ namespace Uno.UI.Wpf.XamlHost
 		protected override void OnRender(DrawingContext drawingContext)
 		{
 			base.OnRender(drawingContext);
+
+			if (!IsXamlContentLoaded())
+			{
+				return;
+			}
 
 			if (_designMode)
 			{
