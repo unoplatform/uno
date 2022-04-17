@@ -37,18 +37,10 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest" Version="1.1.1" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.1.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.1.0" />
-		<PackageReference Include="Uno.UI" Version="4.1.9" Aliases="UnoAlias" IncludeAssets="compile;runtime" />
 	</ItemGroup>
-
-	<Target Name="DisableUnoAnalyzersAndGenerators" BeforeTargets="CoreCompile" Condition="'$(TargetFramework)' == 'net6.0'">
-		<ItemGroup>
-			<Analyzer Remove="@(Analyzer)"
-								Condition="$([System.String]::new('%(FullPath)').Contains('uno.ui'))"/>
-			<Analyzer Remove="@(Analyzer)"
-								Condition="'%(Filename)' == 'System.Text.Json.SourceGeneration'"/>
-		</ItemGroup>
-	</Target>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj" />
