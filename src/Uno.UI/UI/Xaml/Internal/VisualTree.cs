@@ -10,6 +10,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Input;
+using Uno.UI.Xaml.Islands;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -590,17 +591,15 @@ namespace Uno.UI.Xaml.Core
 		[NotImplemented]
 		private static UIElement? GetXamlIslandRootForElement(DependencyObject? pObject)
 		{
-			return null;
-			//TODO Uno: XamlIslandRoot not needed for now.
 			//if (!pObject || !pObject->GetContext()->HasXamlIslands())
 			//{
 			//	return nullptr;
 			//}
-			//if (VisualTree * visualTree = GetForElementNoRef(pObject))
-			//{
-			//	return do_pointer_cast<CXamlIslandRoot>(visualTree->m_rootElement);
-			//}
-			//return null;
+			if (GetForElement(pObject) is VisualTree visualTree)
+			{
+				return visualTree.RootElement;
+			}
+			return null;
 		}
 
 		internal static VisualTree? GetForElement(DependencyObject? element, LookupOptions options = LookupOptions.WarningIfNotFound)
@@ -667,12 +666,11 @@ namespace Uno.UI.Xaml.Core
 					}
 				}
 
-				//if (currentAncestor.GetTypeIndex() == KnownTypeIndex::XamlIsland)
-				//{
-				//	return static_cast<CXamlIslandRoot*>(currentAncestor)->GetVisualTreeNoRef();
-				//}
-				//else
-				if (currentAncestor is RootVisual rootVisual)
+				if (currentAncestor is XamlIslandRoot xamlIslandRoot)
+				{
+					return xamlIslandRoot.ContentRoot.VisualTree;
+				}
+				else if (currentAncestor is RootVisual rootVisual)
 				{
 					return rootVisual.AssociatedVisualTree;
 				}
@@ -773,9 +771,7 @@ namespace Uno.UI.Xaml.Core
 		{
 			if (XamlRoot == null)
 			{
-				//TODO Uno: Our current implementation has only a single XAML root.
-				//In the future we may want to support multiple.
-				XamlRoot = XamlRoot.Current;
+				XamlRoot = new XamlRoot(this);
 			}
 
 			return XamlRoot;
