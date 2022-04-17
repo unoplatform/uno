@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -25,6 +26,12 @@ namespace UnoIslands
         public MainPage()
         {
             this.InitializeComponent();
+			this.DataContextChanged += MainPage_DataContextChanged;
         }
-    }
+
+		private void MainPage_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+		{
+			Debug.WriteLine(args.NewValue?.GetType());
+		}
+	}
 }

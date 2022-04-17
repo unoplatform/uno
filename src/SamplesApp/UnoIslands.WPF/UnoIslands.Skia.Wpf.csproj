@@ -39,7 +39,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="TestData.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="TestData.json" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="SkiaSharp.Views.WPF" Version="2.80.3" />
 	</ItemGroup>
 

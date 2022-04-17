@@ -9,6 +9,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid Background="#FAFAFA">
+		<TextBlock Text="{Binding Name}" />
 		<Button HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40">Hi, I'm Uno!</Button>
 	</Grid>
 </Page>

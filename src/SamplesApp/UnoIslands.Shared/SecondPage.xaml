@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid Background="#ECECEC">
+    <Grid Background="Red">
 		<CheckBox IsChecked="True" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40">I'm Uno too!</CheckBox>
     </Grid>
 </Page>

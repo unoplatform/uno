@@ -4,19 +4,24 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UnoIslands.WPF"
-		xmlns:xamlHost="clr-namespace:Uno.UI.Wpf.XamlHost;assembly=Uno.UI.Runtime.Skia.Wpf"
+		xmlns:xamlHost="clr-namespace:Uno.UI.XamlHost.Skia.Wpf;assembly=Uno.UI.Runtime.Skia.Wpf"
 		mc:Ignorable="d"
         Title="Uno with Skia# Backend" Height="450" Width="800">
 	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="*" />
-			<RowDefinition Height="*" />
-			<RowDefinition Height="*" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
-		<Button Content="Hello WPF!" />
-		<xamlHost:UnoXamlHost Grid.Row="1"  InitialTypeName="UnoIslands.MainPage" />
-		<Button Content="Hello WPF!" Grid.Row="2" />
-		<xamlHost:UnoXamlHost Grid.Row="3"  InitialTypeName="UnoIslands.SecondPage" />
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="3*" />
+		</Grid.ColumnDefinitions>
+		<ListView x:Name="List" ItemsSource="{Binding Data}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
+			<ListView.ItemTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding Name}" />
+				</DataTemplate>
+			</ListView.ItemTemplate>
+		</ListView>
+
+		<Grid x:Name="DetailsPane" DataContext="{Binding SelectedItem}" Grid.Column="1">
+			<xamlHost:UnoXamlHost InitialTypeName="UnoIslands.MainPage" />
+		</Grid>
 	</Grid>
 </Window>

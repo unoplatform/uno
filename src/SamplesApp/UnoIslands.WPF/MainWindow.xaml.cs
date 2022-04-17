@@ -1,5 +1,8 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
+using Newtonsoft.Json;
 using Uno.UI.Skia.Platform;
+using UnoIslands.Skia.Wpf;
 
 namespace UnoIslands.WPF
 {
@@ -13,6 +16,8 @@ namespace UnoIslands.WPF
 		public MainWindow()
 		{
 			InitializeComponent();
+			
+			DataContext = new MainWindowViewModel();
 		}
-	}
+	}	
 }
