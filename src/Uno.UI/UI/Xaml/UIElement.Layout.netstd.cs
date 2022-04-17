@@ -1,10 +1,10 @@
 ﻿#if !__NETSTD_REFERENCE__
-using Windows.Foundation;
 using System;
 using System.Diagnostics;
-using Windows.UI.Xaml.Controls.Primitives;
 using System.Runtime.CompilerServices;
 using Uno.UI;
+using Windows.Foundation;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml
 {
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml
 				(this.GetParent() as UIElement)?.InvalidateMeasure();
 				if (IsVisualTreeRoot)
 				{
-					Window.InvalidateMeasure();
+					Window.InvalidateMeasure(this);
 				}
 			}
 		}
@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void InvalidateMeasureDirtyPath()
 		{
-			if(IsMeasureDirtyOrMeasureDirtyPath)
+			if (IsMeasureDirtyOrMeasureDirtyPath)
 			{
 				return; // Already invalidated
 			}
@@ -70,7 +70,7 @@ namespace Windows.UI.Xaml
 			}
 			else if (IsVisualTreeRoot)
 			{
-				Window.InvalidateMeasure();
+				Window.InvalidateMeasure(XamlRoot);
 			}
 		}
 
@@ -97,7 +97,7 @@ namespace Windows.UI.Xaml
 				(this.GetParent() as UIElement)?.InvalidateArrange();
 				if (IsVisualTreeRoot)
 				{
-					Window.InvalidateArrange();
+					Window.InvalidateArrange(this);
 				}
 			}
 		}
@@ -122,9 +122,9 @@ namespace Windows.UI.Xaml
 			{
 				parent.InvalidateArrangeDirtyPath();
 			}
-			else
+			else if (IsVisualTreeRoot)
 			{
-				Window.InvalidateArrange();
+				Window.InvalidateArrange(this);
 			}
 		}
 
@@ -248,7 +248,7 @@ namespace Windows.UI.Xaml
 				var children = GetChildren().GetEnumerator();
 
 				//foreach (var child in children)
-				while(children.MoveNext())
+				while (children.MoveNext())
 				{
 					if (children.Current is { IsMeasureDirtyOrMeasureDirtyPath: true } child)
 					{
