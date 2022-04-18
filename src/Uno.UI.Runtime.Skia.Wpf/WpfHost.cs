@@ -127,11 +127,14 @@ namespace Uno.UI.Skia.Platform
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = d => dispatcher.BeginInvoke(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = dispatcher.CheckAccess;
 
-			WinUI.Window.InvalidateRender += () =>
-			{
-				InvalidateOverlays();
-				InvalidateVisual();
-			};
+			WinUI.Application.StartWithArguments(CreateApp);
+
+			//TODO:MZ:
+			//WinUI.Window.InvalidateRender += () =>
+			//{
+			//	InvalidateOverlays();
+			//	InvalidateVisual();
+			//};
 
 			WpfApplication.Current.Activated += Current_Activated;
 			WpfApplication.Current.Deactivated += Current_Deactivated;

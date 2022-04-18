@@ -8,8 +8,8 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid Background="#FAFAFA">
-		<TextBlock Text="{Binding Name}" />
-		<Button HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40">Hi, I'm Uno!</Button>
-	</Grid>
+    <StackPanel Background="#FAFAFA" Padding="20">
+		<TextBlock Text="{Binding Name}" Style="{ThemeResource HeaderTextBlockStyle}" />
+		<Button Content="{Binding Phone}" />
+	</StackPanel>
 </Page>

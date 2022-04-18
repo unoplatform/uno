@@ -1,42 +1,13 @@
 ﻿#nullable enable
 
-using System;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using SkiaSharp;
-using Uno.ApplicationModel.DataTransfer;
-using Uno.Extensions.ApplicationModel.DataTransfer;
-using Uno.Extensions.Networking.Connectivity;
-using Uno.Extensions.Storage.Pickers;
-using Uno.Extensions.System;
-using Uno.Extensions.System.Profile;
-using Uno.Extensions.UI.Core.Preview;
-using Uno.Foundation.Extensibility;
-using Uno.Helpers.Theming;
-using Uno.UI.Core.Preview;
-using Uno.UI.Runtime.Skia.Wpf;
-using Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helper.Theming;
-using Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls;
-using Uno.UI.Xaml;
-using Uno.UI.Xaml.Controls.Extensions;
-using Uno.UI.Xaml.Core;
 using Windows.Graphics.Display;
-using Windows.Networking.Connectivity;
-using Windows.Storage.Pickers;
-using Windows.System.Profile.Internal;
-using Windows.UI.Core.Preview;
-using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using UnoApplication = Windows.UI.Xaml.Application;
 using WinUI = Windows.UI.Xaml;
-using WpfApplication = global::System.Windows.Application;
-using WpfCanvas = global::System.Windows.Controls.Canvas;
 using WpfControl = global::System.Windows.Controls.Control;
-using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {
@@ -66,7 +37,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		}
 
 		protected override void OnRender(DrawingContext drawingContext)
-		{			
+		{
 			if (!IsXamlContentLoaded())
 			{
 				return;
@@ -135,14 +106,11 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			}
 
 			// draw the bitmap to the screen
-			_bitmap.AddDirtyRect(new Int32Rect(0, 0, _bitmap.PixelWidth, _bitmap.PixelHeight));			
+			_bitmap.AddDirtyRect(new Int32Rect(0, 0, _bitmap.PixelWidth, _bitmap.PixelHeight));
 			_bitmap.Unlock();
-			
+
 
 			drawingContext.DrawImage(_bitmap, new Rect(0, 0, ActualWidth, ActualHeight));
-			drawingContext.DrawEllipse(Brushes.Blue, null, new Point(10, 10), 10, 10);
 		}
-
-		private Random _randomizer = new Random();
 	}
 }
