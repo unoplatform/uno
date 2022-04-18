@@ -12,8 +12,9 @@ namespace Windows.ApplicationModel.Appointments
 {
 	public partial class AppointmentStore
 	{
-		private bool _startTimeRequested = false; // if it should be included in UWP output result set
-		private bool _durationRequested = false; // set if duration should be included in UWP output result
+		// set to `true` if should be included in UWP output result set
+		private bool _startTimeRequested = false;
+		private bool _durationRequested = false;
 
 		private List<string> UWP2AndroColumnNames(IList<string> uwpColumns)
 		{
@@ -45,6 +46,10 @@ namespace Windows.ApplicationModel.Appointments
 					case "Appointment.Details":
 						androidColumns.Add(Android.Provider.CalendarContract.IEventsColumns.Description);
 						break;
+					case "Appointment.Reminder":
+						androidColumns.Add(Android.Provider.CalendarContract.IEventsColumns.HasAlarm);
+						break;
+
 				}
 			}
 			return androidColumns;
@@ -52,6 +57,9 @@ namespace Windows.ApplicationModel.Appointments
 
 		public IAsyncOperation<IReadOnlyList<Appointment>> FindAppointmentsAsync(DateTimeOffset rangeStart, TimeSpan rangeLength, FindAppointmentsOptions options)
 			=> FindAppointmentsAsyncTask(rangeStart, rangeLength, options).AsAsyncOperation<IReadOnlyList<Appointment>>();
+
+		// I don't know if this is default everywhere, or only on my tablet...
+		private int DEFAULT_REMINDER_MINUTES = 15;
 
 		private async Task<IReadOnlyList<Appointment>> FindAppointmentsAsyncTask(DateTimeOffset rangeStart, TimeSpan rangeLength, FindAppointmentsOptions options)
 		{
@@ -117,6 +125,7 @@ namespace Windows.ApplicationModel.Appointments
 			int _colOrganizer = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.Organizer);
 			int _colDetails = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.Description);
 			int _colCalId = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.CalendarId);
+			int _colHasAlarm = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.HasAlarm);
 			int _colId = cursor.GetColumnIndex("_id");
 
 
@@ -168,6 +177,47 @@ namespace Windows.ApplicationModel.Appointments
 					var organ = new AppointmentOrganizer();
 					organ.Address = cursor.GetString(_colOrganizer);
 					entry.Organizer = organ;
+				}
+
+				if(_colHasAlarm > -1)
+				{
+					// first, set it to default value 
+					entry.Reminder = TimeSpan.FromMinutes(DEFAULT_REMINDER_MINUTES);
+
+					// now, search for implicite alarm times (non-default)
+					var projectionCols = new string[] {
+						Android.Provider.CalendarContract.IRemindersColumns.EventId,
+						Android.Provider.CalendarContract.IRemindersColumns.Minutes,
+					};
+
+					using var cursor_reminder = Android.Provider.CalendarContract.Reminders.Query(
+						_contentResolver, cursor.GetLong(_colId), projectionCols);
+
+					if (cursor_reminder != null)
+					{
+						if (cursor_reminder.MoveToFirst())
+						{
+							int minReminder = int.MaxValue;
+							do
+							{
+								int currMinutes = cursor_reminder.GetInt(1);
+								if (currMinutes == -1)
+								{
+									// == -1 means "default time"
+									currMinutes = DEFAULT_REMINDER_MINUTES;
+								}
+								minReminder = Math.Min(minReminder, currMinutes);
+							}
+							while (cursor_reminder.MoveToNext());
+
+							if(minReminder == int.MaxValue)
+							{
+								minReminder = DEFAULT_REMINDER_MINUTES;
+							}
+							entry.Reminder = TimeSpan.FromMinutes(minReminder);
+						}
+						cursor_reminder.Close();
+					}
 				}
 
 				entriesList.Add(entry);

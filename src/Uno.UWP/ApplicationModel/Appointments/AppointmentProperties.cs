@@ -16,6 +16,7 @@ namespace Windows.ApplicationModel.Appointments
 		public static string Subject => "Appointment.Subject";
 		public static string Organizer => "Appointment.Organizer";
 		public static string Details => "Appointment.Details";
+
 		public static IList<string> DefaultProperties
 		{
 			get
