@@ -176,6 +176,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 				if (currentRoot != null)
 				{
 					currentRoot.SizeChanged -= XamlContentSizeChanged;
+					currentRoot.XamlRoot.InvalidateRender -= XamlRoot_InvalidateRender;
 				}
 
 				_childInternal = value;
@@ -187,6 +188,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 					// If XAML content has changed, check XAML size
 					// to determine if UnoXamlHost needs to re-run layout.
 					frameworkElement.SizeChanged += XamlContentSizeChanged;
+					frameworkElement.XamlRoot.InvalidateRender += XamlRoot_InvalidateRender;
 				}
 
 				OnChildChanged();
@@ -194,6 +196,12 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 				// Fire updated event
 				ChildChanged?.Invoke(this, new EventArgs());
 			}
+		}
+
+		private void XamlRoot_InvalidateRender()
+		{
+			//InvalidateOverlays();
+			InvalidateVisual();
 		}
 
 		/// <summary>

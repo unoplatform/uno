@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 
@@ -9,10 +10,27 @@ public sealed partial class XamlRoot
 	private bool _isMeasureWaiting = false;
 	private bool _isArrangeWaiting = false;
 	private bool _isMeasuringOrArranging = false;
+	private bool _renderQueued = false;
+	
+	internal event Action InvalidateRender = () => { };
 
 	internal void InvalidateMeasure() => ScheduleInvalidateMeasureOrArrange(invalidateMeasure: true);
 
 	internal void InvalidateArrange() => ScheduleInvalidateMeasureOrArrange(invalidateMeasure: false);
+
+	internal void QueueInvalidateRender()
+	{
+		if (!_isMeasuringOrArranging && !_renderQueued)
+		{
+			_renderQueued = true;
+
+			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
+				_renderQueued = false;
+				InvalidateRender();
+			});
+		}
+	}
 
 	internal void ScheduleInvalidateMeasureOrArrange(bool invalidateMeasure)
 	{
@@ -74,9 +92,9 @@ public sealed partial class XamlRoot
 			
 			if (forMeasure)
 			{
-				rootElement.Measure(Bounds.Size);
+				rootElement.Measure(Size);
 			}
-
+			
 			if (forArrange)
 			{
 				rootElement.Arrange(Bounds);

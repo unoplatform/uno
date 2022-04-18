@@ -66,9 +66,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		}
 
 		protected override void OnRender(DrawingContext drawingContext)
-		{
-			base.OnRender(drawingContext);
-
+		{			
 			if (!IsXamlContentLoaded())
 			{
 				return;
@@ -133,12 +131,18 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 				{
 					WinUI.Window.Current.Compositor.RenderVisual(surface, ChildInternal.Visual);
 				}
+				surface.Canvas.Flush();
 			}
 
 			// draw the bitmap to the screen
-			_bitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
+			_bitmap.AddDirtyRect(new Int32Rect(0, 0, _bitmap.PixelWidth, _bitmap.PixelHeight));			
 			_bitmap.Unlock();
+			
+
 			drawingContext.DrawImage(_bitmap, new Rect(0, 0, ActualWidth, ActualHeight));
+			drawingContext.DrawEllipse(Brushes.Blue, null, new Point(10, 10), 10, 10);
 		}
+
+		private Random _randomizer = new Random();
 	}
 }

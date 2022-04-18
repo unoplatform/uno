@@ -33,6 +33,8 @@ namespace Windows.UI.Xaml
 		{
 			Dispatcher = CoreDispatcher.Main;
 			CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
+			InitDragAndDrop();
+		}		
 			CoreWindow.SetInvalidateRender(QueueInvalidateRender);
 
 			InitializeCommon();
@@ -94,6 +96,8 @@ namespace Windows.UI.Xaml
 				{
 					throw new InvalidOperationException("The root visual could not be created.");
 				}
+
+				CoreWindow.SetInvalidateRender(_rootVisual.XamlRoot.QueueInvalidateRender);
 
 				UIElement.LoadingRootElement(_rootVisual);
 

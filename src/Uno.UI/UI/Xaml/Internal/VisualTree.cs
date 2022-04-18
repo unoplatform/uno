@@ -675,22 +675,23 @@ namespace Uno.UI.Xaml.Core
 					return rootVisual.AssociatedVisualTree;
 				}
 
+				DependencyObject? nextAncestor = null;
 				//TODO Uno: Uncomment and implement
-				//DependencyObject? nextAncestor = null;
-				//if (currentAncestor.DoesAllowMultipleAssociation() && currentAncestor.GetParentCount() > 1)
-				//{
-				//	// We cannot travese up a tree through a multiply associated element.  Our goal is to support DOs being
-				//	// shared between XAML trees.  We've seen cases where we traverse up the tree through CSetter objects,
-				//	// so for now we allow the traversal if there's one unique parent.  TODO: This could be fragile?  Allowing
-				//	// the traversal to happen when the parent count is 1 means that if this element gets another parent later,
-				//	// we're now in an inconsistent state.
-				//	// Bug 19548424: Investigate places where an element entering the tree doesn't have a unique VisualTree ptr
-				//}
-				//else
-				//{
-				//	nextAncestor = currentAncestor.GetParentInternal(false /* public parent only */);
-				//}
+				if (false)//currentAncestor.DoesAllowMultipleAssociation() && currentAncestor.GetParentCount() > 1)
+				{
+					// We cannot travese up a tree through a multiply associated element.  Our goal is to support DOs being
+					// shared between XAML trees.  We've seen cases where we traverse up the tree through CSetter objects,
+					// so for now we allow the traversal if there's one unique parent.  TODO: This could be fragile?  Allowing
+					// the traversal to happen when the parent count is 1 means that if this element gets another parent later,
+					// we're now in an inconsistent state.
+					// Bug 19548424: Investigate places where an element entering the tree doesn't have a unique VisualTree ptr
+				}
+				else
+				{
+					nextAncestor = currentAncestor.GetParentInternal(false /* public parent only */);
+				}
 
+				//TODO Uno: Uncomment and implement
 				////
 				//// We have a few tricks to figure out which VisualTree an element may be associated with.
 				//// There is now a cached weak VisualTree pointer on each DO that we update when we do a live
@@ -743,7 +744,7 @@ namespace Uno.UI.Xaml.Core
 				//	}
 				//}
 
-				//currentAncestor = nextAncestor;
+				currentAncestor = nextAncestor;
 			}
 			if (result == null)
 			{

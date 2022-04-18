@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml
 				(this.GetParent() as UIElement)?.InvalidateMeasure();
 				if (IsVisualTreeRoot)
 				{
-					Window.InvalidateMeasure(this);
+					XamlRoot.InvalidateMeasure();
 				}
 			}
 		}
@@ -70,7 +70,7 @@ namespace Windows.UI.Xaml
 			}
 			else if (IsVisualTreeRoot)
 			{
-				Window.InvalidateMeasure(XamlRoot);
+				XamlRoot.InvalidateMeasure();
 			}
 		}
 
@@ -97,7 +97,7 @@ namespace Windows.UI.Xaml
 				(this.GetParent() as UIElement)?.InvalidateArrange();
 				if (IsVisualTreeRoot)
 				{
-					Window.InvalidateArrange(this);
+					XamlRoot.InvalidateArrange();
 				}
 			}
 		}
@@ -124,7 +124,7 @@ namespace Windows.UI.Xaml
 			}
 			else if (IsVisualTreeRoot)
 			{
-				Window.InvalidateArrange(this);
+				XamlRoot.InvalidateArrange();
 			}
 		}
 

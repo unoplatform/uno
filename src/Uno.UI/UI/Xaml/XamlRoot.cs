@@ -1,6 +1,7 @@
 #nullable enable
 
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
 
 namespace Windows.UI.Xaml;
@@ -18,11 +19,52 @@ public sealed partial class XamlRoot
 		VisualTree = visualTree;
 	}
 
+	/// <summary>
+	/// Occurs when a property of XamlRoot has changed.
+	/// </summary>
 	public event TypedEventHandler<XamlRoot, XamlRootChangedEventArgs>? Changed;
 
-	public UIElement? Content => Window.Current?.Content;
+	public UIElement? Content => VisualTree.PublicRootVisual;
 
-	public Size Size => Content?.RenderSize ?? Size.Empty;
+	//TODO Uno specific: This is most likely not implemented here in MUX:
+	public Size Size
+	{
+		get
+		{
+			var rootElement = VisualTree.RootElement;
+			if (rootElement is RootVisual rootVisual)
+			{
+				//TODO:MZ: Support multiple windows!
+				return Window.Current.Bounds.Size;
+			}
+			else if (rootElement is XamlIslandRoot xamlIslandRoot)
+			{
+				return new Size(xamlIslandRoot.ActualSize.X, xamlIslandRoot.ActualSize.Y);
+			}
+
+			return default;
+		}
+	}
+
+	//TODO Uno specific: This is most likely not implemented here in MUX:
+	internal Rect Bounds
+	{
+		get
+		{
+			var rootElement = VisualTree.RootElement;
+			if (rootElement is RootVisual rootVisual)
+			{
+				//TODO:MZ: Support multiple windows!
+				return Window.Current.Bounds;
+			}
+			else if (rootElement is XamlIslandRoot xamlIslandRoot)
+			{
+				return new Rect(0, 0, xamlIslandRoot.ActualSize.X, xamlIslandRoot.ActualSize.Y);
+			}
+
+			return default;
+		}
+	}
 
 	public double RasterizationScale
 		=> global::Windows.Graphics.Display.DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;

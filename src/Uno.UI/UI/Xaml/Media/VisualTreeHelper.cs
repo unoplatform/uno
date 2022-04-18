@@ -188,12 +188,12 @@ namespace Windows.UI.Xaml.Media
 
 		public static IReadOnlyList<Popup> GetOpenPopupsForXamlRoot(XamlRoot xamlRoot)
 		{
-			if (xamlRoot == XamlRoot.Current)
+			if (xamlRoot == Window.Current.RootElement.XamlRoot)
 			{
 				return GetOpenPopups(Window.Current);
 			}
 
-			return new Popup[0];
+			return Array.Empty<Popup>();
 		}
 
 
