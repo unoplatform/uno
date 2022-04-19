@@ -28,6 +28,12 @@ namespace Uno.UI.Runtime.Skia
 		private const SKColorType colorType = SKColorType.Rgba8888;
 		private const GRSurfaceOrigin surfaceOrigin = GRSurfaceOrigin.BottomLeft;
 
+		/// <summary>
+		/// Include a guard band for the creation of the OpenGL surface to avoid
+		/// incorrect renders when the surface is exactly the size of the GLArea.
+		/// </summary>
+		private const int GuardBand = 32;
+
 		private readonly DisplayInformation _displayInformation;
 		private FocusManager? _focusManager;
 
@@ -77,9 +83,6 @@ namespace Uno.UI.Runtime.Skia
 				_grContext = GRContext.CreateGl(glInterface);
 			}
 
-			_gl.Clear(ClearBufferMask.ColorBufferBit);
-			_gl.ClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-
 			// manage the drawing surface
 			var res = (int)Math.Max(1.0, Screen.Resolution / 96.0);
 			var w = Math.Max(0, AllocatedWidth * res);
@@ -102,24 +105,33 @@ namespace Uno.UI.Runtime.Skia
 
 				var glInfo = new GRGlFramebufferInfo((uint)framebuffer, colorType.ToGlSizedFormat());
 
-				_renderTarget = new GRBackendRenderTarget(w, h, samples, stencil, glInfo);
+				_renderTarget = new GRBackendRenderTarget(w + GuardBand, h + GuardBand, samples, stencil, glInfo);
 
 				// create the surface
 				_surface?.Dispose();
 				_surface = SKSurface.Create(_grContext, _renderTarget, surfaceOrigin, colorType);
+
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"Recreate render surface {w}x{h} colorType:{colorType} sample:{samples}");
+				}
 			}
 
-			using (new SKAutoCanvasRestore(_surface.Canvas, true))
-			{
-				_surface.Canvas.Clear(SKColors.White);
+			_gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.StencilBufferBit | ClearBufferMask.DepthBufferBit);
+			_gl.ClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-				// _surface.Canvas.Scale((float)(1/_dpi));
+			var canvas = _surface.Canvas;
+
+			using (new SKAutoCanvasRestore(canvas, true))
+			{
+				canvas.Clear(SKColors.White);
+				canvas.Translate(new SKPoint(0, GuardBand));
 
 				WUX.Window.Current.Compositor.Render(_surface);
 			}
 
 			// update the control
-			_surface.Canvas.Flush();
+			canvas.Flush();
 
 			_gl.Flush();
 		}
