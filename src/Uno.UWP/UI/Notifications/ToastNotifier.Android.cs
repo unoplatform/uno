@@ -111,16 +111,36 @@ namespace Windows.UI.Notifications
 			if ((childToast != null) && childToast.Count > 0)
 			{
 				// first text - bigger text (title)
-				toastTitleText = ConvertToastTextToString(childToast[0]!.InnerText);
+
+				// to keep compiler happy
+				var childNode0 = childToast[0];
+				if (childNode0 is null)
+				{
+					throw new Exception("It cannot happen, but to keep compiler happy...");
+				}
+				toastTitleText = ConvertToastTextToString(childNode0.InnerText);
 
 				if (childToast.Count > 1)
 				{
-					toastText.Append(ConvertToastTextToString(childToast[1]!.InnerText));
+					// to keep compiler happy
+					var childNode1 = childToast[1];
+					if (childNode1 is null)
+					{
+						throw new Exception("It cannot happen, but to keep compiler happy...");
+					}
+					toastText.Append(ConvertToastTextToString(childNode1.InnerText));
 
 					for (int childIndex = 2; childIndex < childToast.Count; childIndex++)
 					{   // in most scenarios, this loop will never iterate
 						// separate lines with space and \n: \n as line splitting for newer Android, space - for older
-						toastText.Append(" \n" + ConvertToastTextToString(childToast[childIndex].InnerText!));
+
+						// to keep compiler happy
+						var childNode = childToast[childIndex];
+						if(childNode is null )
+						{
+							throw new Exception("It cannot happen, but to keep compiler happy...");
+						}
+						toastText.Append(" \n" + ConvertToastTextToString(childNode.InnerText));
 					}
 				}
 			}
@@ -220,7 +240,12 @@ namespace Windows.UI.Notifications
 				var childLaunch = childToast[0]?.Attributes?.GetNamedItem("launch");
 				if (childLaunch != null)
 				{
-					toastArgument = childLaunch.Value!;
+					var launchValue = childLaunch.Value;
+					if (launchValue is null)
+					{
+						throw new Exception("It cannot happen, but to keep compiler happy...");
+					}
+					toastArgument = launchValue;
 				}
 			}
 
