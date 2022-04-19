@@ -1,4 +1,5 @@
-﻿#if __ANDROID__
+﻿#nullable enable 
+#if __ANDROID__
 
 using System;
 using System.Collections.Generic;

@@ -1,35 +1,26 @@
-
-using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Threading.Tasks;
-using Windows.Foundation;
+#nullable enable 
 
 namespace Windows.ApplicationModel.Contacts
 {
 	public partial class ContactQueryOptions
 	{
-		internal ContactQuerySearchFields SearchFields { get; set; }
-		internal string SearchText { get; set; }
-
 		public ContactQueryDesiredFields DesiredFields { get; set; }
+
+		public ContactQueryTextSearch TextSearch { get; internal set; }
 
 		public ContactQueryOptions(string text) 
 		{
-			SearchText = text;
-			SearchFields = ContactQuerySearchFields.All;
+			TextSearch = new ContactQueryTextSearch(text, ContactQuerySearchFields.All);
 		}
 
 		public ContactQueryOptions(string text, ContactQuerySearchFields fields)
 		{
-			SearchText = text;
-			SearchFields = fields;
+			TextSearch = new ContactQueryTextSearch(text, fields);
 		}
 
 		public ContactQueryOptions()
 		{
-			SearchText = "";
-			SearchFields = ContactQuerySearchFields.None;
+			TextSearch = new ContactQueryTextSearch("", ContactQuerySearchFields.None);
 		}
 
 	}
