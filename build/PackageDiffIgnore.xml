@@ -8688,6 +8688,9 @@
 				fullName="System.Void Windows.UI.Core.Preview.SystemNavigationManagerPreview..ctor()"
 				reason="Not public in UWP" />
 			<Member
+				fullName="System.Void Windows.ApplicationModel.Contacts.ContactQueryTextSearch..ctor()"
+				reason="Not public in UWP" />
+			<Member
 				fullName="System.Void Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs..ctor()"
 				reason="Not public in UWP" />
 			<Member
