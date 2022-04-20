@@ -251,7 +251,7 @@ if ($InstallWindowsSDK)
     if($buildNumber -eq 18362)
     {
         # Workaround for removed SDK
-        $uri = "https://go.microsoft.com/fwlink/?linkid=2083448";
+        $uri = "https://software-static.download.prss.microsoft.com/pr/download/18362.1.190318-1202.19h1_release_WindowsSDK.iso";
     }
 
     if ($env:TEMP -eq $null)
