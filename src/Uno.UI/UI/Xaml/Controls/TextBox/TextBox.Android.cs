@@ -169,6 +169,15 @@ namespace Windows.UI.Xaml.Controls
 					using (focusState == FocusState.Programmatic ? PreventKeyboardDisplayIfSet() : null)
 					{
 						_textBoxView.RequestFocus();
+
+						var selectionStart = this.SelectionStart;
+
+						if (selectionStart == 0)
+						{
+							int cursorPosition = selectionStart + _textBoxView?.Text?.Length ?? 0;
+
+							this.Select(cursorPosition, 0);
+						}
 					}
 				}
 			}

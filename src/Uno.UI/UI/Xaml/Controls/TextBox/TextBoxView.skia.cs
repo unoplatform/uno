@@ -87,11 +87,20 @@ namespace Windows.UI.Xaml.Controls
 			{
 				DisplayBlock.Opacity = 0;
 				_textBoxExtension?.StartEntry();
+				
+				var selectionStart = this.GetSelectionStart();
+
+				if (selectionStart == 0)
+				{
+					int cursorPosition = selectionStart + TextBox?.Text?.Length ?? 0;
+
+					_textBoxExtension?.Select(cursorPosition, 0);
+				}				
 			}
 			else
 			{
 				_textBoxExtension?.EndEntry();
-				DisplayBlock.Opacity = 1;
+				DisplayBlock.Opacity = 1;								
 			}
 		}
 

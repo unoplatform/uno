@@ -134,12 +134,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			WindowHelper.WindowContent = textBox;
 			await WindowHelper.WaitForLoaded(textBox);
-#if __WASM__ // Wasm is behaving differently than UWP and other platforms. https://github.com/unoplatform/uno/issues/7016
-			Assert.AreEqual(10, textBox.SelectionStart);
-#else
-			Assert.AreEqual(0, textBox.SelectionStart);
-#endif
-
+			textBox.Focus(FocusState.Programmatic);
+			Assert.AreEqual(textBox.Text.Length, textBox.SelectionStart);
 			Assert.AreEqual(0, textBox.SelectionLength);
 			textBox.Select(1, 7);
 			Assert.AreEqual(1, textBox.SelectionStart);
@@ -156,12 +152,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			WindowHelper.WindowContent = textBox;
 			await WindowHelper.WaitForLoaded(textBox);
-
-#if __WASM__ // Wasm is behaving differently than UWP and other platforms. https://github.com/unoplatform/uno/issues/7016
-			Assert.AreEqual(10, textBox.SelectionStart);
-#else
-			Assert.AreEqual(0, textBox.SelectionStart);
-#endif
+			textBox.Focus(FocusState.Programmatic);
+			Assert.AreEqual(textBox.Text.Length, textBox.SelectionStart);
 			Assert.AreEqual(0, textBox.SelectionLength);
 			textBox.Select(1, 20);
 			Assert.AreEqual(1, textBox.SelectionStart);
@@ -178,12 +170,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			WindowHelper.WindowContent = textBox;
 			await WindowHelper.WaitForLoaded(textBox);
-
-#if __WASM__ // Wasm is behaving differently than UWP and other platforms. https://github.com/unoplatform/uno/issues/7016
-			Assert.AreEqual(10, textBox.SelectionStart);
-#else
-			Assert.AreEqual(0, textBox.SelectionStart);
-#endif
+			textBox.Focus(FocusState.Programmatic);
+			Assert.AreEqual(textBox.Text.Length, textBox.SelectionStart);
 			Assert.AreEqual(0, textBox.SelectionLength);
 			textBox.Select(20, 5);
 			Assert.AreEqual(10, textBox.SelectionStart);
