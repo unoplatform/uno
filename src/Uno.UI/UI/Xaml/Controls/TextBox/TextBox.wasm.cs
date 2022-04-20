@@ -59,21 +59,6 @@ namespace Windows.UI.Xaml.Controls
 			FocusTextView();
 		}
 
-
-		private void ResetCaret()
-		{
-
-			this.SelectionStart = 0;
-			this.SelectionLength = 0;
-
-			if (_textBoxView != null)
-			{
-				_textBoxView.SelectionStart = 0;
-				_textBoxView.SelectionEnd = 0;
-
-			}
-		}
-
 		private void OnHeaderClick(object sender, object args)
 		{
 			FocusTextView();
