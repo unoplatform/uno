@@ -1,8 +1,8 @@
-# Troubleshoot your environment with uno-check
+# Troubleshoot your environment with uno check
 
 If you're having trouble building an Uno Platform project and your dev environment might be the cause, the first thing you should do is run [`uno-check`](https://github.com/unoplatform/uno.check).
 
-`uno-check` (or just uno check) is a dotnet command-line tool that runs a suite of automated check-ups on your dev environment, making sure you have all the prerequisites installed to successfully develop an Uno Platform application. The tool is available on Windows, Linux and macOS.
+`uno-check` is a dotnet command-line tool that runs a suite of automated check-ups on your dev environment, making sure you have all the prerequisites installed to successfully develop an Uno Platform application. The tool is available on Windows, Linux and macOS.
 
 If it finds something missing, out of date, or misconfigured, it will either offer to automatically fix it, or else direct you to instructions to manually fix the problem.
 
