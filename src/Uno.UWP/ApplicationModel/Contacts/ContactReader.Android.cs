@@ -45,13 +45,13 @@ namespace Windows.ApplicationModel.Contacts
 
 			if (oUri is null)
 			{
-				throw new NullReferenceException("Windows.ApplicationModel.Contacts.ContactReader.ctor, oUri is null (impossible)");
+				throw new InvalidOperationException("Windows.ApplicationModel.Contacts.ContactReader.ctor, oUri is null (impossible)");
 			}
 
 			var tempContentResolver = Android.App.Application.Context.ContentResolver;
 			if (tempContentResolver is null)
 			{
-				throw new NullReferenceException("Windows.ApplicationModel.Contacts.ContactReader.ctor, ContentResolver is null (impossible)");
+				throw new InvalidOperationException("Windows.ApplicationModel.Contacts.ContactReader.ctor, ContentResolver is null (impossible)");
 			}
 			_contentResolver = tempContentResolver;
 
@@ -62,7 +62,7 @@ namespace Windows.ApplicationModel.Contacts
 								null);   // == date DESC
 			if (_cursor is null)
 			{
-				throw new NullReferenceException("Windows.ApplicationModel.Contacts.ContactReader.ctor, _cursor is null (impossible)");
+				throw new InvalidOperationException("Windows.ApplicationModel.Contacts.ContactReader.ctor, _cursor is null (impossible)");
 			}
 
 			if (!_cursor.MoveToFirst())
@@ -111,7 +111,7 @@ namespace Windows.ApplicationModel.Contacts
 				var tempDisplayNameOverride = _cursor.GetString(1);
 				if (tempDisplayNameOverride is null)
 				{
-					throw new NullReferenceException("Windows.ApplicationModel.Contacts.ContactReader.ReadBatchInternal, DisplayNameOverride is null (impossible)");
+					throw new InvalidOperationException("Windows.ApplicationModel.Contacts.ContactReader.ReadBatchInternal, DisplayNameOverride is null (impossible)");
 				}
 
 				entry.DisplayNameOverride = tempDisplayNameOverride;   // we defined columns while opening cursor, so we know what data is in which columns
@@ -211,7 +211,7 @@ namespace Windows.ApplicationModel.Contacts
 			var contentUri = Android.Provider.ContactsContract.Data.ContentUri;
 			if (contentUri is null)
 			{
-				throw new NullReferenceException("Windows.ApplicationModel.Contacts.ContactReader.ReadBatchInternal, ContentUri is null (impossible)");
+				throw new InvalidOperationException("Windows.ApplicationModel.Contacts.ContactReader.ReadBatchInternal, ContentUri is null (impossible)");
 			}
 
 			using var subCursor = contentResolver?.Query(
@@ -223,7 +223,7 @@ namespace Windows.ApplicationModel.Contacts
 								null);   // default order
 			if (subCursor is null)
 			{
-				throw new NullReferenceException("Windows.ApplicationModel.Contacts.ContactReader.ReadBatchInternal, subCursor is null (impossible)");
+				throw new InvalidOperationException("Windows.ApplicationModel.Contacts.ContactReader.ReadBatchInternal, subCursor is null (impossible)");
 			}
 
 			//int columnD1 = subCursor.GetColumnIndex(Android.Provider.ContactsContract.DataColumns.Data1); // Phone.NUMBER
@@ -258,26 +258,25 @@ namespace Windows.ApplicationModel.Contacts
 			var contentUri = Android.Provider.ContactsContract.Data.ContentUri;
 			if (contentUri is null)
 			{
-				throw new NullReferenceException("Windows.ApplicationModel.Contacts.ContactReader.ReadBatchInternal, ContentUri2 is null (impossible)");
+				throw new InvalidOperationException("Windows.ApplicationModel.Contacts.ContactReader.ReadBatchInternal, ContentUri2 is null (impossible)");
 			}
 
 			using var subCursor = _contentResolver?.Query(
 							contentUri,
-							new string[] { "data1", "data2" }, //null,   // all columns
-															   // ContactsContract.Data.RAW_CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?",
+							new string[] { "data1", "data2" }, //null would mean "all columns", but we doesn't need any other
 							"contact_id = ? AND mimetype = ?",
 							new string[] { contactId.ToString(), Android.Provider.ContactsContract.CommonDataKinds.Email.ContentItemType },
 							null);   // default order
 			if (subCursor is null)
 			{
-				throw new NullReferenceException("Windows.ApplicationModel.Contacts.ContactReader.ReadBatchInternal, subCursor2 is null (impossible)");
+				throw new InvalidOperationException("Windows.ApplicationModel.Contacts.ContactReader.ReadBatchInternal, subCursor2 is null (impossible)");
 			}
 
 
 			bool searchFound = false;
 
-			//columnD1 = subCursor.GetColumnIndex(Android.Provider.ContactsContract.DataColumns.Data1); // Email.ADDRESS
-			//columnD2 = subCursor.GetColumnIndex(Android.Provider.ContactsContract.DataColumns.Data2); // Email.TYPE
+			//Android.Provider.ContactsContract.DataColumns.Data1 => Email.ADDRESS
+			//Android.Provider.ContactsContract.DataColumns.Data2 => Email.TYPE
 			for (int itemGuard = 10; itemGuard > 0 && subCursor.MoveToNext(); itemGuard--)
 			{
 				var itemEntry = new ContactEmail();
@@ -305,19 +304,18 @@ namespace Windows.ApplicationModel.Contacts
 			var contentUri = Android.Provider.ContactsContract.Data.ContentUri;
 			if (contentUri is null)
 			{
-				throw new NullReferenceException("Windows.ApplicationModel.Contacts.ContactReader.ReadBatchInternal, ContentUri2 is null (impossible)");
+				throw new InvalidOperationException("Windows.ApplicationModel.Contacts.ContactReader.ReadBatchInternal, ContentUri2 is null (impossible)");
 			}
 
 			using var subCursor = _contentResolver?.Query(
 								contentUri,
-								new string[] { "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data9" }, //null,   // all columns
-																									   // ContactsContract.Data.RAW_CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?",
+								new string[] { "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data9" }, //null would mean "all columns", but we doesn't need any other
 								"contact_id = ? AND mimetype = ?",
 								new string[] { contactId.ToString(), Android.Provider.ContactsContract.CommonDataKinds.StructuredName.ContentItemType },
 								null);   // default order
 			if (subCursor is null)
 			{
-				throw new NullReferenceException("Windows.ApplicationModel.Contacts.ContactReader.ReadBatchInternal, subCursor2 is null (impossible)");
+				throw new InvalidOperationException("Windows.ApplicationModel.Contacts.ContactReader.ReadBatchInternal, subCursor2 is null (impossible)");
 			}
 
 			bool searchFound = false;
@@ -362,7 +360,7 @@ namespace Windows.ApplicationModel.Contacts
 			var contentUri = Android.Provider.ContactsContract.Data.ContentUri;
 			if (contentUri is null)
 			{
-				throw new NullReferenceException("Windows.ApplicationModel.Contacts.ContactReader.ReadBatchInternal, ContentUri3 is null (impossible)");
+				throw new InvalidOperationException("Windows.ApplicationModel.Contacts.ContactReader.ReadBatchInternal, ContentUri3 is null (impossible)");
 			}
 
 			var subCursor = _contentResolver?.Query(
@@ -374,7 +372,7 @@ namespace Windows.ApplicationModel.Contacts
 							null);   // default order
 			if (subCursor is null)
 			{
-				throw new NullReferenceException("Windows.ApplicationModel.Contacts.ContactReader.ReadBatchInternal, subCursor3 is null (impossible)");
+				throw new InvalidOperationException("Windows.ApplicationModel.Contacts.ContactReader.ReadBatchInternal, subCursor3 is null (impossible)");
 			}
 
 			bool searchFound = false;
