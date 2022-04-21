@@ -32,9 +32,6 @@ namespace UITests.Windows_ApplicationModel.Contacts
 		private async void getContacts_Click(object sender, RoutedEventArgs e)
 		{
 			uiErrorMsg.Text = "";
-			uiFullName.Text = "";
-			uiPhone.Text = "";
-			uiEmail.Text = "";
 
 			Windows.ApplicationModel.Contacts.ContactStore oStore;
 			try
@@ -74,30 +71,43 @@ namespace UITests.Windows_ApplicationModel.Contacts
 
 			uiOkMsg.Text = "First batch contains " + oBatch.Contacts.Count.ToString() + " contacts, data from first:";
 
-			var contact = oBatch.Contacts[0];
+			var shrtContactsList = new List<ShortContact>();
 
-			uiFullName.Text = "Full name: " + contact.FullName;
-
-			if(contact.Phones.Count < 1)
+			foreach(var contact in oBatch.Contacts)
 			{
-				uiPhone.Text = "(no phone number)";
-			}
-			else
-			{
-				uiPhone.Text = contact.Phones[0].Number;
+				var shortContact = new ShortContact();
+				shortContact.fullName = contact.FullName;
 
+				if (contact.Phones.Count < 1)
+				{
+					shortContact.phone = "(no phone)";
+				}
+				else
+				{
+					shortContact.phone = contact.Phones[0].Number;
+
+				}
+				if (contact.Emails.Count < 1)
+				{
+					shortContact.email = "(no email)";
+				}
+				else
+				{
+					shortContact.email = contact.Emails[0].Address.ToString();
+
+				}
+				shrtContactsList.Add(shortContact);
 			}
 
-			if (contact.Emails.Count < 1)
-			{
-				uiEmail.Text = "(no email)";
-			}
-			else
-			{
-				uiEmail.Text = contact.Emails[0].Address.ToString();
+			uiListItems.ItemsSource = shrtContactsList.ToArray();
 
-			}
 		}
+	}
 
+	public class ShortContact
+	{
+		public string fullName { get; set; }
+		public string phone { get; set; }
+		public string email { get; set; }
 	}
 }

@@ -11,9 +11,28 @@
 	<StackPanel Padding="20">
 		<Button Click="getContacts_Click">Get contact</Button>
 		<TextBlock Text="" Foreground="Red" Name="uiErrorMsg"/>
-		<TextBlock Text="" Name="uiOkMsg"/>
-		<TextBlock Name="uiFullName" />
-		<TextBlock Name="uiPhone"/>
-		<TextBlock Name="uiEmail"/>
+		<TextBlock Text="Can take some time if you have many contacts defined" Name="uiOkMsg"/>
+		<ListView x:Name="uiListItems" Margin="2,5,2,5" HorizontalContentAlignment="Stretch" >
+			<ListView.ItemContainerStyle>
+				<Style TargetType="ListViewItem">
+					<Setter Property="HorizontalContentAlignment"  Value="Stretch"/>
+				</Style>
+			</ListView.ItemContainerStyle>
+
+			<ListView.ItemTemplate>
+				<DataTemplate>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition />
+							<ColumnDefinition />
+							<ColumnDefinition  />
+						</Grid.ColumnDefinitions>
+						<TextBlock Grid.Column="0" Text="{Binding fullName, Mode=OneWay }"/>
+						<TextBlock Grid.Column="1" Text="{Binding phone, Mode=OneWay }"/>
+						<TextBlock Grid.Column="2" Text="{Binding email, Mode=OneWay }"/>
+					</Grid>
+				</DataTemplate>
+			</ListView.ItemTemplate>
+		</ListView>
 	</StackPanel>
 </Page>
