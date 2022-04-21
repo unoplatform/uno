@@ -64,6 +64,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return fullTargetType;
 		}
 
+		private string GetGlobalizedTypeName(XamlType type)
+		{
+			var fullTypeName = type.Name;
+			var knownType = FindType(type);
+			if (knownType == null && type.PreferredXamlNamespace.StartsWith("using:"))
+			{
+				fullTypeName = type.PreferredXamlNamespace.TrimStart("using:") + "." + type.Name;
+			}
+			if (knownType != null)
+			{
+				// Override the using with the type that was found in the list of loaded assemblies
+				fullTypeName = knownType.ToDisplayString();
+			}
+
+			return GetGlobalizedTypeName(fullTypeName);
+		}
+
 		private bool IsType(XamlType xamlType, XamlType? baseType)
 		{
 			if (xamlType == baseType)
