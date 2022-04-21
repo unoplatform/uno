@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
-namespace Windows.ApplicationModel.Background
-{
+namespace Windows.ApplicationModel.Background;
+
 
 	public partial class BackgroundTaskRegistration : IBackgroundTaskRegistration, IBackgroundTaskRegistration2, IBackgroundTaskRegistration3
 	{
@@ -16,4 +16,4 @@ namespace Windows.ApplicationModel.Background
 
 	}
 
-}
+
