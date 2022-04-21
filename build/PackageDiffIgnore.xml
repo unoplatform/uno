@@ -8696,6 +8696,21 @@
 			<Member
 				fullName="System.Void Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent..ctor()"
 				reason="Does not exist in UWP" />
+			<Member
+				fullName="System.Void Windows.Devices.Bluetooth.BluetoothLEDevice..ctor()"
+				reason="Does not exist in UWP" />
+			<Member
+				fullName="System.Void Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult..ctor()"
+				reason="Does not exist in UWP" />
+			<Member
+				fullName="System.Void Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorsResult..ctor()"
+				reason="Does not exist in UWP" />
+			<Member
+				fullName="System.Void Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceServicesResult..ctor()"
+				reason="Does not exist in UWP" />
+			<Member
+				fullName="System.Void Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult..ctor()"
+				reason="Does not exist in UWP" />
 
 			<Member
 				fullName="System.Void Windows.UI.Xaml.BringIntoViewRequestedEventArgs..ctor()"
