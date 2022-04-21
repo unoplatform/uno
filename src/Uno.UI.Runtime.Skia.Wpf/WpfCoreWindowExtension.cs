@@ -18,6 +18,8 @@ using System.Reflection;
 using Windows.System;
 using Uno.UI.Skia.Platform.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Runtime.Skia.Wpf.Constants;
+using Uno.UI.Runtime.Skia.Wpf.Input;
 
 namespace Uno.UI.Skia.Platform
 {
@@ -30,44 +32,31 @@ namespace Uno.UI.Skia.Platform
 		private HwndSource _hwndSource;
 		private PointerEventArgs? _previous;
 
-		// Win32 constants
-		private const int WM_MOUSEWHEEL = 0x020A;
-		private const int WM_MOUSEHWHEEL = 0x020E;
-		private const int WM_DPICHANGED = 0x02E0;
-
 		public CoreCursor PointerCursor
 		{
 			get => Mouse.OverrideCursor.ToCoreCursor();
 			set => Mouse.OverrideCursor = value.ToCursor();
 		}
 
-		[Flags]
-		private enum MouseModifierKeys : int
-		{
-			MK_LBUTTON = 0x0001,
-			MK_RBUTTON = 0x0002,
-			MK_SHIFT = 0x0004,
-			MK_CONTROL = 0x0008,
-			MK_MBUTTON = 0x0010,
-			MK_XBUTTON1 = 0x0020,
-			MK_XBUTTON2 = 0x0040,
-		};
-
-
 		public WpfCoreWindowExtension(object owner)
 		{
 			_ownerEvents = (ICoreWindowEvents)owner;
 
-			//_host = WpfHost.Current;
+			if (WpfHost.Current is null)
+			{
+				return;
+			}
+			
+			_host = WpfHost.Current;
 
-			//_host.MouseEnter += HostOnMouseEnter;
-			//_host.MouseLeave += HostOnMouseLeave;
-			//_host.MouseMove += HostOnMouseMove;
-			//_host.MouseDown += HostOnMouseDown;
-			//_host.MouseUp += HostOnMouseUp;
+			_host.MouseEnter += HostOnMouseEnter;
+			_host.MouseLeave += HostOnMouseLeave;
+			_host.MouseMove += HostOnMouseMove;
+			_host.MouseDown += HostOnMouseDown;
+			_host.MouseUp += HostOnMouseUp;
 
-			//// Hook for native events
-			//_host.Loaded += HookNative;
+			// Hook for native events
+			_host.Loaded += HookNative;
 
 			void HookNative(object sender, RoutedEventArgs e)
 			{
@@ -85,10 +74,10 @@ namespace Uno.UI.Skia.Platform
 		}
 
 		public void SetPointerCapture(PointerIdentifier pointer)
-			=> WpfHost.Current.CaptureMouse();
+			=> WpfHost.Current?.CaptureMouse();
 
 		public void ReleasePointerCapture(PointerIdentifier pointer)
-			=> WpfHost.Current.ReleaseMouseCapture();
+			=> WpfHost.Current?.ReleaseMouseCapture();
 
 		#region Native events
 		private void HostOnMouseEnter(object sender, MouseEventArgs args)
@@ -162,10 +151,10 @@ namespace Uno.UI.Skia.Platform
 
 			switch (msg)
 			{
-				case WM_DPICHANGED:
+				case Win32Messages.WM_DPICHANGED:
 					break;
-				case WM_MOUSEHWHEEL:
-				case WM_MOUSEWHEEL:
+				case Win32Messages.WM_MOUSEHWHEEL:
+				case Win32Messages.WM_MOUSEWHEEL:
 				{
 					var keys = (MouseModifierKeys)GetLoWord(wparam);
 
@@ -184,7 +173,7 @@ namespace Uno.UI.Skia.Platform
 						IsRightButtonPressed = keys.HasFlag(MouseModifierKeys.MK_RBUTTON),
 						IsXButton1Pressed = keys.HasFlag(MouseModifierKeys.MK_XBUTTON1),
 						IsXButton2Pressed = keys.HasFlag(MouseModifierKeys.MK_XBUTTON2),
-						IsHorizontalMouseWheel = msg == WM_MOUSEHWHEEL,
+						IsHorizontalMouseWheel = msg == Win32Messages.WM_MOUSEHWHEEL,
 						IsPrimary = true,
 						IsInRange = true,
 						MouseWheelDelta = -((int)wparam >> 16) / 40
@@ -201,7 +190,7 @@ namespace Uno.UI.Skia.Platform
 					}
 
 					var point = new Windows.UI.Input.PointerPoint(
-						frameId: GetNextFrameId(),
+						frameId: FrameIdProvider.GetNextFrameId(),
 						timestamp: (ulong)Environment.TickCount,
 						device: PointerDevice.For(PointerDeviceType.Mouse),
 						pointerId: 1,
@@ -229,7 +218,7 @@ namespace Uno.UI.Skia.Platform
 			var properties = BuildPointerProperties(args).SetUpdateKindFromPrevious(_previous?.CurrentPoint.Properties);
 			var modifiers = GetKeyModifiers();
 			var point = new Windows.UI.Input.PointerPoint(
-				frameId: GetNextFrameId(),
+				frameId: FrameIdProvider.GetNextFrameId(),
 				timestamp: (ulong)(args.Timestamp * TimeSpan.TicksPerMillisecond),
 				device: GetPointerDevice(args),
 				pointerId: 1,
@@ -254,8 +243,7 @@ namespace Uno.UI.Skia.Platform
 				IsInRange = true
 			};
 
-		private static uint GetNextFrameId()
-			=> (uint)Interlocked.Increment(ref _currentFrameId);
+
 
 		private static PointerDevice GetPointerDevice(MouseEventArgs args)
 			=> args.Device switch

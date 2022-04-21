@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml
 			Failed,
 		}
 
-		private protected class PointerCapture
+		internal protected class PointerCapture
 		{
 			private static readonly IDictionary<PointerIdentifier, PointerCapture> _actives = new Dictionary<PointerIdentifier, PointerCapture>(EqualityComparer<PointerIdentifier>.Default);
 
@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml
 					? capture
 					: new PointerCapture(pointer); // The capture will be added to the _actives only when a target is added to it.
 
-			public static bool TryGet(PointerIdentifier pointer, out PointerCapture capture)
+			internal static bool TryGet(PointerIdentifier pointer, out PointerCapture capture)
 				=> _actives.TryGetValue(pointer, out capture);
 
 			public static bool TryGet(Pointer pointer, out PointerCapture capture)
@@ -111,16 +111,16 @@ namespace Windows.UI.Xaml
 
 			public IEnumerable<PointerCaptureTarget> Targets => _targets.Values;
 
-			public bool IsTarget(UIElement element, PointerCaptureKind kinds)
+			internal bool IsTarget(UIElement element, PointerCaptureKind kinds)
 				=> _targets.TryGetValue(element, out var target)
 					&& (target.Kind & kinds) != PointerCaptureKind.None;
 
-			public IEnumerable<PointerCaptureTarget> GetTargets(PointerCaptureKind kinds)
+			internal IEnumerable<PointerCaptureTarget> GetTargets(PointerCaptureKind kinds)
 				=> _targets
 					.Values
 					.Where(target => (target.Kind & kinds) != PointerCaptureKind.None);
 
-			public PointerCaptureResult TryAddTarget(UIElement element, PointerCaptureKind kind, PointerRoutedEventArgs relatedArgs = null)
+			internal PointerCaptureResult TryAddTarget(UIElement element, PointerCaptureKind kind, PointerRoutedEventArgs relatedArgs = null)
 			{
 				global::System.Diagnostics.Debug.Assert(
 					kind == PointerCaptureKind.Explicit || kind == PointerCaptureKind.Implicit,
@@ -182,7 +182,7 @@ namespace Windows.UI.Xaml
 			/// Removes a UIElement from the targets of this capture.
 			/// DO NOT USE directly, use instead the Release method on the UIElement in order to properly raise the PointerCaptureLost event.
 			/// </summary>
-			public PointerCaptureKind RemoveTarget(UIElement element, PointerCaptureKind kinds, out PointerRoutedEventArgs lastDispatched)
+			internal PointerCaptureKind RemoveTarget(UIElement element, PointerCaptureKind kinds, out PointerRoutedEventArgs lastDispatched)
 			{
 				if (!_targets.TryGetValue(element, out var target)
 					|| (target.Kind & kinds) == 0) // Validate if any of the requested kinds is handled
@@ -375,9 +375,9 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private protected class PointerCaptureTarget
+		internal protected class PointerCaptureTarget
 		{
-			public PointerCaptureTarget(UIElement element, PointerCaptureKind kind)
+			internal PointerCaptureTarget(UIElement element, PointerCaptureKind kind)
 			{
 				NativeCaptureElement = Element = element;
 				Kind = kind;
@@ -403,7 +403,7 @@ namespace Windows.UI.Xaml
 			/// <summary>
 			/// Gets tha current capture kind that was enabled on the target
 			/// </summary>
-			public PointerCaptureKind Kind { get; set; }
+			internal PointerCaptureKind Kind { get; set; }
 
 			/// <summary>
 			/// Determines if the <see cref="Element"/> is in the native bubbling tree.

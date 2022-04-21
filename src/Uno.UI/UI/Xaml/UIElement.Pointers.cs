@@ -851,7 +851,7 @@ namespace Windows.UI.Xaml
 		#region Partial API to raise pointer events and gesture recognition (OnNative***)
 		private bool OnNativePointerEnter(PointerRoutedEventArgs args, BubblingContext ctx = default) => OnPointerEnter(args);
 
-		private bool OnPointerEnter(PointerRoutedEventArgs args, BubblingContext ctx = default)
+		internal bool OnPointerEnter(PointerRoutedEventArgs args, BubblingContext ctx = default)
 		{
 			// We override the isOver for the relevancy check as we will update it right after.
 			var isOverOrCaptured = ValidateAndUpdateCapture(args, isOver: true);
@@ -870,7 +870,7 @@ namespace Windows.UI.Xaml
 
 		private bool OnNativePointerDown(PointerRoutedEventArgs args) => OnPointerDown(args);
 
-		private bool OnPointerDown(PointerRoutedEventArgs args, BubblingContext ctx = default)
+		internal bool OnPointerDown(PointerRoutedEventArgs args, BubblingContext ctx = default)
 		{
 			_isGestureCompleted = false;
 
@@ -962,7 +962,7 @@ namespace Windows.UI.Xaml
 
 		private bool OnNativePointerMove(PointerRoutedEventArgs args) => OnPointerMove(args);
 
-		private bool OnPointerMove(PointerRoutedEventArgs args, BubblingContext ctx = default)
+		internal bool OnPointerMove(PointerRoutedEventArgs args, BubblingContext ctx = default)
 		{
 			var handledInManaged = false;
 			var isOverOrCaptured = ValidateAndUpdateCapture(args);
@@ -993,7 +993,7 @@ namespace Windows.UI.Xaml
 
 		private bool OnNativePointerUp(PointerRoutedEventArgs args) => OnPointerUp(args);
 
-		private bool OnPointerUp(PointerRoutedEventArgs args, BubblingContext ctx = default)
+		internal bool OnPointerUp(PointerRoutedEventArgs args, BubblingContext ctx = default)
 		{
 			var handledInManaged = false;
 			var isOverOrCaptured = ValidateAndUpdateCapture(args, out var isOver);
@@ -1036,7 +1036,7 @@ namespace Windows.UI.Xaml
 
 		private bool OnNativePointerExited(PointerRoutedEventArgs args) => OnPointerExited(args);
 
-		private bool OnPointerExited(PointerRoutedEventArgs args, BubblingContext ctx = default)
+		internal bool OnPointerExited(PointerRoutedEventArgs args, BubblingContext ctx = default)
 		{
 			var handledInManaged = false;
 			var isOverOrCaptured = ValidateAndUpdateCapture(args);
@@ -1080,7 +1080,7 @@ namespace Windows.UI.Xaml
 			return OnPointerCancel(args);
 		}
 
-		private bool OnPointerCancel(PointerRoutedEventArgs args, BubblingContext ctx = default)
+		internal bool OnPointerCancel(PointerRoutedEventArgs args, BubblingContext ctx = default)
 		{
 			var isOverOrCaptured = ValidateAndUpdateCapture(args); // Check this *before* updating the pressed / over states!
 
@@ -1122,7 +1122,7 @@ namespace Windows.UI.Xaml
 		{
 			return RaisePointerEvent(PointerWheelChangedEvent, args);
 		}
-		private bool OnPointerWheel(PointerRoutedEventArgs args, BubblingContext ctx = default)
+		internal bool OnPointerWheel(PointerRoutedEventArgs args, BubblingContext ctx = default)
 		{
 			return RaisePointerEvent(PointerWheelChangedEvent, args);
 		}

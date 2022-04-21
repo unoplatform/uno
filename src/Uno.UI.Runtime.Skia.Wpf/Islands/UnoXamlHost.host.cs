@@ -5,6 +5,8 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using SkiaSharp;
+using Uno.UI.Runtime.Skia.Wpf;
+using Windows.Devices.Input;
 using Windows.Graphics.Display;
 using WinUI = Windows.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
@@ -14,12 +16,13 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 	/// <summary>
 	/// UnoXamlHost control hosts UWP XAML content inside the Windows Presentation Foundation
 	/// </summary>
-	abstract partial class UnoXamlHostBase : WpfControl, WinUI.ISkiaHost
+	abstract partial class UnoXamlHostBase : WpfControl, WinUI.ISkiaHost, IWpfHost
 	{
 		private bool _designMode;
 		private DisplayInformation _displayInformation;
 		private bool _ignorePixelScaling;
 		private WriteableBitmap _bitmap;
+		private HostPointerHandler _hostPointerHandler;
 
 		public bool IgnorePixelScaling
 		{
@@ -31,9 +34,13 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			}
 		}
 
+		WinUI.XamlRoot? IWpfHost.XamlRoot => ChildInternal?.XamlRoot;
+		
 		private void InitializeHost()
 		{
 			_designMode = DesignerProperties.GetIsInDesignMode(this);
+
+			_hostPointerHandler = new HostPointerHandler(this);
 		}
 
 		protected override void OnRender(DrawingContext drawingContext)
@@ -112,5 +119,9 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 			drawingContext.DrawImage(_bitmap, new Rect(0, 0, ActualWidth, ActualHeight));
 		}
+
+		void IWpfHost.ReleasePointerCapture(PointerIdentifier pointer) => CaptureMouse(); //TODO:MZ:This should capture the correct type of pointer (stylus/mouse/touch)
+
+		void IWpfHost.SetPointerCapture(PointerIdentifier pointer) => ReleaseMouseCapture();
 	}
 }

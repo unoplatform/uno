@@ -23,6 +23,8 @@ using Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Core;
+using Uno.UI.XamlHost.Skia.Wpf;
+using Windows.Devices.Input;
 using Windows.Graphics.Display;
 using Windows.Networking.Connectivity;
 using Windows.Storage.Pickers;
@@ -41,7 +43,7 @@ using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
 namespace Uno.UI.Skia.Platform
 {
 	[TemplatePart(Name = NativeOverlayLayerPart, Type = typeof(WpfCanvas))]
-	public class WpfIslandsHost : WpfControl, WinUI.ISkiaHost
+	public class WpfIslandsHost : WpfControl, WinUI.ISkiaHost, IWpfHost
 	{
 		private const string NativeOverlayLayerPart = "NativeOverlayLayer";
 
@@ -77,13 +79,6 @@ namespace Uno.UI.Skia.Platform
 		public WpfIslandsHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder, string[] args = null)
 		{
 			_current = this;
-
-			args ??= Environment
-				.GetCommandLineArgs()
-				.Skip(1)
-				.ToArray();
-
-			designMode = DesignerProperties.GetIsInDesignMode(this);
 
 			void CreateApp(WinUI.ApplicationInitializationCallbackParams _)
 			{
@@ -194,6 +189,8 @@ namespace Uno.UI.Skia.Platform
 			}
 		}
 
+		WinUI.XamlRoot? IWpfHost.XamlRoot => throw new NotImplementedException();
+
 		protected override void OnRender(DrawingContext drawingContext)
 		{
 			base.OnRender(drawingContext);
@@ -271,5 +268,9 @@ namespace Uno.UI.Skia.Platform
 				textBox.TextBoxView?.Extension?.InvalidateLayout();
 			}
 		}
+
+		void IWpfHost.ReleasePointerCapture(PointerIdentifier pointer) => CaptureMouse(); //TODO:MZ:This should capture the correct type of pointer (stylus/mouse/touch)
+
+		void IWpfHost.SetPointerCapture(PointerIdentifier pointer) => ReleaseMouseCapture();
 	}
 }

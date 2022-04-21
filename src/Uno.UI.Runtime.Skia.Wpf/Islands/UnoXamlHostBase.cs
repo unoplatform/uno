@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Skia.Platform;
 using Uno.UI.XamlHost;
 using WUX = Windows.UI.Xaml;
@@ -82,6 +83,8 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 			// Hook DesktopWindowXamlSource OnTakeFocus event for Focus processing
 			_xamlSource.TakeFocusRequested += OnTakeFocusRequested;
+
+			SizeChanged += OnSizeChanged;
 		}
 
 		/// <summary>
@@ -177,6 +180,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 				{
 					currentRoot.SizeChanged -= XamlContentSizeChanged;
 					currentRoot.XamlRoot.InvalidateRender -= XamlRoot_InvalidateRender;
+					XamlRootMap.Unregister(currentRoot.XamlRoot);
 				}
 
 				_childInternal = value;
@@ -189,12 +193,15 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 					// to determine if UnoXamlHost needs to re-run layout.
 					frameworkElement.SizeChanged += XamlContentSizeChanged;
 					frameworkElement.XamlRoot.InvalidateRender += XamlRoot_InvalidateRender;
+					XamlRootMap.Register(frameworkElement.XamlRoot, this);
 				}
 
 				OnChildChanged();
 
 				// Fire updated event
 				ChildChanged?.Invoke(this, new EventArgs());
+
+				UpdateUnoSize();
 			}
 		}
 
@@ -291,48 +298,48 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		//    Dispose(true);
 		//}
 
-		///// <summary>
-		///// UnoXamlHost Dispose
-		///// </summary>
-		///// <param name="disposing">Is disposing?</param>
-		//protected override void Dispose(bool disposing)
-		//{
-		//    if (disposing && !this.IsDisposed)
-		//    {
-		//        var currentRoot = (WUX.FrameworkElement)ChildInternal;
-		//        if (currentRoot != null)
-		//        {
-		//            currentRoot.SizeChanged -= XamlContentSizeChanged;
-		//        }
+		/// <summary>
+		/// UnoXamlHost Dispose
+		/// </summary>
+		/// <param name="disposing">Is disposing?</param>
+		protected void Dispose()
+		{
+			if (!this.IsDisposed)
+			{
+				var currentRoot = (WUX.FrameworkElement)ChildInternal;
+				if (currentRoot != null)
+				{
+					currentRoot.SizeChanged -= XamlContentSizeChanged;
+				}
 
-		//        // Free any other managed objects here.
-		//        ComponentDispatcher.ThreadFilterMessage -= this.OnThreadFilterMessage;
-		//        ChildInternal = null;
-		//        if (_xamlSource != null)
-		//        {
-		//            _xamlSource.TakeFocusRequested -= OnTakeFocusRequested;
-		//        }
+				// Free any other managed objects here.
+				//ComponentDispatcher.ThreadFilterMessage -= this.OnThreadFilterMessage;
+				ChildInternal = null;
+				if (_xamlSource != null)
+				{
+					_xamlSource.TakeFocusRequested -= OnTakeFocusRequested;
+				}
 
-		//        if (_parentWindow != null)
-		//        {
-		//            _parentWindow.Closed -= this.OnParentClosed;
-		//            _parentWindow = null;
-		//        }
-		//    }
+				if (_parentWindow != null)
+				{
+					_parentWindow.Closed -= this.OnParentClosed;
+					_parentWindow = null;
+				}
+			}
 
-		//    // Free any unmanaged objects here.
-		//    if (_xamlSource != null && !this.IsDisposed)
-		//    {
-		//        _xamlSource.Dispose();
-		//    }
+			// Free any unmanaged objects here.
+			if (_xamlSource != null && !this.IsDisposed)
+			{
+				_xamlSource.Dispose();
+			}
 
-		//    // BUGBUG: CoreInputSink cleanup is failing when explicitly disposing
-		//    // WindowsXamlManager.  Add dispose call back when that bug is fixed in 19h1.
-		//    this.IsDisposed = true;
+			// BUGBUG: CoreInputSink cleanup is failing when explicitly disposing
+			// WindowsXamlManager.  Add dispose call back when that bug is fixed in 19h1.
+			this.IsDisposed = true;
 
-		//    // Call base class implementation.
-		//    base.Dispose(disposing);
-		//}
+			// Call base class implementation.
+			//base.Dispose(disposing);
+		}
 
 		//protected override System.IntPtr WndProc(System.IntPtr hwnd, int msg, System.IntPtr wParam, System.IntPtr lParam, ref bool handled)
 		//{
