@@ -17,7 +17,11 @@ public partial class DesktopWindowXamlSource : global::System.IDisposable
 			{
 				_root = new XamlIslandRoot(CoreServices.Instance);
 			}
+
 			_root.SetPublicRootVisual(value);
+
+			UIElement.LoadingRootElement(_root);
+			UIElement.RootElementLoaded(_root);
 		}
 	}	
 

@@ -1,4 +1,5 @@
 ﻿using Uno.UI.Xaml.Core;
+using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -22,9 +23,13 @@ internal class XamlIslandRoot : Panel
 	internal void SetPublicRootVisual(UIElement uiElement)
 	{
 		_contentRoot.VisualTree.SetPublicRootVisual(uiElement, null, null);
+	}
 
-		UIElement.LoadingRootElement(uiElement);
-
-		UIElement.RootElementLoaded(uiElement);
+	protected override Size ArrangeOverride(Size finalSize)
+	{
+		finalSize = base.ArrangeOverride(finalSize);
+		Width = finalSize.Width;
+		Height = finalSize.Height;
+		return finalSize;	
 	}
 }

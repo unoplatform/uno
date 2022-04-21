@@ -39,7 +39,9 @@ public sealed partial class XamlRoot
 			}
 			else if (rootElement is XamlIslandRoot xamlIslandRoot)
 			{
-				return new Size(xamlIslandRoot.ActualSize.X, xamlIslandRoot.ActualSize.Y);
+				var width = !double.IsNaN(xamlIslandRoot.Width) ? xamlIslandRoot.Width : 0;
+				var height = !double.IsNaN(xamlIslandRoot.Height) ? xamlIslandRoot.Height : 0;
+				return new Size(width,  height);
 			}
 
 			return default;
@@ -59,7 +61,9 @@ public sealed partial class XamlRoot
 			}
 			else if (rootElement is XamlIslandRoot xamlIslandRoot)
 			{
-				return new Rect(0, 0, xamlIslandRoot.ActualSize.X, xamlIslandRoot.ActualSize.Y);
+				var width = !double.IsNaN(xamlIslandRoot.Width) ? xamlIslandRoot.Width : 0;
+				var height = !double.IsNaN(xamlIslandRoot.Height) ? xamlIslandRoot.Height : 0;				
+				return new Rect(0, 0, width, height);
 			}
 
 			return default;

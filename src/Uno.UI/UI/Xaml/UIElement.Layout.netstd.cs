@@ -64,7 +64,7 @@ namespace Windows.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal void InvalidateParentMeasureDirtyPath()
 		{
-			if (this.GetParent() is UIElement parent)
+			if (this.GetParent() is UIElement parent) //TODO:MZ: Should this use VisualTree.GetParent as fallback?
 			{
 				parent.InvalidateMeasureDirtyPath();
 			}
@@ -118,13 +118,13 @@ namespace Windows.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void InvalidateParentArrangeDirtyPath()
 		{
-			if (this.GetParent() is UIElement parent)
+			if (this.GetParent() is UIElement parent) //TODO:MZ: Should this use VisualTree.GetParent as fallback?
 			{
 				parent.InvalidateArrangeDirtyPath();
 			}
-			else if (IsVisualTreeRoot)
+			else //TODO: Why not check IsVisualTreeRoot as in InvalidateParentMeasureDirtyPath?
 			{
-				XamlRoot.InvalidateArrange();
+				XamlRoot?.InvalidateArrange();
 			}
 		}
 
