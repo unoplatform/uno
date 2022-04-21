@@ -12,9 +12,9 @@ If it finds something missing, out of date, or misconfigured, it will either off
 
 1. Make sure you have the [dotnet SDK installed](https://dotnet.microsoft.com/download).
 
-2. Open a command-line prompt. If you're on Windows, you can run Windows Terminal if you have it installed, or else Command Prompt or Windows Powershell from the Start menu. If you're on Mac, you can run the Terminal.
+1. Open a command-line prompt. If you're on Windows, you can run Windows Terminal if you have it installed, or else Command Prompt or Windows Powershell from the Start menu. If you're on Mac, you can run the Terminal.
 
-3. Install the tool by running the following command from the command prompt:
+1. Install the tool by running the following command from the command prompt:
     ```
     dotnet tool install -g uno.check
     ```
@@ -23,15 +23,28 @@ If it finds something missing, out of date, or misconfigured, it will either off
     dotnet tool update -g uno.check
     ```
 
-4. Run the tool from the command prompt with the following command:
+1. Run the tool from the command prompt with the following command:
     ```
     uno-check
     ```
     For additional options, see below.
 
-5. If you get any errors or warnings, run the provided fix, or follow the provided instructions. Run `uno-check` again to verify that the fixes worked.
+1. If you are using Visual Studio 2022 17.2 Preview 4 or later, use the following:
+    ```
+    uno-check --pre
+    ```
 
-6. Once `uno-check` gives you the green light, you can [get started](https://platform.uno/docs/articles/get-started.html)!
+1. If you get any errors or warnings, run the provided fix, or follow the provided instructions. Run `uno-check` again to verify that the fixes worked.
+
+1. Once `uno-check` gives you the green light, you can [get started](https://platform.uno/docs/articles/get-started.html)!
+
+### About Visual Studio 2022 Preview 4 upgrades
+If you were already using Uno 4.1, had run uno-check and were using VS 17.2 preview 3 or earlier , upgrading to 17.2 Preview 4 or later will cause mobile workloads to be desynchronized. To fix your environment, you’ll need to run the following command:
+
+```
+dotnet workload install ios android maccatalyst macos --from-rollback-file https://aka.ms/dotnet/maui/rc.1.json --source https://aka.ms/dotnet6/nuget/index.json --source https://api.nuget.org/v3/index.json
+```
+Doing so will re-install the .NET 6 mobile workloads after the SDK changes done by visual studio.
 
 ## Troubleshooting
 
@@ -100,7 +113,7 @@ If you're running on CI you may want to run without any required input with the 
 uno-check --non-interactive
 ```
 
-### `--preview` Preview Manifest feed
+### `--preview` or `--pre` Preview Manifest feed
 
 This uses a more frequently updated manifest with newer versions of things more often. If you use the prerelease versions of Uno.UI NuGet packages, you should use this flag.
 
