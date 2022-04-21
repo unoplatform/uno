@@ -79,13 +79,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 			foreach (var point in GetPointsInside(bounds, perimeterOffset: 5))
 			{
-				var hitTest = VisualTreeHelper.HitTest(point, getHitTestability);
+				var hitTest = VisualTreeHelper.HitTest(point, WindowHelper.WindowContent.XamlRoot, getHitTestability);
 				Assert.AreEqual(sut, hitTest.element);
 			}
 
 			foreach (var point in GetPointsOutside(bounds, perimeterOffset: 5))
 			{
-				var hitTest = VisualTreeHelper.HitTest(point);
+				var hitTest = VisualTreeHelper.HitTest(point, WindowHelper.WindowContent.XamlRoot);
 				Assert.IsNotNull(hitTest.element);
 				Assert.AreNotEqual(sut, hitTest.element);
 			}

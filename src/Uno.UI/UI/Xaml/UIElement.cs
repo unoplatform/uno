@@ -603,7 +603,7 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			var root = Windows.UI.Xaml.Window.Current.RootElement;
+			var root = XamlRoot.VisualTree.RootElement;
 			if (root is null)
 			{
 				return;
