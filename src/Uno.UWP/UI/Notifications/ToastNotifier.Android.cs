@@ -116,7 +116,7 @@ namespace Windows.UI.Notifications
 				var childNode0 = childToast[0];
 				if (childNode0 is null)
 				{
-					throw new Exception("It cannot happen, but to keep compiler happy...");
+					throw new InvalidOperationException("Invalid document notification document"); 
 				}
 				toastTitleText = ConvertToastTextToString(childNode0.InnerText);
 
@@ -126,7 +126,7 @@ namespace Windows.UI.Notifications
 					var childNode1 = childToast[1];
 					if (childNode1 is null)
 					{
-						throw new Exception("It cannot happen, but to keep compiler happy...");
+						throw new InvalidOperationException("Invalid document notification document");
 					}
 					toastText.Append(ConvertToastTextToString(childNode1.InnerText));
 
@@ -138,7 +138,7 @@ namespace Windows.UI.Notifications
 						var childNode = childToast[childIndex];
 						if(childNode is null )
 						{
-							throw new Exception("It cannot happen, but to keep compiler happy...");
+							throw new InvalidOperationException("Invalid document notification document");
 						}
 						toastText.Append(" \n" + ConvertToastTextToString(childNode.InnerText));
 					}
