@@ -12,7 +12,7 @@
 		<Button Click="getBatteryInfo_Click">Get battery info</Button>
 		<TextBlock Text="" Foreground="Red" Name="uiErrorMsg"/>
 		<TextBlock Text="" Name="uiOkMsg"/>
-		<TextBlock Name="uiStatus"/>
+		<TextBlock Name="uiStatus" />
 		<TextBlock Name="uiChargeRate" />
 		<TextBlock Name="uiFull" />
 		<TextBlock Name="uiRemaining" />

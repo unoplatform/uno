@@ -21,7 +21,7 @@ using Windows.ApplicationModel.Appointments;
 namespace UITests.Windows_Devices.Power
 {
 
-	[SampleControlInfo("Windows_Devices.Power", "Battery")]
+	[SampleControlInfo("Windows.Devices.Power", "Battery")]
 	public sealed partial class Battery : Page
     {
         public Battery()
@@ -51,10 +51,10 @@ namespace UITests.Windows_Devices.Power
 
 
 
-			uiStatus.Text = oBattRep.Status.ToString();
-			uiChargeRate.Text = oBattRep.ChargeRateInMilliwatts + " mW";
-			uiFull.Text = oBattRep.FullChargeCapacityInMilliwattHours + " mWh";
-			uiRemaining.Text = oBattRep.RemainingCapacityInMilliwattHours + " mWh";
+			uiStatus.Text = "Battery status: " + oBattRep.Status.ToString();
+			uiChargeRate.Text = "Charge Rate: " + oBattRep.ChargeRateInMilliwatts + " mW";
+			uiFull.Text = "Full Charge Capacity: " + oBattRep.FullChargeCapacityInMilliwattHours + " mWh";
+			uiRemaining.Text = "Remaining Capacity: " + oBattRep.RemainingCapacityInMilliwattHours + " mWh";
 		}
 	}
 }
