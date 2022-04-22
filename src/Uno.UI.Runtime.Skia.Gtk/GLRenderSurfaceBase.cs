@@ -87,10 +87,12 @@ namespace Uno.UI.Runtime.Skia
 				_grContext = TryBuildGRContext();
 			}
 
+			var dpi = _dpi ?? 1f;
+			var scaledGuardBand = (int)(GuardBand * dpi);
 			// manage the drawing surface
 			var res = (int)Math.Max(1.0, Screen.Resolution / 96.0);
-			var w = Math.Max(0, AllocatedWidth * res);
-			var h = Math.Max(0, AllocatedHeight * res);
+			var w = (int)Math.Max(0, AllocatedWidth * dpi);
+			var h = (int)Math.Max(0, AllocatedHeight * dpi);
 
 			if (_renderTarget == null || _surface == null || _renderTarget.Width != w || _renderTarget.Height != h)
 			{
@@ -106,8 +108,8 @@ namespace Uno.UI.Runtime.Skia
 				}
 
 				var glInfo = new GRGlFramebufferInfo((uint)framebuffer, colorType.ToGlSizedFormat());
-
-				_renderTarget = new GRBackendRenderTarget(w + GuardBand, h + GuardBand, samples, stencil, glInfo);
+				
+				_renderTarget = new GRBackendRenderTarget(w + scaledGuardBand, h + scaledGuardBand, samples, stencil, glInfo);
 
 				// create the surface
 				_surface?.Dispose();
@@ -126,9 +128,16 @@ namespace Uno.UI.Runtime.Skia
 			using (new SKAutoCanvasRestore(canvas, true))
 			{
 				canvas.Clear(BackgroundColor);
+
+				if (_dpi != null)
+				{
+					canvas.SetMatrix(SKMatrix.CreateScale((float)dpi, (float)dpi));
+				}
 				canvas.Translate(new SKPoint(0, GuardBand));
 
 				WUX.Window.Current.Compositor.Render(_surface);
+
+				canvas.SetMatrix(SKMatrix.CreateScale((float)1 / dpi, (float)1 / dpi));
 			}
 
 			// update the control
