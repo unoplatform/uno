@@ -12,6 +12,7 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using static Windows.UI.Xaml.UIElement;
@@ -104,20 +105,24 @@ internal partial class InputManager
 			RaiseUsingCaptures(Wheel, originalSource, routedArgs);
 		}
 
-		private (UIElement?, VisualTreeHelper.Branch?) HitTest(PointerEventArgs args)
+		private (UIElement?, VisualTreeHelper.Branch?) HitTest(PointerEventArgs args, Predicate<UIElement>? isStale = null)
 		{
 			if (_inputManager._contentRoot?.XamlRoot is null)
 			{
 				throw new InvalidOperationException("The XamlRoot must be properly initialized for hit testng.");
 			}
 
-			return VisualTreeHelper.HitTest(args.CurrentPoint.Position, _inputManager._contentRoot.XamlRoot);
+			return VisualTreeHelper.HitTest(args.CurrentPoint.Position, _inputManager._contentRoot.XamlRoot, isStale: isStale);
 		}
 
 		internal void OnPointerEntered(Windows.UI.Core.PointerEventArgs args)
 		{
 			var (originalSource, _) = HitTest(args);
 
+			if (originalSource is ImplicitTextBlock)
+			{
+				global::System.Diagnostics.Debug.WriteLine("Entered");
+			}
 			// Even if impossible for the Enter, we are fallbacking on the RootElement for safety
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 			// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
@@ -255,7 +260,7 @@ internal partial class InputManager
 
 		internal void OnPointerMoved(Windows.UI.Core.PointerEventArgs args)
 		{
-			var (originalSource, staleBranch) = HitTest(args);
+			var (originalSource, staleBranch) = HitTest(args, _isOver);
 
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 			// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
