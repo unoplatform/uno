@@ -2,6 +2,7 @@
 
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI.Xaml.Core;
@@ -26,6 +27,8 @@ namespace Uno.UI.Runtime.Skia
 
 		private float? _dpi = 1;
 
+		private readonly SKColorType _colorType;
+
 		public SoftwareRenderSurface()
 		{
 			_displayInformation = DisplayInformation.GetForCurrentView();
@@ -37,6 +40,15 @@ namespace Uno.UI.Runtime.Skia
 					InvalidateOverlays();
 					Invalidate();
 				};
+			_colorType = SKImageInfo.PlatformColorType;
+			// R and B channels are inverted on macOS running on arm64 CPU and this is not detected by Skia
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+			{
+				if (RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
+				{
+					_colorType = SKColorType.Bgra8888;
+				}
+			}
 		}
 
 		private void OnDpiChanged(DisplayInformation sender, object args) =>
@@ -75,12 +87,12 @@ namespace Uno.UI.Runtime.Skia
 			var scaledWidth = (int)(width * dpi);
 			var scaledHeight = (int)(height * dpi);
 
-			var info = new SKImageInfo(scaledWidth, scaledHeight, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
+			var info = new SKImageInfo(scaledWidth, scaledHeight, _colorType, SKAlphaType.Premul);
 
 			// reset the bitmap if the size has changed
 			if (_bitmap == null || info.Width != _bitmap.Width || info.Height != _bitmap.Height)
 			{
-				_bitmap = new SKBitmap(scaledWidth, scaledHeight, SKColorType.Rgba8888, SKAlphaType.Premul);
+				_bitmap = new SKBitmap(info);
 			}
 
 			using (var surface = SKSurface.Create(info, _bitmap.GetPixels(out _)))
