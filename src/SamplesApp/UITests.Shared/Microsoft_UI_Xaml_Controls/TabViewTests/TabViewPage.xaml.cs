@@ -43,7 +43,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 		public TabViewPage()
 		{
 			this.InitializeComponent();
-			Loaded += TabViewPage_Loaded;
+			DisabledTab.Loaded += TabViewPage_Loaded;
 			_iconSource = new SymbolIconSource();
 			_iconSource.Symbol = Symbol.Placeholder;
 
