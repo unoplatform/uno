@@ -14,6 +14,8 @@ using static Windows.UI.Input.PointerUpdateKind;
 using Device = Gtk.Device;
 using Exception = System.Exception;
 using Uno.Foundation.Logging;
+using Windows.UI.Xaml;
+using Uno.UI.Xaml.Core;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -104,7 +106,7 @@ namespace Uno.UI.Runtime.Skia
 			{
 				if (AsPointerArgs(args.Event) is { } ptArgs)
 				{
-					_ownerEvents.RaisePointerEntered(ptArgs);
+					RaisePointerEntered(ptArgs);
 				}
 			}
 			catch (Exception e)
@@ -125,7 +127,7 @@ namespace Uno.UI.Runtime.Skia
 				{
 					if (AsPointerArgs(args.Event) is { } ptArgs)
 					{
-						_ownerEvents.RaisePointerExited(ptArgs);
+						RaisePointerExited(ptArgs);
 					}
 				}
 			}
@@ -141,7 +143,7 @@ namespace Uno.UI.Runtime.Skia
 			{
 				if (AsPointerArgs(args.Event) is { } ptArgs)
 				{
-					_ownerEvents.RaisePointerPressed(ptArgs);
+					RaisePointerPressed(ptArgs);
 				}
 			}
 			catch (Exception e)
@@ -156,7 +158,7 @@ namespace Uno.UI.Runtime.Skia
 			{
 				if (AsPointerArgs(args.Event) is { } ptArgs)
 				{
-					_ownerEvents.RaisePointerReleased(ptArgs);
+					RaisePointerReleased(ptArgs);
 				}
 			}
 			catch (Exception e)
@@ -171,7 +173,7 @@ namespace Uno.UI.Runtime.Skia
 			{
 				if (AsPointerArgs(args.Event) is { } ptArgs)
 				{
-					_ownerEvents.RaisePointerMoved(ptArgs);
+					RaisePointerMoved(ptArgs);
 				}
 			}
 			catch (Exception e)
@@ -186,7 +188,7 @@ namespace Uno.UI.Runtime.Skia
 			{
 				if (AsPointerArgs(args.Event) is { } ptArgs)
 				{
-					_ownerEvents.RaisePointerWheelChanged(ptArgs);
+					RaisePointerWheelChanged(ptArgs);
 				}
 			}
 			catch (Exception e)
@@ -206,21 +208,21 @@ namespace Uno.UI.Runtime.Skia
 					switch (evt.Type)
 					{
 						case EventType.TouchBegin:
-							_ownerEvents.RaisePointerEntered(ptArgs);
-							_ownerEvents.RaisePointerPressed(ptArgs);
+							RaisePointerEntered(ptArgs);
+							RaisePointerPressed(ptArgs);
 							break;
 
 						case EventType.TouchEnd:
-							_ownerEvents.RaisePointerReleased(ptArgs);
-							_ownerEvents.RaisePointerExited(ptArgs);
+							RaisePointerReleased(ptArgs);
+							RaisePointerExited(ptArgs);
 							break;
 
 						case EventType.TouchCancel:
-							_ownerEvents.RaisePointerMoved(ptArgs);
+							RaisePointerMoved(ptArgs);
 							break;
 					}
 
-					_ownerEvents.RaisePointerMoved(ptArgs);
+					RaisePointerMoved(ptArgs);
 				}
 			}
 			catch (Exception e)
@@ -235,7 +237,7 @@ namespace Uno.UI.Runtime.Skia
 			{
 				if (AsPointerArgs(args.Event) is { } ptArgs)
 				{
-					_ownerEvents.RaisePointerExited(ptArgs);
+					RaisePointerExited(ptArgs);
 				}
 			}
 			catch (Exception e)
@@ -250,7 +252,7 @@ namespace Uno.UI.Runtime.Skia
 			{
 				if (AsPointerArgs(args.Event) is { } ptArgs)
 				{
-					_ownerEvents.RaisePointerEntered(ptArgs);
+					RaisePointerEntered(ptArgs);
 				}
 			}
 			catch (Exception e)
@@ -448,5 +450,49 @@ namespace Uno.UI.Runtime.Skia
 
 		private static bool IsPressed(ModifierType state, ModifierType mask, PointerUpdateKind update, PointerUpdateKind pressed, PointerUpdateKind released)
 			=> update == pressed || (state.HasFlag(mask) && update != released);
+
+		private void RaisePointerExited(PointerEventArgs ptArgs)
+		{
+			_ownerEvents.RaisePointerExited(ptArgs);
+			InputManager?.RaisePointerExited(ptArgs);
+		}
+
+		private void RaisePointerPressed(PointerEventArgs ptArgs)
+		{
+			_ownerEvents.RaisePointerPressed(ptArgs);
+			InputManager?.RaisePointerPressed(ptArgs);
+		}
+
+		private void RaisePointerReleased(PointerEventArgs ptArgs)
+		{
+			_ownerEvents.RaisePointerReleased(ptArgs);
+			InputManager?.RaisePointerReleased(ptArgs);
+		}
+
+		private void RaisePointerMoved(PointerEventArgs ptArgs)
+		{
+			_ownerEvents.RaisePointerMoved(ptArgs);
+			InputManager?.RaisePointerMoved(ptArgs);
+		}
+
+		private void RaisePointerWheelChanged(PointerEventArgs ptArgs)
+		{
+			_ownerEvents.RaisePointerWheelChanged(ptArgs);
+			InputManager?.RaisePointerWheelChanged(ptArgs);
+		}
+
+		private void RaisePointerEntered(PointerEventArgs ptArgs)
+		{
+			_ownerEvents.RaisePointerEntered(ptArgs);
+			InputManager?.RaisePointerEntered(ptArgs);
+		}
+
+		
+
+		internal InputManager InputManager =>
+			CoreServices.Instance
+				.ContentRootCoordinator?
+				.CoreWindowContentRoot?
+				.InputManager;
 	}
 }

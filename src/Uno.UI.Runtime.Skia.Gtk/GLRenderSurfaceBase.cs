@@ -53,13 +53,6 @@ namespace Uno.UI.Runtime.Skia
 		{
 			_displayInformation = DisplayInformation.GetForCurrentView();
 			_displayInformation.DpiChanged += OnDpiChanged;
-			WUX.Window.InvalidateRender
-				+= () =>
-				{
-					// TODO Uno: Make this invalidation less often if possible.
-					InvalidateOverlays();
-					QueueRender();
-				};
 
 			// Set some event handlers
 			Render += UnoGLDrawingArea_Render;
@@ -70,6 +63,13 @@ namespace Uno.UI.Runtime.Skia
 			AutoRender = true;
 		}
 
+		public void InvalidateRender()
+		{
+			// TODO Uno: Make this invalidation less often if possible.
+			InvalidateOverlays();
+			QueueRender();
+		}
+		
 		private void GLRenderSurface_Realized(object? sender, EventArgs e)
 		{
 			Context.MakeCurrent();

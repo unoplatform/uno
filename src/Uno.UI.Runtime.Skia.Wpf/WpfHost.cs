@@ -21,17 +21,20 @@ using Uno.Helpers.Theming;
 using Uno.UI.Core.Preview;
 using Uno.UI.Runtime.Skia.Wpf;
 using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Input;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helper.Theming;
 using Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
+using Uno.UI.XamlHost.Skia.Wpf;
 using Windows.Devices.Input;
 using Windows.Graphics.Display;
 using Windows.Networking.Connectivity;
 using Windows.Storage.Pickers;
 using Windows.System.Profile.Internal;
+using Windows.UI.Core;
 using Windows.UI.Core.Preview;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
@@ -75,6 +78,7 @@ namespace Uno.UI.Skia.Platform
 		}
 
 		private static bool _extensionsRegistered;
+		private HostPointerHandler _hostPointerHandler;
 
 		internal static void RegisterExtensions()
 		{
@@ -133,12 +137,8 @@ namespace Uno.UI.Skia.Platform
 
 			WinUI.Application.StartWithArguments(CreateApp);
 
-			//TODO:MZ:
-			//WinUI.Window.InvalidateRender += () =>
-			//{
-			//	InvalidateOverlays();
-			//	InvalidateVisual();
-			//};
+			_hostPointerHandler = new HostPointerHandler(this);			
+			WinUI.Window.Current.Activated += Current_Activated;
 
 			WpfApplication.Current.Activated += Current_Activated;
 			WpfApplication.Current.Deactivated += Current_Deactivated;
@@ -178,6 +178,32 @@ namespace Uno.UI.Skia.Platform
 			Update();
 
 			_registrations.Add(WinUI.Window.Current.RegisterBackgroundChangedEvent((s, e) => Update()));
+		}
+
+		private void Current_Activated(object sender, WindowActivatedEventArgs e)
+		{
+			var xamlRoot = CoreServices.Instance
+				.ContentRootCoordinator?
+				.CoreWindowContentRoot?
+				.XamlRoot;
+
+			if (xamlRoot is null)
+			{
+				throw new InvalidOperationException("XamlRoot was not properly initialized");
+			}
+
+			xamlRoot.InvalidateRender += InvalidateRender;
+			XamlRootMap.Register(xamlRoot, this);
+
+			// Force initial render
+			InvalidateRender();
+			WinUI.Window.Current.Activated -= Current_Activated;
+		}
+
+		private void InvalidateRender()
+		{
+			InvalidateOverlays();
+			InvalidateVisual();
 		}
 
 		private void MainWindow_Closing(object sender, CancelEventArgs e)

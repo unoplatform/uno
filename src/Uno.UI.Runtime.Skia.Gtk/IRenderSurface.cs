@@ -11,5 +11,7 @@ namespace Uno.UI.Runtime.Skia
 		/// Background color for the render surface
 		/// </summary>
 		SKColor BackgroundColor { get; set; }
+		
+		void InvalidateRender();
 	}
 }

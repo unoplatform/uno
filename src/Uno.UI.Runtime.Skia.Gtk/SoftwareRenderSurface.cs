@@ -39,6 +39,14 @@ namespace Uno.UI.Runtime.Skia
 		{
 			_displayInformation = DisplayInformation.GetForCurrentView();
 			_displayInformation.DpiChanged += OnDpiChanged;
+		}
+
+		public void InvalidateRender()
+		{
+		//TODO:MZ: Fix below conflict!
+			// TODO Uno: Make this invalidation less often if possible.
+			InvalidateOverlays();
+			Invalidate();
 			WUX.Window.InvalidateRender
 				+= () =>
 				{
