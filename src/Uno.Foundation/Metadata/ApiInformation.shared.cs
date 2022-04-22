@@ -1,4 +1,6 @@
-﻿namespace Windows.Foundation.Metadata;
+﻿using System.Diagnostics;
+
+namespace Windows.Foundation.Metadata;
 
 public partial class ApiInformation
 {
@@ -36,6 +38,11 @@ public partial class ApiInformation
 				return false;
 #endif
 			default:
+				Debug.Fail(
+					"Contract " + contractName + " is not known." +
+					"If implemented, ensure it is added " +
+					"in ApiInformation.IsApiContractPresent.");
+
 				return false;
 		}
 	}
