@@ -8770,6 +8770,9 @@
 	</IgnoreSet>
 	<IgnoreSet baseVersion="4.2.6">
 		<Methods>
+			<Member
+				fullName="System.Void Windows.Devices.Power.BatteryReport..ctor()"
+				reason="Does not exist in UWP" />
 			<!-- BEGIN Bluetooth API -->
 			<Member
 				fullName="System.Void Windows.Devices.Bluetooth.BluetoothLEDevice..ctor()"
