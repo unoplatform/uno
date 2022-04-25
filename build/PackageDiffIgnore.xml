@@ -8787,6 +8787,9 @@
 				fullName="System.Void Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult..ctor()"
 				reason="Does not exist in UWP" />
 			<!-- END Bluetooth API -->
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Background.BackgroundTaskRegistration..ctor()"
+				reason="Not part of UWP API" />
 		</Methods>
 	</IgnoreSet>
 	<!--
