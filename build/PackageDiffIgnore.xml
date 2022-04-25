@@ -9014,6 +9014,9 @@
 		  <!-- END Android Resources ignore -->
 	  </Types>
 	  <Methods>
+		  <Member
+	  fullName="System.Void Windows.ApplicationModel.Contacts.ContactQueryTextSearch..ctor()()"
+	  reason="Does not exist in UWP" />
 	  </Methods>
 	  <Properties>
 	  </Properties>
