@@ -67,8 +67,6 @@
 		</When>
 		<When Condition="'$(TargetFramework)'=='net6.0-macos'">
 			<PropertyGroup>
-				<!-- Configure the GC -->
-				<MtouchExtraArgs>$(MtouchExtraArgs) --setenv=MONO_GC_PARAMS=soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
 			</PropertyGroup>
 		</When>
 	</Choose>
