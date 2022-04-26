@@ -31,7 +31,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 					.Select(i => new ListViewItem
 					{
 						Content = i,
-						Margin = thinckness,
+						Margin = thickness,
 					})
 					.ToArray();
 		}
