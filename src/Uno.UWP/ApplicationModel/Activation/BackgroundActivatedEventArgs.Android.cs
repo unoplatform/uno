@@ -38,8 +38,7 @@ namespace Windows.ApplicationModel.Activation
 			int triggerType = extras.GetInt("TriggerType", 0);
 
 			// we have to re-create BackgroundTaskRegistration to send it to OnBackgroundActivated
-			var taskRegistration = new Windows.ApplicationModel.Background.BackgroundTaskRegistration();
-			taskRegistration.Name = taskName;
+			Background.BackgroundTaskRegistration taskRegistration;
 
 			switch (triggerType)
 			{
@@ -48,13 +47,13 @@ namespace Windows.ApplicationModel.Activation
 					bool oneShot = extras.GetBoolean("OneShot", true);
 					if(oneShot)
 					{
-						Background.BackgroundTaskRegistration.RemoveTrigger(taskRegistration.Name);
+						Background.BackgroundTaskRegistration.RemoveTrigger(taskName);
 					}
-					taskRegistration.Trigger = new Windows.ApplicationModel.Background.TimeTrigger((uint)freshness, oneShot);
+					taskRegistration = new Background.BackgroundTaskRegistration(taskName,
+						new Windows.ApplicationModel.Background.TimeTrigger((uint)freshness, oneShot));
 					break;
 				default:
 					throw new ArgumentException("BackgroundActivatedEventArgs - unhandled TriggerType");
-
 			}
 
 			// creating IBackgroundTaskInstance

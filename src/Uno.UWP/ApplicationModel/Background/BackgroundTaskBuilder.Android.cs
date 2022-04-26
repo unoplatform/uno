@@ -206,9 +206,7 @@ namespace Windows.ApplicationModel.Background
 			}
 
 			// prepare return value
-			var registration = new BackgroundTaskRegistration();
-			registration.Name = Name;
-			registration.Trigger = _trigger;
+			var registration = new BackgroundTaskRegistration(Name, _trigger);
 
 			switch (_triggerType)
 			{
