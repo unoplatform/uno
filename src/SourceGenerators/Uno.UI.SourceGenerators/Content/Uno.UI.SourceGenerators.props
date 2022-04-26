@@ -351,7 +351,7 @@
 	</CreateProperty>
 
   </Target>
-  
+
   <Target Name="_InjectAdditionalFiles" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;GenerateMSBuildEditorConfigFileCore" DependsOnTargets="_FillSourceGeneratorItemGroups">
 
     <PropertyGroup>
@@ -360,14 +360,14 @@
       <_PRIResources>@(PRIResource)</_PRIResources>
       <_TSBindingAssemblySources>@(TSBindingAssemblySource)</_TSBindingAssemblySources>
     </PropertyGroup>
-    
+
     <ItemGroup Label="Add SourceItemGroup metadata to existing additional files">
-      <AdditionalFiles SourceItemGroup="Page" Condition="$([System.String]::new($(_Pages)).Contains(%(AdditionalFiles.FullPath)))" />
-      <AdditionalFiles SourceItemGroup="ApplicationDefinition" Condition="$([System.String]::new($(_ApplicationDefinitions)).Contains(%(AdditionalFiles.FullPath)))" />
-      <AdditionalFiles SourceItemGroup="PRIResource" Condition="$([System.String]::new($(_PRIResources)).Contains(%(AdditionalFiles.FullPath)))" />
-      <AdditionalFiles SourceItemGroup="TSBindingAssemblySource" Condition="$([System.String]::new($(_TSBindingAssemblySources)).Contains(%(AdditionalFiles.FullPath)))" />
+      <AdditionalFiles SourceItemGroup="Page" Condition="$(_Pages.Contains(%(AdditionalFiles.FullPath)))" />
+      <AdditionalFiles SourceItemGroup="ApplicationDefinition" Condition="$(_ApplicationDefinitions.Contains(%(AdditionalFiles.FullPath)))" />
+      <AdditionalFiles SourceItemGroup="PRIResource" Condition="$(_PRIResources.Contains(%(AdditionalFiles.FullPath)))" />
+      <AdditionalFiles SourceItemGroup="TSBindingAssemblySource" Condition="$(_TSBindingAssemblySources.Contains(%(AdditionalFiles.FullPath)))" />
     </ItemGroup>
-      
+
     <ItemGroup Label="Include new additional files">
       <_ExistingAdditionalFiles Include="%(AdditionalFiles.FullPath)" />
       <AdditionalFiles Include="%(Page.FullPath)" SourceItemGroup="Page" Exclude="@(_ExistingAdditionalFiles)" />
@@ -375,7 +375,7 @@
       <AdditionalFiles Include="%(PRIResource.FullPath)" SourceItemGroup="PRIResource" Exclude="@(_ExistingAdditionalFiles)" />
       <AdditionalFiles Include="%(TSBindingAssemblySource.FullPath)" SourceItemGroup="TSBindingAssemblySource" Exclude="@(_ExistingAdditionalFiles)" />
     </ItemGroup>
-	
+
   </Target>
 
   <Target Name="UnoLogGeneratorsType" BeforeTargets="CoreCompile;_UnoSourceGenerator">
