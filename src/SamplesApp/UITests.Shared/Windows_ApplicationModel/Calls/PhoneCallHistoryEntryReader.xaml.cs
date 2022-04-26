@@ -16,10 +16,12 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.ApplicationModel.Calls;
-          
+
+using Windows.ApplicationModel.Calls;
+
 namespace UITests.Shared.Windows_ApplicationModel.Calls
 {
-	[SampleControlInfo("Windows.ApplicationModel.Calls", "ContactReader")]
+	[SampleControlInfo("Windows.ApplicationModel.Calls", "PhoneCallHistoryReader")]
 
 	public sealed partial class PhoneCallHistoryEntryReader : UserControl
 	{
@@ -37,10 +39,10 @@ namespace UITests.Shared.Windows_ApplicationModel.Calls
 			uiOkMsg.Text = "";
 			uiDuration.Text = "";
 
-			Windows.ApplicationModel.Calls.PhoneCallHistoryStore oCallHist;
+			PhoneCallHistoryStore oCallHist;
 			try
 			{
-				oCallHist = await Windows.ApplicationModel.Calls.PhoneCallHistoryManager.RequestStoreAsync(Windows.ApplicationModel.Calls.PhoneCallHistoryStoreAccessType. .AllEntriesLimitedReadWrite);
+				oCallHist = await PhoneCallHistoryManager.RequestStoreAsync(PhoneCallHistoryStoreAccessType.AllEntriesLimitedReadWrite);
 			}
 			catch (Exception ex)
 			{
