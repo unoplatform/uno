@@ -17,9 +17,21 @@ internal static class ISourceGeneratorExtensions
 		IReadOnlyCollection<string> preprocessorSymbols,
 		CancellationToken cancellationToken = default)
 	{
-		var referenceAssemblies = ReferenceAssemblies.Net.Net60
-			.WithPackages(ImmutableArray.Create(new PackageIdentity("Uno.UI", "4.1.9")));
+		var skiaFolder = Path.Combine("..", "..", "..", "..", "..", "Uno.UI", "bin", "Uno.UI.Skia", "Debug", "netstandard2.0");
+		if (!Directory.Exists(skiaFolder))
+		{
+			throw new InvalidOperationException(
+				"These tests require a project built by Uno.UI.Skia in Debug mode. Please build it using Uno.UI-Skia-only.slnf");
+		}
+
+		var referenceAssemblies = ReferenceAssemblies.Net.Net60;
 		var references = await referenceAssemblies.ResolveAsync(null, cancellationToken);
+		references = references
+			.Add(MetadataReference.CreateFromFile(Path.Combine(skiaFolder, "Uno.dll")))
+			.Add(MetadataReference.CreateFromFile(Path.Combine(skiaFolder, "Uno.Foundation.dll")))
+			.Add(MetadataReference.CreateFromFile(Path.Combine(skiaFolder, "Uno.UI.dll")))
+			.Add(MetadataReference.CreateFromFile(Path.Combine(skiaFolder, "Uno.UI.Composition.dll")));
+
 		var compilation = (Compilation)CSharpCompilation
 			.Create(
 				assemblyName: "Tests",
