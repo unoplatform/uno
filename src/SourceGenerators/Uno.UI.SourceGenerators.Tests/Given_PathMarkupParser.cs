@@ -227,12 +227,14 @@ c.SetClosedState(false);
 }, global::Windows.UI.Xaml.Media.FillRule.EvenOdd)", generatedCode);
 		}
 
-#if NET6_0_OR_GREATER
-
 		[TestMethod]
 		public void Boolean_Should_Be_Read_From_The_Next_Non_Whitespace_Character_Only()
 		{
 			var generatedCode = Parse("M17.432 11.619c.024.082.04.165.04.247V26.54c0 .37-.271.552-.605.409l-5.339-2.282c-.336-.144-.604-.558-.604-.926V9.066c0-.368.27-.551.604-.409l5.339 2.283a.898.898 0 01.27.188c.09.169.189.333.295.49M9.615 9.07v14.675c0 .368-.27.782-.605.925l-5.339 2.282c-.334.143-.604-.04-.604-.408V11.868c0-.368.269-.782.604-.926l5.34-2.282c.333-.143.604.04.604.41m15.713 4.173V23.74c0 .368-.27.782-.605.926l-5.338 2.282c-.334.143-.604-.04-.604-.41V13.216c1.015 1.231 2.702 3.615 3.136 6.3h.312c.43-2.665 2.087-5.033 3.099-6.272m-3.217-2.39c-2.065 0-3.738-1.705-3.738-3.808 0-2.102 1.673-3.807 3.738-3.807 2.064 0 3.738 1.705 3.738 3.807 0 2.103-1.674 3.808-3.738 3.808M22.054 2c-2.768 0-5.012 2.286-5.012 5.105 0 1.378.531 2.693 1.401 3.611 0 0 2.928 2.912 3.488 6.389h.279c.56-3.477 3.471-6.389 3.471-6.389.873-.918 1.386-2.232 1.386-3.61 0-2.82-2.245-5.106-5.013-5.106");
+
+			// A separate assert for net6.0 has been added because here net6.0 will output numbers as 17.471999999999998 instead of 17.472.
+			// https://github.com/unoplatform/uno/pull/8531#discussion_r851318424
+#if NET6_0_OR_GREATER
 			Assert.AreEqual(@"global::Uno.Media.GeometryHelper.Build(c =>
 {
 c.BeginFigure(new global::Windows.Foundation.Point(17.432, 11.619), true);
@@ -283,14 +285,7 @@ c.BezierTo(new global::Windows.Foundation.Point(26.554, 9.798000000000002), new 
 c.BezierTo(new global::Windows.Foundation.Point(27.066999999999997, 4.286000000000001), new global::Windows.Foundation.Point(24.821999999999996, 2.0000000000000018), new global::Windows.Foundation.Point(22.053999999999995, 2.0000000000000018), true, false);
 c.SetClosedState(false);
 }, global::Windows.UI.Xaml.Media.FillRule.EvenOdd)", generatedCode);
-		}
-
 #else
-
-		[TestMethod]
-		public void Boolean_Should_Be_Read_From_The_Next_Non_Whitespace_Character_Only()
-		{
-			var generatedCode = Parse("M17.432 11.619c.024.082.04.165.04.247V26.54c0 .37-.271.552-.605.409l-5.339-2.282c-.336-.144-.604-.558-.604-.926V9.066c0-.368.27-.551.604-.409l5.339 2.283a.898.898 0 01.27.188c.09.169.189.333.295.49M9.615 9.07v14.675c0 .368-.27.782-.605.925l-5.339 2.282c-.334.143-.604-.04-.604-.408V11.868c0-.368.269-.782.604-.926l5.34-2.282c.333-.143.604.04.604.41m15.713 4.173V23.74c0 .368-.27.782-.605.926l-5.338 2.282c-.334.143-.604-.04-.604-.41V13.216c1.015 1.231 2.702 3.615 3.136 6.3h.312c.43-2.665 2.087-5.033 3.099-6.272m-3.217-2.39c-2.065 0-3.738-1.705-3.738-3.808 0-2.102 1.673-3.807 3.738-3.807 2.064 0 3.738 1.705 3.738 3.807 0 2.103-1.674 3.808-3.738 3.808M22.054 2c-2.768 0-5.012 2.286-5.012 5.105 0 1.378.531 2.693 1.401 3.611 0 0 2.928 2.912 3.488 6.389h.279c.56-3.477 3.471-6.389 3.471-6.389.873-.918 1.386-2.232 1.386-3.61 0-2.82-2.245-5.106-5.013-5.106");
 			Assert.AreEqual(@"global::Uno.Media.GeometryHelper.Build(c =>
 {
 c.BeginFigure(new global::Windows.Foundation.Point(17.432, 11.619), true);
@@ -341,8 +336,7 @@ c.BezierTo(new global::Windows.Foundation.Point(26.554, 9.798), new global::Wind
 c.BezierTo(new global::Windows.Foundation.Point(27.067, 4.286), new global::Windows.Foundation.Point(24.822, 2), new global::Windows.Foundation.Point(22.054, 2), true, false);
 c.SetClosedState(false);
 }, global::Windows.UI.Xaml.Media.FillRule.EvenOdd)", generatedCode);
-		}
-
 #endif
+		}
 	}
 }
