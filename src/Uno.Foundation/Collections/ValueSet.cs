@@ -17,15 +17,23 @@ namespace Windows.Foundation.Collections
 		{
 			_dictionary = new Dictionary<string, object>();
 		}
-		
+
 		public void Add(string key, object value) => _dictionary.Add(key, value);
 		public bool ContainsKey(string key) => _dictionary.ContainsKey(key);
 		public bool Remove(string key) => _dictionary.Remove(key);
-		public bool TryGetValue(string key, out object value) => _dictionary.TryGetValue(key, out value);
+		public bool TryGetValue(string key, out object value)
+		{
+			if (key is null)
+			{
+				throw new ArgumentNullException("TryGetValue with null key");
+			}
+			return _dictionary.TryGetValue(key, out value);
+		}
 		public ICollection<string> Keys => _dictionary.Keys;
 		public ICollection<object> Values => _dictionary.Values;
 		public void Add(KeyValuePair<string, object> item) => _dictionary.Add(item.Key, item.Value);
 		public void Clear() => _dictionary.Clear();
+		public bool Remove(KeyValuePair<string, object> item) => Remove(item.Key);
 		public int Count => _dictionary.Count;
 
 		// current implementation is always read/write
