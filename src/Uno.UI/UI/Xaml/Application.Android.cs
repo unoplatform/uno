@@ -47,6 +47,11 @@ namespace Windows.UI.Xaml
 		{
 			Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
 		}
+
+		protected virtual void OnBackgroundActivated(BackgroundActivatedEventArgs args)
+		{
+
+		}
 	}
 }
 #endif
