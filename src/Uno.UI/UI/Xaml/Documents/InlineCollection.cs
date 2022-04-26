@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Documents
 #endif
 		}
 
-		public IEnumerator<Inline> GetEnumerator() => _collection.OfType<Inline>().GetEnumerator();
+		public IEnumerator<Inline> GetEnumerator() => _collection.GetEnumerator();
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
