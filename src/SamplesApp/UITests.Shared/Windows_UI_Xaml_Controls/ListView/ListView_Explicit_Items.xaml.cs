@@ -25,7 +25,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 		public ListView_Explicit_Items()
 		{
 			this.InitializeComponent();
-			var thinckness = new Thickness(5); //ThicknessHelper.FromUniformLength(5);
+			var thickness = new Thickness(5);
 			ListView.ItemsSource =
 				Enumerable.Range(0, 30)
 					.Select(i => new ListViewItem
