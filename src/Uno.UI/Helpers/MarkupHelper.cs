@@ -5,7 +5,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml.Markup;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Markup;
 
 namespace Uno.UI.Helpers
 {
@@ -46,5 +48,20 @@ namespace Uno.UI.Helpers
 		/// </summary>
 		public static void SetVisualTransitionLazy(VisualTransition target, Action builder)
 			=> target.LazyBuilder = builder;
+		
+		public static IXamlServiceProvider CreateParserContext(object? target, ProvideValueTargetProperty? property)
+			=> new XamlServiceProviderContext
+			{
+				TargetObject = target,
+				TargetProperty = property,
+			};
+
+		public static IXamlServiceProvider CreateParserContext(object? target, Type propertyDeclaringType, string propertyName, Type propertyType)
+			=> CreateParserContext(target, new ProvideValueTargetProperty
+			{
+				DeclaringType = propertyDeclaringType,
+				Name = propertyName,
+				Type = propertyType,
+			});
 	}
 }

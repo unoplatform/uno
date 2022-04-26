@@ -3104,7 +3104,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 							else
 							{
-								BuildCustomMarkupExtensionPropertyValue(writer, member, closureName + ".");
+								BuildCustomMarkupExtensionPropertyValue(writer, member, closureName);
 							}
 						}
 						else if (member.Objects.Any())
@@ -3472,12 +3472,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			// Local function used to build a property/value for any custom MarkupExtensions
-			void BuildCustomMarkupExtensionPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string prefix)
+			void BuildCustomMarkupExtensionPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string? closure = null)
 			{
-				Func<string, string> formatLine = format => prefix + format + (prefix.HasValue() ? ";\r\n" : "");
+				Func<string, string> formatLine = assignment => closure.HasValue()
+					? $"{closure}.{assignment};\r\n"
+					: assignment;
 
-				var propertyValue = GetCustomMarkupExtensionValue(member);
-
+				var propertyValue = GetCustomMarkupExtensionValue(member, closure);
 				if (propertyValue.HasValue())
 				{
 					var formatted = formatLine($"{member.Member.Name} = {propertyValue}");
@@ -4242,7 +4243,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private string GetCustomMarkupExtensionValue(XamlMemberDefinition member)
+		private string GetCustomMarkupExtensionValue(XamlMemberDefinition member, string? target = null)
 		{
 			// Get the type of the custom markup extension
 			var markupTypeDef = member
@@ -4254,6 +4255,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				throw new InvalidOperationException($"Unable to find markup extension type for ");
 			}
+
+			// Get the full globalized names
+			var globalized = new
+			{
+				MarkupType = GetGlobalizedTypeName(markupType.GetFullName()!),
+				MarkupHelper = GetGlobalizedTypeName(XamlConstants.Types.MarkupHelper),
+				IMarkupExtensionOverrides = GetGlobalizedTypeName(XamlConstants.Types.IMarkupExtensionOverrides),
+				PvtpDeclaringType = GetGlobalizedTypeName(member.Member.DeclaringType),
+				PvtpType = GetGlobalizedTypeName(member.Member.Type),
+			};
 
 			// Build a string of all its properties
 			var properties = markupTypeDef
@@ -4268,17 +4279,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return "{0} = {1}".InvariantCultureFormat(m.Member.Name, value);
 				})
 				.JoinBy(", ");
+			var markupInitializer = properties.HasValue() ? $" {{ {properties} }}" : "()";
 
-			// Get the full globalized namespaces for the custom markup extension and also for IMarkupExtensionOverrides
+			// Build the parser context for ProvideValue(IXamlServiceProvider)
+			var providerDetails = new string[]
+			{
+				// BuildParserContext(object? target, Type propertyDeclaringType, string propertyName, Type propertyType)
+				target ?? "null",
+				$"typeof({globalized.PvtpDeclaringType})",
+				$"\"{member.Member.Name}\"",
+				$"typeof({globalized.PvtpType})",
+			};
+			var provider = $"{globalized.MarkupHelper}.CreateParserContext({providerDetails.JoinBy(", ")})";
 
-			var markupTypeFullName = GetGlobalizedTypeName(markupType.GetFullName()!);
-			var xamlMarkupFullName = GetGlobalizedTypeName(XamlConstants.Types.IMarkupExtensionOverrides);
+			var provideValue = $"(({globalized.IMarkupExtensionOverrides})new {globalized.MarkupType}{markupInitializer}).ProvideValue({provider})";
 
-			var provideValue = $"(({xamlMarkupFullName})(new {markupTypeFullName} {{ {properties} }})).ProvideValue()";
-			string cast;
 			// Don't use the value from MarkupExtensionReturnType to match UWP behavior.
 			if (FindPropertyType(member.Member) is INamedTypeSymbol propertyType)
 			{
+				var cast = default(string);
 				if (IsImplementingInterface(propertyType, _iConvertibleSymbol))
 				{
 					// The target property implements IConvertible, therefore
@@ -4287,7 +4306,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var targetType = $"typeof({targetTypeDisplay})";
 
 					// It's important to cast to string before performing the conversion
-					provideValue = $"Convert.ChangeType(({ provideValue}).ToString(), {targetType})";
+					provideValue = $"Convert.ChangeType(({provideValue}).ToString(), {targetType})";
 					cast = $"({targetTypeDisplay})";
 				}
 				else
@@ -4296,6 +4315,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// ProvideValue() using the type of the target property
 					cast = GetCastString(propertyType, null);
 				}
+
+				return "{0}{1}".InvariantCultureFormat(cast, provideValue);
 			}
 			else
 			{
@@ -4304,8 +4325,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 #endif
 				return string.Empty;
 			}
-
-			return "{0}{1}".InvariantCultureFormat(cast, provideValue);
 		}
 
 		private (bool isInside, XamlObjectDefinition? xamlObject) IsMemberInsideDataTemplate(XamlObjectDefinition? xamlObject)

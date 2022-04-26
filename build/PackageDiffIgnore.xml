@@ -8673,7 +8673,7 @@
 			  reason="net6 macos remove deprecated API" />
 	  </Properties>
 	</IgnoreSet>
-	  
+
 	<IgnoreSet baseVersion="4.1.9">
 		<Assemblies>
 		</Assemblies>
@@ -8769,6 +8769,20 @@
 		</Fields>
 	</IgnoreSet>
 	<IgnoreSet baseVersion="4.2.6">
+
+		<Types>
+			<!-- BEGIN MarkupExtension -->
+			<!--
+				These interfaces do not existing in UWP, but have been reintroduced with Winui3 under different namespace:
+				https://docs.microsoft.com/en-us/windows/winui/api/microsoft.ui.xaml.markup?view=winui-3.0#interfaces
+			-->
+			<Member fullName="Uno.Xaml.IRootObjectProvider" reason="Does not exist in UWP" />
+			<Member fullName="System.Windows.Markup.IProvideValueTarget" reason="Does not exist in UWP" />
+			<Member fullName="System.Windows.Markup.IUriContext" reason="Does not exist in UWP" />
+			<Member fullName="System.Windows.Markup.IXamlTypeResolver" reason="Does not exist in UWP" />
+			<!-- END MarkupExtension -->
+		</Types>
+
 		<Methods>
 			<!-- BEGIN Bluetooth API -->
 			<Member
