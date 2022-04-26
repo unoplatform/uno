@@ -8,8 +8,21 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <StackPanel Background="#FAFAFA" Padding="20">
+    <Grid Padding="20">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition />
+			<ColumnDefinition Width="128" />
+		</Grid.ColumnDefinitions>
 		<TextBlock Text="{Binding Name}" Style="{ThemeResource HeaderTextBlockStyle}" />
-		<Button Content="{Binding Phone}" />
-	</StackPanel>
+		<Image Grid.Column="1" Source="{Binding ImageUrl}" />
+		<StackPanel Grid.Row="1">
+			<TextBlock Text="{Binding Address}" />
+			<HyperlinkButton Content="{Binding Email}" NavigateUri="{Binding EmailUrl}" Grid.Row="1" />	
+			<TextBlock Text="{Binding Phone}" />
+		</StackPanel>
+	</Grid>
 </Page>

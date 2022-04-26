@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UnoIslands.Skia.Wpf
 {
-	public class DataItem
+	public class PersonViewModel
 	{
 		public string Name { get; set; }
 
@@ -21,5 +21,9 @@ namespace UnoIslands.Skia.Wpf
 		public string Region { get; set; }
 
 		public string Country { get; set; }
+
+		public string EmailUrl => "mailto:" + Email;
+		
+		public string ImageUrl => $"https://www.gravatar.com/avatar/{Name.GetHashCode()}?s=128&d=identicon&r=PG";
 	}
 }

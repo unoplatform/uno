@@ -7,18 +7,18 @@ namespace UnoIslands.Skia.Wpf
 {
 	public class MainWindowViewModel : INotifyPropertyChanged
 	{
-		private DataItem _selectedItem = null;
+		private PersonViewModel _selectedItem = null;
 
 		public MainWindowViewModel()
 		{
 			using var stream = typeof(MainWindowViewModel).Assembly.GetManifestResourceStream("UnoIslands.Skia.Wpf.TestData.json");
 			using var textStream = new StreamReader(stream);
-			Data = JsonConvert.DeserializeObject<DataItem[]>(textStream.ReadToEnd());
+			Data = JsonConvert.DeserializeObject<PersonViewModel[]>(textStream.ReadToEnd());
 		}
 
-		public DataItem[] Data { get; }
+		public PersonViewModel[] Data { get; }
 
-		public DataItem SelectedItem
+		public PersonViewModel SelectedItem
 		{
 			get => _selectedItem;
 			set
