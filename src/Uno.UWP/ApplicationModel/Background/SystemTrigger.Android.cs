@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Background
 				case SystemTriggerType.UserPresent:
 					break;
 				default:	// all other types: unsupported
-					throw new NotSupportedException("Unimplemented type of SystemTrigger");
+					throw new NotSupportedException($"SystemTrigger {triggerType} is not supported");
 			}
 		}
 	}
