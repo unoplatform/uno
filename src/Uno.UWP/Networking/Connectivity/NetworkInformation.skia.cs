@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System;
 using System.Net.NetworkInformation;
 
 namespace Windows.Networking.Connectivity;
@@ -19,9 +20,9 @@ public partial class NetworkInformation
 	}
 
 
-	private static void OnNetworkAddressChanged(object sender, global::System.EventArgs e) =>
+	private static void OnNetworkAddressChanged(object? sender, EventArgs e) =>
 		OnNetworkStatusChanged();
 
-	private static void OnNetworkAvailabilityChanged(object sender, NetworkAvailabilityEventArgs e) =>
+	private static void OnNetworkAvailabilityChanged(object? sender, NetworkAvailabilityEventArgs e) =>
 		OnNetworkStatusChanged();
 }
