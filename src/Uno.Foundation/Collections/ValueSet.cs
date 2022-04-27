@@ -33,6 +33,40 @@ namespace Windows.Foundation.Collections
 		public ICollection<object?> Values => _dictionary.Values;
 		public void Add(KeyValuePair<string, object?> item) => _dictionary.Add(item.Key, item.Value);
 		public void Clear() => _dictionary.Clear();
+		public bool Contains(KeyValuePair<string, object?> item)
+		{
+			object? value;
+			if(!_dictionary.TryGetValue(item.Key, out value)) return false;
+			if (item.Value is null && value is null) return true;
+			if (item.Value is null || value is null) return false;
+			return item.Value.Equals(value);
+		}
+
+		public void CopyTo(KeyValuePair<string, object?>[] array, int arrayIndex)
+		{
+
+			if (array == null)
+			{
+				throw new ArgumentNullException("How can I copy elements to array when array is null?");
+			}
+
+			if(arrayIndex < 0)
+			{
+				throw new ArgumentOutOfRangeException("Cannot copy less than 0 elements");
+			}
+
+			// check now, before starting to copy elements
+			if(array.GetUpperBound(0) - arrayIndex < this.Count)
+			{
+				throw new ArgumentException("Array is too small");
+			}
+
+			foreach(KeyValuePair<string, object?> item in _dictionary)
+			{
+				array[arrayIndex++] = item;
+			}
+		}
+
 		public bool Remove(KeyValuePair<string, object?> item) => Remove(item.Key);
 		public int Count => _dictionary.Count;
 
@@ -45,6 +79,9 @@ namespace Windows.Foundation.Collections
 			get => _dictionary[key];
 			set => _dictionary[key] = value;
 		}
+
+		public IEnumerator<KeyValuePair<string, object?>> GetEnumerator() => _dictionary.GetEnumerator();
+
 	}
 }
 #endif
