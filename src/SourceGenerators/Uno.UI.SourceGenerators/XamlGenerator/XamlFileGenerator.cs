@@ -4362,7 +4362,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var targetType = $"typeof({targetTypeDisplay})";
 
 					// It's important to cast to string before performing the conversion
-					provideValue = $"Convert.ChangeType(({provideValue}).ToString(), {targetType})";
+					provideValue = $"Convert.ChangeType(({provideValue})?.ToString(), {targetType})";
 					cast = $"({targetTypeDisplay})";
 				}
 				else
