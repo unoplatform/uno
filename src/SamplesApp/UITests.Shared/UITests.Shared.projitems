@@ -177,7 +177,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NumberBoxTests\MUX_Test.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NumberBoxTests\NumberBoxPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -4693,8 +4693,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\TopMode\NavigationViewTopNavStorePage.xaml.cs">
       <DependentUpon>NavigationViewTopNavStorePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NumberBoxTests\MUX_Test.xaml.cs">
-      <DependentUpon>MUX_Test.xaml</DependentUpon>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NumberBoxTests\NumberBoxPage.xaml.cs">
+      <DependentUpon>NumberBoxPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NumberBoxTests\NumberBox_Description.xaml.cs">
       <DependentUpon>NumberBox_Description.xaml</DependentUpon>
