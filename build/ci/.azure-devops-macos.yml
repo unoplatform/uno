@@ -76,3 +76,58 @@ jobs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uno-macos-artifacts
       ArtifactType: Container
+- job: macOS_Screenshot_Tests
+  timeoutInMinutes: 90
+  displayName: macOS SamplesApp Screenshot Test
+
+  variables:
+    CI_Build: true
+    SourceLinkEnabled: false
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+  
+  dependsOn: macOS
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  steps:
+  - checkout: none
+    clean: true
+    
+  - template: templates/dotnet-install.yml
+  - template: templates/optimize-roslyn-mono.yml
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: uno-macos-artifacts
+        downloadPath: '$(build.sourcesdirectory)/build'
+  
+  - task: PowerShell@2
+    displayName: 'Install coreutils'
+    inputs:
+      targetType: inline
+      script: |
+        brew install coreutils
+
+  - script: |
+        cd $(build.sourcesdirectory)/build/uno-macos-artifacts
+        installer -pkg SamplesApp.macOS-1.0.pkg -target CurrentUserHomeDirectory
+    
+    displayName: Install SamplesApp
+
+  - script: |
+        timeout 70m /Applications/SamplesApp.macOS.app/Contents/MacOS/SamplesApp.macOS --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/macOS-screenshots
+
+    displayName: Run macOS UI Snapshot Tests
+
+  - task: PublishBuildArtifacts@1
+    displayName: Publish macOS Screenshots
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-results
+      ArtifactType: Container
