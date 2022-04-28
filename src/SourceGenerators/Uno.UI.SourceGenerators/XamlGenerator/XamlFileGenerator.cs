@@ -3104,7 +3104,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 							else
 							{
-								BuildCustomMarkupExtensionPropertyValue(writer, member, closureName + ".");
+								BuildCustomMarkupExtensionPropertyValue(writer, member, closureName);
 							}
 						}
 						else if (member.Objects.Any())
@@ -3472,12 +3472,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			// Local function used to build a property/value for any custom MarkupExtensions
-			void BuildCustomMarkupExtensionPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string prefix)
+			void BuildCustomMarkupExtensionPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string? closure = null)
 			{
-				Func<string, string> formatLine = format => prefix + format + (prefix.HasValue() ? ";\r\n" : "");
+				Func<string, string> formatLine = assignment => closure.HasValue()
+					? $"{closure}.{assignment};\r\n"
+					: assignment;
 
-				var propertyValue = GetCustomMarkupExtensionValue(member);
-
+				var propertyValue = GetCustomMarkupExtensionValue(member, closure);
 				if (propertyValue.HasValue())
 				{
 					var formatted = formatLine($"{member.Member.Name} = {propertyValue}");
@@ -3855,42 +3856,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			Func<string, string> formatLine = format => prefix + format + (prefix.HasValue() ? ";\r\n" : "");
+			var postfix = prefix.HasValue() ? ";" : "";
 
 			var bindingNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Binding");
 			var bindNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Bind");
 			var templateBindingNode = member.Objects.FirstOrDefault(o => o.Type.Name == "TemplateBinding");
-
-			string? GetBindingOptions()
-			{
-				if (bindingNode != null)
-				{
-					return bindingNode
-						.Members
-						.Select(BuildMemberPropertyValue)
-						.JoinBy(", ");
-
-				}
-				if (bindNode != null)
-				{
-					return bindNode
-						.Members
-						.Where(m => m.Member.Name != "_PositionalParameters" && m.Member.Name != "Path" && m.Member.Name != "BindBack")
-						.Select(BuildMemberPropertyValue)
-						.Concat(bindNode.Members.Any(m => m.Member.Name == "Mode") ? "" : "Mode = BindingMode." + GetDefaultBindMode())
-						.JoinBy(", ");
-
-				}
-				if (templateBindingNode != null)
-				{
-					return templateBindingNode
-						.Members
-						.Select(BuildMemberPropertyValue)
-   						.Concat("RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent)")
-					 .JoinBy(", ");
-				}
-
-				return null;
-			}
 
 			if (FindEventType(member.Member) is IEventSymbol eventSymbol)
 			{
@@ -3898,8 +3868,32 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else
 			{
-				var bindingOptions = GetBindingOptions();
+				(IEnumerable<XamlMemberDefinition>?, IEnumerable<string>?) GetBindingOptions()
+				{
+					if (bindingNode != null)
+					{
+						return (bindingNode.Members, default);
+					}
+					if (bindNode != null)
+					{
+						return (
+							bindNode.Members
+								.Where(m => m.Member.Name != "_PositionalParameters" && m.Member.Name != "Path" && m.Member.Name != "BindBack"),
+							new[] { bindNode.Members.Any(m => m.Member.Name == "Mode") ? "" : ("Mode = BindingMode." + GetDefaultBindMode()) }
+						);
+					}
+					if (templateBindingNode != null)
+					{
+						return(
+							templateBindingNode.Members,
+							new[] { "RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent)" }
+						);
+					}
 
+					return default;
+				}
+
+				var (bindingOptions, additionalOptions) = GetBindingOptions();
 				if (bindingOptions != null)
 				{
 					TryAnnotateWithGeneratorSource(writer, suffix: "HasBindingOptions");
@@ -3907,23 +3901,86 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var isBindingType = SymbolEqualityComparer.Default.Equals(FindPropertyType(member.Member), _dataBindingSymbol);
 					var isOwnerDependencyObject = member.Owner != null && GetType(member.Owner.Type).GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol));
 
-					var bindEvalFunction = bindNode != null ? BuildXBindEvalFunction(member, bindNode) : "";
-
 					if (isAttachedProperty)
 					{
 						var propertyOwner = GetType(member.Member.DeclaringType);
 
-						writer.AppendLine(formatLine($"SetBinding({GetGlobalizedTypeName(propertyOwner.ToDisplayString())}.{member.Member.Name}Property, new {XamlConstants.Types.Binding}{{ {bindingOptions} }}{bindEvalFunction})"));
+						using (writer.Indent($"{prefix}SetBinding(", $"){postfix}"))
+						{
+							writer.AppendLine2($"{GetGlobalizedTypeName(propertyOwner.ToDisplayString())}.{member.Member.Name}Property,");
+							WriteBinding();
+						}
 					}
 					else if (isBindingType)
 					{
-						writer.AppendLine(formatLine($"{member.Member.Name} = new {XamlConstants.Types.Binding}{{ {bindingOptions} }}"));
+						WriteBinding(prefix: $"{prefix}{member.Member.Name} = ");
+						writer.AppendLine2(postfix);
 					}
 					else
 					{
 						var pocoBuilder = isOwnerDependencyObject ? "" : $"GetDependencyObjectForXBind().";
+						
+						using (writer.Indent($"{prefix}{pocoBuilder}SetBinding(", $"){postfix}"))
+						{
+							writer.AppendLine2($"\"{member.Member.Name}\",");
+							WriteBinding();
+						}
+					}
 
-						writer.AppendLine(formatLine($"{pocoBuilder}SetBinding(\"{member.Member.Name}\", new {XamlConstants.Types.Binding}{{ {bindingOptions} }}{bindEvalFunction})"));
+					void WriteBinding(string? prefix = null)
+					{
+						writer.AppendLine2($"{prefix}new {XamlConstants.Types.Binding}()");
+
+						var containsCustomMarkup = bindingOptions.Any(x => IsCustomMarkupExtensionType(x.Objects.FirstOrDefault()?.Type));
+						var closure = containsCustomMarkup ? "___b" : default;
+						var setters = bindingOptions
+							.Select(x => BuildMemberPropertyValue(x, closure))
+							.Concat(additionalOptions ?? new string[0])
+							.Where(x => !string.IsNullOrEmpty(x))
+							.ToArray();
+
+						// members initialization
+						if (setters.Any())
+						{
+							if (containsCustomMarkup)
+							{
+								// for custom MarkupExtension, we need to pass the `Binding` to build its parser context:
+								// new Binding().BindingApply(___b => { x = y,... })
+								using var _ = writer.Indent();
+
+								writer.AppendLine2($".BindingApply({closure} =>");
+								using (writer.Indent("{", "})"))
+								{
+									foreach (var setter in setters)
+									{
+										writer.AppendLine2($"{closure}.{setter};");
+									}
+
+									writer.AppendLine2($"return {closure};");
+								}
+							}
+							else
+							{
+								// using object initializers syntax:
+								// new Binding() { x = y, ... }
+								using (writer.Block())
+								{
+									foreach (var setter in setters)
+									{
+										writer.AppendLine2($"{setter},");
+									}
+								}
+							}
+						}
+
+						// xbind initialization
+						if (bindNode != null && !isBindingType)
+						{
+							var xBindEvalFunction = BuildXBindEvalFunction(member, bindNode);
+
+							using var _ = writer.Indent();
+							writer.AppendLine2(xBindEvalFunction);
+						}
 					}
 				}
 
@@ -4226,12 +4283,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string GetDefaultBindMode() => _currentDefaultBindMode.Peek();
 
-		private string BuildMemberPropertyValue(XamlMemberDefinition m)
+		private string BuildMemberPropertyValue(XamlMemberDefinition m, string? closure = null)
 		{
 			if (IsCustomMarkupExtensionType(m.Objects.FirstOrDefault()?.Type))
 			{
 				// If the member contains a custom markup extension, build the inner part first
-				var propertyValue = GetCustomMarkupExtensionValue(m);
+				var propertyValue = GetCustomMarkupExtensionValue(m, closure);
 				return "{0} = {1}".InvariantCultureFormat(m.Member.Name, propertyValue);
 			}
 			else
@@ -4242,7 +4299,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private string GetCustomMarkupExtensionValue(XamlMemberDefinition member)
+		private string GetCustomMarkupExtensionValue(XamlMemberDefinition member, string? target = null)
 		{
 			// Get the type of the custom markup extension
 			var markupTypeDef = member
@@ -4254,6 +4311,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				throw new InvalidOperationException($"Unable to find markup extension type for ");
 			}
+
+			// Get the full globalized names
+			var globalized = new
+			{
+				MarkupType = GetGlobalizedTypeName(markupType.GetFullName()!),
+				MarkupHelper = GetGlobalizedTypeName(XamlConstants.Types.MarkupHelper),
+				IMarkupExtensionOverrides = GetGlobalizedTypeName(XamlConstants.Types.IMarkupExtensionOverrides),
+				PvtpDeclaringType = GetGlobalizedTypeName(member.Member.DeclaringType),
+				PvtpType = GetGlobalizedTypeName(member.Member.Type),
+			};
 
 			// Build a string of all its properties
 			var properties = markupTypeDef
@@ -4268,17 +4335,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return "{0} = {1}".InvariantCultureFormat(m.Member.Name, value);
 				})
 				.JoinBy(", ");
+			var markupInitializer = properties.HasValue() ? $" {{ {properties} }}" : "()";
 
-			// Get the full globalized namespaces for the custom markup extension and also for IMarkupExtensionOverrides
+			// Build the parser context for ProvideValue(IXamlServiceProvider)
+			var providerDetails = new string[]
+			{
+				// BuildParserContext(object? target, Type propertyDeclaringType, string propertyName, Type propertyType)
+				target ?? "null",
+				$"typeof({globalized.PvtpDeclaringType})",
+				$"\"{member.Member.Name}\"",
+				$"typeof({globalized.PvtpType})",
+			};
+			var provider = $"{globalized.MarkupHelper}.CreateParserContext({providerDetails.JoinBy(", ")})";
 
-			var markupTypeFullName = GetGlobalizedTypeName(markupType.GetFullName()!);
-			var xamlMarkupFullName = GetGlobalizedTypeName(XamlConstants.Types.IMarkupExtensionOverrides);
+			var provideValue = $"(({globalized.IMarkupExtensionOverrides})new {globalized.MarkupType}{markupInitializer}).ProvideValue({provider})";
 
-			var provideValue = $"(({xamlMarkupFullName})(new {markupTypeFullName} {{ {properties} }})).ProvideValue()";
-			string cast;
 			// Don't use the value from MarkupExtensionReturnType to match UWP behavior.
 			if (FindPropertyType(member.Member) is INamedTypeSymbol propertyType)
 			{
+				var cast = default(string);
 				if (IsImplementingInterface(propertyType, _iConvertibleSymbol))
 				{
 					// The target property implements IConvertible, therefore
@@ -4287,7 +4362,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var targetType = $"typeof({targetTypeDisplay})";
 
 					// It's important to cast to string before performing the conversion
-					provideValue = $"Convert.ChangeType(({ provideValue}).ToString(), {targetType})";
+					provideValue = $"Convert.ChangeType(({provideValue})?.ToString(), {targetType})";
 					cast = $"({targetTypeDisplay})";
 				}
 				else
@@ -4296,6 +4371,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// ProvideValue() using the type of the target property
 					cast = GetCastString(propertyType, null);
 				}
+
+				return "{0}{1}".InvariantCultureFormat(cast, provideValue);
 			}
 			else
 			{
@@ -4304,8 +4381,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 #endif
 				return string.Empty;
 			}
-
-			return "{0}{1}".InvariantCultureFormat(cast, provideValue);
 		}
 
 		private (bool isInside, XamlObjectDefinition? xamlObject) IsMemberInsideDataTemplate(XamlObjectDefinition? xamlObject)
