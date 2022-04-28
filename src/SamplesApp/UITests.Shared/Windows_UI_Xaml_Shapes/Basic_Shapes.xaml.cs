@@ -24,6 +24,7 @@ using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 using System.IO;
 using Uno.UI;
+using Windows.Graphics.Display;
 
 #if __IOS__
 using UIKit;
@@ -35,7 +36,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 	public sealed partial class Basic_Shapes : Page
 	{
 		#region Shapes
-		private readonly Factory[] _shapes = new []
+		private readonly Factory[] _shapes = new[]
 		{
 			Factory.New(() => new Rectangle
 			{
@@ -171,7 +172,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		#endregion
 
 		#region Test automation support
-		public static DependencyProperty RunTestProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty RunTestProperty { get; } = DependencyProperty.Register(
 			"RunTest", typeof(string), typeof(Basic_Shapes), new PropertyMetadata(default(string), (snd, e) => ((Basic_Shapes)snd).RunTests((string)e.NewValue)));
 
 		public string RunTest
@@ -180,7 +181,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			set => SetValue(RunTestProperty, value);
 		}
 
-		public static DependencyProperty TestResultProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty TestResultProperty { get; } = DependencyProperty.Register(
 			"TestResult", typeof(string), typeof(Basic_Shapes), new PropertyMetadata(default(string)));
 
 		public string TestResult
@@ -189,7 +190,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			set { SetValue(TestResultProperty, value); }
 		}
 
-		public static DependencyProperty RunningTestProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty RunningTestProperty { get; } = DependencyProperty.Register(
 			"RunningTest", typeof(string), typeof(Basic_Shapes), new PropertyMetadata(default(string), (snd, e) => ((Basic_Shapes)snd)._runningTest.Text = e.NewValue?.ToString()));
 
 		public string RunningTest
@@ -259,7 +260,22 @@ namespace UITests.Windows_UI_Xaml_Shapes
 
 		private async void GenerateScreenshots(object sender, RoutedEventArgs e)
 		{
-#if WINDOWS_UWP
+#if __SKIA__
+			// Workaround to avoid issue #7829
+			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, GenerateScreenshots);
+#else
+			await GenerateScreenshots();
+#endif
+		}
+		private async
+#if __SKIA__
+		void
+#else
+		Task
+#endif
+		GenerateScreenshots()
+		{
+#if !__MACOS__
 			_root.Visibility = Visibility.Collapsed;
 
 			var folder = await new FolderPicker { FileTypeFilter = { "*" } }.PickSingleFolderAsync();
@@ -271,81 +287,38 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			var alteratorsMap = _stretches.SelectMany(stretch => _sizes.Select(size => new[] { stretch, size })).ToArray();
 
 			foreach (var shape in _shapes)
-			foreach (var alterators in alteratorsMap)
-			{
-				var fileName = shape.Name + "_" + string.Join("_", alterators.Select(a => a.Id)) + ".png";
-				var grid = BuildHoriVertTestGridForScreenshot(shape, alterators);
-				_testZone.Child = grid;
-				await Task.Yield();
-
-				var renderer = new RenderTargetBitmap();
-				await renderer.RenderAsync(grid);
-
-				var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
-				using (var output = await file.OpenAsync(FileAccessMode.ReadWrite))
+				foreach (var alterators in alteratorsMap)
 				{
-					var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, output);
-					encoder.SetSoftwareBitmap(SoftwareBitmap.CreateCopyFromBuffer(await renderer.GetPixelsAsync(), BitmapPixelFormat.Bgra8, renderer.PixelWidth, renderer.PixelHeight));
-					await encoder.FlushAsync();
-					await output.FlushAsync();
+					var fileName = shape.Name + "_" + string.Join("_", alterators.Select(a => a.Id)) + ".png";
+					var grid = BuildHoriVertTestGridForScreenshot(shape, alterators);
+					_testZone.Child = grid;
+					await Task.Yield();
+
+					var renderer = new RenderTargetBitmap();
+					await renderer.RenderAsync(grid);
+
+					var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+					using (var output = await file.OpenAsync(FileAccessMode.ReadWrite))
+					{
+						var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, output);
+						encoder.SetSoftwareBitmap(SoftwareBitmap.CreateCopyFromBuffer(await renderer.GetPixelsAsync(), BitmapPixelFormat.Bgra8, renderer.PixelWidth, renderer.PixelHeight));
+						await encoder.FlushAsync();
+						await output.FlushAsync();
+					}
 				}
-			}
 
 			_root.Visibility = Visibility.Visible;
 			_testZone.Child = null;
 #endif
 		}
-
-#if __IOS__ // This is the base work for a fix in the UITests in order to highly increase Screenshot speed. It will be removed by https://github.com/unoplatform/Uno.UITest/issues/39
-		private static byte[] RenderAsPng(FrameworkElement elt)
-		{
-			UIImage img;
-			try
-			{
-				UIGraphics.BeginImageContextWithOptions(new Size(elt.ActualWidth, elt.ActualHeight), true, UIScreen.MainScreen.Scale);
-				var ctx = UIGraphics.GetCurrentContext();
-				ctx.SetFillColor(Colors.White);
-				elt.Layer.RenderInContext(ctx);
-				img = UIGraphics.GetImageFromCurrentImageContext();
-			}
-			finally
-			{
-				UIGraphics.EndImageContext();
-			}
-
-			using (img)
-			{
-				return img.AsPNG().ToArray();
-			}
-		}
-#elif __ANDROID__
-		private static byte[] RenderAsPng(FrameworkElement elt)
-		{
-			Android.Graphics.Bitmap b = Android.Graphics.Bitmap.CreateBitmap((int)ViewHelper.LogicalToPhysicalPixels(elt.ActualWidth), (int)ViewHelper.LogicalToPhysicalPixels(elt.ActualHeight), Android.Graphics.Bitmap.Config.Argb8888);
-			Android.Graphics.Canvas c = new Android.Graphics.Canvas(b);
-			var view = elt as Android.Views.View;
-
-			view.Layout(0, 0, (int)ViewHelper.LogicalToPhysicalPixels(elt.ActualWidth), (int)ViewHelper.LogicalToPhysicalPixels(elt.ActualHeight));
-			c.DrawColor(Android.Graphics.Color.White);
-			view.Draw(c);
-			using var stream = new MemoryStream();
-			b.Compress(Android.Graphics.Bitmap.CompressFormat.Png, 100, stream);
-
-			return stream.ToArray();
-		}
-#else
-		private static byte[] RenderAsPng(FrameworkElement elt)
-			=> throw new NotImplementedException("Not supported yet on this platform");
-#endif
-
 		public string RunTests(string testNames)
 		{
 			TestResult = "";
 
-			var tests = testNames.Split(new [] {';'}, StringSplitOptions.RemoveEmptyEntries);
+			var tests = testNames.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 			var id = Guid.NewGuid().ToString("N");
 
-			_ = ((DependencyObject)this).Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => _ = RunTestsCore(tests));
+			_ = this.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => _ = RunTestsCore(tests));
 
 			return id;
 
@@ -353,7 +326,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			{
 				var result = new StringBuilder();
 				result.AppendLine(id);
-
+				var renderer = new RenderTargetBitmap();
 				foreach (var test in strings)
 				{
 					result.Append(test);
@@ -361,8 +334,25 @@ namespace UITests.Windows_UI_Xaml_Shapes
 					try
 					{
 						var elt = await RenderById(test);
-						var testResult = RenderAsPng(elt);
+						await renderer.RenderAsync(elt); ;
+						var pixels = await renderer.GetPixelsAsync();
+						byte[] testResult = default;
 
+						using var ms = new MemoryStream();
+						var ra = ms.AsRandomAccessStream();
+						var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, ra);
+						encoder.SetPixelData(BitmapPixelFormat.Bgra8
+							, BitmapAlphaMode.Premultiplied
+							, (uint)renderer.PixelWidth
+							, (uint)renderer.PixelHeight
+							, DisplayInformation.GetForCurrentView().RawDpiX
+							, DisplayInformation.GetForCurrentView().RawDpiY
+							, pixels.ToArray()
+							);
+						await encoder.FlushAsync();
+						await ra.FlushAsync();
+						ms.Position = 0;
+						testResult = ms.ToArray();
 						result.Append("SUCCESS;");
 						result.Append(Convert.ToBase64String(testResult));
 					}
@@ -382,6 +372,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		private void RenderById(object sender, RoutedEventArgs e)
 			=> RunTests(_idInput.Text);
 
+		static readonly IdleDispatchedHandler idleDispatchedHandler = e => { };
 		private async Task<FrameworkElement> RenderById(string id)
 		{
 			var tcs = new TaskCompletionSource<object>();
@@ -393,17 +384,19 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				_root.Visibility = Visibility.Collapsed;
 
 				var elt = GetElement();
-				elt.SizeChanged += (snd, args) =>
+				SizeChangedEventHandler? sh = default;
+				sh = (snd, args) =>
 				{
 					if (args.NewSize != default)
 					{
+						elt.SizeChanged -= sh;
 						tcs.SetResult(default);
 					}
 				};
+				elt.SizeChanged += sh;
 				_testZone.Child = elt;
 
 				await tcs.Task;
-
 				RunningTest = id;
 
 				return elt;

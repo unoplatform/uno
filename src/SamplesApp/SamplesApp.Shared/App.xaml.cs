@@ -139,7 +139,7 @@ namespace SamplesApp
 
 		private static async Task<bool> HandleSkiaAutoScreenshots(LaunchActivatedEventArgs e)
 		{
-#if __SKIA__
+#if __SKIA__ || __MACOS__
 			var runAutoScreenshotsParam =
 			e.Arguments.Split(';').FirstOrDefault(a => a.StartsWith("--auto-screenshots"));
 
@@ -147,7 +147,6 @@ namespace SamplesApp
 
 			if (!string.IsNullOrEmpty(screenshotsPath))
 			{
-				var sw = Stopwatch.StartNew();
 				var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
 					_ =>
 					{
@@ -170,7 +169,7 @@ namespace SamplesApp
 
 		private static async Task<bool> HandleSkiaRuntimeTests(LaunchActivatedEventArgs e)
 		{
-#if __SKIA__
+#if __SKIA__ || __MACOS__
 			var runRuntimeTestsResultsParam =
 			e.Arguments.Split(';').FirstOrDefault(a => a.StartsWith("--runtime-tests"));
 
@@ -180,7 +179,7 @@ namespace SamplesApp
 			{
 				Console.WriteLine($"HandleSkiaRuntimeTests: {runtimeTestResultFilePath}");
 
-				_ = Window.Current.Dispatcher.RunIdleAsync(async _ =>
+				var runner = new Action(async () =>
 				{
 					// let the app finish its startup
 					await Task.Delay(TimeSpan.FromSeconds(5));
@@ -195,6 +194,8 @@ namespace SamplesApp
 						}
 					);
 				});
+
+				await Task.Run(runner);
 
 				return true;
 			}
