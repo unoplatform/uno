@@ -36,6 +36,7 @@
 		<AndroidResgenNamespace>Uno.UWP</AndroidResgenNamespace>
 		
 		<UnoSourceGeneratorCaptureGenerationHostOutput>true</UnoSourceGeneratorCaptureGenerationHostOutput>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />

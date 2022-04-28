@@ -2,10 +2,12 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Windows.Foundation;
 using CoreGraphics;
 using Foundation;
-using UIKit;
+using Uno.UI;
+using AppKit;
 
 namespace Windows.UI.Xaml.Media.Imaging
 {
@@ -15,7 +17,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		private protected override bool IsSourceReady => _buffer != null;
 
 		/// <inheritdoc />
-		private protected override bool TryOpenSourceSync([NotNullWhen(true)] out UIImage? image)
+		private protected override bool TryOpenSourceSync([NotNullWhen(true)] out NSImage? image)
 		{
 			image = default;
 			if (_buffer is null)
@@ -39,7 +41,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			}
 			if (data is { })
 			{
-				image = UIImage.LoadFromData(data);
+				image = new NSImage(data);
 			}
 			return image != null;
 		}
@@ -49,30 +51,36 @@ namespace Windows.UI.Xaml.Media.Imaging
 			UIElement elementToRender = element
 				?? XamlRoot.Current.Content
 				?? throw new global::System.NullReferenceException();
+
 			var size = new Size(elementToRender.ActualSize.X, elementToRender.ActualSize.Y);
 
 			if (size.IsEmpty)
 			{
 				return (0,0,0);
 			}
-			UIImage img;
+			NSImage? img = default;
 			try
 			{
-				UIGraphics.BeginImageContextWithOptions(size, false, 1f);
-				var ctx = UIGraphics.GetCurrentContext();
+				img = new NSImage(size);
+				img.LockFocusFlipped(elementToRender.IsFlipped);
+				var ctx = NSGraphicsContext.CurrentContext!.GraphicsPort;
 				ctx.SetFillColor(Colors.Transparent); // This is only for pixels not used, but the bitmap as the same size of the element. We keep it only for safety!
-				elementToRender.Layer.RenderInContext(ctx);
-				img = UIGraphics.GetImageFromCurrentImageContext();
+				elementToRender.Layer!.RenderInContext(ctx);
 			}
 			finally
 			{
-				UIGraphics.EndImageContext();
+				img?.UnlockFocus();
 			}
 
 			if (scaledSize.HasValue)
 			{
 				using var unscaled = img;
-				img = unscaled.Scale(scaledSize.Value);
+				img = new NSImage(scaledSize.Value);
+				img.LockFocus();
+				var ctx = NSGraphicsContext.CurrentContext!.GraphicsPort;
+				ctx.SetFillColor(Colors.Transparent);
+				ctx.DrawImage(new CGRect(0, 0, scaledSize.Value.Width, scaledSize.Value.Height), unscaled.CGImage);
+				img.UnlockFocus();
 			}
 
 			using (img)
@@ -104,7 +112,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				EnsureBuffer(ref buffer, byteCount);
 				global::System.Array.Copy(bitmapData, buffer!, bufferLength);
 				SwapRB(ref buffer!, byteCount);
-				return (byteCount,(int)width,(int)height);
+				return (byteCount, (int)width, (int)height);
 			}
 		}
 	}
