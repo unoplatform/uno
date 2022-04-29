@@ -365,5 +365,10 @@ namespace Windows.UI.Xaml.Controls
 
 			_textBoxView.KeyboardAppearance = appearance;
 		}
+
+		partial void OnTextCharacterCasingChangedPartial(DependencyPropertyChangedEventArgs e)
+		{
+			_textBoxView?.SetTextNative(CasingText);
+		}
 	}
 }

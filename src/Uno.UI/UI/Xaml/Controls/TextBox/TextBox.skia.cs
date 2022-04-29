@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 		private TextBoxView _textBoxView;
 
 		internal TextBoxView TextBoxView => _textBoxView;
-		
+
 		internal ContentControl ContentElement => _contentElement;
 
 		partial void OnForegroundColorChangedPartial(Brush newValue) => TextBoxView?.OnForegroundChanged(newValue);
@@ -46,5 +46,14 @@ namespace Windows.UI.Xaml.Controls
 
 
 		protected void SetIsPassword(bool isPassword) => TextBoxView?.SetIsPassword(isPassword);
+
+
+		partial void OnTextCharacterCasingChangedPartial(DependencyPropertyChangedEventArgs e)
+		{
+			_textBoxView?.UpdateTextFromNative(CasingText);
+		}
+		 
+
+
 	}
 }

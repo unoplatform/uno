@@ -236,5 +236,10 @@ namespace Windows.UI.Xaml.Controls
 
 			_isSecured = isSecure;
 		}
+
+		partial void OnTextCharacterCasingChangedPartial(DependencyPropertyChangedEventArgs e)
+		{
+			_textBoxView?.SetTextNative(CasingText);
+		} 
 	}
 }

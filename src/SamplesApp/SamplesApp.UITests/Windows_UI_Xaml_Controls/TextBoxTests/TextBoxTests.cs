@@ -575,8 +575,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 		}
 
 		[Test]
-		[AutoRetry]
-		[ActivePlatforms(Platform.Android)]
+		[AutoRetry] 
 		public void TextBox_CharacterCasingNormal_ShouldAcceptAllCasing_Test()
 		{
 			const string text = "Uno Platform";
@@ -587,14 +586,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			normalCasingTextBox.FastTap();
 			normalCasingTextBox.ClearText();
-			normalCasingTextBox.EnterText(text);
+			normalCasingTextBox.EnterTextAndDismiss(text);
 
 			Assert.AreEqual(text, normalCasingTextBox.GetDependencyPropertyValue("Text")?.ToString());
 		}
 
 		[Test]
-		[AutoRetry]
-		[ActivePlatforms(Platform.Android)]
+		[AutoRetry] 
 		public void TextBox_CharacterCasingDefault_ShouldAcceptAllCasing_Test()
 		{
 			const string text = "Uno Platform";
@@ -605,14 +603,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			defaultCasingTextBox.FastTap();
 			defaultCasingTextBox.ClearText();
-			defaultCasingTextBox.EnterText(text);
+			defaultCasingTextBox.EnterTextAndDismiss(text);
 
 			Assert.AreEqual(text, defaultCasingTextBox.GetDependencyPropertyValue("Text")?.ToString());
 		}
 
 		[Test]
-		[AutoRetry]
-		[ActivePlatforms(Platform.Android)]
+		[AutoRetry] 
 		public void TextBox_CharacterCasingLower_ShouldBeAllLower_Test()
 		{
 			const string text = "Uno Platform";
@@ -623,14 +620,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			lowerCasingTextBox.FastTap();
 			lowerCasingTextBox.ClearText();
-			lowerCasingTextBox.EnterText(text);
+			lowerCasingTextBox.EnterTextAndDismiss(text);
 
-			Assert.AreEqual(text.ToLowerInvariant(), lowerCasingTextBox.GetDependencyPropertyValue("Text")?.ToString());
+			Assert.AreEqual("uno platform", lowerCasingTextBox.GetDependencyPropertyValue("Text")?.ToString());
+
 		}
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android)]
 		public void TextBox_CharacterCasingUpper_ShouldBeAllUpper_Test()
 		{
 			const string text = "Uno Platform";
@@ -641,9 +638,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			upperCasingTextBox.FastTap();
 			upperCasingTextBox.ClearText();
-			upperCasingTextBox.EnterText(text);
+			upperCasingTextBox.EnterTextAndDismiss(text); 
 
-			Assert.AreEqual(text.ToUpperInvariant(), upperCasingTextBox.GetDependencyPropertyValue("Text")?.ToString());
+			Assert.AreEqual("UNO PLATFORM", upperCasingTextBox.GetDependencyPropertyValue("Text")?.ToString());
 		}
 
 		[Test]

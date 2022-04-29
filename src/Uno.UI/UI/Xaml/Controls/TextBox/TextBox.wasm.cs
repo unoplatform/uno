@@ -173,5 +173,12 @@ namespace Windows.UI.Xaml.Controls
 				_textBoxView.SelectionEnd = _textBoxView.SelectionStart + value;
 			}
 		}
+
+
+		partial void OnTextCharacterCasingChangedPartial(DependencyPropertyChangedEventArgs e)
+		{
+			_textBoxView?.SetProperty("value", CasingText);
+		} 
 	}
 }
+

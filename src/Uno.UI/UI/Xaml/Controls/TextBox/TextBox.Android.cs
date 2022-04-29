@@ -559,45 +559,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void OnTextCharacterCasingChangedPartial(DependencyPropertyChangedEventArgs e)
-		{
-			if (_textBoxView == null)
-			{
-				return;
-			}
-
-			var casing = (CharacterCasing)e.NewValue;
-
-			UpdateCasing(casing);
-		}
-
-		private void UpdateCasing(CharacterCasing characterCasing)
-		{
-			var currentFilters = _textBoxView.GetFilters()?.ToList() ?? new List<IInputFilter>();
-
-			//Remove any casing filters before applying new ones.
-			currentFilters.Remove(a => a is InputFilterAllLower || a is InputFilterAllCaps);
-
-			switch (characterCasing)
-			{
-				case CharacterCasing.Lower:
-					var lowerFilter = new List<IInputFilter>(currentFilters)
-										{
-											new InputFilterAllLower()
-										};
-					_textBoxView.SetFilters(lowerFilter.ToArray());
-
-					break;
-				case CharacterCasing.Upper:
-					var upperFilter = new List<IInputFilter>(currentFilters)
-										{
-											new InputFilterAllCaps()
-										};
-					_textBoxView.SetFilters(upperFilter.ToArray());
-
-					break;
-				case CharacterCasing.Normal:
-					break;
-			}
+		{ 
+			_textBoxView?.SetTextNative(CasingText); 
 		}
 	}
 
