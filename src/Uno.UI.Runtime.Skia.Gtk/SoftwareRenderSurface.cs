@@ -3,6 +3,7 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using Cairo;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI.Xaml.Core;
@@ -11,7 +12,6 @@ using WUX = Windows.UI.Xaml;
 using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Controls;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using Uno.UI.Runtime.Skia.Helpers.Windows;
 using Uno.UI.Runtime.Skia.Helpers.Dpi;
 using Windows.Graphics.Display;
@@ -22,10 +22,13 @@ namespace Uno.UI.Runtime.Skia
 	{
 		private readonly DisplayInformation _displayInformation;
 		private FocusManager? _focusManager;
+		private SKSurface? _surface;
 		private SKBitmap? _bitmap;
+		private int _bheight, _bwidth;
+		private ImageSurface? _gtkSurface;
 		private int renderCount;
 
-		private float? _dpi = 1;
+		private float _dpi = 1;
 
 		private readonly SKColorType _colorType;
 
@@ -67,11 +70,9 @@ namespace Uno.UI.Runtime.Skia
 		private void Invalidate()
 			=> QueueDrawArea(0, 0, 10000, 10000);
 
-		protected override bool OnDrawn(Cairo.Context cr)
+		protected override bool OnDrawn(Context cr)
 		{
 			Stopwatch? sw = null;
-
-			int width, height;
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
@@ -79,42 +80,35 @@ namespace Uno.UI.Runtime.Skia
 				this.Log().Trace($"Render {renderCount++}");
 			}
 
-			var dpi = UpdateDpi();
-			
-			width = (int)AllocatedWidth;
-			height = (int)AllocatedHeight;
+			var scaledWidth = (int)(AllocatedWidth * _dpi);
+			var scaledHeight = (int)(AllocatedHeight * _dpi);
 
-			var scaledWidth = (int)(width * dpi);
-			var scaledHeight = (int)(height * dpi);
-
-			var info = new SKImageInfo(scaledWidth, scaledHeight, _colorType, SKAlphaType.Premul);
-
-			// reset the bitmap if the size has changed
-			if (_bitmap == null || info.Width != _bitmap.Width || info.Height != _bitmap.Height)
+			// reset the surfaces (skia/cairo) and bitmap if the size has changed
+			if (_surface == null || scaledWidth != _bwidth || scaledHeight != _bheight)
 			{
+				_gtkSurface?.Dispose ();
+				_surface?.Dispose();
+				_bitmap?.Dispose();
+
+				var info = new SKImageInfo(scaledWidth, scaledHeight, _colorType, SKAlphaType.Premul);
 				_bitmap = new SKBitmap(info);
+				_bwidth = _bitmap.Width;
+				_bheight = _bitmap.Height;
+				var pixels = _bitmap.GetPixels(out _);
+				_surface = SKSurface.Create(info, pixels);
+				_gtkSurface = new ImageSurface(pixels, Format.Argb32, _bwidth, _bheight, _bwidth * 4);
 			}
 
-			using (var surface = SKSurface.Create(info, _bitmap.GetPixels(out _)))
-			{
-				surface.Canvas.Clear(SKColors.White);
+			var canvas = _surface.Canvas;
+			canvas.Clear(SKColors.White);
+			canvas.Scale(_dpi);
 
-				surface.Canvas.Scale(dpi);
+			WUX.Window.Current.Compositor.Render(_surface);
 
-				WUX.Window.Current.Compositor.Render(surface);
-
-				using (var gtkSurface = new Cairo.ImageSurface(
-					_bitmap.GetPixels(out _),
-					Cairo.Format.Argb32,
-					_bitmap.Width, _bitmap.Height,
-					_bitmap.Width * 4))
-				{
-					gtkSurface.MarkDirty();
-					cr.Scale(1 / dpi, 1 / dpi);
-					cr.SetSourceSurface(gtkSurface, 0, 0);
-					cr.Paint();
-				}
-			}
+			_gtkSurface!.MarkDirty();
+			cr.Scale(1 / _dpi, 1 / _dpi);
+			cr.SetSourceSurface(_gtkSurface, 0, 0);
+			cr.Paint();
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
@@ -133,6 +127,6 @@ namespace Uno.UI.Runtime.Skia
 			_bitmap?.Encode(wstream, SKEncodedImageFormat.Png, 100);
 		}
 
-		private float UpdateDpi() => _dpi ??= (float)_displayInformation.RawPixelsPerViewPixel;
+		private float UpdateDpi() => _dpi = (float)_displayInformation.RawPixelsPerViewPixel;
 	}
 }
