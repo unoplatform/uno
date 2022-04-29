@@ -63,7 +63,6 @@ namespace Windows.UI
 			{
 				return size;
 			}
-
             var originalScale = (basePreferredSize / DefaultUIFontPreferredBodyFontSize) ?? (float)1.0;
 			return size * Math.Min(originalScale, FeatureConfiguration.Font.MaximumTextScaleFactor);
 		}
