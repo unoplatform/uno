@@ -1,4 +1,4 @@
-# Troubleshoot your environment with uno-check
+# Troubleshoot your environment with uno check
 
 If you're having trouble building an Uno Platform project and your dev environment might be the cause, the first thing you should do is run [`uno-check`](https://github.com/unoplatform/uno.check).
 
