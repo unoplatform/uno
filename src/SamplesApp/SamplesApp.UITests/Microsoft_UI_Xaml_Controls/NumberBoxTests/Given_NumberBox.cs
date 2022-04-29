@@ -19,7 +19,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		[AutoRetry]
 		public void UpDownTest()
 		{
-			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.MUX_Test");
+			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.NumberBoxPage");
 
 			var numBox = _app.Marked("TestNumberBox");
 			Assert.AreEqual(0, numBox.GetDependencyPropertyValue<double>("Value"));
@@ -71,7 +71,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		[AutoRetry]
 		public void DecimalFormatterTest()
 		{
-			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.MUX_Test");
+			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.NumberBoxPage");
 
 			var numBox = _app.Marked("TestNumberBox");
 			Assert.AreEqual(0, numBox.GetDependencyPropertyValue<double>("Value"));
@@ -93,7 +93,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		[AutoRetry]
 		public void MinMaxTest()
 		{
-			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.MUX_Test");
+			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.NumberBoxPage");
 
 			_app.FastTap("MinCheckBox");
 			_app.FastTap("MaxCheckBox");
@@ -138,7 +138,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		[AutoRetry]
 		public void UpDownEnabledTest()
 		{
-			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.MUX_Test");
+			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.NumberBoxPage");
 
 			var numBox = _app.Marked("TestNumberBox");
 

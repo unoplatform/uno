@@ -19,10 +19,10 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
 {
-	[Sample("NumberBox", "WinUI", Name="MUX_Test")]
-	public sealed partial class MUX_Test : UserControl
+	[Sample("MUX", "WinUI", Name= "NumberBox")]
+	public sealed partial class NumberBoxPage : UserControl
 	{
-		public MUX_Test()
+		public NumberBoxPage()
 		{
 			this.InitializeComponent();
 			TestNumberBox.RegisterPropertyChangedCallback(NumberBox.TextProperty, new DependencyPropertyChangedCallback(TextPropertyChanged));
