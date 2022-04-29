@@ -21,7 +21,10 @@ namespace UITests.Microsoft_UI_Xaml_Controls.ProgressRing
 
 		private void ProgressValue_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			ProgressRing.Value = double.Parse(ProgressValue.SelectedValue as string);
+			if (ProgressRing is { })
+			{
+				ProgressRing.Value = double.Parse(ProgressValue.SelectedValue as string);
+			}
 		}
 	}
 }
