@@ -178,6 +178,12 @@ namespace Uno.UI
 			/// Ignores text scale factor, resulting in a font size as dictated by the control.
 			/// </summary>
 			public static bool IgnoreTextScaleFactor { get; set; } = false;
+
+
+			/// <summary>
+			/// Allows the user to limit the scale factor without having to ignore it.
+			/// </summary>
+			public static double MaximumTextScaleFactor { get; set; } = 2.0;
 		}
 
 		public static class FrameworkElement
