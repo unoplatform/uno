@@ -41,6 +41,8 @@ namespace Windows.Devices.Geolocation
 			BroadcastStatus(PositionStatus.Initializing);
 		}
 
+		internal CLLocationManager LocationManager => _locationManager;
+
 #if __IOS__
 		public Task<Geoposition> GetGeopositionAsync() => GetGeopositionInternalAsync(); //will be removed with #2240
 #else
