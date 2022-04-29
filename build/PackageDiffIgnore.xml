@@ -8790,7 +8790,15 @@
 			<Member
 				fullName="System.Void Windows.ApplicationModel.Background.BackgroundTaskRegistration..ctor()"
 				reason="Not part of UWP API" />
+			<Member
+				fullName="System.UInt32 Windows.Foundation.Collections.ValueSet.get_Size()"
+				reason="Not part of UWP API" />
 		</Methods>
+		<Properties>
+			<Member
+				fullName="System.UInt32 Windows.Foundation.Collections.ValueSet::Size()"
+				reason="Not part of UWP API" />
+		</Properties>
 	</IgnoreSet>
 	<!--
 	Supported nodes (please keep at the bottom of this file):
