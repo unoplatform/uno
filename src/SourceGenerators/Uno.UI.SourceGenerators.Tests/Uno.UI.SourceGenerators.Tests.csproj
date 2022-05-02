@@ -6,6 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<NoWarn>$(NoWarn);NU1608</NoWarn>
+		<AssemblyName>Uno.UI.SourceGenerators.Tets.$(TargetFramework)</AssemblyName>
 	</PropertyGroup>
 
 	<ItemGroup Label="GlobalUsings">
