@@ -80,7 +80,18 @@ namespace Uno.UI.Runtime.Skia
 			if (_grContext == null)
 			{
 				var glInterface = GRGlInterface.Create();
+
+				if(glInterface == null)
+				{
+					throw new InvalidOperationException("Failed to create the GRGlInterface (See https://github.com/unoplatform/uno/issues/8643)");
+				}
+
 				_grContext = GRContext.CreateGl(glInterface);
+
+				if(_grContext == null)
+				{
+					throw new InvalidOperationException("Failed to create the GRContext (See https://github.com/unoplatform/uno/issues/8643)");
+				}
 			}
 
 			// manage the drawing surface
