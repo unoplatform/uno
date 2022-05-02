@@ -66,8 +66,8 @@ namespace Windows.UI
 
 			var originalScale = (basePreferredSize / DefaultUIFontPreferredBodyFontSize) ?? (float)1.0;
 #if __IOS__
-			return size * Math.Min(originalScale, FeatureConfiguration.Font.MaximumTextScaleFactor);
-#elif
+			return (nfloat)(size * Math.Min(originalScale, FeatureConfiguration.Font.MaximumTextScaleFactor));
+#else
 			return size * originalScale;
 #endif
 		}
