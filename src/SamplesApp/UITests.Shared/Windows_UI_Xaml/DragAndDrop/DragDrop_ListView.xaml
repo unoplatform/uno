@@ -14,9 +14,9 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<ListView 
-			CanDragItems="True"
-			CanReorderItems="True"
-			AllowDrop="True"
+			CanDragItems="{Binding IsChecked, ElementName=DragMode}"
+			CanReorderItems="{Binding IsChecked, ElementName=DragMode}"
+			AllowDrop="{Binding IsChecked, ElementName=DragMode}"
 			SelectionMode="Multiple"
 			MinHeight="300"
 			x:Name="SUT">
@@ -29,6 +29,9 @@
 			</ListView.ItemTemplate>
 		</ListView>
 
-		<TextBlock x:Name="Operation" Text="--none--" Grid.Row="1" />
+		<StackPanel Grid.Row="1">
+			<TextBlock x:Name="Operation" Text="--none--" />
+			<CheckBox x:Name="DragMode" IsThreeState="False" IsChecked="True" />
+		</StackPanel>
 	</Grid>
 </Page>

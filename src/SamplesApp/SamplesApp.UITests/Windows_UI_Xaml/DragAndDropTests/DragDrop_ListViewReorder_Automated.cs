@@ -22,6 +22,33 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)] // TODO: support drag-and-drop testing on mobile https://github.com/unoplatform/Uno.UITest/issues/31
+		public void When_Disabled()
+		{
+			Run("UITests.Windows_UI_Xaml.DragAndDrop.DragDrop_ListView", skipInitialScreenshot: true);
+
+			var sut = _app.Marked("SUT");
+			var mode = _app.Marked("DragMode");
+
+			mode.SetDependencyPropertyValue("IsChecked", "False");
+
+			var before = TakeScreenshot("Before", ignoreInSnapshotCompare: true);
+
+			// Attempt to re-order
+			var sutBounds = _app.Query(sut).Single().Rect;
+			var x = sutBounds.X + 50;
+			var srcY = Item(sutBounds, 1);
+			var dstY = Item(sutBounds, 3);
+
+			_app.DragCoordinates(x, srcY, x, dstY);
+
+			var after = TakeScreenshot("After", ignoreInSnapshotCompare: true);
+
+			ImageAssert.AreEqual(before, after, sutBounds);
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] // TODO: support drag-and-drop testing on mobile https://github.com/unoplatform/Uno.UITest/issues/31
 		public void When_Reorder_Down() => Test_Reorder(1, 3);
 
 		[Test]
