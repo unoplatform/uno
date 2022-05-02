@@ -179,12 +179,13 @@ namespace Uno.UI
 			/// </summary>
 			public static bool IgnoreTextScaleFactor { get; set; } = false;
 
-
+#if __IOS__
 			/// <summary>
 			/// Allows the user to limit the scale factor without having to ignore it.
 			/// </summary>
 			public static double MaximumTextScaleFactor { get; set; } = 2.0;
-		}
+#endif
+			}
 
 		public static class FrameworkElement
 		{
