@@ -8066,6 +8066,8 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\CompactSizing.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\DatePicker.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\DefaultIcon.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Diagnostics\exclamation.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Diagnostics\movie_type_dbox.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\DropdownButton.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\FlipView.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\uno-fluentui-assets.ttf" />
@@ -8093,6 +8095,8 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\MenuBar.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\MenuFlyout.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\RedSquare.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\square100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_200_200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\theme-dark\ThemeTestImage.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\theme-light\ThemeTestImage.png" />
     <Content Include="$(MSBuildThisFileDirectory)Asset_GetFileFromApplicationUriAsync.xml" />
@@ -8192,6 +8196,10 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.heic" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.pdf" />
     <None Include="$(MSBuildThisFileDirectory)ItemExclusions.props" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Diagnostics\avatar.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\libre-camera-panorama.svg" />
   </ItemGroup>
   <Import Project="ItemExclusions.props" />
 </Project>
