@@ -5,6 +5,8 @@ namespace Uno.UI.Xaml.Controls.Extensions
 {
 	internal interface ITextBoxViewExtension
     {
+		bool IsNativeOverlayLayerInitialized { get; }
+		
 		void StartEntry();
 
 		void EndEntry();

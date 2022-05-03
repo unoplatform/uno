@@ -30,6 +30,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Logging;
 using Uno;
+using Uno.UI.Xaml.Controls.Extensions;
+using Uno.Foundation.Extensibility;
 
 #if !HAS_UNO
 using Uno.Logging;
@@ -71,32 +73,10 @@ namespace SamplesApp
 
 			ConfigureFeatureFlags();
 
-			AssertIssue1790();
+			AssertIssue1790ApplicationSettingsUsable();
 
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;
-		}
-
-		/// <summary>
-		/// Assert that ApplicationData.Current.[LocalFolder|RoamingFolder] is usable in the constructor of App.xaml.cs on all platforms.
-		/// </summary>
-		/// <seealso href="https://github.com/unoplatform/uno/issues/1741"/>
-		public void AssertIssue1790()
-		{
-#if !__SKIA__ // SKIA TODO
-			void AssertIsUsable(Windows.Storage.ApplicationDataContainer container)
-			{
-				const string issue1790 = nameof(issue1790);
-
-				container.Values.Remove(issue1790);
-				container.Values.Add(issue1790, "ApplicationData.Current.[LocalFolder|RoamingFolder] is usable in the constructor of App.xaml.cs on this platform.");
-
-				Assert.IsTrue(container.Values.ContainsKey(issue1790));
-			}
-
-			AssertIsUsable(Windows.Storage.ApplicationData.Current.LocalSettings);
-			AssertIsUsable(Windows.Storage.ApplicationData.Current.RoamingSettings);
-#endif
 		}
 
 		/// <summary>
@@ -131,6 +111,9 @@ namespace SamplesApp
 			}
 #endif
 			InitializeFrame(e.Arguments);
+
+			AssertIssue8641NativeOverlayInitialized();
+
 			Windows.UI.Xaml.Window.Current.Activate();
 
 			ApplicationView.GetForCurrentView().Title = "Uno Samples";
@@ -580,5 +563,40 @@ namespace SamplesApp
 #endif
 
 		public static bool IsTestDone(string testId) => int.TryParse(testId, out var id) ? _doneTests.Contains(id) : false;
+
+		/// <summary>
+		/// Assert that ApplicationData.Current.[LocalFolder|RoamingFolder] is usable in the constructor of App.xaml.cs on all platforms.
+		/// </summary>
+		/// <seealso href="https://github.com/unoplatform/uno/issues/1741"/>
+		public void AssertIssue1790ApplicationSettingsUsable()
+		{
+#if !__SKIA__ // SKIA TODO
+			void AssertIsUsable(Windows.Storage.ApplicationDataContainer container)
+			{
+				const string issue1790 = nameof(issue1790);
+
+				container.Values.Remove(issue1790);
+				container.Values.Add(issue1790, "ApplicationData.Current.[LocalFolder|RoamingFolder] is usable in the constructor of App.xaml.cs on this platform.");
+
+				Assert.IsTrue(container.Values.ContainsKey(issue1790));
+			}
+
+			AssertIsUsable(Windows.Storage.ApplicationData.Current.LocalSettings);
+			AssertIsUsable(Windows.Storage.ApplicationData.Current.RoamingSettings);
+#endif
+		}
+
+		/// <summary>
+		/// Assert that the native overlay layer for Skia targets is initialized in time for UI to appear.
+		/// </summary>
+		public void AssertIssue8641NativeOverlayInitialized()
+		{
+#if __SKIA__
+			var textBox = new TextBox();
+			var textBoxView = new TextBoxView(textBox);
+			ApiExtensibility.CreateInstance<ITextBoxViewExtension>(textBoxView, out var textBoxViewExtension);
+			Assert.IsTrue(textBoxViewExtension.IsNativeOverlayLayerInitialized);
+#endif
+		}
 	}
 }
