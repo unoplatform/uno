@@ -46,7 +46,10 @@ namespace Uno.UI.Skia.Platform
 		private const string NativeOverlayLayerPart = "NativeOverlayLayer";
 
 		private readonly bool designMode;
-
+		private readonly Func<UnoApplication> _appBuilder;
+		
+		private bool _appStarted = false;
+		
 		[ThreadStatic] private static WpfHost _current;
 
 		private WpfCanvas? _nativeOverlayLayer = null;
@@ -99,19 +102,12 @@ namespace Uno.UI.Skia.Platform
 		public WpfHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder)
 		{
 			_current = this;
+			_appBuilder = appBuilder;
 
 			designMode = DesignerProperties.GetIsInDesignMode(this);
 
-			void CreateApp(WinUI.ApplicationInitializationCallbackParams _)
-			{
-				var app = appBuilder();
-				app.Host = this;
-			}
-
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = d => dispatcher.BeginInvoke(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = dispatcher.CheckAccess;
-
-			WinUI.Application.StartWithArguments(CreateApp);
 
 			WinUI.Window.InvalidateRender += () =>
 			{
@@ -156,6 +152,26 @@ namespace Uno.UI.Skia.Platform
 			base.OnApplyTemplate();
 
 			_nativeOverlayLayer = GetTemplateChild(NativeOverlayLayerPart) as WpfCanvas;
+
+			// App needs to be created after the native overlay layer is properly initialized
+			// otherwise the initially focused input element would cause exception.
+			StartApp();
+		}
+
+		private void StartApp()
+		{
+			if (_appStarted)
+			{
+				return;
+			}
+			
+			void CreateApp(WinUI.ApplicationInitializationCallbackParams _)
+			{
+				var app = _appBuilder();
+				app.Host = this;
+			}
+
+			WinUI.Application.StartWithArguments(CreateApp);
 		}
 
 		private void MainWindow_StateChanged(object? sender, EventArgs e)
