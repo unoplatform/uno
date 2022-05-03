@@ -8,12 +8,16 @@ using System.Windows;
 using WF = Windows.Foundation;
 using WUX = Windows.UI.Xaml;
 
+//TODO:MZ: We need to make sure that when the UnoXamlHost loses focus, focus is changed in the XamlRoot as well,
+//so that for active input fields the native overlay is closed and changes are committed to underlying TextBox text
+//before potential data binding changes.
+
 namespace Uno.UI.XamlHost.Skia.Wpf
 {
     /// <summary>
     /// Focus and Keyboard handling for Focus integration with UWP XAML
     /// </summary>
-    public partial class UnoXamlHostBase
+    partial class UnoXamlHostBase
     {
         /// <summary>
         /// Dictionary that maps WPF (host framework) FocusNavigationDirection to UWP XAML XxamlSourceFocusNavigationReason

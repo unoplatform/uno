@@ -23,6 +23,7 @@
 			<TextBlock Text="{Binding Address}" />
 			<HyperlinkButton Content="{Binding Email}" NavigateUri="{Binding EmailUrl}" Grid.Row="1" />	
 			<TextBlock Text="{Binding Phone}" />
+			<TextBox Text="{Binding Note, Mode=TwoWay}" PlaceholderText="Enter a note..." />
 		</StackPanel>
 	</Grid>
 </Page>

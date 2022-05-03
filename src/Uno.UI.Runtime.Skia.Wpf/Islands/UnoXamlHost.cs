@@ -16,6 +16,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
     {
 		public UnoXamlHost()
 		{
+			this.DefaultStyleKey = typeof(UnoXamlHost);
 			this.DataContextChanged += UnoXamlHost_DataContextChanged;
 			this.Loaded += OnLoaded;
 		}

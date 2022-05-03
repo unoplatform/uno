@@ -5,7 +5,7 @@
 using System;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Skia.Platform;
-using Uno.UI.XamlHost;
+using Windows.UI.Xaml;
 using WUX = Windows.UI.Xaml;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
@@ -13,7 +13,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 	/// <summary>
 	/// UnoXamlHost control hosts UWP XAML content inside the Windows Presentation Foundation
 	/// </summary>
-	abstract partial class UnoXamlHostBase
+	public abstract partial class UnoXamlHostBase
 	{
 		/// <summary>
 		/// An instance of <seealso cref="IXamlMetadataContainer"/>. Required to
@@ -102,6 +102,14 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			ChildInternal.SetWrapper(this);
 		}
 
+		// Uno specific: We need native overlay layer to show input for TextBoxes.
+		public override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+
+			_nativeOverlayLayer = GetTemplateChild("NativeOverlayLayer") as System.Windows.Controls.Canvas;
+		}
+
 		/// <summary>
 		/// Gets the current instance of <seealso cref="XamlApplication"/>
 		/// </summary>
@@ -184,6 +192,16 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 				}
 
 				_childInternal = value;
+
+				if (_childInternal.XamlRoot is not null)
+				{
+					XamlRootMap.Register(_childInternal.XamlRoot, this);
+				}
+				else if (_childInternal is FrameworkElement element)
+				{
+					element.Loading += OnChildLoading;
+				}
+
 				SetContent();
 
 				var frameworkElement = ChildInternal as WUX.FrameworkElement;
@@ -203,6 +221,12 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 				UpdateUnoSize();
 			}
+		}
+
+		private void OnChildLoading(FrameworkElement sender, object args)
+		{
+			// Ensure the XamlRoot is registered early.
+			XamlRootMap.Register(sender.XamlRoot, this);
 		}
 
 		private void XamlRoot_InvalidateRender()

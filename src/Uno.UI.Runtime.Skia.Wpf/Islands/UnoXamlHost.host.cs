@@ -10,19 +10,21 @@ using Windows.Devices.Input;
 using Windows.Graphics.Display;
 using WinUI = Windows.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
+using WpfCanvas = global::System.Windows.Controls.Canvas;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {
 	/// <summary>
 	/// UnoXamlHost control hosts UWP XAML content inside the Windows Presentation Foundation
 	/// </summary>
-	abstract partial class UnoXamlHostBase : WpfControl, WinUI.ISkiaHost, IWpfHost
+	partial class UnoXamlHostBase : WpfControl, WinUI.ISkiaHost, IWpfHost
 	{
 		private bool _designMode;
 		private DisplayInformation _displayInformation;
 		private bool _ignorePixelScaling;
 		private WriteableBitmap _bitmap;
 		private HostPointerHandler _hostPointerHandler;
+		private WpfCanvas _nativeOverlayLayer;
 
 		public bool IgnorePixelScaling
 		{
@@ -34,8 +36,6 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			}
 		}
 
-		WinUI.XamlRoot? IWpfHost.XamlRoot => ChildInternal?.XamlRoot;
-		
 		private void InitializeHost()
 		{
 			_designMode = DesignerProperties.GetIsInDesignMode(this);
@@ -123,5 +123,9 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		void IWpfHost.ReleasePointerCapture(PointerIdentifier pointer) => CaptureMouse(); //TODO:MZ:This should capture the correct type of pointer (stylus/mouse/touch)
 
 		void IWpfHost.SetPointerCapture(PointerIdentifier pointer) => ReleaseMouseCapture();
+
+		WinUI.XamlRoot? IWpfHost.XamlRoot => ChildInternal?.XamlRoot;
+
+		System.Windows.Controls.Canvas? IWpfHost.NativeOverlayLayer => _nativeOverlayLayer;
 	}
 }

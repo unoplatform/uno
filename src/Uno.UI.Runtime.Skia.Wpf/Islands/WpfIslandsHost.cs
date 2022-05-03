@@ -42,6 +42,7 @@ using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
 
 namespace Uno.UI.Skia.Platform
 {
+	// TODO:MZ: Get rid of this class and use the one UnoXamlHost directly.
 	[TemplatePart(Name = NativeOverlayLayerPart, Type = typeof(WpfCanvas))]
 	public class WpfIslandsHost : WpfControl, WinUI.ISkiaHost, IWpfHost
 	{
@@ -190,6 +191,8 @@ namespace Uno.UI.Skia.Platform
 		}
 
 		WinUI.XamlRoot? IWpfHost.XamlRoot => throw new NotImplementedException();
+
+		WpfCanvas? IWpfHost.NativeOverlayLayer => NativeOverlayLayer;
 
 		protected override void OnRender(DrawingContext drawingContext)
 		{
