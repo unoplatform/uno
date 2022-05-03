@@ -30,8 +30,11 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Logging;
 using Uno;
-using Uno.UI.Xaml.Controls.Extensions;
 using Uno.Foundation.Extensibility;
+
+#if __SKIA__
+using Uno.UI.Xaml.Controls.Extensions;
+#endif
 
 #if !HAS_UNO
 using Uno.Logging;
@@ -570,7 +573,6 @@ namespace SamplesApp
 		/// <seealso href="https://github.com/unoplatform/uno/issues/1741"/>
 		public void AssertIssue1790ApplicationSettingsUsable()
 		{
-#if !__SKIA__ // SKIA TODO
 			void AssertIsUsable(Windows.Storage.ApplicationDataContainer container)
 			{
 				const string issue1790 = nameof(issue1790);
@@ -583,7 +585,6 @@ namespace SamplesApp
 
 			AssertIsUsable(Windows.Storage.ApplicationData.Current.LocalSettings);
 			AssertIsUsable(Windows.Storage.ApplicationData.Current.RoamingSettings);
-#endif
 		}
 
 		/// <summary>
