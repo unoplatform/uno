@@ -15,7 +15,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 	public partial class DragDrop_ListViewReorder_Automated : SampleControlUITestBase
 	{
 		private static readonly string[] _items = new[] { "#FF0018", "#FFA52C", "#FFFF41", "#008018", "#0000F9", "#86007D" };
-		private const int _itemHeight = 100;
+		private const int _itemHeight = 90;
 
 		private static float Item(IAppRect sut, int index) => sut.Y + (index * _itemHeight) + 25;
 
@@ -43,7 +43,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 
 			var after = TakeScreenshot("After", ignoreInSnapshotCompare: true);
 
-			ImageAssert.AreEqual(before, after, sutBounds);
+			// note: we test only 100 pixels width to avoid failure due to scrollbar being visible in "after" screenshot
+			var testBounds = new Rectangle((int)sutBounds.X, (int)sutBounds.Y, 100, (int)sutBounds.Height);
+			ImageAssert.AreEqual(before, after, testBounds);
 		}
 
 		[Test]
