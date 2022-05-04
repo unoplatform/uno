@@ -20,7 +20,7 @@ using Windows.ApplicationModel.Appointments;
 
 namespace UITests.Windows_ApplicationModel.Appointments
 {
-	[SampleControlInfo("Windows_ApplicationModel.Appointments", "AppointmentStore")]
+	[SampleControlInfo("Windows.ApplicationModel.Appointments", "AppointmentStore")]
 
 	public sealed partial class AppointmentStore : Page
 	{

@@ -1,5 +1,5 @@
-﻿
-#if __ANDROID__
+﻿#nullable enable 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +34,7 @@ namespace Windows.ApplicationModel.Appointments
 		public static IAsyncOperation<AppointmentStore> RequestStoreAsync(AppointmentStoreAccessType options)
 			=> RequestStoreAsyncTask(options).AsAsyncOperation<AppointmentStore>();
 
-		public static async Task<AppointmentStore> RequestStoreAsyncTask(AppointmentStoreAccessType options)
+		public static async Task<AppointmentStore?> RequestStoreAsyncTask(AppointmentStoreAccessType options)
 		{
 			// UWP: AppCalendarsReadWrite, AppCalendarsReadOnly,AppCalendarsReadWrite (cannot be used without special provisioning by Microsoft)
 			// Android: Manifest has READ_CALENDAR and WRITE_CALENDAR, no difference between app/limited/full
@@ -42,14 +42,14 @@ namespace Windows.ApplicationModel.Appointments
 
 			if (options != AppointmentStoreAccessType.AllCalendarsReadOnly)
 			{
-				throw new NotImplementedException("AppointmentManager:RequestStoreAsync - only AllCalendarsReadOnly is implemented");
+				throw new NotSupportedException("AppointmentManager:RequestStoreAsync - only AllCalendarsReadOnly is implemented");
 			}
 
 			string requiredPermission = Android.Manifest.Permission.ReadCalendar;
 
 			if (!Windows.Extensions.PermissionsHelper.IsDeclaredInManifest(requiredPermission))
 			{
-				throw new Exception("AppointmentManager:RequestStoreAsync - no ReadCalendar permission declared in Manifest");
+				throw new UnauthorizedAccessException("AppointmentManager:RequestStoreAsync - no ReadCalendar permission declared in Manifest");
 			}
 
 			if (!await Windows.Extensions.PermissionsHelper.CheckPermission(CancellationToken.None, requiredPermission))
@@ -66,4 +66,3 @@ namespace Windows.ApplicationModel.Appointments
 		}
 	}
 }
-#endif

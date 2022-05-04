@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-#if __ANDROID__
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,19 +54,19 @@ namespace Windows.ApplicationModel.Appointments
 			return androidColumns;
 		}
 
-		public IAsyncOperation<IReadOnlyList<Appointment>> FindAppointmentsAsync(DateTimeOffset rangeStart, TimeSpan rangeLength, FindAppointmentsOptions options)
-			=> FindAppointmentsAsyncTask(rangeStart, rangeLength, options).AsAsyncOperation<IReadOnlyList<Appointment>>();
+		public IAsyncOperation<IReadOnlyList<Appointment>?> FindAppointmentsAsync(DateTimeOffset rangeStart, TimeSpan rangeLength, FindAppointmentsOptions options)
+			=> FindAppointmentsAsyncTask(rangeStart, rangeLength, options).AsAsyncOperation<IReadOnlyList<Appointment>?>();
 
 		// I don't know if this is default everywhere, or only on my tablet...
 		private int DEFAULT_REMINDER_MINUTES = 15;
 
-		private async Task<IReadOnlyList<Appointment>> FindAppointmentsAsyncTask(DateTimeOffset rangeStart, TimeSpan rangeLength, FindAppointmentsOptions options)
+		private async Task<IReadOnlyList<Appointment>?> FindAppointmentsAsyncTask(DateTimeOffset rangeStart, TimeSpan rangeLength, FindAppointmentsOptions options)
 		{
 			List<Appointment> entriesList = new List<Appointment>();
 
 			if (options is null)
 			{
-				throw new ArgumentNullException("Windows.ApplicationModel.Appointments.AppointmentStore.FindAppointmentsAsyncTask, options cannot be null");
+				return null;
 			}
 
 			var builder = Android.Provider.CalendarContract.Instances.ContentUri?.BuildUpon();
@@ -237,4 +236,3 @@ namespace Windows.ApplicationModel.Appointments
 
 	}
 }
-#endif
