@@ -250,7 +250,7 @@ namespace Umbrella.UI.TestComparer
 			var successCount = compareResult.Tests.Count(t => t.ResultRun.LastOrDefault()?.HasChanged ?? false);
 
 			// Symlinks folder
-			var symlinksBasePath = Path.Combine(basePath, "..", $"test-comparer-{Guid.NewGuid()}");
+			var symlinksBasePath = Path.GetFullPath(Path.Combine(basePath, "..", $"test-comparer-{Guid.NewGuid()}"));
 			Directory.CreateDirectory(symlinksBasePath);
 
 			var doc = new XmlDocument();
