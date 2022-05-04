@@ -358,7 +358,11 @@ namespace Umbrella.UI.TestComparer
 			var targetLinkPath = Path.Combine(symlinksBasePath, Path.GetDirectoryName(relativeSourceFilePath), $"{folderIndex}-{Path.GetFileName(relativeSourceFilePath)}");
 
 			Directory.CreateDirectory(Path.GetDirectoryName(targetLinkPath));
-			File.CreateSymbolicLink(targetLinkPath, originalFilePath);
+
+			if (!File.Exists(targetLinkPath))
+			{
+				File.CreateSymbolicLink(targetLinkPath, originalFilePath);
+			}
 
 			return targetLinkPath;
 		}
