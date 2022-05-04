@@ -838,6 +838,21 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 			}
+
+			public override void DecidePolicy(WKWebView webView, WKNavigationAction navigationAction, WKWebpagePreferences preferences, Action<WKNavigationActionPolicy, WKWebpagePreferences> decisionHandler)
+			{
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"WKNavigationDelegate.DecidePolicy {navigationAction.Request.DebugDescription}");
+				}
+
+				var wkPreferences = new WKWebpagePreferences
+				{
+					AllowsContentJavaScript = true,
+				};
+
+				decisionHandler(WKNavigationActionPolicy.Allow, wkPreferences);
+			}
 		}
 	}
 }
