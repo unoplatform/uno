@@ -22,6 +22,7 @@ using Uno.UI.Samples.Tests;
 
 #if HAS_UNO
 using Uno.Foundation.Logging;
+using MUXControlsTestApp;
 #else
 using Microsoft.Extensions.Logging;
 using Uno.Logging;
@@ -689,7 +690,8 @@ namespace SampleControl.Presentation
 					Description = attribute.Description,
 					ControlType = type.AsType(),
 					IgnoreInSnapshotTests = attribute.IgnoreInSnapshotTests,
-					IsManualTest = attribute.IsManualTest
+					IsManualTest = attribute.IsManualTest,
+					UsesFrame = attribute.UsesFrame
 				};
 		}
 
@@ -847,7 +849,6 @@ description: {sample.Description}";
 			}
 		}
 
-
 		/// <summary>
 		/// This method receives a newContent and returns a newly built content. It also adds the content to the settings for the latest ran tests.
 		/// </summary>
@@ -859,10 +860,12 @@ description: {sample.Description}";
 			SampleChanging?.Invoke(this, EventArgs.Empty);
 
 			FrameworkElement container = null;
-			if (typeof(Page).IsAssignableFrom(newContent.ControlType))
-			{
-				// Content is a page, for MUX compatibility we use Frame to navigate to it.
-				// This ensures the Page.Frame property is not null.
+			
+			var frameRequested =
+				newContent.UsesFrame &&
+				typeof(Page).IsAssignableFrom(newContent.ControlType);
+			if (frameRequested)
+			{				
 				var frame = new Frame();
 				frame.Navigate(newContent.ControlType);
 				container = frame;

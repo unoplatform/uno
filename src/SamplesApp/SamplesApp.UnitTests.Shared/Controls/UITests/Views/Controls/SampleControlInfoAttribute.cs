@@ -15,7 +15,8 @@ namespace Uno.UI.Samples.Controls
 			Type viewModelType = null,
 			bool ignoreInSnapshotTests = false,
 			string description = null,
-			bool isManualTest = false
+			bool isManualTest = false,
+			bool usesFrame = true
 		)
 			: base(category)
 		{
@@ -24,6 +25,7 @@ namespace Uno.UI.Samples.Controls
 			IgnoreInSnapshotTests = ignoreInSnapshotTests;
 			IsManualTest = isManualTest;
 			Description = description;
+			UsesFrame = usesFrame;
 		}
 
 	}
@@ -89,5 +91,11 @@ namespace Uno.UI.Samples.Controls
 		/// An optional description of the sample. A good practice is to explain the expected result of the sample.
 		/// </summary>
 		public string Description { get; set; }
+
+		/// <summary>
+		/// Set to true if the sample is navigated to using frame navigation.
+		/// </summary>
+		/// <remarks>Defaults to true.</remarks>
+		public bool UsesFrame { get; set; } = true;
 	}
 }
