@@ -76,8 +76,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 
 		[TestMethod]
-		[RunsOnUIThread]
-		public async Task When_Flipview_Modified_Check_SelectedIndex()
+		public async Task When_Flipview_Items_Modified()
 		{
 		   
 			var itemsSource = new ObservableCollection<string>();
@@ -94,17 +93,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForLoaded(flipView);
 
-			Assert.AreEqual(0, flipView.SelectedIndex);
+			await WindowHelper.WaitForResultEqual(0, () => flipView.SelectedIndex);
 
 			flipView.SelectedItem = itemsSource[2];
+			
+			await WindowHelper.WaitForResultEqual(2, () => flipView.SelectedIndex);			 
 
-			await WindowHelper.WaitForIdle();
 			itemsSource.RemoveAt(2);
-			 
-			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(-1, flipView.SelectedIndex);
+#if __ANDROID__
+			await WindowHelper.WaitForResultEqual(0, () => flipView.SelectedIndex);
+#else
+			await WindowHelper.WaitForResultEqual(-1, () => flipView.SelectedIndex);
+#endif
+			itemsSource.Clear();
 			  
+			await WindowHelper.WaitForResultEqual(-1, () => flipView.SelectedIndex);
 
 		}
 
