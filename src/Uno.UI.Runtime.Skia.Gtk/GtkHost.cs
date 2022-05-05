@@ -212,6 +212,7 @@ namespace Uno.UI.Runtime.Skia
 			{
 				RenderSurfaceType.Software => new SoftwareRenderSurface(),
 				RenderSurfaceType.OpenGL => new GLRenderSurface(),
+				RenderSurfaceType.OpenGLES => new GLESRenderSurface(),
 				_ => throw new InvalidOperationException($"Unsupported RenderSurfaceType {RenderSurfaceType}")
 			};
 
