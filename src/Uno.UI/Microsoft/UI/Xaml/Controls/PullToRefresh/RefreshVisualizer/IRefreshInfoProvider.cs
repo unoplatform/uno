@@ -8,28 +8,27 @@ using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Composition;
 
-namespace Microsoft.UI.Private.Controls
+namespace Microsoft.UI.Private.Controls;
+
+public interface IRefreshInfoProvider
 {
-	public interface IRefreshInfoProvider
-	{
-		void OnRefreshStarted();
+	void OnRefreshStarted();
 
-		void OnRefreshCompleted();
+	void OnRefreshCompleted();
 
-		bool IsInteractingForRefresh { get; }
+	bool IsInteractingForRefresh { get; }
 
-		CompositionPropertySet CompositionProperties { get; }
+	CompositionPropertySet CompositionProperties { get; }
 
-		string InteractionRatioCompositionProperty { get; }
+	string InteractionRatioCompositionProperty { get; }
 
-		double ExecutionRatio { get; }
+	double ExecutionRatio { get; }
 
-		event TypedEventHandler<IRefreshInfoProvider, object> IsInteractingForRefreshChanged;
+	event TypedEventHandler<IRefreshInfoProvider, object> IsInteractingForRefreshChanged;
 
-		event TypedEventHandler<IRefreshInfoProvider, RefreshInteractionRatioChangedEventArgs> InteractionRatioChanged;
+	event TypedEventHandler<IRefreshInfoProvider, RefreshInteractionRatioChangedEventArgs> InteractionRatioChanged;
 
-		event TypedEventHandler<IRefreshInfoProvider, object> RefreshStarted;
+	event TypedEventHandler<IRefreshInfoProvider, object> RefreshStarted;
 
-		event TypedEventHandler<IRefreshInfoProvider, object> RefreshCompleted;
-	}
+	event TypedEventHandler<IRefreshInfoProvider, object> RefreshCompleted;
 }

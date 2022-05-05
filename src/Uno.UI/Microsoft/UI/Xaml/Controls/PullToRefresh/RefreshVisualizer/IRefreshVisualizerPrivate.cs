@@ -6,12 +6,11 @@
 
 using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Private.Controls
-{
-	internal partial interface IRefreshVisualizerPrivate
-	{
-		IRefreshInfoProvider InfoProvider { get; set; }
+namespace Microsoft.UI.Private.Controls;
 
-		void SetInternalPullDirection(RefreshPullDirection value);
-	}
+internal partial interface IRefreshVisualizerPrivate
+{
+	IRefreshInfoProvider InfoProvider { get; set; }
+
+	void SetInternalPullDirection(RefreshPullDirection value);
 }

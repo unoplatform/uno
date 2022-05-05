@@ -1,13 +1,27 @@
-﻿namespace Microsoft.UI.Xaml.Controls
+﻿namespace Microsoft.UI.Xaml.Controls;
+
+/// <summary>
+/// Defines constants that specify the starting position of a RefreshVisualizer 's progress spinner.
+/// </summary>
+public enum RefreshVisualizerOrientation
 {
 	/// <summary>
-	/// Defines constants that specify the starting position of a RefreshVisualizer 's progress spinner.
+	/// The progress spinner automatically rotates so the arrow starts in the appropriate position for the PullDirection.
 	/// </summary>
-	public enum RefreshVisualizerOrientation
-	{
-		Auto = 0,
-		Normal = 1,
-		Rotate90DegreesCounterclockwise = 2,
-		Rotate270DegreesCounterclockwise = 3,
-	}
+	Auto = 0,
+
+	/// <summary>
+	/// The progress spinner default position.
+	/// </summary>
+	Normal = 1,
+
+	/// <summary>
+	/// The progress spinner is rotated 90 degrees counter-clockwise from Normal.
+	/// </summary>
+	Rotate90DegreesCounterclockwise = 2,
+
+	/// <summary>
+	/// The progress spinner is rotated 270 degrees counter-clockwise from Normal.
+	/// </summary>
+	Rotate270DegreesCounterclockwise = 3,
 }

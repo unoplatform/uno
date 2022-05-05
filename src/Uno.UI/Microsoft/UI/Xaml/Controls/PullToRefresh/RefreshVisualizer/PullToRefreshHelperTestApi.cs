@@ -1,23 +1,22 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Private.Controls
+namespace Microsoft.UI.Private.Controls;
+
+internal static partial class PullToRefreshHelperTestApi
 {
-	internal static partial class PullToRefreshHelperTestApi
+	public static RefreshInteractionRatioChangedEventArgs CreateRefreshInteractionRatioChangedEventArgsInstance(double value)
 	{
-		public static RefreshInteractionRatioChangedEventArgs CreateRefreshInteractionRatioChangedEventArgsInstance(double value)
-		{
-			return new RefreshInteractionRatioChangedEventArgs(value);
-		}
+		return new RefreshInteractionRatioChangedEventArgs(value);
+	}
 
-		public static RefreshStateChangedEventArgs CreateRefreshStateChangedEventArgsInstance(RefreshVisualizerState oldValue, RefreshVisualizerState newValue)
-		{
-			return new RefreshStateChangedEventArgs(oldValue, newValue);
-		}
+	public static RefreshStateChangedEventArgs CreateRefreshStateChangedEventArgsInstance(RefreshVisualizerState oldValue, RefreshVisualizerState newValue)
+	{
+		return new RefreshStateChangedEventArgs(oldValue, newValue);
+	}
 
-		public static RefreshRequestedEventArgs CreateRefreshRequestedEventArgsInstance(Deferral handler)
-		{
-			return new RefreshRequestedEventArgs(handler);
-		}
+	public static RefreshRequestedEventArgs CreateRefreshRequestedEventArgsInstance(Deferral handler)
+	{
+		return new RefreshRequestedEventArgs(handler);
 	}
 }

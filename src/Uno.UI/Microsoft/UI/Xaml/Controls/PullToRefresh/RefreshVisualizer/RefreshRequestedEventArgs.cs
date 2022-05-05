@@ -1,20 +1,51 @@
-﻿using System;
+﻿using Uno.Helpers;
 using Windows.Foundation;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+/// <summary>
+/// Provides event data for RefreshRequested events.
+/// </summary>
+public sealed partial class RefreshRequestedEventArgs
 {
+	private readonly Deferral _deferral;
+	private int _deferralCount;
+
+	internal RefreshRequestedEventArgs(Deferral deferral)
+	{
+		_deferral = deferral;
+	}
+
 	/// <summary>
-	/// Provides event data for RefreshRequested events.
+	/// Gets a deferral object for managing the work done in the RefreshRequested event handler.
 	/// </summary>
-	public sealed partial class RefreshRequestedEventArgs
-    {
-		private readonly Deferral _deferral;
+	/// <returns>A deferral object.</returns>
+	public Deferral GetDeferral()
+	{
+		_deferralCount++;
 
-		internal RefreshRequestedEventArgs(Deferral deferral)
+		var deferral = new Deferral(() =>
 		{
-			_deferral = deferral;
-		}
+			// CheckThread();
+			DecrementDeferralCount();
+		});
 
-		public Deferral GetDeferral() => _deferral;
+		return deferral;
+	}
+
+	internal void DecrementDeferralCount()
+	{
+		MUX_ASSERT(_deferralCount >= 0);
+		_deferralCount--;
+		if (_deferralCount == 0)
+		{
+			_deferral.Complete();
+		}
+	}
+
+	internal void IncrementDeferralCount()
+	{
+		_deferralCount++;
 	}
 }

@@ -1,31 +1,48 @@
-﻿using Windows.UI.Xaml;
+﻿using Windows.Foundation;
+using Windows.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+public partial class RefreshContainer
 {
-	public partial class RefreshContainer
+	/// <summary>
+	/// Gets or sets a value that specifies the direction to pull to initiate a refresh.
+	/// </summary>
+	public RefreshPullDirection PullDirection
 	{
-		public RefreshPullDirection PullDirection
-		{
-			get => (RefreshPullDirection)GetValue(PullDirectionProperty);
-			set => SetValue(PullDirectionProperty, value);
-		}
-
-		public static DependencyProperty PullDirectionProperty { get; } =
-			DependencyProperty.Register(nameof(PullDirection), typeof(RefreshPullDirection), typeof(RefreshContainer), new FrameworkPropertyMetadata(RefreshPullDirection.TopToBottom, OnPropertyChanged));
-
-		public RefreshVisualizer Visualizer
-		{
-			get => (RefreshVisualizer)GetValue(VisualizerProperty);
-			set => SetValue(VisualizerProperty, value);
-		}
-
-		public static DependencyProperty VisualizerProperty { get; } =
-			DependencyProperty.Register(nameof(Visualizer), typeof(RefreshVisualizer), typeof(RefreshContainer), new FrameworkPropertyMetadata(null, OnPropertyChanged));
-
-		private static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-		{
-			var owner = (RefreshContainer)sender;
-			owner.OnPropertyChanged(args);
-		}
+		get => (RefreshPullDirection)GetValue(PullDirectionProperty);
+		set => SetValue(PullDirectionProperty, value);
 	}
+
+	/// <summary>
+	/// Identifies the PullDirection dependency property.
+	/// </summary>
+	public static DependencyProperty PullDirectionProperty { get; } =
+		DependencyProperty.Register(nameof(PullDirection), typeof(RefreshPullDirection), typeof(RefreshContainer), new FrameworkPropertyMetadata(RefreshPullDirection.TopToBottom, OnPropertyChanged));
+
+	/// <summary>
+	/// Gets or sets the RefreshVisualizer for this container.
+	/// </summary>
+	public RefreshVisualizer Visualizer
+	{
+		get => (RefreshVisualizer)GetValue(VisualizerProperty);
+		set => SetValue(VisualizerProperty, value);
+	}
+
+	/// <summary>
+	/// Identifies the Visualizer dependency property.
+	/// </summary>
+	public static DependencyProperty VisualizerProperty { get; } =
+		DependencyProperty.Register(nameof(Visualizer), typeof(RefreshVisualizer), typeof(RefreshContainer), new FrameworkPropertyMetadata(null, OnPropertyChanged));
+
+	private static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (RefreshContainer)sender;
+		owner.OnPropertyChanged(args);
+	}
+
+	/// <summary>
+	/// Occurs when an update of the content has been initiated.
+	/// </summary>
+	public event TypedEventHandler<RefreshContainer, RefreshRequestedEventArgs> RefreshRequested;
 }

@@ -1,7 +1,6 @@
-﻿namespace Microsoft.UI.Private.Controls
+﻿namespace Microsoft.UI.Private.Controls;
+
+internal interface IRefreshContainerPrivate
 {
-    internal interface IRefreshContainerPrivate
-    {
-		IRefreshInfoProviderAdapter RefreshInfoProviderAdapter { get; set; }
-	}
+	IRefreshInfoProviderAdapter RefreshInfoProviderAdapter { get; set; }
 }
