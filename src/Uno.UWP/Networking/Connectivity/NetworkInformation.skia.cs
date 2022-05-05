@@ -1,22 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Uno;
+﻿#nullable enable
 
-namespace Windows.Networking.Connectivity
+using System;
+using System.Net.NetworkInformation;
+
+namespace Windows.Networking.Connectivity;
+
+public partial class NetworkInformation
 {
-    public partial class NetworkInformation
-    {
-		private const string JsType = "Windows.Networking.Connectivity.NetworkInformation";
-
-		private static void StartNetworkStatusChanged()
-		{
-		}
-
-		private static void StopNetworkStatusChanged()
-		{
-		}
+	private static void StartNetworkStatusChanged()
+	{
+		NetworkChange.NetworkAvailabilityChanged += OnNetworkAvailabilityChanged;
+		NetworkChange.NetworkAddressChanged += OnNetworkAddressChanged;
 	}
+
+	private static void StopNetworkStatusChanged()
+	{
+		NetworkChange.NetworkAvailabilityChanged -= OnNetworkAvailabilityChanged;
+		NetworkChange.NetworkAddressChanged -= OnNetworkAddressChanged;
+	}
+
+
+	private static void OnNetworkAddressChanged(object? sender, EventArgs e) =>
+		OnNetworkStatusChanged();
+
+	private static void OnNetworkAvailabilityChanged(object? sender, NetworkAvailabilityEventArgs e) =>
+		OnNetworkStatusChanged();
 }
