@@ -31,8 +31,8 @@ namespace Windows.ApplicationModel.Appointments
 		}
 
 
-		public static IAsyncOperation<AppointmentStore> RequestStoreAsync(AppointmentStoreAccessType options)
-			=> RequestStoreAsyncTask(options).AsAsyncOperation<AppointmentStore>();
+		public static IAsyncOperation<AppointmentStore?> RequestStoreAsync(AppointmentStoreAccessType options)
+			=> RequestStoreAsyncTask(options).AsAsyncOperation<AppointmentStore?>();
 
 		public static async Task<AppointmentStore?> RequestStoreAsyncTask(AppointmentStoreAccessType options)
 		{
