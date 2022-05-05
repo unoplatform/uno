@@ -224,10 +224,10 @@ public class ImplementedRoutedEventsGenerator : ISourceGenerator
 			// TODO MZ: Handle generics
 			using (builder.GenerateNestingContainers(type))
 			{
-				using (builder.BlockInvariant($"partial class {type.Name}"))
+				using (builder.BlockInvariant($"partial class {type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)}"))
 				{
 					builder.AppendLineInvariant("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
-					builder.AppendLineInvariant("private static global::Uno.UI.Xaml.RoutedEventFlag __uno_ImplementedRoutedEvents = global::Uno.UI.UIElementGeneratedProxy.RegisterImplementedRoutedEvents(");
+					builder.AppendLineInvariant("private static global::Uno.UI.Xaml.RoutedEventFlag __uno_ImplementedRoutedEvents = global::Uno.UI.Xaml.UIElementGeneratedProxy.RegisterImplementedRoutedEvents(");
 					builder.AppendLineInvariant($"typeof({type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)}), ");
 					builder.AppendLineInvariant($"{string.Join(" | ", routedEventFlags)}");
 					builder.AppendLineInvariant(");");
