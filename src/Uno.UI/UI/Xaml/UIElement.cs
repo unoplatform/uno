@@ -97,10 +97,8 @@ namespace Windows.UI.Xaml
 		}
 
 		internal static RoutedEventFlag GetImplementedRoutedEventsForType(Type type)
-		{
-			// TODO: GetImplementedRoutedEvents() should be evaluated at compile-time
-			// and the result placed in a partial file.
-			if (ImplementedRoutedEvents.TryGetValue(type, out var result))
+		{			
+			if (UIElementGeneratedProxy.TryGetImplementedRoutedEvents(type, out var result))
 			{
 				return result;
 			}
@@ -121,6 +119,8 @@ namespace Windows.UI.Xaml
 					implementedRoutedEvents |= Control.EvaluateImplementedControlRoutedEvents(type);
 				}
 			}
+
+			UIElementGeneratedProxy.RegisterImplementedRoutedEvents(type, implementedRoutedEvents);
 			
 			return implementedRoutedEvents;
 		}

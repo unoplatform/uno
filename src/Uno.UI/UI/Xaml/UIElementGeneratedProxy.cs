@@ -7,11 +7,12 @@ public static class UIElementGeneratedProxy
 {
 	private static readonly Dictionary<Type, RoutedEventFlag> _implementedRoutedEvents = new();
 
-	public static void RegisterImplementedRoutedEvents(Type type, RoutedEventFlag routedEventFlags)
+	public static RoutedEventFlag RegisterImplementedRoutedEvents(Type type, RoutedEventFlag routedEventFlags)
 	{
 		lock (_implementedRoutedEvents)
 		{
 			_implementedRoutedEvents[type] = routedEventFlags;
+			return routedEventFlags;
 		}
 	}
 

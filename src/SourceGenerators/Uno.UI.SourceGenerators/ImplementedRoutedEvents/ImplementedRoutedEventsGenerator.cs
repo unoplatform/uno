@@ -7,7 +7,6 @@ using Uno.UI.SourceGenerators.Helpers;
 using System.Collections.Generic;
 using Uno.Extensions;
 using Uno.UI.SourceGenerators.XamlGenerator;
-using Uno.UI.SourceGenerators.Helpers;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
@@ -43,7 +42,6 @@ public class ImplementedRoutedEventsGenerator : ISourceGenerator
 	private class ImplementedRoutedEventsVisitor : SymbolVisitor
 	{
 		private readonly GeneratorExecutionContext _context;
-		private readonly IMethodSymbol _getImplementedRoutedEvents;
 		private readonly HashSet<INamedTypeSymbol> _seenTypes = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
 
 		private readonly Dictionary<string, INamedTypeSymbol> _events = new Dictionary<string, INamedTypeSymbol>();
@@ -58,17 +56,6 @@ public class ImplementedRoutedEventsGenerator : ISourceGenerator
 			_uiElementSymbol = GetRequiredTypeByMetadataName(XamlConstants.Types.UIElement);
 			_controlSymbol = GetRequiredTypeByMetadataName(XamlConstants.Types.Control);
 
-			var getImplementedRoutedEventsSymbol = _uiElementSymbol
-				.GetMembers(GetImplementedRoutedEventsMethodName)
-				.OfType<IMethodSymbol>()
-				.FirstOrDefault();
-
-			if (getImplementedRoutedEventsSymbol is null)
-			{
-				throw new InvalidOperationException(GetImplementedRoutedEventsMethodName + " method not found on UIElement");
-			}
-
-			_getImplementedRoutedEvents = getImplementedRoutedEventsSymbol;
 			var pointerRoutedEventArgs = GetRequiredTypeByMetadataName(XamlConstants.Types.PointerRoutedEventArgs);
 			_events.Add("OnPointerPressed", pointerRoutedEventArgs);
 			_events.Add("OnPointerReleased", pointerRoutedEventArgs);
@@ -160,15 +147,14 @@ public class ImplementedRoutedEventsGenerator : ISourceGenerator
 			// Control is defining the virtual property, we cannot generate an override for it.
 			// Use of _seenTypes to prevent processing the same type twice, which causes warnings like:
 			// warning CS2002: Source file 'src\Uno.UI\obj\Debug\monoandroid11.0\g\ImplementedRoutedEventsGenerator\TwoPaneView_ImplementedRoutedEvents_g_cs.g.cs' specified multiple times
+
 			if (!type.IsAbstract &&
-				type.Is(_getImplementedRoutedEvents.ContainingType) &&
-				!type.Equals(_uiElementSymbol, SymbolEqualityComparer.Default) &&
-				!type.Equals(_controlSymbol, SymbolEqualityComparer.Default) &&
+				type.Is(_uiElementSymbol) &&
 				_seenTypes.Add(type))
 			{
 				var list = new List<string>();
 				list.Add("global::Uno.UI.Xaml.RoutedEventFlag.None");
-
+				
 				foreach (var @event in _events)
 				{
 					if (!@event.Key.StartsWith("On", StringComparison.Ordinal))
@@ -188,7 +174,8 @@ public class ImplementedRoutedEventsGenerator : ISourceGenerator
 
 		private bool IsEventOverrideImplemented(INamedTypeSymbol type, string name, INamedTypeSymbol arg)
 		{
-			if (type.Equals(_getImplementedRoutedEvents.ContainingType, SymbolEqualityComparer.Default))
+			if (type.Equals(_uiElementSymbol, SymbolEqualityComparer.Default) ||
+				type.Equals(_controlSymbol, SymbolEqualityComparer.Default))
 			{
 				return false;
 			}
@@ -227,7 +214,9 @@ public class ImplementedRoutedEventsGenerator : ISourceGenerator
 			}
 
 			// Keep containing namespace here to avoid controls defined in both WUXC and MUXC from one overwriting the other.
-			_context.AddSource($"{GetFullMetadataNameForFileName(type)}_ImplementedRoutedEvents.g.cs", builder.ToString());
+			var generatedSource = builder.ToString();
+			var generatedFileName = $"{GetFullMetadataNameForFileName(type)}_ImplementedRoutedEvents.g.cs";
+			_context.AddSource(generatedFileName, generatedSource);
 		}
 
 		private static void WriteClass(IIndentedStringBuilder builder, INamedTypeSymbol type, IEnumerable<string> routedEventFlags)
@@ -238,7 +227,7 @@ public class ImplementedRoutedEventsGenerator : ISourceGenerator
 				using (builder.BlockInvariant($"partial class {type.Name}"))
 				{
 					builder.AppendLineInvariant("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
-					builder.AppendLineInvariant("private static global::Uno.UI.Xaml.RoutedEventFlag __uno_ImplementedRoutedEvents = global::Uno.UI.UIElementGenerated.RegisterImplementedRoutedEvents(");
+					builder.AppendLineInvariant("private static global::Uno.UI.Xaml.RoutedEventFlag __uno_ImplementedRoutedEvents = global::Uno.UI.UIElementGeneratedProxy.RegisterImplementedRoutedEvents(");
 					builder.AppendLineInvariant($"typeof({type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)}), ");
 					builder.AppendLineInvariant($"{string.Join(" | ", routedEventFlags)}");
 					builder.AppendLineInvariant(");");
