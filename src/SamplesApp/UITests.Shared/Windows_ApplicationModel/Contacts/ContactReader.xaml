@@ -8,11 +8,13 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-	<StackPanel Padding="20">
-		<Button Click="getContacts_Click">Get contact</Button>
-		<TextBlock Text="" Foreground="Red" Name="uiErrorMsg"/>
-		<TextBlock Text="Can take some time if you have many contacts defined" Name="uiOkMsg"/>
-		<ListView x:Name="uiListItems" Margin="2,5,2,5" HorizontalContentAlignment="Stretch" >
+    <Grid RowDefinitions="Auto, *">
+    	<StackPanel Padding="20">
+		   <Button Click="getContacts_Click">Get contact</Button>
+		   <TextBlock Text="" Foreground="Red" Name="uiErrorMsg"/>
+		   <TextBlock Text="Can take some time if you have many contacts defined" Name="uiOkMsg"/>
+	    </StackPanel>
+		<ListView x:Name="uiListItems" Grid.Row="1" Margin="2,5,2,5" HorizontalContentAlignment="Stretch" >
 			<ListView.ItemContainerStyle>
 				<Style TargetType="ListViewItem">
 					<Setter Property="HorizontalContentAlignment"  Value="Stretch"/>
@@ -34,5 +36,5 @@
 				</DataTemplate>
 			</ListView.ItemTemplate>
 		</ListView>
-	</StackPanel>
+    </Grid>
 </Page>
