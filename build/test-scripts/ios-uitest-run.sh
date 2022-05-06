@@ -174,13 +174,13 @@ mkdir -p $LOG_FILEPATH
 xcrun simctl spawn booted log collect --output $TMP_LOG_FILEPATH
 log show --style syslog $TMP_LOG_FILEPATH > $LOG_FILEPATH_FULL
 
-if grep -xFe "mini-generic-sharing.c:899" $LOG_FILEPATH_FULL
+if grep -cq "mini-generic-sharing.c:899" $LOG_FILEPATH_FULL
 then
 	# The application may crash without known cause, add a marker so the job can be restarted in that case.
     echo "##[error]UNOBLD001: mini-generic-sharing.c:899 assertion reached (https://github.com/unoplatform/uno/issues/8167)"
 fi
 
-if grep -xFe "Unhandled managed exception: Watchdog failed" $LOG_FILEPATH_FULL
+if grep -cq "Unhandled managed exception: Watchdog failed" $LOG_FILEPATH_FULL
 then
 	# The application UI thread stalled
     echo "##[error]UNOBLD002: Unknown failure, UI Thread Watchdog failed"
