@@ -20,7 +20,7 @@ namespace Uno.UI.Toolkit
 	[TemplatePart(Name = "PART_Border", Type = typeof(Border))]
 	[TemplatePart(Name = "PART_ShadowHost", Type = typeof(Grid))]
 	public sealed partial class ElevatedView : Control
-#if !NETFX_CORE && !NETCOREAPP
+#if HAS_UNO
 		, ICustomClippingElement
 #endif
 	{
@@ -59,7 +59,7 @@ namespace Uno.UI.Toolkit
 		{
 			DefaultStyleKey = typeof(ElevatedView);
 
-#if !NETFX_CORE && !NETCOREAPP
+#if HAS_UNO
 			Loaded += (snd, evt) => SynchronizeContentTemplatedParent();
 
 			// Patch to deactivate the clipping by ContentControl
@@ -114,7 +114,7 @@ namespace Uno.UI.Toolkit
 			set => SetValue(ElevatedContentProperty, value);
 		}
 
-#if !NETFX_CORE && !NETCOREAPP
+#if HAS_UNO
 		public new static DependencyProperty BackgroundProperty { get ; } = DependencyProperty.Register(
 			"Background",
 			typeof(Brush),
@@ -178,7 +178,7 @@ namespace Uno.UI.Toolkit
 				return; // not initialized yet
 			}
 
-#if !NETFX_CORE && !NETCOREAPP
+#if HAS_UNO
 			SynchronizeContentTemplatedParent();
 #endif
 
@@ -199,13 +199,13 @@ namespace Uno.UI.Toolkit
 				_border.SetElevationInternal(Elevation, ShadowColor);
 #elif __SKIA__
 				this.SetElevationInternal(Elevation, ShadowColor);
-#elif NETFX_CORE || NETCOREAPP
+#elif (NETFX_CORE || NETCOREAPP) && !HAS_UNO
 				_border.SetElevationInternal(Elevation, ShadowColor, _shadowHost as DependencyObject, CornerRadius);
 #endif
 			}
 		}
 
-#if !NETFX_CORE && !NETCOREAPP
+#if HAS_UNO
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => false; // Never clip, since it will remove the shadow
 
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
