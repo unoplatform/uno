@@ -77,7 +77,7 @@ namespace UITests.Windows_ApplicationModel.Appointments
 				return;
 			}
 
-			uiOkMsg.Text = "You have " + oBatch.Count.ToString() + " events, data from first:";
+			uiOkMsg.Text = "You have " + oBatch.Count.ToString() + " event(s) in the next 7 days, data from first:";
 
 			var entry = oBatch[0];
 

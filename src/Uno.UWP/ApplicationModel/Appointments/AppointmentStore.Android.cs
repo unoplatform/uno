@@ -11,11 +11,14 @@ namespace Windows.ApplicationModel.Appointments
 {
 	public partial class AppointmentStore
 	{
+		// I don't know if this is default everywhere, or only on my tablet...
+		private const int DEFAULT_REMINDER_MINUTES = 15;
+
 		// set to `true` if should be included in UWP output result set
 		private bool _startTimeRequested = false;
 		private bool _durationRequested = false;
 
-		private List<string> UWP2AndroColumnNames(IList<string> uwpColumns)
+		private List<string> ConvertWinRTToAndroidColumnNames(IList<string> uwpColumns)
 		{
 			_startTimeRequested = false;
 
@@ -57,12 +60,9 @@ namespace Windows.ApplicationModel.Appointments
 		public IAsyncOperation<IReadOnlyList<Appointment>?> FindAppointmentsAsync(DateTimeOffset rangeStart, TimeSpan rangeLength, FindAppointmentsOptions options)
 			=> FindAppointmentsAsyncTask(rangeStart, rangeLength, options).AsAsyncOperation<IReadOnlyList<Appointment>?>();
 
-		// I don't know if this is default everywhere, or only on my tablet...
-		private int DEFAULT_REMINDER_MINUTES = 15;
-
 		private async Task<IReadOnlyList<Appointment>?> FindAppointmentsAsyncTask(DateTimeOffset rangeStart, TimeSpan rangeLength, FindAppointmentsOptions options)
 		{
-			List<Appointment> entriesList = new List<Appointment>();
+			List<Appointment> entriesList = new ();
 
 			if (options is null)
 			{
@@ -77,30 +77,30 @@ namespace Windows.ApplicationModel.Appointments
 			Android.Content.ContentUris.AppendId(builder, rangeStart.ToUniversalTime().ToUnixTimeMilliseconds());
 			var rangeEnd = rangeStart + rangeLength;
 			Android.Content.ContentUris.AppendId(builder, rangeEnd.ToUniversalTime().ToUnixTimeMilliseconds());
-			var oUri = builder.Build();
+			var uri = builder.Build();
 			// it is simply: {content://com.android.calendar/instances/when/1588275364371/1588880164371}
-			if (oUri == null)
+			if (uri == null)
 			{
 				throw new NullReferenceException("Windows.ApplicationModel.Appointments.AppointmentStore.FindAppointmentsAsyncTask, oUri is null (impossible)");
 			}
 
-			var androColumns = UWP2AndroColumnNames(options.FetchProperties);
+			var androidColumns = ConvertWinRTToAndroidColumnNames(options.FetchProperties);
 			// some 'system columns' columns, cannot be switched off
-			androColumns.Add(Android.Provider.CalendarContract.IEventsColumns.CalendarId);
-			androColumns.Add("_id");
-			androColumns.Add(Android.Provider.CalendarContract.Instances.Begin);    // for sort
-			androColumns.Add(Android.Provider.CalendarContract.Instances.End);    // we need this, as Android sometimes has NULL duration, and it should be reconstructed from start/end
+			androidColumns.Add(Android.Provider.CalendarContract.IEventsColumns.CalendarId);
+			androidColumns.Add("_id");
+			androidColumns.Add(Android.Provider.CalendarContract.Instances.Begin);    // for sort
+			androidColumns.Add(Android.Provider.CalendarContract.Instances.End);    // we need this, as Android sometimes has NULL duration, and it should be reconstructed from start/end
 
 			// string sortMode = Android.Provider.CalendarContract.EventsColumns.Dtstart + " ASC";
 			var sortMode = Android.Provider.CalendarContract.Instances.Begin + " ASC";
-			var _contentResolver = Android.App.Application.Context.ContentResolver;
-			if (_contentResolver == null)
+			var contentResolver = Android.App.Application.Context.ContentResolver;
+			if (contentResolver == null)
 			{
 				throw new NullReferenceException("Windows.ApplicationModel.Appointments.AppointmentStore.FindAppointmentsAsyncTask, _contentResolver is null (impossible)");
 			}
 
-			using var cursor = _contentResolver?.Query(oUri,
-									androColumns.ToArray(),  // columns in result
+			using var cursor = contentResolver?.Query(uri,
+									androidColumns.ToArray(),  // columns in result
 									null,   // where
 									null,   // where params
 									sortMode);
@@ -116,16 +116,16 @@ namespace Windows.ApplicationModel.Appointments
 			}
 
 			// optimization
-			int _colAllDay = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.AllDay);
-			int _colLocation = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.EventLocation);
-			int _colStartTime = cursor.GetColumnIndex(Android.Provider.CalendarContract.Instances.Begin);
-			int _colEndTime = cursor.GetColumnIndex(Android.Provider.CalendarContract.Instances.End);
-			int _colSubject = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.Title);
-			int _colOrganizer = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.Organizer);
-			int _colDetails = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.Description);
-			int _colCalId = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.CalendarId);
-			int _colHasAlarm = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.HasAlarm);
-			int _colId = cursor.GetColumnIndex("_id");
+			int colAllDay = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.AllDay);
+			int colLocation = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.EventLocation);
+			int colStartTime = cursor.GetColumnIndex(Android.Provider.CalendarContract.Instances.Begin);
+			int colEndTime = cursor.GetColumnIndex(Android.Provider.CalendarContract.Instances.End);
+			int colSubject = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.Title);
+			int colOrganizer = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.Organizer);
+			int colDetails = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.Description);
+			int colCalId = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.CalendarId);
+			int colHasAlarm = cursor.GetColumnIndex(Android.Provider.CalendarContract.IEventsColumns.HasAlarm);
+			int colId = cursor.GetColumnIndex("_id");
 
 
 			// reading...
@@ -135,50 +135,50 @@ namespace Windows.ApplicationModel.Appointments
 				var entry = new Appointment();
 
 				// two properties always present in result
-				entry.CalendarId = cursor.GetString(_colCalId);
-				entry.LocalId = cursor.GetString(_colId);
+				entry.CalendarId = cursor.GetString(colCalId);
+				entry.LocalId = cursor.GetString(colId);
 
 				// rest of properties can be switched off (absent in result set)
-				if (_colAllDay > -1)
+				if (colAllDay > -1)
 				{
-					entry.AllDay = (cursor.GetInt(_colAllDay) == 1);
+					entry.AllDay = (cursor.GetInt(colAllDay) == 1);
 				}
-				if (_colDetails > -1)
+				if (colDetails > -1)
 				{
-					entry.Details = cursor.GetString(_colDetails);
+					entry.Details = cursor.GetString(colDetails);
 				}
-				if (_colLocation > -1)
+				if (colLocation > -1)
 				{
-					entry.Location = cursor.GetString(_colLocation);
+					entry.Location = cursor.GetString(colLocation);
 				}
 
 				if (_startTimeRequested)
 				{
-					entry.StartTime = DateTimeOffset.FromUnixTimeMilliseconds(cursor.GetLong(_colStartTime));
+					entry.StartTime = DateTimeOffset.FromUnixTimeMilliseconds(cursor.GetLong(colStartTime));
 				}
 
 				if (_durationRequested)
 				{
 					// calculate duration from start/end, as Android Duration field sometimes is null, and is in hard to parse RFC2445 format 
-					long startTime = cursor.GetLong(_colStartTime);
-					long endTime = cursor.GetLong(_colEndTime);
+					long startTime = cursor.GetLong(colStartTime);
+					long endTime = cursor.GetLong(colEndTime);
 					entry.Duration = TimeSpan.FromMilliseconds(endTime - startTime);
 				}
 
 
-				if (_colSubject > -1)
+				if (colSubject > -1)
 				{
-					entry.Subject = cursor.GetString(_colSubject);
+					entry.Subject = cursor.GetString(colSubject);
 				}
 
-				if (_colOrganizer > -1)
+				if (colOrganizer > -1)
 				{
 					var organ = new AppointmentOrganizer();
-					organ.Address = cursor.GetString(_colOrganizer);
+					organ.Address = cursor.GetString(colOrganizer);
 					entry.Organizer = organ;
 				}
 
-				if(_colHasAlarm > -1)
+				if(colHasAlarm > -1)
 				{
 					// first, set it to default value 
 					entry.Reminder = TimeSpan.FromMinutes(DEFAULT_REMINDER_MINUTES);
@@ -190,7 +190,7 @@ namespace Windows.ApplicationModel.Appointments
 					};
 
 					using var cursor_reminder = Android.Provider.CalendarContract.Reminders.Query(
-						_contentResolver, cursor.GetLong(_colId), projectionCols);
+						contentResolver, cursor.GetLong(colId), projectionCols);
 
 					if (cursor_reminder != null)
 					{

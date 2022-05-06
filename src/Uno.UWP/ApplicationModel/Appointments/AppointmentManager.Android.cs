@@ -21,7 +21,7 @@ namespace Windows.ApplicationModel.Appointments
 			var builder = Android.Provider.CalendarContract.ContentUri?.BuildUpon();
 			if (builder == null)
 			{
-				throw new NullReferenceException("Windows.ApplicationModel.Appointments.AppointmentStore.FindAppointmentsAsyncTask, builder is null (impossible)");
+				throw new InvalidOperationException("Windows.ApplicationModel.Appointments.AppointmentStore.FindAppointmentsAsyncTask, builder is null (impossible)");
 			}
 
 			builder.AppendPath("time");
