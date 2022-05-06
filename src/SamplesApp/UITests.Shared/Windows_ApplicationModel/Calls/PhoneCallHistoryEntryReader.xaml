@@ -9,7 +9,7 @@
 
 	<StackPanel Padding="20">
 		<Button Click="getCallLog_Click">Get call log</Button>
-		<TextBlock Text="" Foreground="Red" Name="uiErrorMsg"/>
+		<TextBlock Text="" Foreground="Red" Name="uiErrorMsg" TextWrapping="Wrap"/>
 		<TextBlock Text="" Name="uiOkMsg"/>
 		<TextBlock Name="uiLastNumber" />
 		<TextBlock Name="uiLastDate"/>

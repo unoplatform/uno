@@ -3,6 +3,7 @@
 	<uses-sdk android:minSdkVersion="19" android:targetSdkVersion="31" />
 	<!-- NOTE: Add permissions in AssemblyInfo.cs -->
 	<uses-permission android:name="android.permission.READ_CALL_LOG" />
+	<uses-permission android:name="android.permission.READ_CONTACTS" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.BLUETOOTH" />
 	<!-- NOTE: Uncomment the following to test the use of custom tabs for the WebAuthenticationBroker -->

@@ -46,7 +46,7 @@ namespace UITests.Shared.Windows_ApplicationModel.Calls
 			}
 			catch (Exception ex)
 			{
-				uiErrorMsg.Text = "Exception while RequestStoreAsync: " + ex.Message;
+				uiErrorMsg.Text = "Exception while RequestStoreAsync: " + ex;
 				return;
 			}
 

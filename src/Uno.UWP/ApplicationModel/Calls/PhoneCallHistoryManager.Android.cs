@@ -60,20 +60,20 @@ namespace Windows.ApplicationModel.Calls
 				throw new UnauthorizedAccessException("no permissions in Manifest defined (no permission at all)");
 			}
 
-			if (!Windows.Extensions.PermissionsHelper.IsDeclaredInManifest(Android.Manifest.Permission.ReadCallLog))
+			if (!Extensions.PermissionsHelper.IsDeclaredInManifest(Android.Manifest.Permission.ReadCallLog))
 			{
 				return null;
 			}
 
 			// required for contact name
-			if (!Windows.Extensions.PermissionsHelper.IsDeclaredInManifest(Android.Manifest.Permission.ReadContacts))
+			if (!Extensions.PermissionsHelper.IsDeclaredInManifest(Android.Manifest.Permission.ReadContacts))
 			{
 				return null;
 			}
 
 			if (accessType == PhoneCallHistoryStoreAccessType.AllEntriesReadWrite)
 			{
-				if (!Windows.Extensions.PermissionsHelper.IsDeclaredInManifest(Android.Manifest.Permission.WriteCallLog))
+				if (!Extensions.PermissionsHelper.IsDeclaredInManifest(Android.Manifest.Permission.WriteCallLog))
 				{
 					return null;
 				}
@@ -82,19 +82,19 @@ namespace Windows.ApplicationModel.Calls
 			List<string> requestPermission = new ();
 
 			// check what permission should be granted
-			if (! await Windows.Extensions.PermissionsHelper.CheckPermission(CancellationToken.None, Android.Manifest.Permission.ReadCallLog))
+			if (! await Extensions.PermissionsHelper.CheckPermission(CancellationToken.None, Android.Manifest.Permission.ReadCallLog))
 			{
 				requestPermission.Add(Android.Manifest.Permission.ReadCallLog);
 			}
 
-			if (! await Windows.Extensions.PermissionsHelper.CheckPermission(CancellationToken.None, Android.Manifest.Permission.ReadContacts))
+			if (! await Extensions.PermissionsHelper.CheckPermission(CancellationToken.None, Android.Manifest.Permission.ReadContacts))
 			{
 				requestPermission.Add(Android.Manifest.Permission.ReadContacts);
 			}
 
 			if (accessType == PhoneCallHistoryStoreAccessType.AllEntriesReadWrite)
 			{
-				if (!await Windows.Extensions.PermissionsHelper.CheckPermission(CancellationToken.None, Android.Manifest.Permission.WriteCallLog))
+				if (!await Extensions.PermissionsHelper.CheckPermission(CancellationToken.None, Android.Manifest.Permission.WriteCallLog))
 				{
 					requestPermission.Add(Android.Manifest.Permission.WriteCallLog);
 				}
@@ -105,7 +105,7 @@ namespace Windows.ApplicationModel.Calls
 
 			foreach (var sPerm in requestPermission)
 			{
-				await Windows.Extensions.PermissionsHelper.TryGetPermission(CancellationToken.None, sPerm);
+				await Extensions.PermissionsHelper.TryGetPermission(CancellationToken.None, sPerm);
 			}
 
 			return historyStore;
