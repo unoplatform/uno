@@ -195,12 +195,12 @@ namespace Uno.UI.Controls
 
 		private void OnKeyboardWillShow(object sender, UIKeyboardEventArgs e)
 		{
-#if !MACCATALYST && !IOS // Fix on .NET 6 Preview 6 https://github.com/unoplatform/uno/issues/5873
+#if NET6_0_OR_GREATER
+			_inputPane.OccludedRect = ((NSValue)e.Notification.UserInfo.ObjectForKey(UIKeyboard.FrameEndUserInfoKey)).CGRectValue;
+#else
 			var keyboardRect = ((NSValue)e.Notification.UserInfo.ObjectForKey(UIKeyboard.BoundsUserInfoKey)).RectangleFValue;
 			var windowRect = Windows.UI.Xaml.Window.Current.Bounds;
 			_inputPane.OccludedRect = new Rect(0, windowRect.Height - keyboardRect.Height, keyboardRect.Width, keyboardRect.Height);
-#else
-			this.Log().Warn("OnKeyboardWillShow is disabled restore on .NET 6 Preview 6: https://github.com/unoplatform/uno/issues/5873");
 #endif
 		}
 
