@@ -8,7 +8,11 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-    <Grid RowDefinitions="Auto, *">
+    <Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
     	<StackPanel Padding="20">
 		   <Button Click="getContacts_Click">Get contact</Button>
 		   <TextBlock Text="" Foreground="Red" Name="uiErrorMsg"/>
