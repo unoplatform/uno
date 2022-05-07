@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 {
-	[Sample("ScrollViewer")]
+	[Sample("Scrolling")]
 	public sealed partial class ScrollViewer_Content_Margin : UserControl
     {
         public ScrollViewer_Content_Margin()

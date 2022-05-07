@@ -8,7 +8,7 @@ using Uno.Disposables;
 
 namespace UITests.Windows_UI_Xaml.UIElementTests
 {
-	[Sample("UIElement", "GH Bugs", Description = "This is an illustration of GH Bug #3519")]
+	[Sample("UIElement", Description = "This is an illustration of GH Bug #3519")]
 	public sealed partial class UIElement_InitializationSequence : Page
 	{
 		public UIElement_InitializationSequence()

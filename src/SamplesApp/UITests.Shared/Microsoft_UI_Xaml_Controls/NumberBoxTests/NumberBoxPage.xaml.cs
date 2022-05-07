@@ -19,7 +19,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
 {
-	[Sample("MUX", "WinUI", Name= "NumberBox")]
+	[Sample("MUX", Name= "NumberBox")]
 	public sealed partial class NumberBoxPage : UserControl
 	{
 		public NumberBoxPage()

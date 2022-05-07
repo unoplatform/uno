@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Controls;
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
 
-	[SampleControlInfo("ButtonTestsControl", nameof(CheckBox_IsEnabled_Automated))]
+	[SampleControlInfo("Buttons", nameof(CheckBox_IsEnabled_Automated))]
 	public sealed partial class CheckBox_IsEnabled_Automated : UserControl
 	{
 

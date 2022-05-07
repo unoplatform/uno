@@ -7,7 +7,7 @@ using Uno.UI;
 
 namespace UITests.Windows_UI_Xaml.Clipping
 {
-	[Sample("Clipping", "GH Bugs")]
+	[Sample("Clipping")]
 	public sealed partial class Clipping652 : Page
 	{
 		public Clipping652()

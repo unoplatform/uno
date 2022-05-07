@@ -5,7 +5,7 @@ using Windows.UI.Xaml.Media;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.BitmapIconTests
 {
-	[Sample("IconElement")]
+	[Sample("Icons")]
 	public sealed partial class BitmapIcon_Generic : UserControl
     {
         public BitmapIcon_Generic()

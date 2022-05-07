@@ -6,7 +6,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 {
-	[Sample("TextBlockControl")]
+	[Sample("TextBlock")]
 	public sealed partial class TextBlock_FontWeight_Dynamic : UserControl
 	{
 		int CurrentIndex;

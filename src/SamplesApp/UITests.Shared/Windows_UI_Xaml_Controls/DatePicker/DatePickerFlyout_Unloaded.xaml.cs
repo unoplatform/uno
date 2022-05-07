@@ -7,7 +7,7 @@ using Uno.Extensions;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.DatePicker
 {
-	[Sample("Date Picking", IgnoreInSnapshotTests = true)]
+	[Sample("Pickers", IgnoreInSnapshotTests = true)]
 	public sealed partial class DatePickerFlyout_Unloaded : UserControl
 	{
 		public DatePickerFlyout_Unloaded()

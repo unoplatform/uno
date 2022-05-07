@@ -7,7 +7,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 {
-	[Sample("ScrollViewer")]
+	[Sample("Scrolling")]
 	public sealed partial class ScrollViewer_ScrollBars : Page
 	{
 		public ScrollViewer_ScrollBars()

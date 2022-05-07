@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[SampleControlInfo("TextBlockButton", "Simple_TextBlockButton")]
+	[SampleControlInfo("Buttons", "Simple_TextBlockButton")]
 	public sealed partial class Simple_TextBlockButton : UserControl
 	{
 		public Simple_TextBlockButton()
