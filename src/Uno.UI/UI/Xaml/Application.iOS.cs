@@ -13,11 +13,16 @@ using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using System.Globalization;
 using System.Threading;
+using ObjCRuntime;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 #else
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
+#endif
+
+#if !NET6_0_OR_GREATER
+using NativeHandle = System.IntPtr;
 #endif
 
 namespace Windows.UI.Xaml
@@ -39,7 +44,7 @@ namespace Windows.UI.Xaml
 			SubscribeBackgroundNotifications();
 		}
 
-		public Application(IntPtr handle) : base(handle)
+		public Application(NativeHandle handle) : base(handle)
 		{
 		}
 

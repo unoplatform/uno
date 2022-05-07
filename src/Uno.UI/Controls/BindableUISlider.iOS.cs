@@ -6,6 +6,11 @@ using Foundation;
 using UIKit;
 using Windows.UI.Xaml;
 using CoreGraphics;
+using ObjCRuntime;
+
+#if !NET6_0_OR_GREATER
+using NativeHandle = System.IntPtr;
+#endif
 
 namespace Uno.UI.Controls
 {
@@ -34,7 +39,7 @@ namespace Uno.UI.Controls
 			Initialize();
 		}
 
-		public BindableUISlider(IntPtr handle)
+		public BindableUISlider(NativeHandle handle)
 			: base(handle)
 		{
 			Initialize();
