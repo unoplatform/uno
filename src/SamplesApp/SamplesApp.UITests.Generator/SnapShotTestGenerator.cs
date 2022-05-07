@@ -114,7 +114,7 @@ namespace Uno.Samples.UITest.Generator
 				.Select((p, i) => (p, i))
 				.Single(p => p.p.Name == name)
 				.i;
-	
+
 		private string AlignName(string v)
 			=> v.Replace("/", "_").Replace(" ", "_").Replace("-", "_");
 
@@ -123,15 +123,16 @@ namespace Uno.Samples.UITest.Generator
 			SourceGeneratorContext context,
 			IEnumerable<(INamedTypeSymbol symbol, string[] categories, string name, bool ignoreInSnapshotTests, bool isManual)> symbols)
 		{
-			var groups = 
-				from symbol in symbols.Select((v, i) => (index:i, value:v))
+			var groups =
+				from symbol in symbols.Select((v, i) => (index: i, value: v))
 				group symbol by symbol.index / 50 into g
-				select new {
+				select new
+				{
 					Index = g.Key,
 					Symbols = g.AsEnumerable().Select(v => v.value)
 				};
 
-			foreach(var group in groups)
+			foreach (var group in groups)
 			{
 				string sanitizedAssemblyName = assembly.Replace(".", "_");
 				var groupName = $"Generated_{sanitizedAssemblyName}_{group.Index:000}";
@@ -184,11 +185,8 @@ namespace Uno.Samples.UITest.Generator
 			}
 		}
 
-		private object Sanitize(string category) 
-			=> category
-				.Replace(" ", "_")
-				.Replace("-", "_")
-				.Replace(".", "_");
+		private object Sanitize(string category)
+			=> string.Join("", category.Select(c => char.IsLetterOrDigit(c) ? c : '_'));
 
 		private (Compilation compilation, Project project) GetCompilation(SourceGeneratorContext context, string assembly)
 		{
