@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference ItemTemplateTests.cs, commit 37ade09
 
 using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
 using MUXControlsTestApp.Utilities;
@@ -14,6 +15,8 @@ using Common;
 using System;
 using Microsoft.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using MUXControlsTestApp.Utils;
+using Uno.UI.RuntimeTests;
 
 #if USING_TAEF
 using WEX.TestExecution;
@@ -30,6 +33,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 	using IKeyIndexMapping = Microsoft.UI.Xaml.Controls.IKeyIndexMapping;
 
 	[TestClass]
+	[RequiresFullWindow]
 	public class InspectingDataSourceTests : MUXApiTestBase
 	{
 		[TestMethod]
@@ -37,7 +41,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			RunOnUIThread.Execute(() =>
 			{
-				var dataSource = new InspectingDataSource(Enumerable.Range(0, 100));
+				var dataSource = new ItemsSourceView(Enumerable.Range(0, 100));
 				Verify.AreEqual(100, dataSource.Count);
 				Verify.AreEqual(4, dataSource.GetAt(4));
 			});
@@ -49,7 +53,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			RunOnUIThread.Execute(() =>
 			{
 				var data = new ObservableCollection<string>(Enumerable.Range(0, 100).Select(i => string.Format("Item #{0}", i)));
-				var dataSource = new InspectingDataSource(data);
+				var dataSource = new ItemsSourceView(data);
 				var recorder = new CollectionChangeRecorder(dataSource);
 				Verify.AreEqual(100, dataSource.Count);
 				Verify.AreEqual("Item #4", (string)dataSource.GetAt(4));
@@ -77,7 +81,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			RunOnUIThread.Execute(() =>
 			{
 				var data = new WinRTObservableVector(Enumerable.Range(0, 100).Select(i => string.Format("Item #{0}", i)));
-				var dataSource = new InspectingDataSource(data);
+				var dataSource = new ItemsSourceView(data);
 				var recorder = new CollectionChangeRecorder(dataSource);
 				Verify.AreEqual(100, dataSource.Count);
 				Verify.AreEqual("Item #4", (string)dataSource.GetAt(4));
@@ -106,7 +110,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			RunOnUIThread.Execute(() =>
 			{
 				var data = new ObservableVectorWithUniqueIds(Enumerable.Range(0, 10));
-				var dataSource = new InspectingDataSource(data);
+				var dataSource = new ItemsSourceView(data);
 				Verify.AreEqual(10, dataSource.Count);
 				Verify.AreEqual(true, dataSource.HasKeyIndexMapping);
 				Verify.AreEqual(5, dataSource.IndexFromKey("5"));
@@ -121,12 +125,12 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			{
 				var collections = new List<IEnumerable>();
 				collections.Add(new ObservableVectorWithUniqueIds(Enumerable.Range(0, 10)));
-				collections.Add(new ObservableCollection<int>(Enumerable.Range(0,10)));
+				collections.Add(new ObservableCollection<int>(Enumerable.Range(0, 10)));
 
-				foreach(var collection in collections)
+				foreach (var collection in collections)
 				{
-					var dataSource = new InspectingDataSource(collection);
-					foreach(int i in collection)
+					var dataSource = new ItemsSourceView(collection);
+					foreach (int i in collection)
 					{
 						Verify.AreEqual(i, dataSource.IndexOf(i));
 					}
@@ -134,26 +138,26 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					Verify.AreEqual(-1, dataSource.IndexOf(11));
 				}
 
-#if false // On Uno the underlying field is an IList which does support IndexOf
-				// Enumerabl.Range returns IEnumerable which does not provide IndexOf
-				var testingItemsSourceView = new InspectingDataSource(Enumerable.Range(0, 10));
+				// Enumerable.Range returns IEnumerable which does not provide IndexOf
+				var testingItemsSourceView = new ItemsSourceView(Enumerable.Range(0, 10));
+#if !HAS_UNO // Our implementation supports IndexOf even for IEnumerable
 				var index = -1;
 				try
 				{
 					index = testingItemsSourceView.IndexOf(0);
-				}catch(Exception){ }
+				}
+				catch (Exception) { }
 				Verify.AreEqual(-1, index);
 #endif
 
 				var nullContainingEnumerable = new CustomEnumerable();
-				var testingItemsSourceView2 = new InspectingDataSource(nullContainingEnumerable);
+				testingItemsSourceView = new ItemsSourceView(nullContainingEnumerable);
 
-				Verify.AreEqual(1,testingItemsSourceView2.IndexOf(null));
+				Verify.AreEqual(1, testingItemsSourceView.IndexOf(null));
 
 			});
 		}
 
-#if false
 		// Calling Reset multiple times before layout runs causes a crash
 		// in unique ids. We end up thinking we have multiple elements with the same id.
 		[TestMethod]
@@ -162,16 +166,16 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			RunOnUIThread.Execute(() =>
 			{
 				var data = new CustomItemsSourceWithUniqueId(Enumerable.Range(0, 5).ToList());
-				var repeater = new ItemsRepeater() 
+				var repeater = new ItemsRepeater()
 				{
 					ItemsSource = data,
 					Animator = new DefaultElementAnimator()
 				};
 
-				Content = new Windows.UI.Xaml.Controls.ScrollViewer() 
+				Content = new Windows.UI.Xaml.Controls.ScrollViewer()
 				{
-					Width=400,
-					Height=400,
+					Width = 400,
+					Height = 400,
 					Content = repeater
 				};
 				Content.UpdateLayout();
@@ -182,13 +186,12 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				Content.UpdateLayout();
 
 				Verify.AreEqual(5, repeater.ItemsSourceView.Count);
-				for(int i=0; i< 5; i++)
+				for (int i = 0; i < 5; i++)
 				{
 					Verify.IsNotNull(repeater.TryGetElement(i));
 				}
 			});
 		}
-#endif
 
 		[TestMethod]
 		public void ValidateSwitchingItemsSourceRefreshesElementsNonVirtualLayout()
@@ -197,12 +200,58 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
 		public void ValidateSwitchingItemsSourceRefreshesElementsVirtualLayout()
 		{
 			ValidateSwitchingItemsSourceRefreshesElements(isVirtualLayout: true);
+		}
+
+		[TestMethod]
+		public void VerifyReadOnlyListCompatibility()
+		{
+			RunOnUIThread.Execute(() =>
+			{
+				var collection = new ReadOnlyNotifyPropertyChangedCollection<object>();
+				var firstItem = "something1";
+
+				collection.Data = new ObservableCollection<object>();
+
+				collection.Data.Add(firstItem);
+				collection.Data.Add("something2");
+				collection.Data.Add("something3");
+
+				var itemsSourceView = new ItemsSourceView(collection);
+				Verify.AreEqual(3, itemsSourceView.Count);
+
+				collection.Data.Add("something4");
+				Verify.AreEqual(4, itemsSourceView.Count);
+
+				Verify.AreEqual(firstItem, itemsSourceView.GetAt(0));
+				Verify.AreEqual(0, itemsSourceView.IndexOf(firstItem));
+			});
+		}
+
+		[TestMethod]
+		public void VerifyNotifyCollectionChangeWithReadonlyListBehavior()
+		{
+			int invocationCount = 0;
+
+			RunOnUIThread.Execute(() =>
+			{
+				var collection = new ReadOnlyNotifyPropertyChangedCollection<object>();
+
+				var itemsSourceView = new ItemsSourceView(collection);
+				itemsSourceView.CollectionChanged += ItemsSourceView_CollectionChanged;
+
+				var underlyingData = new ObservableCollection<object>();
+				collection.Data = underlyingData;
+
+				Verify.AreEqual(1, invocationCount);
+			});
+
+			void ItemsSourceView_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+			{
+				invocationCount++;
+			}
 		}
 
 		public void ValidateSwitchingItemsSourceRefreshesElements(bool isVirtualLayout)
@@ -212,7 +261,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				ItemsRepeater repeater = null;
 				const int numItems = 10;
 
-				repeater = new ItemsRepeater() {
+				repeater = new ItemsRepeater()
+				{
 					ItemsSource = Enumerable.Range(0, numItems),
 				};
 
@@ -222,10 +272,12 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					repeater.Layout = new NonVirtualStackLayout();
 				}
 
-				Content = new ItemsRepeaterScrollHost() {
+				Content = new ItemsRepeaterScrollHost()
+				{
 					Width = 400,
 					Height = 400,
-					ScrollViewer = new Windows.UI.Xaml.Controls.ScrollViewer() {
+					ScrollViewer = new Windows.UI.Xaml.Controls.ScrollViewer()
+					{
 						Content = repeater
 					}
 				};
@@ -427,7 +479,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		class CustomEnumerable : IEnumerable<object>
 		{
 			private List<string> myList = new List<string>();
-			
+
 			public CustomEnumerable()
 			{
 				myList.Add("text");
