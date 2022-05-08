@@ -49,6 +49,7 @@ namespace Uno.Extensions.Storage.Pickers
 				file = await StorageFile.GetFileFromPathAsync(dialog.Filename);				
 			}
 
+			dialog.Dispose();
 			dialog.Destroy();
 			return file;
 		}

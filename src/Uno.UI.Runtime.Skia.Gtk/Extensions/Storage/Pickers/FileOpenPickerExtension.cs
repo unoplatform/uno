@@ -77,6 +77,7 @@ namespace Uno.Extensions.Storage.Pickers
 				}
 			}
 
+			dialog.Dispose();
 			dialog.Destroy();
 			return files.ToArray();
 		}
