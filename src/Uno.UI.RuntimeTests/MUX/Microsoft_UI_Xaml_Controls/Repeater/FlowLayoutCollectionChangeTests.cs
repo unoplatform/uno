@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference FlowLayoutCollectionChangeTests.cs, commit 864c068
 
 using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
 using MUXControlsTestApp.Utilities;
@@ -28,6 +29,7 @@ using RecyclingElementFactory = Microsoft.UI.Xaml.Controls.RecyclingElementFacto
 using RecyclePool = Microsoft.UI.Xaml.Controls.RecyclePool;
 using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
 using FlowLayout = Microsoft.UI.Xaml.Controls.FlowLayout;
+using UniformGridLayout = Microsoft.UI.Xaml.Controls.UniformGridLayout;
 using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
 using AnimationContext = Microsoft.UI.Xaml.Controls.AnimationContext;
 using System.Collections.Generic;
@@ -36,9 +38,7 @@ using Uno.UI.RuntimeTests;
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
-#if __MACOS__
-	[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
+	[RequiresFullWindow]
 	public class FlowLayoutCollectionChangeTests : MUXApiTestBase
 	{
 		[TestMethod]
@@ -111,7 +111,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		[Ignore("UNO: Test does not pass yet with Uno (The EffectiveViewport is updated to late) https://github.com/unoplatform/uno/issues/4529")]
 		public void CanRemoveItemsStartingBeforeRealizedRange()
 		{
 			CustomItemsSource dataSource = null;
@@ -173,9 +172,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__ || __MACOS__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
 		public void CanRemoveItemsStartingInRealizedRange()
 		{
 			RunOnUIThread.Execute(() =>
@@ -204,9 +200,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 		[TestMethod]
 		[TestProperty("Bug", "19259478")]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__ || __MACOS__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
 		public void CanRemoveAndInsertItemsInRealizedRange()
 		{
 			RunOnUIThread.Execute(() =>
@@ -234,9 +227,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
 		public void CanRemoveItemsAfterRealizedRange()
 		{
 			RunOnUIThread.Execute(() =>
@@ -257,12 +247,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __MACOS__
-		[Ignore("Fails on WASM, iOS, Android and macOS https://github.com/unoplatform/uno/issues/4529")]
-#endif
-#if __SKIA__
-		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
-#endif
 		public void CanReplaceSingleItem()
 		{
 			CustomItemsSource dataSource = null;
@@ -326,12 +310,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __MACOS__
-		[Ignore("Fails on WASM, iOS, Android and macOS https://github.com/unoplatform/uno/issues/4529")]
-#endif
-#if __SKIA__
-		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
-#endif
 		public void CanMoveItem()
 		{
 			CustomItemsSource dataSource = null;
@@ -384,7 +362,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
-#if false
 		[TestMethod]
 		public void VerifyElement0OwnershipInUniformGridLayout()
 		{
@@ -420,7 +397,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 				Log.Comment("Remove two items");
 				dataSource.Remove(index: 1, count: 1, reset: false);
-				dataSource.Remove(index: 0, count: 1, reset:false);
+				dataSource.Remove(index: 0, count: 1, reset: false);
 				repeater.UpdateLayout();
 				realized = VerifyRealizedRange(repeater, dataSource);
 				Verify.AreEqual(0, realized);
@@ -428,13 +405,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				Verify.AreEqual(elementsPrepared, elementsCleared);
 			});
 		}
-#endif
 
 		[TestMethod]
-#if __WASM__ || __ANDROID__ || __MACOS__
-		[Ignore("Failing on WASM and Androidand macOS for now https://github.com/unoplatform/uno/issues/4529")]
-#endif
-		[RequiresFullWindow]
 		public void EnsureReplaceOfAnchorDoesNotResetAllContainers()
 		{
 			CustomItemsSource dataSource = null;
@@ -472,7 +444,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
-		//[TestMethod]
+		[TestMethod]
+		[TestProperty("Ignore", "True")] // Disabled as per tracking issue #3125
 		public void ReplaceMultipleItems()
 		{
 			// TODO: Lower prioirty scenario. Tracked by work item: 9738020
@@ -480,9 +453,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__ || __MACOS__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
 		public void ValidateStableResets()
 		{
 			RunOnUIThread.Execute(() =>
@@ -504,12 +474,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __MACOS__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
-#if __SKIA__
-		[RequiresFullWindow]
-#endif
 		public void ValidateRegularResets()
 		{
 			RunOnUIThread.Execute(() =>
@@ -529,14 +493,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
-#if UNO_REFERENCE_API // https://github.com/unoplatform/uno/issues/4529
 		[TestMethod]
-#if __WASM__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
-#if __SKIA__
-		[RequiresFullWindow]
-#endif
 		public void ValidateClear()
 		{
 			RunOnUIThread.Execute(() =>
@@ -552,7 +509,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				Verify.AreEqual(0, realized);
 			});
 		}
-#endif
 
 		private ItemsRepeater SetupRepeater(CustomItemsSource dataSource)
 		{
