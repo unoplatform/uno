@@ -1,6 +1,6 @@
-﻿#if false
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference FlowLayoutTests.cs, commit 8c9f7ad
 
 using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
 using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
@@ -38,10 +38,12 @@ using UniformGridLayout = Microsoft.UI.Xaml.Controls.UniformGridLayout;
 using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
 using VirtualizingLayoutContext = Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext;
 using LayoutPanel = Microsoft.UI.Xaml.Controls.LayoutPanel;
+using Uno.UI.RuntimeTests;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
+	[RequiresFullWindow]
 	public class FlowLayoutTests : MUXApiTestBase
 	{
 		[TestMethod]
@@ -156,7 +158,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						layout.MinItemWidth *= 2;
 						layout.MinItemHeight *= 2;
 						Content.UpdateLayout();
-						ValidateGridLayoutChildrenLayoutBounds(om, (i) => panel.Children[i], itemMinorSize*2, itemMajorSize*2, minRowSpacing, minColumnSpacing, panel.Children.Count, panel.DesiredSize);
+						ValidateGridLayoutChildrenLayoutBounds(om, (i) => panel.Children[i], itemMinorSize * 2, itemMajorSize * 2, minRowSpacing, minColumnSpacing, panel.Children.Count, panel.DesiredSize);
 					}
 				}
 			});
@@ -554,8 +556,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						panel,
 						new List<Rect>()
 						{
-							om.MinorMajorRect(0, 0,			   panelMinorSize, itemMajorSize + extraMajorSize),
-							om.MinorMajorRect(0, majorOffset,	 panelMinorSize, itemMajorSize + extraMajorSize),
+							om.MinorMajorRect(0, 0,               panelMinorSize, itemMajorSize + extraMajorSize),
+							om.MinorMajorRect(0, majorOffset,     panelMinorSize, itemMajorSize + extraMajorSize),
 							om.MinorMajorRect(0, majorOffset * 2, panelMinorSize, itemMajorSize + extraMajorSize),
 							om.MinorMajorRect(0, majorOffset * 3, panelMinorSize, itemMajorSize + extraMajorSize),
 						});
@@ -571,9 +573,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						panel,
 						new List<Rect>()
 						{
-							om.MinorMajorRect(0,	0,				  itemMinorSize + 95, itemMajorSize),
-							om.MinorMajorRect(255,  0,				  itemMinorSize + 95, itemMajorSize),
-							om.MinorMajorRect(0,	itemMajorSize + 10, itemMinorSize + 95, itemMajorSize),
+							om.MinorMajorRect(0,    0,                  itemMinorSize + 95, itemMajorSize),
+							om.MinorMajorRect(255,  0,                  itemMinorSize + 95, itemMajorSize),
+							om.MinorMajorRect(0,    itemMajorSize + 10, itemMinorSize + 95, itemMajorSize),
 							om.MinorMajorRect(255,  itemMajorSize + 10, itemMinorSize + 95, itemMajorSize),
 						});
 
@@ -595,7 +597,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					int itemSize = 100;
 
 					LayoutPanel panel = new LayoutPanel();
-					var layout = new UniformGridLayout() {
+					var layout = new UniformGridLayout()
+					{
 						Orientation = scrollOrientation.ToOrthogonalLayoutOrientation(),
 						ItemsJustification = UniformGridLayoutItemsJustification.Start,
 						MinItemWidth = itemSize,
@@ -603,12 +606,12 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						MinRowSpacing = 0,
 						MinColumnSpacing = 0
 					};
-					
+
 					for (int i = 0; i < numItems; i++)
 					{
-						panel.Children.Add(new Button() { Content = i,Width = itemSize,Height = itemSize });
+						panel.Children.Add(new Button() { Content = i, Width = itemSize, Height = itemSize });
 					}
-					
+
 					panel.Layout = layout;
 					Content = panel;
 
@@ -617,7 +620,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					panel.HorizontalAlignment = HorizontalAlignment.Left;
 					layout.ItemsJustification = UniformGridLayoutItemsJustification.Start;
 
-					for(int i = 1; i < numItems; i++)
+					for (int i = 1; i < numItems; i++)
 					{
 						layout.MaximumRowsOrColumns = i;
 						panel.UpdateLayout();
@@ -1362,21 +1365,21 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			{
 				var layoutPanel = (LayoutPanel)XamlReader.Load(
 					@"<controls:LayoutPanel Width='800'  
-						xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
-						xmlns:controls='using:Microsoft.UI.Xaml.Controls'>
-						<controls:LayoutPanel.Layout>
-							<controls:FlowLayout  />
-						</controls:LayoutPanel.Layout>
-						<Border Width='300' Height='300' />
-						<Border Width='350' Height='150' />
-						<Border Width='300' Height='300' />
-						<Border Width='350' Height='250' />
-					</controls:LayoutPanel>");
+                        xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
+                        xmlns:controls='using:Microsoft.UI.Xaml.Controls'>
+                        <controls:LayoutPanel.Layout>
+                            <controls:FlowLayout  />
+                        </controls:LayoutPanel.Layout>
+                        <Border Width='300' Height='300' />
+                        <Border Width='350' Height='150' />
+                        <Border Width='300' Height='300' />
+                        <Border Width='350' Height='250' />
+                    </controls:LayoutPanel>");
 
 				Content = layoutPanel;
 				layoutPanel.UpdateLayout();
 
-				var expected = new List<Rect>() 
+				var expected = new List<Rect>()
 				{
 					new Rect(0, 0, 300, 300),
 					new Rect(300, 0, 350, 300),
@@ -1400,7 +1403,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			RunOnUIThread.Execute(() =>
 			{
 				var svWidth = 1000.0;
-				ScrollViewer sv = new ScrollViewer() {
+				ScrollViewer sv = new ScrollViewer()
+				{
 					Width = svWidth,
 					HorizontalScrollBarVisibility = ScrollBarVisibility.Auto
 				};
@@ -1546,9 +1550,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			return (DataTemplate)XamlReader.Load(
 					   string.Format(@"<DataTemplate  
-							xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
-						   {0}
-						</DataTemplate>", content));
+                            xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+                           {0}
+                        </DataTemplate>", content));
 		}
 
 		private ItemsRepeaterScrollHost CreateAndInitializeRepeater(
@@ -2013,4 +2017,3 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		#endregion
 	}
 }
-#endif
