@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference RepeaterFocusTests.cs, commit 93d6555
 
 using Common;
 using MUXControlsTestApp.Utilities;
@@ -29,14 +30,16 @@ using RecyclingElementFactory = Microsoft.UI.Xaml.Controls.RecyclingElementFacto
 using RecyclePool = Microsoft.UI.Xaml.Controls.RecyclePool;
 using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
 using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
+using Windows.UI.Xaml.Controls.Primitives;
+using Uno.UI.RuntimeTests;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
+	[RequiresFullWindow]
 	public class RepeaterFocusTests : MUXApiTestBase
 	{
 		[TestMethod]
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 		public void ValidateTabNavigation()
 		{
 			if (!PlatformConfiguration.IsOsVersionGreaterThan(OSVersion.Redstone2))
@@ -54,8 +57,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			{
 				var itemTemplate = (DataTemplate)XamlReader.Load(
 						@"<DataTemplate  xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
-							<Button Content='{Binding}' Height='100' />
-						</DataTemplate>");
+                            <Button Content='{Binding}' Height='100' />
+                        </DataTemplate>");
 
 				var elementFactory = new RecyclingElementFactory()
 				{
@@ -122,18 +125,31 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 			Log.Comment("Validating forward tab navigation...");
 
-			foreach(var expectedElement in expectedSequence)
+			foreach (var expectedElement in expectedSequence)
 			{
-				var actualElement = (Button)FocusManager.FindNextFocusableElement(FocusNavigationDirection.Next);
+				var actualElement = FocusManager.FindNextFocusableElement(FocusNavigationDirection.Next);
+				var actualElementAsbutton = FocusManager.FindNextFocusableElement(FocusNavigationDirection.Next) as Button;
+				var actualElementAsToggleButton = FocusManager.FindNextFocusableElement(FocusNavigationDirection.Next) as ToggleButton;
 
+				string content = actualElementAsbutton != null ? (string)actualElementAsbutton.Content : (string)actualElementAsToggleButton.Content;
 				// We need to ignore the toggle theme button, so lets set its tabstop to false and get next element.
-				if((string)actualElement.Content == "Toggle theme")
+				if (content == "Toggle theme")
 				{
-					actualElement.IsTabStop = false;
-					actualElement = (Button)FocusManager.FindNextFocusableElement(FocusNavigationDirection.Next);
+					actualElementAsbutton.IsTabStop = false;
+					actualElement = FocusManager.FindNextFocusableElement(FocusNavigationDirection.Next);
+				}
+				actualElementAsbutton = FocusManager.FindNextFocusableElement(FocusNavigationDirection.Next) as Button;
+				actualElementAsToggleButton = FocusManager.FindNextFocusableElement(FocusNavigationDirection.Next) as ToggleButton;
+
+				content = actualElementAsbutton != null ? (string)actualElementAsbutton.Content : (string)actualElementAsToggleButton.Content;
+				// We need to ignore the lab dimensions button, so lets set its tabstop to false and get next element.
+				if (content == "Render innerframe in lab dimensions")
+				{
+					actualElementAsToggleButton.IsTabStop = false;
+					actualElement = FocusManager.FindNextFocusableElement(FocusNavigationDirection.Next);
 				}
 				Log.Comment("Expected: " + expectedElement.Content);
-				Log.Comment("Actual: " + actualElement.Content);
+				Log.Comment("Actual: " + content);
 				Verify.AreEqual(expectedElement, actualElement);
 				expectedElement.Focus(FocusState.Keyboard);
 			}
