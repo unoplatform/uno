@@ -26,6 +26,10 @@ function renderSidebar() {
             sidetoc.addClass('shiftup');
         }
 
+        if (window.location.href.indexOf("articles/intro.html") > -1 && $(window).width() > 850) {
+            $('.nav.level1 li:eq(1)').addClass(expanded);
+        }
+
         renderBreadcrumb();
     }
 

@@ -70,6 +70,14 @@ h3 {
   }
 }
 
+.container {
+  width:100%;
+}
+
+#breadcrumb {
+  padding: 0 32px;
+}
+
 .body-content .article {
   margin-top: 120px;
   margin-right: 0;
@@ -79,10 +87,33 @@ h3 {
   }
 }
 
+.sidefilter {
+  @media only screen and (min-width: 769px) {
+    width: 24%;
+  }
+  @media (min-width: 769px) and (max-width: 991px){
+    width: 30%;
+  }
+}
+
+.article.grid-right {
+  @media only screen and (min-width: 769px) {
+    margin-left: 26%;
+  }
+  @media (min-width: 769px) and (max-width: 991px){
+    margin-left: 32%;
+  }
+}
 
 .sidetoc {
   top: 180px;
   background-color: white !important;
+  @media only screen and (min-width: 769px) {
+    width: 24%;
+  }
+  @media (min-width: 769px) and (max-width: 991px){
+    width: 30%;  
+  }
 
   .nav > li {
     line-height: 1.79;
