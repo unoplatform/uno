@@ -27,7 +27,7 @@ namespace Uno.Extensions.Storage.Pickers
 				commitText = _picker.CommitButtonText;
 			}
 
-			FileChooserDialog dialog = new FileChooserDialog(
+			using FileChooserDialog dialog = new FileChooserDialog(
 				"Select Folder",
 				GtkHost.Window,
 				FileChooserAction.SelectFolder,
@@ -49,8 +49,6 @@ namespace Uno.Extensions.Storage.Pickers
 				folder = await StorageFolder.GetFolderFromPathAsync(dialog.Filename);
 			}
 
-			dialog.Dispose();
-			dialog.Destroy();
 			return folder;
 		}
 	}
