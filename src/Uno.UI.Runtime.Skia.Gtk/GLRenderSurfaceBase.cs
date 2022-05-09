@@ -17,13 +17,10 @@ using Windows.Graphics.Display;
 using Gdk;
 using System.Reflection;
 using Gtk;
-using Silk.NET.OpenGLES;
-using Silk.NET.Core.Loader;
 
 namespace Uno.UI.Runtime.Skia
 {
-
-	internal class GLESRenderSurface : GLArea, IRenderSurface
+	internal abstract class GLRenderSurfaceBase : GLArea, IRenderSurface
 	{
 		private const SKColorType colorType = SKColorType.Rgba8888;
 		private const GRSurfaceOrigin surfaceOrigin = GRSurfaceOrigin.BottomLeft;
@@ -39,11 +36,10 @@ namespace Uno.UI.Runtime.Skia
 
 		private float? _dpi = 1;
 		private GRContext? _grContext;
-		private GL _gl;
 		private GRBackendRenderTarget? _renderTarget;
 		private SKSurface? _surface;
 
-		public GLESRenderSurface()
+		public GLRenderSurfaceBase()
 		{
 			_displayInformation = DisplayInformation.GetForCurrentView();
 			_displayInformation.DpiChanged += OnDpiChanged;
@@ -55,41 +51,28 @@ namespace Uno.UI.Runtime.Skia
 					QueueRender();
 				};
 
+			// Set some event handlers
+			Render += UnoGLDrawingArea_Render;
+			Realized += GLRenderSurface_Realized;
+
 			HasDepthBuffer = false;
 			HasStencilBuffer = false;
 			AutoRender = true;
-			//UseEs = true;
-			//SetRequiredVersion(2, 0);
-
-			// Set some event handlers
-			Render += UnoGLESDrawingArea_Render;
-			Realized += GLESRenderSurface_Realized;
-
-			_gl = new GL(new Silk.NET.Core.Contexts.DefaultNativeContext(new GLCoreLibraryNameContainer().GetLibraryName()));
 		}
 
-		private void GLESRenderSurface_Realized(object? sender, EventArgs e)
+		private void GLRenderSurface_Realized(object? sender, EventArgs e)
 		{
 			Context.MakeCurrent();
 		}
 
-		private void UnoGLESDrawingArea_Render(object o, RenderArgs args)
+		private void UnoGLDrawingArea_Render(object o, RenderArgs args)
 		{
 			args.Context.MakeCurrent();
 
 			// create the contexts if not done already
 			if (_grContext == null)
 			{
-				var glInterface = GRGlInterface.CreateGles(proc => {
-					if (_gl.Context.TryGetProcAddress(proc, out var addr))
-					{
-						return addr;
-					}
-
-					return IntPtr.Zero;
-				});
-				
-				_grContext = GRContext.CreateGl(glInterface);
+				_grContext = TryBuildGRContext();
 			}
 
 			// manage the drawing surface
@@ -102,10 +85,7 @@ namespace Uno.UI.Runtime.Skia
 				// create or update the dimensions
 				_renderTarget?.Dispose();
 
-				_gl.GetInteger(GLEnum.FramebufferBinding, out var framebuffer);
-				_gl.GetInteger(GLEnum.Stencil, out var stencil);
-				_gl.GetInteger(GLEnum.Samples, out var samples);
-
+				var (framebuffer, stencil, samples) = GetGLBuffers();
 				var maxSamples = _grContext.GetMaxSurfaceSampleCount(colorType);
 
 				if (samples > maxSamples)
@@ -114,6 +94,7 @@ namespace Uno.UI.Runtime.Skia
 				}
 
 				var glInfo = new GRGlFramebufferInfo((uint)framebuffer, colorType.ToGlSizedFormat());
+
 				_renderTarget = new GRBackendRenderTarget(w + GuardBand, h + GuardBand, samples, stencil, glInfo);
 
 				// create the surface
@@ -126,8 +107,7 @@ namespace Uno.UI.Runtime.Skia
 				}
 			}
 
-			_gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.StencilBufferBit | ClearBufferMask.DepthBufferBit);
-			_gl.ClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+			GLClear();
 
 			var canvas = _surface.Canvas;
 
@@ -142,8 +122,16 @@ namespace Uno.UI.Runtime.Skia
 			// update the control
 			canvas.Flush();
 
-			_gl.Flush();
+			GLFlush();
 		}
+
+		protected abstract void GLClear();
+
+		protected abstract void GLFlush();
+
+		protected abstract (int framebuffer, int stencil, int samples)GetGLBuffers();
+
+		protected abstract GRContext TryBuildGRContext();
 
 		private void OnDpiChanged(DisplayInformation sender, object args) =>
 			UpdateDpi();
@@ -171,27 +159,5 @@ namespace Uno.UI.Runtime.Skia
 		}
 
 		private void UpdateDpi() => _dpi = (float)_displayInformation.RawPixelsPerViewPixel;
-
-		// Extracted from https://github.com/dotnet/Silk.NET/blob/23f9bd4d67ad21c69fbd69cc38a62fb2c0ec3927/src/OpenGL/Silk.NET.OpenGL/GLCoreLibraryNameContainer.cs
-		internal class GLCoreLibraryNameContainer : SearchPathContainer
-		{
-			/// <inheritdoc />
-			public override string Linux => "libGL.so.1";
-
-			/// <inheritdoc />
-			public override string MacOS => "/System/Library/Frameworks/OpenGL.framework/OpenGL";
-
-			/// <inheritdoc />
-			public override string Android => "libGL.so.1";
-
-			/// <inheritdoc />
-			public override string IOS => "/System/Library/Frameworks/OpenGL.framework/OpenGL";
-
-			/// <inheritdoc />
-			public override string Windows64 => "opengl32.dll";
-
-			/// <inheritdoc />
-			public override string Windows86 => "opengl32.dll";
-		}
 	}
 }

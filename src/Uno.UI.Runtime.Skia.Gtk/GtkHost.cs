@@ -51,10 +51,11 @@ namespace Uno.UI.Runtime.Skia
 		public static Gtk.Window Window => _window;
 		public static Gtk.EventBox EventBox => _eventBox;
 
-		public RenderSurfaceType RenderSurfaceType { get; set; }
-			= RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
-				? RenderSurfaceType.Software // OpenGL support on macOS is currently broken
-				: RenderSurfaceType.OpenGL;
+		/// <summary>
+		/// Gets or sets the current Skia Render surface type.
+		/// </summary>
+		/// <remarks>If <c>null</c>, the host will try to determine the most compatible mode.</remarks>
+		public RenderSurfaceType? RenderSurfaceType { get; set; }
 
 		/// <summary>
 		/// Creates a host for a Uno Skia GTK application.
@@ -208,13 +209,36 @@ namespace Uno.UI.Runtime.Skia
 		}
 
 		private Widget BuildRenderSurfaceType()
-			=> RenderSurfaceType switch
+		{
+			if(RenderSurfaceType == null)
 			{
-				RenderSurfaceType.Software => new SoftwareRenderSurface(),
-				RenderSurfaceType.OpenGL => new GLRenderSurface(),
-				RenderSurfaceType.OpenGLES => new GLESRenderSurface(),
+				if (OpenGLESRenderSurface.IsSupported)
+				{
+					RenderSurfaceType = Skia.RenderSurfaceType.OpenGLES;
+				}
+				else if (OpenGLRenderSurface.IsSupported)
+				{
+					RenderSurfaceType = Skia.RenderSurfaceType.OpenGL;
+				}
+				else
+				{
+					RenderSurfaceType = Skia.RenderSurfaceType.Software;
+				}
+			}
+
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().LogInfo($"Using {RenderSurfaceType} render surface");
+			}
+
+			return RenderSurfaceType switch
+			{
+				Skia.RenderSurfaceType.OpenGLES => new OpenGLESRenderSurface(),
+				Skia.RenderSurfaceType.OpenGL => new OpenGLRenderSurface(),
+				Skia.RenderSurfaceType.Software => new SoftwareRenderSurface(),
 				_ => throw new InvalidOperationException($"Unsupported RenderSurfaceType {RenderSurfaceType}")
 			};
+		}
 
 		private void OnWindowStateChanged(object o, WindowStateEventArgs args)
 		{
