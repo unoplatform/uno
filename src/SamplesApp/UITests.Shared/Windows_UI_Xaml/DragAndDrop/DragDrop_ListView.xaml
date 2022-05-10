@@ -14,21 +14,25 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<ListView 
-			CanDragItems="True"
-			CanReorderItems="True"
-			AllowDrop="True"
+			CanDragItems="{Binding IsChecked, ElementName=DragMode}"
+			CanReorderItems="{Binding IsChecked, ElementName=DragMode}"
+			AllowDrop="{Binding IsChecked, ElementName=DragMode}"
 			SelectionMode="Multiple"
 			MinHeight="300"
 			x:Name="SUT">
 			<ListView.ItemTemplate>
 				<DataTemplate>
-					<Border Background="{Binding}" Width="300" Height="100">
+					<Border Background="{Binding}" Width="300" Height="90">
 						<TextBlock Text="{Binding}" Foreground="Black" />
 					</Border>
 				</DataTemplate>
 			</ListView.ItemTemplate>
 		</ListView>
 
-		<TextBlock x:Name="Operation" Text="--none--" Grid.Row="1" />
+		<StackPanel Grid.Row="1" Orientation="Horizontal">
+			<CheckBox x:Name="DragMode" IsThreeState="False" IsChecked="True" Content="Allow reorder" Margin="0,0,10,0" />
+			<TextBlock Text="Drag operation: " />
+			<TextBlock x:Name="Operation" Text="--none--" />
+		</StackPanel>
 	</Grid>
 </Page>
