@@ -1,6 +1,7 @@
-﻿<UserControl
-    x:Class="UITests.Microsoft_UI_Xaml_Controls.ExpanderTests.ExpanderColorValidationPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<utilities:MUXTestPage
+    x:Class="UITests.Shared.Microsoft_UI_Xaml_Controls.ExpanderTests.ExpanderColorValidationPage"
+	xmlns:utilities="using:MUXControlsTestApp.Utilities"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.ExpanderTests"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -36,4 +37,4 @@
 				AutomationProperties.AutomationId="ColorfulExpanderContent">Content</TextBlock>
 		</controls:Expander>
     </Grid>
-</UserControl>
+</utilities:MUXTestPage>

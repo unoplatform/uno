@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
@@ -16,7 +11,8 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.ExpanderTests
 		[AutoRetry]
 		public void ToggleCollapsedStateToVerifyClipping()
 		{
-			Run("SamplesApp.Samples.Microsoft_UI_Xaml_Controls.ExpanderTests.ExpanderColorValidationPage", skipInitialScreenshot: true);
+			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.ExpanderTests.ExpanderColorValidationPage");
+
 			var expanderResult = _app.WaitForElement("ExpanderWithColor");
 			var expander = _app.Marked("ExpanderWithColor");
 			var expanderAppRect = ToPhysicalRect(expanderResult[0].Rect);

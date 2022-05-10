@@ -1,10 +1,10 @@
-﻿using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml.Controls;
+﻿using MUXControlsTestApp.Utilities;
+using Uno.UI.Samples.Controls;
 
-namespace UITests.Microsoft_UI_Xaml_Controls.ExpanderTests
+namespace UITests.Shared.Microsoft_UI_Xaml_Controls.ExpanderTests
 {
-	[SampleControlInfo("Expander", "WinUI", Name = "ExpanderClippingSample")]
-	public sealed partial class ExpanderColorValidationPage : UserControl
+	[SampleControlInfo("Expander", "WinUI")]
+	public sealed partial class ExpanderColorValidationPage : MUXTestPage
 	{
 		public ExpanderColorValidationPage()
 		{
