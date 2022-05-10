@@ -34,7 +34,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					NSViewResizingMask.MinYMargin |
 					NSViewResizingMask.MaxYMargin,
 #endif
-				Frame = new CGRect(CGPoint.Empty, ViewHelper.GetScreenSize())
+				Frame = new CGRect(CGPoint.Empty, ViewHelper.GetMainWindowSize())
 			};
 		}
 	}

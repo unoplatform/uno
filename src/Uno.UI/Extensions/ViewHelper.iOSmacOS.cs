@@ -16,6 +16,7 @@ using ObjCRuntime;
 #if __IOS__
 using UIKit;
 using _View = UIKit.UIView;
+using Windows.UI.Xaml;
 #elif __MACOS__
 using AppKit;
 using _View = AppKit.NSView;
@@ -224,31 +225,21 @@ namespace Uno.UI
 		/// Gets the orientation-dependent screen size
 		/// </summary>
 		/// <returns></returns>
-		public static CGSize GetScreenSize()
+		public static CGSize GetMainWindowSize()
 		{
 #if __IOS__
-			var orientation = UIApplication.SharedApplication.StatusBarOrientation;
-			//In iOS versions prior to 8.0, the screen dimensions are based on the portrait orientation, so we might have to invert them.
-			//http://stackoverflow.com/questions/24150359/is-uiscreen-mainscreen-bounds-size-becoming-orientation-dependent-in-ios8
-			var shouldInvertDimension = !UIDevice.CurrentDevice.CheckSystemVersion(8, 0)
-				&& (orientation == UIInterfaceOrientation.LandscapeLeft || orientation == UIInterfaceOrientation.LandscapeRight);
-
-			return new CGSize(GetScreenWidth(shouldInvertDimension), GetScreenHeight(shouldInvertDimension));
+			var width = Window.Current.NativeWindow.Frame.Width;
+			var height = Window.Current.NativeWindow.Frame.Height;
+			var windowSize = new CGSize(width, height);
+			return windowSize;
 #elif __MACOS__
 			return new CGSize(GetScreenWidth(false), GetScreenHeight(false));
 #endif
 		}
 
+#if __MACOS__
 		private static nfloat GetScreenWidth(bool shouldInvertDimension)
 		{
-#if __IOS__
-			//Starting with iOS 9 and the introduction of the SplitView, 
-			//MainScreen.Bounds corresponds to the full screen size whereas the MainScreen.ApplicationFrame is the actual space the application is taking
-			var applicationFrameSize = UIScreen.MainScreen.ApplicationFrame.Size;
-#elif __MACOS__
-			var applicationFrameSize = NSScreen.MainScreen.VisibleFrame;
-#endif
-
 			return shouldInvertDimension
 				? applicationFrameSize.Height
 				: applicationFrameSize.Width;
@@ -256,16 +247,12 @@ namespace Uno.UI
 
 		private static nfloat GetScreenHeight(bool shouldInvertDimension)
 		{
-#if __IOS__
-			//Since there cannot be any vertical split, we can use MainScreen.Bounds for the height to ignore the StatusBar height
-			var fullScreenSize = UIScreen.MainScreen.Bounds.Size;
-#elif __MACOS__
 			var fullScreenSize = NSScreen.MainScreen.VisibleFrame.Size;
-#endif
 
 			return shouldInvertDimension
 				? fullScreenSize.Width
 				: fullScreenSize.Height;
 		}
+#endif
 	}
 }

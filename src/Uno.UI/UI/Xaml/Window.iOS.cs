@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml
 {
 	public sealed partial class Window
 	{
-		private Uno.UI.Controls.Window _window;
+		private Uno.UI.Controls.Window _nativeWindow;
 
 		private static Window _current;
 		private RootVisual _rootVisual;
@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml
 
 		public Window()
 		{
-			_window = new Uno.UI.Controls.Window();
+			_nativeWindow = new Uno.UI.Controls.Window();
 
 			_mainController = ViewControllerGenerator?.Invoke() ?? new RootViewController();
 			_mainController.View.BackgroundColor = UIColor.Clear;
@@ -46,42 +46,42 @@ namespace Windows.UI.Xaml
 			ObserveOrientationAndSize();
 
 			Dispatcher = CoreDispatcher.Main;
-			CoreWindow = new CoreWindow(_window);
+			CoreWindow = new CoreWindow(_nativeWindow);
 
 			InitializeCommon();
 		}
+
+		internal Uno.UI.Controls.Window NativeWindow => _nativeWindow;
 
 		private void ObserveOrientationAndSize()
 		{
 			_orientationRegistration = UIApplication
 				.Notifications
 				.ObserveDidChangeStatusBarOrientation(
-					(sender, args) => RaiseNativeSizeChanged(ViewHelper.GetScreenSize())
+					(sender, args) => RaiseNativeSizeChanged(ViewHelper.GetMainWindowSize())
 				);
 
 			_orientationRegistration = UIApplication
 				.Notifications
 				.ObserveDidChangeStatusBarFrame(
-					(sender, args) => RaiseNativeSizeChanged(ViewHelper.GetScreenSize())
+					(sender, args) => RaiseNativeSizeChanged(ViewHelper.GetMainWindowSize())
 				);
 
-			_window.FrameChanged +=
-				() => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
+			_nativeWindow.FrameChanged +=
+				() => RaiseNativeSizeChanged(ViewHelper.GetMainWindowSize());
 
 			_mainController.VisibleBoundsChanged +=
-				() => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
+				() => RaiseNativeSizeChanged(ViewHelper.GetMainWindowSize());
 
 			var statusBar = StatusBar.GetForCurrentView();
-			statusBar.Showing += (o, e) => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
-			statusBar.Hiding += (o, e) => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
-
-			RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
+			statusBar.Showing += (o, e) => RaiseNativeSizeChanged(ViewHelper.GetMainWindowSize());
+			statusBar.Hiding += (o, e) => RaiseNativeSizeChanged(ViewHelper.GetMainWindowSize());
 		}
 
 		partial void InternalActivate()
 		{
-			_window.RootViewController = _mainController;
-			_window.MakeKeyAndVisible();
+			_nativeWindow.RootViewController = _mainController;
+			_nativeWindow.MakeKeyAndVisible();
 		}
 
 		private void InternalSetContent(UIElement value)
@@ -126,7 +126,7 @@ namespace Windows.UI.Xaml
 		{
 			var newBounds = new Rect(0, 0, size.Width, size.Height);
 
-			ApplicationView.GetForCurrentView()?.SetVisibleBounds(_window, newBounds);
+			ApplicationView.GetForCurrentView()?.SetVisibleBounds(_nativeWindow, newBounds);
 
 			if (Bounds != newBounds)
 			{

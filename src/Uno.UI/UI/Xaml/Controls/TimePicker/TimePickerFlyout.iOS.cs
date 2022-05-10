@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Controls
 				Visibility = Visibility.Collapsed,
 				Background = SolidColorBrushHelper.Transparent,
 				AutoresizingMask = UIViewAutoresizing.All,
-				Frame = new CGRect(CGPoint.Empty, ViewHelper.GetScreenSize())
+				Frame = new CGRect(CGPoint.Empty, ViewHelper.GetMainWindowSize())
 			};
 		}
 
