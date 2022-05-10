@@ -45,7 +45,14 @@ namespace Uno.UI.Runtime.Skia
 					&& File.Exists("/proc/sys/kernel/osrelease")
 					&& File.ReadAllText("/proc/sys/kernel/osrelease").Trim().EndsWith("WSL2");
 
-				if (isMacOS || isWSL2)
+				var isGDKGL_GLES = Environment.GetEnvironmentVariable("GDK_GL")?.Equals("gles", StringComparison.OrdinalIgnoreCase) ?? false;
+
+				if (typeof(OpenGLESRenderSurface).Log().IsEnabled(LogLevel.Debug))
+				{
+					typeof(OpenGLESRenderSurface).Log().LogDebug($"OpenGL ES conditions: isMacOS={isMacOS} isWSL2={isWSL2} isGDKGL_GLES={isGDKGL_GLES}");
+				}
+
+				if (isMacOS || (isWSL2 && !isGDKGL_GLES))
 				{
 					return false;
 				}
