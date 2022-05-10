@@ -83,13 +83,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (GetTemplateChild<Border>(c_expanderContentClip) is Border expanderContentClip)
 			{
-				// Uno Doc: The Composition clipping APIs are currently unsupported,
+				// TODO Uno specific: The Composition clipping APIs are currently unsupported,
 				// so UIElement.Clip a layout slot for the Expander content when the
 				// SizeChanged event is fired.
-				// var visual = ElementCompositionPreview.GetElementVisual(expanderContentClip);
-				// visual.Clip = visual.Compositor.CreateInsetClip();
+#if HAS_UNO
 				expanderContentClip.SizeChanged += OnContentClipSizeChanged;
 				registrations.Add(() => expanderContentClip.SizeChanged -= OnContentClipSizeChanged);
+#else
+				var visual = ElementCompositionPreview.GetElementVisual(expanderContentClip);
+				visual.Clip = visual.Compositor.CreateInsetClip();
+#endif
 			}
 
 			if (GetTemplateChild<Border>(c_expanderContent) is Border expanderContent)
@@ -105,15 +108,17 @@ namespace Microsoft.UI.Xaml.Controls
 			_eventSubscriptions.Disposable = registrations;
 		}
 
+#if HAS_UNO
 		protected void OnContentClipSizeChanged(object sender, SizeChangedEventArgs args)
 		{
-			// Uno Doc: LayoutInformation.GetLayoutSlot(element) is currently inconsistent
+			// TODO Uno specific: LayoutInformation.GetLayoutSlot(element) is currently inconsistent
 			// on some platforms, so construct the Rect from ActualSize. A non-zero Point
 			// is not required for this case.
 			var expanderContentClip = sender as Border;
 			var layoutSlot = new Rect(new Point(0, 0), expanderContentClip.ActualSize.ToSize());
 			expanderContentClip.Clip = new RectangleGeometry() { Rect = layoutSlot };
 		}
+#endif
 
 		protected void OnContentSizeChanged(object sender, SizeChangedEventArgs args)
 		{
