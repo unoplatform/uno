@@ -25,11 +25,10 @@ namespace Uno.UI.Runtime.Skia
 
 	internal class OpenGLESRenderSurface : GLRenderSurfaceBase
 	{
-		private GL _gl;
-
 		public OpenGLESRenderSurface()
 		{
-			_gl = new GL(new Silk.NET.Core.Contexts.DefaultNativeContext(new GLCoreLibraryNameContainer().GetLibraryName()));
+			_glES = new GL(new Silk.NET.Core.Contexts.DefaultNativeContext(new GLCoreLibraryNameContainer().GetLibraryName()));
+			_isGLES = true;
 		}
 
 		public static bool IsSupported
@@ -79,25 +78,16 @@ namespace Uno.UI.Runtime.Skia
 
 		protected override (int framebuffer, int stencil, int samples) GetGLBuffers()
 		{
-			_gl.GetInteger(GLEnum.FramebufferBinding, out var framebuffer);
-			_gl.GetInteger(GLEnum.Stencil, out var stencil);
-			_gl.GetInteger(GLEnum.Samples, out var samples);
+			_glES.GetInteger(GLEnum.FramebufferBinding, out var framebuffer);
+			_glES.GetInteger(GLEnum.Stencil, out var stencil);
+			_glES.GetInteger(GLEnum.Samples, out var samples);
 
 			return (framebuffer, stencil, samples);
 		}
 
-		protected override void GLClear()
-		{
-			_gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.StencilBufferBit | ClearBufferMask.DepthBufferBit);
-			_gl.ClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		}
-
-		protected override void GLFlush()
-			=> _gl.Flush();
-
 		protected override GRContext TryBuildGRContext()
 		{
-			var glInterface = CreateGRGLContext(_gl.Context);
+			var glInterface = CreateGRGLContext(_glES.Context);
 
 			if(glInterface == null)
 			{

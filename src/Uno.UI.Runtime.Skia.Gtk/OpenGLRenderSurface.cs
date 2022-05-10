@@ -25,8 +25,6 @@ namespace Uno.UI.Runtime.Skia
 
 	internal class OpenGLRenderSurface : GLRenderSurfaceBase
 	{
-		private readonly GL _gl;
-
 		public OpenGLRenderSurface()
 		{
 			SetRequiredVersion(3, 3);
@@ -69,15 +67,6 @@ namespace Uno.UI.Runtime.Skia
 
 			return (framebuffer, stencil, samples);
 		}
-
-		protected override void GLClear()
-		{
-			_gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.StencilBufferBit | ClearBufferMask.DepthBufferBit);
-			_gl.ClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		}
-
-		protected override void GLFlush()
-			=> _gl.Flush();
 
 		protected override GRContext TryBuildGRContext()
 		{

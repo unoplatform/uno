@@ -20,7 +20,7 @@ using Gtk;
 
 namespace Uno.UI.Runtime.Skia
 {
-	internal abstract class GLRenderSurfaceBase : GLArea, IRenderSurface
+	internal abstract partial class GLRenderSurfaceBase : GLArea, IRenderSurface
 	{
 		private const SKColorType colorType = SKColorType.Rgba8888;
 		private const GRSurfaceOrigin surfaceOrigin = GRSurfaceOrigin.BottomLeft;
@@ -38,6 +38,14 @@ namespace Uno.UI.Runtime.Skia
 		private GRContext? _grContext;
 		private GRBackendRenderTarget? _renderTarget;
 		private SKSurface? _surface;
+
+		/// <summary>
+		/// This field determines if OpenGL ES shouls be used or not.
+		/// </summary>
+		/// <remarks>
+		/// In order to avoid virtual calls to <see cref="ClearOpenGL"/> and <see cref="FlushOpenGL"/> for performance reasons.
+		/// </remarks>
+		protected bool _isGLES;
 
 		public GLRenderSurfaceBase()
 		{
@@ -125,9 +133,29 @@ namespace Uno.UI.Runtime.Skia
 			GLFlush();
 		}
 
-		protected abstract void GLClear();
+		private void GLClear()
+		{
+			if (_isGLES)
+			{
+				ClearOpenGLES();
+			}
+			else
+			{
+				ClearOpenGL();
+			}
+		}
 
-		protected abstract void GLFlush();
+		private void GLFlush()
+		{
+			if (_isGLES)
+			{
+				FlushOpenGLES();
+			}
+			else
+			{
+				FlushOpenGL();
+			}
+		}
 
 		protected abstract (int framebuffer, int stencil, int samples)GetGLBuffers();
 
