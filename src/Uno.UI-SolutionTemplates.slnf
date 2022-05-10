@@ -8,8 +8,10 @@
       "SolutionTemplate\\UnoSolutionTemplate.VSIX.2019\\UnoSolutionTemplate.VSIX.2019.csproj",
       "SolutionTemplate\\UnoSolutionTemplate.VSIX.2022\\UnoSolutionTemplate.VSIX.2022.csproj",
       "SolutionTemplate\\UnoSolutionTemplate.VSIX\\UnoSolutionTemplate.VSIX.shproj",
-      "SolutionTemplate\\UnoSolutionTemplate.Wizard\\UnoSolutionTemplate.Wizard.csproj",
+      "SolutionTemplate\\UnoSolutionTemplate.Wizard.2019\\UnoSolutionTemplate.Wizard.2019.csproj",
+      "SolutionTemplate\\UnoSolutionTemplate.Wizard.2022\\UnoSolutionTemplate.Wizard.2022.csproj",
       "SolutionTemplate\\UnoSolutionTemplate.net6\\UnoSolutionTemplate.net6.csproj",
+      "SolutionTemplate\\UnoSolutionTemplate.WinUI.net6\\UnoSolutionTemplate.WinUI.net6.csproj",
       "SolutionTemplate\\UnoSolutionTemplate\\UnoSolutionTemplate.csproj",
       "UnoItemTemplate\\UnoItemTemplate.csproj"
     ]

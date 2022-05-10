@@ -1,50 +1,50 @@
 <VSTemplate Version="3.0.0" Type="ProjectGroup" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
-  <TemplateData>
-	<Name>Multi-Platform App (Uno Platform|Xamarin)</Name>
-	<Description>Template for creating a multi-platform C# &amp; XAML application targeting UWP, WebAssembly, Android, iOS, macOS and Linux</Description>
-	<ProjectType>CSharp</ProjectType>
-	<ProjectSubType />
-	<SortOrder>1000</SortOrder>
-	<CreateNewFolder>true</CreateNewFolder>
-	<DefaultName>App</DefaultName>
-	<ProvideDefaultName>true</ProvideDefaultName>
-	<LocationField>Enabled</LocationField>
-	<EnableLocationBrowseButton>true</EnableLocationBrowseButton>
-	<CreateInPlace>true</CreateInPlace>
-	<Icon>__TemplateIcon.png</Icon>
-	<PreviewImage>__PreviewImage.png</PreviewImage>
-	<NumberOfParentCategoriesToRollUp>2</NumberOfParentCategoriesToRollUp>
-	<LanguageTag>csharp</LanguageTag>
-	<PlatformTag>iOS</PlatformTag>
-	<PlatformTag>android</PlatformTag>
-	<PlatformTag>Windows</PlatformTag>
-	<PlatformTag>macOS</PlatformTag>
-	<PlatformTag>web</PlatformTag>
-	<PlatformTag>Tizen</PlatformTag>
-	<ProjectTypeTag>mobile</ProjectTypeTag>
-	<ProjectTypeTag>UWP</ProjectTypeTag>
-	<ProjectTypeTag>WebAssembly</ProjectTypeTag>
-	<ProjectTypeTag>Uno Platform</ProjectTypeTag>
-  </TemplateData>
-  <TemplateContent>
-	<ProjectCollection>
-	  <ProjectTemplateLink ProjectName="$projectname$.Shared" CopyParameters="true">Shared\Shared.vstemplate</ProjectTemplateLink>
-	  
-	  <SolutionFolder Name="Platforms">
-		<ProjectTemplateLink ProjectName="$projectname$.Droid" CopyParameters="true">Droid\Android.vstemplate</ProjectTemplateLink>
-		<ProjectTemplateLink ProjectName="$projectname$.iOS" CopyParameters="true">iOS\iOS.vstemplate</ProjectTemplateLink>
-		<ProjectTemplateLink ProjectName="$projectname$.UWP" CopyParameters="true">UWP\UWP.vstemplate</ProjectTemplateLink>
-		<ProjectTemplateLink ProjectName="$projectname$.Wasm" CopyParameters="true">Wasm\Wasm.vstemplate</ProjectTemplateLink>
-		<ProjectTemplateLink ProjectName="$projectname$.macOS" CopyParameters="true">macOS\macOS.vstemplate</ProjectTemplateLink>
-		<ProjectTemplateLink ProjectName="$projectname$.Skia.Wpf.Host" CopyParameters="true">Skia.Wpf.Host\SkiaWpfHost.vstemplate</ProjectTemplateLink>
-		<ProjectTemplateLink ProjectName="$projectname$.Skia.Wpf" CopyParameters="true">Skia.Wpf\SkiaWpf.vstemplate</ProjectTemplateLink>
-		<ProjectTemplateLink ProjectName="$projectname$.Skia.Gtk" CopyParameters="true">Skia.Gtk\SkiaGtk.vstemplate</ProjectTemplateLink>
-		<ProjectTemplateLink ProjectName="$projectname$.Skia.Tizen" CopyParameters="true">Skia.Tizen\SkiaTizen.vstemplate</ProjectTemplateLink>
-	  </SolutionFolder>
-	</ProjectCollection>
-  </TemplateContent>
-  <WizardExtension>
-	<Assembly>UnoSolutionTemplate.Wizard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=edd9d20ca5dec34b</Assembly>
-	<FullClassName>UnoSolutionTemplate.Wizard.XamarinUnoSolutionWizard</FullClassName>
-  </WizardExtension>
+	<TemplateData>
+		<Name>Uno Platform App (Xamarin)</Name>
+		<Description>Template for creating a multi-platform C# &amp; XAML application targeting UWP, WebAssembly, Android, iOS, macOS and Linux</Description>
+		<ProjectType>CSharp</ProjectType>
+		<ProjectSubType />
+		<SortOrder>1000</SortOrder>
+		<CreateNewFolder>true</CreateNewFolder>
+		<DefaultName>App</DefaultName>
+		<ProvideDefaultName>true</ProvideDefaultName>
+		<LocationField>Enabled</LocationField>
+		<EnableLocationBrowseButton>true</EnableLocationBrowseButton>
+		<CreateInPlace>true</CreateInPlace>
+		<Icon>__TemplateIcon.png</Icon>
+		<PreviewImage>__PreviewImage.png</PreviewImage>
+		<NumberOfParentCategoriesToRollUp>2</NumberOfParentCategoriesToRollUp>
+		<LanguageTag>csharp</LanguageTag>
+		<PlatformTag>iOS</PlatformTag>
+		<PlatformTag>android</PlatformTag>
+		<PlatformTag>Windows</PlatformTag>
+		<PlatformTag>macOS</PlatformTag>
+		<PlatformTag>web</PlatformTag>
+		<PlatformTag>Tizen</PlatformTag>
+		<ProjectTypeTag>mobile</ProjectTypeTag>
+		<ProjectTypeTag>UWP</ProjectTypeTag>
+		<ProjectTypeTag>WebAssembly</ProjectTypeTag>
+		<ProjectTypeTag>Uno Platform</ProjectTypeTag>
+	</TemplateData>
+	<TemplateContent>
+		<ProjectCollection>
+			<ProjectTemplateLink ProjectName="$projectname$.Shared" CopyParameters="true">Shared\Shared.vstemplate</ProjectTemplateLink>
+
+			<SolutionFolder Name="Platforms">
+				<ProjectTemplateLink ProjectName="$projectname$.Droid" CopyParameters="true">Droid\Android.vstemplate</ProjectTemplateLink>
+				<ProjectTemplateLink ProjectName="$projectname$.iOS" CopyParameters="true">iOS\iOS.vstemplate</ProjectTemplateLink>
+				<ProjectTemplateLink ProjectName="$projectname$.UWP" CopyParameters="true">UWP\UWP.vstemplate</ProjectTemplateLink>
+				<ProjectTemplateLink ProjectName="$projectname$.Wasm" CopyParameters="true">Wasm\Wasm.vstemplate</ProjectTemplateLink>
+				<ProjectTemplateLink ProjectName="$projectname$.macOS" CopyParameters="true">macOS\macOS.vstemplate</ProjectTemplateLink>
+				<ProjectTemplateLink ProjectName="$projectname$.Skia.Wpf.Host" CopyParameters="true">Skia.Wpf.Host\SkiaWpfHost.vstemplate</ProjectTemplateLink>
+				<ProjectTemplateLink ProjectName="$projectname$.Skia.Wpf" CopyParameters="true">Skia.Wpf\SkiaWpf.vstemplate</ProjectTemplateLink>
+				<ProjectTemplateLink ProjectName="$projectname$.Skia.Gtk" CopyParameters="true">Skia.Gtk\SkiaGtk.vstemplate</ProjectTemplateLink>
+				<ProjectTemplateLink ProjectName="$projectname$.Skia.Tizen" CopyParameters="true">Skia.Tizen\SkiaTizen.vstemplate</ProjectTemplateLink>
+			</SolutionFolder>
+		</ProjectCollection>
+	</TemplateContent>
+	<WizardExtension>
+		<Assembly>UnoSolutionTemplate.Wizard.2019, Version=1.0.0.0, Culture=neutral, PublicKeyToken=edd9d20ca5dec34b</Assembly>
+		<FullClassName>UnoSolutionTemplate.Wizard.XamarinUnoSolutionWizard</FullClassName>
+	</WizardExtension>
 </VSTemplate>

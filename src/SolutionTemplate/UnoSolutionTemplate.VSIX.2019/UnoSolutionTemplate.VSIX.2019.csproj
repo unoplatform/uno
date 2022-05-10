@@ -46,7 +46,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UnoSolutionTemplate</RootNamespace>
     <AssemblyName>UnoSolutionTemplate.VSIX</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
     <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
@@ -92,9 +92,9 @@
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
     </ProjectReference>
-    <ProjectReference Include="..\UnoSolutionTemplate.Wizard\UnoSolutionTemplate.Wizard.csproj">
+    <ProjectReference Include="..\UnoSolutionTemplate.Wizard.2019\UnoSolutionTemplate.Wizard.2019.csproj">
       <Project>{d8dbbd63-8c85-46a8-9455-9b678c2f713f}</Project>
-      <Name>UnoSolutionTemplate.Wizard</Name>
+      <Name>UnoSolutionTemplate.Wizard.2019</Name>
     </ProjectReference>
     <ProjectReference Include="..\UnoSolutionTemplate\UnoSolutionTemplate.csproj">
       <Project>{5C7C339E-B73C-4FDA-87AF-E8003C0FF2AB}</Project>

@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType Condition="'$(Configuration)'=='Release'">WinExe</OutputType>
+		<OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Uno.WinUI.Skia.Wpf" Version="4.2.6" />
+		<PackageReference Include="Uno.WinUI.RemoteControl" Version="4.2.6" Condition="'$(Configuration)'=='Debug'" />
+		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="3.0.5" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Assets\Fonts\uno-fluentui-assets.ttf" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\$ext_safeprojectname$.Skia.WPF\$ext_safeprojectname$.Skia.WPF.csproj" />
+	</ItemGroup>
+
+</Project>

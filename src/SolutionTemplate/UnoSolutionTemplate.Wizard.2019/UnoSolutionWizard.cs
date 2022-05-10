@@ -42,7 +42,7 @@ namespace UnoSolutionTemplate.Wizard
 
 			if (!File.Exists(vsConfigPath))
 			{
-				using var reader = new StreamReader(GetType().Assembly.GetManifestResourceStream($"{GetType().Assembly.GetName().Name}..vsconfig.{_vsSuffix}"));
+				using var reader = new StreamReader(GetType().Assembly.GetManifestResourceStream(FindManifestFileName($".vsconfig.{_vsSuffix}")));
 				File.WriteAllText(vsConfigPath, reader.ReadToEnd());
 			}
 
@@ -50,7 +50,7 @@ namespace UnoSolutionTemplate.Wizard
 
 			if (_enableNuGetConfig && !File.Exists(nugetConfigPath))
 			{
-				using var reader = new StreamReader(GetType().Assembly.GetManifestResourceStream($"{GetType().Assembly.GetName().Name}.NuGet-netcore.config"));
+				using var reader = new StreamReader(GetType().Assembly.GetManifestResourceStream(FindManifestFileName("NuGet-netcore.config")));
 				File.WriteAllText(nugetConfigPath, reader.ReadToEnd());
 			}
 
@@ -59,6 +59,10 @@ namespace UnoSolutionTemplate.Wizard
 			SetUWPAnyCPUBuildableAndDeployable();
 			SetDefaultConfiguration();
 		}
+
+		private string FindManifestFileName(string fileName)
+			=> GetType().Assembly.GetManifestResourceNames().FirstOrDefault(f => f.EndsWith("." + fileName))
+				?? throw new InvalidOperationException($"Unable to find [{fileName}] in the assembly");
 
 		public void RunStarted(object automationObject, Dictionary<string, string> replacementsDictionary, WizardRunKind runKind, object[] customParams)
 		{
