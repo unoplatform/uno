@@ -34,6 +34,9 @@ namespace Uno.UI.Controls
 
 	public partial class StatePresenter : UIControl, DependencyObject
 	{
+		internal Action Loaded;
+		internal Action Unloaded;
+
 		public RoutedEventHandler<StateChangedEventArgs> StateChanged;
 
 		private bool _highlighted;
@@ -43,6 +46,20 @@ namespace Uno.UI.Controls
 		public StatePresenter()
 		{
 			InitializeBinder();
+		}
+
+		public override void MovedToWindow()
+		{
+			base.MovedToWindow();
+
+			if (this.Window != null)
+			{
+				Loaded?.Invoke();
+			}
+			else
+			{
+				Unloaded?.Invoke();
+			}
 		}
 
 		public override bool Enabled
@@ -139,10 +156,13 @@ namespace Uno.UI.Controls
 
 			public VisualStateManager(StatePresenter presenter)
 			{
-				presenter.RegisterLoadActions(
-					loaded: () => presenter.StateChanged += GoToState,
-					unloaded: () => presenter.StateChanged -= GoToState
-				);
+				if (presenter.Window != null)
+				{
+					presenter.StateChanged += GoToState;
+				}
+
+				presenter.Loaded += () => presenter.StateChanged += GoToState;
+				presenter.Unloaded += () => presenter.StateChanged -= GoToState;
 			}
 
 			private void GoToState(object sender, StateChangedEventArgs e)

@@ -20,8 +20,6 @@ namespace Windows.UI.Xaml.Controls
 		public Panel()
 		{
 			Initialize();
-
-			this.RegisterLoadActions(() => UpdateBackground(), () => _borderRenderer.Clear());
 		}
 
 		partial void Initialize();

@@ -321,11 +321,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 				if (isAndroidView || isAndroidActivity || isAndroidFragment)
 				{
-					if (!isAndroidActivity && !isAndroidFragment)
-					{
-						WriteRegisterLoadActions(typeSymbol, builder);
-					}
-
 					builder.AppendLine($@"
 #if {hasOverridesAttachedToWindowAndroid} //Is Android view (that doesn't already override OnAttachedToWindow)
 
@@ -335,15 +330,11 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 					protected override void OnNativeLoaded()
 					{{
-						_loadActions.ForEach(a => a.Item1());
-
 						BinderAttachedToWindow();
 					}}
 
 					protected override void OnNativeUnloaded()
 					{{
-						_loadActions.ForEach(a => a.Item2());
-
 						BinderDetachedFromWindow();
 					}}
 #else //Not UnoViewGroup
@@ -355,7 +346,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						OnLoading();
 						OnLoaded();
 #endif
-						_loadActions.ForEach(a => a.Item1());
 						BinderAttachedToWindow();
 					}}
 
@@ -363,7 +353,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					protected override void OnDetachedFromWindow()
 					{{
 						base.OnDetachedFromWindow();
-						_loadActions.ForEach(a => a.Item2());
 #if {implementsIFrameworkElement} //Is IFrameworkElement
 						OnUnloaded();
 #endif
@@ -401,41 +390,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 			}
 
-			private static void WriteRegisterLoadActions(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
-			{
-				builder.AppendLine($@"
-					// A list of actions to be executed on Load and Unload
-					private List<(Action loaded, Action unloaded)> _loadActions = new List<(Action loaded, Action unloaded)>(2);
-
-					/// <summary>
-					/// Registers actions to be executed when the control is Loaded and Unloaded.
-					/// </summary>
-					/// <param name=""loaded""></param>
-					/// <param name=""unloaded""></param>
-					/// <returns></returns>
-					/// <remarks>The loaded action may be executed immediately if the control is already loaded.</remarks>
-					public IDisposable RegisterLoadActions(Action loaded, Action unloaded)
-					{{
-						var actions = (loaded, unloaded);
-
-						_loadActions.Add(actions);
-
-#if __ANDROID__
-						if(this.IsLoaded())
-#elif __IOS__ || __MACOS__
-						if(Window != null)
-#else
-#error Unsupported platform
-#endif
-						{{
-							loaded();
-						}}
-
-						return Disposable.Create(() => _loadActions.Remove(actions));
-					}}
-				");
-			}
-
 			private void WriteAttachToWindow(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
 			{
 				var hasOverridesAttachedToWindowiOS = typeSymbol.Is(_iosViewSymbol) &&
@@ -447,8 +401,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 				if (hasOverridesAttachedToWindowiOS)
 				{
-					WriteRegisterLoadActions(typeSymbol, builder);
-
 					builder.AppendLine($@"
 						public override void MovedToWindow()
 						{{
@@ -456,12 +408,10 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 							if(Window != null)
 							{{
-								_loadActions.ForEach(a => a.loaded());
 								OnAttachedToWindowPartial();
 							}}
 							else
 							{{
-								_loadActions.ForEach(a => a.unloaded());
 								OnDetachedFromWindowPartial();
 							}}
 						}}
@@ -494,8 +444,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 				if (hasOverridesAttachedToWindowiOS)
 				{
-					WriteRegisterLoadActions(typeSymbol, builder);
-
 					builder.AppendLine($@"
 						public override void ViewDidMoveToWindow()
 						{{
@@ -503,12 +451,10 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 							if(Window != null)
 							{{
-								_loadActions.ForEach(a => a.loaded());
 								OnAttachedToWindowPartial();
 							}}
 							else
 							{{
-								_loadActions.ForEach(a => a.unloaded());
 								OnDetachedFromWindowPartial();
 							}}
 						}}
