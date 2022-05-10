@@ -4,15 +4,15 @@
   items:
     - name: Select an environment
       href: get-started.md
-    - name: Get Started on Visual Studio
-      href: get-started-vs.md
+    - name: Get Started on Visual Studio 2022
+      href: get-started-vs-2022.md
     - name: Get Started on VS Code
       href: get-started-vscode.md
     - name: Get Started on Visual Studio for Mac
       href: get-started-vsmac.md
     - name: Get Started on Rider
       href: get-started-rider.md
-    - name: dotnet new templates
+    - name: Get started with "dotnet new"
       href: get-started-dotnet-new.md
     - name: Additional setup for Linux
       href: get-started-with-linux.md
@@ -31,8 +31,6 @@
       href: get-started-next-steps.md
     - name: Common issues
       href: get-started-wizard.md
-    - name: Get Started on Visual Studio 2022
-      href: get-started-vs-2022.md
 - name: How-tos and tutorials
   items:
     - name: Overview
