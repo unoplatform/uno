@@ -116,7 +116,7 @@ namespace Uno.Samples.UITest.Generator
 				.i;
 
 		private string AlignName(string v)
-			=> v.Replace("/", "_").Replace(" ", "_").Replace("-", "_");
+			=> v.Replace("/", "_").Replace(" ", "_").Replace("-", "_").Replace(":", "_");
 
 		private void GenerateTests(
 			string assembly,
