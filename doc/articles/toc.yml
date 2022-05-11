@@ -506,3 +506,13 @@
           items:
             - name: Building a simple login page
               href: figma-plugin/designers/simple-login-page.md
+    - name: Uno WebAssembly Bootstrapper
+      href: external/uno.wasm.bootstrap/doc/toc.yml
+    - name: Uno Themes
+      href: external/uno.themes/
+    - name: Uno Toolkit UI
+      href: external/uno.toolkit.ui/
+    - name: Uno Extensions
+      href: external/uno.extensions/
+    - name: Uno Check
+      href: external/uno.check/

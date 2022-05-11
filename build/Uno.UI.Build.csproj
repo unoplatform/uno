@@ -243,6 +243,7 @@
 				 BuildInParallel="true" />
 
 		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\Uno.UWPSyncGenerator.exe &quot;doc&quot;" />
+		<Exec Command="powershell .\import_external_docs.ps1" WorkingDirectory="..\doc" />
 		<Exec Command="$(Pkgdocfx_console)\tools\docfx.exe ..\doc\docfx.json -o $(OutputDir)\doc" />
 	</Target>
 
