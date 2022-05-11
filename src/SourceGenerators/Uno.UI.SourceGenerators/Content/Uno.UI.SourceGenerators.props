@@ -169,9 +169,9 @@
 	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_netstdref" />
 
 	<!--
-				A list of analyzer suppressions to include in every generated class.
-				This is required for roslyn analyzers that do not support the GeneratedCodeAttribute.
-			-->
+		A list of analyzer suppressions to include in every generated class.
+		This is required for roslyn analyzers that do not support the GeneratedCodeAttribute.
+	-->
 	<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV0056" />
 	<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV0058" />
 	<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV1003" />
@@ -180,6 +180,12 @@
 	<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV2003" />
 	<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV2004" />
 	<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV2005" />
+
+	<!--
+		Ignore disposable fields, Uno manages those on its own.
+		https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1001
+	-->
+	<XamlGeneratorAnalyzerSuppressions Include="dotnet-CA1001" />
   </ItemGroup>
 
   <PropertyGroup>
