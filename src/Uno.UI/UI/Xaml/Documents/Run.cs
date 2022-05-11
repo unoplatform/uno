@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Documents
 		public void OnTextChanged()
 		{
 			OnTextChangedPartial();
-			InvalidateInlines();
+			InvalidateInlines(true);
 			InvalidateSegmentsPartial();
 		}
 
@@ -44,54 +44,54 @@ namespace Windows.UI.Xaml.Documents
 		protected override void OnForegroundChanged()
 		{
 			base.OnForegroundChanged();
-			InvalidateInlines();
+			InvalidateInlines(false);
 		}
 
 		protected override void OnFontFamilyChanged()
 		{
 			base.OnFontFamilyChanged();
-			InvalidateInlines();
+			InvalidateInlines(false);
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnFontSizeChanged()
 		{
 			base.OnFontSizeChanged();
-			InvalidateInlines();
+			InvalidateInlines(false);
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnFontStyleChanged()
 		{
 			base.OnFontStyleChanged();
-			InvalidateInlines();
+			InvalidateInlines(false);
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnFontWeightChanged()
 		{
 			base.OnFontWeightChanged();
-			InvalidateInlines();
+			InvalidateInlines(false);
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnBaseLineAlignmentChanged()
 		{
 			base.OnBaseLineAlignmentChanged();
-			InvalidateInlines();
+			InvalidateInlines(false);
 		}
 
 		protected override void OnCharacterSpacingChanged()
 		{
 			base.OnCharacterSpacingChanged();
-			InvalidateInlines();
+			InvalidateInlines(false);
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnTextDecorationsChanged()
 		{
 			base.OnTextDecorationsChanged();
-			InvalidateInlines();
+			InvalidateInlines(false);
 		}
 
 		partial void InvalidateSegmentsPartial();

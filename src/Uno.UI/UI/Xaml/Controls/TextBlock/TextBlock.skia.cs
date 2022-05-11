@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private int GetCharacterIndexAtPoint(Point point)
 		{
-			throw new NotSupportedException();
+			return -1; // Not supported yet
 		}
 
 		protected override Size MeasureOverride(Size availableSize)

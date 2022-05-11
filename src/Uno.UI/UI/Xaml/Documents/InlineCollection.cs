@@ -24,10 +24,10 @@ namespace Windows.UI.Xaml.Documents
 			switch (_collection.GetParent())
 			{
 				case TextBlock textBlock:
-					textBlock.InvalidateInlines();
+					textBlock.InvalidateInlines(true);
 					break;
 				case Inline inline:
-					inline.InvalidateInlines();
+					inline.InvalidateInlines(true);
 					break;
 				default:
 					break;
