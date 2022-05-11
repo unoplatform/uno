@@ -1,7 +1,7 @@
 parameters:
-  DotNetVersion: '6.0.300-preview.22179.2'
-  UnoCheck_Version: '1.2.0-dev.31'
-  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/7017ad61795de3cb8b401282405bdbe263b77548/manifests/uno.ui-preview.manifest.json'
+  DotNetVersion: '6.0.300'
+  UnoCheck_Version: '1.3.0'
+  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/8c7f669060a6cca50f71bb0845281c424ad7eb0d/manifests/uno.ui-preview.manifest.json'
   Dotnet_Root: '/usr/local/share/dotnet/'
   Dotnet_Tools: '~/.dotnet/tools'
 
@@ -22,22 +22,22 @@ steps:
 
   # Required until .NET 6 installs properly using UseDotnet
   # using preview builds
-  - bash: |
-      export PATH="${{ parameters.Dotnet_Root }}:${{ parameters.Dotnet_Tools }}:$PATH"
-      curl -L https://raw.githubusercontent.com/dotnet/install-scripts/11b4eebe23d871c074364940d301c3eb53e7c7ec/src/dotnet-install.sh > dotnet-install.sh
-      sh dotnet-install.sh --version ${{ parameters.DotNetVersion }} --install-dir $DOTNET_ROOT --verbose
-      dotnet --list-sdks
-      echo "##vso[task.setvariable variable=PATH]$PATH"
-    displayName: install .NET ${{ parameters.DotNetVersion }}
-    retryCountOnTaskFailure: 3
-
-  #- task: UseDotNet@2
-  #  displayName: 'Use .NET Core SDK ${{ parameters.DotNetVersion }}'
+  #- bash: |
+  #    export PATH="${{ parameters.Dotnet_Root }}:${{ parameters.Dotnet_Tools }}:$PATH"
+  #    curl -L https://raw.githubusercontent.com/dotnet/install-scripts/11b4eebe23d871c074364940d301c3eb53e7c7ec/src/dotnet-install.sh > dotnet-install.sh
+  #    sh dotnet-install.sh --version ${{ parameters.DotNetVersion }} --install-dir $DOTNET_ROOT --verbose
+  #    dotnet --list-sdks
+  #    echo "##vso[task.setvariable variable=PATH]$PATH"
+  #  displayName: install .NET ${{ parameters.DotNetVersion }}
   #  retryCountOnTaskFailure: 3
-  #  inputs:
-  #    packageType: sdk
-  #    version: ${{ parameters.DotNetVersion }}
-  #    includePreviewVersions: true
+
+  - task: UseDotNet@2
+    displayName: 'Use .NET Core SDK ${{ parameters.DotNetVersion }}'
+    retryCountOnTaskFailure: 3
+    inputs:
+      packageType: sdk
+      version: ${{ parameters.DotNetVersion }}
+      includePreviewVersions: true
 
   - template: jdk-setup.yml
 
