@@ -232,27 +232,10 @@ namespace Uno.UI
 			var height = Window.Current.NativeWindow.Frame.Height;
 			var windowSize = new CGSize(width, height);
 			return windowSize;
-#elif __MACOS__
-			return new CGSize(GetScreenWidth(false), GetScreenHeight(false));
+#else
+			var applicationFrameSize = NSScreen.MainScreen.VisibleFrame;
+			return new CGSize(applicationFrameSize.Width, applicationFrameSize.Height);
 #endif
 		}
-
-#if __MACOS__
-		private static nfloat GetScreenWidth(bool shouldInvertDimension)
-		{
-			return shouldInvertDimension
-				? applicationFrameSize.Height
-				: applicationFrameSize.Width;
-		}
-
-		private static nfloat GetScreenHeight(bool shouldInvertDimension)
-		{
-			var fullScreenSize = NSScreen.MainScreen.VisibleFrame.Size;
-
-			return shouldInvertDimension
-				? fullScreenSize.Width
-				: fullScreenSize.Height;
-		}
-#endif
 	}
 }
