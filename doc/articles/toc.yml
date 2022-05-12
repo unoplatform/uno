@@ -12,15 +12,13 @@
       href: get-started-vsmac.md
     - name: Get Started on Rider
       href: get-started-rider.md
+    - name: Get started with Linux
+      href: get-started-with-linux.md
     - name: Get started with "dotnet new"
       href: get-started-dotnet-new.md
-    - name: Additional setup for Linux
-      href: get-started-with-linux.md
-    - name: Additional instructions for WinUI 3
-      href: get-started-winui3.md
-    - name: Using uno-check
-      href: uno-check.md
-    - name: Creating an app - Tutorial
+    - name: Using Uno Check
+      href: external/uno.check/doc/using-uno-check.md
+    - name: Create an app - Tutorials
       topicHref: getting-started-tutorial-1.md
       items:
         - name: Getting Started Tutorial 1
@@ -37,6 +35,12 @@
       href: tutorials-intro.md
     - name: How-tos
       items:
+        - name: How to deploy a WebAssembly app on Azure Static Web Apps
+          href: guides/azure-static-webapps.md
+        - name: How to integrate Uno.Material
+          href: guides/uno-material-walkthrough.md
+        - name: How to integrate Uno.Cupertino
+          href: guides/uno-cupertino-walkthrough.md
         - name: How to use Windows Community Toolkit
           href: uno-community-toolkit.md
         - name: How to add a splash screen
@@ -57,12 +61,6 @@
           href: interop/MSAL.md
         - name: How to authenticate with OpenID Connect
           href: guides/open-id-connect.md
-        - name: How to deploy a WebAssembly app on Azure Static Web Apps
-          href: guides/azure-static-webapps.md
-        - name: How to integrate Uno.Material
-          href: guides/uno-material-walkthrough.md
-        - name: How to integrate Uno.Cupertino
-          href: guides/uno-cupertino-walkthrough.md
     - name: Tutorials
       items:
         - name: Silverlight migration

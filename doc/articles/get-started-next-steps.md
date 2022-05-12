@@ -2,9 +2,9 @@
 
 Already [completed the tutorial](getting-started-tutorial-1.md)? Ready to build your own app or library, or just want to learn more? These resources will help you on your way.
 
-* The Uno Platform brings Microsoft's UWP/WinUI framework to Android, iOS, macOS, Linux, and WebAssembly. The wealth of [official Microsoft documentation on the UWP framework](https://docs.microsoft.com/en-us/windows/uwp/develop/) is a great place to start, particularly if you've never used UWP/WinUI or XAML before. Some additional resources:
+* The Uno Platform brings Microsoft's WinUI framework to Android, iOS, macOS, mac Catalyst, Linux, and WebAssembly. The wealth of [official Microsoft documentation on the WinUI framework](https://docs.microsoft.com/en-us/windows/apps/winui/winui3/) is a great place to start, particularly if you've never used WinUI or XAML before. Some additional resources:
    - [Get started with Windows 10 apps](https://docs.microsoft.com/en-us/windows/uwp/get-started/)
-   - [Universal Windows Platform documentation](https://docs.microsoft.com/en-us/windows/uwp/develop)
+   - [WinUI 3 documentation](https://docs.microsoft.com/en-us/windows/apps/winui/winui3/)
    - [Further curated links](winui-doc-links-development.md)
 
 * Online courses and videos
@@ -14,10 +14,7 @@ Already [completed the tutorial](getting-started-tutorial-1.md)? Ready to build 
 
     * The [Uno Gallery and Playground](https://github.com/unoplatform/uno.Playground) showcases many of the UI controls supported by Uno.
     * The [Ch9 sample app](https://github.com/unoplatform/Uno.Ch9) (source code and real-world app) uses the publicly-available video feed from Microsoft's Channel 9 for content. 
-
-
     * With [Uno Calculator](https://calculator.platform.uno/) we took Microsoft's open-sourced Windows 10 Calculator, ported it to C#, and put it on Android, iOS, WebAssembly, macOS, and Linux. [Check out all the code here.](https://github.com/unoplatform/calculator)
-
     * [Uno Azure DevOps (UADO)](https://github.com/unoplatform/uado) is our reference app, built from the ground up for Uno.
 
 * To find out more about cross-platform development with Uno, consult the rest of the docs here, including a list of [supported features](supported-features.md) and [general development tips](using-uno-ui.md).

@@ -2,7 +2,8 @@
 
 This getting started will guide you through the creation of an Uno Platform App using C# and .NET, based in the WinUI 3 XAML.
 
-> [!TIP] This guide covers development on Windows using Visual Studio. If you want to use another environment or IDE, see our [general getting started](get-started.md).
+> [!TIP] 
+> This guide covers development on Windows using Visual Studio. If you want to use another environment or IDE, see our [general getting started](get-started.md).
 
 ## Prerequisites
 1. To create Uno Platform applications you will need [**Visual Studio 2022 17.3 (Preview)**](https://visualstudio.microsoft.com/vs/preview/):
@@ -48,9 +49,9 @@ Follow the steps indicated by the tool.
 
 ## Create an application
 
+> [!NOTE] 
 > .NET 6 Mobile support is currently in Preview, following Microsoft's support status. As of Uno 4.3, .NET 6 Mobile RC 3 and above is supported with [Visual Studio 2022 17.3 Preview 1](https://visualstudio.microsoft.com/vs/preview). Previous releases of Visual Studio are not supported.
 
-### Prerequisite
 To create an Uno Platform app:
 1. Create a new C# solution using the **Uno Platform App** template, from Visual Studio's **Start Page**
 1. Choose the list of targets platforms you want to be generated
@@ -77,11 +78,17 @@ To create an Uno Platform app:
     - In the **Debug toolbar** drop down, select framework `net6.0-android`
     - Select an active device in "Device" sub-menu
 
+You're all set! You can now head to [our tutorials](getting-started-tutorial-1.md) on how to work on your Uno Platform app.
+
+> [!NOTE] 
 > Debugging either the macOS and macCatalyst targets is not supported from Visual Studio on Windows.
 
-### Troubleshooting Visual Studio and Uno Platform Installation Issues
+## Troubleshooting Visual Studio and Uno Platform Installation Issues
 
 You may encounter installation and/or post-installation Visual Studio issues for which workarounds exist. Please see [Common Issues](https://platform.uno/docs/articles/get-started-wizard.html) we have documented.
 
-### Getting Help
+## Getting Help
 If you continue experiencing issues with Visual Studio and Uno Platform, please visit our [Discord](https://www.platform.uno/discord) - #uno-platform channel or [GitHub Discussions](https://github.com/unoplatform/uno/discussions) where our engineering team and community will be able to help you.
+
+## Further reading
+- [Special considerations for the WinAppSDK project](features/winapp-sdk-specifics.md)

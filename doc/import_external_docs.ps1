@@ -5,7 +5,7 @@ $external_docs =
     @("https://github.com/unoplatform/uno.wasm.bootstrap", "uno.wasm.bootstrap", "3e7cc247cb2851ef9d8293071ed54433e20bfac2"),
     @("https://github.com/unoplatform/uno.themes", "uno.themes", "master"),
     @("https://github.com/unoplatform/uno.toolkit.ui", "uno.toolkit.ui", "main"),
-    @("https://github.com/unoplatform/uno.check", "uno.check", "main"),
+    @("https://github.com/unoplatform/uno.check", "uno.check", "1a2049ae6c232c5e7dafdc2b3f0ca55a7a180d58"),
     @("https://github.com/unoplatform/uno.extensions", "uno.extensions", "main")
 )
 

@@ -87,7 +87,7 @@ You will be able to build the UWP project, however, Rider currently does not sup
 
 ### Troubleshooting Uno Platform Installation Issues
 
-If you're not sure whether your environment is correctly configured for Uno Platform development, running the [`uno-check` command-line tool](uno-check.md) should be your first step.
+If you're not sure whether your environment is correctly configured for Uno Platform development, running the [`uno-check` command-line tool](external/uno.check/doc/using-uno-check.md) should be your first step.
 
 ### Getting Help
 

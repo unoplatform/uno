@@ -2,7 +2,7 @@
 
 ## Diagnose environment problems with `uno-check`
 
-If you're not sure whether your environment is correctly configured for Uno Platform development, running the [`uno-check` command-line tool](https://www.nuget.org/packages/Uno.Check) should be your first step. Find installation instructions and other details [here](uno-check.md).
+If you're not sure whether your environment is correctly configured for Uno Platform development, running the [`uno-check` command-line tool](https://www.nuget.org/packages/Uno.Check) should be your first step. Find installation instructions and other details [here](external/uno.check/doc/using-uno-check.md).
 
 ## Multi-projects structure considerations
 Uno uses a multi-project structure, for which each project has to be build individually for errors to disapear from the **Error List** window (notice the **Project** column values).

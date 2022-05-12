@@ -140,7 +140,7 @@ An existing application needs additional changes to be debugged properly.
 
 ## Troubleshooting Uno Platform VS Code issues
 
-If you're not sure whether your environment is correctly configured for Uno Platform development, running the [`uno-check` command-line tool](uno-check.md) should be your first step.
+If you're not sure whether your environment is correctly configured for Uno Platform development, running the [`uno-check` command-line tool](external/uno.check/doc/using-uno-check.md) should be your first step.
 
 The Uno Platform extension provides multiple output windows to troubleshoot its activities:
 - **Uno Platform**, which indicates general messages about the extension
