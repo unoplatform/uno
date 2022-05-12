@@ -32,6 +32,20 @@ namespace Windows.UI.Xaml
 			InitializePointers();
 		}
 
+		public override void MovedToWindow()
+		{
+			base.MovedToWindow();
+
+			if (this.Window != null)
+			{
+				OnLoadedForPointers();
+			}
+			else
+			{
+				OnUnloadedForPointers();
+			}
+		}
+
 		internal bool IsMeasureDirtyPath
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]

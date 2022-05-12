@@ -798,6 +798,15 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
+#if __ANDROID__ || __IOS__ || __MACOS__
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			_borderRenderer.Clear();
+		}
+#endif
+
 		private bool ResetDataContextOnFirstLoad()
 		{
 			if (!_firstLoadResetDone)

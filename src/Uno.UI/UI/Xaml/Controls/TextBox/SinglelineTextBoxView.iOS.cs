@@ -111,19 +111,18 @@ namespace Windows.UI.Xaml.Controls
 			{
 				IsKeyboardHiddenOnEnter = true
 			};
+		}
 
-			RegisterLoadActions(
-				() =>
-				{
-					this.EditingChanged += OnEditingChanged;
-					this.EditingDidEnd += OnEditingChanged;
-				},
-				() =>
-				{
-					this.EditingChanged -= OnEditingChanged;
-					this.EditingDidEnd -= OnEditingChanged;
-				}
-			);
+		partial void OnLoadedPartial()
+		{
+			this.EditingChanged += OnEditingChanged;
+			this.EditingDidEnd += OnEditingChanged;
+		}
+
+		partial void OnUnloadedPartial()
+		{
+			this.EditingChanged -= OnEditingChanged;
+			this.EditingDidEnd -= OnEditingChanged;
 		}
 
 		public override CGSize SizeThatFits(CGSize size)
