@@ -115,6 +115,11 @@ namespace UnoSolutionTemplate.Wizard
 
 		private void GenerateProject(Solution2 solution, SolutionFolder platformsFolder, string projectFullName, string templateName)
 		{
+			if(_projectName.Contains(" "))
+			{
+				throw new Exception("The project name should not contain spaces");
+			}
+
 			if (_projectName != null)
 			{
 				var targetPath = Path.Combine(_targetPath, projectFullName);
@@ -216,6 +221,8 @@ namespace UnoSolutionTemplate.Wizard
 			_targetPath = replacementsDictionary["$destinationdirectory$"];
 			_projectName = replacementsDictionary["$projectname$"];
 
+			ValidateProjectName();
+
 			if (runKind == WizardRunKind.AsMultiProject)
 			{
 				_dte = (DTE2)automationObject;
@@ -259,6 +266,32 @@ namespace UnoSolutionTemplate.Wizard
 
 					default:
 						throw new WizardBackoutException();
+				}
+			}
+		}
+
+		private void ValidateProjectName()
+		{
+			const string ErrorCaption = "Error creating the project";
+
+			if (_projectName != null)
+			{
+				if (_projectName.Contains(" "))
+				{
+					MessageBox.Show($"The project name should not be containing spaces", ErrorCaption);
+					throw new WizardBackoutException();
+				}
+
+				if (_projectName.Contains("-"))
+				{
+					MessageBox.Show($"The project name should not be containing '-'", ErrorCaption);
+					throw new WizardBackoutException();
+				}
+
+				if (char.IsDigit(_projectName.First()))
+				{
+					MessageBox.Show($"The project name should not start with a number", ErrorCaption);
+					throw new WizardBackoutException();
 				}
 			}
 		}
