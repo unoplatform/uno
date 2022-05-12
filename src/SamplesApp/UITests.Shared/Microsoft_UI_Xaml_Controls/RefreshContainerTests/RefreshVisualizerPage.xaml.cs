@@ -33,6 +33,7 @@ using RefreshVisualizerOrientation = Microsoft.UI.Xaml.Controls.RefreshVisualize
 using Uno.UI.Samples.Controls;
 #if HAS_UNO
 using IRefreshVisualizerPrivate = Microsoft.UI.Private.Controls.IRefreshVisualizerPrivate;
+using RefreshVizualizer_TestUI;
 #endif
 
 namespace MUXControlsTestApp
@@ -81,7 +82,11 @@ namespace MUXControlsTestApp
             LogController.InitializeLogging();
         }
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
+		protected
+#if HAS_UNO
+			internal
+#endif
+			override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
             timer.Stop();

@@ -10,7 +10,7 @@ using Windows.UI.Composition;
 
 namespace Microsoft.UI.Private.Controls;
 
-public interface IRefreshInfoProvider
+internal partial interface IRefreshInfoProvider
 {
 	void OnRefreshStarted();
 

@@ -23,7 +23,7 @@ using PullToRefreshHelperTestApi = Microsoft.UI.Private.Controls.PullToRefreshHe
 
 namespace MUXControlsTestApp
 {
-    class ImageIRefreshInfoProviderAdapter : IRefreshInfoProviderAdapter
+    internal class ImageIRefreshInfoProviderAdapter : IRefreshInfoProviderAdapter
     {
         RefreshPullDirection refreshPullDirection;
         InteractionTracker interactionTracker;
@@ -169,7 +169,7 @@ namespace MUXControlsTestApp
     }
 
 
-    public class RefreshInfoProviderImplementation : IRefreshInfoProvider, IInteractionTrackerOwner
+    internal class RefreshInfoProviderImplementation : IRefreshInfoProvider, IInteractionTrackerOwner
     {
         double executionRatio = 0.8;
         RefreshPullDirection refreshPullDirection;

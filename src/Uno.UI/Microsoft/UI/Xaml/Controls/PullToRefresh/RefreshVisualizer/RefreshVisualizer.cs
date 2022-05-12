@@ -8,11 +8,15 @@ using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Media;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class RefreshVisualizer : Control
+/// <summary>
+/// Represents a control that provides animated state indicators for content refresh.
+/// </summary>
+public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 {
 	//The Opacity of the progress indicator in the non-pending non-executing states
 	private const float MINIMUM_INDICATOR_OPACITY = 0.4f;
@@ -32,6 +36,9 @@ public partial class RefreshVisualizer : Control
 		}
 	}
 
+	/// <summary>
+	/// Initializes a new instance of the RefreshVisualizer class.
+	/// </summary>
 	public RefreshVisualizer()
 	{
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
@@ -72,7 +79,10 @@ public partial class RefreshVisualizer : Control
 		UpdateContent();
 	}
 
-	internal void RequestRefresh()
+	/// <summary>
+	/// Initiates an update of the content.
+	/// </summary>
+	public void RequestRefresh()
 	{
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
 		UpdateRefreshState(RefreshVisualizerState.Refreshing);
@@ -90,6 +100,12 @@ public partial class RefreshVisualizer : Control
 		set => SetValue(InfoProviderProperty, value);
 	}
 
+	IRefreshInfoProvider IRefreshVisualizerPrivate.InfoProvider
+	{
+		get => InfoProvider;
+		set => InfoProvider = value;
+	}
+
 	private void SetInternalPullDirection(RefreshPullDirection value)
 	{
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH_INT, METH_NAME, this, value);
@@ -97,6 +113,8 @@ public partial class RefreshVisualizer : Control
 		OnOrientationChangedImpl();
 		UpdateContent();
 	}
+
+	void IRefreshVisualizerPrivate.SetInternalPullDirection(RefreshPullDirection value) => SetInternalPullDirection(value);
 
 	//Privates
 	private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
@@ -262,6 +280,7 @@ public partial class RefreshVisualizer : Control
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
 		if (m_content != null)
 		{
+#if !HAS_UNO
 			Visual contentVisual = ElementCompositionPreview.GetElementVisual(m_content);
 
 			Size contentSize = m_content.RenderSize;
@@ -341,12 +360,98 @@ public partial class RefreshVisualizer : Control
 					MUX_ASSERT(false);
 					break;
 			}
+#else
+			Size contentSize = m_content.RenderSize;
+
+			m_content.RenderTransformOrigin = new Point(0.5, 0.5);
+			if (m_content.RenderTransform is not MatrixTransform matrixTransform)
+			{
+				matrixTransform = new MatrixTransform();
+				m_content.RenderTransform = matrixTransform;
+			}
+
+			//switch (m_state)
+			//{
+			//	case RefreshVisualizerState.Idle:
+			//		m_content.Opacity = MINIMUM_INDICATOR_OPACITY;
+			//		matrixTransform.Matrix = new Matrix(Matrix3x2.CreateRotation(m_startingRotationAngle));
+			//		//On RS2 and above we achieve the parallax animation using the Translation property, so we set the appropriate field here.
+			//		if (SharedHelpers.IsRS2OrHigher())
+			//		{
+			//			contentVisual.Properties.InsertVector3("Translation", new Vector3(0.0f, 0.0f, 0.0f));
+			//		}
+			//		else
+			//		{
+			//			contentVisual.Offset = new Vector3(0.0f, 0.0f, 0.0f);
+			//		}
+
+			//		break;
+			//	case RefreshVisualizerState.Peeking:
+			//		m_content.Opacity = 1.0f;
+			//		contentVisual.RotationAngle = m_startingRotationAngle;
+			//		break;
+			//	case RefreshVisualizerState.Interacting:
+			//		m_content.Opacity = MINIMUM_INDICATOR_OPACITY;
+			//		ExecuteInteractingAnimations();
+			//		break;
+			//	case RefreshVisualizerState.Pending:
+			//		ExecuteScaleUpAnimation();
+			//		m_content.Opacity = 1.0f;
+			//		contentVisual.RotationAngle = m_startingRotationAngle;
+			//		break;
+			//	case RefreshVisualizerState.Refreshing:
+			//		ExecuteExecutingRotationAnimation();
+			//		m_content.Opacity = 1.0f;
+			//		if (m_root != null)
+			//		{
+			//			float GetTranslationRatio()
+			//			{
+			//				if (m_refreshInfoProvider is { } refreshInfoProvider)
+			//				{
+			//					return (1.0f - (float)(refreshInfoProvider.ExecutionRatio)) * PARALLAX_POSITION_RATIO;
+			//				}
+			//				return 1.0f;
+			//			}
+			//			float translationRatio = GetTranslationRatio();
+			//			translationRatio = IsPullDirectionFar() ? -1.0f * translationRatio : translationRatio;
+			//			//On RS2 and above we achieve the parallax animation using the Translation property, so we set the appropriate field here.
+			//			if (SharedHelpers.IsRS2OrHigher())
+			//			{
+			//				if (IsPullDirectionVertical())
+			//				{
+			//					contentVisual.Properties.InsertVector3("Translation", new Vector3(0.0f, translationRatio * (float)m_root.ActualHeight, 0.0f));
+			//				}
+			//				else
+			//				{
+			//					contentVisual.Properties.InsertVector3("Translation", new Vector3(translationRatio * (float)m_root.ActualWidth, 0.0f, 0.0f));
+			//				}
+			//			}
+			//			else
+			//			{
+			//				if (IsPullDirectionVertical())
+			//				{
+			//					contentVisual.Offset = new Vector3(0.0f, translationRatio * (float)m_root.ActualHeight, 0.0f);
+			//				}
+			//				else
+			//				{
+			//					contentVisual.Offset = new Vector3(translationRatio * (float)m_root.ActualHeight, 0.0f, 0.0f);
+			//				}
+			//			}
+			//		}
+
+			//		break;
+			//	default:
+			//		MUX_ASSERT(false);
+			//		break;
+			//}
+#endif
 		}
 	}
 
 	private void ExecuteInteractingAnimations()
 	{
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
+#if !HAS_UNO
 		if (m_content != null && m_refreshInfoProvider != null)
 		{
 			Visual contentVisual = ElementCompositionPreview.GetElementVisual(m_content);
@@ -439,11 +544,15 @@ public partial class RefreshVisualizer : Control
 				}
 			}
 		}
+#else
+
+#endif
 	}
 
 	private void ExecuteScaleUpAnimation()
 	{
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
+#if !HAS_UNO
 		if (m_content != null)
 		{
 			Visual contentVisual = ElementCompositionPreview.GetElementVisual(m_content);
@@ -462,11 +571,15 @@ public partial class RefreshVisualizer : Control
 
 			contentVisual.StartAnimation("Scale.XY", contentScaleAnimation);
 		}
+#else
+
+#endif
 	}
 
 	private void ExecuteExecutingRotationAnimation()
 	{
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
+#if !HAS_UNO
 		if (m_content != null)
 		{
 			Visual contentVisual = ElementCompositionPreview.GetElementVisual(m_content);
@@ -486,6 +599,9 @@ public partial class RefreshVisualizer : Control
 
 			contentVisual.StartAnimation("RotationAngle", contentExecutionRotationAnimation);
 		}
+#else
+
+#endif
 	}
 
 	private void UpdateRefreshState(RefreshVisualizerState newState)
@@ -507,25 +623,21 @@ public partial class RefreshVisualizer : Control
 	private void RaiseRefreshRequested()
 	{
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
-		throw new NotImplementedException();
 		//	com_ptr<RefreshVisualizer> strongThis = get_strong();
 
-		//	Deferral instance =
-		//		[strongThis]()
+		var instance = new Deferral(() =>
+		{
+			//this.CheckThread();
+			RefreshCompleted();
+		});
 
-		//{
-		//			strongThis.CheckThread();
-		//			strongThis.RefreshCompleted();
-		//		}
-		//	};
+		var args = new RefreshRequestedEventArgs(instance);
 
-		//	var args = new RefreshRequestedEventArgs(instance);
-
-		//	//This makes sure that everyone registered for this event can get access to the deferral
-		//	//Otherwise someone could complete the deferral before someone else has had a chance to grab it
-		//	args.IncrementDeferralCount();
-		//	RefreshRequested?.Invoke(this, args);
-		//	args.DecrementDeferralCount();
+		//This makes sure that everyone registered for this event can get access to the deferral
+		//Otherwise someone could complete the deferral before someone else has had a chance to grab it
+		args.IncrementDeferralCount();
+		RefreshRequested?.Invoke(this, args);
+		args.DecrementDeferralCount();
 	}
 
 	private void RefreshCompleted()
@@ -563,7 +675,6 @@ public partial class RefreshVisualizer : Control
 			}
 		}
 	}
-
 
 	private void RefreshInfoProvider_InteractionRatioChanged(IRefreshInfoProvider sender, RefreshInteractionRatioChangedEventArgs e)
 	{

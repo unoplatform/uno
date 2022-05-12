@@ -4,35 +4,34 @@ using Uno.Disposables;
 using Windows.UI.Composition;
 using Windows.UI.Composition.Interactions;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using RefreshPullDirection = Microsoft.UI.Xaml.Controls.RefreshPullDirection;
 
-namespace Microsoft.UI.Private.Controls
+namespace Microsoft.UI.Private.Controls;
+
+internal partial class ScrollViewerIRefreshInfoProviderDefaultAnimationHandler
 {
-	internal partial class ScrollViewerIRefreshInfoProviderDefaultAnimationHandler
-	{
-		private readonly RefreshPullDirection m_refreshPullDirection;
+	private readonly RefreshPullDirection m_refreshPullDirection;
 
-		private UIElement? m_refreshVisualizer = null;
-		private UIElement? m_infoProvider = null;
-		private Visual? m_refreshVisualizerVisual = null;
-		private Visual? m_infoProviderVisual = null;
-		private InteractionTracker? m_interactionTracker = null;
-		private Compositor? m_compositor = null;
+	private UIElement? m_refreshVisualizer = null;
+	private UIElement? m_infoProvider = null;
+	private Visual? m_refreshVisualizerVisual = null;
+	private Visual? m_infoProviderVisual = null;
+	private InteractionTracker? m_interactionTracker = null;
+	private Compositor? m_compositor = null;
 
-		private bool m_interactionAnimationNeedsUpdating = true;
-		private bool m_refreshRequestedAnimationNeedsUpdating = true;
-		private bool m_refreshCompletedAnimationNeedsUpdating = true;
+	private bool m_interactionAnimationNeedsUpdating = true;
+	private bool m_refreshRequestedAnimationNeedsUpdating = true;
+	private bool m_refreshCompletedAnimationNeedsUpdating = true;
 
-		private ExpressionAnimation? m_refreshVisualizerVisualOffsetAnimation = null;
-		private ExpressionAnimation? m_infoProviderOffsetAnimation = null;
+	private ExpressionAnimation? m_refreshVisualizerVisualOffsetAnimation = null;
+	private ExpressionAnimation? m_infoProviderOffsetAnimation = null;
 
-		private ScalarKeyFrameAnimation? m_refreshVisualizerRefreshRequestedAnimation = null;
-		private ScalarKeyFrameAnimation? m_infoProviderRefreshRequestedAnimation = null;
+	private ScalarKeyFrameAnimation? m_refreshVisualizerRefreshRequestedAnimation = null;
+	private ScalarKeyFrameAnimation? m_infoProviderRefreshRequestedAnimation = null;
 
-		private ScalarKeyFrameAnimation? m_refreshVisualizerRefreshCompletedAnimation = null;
-		private ScalarKeyFrameAnimation? m_infoProviderRefreshCompletedAnimation = null;
-		private CompositionScopedBatch? m_refreshCompletedScopedBatch = null;
+	private ScalarKeyFrameAnimation? m_refreshVisualizerRefreshCompletedAnimation = null;
+	private ScalarKeyFrameAnimation? m_infoProviderRefreshCompletedAnimation = null;
+	private CompositionScopedBatch? m_refreshCompletedScopedBatch = null;
 
-		private readonly SerialDisposable m_compositionScopedBatchCompletedEventToken = new SerialDisposable();
-	}
+	private readonly SerialDisposable m_compositionScopedBatchCompletedEventToken = new SerialDisposable();
 }

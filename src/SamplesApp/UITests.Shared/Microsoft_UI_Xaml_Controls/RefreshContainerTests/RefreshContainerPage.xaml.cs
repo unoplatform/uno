@@ -40,6 +40,7 @@ using Uno.UI.Samples.Controls;
 using IRefreshContainerPrivate = Microsoft.UI.Private.Controls.IRefreshContainerPrivate;
 using IRefreshInfoProvider = Microsoft.UI.Private.Controls.IRefreshInfoProvider;
 using IRefreshVisualizerPrivate = Microsoft.UI.Private.Controls.IRefreshVisualizerPrivate;
+using System.Threading.Tasks;
 #endif
 
 namespace MUXControlsTestApp
@@ -65,7 +66,11 @@ namespace MUXControlsTestApp
             LogController.InitializeLogging();
         }
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        protected
+#if HAS_UNO
+			internal
+#endif
+			override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
             containerTimer.Stop();
@@ -104,7 +109,7 @@ namespace MUXControlsTestApp
             sbas.ViewChanging += Sv_ViewChanging;
         }
 
-        private void RCRefreshRequestedComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void RCRefreshRequestedComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if(this.RCRefreshRequestedComboBox.SelectedIndex == 0)
             {

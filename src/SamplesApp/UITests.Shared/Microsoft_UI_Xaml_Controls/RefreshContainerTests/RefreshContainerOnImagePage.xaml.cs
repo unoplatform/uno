@@ -50,7 +50,11 @@ namespace MUXControlsTestApp
         private bool delayRefresh = true;
         private int refreshCount = 0;
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
+		protected
+#if HAS_UNO
+			internal
+#endif
+			 override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
             timer.Stop();
@@ -95,7 +99,7 @@ namespace MUXControlsTestApp
         private void RefreshVisualizer_SizeChanged(object sender, SizeChangedEventArgs e)
         {
 #if HAS_UNO
-			((IRefreshContainerPrivate)this.RefreshContainer).RefreshInfoProviderAdapter = new ImageIRefreshInfoProviderAdapter(this.RefreshContainer.PullDirection, new AnimationHandler(RefreshContainer, this.RefreshContainer.PullDirection));\
+			((IRefreshContainerPrivate)this.RefreshContainer).RefreshInfoProviderAdapter = new ImageIRefreshInfoProviderAdapter(this.RefreshContainer.PullDirection, new AnimationHandler(this.RefreshContainer, this.RefreshContainer.PullDirection));
 #endif
         }
 

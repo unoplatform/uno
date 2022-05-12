@@ -8,6 +8,9 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls;
 
+/// <summary>
+/// Represents a container control that provides a RefreshVisualizer and pull-to-refresh functionality for scrollable content.
+/// </summary>
 public partial class RefreshContainer : ContentControl
 {
 	private const int MAX_BFS_DEPTH = 10;
@@ -96,12 +99,16 @@ public partial class RefreshContainer : ContentControl
 
 		m_refreshPullDirection = PullDirection;
 		OnPullDirectionChangedImpl();
+#if HAS_UNO
+		// Force InfoProvider to be initialized
+		OnVisualizerSizeChanged(null, null);
+#endif
 	}
 
 	/// <summary>
 	/// Initiates an update of the content.
 	/// </summary>
-	private void RequestRefresh()
+	public void RequestRefresh()
 	{
 		//PTR_TRACE_INFO(this, TRACE_MSG_METH, METH_NAME, this);
 		if (m_refreshVisualizer != null)

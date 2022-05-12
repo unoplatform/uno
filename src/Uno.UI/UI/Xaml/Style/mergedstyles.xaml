@@ -183,6 +183,10 @@
       <CornerRadius x:Key="ControlCornerRadius">2,2,2,2</CornerRadius>
       <CornerRadius x:Key="OverlayCornerRadius">4,4,4,4</CornerRadius>
       <Color x:Key="SystemControlErrorBackgroundColor">#33FFFFFF</Color>
+      <SolidColorBrush x:Key="RefreshContainerForegroundBrush" Color="White" />
+      <SolidColorBrush x:Key="RefreshContainerBackgroundBrush" Color="Transparent" />
+      <SolidColorBrush x:Key="RefreshVisualizerForeground" Color="White" />
+      <SolidColorBrush x:Key="RefreshVisualizerBackground" Color="Transparent" />
       <StaticResource x:Key="RadioButtonsHeaderForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
       <StaticResource x:Key="RadioButtonsHeaderForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
       <StaticResource x:Key="RatingControlUnselectedForeground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
@@ -1063,6 +1067,10 @@
       <CornerRadius x:Key="ControlCornerRadius">2,2,2,2</CornerRadius>
       <CornerRadius x:Key="OverlayCornerRadius">4,4,4,4</CornerRadius>
       <Color x:Key="SystemControlErrorBackgroundColor">#29C50500</Color>
+      <SolidColorBrush x:Key="RefreshContainerForegroundBrush" Color="Black" />
+      <SolidColorBrush x:Key="RefreshContainerBackgroundBrush" Color="Transparent" />
+      <SolidColorBrush x:Key="RefreshVisualizerForeground" Color="Black" />
+      <SolidColorBrush x:Key="RefreshVisualizerBackground" Color="Transparent" />
       <StaticResource x:Key="RadioButtonsHeaderForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
       <StaticResource x:Key="RadioButtonsHeaderForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
       <StaticResource x:Key="RatingControlUnselectedForeground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
@@ -1945,6 +1953,10 @@
       <StaticResource x:Key="PipsPagerNavigationButtonForegroundDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
       <CornerRadius x:Key="ControlCornerRadius">2,2,2,2</CornerRadius>
       <CornerRadius x:Key="OverlayCornerRadius">4,4,4,4</CornerRadius>
+      <SolidColorBrush x:Key="RefreshContainerForegroundBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
+      <SolidColorBrush x:Key="RefreshContainerBackgroundBrush" Color="Transparent" />
+      <SolidColorBrush x:Key="RefreshVisualizerForeground" Color="{ThemeResource SystemColorHighlightTextColor}" />
+      <SolidColorBrush x:Key="RefreshVisualizerBackground" Color="Transparent" />
       <StaticResource x:Key="RadioButtonsHeaderForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
       <StaticResource x:Key="RadioButtonsHeaderForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
       <StaticResource x:Key="RatingControlUnselectedForeground" ResourceKey="SystemControlForegroundBaseLowBrush" />
@@ -6812,6 +6824,39 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--origin: Microsoft\UI\Xaml\Controls\PullToRefresh\RefreshContainer\RefreshContainer.xaml-->
+  <Style TargetType="controls:RefreshContainer" BasedOn="{StaticResource DefaultRefreshContainerStyle}" />
+  <Style x:Key="DefaultRefreshContainerStyle" TargetType="controls:RefreshContainer">
+    <Setter Property="Foreground" Value="{ThemeResource RefreshContainerForegroundBrush}" />
+    <Setter Property="Background" Value="{ThemeResource RefreshContainerBackgroundBrush}" />
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="controls:RefreshContainer">
+          <Grid x:Name="Root" Background="{TemplateBinding Background}">
+            <ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" Background="Transparent" />
+            <Grid x:Name="RefreshVisualizerPresenter" />
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <!--origin: Microsoft\UI\Xaml\Controls\PullToRefresh\RefreshContainer\RefreshContainer_themeresources.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\PullToRefresh\RefreshVisualizer\RefreshVisualizer.xaml-->
+  <Style TargetType="controls:RefreshVisualizer">
+    <Setter Property="Background" Value="{ThemeResource RefreshVisualizerBackground}" />
+    <Setter Property="Foreground" Value="{ThemeResource RefreshVisualizerForeground}" />
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="Height" Value="100" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="controls:RefreshVisualizer">
+          <Grid x:Name="Root" MinHeight="80" Background="{TemplateBinding Background}" />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <!--origin: Microsoft\UI\Xaml\Controls\PullToRefresh\RefreshVisualizer\RefreshVisualizer_themeresources.xaml-->
   <!--origin: Microsoft\UI\Xaml\Controls\RadioButtons\RadioButton.xaml-->
   <!--origin: Microsoft\UI\Xaml\Controls\RadioButtons\RadioButtons.xaml-->
   <Style TargetType="controls:RadioButtons" BasedOn="{StaticResource DefaultRadioButtonsStyle}" />
