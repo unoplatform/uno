@@ -2,7 +2,7 @@ Set-PSDebug -Trace 1
 
 $external_docs =
 @(
-    @("https://github.com/unoplatform/uno.wasm.bootstrap", "uno.wasm.bootstrap", "dev/jela/docs-aggregate"),
+    @("https://github.com/unoplatform/uno.wasm.bootstrap", "uno.wasm.bootstrap", "3e7cc247cb2851ef9d8293071ed54433e20bfac2"),
     @("https://github.com/unoplatform/uno.themes", "uno.themes", "master"),
     @("https://github.com/unoplatform/uno.toolkit.ui", "uno.toolkit.ui", "main"),
     @("https://github.com/unoplatform/uno.check", "uno.check", "main"),
