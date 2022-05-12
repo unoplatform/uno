@@ -55,16 +55,18 @@ namespace Uno.UI
 
 		static ViewHelper()
 		{
-			if(typeof(ViewHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			if (typeof(ViewHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				typeof(ViewHelper).Log().DebugFormat("Display scale is {0}", MainScreenScale);
 			}
 		}
-		
-		public static nfloat OnePixel { 
-			get {
+
+		public static nfloat OnePixel
+		{
+			get
+			{
 				return (1.0f / MainScreenScale);
-			} 
+			}
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -136,7 +138,7 @@ namespace Uno.UI
 			// CGRectIntegral rounds the rectangle’s origin downward 
 			// and its size upward to the nearest whole integers, 
 			// such that the result contains the original rectangle.
-			
+
 			return new CGRect
 			(
 				(nfloat)FloorWithEpsilon(size.X * MainScreenScale) / MainScreenScale,
@@ -152,7 +154,7 @@ namespace Uno.UI
 		private static double CeilingWithEpsilon(double value)
 		{
 			var decimals = value - Math.Truncate(value);
-			if(decimals < _scaledRectangleRoundingEpsilon)
+			if (decimals < _scaledRectangleRoundingEpsilon)
 			{
 				return Math.Floor(value);
 			}
@@ -179,40 +181,44 @@ namespace Uno.UI
 		}
 
 		public static nfloat GetConvertedPixel(float thickness)
-        {
-            if(IsRetinaDisplay && thickness > 0 && thickness <=1)
-            {
-                return OnePixel;
-            }
-            return thickness;
-        }
+		{
+			if (IsRetinaDisplay && thickness > 0 && thickness <= 1)
+			{
+				return OnePixel;
+			}
+			return thickness;
+		}
 
-		public static nfloat StackSubViews (IEnumerable<_View> views)
+		public static nfloat StackSubViews(IEnumerable<_View> views)
 		{
 			nfloat lastBottom = 0f;
-			foreach (var view in views) {
+			foreach (var view in views)
+			{
 
-				if (view.Hidden) {
+				if (view.Hidden)
+				{
 					continue;
 				}
 
-				view.Frame = view.Frame.SetY (lastBottom);
+				view.Frame = view.Frame.SetY(lastBottom);
 				lastBottom = view.Frame.Bottom;
 			}
 
 			return lastBottom;
 		}
 
-		public static nfloat StackSubViews (_View thisView, float topPadding, float spaceBetweenElements)
+		public static nfloat StackSubViews(_View thisView, float topPadding, float spaceBetweenElements)
 		{
 			nfloat lastBottom = topPadding;
 
-			foreach (var view in thisView.Subviews) {
+			foreach (var view in thisView.Subviews)
+			{
 
-				if (view.Hidden) {
+				if (view.Hidden)
+				{
 					continue;
 				}
-				view.Frame = view.Frame.SetY (lastBottom);
+				view.Frame = view.Frame.SetY(lastBottom);
 
 				lastBottom = view.Frame.Bottom + spaceBetweenElements;
 			}
@@ -225,7 +231,7 @@ namespace Uno.UI
 		/// Gets the orientation-dependent screen size
 		/// </summary>
 		/// <returns></returns>
-		public static CGSize GetMainWindowSize()
+		public static CGSize GetScreenSize()
 		{
 #if __IOS__
 			var width = Window.Current.NativeWindow.Frame.Width;

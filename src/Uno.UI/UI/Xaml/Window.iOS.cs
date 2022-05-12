@@ -58,24 +58,24 @@ namespace Windows.UI.Xaml
 			_orientationRegistration = UIApplication
 				.Notifications
 				.ObserveDidChangeStatusBarOrientation(
-					(sender, args) => RaiseNativeSizeChanged(ViewHelper.GetMainWindowSize())
+					(sender, args) => RaiseNativeSizeChanged(ViewHelper.GetScreenSize())
 				);
 
 			_orientationRegistration = UIApplication
 				.Notifications
 				.ObserveDidChangeStatusBarFrame(
-					(sender, args) => RaiseNativeSizeChanged(ViewHelper.GetMainWindowSize())
+					(sender, args) => RaiseNativeSizeChanged(ViewHelper.GetScreenSize())
 				);
 
 			_nativeWindow.FrameChanged +=
-				() => RaiseNativeSizeChanged(ViewHelper.GetMainWindowSize());
+				() => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
 
 			_mainController.VisibleBoundsChanged +=
-				() => RaiseNativeSizeChanged(ViewHelper.GetMainWindowSize());
+				() => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
 
 			var statusBar = StatusBar.GetForCurrentView();
-			statusBar.Showing += (o, e) => RaiseNativeSizeChanged(ViewHelper.GetMainWindowSize());
-			statusBar.Hiding += (o, e) => RaiseNativeSizeChanged(ViewHelper.GetMainWindowSize());
+			statusBar.Showing += (o, e) => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
+			statusBar.Hiding += (o, e) => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
 		}
 
 		partial void InternalActivate()
