@@ -49,6 +49,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			private readonly INamedTypeSymbol? _iFrameworkElementSymbol;
 			private readonly INamedTypeSymbol? _frameworkElementSymbol;
 			private readonly bool _isUnoSolution;
+			private readonly string[] _analyzerSuppressions;
 
 			public SerializationMethodsGenerator(GeneratorExecutionContext context)
 			{
@@ -68,6 +69,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				_iFrameworkElementSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.IFrameworkElement);
 				_frameworkElementSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.FrameworkElement");
 				_isUnoSolution = _context.GetMSBuildPropertyValue("_IsUnoUISolution") == "true";
+				_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 			}
 
 			public override void VisitNamedType(INamedTypeSymbol type)
@@ -163,6 +165,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 							{
 								builder.AppendLineInvariant(@"[global::Windows.UI.Xaml.Data.Bindable]");
 							}
+
+							AnalyzerSuppressionsGenerator.Generate(builder, _analyzerSuppressions);
 
 							var internalDependencyObject = _isUnoSolution && !typeSymbol.IsSealed ? ", IDependencyObjectInternal" : "";
 
