@@ -21,7 +21,7 @@ Already [completed the tutorial](getting-started-tutorial-1.md)? Ready to build 
 
 * [Uno Platform Workshop](https://github.com/unoplatform/workshops) - In this workshop you will learn by creating a real-world mobile & web app using Uno Platform. The workshop covers: The philosophy behind Uno development, Tooling and component ecosystem, Creating rich and responsive UI, Interoperability with native code. And of course we will show how to contribute to the Uno Platform itself.
 
-* If you have a question about Uno that others might benefit from, post it on [StackOverflow](https://stackoverflow.com/questions/ask?tags=uno-platform) using the 'uno-platform' tag. Remember to check if the question [already exists](https://stackoverflow.com/questions/tagged/uno-platform) and to follow StackOverflow's [question guidelines](https://stackoverflow.com/help/how-to-ask). You'll need to sign up to StackOverflow if you're not signed up already.
+* If you have a question about Uno that others might benefit from, post it on [GitHub Discussions](https://github.com/unoplatform/uno/discussions).
 
 * If you think you've encountered a bug (e.g., something works on UWP but not on another platform), [check for an existing issue on GitHub](https://github.com/unoplatform/uno/issues) and create one if none exists. We don't like bugs, but we do like bug reports!
 

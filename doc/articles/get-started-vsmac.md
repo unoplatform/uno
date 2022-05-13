@@ -60,6 +60,4 @@ Building for WebAssembly takes a few more steps:
 ### Video Tutorial
 [![Getting Started with Visual Studio for Mac video](Assets/vsmac-cover.JPG)](http://www.youtube.com/watch?v=ESGJr6kHQg0 "")
 
-### Getting Help
-
-If you have issues with Visual Studio and Uno Platform, please visit our [Discord](https://www.platform.uno/discord) - #uno-platform channel or [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform) where our engineering team and community will be able to help you. 
+[!include[getting-help](getting-help.md)]

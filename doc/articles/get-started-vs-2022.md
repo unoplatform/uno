@@ -87,8 +87,7 @@ You're all set! You can now head to [our tutorials](getting-started-tutorial-1.m
 
 You may encounter installation and/or post-installation Visual Studio issues for which workarounds exist. Please see [Common Issues](https://platform.uno/docs/articles/get-started-wizard.html) we have documented.
 
-## Getting Help
-If you continue experiencing issues with Visual Studio and Uno Platform, please visit our [Discord](https://www.platform.uno/discord) - #uno-platform channel or [GitHub Discussions](https://github.com/unoplatform/uno/discussions) where our engineering team and community will be able to help you.
+[!include[getting-help](getting-help.md)]
 
 ## Further reading
 - [Special considerations for the WinAppSDK project](features/winapp-sdk-specifics.md)
