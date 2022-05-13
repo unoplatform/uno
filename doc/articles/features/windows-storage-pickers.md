@@ -109,8 +109,12 @@ fileSavePicker.FileTypeChoices.Add("Plain Text", new List<string>() { ".txt", ".
 StorageFile saveFile = await fileSavePicker.PickSaveFileAsync();
 if (saveFile != null)
 {
+    CachedFileManager.DeferUpdates(saveFile);
+
     // Save file was picked, you can now write in it
     await FileIO.WriteTextAsync(saveFile, "Hello, world!");
+
+    await CachedFileManager.CompleteUpdatesAsync(saveFile);
 }
 else
 {
@@ -118,7 +122,10 @@ else
 }
 ```
 
-**Notes**: While the `SuggestedStartLocation` has no effect, it must be set for UWP. You must declare at least one item for `FileTypeChoices`. Each has a description and one or more extensions.
+**Notes**: 
+The `CachedFileManager` only has effect on Windows and on WebAssembly (see below in the [WebAssembly](#WebAssembly) section)
+
+While the `SuggestedStartLocation` has no effect, it must be set for UWP. You must declare at least one item for `FileTypeChoices`. Each has a description and one or more extensions.
 
 ## Picker configuration
 
@@ -176,7 +183,7 @@ savePicker.SuggestedFileName = "New Document";
 
 // For download picker, no dialog is actually triggered here
 // and a temporary file is returned immediately.
-// For Fil System Access API, this triggers the picker to allow
+// For File System Access API, this triggers the picker to allow
 // user to select a local file.
 var file = await savePicker.PickSaveFileAsync();
 
@@ -190,6 +197,35 @@ await FileIO.WriteTextAsync(file, "Hello, world!");
 // For File System Access API, this is a no-op and immediately
 // completes.
 await CachedFileManager.CompleteUpdatesAsync(file);
+```
+
+### Checking whether File System Access API is supported
+
+In some cases you might want to check whether File System Access API is supported in the current runtime environment. A typical reason might be to ensure only **Save As** functionality is available to the user, when the browser only supports download pickers. You can utilize the WASM specific `Uno.Storage.Pickers.FileSystemAccessApiInformation` API:
+
+```c#
+#if __WASM__
+if (FileSystemAccessApiInformation.IsOpenPickerSupported)
+{
+    // File System Access API open picker is available.
+}
+
+if (FileSystemAccessApiInformation.IsSavePickerSupported)
+{
+    // File System Access API open picker is available.
+}
+
+if (FileSystemAccessApiInformation.AreFilePickersSupported)
+{
+    // Both file open and file save pickers from the 
+    // File System Access API are available.
+}
+
+if (FileSystemAccessApiInformation.IsFolderPickerSupported)
+{
+    // File System Access API folder picker is available.
+}
+#endif
 ```
 
 ### Checking the source of opened file
