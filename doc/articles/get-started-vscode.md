@@ -98,31 +98,31 @@ Note that C# Hot Reload is not available when running with the debugger. In orde
 ## Using code snippets
 
 ### Adding a new Page
-    1. In the MyApp.Shared folder, create a new file named `Page2.xaml`
-    2. Type `page` then press the `tab` key to add the page markup
-    3. Adjust the name and namespaces as needed
-    4. In the MyApp.Shared folder, create a new file named `Page2.xaml.cs`
-    5. Type `page` then press the `tab` key to add the page code-behind C#
-    6. Adjust the name and namespaces as needed
+1. In the MyApp.Shared folder, create a new file named `Page2.xaml`
+2. Type `page` then press the `tab` key to add the page markup
+3. Adjust the name and namespaces as needed
+4. In the MyApp.Shared folder, create a new file named `Page2.xaml.cs`
+5. Type `page` then press the `tab` key to add the page code-behind C#
+6. Adjust the name and namespaces as needed
 
 ### Adding a new UserControl
-    1. In the MyApp.Shared folder, create a new file named `UserControl1.xaml`
-    2. Type `usercontrol` then press they `tab` key to add the page markup
-    3. Adjust the name and namespaces as needed
-    4. In the MyApp.Shared folder, create a new file named `UserControl1.xaml.cs`
-    5. Type `usercontrol` then press the `tab` key to add the page code-behind C#
-    6. Adjust the name and namespaces as needed
+1. In the MyApp.Shared folder, create a new file named `UserControl1.xaml`
+2. Type `usercontrol` then press they `tab` key to add the page markup
+3. Adjust the name and namespaces as needed
+4. In the MyApp.Shared folder, create a new file named `UserControl1.xaml.cs`
+5. Type `usercontrol` then press the `tab` key to add the page code-behind C#
+6. Adjust the name and namespaces as needed
 
 ### Adding a new ResourceDictionary
-    1. In the MyApp.Shared folder, create a new file named `ResourceDictionary1.xaml`
-    2. Type `resourcedict` then press they `tab` key to add the page markup
+1. In the MyApp.Shared folder, create a new file named `ResourceDictionary1.xaml`
+2. Type `resourcedict` then press they `tab` key to add the page markup
 
 ### Other snippets
-    * `rd` creates a new `RowDefinition`
-    * `cd` creates a new `ColumnDefinition`
-    * `tag` creates a new XAML tag
-    * `set` creates a new `Style` setter
-    * `ctag` creates a new `TextBlock` close XAML tag
+* `rd` creates a new `RowDefinition`
+* `cd` creates a new `ColumnDefinition`
+* `tag` creates a new XAML tag
+* `set` creates a new `Style` setter
+* `ctag` creates a new `TextBlock` close XAML tag
 
 ## Updating an existing application to work with VS Code
 
@@ -140,7 +140,7 @@ An existing application needs additional changes to be debugged properly.
 
 ## Troubleshooting Uno Platform VS Code issues
 
-If you're not sure whether your environment is correctly configured for Uno Platform development, running the [`uno-check` command-line tool](uno-check.md) should be your first step.
+If you're not sure whether your environment is correctly configured for Uno Platform development, running the [`uno-check` command-line tool](external/uno.check/doc/using-uno-check.md) should be your first step.
 
 The Uno Platform extension provides multiple output windows to troubleshoot its activities:
 - **Uno Platform**, which indicates general messages about the extension
@@ -149,6 +149,4 @@ The Uno Platform extension provides multiple output windows to troubleshoot its 
 
 If the extension is not behaving properly, try using the `Developer: Reload Window` (or `Ctrl+R`) command in the palette.
 
-## Getting Help
-
-If you continue experiencing issues with Visual Studio and Uno Platform, please visit our [Discord](https://www.platform.uno/discord) - #uno-platform channel or [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform) where our engineering team and community will be able to help you. 
+[!include[getting-help](getting-help.md)]

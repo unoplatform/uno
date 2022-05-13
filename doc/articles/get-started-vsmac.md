@@ -11,7 +11,7 @@ While it is easier to create apps using Uno Platform on Windows, you can also cr
     * [.NET Core 5.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (**version 5.0 (SDK 5.0.100)** or later)
 * [**GTK+3**](https://formulae.brew.sh/formula/gtk+3) for running the Skia/GTK projects
 
-Once the dependencies are installed, you'll need to run [**uno-check**](uno-check.md) to ensure that your environment is properly configured.
+Once the dependencies are installed, you'll need to run [**uno-check**](external/uno.check/doc/using-uno-check.md) to ensure that your environment is properly configured.
 
 ## Installing the dotnet new templates
 In order to create a new Uno Project, you'll need to install the [`dotnet new` Uno Platform templates](get-started-dotnet-new.md).
@@ -60,6 +60,4 @@ Building for WebAssembly takes a few more steps:
 ### Video Tutorial
 [![Getting Started with Visual Studio for Mac video](Assets/vsmac-cover.JPG)](http://www.youtube.com/watch?v=ESGJr6kHQg0 "")
 
-### Getting Help
-
-If you have issues with Visual Studio and Uno Platform, please visit our [Discord](https://www.platform.uno/discord) - #uno-platform channel or [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform) where our engineering team and community will be able to help you. 
+[!include[getting-help](getting-help.md)]
