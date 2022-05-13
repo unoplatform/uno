@@ -17,13 +17,10 @@ using Windows.Graphics.Display;
 using Gdk;
 using System.Reflection;
 using Gtk;
-using Silk.NET.OpenGL;
-using Silk.NET.Core.Loader;
 
 namespace Uno.UI.Runtime.Skia
 {
-
-	internal class GLRenderSurface : GLArea, IRenderSurface
+	internal abstract partial class GLRenderSurfaceBase : GLArea, IRenderSurface
 	{
 		private const SKColorType colorType = SKColorType.Rgba8888;
 		private const GRSurfaceOrigin surfaceOrigin = GRSurfaceOrigin.BottomLeft;
@@ -39,11 +36,18 @@ namespace Uno.UI.Runtime.Skia
 
 		private float? _dpi = 1;
 		private GRContext? _grContext;
-		private GL _gl;
 		private GRBackendRenderTarget? _renderTarget;
 		private SKSurface? _surface;
 
-		public GLRenderSurface()
+		/// <summary>
+		/// This field determines if OpenGL ES shouls be used or not.
+		/// </summary>
+		/// <remarks>
+		/// In order to avoid virtual calls to <see cref="ClearOpenGL"/> and <see cref="FlushOpenGL"/> for performance reasons.
+		/// </remarks>
+		protected bool _isGLES;
+
+		public GLRenderSurfaceBase()
 		{
 			_displayInformation = DisplayInformation.GetForCurrentView();
 			_displayInformation.DpiChanged += OnDpiChanged;
@@ -62,9 +66,6 @@ namespace Uno.UI.Runtime.Skia
 			HasDepthBuffer = false;
 			HasStencilBuffer = false;
 			AutoRender = true;
-			SetRequiredVersion(3, 3);
-
-			_gl = new GL(new Silk.NET.Core.Contexts.DefaultNativeContext(new GLCoreLibraryNameContainer().GetLibraryName()));
 		}
 
 		private void GLRenderSurface_Realized(object? sender, EventArgs e)
@@ -79,8 +80,7 @@ namespace Uno.UI.Runtime.Skia
 			// create the contexts if not done already
 			if (_grContext == null)
 			{
-				var glInterface = GRGlInterface.Create();
-				_grContext = GRContext.CreateGl(glInterface);
+				_grContext = TryBuildGRContext();
 			}
 
 			// manage the drawing surface
@@ -93,9 +93,7 @@ namespace Uno.UI.Runtime.Skia
 				// create or update the dimensions
 				_renderTarget?.Dispose();
 
-				_gl.GetInteger(GLEnum.FramebufferBinding, out var framebuffer);
-				_gl.GetInteger(GLEnum.Stencil, out var stencil);
-				_gl.GetInteger(GLEnum.Samples, out var samples);
+				var (framebuffer, stencil, samples) = GetGLBuffers();
 				var maxSamples = _grContext.GetMaxSurfaceSampleCount(colorType);
 
 				if (samples > maxSamples)
@@ -117,8 +115,7 @@ namespace Uno.UI.Runtime.Skia
 				}
 			}
 
-			_gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.StencilBufferBit | ClearBufferMask.DepthBufferBit);
-			_gl.ClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+			GLClear();
 
 			var canvas = _surface.Canvas;
 
@@ -133,8 +130,36 @@ namespace Uno.UI.Runtime.Skia
 			// update the control
 			canvas.Flush();
 
-			_gl.Flush();
+			GLFlush();
 		}
+
+		private void GLClear()
+		{
+			if (_isGLES)
+			{
+				ClearOpenGLES();
+			}
+			else
+			{
+				ClearOpenGL();
+			}
+		}
+
+		private void GLFlush()
+		{
+			if (_isGLES)
+			{
+				FlushOpenGLES();
+			}
+			else
+			{
+				FlushOpenGL();
+			}
+		}
+
+		protected abstract (int framebuffer, int stencil, int samples)GetGLBuffers();
+
+		protected abstract GRContext TryBuildGRContext();
 
 		private void OnDpiChanged(DisplayInformation sender, object args) =>
 			UpdateDpi();
@@ -162,27 +187,5 @@ namespace Uno.UI.Runtime.Skia
 		}
 
 		private void UpdateDpi() => _dpi = (float)_displayInformation.RawPixelsPerViewPixel;
-
-		// Extracted from https://github.com/dotnet/Silk.NET/blob/23f9bd4d67ad21c69fbd69cc38a62fb2c0ec3927/src/OpenGL/Silk.NET.OpenGL/GLCoreLibraryNameContainer.cs
-		internal class GLCoreLibraryNameContainer : SearchPathContainer
-		{
-			/// <inheritdoc />
-			public override string Linux => "libGL.so.1";
-
-			/// <inheritdoc />
-			public override string MacOS => "/System/Library/Frameworks/OpenGL.framework/OpenGL";
-
-			/// <inheritdoc />
-			public override string Android => "libGL.so.1";
-
-			/// <inheritdoc />
-			public override string IOS => "/System/Library/Frameworks/OpenGL.framework/OpenGL";
-
-			/// <inheritdoc />
-			public override string Windows64 => "opengl32.dll";
-
-			/// <inheritdoc />
-			public override string Windows86 => "opengl32.dll";
-		}
 	}
 }
