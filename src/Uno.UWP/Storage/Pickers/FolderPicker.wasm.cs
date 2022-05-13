@@ -14,6 +14,12 @@ namespace Windows.Storage.Pickers
 	{
 		private const string JsType = "Windows.Storage.Pickers.FolderPicker";
 
+		internal static bool IsNativePickerSupported()
+		{
+			var isSupportedString = WebAssemblyRuntime.InvokeJS($"{JsType}.isNativeSupported()");
+			return bool.TryParse(isSupportedString, out var isSupported) && isSupported;
+		}
+
 		private async Task<StorageFolder?> PickSingleFolderTaskAsync(CancellationToken token)
 		{
 			if (!IsNativePickerSupported())
@@ -35,12 +41,6 @@ namespace Windows.Storage.Pickers
 			var info = JsonHelper.Deserialize<NativeStorageItemInfo>(pickedFolderJson);
 
 			return StorageFolder.GetFromNativeInfo(info, null);
-		}
-
-		private bool IsNativePickerSupported()
-		{
-			var isSupportedString = WebAssemblyRuntime.InvokeJS($"{JsType}.isNativeSupported()");
-			return bool.TryParse(isSupportedString, out var isSupported) && isSupported;
 		}
 	}
 }

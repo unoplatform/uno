@@ -19,6 +19,12 @@ namespace Windows.Storage.Pickers
 	{
 		private const string JsType = "Windows.Storage.Pickers.FileOpenPicker";
 
+		internal static bool IsNativePickerSupported()
+		{
+			var isSupportedString = WebAssemblyRuntime.InvokeJS($"{JsType}.isNativeSupported()");
+			return bool.TryParse(isSupportedString, out var isSupported) && isSupported;
+		}
+
 		private async Task<StorageFile?> PickSingleFileTaskAsync(CancellationToken token)
 		{
 			var files = await PickFilesAsync(false, token);
@@ -48,12 +54,6 @@ namespace Windows.Storage.Pickers
 			}
 
 			throw new NotSupportedException("Could not handle the request using any picker implementation.");
-		}
-
-		private bool IsNativePickerSupported()
-		{
-			var isSupportedString = WebAssemblyRuntime.InvokeJS($"{JsType}.isNativeSupported()");
-			return bool.TryParse(isSupportedString, out var isSupported) && isSupported;
 		}
 
 		private async Task<FilePickerSelectedFilesArray> NativePickerPickFilesAsync(bool multiple, CancellationToken token)
