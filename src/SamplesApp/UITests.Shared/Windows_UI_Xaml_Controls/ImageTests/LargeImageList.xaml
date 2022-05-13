@@ -27,7 +27,7 @@
                                     <TextBlock Height="40" Foreground="Black">
 								        <Run Text="Image uri: "/><Run Text="{Binding}"/>
                                     </TextBlock>
-                                    <Image Source="{Binding}"
+                                    <Image Source="{Binding Uri}"
                                            Width="300"
                                            Height="300"/>
                                 </StackPanel>

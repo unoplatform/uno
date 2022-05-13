@@ -6,12 +6,13 @@ using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Controls;
 using Uno.Extensions;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
 	[SampleControlInfo("Image", "LoadFromBytes")]
-	public sealed partial class LoadFromBytes
+	public sealed partial class LoadFromBytes: UserControl
 	{
 		public LoadFromBytes()
 		{
