@@ -31,11 +31,11 @@
       href: get-started-next-steps.md
     - name: Common issues
       href: get-started-wizard.md
-- name: How-tos and tutorials
+- name: How-tos and Samples
   items:
     - name: Overview
       href: tutorials-intro.md
-    - name: How-tos
+    - name: Tutorials
       items:
         - name: How to deploy a WebAssembly app on Azure Static Web Apps
           href: guides/azure-static-webapps.md
@@ -63,9 +63,7 @@
           href: interop/MSAL.md
         - name: How to authenticate with OpenID Connect
           href: guides/open-id-connect.md
-    - name: Tutorials
-      items:
-        - name: Silverlight migration
+        - name: Migrate from Silverlight to Uno Platform
           topicHref: silverlight-migration-landing.md
           items:
             - name: Overview
@@ -106,7 +104,7 @@
               href: guides/silverlight-migration/98-timeentry-samples.md
             - name: Useful resources
               href: guides/silverlight-migration/99-useful-resources.md
-        - name: Embed a JavaScript component
+        - name: Embed a JavaScript Component
           topicHref: interop/wasm-javascript-1.md
           items:
             - name: Part 1
@@ -117,10 +115,12 @@
               href: interop/wasm-javascript-3.md
         - name: Deploy to Raspberry Pi
           href: guides/raspberry-pi/raspberry-pi-intro.md
-    - name: Other examples
-      items:
-        - name: Uno.Samples
-          href: uno-samples.md
+        - name: (Wasm) Handling custom HTML events
+          href: wasm-custom-events.md
+        - name: Using Uno Platform Controls in Xamarin.Forms
+          href: howto-use-uno-in-xamarin-forms.md
+    - name: Samples
+      href: uno-samples.md
 - name: Development
   items:
     - name: Overview
@@ -393,16 +393,32 @@
           href: Uno-UI-Performance.md
         - name: How to profile applications
           href: guides/profiling-applications.md
-    - name: Advanced topics
-      items:
-        - name: (Wasm) Handling custom HTML events
-          href: wasm-custom-events.md
-        - name: Using Uno Platform Controls in Xamarin.Forms
-          href: howto-use-uno-in-xamarin-forms.md
+- name: Uno Themes
+  href: external/uno.themes/
+- name: Uno Toolkit UI
+  href: external/uno.toolkit.ui/
+- name: Uno Extensions
+  href: external/uno.extensions/
 - name: Reference
   href: implemented/toc.yml
   topicHref: implemented-views.md
-- name: Contributing to Uno
+- name: Add-ons
+  items:
+    - name: Figma plugin
+      items:
+        - name: Getting Started with Uno Figma
+          href: figma-plugin/getting-started-uno-figma.md
+        - name: Uno Figma for designers
+          items:
+            - name: Building a simple login page
+              href: figma-plugin/designers/simple-login-page.md
+    - name: Uno WebAssembly Bootstrapper
+      href: external/uno.wasm.bootstrap/doc/toc.yml
+    - name: Uno Check
+      href: external/uno.check/doc/toc.yml
+    - name: Xaml Merging
+      href: external/uno.xamlmerge.task/doc/toc.yml
+- name: Contributing to Uno Platform
   items:
     - name: Overview
       href: uno-development/contributing-intro.md
@@ -494,25 +510,3 @@
           href: uno-development/troubleshooting-source-generation.md
         - name: The XAML Trimming phase
           href: uno-development/Uno-UI-XAML-ResourceTrimming.md
-- name: Add-ons
-  items:
-    - name: Figma plugin
-      items:
-        - name: Getting Started with Uno Figma
-          href: figma-plugin/getting-started-uno-figma.md
-        - name: Uno Figma for designers
-          items:
-            - name: Building a simple login page
-              href: figma-plugin/designers/simple-login-page.md
-    - name: Uno WebAssembly Bootstrapper
-      href: external/uno.wasm.bootstrap/doc/toc.yml
-    - name: Uno Themes
-      href: external/uno.themes/
-    - name: Uno Toolkit UI
-      href: external/uno.toolkit.ui/
-    - name: Uno Extensions
-      href: external/uno.extensions/
-    - name: Uno Check
-      href: external/uno.check/doc/toc.yml
-    - name: Xaml Merging
-      href: external/uno.xamlmerge.task/doc/toc.yml
