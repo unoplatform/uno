@@ -467,9 +467,9 @@ namespace Uno.UI
 				// https://developer.xamarin.com/api/property/Android.Util.DisplayMetrics.ScaledDensity/
 				displayMetrics.ScaledDensity = displayMetrics.Density;
 			}
-			else
+			else if (FeatureConfiguration.Font.MaximumTextScaleFactor is float scaleFactor)
 			{
-				displayMetrics.ScaledDensity = Math.Min(displayMetrics.ScaledDensity, (float)FeatureConfiguration.Font.MaximumTextScaleFactor);
+				displayMetrics.ScaledDensity = Math.Min(displayMetrics.ScaledDensity, scaleFactor * displayMetrics.Density);
 			}
 		}
 	}

@@ -183,7 +183,7 @@ namespace Uno.UI
 			/// <summary>
 			/// Allows the user to limit the scale factor without having to ignore it.
 			/// </summary>
-			public static double? MaximumTextScaleFactor { get; set; }
+			public static float? MaximumTextScaleFactor { get; set; }
 #endif
 		}
 
