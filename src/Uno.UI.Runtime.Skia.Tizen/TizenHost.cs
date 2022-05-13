@@ -33,6 +33,7 @@ using Uno.UI.Runtime.Skia.Tizen.ApplicationModel.DataTransfer;
 using Uno.UI.Runtime.Skia.Tizen.System;
 using Uno.Extensions.System;
 using Windows.System.Profile.Internal;
+using System.ComponentModel;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -51,8 +52,13 @@ namespace Uno.UI.Runtime.Skia
 		/// Creates a host for a Uno Skia Tizen application.
 		/// </summary>
 		/// <param name="appBuilder">App builder.</param>
-		/// <param name="args">Arguments.</param>		
-		public TizenHost(Func<WinUI.Application> appBuilder, string[]? args = null)
+		/// <param name="args">Arguments.</param>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public TizenHost(Func<WinUI.Application> appBuilder, string[]? args = null) : this(appBuilder)
+		{
+		}
+		
+		public TizenHost(Func<WinUI.Application> appBuilder)
 		{
 			Elementary.Initialize();
 			Elementary.ThemeOverlay();

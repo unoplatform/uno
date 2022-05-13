@@ -91,7 +91,12 @@ namespace Uno.UI.Skia.Platform
 		/// Args are obsolete and will be removed in the future. Environment.CommandLine is used instead
 		/// to fill LaunchEventArgs.Arguments.
 		/// </remarks>
-		public WpfHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder, string[] args = null)
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public WpfHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder, string[] args = null) : this(dispatcher, appBuilder)
+		{
+		}
+		
+		public WpfHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder)
 		{
 			_current = this;
 
