@@ -10,6 +10,7 @@ using System.Xml.Linq;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TemplateWizard;
 using Microsoft.VisualStudio.Utilities;
 using UnoSolutionTemplate.Wizard.Forms;
@@ -258,6 +259,15 @@ namespace UnoSolutionTemplate.Wizard
 						replacementsDictionary["$ext_safeprojectname$"] = replacementsDictionary["$safeprojectname$"];
 
 						_replacementDictionary = replacementsDictionary.ToDictionary(p => p.Key, p => p.Value);
+
+						var version = GetVisualStudioReleaseVersion();
+
+						if(version < new Version(17, 3) && (_useiOS || _useAndroid || _useCatalyst || _useAppKit))
+						{
+							MessageBox.Show("iOS, Android, mac Catalyst and mac AppKit are only supported starting from Visual Studio 17.3 Preview 1 or later.", "Unable to create the solution");
+							throw new WizardCancelledException();
+						}
+
 						break;
 
 					case DialogResult.Abort:
@@ -445,5 +455,25 @@ namespace UnoSolutionTemplate.Wizard
 
 			return list.ToArray();
 		}
+
+		private Version? GetVisualStudioReleaseVersion()
+		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+
+			if (_visualStudioServiceProvider?.GetService(typeof(SVsShell)) is IVsShell service)
+			{
+				if (service.GetProperty(-9068, out var releaseVersion) != 0)
+				{
+					return null;
+				}
+				if (releaseVersion is string releaseVersionAsText && Version.TryParse(releaseVersionAsText.Split(' ')[0], out var result))
+				{
+					return result;
+				}
+			}
+
+			return null;
+		}
+
 	}
 }
