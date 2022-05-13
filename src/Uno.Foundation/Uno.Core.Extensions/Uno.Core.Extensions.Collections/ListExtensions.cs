@@ -15,11 +15,11 @@
 //
 // ******************************************************************
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Uno.Collections;
-using System.Collections;
 using System.Linq;
+using Uno.Collections;
 using Uno.Equality;
 
 namespace Uno.Extensions
@@ -267,6 +267,27 @@ namespace Uno.Extensions
 			if (comparer == null)
 			{
 				return list.IndexOf(value);
+			}
+
+			for (var i = 0; i < list.Count; i++)
+			{
+				if (comparer.Equals(value, list[i]))
+				{
+					return i;
+				}
+			}
+
+			return -1;
+		}
+
+		public static int IndexOf<T>(this IReadOnlyList<T> list, T value) =>
+			list.IndexOf(value, EqualityComparer<T>.Default);
+			
+		public static int IndexOf<T>(this IReadOnlyList<T> list, T value, IEqualityComparer comparer)
+		{
+			if (comparer == null)
+			{
+				comparer = EqualityComparer<T>.Default;
 			}
 
 			for (var i = 0; i < list.Count; i++)
