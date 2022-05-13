@@ -46,6 +46,14 @@ namespace UnoSolutionTemplate.Wizard
 				File.WriteAllText(vsConfigPath, reader.ReadToEnd());
 			}
 
+			var globalJson = Path.Combine(_targetPath, "..\\global.json");
+
+			if (!File.Exists(globalJson))
+			{
+				using var reader = new StreamReader(GetType().Assembly.GetManifestResourceStream(FindManifestFileName($"global.json")));
+				File.WriteAllText(globalJson, reader.ReadToEnd());
+			}
+
 			var nugetConfigPath = Path.Combine(_targetPath, "..\\NuGet.config");
 
 			if (_enableNuGetConfig && !File.Exists(nugetConfigPath))
