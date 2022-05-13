@@ -6,6 +6,7 @@ $external_docs =
     @("https://github.com/unoplatform/uno.themes", "uno.themes", "master"),
     @("https://github.com/unoplatform/uno.toolkit.ui", "uno.toolkit.ui", "main"),
     @("https://github.com/unoplatform/uno.check", "uno.check", "1a2049ae6c232c5e7dafdc2b3f0ca55a7a180d58"),
+    @("https://github.com/unoplatform/uno.xamlmerge.task", "uno.xamlmerge.task", "f6e3343a7ea5ba863438bf7566991664d7600ffa"),
     @("https://github.com/unoplatform/uno.extensions", "uno.extensions", "main")
 )
 

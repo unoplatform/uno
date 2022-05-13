@@ -9,7 +9,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 2. Click `Create a new project`
 
    ![Create new project](assets/image-20200325113112235.png)
-3. **Search for "Uno"** and pick `Multi-Platform App (Uno Platform|Xamarin)`.
+3. **Search for "Uno"** and pick `Uno Platform App`.
 
    ![Search for Uno](assets/image-20200325113532758.png)
    Select it and click `Next`.
