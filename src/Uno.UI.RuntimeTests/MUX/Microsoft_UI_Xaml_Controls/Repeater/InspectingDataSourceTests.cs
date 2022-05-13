@@ -17,6 +17,8 @@ using Microsoft.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using MUXControlsTestApp.Utils;
 using Uno.UI.RuntimeTests;
+using System.Threading.Tasks;
+using Private.Infrastructure;
 
 #if USING_TAEF
 using WEX.TestExecution;
@@ -254,13 +256,13 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			}
 		}
 
-		public void ValidateSwitchingItemsSourceRefreshesElements(bool isVirtualLayout)
+		//TODO Uno specific: This test is adjusted to pass on Android - UpdateLayout needs to be called twice.
+		public async Task ValidateSwitchingItemsSourceRefreshesElements(bool isVirtualLayout)
 		{
-			RunOnUIThread.Execute(() =>
+			const int numItems = 10;
+			ItemsRepeater repeater = null;
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
-				ItemsRepeater repeater = null;
-				const int numItems = 10;
-
 				repeater = new ItemsRepeater()
 				{
 					ItemsSource = Enumerable.Range(0, numItems),
@@ -283,6 +285,11 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				};
 
 				Content.UpdateLayout();
+				Content.UpdateLayout();
+			});
+			await TestServices.WindowHelper.WaitForIdle();
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
 				for (int i = 0; i < numItems; i++)
 				{
 					var element = (TextBlock)repeater.TryGetElement(i);
@@ -291,7 +298,11 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 				repeater.ItemsSource = Enumerable.Range(20, numItems);
 				Content.UpdateLayout();
-
+				Content.UpdateLayout();
+			});
+			await TestServices.WindowHelper.WaitForIdle();
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
 				for (int i = 0; i < numItems; i++)
 				{
 					var element = (TextBlock)repeater.TryGetElement(i);
