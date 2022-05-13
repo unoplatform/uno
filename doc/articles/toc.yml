@@ -394,9 +394,9 @@
         - name: How to profile applications
           href: guides/profiling-applications.md
 - name: Uno Themes
-  href: external/uno.themes/
+  href: external/uno.themes/doc/toc.yml
 - name: Uno Toolkit UI
-  href: external/uno.toolkit.ui/
+  href: external/uno.toolkit.ui/doc/toc.yml
 - name: Uno Extensions
   href: external/uno.extensions/
 - name: Reference
