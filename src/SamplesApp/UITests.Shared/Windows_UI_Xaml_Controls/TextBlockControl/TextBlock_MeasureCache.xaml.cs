@@ -5,7 +5,7 @@ using Uno.UI;
 
 namespace UITests.Windows_UI_Xaml_Controls.TextBlockControl
 {
-	[Sample]
+	[Sample("TextBlock")]
 	public sealed partial class TextBlock_MeasureCache : Page
 	{
 		public TextBlock_MeasureCache()

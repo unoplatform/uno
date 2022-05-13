@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[SampleControlInfo(description: "Sample TextBlock with Special Character")]
+	[Sample("TextBlock", Description = "Sample TextBlock with Special Character")]
 	public sealed partial class TextBlock_Special_Character : Page
 	{
 		public TextBlock_Special_Character()

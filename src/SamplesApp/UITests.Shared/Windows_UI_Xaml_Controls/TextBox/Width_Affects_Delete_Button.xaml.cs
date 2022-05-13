@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 {
-	[Sample]
+	[Sample("TextBox")]
 	public sealed partial class Width_Affects_Delete_Button : UserControl
 	{
 		public Width_Affects_Delete_Button()

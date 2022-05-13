@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.DatePicker
 {
-	[Sample("Date Picking", ViewModelType = typeof(DatePickerViewModel), IgnoreInSnapshotTests = true)]
+	[Sample("Pickers", ViewModelType = typeof(DatePickerViewModel), IgnoreInSnapshotTests = true)]
 	public sealed partial class DatePickerSample : UserControl
 	{
 		public DatePickerSample()

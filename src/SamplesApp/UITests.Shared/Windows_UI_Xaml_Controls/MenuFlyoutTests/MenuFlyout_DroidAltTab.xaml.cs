@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 {
-	[Uno.UI.Samples.Controls.SampleControlInfo("MenuFlyout", nameof(MenuFlyout_DroidAltTab), description: Description, IsManualTest = true, IgnoreInSnapshotTests = true)]
+	[Uno.UI.Samples.Controls.SampleControlInfo("Flyouts", nameof(MenuFlyout_DroidAltTab), description: Description, IsManualTest = true, IgnoreInSnapshotTests = true)]
 	public sealed partial class MenuFlyout_DroidAltTab : UserControl
 	{
 		private const string Description = "[ManualTest]: tap 'Here' to open popup, switch app/go to home and come back, tap `Here` and popup should still work.";

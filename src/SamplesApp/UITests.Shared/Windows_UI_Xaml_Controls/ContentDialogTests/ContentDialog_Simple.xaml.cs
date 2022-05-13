@@ -19,7 +19,7 @@ using ICommand = System.Windows.Input.ICommand;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 {
-	[SampleControlInfo("ContentDialog", "ContentDialog_Simple")]
+	[SampleControlInfo("Dialogs", "ContentDialog_Simple")]
 	public sealed partial class ContentDialog_Simple : UserControl
 	{
 		public ContentDialog_Simple()

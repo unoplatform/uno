@@ -12,7 +12,7 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace UITests.Windows_UI_Xaml_Media.BrushesTests
 {
-	[Sample]
+	[Sample("Brushes")]
 	public sealed partial class DynamicBrushes_On_Shapes : Page
 	{
 		private int shape1LayoutCount;

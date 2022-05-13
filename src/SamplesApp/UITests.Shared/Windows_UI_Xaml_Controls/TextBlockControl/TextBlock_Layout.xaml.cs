@@ -4,7 +4,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 {
-	[SampleControlInfo(viewModelType: typeof(ListViewViewModel))]
+	[Sample("TextBlock", ViewModelType = typeof(ListViewViewModel))]
 	public sealed partial class TextBlock_Layout : Page
 	{
 		public TextBlock_Layout()

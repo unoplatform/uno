@@ -10,7 +10,7 @@ namespace UITests.Windows_UI_Xaml_Controls.FlyoutTests
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[Sample]
+	[Sample("Flyouts")]
 	public sealed partial class Flyout_ShowAt_Window_Content : Page
 	{
 		public Flyout_ShowAt_Window_Content()

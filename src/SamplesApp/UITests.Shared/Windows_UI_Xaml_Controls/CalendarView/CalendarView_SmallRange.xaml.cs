@@ -4,7 +4,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.CalendarView
 {
-	[Sample("Date Picking", IgnoreInSnapshotTests = true)]
+	[Sample("Pickers", IgnoreInSnapshotTests = true)]
 	public sealed partial class CalendarView_SmallRange : Page
 	{
 		public CalendarView_SmallRange()
