@@ -32,6 +32,8 @@ using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
 using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI.RuntimeTests;
+using System.Threading.Tasks;
+using Private.Infrastructure;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
@@ -40,7 +42,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 	public class RepeaterFocusTests : MUXApiTestBase
 	{
 		[TestMethod]
-		public void ValidateTabNavigation()
+		public async Task ValidateTabNavigation()
 		{
 			if (!PlatformConfiguration.IsOsVersionGreaterThan(OSVersion.Redstone2))
 			{
@@ -53,7 +55,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			var data = new ObservableCollection<string>(Enumerable.Range(0, 50).Select(i => "Item #" + i));
 			var viewChangedEvent = new AutoResetEvent(false);
 
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				var itemTemplate = (DataTemplate)XamlReader.Load(
 						@"<DataTemplate  xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
@@ -88,12 +90,18 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 				repeater.TabFocusNavigation = KeyboardNavigationMode.Local;
 				Content.UpdateLayout();
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
 				ValidateTabNavigationOrder(repeater);
 			});
 
 			IdleSynchronizer.Wait();
 
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				// Move window - disconnected
 				scrollViewer.ChangeView(null, 2000, null, true);
@@ -102,7 +110,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			Verify.IsTrue(viewChangedEvent.WaitOne(DefaultWaitTimeInMS), "Waiting for final ViewChanged event.");
 			IdleSynchronizer.Wait();
 
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				ValidateTabNavigationOrder(repeater);
 
@@ -112,6 +120,12 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				while (data.Count > 21) { data.RemoveAt(21); }
 
 				repeater.UpdateLayout();
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
 				ValidateTabNavigationOrder(repeater);
 			});
 		}
