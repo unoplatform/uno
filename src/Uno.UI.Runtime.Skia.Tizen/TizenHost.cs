@@ -71,7 +71,7 @@ namespace Uno.UI.Runtime.Skia
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => EcoreMainloop.IsMainThread;
 
 			_tizenApplication = new TizenApplication(this);
-			_tizenApplication.Run(args);
+			_tizenApplication.Run(Environment.GetCommandLineArgs());
 		}
 
 		public void Run()
