@@ -128,7 +128,7 @@ namespace Uno.UI.Samples.Tests
 		}
 
 		public static readonly DependencyProperty CITestGroupProperty =
-			DependencyProperty.Register("CITestGroup", typeof(bool), typeof(UnitTestsControl), new PropertyMetadata(-1));
+			DependencyProperty.Register("CITestGroup", typeof(int), typeof(UnitTestsControl), new PropertyMetadata(-1));
 
 		/// <summary>
 		/// Defines the test group for splitting runtime tests on CI
@@ -140,7 +140,7 @@ namespace Uno.UI.Samples.Tests
 		}
 
 		public static readonly DependencyProperty CITestGroupCountProperty =
-			DependencyProperty.Register("CITestGroupCount", typeof(bool), typeof(UnitTestsControl), new PropertyMetadata(-1));
+			DependencyProperty.Register("CITestGroupCount", typeof(int), typeof(UnitTestsControl), new PropertyMetadata(-1));
 
 		public string NUnitTestResultsDocument
 		{
