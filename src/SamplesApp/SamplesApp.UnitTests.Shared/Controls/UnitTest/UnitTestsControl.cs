@@ -919,13 +919,13 @@ namespace Uno.UI.Samples.Tests
 
 		private static SHA1 _sha1 = SHA1.Create();
 
-		private ulong GetTypeTestGroup(Type type)
+		private int GetTypeTestGroup(Type type)
 		{
 			// Compute a stable hash of the full metadata name
 			var buffer = Encoding.UTF8.GetBytes(type.FullName);
 			var hash = _sha1.ComputeHash(buffer);
 
-			return BitConverter.ToUInt64(hash, 0);
+			return (int)BitConverter.ToUInt64(hash, 0);
 		}
 
 		private static UnitTestClassInfo BuildType(Type type)
