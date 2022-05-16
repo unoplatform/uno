@@ -401,13 +401,13 @@
   href: external/uno.toolkit.ui/doc/toc.yml
 - name: Uno Extensions
   href: external/uno.extensions/doc/toc.yml
+- name: Uno For Figma
+  href: external/figma-docs/toc.yml
 - name: Reference
   href: implemented/toc.yml
   topicHref: implemented-views.md
 - name: Add-ons
   items:
-    - name: Uno For Figma
-      href: external/figma-docs/toc.yml
     - name: Uno WebAssembly Bootstrapper
       href: external/uno.wasm.bootstrap/doc/toc.yml
     - name: Uno Check
