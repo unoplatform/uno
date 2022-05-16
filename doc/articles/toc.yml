@@ -405,7 +405,7 @@
 - name: Add-ons
   items:
     - name: Uno For Figma
-      href: external/figma-docs/doc/toc.yml
+      href: external/figma-docs/toc.yml
     - name: Uno WebAssembly Bootstrapper
       href: external/uno.wasm.bootstrap/doc/toc.yml
     - name: Uno Check
