@@ -27,6 +27,8 @@ using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Newtonsoft.Json;
+using System.Text;
+using System.Security.Cryptography;
 
 #if HAS_UNO
 using Uno.Foundation.Logging;
@@ -115,6 +117,30 @@ namespace Uno.UI.Samples.Tests
 		// Using a DependencyProperty as the backing store for IsRunningOnCI.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty IsRunningOnCIProperty =
 			DependencyProperty.Register("IsRunningOnCI", typeof(bool), typeof(UnitTestsControl), new PropertyMetadata(false));
+
+		/// <summary>
+		/// Defines the test group for splitting runtime tests on CI
+		/// </summary>
+		public int CITestGroup
+		{
+			get => (int)GetValue(CITestGroupProperty);
+			set => SetValue(CITestGroupProperty, value);
+		}
+
+		public static readonly DependencyProperty CITestGroupProperty =
+			DependencyProperty.Register("CITestGroup", typeof(bool), typeof(UnitTestsControl), new PropertyMetadata(-1));
+
+		/// <summary>
+		/// Defines the test group for splitting runtime tests on CI
+		/// </summary>
+		public int CITestGroupCount
+		{
+			get => (int)GetValue(CITestGroupCountProperty);
+			set => SetValue(CITestGroupCountProperty, value);
+		}
+
+		public static readonly DependencyProperty CITestGroupCountProperty =
+			DependencyProperty.Register("CITestGroupCount", typeof(bool), typeof(UnitTestsControl), new PropertyMetadata(-1));
 
 		public string NUnitTestResultsDocument
 		{
@@ -884,10 +910,22 @@ namespace Uno.UI.Samples.Tests
 
 			return from type in types
 				   where type.GetTypeInfo().GetCustomAttribute(typeof(TestClassAttribute)) != null
+				   where CITestGroupCount == -1 || (CITestGroupCount != -1 && (GetTypeTestGroup(type) % CITestGroupCount) == CITestGroup)
 				   orderby type.Name
 				   let info = BuildType(type)
 				   where info.Type is { }
 				   select info;
+		}
+
+		private static SHA1 _sha1 = SHA1.Create();
+
+		private ulong GetTypeTestGroup(Type type)
+		{
+			// Compute a stable hash of the full metadata name
+			var buffer = Encoding.UTF8.GetBytes(type.FullName);
+			var hash = _sha1.ComputeHash(buffer);
+
+			return BitConverter.ToUInt64(hash, 0);
 		}
 
 		private static UnitTestClassInfo BuildType(Type type)

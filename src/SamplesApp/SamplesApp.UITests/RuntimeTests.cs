@@ -22,6 +22,8 @@ namespace SamplesApp.UITests.Runtime
 		private readonly TimeSpan TestRunTimeout = TimeSpan.FromMinutes(2);
 		private const string TestResultsOutputFilePath = "UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH";
 		private const string TestResultsOutputTempFilePath = "UNO_UITEST_RUNTIMETESTS_RESULTS_TEMP_FILE_PATH";
+		private const string TestGroupVariable = "UITEST_RUNTIME_TEST_GROUP";
+		private const string TestGroupCountVariable = "UITEST_RUNTIME_TEST_GROUP_COUNT";
 
 		[Test]
 		[AutoRetry(tryCount: 1)]
@@ -50,6 +52,13 @@ namespace SamplesApp.UITests.Runtime
 			{
 				// Used to disable showing the test output visually
 				unitTestsControl.SetDependencyPropertyValue("IsRunningOnCI", "true");
+
+				// Used to perform test grouping on CI to reduce the impact of re-runs
+				if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable(TestGroupVariable)))
+				{
+					unitTestsControl.SetDependencyPropertyValue("CITestGroup", Environment.GetEnvironmentVariable(TestGroupVariable));
+					unitTestsControl.SetDependencyPropertyValue("CITestGroupCount", Environment.GetEnvironmentVariable(TestGroupCountVariable));
+				}
 			}
 
 			_app.FastTap(runButton);
