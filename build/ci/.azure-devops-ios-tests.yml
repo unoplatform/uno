@@ -108,8 +108,8 @@ jobs:
 - template: .azure-devops-ios-tests-run.yml
   parameters:
     nugetPackages: $(NUGET_PACKAGES)
-    JobName: 'iOS_Automated_Tests_Runtime_Tests'
-    JobDisplayName: 'iOS Automated Runtime Tests'
+    JobName: 'iOS_Automated_Tests_Runtime_Tests_group_0'
+    JobDisplayName: 'iOS Automated Runtime Tests (group 0)'
     JobTimeoutInMinutes: 60
     vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: false
@@ -124,8 +124,8 @@ jobs:
 - template: .azure-devops-ios-tests-run.yml
   parameters:
     nugetPackages: $(NUGET_PACKAGES)
-    JobName: 'iOS_Automated_Tests_Runtime_Tests'
-    JobDisplayName: 'iOS Automated Runtime Tests'
+    JobName: 'iOS_Automated_Tests_Runtime_Tests_group_1'
+    JobDisplayName: 'iOS Automated Runtime Tests (group 1)'
     JobTimeoutInMinutes: 60
     vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: false
@@ -140,8 +140,8 @@ jobs:
 - template: .azure-devops-ios-tests-run.yml
   parameters:
     nugetPackages: $(NUGET_PACKAGES)
-    JobName: 'iOS_Automated_Tests_Runtime_Tests'
-    JobDisplayName: 'iOS Automated Runtime Tests'
+    JobName: 'iOS_Automated_Tests_Runtime_Tests_group_2'
+    JobDisplayName: 'iOS Automated Runtime Tests (group 2)'
     JobTimeoutInMinutes: 60
     vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: false
