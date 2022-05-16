@@ -146,7 +146,7 @@ jobs:
     condition: always()
     inputs:
       testResultsFiles: '$(build.sourcesdirectory)/build/RuntimeTestResults*.xml'
-      testRunTitle: 'iOS Runtime Tests Run'
+      testRunTitle: 'iOS Runtime Tests Run ($(Agent.JobName))'
       testResultsFormat: 'NUnit'
       failTaskOnFailedTests: true
 
