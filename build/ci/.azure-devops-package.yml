@@ -81,6 +81,16 @@ jobs:
       cleanDestinationFolder: false
       overwriteExistingFiles: true
 
+  - template: templates/generate-changelog.yml
+
+  - task: CopyFiles@2
+    displayName: Copy changelog packages
+    condition: always()
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/build
+      Contents: 'CHANGELOG.md'
+      TargetFolder: $(build.artifactstagingdirectory)\vslatest
+
   - task: MSBuild@1
     inputs:
       solution: Build/Uno.UI.Build.csproj

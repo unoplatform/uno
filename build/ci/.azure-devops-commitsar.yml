@@ -19,3 +19,19 @@ jobs:
 
     condition: ne(variables['System.PullRequest.PullRequestNumber'], '')
 
+  - template: templates/generate-changelog.yml
+
+  - task: CopyFiles@2
+    displayName: Copy Changelog
+    condition: always()
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/build
+      Contents: 'CHANGELOG.md'
+      TargetFolder: $(build.artifactstagingdirectory)/vslatest
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: Changelog
+      ArtifactType: Container
