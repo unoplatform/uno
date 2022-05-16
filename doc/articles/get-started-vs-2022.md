@@ -71,7 +71,9 @@ To create an Uno Platform app:
 1. To debug for **iOS**:
     - Right click on the `MyApp.Mobile` project, select **Set as startup project**
     - In the "Debug toolbar" drop down, select framework `net6.0-ios`:
-    ![visual-studio-installer-web](Assets/quick-start/net6-ios-debug.png)
+
+      ![visual-studio-installer-web](Assets/quick-start/net6-ios-debug.png)
+      
     - Select an active device
 1. To debug the **Android** platform:
     - Right click on the `MyApp.Mobile` project, select **Set as startup project**

@@ -1,39 +1,41 @@
 - name: Overview
   topicHref: intro.md
 - name: Get started
+  topicHref: get-started.md
   items:
-    - name: Select an environment
-      href: get-started.md
-    - name: Get Started on Visual Studio 2022
-      href: get-started-vs-2022.md
-    - name: Get Started on VS Code
-      href: get-started-vscode.md
-    - name: Get Started on Visual Studio for Mac
-      href: get-started-vsmac.md
-    - name: Get Started on Rider
-      href: get-started-rider.md
-    - name: Get started with Linux
-      href: get-started-with-linux.md
-    - name: Get started with "dotnet new"
-      href: get-started-dotnet-new.md
+    - name: Development Environment
+      topicHref: get-started-vs-2022.md
+      items:
+      - name: Visual Studio 2022
+        href: get-started-vs-2022.md
+      - name: VS Code
+        href: get-started-vscode.md
+      - name: Visual Studio for Mac
+        href: get-started-vsmac.md
+      - name: Rider
+        href: get-started-rider.md
+      - name: Linux
+        href: get-started-with-linux.md
+      - name: "dotnet new"
+        href: get-started-dotnet-new.md
     - name: Using Uno Check
       href: external/uno.check/doc/using-uno-check.md
-    - name: Create an app - Tutorials
+    - name: Create Your First App
       topicHref: getting-started-tutorial-1.md
       items:
-        - name: Getting Started Tutorial 1
+        - name: Tutorial 1
           href: getting-started-tutorial-1.md
-        - name: Getting Started Tutorial 2
+        - name: Tutorial 2
           href: getting-started-tutorial-2.md
     - name: Next steps
       href: get-started-next-steps.md
     - name: Common issues
       href: get-started-wizard.md
-- name: How-tos and tutorials
+- name: How-tos and Samples
   items:
     - name: Overview
       href: tutorials-intro.md
-    - name: How-tos
+    - name: Tutorials
       items:
         - name: How to deploy a WebAssembly app on Azure Static Web Apps
           href: guides/azure-static-webapps.md
@@ -61,9 +63,7 @@
           href: interop/MSAL.md
         - name: How to authenticate with OpenID Connect
           href: guides/open-id-connect.md
-    - name: Tutorials
-      items:
-        - name: Silverlight migration
+        - name: Migrate from Silverlight to Uno Platform
           topicHref: silverlight-migration-landing.md
           items:
             - name: Overview
@@ -104,7 +104,7 @@
               href: guides/silverlight-migration/98-timeentry-samples.md
             - name: Useful resources
               href: guides/silverlight-migration/99-useful-resources.md
-        - name: Embed a JavaScript component
+        - name: Embed a JavaScript Component
           topicHref: interop/wasm-javascript-1.md
           items:
             - name: Part 1
@@ -115,10 +115,12 @@
               href: interop/wasm-javascript-3.md
         - name: Deploy to Raspberry Pi
           href: guides/raspberry-pi/raspberry-pi-intro.md
-    - name: Other examples
-      items:
-        - name: Uno.Samples
-          href: uno-samples.md
+        - name: (Wasm) Handling custom HTML events
+          href: wasm-custom-events.md
+        - name: Using Uno Platform Controls in Xamarin.Forms
+          href: howto-use-uno-in-xamarin-forms.md
+    - name: Samples
+      href: uno-samples.md
 - name: Development
   items:
     - name: Overview
@@ -391,16 +393,26 @@
           href: Uno-UI-Performance.md
         - name: How to profile applications
           href: guides/profiling-applications.md
-    - name: Advanced topics
-      items:
-        - name: (Wasm) Handling custom HTML events
-          href: wasm-custom-events.md
-        - name: Using Uno Platform Controls in Xamarin.Forms
-          href: howto-use-uno-in-xamarin-forms.md
+- name: Uno Themes
+  href: external/uno.themes/doc/toc.yml
+- name: Uno Toolkit UI
+  href: external/uno.toolkit.ui/doc/toc.yml
+- name: Uno Extensions
+  href: external/uno.extensions/doc/toc.yml
 - name: Reference
   href: implemented/toc.yml
   topicHref: implemented-views.md
-- name: Contributing to Uno
+- name: Add-ons
+  items:
+    - name: Uno For Figma
+      href: external/figma-docs/toc.yml
+    - name: Uno WebAssembly Bootstrapper
+      href: external/uno.wasm.bootstrap/doc/toc.yml
+    - name: Uno Check
+      href: external/uno.check/doc/toc.yml
+    - name: Xaml Merging
+      href: external/uno.xamlmerge.task/doc/toc.yml
+- name: Contributing to Uno Platform
   items:
     - name: Overview
       href: uno-development/contributing-intro.md
@@ -492,23 +504,3 @@
           href: uno-development/troubleshooting-source-generation.md
         - name: The XAML Trimming phase
           href: uno-development/Uno-UI-XAML-ResourceTrimming.md
-- name: Add-ons
-  items:
-    - name: Figma plugin
-      items:
-        - name: Getting Started with Uno Figma
-          href: figma-plugin/getting-started-uno-figma.md
-        - name: Uno Figma for designers
-          items:
-            - name: Building a simple login page
-              href: figma-plugin/designers/simple-login-page.md
-    - name: Uno WebAssembly Bootstrapper
-      href: external/uno.wasm.bootstrap/doc/toc.yml
-    - name: Uno Themes
-      href: external/uno.themes/
-    - name: Uno Toolkit UI
-      href: external/uno.toolkit.ui/
-    - name: Uno Extensions
-      href: external/uno.extensions/
-    - name: Uno Check
-      href: external/uno.check/
