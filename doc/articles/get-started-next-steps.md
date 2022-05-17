@@ -3,9 +3,9 @@ If you have already [completed the tutorial](getting-started-tutorial-1.md)? and
 The Uno Platform brings Microsoft's WinUI framework to Android, iOS, macOS, mac Catalyst, Linux, and WebAssembly. The wealth of [official Microsoft documentation on the WinUI framework](https://docs.microsoft.com/en-us/windows/apps/winui/winui3/) is a great place to start, particularly if you've never used WinUI or XAML before. 
 
 Some additional resources:
--	[Get started with Windows 10 apps](https://docs.microsoft.com/en-us/windows/uwp/get-started/)
--	[WinUI 3 documentation](https://docs.microsoft.com/en-us/windows/apps/winui/winui3/)
--	[Further curated links](winui-doc-links-development.md)
+- [Get started with Windows 10 apps](https://docs.microsoft.com/en-us/windows/uwp/get-started/)
+- [WinUI 3 documentation](https://docs.microsoft.com/en-us/windows/apps/winui/winui3/)
+- [Further curated links](winui-doc-links-development.md)
 	
 ## Free & paid tutorials, courses, and guided pathways for getting started with Uno Platform
 
@@ -77,15 +77,15 @@ The course covers:
 
 #### 7. Udemy – Introduction to Uno Platform
 
-   •	A cost-effective way to get the basics is the [Uno Platform course on Udemy]( https://www.udemy.com/course/introduction-to-uno-platform/?referralCode=C9FE308096EADFB5B661) – only about $15 USD. *If you visit the page on consecutive days, it automatically kicks in with a discount.
+- A cost-effective way to get the basics is the [Uno Platform course on Udemy]( https://www.udemy.com/course/introduction-to-uno-platform/?referralCode=C9FE308096EADFB5B661) – only about $15 USD. *If you visit the page on consecutive days, it automatically kicks in with a discount.
    
 #### 8. Packt - Creating Cross-Platform C# Applications with Uno Platform
 
-   •	[Creating Cross-Platform C# Applications with Uno Platform]( https://www.packtpub.com/product/creating-cross-platform-c-applications-with-uno-platform/9781801078498) By Matt Lacey & Marcel Alexander Wagner is a helpful guide packed with tips and practical examples to help you build applications for common scenarios. It’s available on Packt as well as Amazon.ca/.com
+- [Creating Cross-Platform C# Applications with Uno Platform]( https://www.packtpub.com/product/creating-cross-platform-c-applications-with-uno-platform/9781801078498) By Matt Lacey & Marcel Alexander Wagner is a helpful guide packed with tips and practical examples to help you build applications for common scenarios. It’s available on Packt as well as Amazon.ca/.com
    
-**ADVANCED RESOURCES:**
+## ADVANCED RESOURCES:
 
-**9. Raspberry Pi**
+#### 9. Raspberry Pi
 
 - If your looking to bring your cross platform apps to Raspberry Pi with Uno Platform, Peter Gallagher wrote an [article to help you get started]( https://www.petecodes.co.uk/developing-uwp-apps-for-the-raspberry-pi-with-uno-platform/) or try our [getting started with Raspberry Pi documentation]( https://platform.uno/docs/articles/guides/raspberry-pi/raspberry-pi-intro.html).
 
