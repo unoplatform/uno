@@ -3,10 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:UnoIslands.WPF"
-		xmlns:xamlHost="clr-namespace:Uno.UI.XamlHost.Skia.Wpf;assembly=Uno.UI.Runtime.Skia.Wpf"
-		mc:Ignorable="d"
-        Title="Uno with Skia# Backend" Height="450" Width="800">
+        xmlns:xamlHost="clr-namespace:Uno.UI.XamlHost.Skia.Wpf;assembly=Uno.UI.Runtime.Skia.Wpf"
+        mc:Ignorable="d"
+        Title="Uno Islands Sample" Height="450" Width="800">
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
