@@ -1,8 +1,8 @@
-﻿using System;
+﻿#if !NET6_0_OR_GREATER
+using System;
 using System.Threading;
 using Android.Animation;
 using Android.Widget;
-using Com.Airbnb.Lottie;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using Android.Views;
@@ -10,6 +10,8 @@ using Uno.Disposables;
 using Uno.UI;
 using ViewHelper = Uno.UI.ViewHelper;
 using System.Threading.Tasks;
+
+using Com.Airbnb.Lottie;
 
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
@@ -260,3 +262,122 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		}
 	}
 }
+#else
+using System;
+using System.Threading;
+using Windows.Foundation;
+using Windows.UI.Xaml.Controls;
+using System.Threading.Tasks;
+using Uno.Disposables;
+using Uno.UI.Controls;
+using Android.Graphics;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml;
+
+namespace Microsoft.Toolkit.Uwp.UI.Lottie
+{
+	partial class LottieVisualSourceBase
+	{
+		private BindableProgressBar? _bindableProgressBar;
+		private double _toProgress;
+		private bool _looped;
+		private IDisposable? _colorDisposable;
+
+		public bool UseHardwareAcceleration { get; set; } = true;
+
+		async Task InnerUpdate(CancellationToken ct)
+		{
+			
+		}
+
+		public void Play(double fromProgress, double toProgress, bool looped)
+		{
+			_toProgress = toProgress;
+			_looped = looped;
+
+			if(_bindableProgressBar != null)
+			{
+				_bindableProgressBar.SetProgress((int)(toProgress * 100), looped);
+			}
+		}
+
+		public void Stop()
+		{
+			if (_bindableProgressBar != null)
+			{
+				_bindableProgressBar.SetProgress(0, false);
+			}
+		}
+
+		public void Pause()
+		{
+
+		}
+
+		public void Resume()
+		{
+
+		}
+
+		public void SetProgress(double progress)
+		{
+			if (_bindableProgressBar != null)
+			{
+				_bindableProgressBar.SetProgress((int)(_toProgress * 100), false);
+			}
+		}
+
+		public void Load()
+		{
+			TryLoadProgressRing();
+		}
+
+		public void Unload()
+		{
+			TryUnloadProgressRing();
+		}
+
+		private void TryLoadProgressRing()
+		{
+			if (_player?.TemplatedParent is Microsoft.UI.Xaml.Controls.ProgressRing progress)
+			{
+				_bindableProgressBar ??= new BindableProgressBar();
+
+				_player.AddView(_bindableProgressBar);
+
+				void UpdateColor()
+				{
+					if (progress.Foreground is SolidColorBrush foregroundColor && _bindableProgressBar?.IndeterminateDrawable != null)
+					{
+#pragma warning disable 618 // SetColorFilter is deprecated
+						_bindableProgressBar.IndeterminateDrawable.SetColorFilter(foregroundColor.Color, PorterDuff.Mode.SrcIn!);
+#pragma warning restore 618 // SetColorFilter is deprecated
+					}
+				}
+
+				void UpdateColorCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+					=> UpdateColor();
+
+				_colorDisposable = progress.RegisterDisposablePropertyChangedCallback(Microsoft.UI.Xaml.Controls.ProgressRing.ForegroundProperty, UpdateColorCallback);
+
+				_bindableProgressBar.SetProgress((int)(_toProgress * 100), _looped);
+
+				UpdateColor();
+			}
+		}
+
+
+		private void TryUnloadProgressRing()
+		{
+			if (_player?.TemplatedParent is Microsoft.UI.Xaml.Controls.ProgressRing progress)
+			{
+				_colorDisposable?.Dispose();
+				_player.RemoveView(_bindableProgressBar);
+				_bindableProgressBar = null;
+			}
+		}
+
+		private Size CompositionSize => default;
+	}
+}
+#endif

@@ -228,51 +228,89 @@ using Windows.UI.Xaml.Controls;
 using Foundation;
 using System.Threading.Tasks;
 using Uno.Disposables;
+using Uno.UI.Views.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml;
 
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
 	partial class LottieVisualSourceBase
 	{
+		private NativeProgressRing? _nativeProgressRing;
+		private IDisposable? _colorDisposable;
+
 		public bool UseHardwareAcceleration { get; set; } = true;
 
 		async Task InnerUpdate(CancellationToken ct)
 		{
-
 		}
 
 		public void Play(double fromProgress, double toProgress, bool looped)
 		{
-			throw new NotImplementedException();
+			if (_nativeProgressRing != null)
+			{
+				_nativeProgressRing.StartAnimating();
+			}
 		}
 
 		public void Stop()
 		{
-			throw new NotImplementedException();
+			if (_nativeProgressRing != null)
+			{
+				_nativeProgressRing.StopAnimating();
+			}
 		}
 
 		public void Pause()
 		{
-			throw new NotImplementedException();
 		}
 
 		public void Resume()
 		{
-			throw new NotImplementedException();
 		}
 
 		public void SetProgress(double progress)
 		{
-			throw new NotImplementedException();
 		}
 
 		public void Load()
 		{
-			throw new NotImplementedException();
+			if (_player?.TemplatedParent is Microsoft.UI.Xaml.Controls.ProgressRing progress)
+			{
+				_nativeProgressRing ??= new NativeProgressRing();
+
+#if __IOS__
+				_player?.Add(_nativeProgressRing);
+#else
+				_player?.AddSubview(_bindableProgressBar);
+#endif
+
+				void UpdateColor()
+				{
+					if (progress.Foreground is SolidColorBrush foregroundColor)
+					{
+						_nativeProgressRing.Color = Brush.GetColorWithOpacity(foregroundColor);
+					}
+				}
+
+				void UpdateColorCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+					=> UpdateColor();
+
+				_colorDisposable = progress.RegisterDisposablePropertyChangedCallback(Microsoft.UI.Xaml.Controls.ProgressRing.ForegroundProperty, UpdateColorCallback);
+
+				UpdateColor();
+			}
 		}
 
 		public void Unload()
 		{
-			throw new NotImplementedException();
+			if (_player?.TemplatedParent is Microsoft.UI.Xaml.Controls.ProgressRing progress)
+			{
+				_colorDisposable?.Dispose();
+
+				_nativeProgressRing?.RemoveFromSuperview();
+				_nativeProgressRing = null;
+			}
 		}
 
 		private Size CompositionSize => default;
