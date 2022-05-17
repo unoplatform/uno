@@ -6,7 +6,8 @@ This getting started will guide you through the creation of an Uno Platform App 
 > This guide covers development on Windows using Visual Studio. If you want to use another environment or IDE, see our [general getting started](get-started.md).
 
 ## Prerequisites
-1. To create Uno Platform applications you will need [**Visual Studio 2022 17.3 (Preview)**](https://visualstudio.microsoft.com/vs/preview/):
+To create Uno Platform applications you will need [**Visual Studio 2022 17.3 (Preview)**](https://visualstudio.microsoft.com/vs/preview/):
+
 1. **Universal Windows Platform** workload installed.
 
     ![visual-studio-installer-uwp](Assets/quick-start/vs-install-uwp.png)

@@ -2,7 +2,7 @@
 
 Already [completed the tutorial](getting-started-tutorial-1.md)? Ready to build your own app or library, or just want to learn more? These resources will help you on your way.
 
-* The Uno Platform brings Microsoft's WinUI framework to Android, iOS, macOS, mac Catalyst, Linux, and WebAssembly. The wealth of [official Microsoft documentation on the WinUI framework](https://docs.microsoft.com/en-us/windows/apps/winui/winui3/) is a great place to start, particularly if you've never used WinUI or XAML before. All concepts, docs and samples translate to Uno Platform. Some additional resources:
+* The Uno Platform brings Microsoft's WinUI framework to Android, iOS, macOS, Mac Catalyst, Linux, and WebAssembly. The wealth of [official Microsoft documentation on the WinUI framework](https://docs.microsoft.com/en-us/windows/apps/winui/winui3/) is a great place to start, particularly if you've never used WinUI or XAML before. All concepts, docs and samples translate to Uno Platform. Some additional resources:
    - [WinUI 3 documentation](https://docs.microsoft.com/en-us/windows/apps/winui/winui3/)
    - [Get started with Windows 10 apps](https://docs.microsoft.com/en-us/windows/uwp/get-started/)
    - [Further curated links](winui-doc-links-development.md)
