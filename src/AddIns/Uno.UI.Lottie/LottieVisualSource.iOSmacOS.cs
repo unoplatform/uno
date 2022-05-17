@@ -231,6 +231,7 @@ using Uno.Disposables;
 using Uno.UI.Views.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml;
+using Uno.Foundation.Logging;
 
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
@@ -238,6 +239,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 	{
 		private NativeProgressRing? _nativeProgressRing;
 		private IDisposable? _colorDisposable;
+		private bool _warnOnce;
 
 		public bool UseHardwareAcceleration { get; set; } = true;
 
@@ -275,6 +277,15 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public void Load()
 		{
+			if (!TryLoadProgressRing() && !_warnOnce)
+			{
+				_warnOnce = true;
+				this.Log().Warn("LottieVisualSource is not available on this platform. See https://github.com/mono/SkiaSharp/issues/1787");
+			}
+		}
+
+		private bool TryLoadProgressRing()
+		{
 			if (_player?.TemplatedParent is Microsoft.UI.Xaml.Controls.ProgressRing progress)
 			{
 				_nativeProgressRing ??= new NativeProgressRing();
@@ -299,7 +310,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				_colorDisposable = progress.RegisterDisposablePropertyChangedCallback(Microsoft.UI.Xaml.Controls.ProgressRing.ForegroundProperty, UpdateColorCallback);
 
 				UpdateColor();
+
+				return true;
 			}
+
+			return false;
 		}
 
 		public void Unload()

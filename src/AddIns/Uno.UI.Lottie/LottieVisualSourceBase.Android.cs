@@ -282,6 +282,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		private double _toProgress;
 		private bool _looped;
 		private IDisposable? _colorDisposable;
+		private bool _warnOnce;
 
 		public bool UseHardwareAcceleration { get; set; } = true;
 
@@ -329,7 +330,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public void Load()
 		{
-			TryLoadProgressRing();
+			if(!TryLoadProgressRing()&& !_warnOnce)
+			{
+				_warnOnce = true;
+				this.Log().Warn("LottieVisualSource is not available on this platform. See https://github.com/mono/SkiaSharp/issues/1787");
+			}
 		}
 
 		public void Unload()
@@ -337,7 +342,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			TryUnloadProgressRing();
 		}
 
-		private void TryLoadProgressRing()
+		private bool TryLoadProgressRing()
 		{
 			if (_player?.TemplatedParent is Microsoft.UI.Xaml.Controls.ProgressRing progress)
 			{
