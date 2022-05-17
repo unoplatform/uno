@@ -1,4 +1,4 @@
-# Uno Support for Windows.ApplicationModel
+# Package information
 
 ## `PackageId`
 

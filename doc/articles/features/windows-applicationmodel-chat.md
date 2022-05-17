@@ -1,6 +1,6 @@
-# Uno Support for Windows.ApplicationModel.Chat
+# SMS
 
-## `ChatMessageManager`
+The `Windows.ApplicationModel.Chat.ChatMessageManager` class allows composing SMS messages and presenting them to the user to send. The class is supported on Windows, iOS, Android, and macOS.
 
 ### Limitations
 
