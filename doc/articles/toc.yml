@@ -20,7 +20,7 @@
         href: get-started-dotnet-new.md
       - name: Using Uno Check
         href: external/uno.check/doc/using-uno-check.md
-    - name: Common issues
+    - name: Common Issues
       href: get-started-wizard.md
 
 - name: Fundamentals
@@ -36,7 +36,7 @@
             href: net-version-support.md
         - name: Philosophy
           href: concepts/overview/philosophy-of-uno.md
-        - name: How it works
+        - name: How Uno Works
           href: how-uno-works.mmd
 
     - name: Learn
@@ -112,19 +112,19 @@
           items:
             - name: Overview
               href: what-is-uno.md
-            - name: Supported platforms
+            - name: Supported Platforms
               href: getting-started/requirements.md
-            - name: Features list
+            - name: Features List
               href: supported-features.md
-            - name: How Uno works
+            - name: How Uno Works
               href: how-uno-works.md
-            - name: Differences from WinUI
+            - name: Differences From WinUI
               href: api-differences.md
             - name: Philosophy of Uno
               href: concepts/overview/philosophy-of-uno.md
-            - name: Uno and WinUI 3
+            - name: Uno And WinUI 3
               href: uwp-vs-winui3.md
-            - name: .NET version support
+            - name: .NET Version Support
               href: net-version-support.md
             - name: FAQ
               href: faq.md
