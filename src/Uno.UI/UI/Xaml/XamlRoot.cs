@@ -24,9 +24,15 @@ public sealed partial class XamlRoot
 	/// </summary>
 	public event TypedEventHandler<XamlRoot, XamlRootChangedEventArgs>? Changed;
 
+	/// <summary>
+	/// Gets the root element of the XAML element tree.
+	/// </summary>
 	public UIElement? Content => VisualTree.PublicRootVisual;
 
-	//TODO Uno specific: This is most likely not implemented here in MUX:
+	//TODO Uno specific: This logic is most likely not implemented here in MUX:
+	/// <summary>
+	/// Gets the width and height of the content area.
+	/// </summary>
 	public Size Size
 	{
 		get
@@ -48,7 +54,7 @@ public sealed partial class XamlRoot
 		}
 	}
 
-	//TODO Uno specific: This is most likely not implemented here in MUX:
+	//TODO Uno specific: This logic is most likely not implemented here in MUX:
 	internal Rect Bounds
 	{
 		get
@@ -70,8 +76,22 @@ public sealed partial class XamlRoot
 		}
 	}
 
-	public double RasterizationScale
-		=> global::Windows.Graphics.Display.DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+	/// <summary>
+	/// Gets a value that represents the number of raw (physical) pixels for each view pixel.
+	/// </summary>
+	public double RasterizationScale => DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+
+	/// <summary>
+	/// Gets a value that indicates whether the XamlRoot is visible.
+	/// </summary>
+	public bool IsHostVisible { get; internal set; } // TODO: This should reflect the actual state of the visual tree
+
+#if !HAS_UNO_WINUI // This is a UWP-only property
+	/// <summary>
+	/// Gets the context identifier for the view.
+	/// </summary>
+	public UIContext UIContext { get; } = new UIContext();
+#endif
 
 	internal void NotifyChanged()
 	{

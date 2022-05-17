@@ -37,12 +37,13 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 				MetadataProviderDiscovery.MetadataProviderFactory = type =>
 				{
 					WUX.Application application = null;
-					var host = new WpfIslandsHost(
-						System.Windows.Application.Current.MainWindow.Dispatcher,
-						() => application = (WUX.Application)Activator.CreateInstance(type),
-						null);
-					var provider = (WUX.Markup.IXamlMetadataProvider)application;
-					return provider;
+					
+					WUX.Application.Start(_ =>
+					{
+						application = (WUX.Application)Activator.CreateInstance(type);
+					});
+										
+					return (WUX.Markup.IXamlMetadataProvider)application;
 				};
 			}
 

@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.ComponentModel;
-using System.Runtime.InteropServices;
 using System.Windows;
 using WUX = Windows.UI.Xaml;
 

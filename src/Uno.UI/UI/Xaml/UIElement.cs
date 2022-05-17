@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml
 
 		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
 		private string _uid;
-		private WeakReference<VisualTree> _visualTreeWeakReference;
+		private WeakReference<VisualTree> _visualTreeCacheWeakReference;
 
 		//private protected virtual void PrepareState() 
 		//{
@@ -80,10 +80,10 @@ namespace Windows.UI.Xaml
 		/// <remarks>This differs from the XamlRoot be being true for the root element of a native Popup.</remarks>
 		internal bool IsVisualTreeRoot { get; set; }
 
-		internal VisualTree VisualTree
+		internal VisualTree VisualTreeCache
 		{
-			get => _visualTreeWeakReference?.TryGetTarget(out var target) == true ? target : null;
-			set => _visualTreeWeakReference = new WeakReference<VisualTree>(value);
+			get => _visualTreeCacheWeakReference?.TryGetTarget(out var target) == true ? target : null;
+			set => _visualTreeCacheWeakReference = new WeakReference<VisualTree>(value);
 		}
 
 		private void Initialize()

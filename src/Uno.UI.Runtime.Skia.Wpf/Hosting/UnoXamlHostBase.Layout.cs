@@ -98,7 +98,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		{
 			if (IsXamlContentLoaded())
 			{
-				if (_xamlSource.Content.VisualTree.RootElement is WUX.FrameworkElement element)
+				if (_xamlSource.Content.VisualTreeCache.RootElement is WUX.FrameworkElement element)
 				{
 					var width = ActualWidth;
 					var height = ActualHeight;

@@ -16,7 +16,7 @@ namespace Uno.UI.Extensions
 			//TODO:MZ: This should work for non-UIElement as well!
 			if (dependencyObject is UIElement uiElement)
 			{
-				return uiElement.VisualTree;
+				return uiElement.VisualTreeCache;
 			}
 
 			return null;
@@ -27,7 +27,7 @@ namespace Uno.UI.Extensions
 			//TODO:MZ: This should work for non-UIElement as well!
 			if (dependencyObject is UIElement uiElement)
 			{
-				uiElement.VisualTree = visualTree;
+				uiElement.VisualTreeCache = visualTree;
 			}
 		}
 	}
