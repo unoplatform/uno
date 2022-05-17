@@ -228,17 +228,23 @@ using Windows.UI.Xaml.Controls;
 using Foundation;
 using System.Threading.Tasks;
 using Uno.Disposables;
-using Uno.UI.Views.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml;
 using Uno.Foundation.Logging;
+
+#if !__MACOS__
+using Uno.UI.Views.Controls;
+#endif
 
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
 	partial class LottieVisualSourceBase
 	{
+#if !__MACOS__
 		private NativeProgressRing? _nativeProgressRing;
 		private IDisposable? _colorDisposable;
+#endif
+
 		private bool _warnOnce;
 
 		public bool UseHardwareAcceleration { get; set; } = true;
@@ -249,18 +255,22 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public void Play(double fromProgress, double toProgress, bool looped)
 		{
+#if !__MACOS__
 			if (_nativeProgressRing != null)
 			{
 				_nativeProgressRing.StartAnimating();
 			}
+#endif
 		}
 
 		public void Stop()
 		{
+#if !__MACOS__
 			if (_nativeProgressRing != null)
 			{
 				_nativeProgressRing.StopAnimating();
 			}
+#endif
 		}
 
 		public void Pause()
@@ -286,6 +296,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private bool TryLoadProgressRing()
 		{
+#if !__MACOS__
 			if (_player?.TemplatedParent is Microsoft.UI.Xaml.Controls.ProgressRing progress)
 			{
 				_nativeProgressRing ??= new NativeProgressRing();
@@ -313,12 +324,14 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 				return true;
 			}
+#endif
 
 			return false;
 		}
 
 		public void Unload()
 		{
+#if !__MACOS__
 			if (_player?.TemplatedParent is Microsoft.UI.Xaml.Controls.ProgressRing progress)
 			{
 				_colorDisposable?.Dispose();
@@ -326,6 +339,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				_nativeProgressRing?.RemoveFromSuperview();
 				_nativeProgressRing = null;
 			}
+#endif
 		}
 
 		private Size CompositionSize => default;

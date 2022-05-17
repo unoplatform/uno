@@ -273,6 +273,7 @@ using Uno.UI.Controls;
 using Android.Graphics;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml;
+using Uno.Foundation.Logging;
 
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
@@ -368,7 +369,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				_bindableProgressBar.SetProgress((int)(_toProgress * 100), _looped);
 
 				UpdateColor();
+
+				return true;
 			}
+
+			return false;
 		}
 
 
