@@ -5,7 +5,16 @@ trigger:
       - release/beta/*
       - release/stable/*
       - feature/*
-
+      
+  paths:
+    include:
+    - '/'
+    exclude:
+    - .dependabot/
+    - .github/
+    - doc/*
+    - .all-contributorsrc
+    
 pr: 
   branches:
     include:

@@ -13,12 +13,6 @@ pr:
       - release/beta/*
       - release/stable/*
       - feature/*
-      
-  paths:
-    exclude:
-    - '/'
-    include:
-    - doc/*
 
 variables:
   windows2022HostedVMImage: 'windows-2022'

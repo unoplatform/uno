@@ -134,7 +134,7 @@ dotnet new unoapp-net6 -o MyApp -mobile=false
 
 ## Uno Platform Blank Application for WinAppSDK - WinUI 3 (.NET 6 - Preview)
 
-This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Mac Catalyst, Linux, and Win32 Desktop which uses the new WinUI 3 apis.
+This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Mac Catalyst, Linux, and Win32 Desktop which uses the new WinUI 3 APIs.
 
 This template uses a single project head for iOS, Android, macOS and Mac Catalyst and requires Visual Studio 2022.
 
