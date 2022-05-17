@@ -26,8 +26,6 @@ Use `Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor` to control this.
 
 By default, Android has a limit of 200% for the text scaling which is not the case for iOS.
 
-The base value is set to 200% (2.0) based on those [guidelines](https://www.w3.org/TR/mobile-accessibility-mapping/)
-
 Use `Uno.UI.FeatureConfiguration.Font.MaximumTextScaleFactor` to control this. 
 
 ## Popups
