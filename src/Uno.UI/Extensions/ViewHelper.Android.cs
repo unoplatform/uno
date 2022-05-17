@@ -469,7 +469,7 @@ namespace Uno.UI
 			}
 			else if (FeatureConfiguration.Font.MaximumTextScaleFactor is float scaleFactor)
 			{
-				displayMetrics.ScaledDensity = Math.Min(displayMetrics.ScaledDensity, scaleFactor * displayMetrics.Density);
+				displayMetrics.ScaledDensity = Math.Min(displayMetrics.ScaledDensity, scaleFactor);
 			}
 		}
 	}
