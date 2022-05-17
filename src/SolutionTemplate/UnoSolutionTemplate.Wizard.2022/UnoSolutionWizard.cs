@@ -264,7 +264,7 @@ namespace UnoSolutionTemplate.Wizard
 
 						if(version < new Version(17, 3) && (_useiOS || _useAndroid || _useCatalyst || _useAppKit))
 						{
-							MessageBox.Show("iOS, Android, Mac Catalyst and mac AppKit are only supported starting from Visual Studio 17.3 Preview 1 or later.", "Unable to create the solution");
+							MessageBox.Show("iOS, Android, Mac Catalyst, and mac AppKit are only supported starting from Visual Studio 17.3 Preview 1 or later.", "Unable to create the solution");
 							throw new WizardCancelledException();
 						}
 
