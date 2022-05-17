@@ -122,6 +122,7 @@
 		<reference file="Uno.UI.dll" />
 		<reference file="Uno.UI.Composition.dll" />
 		<reference file="Uno.UI.Dispatching.dll" />
+		<reference file="Uno.UI.XamlHost" />
 		<reference file="Uno.Foundation.dll" />
 		<reference file="Uno.Foundation.Logging.dll" />
 		<reference file="Uno.dll" />
@@ -137,6 +138,7 @@
 		<reference file="Uno.UI.dll" />
 		<reference file="Uno.UI.Composition.dll" />
 		<reference file="Uno.UI.Dispatching.dll" />
+		<reference file="Uno.UI.XamlHost" />
 		<reference file="Uno.Foundation.dll" />
 		<reference file="Uno.Foundation.Logging.dll" />
 		<reference file="Uno.dll" />
@@ -152,6 +154,7 @@
 		<reference file="Uno.UI.dll" />
 		<reference file="Uno.UI.Composition.dll" />
 		<reference file="Uno.UI.Dispatching.dll" />
+		<reference file="Uno.UI.XamlHost" />
 		<reference file="Uno.Foundation.dll" />
 		<reference file="Uno.Foundation.Logging.dll" />
 		<reference file="Uno.dll" />
@@ -167,6 +170,7 @@
 		<reference file="Uno.UI.dll" />
 		<reference file="Uno.UI.Composition.dll" />
 		<reference file="Uno.UI.Dispatching.dll" />
+		<reference file="Uno.UI.XamlHost" />
 		<reference file="Uno.Foundation.dll" />
 		<reference file="Uno.Foundation.Logging.dll" />
 		<reference file="Uno.dll" />
@@ -182,6 +186,7 @@
 		<reference file="Uno.UI.dll" />
 		<reference file="Uno.UI.Composition.dll" />
 		<reference file="Uno.UI.Dispatching.dll" />
+		<reference file="Uno.UI.XamlHost" />
 		<reference file="Uno.Foundation.dll" />
 		<reference file="Uno.Foundation.Logging.dll" />
 		<reference file="Uno.dll" />
@@ -197,6 +202,7 @@
 		<reference file="Uno.UI.dll" />
 		<reference file="Uno.UI.Composition.dll" />
 		<reference file="Uno.UI.Dispatching.dll" />
+		<reference file="Uno.UI.XamlHost" />
 		<reference file="Uno.Foundation.dll" />
 		<reference file="Uno.Foundation.Logging.dll" />
 		<reference file="Uno.dll" />
@@ -213,6 +219,7 @@
 		<reference file="Uno.UI.dll" />
 		<reference file="Uno.UI.Composition.dll" />
 		<reference file="Uno.UI.Dispatching.dll" />
+		<reference file="Uno.UI.XamlHost" />
 		<reference file="Uno.Foundation.dll" />
 		<reference file="Uno.Foundation.Logging.dll" />
 		<reference file="Uno.dll" />
@@ -229,6 +236,7 @@
 		<reference file="Uno.UI.dll" />
 		<reference file="Uno.UI.Composition.dll" />
 		<reference file="Uno.UI.Dispatching.dll" />
+		<reference file="Uno.UI.XamlHost" />
 		<reference file="Uno.Foundation.dll" />
 		<reference file="Uno.Foundation.Logging.dll" />
 		<reference file="Uno.dll" />
@@ -269,6 +277,8 @@
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.UI.Composition.pdb" target="lib\MonoAndroid11.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.UI.Dispatching.dll" target="lib\MonoAndroid11.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.UI.Dispatching.pdb" target="lib\MonoAndroid11.0" />
+	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.UI.XamlHost.dll" target="lib\MonoAndroid11.0" />
+	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.UI.XamlHost.pdb" target="lib\MonoAndroid11.0" />	
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.Xaml.dll" target="lib\MonoAndroid11.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.Xaml.pdb" target="lib\MonoAndroid11.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\*.xml" target="lib\MonoAndroid11.0" />
@@ -296,6 +306,8 @@
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid12.0\Uno.UI.Composition.pdb" target="lib\MonoAndroid12.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid12.0\Uno.UI.Dispatching.dll" target="lib\MonoAndroid12.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid12.0\Uno.UI.Dispatching.pdb" target="lib\MonoAndroid12.0" />
+	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid12.0\Uno.UI.XamlHost.dll" target="lib\MonoAndroid12.0" />
+	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid12.0\Uno.UI.XamlHost.pdb" target="lib\MonoAndroid12.0" />	
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid12.0\Uno.Xaml.dll" target="lib\MonoAndroid12.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid12.0\Uno.Xaml.pdb" target="lib\MonoAndroid12.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid12.0\*.xml" target="lib\MonoAndroid12.0" />
@@ -321,6 +333,8 @@
 	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.UI.Composition.pdb" target="lib\xamarinios10" />
 	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.UI.Dispatching.dll" target="lib\xamarinios10" />
 	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.UI.Dispatching.pdb" target="lib\xamarinios10" />
+	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.UI.XamlHost.dll" target="lib\xamarinios10" />
+	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.UI.XamlHost.pdb" target="lib\xamarinios10" />		
 	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.Xaml.dll" target="lib\xamarinios10" />
 	<file src="..\src\Uno.UI\Bin\Release\xamarinios10\Uno.Xaml.pdb" target="lib\xamarinios10" />
 	<file src="..\src\Uno.UI\bin\Release\xamarinios10\*.xml" target="lib\xamarinios10" />
@@ -346,6 +360,8 @@
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-ios\Uno.UI.Composition.pdb" target="lib\net6.0-ios" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-ios\Uno.UI.Dispatching.dll" target="lib\net6.0-ios" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-ios\Uno.UI.Dispatching.pdb" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-ios\Uno.UI.XamlHost.dll" target="lib\net6.0-ios" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-ios\Uno.UI.XamlHost.pdb" target="lib\net6.0-ios" />	
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-ios\Uno.Xaml.dll" target="lib\net6.0-ios" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-ios\Uno.Xaml.pdb" target="lib\net6.0-ios" />
 	<file src="..\src\Uno.UI\bin\Uno.UI.net6\Release\net6.0-ios\*.xml" target="lib\net6.0-ios" />
@@ -371,6 +387,8 @@
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-maccatalyst\Uno.UI.Composition.pdb" target="lib\net6.0-maccatalyst" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-maccatalyst\Uno.UI.Dispatching.dll" target="lib\net6.0-maccatalyst" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-maccatalyst\Uno.UI.Dispatching.pdb" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-maccatalyst\Uno.UI.XamlHost.dll" target="lib\net6.0-maccatalyst" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-maccatalyst\Uno.UI.XamlHost.pdb" target="lib\net6.0-maccatalyst" />	
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-maccatalyst\Uno.Xaml.dll" target="lib\net6.0-maccatalyst" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-maccatalyst\Uno.Xaml.pdb" target="lib\net6.0-maccatalyst" />
 	<file src="..\src\Uno.UI\bin\Uno.UI.net6\Release\net6.0-maccatalyst\*.xml" target="lib\net6.0-maccatalyst" />
@@ -396,6 +414,8 @@
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-macos\Uno.UI.Composition.pdb" target="lib\net6.0-macos" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-macos\Uno.UI.Dispatching.dll" target="lib\net6.0-macos" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-macos\Uno.UI.Dispatching.pdb" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-macos\Uno.UI.XamlHost.dll" target="lib\net6.0-macos" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-macos\Uno.UI.XamlHost.pdb" target="lib\net6.0-macos" />	
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-macos\Uno.Xaml.dll" target="lib\net6.0-macos" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-macos\Uno.Xaml.pdb" target="lib\net6.0-macos" />
 	<file src="..\src\Uno.UI\bin\Uno.UI.net6\Release\net6.0-macos\*.xml" target="lib\net6.0-macos" />
@@ -421,6 +441,8 @@
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.UI.Composition.pdb" target="lib\net6.0-android30.0" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.UI.Dispatching.dll" target="lib\net6.0-android30.0" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.UI.Dispatching.pdb" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.UI.XamlHost.dll" target="lib\net6.0-android30.0" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.UI.XamlHost.pdb" target="lib\net6.0-android30.0" />	
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.Xaml.dll" target="lib\net6.0-android30.0" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.Xaml.pdb" target="lib\net6.0-android30.0" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.net6\Release\net6.0-android\Uno.UI.BindingHelper.Android.dll" target="lib\net6.0-android30.0" />
@@ -449,6 +471,8 @@
 	<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.UI.Composition.pdb" target="lib\xamarinmac20" />
 	<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.UI.Dispatching.dll" target="lib\xamarinmac20" />
 	<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.UI.Dispatching.pdb" target="lib\xamarinmac20" />
+	<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.UI.XamlHost.dll" target="lib\xamarinmac20" />
+	<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.UI.XamlHost.pdb" target="lib\xamarinmac20" />	
 	<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.Xaml.dll" target="lib\xamarinmac20" />
 	<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.Xaml.pdb" target="lib\xamarinmac20" />
 	<file src="..\src\Uno.UI\bin\Release\xamarinmac20\*.xml" target="lib\xamarinmac20" />
@@ -468,6 +492,7 @@
 	<file src="..\src\Uno.UI\Bin\Release\netstandard2.0\Uno.UI.dll" target="lib\netstandard2.0" />
 	<file src="..\src\Uno.UI\Bin\Release\netstandard2.0\Uno.UI.Composition.dll" target="lib\netstandard2.0" />
 	<file src="..\src\Uno.UI\Bin\Release\netstandard2.0\Uno.UI.Dispatching.dll" target="lib\netstandard2.0" />
+	<file src="..\src\Uno.UI\Bin\Release\netstandard2.0\Uno.UI.XamlHost.dll" target="lib\netstandard2.0" />
 	<file src="..\src\Uno.UI\Bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\netstandard2.0" />
 	<file src="..\src\Uno.UI.FluentTheme\bin\Release\netstandard2.0\Uno.UI.FluentTheme.dll" target="lib\netstandard2.0" />
 	<file src="..\src\Uno.UI.FluentTheme\bin\Release\netstandard2.0\Uno.UI.FluentTheme.pdb" target="lib\netstandard2.0" />
@@ -491,6 +516,8 @@
 	<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.UI.Composition.pdb" target="uno-runtime\webassembly" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.UI.Dispatching.dll" target="uno-runtime\webassembly" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.UI.Dispatching.pdb" target="uno-runtime\webassembly" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.UI.XamlHost.dll" target="uno-runtime\webassembly" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.UI.XamlHost.pdb" target="uno-runtime\webassembly" />	
 	<file src="..\src\Uno.UI\bin\Uno.UI.Wasm\Release\netstandard2.0\*.xml" target="uno-runtime\webassembly" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.Xaml.dll" target="uno-runtime\webassembly" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.Xaml.pdb" target="uno-runtime\webassembly" />
@@ -518,6 +545,8 @@
 	<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.UI.Composition.pdb" target="uno-runtime\skia" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.UI.Dispatching.dll" target="uno-runtime\skia" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.UI.Dispatching.pdb" target="uno-runtime\skia" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.UI.XamlHost.dll" target="uno-runtime\skia" />
+	<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.UI.XamlHost.pdb" target="uno-runtime\skia" />	
 	<file src="..\src\Uno.UI\bin\Uno.UI.Skia\Release\netstandard2.0\*.xml" target="uno-runtime\skia" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.Xaml.dll" target="uno-runtime\skia" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.Xaml.pdb" target="uno-runtime\skia" />
