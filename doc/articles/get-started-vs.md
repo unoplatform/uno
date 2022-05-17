@@ -1,23 +1,22 @@
-# Get Started on Visual Studio 2019
+# Get Started on Visual Studio 2019 and 2022 for Xamarin
 
 ## Prerequisites
 * [**Visual Studio 2019 16.3 or later**](https://visualstudio.microsoft.com/), with:
     * **Universal Windows Platform** workload installed.
 
-    ![visual-studio-installer-uwp](Assets/quick-start/vs-install-uwp.png)
+      ![visual-studio-installer-uwp](Assets/quick-start/vs-install-uwp.png)
 
 	* **Mobile development with .NET (Xamarin)** workload installed.
 
-    ![visual-studio-installer-xamarin](Assets/quick-start/vs-install-xamarin.png)
+        ![visual-studio-installer-xamarin](Assets/quick-start/vs-install-xamarin.png)
 
-    *
-        * the iOS Remote Simulator installed (for iOS development)
+        * The iOS Remote Simulator installed (for iOS development)
 	    * A working Mac with Visual Studio for Mac, Xcode 8.2 or later installed (for iOS development)
 	    * Google's Android x86 emulators or a physical Android device (for Android development)
 
-    * **ASP**.**NET and web** workload installed, along with .NET Core 5.0 (for WASM development)
+    * **ASP**.**NET and web** workload installed, along with .NET Core 5.0 or 6.0 (for WebAssembly development)
 
-    ![visual-studio-installer-web](Assets/quick-start/vs-install-web.png)
+      ![visual-studio-installer-web](Assets/quick-start/vs-install-web.png)
     * **.NET Core SDK**
         * [.NET Core 5.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (**version 5.0 (SDK 5.0.400)** or later)
 
@@ -36,7 +35,7 @@ For more information about these prerequisites, see [Installing Xamarin](https:/
 ## Create an application from the solution template
 
 To easily create a multi-platform application:
-* Create a new C# solution using the **Multi-Platform App (Uno Platform|Xamarin)** template, from Visual Studio's **Start Page**:
+* Create a new C# solution using the **Uno Platform App (Xamarin|UWP)** template, from Visual Studio's **Start Page**:
 
 ![new project](Assets/quick-start/vsix-new-project.png)
 * Right click on the Solution and select `Manage NuGet Packages for Solution` from the context menu.
@@ -56,9 +55,6 @@ If XAML Intellisense isn't working on a freshly-created project, try the followi
 2. Close all XAML documents.
 3. Close and reopen Visual Studio.
 4. Reopen XAML documents.
-
-### Video Tutorial
-[![Getting Started Visual Studio Video](Assets/vs-cover.JPG)](http://www.youtube.com/watch?v=hQcKsoxaAHo "")
 
 ### Troubleshooting Visual Studio and Uno Platform Installation Issues
 

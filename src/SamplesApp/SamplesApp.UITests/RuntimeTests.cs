@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
@@ -22,6 +23,8 @@ namespace SamplesApp.UITests.Runtime
 		private readonly TimeSpan TestRunTimeout = TimeSpan.FromMinutes(2);
 		private const string TestResultsOutputFilePath = "UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH";
 		private const string TestResultsOutputTempFilePath = "UNO_UITEST_RUNTIMETESTS_RESULTS_TEMP_FILE_PATH";
+		private const string TestGroupVariable = "UITEST_RUNTIME_TEST_GROUP";
+		private const string TestGroupCountVariable = "UITEST_RUNTIME_TEST_GROUP_COUNT";
 
 		[Test]
 		[AutoRetry(tryCount: 1)]
@@ -50,6 +53,13 @@ namespace SamplesApp.UITests.Runtime
 			{
 				// Used to disable showing the test output visually
 				unitTestsControl.SetDependencyPropertyValue("IsRunningOnCI", "true");
+
+				// Used to perform test grouping on CI to reduce the impact of re-runs
+				if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable(TestGroupVariable)))
+				{
+					unitTestsControl.SetDependencyPropertyValue("CITestGroup", Environment.GetEnvironmentVariable(TestGroupVariable));
+					unitTestsControl.SetDependencyPropertyValue("CITestGroupCount", Environment.GetEnvironmentVariable(TestGroupCountVariable));
+				}
 			}
 
 			_app.FastTap(runButton);
@@ -79,7 +89,7 @@ namespace SamplesApp.UITests.Runtime
 				Assert.Fail("A test run timed out");
 			}
 
-			TestContext.AddTestAttachment(ArchiveResults(unitTestsControl), "runtimetests-results.zip");
+			TestContext.AddTestAttachment(await ArchiveResults(unitTestsControl), "runtimetests-results.zip");
 
 			var count = GetValue(nameof(unitTestsControl), unitTestsControl, "FailedTestCountForUITest");
 			if (count != "0")
@@ -128,9 +138,9 @@ namespace SamplesApp.UITests.Runtime
 			throw lastException;
 		}
 
-		private static string ArchiveResults(QueryEx unitTestsControl)
+		private static async Task<string> ArchiveResults(QueryEx unitTestsControl)
 		{
-			var document = GetValue(nameof(unitTestsControl), unitTestsControl, "NUnitTestResultsDocument");
+			var document = await GetNUnitTestResultsDocument(unitTestsControl);
 
 			var file = Path.GetTempFileName();
 			File.WriteAllText(file, document, Encoding.Unicode);
@@ -154,6 +164,27 @@ namespace SamplesApp.UITests.Runtime
 			File.Move(file, finalFile);
 
 			return finalFile;
+		}
+
+		private static async Task<string> GetNUnitTestResultsDocument(QueryEx unitTestsControl)
+		{
+			int counter = 0;
+
+			do
+			{
+				var document = GetValue(nameof(unitTestsControl), unitTestsControl, "NUnitTestResultsDocument");
+
+				if (!string.IsNullOrEmpty(document))
+				{
+					return document;
+				}
+
+				// The results are built asynchronously, it may not be available right away.
+				await Task.Delay(1000);
+
+			} while (counter++ < 3);
+
+			throw new InvalidOperationException($"Failed to get the test results document");
 		}
 
 		private static string GetValue(string elementName, QueryEx element, string dpName = "Text", [CallerLineNumber] int line = -1)

@@ -29,4 +29,4 @@ There are a number of pages of Silverlight migration documentation to help you w
 
 ## Next unit: Silverlight to Uno Migration
 
-[![button](guides/silverlight-migration/assets/NextButton.png)](guides/silverlight-migration/00-overview.md)
+[![button](assets/NextButton.png)](00-overview.md)

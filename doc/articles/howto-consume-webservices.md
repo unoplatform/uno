@@ -38,7 +38,7 @@ In this task you will create a simple Single Page App with the Uno Platform. Thi
 
     ![Visual Studio new project dialog searching for Uno](Assets/how-to-webservice/newproject2.PNG)
 
-1. In the filtered list of templates, select **Multi-Platform App (Uno Platform|Xamarin)** and then click **Next**.
+1. In the filtered list of templates, select **Uno Platform App** and then click **Next**.
 
 1. In the **Configure your new project** window, set the **Project name** to **TheCatApiClient**, choose where you would like to save your project and click the **Create** button.
 

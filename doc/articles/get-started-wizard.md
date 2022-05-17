@@ -42,6 +42,10 @@ Event handlers [cannot be automatically](https://github.com/unoplatform/uno/issu
 
 A workaround is to use the [`x:Bind` to events feature](features/windows-ui-xaml-xbind.md#examples). This feature allows to use a simpler syntax like `<Button Click="{x:Bind MyClick}" />` and declare a simple method `private void MyClick() { }` in the code-behind.
 
+#### error NETSDK1148: A referenced assembly was compiled using a newer version of Microsoft.Windows.SDK.NET.dll.
+
+See [this article](features/winapp-sdk-specifics.md#adjusting-windows-sdk-references) to solve this issue.
+
 #### Build error `Failed to generate AOT layout`
 
 When building for WebAssembly with AOT mode enabled, the following error may appear:

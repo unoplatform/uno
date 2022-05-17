@@ -22,9 +22,9 @@ As an application developer, you normally don't need to worry about exactly how 
 
 On the web, each XAML element is converted into an appropriate [HTML element](https://developer.mozilla.org/en-US/docs/Glossary/Element). Panels, controls, and other 'intermediate' elements in the visual tree are converted to `<div/>` elements, whereas 'leaf' elements like `TextBlock`, `Image` etc get converted into more specific tags (`<p/>`, `<img/>` etc).
 
-#### iOS and mac Catalyst
+#### iOS and Mac Catalyst
 
-On iOS and mac Catalyst, all types that inherit from `Microsoft.UI.Xaml.FrameworkElement`, also inherit from the native [`UIView` type](https://docs.microsoft.com/en-us/dotnet/api/uikit.uiview). That is to say, on iOS, all XAML visual elements are also native views.
+On iOS and Mac Catalyst, all types that inherit from `Microsoft.UI.Xaml.FrameworkElement`, also inherit from the native [`UIView` type](https://docs.microsoft.com/en-us/dotnet/api/uikit.uiview). That is to say, on iOS, all XAML visual elements are also native views.
 
 When rendered at runtime, certain `FrameworkElement` types implicitly create inner views that inherit from higher-level native view types. For example, `Image` implicitly creates an inner `NativeImage` view, where `NativeImage` is an Uno-defined internal type that inherits directly from the native `UIKit.UIImageView` type.
 
@@ -50,7 +50,7 @@ The codebase of an Uno Platform application is a mix of XAML markup, C# code, im
 
 ### Binaries
 
-The C# code is the easy part - [.NET runs pretty much everywhere](https://docs.microsoft.com/en-us/dotnet/core/introduction). On iOS, Android, and macOS, Uno.UI is using [Xamarin Native](https://dotnet.microsoft.com/learn/xamarin/what-is-xamarin) (note: not Xamarin.Forms or MAUI). On the web, it's using .NET running in [WebAssembly](https://webassembly.org/), and on Linux it's running under .NET 6 or later.
+The C# code is the easy part - [.NET runs pretty much everywhere](https://docs.microsoft.com/en-us/dotnet/core/introduction). On iOS, Android, macOS and Mac Catalyst, Uno.UI is using .NET for Mobile (previously known as [Xamarin Native](https://dotnet.microsoft.com/learn/xamarin/what-is-xamarin), and is not Xamarin.Forms or MAUI). On the web, it's using .NET running in [WebAssembly](https://webassembly.org/), and on Linux it's running under .NET 6 or later.
 
 The compiled binaries also include the output of the XAML parser, as described in the next section.
 
