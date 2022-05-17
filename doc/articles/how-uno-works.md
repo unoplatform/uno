@@ -22,9 +22,9 @@ As an application developer, you normally don't need to worry about exactly how 
 
 On the web, each XAML element is converted into an appropriate [HTML element](https://developer.mozilla.org/en-US/docs/Glossary/Element). Panels, controls, and other 'intermediate' elements in the visual tree are converted to `<div/>` elements, whereas 'leaf' elements like `TextBlock`, `Image` etc get converted into more specific tags (`<p/>`, `<img/>` etc).
 
-#### iOS and mac Catalyst
+#### iOS and Mac Catalyst
 
-On iOS and mac Catalyst, all types that inherit from `Microsoft.UI.Xaml.FrameworkElement`, also inherit from the native [`UIView` type](https://docs.microsoft.com/en-us/dotnet/api/uikit.uiview). That is to say, on iOS, all XAML visual elements are also native views.
+On iOS and Mac Catalyst, all types that inherit from `Microsoft.UI.Xaml.FrameworkElement`, also inherit from the native [`UIView` type](https://docs.microsoft.com/en-us/dotnet/api/uikit.uiview). That is to say, on iOS, all XAML visual elements are also native views.
 
 When rendered at runtime, certain `FrameworkElement` types implicitly create inner views that inherit from higher-level native view types. For example, `Image` implicitly creates an inner `NativeImage` view, where `NativeImage` is an Uno-defined internal type that inherits directly from the native `UIKit.UIImageView` type.
 

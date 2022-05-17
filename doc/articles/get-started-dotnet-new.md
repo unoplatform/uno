@@ -117,9 +117,9 @@ To use it:
 
 > .NET 6 Mobile support is currently in Preview, following Microsoft's support status. As of Uno 4.1, .NET 6 Mobile Preview 13 and above is supported with [Visual Studio 2022 17.2 Preview 1](https://visualstudio.microsoft.com/vs/preview). Previous releases of Visual Studio are not supported.
 
-This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, mac Catalyst, Skia/GTK (Windows, Linux, macOS) and Skia/Wpf (Windows 7 and 10).
+This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Mac Catalyst, Skia/GTK (Windows, Linux, macOS) and Skia/Wpf (Windows 7 and 10).
 
-This template uses a single project head for iOS, Android, macOS and mac Catalyst and requires Visual Studio 2022.
+This template uses a single project head for iOS, Android, macOS and Mac Catalyst and requires Visual Studio 2022.
 
 A basic example:
 ```
@@ -134,9 +134,9 @@ dotnet new unoapp-net6 -o MyApp -mobile=false
 
 ## Uno Platform Blank Application for WinAppSDK - WinUI 3 (.NET 6 - Preview)
 
-This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, mac Catalyst, Linux, and Win32 Desktop which uses the new WinUI 3 apis.
+This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Mac Catalyst, Linux, and Win32 Desktop which uses the new WinUI 3 apis.
 
-This template uses a single project head for iOS, Android, macOS and mac Catalyst and requires Visual Studio 2022.
+This template uses a single project head for iOS, Android, macOS and Mac Catalyst and requires Visual Studio 2022.
 
 [**Find detailed instructions here.**](get-started-winui3.md)
 
