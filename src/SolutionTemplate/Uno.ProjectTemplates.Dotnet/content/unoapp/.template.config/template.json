@@ -43,7 +43,7 @@
       "generator": "guid",
       "replaces": "$guid1$",
       "parameters": {
-        "format": "N"
+        "defaultFormat": "d"
       }
     },
     "guid2": {
@@ -51,7 +51,7 @@
       "generator": "guid",
       "replaces": "$guid2$",
       "parameters": {
-        "format": "N"
+        "defaultFormat": "d"
       }
     },
     "guid3": {
@@ -59,7 +59,7 @@
       "generator": "guid",
       "replaces": "$guid3$",
       "parameters": {
-        "format": "N"
+        "defaultFormat": "d"
       }
     },
     "guid4": {
@@ -67,7 +67,7 @@
       "generator": "guid",
       "replaces": "$guid4$",
       "parameters": {
-        "format": "N"
+        "defaultFormat": "d"
       }
     },
     "guid5": {
@@ -75,7 +75,7 @@
       "generator": "guid",
       "replaces": "$guid5$",
       "parameters": {
-        "format": "N"
+        "defaultFormat": "d"
       }
     },
     "windowsPublisherName": {
