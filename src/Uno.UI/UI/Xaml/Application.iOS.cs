@@ -13,7 +13,6 @@ using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using System.Globalization;
 using System.Threading;
-using ObjCRuntime;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
