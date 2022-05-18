@@ -572,16 +572,35 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 #if DEBUG
 						Console.Write("Parse resource file : " + file);
 #endif
+						try
+						{
+							//load document
+							var doc = new XmlDocument();
+							doc.Load(file);
 
-						//load document
-						var doc = new XmlDocument();
-						doc.Load(file);
+							//extract all localization keys from Win10 resource file
+							return doc.SelectNodes("//data")
+								?.Cast<XmlElement>()
+								.Select(node => node.GetAttribute("name"))
+								.ToArray() ?? Array.Empty<string>();
+						}
+						catch(Exception e)
+						{
+							var message = $"Unable to parse resource file [{file}], make sure it is a valid resw file. ({e.Message})";
 
-						//extract all localization keys from Win10 resource file
-						return doc.SelectNodes("//data")
-							?.Cast<XmlElement>()
-							.Select(node => node.GetAttribute("name"))
-							.ToArray() ?? Array.Empty<string>();
+#if NETSTANDARD
+							var diagnostic = Diagnostic.Create(
+								XamlCodeGenerationDiagnostics.ResourceParsingFailureRule,
+								null,
+								message);
+
+							_generatorContext.ReportDiagnostic(diagnostic);
+
+							return Array.Empty<string>();
+#else
+							throw new InvalidOperationException(message, e);
+#endif
+						}
 					})
 					.Distinct()
 					.Select(k => k.Replace(".", "/"))
