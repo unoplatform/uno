@@ -326,7 +326,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SubmitSearch()
 		{
-			QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(null, Text));
+			QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(_suggestionsList.SelectedItem, Text));
 			IsSuggestionListOpen = false;
 		}
 
