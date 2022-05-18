@@ -43,19 +43,28 @@ a {
 }
 
 h1 {
-  font-size: 48px;
+  font-size: 40px;
+  @media only screen and (max-width: 767px) {
+    font-size: 32px;
+  }
   font-weight: 600;
   text-transform: none;
 }
 
 h2 {
-  font-size: 44px;
+  font-size: 34px;
+  @media only screen and (max-width: 767px) {
+    font-size: 28px;
+  }
   font-weight: 600;
   text-transform: none;
 }
 
 h3 {
-  font-size: 36px;
+  font-size: 28px;
+  @media only screen and (max-width: 767px) {
+    font-size: 22px;
+  }
   font-weight: 600;
   text-transform: none;
 }

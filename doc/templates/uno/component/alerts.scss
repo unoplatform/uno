@@ -1,13 +1,10 @@
 @import '../variables';
 
 .alert {
-  @media only screen and (min-width: 768px) {
-    min-height: 120px;
-  }
   background-color: transparent;
   border-color: $lightgray;
   color: $darkgray;
-  padding: 26px 16px;
+  padding: 16px 16px;
   transition: transform .2s;
 }
 
