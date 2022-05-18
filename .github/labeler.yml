@@ -30,9 +30,6 @@ area/code-generation:
   - src/SourceGenerators/*
   - src/SourceGenerators/**/*
 
-area/community:
-  - .all-contributorsrc
-
 kind/documentation:
   - README.*
   - docs/*

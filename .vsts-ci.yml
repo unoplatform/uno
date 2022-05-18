@@ -13,7 +13,6 @@ trigger:
     - .dependabot/
     - .github/
     - doc/*
-    - .all-contributorsrc
     
 pr: 
   branches:
@@ -30,7 +29,6 @@ pr:
     - .dependabot/
     - .github/
     - doc/*
-    - .all-contributorsrc
 
 resources:
   containers:
