@@ -4,6 +4,7 @@ enableSearch();
 
 renderTables();
 renderAlerts();
+updateAlertHeightOnResize();
 renderLinks();
 renderSidebar();
 renderAffix();
