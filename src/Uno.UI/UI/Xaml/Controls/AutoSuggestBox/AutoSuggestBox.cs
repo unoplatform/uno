@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Controls
 		private Grid _layoutRoot;
 		private ListView _suggestionsList;
 		private Button _queryButton;
-		private AutoSuggestionBoxTextChangeReason _textChangeReason;
+		private AutoSuggestionBoxTextChangeReason _textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
 		private string userInput;
 		private BindingPath _textBoxBinding;
 

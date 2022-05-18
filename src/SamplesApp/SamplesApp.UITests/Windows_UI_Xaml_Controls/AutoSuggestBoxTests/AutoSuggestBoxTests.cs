@@ -25,5 +25,24 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			using var screenshot = TakeScreenshot("AutoSuggestBox Description", new ScreenshotOptions() { IgnoreInSnapshotCompare = true });
 			ImageAssert.HasColorAt(screenshot, autoSuggestBoxRect.X + autoSuggestBoxRect.Width / 2, autoSuggestBoxRect.Y + autoSuggestBoxRect.Height - 50, Color.Red);
 		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Browser)] // Android not working currently. https://github.com/unoplatform/uno/issues/8836
+		public void AutoSuggestBox_Reason()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.AutoSuggestBoxTests.AutoSuggestBox_Reason", skipInitialScreenshot: true);
+			var SUT = _app.Marked("ReasonAutoSuggestBox");
+			_app.WaitForElement(SUT);
+
+			_app.FastTap("btnPopulate");
+			_app.WaitForText("txtConsole", "ProgrammaticChange");
+			//Entering Text as User
+			SUT.EnterText("m");
+			_app.WaitForText("txtConsole", "UserInput");
+
+			//Missing SuggestionChosen
+			//Uno UI Test does not support keyboard yet
+		}
 	}
 }
