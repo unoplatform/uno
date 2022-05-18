@@ -46,7 +46,7 @@ _Andrew is also currently writing a book on Uno Platform; we will add it here up
    
 #### 5. Building a Todo App with Uno Platform
 
-- [Steven Giesel](https://github.com/linkdotnet). recently explored the in’s and out of Uno Platform and in turn documented his experience with a great blog series that dive’s further into What is Uno Platform and how to build a multi-platform Todo App.
+- [Steven Giesel](https://github.com/linkdotnet). recently explored the in’s and out of Uno Platform and in turn documented his experience with a great blog series that dives further into What is Uno Platform and how to build a multi-platform Todo App.
 
    [Part 1 –  Introduction and Environment set up](https://steven-giesel.com/blogPost/b2234ada-0978-4c7b-841e-ca6a255247b0)
 
@@ -62,7 +62,7 @@ _Andrew is also currently writing a book on Uno Platform; we will add it here up
 
 #### 6. Pluralsight - Uno Platform Fundamentals
 
-- If you already have a subscription on Pluralsight, you can find our [Uno Platform Fundamentals course](https://www.pluralsight.com/courses/uno-platform-fundamentals). By the end of the course, you will have created your first Uno solution in Visual Studio and you’ll have the skills and knowledge needed to build multi-platform apps with Uno Platform.
+- If you already have a subscription to Pluralsight, you can find our [Uno Platform Fundamentals course](https://www.pluralsight.com/courses/uno-platform-fundamentals). By the end of the course, you will have created your first Uno solution in Visual Studio and you’ll have the skills and knowledge needed to build multi-platform apps with Uno Platform.
 
 _If you’re not subscribed, you can still watch it with a 30-day trial._
 
@@ -87,7 +87,7 @@ The course covers:
 
 #### 9. Raspberry Pi
 
-- If your looking to bring your cross platform apps to Raspberry Pi with Uno Platform, Peter Gallagher wrote an [article to help you get started]( https://www.petecodes.co.uk/developing-uwp-apps-for-the-raspberry-pi-with-uno-platform/) or try our [getting started with Raspberry Pi documentation]( https://platform.uno/docs/articles/guides/raspberry-pi/raspberry-pi-intro.html).
+- If you are looking to bring your cross-platform apps to Raspberry Pi with Uno Platform, Peter Gallagher wrote an [article to help you get started]( https://www.petecodes.co.uk/developing-uwp-apps-for-the-raspberry-pi-with-uno-platform/) or try our [getting started with Raspberry Pi documentation]( https://platform.uno/docs/articles/guides/raspberry-pi/raspberry-pi-intro.html).
 
 ## UNO PLATFORM RESOURCES
 
@@ -95,11 +95,11 @@ The course covers:
 
 - If you have a question about Uno Platform that others might benefit from, post it on [Uno Platform GitHub discussions](https://github.com/unoplatform/uno/discussions) or If you think you've encountered a bug (e.g. something works on UWP but not on another platform), [check for an existing issue on GitHub]( https://github.com/unoplatform/uno/issues) and create one if none exists. We don't like bugs, but we do like bug reports!
 
-- For more chat-like troubleshooting, visit with the Uno Platform team and the Uno community on our [Discord Channel #uno-platform]( https://discord.gg/eBHZSKG). Both have our engineering team monitoring discussions and answering questions.
+- For more chat-like troubleshooting, visit the Uno Platform team and the Uno community on our [Discord Channel #uno-platform]( https://discord.gg/eBHZSKG). Both have our engineering team monitoring discussions and answering questions.
 
 #### Official Documentation
 
-- Our [Uno Platform Documentations]( https://platform.uno/docs/articles/intro.html) page is always a great reference point when looking for additional information. We are continuously publishing documentation covering everything from getting started, migration, components, tutorials, troubleshooting and even contributing. To find out more about cross-platform development with Uno, consult the rest of the docs here, including a list of [supported features]( https://github.com/unoplatform/uno/blob/master/doc/articles/supported-features.md) and [general development tips]( https://github.com/unoplatform/uno/blob/master/doc/articles/using-uno-ui.md).
+- Our [Uno Platform Documentations]( https://platform.uno/docs/articles/intro.html) page is always a great reference point when looking for additional information. We are continuously publishing documentation covering everything from getting started, migration, components, tutorials, troubleshooting, and even contributing. To find out more about cross-platform development with Uno, consult the rest of the docs here, including a list of [supported features]( https://github.com/unoplatform/uno/blob/master/doc/articles/supported-features.md) and [general development tips]( https://github.com/unoplatform/uno/blob/master/doc/articles/using-uno-ui.md).
    
 #### Uno Platform YouTube
 
@@ -108,7 +108,7 @@ The course covers:
 #### Uno Platform Blog
 
 - The [Uno Platform blog](http://platform.uno/blog) is frequently active, publishing articles weekly on a wide array of topics and varying complexity.
-Here are some highlighted articles form the Uno Blog:
+Here are some highlighted articles from the Uno Blog:
 
 - [UnoConf 2021 “How-To” Series](https://platform.uno/blog/unoconf-2021-summary-and-recordings/)
 
@@ -126,4 +126,4 @@ Here are some highlighted articles form the Uno Blog:
 
 We're excited for you to join the Uno Platform community, if you're ready to contribute to Uno Platform, great! Check out our guides on [building Uno]( https://github.com/unoplatform/uno/blob/master/doc/articles/uno-development/debugging-uno-ui.md) and [creating UI samples]( https://github.com/unoplatform/uno/blob/master/doc/articles/uno-development/working-with-the-samples-apps.md). Knowledge of working with GitHub and Forks, Pull and Push requests is desirable. 
 
-To learn more about Forks please see official GitHub documentation. [GitHub - Forks]( https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/working-with-forks).
+To learn more about Forks please see the official GitHub documentation. [GitHub - Forks]( https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/working-with-forks).
