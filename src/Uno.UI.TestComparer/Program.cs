@@ -354,17 +354,22 @@ namespace Umbrella.UI.TestComparer
 
 		private static string BuildSymlink(string basePath, string symlinksBasePath, int folderIndex, string originalFilePath)
 		{
-			var relativeSourceFilePath = Path.GetRelativePath(basePath, originalFilePath);
-			var targetLinkPath = Path.Combine(symlinksBasePath, Path.GetDirectoryName(relativeSourceFilePath), $"{folderIndex}-{Path.GetFileName(relativeSourceFilePath)}");
-
-			Directory.CreateDirectory(Path.GetDirectoryName(targetLinkPath));
-
-			if (!File.Exists(targetLinkPath))
+			if (!string.IsNullOrEmpty(originalFilePath))
 			{
-				File.CreateSymbolicLink(targetLinkPath, originalFilePath);
+				var relativeSourceFilePath = Path.GetRelativePath(basePath, originalFilePath);
+				var targetLinkPath = Path.Combine(symlinksBasePath, Path.GetDirectoryName(relativeSourceFilePath), $"{folderIndex}-{Path.GetFileName(relativeSourceFilePath)}");
+
+				Directory.CreateDirectory(Path.GetDirectoryName(targetLinkPath));
+
+				if (!File.Exists(targetLinkPath))
+				{
+					File.CreateSymbolicLink(targetLinkPath, originalFilePath);
+				}
+
+				return targetLinkPath;
 			}
 
-			return targetLinkPath;
+			return null;
 		}
 
 		private static string SanitizeTestName(string testName)
