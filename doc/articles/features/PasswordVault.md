@@ -23,7 +23,7 @@
 
 ## `PasswordVault`
 
-The `PasswordVault` is designed to be safe place to store user's credentials and tokens.
+The `PasswordVault` is designed to be a safe place to store the user's credentials and tokens.
 It's backed by the hardware encryption mechanism of each platform, which provides a high level of security.
 However, the `PasswordVault` does **not** offer any memory security feature.
 
@@ -32,13 +32,13 @@ Below see the implementation information for each platform:
 ### [**Android**](#tab/android)
 The implementation uses the `AndroidKeyStore` which was introduced with API 18 (4.3).
 The `KeyStore` is used to generate a symmetric key which is then used to encrypt and decrypt a file persisted in the application directory.
-The key is managed by the `KeyStore` itself, which usually uses hardware component to persist it. The key is not even accessible to the application.
+The key is managed by the `KeyStore` itself, which usually uses the hardware component to persist it. The key is not even accessible to the application.
 
 More info: https://developer.android.com/reference/java/security/KeyStore
 
 ### [**iOS**](#tab/iOS)
 The `PasswordVault` is directly stored in the iOS `KeyChain` which is the recommended way to store secrets on iOS devices.
-It's backed by hardware components which ensure that the data is almost impossible to retrieve if not granted.
+It's backed by hardware components that ensure that the data is almost impossible to retrieve if not granted.
 
 More info: https://developer.apple.com/documentation/security/certificate_key_and_trust_services/keys/storing_keys_in_the_keychain
 
