@@ -7,7 +7,17 @@
 
   <PropertyGroup>
 	<_isRoslynAnalyzerAvailable Condition="'$(MSBuildVersion)' &gt;= '16.8'">true</_isRoslynAnalyzerAvailable>
-	<_canUseRoslynAnalyzer Condition="'$(LangVersion)' == 'preview' or ('$(LangVersion)'!='' and $(LangVersion.Contains('.')) and '$(LangVersion)'&gt;='9.0')">true</_canUseRoslynAnalyzer>
+	  
+	<_canUseRoslynAnalyzer Condition="
+							'$(LangVersion)' == 'preview'
+							Or '$(LangVersion)' == 'latest'
+							Or '$(LangVersion)' == 'latestMajor'
+							Or '$(LangVersion)' == 'default'
+							Or (
+								'$(LangVersion)'!=''
+								and $([MSBuild]::VersionGreaterThan($(LangVersion), '9.0'))
+							)">true</_canUseRoslynAnalyzer>
+
 	<UnoUIUseRoslynSourceGenerators Condition="'$(UnoUIUseRoslynSourceGenerators)'=='' and '$(_isRoslynAnalyzerAvailable)' == 'true' and '$(_canUseRoslynAnalyzer)'=='true'">true</UnoUIUseRoslynSourceGenerators>
 	<UnoUIUseRoslynSourceGenerators Condition="'$(UnoUIUseRoslynSourceGenerators)'==''">false</UnoUIUseRoslynSourceGenerators>
 
@@ -372,7 +382,7 @@
   </Target>
 
   <Target Name="UnoLogGeneratorsType" BeforeTargets="CoreCompile;_UnoSourceGenerator">
-	<Message
+	<Message Importance="high"
 		   Condition="'$(UnoUIUseRoslynSourceGenerators)'=='true'"
 		   Text="Uno.UI is using Roslyn generators" />
 	<Message Importance="high"
