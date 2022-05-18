@@ -241,7 +241,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 	partial class LottieVisualSourceBase
 	{
 #if !__MACOS__
-		private NativeProgressRing? _nativeProgressRing;
+		private BindableUIActivityIndicatorView? _nativeProgressRing;
 		private IDisposable? _colorDisposable;
 #endif
 
@@ -299,7 +299,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 #if !__MACOS__
 			if (_player?.TemplatedParent is Microsoft.UI.Xaml.Controls.ProgressRing progress)
 			{
-				_nativeProgressRing ??= new NativeProgressRing();
+				_nativeProgressRing ??= new BindableUIActivityIndicatorView();
 
 #if __IOS__
 				_player?.Add(_nativeProgressRing);
