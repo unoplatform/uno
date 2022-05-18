@@ -220,68 +220,68 @@
               href: controls/TimePicker.md
             - name: ToggleSwitch
               href: controls/ToggleSwitch.md
-        - name: WinRT features
+        - name: Non-UI APIs
           items:
-            - name: PasswordVault
+            - name: App Close Handling
+              href: features/windows-ui-core-preview.md
+            - name: App Suspension
+              href: features/windows-ui-xaml-application.md
+            - name: Badge Notifications
+              href: features/windows-ui-notifications.md
+            - name: Bluetooth
+              href: features/bluetoothdevice.md
+            - name: Contacts
+              href: features/windows-applicationmodel-contacts.md
+            - name: Credential Storage
               href: features/PasswordVault.md
+            - name: Device Enumeration
+              href: features/windows-devices-enumeration.md
+            - name: Device Information
+              href: features/windows-system-profile.md
+            - name: E-mail
+              href: features/windows-applicationmodel-email.md
+            - name: File Management
+              href: features/windows-storage.md
+            - name: File and Folder Pickers
+              href: features/windows-storage-pickers.md
+            - name: Flashlight
+              href: features/windows-devices-lights.md
+            - name: Geolocation (GPS)
+              href: features/windows-devices-geolocation.md
+            - name: Haptics
+              href: features/windows-devices-haptics.md
+            - name: Jump List (Quick Actions)
+              href: features/windows-ui-startscreen.md
+            - name: Keeping Screen On
+              href: features/windows-system-display.md
+            - name: MIDI
+              href: features/windows-devices-midi.md
+            - name: Network Information
+              href: features/windows-networking.md
+            - name: Package Information
+              href: features/windows-applicationmodel.md
+            - name: Personalization
+              href: features/windows-system-userprofile.md
+            - name: Phone Calls
+              href: features/windows-applicationmodel-calls.md
             - name: PowerManager
               href: features/windows-system-power.md
+            - name: Sharing
+              href: features/windows-applicationmodel-datatransfer.md
+            - name: SMS
+              href: features/windows-applicationmodel-chat.md
+            - name: Sensors
+              href: features/windows-devices-sensors.md
             - name: Speech Recognition
               href: features/SpeechRecognition.md
+            - name: Title Bar Customization
+              href: features/windows-ui-viewmanagement.md
+            - name: URI Launcher
+              href: features/windows-system.md
+            - name: Vibration
+              href: features/windows-phone-devices-notification-vibrationdevice.md
             - name: Web Authentication Broker
               href: features/web-authentication-broker.md
-            - name: Windows.ApplicationModel
-              href: features/windows-applicationmodel.md
-            - name: Windows.ApplicationModel.Calls
-              href: features/windows-applicationmodel-calls.md
-            - name: Windows.ApplicationModel.Chat
-              href: features/windows-applicationmodel-chat.md
-            - name: Windows.ApplicationModel.Contacts
-              href: features/windows-applicationmodel-contacts.md
-            - name: Windows.ApplicationModel.DataTransfer
-              href: features/windows-applicationmodel-datatransfer.md
-            - name: Windows.ApplicationModel.Email
-              href: features/windows-applicationmodel-email.md
-            - name: Windows.Devices.Enumeration
-              href: features/windows-devices-enumeration.md
-            - name: Windows.Devices.Haptics
-              href: features/windows-devices-haptics.md
-            - name: Windows.Devices.Lights
-              href: features/windows-devices-lights.md
-            - name: Windows.Devices.Midi
-              href: features/windows-devices-midi.md
-            - name: Windows.Devices.Sensors
-              href: features/windows-devices-sensors.md
-            - name: Windows.Networking
-              href: features/windows-networking.md
-            - name: Windows.Phone.Devices.Notification
-              href: features/windows-phone-devices-notification-vibrationdevice.md
-            - name: Windows.UI.Core.Preview
-              href: features/windows-ui-core-preview.md
-            - name: Windows.UI.StartScreen
-              href: features/windows-ui-startscreen.md
-            - name: Windows.UI.Notifications
-              href: features/windows-ui-notifications.md
-            - name: Windows.UI.Xaml.Application
-              href: features/windows-ui-xaml-application.md
-            - name: Windows.Devices.Geolocation
-              href: features/windows-devices-geolocation.md
-            - name: Windows.System
-              href: features/windows-system.md
-            - name: Windows.System.Display
-              href: features/windows-system-display.md
-            - name: Windows.System.Profile
-              href: features/windows-system-profile.md
-            - name: Windows.System.UserProfile
-              href: features/windows-system-userprofile.md
-            - name: Windows.Storage
-              href: features/windows-storage.md
-            - name: Windows.Storage.Pickers
-              href: features/windows-storage-pickers.md
-            - name: Windows.UI.ViewManagement
-              href: features/windows-ui-viewmanagement.md
-            - name: Windows.Devices.Bluetooth.BluetoothDevice
-              href: features/bluetoothdevice.md
         - name: Uno features
           items:
             - name: Uno.UI.Toolkit
