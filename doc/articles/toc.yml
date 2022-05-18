@@ -138,7 +138,7 @@
               href: winui-doc-links-development.md
             - name: Design
               href: winui-doc-links-design.md
-        - name: Uno basics
+        - name: Uno Basics
           items:
             - name: Platform-specific C# code
               href: platform-specific-csharp.md
@@ -150,7 +150,7 @@
               href: uno-app-solution-structure.md
             - name: Best practices
               href: best-practices-uno.md
-        - name: WinUI features
+        - name: WinUI Features
           items:
             - name: Accessibility
               href: features/working-with-accessibility.md
@@ -188,7 +188,7 @@
               href: features/windows-ui-succinct-syntax.md
             - name: WinAppSDK Specifics
               href: features/winapp-sdk-specifics.md
-        - name: WinUI controls
+        - name: WinUI Controls
           items:
             - name: ComboBox
               href: controls/ComboBox.md
@@ -318,7 +318,7 @@
               href: features/working-with-cookies.md
             - name: Using pointer cursors
               href: features/cursors.md
-        - name: Core functionality
+        - name: Core Functionality
           items:
             - name: Logging
               href: logging.md
@@ -336,7 +336,7 @@
               href: features/protocol-activation.md
             - name: Activities in Android
               href: android-activities.md
-        - name: Common tasks
+        - name: Common Tasks
           items:
             - name: Upgrading from previous releases
               href: migrating-from-previous-releases.md
@@ -378,6 +378,14 @@
               href: Uno-UI-Performance.md
             - name: How to profile applications
               href: guides/profiling-applications.md
+        - name: Tooling
+          items:
+            - name: Uno WebAssembly Bootstrapper
+              href: external/uno.wasm.bootstrap/doc/toc.yml
+            - name: Uno Check
+              href: external/uno.check/doc/toc.yml
+            - name: Xaml Merging
+              href: external/uno.xamlmerge.task/doc/toc.yml
 
     - name: Reference
       items:
@@ -479,23 +487,14 @@
             href: uno-development/Uno-UI-XAML-ResourceTrimming.md
 
 - name: Extensions
-  topicHref: external/uno.extensions/doc/overview.md
+  topicHref: external/uno.extensions/doc/00-Introduction.html
   href: external/uno.extensions/doc/toc.yml
 - name: Themes
-  topicHref: external/uno.themes/doc/overview.md
+  topicHref: external/uno.themes/doc/getting-started.md
   href: external/uno.themes/doc/toc.yml
 - name: Toolkit
-  topicHref: external/uno.toolkit.ui/doc/overview.md
+  topicHref: external/uno.toolkit.ui/doc/getting-started.md
   href: external/uno.toolkit.ui/doc/toc.yml
 - name: Figma
-  topicHref: external/figma-docs/overview.md
+  topicHref: external/figma-docs/getting-started-uno-figma.md
   href: external/figma-docs/toc.yml
-
-- name: Tools
-  items:
-    - name: Uno WebAssembly Bootstrapper
-      href: external/uno.wasm.bootstrap/doc/toc.yml
-    - name: Uno Check
-      href: external/uno.check/doc/toc.yml
-    - name: Xaml Merging
-      href: external/uno.xamlmerge.task/doc/toc.yml
