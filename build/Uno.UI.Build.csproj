@@ -121,6 +121,7 @@
 			<_sdkProject Include="..\src\SolutionTemplate\**\*.Skia.*.csproj"/>
 			<_sdkProject Include="..\src\SolutionTemplate\UnoLibraryTemplate\CrossTargetedLibrary.csproj"/>
 			<_sdkProject Include="..\src\SolutionTemplate\UnoLibraryTemplate.net6\CrossTargetedLibrary.csproj"/>
+			<_sdkProject Include="..\src\SolutionTemplate\UnoLibraryTemplate.net6\CrossTargetedLibrary.csproj"/>
 
 			<_sdkProject Include="..\src\SolutionTemplate\Uno.ProjectTemplates.Dotnet\content\unolib-crossruntime\UnoCrossRuntimeLib\*.csproj"/>
 		</ItemGroup>
@@ -143,6 +144,7 @@
 							 Namespaces="$(MSBuildDeveloperNamespace)"
 							 />
 
+		<!-- Update templates for Uno.UI -->
 		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
 							 Query="//PackageReference[@Include='Uno.UI']/@Version"
 							 Value="$(GitVersion_SemVer)" />
@@ -167,10 +169,38 @@
 		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
 							 Query="//PackageReference[@Include='Uno.UI.Runtime.WebAssembly']/@Version"
 							 Value="$(GitVersion_SemVer)" />
+
+		<!-- Update templates for Uno.WinUI -->
+		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
+							 Query="//PackageReference[@Include='Uno.WinUI']/@Version"
+							 Value="$(GitVersion_SemVer)" />
+		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
+							 Query="//PackageReference[@Include='Uno.WinUI.RemoteControl']/@Version"
+							 Value="$(GitVersion_SemVer)" />
+		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
+							 Query="//PackageReference[@Include='Uno.WinUI.WebAssembly']/@Version"
+							 Value="$(GitVersion_SemVer)" />
+		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
+							 Query="//PackageReference[@Include='Uno.WinUI.Skia.Gtk']/@Version"
+							 Value="$(GitVersion_SemVer)" />
+		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
+							 Query="//PackageReference[@Include='Uno.WinUI.Skia.Linux.FrameBuffer']/@Version"
+							 Value="$(GitVersion_SemVer)" />
+		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
+							 Query="//PackageReference[@Include='Uno.WinUI.Skia.Wpf']/@Version"
+							 Value="$(GitVersion_SemVer)" />
+		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
+							 Query="//PackageReference[@Include='Uno.WinUI.Skia.Tizen']/@Version"
+							 Value="$(GitVersion_SemVer)" />
+		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
+							 Query="//PackageReference[@Include='Uno.WinUI.Runtime.WebAssembly']/@Version"
+							 Value="$(GitVersion_SemVer)" />
+
+
+		<!-- Update templates for generic packages -->
 		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
 							 Query="//PackageReference[@Include='Uno.UI.Adapter.Microsoft.Extensions.Logging']/@Version"
-							 Value="$(GitVersion_SemVer)" />
-	</Target>
+							 Value="$(GitVersion_SemVer)" />	</Target>
 
 	<Target Name="UpdateTasksSHA">
 
