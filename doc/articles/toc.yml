@@ -241,7 +241,7 @@
             - name: E-mail
               href: features/windows-applicationmodel-email.md
             - name: File Management
-              href: features/windows-storage.md
+              href: features/file-management.md
             - name: File and Folder Pickers
               href: features/windows-storage-pickers.md
             - name: Flashlight
