@@ -1,6 +1,6 @@
 - name: Overview
   topicHref: intro.md
-- name: Get started
+- name: Get Started
   topicHref: get-started.md
   items:
     - name: Development Environment
