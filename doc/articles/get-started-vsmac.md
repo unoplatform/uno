@@ -29,7 +29,11 @@ To update, go to `Visual Studio > Preferences > Projects > SDK Locations > Apple
 Restart Visual Studio.
 1. You can now run on iOS, Android, macOS and Skia.GTK projects by changing your startup project and start the debugger.
    
-Note: You will not be able to build the UWP and WPF projects on a Mac. All changes to this project must be made on Windows.
+> [!NOTE]
+> You will not be able to build the UWP and WPF projects on a Mac. All changes to this project must be made on Windows.
+   
+> [!IMPORTANT]
+> As of .NET 6 Mobile RC3, the macOS head is can fail to build with issues related to the AOT compiler. You can run the Catalyst app on a mac.
 
 ## Create other projects types using the command line
 
@@ -46,12 +50,12 @@ Building for WebAssembly takes a few more steps:
 
 1. Set `MyProject.Wasm` to startup project
 1. Build the project
-1. In the terminal, navigate to your build output path. This will typically be: `MyProject.Wasm > bin > Debug > net5.0 > dist`
+1. In the terminal, navigate to your build output path. This will typically be: `MyProject.Wasm > bin > Debug > net6.0 > dist`
 1. Install `dotnet serve`:
     ```
     dotnet tool install -g dotnet-serve
     ```
-1. Once installed type `dotnet serve`.
+1. Once installed type `dotnet serve` (or `~/.dotnet/tools/dotnet-serve`).
 1. Navigate to the url presented by the tool to run your application
 
 [!include[getting-help](getting-help.md)]
