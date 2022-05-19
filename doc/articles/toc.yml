@@ -245,7 +245,7 @@
             - name: File and Folder Pickers
               href: features/windows-storage-pickers.md
             - name: Flashlight
-              href: features/windows-devices-lights.md
+              href: features/flashlight.md
             - name: Geolocation (GPS)
               href: features/windows-devices-geolocation.md
             - name: Haptics
