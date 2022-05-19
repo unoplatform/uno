@@ -274,6 +274,8 @@
               href: features/windows-devices-sensors.md
             - name: Speech Recognition
               href: features/SpeechRecognition.md
+            - name: Settings
+              href: features/settings.md              
             - name: Title Bar Customization
               href: features/windows-ui-viewmanagement.md
             - name: URI Launcher
