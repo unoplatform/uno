@@ -222,8 +222,8 @@
               href: controls/ToggleSwitch.md
         - name: Non-UI APIs
           items:
-            - name: App Close Handling
-              href: features/windows-ui-core-preview.md
+            - name: App Close Handler
+              href: features/app-close-handler.md          
             - name: App Suspension
               href: features/windows-ui-xaml-application.md
             - name: Badge Notifications
