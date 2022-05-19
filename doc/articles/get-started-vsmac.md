@@ -3,7 +3,7 @@
 While it is easier to create apps using Uno Platform on Windows, you can also create all but UWP/WinUI apps on your Mac.
 
 ## Prerequisites
-* [**Visual Studio for Mac 2022 Preview**](https://visualstudio.microsoft.com/vs/mac/)
+* [**Visual Studio for Mac 2022 Preview**](https://visualstudio.microsoft.com/vs/mac/preview/)
 * [**Xcode**](https://apps.apple.com/us/app/xcode/id497799835?mt=12) 13.3 or higher
 * An [**Apple ID**](https://support.apple.com/en-us/HT204316)
 * [**GTK+3**](https://formulae.brew.sh/formula/gtk+3) for running the Skia/GTK projects
