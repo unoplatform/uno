@@ -222,6 +222,8 @@
               href: controls/ToggleSwitch.md
         - name: Non-UI APIs
           items:
+            - name: Accelerometer
+              href: accelerometer.md
             - name: App Close Handler
               href: features/app-close-handler.md          
             - name: App Suspension

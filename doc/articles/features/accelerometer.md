@@ -1,0 +1,59 @@
+# Accelerometer
+
+> [!TIP]
+> This article covers Uno-specific information for Accelerometer. For a full description of the feature and instructions on using it, consult the UWP documentation: https://docs.microsoft.com/en-us/windows/uwp/devices-sensors/use-the-accelerometer
+
+ * The `Windows.Devices.Sensors.Accelerometer` class allows measuring linear acceleration of the device along three X, Y and Z axis. 
+
+## Supported features
+
+| Feature        |  Windows  | Android |  iOS  |  Web (WASM)  | macOS | Linux (Skia)  | Win 7 (Skia) | 
+|---------------|-------|-------|-------|-------|-------|-------|-|
+| `GetDefault`         | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
+| `ReadingChanged` | ✔ | ✔ | ✔ | ✔ | ✖ | ✖| ✖ |
+| `Shaken`     | ✔ | ✔ | ✔ | ✔ | ✖ | ✖ | ✖ |
+| `ReportInterval`     | ✔ | ✔ | ✔ | ✔ | ✖ | ✖ | ✖ |
+
+## Using Accelerometer with Uno
+ 
+ * The `GetDefault` method is availble on all targets and will return `null` on those which do not support `Accelerometer` or devices which do not have such sensor.
+ * While iOS features a built-in shake gesture recognition, this is not available on Android and WASM. For these platforms we use a commonly used implementation which tries to approximate the shake motion to detect it. Both Android and WASM use the same implementation. In case this is not sufficient for your use case, you can implement Shake detection utilizing the `ReadingChanged` event readings.
+ * On Android, when both `ReadingChanged` and `Shaken` events are attached and the user sets the `ReportInterval` to a high value, the `ReadingChanged` event may be raised more often than requested. This is because for multiple subscribers to the same sensor the system may raise the sensor events with the frequency of the one with lower requested report delay. This is, however, in line with the behavior of UWP Accelerometer and you can filter the events as necessary for your use case.
+ * `ReportInterval` property on WASM is not supported directly and we use an approximation in the form of raising the `ReadingChanged` event only when enough time has passed since the last report. The event is actually raised a bit more often to make sure the gap caused by the filter is not too large, but this is in-line with the behavior of UWP Accelerometer.
+
+## Example
+
+### Capturing sensor readings
+
+```c#
+var accelerometer = Accelerometer.GetDefault();
+accelerometer.ReadingChanged += Accelerometer_ReadingChanged;
+
+private async void Accelerometer_ReadingChanged(Accelerometer sender, AccelerometerReadingChangedEventArgs args)
+{
+    // If you want to update the UI in some way, ensure the Dispatcher is used,
+    // as the ReadingChanged event handler does not run on the UI thread.
+    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+    {
+        OutputTextBlock.Text = $"Sensor reading is "
+            $"x = {args.Reading.AccelerationX}, y = {args.Reading.AccelerationY}, z = {args.Reading.AccelerationZ}, " + 
+            $"timestamp = {args.Reading.Timestamp}";
+    });
+}
+```
+
+### Detecting shake
+
+```c#
+var accelerometer = Accelerometer.GetDefault();
+accelerometer.Shaken += Accelerometer_ReadingChanged;
+
+private async void Accelerometer_Shaken(Accelerometer sender, AccelerometerShakenEventArgs args)
+{
+    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => ShakenTimestamp = args.Timestamp.ToString("R"));
+}
+```
+
+## See Accelerometer in action
+
+ * To see this API in action, visit example application for non-UI APIs [here](https://cutt.ly/apis).
