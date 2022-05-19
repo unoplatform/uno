@@ -3,12 +3,9 @@
 While it is easier to create apps using Uno Platform on Windows, you can also create all but UWP/WinUI apps on your Mac.
 
 ## Prerequisites
-* [**Visual Studio for Mac 8.8**](https://visualstudio.microsoft.com/vs/mac/)
-* [**Xcode**](https://apps.apple.com/us/app/xcode/id497799835?mt=12) 10.0 or higher
+* [**Visual Studio for Mac 2022 Preview**](https://visualstudio.microsoft.com/vs/mac/)
+* [**Xcode**](https://apps.apple.com/us/app/xcode/id497799835?mt=12) 13.3 or higher
 * An [**Apple ID**](https://support.apple.com/en-us/HT204316)
-* **.NET Core SDK**
-    * [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1) (**version 3.1.8 (SDK 3.1.402)** or later)
-    * [.NET Core 5.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (**version 5.0 (SDK 5.0.100)** or later)
 * [**GTK+3**](https://formulae.brew.sh/formula/gtk+3) for running the Skia/GTK projects
 
 Once the dependencies are installed, you'll need to run [**uno-check**](external/uno.check/doc/using-uno-check.md) to ensure that your environment is properly configured.
@@ -20,7 +17,7 @@ In order to create a new Uno Project, you'll need to install the [`dotnet new` U
 1. To create a new project, from the command line:
     ```
     cd src
-    dotnet new unoapp -o MyApp01
+    dotnet new unoapp-net6 -o MyApp01
     ```
 
 1. Once created, open the `MyApp-vsmac.slnf` file
@@ -28,7 +25,7 @@ In order to create a new Uno Project, you'll need to install the [`dotnet new` U
     - If you have a warning symbol on your iOS project, make sure you have the minimum version of Xcode installed.
 ![update-xcode](Assets/quick-start/xcode-version-warning.jpg)\
 
-To update, go to `Visual Studio > Preferences > Projects > SDK Locations > Apple` and select Xcode 12 or higher.
+To update, go to `Visual Studio > Preferences > Projects > SDK Locations > Apple` and select Xcode 13.3 or higher.
 Restart Visual Studio.
 1. You can now run on iOS, Android, macOS and Skia.GTK projects by changing your startup project and start the debugger.
    
@@ -56,8 +53,5 @@ Building for WebAssembly takes a few more steps:
     ```
 1. Once installed type `dotnet serve`.
 1. Navigate to the url presented by the tool to run your application
-
-### Video Tutorial
-[![Getting Started with Visual Studio for Mac video](Assets/vsmac-cover.JPG)](http://www.youtube.com/watch?v=ESGJr6kHQg0 "")
 
 [!include[getting-help](getting-help.md)]

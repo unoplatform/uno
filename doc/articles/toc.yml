@@ -20,6 +20,8 @@
         href: get-started-dotnet-new.md
       - name: Using Uno Check
         href: external/uno.check/doc/using-uno-check.md
+      - name: Visual Studio 2019
+        href: get-started-vs.md
     - name: Common Issues
       href: get-started-wizard.md
 
