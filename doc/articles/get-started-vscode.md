@@ -42,7 +42,7 @@ This will create a solution that only contains the WebAssembly and Skia+GTK plat
     > For this command to work you need to previously have configured Visual Studio Code to be launched from the terminal.
 
 1. Visual Studio Code will ask to restore the NuGet packages.
-1. Once the project has been loaded, in the status bar, `MyApp.sln` is selected by default. Select `MyApp.Wasm.csproj` or `MyApp.Skia.Gtk.csproj` instead.
+1. Once the project has been loaded, in the status bar at the bottom left of VS Code, `MyApp.sln` is selected by default. Select `MyApp.Wasm.csproj` or `MyApp.Skia.Gtk.csproj` instead.
 
 ## Modify the template
 
