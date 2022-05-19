@@ -19,7 +19,7 @@ namespace SkiaSharpExample
 				expArgs.ExitApplication = true;
 			};
 
-			var host = new GtkHost(() => new SamplesApp.App(), args);
+			var host = new GtkHost(() => new SamplesApp.App());
 
 			SampleControl.Presentation.SampleChooserViewModel.TakeScreenShot = filePath => host.TakeScreenshot(filePath);
 

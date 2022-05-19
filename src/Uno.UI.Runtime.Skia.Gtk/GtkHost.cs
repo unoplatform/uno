@@ -31,6 +31,7 @@ using Uno.UI.Runtime.Skia.GTK.System.Profile;
 using Uno.UI.Runtime.Skia.Helpers;
 using Uno.UI.Runtime.Skia.Helpers.Dpi;
 using System.Runtime.InteropServices;
+using System.ComponentModel;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -57,16 +58,21 @@ namespace Uno.UI.Runtime.Skia
 		/// <remarks>If <c>null</c>, the host will try to determine the most compatible mode.</remarks>
 		public RenderSurfaceType? RenderSurfaceType { get; set; }
 
-		/// <summary>
-		/// Creates a host for a Uno Skia GTK application.
-		/// </summary>
-		/// <param name="appBuilder">App builder.</param>
-		/// <param name="args">Deprecated, value ignored.</param>
-		/// <remarks>
-		/// Args are obsolete and will be removed in the future. Environment.CommandLine is used instead
-		/// to fill LaunchEventArgs.Arguments.
-		/// </remarks>
-		public GtkHost(Func<WUX.Application> appBuilder, string[] args)
+        /// <summary>
+        /// Creates a host for a Uno Skia GTK application.
+        /// </summary>
+        /// <param name="appBuilder">App builder.</param>
+        /// <param name="args">Deprecated, value ignored.</param>
+        /// <remarks>
+        /// Args are obsolete and will be removed in the future. Environment.CommandLine is used instead
+        /// to fill LaunchEventArgs.Arguments.
+        /// </remarks>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+		public GtkHost(Func<WUX.Application> appBuilder, string[] args) : this(appBuilder)
+		{
+		}
+
+		public GtkHost(Func<WUX.Application> appBuilder)
 		{
 			_appBuilder = appBuilder;
 		}

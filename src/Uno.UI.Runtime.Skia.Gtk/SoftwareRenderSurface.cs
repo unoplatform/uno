@@ -100,15 +100,21 @@ namespace Uno.UI.Runtime.Skia
 			}
 
 			var canvas = _surface.Canvas;
-			canvas.Clear(SKColors.White);
-			canvas.Scale(_dpi);
 
-			WUX.Window.Current.Compositor.Render(_surface);
+			using (new SKAutoCanvasRestore(canvas, true))
+			{
+				canvas.Clear(SKColors.White);
+				canvas.Scale(_dpi);
+
+				WUX.Window.Current.Compositor.Render(_surface);
+			}
 
 			_gtkSurface!.MarkDirty();
+			cr.Save();
 			cr.Scale(1 / _dpi, 1 / _dpi);
 			cr.SetSourceSurface(_gtkSurface, 0, 0);
 			cr.Paint();
+			cr.Restore();
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
