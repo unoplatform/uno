@@ -382,10 +382,10 @@
   </Target>
 
   <Target Name="UnoLogGeneratorsType" BeforeTargets="CoreCompile;_UnoSourceGenerator">
-	<Message Importance="high"
+	<Message Importance="low"
 		   Condition="'$(UnoUIUseRoslynSourceGenerators)'=='true'"
 		   Text="Uno.UI is using Roslyn generators" />
-	<Message Importance="high"
+	<Message Importance="low"
 		   Condition="'$(UnoUIUseRoslynSourceGenerators)'==''"
 		   Text="Uno.UI is using Uno.SourceGenerators" />
 
