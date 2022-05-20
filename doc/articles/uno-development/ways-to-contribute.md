@@ -43,9 +43,9 @@ Wherever we can, we prefer to implement UWP/WinUI APIs for maximum cross-platfor
 
 ### Ask (and answer) questions
 
-If you have a question, be sure first to check out our [documentation](https://platform.uno/docs/articles/intro.html). But if you are still stuck, you'll have a better chance of getting help on [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform) and we'll do our best to answer it. Questions asked there should be tagged with `uno-platform.`
+If you have a question, be sure first to check out our [documentation](https://platform.uno/docs/articles/intro.html). But if you are still stuck, please visit [GitHub Discussions](https://github.com/unoplatform/uno/discussions) where our engineering team and community will be able to help you.
 
-Of course if you've already done some Uno Platform development, maybe there's a [StackOverflow question](https://stackoverflow.com/questions/tagged/uno-platform) you can answer!
+If you've already done some Uno development, maybe there's a GitHub discussion question you can answer, giving another user the benefit of your experience.
 
 For a more direct conversation, [visit our Discord Channel #uno-platform](https://discord.gg/eBHZSKG).
 
