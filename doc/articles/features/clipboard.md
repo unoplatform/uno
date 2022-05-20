@@ -27,7 +27,7 @@
 
 ### Copying text to clipboard
 
-```c#
+```csharp
 var dataPackage = new DataPackage();
 dataPackage.SetText("Hello, clipboard");
 Clipboard.SetContent(dataPackage);
@@ -35,14 +35,14 @@ Clipboard.SetContent(dataPackage);
 
 ### Pasting text from clipboard
 
-```c#
+```csharp
 var content = Clipboard.GetContent();
 var text = await content.GetTextAsync();
 ```
 
 ### Observing clipboard changes
 
-```c#
+```csharp
 Clipboard.ContentChanged += Clipboard_ContentChanged;
 
 private void Clipboard_ContentChanged(object sender, object e)

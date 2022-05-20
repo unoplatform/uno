@@ -22,7 +22,7 @@
 
 ### Capturing sensor readings
 
-```c#
+```csharp
 var barometer = Barometer.GetDefault();
 barometer.ReadingChanged += Barometer_ReadingChanged;
 
@@ -40,6 +40,6 @@ private async void Barometer_ReadingChanged(Barometer sender, BarometerReadingCh
 
 ### Unsubscribing from the readings
 
-```c#
+```csharp
 barometer.ReadingChanged -= Barometer_ReadingChanged;
 ```

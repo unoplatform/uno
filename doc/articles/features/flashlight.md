@@ -24,7 +24,7 @@
 
 ## Example
 
-```c#
+```csharp
 if (await Lamp.GetDefaultAsync() is Lamp lamp)
 {
     lamp.IsEnabled = true; // Turn on the flashlight.

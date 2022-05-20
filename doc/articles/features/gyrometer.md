@@ -23,7 +23,7 @@
 
 ### Capturing sensor readings
 
-```c#
+```csharp
 var gyrometer = Gyrometer.GetDefault();
 gyrometer.ReadingChanged += Gyrometer_ReadingChanged;
 
@@ -43,6 +43,6 @@ private async void Gyrometer_ReadingChanged(Gyrometer sender, GyrometerReadingCh
 
 ### Unsubscribing from the readings
 
-```c#
+```csharp
 gyrometer.ReadingChanged -= Gyrometer_ReadingChanged;
 ```

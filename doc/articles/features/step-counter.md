@@ -45,7 +45,7 @@ Make sure to add the following capability declaration to your `Info.plist` file,
 
 ### Capturing sensor readings
 
-```c#
+```csharp
 var pedometer = await Pedometer.GetDefaultAsync();
 pedometer.ReportInterval = 10000;
 pedometer.ReadingChanged += Pedometer_ReadingChanged;

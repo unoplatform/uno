@@ -6,7 +6,7 @@ To see how to implement MIDI support in your application, you can follow the sam
 
 In case of **WebAssembly**, additional security check is required to be able to receive/send system exclusive MIDI messages. If you require this functionality, please set the `WinRTFeatureConfiguration.Midi.RequestSystemExclusiveAccess` flag early in the application lifecycle.
 
-```C#
+```csharp
 #if __WASM__
 WinRTFeatureConfiguration.Midi.RequestSystemExclusiveAccess = true;
 #endif

@@ -26,7 +26,7 @@
 
 ### Capturing sensor readings
 
-```c#
+```csharp
 var accelerometer = Accelerometer.GetDefault();
 accelerometer.ReadingChanged += Accelerometer_ReadingChanged;
 
@@ -45,7 +45,7 @@ private async void Accelerometer_ReadingChanged(Accelerometer sender, Accelerome
 
 ### Detecting shake
 
-```c#
+```csharp
 var accelerometer = Accelerometer.GetDefault();
 accelerometer.Shaken += Accelerometer_ReadingChanged;
 
@@ -57,7 +57,7 @@ private async void Accelerometer_Shaken(Accelerometer sender, AccelerometerShake
 
 ### Unsubscribing from the readings
 
-```c#
+```csharp
 accelerometer.ReadingChanged -= Accelerometer_ReadingChanged;
 accelerometer.Shaken -= Accelerometer_ReadingChanged;
 ```

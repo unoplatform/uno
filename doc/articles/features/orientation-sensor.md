@@ -21,7 +21,7 @@
 
 ### Capturing sensor readings
 
-```c#
+```csharp
 var simpleOrientationSensor = SimpleOrientationSensor.GetDefault();
 simpleOrientationSensor.ReadingChanged += SimpleOrientationSensor_ReadingChanged;
 
@@ -61,6 +61,6 @@ private async void SimpleOrientationSensor_ReadingChanged(object sender, SimpleO
 
 ### Unsubscribing from the readings
 
-```c#
+```csharp
 simpleOrientationSensor.ReadingChanged -= SimpleOrientationSensor_ReadingChanged;
 ```

@@ -24,7 +24,7 @@
 
 ### Capturing sensor readings
 
-```c#
+```csharp
 var magnetometer = Magnetometer.GetDefault();
 magnetometer.ReadingChanged += Magnetometer_ReadingChanged;
 
@@ -45,6 +45,6 @@ private async void Magnetometer_ReadingChanged(Magnetometer sender, Magnetometer
 
 ### Unsubscribing from the readings
 
-```c#
+```csharp
 magnetometer.ReadingChanged -= Magnetometer_ReadingChanged;
 ```

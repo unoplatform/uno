@@ -23,14 +23,14 @@
 
 ### Storing a Setting
 
-```c#
+```csharp
 ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
 localSettings.Values["MySettingName"] = "A user setting";
 ```
 
 ### Reading a setting
 
-```c#
+```csharp
 ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
 var localValue = localSettings.Values["MySettingName"] as string;
 ```

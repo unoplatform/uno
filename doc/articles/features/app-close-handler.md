@@ -19,7 +19,7 @@
 
 ## Example
 
-```c#
+```csharp
 SystemNavigationManagerPreview.CloseRequested += App_CloseRequested;
 
 private async void App_CloseRequested(object sender, SystemNavigationCloseRequestedPreviewEventArgs e)

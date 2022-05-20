@@ -17,7 +17,7 @@ To set a cookie, create an instance of `Uno.Web.Http.SetCookieRequest` and initi
 
 Then set the cookie using the `SetCookie` method.
 
-```c#
+```csharp
 #if __WASM__
 
 var cookie = new Cookie("MyCookie", "somevalue");
@@ -40,7 +40,7 @@ CookieManager.GetDefault().SetCookie(request);
 
 To retrieve the active cookies, use the `GetCookies` method:
 
-```c#
+```csharp
 #if __WASM__
 
 var cookies = CookieManager.GetDefault().GetCookies();
@@ -60,7 +60,7 @@ foreach (var cookie in cookies)
 
 To delete a cookie, provide its `Name` and optionally the `Domain` and `Path` to the `DeleteCookie` method:
 
-```c#
+```csharp
 #if __WASM__
 
 CookieManager.GetDefault().DeleteCookie("MyCookie", path: "/");

@@ -21,13 +21,13 @@
 
 ### Show phone call UI
 
-```c#
+```csharp
 PhoneCallManager.ShowPhoneCallUI("123456789", "Jon Doe");
 ```
 
 ### Observe phone call state
 
-```c#
+```csharp
 PhoneCallManager.CallStateChanged += PhoneCallManager_CallStateChanged;
 
 private void PhoneCallManager_CallStateChanged(object sender, object e)
