@@ -10,11 +10,11 @@ Follow the instructions to [set up your development environment for Uno Platform
 
 ## Applying Uno Platform project structure
 
-Adding Uno Platform support to an existing class library entails changing the contents of the existing `.csproj` file. The easiest way to do that is to create a temporary Uno class library, and copy its contents into the existing `.csproj` file. The steps in detail:
+Adding Uno Platform support to an existing class library entails changing the contents of the existing `.csproj` file. The easiest way to do that is to create a temporary Uno class library and copy its contents into the existing `.csproj` file. The steps in detail:
 
 1. Open the solution containing the WinUI/UWP-only library you wish to convert.
 
-2. Create a **Uno Platform Library** project in the same solution, and name it `TempUno`.
+2. Create an **Uno Platform Library** project in the same solution, and name it `TempUno`.
 
 3. Let's say we want to convert a library called 'CoolControls'. Right-click on the `CoolControls` project, and choose **Unload Project**.
 
