@@ -120,8 +120,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Update="content\unoapp-net6\UnoQuickStart-vsmac.slnf">
+	  <Content Update="content\unoapp\UnoQuickStart-vsmac.slnf">
 	    <PackagePath>content\unoapp</PackagePath>
+	  </Content>
+	  <Content Update="content\unoapp-net6\UnoQuickStart-vsmac.slnf">
+	    <PackagePath>content\unoapp-net6</PackagePath>
 	  </Content>
 	  <Content Update="content\unoapp-winui-net6\UnoWinUIQuickStart-vsmac.slnf">
 	    <PackagePath>content\unoapp-winui-net6</PackagePath>

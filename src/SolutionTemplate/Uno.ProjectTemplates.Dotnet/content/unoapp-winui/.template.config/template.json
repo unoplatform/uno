@@ -189,15 +189,15 @@
     },
     {
       "condition": "skia-gtk",
-      "path": "UnoWinUIQuickStart.macOS\\UnoWinUIQuickStart.Skia.Gtk.csproj"
+      "path": "UnoWinUIQuickStart.Skia.Gtk\\UnoWinUIQuickStart.Skia.Gtk.csproj"
     },
     {
       "condition": "skia-wpf",
-      "path": "UnoWinUIQuickStart.macOS\\UnoWinUIQuickStart.Skia.WPF.csproj"
+      "path": "UnoWinUIQuickStart.Skia.WPF\\UnoWinUIQuickStart.Skia.WPF.csproj"
     },
     {
       "condition": "skia-wpf",
-      "path": "UnoWinUIQuickStart.macOS\\UnoWinUIQuickStart.Skia.WPF.Host.csproj"
+      "path": "UnoWinUIQuickStart.Skia.WPF.Host\\UnoWinUIQuickStart.Skia.WPF.Host.csproj"
     }
   ],
   "sources": [
