@@ -21,19 +21,19 @@ In order to create a new Uno Project, you'll need to install the [`dotnet new` U
     ```
 
 1. Once created, open the `MyApp-vsmac.slnf` file
-    - This `slnf` is called a solution filter, which automatically excludes projects which are not compatible with Visual Studio for mac.
+    - This `slnf` is called a solution filter, which automatically excludes projects which are not compatible with Visual Studio for Mac.
     - If you have a warning symbol on your iOS project, make sure you have the minimum version of Xcode installed.
 ![update-xcode](Assets/quick-start/xcode-version-warning.jpg)\
 
 To update, go to `Visual Studio > Preferences > Projects > SDK Locations > Apple` and select Xcode 13.3 or higher.
 Restart Visual Studio.
-1. You can now run on iOS, Android, macOS and Skia.GTK projects by changing your startup project and start the debugger.
+1. You can now run on iOS, Android, macOS, and Skia.GTK projects by changing your startup project and starting the debugger.
    
 > [!NOTE]
 > You will not be able to build the UWP and WPF projects on a Mac. All changes to this project must be made on Windows.
    
 > [!IMPORTANT]
-> As of .NET 6 Mobile RC3, the macOS head is can fail to build with issues related to the AOT compiler. You can run the Catalyst app on a mac.
+> As of .NET 6 Mobile RC3, the macOS head can fail to build with issues related to the AOT compiler. You can run the Catalyst app on a mac.
 
 ## Create other projects types using the command line
 
@@ -56,6 +56,6 @@ Building for WebAssembly takes a few more steps:
     dotnet tool install -g dotnet-serve
     ```
 1. Once installed type `dotnet serve` (or `~/.dotnet/tools/dotnet-serve`).
-1. Navigate to the url presented by the tool to run your application
+1. Navigate to the URL presented by the tool to run your application
 
 [!include[getting-help](getting-help.md)]
