@@ -17,11 +17,12 @@
 ## Using Accelerometer with Uno
  
  * The `GetDefault` method is availble on all targets and will return `null` on those which do not support `Accelerometer` or devices which do not have such sensor.
+* Ensure to unsubscribe from the `ReadingChanged` and `Shaken` events when you no longer need the readings, so that the sensor is no longer active to avoid unnecessary battery consumption.
  * While iOS features a built-in shake gesture recognition, this is not available on Android and WASM. For these platforms we use a commonly used implementation which tries to approximate the shake motion to detect it. Both Android and WASM use the same implementation. In case this is not sufficient for your use case, you can implement Shake detection utilizing the `ReadingChanged` event readings.
  * On Android, when both `ReadingChanged` and `Shaken` events are attached and the user sets the `ReportInterval` to a high value, the `ReadingChanged` event may be raised more often than requested. This is because for multiple subscribers to the same sensor the system may raise the sensor events with the frequency of the one with lower requested report delay. This is, however, in line with the behavior of UWP Accelerometer and you can filter the events as necessary for your use case.
  * `ReportInterval` property on WASM is not supported directly and we use an approximation in the form of raising the `ReadingChanged` event only when enough time has passed since the last report. The event is actually raised a bit more often to make sure the gap caused by the filter is not too large, but this is in-line with the behavior of UWP Accelerometer.
 
-## Example
+## Examples
 
 ### Capturing sensor readings
 
@@ -35,7 +36,7 @@ private async void Accelerometer_ReadingChanged(Accelerometer sender, Accelerome
     // as the ReadingChanged event handler does not run on the UI thread.
     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
     {
-        OutputTextBlock.Text = $"Sensor reading is "
+        OutputTextBlock.Text = $"Sensor reading is " +
             $"x = {args.Reading.AccelerationX}, y = {args.Reading.AccelerationY}, z = {args.Reading.AccelerationZ}, " + 
             $"timestamp = {args.Reading.Timestamp}";
     });
@@ -52,6 +53,13 @@ private async void Accelerometer_Shaken(Accelerometer sender, AccelerometerShake
 {
     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => ShakenTimestamp = args.Timestamp.ToString("R"));
 }
+```
+
+### Unsubscribing from the readings
+
+```c#
+accelerometer.ReadingChanged -= Accelerometer_ReadingChanged;
+accelerometer.Shaken -= Accelerometer_ReadingChanged;
 ```
 
 ## See Accelerometer in action
