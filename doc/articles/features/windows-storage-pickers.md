@@ -175,7 +175,7 @@ For the download picker, the experience requires the use of [`CachedFileManager`
 
 The `CachedFileManager` class works transparently with both the **Download picker** and the **File System Access API**, which means you can write a single snippet of code that handles both scenarios correctly:
 
-```c#
+```csharp
 var savePicker = new FileSavePicker():
 savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
 savePicker.FileTypeChoices.Add("Text file", new List<string>() { ".txt" });
@@ -201,9 +201,9 @@ await CachedFileManager.CompleteUpdatesAsync(file);
 
 ### Checking whether File System Access API is supported
 
-In some cases you might want to check whether File System Access API is supported in the current runtime environment. A typical reason might be to ensure only **Save As** functionality is available to the user, when the browser only supports download pickers. You can utilize the WASM specific `Uno.Storage.Pickers.FileSystemAccessApiInformation` API:
+In some cases, you might want to check whether File System Access API is supported in the current runtime environment. A typical reason might be to ensure only **Save As** functionality is available to the user when the browser only supports download pickers. You can utilize the WASM specific `Uno.Storage.Pickers.FileSystemAccessApiInformation` API:
 
-```c#
+```csharp
 #if __WASM__
 if (FileSystemAccessApiInformation.IsOpenPickerSupported)
 {
@@ -232,7 +232,7 @@ if (FileSystemAccessApiInformation.IsFolderPickerSupported)
 
 To know how the file needs to be handled, you need to check the type of storage provider it comes from. To do this, access the `Provider` property of the file:
 
-```c#
+```csharp
 if (file.Provider.Id == "jsfileaccessapi")
 {
     // File was picked using File System Access pickers.
@@ -250,7 +250,7 @@ The local files have provider ID of `computer`, which matches the UWP behavior. 
 
 By default, Uno Platform attempts to use File System Access API and falls back to download/upload pickers if not available. To control this behavior, you can use `WinRTFeatureConfiguration`:
 
-```c#
+```csharp
 #if __WASM__
 Uno.WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = 
     WasmPickerConfiguration.FileSystemAccessApiWithFallback;
@@ -273,7 +273,7 @@ iOS does not offer a built-in `FileSavePicker` experience. Luckily it is possibl
 
 To provide your own custom implementation, create a class that implements the `IFileSavePickerExtension` which is only available on iOS. This class must have a `public` constructor with a `object` parameter. This will actually be an instance of `FileSavePicker` when invoked later. Then implement the `PickSaveFileAsync` method:
 
-```c#
+```csharp
 #if __IOS__
 namespace Custom.Pickers
 {
@@ -297,7 +297,7 @@ namespace Custom.Pickers
 
 When done, register this extension in `App.xaml.cs`:
 
-```c#
+```csharp
 public App()
 {
 #if __IOS__

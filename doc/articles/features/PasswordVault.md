@@ -58,7 +58,7 @@ The [`Properties`](https://docs.microsoft.com/en-us/uwp/api/windows.security.cre
 
 ### Storing a credential
 
-```c#
+```csharp
 var vault = new Windows.Security.Credentials.PasswordVault();
 vault.Add(new Windows.Security.Credentials.PasswordCredential(
     "My App", username, password));
@@ -66,7 +66,7 @@ vault.Add(new Windows.Security.Credentials.PasswordCredential(
 
 ### Retrieving a credential
 
-```c#
+```csharp
 var vault = new Windows.Security.Credentials.PasswordVault();
 var credential = vault.Retrieve("My App", userName);
 credential.RetrievePassword();
