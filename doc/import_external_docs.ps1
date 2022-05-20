@@ -8,7 +8,7 @@ $external_docs =
     @("https://github.com/unoplatform/uno.check", "uno.check", "1a2049ae6c232c5e7dafdc2b3f0ca55a7a180d58"),
     @("https://github.com/unoplatform/uno.xamlmerge.task", "uno.xamlmerge.task", "a6d2efa69e24e8280c38300b5c1b7a8f2033f9f9"),
     @("https://github.com/unoplatform/figma-docs", "figma-docs", "74bf09fd2211ba30e4d763caf134010610443b9a"),
-    @("https://github.com/unoplatform/uno.extensions", "uno.extensions", "ad8b707fb99dea47781fe588b9e53c6b288338c4")
+    @("https://github.com/unoplatform/uno.extensions", "uno.extensions", "c0c66899d8628fd61d527a35b100efb1d8f809cb")
 )
 
 $ErrorActionPreference = 'Stop'
