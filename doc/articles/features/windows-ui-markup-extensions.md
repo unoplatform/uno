@@ -70,10 +70,6 @@ This class can be used as follows in the XAML:
 </Grid>
 ```
 
-### IXamlServiceProvider
-
-Not supported as of Uno 4.3
-
 ### IRootObjectProvider
 
 Not supported as of Uno 4.3
