@@ -19,10 +19,10 @@
 
 Uno supports some of the APIs from the `Windows.Storage` namespace, such as `Windows.Storage.StorageFile` and `Windows.Storage.StorageFolder` for all platforms.
 
-Both `Windows.Storage` and `System.IO` APIs are available, with some platform specifics defined below. In general, it is best to use `Windows.Storage` APIs when available, as their asynchronous nature allows for transparent interactions with the underlying file system implementations. In addition, `System.IO` cannot work with files which are not owned by the application directly (e.g. files picked by a dialog).
+Both `Windows.Storage` and `System.IO` APIs are available, with some platform specifics defined below. In general, it is best to use `Windows.Storage` APIs when available, as their asynchronous nature allows for transparent interactions with the underlying file system implementations. In addition, `System.IO` cannot work with files that are not owned by the application directly (e.g. files picked by a dialog).
 
 Note that for file and folder metadata only `BasicProperties` are partially supported for now. 
-`FileAttributes` and all "advanced properties" (`StorageItemContentProperties`) related to the content of the file, including thumbnail, are not yet supported.
+`FileAttributes` and all "advanced properties" (`StorageItemContentProperties`) related to the content of the file, including the thumbnail, are not yet supported.
 
 ## WebAssembly File System
 
@@ -53,7 +53,7 @@ Uno supports the ability to get package files using the [`StorageFile.GetFileFro
 
 Support per platform may vary:
 - On non-WebAssembly targets, the file is available directly as it is a part of the installed package.
-- On WebAssembly, the requested file is part of the application package on the remote server, and is downloaded on demand to avoid increasing the initial application payload size. After it is requested for the first time, the file is then stored in the browser IndexedDB.
+- On WebAssembly, the requested file is part of the application package on the remote server and is downloaded on demand to avoid increasing the initial application payload size. After it is requested for the first time, the file is then stored in the browser IndexedDB.
 
 Here's how to use it:
 
@@ -70,11 +70,11 @@ Given than in the project there's the following declaration:
 
 ## Support for `RandomAccessStreamReference.CreateFromUri`
 
-Uno Platform supports to creation of a `RandomAccessStreamReference` from an `Uri` (`RandomAccessStreamReference.CreateFromUri`), but note that on WASM downloading a file from a server often causes issues with [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS). 
+Uno Platform supports the creation of a `RandomAccessStreamReference` from an `Uri` (`RandomAccessStreamReference.CreateFromUri`), but note that on WASM downloading a file from a server often causes issues with [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS). 
 Make sure the server that hosts the file is configured accordingly.
 
 ## Support for `CachedFileManager`
 
-For all targets except for UWP/WinUI and WebAssembly, the `CachedFileManager` does not provide any functionality and its methods immediately return. This allows to easily write code which requires deferring updates on UWP and sharing it across all targets.
+For all targets except for UWP/WinUI and WebAssembly, the `CachedFileManager` does not provide any functionality and its methods immediately return. This allows us to easily write code that requires deferring updates on UWP and sharing it across all targets.
 
-In case of WebAssembly, the behavior of `CachedFileManager` depends on whether the app uses the **File System Access API** or **Download picker**. This is described in detail in [file pickers documentation](windows-storage-pickers.md#webassembly).
+In the case of WebAssembly, the behavior of `CachedFileManager` depends on whether the app uses the **File System Access API** or **Download picker**. This is described in detail in [file pickers documentation](windows-storage-pickers.md#webassembly).

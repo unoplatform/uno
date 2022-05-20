@@ -18,9 +18,9 @@
 ## Using `Lamp` with Uno
 
  * The `GetDefaultAsync` method is implemented on all targets and will return `null` where `Lamp` is not supported.
- * Make sure call `Lamp.Dispose()` after use, as implementation on both iOS and Android uses unmanaged resources and not disposing of them could cause a memory leak. This is in line with UWP, where the `Lamp` needs to be disposed as well.
- * On **iOS**, in case the device supports torch, `BrightnessLevel` is fully supported. In case the device has only flash, any non-zero `BrightnessLevel` will result in full brightness of the flashlight.
- * On **Android**, flashlight brightness cannot be controlled, hence any non-zero `BrightnessLevel` results in full brightness of the flashlight.
+ * Make sure to call `Lamp.Dispose()` after use, as implementation on both iOS and Android uses unmanaged resources, and not disposing of them could cause a memory leak. This is in line with UWP, where the `Lamp` needs to be disposed of as well.
+ * On **iOS**, in case the device supports the torch, `BrightnessLevel` is fully supported. In case the device has only flash, any non-zero `BrightnessLevel` will result in the full brightness of the flashlight.
+ * On **Android**, flashlight brightness cannot be controlled, hence any non-zero `BrightnessLevel` results in the full brightness of the flashlight.
 
 ## Example
 

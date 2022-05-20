@@ -1,6 +1,6 @@
 ## Sharing Content
 
-Data transfer manager allows sharing content from your application using the OS sharing dialog. To check whether sharing is supported at runtime, use `IsSupported()` method:
+The data transfer manager allows sharing content from your application using the OS sharing dialog. To check whether sharing is supported at runtime, use `IsSupported()` method:
 
 ```
 if (DataTransferManager.IsSupported())

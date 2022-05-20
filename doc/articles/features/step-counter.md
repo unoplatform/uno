@@ -15,9 +15,9 @@
 
 ## Using Pedometer with Uno
  
- * The `GetDefault` method is availble on all targets and will return `null` on those which do not support `Pedometer` or devices which do not have such sensor.
+ * The `GetDefault` method is available on all targets and will return `null` on those which do not support `Pedometer` or devices that do not have such a sensor.
  * Ensure to unsubscribe from the `ReadingChanged` event when you no longer need the readings, so that the sensor is no longer active to avoid unnecessary battery consumption.
- * `ReportInterval` property on WASM is currently not supported directly. Uno uses an approximation in the form of raising the `ReadingChanged` event, only when enough time has passed since the last report. The event is raised a bit more often to make sure the gap caused by the filter is not too large, but this is in-line with the behavior of Windows' `Pedometer`.
+ * `ReportInterval` property on WASM is currently not supported directly. Uno uses an approximation in the form of raising the `ReadingChanged` event, only when enough time has passed since the last report. The event is raised a bit more often to make sure the gap caused by the filter is not too large, but this is in line with the behavior of Windows' `Pedometer`.
  * `DirectionalAccuracy` is not reported on iOS, so it will always return `Unknown`.
 
 ## Platform-specific requirements
@@ -32,9 +32,9 @@ Since Android 10, your application must declare the permission to use the step c
 ```
 
 ### [**iOS**](#tab/iOS)
-The first reading on iOS returns the cumulative number of steps from 24 hours back to current moment. Unfortunately, in case the tracking was not enabled before, this will likely return 0 steps. Once the tracking is enabled, `ReadingChanged` will be triggered and step count will be updated appropriately.
+The first reading on iOS returns the cumulative number of steps from 24 hours back to the current moment. Unfortunately, in case the tracking was not enabled before, this will likely return 0 steps. Once the tracking is enabled, `ReadingChanged` will be triggered and the step count will be updated appropriately.
 
-Make sure to add the following capability declaration to your `Info.plist` file, otherwise the API will crash at runtime.
+Make sure to add the following capability declaration to your `Info.plist` file, otherwise, the API will crash at runtime.
 
 ```
 <key>NSMotionUsageDescription</key>

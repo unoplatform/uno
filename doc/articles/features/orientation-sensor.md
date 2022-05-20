@@ -14,7 +14,7 @@
 
 ## Using SimpleOrientationSensor with Uno
  
- * The `GetDefault` method is availble on all targets and will return `null` on those which do not support `SimpleOrientationSensor` or devices which do not have such sensor.
+ * The `GetDefault` method is available on all targets and will return `null` on those which do not support `SimpleOrientationSensor` or devices that do not have such a sensor.
  * Ensure to unsubscribe from the `ReadingChanged` event when you no longer need the readings, so that the sensor is no longer active to avoid unnecessary battery consumption.
 
 ## Example
