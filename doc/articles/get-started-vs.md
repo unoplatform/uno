@@ -39,8 +39,7 @@
 
 To easily create a multi-platform application:
 * Create a new C# solution using the **Uno Platform App (Xamarin|UWP)** template, from Visual Studio's **Start Page**:
-
-![new project](Assets/quick-start/vsix-new-project.png)
+  ![new project](Assets/quick-start/vsix-new-project.png)
 * Right click on the Solution and select `Manage NuGet Packages for Solution` from the context menu.
 * Update to the latest NuGet package named `Uno.UI`.
 * To debug the iOS head, select the `Debug|iPhoneSimulator` configuration
