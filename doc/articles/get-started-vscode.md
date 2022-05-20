@@ -15,7 +15,7 @@ See these sections for information about using Uno Platform with:
 * The [Uno Platform Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=unoplatform.vscode) Extension
 * For Windows, install the [GTK+ 3 runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases) (See [this uno-check issue](https://github.com/unoplatform/uno.check/issues/12))
 
-You can use [`uno-check`](https://github.com/unoplatform/uno.check) to make your installation compatible with Uno Platform.
+[!include[getting-help](use-uno-check-inline.md)]
 
 ## Developing an Uno Platform project
 

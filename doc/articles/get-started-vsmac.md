@@ -1,4 +1,4 @@
-# Get Started on Visual Studio For Mac
+# Get Started on Visual Studio For Mac 2022
 
 While it is easier to create apps using Uno Platform on Windows, you can also create all but UWP/WinUI apps on your Mac.
 
@@ -8,7 +8,7 @@ While it is easier to create apps using Uno Platform on Windows, you can also cr
 * An [**Apple ID**](https://support.apple.com/en-us/HT204316)
 * [**GTK+3**](https://formulae.brew.sh/formula/gtk+3) for running the Skia/GTK projects
 
-Once the dependencies are installed, you'll need to run [**uno-check**](external/uno.check/doc/using-uno-check.md) to ensure that your environment is properly configured.
+[!include[getting-help](use-uno-check-inline.md)]
 
 ## Installing the dotnet new templates
 In order to create a new Uno Project, you'll need to install the [`dotnet new` Uno Platform templates](get-started-dotnet-new.md).
@@ -21,7 +21,7 @@ In order to create a new Uno Project, you'll need to install the [`dotnet new` U
     ```
 
 1. Once created, open the `MyApp-vsmac.slnf` file
-    - This `slnf` is called a solution filter, which automatically excludes projects which are not compatible with Visual Studio for Mac.
+    - This `slnf` is called a solution filter, which automatically excludes projects which are not compatible with Visual Studio for Mac 2022.
     - If you have a warning symbol on your iOS project, make sure you have the minimum version of Xcode installed.
 ![update-xcode](Assets/quick-start/xcode-version-warning.jpg)\
 
@@ -42,7 +42,7 @@ You can create a new Uno Platfom solution with the following terminal command:
     dotnet new unoapp -o MyProject --wasm=false
     ```
 
-Once created, you can open it using the Visual Studio IDE.
+Once created, you can open it using Visual Studio for Mac 2022.
 
 ### Build and Run for WebAssembly
 

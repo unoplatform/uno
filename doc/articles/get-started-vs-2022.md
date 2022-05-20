@@ -30,17 +30,7 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.3 (Pr
 > [!NOTE]
 > For information about connecting Visual Studio to a Mac build host to build iOS apps, see [Pairing to a Mac for Xamarin.iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
 
-## Finalize your environment
-* Install the [uno-check](external/uno.check/doc/using-uno-check.md) tool by launching a PowerShell command line and type:
-   ```
-   dotnet tool install -g Uno.Check
-   ```
-* Then run the uno-check tool:
-   ```
-   uno-check --pre
-   ```
-
-Follow the steps indicated by the tool.
+[!include[getting-help](use-uno-check-inline.md)]
 
 ## Install the Solution Templates
 
