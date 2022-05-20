@@ -146,6 +146,10 @@
               href: platform-specific-csharp.md
             - name: Platform-specific XAML markup
               href: platform-specific-xaml.md
+            - name: Control Libraries
+              href: guides/how-to-create-control-libraries.md
+            - name: Adding New Platforms
+              href: guides/how-to-add-platforms-existing-project.md
             - name: Feature flags
               href: feature-flags.md
             - name: Uno app solution structure
