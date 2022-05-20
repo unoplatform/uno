@@ -1,6 +1,6 @@
 # dotnet new templates for Uno Platform
 
-The Uno Platform provides a set of command line templates to create cross platform applications.
+The Uno Platform provides a set of command-line templates to create cross-platform applications.
 
 To install the templates, type the following:
 ```
@@ -12,13 +12,13 @@ If you need to determine the parameters available for a template use `dotnet new
 > [!IMPORTANT]
 > Installing the templates is done per dotnet CLI version. Meaning that the templates are installed for the version shown by `dotnet --version`. If you tried to use the templates with a version different than the one you used for installing, you'll get "No templates found matching: '<template-name>'." error.
 >
-> This is common when using `global.json` that alters the .NET CLI/SDK version. Specifically, it's common for UI Test template.
+> This is common when using `global.json` that alters the .NET CLI/SDK version. Specifically, it's common for the UI Test template.
 
 [!include[getting-help](use-uno-check-inline.md)]
 
 ## Uno Platform Blank Application
 
-This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Skia/GTK (Windows, Linux, macOS) and Skia/Wpf (Windows 7 and 10).
+This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Skia/GTK (Windows, Linux, macOS), and Skia/Wpf (Windows 7 and 10).
 
 A basic example:
 ```
