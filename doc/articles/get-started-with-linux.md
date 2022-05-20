@@ -6,9 +6,6 @@ It is possible to develop :
 - Using Visual Studio on Windows directly, or using the Windows Subsystem for Linux (WSL).
 - Using VS Code under Linux
 
-> [!TIP]
-> Make sure to setup your environment using [uno-check](external/uno.check/doc/using-uno-check.md) before using the steps below.
-
 ## Setting for Windows and WSL
 
 Using VS 2019 16.6 or later:
@@ -101,6 +98,8 @@ Now let's run the application:
     dotnet new -i Uno.ProjectTemplates.Dotnet
     ```
 ***
+
+[!include[getting-help](use-uno-check-inline.md)]
 
 ### Install the templates and create the application
 
