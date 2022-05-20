@@ -22,10 +22,17 @@ If you control the API, you'll need to use the features from your framework to e
 
 To test if CORS is really the issue, you can use [CORS Anywhere](https://cors-anywhere.herokuapp.com/) to proxy the queries.
 
+#### error NETSDK1148: A referenced assembly was compiled using a newer version of Microsoft.Windows.SDK.NET.dll.
+
+See [this article](features/winapp-sdk-specifics.md#adjusting-windows-sdk-references) to solve this issue.
+
 #### The XAML editor shows `The type 'page' does not support direct content` message
 XAML Intellisense [is not working properly](https://developercommunity.visualstudio.com/content/problem/587980/xaml-intellisense-does-not-use-contentpropertyattr.html) in Visual Studio when the active project is not the UWP one. 
 
-To work around this issue, close all XAML editors, open a C# file and select 'UWP' in the top left drop-down list of the text editor sector. Once selected, re-open the XAML file.
+To work around this issue, close all XAML editors, open a C# file and select 'UWP' in the top-left drop-down list of the text editor sector. Once selected, re-open the XAML file.
+
+#### Error MSB3030: Could not copy the file "MyProject.Shared\MainPage.xbf" because it was not found.
+This issue is present in Visual Studio 17.2 and 17.3 Preview 1 and can be addressed by [taking a look at this issue](https://github.com/unoplatform/uno/discussions/5007#discussioncomment-2583741).
 
 #### `InitializeComponent` or `x:Name` variable is not available in code-behind
 Visual Studio [does not refresh the intellisense cache](https://developercommunity.visualstudio.com/content/problem/588021/the-compile-itemgroup-intellisense-cache-is-not-re.html) properly, causing variables to be incorrectly defined.
@@ -41,10 +48,6 @@ In order to clear the **Error List** window, build the whole solution completely
 Event handlers [cannot be automatically](https://github.com/unoplatform/uno/issues/1348#issuecomment-520300471) added using the XAML editor. 
 
 A workaround is to use the [`x:Bind` to events feature](features/windows-ui-xaml-xbind.md#examples). This feature allows to use a simpler syntax like `<Button Click="{x:Bind MyClick}" />` and declare a simple method `private void MyClick() { }` in the code-behind.
-
-#### error NETSDK1148: A referenced assembly was compiled using a newer version of Microsoft.Windows.SDK.NET.dll.
-
-See [this article](features/winapp-sdk-specifics.md#adjusting-windows-sdk-references) to solve this issue.
 
 #### Build error `Failed to generate AOT layout`
 

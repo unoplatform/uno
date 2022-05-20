@@ -5,8 +5,11 @@ This getting started will guide you through the creation of an Uno Platform App 
 > [!TIP] 
 > This guide covers development on Windows using Visual Studio. If you want to use another environment or IDE, see our [general getting started](get-started.md).
 
+> [!IMPORTANT] 
+> Microsoft's .NET support for mobile targets is currently in preview. As of Uno 4.3, .NET 6 Mobile RC 3 and above is supported with Visual Studio 2022 17.3 Preview 1 or later. To use Xamarin (as opposed to .NET 6 Mobile) and Visual Studio 2022 stable or 2019, [follow this guide](get-started-vs.md).
+
 ## Prerequisites
-To create Uno Platform applications you will need [**Visual Studio 2022 17.3 (Preview)**](https://visualstudio.microsoft.com/vs/preview/):
+To create Uno Platform applications you will need [**Visual Studio 2022 17.3 (Preview 1 or later)**](https://visualstudio.microsoft.com/vs/preview/):
 
 1. **Universal Windows Platform** workload installed.
 
@@ -24,6 +27,7 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.3 (Pr
 
     ![visual-studio-installer-web](Assets/quick-start/vs-install-web.png)
 
+> [!NOTE]
 > For information about connecting Visual Studio to a Mac build host to build iOS apps, see [Pairing to a Mac for Xamarin.iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
 
 ## Finalize your environment
@@ -49,9 +53,6 @@ Follow the steps indicated by the tool.
     ![](Assets/tutorial01/uno-extensions.PNG)
 
 ## Create an application
-
-> [!NOTE] 
-> .NET 6 Mobile support is currently in Preview, following Microsoft's support status. As of Uno 4.3, .NET 6 Mobile RC 3 and above is supported with [Visual Studio 2022 17.3 Preview 1](https://visualstudio.microsoft.com/vs/preview). Previous releases of Visual Studio are not supported.
 
 To create an Uno Platform app:
 1. Create a new C# solution using the **Uno Platform App** template, from Visual Studio's **Start Page**

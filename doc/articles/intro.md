@@ -6,7 +6,7 @@
 <a href="get-started.md">
 <div class="alert alert-info alert-hover">
 
-#### Get started
+#### Get Started
 
 Set up with your OS and IDE of choice.
 
@@ -18,7 +18,7 @@ Set up with your OS and IDE of choice.
 <a href="tutorials-intro.md">
 <div class="alert alert-info alert-hover">
 
-#### How-tos and tutorials
+#### How-tos and Tutorials
 
 See real-world examples with working code.
 
@@ -42,7 +42,7 @@ Learn the principles of cross-platform development with Uno.
 <a href="implemented-views.md">
 <div class="alert alert-info alert-hover">
 
-#### API reference
+#### API Reference
 
 Browse the set of available controls and their properties.
 

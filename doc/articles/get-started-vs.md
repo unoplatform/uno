@@ -14,13 +14,14 @@
 	    * A working Mac with Visual Studio for Mac, Xcode 8.2 or later installed (for iOS development)
 	    * Google's Android x86 emulators or a physical Android device (for Android development)
 
-    * **ASP**.**NET and web** workload installed, along with .NET Core 5.0 or 6.0 (for WebAssembly development)
+    * **ASP**.**NET and web** workload installed, along with .NET 5.0 or 6.0 (for WebAssembly development)
 
       ![visual-studio-installer-web](Assets/quick-start/vs-install-web.png)
-    * **.NET Core SDK**
-        * [.NET Core 5.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (**version 5.0 (SDK 5.0.400)** or later)
+    * **.NET SDK**
+        * [.NET 5.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (SDK 5.0.400 or later)
 
-For more information about these prerequisites, see [Installing Xamarin](https://docs.microsoft.com/en-us/xamarin/get-started/installation/). For information about connecting Visual Studio to a Mac build host, see [Pair to Mac for Xamarin.iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
+> [!NOTE]
+> For more information about these prerequisites, see [Installing Xamarin](https://docs.microsoft.com/en-us/xamarin/get-started/installation/). For information about connecting Visual Studio to a Mac build host, see [Pair to Mac for Xamarin.iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
 
 ## Installing the Uno Platform Solution Templates with Visual Studio
 
@@ -45,6 +46,8 @@ To easily create a multi-platform application:
 * To debug the UWP head, select the `Debug|x86` configuration
 * To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctrl+F5** or choose `Start without debugging` from the Debug menu. To enable full debugging, see these [debugging instructions](debugging-wasm.md).
 
+You're all set! You can now head to [our tutorials](getting-started-tutorial-1.md) on how to work on your Uno Platform app.
+
 ### Make sure XAML Intellisense is enabled
 
 [Intellisense](https://docs.microsoft.com/en-us/visualstudio/ide/using-intellisense) is supported in XAML when the UWP head is active:
@@ -62,6 +65,4 @@ You may encounter installation and/or post-installation Visual Studio issues for
 
 If you're not sure whether your environment is correctly configured for Uno Platform development, running the [`uno-check` command-line tool](external/uno.check/doc/using-uno-check.md) should be your first step.
 
-### Getting Help
-
-If you continue experiencing issues with Visual Studio and Uno Platform, please visit our [Discord](https://www.platform.uno/discord) - #uno-platform channel or [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform) where our engineering team and community will be able to help you. 
+[!include[getting-help](getting-help.md)]
