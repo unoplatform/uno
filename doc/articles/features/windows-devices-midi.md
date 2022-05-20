@@ -1,4 +1,4 @@
-# Uno Support for Windows.Devices.Midi
+# MIDI
 
 MIDI device input and output is supported across iOS, Android, macOS, and WebAssembly.
 
