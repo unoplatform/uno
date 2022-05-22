@@ -19,7 +19,9 @@ You can find the [full sample code](https://github.com/unoplatform/Uno.Samples/b
 ## Create the Control
 1. Right-click on the project library, then **Add**, **New Item**
 1. In the **Uno Platform** section of **C# Items**, select **Custom Control**, name it `MyTemplatedControl`
-1. In the new C# file, if you're building for WinUI (your project uses the "Uno.WinUI" nuget package), replace `Windows.UI.Xaml` by `Microsoft.UI.Xaml` as needed.
+   > [!TIP]
+   > Choose the template flavor based on your library's flavor: UWP or WinUI. If your project uses the `Uno.UI` NuGet package, it's **UWP** otherwise **WinUI 3** if it uses `Uno.WinUI`.
+
 1. Right click on the project library again, then **Add**, **New Folder**, call it `Themes` (case sentitive)
 1. Right click on the `Generic` folder, then **Add**, **New Item**
 1. In the **Uno Platform** section of **C# Items**, select **Resource Dictionary**, name it `Generic.xaml` (case sensitive)
