@@ -55,7 +55,7 @@ See [this documentation](external/uno.extensions/doc/Overview/ExtensionsOverview
 
 ## Uno Platform Blank library
 
-This template can be used to create a blank library. With this type of library, Skia and WebAssembly do not need to built separately, but cannot be differentiated.
+This template can be used to create a blank library. With this type of library, Skia and WebAssembly do not need to be built separately, but cannot be differentiated.
 
 A basic example:
 ```
