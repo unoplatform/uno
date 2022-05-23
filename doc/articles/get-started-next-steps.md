@@ -9,7 +9,7 @@ Some additional resources:
 	
 ## Uno Extensions
 
-Uno.Extensions is a series of NuGet packages designed to encapsulate common developer tasks associated with building multi-platform mobile, desktop and web applications using the Uno platform.
+Uno.Extensions is a series of NuGet packages designed to encapsulate common developer tasks associated with building multi-platform mobile, desktop, and web applications using the Uno platform.
 
 Visit [the documentation](external/uno.extensions/doc/Overview/ExtensionsOverviewAndGettingStarted.md) to know more.
 
@@ -43,7 +43,7 @@ _Andrew is also currently writing a book on Uno Platform; we will add it here up
 
 #### XAML Fundamentals for Web and Mobile
 
-Any UWP/WinUI/XAML material is a great starting point as all we do is take that over the Uno bridge. To that point, one Uno contributor and Microsoft MVP Nick Randolph has been revitalizing older XAML resources on his [.NET Travels blog.](https://nicksnettravels.builttoroam.com/xaml-basics/) Uno Platform will be continuing the series on our blog.
+Any UWP/WinUI/XAML material is a great starting point as all we do is take that over the Uno bridge. To that point, one Uno contributor and Microsoft MVP, Nick Randolph has been revitalizing older XAML resources on his [.NET Travels blog.](https://nicksnettravels.builttoroam.com/xaml-basics/) Uno Platform will be continuing the series on our blog.
 
 #### Microsoft blogs on Uno Platform
 
