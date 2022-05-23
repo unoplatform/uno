@@ -47,6 +47,12 @@ More articles on WinUI 3:
  * [WinUI 3, UWP, and Uno Platform.](uwp-vs-winui3.md)
  * [Updating from UWP to WinUI 3.](updating-to-winui3.md)
 
+## Uno Platform Extensions
+
+Uno Platform provides an enhanced template to build your application with less effort.
+
+See [this documentation](external/uno.extensions/doc/Overview/ExtensionsOverviewAndGettingStarted.md) for more information.
+
 ## Uno Platform Blank library
 
 This template can be used to create a blank library. With this type of library, Skia and WebAssembly do not need to built separately, but cannot be differentiated.
