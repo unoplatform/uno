@@ -68,6 +68,10 @@ echo "$BUILD_SOURCESDIRECTORY/build/samplesapp-uitest-binaries/SamplesApp.UITest
 ## Install NUnit
 mono $BUILD_SOURCESDIRECTORY/build/nuget/NuGet.exe install NUnit.ConsoleRunner -Version $NUNIT_VERSION
 
+## Show the tests list
+mono $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \
+    @$UNO_TESTS_RESPONSE_FILE --explore || true
+
 ## Run the tests
 mono $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \
     @$UNO_TESTS_RESPONSE_FILE || true
