@@ -511,10 +511,10 @@
             href: uno-development/Uno-UI-XAML-ResourceTrimming.md
 
 - name: Extensions
-  topicHref: external/uno.extensions/doc/00-Introduction.html
+  topicHref: external/uno.extensions/doc/Overview/ExtensionsOverviewAndGettingStarted.html
   href: external/uno.extensions/doc/toc.yml
 - name: Themes
-  topicHref: external/uno.themes/doc/getting-started.md
+  topicHref: external/uno.themes/doc/themes-overview.html
   href: external/uno.themes/doc/toc.yml
 - name: Toolkit
   topicHref: external/uno.toolkit.ui/doc/getting-started.md
