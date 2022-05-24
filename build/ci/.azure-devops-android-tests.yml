@@ -114,13 +114,8 @@ jobs:
 
   strategy:
     matrix:
-      # Most tests pass, will be enabled in a later PR
-      #Android_5.0:
-      #  ANDROID_SIMULATOR_APILEVEL: 21
-      #  UITEST_TEST_MODE_NAME: Automated
-
       Android_9.0_Group_01:
-        ANDROID_SIMULATOR_APILEVEL: 28
+        ANDROID_SIMULATOR_APILEVEL: 31
         UITEST_TEST_MODE_NAME: Automated
         UNO_UITEST_BUCKET_ID: 1 ## Note: Align with UNO_UITEST_BUCKET_COUNT
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
@@ -130,7 +125,7 @@ jobs:
         UITEST_TEST_TIMEOUT: '270000'
 
       Android_9.0_Group_02:
-        ANDROID_SIMULATOR_APILEVEL: 28
+        ANDROID_SIMULATOR_APILEVEL: 31
         UITEST_TEST_MODE_NAME: Automated
         UNO_UITEST_BUCKET_ID: 2 ## Note: Align with UNO_UITEST_BUCKET_COUNT
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
@@ -140,7 +135,7 @@ jobs:
         UITEST_TEST_TIMEOUT: '270000'
 
       Android_9.0_Group_03:
-        ANDROID_SIMULATOR_APILEVEL: 28
+        ANDROID_SIMULATOR_APILEVEL: 31
         UITEST_TEST_MODE_NAME: Automated
         UNO_UITEST_BUCKET_ID: 3 ## Note: Align with UNO_UITEST_BUCKET_COUNT
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
@@ -150,7 +145,7 @@ jobs:
         ALLOW_RERUN: true
 
       Android_9.0_Snapshots:
-        ANDROID_SIMULATOR_APILEVEL: 28
+        ANDROID_SIMULATOR_APILEVEL: 31
         UITEST_TEST_MODE_NAME: Snapshots
         UNO_UITEST_BUCKET_ID: Snapshots
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
@@ -160,7 +155,7 @@ jobs:
         UITEST_TEST_TIMEOUT: '270000'
 
       Android_9.0_RuntimeTests:
-        ANDROID_SIMULATOR_APILEVEL: 28
+        ANDROID_SIMULATOR_APILEVEL: 31
         UITEST_TEST_MODE_NAME: RuntimeTests
         UNO_UITEST_BUCKET_ID: RuntimeTests
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
@@ -169,22 +164,25 @@ jobs:
         ALLOW_RERUN: false
         UITEST_TEST_TIMEOUT: '2600000'
 
-      # Disabled because of layout instabilities: https://github.com/unoplatform/uno/issues/7996
-      #
-      # Android_9.0_RuntimeTests_Net6:
-      #   ANDROID_SIMULATOR_APILEVEL: 28
-      #   UITEST_TEST_MODE_NAME: RuntimeTests
-      #   UNO_UITEST_BUCKET_ID: RuntimeTests
-      #   SAMPLEAPP_ARTIFACT_NAME: uitests-android-net6-build
-      #   TARGETPLATFORM_NAME: net6
-      #   ALLOW_RERUN: false
-      #   UITEST_TEST_TIMEOUT: '2600000'
-      #   FAILBUILD_ON_FAILURE: false # false until https://github.com/unoplatform/uno/issues/5873 and https://github.com/dotnet/runtime/pull/55681 are released
+      Android_9.0_RuntimeTests_net6:
+        ANDROID_SIMULATOR_APILEVEL: 31
+        UITEST_TEST_MODE_NAME: RuntimeTests
+        UNO_UITEST_BUCKET_ID: RuntimeTests
+        SAMPLEAPP_ARTIFACT_NAME: uitests-android-net6-build
+        TARGETPLATFORM_NAME: net6
+        FAILBUILD_ON_FAILURE: true
+        ALLOW_RERUN: false
+        UITEST_TEST_TIMEOUT: '2600000'
 
-      # Android 10 testing is disabled because of https://github.com/microsoft/appcenter/issues/1451
-      # Android_10.0:
-      #   ANDROID_SIMULATOR_APILEVEL: 29
-      #   UITEST_TEST_MODE_NAME: Automated
+      Android_5.0_RuntimeTests:
+        ANDROID_SIMULATOR_APILEVEL: 21
+        UITEST_TEST_MODE_NAME: RuntimeTests
+        UNO_UITEST_BUCKET_ID: RuntimeTests
+        SAMPLEAPP_ARTIFACT_NAME: uitests-android-net6-build
+        TARGETPLATFORM_NAME: net6
+        FAILBUILD_ON_FAILURE: true
+        ALLOW_RERUN: false
+        UITEST_TEST_TIMEOUT: '2600000'
 
   steps:
   - checkout: self
