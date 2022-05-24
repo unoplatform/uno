@@ -11,14 +11,14 @@ using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
-namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
+namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.AutoSuggestBoxTests
 {
 	[TestFixture]
 	public partial class AutoSuggestBoxTests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]
-		public void PasswordBox_With_Description()
+		public void AutoSuggestBox_With_Description()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.AutoSuggestBoxTests.AutoSuggestBox_Description", skipInitialScreenshot: true);
 			var autoSuggestBoxRect = ToPhysicalRect(_app.WaitForElement("DescriptionAutoSuggestBox")[0].Rect);
