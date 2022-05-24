@@ -640,7 +640,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			private void WriteDispose(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
 			{
-				var hasDispose = typeSymbol.Is(_androidViewSymbol) || typeSymbol.Is(_iosViewSymbol) || typeSymbol.Is(_macosViewSymbol);
+				var hasDispose = typeSymbol.Is(_iosViewSymbol) || typeSymbol.Is(_macosViewSymbol);
 
 				if (hasDispose)
 				{
@@ -668,11 +668,18 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 							var subviews = Subviews;
 
-							RequestCollect(subviews);
-
-							foreach (var v in subviews)
+							if (subviews.Length > 0)
 							{{
-								v.RemoveFromSuperview();
+								BinderCollector.RequestCollect();
+#if __IOS__
+								foreach (var v in subviews)
+								{{
+									v.RemoveFromSuperview();
+								}}
+#elif __MACOS__
+								// avoids multiple native calls to remove subviews
+								Subviews = Array.Empty<AppKit.NSView>();
+#endif
 							}}
 
 							base.Dispose(disposing);
@@ -684,18 +691,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 							GC.ReRegisterForFinalize(this);
 
 							Dispatcher.RunIdleAsync(_ => Dispose());
-						}}
-					}}
-
-#if __IOS__
-					private void RequestCollect(UIKit.UIView[] subviews)
-#elif __MACOS__
-					private void RequestCollect(AppKit.NSView[] subviews)
-#endif
-					{{
-						if(subviews.Length != 0)
-						{{
-							BinderCollector.RequestCollect();
 						}}
 					}}
 #endif
