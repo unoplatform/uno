@@ -87,13 +87,12 @@ h3 {
   padding: 0 32px;
 }
 
-.body-content .article {
-  margin-top: 120px;
-  margin-right: 0;
+.breadcrumb {
+  white-space: inherit;
+}
 
-  @media only screen and (max-width: 767px) {
-    margin-top: 180px !important;
-  }
+.body-content .article {
+  margin-right: 0;
 }
 
 .sidefilter {
@@ -141,6 +140,20 @@ h3 {
     }
   }
 
+  .toc .nav > li.filtered > ul, .toc .nav > li.in > ul {
+    display: block;
+    @media only screen and (max-width: 768px) {
+      display: grid;
+    }
+  }
+
+  
+  .toc li:after {
+    @media only screen and (max-width: 768px) {
+      display: none;
+    }
+  }
+
   .toc {
     .nav > li > .expand-stub::before {
       font-family: 'Glyphicons Halflings', 'ui-sans-serif';
@@ -162,6 +175,10 @@ h3 {
 
     ul {
       padding-left: 5px;
+      text-align: left;
+      @media only screen and (max-width: 768px) {
+        text-align: left;
+      }
 
       li a {
         padding-left: 5px;
@@ -185,7 +202,6 @@ h3 {
 .sidenav {
   @media only screen and (max-width: 767px) {
     position: fixed;
-    top: 116px;
     width: 100%;
     z-index: 999;
   }
