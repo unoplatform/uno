@@ -125,7 +125,8 @@
 		<_UnoUITestTemplateFilesExclude Include="..\UnoUITestTemplate\obj\**" />
 		<_UnoUITestTemplateFilesExclude Include="..\UnoUITestTemplate\bin\**" />
 		<_UnoUITestTemplateFilesExclude Include="..\UnoUITestTemplate\Properties\**" />
-
+		<_UnoUITestTemplateFilesExclude Include="..\UnoUITestTemplate\UnoUITestTemplate.csproj" />
+		
 		<_UnoUITestTemplateFiles Include="..\UnoUITestTemplate\**" Exclude="@(_UnoUITestTemplateFilesExclude)" />
 	</ItemGroup>
 
