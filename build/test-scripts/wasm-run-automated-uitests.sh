@@ -76,6 +76,9 @@ mono $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/NUnit.ConsoleRunner.$NUN
 mono $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \
     @$UNO_TESTS_RESPONSE_FILE || true
 
+## Copy the results file to the results folder
+cp --backup=t $UNO_ORIGINAL_TEST_RESULTS $UNO_UITEST_SCREENSHOT_PATH
+
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
