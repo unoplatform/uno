@@ -152,6 +152,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					builder.AppendLineInvariant($"using Uno.Disposables;");
 					builder.AppendLineInvariant($"using System.Runtime.CompilerServices;");
 					builder.AppendLineInvariant($"using Uno.UI;");
+					builder.AppendLineInvariant($"using Uno.UI.Controls;");
 					builder.AppendLineInvariant($"using Uno.UI.DataBinding;");
 					builder.AppendLineInvariant($"using Windows.UI.Xaml;");
 					builder.AppendLineInvariant($"using Windows.UI.Xaml.Data;");
@@ -690,6 +691,11 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						{{
 							GC.ReRegisterForFinalize(this);
 
+#if !(NET6_0_OR_GREATER && __MACOS__)
+							// net6.0-macos uses CoreCLR (not mono) and the notification mechanism is different
+							// workaround for mono's https://github.com/xamarin/xamarin-macios/issues/15089
+							NSObjectMemoryRepresentation.RemoveInFinalizerQueueFlag(this);
+#endif
 							Dispatcher.RunIdleAsync(_ => Dispose());
 						}}
 					}}
