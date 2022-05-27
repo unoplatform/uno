@@ -10,7 +10,7 @@
 		<PackageReference Include="Uno.WinUI" Version="4.2.6" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net5.0-windows10.0.18362'">
+	<ItemGroup Condition="'$(TargetFramework)'=='net6.0-windows10.0.18362'">
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0" />
 
 		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.22000.24" />
