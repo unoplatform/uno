@@ -173,6 +173,11 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public static RoutedEvent BringIntoViewRequestedEvent { get; } = new RoutedEvent(RoutedEventFlag.BringIntoViewRequested);
 
+		/// <summary>
+		/// Gets the identifier for the ContextRequested routed event.
+		/// </summary>
+		public static RoutedEvent ContextRequestedEvent { get; } = new RoutedEvent(RoutedEventFlag.ContextRequested);
+
 		private struct RoutedEventHandlerInfo
 		{
 			internal RoutedEventHandlerInfo(object handler, bool handledEventsToo)
@@ -274,6 +279,15 @@ namespace Microsoft.UI.Xaml
 		{
 			add => AddHandler(BringIntoViewRequestedEvent, value, false);
 			remove => RemoveHandler(BringIntoViewRequestedEvent, value);
+		}
+
+		/// <summary>
+		/// Occurs when the user has completed a context input gesture, such as a right-click.
+		/// </summary>
+		public event TypedEventHandler<UIElement, ContextRequestedEventArgs> ContextRequested
+		{
+			add => AddHandler(ContextRequestedEvent, value, false);
+			remove => RemoveHandler(ContextRequestedEvent, value);
 		}
 
 		public event PointerEventHandler PointerCanceled
