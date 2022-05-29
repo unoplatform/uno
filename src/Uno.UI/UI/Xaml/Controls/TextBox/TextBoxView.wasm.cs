@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Uno.UI;
-using Uno.Extensions;
-using Windows.UI.Xaml.Media;
-using Uno.Foundation.Logging;
-using Windows.Foundation;
 using System.Globalization;
 using Uno.Disposables;
 using Uno.Foundation;
+using Uno.UI;
+using Windows.Foundation;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {

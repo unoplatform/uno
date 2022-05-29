@@ -2,34 +2,29 @@
 #pragma warning disable CS0067
 #endif
 
-using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using System.Collections.Generic;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
-using Uno.Disposables;
-using Windows.UI.Xaml.Controls;
-using Uno.UI;
-using Uno;
-using Uno.UI.Controls;
-using Uno.UI.Media;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Numerics;
 using System.Reflection;
-using Windows.UI.Xaml.Markup;
-
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Core;
+using System.Runtime.CompilerServices;
 using System.Text;
+using Uno;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+using Uno.UI.Extensions;
+using Uno.UI.Media;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml.Automation.Peers;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
-using System.Runtime.CompilerServices;
+using Windows.Foundation;
 using Windows.Graphics.Display;
-using Uno.UI.Extensions;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
 
 #if __IOS__
 using UIKit;
@@ -531,13 +526,16 @@ namespace Windows.UI.Xaml
 			{
 				RightTapped -= OpenContextFlyout;
 			}
+			OnContextFlyoutChangedPartial(newValue);
 		}
+
+		partial void OnContextFlyoutChangedPartial(FlyoutBase newValue);
 
 		private void OpenContextFlyout(object sender, RightTappedRoutedEventArgs args)
 		{
-			if (this is FrameworkElement fe)
+			if (this is FrameworkElement fe && ContextFlyout is { } flyout)
 			{
-				ContextFlyout?.ShowAt(
+				flyout.ShowAt(
 					placementTarget: fe,
 					showOptions: new FlyoutShowOptions()
 					{

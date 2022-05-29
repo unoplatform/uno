@@ -1648,11 +1648,28 @@ var Uno;
                 document.body.appendChild(this.containerElement);
                 window.addEventListener("resize", x => this.resize());
                 window.addEventListener("contextmenu", x => {
-                    if (!(x.target instanceof HTMLInputElement)) {
+                    if (!(x.target instanceof HTMLInputElement) ||
+                        WindowManager.elementOrAncestorHasClass(x.target, "context-menu-disabled")) {
                         x.preventDefault();
                     }
                 });
                 window.addEventListener("blur", this.onWindowBlur);
+            }
+            static elementOrAncestorHasClass(element, className) {
+                if (!element) {
+                    return false;
+                }
+                var parent = element;
+                do {
+                    if (parent === document) {
+                        break;
+                    }
+                    if (parent instanceof HTMLElement &&
+                        parent.classList.contains(className)) {
+                        return true;
+                    }
+                } while (parent = parent.parentNode);
+                return false;
             }
             removeLoading() {
                 if (!this.loadingElementId) {

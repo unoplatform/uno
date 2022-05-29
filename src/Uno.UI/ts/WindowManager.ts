@@ -279,7 +279,7 @@ namespace Uno.UI {
 			}
 
 			if (contentDefinition) {
-				let classes = element.classList.value; 
+				let classes = element.classList.value;
 				for (const className of uiElementRegistration.classNames) {
 					classes += " uno-" + className;
 				}
@@ -1281,7 +1281,7 @@ namespace Uno.UI {
 			*
 			* @param maxWidth string containing width in pixels. Empty string means infinite.
 			* @param maxHeight string containing height in pixels. Empty string means infinite.
-		    * @param measureContent if we're interested by the content of the control (<img>'s image, <input>'s text...)
+			* @param measureContent if we're interested by the content of the control (<img>'s image, <input>'s text...)
 			*/
 		public measureView(viewId: string, maxWidth: string, maxHeight: string, measureContent: boolean = true): string {
 
@@ -1727,11 +1727,29 @@ namespace Uno.UI {
 
 			window.addEventListener("resize", x => this.resize());
 			window.addEventListener("contextmenu", x => {
-				if (!(x.target instanceof HTMLInputElement)) {
+				if (!(x.target instanceof HTMLInputElement) ||
+					WindowManager.elementOrAncestorHasClass(x.target, "context-menu-disabled")) {
 					x.preventDefault();
 				}
 			})
 			window.addEventListener("blur", this.onWindowBlur);
+		}
+
+		private static elementOrAncestorHasClass(element: Node, className: string) {
+			if (!element) {
+				return false;
+			}
+			var parent = element;
+			do {
+				if (parent === document) {
+					break;
+				}
+				if (parent instanceof HTMLElement &&
+					parent.classList.contains(className)) {
+					return true;
+				}
+			} while (parent = parent.parentNode);
+			return false;
 		}
 
 		private removeLoading() {

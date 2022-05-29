@@ -1,5 +1,5 @@
 ﻿using Uno.Extensions;
-using Uno.Foundation;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
-		
+
 		partial void InitializePropertiesPartial()
 		{
 			if (_header != null)
