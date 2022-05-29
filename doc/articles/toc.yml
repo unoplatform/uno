@@ -39,7 +39,7 @@
         - name: Philosophy
           href: concepts/overview/philosophy-of-uno.md
         - name: How Uno Works
-          href: how-uno-works.mmd
+          href: how-uno-works.md
 
     - name: Learn
       items:
