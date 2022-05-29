@@ -139,6 +139,13 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void SelectAllPartial() => Select(0, Text.Length);
 
+		private protected override void OnContextFlyoutChanged(FlyoutBase oldValue, FlyoutBase newValue)
+		{
+			base.OnContextFlyoutChanged(oldValue, newValue);
+
+			_textBoxView?.UpdateContextMenuEnabling();
+		}
+
 		public int SelectionStart
 		{
 			get => _textBoxView?.SelectionStart ?? 0;

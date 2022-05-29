@@ -15,7 +15,6 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.System;
 
 namespace Windows.UI.Xaml
@@ -364,18 +363,6 @@ namespace Windows.UI.Xaml
 			if (FeatureConfiguration.UIElement.AssignDOMXamlName)
 			{
 				Uno.UI.Xaml.WindowManagerInterop.SetXUid(HtmlId, _uid);
-			}
-		}
-
-		partial void OnContextFlyoutChangedPartial(FlyoutBase newValue)
-		{
-			if (newValue is { } flyout)
-			{
-				SetCssClasses("context-menu-disabled");
-			}
-			else
-			{
-				UnsetCssClasses("context-menu-disabled");
 			}
 		}
 

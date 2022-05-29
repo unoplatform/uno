@@ -1728,28 +1728,11 @@ namespace Uno.UI {
 			window.addEventListener("resize", x => this.resize());
 			window.addEventListener("contextmenu", x => {
 				if (!(x.target instanceof HTMLInputElement) ||
-					WindowManager.elementOrAncestorHasClass(x.target, "context-menu-disabled")) {
+					x.target.classList.contains("context-menu-disabled")) {
 					x.preventDefault();
 				}
 			})
 			window.addEventListener("blur", this.onWindowBlur);
-		}
-
-		private static elementOrAncestorHasClass(element: Node, className: string) {
-			if (!element) {
-				return false;
-			}
-			var parent = element;
-			do {
-				if (parent === document) {
-					break;
-				}
-				if (parent instanceof HTMLElement &&
-					parent.classList.contains(className)) {
-					return true;
-				}
-			} while (parent = parent.parentNode);
-			return false;
 		}
 
 		private removeLoading() {

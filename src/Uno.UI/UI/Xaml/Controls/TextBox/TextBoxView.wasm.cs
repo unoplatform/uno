@@ -58,6 +58,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			SetAttribute("tabindex", "0");
+			UpdateContextMenuEnabling();
 		}
 
 		private event EventHandler HtmlInput
@@ -137,6 +138,18 @@ namespace Windows.UI.Xaml.Controls
 			else
 			{
 				RemoveAttribute("readonly");
+			}
+		}
+
+		internal void UpdateContextMenuEnabling()
+		{
+			if (_textBox.ContextFlyout is not null)
+			{
+				SetCssClasses("context-menu-disabled");
+			}
+			else
+			{
+				UnsetCssClasses("context-menu-disabled");
 			}
 		}
 

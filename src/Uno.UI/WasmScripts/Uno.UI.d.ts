@@ -562,7 +562,6 @@ declare namespace Uno.UI {
         private init;
         private static initMethods;
         private initDom;
-        private static elementOrAncestorHasClass;
         private removeLoading;
         private resize;
         private onfocusin;
