@@ -151,6 +151,16 @@ In order to match the WinUI behavior, on WASM the default "Context menu" of the 
 no matter if you use / handle the `RightTapped` event or not.
 Be aware that on some browser (Firefox), user can still request to get the "Context menu" on right click.
 
+### Disabling browser context menu on `TextBox` 
+
+While the context menu is enabled on `TextBox` and derived input elements by default, it will be auto-disabled when a `ContextFlyout` is set on the element. To explicitly disable the context menu, you can manually set the `context-menu-disabled` CSS class on the element:
+
+```
+#if __WASM__
+MyTextBox.SetCssClasses("context-menu-disabled");
+#endif
+```
+
 ## Drag and drop
 
 Those events are also 100% managed events, built from the PointerXXX events (using the `Windows.UI.Input.GestureRecognizer`)
