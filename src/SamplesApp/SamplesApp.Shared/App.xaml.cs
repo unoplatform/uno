@@ -30,10 +30,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Logging;
 using Uno;
-using Uno.Foundation.Extensibility;
 
 #if __SKIA__
 using Uno.UI.Xaml.Controls.Extensions;
+using Uno.Foundation.Extensibility;
 #endif
 
 #if !HAS_UNO
