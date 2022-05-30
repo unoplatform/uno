@@ -20,9 +20,6 @@ namespace Uno.UI.Controls
 	/// </summary>
 	internal class TextPaintPool
 	{
-		private static readonly Action LogCharacterSpacingNotSupported =
-			Actions.CreateOnce(() => typeof(TextPaintPool).Log().Warn("CharacterSpacing is only supported on Android API Level 21+"));
-
 		private record Entry(
 			FontWeight FontWeight,
 			FontStyle FontStyle,
@@ -128,39 +125,21 @@ namespace Uno.UI.Controls
 
 		private static TextPaint InnerBuildPaint(FontWeight fontWeight, FontStyle fontStyle, FontFamily fontFamily,  double fontSize, double characterSpacing, Color foreground, Shader shader,  BaseLineAlignment baselineAlignment, TextDecorations textDecorations)
 		{
-			var paint = new TextPaint(PaintFlags.AntiAlias);
-
 			var paintSpecs = BuildPaintValueSpecs(fontSize, characterSpacing);
 
-			paint.Density = paintSpecs.density;
-			paint.TextSize = paintSpecs.textSize;
-			paint.UnderlineText = (textDecorations & TextDecorations.Underline) == TextDecorations.Underline;
-			paint.StrikeThruText = (textDecorations & TextDecorations.Strikethrough) == TextDecorations.Strikethrough;
-			if (shader != null)
-			{
-				paint.SetShader(shader);
-			}
-
-			if (baselineAlignment == BaseLineAlignment.Superscript)
-			{
-				paint.BaselineShift += (int)(paint.Ascent() / 2);
-			}
-
-			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop)
-			{
-				paint.LetterSpacing = paintSpecs.letterSpacing;
-			}
-			else
-			{
-				LogCharacterSpacingNotSupported();
-			}
-
 			var typefaceStyle = TypefaceStyleHelper.GetTypefaceStyle(fontStyle, fontWeight);
-			var typeface = FontHelper.FontFamilyToTypeFace(fontFamily, fontWeight, typefaceStyle);
-			paint.SetTypeface(typeface);
-			paint.Color = foreground;
 
-			return paint;
+			return TextPaintPoolNative.BuildPaint(
+				paintSpecs.density,
+				paintSpecs.textSize,
+				paintSpecs.letterSpacing,
+				FontHelper.FontFamilyToTypeFace(fontFamily, fontWeight, typefaceStyle),
+				(int)((Android.Graphics.Color)foreground),
+				(textDecorations & TextDecorations.Underline) == TextDecorations.Underline,
+				(textDecorations & TextDecorations.Strikethrough) == TextDecorations.Strikethrough,
+				baselineAlignment == BaseLineAlignment.Superscript,
+				shader
+			);
 		}
 
 		internal static (float density, float textSize, float letterSpacing) BuildPaintValueSpecs(double fontSize, double characterSpacing)
