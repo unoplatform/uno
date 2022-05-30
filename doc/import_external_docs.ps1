@@ -4,7 +4,7 @@ $external_docs =
 @(
     @("https://github.com/unoplatform/uno.wasm.bootstrap", "uno.wasm.bootstrap", "3e7cc247cb2851ef9d8293071ed54433e20bfac2"),
     @("https://github.com/unoplatform/uno.themes", "uno.themes", "b3656e715b3eb7349e1d11566640169691d7ea73"),
-    @("https://github.com/unoplatform/uno.toolkit.ui", "uno.toolkit.ui", "b938643891988af833f2fdb63e6e8a5963bd57f5"),
+    @("https://github.com/unoplatform/uno.toolkit.ui", "uno.toolkit.ui", "602341f645872df840cfcd9dd59bab4745057f58"),
     @("https://github.com/unoplatform/uno.check", "uno.check", "479b01d10240e2c506912c4af46197c1497c9971"),
     @("https://github.com/unoplatform/uno.xamlmerge.task", "uno.xamlmerge.task", "a6d2efa69e24e8280c38300b5c1b7a8f2033f9f9"),
     @("https://github.com/unoplatform/figma-docs", "figma-docs", "97217d5669342a4f2a215ce018d2c328518f24f2"),
