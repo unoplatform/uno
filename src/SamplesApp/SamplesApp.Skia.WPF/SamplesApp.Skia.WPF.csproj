@@ -40,7 +40,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
-		<PackageReference Include="SkiaSharp.Views.WPF" Version="2.80.3" />
+		<PackageReference Include="SkiaSharp.Views.WPF" Version="2.80.4" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -46,7 +46,7 @@
 	<PackageReference Update="Xamarin.UITest" Version="3.2.7" />
 	<PackageReference Update="System.Numerics.Vectors" Version="4.5.0" />
 	<PackageReference Update="SkiaSharp.Views" Version="2.80.3" />
-	<PackageReference Update="SkiaSharp.Views.WPF" Version="2.80.3" />
+	<PackageReference Update="SkiaSharp.Views.WPF" Version="2.80.4" />
 	<PackageReference Update="SkiaSharp" Version="2.80.3" />
 	<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.80.3" />
 	<PackageReference Update="SkiaSharp.HarfBuzz" Version="2.80.3" />
