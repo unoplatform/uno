@@ -11,17 +11,13 @@ namespace Windows.UI.Xaml.Media.Imaging
 			? new SwapColor(SwapRB)
 			: default(SwapColor);
 
-		private static (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement? element, ref byte[]? buffer, Size? scaledSize = null)
+		private static (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref byte[]? buffer, Size? scaledSize = null)
 		{
-			UIElement elementToRender = element
-				?? XamlRoot.Current.Content
-				?? throw new global::System.NullReferenceException();
+			var renderSize = element.RenderSize;
+			var visual = element.Visual;
 
-			var renderSize = elementToRender.RenderSize;
-			var visual = elementToRender.Visual;
-
-			if (elementToRender.RenderSize is { IsEmpty: true }
-			 || elementToRender.RenderSize is { Width: 0, Height: 0 })
+			if (element.RenderSize is { IsEmpty: true }
+			 || element.RenderSize is { Width: 0, Height: 0 })
 			{
 				return (0, 0, 0);
 			}

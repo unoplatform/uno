@@ -87,7 +87,11 @@ namespace Windows.UI.Xaml.Media.Imaging
 			{
 				try
 				{
-					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(element, ref _buffer, new Size(scaledWidth, scaledHeight));
+					UIElement elementToRender = element
+						?? XamlRoot.Current.Content
+						?? throw new global::System.NullReferenceException("Invalid XamlRoot Content.");
+
+					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(elementToRender, ref _buffer, new Size(scaledWidth, scaledHeight));
 #if __WASM__ || __SKIA__
 					InvalidateSource();
 #endif
@@ -106,7 +110,11 @@ namespace Windows.UI.Xaml.Media.Imaging
 			{
 				try
 				{
-					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(element, ref _buffer);
+					UIElement elementToRender = element
+						?? XamlRoot.Current.Content
+						?? throw new global::System.NullReferenceException("Invalid XamlRoot Content.");
+
+					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(elementToRender, ref _buffer);
 #if __WASM__ || __SKIA__
 					InvalidateSource();
 #endif
@@ -131,7 +139,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			});
 
 #if NOT_IMPLEMENTED
-		private (int ByteCount,int Width, int Height) RenderAsBgra8_Premul(UIElement? element, ref byte[]? buffer, Size? scaledSize = null)
+		private (int ByteCount,int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref byte[]? buffer, Size? scaledSize = null)
 			=> throw new NotImplementedException("RenderTargetBitmap is not supported on this platform.");
 #endif
 

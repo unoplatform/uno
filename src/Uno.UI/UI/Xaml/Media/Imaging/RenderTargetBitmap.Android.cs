@@ -50,19 +50,16 @@ namespace Windows.UI.Xaml.Media.Imaging
 			return image != null;
 		}
 
-		private (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement? element, ref byte[]? buffer, Size? scaledSize = null)
+		private (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref byte[]? buffer, Size? scaledSize = null)
 		{
 
 			var byteCount = 0;
 			Bitmap? bitmap = default;
-			UIElement elementToRender = element
-				?? XamlRoot.Current.Content
-				?? throw new global::System.NullReferenceException();
 
 			// In UWP RenderTargetBitmap use logical size
 			// if using logical size to render the element there are generate glycth.
 			// to avoid this layout the control on Physical and after scale to logical
-			var logical = elementToRender.ActualSize.ToSize();
+			var logical = element.ActualSize.ToSize();
 			var physical = logical.LogicalToPhysicalPixels();
 			if (physical.IsEmpty)
 			{
@@ -70,7 +67,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			}
 			try
 			{
-				SetSoftwareRendering(elementToRender, true);
+				SetSoftwareRendering(element, true);
 				bitmap = Bitmap.CreateBitmap((int)physical.Width, (int)physical.Height, Bitmap.Config.Argb8888!, true)
 					?? throw new InvalidOperationException("Failed to create target native bitmap.");
 				using var canvas = new Canvas(bitmap);
@@ -79,7 +76,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 					Uno.UI.UnoViewGroup.TryFastRequestLayout(element, false);
 					// Render on the canvas
 					canvas.DrawColor(Colors.Transparent, PorterDuff.Mode.Clear!);
-					elementToRender.Draw(canvas);
+					element.Draw(canvas);
 				}
 
 				var targetSize = scaledSize ?? logical;
@@ -111,7 +108,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			finally
 			{
 				bitmap?.Dispose();
-				SetSoftwareRendering(elementToRender, false);
+				SetSoftwareRendering(element, false);
 			}
 			
 

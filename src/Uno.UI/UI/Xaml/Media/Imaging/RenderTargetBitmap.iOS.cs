@@ -44,12 +44,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 			return image != null;
 		}
 
-		private static (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement? element, ref byte[]? buffer, Size? scaledSize = null)
+		private static (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref byte[]? buffer, Size? scaledSize = null)
 		{
-			UIElement elementToRender = element
-				?? XamlRoot.Current.Content
-				?? throw new global::System.NullReferenceException();
-			var size = new Size(elementToRender.ActualSize.X, elementToRender.ActualSize.Y);
+			var size = new Size(element.ActualSize.X, element.ActualSize.Y);
 
 			if (size.IsEmpty)
 			{
@@ -61,7 +58,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				UIGraphics.BeginImageContextWithOptions(size, false, 1f);
 				var ctx = UIGraphics.GetCurrentContext();
 				ctx.SetFillColor(Colors.Transparent); // This is only for pixels not used, but the bitmap as the same size of the element. We keep it only for safety!
-				elementToRender.Layer.RenderInContext(ctx);
+				element.Layer.RenderInContext(ctx);
 				img = UIGraphics.GetImageFromCurrentImageContext();
 			}
 			finally
