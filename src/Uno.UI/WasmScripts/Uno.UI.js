@@ -1648,7 +1648,8 @@ var Uno;
                 document.body.appendChild(this.containerElement);
                 window.addEventListener("resize", x => this.resize());
                 window.addEventListener("contextmenu", x => {
-                    if (!(x.target instanceof HTMLInputElement)) {
+                    if (!(x.target instanceof HTMLInputElement) ||
+                        x.target.classList.contains("context-menu-disabled")) {
                         x.preventDefault();
                     }
                 });
