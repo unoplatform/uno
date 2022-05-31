@@ -43,9 +43,9 @@ namespace Uno.UI.Runtime.Skia
 				{
 					var ctx = new Silk.NET.Core.Contexts.DefaultNativeContext(new GLCoreLibraryNameContainer().GetLibraryName());
 
-					using var glContext = GRGlInterface.Create();
+					var isAvailable = ctx.TryGetProcAddress("glGetString", out _);
 
-					return glContext != null && !isMacOs;
+					return isAvailable && !isMacOs;
 				}
 				catch(Exception e)
 				{
