@@ -57,6 +57,7 @@ internal partial class SystemFocusVisual : Control
 
 			focusVisual.AttachVisualPartial();
 
+			focusVisual._lastRect = Rect.Empty;
 			focusVisual.SetLayoutProperties();
 
 			focusVisual._focusedElementSubscriptions.Disposable = Disposable.Create(() =>
@@ -98,7 +99,7 @@ internal partial class SystemFocusVisual : Control
 
 		Visibility = Visibility.Visible;
 
-		var transformToRoot = FocusedElement.TransformToVisual(Windows.UI.Xaml.Window.Current.Content);
+		var transformToRoot = FocusedElement.TransformToVisual(Windows.UI.Xaml.Window.Current.RootElement);
 		var point = transformToRoot.TransformPoint(new Windows.Foundation.Point(0, 0));
 		var newRect = new Rect(point.X, point.Y, FocusedElement.ActualSize.X, FocusedElement.ActualSize.Y);
 

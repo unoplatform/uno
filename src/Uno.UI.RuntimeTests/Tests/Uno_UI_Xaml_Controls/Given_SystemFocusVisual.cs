@@ -53,14 +53,14 @@ public class Given_SystemFocusVisual
 
 		var focusVisual = focusVisualLayer.Children.First();
 
-		var transform = focusVisual.TransformToVisual(scrollViewer);
+		var transform = focusVisual.TransformToVisual(Windows.UI.Xaml.Window.Current.RootElement);
 		var initialPoint = transform.TransformPoint(default);
 
 		scrollViewer.ChangeView(null, 100, null, true);
 
 		await TestServices.WindowHelper.WaitFor(() =>
 		{
-			transform = focusVisual.TransformToVisual(scrollViewer);
+			transform = focusVisual.TransformToVisual(Windows.UI.Xaml.Window.Current.RootElement);
 			var currentPoint = transform.TransformPoint(default);
 
 			return currentPoint.Y < initialPoint.Y;
@@ -68,7 +68,7 @@ public class Given_SystemFocusVisual
 		
 		await TestServices.WindowHelper.WaitForIdle();
 
-		transform = focusVisual.TransformToVisual(scrollViewer);
+		transform = focusVisual.TransformToVisual(Windows.UI.Xaml.Window.Current.RootElement);
 		var scrolledPoint = transform.TransformPoint(default);
 		Assert.AreEqual(initialPoint.Y - 100, scrolledPoint.Y, 0.5);
 	}
