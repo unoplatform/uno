@@ -23,6 +23,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml
 {
@@ -33,6 +34,7 @@ namespace Windows.UI.Xaml
 		// private ScrollViewer _rootScrollViewer;
 		private Border? _rootBorder;
 		private UIElement? _content;
+		private FocusManager? _focusManager;
 
 		public Window()
 		{
@@ -62,7 +64,19 @@ namespace Windows.UI.Xaml
 				{
 					_renderQueued = false;
 					InvalidateRender();
+
+					InvalidateOverlays();
 				});
+			}
+		}
+
+		private void InvalidateOverlays()
+		{
+			_focusManager ??= VisualTree.GetFocusManagerForElement(Windows.UI.Xaml.Window.Current?.RootElement);
+			_focusManager?.FocusRectManager?.RedrawFocusVisual();
+			if (_focusManager?.FocusedElement is TextBox textBox)
+			{
+				textBox.TextBoxView?.Extension?.InvalidateLayout();
 			}
 		}
 

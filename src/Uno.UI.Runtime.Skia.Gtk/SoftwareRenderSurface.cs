@@ -39,8 +39,6 @@ namespace Uno.UI.Runtime.Skia
 			WUX.Window.InvalidateRender
 				+= () =>
 				{
-					// TODO Uno: Make this invalidation less often if possible.
-					InvalidateOverlays();
 					Invalidate();
 				};
 			_colorType = SKImageInfo.PlatformColorType;
@@ -56,16 +54,6 @@ namespace Uno.UI.Runtime.Skia
 
 		private void OnDpiChanged(DisplayInformation sender, object args) =>
 			UpdateDpi();
-
-		private void InvalidateOverlays()
-		{
-			_focusManager ??= VisualTree.GetFocusManagerForElement(Windows.UI.Xaml.Window.Current?.RootElement);
-			_focusManager?.FocusRectManager?.RedrawFocusVisual();
-			if (_focusManager?.FocusedElement is TextBox textBox)
-			{
-				textBox.TextBoxView?.Extension?.InvalidateLayout();
-			}
-		}
 
 		private void Invalidate()
 			=> QueueDrawArea(0, 0, 10000, 10000);
