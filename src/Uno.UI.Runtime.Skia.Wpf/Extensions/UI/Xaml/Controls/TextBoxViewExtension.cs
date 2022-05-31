@@ -23,6 +23,8 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			_owner = owner ?? throw new ArgumentNullException(nameof(owner));
 		}
 
+		public bool IsNativeOverlayLayerInitialized => GetWindowTextInputLayer() is not null;
+		
 		private WpfCanvas? GetWindowTextInputLayer() => WpfHost.Current?.NativeOverlayLayer;
 
 		public void StartEntry()
