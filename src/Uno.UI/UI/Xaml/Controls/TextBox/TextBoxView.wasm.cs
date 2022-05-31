@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Uno.UI;
+using Uno.Extensions;
+using Windows.UI.Xaml.Media;
+using Uno.Foundation.Logging;
+using Windows.Foundation;
 using System.Globalization;
 using Uno.Disposables;
 using Uno.Foundation;
-using Uno.UI;
-using Windows.Foundation;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -14,6 +18,7 @@ namespace Windows.UI.Xaml.Controls
 		private readonly TextBox _textBox;
 		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
 
+		private bool _browserContextMenuEnabled = true;
 		private bool _isReadOnly = false;
 
 		public Brush Foreground
@@ -143,13 +148,18 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void UpdateContextMenuEnabling()
 		{
-			if (_textBox.ContextFlyout is not null)
+			// _browserContextMenuEnabled flag is used to avoid unnecessary round-trips
+			// to JS when the value didn't change.
+
+			if (_textBox?.ContextFlyout is not null && _browserContextMenuEnabled)
 			{
 				SetCssClasses("context-menu-disabled");
+				_browserContextMenuEnabled = false;
 			}
-			else
+			else if (_textBox?.ContextFlyout is null && !_browserContextMenuEnabled)
 			{
 				UnsetCssClasses("context-menu-disabled");
+				_browserContextMenuEnabled = true;
 			}
 		}
 
