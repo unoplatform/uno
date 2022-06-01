@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Media.GradientBrushTests
 {
-	[Sample("GradientBrush")]
+	[Sample("Brushes")]
 	public sealed partial class LinearGradientBrush_Change_Stops : UserControl
 	{
 		public LinearGradientBrush_Change_Stops()

@@ -5,6 +5,11 @@ using Foundation;
 using UIKit;
 using Windows.UI.Xaml;
 using CoreGraphics;
+using ObjCRuntime;
+
+#if !NET6_0_OR_GREATER
+using NativeHandle = System.IntPtr;
+#endif
 
 namespace Uno.UI.Views.Controls
 {
@@ -33,7 +38,7 @@ namespace Uno.UI.Views.Controls
 			InitializeBinder();
 		}
 
-		public BindableUIActivityIndicatorView(IntPtr handle)
+		public BindableUIActivityIndicatorView(NativeHandle handle)
 			: base(handle)
 		{
 			InitializeBinder();

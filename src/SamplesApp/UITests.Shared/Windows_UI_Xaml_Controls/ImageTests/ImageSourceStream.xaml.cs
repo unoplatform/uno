@@ -22,7 +22,7 @@ namespace Uno.UI.Samples.UITests.ImageTestsControl
 			this.Loaded += OnLoaded;
 		}
 
-		private const string _imageUrl = "http://placehold.it/420x220&text=Super+Image";
+		private const string _imageUrl = "https://via.placeholder.com/420x220.png?text=Super+Image";
 
 		private async void OnLoaded(object sender, RoutedEventArgs e)
 		{

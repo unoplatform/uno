@@ -15,19 +15,9 @@ The Uno Platform Hot Reload feature provides a way to modify the XAML displayed 
 
 ### Visual Studio 2022
 - Install the [Uno Platform Add-in](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) from the Visual Studio Marketplace.
-- Create a sample application using the **Multi-Platform App (Uno Platform)** template
+- Create a sample application using the **Uno Platform App** template
 - Build an Uno application head (iOS, Android or WebAssembly), start it (with or without the debugger)
 - Change a XAML file from VS and the app should update
-
-> Note: You can also get pre-released version of the Visual Studio Extension from the [master CI builds artifacts](https://dev.azure.com/uno-platform/Uno%20Platform/_build?definitionId=5&_a=summary). 
-
-If you're using the XAML Hot Reload feature in an existing application, you'll need to add the following lines to your project:
-```xml
-<ItemGroup>
-    <PackageReference Include="Uno.UI.RemoteControl" Version="4.0" Condition="'$(Configuration)'=='Debug'" />
-</ItemGroup>
-```
-Make sure that the version number is the same as the `Uno.UI` package.
 
 ### Visual Studio Code
 - Follow the [getting started guide](../get-started-vscode.md)

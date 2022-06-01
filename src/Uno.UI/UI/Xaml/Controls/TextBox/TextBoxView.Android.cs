@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Controls
 			_ownerRef = WeakReferencePool.RentWeakReference(this, owner);
 			InitializeBinder();
 
-			base.SetSingleLine(true);
+			base.SetSingleLine(owner.TextWrapping == TextWrapping.NoWrap);
 
 			//This Background color is set to remove the native android underline on the EditText.
 			this.SetBackgroundColor(Colors.Transparent);

@@ -53,7 +53,7 @@
 				Text="{Binding Text, ElementName=input}"
 				Padding="{Binding SelectedItem.Content, ElementName=padding}"
 				FontSize="{Binding SelectedItem.Content, ElementName=fontSize}"
-				FontWeight="Binding SelectedItem.Content, ElementName=fontWeight}"
+				FontWeight="{Binding SelectedItem.Content, ElementName=fontWeight}"
 				CharacterSpacing="{Binding SelectedItem.Content, ElementName=characterSpacing}"
 				FontStyle="{Binding SelectedItem.Content, ElementName=style}"
 			/>

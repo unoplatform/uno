@@ -124,12 +124,12 @@ namespace Uno.UWPSyncGenerator
 							_sb.AppendParagraph($"*Implemented for:* {ToDisplayString(view.ImplementedForMain)}");
 
 							var baseDocLinkUrl = @"https://docs.microsoft.com/en-us/uwp/api/" + view.UAPSymbol.ToDisplayString().ToLowerInvariant();
-							_sb.AppendParagraph($"This document lists all properties, methods, and events of {formattedViewName} that are currently implemented by the Uno Platform. See the {Hyperlink("UWP documentation", baseDocLinkUrl)} for detailed usage guidelines. ");
+							_sb.AppendParagraph($"This document lists all properties, methods, and events of {formattedViewName} that are currently implemented by the Uno Platform. See the {Hyperlink("WinUI and UWP documentation", baseDocLinkUrl)} for detailed usage guidelines which all automatically apply to Uno Platform. ");
 
 							var customDocLink = GetCustomDocLink(viewName);
 							if (customDocLink != null)
 							{
-								_sb.AppendParagraph($"{formattedViewName} has Uno-specific documentation {Hyperlink("here", customDocLink)}.");
+								_sb.AppendParagraph($"In addition, {formattedViewName} has Uno-specific documentation {Hyperlink("here", customDocLink)}.");
 							}
 
 							var properties = view.UAPSymbol.GetMembers().OfType<IPropertySymbol>().Select(p => GetAllMatchingPropertyMember(view, p)).ToArray();
@@ -361,7 +361,7 @@ namespace Uno.UWPSyncGenerator
 			switch (implementedFor)
 			{
 				case ImplementedFor.Main:
-					return "all platforms";
+					return "all platforms supported by Uno Platform";
 				case ImplementedFor.Mobile:
 					return "Android, iOS";
 				case ImplementedFor.Xamarin:

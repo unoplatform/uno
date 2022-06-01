@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Flyout
 {
-	[SampleControlInfoAttribute("Flyout", nameof(Flyout_LargeContent))]
+	[SampleControlInfoAttribute("Flyouts", nameof(Flyout_LargeContent))]
 	public sealed partial class Flyout_LargeContent : UserControl
 	{
 		public Flyout_LargeContent()

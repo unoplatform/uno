@@ -192,9 +192,16 @@ namespace Uno.UI.RemoteControl
 			}
 			catch (Exception ex)
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
+				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
-					this.Log().LogError($"Failed to connect to the server ({ex})", ex);
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug($"Failed to connect to the server ({ex})", ex);
+					}
+					else
+					{
+						this.Log().LogWarning($"The remote control client failed to initialize ({ex.Message}). This generally means that XAML Hot Reload will not be available for this session.");
+					}
 				}
 			}
 		}

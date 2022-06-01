@@ -8673,11 +8673,14 @@
 			  reason="net6 macos remove deprecated API" />
 	  </Properties>
 	</IgnoreSet>
-	  
+
 	<IgnoreSet baseVersion="4.1.9">
 		<Assemblies>
 		</Assemblies>
 		<Methods>
+			<Member
+				fullName="System.Void Windows.Devices.Power.BatteryReport..ctor()"
+				reason="not public in UWP"/>
 			<Member
 				fullName="System.Boolean Windows.UI.Xaml.FrameworkElement.get_StretchAffectsMeasure()"
 				reason="False positive: added in an internal interface" />
@@ -8694,24 +8697,11 @@
 				fullName="System.Void Windows.Devices.Geolocation.Geolocator.WaitForPermissionFromBackground()"
 				reason="Not part of UWP API" />
 			<Member
+				fullName="System.Void Windows.ApplicationModel.Background.BackgroundTaskRegistration..ctor()"
+				reason="Not part of UWP API" />
+			<Member
 				fullName="System.Void Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent..ctor()"
 				reason="Does not exist in UWP" />
-			<Member
-				fullName="System.Void Windows.Devices.Bluetooth.BluetoothLEDevice..ctor()"
-				reason="Does not exist in UWP" />
-			<Member
-				fullName="System.Void Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult..ctor()"
-				reason="Does not exist in UWP" />
-			<Member
-				fullName="System.Void Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorsResult..ctor()"
-				reason="Does not exist in UWP" />
-			<Member
-				fullName="System.Void Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceServicesResult..ctor()"
-				reason="Does not exist in UWP" />
-			<Member
-				fullName="System.Void Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult..ctor()"
-				reason="Does not exist in UWP" />
-
 			<Member
 				fullName="System.Void Windows.UI.Xaml.BringIntoViewRequestedEventArgs..ctor()"
 				reason="Does not exist in UWP" />
@@ -8780,6 +8770,71 @@
 			<Member fullName="ObjCRuntime.nfloat Uno.UI.ViewHelper::MainScreenScale" reason="net6 preview 14 breaking changes" />
 			<!-- END .NET 6 RC 1 -->
 		</Fields>
+	</IgnoreSet>
+	<IgnoreSet baseVersion="4.2.6">
+
+		<Types>
+			<!-- BEGIN MarkupExtension -->
+			<!--
+				These interfaces do not existing in UWP, but have been reintroduced with Winui3 under different namespace:
+				https://docs.microsoft.com/en-us/windows/winui/api/microsoft.ui.xaml.markup?view=winui-3.0#interfaces
+			-->
+			<Member fullName="Uno.Xaml.IRootObjectProvider" reason="Does not exist in UWP" />
+			<Member fullName="System.Windows.Markup.IProvideValueTarget" reason="Does not exist in UWP" />
+			<Member fullName="System.Windows.Markup.IUriContext" reason="Does not exist in UWP" />
+			<Member fullName="System.Windows.Markup.IXamlTypeResolver" reason="Does not exist in UWP" />
+			<!-- END MarkupExtension -->
+		</Types>
+
+		<Methods>
+			<Member
+				fullName="System.Void Windows.Devices.Power.BatteryReport..ctor()"
+				reason="Does not exist in UWP" />
+			<!-- BEGIN Bluetooth API -->
+			<Member
+				fullName="System.Void Windows.Devices.Bluetooth.BluetoothLEDevice..ctor()"
+				reason="Does not exist in UWP" />
+			<Member
+				fullName="System.Void Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult..ctor()"
+				reason="Does not exist in UWP" />
+			<Member
+				fullName="System.Void Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptorsResult..ctor()"
+				reason="Does not exist in UWP" />
+			<Member
+				fullName="System.Void Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceServicesResult..ctor()"
+				reason="Does not exist in UWP" />
+			<Member
+				fullName="System.Void Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult..ctor()"
+				reason="Does not exist in UWP" />
+			<!-- END Bluetooth API -->
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Background.BackgroundTaskRegistration..ctor()"
+				reason="Not part of UWP API" />
+			<Member
+				fullName="System.UInt32 Windows.Foundation.Collections.ValueSet.get_Size()"
+				reason="Not part of UWP API" />
+			
+			<!-- BEGIN .NET 6 ios updated native ctors -->
+			<Member fullName="System.Void Windows.UI.Xaml.Application..ctor(System.IntPtr handle)" reason="Changed by .NET 6 iOS" />
+			<Member fullName="System.Void Uno.UI.Views.Controls.BindableUIActivityIndicatorView..ctor(System.IntPtr handle)" reason="Changed by .NET 6 iOS" />
+			<Member fullName="System.Void Uno.UI.Views.Controls.BindableUIAlertView..ctor(System.IntPtr handle)" reason="Changed by .NET 6 iOS" />
+			<Member fullName="System.Void Uno.UI.Views.Controls.BindableUIButton..ctor(System.IntPtr handle)" reason="Changed by .NET 6 iOS" />
+			<Member fullName="System.Void Uno.UI.Views.Controls.BindableUIScrollView..ctor(System.IntPtr handle)" reason="Changed by .NET 6 iOS" />
+			<Member fullName="System.Void Uno.UI.Views.Controls.BindableUISwitch..ctor(System.IntPtr handle)" reason="Changed by .NET 6 iOS" />
+			<Member fullName="System.Void Uno.UI.Views.Controls.BindableUICollectionView..ctor(System.IntPtr handle)" reason="Changed by .NET 6 iOS" />
+			<Member fullName="System.Void Uno.UI.Controls.BindableSearchBar..ctor(System.IntPtr handle)" reason="Changed by .NET 6 iOS" />
+			<Member fullName="System.Void Uno.UI.Controls.BindableUISlider..ctor(System.IntPtr handle)" reason="Changed by .NET 6 iOS" />
+			<Member fullName="System.Void Uno.UI.Controls.BindableUIView..ctor(System.IntPtr handle)" reason="Changed by .NET 6 iOS" />
+			<Member fullName="System.Void Uno.UI.Controls.RootViewController..ctor(System.IntPtr handle)" reason="Changed by .NET 6 iOS" />
+			<Member fullName="System.Void Uno.UI.Controls.UnoNavigationBar..ctor(System.IntPtr handle)" reason="Changed by .NET 6 iOS" />
+			<Member fullName="System.Void Uno.UI.Controls.BindableNSView..ctor(System.IntPtr handle)" reason="Changed by .NET 6 iOS" />
+			<!-- END .NET 6 ios updated native ctors -->
+		</Methods>
+		<Properties>
+			<Member
+				fullName="System.UInt32 Windows.Foundation.Collections.ValueSet::Size()"
+				reason="Not part of UWP API" />
+		</Properties>
 	</IgnoreSet>
 	<!--
 	Supported nodes (please keep at the bottom of this file):

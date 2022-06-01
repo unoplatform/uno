@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl
 {
-	[SampleControlInfo("PathTestsControl", "Invisible")]
+	[SampleControlInfo("Path", "Invisible")]
 	public sealed partial class Invisible : UserControl
 	{
 		public Invisible()

@@ -13,7 +13,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests
 {
-	[Sample("RadioButtons", "WinUI")]
+	[Sample("Buttons", "MUX")]
 	public sealed partial class RadioButtonsFocusPage : Page
 	{
 		public RadioButtonsFocusPage()

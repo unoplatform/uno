@@ -49,6 +49,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			private readonly INamedTypeSymbol? _iFrameworkElementSymbol;
 			private readonly INamedTypeSymbol? _frameworkElementSymbol;
 			private readonly bool _isUnoSolution;
+			private readonly string[] _analyzerSuppressions;
 
 			public SerializationMethodsGenerator(GeneratorExecutionContext context)
 			{
@@ -68,6 +69,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				_iFrameworkElementSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.IFrameworkElement);
 				_frameworkElementSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.FrameworkElement");
 				_isUnoSolution = _context.GetMSBuildPropertyValue("_IsUnoUISolution") == "true";
+				_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 			}
 
 			public override void VisitNamedType(INamedTypeSymbol type)
@@ -150,6 +152,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					builder.AppendLineInvariant($"using Uno.Disposables;");
 					builder.AppendLineInvariant($"using System.Runtime.CompilerServices;");
 					builder.AppendLineInvariant($"using Uno.UI;");
+					builder.AppendLineInvariant($"using Uno.UI.Controls;");
 					builder.AppendLineInvariant($"using Uno.UI.DataBinding;");
 					builder.AppendLineInvariant($"using Windows.UI.Xaml;");
 					builder.AppendLineInvariant($"using Windows.UI.Xaml.Data;");
@@ -163,6 +166,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 							{
 								builder.AppendLineInvariant(@"[global::Windows.UI.Xaml.Data.Bindable]");
 							}
+
+							AnalyzerSuppressionsGenerator.Generate(builder, _analyzerSuppressions);
 
 							var internalDependencyObject = _isUnoSolution && !typeSymbol.IsSealed ? ", IDependencyObjectInternal" : "";
 
@@ -636,7 +641,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			private void WriteDispose(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
 			{
-				var hasDispose = typeSymbol.Is(_androidViewSymbol) || typeSymbol.Is(_iosViewSymbol) || typeSymbol.Is(_macosViewSymbol);
+				var hasDispose = typeSymbol.Is(_iosViewSymbol) || typeSymbol.Is(_macosViewSymbol);
 
 				if (hasDispose)
 				{
@@ -664,11 +669,18 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 							var subviews = Subviews;
 
-							RequestCollect(subviews);
-
-							foreach (var v in subviews)
+							if (subviews.Length > 0)
 							{{
-								v.RemoveFromSuperview();
+								BinderCollector.RequestCollect();
+#if __IOS__
+								foreach (var v in subviews)
+								{{
+									v.RemoveFromSuperview();
+								}}
+#elif __MACOS__
+								// avoids multiple native calls to remove subviews
+								Subviews = Array.Empty<AppKit.NSView>();
+#endif
 							}}
 
 							base.Dispose(disposing);
@@ -679,19 +691,12 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						{{
 							GC.ReRegisterForFinalize(this);
 
-							Dispatcher.RunIdleAsync(_ => Dispose());
-						}}
-					}}
-
-#if __IOS__
-					private void RequestCollect(UIKit.UIView[] subviews)
-#elif __MACOS__
-					private void RequestCollect(AppKit.NSView[] subviews)
+#if !(NET6_0_OR_GREATER && __MACOS__)
+							// net6.0-macos uses CoreCLR (not mono) and the notification mechanism is different
+							// workaround for mono's https://github.com/xamarin/xamarin-macios/issues/15089
+							NSObjectMemoryRepresentation.RemoveInFinalizerQueueFlag(this);
 #endif
-					{{
-						if(subviews.Length != 0)
-						{{
-							BinderCollector.RequestCollect();
+							Dispatcher.RunIdleAsync(_ => Dispose());
 						}}
 					}}
 #endif

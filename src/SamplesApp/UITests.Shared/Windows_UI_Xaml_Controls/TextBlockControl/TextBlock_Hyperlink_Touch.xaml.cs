@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[SampleControlInfo("TextBlockControl", "TextBlock_Hyperlink_Touch")]
+	[SampleControlInfo("TextBlock", "TextBlock_Hyperlink_Touch")]
 	public sealed partial class TextBlock_Hyperlink_Touch : UserControl
 	{
 		public TextBlock_Hyperlink_Touch()

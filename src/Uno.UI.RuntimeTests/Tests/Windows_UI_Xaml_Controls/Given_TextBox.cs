@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
@@ -8,6 +9,7 @@ using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using Windows.UI.Xaml;
 using Windows.UI;
+using FluentAssertions;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -293,6 +295,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(textbox.IsEnabled);
 			Assert.AreEqual(contentPresenter.Foreground, foregroundColor);
 		}
+
+#if __ANDROID__
+		[TestMethod]
+		public async Task When_Text_IsWrapping_Set()
+		{
+			var textbox = new TextBox();
+
+			textbox.Width = 100;
+			StackPanel panel = new() { Orientation = Orientation.Vertical };
+			panel.Children.Add(textbox);
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(textbox);
+			var originalActualHeigth = textbox.ActualHeight;
+			textbox.Text = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremaaaaaaaaaaaaaaaaaa";
+			textbox.TextWrapping = TextWrapping.Wrap;
+			await WindowHelper.WaitForIdle();
+			textbox.ActualHeight.Should().BeGreaterThan(originalActualHeigth);
+		}
+
+
+		[TestMethod]
+		public async Task When_Text_IsNoWrap_Set()
+		{
+			var textbox = new TextBox();
+
+			textbox.Width = 100;
+			StackPanel panel = new() { Orientation = Orientation.Vertical };
+			panel.Children.Add(textbox);
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(textbox);
+			var originalActualHeigth = textbox.ActualHeight;
+			textbox.Text = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremaaaaaaaaaaaaaaaaaa";
+			textbox.TextWrapping = TextWrapping.NoWrap;
+			await WindowHelper.WaitForIdle();
+			textbox.ActualHeight.Should().Be(originalActualHeigth);
+		}
+
+#endif
 
 		[TestMethod]
 		public async Task When_SelectedText_StartZero()

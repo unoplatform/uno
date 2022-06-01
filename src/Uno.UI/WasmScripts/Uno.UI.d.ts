@@ -1249,6 +1249,19 @@ declare namespace Windows.UI.Xaml.Media.Animation {
         private _isEnabled;
     }
 }
+declare namespace Windows.UI.Xaml.Input {
+    class FocusVisual {
+        private static focusVisualId;
+        private static focusVisual;
+        private static focusedElement;
+        private static currentDispatchTimeout?;
+        private static dispatchPositionChange;
+        static attachVisual(focusVisualId: number, focusedElementId: number): void;
+        static detachVisual(): void;
+        private static onDocumentScroll;
+        static updatePosition(): void;
+    }
+}
 declare class WindowManagerAddViewParams {
     HtmlId: number;
     ChildView: number;

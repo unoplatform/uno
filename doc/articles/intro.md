@@ -6,7 +6,7 @@
 <a href="get-started.md">
 <div class="alert alert-info alert-hover">
 
-#### Get started
+#### Get Started
 
 Set up with your OS and IDE of choice.
 
@@ -18,7 +18,7 @@ Set up with your OS and IDE of choice.
 <a href="tutorials-intro.md">
 <div class="alert alert-info alert-hover">
 
-#### How-tos and tutorials
+#### How-tos and Tutorials
 
 See real-world examples with working code.
 
@@ -42,7 +42,7 @@ Learn the principles of cross-platform development with Uno.
 <a href="implemented-views.md">
 <div class="alert alert-info alert-hover">
 
-#### API reference
+#### API Reference
 
 Browse the set of available controls and their properties.
 
@@ -111,7 +111,7 @@ Uno Platform is supported by a number of 3rd-party packages and libraries, inclu
 
 #### Where do I get help if I have any questions?
 
-Free support is available via [Stack Overflow](https://stackoverflow.com/questions/tagged/uno-platform) and Discord www.platform.uno/discord - #uno-platform channel. Commercial paid support is available as well - email [info@platform.uno](mailto:info@platform.uno) for more information.
+Free support is available via our [GitHub Discussions](https://github.com/unoplatform/uno/discussions) or [Discord](https://www.platform.uno/discord) - #uno-platform channel where our engineering team and community will be able to help you.
 
 #### How do you sustain Uno Platform?
 

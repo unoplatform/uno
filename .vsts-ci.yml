@@ -5,7 +5,17 @@ trigger:
       - release/beta/*
       - release/stable/*
       - feature/*
-
+      
+  paths:
+    include:
+    - '/'
+    exclude:
+    - .dependabot/
+    - .github/
+    # don't trigger the CI if only docs files are changed
+    - doc/*
+    - '**/*.md'
+    
 pr: 
   branches:
     include:
@@ -20,8 +30,9 @@ pr:
     exclude:
     - .dependabot/
     - .github/
+    # don't trigger the CI if only docs files are changed
     - doc/*
-    - .all-contributorsrc
+    - '**/*.md'
 
 resources:
   containers:

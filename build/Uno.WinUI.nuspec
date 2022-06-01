@@ -9,7 +9,7 @@
 	<requireLicenseAcceptance>false</requireLicenseAcceptance>
 	<projectUrl>https://platform.uno/</projectUrl>
 	<license type="expression">Apache-2.0</license>
-	<iconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</iconUrl>
+	<icon>uno.png</icon>
 	<description>Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today. Open source and professionally supported.</description>
 	<copyright>Copyright (C) 2015-2019 nventive inc. - all rights reserved</copyright>
 	<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
@@ -246,7 +246,8 @@
 	</references>
   </metadata>
   <files>
-
+	<!-- Icon File -->
+	<file src="..\src\Common\uno.png" target="/" />
 	<!-- UAP -->
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\$winuisourcepath$\Uno.UI.Toolkit*.dll" target="lib\$winuitargetpath$" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\$winuisourcepath$\Uno.UI.Toolkit*.pdb" target="lib\$winuitargetpath$" />

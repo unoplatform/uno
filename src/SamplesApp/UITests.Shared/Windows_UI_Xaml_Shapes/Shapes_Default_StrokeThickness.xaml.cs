@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Shapes
 {
-	[Sample("Shapes", "Default_StrokeThickness")]
+	[Sample("Shapes")]
 	public sealed partial class Shapes_Default_StrokeThickness : UserControl
     {
 		public double MyStrokeThickness { get; set; } = 0d;

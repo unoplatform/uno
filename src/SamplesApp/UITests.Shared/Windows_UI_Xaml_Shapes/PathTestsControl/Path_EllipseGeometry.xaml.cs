@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Shapes.PathTestsControl
 {
-	[Sample]
+	[Sample("Path")]
 	public sealed partial class Path_EllipseGeometry : UserControl
 	{
 		public Path_EllipseGeometry()

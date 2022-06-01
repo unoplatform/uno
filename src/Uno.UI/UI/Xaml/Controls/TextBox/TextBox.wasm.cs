@@ -1,5 +1,5 @@
 ﻿using Uno.Extensions;
-using Uno.Foundation;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
-		
+
 		partial void InitializePropertiesPartial()
 		{
 			if (_header != null)
@@ -138,6 +138,13 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void SelectAllPartial() => Select(0, Text.Length);
+
+		private protected override void OnContextFlyoutChanged(FlyoutBase oldValue, FlyoutBase newValue)
+		{
+			base.OnContextFlyoutChanged(oldValue, newValue);
+
+			_textBoxView?.UpdateContextMenuEnabling();
+		}
 
 		public int SelectionStart
 		{

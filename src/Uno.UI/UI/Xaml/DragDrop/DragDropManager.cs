@@ -102,7 +102,7 @@ namespace Windows.UI.Xaml
 			=> FindOperation(src)?.Aborted(src) ?? DataPackageOperation.None;
 
 		private DragOperation? FindOperation(IDragEventSource src)
-			=> _dragOperations.FirstOrDefault(drag =>  drag.Info.SourceId == src.Id);
+			=> _dragOperations.FirstOrDefault(drag => drag.Info.SourceId == src.Id);
 
 		private void RegisterWindowHandlers()
 		{

@@ -34,7 +34,10 @@ namespace Windows.UI.Xaml
 
 			public uint Id { get; }
 
-			public uint LastManagedOnlyFrameId { get; set; }
+			// The first frameId can be zero, and we're comparing it when handling
+			// TouchesBegan. Setting it to -1 by default allows for handling the
+			// "unset" value with a minimal performance cost.
+			public long LastManagedOnlyFrameId { get; set; } = -1;
 
 			public PointerRoutedEventArgs DownArgs { get; set; }
 
@@ -78,8 +81,7 @@ namespace Windows.UI.Xaml
 		partial void InitializePointersPartial()
 		{
 			MultipleTouchEnabled = true;
-			RegisterLoadActions(OnLoadedForPointers, OnUnloadedForPointers);
-
+			
 			ArePointersEnabled = true;
 		}
 

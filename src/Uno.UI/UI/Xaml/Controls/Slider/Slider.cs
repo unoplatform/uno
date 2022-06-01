@@ -42,10 +42,6 @@ namespace Windows.UI.Xaml.Controls
 
 		public Slider()
 		{
-#if XAMARIN
-			RegisterLoadActions(SubscribeSliderContainerPressed, () => _sliderContainerSubscription.Disposable = null);
-#endif
-
 			DefaultStyleKey = typeof(Slider);
 		}
 
@@ -120,6 +116,10 @@ namespace Windows.UI.Xaml.Controls
 			base.OnUnloaded();
 
 			_eventSubscriptions.Disposable = null;
+
+#if XAMARIN
+			_sliderContainerSubscription.Disposable = null;
+#endif
 		}
 
 		private IDisposable RegisterHandlers()

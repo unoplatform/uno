@@ -343,7 +343,7 @@ namespace SampleControl.Presentation
 						var activeStats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats();
 #endif
 
-						var fileName = $"{sample.Category.Category}-{sample.Sample.ControlName}.png";
+						var fileName = $"{SanitizeScreenshotFileName(sample.Category.Category + "-" + sample.Sample.ControlName)}.png";
 
 						try
 						{
@@ -424,6 +424,13 @@ namespace SampleControl.Presentation
 				IsSplitVisible = true;
 			}
 		}
+
+		private object SanitizeScreenshotFileName(string fileName) =>
+			fileName
+				.Replace(":", "_")
+				.Replace("/", "_")
+				.Replace("\\", "_")
+				.Replace("\\", "_");
 
 		internal async Task OpenRuntimeTests(CancellationToken ct)
 		{
