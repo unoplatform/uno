@@ -14,10 +14,12 @@
       "url": "http://localhost:5000",
       "webRoot": "${workspaceFolder}/UnoWinUIQuickStart.Wasm",
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
+      "timeout": 30000,
       "server": {
         "runtimeExecutable": "dotnet",
         "program": "run",
         "outputCapture": "std",
+        "timeout": 30000,
         "cwd": "${workspaceFolder}/UnoWinUIQuickStart.Wasm"
       }
     },
