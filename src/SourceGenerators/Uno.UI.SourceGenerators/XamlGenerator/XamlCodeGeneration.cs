@@ -59,6 +59,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly RoslynMetadataHelper _metadataHelper;
 
 		/// <summary>
+		/// Path to output all the intermediate generated code, per process.
+		/// </summary>
+		/// <remarks>
+		/// This is useful to troubleshoot transient generation issues in the context of
+		/// C# hot reload.
+		/// </remarks>
+		private string? _historicalOutputGenerationPath;
+
+		/// <summary>
 		/// If set, code generated from XAML will be annotated with the source method and line # in XamlFileGenerator, for easier debugging.
 		/// </summary>
 		private readonly bool _shouldAnnotateGeneratedXaml = false;
@@ -122,6 +131,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_projectFullPath = context.GetMSBuildPropertyValue("MSBuildProjectFullPath");
 			_projectDirectory = Path.GetDirectoryName(_projectFullPath)
 				?? throw new InvalidOperationException($"MSBuild property MSBuildProjectFullPath value {_projectFullPath} is not valid");
+
+			_historicalOutputGenerationPath = context.GetMSBuildPropertyValue("UnoXamlHistoricalOutputGenerationPath") is { Length: > 0 } value ? value : null;
 
 			var xamlItems = context.GetMSBuildItems("Page")
 				.Concat(context.GetMSBuildItems("ApplicationDefinition"));
@@ -333,6 +344,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				outputFiles.Add(new KeyValuePair<string, string>("GlobalStaticResources", GenerateGlobalResources(files, globalStaticResourcesMap)));
 
 				TrackGenerationDone(stopwatch.Elapsed);
+
+				if(_historicalOutputGenerationPath is { Length: > 0 } path)
+				{
+					// Dumps all the generated files to the output folder
+					// in separate folder to troubleshoot transient compilation issues.
+
+					var dumpPath = Path.Combine(path, $"{DateTime.Now:yyyyMMdd-HHmmss-ffff}-{Process.GetCurrentProcess().ProcessName}");
+
+					Directory.CreateDirectory(dumpPath);
+
+					foreach(var file in outputFiles)
+					{
+						File.WriteAllText(Path.Combine(dumpPath	, file.Key), file.Value);
+					}
+				}
 
 				return outputFiles.ToArray();
 
