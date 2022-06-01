@@ -8,9 +8,9 @@
 			const gamepads = navigator.getGamepads();
 			const separator = ";";
 			var result = '';
-			for (var i = 0; i < gamepads.length; i++) {
-				if (gamepads[i]) {
-					result += gamepads[i].index + separator;
+			for (var gamepad of gamepads) {
+				if (gamepad) {
+					result += gamepad.index + separator;
 				}
 			}
 			return result;
@@ -41,7 +41,7 @@
 				if (buttonId != 0) {
 					result += '|';
 				}
-				result += gamepad.buttons[buttonId].value;				
+				result += gamepad.buttons[buttonId].value;
 			}
 
 			return result;

@@ -39,7 +39,7 @@ namespace Uno.Helpers
 
 		public TDelegate? Event { get; private set; } = null;
 
-		public bool HasSubscribers => Event != null;
+		public bool IsActive => Event != null;
 		
 		public object SyncLock => _syncLock;
 

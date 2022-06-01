@@ -1,31 +1,105 @@
 using System;
 
-namespace Windows.Gaming.Input
+namespace Windows.Gaming.Input;
+
+/// <summary>
+/// Specifies the button type.
+/// </summary>
+[Flags]
+public enum GamepadButtons
 {
 	/// <summary>
-	/// Specifies the button type.
+	/// No button.
 	/// </summary>
-	[Flags]
-	public enum GamepadButtons
-	{
-		None = 0,
-		Menu = 1,
-		View = 2,
-		A = 4,
-		B = 8,
-		X = 16,
-		Y = 32,
-		DPadUp = 64,
-		DPadDown = 128,
-		DPadLeft = 256,
-		DPadRight = 512,
-		LeftShoulder = 1024,
-		RightShoulder = 2048,
-		LeftThumbstick = 4096,
-		RightThumbstick = 8192,
-		Paddle1 = 16384,
-		Paddle2 = 32768,
-		Paddle3 = 65536,
-		Paddle4 = 131072,
-	}
+	None = 0,
+
+	/// <summary>
+	/// Menu button.
+	/// </summary>
+	Menu = 1,
+
+	/// <summary>
+	/// View button.
+	/// </summary>
+	View = 2,
+
+	/// <summary>
+	/// A button.
+	/// </summary>
+	A = 4,
+
+	/// <summary>
+	/// B button.
+	/// </summary>
+	B = 8,
+
+	/// <summary>
+	/// X button.
+	/// </summary>
+	X = 16,
+
+	/// <summary>
+	/// Y button.
+	/// </summary>
+	Y = 32,
+
+	/// <summary>
+	/// D-pad up.
+	/// </summary>
+	DPadUp = 64,
+
+	/// <summary>
+	/// D-pad down.
+	/// </summary>
+	DPadDown = 128,
+
+	/// <summary>
+	/// D-pad left.
+	/// </summary>
+	DPadLeft = 256,
+
+	/// <summary>
+	/// D-pad right.
+	/// </summary>
+	DPadRight = 512,
+
+	/// <summary>
+	/// Left bumper.
+	/// </summary>
+	LeftShoulder = 1024,
+
+	/// <summary>
+	/// Right bumper.
+	/// </summary>
+	RightShoulder = 2048,
+
+	/// <summary>
+	/// Left stick.
+	/// </summary>
+	LeftThumbstick = 4096,
+
+	/// <summary>
+	/// Right stick.
+	/// </summary>
+	RightThumbstick = 8192,
+
+	/// <summary>
+	/// The first paddle.
+	/// </summary>
+	Paddle1 = 16384,
+
+	/// <summary>
+	///	The second paddle.
+	/// </summary>
+	Paddle2 = 32768,
+
+	/// <summary>
+	/// The third paddle.
+	/// </summary>
+	Paddle3 = 65536,
+
+	/// <summary>
+	/// The fourth paddle.
+	/// </summary>
+	Paddle4 = 131072,
 }
