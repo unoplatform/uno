@@ -660,7 +660,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		[Ignore("In case of Uno Platform, exception during layout does not bubble up.")]
+#if HAS_UNO
+		[Ignore("In case of Uno Platform, exception during layout does not bubble up (intentionally).")]
+#endif
 		public async Task VerifyNullTemplateGivesMeaningfullError()
 		{
 			await RunOnUIThread.ExecuteAsync(async () =>
