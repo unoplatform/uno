@@ -77,9 +77,22 @@ namespace SamplesApp
 			ConfigureFeatureFlags();
 
 			AssertIssue1790ApplicationSettingsUsable();
+			AssertIssue8356();
 
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;
+		}
+
+		/// <summary>
+		/// Assert that Application Title is getting its value from manifest
+		/// </summary>
+		public void AssertIssue8356()
+		{
+#if __SKIA__
+			string SUT = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title;
+			string value = Windows.ApplicationModel.Package.Current.DisplayName;
+			Assert.AreEqual(SUT, value);
+#endif
 		}
 
 		/// <summary>
