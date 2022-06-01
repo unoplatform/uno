@@ -107,7 +107,7 @@
       "defaultValue": "true",
       "description": "Enables the WebAssembly platform support project"
     },
-    "Mobile": {
+    "mobile": {
       "type": "parameter",
       "dataType": "bool",
       "defaultValue": "true",
@@ -124,6 +124,12 @@
       "dataType": "bool",
       "defaultValue": "true",
       "description": "Enables the Skia/GTK platform support project"
+    },
+    "skia-linux-fb": {
+      "type": "parameter",
+      "dataType": "bool",
+      "defaultValue": "true",
+      "description": "Enables the Skia/Linux Framebuffer platform support project"
     },
     "winui-desktop": {
       "type": "parameter",
@@ -153,9 +159,6 @@
       "path": "UnoWinUIQuickStart.Mobile\\UnoWinUIQuickStart.Mobile.csproj"
     },
     {
-      "path": "UnoWinUIQuickStart.UWP\\UnoWinUIQuickStart.Uwp.csproj"
-    },
-    {
       "condition": "winui-desktop",
       "path": "UnoWinUIQuickStart.Windows\\UnoWinUIQuickStart.Windows.csproj"
     },
@@ -174,6 +177,10 @@
     {
       "condition": "skia-wpf",
       "path": "UnoWinUIQuickStart.Skia.WPF.Host\\UnoWinUIQuickStart.Skia.WPF.Host.csproj"
+    },
+    {
+      "condition": "skia-linux-fb",
+      "path": "UnoWinUIQuickStart.Skia.Linux.FrameBuffer\\UnoWinUIQuickStart.Skia.Linux.FrameBuffer.csproj"
     }
   ],
   "sources": [
@@ -211,6 +218,17 @@
           "exclude": [
             "UnoWinUIQuickStart.Skia.WPF/**/*",
             "UnoWinUIQuickStart.Skia.WPF.Host/**/*"
+          ]
+        },
+        {
+          "condition": "(!skia-linux-fb)",
+          "exclude": [
+            "UnoWinUIQuickStart.Skia.Linux.FrameBuffer/**/*"
+          ]
+        },
+        {
+          "exclude": [
+            "UnoWinUIQuickStart.UWP/**/*"
           ]
         },
         {

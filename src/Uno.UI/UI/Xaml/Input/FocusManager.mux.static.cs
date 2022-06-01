@@ -360,6 +360,8 @@ namespace Windows.UI.Xaml.Input
 				// We need to start and complete the async operation since this is a no-op
 
 				spFocusAsyncOperation.CoreSetResults(new FocusMovementResult());
+				spFocusAsyncOperation.CoreFireCompletion();
+				return asyncOperation;
 			}
 
 			// TODO Uno specific: Do not use async operations, only simulated

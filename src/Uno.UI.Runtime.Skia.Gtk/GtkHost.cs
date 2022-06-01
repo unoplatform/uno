@@ -97,7 +97,7 @@ namespace Uno.UI.Runtime.Skia
 			ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), o => new SystemNavigationManagerPreviewExtension(_window));
 
 			_isDispatcherThread = true;
-			_window = new Gtk.Window("Uno Host");
+			_window = new Gtk.Window(Windows.ApplicationModel.Package.Current.DisplayName);
 			Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 			if (preferredWindowSize != Size.Empty)
 			{
