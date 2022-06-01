@@ -37,15 +37,15 @@ namespace Uno.UI.Runtime.Skia
 			get
 			{
 				// OpenGL support on macOS is currently broken
-				var isMacOs = !RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+				var isMacOs = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
 
 				try
 				{
 					var ctx = new Silk.NET.Core.Contexts.DefaultNativeContext(new GLCoreLibraryNameContainer().GetLibraryName());
 
-					using var glContext = GRGlInterface.Create();
+					var isAvailable = ctx.TryGetProcAddress("glGetString", out _);
 
-					return glContext != null && !isMacOs;
+					return isAvailable && !isMacOs;
 				}
 				catch(Exception e)
 				{
