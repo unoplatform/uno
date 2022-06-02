@@ -272,9 +272,9 @@ namespace Uno.UI.Runtime.Skia
 			Gtk.Main.Quit();
 		}
 
-		private Widget BuildRenderSurfaceType()
+		private IRenderSurface BuildRenderSurfaceType()
 		{
-			if(RenderSurfaceType == null)
+			if (RenderSurfaceType == null)
 			{
 				if (OpenGLESRenderSurface.IsSupported)
 				{

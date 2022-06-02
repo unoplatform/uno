@@ -135,8 +135,6 @@ namespace Uno.UI.Skia.Platform
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = d => dispatcher.BeginInvoke(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = dispatcher.CheckAccess;
 
-			WinUI.Application.StartWithArguments(CreateApp);
-
 			_hostPointerHandler = new HostPointerHandler(this);			
 			WinUI.Window.Current.Activated += Current_Activated;
 
