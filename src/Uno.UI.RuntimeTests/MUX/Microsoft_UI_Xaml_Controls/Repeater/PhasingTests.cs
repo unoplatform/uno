@@ -2,6 +2,9 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference PhasingTests.cs, commit e7e0823
 
+// Uno specific: Avoiding the use of ManualResetEvent in favor of WaitFor
+// to handle lack of threading in WASM.
+
 using Common;
 using MUXControlsTestApp.Utilities;
 using System;
@@ -28,6 +31,8 @@ using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
 using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
 using RepeaterTestHooks = Microsoft.UI.Private.Controls.RepeaterTestHooks;
 using Uno.UI.RuntimeTests;
+using Private.Infrastructure;
+using System.Threading.Tasks;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
@@ -42,7 +47,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		const int expectedLastRealizedIndex = 8;
 
 		[TestMethod]
-		public void ValidatePhaseInvokeAndOrdering()
+		public async Task ValidatePhaseInvokeAndOrdering()
 		{
 			if (!PlatformConfiguration.IsOsVersionGreaterThan(OSVersion.Redstone2))
 			{
@@ -52,7 +57,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 			ItemsRepeater repeater = null;
 			int numPhases = 6; // 0 to 5
-			ManualResetEvent buildTreeCompleted = new ManualResetEvent(false);
+			bool buildTreeCompleted = false;
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -74,7 +79,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 						Log.Comment("Item 8 Created!");
 						RepeaterTestHooks.BuildTreeCompleted += (sender1, args1) =>
 						{
-							buildTreeCompleted.Set();
+							buildTreeCompleted = true;
 						};
 					}
 				};
@@ -92,7 +97,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				// CompositionTarget.Rendering += (sender, args) => { Log.Comment("Rendering"); }; // debugging aid
 			});
 
-			if (buildTreeCompleted.WaitOne(TimeSpan.FromMilliseconds(2000)))
+			await TestServices.WindowHelper.WaitFor(() => buildTreeCompleted, 2000);
+			if (buildTreeCompleted)
 			{
 				RunOnUIThread.Execute(() =>
 				{
@@ -120,11 +126,11 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		public void ValidateXBindWithoutPhasing()
+		public async Task ValidateXBindWithoutPhasing()
 		{
 			ItemsRepeater repeater = null;
 			int numPhases = 1; // Just Phase 0 for x:Bind
-			ManualResetEvent ElementLoadedCompleted = new ManualResetEvent(false);
+			bool ElementLoadedCompleted = false;
 
 			RunOnUIThread.Execute(() =>
 			{
@@ -144,7 +150,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					if (args.Index == expectedLastRealizedIndex)
 					{
 						Log.Comment("Item 8 Created!");
-						ElementLoadedCompleted.Set();
+						ElementLoadedCompleted = true;
 					}
 				};
 
@@ -159,7 +165,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				};
 			});
 
-			if (ElementLoadedCompleted.WaitOne(TimeSpan.FromMilliseconds(2000)))
+			await TestServices.WindowHelper.WaitFor(() => ElementLoadedCompleted, 2000);
+			if (ElementLoadedCompleted)
 			{
 				RunOnUIThread.Execute(() =>
 				{
