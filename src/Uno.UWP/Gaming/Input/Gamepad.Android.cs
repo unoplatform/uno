@@ -2,7 +2,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Android.Content;
+using Android.Hardware.Input;
+using Android.Views;
+using Uno.Extensions;
+using Uno.Gaming.Input.Internal;
+using Uno.UI;
 
 namespace Windows.Gaming.Input;
 
@@ -92,10 +99,6 @@ public partial class Gamepad
 				reading.RightTrigger = rightTrigger;
 
 				gamepad._gamepadReading = reading;
-				foreach (var axis in Enum.GetValues(typeof(Axis)).OfType<Axis>())
-				{
-					global::System.Diagnostics.Debug.WriteLine($"Axis: {axis.ToString("g")}, value: {GetCenteredAxis(motionEvent, inputDevice, axis)}");
-				}
 
 				return true;
 			}
@@ -221,8 +224,8 @@ public partial class Gamepad
 
 	private static void DetachInputDeviceListener()
 	{
-		if (_gamepadAddedWrapper.HasSubscribers ||
-			_gamepadRemovedWrapper.HasSubscribers)
+		if (_gamepadAddedWrapper.IsActive ||
+			_gamepadRemovedWrapper.IsActive)
 		{
 			return;
 		}

@@ -1,6 +1,8 @@
 ﻿#nullable enable
 
 using System;
+using Android.Views;
+using Windows.Gaming.Input;
 
 namespace Uno.Gaming.Input.Internal;
 
