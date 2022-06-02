@@ -469,7 +469,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								using (componentBuilder.Indent(writer.CurrentLevel))
 								{
 									BuildInitializeComponent(componentBuilder, topLevelControl, controlBaseType, false);
-
+#if NETSTANDARD
+									if (IsApplication(topLevelControl.Type) && PlatformHelper.IsAndroid(_generatorContext))
+									{
+										BuildDrawableResourcesIdResolver(componentBuilder);
+									}
+#endif
 									TryBuildElementStubHolders(componentBuilder);
 
 									BuildPartials(componentBuilder, isStatic: false);
@@ -594,7 +599,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			writer.AppendLineInvariant($"#if __ANDROID__");
+#if NETSTANDARD
+			writer.AppendLineInvariant($"global::Uno.Helpers.DrawableHelper.SetDrawableResolver(global::{_className.ns}.App.DrawableResourcesIdResolver.Resolve);");
+#else
 			writer.AppendLineInvariant($"global::Uno.Helpers.DrawableHelper.Drawables = typeof(global::{_defaultNamespace}.Resource.Drawable);");
+#endif
 			writer.AppendLineInvariant($"#endif");
 
 			if (_isWasm)
@@ -635,6 +644,47 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineInvariant(";");
 			}
 		}
+
+#if NETSTANDARD
+		private void BuildDrawableResourcesIdResolver(IndentedStringBuilder writer)
+		{
+			writer.AppendLine();
+			writer.AppendLineInvariant("/// <summary>");
+			writer.AppendLineInvariant("/// Resolves the Id of a bundled image.");
+			writer.AppendLineInvariant("/// </summary>");
+
+			AnalyzerSuppressionsGenerator.Generate(writer, _analyzerSuppressions);
+
+			writer.AppendLineInvariant("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
+
+			using (writer.BlockInvariant("internal static class DrawableResourcesIdResolver"))
+			{
+				using (writer.BlockInvariant("internal static int Resolve(string imageName)"))
+				{
+					using (writer.BlockInvariant("switch (imageName)"))
+					{
+						var drawables = _metadataHelper.FindTypeByFullName($"{_defaultNamespace}.Resource").GetTypeMembers("Drawable").Single().GetFields();
+
+						foreach (var drawable in drawables)
+						{
+							writer.AppendLineInvariant("case \"{0}\":", drawable.Name);
+							using (writer.Indent())
+							{
+								writer.AppendLineInvariant("return {0};", drawable.ConstantValue);
+							}
+						}
+
+						writer.AppendLineInvariant("default:");
+						using (writer.Indent())
+						{
+							writer.AppendLineInvariant("return 0;");
+						}
+					}
+				}
+			}
+		}
+#endif
+
 
 		private void GenerateApiExtensionRegistrations(IndentedStringBuilder writer)
 		{
