@@ -16,6 +16,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	public class PlatformHelper
 	{
+		public static bool IsAndroid(GeneratorExecutionContext context)
+			=> context.GetMSBuildPropertyValue("AndroidApplication")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
+
 		public static bool IsValidPlatform(GeneratorExecutionContext context)
 		{
 			var evaluatedValue = context.GetMSBuildPropertyValue("TargetPlatformIdentifier");
