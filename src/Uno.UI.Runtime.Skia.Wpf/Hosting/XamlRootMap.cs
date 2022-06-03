@@ -1,16 +1,41 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
+using System;
+using System.Collections.Generic;
 using Windows.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Hosting
 {
 	internal static class XamlRootMap
 	{
-		private static Dictionary<XamlRoot, IWpfHost> _map = new Dictionary<XamlRoot, IWpfHost>();
+		private static readonly Dictionary<XamlRoot, IWpfHost> _map = new();
 
-		public static void Register(XamlRoot xamlRoot, IWpfHost host) => _map[xamlRoot] = host;
+		internal static void Register(XamlRoot xamlRoot, IWpfHost host)
+		{
+			if (xamlRoot is null)
+			{
+				throw new ArgumentNullException(nameof(xamlRoot));
+			}
 
-		public static void Unregister(XamlRoot xamlRoot) => _map.Remove(xamlRoot);
+			if (host is null)
+			{
+				throw new ArgumentNullException(nameof(host));
+			}
 
-		public static IWpfHost GetHostForRoot(XamlRoot xamlRoot) => _map[xamlRoot];
+			_map[xamlRoot] = host;
+		}
+
+		internal static void Unregister(XamlRoot xamlRoot)
+		{
+			if (xamlRoot is null)
+			{
+				throw new ArgumentNullException(nameof(xamlRoot));
+			}
+
+			_map.Remove(xamlRoot);
+		}
+
+		internal static IWpfHost? GetHostForRoot(XamlRoot xamlRoot) =>
+			_map.TryGetValue(xamlRoot, out var host) ? host : null;
 	}
 }

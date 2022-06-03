@@ -1,42 +1,30 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
+﻿#nullable enable
 
 using System;
 using Windows.Devices.Input;
 using Windows.UI.Core;
-using Uno.Extensions;
-using MouseEventArgs = System.Windows.Input.MouseEventArgs;
-using WpfApplication = System.Windows.Application;
-using WpfWindow = System.Windows.Window;
-using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
 using Windows.UI.Input;
-using MouseDevice = System.Windows.Input.MouseDevice;
-using System.Reflection;
 using Windows.System;
-using Uno.UI.Skia.Platform.Extensions;
 using Uno.Foundation.Logging;
-using UnoApplication = Windows.UI.Xaml.Application;
-using WinUI = Windows.UI.Xaml;
-using WpfCanvas = System.Windows.Controls.Canvas;
-using WpfControl = System.Windows.Controls.Control;
-using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
 using Uno.UI.Runtime.Skia.Wpf.Input;
 using Uno.UI.Runtime.Skia.Wpf.Constants;
 using Uno.UI.Runtime.Skia.Wpf;
+using WinUIInputManager = Uno.UI.Xaml.Core.InputManager;
+using WpfControl = System.Windows.Controls.Control;
+using WpfMouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {
 	internal class HostPointerHandler
 	{
-		private WpfControl _hostControl;
-		private HwndSource _hwndSource;
-		private PointerEventArgs _previous;
 		private readonly IWpfHost _host;
+		private readonly WpfControl _hostControl;
+		private HwndSource? _hwndSource;
+		private PointerEventArgs? _previous;
+		private WinUIInputManager? _inputManager;
 
 		public HostPointerHandler(IWpfHost host)
 		{
@@ -69,6 +57,9 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			_host = host;
 		}
 
+		private WinUIInputManager? InputManager =>
+			_inputManager ??= _host.XamlRoot?.VisualTree.ContentRoot.InputManager;
+
 		public void SetPointerCapture(PointerIdentifier pointer)
 			=> _hostControl.CaptureMouse();
 
@@ -76,11 +67,11 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			=> _hostControl.ReleaseMouseCapture();
 
 		#region Native events
-		private void HostOnMouseEnter(object sender, MouseEventArgs args)
+		private void HostOnMouseEnter(object sender, WpfMouseEventArgs args)
 		{
 			try
 			{
-				_host.XamlRoot?.VisualTree.ContentRoot.InputManager.RaisePointerEntered(_previous = BuildPointerArgs(args));
+				InputManager?.RaisePointerEntered(_previous = BuildPointerArgs(args));
 			}
 			catch (Exception e)
 			{
@@ -88,11 +79,11 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			}
 		}
 
-		private void HostOnMouseLeave(object sender, MouseEventArgs args)
+		private void HostOnMouseLeave(object sender, WpfMouseEventArgs args)
 		{
 			try
 			{
-				_host.XamlRoot?.VisualTree.ContentRoot.InputManager.RaisePointerExited(_previous = BuildPointerArgs(args));
+				InputManager?.RaisePointerExited(_previous = BuildPointerArgs(args));
 			}
 			catch (Exception e)
 			{
@@ -100,11 +91,11 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			}
 		}
 
-		private void HostOnMouseMove(object sender, MouseEventArgs args)
+		private void HostOnMouseMove(object sender, WpfMouseEventArgs args)
 		{
 			try
 			{
-				_host.XamlRoot?.VisualTree.ContentRoot.InputManager.RaisePointerMoved(_previous = BuildPointerArgs(args));
+				InputManager?.RaisePointerMoved(_previous = BuildPointerArgs(args));
 			}
 			catch (Exception e)
 			{
@@ -117,7 +108,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			try
 			{
 				// IsInContact: true
-				_host.XamlRoot?.VisualTree.ContentRoot.InputManager.RaisePointerPressed(_previous = BuildPointerArgs(args));
+				InputManager?.RaisePointerPressed(_previous = BuildPointerArgs(args));
 			}
 			catch (Exception e)
 			{
@@ -129,7 +120,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		{
 			try
 			{
-				_host.XamlRoot?.VisualTree.ContentRoot.InputManager.RaisePointerReleased(_previous = BuildPointerArgs(args));
+				InputManager?.RaisePointerReleased(_previous = BuildPointerArgs(args));
 			}
 			catch (Exception e)
 			{
@@ -197,7 +188,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 						);
 						var ptArgs = new PointerEventArgs(point, modifiers);
 
-						_host.XamlRoot?.VisualTree.ContentRoot.InputManager.RaisePointerWheelChanged(_previous = ptArgs);
+						InputManager?.RaisePointerWheelChanged(_previous = ptArgs);
 
 						handled = true;
 						break;
@@ -208,12 +199,17 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		}
 		#endregion
 
-		private PointerEventArgs BuildPointerArgs(MouseEventArgs args)
+		private PointerEventArgs BuildPointerArgs(WpfMouseEventArgs args)
 		{
+			if (args is null)
+			{
+				throw new ArgumentNullException(nameof(args));
+			}
+
 			var position = args.GetPosition(_hostControl);
 			var properties = BuildPointerProperties(args).SetUpdateKindFromPrevious(_previous?.CurrentPoint.Properties);
 			var modifiers = GetKeyModifiers();
-			var point = new Windows.UI.Input.PointerPoint(
+			var point = new PointerPoint(
 				frameId: FrameIdProvider.GetNextFrameId(),
 				timestamp: (ulong)(args.Timestamp * TimeSpan.TicksPerMillisecond),
 				device: GetPointerDevice(args),
@@ -227,8 +223,14 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			return new PointerEventArgs(point, modifiers);
 		}
 
-		private static PointerPointProperties BuildPointerProperties(System.Windows.Input.MouseEventArgs args)
-			=> new()
+		private static PointerPointProperties BuildPointerProperties(WpfMouseEventArgs args)
+		{
+			if (args is null)
+			{
+				throw new ArgumentNullException(nameof(args));
+			}
+
+			return new()
 			{
 				IsLeftButtonPressed = args.LeftButton == MouseButtonState.Pressed,
 				IsMiddleButtonPressed = args.MiddleButton == MouseButtonState.Pressed,
@@ -238,15 +240,23 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 				IsPrimary = true,
 				IsInRange = true
 			};
+		}
 
-		private static PointerDevice GetPointerDevice(System.Windows.Input.MouseEventArgs args)
-			=> args.Device switch
+		private static PointerDevice GetPointerDevice(WpfMouseEventArgs args)
+		{
+			if (args is null)
+			{
+				throw new ArgumentNullException(nameof(args));
+			}
+
+			return args.Device switch
 			{
 				System.Windows.Input.MouseDevice _ => PointerDevice.For(PointerDeviceType.Mouse),
 				StylusDevice _ => PointerDevice.For(PointerDeviceType.Pen),
 				TouchDevice _ => PointerDevice.For(PointerDeviceType.Touch),
 				_ => PointerDevice.For(PointerDeviceType.Mouse),
 			};
+		}
 
 		private VirtualKeyModifiers GetKeyModifiers()
 			=> VirtualKeyModifiers.None;
