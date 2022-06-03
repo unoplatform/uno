@@ -29,12 +29,13 @@ host.RenderSurfaceType = RenderSurfaceType.Software;
 
 By default Uno comes with a set of **SkiaSharp** dependencies set by the **[Uno.UI.Runtime.Skia.Gtk](https://nuget.info/packages/Uno.UI.Runtime.Skia.Gtk)** package. 
 
-If you want to upgrade **SkiaSharp** to a later version, you'll need to specificy all packages individually in your project as follows:
+If you want to upgrade **SkiaSharp** to a later version, you'll need to specify all packages individually in your project as follows:
 
 ```xml
 <ItemGroup>
    <PackagReference Include="SkiaSharp" Version="2.88.0" /> 
    <PackagReference Include="SkiaSharp.Harfbuzz" Version="2.88.0" /> 
    <PackagReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.0" /> 
+   <PackageReference Update="SkiaSharp.NativeAssets.macOS" Version="2.88.0" />
 </ItemGroup>
 ```
