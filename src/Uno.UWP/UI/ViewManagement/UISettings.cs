@@ -28,7 +28,7 @@ namespace Windows.UI.ViewManagement
 			_instances.TryAdd(_weakReference, null);
 
 
-#if  __MACOS__
+#if __MACOS__ && NET6_0_OR_GREATER
 			NSColor.Notifications.ObserveSystemColorsChanged((sender, eventArgs) =>
 			{
 				OnColorValuesChanged();
@@ -66,7 +66,7 @@ namespace Windows.UI.ViewManagement
 			return desiredColor switch
 			{
 
-#if __MACOS__
+#if __MACOS__ && NET6_0_OR_GREATER
 				UIColorType.Background => NSColor.ControlBackground,
 				UIColorType.Foreground => NSColor.ControlText,
 				UIColorType.Accent => NSColor.ControlAccent,
