@@ -6,7 +6,7 @@ namespace Windows.Gaming.Input;
 /// Specifies the button type.
 /// </summary>
 [Flags]
-public enum GamepadButtons
+public enum GamepadButtons : uint
 {
 	/// <summary>
 	/// No button.
