@@ -35,14 +35,17 @@ namespace Uno.UI.Skia.Platform
 		{
 			_manager = (DragDropManager)owner;
 
-			//var host = WpfHost.Current;
+			var host = WpfHost.Current;
 
-			//host.AllowDrop = true;
+			if (host is not null) // TODO: Add support for multiple XamlRoots
+			{
+				host.AllowDrop = true;
 
-			//host.DragEnter += OnHostDragEnter;
-			//host.DragOver += OnHostDragOver;
-			//host.DragLeave += OnHostDragLeave;
-			//host.Drop += OnHostDrop;
+				host.DragEnter += OnHostDragEnter;
+				host.DragOver += OnHostDragOver;
+				host.DragLeave += OnHostDragLeave;
+				host.Drop += OnHostDrop;
+			}
 		}
 
 		private void OnHostDragEnter(object sender, DragEventArgs e)
