@@ -57,7 +57,7 @@ internal partial class InputManager
 
 	private class PointerManager
 	{
-		private static IPointerExtension _pointerExtension;
+		private static IPointerExtension? _pointerExtension;
 
 		// TODO: Use pointer ID for the predicates
 		private static readonly Predicate<UIElement> _isOver = e => e.IsPointerOver;
@@ -70,7 +70,7 @@ internal partial class InputManager
 		{
 			if (_pointerExtension is null)
 			{
-				ApiExtensibility.CreateInstance(this, out _pointerExtension);
+				ApiExtensibility.CreateInstance(typeof(PointerManager), out _pointerExtension); // TODO: Add IPointerExtension implementation to all Skia targets and create instance per XamlRoot #8978
 			}
 			_inputManager = inputManager;
 		}
@@ -329,11 +329,29 @@ internal partial class InputManager
 			ClearPressedState(routedArgs);
 		}
 
-		internal void SetPointerCapture(PointerIdentifier uniqueId) =>
-			_pointerExtension?.SetPointerCapture(uniqueId, _inputManager._contentRoot.XamlRoot);
+		internal void SetPointerCapture(PointerIdentifier uniqueId)
+		{
+			if (_pointerExtension is not null)
+			{
+				_pointerExtension?.SetPointerCapture(uniqueId, _inputManager._contentRoot.XamlRoot);
+			}
+			else
+			{
+				CoreWindow.GetForCurrentThread()!.SetPointerCapture(uniqueId);
+			}
+		}
 
-		internal void ReleasePointerCapture(PointerIdentifier uniqueId) =>
-			_pointerExtension?.ReleasePointerCapture(uniqueId, _inputManager._contentRoot.XamlRoot);
+		internal void ReleasePointerCapture(PointerIdentifier uniqueId)
+		{
+			if (_pointerExtension is not null)
+			{
+				_pointerExtension?.ReleasePointerCapture(uniqueId, _inputManager._contentRoot.XamlRoot);
+			}
+			else
+			{
+				CoreWindow.GetForCurrentThread()!.ReleasePointerCapture(uniqueId);
+			}
+		}
 
 		private void ReleaseCaptures(PointerRoutedEventArgs routedArgs)
 		{
