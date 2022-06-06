@@ -4,16 +4,18 @@
 
 using System;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
-using Uno.UI.Skia.Platform;
 using Windows.UI.Xaml;
 using WUX = Windows.UI.Xaml;
+using WinUI = Windows.UI.Xaml;
+using Uno.UI.Runtime.Skia.Wpf;
+using WpfControl = global::System.Windows.Controls.Control;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {
 	/// <summary>
 	/// UnoXamlHost control hosts UWP XAML content inside the Windows Presentation Foundation
 	/// </summary>
-	public abstract partial class UnoXamlHostBase
+	public abstract partial class UnoXamlHostBase : WpfControl, WinUI.ISkiaHost, IWpfHost
 	{
 		/// <summary>
 		/// An instance of <seealso cref="IXamlMetadataContainer"/>. Required to

@@ -17,7 +17,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 	/// <summary>
 	/// UnoXamlHost control hosts UWP XAML content inside the Windows Presentation Foundation
 	/// </summary>
-	partial class UnoXamlHostBase : WpfControl, WinUI.ISkiaHost, IWpfHost
+	partial class UnoXamlHostBase
 	{
 		private bool _designMode;
 		private DisplayInformation _displayInformation;
