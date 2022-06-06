@@ -48,7 +48,7 @@ internal partial class InputManager
 	internal void ReleasePointerCapture(PointerIdentifier identifier)
 		=> _pointerManager.SetPointerCapture(identifier);
 
-	private PointerManager _pointerManager;
+	private PointerManager _pointerManager = null!;
 
 	partial void InitializeManagedPointers()
 	{

@@ -3,7 +3,7 @@ using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using CoreServices = global::Uno.UI.Xaml.Core.CoreServices;
+using WinUICoreServices = global::Uno.UI.Xaml.Core.CoreServices;
 
 namespace Uno.UI.Xaml.Islands;
 
@@ -11,7 +11,7 @@ internal partial class XamlIslandRoot : Panel
 {
 	private readonly ContentRoot _contentRoot;
 
-	internal XamlIslandRoot(CoreServices coreServices)
+	internal XamlIslandRoot(WinUICoreServices coreServices)
 	{
 		_contentRoot = coreServices.ContentRootCoordinator.CreateContentRoot(ContentRootType.XamlIsland, Colors.Transparent, this);
 

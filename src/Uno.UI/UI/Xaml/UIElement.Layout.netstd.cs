@@ -43,7 +43,11 @@ namespace Windows.UI.Xaml
 				(this.GetParent() as UIElement)?.InvalidateMeasure();
 				if (IsVisualTreeRoot)
 				{
+#if __SKIA__
 					XamlRoot.InvalidateMeasure();
+#else
+					Window.InvalidateMeasure();
+#endif
 				}
 			}
 		}
@@ -70,7 +74,11 @@ namespace Windows.UI.Xaml
 			}
 			else if (IsVisualTreeRoot)
 			{
+#if __SKIA__
 				XamlRoot.InvalidateMeasure();
+#else
+				Window.InvalidateMeasure();
+#endif
 			}
 		}
 
@@ -97,7 +105,11 @@ namespace Windows.UI.Xaml
 				(this.GetParent() as UIElement)?.InvalidateArrange();
 				if (IsVisualTreeRoot)
 				{
+#if __SKIA__
 					XamlRoot.InvalidateArrange();
+#else
+					Window.InvalidateArrange();
+#endif
 				}
 			}
 		}
@@ -124,7 +136,11 @@ namespace Windows.UI.Xaml
 			}
 			else //TODO: Why not check IsVisualTreeRoot as in InvalidateParentMeasureDirtyPath?
 			{
+#if __SKIA__
 				XamlRoot?.InvalidateArrange();
+#else
+				Window.InvalidateArrange();
+#endif
 			}
 		}
 

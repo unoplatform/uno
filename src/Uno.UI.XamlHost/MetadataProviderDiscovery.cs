@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
+// https://github.com/CommunityToolkit/Microsoft.Toolkit.Win32/blob/master/Microsoft.Toolkit.Win32.UI.XamlHost/MetadataProviderDiscovery.cs
 
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Uno.UI.XamlHost;
 
 /// <summary>
 /// MetadataProviderDiscovery is responsible for loading all metadata providers for custom UWP XAML
-/// types.  In this implementation, reflection is used at runtime to probe for metadata providers in
+/// types. In this implementation, reflection is used at runtime to probe for metadata providers in
 /// the working directory, allowing any type that includes metadata (compiled in to a .NET framework
 /// assembly) to be used without explicit metadata handling by the application developer.  This
 /// internal class will be amended or removed when additional type loading support is available.
@@ -59,11 +60,12 @@ internal static class MetadataProviderDiscovery
 			{
 				yield return provider;
 
-				if (typeof(WUX.Application).IsAssignableFrom(provider.GetType()))
-				{
-					System.Diagnostics.Debug.WriteLine("Xaml application has been created");
-					yield break;
-				}
+				// TODO: Yield break is weird here, investigate in WCT issues. #8978
+				//if (typeof(WUX.Application).IsAssignableFrom(provider.GetType()))
+				//{
+				//	System.Diagnostics.Debug.WriteLine("Xaml application has been created");
+				//	yield break;
+				//}
 			}
 		}
 	}
