@@ -232,7 +232,7 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 		
-		private void Current_Activated(object sender, WindowActivatedEventArgs e)
+		private void Current_Activated(object sender, object e)
 		{
 			var xamlRoot = CoreServices.Instance
 				.ContentRootCoordinator?

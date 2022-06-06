@@ -178,7 +178,7 @@ namespace Uno.UI.Skia.Platform
 			_registrations.Add(WinUI.Window.Current.RegisterBackgroundChangedEvent((s, e) => Update()));
 		}
 
-		private void Current_Activated(object sender, WindowActivatedEventArgs e)
+		private void Current_Activated(object sender, object e)
 		{
 			var xamlRoot = CoreServices.Instance
 				.ContentRootCoordinator?
@@ -396,4 +396,3 @@ namespace Uno.UI.Skia.Platform
 		WpfCanvas? IWpfHost.NativeOverlayLayer => NativeOverlayLayer;
 	}
 }
-DesktopWindowXamlSource

@@ -5,7 +5,6 @@
 
 using System;
 using System.Windows;
-using windows = Windows;
 using WUX = Windows.UI.Xaml;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
@@ -26,7 +25,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 			if (IsXamlContentLoaded())
 			{
-				_xamlSource.Content.Measure(new windows.Foundation.Size(constraint.Width, constraint.Height));
+				_xamlSource.Content.Measure(new Windows.Foundation.Size(constraint.Width, constraint.Height));
 				desiredSize.Width = _xamlSource.Content.DesiredSize.Width;
 				desiredSize.Height = _xamlSource.Content.DesiredSize.Height;
 			}
@@ -49,7 +48,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 				// Arrange is required to support HorizontalAlignment and VerticalAlignment properties
 				// set to 'Stretch'.  The UWP XAML content will be 0 in the stretch alignment direction
 				// until Arrange is called, and the UWP XAML content is expanded to fill the available space.
-				var finalRect = new windows.Foundation.Rect(0, 0, finalSize.Width, finalSize.Height);
+				var finalRect = new Windows.Foundation.Rect(0, 0, finalSize.Width, finalSize.Height);
 				_xamlSource.Content.Arrange(finalRect);
 			}
 
@@ -83,7 +82,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		/// </summary>
 		/// <param name="sender">The sender.</param>
 		/// <param name="e">The <see cref="windows.UI.Xaml.SizeChangedEventArgs"/> instance containing the event data.</param>
-		private void XamlContentSizeChanged(object sender, windows.UI.Xaml.SizeChangedEventArgs e)
+		private void XamlContentSizeChanged(object sender, WUX.SizeChangedEventArgs e)
 		{
 			InvalidateMeasure();
 		}

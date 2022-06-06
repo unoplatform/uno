@@ -34,6 +34,8 @@ using Uno.UI.Runtime.Skia.Tizen.System;
 using Uno.Extensions.System;
 using Windows.System.Profile.Internal;
 using System.ComponentModel;
+using Windows.UI.Core;
+using Uno.UI.Xaml.Core;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -99,6 +101,26 @@ namespace Uno.UI.Runtime.Skia
 					_tizenApplication.Window.ScreenSize.Width,
 					_tizenApplication.Window.ScreenSize.Height));
 			WinUI.Application.StartWithArguments(CreateApp);
+			WUX.Window.Current.Activated += Current_Activated;
+		}
+
+		private void Current_Activated(object sender, object e)
+		{
+			var xamlRoot = CoreServices.Instance
+				.ContentRootCoordinator?
+				.CoreWindowContentRoot?
+				.XamlRoot;
+
+			if (xamlRoot is null)
+			{
+				throw new InvalidOperationException("XamlRoot was not properly initialized");
+			}
+
+			xamlRoot.InvalidateRender += _tizenApplication!.Canvas.InvalidateRender;
+
+			// Force initial render
+			_tizenApplication!.Canvas.InvalidateRender();
+			WUX.Window.Current.Activated -= Current_Activated;
 		}
 	}
 }

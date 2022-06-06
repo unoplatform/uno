@@ -1,4 +1,5 @@
-﻿namespace Windows.UI.Xaml.Markup;
+﻿#if !HAS_UNO_WINUI
+namespace Windows.UI.Xaml.Markup;
 
 /// <summary>
 /// Provides the means to report XAML-type system specifics about XAML types. Using this interface contract,
@@ -12,3 +13,4 @@ public partial interface IXamlType2 : IXamlType
 	/// </summary>
 	IXamlType BoxedType { get; }
 }
+#endif

@@ -6,7 +6,6 @@
 #nullable enable
 
 using System;
-using windows = Windows;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {
@@ -15,11 +14,11 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 	/// </summary>
 	public static class UwpUIElementExtensions
 	{
-		private static windows.UI.Xaml.DependencyProperty WrapperProperty =>
-			windows.UI.Xaml.DependencyProperty.RegisterAttached("Wrapper", typeof(System.Windows.UIElement), typeof(UwpUIElementExtensions), new windows.UI.Xaml.PropertyMetadata(null));
+		private static global::Windows.UI.Xaml.DependencyProperty WrapperProperty =>
+			 global::Windows.UI.Xaml.DependencyProperty.RegisterAttached("Wrapper", typeof(System.Windows.UIElement), typeof(UwpUIElementExtensions), new global::Windows.UI.Xaml.PropertyMetadata(null));
 
-		public static UnoXamlHostBase? GetWrapper(this windows.UI.Xaml.UIElement element) => (UnoXamlHostBase)element.GetValue(WrapperProperty);
+		public static UnoXamlHostBase? GetWrapper(this global::Windows.UI.Xaml.UIElement element) => (UnoXamlHostBase)element.GetValue(WrapperProperty);
 
-		public static void SetWrapper(this windows.UI.Xaml.UIElement element, UnoXamlHostBase? wrapper) => element.SetValue(WrapperProperty, wrapper);
+		public static void SetWrapper(this global::Windows.UI.Xaml.UIElement element, UnoXamlHostBase? wrapper) => element.SetValue(WrapperProperty, wrapper);
 	}
 }

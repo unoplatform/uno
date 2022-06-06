@@ -74,7 +74,7 @@ namespace Uno.UI.Runtime.Skia
 			WUX.Window.Current.Activated += Current_Activated;
 		}
 
-		private void Current_Activated(object sender, WindowActivatedEventArgs e)
+		private void Current_Activated(object sender, object e)
 		{
 			var xamlRoot = CoreServices.Instance
 				.ContentRootCoordinator?
