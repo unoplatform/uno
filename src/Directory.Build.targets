@@ -49,7 +49,7 @@
 	<PackageReference Update="SkiaSharp.Views.WPF" Version="2.80.3" />
 	<PackageReference Update="SkiaSharp" Version="2.80.3" />
 	<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.80.3" />
-	<PackageReference Update="SkiaSharp.HarfBuzz" Version="2.80.3" />
+	<PackageReference Update="SkiaSharp.HarfBuzz" Version="2.80.4" />
 	<PackageReference Update="GtkSharp" Version="3.24.24.34" />
 	<PackageReference Update="System.Json" Version="4.7.1" />
 	<PackageReference Update="FluentAssertions" Version="5.10.3" />
