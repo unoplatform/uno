@@ -1,0 +1,53 @@
+﻿<Page
+    x:Class="UITests.Windows_Gaming.GamepadReadingTest"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UITests.Windows_Gaming"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+	x:DefaultBindMode="OneWay"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<StackPanel Spacing="8" Padding="8">
+		<Button Command="{x:Bind ViewModel.GetCurrentReadingCommand}">Get current reading</Button>
+		<ToggleButton IsChecked="{x:Bind ViewModel.IsCheckingAutomatically, Mode=TwoWay}">Check automatically</ToggleButton>
+		
+		<TextBlock>
+			<Run Text="Timestamp:" />
+			<Run Text="{x:Bind ViewModel.Timestamp}" />
+		</TextBlock>
+		
+		<TextBlock>
+			<Run Text="Left thumbstick X:" />
+			<Run Text="{x:Bind ViewModel.LeftThumbstickX}" />
+		</TextBlock>
+		<TextBlock>
+			<Run Text="Left thumbstick Y:" />
+			<Run Text="{x:Bind ViewModel.LeftThumbstickY}" />
+		</TextBlock>
+		
+		<TextBlock>
+			<Run Text="Right thumbstick X:" />
+			<Run Text="{x:Bind ViewModel.RightThumbstickX}" />
+		</TextBlock>
+		<TextBlock>
+			<Run Text="Right thumbstick Y:" />
+			<Run Text="{x:Bind ViewModel.RightThumbstickY}" />
+		</TextBlock>
+
+		<TextBlock>
+			<Run Text="Left trigger:" />
+			<Run Text="{x:Bind ViewModel.LeftTrigger}" />
+		</TextBlock>
+		<TextBlock>
+			<Run Text="Right trigger:" />
+			<Run Text="{x:Bind ViewModel.RightTrigger}" />
+		</TextBlock>
+
+		<TextBlock>
+			<Run Text="Buttons:" />
+			<Run Text="{x:Bind ViewModel.Buttons}" />
+		</TextBlock>
+	</StackPanel>
+</Page>

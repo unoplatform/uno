@@ -8836,6 +8836,18 @@
 				reason="Not part of UWP API" />
 		</Properties>
 	</IgnoreSet>
+	<IgnoreSet baseVersion="4.3.8">
+		<Types>
+		</Types>
+
+		<Methods>
+			<Member
+				fullName="System.Void Windows.Gaming.Input.Gamepad..ctor()"
+				reason="Not part of UWP API" />
+		</Methods>
+		<Properties>
+		</Properties>
+	</IgnoreSet>
 	<!--
 	Supported nodes (please keep at the bottom of this file):
 	<IgnoreSet baseVersion="0.0.0">
