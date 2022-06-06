@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
+using Uno.UI.Xaml;
 
 namespace Uno.UI.Tests.BinderTests
 {
@@ -36,14 +37,86 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(0, conv.ConvertBackCount);
 
 			dp2.MyInt = 7;
-			Assert.AreEqual(dp2.MyInt, 7);
-			Assert.AreEqual(dp1.MyInt, 8);
+			Assert.AreEqual(7, dp2.MyInt);
+			Assert.AreEqual(8, dp1.MyInt);
 			Assert.AreEqual(1, conv.ConvertCount);
 			Assert.AreEqual(1, conv.ConvertBackCount);
 
 			dp1.MyInt = 19;
 			Assert.AreEqual(19, dp1.MyInt);
 			Assert.AreEqual(20, dp2.MyInt);
+			Assert.AreEqual(2, conv.ConvertCount);
+			Assert.AreEqual(1, conv.ConvertBackCount);
+		}
+
+		[TestMethod]
+		public void When_TwoWay_And_ConvertBack_Normal_Binding()
+		{
+			var dp1 = new MyDP();
+			var dp2 = new MyDP();
+
+			var conv = new StringToDoubleConverter();
+			var binding = new Binding
+			{
+				Source = dp1,
+				Path = new PropertyPath(nameof(MyDP.MyDouble)),
+				Mode = BindingMode.TwoWay,
+				Converter = conv
+			};
+
+			BindingOperations.SetBinding(dp2, MyDP.MyStringProperty, binding);
+
+			Assert.AreEqual("¤0.00", dp2.MyString);
+			Assert.AreEqual(1, conv.ConvertCount);
+			Assert.AreEqual(0, conv.ConvertBackCount);
+
+			dp2.MyString = "42";
+
+			// For normal bindings, the source update through the converter
+			// is ignored. Therefore, only the ConvertBack method is invoked as
+			// the UpdateSource method is ignored because a two-way binding is
+			// in progress. This behavior is different with x:Bind.
+			Assert.AreEqual("42", dp2.MyString);
+			Assert.AreEqual(42, dp1.MyDouble);
+			Assert.AreEqual(1, conv.ConvertCount);
+			Assert.AreEqual(1, conv.ConvertBackCount);
+		}
+
+		[TestMethod]
+		public void When_TwoWay_And_ConvertBack_Normal_xBind()
+		{
+			var dp1 = new MyDP();
+			var dp2 = new MyDP();
+
+			var conv = new StringToDoubleConverter();
+			var binding = new Binding
+			{
+				Path = new PropertyPath(nameof(MyDP.MyDouble)),
+				Mode = BindingMode.TwoWay,
+				Converter = conv,
+				CompiledSource = dp1,
+			};
+
+			BindingOperations.SetBinding(dp2, MyDP.MyStringProperty, binding);
+
+			dp2.ApplyXBind();
+
+			Assert.AreEqual("¤0.00", dp2.MyString);
+			Assert.AreEqual(1, conv.ConvertCount);
+			Assert.AreEqual(0, conv.ConvertBackCount);
+
+			dp2.MyString = "42";
+
+			// For x:Bind, the source update through the converter raises
+			// a property change, which is in turn sent back to the target
+			// after another Convert invocation.
+			//
+			// There is no loop happening because the binding engine is ignoring
+			// the UpdateSource invocation as a two-way binding is still happening.
+			//
+			// This behavior is different with a normal binding.
+			Assert.AreEqual("¤42.00", dp2.MyString);
+			Assert.AreEqual(42, dp1.MyDouble);
 			Assert.AreEqual(2, conv.ConvertCount);
 			Assert.AreEqual(1, conv.ConvertBackCount);
 		}
@@ -162,7 +235,39 @@ namespace Uno.UI.Tests.BinderTests
 			}
 
 			public static readonly DependencyProperty MyIntProperty =
-				DependencyProperty.Register("MyInt", typeof(int), typeof(MyDP), new PropertyMetadata(0));
+				DependencyProperty.Register(
+					"MyInt",
+					typeof(int),
+					typeof(MyDP),
+					new PropertyMetadata(0, propertyChangedCallback: (s, e) => { })
+				);
+
+			public string MyString
+			{
+				get { return (string)GetValue(MyStringProperty); }
+				set { SetValue(MyStringProperty, value); }
+			}
+
+			public static readonly DependencyProperty MyStringProperty =
+				DependencyProperty.Register(
+					"MyString",
+					typeof(string),
+					typeof(MyDP),
+					new PropertyMetadata(
+						"",
+						propertyChangedCallback: (s, e) => { }
+					)
+				);
+
+			public double MyDouble
+			{
+				get { return (double)GetValue(MyDoubleProperty); }
+				set { SetValue(MyDoubleProperty, value); }
+			}
+
+			// Using a DependencyProperty as the backing store for MyDouble.  This enables animation, styling, binding, etc...
+			public static readonly DependencyProperty MyDoubleProperty =
+				DependencyProperty.Register("MyDouble", typeof(double), typeof(MyDP), new PropertyMetadata(0.0, propertyChangedCallback: (s, e) => { }));
 		}
 
 		public class IncrementConverter : IValueConverter
@@ -189,6 +294,47 @@ namespace Uno.UI.Tests.BinderTests
 				}
 
 				return value;
+			}
+		}
+
+		class StringToDoubleConverter : IValueConverter
+		{
+			public int ConvertCount { get; set; }
+			public int ConvertBackCount { get; set; }
+
+			public object Convert(object value, Type targetType, object parameter, string language)
+			{
+				ConvertCount++;
+				if (value != null)
+				{
+					var result = (double)value;
+					return result.ToString("C");
+				}
+				else
+				{
+					return null;
+				}
+			}
+
+			public object ConvertBack(object value, Type targetType, object parameter, string language)
+			{
+				ConvertBackCount++;
+				if (value is string stringValue)
+				{
+					if (double.TryParse(stringValue, out var numberValue))
+					{
+						return numberValue;
+
+					}
+					else
+					{
+						return 0.00;
+					}
+				}
+				else
+				{
+					return 0.00;
+				}
 			}
 		}
 
