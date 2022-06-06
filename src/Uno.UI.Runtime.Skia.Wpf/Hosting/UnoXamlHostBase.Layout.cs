@@ -67,7 +67,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 				return false;
 			}
 
-			//TODO:MZ: What should be the parent?
+			//TODO: What should be the parent? #8978
 			//if (WUX.Media.VisualTreeHelper.GetParent(_xamlSource.Content) == null)
 			//{
 			//    // If there's no parent to this content, it's not "live" or "loaded" in the tree yet.
@@ -93,7 +93,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			UpdateUnoSize();
 		}
 
-		//TODO:MZ: This is temporary workaround, should not be needed as per UWP islands.
+		//TODO: This is temporary workaround, should not be needed as per UWP islands. #8978
 		//Might be some missing logic.
 		private void UpdateUnoSize()
 		{

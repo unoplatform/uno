@@ -34,7 +34,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 		static UnoXamlHostBase()
 		{
-			//TODO:MZ: This should be set in a different location, possibly in a more general way
+			//TODO: This should be set in a different location, possibly in a more general way #8978
 			if (MetadataProviderDiscovery.MetadataProviderFactory is null)
 			{
 				MetadataProviderDiscovery.MetadataProviderFactory = type =>

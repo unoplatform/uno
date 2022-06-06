@@ -9,9 +9,9 @@ using System.Windows;
 using WF = Windows.Foundation;
 using WUX = Windows.UI.Xaml;
 
-//TODO:MZ: We need to make sure that when the UnoXamlHost loses focus, focus is changed in the XamlRoot as well,
+//TODO: We need to make sure that when the UnoXamlHost loses focus, focus is changed in the XamlRoot as well,
 //so that for active input fields the native overlay is closed and changes are committed to underlying TextBox text
-//before potential data binding changes.
+//before potential data binding changes. #8978[focus]
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {

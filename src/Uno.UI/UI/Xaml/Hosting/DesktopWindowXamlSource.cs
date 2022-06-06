@@ -38,7 +38,7 @@ public partial class DesktopWindowXamlSource : IDisposable
 	/// <summary>
 	/// Gets a value that indicates whether the DesktopWindowXamlSource currently has focus in the desktop application.
 	/// </summary>
-	public bool HasFocus => false; //TODO:MZ: Always false currently, should adhere to its purpose
+	public bool HasFocus => false; //TODO: Always false currently, should adhere to its purpose #8978[focus]
 
 	/// <summary>
 	/// Gets or sets the Windows.UI.Xaml.UIElement object that you want to host in the application.
@@ -65,7 +65,7 @@ public partial class DesktopWindowXamlSource : IDisposable
 	/// </summary>
 	/// <param name="request">An object that specifies the reason and other optional info for the focus navigation.</param>
 	/// <returns>An object that provides data for the focus navigation request.</returns>
-	public XamlSourceFocusNavigationResult NavigateFocus(XamlSourceFocusNavigationRequest request) => new XamlSourceFocusNavigationResult(false); //TODO:MZ: Always false currently, should adhere to its purpose
+	public XamlSourceFocusNavigationResult NavigateFocus(XamlSourceFocusNavigationRequest request) => new XamlSourceFocusNavigationResult(false); //TODO: Always false currently, should adhere to its purpose #8978[focus]
 
 	/// <summary>
 	/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

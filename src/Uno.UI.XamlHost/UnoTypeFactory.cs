@@ -35,7 +35,7 @@ static partial class UnoTypeFactory
 		var xamlRootMetadataProvider = windows.UI.Xaml.Application.Current as windows.UI.Xaml.Markup.IXamlMetadataProvider;
 		if (xamlRootMetadataProvider != null)
 		{
-			//TODO:MZ: This is a temporary workaround
+			//TODO: This is a temporary workaround  #8978
 			//xamlType = xamlRootMetadataProvider.GetXamlType(xamlTypeName);
 		}
 

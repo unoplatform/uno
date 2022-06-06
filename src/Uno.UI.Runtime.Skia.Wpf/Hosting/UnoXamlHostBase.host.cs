@@ -120,7 +120,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			drawingContext.DrawImage(_bitmap, new Rect(0, 0, ActualWidth, ActualHeight));
 		}
 
-		void IWpfHost.ReleasePointerCapture(PointerIdentifier pointer) => CaptureMouse(); //TODO:MZ:This should capture the correct type of pointer (stylus/mouse/touch)
+		void IWpfHost.ReleasePointerCapture(PointerIdentifier pointer) => CaptureMouse(); //TODO: This should capture the correct type of pointer (stylus/mouse/touch) #8978[capture]
 
 		void IWpfHost.SetPointerCapture(PointerIdentifier pointer) => ReleaseMouseCapture();
 

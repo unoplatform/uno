@@ -234,7 +234,7 @@ namespace Windows.UI.Xaml
 					throw new InvalidOperationException("Cannot change XamlRoot for existing element");
 				}
 
-				// TODO:MZ: It should be possible to set XamlRoot when still null.
+				// TODO: It should be possible to set XamlRoot when still null. #8978
 			}
 		}
 

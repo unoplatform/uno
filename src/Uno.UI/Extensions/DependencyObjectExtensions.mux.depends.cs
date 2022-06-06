@@ -13,7 +13,7 @@ namespace Uno.UI.Extensions
 	{
 		internal static VisualTree? GetVisualTree(this DependencyObject dependencyObject)
 		{
-			//TODO:MZ: This should work for non-UIElement as well!
+			//TODO: This should work for non-UIElement as well! #8978
 			if (dependencyObject is UIElement uiElement)
 			{
 				return uiElement.VisualTreeCache;
@@ -24,7 +24,7 @@ namespace Uno.UI.Extensions
 
 		internal static void SetVisualTree(this DependencyObject dependencyObject, VisualTree visualTree)
 		{
-			//TODO:MZ: This should work for non-UIElement as well!
+			//TODO: This should work for non-UIElement as well! #8978
 			if (dependencyObject is UIElement uiElement)
 			{
 				uiElement.VisualTreeCache = visualTree;

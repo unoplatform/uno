@@ -41,7 +41,7 @@ public sealed partial class XamlRoot
 			var rootElement = VisualTree.RootElement;
 			if (rootElement is RootVisual rootVisual)
 			{
-				//TODO:MZ: Support multiple windows!
+				// TODO: Support multiple windows! #8978[windows]
 				return Window.Current.Bounds.Size;
 			}
 			else if (rootElement is XamlIslandRoot xamlIslandRoot)
@@ -63,7 +63,7 @@ public sealed partial class XamlRoot
 			var rootElement = VisualTree.RootElement;
 			if (rootElement is RootVisual rootVisual)
 			{
-				//TODO:MZ: Support multiple windows!
+				//TODO: Support multiple windows! #8978[windows]
 				return Window.Current.Bounds;
 			}
 			else if (rootElement is XamlIslandRoot xamlIslandRoot)

@@ -128,7 +128,7 @@ namespace Windows.UI.Xaml
 		{
 			var target = VisualTreeHelper.HitTest(
 				dragInfo.Position,
-				Window.Current.RootElement.XamlRoot, //TODO:MZ: Choose proper XamlRoot
+				Window.Current.RootElement.XamlRoot, //TODO: Choose proper XamlRoot #8978
 				getTestability: GetDropHitTestability,
 				isStale: elt => elt.IsDragOver(dragInfo.SourceId));
 
