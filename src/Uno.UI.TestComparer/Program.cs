@@ -382,7 +382,7 @@ namespace Umbrella.UI.TestComparer
 
 			var filePathNode = doc.CreateElement("filePath");
 			attachmentNode.AppendChild(filePathNode);
-			filePathNode.InnerText = filePath;
+			filePathNode.InnerText =  @"\\?\" + filePath;
 
 			var descriptionNode = doc.CreateElement("description");
 			attachmentNode.AppendChild(descriptionNode);
