@@ -30,6 +30,9 @@ internal static class MetadataProviderDiscovery
 
 	internal static Func<Type, IXamlMetadataProvider> MetadataProviderFactory { get; set; }
 
+
+	private static IXamlMetadataProvider[] _metadataProviders;
+	
 	/// <summary>
 	/// Probes working directory for all available metadata providers
 	/// </summary>
@@ -41,6 +44,13 @@ internal static class MetadataProviderDiscovery
 			throw new InvalidOperationException("MetadataProviderFactory is not set");
 		}
 
+		_metadataProviders ??= DiscoverMetadataProvidersPrivate()?.ToArray();
+		return _metadataProviders;
+	}
+
+
+	private static IEnumerable<WUX.Markup.IXamlMetadataProvider> DiscoverMetadataProvidersPrivate()
+	{
 		// Get all assemblies loaded in app domain and placed side-by-side from all DLL and EXE
 		var loadedAssemblies = GetAssemblies();
 #if NET462

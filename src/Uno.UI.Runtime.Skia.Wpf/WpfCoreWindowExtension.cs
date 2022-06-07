@@ -26,7 +26,7 @@ namespace Uno.UI.Skia.Platform
 	internal partial class WpfCoreWindowExtension : ICoreWindowExtension
 	{
 		private readonly ICoreWindowEvents _ownerEvents;
-		private readonly WpfHost _host;
+		private readonly WpfHost? _host;
 
 		private static int _currentFrameId;
 		private HwndSource _hwndSource;
@@ -42,12 +42,11 @@ namespace Uno.UI.Skia.Platform
 		{
 			_ownerEvents = (ICoreWindowEvents)owner;
 
-			if (WpfHost.Current is null)
+			_host = WpfHost.Current;
+			if (_host is null)
 			{
 				return;
-			}
-			
-			_host = WpfHost.Current;
+			}			
 
 			_host.MouseEnter += HostOnMouseEnter;
 			_host.MouseLeave += HostOnMouseLeave;
