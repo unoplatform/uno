@@ -22,6 +22,7 @@ using Uno.UI.Core.Preview;
 using Uno.UI.Runtime.Skia.Wpf;
 using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Input;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
+using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helper.Theming;
 using Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls;
 using Uno.UI.Xaml;
@@ -78,6 +79,7 @@ namespace Uno.UI.Skia.Platform
 		}
 
 		private static bool _extensionsRegistered;
+		private UnoWpfRenderer _renderer;
 		private HostPointerHandler _hostPointerHandler;
 
 		internal static void RegisterExtensions()
@@ -107,6 +109,10 @@ namespace Uno.UI.Skia.Platform
 			_extensionsRegistered = true;
 		}
 
+		public bool IsIsland => false;
+
+		public Windows.UI.Composition.Visual? Visual => null;
+
 		public static WpfHost Current => _current;
 
 		internal WpfCanvas? NativeOverlayLayer => _nativeOverlayLayer;
@@ -134,7 +140,7 @@ namespace Uno.UI.Skia.Platform
 
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = d => dispatcher.BeginInvoke(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = dispatcher.CheckAccess;
-
+			_renderer = new UnoWpfRenderer(this);
 			_hostPointerHandler = new HostPointerHandler(this);			
 			WinUI.Window.Current.Activated += Current_Activated;
 
@@ -312,68 +318,7 @@ namespace Uno.UI.Skia.Platform
 		{
 			base.OnRender(drawingContext);
 
-			if (designMode)
-			{
-				return;
-			}
-
-			if (ActualWidth == 0
-				|| ActualHeight == 0
-				|| double.IsNaN(ActualWidth)
-				|| double.IsNaN(ActualHeight)
-				|| double.IsInfinity(ActualWidth)
-				|| double.IsInfinity(ActualHeight)
-				|| Visibility != Visibility.Visible)
-			{
-				return;
-			}
-
-
-			int width, height;
-
-			if (_displayInformation == null)
-			{
-				_displayInformation = DisplayInformation.GetForCurrentView();
-			}
-
-			var dpi = _displayInformation.RawPixelsPerViewPixel;
-			double dpiScaleX = dpi;
-			double dpiScaleY = dpi;
-			if (IgnorePixelScaling)
-			{
-				width = (int)ActualWidth;
-				height = (int)ActualHeight;
-			}
-			else
-			{
-				var matrix = PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice;
-				dpiScaleX = matrix.M11;
-				dpiScaleY = matrix.M22;
-				width = (int)(ActualWidth * dpiScaleX);
-				height = (int)(ActualHeight * dpiScaleY);
-			}
-
-			var info = new SKImageInfo(width, height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
-
-			// reset the bitmap if the size has changed
-			if (bitmap == null || info.Width != bitmap.PixelWidth || info.Height != bitmap.PixelHeight)
-			{
-				bitmap = new WriteableBitmap(width, height, 96 * dpiScaleX, 96 * dpiScaleY, PixelFormats.Pbgra32, null);
-			}
-
-			// draw on the bitmap
-			bitmap.Lock();
-			using (var surface = SKSurface.Create(info, bitmap.BackBuffer, bitmap.BackBufferStride))
-			{
-				surface.Canvas.Clear(_backgroundColor);
-				surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
-				WinUI.Window.Current.Compositor.Render(surface);
-			}
-
-			// draw the bitmap to the screen
-			bitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
-			bitmap.Unlock();
-			drawingContext.DrawImage(bitmap, new Rect(0, 0, ActualWidth, ActualHeight));
+			_renderer.Render(drawingContext);
 		}
 
 		private void InvalidateOverlays()
