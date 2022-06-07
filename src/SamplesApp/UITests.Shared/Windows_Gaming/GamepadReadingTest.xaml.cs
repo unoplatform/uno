@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Uno.Disposables;
 using Uno.UI.Samples.Controls;
@@ -31,6 +34,7 @@ namespace UITests.Windows_Gaming
 	internal class GamepadReadingTestViewModel : ViewModelBase
 	{
 		private bool _isCheckingAutomatically = false;
+
 		private DispatcherTimer _checkTimer = new DispatcherTimer()
 		{
 			Interval = TimeSpan.FromMilliseconds(100)
@@ -45,8 +49,30 @@ namespace UITests.Windows_Gaming
 			}));
 		}
 
-		private void CheckTimer_Tick(object sender, object e) =>
-			GetCurrentReading();
+		public ObservableCollection<GamepadReadingViewModel> Gamepads { get; } = new ObservableCollection<GamepadReadingViewModel>();
+
+		public ICommand UpdateReadingsCommand => GetOrCreateCommand(() =>
+		{
+			UpdateReadings();
+		});
+
+		public ICommand UpdateGamepadsCommand => GetOrCreateCommand(async () =>
+		{
+			await UpdateGamepadsAsync();
+		});
+
+		private void CheckTimer_Tick(object sender, object e)
+		{
+			UpdateReadings();
+		}
+
+		private void UpdateReadings()
+		{
+			foreach (var gamepad in Gamepads)
+			{
+				gamepad.Update();
+			}
+		}
 
 		public bool IsCheckingAutomatically
 		{
@@ -65,50 +91,30 @@ namespace UITests.Windows_Gaming
 			}
 		}
 
-		public ICommand GetCurrentReadingCommand => GetOrCreateCommand(GetCurrentReading);
 
-		public ulong Timestamp => CurrentReading.Timestamp;
-
-		public GamepadButtons Buttons => CurrentReading.Buttons;
-
-		public double LeftTrigger => CurrentReading.LeftTrigger;
-
-		public double RightTrigger => CurrentReading.RightTrigger;
-
-		public double LeftThumbstickX => CurrentReading.LeftThumbstickX;
-
-		public double LeftThumbstickY => CurrentReading.LeftThumbstickY;
-
-		public double RightThumbstickX => CurrentReading.RightThumbstickX;
-
-		public double RightThumbstickY => CurrentReading.RightThumbstickY;
-
-		public GamepadReading CurrentReading { get; set; }
-
-		private void GetCurrentReading()
+		private async Task UpdateGamepadsAsync()
 		{
-			var gamepad = Gamepad.Gamepads.FirstOrDefault();
-			if (gamepad != null)
+			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
 			{
-				CurrentReading = gamepad.GetCurrentReading();
-			}
-			else
-			{
-				CurrentReading = new GamepadReading();
-			}
-			Refresh();
-		}
+				var gamepads = Gamepad.Gamepads.ToArray();
 
-		private void Refresh()
-		{
-			RaisePropertyChanged(nameof(Timestamp));
-			RaisePropertyChanged(nameof(Buttons));
-			RaisePropertyChanged(nameof(LeftTrigger));
-			RaisePropertyChanged(nameof(RightTrigger));
-			RaisePropertyChanged(nameof(LeftThumbstickX));
-			RaisePropertyChanged(nameof(LeftThumbstickY));
-			RaisePropertyChanged(nameof(RightThumbstickX));
-			RaisePropertyChanged(nameof(RightThumbstickY));
+				var existingGamepads = new HashSet<Gamepad>(Gamepads.Select(g => g.Gamepad));
+
+				var toRemove = existingGamepads.Except(gamepads).ToArray();
+				var toAdd = gamepads.Except(existingGamepads).ToArray();
+
+				foreach (var gamepad in toRemove)
+				{
+					var vmToRemove = Gamepads.FirstOrDefault(g => g.Gamepad == gamepad);
+					Gamepads.Remove(vmToRemove);
+				}
+
+				foreach (var gamepad in toAdd)
+				{
+					var vmToAdd = new GamepadReadingViewModel(gamepad);
+					Gamepads.Add(vmToAdd);
+				}
+			});
 		}
 	}
 }

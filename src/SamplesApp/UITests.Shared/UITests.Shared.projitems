@@ -4933,6 +4933,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Gaming\GamepadReadingTest.xaml.cs">
       <DependentUpon>GamepadReadingTest.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Gaming\GamepadReadingViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Globalization\Language_Properties.xaml.cs">
       <DependentUpon>Language_Properties.xaml</DependentUpon>
     </Compile>
