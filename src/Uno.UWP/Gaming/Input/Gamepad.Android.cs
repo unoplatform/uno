@@ -80,9 +80,9 @@ public partial class Gamepad
 				var inputDevice = motionEvent.Device!;
 
 				reading.LeftThumbstickX = GetCenteredAxis(motionEvent, inputDevice, Axis.X);
-				reading.LeftThumbstickY = GetCenteredAxis(motionEvent, inputDevice, Axis.Y);
+				reading.LeftThumbstickY = -1 * GetCenteredAxis(motionEvent, inputDevice, Axis.Y);
 				reading.RightThumbstickX = GetCenteredAxis(motionEvent, inputDevice, Axis.Z);
-				reading.RightThumbstickY = GetCenteredAxis(motionEvent, inputDevice, Axis.Rz);
+				reading.RightThumbstickY = -1 * GetCenteredAxis(motionEvent, inputDevice, Axis.Rz);
 
 				var leftTrigger = GetCenteredAxis(motionEvent, inputDevice, Axis.Brake);
 				if (leftTrigger == 0)

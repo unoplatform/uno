@@ -13,12 +13,13 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 		<Button Command="{x:Bind ViewModel.UpdateGamepadsCommand}">Get gamepads list</Button>
-		<Button Command="{x:Bind ViewModel.UpdateReadingsCommand}">Get current readings</Button>
-		<ToggleButton IsChecked="{x:Bind ViewModel.IsCheckingAutomatically, Mode=TwoWay}">Check automatically</ToggleButton>
-		<ListView ItemsSource="{x:Bind ViewModel.Gamepads}" SelectionMode="None">
+		<Button Grid.Row="1" Command="{x:Bind ViewModel.UpdateReadingsCommand}">Get current readings</Button>
+		<ToggleButton Grid.Row="2" IsChecked="{x:Bind ViewModel.IsCheckingAutomatically, Mode=TwoWay}">Check automatically</ToggleButton>
+		<ListView Grid.Row="3" ItemsSource="{x:Bind ViewModel.Gamepads}" SelectionMode="None">
 			<ListView.ItemTemplate>
 				<DataTemplate x:DataType="local:GamepadReadingViewModel" x:DefaultBindMode="OneWay">
 					<StackPanel>

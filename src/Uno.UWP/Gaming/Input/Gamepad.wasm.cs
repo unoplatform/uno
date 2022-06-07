@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Uno;
 using Uno.Extensions;
@@ -37,42 +38,48 @@ public partial class Gamepad
 		var axesPart = parts[1];
 		var buttonsPart = parts[2];
 
-		var timestampDouble = double.Parse(timestampPart);
+		var timestampDouble = double.Parse(timestampPart, CultureInfo.InvariantCulture);
 		reading.Timestamp = (ulong)(timestampDouble * 1000); // JS timestamp is in milliseconds
 
-		var axes = axesPart.Split('|').Select(double.Parse).ToArray();
+		if (!string.IsNullOrEmpty(axesPart))
+		{
+			var axes = axesPart.Split('|').Select(p => double.Parse(p, CultureInfo.InvariantCulture)).ToArray();
 
-		reading.LeftThumbstickX = GetGamepadValueIfExists(ref axes, 0);
-		reading.LeftThumbstickY = GetGamepadValueIfExists(ref axes, 1);
-		reading.RightThumbstickX = GetGamepadValueIfExists(ref axes, 2);
-		reading.RightThumbstickY = GetGamepadValueIfExists(ref axes, 3);
+			reading.LeftThumbstickX = GetGamepadValueIfExists(ref axes, 0);
+			reading.LeftThumbstickY = -1 * GetGamepadValueIfExists(ref axes, 1);
+			reading.RightThumbstickX = GetGamepadValueIfExists(ref axes, 2);
+			reading.RightThumbstickY = -1 * GetGamepadValueIfExists(ref axes, 3);
+		}
 
-		var buttons = buttonsPart.Split('|').Select(double.Parse).ToArray();
+		if (!string.IsNullOrEmpty(buttonsPart))
+		{
+			var buttons = buttonsPart.Split('|').Select(p => double.Parse(p, CultureInfo.InvariantCulture)).ToArray();
 
-		var pressedButtons = GamepadButtons.None;
-		pressedButtons |= IsButtonPressed(ref buttons, 0) ? GamepadButtons.A : GamepadButtons.None;
-		pressedButtons |= IsButtonPressed(ref buttons, 1) ? GamepadButtons.B : GamepadButtons.None;
-		pressedButtons |= IsButtonPressed(ref buttons, 2) ? GamepadButtons.X : GamepadButtons.None;
-		pressedButtons |= IsButtonPressed(ref buttons, 3) ? GamepadButtons.Y : GamepadButtons.None;
+			var pressedButtons = GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 0) ? GamepadButtons.A : GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 1) ? GamepadButtons.B : GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 2) ? GamepadButtons.X : GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 3) ? GamepadButtons.Y : GamepadButtons.None;
 
-		pressedButtons |= IsButtonPressed(ref buttons, 4) ? GamepadButtons.LeftShoulder : GamepadButtons.None;
-		pressedButtons |= IsButtonPressed(ref buttons, 5) ? GamepadButtons.RightShoulder : GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 4) ? GamepadButtons.LeftShoulder : GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 5) ? GamepadButtons.RightShoulder : GamepadButtons.None;
 
-		pressedButtons |= IsButtonPressed(ref buttons, 8) ? GamepadButtons.View : GamepadButtons.None;
-		pressedButtons |= IsButtonPressed(ref buttons, 9) ? GamepadButtons.Menu : GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 8) ? GamepadButtons.View : GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 9) ? GamepadButtons.Menu : GamepadButtons.None;
 
-		pressedButtons |= IsButtonPressed(ref buttons, 10) ? GamepadButtons.LeftThumbstick : GamepadButtons.None;
-		pressedButtons |= IsButtonPressed(ref buttons, 11) ? GamepadButtons.RightThumbstick : GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 10) ? GamepadButtons.LeftThumbstick : GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 11) ? GamepadButtons.RightThumbstick : GamepadButtons.None;
 
-		pressedButtons |= IsButtonPressed(ref buttons, 12) ? GamepadButtons.DPadUp : GamepadButtons.None;
-		pressedButtons |= IsButtonPressed(ref buttons, 13) ? GamepadButtons.DPadDown : GamepadButtons.None;
-		pressedButtons |= IsButtonPressed(ref buttons, 14) ? GamepadButtons.DPadLeft : GamepadButtons.None;
-		pressedButtons |= IsButtonPressed(ref buttons, 15) ? GamepadButtons.DPadRight : GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 12) ? GamepadButtons.DPadUp : GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 13) ? GamepadButtons.DPadDown : GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 14) ? GamepadButtons.DPadLeft : GamepadButtons.None;
+			pressedButtons |= IsButtonPressed(ref buttons, 15) ? GamepadButtons.DPadRight : GamepadButtons.None;
 
-		reading.Buttons = pressedButtons;
+			reading.Buttons = pressedButtons;
 
-		reading.LeftTrigger = GetGamepadValueIfExists(ref buttons, 6);
-		reading.RightTrigger = GetGamepadValueIfExists(ref buttons, 7);
+			reading.LeftTrigger = GetGamepadValueIfExists(ref buttons, 6);
+			reading.RightTrigger = GetGamepadValueIfExists(ref buttons, 7);
+		}
 
 		return reading;
 	}
