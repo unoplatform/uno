@@ -312,6 +312,20 @@ var MonoSupport;
         static getMethodMapId(methodHandle) {
             return methodHandle + "";
         }
+        static invokeOnMainThread() {
+            if (!jsCallDispatcher.dispatcherCallback) {
+                jsCallDispatcher.dispatcherCallback = Module.mono_bind_static_method("[Uno.UI.Dispatching] Uno.UI.Dispatching.CoreDispatcher:DispatcherCallback");
+            }
+            window.setImmediate(() => {
+                try {
+                    jsCallDispatcher.dispatcherCallback();
+                }
+                catch (e) {
+                    console.error(`Unhandled dispatcher exception: ${e} (${e.stack})`);
+                    throw e;
+                }
+            });
+        }
     }
     jsCallDispatcher.registrations = new Map();
     jsCallDispatcher.methodMap = {};
@@ -319,6 +333,7 @@ var MonoSupport;
 })(MonoSupport || (MonoSupport = {}));
 // Export the DotNet helper for WebAssembly.JSInterop.InvokeJSUnmarshalled
 window.DotNet = MonoSupport;
+MonoSupport.invokeOnMainThread = MonoSupport.jsCallDispatcher.invokeOnMainThread;
 // eslint-disable-next-line @typescript-eslint/no-namespace
 var Uno;
 (function (Uno) {

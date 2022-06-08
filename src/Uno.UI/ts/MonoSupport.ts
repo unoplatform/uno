@@ -11,6 +11,7 @@ namespace MonoSupport {
 		private static registrations: Map<string, any> = new Map<string, any>();
 		private static methodMap: { [id: string]: any } = {};
 		private static _isUnoRegistered : boolean;
+		private static dispatcherCallback: () => void;
 
 		/**
 		 * Registers a instance for a specified identier
@@ -88,8 +89,31 @@ namespace MonoSupport {
 		private static getMethodMapId(methodHandle: number) {
 			return methodHandle + "";
 		}
+	
+		public static invokeOnMainThread() {
+
+			if (!jsCallDispatcher.dispatcherCallback) {
+				jsCallDispatcher.dispatcherCallback = (<any>Module).mono_bind_static_method(
+					"[Uno.UI.Dispatching] Uno.UI.Dispatching.CoreDispatcher:DispatcherCallback");
+			}
+
+			// Use setImmediate to return avoid blocking the background thread
+			// on a sync call.
+			(<any>window).setImmediate(() => {
+				try {
+					jsCallDispatcher.dispatcherCallback();
+				}
+				catch (e) {
+					console.error(`Unhandled dispatcher exception: ${e} (${e.stack})`);
+					throw e;
+				}
+			});
+		}
 	}
 }
 
 // Export the DotNet helper for WebAssembly.JSInterop.InvokeJSUnmarshalled
 (<any>window).DotNet = MonoSupport;
+
+// Export the main thread invoker for threading support
+(<any>MonoSupport).invokeOnMainThread = MonoSupport.jsCallDispatcher.invokeOnMainThread;
