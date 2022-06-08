@@ -100,16 +100,18 @@ namespace Uno.UI.Runtime.Skia
 				new Windows.Foundation.Size(
 					_tizenApplication.Window.ScreenSize.Width,
 					_tizenApplication.Window.ScreenSize.Height));
+
+			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
+
 			WinUI.Application.StartWithArguments(CreateApp);
-			WUX.Window.Current.Activated += Current_Activated;
 		}
 
-		private void Current_Activated(object sender, object e)
+		private void OnCoreWindowContentRootSet(object? sender, object e)
 		{
 			var xamlRoot = CoreServices.Instance
-				.ContentRootCoordinator?
+				.ContentRootCoordinator
 				.CoreWindowContentRoot?
-				.XamlRoot;
+				.GetOrCreateXamlRoot();
 
 			if (xamlRoot is null)
 			{
@@ -118,9 +120,7 @@ namespace Uno.UI.Runtime.Skia
 
 			xamlRoot.InvalidateRender += _tizenApplication!.Canvas.InvalidateRender;
 
-			// Force initial render
-			_tizenApplication!.Canvas.InvalidateRender();
-			WUX.Window.Current.Activated -= Current_Activated;
+			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 		}
 	}
 }

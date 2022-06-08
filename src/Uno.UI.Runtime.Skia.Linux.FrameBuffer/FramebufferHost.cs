@@ -69,17 +69,17 @@ namespace Uno.UI.Runtime.Skia
 			_renderer = new Renderer();
 			_displayInformationExtension!.Renderer = _renderer;
 
-			WUX.Application.StartWithArguments(CreateApp);
+			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
 
-			WUX.Window.Current.Activated += Current_Activated;
+			WUX.Application.StartWithArguments(CreateApp);
 		}
 
-		private void Current_Activated(object sender, object e)
+		private void OnCoreWindowContentRootSet(object? sender, object e)
 		{
 			var xamlRoot = CoreServices.Instance
-				.ContentRootCoordinator?
+				.ContentRootCoordinator
 				.CoreWindowContentRoot?
-				.XamlRoot;
+				.GetOrCreateXamlRoot();
 
 			if (xamlRoot is null)
 			{
@@ -88,9 +88,7 @@ namespace Uno.UI.Runtime.Skia
 
 			xamlRoot.InvalidateRender += _renderer!.InvalidateRender;
 
-			// Force initial render
-			_renderer.InvalidateRender();
-			WUX.Window.Current.Activated -= Current_Activated;
+			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 		}
 	}
 }

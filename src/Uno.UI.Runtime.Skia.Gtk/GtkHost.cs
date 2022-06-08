@@ -195,11 +195,11 @@ namespace Uno.UI.Runtime.Skia
 				app.Host = this;
 			}
 
+			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
+			
 			WUX.Application.StartWithArguments(CreateApp);
 
 			RegisterForBackgroundColor();
-
-			WUX.Window.Current.Activated += Current_Activated;
 			
 			UpdateWindowPropertiesFromPackage();
 
@@ -232,12 +232,12 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 		
-		private void Current_Activated(object sender, object e)
+		private void OnCoreWindowContentRootSet(object sender, object e)
 		{
 			var xamlRoot = CoreServices.Instance
-				.ContentRootCoordinator?
+				.ContentRootCoordinator
 				.CoreWindowContentRoot?
-				.XamlRoot;
+				.GetOrCreateXamlRoot();
 
 			if (xamlRoot is null)
 			{
@@ -246,9 +246,7 @@ namespace Uno.UI.Runtime.Skia
 
 			xamlRoot.InvalidateRender += _renderSurface.InvalidateRender;
 
-			// Force initial render
-			_renderSurface.InvalidateRender();
-			WUX.Window.Current.Activated -= Current_Activated;
+			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 		}
 
 		private void WindowClosing(object sender, DeleteEventArgs args)

@@ -179,7 +179,6 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			{
 				return _childInternal;
 			}
-
 			set
 			{
 				if (value == ChildInternal)

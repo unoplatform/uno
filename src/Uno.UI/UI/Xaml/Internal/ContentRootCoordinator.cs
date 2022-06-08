@@ -15,6 +15,7 @@ namespace Uno.UI.Xaml.Core
 	{
 		private readonly CoreServices _coreServices;
 		private readonly List<ContentRoot> _contentRoots = new List<ContentRoot>();
+		private ContentRoot? _coreWindowContentRoot;
 
 		public ContentRootCoordinator(CoreServices coreServices)
 		{
@@ -23,7 +24,22 @@ namespace Uno.UI.Xaml.Core
 
 		public IReadOnlyList<ContentRoot> ContentRoots => _contentRoots;
 
-		public ContentRoot? CoreWindowContentRoot { get; set; }
+		public ContentRoot? CoreWindowContentRoot
+		{
+			get => _coreWindowContentRoot;
+			set
+			{
+				_coreWindowContentRoot = value;
+				if (value is not null)
+				{
+					CoreWindowContentRootSet?.Invoke(this, EventArgs.Empty);
+				}
+			}
+		}
+
+		// TODO: Notifies Skia hosts that the content root was assigned.
+		// Not part of MUX code. #8978
+		public event EventHandler CoreWindowContentRootSet;
 
 		public ContentRoot CreateContentRoot(ContentRootType type, Color backgroundColor, UIElement? rootElement)
 		{

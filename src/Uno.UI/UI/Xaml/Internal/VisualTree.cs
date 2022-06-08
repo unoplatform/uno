@@ -770,7 +770,7 @@ namespace Uno.UI.Xaml.Core
 
 		internal XamlRoot GetOrCreateXamlRoot()
 		{
-			if (XamlRoot == null)
+			if (XamlRoot is null)
 			{
 				XamlRoot = new XamlRoot(this);
 			}
