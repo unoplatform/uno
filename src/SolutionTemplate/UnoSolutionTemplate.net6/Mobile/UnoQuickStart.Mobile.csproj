@@ -73,6 +73,7 @@
 		</When>
 		<When Condition="'$(TargetFramework)'=='net6.0-macos'">
 			<PropertyGroup>
+				<TrimMode Condition="'$(Configuration)'=='Release'">link</TrimMode>
 			</PropertyGroup>
 		</When>
 	</Choose>
