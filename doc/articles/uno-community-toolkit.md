@@ -81,7 +81,7 @@ These package ids are for Uno (non-Windows) projects. For UWP project, you shoul
     ```xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"```  
   
    In C#:  
-    ```using Microsoft.Toolkit.Uwp;``
+    ```using Microsoft.Toolkit.Uwp;```
 
 ***
 
@@ -199,4 +199,4 @@ A working sample complete with data is available on GitHub: [Uno Windows Communi
 
 ***
 
-[!include[getting-help](getting-help.md]
+[!include[getting-help](getting-help.md)]
