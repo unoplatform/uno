@@ -290,8 +290,6 @@
               href: features/windows-applicationmodel-datatransfer.md
             - name: SMS
               href: features/windows-applicationmodel-chat.md
-            - name: Sensors
-              href: features/windows-devices-sensors.md
             - name: Settings
               href: features/settings.md               
             - name: Speech Recognition
