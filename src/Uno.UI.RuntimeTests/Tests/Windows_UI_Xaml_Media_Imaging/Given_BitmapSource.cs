@@ -59,6 +59,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			Assert.IsTrue(success);
 		}
 
+#if __SKIA__ // Not yet supported on the other platforms (https://github.com/unoplatform/uno/issues/8909)
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_MsAppData()
@@ -79,6 +80,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 			await tcs.Task;
 		}
+#endif
 
 #if !WINDOWS_UWP
 		[TestMethod]
