@@ -61,6 +61,11 @@ namespace WebAssembly
 			[MethodImpl(MethodImplOptions.InternalCall)]
 			[EditorBrowsable(EditorBrowsableState.Never)]
 			public static extern IntPtr InvokeJSUnmarshalled(out string exceptionMessage, string functionIdentifier, IntPtr arg0, IntPtr arg1, IntPtr arg2);
+
+			// Uno-Specific implementation for https://github.com/dotnet/runtime/issues/69409.
+			// To be removed when the runtime will support the main SynchronizationContext.
+			[MethodImplAttribute(MethodImplOptions.InternalCall)]
+			public static extern void InvokeOnMainThread();
 		}
 	}
 }
