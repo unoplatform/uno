@@ -49,6 +49,8 @@ jobs:
       msbuildArguments: /r /p:CheckExclusions=True /p:Configuration=Release /nodeReuse:true /detailedsummary /m $(ADDITIONAL_FLAGS) # /bl:$(build.artifactstagingdirectory)\build.binlog
 
   - task: VisualStudioTestPlatformInstaller@1
+    inputs:
+      versionSelector: latestStable
 
   - task: VSTest@2
     inputs:
