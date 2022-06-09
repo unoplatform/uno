@@ -126,6 +126,8 @@ declare namespace MonoSupport {
          */
         private static cacheMethod;
         private static getMethodMapId;
+        private static dispatcherCallback;
+        static invokeOnMainThread(): void;
     }
 }
 declare const config: any;
