@@ -231,7 +231,7 @@
         - name: Non-UI APIs
           items:
             - name: Accelerometer
-              href: accelerometer.md
+              href: features/accelerometer.md
             - name: App Actions
               href: features/windows-ui-startscreen.md
             - name: App Close Handler
