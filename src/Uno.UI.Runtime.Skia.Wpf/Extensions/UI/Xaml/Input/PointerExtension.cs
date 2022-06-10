@@ -1,6 +1,5 @@
-﻿using System;
-using Uno.UI.Runtime.Skia.Wpf.Hosting;
-using Uno.UI.Xaml.Input;
+﻿using Uno.UI.Xaml.Input;
+using Uno.UI.XamlHost.Skia.Wpf.Hosting;
 using Windows.Devices.Input;
 using Windows.UI.Xaml;
 
@@ -11,13 +10,13 @@ namespace Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Input
 		public void ReleasePointerCapture(PointerIdentifier pointer, XamlRoot xamlRoot)
 		{
 			var host = XamlRootMap.GetHostForRoot(xamlRoot);
-			host?.ReleasePointerCapture(pointer);
+			host?.ReleasePointerCapture();
 		}
 		
 		public void SetPointerCapture(PointerIdentifier pointer, XamlRoot xamlRoot)
 		{
 			var host = XamlRootMap.GetHostForRoot(xamlRoot);
-			host?.SetPointerCapture(pointer);
+			host?.SetPointerCapture();
 		}
 	}
 }

@@ -98,13 +98,13 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		{
 			if (IsXamlContentLoaded())
 			{
-				if (_xamlSource.Content.VisualTreeCache.RootElement is WUX.FrameworkElement element)
-				{
-					var width = ActualWidth;
-					var height = ActualHeight;
-					element.Width = width;
-					element.Height = height;
-				}
+				//if (_xamlSource.Content.VisualTreeCache.RootElement is WUX.FrameworkElement element)
+				//{
+				//	var width = ActualWidth;
+				//	var height = ActualHeight;
+				//	element.Width = width;
+				//	element.Height = height;
+				//}
 			}
 		}
 	}

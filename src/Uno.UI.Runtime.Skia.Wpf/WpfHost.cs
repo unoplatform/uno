@@ -21,7 +21,6 @@ using Uno.Helpers.Theming;
 using Uno.UI.Core.Preview;
 using Uno.UI.Runtime.Skia.Wpf;
 using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Input;
-using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helper.Theming;
 using Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls;
@@ -30,6 +29,7 @@ using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Uno.UI.XamlHost.Skia.Wpf;
+using Uno.UI.XamlHost.Skia.Wpf.Hosting;
 using Windows.Devices.Input;
 using Windows.Graphics.Display;
 using Windows.Networking.Connectivity;
@@ -111,7 +111,7 @@ namespace Uno.UI.Skia.Platform
 
 		public bool IsIsland => false;
 
-		public Windows.UI.Composition.Visual? Visual => null;
+		public Windows.UI.Xaml.UIElement? RootElement => null;
 
 		public static WpfHost Current => _current;
 
@@ -198,12 +198,12 @@ namespace Uno.UI.Skia.Platform
 				throw new InvalidOperationException("XamlRoot was not properly initialized");
 			}
 
-			xamlRoot.InvalidateRender += InvalidateRender;
+			XamlRootMap.Register(xamlRoot, this);
 
 			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 		}
 
-		private void InvalidateRender()
+		void IWpfHost.InvalidateRender()
 		{
 			InvalidateOverlays();
 			InvalidateVisual();
@@ -336,9 +336,9 @@ namespace Uno.UI.Skia.Platform
 			}
 		}
 
-		void IWpfHost.ReleasePointerCapture(PointerIdentifier pointer) => CaptureMouse(); //TODO: This should capture the correct type of pointer (stylus/mouse/touch) #8978[capture]
+		void IWpfHost.ReleasePointerCapture() => CaptureMouse(); //TODO: This should capture the correct type of pointer (stylus/mouse/touch) #8978[capture]
 
-		void IWpfHost.SetPointerCapture(PointerIdentifier pointer) => ReleaseMouseCapture();
+		void IWpfHost.SetPointerCapture() => ReleaseMouseCapture();
 
 		//TODO: This will need to be adjusted when multi-window support is added. #8978[windows]
 		WinUI.XamlRoot? IWpfHost.XamlRoot => WinUI.Window.Current?.RootElement?.XamlRoot;

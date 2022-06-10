@@ -25,7 +25,7 @@
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 	</PropertyGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
+	<Import Project="..\..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
 	  <EmbeddedResource Include="LinkerDefinition.Wasm.xml">
@@ -39,7 +39,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
 	</ItemGroup>
 
 </Project>

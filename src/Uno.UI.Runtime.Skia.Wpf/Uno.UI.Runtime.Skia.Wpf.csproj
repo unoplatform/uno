@@ -37,7 +37,6 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
-	  <ProjectReference Include="..\Uno.UI.XamlHost\Uno.UI.XamlHost.Skia.csproj" />
 	  <ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
 	  <ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>

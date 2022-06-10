@@ -3,6 +3,7 @@
 using Windows.Devices.Input;
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Input;
 using WpfCanvas = System.Windows.Controls.Canvas;
 
 namespace Uno.UI.Runtime.Skia.Wpf
@@ -11,7 +12,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 	{
 		bool IsIsland { get; }
 
-		Visual? Visual { get; }
+		UIElement? RootElement { get; }
 
 		XamlRoot? XamlRoot { get; }
 
@@ -19,8 +20,10 @@ namespace Uno.UI.Runtime.Skia.Wpf
 
 		public bool IgnorePixelScaling { get; }
 
-		void ReleasePointerCapture(PointerIdentifier pointer);
+		void ReleasePointerCapture();
 		
-		void SetPointerCapture(PointerIdentifier pointer);
+		void SetPointerCapture();
+
+		void InvalidateRender();
 	}
 }

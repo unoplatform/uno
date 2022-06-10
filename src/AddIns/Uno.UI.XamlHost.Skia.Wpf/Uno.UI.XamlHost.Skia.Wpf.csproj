@@ -1,0 +1,52 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras">
+
+  <PropertyGroup>
+    <TargetFrameworks>net47;netcoreapp3.1</TargetFrameworks>
+  </PropertyGroup>
+
+	<Import Project="../../netcore-build-windows.props" />
+
+	<PropertyGroup>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+		<Authors>nventive</Authors>
+		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
+		<PackageIcon>uno.png</PackageIcon>
+		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
+		<Description>This package provides the platform support for XAML hosting for Skia WPF.</Description>
+		<Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
+
+		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.XamlHost.Skia.Wpf</PackageId>
+
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<UseWPF>true</UseWPF>
+
+		<!-- 9.0 to work around a VS 2019 build issue -->
+		<LangVersion>9.0</LangVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" Visible="false" />
+	</ItemGroup>
+
+	<Import Project="..\..\Uno.CrossTargetting.props" />
+
+	<ItemGroup>
+		<Content Include="buildTransitive/*.targets">
+			<Pack>true</Pack>
+			<PackagePath>buildTransitive</PackagePath>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Wpf\Uno.UI.Runtime.Skia.Wpf.csproj" />
+	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
+	  <ProjectReference Include="..\..\Uno.UWP\Uno.Skia.csproj" />
+	  <ProjectReference Include="..\Uno.UI.XamlHost\Uno.UI.XamlHost.Skia.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Update="Themes\Generic.xaml">
+	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+	  </Page>
+	</ItemGroup>
+</Project>

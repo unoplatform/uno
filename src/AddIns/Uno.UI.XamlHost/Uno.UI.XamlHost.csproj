@@ -1,0 +1,79 @@
+<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+  
+  <PropertyGroup>
+    <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid12.0;netstandard2.0;net461</TargetFrameworks>
+	<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid12.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+	<NoWarn>$(NoWarn);NU1701;NU5100;NU5118;NU5128</NoWarn>
+	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+	<Deterministic>true</Deterministic>
+	<Nullable>enable</Nullable>
+  </PropertyGroup>
+	
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Authors>nventive</Authors>
+		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
+		<PackageIcon>uno.png</PackageIcon>
+		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
+		<Description>This package provides the XAML hosting capabilities for an Uno Platform application.</Description>
+		<Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
+
+		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.XamlHost</PackageId>
+
+		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Reference</UnoRuntimeIdentifier>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="buildTransitive\Uno.UI.MSAL.targets" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="buildTransitive/*">
+			<Pack>true</Pack>
+			<PackagePath>buildTransitive</PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' != 'uap10.0.18362'">
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
+	</ItemGroup>
+
+	<Import Project="..\..\Common.targets" />
+	<Import Project="..\..\Uno.CrossTargetting.props" />
+	<Import Project="..\..\..\build\uno.winui.cross-runtime.targets"/>
+	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj" />
+	</ItemGroup>
+
+	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
+
+	<Target Name="VS16Mac_RemoveSystemMemory" BeforeTargets="ResolveAssemblyReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and $([MSBuild]::IsOsPlatform('OSX'))">
+		<!--
+				VS4Mac seems to process System.Memory differently, and removes
+				the System.Memory local reference if the package is transitively referenced.
+				We remove the Reference added by the nuget targets so that ResolveAssemblyReferences
+				is properly adding the local System.Memory to the Reference item group.
+		-->
+		<ItemGroup>
+			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Memory'" />
+			<Reference Remove="@(_ReferenceToRemove)" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac))">
+		<ItemGroup>
+			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
+			<ReferencePath Remove="@(_ReferencePathToRemove)" />
+		</ItemGroup>
+	</Target>
+
+</Project>

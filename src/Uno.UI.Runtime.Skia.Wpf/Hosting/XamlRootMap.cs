@@ -2,9 +2,10 @@
 
 using System;
 using System.Collections.Generic;
+using Uno.UI.Runtime.Skia.Wpf;
 using Windows.UI.Xaml;
 
-namespace Uno.UI.Runtime.Skia.Wpf.Hosting
+namespace Uno.UI.XamlHost.Skia.Wpf.Hosting
 {
 	internal static class XamlRootMap
 	{
@@ -23,6 +24,8 @@ namespace Uno.UI.Runtime.Skia.Wpf.Hosting
 			}
 
 			_map[xamlRoot] = host;
+
+			xamlRoot.InvalidateRender += host.InvalidateRender;
 		}
 
 		internal static void Unregister(XamlRoot xamlRoot)
@@ -32,7 +35,12 @@ namespace Uno.UI.Runtime.Skia.Wpf.Hosting
 				throw new ArgumentNullException(nameof(xamlRoot));
 			}
 
-			_map.Remove(xamlRoot);
+			var host = GetHostForRoot(xamlRoot);
+			if (host is not null)
+			{
+				xamlRoot.InvalidateRender -= host.InvalidateRender;
+				_map.Remove(xamlRoot);
+			}
 		}
 
 		internal static IWpfHost? GetHostForRoot(XamlRoot xamlRoot) =>

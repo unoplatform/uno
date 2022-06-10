@@ -9,7 +9,7 @@ using Uno.UI.Skia.Platform;
 using Uno.UI.Xaml.Controls.Extensions;
 using Point = Windows.Foundation.Point;
 using WpfCanvas = System.Windows.Controls.Canvas;
-using Uno.UI.Runtime.Skia.Wpf.Hosting;
+using Uno.UI.XamlHost.Skia.Wpf.Hosting;
 
 namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 {

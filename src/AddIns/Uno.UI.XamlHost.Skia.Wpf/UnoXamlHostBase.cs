@@ -4,19 +4,20 @@
 // https://github.com/CommunityToolkit/Microsoft.Toolkit.Win32/blob/master/Microsoft.Toolkit.Wpf.UI.XamlHost/WindowsXamlHost.cs
 
 using System;
-using Uno.UI.Runtime.Skia.Wpf.Hosting;
+using Uno.UI.XamlHost.Skia.Wpf.Hosting;
 using Windows.UI.Xaml;
 using WUX = Windows.UI.Xaml;
 using WinUI = Windows.UI.Xaml;
-using Uno.UI.Runtime.Skia.Wpf;
+using Uno.UI.XamlHost.Skia.Wpf;
 using WpfControl = global::System.Windows.Controls.Control;
+using Uno.UI.Runtime.Skia.Wpf;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {
 	/// <summary>
 	/// UnoXamlHost control hosts UWP XAML content inside the Windows Presentation Foundation
 	/// </summary>
-	public abstract partial class UnoXamlHostBase : WpfControl, WinUI.ISkiaHost, IWpfHost
+	public abstract partial class UnoXamlHostBase : WpfControl, IWpfHost
 	{
 		/// <summary>
 		/// An instance of <seealso cref="IXamlMetadataContainer"/>. Required to
@@ -190,7 +191,6 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 				if (currentRoot != null)
 				{
 					currentRoot.SizeChanged -= XamlContentSizeChanged;
-					currentRoot.XamlRoot.InvalidateRender -= XamlRoot_InvalidateRender;
 					XamlRootMap.Unregister(currentRoot.XamlRoot);
 				}
 
@@ -213,7 +213,6 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 					// If XAML content has changed, check XAML size
 					// to determine if UnoXamlHost needs to re-run layout.
 					frameworkElement.SizeChanged += XamlContentSizeChanged;
-					frameworkElement.XamlRoot.InvalidateRender += XamlRoot_InvalidateRender;
 					XamlRootMap.Register(frameworkElement.XamlRoot, this);
 				}
 
@@ -226,16 +225,17 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			}
 		}
 
+
+		void IWpfHost.InvalidateRender()
+		{
+			//InvalidateOverlays();
+			InvalidateVisual();
+		}
+
 		private void OnChildLoading(FrameworkElement sender, object args)
 		{
 			// Ensure the XamlRoot is registered early.
 			XamlRootMap.Register(sender.XamlRoot, this);
-		}
-
-		private void XamlRoot_InvalidateRender()
-		{
-			//InvalidateOverlays();
-			InvalidateVisual();
 		}
 
 		/// <summary>

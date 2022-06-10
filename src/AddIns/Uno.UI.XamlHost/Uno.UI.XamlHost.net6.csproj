@@ -56,6 +56,6 @@
 
 
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.net6.csproj" />
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.net6.csproj" />
 	</ItemGroup>
 </Project>

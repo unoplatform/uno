@@ -32,7 +32,7 @@ namespace Uno.UI.Dispatching
 
 		partial void EnqueueNative()
 		{
-			if(DispatchOverride == null)
+			if (DispatchOverride == null)
 			{
 				throw new InvalidOperationException("CoreDispatcher.DispatchOverride must be set");
 			}
