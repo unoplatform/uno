@@ -1,0 +1,49 @@
+﻿<!--Test for [Android] VisibleBoundsPadding.PaddingMask.Top does not always work as intended #6218
+	and
+	[Android] When keyboard with InputScope=CurrencyAmount is displayed, it can break the status bar. #6216-->
+<!--Window_PaddingTop_StatusBarTranslucent-->
+<UserControl
+    x:Class="UITests.Windows_UI_Xaml.WindowTests.Window_PaddingTop_SBT"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UITests.Windows_UI_Xaml.WindowTests"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+	xmlns:toolkit="using:Uno.UI.Toolkit"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+
+		<Grid Background="Red"
+              toolkit:VisibleBoundsPadding.PaddingMask="All">
+
+			<TextBox x:Name="boxSBT" InputScope="CurrencyAmount"
+				 Grid.Row="0" />
+
+			<TextBlock x:Name="blockSBT" Text="Expected result ALL"
+					   VerticalAlignment="Top" />
+
+			<TextBlock Text="Expected result ALL"
+					   VerticalAlignment="Bottom" />
+		</Grid>
+
+		<Grid Background="Green"
+			  Grid.Column="1"
+              toolkit:VisibleBoundsPadding.PaddingMask="Top">
+
+			<TextBox InputScope="CurrencyAmount"
+				 Grid.Row="0" />
+
+			<TextBlock Text="Actual result TOP"
+					   VerticalAlignment="Top" />
+			<TextBlock Text="Actual result TOP"
+					   VerticalAlignment="Bottom" />
+		</Grid>
+	</Grid>
+</UserControl>

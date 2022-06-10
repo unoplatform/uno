@@ -316,7 +316,8 @@ namespace Windows.UI.Xaml
 			}
 
 			return activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.TranslucentStatus)
-				|| activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.LayoutNoLimits);
+				|| activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.LayoutNoLimits)
+				|| activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.DrawsSystemBarBackgrounds);
 		}
 #endregion
 
