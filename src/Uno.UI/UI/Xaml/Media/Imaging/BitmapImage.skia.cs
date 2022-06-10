@@ -48,6 +48,12 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 						return OpenFromStream(targetWidth, targetHeight, surface, fileStream);
 					}
+					else if (UriSource.Scheme == "ms-appdata")
+					{
+						using var fileStream = File.OpenRead(FilePath);
+
+						return OpenFromStream(targetWidth, targetHeight, surface, fileStream);
+					}
 				}
 				else if (_stream != null)
 				{
@@ -62,17 +68,20 @@ namespace Windows.UI.Xaml.Media.Imaging
 			return default;
 		}
 
-		private static ImageData OpenFromStream(int? targetWidth, int? targetHeight, SkiaCompositionSurface surface, global::System.IO.Stream imageStream)
+		private ImageData OpenFromStream(int? targetWidth, int? targetHeight, SkiaCompositionSurface surface, global::System.IO.Stream imageStream)
 		{
 			var result = surface.LoadFromStream(targetWidth, targetHeight, imageStream);
 
 			if (result.success)
 			{
+				RaiseImageOpened();
 				return new ImageData { Value = surface };
 			}
 			else
 			{
-				return new ImageData { Error = new InvalidOperationException($"Image load failed ({result.nativeResult})") };
+				var exception = new InvalidOperationException($"Image load failed ({result.nativeResult})");
+				RaiseImageFailed(exception);
+				return new ImageData { Error = exception };
 			}
 		}
 
