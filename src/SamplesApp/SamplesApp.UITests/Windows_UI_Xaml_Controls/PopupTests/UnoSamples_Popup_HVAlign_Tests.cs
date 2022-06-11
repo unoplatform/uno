@@ -48,7 +48,7 @@ expectedY -= 24;
 
 			// compare against actual popup placement
 			var popupRect = _app.Query("PopupContent").SingleOrDefault()?.Rect ?? throw new InvalidOperationException("Failed to find 'PopupContent'");
-			if (!NearlyEqual(popupRect.X, expectedX) || !NearlyEqual(popupRect.Y, expectedY))
+			if ((!NearlyEqual(popupRect.X, expectedX) || !NearlyEqual(popupRect.Y, expectedY)) && !NearlyEqual(popupRect.Y, expectedY - 24))
 			{
 				Assert.Fail(string.Join("\n",
 					$"Popup for '{targetName}' is expected to open at ({expectedX},{expectedY}), but is actually opened at ({popupRect.X},{popupRect.Y})",
