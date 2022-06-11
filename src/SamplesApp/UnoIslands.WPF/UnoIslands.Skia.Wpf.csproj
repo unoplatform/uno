@@ -53,6 +53,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\Uno.UI.XamlHost.Skia.Wpf\Uno.UI.XamlHost.Skia.Wpf.csproj" />
 		<ProjectReference Include="..\..\SourceGenerators\System.Xaml\Uno.Xaml.csproj">
 			<Project>{6ffac28c-aced-4ba1-954d-7e720b035928}</Project>
 			<Name>Uno.Xaml</Name>
@@ -83,7 +84,7 @@
 	  </Compile>
 	</ItemGroup>
 
-	<Import Project="..\..\..\build\*.Skia.Wpf.props" />
-	<Import Project="..\..\..\build\*.Skia.Wpf.targets" />
+	<Import Project="..\..\build\*.Skia.Wpf.props" />
+	<Import Project="..\..\build\*.Skia.Wpf.targets" />
 
 </Project>
