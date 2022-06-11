@@ -18,7 +18,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.WindowTests
 		[ActivePlatforms(Platform.Android)] // Tests display of Android native view
 		public void When_StatusBarTranslucent_PaddingTop()
 		{
-			Run("UITests.Windows_UI_Xaml.WindowTests.Window_PaddingTop_SBT");
+			Run("UITests.Windows_UI_Xaml.WindowTests.Window_PaddingTop_SBT", skipInitialScreenshot: true);
 
 			var blockSBT = _app.Marked("blockSBT");
 			_app.WaitForElement(blockSBT);

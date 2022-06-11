@@ -40,7 +40,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 			// find the expected popup placement based on button rect
 			var buttonRect = _app.Query(targetName).Single().Rect;
 			var expectedX = buttonRect.X + (buttonRect.Width * xMul);
-			var expectedY = buttonRect.Y + (buttonRect.Height * yMul);
+			var expectedY = buttonRect.Y + (buttonRect.Height * yMul) - 24;
 
 			// compare against actual popup placement
 			var popupRect = _app.Query("PopupContent").SingleOrDefault()?.Rect ?? throw new InvalidOperationException("Failed to find 'PopupContent'");
