@@ -157,6 +157,9 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					builder.AppendLineInvariant($"using Windows.UI.Xaml;");
 					builder.AppendLineInvariant($"using Windows.UI.Xaml.Data;");
 					builder.AppendLineInvariant($"using Uno.Diagnostics.Eventing;");
+					builder.AppendLineInvariant("#if __MACOS__");
+					builder.AppendLineInvariant("using AppKit;");
+					builder.AppendLineInvariant("#endif");
 
 					using (builder.BlockInvariant($"namespace {typeSymbol.ContainingNamespace}"))
 					{
@@ -667,21 +670,27 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 							// a native representation via the IntPtr ctor, particularly on iOS.
 							__Store?.Dispose();
 
+#if __IOS__
 							var subviews = Subviews;
 
 							if (subviews.Length > 0)
 							{{
 								BinderCollector.RequestCollect();
-#if __IOS__
 								foreach (var v in subviews)
 								{{
 									v.RemoveFromSuperview();
 								}}
-#elif __MACOS__
-								// avoids multiple native calls to remove subviews
-								Subviews = Array.Empty<AppKit.NSView>();
-#endif
 							}}
+#elif __MACOS__
+							// avoids the managed array (and items) allocation(s) since we do not need them
+							if (this.GetSubviewsCount() > 0)
+							{{
+								BinderCollector.RequestCollect();
+
+								// avoids multiple native calls to remove subviews
+								Subviews = Array.Empty<NSView>();
+							}}
+#endif
 
 							base.Dispose(disposing);
 
