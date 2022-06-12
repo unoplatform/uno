@@ -90,11 +90,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 
 			var popupLocationDifferenceExtended = popupResultExtended.Rect.Y - resourcesFilterResultExtended.Rect.Bottom;
 
+#if __ANDROID__
 			Assert.AreEqual(popupLocationDifferenceExtended, 2, 1);
+#else
+			Assert.AreEqual(popupLocationDifferenceExtended-24, 2, 1);
+#endif
 
+#if __ANDROID__
 			// Validates that the popup has not moved. The use of sampleControlResultExtended
 			// compensates for a possible change of origins with android popups.
 			Assert.AreEqual(popupLocationDifference - sampleControlResultExtended.Rect.Y, popupLocationDifferenceExtended);
+#else
+			Assert.AreEqual(popupLocationDifference - sampleControlResultExtended.Rect.Y, popupLocationDifferenceExtended);
+#endif
 		}
 
 		[Test]
