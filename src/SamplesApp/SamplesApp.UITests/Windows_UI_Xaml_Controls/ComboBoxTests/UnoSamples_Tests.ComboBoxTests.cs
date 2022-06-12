@@ -91,9 +91,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 			var popupLocationDifferenceExtended = popupResultExtended.Rect.Y - resourcesFilterResultExtended.Rect.Bottom;
 
 #if __ANDROID__
-			Assert.AreEqual(popupLocationDifferenceExtended, 2, 1);
+			Assert.AreEqual(popupLocationDifferenceExtended + 24, 2, 1);
 #else
-			Assert.AreEqual(popupLocationDifferenceExtended+24, 2, 1);
+			Assert.AreEqual(popupLocationDifferenceExtended, 2, 1);
 #endif
 
 #if __ANDROID__
