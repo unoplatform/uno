@@ -28,7 +28,9 @@ namespace UITests.Windows_UI_Xaml.WindowTests
 		{
 			this.InitializeComponent();
 
+#if HAS_UNO
 			_selectedColor = (Window.Current.Background as SolidColorBrush)?.Color ?? Colors.White;
+#endif
 		}
 
 		public Color SelectedColor
@@ -38,7 +40,9 @@ namespace UITests.Windows_UI_Xaml.WindowTests
 			{
 				_selectedColor = value;
 
+#if HAS_UNO
 				Window.Current.Background = new SolidColorBrush(_selectedColor);
+#endif
 			}
 		}
 	}
