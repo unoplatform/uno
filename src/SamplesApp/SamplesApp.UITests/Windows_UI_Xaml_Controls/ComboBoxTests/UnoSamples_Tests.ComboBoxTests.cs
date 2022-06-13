@@ -67,6 +67,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 			var combo01 = _app.Marked("combo01");
 			var sampleControl = _app.Marked("sampleControl");
 			var changeExtended = _app.Marked("changeExtended");
+			var topBound = _app.Marked("topBound");
+
 
 			var resourcesFilterResult = _app.WaitForElement(combo01).First();
 			var sampleControlResult = _app.WaitForElement(sampleControl).First();
@@ -90,19 +92,22 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 
 			var popupLocationDifferenceExtended = popupResultExtended.Rect.Y - resourcesFilterResultExtended.Rect.Bottom;
 
-#if __ANDROID__
-			Assert.AreEqual(popupLocationDifferenceExtended + 24, 2, 1);
-#else
-			Assert.AreEqual(popupLocationDifferenceExtended, 2, 1);
-#endif
+			float topBoudFloat = 0;
 
-#if __ANDROID__
+			float.TryParse(topBound.GetText(), out topBoudFloat);
+			//#if __ANDROID__
+			//			Assert.AreEqual(popupLocationDifferenceExtended + 24, 2, 1);
+			//#else
+			Assert.AreEqual(popupLocationDifferenceExtended + topBoudFloat, 2, 1);
+			//#endif
+
+			//#if __ANDROID__
 			// Validates that the popup has not moved. The use of sampleControlResultExtended
 			// compensates for a possible change of origins with android popups.
 			Assert.AreEqual(popupLocationDifference - sampleControlResultExtended.Rect.Y, popupLocationDifferenceExtended);
-#else
-			Assert.AreEqual(popupLocationDifference - sampleControlResultExtended.Rect.Y, popupLocationDifferenceExtended);
-#endif
+			//#else
+			//			Assert.AreEqual(popupLocationDifference - sampleControlResultExtended.Rect.Y, popupLocationDifferenceExtended);
+			//#endif
 		}
 
 		[Test]
@@ -290,7 +295,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 		public void ComboBox_With_Description()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ComboBox.ComboBox_Description", skipInitialScreenshot: true);
-			var comboBox = _app.WaitForElement("DescriptionComboBox")[0];			
+			var comboBox = _app.WaitForElement("DescriptionComboBox")[0];
 			using var screenshot = TakeScreenshot("ComboBox Description", new ScreenshotOptions() { IgnoreInSnapshotCompare = true });
 			ImageAssert.HasColorAt(screenshot, comboBox.Rect.X + comboBox.Rect.Width / 2, comboBox.Rect.Y + comboBox.Rect.Height - 150, Color.Red);
 		}

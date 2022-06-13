@@ -332,6 +332,8 @@
 				  ItemContainerStyle="{StaticResource DefaultComboBoxItemStyle}"
 				  Style="{StaticResource ResourcesComboBoxStyle}"
 				  Grid.Row="2" />
+
+		<TextBlock x:Name="topBound" Visibility="Collapsed" />
 	</Grid>
 
 </UserControl>

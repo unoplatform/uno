@@ -32,11 +32,14 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 
 			var previousState = CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar;
 			Unloaded += (s, e) => CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = previousState;
+
+			topBound.Text = CoreApplication.GetCurrentView().CoreWindow.Bounds.Top;
 		}
 
 		private void OnChangeStatusBarExtended(object sender, object args)
 		{
 			CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
+			topBound.Text = CoreApplication.GetCurrentView().CoreWindow.Bounds.Top;
 		}
 	}
 }
