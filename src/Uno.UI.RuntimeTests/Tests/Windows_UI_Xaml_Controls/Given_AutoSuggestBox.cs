@@ -96,5 +96,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 			}
 		}
+
+		[TestMethod]
+		public async Task When_Choose_Selection()
+		{
+			var SUT = new AutoSuggestBox();
+
+			static void QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+			{
+				if (args.ChosenSuggestion is null)
+				{
+					Assert.Fail();
+				}
+			}
+			Button button = null;
+			try
+			{
+				
+
+				button = new Button();
+				var stack = new StackPanel()
+				{
+					Children =
+					{
+						button,
+						SUT
+					}
+				};
+
+				SUT.QuerySubmitted += QuerySubmitted;
+				SUT.ItemsSource = new List<string>() { "ab", "abc", "abcde" };
+				WindowHelper.WindowContent = stack;
+				await WindowHelper.WaitForIdle();
+				
+
+				SUT.Focus(FocusState.Programmatic);				
+				SUT.Text = "ab";
+				await WindowHelper.WaitForIdle();
+			}
+			finally
+			{	
+				button?.Focus(FocusState.Programmatic); // Unfocus the AutoSuggestBox to ensure popup is closed.
+				await WindowHelper.WaitForIdle();
+			}
+		}		
 	}
 }
