@@ -30,8 +30,8 @@ namespace Uno.UI
 		public static readonly nfloat MainScreenScale = UIScreen.MainScreen.Scale;
 		public static readonly bool IsRetinaDisplay = UIScreen.MainScreen.Scale > 1.0f;
 #elif __MACOS__
-		public static readonly nfloat MainScreenScale = NSScreen.MainScreen.UserSpaceScaleFactor;
-		public static readonly bool IsRetinaDisplay = NSScreen.MainScreen.UserSpaceScaleFactor > 1.0f;
+		public static readonly nfloat MainScreenScale = NSScreen.MainScreen.BackingScaleFactor;
+		public static readonly bool IsRetinaDisplay = NSScreen.MainScreen.BackingScaleFactor > 1.0f;
 #endif
 
 		private static double _rectangleRoundingEpsilon = 0.05;
