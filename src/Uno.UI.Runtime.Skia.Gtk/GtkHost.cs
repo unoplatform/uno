@@ -32,6 +32,7 @@ using Uno.UI.Runtime.Skia.Helpers;
 using Uno.UI.Runtime.Skia.Helpers.Dpi;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
+using Uno.Disposables;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -48,6 +49,7 @@ namespace Uno.UI.Runtime.Skia
 		private Widget _area;
 		private Fixed _fix;
 		private GtkDisplayInformationExtension _displayInformationExtension;
+		private CompositeDisposable _registrations = new();
 
 		public static Gtk.Window Window => _window;
 		public static Gtk.EventBox EventBox => _eventBox;
@@ -188,9 +190,37 @@ namespace Uno.UI.Runtime.Skia
 
 			WUX.Application.StartWithArguments(CreateApp);
 
+			RegisterForBackgroundColor();
+
 			UpdateWindowPropertiesFromPackage();
 
 			Gtk.Application.Run();
+		}
+
+		private void RegisterForBackgroundColor()
+		{
+			if (_area is IRenderSurface renderSurface)
+			{
+				void Update()
+				{
+					if (WUX.Window.Current.Background is WUX.Media.SolidColorBrush brush)
+					{
+						renderSurface.BackgroundColor = brush.Color;
+					}
+					else
+					{
+						if (this.Log().IsEnabled(LogLevel.Warning))
+						{
+							this.Log().Warn($"This platform only supports SolidColorBrush for the Window background");
+						}
+					}
+
+				}
+
+				Update();
+
+				_registrations.Add(WUX.Window.Current.RegisterBackgroundChangedEvent((s, e) => Update()));
+			}
 		}
 
 		private void WindowClosing(object sender, DeleteEventArgs args)

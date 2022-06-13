@@ -32,6 +32,9 @@ namespace Uno.UI.Runtime.Skia
 
 		private readonly SKColorType _colorType;
 
+		public SKColor BackgroundColor { get; set; }
+			= SKColors.White;
+
 		public SoftwareRenderSurface()
 		{
 			_displayInformation = DisplayInformation.GetForCurrentView();
@@ -103,7 +106,7 @@ namespace Uno.UI.Runtime.Skia
 
 			using (new SKAutoCanvasRestore(canvas, true))
 			{
-				canvas.Clear(SKColors.White);
+				canvas.Clear(BackgroundColor);
 				canvas.Scale(_dpi);
 
 				WUX.Window.Current.Compositor.Render(_surface);
