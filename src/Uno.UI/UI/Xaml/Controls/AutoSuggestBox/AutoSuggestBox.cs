@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.Linq;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
@@ -325,8 +326,11 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private void SubmitSearch()
-		{
-			QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(_suggestionsList.SelectedItem, Text));
+	    {	
+			string finalResult = GetObjectText(Text);
+
+			QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(finalResult is "" ? null : finalResult, userInput));			
+
 			IsSuggestionListOpen = false;
 		}
 
