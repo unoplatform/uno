@@ -1,18 +1,15 @@
-﻿using System;
-using System.Numerics;
-using Uno.Disposables;
-using Windows.Foundation;
+﻿using Uno.Disposables;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Hosting;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Expander : ContentControl
-	{
+    {
 		private readonly string c_expanderHeader = "ExpanderHeader";
 		private readonly string c_expanderContent = "ExpanderContent";
 		private readonly string c_expanderContentClip = "ExpanderContentClip";
@@ -83,16 +80,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (GetTemplateChild<Border>(c_expanderContentClip) is Border expanderContentClip)
 			{
-				// TODO Uno specific: The Composition clipping APIs are currently unsupported,
-				// so UIElement.Clip a layout slot for the Expander content when the
-				// SizeChanged event is fired.
-#if HAS_UNO
-				expanderContentClip.SizeChanged += OnContentClipSizeChanged;
-				registrations.Add(() => expanderContentClip.SizeChanged -= OnContentClipSizeChanged);
-#else
 				var visual = ElementCompositionPreview.GetElementVisual(expanderContentClip);
 				visual.Clip = visual.Compositor.CreateInsetClip();
-#endif
 			}
 
 			if (GetTemplateChild<Border>(c_expanderContent) is Border expanderContent)
@@ -107,18 +96,6 @@ namespace Microsoft.UI.Xaml.Controls
 			// Uno Doc: Added to dispose event handlers
 			_eventSubscriptions.Disposable = registrations;
 		}
-
-#if HAS_UNO
-		protected void OnContentClipSizeChanged(object sender, SizeChangedEventArgs args)
-		{
-			// TODO Uno specific: LayoutInformation.GetLayoutSlot(element) is currently inconsistent
-			// on some platforms, so construct the Rect from ActualSize. A non-zero Point
-			// is not required for this case.
-			var expanderContentClip = sender as Border;
-			var layoutSlot = new Rect(new Point(0, 0), expanderContentClip.ActualSize.ToSize());
-			expanderContentClip.Clip = new RectangleGeometry() { Rect = layoutSlot };
-		}
-#endif
 
 		protected void OnContentSizeChanged(object sender, SizeChangedEventArgs args)
 		{
@@ -222,5 +199,5 @@ namespace Microsoft.UI.Xaml.Controls
 				);
 			}
 		}
-	}
+    }
 }

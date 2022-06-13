@@ -49,9 +49,6 @@
 	<PackageReference Update="SkiaSharp.Views.WPF" Version="2.80.3" />
 	<PackageReference Update="SkiaSharp" Version="2.80.3" />
 	<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.80.3" />
-	<PackageReference Update="SkiaSharp.Harfbuzz" Version="2.80.3" />
-	<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="2.8.2" />
-	<PackageReference Update="HarfBuzzSharp.NativeAssets.Tizen" Version="2.8.2" />
 	<PackageReference Update="SkiaSharp.HarfBuzz" Version="2.80.3" />
 	<PackageReference Update="GtkSharp" Version="3.24.24.34" />
 	<PackageReference Update="System.Json" Version="4.7.1" />

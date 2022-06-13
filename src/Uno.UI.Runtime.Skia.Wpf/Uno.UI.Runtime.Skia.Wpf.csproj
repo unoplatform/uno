@@ -32,7 +32,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp.Views.WPF" />
-		<PackageReference Include="SkiaSharp.Harfbuzz" />
 	</ItemGroup>
 
 	<ItemGroup>
