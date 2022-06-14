@@ -35,7 +35,11 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 		static UnoXamlHostBase()
 		{
-			//TODO: This should be set in a different location, possibly in a more general way #8978
+			//TODO: These lines should be set in a different location, possibly in a more general way (for multi-window support) #8978
+			Windows.UI.Core.CoreDispatcher.DispatchOverride = d =>
+				global::System.Windows.Application.Current.Dispatcher.BeginInvoke(d);
+			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride =
+				global::System.Windows.Application.Current.Dispatcher.CheckAccess;
 			if (MetadataProviderDiscovery.MetadataProviderFactory is null)
 			{
 				MetadataProviderDiscovery.MetadataProviderFactory = type =>

@@ -40,6 +40,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.Wasm.csproj" />
 	</ItemGroup>
 
 </Project>

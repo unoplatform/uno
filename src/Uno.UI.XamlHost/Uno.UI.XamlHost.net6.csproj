@@ -57,5 +57,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.net6.csproj" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.net6.csproj" />
 	</ItemGroup>
 </Project>

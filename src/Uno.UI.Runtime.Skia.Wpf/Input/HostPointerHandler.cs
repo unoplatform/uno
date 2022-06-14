@@ -190,7 +190,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 						InputManager?.RaisePointerWheelChanged(_previous = ptArgs);
 
-						handled = true;
+						handled = ptArgs.Handled;
 						break;
 					}
 			}

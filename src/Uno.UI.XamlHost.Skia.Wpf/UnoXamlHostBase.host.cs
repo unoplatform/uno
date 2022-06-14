@@ -49,8 +49,6 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		{
 			// TODO: These three lines are required here for initialization, but should be refactored later #8978
 			WpfHost.RegisterExtensions();
-			Windows.UI.Core.CoreDispatcher.DispatchOverride = d => Dispatcher.BeginInvoke(d);
-			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = Dispatcher.CheckAccess;
 
 			_designMode = DesignerProperties.GetIsInDesignMode(this);
 

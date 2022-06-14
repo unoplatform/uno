@@ -5,6 +5,7 @@
 
 using System;
 using System.Windows;
+using Uno.UI.XamlHost.Extensions;
 using WUX = Windows.UI.Xaml;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
@@ -98,13 +99,13 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		{
 			if (IsXamlContentLoaded())
 			{
-				//if (_xamlSource.Content.VisualTreeCache.RootElement is WUX.FrameworkElement element)
-				//{
-				//	var width = ActualWidth;
-				//	var height = ActualHeight;
-				//	element.Width = width;
-				//	element.Height = height;
-				//}
+				if (_xamlSource.GetVisualTreeRoot() is WUX.FrameworkElement element)
+				{
+					var width = ActualWidth;
+					var height = ActualHeight;
+					element.Width = width;
+					element.Height = height;
+				}
 			}
 		}
 	}
