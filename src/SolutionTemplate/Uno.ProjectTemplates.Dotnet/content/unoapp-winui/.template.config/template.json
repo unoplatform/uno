@@ -194,10 +194,6 @@
     {
       "condition": "skia-wpf",
       "path": "UnoWinUIQuickStart.Skia.WPF\\UnoWinUIQuickStart.Skia.WPF.csproj"
-    },
-    {
-      "condition": "skia-wpf",
-      "path": "UnoWinUIQuickStart.Skia.WPF.Host\\UnoWinUIQuickStart.Skia.WPF.Host.csproj"
     }
   ],
   "sources": [
@@ -245,8 +241,7 @@
         {
           "condition": "(!skia-wpf)",
           "exclude": [
-            "UnoWinUIQuickStart.Skia.WPF/**/*",
-            "UnoWinUIQuickStart.Skia.WPF.Host/**/*"
+            "UnoWinUIQuickStart.Skia.WPF/**/*"
           ]
         },
         {

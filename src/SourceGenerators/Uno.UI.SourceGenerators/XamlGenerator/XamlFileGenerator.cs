@@ -20,6 +20,7 @@ using Uno.Disposables;
 using Uno.UI.SourceGenerators.BindableTypeProviders;
 using Microsoft.CodeAnalysis.CSharp;
 using System.Diagnostics;
+using Uno.UI.SourceGenerators.Helpers;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;

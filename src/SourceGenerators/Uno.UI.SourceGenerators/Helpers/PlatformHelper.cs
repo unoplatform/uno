@@ -10,9 +10,13 @@ using Uno.Roslyn;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
+using Uno.UI;
+using Uno.UI.SourceGenerators;
+using Uno.UI.SourceGenerators.Helpers;
+using Uno.UI.SourceGenerators.XamlGenerator;
 #endif
 
-namespace Uno.UI.SourceGenerators.XamlGenerator
+namespace Uno.UI.SourceGenerators.Helpers
 {
 	public class PlatformHelper
 	{
@@ -22,7 +26,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public static bool IsValidPlatform(GeneratorExecutionContext context)
 		{
 			var evaluatedValue = context.GetMSBuildPropertyValue("TargetPlatformIdentifier");
-			var useWPF = context.GetMSBuildPropertyValue("UseWPF");
+			var windowsAppSDKWinUI = context.GetMSBuildPropertyValue("WindowsAppSDKWinUI");
 			var projectTypeGuids = context.GetMSBuildPropertyValue("ProjectTypeGuidsProperty");
 
 			var isUAP = evaluatedValue?.Equals("UAP", StringComparison.OrdinalIgnoreCase) ?? false;
@@ -32,11 +36,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var isWindowsRuntimeApplicationOutput = context.Compilation.Options.OutputKind == OutputKind.WindowsRuntimeApplication;
 			var isWindowsRuntimeMetadataOutput = context.Compilation.Options.OutputKind == OutputKind.WindowsRuntimeMetadata;
 
-			var isNetCoreWPF = useWPF?.Equals("True", StringComparison.OrdinalIgnoreCase) ?? false;
+			var isWinAppSDK = windowsAppSDKWinUI?.Equals("True", StringComparison.OrdinalIgnoreCase) ?? false;
 			var isNetCoreDesktop = projectTypeGuids?.Equals("{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", StringComparison.OrdinalIgnoreCase) ?? false;
 
 			return !isUAP
-				&& !isNetCoreWPF
+				&& !isWinAppSDK
 				&& !isNetCoreDesktop
 				&& !isWindowsRuntimeMetadataOutput
 				&& !isWindowsRuntimeApplicationOutput;

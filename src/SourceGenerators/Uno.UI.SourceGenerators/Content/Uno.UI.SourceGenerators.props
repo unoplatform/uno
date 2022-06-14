@@ -310,7 +310,7 @@
 		capture of target-defined Pages 
 		-->
 	<ItemGroup>
-	  <SourceGeneratorInput Include="@(Page);@(ApplicationDefinition)" />
+	  <SourceGeneratorInput Include="@(Page);@(ApplicationDefinition);@(UnoPage);@(UnoApplicationDefinition)" />
 	</ItemGroup>
   </Target>
 
@@ -375,6 +375,13 @@
 	  <AdditionalFiles Include="@(ApplicationDefinition)" SourceItemGroup="ApplicationDefinition" />
 	  <AdditionalFiles Include="@(PRIResource)" SourceItemGroup="PRIResource" />
 	  <AdditionalFiles Include="@(TSBindingAssemblySource)" SourceItemGroup="TSBindingAssemblySource" />
+
+	  <!--
+	  Include files duplicated from the XamlRuntime metadata. Used
+	  when building WPF.Skia heads.
+	  -->
+	  <AdditionalFiles Include="@(UnoPage)" SourceItemGroup="Page" />
+	  <AdditionalFiles Include="@(UnoApplicationDefinition)" SourceItemGroup="ApplicationDefinition" />
 
 	  <_AdditionalFilesCleanup Include="@(AdditionalFiles)" />
 	  <AdditionalFiles Remove="@(_AdditionalFilesCleanup)" />
