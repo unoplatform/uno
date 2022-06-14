@@ -47,6 +47,8 @@ namespace Uno.UI.Runtime.Skia
 		/// </remarks>
 		protected bool _isGLES;
 
+		public SKColor BackgroundColor { get; set; }
+
 		public GLRenderSurfaceBase()
 		{
 			_displayInformation = DisplayInformation.GetForCurrentView();
@@ -121,7 +123,7 @@ namespace Uno.UI.Runtime.Skia
 
 			using (new SKAutoCanvasRestore(canvas, true))
 			{
-				canvas.Clear(SKColors.White);
+				canvas.Clear(BackgroundColor);
 				canvas.Translate(new SKPoint(0, GuardBand));
 
 				WUX.Window.Current.Compositor.Render(_surface);

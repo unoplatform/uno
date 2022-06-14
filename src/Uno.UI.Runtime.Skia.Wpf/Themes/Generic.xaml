@@ -8,7 +8,7 @@
         <Setter Property="Template">
             <Setter.Value>
 				<ControlTemplate TargetType="{x:Type platform:WpfHost}">
-                    <Border Background="{TemplateBinding Background}"
+                    <Border Background="{x:Null}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
 						<Canvas x:Name="NativeOverlayLayer" />
@@ -28,7 +28,11 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type controls:WpfTextViewTextBox}">
-					<Border Name="Border" CornerRadius="0" Margin="{TemplateBinding Margin}" Padding="{TemplateBinding Padding}" BorderThickness="0">
+					<Border Name="Border"
+							CornerRadius="0"
+							Margin="{TemplateBinding Margin}"
+							Padding="{TemplateBinding Padding}"
+							BorderThickness="0">
 						<Border.Background>
 							<SolidColorBrush Color="Transparent" />
 						</Border.Background>

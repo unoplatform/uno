@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using SkiaSharp;
 using Uno.ApplicationModel.DataTransfer;
+using Uno.Disposables;
 using Uno.Extensions.ApplicationModel.DataTransfer;
 using Uno.Extensions.Networking.Connectivity;
 using Uno.Extensions.Storage.Pickers;
@@ -15,6 +16,7 @@ using Uno.Extensions.System;
 using Uno.Extensions.System.Profile;
 using Uno.Extensions.UI.Core.Preview;
 using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.UI.Core.Preview;
 using Uno.UI.Runtime.Skia.Wpf;
@@ -47,7 +49,8 @@ namespace Uno.UI.Skia.Platform
 
 		private readonly bool designMode;
 		private readonly Func<UnoApplication> _appBuilder;
-		
+		private CompositeDisposable _registrations = new();
+
 		private bool _appStarted = false;
 		
 		[ThreadStatic] private static WpfHost _current;
@@ -59,6 +62,7 @@ namespace Uno.UI.Skia.Platform
 		private bool _isVisible = true;
 
 		private DisplayInformation _displayInformation;
+		private SKColor _backgroundColor;
 
 		static WpfHost()
 		{
@@ -129,6 +133,30 @@ namespace Uno.UI.Skia.Platform
 
 			SizeChanged += WpfHost_SizeChanged;
 			Loaded += WpfHost_Loaded;
+
+			RegisterForBackgroundColor();
+		}
+
+		private void RegisterForBackgroundColor()
+		{
+			void Update()
+			{
+				if (WinUI.Window.Current.Background is WinUI.Media.SolidColorBrush brush)
+				{
+					_backgroundColor = brush.Color;
+				}
+				else
+				{
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().Warn($"This platform only supports SolidColorBrush for the Window background");
+					}
+				}
+			}
+
+			Update();
+
+			_registrations.Add(WinUI.Window.Current.RegisterBackgroundChangedEvent((s, e) => Update()));
 		}
 
 		private void MainWindow_Closing(object sender, CancelEventArgs e)
@@ -290,7 +318,7 @@ namespace Uno.UI.Skia.Platform
 			bitmap.Lock();
 			using (var surface = SKSurface.Create(info, bitmap.BackBuffer, bitmap.BackBufferStride))
 			{
-				surface.Canvas.Clear(SKColors.White);
+				surface.Canvas.Clear(_backgroundColor);
 				surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
 				WinUI.Window.Current.Compositor.Render(surface);
 			}
