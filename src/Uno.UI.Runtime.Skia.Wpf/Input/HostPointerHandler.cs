@@ -1,17 +1,17 @@
 ﻿#nullable enable
 
 using System;
-using Windows.Devices.Input;
-using Windows.UI.Core;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
-using Windows.UI.Input;
-using Windows.System;
 using Uno.Foundation.Logging;
-using Uno.UI.Runtime.Skia.Wpf.Input;
-using Uno.UI.Runtime.Skia.Wpf.Constants;
 using Uno.UI.Runtime.Skia.Wpf;
+using Uno.UI.Runtime.Skia.Wpf.Constants;
+using Uno.UI.Runtime.Skia.Wpf.Input;
+using Windows.Devices.Input;
+using Windows.System;
+using Windows.UI.Core;
+using Windows.UI.Input;
 using WinUIInputManager = Uno.UI.Xaml.Core.InputManager;
 using WpfControl = System.Windows.Controls.Control;
 using WpfMouseEventArgs = System.Windows.Input.MouseEventArgs;
@@ -22,6 +22,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 	{
 		private readonly IWpfHost _host;
 		private readonly WpfControl _hostControl;
+		private readonly ICoreWindowEvents _coreWindow;
 		private HwndSource? _hwndSource;
 		private PointerEventArgs? _previous;
 		private WinUIInputManager? _inputManager;
@@ -32,7 +33,12 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			{
 				throw new ArgumentException($"{nameof(host)} must be a WPF Control instance", nameof(host));
 			}
-			
+
+			if (!host.IsIsland)
+			{
+				_coreWindow = CoreWindow.GetForCurrentThread()!;
+			}
+
 			_hostControl = hostControl;
 
 			_hostControl.MouseEnter += HostOnMouseEnter;
@@ -71,7 +77,10 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		{
 			try
 			{
-				InputManager?.RaisePointerEntered(_previous = BuildPointerArgs(args));
+				var eventArgs = BuildPointerArgs(args);
+				_coreWindow?.RaisePointerEntered(eventArgs);
+				InputManager?.RaisePointerEntered(eventArgs);
+				_previous = eventArgs;
 			}
 			catch (Exception e)
 			{
@@ -83,7 +92,10 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		{
 			try
 			{
-				InputManager?.RaisePointerExited(_previous = BuildPointerArgs(args));
+				var eventArgs = BuildPointerArgs(args);
+				_coreWindow?.RaisePointerExited(eventArgs);
+				InputManager?.RaisePointerExited(eventArgs);
+				_previous = eventArgs;
 			}
 			catch (Exception e)
 			{
@@ -95,7 +107,10 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		{
 			try
 			{
-				InputManager?.RaisePointerMoved(_previous = BuildPointerArgs(args));
+				var eventArgs = BuildPointerArgs(args);
+				_coreWindow?.RaisePointerMoved(eventArgs);
+				InputManager?.RaisePointerMoved(eventArgs);
+				_previous = eventArgs;
 			}
 			catch (Exception e)
 			{
@@ -108,7 +123,10 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			try
 			{
 				// IsInContact: true
-				InputManager?.RaisePointerPressed(_previous = BuildPointerArgs(args));
+				var eventArgs = BuildPointerArgs(args);
+				_coreWindow?.RaisePointerPressed(eventArgs);
+				InputManager?.RaisePointerPressed(eventArgs);
+				_previous = eventArgs;
 			}
 			catch (Exception e)
 			{
@@ -120,7 +138,10 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		{
 			try
 			{
-				InputManager?.RaisePointerReleased(_previous = BuildPointerArgs(args));
+				var eventArgs = BuildPointerArgs(args);
+				_coreWindow?.RaisePointerReleased(eventArgs);
+				InputManager?.RaisePointerReleased(eventArgs);
+				_previous = eventArgs;
 			}
 			catch (Exception e)
 			{
@@ -135,7 +156,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 			static short GetLoWord(int i) => (short)(i & 0xFFFF);
 			static short GetHiWord(int i) => (short)(i >> 16);
-
+			global::System.Diagnostics.Debug.WriteLine(msg);
 			switch (msg)
 			{
 				case Win32Messages.WM_DPICHANGED:
@@ -188,7 +209,9 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 						);
 						var ptArgs = new PointerEventArgs(point, modifiers);
 
-						InputManager?.RaisePointerWheelChanged(_previous = ptArgs);
+						_coreWindow?.RaisePointerWheelChanged(ptArgs);
+						InputManager?.RaisePointerWheelChanged(ptArgs);
+						_previous = ptArgs;
 
 						handled = ptArgs.Handled;
 						break;
