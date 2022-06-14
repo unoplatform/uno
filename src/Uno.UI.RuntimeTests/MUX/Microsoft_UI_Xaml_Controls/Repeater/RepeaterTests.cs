@@ -32,10 +32,12 @@ using System.Collections.Generic;
 using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Uno.UI.RuntimeTests;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
+	[RequiresFullWindow]
 	public class RepeaterTests : MUXApiTestBase
 	{
 		[TestMethod]
@@ -225,6 +227,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+		// TODO: MZ fails
 		public void VerifyCurrentAnchor()
 		{
 			//if (PlatformConfiguration.IsDebugBuildConfiguration())
@@ -306,6 +309,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+		// TODO: MZ fails
 		public void VerifyFocusedItemIsRecycledOnCollectionReset()
 		{
 			List<Layout> layouts = new List<Layout>();
@@ -595,6 +599,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 
 		[TestMethod]
+		// TODO: MZ fails
 		public void VerifyUIElementsInItemsSource()
 		{
 			ItemsRepeater repeater = null;
@@ -643,6 +648,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+		// TODO: MZ fails
 		public void VerifyRepeaterDoesNotLeakItemContainers()
 		{
 			ObservableCollection<int> items = new ObservableCollection<int>();
@@ -696,6 +702,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+		// TODO: MZ fails
 		public void BringIntoViewOfExistingItemsDoesNotChangeScrollOffset()
 		{
 			ScrollViewer scrollViewer = null;
