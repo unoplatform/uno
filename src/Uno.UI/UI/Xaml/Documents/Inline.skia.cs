@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 using HarfBuzzSharp;
 using SkiaSharp;
@@ -20,12 +21,14 @@ namespace Windows.UI.Xaml.Documents
 		// makes here but it affects subpixel rendering accuracy. Performance does not seem to be affected by changing this value.
 		private const int FontScale = 512;
 
-		private static readonly Func<string?, FontWeight, FontStretch, FontStyle, (SKTypeface, Font)> _getFont =
-			Funcs.CreateMemoized<string?, FontWeight, FontStretch, FontStyle, (SKTypeface, Font)>(
+		private static readonly Func<string?, FontWeight, FontStretch, FontStyle, FontDetails> _getFont =
+			Funcs.CreateMemoized<string?, FontWeight, FontStretch, FontStyle, FontDetails>(
 				(nm, wt, wh, sl) => GetFont(nm, wt, wh, sl));
 
-		private (SKTypeface Typeface, Font Font)? _fontInfo;
+		private FontDetails? _fontInfo;
 		private SKPaint? _paint;
+
+		internal record FontDetails(SKTypeface Typeface, Font Font, Face Face);
 
 		internal SKPaint Paint
 		{
@@ -47,7 +50,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 
-		internal (SKTypeface Typeface, Font Font) FontInfo => _fontInfo ??= _getFont(FontFamily?.Source, FontWeight, FontStretch, FontStyle);
+		internal FontDetails FontInfo => _fontInfo ??= _getFont(FontFamily?.Source, FontWeight, FontStretch, FontStyle);
 
 		internal float LineHeight
 		{
@@ -62,7 +65,7 @@ namespace Windows.UI.Xaml.Documents
 
 		internal float BelowBaselineHeight => Paint.FontMetrics.Descent;
 
-		private static (SKTypeface Typeface, Font Font) GetFont(
+		private static FontDetails GetFont(
 			string? name,
 			FontWeight weight,
 			FontStretch stretch,
@@ -105,18 +108,52 @@ namespace Windows.UI.Xaml.Documents
 				}
 			}
 
-			using (var hbBlob = skTypeFace.OpenStream(out int index).ToHarfBuzzBlob())
-			using (var hbFace = new Face(hbBlob, index))
+			Blob? GetTable(Face face, Tag tag)
 			{
-				hbFace.Index = index;
-				hbFace.UnitsPerEm = skTypeFace.UnitsPerEm;
+				var size = skTypeFace.GetTableSize(tag);
 
-				var hbFont = new Font(hbFace);
-				hbFont.SetScale(FontScale, FontScale);
-				hbFont.SetFunctionsOpenType();
+				if(size == 0)
+                {
+					return null;
+                }
 
-				return (skTypeFace, hbFont);
+				var data = Marshal.AllocCoTaskMem(size);
+
+				var releaseDelegate = new ReleaseDelegate(() => Marshal.FreeCoTaskMem(data));
+
+				var value = skTypeFace.TryGetTableData(tag, 0, size, data) ?
+					new Blob(data, size, MemoryMode.Writeable, releaseDelegate) : null;
+
+				return value;
 			}
+
+			var hbFace = new Face(GetTable);
+
+			hbFace.UnitsPerEm = skTypeFace.UnitsPerEm;
+
+			var hbFont = new Font(hbFace);
+			hbFont.SetScale(FontScale, FontScale);
+			hbFont.SetFunctionsOpenType();
+
+			return new(skTypeFace, hbFont, hbFace);
+		}
+
+		/// <summary>
+		/// Apply a workaround for https://github.com/mono/SkiaSharp/issues/2113
+		/// </summary>
+		public static void ApplyHarfbuzzWorkaround()
+		{
+			// HarfBuzzSharp.Font.SetFunctionsOpenType() needs to be initialized before GtkSharp is initialized
+			// to avoid libHarfBuzzSharp's own static library to hook onto
+			// the system implementation of libHarfBuzzSharp.
+			var font = GetFont(null, FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
+
+			using HarfBuzzSharp.Buffer buffer = new();
+			buffer.ContentType = ContentType.Unicode;
+			buffer.GuessSegmentProperties();
+
+			// Force a font loading by shaping a buffer.
+			font.Font.Shape(buffer);
 		}
 	}
 }
