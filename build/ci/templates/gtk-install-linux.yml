@@ -4,7 +4,7 @@ parameters:
 steps:
   - bash: |
        sudo apt update
-       sudo apt-get install gtk+3.0 
+       sudo apt install -y gtk+3.0
 
     displayName: Install GTK3 runtime
     retryCountOnTaskFailure: 3
