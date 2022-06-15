@@ -81,6 +81,8 @@ namespace Uno.UI.Runtime.Skia
 
 		public void Run()
 		{
+			Windows.UI.Xaml.Documents.Inline.ApplyHarfbuzzWorkaround();
+
 			Gtk.Application.Init();
 			SetupTheme();
 
