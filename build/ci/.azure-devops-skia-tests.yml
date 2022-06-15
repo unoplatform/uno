@@ -120,7 +120,7 @@ jobs:
 
 - job: Skia_Gtk_Runtime_Tests_Run_Linux
   displayName: 'Skia Runtime Tests (Linux)'
-  timeoutInMinutes: 30
+  timeoutInMinutes: 60
 
   pool:
     vmImage: ${{ parameters.vmLinuxImage }}
