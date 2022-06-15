@@ -90,6 +90,7 @@ jobs:
   parameters:
     vmImage: '$(windows2022HostedVMImage)'
     vmMacImage: '$(macOSVMImage)'
+    vmLinuxImage: '$(linuxVMImage)'
     poolName: '$(windows2022HostedVMImage)'
 
 - template: build/ci/.azure-devops-docs.yml

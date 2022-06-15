@@ -84,11 +84,10 @@ jobs:
       ArtifactName: uitests-results
       ArtifactType: Container
 
-- job: Skia_Gtk_Runtime_Tests_Build
-  displayName: 'Skia Samples App Runtime Tests'
+- job: Skia_Gtk_Runtime_Tests_Run_macOS
+  displayName: 'Skia Runtime Tests (macOS)'
   timeoutInMinutes: 30
 
-  #pool: ${{ parameters.poolName }}
   pool:
     vmImage: ${{ parameters.vmMacImage }}
 
@@ -113,7 +112,45 @@ jobs:
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Skia GTK Runtime Tests'
+      testRunTitle: 'Skia GTK Runtime Tests (macOS)'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/skia-gtk-runtime-tests-results.xml'
+      failTaskOnFailedTests: true
+
+
+- job: Skia_Gtk_Runtime_Tests_Run_Linux
+  displayName: 'Skia Runtime Tests (Linux)'
+  timeoutInMinutes: 30
+
+  pool:
+    vmImage: ${{ parameters.vmLinuxImage }}
+
+  container: unoplatform/wasm-build:2.3
+
+  dependsOn: Skia_Tests_Build
+
+  steps:
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: skia-gtk-samples-app
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: templates/dotnet-install.yml
+  - template: templates/gtk-install-linux.yml
+
+  - script: sudo apt-get install xvfb
+    displayName: Install xvfb
+
+  - script: |
+        cd $(build.sourcesdirectory)/build/skia-gtk-samples-app
+        xvfb-run --auto-servernum dotnet SamplesApp.Skia.Gtk.dll --runtime-tests=$(build.sourcesdirectory)/build/skia-gtk-runtime-tests-results.xml
+
+    displayName: Run Skia GTK Runtime Tests
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'Skia GTK Runtime Tests (Linux)'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-gtk-runtime-tests-results.xml'
       failTaskOnFailedTests: true
