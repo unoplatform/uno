@@ -138,7 +138,7 @@ jobs:
   - template: templates/dotnet-install.yml
   - template: templates/gtk-install-linux.yml
 
-  - script: sudo apt-get install xvfb
+  - script: sudo apt install -y xvfb
     displayName: Install xvfb
 
   - script: |
