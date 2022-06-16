@@ -43,6 +43,12 @@
 		<BundleResource Include="$(MacOSProjectFolder)Resources\**" Exclude="$(_SingleProjectMacOSExcludes)" IsDefaultItem="true" />
 	</ItemGroup>
 
+	<!-- Windows -->
+	<ItemGroup Condition=" '$(EnableDefaultItems)' == 'true' and '$(SingleProject)' == 'true' and '$(TargetPlatformIdentifier)' == 'windows' and '$(WindowsProjectFolder)' != '' ">
+		<Manifest Include="$(ApplicationManifest)" Condition="Exists('$(ApplicationManifest)')" />
+		<AppxManifest Include="$(PackageManifest)" Condition="Exists('$(PackageManifest)')" />
+	</ItemGroup>
+
 	<!-- Targets -->
 
 	<PropertyGroup Condition=" '$(SingleProject)' == 'true' ">
@@ -70,6 +76,15 @@
 		<MacOSProjectFolder Condition=" '$(MacOSProjectFolder)' == '' ">MacOS\</MacOSProjectFolder>
 		<IPhoneResourcePrefix Condition=" '$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))' == 'macos' ">$(MacOSProjectFolder)Resources</IPhoneResourcePrefix>
 		<_SingleProjectMacOSExcludes>$(MacOSProjectFolder)/**/.*/**</_SingleProjectMacOSExcludes>
+
+		<!-- Windows -->
+		<WindowsProjectFolder Condition=" '$(WindowsProjectFolder)' == '' ">Windows\</WindowsProjectFolder>
+		<WindowsProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(WindowsProjectFolder)'))</WindowsProjectFolder>
+
+		<ApplicationManifest Condition=" Exists('$(WindowsProjectFolder)app.manifest') ">$(WindowsProjectFolder)app.manifest</ApplicationManifest>
+		<PackageManifest Condition=" Exists('$(WindowsProjectFolder)Package.appxmanifest') ">$(WindowsProjectFolder)Package.appxmanifest</PackageManifest>
+		<_SingleProjectWindowsExcludes>$(WindowsProjectFolder)/**/.*/**</_SingleProjectWindowsExcludes>
+
 	</PropertyGroup>
 
 	<!-- Removals -->
@@ -78,48 +93,53 @@
 		<Compile Condition=" '$(TargetPlatformIdentifier)' != 'ios' and '$(iOSProjectFolder)' != '' " Remove="$(iOSProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
 		<Compile Condition=" '$(TargetPlatformIdentifier)' != 'maccatalyst' and '$(MacCatalystProjectFolder)' != '' " Remove="$(MacCatalystProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
 		<Compile Condition=" '$(TargetPlatformIdentifier)' != 'macos' and '$(MacOSProjectFolder)' != '' " Remove="$(MacOSProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
+		<Compile Condition=" '$(TargetPlatformIdentifier)' != 'windows' and '$(MacOSProjectFolder)' != '' " Remove="$(WindowsProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
 
 		<!-- Make files available in the tree -->
 		<None Include="**/*$(DefaultLanguageSourceExtension)"/>
 	</ItemGroup>
 
-	<!-- IDE capabilities -->
+	<Choose>
+		<When Condition="'$(WindowsAppSDKWinUI)'!='true'">
+			<!-- IDE capabilities -->
 
-	<!-- Sync with https://github.com/dotnet/maui/blob/ffab30545ac146710a9ee61138be33e52ca4b326/src/Templates/src/templates/maui-mobile/Directory.Build.targets -->
-	<PropertyGroup>
-		<!-- Required - Enable Launch Profiles for .NET 6 iOS/Android -->
-		<_KeepLaunchProfiles>true</_KeepLaunchProfiles>
-	</PropertyGroup>
+			<!-- Sync with https://github.com/dotnet/maui/blob/ffab30545ac146710a9ee61138be33e52ca4b326/src/Templates/src/templates/maui-mobile/Directory.Build.targets -->
+			<PropertyGroup>
+				<!-- Required - Enable Launch Profiles for .NET 6 iOS/Android -->
+				<_KeepLaunchProfiles>true</_KeepLaunchProfiles>
+			</PropertyGroup>
 
-  <ItemGroup Condition=" '$(SingleProject)' == 'true' ">
-	<ProjectCapability Include="Msix" />
-	<ProjectCapability Include="MauiSingleProject" />
-	<ProjectCapability Include="LaunchProfiles" />
-	<!-- If VS is older than Dev17 -->
-	<ProjectCapability Include="XamarinStaticLaunchProfiles" Condition=" '$(VisualStudioVersion)' != '' and '$(VisualStudioVersion)' &lt; '17.0' " />
-	<!-- Otherwise define LaunchProfilesGroupByPlatformFilters by default -->
-	<ProjectCapability Include="LaunchProfilesGroupByPlatformFilters" Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &gt;= '17.0' " />
+			<ItemGroup Condition=" '$(SingleProject)' == 'true' ">
+				<ProjectCapability Include="Msix" />
+				<ProjectCapability Include="MauiSingleProject" />
+				<ProjectCapability Include="LaunchProfiles" />
+				<!-- If VS is older than Dev17 -->
+				<ProjectCapability Include="XamarinStaticLaunchProfiles" Condition=" '$(VisualStudioVersion)' != '' and '$(VisualStudioVersion)' &lt; '17.0' " />
+				<!-- Otherwise define LaunchProfilesGroupByPlatformFilters by default -->
+				<ProjectCapability Include="LaunchProfilesGroupByPlatformFilters" Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &gt;= '17.0' " />
 
-	<ProjectCapability Include="UseMauiCore" />
-  </ItemGroup>
+				<ProjectCapability Include="UseMauiCore" />
+			</ItemGroup>
 
 
-	<!-- Additional capabilities to enable XAML Intellisense for non UWP/WinUI native projects -->
-	<ItemGroup Condition="'$(BuildingInsideVisualStudio)'=='true'">
-		<AvailableItemName Include="PRIResource" />
-		<AvailableItemName Include="AppxManifest" />
-		<AvailableItemName Include="ApplicationDefinition" />
-		<AvailableItemName Include="Page" />
-		<AvailableItemName Include="DesignData" />
-		<AvailableItemName Include="DesignDataWithDesignTimeCreatableTypes" />
-	</ItemGroup>
+			<!-- Additional capabilities to enable XAML Intellisense for non UWP/WinUI native projects -->
+			<ItemGroup Condition="'$(BuildingInsideVisualStudio)'=='true'">
+				<AvailableItemName Include="PRIResource" />
+				<AvailableItemName Include="AppxManifest" />
+				<AvailableItemName Include="ApplicationDefinition" />
+				<AvailableItemName Include="Page" />
+				<AvailableItemName Include="DesignData" />
+				<AvailableItemName Include="DesignDataWithDesignTimeCreatableTypes" />
+			</ItemGroup>
 
-	<ItemGroup>
-		<ProjectCapability Include="WindowsXaml"/>
-		<ProjectCapability Include="WindowsXamlPage"/>
-		<ProjectCapability Include="WindowsXamlCodeBehind"/>
-		<ProjectCapability Include="WindowsXamlResourceDictionary"/>
-		<ProjectCapability Include="WindowsXamlUserControl"/>
-		<ProjectCapability Include="WindowsUniversalMultiViews"/>
-	</ItemGroup>
+			<ItemGroup>
+				<ProjectCapability Include="WindowsXaml"/>
+				<ProjectCapability Include="WindowsXamlPage"/>
+				<ProjectCapability Include="WindowsXamlCodeBehind"/>
+				<ProjectCapability Include="WindowsXamlResourceDictionary"/>
+				<ProjectCapability Include="WindowsXamlUserControl"/>
+				<ProjectCapability Include="WindowsUniversalMultiViews"/>
+			</ItemGroup>
+		</When>
+	</Choose>
 </Project>
