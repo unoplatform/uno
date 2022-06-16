@@ -137,6 +137,8 @@
 				<ContentControl x:Name="Size_HRVB" Grid.Column="3" Content="HRVB" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom" Style="{StaticResource PopupPlacementTestWithFixedSize_ContentControlStyle}" />
 			</Grid>
 
+			<TextBlock x:Name="topBound"  Text="0" />
+
 		</StackPanel>
 	</ScrollViewer>
 </UserControl>

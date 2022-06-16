@@ -24,6 +24,9 @@ namespace Uno.UI.Samples.Content.UITests.Popup
 		public Popup_HVAlignments()
 		{
 			this.InitializeComponent();
+
+			topBound.Text = CoreApplication.GetCurrentView().CoreWindow.Bounds.Top.ToString();
+
 		}
 	}
 }

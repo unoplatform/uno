@@ -42,9 +42,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 			var expectedX = buttonRect.X + (buttonRect.Width * xMul);
 			var expectedY = buttonRect.Y + (buttonRect.Height * yMul);
 
-#if __ANDROID__
-expectedY -= 24;
-#endif
+			var topBound = _app.Marked("topBound");
+			var topBoundResult = _app.WaitForElement(topBound).First();
+
+			float topBoudFloat = 0;
+
+			float.TryParse(topBound.GetText(), out topBoudFloat);
+
+			expectedY -= topBoudFloat;
+
 
 			// compare against actual popup placement
 			var popupRect = _app.Query("PopupContent").SingleOrDefault()?.Rect ?? throw new InvalidOperationException("Failed to find 'PopupContent'");

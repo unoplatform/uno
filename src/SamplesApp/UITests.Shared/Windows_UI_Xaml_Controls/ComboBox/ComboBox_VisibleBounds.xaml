@@ -333,7 +333,7 @@
 				  Style="{StaticResource ResourcesComboBoxStyle}"
 				  Grid.Row="2" />
 
-		<TextBlock x:Name="topBound" Grid.Row="4"  />
+		<TextBlock x:Name="topBound" Grid.Row="4" Text="0" />
 	</Grid>
 
 </UserControl>
