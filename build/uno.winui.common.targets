@@ -29,7 +29,7 @@
 		-->
 		<PropertyGroup>
 			<UnoDefineConstants>$(UnoDefineConstants);HAS_UNO</UnoDefineConstants>
-			<UnoDefineConstants Condition="'$(MSBuildThisFile)'=='uno.winui.targets'">$(UnoDefineConstants);HAS_UNO_WINUI</UnoDefineConstants>
+			<UnoDefineConstants Condition="$(_IsUnoWinUIPackage)">$(UnoDefineConstants);HAS_UNO_WINUI</UnoDefineConstants>
 			<UnoDefineConstants>$(UnoDefineConstants);UNO_HAS_FRAMEWORKELEMENT_MEASUREOVERRIDE</UnoDefineConstants>
 			<UnoDefineConstants>$(UnoDefineConstants);UNO_HAS_NO_IDEPENDENCYOBJECT</UnoDefineConstants>
 		</PropertyGroup>
@@ -66,8 +66,8 @@
 
 	<!-- List of packages that provide an uno-runtime folder -->
 	<ItemGroup>
-		<UnoRuntimeEnabledPackage Include="Uno.UI" PackageBasePath="$(MSBuildThisFileDirectory).." Condition="'$(MSBuildThisFile)'=='uno.ui.targets'" />
-		<UnoRuntimeEnabledPackage Include="Uno.WinUI" PackageBasePath="$(MSBuildThisFileDirectory).." Condition="'$(MSBuildThisFile)'=='uno.winui.targets'" />
+		<UnoRuntimeEnabledPackage Include="Uno.UI" PackageBasePath="$(MSBuildThisFileDirectory).." Condition="!$(_IsUnoWinUIPackage)" />
+		<UnoRuntimeEnabledPackage Include="Uno.WinUI" PackageBasePath="$(MSBuildThisFileDirectory).." Condition="$(_IsUnoWinUIPackage)" />
 	</ItemGroup>
 
 	<!-- Backward compatibility validation -->
