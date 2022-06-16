@@ -117,10 +117,25 @@ jobs:
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-gtk-runtime-tests-results.xml'
       failTaskOnFailedTests: true
 
-
 - job: Skia_Gtk_Runtime_Tests_Run_Linux
   displayName: 'Skia Runtime Tests (Linux)'
   timeoutInMinutes: 60
+
+ 
+  strategy:
+    matrix:
+      Group_00:
+        UITEST_RUNTIME_TEST_GROUP: "0"
+        UITEST_RUNTIME_TEST_GROUP_COUNT: "3"
+
+      Group_01:
+        UITEST_RUNTIME_TEST_GROUP: "1"
+        UITEST_RUNTIME_TEST_GROUP_COUNT: "3"
+
+      Group_02:
+        UITEST_RUNTIME_TEST_GROUP: "2"
+        UITEST_RUNTIME_TEST_GROUP_COUNT: "3"
+
 
   pool:
     vmImage: ${{ parameters.vmLinuxImage }}
@@ -146,11 +161,14 @@ jobs:
         xvfb-run --auto-servernum dotnet SamplesApp.Skia.Gtk.dll --runtime-tests=$(build.sourcesdirectory)/build/skia-gtk-runtime-tests-results.xml
 
     displayName: Run Skia GTK Runtime Tests
+    env:
+      UITEST_RUNTIME_TEST_GROUP: "$(UITEST_RUNTIME_TEST_GROUP)"
+      UITEST_RUNTIME_TEST_GROUP_COUNT: "$(UITEST_RUNTIME_TEST_GROUP_COUNT)"
 
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Skia GTK Runtime Tests (Linux)'
+      testRunTitle: 'Skia GTK Runtime Tests Group $(UITEST_RUNTIME_TEST_GROUP) (Linux)'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-gtk-runtime-tests-results.xml'
       failTaskOnFailedTests: true
