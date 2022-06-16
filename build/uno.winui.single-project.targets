@@ -96,7 +96,7 @@
 		<Compile Condition=" '$(TargetPlatformIdentifier)' != 'windows' and '$(MacOSProjectFolder)' != '' " Remove="$(WindowsProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
 
 		<!-- Make files available in the tree -->
-		<None Include="**/*$(DefaultLanguageSourceExtension)"/>
+		<None Include="**/*$(DefaultLanguageSourceExtension)" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
 	</ItemGroup>
 
 	<Choose>
@@ -142,4 +142,14 @@
 			</ItemGroup>
 		</When>
 	</Choose>
+
+	<Target Name="_RemoveRoslynUnoSourceGenerationWinUI" BeforeTargets="CoreCompile;XamlPreCompile" Condition="'$(WindowsAppSDKWinUI)'=='true'">
+		<!---
+		Remove uno source generators when building under WinAppSDK
+		-->
+		<ItemGroup>
+			<_AnalyzerToRemove Include="@(Analyzer)" Condition="'%(FileName)'=='Uno.UI.SourceGenerators'" />
+			<Analyzer Remove="@(_AnalyzerToRemove)"/>
+		</ItemGroup>
+	</Target>
 </Project>
