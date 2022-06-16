@@ -59,6 +59,8 @@ namespace SamplesApp.UITests.Runtime
 				{
 					unitTestsControl.SetDependencyPropertyValue("CITestGroup", Environment.GetEnvironmentVariable(TestGroupVariable));
 					unitTestsControl.SetDependencyPropertyValue("CITestGroupCount", Environment.GetEnvironmentVariable(TestGroupCountVariable));
+
+					Console.WriteLine($"Running tests in group {Environment.GetEnvironmentVariable(TestGroupVariable)}");
 				}
 			}
 
