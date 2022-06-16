@@ -231,7 +231,7 @@
         - name: Non-UI APIs
           items:
             - name: Accelerometer
-              href: accelerometer.md
+              href: features/accelerometer.md
             - name: App Actions
               href: features/windows-ui-startscreen.md
             - name: App Close Handler
@@ -290,8 +290,6 @@
               href: features/windows-applicationmodel-datatransfer.md
             - name: SMS
               href: features/windows-applicationmodel-chat.md
-            - name: Sensors
-              href: features/windows-devices-sensors.md
             - name: Settings
               href: features/settings.md               
             - name: Speech Recognition
