@@ -26,7 +26,7 @@ $dotnetBuildConfigurations =
     @("Wasm", ""),
     @("Skia.Gtk", ""),
     @("Skia.Linux.FrameBuffer", ""),
-    @("Skia.WPF.Host", "")
+    @("Skia.WPF", "")
 )
 
 # Debug Config
@@ -65,7 +65,7 @@ $dotnetBuildNet6Configurations =
     @("Wasm", ""),
     @("Skia.Gtk", ""),
     @("Skia.Linux.FrameBuffer", ""),
-    @("Skia.WPF.Host", "")
+    @("Skia.WPF", "")
 )
 
 # WinUI - Default

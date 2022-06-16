@@ -151,10 +151,6 @@
       "path": "UnoQuickStart.Skia.WPF\\UnoQuickStart.Skia.Wpf.csproj"
     },
     {
-      "condition": "skia-wpf",
-      "path": "UnoQuickStart.Skia.WPF.Host\\UnoQuickStart.Skia.Wpf.Host.csproj"
-    },
-    {
       "condition": "skia-linux-fb",
       "path": "UnoQuickStart.Skia.Linux.FrameBuffer\\UnoQuickStart.Skia.Linux.FrameBuffer.csproj"
     }
@@ -205,8 +201,7 @@
         {
           "condition": "(!skia-wpf)",
           "exclude": [
-            "UnoQuickStart.Skia.WPF/**/*",
-            "UnoQuickStart.Skia.WPF.Host/**/*"
+            "UnoQuickStart.Skia.WPF/**/*"
           ]
         },
         {
