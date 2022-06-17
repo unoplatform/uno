@@ -7,7 +7,7 @@
 	<ProjectType>CSharp</ProjectType>
 	<ProjectSubType />
 	<SortOrder>1000</SortOrder>
-	<DefaultName>UnoQuickStart.Skia.Wpf.Host</DefaultName>
+	<DefaultName>UnoQuickStart.Skia.Wpf</DefaultName>
 	<ProvideDefaultName>true</ProvideDefaultName>
 	<EnableLocationBrowseButton>true</EnableLocationBrowseButton>
 	<LocationField>Enabled</LocationField>
