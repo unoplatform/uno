@@ -262,18 +262,16 @@ namespace Windows.UI.Xaml
 			{
 				if (!ClippingIsSetByCornerRadius)
 				{
-					if (Layer != null)
-					{
-						this.Layer.Mask = null;
-					}
+					Layer.Mask = null;
 				}
 				return;
 			}
 
 			WantsLayer = true;
-			if (Layer != null)
+			var layer = Layer;
+			if (layer != null)
 			{
-				this.Layer.Mask = new CAShapeLayer
+				layer.Mask = new CAShapeLayer
 				{
 					Path = CGPath.FromRect(rect.ToCGRect())
 				};

@@ -111,6 +111,7 @@ namespace Windows.UI.Xaml.Controls
 
 			// If NSView.Transform is not identity, then modifying the frame will give undefined behavior. (https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIView_Class/#//apple_ref/occ/instp/NSView/transform)
 			// We have either already applied the transform to the new frame, or we will reset the transform straight after.
+			// FIXME: view.Layer called twice (thrice with above check)
 			var transform = view.Layer.Transform;
 			view.Layer.Transform = CATransform3D.Identity;
 			return Disposable.Create(reapplyTransform);

@@ -58,9 +58,10 @@ namespace Uno.UI.Controls
 		{
 			Initialize();
 			WantsLayer = true;
-			if (Layer != null)
+			var layer = Layer;
+			if (layer != null)
 			{
-				Layer.MasksToBounds = false;
+				layer.MasksToBounds = false;
 			}
 		}
 
