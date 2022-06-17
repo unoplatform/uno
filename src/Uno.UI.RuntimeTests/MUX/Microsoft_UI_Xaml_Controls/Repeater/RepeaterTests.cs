@@ -598,7 +598,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 
 		[TestMethod]
-		// TODO: MZ fails
 		public void VerifyUIElementsInItemsSource()
 		{
 			ItemsRepeater repeater = null;
