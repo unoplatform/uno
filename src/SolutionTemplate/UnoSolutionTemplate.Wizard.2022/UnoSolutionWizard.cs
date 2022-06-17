@@ -104,7 +104,6 @@ namespace UnoSolutionTemplate.Wizard
 					if (_useWpf)
 					{
 						GenerateProject(solution, platformsFolder, $"{_projectName}.Skia.Wpf", "SkiaWpf.winui.net6.vstemplate");
-						GenerateProject(solution, platformsFolder, $"{_projectName}.Skia.Wpf.Host", "SkiaWpfHost.winui.net6.vstemplate");
 					}
 				}
 				else
