@@ -22,6 +22,8 @@ namespace Uno.UI.Runtime.Skia.Wpf.Rendering
 			_host = host;
 		}
 
+		public SKColor BackgroundColor { get; set; } = SKColors.White;
+
 		public void Render(DrawingContext drawingContext)
 		{
 			if (_hostControl.ActualWidth == 0
@@ -72,7 +74,7 @@ namespace Uno.UI.Runtime.Skia.Wpf.Rendering
 			_bitmap.Lock();
 			using (var surface = SKSurface.Create(info, _bitmap.BackBuffer, _bitmap.BackBufferStride))
 			{
-				surface.Canvas.Clear(SKColors.White);
+				surface.Canvas.Clear(BackgroundColor);
 				surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
 				if (!_host.IsIsland)
 				{

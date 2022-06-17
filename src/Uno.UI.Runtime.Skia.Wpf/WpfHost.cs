@@ -170,7 +170,7 @@ namespace Uno.UI.Skia.Platform
 			{
 				if (WinUI.Window.Current.Background is WinUI.Media.SolidColorBrush brush)
 				{
-					_backgroundColor = brush.Color;
+					_renderer.BackgroundColor = brush.Color;
 				}
 				else
 				{

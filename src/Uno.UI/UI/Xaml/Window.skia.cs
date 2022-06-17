@@ -33,28 +33,8 @@ namespace Windows.UI.Xaml
 		{
 			Dispatcher = CoreDispatcher.Main;
 			CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
-			InitDragAndDrop();
-		}		
-			CoreWindow.SetInvalidateRender(QueueInvalidateRender);
 
 			InitializeCommon();
-		}
-
-		internal static Action InvalidateRender = () => { };
-		private bool _renderQueued = false;
-
-		internal void QueueInvalidateRender()
-		{
-			if (!_isMeasuringOrArranging && !_renderQueued)
-			{
-				_renderQueued = true;
-
-				CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
-				{
-					_renderQueued = false;
-					InvalidateRender();
-				});
-			}
 		}
 
 		internal void OnNativeSizeChanged(Size size)
@@ -78,11 +58,6 @@ namespace Windows.UI.Xaml
 		}
 
 		public Compositor Compositor { get; }
-
-		partial void InternalActivate()
-		{
-			// WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.activate();");
-		}
 
 		private void InternalSetContent(UIElement content)
 		{
