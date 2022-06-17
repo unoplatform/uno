@@ -309,7 +309,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		// TODO: MZ fails
 		public void VerifyFocusedItemIsRecycledOnCollectionReset()
 		{
 			List<Layout> layouts = new List<Layout>();
