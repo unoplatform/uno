@@ -159,11 +159,11 @@
 		UnoPage and UnoApplicationDefinition to avoid conflicts with the WPF ones.
 		-->
 		<ItemGroup>
-			<UnoPage Include="@(Page)" Condition="%(XamlRuntime)=='WinUI'" />
-			<UnoApplicationDefinition Include="@(ApplicationDefinition)" Condition="%(XamlRuntime)=='WinUI'" />
+			<UnoPage Include="@(Page)" Condition="%(Page.XamlRuntime)=='WinUI'" />
+			<UnoApplicationDefinition Include="@(ApplicationDefinition)" Condition="%(ApplicationDefinition.XamlRuntime)=='WinUI'" />
 
-			<ApplicationDefinition Remove="@(ApplicationDefinition)" Condition="%(XamlRuntime)=='WinUI'" />
-			<Page Remove="@(Page)" Condition="%(XamlRuntime)=='WinUI'" />
+			<Page Remove="@(Page)" Condition="%(Page.XamlRuntime)=='WinUI'" />
+			<ApplicationDefinition Remove="@(ApplicationDefinition)" Condition="%(ApplicationDefinition.XamlRuntime)=='WinUI'" />
 		</ItemGroup>
 	</Target>
 
