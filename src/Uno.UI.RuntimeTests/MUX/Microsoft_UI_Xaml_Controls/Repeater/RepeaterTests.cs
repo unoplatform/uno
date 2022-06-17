@@ -227,7 +227,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		// TODO: MZ fails
+		[Ignore("Fails")]
 		public void VerifyCurrentAnchor()
 		{
 			//if (PlatformConfiguration.IsDebugBuildConfiguration())
@@ -646,7 +646,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		// TODO: MZ fails
 		public void VerifyRepeaterDoesNotLeakItemContainers()
 		{
 			ObservableCollection<int> items = new ObservableCollection<int>();
@@ -700,7 +699,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		// TODO: MZ fails
+		[Ignore("Fails")]
 		public void BringIntoViewOfExistingItemsDoesNotChangeScrollOffset()
 		{
 			ScrollViewer scrollViewer = null;

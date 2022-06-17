@@ -34,7 +34,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private const uint MaxStackLayoutIterations = 60u;
 
 		private readonly SerialDisposable _layoutSubscriptionsRevoker = new SerialDisposable();
-
+		private readonly SerialDisposable _dataSourceSubscriptionsRevoker = new SerialDisposable();
+		
 		internal IElementFactoryShim ItemTemplateShim => m_itemTemplateWrapper;
 
 		internal object LayoutState
@@ -618,15 +619,24 @@ namespace Microsoft.UI.Xaml.Controls
 			++_loadedCounter;
 
 #if HAS_UNO
-			// Uno specific: If the control was unloaded but is loaded again, reattach layout events
-			if (_layoutSubscriptionsRevoker.Disposable is null && Layout is not null)
+			// Uno specific: If the control was unloaded but is loaded again, reattach Layout and DataSource events
+			if (_layoutSubscriptionsRevoker.Disposable is null && Layout is { } layout)
 			{
-				Layout.MeasureInvalidated += InvalidateMeasureForLayout;
-				Layout.ArrangeInvalidated += InvalidateArrangeForLayout;
+				layout.MeasureInvalidated += InvalidateMeasureForLayout;
+				layout.ArrangeInvalidated += InvalidateArrangeForLayout;
 				_layoutSubscriptionsRevoker.Disposable = Disposable.Create(() =>
 				{
-					Layout.MeasureInvalidated -= InvalidateMeasureForLayout;
-					Layout.ArrangeInvalidated -= InvalidateArrangeForLayout;
+					layout.MeasureInvalidated -= InvalidateMeasureForLayout;
+					layout.ArrangeInvalidated -= InvalidateArrangeForLayout;
+				});
+			}
+
+			if (_dataSourceSubscriptionsRevoker.Disposable is null && ItemsSource is ItemsSourceView itemsSource)
+			{
+				itemsSource.CollectionChanged += OnItemsSourceViewChanged;
+				_dataSourceSubscriptionsRevoker.Disposable = Disposable.Create(() =>
+				{
+					itemsSource.CollectionChanged -= OnItemsSourceViewChanged;
 				});
 			}
 #endif
@@ -646,6 +656,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// Uno specific: Ensure Layout subscriptions are unattached to avoid memory leaks
 			// because ItemsRepeater uses a "singleton" instance of default StackLayout.
 			_layoutSubscriptionsRevoker.Disposable = null;
+			_dataSourceSubscriptionsRevoker.Disposable = null;
 #endif
 		}
 
@@ -666,12 +677,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (oldValue != null)
 			{
-				oldValue.CollectionChanged -= OnItemsSourceViewChanged;
+				_dataSourceSubscriptionsRevoker.Disposable = null;
 			}
 
 			if (newValue != null)
 			{
 				newValue.CollectionChanged += OnItemsSourceViewChanged;
+				_dataSourceSubscriptionsRevoker.Disposable = Disposable.Create(() =>
+				{
+					newValue.CollectionChanged -= OnItemsSourceViewChanged;
+				});
 			}
 
 			var layout = Layout;
