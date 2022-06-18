@@ -22,10 +22,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 {
 	[SampleControlInfo("ComboBox")]
 	public sealed partial class ComboBox_VisibleBounds : UserControl
-    {
-        public ComboBox_VisibleBounds()
-        {
-            this.InitializeComponent();
+	{
+		public ComboBox_VisibleBounds()
+		{
+			this.InitializeComponent();
 
 			combo01.ItemsSource = Enumerable.Range(0, 20).Select(u => new { Name = $"{u:00}" }).ToArray();
 			combo01.SelectedIndex = 0;
@@ -39,7 +39,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 		private void OnChangeStatusBarExtended(object sender, object args)
 		{
 			CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
-			topBound.Text = CoreApplication.GetCurrentView().CoreWindow.Bounds.Top.ToString();
+			topBound.Text = (CoreApplication.GetCurrentView().CoreWindow.Bounds.Top + 24).ToString();
 		}
 	}
 }
