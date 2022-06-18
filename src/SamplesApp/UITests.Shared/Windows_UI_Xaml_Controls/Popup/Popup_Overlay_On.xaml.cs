@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI.Samples.Controls;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -24,6 +25,8 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 		public Popup_Overlay_On()
 		{
 			this.InitializeComponent();
+			topBound.Text = CoreApplication.GetCurrentView().CoreWindow.Bounds.Top.ToString();
+
 		}
 	}
 }

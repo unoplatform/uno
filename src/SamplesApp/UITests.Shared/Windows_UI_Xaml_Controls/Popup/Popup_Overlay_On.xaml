@@ -17,6 +17,8 @@
 				   Height="50" />
 		<CheckBox x:Name="PopupCheckBox"
 				  IsChecked="False" />
+		<TextBlock x:Name="topBound" Text="0" />
+
 		<Popup IsOpen="{Binding ElementName=PopupCheckBox, Path=IsChecked, Mode=TwoWay}"
 			   IsLightDismissEnabled="True"
 			   LightDismissOverlayMode="On">

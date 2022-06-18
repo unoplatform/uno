@@ -122,9 +122,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 
 			ImageAssert.DoesNotHaveColorAt(during, rect.CenterX, rect.CenterY, Color.Blue);
 
+			var topBound = _app.Marked("topBound");
+			var topBoundResult = _app.WaitForElement(topBound).First();
+			int topBoudFloat = 0;
+			int.TryParse(topBound.GetText(), out topBoudFloat);
+
 			// Dismiss popup
 			var screenRect = _app.Marked("sampleContent").FirstResult().Rect;
-			_app.TapCoordinates(10, screenRect.Bottom - 10 + 24); //24 from statusbar
+			_app.TapCoordinates(10, screenRect.Bottom - 10 + topBoudFloat); //topBoudFloat from statusbar
 
 			_app.WaitForNoElement("PopupChild");
 

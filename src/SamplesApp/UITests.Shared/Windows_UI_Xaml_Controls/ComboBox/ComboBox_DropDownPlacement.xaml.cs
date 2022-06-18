@@ -2,6 +2,7 @@
 using System.Linq;
 using Windows.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
+using Windows.ApplicationModel.Core;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 {
@@ -24,6 +25,8 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 					await statusBar.ShowAsync();
 				});
 #endif
+			topBound.Text = CoreApplication.GetCurrentView().CoreWindow.Bounds.Top.ToString();
+
 		}
 	}
 }

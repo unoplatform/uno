@@ -1,4 +1,5 @@
 using Uno.UI.Samples.Controls;
+using Windows.ApplicationModel.Core;
 using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.Flyout
@@ -10,6 +11,8 @@ namespace Uno.UI.Samples.Content.UITests.Flyout
 		{
 			this.InitializeComponent();
 			this.SampleRoot.SampleDescription = "note: On smaller devices, buttons with * are not closable without native back button/gesture. They can also be closed by going to home screen or switching app.";
+			topBound.Text = CoreApplication.GetCurrentView().CoreWindow.Bounds.Top.ToString();
+
 		}
 	}
 }

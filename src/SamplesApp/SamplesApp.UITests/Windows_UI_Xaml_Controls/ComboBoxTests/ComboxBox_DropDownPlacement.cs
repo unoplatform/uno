@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
@@ -15,25 +16,25 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 	[ActivePlatforms(Platform.Android, Platform.Browser)] // Disabled for iOS: https://github.com/unoplatform/uno/issues/1955
 	public partial class ComboxBox_DropDownPlacement : SampleControlUITestBase
 	{
-		[Test] [AutoRetry] public void NoSelectionPreferAbove() => TestAbove();
-		[Test] [AutoRetry] public void NoSelectionPreferCentered() => TestCentered();
-		[Test] [AutoRetry] public void NoSelectionPreferBelow() => TestBelow();
-		[Test] [AutoRetry] public void NoSelectionPreferAuto() => TestCentered();
+		[Test][AutoRetry] public void NoSelectionPreferAbove() => TestAbove();
+		[Test][AutoRetry] public void NoSelectionPreferCentered() => TestCentered();
+		[Test][AutoRetry] public void NoSelectionPreferBelow() => TestBelow();
+		[Test][AutoRetry] public void NoSelectionPreferAuto() => TestCentered();
 
-		[Test] [AutoRetry] public void FirstSelectedPreferAbove() => TestAbove();
-		[Test] [AutoRetry] public void FirstSelectedPreferCentered() => TestCentered();
-		[Test] [AutoRetry] public void FirstSelectedPreferBelow() => TestBelow();
-		[Test] [AutoRetry] public void FirstSelectedPreferAuto() => TestBelow();
+		[Test][AutoRetry] public void FirstSelectedPreferAbove() => TestAbove();
+		[Test][AutoRetry] public void FirstSelectedPreferCentered() => TestCentered();
+		[Test][AutoRetry] public void FirstSelectedPreferBelow() => TestBelow();
+		[Test][AutoRetry] public void FirstSelectedPreferAuto() => TestBelow();
 
-		[Test] [AutoRetry] public void MiddleSelectedPreferAbove() => TestAbove();
-		[Test] [AutoRetry] public void MiddleSelectedPreferCentered() => TestCentered();
-		[Test] [AutoRetry] public void MiddleSelectedPreferBelow() => TestBelow();
-		[Test] [AutoRetry] public void MiddleSelectedPreferAuto() => TestCentered();
+		[Test][AutoRetry] public void MiddleSelectedPreferAbove() => TestAbove();
+		[Test][AutoRetry] public void MiddleSelectedPreferCentered() => TestCentered();
+		[Test][AutoRetry] public void MiddleSelectedPreferBelow() => TestBelow();
+		[Test][AutoRetry] public void MiddleSelectedPreferAuto() => TestCentered();
 
-		[Test] [AutoRetry] public void LastSelectedPreferAbove() => TestAbove();
-		[Test] [AutoRetry] public void LastSelectedPreferCentered() => TestCentered();
-		[Test] [AutoRetry] public void LastSelectedPreferBelow() => TestBelow();
-		[Test] [AutoRetry] public void LastSelectedPreferAuto() => TestAbove();
+		[Test][AutoRetry] public void LastSelectedPreferAbove() => TestAbove();
+		[Test][AutoRetry] public void LastSelectedPreferCentered() => TestCentered();
+		[Test][AutoRetry] public void LastSelectedPreferBelow() => TestBelow();
+		[Test][AutoRetry] public void LastSelectedPreferAuto() => TestAbove();
 
 		private void TestAbove([CallerMemberName] string test = null) => Test(test: test, aboveEquals: false, belowEquals: true);
 		private void TestCentered([CallerMemberName] string test = null) => Test(test: test, aboveEquals: false, belowEquals: false);
@@ -44,6 +45,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ComboBox.ComboBox_DropDownPlacement", skipInitialScreenshot: true);
 
 			_app.WaitForElement(test);
+			var topBound = _app.Marked("topBound");
+			var topBoundResult = _app.WaitForElement(topBound).First();
 
 			var rect = _app.GetPhysicalRect(test);
 
@@ -60,9 +63,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 			// Make sure to close the combo
 			_app.TapCoordinates(rect.X - 10, rect.Y - 10);
 
+			int topBoudFloat = 0;
+
+			int.TryParse(topBound.GetText(), out topBoudFloat);
+
 			// Assertions
 			const int testHeight = 50;
-			const int tolerance = 34; // Margins, +StatusBar etc
+			//const int tolerance = 10 + topBoudFloat; // Margins, +StatusBar etc
+			int tolerance = 10 + topBoudFloat; // Margins, +StatusBar etc
 			var above = new Rectangle((int)rect.X, (int)rect.Y - testHeight - tolerance, (int)rect.Width, testHeight);
 			var below = new Rectangle((int)rect.X, (int)rect.Bottom + tolerance, (int)rect.Width, testHeight);
 

@@ -168,8 +168,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 				button.Value.FastTap();
 				using var flyoutOpenedScreenshot = TakeScreenshot($"{majorStepIndex} {button.Key} 0 Opened", ignoreInSnapshotCompare: true);
 
+				var topBound = _app.Marked("topBound");
+				var topBoundResult = _app.WaitForElement(topBound).First();
+				int topBoudFloat = 0;
+				int.TryParse(topBound.GetText(), out topBoudFloat);
+
 				// dismiss flyout
-				_app.TapCoordinates(dismissArea.X, dismissArea.Y + 24); //24 from statusbar
+				_app.TapCoordinates(dismissArea.X, dismissArea.Y + topBoudFloat); //topBoudFloat from statusbar
 				_app.Wait(1);
 				using var flyoutDismissedScreenshot = TakeScreenshot($"{majorStepIndex} {button.Key} 1 Dismissed", ignoreInSnapshotCompare: true);
 

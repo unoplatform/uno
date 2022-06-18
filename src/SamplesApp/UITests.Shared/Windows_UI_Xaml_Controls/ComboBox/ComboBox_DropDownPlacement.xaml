@@ -38,6 +38,8 @@
 		<TextBlock Grid.Column="1" Text="Center" />
 		<TextBlock Grid.Column="2" Text="Below" />
 		<TextBlock Grid.Column="3" Text="Auto" />
+		<TextBlock x:Name="topBound" Grid.Column="3" Text="0" />
+
 
 		<ComboBox
 			x:Name="NoSelectionPreferAbove"
