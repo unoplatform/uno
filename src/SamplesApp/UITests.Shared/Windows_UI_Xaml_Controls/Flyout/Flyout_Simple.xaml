@@ -154,11 +154,12 @@
 						</Button.Flyout>
 					</Button>
 
-					<TextBlock x:Name="topBound" Text="0" />
 
 
 				</StackPanel>
 			</DataTemplate>
 		</controls:SampleControl.SampleContent>
 	</controls:SampleControl>
+	<TextBlock x:Name="topBound" Text="0" />
+
 </UserControl>
