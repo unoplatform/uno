@@ -56,7 +56,8 @@
 			<Setter Property="Background" Value="SkyBlue" />
 		</Style>
 	</UserControl.Resources>
-
+	<Grid>
+		
 	<controls:SampleControl x:Name="SampleRoot">
 		<controls:SampleControl.SampleContent>
 			<DataTemplate>
@@ -160,6 +161,6 @@
 			</DataTemplate>
 		</controls:SampleControl.SampleContent>
 	</controls:SampleControl>
-	<TextBlock x:Name="topBound" Text="0" />
-
+		<TextBlock x:Name="topBound" Text="0" />
+	</Grid>
 </UserControl>
