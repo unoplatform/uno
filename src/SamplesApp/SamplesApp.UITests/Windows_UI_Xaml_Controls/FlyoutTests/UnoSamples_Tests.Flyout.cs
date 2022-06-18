@@ -169,7 +169,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 				using var flyoutOpenedScreenshot = TakeScreenshot($"{majorStepIndex} {button.Key} 0 Opened", ignoreInSnapshotCompare: true);
 
 				// dismiss flyout
-				_app.TapCoordinates(dismissArea.X, dismissArea.Y);
+				_app.TapCoordinates(dismissArea.X, dismissArea.Y + 24); //24 from statusbar
 				_app.Wait(1);
 				using var flyoutDismissedScreenshot = TakeScreenshot($"{majorStepIndex} {button.Key} 1 Dismissed", ignoreInSnapshotCompare: true);
 

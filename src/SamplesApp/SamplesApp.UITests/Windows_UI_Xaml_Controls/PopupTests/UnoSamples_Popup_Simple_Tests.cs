@@ -124,7 +124,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 
 			// Dismiss popup
 			var screenRect = _app.Marked("sampleContent").FirstResult().Rect;
-			_app.TapCoordinates(10, screenRect.Bottom - 10);
+			_app.TapCoordinates(10, screenRect.Bottom - 10 + 24); //24 from statusbar
 
 			_app.WaitForNoElement("PopupChild");
 
