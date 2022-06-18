@@ -4770,6 +4770,52 @@ var Windows;
         })(Xaml = UI.Xaml || (UI.Xaml = {}));
     })(UI = Windows.UI || (Windows.UI = {}));
 })(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var Xaml;
+        (function (Xaml) {
+            var Media;
+            (function (Media) {
+                class FontFamily {
+                    static async loadFont(fontFamilyName, fontSource) {
+                        // Launch the loading of the font
+                        const font = new FontFace(fontFamilyName, `url(${fontSource})`);
+                        // Wait for the font to be loaded
+                        await font.load();
+                        // Make it available to document
+                        document.fonts.add(font);
+                        await FontFamily.forceFontUsage(fontFamilyName);
+                        // Notify font as loaded to application
+                        FontFamily.notifyFontLoaded(fontFamilyName);
+                    }
+                    static async forceFontUsage(fontFamilyName) {
+                        // Force the browser to use it
+                        const dummyHiddenElement = document.createElement("p");
+                        dummyHiddenElement.style.fontFamily = fontFamilyName;
+                        dummyHiddenElement.style.opacity = "0";
+                        dummyHiddenElement.style.pointerEvents = "none";
+                        dummyHiddenElement.innerText = fontFamilyName;
+                        document.body.appendChild(dummyHiddenElement);
+                        // Yield an animation frame
+                        await new Promise((ok, err) => requestAnimationFrame(() => ok(null)));
+                        // Remove dummy element
+                        document.body.removeChild(dummyHiddenElement);
+                    }
+                    static notifyFontLoaded(fontFamilyName) {
+                        if (!FontFamily.managedNotifyFontLoaded) {
+                            FontFamily.managedNotifyFontLoaded =
+                                Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Media.FontFamily:NotifyFontLoaded");
+                        }
+                        FontFamily.managedNotifyFontLoaded(fontFamilyName);
+                    }
+                }
+                Media.FontFamily = FontFamily;
+            })(Media = Xaml.Media || (Xaml.Media = {}));
+        })(Xaml = UI.Xaml || (UI.Xaml = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerAddViewParams {
     static unmarshal(pData) {

@@ -1278,6 +1278,14 @@ declare namespace Windows.UI.Xaml.Input {
         static updatePosition(): void;
     }
 }
+declare namespace Windows.UI.Xaml.Media {
+    class FontFamily {
+        static loadFont(fontFamilyName: string, fontSource: string): Promise<void>;
+        static forceFontUsage(fontFamilyName: string): Promise<void>;
+        private static managedNotifyFontLoaded?;
+        private static notifyFontLoaded;
+    }
+}
 declare class WindowManagerAddViewParams {
     HtmlId: number;
     ChildView: number;
