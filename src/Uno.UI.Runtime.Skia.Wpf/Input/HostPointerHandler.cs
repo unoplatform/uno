@@ -63,8 +63,11 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			_host = host;
 		}
 
-		private WinUIInputManager? InputManager =>
-			_inputManager ??= _host.XamlRoot?.VisualTree.ContentRoot.InputManager;
+		// TODO:MZ: InputManager is invoked directly only for islands,
+		// in other cases input goes through CoreWindow
+		private WinUIInputManager? InputManager => _host.IsIsland ?
+			(_inputManager ??= _host.XamlRoot?.VisualTree.ContentRoot.InputManager) :
+			null;
 
 		public void SetPointerCapture(PointerIdentifier pointer)
 			=> _hostControl.CaptureMouse();

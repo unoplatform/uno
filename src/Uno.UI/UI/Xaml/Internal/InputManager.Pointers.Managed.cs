@@ -73,6 +73,17 @@ internal partial class InputManager
 				ApiExtensibility.CreateInstance(typeof(PointerManager), out _pointerExtension); // TODO: Add IPointerExtension implementation to all Skia targets and create instance per XamlRoot #8978
 			}
 			_inputManager = inputManager;
+
+			if (_inputManager._contentRoot.Type == ContentRootType.CoreWindow)
+			{
+				Windows.UI.Xaml.Window.Current.CoreWindow.PointerMoved += (c, e) => OnPointerWheelChanged(e);
+				Windows.UI.Xaml.Window.Current.CoreWindow.PointerEntered += (c, e) => OnPointerEntered(e);
+				Windows.UI.Xaml.Window.Current.CoreWindow.PointerExited += (c, e) => OnPointerExited(e);
+				Windows.UI.Xaml.Window.Current.CoreWindow.PointerPressed += (c, e) => OnPointerPressed(e);
+				Windows.UI.Xaml.Window.Current.CoreWindow.PointerReleased += (c, e) => OnPointerReleased(e);
+				Windows.UI.Xaml.Window.Current.CoreWindow.PointerWheelChanged += (c, e) => OnPointerWheelChanged(e);
+				Windows.UI.Xaml.Window.Current.CoreWindow.PointerCancelled += (c, e) => OnPointerCancelled(e);
+			}
 		}
 
 		internal void OnPointerWheelChanged(Windows.UI.Core.PointerEventArgs args)

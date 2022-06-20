@@ -454,45 +454,31 @@ namespace Uno.UI.Runtime.Skia
 		private void RaisePointerExited(PointerEventArgs ptArgs)
 		{
 			_ownerEvents.RaisePointerExited(ptArgs);
-			InputManager?.RaisePointerExited(ptArgs);
 		}
 
 		private void RaisePointerPressed(PointerEventArgs ptArgs)
 		{
 			_ownerEvents.RaisePointerPressed(ptArgs);
-			InputManager?.RaisePointerPressed(ptArgs);
 		}
 
 		private void RaisePointerReleased(PointerEventArgs ptArgs)
 		{
 			_ownerEvents.RaisePointerReleased(ptArgs);
-			InputManager?.RaisePointerReleased(ptArgs);
 		}
 
 		private void RaisePointerMoved(PointerEventArgs ptArgs)
 		{
 			_ownerEvents.RaisePointerMoved(ptArgs);
-			InputManager?.RaisePointerMoved(ptArgs);
 		}
 
 		private void RaisePointerWheelChanged(PointerEventArgs ptArgs)
 		{
 			_ownerEvents.RaisePointerWheelChanged(ptArgs);
-			InputManager?.RaisePointerWheelChanged(ptArgs);
 		}
 
 		private void RaisePointerEntered(PointerEventArgs ptArgs)
 		{
 			_ownerEvents.RaisePointerEntered(ptArgs);
-			InputManager?.RaisePointerEntered(ptArgs);
 		}
-
-		
-
-		internal InputManager InputManager =>
-			CoreServices.Instance
-				.ContentRootCoordinator?
-				.CoreWindowContentRoot?
-				.InputManager;
 	}
 }
