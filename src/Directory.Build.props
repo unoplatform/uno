@@ -53,6 +53,11 @@
     Uno itself needs to be built using C# 10.0, which provides roslyn's own generators.
     -->
     <UnoUIUseRoslynSourceGenerators>true</UnoUIUseRoslynSourceGenerators>
+
+    <!--
+    Disable on mono, some properties (Like `MSBuildProjectFullPath`) are not captured properly by roslyn
+    -->
+    <UnoUIUseRoslynSourceGenerators Condition="'$(MSBuildRuntimeType)'=='Mono'">false</UnoUIUseRoslynSourceGenerators>
   </PropertyGroup>
 
   <!--
