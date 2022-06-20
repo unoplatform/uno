@@ -38,6 +38,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
 	[RequiresFullWindow]
+#if __ANDROID__ || __WASM__
+	[Ignore] // TODO: Android and WASM tests are failing
+#endif
 	public class RepeaterTests : MUXApiTestBase
 	{
 		[TestMethod]

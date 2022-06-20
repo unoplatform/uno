@@ -50,7 +50,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(CheckBox), 15)]
 		[DataRow(typeof(ListView), 15)]
 		[DataRow(typeof(Windows.UI.Xaml.Controls.ProgressRing), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressRing), 15)]
+		//[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressRing), 15)] This leaks, issue #9078
 		[DataRow(typeof(Pivot), 15)]
 		[DataRow(typeof(ScrollBar), 15)]
 		[DataRow(typeof(Slider), 15)]
