@@ -12,7 +12,10 @@
 	d:DesignHeight="300"
 	d:DesignWidth="400">
 
-	<TextBox Header="Enter Email:"
-	         InputScope="EmailSmtpAddress" />
-	
+	<StackPanel>
+		<TextBox Header="Enter Email:" PlaceholderText="IsSpellCheckEnabled=True"
+	         InputScope="EmailSmtpAddress"  IsSpellCheckEnabled="True" />
+		<TextBox Header="Enter Email:" PlaceholderText="IsSpellCheckEnabled=False"
+	         InputScope="EmailSmtpAddress"  IsSpellCheckEnabled="False" />		
+	</StackPanel>
 </UserControl>
