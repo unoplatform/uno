@@ -33,6 +33,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// with this value as small as 61. It was never reached with 60. 
 		private const uint MaxStackLayoutIterations = 60u;
 
+		private readonly SerialDisposable _layoutSubscriptionsRevoker = new SerialDisposable();
+		private readonly SerialDisposable _dataSourceSubscriptionsRevoker = new SerialDisposable();
+		
 		internal IElementFactoryShim ItemTemplateShim => m_itemTemplateWrapper;
 
 		internal object LayoutState
@@ -614,6 +617,29 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			++_loadedCounter;
+
+#if HAS_UNO
+			// Uno specific: If the control was unloaded but is loaded again, reattach Layout and DataSource events
+			if (_layoutSubscriptionsRevoker.Disposable is null && Layout is { } layout)
+			{
+				layout.MeasureInvalidated += InvalidateMeasureForLayout;
+				layout.ArrangeInvalidated += InvalidateArrangeForLayout;
+				_layoutSubscriptionsRevoker.Disposable = Disposable.Create(() =>
+				{
+					layout.MeasureInvalidated -= InvalidateMeasureForLayout;
+					layout.ArrangeInvalidated -= InvalidateArrangeForLayout;
+				});
+			}
+
+			if (_dataSourceSubscriptionsRevoker.Disposable is null && ItemsSource is ItemsSourceView itemsSource)
+			{
+				itemsSource.CollectionChanged += OnItemsSourceViewChanged;
+				_dataSourceSubscriptionsRevoker.Disposable = Disposable.Create(() =>
+				{
+					itemsSource.CollectionChanged -= OnItemsSourceViewChanged;
+				});
+			}
+#endif
 		}
 
 		private void OnUnloaded(object sender, RoutedEventArgs args)
@@ -625,6 +651,13 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				m_viewportManager.ResetScrollers();
 			}
+
+#if HAS_UNO
+			// Uno specific: Ensure Layout subscriptions are unattached to avoid memory leaks
+			// because ItemsRepeater uses a "singleton" instance of default StackLayout.
+			_layoutSubscriptionsRevoker.Disposable = null;
+			_dataSourceSubscriptionsRevoker.Disposable = null;
+#endif
 		}
 
 		private void OnLayoutUpdated(object sender, object e)
@@ -644,12 +677,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (oldValue != null)
 			{
-				oldValue.CollectionChanged -= OnItemsSourceViewChanged;
+				_dataSourceSubscriptionsRevoker.Disposable = null;
 			}
 
 			if (newValue != null)
 			{
 				newValue.CollectionChanged += OnItemsSourceViewChanged;
+				_dataSourceSubscriptionsRevoker.Disposable = Disposable.Create(() =>
+				{
+					newValue.CollectionChanged -= OnItemsSourceViewChanged;
+				});
 			}
 
 			var layout = Layout;
@@ -776,8 +813,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (oldValue != null)
 			{
 				oldValue.UninitializeForContext(GetLayoutContext());
-				oldValue.MeasureInvalidated -= InvalidateMeasureForLayout;
-				oldValue.ArrangeInvalidated -= InvalidateArrangeForLayout;
+				_layoutSubscriptionsRevoker.Disposable = null;
 				_stackLayoutMeasureCounter = 0u;
 
 				// Walk through all the elements and make sure they are cleared
@@ -806,6 +842,11 @@ namespace Microsoft.UI.Xaml.Controls
 				newValue.InitializeForContext(GetLayoutContext());
 				newValue.MeasureInvalidated += InvalidateMeasureForLayout;
 				newValue.ArrangeInvalidated += InvalidateArrangeForLayout;
+				_layoutSubscriptionsRevoker.Disposable = Disposable.Create(() =>
+				{
+					newValue.MeasureInvalidated -= InvalidateMeasureForLayout;
+					newValue.ArrangeInvalidated -= InvalidateArrangeForLayout;
+				});
 			}
 
 			bool isVirtualizingLayout = newValue is VirtualizingLayout;
