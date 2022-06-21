@@ -8844,6 +8844,9 @@
 			<Member
 				fullName="System.Void Windows.Gaming.Input.Gamepad..ctor()"
 				reason="Not part of UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.UIContext..ctor()"
+				reason="Not part of UWP API" />
 		</Methods>
 		<Properties>
 		</Properties>
