@@ -175,17 +175,8 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected Android.Graphics.Path GetOrCreatePath()
 		{
-			Android.Graphics.Path path;
-			if (_path != null)
-			{
-				path = _path;
-				path.Reset();
-			}
-			else
-			{
-				path = new Android.Graphics.Path();
-			}
-			return path;
+			_path?.Reset();
+			return _path ?? new Android.Graphics.Path();
 		}
 
 		protected Windows.Foundation.Rect TransformToLogical(Windows.Foundation.Rect renderingArea)
