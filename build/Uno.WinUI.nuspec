@@ -122,7 +122,6 @@
 		<reference file="Uno.UI.dll" />
 		<reference file="Uno.UI.Composition.dll" />
 		<reference file="Uno.UI.Dispatching.dll" />
-		<reference file="Uno.UI.XamlHost" />
 		<reference file="Uno.Foundation.dll" />
 		<reference file="Uno.Foundation.Logging.dll" />
 		<reference file="Uno.dll" />
@@ -138,7 +137,6 @@
 		<reference file="Uno.UI.dll" />
 		<reference file="Uno.UI.Composition.dll" />
 		<reference file="Uno.UI.Dispatching.dll" />
-		<reference file="Uno.UI.XamlHost" />
 		<reference file="Uno.Foundation.dll" />
 		<reference file="Uno.Foundation.Logging.dll" />
 		<reference file="Uno.dll" />
@@ -154,7 +152,6 @@
 		<reference file="Uno.UI.dll" />
 		<reference file="Uno.UI.Composition.dll" />
 		<reference file="Uno.UI.Dispatching.dll" />
-		<reference file="Uno.UI.XamlHost" />
 		<reference file="Uno.Foundation.dll" />
 		<reference file="Uno.Foundation.Logging.dll" />
 		<reference file="Uno.dll" />
@@ -170,7 +167,6 @@
 		<reference file="Uno.UI.dll" />
 		<reference file="Uno.UI.Composition.dll" />
 		<reference file="Uno.UI.Dispatching.dll" />
-		<reference file="Uno.UI.XamlHost" />
 		<reference file="Uno.Foundation.dll" />
 		<reference file="Uno.Foundation.Logging.dll" />
 		<reference file="Uno.dll" />
@@ -186,7 +182,6 @@
 		<reference file="Uno.UI.dll" />
 		<reference file="Uno.UI.Composition.dll" />
 		<reference file="Uno.UI.Dispatching.dll" />
-		<reference file="Uno.UI.XamlHost" />
 		<reference file="Uno.Foundation.dll" />
 		<reference file="Uno.Foundation.Logging.dll" />
 		<reference file="Uno.dll" />
@@ -202,7 +197,6 @@
 		<reference file="Uno.UI.dll" />
 		<reference file="Uno.UI.Composition.dll" />
 		<reference file="Uno.UI.Dispatching.dll" />
-		<reference file="Uno.UI.XamlHost" />
 		<reference file="Uno.Foundation.dll" />
 		<reference file="Uno.Foundation.Logging.dll" />
 		<reference file="Uno.dll" />
@@ -219,7 +213,6 @@
 		<reference file="Uno.UI.dll" />
 		<reference file="Uno.UI.Composition.dll" />
 		<reference file="Uno.UI.Dispatching.dll" />
-		<reference file="Uno.UI.XamlHost" />
 		<reference file="Uno.Foundation.dll" />
 		<reference file="Uno.Foundation.Logging.dll" />
 		<reference file="Uno.dll" />
@@ -236,7 +229,6 @@
 		<reference file="Uno.UI.dll" />
 		<reference file="Uno.UI.Composition.dll" />
 		<reference file="Uno.UI.Dispatching.dll" />
-		<reference file="Uno.UI.XamlHost" />
 		<reference file="Uno.Foundation.dll" />
 		<reference file="Uno.Foundation.Logging.dll" />
 		<reference file="Uno.dll" />
