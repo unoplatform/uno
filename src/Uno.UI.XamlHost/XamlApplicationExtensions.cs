@@ -37,7 +37,7 @@ public static partial class XamlApplicationExtensions
 	/// <summary>
 	/// Gets and returns the current UWP XAML Application instance in a reference parameter.
 	/// If the current XAML Application instance has not been created for the process (is null),
-	/// a new <see cref="Microsoft.Toolkit.Win32.UI.XamlHost.XamlApplication" /> instance is created and returned.
+	/// a new <see cref="Uno.UI.XamlHost.XamlApplication" /> instance is created and returned.
 	/// </summary>
 	/// <returns>The instance of <seealso cref="XamlApplication"/></returns>
 	public static IXamlMetadataContainer GetOrCreateXamlMetadataContainer()
