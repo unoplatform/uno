@@ -49,16 +49,16 @@
 	<files>
 		<file src="..\src\Common\uno.png" target="/" />
 
-		<file src="..\src\Uno.UI.XamlHost\Bin\Release\MonoAndroid11.0\Uno.UI.XamlHost.dll" target="lib\MonoAndroid11.0" />
-		<file src="..\src\Uno.UI.XamlHost\Bin\Release\MonoAndroid11.0\Uno.UI.XamlHost.pdb" target="lib\MonoAndroid11.0" />
-		<file src="..\src\Uno.UI.XamlHost\Bin\Release\MonoAndroid12.0\Uno.UI.XamlHost.dll" target="lib\MonoAndroid12.0" />
-		<file src="..\src\Uno.UI.XamlHost\Bin\Release\MonoAndroid12.0\Uno.UI.XamlHost.pdb" target="lib\MonoAndroid12.0" />
+		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost\Release\MonoAndroid11.0\Uno.UI.XamlHost.dll" target="lib\MonoAndroid11.0" />
+		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost\Release\MonoAndroid11.0\Uno.UI.XamlHost.pdb" target="lib\MonoAndroid11.0" />
+		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost\Release\MonoAndroid12.0\Uno.UI.XamlHost.dll" target="lib\MonoAndroid12.0" />
+		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost\Release\MonoAndroid12.0\Uno.UI.XamlHost.pdb" target="lib\MonoAndroid12.0" />
 
-		<file src="..\src\Uno.UI.XamlHost\Bin\Release\xamarinios10\Uno.UI.XamlHost.dll" target="lib\xamarinios10" />
-		<file src="..\src\Uno.UI.XamlHost\Bin\Release\xamarinios10\Uno.UI.XamlHost.pdb" target="lib\xamarinios10" />
+		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost\Release\xamarinios10\Uno.UI.XamlHost.dll" target="lib\xamarinios10" />
+		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost\Release\xamarinios10\Uno.UI.XamlHost.pdb" target="lib\xamarinios10" />
 
-		<file src="..\src\Uno.UI.XamlHost\Bin\Release\xamarinmac20\Uno.UI.XamlHost.dll" target="lib\xamarinmac20" />
-		<file src="..\src\Uno.UI.XamlHost\Bin\Release\xamarinmac20\Uno.UI.XamlHost.pdb" target="lib\xamarinmac20" />
+		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost\Release\xamarinmac20\Uno.UI.XamlHost.dll" target="lib\xamarinmac20" />
+		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost\Release\xamarinmac20\Uno.UI.XamlHost.pdb" target="lib\xamarinmac20" />
 
 		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.net6\Release\net6.0-ios\Uno.UI.XamlHost.dll" target="lib\net6.0-ios" />
 		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.net6\Release\net6.0-ios\Uno.UI.XamlHost.pdb" target="lib\net6.0-ios" />
