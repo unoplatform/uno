@@ -12,6 +12,7 @@ using Windows.UI;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Windows.UI.Xaml.Markup;
+using System.Collections.ObjectModel;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -397,6 +398,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, item.ActualHeight, "reset state: expecting the item's height to be remeasured to 0");
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Get_ItemsControl_From_DataTemplateSelector_Not_Own_Container()
+		{
+			var list = new ItemsControl();
+			var items = new ObservableCollection<int>()
+			{
+				1,
+				2,
+				3,
+				4,
+			};
+
+			list.ItemsSource = items;
+			var selector = new ContainerEventDataTemplateSelector();
+			int callCount = 0;
+			selector.OnSelectTemplateCore += (s, e) =>
+			{
+				var control = ItemsControl.ItemsControlFromItemContainer(e.container);
+				Assert.AreEqual(list, control);
+				callCount++;
+			};
+
+			list.ItemTemplateSelector = selector;
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => callCount >= 4);
+		}
 	}
 
 	internal partial class ContentControlItemsControl : ItemsControl

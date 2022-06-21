@@ -1443,6 +1443,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_Get_ItemsControl_From_DataTemplateSelector_Not_Own_Container()
+		{
+			var list = new OnItemsChangedListView();
+			var items = new ObservableCollection<int>()
+			{
+				1,
+				2,
+				3,
+				4,
+			};
+
+			list.ItemsSource = items;
+			var selector = new ContainerEventDataTemplateSelector();
+			int callCount = 0;
+			selector.OnSelectTemplateCore += (s, e) =>
+			{
+				var control = ItemsControl.ItemsControlFromItemContainer(e.container);
+				Assert.AreEqual(list, control);
+				callCount++;
+			};
+
+			list.ItemTemplateSelector = selector;
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForLoaded(list);
+			await WindowHelper.WaitFor(() => callCount >= 4);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_Items_Not_Their_Own_Container_In_OnItemsChanged_Removal()
 		{
 			var list = new OnItemsChangedListView();
@@ -2444,7 +2473,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
 
-#region Helper classes
+		#region Helper classes
 		private class When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext : System.ComponentModel.INotifyPropertyChanged
 		{
 			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
@@ -2471,23 +2500,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
-#region SelectedItem
+			#region SelectedItem
 			private object _selectedItem;
 			public object SelectedItem
 			{
 				get => _selectedItem;
 				set => RaiseAndSetIfChanged(ref _selectedItem, value);
 			}
-#endregion
-#region SelectedValue
+			#endregion
+			#region SelectedValue
 			private object _selectedValue;
 			public object SelectedValue
 			{
 				get => _selectedValue;
 				set => RaiseAndSetIfChanged(ref _selectedValue, value);
 			}
-#endregion
-#region SelectedIndex
+			#endregion
+			#region SelectedIndex
 			private int _selectedIndex;
 
 			public int SelectedIndex
@@ -2495,7 +2524,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				get => _selectedIndex;
 				set => RaiseAndSetIfChanged(ref _selectedIndex, value);
 			}
-#endregion
+			#endregion
 
 			protected void RaiseAndSetIfChanged<T>(ref T backingField, T value, [CallerMemberName] string propertyName = null)
 			{
@@ -2526,10 +2555,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			}
 		}
-#endregion
+		#endregion
 	}
 
-#region Helper classes
+	#region Helper classes
 	public partial class OnItemsChangedListView : ListView
 	{
 		public Action ItemsChangedAction = null;
@@ -2725,5 +2754,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		public int LastIndex => _start;
 	}
-#endregion
+
+	internal partial class ContainerEventDataTemplateSelector : DataTemplateSelector
+	{
+		public event EventHandler<(object item, DependencyObject container)> OnSelectTemplateCore;
+
+		protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
+		{
+			OnSelectTemplateCore?.Invoke(this, (item, container));
+			return base.SelectTemplateCore(item, container);
+		}
+	}
+	#endregion
 }
