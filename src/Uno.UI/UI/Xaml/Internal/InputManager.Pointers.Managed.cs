@@ -46,7 +46,7 @@ internal partial class InputManager
 		=> _pointerManager.SetPointerCapture(identifier);
 
 	internal void ReleasePointerCapture(PointerIdentifier identifier)
-		=> _pointerManager.SetPointerCapture(identifier);
+		=> _pointerManager.ReleasePointerCapture(identifier);
 
 	private PointerManager _pointerManager = null!;
 
@@ -76,7 +76,7 @@ internal partial class InputManager
 
 			if (_inputManager._contentRoot.Type == ContentRootType.CoreWindow)
 			{
-				Windows.UI.Xaml.Window.Current.CoreWindow.PointerMoved += (c, e) => OnPointerWheelChanged(e);
+				Windows.UI.Xaml.Window.Current.CoreWindow.PointerMoved += (c, e) => OnPointerMoved(e);
 				Windows.UI.Xaml.Window.Current.CoreWindow.PointerEntered += (c, e) => OnPointerEntered(e);
 				Windows.UI.Xaml.Window.Current.CoreWindow.PointerExited += (c, e) => OnPointerExited(e);
 				Windows.UI.Xaml.Window.Current.CoreWindow.PointerPressed += (c, e) => OnPointerPressed(e);
