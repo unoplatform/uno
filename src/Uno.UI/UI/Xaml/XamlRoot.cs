@@ -4,7 +4,6 @@ using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
 using Windows.Graphics.Display;
-using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml;
 
@@ -26,11 +25,13 @@ public sealed partial class XamlRoot
 	/// </summary>
 	public event TypedEventHandler<XamlRoot, XamlRootChangedEventArgs>? Changed;
 
-	// TODO:MZ: This might not be a border potentially, behaves differently on XamlIslands
+	// TODO:MZ: This might not be a border potentially, behaves differently on XamlIslands #8978
 	/// <summary>
 	/// Gets the root element of the XAML element tree.
 	/// </summary>
-	public UIElement? Content => (VisualTree.PublicRootVisual as Border)?.Child; 
+	public UIElement? Content =>
+		VisualTree.ContentRoot.Type == ContentRootType.CoreWindow ?
+			Windows.UI.Xaml.Window.Current.Content : VisualTree.PublicRootVisual;
 
 	//TODO Uno specific: This logic is most likely not implemented here in MUX:
 	/// <summary>
