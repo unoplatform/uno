@@ -262,7 +262,11 @@ namespace Windows.UI.Xaml
 			{
 				if (!ClippingIsSetByCornerRadius)
 				{
-					Layer.Mask = null;
+					var emptyClipLayer = Layer;
+					if (emptyClipLayer != null)
+					{
+						emptyClipLayer.Mask = null;
+					}
 				}
 				return;
 			}
