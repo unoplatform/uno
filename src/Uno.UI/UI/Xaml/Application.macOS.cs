@@ -13,7 +13,6 @@ using System.Globalization;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using System.Linq;
-using ObjCRuntime;
 
 using Selector = ObjCRuntime.Selector;
 using Windows.System.Profile;

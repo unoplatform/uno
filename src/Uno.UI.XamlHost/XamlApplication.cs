@@ -29,7 +29,12 @@ public class XamlApplication : Application, IXamlMetadataProvider, IXamlMetadata
 	
 	public XmlnsDefinition[] GetXmlnsDefinitions() => throw new NotImplementedException();
 
-	public void Dispose() => IsDisposed = true;
+	public
+#if __IOS__ || __MACOS__
+		new
+#endif
+		void Dispose() => IsDisposed = true;
+
 
 	public bool IsDisposed { get; private set; }
 }
