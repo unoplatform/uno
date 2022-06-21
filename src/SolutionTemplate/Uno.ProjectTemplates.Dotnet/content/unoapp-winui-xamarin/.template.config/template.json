@@ -14,15 +14,15 @@
     "dotnet-new"
   ],
   "name": "Multi-Platform App (WinUI)",
-  "identity": "Uno.Platform.UnoApp.WinUI",
-  "groupIdentity": "Uno.Platform.Blank.WinUI",
+  "identity": "Uno.Platform.UnoApp.WinUI.Xamarin",
+  "groupIdentity": "Uno.Platform.Blank.WinUI.Xamarin",
   "description": "Template for creating a multi-platform C# & XAML application targeting WinUI 3, Android, iOS, macOS, WebAssembly, Skia/Tizen, Skia/WPF and Skia/GTK for Linux.",
   "precedence": "6001",
   "tags": {
     "language": "C#",
     "type": "project"
   },
-  "shortName": "unoapp-winui",
+  "shortName": "unoapp-winui-xamarin",
   "sourceName": "UnoWinUIQuickStart",
   "defaultName": "UnoApp",
   "placeholderFilename": "template-ignore",
