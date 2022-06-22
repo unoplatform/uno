@@ -20,7 +20,7 @@ If you need to determine the parameters available for a template use `dotnet new
 
 This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Mac Catalyst, Linux, and Win32 Desktop which uses the new WinUI 3 APIs.
 
-This template uses a single project head for iOS, Android, macOS, and Mac Catalyst and requires Visual Studio 2022.
+This template uses a single project head for iOS, Android, macOS, and Mac Catalyst. It requires Visual Studio 2022.
 
 [**Find detailed instructions here.**](get-started-winui3.md)
 
@@ -72,7 +72,7 @@ More articles on WinUI 3:
 
 This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Mac Catalyst, Skia/GTK (Windows, Linux, macOS), and Skia/Wpf (Windows 7 and 10).
 
-This template uses a single project head for iOS, Android, macOS, and Mac Catalyst and requires Visual Studio 2022.
+This template uses a single project head for iOS, Android, macOS, and Mac Catalyst. It requires Visual Studio 2022.
 
 A basic example:
 ```
