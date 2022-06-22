@@ -354,7 +354,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			EnsureXClassName();
 
 			var xamlDefinedBaseType = GetType(topLevelControl.Type);
-			var fullClassName = _xClassName.ns + "." + _xClassName.className;
+			var fullClassName = _xClassName.Namespace + "." + _xClassName.ClassName;
 			var classDefinedBaseType = FindType(fullClassName)?.BaseType;
 
 			if (!SymbolEqualityComparer.Default.Equals(xamlDefinedBaseType, classDefinedBaseType))
@@ -455,16 +455,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				_xClassName = GetClassName(topLevelControl);
 
-				using (writer.BlockInvariant("namespace {0}", _xClassName.ns))
+				using (writer.BlockInvariant("namespace {0}", _xClassName.Namespace))
 				{
 					AnalyzerSuppressionsGenerator.Generate(writer, _analyzerSuppressions);
 					TryGenerateWarningForInconsistentBaseType(writer, topLevelControl);
 
 					var controlBaseType = GetType(topLevelControl.Type);
 
-					using (writer.BlockInvariant("partial class {0} : {1}", _xClassName.className, controlBaseType.ToDisplayString()))
+					using (writer.BlockInvariant("partial class {0} : {1}", _xClassName.ClassName, controlBaseType.ToDisplayString()))
 					{
-						using (Scope(_xClassName.ns, _xClassName.className))
+						using (Scope(_xClassName.Namespace, _xClassName.ClassName))
 						{
 							if (_generationRunFileInfo.RunInfo.Index == 0)
 							{
@@ -489,7 +489,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 									BuildComponentFields(componentBuilder);
 
-									BuildCompiledBindings(componentBuilder, _xClassName.className);
+									BuildCompiledBindings(componentBuilder, _xClassName.ClassName);
 
 									_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
 									_generationRunFileInfo.ComponentCode = componentBuilder.ToString();
@@ -549,7 +549,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				EnsureXClassName();
-				BuildCompiledBindingsInitializer(writer, _xClassName.className, controlBaseType);
+				BuildCompiledBindingsInitializer(writer, _xClassName.ClassName, controlBaseType);
 
 				if (isDirectUserControlChild)
 				{
@@ -605,7 +605,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			writer.AppendLineInvariant($"#if __ANDROID__");
 #if NETSTANDARD
-			writer.AppendLineInvariant($"global::Uno.Helpers.DrawableHelper.SetDrawableResolver(global::{_xClassName?.ns}.App.DrawableResourcesIdResolver.Resolve);");
+			writer.AppendLineInvariant($"global::Uno.Helpers.DrawableHelper.SetDrawableResolver(global::{_xClassName?.Namespace}.App.DrawableResourcesIdResolver.Resolve);");
 #else
 			writer.AppendLineInvariant($"global::Uno.Helpers.DrawableHelper.Drawables = typeof(global::{_defaultNamespace}.Resource.Drawable);");
 #endif
@@ -1577,15 +1577,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			TryAnnotateWithGeneratorSource(writer);
 			var className = FindClassName(topLevelControl);
 
-			if (className?.ns != null)
+			if (className?.Namespace != null)
 			{
 				var controlBaseType = GetType(topLevelControl.Type);
 
-				using (writer.BlockInvariant("namespace {0}", className.ns))
+				using (writer.BlockInvariant("namespace {0}", className.Namespace))
 				{
-					using (writer.BlockInvariant("public sealed partial class {0} : {1}", className.className, GetGlobalizedTypeName(controlBaseType.ToDisplayString())))
+					using (writer.BlockInvariant("public sealed partial class {0} : {1}", className.ClassName, GetGlobalizedTypeName(controlBaseType.ToDisplayString())))
 					{
-						using (Scope(className.ns, className.className!))
+						using (Scope(className.Namespace, className.ClassName!))
 						{
 							using (writer.BlockInvariant("public void InitializeComponent()"))
 							{
@@ -3691,17 +3691,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 							else
 							{
-								if (_xClassName?.symbol != null)
+								if (_xClassName?.Symbol != null)
 								{
 									return (
 										$"{member.Member.Name}_{sanitizedEventTarget}_That.Target as {_xClassName}",
 										$"({eventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference",
-										FindTargetMethodSymbol(_xClassName.symbol)
+										FindTargetMethodSymbol(_xClassName.Symbol)
 									);
 								}
 								else
 								{
-									throw new Exception($"Unable to find the type {_xClassName?.ns}.{_xClassName?.className}");
+									throw new Exception($"Unable to find the type {_xClassName?.Namespace}.{_xClassName?.ClassName}");
 								}
 							}
 						}
@@ -3766,7 +3766,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				writeEvent("");
 			}
-			else if (_xClassName?.className != null)
+			else if (_xClassName?.ClassName != null)
 			{
 				writeEvent(CurrentResourceOwner?.Name);
 			}
@@ -4263,7 +4263,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private ITypeSymbol GetXBindPropertyPathType(string propertyPath, INamedTypeSymbol? rootType = null)
 		{
 			ITypeSymbol currentType = rootType
-				?? _xClassName?.symbol
+				?? _xClassName?.Symbol
 				?? throw new InvalidCastException($"Unable to find type {_xClassName}");
 
 			var parts = propertyPath.Split('.');
@@ -4310,7 +4310,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var isTopLevelMember = lastDotIndex == -1;
 
 			var className = isTopLevelMember
-				? _xClassName?.ns + "." + _xClassName?.className
+				? _xClassName?.Namespace + "." + _xClassName?.ClassName
 				: fullMemberName.Substring(0, lastDotIndex);
 
 			var memberName = isTopLevelMember

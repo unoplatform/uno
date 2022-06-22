@@ -26,11 +26,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly static Func<INamedTypeSymbol, string, INamedTypeSymbol> _getAttachedPropertyType;
 		private readonly static Func<INamedTypeSymbol, bool> _isTypeImplemented;
 
-		record XClassName(string ns, string className, INamedTypeSymbol? symbol)
+		record XClassName(string Namespace, string ClassName, INamedTypeSymbol? Symbol)
 		{
 			public override string ToString()
-				=> symbol?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Included))
-				?? ns + "." + className;
+				=> Symbol?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Included))
+				?? Namespace + "." + ClassName;
 		}
 
 		private void InitCaches()
