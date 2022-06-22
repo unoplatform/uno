@@ -19,12 +19,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private Func<XamlMember, IEventSymbol?>? _findEventType;
 		private Func<INamedTypeSymbol, Dictionary<string, IEventSymbol>>? _getEventsForType;
 		private Func<INamedTypeSymbol, string[]>? _findLocalizableDeclaredProperties;
-		private (string ns, string className) _className;
+		private XClassName? _xClassName;
 		private string[]? _clrNamespaces;
 		private readonly static Func<INamedTypeSymbol, IPropertySymbol?> _findContentProperty;
 		private readonly static Func<INamedTypeSymbol, string, bool> _isAttachedProperty;
 		private readonly static Func<INamedTypeSymbol, string, INamedTypeSymbol> _getAttachedPropertyType;
 		private readonly static Func<INamedTypeSymbol, bool> _isTypeImplemented;
+
+		record XClassName(string ns, string className, INamedTypeSymbol? symbol)
+		{
+			public override string ToString()
+				=> symbol?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Included))
+				?? ns + "." + className;
+		}
 
 		private void InitCaches()
 		{
