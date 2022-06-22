@@ -92,7 +92,7 @@ public sealed partial class XamlRoot
 			
 			if (forMeasure)
 			{
-				rootElement.Measure(Size);
+				rootElement.Measure(Bounds.Size);
 			}
 			
 			if (forArrange)
