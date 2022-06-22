@@ -19,7 +19,7 @@ namespace Uno.UI.Tests.ResourceLoader.Strings.en {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -61,29 +61,29 @@ namespace Uno.UI.Tests.ResourceLoader.Strings.en {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to App70-en.
+        ///   Looks up a localized string similar to .
         /// </summary>
-        internal static string ApplicationName {
+        internal static string TestEmptyConverterText_ValueIfNotNull {
             get {
-                return ResourceManager.GetString("ApplicationName", resourceCulture);
+                return ResourceManager.GetString("TestEmptyConverterText.ValueIfNotNull", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Text in &apos;en&apos;.
+        ///   Looks up a localized string similar to Test.
         /// </summary>
-        internal static string Given_ResourceLoader_When_LocalizedResource {
+        internal static string TestEmptyConverterText_ValueIfNull {
             get {
-                return ResourceManager.GetString("Given_ResourceLoader.When_LocalizedResource", resourceCulture);
+                return ResourceManager.GetString("TestEmptyConverterText.ValueIfNull", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Header in &apos;en&apos;.
+        ///   Looks up a localized string similar to .
         /// </summary>
-        internal static string ThemeRadioButtons_Header {
+        internal static string TestEmptyResource {
             get {
-                return ResourceManager.GetString("ThemeRadioButtons.Header", resourceCulture);
+                return ResourceManager.GetString("TestEmptyResource", resourceCulture);
             }
         }
     }
