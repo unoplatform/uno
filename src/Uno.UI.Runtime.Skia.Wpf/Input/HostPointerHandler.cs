@@ -159,7 +159,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 			static short GetLoWord(int i) => (short)(i & 0xFFFF);
 			static short GetHiWord(int i) => (short)(i >> 16);
-			global::System.Diagnostics.Debug.WriteLine(msg);
+
 			switch (msg)
 			{
 				case Win32Messages.WM_DPICHANGED:

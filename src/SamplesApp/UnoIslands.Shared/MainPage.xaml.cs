@@ -26,12 +26,6 @@ namespace UnoIslands
         public MainPage()
         {
             this.InitializeComponent();
-			this.DataContextChanged += MainPage_DataContextChanged;
         }
-
-		private void MainPage_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-		{
-			Debug.WriteLine(args.NewValue?.GetType());
-		}
 	}
 }
