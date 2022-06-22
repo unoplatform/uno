@@ -20,7 +20,7 @@ If you need to determine the parameters available for a template use `dotnet new
 
 This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Mac Catalyst, Linux, and Win32 Desktop which uses the new WinUI 3 APIs.
 
-This template uses a single project head for iOS, Android, macOS and Mac Catalyst and requires Visual Studio 2022.
+This template uses a single project head for iOS, Android, macOS, and Mac Catalyst and requires Visual Studio 2022.
 
 [**Find detailed instructions here.**](get-started-winui3.md)
 
@@ -43,7 +43,7 @@ A basic example:
 dotnet new unoapp-uwp -o MyApp
 ```
 
-A more advanced example which will not generate the android and macOS heads:
+A more advanced example that will not generate the android and macOS heads:
 
 ```
 dotnet new unoapp-uwp -o MyApp -android=false -macos=false
@@ -51,7 +51,7 @@ dotnet new unoapp-uwp -o MyApp -android=false -macos=false
 
 ## Uno Platform Blank Application (WinAppSDK - WinUI 3, Xamarin)
 
-This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Linux, and Win32 Desktop which uses the new WinUI 3 apis.
+This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Linux, and Win32 Desktop which uses the new WinUI 3 APIs.
 
 [**Find detailed instructions here.**](get-started-winui3.md)
 
@@ -70,16 +70,16 @@ More articles on WinUI 3:
 
 > .NET 6 Mobile support is currently in Preview, following Microsoft's support status. As of Uno 4.1, .NET 6 Mobile Preview 13 and above is supported with [Visual Studio 2022 17.2 Preview 1](https://visualstudio.microsoft.com/vs/preview). Previous releases of Visual Studio are not supported.
 
-This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Mac Catalyst, Skia/GTK (Windows, Linux, macOS) and Skia/Wpf (Windows 7 and 10).
+This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Mac Catalyst, Skia/GTK (Windows, Linux, macOS), and Skia/Wpf (Windows 7 and 10).
 
-This template uses a single project head for iOS, Android, macOS and Mac Catalyst and requires Visual Studio 2022.
+This template uses a single project head for iOS, Android, macOS, and Mac Catalyst and requires Visual Studio 2022.
 
 A basic example:
 ```
 dotnet new unoapp-uwp-net6 -o MyApp
 ```
 
-A more advanced example which will not generate the android and macOS heads:
+A more advanced example that will not generate the android and macOS heads:
 
 ```
 dotnet new unoapp-uwp-net6 -o MyApp -mobile=false
