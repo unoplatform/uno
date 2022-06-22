@@ -375,7 +375,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				return outputFiles.ToArray();
-
 			}
 			catch (OperationCanceledException)
 			{

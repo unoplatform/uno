@@ -20,6 +20,7 @@ using Uno.Disposables;
 using Uno.UI.SourceGenerators.BindableTypeProviders;
 using Microsoft.CodeAnalysis.CSharp;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Uno.UI.SourceGenerators.Helpers;
 
 #if NETFRAMEWORK
@@ -350,8 +351,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void TryGenerateWarningForInconsistentBaseType(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
 		{
+			EnsureXClassName();
+
 			var xamlDefinedBaseType = GetType(topLevelControl.Type);
-			var fullClassName = _className.ns + "." + _className.className;
+			var fullClassName = _xClassName.Namespace + "." + _xClassName.ClassName;
 			var classDefinedBaseType = FindType(fullClassName)?.BaseType;
 
 			if (!SymbolEqualityComparer.Default.Equals(xamlDefinedBaseType, classDefinedBaseType))
@@ -450,18 +453,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else
 			{
-				_className = GetClassName(topLevelControl);
+				_xClassName = GetClassName(topLevelControl);
 
-				using (writer.BlockInvariant("namespace {0}", _className.ns))
+				using (writer.BlockInvariant("namespace {0}", _xClassName.Namespace))
 				{
 					AnalyzerSuppressionsGenerator.Generate(writer, _analyzerSuppressions);
 					TryGenerateWarningForInconsistentBaseType(writer, topLevelControl);
 
 					var controlBaseType = GetType(topLevelControl.Type);
 
-					using (writer.BlockInvariant("partial class {0} : {1}", _className.className, controlBaseType.ToDisplayString()))
+					using (writer.BlockInvariant("partial class {0} : {1}", _xClassName.ClassName, controlBaseType.ToDisplayString()))
 					{
-						using (Scope(_className.ns, _className.className))
+						using (Scope(_xClassName.Namespace, _xClassName.ClassName))
 						{
 							if (_generationRunFileInfo.RunInfo.Index == 0)
 							{
@@ -486,7 +489,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 									BuildComponentFields(componentBuilder);
 
-									BuildCompiledBindings(componentBuilder, _className.className);
+									BuildCompiledBindings(componentBuilder, _xClassName.ClassName);
 
 									_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
 									_generationRunFileInfo.ComponentCode = componentBuilder.ToString();
@@ -545,7 +548,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					BuildNamedResources(writer, _namedResources);
 				}
 
-				BuildCompiledBindingsInitializer(writer, _className.className, controlBaseType);
+				EnsureXClassName();
+				BuildCompiledBindingsInitializer(writer, _xClassName.ClassName, controlBaseType);
 
 				if (isDirectUserControlChild)
 				{
@@ -601,7 +605,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			writer.AppendLineInvariant($"#if __ANDROID__");
 #if NETSTANDARD
-			writer.AppendLineInvariant($"global::Uno.Helpers.DrawableHelper.SetDrawableResolver(global::{_className.ns}.App.DrawableResourcesIdResolver.Resolve);");
+			writer.AppendLineInvariant($"global::Uno.Helpers.DrawableHelper.SetDrawableResolver(global::{_xClassName?.Namespace}.App.DrawableResourcesIdResolver.Resolve);");
 #else
 			writer.AppendLineInvariant($"global::Uno.Helpers.DrawableHelper.Drawables = typeof(global::{_defaultNamespace}.Resource.Drawable);");
 #endif
@@ -1573,15 +1577,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			TryAnnotateWithGeneratorSource(writer);
 			var className = FindClassName(topLevelControl);
 
-			if (className.ns != null)
+			if (className?.Namespace != null)
 			{
 				var controlBaseType = GetType(topLevelControl.Type);
 
-				using (writer.BlockInvariant("namespace {0}", className.ns))
+				using (writer.BlockInvariant("namespace {0}", className.Namespace))
 				{
-					using (writer.BlockInvariant("public sealed partial class {0} : {1}", className.className, GetGlobalizedTypeName(controlBaseType.ToDisplayString())))
+					using (writer.BlockInvariant("public sealed partial class {0} : {1}", className.ClassName, GetGlobalizedTypeName(controlBaseType.ToDisplayString())))
 					{
-						using (Scope(className.ns, className.className!))
+						using (Scope(className.Namespace, className.ClassName!))
 						{
 							using (writer.BlockInvariant("public void InitializeComponent()"))
 							{
@@ -2156,19 +2160,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return member;
 		}
 
-		private (string ns, string className) GetClassName(XamlObjectDefinition control)
+		private XClassName GetClassName(XamlObjectDefinition control)
 		{
 			var classMember = FindClassName(control);
 
-			if (classMember.ns == null)
+			if (classMember == null)
 			{
 				throw new Exception("Unable to find class name for toplevel control");
 			}
 
-			return classMember!;
+			return classMember;
 		}
 
-		private static (string? ns, string? className) FindClassName(XamlObjectDefinition control)
+		private XClassName? FindClassName(XamlObjectDefinition control)
 		{
 			var classMember = control.Members.FirstOrDefault(m => m.Member.Name == "Class");
 
@@ -2178,11 +2182,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				var index = fullName.LastIndexOf('.');
 
-				return (fullName.Substring(0, index), fullName.Substring(index + 1));
+				return new(fullName.Substring(0, index), fullName.Substring(index + 1), FindType(fullName));
 			}
 			else
 			{
-				return (null, null);
+				return null;
+			}
+		}
+
+		[MemberNotNull(nameof(_xClassName))]
+		private void EnsureXClassName()
+		{
+			if (_xClassName == null)
+			{
+				throw new Exception($"Unable to find x:Class on the top level element");
 			}
 		}
 
@@ -3678,12 +3691,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 							else
 							{
-
-								return (
-									$"{member.Member.Name}_{sanitizedEventTarget}_That.Target as {_className.className}",
-									$"({eventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference",
-									FindTargetMethodSymbol(FindType(_className.className))
-								);
+								if (_xClassName?.Symbol != null)
+								{
+									return (
+										$"{member.Member.Name}_{sanitizedEventTarget}_That.Target as {_xClassName}",
+										$"({eventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference",
+										FindTargetMethodSymbol(_xClassName.Symbol)
+									);
+								}
+								else
+								{
+									throw new Exception($"Unable to find the type {_xClassName?.Namespace}.{_xClassName?.ClassName}");
+								}
 							}
 						}
 
@@ -3721,6 +3740,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else
 					{
+						EnsureXClassName();
+
 						// x:Bind to second-level method generates invalid code
 						// sanitizing member.Value so that "ViewModel.SearchBreeds" becomes "ViewModel_SearchBreeds"
 						var sanitizedMemberValue = SanitizeResourceName(member.Value?.ToString());
@@ -3732,7 +3753,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						//
 						writer.AppendLineInvariant($"var {member.Member.Name}_{sanitizedMemberValue}_That = ({eventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
 
-						writer.AppendLineInvariant($"/* second level */ {closureName}.{member.Member.Name} += ({parms}) => ({member.Member.Name}_{sanitizedMemberValue}_That.Target as {_className.className})?.{member.Value}({parms});");
+						writer.AppendLineInvariant($"/* second level */ {closureName}.{member.Member.Name} += ({parms}) => ({member.Member.Name}_{sanitizedMemberValue}_That.Target as {_xClassName})?.{member.Value}({parms});");
 					}
 				}
 				else
@@ -3745,7 +3766,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				writeEvent("");
 			}
-			else if (_className.className != null)
+			else if (_xClassName?.ClassName != null)
 			{
 				writeEvent(CurrentResourceOwner?.Name);
 			}
@@ -4192,6 +4213,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else
 			{
+				EnsureXClassName();
+
 				var originalRawFunction = rawFunction;
 				rawFunction = string.IsNullOrEmpty(rawFunction) ? "___ctx" : XBindExpressionParser.Rewrite("___tctx", rawFunction, IsStaticMember);
 
@@ -4216,7 +4239,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								var targetPropertyType = GetXBindPropertyPathType(propertyPaths.properties[0]).ToDisplayString(NullableFlowState.None);
 								return $"(___ctx, __value) => {{ " +
-									$"if(___ctx is global::{_className.ns + "." + _className.className} ___tctx) " +
+									$"if(___ctx is {_xClassName} ___tctx) " +
 									$"{rawFunction} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value);" +
 									$" }}";
 							}
@@ -4232,14 +4255,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				var bindFunction = $"___ctx is global::{_className.ns + "." + _className.className} ___tctx ? (object)({rawFunction}) : null";
+				var bindFunction = $"___ctx is {_xClassName} ___tctx ? (object)({rawFunction}) : null";
 				return $".BindingApply(___b =>  /*defaultBindMode{GetDefaultBindMode()} {originalRawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, this, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}))";
 			}
 		}
 
 		private ITypeSymbol GetXBindPropertyPathType(string propertyPath, INamedTypeSymbol? rootType = null)
 		{
-			ITypeSymbol currentType = rootType ?? GetType(_className.ns + "." + _className.className);
+			ITypeSymbol currentType = rootType
+				?? _xClassName?.Symbol
+				?? throw new InvalidCastException($"Unable to find type {_xClassName}");
 
 			var parts = propertyPath.Split('.');
 
@@ -4285,7 +4310,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var isTopLevelMember = lastDotIndex == -1;
 
 			var className = isTopLevelMember
-				? _className.ns + "." + _className.className
+				? _xClassName?.Namespace + "." + _xClassName?.ClassName
 				: fullMemberName.Substring(0, lastDotIndex);
 
 			var memberName = isTopLevelMember
@@ -5952,6 +5977,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							if (hasLoadMarkup || hasVisibilityMarkup)
 							{
+
 								var members = new List<XamlMemberDefinition>();
 
 								if (hasLoadMarkup)
@@ -5968,11 +5994,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								if ((!_isTopLevelDictionary || isInsideFrameworkTemplate)
 									&& (HasXBindMarkupExtension(definition) || HasMarkupExtensionNeedingComponent(definition)))
 								{
-									var componentName = $"_component_{ CurrentScope.ComponentCount}";
+									var componentName = $"_component_{CurrentScope.ComponentCount}";
 									writer.AppendLineInvariant($"this.{componentName} = {closureName};");
 
 									if (!isInsideFrameworkTemplate)
 									{
+										EnsureXClassName();
+
 										writer.AppendLineInvariant($"var {componentName}_update_That = ({CurrentResourceOwnerName} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
 
 										if (nameMember != null)
@@ -5982,7 +6010,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 										using (writer.BlockInvariant($"void {componentName}_update(global::Windows.UI.Xaml.ElementStub sender)"))
 										{
-											using (writer.BlockInvariant($"if ({componentName}_update_That.Target is {_className.className} that)"))
+											using (writer.BlockInvariant($"if ({componentName}_update_That.Target is {_xClassName} that)"))
 											{
 
 												using (writer.BlockInvariant($"if (sender.IsMaterialized)"))
@@ -6000,7 +6028,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											// ElementStub will be unloaded **after** the stubbed control has been created
 											// in order for the _component_XXX to be filled, and Bindings.Update() to do its work.
 
-											using (writer.BlockInvariant($"if ({componentName}_update_That.Target is {_className.className} that)"))
+											using (writer.BlockInvariant($"if ({componentName}_update_That.Target is {_xClassName} that)"))
 											{
 												if (CurrentXLoadScope != null)
 												{
@@ -6071,6 +6099,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			return null;
 		}
+
 
 		/// <summary>
 		/// Set the active DefaultBindMode, if x:DefaultBindMode is defined on this <paramref name="xamlObjectDefinition"/>.
