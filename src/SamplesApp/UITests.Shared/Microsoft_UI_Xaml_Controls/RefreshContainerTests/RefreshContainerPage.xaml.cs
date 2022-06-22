@@ -59,9 +59,9 @@ namespace MUXControlsTestApp
             this.InitializeComponent();
             this.Loaded += OnMainPageLoaded;
 
-            containerTimer.Interval = new TimeSpan(0, 0, 0, 0, 800);
+            containerTimer.Interval = new TimeSpan(0, 0, 0, 5, 0);
             containerTimer.Tick += containerTimer_Tick;
-            visualizerTimer.Interval = new TimeSpan(0, 0, 0, 0, 800);
+            visualizerTimer.Interval = new TimeSpan(0, 0, 0, 5, 0);
             visualizerTimer.Tick += visualizerTimer_Tick;
             LogController.InitializeLogging();
         }
@@ -101,7 +101,7 @@ namespace MUXControlsTestApp
             this.RVRefreshRequestedComboBoxSwitcher.Click += RVRefreshRequestedComboBoxSwitcher_Click;
 
 #if HAS_UNO
-			((IRefreshVisualizerPrivate)this.RefreshContainer.Visualizer).InfoProvider.InteractionRatioChanged += RefreshInfoProvider_InteractionRatioChanged;
+			//((IRefreshVisualizerPrivate)this.RefreshContainer.Visualizer).InfoProvider.InteractionRatioChanged += RefreshInfoProvider_InteractionRatioChanged;
 #endif
             var boarderChild = VisualTreeHelper.GetChild(listView, 0);
             var sv = VisualTreeHelper.GetChild(boarderChild, 0);

@@ -2,7 +2,7 @@
 
 using System;
 using System.Linq;
-using System.Runtime.CompilerServices;
+using CoreGraphics;
 using UIKit;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
@@ -10,14 +10,15 @@ using Uno.UI.Extensions;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 public partial class RefreshContainer : ContentControl
 {
 	private readonly SerialDisposable _refreshSubscription = new SerialDisposable();
+	private readonly SerialDisposable _nativeScrollViewAttachment = new SerialDisposable();
 	private NativeRefreshControl _refreshControl = null!;
+	private UIScrollView? _ownerScrollView = null;
 	private bool _managedIsRefreshing = false;
 
 	private void InitializePlatform()
@@ -32,14 +33,17 @@ public partial class RefreshContainer : ContentControl
 		if (!_refreshControl.Refreshing)
 		{
 			_refreshControl.BeginRefreshing();
+			var offsetPoint = new CGPoint(0, -_refreshControl.Frame.Size.Height);
+			_ownerScrollView?.SetContentOffset(offsetPoint, animated: true);
+			OnNativeRefreshingChanged();
 		}
 	}
 
 	partial void OnApplyTemplatePartial()
 	{
-		base.OnApplyTemplate();		
+		base.OnApplyTemplate();
 	}
-		
+
 	private void OnLoaded(object sender, RoutedEventArgs e)
 	{
 		if (_refreshControl.Superview != null)
@@ -47,15 +51,8 @@ public partial class RefreshContainer : ContentControl
 			_refreshControl.RemoveFromSuperview();
 		}
 
-		// Inject the UIRefreshControl into the first scrollable element found in the hierarchy
-		if (this.FindFirstChild<UIScrollView>() is { } scrollView)
-		{
-			SetRefreshControlOnNativeView(scrollView);
-		}
-		else if (this.Log().IsEnabled(LogLevel.Warning))
-		{
-			this.Log().Warn($"No {nameof(UIScrollView)} found to host refresh indicator; swipe to refresh will not be available.");
-		}
+
+		AttachToNativeScrollView();
 
 		_refreshControl.ValueChanged += OnRefreshControlValueChanged;
 		_refreshSubscription.Disposable = Disposable.Create(() => _refreshControl.ValueChanged -= OnRefreshControlValueChanged);
@@ -67,39 +64,80 @@ public partial class RefreshContainer : ContentControl
 		_refreshSubscription.Disposable = null;
 	}
 
-	private void OnRefreshControlValueChanged(object sender, EventArgs e)
+	private void OnRefreshControlValueChanged(object sender, EventArgs e) => OnNativeRefreshingChanged();
+
+	private void OnNativeRefreshingChanged()
 	{
 		if (_refreshControl.Refreshing && !_managedIsRefreshing)
 		{
 			_managedIsRefreshing = true;
-			RefreshRequested?.Invoke(this, new RefreshRequestedEventArgs(new Deferral(() =>
+
+			var deferral = new Deferral(() =>
 			{
+				// CheckThread();
 				_refreshControl.EndRefreshing();
 				_managedIsRefreshing = false;
-			}))); // TODO:MZ
+				//RefreshCompleted();
+			});
+
+			var args = new RefreshRequestedEventArgs(deferral);
+
+			//This makes sure that everyone registered for this event can get access to the deferral
+			//Otherwise someone could complete the deferral before someone else has had a chance to grab it
+			args.IncrementDeferralCount();
+			RefreshRequested?.Invoke(this, args);
+			args.DecrementDeferralCount();
 		}
 	}
 
-	private void SetRefreshControlOnNativeView(UIScrollView targetView)
+	protected override void OnContentChanged(object oldValue, object newValue)
 	{
-		foreach (var existingRefresh in targetView.Subviews.OfType<NativeRefreshControl>())
-		{
-			// We can get a scroll view that already has a NativeSwipeRefresh due to template reuse. 
-			existingRefresh.RemoveFromSuperview();
-		}
+		base.OnContentChanged(oldValue, newValue);
+		
+		_nativeScrollViewAttachment.Disposable = null;
 
-		if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
-		{
-			targetView.RefreshControl = _refreshControl;
-		}
-		else
-		{
-			targetView.AddSubview(_refreshControl);
-		}
-
-		// Setting AlwaysBounceVertical allows the refresh to work even when the scroll view is not scrollable (ie its content
-		// fits entirely in its visible bounds)
-		targetView.AlwaysBounceVertical = true;
+		AttachToNativeScrollView();
 	}
 
+	private void AttachToNativeScrollView()
+	{
+		// Inject the UIRefreshControl into the first scrollable element found in the hierarchy		
+		if (this.FindFirstChild<UIScrollView>() is { } scrollView)
+		{
+			_ownerScrollView = scrollView;
+			foreach (var existingRefresh in scrollView.Subviews.OfType<NativeRefreshControl>())
+			{
+				// We can get a scroll view that already has a refresh control due to template reuse. 
+				existingRefresh.RemoveFromSuperview();
+			}
+
+			if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
+			{
+				scrollView.RefreshControl = _refreshControl;
+			}
+			else
+			{
+				scrollView.AddSubview(_refreshControl);
+			}
+
+			// Setting AlwaysBounceVertical allows the refresh to work even when the scroll view is not scrollable (ie its content
+			// fits entirely in its visible bounds)
+			var originalBounceSetting = scrollView.AlwaysBounceVertical;
+			scrollView.AlwaysBounceVertical = true;
+
+			_nativeScrollViewAttachment.Disposable = Disposable.Create(() =>
+			{
+				_ownerScrollView = null;
+				if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
+				{
+					scrollView.RefreshControl = null;
+				}
+				else
+				{
+					_refreshControl.RemoveFromSuperview();
+				}
+				scrollView.AlwaysBounceVertical = originalBounceSetting;
+			});
+		}	
+	}
 }

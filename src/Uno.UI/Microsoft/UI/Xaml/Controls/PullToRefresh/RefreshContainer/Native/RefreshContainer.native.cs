@@ -17,6 +17,17 @@ public partial class RefreshContainer : ContentControl
 	{
 		base.OnApplyTemplate();
 
+		m_refreshVisualizer = Visualizer;
+		if (m_refreshVisualizer == null)
+		{
+			Visualizer = new RefreshVisualizer();
+			m_hasDefaultRefreshVisualizer = true;
+		}
+		else
+		{
+			m_hasDefaultRefreshVisualizer = false;
+		}
+
 		OnApplyTemplatePartial();
 	}
 

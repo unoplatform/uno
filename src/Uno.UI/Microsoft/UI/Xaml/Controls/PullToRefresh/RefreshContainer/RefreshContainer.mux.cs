@@ -352,7 +352,7 @@ public partial class RefreshContainer : ContentControl
 		//This makes sure that everyone registered for this event can get access to the deferral
 		//Otherwise someone could complete the deferral before someone else has had a chance to grab it
 		args.IncrementDeferralCount();
-		RefreshRequested(this, args);
+		RefreshRequested?.Invoke(this, args);
 		args.DecrementDeferralCount();
 	}
 
