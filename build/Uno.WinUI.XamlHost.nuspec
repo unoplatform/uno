@@ -81,6 +81,8 @@
 		<!-- netstandard2.0 Skia -->
 		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\netstandard2.0\Uno.UI.XamlHost.dll" target="uno-runtime\skia" />
 		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\netstandard2.0\Uno.UI.XamlHost.pdb" target="uno-runtime\skia" />
+
+		<file src="..\src\Uno.UI.XamlHost\buildTransitive\Uno.WinUI.XamlHost.props" target="build" />
 	</files>
 
 </package>
