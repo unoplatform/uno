@@ -1,4 +1,6 @@
 ﻿#nullable enable
+#pragma warning disable CS0414
+#pragma warning disable CS0169
 
 using Microsoft.UI.Private.Controls;
 using Uno.Disposables;

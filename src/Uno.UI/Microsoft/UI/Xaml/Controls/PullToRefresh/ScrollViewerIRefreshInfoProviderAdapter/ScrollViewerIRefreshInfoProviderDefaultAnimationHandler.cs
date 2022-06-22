@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using System.Numerics;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;

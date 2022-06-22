@@ -179,7 +179,7 @@ internal partial class ScrollViewerIRefreshInfoProviderAdapter : IRefreshInfoPro
 							//PTR_TRACE_INFO(null, TRACE_MSG_METH_METH, "ScrollViewer.PointerPressedHandler", this, "TryRedirectForManipulation");
 							m_visualInteractionSource.TryRedirectForManipulation(pp);
 						}
-						catch (Exception ex)
+						catch (Exception)
 						{
 							// Swallowing Access Denied error because of InteractionTracker bug 17434718 which has been causing crashes at least in RS3, RS4 and RS5.
 							//if (e.to_abi() != E_ACCESSDENIED)

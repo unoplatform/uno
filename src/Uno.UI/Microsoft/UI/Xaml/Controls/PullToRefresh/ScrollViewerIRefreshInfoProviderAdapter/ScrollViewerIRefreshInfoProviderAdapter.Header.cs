@@ -11,7 +11,7 @@ namespace Microsoft.UI.Private.Controls;
 internal partial class ScrollViewerIRefreshInfoProviderAdapter
 {
 	private RefreshInfoProviderImpl? m_infoProvider = null;
-	private IAdapterAnimationHandler m_animationHandler = null;
+	private IAdapterAnimationHandler? m_animationHandler = null;
 	private ScrollViewer? m_scrollViewer = null;
 	private RefreshPullDirection m_refreshPullDirection = RefreshPullDirection.TopToBottom;
 	private InteractionTracker? m_interactionTracker = null;
