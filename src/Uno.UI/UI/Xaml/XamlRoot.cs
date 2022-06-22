@@ -41,8 +41,13 @@ public sealed partial class XamlRoot
 	{
 		get
 		{
+			if (VisualTree.ContentRoot.Type == ContentRootType.CoreWindow)
+			{
+				return Content?.RenderSize ?? Size.Empty;
+			}
+
 			var rootElement = VisualTree.RootElement;
-			if (rootElement is RootVisual rootVisual)
+			if (rootElement is RootVisual)
 			{
 				// TODO: Support multiple windows! #8978[windows]
 				return Window.Current.Bounds.Size;
