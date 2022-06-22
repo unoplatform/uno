@@ -155,7 +155,7 @@
       "path": "UnoWinUIQuickStart.Shared\\UnoWinUIQuickStart.Shared.shproj"
     },
     {
-      "condition": "Mobile",
+      "condition": "mobile",
       "path": "UnoWinUIQuickStart.Mobile\\UnoWinUIQuickStart.Mobile.csproj"
     },
     {
@@ -192,7 +192,7 @@
           ]
         },
         {
-          "condition": "(!Mobile)",
+          "condition": "(!mobile)",
           "exclude": [
             "UnoWinUIQuickStart.Mobile/**/*"
           ]
