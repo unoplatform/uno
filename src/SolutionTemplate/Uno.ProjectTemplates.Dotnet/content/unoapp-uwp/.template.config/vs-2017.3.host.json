@@ -4,7 +4,7 @@
     "text": "Cross-Platform App"
   },
   "description": {
-    "text": "Solution template for creating a cross-platform XAML app with the Uno Platform that targets UWP, Android, iOS, macOS, WebAssembly, Skia/Tizen, Skia/WPF and Skia/GTK for Linux."
+    "text": "Solution template for creating a cross-platform XAML app with the Uno Platform that targets UWP, Android, iOS, macOS, WebAssembly, Skia/Tizen, Skia/WPF, and Skia/GTK for Linux."
   },
   "order": 610,
   "icon": "uno-logo.png",
