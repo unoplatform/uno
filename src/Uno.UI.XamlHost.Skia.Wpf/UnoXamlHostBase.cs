@@ -4,13 +4,13 @@
 // https://github.com/CommunityToolkit/Microsoft.Toolkit.Win32/blob/master/Microsoft.Toolkit.Wpf.UI.XamlHost/WindowsXamlHost.cs
 
 using System;
+using Uno.UI.Runtime.Skia.Wpf;
+using Uno.UI.XamlHost.Skia.Wpf;
 using Uno.UI.XamlHost.Skia.Wpf.Hosting;
 using Windows.UI.Xaml;
-using WUX = Windows.UI.Xaml;
 using WinUI = Windows.UI.Xaml;
-using Uno.UI.XamlHost.Skia.Wpf;
 using WpfControl = global::System.Windows.Controls.Control;
-using Uno.UI.Runtime.Skia.Wpf;
+using WUX = Windows.UI.Xaml;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {
@@ -44,14 +44,19 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			{
 				MetadataProviderDiscovery.MetadataProviderFactory = type =>
 				{
-					WUX.Application application = null;
-					
-					WUX.Application.Start(_ =>
+					if (typeof(WUX.Application).IsAssignableFrom(type))
 					{
-						application = (WUX.Application)Activator.CreateInstance(type);
-					});
-										
-					return (WUX.Markup.IXamlMetadataProvider)application;
+						WUX.Application application = null;
+
+						WUX.Application.Start(_ =>
+						{
+							application = (WUX.Application)Activator.CreateInstance(type);
+						});
+
+						return (WUX.Markup.IXamlMetadataProvider)application;
+					}
+					
+					return null;
 				};
 			}
 

@@ -32,7 +32,7 @@ internal static class MetadataProviderDiscovery
 
 
 	private static IXamlMetadataProvider[] _metadataProviders;
-	
+
 	/// <summary>
 	/// Probes working directory for all available metadata providers
 	/// </summary>
@@ -145,7 +145,11 @@ internal static class MetadataProviderDiscovery
 				!type.IsInterface &&
 				!type.IsGenericType)
 			{
-				yield return MetadataProviderFactory.Invoke(type);
+				var result = MetadataProviderFactory.Invoke(type);
+				if (result is not null)
+				{
+					yield return result;
+				}
 			}
 		}
 	}
