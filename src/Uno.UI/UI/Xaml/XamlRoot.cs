@@ -31,7 +31,7 @@ public sealed partial class XamlRoot
 	/// </summary>
 	public UIElement? Content =>
 		VisualTree.ContentRoot.Type == ContentRootType.CoreWindow ?
-			Windows.UI.Xaml.Window.Current.Content : VisualTree.PublicRootVisual;
+			Windows.UI.Xaml.Window.Current?.Content : VisualTree.PublicRootVisual;
 
 	//TODO Uno specific: This logic is most likely not implemented here in MUX:
 	/// <summary>
