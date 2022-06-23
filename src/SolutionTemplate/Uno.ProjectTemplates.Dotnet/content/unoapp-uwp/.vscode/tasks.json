@@ -7,7 +7,7 @@
       "type": "process",
       "args": [
         "build",
-        "${workspaceFolder}/UnoWinUIQuickStart.Wasm/UnoWinUIQuickStart.Wasm.csproj",
+        "${workspaceFolder}/UnoQuickStart.Wasm/UnoQuickStart.Wasm.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -19,7 +19,7 @@
       "type": "process",
       "args": [
         "publish",
-        "${workspaceFolder}/UnoWinUIQuickStart.Wasm/UnoWinUIQuickStart.Wasm.csproj",
+        "${workspaceFolder}/UnoQuickStart.Wasm/UnoQuickStart.Wasm.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -31,7 +31,7 @@
       "type": "process",
       "args": [
         "build",
-        "${workspaceFolder}/UnoWinUIQuickStart.Skia.Gtk/UnoWinUIQuickStart.Skia.Gtk.csproj",
+        "${workspaceFolder}/UnoQuickStart.Skia.Gtk/UnoQuickStart.Skia.Gtk.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -43,7 +43,7 @@
       "type": "process",
       "args": [
         "publish",
-        "${workspaceFolder}/UnoWinUIQuickStart.Skia.Gtk/UnoWinUIQuickStart.Skia.Gtk.csproj",
+        "${workspaceFolder}/UnoQuickStart.Skia.Gtk/UnoQuickStart.Skia.Gtk.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],

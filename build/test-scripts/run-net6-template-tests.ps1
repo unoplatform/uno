@@ -30,7 +30,7 @@ $dotnetBuildConfigurations =
 )
 
 # Debug Config
-dotnet new unoapp-net6 -n UnoAppAll
+dotnet new unoapp-uwp-net6 -n UnoAppAll
 
 pushd UnoAppAll
 
@@ -69,7 +69,7 @@ $dotnetBuildNet6Configurations =
 )
 
 # WinUI - Default
-dotnet new unoapp-winui-net6 -n UnoAppWinUI
+dotnet new unoapp -n UnoAppWinUI
 
 pushd UnoAppWinUI
 for($i = 0; $i -lt $dotnetBuildNet6Configurations.Length; $i++)
@@ -86,6 +86,6 @@ Assert-ExitCodeIsZero
 popd
 
 # XAML Trimming build smoke test
-dotnet new unoapp-net6 -n MyAppXamlTrim
+dotnet new unoapp-uwp-net6 -n MyAppXamlTrim
 & dotnet build -c Debug MyAppXamlTrim\MyAppXamlTrim.Wasm\MyAppXamlTrim.Wasm.csproj /p:UnoXamlResourcesTrimming=true
 Assert-ExitCodeIsZero
