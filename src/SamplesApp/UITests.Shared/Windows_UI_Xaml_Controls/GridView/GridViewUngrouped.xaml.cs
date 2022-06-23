@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace GenericApp.Views.Samples.Shared.Content.UITests
 {
-    [Sample("GridView", ViewModelType = typeof(ListViewGroupedViewModel))]
+	[Sample("GridView", ViewModelType = typeof(ListViewGroupedViewModel), IgnoreInSnapshotTests = true)]
 	public sealed partial class GridViewUngrouped : UserControl
 	{
 		public GridViewUngrouped()
