@@ -66,29 +66,9 @@ public partial class RefreshContainer : ContentControl
 
 	private void OnRefreshControlValueChanged(object sender, EventArgs e) => OnNativeRefreshingChanged();
 
-	private void OnNativeRefreshingChanged()
-	{
-		if (_refreshControl.Refreshing && !_managedIsRefreshing)
-		{
-			_managedIsRefreshing = true;
-
-			var deferral = new Deferral(() =>
-			{
-				// CheckThread();
-				_refreshControl.EndRefreshing();
-				_managedIsRefreshing = false;
-				//RefreshCompleted();
-			});
-
-			var args = new RefreshRequestedEventArgs(deferral);
-
-			//This makes sure that everyone registered for this event can get access to the deferral
-			//Otherwise someone could complete the deferral before someone else has had a chance to grab it
-			args.IncrementDeferralCount();
-			RefreshRequested?.Invoke(this, args);
-			args.DecrementDeferralCount();
-		}
-	}
+	private bool IsNativeRefreshing => _refreshControl.Refreshing;
+					
+	private void EndNativeRefreshing() => _refreshControl.EndRefreshing();
 
 	protected override void OnContentChanged(object oldValue, object newValue)
 	{

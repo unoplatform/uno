@@ -1,9 +1,9 @@
 ﻿using CoreGraphics;
 using UIKit;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Uno.UI.Xaml.Controls;
 
-internal partial class NativeRefreshControl : UIRefreshControl
+public partial class NativeRefreshControl : UIRefreshControl
 {
 	public CGPoint IndicatorOffset { get; set; }
 	

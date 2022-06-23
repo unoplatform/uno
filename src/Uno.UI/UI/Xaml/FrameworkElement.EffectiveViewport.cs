@@ -20,6 +20,7 @@ using Uno;
 using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Extensions;
+using Windows.UI.Xaml;
 using _This = Windows.UI.Xaml.FrameworkElement;
 #if __IOS__
 using UIKit;

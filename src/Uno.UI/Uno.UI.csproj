@@ -170,7 +170,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Microsoft\UI\Xaml\Controls\PullToRefresh\RefreshContainer\Native\NativeRefreshControl.Android.cs" />
+	  <None Remove="Microsoft\UI\Xaml\Controls\PullToRefresh\RefreshContainer\Native\RefreshContainer.Android.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Microsoft\UI\Xaml\Controls\PullToRefresh\RefreshContainer\Native\NativeRefreshControl.Android.cs" />
+	  <UpToDateCheckInput Remove="Microsoft\UI\Xaml\Controls\PullToRefresh\RefreshContainer\Native\RefreshContainer.Android.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Compile Include="Mixins\Android\BaseActivity.Callbacks.g.cs" />
+		<Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
 		<Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
 		<Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />		
 		<Compile Include="Mixins\DependencyPropertyMixins.g.cs" />
