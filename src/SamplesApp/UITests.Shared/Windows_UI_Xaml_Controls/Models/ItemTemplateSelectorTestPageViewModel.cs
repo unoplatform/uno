@@ -10,7 +10,7 @@ using Windows.UI.Core;
 
 namespace Uno.UI.Samples.Presentation.SamplePages
 {
-	public partial class ItemTemplateSelectorTestPageViewModel : ViewModelBase
+	internal partial class ItemTemplateSelectorTestPageViewModel : ViewModelBase
 	{
 
 		public ItemTemplateSelectorTestPageViewModel(CoreDispatcher coreDispatcher) : base(coreDispatcher)

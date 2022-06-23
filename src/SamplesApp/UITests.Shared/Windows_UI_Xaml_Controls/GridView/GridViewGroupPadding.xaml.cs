@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.GridView
 {
-	[SampleControlInfoAttribute("GridView", "GridViewGroupPadding", typeof(ListViewGroupedViewModel))]
+    [Sample("GridView", ViewModelType = typeof(ListViewGroupedViewModel))]
 	public sealed partial class GridViewGroupPadding : UserControl
 	{
 		public GridViewGroupPadding()

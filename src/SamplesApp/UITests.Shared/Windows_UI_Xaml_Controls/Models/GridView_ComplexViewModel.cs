@@ -10,7 +10,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.GridView
 {
-	public class GridView_ComplexViewModel : ViewModelBase
+	internal class GridView_ComplexViewModel : ViewModelBase
 	{
 		public GridView_ComplexViewModel(CoreDispatcher coreDispatcher) : base(coreDispatcher)
 		{
@@ -44,7 +44,7 @@ namespace Uno.UI.Samples.Content.UITests.GridView
 		}
 	}
 
-	public class GridView_ComplexItemViewModel : ViewModelBase
+	internal class GridView_ComplexItemViewModel : ViewModelBase
 	{
 		public GridView_ComplexItemViewModel(CoreDispatcher coreDispatcher) : base(coreDispatcher)
 		{

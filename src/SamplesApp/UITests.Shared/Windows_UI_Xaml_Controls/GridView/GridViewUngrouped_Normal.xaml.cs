@@ -19,7 +19,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace GenericApp.Views.Content.UITests.GridView
 {
-    [SampleControlInfoAttribute("GridView", "GridViewUngrouped_Normal", typeof(ListViewGroupedViewModel))]
+    [Sample("GridView", ViewModelType = typeof(ListViewGroupedViewModel))]
     public sealed partial class GridViewUngrouped_Normal : UserControl
     {
         public GridViewUngrouped_Normal()

@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.GridView
 {
-	[SampleControlInfoAttribute("GridView", "GridViewResizable", typeof(ListViewViewModel))]
+    [Sample("GridView", ViewModelType = typeof(ListViewViewModel))]
 	public sealed partial class GridViewResizable : UserControl
 	{
 		public GridViewResizable()

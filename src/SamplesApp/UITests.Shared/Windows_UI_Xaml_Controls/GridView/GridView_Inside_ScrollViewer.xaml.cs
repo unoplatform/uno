@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.GridView
 {
-	[SampleControlInfoAttribute("GridView", "GridView_Inside_ScrollViewer", typeof(ListViewGroupedViewModel))]
+    [Sample("GridView", ViewModelType = typeof(ListViewGroupedViewModel))]
 	public sealed partial class GridView_Inside_ScrollViewer : UserControl
 	{
 		public GridView_Inside_ScrollViewer()

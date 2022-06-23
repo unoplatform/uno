@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.GridView
 {
-	[SampleControlInfoAttribute("GridView", "GridViewLarge", typeof(ListViewViewModel))]
+    [Sample("GridView", ViewModelType = typeof(ListViewViewModel))]
 	public sealed partial class GridViewLarge : UserControl
 	{
 		public GridViewLarge()

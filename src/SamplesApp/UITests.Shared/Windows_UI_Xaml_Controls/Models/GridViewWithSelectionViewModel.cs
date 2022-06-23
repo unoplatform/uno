@@ -13,7 +13,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Presentation.SamplePages.GridView
 {
-	public class GridViewWithSelectionViewModel : ViewModelBase
+	internal class GridViewWithSelectionViewModel : ViewModelBase
 	{
 
 		public GridViewWithSelectionViewModel(CoreDispatcher coreDispatcher) : base(coreDispatcher)

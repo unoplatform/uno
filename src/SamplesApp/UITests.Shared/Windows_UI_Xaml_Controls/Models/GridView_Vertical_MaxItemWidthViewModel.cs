@@ -9,7 +9,7 @@ using Windows.UI.Core;
 
 namespace Uno.UI.Samples.Presentation.SamplePages
 {
-	public class GridView_Vertical_MaxItemWidthViewModel : ViewModelBase
+	internal class GridView_Vertical_MaxItemWidthViewModel : ViewModelBase
 	{
 		public GridView_Vertical_MaxItemWidthViewModel(CoreDispatcher coreDispatcher) : base(coreDispatcher)
 		{

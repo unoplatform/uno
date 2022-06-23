@@ -13,7 +13,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Presentation.SamplePages.GridView
 {
-	public class GridViewViewModel : ViewModelBase
+	internal class GridViewViewModel : ViewModelBase
 	{
 
 		public GridViewViewModel(CoreDispatcher coreDispatcher) : base(coreDispatcher)
@@ -42,7 +42,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages.GridView
 		}
 	}
 
-	public class GridViewItemViewModel : ViewModelBase
+	internal class GridViewItemViewModel : ViewModelBase
 	{
 		public GridViewItemViewModel(CoreDispatcher coreDispatcher, string name) : base(coreDispatcher)
 		{

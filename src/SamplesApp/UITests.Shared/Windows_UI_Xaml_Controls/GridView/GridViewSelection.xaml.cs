@@ -20,7 +20,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.GridView
 {
-	[SampleControlInfoAttribute("GridView", "GridViewSelection", typeof(Presentation.SamplePages.GridView.GridViewWithSelectionViewModel))]
+    [Sample("GridView", ViewModelType = typeof(Presentation.SamplePages.GridView.GridViewWithSelectionViewModel))]
 	public sealed partial class GridViewSelection : UserControl
 	{
 		public GridViewSelection()
