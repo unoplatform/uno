@@ -65,6 +65,8 @@ namespace Windows.UI.Xaml.Documents
 
 		internal float BelowBaselineHeight => Paint.FontMetrics.Descent;
 
+		protected override void InvalidateFontInfo() => _fontInfo = null;
+
 		private static FontDetails GetFont(
 			string? name,
 			FontWeight weight,
@@ -99,9 +101,9 @@ namespace Windows.UI.Xaml.Documents
 				// FromFontFamilyName may return null: https://github.com/mono/SkiaSharp/issues/1058
 				if (skTypeFace == null)
 				{
-					if (typeof(Run).Log().IsEnabled(LogLevel.Warning))
+					if (typeof(Inline).Log().IsEnabled(LogLevel.Warning))
 					{
-						typeof(Run).Log().LogWarning($"The font {name} could not be found, using system default");
+						typeof(Inline).Log().LogWarning($"The font {name} could not be found, using system default");
 					}
 
 					skTypeFace = SKTypeface.FromFamilyName(null, skWeight, skWidth, skSlant);
