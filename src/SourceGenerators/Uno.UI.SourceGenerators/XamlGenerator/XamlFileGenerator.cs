@@ -4843,9 +4843,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (_resourceKeys.Any(k => k == fullKey))
 			{
-				var resourceNameString = resourceFileName == null ? "" : $"\"{resourceFileName}\"";
+				var resourceNameString = resourceFileName == null ? "null" : $"\"{resourceFileName}\"";
 
-				return $"global::Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView({resourceNameString}).GetString(\"{fullKey}\")";
+				return $"global::Uno.UI.Helpers.MarkupHelper.GetResourceStringForXUid({resourceNameString}, \"{fullKey}\")";
 			}
 
 			return null;
