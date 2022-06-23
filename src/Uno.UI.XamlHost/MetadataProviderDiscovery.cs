@@ -143,7 +143,8 @@ internal static class MetadataProviderDiscovery
 			if (typeof(WUX.Markup.IXamlMetadataProvider).IsAssignableFrom(type) &&
 				!type.IsAbstract &&
 				!type.IsInterface &&
-				!type.IsGenericType)
+				!type.IsGenericType &&
+				type != typeof(XamlApplication))
 			{
 				var result = MetadataProviderFactory.Invoke(type);
 				if (result is not null)

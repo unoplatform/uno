@@ -10,7 +10,7 @@ using Windows.UI.Xaml.Markup;
 
 namespace Uno.UI.XamlHost;
 
-public abstract class XamlApplication : Application, IXamlMetadataProvider, IXamlMetadataContainer, IDisposable
+public class XamlApplication : Application, IXamlMetadataProvider, IXamlMetadataContainer, IDisposable
 {
 	public XamlApplication()
 	{
