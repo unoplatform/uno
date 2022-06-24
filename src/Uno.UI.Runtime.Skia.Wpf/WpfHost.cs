@@ -143,7 +143,6 @@ namespace Uno.UI.Skia.Platform
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = d => dispatcher.BeginInvoke(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = dispatcher.CheckAccess;
 			_renderer = new UnoWpfRenderer(this);
-			_hostPointerHandler = new HostPointerHandler(this);						
 
 			WpfApplication.Current.Activated += Current_Activated;
 			WpfApplication.Current.Deactivated += Current_Deactivated;
@@ -250,6 +249,7 @@ namespace Uno.UI.Skia.Platform
 			}
 
 			WinUI.Application.StartWithArguments(CreateApp);
+			_hostPointerHandler = new HostPointerHandler(this);
 
 			WpfApplication.Current.MainWindow.Title = Windows.ApplicationModel.Package.Current.DisplayName;
 		}
