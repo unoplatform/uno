@@ -8,7 +8,21 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid Background="Red">
-		<CheckBox IsChecked="True" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40">I'm Uno too!</CheckBox>
-    </Grid>
+	<StackPanel x:Name="Root">
+		<TextBlock Text="Hello, world 2!"
+				   Margin="20"
+				   FontSize="30" />
+		<Button Content="test" />
+		<Border Background="Red">
+			<StackPanel>
+				<ComboBox Header="Test"
+						  x:Name="test"
+						  ItemsSource="{Binding}">
+				</ComboBox>
+				<TextBlock Text="{Binding}"
+						   Margin="20"
+						   FontSize="30" />
+			</StackPanel>
+		</Border>
+	</StackPanel>
 </Page>
