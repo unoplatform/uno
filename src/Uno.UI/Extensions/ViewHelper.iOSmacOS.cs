@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using Uno.UI.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Extensions;
+using Windows.Graphics.Display;
 
 using Foundation;
 using CoreGraphics;
@@ -27,15 +28,19 @@ namespace Uno.UI
 	public static class ViewHelper
 	{
 #if __IOS__
+		[Obsolete("This return the value from the original screen. Use 'DisplayInformation.RawPixelsPerViewPixel' to get the value for the current screen.")]
 		public static readonly nfloat MainScreenScale = UIScreen.MainScreen.Scale;
-		public static readonly bool IsRetinaDisplay = UIScreen.MainScreen.Scale > 1.0f;
+		[Obsolete("This return the value from the original screen. Use 'DisplayInformation.RawPixelsPerViewPixel > 1.0f' for the current screen.")]
+		public static readonly bool IsRetinaDisplay = MainScreenScale > 1.0f;
 #elif __MACOS__
+		[Obsolete("This return the value from the original screen. Use 'DisplayInformation.RawPixelsPerViewPixel' to get the value for the current screen.")]
 		public static readonly nfloat MainScreenScale = NSScreen.MainScreen.BackingScaleFactor;
-		public static readonly bool IsRetinaDisplay = NSScreen.MainScreen.BackingScaleFactor > 1.0f;
+		[Obsolete("This return the value from the original screen. Use 'DisplayInformation.RawPixelsPerViewPixel > 1.0f' for the current screen.")]
+		public static readonly bool IsRetinaDisplay = MainScreenScale > 1.0f;
 #endif
 
 		private static double _rectangleRoundingEpsilon = 0.05;
-		private static double _scaledRectangleRoundingEpsilon = _rectangleRoundingEpsilon * MainScreenScale;
+		private static double _scaledRectangleRoundingEpsilon = _rectangleRoundingEpsilon * DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
 
 		/// <summary>
 		/// This is used to correct some errors when using Floor and Ceiling in LogicalToPhysicalPixels for CGRect.
@@ -46,7 +51,7 @@ namespace Uno.UI
 			set
 			{
 				_rectangleRoundingEpsilon = value;
-				_scaledRectangleRoundingEpsilon = value * MainScreenScale;
+				_scaledRectangleRoundingEpsilon = value * DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
 			}
 		}
 
@@ -57,7 +62,7 @@ namespace Uno.UI
 		{
 			if (typeof(ViewHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				typeof(ViewHelper).Log().DebugFormat("Display scale is {0}", MainScreenScale);
+				typeof(ViewHelper).Log().DebugFormat("Display scale is {0}", DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel);
 			}
 		}
 
@@ -65,7 +70,7 @@ namespace Uno.UI
 		{
 			get
 			{
-				return (1.0f / MainScreenScale);
+				return (nfloat)(1.0d / DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel);
 			}
 		}
 
@@ -139,12 +144,13 @@ namespace Uno.UI
 			// and its size upward to the nearest whole integers, 
 			// such that the result contains the original rectangle.
 
+			var scale = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
 			return new CGRect
 			(
-				(nfloat)FloorWithEpsilon(size.X * MainScreenScale) / MainScreenScale,
-				(nfloat)FloorWithEpsilon(size.Y * MainScreenScale) / MainScreenScale,
-				(nfloat)CeilingWithEpsilon(size.Width * MainScreenScale) / MainScreenScale,
-				(nfloat)CeilingWithEpsilon(size.Height * MainScreenScale) / MainScreenScale
+				(nfloat)FloorWithEpsilon(size.X * scale) / scale,
+				(nfloat)FloorWithEpsilon(size.Y * scale) / scale,
+				(nfloat)CeilingWithEpsilon(size.Width * scale) / scale,
+				(nfloat)CeilingWithEpsilon(size.Height * scale) / scale
 			);
 		}
 
@@ -182,7 +188,7 @@ namespace Uno.UI
 
 		public static nfloat GetConvertedPixel(float thickness)
 		{
-			if (IsRetinaDisplay && thickness > 0 && thickness <= 1)
+			if (thickness > 0 && thickness <= 1 && (DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel > 1.0f))
 			{
 				return OnePixel;
 			}
