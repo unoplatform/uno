@@ -27,7 +27,7 @@ Add the following namespaces:
 Documentation: <https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.animatedvisualplayer>
 
 On UWP, you'll need to reference the following packages in your head project:
-  * `Microsoft.Toolki.Uwp.UI.Lottie` (for the `LottieVisualSource`)
+  * `Microsoft.Toolkit.Uwp.UI.Lottie` (for the `LottieVisualSource`)
   * `Microsoft.UI.Xaml` (for the `AnimatedVisualPlayer`)
 
 On WASM, Android, iOS and macOS, you'll need the following packages:
