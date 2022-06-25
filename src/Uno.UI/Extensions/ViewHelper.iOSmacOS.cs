@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using Uno.UI.Extensions;
@@ -28,14 +29,18 @@ namespace Uno.UI
 	public static class ViewHelper
 	{
 #if __IOS__
-		[Obsolete("This return the value from the original screen. Use 'DisplayInformation.RawPixelsPerViewPixel' to get the value for the current screen.")]
+		// This return the value from the original screen. Use 'DisplayInformation.RawPixelsPerViewPixel' to get the value for the current screen.
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static readonly nfloat MainScreenScale = UIScreen.MainScreen.Scale;
-		[Obsolete("This return the value from the original screen. Use 'DisplayInformation.RawPixelsPerViewPixel > 1.0f' for the current screen.")]
+		// This return the value from the original screen. Use 'DisplayInformation.RawPixelsPerViewPixel > 1.0f' for the current screen.
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static readonly bool IsRetinaDisplay = MainScreenScale > 1.0f;
 #elif __MACOS__
-		[Obsolete("This return the value from the original screen. Use 'DisplayInformation.RawPixelsPerViewPixel' to get the value for the current screen.")]
+		// This return the value from the original screen. Use 'DisplayInformation.RawPixelsPerViewPixel' to get the value for the current screen.
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static readonly nfloat MainScreenScale = NSScreen.MainScreen.BackingScaleFactor;
-		[Obsolete("This return the value from the original screen. Use 'DisplayInformation.RawPixelsPerViewPixel > 1.0f' for the current screen.")]
+		// This return the value from the original screen. Use 'DisplayInformation.RawPixelsPerViewPixel > 1.0f' for the current screen.
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static readonly bool IsRetinaDisplay = MainScreenScale > 1.0f;
 #endif
 
