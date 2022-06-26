@@ -25,7 +25,7 @@ namespace UnoIslands
         public SecondPage()
         {
             this.InitializeComponent();
-			Root.DataContext = Enumerable.Range(1, 10).ToArray();
+			this.DataContext = Enumerable.Range(1, 10).ToArray();
 
 			test.SelectedItem = "1";
 		}

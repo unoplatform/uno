@@ -66,7 +66,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		/// <summary>
 		/// UWP XAML DesktopWindowXamlSource instance that hosts XAML content in a win32 application
 		/// </summary>
-		private readonly WUX.Hosting.DesktopWindowXamlSource _xamlSource;
+		private protected readonly WUX.Hosting.DesktopWindowXamlSource _xamlSource;
 
 		/// <summary>
 		/// Private field that backs ChildInternal property.

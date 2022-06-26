@@ -6,6 +6,7 @@
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows;
+using Uno.UI.XamlHost.Extensions;
 using WUX = Windows.UI.Xaml;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
@@ -90,7 +91,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 		private void PropagateDataContext()
 		{
-			var frameworkElement = ChildInternal as WUX.FrameworkElement;
+			var frameworkElement = _xamlSource.GetVisualTreeRoot() as WUX.FrameworkElement;
 			if (frameworkElement != null)
 			{
 				// UnoXamlHost DataContext should flow through to UWP XAML content
