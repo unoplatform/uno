@@ -98,22 +98,15 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size MeasureOverride(Size size)
 		{
-			// Size used to compare with the previous one. We don't want to use this one for the calculation.
-			var ceiledNewSize = new CGSize(Math.Ceiling(size.Width), Math.Ceiling(size.Height));
-
-			var hasSameDesiredSize =
+			// `size` is used to compare with the previous one `_previousDesiredSize`
+			// We need to apply `Math.Ceiling` to compare them correctly
+			var isSameOrNarrower =
 				!_measureInvalidated
 				&& _previousAvailableSize != null
-				&& _previousDesiredSize.Width == ceiledNewSize.Width
-				&& _previousDesiredSize.Height == ceiledNewSize.Height;
+				&& _previousDesiredSize.Width <= Math.Ceiling(size.Width)
+				&& _previousDesiredSize.Height == Math.Ceiling(size.Height);
 
-			var isSingleLineNarrower =
-				!_measureInvalidated
-				&& _previousAvailableSize != null
-				&& _previousDesiredSize.Width <= ceiledNewSize.Width
-				&& _previousDesiredSize.Height == ceiledNewSize.Height;
-
-			if (hasSameDesiredSize || isSingleLineNarrower)
+			if (isSameOrNarrower)
 			{
 				return _previousDesiredSize;
 			}
@@ -144,7 +137,7 @@ namespace Windows.UI.Xaml.Controls
 
 				result = result.Add(padding);
 
-				return _previousDesiredSize = new CGSize(Math.Ceiling(result.Width), Math.Ceiling(result.Height));
+				return _previousDesiredSize = new Size(Math.Ceiling(result.Width), Math.Ceiling(result.Height));
 			}
 		}
 
@@ -159,7 +152,7 @@ namespace Windows.UI.Xaml.Controls
 
 			result = result.Add(padding);
 
-			return new CGSize(Math.Ceiling(result.Width), Math.Ceiling(result.Height));
+			return new Size(Math.Ceiling(result.Width), Math.Ceiling(result.Height));
 		}
 
 		#endregion
