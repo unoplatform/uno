@@ -131,7 +131,7 @@
 		<EmbeddedResource Include="LinkerDefinition.$(TargetFramework).xml" Condition="exists('LinkerDefinition.$(TargetFramework).xml')">
 		  <LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>
-		<EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRingIntdeterminate.json" />
+		<EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\*.json" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
