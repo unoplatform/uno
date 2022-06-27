@@ -71,19 +71,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private CGRect GetDrawRect(CGRect rect)
-		{
-			// Reduce available size by Padding
-			rect.Width -= (nfloat)(Padding.Left + Padding.Right);
-			rect.Height -= (nfloat)(Padding.Top + Padding.Bottom);
-
-			// Offset drawing location by Padding
-			rect.X += (nfloat)Padding.Left;
-			rect.Y += (nfloat)Padding.Top;
-
-			return rect;
-		}
-
 		/// <summary>
 		/// Invalidates the last cached measure
 		/// </summary>
