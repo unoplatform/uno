@@ -369,7 +369,7 @@ namespace Windows.UI.Xaml.Media
 
 		internal static (UIElement? element, Branch? stale) HitTest(
 			Point position,
-			XamlRoot xamlRoot,
+			XamlRoot? xamlRoot,
 			GetHitTestability? getTestability = null,
 			Predicate<UIElement>? isStale = null
 #if TRACE_HIT_TESTING
@@ -381,7 +381,7 @@ namespace Windows.UI.Xaml.Media
 			)
 		{
 #endif
-			if (xamlRoot.VisualTree.RootElement is UIElement root)
+			if (xamlRoot?.VisualTree.RootElement is UIElement root)
 			{
 				return SearchDownForTopMostElementAt(position, root, getTestability ?? DefaultGetTestability, isStale);
 			}
@@ -681,7 +681,7 @@ namespace Windows.UI.Xaml.Media
 		internal struct Branch
 		{
 			public static Branch ToWindowRoot(UIElement leaf)
-				=> new Branch(leaf.XamlRoot.VisualTree.RootElement, leaf);
+				=> new Branch(Window.Current.RootElement, leaf);
 
 			public Branch(UIElement root, UIElement leaf)
 			{

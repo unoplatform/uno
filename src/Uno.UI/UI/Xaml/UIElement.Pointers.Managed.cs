@@ -105,10 +105,10 @@ namespace Windows.UI.Xaml
 		#endregion
 
 		partial void CapturePointerNative(Pointer pointer)
-			=> XamlRoot.VisualTree.ContentRoot.InputManager!.SetPointerCapture(pointer.UniqueId);
+			=> XamlRoot?.VisualTree.ContentRoot.InputManager!.SetPointerCapture(pointer.UniqueId);
 
 		partial void ReleasePointerNative(Pointer pointer)
-			=> XamlRoot.VisualTree.ContentRoot.InputManager!.ReleasePointerCapture(pointer.UniqueId);
+			=> XamlRoot?.VisualTree.ContentRoot.InputManager!.ReleasePointerCapture(pointer.UniqueId);
 	}
 }
 #endif

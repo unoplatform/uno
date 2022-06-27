@@ -10,7 +10,7 @@ internal partial class VisualTree : IWeakReferenceProvider
 	private const int UnoTopZIndex = int.MaxValue - 100;
 	private const int FocusVisualZIndex = UnoTopZIndex + 1;
 
-	private ManagedWeakReference _selfWeakReference;
+	private ManagedWeakReference? _selfWeakReference;
 
 	public Canvas? FocusVisualRoot { get; private set; }
 
