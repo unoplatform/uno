@@ -331,7 +331,7 @@
 		<ItemGroup>
 			<CustomUiAutomationMemberMappingAdjusted Include="@(CustomUiAutomationMemberMapping)" Mappings="$([System.String]::new('%(Mappings)').Replace('&#x0A;',','))" />
 		</ItemGroup>
-		
+
 		<CreateProperty Value="@(ExcludeXamlNamespaces, ',')">
 			<Output
 					TaskParameter="Value"
