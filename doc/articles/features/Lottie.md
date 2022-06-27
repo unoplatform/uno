@@ -65,6 +65,7 @@ On Skia targets (Gtk, WPF, Framebuffer), you'll need the following packages:
 On UWP, you'll need to reference the following packages in your head project:
   * `Microsoft.Toolkit.Uwp.UI.Lottie` (for the `LottieVisualSource`)
   * `Microsoft.UI.Xaml` (for the `AnimatedVisualPlayer`)
+
 ***
 
 Documentation: <https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.animatedvisualplayer>
@@ -80,7 +81,7 @@ To reference the animations in XAML, use the `ms-appx:` URI, in this case `ms-ap
 ## Using `embedded://` scheme
 
 > [!WARNING]
-> This feature is only 
+> This feature is only available on Uno Platform targets. WinUI and UWP on Windows is not supported.
 
 You can put the file as `<EmbeddedResource>` in your assembly and retrieve it using the following url format as `UriSource`:
 
