@@ -15,6 +15,7 @@ using Uno.UI.Controls;
 using Uno.UI.Skia.Platform;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using Uno.UI.Runtime.Skia.Wpf;
+using Uno.UI.XamlHost.Extensions;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {
@@ -30,10 +31,12 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		private HostPointerHandler _hostPointerHandler;
 		private WpfCanvas _nativeOverlayLayer;
 		private UnoWpfRenderer _renderer;
+		private Windows.UI.Xaml.UIElement? _rootElement;
 
 		public bool IsIsland => true;
 
-		public Windows.UI.Xaml.UIElement? RootElement => ChildInternal;
+		public Windows.UI.Xaml.UIElement? RootElement =>
+			_rootElement ??= _xamlSource?.GetVisualTreeRoot();
 
 		public bool IgnorePixelScaling
 		{

@@ -124,7 +124,6 @@ Now we can use the data in the `MainPage.xaml`:
 This feature is in early preview and some functionality is not enabled yet, including:
 
 - Focus management
-- `Popups` and `Flyouts`
 - Drag and drop
 - Keyboard event handling
 
