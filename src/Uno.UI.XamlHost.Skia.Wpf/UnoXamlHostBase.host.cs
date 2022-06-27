@@ -68,9 +68,9 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			_renderer?.Render(drawingContext);
 		}
 
-		void IWpfHost.ReleasePointerCapture() => CaptureMouse(); //TODO: This should capture the correct type of pointer (stylus/mouse/touch) #8978[capture]
+		void IWpfHost.ReleasePointerCapture() => ReleaseMouseCapture(); //TODO: This should capture the correct type of pointer (stylus/mouse/touch) #8978[capture]
 
-		void IWpfHost.SetPointerCapture() => ReleaseMouseCapture();
+		void IWpfHost.SetPointerCapture() => CaptureMouse();
 
 		WinUI.XamlRoot? IWpfHost.XamlRoot => ChildInternal?.XamlRoot;
 
