@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Media;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.PagerControlTests
 {
-	[Sample("PagerControl", "WinUI")]
+	[Sample("PagerControl", "MUX")]
 	public sealed partial class PagerControlPage : Page
 	{
 		ComboBox pagerComboBox;

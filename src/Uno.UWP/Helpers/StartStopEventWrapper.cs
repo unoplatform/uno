@@ -39,6 +39,8 @@ namespace Uno.Helpers
 
 		public TDelegate? Event { get; private set; } = null;
 
+		public bool IsActive => Event != null;
+		
 		public object SyncLock => _syncLock;
 
 		public void AddHandler(TDelegate handler)

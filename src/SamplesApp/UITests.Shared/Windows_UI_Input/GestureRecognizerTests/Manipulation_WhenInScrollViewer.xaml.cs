@@ -23,7 +23,7 @@ using Windows.UI.Input;
 
 namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 {
-	[Sample("Gesture recognizer", IgnoreInSnapshotTests = true)]
+	[Sample("Gesture Recognizer", IgnoreInSnapshotTests = true)]
 	public sealed partial class Manipulation_WhenInScrollViewer : Page
 	{
 		public Manipulation_WhenInScrollViewer()

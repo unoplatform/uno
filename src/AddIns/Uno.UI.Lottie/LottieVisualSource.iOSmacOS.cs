@@ -228,51 +228,118 @@ using Windows.UI.Xaml.Controls;
 using Foundation;
 using System.Threading.Tasks;
 using Uno.Disposables;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Uno.Foundation.Logging;
+
+#if !__MACOS__
+using Uno.UI.Views.Controls;
+#endif
 
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
 	partial class LottieVisualSourceBase
 	{
+#if !__MACOS__
+		private BindableUIActivityIndicatorView? _nativeProgressRing;
+		private IDisposable? _colorDisposable;
+#endif
+
+		private bool _warnOnce;
+
 		public bool UseHardwareAcceleration { get; set; } = true;
 
 		async Task InnerUpdate(CancellationToken ct)
 		{
-
 		}
 
 		public void Play(double fromProgress, double toProgress, bool looped)
 		{
-			throw new NotImplementedException();
+#if !__MACOS__
+			if (_nativeProgressRing != null)
+			{
+				_nativeProgressRing.StartAnimating();
+			}
+#endif
 		}
 
 		public void Stop()
 		{
-			throw new NotImplementedException();
+#if !__MACOS__
+			if (_nativeProgressRing != null)
+			{
+				_nativeProgressRing.StopAnimating();
+			}
+#endif
 		}
 
 		public void Pause()
 		{
-			throw new NotImplementedException();
 		}
 
 		public void Resume()
 		{
-			throw new NotImplementedException();
 		}
 
 		public void SetProgress(double progress)
 		{
-			throw new NotImplementedException();
 		}
 
 		public void Load()
 		{
-			throw new NotImplementedException();
+			if (!TryLoadProgressRing() && !_warnOnce)
+			{
+				_warnOnce = true;
+				this.Log().Warn("LottieVisualSource is not available on this platform. See https://github.com/mono/SkiaSharp/issues/1787");
+			}
+		}
+
+		private bool TryLoadProgressRing()
+		{
+#if !__MACOS__
+			if (_player?.TemplatedParent is Microsoft.UI.Xaml.Controls.ProgressRing progress)
+			{
+				_nativeProgressRing ??= new BindableUIActivityIndicatorView();
+
+#if __IOS__
+				_player?.Add(_nativeProgressRing);
+#else
+				_player?.AddSubview(_bindableProgressBar);
+#endif
+
+				void UpdateColor()
+				{
+					if (progress.Foreground is SolidColorBrush foregroundColor)
+					{
+						_nativeProgressRing.Color = Brush.GetColorWithOpacity(foregroundColor);
+					}
+				}
+
+				void UpdateColorCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+					=> UpdateColor();
+
+				_colorDisposable = progress.RegisterDisposablePropertyChangedCallback(Microsoft.UI.Xaml.Controls.ProgressRing.ForegroundProperty, UpdateColorCallback);
+
+				UpdateColor();
+
+				return true;
+			}
+#endif
+
+			return false;
 		}
 
 		public void Unload()
 		{
-			throw new NotImplementedException();
+#if !__MACOS__
+			if (_player?.TemplatedParent is Microsoft.UI.Xaml.Controls.ProgressRing progress)
+			{
+				_colorDisposable?.Dispose();
+
+				_nativeProgressRing?.RemoveFromSuperview();
+				_nativeProgressRing = null;
+			}
+#endif
 		}
 
 		private Size CompositionSize => default;

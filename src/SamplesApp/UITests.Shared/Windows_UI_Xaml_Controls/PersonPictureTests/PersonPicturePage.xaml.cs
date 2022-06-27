@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Shapes;
 
 namespace MUXControlsTestApp
 {
-	[SampleControlInfo("PersonPicture", "MUX Page")]
+	[Sample("MUX","PersonPicture")]
 	public sealed partial class PersonPicturePage
     {
         private Uri imageUri = new Uri("ms-appx:///Assets/ingredient2.png");

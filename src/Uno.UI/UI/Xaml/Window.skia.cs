@@ -46,7 +46,8 @@ namespace Windows.UI.Xaml
 			Dispatcher = CoreDispatcher.Main;
 			CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
 			CoreWindow.SetInvalidateRender(QueueInvalidateRender);
-			InitDragAndDrop();
+
+			InitializeCommon();
 		}
 
 		internal static Action InvalidateRender = () => { };

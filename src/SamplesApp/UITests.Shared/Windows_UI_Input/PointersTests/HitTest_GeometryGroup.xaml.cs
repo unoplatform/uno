@@ -20,7 +20,7 @@ using Uno.Extensions;
 
 namespace UITests.Windows_UI_Input.PointersTests
 {
-	[Sample("Pointers", "GeometryGroup")]
+	[Sample("Pointers", "Geometry")]
 	public sealed partial class HitTest_GeometryGroup : Page
 	{
 		public HitTest_GeometryGroup()

@@ -9,7 +9,7 @@
 	<requireLicenseAcceptance>false</requireLicenseAcceptance>
 	<projectUrl>https://platform.uno/</projectUrl>
 	<license type="expression">Apache-2.0</license>
-	<iconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</iconUrl>
+	<icon>uno.png</icon>
 	<description>Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today. Open source and professionally supported.</description>
 	<copyright>Copyright (C) 2015-2019 nventive inc. - all rights reserved</copyright>
 	<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
@@ -246,7 +246,8 @@
 	</references>
   </metadata>
   <files>
-
+	<!-- Icon File -->
+	<file src="..\src\Common\uno.png" target="/" />
 	<!-- UAP -->
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\$winuisourcepath$\Uno.UI.Toolkit*.dll" target="lib\$winuitargetpath$" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\$winuisourcepath$\Uno.UI.Toolkit*.pdb" target="lib\$winuitargetpath$" />
@@ -573,6 +574,7 @@
 	<file src="Uno.WinUI.targets" target="buildTransitive\net6.0-ios" />
 	<file src="Uno.WinUI.targets" target="buildTransitive\net6.0-maccatalyst" />
 	<file src="Uno.WinUI.targets" target="buildTransitive\net6.0-macos" />
+	<file src="Uno.WinUI.targets" target="buildTransitive\net5.0-windows" />
 
 	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\MonoAndroid" />
 	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\xamarinios10" />
@@ -582,6 +584,17 @@
 	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net6.0-ios" />
 	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net6.0-maccatalyst" />
 	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net6.0-macos" />
+	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net5.0-windows" />
+
+	<file src="uno.winui.common.targets" target="buildTransitive\MonoAndroid" />
+	<file src="uno.winui.common.targets" target="buildTransitive\xamarinios10" />
+	<file src="uno.winui.common.targets" target="buildTransitive\xamarinmac20" />
+	<file src="uno.winui.common.targets" target="buildTransitive\netstandard2.0" />
+	<file src="uno.winui.common.targets" target="buildTransitive\net6.0-android30.0" />
+	<file src="uno.winui.common.targets" target="buildTransitive\net6.0-ios" />
+	<file src="uno.winui.common.targets" target="buildTransitive\net6.0-maccatalyst" />
+	<file src="uno.winui.common.targets" target="buildTransitive\net6.0-macos" />
+	<file src="uno.winui.common.targets" target="buildTransitive\net5.0-windows" />
 
 	<file src="uno.winui.single-project.targets" target="buildTransitive\MonoAndroid" />
 	<file src="uno.winui.single-project.targets" target="buildTransitive\xamarinios10" />
@@ -591,6 +604,7 @@
 	<file src="uno.winui.single-project.targets" target="buildTransitive\net6.0-ios" />
 	<file src="uno.winui.single-project.targets" target="buildTransitive\net6.0-maccatalyst" />
 	<file src="uno.winui.single-project.targets" target="buildTransitive\net6.0-macos" />
+	<file src="uno.winui.single-project.targets" target="buildTransitive\net5.0-windows" />
 
 	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\MonoAndroid" />
 	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\xamarinios10" />
@@ -600,6 +614,7 @@
 	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net6.0-ios" />
 	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net6.0-maccatalyst" />
 	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net6.0-macos" />
+	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net5.0-windows" />
 
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\MonoAndroid" />
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\xamarinios10" />
@@ -609,6 +624,7 @@
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\net6.0-ios" />
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\net6.0-maccatalyst" />
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\net6.0-macos" />
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\net5.0-windows" />
 
 	<!-- Force UAP to ignore netstandard 2.0 -->
 	<file src="uno.winui.win.targets" target="buildTransitive\uap10.0.16299\uno.winui.targets" />
@@ -619,9 +635,6 @@
 
 	<file src="uno.winui.win.targets" target="buildTransitive\uap10.0.18362\uno.winui.targets" />
 	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\uap10.0.18362" />
-
-	<file src="uno.winui.win.targets" target="buildTransitive\net5.0-windows\uno.winui.targets" />
-	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net5.0-windows" />
 
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" target="buildTransitive" />
   </files>

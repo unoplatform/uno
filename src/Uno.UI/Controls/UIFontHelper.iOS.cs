@@ -64,7 +64,12 @@ namespace Windows.UI
 				return size;
 			}
 
-			return size * (basePreferredSize / DefaultUIFontPreferredBodyFontSize) ?? (float)1.0;
+			var originalScale = (basePreferredSize / DefaultUIFontPreferredBodyFontSize) ?? (float)1.0;
+			if (FeatureConfiguration.Font.MaximumTextScaleFactor is float scaleFactor)
+			{
+				return size * (nfloat)Math.Min(originalScale, scaleFactor);
+			}
+			return size * originalScale;
 		}
 
 		private static UIFont InternalTryGetFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, FontFamily requestedFamily, nfloat? basePreferredSize)
@@ -94,7 +99,7 @@ namespace Windows.UI
 			return ApplyStyle(UIFont.SystemFontOfSize(size, fontWeight.ToUIFontWeight()), size, fontStyle);
 		}
 
-		#region Load Custom Font
+#region Load Custom Font
 		private static UIFont GetCustomFont(nfloat size, string fontPath, FontWeight fontWeight, FontStyle fontStyle)
 		{
 			UIFont font;
@@ -232,9 +237,9 @@ namespace Windows.UI
 				}
 			}
 		}
-		#endregion
+#endregion
 
-		#region Load System Font
+#region Load System Font
 		private static UIFont GetSystemFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, string fontFamilyName)
 		{
 			//based on Fonts available @ http://iosfonts.com/
@@ -332,6 +337,6 @@ namespace Windows.UI
 			}
 			return string.Empty;
 		}
-		#endregion
+#endregion
 	}
 }

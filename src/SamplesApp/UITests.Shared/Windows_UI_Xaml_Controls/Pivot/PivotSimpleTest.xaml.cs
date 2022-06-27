@@ -8,7 +8,7 @@ using Uno.UI.Samples.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.PivotTests
 {
-	[SampleControlInfo("Pivot Tests", "Basics Pivot Test")]
+	[SampleControlInfo("Pivot", "Basics Pivot Test")]
 	public sealed partial class Basics : UserControl
     {
         public Basics()

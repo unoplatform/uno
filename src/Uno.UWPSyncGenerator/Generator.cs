@@ -504,6 +504,10 @@ namespace Uno.UWPSyncGenerator
 					// Skipped to include generic variance.
 					return true;
 
+				case "Windows.Foundation.Collections.ValueSet":
+					// Skipped to include nullable annotations.
+					return true;
+
 				case "Windows.Foundation.Uri":
 				case BaseXamlNamespace + ".Input.ICommand":
 				case BaseXamlNamespace + ".Controls.UIElementCollection":

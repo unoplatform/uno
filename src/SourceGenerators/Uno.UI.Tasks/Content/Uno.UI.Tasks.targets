@@ -51,7 +51,7 @@
   </Target>
 
   <Target Name="UnoAssetsGeneration"
-			  BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent"
+			  BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent;_CollectBundleResources"
 			  DependsOnTargets="ResolveProjectReferences"
 			  Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == '' and ('$(XamarinProjectType)'!='' or '$(UnoForceProcessPRIResource)'!='')">
 	<!-- Assets -->
@@ -62,6 +62,7 @@
 						TargetPlatform="$(XamarinProjectType)"
 						DefaultLanguage="$(DefaultLanguage)"
 						ContentItems="@(Content)"
+						AndroidAssetsPrefix="$(MonoAndroidAssetsPrefix)"
 						Condition="'$(XamarinProjectType)'!=''">
 	  <Output TaskParameter="Assets"
 					  ItemName="Assets" />

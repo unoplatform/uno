@@ -19,6 +19,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.UI;
 using Windows.UI;
 using System.Text.RegularExpressions;
+using FluentAssertions.Execution;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {
@@ -690,6 +691,87 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var panel2 = r.FindName("innerPanel2") as StackPanel;
 			Assert.AreEqual(2, Grid.GetRow(panel2));
 
+		}
+
+		[TestMethod]
+		public void When_Grid_Uses_Common_Syntax()
+		{
+			using var _ = new AssertionScope();
+			var xaml = GetContent(nameof(When_Grid_Uses_Common_Syntax));
+			var userControl = Windows.UI.Xaml.Markup.XamlReader.Load(xaml) as UserControl;
+			var grid = userControl.FindName("grid") as Grid;
+
+			grid.Should().NotBeNull();
+			grid.RowDefinitions.Should().BeEquivalentTo(new[]
+			{
+				new RowDefinition { Height = new GridLength(1, GridUnitType.Star) },
+				new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) },
+				new RowDefinition { Height = new GridLength(25, GridUnitType.Pixel) },
+				new RowDefinition { Height = new GridLength(14, GridUnitType.Pixel) },
+				new RowDefinition { Height = new GridLength(20, GridUnitType.Pixel) },
+			});
+			grid.ColumnDefinitions.Should().BeEquivalentTo(new[]
+			{
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+				new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) },
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+				new ColumnDefinition { Width = new GridLength(300, GridUnitType.Pixel) },
+			});
+		}
+
+		[TestMethod]
+		public void When_Grid_Uses_New_Succinct_Syntax()
+		{
+			using var _ = new AssertionScope();
+			var xaml = GetContent(nameof(When_Grid_Uses_New_Succinct_Syntax));
+			var userControl = Windows.UI.Xaml.Markup.XamlReader.Load(xaml) as UserControl;
+			var grid = userControl.FindName("grid") as Grid;
+
+			grid.Should().NotBeNull();
+			grid.RowDefinitions.Should().BeEquivalentTo(new[]
+			{
+				new RowDefinition { Height = new GridLength(1, GridUnitType.Star) },
+				new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) },
+				new RowDefinition { Height = new GridLength(25, GridUnitType.Pixel) },
+				new RowDefinition { Height = new GridLength(14, GridUnitType.Pixel) },
+				new RowDefinition { Height = new GridLength(20, GridUnitType.Pixel) },
+			});
+			grid.ColumnDefinitions.Should().BeEquivalentTo(new[]
+			{
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+				new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) },
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+				new ColumnDefinition { Width = new GridLength(300, GridUnitType.Pixel) },
+			});
+		}
+
+		[TestMethod]
+		public void When_Grid_Uses_New_Assigned_ContentProperty_Syntax()
+		{
+			using var _ = new AssertionScope();
+			var xaml = GetContent(nameof(When_Grid_Uses_New_Assigned_ContentProperty_Syntax));
+			var userControl = Windows.UI.Xaml.Markup.XamlReader.Load(xaml) as UserControl;
+			var grid = userControl.FindName("grid") as Grid;
+
+			grid.Should().NotBeNull();
+			grid.RowDefinitions.Should().BeEquivalentTo(new[]
+			{
+				new RowDefinition { Height = new GridLength(1, GridUnitType.Star) },
+				new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) },
+				new RowDefinition { Height = new GridLength(25, GridUnitType.Pixel) },
+				new RowDefinition { Height = new GridLength(14, GridUnitType.Pixel) },
+				new RowDefinition { Height = new GridLength(20, GridUnitType.Pixel) },
+			});
+			grid.ColumnDefinitions.Should().BeEquivalentTo(new[]
+			{
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+				new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) },
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+				new ColumnDefinition { Width = new GridLength(300, GridUnitType.Pixel) },
+			});
 		}
 
 		[TestMethod]

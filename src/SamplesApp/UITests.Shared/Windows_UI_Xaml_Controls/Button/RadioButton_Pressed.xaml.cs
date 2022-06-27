@@ -19,7 +19,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 {
-	[SampleControlInfo("Button", "RadioButton_Pressed", description: "RadioButtons with a lower opacity when in pressed state. Tapping on any zone should have the same result.")]
+	[SampleControlInfo("Buttons", "RadioButton_Pressed", description: "RadioButtons with a lower opacity when in pressed state. Tapping on any zone should have the same result.")]
 	public sealed partial class RadioButton_Pressed : UserControl
     {
         public RadioButton_Pressed()

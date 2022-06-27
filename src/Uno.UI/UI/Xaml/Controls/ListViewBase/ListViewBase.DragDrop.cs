@@ -106,6 +106,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
+			itemContainer.CanDrag = false;
 			itemContainer.DragStarting -= OnItemContainerDragStarting;
 			itemContainer.DropCompleted -= OnItemContainerDragCompleted;
 

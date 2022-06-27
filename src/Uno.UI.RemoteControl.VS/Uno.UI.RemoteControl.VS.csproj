@@ -36,7 +36,6 @@
 		<PackageReference Include="Newtonsoft.Json" version="12.0.3" />
 		<PackageReference Include="NuGet.VisualStudio" version="4.5.0" />
 		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem" Version="16.0.374-pre" />
-		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>

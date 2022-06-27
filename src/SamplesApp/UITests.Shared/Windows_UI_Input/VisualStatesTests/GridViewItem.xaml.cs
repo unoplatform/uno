@@ -5,7 +5,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Input.VisualStatesTests
 {
-	[SampleControlInfo("Gesture recognizer", "VisualStates GridViewItem")]
+	[SampleControlInfo("Gesture Recognizer", "VisualStates GridViewItem")]
 	public sealed partial class GridViewItem : Page
 	{
 		public GridViewItem()

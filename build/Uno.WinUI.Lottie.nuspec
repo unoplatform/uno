@@ -9,7 +9,7 @@
 	<requireLicenseAcceptance>false</requireLicenseAcceptance>
 	<projectUrl>https://platform.uno/</projectUrl>
 	<license type="expression">Apache-2.0</license>
-	<iconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</iconUrl>
+	<icon>uno.png</icon>
 	<description>
 	  Support for Lottie on Uno.WinUI.
 
@@ -101,6 +101,7 @@
 	</references>
   </metadata>
   <files>
+	<file src="..\src\Common\uno.png" target="/" />
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\netstandard2.0\Uno.UI.Lottie.dll" target="lib\netstandard2.0" />
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\xamarinios10\Uno.UI.Lottie.dll" target="lib\xamarinios10" />
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\xamarinmac20\Uno.UI.Lottie.dll" target="lib\xamarinmac20" />

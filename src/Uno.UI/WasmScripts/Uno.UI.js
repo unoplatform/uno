@@ -312,6 +312,20 @@ var MonoSupport;
         static getMethodMapId(methodHandle) {
             return methodHandle + "";
         }
+        static invokeOnMainThread() {
+            if (!jsCallDispatcher.dispatcherCallback) {
+                jsCallDispatcher.dispatcherCallback = Module.mono_bind_static_method("[Uno.UI.Dispatching] Uno.UI.Dispatching.CoreDispatcher:DispatcherCallback");
+            }
+            window.setImmediate(() => {
+                try {
+                    jsCallDispatcher.dispatcherCallback();
+                }
+                catch (e) {
+                    console.error(`Unhandled dispatcher exception: ${e} (${e.stack})`);
+                    throw e;
+                }
+            });
+        }
     }
     jsCallDispatcher.registrations = new Map();
     jsCallDispatcher.methodMap = {};
@@ -319,6 +333,7 @@ var MonoSupport;
 })(MonoSupport || (MonoSupport = {}));
 // Export the DotNet helper for WebAssembly.JSInterop.InvokeJSUnmarshalled
 window.DotNet = MonoSupport;
+MonoSupport.invokeOnMainThread = MonoSupport.jsCallDispatcher.invokeOnMainThread;
 // eslint-disable-next-line @typescript-eslint/no-namespace
 var Uno;
 (function (Uno) {
@@ -1648,7 +1663,8 @@ var Uno;
                 document.body.appendChild(this.containerElement);
                 window.addEventListener("resize", x => this.resize());
                 window.addEventListener("contextmenu", x => {
-                    if (!(x.target instanceof HTMLInputElement)) {
+                    if (!(x.target instanceof HTMLInputElement) ||
+                        x.target.classList.contains("context-menu-disabled")) {
                         x.preventDefault();
                     }
                 });
@@ -2663,6 +2679,76 @@ var Windows;
             Sensors.Magnetometer = Magnetometer;
         })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
     })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Gaming;
+    (function (Gaming) {
+        var Input;
+        (function (Input) {
+            class Gamepad {
+                static getConnectedGamepadIds() {
+                    const gamepads = navigator.getGamepads();
+                    const separator = ";";
+                    var result = '';
+                    for (var gamepad of gamepads) {
+                        if (gamepad) {
+                            result += gamepad.index + separator;
+                        }
+                    }
+                    return result;
+                }
+                static getReading(id) {
+                    var gamepad = navigator.getGamepads()[id];
+                    if (!gamepad) {
+                        return "";
+                    }
+                    var result = "";
+                    result += gamepad.timestamp;
+                    result += '*';
+                    for (var axisId = 0; axisId < gamepad.axes.length; axisId++) {
+                        if (axisId != 0) {
+                            result += '|';
+                        }
+                        result += gamepad.axes[axisId];
+                    }
+                    result += '*';
+                    for (var buttonId = 0; buttonId < gamepad.buttons.length; buttonId++) {
+                        if (buttonId != 0) {
+                            result += '|';
+                        }
+                        result += gamepad.buttons[buttonId].value;
+                    }
+                    return result;
+                }
+                static startGamepadAdded() {
+                    window.addEventListener("gamepadconnected", Gamepad.onGamepadConnected);
+                }
+                static endGamepadAdded() {
+                    window.removeEventListener("gamepadconnected", Gamepad.onGamepadConnected);
+                }
+                static startGamepadRemoved() {
+                    window.addEventListener("gamepaddisconnected", Gamepad.onGamepadDisconnected);
+                }
+                static endGamepadRemoved() {
+                    window.removeEventListener("gamepaddisconnected", Gamepad.onGamepadDisconnected);
+                }
+                static onGamepadConnected(e) {
+                    if (!Gamepad.dispatchGamepadAdded) {
+                        Gamepad.dispatchGamepadAdded = Module.mono_bind_static_method("[Uno] Windows.Gaming.Input.Gamepad:DispatchGamepadAdded");
+                    }
+                    Gamepad.dispatchGamepadAdded(e.gamepad.index.toString());
+                }
+                static onGamepadDisconnected(e) {
+                    if (!Gamepad.dispatchGamepadRemoved) {
+                        Gamepad.dispatchGamepadRemoved = Module.mono_bind_static_method("[Uno] Windows.Gaming.Input.Gamepad:DispatchGamepadRemoved");
+                    }
+                    Gamepad.dispatchGamepadRemoved(e.gamepad.index.toString());
+                }
+            }
+            Input.Gamepad = Gamepad;
+        })(Input = Gaming.Input || (Gaming.Input = {}));
+    })(Gaming = Windows.Gaming || (Windows.Gaming = {}));
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
@@ -4633,6 +4719,51 @@ var Windows;
                     Animation.RenderingLoopAnimator = RenderingLoopAnimator;
                 })(Animation = Media.Animation || (Media.Animation = {}));
             })(Media = Xaml.Media || (Xaml.Media = {}));
+        })(Xaml = UI.Xaml || (UI.Xaml = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var Xaml;
+        (function (Xaml) {
+            var Input;
+            (function (Input) {
+                class FocusVisual {
+                    static attachVisual(focusVisualId, focusedElementId) {
+                        FocusVisual.focusVisualId = focusVisualId;
+                        FocusVisual.focusVisual = Uno.UI.WindowManager.current.getView(focusVisualId);
+                        FocusVisual.focusedElement = Uno.UI.WindowManager.current.getView(focusedElementId);
+                        document.addEventListener("scroll", FocusVisual.onDocumentScroll, true);
+                    }
+                    static detachVisual() {
+                        document.removeEventListener("scroll", FocusVisual.onDocumentScroll, true);
+                        FocusVisual.focusVisualId = null;
+                    }
+                    static onDocumentScroll() {
+                        if (!FocusVisual.dispatchPositionChange) {
+                            FocusVisual.dispatchPositionChange = Module.mono_bind_static_method("[Uno.UI] Uno.UI.Xaml.Controls.SystemFocusVisual:DispatchNativePositionChange");
+                        }
+                        FocusVisual.updatePosition();
+                        // Throttle managed notification while actively scrolling
+                        if (FocusVisual.currentDispatchTimeout) {
+                            clearTimeout(FocusVisual.currentDispatchTimeout);
+                        }
+                        FocusVisual.currentDispatchTimeout = setTimeout(() => FocusVisual.dispatchPositionChange(FocusVisual.focusVisualId), 100);
+                    }
+                    static updatePosition() {
+                        const focusVisual = FocusVisual.focusVisual;
+                        const focusedElement = FocusVisual.focusedElement;
+                        const boundingRect = focusedElement.getBoundingClientRect();
+                        const centerX = boundingRect.x + boundingRect.width / 2;
+                        const centerY = boundingRect.y + boundingRect.height / 2;
+                        focusVisual.style.setProperty("left", boundingRect.x + "px");
+                        focusVisual.style.setProperty("top", boundingRect.y + "px");
+                    }
+                }
+                Input.FocusVisual = FocusVisual;
+            })(Input = Xaml.Input || (Xaml.Input = {}));
         })(Xaml = UI.Xaml || (UI.Xaml = {}));
     })(UI = Windows.UI || (Windows.UI = {}));
 })(Windows || (Windows = {}));

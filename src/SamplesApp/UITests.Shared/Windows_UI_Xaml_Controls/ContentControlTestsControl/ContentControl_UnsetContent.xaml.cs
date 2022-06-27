@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace GenericApp.Views.Content.UITests.ContentControlTestsControl
 {
-	[SampleControlInfo("ContentControlTestsControl", "ContentControl_UnsetContent", typeof(ContentControlTestViewModel))]
+	[SampleControlInfo("ContentControl", "ContentControl_UnsetContent", typeof(ContentControlTestViewModel))]
 	public sealed partial class ContentControl_UnsetContent : UserControl
 	{
 		public ContentControl_UnsetContent()

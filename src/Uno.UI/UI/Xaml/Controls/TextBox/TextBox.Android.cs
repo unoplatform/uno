@@ -169,6 +169,15 @@ namespace Windows.UI.Xaml.Controls
 					using (focusState == FocusState.Programmatic ? PreventKeyboardDisplayIfSet() : null)
 					{
 						_textBoxView.RequestFocus();
+
+						var selectionStart = this.SelectionStart;
+
+						if (selectionStart == 0)
+						{
+							int cursorPosition = selectionStart + _textBoxView?.Text?.Length ?? 0;
+
+							this.Select(cursorPosition, 0);
+						}
 					}
 				}
 			}
@@ -371,7 +380,10 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextWrappingChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
-			//TODO : see bug #8178
+			if (_textBoxView != null && e.NewValue is TextWrapping textWrapping)
+			{
+				_textBoxView.SetSingleLine(textWrapping == TextWrapping.NoWrap);
+			}
 		}
 
 		partial void UpdateFontPartial()

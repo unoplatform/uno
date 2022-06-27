@@ -49,7 +49,8 @@ namespace Windows.Storage.Pickers
 				_ => NSSearchPathDirectory.UserDirectory
 			};
 
-			return NSFileManager.DefaultManager.GetUrls(specialFolder, NSSearchPathDomain.User)[0].AbsoluteString;
+			var urls = NSFileManager.DefaultManager.GetUrls(specialFolder, NSSearchPathDomain.User);
+			return (urls.Length == 0) ? NSFileManager.HomeDirectory : urls[0].AbsoluteString;
 		}
 
 		private string[] GetFileTypes() => FileTypeChoices.SelectMany(x => x.Value.Select(val => val.TrimStart(new[] { '.' }))).ToArray();

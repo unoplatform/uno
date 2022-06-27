@@ -19,12 +19,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private Func<XamlMember, IEventSymbol?>? _findEventType;
 		private Func<INamedTypeSymbol, Dictionary<string, IEventSymbol>>? _getEventsForType;
 		private Func<INamedTypeSymbol, string[]>? _findLocalizableDeclaredProperties;
-		private (string ns, string className) _className;
+		private XClassName? _xClassName;
 		private string[]? _clrNamespaces;
 		private readonly static Func<INamedTypeSymbol, IPropertySymbol?> _findContentProperty;
 		private readonly static Func<INamedTypeSymbol, string, bool> _isAttachedProperty;
 		private readonly static Func<INamedTypeSymbol, string, INamedTypeSymbol> _getAttachedPropertyType;
 		private readonly static Func<INamedTypeSymbol, bool> _isTypeImplemented;
+
+		record XClassName(string Namespace, string ClassName, INamedTypeSymbol? Symbol)
+		{
+			public override string ToString()
+				=> Symbol?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Included))
+				?? Namespace + "." + ClassName;
+		}
 
 		private void InitCaches()
 		{
@@ -62,6 +69,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			return fullTargetType;
+		}
+
+		private string GetGlobalizedTypeName(XamlType type)
+		{
+			var fullTypeName = type.Name;
+			var knownType = FindType(type);
+			if (knownType == null && type.PreferredXamlNamespace.StartsWith("using:"))
+			{
+				fullTypeName = type.PreferredXamlNamespace.TrimStart("using:") + "." + type.Name;
+			}
+			if (knownType != null)
+			{
+				// Override the using with the type that was found in the list of loaded assemblies
+				fullTypeName = knownType.ToDisplayString();
+			}
+
+			return GetGlobalizedTypeName(fullTypeName);
 		}
 
 		private bool IsType(XamlType xamlType, XamlType? baseType)

@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.NavigationViewTests
 {
-	[Sample("NavigationView", "WinUI")]
+	[Sample("NavigationView", "MUX")]
     public sealed partial class NavigationViewBasicPage : Page
     {
         public NavigationViewBasicPage()

@@ -64,8 +64,6 @@ namespace Windows.ApplicationModel
 		{
 			if(_entryAssembly != null && !_manifestParsed)
 			{
-				_manifestParsed = true;
-
 				var manifest = _entryAssembly.GetManifestResourceStream(PackageManifestName);
 
 				if (manifest != null)
@@ -80,6 +78,8 @@ namespace Windows.ApplicationModel
 
 						_displayName = doc.SelectSingleNode("/d:Package/d:Properties/d:DisplayName", nsmgr)?.InnerText ?? "";
 						_logo = doc.SelectSingleNode("/d:Package/d:Properties/d:Logo", nsmgr)?.InnerText ?? "";
+
+						_manifestParsed = true;
 					}
 					catch (Exception ex)
 					{

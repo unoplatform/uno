@@ -20,7 +20,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UnoItemTemplate</RootNamespace>
     <AssemblyName>UnoItemTemplate</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <GeneratePkgDefFile>false</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>false</IncludeAssemblyInVSIXContainer>
@@ -60,32 +60,45 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ResourceDictionaryWithCodeBehind\ResourceDictionaryWithCodeBehind.xaml.cs">
+    <None Include="UserControl.WinUI\UserControl.xaml.cs">
+      <DependentUpon>UserControl.xaml</DependentUpon>
+    </None>
+    <None Include="Uno.Neutral.Cs.TemplatedControl.WinUI\CustomControl.cs" />
+    <None Include="ResourceDictionaryWithCodeBehind.WinUI\ResourceDictionaryWithCodeBehind.xaml.cs">
       <DependentUpon>ResourceDictionaryWithCodeBehind.xaml</DependentUpon>
     </None>
-    <None Include="Uno.Neutral.Cs.TemplatedControl\CustomControl.cs" />
+    <None Include="ResourceDictionaryWithCodeBehind.UWP\ResourceDictionaryWithCodeBehind.xaml.cs">
+      <DependentUpon>ResourceDictionaryWithCodeBehind.xaml</DependentUpon>
+    </None>
+    <None Include="Uno.Neutral.Cs.TemplatedControl.UWP\CustomControl.cs" />
     <None Include="Uno.Neutral.Cs.Resw\Resources.resw">
       <SubType>Designer</SubType>
     </None>
-    <None Include="UserControl\UserControl.xaml.cs">
+    <None Include="UserControl.UWP\UserControl.xaml.cs">
       <DependentUpon>UserControl.xaml</DependentUpon>
     </None>
-    <None Include="BlankPage\BlankPage.xaml.cs">
+    <None Include="BlankPage.UWP\BlankPage.xaml.cs">
       <DependentUpon>BlankPage.xaml</DependentUpon>
     </None>
-    <None Include="ContentDialog\ContentDialog.xaml.cs">
+    <None Include="ContentDialog.UWP\ContentDialog.xaml.cs">
+      <DependentUpon>ContentDialog.xaml</DependentUpon>
+    </None>
+    <None Include="BlankPage.WinUI\BlankPage.xaml.cs">
+      <DependentUpon>BlankPage.xaml</DependentUpon>
+    </None>
+    <None Include="ContentDialog.WinUI\ContentDialog.xaml.cs">
       <DependentUpon>ContentDialog.xaml</DependentUpon>
     </None>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="BlankPage\BlankPage.png" />
-    <VSTemplate Include="BlankPage\BlankPage.vstemplate">
+    <None Include="BlankPage.UWP\BlankPage.png" />
+    <VSTemplate Include="BlankPage.UWP\BlankPage.uwp.vstemplate">
       <OutputSubPath>Uno Platform</OutputSubPath>
     </VSTemplate>
   </ItemGroup>
   <ItemGroup>
-    <None Include="BlankPage\BlankPage.xaml">
+    <None Include="BlankPage.UWP\BlankPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </None>
@@ -94,33 +107,33 @@
     <VSTemplate Include="Uno.Neutral.Cs.Resw\Uno.Neutral.Cs.Resw.vstemplate">
       <OutputSubPath>Uno Platform</OutputSubPath>
     </VSTemplate>
-    <VSTemplate Include="Uno.Neutral.Cs.TemplatedControl\Uno.Neutral.Cs.TemplatedControl.vstemplate">
+    <VSTemplate Include="Uno.Neutral.Cs.TemplatedControl.UWP\Uno.Neutral.Cs.TemplatedControl.uwp.vstemplate">
       <OutputSubPath>Uno Platform</OutputSubPath>
     </VSTemplate>
-    <VSTemplate Include="ContentDialog\ContentDialog.vstemplate">
+    <VSTemplate Include="ContentDialog.UWP\ContentDialog.vstemplate">
       <OutputSubPath>Uno Platform</OutputSubPath>
     </VSTemplate>
-    <VSTemplate Include="UserControl\UserControl.vstemplate">
+    <Content Include="UserControl.UWP\UserControl..uwp.vstemplate">
       <OutputSubPath>Uno Platform</OutputSubPath>
-    </VSTemplate>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="UserControl\UserControl.xaml">
+    <None Include="UserControl.UWP\UserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ContentDialog\ContentDialog.xaml">
+    <None Include="ContentDialog.UWP\ContentDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <VSTemplate Include="ResourceDictionaryWithCodeBehind\ResourceDictionaryWithCodeBehind.vstemplate" />
+    <VSTemplate Include="ResourceDictionaryWithCodeBehind.UWP\ResourceDictionaryWithCodeBehind.uwp.vstemplate" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ResourceDictionaryWithCodeBehind\ResourceDictionaryWithCodeBehind.xaml">
+    <None Include="ResourceDictionaryWithCodeBehind.UWP\ResourceDictionaryWithCodeBehind.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </None>
@@ -130,6 +143,48 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ResourceDictionary\ResourceDictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BlankPage.WinUI\BlankPage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <VSTemplate Include="BlankPage.WinUI\BlankPage.winui.vstemplate" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BlankPage.WinUI\BlankPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <VSTemplate Include="ContentDialog.WinUI\ContentDialog.winui.vstemplate" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ContentDialog.WinUI\ContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <VSTemplate Include="ResourceDictionaryWithCodeBehind.WinUI\ResourceDictionaryWithCodeBehind.winui.vstemplate" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ResourceDictionaryWithCodeBehind.WinUI\ResourceDictionaryWithCodeBehind.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <VSTemplate Include="Uno.Neutral.Cs.TemplatedControl.WinUI\Uno.Neutral.Cs.TemplatedControl.winui.vstemplate" />
+  </ItemGroup>
+  <ItemGroup>
+    <VSTemplate Include="UserControl.WinUI\UserControl.winui.vstemplate" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UserControl.WinUI\UserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </None>

@@ -5,7 +5,7 @@ There are two ways to debug a WebAssembly application:
 - Using the browser's debugger
 
 ## Using Visual Studio
-Here’s what you need to do to debug an Uno application in Visual Studio (2019 16.10+ or 2022 17.0 Preview 3.1+):
+Here’s what you need to do to debug an Uno application in Visual Studio (2019 16.10+ or 2022 17.1):
 
 - Install the latest [Uno Platform Visual Studio templates](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin)
 - Have Chrome or Edge (Chromium based)
@@ -24,8 +24,9 @@ Then you can start debugging with the VS debugger toolbar:
 You should now be able to set breakpoints or do step by step debugging of your code.
 
 ### Tips for debugging in visual studio
-- Some debugger features may not have yet been implemented by the .NET and Visual Studio team. You can take a look the [dotnet/runtime](https://github.com/dotnet/runtime) repository for more details.
-- If the breaking do not hit, make sure that the `inspecturi` lines have been added to the `Properties/launchSettings.json` file.
+- Some debugger features may not have yet been implemented by the .NET and Visual Studio team. You can take a look at the [dotnet/runtime](https://github.com/dotnet/runtime) repository for more details.
+- If the breaking does not hit, make sure that the `inspectUri` lines have been added to the `Properties/launchSettings.json` file.
+- Methods with only invocations to generated code (e.g. control constructors with only "InitializeComponent" in it) may not allow placing breakpoints. Add some explicit code in the scope to place breakpoints.
 
 ## Using the browser debugger
 

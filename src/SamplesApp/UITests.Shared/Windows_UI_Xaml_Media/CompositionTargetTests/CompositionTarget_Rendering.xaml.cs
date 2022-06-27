@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Media.CompositionTargetTests
 {
-	[SampleControlInfo("CompositionTarget", "CompositionTarget_Rendering", description: "Demonstrates the CompositionTarget.Rendering event")]
+	[SampleControlInfo("Composition", "CompositionTarget_Rendering", description: "Demonstrates the CompositionTarget.Rendering event")]
 	public sealed partial class CompositionTarget_Rendering : UserControl
 	{
 		public CompositionTarget_Rendering()

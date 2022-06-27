@@ -38,6 +38,11 @@ namespace Windows.UI.Composition
 
 		}
 
+		public void Dispose()
+		{
+			
+		}
+
 		internal virtual void StartAnimationCore(string propertyName, CompositionAnimation animation) { }
 
 		internal void AddContext(CompositionObject context, string? propertyName)

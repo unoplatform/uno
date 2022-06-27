@@ -1,11 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net5.0</TargetFramework>
+		<RollForward>major</RollForward>
 
-    <!-- Required for non-net6 CI build -->
-    <LangVersion>9.0</LangVersion>
-  </PropertyGroup>
+		<!-- Required for non-net6 CI build -->
+		<LangVersion>9.0</LangVersion>
+	</PropertyGroup>
 
 </Project>

@@ -7,7 +7,7 @@ namespace $ext_safeprojectname$.Skia.Tizen
 {
 	static void Main(string[] args)
 	{
-		var host = new TizenHost(() => new $ext_safeprojectname$.App(), args);
+		var host = new TizenHost(() => new $ext_safeprojectname$.App());
 		host.Run();
 	}
 }

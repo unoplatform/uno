@@ -15,7 +15,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 #endif
 
-#if NETCOREAPP
+#if NETCOREAPP && !HAS_UNO
 using Microsoft.UI;
 #endif
 
@@ -75,7 +75,7 @@ namespace Uno.UI.Toolkit
 
 #if __IOS__ || __MACOS__
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor, CGPath path = null)
-#elif NETFX_CORE || NETCOREAPP
+#elif (NETFX_CORE || NETCOREAPP) && !HAS_UNO
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor, DependencyObject host = null, CornerRadius cornerRadius = default(CornerRadius))
 #else
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor)
@@ -163,7 +163,7 @@ namespace Uno.UI.Toolkit
 				var shadow = new ShadowState(dx, dy, sigmaX, sigmaY, shadowColor);
 				visual.ShadowState = shadow;
 			}
-#elif NETFX_CORE || NETCOREAPP
+#elif (NETFX_CORE || NETCOREAPP) && !HAS_UNO
 			if (element is UIElement uiElement)
 			{
 				var compositor = ElementCompositionPreview.GetElementVisual(uiElement).Compositor;
@@ -236,7 +236,7 @@ namespace Uno.UI.Toolkit
 #endif
 		}
 
-#endregion
+		#endregion
 
 		internal static Thickness GetPadding(this UIElement uiElement)
 		{
@@ -354,7 +354,7 @@ namespace Uno.UI.Toolkit
 				uiElement.Log().Warn($"The {propertyName} dependency property does not exist on {type}");
 #endif
 			}
-#if !NETFX_CORE && !NETCOREAPP
+#if HAS_UNO
 			else if (property.Type != propertyType)
 			{
 				uiElement.Log().Warn($"The {propertyName} dependency property {type} is not of the {propertyType} Type.");

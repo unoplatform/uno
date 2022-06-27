@@ -21,7 +21,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[Sample("TextBlockControl")]
+	[Sample("TextBlock")]
 	public sealed partial class TextBlock_Decorations : Page
 	{
 		public TextBlock_Decorations()

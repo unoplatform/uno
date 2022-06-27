@@ -12,7 +12,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
-
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml
 {
@@ -22,8 +22,14 @@ namespace Windows.UI.Xaml
 	public sealed partial class Window
 	{
 		private CoreWindowActivationState? _lastActivationState;
+		private Brush _background;
 
 		private List<WeakEventHelper.GenericEventHandler> _sizeChangedHandlers = new List<WeakEventHelper.GenericEventHandler>();
+		private List<WeakEventHelper.GenericEventHandler> _backgroundChangedHandlers;
+
+#if HAS_UNO_WINUI
+		public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; } = global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+#endif
 
 #pragma warning disable 67
 		/// <summary>
@@ -60,6 +66,8 @@ namespace Windows.UI.Xaml
 					this.Log().Warn("Unable to raise WindowCreatedEvent, there is no active Application");
 				}
 			}
+
+			Background = SolidColorBrushHelper.White;
 		}
 
 		public UIElement Content
@@ -236,7 +244,32 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#region Drag and Drop
+		internal Brush Background
+		{
+			get => _background;
+			set
+			{
+				_background = value;
+
+				if (_backgroundChangedHandlers != null)
+				{
+					foreach (var action in _backgroundChangedHandlers)
+					{
+						action(this, EventArgs.Empty);
+					}
+				}
+			}
+		}
+
+		internal IDisposable RegisterBackgroundChangedEvent(EventHandler handler)
+			=> WeakEventHelper.RegisterEvent(
+				_backgroundChangedHandlers ??= new(),
+				handler,
+				(h, s, e) =>
+					(h as EventHandler)?.Invoke(s, (EventArgs)e)
+			);
+
+		#region Drag and Drop
 		private DragRoot _dragRoot;
 
 		internal DragDropManager DragDrop { get; private set; }
@@ -279,6 +312,6 @@ namespace Windows.UI.Xaml
 				}
 			}
 		}
-#endregion
+		#endregion
 	}
 }

@@ -26,7 +26,7 @@ using MUXControlsTestApp.Utilities;
 
 namespace MUXControlsTestApp
 {
-	[Sample("NavigationView", "WinUI")]
+	[Sample("NavigationView", "MUX")]
     public sealed partial class NavigationViewTopNavOnlyPage : TestPage
 	{
         int m_numberOfItemAdded = 0;

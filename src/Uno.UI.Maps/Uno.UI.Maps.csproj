@@ -8,7 +8,7 @@
 	<PropertyGroup>
     <Authors>nventive</Authors>
     <PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
-    <PackageIconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</PackageIconUrl>
+    <PackageIcon>uno.png</PackageIcon>
     <RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
     <Description>This package provides the ability for Uno Platform based apps to use the MapControl</Description>
     <Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
@@ -16,6 +16,11 @@
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Maps</PackageId>
   </PropertyGroup>
 	
+
+	<ItemGroup>
+		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" Visible="false"/>
+	</ItemGroup>
+
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>

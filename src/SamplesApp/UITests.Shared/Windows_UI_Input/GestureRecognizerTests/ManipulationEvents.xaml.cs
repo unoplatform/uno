@@ -15,7 +15,7 @@ using Windows.UI.Input;
 
 namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 {
-	[Sample("Gesture recognizer", "Manipulation Events", IgnoreInSnapshotTests = true)]
+	[Sample("Gesture Recognizer", "Pointers", IgnoreInSnapshotTests = true)]
 	public sealed partial class ManipulationEvents : Page
 	{
 		public ManipulationEvents()

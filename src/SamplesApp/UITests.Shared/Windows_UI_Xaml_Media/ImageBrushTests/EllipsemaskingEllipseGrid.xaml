@@ -25,12 +25,12 @@
 						<Grid Height="240" Width="240" >
 							<Ellipse Width="200" Height="200">
 								<Ellipse.Fill>
-									<ImageBrush ImageSource="http://homepages.cae.wisc.edu/~ece533/images/baboon.png" Stretch="Fill" />
+									<ImageBrush ImageSource="/Assets/test_image_200_200.png" Stretch="Fill" />
 								</Ellipse.Fill>
 							</Ellipse>
 							<Ellipse Width="120" Height="120" HorizontalAlignment="Right" VerticalAlignment="Bottom">
 								<Ellipse.Fill>
-									<ImageBrush ImageSource="http://homepages.cae.wisc.edu/~ece533/images/monarch.png" Stretch="Fill" />
+									<ImageBrush ImageSource="/Assets/Diagnostics/exclamation.png" Stretch="Fill" />
 								</Ellipse.Fill>
 							</Ellipse>
 						</Grid>
