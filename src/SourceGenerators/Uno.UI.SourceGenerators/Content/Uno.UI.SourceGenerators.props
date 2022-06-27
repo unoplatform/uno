@@ -359,6 +359,8 @@
       <_ApplicationDefinitions>@(ApplicationDefinition)</_ApplicationDefinitions>
       <_PRIResources>@(PRIResource)</_PRIResources>
       <_TSBindingAssemblySources>@(TSBindingAssemblySource)</_TSBindingAssemblySources>
+      <_UnoPages>@(UnoPage)</_UnoPages>
+      <_UnoApplicationDefinitions>@(UnoApplicationDefinition)</_UnoApplicationDefinitions>
     </PropertyGroup>
 
     <ItemGroup Label="Add SourceItemGroup metadata to existing additional files">
@@ -366,6 +368,8 @@
       <AdditionalFiles SourceItemGroup="ApplicationDefinition" Condition="$(_ApplicationDefinitions) != '' AND $(_ApplicationDefinitions.Contains(%(AdditionalFiles.FullPath)))" />
       <AdditionalFiles SourceItemGroup="PRIResource" Condition="$(_PRIResources) != '' AND $(_PRIResources.Contains(%(AdditionalFiles.FullPath)))" />
       <AdditionalFiles SourceItemGroup="TSBindingAssemblySource" Condition="$(_TSBindingAssemblySources) != '' AND $(_TSBindingAssemblySources.Contains(%(AdditionalFiles.FullPath)))" />
+      <AdditionalFiles SourceItemGroup="Page" Condition="$(_UnoPages) != '' AND $(_UnoPages.Contains(%(AdditionalFiles.FullPath)))" />
+      <AdditionalFiles SourceItemGroup="ApplicationDefinition" Condition="$(_UnoApplicationDefinitions) != '' AND $(_UnoApplicationDefinitions.Contains(%(AdditionalFiles.FullPath)))" />
     </ItemGroup>
 
     <ItemGroup Label="Include new additional files">
@@ -374,6 +378,8 @@
       <AdditionalFiles Include="%(ApplicationDefinition.FullPath)" SourceItemGroup="ApplicationDefinition" Exclude="@(_ExistingAdditionalFiles)" />
       <AdditionalFiles Include="%(PRIResource.FullPath)" SourceItemGroup="PRIResource" Exclude="@(_ExistingAdditionalFiles)" />
       <AdditionalFiles Include="%(TSBindingAssemblySource.FullPath)" SourceItemGroup="TSBindingAssemblySource" Exclude="@(_ExistingAdditionalFiles)" />
+      <AdditionalFiles Include="%(UnoPage.FullPath)" SourceItemGroup="Page" Exclude="@(_ExistingAdditionalFiles)" />
+			<AdditionalFiles Include="%(UnoApplicationDefinition.FullPath)" SourceItemGroup="ApplicationDefinition" Exclude="@(_ExistingAdditionalFiles)" />
     </ItemGroup>
 
   </Target>
