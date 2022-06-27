@@ -331,8 +331,8 @@
 		<ItemGroup>
 			<CustomUiAutomationMemberMappingAdjusted Include="@(CustomUiAutomationMemberMapping)" Mappings="$([System.String]::new('%(Mappings)').Replace('&#x0A;',','))" />
 		</ItemGroup>
-    
-    <CreateProperty Value="@(ExcludeXamlNamespaces, ',')">
+		
+		<CreateProperty Value="@(ExcludeXamlNamespaces, ',')">
 			<Output
 					TaskParameter="Value"
 					PropertyName="ExcludeXamlNamespacesProperty" />
@@ -369,46 +369,46 @@
 		</CreateProperty>
 
 	</Target>
-  
-  <Target Name="_InjectAdditionalFiles" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;GenerateMSBuildEditorConfigFileCore" DependsOnTargets="_FillSourceGeneratorItemGroups">
 
-    <PropertyGroup>
-      <_Pages>@(Page)</_Pages>
-      <_ApplicationDefinitions>@(ApplicationDefinition)</_ApplicationDefinitions>
-      <_PRIResources>@(PRIResource)</_PRIResources>
-      <_TSBindingAssemblySources>@(TSBindingAssemblySource)</_TSBindingAssemblySources>
-      <_UnoPages>@(UnoPage)</_UnoPages>
-      <_UnoApplicationDefinitions>@(UnoApplicationDefinition)</_UnoApplicationDefinitions>
-    </PropertyGroup>
+	<Target Name="_InjectAdditionalFiles" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;GenerateMSBuildEditorConfigFileCore" DependsOnTargets="_FillSourceGeneratorItemGroups">
 
-    <ItemGroup Label="Add SourceItemGroup metadata to existing additional files">
-      <AdditionalFiles SourceItemGroup="Page" Condition="$(_Pages) != '' AND $(_Pages.Contains(%(AdditionalFiles.FullPath)))" />
-      <AdditionalFiles SourceItemGroup="ApplicationDefinition" Condition="$(_ApplicationDefinitions) != '' AND $(_ApplicationDefinitions.Contains(%(AdditionalFiles.FullPath)))" />
-      <AdditionalFiles SourceItemGroup="PRIResource" Condition="$(_PRIResources) != '' AND $(_PRIResources.Contains(%(AdditionalFiles.FullPath)))" />
-      <AdditionalFiles SourceItemGroup="TSBindingAssemblySource" Condition="$(_TSBindingAssemblySources) != '' AND $(_TSBindingAssemblySources.Contains(%(AdditionalFiles.FullPath)))" />
-      <AdditionalFiles SourceItemGroup="Page" Condition="$(_UnoPages) != '' AND $(_UnoPages.Contains(%(AdditionalFiles.FullPath)))" />
-      <AdditionalFiles SourceItemGroup="ApplicationDefinition" Condition="$(_UnoApplicationDefinitions) != '' AND $(_UnoApplicationDefinitions.Contains(%(AdditionalFiles.FullPath)))" />
-    </ItemGroup>
+		<PropertyGroup>
+			<_Pages>@(Page)</_Pages>
+			<_ApplicationDefinitions>@(ApplicationDefinition)</_ApplicationDefinitions>
+			<_PRIResources>@(PRIResource)</_PRIResources>
+			<_TSBindingAssemblySources>@(TSBindingAssemblySource)</_TSBindingAssemblySources>
+			<_UnoPages>@(UnoPage)</_UnoPages>
+			<_UnoApplicationDefinitions>@(UnoApplicationDefinition)</_UnoApplicationDefinitions>
+		</PropertyGroup>
 
-    <ItemGroup Label="Include new additional files">
-      <_ExistingAdditionalFiles Include="%(AdditionalFiles.FullPath)" />
-      <AdditionalFiles Include="%(Page.FullPath)" SourceItemGroup="Page" Exclude="@(_ExistingAdditionalFiles)" />
-      <AdditionalFiles Include="%(ApplicationDefinition.FullPath)" SourceItemGroup="ApplicationDefinition" Exclude="@(_ExistingAdditionalFiles)" />
-      <AdditionalFiles Include="%(PRIResource.FullPath)" SourceItemGroup="PRIResource" Exclude="@(_ExistingAdditionalFiles)" />
-      <AdditionalFiles Include="%(TSBindingAssemblySource.FullPath)" SourceItemGroup="TSBindingAssemblySource" Exclude="@(_ExistingAdditionalFiles)" />
-      <AdditionalFiles Include="%(UnoPage.FullPath)" SourceItemGroup="Page" Exclude="@(_ExistingAdditionalFiles)" />
-      <AdditionalFiles Include="%(UnoApplicationDefinition.FullPath)" SourceItemGroup="ApplicationDefinition" Exclude="@(_ExistingAdditionalFiles)" />
-    </ItemGroup>
+		<ItemGroup Label="Add SourceItemGroup metadata to existing additional files">
+			<AdditionalFiles SourceItemGroup="Page" Condition="$(_Pages) != '' AND $(_Pages.Contains(%(AdditionalFiles.FullPath)))" />
+			<AdditionalFiles SourceItemGroup="ApplicationDefinition" Condition="$(_ApplicationDefinitions) != '' AND $(_ApplicationDefinitions.Contains(%(AdditionalFiles.FullPath)))" />
+			<AdditionalFiles SourceItemGroup="PRIResource" Condition="$(_PRIResources) != '' AND $(_PRIResources.Contains(%(AdditionalFiles.FullPath)))" />
+			<AdditionalFiles SourceItemGroup="TSBindingAssemblySource" Condition="$(_TSBindingAssemblySources) != '' AND $(_TSBindingAssemblySources.Contains(%(AdditionalFiles.FullPath)))" />
+			<AdditionalFiles SourceItemGroup="Page" Condition="$(_UnoPages) != '' AND $(_UnoPages.Contains(%(AdditionalFiles.FullPath)))" />
+			<AdditionalFiles SourceItemGroup="ApplicationDefinition" Condition="$(_UnoApplicationDefinitions) != '' AND $(_UnoApplicationDefinitions.Contains(%(AdditionalFiles.FullPath)))" />
+		</ItemGroup>
 
-  </Target>
+		<ItemGroup Label="Include new additional files">
+			<_ExistingAdditionalFiles Include="%(AdditionalFiles.FullPath)" />
+			<AdditionalFiles Include="%(Page.FullPath)" SourceItemGroup="Page" Exclude="@(_ExistingAdditionalFiles)" />
+			<AdditionalFiles Include="%(ApplicationDefinition.FullPath)" SourceItemGroup="ApplicationDefinition" Exclude="@(_ExistingAdditionalFiles)" />
+			<AdditionalFiles Include="%(PRIResource.FullPath)" SourceItemGroup="PRIResource" Exclude="@(_ExistingAdditionalFiles)" />
+			<AdditionalFiles Include="%(TSBindingAssemblySource.FullPath)" SourceItemGroup="TSBindingAssemblySource" Exclude="@(_ExistingAdditionalFiles)" />
+			<AdditionalFiles Include="%(UnoPage.FullPath)" SourceItemGroup="Page" Exclude="@(_ExistingAdditionalFiles)" />
+			<AdditionalFiles Include="%(UnoApplicationDefinition.FullPath)" SourceItemGroup="ApplicationDefinition" Exclude="@(_ExistingAdditionalFiles)" />
+		</ItemGroup>
+
+	</Target>
 
 	<Target Name="UnoLogGeneratorsType" BeforeTargets="CoreCompile;_UnoSourceGenerator">
 		<Message Importance="low"
-			   Condition="'$(UnoUIUseRoslynSourceGenerators)'=='true'"
-			   Text="Uno.UI is using Roslyn generators" />
+			Condition="'$(UnoUIUseRoslynSourceGenerators)'=='true'"
+			Text="Uno.UI is using Roslyn generators" />
 		<Message Importance="low"
-			   Condition="'$(UnoUIUseRoslynSourceGenerators)'==''"
-			   Text="Uno.UI is using Uno.SourceGenerators" />
+			Condition="'$(UnoUIUseRoslynSourceGenerators)'==''"
+			Text="Uno.UI is using Uno.SourceGenerators" />
 
 		<WriteLinesToFile File="$(IntermediateOutputPath)\build-time-generator.touch" />
 	</Target>
@@ -432,8 +432,8 @@
 	-->
 
 		<Warning
-		  Condition="'$(registry:HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem@LongPathsEnabled)'!='1' and '$(UnoUIDisableLongPathWarning)'==''"
-		  Text="Windows LongPath support is not enabled, you may experience build errors. You can avoid these by enabling LongPath with &quot;reg ADD HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem /v LongPathsEnabled /t REG_DWORD /d 1&quot;, or disable this warning by setting UnoUIDisableLongPathWarning to true."/>
+			Condition="'$(registry:HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem@LongPathsEnabled)'!='1' and '$(UnoUIDisableLongPathWarning)'==''"
+			Text="Windows LongPath support is not enabled, you may experience build errors. You can avoid these by enabling LongPath with &quot;reg ADD HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem /v LongPathsEnabled /t REG_DWORD /d 1&quot;, or disable this warning by setting UnoUIDisableLongPathWarning to true."/>
 	</Target>
 
 	<Target Name="_UnoUIValidateInvalidRoslynPath"
@@ -444,8 +444,8 @@
 	-->
 
 		<Warning
-		  Condition="$(MSBuildProjectFullPath.Contains('#')) and '$(UnoUIDisable5953Warning)'==''"
-		  Text="The path to your project contains the '#' character, which causes known build issues. Try moving your project to a different location. (See https://github.com/unoplatform/uno/issues/5953 for more details)."/>
+			Condition="$(MSBuildProjectFullPath.Contains('#')) and '$(UnoUIDisable5953Warning)'==''"
+			Text="The path to your project contains the '#' character, which causes known build issues. Try moving your project to a different location. (See https://github.com/unoplatform/uno/issues/5953 for more details)."/>
 	</Target>
 
 	<Target Name="Roslyn51768Workaround"
