@@ -22,6 +22,8 @@
 		
 		<WarningsAsErrors>true</WarningsAsErrors>
 
+		<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
+
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI</PackageId>
 	</PropertyGroup>
 
