@@ -161,7 +161,7 @@ namespace Uno.UI.RemoteControl
 					var completed = await Task.WhenAny(connections.Select(c => c.task).Concat(timeout));
 
 					// Wait for any non-faulted task
-					while (!completed.IsCompletedSuccessfully)
+					while (completed.IsFaulted)
 					{
 						var tasks = connections.Select(c => c.task).Where(t => t.Status != TaskStatus.Faulted).ToArray();
 
