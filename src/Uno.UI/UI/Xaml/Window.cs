@@ -104,7 +104,11 @@ namespace Windows.UI.Xaml
 					newRoot.SizeChanged += RootSizeChanged;					
 				}
 
-				(value?.XamlRoot ?? oldContent?.XamlRoot)?.NotifyChanged();
+				oldContent?.XamlRoot?.NotifyChanged();
+				if (value?.XamlRoot != oldContent?.XamlRoot)
+				{
+					value?.XamlRoot?.NotifyChanged();
+				}
 			}
 		}
 

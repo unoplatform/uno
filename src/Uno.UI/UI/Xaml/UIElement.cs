@@ -49,7 +49,6 @@ namespace Windows.UI.Xaml
 
 		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
 		private string _uid;
-		private WeakReference<VisualTree> _visualTreeCacheWeakReference;
 
 		//private protected virtual void PrepareState() 
 		//{
@@ -79,12 +78,6 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <remarks>This differs from the XamlRoot be being true for the root element of a native Popup.</remarks>
 		internal bool IsVisualTreeRoot { get; set; }
-
-		internal VisualTree VisualTreeCache
-		{
-			get => _visualTreeCacheWeakReference?.TryGetTarget(out var target) == true ? target : null;
-			set => _visualTreeCacheWeakReference = new WeakReference<VisualTree>(value);
-		}
 
 		private void Initialize()
 		{
@@ -208,35 +201,6 @@ namespace Windows.UI.Xaml
 		}
 
 		partial void OnUidChangedPartial();
-
-		public XamlRoot XamlRoot
-		{
-			get
-			{
-				var visualTree = VisualTree.GetForElement(this);
-				if (visualTree is not null)
-				{
-					var xamlRoot = visualTree.GetOrCreateXamlRoot();
-					return xamlRoot;
-				}
-
-				return null;
-			}
-			set
-			{
-				if (XamlRoot == value)
-				{
-					return;
-				}
-
-				if (XamlRoot is not null)
-				{
-					throw new InvalidOperationException("Cannot change XamlRoot for existing element");
-				}
-
-				// TODO: It should be possible to set XamlRoot when still null. #8978
-			}
-		}
 
 		#region VirtualizationInformation
 		private VirtualizationInformation _virtualizationInformation;
