@@ -87,7 +87,7 @@ namespace Uno.Helpers
 		/// <returns>Drawable</returns>
 		public static Drawable FromUri(Uri uri)
 		{
-			var id = FindResourceId(uri?.AbsoluteUri);
+			var id = FindResourceIdFromPath(uri.PathAndQuery.TrimStart(new[] { '/' }));
 			var drawable = id.HasValue
 				? ContextCompat.GetDrawable(ContextHelper.Current, id.Value)
 				: null;

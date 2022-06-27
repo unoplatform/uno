@@ -8317,6 +8317,8 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\icon.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\menu.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\search.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\star_empty.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\star_full.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\image.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ingredient1.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ingredient2.png" />
