@@ -57,6 +57,7 @@
 
 				<CompilerVisibleProperty Include="UseWPF" />
 				<CompilerVisibleProperty Include="IsUnoHead" />
+				<CompilerVisibleProperty Include="WindowsAppSDKWinUI" />
 				<CompilerVisibleProperty Include="UnoRemoteControlPort" />
 				<CompilerVisibleProperty Include="UnoRemoteControlHost" />
 				<CompilerVisibleProperty Include="UnoRemoteControlProcessorsPath" />
