@@ -287,7 +287,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 				canvas.Save();
 
-				// canvas.Clear(GetBackgroundColor());
+				canvas.Clear(GetBackgroundColor());
 
 				canvas.Translate((float)x, (float)y);
 				canvas.Scale((float)(scaledSize.Width / animation.Size.Width), (float)(scaledSize.Height / animation.Size.Height));
