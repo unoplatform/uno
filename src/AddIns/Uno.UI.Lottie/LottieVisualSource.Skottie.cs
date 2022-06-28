@@ -14,6 +14,8 @@ using Windows.System;
 using System.Diagnostics;
 using SkiaSharp.SceneGraph;
 using Windows.UI.Xaml.Media;
+using System.Text;
+using System.IO;
 
 #if HAS_UNO_WINUI
 using SkiaSharp.Views.Windows;
@@ -76,81 +78,94 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			async Task SetProperties()
 			{
-				var sourceUri = UriSource;
-				if (_lastSource == null || !_lastSource.Equals(sourceUri))
+				try
 				{
-					_lastSource = sourceUri;
-					if ((await TryLoadDownloadJson(sourceUri, ct)) is { } jsonStream)
+					var sourceUri = UriSource;
+					if (_lastSource == null || !_lastSource.Equals(sourceUri))
 					{
-						var cacheKey = sourceUri.OriginalString;
-						_animationDataSubscription.Disposable = null;
-						_animationDataSubscription.Disposable =
-							LoadAndObserveAnimationData(jsonStream, cacheKey, OnJsonChanged);
-
-						void OnJsonChanged(string updatedJson, string updatedCacheKey)
+						_lastSource = sourceUri;
+						if ((await TryLoadDownloadJson(sourceUri, ct)) is { } jsonStream)
 						{
-							try
-							{
-								if (SkiaSharp.Skottie.Animation.TryParse(updatedJson, out var animation))
-								{
-									animation.Seek(0);
+							var cacheKey = sourceUri.OriginalString;
+							_animationDataSubscription.Disposable = null;
+							_animationDataSubscription.Disposable =
+								LoadAndObserveAnimationData(jsonStream, cacheKey, OnJsonChanged);
 
-									if (this.Log().IsEnabled(LogLevel.Debug))
+							void OnJsonChanged(string updatedJson, string updatedCacheKey)
+							{
+								try
+								{
+									var stream = new MemoryStream(Encoding.UTF8.GetBytes(updatedJson));
+
+									if (SkiaSharp.Skottie.Animation.TryCreate(stream, out var animation))
 									{
-										this.Log().Debug($"Version: {animation.Version} Duration: {animation.Duration} Fps:{animation.Fps} InPoint: {animation.InPoint} OutPoint: {animation.OutPoint}");
+										animation.Seek(0);
+
+										if (this.Log().IsEnabled(LogLevel.Debug))
+										{
+											this.Log().Debug($"Version: {animation.Version} Duration: {animation.Duration} Fps:{animation.Fps} InPoint: {animation.InPoint} OutPoint: {animation.OutPoint}");
+										}
+									}
+									else
+									{
+										throw new InvalidOperationException("Failed to load animation.");
+									}
+
+									SetAnimation(animation);
+
+									if (_playState != null)
+									{
+										var (fromProgress, toProgress, looped) = _playState;
+										Play(fromProgress, toProgress, looped);
 									}
 								}
-								else
+								catch (Exception ex)
 								{
-									throw new InvalidOperationException("Failed to load animation.");
+									throw new InvalidOperationException("Failed load the animation", ex);
 								}
-
-								SetAnimation(animation);
-
-								if (_playState != null)
-								{
-									var (fromProgress, toProgress, looped) = _playState;
-									Play(fromProgress, toProgress, looped);
-								}
-							}
-							catch(Exception ex)
-							{
-								throw new InvalidOperationException("Failed load the animation", ex);
 							}
 						}
-					}
-					else
-					{
-						throw new NotSupportedException($"Failed to load animation: {sourceUri}");
+						else
+						{
+							throw new NotSupportedException($"Failed to load animation: {sourceUri}");
+						}
+
+						// Force layout to recalculate
+						player.InvalidateMeasure();
+						player.InvalidateArrange();
+
+						if (_playState != null)
+						{
+							var (fromProgress, toProgress, looped) = _playState;
+							Play(fromProgress, toProgress, looped);
+						}
+						else if (player.AutoPlay)
+						{
+							Play(0, 1, true);
+						}
+
 					}
 
-					// Force layout to recalculate
-					player.InvalidateMeasure();
-					player.InvalidateArrange();
+					if (_animation == null)
+					{
+						return;
+					}
 
-					if (_playState != null)
-					{
-						var (fromProgress, toProgress, looped) = _playState;
-						Play(fromProgress, toProgress, looped);
-					}
-					else if (player.AutoPlay)
-					{
-						Play(0, 1, true);
-					}
+					var duration = _animation.Duration;
+					player.SetValue(AnimatedVisualPlayer.DurationProperty, duration);
+
+					var isLoaded = duration > TimeSpan.Zero;
+					player.SetValue(AnimatedVisualPlayer.IsAnimatedVisualLoadedProperty, isLoaded);
+
+					Invalidate();
 				}
-
-				if (_animation == null)
+				catch (Exception e)
 				{
-					return;
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error($"Failed to update lottie player for [{UriSource}]", e);
+					}
 				}
-
-				var duration = _animation.Duration;
-				player.SetValue(AnimatedVisualPlayer.DurationProperty, duration);
-
-				var isLoaded = duration > TimeSpan.Zero;
-				player.SetValue(AnimatedVisualPlayer.IsAnimatedVisualLoadedProperty, isLoaded);
-
-				Invalidate();
 			}
 		}
 
