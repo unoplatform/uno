@@ -49,7 +49,7 @@ Now let's run the application:
 - Install GTK3:
     ```
     sudo apt update
-    sudo apt-get install gtk+3.0 
+    sudo apt-get install gtk+3.0 mesa-utils libgl1-mesa-glx
     ```
 - Install dotnet core 3.1
     ```
@@ -68,7 +68,7 @@ Now let's run the application:
 - Install GTK3:
     ```
     sudo apt update
-    sudo apt install libgtk-3-dev
+    sudo apt install libgtk-3-dev mesa-utils libgl1-mesa-glx
     ```
 - Install dotnet core 3.1 and 5.0
     ```
