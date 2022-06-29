@@ -184,7 +184,7 @@
 		<!--
 		A list of analyzer suppressions to include in every generated class.
 		This is required for roslyn analyzers that do not support the GeneratedCodeAttribute.
-	-->
+		-->
 		<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV0056" />
 		<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV0058" />
 		<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV1003" />
@@ -194,10 +194,15 @@
 		<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV2004" />
 		<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV2005" />
 
+		<XamlGeneratorAnalyzerSuppressions Include="csharp-618 // Ignore obsolete members warnings" />
+		<XamlGeneratorAnalyzerSuppressions Include="csharp-105 // Ignore duplicate namespaces" />
+		<XamlGeneratorAnalyzerSuppressions Include="csharp-1591 // Ignore missing XML comment warnings" />
+		<XamlGeneratorAnalyzerSuppressions Include="csharp-CS8669 // Ignore annotation for nullable reference types" />
+
 		<!--
 		Ignore disposable fields, Uno manages those on its own.
 		https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1001
-	-->
+		-->
 		<XamlGeneratorAnalyzerSuppressions Include="dotnet-CA1001" />
 	</ItemGroup>
 
