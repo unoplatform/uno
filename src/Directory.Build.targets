@@ -45,14 +45,23 @@
 	<PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.4" />
 	<PackageReference Update="Xamarin.UITest" Version="3.2.8" />
 	<PackageReference Update="System.Numerics.Vectors" Version="4.5.0" />
-	<PackageReference Update="SkiaSharp.Views" Version="2.80.3" />
-	<PackageReference Update="SkiaSharp.Views.WPF" Version="2.80.3" />
-	<PackageReference Update="SkiaSharp" Version="2.80.3" />
-	<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.80.3" />
-	<PackageReference Update="SkiaSharp.Harfbuzz" Version="2.80.3" />
-	<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="2.8.2" />
-	<PackageReference Update="HarfBuzzSharp.NativeAssets.Tizen" Version="2.8.2" />
-	<PackageReference Update="SkiaSharp.HarfBuzz" Version="2.80.3" />
+
+	<PackageReference Update="SkiaSharp.Views" Version="2.88.1-preview.71" />
+	<PackageReference Update="SkiaSharp.Views.Uno" Version="2.88.1-preview.71" />
+	<PackageReference Update="SkiaSharp.Views.Uno.WinUI" Version="2.88.1-preview.71" />
+	<PackageReference Update="SkiaSharp.Views.WPF" Version="2.88.1-preview.71" />
+	<PackageReference Update="SkiaSharp" Version="2.88.1-preview.71" />
+	<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.88.1-preview.71" />
+	<PackageReference Update="SkiaSharp.Harfbuzz" Version="2.88.1-preview.71" />
+	<PackageReference Update="SkiaSharp.Skottie" Version="2.88.1-preview.71" />
+	<PackageReference Update="SkiaSharp.NativeAssets.Android" Version="2.88.1-preview.71" />
+	<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="2.88.1-preview.71" />
+	<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="2.88.1-preview.71" />
+	<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="2.88.1-preview.71" />
+
+	<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="2.8.2.1-preview.71" />
+	<PackageReference Update="HarfBuzzSharp.NativeAssets.Tizen" Version="2.8.2.1-preview.71" />
+	<PackageReference Update="SkiaSharp.HarfBuzz" Version="2.88.1-preview.71" />
 	<PackageReference Update="GtkSharp" Version="3.24.24.34" />
 	<PackageReference Update="System.Json" Version="4.7.1" />
 	<PackageReference Update="FluentAssertions" Version="5.10.3" />

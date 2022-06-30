@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Markup;
+using Windows.ApplicationModel.Resources;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Markup;
 
@@ -36,6 +37,23 @@ namespace Uno.UI.Helpers
 		/// <returns>A the x:Uid value</returns>
 		public static string GetXUid(object target)
 			=> target is IXUidProvider provider ? provider.Uid : "";
+
+		/// <summary>
+		/// Gets a resource string for an x:Uid bound property.
+		/// </summary>
+		/// <remarks>
+		/// Returns null when the resource is an empty string.
+		/// </remarks>
+		public static string? GetResourceStringForXUid(string viewName, string resourceName)
+		{
+			var loader = viewName is not null
+				? ResourceLoader.GetForCurrentView(viewName)
+				: ResourceLoader.GetForCurrentView();
+
+			return loader.GetString(resourceName) is { Length: > 0 } value
+						? value
+						: null;
+		}
 
 		/// <summary>
 		/// Sets a builder for markup-lazy properties in <see cref="VisualState"/>

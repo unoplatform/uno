@@ -487,17 +487,14 @@ namespace AppKit
 
 		public static void AddBorder(this _View thisButton, float borderThickness = 1, _Color borderColor = null)
 		{
+			var layer = thisButton.Layer;
 			if (borderColor != null)
 			{
-				thisButton.Layer.BorderColor = borderColor.CGColor;
+				layer.BorderColor = borderColor.CGColor;
 			}
 			if (borderThickness > 0)
 			{
-				if (Math.Abs(borderThickness - 1f) < float.Epsilon && ViewHelper.IsRetinaDisplay)
-				{
-					borderThickness = (float)ViewHelper.OnePixel;
-				}
-				thisButton.Layer.BorderWidth = borderThickness;
+				layer.BorderWidth = ViewHelper.GetConvertedPixel(borderThickness);
 			}
 		}
 

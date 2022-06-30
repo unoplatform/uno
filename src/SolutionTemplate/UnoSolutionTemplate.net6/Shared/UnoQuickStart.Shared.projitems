@@ -57,5 +57,12 @@
 
 	<_Globbed_Content Include="$(MSBuildThisFileDirectory)Assets/**/*.*" Exclude="@(Content)" />
 	<Content Include="@(_Globbed_Content)" />
+
+	<!-- Mark the files from this folder as being part of WinUI -->
+	<Page Update="$(MSBuildThisFileDirectory)**/*.xaml" XamlRuntime="WinUI" />
+	<ApplicationDefinition Update="$(MSBuildThisFileDirectory)**/*.xaml" XamlRuntime="WinUI" />
+
+	<!-- Make sure XAML files force reevaluation of up-to-date checks -->
+	<UpToDateCheckInput Include="$(MSBuildThisFileDirectory)**/*.xaml" />
   </ItemGroup>
 </Project>

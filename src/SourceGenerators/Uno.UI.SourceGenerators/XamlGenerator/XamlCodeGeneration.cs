@@ -134,8 +134,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_historicalOutputGenerationPath = context.GetMSBuildPropertyValue("UnoXamlHistoricalOutputGenerationPath") is { Length: > 0 } value ? value : null;
 
-			var xamlItems = context.GetMSBuildItems("Page")
-				.Concat(context.GetMSBuildItems("ApplicationDefinition"));
+			var pageItems = GetWinUIItems("Page").Concat(GetWinUIItems("UnoPage"));
+			var applicationDefinitionItems = GetWinUIItems("ApplicationDefinition").Concat(GetWinUIItems("UnoApplicationDefinition"));
+
+			var xamlItems = pageItems
+				.Concat(applicationDefinitionItems)
+				.ToArray();
 
 			_xamlSourceFiles = xamlItems.Select(i => i.Identity).ToArray();
 
@@ -218,6 +222,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isWasm = context.GetMSBuildPropertyValue("DefineConstantsProperty")?.Contains("__WASM__") ?? false;
 			_isDesignTimeBuild = Helpers.DesignTimeHelper.IsDesignTime(context);
 		}
+
+		private static bool IsWinUIItem(MSBuildItem item)
+			=> item.GetMetadataValue("XamlRuntime") is { } xamlRuntime
+				? xamlRuntime == "WinUI" || string.IsNullOrWhiteSpace(xamlRuntime)
+				: true;
+
+		private IEnumerable<MSBuildItem> GetWinUIItems(string name)
+			=> _generatorContext
+				.GetMSBuildItems(name)
+				.Where(IsWinUIItem);
 
 		/// <summary>
 		/// Get the file location as seen in the IDE, used for ResourceDictionary.Source resolution.
@@ -361,7 +375,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				return outputFiles.ToArray();
-
 			}
 			catch (OperationCanceledException)
 			{

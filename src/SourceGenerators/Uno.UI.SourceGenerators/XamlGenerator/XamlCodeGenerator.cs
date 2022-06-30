@@ -7,6 +7,7 @@ using System.Net.Mime;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Uno.Roslyn;
+using Uno.UI.SourceGenerators.Helpers;
 using Uno.UI.SourceGenerators.Telemetry;
 
 #if NETFRAMEWORK

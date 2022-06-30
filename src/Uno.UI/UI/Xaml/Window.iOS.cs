@@ -76,6 +76,8 @@ namespace Windows.UI.Xaml
 			var statusBar = StatusBar.GetForCurrentView();
 			statusBar.Showing += (o, e) => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
 			statusBar.Hiding += (o, e) => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
+
+			RaiseNativeSizeChanged(ViewHelper.GetScreenSizeInternal(this));
 		}
 
 		partial void InternalActivate()
