@@ -8848,6 +8848,17 @@
 		<Properties>
 		</Properties>
 	</IgnoreSet>
+	<IgnoreSet baseVersion="4.4.13">
+		<Types>
+		</Types>
+		<Methods>
+		</Methods>
+		<Properties>
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.SinglelineTextBoxView::SecureTextEntry()"
+				reason="Removed no-longer-needed override" />
+		</Properties>
+	</IgnoreSet>
 	<!--
 	Supported nodes (please keep at the bottom of this file):
 	<IgnoreSet baseVersion="0.0.0">
