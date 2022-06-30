@@ -12,7 +12,6 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.UI.Xaml" Version="2.6.2" />
 		<PackageReference Include="Uno.UI" Version="2.2.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
 	</ItemGroup>
