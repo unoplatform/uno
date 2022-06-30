@@ -237,6 +237,25 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 				_hardwareCanvas.Loaded += UpdateTransparency;
 			}
+#elif __IOS__ && !__MACCATALYST__
+			if (_hardwareCanvas != null)
+			{
+				void UpdateTransparency(object s, object e)
+				{
+					// The SKGLTextureView is opaque by default, so we poke at the tree
+					// to change the opacity of the first view of the SKSwapChainPanel
+					// to make it transparent.
+					if (_hardwareCanvas.Subviews.Length == 1
+						&& _hardwareCanvas.Subviews[0] is GLKit.GLKView texture)
+					{
+						texture.Opaque = false;
+					}
+
+					_hardwareCanvas.Loaded -= UpdateTransparency;
+				}
+
+				_hardwareCanvas.Loaded += UpdateTransparency;
+			}
 #endif
 		}
 
