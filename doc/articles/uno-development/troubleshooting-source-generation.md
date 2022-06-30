@@ -31,7 +31,7 @@ To define a pragma, in your csproj add the following:
 ```
 
 It is also possible to have `SuppressMessageAttribute` specified in the code, by using the following syntax:
-```
+```xml
 <ItemGroup>
     <XamlGeneratorAnalyzerSuppressions Include="mycategory.subcategory-CAT0042" />
 </ItemGroup>
