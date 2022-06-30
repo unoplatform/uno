@@ -21,45 +21,12 @@ namespace Windows.UI.Xaml.Controls
 		private readonly WeakReference<TextBox> _textBox;
 		private readonly SerialDisposable _foregroundChanged = new();
 
-		private string _restoreOnNextKeyStroke;
-
 		public SinglelineTextBoxView(TextBox textBox)
 		{
 			_textBox = new WeakReference<TextBox>(textBox);
 
 			InitializeBinder();
 			Initialize();
-		}
-
-		/// <inheritdoc />
-		public override bool SecureTextEntry
-		{
-			get => base.SecureTextEntry;
-			set
-			{
-				if (base.SecureTextEntry != value)
-				{
-					if (value)
-					{
-						// Disable auto-fill for now, does not work properly. The auto-filled value never becomes available on base.Text and blocks input on the soft keyboard.
-						if (UIDevice.CurrentDevice.CheckSystemVersion(12, 0))
-						{
-							base.TextContentType = UITextContentType.OneTimeCode;
-						}
-						else if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
-						{
-							base.TextContentType = NSString.Empty;
-						}
-
-						// When we enable the "secure" mode, iOS will auto-magically clear the value on next key stroke
-						// (Without invoking the "ShouldClear" nor any callback except "DidChangeSelection" multiple times).
-						// The only way is to keep ref of the current text and restore it on next text change (expected to be an empty string).
-						_restoreOnNextKeyStroke = base.Text;
-					}
-
-					base.SecureTextEntry = value;
-				}
-			}
 		}
 
 		public override string Text
@@ -79,15 +46,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnEditingChanged(object sender, EventArgs e)
 		{
-			if (_restoreOnNextKeyStroke is { Length: > 0 } text)
-			{
-				base.Text = text + base.Text;
-				_restoreOnNextKeyStroke = default;
-			}
-			else
-			{
-				OnTextChanged();
-			}
+			OnTextChanged();
 		}
 
 		private void OnTextChanged()
@@ -123,6 +82,21 @@ namespace Windows.UI.Xaml.Controls
 		{
 			this.EditingChanged -= OnEditingChanged;
 			this.EditingDidEnd -= OnEditingChanged;
+		}
+
+		//Forces the secure UITextField to maintain its current value upon regaining focus
+		public override bool BecomeFirstResponder()
+		{
+			var result = base.BecomeFirstResponder();
+
+			if (SecureTextEntry)
+			{
+				var text = Text;
+				Text = string.Empty;
+				InsertText(text);
+			}
+
+			return result;
 		}
 
 		public override CGSize SizeThatFits(CGSize size)
