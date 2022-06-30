@@ -107,7 +107,6 @@
     <None Include="Skia.Linux.FrameBuffer\Program.cs" />
     <None Include="Skia.Linux.FrameBuffer\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Skia.Linux.FrameBuffer\UnoQuickStart.Skia.Linux.FrameBuffer.csproj" />
-    <None Include="Skia.WPF\App.config" />
     <None Include="Skia.WPF\app.manifest" />
     <None Include="Skia.WPF\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Skia.Gtk\Assets\Fonts\uno-fluentui-assets.ttf" />
