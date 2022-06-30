@@ -2,21 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Streams
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
-	public  partial class DataWriter : global::Windows.Storage.Streams.IDataWriter,global::System.IDisposable
+#endif
+	public partial class DataWriter : global::Windows.Storage.Streams.IDataWriter, global::System.IDisposable
 	{
 		// Skipping already declared property UnicodeEncoding
 		// Skipping already declared property ByteOrder
 		// Skipping already declared property UnstoredBufferLength
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public DataWriter( global::Windows.Storage.Streams.IOutputStream outputStream) 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "DataWriter.DataWriter(IOutputStream outputStream)");
-		}
-		#endif
 		// Forced skipping of method Windows.Storage.Streams.DataWriter.DataWriter(Windows.Storage.Streams.IOutputStream)
 		// Skipping already declared method Windows.Storage.Streams.DataWriter.DataWriter()
 		// Forced skipping of method Windows.Storage.Streams.DataWriter.DataWriter()
@@ -43,22 +36,23 @@ namespace Windows.Storage.Streams
 		// Skipping already declared method Windows.Storage.Streams.DataWriter.WriteTimeSpan(System.TimeSpan)
 		// Skipping already declared method Windows.Storage.Streams.DataWriter.WriteString(string)
 		// Skipping already declared method Windows.Storage.Streams.DataWriter.MeasureString(string)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.DataWriterStoreOperation StoreAsync()
-		{
-			throw new global::System.NotImplementedException("The member DataWriterStoreOperation DataWriter.StoreAsync() is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.Storage.Streams.DataWriter.StoreAsync
+		//#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		//		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		//		public  global::Windows.Storage.Streams.DataWriterStoreOperation StoreAsync()
+		//		{
+		//			throw new global::System.NotImplementedException("The member DataWriterStoreOperation DataWriter.StoreAsync() is not implemented in Uno.");
+		//		}
+		//		#endif
 		// Skipping already declared method Windows.Storage.Streams.DataWriter.FlushAsync()
 		// Skipping already declared method Windows.Storage.Streams.DataWriter.DetachBuffer()
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IOutputStream DetachStream()
+		public global::Windows.Storage.Streams.IOutputStream DetachStream()
 		{
 			throw new global::System.NotImplementedException("The member IOutputStream DataWriter.DetachStream() is not implemented in Uno.");
 		}
-		#endif
+#endif
 		// Skipping already declared method Windows.Storage.Streams.DataWriter.Dispose()
 		// Processing: Windows.Storage.Streams.IDataWriter
 		// Processing: System.IDisposable
