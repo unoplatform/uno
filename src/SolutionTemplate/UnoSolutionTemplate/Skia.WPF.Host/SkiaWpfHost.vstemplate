@@ -21,7 +21,6 @@
 		</Folder>
 	  </Folder>
 	  <Folder Name="Properties" TargetFolderName="Properties">
-		<ProjectItem TargetFileName="AssemblyInfo.cs" ReplaceParameters="true">assemblyinfo.cs</ProjectItem>
 		<ProjectItem TargetFileName="Resources.Designer.cs" ReplaceParameters="true">Resources.Designer.cs</ProjectItem>
 		<ProjectItem TargetFileName="Resources.resx" ReplaceParameters="true">Resources.resx</ProjectItem>
 		<ProjectItem TargetFileName="Settings.Designer.cs" ReplaceParameters="true">Settings.Designer.cs</ProjectItem>
