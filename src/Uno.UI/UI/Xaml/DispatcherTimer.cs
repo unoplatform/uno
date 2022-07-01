@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public TimeSpan Interval
 		{
-			get { return _interval; }
+			get => _interval;
 			set
 			{
 				if (_interval != value)
