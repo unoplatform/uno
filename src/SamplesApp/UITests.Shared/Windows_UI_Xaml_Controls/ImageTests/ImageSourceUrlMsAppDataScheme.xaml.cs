@@ -32,7 +32,10 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 
 		private async void ImageSourceUrlMsAppDataScheme_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{
-			await((ImageSourceUrlMsAppDataSchemeViewModel)DataContext).LoadAsync();
+			if (DataContext is ImageSourceUrlMsAppDataSchemeViewModel viewModel)
+			{
+				await viewModel.LoadAsync();
+			}			
 		}
 	}
 

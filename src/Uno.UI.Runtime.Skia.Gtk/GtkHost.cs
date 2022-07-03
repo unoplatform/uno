@@ -27,6 +27,12 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using UnoApplication = Windows.UI.Xaml.Application;
 using WUX = Windows.UI.Xaml;
+using Uno.UI.Runtime.Skia.GTK.System.Profile;
+using Uno.UI.Runtime.Skia.Helpers;
+using Uno.UI.Runtime.Skia.Helpers.Dpi;
+using System.Runtime.InteropServices;
+using System.ComponentModel;
+using Uno.Disposables;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -37,25 +43,46 @@ namespace Uno.UI.Runtime.Skia
 		[ThreadStatic]
 		private static bool _isDispatcherThread = false;
 
-		private readonly string[] _args;
 		private readonly Func<WUX.Application> _appBuilder;
 		private static Gtk.Window _window;
 		private static Gtk.EventBox _eventBox;
-		private UnoDrawingArea _area;
+		private Widget _area;
 		private Fixed _fix;
 		private GtkDisplayInformationExtension _displayInformationExtension;
+		private CompositeDisposable _registrations = new();
 
 		public static Gtk.Window Window => _window;
 		public static Gtk.EventBox EventBox => _eventBox;
 
-		public GtkHost(Func<WUX.Application> appBuilder, string[] args)
+		/// <summary>
+		/// Gets or sets the current Skia Render surface type.
+		/// </summary>
+		/// <remarks>If <c>null</c>, the host will try to determine the most compatible mode.</remarks>
+		public RenderSurfaceType? RenderSurfaceType { get; set; }
+
+        /// <summary>
+        /// Creates a host for a Uno Skia GTK application.
+        /// </summary>
+        /// <param name="appBuilder">App builder.</param>
+        /// <param name="args">Deprecated, value ignored.</param>
+        /// <remarks>
+        /// Args are obsolete and will be removed in the future. Environment.CommandLine is used instead
+        /// to fill LaunchEventArgs.Arguments.
+        /// </remarks>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+		public GtkHost(Func<WUX.Application> appBuilder, string[] args) : this(appBuilder)
 		{
-			_args = args;
+		}
+
+		public GtkHost(Func<WUX.Application> appBuilder)
+		{
 			_appBuilder = appBuilder;
 		}
 
 		public void Run()
 		{
+			Windows.UI.Xaml.Documents.Inline.ApplyHarfbuzzWorkaround();
+
 			Gtk.Application.Init();
 			SetupTheme();
 
@@ -74,7 +101,7 @@ namespace Uno.UI.Runtime.Skia
 			ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), o => new SystemNavigationManagerPreviewExtension(_window));
 
 			_isDispatcherThread = true;
-			_window = new Gtk.Window("Uno Host");
+			_window = new Gtk.Window(Windows.ApplicationModel.Package.Current.DisplayName);
 			Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 			if (preferredWindowSize != Size.Empty)
 			{
@@ -130,12 +157,17 @@ namespace Uno.UI.Runtime.Skia
 			var overlay = new Overlay();
 
 			_eventBox = new EventBox();
-			_area = new UnoDrawingArea();
+			_area = BuildRenderSurfaceType();
 			_fix = new Fixed();
 			overlay.Add(_area);
 			overlay.AddOverlay(_fix);
 			_eventBox.Add(overlay);
 			_window.Add(_eventBox);
+
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().Info($"Using {RenderSurfaceType} rendering");
+			}
 
 			_area.Realized += (s, e) =>
 			{
@@ -158,11 +190,39 @@ namespace Uno.UI.Runtime.Skia
 				app.Host = this;
 			}
 
-			WUX.Application.Start(CreateApp, _args);
+			WUX.Application.StartWithArguments(CreateApp);
+
+			RegisterForBackgroundColor();
 
 			UpdateWindowPropertiesFromPackage();
 
 			Gtk.Application.Run();
+		}
+
+		private void RegisterForBackgroundColor()
+		{
+			if (_area is IRenderSurface renderSurface)
+			{
+				void Update()
+				{
+					if (WUX.Window.Current.Background is WUX.Media.SolidColorBrush brush)
+					{
+						renderSurface.BackgroundColor = brush.Color;
+					}
+					else
+					{
+						if (this.Log().IsEnabled(LogLevel.Warning))
+						{
+							this.Log().Warn($"This platform only supports SolidColorBrush for the Window background");
+						}
+					}
+
+				}
+
+				Update();
+
+				_registrations.Add(WUX.Window.Current.RegisterBackgroundChangedEvent((s, e) => Update()));
+			}
 		}
 
 		private void WindowClosing(object sender, DeleteEventArgs args)
@@ -184,6 +244,38 @@ namespace Uno.UI.Runtime.Skia
 			// All prerequisites passed, can safely close.
 			args.RetVal = false;
 			Gtk.Main.Quit();
+		}
+
+		private Widget BuildRenderSurfaceType()
+		{
+			if(RenderSurfaceType == null)
+			{
+				if (OpenGLESRenderSurface.IsSupported)
+				{
+					RenderSurfaceType = Skia.RenderSurfaceType.OpenGLES;
+				}
+				else if (OpenGLRenderSurface.IsSupported)
+				{
+					RenderSurfaceType = Skia.RenderSurfaceType.OpenGL;
+				}
+				else
+				{
+					RenderSurfaceType = Skia.RenderSurfaceType.Software;
+				}
+			}
+
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().LogInfo($"Using {RenderSurfaceType} render surface");
+			}
+
+			return RenderSurfaceType switch
+			{
+				Skia.RenderSurfaceType.OpenGLES => new OpenGLESRenderSurface(),
+				Skia.RenderSurfaceType.OpenGL => new OpenGLRenderSurface(),
+				Skia.RenderSurfaceType.Software => new SoftwareRenderSurface(),
+				_ => throw new InvalidOperationException($"Unsupported RenderSurfaceType {RenderSurfaceType}")
+			};
 		}
 
 		private void OnWindowStateChanged(object o, WindowStateEventArgs args)
@@ -258,7 +350,10 @@ namespace Uno.UI.Runtime.Skia
 
 		public void TakeScreenshot(string filePath)
 		{
-			_area.TakeScreenshot(filePath);
+			if (_area is IRenderSurface renderSurface)
+			{
+				renderSurface.TakeScreenshot(filePath);
+			}
 		}
 
 		private void SetupTheme()

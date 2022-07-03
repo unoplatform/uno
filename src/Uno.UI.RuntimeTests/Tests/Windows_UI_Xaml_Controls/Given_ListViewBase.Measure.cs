@@ -23,6 +23,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public partial class Given_ListViewBase
 	{
 		[TestMethod]
+		[RunsOnUIThread]
 #if __IOS__ || __ANDROID__
 		[Ignore("ListView only supports HorizontalAlignment.Stretch - https://github.com/unoplatform/uno/issues/1133")]
 #endif
@@ -58,6 +59,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 #if __IOS__ || __ANDROID__
 		[Ignore("ListView only supports HorizontalAlignment.Stretch - https://github.com/unoplatform/uno/issues/1133")]
 #endif
@@ -100,6 +102,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __IOS__ || __ANDROID__
 		[Ignore("ListView only supports HorizontalAlignment.Stretch - https://github.com/unoplatform/uno/issues/1133")]
 #endif
+		[RunsOnUIThread]
 		public async Task When_Item_Margins()
 		{
 			var SUT = new ListView
@@ -119,6 +122,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_Item_Changes_Measure_Count()
 		{
 			var template = (DataTemplate)_testsResources["When_Item_Changes_Measure_Count_Template"];
@@ -159,6 +163,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_Available_Breadth_Changes()
 		{
 			var template = (DataTemplate)_testsResources["When_Available_Breadth_Changes_Template"];
@@ -193,6 +198,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_Item_Margins_And_Scrolled()
 		{
 			var SUT = new ListView
@@ -252,6 +258,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
+#if __WASM__
+		[Ignore("Test is flaky")]
+#endif
 		public async Task When_ItemsPresenter_MinHeight()
 		{
 			var SUT = new ListView
@@ -275,7 +285,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(container);
 			var initialRect = container.GetRelativeBounds(SUT);
 			const double HeightOfTwoItems = 29 * 2;
-			Assert.AreEqual(HeightOfTwoItems, initialRect.Y, 1);
+			Assert.AreEqual(HeightOfTwoItems, initialRect.Y, 1, "HeightOfTwoItems");
 
 			await Task.Delay(2000);
 			var sv = SUT.FindFirstChild<ScrollViewer>();
@@ -292,7 +302,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForEqual(40, InitialScroll);
 
 			var rectScrolledPartial = container.GetRelativeBounds(SUT);
-			Assert.AreEqual(HeightOfTwoItems - 40, rectScrolledPartial.Y, 1);
+			Assert.AreEqual(HeightOfTwoItems - 40, rectScrolledPartial.Y, 1, "HeightOfTwoItems - 40");
 
 			await ScrollByInIncrements(SUT, 200);
 			const double MaxPossibleScroll = 310 - 250;

@@ -143,13 +143,19 @@ namespace Windows.UI.Xaml
 				child.InvalidateMeasure();
 			}
 
-			if (child.IsArrangeDirty && !IsArrangeDirty)
+			if (IsArrangeDirtyPathDisabled)
 			{
-				InvalidateArrange();
+				FrameworkElementHelper.SetUseArrangePathDisabled(child); // will invalidate too
+			}
+			else
+			{
+				child.InvalidateArrange();
 			}
 
 			// Force a new measure of this element (the parent of the new child)
 			InvalidateMeasure();
+			InvalidateArrange();
+
 		}
 
 		internal void MoveChildTo(int oldIndex, int newIndex)
@@ -245,7 +251,7 @@ namespace Windows.UI.Xaml
 		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
 		{
 			LayoutSlotWithMarginsAndAlignments =
-				VisualTreeHelper.GetParent(this) is UIElement parent
+				VisualTreeHelper.GetParent(this) is UIElement parent && parent is not RootVisual
 					? finalRect.DeflateBy(parent.GetBorderThickness())
 					: finalRect;
 

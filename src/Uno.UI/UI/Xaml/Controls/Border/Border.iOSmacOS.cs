@@ -23,10 +23,23 @@ namespace Windows.UI.Xaml.Controls
 
 		public Border()
 		{
-			this.RegisterLoadActions(() => UpdateBorderLayer(), () => _borderRenderer.Clear());
 		}
 
-        partial void OnBorderBrushChangedPartial()
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+
+			UpdateBorderLayer();
+		}
+
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			_borderRenderer.Clear();
+		}
+
+		partial void OnBorderBrushChangedPartial()
 		{
 			UpdateBorderLayer();
 		}

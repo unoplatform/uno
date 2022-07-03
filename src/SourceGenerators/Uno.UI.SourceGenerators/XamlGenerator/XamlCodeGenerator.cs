@@ -7,6 +7,7 @@ using System.Net.Mime;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Uno.Roslyn;
+using Uno.UI.SourceGenerators.Helpers;
 using Uno.UI.SourceGenerators.Telemetry;
 
 #if NETFRAMEWORK
@@ -22,6 +23,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	public class XamlCodeGenerator : ISourceGenerator
 	{
 		private readonly GenerationRunInfoManager _generationRunInfoManager = new GenerationRunInfoManager();
+		private readonly object _gate = new();
 
 		public void Initialize(GeneratorInitializationContext context)
 		{
@@ -36,16 +38,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			//	Debugger.Launch();
 			//}
 
-			if (PlatformHelper.IsValidPlatform(context))
+			//
+			// Lock the current generator instance, as it may be invoked concurrently
+			// in the context of omnisharp when saving and editing fast enough, causing
+			// corruption issues in the GenerationRunInfoManager.
+			//
+			lock (_gate)
 			{
-				_generationRunInfoManager.Update(context);
-
-				var gen = new XamlCodeGeneration(context);
-				var genereratedTrees = gen.Generate(_generationRunInfoManager.CreateRun());
-
-				foreach (var tree in genereratedTrees)
+				if (PlatformHelper.IsValidPlatform(context))
 				{
-					context.AddSource(tree.Key, tree.Value);
+					_generationRunInfoManager.Update(context);
+
+					var gen = new XamlCodeGeneration(context);
+					var genereratedTrees = gen.Generate(_generationRunInfoManager.CreateRun());
+
+					foreach (var tree in genereratedTrees)
+					{
+						context.AddSource(tree.Key, tree.Value);
+					}
 				}
 			}
 		}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Uno.Disposables;
 using System.Text;
 using Windows.UI.Xaml.Input;
@@ -22,7 +23,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			public const string Pressed = "Pressed";
 			public const string OverSelected = "PointerOverSelected"; // "SelectedPointerOver" for ListBoxItem, ComboBoxItem and PivotHeaderItem
 			public const string PressedSelected = "PressedSelected"; // "SelectedPressed" for ListBoxItem, ComboBoxItem and PivotHeaderItem
-
 			// On ListViewItem and GridViewItem we also have this state declared in default style,
 			// however it seems to never been activated
 			// public const string OverPressed = "PointerOverPressed";
@@ -41,6 +41,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			End,
 			Clicked
 		}
+
+		private static readonly Stopwatch _chronometer = Stopwatch.StartNew();
 
 		/// <summary>
 		/// Delay time before setting the pressed state of an item to false, to allow time for the Pressed visual state to be drawn and perceived. 
@@ -66,7 +68,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private string _currentState;
 		private uint _goToStateRequest;
-		private DateTime _pauseStateUpdateUntil;
+		private TimeSpan _pauseStateUpdateUntil;
 		private bool _canRaiseClickOnPointerRelease;
 
 		public SelectorItem()
@@ -159,7 +161,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				_currentState = pressedState;
 				VisualStateManager.GoToState(this, pressedState, true);
 
-				_pauseStateUpdateUntil = DateTime.Now + MinTimeBetweenPressStates;
+				_pauseStateUpdateUntil = _chronometer.Elapsed + MinTimeBetweenPressStates;
 
 				delay = MinTimeBetweenPressStates;
 				pause = false;
@@ -174,7 +176,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 			else
 			{
-				delay = _pauseStateUpdateUntil - DateTime.Now;
+				delay = _pauseStateUpdateUntil - _chronometer.Elapsed;
 				pause = false;
 			}
 
@@ -205,7 +207,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (pause)
 					{
-						_pauseStateUpdateUntil = DateTime.Now + MinTimeBetweenPressStates;
+						_pauseStateUpdateUntil = _chronometer.Elapsed + MinTimeBetweenPressStates;
 					}
 				});
 			}
@@ -372,6 +374,18 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			base.OnPointerCaptureLost(args);
 			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.End);
+		}
+
+		protected override void OnGotFocus(RoutedEventArgs e)
+		{
+			base.OnGotFocus(e);
+			ChangeVisualState(true);
+		}
+
+		protected override void OnLostFocus(RoutedEventArgs e)
+		{
+			base.OnLostFocus(e);
+			ChangeVisualState(true);
 		}
 
 		private IDisposable InterceptSetNeedsLayout()

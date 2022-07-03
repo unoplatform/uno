@@ -3,7 +3,7 @@
 namespace Windows.Media.Playback
 {
 	#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-	[global::Uno.NotImplemented]
+	[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	#endif
 	public  partial class MediaPlaybackSession 
 	{

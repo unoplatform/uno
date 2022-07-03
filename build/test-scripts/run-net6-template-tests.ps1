@@ -26,11 +26,11 @@ $dotnetBuildConfigurations =
     @("Wasm", ""),
     @("Skia.Gtk", ""),
     @("Skia.Linux.FrameBuffer", ""),
-    @("Skia.WPF.Host", "")
+    @("Skia.WPF", "")
 )
 
 # Debug Config
-dotnet new unoapp-net6 -n UnoAppAll
+dotnet new unoapp-uwp-net6 -n UnoAppAll
 
 pushd UnoAppAll
 
@@ -65,11 +65,11 @@ $dotnetBuildNet6Configurations =
     @("Wasm", ""),
     @("Skia.Gtk", ""),
     @("Skia.Linux.FrameBuffer", ""),
-    @("Skia.WPF.Host", "")
+    @("Skia.WPF", "")
 )
 
 # WinUI - Default
-dotnet new unoapp-winui-net6 -n UnoAppWinUI
+dotnet new unoapp -n UnoAppWinUI
 
 pushd UnoAppWinUI
 for($i = 0; $i -lt $dotnetBuildNet6Configurations.Length; $i++)
@@ -86,6 +86,13 @@ Assert-ExitCodeIsZero
 popd
 
 # XAML Trimming build smoke test
-dotnet new unoapp-net6 -n MyAppXamlTrim
+dotnet new unoapp-uwp-net6 -n MyAppXamlTrim
+
+dotnet publish -c Debug -r win-x64 -p:PublishTrimmed=true -p:SelfContained=true -p:UnoXamlResourcesTrimming=true MyAppXamlTrim\MyAppXamlTrim.Skia.Gtk\MyAppXamlTrim.Skia.Gtk.csproj
+Assert-ExitCodeIsZero
+
+dotnet run -c Debug --project src\Uno.XamlTrimmingValidator\Uno.XamlTrimmingValidator.csproj -- --hints-file=build\assets\MyAppXamlTrim-hints.txt --target-assembly=MyAppXamlTrim\MyAppXamlTrim.Skia.Gtk\bin\Debug\net6.0\win-x64\publish\Uno.UI.dll
+Assert-ExitCodeIsZero
+
 & dotnet build -c Debug MyAppXamlTrim\MyAppXamlTrim.Wasm\MyAppXamlTrim.Wasm.csproj /p:UnoXamlResourcesTrimming=true
 Assert-ExitCodeIsZero

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -29,6 +29,8 @@ using Uno.UI.RuntimeTests.Helpers;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Data;
 using Uno.UI.RuntimeTests.Extensions;
+using Windows.UI.Xaml.Input;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -43,6 +45,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private Style ContainerMarginStyle => _testsResources["ListViewContainerMarginStyle"] as Style;
 
 		private Style NoSpaceContainerStyle => _testsResources["NoExtraSpaceListViewContainerStyle"] as Style;
+
+		private Style FocusableContainerStyle => _testsResources["FocusableListViewItemStyle"] as Style;
 
 		private DataTemplate TextBlockItemTemplate => _testsResources["TextBlockItemTemplate"] as DataTemplate;
 
@@ -133,6 +137,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var containerItem = SUT.ContainerFromItem("different");
 			Assert.AreEqual(container0, containerItem);
 		}
+
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task ContainerIndicesAreUpdated_OnRemoveAndAdd()
+		{
+			var source = new ObservableCollection<string>(Enumerable.Range(0, 5).Select(i => $"Item #{i}"));
+			var SUT = new ListView { ItemsSource = source };
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
+
+			SUT.MaterializedContainers.Should().HaveCount(5);
+
+			var originalIndicies = SUT.MaterializedContainers
+				.Select(container => (
+					item: (container as ContentControl)?.Content?.ToString(),
+					index: container.GetValue(ItemsControl.IndexForItemContainerProperty)))
+				.OrderBy(entry => entry.index)
+				.ToArray();
+
+			var item2 = source[2];
+			source.RemoveAt(2);
+			source.Insert(3, item2);
+
+			// Note: we don't let the LV the opportunity to be measured, indices should have been updated right away.
+			var updatedIndices = SUT.MaterializedContainers
+				.Select(container => (
+					item: (container as ContentControl)?.Content?.ToString(),
+					index: container.GetValue(ItemsControl.IndexForItemContainerProperty)))
+				.OrderBy(entry => entry.index)
+				.ToArray();
+
+			originalIndicies.Should().BeEquivalentTo(new (object item, int index)[]
+			{
+				("Item #0", 0),
+				("Item #1", 1),
+				("Item #2", 2),
+				("Item #3", 3),
+				("Item #4", 4),
+			});
+
+			updatedIndices.Should().BeEquivalentTo(new (object item, int index)[]
+			{
+				("Item #0", 0),
+				("Item #1", 1),
+				("Item #3", 2),
+				("Item #2", 3),
+				("Item #4", 4),
+			});
+		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -583,6 +641,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_CollectionViewSource_In_Xaml()
 		{
 			var page = new ListViewCollectionViewSourcePage();
@@ -679,9 +738,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __IOS__
-		[Ignore("Test is flaky on iOS")]
+#if __NETSTD__
+		[Ignore("This test is flaky on netstd platforms")]
 #endif
+		[RunsOnUIThread]
 		public async Task When_Scrolled_To_End_And_Last_Item_Removed()
 		{
 			var container = new Grid { Height = 210 };
@@ -714,6 +774,282 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForEqual(181, () => GetTop(list.ContainerFromItem(18) as ListViewItem, container), tolerance: 2);
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+#if __IOS__ || __ANDROID__
+		[Ignore("Disabled because of animated scrolling, even when explicitly requested.")]
+#endif
+		public async Task When_SmallExtent_And_Large_List_Scroll_To_End_Full_Size()
+		{
+			var materialized = 0;
+			var container = new Grid { Height = 100, Width=100 };
+
+			var list = new ListView
+			{
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = new DataTemplate(() => {
+
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+					var border = new Border() {
+						Height = 100,
+						Child = tb
+					};
+
+					materialized++;
+
+					return border;
+				})
+			};
+			container.Children.Add(list);
+
+			var source = new ObservableCollection<int>(Enumerable.Range(0, 50));
+			list.ItemsSource = source;
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForIdle();
+
+			ScrollBy(list, 1000000); // Scroll to end
+
+			await WindowHelper.WaitForIdle();
+
+			materialized.Should().BeLessThan(5);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __IOS__ || __ANDROID__
+		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
+#endif
+		public async Task When_SmallExtent_And_Large_List_Scroll_To_End_Half_Size()
+		{
+			var materialized = 0;
+			var container = new Grid { Height = 100, Width = 100 };
+
+			var list = new ListView
+			{
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = new DataTemplate(() => {
+
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+					var border = new Border()
+					{
+						Height = 50,
+						Child = tb
+					};
+
+					materialized++;
+
+					return border;
+				})
+			};
+			container.Children.Add(list);
+
+			var source = new ObservableCollection<int>(Enumerable.Range(0, 50));
+			list.ItemsSource = source;
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForIdle();
+
+			ScrollBy(list, 1000000); // Scroll to end
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(4, materialized);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __IOS__ || __ANDROID__
+		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
+#endif
+		public async Task When_SmallExtent_And_Large_List_Scroll_To_End_And_Back_Half_Size()
+		{
+			var materialized = 0;
+			var dataContextChanged = 0;
+			var container = new Grid { Height = 100, Width = 100 };
+
+			var list = new ListView
+			{
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = new DataTemplate(() => {
+
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+					var border = new Border()
+					{
+						Height = 50,
+						Child = tb
+					};
+					tb.RegisterPropertyChangedCallback(FrameworkElement.DataContextProperty, (s, e) => dataContextChanged++);
+
+					materialized++;
+
+					return border;
+				})
+			};
+			container.Children.Add(list);
+
+			var source = new ObservableCollection<int>(Enumerable.Range(0, 50));
+			list.ItemsSource = source;
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForIdle();
+
+			using var scope = new AssertionScope();
+
+			var scroll = list.FindFirstChild<ScrollViewer>();
+			Assert.IsNotNull(scroll);
+
+			dataContextChanged.Should().BeLessThan(5, $"dataContextChanged {dataContextChanged}");
+
+			ScrollBy(list, scroll.ExtentHeight / 2); // Scroll to middle
+
+			await WindowHelper.WaitForIdle();
+
+			materialized.Should().BeLessThan(8, $"materialized {materialized}");
+			dataContextChanged.Should().BeLessThan(10, $"dataContextChanged {dataContextChanged}");
+
+			ScrollBy(list, scroll.ExtentHeight / 4); // Scroll to Quarter
+
+			await WindowHelper.WaitForIdle();
+
+			materialized.Should().BeLessThan(8, $"materialized {materialized}");
+			dataContextChanged.Should().BeLessThan(15, $"dataContextChanged {dataContextChanged}");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __IOS__ || __ANDROID__
+		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
+#endif
+		public async Task When_SmallExtent_And_Very_Large_List_Scroll_To_End_And_Back_Half_Size()
+		{
+			var materialized = 0;
+			var container = new Grid { Height = 100, Width = 100 };
+
+			var list = new ListView
+			{
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = new DataTemplate(() => {
+
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+					var border = new Border()
+					{
+						Height = 50,
+						Child = tb
+					};
+
+					materialized++;
+
+					return border;
+				})
+			};
+			container.Children.Add(list);
+
+			var source = new ObservableCollection<int>(Enumerable.Range(0, 500));
+			list.ItemsSource = source;
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForIdle();
+
+			using var scope = new AssertionScope();
+
+			var scroll = list.FindFirstChild<ScrollViewer>();
+			Assert.IsNotNull(scroll);
+
+			ScrollBy(list, scroll.ExtentHeight / 2); // Scroll to middle
+
+			await WindowHelper.WaitForIdle();
+
+			materialized.Should().BeLessThan(10, $"materialized {materialized}");
+
+			ScrollBy(list, scroll.ExtentHeight / 4); // Scroll to Quarter
+
+			await WindowHelper.WaitForIdle();
+
+			materialized.Should().BeLessThan(10, $"materialized {materialized}");
+		}
+
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __IOS__ || __ANDROID__
+		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
+#endif
+		public async Task When_LargeExtent_And_Very_Large_List_Scroll_To_End_And_Back_Half_Size()
+		{
+			const int ElementHeight = 50;
+			var materialized = 0;
+			var dataContextChanged = 0;
+			var container = new Grid { Height = 300, Width = 300 };
+
+			var list = new ListView
+			{
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = new DataTemplate(() => {
+
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+					var border = new Border()
+					{
+						Height = ElementHeight,
+						Child = tb
+					};
+					tb.RegisterPropertyChangedCallback(FrameworkElement.DataContextProperty, (s, e) => dataContextChanged++);
+
+					materialized++;
+
+					return border;
+				})
+			};
+			container.Children.Add(list);
+
+			var source = new ObservableCollection<int>(Enumerable.Range(0, 500));
+			list.ItemsSource = source;
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForIdle();
+
+			using var scope = new AssertionScope();
+
+			var scroll = list.FindFirstChild<ScrollViewer>();
+			Assert.IsNotNull(scroll);
+			dataContextChanged.Should().BeLessThan(10, $"dataContextChanged {dataContextChanged}");
+
+			ScrollBy(list, ElementHeight);
+
+			await WindowHelper.WaitForIdle();
+
+			materialized.Should().BeLessThan(12, $"materialized {materialized}");
+			dataContextChanged.Should().BeLessThan(11, $"dataContextChanged {dataContextChanged}");
+
+			ScrollBy(list, ElementHeight * 3);
+
+			await WindowHelper.WaitForIdle();
+
+			materialized.Should().BeLessThan(14, $"materialized {materialized}");
+			dataContextChanged.Should().BeLessThan(13, $"dataContextChanged {dataContextChanged}");
+
+			ScrollBy(list, scroll.ExtentHeight / 2); // Scroll to middle
+
+			await WindowHelper.WaitForIdle();
+
+			materialized.Should().BeLessThan(14, $"materialized {materialized}");
+			dataContextChanged.Should().BeLessThan(25, $"dataContextChanged {dataContextChanged}");
+
+			ScrollBy(list, scroll.ExtentHeight / 4); // Scroll to Quarter
+
+			await WindowHelper.WaitForIdle();
+
+			materialized.Should().BeLessThan(14, $"materialized {materialized}");
+			dataContextChanged.Should().BeLessThan(35, $"dataContextChanged {dataContextChanged}");
+		}
+#endif
 
 		private static double GetTop(FrameworkElement element, FrameworkElement container)
 		{
@@ -808,7 +1144,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = list;
 			await WindowHelper.WaitForLoaded(list);
 			await WindowHelper.WaitFor(() => GetPanelChildren(list).Length == 1);
-		
+
 			Assert.AreEqual(list, ItemsControl.ItemsControlFromItemContainer(item));
 		}
 
@@ -816,7 +1152,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_Not_Own_Container_ContainerFromItem_Owner()
 		{
-			var list = new ListView();			
+			var list = new ListView();
 			var items = new ObservableCollection<int>()
 			{
 				1,
@@ -1899,11 +2235,216 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if __SKIA__ || __WASM__
+		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
+		public async Task When_Focus_Tab()
+		{
+			var stack = new StackPanel();
+			stack.Children.Add(new Button() { Content = "Before" });
+			var SUT = new ListView()
+			{
+				TabNavigation = KeyboardNavigationMode.Local,
+				Height = 400,
+				ItemContainerStyle = FocusableContainerStyle,
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+			stack.Children.Add(SUT);
+			stack.Children.Add(new Button() { Content = "After" });
+
+			var item1 = new ListViewItem() { Content = "item 1" };
+			var item2 = new ListViewItem() { Content = "item 2" };
+
+			SUT.Items.Add(item1);
+			SUT.Items.Add(item2);
+
+			WindowHelper.WindowContent = stack;
+
+			await WindowHelper.WaitForIdle();
+
+			item1.Focus(FocusState.Keyboard);
+			var success = FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
+			Assert.IsTrue(success);
+
+			var focused = FocusManager.GetFocusedElement();
+			Assert.AreEqual(item2, focused);
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
+		public async Task When_Focus_Shift_Tab()
+		{
+			var stack = new StackPanel();
+			stack.Children.Add(new Button() { Content = "Before" });
+			var SUT = new ListView()
+			{
+				TabNavigation = KeyboardNavigationMode.Local,
+				Height = 400,
+				ItemContainerStyle = FocusableContainerStyle,
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+			stack.Children.Add(SUT);
+			stack.Children.Add(new Button() { Content = "After" });
+
+			var item1 = new ListViewItem() { Content = "item 1" };
+			var item2 = new ListViewItem() { Content = "item 2" };
+
+			SUT.Items.Add(item1);
+			SUT.Items.Add(item2);
+
+			WindowHelper.WindowContent = stack;
+
+			await WindowHelper.WaitForIdle();
+
+			item2.Focus(FocusState.Keyboard);
+			var success = FocusManager.TryMoveFocus(FocusNavigationDirection.Previous);
+			Assert.IsTrue(success);
+
+			var focused = FocusManager.GetFocusedElement();
+			Assert.AreEqual(item1, focused);
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
+		public async Task When_Item_Focus_VisualState()
+		{
+			var SUT = new ListView()
+			{
+				TabNavigation = KeyboardNavigationMode.Local,
+				Height = 400,
+				ItemContainerStyle = FocusableContainerStyle,
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+			var item1 = new ListViewItem() { Content = "item 1" };
+			SUT.Items.Add(item1);
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+
+			item1.Focus(FocusState.Keyboard);
+			VisualState state = null;
+			await WindowHelper.WaitForNonNull(() => state = VisualStateManager.GetCurrentState(item1, "FocusStates"));
+
+			Assert.AreEqual("Focused", state?.Name);
+		}
+#endif
+
+		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
+		public async Task When_Incremental_Load()
+		{
+			const int BatchSize = 25;
+
+			// setup
+			var container = new Grid { Height = 210, VerticalAlignment = VerticalAlignment.Bottom };
+
+			var list = new ListView
+			{
+				ItemContainerStyle = BasicContainerStyle,
+				ItemTemplate = FixedSizeItemTemplate // height=29
+			};
+			container.Children.Add(list);
+
+			var source = new InfiniteSource<int>(async start =>
+			{
+				await Task.Delay(25);
+				return Enumerable.Range(start, BatchSize).ToArray();
+			});
+			list.ItemsSource = source;
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(list);
+			await Task.Delay(1000);
+			var initial = GetCurrenState();
+
+			// scroll to bottom
+			ScrollBy(list, 10000);
+			await Task.Delay(500);
+			await WindowHelper.WaitForIdle();
+			var firstScroll = GetCurrenState();
+
+			// scroll to bottom
+			ScrollBy(list, 10000);
+			await Task.Delay(500);
+			await WindowHelper.WaitForIdle();
+			var secondScroll = GetCurrenState();
+
+			Assert.AreEqual(BatchSize * 1, initial.LastLoaded, "Should start with first batch loaded.");
+			Assert.AreEqual(BatchSize * 2, firstScroll.LastLoaded, "Should have 2 batches loaded after first scroll.");
+			Assert.IsTrue(initial.LastMaterialized < firstScroll.LastMaterialized, "No extra item materialized after first scroll.");
+			Assert.AreEqual(BatchSize * 3, secondScroll.LastLoaded, "Should have 3 batches loaded after second scroll.");
+			Assert.IsTrue(firstScroll.LastMaterialized < secondScroll.LastMaterialized, "No extra item materialized after second scroll.");
+
+			(int LastLoaded, int LastMaterialized) GetCurrenState() =>
+			(
+				source.LastIndex,
+				Enumerable.Range(0, source.LastIndex).Reverse().FirstOrDefault(x => list.ContainerFromIndex(x) != null)
+			);
+		}
+
+		[TestMethod]
+		public async Task When_Incremental_Load_ShouldStop()
+		{
+			const int BatchSize = 25;
+
+			// setup
+			var container = new Grid { Height = 210, VerticalAlignment = VerticalAlignment.Bottom };
+
+			var list = new ListView
+			{
+				ItemContainerStyle = BasicContainerStyle,
+				ItemTemplate = FixedSizeItemTemplate // height=29
+			};
+			container.Children.Add(list);
+
+			var source = new InfiniteSource<int>(async start =>
+			{
+				await Task.Delay(25);
+				return Enumerable.Range(start, BatchSize).ToArray();
+			});
+			list.ItemsSource = source;
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(list);
+			await Task.Delay(1000);
+			var initial = GetCurrenState();
+
+			// scroll to bottom
+			ScrollBy(list, 10000);
+			await Task.Delay(500);
+			await WindowHelper.WaitForIdle();
+			var firstScroll = GetCurrenState();
+
+			// Has'No'MoreItems
+			source.HasMoreItems = false;
+
+			// scroll to bottom
+			ScrollBy(list, 10000);
+			await Task.Delay(500);
+			await WindowHelper.WaitForIdle();
+			var secondScroll = GetCurrenState();
+
+			Assert.AreEqual(BatchSize * 1, initial.LastLoaded, "Should start with first batch loaded.");
+			Assert.AreEqual(BatchSize * 2, firstScroll.LastLoaded, "Should have 2 batches loaded after first scroll.");
+			Assert.IsTrue(initial.LastMaterialized < firstScroll.LastMaterialized, "No extra item materialized after first scroll.");
+			Assert.AreEqual(BatchSize * 2, secondScroll.LastLoaded, "Should still have 2 batches loaded after first scroll since HasMoreItems was false.");
+			Assert.AreEqual(BatchSize * 2 - 1, secondScroll.LastMaterialized, "Last materialized item should be the last from 2nd batch (50th/index=49).");
+
+			(int LastLoaded, int LastMaterialized) GetCurrenState() =>
+			(
+				source.LastIndex,
+				Enumerable.Range(0, source.LastIndex).Reverse().FirstOrDefault(x => list.ContainerFromIndex(x) != null)
+			);
+		}
+
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
 
-
-
-		#region Helper classes
+#region Helper classes
 		private class When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext : System.ComponentModel.INotifyPropertyChanged
 		{
 			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
@@ -1930,23 +2471,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
-			#region SelectedItem
+#region SelectedItem
 			private object _selectedItem;
 			public object SelectedItem
 			{
 				get => _selectedItem;
 				set => RaiseAndSetIfChanged(ref _selectedItem, value);
 			}
-			#endregion
-			#region SelectedValue
+#endregion
+#region SelectedValue
 			private object _selectedValue;
 			public object SelectedValue
 			{
 				get => _selectedValue;
 				set => RaiseAndSetIfChanged(ref _selectedValue, value);
 			}
-			#endregion
-			#region SelectedIndex
+#endregion
+#region SelectedIndex
 			private int _selectedIndex;
 
 			public int SelectedIndex
@@ -1954,7 +2495,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				get => _selectedIndex;
 				set => RaiseAndSetIfChanged(ref _selectedIndex, value);
 			}
-			#endregion
+#endregion
 
 			protected void RaiseAndSetIfChanged<T>(ref T backingField, T value, [CallerMemberName] string propertyName = null)
 			{
@@ -1985,8 +2526,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			}
 		}
+#endregion
 	}
 
+#region Helper classes
 	public partial class OnItemsChangedListView : ListView
 	{
 		public Action ItemsChangedAction = null;
@@ -2148,5 +2691,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 	}
-	#endregion
+
+	public class InfiniteSource<T> : ObservableCollection<T>, ISupportIncrementalLoading
+	{
+		public delegate Task<T[]> AsyncFetch(int start);
+		public delegate T[] Fetch(int start);
+
+		private readonly AsyncFetch _fetchAsync;
+		private int _start;
+
+		public InfiniteSource(AsyncFetch fetch)
+		{
+			_fetchAsync = fetch;
+			_start = 0;
+		}
+
+		public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
+		{
+			return AsyncInfo.Run(async ct =>
+			{
+				var items = await _fetchAsync(_start);
+				foreach (var item in items)
+				{
+					Add(item);
+				}
+				_start += items.Length;
+
+				return new LoadMoreItemsResult { Count = count };
+			});
+		}
+
+		public bool HasMoreItems { get; set; } = true;
+
+		public int LastIndex => _start;
+	}
+#endregion
 }

@@ -6,7 +6,7 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.ImageIconTests
 {
-	[Sample("IconElement")]
+	[Sample("Icons")]
     public sealed partial class ImageIconPage : Page
     {
         public ImageIconPage()

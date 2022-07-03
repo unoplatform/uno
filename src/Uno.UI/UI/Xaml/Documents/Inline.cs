@@ -8,16 +8,16 @@ namespace Windows.UI.Xaml.Documents
 {
 	public abstract partial class Inline : TextElement
 	{
-		internal void InvalidateInlines()
+		internal void InvalidateInlines(bool updateText)
 		{
 #if !NET461
 			switch (this.GetParent())
 			{
 				case Span span:
-					span.InvalidateInlines();
+					span.InvalidateInlines(updateText);
 					break;
 				case TextBlock textBlock:
-					textBlock.InvalidateInlines();
+					textBlock.InvalidateInlines(updateText);
 					break;
 				default:
 					break;

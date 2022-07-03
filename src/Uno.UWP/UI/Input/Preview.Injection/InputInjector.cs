@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Windows.Devices.Input;
+using Windows.Foundation;
 using Windows.UI.Core;
+using Uno.Extensions.Specialized;
 
 namespace Windows.UI.Input.Preview.Injection;
 
@@ -22,6 +24,11 @@ public partial class InputInjector
 
 	private readonly InjectedInputState _mouse = new(PointerDeviceType.Mouse);
 	private (InjectedInputState state, bool isAdded)? _touch;
+
+	/// <summary>
+	/// Gets the current state of the mouse pointer
+	/// </summary>
+	internal InjectedInputState Mouse => _mouse;
 
 	private InputInjector(CoreWindow window)
 	{

@@ -15,6 +15,9 @@ using Uno.SourceGeneration;
 namespace Uno.UI.SourceGenerators.NativeCtor
 {
 	[Generator]
+#if NETFRAMEWORK
+	[GenerateAfter("Uno.UI.SourceGenerators.XamlGenerator." + nameof(XamlGenerator.XamlCodeGenerator))]
+#endif
 	public class NativeCtorsGenerator : ISourceGenerator
 	{
 		public void Initialize(GeneratorInitializationContext context)
@@ -24,7 +27,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 
 		public void Execute(GeneratorExecutionContext context)
 		{
-			if (!DesignTimeHelper.IsDesignTime(context))
+			if (!DesignTimeHelper.IsDesignTime(context) && PlatformHelper.IsValidPlatform(context))
 			{
 
 				var visitor = new SerializationMethodsGenerator(context);

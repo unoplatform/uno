@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using Windows.UI.Xaml.Controls;
 
@@ -13,6 +14,22 @@ namespace Windows.UI.Xaml.Documents
 		internal InlineCollection(UIElement containerElement)
 		{
 			_collection = new UIElementCollection(containerElement);
+			_collection.CollectionChanged += OnCollectionChanged;
+		}
+
+		private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			switch (_collection.Owner)
+			{
+				case TextBlock textBlock:
+					textBlock.InvalidateInlines(true);
+					break;
+				case Inline inline:
+					inline.InvalidateInlines(true);
+					break;
+				default:
+					break;
+			}
 		}
 
 		/// <inheritdoc />

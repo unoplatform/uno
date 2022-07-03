@@ -132,16 +132,21 @@ This guide will walk you through the necessary steps for changing app language a
         private void GotoNextPage(object sender, RoutedEventArgs e) => Frame.Navigate(typeof(Page1));
         private void GotoLanguageSettings(object sender, RoutedEventArgs e) => Frame.Navigate(typeof(LanguageSettings));
         ```
+1. Add a new folder fr under the Strings folder by: Right-click on String > Add > New Folder
+
+1. Add a new resource file Resources.resw under the fr folder by: Right-click on fr > Add > New Item ... > Visual C# > Xaml > Resources File
+
 1. Add the localization strings for the new elements:
-    Open both `Strings\en\Resources.resw` and `Strings\fr\Resources.xaml`, and add these:
-    Name|Value in en\Resources.resw|Value in fr\Resources.resw
-    -|-|-
-    MainPage_GotoNextPage.Content|Next Page|Page suivante
-    MainPage_GotoLanguageSettings.Content|Language Settings|Paramètres de langue
-    Page1_Title.Text|Page in english|Page en français
-    Page1_GoBack.Content|Go back|Retourner
-    LanguageSettings_Title.Text|Language Settings|Paramètres de langue
-    LanguageSettings_GoBack.Content|Go back|Retourner
+    Open both `Strings\en\Resources.resw` and `Strings\fr\Resources.resw`, and add these:
+
+    |Name|Value in en\Resources.resw|Value in fr\Resources.resw|
+    |-|-|-|
+    |MainPage_GotoNextPage.Content|Next Page|Page suivante|
+    |MainPage_GotoLanguageSettings.Content|Language Settings|Paramètres de langue|
+    |Page1_Title.Text|Page in english|Page en français
+    |Page1_GoBack.Content|Go back|Retourner|
+    |LanguageSettings_Title.Text|Language Settings|Paramètres de langue|
+    |LanguageSettings_GoBack.Content|Go back|Retourner|
 
 ## Get the complete code
 
@@ -154,10 +159,4 @@ https://docs.microsoft.com/en-us/windows/uwp/design/globalizing/globalizing-port
 
 ***
 
-## Help! I'm having trouble
-
-> [!TIP]
-> If you ran into difficulties with any part of this guide, you can:
->
-> * Ask for help on our [Discord channel](https://www.platform.uno/discord) - #uno-platform
-> * Ask a question on [Stack Overflow](https://stackoverflow.com/questions/tagged/uno-platform) with the 'uno-platform' tag
+[!include[getting-help](getting-help.md)]

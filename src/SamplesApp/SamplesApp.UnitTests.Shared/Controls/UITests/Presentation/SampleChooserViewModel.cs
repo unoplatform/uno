@@ -74,6 +74,7 @@ namespace SampleControl.Presentation
 
 		private Section _lastSection = Section.Library;
 		private readonly Stack<Section> _previousSections = new Stack<Section>();
+		private bool _isRecordAllTests = false;
 
 		// A static instance used during UI Testing automation
 		public static SampleChooserViewModel Instance { get; private set; }
@@ -267,6 +268,7 @@ namespace SampleControl.Presentation
 		{
 			try
 			{
+				_isRecordAllTests = true;
 				IsSplitVisible = false;
 
 				var folderName = Path.Combine(screenShotPath, "UITests-" + DateTime.Now.ToString("yyyyMMdd-hhmmssfff", CultureInfo.InvariantCulture));
@@ -277,7 +279,12 @@ namespace SampleControl.Presentation
 					CoreDispatcherPriority.Normal,
 					async () =>
 					{
-						await RecordAllTestsInner(folderName, ct, doneAction);
+						try {
+						  await RecordAllTestsInner(folderName, ct, doneAction);
+						}
+						finally {
+						  _isRecordAllTests = false;
+						}
 					});
 			}
 			catch (Exception e)
@@ -336,7 +343,7 @@ namespace SampleControl.Presentation
 						var activeStats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats();
 #endif
 
-						var fileName = $"{sample.Category.Category}-{sample.Sample.ControlName}.png";
+						var fileName = $"{SanitizeScreenshotFileName(sample.Category.Category + "-" + sample.Sample.ControlName)}.png";
 
 						try
 						{
@@ -418,6 +425,13 @@ namespace SampleControl.Presentation
 			}
 		}
 
+		private object SanitizeScreenshotFileName(string fileName) =>
+			fileName
+				.Replace(":", "_")
+				.Replace("/", "_")
+				.Replace("\\", "_")
+				.Replace("\\", "_");
+
 		internal async Task OpenRuntimeTests(CancellationToken ct)
 		{
 			IsSplitVisible = false;
@@ -467,6 +481,10 @@ namespace SampleControl.Presentation
 
 				void Update(SampleChooserContent newContent)
 				{
+					if (_isRecordAllTests)
+					{
+						return;
+					}
 					var unused = Window.Current.Dispatcher.RunAsync(
 						CoreDispatcherPriority.Normal,
 						async () =>

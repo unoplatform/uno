@@ -18,7 +18,7 @@ using System.Globalization;
 
 namespace Uno.UI.Samples.Content.UITests.DeferLoadStrategy
 {
-	[SampleControlInfo("DeferLoadStrategy", "SimpleDeferLoadStrategy", typeof(Presentation.SamplePages.DeferLoadStrategyViewModel))]
+	[SampleControlInfo("XAML", "SimpleDeferLoadStrategy", typeof(Presentation.SamplePages.DeferLoadStrategyViewModel))]
 	public sealed partial class SimpleDeferLoadStrategy : UserControl
 	{
 		public SimpleDeferLoadStrategy()

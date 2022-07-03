@@ -30,35 +30,7 @@ namespace Windows.UI.Xaml.Controls
 		#region SCP to Native SCP
 		private Thickness _oldNativePadding;
 		private Thickness _occludedRectPadding;
-
-		public Rect MakeVisible(UIElement visual, Rect rectangle)
-		{
-			// NOTE: We should re-use the computation of the offsets and then use the Set
-
-			if (visual is FrameworkElement fe && !(Native is null))
-			{
-				var scrollRect = new Rect(
-					_occludedRectPadding.Left,
-					_occludedRectPadding.Top,
-					ActualWidth - _occludedRectPadding.Right,
-					ActualHeight - _occludedRectPadding.Bottom
-				);
-
-				var visualPoint = UIElement.TransformToVisual(visual, this).TransformPoint(new Point());
-				var visualRect = new Rect(visualPoint, new Size(fe.ActualWidth, fe.ActualHeight));
-
-				var deltaX = Math.Min(visualRect.Left - scrollRect.Left, Math.Max(0, visualRect.Right - scrollRect.Right));
-				var deltaY = Math.Min(visualRect.Top - scrollRect.Top, Math.Max(0, visualRect.Bottom - scrollRect.Bottom));
-
-				Native.SmoothScrollBy(
-					ViewHelper.LogicalToPhysicalPixels(deltaX),
-					ViewHelper.LogicalToPhysicalPixels(deltaY)
-				);
-			}
-
-			return rectangle;
-		}
-
+		
 		internal IDisposable Pad(Rect occludedRect)
 		{
 			var viewPortPoint = UIElement.TransformToVisual(this, null).TransformPoint(new Point());

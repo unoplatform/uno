@@ -34,6 +34,12 @@ namespace Windows.UI.Xaml
 			get => false; // Not implemented on macOS yet
 		}
 
+		internal bool IsArrangeDirtyPath
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => false; // Not implemented on macOS yet
+		}
+
 		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
@@ -256,18 +262,20 @@ namespace Windows.UI.Xaml
 			{
 				if (!ClippingIsSetByCornerRadius)
 				{
-					if (Layer != null)
+					var emptyClipLayer = Layer;
+					if (emptyClipLayer != null)
 					{
-						this.Layer.Mask = null;
+						emptyClipLayer.Mask = null;
 					}
 				}
 				return;
 			}
 
 			WantsLayer = true;
-			if (Layer != null)
+			var layer = Layer;
+			if (layer != null)
 			{
-				this.Layer.Mask = new CAShapeLayer
+				layer.Mask = new CAShapeLayer
 				{
 					Path = CGPath.FromRect(rect.ToCGRect())
 				};

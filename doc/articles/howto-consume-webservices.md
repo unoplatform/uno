@@ -38,7 +38,7 @@ In this task you will create a simple Single Page App with the Uno Platform. Thi
 
     ![Visual Studio new project dialog searching for Uno](Assets/how-to-webservice/newproject2.PNG)
 
-1. In the filtered list of templates, select **Cross-Platform App (Uno Platform)** and then click **Next**.
+1. In the filtered list of templates, select **Uno Platform App** and then click **Next**.
 
 1. In the **Configure your new project** window, set the **Project name** to **TheCatApiClient**, choose where you would like to save your project and click the **Create** button.
 
@@ -257,7 +257,7 @@ The primary objective of this tutorial is to demonstrate how to implement a REST
     using System;
     using System.Text.Json.Serialization;
 
-    namespace TheCatApiClient.Shared.Models.DataModels
+    namespace TheCatApiClient.Models.DataModels
     {
         public partial class Breed
         {
@@ -305,7 +305,7 @@ In this task, you will create a number of classes that demonstrate how to use th
     using System.Threading.Tasks;
     using Uno.Extensions.Specialized;
 
-    namespace TheCatApiClient.Shared.WebServices
+    namespace TheCatApiClient.WebServices
     {
         public abstract class WebApiBase
         {
@@ -346,17 +346,9 @@ In this task, you will create a number of classes that demonstrate how to use th
     // Insert static constructor below here
     static WebApiBase()
     {
-    #if __WASM__
-        var innerHandler = new Uno.UI.Wasm.WasmHttpHandler();
-    #else
-        var innerHandler = new HttpClientHandler();
-    #endif
-        _client = new HttpClient(innerHandler);
+        _client = new HttpClient();
     }
     ```
-
-    > [!IMPORTANT]
-    > The WebAssembly version of the application requires an alternative implementation of **HttpMessageHandler**, therefore the `#if __WASM__` preprocessor directive ensures that **Uno.UI.Wasm.WasmHttpHandler** is used, rather than **HttpClientHandler**.
 
     To facilitate the re-use of the single **HttpClient** instance, you will use instances of the **HttpRequestMessage** class to represent each request, rather than directly setting the **BaseAddress** and **DefaultRequestHeader** properties on the single **HttpClient** instance. This provides a thread-safe, reusable way of making multiple requests with the single **HttpClient** instance.
 
@@ -418,7 +410,7 @@ In this task, you will create a number of classes that demonstrate how to use th
     using System.Threading.Tasks;
     using Uno.Extensions.Specialized;
 
-    namespace TheCatApiClient.Shared.WebServices
+    namespace TheCatApiClient.WebServices
     {
         public abstract class WebApiBase
         {
@@ -428,12 +420,7 @@ In this task, you will create a number of classes that demonstrate how to use th
             // Insert static constructor below here
             static WebApiBase()
             {
-    #if __WASM__
-                var innerHandler = new Uno.UI.Wasm.WasmHttpHandler();
-    #else
-                var innerHandler = new HttpClientHandler();
-    #endif
-                _client = new HttpClient(innerHandler);
+                _client = new HttpClient();
             }
 
             // Insert CreateRequestMessage method below here
@@ -488,9 +475,9 @@ In this task, you will create a number of classes that demonstrate how to use th
     using System.Net;
     using System.Text.Json;
     using System.Threading.Tasks;
-    using TheCatApiClient.Shared.Models.DataModels;
+    using TheCatApiClient.Models.DataModels;
 
-    namespace TheCatApiClient.Shared.WebServices
+    namespace TheCatApiClient.WebServices
     {
         public class BreedSearchApi : WebApiBase
         {
@@ -550,7 +537,7 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
     using Windows.ApplicationModel.Core;
     using Windows.UI.Core;
 
-    namespace TheCatApiClient.Shared.Models.ViewModels
+    namespace TheCatApiClient.Models.ViewModels
     {
         public abstract class DispatchedBindableBase : INotifyPropertyChanged
         {
@@ -651,7 +638,7 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
     }
     ```
 
-    > ![Note]
+    > [!NOTE]
     > As **WASM** is currently single-threaded, the **Uno.WASM** implementation of `Dispatcher.HasThreadAccess` always returns `false` by default. This default has been chosen to prevent live-locking for certain frameworks that expect a multi-threaded environment. This app overrides that default WASM behavior here via conditional compilation and always invokes the callback directly on WASM.
 
     In XAML applications, control bindings should only be updated on the UI thread, therefore this code uses the value of **hasThreadAccess** to determine if the callback can be directly invoked. If not, the **Dispatcher.RunAsync** method is used to execute the callback asynchronously on the UI Thread. This method is used when setting properties and whenever bound collections are updated, to ensure the collection views (such as GridView, ListView, etc.) are updated.
@@ -667,7 +654,7 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
     using Windows.ApplicationModel.Core;
     using Windows.UI.Core;
 
-    namespace TheCatApiClient.Shared.Models.ViewModels
+    namespace TheCatApiClient.Models.ViewModels
     {
         public abstract class DispatchedBindableBase : INotifyPropertyChanged
         {
@@ -716,6 +703,8 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
 
 In this task you will build the view-model that implements a simple breed search feature using the base class and web service client you just implemented.
 
+1. In the **TheCatApiClient.Shared** project, right-click the **Models\ViewModels** folder, select **Add** and click **Class...**
+
 1. On the **Add New Item** dialog, in the **Name** field, enter **MainViewModel.cs**
 
 1. In the editor, replace the content of the **MainViewModel.cs** class with the following:
@@ -723,11 +712,11 @@ In this task you will build the view-model that implements a simple breed search
     ```csharp
     using System.Collections.ObjectModel;
     using System.Linq;
-    using TheCatApiClient.Shared.Models.DataModels;
-    using TheCatApiClient.Shared.WebServices;
+    using TheCatApiClient.Models.DataModels;
+    using TheCatApiClient.WebServices;
     using Uno.Extensions.Specialized;
 
-    namespace TheCatApiClient.Shared.Models.ViewModels
+    namespace TheCatApiClient.Models.ViewModels
     {
         public class MainViewModel : DispatchedBindableBase
         {
@@ -751,7 +740,7 @@ In this task you will build the view-model that implements a simple breed search
     ```csharp
     // Insert variables below here
     private bool _isBusy;
-    private string _searchTerm;
+    private string _searchTerm = string.Empty;
     private ObservableCollection<Breed> _searchResults = new ObservableCollection<Breed>();
     private BreedSearchApi _breedSearchApi = new BreedSearchApi();
     ```
@@ -825,17 +814,17 @@ In this task you will build the view-model that implements a simple breed search
 
     ```csharp
     using System.Linq;
-    using TheCatApiClient.Shared.Models.DataModels;
-    using TheCatApiClient.Shared.WebServices;
+    using TheCatApiClient.Models.DataModels;
+    using TheCatApiClient.WebServices;
     using Uno.Extensions.Specialized;
 
-    namespace TheCatApiClient.Shared.Models.ViewModels
+    namespace TheCatApiClient.Models.ViewModels
     {
         public class MainViewModel : BaseViewModel
         {
             // Insert member variables below here
             private bool _isBusy;
-            private string _searchTerm;
+            private string _searchTerm = string.Empty;
             private ObservableCollection<Breed> _searchResults = new ObservableCollection<Breed>();
             private BreedSearchApi _breedSearchApi = new BreedSearchApi();
 
@@ -910,8 +899,8 @@ In this task you will create the XAML for the UI and implement the bindings for 
         xmlns:local="using:TheCatApiClient"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-        xmlns:viewmodels="using:TheCatApiClient.Shared.Models.ViewModels" 
-        xmlns:datamodels="using:TheCatApiClient.Shared.Models.DataModels"
+        xmlns:viewmodels="using:TheCatApiClient.Models.ViewModels" 
+        xmlns:datamodels="using:TheCatApiClient.Models.DataModels"
         xmlns:toolkit="using:Uno.UI.Toolkit"
         mc:Ignorable="d"
         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -955,8 +944,8 @@ In this task you will create the XAML for the UI and implement the bindings for 
     ```xml
     <Page
         ...
-        xmlns:viewmodels="using:TheCatApiClient.Shared.Models.ViewModels" 
-        xmlns:datamodels="using:TheCatApiClient.Shared.Models.DataModels"
+        xmlns:viewmodels="using:TheCatApiClient.Models.ViewModels" 
+        xmlns:datamodels="using:TheCatApiClient.Models.DataModels"
         xmlns:toolkit="using:Uno.UI.Toolkit"
         ...
     >
@@ -1056,7 +1045,7 @@ In this task you will create the XAML for the UI and implement the bindings for 
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <!-- ROW 0 - Title -->
-            <TextBlock Text="{x:Bind ViewModel.Title}" Style="{StaticResource HeaderTextBlockStyle}" />
+            <TextBlock Text="The Cat API Client" Style="{StaticResource HeaderTextBlockStyle}" />
 
             <!-- ROW 1 - Search Box -->
             <AutoSuggestBox Grid.Row="1" PlaceholderText="Search for breed" QueryIcon="Find" 
@@ -1081,7 +1070,7 @@ In this task you will create the XAML for the UI and implement the bindings for 
             </GridView>
 
             <!-- ROW 3 - Favorites Title -->
-            <TextBlock Grid.Row="3" Text="{x:Bind ViewModel.Subtitle}" Style="{StaticResource SubheaderTextBlockStyle}" />
+            <TextBlock Grid.Row="3" Text="Favorites" Style="{StaticResource SubheaderTextBlockStyle}" />
 
             <!-- ROW 4 - Favorites -->
 
@@ -1130,8 +1119,6 @@ In this task you will create the XAML for the UI and implement the bindings for 
     The **Downloading data...** UI should be shown and then the results should be populated. You should be able to scroll the results and select one (nothing will happen yet).
 
     ![WebAssembly Search UI preview](Assets/how-to-webservice/wasm-ui-preview.png)
-
-    This validates that your code uses **Uno.UI.Wasm.WasmHttpHandler** for Wasm, rather than **HttpClientHandler**.
 
     Here is how the app looks running in the iPhone and Android simulators:
 
@@ -1391,9 +1378,9 @@ You will start by adding the data models.
 
 1. To add a class for the Favorites API service, in the **TheCatApiClient.Shared** project, right-click the **WebServices** folder, select **Add** and click **Class...**
 
-1. On the **Add New Item** dialog, in the **Name** field, enter **FavoritesApi.cs**
+1. On the **Add New Item** dialog, in the **Name** field, enter **ImageApi.cs**
 
-1. In the editor, replace the content of the **FavoritesApi.cs** class with the following:
+1. In the editor, replace the content of the **ImageApi.cs** class with the following:
 
     ```csharp
     using System.Collections.Generic;
@@ -1485,7 +1472,7 @@ You will start by adding the data models.
 
     In order to add an image to your favorites, the API expects a JSON payload that contains the image ID and an optional **sub_id** value. The **Add** methods constructs this using a **Dictionary** that is then serialized to JSON and submitted as the payload. Rather than returning a **Favorite**, it returns a **Response** instance which contains the new Favorite ID.
 
-1. To add support for adding an image to your favorites, locate the comment **// Insert Delete below here** and replace it with the following code:
+1. To add support for deleting an image from your favorites, locate the comment **// Insert Delete below here** and replace it with the following code:
 
     ```csharp
     // Insert Delete below here
@@ -1503,6 +1490,8 @@ You will start by adding the data models.
         return null;
     }
     ```
+
+    In order to delete an image from your favorites, the API expects a JSON payload that contains the favorite ID value. The **Delete** method submits the favorite ID value in the url. The method returns a **Response** instance.
 
 1. The implementation of **FavoritesApi** should look similar to:
 
@@ -1821,7 +1810,6 @@ In this how-to, you built a multi-platform application that leverages web servic
 * Registered and obtained a key for The Cat API web service.
 * Built a number of data models that utilize JSON serialization
 * Built a web service base class that supports REST service operations and then implemented a number of services that derived from it
-  * You will have noted that WASM requires the use of `Uno.UI.Wasm.WasmHttpHandler()` rather than the default `HttpClientHandler`
 * Leveraged the services in a view-model
   * You built a base class that uses the dispatcher to ensure bound properties are updated on the UI thread
 * Built a XAML UI that utilizes the view-model

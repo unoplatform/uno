@@ -22,8 +22,6 @@ namespace Windows.UI.Xaml.Controls
 		public ContentPresenter()
 		{
 			InitializeContentPresenter();
-
-			this.RegisterLoadActions(UpdateBorder, () => _borderRenderer.Clear());
 		}
 
 		private void SetUpdateTemplate()

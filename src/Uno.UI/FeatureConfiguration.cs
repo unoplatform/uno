@@ -178,6 +178,13 @@ namespace Uno.UI
 			/// Ignores text scale factor, resulting in a font size as dictated by the control.
 			/// </summary>
 			public static bool IgnoreTextScaleFactor { get; set; } = false;
+
+#if __ANDROID__ || __IOS__ 
+			/// <summary>
+			/// Allows the user to limit the scale factor without having to ignore it.
+			/// </summary>
+			public static float? MaximumTextScaleFactor { get; set; }
+#endif
 		}
 
 		public static class FrameworkElement
@@ -209,7 +216,7 @@ namespace Uno.UI
 			/// or native visual tree traversal.
 			/// </summary>
 			/// <remarks>
-			/// This setting impacts significantly the loading performance of controls on Web Assembly.
+			/// This setting impacts significantly the loading performance of controls on WebAssembly.
 			/// Setting it to true avoids the use of costly JavaScript->C# interop.
 			/// </remarks>
 			public static bool WasmUseManagedLoadedUnloaded { get; set; } = true;
@@ -514,9 +521,15 @@ namespace Uno.UI
 		{
 			/// <summary>
 			/// Call the .MeasureOverride only on element explicitly invalidating
-			/// their measure and when the size changed.
+			/// their measure and when the available size is changing.
 			/// </summary>
 			public static bool UseInvalidateMeasurePath { get; set; } = true;
+
+			/// <summary>
+			/// Call the .ArrangeOverride only on elements explicitly invalidating
+			/// their arrange and when the final rect is changing.
+			/// </summary>
+			public static bool UseInvalidateArrangePath { get; set; } = true;
 
 			/// <summary>
 			/// [DEPRECATED]

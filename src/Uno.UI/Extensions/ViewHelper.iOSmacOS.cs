@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using Uno.UI.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Extensions;
+using Windows.Graphics.Display;
 
 using Foundation;
 using CoreGraphics;
@@ -16,6 +18,7 @@ using ObjCRuntime;
 #if __IOS__
 using UIKit;
 using _View = UIKit.UIView;
+using Windows.UI.Xaml;
 #elif __MACOS__
 using AppKit;
 using _View = AppKit.NSView;
@@ -26,15 +29,23 @@ namespace Uno.UI
 	public static class ViewHelper
 	{
 #if __IOS__
+		// This return the value from the original screen. Use 'DisplayInformation.RawPixelsPerViewPixel' to get the value for the current screen.
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static readonly nfloat MainScreenScale = UIScreen.MainScreen.Scale;
-		public static readonly bool IsRetinaDisplay = UIScreen.MainScreen.Scale > 1.0f;
+		// This return the value from the original screen. Use 'DisplayInformation.RawPixelsPerViewPixel > 1.0f' for the current screen.
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static readonly bool IsRetinaDisplay = MainScreenScale > 1.0f;
 #elif __MACOS__
-		public static readonly nfloat MainScreenScale = NSScreen.MainScreen.UserSpaceScaleFactor;
-		public static readonly bool IsRetinaDisplay = NSScreen.MainScreen.UserSpaceScaleFactor > 1.0f;
+		// This return the value from the original screen. Use 'DisplayInformation.RawPixelsPerViewPixel' to get the value for the current screen.
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static readonly nfloat MainScreenScale = NSScreen.MainScreen.BackingScaleFactor;
+		// This return the value from the original screen. Use 'DisplayInformation.RawPixelsPerViewPixel > 1.0f' for the current screen.
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static readonly bool IsRetinaDisplay = MainScreenScale > 1.0f;
 #endif
 
 		private static double _rectangleRoundingEpsilon = 0.05;
-		private static double _scaledRectangleRoundingEpsilon = _rectangleRoundingEpsilon * MainScreenScale;
+		private static double _scaledRectangleRoundingEpsilon = _rectangleRoundingEpsilon * DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
 
 		/// <summary>
 		/// This is used to correct some errors when using Floor and Ceiling in LogicalToPhysicalPixels for CGRect.
@@ -45,7 +56,7 @@ namespace Uno.UI
 			set
 			{
 				_rectangleRoundingEpsilon = value;
-				_scaledRectangleRoundingEpsilon = value * MainScreenScale;
+				_scaledRectangleRoundingEpsilon = value * DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
 			}
 		}
 
@@ -54,16 +65,18 @@ namespace Uno.UI
 
 		static ViewHelper()
 		{
-			if(typeof(ViewHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			if (typeof(ViewHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				typeof(ViewHelper).Log().DebugFormat("Display scale is {0}", MainScreenScale);
+				typeof(ViewHelper).Log().DebugFormat("Display scale is {0}", DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel);
 			}
 		}
-		
-		public static nfloat OnePixel { 
-			get {
-				return (1.0f / MainScreenScale);
-			} 
+
+		public static nfloat OnePixel
+		{
+			get
+			{
+				return (nfloat)(1.0d / DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel);
+			}
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -135,13 +148,14 @@ namespace Uno.UI
 			// CGRectIntegral rounds the rectangle’s origin downward 
 			// and its size upward to the nearest whole integers, 
 			// such that the result contains the original rectangle.
-			
+
+			var scale = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
 			return new CGRect
 			(
-				(nfloat)FloorWithEpsilon(size.X * MainScreenScale) / MainScreenScale,
-				(nfloat)FloorWithEpsilon(size.Y * MainScreenScale) / MainScreenScale,
-				(nfloat)CeilingWithEpsilon(size.Width * MainScreenScale) / MainScreenScale,
-				(nfloat)CeilingWithEpsilon(size.Height * MainScreenScale) / MainScreenScale
+				(nfloat)FloorWithEpsilon(size.X * scale) / scale,
+				(nfloat)FloorWithEpsilon(size.Y * scale) / scale,
+				(nfloat)CeilingWithEpsilon(size.Width * scale) / scale,
+				(nfloat)CeilingWithEpsilon(size.Height * scale) / scale
 			);
 		}
 
@@ -151,7 +165,7 @@ namespace Uno.UI
 		private static double CeilingWithEpsilon(double value)
 		{
 			var decimals = value - Math.Truncate(value);
-			if(decimals < _scaledRectangleRoundingEpsilon)
+			if (decimals < _scaledRectangleRoundingEpsilon)
 			{
 				return Math.Floor(value);
 			}
@@ -178,40 +192,44 @@ namespace Uno.UI
 		}
 
 		public static nfloat GetConvertedPixel(float thickness)
-        {
-            if(IsRetinaDisplay && thickness > 0 && thickness <=1)
-            {
-                return OnePixel;
-            }
-            return thickness;
-        }
+		{
+			if (thickness > 0 && thickness <= 1 && (DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel > 1.0f))
+			{
+				return OnePixel;
+			}
+			return thickness;
+		}
 
-		public static nfloat StackSubViews (IEnumerable<_View> views)
+		public static nfloat StackSubViews(IEnumerable<_View> views)
 		{
 			nfloat lastBottom = 0f;
-			foreach (var view in views) {
+			foreach (var view in views)
+			{
 
-				if (view.Hidden) {
+				if (view.Hidden)
+				{
 					continue;
 				}
 
-				view.Frame = view.Frame.SetY (lastBottom);
+				view.Frame = view.Frame.SetY(lastBottom);
 				lastBottom = view.Frame.Bottom;
 			}
 
 			return lastBottom;
 		}
 
-		public static nfloat StackSubViews (_View thisView, float topPadding, float spaceBetweenElements)
+		public static nfloat StackSubViews(_View thisView, float topPadding, float spaceBetweenElements)
 		{
 			nfloat lastBottom = topPadding;
 
-			foreach (var view in thisView.Subviews) {
+			foreach (var view in thisView.Subviews)
+			{
 
-				if (view.Hidden) {
+				if (view.Hidden)
+				{
 					continue;
 				}
-				view.Frame = view.Frame.SetY (lastBottom);
+				view.Frame = view.Frame.SetY(lastBottom);
 
 				lastBottom = view.Frame.Bottom + spaceBetweenElements;
 			}
@@ -219,53 +237,25 @@ namespace Uno.UI
 			return lastBottom;
 		}
 
-
 		/// <summary>
 		/// Gets the orientation-dependent screen size
 		/// </summary>
 		/// <returns></returns>
 		public static CGSize GetScreenSize()
 		{
-#if __IOS__
-			var orientation = UIApplication.SharedApplication.StatusBarOrientation;
-			//In iOS versions prior to 8.0, the screen dimensions are based on the portrait orientation, so we might have to invert them.
-			//http://stackoverflow.com/questions/24150359/is-uiscreen-mainscreen-bounds-size-becoming-orientation-dependent-in-ios8
-			var shouldInvertDimension = !UIDevice.CurrentDevice.CheckSystemVersion(8, 0)
-				&& (orientation == UIInterfaceOrientation.LandscapeLeft || orientation == UIInterfaceOrientation.LandscapeRight);
-
-			return new CGSize(GetScreenWidth(shouldInvertDimension), GetScreenHeight(shouldInvertDimension));
-#elif __MACOS__
-			return new CGSize(GetScreenWidth(false), GetScreenHeight(false));
-#endif
+			return GetScreenSizeInternal(window: Windows.UI.Xaml.Window.Current);
 		}
-
-		private static nfloat GetScreenWidth(bool shouldInvertDimension)
+		
+		internal static CGSize GetScreenSizeInternal(Windows.UI.Xaml.Window window)
 		{
 #if __IOS__
-			//Starting with iOS 9 and the introduction of the SplitView, 
-			//MainScreen.Bounds corresponds to the full screen size whereas the MainScreen.ApplicationFrame is the actual space the application is taking
-			var applicationFrameSize = UIScreen.MainScreen.ApplicationFrame.Size;
-#elif __MACOS__
+			var nativeFrame = window?.NativeWindow?.Frame ?? CGRect.Empty;
+
+			return new CGSize(nativeFrame.Width, nativeFrame.Height);
+#else
 			var applicationFrameSize = NSScreen.MainScreen.VisibleFrame;
+			return new CGSize(applicationFrameSize.Width, applicationFrameSize.Height);
 #endif
-
-			return shouldInvertDimension
-				? applicationFrameSize.Height
-				: applicationFrameSize.Width;
-		}
-
-		private static nfloat GetScreenHeight(bool shouldInvertDimension)
-		{
-#if __IOS__
-			//Since there cannot be any vertical split, we can use MainScreen.Bounds for the height to ignore the StatusBar height
-			var fullScreenSize = UIScreen.MainScreen.Bounds.Size;
-#elif __MACOS__
-			var fullScreenSize = NSScreen.MainScreen.VisibleFrame.Size;
-#endif
-
-			return shouldInvertDimension
-				? fullScreenSize.Width
-				: fullScreenSize.Height;
 		}
 	}
 }

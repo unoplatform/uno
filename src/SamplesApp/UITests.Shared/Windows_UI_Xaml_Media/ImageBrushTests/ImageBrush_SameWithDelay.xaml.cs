@@ -20,7 +20,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Media.ImageBrushTests
 {
-	[SampleControlInfo(category: "ImageBrushTestControl")]
+	[SampleControlInfo(category: "Brushes")]
 	public sealed partial class ImageBrush_SameWithDelay : UserControl
 	{
 		BrushContext _ctx = new BrushContext();

@@ -23,7 +23,7 @@ using ICommand = System.Windows.Input.ICommand;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls
 {
-    [SampleControlInfo("Button", "Buttons_Native")]
+    [SampleControlInfo("Buttons", "Buttons_Native")]
 
     public sealed partial class Buttons_Native : UserControl
     {

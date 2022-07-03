@@ -83,6 +83,11 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
+			if (_owner is FrameworkElement fe)
+			{
+				fe.InvalidateMeasure();
+			}
+
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, items.ToList()));
 		}
 

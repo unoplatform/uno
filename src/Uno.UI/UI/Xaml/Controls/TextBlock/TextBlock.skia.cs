@@ -13,17 +13,14 @@ using Windows.UI.Composition.Interactions;
 using Uno.Disposables;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
+using Windows.UI.Xaml.Documents.TextFormatting;
 
 namespace Windows.UI.Xaml.Controls
 {
-	partial class TextBlock : FrameworkElement
+	partial class TextBlock : FrameworkElement, IBlock
 	{
-		private readonly TextVisual _textVisual;
-
 		internal CompositionBrush ForegroundCompositionBrush;
-
-		public Size _lastMeasure;
-		private Size _lastDesiredSize;
+		private readonly TextVisual _textVisual;
 
 		public TextBlock()
 		{
@@ -34,35 +31,54 @@ namespace Windows.UI.Xaml.Controls
 
 		private int GetCharacterIndexAtPoint(Point point)
 		{
-			throw new NotSupportedException();
+			return -1; // Not supported yet
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			_lastMeasure = availableSize;
 			var padding = Padding;
+			var availableSizeWithoutPadding = availableSize.Subtract(padding);
+			var desiredSize = Inlines.Measure(availableSizeWithoutPadding);
 
-			// available size considering padding
-			var availableSizeWithoutPadding = availableSize.Subtract(Padding);
-
-			var desiredSize = _textVisual.Measure(availableSizeWithoutPadding);
-
-			_lastDesiredSize = desiredSize.Add(padding);
-
-			return new Size(_lastDesiredSize.Width, _lastDesiredSize.Height);
+			return desiredSize.Add(padding);
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			if (_lastDesiredSize != finalSize)
-			{
-				_lastMeasure = finalSize;
-				_lastDesiredSize = _textVisual.Measure(finalSize);
-			}
-
-			_textVisual.Size = new Vector2((float)_lastDesiredSize.Width, (float)_lastDesiredSize.Height);
+			var padding = Padding;
+			var availableSizeWithoutPadding = finalSize.Subtract(padding);
+			var arrangedSizeWithoutPadding = Inlines.Arrange(availableSizeWithoutPadding);
+			_textVisual.Size = new Vector2((float)arrangedSizeWithoutPadding.Width, (float)arrangedSizeWithoutPadding.Height);
+			_textVisual.Offset = new Vector3((float)padding.Left, (float)padding.Top, 0);
 
 			return base.ArrangeOverride(finalSize);
+		}
+
+		partial void OnInlinesChangedPartial()
+		{
+			Inlines.InvalidateMeasure();
+		}
+
+		// Invalidate Inlines measure when any IBlock properties used during measuring change:
+
+		partial void OnMaxLinesChangedPartial()
+		{
+			Inlines.InvalidateMeasure();
+		}
+
+		partial void OnTextWrappingChangedPartial()
+		{
+			Inlines.InvalidateMeasure();
+		}
+
+		partial void OnLineHeightChangedPartial()
+		{
+			Inlines.InvalidateMeasure();
+		}
+
+		partial void OnLineStackingStrategyChangedPartial()
+		{
+			Inlines.InvalidateMeasure();
 		}
 	}
 }

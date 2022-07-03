@@ -20,7 +20,7 @@ using _Button = Windows.UI.Xaml.Controls.Button;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 {
-	[SampleControlInfo("ContentDialog", "ContentDialog_Closing", description: "Tests for ContentDialog.Closing event")]
+	[SampleControlInfo("Dialogs", "ContentDialog_Closing", description: "Tests for ContentDialog.Closing event")]
     public sealed partial class ContentDialog_Closing : UserControl
     {
         public ContentDialog_Closing()

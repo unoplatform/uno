@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Extensions.Specialized;
 using Uno.UI.Extensions;
+using ObjCRuntime;
 
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
@@ -32,6 +33,10 @@ using nfloat = System.Single;
 using CGPoint = System.Drawing.PointF;
 using nint = System.Int32;
 using CGSize = System.Drawing.SizeF;
+#endif
+
+#if !NET6_0_OR_GREATER
+using NativeHandle = System.IntPtr;
 #endif
 
 namespace Uno.UI.Controls.Legacy
@@ -618,7 +623,7 @@ namespace Uno.UI.Controls.Legacy
 			/// Used by the Xamarin Runtime to materialize native 
 			/// objects that may have been collected in the managed world.
 			/// </remarks>
-			public InternalContainer(IntPtr handle) : base(handle) { }
+			public InternalContainer(NativeHandle handle) : base(handle) { }
 
 			private CGSize _lastUsedSize;
 

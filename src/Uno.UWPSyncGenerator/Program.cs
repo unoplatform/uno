@@ -33,6 +33,9 @@ namespace Uno.UWPSyncGenerator
 				new SyncGenerator().Build(@"..\..\..\Uno.UWP", "Uno", "Windows.Networking.Connectivity.WwanContract");
 				new SyncGenerator().Build(@"..\..\..\Uno.UWP", "Uno", "Windows.ApplicationModel.Calls.CallsPhoneContract");
 
+				// When adding support for a new WinRT contract here, ensure to add it to the list of origins in Generator.cs
+				// and to the list of supported contracts in ApiInformation.shared.cs
+
 #if HAS_UNO_WINUI
 				new SyncGenerator().Build(@"..\..\..\Uno.Foundation", "Uno.Foundation", "Microsoft.Foundation");
 
@@ -55,6 +58,8 @@ namespace Uno.UWPSyncGenerator
 				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Xaml");
 
 #else
+				new SyncGenerator().Build(@"..\..\..\Uno.UI.Composition", "Uno.UI.Composition", "Windows.Foundation.UniversalApiContract");
+				new SyncGenerator().Build(@"..\..\..\Uno.UI.Dispatching", "Uno.UI.Dispatching", "Windows.Foundation.UniversalApiContract");
 				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Windows.Foundation.UniversalApiContract");
 #endif
 			}

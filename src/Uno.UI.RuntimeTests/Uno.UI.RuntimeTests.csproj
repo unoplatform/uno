@@ -89,6 +89,9 @@
 		<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.18362'">
+		<Page Remove="$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.xaml" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PRIResource Include="Resources\**\*.resw" />

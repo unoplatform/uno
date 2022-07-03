@@ -27,6 +27,8 @@ using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Newtonsoft.Json;
+using System.Text;
+using System.Security.Cryptography;
 
 #if HAS_UNO
 using Uno.Foundation.Logging;
@@ -61,6 +63,12 @@ namespace Uno.UI.Samples.Tests
 		private List<TestCaseResult> _testCases = new List<TestCaseResult>();
 		private TestRun _currentRun;
 
+		// On WinUI/UWP dependency properties cannot be accessed outside of
+		// UI thread. This field caches the current value so it can be accessed
+		// asynchronously during test enumeration.
+		private int _ciTestsGroupCountCache = -1;
+		private int _ciTestGroupCache = -1;
+		
 		public UnitTestsControl()
 		{
 			this.InitializeComponent();
@@ -104,6 +112,52 @@ namespace Uno.UI.Samples.Tests
 		{
 			StopRunningTests();
 			SampleChooserViewModel.Instance.SampleChanging -= OnSampleChanging;
+		}
+
+		public bool IsRunningOnCI
+		{
+			get { return (bool)GetValue(IsRunningOnCIProperty); }
+			set { SetValue(IsRunningOnCIProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for IsRunningOnCI.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty IsRunningOnCIProperty =
+			DependencyProperty.Register("IsRunningOnCI", typeof(bool), typeof(UnitTestsControl), new PropertyMetadata(false));
+
+		/// <summary>
+		/// Defines the test group for splitting runtime tests on CI
+		/// </summary>
+		public int CITestGroup
+		{
+			get => (int)GetValue(CITestGroupProperty);
+			set => SetValue(CITestGroupProperty, value);
+		}
+
+		public static readonly DependencyProperty CITestGroupProperty =
+			DependencyProperty.Register("CITestGroup", typeof(int), typeof(UnitTestsControl), new PropertyMetadata(-1, OnCITestGroupChanged));
+
+		private static void OnCITestGroupChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			var unitTestsControl = (UnitTestsControl)d;
+			unitTestsControl._ciTestGroupCache = (int)e.NewValue;
+		}
+
+		/// <summary>
+		/// Defines the test group for splitting runtime tests on CI
+		/// </summary>
+		public int CITestGroupCount
+		{
+			get => (int)GetValue(CITestGroupCountProperty);
+			set => SetValue(CITestGroupCountProperty, value);
+		}
+
+		public static readonly DependencyProperty CITestGroupCountProperty =
+			DependencyProperty.Register("CITestGroupCount", typeof(int), typeof(UnitTestsControl), new PropertyMetadata(-1, OnCITestsGroupCountChanged));
+
+		private static void OnCITestsGroupCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			var unitTestsControl = (UnitTestsControl)d;
+			unitTestsControl._ciTestsGroupCountCache = (int)e.NewValue;
 		}
 
 		public string NUnitTestResultsDocument
@@ -182,9 +236,13 @@ namespace Uno.UI.Samples.Tests
 			void Setter()
 			{
 				testFilter.IsEnabled = runButton.IsEnabled = !isRunning || _cts == null; // Disable the testFilter to avoid SIP to re-open
-#if !DEBUG // Improves perf on CI by not re-rendering the whole test result live during tests
-				testResults.Visibility = Visibility.Collapsed;
-#endif
+
+				if (IsRunningOnCI)
+				{
+					// Improves perf on CI by not re-rendering the whole test result live during tests
+					testResults.Visibility = Visibility.Collapsed;
+				}
+
 				stopButton.IsEnabled = _cts != null && !_cts.IsCancellationRequested || !isRunning;
 				RunningStateForUITest = runningState.Text = isRunning ? "Running" : "Finished";
 				runStatus.Text = message;
@@ -225,16 +283,19 @@ namespace Uno.UI.Samples.Tests
 				Windows.UI.Core.CoreDispatcherPriority.Normal,
 				() =>
 				{
-					var testResultBlock = new TextBlock()
+					if (!IsRunningOnCI)
 					{
-						Text = $"{testClass.Name} ({testClass.Assembly.GetName().Name})",
-						Foreground = new SolidColorBrush(Colors.White),
-						FontSize = 16d,
-						IsTextSelectionEnabled = true
-					};
+						var testResultBlock = new TextBlock()
+						{
+							Text = $"{testClass.Name} ({testClass.Assembly.GetName().Name})",
+							Foreground = new SolidColorBrush(Colors.White),
+							FontSize = 16d,
+							IsTextSelectionEnabled = true
+						};
 
-					testResults.Children.Add(testResultBlock);
-					testResultBlock.StartBringIntoView();
+						testResults.Children.Add(testResultBlock);
+						testResultBlock.StartBringIntoView();
+					}
 				}
 			);
 		}
@@ -303,8 +364,11 @@ namespace Uno.UI.Samples.Tests
 					testResultBlock.Inlines.Add(new Run { Text = "\nOUT>" + console, Foreground = new SolidColorBrush(Colors.Gray) });
 				}
 
-				testResults.Children.Add(testResultBlock);
-				testResultBlock.StartBringIntoView();
+				if (!IsRunningOnCI)
+				{
+					testResults.Children.Add(testResultBlock);
+					testResultBlock.StartBringIntoView();
+				}
 
 				if (testResult == TestResult.Error || testResult == TestResult.Failed)
 				{
@@ -568,7 +632,10 @@ namespace Uno.UI.Samples.Tests
 				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
 					testFilter.IsEnabled = runButton.IsEnabled = true; // Disable the testFilter to avoid SIP to re-open
-					testResults.Visibility = Visibility.Visible;
+					if (!IsRunningOnCI)
+					{
+						testResults.Visibility = Visibility.Visible;
+					}
 					stopButton.IsEnabled = false;
 				});
 			}
@@ -697,9 +764,15 @@ namespace Uno.UI.Samples.Tests
 							{
 								await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 								{
+									if (instance is IInjectPointers pointersInjector)
+									{
+										pointersInjector.CleanupPointers();
+									}
+
 									if (testCase.Pointer is { } pt)
 									{
 										var ptSubscription = (instance as IInjectPointers ?? throw new InvalidOperationException("test class does not supports pointer selection.")).SetPointer(pt);
+
 										cleanupActions.Add(async _ => ptSubscription.Dispose());
 									}
 
@@ -855,10 +928,22 @@ namespace Uno.UI.Samples.Tests
 
 			return from type in types
 				   where type.GetTypeInfo().GetCustomAttribute(typeof(TestClassAttribute)) != null
+				   where _ciTestsGroupCountCache == -1 || (_ciTestsGroupCountCache != -1 && (GetTypeTestGroup(type) % _ciTestsGroupCountCache) == _ciTestGroupCache)
 				   orderby type.Name
 				   let info = BuildType(type)
 				   where info.Type is { }
 				   select info;
+		}
+
+		private static SHA1 _sha1 = SHA1.Create();
+
+		private int GetTypeTestGroup(Type type)
+		{
+			// Compute a stable hash of the full metadata name
+			var buffer = Encoding.UTF8.GetBytes(type.FullName);
+			var hash = _sha1.ComputeHash(buffer);
+
+			return (int)BitConverter.ToUInt64(hash, 0);
 		}
 
 		private static UnitTestClassInfo BuildType(Type type)

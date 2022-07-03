@@ -41,7 +41,7 @@ namespace Uno.Extensions.Storage.Pickers
 				commitText = _picker.CommitButtonText;
 			}
 
-			FileChooserDialog dialog = new FileChooserDialog(
+			using FileChooserDialog dialog = new FileChooserDialog(
 				"Open",
 				GtkHost.Window,
 				FileChooserAction.Open,
@@ -77,7 +77,6 @@ namespace Uno.Extensions.Storage.Pickers
 				}
 			}
 
-			dialog.Destroy();
 			return files.ToArray();
 		}
 	}

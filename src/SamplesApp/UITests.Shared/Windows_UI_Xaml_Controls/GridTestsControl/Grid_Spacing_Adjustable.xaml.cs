@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.GridTestsControl
 {
-	[SampleControlInfo(description: "Demonstrates the RowSpacing and ColumnSpacing properties")]
+	[Sample("Grid", Description = "Demonstrates the RowSpacing and ColumnSpacing properties")]
 	public sealed partial class Grid_Spacing_Adjustable : UserControl
 	{
 		public Grid_Spacing_Adjustable()

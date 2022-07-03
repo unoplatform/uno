@@ -6,6 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls;
 using Windows.UI.Xaml.Controls;
+using FluentAssertions;
+using Windows.UI.Xaml.Data;
+using FluentAssertions.Execution;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 {
@@ -130,6 +133,70 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 			var tb = SUT.FindName("innerTextBlock") as Windows.UI.Xaml.Controls.TextBlock;
 
 			Assert.AreEqual(SUT.topLevel.Tag, tb.Text);
+		}
+
+		[TestMethod]
+		public void When_Xaml_Object_With_Common_Properties()
+		{
+			using var _ = new AssertionScope();
+			var SUT = new Binding_Xaml_Object_With_Common_Properties();
+
+			SUT.ForceLoaded();
+
+			SUT.topLevel.Should().NotBeNull();
+			SUT.topLevel.Text.Should().Be("42");
+
+			var bindingExpression = SUT.topLevel.GetBindingExpression(TextBlock.TextProperty);
+			bindingExpression.Should().NotBeNull();
+
+			var binding = bindingExpression.ParentBinding;
+			binding.Should().NotBeNull();
+			binding.Path.Should().NotBeNull();
+			binding.Path.Path.Should().Be("Tag");
+			// https://github.com/unoplatform/uno/issues/8532
+			//binding.ElementName.Should().BeOfType<ElementNameSubject>().Which.Name.Should().Be("topLevel");
+			binding.ElementName.Should().BeOfType<ElementNameSubject>();
+			binding.Converter.Should().NotBeNull();
+			binding.ConverterParameter.Should().Be("topLevel");
+			binding.ConverterLanguage.Should().Be("topLevel");
+			binding.UpdateSourceTrigger.Should().Be(UpdateSourceTrigger.Default);
+			binding.TargetNullValue.Should().Be("TargetNullValue");
+			binding.FallbackValue.Should().Be("FallbackValue");
+			binding.Mode.Should().Be(BindingMode.OneWay);
+			binding.RelativeSource.Should().NotBeNull();
+			binding.RelativeSource.Mode.Should().Be(RelativeSourceMode.None);
+			binding.Source.Should().Be("Source");
+		}
+
+		[TestMethod]
+		public void When_Xaml_Object_With_Xaml_Object_Properties()
+		{
+			using var _ = new AssertionScope();
+			var SUT = new Binding_Xaml_Object_With_Xaml_Object_Properties();
+
+			SUT.ForceLoaded();
+
+			SUT.topLevel.Should().NotBeNull();
+			SUT.topLevel.Text.Should().Be("42");
+
+			var bindingExpression = SUT.topLevel.GetBindingExpression(TextBlock.TextProperty);
+			bindingExpression.Should().NotBeNull();
+
+			var binding = bindingExpression.ParentBinding;
+			binding.Should().NotBeNull();
+			binding.Path.Should().NotBeNull();
+			binding.Path.Path.Should().Be("Tag");
+			binding.ElementName.Should().BeOfType<ElementNameSubject>();
+			binding.Converter.Should().NotBeNull();
+			binding.ConverterParameter.Should().Be("topLevel");
+			binding.ConverterLanguage.Should().Be("topLevel");
+			binding.UpdateSourceTrigger.Should().Be(UpdateSourceTrigger.Default);
+			binding.TargetNullValue.Should().Be("TargetNullValue");
+			binding.FallbackValue.Should().Be("FallbackValue");
+			binding.Mode.Should().Be(BindingMode.OneWay);
+			binding.RelativeSource.Should().NotBeNull();
+			binding.RelativeSource.Mode.Should().Be(RelativeSourceMode.None);
+			binding.Source.Should().Be("Source");
 		}
 	}
 }

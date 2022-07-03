@@ -163,6 +163,14 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override int IndexFromContainerInner(DependencyObject container)
 		{
+			if (_isProcessingReorder)
+			{
+				// When we process a re-ordering, the "attached" indexes (IndexForItemContainerProperty) are known to be valid,
+				// but the native (NativePanel) is not (moved item is still at it's original location / index).
+
+				return base.IndexFromContainerInner(container);
+			}
+
 			if (NativePanel != null)
 			{
 				var selectorItem = container as SelectorItem;

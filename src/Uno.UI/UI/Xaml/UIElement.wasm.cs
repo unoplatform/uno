@@ -13,6 +13,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Core;
 using Windows.UI.Xaml.Controls;
 using Windows.System;
 
@@ -207,7 +208,7 @@ namespace Windows.UI.Xaml
 		protected internal void ArrangeVisual(Rect rect, Rect? clipRect)
 		{
 			LayoutSlotWithMarginsAndAlignments =
-				VisualTreeHelper.GetParent(this) is UIElement parent
+				VisualTreeHelper.GetParent(this) is UIElement parent && parent is not RootVisual
 					? rect.DeflateBy(parent.GetBorderThickness())
 					: rect;
 

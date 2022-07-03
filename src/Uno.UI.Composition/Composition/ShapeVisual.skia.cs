@@ -7,7 +7,7 @@ namespace Windows.UI.Composition
 {
 	public partial class ShapeVisual
 	{
-		internal override void Render(SKSurface surface, SKImageInfo info)
+		internal override void Render(SKSurface surface)
 		{
 			foreach(var shape in Shapes)
 			{
@@ -34,7 +34,7 @@ namespace Windows.UI.Composition
 
 				surface.Canvas.SetMatrix(visualMatrix);
 
-				shape.Render(surface, info);
+				shape.Render(surface);
 
 				surface.Canvas.Restore();
 			}

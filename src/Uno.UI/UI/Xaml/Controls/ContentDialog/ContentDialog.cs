@@ -15,6 +15,12 @@ using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.ViewManagement;
 
+#if HAS_UNO_WINUI
+using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+#else
+using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class
@@ -23,7 +29,9 @@ namespace Windows.UI.Xaml.Controls
 		internal readonly Popup _popup;
 		private TaskCompletionSource<ContentDialogResult> _tcs;
 		private readonly SerialDisposable _subscriptions = new SerialDisposable();
+		private readonly SerialDisposable _templateSubscriptions = new SerialDisposable();
 		private bool _hiding = false;
+		private bool _templateApplied = false;
 
 		private Border m_tpBackgroundElementPart;
 		private Border m_tpButton1HostPart;
@@ -80,11 +88,29 @@ namespace Windows.UI.Xaml.Controls
 
 			Loaded += (s, e) => RegisterEvents();
 			Unloaded += (s, e) => UnregisterEvents();
-
 			DefaultStyleKey = typeof(ContentDialog);
 		}
 
-		private void OnPopupKeyDown(object sender, KeyRoutedEventArgs e)
+		// Uno specific: Ensure we respond to window sizing
+		private void WindowSizeChanged(object sender, WindowSizeChangedEventArgs e) =>
+			UpdateSizeProperties();
+
+		private void UpdateSizeProperties()
+		{
+			if (!_templateApplied)
+			{
+				return;
+			}
+
+			UpdateVisualState();
+
+			if (m_placementMode != PlacementMode.InPlace)
+			{
+				SizeAndPositionContentInPopup();
+			}
+		}
+
+		private protected virtual void OnPopupKeyDown(object sender, KeyRoutedEventArgs e)
 		{
 			switch (e.Key)
 			{
@@ -125,7 +151,7 @@ namespace Windows.UI.Xaml.Controls
 			Hide(ContentDialogResult.None);
 		}
 
-		private bool Hide(ContentDialogResult result)
+		internal bool Hide(ContentDialogResult result)
 		{
 			void Complete(ContentDialogClosingEventArgs args)
 			{
@@ -156,7 +182,8 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
-
+			_templateSubscriptions.Disposable = null;
+			CompositeDisposable subscriptions = new CompositeDisposable();
 			GetTemplateParts();
 
 			m_dialogMinHeight = ResourceResolver.ResolveTopLevelResourceDouble("ContentDialogMinHeight");
@@ -178,7 +205,20 @@ namespace Windows.UI.Xaml.Controls
 			//	// Update which command button has the default button visualization.
 			//	return UpdateVisualState();
 			//}));
+
+			m_tpBackgroundElementPart.SizeChanged += BackgroundElementSizeChanged;
+			subscriptions.Add(() =>
+			{
+				m_tpBackgroundElementPart.SizeChanged -= BackgroundElementSizeChanged;
+			});
+
+			_templateSubscriptions.Disposable = subscriptions;
+			_templateApplied = true;
 		}
+
+		// Uno specific: Ensure we respond to window sizing
+		private void BackgroundElementSizeChanged(object sender, SizeChangedEventArgs args) =>
+			UpdateSizeProperties();
 
 		void GetTemplateParts()
 		{
@@ -227,7 +267,18 @@ namespace Windows.UI.Xaml.Controls
 
 				_tcs = new TaskCompletionSource<ContentDialogResult>();
 
-				return await _tcs.Task;
+				using (ct.Register(() =>
+				{
+					_tcs.TrySetCanceled();
+					Hide();
+				}
+#if !__WASM__ // WASM lacks threading support
+					, useSynchronizationContext: true
+#endif
+					))
+				{
+					return await _tcs.Task;
+				}
 			});
 
 		public event TypedEventHandler<ContentDialog, ContentDialogClosedEventArgs> Closed;
@@ -248,6 +299,7 @@ namespace Windows.UI.Xaml.Controls
 		private void UnregisterEvents()
 		{
 			_subscriptions.Disposable = null;
+			_templateSubscriptions.Disposable = null;
 		}
 
 		private void RegisterEvents()
@@ -285,6 +337,13 @@ namespace Windows.UI.Xaml.Controls
 					closeButton.Click -= OnCloseButtonClicked;
 				});
 			}
+
+			var window = Windows.UI.Xaml.Window.Current;
+			window.SizeChanged += WindowSizeChanged;
+			d.Add(() =>
+			{
+				window.SizeChanged -= WindowSizeChanged;
+			});
 
 			_subscriptions.Disposable = d;
 		}

@@ -101,18 +101,23 @@ namespace Windows.UI.Xaml.Input
 
 		private static ulong ToTimeStamp(double timestamp)
 		{
-			if (!_bootTime.HasValue)
-			{
-				_bootTime = DateTime.UtcNow.Ticks - (long)(TimeSpan.TicksPerSecond * new NSProcessInfo().SystemUptime);
-			}
+			_bootTime ??= DateTime.UtcNow.Ticks - (long)(TimeSpan.TicksPerSecond * new NSProcessInfo().SystemUptime);
 
 			return (ulong)_bootTime.Value + (ulong)(TimeSpan.TicksPerSecond * timestamp);
 		}
 
+		private static double? _firstTimestamp;
+
 		private static uint ToFrameId(double timestamp)
 		{
-			// The precision of the frameId is 10 frame per ms ... which should be enough
-			return (uint)(timestamp * 1000.0 * 10.0);
+			_firstTimestamp ??= timestamp;
+
+			var relativeTimestamp = timestamp - _firstTimestamp;
+			var frameId = relativeTimestamp * 120.0; // we allow a precision of 120Hz (8.333 ms per frame)
+
+			// When we cast, we are not overflowing but instead capping to uint.MaxValue.
+			// We use modulo to make sure to reset to 0 in that case (1.13 years of app run-time, but we prefer to be safe).
+			return (uint)(frameId % uint.MaxValue); 
 		}
 
 		private static UIElement FindOriginalSource(UITouch touch)

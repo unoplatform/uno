@@ -26,6 +26,8 @@ namespace Uno.UI.Tasks.Assets
 		[Required]
 		public string TargetPlatform { get; set; }
 
+		public string AndroidAssetsPrefix { get; set; }
+
 		[Required]
 		public string DefaultLanguage { get; set; }
 
@@ -53,7 +55,7 @@ namespace Uno.UI.Tasks.Assets
 					break;
 				case "android":
 					resourceToTargetPath = resource => AndroidResourceConverter.Convert(resource, DefaultLanguage);
-					pathEncoder = AndroidResourceNameEncoder.EncodeFileSystemPath;
+					pathEncoder = s => AndroidResourceNameEncoder.EncodeFileSystemPath(s, AndroidAssetsPrefix ?? "Assets");
 					break;
 				default:
 					Log.LogMessage($"Skipping unknown platform {TargetPlatform}");
@@ -62,7 +64,7 @@ namespace Uno.UI.Tasks.Assets
 
 			Assets = ContentItems.ToArray();
 			RetargetedAssets = Assets
-				.Select((Func<ITaskItem, TaskItem>)(asset => ProcessContentItem(asset, resourceToTargetPath, pathEncoder)))
+				.Select(asset => ProcessContentItem(asset, resourceToTargetPath, pathEncoder))
 				.Where(a => a != null)
 				.ToArray();
 

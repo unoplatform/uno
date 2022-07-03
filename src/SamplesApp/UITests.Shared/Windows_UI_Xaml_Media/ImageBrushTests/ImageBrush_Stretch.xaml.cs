@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Media.ImageBrushTests
 {
-	[Sample("ImageBrushTestControl")]
+	[Sample("Brushes")]
 	public sealed partial class ImageBrush_Stretch : Page
     {
         public ImageBrush_Stretch()

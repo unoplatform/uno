@@ -1,7 +1,6 @@
-﻿namespace Windows.Networking.Connectivity
+﻿namespace Windows.Networking.Connectivity;
+
+internal interface IConnectionProfileExtension
 {
-	internal interface IConnectionProfileExtension
-	{
-		NetworkConnectivityLevel GetNetworkConnectivityLevel();
-	}
+	NetworkConnectivityLevel GetNetworkConnectivityLevel();
 }

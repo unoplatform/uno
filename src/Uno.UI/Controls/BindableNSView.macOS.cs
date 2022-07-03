@@ -13,6 +13,11 @@ using System.ComponentModel;
 using Windows.UI.Xaml.Media;
 using AppKit;
 using System.Collections;
+using ObjCRuntime;
+
+#if !NET6_0_OR_GREATER
+using NativeHandle = System.IntPtr;
+#endif
 
 namespace Uno.UI.Controls
 {
@@ -53,13 +58,14 @@ namespace Uno.UI.Controls
 		{
 			Initialize();
 			WantsLayer = true;
-			if (Layer != null)
+			var layer = Layer;
+			if (layer != null)
 			{
-				Layer.MasksToBounds = false;
+				layer.MasksToBounds = false;
 			}
 		}
 
-		public BindableNSView(IntPtr handle)
+		public BindableNSView(NativeHandle handle)
 			: base(handle)
 		{
 			Initialize();

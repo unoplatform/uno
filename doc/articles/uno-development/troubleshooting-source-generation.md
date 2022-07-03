@@ -20,6 +20,23 @@ Conversely, Uno.SourceGeneration generators can be used by setting this:
 </PropertyGroup>
 ```
 
+## Adding generated files C# pragma
+In some cases, the generated code may use patterns that cause C# to raise warnings, and in order to silence those warnings, the generated code can contain a set of custom C# pragma.
+
+To define a pragma, in your csproj add the following:
+```xml
+<ItemGroup>
+	<XamlGeneratorAnalyzerSuppressions Include="csharp-618 // Ignore obsolete members warnings" />
+</ItemGroup>
+```
+
+It is also possible to have `SuppressMessageAttribute` specified in the code, by using the following syntax:
+```xml
+<ItemGroup>
+    <XamlGeneratorAnalyzerSuppressions Include="mycategory.subcategory-CAT0042" />
+</ItemGroup>
+```
+
 ## Debugging the XAML Source Generator
 It is possible to step into the XAML generator by adding the following property:
 ```xml
@@ -28,6 +45,19 @@ It is possible to step into the XAML generator by adding the following property:
 </PropertyGroup>
 ```
 Setting this property will popup a Debugger window allowing the selection of a visual studio instance, giving the ability to set breakpoints and trace the generator.
+
+## Historical dumping of generated XAML files
+In the context of hot reload, troubleshooting the generator's state may be useful. In this case, the generator maintains a state in order to work around the current edition limitations (e.g. editing lambdas is not possible in .NET 6).
+
+In order to see all the generated files historically, set the following property in the project:
+```xml
+<PropertyGroup>
+    <UnoXamlHistoricalOutputGenerationPath>$(MSBuildThisFileDirectory)obj\generation-history</UnoXamlHistoricalOutputGenerationPath>
+</PropertyGroup>
+```
+
+> [!WARNING]
+> Setting this property will generate a lot of data, particularly when editing files in the editor, as most key strokes invoke the source generators.
 
 ## Troubleshooting Uno.SourceGeneration based generation
 

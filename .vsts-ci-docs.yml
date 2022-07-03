@@ -4,28 +4,29 @@ trigger:
       - master
       - release/beta/*
       - release/stable/*
+      - feature/*
 
-pr:
+pr: 
   branches:
     include:
       - master
       - release/beta/*
       - release/stable/*
+      - feature/*
 
-  paths:
-    include:
-    - '/'
-    exclude:
-    - .dependabot/
-    - .github/
-    - .editorconfig
-    - '*.md'
-    - .all-contributorsrc
-      
 variables:
-  windowsHostedVMImage: 'windows-2019'
+  windows2022HostedVMImage: 'windows-2022'
+  linuxVMImage: 'ubuntu-latest'
 
 jobs:
+- template: build/ci/.azure-devops-commitsar.yml
+  parameters:
+    vmImage: '$(linuxVMImage)'
+
+- template: build/ci/.azure-devops-pipeline-validations.yml
+  parameters:
+    vmImage: '$(linuxVMImage)'
+
 - template: build/ci/.azure-devops-docs.yml
   parameters:
-    vmImage: '$(windowsHostedVMImage)'
+    vmImage: '$(windows2022HostedVMImage)'

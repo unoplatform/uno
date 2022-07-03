@@ -16,7 +16,7 @@ using Windows.UI.Input;
 
 namespace UITests.Windows_UI_Input.GestureRecognizerTests
 {
-	[Sample("Gesture recognizer")]
+	[Sample("Gesture Recognizer")]
 	public sealed partial class Manipulation_Inertia : Page
 	{
 		public Manipulation_Inertia()

@@ -68,3 +68,5 @@ using System.Runtime.InteropServices;
 #if !MOBILE && !NETSTANDARD2_0 && !NET5_0
 [assembly: TypeForwardedTo (typeof (System.Windows.Markup.ValueSerializerAttribute))]
 #endif
+
+[assembly: InternalsVisibleTo("Uno.Xaml.Tests")]

@@ -21,7 +21,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[Sample("Shapes", "Rectangle_Rounding")]
+	[Sample("Shapes")]
 	public sealed partial class Rectangle_Rounding : Page
     {
         public Rectangle_Rounding()

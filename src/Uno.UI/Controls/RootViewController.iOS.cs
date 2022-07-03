@@ -8,6 +8,11 @@ using Windows.UI.Xaml.Media;
 using Uno.Extensions;
 using Windows.Devices.Sensors;
 using CoreGraphics;
+using ObjCRuntime;
+
+#if !NET6_0_OR_GREATER
+using NativeHandle = System.IntPtr;
+#endif
 
 namespace Uno.UI.Controls
 {
@@ -38,7 +43,7 @@ namespace Uno.UI.Controls
 			Initialize();
 		}
 
-		public RootViewController(IntPtr handle)
+		public RootViewController(NativeHandle handle)
 			: base(handle)
 		{
 			Initialize();

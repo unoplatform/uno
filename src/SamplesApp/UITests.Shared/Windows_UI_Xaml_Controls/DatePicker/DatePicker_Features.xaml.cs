@@ -7,7 +7,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.DatePicker
 {
-	[Sample("Date Picking", IgnoreInSnapshotTests = true)]
+	[Sample("Pickers", IgnoreInSnapshotTests = true)]
 	public sealed partial class DatePicker_Features : Page
 	{
 		public static readonly DependencyProperty PickedDateProperty =

@@ -39,6 +39,31 @@ namespace Uno.Extensions
 		{
 			builder.AppendLine(CultureInfo.InvariantCulture, pattern, replacements);
 		}
+		
+		/// <summary>
+		/// Sane version of <see cref="IndentedStringBuilder.AppendLine(string)"/> that actually appends a newline.
+		/// </summary>
+		/// <param name="text">The string to append.</param>
+		public static void AppendLine2(this IIndentedStringBuilder builder, string text)
+		{
+			builder.AppendLine(text);
+			builder.AppendLine();
+		}
+
+		public static IDisposable Indent(this IIndentedStringBuilder builder, string opening, string closing = null)
+		{
+			builder.AppendLine2(opening);
+			var block = builder.Indent();
+
+			return new DisposableAction(() =>
+			{
+				block.Dispose();
+				if (closing != null)
+				{
+					builder.AppendLine2(closing);
+				}
+			});
+		}
 
 		public static void AppendLineInvariant(this IIndentedStringBuilder builder, int indentLevel, string pattern, params object[] replacements)
 		{

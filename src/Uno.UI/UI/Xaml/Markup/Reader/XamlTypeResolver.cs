@@ -162,20 +162,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 		}
 
-		/// <summary>
-		/// Returns true if the property has an accessible public setter and has a parameterless constructor
-		/// </summary>
-		public bool IsNewableProperty(PropertyInfo property, out Type? newableType)
-		{
-			var namedType = property.PropertyType as Type;
-
-			var isNewable = (property.SetMethod?.IsPublic ?? false) &&
-				namedType.SelectOrDefault(nts => nts.GetConstructors().Any(ms => ms.GetParameters().Length == 0), false);
-
-			newableType = isNewable ? namedType : null;
-
-			return isNewable;
-		}
+		public bool IsNewableType(Type type) => type.GetConstructors().Any(x => x.GetParameters().Length == 0);
 
 		public DependencyProperty? FindDependencyProperty(XamlMemberDefinition member)
 		{
@@ -242,8 +229,13 @@ namespace Windows.UI.Xaml.Markup.Reader
 		private bool IsInitializableProperty(PropertyInfo property)
 			=> !(property.SetMethod?.IsPublic ?? false);
 
-		public bool IsCollectionOrListType(Type type)
+		public bool IsCollectionOrListType(Type? type)
 		{
+			if (type == null)
+			{
+				return false;
+			}
+
 			return IsImplementingInterface(type, typeof(global::System.Collections.ICollection)) ||
 				IsImplementingInterface(type, typeof(ICollection<>)) ||
 				IsImplementingInterface(type, typeof(global::System.Collections.IList)) ||

@@ -1,13 +1,13 @@
 {
   "SignClient": {
-	"AzureAd": {
-	"AADInstance": "https://login.microsoftonline.com/",
-	"ClientId": "8138ef14-0570-432c-8aad-9f73f05297d5",
-	"TenantId": "6d53ef61-b6d1-4150-ae0b-43b90e75e0cd"
-	},
-	"Service": {
-	  "Url": "https://nv-signservice.azurewebsites.net",
-	  "ResourceId": "https://SignService/715027a2-5a78-4271-9a16-f4502f1706fe"
-	}
+    "AzureAd": {
+      "AADInstance": "https://login.microsoftonline.com/",
+      "ClientId": "80441c68-7fd8-4866-8dd1-8c78ff585a8a",
+      "TenantId": "a297d6c0-b635-41a3-b1e3-558efe71e413"
+    },
+    "Service": {
+      "Url": "https://uno-signservice.azurewebsites.net",
+      "ResourceId": "https://SignService.platformuno.onmicrosoft.com/6dd8824b-6147-4b02-a1af-ea83b0ffebdb"
+    }
   }
 }

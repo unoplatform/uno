@@ -20,11 +20,12 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+using ObjCRuntime;
 
 using Uno.UI.UI.Xaml.Controls.Layouter;
 
-#if NET6_0_OR_GREATER
-using ObjCRuntime;
+#if !NET6_0_OR_GREATER
+using NativeHandle = System.IntPtr;
 #endif
 
 #if XAMARIN_IOS_UNIFIED
@@ -669,7 +670,7 @@ namespace Windows.UI.Xaml.Controls
 		/// Used by the Xamarin Runtime to materialize native 
 		/// objects that may have been collected in the managed world.
 		/// </remarks>
-		public ListViewBaseInternalContainer(IntPtr handle) : base(handle) { }
+		public ListViewBaseInternalContainer(NativeHandle handle) : base(handle) { }
 
 		public ListViewBaseInternalContainer()
 		{

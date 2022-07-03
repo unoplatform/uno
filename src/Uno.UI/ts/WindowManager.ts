@@ -279,7 +279,7 @@ namespace Uno.UI {
 			}
 
 			if (contentDefinition) {
-				let classes = element.classList.value; 
+				let classes = element.classList.value;
 				for (const className of uiElementRegistration.classNames) {
 					classes += " uno-" + className;
 				}
@@ -1281,7 +1281,7 @@ namespace Uno.UI {
 			*
 			* @param maxWidth string containing width in pixels. Empty string means infinite.
 			* @param maxHeight string containing height in pixels. Empty string means infinite.
-		    * @param measureContent if we're interested by the content of the control (<img>'s image, <input>'s text...)
+			* @param measureContent if we're interested by the content of the control (<img>'s image, <input>'s text...)
 			*/
 		public measureView(viewId: string, maxWidth: string, maxHeight: string, measureContent: boolean = true): string {
 
@@ -1481,7 +1481,7 @@ namespace Uno.UI {
 			const opts = <ScrollToOptions>({
 				left: params.HasLeft ? params.Left : undefined,
 				top: params.HasTop ? params.Top : undefined,
-				behavior: <ScrollBehavior>(params.DisableAnimation ? "auto" : "smooth")
+				behavior: <ScrollBehavior>(params.DisableAnimation ? "instant" : "smooth")
 			});
 
 			elt.scrollTo(opts);
@@ -1727,7 +1727,8 @@ namespace Uno.UI {
 
 			window.addEventListener("resize", x => this.resize());
 			window.addEventListener("contextmenu", x => {
-				if (!(x.target instanceof HTMLInputElement)) {
+				if (!(x.target instanceof HTMLInputElement) ||
+					x.target.classList.contains("context-menu-disabled")) {
 					x.preventDefault();
 				}
 			})

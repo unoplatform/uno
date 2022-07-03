@@ -29,6 +29,7 @@ using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using System.Runtime.CompilerServices;
 using Windows.Graphics.Display;
+using Uno.UI.Extensions;
 
 #if __IOS__
 using UIKit;
@@ -38,6 +39,14 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IXUidProvider, IUIElement
 	{
+		private static readonly Dictionary<Type, RoutedEventFlag> ImplementedRoutedEvents
+			= new Dictionary<Type, RoutedEventFlag>();
+
+		private static readonly TypedEventHandler<UIElement, BringIntoViewRequestedEventArgs> OnBringIntoViewRequestedHandler =
+			(UIElement sender, BringIntoViewRequestedEventArgs args) => sender.OnBringIntoViewRequested(args);
+
+		private static readonly Type[] _bringIntoViewRequestedArgs = new[] { typeof(BringIntoViewRequestedEventArgs) };
+
 		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
 		private XamlRoot _xamlRoot = null;
 		private string _uid;
@@ -73,6 +82,78 @@ namespace Windows.UI.Xaml
 
 		private void Initialize()
 		{
+			SubscribeToOverridenRoutedEvents();
+		}
+
+		private void SubscribeToOverridenRoutedEvents()
+		{
+			// Overridden Events are registered from constructor to ensure they are
+			// registered first in event handlers.
+			// https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.control.onpointerpressed#remarks
+
+			var implementedEvents = GetImplementedRoutedEventsForType(GetType());
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.BringIntoViewRequested))
+			{
+				BringIntoViewRequested += OnBringIntoViewRequestedHandler;
+			}
+		}
+
+		internal static RoutedEventFlag GetImplementedRoutedEventsForType(Type type)
+		{
+			// TODO: GetImplementedRoutedEvents() should be evaluated at compile-time
+			// and the result placed in a partial file.
+			if (ImplementedRoutedEvents.TryGetValue(type, out var result))
+			{
+				return result;
+			}
+
+			RoutedEventFlag implementedRoutedEvents;
+
+			var baseClass = type.BaseType;
+			if (baseClass == null || type == typeof(Control) || type == typeof(UIElement))
+			{
+				implementedRoutedEvents = RoutedEventFlag.None;
+			}
+			else
+			{
+				implementedRoutedEvents = EvaluateImplementedUIElementRoutedEvents(type);
+
+				if (typeof(Control).IsAssignableFrom(type))
+				{
+					implementedRoutedEvents |= Control.EvaluateImplementedControlRoutedEvents(type);
+				}
+			}
+
+			return ImplementedRoutedEvents[type] = implementedRoutedEvents;
+		}
+
+		internal static RoutedEventFlag EvaluateImplementedUIElementRoutedEvents(Type type)
+		{
+			RoutedEventFlag result = RoutedEventFlag.None;
+
+			if (GetIsEventOverrideImplemented(type, nameof(OnBringIntoViewRequested), _bringIntoViewRequestedArgs))
+			{
+				result |= RoutedEventFlag.BringIntoViewRequested;
+			}
+
+			return result;
+		}
+
+		private protected static bool GetIsEventOverrideImplemented(Type type, string name, Type[] args)
+		{
+			var method = type
+				.GetMethod(
+					name,
+					BindingFlags.NonPublic | BindingFlags.Instance,
+					null,
+					args,
+					null);
+
+			return method != null
+				&& method.IsVirtual
+				&& method.DeclaringType != typeof(UIElement)
+				&& method.DeclaringType != typeof(Control);
 		}
 
 		private protected virtual bool IsTabStopDefaultValue => false;
@@ -411,7 +492,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY)
 		{
-			var parent = this.GetParent();
+			var parent = VisualTreeHelper.GetParent(this);
 			switch (parent)
 			{
 				case UIElement elt:
@@ -541,7 +622,7 @@ namespace Windows.UI.Xaml
 				for (var i = 0; i < MaxLayoutIterations; i++)
 				{
 					// On Android, Measure and arrange are the same
-					if (root.IsMeasureOrMeasureDirtyPath)
+					if (root.IsMeasureDirtyOrMeasureDirtyPath)
 					{
 						root.Measure(bounds.Size);
 						root.Arrange(bounds);
@@ -552,13 +633,13 @@ namespace Windows.UI.Xaml
 					}
 				}
 #else
-			for (var i = 0; i < MaxLayoutIterations; i++)
+			for (var i = MaxLayoutIterations; i > 0; i--)
 			{
-				if (root.IsMeasureOrMeasureDirtyPath)
+				if (root.IsMeasureDirtyOrMeasureDirtyPath)
 				{
 					root.Measure(bounds.Size);
 				}
-				else if (root.IsArrangeDirty)
+				else if (root.IsArrangeDirtyOrArrangeDirtyPath)
 				{
 					root.Arrange(bounds);
 				}
@@ -756,24 +837,6 @@ namespace Windows.UI.Xaml
 #endif
 		}
 #endif
-
-		public void StartBringIntoView()
-		{
-			StartBringIntoView(new BringIntoViewOptions());
-		}
-
-		public void StartBringIntoView(BringIntoViewOptions options)
-		{
-#if __IOS__ || __ANDROID__
-			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-			{
-				// This currently doesn't support nested scrolling.
-				// This currently doesn't support BringIntoViewOptions.AnimationDesired.
-				var scrollContentPresenter = this.FindFirstParent<ScrollContentPresenter>();
-				scrollContentPresenter?.MakeVisible(this, options.TargetRect ?? Rect.Empty);
-			});
-#endif
-		}
 
 		internal virtual bool IsViewHit() => true;
 

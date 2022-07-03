@@ -66,6 +66,11 @@
     Force the compilation using Roslyn Generators on net6.0 and later
     -->
     <UnoUIUseRoslynSourceGenerators Condition="$(TargetFramework.StartsWith('net6'))">true</UnoUIUseRoslynSourceGenerators>
+	  
+    <!--
+    Force the compilation using Roslyn Generators on net461 (Unit Tests)
+    -->
+    <UnoUIUseRoslynSourceGenerators Condition="'$(TargetFramework)'=='net461'">true</UnoUIUseRoslynSourceGenerators>
   </PropertyGroup>
 
   <!--

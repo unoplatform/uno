@@ -11,7 +11,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.ProgressRing
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[Sample("Progress", "WinUI")]
+	[Sample("Progress", "MUX")]
 	public sealed partial class WinUIProgressRing_CustomSources : Page
     {
         public WinUIProgressRing_CustomSources()

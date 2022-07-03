@@ -345,32 +345,43 @@ namespace SamplesApp.UITests.TestFramework
 		#region Validation core (ExpectedPixels)
 		private static bool Validate(ExpectedPixels expectation, Bitmap actualBitmap, double expectedToActualScale, StringBuilder report)
 		{
-			report.AppendLine($"{expectation.Name}:");
-
-			bool isSuccess;
-			switch (expectation.Tolerance.OffsetKind)
+			foreach (var pixels in expectation.GetAllPossibilities())
 			{
-				case LocationToleranceKind.PerRange:
-					isSuccess = GetLocationOffsets(expectation)
-						.Any(offset => GetPixelCoordinates(expectation)
-							.All(pixel => ValidatePixel(actualBitmap, expectation, expectedToActualScale, pixel, offset, report)));
-					break;
+				report.AppendLine($"{pixels.Name}:");
 
-				case LocationToleranceKind.PerPixel:
-					isSuccess = GetPixelCoordinates(expectation)
-						.All(pixel => GetLocationOffsets(expectation)
-							.Any(offset => ValidatePixel(actualBitmap, expectation, expectedToActualScale, pixel, offset, report)));
-					break;
+				if (pixels.Values is null)
+				{
+					report.AppendLine("INVALID EXPECTATION: No pixels defined.");
+					continue;
+				}
 
-				default:
-					throw new ArgumentOutOfRangeException(nameof(expectation.Tolerance.OffsetKind));
+				bool isSuccess;
+				switch (pixels.Tolerance.OffsetKind)
+				{
+					case LocationToleranceKind.PerRange:
+						isSuccess = GetLocationOffsets(pixels)
+							.Any(offset => GetPixelCoordinates(pixels)
+								.All(pixel => ValidatePixel(actualBitmap, pixels, expectedToActualScale, pixel, offset, report)));
+						break;
+
+					case LocationToleranceKind.PerPixel:
+						isSuccess = GetPixelCoordinates(pixels)
+							.All(pixel => GetLocationOffsets(pixels)
+								.Any(offset => ValidatePixel(actualBitmap, pixels, expectedToActualScale, pixel, offset, report)));
+						break;
+
+					default:
+						throw new ArgumentOutOfRangeException(nameof(pixels.Tolerance.OffsetKind));
+				}
+
+				if (isSuccess) // otherwise the report has already been full-filled
+				{
+					report?.AppendLine("\tOK");
+					return isSuccess;
+				}
 			}
 
-			if (isSuccess) // otherwise the report has already been full-filled
-			{
-				report?.AppendLine("\tOK");
-			}
-			return isSuccess;
+			return false;
 		}
 
 		private static IEnumerable<(int x, int y)> GetLocationOffsets(ExpectedPixels expectation)
@@ -454,7 +465,7 @@ namespace SamplesApp.UITests.TestFramework
 		#endregion
 
 		private static Rectangle Normalize(Rectangle rect, Size size)
-			=> new Rectangle(
+			=> new (
 				rect.X < 0 ? size.Width + rect.X : rect.X,
 				rect.Y < 0 ? size.Height + rect.Y : rect.Y,
 				Math.Min(rect.Width, size.Width),

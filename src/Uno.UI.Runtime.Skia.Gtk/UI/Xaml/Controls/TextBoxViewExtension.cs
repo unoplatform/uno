@@ -43,6 +43,8 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			_window = window ?? throw new ArgumentNullException(nameof(window));
 		}
 
+		public bool IsNativeOverlayLayerInitialized => GetWindowTextInputLayer() is not null;
+
 		public static TextBoxViewExtension? ActiveTextBoxView { get; private set; }
 
 		private Fixed GetWindowTextInputLayer()
