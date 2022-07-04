@@ -126,8 +126,17 @@ namespace Windows.UI.Xaml
 			{
 				_lastTick = DateTimeOffset.UtcNow;
 
-				Tick?.Invoke(this, null);
+				try
+				{
+					Tick?.Invoke(this, null);
+				}
+				finally
+				{
+					OnTickFinished();
+				}
 			}
 		}
+
+		partial void OnTickFinished();
 	}
 }

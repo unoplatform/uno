@@ -14,13 +14,13 @@ partial class DispatcherTimer
 	private void StartNative(TimeSpan interval)
 	{
 		_timer ??= new Timer(_ => DispatchRaiseTick());
-		_timer.Change(ClampInterval(interval), ClampInterval(interval));
+		_timer.Change(ClampInterval(interval), Timeout.InfiniteTimeSpan);
 	}
 
 	private void StartNative(TimeSpan dueTime, TimeSpan interval)
 	{
 		_timer ??= new Timer(_ => DispatchRaiseTick());
-		_timer.Change(ClampInterval(dueTime), ClampInterval(interval));
+		_timer.Change(ClampInterval(dueTime), Timeout.InfiniteTimeSpan);
 	}
 
 	private void DispatchRaiseTick()
@@ -35,9 +35,17 @@ partial class DispatcherTimer
 		CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, RaiseTick);
 	}
 
+	partial void OnTickFinished()
+	{
+		if (IsEnabled)
+		{
+			_timer.Change(ClampInterval(Interval), Timeout.InfiniteTimeSpan);
+		}
+	}
+
 	private void StopNative()
 	{
-		_timer.Dispose();
+		_timer?.Dispose();
 		_timer = null;
 	}
 
