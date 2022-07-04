@@ -227,8 +227,9 @@ namespace Windows.UI.Xaml.Controls
 				.GetColorWithOpacity(Foreground, Colors.Transparent)
 				.Value;
 
+			// The size is incorrect at this point, we update it later in `UpdateLayout`.
 			var shader = Foreground is GradientBrush gb
-				? gb.GetShader(LayoutSlot.LogicalToPhysicalPixels())
+				? gb.GetShader(LayoutSlot.Size.LogicalToPhysicalPixels())
 				: null;
 
 			_paint = TextPaintPool.GetPaint(
@@ -267,10 +268,6 @@ namespace Windows.UI.Xaml.Controls
 			else
 			{
 				var textFormatted = new UnoSpannableString(Text);
-				foreach (var inline in GetEffectiveInlines())
-				{
-					textFormatted.SetPaintSpan(inline.inline.GetPaint(), inline.start, inline.end);
-				}
 				return textFormatted;
 			}
 		}
@@ -423,7 +420,6 @@ namespace Windows.UI.Xaml.Controls
 			if (!newLayout.Equals(layout))
 			{
 				layout = newLayout;
-
 				using (
 					_trace.WriteEventActivity(
 						TraceProvider.TextBlock_MakeLayoutStart,
@@ -432,6 +428,20 @@ namespace Windows.UI.Xaml.Controls
 				)
 				{
 					layout.Build();
+				}
+			}
+
+			if (Foreground is GradientBrush gb)
+			{
+				layout.Layout.Paint.SetShader(gb.GetShader(_measureLayout.MeasuredSize.LogicalToPhysicalPixels()));
+			}
+
+			if (_textFormatted is UnoSpannableString textFormatted)
+			{
+				foreach (var inline in GetEffectiveInlines())
+				{
+					// TODO: This doesn't work when the Inline background is a GradientBrush, but works for SolidColorBrush
+					textFormatted.SetPaintSpan(inline.inline.GetPaint(_measureLayout.MeasuredSize), inline.start, inline.end);
 				}
 			}
 
