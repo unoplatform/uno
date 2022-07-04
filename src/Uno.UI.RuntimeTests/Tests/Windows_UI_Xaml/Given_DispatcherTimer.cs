@@ -69,64 +69,6 @@ public class Given_DispatcherTimer
 	}
 
 	[TestMethod]
-	public async Task When_Change_Interval_Lower()
-	{
-		var dispatcherTimer = new DispatcherTimer();
-		dispatcherTimer.Interval = TimeSpan.FromMilliseconds(2000);
-		try
-		{
-			Stopwatch stopwatch = new();
-			dispatcherTimer.Tick += (s, e) =>
-			{
-				stopwatch.Stop();
-				dispatcherTimer.Stop();
-			};
-			dispatcherTimer.Start();
-			await Task.Delay(250);
-			dispatcherTimer.Interval = TimeSpan.FromMilliseconds(500);
-			stopwatch.Start();
-
-			await TestServices.WindowHelper.WaitFor(() => !dispatcherTimer.IsEnabled);
-			// We lowered the interval to 500ms after about 100ms elapsed, so the next tick should be scheduled
-			// at around 250ms after stopwatch started.
-			Assert.IsTrue(stopwatch.ElapsedMilliseconds >= 150 && stopwatch.ElapsedMilliseconds <= 350);
-		}
-		finally
-		{
-			dispatcherTimer.Stop();
-		}
-	}
-
-	[TestMethod]
-	public async Task When_Change_Interval_Elapsed()
-	{
-		var dispatcherTimer = new DispatcherTimer();
-		dispatcherTimer.Interval = TimeSpan.FromMilliseconds(2000);
-		try
-		{
-			Stopwatch stopwatch = new();
-			dispatcherTimer.Tick += (s, e) =>
-			{
-				stopwatch.Stop();
-				dispatcherTimer.Stop();
-			};
-			dispatcherTimer.Start();
-			await Task.Delay(500);
-			dispatcherTimer.Interval = TimeSpan.FromMilliseconds(200);
-			stopwatch.Start();
-
-			await TestServices.WindowHelper.WaitFor(() => !dispatcherTimer.IsEnabled, 2000);
-			// We lowered the interval to 200ms after about 500ms elapsed, so the next tick should be scheduled
-			// right away.
-			Assert.IsTrue(stopwatch.ElapsedMilliseconds <= 100);
-		}
-		finally
-		{
-			dispatcherTimer.Stop();
-		}
-	}
-
-	[TestMethod]
 	public async Task When_Change_Interval_Higher()
 	{
 		var dispatcherTimer = new DispatcherTimer();
