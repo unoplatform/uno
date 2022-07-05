@@ -72,5 +72,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			items.Add($"Item {items.Count + 1}");
 		}
+
+
+
+		[TestMethod]
+		public async Task When_Flipview_Items_Modified()
+		{
+		   
+			var itemsSource = new ObservableCollection<string>();
+			AddItem(itemsSource);
+			AddItem(itemsSource);
+			AddItem(itemsSource);
+
+			var flipView = new FlipView
+			{
+				ItemsSource = itemsSource
+			};
+
+			WindowHelper.WindowContent = flipView;
+
+			await WindowHelper.WaitForLoaded(flipView);
+
+			await WindowHelper.WaitForResultEqual(0, () => flipView.SelectedIndex);
+
+			flipView.SelectedItem = itemsSource[2];
+			
+			await WindowHelper.WaitForResultEqual(2, () => flipView.SelectedIndex);			 
+
+			itemsSource.RemoveAt(2);
+
+#if __ANDROID__
+			await WindowHelper.WaitForResultEqual(0, () => flipView.SelectedIndex);
+#else
+			await WindowHelper.WaitForResultEqual(-1, () => flipView.SelectedIndex);
+#endif
+			itemsSource.Clear();
+			  
+			await WindowHelper.WaitForResultEqual(-1, () => flipView.SelectedIndex);
+
+		}
+
+
 	}
 }
