@@ -39,7 +39,7 @@ public class Given_DispatcherTimer
 		dispatcherTimer.Interval = TimeSpan.FromMilliseconds(200);
 		try
 		{
-			var firstTick = true;			
+			var firstTick = true;
 			Stopwatch stopwatch = new Stopwatch();
 			dispatcherTimer.Tick += (s, e) =>
 			{
@@ -57,7 +57,7 @@ public class Given_DispatcherTimer
 			};
 			dispatcherTimer.Start();
 			await TestServices.WindowHelper.WaitFor(() => !dispatcherTimer.IsEnabled);
-			
+
 			// The second tick must be scheduled only after the first one finishes completely -
 			// around 200ms must have elapsed on the stopwatch.
 			Assert.IsTrue(stopwatch.ElapsedMilliseconds >= 180);
@@ -90,6 +90,39 @@ public class Given_DispatcherTimer
 			// We increased the interval to 600ms after about 100ms elapsed, so the next tick should be scheduled
 			// around 500ms after stopwatch started.
 			Assert.IsTrue(stopwatch.ElapsedMilliseconds >= 400);
+		}
+		finally
+		{
+			dispatcherTimer.Stop();
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Exception_In_Tick()
+	{
+		var dispatcherTimer = new DispatcherTimer();
+		var simulatedExceptionMessage = "Simulated exception";
+		Application.Current.UnhandledException += (s, e) =>
+		{
+			if (e.Exception.Message == simulatedExceptionMessage)
+			{
+				e.Handled = true;
+			}
+		};
+		dispatcherTimer.Interval = TimeSpan.FromMilliseconds(100);
+		try
+		{
+			int tickCounter = 0;
+			dispatcherTimer.Tick += (s, e) =>
+			{
+				tickCounter++;
+				throw new InvalidOperationException(simulatedExceptionMessage);
+			};
+			dispatcherTimer.Start();
+			await TestServices.WindowHelper.WaitFor(() => tickCounter > 0);
+			await Task.Delay(200);
+			// Second tick never happens
+			Assert.AreEqual(tickCounter, 1);
 		}
 		finally
 		{
