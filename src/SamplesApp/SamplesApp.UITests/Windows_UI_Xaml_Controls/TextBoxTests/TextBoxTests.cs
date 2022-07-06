@@ -605,7 +605,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			defaultCasingTextBox.ClearText();
 			defaultCasingTextBox.EnterTextAndDismiss(text);
 
-			Assert.AreEqual(text, defaultCasingTextBox.GetDependencyPropertyValue("Text")?.ToString());
+			_app.WaitForText(defaultCasingTextBox, "Uno Platform");
 		}
 
 		[Test]
@@ -622,8 +622,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			lowerCasingTextBox.ClearText();
 			lowerCasingTextBox.EnterTextAndDismiss(text);
 
-			Assert.AreEqual("uno platform", lowerCasingTextBox.GetDependencyPropertyValue("Text")?.ToString());
-
+			_app.WaitForText(lowerCasingTextBox, "uno platform"); 
 		}
 
 		[Test]
@@ -638,9 +637,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			upperCasingTextBox.FastTap();
 			upperCasingTextBox.ClearText();
-			upperCasingTextBox.EnterTextAndDismiss(text); 
+			upperCasingTextBox.EnterTextAndDismiss(text);
 
-			Assert.AreEqual("UNO PLATFORM", upperCasingTextBox.GetDependencyPropertyValue("Text")?.ToString());
+			_app.WaitForText(upperCasingTextBox, "UNO PLATFORM");
 		}
 
 		[Test]
