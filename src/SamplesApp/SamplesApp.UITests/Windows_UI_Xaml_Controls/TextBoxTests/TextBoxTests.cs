@@ -595,7 +595,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 		[AutoRetry] 
 		public void TextBox_CharacterCasingDefault_ShouldAcceptAllCasing_Test()
 		{
-			const string text = "Uno Platform";
+			const string text = "Uno";
 
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_CharacterCasing");
 
@@ -605,14 +605,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			defaultCasingTextBox.ClearText();
 			defaultCasingTextBox.EnterTextAndDismiss(text);
 
-			_app.WaitForText(defaultCasingTextBox, "Uno Platform");
+			_app.WaitForText(defaultCasingTextBox, "Uno");
 		}
 
 		[Test]
 		[AutoRetry] 
 		public void TextBox_CharacterCasingLower_ShouldBeAllLower_Test()
 		{
-			const string text = "Uno Platform";
+			const string text = "Uno";
 
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_CharacterCasing");
 
@@ -622,14 +622,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			lowerCasingTextBox.ClearText();
 			lowerCasingTextBox.EnterTextAndDismiss(text);
 
-			_app.WaitForText(lowerCasingTextBox, "uno platform"); 
+			_app.WaitForText(lowerCasingTextBox, "uno"); 
 		}
 
 		[Test]
 		[AutoRetry]
 		public void TextBox_CharacterCasingUpper_ShouldBeAllUpper_Test()
 		{
-			const string text = "Uno Platform";
+			const string text = "Uno";
 
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_CharacterCasing");
 
@@ -639,7 +639,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			upperCasingTextBox.ClearText();
 			upperCasingTextBox.EnterTextAndDismiss(text);
 
-			_app.WaitForText(upperCasingTextBox, "UNO PLATFORM");
+			_app.WaitForText(upperCasingTextBox, "UNO");
 		}
 
 		[Test]
