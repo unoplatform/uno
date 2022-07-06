@@ -9,11 +9,11 @@ using WUX = Windows.UI.Xaml;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {
-    /// <summary>
-    /// UnoXamlHost control hosts UWP XAML content inside the Windows Presentation Foundation
-    /// </summary>
-    public partial class UnoXamlHost : UnoXamlHostBase
-    {
+	/// <summary>
+	/// UnoXamlHost control hosts UWP XAML content inside the Windows Presentation Foundation
+	/// </summary>
+	public partial class UnoXamlHost : UnoXamlHostBase
+	{
 		public UnoXamlHost()
 		{
 			this.DefaultStyleKey = typeof(UnoXamlHost);
@@ -36,11 +36,11 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		/// </summary>
 		/// <remarks>This UWP XAML element is the root element of the wrapped DesktopWindowXamlSource.</remarks>
 		[Browsable(true)]
-        public WUX.UIElement Child
-        {
-            get => ChildInternal;
+		public WUX.UIElement Child
+		{
+			get => ChildInternal;
 
-            set => ChildInternal = value;
-        }
-    }
+			set => ChildInternal = value;
+		}
+	}
 }

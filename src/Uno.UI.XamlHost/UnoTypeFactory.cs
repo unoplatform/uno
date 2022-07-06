@@ -35,7 +35,7 @@ static partial class UnoTypeFactory
 		var xamlRootMetadataProvider = WUX.Application.Current as WUX.Markup.IXamlMetadataProvider;
 		if (xamlRootMetadataProvider != null)
 		{
-			//TODO: This is a temporary workaround  #8978
+			//TODO: This is a temporary workaround  https://github.com/unoplatform/uno/issues/8978
 			//xamlType = xamlRootMetadataProvider.GetXamlType(xamlTypeName);
 		}
 

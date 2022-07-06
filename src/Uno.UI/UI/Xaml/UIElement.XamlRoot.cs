@@ -35,7 +35,7 @@ public partial class UIElement : DependencyObject, IXUidProvider, IUIElement
 				throw new InvalidOperationException("Cannot change XamlRoot for existing element");
 			}
 
-			// TODO: It should be possible to set XamlRoot when still null. #8978
+			// TODO: It should be possible to set XamlRoot when still null. https://github.com/unoplatform/uno/issues/8978
 		}
 	}
 

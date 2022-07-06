@@ -336,11 +336,11 @@ namespace Uno.UI.Skia.Platform
 			}
 		}
 
-		void IWpfHost.ReleasePointerCapture() => ReleaseMouseCapture(); //TODO: This should capture the correct type of pointer (stylus/mouse/touch) #8978[capture]
+		void IWpfHost.ReleasePointerCapture() => ReleaseMouseCapture(); //TODO: This should capture the correct type of pointer (stylus/mouse/touch) https://github.com/unoplatform/uno/issues/8978[capture]
 
 		void IWpfHost.SetPointerCapture() => CaptureMouse();
 
-		//TODO: This will need to be adjusted when multi-window support is added. #8978[windows]
+		//TODO: This will need to be adjusted when multi-window support is added. https://github.com/unoplatform/uno/issues/8978[windows]
 		WinUI.XamlRoot? IWpfHost.XamlRoot => WinUI.Window.Current?.RootElement?.XamlRoot;
 
 		WpfCanvas? IWpfHost.NativeOverlayLayer => NativeOverlayLayer;

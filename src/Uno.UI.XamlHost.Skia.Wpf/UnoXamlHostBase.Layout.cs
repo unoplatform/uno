@@ -67,7 +67,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 				return false;
 			}
 
-			//TODO: What should be the parent? #8978
+			//TODO: What should be the parent? https://github.com/unoplatform/uno/issues/8978
 			//if (WUX.Media.VisualTreeHelper.GetParent(_xamlSource.Content) == null)
 			//{
 			//    // If there's no parent to this content, it's not "live" or "loaded" in the tree yet.
@@ -93,7 +93,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			UpdateUnoSize();
 		}
 
-		//TODO: This is temporary workaround, should not be needed as per UWP islands. #8978
+		//TODO: This is temporary workaround, should not be needed as per UWP islands. https://github.com/unoplatform/uno/issues/8978
 		//Might be some missing logic. Maybe not needed now after Arrange and Measure works with XamlIslandRoot
 		private void UpdateUnoSize()
 		{

@@ -50,7 +50,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 		private void InitializeHost()
 		{
-			// TODO: These three lines are required here for initialization, but should be refactored later #8978
+			// TODO: These three lines are required here for initialization, but should be refactored later https://github.com/unoplatform/uno/issues/8978
 			WpfHost.RegisterExtensions();
 
 			_designMode = DesignerProperties.GetIsInDesignMode(this);
@@ -71,7 +71,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			_renderer?.Render(drawingContext);
 		}
 
-		void IWpfHost.ReleasePointerCapture() => ReleaseMouseCapture(); //TODO: This should capture the correct type of pointer (stylus/mouse/touch) #8978[capture]
+		void IWpfHost.ReleasePointerCapture() => ReleaseMouseCapture(); //TODO: This should capture the correct type of pointer (stylus/mouse/touch) https://github.com/unoplatform/uno/issues/8978[capture]
 
 		void IWpfHost.SetPointerCapture() => CaptureMouse();
 

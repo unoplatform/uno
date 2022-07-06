@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				if (newIsOpen)
 				{
-#if !__SKIA__
+#if !__SKIA__ // The OpenPopup method should be moved out of Window in general https://github.com/unoplatform/uno/issues/8978
 					_closePopup.Disposable = Window.Current.OpenPopup(this);
 #else
 					var currentXamlRoot = XamlRoot ?? CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot;

@@ -70,7 +70,7 @@ internal partial class InputManager
 		{
 			if (_pointerExtension is null)
 			{
-				ApiExtensibility.CreateInstance(typeof(PointerManager), out _pointerExtension); // TODO: Add IPointerExtension implementation to all Skia targets and create instance per XamlRoot #8978
+				ApiExtensibility.CreateInstance(typeof(PointerManager), out _pointerExtension); // TODO: Add IPointerExtension implementation to all Skia targets and create instance per XamlRoot https://github.com/unoplatform/uno/issues/8978
 			}
 			_inputManager = inputManager;
 

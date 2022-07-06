@@ -1,4 +1,4 @@
-﻿#pragma warning disable 67 // TODO: Focus-related members are currently unused #8978
+﻿#pragma warning disable 67 // TODO: Focus-related members are currently unused https://github.com/unoplatform/uno/issues/8978
 
 using System;
 using Uno.UI.Xaml.Core;
@@ -41,7 +41,7 @@ public partial class DesktopWindowXamlSource : IDisposable
 	/// <summary>
 	/// Gets a value that indicates whether the DesktopWindowXamlSource currently has focus in the desktop application.
 	/// </summary>
-	public bool HasFocus => false; //TODO: Always false currently, should adhere to its purpose #8978[focus]
+	public bool HasFocus => false; //TODO: Always false currently, should adhere to its purpose https://github.com/unoplatform/uno/issues/8978[focus]
 
 	/// <summary>
 	/// Gets or sets the Windows.UI.Xaml.UIElement object that you want to host in the application.
@@ -69,7 +69,7 @@ public partial class DesktopWindowXamlSource : IDisposable
 	/// </summary>
 	/// <param name="request">An object that specifies the reason and other optional info for the focus navigation.</param>
 	/// <returns>An object that provides data for the focus navigation request.</returns>
-	public XamlSourceFocusNavigationResult NavigateFocus(XamlSourceFocusNavigationRequest request) => new XamlSourceFocusNavigationResult(false); //TODO: Always false currently, should adhere to its purpose #8978[focus]
+	public XamlSourceFocusNavigationResult NavigateFocus(XamlSourceFocusNavigationRequest request) => new XamlSourceFocusNavigationResult(false); //TODO: Always false currently, should adhere to its purpose https://github.com/unoplatform/uno/issues/8978[focus]
 
 	/// <summary>
 	/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

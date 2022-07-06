@@ -70,7 +70,7 @@ internal static class MetadataProviderDiscovery
 			{
 				yield return provider;
 
-				// TODO: Yield break is weird here, investigate in WCT issues. #8978
+				// TODO: Yield break is weird here, investigate in WCT issues. https://github.com/unoplatform/uno/issues/8978
 				//if (typeof(WUX.Application).IsAssignableFrom(provider.GetType()))
 				//{
 				//	System.Diagnostics.Debug.WriteLine("Xaml application has been created");

@@ -38,7 +38,7 @@ namespace Uno.UI.Xaml.Core
 		}
 
 		// TODO: Notifies Skia hosts that the content root was assigned.
-		// Not part of MUX code. #8978
+		// Not part of MUX code. https://github.com/unoplatform/uno/issues/8978
 		public event EventHandler? CoreWindowContentRootSet;
 
 		public ContentRoot CreateContentRoot(ContentRootType type, Color backgroundColor, UIElement? rootElement)

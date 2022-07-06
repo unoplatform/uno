@@ -25,7 +25,7 @@ public sealed partial class XamlRoot
 	/// </summary>
 	public event TypedEventHandler<XamlRoot, XamlRootChangedEventArgs>? Changed;
 
-	// TODO:MZ: This might not be a border potentially, behaves differently on XamlIslands #8978
+	// TODO:MZ: This might not be a border potentially, behaves differently on XamlIslands https://github.com/unoplatform/uno/issues/8978
 	/// <summary>
 	/// Gets the root element of the XAML element tree.
 	/// </summary>
@@ -49,7 +49,7 @@ public sealed partial class XamlRoot
 			var rootElement = VisualTree.RootElement;
 			if (rootElement is RootVisual)
 			{
-				// TODO: Support multiple windows! #8978[windows]
+				// TODO: Support multiple windows! https://github.com/unoplatform/uno/issues/8978[windows]
 				return Window.Current.Bounds.Size;
 			}
 			else if (rootElement is XamlIslandRoot xamlIslandRoot)
@@ -71,7 +71,7 @@ public sealed partial class XamlRoot
 			var rootElement = VisualTree.RootElement;
 			if (rootElement is RootVisual rootVisual)
 			{
-				//TODO: Support multiple windows! #8978[windows]
+				//TODO: Support multiple windows! https://github.com/unoplatform/uno/issues/8978[windows]
 				return Window.Current.Bounds;
 			}
 			else if (rootElement is XamlIslandRoot xamlIslandRoot)
