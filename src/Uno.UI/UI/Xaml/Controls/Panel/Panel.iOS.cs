@@ -21,11 +21,19 @@ namespace Windows.UI.Xaml.Controls
 		public Panel()
 		{
 			Initialize();
-
-			this.RegisterLoadActions(() => UpdateBackground(), () => _borderRenderer.Clear());
 		}
 
 		partial void Initialize();
+
+		partial void OnLoadedPartial()
+		{
+			UpdateBackground();
+		}
+
+		partial void OnUnloadedPartial()
+		{
+			_borderRenderer.Clear();
+		}
 
 		public override void SubviewAdded(UIView uiview)
 		{

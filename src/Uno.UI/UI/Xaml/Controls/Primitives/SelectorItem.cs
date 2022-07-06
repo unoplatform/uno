@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Uno.Disposables;
 using System.Text;
 using Windows.UI.Xaml.Input;
@@ -41,6 +42,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			Clicked
 		}
 
+		private static readonly Stopwatch _chronometer = Stopwatch.StartNew();
+
 		/// <summary>
 		/// Delay time before setting the pressed state of an item to false, to allow time for the Pressed visual state to be drawn and perceived. 
 		/// </summary>
@@ -65,7 +68,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private string _currentState;
 		private uint _goToStateRequest;
-		private DateTime _pauseStateUpdateUntil;
+		private TimeSpan _pauseStateUpdateUntil;
 		private bool _canRaiseClickOnPointerRelease;
 
 		public SelectorItem()
@@ -158,7 +161,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				_currentState = pressedState;
 				VisualStateManager.GoToState(this, pressedState, true);
 
-				_pauseStateUpdateUntil = DateTime.Now + MinTimeBetweenPressStates;
+				_pauseStateUpdateUntil = _chronometer.Elapsed + MinTimeBetweenPressStates;
 
 				delay = MinTimeBetweenPressStates;
 				pause = false;
@@ -173,7 +176,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 			else
 			{
-				delay = _pauseStateUpdateUntil - DateTime.Now;
+				delay = _pauseStateUpdateUntil - _chronometer.Elapsed;
 				pause = false;
 			}
 
@@ -204,7 +207,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (pause)
 					{
-						_pauseStateUpdateUntil = DateTime.Now + MinTimeBetweenPressStates;
+						_pauseStateUpdateUntil = _chronometer.Elapsed + MinTimeBetweenPressStates;
 					}
 				});
 			}

@@ -63,6 +63,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			Assert.IsFalse(popup.IsLightDismissEnabled);
 		}
 
+		[TestMethod]
+		public void When_Closed_Immediately()
+		{
+			var popup = new Popup();
+			popup.IsOpen = true;
+			// Should not throw
+			popup.IsOpen = false;
+		}
+
 		private static bool CanReach(DependencyObject startingElement, DependencyObject targetElement)
 		{
 			var currentElement = startingElement;

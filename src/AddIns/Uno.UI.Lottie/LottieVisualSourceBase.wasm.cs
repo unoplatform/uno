@@ -99,8 +99,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				}
 				else
 				{
-					var documentPath = Windows.Storage.Helpers.AssetsPathBuilder.BuildAssetUri(UriSource?.PathAndQuery);
-					_domLoaded = false;
+					var documentPath = UriSource.Scheme.Equals("http") || UriSource.Scheme.Equals("https")
+					? UriSource.OriginalString
+					: Windows.Storage.Helpers.AssetsPathBuilder.BuildAssetUri(UriSource?.PathAndQuery);
 
 					js = new[]
 					{

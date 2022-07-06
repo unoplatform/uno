@@ -1025,6 +1025,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 						Margin = new Thickness(margin),
 						BorderBrush = new SolidColorBrush(Colors.Red),
 						BorderThickness = new Thickness(border),
+						Background = new SolidColorBrush(Colors.Pink),
 						Width = 300,
 						Height = 300,
 						HorizontalAlignment = hAlign,
@@ -1044,7 +1045,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				sv.ChangeView(offset.x, offset.y, zoomFactor: null, disableAnimation: true);
 
 				await RetryAssert(
-					$"scrolled to ({offset.x},{offset.y})",
+					$"after scrolled to ({offset.x},{offset.y}), actual rect is ",
 					() =>
 					{
 						var expected = new Rect(margin - offset.x, margin - offset.y, sut.Width, sut.Height);
@@ -1076,6 +1077,106 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					yield return (sv.ScrollableWidth, sv.ScrollableHeight);
 				}
 			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_Basic_Triple_Nesting()
+		{
+			var setup = await SetupTripleScrollViewerScenarioAsync();
+
+			var innerPoint = GetTransformedPoint(setup.item, setup.inner);
+			var middlePoint = GetTransformedPoint(setup.item, setup.middle);
+			var outerPoint = GetTransformedPoint(setup.item, setup.outer);
+
+			Assert.AreEqual(new Point(60, 60), innerPoint);
+			Assert.AreEqual(new Point(80, 80), middlePoint);
+			Assert.AreEqual(new Point(100, 100), outerPoint);
+		}		
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_Triple_Nesting_Margin_Item()
+		{
+			var setup = await SetupTripleScrollViewerScenarioAsync();
+
+			setup.item.Margin = new Thickness(0, 500, 0, 0);
+
+			await WaitForIdle();
+
+			var innerPoint = GetTransformedPoint(setup.item, setup.inner);
+			var middlePoint = GetTransformedPoint(setup.item, setup.middle);
+			var outerPoint = GetTransformedPoint(setup.item, setup.outer);
+
+			Assert.AreEqual(new Point(60, 520), innerPoint);
+			Assert.AreEqual(new Point(80, 540), middlePoint);
+			Assert.AreEqual(new Point(100, 560), outerPoint);
+		}
+		
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_Triple_Nesting_Scroll_Paddings()
+		{
+			var setup = await SetupTripleScrollViewerScenarioAsync();
+
+			setup.item.Margin = new Thickness(0, 500, 0, 0);
+			setup.middle.Padding = new Thickness(30, 300, 0, 0);
+			setup.outer.Padding = new Thickness(0, 200, 10, 0);
+
+			await WaitForIdle();
+
+			var innerPoint = GetTransformedPoint(setup.item, setup.inner);
+			var middlePoint = GetTransformedPoint(setup.item, setup.middle);
+			var outerPoint = GetTransformedPoint(setup.item, setup.outer);
+
+			Assert.AreEqual(new Point(80, 520), innerPoint);
+			Assert.AreEqual(new Point(110, 820), middlePoint);
+			Assert.AreEqual(new Point(110, 1020), outerPoint);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_Double_Nesting_Scroll_Offsets()
+		{
+			var outer = new ScrollViewer()
+			{
+				Padding = new Thickness(20),
+				Width = 300,
+				Height = 300,
+				Background = new SolidColorBrush(Colors.Red)
+			};
+			var inner = new ScrollViewer()
+			{
+				Padding = new Thickness(20),
+				Width = 400,
+				Height = 400,
+				Background = new SolidColorBrush(Colors.Yellow)
+			};
+			var item = new Border()
+			{
+				Width = 500,
+				Height = 500,
+				Background = new SolidColorBrush(Colors.Green)
+			};
+			outer.Content = inner;
+			inner.Content = item;
+
+			WindowContent = outer;
+
+			await WaitForLoaded(outer);
+			await WaitForIdle();
+
+			inner.ChangeView(0, 100, null, true);
+
+			var innerPoint = GetTransformedPoint(item, inner);
+			var outerPoint = GetTransformedPoint(item, outer);
+
+			Assert.AreEqual(new Point(20, -80), innerPoint);
+			Assert.AreEqual(new Point(40, -60), outerPoint);
 		}
 
 		private static double X(HorizontalAlignment alignment, double available, double used, double margin)
@@ -1124,6 +1225,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					await Task.Delay(10);
 				}
 			}
+		}
+
+		private async Task<(ScrollViewer outer, ScrollViewer middle, ScrollViewer inner, Border item)> SetupTripleScrollViewerScenarioAsync()
+		{
+			var outer = new ScrollViewer()
+			{
+				Padding = new Thickness(20),
+				Width = 300,
+				Height = 300,
+				Background = new SolidColorBrush(Colors.Red)
+			};
+			var middle = new ScrollViewer()
+			{
+				Padding = new Thickness(20),
+				Background = new SolidColorBrush(Colors.Orange)
+			};
+			var inner = new ScrollViewer()
+			{
+				Padding = new Thickness(20),
+				Background = new SolidColorBrush(Colors.Yellow)
+			};
+			var item = new Border()
+			{
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Colors.Green)
+			};
+			outer.Content = middle;
+			middle.Content = inner;
+			inner.Content = item;
+
+			WindowContent = outer;
+
+			await WaitForLoaded(outer);
+			await WaitForIdle();
+
+			return (outer, middle, inner, item);
+		}
+
+		private Point GetTransformedPoint(UIElement from, UIElement to)
+		{
+			var transform = from.TransformToVisual(to);
+			return transform.TransformPoint(default(Point));
 		}
 	}
 }

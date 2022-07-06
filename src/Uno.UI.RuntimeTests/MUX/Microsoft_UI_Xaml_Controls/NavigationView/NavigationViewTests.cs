@@ -1315,8 +1315,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 					navView.IsPaneOpen = isPaneOpen;
 					Content.UpdateLayout();
 
-					// Uno specific: Waiting for relayout is needed due to lifecycle differences
-					await TestServices.WindowHelper.WaitForRelayouted(navView);
+					// Uno specific: Waiting is needed due to lifecycle differences
+					await TestServices.WindowHelper.WaitForIdle();
 
 					Verify.AreEqual(expectedDefaultToolTip, ToolTipService.GetToolTip(menuItem1), $"Item 1's tooltip should have been \"{expectedDefaultToolTip ?? "null"}\".");
 					Verify.AreEqual(expectedCustomToolTip, ToolTipService.GetToolTip(menuItem2), $"Item 2's tooltip should have been {expectedCustomToolTip}.");

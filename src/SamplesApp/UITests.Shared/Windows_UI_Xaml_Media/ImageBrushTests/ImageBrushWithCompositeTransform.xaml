@@ -20,7 +20,7 @@
 			<DataTemplate>
 				<Border Width="150" Height="200">
 					<Border.Background>
-						<ImageBrush ImageSource="http://homepages.cae.wisc.edu/~ece533/images/fruits.png"
+						<ImageBrush ImageSource="/Assets/test_image_200_200.png"
 									Stretch="UniformToFill">
 							<ImageBrush.RelativeTransform>
 								<CompositeTransform CenterX=".5" CenterY=".5" ScaleX="1.25" ScaleY="1.25" Rotation="-30"/>

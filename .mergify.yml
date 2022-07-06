@@ -30,10 +30,3 @@ pull_request_rules:
         method: merge
         # https://doc.mergify.io/strict-workflow.html
         # https://doc.mergify.io/actions.html#label
-
-  - name: automatic merge for allcontributors pull requests
-    conditions:
-      - author=allcontributors[bot]
-    actions:
-      merge:
-        method: merge

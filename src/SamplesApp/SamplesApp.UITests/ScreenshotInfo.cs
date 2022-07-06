@@ -23,6 +23,11 @@ namespace SamplesApp.UITests
 		public static implicit operator ScreenshotInfo(FileInfo fi) => new ScreenshotInfo(fi, fi.Name);
 
 		public Bitmap GetBitmap() => _bitmap ??= new Bitmap(File.FullName);
+
+		public int Width => GetBitmap().Width;
+		
+		public int Height => GetBitmap().Height;
+
 		public void Dispose()
 		{
 			_bitmap?.Dispose();

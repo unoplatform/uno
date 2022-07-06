@@ -27,8 +27,6 @@ namespace Windows.UI.Xaml.Controls
 			InitializeContentPresenter();
 
 			IFrameworkElementHelper.Initialize(this);
-
-			this.RegisterLoadActions(UpdateBorder, () => _borderRenderer.Clear());
 		}
 
 		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom)

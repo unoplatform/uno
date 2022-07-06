@@ -31,7 +31,20 @@ namespace Windows.UI.Xaml.Controls
 
 		public Border()
 		{
-			this.RegisterLoadActions(UpdateBorder, () => _borderRenderer.Clear());
+		}
+
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+
+			UpdateBorder();
+		}
+
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			_borderRenderer.Clear();
 		}
 
 		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom)

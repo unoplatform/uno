@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 {
-	[SampleControlInfo("ContentControlTestsControl", "ContentControl_NoTemplateDataContext")]
+	[SampleControlInfo("ContentControl", "ContentControl_NoTemplateDataContext")]
 	public sealed partial class ContentControl_NoTemplateDataContext : UserControl
 	{
 		public ContentControl_NoTemplateDataContext()

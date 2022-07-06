@@ -140,7 +140,7 @@ namespace Uno.UI {
 		}
 
 		private containerElement: HTMLDivElement;
-		private rootContent: HTMLElement;
+		private rootElement: HTMLElement;
 
 		private cursorStyleElement: HTMLElement;
 
@@ -279,7 +279,7 @@ namespace Uno.UI {
 			}
 
 			if (contentDefinition) {
-				let classes = element.classList.value; 
+				let classes = element.classList.value;
 				for (const className of uiElementRegistration.classNames) {
 					classes += " uno-" + className;
 				}
@@ -1026,21 +1026,21 @@ namespace Uno.UI {
 		}
 
 		/**
-			* Set or replace the root content element.
+			* Set or replace the root element.
 			*/
-		public setRootContent(elementId?: number): string {
-			if (this.rootContent && Number(this.rootContent.id) === elementId) {
+		public setRootElement(elementId?: number): string {
+			if (this.rootElement && Number(this.rootElement.id) === elementId) {
 				return null; // nothing to do
 			}
 
-			if (this.rootContent) {
+			if (this.rootElement) {
 				// Remove existing
-				this.containerElement.removeChild(this.rootContent);
+				this.containerElement.removeChild(this.rootElement);
 
 				if (WindowManager.isLoadEventsEnabled) {
-					this.dispatchEvent(this.rootContent, "unloaded");
+					this.dispatchEvent(this.rootElement, "unloaded");
 				}
-				this.rootContent.classList.remove(WindowManager.unoRootClassName);
+				this.rootElement.classList.remove(WindowManager.unoRootClassName);
 			}
 
 			if (!elementId) {
@@ -1051,16 +1051,16 @@ namespace Uno.UI {
 			const newRootElement = this.getView(elementId) as HTMLElement;
 			newRootElement.classList.add(WindowManager.unoRootClassName);
 
-			this.rootContent = newRootElement;
+			this.rootElement = newRootElement;
 
 			if (WindowManager.isLoadEventsEnabled) {
-				this.dispatchEvent(this.rootContent, "loading");
+				this.dispatchEvent(this.rootElement, "loading");
 			}
 
-			this.containerElement.appendChild(this.rootContent);
+			this.containerElement.appendChild(this.rootElement);
 
 			if (WindowManager.isLoadEventsEnabled) {
-				this.dispatchEvent(this.rootContent, "loaded");
+				this.dispatchEvent(this.rootElement, "loaded");
 			}
 			this.setAsArranged(newRootElement); // patch because root is not measured/arranged
 
@@ -1281,7 +1281,7 @@ namespace Uno.UI {
 			*
 			* @param maxWidth string containing width in pixels. Empty string means infinite.
 			* @param maxHeight string containing height in pixels. Empty string means infinite.
-		    * @param measureContent if we're interested by the content of the control (<img>'s image, <input>'s text...)
+			* @param measureContent if we're interested by the content of the control (<img>'s image, <input>'s text...)
 			*/
 		public measureView(viewId: string, maxWidth: string, maxHeight: string, measureContent: boolean = true): string {
 
@@ -1727,7 +1727,8 @@ namespace Uno.UI {
 
 			window.addEventListener("resize", x => this.resize());
 			window.addEventListener("contextmenu", x => {
-				if (!(x.target instanceof HTMLInputElement)) {
+				if (!(x.target instanceof HTMLInputElement) ||
+					x.target.classList.contains("context-menu-disabled")) {
 					x.preventDefault();
 				}
 			})
@@ -1804,7 +1805,7 @@ namespace Uno.UI {
 		}
 
 		private getIsConnectedToRootElement(element: HTMLElement | SVGElement): boolean {
-			const rootElement = this.rootContent;
+			const rootElement = this.rootElement;
 
 			if (!rootElement) {
 				return false;

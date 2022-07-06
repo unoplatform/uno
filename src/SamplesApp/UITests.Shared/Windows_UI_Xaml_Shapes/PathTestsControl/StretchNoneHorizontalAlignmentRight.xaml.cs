@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl
 {
-	[SampleControlInfo("PathTestsControl", "StretchNoneHorizontalAlignmentRight")]
+	[SampleControlInfo("Path", "StretchNoneHorizontalAlignmentRight")]
 	public sealed partial class StretchNoneHorizontalAlignmentRight : UserControl
 	{
 		public StretchNoneHorizontalAlignmentRight()

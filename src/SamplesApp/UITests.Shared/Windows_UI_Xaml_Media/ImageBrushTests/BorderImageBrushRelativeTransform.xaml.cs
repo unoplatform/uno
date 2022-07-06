@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace GenericApp.Views.Content.UITests.ImageBrushTestControl
 {
-	[Sample]
+	[Sample("Brushes")]
 	public sealed partial class BorderImageBrushRelativeTransform : UserControl
 	{
 		public BorderImageBrushRelativeTransform()

@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 {
-	[SampleControlInfo("ContentControlTestsControl", "ContentControl_WithPadding")]
+	[SampleControlInfo("ContentControl", "ContentControl_WithPadding")]
 	public sealed partial class ContentControl_WithPadding : UserControl
     {
         public ContentControl_WithPadding()

@@ -30,6 +30,30 @@ namespace Windows.UI.Xaml.Controls
 
 		CGPoint IUIScrollView.UpperScrollLimit { get { return (CGPoint)(ContentSize - Frame.Size); } }
 
+		void IUIScrollView.ApplyZoomScale(nfloat scale, bool animated)
+		{
+			if (animated)
+			{
+				SetZoomScale(scale, animated);
+			}
+			else
+			{
+				ZoomScale = scale;
+			}
+		}
+
+		void IUIScrollView.ApplyContentOffset(CGPoint contentOffset, bool animated)
+		{
+			if (animated)
+			{
+				SetContentOffset(contentOffset, animated);
+			}
+			else
+			{
+				ContentOffset = contentOffset;
+			}
+		}
+
 		public MultilineTextBoxView(TextBox textBox)
 		{
 			_textBox = new WeakReference<TextBox>(textBox);

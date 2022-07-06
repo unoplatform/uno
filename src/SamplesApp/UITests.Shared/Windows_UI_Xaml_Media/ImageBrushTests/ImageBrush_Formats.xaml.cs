@@ -5,7 +5,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Media.ImageBrushTests
 {
-	[Sample("ImageBrushTestControl")]
+	[Sample("Brushes")]
 	public sealed partial class ImageBrush_Formats : Page
 	{
 		public ImageBrush_Formats()

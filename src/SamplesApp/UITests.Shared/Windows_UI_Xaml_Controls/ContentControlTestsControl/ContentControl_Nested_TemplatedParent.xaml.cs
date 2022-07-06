@@ -21,7 +21,7 @@ using View = Windows.UI.Xaml.UIElement;
 namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 {
 	[SampleControlInfo(
-		"ContentControlTestsControl",
+		"ContentControl",
 		"ContentControl_Nested_TemplatedParent",
 		description: "This test validates the TemplatedParent propagation with loaded/unloaded content cycles"
 	)]

@@ -51,13 +51,15 @@
 		<WarningLevel>4</WarningLevel>
 		<AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
 		<AndroidLinkMode>SdkOnly</AndroidLinkMode>
-		<AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
+		<AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
 		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
 		<AotAssemblies>true</AotAssemblies>
 		<EnableLLVM>true</EnableLLVM>
 		<AndroidEnableSGenConcurrent>true</AndroidEnableSGenConcurrent>
 		<AndroidSupportedAbis>armeabi-v7a;x86;x86_64;arm64-v8a</AndroidSupportedAbis>
 		<BundleAssemblies>false</BundleAssemblies>
+		<AndroidPackageFormat>aab</AndroidPackageFormat>
+		<AndroidEnableProfiledAot>true</AndroidEnableProfiledAot>
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="Mono.Android" />
@@ -74,7 +76,6 @@
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="3.0.5" />
 		<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.33" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="MainActivity.cs" />

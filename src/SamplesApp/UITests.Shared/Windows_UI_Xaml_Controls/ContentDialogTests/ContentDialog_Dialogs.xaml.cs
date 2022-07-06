@@ -19,7 +19,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 {
-	[Sample("ContentDialog")]
+	[Sample("Dialogs")]
 	public sealed partial class ContentDialog_Dialogs : UserControl
 	{
 		public ContentDialog_Dialogs()

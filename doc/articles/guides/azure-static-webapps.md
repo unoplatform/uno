@@ -10,7 +10,7 @@ You can review [the Azure documentation](https://docs.microsoft.com/en-us/azure/
 Here is how to publish an app from GitHub, using Uno Platform:
 -	In a new repository, create a Uno Platform app using the following command:
     ```
-    cd src
+    cd <repository-name>
     dotnet new -i Uno.ProjectTemplates.Dotnet
     dotnet new unoapp -o MyApp
     ```
@@ -42,7 +42,7 @@ Here is how to publish an app from GitHub, using Uno Platform:
 
 -	In the Deploy step that was automatically added, change the `app_location` parameter to the following:
     ```yaml
-    app_location: "src/MyApp.Wasm/bin/Release/net5.0/dist"
+    app_location: "src/MyApp.Wasm/bin/Debug/net5.0/dist"
     ```
 -	Once changed, the application will be built and deployed on your Azure Static Web App instance.
 

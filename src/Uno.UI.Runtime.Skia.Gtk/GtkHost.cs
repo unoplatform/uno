@@ -31,6 +31,8 @@ using Uno.UI.Runtime.Skia.GTK.System.Profile;
 using Uno.UI.Runtime.Skia.Helpers;
 using Uno.UI.Runtime.Skia.Helpers.Dpi;
 using System.Runtime.InteropServices;
+using System.ComponentModel;
+using Uno.Disposables;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -47,31 +49,40 @@ namespace Uno.UI.Runtime.Skia
 		private Widget _area;
 		private Fixed _fix;
 		private GtkDisplayInformationExtension _displayInformationExtension;
+		private CompositeDisposable _registrations = new();
 
 		public static Gtk.Window Window => _window;
 		public static Gtk.EventBox EventBox => _eventBox;
 
-		public RenderSurfaceType RenderSurfaceType { get; set; }
-			= RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
-				? RenderSurfaceType.Software // OpenGL support on macOS is currently broken
-				: RenderSurfaceType.OpenGL;
-
 		/// <summary>
-		/// Creates a host for a Uno Skia GTK application.
+		/// Gets or sets the current Skia Render surface type.
 		/// </summary>
-		/// <param name="appBuilder">App builder.</param>
-		/// <param name="args">Deprecated, value ignored.</param>
-		/// <remarks>
-		/// Args are obsolete and will be removed in the future. Environment.CommandLine is used instead
-		/// to fill LaunchEventArgs.Arguments.
-		/// </remarks>
-		public GtkHost(Func<WUX.Application> appBuilder, string[] args)
+		/// <remarks>If <c>null</c>, the host will try to determine the most compatible mode.</remarks>
+		public RenderSurfaceType? RenderSurfaceType { get; set; }
+
+        /// <summary>
+        /// Creates a host for a Uno Skia GTK application.
+        /// </summary>
+        /// <param name="appBuilder">App builder.</param>
+        /// <param name="args">Deprecated, value ignored.</param>
+        /// <remarks>
+        /// Args are obsolete and will be removed in the future. Environment.CommandLine is used instead
+        /// to fill LaunchEventArgs.Arguments.
+        /// </remarks>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+		public GtkHost(Func<WUX.Application> appBuilder, string[] args) : this(appBuilder)
+		{
+		}
+
+		public GtkHost(Func<WUX.Application> appBuilder)
 		{
 			_appBuilder = appBuilder;
 		}
 
 		public void Run()
 		{
+			Windows.UI.Xaml.Documents.Inline.ApplyHarfbuzzWorkaround();
+
 			Gtk.Application.Init();
 			SetupTheme();
 
@@ -90,7 +101,7 @@ namespace Uno.UI.Runtime.Skia
 			ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), o => new SystemNavigationManagerPreviewExtension(_window));
 
 			_isDispatcherThread = true;
-			_window = new Gtk.Window("Uno Host");
+			_window = new Gtk.Window(Windows.ApplicationModel.Package.Current.DisplayName);
 			Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 			if (preferredWindowSize != Size.Empty)
 			{
@@ -181,9 +192,37 @@ namespace Uno.UI.Runtime.Skia
 
 			WUX.Application.StartWithArguments(CreateApp);
 
+			RegisterForBackgroundColor();
+
 			UpdateWindowPropertiesFromPackage();
 
 			Gtk.Application.Run();
+		}
+
+		private void RegisterForBackgroundColor()
+		{
+			if (_area is IRenderSurface renderSurface)
+			{
+				void Update()
+				{
+					if (WUX.Window.Current.Background is WUX.Media.SolidColorBrush brush)
+					{
+						renderSurface.BackgroundColor = brush.Color;
+					}
+					else
+					{
+						if (this.Log().IsEnabled(LogLevel.Warning))
+						{
+							this.Log().Warn($"This platform only supports SolidColorBrush for the Window background");
+						}
+					}
+
+				}
+
+				Update();
+
+				_registrations.Add(WUX.Window.Current.RegisterBackgroundChangedEvent((s, e) => Update()));
+			}
 		}
 
 		private void WindowClosing(object sender, DeleteEventArgs args)
@@ -208,12 +247,36 @@ namespace Uno.UI.Runtime.Skia
 		}
 
 		private Widget BuildRenderSurfaceType()
-			=> RenderSurfaceType switch
+		{
+			if(RenderSurfaceType == null)
 			{
-				RenderSurfaceType.Software => new SoftwareRenderSurface(),
-				RenderSurfaceType.OpenGL => new GLRenderSurface(),
+				if (OpenGLESRenderSurface.IsSupported)
+				{
+					RenderSurfaceType = Skia.RenderSurfaceType.OpenGLES;
+				}
+				else if (OpenGLRenderSurface.IsSupported)
+				{
+					RenderSurfaceType = Skia.RenderSurfaceType.OpenGL;
+				}
+				else
+				{
+					RenderSurfaceType = Skia.RenderSurfaceType.Software;
+				}
+			}
+
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().LogInfo($"Using {RenderSurfaceType} render surface");
+			}
+
+			return RenderSurfaceType switch
+			{
+				Skia.RenderSurfaceType.OpenGLES => new OpenGLESRenderSurface(),
+				Skia.RenderSurfaceType.OpenGL => new OpenGLRenderSurface(),
+				Skia.RenderSurfaceType.Software => new SoftwareRenderSurface(),
 				_ => throw new InvalidOperationException($"Unsupported RenderSurfaceType {RenderSurfaceType}")
 			};
+		}
 
 		private void OnWindowStateChanged(object o, WindowStateEventArgs args)
 		{

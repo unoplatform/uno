@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using SkiaSharp;
 using Uno.ApplicationModel.DataTransfer;
+using Uno.Disposables;
 using Uno.Extensions.ApplicationModel.DataTransfer;
 using Uno.Extensions.Networking.Connectivity;
 using Uno.Extensions.Storage.Pickers;
@@ -15,6 +16,7 @@ using Uno.Extensions.System;
 using Uno.Extensions.System.Profile;
 using Uno.Extensions.UI.Core.Preview;
 using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.UI.Core.Preview;
 using Uno.UI.Runtime.Skia.Wpf;
@@ -46,7 +48,11 @@ namespace Uno.UI.Skia.Platform
 		private const string NativeOverlayLayerPart = "NativeOverlayLayer";
 
 		private readonly bool designMode;
+		private readonly Func<UnoApplication> _appBuilder;
+		private CompositeDisposable _registrations = new();
 
+		private bool _appStarted = false;
+		
 		[ThreadStatic] private static WpfHost _current;
 
 		private WpfCanvas? _nativeOverlayLayer = null;
@@ -56,6 +62,7 @@ namespace Uno.UI.Skia.Platform
 		private bool _isVisible = true;
 
 		private DisplayInformation _displayInformation;
+		private SKColor _backgroundColor;
 
 		static WpfHost()
 		{
@@ -91,22 +98,20 @@ namespace Uno.UI.Skia.Platform
 		/// Args are obsolete and will be removed in the future. Environment.CommandLine is used instead
 		/// to fill LaunchEventArgs.Arguments.
 		/// </remarks>
-		public WpfHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder, string[] args = null)
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public WpfHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder, string[] args = null) : this(dispatcher, appBuilder)
+		{
+		}
+		
+		public WpfHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder)
 		{
 			_current = this;
+			_appBuilder = appBuilder;
 
 			designMode = DesignerProperties.GetIsInDesignMode(this);
 
-			void CreateApp(WinUI.ApplicationInitializationCallbackParams _)
-			{
-				var app = appBuilder();
-				app.Host = this;
-			}
-
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = d => dispatcher.BeginInvoke(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = dispatcher.CheckAccess;
-
-			WinUI.Application.StartWithArguments(CreateApp);
 
 			WinUI.Window.InvalidateRender += () =>
 			{
@@ -128,6 +133,30 @@ namespace Uno.UI.Skia.Platform
 
 			SizeChanged += WpfHost_SizeChanged;
 			Loaded += WpfHost_Loaded;
+
+			RegisterForBackgroundColor();
+		}
+
+		private void RegisterForBackgroundColor()
+		{
+			void Update()
+			{
+				if (WinUI.Window.Current.Background is WinUI.Media.SolidColorBrush brush)
+				{
+					_backgroundColor = brush.Color;
+				}
+				else
+				{
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().Warn($"This platform only supports SolidColorBrush for the Window background");
+					}
+				}
+			}
+
+			Update();
+
+			_registrations.Add(WinUI.Window.Current.RegisterBackgroundChangedEvent((s, e) => Update()));
 		}
 
 		private void MainWindow_Closing(object sender, CancelEventArgs e)
@@ -151,6 +180,28 @@ namespace Uno.UI.Skia.Platform
 			base.OnApplyTemplate();
 
 			_nativeOverlayLayer = GetTemplateChild(NativeOverlayLayerPart) as WpfCanvas;
+
+			// App needs to be created after the native overlay layer is properly initialized
+			// otherwise the initially focused input element would cause exception.
+			StartApp();
+		}
+
+		private void StartApp()
+		{
+			if (_appStarted)
+			{
+				return;
+			}
+			
+			void CreateApp(WinUI.ApplicationInitializationCallbackParams _)
+			{
+				var app = _appBuilder();
+				app.Host = this;
+			}
+
+			WinUI.Application.StartWithArguments(CreateApp);
+
+			WpfApplication.Current.MainWindow.Title = Windows.ApplicationModel.Package.Current.DisplayName;
 		}
 
 		private void MainWindow_StateChanged(object? sender, EventArgs e)
@@ -269,7 +320,7 @@ namespace Uno.UI.Skia.Platform
 			bitmap.Lock();
 			using (var surface = SKSurface.Create(info, bitmap.BackBuffer, bitmap.BackBufferStride))
 			{
-				surface.Canvas.Clear(SKColors.White);
+				surface.Canvas.Clear(_backgroundColor);
 				surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
 				WinUI.Window.Current.Compositor.Render(surface);
 			}

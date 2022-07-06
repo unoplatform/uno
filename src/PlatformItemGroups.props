@@ -28,16 +28,23 @@
 
   <PropertyGroup Condition="$(_IsIOS)">
     <DefineConstants>$(DefineConstants);IOS1_0;XAMARIN;XAMARIN_IOS;XAMARIN_IOS_UNIFIED</DefineConstants>
+    <SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(_IsMacOS)">
     <DefineConstants>$(DefineConstants);XAMARIN</DefineConstants>
+    <SupportedOSPlatformVersion>10.14</SupportedOSPlatformVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(_IsCatalyst)">
+    <SupportedOSPlatformVersion>13.1</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(_IsAndroid)">
     <AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <DefineConstants>$(DefineConstants);__ANDROID__;XAMARIN;MONOANDROID5_0;XAMARIN_ANDROID</DefineConstants>
+	<SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>

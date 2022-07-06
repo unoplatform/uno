@@ -19,6 +19,19 @@ namespace Windows.Storage.Pickers
 	{
 		private const string JsType = "Windows.Storage.Pickers.FileSavePicker";
 
+		private static bool? _fileSystemAccessApiSupported;
+
+		internal static bool IsNativePickerSupported()
+		{
+			if (_fileSystemAccessApiSupported is null)
+			{
+				var isSupportedString = WebAssemblyRuntime.InvokeJS($"{JsType}.isNativeSupported()");
+				_fileSystemAccessApiSupported = bool.TryParse(isSupportedString, out var isSupported) && isSupported;
+			}
+
+			return _fileSystemAccessApiSupported.Value;
+		}
+
 		private async Task<StorageFile?> PickSaveFileTaskAsync(CancellationToken token)
 		{
 			var fileSystemAccessApiEnabled = WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration
@@ -37,12 +50,6 @@ namespace Windows.Storage.Pickers
 			}
 
 			throw new NotSupportedException("Could not handle the request using any picker implementation.");
-		}
-
-		private bool IsNativePickerSupported()
-		{
-			var isSupportedString = WebAssemblyRuntime.InvokeJS($"{JsType}.isNativeSupported()");
-			return bool.TryParse(isSupportedString, out var isSupported) && isSupported;
 		}
 
 		private async Task<StorageFile?> NativePickerPickSaveFileAsync(CancellationToken token)

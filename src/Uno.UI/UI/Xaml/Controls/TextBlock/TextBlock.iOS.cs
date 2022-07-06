@@ -11,6 +11,7 @@ using CoreGraphics;
 using Windows.UI.Text;
 using Uno.UI;
 using Windows.UI;
+using CoreAnimation;
 
 #if NET6_0_OR_GREATER
 using ObjCRuntime;
@@ -61,6 +62,7 @@ namespace Windows.UI.Xaml.Controls
 		public override void Draw(CGRect rect)
 		{
 			_drawRect = GetDrawRect(rect);
+
 			if (UseLayoutManager)
 			{
 				_layoutManager?.DrawGlyphs(new NSRange(0, (nint)_layoutManager.NumberOfGlyphs), _drawRect.Location);
@@ -69,19 +71,6 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_attributedString?.DrawString(_drawRect, NSStringDrawingOptions.UsesLineFragmentOrigin, null);
 			}
-		}
-
-		private CGRect GetDrawRect(CGRect rect)
-		{
-			// Reduce available size by Padding
-			rect.Width -= (nfloat)(Padding.Left + Padding.Right);
-			rect.Height -= (nfloat)(Padding.Top + Padding.Bottom);
-
-			// Offset drawing location by Padding
-			rect.X += (nfloat)Padding.Left;
-			rect.Y += (nfloat)Padding.Top;
-
-			return rect;
 		}
 
 		/// <summary>
@@ -98,22 +87,15 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size MeasureOverride(Size size)
 		{
-			// Size used to compare with the previous one. We don't want to use this one for the calculation.
-			var ceiledNewSize = new CGSize(Math.Ceiling(size.Width), Math.Ceiling(size.Height));
-
-			var hasSameDesiredSize =
+			// `size` is used to compare with the previous one `_previousDesiredSize`
+			// We need to apply `Math.Ceiling` to compare them correctly
+			var isSameOrNarrower =
 				!_measureInvalidated
 				&& _previousAvailableSize != null
-				&& _previousDesiredSize.Width == ceiledNewSize.Width
-				&& _previousDesiredSize.Height == ceiledNewSize.Height;
+				&& _previousDesiredSize.Width <= Math.Ceiling(size.Width)
+				&& _previousDesiredSize.Height == Math.Ceiling(size.Height);
 
-			var isSingleLineNarrower =
-				!_measureInvalidated
-				&& _previousAvailableSize != null
-				&& _previousDesiredSize.Width <= ceiledNewSize.Width
-				&& _previousDesiredSize.Height == ceiledNewSize.Height;
-
-			if (hasSameDesiredSize || isSingleLineNarrower)
+			if (isSameOrNarrower)
 			{
 				return _previousDesiredSize;
 			}
@@ -144,7 +126,7 @@ namespace Windows.UI.Xaml.Controls
 
 				result = result.Add(padding);
 
-				return _previousDesiredSize = new CGSize(Math.Ceiling(result.Width), Math.Ceiling(result.Height));
+				return _previousDesiredSize = new Size(Math.Ceiling(result.Width), Math.Ceiling(result.Height));
 			}
 		}
 
@@ -159,7 +141,7 @@ namespace Windows.UI.Xaml.Controls
 
 			result = result.Add(padding);
 
-			return new CGSize(Math.Ceiling(result.Width), Math.Ceiling(result.Height));
+			return new Size(Math.Ceiling(result.Width), Math.Ceiling(result.Height));
 		}
 
 		#endregion
@@ -213,7 +195,6 @@ namespace Windows.UI.Xaml.Controls
 			var font = UIFontHelper.TryGetFont((float)FontSize, FontWeight, FontStyle, FontFamily);
 
 			attributes.Font = font;
-			attributes.ForegroundColor = Brush.GetColorWithOpacity(Foreground, Colors.Transparent);
 
 			if (TextDecorations != TextDecorations.None)
 			{
@@ -265,6 +246,18 @@ namespace Windows.UI.Xaml.Controls
 				attributes.KerningAdjustment = (CharacterSpacing / 1000f) * 12;
 			}
 
+			// Foreground checks should be kept at the end since we **may** use the attributes to calculate text size
+			// for gradient brushes.
+			// TODO: Support other brushes (e.g. gradients):
+			if (Brush.TryGetColorWithOpacity(Foreground, out var color))
+			{
+				attributes.ForegroundColor = color;
+			}
+			else
+			{
+				attributes.ForegroundColor = Colors.Transparent;
+			}
+
 			return attributes;
 		}
 
@@ -299,7 +292,7 @@ namespace Windows.UI.Xaml.Controls
 				_textContainer.LineFragmentPadding = 0;
 				_textContainer.LineBreakMode = GetLineBreakMode();
 				_textContainer.MaximumNumberOfLines = (nuint)GetLines();
-				
+
 				// Configure layoutManager
 				_layoutManager = new NSLayoutManager();
 				_layoutManager.AddTextContainer(_textContainer);

@@ -366,12 +366,13 @@ namespace <#= mixin.NamespaceName #>
 #endif
 
 				CoreAnimation.CATransform3D? oldTransform = null;
-				if (Layer != null && !Layer.Transform.IsIdentity)
+				var layer = Layer;
+				if (layer != null && !layer.Transform.IsIdentity)
 				{
 					// If NSView.Transform is not identity, then modifying the frame will give undefined behavior. (https://developer.apple.com/library/ios/documentation/UIKit/Reference/NSView_Class/#//apple_ref/occ/instp/NSView/transform)
 					// We reapply the transform based on the new size straight after.
-					oldTransform = Layer.Transform;
-					Layer.Transform = CoreAnimation.CATransform3D.Identity;
+					oldTransform = layer.Transform;
+					layer.Transform = CoreAnimation.CATransform3D.Identity;
 				}
 
 				base.Frame = value;
@@ -389,13 +390,13 @@ namespace <#= mixin.NamespaceName #>
 					else if (oldTransform.HasValue)
 					{
 						// We grudgingly support setting the native transform directly without going through RenderTransform.
-						Layer.Transform = oldTransform.Value;
+						layer.Transform = oldTransform.Value;
 					}
 				}
 				else if (oldTransform.HasValue)
 				{
 					// We grudgingly support setting the native transform directly without going through RenderTransform.
-					Layer.Transform = oldTransform.Value;
+					layer.Transform = oldTransform.Value;
 				}
 			}
 		}
@@ -882,17 +883,18 @@ namespace <#= mixin.NamespaceName #>
 			{
 				WantsLayer = true;
 
+				var layer = Layer;
 				if(e.NewValue is SolidColorBrush scb)
 				{
-					Layer.BackgroundColor = scb.ColorWithOpacity;
+					layer.BackgroundColor = scb.ColorWithOpacity;
 
 					_brushColorChanged.Disposable = scb.RegisterDisposablePropertyChangedCallback(
 						SolidColorBrush.ColorProperty,
-						(s, colorArg) => Layer.BackgroundColor = (s as SolidColorBrush).ColorWithOpacity
+						(s, colorArg) => layer.BackgroundColor = (s as SolidColorBrush).ColorWithOpacity
 					);
 					_brushOpacityChanged.Disposable = scb.RegisterDisposablePropertyChangedCallback(
 						SolidColorBrush.OpacityProperty,
-						(s, colorArg) => Layer.BackgroundColor = (s as SolidColorBrush).ColorWithOpacity
+						(s, colorArg) => layer.BackgroundColor = (s as SolidColorBrush).ColorWithOpacity
 					);
 				}
 				else
@@ -901,7 +903,7 @@ namespace <#= mixin.NamespaceName #>
 					_brushOpacityChanged.Disposable = null;
 					if(e.NewValue is GradientBrush gb)
 					{
-						Layer.BackgroundColor = gb.FallbackColorWithOpacity;
+						layer.BackgroundColor = gb.FallbackColorWithOpacity;
 					}
 					else
 					{
@@ -909,7 +911,7 @@ namespace <#= mixin.NamespaceName #>
 						{
 							this.Log().Warn("Brush is not a SolidColorBrush, ignoring");
 						}
-						Layer.BackgroundColor = SolidColorBrushHelper.Transparent.Color;
+						layer.BackgroundColor = SolidColorBrushHelper.Transparent.Color;
 					}
 				}
 			}

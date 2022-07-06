@@ -46,12 +46,15 @@ namespace Uno
 			return key;
 		}
 
-		public static string EncodeFileSystemPath(string path)
+		public static string EncodeFileSystemPath(string path, string prefix = "Assets")
 			// Android assets need to placed in the Assets folder
-			=> global::System.IO.Path.Combine("Assets", EncodePath(path, global::System.IO.Path.DirectorySeparatorChar));
+			=> global::System.IO.Path.Combine(prefix, EncodePath(path, global::System.IO.Path.DirectorySeparatorChar));
 
 		public static string EncodeResourcePath(string path)
 			=> EncodePath(path, '/');
+
+		public static string EncodeDrawablePath(string path)
+			=> EncodeResourcePath(path).Replace('/', '_');
 
 		private static string EncodePath(string path, char separator)
 		{

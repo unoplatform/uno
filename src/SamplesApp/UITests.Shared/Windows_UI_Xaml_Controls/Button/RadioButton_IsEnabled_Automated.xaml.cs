@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Controls;
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
 
-	[SampleControlInfo("ButtonTestsControl", nameof(RadioButton_IsEnabled_Automated))]
+	[SampleControlInfo("Buttons", nameof(RadioButton_IsEnabled_Automated))]
 	public sealed partial class RadioButton_IsEnabled_Automated : UserControl
 	{
 

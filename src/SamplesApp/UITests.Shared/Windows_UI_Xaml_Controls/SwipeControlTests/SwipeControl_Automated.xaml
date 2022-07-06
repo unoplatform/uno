@@ -9,7 +9,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<Page.Resources>
-		<FontIconSource x:Name="Icon" Glyph="&#xE710;" />
+		<FontIconSource x:Name="Icon" Glyph="&#xE710;"/>
 	</Page.Resources>
 
 	<Grid>

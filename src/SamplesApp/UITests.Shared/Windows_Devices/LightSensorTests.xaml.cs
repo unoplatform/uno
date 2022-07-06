@@ -45,13 +45,13 @@ namespace UITests.Windows_Devices
 			}));
 		}
 
-		internal Command AttachReadingChangedCommand => new Command((p) =>
+		public Command AttachReadingChangedCommand => new Command((p) =>
 		{
 			_LightSensor.ReadingChanged += LightSensor_ReadingChanged;
 			ReadingChangedAttached = true;
 		});
 
-		internal Command DetachReadingChangedCommand => new Command((p) =>
+		public Command DetachReadingChangedCommand => new Command((p) =>
 		{
 			_LightSensor.ReadingChanged -= LightSensor_ReadingChanged;
 			ReadingChangedAttached = false;

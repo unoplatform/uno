@@ -1,6 +1,6 @@
 <VSTemplate Version="3.0.0" Type="ProjectGroup" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
   <TemplateData>
-	<Name>Multi-Platform App (Uno Platform|net6)</Name>
+	<Name>Uno Platform App (net6|UWP)</Name>
 	<Description>Template for creating a multi-platform C# &amp; XAML application targeting UWP, WebAssembly, Android, iOS, macOS and Linux</Description>
 	<ProjectType>CSharp</ProjectType>
 	<ProjectSubType />
@@ -33,7 +33,6 @@
 		<ProjectTemplateLink ProjectName="$projectname$.Mobile" CopyParameters="true">Mobile\Mobile.net6.vstemplate</ProjectTemplateLink>
 		<ProjectTemplateLink ProjectName="$projectname$.UWP" CopyParameters="true">UWP\UWP.net6.vstemplate</ProjectTemplateLink>
 		<ProjectTemplateLink ProjectName="$projectname$.Wasm" CopyParameters="true">Wasm\Wasm.net6.vstemplate</ProjectTemplateLink>
-		<ProjectTemplateLink ProjectName="$projectname$.Skia.Wpf.Host" CopyParameters="true">Skia.Wpf.Host\SkiaWpfHost.net6.vstemplate</ProjectTemplateLink>
 		<ProjectTemplateLink ProjectName="$projectname$.Skia.Wpf" CopyParameters="true">Skia.Wpf\SkiaWpf.net6.vstemplate</ProjectTemplateLink>
 		<ProjectTemplateLink ProjectName="$projectname$.Skia.Gtk" CopyParameters="true">Skia.Gtk\SkiaGtk.net6.vstemplate</ProjectTemplateLink>
 	  </SolutionFolder>

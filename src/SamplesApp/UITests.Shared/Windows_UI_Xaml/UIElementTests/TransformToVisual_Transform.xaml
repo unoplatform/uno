@@ -12,7 +12,7 @@
 
 	<controls:SampleControl>
 		<controls:SampleControl.Template>
-			<ControlTemplate>
+			<ControlTemplate TargetType="controls:SampleControl">
 				<Border Background="{TemplateBinding Background}"
 						VerticalAlignment="Stretch"
 						HorizontalAlignment="Stretch">

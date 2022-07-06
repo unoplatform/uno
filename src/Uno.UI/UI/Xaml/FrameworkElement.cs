@@ -24,6 +24,8 @@ using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Data;
+using Uno.UI.Xaml.Core;
+
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 #elif XAMARIN_IOS_UNIFIED
@@ -631,6 +633,16 @@ namespace Windows.UI.Xaml
 		[GeneratedDependencyProperty(DefaultValue = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
 		public static DependencyProperty AllowFocusOnInteractionProperty { get; } = CreateAllowFocusOnInteractionProperty();
 
+		internal
+#if __ANDROID__
+			new
+#endif 
+			bool HasFocus()
+		{
+			var focusManager = VisualTree.GetFocusManagerForElement(this);
+			return focusManager?.FocusedElement == this;
+		}
+
 		/// <summary>
 		/// Replace previous style with new style, at nominated precedence. This method is called separately for the user-determined
 		/// 'active style' and for the baked-in 'default style'.
@@ -827,7 +839,7 @@ namespace Windows.UI.Xaml
 			{
 				return Background != null;
 			}
-			
+
 			return false;
 		}
 

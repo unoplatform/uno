@@ -1,7 +1,9 @@
 # Create a Single Page App with Uno Platform
 
 [Download the complete sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Getting-Started-Tutorial-2)  
--- Estimated time to complete: 30 minutes --
+
+> [!NOTE] 
+> Estimated time to complete: 30 minutes
 
 In this tutorial you will learn how to:
 
@@ -24,7 +26,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 
     ![](Assets/tutorial01/newproject1.PNG)
 
-1. Search for the `Uno` templates, select the `Cross-Platform App (Uno Platform)` then click `Next`.
+1. Search for the `Uno` templates, select the `Uno Platform App` then click `Next`.
 
     ![](Assets/tutorial01/newproject2.PNG)
 
@@ -35,10 +37,13 @@ The tutorial walks you through creating a cross platform application with Uno Pl
     > [!IMPORTANT]
     > The C# and XAML snippets in this tutorial requires that the solution is named **BugTracker**. Using a different name will result in build errors when you copy code from this tutorial into the solution.
 
+1. Choose a list of platforms, including **WebAssembly** and **WinUI**
+
+    ![](Assets/tutorial01/newproject4.PNG)
+
 1. Right click on the Solution and select `Manage NuGet Packages for Solution` from the context menu.
     - Make sure to select **nuget.org** or **NuGet official package source** as the package source
-    - Click on the Updates tab. Update the following packages to the latest stable version, if they're not up to date: `Uno.Core`, `Uno.UI`, `Uno.UI.WebAssembly` `Uno.Wasm.Bootstrap` and `Uno.Wasm.Bootstrap.DevServer`.
-        - Note: **do not** update the `Microsoft.Extensions.Logging.Console`. Recent versions of the package use APIs that aren't supported by WebAssembly, and aren't compatible with Uno Platform.
+    - Click on the Updates tab. Update the following packages to the latest stable version, if they're not up to date: `Uno.Core`, `Uno.WinUI`, `Uno.UI.WebAssembly` `Uno.Wasm.Bootstrap` and `Uno.Wasm.Bootstrap.DevServer`.
     - Click back on the Browse tab and install the following NuGet Packages to each of the projects in your solution:
         - `Refractored.MvvmHelpers`
 
@@ -138,7 +143,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
     ```
 
     > [!IMPORTANT]
-    > Because we want to be able to respond to changes in our model we'll want to bring in the ObservableObject in the MvvmHelpers namespace, from the `Refractored.MvvmHelpers` NuGet package we installed earlier.
+    > Because we want to be able to respond to changes in our model we'll want to bring in the `ObservableObject` in the `MvvmHelpers` namespace, from the `Refractored.MvvmHelpers` NuGet package we installed earlier.
 
 ## Setting up our Page
 

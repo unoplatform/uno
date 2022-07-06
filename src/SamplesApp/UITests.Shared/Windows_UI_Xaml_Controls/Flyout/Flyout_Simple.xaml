@@ -40,6 +40,12 @@
 				</Setter.Value>
 			</Setter>
 		</Style>
+		<Style x:Key="FullFlyoutPresenterStyle"
+			   TargetType="FlyoutPresenter"
+			   BasedOn="{StaticResource SampleFlyoutPresenterStyle}">
+			<Setter Property="MaxWidth" Value="NaN" />
+			<Setter Property="MaxHeight" Value="NaN" />
+		</Style>
 		<Style x:Key="SimpleFlyoutButtonStyle" TargetType="Button">
 			<Setter Property="Width" Value="200" />
 			<Setter Property="Height" Value="50" />
@@ -100,6 +106,15 @@
 							Style="{StaticResource SimpleFlyoutButtonStyle}">
 						<Button.Flyout>
 							<Flyout Placement="Full" FlyoutPresenterStyle="{StaticResource SampleFlyoutPresenterStyle}">
+								<Border Style="{StaticResource SmallSkyBlueBorderStyle}" />
+							</Flyout>
+						</Button.Flyout>
+					</Button>
+					<Button x:Name="FullFlyoutButtonNoConstraint"
+							Content="Show Flyout Full (No MaxWidth/Height)*"
+							Style="{StaticResource SimpleFlyoutButtonStyle}">
+						<Button.Flyout>
+							<Flyout Placement="Full" FlyoutPresenterStyle="{StaticResource FullFlyoutPresenterStyle}">
 								<Border Style="{StaticResource SmallSkyBlueBorderStyle}" />
 							</Flyout>
 						</Button.Flyout>

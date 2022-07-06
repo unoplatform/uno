@@ -36,7 +36,7 @@ namespace Uno.UI.Xaml
 		LosingFocus = 1UL << 26,
 		LostFocus = 1UL << 27,
 		NoFocusCandidateFound = 1UL << 28,
-		// BringIntoViewRequested = 1UL << 29, => Reserved for future usage 
+		BringIntoViewRequested = 1UL << 29,
 
 		// Drag and drop
 		DragStarting = 1UL << 32, // this is actually not a RoutedEvent
@@ -80,12 +80,13 @@ namespace Uno.UI.Xaml
 			  RoutedEventFlag.KeyDown
 			| RoutedEventFlag.KeyUp;
 
-		private const RoutedEventFlag _isFocus = // 0b0000_0000_0000_0000___0000_0000_0000_0000___0011_1111_0000_0000___0000_0000_0000_0000
+		private const RoutedEventFlag _isFocus = // 0b0000_0000_0000_0000___0000_0000_0000_0000___0111_1111_0000_0000___0000_0000_0000_0000
 			  RoutedEventFlag.GotFocus
 			| RoutedEventFlag.LostFocus
 			| RoutedEventFlag.GettingFocus
 			| RoutedEventFlag.LosingFocus
-			| RoutedEventFlag.NoFocusCandidateFound;
+			| RoutedEventFlag.NoFocusCandidateFound
+			| RoutedEventFlag.BringIntoViewRequested;
 
 		private const RoutedEventFlag _isDragAndDrop = // 0b0000_0000_0000_0000___0000_0000_0011_1111___0000_0000_0000_0000___0000_0000_0000_0000;
 			  RoutedEventFlag.DragStarting

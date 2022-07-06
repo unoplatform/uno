@@ -39,7 +39,7 @@
 		         MinHeight="120"
 		         MaxWidth="300"
 		         Text="{Binding MyInput, Mode=TwoWay}"
-		         TextWrapping="WrapWholeWords"
+		         TextWrapping="Wrap"
 		         AcceptsReturn="False" />
 		<TextBlock Text="Result :" />
 		<TextBlock Text="{Binding Result}" />

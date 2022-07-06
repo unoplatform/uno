@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[SampleControlInfo("TextBlockControl", "TextBlock_UpdatePerformance")]
+	[SampleControlInfo("TextBlock", "TextBlock_UpdatePerformance")]
 	public sealed partial class TextBlock_UpdatePerformance : UserControl
 	{
 		public TextBlock_UpdatePerformance()

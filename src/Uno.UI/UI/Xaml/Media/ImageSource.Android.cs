@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml.Media
 		partial void InitFromResource(Uri uri)
 		{
 			ResourceString = uri.PathAndQuery.TrimStart(new[] { '/' });
-			ResourceId = Uno.Helpers.DrawableHelper.FindResourceId(ResourceString);
+			ResourceId = Uno.Helpers.DrawableHelper.FindResourceIdFromPath(ResourceString);
 		}
 
 		/// <summary>

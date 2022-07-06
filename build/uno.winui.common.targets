@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<PropertyGroup>
+		<SourceGeneratorBasePath Condition="'$(SourceGeneratorBasePath)'==''">..\</SourceGeneratorBasePath>
+		<UnoUIMSBuildTasksTargetPath Condition="'$(UnoUIMSBuildTasksTargetPath)'==''"></UnoUIMSBuildTasksTargetPath>
+
+		<_IsUnoPlatform>true</_IsUnoPlatform>
+	</PropertyGroup>
+
+	<Target Name="ValidateUnoUIAndUnoWinUIExclusion" BeforeTargets="BeforeBuild">
+		<Error Code="UNOB0001"
+		Text="Cannot build with both Uno.WinUI and Uno.UI nuget packages referenced."
+		Condition="'$(PkgUno_UI)'!='' and '$(PkgUno_WinUI)'!=''" />
+	</Target>
+
+	<Import Project="$(SourceGeneratorBasePath)Uno.UI.SourceGenerators.props" />
+	<Import Project="$(UnoUIMSBuildTasksTargetPath)Uno.UI.Tasks.targets" />
+	<Target Name="_UnoFeatureDefines"
+            BeforeTargets="BeforeCompile">
+
+		<!-- 
+			Defines Uno features. 
+		
+			Note to contributors: Adding a feature here allows for smoother upgrade 
+			to a more recent version of uno. These constants are defined in the code 
+			that uses Uno, so conditional compilation can be used to detect the presence
+			of breaking changes.
+		-->
+		<PropertyGroup>
+			<UnoDefineConstants>$(UnoDefineConstants);HAS_UNO</UnoDefineConstants>
+			<UnoDefineConstants Condition="$(_IsUnoWinUIPackage)">$(UnoDefineConstants);HAS_UNO_WINUI</UnoDefineConstants>
+			<UnoDefineConstants>$(UnoDefineConstants);UNO_HAS_FRAMEWORKELEMENT_MEASUREOVERRIDE</UnoDefineConstants>
+			<UnoDefineConstants>$(UnoDefineConstants);UNO_HAS_NO_IDEPENDENCYOBJECT</UnoDefineConstants>
+		</PropertyGroup>
+
+		<PropertyGroup Condition="'$(TargetFrameworkIdentifier)'=='.NETStandard' or '$(TargetFrameworkIdentifier)'=='.NETCoreApp'">
+			<UnoDefineConstants>$(UnoDefineConstants);UNO_REFERENCE_API</UnoDefineConstants>
+		</PropertyGroup>
+
+		<!-- Merge the UnoDefineConstants with the existing constants -->
+		<CreateProperty Value="$(DefineConstants);$(UnoDefineConstants)">
+			<Output TaskParameter="Value" PropertyName="DefineConstants" />
+		</CreateProperty>
+
+	</Target>
+
+	<Target Name="ReplaceRefAssemblies" AfterTargets="_ResolveAssemblies" Condition="'$(AndroidApplication)'=='true'">
+		<!-- This is a workaround for https://github.com/xamarin/xamarin-android/issues/1162#issuecomment-359475008 -->
+		<ItemGroup>
+			<ResolvedAssembliesFixedWindows Include="@(ResolvedAssemblies->Replace('\ref\','\lib\'))" />
+			<ResolvedAssembliesFixedUnix Include="@(ResolvedAssemblies->Replace('/ref/','/lib/'))" />
+			<ResolvedAssembliesFixed Include="@(ResolvedAssembliesFixedWindows)" Condition="@(ResolvedAssembliesFixedWindows) != @(ResolvedAssemblies)" />
+			<ResolvedAssembliesFixed Include="@(ResolvedAssembliesFixedUnix)" Condition="@(ResolvedAssembliesFixedUnix) != @(ResolvedAssemblies)" />
+			<ResolvedAssemblies Condition="'@(ResolvedAssembliesFixed->Count())' &gt; 0" Remove="@(ResolvedAssemblies)" />
+			<ResolvedAssemblies Include="@(ResolvedAssembliesFixed)" />
+		</ItemGroup>
+	</Target>
+
+	<ItemGroup>
+		<!-- Properties that will be automatically forwarded to the source generators -->
+		<UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlPort" />
+		<UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlHost" />
+		<UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlProcessorsPath" />
+	</ItemGroup>
+
+	<!-- List of packages that provide an uno-runtime folder -->
+	<ItemGroup>
+		<UnoRuntimeEnabledPackage Include="Uno.UI" PackageBasePath="$(MSBuildThisFileDirectory).." Condition="!$(_IsUnoWinUIPackage)" />
+		<UnoRuntimeEnabledPackage Include="Uno.WinUI" PackageBasePath="$(MSBuildThisFileDirectory).." Condition="$(_IsUnoWinUIPackage)" />
+	</ItemGroup>
+
+	<!-- Backward compatibility validation -->
+	<Target Name="_ValidateTopLevelPackageWasmUpgrade"
+				  Condition="'$(IsUnoHead)'!='true' and '$(WasmHead)'!=''"
+				  BeforeTargets="BeforeBuild">
+
+		<Error Text="WebAssembly head projects need to be updated to use the [Uno.UI.WebAssembly] package instead of the [Uno.UI] NuGet package." />
+	</Target>
+
+	<!--
+  Cross-runtime libraries creation targets
+  -->
+	<Target Name="PrepareUnoRuntimeProjectReferences" BeforeTargets="BeforeBuild">
+
+		<!--
+	Build the ProjectReference item group for UnoRuntimeProjectReference items.
+	The references are added as non-referencing ProjectReferences to enable the inclusion
+	of their output in the final nuget package.
+	-->
+		<ItemGroup>
+			<ProjectReference Include="%(UnoRuntimeProjectReference.Identity)">
+				<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+				<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+				<UndefineProperties>TargetFramework</UndefineProperties>
+			</ProjectReference>
+		</ItemGroup>
+
+	</Target>
+
+	<Target Name="ResolvePrepareUnoRuntimeProjectReferences" AfterTargets="ResolveProjectReferences">
+
+		<!-- Execute UnoRuntimeGetTargetPath for all UnoRuntimeProjectReference to get their actual output -->
+		<MSBuild
+			Projects="@(UnoRuntimeProjectReference)"
+			Targets="UnoRuntimeGetTargetPath"
+			BuildInParallel="$(BuildInParallel)"
+			Properties="Configuration=$(Configuration);Platform=$(Platform);TargetFramework=$(TargetFramework)"
+			ContinueOnError="!$(BuildingProject)">
+
+			<Output TaskParameter="TargetOutputs" ItemName="UnoRuntimeProjectReferenceOutput" />
+		</MSBuild>
+
+		<ItemGroup>
+			<!-- Add the appropriate metadata to include those files -->
+			<UnoRuntimeProjectReferenceOutput Update="@(UnoRuntimeProjectReferenceOutput)">
+				<Pack>true</Pack>
+				<PackagePath>uno-runtime/%(UnoRuntimeIdentifier)</PackagePath>
+			</UnoRuntimeProjectReferenceOutput>
+
+			<!-- Include symbols as well, if available -->
+			<UnoRuntimeProjectReferenceOutput
+				Include="@(UnoRuntimeProjectReferenceOutput->'%(rootdir)%(directory)%(filename).pdb')"
+				Condition="exists('%(rootdir)%(directory)%(filename).pdb')">
+				<Pack>true</Pack>
+				<PackagePath>uno-runtime/%(UnoRuntimeIdentifier)</PackagePath>
+			</UnoRuntimeProjectReferenceOutput>
+
+		</ItemGroup>
+
+		<ItemGroup>
+			<TfmSpecificPackageFile Include="@(UnoRuntimeProjectReferenceOutput)" />
+		</ItemGroup>
+
+		<RemoveDuplicates Inputs="@(TfmSpecificPackageFile)">
+			<Output TaskParameter="Filtered" ItemName="FilteredUnoRuntimeProjectReferenceOutput" />
+		</RemoveDuplicates>
+
+		<ItemGroup>
+			<TfmSpecificPackageFile Remove="@(TfmSpecificPackageFile)" />
+			<TfmSpecificPackageFile Include="@(FilteredUnoRuntimeProjectReferenceOutput)" />
+		</ItemGroup>
+	</Target>
+
+	<!-- Target used to determine the outputs of a project alongs with its associated UnoRuntimeIdentifier -->
+	<Target
+	  Name="UnoRuntimeGetTargetPath"
+	  DependsOnTargets="GetTargetPath"
+	  Returns="@(UnoRuntimeTargetPathWithTargetPlatformMoniker)">
+
+		<ItemGroup>
+			<UnoRuntimeTargetPathWithTargetPlatformMoniker
+				Include="@(TargetPathWithTargetPlatformMoniker)"
+				UnoRuntimeIdentifier="$(UnoRuntimeIdentifier.ToLower())" />
+		</ItemGroup>
+
+	</Target>
+
+
+	<!--
+	  Target used to warn the developer that overriden package binaries have been placed in the nuget cache.
+	  -->
+	<Target Name="_UnoNotifyNugetOverride" BeforeTargets="PrepareProjectReferences">
+		<ItemGroup>
+			<!--
+      If System.Collections* files are present, the package may have been overriden by an Uno.UI solution
+      version before the introduction of this check.
+      -->
+			<_OverrideFiles Include="$(MSBuildThisFileDirectory)../../tools/System.Collections*.dll"/>
+		</ItemGroup>
+		<PropertyGroup>
+			<_warnForUnoOverride>false</_warnForUnoOverride>
+			<_warnForUnoOverride Condition="'@(_OverrideFiles)'!='' or exists('$(MSBuildThisFileDirectory)../../.packageoverride')">true</_warnForUnoOverride>
+		</PropertyGroup>
+		<Warning Condition="$(_warnForUnoOverride)"
+             Text="======================================"
+             ContinueOnError="true" />
+		<Warning Condition="$(_warnForUnoOverride)"
+             Text="The Uno.UI nuget package has been overriden and may use modified files.&#x0d;&#x0a;Clear this package version folder in the nuget cache to return to a stable state."
+             ContinueOnError="true" />
+		<Warning Condition="$(_warnForUnoOverride)"
+             Text="======================================"
+             ContinueOnError="true" />
+	</Target>
+
+	<Target Name="ValidateUnoUIAndroid" BeforeTargets="BeforeBuild" Condition="'$(AndroidApplication)'!='' and '$(TargetFrameworkVersion)'!=''">
+
+		<PropertyGroup Condition="'$(NETCoreAppMaximumVersion)'!='' and '$(NETCoreAppMaximumVersion)'&gt;='6.0'">
+			<UnoUIMinAndroidSDKVersion>30</UnoUIMinAndroidSDKVersion>
+			<_CurrentTrimmedAndroidSDLVersion>$(_AndroidApiLevel)</_CurrentTrimmedAndroidSDLVersion>
+		</PropertyGroup>
+
+		<PropertyGroup Condition="$(TargetFramework.ToLowerInvariant().StartsWith('monoandroid')) or '$(ProjectTypeGuids)'=='{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}'">
+			<UnoUIMinAndroidSDKVersion>11.0</UnoUIMinAndroidSDKVersion>
+			<_CurrentTrimmedAndroidSDLVersion>$(TargetFrameworkVersion.Substring(1))</_CurrentTrimmedAndroidSDLVersion>
+		</PropertyGroup>
+
+		<Error Text="This version of the Android SDK ($(_CurrentTrimmedAndroidSDLVersion)) is not supported by Uno Platform. You must change the &quot;Compile using Android version:&quot; field in the android project property with at least version $(UnoUIMinAndroidSDKVersion)."
+					 Condition="'$(_CurrentTrimmedAndroidSDLVersion)' &lt; '$(UnoUIMinAndroidSDKVersion)'" />
+	</Target>
+
+</Project>

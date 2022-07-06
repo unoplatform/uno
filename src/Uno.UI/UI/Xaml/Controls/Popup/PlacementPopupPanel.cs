@@ -11,8 +11,10 @@ using Uno.Foundation.Logging;
 
 #if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+using XamlWindow = Microsoft.UI.Xaml.Window;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
+using XamlWindow = Windows.UI.Xaml.Window;
 #endif
 
 namespace Windows.UI.Xaml.Controls.Primitives
@@ -191,10 +193,39 @@ namespace Windows.UI.Xaml.Controls.Primitives
 							y: anchorRect.Top + halfAnchorHeight - halfChildHeight);
 						break;
 					case FlyoutBase.MajorPlacementMode.Full:
+#if __IOS__ || __ANDROID__
+						// The status bar should remain visible. On droid, this panel is placed beneath the status bar.
+						desiredSize = new Size(
+							ActualWidth,
+							ActualHeight
+#if __IOS__
+							// On iOS, this panel will cover the status bar, so we have to substract it out.
+							- visibleBounds.Y
+#endif
+						).AtMost(maxSize);
+#else
 						desiredSize = visibleBounds.Size.AtMost(maxSize);
+#endif
 						finalPosition = new Point(
-							x: (visibleBounds.Width - desiredSize.Width) / 2.0,
-							y: (visibleBounds.Height - desiredSize.Height) / 2.0);
+							x: FindOptimalOffset(desiredSize.Width, visibleBounds.X, visibleBounds.Width, ActualWidth),
+							y: FindOptimalOffset(desiredSize.Height, visibleBounds.Y, visibleBounds.Height, ActualHeight));
+
+						double FindOptimalOffset(double length, double visibleOffset, double visibleLength, double constraint)
+						{
+							// Center the flyout inside the first area that fits: within visible bounds, below status bar, the screen
+							if (visibleLength >= length)
+							{
+								return visibleOffset + (visibleLength - length) / 2;
+							}
+							if (constraint - visibleOffset >= length)
+							{
+								return visibleOffset + ((constraint - visibleOffset) - length) / 2;
+							}
+							else
+							{
+								return (constraint - length) / 2;
+							}
+						}
 						break;
 					default: // Other unsupported placements
 						finalPosition = new Point(
@@ -254,6 +285,48 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				this.Log().LogDebug($"Calculated placement, finalRect={finalRect}");
 			}
+
+			// Ensure the popup is not positioned fully beyond visible bounds.
+			// This can happen for example when the user is trying to show a flyout at
+			// Window.Current.Content - which will match Top position, which would be outside
+			// the visible bounds (negative Y).
+
+			if (finalRect.Bottom < visibleBounds.Top)
+			{
+				finalRect = new Rect(
+					finalRect.Left,
+					visibleBounds.Top,
+					finalRect.Width,
+					finalRect.Height);
+			}
+
+			if (finalRect.Top > visibleBounds.Bottom)
+			{
+				finalRect = new Rect(
+					finalRect.Left,
+					visibleBounds.Bottom - finalRect.Height,
+					finalRect.Width,
+					finalRect.Height);
+			}
+
+			if (finalRect.Right < visibleBounds.Left)
+			{
+				finalRect = new Rect(
+					visibleBounds.Left,
+					finalRect.Top,
+					finalRect.Width,
+					finalRect.Height);
+			}
+
+			if (finalRect.Left > visibleBounds.Right)
+			{
+				finalRect = new Rect(
+					visibleBounds.Right - finalRect.Width,
+					finalRect.Top,
+					finalRect.Width,
+					finalRect.Height);
+			}
+
 			return finalRect;
 		}
 

@@ -44,7 +44,7 @@ namespace $ext_safeprojectname$
             }
 #endif
 
-#if NET6_0_OR_GREATER && WINDOWS
+#if NET6_0_OR_GREATER && WINDOWS && !HAS_UNO
             _window = new Window();
             _window.Activate();
 #else

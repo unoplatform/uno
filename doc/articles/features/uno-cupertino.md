@@ -16,7 +16,7 @@ Uno Cupertino is an add-on package that lets you apply [Human Interface Guidelin
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
 
                 <CupertinoColors xmlns="using:Uno.Cupertino"  />
-				 <CupertinoResources xmlns="using:Uno.Cupertino" />
+                <CupertinoResources xmlns="using:Uno.Cupertino" />
 
                 <!-- Application's custom styles -->
                 <!-- other ResourceDictionaries -->

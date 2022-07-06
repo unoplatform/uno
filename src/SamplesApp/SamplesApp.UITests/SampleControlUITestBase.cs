@@ -223,6 +223,7 @@ namespace SamplesApp.UITests
 					$"{TestContext.CurrentContext.Test.Name}_{stepName}"
 						.Replace(" ", "_")
 						.Replace(".", "_")
+						.Replace(":", "_")
 						.Replace("(", "")
 						.Replace(")", "")
 						.Replace("\"", "")

@@ -2,14 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
+using Windows.Foundation;
 using System.Threading.Tasks;
 using CoreLocation;
 using Foundation;
 using Uno.Extensions;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 
 namespace Windows.Devices.Geolocation
@@ -18,7 +15,7 @@ namespace Windows.Devices.Geolocation
 	{
 		private CLLocationManager _locationManager;
 
-		public Geolocator()
+		partial void PlatformInitialize()
 		{
 			_locationManager = new CLLocationManager
 			{
@@ -32,14 +29,16 @@ namespace Windows.Devices.Geolocation
 
 		private void _locationManager_LocationsUpdated(object sender, CLLocationsUpdatedEventArgs e)
 		{
-			BroadcastStatus(PositionStatus.Ready);
-			this._positionChanged?.Invoke(this, new PositionChangedEventArgs(ToGeoposition(e.Locations.Last())));
+			BroadcastStatusChanged(PositionStatus.Ready);
+			_positionChangedWrapper.Event?.Invoke(this, new PositionChangedEventArgs(ToGeoposition(e.Locations.Last())));
 		}
 
 		partial void StartPositionChanged()
 		{
-			BroadcastStatus(PositionStatus.Initializing);
+			BroadcastStatusChanged(PositionStatus.Initializing);
 		}
+
+		internal CLLocationManager LocationManager => _locationManager;
 
 #if __IOS__
 		public Task<Geoposition> GetGeopositionAsync() => GetGeopositionInternalAsync(); //will be removed with #2240
@@ -52,14 +51,14 @@ namespace Windows.Devices.Geolocation
 		{
 			if (CoreDispatcher.Main.HasThreadAccess)
 			{
-				BroadcastStatus(PositionStatus.Initializing);
+				BroadcastStatusChanged(PositionStatus.Initializing);
 				var location = _locationManager.Location;
 				if (location == null)
 				{
 					throw new InvalidOperationException("Could not obtain the location. Please make sure that NSLocationWhenInUseUsageDescription and NSLocationUsageDescription are set in info.plist.");
 				}
 
-				BroadcastStatus(PositionStatus.Ready);
+				BroadcastStatusChanged(PositionStatus.Ready);
 
 				return Task.FromResult(ToGeoposition(location));
 			}

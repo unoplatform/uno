@@ -48,7 +48,7 @@ internal class DeferralManager<T>
 			}
 
 			isCompleted = true;
-			DeferralCompleted();
+			DeferralCompleted(false);
 		}
 	}
 
@@ -61,22 +61,24 @@ internal class DeferralManager<T>
 	/// <returns>A value indicating whether the deferral completed synchronously.</returns>
 	internal bool EventRaiseCompleted()
 	{
-		CompletedSynchronously = DeferralCompleted();
+		DeferralCompleted(true);
 		return CompletedSynchronously;
 	}
 
 	internal Task WhenAllCompletedAsync() => _allDeferralsCompletedCompletionSource.Task;
 
-	private bool DeferralCompleted()
+	private void DeferralCompleted(bool eventRaiseCompletion)
 	{
 		_deferralsCount--;
 		if (_deferralsCount <= 0)
 		{
+			if (eventRaiseCompletion)
+			{
+				CompletedSynchronously = true;
+			}
+
 			Completed?.Invoke(this, EventArgs.Empty);
 			_allDeferralsCompletedCompletionSource.TrySetResult(null);
-			return true;
 		}
-
-		return false;
 	}
 }

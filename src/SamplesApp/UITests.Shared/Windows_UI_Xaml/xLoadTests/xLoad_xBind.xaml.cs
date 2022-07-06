@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml.xLoadTests
 {
-	[Sample("xLoad", Name = "xLoad_xBind")]
+	[Sample("x:Load", Name = "xLoad_xBind")]
 	public sealed partial class xLoad_xBind : UserControl
     {
 		public bool IsLoad

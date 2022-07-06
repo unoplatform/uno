@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Flyout
 {
-	[SampleControlInfo("Flyout", "Flyout_Attached", description: "Demonstrates use of FlyoutBase.AttachedFlyout.")]
+	[SampleControlInfo("Flyouts", "Flyout_Attached", description: "Demonstrates use of FlyoutBase.AttachedFlyout.")]
 	public sealed partial class Flyout_Attached : UserControl
 	{
 		public Flyout_Attached()

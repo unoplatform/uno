@@ -23,6 +23,8 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			_owner = owner ?? throw new ArgumentNullException(nameof(owner));
 		}
 
+		public bool IsNativeOverlayLayerInitialized => GetWindowTextInputLayer() is not null;
+		
 		private WpfCanvas? GetWindowTextInputLayer() => WpfHost.Current?.NativeOverlayLayer;
 
 		public void StartEntry()
@@ -38,7 +40,11 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			_contentElement = textBox.ContentElement;
 
 			EnsureWidgetForAcceptsReturn();
-			textInputLayer.Children.Add(_currentInputWidget!);
+
+			if (textInputLayer.Children.Count == 0)
+			{
+				textInputLayer.Children.Add(_currentInputWidget!);
+			}
 
 			UpdateNativeView();
 			SetTextNative(textBox.Text);
@@ -160,7 +166,15 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			// No support for now.
 		}
 
-		public void Select(int start, int length) => _currentInputWidget?.Select(start, length);
+		public void Select(int start, int length)
+		{
+			if (_currentInputWidget == null)
+			{
+				this.StartEntry();
+			}
+
+			_currentInputWidget!.Select(start, length);
+		}
 
 		public int GetSelectionStart() => _currentInputWidget?.SelectionStart ?? 0;
 

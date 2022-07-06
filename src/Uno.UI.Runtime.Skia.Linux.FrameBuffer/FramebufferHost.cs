@@ -5,6 +5,7 @@ using WUX = Windows.UI.Xaml;
 using Uno.WinUI.Runtime.Skia.LinuxFB;
 using Windows.UI.Core;
 using Uno.Foundation.Extensibility;
+using System.ComponentModel;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -27,7 +28,12 @@ namespace Uno.UI.Runtime.Skia
 		/// Args are obsolete and will be removed in the future. Environment.CommandLine is used instead
 		/// to fill LaunchEventArgs.Arguments.
 		/// </remarks>
-		public FrameBufferHost(Func<WUX.Application> appBuilder, string[] args)
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public FrameBufferHost(Func<WUX.Application> appBuilder, string[] args) : this(appBuilder)
+		{
+		}
+
+		public FrameBufferHost(Func<WUX.Application> appBuilder)
 		{
 			_appBuilder = appBuilder;
 

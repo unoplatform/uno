@@ -2,26 +2,19 @@
 
 ![Uno Hello World](images/00_uno-hello-world.jpg)
 
-In this series of guides, we'll build a cloud connected Raspberry Pi GUI app to perform some straightforward GPIO (General Purpose Input Output) operations.
-
-1. Introduction and Getting Started (this article)
-2. [GPIO Control](raspberry-pi-gpio.md)
-3. [Connecting to an Azure IoT Hub](raspberry-pi-azure.md)
 
 ## Prerequisites
 
-For this series of guides, you'll need various pieces of hardware and an Azure Account;
+For this guide, you'll need various pieces of hardware and an Azure Account;
 
 - Raspberry Pi 3b+ and above (I'll be using a [4Gb Pi 4](https://shop.pimoroni.com/products/raspberry-pi-4?variant=29157087445075)) 
 - [Raspberry Pi Power Supply](https://shop.pimoroni.com/products/universal-usb-c-power-supply-5-1v-3a)
 - [16GB SD Card](https://amzn.to/2YAI07e)
-- Optional: Keyboard and mouse
-- SSH Client (Both Windows and Mac have a built in ssh client)
+- SSH Client like [PuTTY](https://putty.org/)(Both Windows and Mac have a built in ssh client)
 - Code Editor - [Visual Studio Code](https://code.visualstudio.com)
-- [Jumper Cables, Breadboard, 220 Ohm Resistors, Assorted LEDs](https://amzn.to/3uYybMu)
-- [Microsoft Azure Account](https://portal.azure.com)
-- Optional: [LCD Touchscreen](https://amzn.to/3uYSXvt)
-- [VNC Viewer](https://www.realvnc.com/en/connect/download/viewer/)
+- Choose the two following options:
+  - [LCD Touchscreen](https://amzn.to/3uYSXvt), Keyboard and mouse
+  - OR [VNC Viewer](https://www.realvnc.com/en/connect/download/viewer/)
 
 ## What we'll be doing
 
@@ -45,7 +38,7 @@ There will be a series of steps involved in this;
 
 Before we go anywhere, let's make sure we can dial in to our Raspberry Pi.
 
-You may need to do this part with a Keyboard, a Mouse and Monitor of course, unless you enabled SSH the SD card before you installed Raspberry Pi OS.
+You may need to do this part with a Keyboard, a Mouse and Monitor of course, unless you enabled SSH on the SD card before you installed Raspberry Pi OS.
 
 Firstly, make sure that your Pi is connected to the same network.
 
@@ -104,8 +97,6 @@ Once you're finished, you should be able to run the following to check your .NET
 
 Next we can add the Uno Platform Project Templates to our .NET Installation;
 
-`dotnet new --install Uno.ProjectTemplates.Dotnet::3.11.0-dev.348`
-Or once Uno Platform 3.11 or later is out, you can use :
 `dotnet new --install Uno.ProjectTemplates.Dotnet`
 
 ![Install Uno Templates](images/05_install-uno-templates.png)
@@ -118,7 +109,7 @@ Once the templates are installed, you can scroll back up and see the list of Uno
 
 Now we have the moving parts installed on our Pi, we can spin up a brand new Uno solution with the following command;
 
-`dotnet new UnoApp -o unoapp1 -ios=false -android=false -macos=false -wasm=false -skia-wpf=false -st=false && cd unoapp1`
+`dotnet new UnoApp -o unoapp1 -ios=false -android=false -macos=false -wasm=false -skia-wpf=false -skia-tizen=false && cd unoapp1`
 
 You should now find yourself in the solution directory for your new Uno App. If we have a look at the folder contents with;
 
@@ -141,7 +132,7 @@ Then we have four directories;
 
 The directory we're interested in is the `unoapp1.Skia.Gtk` directory. This directory contains the project which we'll build and run on the Raspberry Pi.
 
-It actually includes the build outputs from the `unoapp1.Shared` and `unoaddp1.Skia.Linux.FrameBuffer` projects too, and in the next tutorial, we'll dive in to those in a bit more detail.
+It actually includes the build outputs from the `unoapp1.Shared` and `unoapp1.Skia.Linux.FrameBuffer` projects too, and in the next tutorial, we'll dive in to those in a bit more detail.
 
 ## Give the SSH Session access to use the display
 
@@ -193,11 +184,15 @@ You can copy the contents of the `bin\linux-arm\publish` directory to your Pi in
 
 You then need to navigate to the directory where you've copied the files and make the main application executable with;
 
-`chmod +x unoapp1.Skia.GTK`
+`chmod +x unoapp1.Skia.Gtk`
 
 Don't forget that, if you've just dialled in you'll need to give access to the Display;
 
 `export DISPLAY=:0`
+
+If you are using a 64-bit version of the Raspberry Pi OS, you need to run the following commands to be able to run 32-bit executable :
+`$ sudo apt-get install ia32-libs-multiarch`
+`$ sudo apt-get install ia32-libs`
 
 You can then run the application with;
 
@@ -210,8 +205,6 @@ I've created a blog post around how you can actually automate Building, Deployin
 ## Wrap Up
 
 With that, we've gotten our first Hello World application up and running on the Raspberry Pi.
-
-In the next guide, we'll look at how we can create a UI and some code to control the GPIO on the Raspberry Pi to read the status of Buttons and turn on and off LEDs.
 
 Thanks.
 

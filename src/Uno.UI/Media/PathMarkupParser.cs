@@ -538,8 +538,6 @@ namespace Uno.Media
 			return span.Slice(i);
 		}
 
-		// Uno docs: Implementation (currently) different than Avalonia due to:
-		// https://github.com/unoplatform/uno/issues/2855
 		private bool ReadBool(ref ReadOnlySpan<char> span)
 		{
 			span = SkipWhitespace(span);

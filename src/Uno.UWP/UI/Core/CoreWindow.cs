@@ -9,6 +9,7 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Input;
 using Uno.Foundation.Logging;
+using Windows.UI.ViewManagement;
 
 namespace Windows.UI.Core
 {
@@ -52,6 +53,10 @@ namespace Windows.UI.Core
 
 		internal static CoreWindow? Main { get; private set; }
 
+		/// <summary>
+		/// Gets a Rect value containing the height and width of the application window in units of effective (view) pixels.
+		/// </summary>
+		public Rect Bounds { get; private set; }
 		/// <summary>
 		/// Gets the event dispatcher for the window.
 		/// </summary>
@@ -125,7 +130,16 @@ namespace Windows.UI.Core
 		}
 
 		internal void OnSizeChanged(WindowSizeChangedEventArgs windowSizeChangedEventArgs)
-			=> SizeChanged?.Invoke(this, windowSizeChangedEventArgs);
+		{
+			//Windows.Bounds doesn't implemment X an Y Windows Origin as well.
+			var newBounds = new Rect(0,0,windowSizeChangedEventArgs.Size.Width, windowSizeChangedEventArgs.Size.Height);
+			if (newBounds != Bounds)
+			{
+				Bounds = newBounds;
+			}
+
+			SizeChanged?.Invoke(this, windowSizeChangedEventArgs);
+		}
 
 		internal interface IPointerEventArgs
 		{

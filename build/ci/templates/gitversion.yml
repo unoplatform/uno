@@ -31,6 +31,14 @@ steps:
       installationPath: '${{parameters.dotnetInstallationPath}}'
 
   - task: UseDotNet@2
+    displayName: 'Use .Net Core runtime 6.0.4'
+    retryCountOnTaskFailure: 3
+    inputs:
+      packageType: runtime
+      version: 6.0.4
+      installationPath: '${{parameters.dotnetInstallationPath}}'
+
+  - task: UseDotNet@2
     displayName: 'Use .Net Core runtime 3.1.12'
     retryCountOnTaskFailure: 3
     inputs:

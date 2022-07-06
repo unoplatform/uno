@@ -22,6 +22,8 @@
 		
 		<WarningsAsErrors>true</WarningsAsErrors>
 
+		<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
+
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI</PackageId>
 	</PropertyGroup>
 
@@ -33,6 +35,7 @@
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="System.Memory" Version="4.5.2" />
+		<PackageReference Include="SkiaSharp.HarfBuzz" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -43,7 +46,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="$(PlatformItemsBasePath)Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRingIntdeterminate.json" />
+		<EmbeddedResource Include="$(PlatformItemsBasePath)Microsoft\UI\Xaml\Controls\ProgressRing\*.json" />
 		<PRIResource Include="$(PlatformItemsBasePath)**\*.resw" />
 	</ItemGroup>
 
