@@ -4,6 +4,7 @@ using Uno;
 using Uno.UI;
 using System.Linq;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 
 #if __ANDROID__
 using View = Android.Views.ViewGroup;
@@ -179,5 +180,38 @@ namespace Windows.UI.Xaml.Automation.Peers
 		}
 
 		protected override AutomationLandmarkType GetLandmarkTypeCore() => AutomationProperties.GetLandmarkType(Owner);
+
+		/// <summary>
+		/// Virtual helper method which provide ability for any specific Automation peers
+		/// do not allows including Automation peer of child elements' in to the Automation
+		/// peer tree.
+		/// </summary>
+		/// <remarks>
+		/// We don't accept nonUI or null elements by default.
+		/// </remarks>
+		/// <param name="child">
+		/// Child element to be decided to include it to
+		/// Automation peer's tree.
+		/// </param>
+		/// <returns>True if the child element is acceptable.</returns>
+		private protected virtual bool ChildIsAcceptable(UIElement element)
+		{
+			bool isPopupOpen = true;
+
+			var childIsAcceptable = element != null;
+			if (element != null)
+			{
+				if (element is Popup popup)
+				{
+					isPopupOpen = popup.IsOpen;
+				}
+				var value = element.Visibility;
+
+				// this condition checks that if Control is visible and if it's popup then it must be open
+				childIsAcceptable = isPopupOpen && value == Visibility.Visible;
+			}
+
+			return childIsAcceptable;
+		}
 	}
 }

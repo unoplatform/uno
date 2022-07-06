@@ -825,7 +825,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		// Value indicating whether the ScrollBar reacts to user input or not.
-		private bool IsIgnoringUserInput
+		internal bool IsIgnoringUserInput
 		{
 			get => m_isIgnoringUserInput;
 			set => m_isIgnoringUserInput = value;
