@@ -19,6 +19,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class TextBlock : FrameworkElement, IBlock
 	{
+		internal CompositionBrush ForegroundCompositionBrush;
 		private readonly TextVisual _textVisual;
 
 		public TextBlock()
