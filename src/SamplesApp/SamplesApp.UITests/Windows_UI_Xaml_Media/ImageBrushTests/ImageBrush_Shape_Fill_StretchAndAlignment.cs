@@ -26,24 +26,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.ImageBrushTests
 		[Test]
 		[AutoRetry]
 		[Timeout(SingleStretchTestTimeout)]
-		public void When_Stretch_None_And_Alignment() => When_StretchAndAlignment(Stretch.None);
-
-		[Test]
-		[AutoRetry]
-		[Timeout(SingleStretchTestTimeout)]
-		public void When_Stretch_Fill_And_Alignment() => When_StretchAndAlignment(Stretch.Fill);
-
-		[Test]
-		[AutoRetry]
-		[Timeout(SingleStretchTestTimeout)]
-		public void When_Stretch_UniformToFill_And_Alignment() => When_StretchAndAlignment(Stretch.UniformToFill);
-
-		[Test]
-		[AutoRetry]
-		[Timeout(SingleStretchTestTimeout)]
-		public void When_Stretch_Uniform_And_Alignment() => When_StretchAndAlignment(Stretch.Uniform);
-
-		private void When_StretchAndAlignment(Stretch stretch)
+		public void When_StretchAndAlignment([Values] Stretch stretch)
 		{
 			try
 			{
@@ -148,7 +131,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.ImageBrushTests
 			Bottom,
 		}
 
-		private enum Stretch : int
+		public enum Stretch : int
 		{
 			Fill = 0,
 			None,
