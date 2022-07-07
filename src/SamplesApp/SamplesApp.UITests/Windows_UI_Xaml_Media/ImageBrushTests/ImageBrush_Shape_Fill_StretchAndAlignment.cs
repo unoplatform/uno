@@ -131,7 +131,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.ImageBrushTests
 			Bottom,
 		}
 
-		private enum Stretch : int
+		public enum Stretch : int
 		{
 			Fill = 0,
 			None,
