@@ -787,6 +787,69 @@ namespace Uno.UI.Xaml
 		}
 		#endregion
 
+		#region SetFontFamily
+
+		internal static void SetFontFamily(IntPtr htmlId, string fontname)
+		{
+			fontname = AddQuotationMarks(fontname);
+			if (UseJavascriptEval)
+			{
+				var command = $"Uno.UI.WindowManager.current.setFontFamily(\"{htmlId}\", \"{fontname}\");";
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerSetFontFamily()
+				{
+					HtmlId = htmlId,
+					Fontfamily = fontname,
+				};
+
+				TSInteropMarshaller.InvokeJS("Uno:setFontFamilyNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetFontFamily
+		{
+			public IntPtr HtmlId;
+
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
+			public string Fontfamily;
+		}
+
+
+		/**
+		 * Define if the fontName needs add quotation marks.
+		*/
+		private static bool NeedQuotationMarks(string fontName)
+		{
+			//Split white-space characters 
+			var myArray = fontName.Split(null);
+			foreach (var word in myArray)
+			{
+				var isnum = System.Text.RegularExpressions.Regex.IsMatch(word.Substring(0, 1), @"/^\d+$/");
+				if (isnum)
+					return true;
+			}
+			return false;
+		}
+
+		/**
+		* Add quotation marks on fontName if is necessary.
+		*/
+		private static string AddQuotationMarks(string fontName)
+		{
+			if (NeedQuotationMarks(fontName))
+			{
+				return "'" + fontName + "'";
+			}
+
+			return fontName;
+		}
+		#endregion
+
 		#region SetVisibility
 
 		internal static void SetVisibility(IntPtr htmlId, bool visible)

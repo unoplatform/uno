@@ -89,8 +89,7 @@ namespace Windows.UI.Xaml
 					{
 						value = FontFamily.Default;
 					}
-
-					this.SetStyle("font-family", value.ParsedSource);
+					Uno.UI.Xaml.WindowManagerInterop.SetFontFamily(HtmlId, _uid);
 				}
 			}
 		}

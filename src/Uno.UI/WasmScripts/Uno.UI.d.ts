@@ -239,6 +239,12 @@ declare namespace Uno.UI {
         setXUidNative(pParam: number): boolean;
         private setXUidInternal;
         /**
+            * Set font-family for an element.
+            *
+            */
+        setFontFamilyNative(elementId: number, fontname: string): string;
+        private setFontFamilyInternal;
+        /**
             * Sets the visibility of the specified element
             */
         setVisibility(elementId: number, visible: boolean): string;
@@ -1453,6 +1459,10 @@ declare class WindowManagerSetElementTransformParams {
     M31: number;
     M32: number;
     static unmarshal(pData: number): WindowManagerSetElementTransformParams;
+}
+declare class WindowManagerSetFontFamily {
+    HtmlId: number;
+    Fontfamily: string;
 }
 declare class WindowManagerSetNameParams {
     HtmlId: number;

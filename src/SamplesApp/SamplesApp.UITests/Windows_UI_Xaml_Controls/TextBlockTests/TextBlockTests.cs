@@ -147,6 +147,31 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] // Disabled for Mobile because the error only occurs on WASM
+		public void When_FontFamily_Changed()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_FontFamily");
+
+			var rectNoNumber = _app.GetLogicalRect("testBlockNoNumber");
+			var widthNoNumber = rectNoNumber.Width;
+			var heightNoNumber = rectNoNumber.Height;
+
+			var rectWithNumber = _app.GetLogicalRect("testBlockWithNumber");
+			var widthWithNumber = rectWithNumber.Width;
+			var heightWithNumber = rectNoNumber.Height;
+
+			var rectDefault = _app.GetLogicalRect("testBlockDefault");
+			var widthDefault = rectDefault.Width;
+			var heightDefault = rectNoNumber.Height;
+
+			using var _ = new AssertionScope();
+			Assert.AreNotEqual(widthNoNumber, widthWithNumber);
+			Assert.AreNotEqual(widthNoNumber, widthDefault);
+			Assert.AreNotEqual(widthWithNumber, widthDefault);
+		}
+
+		[Test]
+		[AutoRetry]
 		public void When_Foreground_Brush_Color_Changed()
 		{
 			Run("Uno.UI.Samples.Content.UITests.TextBlockControl.TextBlock_BrushColorChanging");
@@ -311,7 +336,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 				(borderRect, textRect) = GetRects(borderName, textName);
 				textRect.X.Should()
 					.BeApproximately(
-						borderRect.X + (borderRect.Width - textRect.Width)/2f,
+						borderRect.X + (borderRect.Width - textRect.Width) / 2f,
 						precision,
 						"X - center");
 				textRect.Width.Should().BeLessThan(borderRect.Width, "Width - center");

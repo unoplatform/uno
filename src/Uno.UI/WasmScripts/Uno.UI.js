@@ -617,6 +617,18 @@ var Uno;
                 this.getView(elementId).setAttribute("xuid", name);
             }
             /**
+                * Set font-family for an element.
+                *
+                */
+            setFontFamilyNative(elementId, fontname) {
+                this.setFontFamilyInternal(elementId, fontname);
+                return "ok";
+            }
+            setFontFamilyInternal(elementId, fontname) {
+                const elementStyle = this.getView(elementId).style;
+                elementStyle.setProperty('font-family', fontname);
+            }
+            /**
                 * Sets the visibility of the specified element
                 */
             setVisibility(elementId, visible) {
@@ -5317,6 +5329,9 @@ class WindowManagerSetElementTransformParams {
         }
         return ret;
     }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetFontFamily {
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetNameParams {

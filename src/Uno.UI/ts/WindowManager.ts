@@ -376,6 +376,24 @@ namespace Uno.UI {
 			this.getView(elementId).setAttribute("xuid", name);
 		}
 
+
+		/**
+			* Set font-family for an element.
+			*
+			*/
+		public setFontFamilyNative(elementId: number, fontname: string): string {
+			this.setFontFamilyInternal(elementId, fontname);
+			return "ok";
+		}
+
+		private setFontFamilyInternal(elementId: number, fontname: string): void {
+
+			const elementStyle = this.getView(elementId).style;
+
+			elementStyle.setProperty('font-family', fontname);
+
+		}
+
 		/**
 			* Sets the visibility of the specified element
 			*/
@@ -565,7 +583,6 @@ namespace Uno.UI {
 			for (let i = 0; i < params.Pairs_Length; i += 2) {
 				const key = pairs[i];
 				const value = pairs[i + 1];
-
 				elementStyle.setProperty(key, value);
 			}
 
@@ -1876,7 +1893,6 @@ namespace Uno.UI {
 		public selectInputRange(elementId: number, start: number, length: number) {
 			(this.getView(elementId) as HTMLInputElement).setSelectionRange(start, start + length);
 		}
-
 	}
 
 	if (typeof define === "function") {
