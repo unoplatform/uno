@@ -9,7 +9,11 @@
       "SamplesApp\\SamplesApp.UnitTests.Shared\\SamplesApp.UnitTests.Shared.shproj",
       "SamplesApp\\UITests.Shared\\UITests.Shared.shproj",
       "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.csproj",
-      "Uno.UI.Toolkit\\Uno.UI.Toolkit.csproj"
+      "Uno.UI.Toolkit\\Uno.UI.Toolkit.csproj",
+      "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
+      "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
+      "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",
+      "SamplesApp\\SamplesApp.UITests.Generator\\Uno.Samples.UITest.Generator.csproj"
     ]
   }
 }
