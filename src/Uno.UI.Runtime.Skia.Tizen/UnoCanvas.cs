@@ -14,9 +14,9 @@ namespace Uno.UI.Runtime.Skia
 		{
 			PaintSurface += UnoCanvas_PaintSurface;
 			Resized += UnoCanvas_Resized;
-
-			WUX.Window.InvalidateRender += () => Invalidate();
 		}
+
+		internal void InvalidateRender() => Invalidate();
 
 		private void UnoCanvas_Resized(object sender, EventArgs e)
 		{

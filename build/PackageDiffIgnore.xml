@@ -8848,6 +8848,18 @@
 		<Properties>
 		</Properties>
 	</IgnoreSet>
+	<IgnoreSet baseVersion="4.4.13">
+		<Types>
+		</Types>
+
+		<Methods>
+			<Member
+				fullName="System.Void Windows.UI.UIContext..ctor()"
+				reason="Not part of UWP API" />
+		</Methods>
+		<Properties>
+		</Properties>
+	</IgnoreSet>
 	<!--
 	Supported nodes (please keep at the bottom of this file):
 	<IgnoreSet baseVersion="0.0.0">

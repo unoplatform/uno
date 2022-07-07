@@ -1,6 +1,4 @@
-﻿#if !WINDOWS_UWP
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Threading.Tasks;
 using Private.Infrastructure;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -27,4 +25,3 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 	}
 }
-#endif

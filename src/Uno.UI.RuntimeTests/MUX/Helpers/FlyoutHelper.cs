@@ -11,12 +11,12 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 {
 	internal static class FlyoutHelper
 	{
-		public static FrameworkElement GetOpenFlyoutPresenter()
+		public static FrameworkElement GetOpenFlyoutPresenter(XamlRoot xamlRoot)
 		{
 #if NETFX_CORE
 			var popups = VisualTreeHelper.GetOpenPopups(Window.Current);
 #else
-			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(XamlRoot.Current);
+			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(xamlRoot);
 #endif
 			if (popups.Count != 1)
 			{

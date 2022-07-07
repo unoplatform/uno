@@ -134,6 +134,11 @@
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.net6.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.Wasm.csproj</_AdjustedOutputProjects>
+
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.XamlHost.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.XamlHost.net6.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.XamlHost.Skia.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.XamlHost.Wasm.csproj</_AdjustedOutputProjects>
   </PropertyGroup>
 
   <PropertyGroup>

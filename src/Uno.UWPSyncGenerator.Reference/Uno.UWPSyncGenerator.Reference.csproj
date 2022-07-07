@@ -122,7 +122,7 @@
 		<PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
 			<Version>6.2.9</Version>
 		</PackageReference>
-		<SDKReference Include="WindowsDesktop, Version=10.0.19041.0">
+		<SDKReference Include="WindowsDesktop, Version=10.0.22000.0">
 			<Name>Windows Desktop Extensions for the UWP</Name>
 		</SDKReference>
 		<SDKReference Include="WindowsMobile, Version=10.0.19041.0">

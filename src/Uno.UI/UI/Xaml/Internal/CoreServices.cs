@@ -62,6 +62,7 @@ namespace Uno.UI.Xaml.Core
 
 			// Set the root visual from the parser result. If we're passed null it means
 			// we're supposed to just clear the tree.
+			// TODO: This is not currently happening, adjust when porting next time
 			if (dependencyObject != null)
 			{
 				var root = dependencyObject as UIElement;

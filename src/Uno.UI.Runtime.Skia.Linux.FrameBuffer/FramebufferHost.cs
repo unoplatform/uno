@@ -6,6 +6,7 @@ using Uno.WinUI.Runtime.Skia.LinuxFB;
 using Windows.UI.Core;
 using Uno.Foundation.Extensibility;
 using System.ComponentModel;
+using Uno.UI.Xaml.Core;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -68,7 +69,26 @@ namespace Uno.UI.Runtime.Skia
 			_renderer = new Renderer();
 			_displayInformationExtension!.Renderer = _renderer;
 
+			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
+
 			WUX.Application.StartWithArguments(CreateApp);
+		}
+
+		private void OnCoreWindowContentRootSet(object? sender, object e)
+		{
+			var xamlRoot = CoreServices.Instance
+				.ContentRootCoordinator
+				.CoreWindowContentRoot?
+				.GetOrCreateXamlRoot();
+
+			if (xamlRoot is null)
+			{
+				throw new InvalidOperationException("XamlRoot was not properly initialized");
+			}
+
+			xamlRoot.InvalidateRender += _renderer!.InvalidateRender;
+
+			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 		}
 	}
 }

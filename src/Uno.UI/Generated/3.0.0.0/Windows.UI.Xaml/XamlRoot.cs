@@ -8,28 +8,10 @@ namespace Windows.UI.Xaml
 	public  partial class XamlRoot 
 	{
 		// Skipping already declared property Content
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsHostVisible
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool XamlRoot.IsHostVisible is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property IsHostVisible
 		// Skipping already declared property RasterizationScale
 		// Skipping already declared property Size
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.UIContext UIContext
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member UIContext XamlRoot.UIContext is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property UIContext
 		// Forced skipping of method Windows.UI.Xaml.XamlRoot.Content.get
 		// Forced skipping of method Windows.UI.Xaml.XamlRoot.Size.get
 		// Forced skipping of method Windows.UI.Xaml.XamlRoot.RasterizationScale.get

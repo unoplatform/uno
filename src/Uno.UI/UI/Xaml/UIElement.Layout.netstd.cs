@@ -1,10 +1,10 @@
 ﻿#if !__NETSTD_REFERENCE__
-using Windows.Foundation;
 using System;
 using System.Diagnostics;
-using Windows.UI.Xaml.Controls.Primitives;
 using System.Runtime.CompilerServices;
 using Uno.UI;
+using Windows.Foundation;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml
 {
@@ -49,7 +49,11 @@ namespace Windows.UI.Xaml
 				(this.GetParent() as UIElement)?.InvalidateMeasure();
 				if (IsVisualTreeRoot)
 				{
+#if __SKIA__
+					XamlRoot.InvalidateMeasure();
+#else
 					Window.InvalidateMeasure();
+#endif
 				}
 			}
 		}
@@ -57,7 +61,7 @@ namespace Windows.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void InvalidateMeasureDirtyPath()
 		{
-			if(IsMeasureDirtyOrMeasureDirtyPath)
+			if (IsMeasureDirtyOrMeasureDirtyPath)
 			{
 				return; // Already invalidated
 			}
@@ -70,13 +74,17 @@ namespace Windows.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal void InvalidateParentMeasureDirtyPath()
 		{
-			if (this.GetParent() is UIElement parent)
+			if (this.GetParent() is UIElement parent) //TODO: Should this use VisualTree.GetParent as fallback? https://github.com/unoplatform/uno/issues/8978
 			{
 				parent.InvalidateMeasureDirtyPath();
 			}
 			else if (IsVisualTreeRoot)
 			{
+#if __SKIA__
+				XamlRoot.InvalidateMeasure();
+#else
 				Window.InvalidateMeasure();
+#endif
 			}
 		}
 
@@ -103,7 +111,11 @@ namespace Windows.UI.Xaml
 				(this.GetParent() as UIElement)?.InvalidateArrange();
 				if (IsVisualTreeRoot)
 				{
+#if __SKIA__
+					XamlRoot.InvalidateArrange();
+#else
 					Window.InvalidateArrange();
+#endif
 				}
 			}
 		}
@@ -124,13 +136,17 @@ namespace Windows.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void InvalidateParentArrangeDirtyPath()
 		{
-			if (this.GetParent() is UIElement parent)
+			if (this.GetParent() is UIElement parent) //TODO: Should this use VisualTree.GetParent as fallback? https://github.com/unoplatform/uno/issues/8978
 			{
 				parent.InvalidateArrangeDirtyPath();
 			}
-			else
+			else //TODO: Why not check IsVisualTreeRoot as in InvalidateParentMeasureDirtyPath?
 			{
+#if __SKIA__
+				XamlRoot?.InvalidateArrange();
+#else
 				Window.InvalidateArrange();
+#endif
 			}
 		}
 
@@ -254,7 +270,7 @@ namespace Windows.UI.Xaml
 				var children = GetChildren().GetEnumerator();
 
 				//foreach (var child in children)
-				while(children.MoveNext())
+				while (children.MoveNext())
 				{
 					if (children.Current is { IsMeasureDirtyOrMeasureDirtyPath: true } child)
 					{

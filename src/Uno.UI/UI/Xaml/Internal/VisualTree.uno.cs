@@ -1,27 +1,32 @@
 ﻿#nullable enable
 
+using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Controls;
 
-namespace Uno.UI.Xaml.Core
+namespace Uno.UI.Xaml.Core;
+
+internal partial class VisualTree : IWeakReferenceProvider
 {
-	internal partial class VisualTree
+	private const int UnoTopZIndex = int.MaxValue - 100;
+	private const int FocusVisualZIndex = UnoTopZIndex + 1;
+
+	private ManagedWeakReference? _selfWeakReference;
+
+	public Canvas? FocusVisualRoot { get; private set; }
+
+	public void EnsureFocusVisualRoot()
 	{
-		private const int UnoTopZIndex = int.MaxValue - 100;
-		private const int FocusVisualZIndex = UnoTopZIndex + 1;
-
-		public Canvas? FocusVisualRoot { get; private set; }
-
-		public void EnsureFocusVisualRoot()
+		if (FocusVisualRoot == null)
 		{
-			if (FocusVisualRoot == null)
+			FocusVisualRoot = new Canvas()
 			{
-				FocusVisualRoot = new Canvas()
-				{
-					Background = null,
-					IsHitTestVisible = false
-				};
-				Canvas.SetZIndex(FocusVisualRoot, FocusVisualZIndex);
-			}
+				Background = null,
+				IsHitTestVisible = false
+			};
+			Canvas.SetZIndex(FocusVisualRoot, FocusVisualZIndex);
 		}
 	}
+
+	ManagedWeakReference IWeakReferenceProvider.WeakReference =>
+		_selfWeakReference ??= WeakReferencePool.RentSelfWeakReference(this);		
 }

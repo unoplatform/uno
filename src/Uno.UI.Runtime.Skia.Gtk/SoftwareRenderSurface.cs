@@ -15,6 +15,7 @@ using System.Diagnostics;
 using Uno.UI.Runtime.Skia.Helpers.Windows;
 using Uno.UI.Runtime.Skia.Helpers.Dpi;
 using Windows.Graphics.Display;
+using Gtk;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -39,13 +40,7 @@ namespace Uno.UI.Runtime.Skia
 		{
 			_displayInformation = DisplayInformation.GetForCurrentView();
 			_displayInformation.DpiChanged += OnDpiChanged;
-			WUX.Window.InvalidateRender
-				+= () =>
-				{
-					// TODO Uno: Make this invalidation less often if possible.
-					InvalidateOverlays();
-					Invalidate();
-				};
+
 			_colorType = SKImageInfo.PlatformColorType;
 			// R and B channels are inverted on macOS running on arm64 CPU and this is not detected by Skia
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
@@ -55,6 +50,15 @@ namespace Uno.UI.Runtime.Skia
 					_colorType = SKColorType.Bgra8888;
 				}
 			}
+		}
+
+		public Widget Widget => this;
+
+		public void InvalidateRender()
+		{
+			// TODO Uno: Make this invalidation less often if possible.
+			InvalidateOverlays();
+			Invalidate();
 		}
 
 		private void OnDpiChanged(DisplayInformation sender, object args) =>

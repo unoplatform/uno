@@ -6,5 +6,5 @@
         xmlns:local="clr-namespace:SamplesApp.WPF"
 		mc:Ignorable="d"
         Title="Uno with Skia# Backend" Height="450" Width="800">
-	<ContentControl x:Name="root"/>
+	<ContentControl x:Name="root" />
 </Window>

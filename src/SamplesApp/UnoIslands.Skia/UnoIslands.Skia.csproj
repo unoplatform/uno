@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DefineConstants>$(DefineConstants);__SKIA__;HAS_UNO;UNO_REFERENCE_API</DefineConstants>
+		<IsUnoHead>true</IsUnoHead>
+		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Skia.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.XamlHost\Uno.UI.XamlHost.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UWP\Uno.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Uno.BenchmarkDotNet" Version="0.11.7-develop" />
+		<PackageReference Include="Uno.BenchmarkDotNet.Annotations" Version="0.11.7-develop" />
+		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
+
+
+		<PackageReference Include="IdentityModel.OidcClient" Version="3.1.2" />
+		<PackageReference Include="Microsoft.Graph" Version="3.12.0" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />
+		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
+		<PackageReference Include="System.Management" Version="4.6.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+		<PackageReference Include="Uno.CodeGen" Version="1.34.0" />
+		<PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
+	</ItemGroup>
+
+	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
+
+	<Import Project="..\UnoIslands.Shared\UnoIslands.Shared.projitems" Label="Shared" />
+
+	<ItemGroup>
+		<Content Update="@(Content)" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+
+</Project>

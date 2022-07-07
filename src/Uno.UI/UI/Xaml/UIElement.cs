@@ -48,7 +48,6 @@ namespace Windows.UI.Xaml
 		private static readonly Type[] _bringIntoViewRequestedArgs = new[] { typeof(BringIntoViewRequestedEventArgs) };
 
 		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
-		private XamlRoot _xamlRoot = null;
 		private string _uid;
 
 		//private protected virtual void PrepareState() 
@@ -202,12 +201,6 @@ namespace Windows.UI.Xaml
 		}
 
 		partial void OnUidChangedPartial();
-
-		public XamlRoot XamlRoot
-		{
-			get => _xamlRoot ?? XamlRoot.Current;
-			set => _xamlRoot = value;
-		}
 
 		#region VirtualizationInformation
 		private VirtualizationInformation _virtualizationInformation;
@@ -574,7 +567,7 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			var root = Windows.UI.Xaml.Window.Current.RootElement;
+			var root = XamlRoot?.VisualTree.RootElement;
 			if (root is null)
 			{
 				return;
