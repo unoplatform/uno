@@ -76,7 +76,7 @@ namespace SamplesApp
 
 			ConfigureFeatureFlags();
 
-			AssertIssue1790ApplicationSettingsUsable();
+			//AssertIssue1790ApplicationSettingsUsable();
 			AssertIssue8356();
 
 			this.InitializeComponent();
@@ -139,9 +139,9 @@ namespace SamplesApp
 
 		private static async Task<bool> HandleSkiaAutoScreenshots(LaunchActivatedEventArgs e)
 		{
-#if __SKIA__
+#if __SKIA__ || __MACOS__
 			var runAutoScreenshotsParam =
-			e.Arguments.Split(';').FirstOrDefault(a => a.StartsWith("--auto-screenshots"));
+			e.Arguments.Split(' ').FirstOrDefault(a => a.StartsWith("--auto-screenshots"));
 
 			var screenshotsPath = runAutoScreenshotsParam?.Split('=').LastOrDefault();
 
@@ -170,9 +170,9 @@ namespace SamplesApp
 
 		private static async Task<bool> HandleSkiaRuntimeTests(LaunchActivatedEventArgs e)
 		{
-#if __SKIA__
+#if __SKIA__ || __MACOS__
 			var runRuntimeTestsResultsParam =
-			e.Arguments.Split(';').FirstOrDefault(a => a.StartsWith("--runtime-tests"));
+			e.Arguments.Split(' ').FirstOrDefault(a => a.StartsWith("--runtime-tests"));
 
 			var runtimeTestResultFilePath = runRuntimeTestsResultsParam?.Split('=').LastOrDefault();
 
@@ -185,15 +185,10 @@ namespace SamplesApp
 					// let the app finish its startup
 					await Task.Delay(TimeSpan.FromSeconds(5));
 
-					await Task.Run(
-						async () =>
-						{
 							await SampleControl.Presentation.SampleChooserViewModel.Instance.RunRuntimeTests(
 								CancellationToken.None,
 								runtimeTestResultFilePath,
 								() => System.Environment.Exit(0));
-						}
-					);
 				});
 
 				return true;

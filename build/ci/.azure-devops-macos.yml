@@ -5,7 +5,7 @@ parameters:
 
 jobs:
 
-- job: macOS
+- job: macOS_Tests_Build
   displayName: 'macOS Samples App Build'
 
   variables:
@@ -35,13 +35,6 @@ jobs:
       xCodeRoot: ${{ parameters.xCodeRoot }}
       XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
-  # Apply workaround for https://github.com/xamarin/xamarin-macios/issues/10652
-  - bash: |
-        curl -o xamarinmac.pkg 'https://bosstoragemirror.blob.core.windows.net/wrench/xcode12.4/a4c70e7d04e3904d17aa60f6d640eb048081c757/4477741/package/notarized/xamarin.mac-7.4.0.10.pkg'
-        sudo installer -pkg xamarinmac.pkg -target /
-
-    displayName: Apply Xamarin.mac workaround
-
   - task: NuGetToolInstaller@0
     inputs:
       versionSpec: 4.7.0
@@ -53,7 +46,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /p:Configuration=Release /detailedsummary /bl:$(build.artifactstagingdirectory)/build-macos.binlog
+      msbuildArguments: /r /p:Configuration=Debug /p:EnableCodeSigning=false /p:UseHardenedRuntime=false /detailedsummary /bl:$(build.artifactstagingdirectory)/build-macos.binlog
       clean: false
       maximumCpuCount: true
       restoreNugetPackages: false
@@ -63,8 +56,8 @@ jobs:
   - task: CopyFiles@2
     displayName: 'Copy macOS artifacts'
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.macOS/bin/Release
-      Contents: '**/*.pkg'
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.macOS/bin/Debug
+      Contents: '**/*.*'
       TargetFolder: $(build.artifactstagingdirectory)
       CleanTargetFolder: false
       OverWrite: false
@@ -76,3 +69,73 @@ jobs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uno-macos-artifacts
       ArtifactType: Container
+
+##
+## macOS
+##
+
+- job: macOS_Screenshot_Tests
+  displayName: 'macOS Samples App Snapshot Tests'
+  timeoutInMinutes: 60
+
+  #pool: ${{ parameters.poolName }}
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  dependsOn: macOS_Tests_Build
+
+  steps:
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: uno-macos-artifacts
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - bash: |
+        cd $(build.sourcesdirectory)/build/uno-macos-artifacts
+        chmod +x ./SamplesApp.macOS.app/Contents/MacOS/SamplesApp.macOS
+        sudo spctl --master-disable
+        sudo xattr -d -r com.apple.quarantine SamplesApp.macOS.app
+        open -n ./SamplesApp.macOS.app --stderr out.txt --args --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/macos-screenshots
+
+    displayName: Run macOS UI Snapshot Tests
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-results
+      ArtifactType: Container
+
+- job: macOS_Runtime_Tests_Build
+  displayName: 'macOS Samples App Runtime Tests'
+  timeoutInMinutes: 30
+
+  #pool: ${{ parameters.poolName }}
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  dependsOn: macOS_Tests_Build
+
+  steps:
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: uno-macos-artifacts
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - bash: |
+        cd $(build.sourcesdirectory)/build/uno-macos-artifacts
+        chmod +x ./SamplesApp.macOS.app/Contents/MacOS/SamplesApp.macOS
+        sudo spctl --master-disable
+        sudo xattr -d -r com.apple.quarantine SamplesApp.macOS.app
+        open -n ./SamplesApp.macOS.app --stderr out.txt --args --runtime-tests
+
+
+    displayName: Run macOS Runtime Tests
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'macOS Runtime Tests'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/macos-runtime-tests-results.xml'
+      failTaskOnFailedTests: true
