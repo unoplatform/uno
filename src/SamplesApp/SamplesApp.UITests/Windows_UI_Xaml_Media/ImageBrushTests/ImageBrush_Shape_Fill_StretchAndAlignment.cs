@@ -18,25 +18,44 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.ImageBrushTests
 		private const string red = "#ED1C24";
 		private const string green = "#008000";
 		private const string white = "#FFFFFF";
+
+		private const int SingleStretchTestTimeout = 3 * 60 * 1000;
+		
 		private readonly ExpectedColor[] _expectedColors = GetExpectedColors();
 
 		[Test]
 		[AutoRetry]
-		[Timeout(8 * 60 * 1000)]
-		public void When_StretchAndAlignment()
+		[Timeout(SingleStretchTestTimeout)]
+		public void When_Stretch_None_And_Alignment() => When_StretchAndAlignment(Stretch.None);
+
+		[Test]
+		[AutoRetry]
+		[Timeout(SingleStretchTestTimeout)]
+		public void When_Stretch_Fill_And_Alignment() => When_StretchAndAlignment(Stretch.Fill);
+
+		[Test]
+		[AutoRetry]
+		[Timeout(SingleStretchTestTimeout)]
+		public void When_Stretch_UniformToFill_And_Alignment() => When_StretchAndAlignment(Stretch.UniformToFill);
+
+		[Test]
+		[AutoRetry]
+		[Timeout(SingleStretchTestTimeout)]
+		public void When_Stretch_Uniform_And_Alignment() => When_StretchAndAlignment(Stretch.Uniform);
+
+		private void When_StretchAndAlignment(Stretch stretch)
 		{
 			try
 			{
 				Run("UITests.Windows_UI_Xaml_Media.ImageBrushTests.ImageBrushShapeStretchesAlignments");
 				_app.SetOrientationPortrait();
 
-
 				_app.WaitForElement("MyRectangle");
 
+				SetProperty("MyStretch", "SelectedIndex", ((int)stretch).ToString());
 
-				foreach (var expected in _expectedColors)
+				foreach (var expected in _expectedColors.Where(e => e.Stretch == stretch))
 				{
-					SetProperty("MyStretch", "SelectedIndex", ((int)expected.Stretch).ToString());
 					SetProperty("MyAlignmentX", "SelectedIndex", ((int)expected.AlignmentX).ToString());
 					SetProperty("MyAlignmentY", "SelectedIndex", ((int)expected.AlignmentY).ToString());
 
