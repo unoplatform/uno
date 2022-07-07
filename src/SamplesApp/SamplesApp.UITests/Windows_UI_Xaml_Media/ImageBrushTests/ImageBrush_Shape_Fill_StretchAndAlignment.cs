@@ -22,7 +22,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.ImageBrushTests
 
 		[Test]
 		[AutoRetry]
-		[Timeout(7 * 60 * 1000)]
+		[Timeout(8 * 60 * 1000)]
 		public void When_StretchAndAlignment()
 		{
 			try
