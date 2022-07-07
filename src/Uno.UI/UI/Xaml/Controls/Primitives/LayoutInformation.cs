@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					iue.DesiredSize = desiredSize;
 					break;
 				default:
-					_layoutProperties.GetValue(view, "desiredSize", () => default(Size));
+					_layoutProperties.SetValue(view, "desiredSize", desiredSize);
 					break;
 			}
 		}
