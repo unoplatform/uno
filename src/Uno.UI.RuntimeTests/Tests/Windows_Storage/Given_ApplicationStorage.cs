@@ -29,5 +29,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 
 			Assert.AreEqual("<SomeContent/>", content);
 		}
+
+		[TestMethod]
+		public async Task When_GetFileFromApplicationUriAsync_Image()
+		{
+			var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Button.png"));
+
+			Assert.IsTrue((await FileIO.ReadBufferAsync(file)).Length > 0);
+		}
+
+		[TestMethod]
+		public async Task When_GetFileFromApplicationUriAsync_Image_Nested()
+		{
+			var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Icons/menu.png"));
+
+			Assert.IsTrue((await FileIO.ReadBufferAsync(file)).Length > 0);
+		}
 	}
 }

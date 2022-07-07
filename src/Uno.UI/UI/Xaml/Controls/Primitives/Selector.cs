@@ -548,6 +548,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						SelectedIndex = -1;
 					}
 				}
+				//Prevent SelectedIndex been >= Items.Count
+				var sItem = ItemFromIndex(SelectedIndex);
+
+				if (sItem == null || !sItem.Equals(SelectedItem))
+				{
+					SelectedIndex = -1;
+				}
 			}
 		}
 

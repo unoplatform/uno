@@ -332,6 +332,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textbox.ActualHeight.Should().Be(originalActualHeigth);
 		}
 
+
+		[TestMethod]
+		public async Task When_AcceptsReturn_Set()
+		{
+			var textbox = new TextBox();
+
+			textbox.Width = 100;
+			StackPanel panel = new() { Orientation = Orientation.Vertical };
+			panel.Children.Add(textbox);
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(textbox);
+			var originalActualHeigth = textbox.ActualHeight;
+			textbox.AcceptsReturn = true;
+			textbox.Text = "Sed ut perspiciatis unde omnis iste natus \nerror sit voluptatem accusantium doloremaaaaaaaaaaaaaaaaaa";
+			await WindowHelper.WaitForIdle();
+			textbox.ActualHeight.Should().BeGreaterThan(originalActualHeigth * 2);
+		}
+
+		[TestMethod]
+		public async Task When_AcceptsReturn_Set_On_Init()
+		{
+			var textbox = new TextBox();
+			textbox.AcceptsReturn = true;
+			textbox.Text = "Sed ut perspiciatis unde omnis iste natus \nerror sit voluptatem accusantium doloremaaaaaaaaaaaaaaaaaa";
+			textbox.Width = 100;
+
+			StackPanel panel = new() { Orientation = Orientation.Vertical };
+			panel.Children.Add(textbox);
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(textbox);
+			var originalActualHeigth = textbox.ActualHeight;
+			textbox.AcceptsReturn = false;
+			await WindowHelper.WaitForIdle();
+			textbox.ActualHeight.Should().BeLessThan(originalActualHeigth / 2);
+		}
 #endif
 
 		[TestMethod]

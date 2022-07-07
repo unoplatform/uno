@@ -373,7 +373,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var acceptsReturn = (bool)e.NewValue;
 			_textBoxView?.SetHorizontallyScrolling(!acceptsReturn);
-			_textBoxView?.SetMaxLines(acceptsReturn ? int.MaxValue : 1);
+			_textBoxView?.UpdateSingleLineMode();
 
 			UpdateInputScope(InputScope);
 		}
@@ -382,7 +382,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_textBoxView != null && e.NewValue is TextWrapping textWrapping)
 			{
-				_textBoxView.SetSingleLine(textWrapping == TextWrapping.NoWrap);
+				_textBoxView.UpdateSingleLineMode();
 			}
 		}
 
@@ -390,7 +390,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (Parent != null && _textBoxView != null)
 			{
-				var style = GetTypefaceStyle(FontStyle, FontWeight);
+				var style = TypefaceStyleHelper.GetTypefaceStyle(FontStyle, FontWeight);
 				var typeface = FontHelper.FontFamilyToTypeFace(FontFamily, FontWeight);
 
 				_textBoxView.SetTypeface(typeface, style);
@@ -404,23 +404,6 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_textBoxView.Enabled = e.NewValue;
 			}
-		}
-
-		private static TypefaceStyle GetTypefaceStyle(FontStyle fontStyle, FontWeight fontWeight)
-		{
-			var style = TypefaceStyle.Normal;
-
-			if (fontWeight.Weight > 500)
-			{
-				style |= TypefaceStyle.Bold;
-			}
-
-			if (fontStyle == FontStyle.Italic)
-			{
-				style |= TypefaceStyle.Italic;
-			}
-
-			return style;
 		}
 
 		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e) => UpdateTextBoxViewReadOnly();

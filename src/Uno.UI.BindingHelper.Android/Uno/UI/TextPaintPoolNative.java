@@ -28,6 +28,9 @@ public final class TextPaintPoolNative {
 		if (shader != null) {
 			paint.setShader(shader);
 		}
+		else {
+			paint.setColor(color);
+		}
 
 		if (superscript) {
 			paint.baselineShift += (int)(paint.ascent() / 2);
@@ -35,7 +38,6 @@ public final class TextPaintPoolNative {
 
 		paint.setLetterSpacing(letterSpacing);
 		paint.setTypeface(typeface);
-		paint.setColor(color);
 
 		return paint;
 	}

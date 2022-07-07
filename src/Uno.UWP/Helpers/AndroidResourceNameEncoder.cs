@@ -53,6 +53,9 @@ namespace Uno
 		public static string EncodeResourcePath(string path)
 			=> EncodePath(path, '/');
 
+		public static string EncodeDrawablePath(string path)
+			=> EncodeResourcePath(path).Replace('/', '_');
+
 		private static string EncodePath(string path, char separator)
 		{
 			var localSeparation = global::System.IO.Path.DirectorySeparatorChar;

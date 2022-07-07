@@ -112,7 +112,7 @@
 
   <Target Name="_UnoLinkerHintsPass1"
 		Condition="'$(IsUnoHead)'=='true' and '$(UnoXamlResourcesTrimming)'=='true'"
-		BeforeTargets="BuildDist">
+		BeforeTargets="BuildDist;PrepareForILLink">
 
 	<ItemGroup>
 	  <!-- Filter ReferenceCopyLocalPaths as it may contain pdbs as well -->
@@ -132,7 +132,7 @@
 	</LinkerHintGeneratorTask_v0>
 
 	<ItemGroup>
-	  <RuntimeHostConfigurationOption Include="@(_LinkerHintOutputFeatures)" />
+	  <RuntimeHostConfigurationOption Include="@(_LinkerHintOutputFeatures)" Trim="true" />
 	</ItemGroup>
   </Target>
   

@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
+using System.Collections.Generic;  
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -280,5 +280,6 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 			Assert.IsFalse(source[1].IsSelected);
 			Assert.IsFalse(source[2].IsSelected);
 		}
+
 	}
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -445,7 +446,7 @@ namespace SamplesApp.UITests
 
 			// We only validate that the bottom of the screen is the same (so the keyboard is no longer visible).
 			// This is to avoid content offset if the status bar was opened by the keyboard or the message box.
-			ImageAssert.AreEqual(initial, final, new Rectangle(0, -100, int.MaxValue, 100));
+			ImageAssert.AreEqual(initial, final, new Rectangle(0, -100, int.MaxValue, 100));			
 		}
 	}
 }

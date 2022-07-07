@@ -1,5 +1,6 @@
-﻿#if __MACOS__
+#if __MACOS__
 using System;
+using CoreGraphics;
 
 #if NET6_0_OR_GREATER
 using ObjCRuntime;
@@ -10,7 +11,7 @@ namespace Windows.UI
 	public partial struct Color : IFormattable
 	{
 		public static implicit operator AppKit.NSColor(Color color) => AppKit.NSColor.FromRgba(color.R, color.G, color.B, color.A);
-		public static implicit operator CoreGraphics.CGColor(Color color) => AppKit.NSColor.FromRgba(color.R, color.G, color.B, color.A).CGColor;
+		public static implicit operator CGColor(Color color) => CGColor.CreateSrgb(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f);
 
 		public static implicit operator Color(AppKit.NSColor color) => color.CGColor;
 
