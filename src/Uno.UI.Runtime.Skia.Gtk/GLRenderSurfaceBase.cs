@@ -56,8 +56,6 @@ namespace Uno.UI.Runtime.Skia
 			WUX.Window.InvalidateRender
 				+= () =>
 				{
-					// TODO Uno: Make this invalidation less often if possible.
-					InvalidateOverlays();
 					QueueRender();
 				};
 
