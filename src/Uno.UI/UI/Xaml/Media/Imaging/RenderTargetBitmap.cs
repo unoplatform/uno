@@ -88,9 +88,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				try
 				{
 					UIElement elementToRender = element
-						?? XamlRoot.Current.Content
-						?? throw new global::System.NullReferenceException("Invalid XamlRoot Content.");
-
+						?? Window.Current.Content;
 					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(elementToRender, ref _buffer, new Size(scaledWidth, scaledHeight));
 #if __WASM__ || __SKIA__
 					InvalidateSource();
@@ -111,8 +109,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				try
 				{
 					UIElement elementToRender = element
-						?? XamlRoot.Current.Content
-						?? throw new global::System.NullReferenceException("Invalid XamlRoot Content.");
+						?? Window.Current.Content;
 
 					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(elementToRender, ref _buffer);
 #if __WASM__ || __SKIA__
