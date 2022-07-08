@@ -81,7 +81,6 @@
     <None Include="Skia.WPF\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </None>
-    <None Include="Skia.WPF\Properties\AssemblyInfo.cs" />
     <None Include="Mobile\Android\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Mobile\Android\environment.conf" />
     <None Include="Mobile\iOS\Entitlements.plist" />

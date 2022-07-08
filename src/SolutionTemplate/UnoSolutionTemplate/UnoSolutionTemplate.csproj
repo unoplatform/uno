@@ -85,7 +85,6 @@
     <None Include="Skia.WPF.Host\App.xaml.cs" />
     <None Include="Skia.WPF.Host\MainWindow.xaml.cs" />
     <None Include="Skia.WPF.Host\app.manifest" />
-    <None Include="Skia.WPF.Host\Properties\AssemblyInfo.cs" />
     <None Include="Skia.Gtk\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Skia.Gtk\Program.cs" />
     <None Include="Skia.Gtk\app.manifest" />
