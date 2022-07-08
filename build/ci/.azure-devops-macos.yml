@@ -136,7 +136,7 @@ jobs:
       failTaskOnFailedTests: true
 
 - job: macOS_Screenshot_Tests
-  timeoutInMinutes: 90
+  timeoutInMinutes: 100
   displayName: macOS SamplesApp Screenshot Test
 
   variables:
@@ -179,7 +179,7 @@ jobs:
     displayName: Install SamplesApp
 
   - script: |
-        timeout 70m /Applications/SamplesApp.macOS.app/Contents/MacOS/SamplesApp.macOS --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/macOS-screenshots
+        timeout 90m /Applications/SamplesApp.macOS.app/Contents/MacOS/SamplesApp.macOS --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/macOS-screenshots
 
     displayName: Run macOS UI Snapshot Tests
 
