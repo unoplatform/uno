@@ -33,6 +33,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.SourceGenerators", "SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj", "{68E667C4-AAED-4242-A47F-3D77C33C489E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Tasks", "SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj", "{946D318B-305A-4264-81A4-31698DCC22F7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{68E667C4-AAED-4242-A47F-3D77C33C489E} = {68E667C4-AAED-4242-A47F-3D77C33C489E}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnoSolutionTemplate", "SolutionTemplate\UnoSolutionTemplate\UnoSolutionTemplate.csproj", "{5C7C339E-B73C-4FDA-87AF-E8003C0FF2AB}"
 EndProject
@@ -50,10 +53,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "T4Generator", "T4Generator\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI", "Uno.UI\Uno.UI.csproj", "{C6884723-81DB-43BD-924F-3FA367633E64}"
 	ProjectSection(ProjectDependencies) = postProject
-		{A94EFF4A-3CE5-4755-85E5-57D9119055AA} = {A94EFF4A-3CE5-4755-85E5-57D9119055AA}
 		{58332380-4302-4259-8F36-AF572C53827F} = {58332380-4302-4259-8F36-AF572C53827F}
-		{946D318B-305A-4264-81A4-31698DCC22F7} = {946D318B-305A-4264-81A4-31698DCC22F7}
 		{68E667C4-AAED-4242-A47F-3D77C33C489E} = {68E667C4-AAED-4242-A47F-3D77C33C489E}
+		{946D318B-305A-4264-81A4-31698DCC22F7} = {946D318B-305A-4264-81A4-31698DCC22F7}
+		{A94EFF4A-3CE5-4755-85E5-57D9119055AA} = {A94EFF4A-3CE5-4755-85E5-57D9119055AA}
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.Foundation", "Uno.Foundation\Uno.Foundation.csproj", "{528AE586-5DF3-4DAD-AA5C-F12F4D5E0605}"
@@ -92,6 +95,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplesApp.iOS", "SamplesAp
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplesApp.UWP", "SamplesApp\SamplesApp.UWP\SamplesApp.UWP.csproj", "{6C25BEB3-E332-48D3-B4DE-20A0B71935CD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E6872579-B7A0-42CE-AE97-44234BB55625} = {E6872579-B7A0-42CE-AE97-44234BB55625}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplesApp.Wasm", "SamplesApp\SamplesApp.Wasm\SamplesApp.Wasm.csproj", "{21206058-D5EF-466D-8E4D-AC62357FB479}"
 EndProject
@@ -106,6 +112,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Wasm.Tests", "Uno.UI.Wasm.Tests\Uno.UI.Wasm.Tests.csproj", "{95F17106-3548-4CD5-B315-060C048903F5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.RuntimeTests", "Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.csproj", "{028F3EE0-D51B-469A-A72C-C272585DCD40}"
+	ProjectSection(ProjectDependencies) = postProject
+		{946D318B-305A-4264-81A4-31698DCC22F7} = {946D318B-305A-4264-81A4-31698DCC22F7}
+	EndProjectSection
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "UITests.Shared", "SamplesApp\UITests.Shared\UITests.Shared.shproj", "{BEB0AB3A-16A7-49CF-AD5E-F4A53B985AFE}"
 EndProject
@@ -134,6 +143,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.RemoteControl.VS", "Uno.UI.RemoteControl.VS\Uno.UI.RemoteControl.VS.csproj", "{BCB38AAE-4CDA-43C2-AA10-C3A935B08F79}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.Samples.UITest.Generator", "SamplesApp\SamplesApp.UITests.Generator\Uno.Samples.UITest.Generator.csproj", "{E6872579-B7A0-42CE-AE97-44234BB55625}"
+	ProjectSection(ProjectDependencies) = postProject
+		{68E667C4-AAED-4242-A47F-3D77C33C489E} = {68E667C4-AAED-4242-A47F-3D77C33C489E}
+		{946D318B-305A-4264-81A4-31698DCC22F7} = {946D318B-305A-4264-81A4-31698DCC22F7}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.SourceGenerators.Tests", "SourceGenerators\Uno.UI.SourceGenerators.Tests\Uno.UI.SourceGenerators.Tests.csproj", "{34DB4266-6184-4889-8D16-92F22C43BB15}"
 EndProject
