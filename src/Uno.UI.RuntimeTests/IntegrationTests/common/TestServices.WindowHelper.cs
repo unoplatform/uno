@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
@@ -24,22 +23,36 @@ namespace Private.Infrastructure
 	{
 		public static class WindowHelper
 		{
+			private static Windows.UI.Xaml.Window _currentTestWindow = null;
 			private static UIElement _originalWindowContent = null;
+
+			public static Windows.UI.Xaml.Window CurrentTestWindow
+			{
+				get
+				{
+					if (_currentTestWindow is null)
+					{
+						throw new InvalidOperationException("Current test window not set.");
+					}
+					return _currentTestWindow;
+				}
+				set => _currentTestWindow = value;
+			}
 
 			public static bool UseActualWindowRoot { get; set; }
 
 			public static UIElement WindowContent
 			{
 				get => UseActualWindowRoot
-					? Windows.UI.Xaml.Window.Current.Content
+					? CurrentTestWindow.Content
 					: EmbeddedTestRoot.getContent?.Invoke();
 				internal set
 				{
 					if (UseActualWindowRoot)
 					{
-						Windows.UI.Xaml.Window.Current.Content = value;
+						CurrentTestWindow.Content = value;
 					}
-					else if (EmbeddedTestRoot.setContent is {} setter)
+					else if (EmbeddedTestRoot.setContent is { } setter)
 					{
 						setter(value);
 					}
@@ -52,23 +65,27 @@ namespace Private.Infrastructure
 
 			public static void SaveOriginalWindowContent()
 			{
-				_originalWindowContent = Windows.UI.Xaml.Window.Current.Content;
+				_originalWindowContent = CurrentTestWindow.Content;
 			}
 
 			public static void RestoreOriginalWindowContent()
 			{
 				if (_originalWindowContent != null)
 				{
-					Windows.UI.Xaml.Window.Current.Content = _originalWindowContent;
+					CurrentTestWindow.Content = _originalWindowContent;
 					_originalWindowContent = null;
 				}
 			}
 
 			public static (UIElement control, Func<UIElement> getContent, Action<UIElement> setContent) EmbeddedTestRoot { get; set; }
 
-			public static UIElement RootElement => UseActualWindowRoot
-				? Windows.UI.Xaml.Window.Current.Content
-				: EmbeddedTestRoot.control;
+			public static UIElement RootElement => UseActualWindowRoot ?
+				CurrentTestWindow.Content : EmbeddedTestRoot.control;
+
+			// Dispatcher is a separate property, as accessing CurrentTestWindow.COntent when
+			// not on the UI thread will throw an exception in WinUI.
+			public static CoreDispatcher RootElementDispatcher => UseActualWindowRoot ?
+				CurrentTestWindow.Dispatcher : EmbeddedTestRoot.control.Dispatcher;
 
 			internal static Page SetupSimulatedAppPage()
 			{
@@ -85,8 +102,8 @@ namespace Private.Infrastructure
 
 			internal static async Task WaitForIdle()
 			{
-				await RootElement.Dispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
-				await RootElement.Dispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
+				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
+				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
 			}
 
 			/// <summary>

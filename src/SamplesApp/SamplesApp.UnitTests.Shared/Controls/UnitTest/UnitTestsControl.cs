@@ -83,6 +83,9 @@ namespace Uno.UI.Samples.Tests
 				}
 			);
 
+			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow =
+				Windows.UI.Xaml.Window.Current;
+
 			DataContext = null;
 
 			SampleChooserViewModel.Instance.SampleChanging += OnSampleChanging;

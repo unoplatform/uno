@@ -50,7 +50,7 @@ namespace Private.Infrastructure
 #if __WASM__
 			action();
 #else
-			await WindowHelper.RootElement.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => action());
+			await WindowHelper.RootElementDispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => action());
 #endif
 		}
 
