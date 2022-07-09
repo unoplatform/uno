@@ -95,6 +95,7 @@ jobs:
         chmod +x ./SamplesApp.macOS.app/Contents/MacOS/SamplesApp.macOS
         sudo spctl --master-disable
         sudo xattr -d -r com.apple.quarantine SamplesApp.macOS.app
+        /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f SamplesApp.macOS.app
         open -n ./SamplesApp.macOS.app --stderr out.txt --args --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/macos-screenshots
 
     displayName: Run macOS UI Snapshot Tests
