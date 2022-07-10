@@ -31,6 +31,8 @@ using Uno.UI.Runtime.Skia.GTK.System.Profile;
 using Uno.UI.Runtime.Skia.Helpers;
 using Uno.UI.Runtime.Skia.Helpers.Dpi;
 using System.Runtime.InteropServices;
+using Uno.UI.Xaml.Core;
+using Windows.UI.Core;
 using System.ComponentModel;
 using Uno.Disposables;
 
@@ -44,6 +46,7 @@ namespace Uno.UI.Runtime.Skia
 		private static bool _isDispatcherThread = false;
 
 		private readonly Func<WUX.Application> _appBuilder;
+		private IRenderSurface _renderSurface;
 		private static Gtk.Window _window;
 		private static Gtk.EventBox _eventBox;
 		private Widget _area;
@@ -157,7 +160,9 @@ namespace Uno.UI.Runtime.Skia
 			var overlay = new Overlay();
 
 			_eventBox = new EventBox();
-			_area = BuildRenderSurfaceType();
+
+			_renderSurface = BuildRenderSurfaceType();
+			_area = (Widget)_renderSurface;
 			_fix = new Fixed();
 			overlay.Add(_area);
 			overlay.AddOverlay(_fix);
@@ -190,10 +195,12 @@ namespace Uno.UI.Runtime.Skia
 				app.Host = this;
 			}
 
+			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
+			
 			WUX.Application.StartWithArguments(CreateApp);
 
 			RegisterForBackgroundColor();
-
+			
 			UpdateWindowPropertiesFromPackage();
 
 			Gtk.Application.Run();
@@ -224,6 +231,23 @@ namespace Uno.UI.Runtime.Skia
 				_registrations.Add(WUX.Window.Current.RegisterBackgroundChangedEvent((s, e) => Update()));
 			}
 		}
+		
+		private void OnCoreWindowContentRootSet(object sender, object e)
+		{
+			var xamlRoot = CoreServices.Instance
+				.ContentRootCoordinator
+				.CoreWindowContentRoot?
+				.GetOrCreateXamlRoot();
+
+			if (xamlRoot is null)
+			{
+				throw new InvalidOperationException("XamlRoot was not properly initialized");
+			}
+
+			xamlRoot.InvalidateRender += _renderSurface.InvalidateRender;
+
+			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
+		}
 
 		private void WindowClosing(object sender, DeleteEventArgs args)
 		{
@@ -246,9 +270,9 @@ namespace Uno.UI.Runtime.Skia
 			Gtk.Main.Quit();
 		}
 
-		private Widget BuildRenderSurfaceType()
+		private IRenderSurface BuildRenderSurfaceType()
 		{
-			if(RenderSurfaceType == null)
+			if (RenderSurfaceType == null)
 			{
 				if (OpenGLESRenderSurface.IsSupported)
 				{

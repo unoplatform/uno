@@ -56,6 +56,7 @@ namespace Uno.UI.Xaml.Core
 		/// <param name="rootElement">Root element.</param>
 		public ContentRoot(ContentRootType type, Color backgroundColor, UIElement? rootElement, CoreServices coreServices)
 		{
+			Type = type;
 			//TODO Uno: Does not match WinUI exactly, additional logic can be ported later.
 			_coreServices = coreServices ?? throw new ArgumentNullException(nameof(coreServices));
 			VisualTree = new VisualTree(coreServices, backgroundColor, rootElement, this);

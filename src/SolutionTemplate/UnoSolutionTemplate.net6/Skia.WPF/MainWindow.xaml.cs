@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace $ext_safeprojectname$.WPF.Host
+namespace $ext_safeprojectname$.WPF
 {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml

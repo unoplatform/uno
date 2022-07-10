@@ -20,9 +20,6 @@
 		  <ProjectItem TargetFileName="uno-fluentui-assets.ttf" ReplaceParameters="false">uno-fluentui-assets.ttf</ProjectItem>
 		</Folder>
 	  </Folder>
-	  <Folder Name="Properties" TargetFolderName="Properties">
-		<ProjectItem TargetFileName="AssemblyInfo.cs" ReplaceParameters="true">assemblyinfo.cs</ProjectItem>
-	  </Folder>
 
 	  <ProjectItem TargetFileName="App.xaml" ReplaceParameters="true">App.xaml</ProjectItem>
 	  <ProjectItem TargetFileName="App.xaml.cs" ReplaceParameters="true">App.xaml.cs</ProjectItem>

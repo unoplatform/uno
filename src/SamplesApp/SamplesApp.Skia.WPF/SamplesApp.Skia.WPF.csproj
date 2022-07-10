@@ -9,6 +9,18 @@
 		<RollForward>Major</RollForward>
 	</PropertyGroup>
 
+	<ItemGroup Label="AssemblyInfo">
+		<AssemblyAttribute Include="System.Runtime.InteropServices.ComVisibleAttribute">
+			<_Parameter1>false</_Parameter1>
+		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Windows.ThemeInfo">
+			<_Parameter1>System.Windows.ResourceDictionaryLocation.None</_Parameter1>
+			<_Parameter1_IsLiteral>true</_Parameter1_IsLiteral>
+			<_Parameter2>System.Windows.ResourceDictionaryLocation.SourceAssembly</_Parameter2>
+			<_Parameter2_IsLiteral>true</_Parameter2_IsLiteral>
+		</AssemblyAttribute>
+	</ItemGroup>
+
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>

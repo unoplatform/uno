@@ -8852,6 +8852,9 @@
 		<Types>
 		</Types>
 		<Methods>
+			<Member
+				fullName="System.Void Windows.UI.UIContext..ctor()"
+				reason="Not part of UWP API" />
 		</Methods>
 		<Properties>
 			<Member

@@ -22,17 +22,13 @@ namespace Uno.UI.Runtime.Skia
 			_fbDev.Init();
 
 			var resolution = _fbDev.ScreenSize;
-
-			WUX.Window.InvalidateRender
-			+= () =>
-			{
-				Invalidate();
-			};
 			
 			WUX.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(resolution.Width, resolution.Height));
 		}
 
 		public Size PixelSize => _fbDev.ScreenSize;
+
+		internal void InvalidateRender() => Invalidate();
 
 		void Invalidate()
 		{

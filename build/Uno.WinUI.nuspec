@@ -254,7 +254,7 @@
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\$winuisourcepath$\Uno.UI.Toolkit*.pri" target="lib\$winuitargetpath$" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\$winuisourcepath$\Uno.UI.Toolkit\**" target="lib\$winuitargetpath$\Uno.UI.Toolkit" />
 
-	<!-- Android 9.0 -->
+	<!-- Android 11.0 -->
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.dll" target="lib\MonoAndroid11.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.pdb" target="lib\MonoAndroid11.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.Foundation.dll" target="lib\MonoAndroid11.0" />

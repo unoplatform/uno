@@ -188,12 +188,12 @@ namespace Windows.UI.Xaml.Media
 
 		public static IReadOnlyList<Popup> GetOpenPopupsForXamlRoot(XamlRoot xamlRoot)
 		{
-			if (xamlRoot == XamlRoot.Current)
+			if (xamlRoot == Window.Current.RootElement.XamlRoot)
 			{
 				return GetOpenPopups(Window.Current);
 			}
 
-			return new Popup[0];
+			return Array.Empty<Popup>();
 		}
 
 
@@ -369,6 +369,7 @@ namespace Windows.UI.Xaml.Media
 
 		internal static (UIElement? element, Branch? stale) HitTest(
 			Point position,
+			XamlRoot? xamlRoot,
 			GetHitTestability? getTestability = null,
 			Predicate<UIElement>? isStale = null
 #if TRACE_HIT_TESTING
@@ -380,7 +381,7 @@ namespace Windows.UI.Xaml.Media
 			)
 		{
 #endif
-			if (Window.Current.RootElement is UIElement root)
+			if (xamlRoot?.VisualTree.RootElement is UIElement root)
 			{
 				return SearchDownForTopMostElementAt(position, root, getTestability ?? DefaultGetTestability, isStale);
 			}

@@ -55,7 +55,7 @@ namespace Windows.UI.Composition
 			}
 		}
 
-		private void RenderVisual(SKSurface surface, Visual visual)
+		internal void RenderVisual(SKSurface surface, Visual visual)
 		{
 			if (visual.Opacity != 0 && visual.IsVisible)
 			{
