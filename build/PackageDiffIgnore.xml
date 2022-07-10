@@ -8851,13 +8851,15 @@
 	<IgnoreSet baseVersion="4.4.13">
 		<Types>
 		</Types>
-
 		<Methods>
 			<Member
 				fullName="System.Void Windows.UI.UIContext..ctor()"
 				reason="Not part of UWP API" />
 		</Methods>
 		<Properties>
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.SinglelineTextBoxView::SecureTextEntry()"
+				reason="Removed no-longer-needed override" />
 		</Properties>
 	</IgnoreSet>
 	<!--
