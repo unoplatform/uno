@@ -104,7 +104,7 @@ namespace Uno.UI.Runtime.Skia
 			ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), o => new SystemNavigationManagerPreviewExtension(_window));
 
 			_isDispatcherThread = true;
-			_window = new Gtk.Window(Windows.ApplicationModel.Package.Current.DisplayName);
+			_window = new Gtk.Window("GTK Host");
 			Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 			if (preferredWindowSize != Size.Empty)
 			{
@@ -198,6 +198,8 @@ namespace Uno.UI.Runtime.Skia
 			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
 			
 			WUX.Application.StartWithArguments(CreateApp);
+
+			_window.Title = Windows.ApplicationModel.Package.Current.DisplayName;
 
 			RegisterForBackgroundColor();
 			
