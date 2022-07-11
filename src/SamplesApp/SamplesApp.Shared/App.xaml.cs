@@ -111,7 +111,15 @@ namespace SamplesApp
 
 			LaunchiOSWatchDog();
 #endif
-			if (e.Kind == ActivationKind.Launch)
+			var activationKind =
+#if HAS_UNO_WINUI
+				e.UWPLaunchActivatedEventArgs.Kind
+#else
+				e.Kind
+#endif
+				;
+
+			if (activationKind == ActivationKind.Launch)
 			{
 				AssertIssue8356();
 			}
