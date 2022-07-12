@@ -62,4 +62,7 @@
 		<Content Update="@(Content)" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<EmbeddedResource Include="..\SamplesApp.UWP\Package.appxmanifest" LogicalName="Package.appxmanifest" />
+	</ItemGroup>
 </Project>

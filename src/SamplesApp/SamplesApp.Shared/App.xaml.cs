@@ -77,7 +77,6 @@ namespace SamplesApp
 			ConfigureFeatureFlags();
 
 			AssertIssue1790ApplicationSettingsUsable();
-			AssertIssue8356();
 
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;
@@ -112,6 +111,18 @@ namespace SamplesApp
 
 			LaunchiOSWatchDog();
 #endif
+			var activationKind =
+#if HAS_UNO_WINUI
+				e.UWPLaunchActivatedEventArgs.Kind
+#else
+				e.Kind
+#endif
+				;
+
+			if (activationKind == ActivationKind.Launch)
+			{
+				AssertIssue8356();
+			}
 
 			var sw = Stopwatch.StartNew();
 			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
