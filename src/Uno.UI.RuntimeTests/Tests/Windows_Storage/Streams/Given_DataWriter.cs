@@ -4,10 +4,12 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Extensions;
+using Windows.Foundation;
+using Windows.Storage;
 using Windows.Storage.Streams;
 using UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding;
 
-namespace Uno.UI.Tests.Windows_Storage.Streams
+namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 {
 	[TestClass]
 	public class When_DataWriter
@@ -40,7 +42,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 			}
 
 			var buffer = writer.DetachBuffer();
-			var reader = DataReader.FromBuffer(buffer);			
+			var reader = DataReader.FromBuffer(buffer);
 
 			try
 			{
@@ -762,6 +764,37 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 			dataWriter.WriteGuid(Guid.Parse("00000000-0000-0000-0000-000000000000"));
 			var bytes = dataWriter.DetachBuffer().ToArray();
 			CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, bytes);
+		}
+		private string GenerateRandomFileName() => $"{Guid.NewGuid()}.txt";
+
+		[TestMethod]
+		public async Task When_StoreAsync()
+		{
+
+			StorageFolder localFolder = ApplicationData.Current.LocalFolder;
+			IAsyncOperation<StorageFile> createOp =
+							localFolder.CreateFileAsync(GenerateRandomFileName(),
+								CreationCollisionOption.ReplaceExisting);
+
+			createOp.Completed = (asyncInfo1, asyncStatus1) =>
+			{
+				IStorageFile storageFile = asyncInfo1.GetResults();
+				IAsyncOperation<IRandomAccessStream> openOp =
+									   storageFile.OpenAsync(FileAccessMode.ReadWrite);
+				openOp.Completed = (asyncInfo2, asyncStatus2) =>
+				{
+					IRandomAccessStream stream = asyncInfo2.GetResults();
+					DataWriter dataWriter = new DataWriter(stream);
+					dataWriter.WriteString("Test StoreAsync");
+					DataWriterStoreOperation storeOp = dataWriter.StoreAsync();
+					storeOp.Completed = (asyncInfo3, asyncStatus3) =>
+					{
+						dataWriter.Dispose();
+						localFolder.DeleteAsync();
+						Assert.AreEqual(asyncStatus3, AsyncStatus.Completed);
+					};
+				};
+			};
 		}
 	}
 }
