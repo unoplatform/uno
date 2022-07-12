@@ -70,8 +70,6 @@ public partial class Slider
 	private readonly SerialDisposable _elementVerticalThumbDragDeltaToken = new SerialDisposable();
 	private readonly SerialDisposable _elementVerticalThumbDragCompletedToken = new SerialDisposable();
 	private readonly SerialDisposable _elementVerticalThumbSizeChangedToken = new SerialDisposable();
-	private readonly SerialDisposable _focusEngagedToken = new SerialDisposable();
-	private readonly SerialDisposable _focusDisengagedToken = new SerialDisposable();
 
 	// Whether the pointer is currently over the control
 	private bool _isPointerOver;

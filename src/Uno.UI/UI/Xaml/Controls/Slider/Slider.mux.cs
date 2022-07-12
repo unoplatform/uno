@@ -43,12 +43,24 @@ public partial class Slider
 		// TODO Uno specific: This is called by DirectUI automatically,
 		// we have to do it manually here.
 		PrepareState();
+
+#if HAS_UNO
+		// Uno specific: Detach and reattach template child events.
+		// Needed to avoid memory leaks on iOS.
+		Loaded += Slider_Loaded;
+		Unloaded += Slider_Unloaded;
+#endif
 	}
 
 	private void PrepareState()
 	{
 		FocusEngaged += OnFocusEngaged;
 		FocusDisengaged += OnFocusDisengaged;
+		_prepareStateToken.Disposable = Disposable.Create(() =>
+		{
+			FocusDisengaged -= OnFocusDisengaged;
+			FocusEngaged -= OnFocusEngaged;
+		});
 	}
 
 	internal override bool GetDefaultValue2(DependencyProperty property, out object value)
@@ -682,14 +694,7 @@ public partial class Slider
 
 			if (_tpElementHorizontalThumb != null)
 			{
-				_tpElementHorizontalThumb.DragStarted += OnThumbDragStarted;
-				_elementHorizontalThumbDragStartedToken.Disposable = Disposable.Create(() => _tpElementHorizontalThumb.DragStarted -= OnThumbDragStarted);
-				_tpElementHorizontalThumb.DragDelta += OnThumbDragDelta;
-				_elementHorizontalThumbDragDeltaToken.Disposable = Disposable.Create(() => _tpElementHorizontalThumb.DragDelta -= OnThumbDragDelta);
-				_tpElementHorizontalThumb.DragCompleted += OnThumbDragCompleted;
-				_elementHorizontalThumbDragCompletedToken.Disposable = Disposable.Create(() => _tpElementHorizontalThumb.DragCompleted -= OnThumbDragCompleted);
-				_tpElementHorizontalThumb.SizeChanged += OnThumbSizeChanged;
-				_elementHorizontalThumbSizeChangedToken.Disposable = Disposable.Create(() => _tpElementHorizontalThumb.SizeChanged -= OnThumbSizeChanged);
+				AttachHorizontalThumbSubscriptions();
 
 				var spHorizontalThumbToolTip = ToolTipService.GetToolTipReference(_tpElementHorizontalThumb);
 				// If no disambiguation UI ToolTip exist for the Thumb, we create one.
@@ -709,14 +714,7 @@ public partial class Slider
 
 			if (_tpElementVerticalThumb != null)
 			{
-				_tpElementVerticalThumb.DragStarted += OnThumbDragStarted;
-				_elementVerticalThumbDragStartedToken.Disposable = Disposable.Create(() => _tpElementVerticalThumb.DragStarted -= OnThumbDragStarted);
-				_tpElementVerticalThumb.DragDelta += OnThumbDragDelta;
-				_elementVerticalThumbDragDeltaToken.Disposable = Disposable.Create(() => _tpElementVerticalThumb.DragDelta -= OnThumbDragDelta);
-				_tpElementVerticalThumb.DragCompleted += OnThumbDragCompleted;
-				_elementVerticalThumbDragCompletedToken.Disposable = Disposable.Create(() => _tpElementVerticalThumb.DragCompleted -= OnThumbDragCompleted);
-				_tpElementVerticalThumb.SizeChanged += OnThumbSizeChanged;
-				_elementVerticalThumbSizeChangedToken.Disposable = Disposable.Create(() => _tpElementVerticalThumb.SizeChanged -= OnThumbSizeChanged);
+				AttachVerticalThumbSubscriptions();
 
 				var spVerticalThumbToolTip = ToolTipService.GetToolTipReference(_tpElementVerticalThumb);
 				// If no disambiguation UI ToolTip exist for the Thumb, we create one.
@@ -737,13 +735,7 @@ public partial class Slider
 
 		// Attach to pointer events
 		{
-			FrameworkElement spSliderContainer = _tpSliderContainer ?? this;
-
-			//TODO MZ: Should include handled too?
-			spSliderContainer.PointerPressed += OnPointerPressed;
-			spSliderContainer.PointerReleased += OnPointerReleased;
-			spSliderContainer.PointerCaptureLost += OnPointerCaptureLost;
-			spSliderContainer.SizeChanged += OnSizeChanged;
+			AttachSliderContainerEvents();
 		}
 
 		// Updating states for parts where properties might have been updated
@@ -779,7 +771,53 @@ public partial class Slider
 			LayoutRoundRectangleStrokeThickness(spFocusVisualWhiteVerticalDORect);
 			LayoutRoundRectangleStrokeThickness(spFocusVisualBlackVerticalDORect);
 		}
+
+		_isTemplateApplied = true;
 	}
+
+#if HAS_UNO
+	private void AttachVerticalThumbSubscriptions()
+	{
+		_tpElementVerticalThumb.DragStarted += OnThumbDragStarted;
+		_elementVerticalThumbDragStartedToken.Disposable = Disposable.Create(() => _tpElementVerticalThumb.DragStarted -= OnThumbDragStarted);
+		_tpElementVerticalThumb.DragDelta += OnThumbDragDelta;
+		_elementVerticalThumbDragDeltaToken.Disposable = Disposable.Create(() => _tpElementVerticalThumb.DragDelta -= OnThumbDragDelta);
+		_tpElementVerticalThumb.DragCompleted += OnThumbDragCompleted;
+		_elementVerticalThumbDragCompletedToken.Disposable = Disposable.Create(() => _tpElementVerticalThumb.DragCompleted -= OnThumbDragCompleted);
+		_tpElementVerticalThumb.SizeChanged += OnThumbSizeChanged;
+		_elementVerticalThumbSizeChangedToken.Disposable = Disposable.Create(() => _tpElementVerticalThumb.SizeChanged -= OnThumbSizeChanged);
+	}
+	
+	private void AttachHorizontalThumbSubscriptions()
+	{
+		_tpElementHorizontalThumb.DragStarted += OnThumbDragStarted;
+		_elementHorizontalThumbDragStartedToken.Disposable = Disposable.Create(() => _tpElementHorizontalThumb.DragStarted -= OnThumbDragStarted);
+		_tpElementHorizontalThumb.DragDelta += OnThumbDragDelta;
+		_elementHorizontalThumbDragDeltaToken.Disposable = Disposable.Create(() => _tpElementHorizontalThumb.DragDelta -= OnThumbDragDelta);
+		_tpElementHorizontalThumb.DragCompleted += OnThumbDragCompleted;
+		_elementHorizontalThumbDragCompletedToken.Disposable = Disposable.Create(() => _tpElementHorizontalThumb.DragCompleted -= OnThumbDragCompleted);
+		_tpElementHorizontalThumb.SizeChanged += OnThumbSizeChanged;
+		_elementHorizontalThumbSizeChangedToken.Disposable = Disposable.Create(() => _tpElementHorizontalThumb.SizeChanged -= OnThumbSizeChanged);
+	}
+	
+	private void AttachSliderContainerEvents()
+	{
+		FrameworkElement spSliderContainer = _tpSliderContainer ?? this;
+
+		//TODO MZ: Should include handled too?
+		spSliderContainer.PointerPressed += OnPointerPressed;
+		spSliderContainer.PointerReleased += OnPointerReleased;
+		spSliderContainer.PointerCaptureLost += OnPointerCaptureLost;
+		spSliderContainer.SizeChanged += OnSizeChanged;
+		_sliderContainerToken.Disposable = Disposable.Create(() =>
+		{
+			spSliderContainer.PointerPressed -= OnPointerPressed;
+			spSliderContainer.PointerReleased -= OnPointerReleased;
+			spSliderContainer.PointerCaptureLost -= OnPointerCaptureLost;
+			spSliderContainer.SizeChanged -= OnSizeChanged;
+		});
+	}
+#endif
 
 	protected override void OnValueChanged(double oldValue, double newValue)
 	{
