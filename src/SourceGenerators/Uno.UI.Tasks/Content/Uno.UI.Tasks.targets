@@ -121,12 +121,18 @@
 			  Condition="'%(Extension)' == '.dll'" />
 	</ItemGroup>
 
+	<PropertyGroup>
+		<_UnoUIPackageBasePath Condition="'%(UnoRuntimeEnabledPackage.Identity)'=='Uno.UI' or '%(UnoRuntimeEnabledPackage.Identity)'=='Uno.WinUI'">%(UnoRuntimeEnabledPackage.PackageBasePath)</_UnoUIPackageBasePath>
+	</PropertyGroup>
+
 	<LinkerHintGeneratorTask_v0
 		CurrentProjectPath="$(MSBuildProjectDirectory)"
 		AssemblyPath="$(IntermediateOutputPath)$(TargetFileName)"
 		OutputPath="$(ProjectDir)$(IntermediateOutputPath)/linkerhints"
 		ReferencePath="@(_UnoLinkerHintsPass1AssembliesForReferencePaths)"
-		ILLinkerPath="$(MSBuildThisFileDirectory)\..\..\tools\linker">
+		ILLinkerPath="$(MSBuildThisFileDirectory)\..\..\tools\linker"
+		UnoUIPackageBasePath="$(_UnoUIPackageBasePath)"
+		UnoRuntimeIdentifier="$(UnoRuntimeIdentifier)">
 	  <Output TaskParameter="OutputFeatures"
 			   ItemName="_LinkerHintOutputFeatures" />
 	</LinkerHintGeneratorTask_v0>
