@@ -292,6 +292,35 @@ namespace Uno.UI.Tests.FrameTests
 			Assert.AreEqual(typeof(MyPage), SUT.SourcePageType);
 			Assert.AreEqual(typeof(MyPage), SUT.CurrentSourcePageType);
 		}
+
+		internal static NavigateOrderTracker _navigateOrderTracker = null;
+
+		[TestMethod]
+		public void When_NavigatingBetweenPages()
+		{
+			// We must use a static field, as page is created internally by the frame.
+			_navigateOrderTracker = null;
+
+			var SUT = new Frame()
+			{
+			};
+
+			SUT.Navigated += (s, e) =>
+			{
+				_navigateOrderTracker?.OnFrameNavigated();
+			};
+
+			SUT.Navigate(typeof(NavigationTrackingPage));
+
+			_navigateOrderTracker = new NavigateOrderTracker();
+
+			SUT.Navigate(typeof(NavigationTrackingPage));
+
+			//now all should be set
+			Assert.IsTrue(_navigateOrderTracker.NavigatedFrom);
+			Assert.IsTrue(_navigateOrderTracker.NavigatedTo);
+			Assert.IsTrue(_navigateOrderTracker.FrameNavigated);
+		}
 	}
 
 	class MyPage : Page
@@ -348,4 +377,58 @@ namespace Uno.UI.Tests.FrameTests
 	class SourceTypePage1 : SourceTypePage { }
 
 	class SourceTypePage2 : SourceTypePage { }
+
+	class NavigateOrderTracker
+	{
+		public bool NavigatedFrom { get; set; }
+
+		public bool NavigatedTo { get; set; }
+
+		public bool FrameNavigated { get; set; }
+
+		public void OnFrameNavigated()
+		{
+			// Frame.Navigated is the first event
+			Assert.IsFalse(FrameNavigated);
+			Assert.IsFalse(NavigatedFrom);
+			Assert.IsFalse(NavigatedTo);
+
+			FrameNavigated = true;
+		}
+
+		public void OnPageNavigatedFrom()
+		{
+			// Page.NavigatedFrom occurs after frame navigated.
+			Assert.IsTrue(FrameNavigated);
+			Assert.IsFalse(NavigatedFrom);
+			Assert.IsFalse(NavigatedTo);
+
+			NavigatedFrom = true;
+		}
+
+		public void OnPageNavigatedTo()
+		{
+			// Page.NavigatedTo is the last event
+			Assert.IsTrue(FrameNavigated);
+			Assert.IsTrue(NavigatedFrom);
+			Assert.IsFalse(NavigatedTo);
+
+			NavigatedTo = true;
+		}
+	}
+
+	class NavigationTrackingPage : Page
+	{
+		protected internal override void OnNavigatedTo(NavigationEventArgs e)
+		{
+			base.OnNavigatedTo(e);
+			Given_Frame._navigateOrderTracker?.OnPageNavigatedTo();
+		}
+
+		protected internal override void OnNavigatedFrom(NavigationEventArgs e)
+		{
+			base.OnNavigatedFrom(e);
+			Given_Frame._navigateOrderTracker?.OnPageNavigatedFrom();
+		}
+	}
 }
