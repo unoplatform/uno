@@ -78,6 +78,14 @@
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
 	</ItemGroup>
+	
+	<ItemGroup>
+	  <AndroidAsset Remove="Assets\Border_Snapshot.bgra8" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <EmbeddedResource Include="Assets\Border_Snapshot.bgra8" />
+	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />

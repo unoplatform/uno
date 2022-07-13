@@ -8855,6 +8855,14 @@
 			<Member
 				fullName="System.Void Windows.UI.UIContext..ctor()"
 				reason="Not part of UWP API" />
+			<!-- BEGIN BitmapEncoder -->
+			<Member
+				fullName="System.Void Windows.Graphics.Imaging.BitmapEncoder..ctor()"
+				reason="Add private ctor for initialize BitmapEncoder" />
+			<Member
+				fullName="System.Void Windows.Graphics.Imaging.BitmapEncoder::.ctor()"
+				reason="Add private ctor for initialize BitmapEncoder" />
+			<!-- END BitmapEncoder API -->
 		</Methods>
 		<Properties>
 			<Member

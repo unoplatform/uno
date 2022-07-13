@@ -60,79 +60,17 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		private async Task DumpOutputFolderName(CancellationToken ct, string folderName)
+		private async Task<StorageFolder> GetStorageFolderFromNameOrCreate(CancellationToken ct, string folderName)
 		{
-			var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync(
-				folderName,
-				Windows.Storage.CreationCollisionOption.OpenIfExists
-			).AsTask(ct);
-
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().Debug($"Output folder for tests: {folder.Path}");
-			}
+			var root = ApplicationData.Current.LocalFolder;
+			var folder = await root.CreateFolderAsync(folderName,
+				CreationCollisionOption.OpenIfExists
+				).AsTask(ct);
+			return folder;
 		}
 
-		private static async Task GenerateBitmap(CancellationToken ct, string folderName, string fileName, FrameworkElement content)
-		{
-			var parent = content.Parent as FrameworkElement;
-
-			if (parent != null)
-			{
-				parent.MinWidth = 400;
-				parent.MinHeight = 400;
-			}
-
-			content.MinWidth = 400;
-			content.MinHeight = 400;
-
-			var border = content.FindFirstChild<Border>();
-
-			if (border != null)
-			{
-				border.Background = new SolidColorBrush(Colors.White);
-			}
-
-			Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap bmp = new Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap();
-
-			await bmp.RenderAsync(content.Parent as FrameworkElement).AsTask(ct);
-
-			content.DataContext = null;
-
-			var pixels = await bmp.GetPixelsAsync().AsTask(ct);
-
-			var folder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync(
-				folderName,
-				Windows.Storage.CreationCollisionOption.OpenIfExists
-			).AsTask(ct);
-
-			if (folder == null)
-			{
-				folder = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFolderAsync(folderName).AsTask(ct);
-			}
-
-			var file = await folder.CreateFileAsync(
-				fileName,
-				Windows.Storage.CreationCollisionOption.ReplaceExisting
-			).AsTask(ct);
-
-			using (var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite).AsTask(ct))
-			{
-				var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, fileStream).AsTask(ct);
-
-				encoder.SetPixelData(
-					BitmapPixelFormat.Bgra8,
-					BitmapAlphaMode.Ignore,
-					(uint)bmp.PixelWidth,
-					(uint)bmp.PixelHeight,
-					DisplayInformation.GetForCurrentView().RawDpiX,
-					DisplayInformation.GetForCurrentView().RawDpiY,
-					pixels.ToArray()
-				);
-
-				await encoder.FlushAsync().AsTask(ct);
-			}
-		}
+		private (double MinWidth, double MinHeight, double Width, double Height) GetScreenshotConstraints()
+			=> (400, 400, 1200, 800);
 	}
 }
 #endif

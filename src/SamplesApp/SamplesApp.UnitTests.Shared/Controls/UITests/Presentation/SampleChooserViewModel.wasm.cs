@@ -1,4 +1,4 @@
-﻿#if __SKIA__
+﻿#if __WASM__
 using SampleControl.Entities;
 using System;
 using System.Collections;
@@ -16,32 +16,29 @@ using Uno.UI.Samples.Controls;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.Storage;
 
 namespace SampleControl.Presentation
 {
 
 	public partial class SampleChooserViewModel
 	{
-		public static Action<string> TakeScreenShot;
-
 		public void PrintViewHierarchy(UIElement vg, StringBuilder sb, int level = 0)
 		{
 			
 		}
 
-		private async Task DumpOutputFolderName(CancellationToken ct, string folderName)
+		private async Task<StorageFolder> GetStorageFolderFromNameOrCreate(CancellationToken ct, string folderName)
 		{
-			var fullPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), folderName);
-
-			Console.WriteLine($"Output folder for tests: {fullPath}");
+			var root = ApplicationData.Current.LocalFolder;
+			var folder = await root.CreateFolderAsync(folderName,
+				CreationCollisionOption.OpenIfExists
+				).AsTask(ct);
+			return folder;
 		}
 
-		private async Task GenerateBitmap(CancellationToken ct, string folderName, string fileName, IFrameworkElement content)
-		{
-			Directory.CreateDirectory(folderName);
-
-			TakeScreenShot(Path.Combine(folderName, fileName));
-		}
+		private (double MinWidth, double MinHeight, double Width, double Height) GetScreenshotConstraints()
+			=> (400, 400, 1200, 800);
 	}
 }
 #endif
