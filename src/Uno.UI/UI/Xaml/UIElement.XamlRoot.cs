@@ -2,6 +2,7 @@
 
 using System;
 using Uno.UI.DataBinding;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 
 namespace Windows.UI.Xaml;
@@ -35,7 +36,7 @@ public partial class UIElement : DependencyObject, IXUidProvider, IUIElement
 				throw new InvalidOperationException("Cannot change XamlRoot for existing element");
 			}
 
-			// TODO: It should be possible to set XamlRoot when still null. https://github.com/unoplatform/uno/issues/8978
+			this.SetVisualTree(value!.VisualTree);
 		}
 	}
 
