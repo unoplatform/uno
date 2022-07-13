@@ -3,11 +3,6 @@
 #endif
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Windows.Input;
 
 using Uno.Extensions;
 using Uno.UI.Common;
@@ -16,19 +11,16 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Text;
-using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Uno.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
-using Windows.UI.Input;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
 
@@ -264,9 +256,9 @@ namespace Windows.UI.Xaml.Controls
 					_isTextChangedPending = false;
 				}
 			}
-			
+
 			_textBoxView?.SetTextNative(Text);
-		
+
 		}
 
 
@@ -305,9 +297,9 @@ namespace Windows.UI.Xaml.Controls
 			return baseString;
 		}
 
-#endregion
+		#endregion
 
-#region Description DependencyProperty
+		#region Description DependencyProperty
 
 		public
 #if __IOS__ || __MACOS__
@@ -344,7 +336,7 @@ namespace Windows.UI.Xaml.Controls
 				descriptionPresenter.Visibility = Description != null ? Visibility.Visible : Visibility.Collapsed;
 			}
 		}
-#endregion
+		#endregion
 
 		protected override void OnFontSizeChanged(double oldValue, double newValue)
 		{
@@ -376,7 +368,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnForegroundColorChangedPartial(Brush newValue);
 
-#region PlaceholderText DependencyProperty
+		#region PlaceholderText DependencyProperty
 
 		public string PlaceholderText
 		{
@@ -392,9 +384,9 @@ namespace Windows.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(defaultValue: string.Empty)
 			);
 
-#endregion
+		#endregion
 
-#region InputScope DependencyProperty
+		#region InputScope DependencyProperty
 
 		public InputScope InputScope
 		{
@@ -425,9 +417,9 @@ namespace Windows.UI.Xaml.Controls
 		protected void OnInputScopeChanged(DependencyPropertyChangedEventArgs e) => OnInputScopeChangedPartial(e);
 		partial void OnInputScopeChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#endregion
+		#endregion
 
-#region MaxLength DependencyProperty
+		#region MaxLength DependencyProperty
 
 		public int MaxLength
 		{
@@ -450,9 +442,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnMaxLengthChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#endregion
+		#endregion
 
-#region AcceptsReturn DependencyProperty
+		#region AcceptsReturn DependencyProperty
 
 		public bool AcceptsReturn
 		{
@@ -489,9 +481,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnAcceptsReturnChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#endregion
+		#endregion
 
-#region TextWrapping DependencyProperty
+		#region TextWrapping DependencyProperty
 		public TextWrapping TextWrapping
 		{
 			get => (TextWrapping)this.GetValue(TextWrappingProperty);
@@ -516,7 +508,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextWrappingChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#endregion
+		#endregion
 
 #if __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -547,7 +539,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextCharacterCasingChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#region IsReadOnly DependencyProperty
+		#region IsReadOnly DependencyProperty
 
 		public bool IsReadOnly
 		{
@@ -574,9 +566,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#endregion
+		#endregion
 
-#region Header DependencyProperties
+		#region Header DependencyProperties
 
 		public object Header
 		{
@@ -620,9 +612,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-#endregion
+		#endregion
 
-#region IsSpellCheckEnabled DependencyProperty
+		#region IsSpellCheckEnabled DependencyProperty
 
 		public bool IsSpellCheckEnabled
 		{
@@ -645,9 +637,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsSpellCheckEnabledChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#endregion
+		#endregion
 
-#region IsTextPredictionEnabled DependencyProperty
+		#region IsTextPredictionEnabled DependencyProperty
 
 		[Uno.NotImplemented]
 		public bool IsTextPredictionEnabled
@@ -672,9 +664,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsTextPredictionEnabledChangedPartial(DependencyPropertyChangedEventArgs e);
 
-#endregion
+		#endregion
 
-#region TextAlignment DependencyProperty
+		#region TextAlignment DependencyProperty
 
 #if XAMARIN_ANDROID
 		public new TextAlignment TextAlignment
@@ -754,6 +746,7 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateVisualState();
 		}
+
 		partial void OnFocusStateChangedPartial(FocusState focusState);
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
@@ -995,7 +988,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateKeyboardThemePartial();
 		}
 
-		partial void UpdateKeyboardThemePartial();		
+		partial void UpdateKeyboardThemePartial();
 
 		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
 		{
