@@ -28,7 +28,9 @@ namespace Windows.UI.Xaml.Controls
 		public event DragItemsStartingEventHandler DragItemsStarting;
 		public event TypedEventHandler<ListViewBase, DragItemsCompletedEventArgs> DragItemsCompleted;
 
+#pragma warning disable CS0414 // Field currently used only on Android.
 		private bool _isProcessingReorder;
+#pragma warning restore CS0414
 
 		#region CanReorderItems (DP)
 		public static DependencyProperty CanReorderItemsProperty { get; } = DependencyProperty.Register(
