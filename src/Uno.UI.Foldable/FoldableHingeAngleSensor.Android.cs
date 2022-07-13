@@ -31,7 +31,8 @@ namespace Uno.UI.Foldable
     {
 		const string HINGE_SENSOR_NAME = "hinge"; // works on multiple OEM devices
 
-		SensorManager _sensorManager;
+		private static SensorManager _sensorManager;
+	
 		Sensor _hingeSensor;
 		HingeSensorEventListener _sensorListener;
 
@@ -45,16 +46,23 @@ namespace Uno.UI.Foldable
 
 		public FoldableHingeAngleSensor(object owner)
 		{
+			_hingeSensor = GetHingeSensor();
+		}
+
+		internal static bool HasHinge => GetHingeSensor() is not null;
+
+		private static Sensor GetHingeSensor()
+		{
 			if (!(ContextHelper.Current is Activity currentActivity))
 			{
 				throw new InvalidOperationException("FoldableHingeAngleSensor must be initialized on the UI Thread");
 			}
 
-			_sensorManager = SensorManager.FromContext(currentActivity);
+			_sensorManager ??= SensorManager.FromContext(currentActivity);
 
 			var sensors = _sensorManager.GetSensorList(Android.Hardware.SensorType.All);
 
-			_hingeSensor = sensors.FirstOrDefault(s => s.Name.Contains(HINGE_SENSOR_NAME, StringComparison.OrdinalIgnoreCase)); // NAME - generic foldable device/s
+			return sensors.FirstOrDefault(s => s.Name.Contains(HINGE_SENSOR_NAME, StringComparison.OrdinalIgnoreCase)); // NAME - generic foldable device/s
 		}
 
 		public event EventHandler<NativeHingeAngleReading> ReadingChanged
