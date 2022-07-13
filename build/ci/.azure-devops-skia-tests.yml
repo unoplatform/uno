@@ -42,7 +42,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     condition: always()
     inputs:
-      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.WPF\bin\Release\netcoreapp3.1
+      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.WPF\bin\Release\net5.0-windows
       ArtifactName: skia-wpf-samples-app
       ArtifactType: Container
 
