@@ -178,35 +178,14 @@ namespace SamplesApp
 			if (!string.IsNullOrEmpty(runtimeTestResultFilePath))
 			{
 				Console.WriteLine($"HandleSkiaRuntimeTests: {runtimeTestResultFilePath}");
-				var currentDispatcher = global::Windows.UI.Xaml.Window.Current.Dispatcher;
-				var runner = new Action(async () =>
-				{
-					// let the app finish its startup
-					await Task.Delay(TimeSpan.FromSeconds(5));
 
-					TaskCompletionSource<bool> testRunCompleted = new TaskCompletionSource<bool>();
-					await currentDispatcher.RunAsync(
-						CoreDispatcherPriority.Normal,
-						async () =>
-						{
-							try
-							{
-								await SampleControl.Presentation.SampleChooserViewModel.Instance.RunRuntimeTests(
-									CancellationToken.None,
-									runtimeTestResultFilePath,
-									() => System.Environment.Exit(0));
-							}
-							finally
-							{
-								testRunCompleted.SetResult(true);
-							}
-						}
-					);
+				// let the app finish its startup
+				await Task.Delay(TimeSpan.FromSeconds(5));
 
-					await testRunCompleted.Task;
-				});
-
-				await Task.Run(runner);
+				await SampleControl.Presentation.SampleChooserViewModel.Instance.RunRuntimeTests(
+					CancellationToken.None,
+					runtimeTestResultFilePath,
+					() => System.Environment.Exit(0));
 
 				return true;
 			}
