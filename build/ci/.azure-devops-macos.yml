@@ -79,7 +79,7 @@ jobs:
 
 - job: macOS_Runtime_Tests
   timeoutInMinutes: 90
-  displayName: macOS SamplesApp Runtime Tests
+  displayName: macOS Runtime Tests
 
   variables:
     CI_Build: true
@@ -136,7 +136,7 @@ jobs:
 
 - job: macOS_Screenshot_Tests
   timeoutInMinutes: 100
-  displayName: macOS SamplesApp Screenshot Test
+  displayName: macOS Snapshot Tests
 
   variables:
     CI_Build: true
@@ -180,10 +180,10 @@ jobs:
   - script: |
         timeout 90m /Applications/SamplesApp.macOS.app/Contents/MacOS/SamplesApp.macOS --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/macOS-screenshots
 
-    displayName: Run macOS UI Snapshot Tests
+    displayName: Run macOS Snapshot Tests
 
   - task: PublishBuildArtifacts@1
-    displayName: Publish macOS Screenshots
+    displayName: Publish macOS Snapshots
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)

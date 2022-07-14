@@ -7,7 +7,7 @@ parameters:
 jobs:
 
 - job: Android_Build_Net6_For_Tests
-  displayName: 'Android UI Tests (Net6 Build)'
+  displayName: 'Android Samples App Build (.NET 6)'
 
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
@@ -51,7 +51,7 @@ jobs:
       ArtifactType: Container
 
 - job: Android_Build_For_Tests
-  displayName: 'Android UI Tests (Build)'
+  displayName: 'Android Samples App Build (Xamarin)'
 
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
@@ -97,7 +97,7 @@ jobs:
       ArtifactType: Container
 
 - job: Android_Tests
-  displayName: 'Android UI Tests (Run)'
+  displayName: 'Android'
   dependsOn:
   - Android_Build_For_Tests
   - Android_Build_Net6_For_Tests
@@ -119,7 +119,7 @@ jobs:
       #  ANDROID_SIMULATOR_APILEVEL: 21
       #  UITEST_TEST_MODE_NAME: Automated
 
-      Android_9.0_Group_01:
+      'UI Tests (Group 1)':
         ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_NAME: Automated
         UNO_UITEST_BUCKET_ID: 1 ## Note: Align with UNO_UITEST_BUCKET_COUNT
@@ -129,7 +129,7 @@ jobs:
         ALLOW_RERUN: true
         UITEST_TEST_TIMEOUT: '270000'
 
-      Android_9.0_Group_02:
+      'UI Tests (Group 2)':
         ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_NAME: Automated
         UNO_UITEST_BUCKET_ID: 2 ## Note: Align with UNO_UITEST_BUCKET_COUNT
@@ -139,7 +139,7 @@ jobs:
         ALLOW_RERUN: true
         UITEST_TEST_TIMEOUT: '270000'
 
-      Android_9.0_Group_03:
+      'UI Tests (Group 3)':
         ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_NAME: Automated
         UNO_UITEST_BUCKET_ID: 3 ## Note: Align with UNO_UITEST_BUCKET_COUNT
@@ -149,7 +149,7 @@ jobs:
         UITEST_TEST_TIMEOUT: '270000'
         ALLOW_RERUN: true
 
-      Android_9.0_Snapshots:
+      'Snapshot Tests':
         ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_NAME: Snapshots
         UNO_UITEST_BUCKET_ID: Snapshots
@@ -159,7 +159,7 @@ jobs:
         ALLOW_RERUN: true
         UITEST_TEST_TIMEOUT: '270000'
 
-      Android_9.0_RuntimeTests:
+      'Runtime Tests':
         ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_NAME: RuntimeTests
         UNO_UITEST_BUCKET_ID: RuntimeTests

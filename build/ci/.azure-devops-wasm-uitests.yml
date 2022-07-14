@@ -2,8 +2,8 @@ parameters:
   vmImage: ''
 
 jobs:
-- job: Wasm_UITests_Build
-  displayName: 'WebAssembly UI Tests (Build)'
+- job: Wasm_SamplesApp_Build
+  displayName: 'WebAssembly Samples App Build (.NET 5)'
   container: nv-bionic-wasm
 
   dependsOn: Pipeline_Validations
@@ -55,14 +55,14 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: wasm-uitest-binaries
+      ArtifactName: wasm-samplesapp-binaries
       ArtifactType: Container
 
 
 - job: Wasm_UITests_Snap
-  displayName: 'WebAssembly UI Tests (Snapshots Run)'
+  displayName: 'WebAssembly Snapshot Tests'
   dependsOn:
-  - Wasm_UITests_Build
+  - Wasm_SamplesApp_Build
   - SamplesApp_UITests_Build
 
   container: nv-bionic-wasm
@@ -81,12 +81,13 @@ jobs:
   - template: templates/dotnet-install.yml
 
   - task: DownloadBuildArtifacts@0
+    displayName: 'Download Samples App Binaries'
     inputs:
-        artifactName: wasm-uitest-binaries
+        artifactName: wasm-samplesapp-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - task: DownloadBuildArtifacts@0
-    displayName: 'Download iOS SamplesApp UnitTests'
+    displayName: 'Download UI Test Binaries'
     inputs:
         artifactName: samplesapp-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
@@ -102,7 +103,7 @@ jobs:
       dotnet tool uninstall dotnet-serve --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
       dotnet tool install dotnet-serve --version 1.8.15 --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
       export PATH="$PATH:$BUILD_SOURCESDIRECTORY/build/tools"
-      $BUILD_SOURCESDIRECTORY/build/tools/dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-net5.0" &
+      $BUILD_SOURCESDIRECTORY/build/tools/dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-samplesapp-binaries/site-net5.0" &
       cd $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Wasm.UITests
       npm install
       node app
@@ -132,25 +133,25 @@ jobs:
 
 
 - job: Wasm_UITests_Automated
-  displayName: 'WebAssembly UI Tests (Automated Run)'
+  displayName: 'WebAssembly'
   dependsOn:
-  - Wasm_UITests_Build
+  - Wasm_SamplesApp_Build
   - SamplesApp_UITests_Build
   container: nv-bionic-wasm
 
   strategy:
     matrix:
-      net5_default:
+      'UI Tests (.NET 5)':
         SITE_SUFFIX: 'net5.0'
         UITEST_AUTOMATED_GROUP: 'Default'
         UITEST_TEST_TIMEOUT: '120000'
 
-      net5_runtimetests:
+      'Runtime Tests (.NET 5)':
         SITE_SUFFIX: 'net5.0'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '1800000'
 
-      net5_benchmarks:
+      'Benchmarks (.NET 5)':
         SITE_SUFFIX: 'net5.0'
         UITEST_AUTOMATED_GROUP: 'Benchmarks'
         UITEST_TEST_TIMEOUT: '120000'
@@ -174,13 +175,7 @@ jobs:
 
   - task: DownloadBuildArtifacts@0
     inputs:
-        artifactName: wasm-uitest-binaries
-        downloadPath: '$(build.sourcesdirectory)/build'
-
-  - task: DownloadBuildArtifacts@0
-    displayName: 'Download iOS SamplesApp UnitTests'
-    inputs:
-        artifactName: samplesapp-uitest-binaries
+        artifactName: wasm-samplesapp-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - task: DownloadBuildArtifacts@0

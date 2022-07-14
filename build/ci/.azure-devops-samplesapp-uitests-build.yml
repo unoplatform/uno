@@ -3,7 +3,7 @@ parameters:
 
 jobs:
 - job: SamplesApp_UITests_Build
-  displayName: 'SamplesApp UI Tests (Build)'
+  displayName: 'UI Tests Build'
   
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -32,7 +32,7 @@ jobs:
       msbuildArguments: /r /m /p:Configuration=Release /detailedsummary /m # /bl:$(build.artifactstagingdirectory)\build.binlog
 
   - task: CopyFiles@2
-    displayName: 'Publish Wasm UITest binaries'
+    displayName: 'Publish UI Test binaries'
     inputs:
       SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.UITests/bin/Release
       Contents: '**/*.*'

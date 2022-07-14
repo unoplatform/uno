@@ -3,7 +3,7 @@ parameters:
 
 jobs:
 - job: Wasm_cs9_Build
-  displayName: 'WebAssembly Samples App Build'
+  displayName: 'WebAssembly Samples App Build (.NET Standard 2.0)'
   container: nv-bionic-wasm
 
   pool:
@@ -46,5 +46,5 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: wasm-uitest-binaries
+      ArtifactName: wasm-samplesapp-binaries
       ArtifactType: Container
