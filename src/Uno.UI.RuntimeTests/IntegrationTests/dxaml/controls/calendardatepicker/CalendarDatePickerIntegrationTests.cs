@@ -27,6 +27,9 @@ using static Private.Infrastructure.CalendarHelper;
 namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 {
 	[TestClass]
+#if __MACOS__
+	[Ignore("Most of these tests crash on macOS")]
+#endif
 	public partial class CalendarDatePickerIntegrationTests : BaseDxamlTestClass
 	{
 		[ClassInitialize]

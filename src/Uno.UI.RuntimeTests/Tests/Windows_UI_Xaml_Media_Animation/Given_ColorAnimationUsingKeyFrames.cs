@@ -13,6 +13,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 {
 	[TestClass]
 	[RunsOnUIThread]
+#if __MACOS__
+	[Ignore("Most of these tests freeze on macOS")]
+#endif
 	public class Given_ColorAnimationUsingKeyFrames
 	{
 		[TestMethod]

@@ -26,6 +26,9 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 {
 	[TestClass]
 	[RequiresFullWindow]
+#if __MACOS__
+	[Ignore("Most of these tests freeze on macOS")]
+#endif
 	public class FocusTests
 	{
 		private enum FocusAsyncMethod

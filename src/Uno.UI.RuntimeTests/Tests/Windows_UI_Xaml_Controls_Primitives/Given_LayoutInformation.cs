@@ -18,6 +18,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 {
 	[TestClass]
 	[RunsOnUIThread]
+#if __MACOS__
+	[Ignore("All these tests fail on macOS")]
+#endif
 	public class Given_LayoutInformation
 	{
 		[TestMethod]
