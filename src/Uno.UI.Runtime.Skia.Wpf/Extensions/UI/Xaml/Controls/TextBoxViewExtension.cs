@@ -66,6 +66,12 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 
 		public void EndEntry()
 		{
+			if (_currentInputWidget is null)
+			{
+				// No entry is in progress.
+				return;
+			}
+
 			if (GetInputText() is { } inputText)
 			{
 				_owner.UpdateTextFromNative(inputText);

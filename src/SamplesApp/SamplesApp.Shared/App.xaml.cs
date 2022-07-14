@@ -34,6 +34,7 @@ using Uno;
 #if __SKIA__
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.Foundation.Extensibility;
+using MUXControlsTestApp.Utilities;
 #endif
 
 #if !HAS_UNO
@@ -80,18 +81,6 @@ namespace SamplesApp
 
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;
-		}
-
-		/// <summary>
-		/// Assert that Application Title is getting its value from manifest
-		/// </summary>
-		public void AssertIssue8356()
-		{
-#if __SKIA__
-			string SUT = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title;
-			string value = Windows.ApplicationModel.Package.Current.DisplayName;
-			Assert.AreEqual(SUT, value);
-#endif
 		}
 
 		/// <summary>
@@ -190,23 +179,13 @@ namespace SamplesApp
 			{
 				Console.WriteLine($"HandleSkiaRuntimeTests: {runtimeTestResultFilePath}");
 
-				var runner = new Action(async () =>
-				{
-					// let the app finish its startup
-					await Task.Delay(TimeSpan.FromSeconds(5));
+				// let the app finish its startup
+				await Task.Delay(TimeSpan.FromSeconds(5));
 
-					await Task.Run(
-						async () =>
-						{
-							await SampleControl.Presentation.SampleChooserViewModel.Instance.RunRuntimeTests(
-								CancellationToken.None,
-								runtimeTestResultFilePath,
-								() => System.Environment.Exit(0));
-						}
-					);
-				});
-
-				await Task.Run(runner);
+				await SampleControl.Presentation.SampleChooserViewModel.Instance.RunRuntimeTests(
+					CancellationToken.None,
+					runtimeTestResultFilePath,
+					() => System.Environment.Exit(0));
 
 				return true;
 			}
@@ -613,12 +592,27 @@ namespace SamplesApp
 		}
 
 		/// <summary>
+		/// Assert that Application Title is getting its value from manifest
+		/// </summary>
+		public void AssertIssue8356()
+		{
+#if __SKIA__
+			string SUT = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title;
+			string value = Windows.ApplicationModel.Package.Current.DisplayName;
+			Assert.AreEqual(SUT, value);
+#endif
+		}
+
+		/// <summary>
 		/// Assert that the native overlay layer for Skia targets is initialized in time for UI to appear.
 		/// </summary>
 		public void AssertIssue8641NativeOverlayInitialized()
 		{
 #if __SKIA__
+			// Temporarily add a TextBox to the current page's content to verify native overlay is available
+			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
 			var textBox = new TextBox();
+			textBox.XamlRoot = rootFrame.XamlRoot;
 			var textBoxView = new TextBoxView(textBox);
 			ApiExtensibility.CreateInstance<ITextBoxViewExtension>(textBoxView, out var textBoxViewExtension);
 			Assert.IsTrue(textBoxViewExtension.IsNativeOverlayLayerInitialized);

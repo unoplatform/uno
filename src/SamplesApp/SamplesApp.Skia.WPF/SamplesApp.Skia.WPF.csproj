@@ -1,7 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
-		<TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
-		
+		<TargetFrameworks>net5.0-windows</TargetFrameworks>		
 		<!--
 		Enable implicit dotnet runtime forward rolling, as a net5
 		project may run with net6 only SDK installed
