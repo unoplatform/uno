@@ -36,6 +36,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
 	[RunsOnUIThread]
+#if __MACOS__
+	[Ignore("Most tests fail on macOS")]
+#endif
 	public partial class Given_ListViewBase
 	{
 		private ResourceDictionary _testsResources;

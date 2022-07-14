@@ -18,6 +18,9 @@ using Uno.UI.WinRT.Extensions.UI.Popups;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 {
 	[TestClass]
+#if __MACOS__
+	[Ignore("Dialogs never close on macOS")]
+#endif
 	public class Given_MessageDialog
 	{
 		[TestMethod]

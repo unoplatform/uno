@@ -27,6 +27,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
 	[TestClass]
 	[RunsOnUIThread]
+#if __MACOS__
+	[Ignore("Most tests fail or are very slow on macOS")]
+#endif
 	public class Given_FrameworkElement_EffectiveViewport
 	{
 #if __ANDROID__

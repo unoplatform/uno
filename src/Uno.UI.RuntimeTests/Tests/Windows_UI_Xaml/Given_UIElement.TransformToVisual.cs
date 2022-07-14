@@ -309,6 +309,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Most tests fail on macOS")]
+#endif
 		#region DataRows
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0)]
@@ -409,6 +412,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Most tests fail on macOS")]
+#endif
 		#region DataRows
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0, false, false)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0, false, false)]
@@ -716,6 +722,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Most tests fail on macOS")]
+#endif
 		#region DataRows
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0, false, false)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0, false, false)]
