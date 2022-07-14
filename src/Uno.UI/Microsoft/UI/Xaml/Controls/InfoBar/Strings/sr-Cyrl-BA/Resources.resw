@@ -118,35 +118,35 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="InfoBarCloseButtonName" xml:space="preserve">
-    <value>Yopish</value>
+    <value>Затвори</value>
     <comment>Automation name of the close button.</comment>
   </data>
   <data name="InfoBarCloseButtonTooltip" xml:space="preserve">
-    <value>Yopish</value>
+    <value>Затвори</value>
     <comment>The tooltip that appears on the Close button in InfoBar.</comment>
   </data>
   <data name="InfoBarClosedNotification" xml:space="preserve">
-    <value>Axborot paneli yopildi</value>
+    <value>InfoBar трака је одбачена</value>
     <comment>The string read by narrator when the InfoBar closes.</comment>
   </data>
   <data name="InfoBarCustomLandmarkName" xml:space="preserve">
-    <value>Axborot paneli</value>
+    <value>InfoBar</value>
     <comment>This is the custom landmark used to denote an InfoBar to narrator.</comment>
   </data>
   <data name="InfoBarIconSeverityErrorName" xml:space="preserve">
-    <value>Xatolik belgisi</value>
+    <value>Икона грешке</value>
     <comment>Automation name used to announce the severity error icon.</comment>
   </data>
   <data name="InfoBarIconSeverityInformationalName" xml:space="preserve">
-    <value>Axborot belgisi</value>
+    <value>Информативна икона</value>
     <comment>Automation name used to announce the severity informational icon.</comment>
   </data>
   <data name="InfoBarIconSeveritySuccessName" xml:space="preserve">
-    <value>Muvaffaqiyat belgisi</value>
+    <value>Икона успјеха</value>
     <comment>Automation name used to announce the severity success icon.</comment>
   </data>
   <data name="InfoBarIconSeverityWarningName" xml:space="preserve">
-    <value>Ogohlantiruvchi belgi</value>
+    <value>Икона упозорења</value>
     <comment>Automation name used to announce the severity warning icon.</comment>
   </data>
   <data name="InfoBarOpenedNotification" xml:space="preserve">
@@ -154,19 +154,19 @@
     <comment>The formatted string read by narrator when the InfoBar opens: "{Severity level}, {Title} {Message}"</comment>
   </data>
   <data name="InfoBarSeverityErrorName" xml:space="preserve">
-    <value>Axborot beruvchi xabar, jiddiy xatolik</value>
+    <value>Информативна порука, грешка озбиљности</value>
     <comment>Name used to announce severity error to users.</comment>
   </data>
   <data name="InfoBarSeverityInformationalName" xml:space="preserve">
-    <value>Axborot beruvchi xabar, muhim axborot</value>
+    <value>Информативна порука, информација о озбиљности</value>
     <comment>Name used to announce severity informational to users.</comment>
   </data>
   <data name="InfoBarSeveritySuccessName" xml:space="preserve">
-    <value>Axborot beruvchi xabar, muhim muvaffaqiyat</value>
+    <value>Информативна порука, озбиљност успјеха</value>
     <comment>Name used to announce severity success to users.</comment>
   </data>
   <data name="InfoBarSeverityWarningName" xml:space="preserve">
-    <value>Axborot beruvchi xabar, jiddiy ogohlantirish</value>
+    <value>Информативна порука, упозорење о озбиљности</value>
     <comment>Name used to announce severity warning to users.</comment>
   </data>
 </root>
