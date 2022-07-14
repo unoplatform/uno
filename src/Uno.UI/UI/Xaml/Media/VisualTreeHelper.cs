@@ -423,14 +423,11 @@ namespace Windows.UI.Xaml.Media
 			var layoutSlot = element.LayoutSlotWithMarginsAndAlignments;
 
 			// The maximum region where the current element and its children might draw themselves
-			// TODO: Get the real clipping rect! For now we assume no clipping.
 			// This is expressed in element coordinate space.
-			// For some controls imported from WinUI, such as NavigationView, 
-			// the Clip property may be significant. 
-			var clippingBounds = element.Clip?.Bounds ?? Rect.Infinite;
+			var clippingBounds = element.Viewport;
 
 			// The region where the current element draws itself.
-			// Be aware that children might be out of this rendering bounds if no clipping defined. TODO: .Intersect(clippingBounds)
+			// Be aware that children might be out of this rendering bounds if no clipping defined.
 			// This is expressed in element coordinate space.
 			var renderingBounds = new Rect(new Point(), layoutSlot.Size);
 
@@ -462,15 +459,22 @@ namespace Windows.UI.Xaml.Media
 				posRelToElement.X /= zoom;
 				posRelToElement.Y /= zoom;
 
-				renderingBounds = new Rect(renderingBounds.Location, new Size(sv.ExtentWidth, sv.ExtentHeight));
+				clippingBounds.Width *= zoom;
+				clippingBounds.Height *= zoom;
 			}
 
 			if (element.IsScrollPort) // Managed SCP or custom scroller
 			{
 				posRelToElement.X += element.ScrollOffsets.X;
 				posRelToElement.Y += element.ScrollOffsets.Y;
+
+				clippingBounds.X += element.ScrollOffsets.X;
+				clippingBounds.Y += element.ScrollOffsets.Y;
 			}
 #endif
+
+			// Apply the effective clipping on the rendering bounds
+			renderingBounds = renderingBounds.IntersectWith(clippingBounds) ?? Rect.Empty;
 
 			TRACE($"- layoutSlot: {layoutSlot.ToDebugString()}");
 			TRACE($"- renderBounds (relative to element): {renderingBounds.ToDebugString()}");
