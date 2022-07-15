@@ -9,6 +9,10 @@ namespace Windows.UI.Core
 {
 	public partial class CoreWindow 
 	{
+		public event TypedEventHandler<CoreWindow, KeyEventArgs> KeyDown;
+
+		public event TypedEventHandler<CoreWindow, KeyEventArgs> KeyUp;
+
         private readonly UIWindow _window;
 
         public CoreWindow(UIWindow window) : this()
