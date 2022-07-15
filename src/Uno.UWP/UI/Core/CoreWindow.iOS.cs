@@ -1,4 +1,3 @@
-#if __IOS__
 using System;
 using System.Runtime.InteropServices;
 using UIKit;
@@ -18,4 +17,3 @@ namespace Windows.UI.Core
         }
 	}
 }
-#endif
