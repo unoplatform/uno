@@ -196,6 +196,8 @@ namespace Windows.UI.Xaml
 
 		private protected sealed override void OnViewportUpdated(Rect viewport) // a.k.a. OnLayoutUpdated / OnClippingApplied
 		{
+			base.OnViewportUpdated(viewport);
+
 			// The 'viewport' (a.k.a. the clipping) is actually not used to compute the EffectiveViewport ...
 			// except for element flagged as ScrollHost!
 			// For now we are using the LayoutSlot + ScrollOffsets (which is internal only!), but we should use that 'viewport'.
