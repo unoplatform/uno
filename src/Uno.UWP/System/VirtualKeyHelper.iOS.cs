@@ -75,7 +75,7 @@ namespace Windows.System
 				UIKeyboardHidUsage.KeyboardSpacebar => VirtualKey.Space,
 				UIKeyboardHidUsage.KeyboardReturnOrEnter => VirtualKey.Enter,
 				UIKeyboardHidUsage.KeyboardTab => VirtualKey.Tab,
-				//42L => VirtualKey.Back,
+				UIKeyboardHidUsage.KeyboardDeleteForward => VirtualKey.Delete,
 				UIKeyboardHidUsage.KeyboardDeleteOrBackspace => VirtualKey.Delete,
 
 				// Modifiers
@@ -111,9 +111,12 @@ namespace Windows.System
 				UIKeyboardHidUsage.KeyboardF18 => VirtualKey.F18,
 				UIKeyboardHidUsage.KeyboardF19 => VirtualKey.F19,
 				UIKeyboardHidUsage.KeyboardF20 => VirtualKey.F20,
+				UIKeyboardHidUsage.KeyboardF21 => VirtualKey.F21,
+				UIKeyboardHidUsage.KeyboardF22 => VirtualKey.F22,
+				UIKeyboardHidUsage.KeyboardF23 => VirtualKey.F23,
+				UIKeyboardHidUsage.KeyboardF24 => VirtualKey.F24,
 
 				// Navigation
-				//comenting for now
 				UIKeyboardHidUsage.KeyboardInsert => VirtualKey.Insert,
 				UIKeyboardHidUsage.KeyboardHome => VirtualKey.Home,
 				UIKeyboardHidUsage.KeyboardEnd => VirtualKey.End,

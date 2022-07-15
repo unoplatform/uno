@@ -1,4 +1,3 @@
-#if XAMARIN_IOS
 using CoreGraphics;
 using Foundation;
 using System;
@@ -48,6 +47,7 @@ namespace Windows.UI.Xaml
 			Dispatcher = CoreDispatcher.Main;
 			CoreWindow = new CoreWindow(_nativeWindow);
 
+			_nativeWindow.SetOwner(CoreWindow);
 			InitializeCommon();
 		}
 
@@ -159,4 +159,3 @@ namespace Windows.UI.Xaml
 		}
 	}
 }
-#endif

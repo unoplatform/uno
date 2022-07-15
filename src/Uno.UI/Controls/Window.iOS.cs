@@ -20,6 +20,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
+using Windows.System;
+using Windows.UI.Core;
 
 #if NET6_0_OR_GREATER
 using ObjCRuntime;
@@ -56,6 +58,11 @@ namespace Uno.UI.Controls
 
 		internal event Action FrameChanged;
 
+		private WeakReference<CoreWindow> _owner;
+		private ICoreWindowEvents _ownerEvents;
+
+		//internal event EventHandler<KeyEventArgs> KeyDown;
+
 		/// <summary>
 		/// ctor.
 		/// </summary>
@@ -80,9 +87,9 @@ namespace Uno.UI.Controls
 		{
 			var handled = false;
 			var focusInputHandler = Uno.UI.Xaml.Core.CoreServices.Instance.MainRootVisual?.AssociatedVisualTree?.UnoFocusInputHandler;
-			if (Uno.WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus && focusInputHandler != null)
+			foreach (UIPress press in presses)
 			{
-				foreach (UIPress press in presses)
+				if (Uno.WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus && focusInputHandler != null)
 				{
 					if (press.Key.KeyCode == UIKeyboardHidUsage.KeyboardTab)
 					{
@@ -108,6 +115,37 @@ namespace Uno.UI.Controls
 						handled |= focusInputHandler.TryHandleDirectionalFocus(Windows.System.VirtualKey.Down);
 					}
 				}
+
+#if __MACCATALYST__
+				var virtualKey = VirtualKeyHelper.FromKeyCode(press.Key.KeyCode);
+
+				var args = new KeyEventArgs(
+					"keyboard",
+					virtualKey,
+					new CorePhysicalKeyStatus
+					{
+						ScanCode = (uint)press.Key.KeyCode,
+						RepeatCount = 1,
+					});
+
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"PressesBegan: {press.Key.KeyCode} -> {virtualKey}");
+				}
+
+				try
+				{
+					if (_ownerEvents is { })
+					{						
+						RaiseKeyEvent(_ownerEvents.RaiseKeyDown, args);
+						handled |= true;
+					}
+				}
+				catch (Exception e)
+				{
+					Application.Current.RaiseRecoverableUnhandledException(e);
+				}
+#endif
 			}
 
 			if (!handled)
@@ -115,6 +153,18 @@ namespace Uno.UI.Controls
 				base.PressesBegan(presses, evt);
 			}
 		}
+
+		public void SetOwner(CoreWindow owner)
+		{
+			_owner = new WeakReference<CoreWindow>(owner);
+			_ownerEvents = (ICoreWindowEvents)owner;
+		}
+
+		public CoreWindow GetOwner() =>
+			_owner != null && _owner.TryGetTarget(out var target) && target is { }
+			? target
+			: null;
+
 
 		/// <summary>
 		/// The behavior to use to bring the focused item into view when opening the keyboard.
@@ -126,6 +176,13 @@ namespace Uno.UI.Controls
 		/// The padding to add at top or bottom when bringing the focused item in the view when opening the keyboard.
 		/// </summary>
 		public int FocusedViewBringIntoViewOnKeyboardOpensPadding { get; set; }
+
+		private void RaiseKeyEvent(Action<KeyEventArgs> raisePointerEvent, KeyEventArgs args)
+		{
+			_ = GetOwner()?.Dispatcher.RunAsync(
+				CoreDispatcherPriority.High,
+				() => raisePointerEvent(args));
+		}
 
 		private void OnApplicationEnteredBackground(object sender, NSNotificationEventArgs e)
 		{
@@ -149,7 +206,7 @@ namespace Uno.UI.Controls
 				{
 					// For some strange reasons, on iOS 8, when the app is sent in background (while the keyboard is open ?) and then restored,
 					// when user re-opens the keyboard we will get some HitTest also for touches which are made upon the keyboard.
-					// In this case we have to send back the currently focused view in order to prevent EndEditing which will cause 
+					// In this case we have to send back the currently focused view in order to prevent EndEditing which will cause
 					// the keyboard to disappear and the feeling that touches are going "through the keyboard".
 
 					return _focusedView;
@@ -273,12 +330,12 @@ namespace Uno.UI.Controls
 			var keyboardOverlap = scrollViewRectInWindow.Bottom - keyboardTop;
 			if (keyboardOverlap > 0)
 			{
-				scrollView.ContentInset = new UIEdgeInsets(0, 0, keyboardOverlap, 0);
+				scrollView.ContentInset = new UIEdgeInsets(0f, 0f, keyboardOverlap, 0f);
 			}
 
 			var viewRectInScrollView = CGRect.Empty;
 
-			//if the view is a multilineTextBox, we want to based our ScrollRectToVisible logic on caret position not on the bottom of the multilineTextBox view 
+			//if the view is a multilineTextBox, we want to based our ScrollRectToVisible logic on caret position not on the bottom of the multilineTextBox view
 			var multilineTextBoxView = view as Windows.UI.Xaml.Controls.MultilineTextBoxView;
 			if (multilineTextBoxView == null)
 			{
