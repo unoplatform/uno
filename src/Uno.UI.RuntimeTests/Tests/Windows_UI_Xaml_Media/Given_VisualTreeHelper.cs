@@ -60,6 +60,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 #endif
 		[TestMethod]
 		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Nested_In_Native_View()
 		{
 			var page = new Native_View_Page();

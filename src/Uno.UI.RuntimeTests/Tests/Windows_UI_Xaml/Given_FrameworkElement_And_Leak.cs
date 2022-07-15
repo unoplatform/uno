@@ -36,7 +36,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[TestClass]
 	[RunsOnUIThread]
 #if __MACOS__
-	[Ignore("Most tests fail on macOS")]
+	[Ignore("Currently fails on macOS, part of #9282! epic")]
 #endif
 	public class Given_FrameworkElement_And_Leak
 	{

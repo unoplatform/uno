@@ -19,7 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 {
 	[TestClass]
 #if __MACOS__
-	[Ignore("Dialogs never close on macOS")]
+	[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 	public class Given_MessageDialog
 	{

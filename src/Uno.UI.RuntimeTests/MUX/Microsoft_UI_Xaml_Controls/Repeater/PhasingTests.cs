@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 	[TestClass]
 	[RequiresFullWindow]
 #if __MACOS__
-	[Ignore("Fail on macOS")]
+	[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 	public class PhasingTests : MUXApiTestBase
 	{

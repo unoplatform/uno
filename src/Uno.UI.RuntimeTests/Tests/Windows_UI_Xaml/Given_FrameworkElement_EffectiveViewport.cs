@@ -28,7 +28,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[TestClass]
 	[RunsOnUIThread]
 #if __MACOS__
-	[Ignore("Most tests fail or are very slow on macOS")]
+	[Ignore("Currently fails on macOS, part of #9282! epic")]
 #endif
 	public class Given_FrameworkElement_EffectiveViewport
 	{

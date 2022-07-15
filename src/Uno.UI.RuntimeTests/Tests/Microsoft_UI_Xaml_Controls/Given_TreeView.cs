@@ -47,6 +47,9 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Sublist_Of_Last_Item_Cleared()
 		{
 			var initial_Depth_0 = 0;

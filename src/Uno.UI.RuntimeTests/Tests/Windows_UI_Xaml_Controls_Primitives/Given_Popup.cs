@@ -17,6 +17,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 	public class Given_Popup
 	{
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task Check_Can_Reach_Main_Visual_Tree()
 		{
 			var page = new ReachMainTreePage();

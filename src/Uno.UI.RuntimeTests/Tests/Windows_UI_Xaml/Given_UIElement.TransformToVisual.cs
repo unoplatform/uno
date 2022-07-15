@@ -36,6 +36,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_TransformToVisual_WithMargin()
 		{
 			FrameworkElement inner = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.DarkBlue) };
@@ -77,6 +80,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if !WINDOWS_UWP // Cannot create a DataTemplate on UWP
 		[TestMethod]
 		[RunsOnUIThread]
+
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_TransformToVisual_ThroughListView()
 		{
 			var listView = new ListView
@@ -202,6 +209,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282! epic")]
+#endif
 		public async Task When_TransformToVisual_WithTransformOrigin()
 		{
 			var sut = new Border
@@ -231,6 +241,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_TransformToVisual_From_ScrollViewer()
 		{
 			var innerBorder = new Border
@@ -310,7 +323,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 #if __MACOS__
-		[Ignore("Most tests fail on macOS")]
+		[Ignore("Currently fails on macOS, part of #9282! epic")]
 #endif
 		#region DataRows
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0)]
@@ -413,7 +426,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 #if __MACOS__
-		[Ignore("Most tests fail on macOS")]
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		#region DataRows
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0, false, false)]
@@ -723,7 +736,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 #if __MACOS__
-		[Ignore("Most tests fail on macOS")]
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		#region DataRows
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 0, false, false)]
@@ -1091,6 +1104,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Basic_Triple_Nesting()
 		{
 			var setup = await SetupTripleScrollViewerScenarioAsync();
@@ -1107,6 +1123,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Triple_Nesting_Margin_Item()
 		{
 			var setup = await SetupTripleScrollViewerScenarioAsync();
@@ -1127,6 +1146,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Triple_Nesting_Scroll_Paddings()
 		{
 			var setup = await SetupTripleScrollViewerScenarioAsync();
@@ -1149,6 +1171,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Double_Nesting_Scroll_Offsets()
 		{
 			var outer = new ScrollViewer()

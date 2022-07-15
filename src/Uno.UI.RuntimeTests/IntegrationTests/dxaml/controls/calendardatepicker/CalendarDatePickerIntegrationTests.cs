@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 {
 	[TestClass]
 #if __MACOS__
-	[Ignore("Most of these tests crash on macOS")]
+	[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 	public partial class CalendarDatePickerIntegrationTests : BaseDxamlTestClass
 	{

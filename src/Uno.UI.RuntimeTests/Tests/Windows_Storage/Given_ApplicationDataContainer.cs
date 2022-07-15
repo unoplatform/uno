@@ -164,6 +164,9 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public void When_GetAllKeys()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;

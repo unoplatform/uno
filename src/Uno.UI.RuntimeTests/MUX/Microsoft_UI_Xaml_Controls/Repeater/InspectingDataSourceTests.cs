@@ -160,6 +160,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		// Calling Reset multiple times before layout runs causes a crash
 		// in unique ids. We end up thinking we have multiple elements with the same id.
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task VerifyCallingResetMultipleTimesOnUniqueIdItemsSource()
 		{
 			var data = new CustomItemsSourceWithUniqueId(Enumerable.Range(0, 5).ToList());

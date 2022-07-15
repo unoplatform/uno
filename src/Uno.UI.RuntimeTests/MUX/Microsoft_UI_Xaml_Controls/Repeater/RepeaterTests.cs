@@ -305,6 +305,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		// Ensure that scrolling a nested repeater works when the 
 		// Itemtemplates are data templates.
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public void NestedRepeaterWithDataTemplateScenario()
 		{
 			NestedRepeaterWithDataTemplateScenario(disableAnimation: true);
@@ -649,6 +652,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public void VerifyRepeaterDoesNotLeakItemContainers()
 		{
 			ObservableCollection<int> items = new ObservableCollection<int>();

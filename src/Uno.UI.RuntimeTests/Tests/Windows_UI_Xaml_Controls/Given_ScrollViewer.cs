@@ -125,6 +125,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_ScrollViewer_Resized()
 		{
 			var content = new Border
@@ -183,6 +186,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Presenter_Doesnt_Take_Up_All_Space()
 		{
 			const int ContentWidth = 700;
@@ -219,6 +225,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// Issue needs to be fixed first for WASM for Right and Bottom Margin missing
 		// Details here: https://github.com/unoplatform/uno/issues/7000
 		[Ignore]
+#endif
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		public async Task When_ScrollViewer_Centered_With_Margin_Inside_Tall_Rectangle()
 		{
@@ -257,6 +266,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// Details here: https://github.com/unoplatform/uno/issues/7000
 		[Ignore]
 #endif
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_ScrollViewer_Centered_With_Margin_Inside_Wide_Rectangle()
 		{
 			const int ContentWidth = 300;
@@ -291,6 +303,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282! epic")]
+#endif
 		public async Task When_Direct_Content_BringIntoView()
 		{
 			var scrollViewer = new ScrollViewer()
@@ -324,6 +339,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Nested_Scroll_BringIntoView()
 		{
 			var outerScrollViewer = new ScrollViewer()

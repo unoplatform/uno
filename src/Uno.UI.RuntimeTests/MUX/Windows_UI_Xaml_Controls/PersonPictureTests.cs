@@ -149,7 +149,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 		[TestMethod]
 #if __MACOS__
-		[Ignore("Never completes on macOS")]
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		public async Task VerifySmallWidthAndHeightDoNotCrash()
 		{
