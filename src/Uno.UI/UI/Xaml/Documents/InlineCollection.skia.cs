@@ -463,10 +463,7 @@ namespace Windows.UI.Xaml.Documents
 					return span;
 				}
 
-				if (justifySpaceOffset > 0 && i < line.SegmentSpans.Count - 1)
-				{
-					spanX += justifySpaceOffset * span.TrailingSpaces;
-				}
+				spanX += justifySpaceOffset * span.TrailingSpaces;
 			} while (i < line.SegmentSpans.Count);
 
 			return extendedSelection ? span : null;

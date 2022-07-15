@@ -62,7 +62,9 @@ namespace Windows.UI.Xaml.Controls
 			var span = Inlines.GetRenderSegmentSpanAt(point - new Point(padding.Left, padding.Top), false);
 
 			if (span == null)
+			{
 				return null;
+			}
 
 			var inline = span.Segment.Inline;
 
