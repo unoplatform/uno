@@ -326,8 +326,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private void SubmitSearch()
-	    {	
-			string finalResult = GetObjectText(Text);
+	    {
+			var finalResult = _suggestionsList.SelectedItem ?? GetObjectText(Text);
 
 			QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(finalResult is "" ? null : finalResult, userInput));			
 
