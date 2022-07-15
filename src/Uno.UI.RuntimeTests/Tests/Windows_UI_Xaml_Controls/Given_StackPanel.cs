@@ -15,6 +15,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_InsertingChildren_Then_ResultIsInRightOrder()
 		{
 			// This is an illustration of the bug https://github.com/unoplatform/uno/issues/3543

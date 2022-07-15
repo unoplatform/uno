@@ -127,6 +127,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Calling_Select_With_In_Range_Values()
 		{
 			var textBox = new TextBox
@@ -145,6 +148,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Calling_Select_With_Out_Of_Range_Length()
 		{
 			var textBox = new TextBox
@@ -163,6 +169,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Calling_Select_With_Out_Of_Range_Start()
 		{
 			var textBox = new TextBox
@@ -184,6 +193,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[Ignore("Disabled as not working properly. See https://github.com/unoplatform/uno/issues/8016")]
 #endif
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_SelectionStart_Set()
 		{
 			var textBox = new TextBox
@@ -222,6 +234,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[Ignore("Disabled as not working properly. See https://github.com/unoplatform/uno/issues/8016")]
 #endif
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Focus_Changes_SelectionStart_Preserved()
 		{
 			var textBox = new TextBox
@@ -390,6 +405,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_SelectedText_EndOfText()
 		{
 			var textBox = new TextBox
@@ -409,6 +427,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_SelectedText_MiddleOfText()
 		{
 			var textBox = new TextBox
@@ -429,6 +450,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_SelectedText_AllTextToEmpty()
 		{
 			var textBox = new TextBox

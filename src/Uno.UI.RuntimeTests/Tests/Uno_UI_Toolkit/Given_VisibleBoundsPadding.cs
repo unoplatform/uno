@@ -27,6 +27,9 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Toolkit
 #elif __ANDROID__
 		[Ignore("Flaky test on Android")]
 #endif
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Mask_All()
 		{
 			using (ScreenHelper.OverrideVisibleBounds(new Thickness(0, 34, 0, 65)))

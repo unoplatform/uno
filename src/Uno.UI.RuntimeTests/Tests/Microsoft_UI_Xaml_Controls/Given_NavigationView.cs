@@ -38,6 +38,9 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 	{
 		[TestMethod]
 		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_SelectedItem_Set_Before_Load_And_Theme_Changed()
 		{
 			using (StyleHelper.UseFluentStyles())

@@ -79,7 +79,6 @@ jobs:
 
 - job: macOS_Runtime_Tests
   timeoutInMinutes: 90
-  condition: eq(1,2)
   displayName: macOS SamplesApp Runtime Tests
 
   variables:

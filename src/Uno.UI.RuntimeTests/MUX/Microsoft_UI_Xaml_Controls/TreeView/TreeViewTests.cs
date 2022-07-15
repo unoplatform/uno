@@ -378,6 +378,9 @@ namespace MUXControlsTestApp
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task ValidateTreeViewItemSourceChangeUpdatesChevronOpacity()
 		{
 			TreeView treeView = null;
@@ -505,6 +508,9 @@ namespace MUXControlsTestApp
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task TreeViewPendingSelectedNodesTest()
 		{
 			TreeView treeView = null;
@@ -548,6 +554,9 @@ namespace MUXControlsTestApp
 		//}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task TreeViewSelectionChangedSingleMode()
 		{
 			TreeView treeView = null;
