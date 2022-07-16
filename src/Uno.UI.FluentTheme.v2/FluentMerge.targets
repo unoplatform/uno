@@ -12,9 +12,7 @@
       <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />
       <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\TeachingTip.xaml" />
       <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\TeachingTip_rs1_themeresources.xaml" />
-      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\TeachingTip_rs2_themeresources.xaml" />
-      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\PipsPager.xaml" />
-      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\PipsPager_themeresources.xaml" />
+      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\TeachingTip_rs2_themeresources.xaml" />     
       <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\BreadcrumbBar.xaml" />
       <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\BreadcrumbBar_themeresources.xaml" />
       <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\ProgressRing.xaml" />
