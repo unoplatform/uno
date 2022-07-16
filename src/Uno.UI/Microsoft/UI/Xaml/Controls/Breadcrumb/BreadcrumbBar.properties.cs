@@ -29,7 +29,7 @@ public partial class BreadcrumbBar : Control
 			nameof(ItemsSource),
 			typeof(object),
 			typeof(BreadcrumbBar),
-			new FrameworkPropertyMetadata(null));
+			new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the data template for the BreadcrumbBarItem.
@@ -48,7 +48,13 @@ public partial class BreadcrumbBar : Control
 			nameof(ItemTemplate),
 			typeof(object),
 			typeof(BreadcrumbBar),
-			new FrameworkPropertyMetadata(null));
+			new FrameworkPropertyMetadata(null, OnPropertyChanged));
+
+	private static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (BreadcrumbBar)sender;
+		owner.OnPropertyChanged(args);
+	}
 
 	/// <summary>
 	/// Occurs when an item is clicked in the BreadcrumbBar.
