@@ -85,7 +85,6 @@ namespace Windows.UI.Xaml.Documents
 		{
 			base.OnCharacterSpacingChanged();
 			InvalidateInlines(false);
-			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnTextDecorationsChanged()

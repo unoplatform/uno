@@ -65,7 +65,25 @@ namespace Windows.UI.Xaml.Documents
 
 		internal float BelowBaselineHeight => Paint.FontMetrics.Descent;
 
-		protected override void InvalidateFontInfo() => _fontInfo = null;
+		protected override void OnFontFamilyChanged()
+		{
+			base.OnFontFamilyChanged();
+			InvalidateFontInfo();
+		}
+
+		protected override void OnFontStyleChanged()
+		{
+			base.OnFontStyleChanged();
+			InvalidateFontInfo();
+		}
+
+		protected override void OnFontWeightChanged()
+		{
+			base.OnFontWeightChanged();
+			InvalidateFontInfo();
+		}
+
+		private void InvalidateFontInfo() => _fontInfo = null;
 
 		private static FontDetails GetFont(
 			string? name,
