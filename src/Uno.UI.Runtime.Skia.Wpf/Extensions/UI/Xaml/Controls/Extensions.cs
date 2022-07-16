@@ -87,7 +87,7 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			return (System.Windows.Media.Stretch)stretch;
 		}
 
-		private static System.Windows.Media.Transform ToWpfTransform(this Windows.UI.Xaml.Media.Transform transform)
+		private static System.Windows.Media.Transform? ToWpfTransform(this Windows.UI.Xaml.Media.Transform transform)
 		{
 			if (transform is Windows.UI.Xaml.Media.MatrixTransform matrixTransform)
 			{

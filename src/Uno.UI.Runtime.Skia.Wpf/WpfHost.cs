@@ -30,12 +30,10 @@ using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Uno.UI.XamlHost.Skia.Wpf;
 using Uno.UI.XamlHost.Skia.Wpf.Hosting;
-using Windows.Devices.Input;
 using Windows.Graphics.Display;
 using Windows.Networking.Connectivity;
 using Windows.Storage.Pickers;
 using Windows.System.Profile.Internal;
-using Windows.UI.Core;
 using Windows.UI.Core.Preview;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
@@ -59,7 +57,7 @@ namespace Uno.UI.Skia.Platform
 
 		private bool _appStarted = false;
 		
-		[ThreadStatic] private static WpfHost _current;
+		[ThreadStatic] private static WpfHost? _current;
 
 		private WpfCanvas? _nativeOverlayLayer = null;
 		private bool ignorePixelScaling;
@@ -75,7 +73,7 @@ namespace Uno.UI.Skia.Platform
 
 		private static bool _extensionsRegistered;
 		private UnoWpfRenderer _renderer;
-		private HostPointerHandler _hostPointerHandler;
+		private HostPointerHandler? _hostPointerHandler;
 
 		internal static void RegisterExtensions()
 		{
@@ -108,7 +106,7 @@ namespace Uno.UI.Skia.Platform
 
 		public Windows.UI.Xaml.UIElement? RootElement => null;
 
-		public static WpfHost Current => _current;
+		public static WpfHost? Current => _current;
 
 		internal WpfCanvas? NativeOverlayLayer => _nativeOverlayLayer;
 
@@ -122,7 +120,7 @@ namespace Uno.UI.Skia.Platform
 		/// to fill LaunchEventArgs.Arguments.
 		/// </remarks>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public WpfHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder, string[] args = null) : this(dispatcher, appBuilder)
+		public WpfHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder, string[]? args = null) : this(dispatcher, appBuilder)
 		{
 		}
 		
