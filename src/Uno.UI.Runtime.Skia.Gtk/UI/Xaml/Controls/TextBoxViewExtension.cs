@@ -424,6 +424,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 		{
 			if (brush is SolidColorBrush scb)
 			{
+#pragma warning disable CS0612 // Suppress Type or member is obsolete. This is a GtkSharp issue https://github.com/GtkSharp/GtkSharp/issues/362
 				_currentInputWidget?.OverrideColor(StateFlags.Normal, new Gdk.RGBA
 				{
 					Red = scb.ColorWithOpacity.R,
@@ -431,6 +432,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 					Blue = scb.ColorWithOpacity.B,
 					Alpha = scb.ColorWithOpacity.A
 				});
+#pragma warning restore CS0612 // Type or member is obsolete
 			}
 		}
 	}

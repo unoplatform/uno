@@ -27,12 +27,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using UnoApplication = Windows.UI.Xaml.Application;
 using WUX = Windows.UI.Xaml;
-using Uno.UI.Runtime.Skia.GTK.System.Profile;
-using Uno.UI.Runtime.Skia.Helpers;
-using Uno.UI.Runtime.Skia.Helpers.Dpi;
-using System.Runtime.InteropServices;
 using Uno.UI.Xaml.Core;
-using Windows.UI.Core;
 using System.ComponentModel;
 using Uno.Disposables;
 

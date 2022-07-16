@@ -35,7 +35,7 @@ internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 
 	public ResolutionScale ResolutionScale => (ResolutionScale)(int)(RawPixelsPerViewPixel * 100.0);
 
-	private void OnDpiChanged(object sender, EventArgs args)
+	private void OnDpiChanged(object? sender, EventArgs args)
 	{
 		_dpi = GetLogicalDpi();
 		_displayInformation.NotifyDpiChanged();
