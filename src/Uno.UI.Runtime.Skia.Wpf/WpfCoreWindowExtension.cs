@@ -28,8 +28,6 @@ namespace Uno.UI.Skia.Platform
 		private readonly ICoreWindowEvents _ownerEvents;
 		private readonly WpfHost? _host;
 
-		private PointerEventArgs? _previous;
-
 		public CoreCursor PointerCursor
 		{
 			get => Mouse.OverrideCursor.ToCoreCursor();

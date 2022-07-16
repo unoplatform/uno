@@ -54,7 +54,6 @@ namespace Uno.UI.Skia.Platform
 	{
 		private const string NativeOverlayLayerPart = "NativeOverlayLayer";
 
-		private readonly bool designMode;
 		private readonly Func<UnoApplication> _appBuilder;
 		private CompositeDisposable _registrations = new();
 
@@ -63,13 +62,9 @@ namespace Uno.UI.Skia.Platform
 		[ThreadStatic] private static WpfHost _current;
 
 		private WpfCanvas? _nativeOverlayLayer = null;
-		private WriteableBitmap bitmap;
 		private bool ignorePixelScaling;
 		private FocusManager? _focusManager;
 		private bool _isVisible = true;
-
-		private DisplayInformation _displayInformation;
-		private SKColor _backgroundColor;
 
 		static WpfHost()
 		{
@@ -137,8 +132,6 @@ namespace Uno.UI.Skia.Platform
 
 			_current = this;
 			_appBuilder = appBuilder;
-
-			designMode = DesignerProperties.GetIsInDesignMode(this);
 
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = d => dispatcher.BeginInvoke(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = dispatcher.CheckAccess;
@@ -306,8 +299,6 @@ namespace Uno.UI.Skia.Platform
 				)
 			);
 		}
-
-		public SKSize CanvasSize => bitmap == null ? SKSize.Empty : new SKSize(bitmap.PixelWidth, bitmap.PixelHeight);
 
 		public bool IgnorePixelScaling
 		{
