@@ -2,28 +2,25 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference BreadcrumbLayout.cpp, commit 9aedb00
 
-using Common;
-using MUXControlsTestApp.Utilities;
-
-using Windows.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls;
-using Common;
-using Windows.UI.Xaml.Markup;
 using System.Collections.Generic;
-using Windows.UI.Xaml.Media;
-using System.Security.Cryptography.X509Certificates;
+using System.Linq;
+using System.Threading.Tasks;
+using Common;
+using Microsoft.UI.Xaml.Controls;
+using MUXControlsTestApp.Utilities;
+using Private.Infrastructure;
+using Uno.UI.RuntimeTests;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation.Provider;
-using System.Linq;
-using Uno.UI.RuntimeTests;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
 
 #if USING_TAEF
 using WEX.TestExecution;
 using WEX.TestExecution.Markup;
 using WEX.Logging.Interop;
 #else
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
@@ -52,10 +49,10 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void VerifyDefaultBreadcrumb()
+		public async Task VerifyDefaultBreadcrumb()
 		{
 			BreadcrumbBar breadcrumb = null;
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				breadcrumb = new BreadcrumbBar();
 				var stackPanel = new StackPanel();
@@ -65,9 +62,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				ItemsRepeater breadcrumbItemsRepeater = (ItemsRepeater)breadcrumb.FindVisualChildByName("PART_ItemsRepeater");
 				Verify.IsNotNull(breadcrumbItemsRepeater, "The underlying items repeater could not be retrieved");
@@ -78,11 +75,11 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void VerifyCustomItemTemplate()
+		public async Task VerifyCustomItemTemplate()
 		{
 			BreadcrumbBar breadcrumb = null;
 			BreadcrumbBar breadcrumb2 = null;
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				breadcrumb = new BreadcrumbBar();
 				breadcrumb.ItemsSource = new List<string>() { "Node 1", "Node 2" };
@@ -117,9 +114,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				ItemsRepeater breadcrumbItemsRepeater = (ItemsRepeater)breadcrumb.FindVisualChildByName("PART_ItemsRepeater");
 				ItemsRepeater breadcrumbItemsRepeater2 = (ItemsRepeater)breadcrumb2.FindVisualChildByName("PART_ItemsRepeater");
@@ -141,11 +138,11 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void VerifyNumericItemsSource()
+		public async Task VerifyNumericItemsSource()
 		{
 			BreadcrumbBar breadcrumb = null;
 			BreadcrumbBar breadcrumb2 = null;
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				// Set a custom ItemTemplate to be wrapped in a BreadcrumbBarItem.
 				var itemTemplate = (DataTemplate)XamlReader.Load(
@@ -169,9 +166,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				ItemsRepeater breadcrumbItemsRepeater = (ItemsRepeater)breadcrumb.FindVisualChildByName("PART_ItemsRepeater");
 				Verify.IsNotNull(breadcrumbItemsRepeater, "The underlying items repeater could not be retrieved");
@@ -196,10 +193,10 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		};
 
 		[TestMethod]
-		public void VerifyObjectItemsSource()
+		public async Task VerifyObjectItemsSource()
 		{
 			BreadcrumbBar breadcrumb = null;
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				// Set a custom ItemTemplate to be wrapped in a BreadcrumbBarItem.
 				var itemTemplate = (DataTemplate)XamlReader.Load(
@@ -231,9 +228,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				ItemsRepeater breadcrumbItemsRepeater = (ItemsRepeater)breadcrumb.FindVisualChildByName("PART_ItemsRepeater");
 				Verify.IsNotNull(breadcrumbItemsRepeater, "The underlying items repeater could not be retrieved");
@@ -244,11 +241,11 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void VerifyDropdownItemTemplate()
+		public async Task VerifyDropdownItemTemplate()
 		{
 			BreadcrumbBar breadcrumb = null;
 
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				breadcrumb = new BreadcrumbBar();
 				breadcrumb.ItemsSource = new List<MockClass>() {
@@ -281,10 +278,10 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			Button ellipsisButton = null;
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				ItemsRepeater breadcrumbItemsRepeater = (ItemsRepeater)breadcrumb.FindVisualChildByName("PART_ItemsRepeater");
 				Verify.IsNotNull(breadcrumbItemsRepeater, "The underlying items repeater (1) could not be retrieved");
@@ -304,9 +301,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			// test/infra issue in RS3, so filtering it out for now.
 			if (PlatformConfiguration.IsOsVersionGreaterThan(OSVersion.Redstone3))
 			{
-				IdleSynchronizer.Wait();
+				await TestServices.WindowHelper.WaitForIdle();
 
-				RunOnUIThread.Execute(() =>
+				await RunOnUIThread.ExecuteAsync(() =>
 				{
 					var flyout = VisualTreeHelper.GetOpenPopups(Window.Current).Last();
 					Verify.IsNotNull(flyout, "Flyout could not be retrieved");
@@ -327,11 +324,11 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void VerifyDropdownItemTemplateWithNoControl()
+		public async Task VerifyDropdownItemTemplateWithNoControl()
 		{
 			BreadcrumbBar breadcrumb = null;
 
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				breadcrumb = new BreadcrumbBar();
 				breadcrumb.ItemsSource = new List<string>() { "Node 1", "Node 2" };
@@ -352,10 +349,10 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			Button ellipsisButton = null;
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				ItemsRepeater breadcrumbItemsRepeater = (ItemsRepeater)breadcrumb.FindVisualChildByName("PART_ItemsRepeater");
 				Verify.IsNotNull(breadcrumbItemsRepeater, "The underlying items repeater (1) could not be retrieved");
@@ -375,9 +372,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			// test/infra issue in RS3, so filtering it out for now.
 			if (PlatformConfiguration.IsOsVersionGreaterThan(OSVersion.Redstone3))
 			{
-				IdleSynchronizer.Wait();
+				await TestServices.WindowHelper.WaitForIdle();
 
-				RunOnUIThread.Execute(() =>
+				await RunOnUIThread.ExecuteAsync(() =>
 				{
 					var flyout = VisualTreeHelper.GetOpenPopups(Window.Current).Last();
 					Verify.IsNotNull(flyout, "Flyout could not be retrieved");
@@ -398,11 +395,11 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void VerifyCollectionChangeGetsRespected()
+		public async Task VerifyCollectionChangeGetsRespected()
 		{
 			BreadcrumbBar breadcrumb = null;
 			ItemsRepeater breadcrumbItemsRepeater = null;
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				// Set a custom ItemTemplate to be wrapped in a BreadcrumbBarItem.
 				var itemTemplate = (DataTemplate)XamlReader.Load(
@@ -434,9 +431,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				breadcrumbItemsRepeater = (ItemsRepeater)breadcrumb.FindVisualChildByName("PART_ItemsRepeater");
 				Verify.IsNotNull(breadcrumbItemsRepeater, "The underlying items repeater could not be retrieved");
@@ -452,10 +449,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				};
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
-
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				var breadcrumbNode3 = breadcrumbItemsRepeater.TryGetElement(3) as BreadcrumbBarItem;
 				Verify.IsNotNull(breadcrumbNode3, "A fourth item should have been rendered by the BreadcrumControl");
