@@ -13,7 +13,6 @@ using Uno.Foundation.Logging;
 using static Windows.UI.Input.PointerUpdateKind;
 using Device = Gtk.Device;
 using Exception = System.Exception;
-using Uno.Foundation.Logging;
 using Windows.UI.Xaml;
 using Uno.UI.Xaml.Core;
 
