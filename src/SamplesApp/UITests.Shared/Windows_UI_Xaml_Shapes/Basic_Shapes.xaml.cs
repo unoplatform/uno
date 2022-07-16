@@ -384,7 +384,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				_root.Visibility = Visibility.Collapsed;
 
 				var elt = GetElement();
-				SizeChangedEventHandler? sh = default;
+				SizeChangedEventHandler sh = default;
 				sh = (snd, args) =>
 				{
 					if (args.NewSize != default)

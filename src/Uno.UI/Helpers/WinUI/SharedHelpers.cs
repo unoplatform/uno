@@ -261,6 +261,17 @@ namespace Uno.UI.Helpers.WinUI
 			return s_isScrollContentPresenterSizesContentToTemplatedParentAvailable.Value;
 		}
 
+		static bool? s_isBringIntoViewOptionsVerticalAlignmentRatioAvailable;
+		public static bool IsBringIntoViewOptionsVerticalAlignmentRatioAvailable()
+		{
+			if (s_isBringIntoViewOptionsVerticalAlignmentRatioAvailable == null) {
+				s_isBringIntoViewOptionsVerticalAlignmentRatioAvailable =
+					IsRS4OrHigher() ||
+					ApiInformation.IsPropertyPresent("Windows.UI.Xaml.BringIntoViewOptions", "VerticalAlignmentRatio");
+			}
+			return s_isBringIntoViewOptionsVerticalAlignmentRatioAvailable.Value;
+		}
+
 		static bool? s_isFrameworkElementInvalidateViewportAvailable;
 		public static bool IsFrameworkElementInvalidateViewportAvailable()
 		{
