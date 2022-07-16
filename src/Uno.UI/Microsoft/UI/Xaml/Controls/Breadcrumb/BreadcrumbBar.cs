@@ -310,6 +310,12 @@ public partial class BreadcrumbBar : Control
 					}
 				}
 			}
+
+#if IS_UNO
+			// TODO: Uno specific - remove when #4689 is fixed
+			// This ensures the item is properly initialized and the selected item is displayed
+			item.Reinitialize();
+#endif
 		}
 	}
 

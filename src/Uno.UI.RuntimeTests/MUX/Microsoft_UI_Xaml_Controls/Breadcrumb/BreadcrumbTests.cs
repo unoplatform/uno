@@ -243,19 +243,21 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		[TestMethod]
 		public async Task VerifyDropdownItemTemplate()
 		{
-			BreadcrumbBar breadcrumb = null;
-
-			await RunOnUIThread.ExecuteAsync(() =>
+			try
 			{
-				breadcrumb = new BreadcrumbBar();
-				breadcrumb.ItemsSource = new List<MockClass>() {
+				BreadcrumbBar breadcrumb = null;
+
+				await RunOnUIThread.ExecuteAsync(() =>
+				{
+					breadcrumb = new BreadcrumbBar();
+					breadcrumb.ItemsSource = new List<MockClass>() {
 					new MockClass { MockProperty = "Node 1" },
 					new MockClass { MockProperty = "Node 2" },
-				};
+					};
 
-				// Set a custom ItemTemplate to be wrapped in a BreadcrumbBarItem.
-				var itemTemplate = (DataTemplate)XamlReader.Load(
-					@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
+					// Set a custom ItemTemplate to be wrapped in a BreadcrumbBarItem.
+					var itemTemplate = (DataTemplate)XamlReader.Load(
+						@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                             xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
                             xmlns:controls='using:Microsoft.UI.Xaml.Controls'
                             xmlns:local='using:Windows.UI.Xaml.Tests.MUXControls.ApiTests'>
@@ -268,129 +270,141 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
                             </controls:BreadcrumbBarItem>
                         </DataTemplate>");
 
-				breadcrumb.ItemTemplate = itemTemplate;
+					breadcrumb.ItemTemplate = itemTemplate;
 
-				var stackPanel = new StackPanel();
-				stackPanel.Width = 60;
-				stackPanel.Children.Add(breadcrumb);
+					var stackPanel = new StackPanel();
+					stackPanel.Width = 60;
+					stackPanel.Children.Add(breadcrumb);
 
-				Content = stackPanel;
-				Content.UpdateLayout();
-			});
+					Content = stackPanel;
+					Content.UpdateLayout();
+				});
 
-			await TestServices.WindowHelper.WaitForIdle();
-
-			Button ellipsisButton = null;
-			await RunOnUIThread.ExecuteAsync(() =>
-			{
-				ItemsRepeater breadcrumbItemsRepeater = (ItemsRepeater)breadcrumb.FindVisualChildByName("PART_ItemsRepeater");
-				Verify.IsNotNull(breadcrumbItemsRepeater, "The underlying items repeater (1) could not be retrieved");
-
-				var breadcrumbNode1 = breadcrumbItemsRepeater.TryGetElement(0) as BreadcrumbBarItem;
-				Verify.IsNotNull(breadcrumbNode1, "Our custom ItemTemplate (1) should have been wrapped in a BreadcrumbBarItem.");
-
-				ellipsisButton = (Button)breadcrumbNode1.FindVisualChildByName("PART_ItemButton");
-				Verify.IsNotNull(ellipsisButton, "The ellipsis item (1) could not be retrieved");
-
-				var automationPeer = new ButtonAutomationPeer(ellipsisButton);
-				var invokationPattern = automationPeer.GetPattern(PatternInterface.Invoke) as IInvokeProvider;
-				invokationPattern?.Invoke();
-			});
-
-			// GetOpenPopups returns empty list in RS3. The scenario works, this just seems to be a
-			// test/infra issue in RS3, so filtering it out for now.
-			if (PlatformConfiguration.IsOsVersionGreaterThan(OSVersion.Redstone3))
-			{
 				await TestServices.WindowHelper.WaitForIdle();
 
+				Button ellipsisButton = null;
 				await RunOnUIThread.ExecuteAsync(() =>
 				{
-					var flyout = VisualTreeHelper.GetOpenPopups(Window.Current).Last();
-					Verify.IsNotNull(flyout, "Flyout could not be retrieved");
-					var ellipsisItemsRepeater = TestUtilities.FindDescendents<ItemsRepeater>(flyout).Single();
-					Verify.IsNotNull(ellipsisItemsRepeater, "The underlying flyout items repeater (1) could not be retrieved");
+					ItemsRepeater breadcrumbItemsRepeater = (ItemsRepeater)breadcrumb.FindVisualChildByName("PART_ItemsRepeater");
+					Verify.IsNotNull(breadcrumbItemsRepeater, "The underlying items repeater (1) could not be retrieved");
 
-					ellipsisItemsRepeater.Loaded += (object sender, RoutedEventArgs e) =>
-					{
-						TextBlock ellipsisNode1 = ellipsisItemsRepeater.TryGetElement(0) as TextBlock;
-						Verify.IsNotNull(ellipsisNode1, "Our flyout ItemTemplate (1) should have been wrapped in a TextBlock.");
+					var breadcrumbNode1 = breadcrumbItemsRepeater.TryGetElement(0) as BreadcrumbBarItem;
+					Verify.IsNotNull(breadcrumbNode1, "Our custom ItemTemplate (1) should have been wrapped in a BreadcrumbBarItem.");
 
-						// change this conditions
-						bool testCondition = !(ellipsisNode1.Foreground is SolidColorBrush brush && brush.Color == Colors.Blue);
-						Verify.IsTrue(testCondition, "Default foreground color of the BreadcrumbBarItem should not have been [blue].");
-					};
+					ellipsisButton = (Button)breadcrumbNode1.FindVisualChildByName("PART_ItemButton");
+					Verify.IsNotNull(ellipsisButton, "The ellipsis item (1) could not be retrieved");
+
+					var automationPeer = new ButtonAutomationPeer(ellipsisButton);
+					var invokationPattern = automationPeer.GetPattern(PatternInterface.Invoke) as IInvokeProvider;
+					invokationPattern?.Invoke();
 				});
+
+				// GetOpenPopups returns empty list in RS3. The scenario works, this just seems to be a
+				// test/infra issue in RS3, so filtering it out for now.
+				if (PlatformConfiguration.IsOsVersionGreaterThan(OSVersion.Redstone3))
+				{
+					await TestServices.WindowHelper.WaitForIdle();
+
+					await RunOnUIThread.ExecuteAsync(() =>
+					{
+						var flyout = VisualTreeHelper.GetOpenPopups(Window.Current).Last();
+						Verify.IsNotNull(flyout, "Flyout could not be retrieved");
+						var ellipsisItemsRepeater = TestUtilities.FindDescendents<ItemsRepeater>(flyout).Single();
+						Verify.IsNotNull(ellipsisItemsRepeater, "The underlying flyout items repeater (1) could not be retrieved");
+
+						ellipsisItemsRepeater.Loaded += (object sender, RoutedEventArgs e) =>
+						{
+							TextBlock ellipsisNode1 = ellipsisItemsRepeater.TryGetElement(0) as TextBlock;
+							Verify.IsNotNull(ellipsisNode1, "Our flyout ItemTemplate (1) should have been wrapped in a TextBlock.");
+
+							// change this conditions
+							bool testCondition = !(ellipsisNode1.Foreground is SolidColorBrush brush && brush.Color == Colors.Blue);
+							Verify.IsTrue(testCondition, "Default foreground color of the BreadcrumbBarItem should not have been [blue].");
+						};
+					});
+				}
+			}
+			finally
+			{
+				VisualTreeHelper.CloseAllFlyouts();
 			}
 		}
 
 		[TestMethod]
 		public async Task VerifyDropdownItemTemplateWithNoControl()
 		{
-			BreadcrumbBar breadcrumb = null;
-
-			await RunOnUIThread.ExecuteAsync(() =>
+			try
 			{
-				breadcrumb = new BreadcrumbBar();
-				breadcrumb.ItemsSource = new List<string>() { "Node 1", "Node 2" };
-
-				// Set a custom ItemTemplate to be wrapped in a BreadcrumbBarItem.
-				var itemTemplate = (DataTemplate)XamlReader.Load(
-					@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
-                            <TextBlock Text='{Binding}'/>
-                        </DataTemplate>");
-
-				breadcrumb.ItemTemplate = itemTemplate;
-
-				var stackPanel = new StackPanel();
-				stackPanel.Width = 60;
-				stackPanel.Children.Add(breadcrumb);
-
-				Content = stackPanel;
-				Content.UpdateLayout();
-			});
-
-			await TestServices.WindowHelper.WaitForIdle();
-
-			Button ellipsisButton = null;
-			await RunOnUIThread.ExecuteAsync(() =>
-			{
-				ItemsRepeater breadcrumbItemsRepeater = (ItemsRepeater)breadcrumb.FindVisualChildByName("PART_ItemsRepeater");
-				Verify.IsNotNull(breadcrumbItemsRepeater, "The underlying items repeater (1) could not be retrieved");
-
-				var breadcrumbNode1 = breadcrumbItemsRepeater.TryGetElement(0) as BreadcrumbBarItem;
-				Verify.IsNotNull(breadcrumbNode1, "Our custom ItemTemplate (1) should have been wrapped in a BreadcrumbBarItem.");
-
-				ellipsisButton = (Button)breadcrumbNode1.FindVisualChildByName("PART_ItemButton");
-				Verify.IsNotNull(ellipsisButton, "The ellipsis item (1) could not be retrieved");
-
-				var automationPeer = new ButtonAutomationPeer(ellipsisButton);
-				var invokationPattern = automationPeer.GetPattern(PatternInterface.Invoke) as IInvokeProvider;
-				invokationPattern?.Invoke();
-			});
-
-			// GetOpenPopups returns empty list in RS3. The scenario works, this just seems to be a
-			// test/infra issue in RS3, so filtering it out for now.
-			if (PlatformConfiguration.IsOsVersionGreaterThan(OSVersion.Redstone3))
-			{
-				await TestServices.WindowHelper.WaitForIdle();
+				BreadcrumbBar breadcrumb = null;
 
 				await RunOnUIThread.ExecuteAsync(() =>
 				{
-					var flyout = VisualTreeHelper.GetOpenPopups(Window.Current).Last();
-					Verify.IsNotNull(flyout, "Flyout could not be retrieved");
-					var ellipsisItemsRepeater = TestUtilities.FindDescendents<ItemsRepeater>(flyout).Single();
-					Verify.IsNotNull(ellipsisItemsRepeater, "The underlying flyout items repeater (1) could not be retrieved");
+					breadcrumb = new BreadcrumbBar();
+					breadcrumb.ItemsSource = new List<string>() { "Node 1", "Node 2" };
 
-					ellipsisItemsRepeater.Loaded += (object sender, RoutedEventArgs e) =>
-					{
-						TextBlock ellipsisNode1 = ellipsisItemsRepeater.TryGetElement(0) as TextBlock;
-						Verify.IsNotNull(ellipsisNode1, "Our flyout ItemTemplate (1) should have been wrapped in a TextBlock.");
+					// Set a custom ItemTemplate to be wrapped in a BreadcrumbBarItem.
+					var itemTemplate = (DataTemplate)XamlReader.Load(
+						@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+                            <TextBlock Text='{Binding}'/>
+                        </DataTemplate>");
 
-						// change this conditions
-						bool testCondition = !(ellipsisNode1.Foreground is SolidColorBrush brush && brush.Color == Colors.Blue);
-						Verify.IsTrue(testCondition, "Default foreground color of the BreadcrumbBarItem should not have been [blue].");
-					};
+					breadcrumb.ItemTemplate = itemTemplate;
+
+					var stackPanel = new StackPanel();
+					stackPanel.Width = 60;
+					stackPanel.Children.Add(breadcrumb);
+
+					Content = stackPanel;
+					Content.UpdateLayout();
 				});
+
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Button ellipsisButton = null;
+				await RunOnUIThread.ExecuteAsync(() =>
+				{
+					ItemsRepeater breadcrumbItemsRepeater = (ItemsRepeater)breadcrumb.FindVisualChildByName("PART_ItemsRepeater");
+					Verify.IsNotNull(breadcrumbItemsRepeater, "The underlying items repeater (1) could not be retrieved");
+
+					var breadcrumbNode1 = breadcrumbItemsRepeater.TryGetElement(0) as BreadcrumbBarItem;
+					Verify.IsNotNull(breadcrumbNode1, "Our custom ItemTemplate (1) should have been wrapped in a BreadcrumbBarItem.");
+
+					ellipsisButton = (Button)breadcrumbNode1.FindVisualChildByName("PART_ItemButton");
+					Verify.IsNotNull(ellipsisButton, "The ellipsis item (1) could not be retrieved");
+
+					var automationPeer = new ButtonAutomationPeer(ellipsisButton);
+					var invokationPattern = automationPeer.GetPattern(PatternInterface.Invoke) as IInvokeProvider;
+					invokationPattern?.Invoke();
+				});
+
+				// GetOpenPopups returns empty list in RS3. The scenario works, this just seems to be a
+				// test/infra issue in RS3, so filtering it out for now.
+				if (PlatformConfiguration.IsOsVersionGreaterThan(OSVersion.Redstone3))
+				{
+					await TestServices.WindowHelper.WaitForIdle();
+
+					await RunOnUIThread.ExecuteAsync(() =>
+					{
+						var flyout = VisualTreeHelper.GetOpenPopups(Window.Current).Last();
+						Verify.IsNotNull(flyout, "Flyout could not be retrieved");
+						var ellipsisItemsRepeater = TestUtilities.FindDescendents<ItemsRepeater>(flyout).Single();
+						Verify.IsNotNull(ellipsisItemsRepeater, "The underlying flyout items repeater (1) could not be retrieved");
+
+						ellipsisItemsRepeater.Loaded += (object sender, RoutedEventArgs e) =>
+						{
+							TextBlock ellipsisNode1 = ellipsisItemsRepeater.TryGetElement(0) as TextBlock;
+							Verify.IsNotNull(ellipsisNode1, "Our flyout ItemTemplate (1) should have been wrapped in a TextBlock.");
+
+							// change this conditions
+							bool testCondition = !(ellipsisNode1.Foreground is SolidColorBrush brush && brush.Color == Colors.Blue);
+							Verify.IsTrue(testCondition, "Default foreground color of the BreadcrumbBarItem should not have been [blue].");
+						};
+					});
+				}
+			}
+			finally
+			{
+				VisualTreeHelper.CloseAllFlyouts();
 			}
 		}
 

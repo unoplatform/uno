@@ -119,6 +119,15 @@ public partial class BreadcrumbBarItem : ContentControl
 	{
 		base.OnApplyTemplate();
 
+		//#if HAS_UNO
+		//		// TODO: Uno specific: Parent may not be set yet, wait for later #4689
+		//		if (m_parentBreadcrumb is null || )
+		//		{
+		//			// Postpone template application for later
+		//			return;
+		//		}
+		//#endif
+
 		if (m_isEllipsisDropDownItem)
 		{
 			UpdateEllipsisDropDownItemCommonVisualState(false /*useTransitions*/);
@@ -130,7 +139,15 @@ public partial class BreadcrumbBarItem : ContentControl
 
 			if (m_isEllipsisItem)
 			{
+#if !HAS_UNO
 				m_ellipsisFlyout = (Flyout)GetTemplateChild(s_itemEllipsisFlyoutPartName);
+#else
+				var rootGrid = GetTemplateChild("PART_LayoutRoot") as FrameworkElement;
+				if (rootGrid is not null)
+				{
+					m_ellipsisFlyout = (Flyout)rootGrid.Resources[s_itemEllipsisFlyoutPartName];
+				}
+#endif
 			}
 
 			m_button = (Button)GetTemplateChild(s_itemButtonPartName);
@@ -167,6 +184,8 @@ public partial class BreadcrumbBarItem : ContentControl
 		}
 
 		UpdateItemTypeVisualState();
+
+		_fullyInitialized = true;
 	}
 
 	private void OnLoadedEvent(object sender, RoutedEventArgs args)
@@ -823,4 +842,17 @@ public partial class BreadcrumbBarItem : ContentControl
 			OnBreadcrumbBarItemClick(null, null);
 		}
 	}
+
+#if IS_UNO
+	// TODO: Uno specific: Remove when #4689 is fixed
+
+	protected bool _fullyInitialized = false;
+
+	internal void Reinitialize()
+	{
+		OnApplyTemplate();
+		UpdateVisualState(false);
+		OnLoadedEvent(this, new RoutedEventArgs());
+	}
+#endif
 }
