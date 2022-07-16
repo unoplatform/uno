@@ -466,7 +466,7 @@ public partial class BreadcrumbBar : Control
 
 				// Focus was already in the repeater: in RS3+ Selection follows focus unless control is held down.
 				else if (SharedHelpers.IsRS3OrHigher() &&
-					(Window.Current.CoreWindow.GetKeyState(VirtualKey.Control) &
+					(global::Windows.UI.Xaml.Window.Current.CoreWindow.GetKeyState(VirtualKey.Control) &
 						CoreVirtualKeyStates.Down) != CoreVirtualKeyStates.Down)
 				{
 					if (args.NewFocusedElement is UIElement newFocusedElementAsUIE)
