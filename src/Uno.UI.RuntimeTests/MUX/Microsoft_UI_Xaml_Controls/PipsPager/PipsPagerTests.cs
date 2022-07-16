@@ -11,6 +11,9 @@ using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Automation;
+using Private.Infrastructure;
+using System.Threading.Tasks;
+using Uno.UI.RuntimeTests;
 #if USING_TAEF
 using WEX.TestExecution;
 using WEX.TestExecution.Markup;
@@ -23,6 +26,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
+    [RequiresFullWindow]
 	public class PipsPagerTests : MUXApiTestBase
 	{
 		[TestMethod]
@@ -42,18 +46,18 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void VerifyPipsPagerButtonUIABehavior()
+		public async Task VerifyPipsPagerButtonUIABehavior()
 		{
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				var pipsPager = new PipsPager();
 				pipsPager.NumberOfPages = 5;
 				Content = pipsPager;
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				var rootPanel = VisualTreeHelper.GetChild(Content, 0) as StackPanel;
 				var repeaterRootParent = VisualTreeHelper.GetChild(rootPanel, 1);
@@ -75,27 +79,27 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-		public void VerifyEmptyPagerDoesNotCrash()
+		public async Task VerifyEmptyPagerDoesNotCrash()
 		{
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				Content = new PipsPager();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				Verify.IsNotNull(Content);
 			});
 		}
 
 		[TestMethod]
-		public void VerifySelectedIndexChangedEventArgs()
+		public async Task VerifySelectedIndexChangedEventArgs()
 		{
 			PipsPager pager = null;
 			var newIndex = -2;
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				pager = new PipsPager();
 				pager.SelectedIndexChanged += Pager_SelectedIndexChanged;
@@ -103,9 +107,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				VerifySelectionChanged(0);
 
