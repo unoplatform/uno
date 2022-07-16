@@ -99,7 +99,7 @@ internal partial class BreadcrumbLayout : NonVirtualizingLayout
 	{
 		int itemCount = GetItemCount(context);
 		float accumLength = (float)GetElementAt(context, itemCount - 1).DesiredSize.Width +
-			(float)m_ellipsisButton.DesiredSize.Width;
+			(float)(m_ellipsisButton?.DesiredSize.Width ?? 0.0);
 
 		for (int i = itemCount - 2; i >= 0; --i)
 		{
@@ -120,7 +120,7 @@ internal partial class BreadcrumbLayout : NonVirtualizingLayout
 
 		if (m_ellipsisIsRendered)
 		{
-			maxElementHeight = (float)m_ellipsisButton.DesiredSize.Height;
+			maxElementHeight = (float)(m_ellipsisButton?.DesiredSize.Height ?? 0.0);
 		}
 
 		for (int i = firstItemToRender; i < GetItemCount(context); ++i)
@@ -156,14 +156,16 @@ internal partial class BreadcrumbLayout : NonVirtualizingLayout
 		if (itemCount > 0)
 		{
 			var ellipsisButton = m_ellipsisButton;
-
-			if (m_ellipsisIsRendered)
+			if (ellipsisButton is not null)
 			{
-				ArrangeItem(ellipsisButton, ref accumulatedWidths, maxElementHeight);
-			}
-			else
-			{
-				HideItem(ellipsisButton);
+				if (m_ellipsisIsRendered)
+				{
+					ArrangeItem(ellipsisButton, ref accumulatedWidths, maxElementHeight);
+				}
+				else
+				{
+					HideItem(ellipsisButton);
+				}
 			}
 		}
 

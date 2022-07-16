@@ -141,7 +141,7 @@ public partial class BreadcrumbBar : Control
 	private void UpdateItemTemplate()
 	{
 		var newItemTemplate = ItemTemplate;
-		m_itemsRepeaterElementFactory.UserElementFactory(newItemTemplate);
+		m_itemsRepeaterElementFactory?.UserElementFactory(newItemTemplate);
 	}
 
 	private void UpdateEllipsisBreadcrumbBarItemDropDownItemTemplate()
@@ -390,7 +390,7 @@ public partial class BreadcrumbBar : Control
 	internal void ReIndexVisibleElementsForAccessibility()
 	{
 		// Once the arrangement of BreadcrumbBar Items has happened then index all visible items
-		if (m_itemsRepeater is { } itemsRepeater)
+		if (m_itemsRepeater is { } itemsRepeater && m_itemsRepeaterLayout is not null)
 		{
 			uint visibleItemsCount = m_itemsRepeaterLayout.GetVisibleItemsCount();
 			var isEllipsisRendered = m_itemsRepeaterLayout.EllipsisIsRendered();

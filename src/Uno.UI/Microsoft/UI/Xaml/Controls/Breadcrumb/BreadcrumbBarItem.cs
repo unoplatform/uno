@@ -543,7 +543,7 @@ public partial class BreadcrumbBarItem : ContentControl
 
 				if (m_ellipsisDropDownItemDataTemplate is { } dataTemplate)
 				{
-					m_ellipsisElementFactory.UserElementFactory(dataTemplate);
+					m_ellipsisElementFactory?.UserElementFactory(dataTemplate);
 				}
 
 				if (m_ellipsisItemsRepeater is { } flyoutRepeater)
@@ -704,7 +704,7 @@ public partial class BreadcrumbBarItem : ContentControl
 
 			MUX_ASSERT(!m_isPressed);
 
-			if (args.Pointer.PointerDeviceType == PointerDeviceType.Mouse)
+			if (args.Pointer.PointerDeviceType == global::Windows.Devices.Input.PointerDeviceType.Mouse)
 			{
 				var pointerProperties = args.GetCurrentPoint(this).Properties;
 				m_isPressed = pointerProperties.IsLeftButtonPressed;
