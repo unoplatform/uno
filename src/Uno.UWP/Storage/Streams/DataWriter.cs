@@ -12,8 +12,8 @@ namespace Windows.Storage.Streams
 	/// </summary>
 	public sealed partial class DataWriter : IDataWriter, IDisposable
 	{
-		private MemoryStream _memoryStream = null;
 		private readonly IOutputStream _outputStream = null;
+		private MemoryStream _memoryStream = null;
 
 		/// <summary>
 		/// Creates and initializes a new instance of the data writer.
@@ -292,7 +292,7 @@ namespace Windows.Storage.Streams
 		{
 			var cancelToken = new CancellationTokenSource();
 			var inBuffer = _memoryStream.GetBuffer();
-			await _outputStream.WriteAsync(inBuffer, 0, inBuffer.Length, cancelToken.Token);
+			await _outputStream.WriteAsync(inBuffer, 0, (int)_memoryStream.Length, cancelToken.Token);
 			await _outputStream.FlushAsync();
 			return (uint)inBuffer.Length;
 		}
