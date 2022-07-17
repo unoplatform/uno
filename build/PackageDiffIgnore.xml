@@ -8863,6 +8863,9 @@
 				fullName="System.Void Windows.Graphics.Imaging.BitmapEncoder::.ctor()"
 				reason="Add private ctor for initialize BitmapEncoder" />
 			<!-- END BitmapEncoder API -->
+			<Member
+				fullName="System.Void Windows.Storage.Streams.DataWriterStoreOperation..ctor()"
+				reason="Not part of UWP API" />
 		</Methods>
 		<Properties>
 			<Member
