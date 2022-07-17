@@ -285,28 +285,16 @@ namespace Windows.Storage.Streams
 		}
 
 
-		public DataWriterStoreOperation StoreAsync()
+		public DataWriterStoreOperation StoreAsync() =>
+			new DataWriterStoreOperation(StoreTaskAsync().AsAsyncOperation<uint>());
+
+		private async Task<uint> StoreTaskAsync()
 		{
-			var dwStore = new DataWriterStoreOperation();
-			Task.Run(async () =>
-			{
-				try
-				{
-					var cancelToken = new CancellationTokenSource();
-					var inBuffer = _memoryStream.GetBuffer();
-					await _outputStream.WriteAsync(inBuffer, 0, inBuffer.Length, cancelToken.Token);
-					await _outputStream.FlushAsync().AsTask();
-					dwStore.Status = AsyncStatus.Completed;
-					dwStore.Result = (uint)inBuffer.Length;
-					dwStore.Completed.Invoke(dwStore, dwStore.Status);
-				}
-				catch (Exception ex)
-				{
-					dwStore.ErrorCode = ex;
-					dwStore.Status = AsyncStatus.Error;
-				}
-			});
-			return dwStore;
+			var cancelToken = new CancellationTokenSource();
+			var inBuffer = _memoryStream.GetBuffer();
+			await _outputStream.WriteAsync(inBuffer, 0, inBuffer.Length, cancelToken.Token);
+			await _outputStream.FlushAsync();
+			return (uint)inBuffer.Length;
 		}
 	}
 }
