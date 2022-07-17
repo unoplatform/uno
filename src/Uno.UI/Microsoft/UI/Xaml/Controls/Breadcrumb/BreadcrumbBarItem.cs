@@ -18,6 +18,14 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+#else
+using Windows.UI.Input;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+#endif
+
 namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
@@ -704,7 +712,7 @@ public partial class BreadcrumbBarItem : ContentControl
 
 			MUX_ASSERT(!m_isPressed);
 
-			if (args.Pointer.PointerDeviceType == global::Windows.Devices.Input.PointerDeviceType.Mouse)
+			if (args.Pointer.PointerDeviceType == PointerDeviceType.Mouse)
 			{
 				var pointerProperties = args.GetCurrentPoint(this).Properties;
 				m_isPressed = pointerProperties.IsLeftButtonPressed;
