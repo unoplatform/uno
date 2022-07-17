@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Extensions;
 using Windows.Foundation;
 using Windows.Storage;
@@ -765,36 +764,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 			var bytes = dataWriter.DetachBuffer().ToArray();
 			CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, bytes);
 		}
-		private string GenerateRandomFileName() => $"{Guid.NewGuid()}.txt";
 
 		[TestMethod]
 		public async Task When_StoreAsync()
 		{
+			var localFolder = ApplicationData.Current.LocalFolder;
 
-			StorageFolder localFolder = ApplicationData.Current.LocalFolder;
-			IAsyncOperation<StorageFile> createOp =
-							localFolder.CreateFileAsync(GenerateRandomFileName(),
-								CreationCollisionOption.ReplaceExisting);
-
-			createOp.Completed = (asyncInfo1, asyncStatus1) =>
+			var createdFile = await localFolder.CreateFileAsync(
+				GenerateRandomFileName(),
+				CreationCollisionOption.ReplaceExisting);
+			try
 			{
-				IStorageFile storageFile = asyncInfo1.GetResults();
-				IAsyncOperation<IRandomAccessStream> openOp =
-									   storageFile.OpenAsync(FileAccessMode.ReadWrite);
-				openOp.Completed = (asyncInfo2, asyncStatus2) =>
+				var expected = "Test StoreAsync";
+				using (var stream = await createdFile.OpenAsync(FileAccessMode.ReadWrite))
+				using (var dataWriter = new DataWriter(stream))
 				{
-					IRandomAccessStream stream = asyncInfo2.GetResults();
-					DataWriter dataWriter = new DataWriter(stream);
-					dataWriter.WriteString("Test StoreAsync");
-					DataWriterStoreOperation storeOp = dataWriter.StoreAsync();
-					storeOp.Completed = (asyncInfo3, asyncStatus3) =>
-					{
-						dataWriter.Dispose();
-						localFolder.DeleteAsync();
-						Assert.AreEqual(asyncStatus3, AsyncStatus.Completed);
-					};
-				};
-			};
+					dataWriter.WriteString(expected);
+					await dataWriter.StoreAsync();
+				}
+
+				// Read from file
+				var actual = await FileIO.ReadTextAsync(createdFile);
+				Assert.AreEqual(expected, actual);
+			}
+			finally
+			{
+				await createdFile.DeleteAsync();
+			}
 		}
+
+		private string GenerateRandomFileName() => $"{Guid.NewGuid()}.txt";
 	}
 }
