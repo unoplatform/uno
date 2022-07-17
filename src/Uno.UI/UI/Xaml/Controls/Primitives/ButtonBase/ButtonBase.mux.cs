@@ -737,7 +737,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			ExecuteCommand();
 		}
 
-		private void ProgrammaticClick() => OnClick();
+		internal void ProgrammaticClick() => OnClick();
 
 		private protected void SetAcceptsReturn(bool value) => _keyboardNavigationAcceptsReturn = value;
 	}

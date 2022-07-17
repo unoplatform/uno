@@ -100,6 +100,7 @@
 		public const string SR_ProgressBarPausedStatus = "ProgressBarPausedStatus";
 		public const string SR_ProgressBarErrorStatus = "ProgressBarErrorStatus";
 		public const string SR_RatingLocalizedControlType = "RatingLocalizedControlType";
+		public const string SR_BreadcrumbBarItemLocalizedControlType = "BreadcrumbBarItemLocalizedControlType";
 		public const string SR_SplitButtonSecondaryButtonName = "SplitButtonSecondaryButtonName";
 		public const string SR_ProofingMenuItemLabel = "ProofingMenuItemLabel";
 		public const string SR_TextCommandLabelCut = "TextCommandLabelCut";
@@ -148,6 +149,8 @@
 		public const string SR_InfoBarClosedNotification = "InfoBarClosedNotification";
 		public const string SR_InfoBarCustomLandmarkName = "InfoBarCustomLandmarkName";
 		public const string SR_InfoBarCloseButtonTooltip = "InfoBarCloseButtonTooltip";
+
+		public const string SR_AutomationNameEllipsisBreadcrumbBarItem = "AutomationNameEllipsisBreadcrumbBarItem";
 
 		public const string IR_NoiseAsset_256X256_PNG = "NoiseAsset_256X256_PNG";
 
