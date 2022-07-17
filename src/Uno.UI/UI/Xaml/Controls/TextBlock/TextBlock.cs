@@ -938,6 +938,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool HasHyperlink => _hyperlinks.Any();
 
+#if !__SKIA__
 		private Hyperlink FindHyperlinkAt(Point point)
 		{
 			var characterIndex = GetCharacterIndexAtPoint(point);
@@ -947,6 +948,7 @@ namespace Windows.UI.Xaml.Controls
 
 			return hyperlink;
 		}
+#endif
 #endif
 
 		#endregion

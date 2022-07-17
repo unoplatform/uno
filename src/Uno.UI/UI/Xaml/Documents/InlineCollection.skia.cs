@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -411,6 +411,62 @@ namespace Windows.UI.Xaml.Documents
 				canvas.DrawLine(x, y, x + width, y, paint);
 				paint.IsStroke = false;
 			}
+        }
+
+		internal RenderLine? GetRenderLineAt(double y, bool extendedSelection)
+		{
+			if (_renderLines.Count == 0)
+			{
+				return null;
+			}
+
+			RenderLine line;
+			float lineY = 0;
+			int i = 0;
+
+			do
+			{
+				line = _renderLines[i++];
+				lineY += line.Height;
+
+				if (y <= lineY && (extendedSelection || y >= lineY - line.Height))
+				{
+					return line;
+				}
+			} while (i < _renderLines.Count);
+
+			return extendedSelection ? line : null;
+		}
+
+		internal RenderSegmentSpan? GetRenderSegmentSpanAt(Point point, bool extendedSelection)
+		{
+			var parent = (IBlock)_collection.GetParent();
+
+			var line = GetRenderLineAt(point.Y, extendedSelection);
+
+			if (line == null)
+			{
+				return null;
+			}
+
+			RenderSegmentSpan span;
+			(float spanX, float justifySpaceOffset) = line.GetOffsets((float)_lastArrangedSize.Width, parent.TextAlignment);
+			int i = 0;
+
+			do
+			{
+				span = line.SegmentSpans[i++];
+				spanX += span.Width;
+
+				if (point.X <= spanX && (extendedSelection || point.X >= spanX - span.Width))
+				{
+					return span;
+				}
+
+				spanX += justifySpaceOffset * span.TrailingSpaces;
+			} while (i < line.SegmentSpans.Count);
+
+			return extendedSelection ? span : null;
 		}
 	}
 }
