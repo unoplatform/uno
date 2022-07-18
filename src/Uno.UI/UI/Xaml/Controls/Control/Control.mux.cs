@@ -9,6 +9,7 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -144,6 +145,22 @@ namespace Windows.UI.Xaml.Controls
 				var focusDisengagedEventArgs = new FocusDisengagedEventArgs();
 				focusDisengagedEventArgs.OriginalSource = this;
 				FocusDisengaged?.Invoke(this, focusDisengagedEventArgs);
+			}
+		}
+
+		private protected void LayoutRoundRectangleStrokeThickness(Rectangle pRectangle)
+		{
+			bool roundStrokeThickness = false;
+			double strokeThickness = 0.0f;
+			float strokeThicknessFloat = 0.0f;
+
+			roundStrokeThickness = pRectangle.UseLayoutRounding;
+			if (roundStrokeThickness)
+			{
+				strokeThickness = pRectangle.StrokeThickness;
+				strokeThicknessFloat = (float)strokeThickness;
+				strokeThicknessFloat = (float)LayoutRound(strokeThicknessFloat);
+				pRectangle.StrokeThickness = strokeThicknessFloat;
 			}
 		}
 

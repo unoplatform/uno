@@ -8855,6 +8855,33 @@
 			<Member
 				fullName="System.Void Windows.UI.UIContext..ctor()"
 				reason="Not part of UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.RangeBase.OnMinimumChanged(System.Double oldValue, System.Double newValue)"
+				reason="Parameter names were incorrect" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.RangeBase.OnMaximumChanged(System.Double oldValue, System.Double newValue)"
+				reason="Parameter names were incorrect" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.RangeBase.OnSmallChangeChanged(System.Double oldValue, System.Double newValue)"
+				reason="Parameter names were incorrect" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.RangeBase.OnSmallChangeChanged(System.Double oldValue, System.Double newValue)"
+				reason="Not part of public API" />
+			<Member
+				fullName="System.Double Windows.UI.Xaml.Controls.Primitives.RangeBase.get_ActualValue()"
+				reason="Not part of public API" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Primitives.RangeBase.get_ActualValueProperty()"
+				reason="Not part of public API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.RangeBase.OnActualValueChanged(System.Double oldValue, System.Double newValue)"
+				reason="Not part of public API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer..ctor()"
+				reason="Not part of public API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer..ctor(System.Object instance)"
+				reason="Not part of public API" />
 			<!-- BEGIN BitmapEncoder -->
 			<Member
 				fullName="System.Void Windows.Graphics.Imaging.BitmapEncoder..ctor()"
@@ -8868,6 +8895,12 @@
 				reason="Not part of UWP API" />
 		</Methods>
 		<Properties>
+			<Member
+				fullName="System.Double Windows.UI.Xaml.Controls.Primitives.RangeBase::ActualValue()"
+				reason="Not part of public API" />		
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Primitives.RangeBase::ActualValueProperty()"
+				reason="Not part of public API" />
 			<Member
 				fullName="System.Boolean Windows.UI.Xaml.Controls.SinglelineTextBoxView::SecureTextEntry()"
 				reason="Removed no-longer-needed override" />

@@ -1,8 +1,8 @@
 ﻿#nullable enable
 
 using System;
-using System.Diagnostics;
-
+using DirectUI;
+using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
@@ -34,7 +34,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				if(_popup == null)
+				if (_popup == null)
 				{
 					_popup = new Popup { IsLightDismissEnabled = false };
 					_popup.PopupPanel = new PopupPanel(_popup);
@@ -60,7 +60,8 @@ namespace Windows.UI.Xaml.Controls
 		private bool m_bClosing;
 		private bool m_bIsOpenAsAutomaticToolTip;
 		private bool m_bCallPerformPlacementAtNextPopupOpen;
-		private bool m_isSliderThumbToolTip;
+		internal AutomaticToolTipInputMode m_inputMode = AutomaticToolTipInputMode.Mouse; // TODO Uno: This should be set from ToolTipService
+		internal bool m_isSliderThumbToolTip;
 #pragma warning restore CS0649
 #pragma warning restore CS0169
 #pragma warning restore CS0414
@@ -122,7 +123,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			PerformPlacementInternal();
 			Popup.IsOpen = isOpen;
-			if (isOpen)
+			if (isOpen && IsEnabled)
 			{
 				AttachToPopup();
 
@@ -159,7 +160,7 @@ namespace Windows.UI.Xaml.Controls
 		// Slider "Disambiguation UI" ToolTips need special handling since they need to remain centered
 		// over the sliding Thumb, which has not yet rendered in its new position.  Therefore, we pass
 		// the new target rect to handle this case.
-		private void PerformPlacement(Rect? pTargetRect = null)
+		internal void PerformPlacement(Rect? pTargetRect = null)
 		{
 			// It is possible for this function to be called even though the ToolTip is closed.
 			// This can happen if the ToolTip gets closed before it has had a chance to layout and complete its opening sequence.
@@ -216,11 +217,8 @@ namespace Windows.UI.Xaml.Controls
 			var dimentions = new Rect(HorizontalOffset, VerticalOffset, ActualWidth, ActualHeight);
 
 			// PlacementMode.Mouse only makes sense for automatic ToolTips opened by touch or mouse.
-			if (placement == PlacementMode.Mouse
-				// UNO TODO
-				// &&
-				//(m_inputMode == AutomaticToolTipInputMode::Touch || m_inputMode == AutomaticToolTipInputMode::Mouse)
-				)
+			if (placement == PlacementMode.Mouse &&
+				(m_inputMode == AutomaticToolTipInputMode.Touch || m_inputMode == AutomaticToolTipInputMode.Mouse))
 			{
 				PerformMousePlacementWithPopup(dimentions, placement);
 			}
@@ -443,11 +441,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				rcDockTo = placementRect;
 			}
-			else if (!m_isSliderThumbToolTip
-				// UNOTODO
-				//&&
-				//      (AutomaticToolTipInputMode::Touch == m_inputMode || AutomaticToolTipInputMode::Mouse == m_inputMode)
-				)
+			else if (!m_isSliderThumbToolTip &&
+				(AutomaticToolTipInputMode.Touch == m_inputMode || AutomaticToolTipInputMode.Mouse == m_inputMode))
 			{
 				var lastPointerEnteredPoint = default(Point);
 
@@ -473,7 +468,7 @@ namespace Windows.UI.Xaml.Controls
 			if (getDockToRectFromTargetElement && Target != null)
 			{
 				var targetTopLeft = default(Point);
-				Target.TransformToVisual(null).TransformPoint(targetTopLeft);
+				targetTopLeft = Target.TransformToVisual(null).TransformPoint(targetTopLeft);
 
 				//// UNO TODO
 				//      // targetTopLeft.X should be the left edge of the target, so adjust for RTL by
@@ -495,40 +490,37 @@ namespace Windows.UI.Xaml.Controls
 			var isPropertyLocal = this.IsDependencyPropertySet(HorizontalOffsetProperty);
 			if (!isPropertyLocal)
 			{
-				// UNO TODO
-				//switch (m_inputMode)
-				//{
-				//case AutomaticToolTipInputMode::Keyboard:
-				//    horizontalOffset = DEFAULT_KEYBOARD_OFFSET;
-				//    break;
-				//case AutomaticToolTipInputMode::Mouse:
-				//    horizontalOffset = DEFAULT_MOUSE_OFFSET;
-				//    break;
-				//case AutomaticToolTipInputMode::Touch:
-				//    horizontalOffset = DEFAULT_TOUCH_OFFSET;
-				//    break;
-				//}
 				horizontalOffset = DEFAULT_MOUSE_OFFSET;
+				switch (m_inputMode)
+				{
+					case AutomaticToolTipInputMode.Keyboard:
+						horizontalOffset = DEFAULT_KEYBOARD_OFFSET;
+						break;
+					case AutomaticToolTipInputMode.Mouse:
+						horizontalOffset = DEFAULT_MOUSE_OFFSET;
+						break;
+					case AutomaticToolTipInputMode.Touch:
+						horizontalOffset = DEFAULT_TOUCH_OFFSET;
+						break;
+				}
 			}
 
 			isPropertyLocal = this.IsDependencyPropertySet(VerticalOffsetProperty);
 			if (!isPropertyLocal)
 			{
-				// UNO TODO
-				//switch (m_inputMode)
-				//{
-				//case AutomaticToolTipInputMode::Keyboard:
-				//    verticalOffset = DEFAULT_KEYBOARD_OFFSET;
-				//    break;
-				//case AutomaticToolTipInputMode::Mouse:
-				//    verticalOffset = DEFAULT_MOUSE_OFFSET;
-				//    break;
-				//case AutomaticToolTipInputMode::Touch:
-				//    verticalOffset = DEFAULT_TOUCH_OFFSET;
-				//    break;
-				//}
-
 				verticalOffset = DEFAULT_MOUSE_OFFSET;
+				switch (m_inputMode)
+				{
+					case AutomaticToolTipInputMode.Keyboard:
+						verticalOffset = DEFAULT_KEYBOARD_OFFSET;
+						break;
+					case AutomaticToolTipInputMode.Mouse:
+						verticalOffset = DEFAULT_MOUSE_OFFSET;
+						break;
+					case AutomaticToolTipInputMode.Touch:
+						verticalOffset = DEFAULT_TOUCH_OFFSET;
+						break;
+				}
 			}
 
 			// UNO TODO
@@ -734,6 +726,17 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 			}
+		}
+
+		// Removes the "automatic" flag and clears associated fields.
+		//
+		// For Slider, the Thumb ToolTip may be opened as an automatic ToolTip by pointer hover.  However, if
+		// we click on the Thumb and start to drag, we don't want the ToolTip to disappear after several seconds.
+		// Thus, we remove the automatic flag and keep the ToolTip open for Slider to handle.
+		[NotImplemented]
+		internal void RemoveAutomaticStatusFromOpenToolTip()
+		{
+			// TODO Uno: Not implemented yet
 		}
 	}
 }

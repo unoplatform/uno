@@ -1,12 +1,18 @@
-using System;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
+namespace Windows.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls.Primitives
+/// <summary>
+/// Defines constants that specify how a Slider or related range control
+/// class conforms the indicator position to its steps or tick marks.
+/// </summary>
+public enum SliderSnapsTo
 {
-	public enum SliderSnapsTo
-	{
-		StepValues,
-		Ticks
-	}
+	/// <summary>
+	/// Conform the indicator to the step values.
+	/// </summary>
+	StepValues,
+
+	/// <summary>
+	/// Conform the indicator to the tick marks.
+	/// </summary>
+	Ticks
 }

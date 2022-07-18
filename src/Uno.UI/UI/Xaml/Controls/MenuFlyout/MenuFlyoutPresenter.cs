@@ -606,7 +606,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		string GetPlainText()
+		private protected override string GetPlainText()
 		{
 			string automationName = null;
 
