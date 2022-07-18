@@ -60,7 +60,7 @@
 	<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="2.88.1-preview.79" />
 
 	<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="2.8.2.1-preview.79" />
-	<PackageReference Update="HarfBuzzSharp.NativeAssets.Tizen" Version="2.8.2.1-preview.79" />
+	<PackageReference Update="HarfBuzzSharp.NativeAssets.Tizen" Version="2.8.2.1-preview.91" />
 	<PackageReference Update="SkiaSharp.HarfBuzz" Version="2.88.1-preview.79" />
 	<PackageReference Update="GtkSharp" Version="3.24.24.34" />
 	<PackageReference Update="System.Json" Version="4.7.1" />
