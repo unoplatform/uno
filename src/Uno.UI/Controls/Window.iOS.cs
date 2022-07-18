@@ -86,10 +86,44 @@ namespace Uno.UI.Controls
 		public override void PressesBegan(NSSet<UIPress> presses, UIPressesEvent evt)
 		{
 			var handled = false;
-			var focusInputHandler = Uno.UI.Xaml.Core.CoreServices.Instance.MainRootVisual?.AssociatedVisualTree?.UnoFocusInputHandler;
+
+#if __MACCATALYST__
 			foreach (UIPress press in presses)
 			{
-				if (Uno.WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus && focusInputHandler != null)
+				var virtualKey = VirtualKeyHelper.FromKeyCode(press.Key.KeyCode);
+
+				var args = new KeyEventArgs(
+					"keyboard",
+					virtualKey,
+					new CorePhysicalKeyStatus
+					{
+						ScanCode = (uint)press.Key.KeyCode,
+						RepeatCount = 1,
+					});
+
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"PressesBegan: {press.Key.KeyCode} -> {virtualKey}");
+				}
+
+				try
+				{
+					if (_ownerEvents is { })
+					{
+						RaiseKeyEvent(_ownerEvents.RaiseKeyDown, args);
+						handled |= true;
+					}
+				}
+				catch (Exception e)
+				{
+					Application.Current.RaiseRecoverableUnhandledException(e);
+				}
+			}
+#else
+			var focusInputHandler = Uno.UI.Xaml.Core.CoreServices.Instance.MainRootVisual?.AssociatedVisualTree?.UnoFocusInputHandler;
+			if (Uno.WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus && focusInputHandler != null)
+			{
+				foreach (UIPress press in presses)
 				{
 					if (press.Key.KeyCode == UIKeyboardHidUsage.KeyboardTab)
 					{
@@ -115,39 +149,8 @@ namespace Uno.UI.Controls
 						handled |= focusInputHandler.TryHandleDirectionalFocus(Windows.System.VirtualKey.Down);
 					}
 				}
-
-#if __MACCATALYST__
-				var virtualKey = VirtualKeyHelper.FromKeyCode(press.Key.KeyCode);
-
-				var args = new KeyEventArgs(
-					"keyboard",
-					virtualKey,
-					new CorePhysicalKeyStatus
-					{
-						ScanCode = (uint)press.Key.KeyCode,
-						RepeatCount = 1,
-					});
-
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().Trace($"PressesBegan: {press.Key.KeyCode} -> {virtualKey}");
-				}
-
-				try
-				{
-					if (_ownerEvents is { })
-					{						
-						RaiseKeyEvent(_ownerEvents.RaiseKeyDown, args);
-						handled |= true;
-					}
-				}
-				catch (Exception e)
-				{
-					Application.Current.RaiseRecoverableUnhandledException(e);
-				}
-#endif
 			}
-
+#endif
 			if (!handled)
 			{
 				base.PressesBegan(presses, evt);
