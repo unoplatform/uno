@@ -1138,6 +1138,7 @@ namespace Windows.UI.Xaml
 				return args.Handled;
 			}
 
+			var originalPending = _pendingRaisedEvent;
 			try
 			{
 				_pendingRaisedEvent = (this, evt, args);
@@ -1155,7 +1156,7 @@ namespace Windows.UI.Xaml
 			}
 			finally
 			{
-				_pendingRaisedEvent = (null, null, null);
+				_pendingRaisedEvent = originalPending;
 			}
 		}
 		#endregion

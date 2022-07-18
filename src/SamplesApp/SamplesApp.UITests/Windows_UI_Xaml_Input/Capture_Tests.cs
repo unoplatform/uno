@@ -3,67 +3,77 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Devices.Input;
+using FluentAssertions;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using Uno.Testing;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
-namespace SamplesApp.UITests.Windows_UI_Xaml_Input
+namespace SamplesApp.UITests.Windows_UI_Xaml_Input;
+
+[TestFixture]
+public partial class Capture_Tests : SampleControlUITestBase
 {
-	public partial class Capture_Tests : SampleControlUITestBase
+	[Test]
+	[AutoRetry]
+	[ActivePlatforms(Platform.iOS | Platform.Android)] // This fails with unit test
+	[InjectedPointer(PointerDeviceType.Touch)]
+	public async Task TestSimple()
+		=> RunTest("Simple", TouchAndMoveOut);
+
+	[Test]
+	[AutoRetry]
+	[InjectedPointer(PointerDeviceType.Touch)]
+	public async Task TestVisibility()
+		=> RunTest("Visibility");
+
+	[Test]
+	[AutoRetry]
+	[InjectedPointer(PointerDeviceType.Touch)]
+	public async Task TestNestedVisibility()
+		=> RunTest("NestedVisibility");
+
+	[Test]
+	[AutoRetry]
+	[Ignore("Inconsistent behavior between manual and unit test")]
+	[InjectedPointer(PointerDeviceType.Touch)]
+	public async Task TestIsEnabled()
+		=> RunTest("IsEnabled");
+
+	[Test]
+	[AutoRetry]
+	[Ignore("Inconsistent behavior between manual and unit test")]
+	[ActivePlatforms(Platform.Browser)] // The IsEnabled property is not inherited on other platforms yet.
+	[InjectedPointer(PointerDeviceType.Touch)]
+	public async Task TestNestedIsEnabled()
+		=> RunTest("NestedIsEnabled");
+
+
+	private readonly Action<QueryEx> TouchAndHold = element => /*element.TouchAndHold() not implemented ... we can use tap instead */ element.FastTap();
+	private void TouchAndMoveOut(QueryEx element)
 	{
-		[Test]
-		[AutoRetry]
-		[ActivePlatforms(Platform.iOS | Platform.Android)] // This fails with unit test
-		public void TestSimple()
-			=> RunTest("Simple", TouchAndMoveOut);
+		var rect = App.WaitForElement(element).Single().Rect;
+		App.DragCoordinates(rect.X + 10, rect.Y + 10, rect.Right + 10, rect.Y + 10);
+	}
 
-		[Test]
-		[AutoRetry]
-		public void TestVisibility()
-			=> RunTest("Visibility");
+	private async Task RunTest(string testName, Action<QueryEx> act = null)
+	{
+		act = act ?? TouchAndHold;
 
-		[Test]
-		[AutoRetry]
-		public void TestNestedVisibility()
-			=> RunTest("NestedVisibility");
+		await RunAsync("UITests.Shared.Windows_UI_Input.PointersTests.Capture");
 
-		[Test]
-		[AutoRetry]
-		[Ignore("Inconsistent behavior between manual and unit test")]
-		public void TestIsEnabled()
-			=> RunTest("IsEnabled");
+		var target = App.Marked($"{testName}Target");
+		var result = App.Marked($"{testName}Result");
 
-		[Test]
-		[AutoRetry]
-		[Ignore("Inconsistent behavior between manual and unit test")]
-		[ActivePlatforms(Platform.Browser)] // The IsEnabled property is not inherited on other platforms yet.
-		public void TestNestedIsEnabled()
-			=> RunTest("NestedIsEnabled");
+		App.WaitForElement(target);
+		act(target);
 
-
-		private readonly Action<QueryEx> TouchAndHold = element => /*element.TouchAndHold() not implemented ... we can use tap instead */ element.FastTap();
-		private void TouchAndMoveOut(QueryEx element)
-		{
-			var rect = _app.WaitForElement(element).Single().Rect;
-			_app.DragCoordinates(rect.X + 10, rect.Y + 10, rect.Right + 10, rect.Y + 10);
-		}
-
-		private void RunTest(string testName, Action<QueryEx> act = null)
-		{
-			act = act ?? TouchAndHold;
-
-			Run("UITests.Shared.Windows_UI_Input.PointersTests.Capture");
-
-			var target = _app.Marked($"{testName}Target");
-			var result = _app.Marked($"{testName}Result");
-
-			_app.WaitForElement(target);
-			act(target);
-
+#if !__SKIA__
 			TakeScreenshot("Result");
+#endif
 
-			_app.WaitForDependencyPropertyValue(result, "Text", "SUCCESS");
-		}
+		result.GetDependencyPropertyValue<string>("Text").Should().Be("SUCCESS");
 	}
 }
