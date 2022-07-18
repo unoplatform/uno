@@ -58,7 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.0-previews-3-31605-261" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.2.2141" />
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.3.2090" />
     <PackageReference Include="Newtonsoft.Json" version="12.0.3" />
     <PackageReference Include="NuGet.VisualStudio" version="4.5.0" />
     <PackageReference Include="Microsoft.VisualStudio.ProjectSystem">
