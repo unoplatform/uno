@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -10,27 +9,34 @@ using Android.Widget;
 using AndroidX.Core.View;
 using AndroidX.RecyclerView.Widget;
 using AndroidX.SwipeRefreshLayout.Widget;
+using Uno.UI.Controls;
+using Windows.Foundation;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Xaml.Controls;
 
-public partial class NativeRefreshControl : SwipeRefreshLayout, DependencyObject
+public partial class NativeRefreshControl : SwipeRefreshLayout, IShadowChildrenProvider, DependencyObject, ILayouterElement
 {
-	public NativeRefreshControl() : base(ContextHelper.Current)
-	{
-	}
-
 	// Distance in pixels a touch can wander before we think the user is scrolling
 	// https://developer.android.com/reference/android/view/ViewConfiguration.html#getScaledTouchSlop()
 	private static readonly float _touchSlop = ViewConfiguration.Get(ContextHelper.Current).ScaledTouchSlop;
-	private PointF _gestureStart;
+	private System.Drawing.PointF _gestureStart;
 	private bool _isSwiping = false;
 	private bool _ignoreGesture = false;
 	private Android.Views.View _content;
+	private ViewGroup _descendantScrollable;
+	private bool _lastOnInterceptTouchEvent;
+
+	public NativeRefreshControl() : base(ContextHelper.Current)
+	{
+		_layouter = new NativeRefreshControlLayouter(this);
+	}
 
 	internal Android.Views.View Content
 	{
-		get { return _content; }
+		get => _content;
 		set
 		{
 			if (_content != null)
@@ -44,9 +50,6 @@ public partial class NativeRefreshControl : SwipeRefreshLayout, DependencyObject
 			}
 		}
 	}
-
-	private ViewGroup _descendantScrollable;
-	private bool _lastOnInterceptTouchEvent;
 
 	public override bool CanChildScrollUp()
 	{
@@ -62,6 +65,122 @@ public partial class NativeRefreshControl : SwipeRefreshLayout, DependencyObject
 		return base.CanChildScrollUp();
 	}
 
+	private readonly List<View> _emptyList = new();
+	//public override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec) => base.OnMeasure(widthMeasureSpec, heightMeasureSpec);
+	List<View> IShadowChildrenProvider.ChildrenShadow => Content != null ? new List<View>(1) { Content as View } : _emptyList;
+
+	private ILayouter _layouter;
+
+	ILayouter ILayouterElement.Layouter => _layouter;
+	Size ILayouterElement.LastAvailableSize => LayoutInformation.GetAvailableSize(this);
+	bool ILayouterElement.IsMeasureDirty => true;
+	bool ILayouterElement.IsFirstMeasureDoneAndManagedElement => false;
+	bool ILayouterElement.StretchAffectsMeasure => false;
+	bool ILayouterElement.IsMeasureDirtyPathDisabled => true;
+
+	public override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
+	{
+		base.OnMeasure(widthMeasureSpec, heightMeasureSpec);
+		((ILayouterElement)this).OnMeasureInternal(widthMeasureSpec, heightMeasureSpec);
+	}
+
+	void ILayouterElement.SetMeasuredDimensionInternal(int width, int height)
+	{
+		SetMeasuredDimension(width, height);
+	}
+
+	partial void OnLayoutPartial(bool changed, int left, int top, int right, int bottom)
+	{
+		var newSize = new Rect(0, 0, right - left, bottom - top).PhysicalToLogicalPixels();
+
+		// WARNING: The layouter must be called every time here,
+		// even if the size has not changed. Failing to call the layouter
+		// may leave the default ScrollViewer implementation place 
+		// the child at an invalid location when the visibility changes.
+
+		_layouter.Arrange(newSize);
+
+		// base.OnLayout is not invoked in the mixin to allow for the clipping algorithms
+		base.OnLayout(changed, left, top, right, bottom);
+	}
+	
+	private class NativeRefreshControlLayouter : Layouter
+	{
+		public NativeRefreshControlLayouter(NativeRefreshControl view) : base(view)
+		{
+		}
+
+		private NativeRefreshControl RefreshControl => Panel as NativeRefreshControl;
+
+		protected override void MeasureChild(View child, int widthSpec, int heightSpec)
+		{
+			var childMargin = (child as FrameworkElement)?.Margin ?? Thickness.Empty;
+			//ScrollContentPresenter.SetChildMargin(childMargin);
+
+			RefreshControl.Content?.Measure(widthSpec, heightSpec);
+		}
+
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			var child = RefreshControl.Content;
+
+			var desiredChildSize = default(Size);
+			if (child != null)
+			{
+				var scrollSpace = availableSize;
+				//if (ScrollContentPresenter.VerticalScrollBarVisibility != ScrollBarVisibility.Disabled)
+				//{
+				//	scrollSpace.Height = double.PositiveInfinity;
+				//}
+				//if (ScrollContentPresenter.HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled)
+				//{
+				//	scrollSpace.Width = double.PositiveInfinity;
+				//}
+
+				desiredChildSize = MeasureChild(child, scrollSpace);
+
+				// Give opportunity to the the content to define the viewport size itself
+				(child as ICustomScrollInfo)?.ApplyViewport(ref desiredChildSize);
+			}
+
+			return desiredChildSize;
+		}
+
+		protected override Size ArrangeOverride(Size slotSize)
+		{
+			var child = RefreshControl.Content;
+
+			if (child != null)
+			{
+				var desiredChildSize = LayoutInformation.GetDesiredSize(child);
+
+				var occludedPadding = new Thickness(0);
+				slotSize.Width -= occludedPadding.Left + occludedPadding.Right;
+				slotSize.Height -= occludedPadding.Top + occludedPadding.Bottom;
+
+				var width = Math.Max(slotSize.Width, desiredChildSize.Width);
+				var height = Math.Max(slotSize.Height, desiredChildSize.Height);
+
+				ArrangeChild(child, new Rect(
+					0,
+					0,
+					width,
+					height
+				));
+
+				//ScrollContentPresenter.ScrollOwner?.TryApplyPendingScrollTo();
+
+				// Give opportunity to the the content to define the viewport size itself
+				(child as ICustomScrollInfo)?.ApplyViewport(ref slotSize);
+
+			}
+
+			return slotSize;
+		}
+
+		protected override string Name => Panel.Name;
+	}
+
 	public override bool OnInterceptTouchEvent(MotionEvent e)
 	{
 		_lastOnInterceptTouchEvent = base.OnInterceptTouchEvent(e);
@@ -70,7 +189,7 @@ public partial class NativeRefreshControl : SwipeRefreshLayout, DependencyObject
 			case MotionEventActions.Down:
 				_isSwiping = false;
 				_ignoreGesture = false;
-				_gestureStart = new PointF(e.GetX(), e.GetY());
+				_gestureStart = new System.Drawing.PointF(e.GetX(), e.GetY());
 				break;
 			case MotionEventActions.Move:
 				return ShouldInterceptMove(e);

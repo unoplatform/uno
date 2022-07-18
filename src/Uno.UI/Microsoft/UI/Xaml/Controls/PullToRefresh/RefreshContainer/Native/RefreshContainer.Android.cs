@@ -1,10 +1,8 @@
 ﻿#nullable enable
 
 using System;
-using System.Linq;
 using Uno.Disposables;
 using Uno.UI;
-using Uno.UI.Extensions;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Xaml;
@@ -16,7 +14,8 @@ public partial class RefreshContainer : ContentControl
 {
 	private readonly SerialDisposable _refreshSubscription = new SerialDisposable();
 	private readonly SerialDisposable _nativeScrollViewAttachment = new SerialDisposable();
-	private NativeRefreshControl? _refreshControl = null!;
+	private NativeRefreshControl? _refreshControl = null;
+	private ContentPresenter? _contentPresenter = null;
 	private bool _managedIsRefreshing = false;
 
 	private void InitializePlatform()
@@ -34,8 +33,23 @@ public partial class RefreshContainer : ContentControl
 			throw new NotSupportedException($"RefreshContainer requires a control of type {nameof(NativeRefreshControl)} in its hierarchy.");
 		}
 
+		_contentPresenter = GetTemplateChild<ContentPresenter>("ContentPresenter");
+
+
 		SubscribeToRefresh();
-		_refreshControl.Content = Content as Android.Views.View;
+		//_refreshControl.Content = Content as Android.Views.View;
+	}
+
+	protected override Size MeasureOverride(Size availableSize)
+	{		
+		var size = base.MeasureOverride(availableSize);
+		return size;
+	}
+
+	protected override Size ArrangeOverride(Size finalSize)
+	{		
+		var size = base.ArrangeOverride(finalSize);
+		return size;
 	}
 
 	private void OnLoaded(object sender, EventArgs e)
@@ -73,7 +87,7 @@ public partial class RefreshContainer : ContentControl
 
 	private void OnNativeRefresh(object sender, EventArgs e)
 	{
-		//OnRefresh();
+		OnNativeRefreshingChanged();
 	}
 
 	protected override void OnContentChanged(object oldValue, object newValue)
@@ -91,6 +105,7 @@ public partial class RefreshContainer : ContentControl
 		if (_refreshControl != null)
 		{
 			_refreshControl.Refreshing = true;
+			OnNativeRefreshingChanged();
 		}
 	}
 

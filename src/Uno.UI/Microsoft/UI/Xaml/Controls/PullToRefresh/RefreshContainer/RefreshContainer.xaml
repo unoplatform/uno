@@ -35,7 +35,11 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="local:RefreshContainer">
 					<Grid>
-						<uno:NativeRefreshControl x:Name="NativeRefreshControl" />
+						<uno:NativeRefreshControl x:Name="NativeRefreshControl">
+							<uno:NativeRefreshControl.Content>
+								<ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" Background="Transparent" />
+							</uno:NativeRefreshControl.Content>
+						</uno:NativeRefreshControl>
 					</Grid>
 				</ControlTemplate>
 			</Setter.Value>

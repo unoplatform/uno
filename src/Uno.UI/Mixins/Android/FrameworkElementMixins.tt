@@ -23,7 +23,7 @@
 	AddClass("Windows.UI.Xaml.Controls", "NativeListViewBase", isUnoMotionTarget: true, derivesFromFrameworkElement: false);
 	AddClass("Windows.UI.Xaml.Controls", "NativePagedView", hasLayouter: true, derivesFromFrameworkElement: false);
 	AddClass("Windows.UI.Xaml.Controls", "NativeScrollContentPresenter", callsBaseOnLayout: false, hasLayouter: true, derivesFromFrameworkElement: false);
-	AddClass("Uno.UI.Xaml.Controls", "NativeRefreshControl", isUnoMotionTarget: false, derivesFromFrameworkElement: false);
+	AddClass("Uno.UI.Xaml.Controls", "NativeRefreshControl", isUnoMotionTarget: false, derivesFromFrameworkElement: false, hasLayouter: true);
 	AddClass("Windows.UI.Xaml.Controls", "TextBoxView", hasNewMinWidthHeight: true, hasNewMaxWidthHeight: true, derivesFromFrameworkElement: false);
 	AddClass("Uno.UI.Controls.Legacy", "GridView", derivesFromFrameworkElement: false);
 	AddClass("Uno.UI.Controls.Legacy", "ListView", derivesFromFrameworkElement: false);
