@@ -5,6 +5,7 @@
 using System;
 using DirectUI;
 using Uno.Disposables;
+using Uno.UI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.Devices.Input;
@@ -696,19 +697,22 @@ public partial class Slider
 			{
 				AttachHorizontalThumbSubscriptions();
 
-				var spHorizontalThumbToolTip = ToolTipService.GetToolTipReference(_tpElementHorizontalThumb);
-				// If no disambiguation UI ToolTip exist for the Thumb, we create one.
-				// TODO: Jupiter 101372 - Cannot use RelativeSource={RelativeSource TemplatedParent} in generic.xaml
-				// When the bug is fixed, stop creating a ToolTip in code and move this to XAML.
-				if (spHorizontalThumbToolTip == null)
+				if (FeatureConfiguration.ToolTip.UseToolTips)
 				{
-					SetDefaultThumbToolTip(Orientation.Horizontal);
-					_usingDefaultToolTipForHorizontalThumb = true;
-				}
-				else
-				{
-					spHorizontalThumbToolTip.IsEnabled = bIsThumbToolTipEnabled;
-					spHorizontalThumbToolTip.m_isSliderThumbToolTip = true;
+					var spHorizontalThumbToolTip = ToolTipService.GetToolTipReference(_tpElementHorizontalThumb);
+					// If no disambiguation UI ToolTip exist for the Thumb, we create one.
+					// TODO: Jupiter 101372 - Cannot use RelativeSource={RelativeSource TemplatedParent} in generic.xaml
+					// When the bug is fixed, stop creating a ToolTip in code and move this to XAML.
+					if (spHorizontalThumbToolTip == null)
+					{
+						SetDefaultThumbToolTip(Orientation.Horizontal);
+						_usingDefaultToolTipForHorizontalThumb = true;
+					}
+					else
+					{
+						spHorizontalThumbToolTip.IsEnabled = bIsThumbToolTipEnabled;
+						spHorizontalThumbToolTip.m_isSliderThumbToolTip = true;
+					}
 				}
 			}
 
@@ -716,19 +720,22 @@ public partial class Slider
 			{
 				AttachVerticalThumbSubscriptions();
 
-				var spVerticalThumbToolTip = ToolTipService.GetToolTipReference(_tpElementVerticalThumb);
-				// If no disambiguation UI ToolTip exist for the Thumb, we create one.
-				// TODO: Jupiter 101372 - Cannot use RelativeSource={RelativeSource TemplatedParent} in generic.xaml
-				// When the bug is fixed, stop creating a ToolTip in code and move this to XAML.
-				if (spVerticalThumbToolTip == null)
+				if (FeatureConfiguration.ToolTip.UseToolTips)
 				{
-					SetDefaultThumbToolTip(Orientation.Vertical);
-					_usingDefaultToolTipForVerticalThumb = true;
-				}
-				else
-				{
-					spVerticalThumbToolTip.IsEnabled = bIsThumbToolTipEnabled;
-					spVerticalThumbToolTip.m_isSliderThumbToolTip = true;
+					var spVerticalThumbToolTip = ToolTipService.GetToolTipReference(_tpElementVerticalThumb);
+					// If no disambiguation UI ToolTip exist for the Thumb, we create one.
+					// TODO: Jupiter 101372 - Cannot use RelativeSource={RelativeSource TemplatedParent} in generic.xaml
+					// When the bug is fixed, stop creating a ToolTip in code and move this to XAML.
+					if (spVerticalThumbToolTip == null)
+					{
+						SetDefaultThumbToolTip(Orientation.Vertical);
+						_usingDefaultToolTipForVerticalThumb = true;
+					}
+					else
+					{
+						spVerticalThumbToolTip.IsEnabled = bIsThumbToolTipEnabled;
+						spVerticalThumbToolTip.m_isSliderThumbToolTip = true;
+					}
 				}
 			}
 		}
@@ -1067,7 +1074,10 @@ public partial class Slider
 		actualHeight = Math.Max(actualHeight - padding.Top - padding.Bottom, 0.0);
 
 		isThumbToolTipEnabled = IsThumbToolTipEnabled;
-
+#if HAS_UNO
+		isThumbToolTipEnabled &= FeatureConfiguration.ToolTip.UseToolTips;
+#endif
+		
 		maximum = Maximum;
 		minimum = Minimum;
 		currentValue = IntermediateValue;
@@ -1638,6 +1648,12 @@ public partial class Slider
 	// on the Thumb.  Currently, this ToolTip is created in code if the Thumb template part's ToolTip is null.
 	private void SetDefaultThumbToolTip(Orientation orientation)
 	{
+#if HAS_UNO
+		if (!FeatureConfiguration.ToolTip.UseToolTips)
+		{
+			return;
+		}
+#endif
 		object spSliderValueWeakReference;    // to be used as ConverterParameter
 		PlacementMode placementMode = PlacementMode.Top;
 		bool bIsThumbToolTipEnabled = false;
@@ -1707,6 +1723,12 @@ public partial class Slider
 	// Called when IsThumbToolTipEnabled changes.
 	private void OnIsThumbToolTipEnabledChanged()
 	{
+#if HAS_UNO
+		if (!FeatureConfiguration.ToolTip.UseToolTips)
+		{
+			return;
+		}
+#endif
 		bool isThumbToolTipEnabled = IsThumbToolTipEnabled;
 
 		if (_tpElementHorizontalThumb != null)
