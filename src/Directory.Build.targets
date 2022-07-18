@@ -47,7 +47,7 @@
 	<PackageReference Update="System.Numerics.Vectors" Version="4.5.0" />
 
 	<PackageReference Update="SkiaSharp.Views" Version="2.88.1-preview.79" />
-	<PackageReference Update="SkiaSharp.Views.Uno" Version="2.88.1-preview.79" />
+	<PackageReference Update="SkiaSharp.Views.Uno" Version="2.88.1-preview.91" />
 	<PackageReference Update="SkiaSharp.Views.Uno.WinUI" Version="2.88.1-preview.79" />
 	<PackageReference Update="SkiaSharp.Views.WPF" Version="2.88.1-preview.79" />
 	<PackageReference Update="SkiaSharp" Version="2.88.1-preview.79" />
