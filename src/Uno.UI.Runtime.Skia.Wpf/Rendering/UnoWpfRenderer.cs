@@ -94,5 +94,7 @@ namespace Uno.UI.Runtime.Skia.Wpf.Rendering
 			_bitmap.Unlock();
 			drawingContext.DrawImage(_bitmap, new Rect(0, 0, _hostControl.ActualWidth, _hostControl.ActualHeight));
 		}
+
+		public SKSize CanvasSize => _bitmap == null ? SKSize.Empty : new SKSize(_bitmap.PixelWidth, _bitmap.PixelHeight);
 	}
 }

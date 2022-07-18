@@ -308,6 +308,9 @@ namespace Uno.UI.Skia.Platform
 			}
 		}
 
+		[Obsolete("It will be removed in the next major release.")]
+		public SKSize CanvasSize => _renderer.CanvasSize;
+
 		protected override void OnRender(DrawingContext drawingContext)
 		{
 			base.OnRender(drawingContext);
