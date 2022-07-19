@@ -1,5 +1,6 @@
 ﻿#if !__ANDROID__ && !__IOS__
 using Microsoft.UI.Private.Controls;
+using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -63,7 +64,11 @@ public partial class RefreshContainer : ContentControl
 
 		DefaultStyleKey = typeof(RefreshContainer);
 
+#if !HAS_UNO
 		m_refreshInfoProviderAdapter = new ScrollViewerIRefreshInfoProviderAdapter(PullDirection, null);
+#else
+		m_refreshInfoProviderAdapter = new StubRefreshInfoProviderAdapter();
+#endif
 		m_hasDefaultRefreshInfoProviderAdapter = true;
 		OnRefreshInfoProviderAdapterChanged();
 	}
@@ -224,7 +229,11 @@ public partial class RefreshContainer : ContentControl
 				m_refreshVisualizer.ActualHeight == DEFAULT_PULL_DIMENSION_SIZE &&
 				m_refreshVisualizer.ActualWidth == DEFAULT_PULL_DIMENSION_SIZE)
 			{
+#if !HAS_UNO
 				m_refreshInfoProviderAdapter = new ScrollViewerIRefreshInfoProviderAdapter(PullDirection, null);
+#else
+				m_refreshInfoProviderAdapter = new StubRefreshInfoProviderAdapter();
+#endif
 				OnRefreshInfoProviderAdapterChanged();
 			}
 
@@ -325,7 +334,11 @@ public partial class RefreshContainer : ContentControl
 		//PTR_TRACE_INFO(this, TRACE_MSG_METH_FLT_FLT_FLT_FLT, METH_NAME, this, args.PreviousSize().Width, args.PreviousSize().Height, args.NewSize().Width, args.NewSize().Height);
 		if (m_hasDefaultRefreshInfoProviderAdapter)
 		{
-			m_refreshInfoProviderAdapter = new ScrollViewerIRefreshInfoProviderAdapter(PullDirection, null);
+#if !HAS_UNO
+		m_refreshInfoProviderAdapter = new ScrollViewerIRefreshInfoProviderAdapter(PullDirection, null);
+#else
+			m_refreshInfoProviderAdapter = new StubRefreshInfoProviderAdapter();
+#endif
 			OnRefreshInfoProviderAdapterChanged();
 		}
 	}
