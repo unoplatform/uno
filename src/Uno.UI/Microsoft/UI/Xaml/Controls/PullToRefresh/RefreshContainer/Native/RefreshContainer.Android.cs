@@ -85,7 +85,7 @@ public partial class RefreshContainer : ContentControl
 		}
 	}
 
-	private void OnNativeRefresh(object sender, EventArgs e)
+	private void OnNativeRefresh(object? sender, EventArgs e)
 	{
 		OnNativeRefreshingChanged();
 	}

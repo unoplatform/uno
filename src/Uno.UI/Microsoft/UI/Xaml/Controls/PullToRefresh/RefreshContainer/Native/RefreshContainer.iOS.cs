@@ -65,7 +65,7 @@ public partial class RefreshContainer : ContentControl
 		_refreshSubscription.Disposable = null;
 	}
 
-	private void OnRefreshControlValueChanged(object sender, EventArgs e) => OnNativeRefreshingChanged();
+	private void OnRefreshControlValueChanged(object? sender, EventArgs e) => OnNativeRefreshingChanged();
 
 	private bool IsNativeRefreshing => _refreshControl.Refreshing;
 					

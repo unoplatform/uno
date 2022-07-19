@@ -83,10 +83,10 @@ public partial class RefreshVisualizer
 	/// <summary>
 	/// Occurs when an update of the content has been initiated.
 	/// </summary>
-	public TypedEventHandler<RefreshVisualizer, RefreshRequestedEventArgs>? RefreshRequested;
+	public event TypedEventHandler<RefreshVisualizer, RefreshRequestedEventArgs>? RefreshRequested;
 
 	/// <summary>
 	/// Occurs when an update of the content has been initiated.
 	/// </summary>
-	public TypedEventHandler<RefreshVisualizer, RefreshStateChangedEventArgs>? RefreshStateChanged;
+	public event TypedEventHandler<RefreshVisualizer, RefreshStateChangedEventArgs>? RefreshStateChanged;
 }
