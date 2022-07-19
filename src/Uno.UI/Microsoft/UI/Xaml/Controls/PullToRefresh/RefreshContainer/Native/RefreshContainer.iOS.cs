@@ -7,6 +7,7 @@ using UIKit;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;

@@ -16,8 +16,8 @@ public partial class RefreshContainer : ContentControl
 	private const int DEFAULT_PULL_DIMENSION_SIZE = 100;
 
 	// Change to 'true' to turn on debugging outputs in Output window
-	private bool PTRTraces_IsDebugOutputEnabled = false;
-	private bool PTRTraces_IsVerboseDebugOutputEnabled = false;
+	//private bool PTRTraces_IsDebugOutputEnabled = false;
+	//private bool PTRTraces_IsVerboseDebugOutputEnabled = false;
 
 	// RefreshContainer is the top level visual in a PTR experience. responsible for displaying its content property along with a RefreshVisualizer,
 	// in the specified location. It also adapts a member of its contents tree to an IRefreshInfoProvider and attaches it to the

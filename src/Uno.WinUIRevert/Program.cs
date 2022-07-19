@@ -85,6 +85,7 @@ namespace UnoWinUIRevert
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\TreeView.cs"),
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\TwoPaneView.cs"),
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\ColorPicker.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\RefreshContainer.cs"),
 			};
 			DeleteFiles(duplicatedImplementations);
 
