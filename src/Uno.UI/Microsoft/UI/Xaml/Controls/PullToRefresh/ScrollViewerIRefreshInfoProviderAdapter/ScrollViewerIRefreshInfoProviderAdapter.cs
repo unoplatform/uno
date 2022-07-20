@@ -186,7 +186,9 @@ internal partial class ScrollViewerIRefreshInfoProviderAdapter : IRefreshInfoPro
 						try
 						{
 							//PTR_TRACE_INFO(null, TRACE_MSG_METH_METH, "ScrollViewer.PointerPressedHandler", this, "TryRedirectForManipulation");
+#if !HAS_UNO_WINUI // TODO Uno: Currently under WinUI compilation this method uses a "ExpPointerPoint" type - experimental
 							m_visualInteractionSource.TryRedirectForManipulation(pp);
+#endif
 						}
 						catch (Exception)
 						{
