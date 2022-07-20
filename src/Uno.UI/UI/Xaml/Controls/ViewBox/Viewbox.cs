@@ -15,7 +15,7 @@ using AppKit;
 namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = "Child")]
-	public partial class Viewbox : global::Windows.UI.Xaml.FrameworkElement
+	public partial class Viewbox : global::Windows.UI.Xaml.FrameworkElement, ILayoutOptOut
 	{
 		private const double SCALE_EPSILON = 0.00001d;
 
@@ -29,6 +29,8 @@ namespace Windows.UI.Xaml.Controls
 			_container = new Border();
 			OnChildChangedPartial(null, _container);
 		}
+
+		bool ILayoutOptOut.ShouldUseMinSize => false;
 
 		public UIElement Child
 		{
@@ -48,11 +50,12 @@ namespace Windows.UI.Xaml.Controls
 			);
 
 			var (scaleX, scaleY) = GetScale(availableSize, measuredSize);
-
-			return new Size(
+			var result = new Size(
 				Math.Min(availableSize.Width, measuredSize.Width * scaleX),
 				Math.Min(availableSize.Height, measuredSize.Height * scaleY)
 			);
+
+			return result;
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)
@@ -75,10 +78,11 @@ namespace Windows.UI.Xaml.Controls
 				transform.ScaleY = scaleY;
 				_container.RenderTransform = transform;
 			}
-
 			base.ArrangeElement(_container, new Rect(new Point(), _container.DesiredSize));
 
-			return finalSize;
+			var result = new Size(_container.DesiredSize.Width * scaleX, _container.DesiredSize.Height * scaleY);
+
+			return result;
 		}
 
 		// Internal for Unit Tests
