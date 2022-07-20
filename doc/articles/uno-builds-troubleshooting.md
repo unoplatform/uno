@@ -23,7 +23,7 @@ Make sure to review the content of the file for sensitve information before post
 
 ### From Visual Studio
 To use MSBuild binary logs:
-  - Go to **Tools**, **Options**, **Projects and SOlution**, then **Build and Run**
+  - Go to **Tools**, **Options**, **Projects and Solution**, then **Build and Run**
   - Set **MSBuild project build log verbosity** to **Detailed** or **Diagnostics**
   - Install the [MSBuild log viewer](http://msbuildlog.com/)
   - Install the [Project System Tools for VS 2022](https://marketplace.visualstudio.com/items?itemName=VisualStudioProductTeam.ProjectSystemTools2022) or [VS 2019](https://marketplace.visualstudio.com/items?itemName=VisualStudioProductTeam.ProjectSystemTools) addin 
