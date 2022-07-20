@@ -307,9 +307,10 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			string RewriteReferencePath(string referencePath, string unoUIPackageBasePath, string unoRuntimeIdentifier)
 			{
 				var separator = Path.DirectorySeparatorChar;
+				unoRuntimeIdentifier = unoRuntimeIdentifier.ToLowerInvariant();
 
 				return
-					(unoRuntimeIdentifier == "Skia" || unoRuntimeIdentifier == "WebAssembly") &&
+					(unoRuntimeIdentifier == "skia" || unoRuntimeIdentifier == "webassembly") &&
 						referencePath.StartsWith(unoUIPackageBasePath) ?
 							referencePath.Replace($"lib{separator}netstandard2.0", $"uno-runtime{separator}{unoRuntimeIdentifier}") :
 								referencePath;
