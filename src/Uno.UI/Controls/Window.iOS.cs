@@ -61,8 +61,6 @@ namespace Uno.UI.Controls
 		private WeakReference<CoreWindow> _owner;
 		private ICoreWindowEvents _ownerEvents;
 
-		//internal event EventHandler<KeyEventArgs> KeyDown;
-
 		/// <summary>
 		/// ctor.
 		/// </summary>
@@ -167,7 +165,6 @@ namespace Uno.UI.Controls
 			_owner != null && _owner.TryGetTarget(out var target) && target is { }
 			? target
 			: null;
-
 
 		/// <summary>
 		/// The behavior to use to bring the focused item into view when opening the keyboard.
