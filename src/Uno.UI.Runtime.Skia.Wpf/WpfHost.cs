@@ -30,12 +30,10 @@ using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Uno.UI.XamlHost.Skia.Wpf;
 using Uno.UI.XamlHost.Skia.Wpf.Hosting;
-using Windows.Devices.Input;
 using Windows.Graphics.Display;
 using Windows.Networking.Connectivity;
 using Windows.Storage.Pickers;
 using Windows.System.Profile.Internal;
-using Windows.UI.Core;
 using Windows.UI.Core.Preview;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
@@ -54,22 +52,17 @@ namespace Uno.UI.Skia.Platform
 	{
 		private const string NativeOverlayLayerPart = "NativeOverlayLayer";
 
-		private readonly bool designMode;
 		private readonly Func<UnoApplication> _appBuilder;
 		private CompositeDisposable _registrations = new();
 
 		private bool _appStarted = false;
 		
-		[ThreadStatic] private static WpfHost _current;
+		[ThreadStatic] private static WpfHost? _current;
 
 		private WpfCanvas? _nativeOverlayLayer = null;
-		private WriteableBitmap bitmap;
 		private bool ignorePixelScaling;
 		private FocusManager? _focusManager;
 		private bool _isVisible = true;
-
-		private DisplayInformation _displayInformation;
-		private SKColor _backgroundColor;
 
 		static WpfHost()
 		{
@@ -80,7 +73,7 @@ namespace Uno.UI.Skia.Platform
 
 		private static bool _extensionsRegistered;
 		private UnoWpfRenderer _renderer;
-		private HostPointerHandler _hostPointerHandler;
+		private HostPointerHandler? _hostPointerHandler;
 
 		internal static void RegisterExtensions()
 		{
@@ -113,7 +106,7 @@ namespace Uno.UI.Skia.Platform
 
 		public Windows.UI.Xaml.UIElement? RootElement => null;
 
-		public static WpfHost Current => _current;
+		public static WpfHost? Current => _current;
 
 		internal WpfCanvas? NativeOverlayLayer => _nativeOverlayLayer;
 
@@ -127,7 +120,7 @@ namespace Uno.UI.Skia.Platform
 		/// to fill LaunchEventArgs.Arguments.
 		/// </remarks>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public WpfHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder, string[] args = null) : this(dispatcher, appBuilder)
+		public WpfHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder, string[]? args = null) : this(dispatcher, appBuilder)
 		{
 		}
 		
@@ -137,8 +130,6 @@ namespace Uno.UI.Skia.Platform
 
 			_current = this;
 			_appBuilder = appBuilder;
-
-			designMode = DesignerProperties.GetIsInDesignMode(this);
 
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = d => dispatcher.BeginInvoke(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = dispatcher.CheckAccess;
@@ -307,8 +298,6 @@ namespace Uno.UI.Skia.Platform
 			);
 		}
 
-		public SKSize CanvasSize => bitmap == null ? SKSize.Empty : new SKSize(bitmap.PixelWidth, bitmap.PixelHeight);
-
 		public bool IgnorePixelScaling
 		{
 			get => ignorePixelScaling;
@@ -318,6 +307,9 @@ namespace Uno.UI.Skia.Platform
 				InvalidateVisual();
 			}
 		}
+
+		[Obsolete("It will be removed in the next major release.")]
+		public SKSize CanvasSize => _renderer.CanvasSize;
 
 		protected override void OnRender(DrawingContext drawingContext)
 		{

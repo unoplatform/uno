@@ -279,7 +279,7 @@ namespace Uno.UI.Skia.Platform
 			}
 
 			/// <inheritdoc />
-			public Point GetPosition(object? relativeTo)
+			public Point GetPosition(object relativeTo)
 			{
 				var rawWpfPosition = _wpfArgs.GetPosition(WpfHost.Current);
 				var rawPosition = new Point(rawWpfPosition.X, rawWpfPosition.Y);

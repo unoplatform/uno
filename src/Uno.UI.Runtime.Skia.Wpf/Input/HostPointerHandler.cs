@@ -22,7 +22,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 	{
 		private readonly IWpfHost _host;
 		private readonly WpfControl _hostControl;
-		private readonly ICoreWindowEvents _coreWindow;
+		private readonly ICoreWindowEvents? _coreWindow;
 		private HwndSource? _hwndSource;
 		private PointerEventArgs? _previous;
 		private WinUIInputManager? _inputManager;
