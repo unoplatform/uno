@@ -1,4 +1,8 @@
-﻿using Uno.Helpers;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference RefreshVisualizerEventArgs.cpp, commit 11df1aa
+
+using Uno.Helpers;
 using Windows.Foundation;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 

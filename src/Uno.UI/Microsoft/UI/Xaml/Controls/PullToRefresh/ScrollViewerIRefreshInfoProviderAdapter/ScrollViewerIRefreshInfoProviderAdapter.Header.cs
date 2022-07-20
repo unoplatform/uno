@@ -1,4 +1,8 @@
-﻿#nullable enable
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference ScrollViewerIRefreshInfoProviderAdapter.h, commit 838a0cc
+
+#nullable enable
 
 using Uno.Disposables;
 using Windows.UI.Composition.Interactions;

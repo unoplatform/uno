@@ -1,11 +1,13 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference ScrollViewerIRefreshInfoProviderAdapter.cpp, commit de78834
+
+using System;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Disposables;
-using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Composition;
 using Windows.UI.Composition.Interactions;
-using Windows.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Hosting;
@@ -13,6 +15,13 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 using RefreshPullDirection = Microsoft.UI.Xaml.Controls.RefreshPullDirection;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace Microsoft.UI.Private.Controls;
 

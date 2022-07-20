@@ -1,4 +1,8 @@
-﻿#if !__ANDROID__ && !__IOS__
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference RefreshContainer.cpp, commit de78834
+
+#if !__ANDROID__ && !__IOS__
 using Microsoft.UI.Private.Controls;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;

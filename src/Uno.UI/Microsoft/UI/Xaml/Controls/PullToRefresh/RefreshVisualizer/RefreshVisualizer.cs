@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference RefreshVisualizer.cpp, commit de78834
+
+using System;
 using System.Numerics;
 using Microsoft.UI.Private.Controls;
 using Uno.Disposables;
