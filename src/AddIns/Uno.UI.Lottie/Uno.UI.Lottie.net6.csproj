@@ -16,7 +16,7 @@
 		<AssemblyName>Uno.UI.Lottie</AssemblyName>
 		<RootNamespace>Uno.UI.Lottie</RootNamespace>
 
-		<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_SKOTTIE</DefineConstants>
+		<DefineConstants>$(DefineConstants);HAS_SKOTTIE</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
