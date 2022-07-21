@@ -5,17 +5,16 @@ using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 public partial class RefreshContainer : ContentControl
 {
+	private const int IndicatorHeight = 64;
 	private readonly SerialDisposable _refreshSubscription = new SerialDisposable();
 	private readonly SerialDisposable _nativeScrollViewAttachment = new SerialDisposable();
 	private NativeRefreshControl? _refreshControl = null;
-	private ContentPresenter? _contentPresenter = null;
 	private bool _managedIsRefreshing = false;
 
 	private void InitializePlatform()
@@ -26,30 +25,13 @@ public partial class RefreshContainer : ContentControl
 
 	partial void OnApplyTemplatePartial()
 	{
-		_refreshControl = GetTemplateChild<NativeRefreshControl>("NativeRefreshControl");
-
-		if (_refreshControl == null)
-		{
-			throw new NotSupportedException($"RefreshContainer requires a control of type {nameof(NativeRefreshControl)} in its hierarchy.");
-		}
-
-		_contentPresenter = GetTemplateChild<ContentPresenter>("ContentPresenter");
-
+		_refreshControl =
+			GetTemplateChild<NativeRefreshControl>("NativeRefreshControl") ??
+			throw new NotSupportedException(
+				$"RefreshContainer requires a control of type " +
+				$"{nameof(NativeRefreshControl)} in its hierarchy.");
 
 		SubscribeToRefresh();
-		//_refreshControl.Content = Content as Android.Views.View;
-	}
-
-	protected override Size MeasureOverride(Size availableSize)
-	{		
-		var size = base.MeasureOverride(availableSize);
-		return size;
-	}
-
-	protected override Size ArrangeOverride(Size finalSize)
-	{		
-		var size = base.ArrangeOverride(finalSize);
-		return size;
 	}
 
 	private void OnLoaded(object sender, EventArgs e)
@@ -113,8 +95,7 @@ public partial class RefreshContainer : ContentControl
 	{
 		if (newValue.Y != 0)
 		{
-			//the hardcoded 64 here is the constant height of the indicator
-			_refreshControl?.SetProgressViewEndTarget(true, ViewHelper.LogicalToPhysicalPixels(newValue.Y + 64));
+			_refreshControl?.SetProgressViewEndTarget(true, ViewHelper.LogicalToPhysicalPixels(newValue.Y + IndicatorHeight));
 		}
 	}
 }

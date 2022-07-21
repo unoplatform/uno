@@ -4,7 +4,6 @@
 
 using System;
 using System.Numerics;
-using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Composition;
 using Windows.UI.Composition.Interactions;
@@ -20,6 +19,13 @@ using IAdapterAnimationHandler = Microsoft.UI.Private.Controls.IAdapterAnimation
 using IRefreshInfoProvider = Microsoft.UI.Private.Controls.IRefreshInfoProvider;
 using IRefreshInfoProviderAdapter = Microsoft.UI.Private.Controls.IRefreshInfoProviderAdapter;
 using PullToRefreshHelperTestApi = Microsoft.UI.Private.Controls.PullToRefreshHelperTestApi;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace MUXControlsTestApp
 {
@@ -127,8 +133,10 @@ namespace MUXControlsTestApp
         {
             if(e.Pointer.PointerDeviceType == PointerDeviceType.Touch)
             {
-                visualInteractionSource.TryRedirectForManipulation(e.GetCurrentPoint(null));
-                infoProvider.UpdateIsInteractingForRefresh(true);
+#if !HAS_UNO_WINUI
+				visualInteractionSource.TryRedirectForManipulation(e.GetCurrentPoint(null));
+#endif
+				infoProvider.UpdateIsInteractingForRefresh(true);
             }
         }
 

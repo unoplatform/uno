@@ -23,12 +23,8 @@ public partial class NativeRefreshControl : SwipeRefreshLayout, IShadowChildrenP
 	// Distance in pixels a touch can wander before we think the user is scrolling
 	// https://developer.android.com/reference/android/view/ViewConfiguration.html#getScaledTouchSlop()
 	private static readonly float _touchSlop = ViewConfiguration.Get(ContextHelper.Current).ScaledTouchSlop;
-	private System.Drawing.PointF _gestureStart;
-	private bool _isSwiping = false;
-	private bool _ignoreGesture = false;
 	private Android.Views.View _content;
 	private ViewGroup _descendantScrollable;
-	private bool _lastOnInterceptTouchEvent;
 
 	public NativeRefreshControl() : base(ContextHelper.Current)
 	{
@@ -67,7 +63,7 @@ public partial class NativeRefreshControl : SwipeRefreshLayout, IShadowChildrenP
 	}
 
 	private readonly List<View> _emptyList = new();
-	//public override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec) => base.OnMeasure(widthMeasureSpec, heightMeasureSpec);
+	
 	List<View> IShadowChildrenProvider.ChildrenShadow => Content != null ? new List<View>(1) { Content as View } : _emptyList;
 
 	private ILayouter _layouter;
@@ -116,7 +112,6 @@ public partial class NativeRefreshControl : SwipeRefreshLayout, IShadowChildrenP
 		protected override void MeasureChild(View child, int widthSpec, int heightSpec)
 		{
 			var childMargin = (child as FrameworkElement)?.Margin ?? Thickness.Empty;
-			//ScrollContentPresenter.SetChildMargin(childMargin);
 
 			RefreshControl.Content?.Measure(widthSpec, heightSpec);
 		}
@@ -129,14 +124,6 @@ public partial class NativeRefreshControl : SwipeRefreshLayout, IShadowChildrenP
 			if (child != null)
 			{
 				var scrollSpace = availableSize;
-				//if (ScrollContentPresenter.VerticalScrollBarVisibility != ScrollBarVisibility.Disabled)
-				//{
-				//	scrollSpace.Height = double.PositiveInfinity;
-				//}
-				//if (ScrollContentPresenter.HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled)
-				//{
-				//	scrollSpace.Width = double.PositiveInfinity;
-				//}
 
 				desiredChildSize = MeasureChild(child, scrollSpace);
 
@@ -155,10 +142,6 @@ public partial class NativeRefreshControl : SwipeRefreshLayout, IShadowChildrenP
 			{
 				var desiredChildSize = LayoutInformation.GetDesiredSize(child);
 
-				var occludedPadding = new Thickness(0);
-				slotSize.Width -= occludedPadding.Left + occludedPadding.Right;
-				slotSize.Height -= occludedPadding.Top + occludedPadding.Bottom;
-
 				var width = Math.Max(slotSize.Width, desiredChildSize.Width);
 				var height = Math.Max(slotSize.Height, desiredChildSize.Height);
 
@@ -169,8 +152,6 @@ public partial class NativeRefreshControl : SwipeRefreshLayout, IShadowChildrenP
 					height
 				));
 
-				//ScrollContentPresenter.ScrollOwner?.TryApplyPendingScrollTo();
-
 				// Give opportunity to the the content to define the viewport size itself
 				(child as ICustomScrollInfo)?.ApplyViewport(ref slotSize);
 
@@ -180,87 +161,6 @@ public partial class NativeRefreshControl : SwipeRefreshLayout, IShadowChildrenP
 		}
 
 		protected override string Name => Panel.Name;
-	}
-
-	public override bool OnInterceptTouchEvent(MotionEvent e)
-	{
-		_lastOnInterceptTouchEvent = base.OnInterceptTouchEvent(e);
-		switch (e.Action)
-		{
-			case MotionEventActions.Down:
-				_isSwiping = false;
-				_ignoreGesture = false;
-				_gestureStart = new System.Drawing.PointF(e.GetX(), e.GetY());
-				break;
-			case MotionEventActions.Move:
-				return ShouldInterceptMove(e);
-			default:
-				_isSwiping = false;
-				_ignoreGesture = false;
-				break;
-		}
-
-		return _lastOnInterceptTouchEvent;
-	}
-
-	private bool ShouldInterceptMove(MotionEvent e)
-	{
-		//If the Swipe already started swiping we let it handle the touch until it is completed.
-		if (_isSwiping)
-		{
-			return true;
-		}
-		else
-		{
-			Vector2 cumulativeDistance = new Vector2(
-											Math.Abs(e.GetX() - _gestureStart.X),
-											Math.Abs(e.GetY() - _gestureStart.Y)
-										);
-
-			//Here we validate that the touch is not horizontal. 
-			//This is to ensure that it will not override horizontal touches for children such as flipviews.
-			if (_ignoreGesture || cumulativeDistance.X > _touchSlop)
-			{
-				_ignoreGesture = true;
-				return false;
-			}
-
-			if (cumulativeDistance.Y > _touchSlop && // touchSlop is the minimal distance for us to determine it is a scroll
-				cumulativeDistance.Y > cumulativeDistance.X && // Check the scroll is vertical
-				e.GetY() - _gestureStart.Y > 0 && // Check if the scroll is positive so that we don't intercept the scrolling of the AVP/List
-				!CanChildScrollUp()) // Validate if the child can scroll up so that we only allow swipe refresh when the content is scrolled.
-			{
-				_isSwiping = true;
-
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-	}
-
-	public override bool OnTouchEvent(MotionEvent e)
-	{
-		if (e.Action == MotionEventActions.Up && !_lastOnInterceptTouchEvent)
-		{
-			// On MotionEventActions.Up, SwipeRefreshLayout.OnTouchEvent checks the current y against mInitialMotionY and sets 
-			// refreshing accordingly. However, if OnInterceptTouchEvent hasn't returned true (because user hasn't dragged far 
-			// enough to trigger a drag) then mInitialMotionY hasn't been set properly, giving rise to false-positive refreshes. 
-			// Hence we don't call base in this case to prevent the false positive.
-			return false;
-		}
-
-		var baseOnTouchEvent = base.OnTouchEvent(e);
-		// If we are handling touch and OnInterceptTouchEvent() did not return true, it means there are no touch handlers in the
-		// children. (This can happen if, eg, the content is not scrollable.) Give OnInterceptTouchEvent another chance so that
-		// SwipeRefreshLayout can set its isDragged state correctly, otherwise indicator won't appear.
-		if (baseOnTouchEvent && !_lastOnInterceptTouchEvent)
-		{
-			OnInterceptTouchEvent(e);
-		}
-		return baseOnTouchEvent;
 	}
 
 	private ViewGroup GetDescendantScrollable()
