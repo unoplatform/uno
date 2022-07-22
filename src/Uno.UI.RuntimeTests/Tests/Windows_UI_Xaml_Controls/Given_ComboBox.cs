@@ -306,7 +306,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[Ignore] // https://github.com/unoplatform/uno/issues/4686
 		public void When_Index_Is_Out_Of_Range_And_Later_Becomes_Valid()
 		{
 			var comboBox = new ComboBox();
@@ -321,7 +320,53 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[Ignore] // https://github.com/unoplatform/uno/issues/4686
+		public void When_Index_Set_With_No_Items_Repeated()
+		{
+			var comboBox = new ComboBox();
+			comboBox.SelectedIndex = 1;
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(1, comboBox.SelectedIndex);
+			comboBox.Items.Clear();
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.SelectedIndex = 2;
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(2, comboBox.SelectedIndex);
+		}
+
+		[TestMethod]
+		public void When_Index_Set_Out_Of_Range_When_Items_Exist()
+		{
+			var comboBox = new ComboBox();
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.ThrowsException<ArgumentException>(() => comboBox.SelectedIndex = 2);
+		}
+
+		[TestMethod]
+		public void When_Index_Set_Negative_Out_Of_Range_When_Items_Exist()
+		{
+			var comboBox = new ComboBox();
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.ThrowsException<ArgumentException>(() => comboBox.SelectedIndex = -2);
+		}
+
+		[TestMethod]
+		public void When_Index_Set_Negative_Out_Of_Range_When_Items_Do_Not_Exist()
+		{
+			var comboBox = new ComboBox();
+			comboBox.SelectedIndex = -2;
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+		}
+
+		[TestMethod]
 		public void When_Index_Is_Explicitly_Set_To_Negative_After_Out_Of_Range_Value()
 		{
 			var comboBox = new ComboBox();
