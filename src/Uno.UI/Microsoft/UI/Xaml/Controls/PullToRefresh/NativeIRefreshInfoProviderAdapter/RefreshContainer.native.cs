@@ -38,23 +38,16 @@ public partial class RefreshContainer : ContentControl
 	/// Initiates an update of the content.
 	/// </summary>
 	public void RequestRefresh() => RequestRefreshPlatform();
-
-	private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
-	{		
-	}
-
+	
 	private void OnNativeRefreshingChanged()
 	{
-		if (IsNativeRefreshing && !_managedIsRefreshing)
+		if (IsNativeRefreshing && Visualizer?.State != RefreshVisualizerState.Refreshing)
 		{
-			_managedIsRefreshing = true;
-
 			var deferral = new Deferral(() =>
 			{
 				// CheckThread();
 				EndNativeRefreshing();
-				_managedIsRefreshing = false;
-				//RefreshCompleted();
+				RefreshCompleted();
 			});
 
 			var args = new RefreshRequestedEventArgs(deferral);
