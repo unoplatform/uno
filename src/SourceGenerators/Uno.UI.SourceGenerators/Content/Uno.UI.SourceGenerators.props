@@ -372,34 +372,40 @@
 
 	<Target Name="_InjectAdditionalFiles" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;GenerateMSBuildEditorConfigFileCore" DependsOnTargets="_FillSourceGeneratorItemGroups">
 
-		<PropertyGroup>
-			<_Pages>@(Page)</_Pages>
-			<_ApplicationDefinitions>@(ApplicationDefinition)</_ApplicationDefinitions>
-			<_PRIResources>@(PRIResource)</_PRIResources>
-			<_TSBindingAssemblySources>@(TSBindingAssemblySource)</_TSBindingAssemblySources>
-			<_UnoPages>@(UnoPage)</_UnoPages>
-			<_UnoApplicationDefinitions>@(UnoApplicationDefinition)</_UnoApplicationDefinitions>
-			<_AdditionalFiles>@(AdditionalFiles)</_AdditionalFiles>
-		</PropertyGroup>
+    <PropertyGroup>
+      <_Pages>@(Page)</_Pages>
+      <_ApplicationDefinitions>@(ApplicationDefinition)</_ApplicationDefinitions>
+      <_PRIResources>@(PRIResource)</_PRIResources>
+      <_TSBindingAssemblySources>@(TSBindingAssemblySource)</_TSBindingAssemblySources>
+      <_UnoPages>@(UnoPage)</_UnoPages>
+      <_UnoApplicationDefinitions>@(UnoApplicationDefinition)</_UnoApplicationDefinitions>
+      <_AdditionalFiles>@(AdditionalFiles)</_AdditionalFiles>
+    </PropertyGroup>
 
-		<ItemGroup Label="Add SourceItemGroup metadata to existing additional files">
-			<AdditionalFiles SourceItemGroup="Page" Condition="$(_Pages) != '' AND $(_AdditionalFiles) != '' AND $(_Pages.Contains(%(AdditionalFiles.FullPath)))" />
-			<AdditionalFiles SourceItemGroup="ApplicationDefinition" Condition="$(_ApplicationDefinitions) != '' AND $(_AdditionalFiles) != '' AND $(_ApplicationDefinitions.Contains(%(AdditionalFiles.FullPath)))" />
-			<AdditionalFiles SourceItemGroup="PRIResource" Condition="$(_PRIResources) != '' AND $(_AdditionalFiles) != '' AND $(_PRIResources.Contains(%(AdditionalFiles.FullPath)))" />
-			<AdditionalFiles SourceItemGroup="TSBindingAssemblySource" Condition="$(_TSBindingAssemblySources) != '' AND $(_AdditionalFiles) != '' AND $(_TSBindingAssemblySources.Contains(%(AdditionalFiles.FullPath)))" />
-			<AdditionalFiles SourceItemGroup="Page" Condition="$(_UnoPages) != '' AND $(_AdditionalFiles) != '' AND $(_UnoPages.Contains(%(AdditionalFiles.FullPath)))" />
-			<AdditionalFiles SourceItemGroup="ApplicationDefinition" Condition="$(_UnoApplicationDefinitions) != '' AND $(_AdditionalFiles) != '' AND $(_UnoApplicationDefinitions.Contains(%(AdditionalFiles.FullPath)))" />
-		</ItemGroup>
+    <ItemGroup Label="Add SourceItemGroup metadata to existing additional files">
+      <AdditionalFiles SourceItemGroup="Page" Condition="$(_UnoPages) == '' AND $(_Pages) != '' AND $(_AdditionalFiles) != '' AND $(_Pages.Contains(%(AdditionalFiles.FullPath)))" />
+      <AdditionalFiles SourceItemGroup="ApplicationDefinition" Condition="$(_UnoApplicationDefinitions) == '' AND $(_ApplicationDefinitions) != '' AND $(_AdditionalFiles) != '' AND $(_ApplicationDefinitions.Contains(%(AdditionalFiles.FullPath)))" />
+      <AdditionalFiles SourceItemGroup="PRIResource" Condition="$(_PRIResources) != '' AND $(_AdditionalFiles) != '' AND $(_PRIResources.Contains(%(AdditionalFiles.FullPath)))" />
+      <AdditionalFiles SourceItemGroup="TSBindingAssemblySource" Condition="$(_TSBindingAssemblySources) != '' AND $(_AdditionalFiles) != '' AND $(_TSBindingAssemblySources.Contains(%(AdditionalFiles.FullPath)))" />
+      <AdditionalFiles SourceItemGroup="Page" Condition="$(_UnoPages) != '' AND $(_AdditionalFiles) != '' AND $(_UnoPages.Contains(%(AdditionalFiles.FullPath)))" />
+      <AdditionalFiles SourceItemGroup="ApplicationDefinition" Condition="$(_UnoApplicationDefinitions) != '' AND $(_AdditionalFiles) != '' AND $(_UnoApplicationDefinitions.Contains(%(AdditionalFiles.FullPath)))" />
+    </ItemGroup>
 
-		<ItemGroup Label="Include new additional files">
-			<_ExistingAdditionalFiles Include="%(AdditionalFiles.FullPath)" />
-			<AdditionalFiles Include="%(Page.FullPath)" SourceItemGroup="Page" Exclude="@(_ExistingAdditionalFiles)" />
-			<AdditionalFiles Include="%(ApplicationDefinition.FullPath)" SourceItemGroup="ApplicationDefinition" Exclude="@(_ExistingAdditionalFiles)" />
-			<AdditionalFiles Include="%(PRIResource.FullPath)" SourceItemGroup="PRIResource" Exclude="@(_ExistingAdditionalFiles)" />
-			<AdditionalFiles Include="%(TSBindingAssemblySource.FullPath)" SourceItemGroup="TSBindingAssemblySource" Exclude="@(_ExistingAdditionalFiles)" />
-			<AdditionalFiles Include="%(UnoPage.FullPath)" SourceItemGroup="Page" Exclude="@(_ExistingAdditionalFiles)" />
-			<AdditionalFiles Include="%(UnoApplicationDefinition.FullPath)" SourceItemGroup="ApplicationDefinition" Exclude="@(_ExistingAdditionalFiles)" />
-		</ItemGroup>
+    <ItemGroup Label="Reinclude by full path">
+      <_AdditionalFilesMetadata Include="@(AdditionalFiles)" />
+      <AdditionalFiles Remove="@(AdditionalFiles)" />
+      <AdditionalFiles Include="@(_AdditionalFilesMetadata->Metadata('FullPath'))" />
+    </ItemGroup>
+
+    <ItemGroup Label="Include new additional files">
+      <_ExistingAdditionalFiles Include="@(AdditionalFiles->Metadata('FullPath'))" />
+      <AdditionalFiles Include="@(Page->Metadata('FullPath'))" SourceItemGroup="Page" Exclude="@(_ExistingAdditionalFiles)" />
+      <AdditionalFiles Include="@(ApplicationDefinition->Metadata('FullPath'))" SourceItemGroup="ApplicationDefinition" Exclude="@(_ExistingAdditionalFiles)" />
+      <AdditionalFiles Include="@(PRIResource->Metadata('FullPath'))" SourceItemGroup="PRIResource" Exclude="@(_ExistingAdditionalFiles)" />
+      <AdditionalFiles Include="@(TSBindingAssemblySource->Metadata('FullPath'))" SourceItemGroup="TSBindingAssemblySource" Exclude="@(_ExistingAdditionalFiles)" />
+      <AdditionalFiles Include="@(UnoPage->Metadata('FullPath'))" SourceItemGroup="Page" Exclude="@(_ExistingAdditionalFiles)" />
+      <AdditionalFiles Include="@(UnoApplicationDefinition->Metadata('FullPath'))" SourceItemGroup="ApplicationDefinition" Exclude="@(_ExistingAdditionalFiles)" />
+    </ItemGroup>
 
 	</Target>
 
