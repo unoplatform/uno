@@ -144,9 +144,30 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 		private void ValidateTranslatedTapTest(object sender, RoutedEventArgs e)
 		{
 			var args = new EventSequenceValidator(_translatedTapResult);
+			var isInertialManip = _translatedTapResult.Any(arg => arg.evt == ManipulationInertiaStartingEvent);
 			var result = false;
 			switch (PointerType)
 			{
+				case PointerDeviceType.Mouse when isInertialManip:
+				case PointerDeviceType.Pen when isInertialManip && PenSupportsHover:
+					result = args.One(PointerEnteredEvent)
+						&& args.MaybeSome(PointerMovedEvent)
+						&& args.One(PointerPressedEvent)
+						&& args.One(ManipulationStartingEvent)
+						&& args.Some(PointerMovedEvent)
+						&& args.One(ManipulationStartedEvent)
+						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
+						// && args.One(TappedEvent) // No tap as we moved too far
+						&& args.One(ManipulationInertiaStartingEvent)
+						&& args.MaybeSome(ManipulationDeltaEvent)
+						&& args.One(PointerReleasedEvent)
+						&& args.MaybeSome(PointerMovedEvent, ManipulationDeltaEvent)
+						&& args.One(ManipulationCompletedEvent)
+						&& args.MaybeSome(PointerMovedEvent)
+						&& args.One(PointerExitedEvent)
+						&& args.End();
+					break;
+
 				case PointerDeviceType.Mouse:
 				case PointerDeviceType.Pen when PenSupportsHover:
 					result = args.One(PointerEnteredEvent)
@@ -157,12 +178,28 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 						&& args.One(ManipulationStartedEvent)
 						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
 						// && args.One(TappedEvent) // No tap as we moved too far
-						&& args.One(PointerReleasedEvent)
-						&& args.MaybeOne(ManipulationInertiaStartingEvent)
-						&& args.MaybeSome(PointerMovedEvent, ManipulationDeltaEvent)
 						&& args.One(ManipulationCompletedEvent)
+						&& args.One(PointerReleasedEvent)
 						&& args.MaybeSome(PointerMovedEvent)
 						&& args.One(PointerExitedEvent)
+						&& args.End();
+					break;
+
+				case PointerDeviceType.Pen when isInertialManip:
+				case PointerDeviceType.Touch when isInertialManip:
+					result = args.One(PointerEnteredEvent)
+						&& args.One(PointerPressedEvent)
+						&& args.One(ManipulationStartingEvent)
+						&& args.Some(PointerMovedEvent)
+						&& args.One(ManipulationStartedEvent)
+						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
+						// && args.One(TappedEvent) // No tap as we moved too far
+						&& args.One(ManipulationInertiaStartingEvent)
+						&& args.Some(ManipulationDeltaEvent)
+						&& args.One(PointerReleasedEvent)
+						&& args.One(PointerExitedEvent)
+						&& args.Some(ManipulationDeltaEvent)
+						&& args.One(ManipulationCompletedEvent)
 						&& args.End();
 					break;
 
@@ -175,12 +212,9 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 						&& args.One(ManipulationStartedEvent)
 						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
 						// && args.One(TappedEvent) // No tap as we moved too far
-						&& args.One(PointerReleasedEvent)
-						&& args.MaybeOne(ManipulationInertiaStartingEvent)
-						&& args.MaybeOne(PointerExitedEvent)
-						&& args.MaybeSome(ManipulationDeltaEvent)
 						&& args.One(ManipulationCompletedEvent)
-						&& args.MaybeOne(PointerExitedEvent) // If no inertia
+						&& args.One(PointerReleasedEvent)
+						&& args.One(PointerExitedEvent)
 						&& args.End();
 					break;
 			}
@@ -194,9 +228,30 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 			// Pointer pressed and released are handled by the ButtonBase
 
 			var args = new EventSequenceValidator(_translatedClickResult);
+			var isInertialManip = _translatedTapResult.Any(arg => arg.evt == ManipulationInertiaStartingEvent);
 			var result = false;
 			switch (PointerType)
 			{
+				case PointerDeviceType.Mouse when isInertialManip:
+				case PointerDeviceType.Pen when isInertialManip && PenSupportsHover:
+					result = args.One(PointerEnteredEvent)
+						&& args.MaybeSome(PointerMovedEvent)
+						&& args.One(ManipulationStartingEvent)
+						&& args.Some(PointerMovedEvent)
+						&& args.One(ManipulationStartedEvent)
+						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
+						&& args.MaybeOne(ManipulationInertiaStartingEvent)
+						&& args.MaybeSome(ManipulationDeltaEvent)
+						&& args.Click()
+						&& args.One(PointerCaptureLostEvent)
+						// && args.One(TappedEvent) // No tap as we moved too far
+						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
+						&& args.One(ManipulationCompletedEvent)
+						&& args.MaybeSome(PointerMovedEvent)
+						&& args.One(PointerExitedEvent)
+						&& args.End();
+					break;
+
 				case PointerDeviceType.Mouse:
 				case PointerDeviceType.Pen when PenSupportsHover:
 					result = args.One(PointerEnteredEvent)
@@ -205,14 +260,30 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 						&& args.Some(PointerMovedEvent)
 						&& args.One(ManipulationStartedEvent)
 						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
+						&& args.One(ManipulationCompletedEvent)
 						&& args.Click()
 						&& args.One(PointerCaptureLostEvent)
 						// && args.One(TappedEvent) // No tap as we moved too far
-						&& args.MaybeOne(ManipulationInertiaStartingEvent)
-						&& args.MaybeSome(PointerMovedEvent, ManipulationDeltaEvent)
-						&& args.One(ManipulationCompletedEvent)
 						&& args.MaybeSome(PointerMovedEvent)
 						&& args.One(PointerExitedEvent)
+						&& args.End();
+					break;
+
+				case PointerDeviceType.Pen when isInertialManip:
+				case PointerDeviceType.Touch when isInertialManip:
+					result = args.One(PointerEnteredEvent)
+						&& args.One(ManipulationStartingEvent)
+						&& args.Some(PointerMovedEvent)
+						&& args.One(ManipulationStartedEvent)
+						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
+						&& args.One(ManipulationInertiaStartingEvent)
+						&& args.MaybeSome(ManipulationDeltaEvent)
+						&& args.Click()
+						&& args.One(PointerCaptureLostEvent)
+						// && args.One(TappedEvent) // No tap as we moved too far
+						&& args.One(PointerExitedEvent)
+						&& args.Some(ManipulationDeltaEvent)
+						&& args.One(ManipulationCompletedEvent)
 						&& args.End();
 					break;
 
@@ -223,14 +294,10 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 						&& args.Some(PointerMovedEvent)
 						&& args.One(ManipulationStartedEvent)
 						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
+						&& args.One(ManipulationCompletedEvent)
 						&& args.Click()
 						&& args.One(PointerCaptureLostEvent)
-						// && args.One(TappedEvent) // No tap as we moved too far
-						&& args.MaybeOne(ManipulationInertiaStartingEvent)
-						&& args.MaybeOne(PointerExitedEvent)
-						&& args.MaybeSome(ManipulationDeltaEvent)
-						&& args.One(ManipulationCompletedEvent)
-						&& args.MaybeOne(PointerExitedEvent) // If no inertia
+						&& args.One(PointerExitedEvent)
 						&& args.End();
 					break;
 			}
