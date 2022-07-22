@@ -441,7 +441,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					if (selectedIndexToSet >= newIndex)
 					{
 						selectedIndexToSet += c.NewItems.Count;
-						SelectedIndex = selectedIndexToSet;
+						SelectedIndex = Math.Min(NumberOfItems - 1, selectedIndexToSet);
 					}
 					break;
 				case NotifyCollectionChangedAction.Remove:
@@ -456,7 +456,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						{
 							//Decrement SelectedIndex if items are removed before it
 							selectedIndexToSet -= c.OldItems.Count;
-							SelectedIndex = selectedIndexToSet;
+							SelectedIndex = Math.Max(-1, selectedIndexToSet);
 						}
 					}
 					break;
