@@ -9,11 +9,16 @@ using Windows.System;
 using Android.App;
 using Android.OS;
 using Uno.UI;
+using Android.Content;
+using Windows.Foundation.Metadata;
+using AndroidX.Browser.CustomTabs;
+using Android.Content.PM;
 
 namespace Uno.AuthenticationBroker
 {
 	partial class WebAuthenticationBrokerProvider
 	{
+
 		private static string[]? _schemes;
 
 		protected virtual IEnumerable<string> GetApplicationCustomSchemes()
@@ -60,32 +65,45 @@ namespace Uno.AuthenticationBroker
 			return _schemes;
 		}
 
-		internal static void SetReturnData(Uri data)
+		private Activity? CurrentActivity => ContextHelper.Current as Activity;
+
+		TaskCompletionSource<WebAuthenticationResult>? tcsResponse = null;
+		Uri? currentRedirectUri = null;
+
+		public bool OnResumeCallback(Intent? intent = null)
 		{
-			if (_waitingForCallbackUri == null || _completionSource == null)
+			// If we aren't waiting on a task, don't handle the url
+			if (tcsResponse?.Task?.IsCompleted ?? true)
+				return false;
+
+			var intentData = intent?.Data?.ToString();
+			if (intentData is null ||
+				currentRedirectUri is null)
 			{
-				return; // Not waiting for this
+				tcsResponse.TrySetCanceled();
+				return false;
 			}
 
-			if (data.OriginalString.StartsWith(_waitingForCallbackUri))
+			try
 			{
-				_completionSource?.TrySetResult(
-					new WebAuthenticationResult(data.OriginalString, 0, WebAuthenticationStatus.Success));
+				var intentUri = new Uri(intentData);
+
+				// Only handle schemes we expect
+				if (!CanHandleCallback(currentRedirectUri, intentUri))
+				{
+					tcsResponse.TrySetException(new InvalidOperationException($"Invalid Redirect URI, detected `{intentUri}` but expected a URI in the format of `{currentRedirectUri}`"));
+					return false;
+				}
+
+				tcsResponse?.TrySetResult(new WebAuthenticationResult(intentUri.OriginalString, 0, WebAuthenticationStatus.Success));
+				return true;
+			}
+			catch (Exception ex)
+			{
+				tcsResponse.TrySetException(ex);
+				return false;
 			}
 		}
-
-		internal static void OnMainActivityResumed()
-		{
-			// This is called when the application activity is resumed.
-			// If it occurs before the TCS is competed, it means the user canceled the operation.
-
-			Interlocked.Exchange(ref _completionSource, null)
-				?.TrySetResult(new WebAuthenticationResult(null, 0, WebAuthenticationStatus.UserCancel));
-		}
-
-		private static string? _waitingForCallbackUri;
-
-		private static TaskCompletionSource<WebAuthenticationResult>? _completionSource;
 
 		protected virtual async Task<WebAuthenticationResult> AuthenticateAsyncCore(
 			WebAuthenticationOptions options,
@@ -93,29 +111,119 @@ namespace Uno.AuthenticationBroker
 			Uri callbackUri,
 			CancellationToken ct)
 		{
-			var tcs = new TaskCompletionSource<WebAuthenticationResult>();
-			Interlocked.Exchange(ref _completionSource, tcs)?.TrySetCanceled();
+			var url = requestUri;
+			var callbackUrl = callbackUri;
+			var packageName = Application.Context.PackageName;
 
-			_waitingForCallbackUri = callbackUri.OriginalString;
+			// Create an intent to see if the app developer wired up the callback activity correctly
+			var intent = new Intent(Intent.ActionView);
+			intent.AddCategory(Intent.CategoryBrowsable);
+			intent.AddCategory(Intent.CategoryDefault);
+			intent.SetPackage(packageName);
+			intent.SetData(global::Android.Net.Uri.Parse(callbackUrl.OriginalString));
 
-			await LaunchBrowserCore(options, requestUri, callbackUri, ct);
+			// Try to find the activity for the callback intent
+			if (!IsIntentSupported(intent, packageName))
+				throw new InvalidOperationException($"You must subclass the `{nameof(WebAuthenticationBrokerActivityBase)}` and create an IntentFilter for it which matches your `{nameof(callbackUrl)}`.");
 
-			var result = await tcs!.Task;
+			// Cancel any previous task that's still pending
+			if (tcsResponse?.Task != null && !tcsResponse.Task.IsCompleted)
+				tcsResponse.TrySetCanceled();
 
-			if(Interlocked.CompareExchange(ref _completionSource, null!, tcs) == tcs)
+			tcsResponse = new TaskCompletionSource<WebAuthenticationResult>();
+			currentRedirectUri = callbackUrl;
+
+			if (!(await StartCustomTabsActivity(url)))
 			{
-				_waitingForCallbackUri = null;
+				// Fall back to opening the system-registered browser if necessary
+				var urlOriginalString = url.OriginalString;
+				var browserIntent = new Intent(Intent.ActionView, global::Android.Net.Uri.Parse(urlOriginalString));
+				WebAuthenticationBrokerRedirectActivity.StartActivity(CurrentActivity!, browserIntent);
 			}
 
-			return result;
+			return await tcsResponse.Task;
 		}
 
-		protected virtual async Task LaunchBrowserCore(WebAuthenticationOptions options,
-			Uri requestUri,
-			Uri callbackUri,
-			CancellationToken ct)
+		private async Task<bool> StartCustomTabsActivity(Uri url)
 		{
-			await Launcher.LaunchUriAsync(requestUri);
+			// Is only set to true if BindServiceAsync succeeds and no exceptions are thrown
+			var success = false;
+			var parentActivity = CurrentActivity;
+
+			var customTabsActivityManager = CustomTabsActivityManager.From(parentActivity);
+			try
+			{
+				if (await BindServiceAsync(customTabsActivityManager))
+				{
+					var customTabsIntent = new CustomTabsIntent.Builder(customTabsActivityManager.Session)
+						.SetShowTitle(true)
+						.Build();
+
+					customTabsIntent.Intent.SetData(global::Android.Net.Uri.Parse(url.OriginalString));
+
+					if (parentActivity?.PackageManager is { } packageManager &&
+						customTabsIntent.Intent.ResolveActivity(packageManager) != null)
+					{
+						WebAuthenticationBrokerRedirectActivity.StartActivity(parentActivity, customTabsIntent.Intent);
+						success = true;
+					}
+				}
+			}
+			finally
+			{
+				try
+				{
+					customTabsActivityManager.Client?.Dispose();
+				}
+				finally
+				{
+				}
+			}
+
+			return success;
+		}
+
+		static Task<bool> BindServiceAsync(CustomTabsActivityManager manager)
+		{
+			var tcs = new TaskCompletionSource<bool>();
+
+			manager.CustomTabsServiceConnected += OnCustomTabsServiceConnected;
+
+			if (!manager.BindService())
+			{
+				manager.CustomTabsServiceConnected -= OnCustomTabsServiceConnected;
+				tcs.TrySetResult(false);
+			}
+
+			return tcs.Task;
+
+			void OnCustomTabsServiceConnected(ComponentName name, CustomTabsClient client)
+			{
+				manager.CustomTabsServiceConnected -= OnCustomTabsServiceConnected;
+				tcs.TrySetResult(true);
+			}
+		}
+
+		internal static bool IsIntentSupported(Intent intent, string? expectedPackageName)
+		{
+			if (Application.Context is not Context ctx || ctx.PackageManager is not PackageManager pm)
+				return false;
+
+			return intent.ResolveActivity(pm) is ComponentName c && c.PackageName == expectedPackageName;
+		}
+
+		internal static bool CanHandleCallback(Uri expectedUrl, Uri callbackUrl)
+		{
+			if (!callbackUrl.Scheme.Equals(expectedUrl.Scheme, StringComparison.OrdinalIgnoreCase))
+				return false;
+
+			if (!string.IsNullOrEmpty(expectedUrl.Host))
+			{
+				if (!callbackUrl.Host.Equals(expectedUrl.Host, StringComparison.OrdinalIgnoreCase))
+					return false;
+			}
+
+			return true;
 		}
 	}
 }
