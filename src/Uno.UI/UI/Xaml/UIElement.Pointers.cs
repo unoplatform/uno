@@ -1004,6 +1004,15 @@ namespace Windows.UI.Xaml
 				ctx = ctx.WithMode(ctx.Mode | BubblingMode.IgnoreElement);
 			}
 
+			// Note: We process the UpEvent between Release and Exited as the gestures like "Tap"
+			//		 are fired between those events.
+			var currentPoint = default(PointerPoint);
+			if (IsGestureRecognizerCreated)
+			{
+				currentPoint = args.GetCurrentPoint(this);
+				GestureRecognizer.ProcessBeforeUpEvent(currentPoint, !ctx.IsInternal || isOverOrCaptured);
+			}
+
 			handledInManaged |= SetPressed(args, false, ctx);
 
 			// Note: We process the UpEvent between Release and Exited as the gestures like "Tap"
@@ -1014,7 +1023,7 @@ namespace Windows.UI.Xaml
 				// if they are bubbling in managed it means that they where handled a child control,
 				// so we should not use them for gesture recognition.
 				var isDragging = GestureRecognizer.IsDragging;
-				GestureRecognizer.ProcessUpEvent(args.GetCurrentPoint(this), !ctx.IsInternal || isOverOrCaptured);
+				GestureRecognizer.ProcessUpEvent(currentPoint, !ctx.IsInternal || isOverOrCaptured);
 				if (isDragging && !ctx.IsInternal)
 				{
 					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessDropped(args);
