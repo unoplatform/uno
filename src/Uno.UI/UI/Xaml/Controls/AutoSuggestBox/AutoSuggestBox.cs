@@ -329,7 +329,16 @@ namespace Windows.UI.Xaml.Controls
 	    {
 			var finalResult = _suggestionsList.SelectedItem ?? GetObjectText(Text);
 
-			QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(finalResult is "" ? null : finalResult, userInput));			
+			var isSelected = _suggestionsList.Items.FirstOrDefault(it => it?.ToString() == Text) is not null;
+
+			if (isSelected)
+			{
+				QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(finalResult is "" ? null : finalResult, userInput));
+			}
+			else
+			{
+				QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(null, userInput));
+			}
 
 			IsSuggestionListOpen = false;
 		}

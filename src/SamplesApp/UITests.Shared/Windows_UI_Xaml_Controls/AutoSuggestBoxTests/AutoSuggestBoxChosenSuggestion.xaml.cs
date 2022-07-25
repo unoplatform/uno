@@ -55,7 +55,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.AutoSuggestBoxTests
 			{
 				await new ContentDialog
 				{
-					Content = "e.ChosenSuggestion == NULL: this is wrong !!!",
+					Content = $"e.ChosenSuggestion == NULL because the selectiopn does not match. The Text inputted is '{sender.Text}'!",
 					PrimaryButtonText = "OK",
 					RequestedTheme = ElementTheme.Default,
 					XamlRoot = XamlRoot,
