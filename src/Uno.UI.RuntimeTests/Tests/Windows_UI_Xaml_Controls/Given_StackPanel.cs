@@ -12,9 +12,6 @@ using Windows.Foundation;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
-#if __MACOS__
-	[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 	public class Given_StackPanel
 	{
 		[TestMethod]
