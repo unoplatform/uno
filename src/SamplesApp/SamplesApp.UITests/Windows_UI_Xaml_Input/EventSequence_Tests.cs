@@ -29,6 +29,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		public void TestTranslatedClick()
 			=> RunSequence("TranslatedClick", TranslateOverElement);
 
