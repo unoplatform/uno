@@ -68,7 +68,7 @@
 
 	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.18362'">
 		<PackageReference Include="System.Numerics.Vectors" Version="4.3.0" />
-		<PackageReference Include="Microsoft.UI.Xaml" Version="2.7.0-prerelease.210816001" />
+		<PackageReference Include="Microsoft.UI.Xaml" Version="2.8.0" />
 		
 		<PackageReference Include="Uno.Core.Extensions.Logging" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
