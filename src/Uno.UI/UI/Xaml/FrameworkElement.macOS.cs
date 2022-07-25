@@ -9,6 +9,8 @@ using Windows.Foundation;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using AppKit;
+using Windows.UI.Xaml.Controls.Primitives;
+using SpriteKit;
 
 namespace Windows.UI.Xaml
 {
@@ -24,15 +26,75 @@ namespace Windows.UI.Xaml
 		{
 			set
 			{
+				if (ShouldInterceptInvalidate)
+				{
+					return;
+				}
+
 				if (!_inLayoutSubviews)
 				{
 					base.NeedsLayout = value;
 				}
 
-				if (ShouldInterceptInvalidate)
+				SetLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.ArrangeDirty);
+
+				SetSuperviewNeedsLayout();
+			}
+		}
+
+
+		public override void Layout()
+		{
+			try
+			{
+				try
 				{
-					return;
+					_inLayoutSubviews = true;
+
+					if (IsMeasureDirty)
+					{
+						// Add back the Margin (which is normally 'outside' the view's bounds) - the layouter will subtract it again
+						var availableSizeWithMargins = Bounds.Size.Add(Margin);
+						XamlMeasure(availableSizeWithMargins);
+					}
+
+					//if (IsArrangeDirty) // commented until the MEASURE_DIRTY_PATH is properly implemented for iOS
+					{
+						ClearLayoutFlags(LayoutFlag.ArrangeDirty);
+
+						OnBeforeArrange();
+
+						Rect finalRect;
+						var parent = Superview;
+						if (parent is UIElement)
+						{
+							finalRect = LayoutSlotWithMarginsAndAlignments;
+						}
+						else
+						{
+							// Here the "arrange" is coming from a native element,
+							// so we convert those measurements to logical ones.
+							finalRect = RectFromUIRect(Frame);
+
+							// We also need to set the LayoutSlot as it was not by the parent.
+							// Note: This is only an approximation of the LayoutSlot as margin and alignment might already been applied at this point.
+							LayoutInformation.SetLayoutSlot(this, finalRect);
+							LayoutSlotWithMarginsAndAlignments = finalRect;
+						}
+
+						_layouter.Arrange(finalRect);
+
+						OnAfterArrange();
+					}
 				}
+				finally
+				{
+					_inLayoutSubviews = false;
+				}
+			}
+			catch (Exception e)
+			{
+				this.Log().Error($"Layout failed in {GetType()}", e);
 			}
 		}
 
@@ -64,37 +126,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public override void Layout()
-		{
-			try
-			{
-				_inLayoutSubviews = true;
-
-				var bounds = Bounds.Size;
-				if (IsMeasureDirty)
-				{
-					XamlMeasure(bounds);
-				}
-
-				OnBeforeArrange();
-
-				var size = SizeFromUISize(bounds);
-
-				_layouter.Arrange(new Rect(0, 0, size.Width, size.Height));
-
-				OnAfterArrange();
-			}
-			catch (Exception e)
-			{
-				this.Log().Error($"Layout failed in {GetType()}", e);
-			}
-			finally
-			{
-				_inLayoutSubviews = false;
-
-				ClearLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.ArrangeDirty);
-			}
-		}
 
 		public CGSize SizeThatFits(CGSize size)
 		{
@@ -117,6 +148,46 @@ namespace Windows.UI.Xaml
 			{
 				_inLayoutSubviews = false;
 			}
+		}
+
+		public override void AddSubview(NSView view)
+		{
+			if (IsLoaded)
+			{
+				// Apply styles in the subtree being loaded (if not already applied). We do it in this way to force Styles application in a
+				// 'root-first' order, because on iOS the native loading callback is raised 'leaf first,' and waiting until this point to
+				// apply the style can cause Loading/Loaded to be raised twice for some views (because template of outer control changes).
+				//
+				// This override can be removed when Loading/Loaded timing is adjusted to fully match UWP.
+				if (view is IDependencyObjectStoreProvider provider)
+				{
+					// Set parent so implicit styles in the tree can be resolved
+					provider.Store.Parent = this;
+				}
+				ApplyStylesToChildren(view);
+			}
+
+			base.AddSubview(view);
+			NeedsLayout = true;
+
+			void ApplyStylesToChildren(NSView viewInner)
+			{
+				if (viewInner is FrameworkElement fe)
+				{
+					fe.ApplyStyles();
+				}
+
+				foreach (var subview in viewInner.Subviews)
+				{
+					ApplyStylesToChildren(subview);
+				}
+			}
+		}
+
+		public override void WillRemoveSubview(NSView NSView)
+		{
+			base.WillRemoveSubview(NSView);
+			NeedsLayout = true;
 		}
 	}
 }

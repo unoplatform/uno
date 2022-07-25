@@ -134,6 +134,7 @@ namespace Windows.UI.Xaml.Controls
 				_unclippedDesiredSize = desiredSize;
 
 				var clippedDesiredSize = desiredSize
+					.AtMost(maxSize)
 					.AtMost(frameworkAvailableSize)
 					.Add(marginSize)
 					// Margin may be negative
