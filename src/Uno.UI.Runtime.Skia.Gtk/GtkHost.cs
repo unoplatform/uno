@@ -43,14 +43,14 @@ namespace Uno.UI.Runtime.Skia
 		private readonly Func<WUX.Application> _appBuilder;
 		private IRenderSurface _renderSurface;
 		private static Gtk.Window _window;
-		private static Gtk.EventBox _eventBox;
+		private static UnoEventBox _eventBox;
 		private Widget _area;
 		private Fixed _fix;
 		private GtkDisplayInformationExtension _displayInformationExtension;
 		private CompositeDisposable _registrations = new();
 
 		public static Gtk.Window Window => _window;
-		public static Gtk.EventBox EventBox => _eventBox;
+		internal static UnoEventBox EventBox => _eventBox;
 
 		/// <summary>
 		/// Gets or sets the current Skia Render surface type.
@@ -154,7 +154,7 @@ namespace Uno.UI.Runtime.Skia
 
 			var overlay = new Overlay();
 
-			_eventBox = new EventBox();
+			_eventBox = new UnoEventBox();
 
 			_renderSurface = BuildRenderSurfaceType();
 			_area = (Widget)_renderSurface;
