@@ -1016,13 +1016,16 @@ namespace Windows.UI.Xaml.Controls
 					finalSize.Width - padding.Left - padding.Right - borderThickness.Left - borderThickness.Right,
 					finalSize.Height - padding.Top - padding.Bottom - borderThickness.Top - borderThickness.Bottom
 				);
-				
+
 				var availableSize = new Size(innerRect.Width, innerRect.Height);
 
+				// Using GetElementDesiredSize to properly handle native controls.
+				var desiredSize = GetElementDesiredSize(child);
+
 				var contentWidth = HorizontalContentAlignment == HorizontalAlignment.Stretch ?
-					availableSize.Width : child.DesiredSize.Width;
+					availableSize.Width : desiredSize.Width;
 				var contentHeight = VerticalContentAlignment == VerticalAlignment.Stretch ?
-					availableSize.Height : child.DesiredSize.Height;
+					availableSize.Height : desiredSize.Height;
 				var contentSize = new Size(contentWidth, contentHeight);
 
 				var offset = CalculateContentOffset(availableSize, contentSize);
@@ -1033,7 +1036,7 @@ namespace Windows.UI.Xaml.Controls
 					contentSize.Width,
 					contentSize.Height);
 
-				base.ArrangeElement(child, arrangeRect);
+				ArrangeElement(child, arrangeRect);
 			}
 
 			return finalSize;
