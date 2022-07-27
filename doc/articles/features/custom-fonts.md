@@ -1,6 +1,6 @@
 # Custom Fonts
 
-The `FontFamily` property allows you to customize the font used in you application's UI. Please note that in the following examples `yourfont.ttf` is placeholder for font file name and `Your Font Name` is placeholder for its actual name. To make figuring out the correct format easier, use a font management app. Free application [Character Map UWP](https://www.microsoft.com/store/productId/9WZDNCRDXF41) will provide you with the full string for your selected font:
+The `FontFamily` property allows you to customize the font used in you application's UI. Please note that in the following examples `yourfont.ttf` is placeholder for font file name and `Your Font Name` is placeholder for its actual name. To make figuring out the correct format easier, use a font management app. The free application, [Character Map](https://www.microsoft.com/store/productId/9WZDNCRDXF41), can be used to extract the full string for your selected font:
 
 ![Character Map UWP providing font information](../Assets/features/customfonts/charactermapuwp.png)
 
