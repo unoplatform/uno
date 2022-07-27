@@ -62,6 +62,13 @@ namespace Uno.UI.Runtime.Skia
 			GtkHost.EventBox.AddEvents((int)RequestedEvents);
 
 			// Use GtkEventBox to fix Wayland titlebar events
+			// Note: On some devices (e.g. raspberryPI - seems to be devices that are not supporting multi-touch?),
+			//		 touch events are not going through the OnTouchEvent but are instead sent as "emulated" mouse (cf. EventHelper.GetPointerEmulated).
+			//		 * For that kind of devices we are also supporting the touch in other handlers.
+			//		   We don't have to inject Entered and Exited events as they are also simulated by the system.
+			//		 * When a device properly send the touch events through the OnTouchEvent,
+			//		   system does not "emulate the mouse" so this method should not be invoked.
+			//		   That's the purpose of the UnoEventBox.
 			GtkHost.EventBox.EnterNotifyEvent += OnEnterEvent;
 			GtkHost.EventBox.LeaveNotifyEvent += OnLeaveEvent;
 			GtkHost.EventBox.ButtonPressEvent += OnButtonPressEvent;
@@ -144,17 +151,6 @@ namespace Uno.UI.Runtime.Skia
 			{
 				if (AsPointerArgs(args.Event) is { } ptArgs)
 				{
-					// On some devices (e.g. raspberryPI - seems to be devices that are not supporting multi-touch?),
-					// touch events are not going through the OnTouchEvent but are instead sent as "emulated" mouse (cf. EventHelper.GetPointerEmulated).
-					// For that kind of devices we are also supporting the touch in On<Press|Release>Event and we inject the missing Entered and Exited events.
-					// Note: When a device properly send the touch events through the OnTouchEvent,
-					//		 system does not "emulate the mouse" so this method should not be invoked.
-					//		 That's the purpose of the UnoEventBox.
-					if (ptArgs.CurrentPoint.PointerDeviceType is PointerDeviceType.Touch)
-					{
-						RaisePointerEntered(ptArgs);
-					}
-
 					RaisePointerPressed(ptArgs);
 				}
 			}
@@ -171,12 +167,6 @@ namespace Uno.UI.Runtime.Skia
 				if (AsPointerArgs(args.Event) is { } ptArgs)
 				{
 					RaisePointerReleased(ptArgs);
-
-					if (ptArgs.CurrentPoint.PointerDeviceType is PointerDeviceType.Touch)
-					{
-						// Cf. OnButtonPressEvent
-						RaisePointerExited(ptArgs);
-					}
 				}
 			}
 			catch (Exception e)
