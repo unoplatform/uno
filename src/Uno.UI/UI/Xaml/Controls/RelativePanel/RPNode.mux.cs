@@ -2,6 +2,16 @@
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
+#if XAMARIN_ANDROID
+using View = Android.Views.View;
+#elif XAMARIN_IOS_UNIFIED
+using View = UIKit.UIView;
+#elif __MACOS__
+using View = AppKit.NSView;
+#else
+using View = Windows.UI.Xaml.UIElement;
+#endif
+
 namespace Uno.UI.Xaml.Controls;
 
 internal partial class RPNode
@@ -20,6 +30,12 @@ internal partial class RPNode
 		}
 		else
 		{
+			// Native element, use parent to get desired size
+			if (_nativeView is not null && m_element.GetParent() is RelativePanel relativePanel)
+			{
+				return relativePanel.GetChildDesiredSize(_nativeView).Width;
+			}
+
 			return 0.0;
 		}
 	}
@@ -32,10 +48,14 @@ internal partial class RPNode
 			//return element.GetLayoutStorage().m_desiredSize.height;
 			return element.DesiredSize.Height;
 		}
-		else
+#if HAS_UNO // Handling native controls
+		else if (_nativeView is not null && m_element.GetParent() is RelativePanel relativePanel)
 		{
-			return 0.0;
+			return relativePanel.GetChildDesiredSize(_nativeView).Height;
 		}
+#endif
+
+		return 0.0;
 	}
 
 	internal void Measure(Size rainedAvailableSize)
@@ -46,6 +66,12 @@ internal partial class RPNode
 			//TODO Uno: Layout storage not supported internally yet
 			//element.EnsureLayoutStorage();
 		}
+#if HAS_UNO // Handling native controls
+		else if (_nativeView is not null && m_element.GetParent() is RelativePanel relativePanel)
+		{
+			relativePanel.MeasureChild(_nativeView);
+		}
+#endif
 	}
 
 	internal void Arrange(Rect finalRect)
@@ -54,6 +80,12 @@ internal partial class RPNode
 		{
 			element.Arrange(finalRect);
 		}
+#if HAS_UNO // Handling native controls
+		else if (_nativeView is not null && m_element.GetParent() is RelativePanel relativePanel)
+		{
+			relativePanel.ArrangeChild(_nativeView, finalRect);
+		}
+#endif
 	}
 
 	internal void GetLeftOfValue(out object pValue)
