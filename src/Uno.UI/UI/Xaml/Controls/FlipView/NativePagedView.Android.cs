@@ -41,10 +41,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var measuredSize = ((ILayouterElement)this).OnMeasureInternal(widthMeasureSpec, heightMeasureSpec);
 
+			var logicalMeasuredSize = measuredSize.PhysicalToLogicalPixels();
+
 			//We call ViewPager.OnMeasure here, because it creates the page views.
 			base.OnMeasure(
-				ViewHelper.SpecFromLogicalSize(measuredSize.Width),
-				ViewHelper.SpecFromLogicalSize(measuredSize.Height)
+				ViewHelper.SpecFromLogicalSize(logicalMeasuredSize.Width),
+				ViewHelper.SpecFromLogicalSize(logicalMeasuredSize.Height)
 			);
 
 			IFrameworkElementHelper.OnMeasureOverride(this);
