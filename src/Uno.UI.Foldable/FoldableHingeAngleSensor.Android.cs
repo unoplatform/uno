@@ -60,6 +60,11 @@ namespace Uno.UI.Foldable
 
 			_sensorManager ??= SensorManager.FromContext(currentActivity);
 
+			if (_sensorManager is null)
+			{
+				return null;
+			}
+			
 			var sensors = _sensorManager.GetSensorList(Android.Hardware.SensorType.All);
 
 			return sensors.FirstOrDefault(s => s.Name.Contains(HINGE_SENSOR_NAME, StringComparison.OrdinalIgnoreCase)); // NAME - generic foldable device/s
