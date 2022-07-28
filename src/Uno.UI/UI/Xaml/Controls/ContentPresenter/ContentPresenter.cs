@@ -1030,7 +1030,7 @@ namespace Windows.UI.Xaml.Controls
 
 				var offset = CalculateContentOffset(availableSize, contentSize);
 
-				var arrangeRect = new Rect(
+				var arrangeRect = new Windows.Foundation.Rect(
 					innerRect.X + offset.X,
 					innerRect.Y + offset.Y,
 					contentSize.Width,
