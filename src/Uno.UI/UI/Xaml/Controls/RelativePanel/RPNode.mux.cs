@@ -58,18 +58,18 @@ internal partial class RPNode
 		return 0.0;
 	}
 
-	internal void Measure(Size rainedAvailableSize)
+	internal void Measure(Size availableSize)
 	{
 		if (m_element is UIElement element)
 		{
-			element.Measure(rainedAvailableSize);
+			element.Measure(availableSize);
 			//TODO Uno: Layout storage not supported internally yet
 			//element.EnsureLayoutStorage();
 		}
 #if HAS_UNO // Handling native controls
 		else if (_nativeView is not null && m_element.GetParent() is RelativePanel relativePanel)
 		{
-			relativePanel.MeasureChild(_nativeView);
+			relativePanel.MeasureChild(_nativeView, availableSize);
 		}
 #endif
 	}
