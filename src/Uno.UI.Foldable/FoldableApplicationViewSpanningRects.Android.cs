@@ -239,6 +239,8 @@ namespace Uno.UI.Foldable
 			}
 		}
 
+		public bool SupportsSpanning => HasFoldFeature || FoldableHingeAngleSensor.HasHinge;
+
         public Rect Bounds
         {
 			get {
