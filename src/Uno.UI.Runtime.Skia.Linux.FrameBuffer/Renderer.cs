@@ -12,11 +12,12 @@ namespace Uno.UI.Runtime.Skia
 {
 	class Renderer
 	{
+		private readonly FrameBufferHost _host;
 		private FrameBufferDevice _fbDev;
 		private SKBitmap? bitmap;
 		private int renderCount = 0;
 
-		public Renderer()
+		public Renderer(FrameBufferHost host)
 		{
 			_fbDev = new FrameBufferDevice();
 			_fbDev.Init();
@@ -24,6 +25,7 @@ namespace Uno.UI.Runtime.Skia
 			var resolution = _fbDev.ScreenSize;
 			
 			WUX.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(resolution.Width, resolution.Height));
+			_host = host;
 		}
 
 		public Size PixelSize => _fbDev.ScreenSize;
@@ -39,15 +41,15 @@ namespace Uno.UI.Runtime.Skia
 				this.Log().Trace($"Render {renderCount++}");
 			}
 
-			var dpi = 1;
+			var scale = _host.ScaleOverride ?? 1f;
 
 			var resolution = _fbDev.ScreenSize;
 
 			width = (int)resolution.Width;
 			height = (int)resolution.Height;
 
-			var scaledWidth = (int)(width * dpi);
-			var scaledHeight = (int)(height * dpi);
+			var scaledWidth = (int)(width * scale);
+			var scaledHeight = (int)(height * scale);
 
 			var info = new SKImageInfo(scaledWidth, scaledHeight, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
 
@@ -61,7 +63,7 @@ namespace Uno.UI.Runtime.Skia
 			{
 				surface.Canvas.Clear(SKColors.White);
 
-				surface.Canvas.Scale((float)dpi);
+				surface.Canvas.Scale(scale);
 
 				WUX.Window.Current.Compositor.Render(surface);
 

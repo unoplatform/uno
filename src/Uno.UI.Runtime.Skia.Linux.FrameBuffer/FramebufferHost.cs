@@ -41,6 +41,8 @@ namespace Uno.UI.Runtime.Skia
 			_eventLoop = new EventLoop();
 		}
 
+		public float? ScaleOverride { get; set; }
+
 		public void Run()
 		{
 			_eventLoop.Schedule(Initialize);
@@ -66,7 +68,7 @@ namespace Uno.UI.Runtime.Skia
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 
-			_renderer = new Renderer();
+			_renderer = new Renderer(this);
 			_displayInformationExtension!.Renderer = _renderer;
 
 			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
