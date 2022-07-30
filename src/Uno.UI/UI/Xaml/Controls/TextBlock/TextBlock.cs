@@ -439,18 +439,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_foregroundChanged.Disposable = null;
+
 			if (Foreground?.SupportsAssignAndObserveBrush ?? false)
 			{
-				_foregroundChanged.Disposable =
-#if __SKIA__
-					Brush.AssignAndObserveBrush(Foreground, Visual.Compositor, compositionBrush =>
-					{
-						refreshForeground();
-						ForegroundCompositionBrush = compositionBrush;
-					});
-#else
-					Brush.AssignAndObserveBrush(Foreground, c => refreshForeground(), refreshForeground);
-#endif
+				_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(Foreground, c => refreshForeground(), refreshForeground);
 			}
 
 			refreshForeground();

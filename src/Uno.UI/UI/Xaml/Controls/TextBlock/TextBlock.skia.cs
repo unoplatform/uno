@@ -21,7 +21,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class TextBlock : FrameworkElement, IBlock
 	{
-		internal CompositionBrush ForegroundCompositionBrush;
 		private readonly TextVisual _textVisual;
 
 		public TextBlock()
@@ -29,11 +28,6 @@ namespace Windows.UI.Xaml.Controls
 			_textVisual = new TextVisual(Visual.Compositor, this);
 
 			Visual.Children.InsertAtBottom(_textVisual);
-		}
-
-		private int GetCharacterIndexAtPoint(Point point)
-		{
-			return -1; // Not supported yet
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
