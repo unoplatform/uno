@@ -303,9 +303,9 @@ namespace Windows.UI.Xaml.Documents
 				y += line.Height;
 				float baselineOffsetY = line.BaselineOffsetY;
 
-				for (int s = 0; s < line.SegmentSpans.Count; s++)
+				for (int s = 0; s < line.RenderOrderedSegmentSpans.Count; s++)
 				{
-					var segmentSpan = line.SegmentSpans[s];
+					var segmentSpan = line.RenderOrderedSegmentSpans[s];
 
 					if (segmentSpan.GlyphsLength == 0)
 					{
@@ -330,7 +330,7 @@ namespace Windows.UI.Xaml.Documents
 					if ((decorations & allDecorations) != 0)
 					{
 						var metrics = paint.FontMetrics;
-						float width = s == line.SegmentSpans.Count - 1 ? segmentSpan.WidthWithoutTrailingSpaces : segmentSpan.Width;
+						float width = s == line.RenderOrderedSegmentSpans.Count - 1 ? segmentSpan.WidthWithoutTrailingSpaces : segmentSpan.Width;
 
 						if ((decorations & TextDecorations.Underline) != 0)
 						{
@@ -388,7 +388,9 @@ namespace Windows.UI.Xaml.Documents
 								var glyphInfo = segment.Glyphs[segmentSpan.GlyphsStart + j];
 
 								if (glyphInfo.AdvanceX > 0)
+								{
 									x += segmentSpan.CharacterSpacing;
+								}
 
 								glyphs[j] = glyphInfo.GlyphId;
 								positions[j] = new SKPoint(x + glyphInfo.OffsetX, glyphInfo.OffsetY);
@@ -455,7 +457,7 @@ namespace Windows.UI.Xaml.Documents
 
 			do
 			{
-				span = line.SegmentSpans[i++];
+				span = line.RenderOrderedSegmentSpans[i++];
 				spanX += span.Width;
 
 				if (point.X <= spanX && (extendedSelection || point.X >= spanX - span.Width))
@@ -464,7 +466,7 @@ namespace Windows.UI.Xaml.Documents
 				}
 
 				spanX += justifySpaceOffset * span.TrailingSpaces;
-			} while (i < line.SegmentSpans.Count);
+			} while (i < line.RenderOrderedSegmentSpans.Count);
 
 			return extendedSelection ? span : null;
 		}

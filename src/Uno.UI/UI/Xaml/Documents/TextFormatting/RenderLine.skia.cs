@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+#nullable enable
+
 namespace Windows.UI.Xaml.Documents.TextFormatting
 {
 	/// <summary>
@@ -11,8 +13,17 @@ namespace Windows.UI.Xaml.Documents.TextFormatting
 	internal class RenderLine
 	{
 		private readonly List<RenderSegmentSpan> _segmentSpans;
+		private List<RenderSegmentSpan>? _renderOrderedSegmentSpans;
 
+		/// <summary>
+		/// Gets the segment spans in the order they appear within the text string.
+		/// </summary>
 		public IReadOnlyList<RenderSegmentSpan> SegmentSpans => _segmentSpans;
+
+		/// <summary>
+		/// Gets the segment spans in the order they should be rendered (from left to right).
+		/// </summary>
+		public IReadOnlyList<RenderSegmentSpan> RenderOrderedSegmentSpans => _renderOrderedSegmentSpans ??= GetRenderOrderedSegmentSpans();
 
 		public float Width { get; }
 
@@ -24,7 +35,7 @@ namespace Windows.UI.Xaml.Documents.TextFormatting
 
 		public bool Wraps { get; }
 
-		public RenderLine(IEnumerable<RenderSegmentSpan> spans, LineStackingStrategy lineStackingStrategy, float lineHeight, bool firstLine, bool wraps)
+		public RenderLine(List<RenderSegmentSpan> spans, LineStackingStrategy lineStackingStrategy, float lineHeight, bool firstLine, bool wraps)
 		{
 			_segmentSpans = new(spans);
 
@@ -160,6 +171,42 @@ namespace Windows.UI.Xaml.Documents.TextFormatting
 
 				return 0;
 			}
+		}
+
+		private List<RenderSegmentSpan> GetRenderOrderedSegmentSpans()
+		{
+			List<RenderSegmentSpan>? orderedSpans = null;
+			int i = 0;
+
+			while (i < _segmentSpans.Count - 1)
+			{
+				var span = _segmentSpans[i];
+
+				if (span.Segment.Direction == FlowDirection.RightToLeft)
+				{
+					int rtlEndIndex = i + 1; // Exclusive end index of the RTL span run
+
+					// Check if next span is also RTL before allocating/copying an ordered list,
+					// since reversing the order of a single RTL span run is a no-op.
+
+					if (_segmentSpans[rtlEndIndex].Segment.Direction == FlowDirection.RightToLeft)
+					{
+						orderedSpans ??= new(_segmentSpans);
+
+						while (++rtlEndIndex < _segmentSpans.Count && _segmentSpans[rtlEndIndex].Segment.Direction == FlowDirection.RightToLeft) { }
+
+						orderedSpans.Reverse(i, rtlEndIndex - i);
+					}
+
+					i = rtlEndIndex + 1; // Can skip next element since we know it is LTR
+				}
+				else
+				{
+					i++;
+				}
+			}
+
+			return orderedSpans ?? _segmentSpans;
 		}
 
 		private float GetMaxStackHeight() => _segmentSpans.Max(s => s.Segment.Inline.LineHeight);
