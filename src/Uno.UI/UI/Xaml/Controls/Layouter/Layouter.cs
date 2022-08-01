@@ -128,7 +128,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				desiredSize = desiredSize
-					.AtLeast(minSize)
+					.AtLeast((Panel as ILayoutOptOut)?.ShouldUseMinSize == false ? Size.Empty : minSize)
 					.AtLeastZero();
 
 				_unclippedDesiredSize = desiredSize;
@@ -528,16 +528,13 @@ namespace Windows.UI.Xaml.Controls
 
 				var childMaxHeight = frameworkElement.MaxHeight;
 				var childMaxWidth = frameworkElement.MaxWidth;
-				var childMinHeight = frameworkElement.MinHeight;
-				var childMinWidth = frameworkElement.MinWidth;
-				if (frameworkElement is ILayoutOptOut optOutElement && !optOutElement.ShouldUseMinSize)
-				{
-					childMinHeight = 0;
-					childMinWidth = 0;
-				}
+				var (childMinHeight, childMinWidth) = (frameworkElement as ILayoutOptOut)?.ShouldUseMinSize == false
+					? (0, 0)
+					: (frameworkElement.MinHeight, frameworkElement.MinWidth);
 				var childWidth = frameworkElement.Width;
 				var childHeight = frameworkElement.Height;
 				var childMargin = frameworkElement.Margin;
+
 				var hasChildHeight = !IsNaN(childHeight);
 				var hasChildWidth = !IsNaN(childWidth);
 				var hasChildMaxWidth = !IsInfinity(childMaxWidth) && !IsNaN(childMaxWidth);
