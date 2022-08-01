@@ -30,7 +30,7 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0'">
-		<PackageReference Include="Xamarin.Build.Download" Version="0.11.2" />
+		<PackageReference Include="Xamarin.Build.Download" Version="0.11.3" />
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
