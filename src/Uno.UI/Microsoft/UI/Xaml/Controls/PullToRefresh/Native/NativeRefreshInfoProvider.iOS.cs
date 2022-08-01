@@ -5,15 +5,15 @@ using Windows.UI.Composition;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal class NativeIRefreshInfoProvider : IRefreshInfoProvider
+internal class NativeRefreshInfoProvider : IRefreshInfoProvider
 {
 	private readonly RefreshContainer _refreshContainer;
 
-	public NativeIRefreshInfoProvider(RefreshContainer refreshContainer)
+	public NativeRefreshInfoProvider(RefreshContainer refreshContainer)
 	{
 		_refreshContainer = refreshContainer;
 	}
-	
+
 	public bool IsInteractingForRefresh { get; }
 
 	public CompositionPropertySet CompositionProperties => null;
@@ -23,10 +23,11 @@ internal class NativeIRefreshInfoProvider : IRefreshInfoProvider
 	public double ExecutionRatio => 1;
 
 	public event TypedEventHandler<IRefreshInfoProvider, object> IsInteractingForRefreshChanged;
+
 	public event TypedEventHandler<IRefreshInfoProvider, RefreshInteractionRatioChangedEventArgs> InteractionRatioChanged;
 
 	public event TypedEventHandler<IRefreshInfoProvider, object> RefreshStarted;
-	
+
 	public event TypedEventHandler<IRefreshInfoProvider, object> RefreshCompleted;
 
 	public void OnRefreshCompleted() => RefreshCompleted?.Invoke(this, null);

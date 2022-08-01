@@ -20,7 +20,6 @@ public partial class RefreshContainer : ContentControl
 	private readonly SerialDisposable _nativeScrollViewAttachment = new SerialDisposable();
 	private NativeRefreshControl _refreshControl = null!;
 	private UIScrollView? _ownerScrollView = null;
-	private bool _managedIsRefreshing = false;
 
 	private void InitializePlatform()
 	{
@@ -29,7 +28,7 @@ public partial class RefreshContainer : ContentControl
 		this.Unloaded += OnUnloaded;
 	}
 
-	private void RequestRefreshPlatform()
+	internal void RequestRefreshPlatform()
 	{
 		if (!_refreshControl.Refreshing)
 		{
@@ -38,11 +37,6 @@ public partial class RefreshContainer : ContentControl
 			_ownerScrollView?.SetContentOffset(offsetPoint, animated: true);
 			OnNativeRefreshingChanged();
 		}
-	}
-
-	partial void OnApplyTemplatePartial()
-	{
-		base.OnApplyTemplate();
 	}
 
 	private void OnLoaded(object sender, RoutedEventArgs e)
@@ -68,8 +62,8 @@ public partial class RefreshContainer : ContentControl
 	private void OnRefreshControlValueChanged(object? sender, EventArgs e) => OnNativeRefreshingChanged();
 
 	private bool IsNativeRefreshing => _refreshControl.Refreshing;
-					
-	private void EndNativeRefreshing() => _refreshControl.EndRefreshing();
+
+	internal void EndNativeRefreshing() => _refreshControl.EndRefreshing();
 
 	protected override void OnContentChanged(object oldValue, object newValue)
 	{

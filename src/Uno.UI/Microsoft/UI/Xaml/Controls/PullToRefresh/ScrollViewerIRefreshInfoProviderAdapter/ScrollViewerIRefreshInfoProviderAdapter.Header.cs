@@ -1,4 +1,5 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿#if !__ANDROID__ && !__IOS__
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference ScrollViewerIRefreshInfoProviderAdapter.h, commit 838a0cc
 
@@ -31,3 +32,4 @@ internal partial class ScrollViewerIRefreshInfoProviderAdapter
 
 	private PointerEventHandler m_boxedPointerPressedEventHandler;
 }
+#endif

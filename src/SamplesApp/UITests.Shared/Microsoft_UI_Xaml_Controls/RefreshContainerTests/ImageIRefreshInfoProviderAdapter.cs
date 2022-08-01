@@ -326,6 +326,8 @@ namespace MUXControlsTestApp
                 interactionRatioChangedCount++;
             }
         }
+
+		public void Dispose() { }
     }
 }
 #endif

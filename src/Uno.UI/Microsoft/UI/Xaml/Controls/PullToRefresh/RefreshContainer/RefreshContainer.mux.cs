@@ -63,11 +63,17 @@ public partial class RefreshContainer : ContentControl
 		DefaultStyleKey = typeof(RefreshContainer);
 
 #if HAS_UNO
-		m_refreshInfoProviderAdapter = GetDefaultRefreshInfoProvider();
+		SetDefaultRefreshInfoProviderAdapter();
 #endif
 		m_hasDefaultRefreshInfoProviderAdapter = true;
 		OnRefreshInfoProviderAdapterChanged();
+
+#if HAS_UNO
+		InitializePlatformPartial();
+#endif
 	}
+
+	partial void InitializePlatformPartial();
 
 	protected override void OnApplyTemplate()
 	{
@@ -98,11 +104,12 @@ public partial class RefreshContainer : ContentControl
 
 		m_refreshPullDirection = PullDirection;
 		OnPullDirectionChangedImpl();
-//#if HAS_UNO
-//		// Force InfoProvider to be initialized
-//		OnVisualizerSizeChanged(null, null);
-//#endif
+#if HAS_UNO
+		OnApplyTemplatePartial();
+#endif
 	}
+
+	partial void OnApplyTemplatePartial();
 
 	/// <summary>
 	/// Initiates an update of the content.
@@ -226,7 +233,7 @@ public partial class RefreshContainer : ContentControl
 				m_refreshVisualizer.ActualWidth == DEFAULT_PULL_DIMENSION_SIZE)
 			{
 #if HAS_UNO
-				m_refreshInfoProviderAdapter = GetDefaultRefreshInfoProvider();
+				SetDefaultRefreshInfoProviderAdapter();
 #endif
 				OnRefreshInfoProviderAdapterChanged();
 			}
@@ -329,7 +336,7 @@ public partial class RefreshContainer : ContentControl
 		if (m_hasDefaultRefreshInfoProviderAdapter)
 		{
 #if HAS_UNO
-			m_refreshInfoProviderAdapter = GetDefaultRefreshInfoProvider();
+			SetDefaultRefreshInfoProviderAdapter();
 #endif
 			OnRefreshInfoProviderAdapterChanged();
 		}

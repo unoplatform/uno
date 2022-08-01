@@ -14,4 +14,6 @@ internal class StubIRefreshInfoProviderAdapter : IRefreshInfoProviderAdapter
 	{
 		refreshVisualizerAnimatableContainer.Visibility = Visibility.Collapsed;
 	}
+	
+	public void Dispose() { }
 }

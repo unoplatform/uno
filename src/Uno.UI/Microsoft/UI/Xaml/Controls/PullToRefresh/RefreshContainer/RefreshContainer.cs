@@ -9,12 +9,17 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class RefreshContainer : ContentControl
 {
-	private IRefreshInfoProviderAdapter GetDefaultRefreshInfoProvider()
+	private void SetDefaultRefreshInfoProviderAdapter()
 	{
+		if (m_refreshInfoProviderAdapter is not null)
+		{
+			m_refreshInfoProviderAdapter.Dispose();
+		}
+		
 #if !__ANDROID__ && !__IOS__
-		return new StubIRefreshInfoProviderAdapter();
+		m_refreshInfoProviderAdapter =  new StubIRefreshInfoProviderAdapter();
 #else
-		return new NativeIRefreshInfoProviderAdapter(this);
+		m_refreshInfoProviderAdapter = new NativeRefreshInfoProviderAdapter(this);
 #endif
 	}
 }

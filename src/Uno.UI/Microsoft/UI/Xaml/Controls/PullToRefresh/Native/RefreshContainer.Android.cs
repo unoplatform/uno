@@ -15,7 +15,6 @@ public partial class RefreshContainer : ContentControl
 	private readonly SerialDisposable _refreshSubscription = new SerialDisposable();
 	private readonly SerialDisposable _nativeScrollViewAttachment = new SerialDisposable();
 	private NativeRefreshControl? _refreshControl = null;
-	private bool _managedIsRefreshing = false;
 
 	private void InitializePlatform()
 	{
@@ -59,7 +58,7 @@ public partial class RefreshContainer : ContentControl
 
 	private bool IsNativeRefreshing => _refreshControl?.Refreshing ?? false;
 
-	private void EndNativeRefreshing()
+	internal void EndNativeRefreshing()
 	{
 		if (_refreshControl is not null)
 		{
@@ -82,7 +81,7 @@ public partial class RefreshContainer : ContentControl
 		}
 	}
 
-	private void RequestRefreshPlatform()
+	internal void RequestRefreshPlatform()
 	{
 		if (_refreshControl != null)
 		{

@@ -2,12 +2,13 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference ScrollViewerIRefreshInfoProviderAdapter.idl, commit c6174f1
 
+using System;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Private.Controls;
 
-internal interface IRefreshInfoProviderAdapter
+internal interface IRefreshInfoProviderAdapter : IDisposable
 {
 	IRefreshInfoProvider AdaptFromTree(UIElement root, Size visualizerSize);
 
