@@ -36,6 +36,8 @@ internal class NativeRefreshInfoProviderAdapter : IRefreshInfoProviderAdapter
 
 	public void SetAnimations(UIElement refreshVisualizerAnimatableContainer)
 	{
+		// TODO: Make visible
+		refreshVisualizerAnimatableContainer.Visibility = Visibility.Collapsed;
 	}
 
 	public void Dispose()

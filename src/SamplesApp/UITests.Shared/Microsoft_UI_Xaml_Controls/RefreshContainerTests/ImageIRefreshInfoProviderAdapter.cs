@@ -174,10 +174,12 @@ namespace MUXControlsTestApp
         {
             return (refreshPullDirection == RefreshPullDirection.TopToBottom || refreshPullDirection == RefreshPullDirection.BottomToTop);
         }
-    }
+
+		public void Dispose() { }		
+	}
 
 
-    internal class RefreshInfoProviderImplementation : IRefreshInfoProvider, IInteractionTrackerOwner
+	internal class RefreshInfoProviderImplementation : IRefreshInfoProvider, IInteractionTrackerOwner
     {
         double executionRatio = 0.8;
         RefreshPullDirection refreshPullDirection;
@@ -326,8 +328,6 @@ namespace MUXControlsTestApp
                 interactionRatioChangedCount++;
             }
         }
-
-		public void Dispose() { }
     }
 }
 #endif
