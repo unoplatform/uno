@@ -155,13 +155,13 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		public void SetOwner(CoreWindow owner)
+		internal void SetOwner(CoreWindow owner)
 		{
 			_owner = new WeakReference<CoreWindow>(owner);
 			_ownerEvents = (ICoreWindowEvents)owner;
 		}
 
-		public CoreWindow GetOwner() =>
+		internal CoreWindow GetOwner() =>
 			_owner != null && _owner.TryGetTarget(out var target) && target is { }
 			? target
 			: null;
