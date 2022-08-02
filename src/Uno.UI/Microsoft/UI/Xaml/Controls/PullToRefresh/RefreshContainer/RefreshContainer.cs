@@ -22,4 +22,13 @@ public partial class RefreshContainer : ContentControl
 		m_refreshInfoProviderAdapter = new NativeRefreshInfoProviderAdapter(this);
 #endif
 	}
+
+	private void SetDefaultRefreshVisualizer()
+	{
+#if !__ANDROID__ && !__IOS__
+		Visualizer = new RefreshVisualizer();
+#else
+		Visualizer = new NativeRefreshVisualizer();
+#endif
+	}
 }

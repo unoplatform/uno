@@ -41,6 +41,7 @@ using IRefreshContainerPrivate = Microsoft.UI.Private.Controls.IRefreshContainer
 using IRefreshInfoProvider = Microsoft.UI.Private.Controls.IRefreshInfoProvider;
 using IRefreshVisualizerPrivate = Microsoft.UI.Private.Controls.IRefreshVisualizerPrivate;
 using System.Threading.Tasks;
+using Intents;
 #endif
 
 namespace MUXControlsTestApp
@@ -87,6 +88,7 @@ namespace MUXControlsTestApp
             this.AdaptButton.Click += AdaptButton_Click;
             this.RotateButton.Click += RotateButton_Click;
             this.ChangeAlignment.Click += ChangeAlignmentButton_Click;
+			this.ChangeVisualizer.Click += ChangeVisualizer_Click;
             this.AddOrRemoveRefreshDelay.Click += AddOrRemoveRefreshDelayButton_Click;
 
             this.RCRefreshRequestedComboBox.Items.Add("Off");
@@ -246,7 +248,14 @@ namespace MUXControlsTestApp
             }
         }
 
-        private void AddOrRemoveRefreshDelayButton_Click(object sender, RoutedEventArgs e)
+		private void ChangeVisualizer_Click(object sender, RoutedEventArgs e)
+		{
+			var symbolIcon = new SymbolIcon() { Symbol = Symbol.Home };
+			this.RefreshContainer.Visualizer = new RefreshVisualizer() { Content = symbolIcon };
+		}
+
+
+		private void AddOrRemoveRefreshDelayButton_Click(object sender, RoutedEventArgs e)
         {
             delayRefresh = !delayRefresh;
         }

@@ -21,7 +21,7 @@ public partial class RefreshContainer : ContentControl
 	private NativeRefreshControl _refreshControl = null!;
 	private UIScrollView? _ownerScrollView = null;
 
-	private void InitializePlatform()
+	partial void InitializePlatformPartial()
 	{
 		_refreshControl = new NativeRefreshControl();
 		this.Loaded += OnLoaded;
@@ -114,5 +114,20 @@ public partial class RefreshContainer : ContentControl
 				scrollView.AlwaysBounceVertical = originalBounceSetting;
 			});
 		}	
+	}
+
+	private SerialDisposable _refreshVisualizerSubscriptions = new SerialDisposable();
+	
+	partial void OnRefreshVisualizerChangedPartial()
+	{
+		_refreshVisualizerSubscriptions.Disposable = null;
+		if (Visualizer is null || Visualizer is NativeRefreshVisualizer)
+		{
+			return;
+		}
+		var visualizer = Visualizer;
+		_refreshControl.AddSubview(visualizer);
+		visualizer.Bounds = _refreshControl.Bounds;
+		_refreshVisualizerSubscriptions.Disposable = Disposable.Create(() => visualizer.RemoveFromSuperview());
 	}
 }

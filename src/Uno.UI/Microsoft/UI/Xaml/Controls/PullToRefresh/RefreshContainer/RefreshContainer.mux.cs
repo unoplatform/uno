@@ -82,6 +82,9 @@ public partial class RefreshContainer : ContentControl
 		//IControlProtected thisAsControlProtected = this;
 		m_root = (Panel)GetTemplateChild("Root");
 		m_refreshVisualizerPresenter = (Panel)GetTemplateChild("RefreshVisualizerPresenter");
+#if HAS_UNO
+		//m_refreshVisualizerPresenter.Visibility = Visibility.Collapsed;
+#endif
 		// END: Populate template children
 
 		if (m_root != null)
@@ -93,7 +96,9 @@ public partial class RefreshContainer : ContentControl
 		m_refreshVisualizer = Visualizer;
 		if (m_refreshVisualizer == null)
 		{
-			Visualizer = new RefreshVisualizer();
+#if HAS_UNO
+			SetDefaultRefreshVisualizer();
+#endif
 			m_hasDefaultRefreshVisualizer = true;
 		}
 		else
@@ -160,6 +165,7 @@ public partial class RefreshContainer : ContentControl
 				m_refreshVisualizerPresenter.Children.Add(m_refreshVisualizer);
 			}
 		}
+		OnRefreshVisualizerChangedPartial();
 
 		if (m_refreshVisualizer != null)
 		{
@@ -167,6 +173,8 @@ public partial class RefreshContainer : ContentControl
 			m_refreshVisualizer.RefreshRequested += OnVisualizerRefreshRequested;
 		}
 	}
+
+	partial void OnRefreshVisualizerChangedPartial();
 
 	private void OnPullDirectionChanged(DependencyPropertyChangedEventArgs args)
 	{

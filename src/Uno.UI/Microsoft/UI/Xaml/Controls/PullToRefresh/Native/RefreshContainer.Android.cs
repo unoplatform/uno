@@ -16,7 +16,7 @@ public partial class RefreshContainer : ContentControl
 	private readonly SerialDisposable _nativeScrollViewAttachment = new SerialDisposable();
 	private NativeRefreshControl? _refreshControl = null;
 
-	private void InitializePlatform()
+	partial void InitializePlatformPartial()
 	{
 		this.Loaded += OnLoaded;
 		this.Unloaded += OnUnloaded;
