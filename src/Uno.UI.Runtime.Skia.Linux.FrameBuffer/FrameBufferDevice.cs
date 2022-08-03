@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using SkiaSharp;
 using Uno.UI.Runtime.Skia.Native;
+using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 
 namespace Uno.UI.Runtime.Skia
@@ -38,8 +39,23 @@ namespace Uno.UI.Runtime.Skia
 		/// <summary>
 		/// Pixel format information
 		/// </summary>
-		public SKColorType PixelFormat
-			=> _screenInfo.blue.offset == 16 ? SKColorType.Rgba8888 : SKColorType.Bgra8888;
+		public SKColorType PixelFormat =>
+			_screenInfo.bits_per_pixel switch
+			{
+				32 => _screenInfo.blue.offset == 16
+					? SKColorType.Rgba8888
+					: SKColorType.Bgra8888,
+				16 => _screenInfo.red.offset == 11
+					? SKColorType.Rgb565
+					: throw new NotSupportedException($"RGB555 is not supported by Uno Platform"),
+				_ => throw new NotSupportedException($"{_screenInfo.bits_per_pixel} bpp framebuffer is not supported"),
+			};
+
+		/// <summary>
+		/// Screen physical size in millimeters
+		/// </summary>
+		public Size ScreenPhysicalDimensions
+			=> new((int)_screenInfo.width, (int)_screenInfo.height);
 
 		/// <summary>
 		/// Builds a FrameBufferDevice instance.
@@ -83,7 +99,10 @@ namespace Uno.UI.Runtime.Skia
 
 				if (_screenInfo.bits_per_pixel != 32)
 				{
-					throw new InvalidOperationException("Failed to set 32 bits display mode");
+					if(_screenInfo.bits_per_pixel != 16)
+					{
+						throw new InvalidOperationException($"Failed to set 32 bits display mode (Found {_screenInfo.bits_per_pixel})");
+					}
 				}
 			}
 
