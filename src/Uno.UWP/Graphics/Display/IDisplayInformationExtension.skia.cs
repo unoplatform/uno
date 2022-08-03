@@ -14,4 +14,6 @@ public interface IDisplayInformationExtension
 	double RawPixelsPerViewPixel { get; }
 
 	ResolutionScale ResolutionScale { get; }
+
+	double? DiagonalSizeInInches { get; }
 }
