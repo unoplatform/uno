@@ -23,7 +23,6 @@ public partial class RefreshContainer : ContentControl
 
 	partial void InitializePlatformPartial()
 	{
-		_refreshControl = new NativeRefreshControl();
 		this.Loaded += OnLoaded;
 		this.Unloaded += OnUnloaded;
 	}
@@ -39,19 +38,7 @@ public partial class RefreshContainer : ContentControl
 		}
 	}
 
-	private void OnLoaded(object sender, RoutedEventArgs e)
-	{
-		if (_refreshControl.Superview != null)
-		{
-			_refreshControl.RemoveFromSuperview();
-		}
-
-
-		AttachToNativeScrollView();
-
-		_refreshControl.ValueChanged += OnRefreshControlValueChanged;
-		_refreshSubscription.Disposable = Disposable.Create(() => _refreshControl.ValueChanged -= OnRefreshControlValueChanged);
-	}
+	private void OnLoaded(object sender, RoutedEventArgs e) => InitializeRefreshControl();
 
 	private void OnUnloaded(object sender, RoutedEventArgs e)
 	{
@@ -64,6 +51,26 @@ public partial class RefreshContainer : ContentControl
 	private bool IsNativeRefreshing => _refreshControl.Refreshing;
 
 	internal void EndNativeRefreshing() => _refreshControl.EndRefreshing();
+
+	private void InitializeRefreshControl()
+	{
+		if (_refreshControl is not null)
+		{
+			_refreshControl.EndRefreshing();
+			_refreshSubscription.Disposable = null;
+		}
+
+		_refreshControl = new NativeRefreshControl();
+		if (_refreshControl.Superview != null)
+		{
+			_refreshControl.RemoveFromSuperview();
+		}
+
+		AttachToNativeScrollView();
+
+		_refreshControl.ValueChanged += OnRefreshControlValueChanged;
+		_refreshSubscription.Disposable = Disposable.Create(() => _refreshControl.ValueChanged -= OnRefreshControlValueChanged);
+	}
 
 	protected override void OnContentChanged(object oldValue, object newValue)
 	{
@@ -80,6 +87,7 @@ public partial class RefreshContainer : ContentControl
 		if (this.FindFirstChild<UIScrollView>() is { } scrollView)
 		{
 			_ownerScrollView = scrollView;
+
 			foreach (var existingRefresh in scrollView.Subviews.OfType<NativeRefreshControl>())
 			{
 				// We can get a scroll view that already has a refresh control due to template reuse. 
@@ -121,13 +129,25 @@ public partial class RefreshContainer : ContentControl
 	partial void OnRefreshVisualizerChangedPartial()
 	{
 		_refreshVisualizerSubscriptions.Disposable = null;
-		if (Visualizer is null || Visualizer is NativeRefreshVisualizer)
+		if (Visualizer is null)
 		{
 			return;
 		}
 		var visualizer = Visualizer;
-		_refreshControl.AddSubview(visualizer);
-		visualizer.Bounds = _refreshControl.Bounds;
-		_refreshVisualizerSubscriptions.Disposable = Disposable.Create(() => visualizer.RemoveFromSuperview());
+		if (visualizer is NativeRefreshVisualizer)
+		{
+			InitializeRefreshControl();
+		}
+		else
+		{
+			var subviews = _refreshControl.Subviews.ToArray();
+			foreach (var subview in subviews)
+			{
+				subview.RemoveFromSuperview();
+			}
+			_refreshControl.AddSubview(visualizer);
+			visualizer.Bounds = _refreshControl.Bounds;
+			_refreshVisualizerSubscriptions.Disposable = Disposable.Create(() => visualizer.RemoveFromSuperview());
+		}
 	}
 }
