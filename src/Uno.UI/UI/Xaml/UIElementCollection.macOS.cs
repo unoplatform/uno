@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				_owner.AddSubview(item, NSWindowOrderingMode.Above, _owner.Subviews[index]);
+				_owner.AddSubview(item, NSWindowOrderingMode.Below, _owner.Subviews[index]);
 			}
 		}
 

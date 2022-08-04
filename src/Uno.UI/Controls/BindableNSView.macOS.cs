@@ -37,7 +37,40 @@ namespace Uno.UI.Controls
 			// the items has been added other than by getting the complete list.
 			// Subviews materializes a new array at every call, which makes it safe to
 			// reference.
-			_shadowChildren = new MaterializableList<NSView>(Subviews);
+			SyncShadowChildren();
+		}
+
+		public override void ReplaceSubviewWith(NSView oldView, NSView newView)
+		{
+			base.ReplaceSubviewWith(oldView, newView);
+			SyncShadowChildren();
+		}
+
+		public override void AddSubview(NSView aView, NSWindowOrderingMode place, NSView otherView)
+		{
+			base.AddSubview(aView, place, otherView);
+			SyncShadowChildren();
+		}
+
+		private void SyncShadowChildren()
+		{
+			var subviews = Subviews;
+			while (_shadowChildren.Count > subviews.Length)
+			{
+				_shadowChildren.RemoveAt(_shadowChildren.Count - 1);
+			}
+
+			while (_shadowChildren.Count < subviews.Length)
+			{
+				_shadowChildren.Add(subviews[_shadowChildren.Count]);
+			}
+
+			// Ensure both collections are in sync
+			for (int i = 0; i < subviews.Length; i++)
+			{
+				_shadowChildren[i] = subviews[i];
+			}
+
 		}
 
 		internal List<NSView>.Enumerator GetChildrenEnumerator() => _shadowChildren.Materialized.GetEnumerator();
