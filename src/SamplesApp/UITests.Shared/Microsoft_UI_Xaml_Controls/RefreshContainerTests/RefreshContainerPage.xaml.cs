@@ -41,7 +41,6 @@ using IRefreshContainerPrivate = Microsoft.UI.Private.Controls.IRefreshContainer
 using IRefreshInfoProvider = Microsoft.UI.Private.Controls.IRefreshInfoProvider;
 using IRefreshVisualizerPrivate = Microsoft.UI.Private.Controls.IRefreshVisualizerPrivate;
 using System.Threading.Tasks;
-using Intents;
 #endif
 
 namespace MUXControlsTestApp

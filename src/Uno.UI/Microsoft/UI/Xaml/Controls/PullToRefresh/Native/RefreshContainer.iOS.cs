@@ -19,6 +19,7 @@ public partial class RefreshContainer : ContentControl
 {
 	private readonly SerialDisposable _refreshSubscription = new SerialDisposable();
 	private readonly SerialDisposable _nativeScrollViewAttachment = new SerialDisposable();
+	private readonly SerialDisposable _refreshVisualizerSubscriptions = new SerialDisposable();
 	private NativeRefreshControl? _refreshControl = null;
 	private UIScrollView? _ownerScrollView = null;
 
@@ -147,8 +148,6 @@ public partial class RefreshContainer : ContentControl
 			});
 		}
 	}
-
-	private SerialDisposable _refreshVisualizerSubscriptions = new SerialDisposable();
 
 	partial void OnRefreshVisualizerChangedPartial()
 	{

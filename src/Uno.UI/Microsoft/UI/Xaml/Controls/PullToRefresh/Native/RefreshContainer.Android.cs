@@ -5,7 +5,9 @@ using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -14,6 +16,7 @@ public partial class RefreshContainer : ContentControl
 	private const int IndicatorHeight = 64;
 	private readonly SerialDisposable _refreshSubscription = new SerialDisposable();
 	private readonly SerialDisposable _nativeScrollViewAttachment = new SerialDisposable();
+	private readonly SerialDisposable _refreshVisualizerSubscriptions = new SerialDisposable();
 	private NativeRefreshControl? _refreshControl = null;
 
 	partial void InitializePlatformPartial()
@@ -31,6 +34,7 @@ public partial class RefreshContainer : ContentControl
 				$"{nameof(NativeRefreshControl)} in its hierarchy.");
 
 		SubscribeToRefresh();
+		OnRefreshVisualizerChangedPartial();
 	}
 
 	private void OnLoaded(object sender, EventArgs e)
@@ -90,11 +94,40 @@ public partial class RefreshContainer : ContentControl
 		}
 	}
 
-	private void SetIndicatorOffset(Point newValue)
+	partial void OnRefreshVisualizerChangedPartial()
 	{
-		if (newValue.Y != 0)
+		_refreshVisualizerSubscriptions.Disposable = null;
+
+		if (_refreshControl is null || Visualizer is null)
 		{
-			_refreshControl?.SetProgressViewEndTarget(true, ViewHelper.LogicalToPhysicalPixels(newValue.Y + IndicatorHeight));
+			return;
+		}
+
+		var visualizer = Visualizer;
+		var compositeDisposable = new CompositeDisposable();
+		compositeDisposable.Add(visualizer.RegisterDisposablePropertyChangedCallback(RefreshVisualizer.ForegroundProperty, OnVisualizerPropertyChanged));
+		compositeDisposable.Add(visualizer.RegisterDisposablePropertyChangedCallback(RefreshVisualizer.BackgroundProperty, OnVisualizerPropertyChanged));
+		_refreshVisualizerSubscriptions.Disposable = compositeDisposable;
+	}
+
+	private void OnVisualizerPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+	{
+		if (_refreshControl is null || Visualizer is not { } visualizer)
+		{
+			return;
+		}
+
+		if (visualizer.Foreground is SolidColorBrush foregroundBrush)
+		{
+			var androidIndicatorColor = (int)(Android.Graphics.Color)foregroundBrush.ColorWithOpacity;
+			var indicatorColorScheme = new[] { androidIndicatorColor };
+			_refreshControl.SetColorSchemeColors(indicatorColorScheme);
+		}
+
+		if (visualizer.Background is SolidColorBrush backgroundBrush)
+		{
+			var androidBackgroundColor = (int)(Android.Graphics.Color)backgroundBrush.ColorWithOpacity;
+			_refreshControl.SetProgressBackgroundColorSchemeColor(androidBackgroundColor);
 		}
 	}
 }
