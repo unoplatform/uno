@@ -37,7 +37,7 @@ namespace Windows.Graphics.Display
 		public float RawDpiY { get; private set; } = 0;
 #endif
 
-#if __WASM__ || __IOS__ || __MACOS__ || NET461 || __SKIA__ || __NETSTD_REFERENCE__
+#if __WASM__ || __IOS__ || __MACOS__ || NET461 || __NETSTD_REFERENCE__
 		/// <summary>
 		/// Diagonal size of the display in inches.
 		/// </summary>
@@ -45,7 +45,7 @@ namespace Windows.Graphics.Display
 		/// As per <see href="https://docs.microsoft.com/en-us/uwp/api/windows.graphics.display.displayinformation.diagonalsizeininches#property-value">Docs</see> 
 		/// defaults to null if not set
 		/// </remarks>
-		[global::Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[global::Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public double? DiagonalSizeInInches { get; private set; }
 #endif
 

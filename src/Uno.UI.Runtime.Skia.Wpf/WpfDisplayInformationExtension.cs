@@ -31,6 +31,8 @@ namespace Uno.UI.Skia.Platform
 
 		public ResolutionScale ResolutionScale => (ResolutionScale)(int)(RawPixelsPerViewPixel * 100.0);
 
+		public double? DiagonalSizeInInches => null;
+
 		private void OnDpiChanged(object sender, DpiChangedEventArgs e)
 		{
 			_dpi = GetDpi();
