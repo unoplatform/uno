@@ -11,6 +11,7 @@ using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -18,17 +19,22 @@ public partial class RefreshContainer : ContentControl
 {
 	private readonly SerialDisposable _refreshSubscription = new SerialDisposable();
 	private readonly SerialDisposable _nativeScrollViewAttachment = new SerialDisposable();
-	private NativeRefreshControl _refreshControl = null!;
+	private NativeRefreshControl? _refreshControl = null;
 	private UIScrollView? _ownerScrollView = null;
 
 	partial void InitializePlatformPartial()
 	{
-		this.Loaded += OnLoaded;
-		this.Unloaded += OnUnloaded;
+		Loaded += OnLoaded;
+		Unloaded += OnUnloaded;
 	}
 
 	internal void RequestRefreshPlatform()
 	{
+		if (_refreshControl is null)
+		{
+			return;
+		}
+
 		if (!_refreshControl.Refreshing)
 		{
 			_refreshControl.BeginRefreshing();
@@ -38,19 +44,23 @@ public partial class RefreshContainer : ContentControl
 		}
 	}
 
-	private void OnLoaded(object sender, RoutedEventArgs e) => InitializeRefreshControl();
-
-	private void OnUnloaded(object sender, RoutedEventArgs e)
+	private void OnLoaded(object sender, RoutedEventArgs e)
 	{
-		_refreshControl.EndRefreshing();
-		_refreshSubscription.Disposable = null;
+		InitializeRefreshControl();
+		OnRefreshVisualizerChangedPartial();
 	}
+
+	private void OnUnloaded(object sender, RoutedEventArgs e) => CleanupRefreshControl();
 
 	private void OnRefreshControlValueChanged(object? sender, EventArgs e) => OnNativeRefreshingChanged();
 
-	private bool IsNativeRefreshing => _refreshControl.Refreshing;
-
-	internal void EndNativeRefreshing() => _refreshControl.EndRefreshing();
+	internal void EndNativeRefreshing()
+	{
+		if (_refreshControl is not null)
+		{
+			_refreshControl.EndRefreshing();
+		}
+	}
 
 	private void InitializeRefreshControl()
 	{
@@ -72,10 +82,19 @@ public partial class RefreshContainer : ContentControl
 		_refreshSubscription.Disposable = Disposable.Create(() => _refreshControl.ValueChanged -= OnRefreshControlValueChanged);
 	}
 
+	private void CleanupRefreshControl()
+	{
+		if (_refreshControl is not null)
+		{
+			_refreshControl.EndRefreshing();
+			_refreshSubscription.Disposable = null;
+		}
+	}
+
 	protected override void OnContentChanged(object oldValue, object newValue)
 	{
 		base.OnContentChanged(oldValue, newValue);
-		
+
 		_nativeScrollViewAttachment.Disposable = null;
 
 		AttachToNativeScrollView();
@@ -83,6 +102,11 @@ public partial class RefreshContainer : ContentControl
 
 	private void AttachToNativeScrollView()
 	{
+		if (_refreshControl is null)
+		{
+			return;
+		}
+
 		// Inject the UIRefreshControl into the first scrollable element found in the hierarchy		
 		if (this.FindFirstChild<UIScrollView>() is { } scrollView)
 		{
@@ -121,33 +145,42 @@ public partial class RefreshContainer : ContentControl
 				}
 				scrollView.AlwaysBounceVertical = originalBounceSetting;
 			});
-		}	
+		}
 	}
 
 	private SerialDisposable _refreshVisualizerSubscriptions = new SerialDisposable();
-	
+
 	partial void OnRefreshVisualizerChangedPartial()
 	{
 		_refreshVisualizerSubscriptions.Disposable = null;
-		if (Visualizer is null)
+
+		if (_refreshControl is null || Visualizer is null)
 		{
 			return;
 		}
+
 		var visualizer = Visualizer;
-		if (visualizer is NativeRefreshVisualizer)
+		var compositeDisposable = new CompositeDisposable();
+		compositeDisposable.Add(visualizer.RegisterDisposablePropertyChangedCallback(RefreshVisualizer.ForegroundProperty, OnVisualizerPropertyChanged));
+		compositeDisposable.Add(visualizer.RegisterDisposablePropertyChangedCallback(RefreshVisualizer.BackgroundProperty, OnVisualizerPropertyChanged));
+		_refreshVisualizerSubscriptions.Disposable = compositeDisposable;
+	}
+
+	private void OnVisualizerPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+	{
+		if (_refreshControl is null || Visualizer is not { } visualizer)
 		{
-			InitializeRefreshControl();
+			return;
 		}
-		else
+
+		if (visualizer.Foreground is SolidColorBrush foregroundBrush)
 		{
-			var subviews = _refreshControl.Subviews.ToArray();
-			foreach (var subview in subviews)
-			{
-				subview.RemoveFromSuperview();
-			}
-			_refreshControl.AddSubview(visualizer);
-			visualizer.Bounds = _refreshControl.Bounds;
-			_refreshVisualizerSubscriptions.Disposable = Disposable.Create(() => visualizer.RemoveFromSuperview());
+			_refreshControl.TintColor = foregroundBrush.ColorWithOpacity;
+		}
+
+		if (visualizer.Background is SolidColorBrush backgroundBrush)
+		{
+			_refreshControl.BackgroundColor = backgroundBrush.ColorWithOpacity;
 		}
 	}
 }
