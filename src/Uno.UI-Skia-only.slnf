@@ -7,6 +7,7 @@
       "SamplesApp\\Benchmarks.Shared\\SamplesApp.Benchmarks.shproj",
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
       "SamplesApp\\SamplesApp.Skia.Gtk\\SamplesApp.Skia.Gtk.csproj",
+      "SamplesApp\\SamplesApp.Skia.Linux.FrameBuffer\\SamplesApp.Skia.Linux.FrameBuffer.csproj",
       "SamplesApp\\SamplesApp.Skia.Tizen\\SamplesApp.Skia.Tizen.csproj",
       "SamplesApp\\SamplesApp.Skia.WPF\\SamplesApp.Skia.WPF.csproj",
       "SamplesApp\\SamplesApp.Skia\\SamplesApp.Skia.csproj",
