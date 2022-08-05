@@ -6,7 +6,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml.ThemeResources
 {
-	[SampleControlInfo("XAML", "BasicThemeResources")]
+	[Sample("XAML")]
 	public sealed partial class BasicThemeResources : Page
 	{
 		public BasicThemeResources()
@@ -20,7 +20,7 @@ namespace UITests.Shared.Windows_UI_Xaml.ThemeResources
 
 		private ApplicationTheme ApplicationTheme { get; }
 
-		public static DependencyProperty LocalThemeProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty LocalThemeProperty { get; } = DependencyProperty.Register(
 			"LocalTheme", typeof(ElementTheme), typeof(BasicThemeResources), new PropertyMetadata(default(ElementTheme)));
 
 		public ElementTheme LocalTheme
@@ -29,20 +29,20 @@ namespace UITests.Shared.Windows_UI_Xaml.ThemeResources
 			set
 			{
 				SetValue(LocalThemeProperty, value);
-				RequestedTheme = value;
+				RootGrid.RequestedTheme = value;
 			}
 		}
 
-		public static DependencyProperty ParentThemeProperty { get ; } = DependencyProperty.Register(
+		public static DependencyProperty ParentThemeProperty { get; } = DependencyProperty.Register(
 			"ParentTheme", typeof(ElementTheme), typeof(BasicThemeResources), new PropertyMetadata(default(ElementTheme)));
 
 		public ElementTheme ParentTheme
 		{
-			get => ((FrameworkElement)Parent).RequestedTheme;
+			get => RequestedTheme;
 			set
 			{
 				SetValue(ParentThemeProperty, value);
-				((FrameworkElement) Parent).RequestedTheme = value;
+				RequestedTheme = value;
 			}
 		}
 
@@ -52,10 +52,10 @@ namespace UITests.Shared.Windows_UI_Xaml.ThemeResources
 
 		private void LocalLight(object sender, RoutedEventArgs e) => LocalTheme = ElementTheme.Light;
 
-		private void ParentDefault(object sender, RoutedEventArgs e) => LocalTheme = ElementTheme.Default;
+		private void ParentDefault(object sender, RoutedEventArgs e) => ParentTheme = ElementTheme.Default;
 
-		private void ParentDark(object sender, RoutedEventArgs e) => LocalTheme = ElementTheme.Dark;
+		private void ParentDark(object sender, RoutedEventArgs e) => ParentTheme = ElementTheme.Dark;
 
-		private void ParentLight(object sender, RoutedEventArgs e) => LocalTheme = ElementTheme.Light;
+		private void ParentLight(object sender, RoutedEventArgs e) => ParentTheme = ElementTheme.Light;
 	}
 }
