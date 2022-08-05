@@ -816,7 +816,7 @@ namespace Windows.UI.Xaml
 			SetNeedsLayout();
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
 #elif __MACOS__
-			base.NeedsLayout = true;
+			NeedsLayout = true;
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
 #endif
 

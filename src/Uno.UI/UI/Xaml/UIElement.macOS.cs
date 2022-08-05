@@ -96,7 +96,7 @@ namespace Windows.UI.Xaml
 
 		public void SetSubviewsNeedLayout()
 		{
-			base.NeedsLayout = true;
+			NeedsLayout = true;
 
 			if (this is Controls.Panel p)
 			{
