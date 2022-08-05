@@ -66,13 +66,16 @@ namespace Windows.UI.Xaml
 			_windowResizeNotificationObject = NSNotificationCenter.DefaultCenter.AddObserver(
 				new NSString("NSWindowDidResizeNotification"), ResizeObserver, null);
 
-			RaiseNativeSizeChanged(new CGSize(_window.Frame.Width, _window.Frame.Height));
+			RaiseNativeSizeChanged();
 
 		}
 
-		private void ResizeObserver(NSNotification obj)
+		private void ResizeObserver(NSNotification obj) => RaiseNativeSizeChanged();
+
+		private void RaiseNativeSizeChanged()
 		{
-			RaiseNativeSizeChanged(new CGSize(_window.Frame.Width, _window.Frame.Height));
+			var contentRect = _window.ContentRectFor(_window.Frame);
+			RaiseNativeSizeChanged(new CGSize(contentRect.Width, contentRect.Height));
 		}
 
 		partial void InternalActivate()
