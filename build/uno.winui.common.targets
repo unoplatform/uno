@@ -16,7 +16,7 @@
 
 	<Import Project="$(SourceGeneratorBasePath)Uno.UI.SourceGenerators.props" />
 	<Import Project="$(UnoUIMSBuildTasksTargetPath)Uno.UI.Tasks.targets" />
-	<Target Name="_UnoFeatureDefines"
+	<Target Name="_UnoWinUICommonFeatureDefines"
             BeforeTargets="BeforeCompile">
 
 		<!-- 
