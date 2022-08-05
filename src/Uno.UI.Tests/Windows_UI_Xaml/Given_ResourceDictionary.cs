@@ -80,9 +80,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		{
 			var rd = new ResourceDictionary();
 
-			//var retrieved = rd["Nope"]; //Throws on UWP
-
-			;
+			Assert.ThrowsException<KeyNotFoundException>(() => rd["Nope"]); //Throws on UWP
 		}
 
 		[TestMethod]
@@ -202,11 +200,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			var retrievedExplicit = (rd.ThemeDictionaries["Default"] as ResourceDictionary)["Blu"];
 			Assert.AreEqual(Colors.DodgerBlue, ((SolidColorBrush)retrievedExplicit).Color);
-			;
 
 			var retrieved = rd["Blu"];
 			Assert.AreEqual(Colors.CornflowerBlue, ((SolidColorBrush)retrieved).Color);
-			;
 		}
 
 		[TestMethod]

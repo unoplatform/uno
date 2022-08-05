@@ -599,6 +599,76 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual(490, transform.X); // Resource is actually a Thickness!
 		}
 
+		
+		[TestMethod]
+		public async Task When_Application_Theme_Dark_Dark_Resource_Can_Be_Retrieved()
+		{
+			try
+			{
+				await SwapSystemTheme();
+				var dictionary = new ResourceDictionary();
+				var darkTheme = new ResourceDictionary();
+				darkTheme.Add("key", "test");
+				dictionary.ThemeDictionaries.Add("Dark", darkTheme);
+				Assert.AreEqual("test", dictionary["key"]);
+			}
+			finally
+			{
+				await SwapSystemTheme();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Application_Theme_Light_Dark_Resource_Cannot_Be_Retrieved()
+		{
+			var dictionary = new ResourceDictionary();
+			var darkTheme = new ResourceDictionary();
+			darkTheme.Add("key", "test");
+			dictionary.ThemeDictionaries.Add("Dark", darkTheme);
+
+			Assert.ThrowsException<KeyNotFoundException>(() => dictionary["key"]);
+		}
+
+		[TestMethod]
+		public async Task When_Light_Theme_Default_Resource_Can_Be_Retrieved()
+		{
+			var dictionary = new ResourceDictionary();
+
+			var darkTheme = new ResourceDictionary();
+			darkTheme.Add("key", "dark");
+			dictionary.ThemeDictionaries.Add("Dark", darkTheme);
+
+			var defaultTheme = new ResourceDictionary();
+			defaultTheme.Add("key", "default");
+			dictionary.ThemeDictionaries.Add("Default", defaultTheme);
+
+			Assert.AreEqual("default", dictionary["key"]);
+		}
+
+		[TestMethod]
+		public async Task When_Dark_Theme_Dark_Resource_Has_Precedence_Over_Default()
+		{
+			try
+			{
+				await SwapSystemTheme();
+				var dictionary = new ResourceDictionary();
+
+				var darkTheme = new ResourceDictionary();
+				darkTheme.Add("key", "dark");
+				dictionary.ThemeDictionaries.Add("Dark", darkTheme);
+
+				var defaultTheme = new ResourceDictionary();
+				defaultTheme.Add("key", "default");
+				dictionary.ThemeDictionaries.Add("Default", defaultTheme);
+
+				Assert.AreEqual("dark", dictionary["key"]);
+			}
+			finally
+			{
+				await SwapSystemTheme();
+			}
+		}
+
 		[TestMethod]
 		public async Task When_Theme_Bound_Overwritten_By_Local()
 		{
