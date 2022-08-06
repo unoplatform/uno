@@ -231,7 +231,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (!_isInputModifyingText)
 			{
-				_textBoxView?.SetTextNative(Text);
+				_textBoxView?.SetText(Text);
 			}
 
 			UpdatePlaceholderVisibility();
@@ -265,7 +265,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			_textBoxView?.SetTextNative(Text);
+			_textBoxView?.SetText(Text);
 
 		}
 

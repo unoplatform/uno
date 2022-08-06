@@ -104,7 +104,7 @@ namespace Windows.UI.Xaml.Controls
 			InvalidateMeasure();
 		}
 
-		internal void SetTextNative(string text)
+		internal void SetText(string text)
 		{
 			SetProperty("value", text);
 

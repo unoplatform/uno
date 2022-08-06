@@ -172,9 +172,10 @@ namespace Uno.UI.Runtime.Skia
 		{
 			_focusManager ??= VisualTree.GetFocusManagerForElement(Windows.UI.Xaml.Window.Current?.RootElement);
 			_focusManager?.FocusRectManager?.RedrawFocusVisual();
+
 			if (_focusManager?.FocusedElement is TextBox textBox)
 			{
-				textBox.TextBoxView?.Extension?.InvalidateLayout();
+				textBox.TextBoxView?.InvalidateLayout();
 			}
 		}
 

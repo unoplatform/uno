@@ -10,15 +10,16 @@ using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
-	internal class TextBoxView
+	internal class NativeTextBoxView : ITextBoxView
 	{
 		private readonly ITextBoxViewExtension? _textBoxExtension;
 
 		private readonly WeakReference<TextBox> _textBox;
+		private readonly TextBlock _displayBlock = new TextBlock();
 		private readonly bool _isPasswordBox;
 		private bool _isPasswordRevealed;
 
-		public TextBoxView(TextBox textBox)
+		public NativeTextBoxView(TextBox textBox)
 		{
 			_textBox = new WeakReference<TextBox>(textBox);
 			_isPasswordBox = textBox is PasswordBox;
@@ -27,13 +28,11 @@ namespace Windows.UI.Xaml.Controls
 				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
 					this.Log().LogWarning(
-						"No TextBoxView implementation is available " +
+						"No TextBoxView extension implementation is available " +
 						"for this Skia target. Functionality will be limited.");
 				}
 			}
 		}
-
-		internal ITextBoxViewExtension? Extension => _textBoxExtension;
 
 		public TextBox? TextBox
 		{
@@ -47,47 +46,47 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal int GetSelectionStart() => _textBoxExtension?.GetSelectionStart() ?? 0;
+		public int GetSelectionStart() => _textBoxExtension?.GetSelectionStart() ?? 0;
 
-		internal int GetSelectionLength() => _textBoxExtension?.GetSelectionLength() ?? 0;
+		public int GetSelectionLength() => _textBoxExtension?.GetSelectionLength() ?? 0;
 
-		public TextBlock DisplayBlock { get; } = new TextBlock();
+		public UIElement Content => _displayBlock;
 
-		internal void SetTextNative(string text)
+		public void SetText(string text)
 		{
 			// TODO: Inheritance hierarchy is wrong in Uno. PasswordBox shouldn't inherit TextBox.
 			// This needs to be moved to PasswordBox if it's separated from TextBox.
 			if (_isPasswordBox && !_isPasswordRevealed)
 			{
 				// TODO: PasswordChar isn't currently implemented. It should be used here when implemented.
-				DisplayBlock.Text = new string('•', text.Length);
+				_displayBlock.Text = new string('•', text.Length);
 			}
 			else
 			{
-				DisplayBlock.Text = text;
+				_displayBlock.Text = text;
 			}
 
 			_textBoxExtension?.SetTextNative(text);
 		}
 
-		internal void Select(int start, int length)
+		public void Select(int start, int length)
 		{
 			_textBoxExtension?.Select(start, length);
 		}
 
-		internal void OnForegroundChanged(Brush brush)
+		public void OnForegroundChanged(Brush brush)
 		{
-			DisplayBlock.Foreground = brush;
+			_displayBlock.Foreground = brush;
 			_textBoxExtension?.SetForeground(brush);
 		}
 
-		internal void OnFocusStateChanged(FocusState focusState)
+		public void OnFocusStateChanged(FocusState focusState)
 		{
 			if (focusState != FocusState.Unfocused)
 			{
-				DisplayBlock.Opacity = 0;
+				_displayBlock.Opacity = 0;
 				_textBoxExtension?.StartEntry();
-				
+
 				var selectionStart = this.GetSelectionStart();
 
 				if (selectionStart == 0)
@@ -95,20 +94,24 @@ namespace Windows.UI.Xaml.Controls
 					int cursorPosition = selectionStart + TextBox?.Text?.Length ?? 0;
 
 					_textBoxExtension?.Select(cursorPosition, 0);
-				}				
+				}
 			}
 			else
 			{
 				_textBoxExtension?.EndEntry();
-				DisplayBlock.Opacity = 1;								
+				_displayBlock.Opacity = 1;
 			}
 		}
 
-		internal void SetIsPassword(bool isPassword)
+		public void SetIsPassword(bool isPassword)
 		{
 			_isPasswordRevealed = !isPassword;
 			_textBoxExtension?.SetIsPassword(isPassword);
 		}
+
+		public void UpdateMaxLength() => _textBoxExtension?.UpdateNativeView();
+
+		public void InvalidateLayout() => _textBoxExtension?.InvalidateLayout();
 
 		internal void UpdateTextFromNative(string newText)
 		{
@@ -118,11 +121,9 @@ namespace Windows.UI.Xaml.Controls
 				var text = textBox.ProcessTextInput(newText);
 				if (text != newText)
 				{
-					SetTextNative(text);
+					SetText(text);
 				}
 			}
 		}
-
-		public void UpdateMaxLength() => _textBoxExtension?.UpdateNativeView();
 	}
 }

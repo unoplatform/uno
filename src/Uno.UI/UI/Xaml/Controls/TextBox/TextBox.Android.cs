@@ -106,7 +106,7 @@ namespace Windows.UI.Xaml.Controls
 					_textBoxView = new TextBoxView(this);
 
 					_contentElement.Content = _textBoxView;
-					_textBoxView.SetTextNative(Text);
+					_textBoxView.SetText(Text);
 
 					_editableFactory = _editableFactory ?? new Factory(WeakReferencePool.RentSelfWeakReference(this));
 					_textBoxView.SetEditableFactory(_editableFactory);

@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 
 		Brush Foreground { get; set; }
-		void SetTextNative(string text);
+		void SetText(string text);
 		void Select(int start, int length);
 
 #if NET6_0_OR_GREATER && __IOS__

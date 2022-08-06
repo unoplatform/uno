@@ -24,7 +24,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 	{
 		private const string TextBoxViewCssClass = "textboxview";
 
-		private readonly TextBoxView _owner;
+		private readonly NativeTextBoxView _owner;
 		private readonly GtkWindow _window;
 		private ContentControl? _contentElement;
 		private Widget? _currentInputWidget;
@@ -37,7 +37,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 
 		private readonly SerialDisposable _textChangedDisposable = new SerialDisposable();
 
-		public TextBoxViewExtension(TextBoxView owner, GtkWindow window)
+		public TextBoxViewExtension(NativeTextBoxView owner, GtkWindow window)
 		{
 			_owner = owner ?? throw new ArgumentNullException(nameof(owner));
 			_window = window ?? throw new ArgumentNullException(nameof(window));

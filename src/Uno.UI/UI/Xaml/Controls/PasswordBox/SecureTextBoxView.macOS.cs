@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml.Controls
 			if (textBox != null)
 			{
 				var text = textBox.ProcessTextInput(Text);
-				SetTextNative(text);
+				SetText(text);
 
 				// Launch the invalidation of the measure + layout on the first _managed_ element
 				// Native elements will be relayouted correctly at the same time.
@@ -68,7 +68,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public void SetTextNative(string text) => Text = text;
+		public void SetText(string text) => Text = text;
 
 		private void Initialize()
 		{

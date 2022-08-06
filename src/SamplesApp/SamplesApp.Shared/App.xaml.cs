@@ -616,7 +616,7 @@ namespace SamplesApp
 			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
 			var textBox = new TextBox();
 			textBox.XamlRoot = rootFrame.XamlRoot;
-			var textBoxView = new TextBoxView(textBox);
+			var textBoxView = new NativeTextBoxView(textBox);
 			ApiExtensibility.CreateInstance<ITextBoxViewExtension>(textBoxView, out var textBoxViewExtension);
 			Assert.IsTrue(textBoxViewExtension.IsNativeOverlayLayerInitialized);
 #endif

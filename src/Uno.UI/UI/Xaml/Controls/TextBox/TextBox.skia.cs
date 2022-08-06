@@ -1,13 +1,19 @@
-﻿using Windows.UI.Xaml.Media;
+﻿using Uno.UI;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Documents.TextFormatting;
+using Windows.UI.Xaml.Media;
+
+#nullable enable
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class TextBox
+	public partial class TextBox : IBlock
 	{
-		private TextBoxView _textBoxView;
+		private ITextBoxView? _textBoxView;
+		private InlineCollection? _inlines;
 
-		internal TextBoxView TextBoxView => _textBoxView;
-		
+		internal ITextBoxView? TextBoxView => _textBoxView;
+
 		internal ContentControl ContentElement => _contentElement;
 
 		partial void OnForegroundColorChangedPartial(Brush newValue) => TextBoxView?.OnForegroundChanged(newValue);
@@ -16,35 +22,47 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateTextBoxView()
 		{
-			_textBoxView ??= new TextBoxView(this);
-			if (ContentElement != null && ContentElement.Content != TextBoxView.DisplayBlock)
+			_textBoxView ??= FeatureConfiguration.TextBox.UseSkiaOnlyImplementation
+				? new NativeTextBoxView(this)
+				: new SkiaTextBoxView(this);
+
+			if (ContentElement != null && ContentElement.Content != _textBoxView.Content)
 			{
-				ContentElement.Content = TextBoxView.DisplayBlock;
+				ContentElement.Content = _textBoxView.Content;
 			}
 		}
 
-		partial void OnFocusStateChangedPartial(FocusState focusState) => TextBoxView?.OnFocusStateChanged(focusState);
+		partial void OnFocusStateChangedPartial(FocusState focusState) => _textBoxView?.OnFocusStateChanged(focusState);
 
 		partial void SelectPartial(int start, int length)
 		{
-			TextBoxView?.Select(start, length);
+			_textBoxView?.Select(start, length);
 		}
 
 		partial void SelectAllPartial() => Select(0, Text.Length);
 
 		public int SelectionStart
 		{
-			get => TextBoxView?.GetSelectionStart() ?? 0;
+			get => _textBoxView?.GetSelectionStart() ?? 0;
 			set => Select(start: value, length: SelectionLength);
 		}
 
 		public int SelectionLength
 		{
-			get => TextBoxView?.GetSelectionLength() ?? 0;
+			get => _textBoxView?.GetSelectionLength() ?? 0;
 			set => Select(SelectionStart, value);
 		}
 
-
 		protected void SetIsPassword(bool isPassword) => TextBoxView?.SetIsPassword(isPassword);
+
+		// Remaining IBlock properties that TextBox does not support:
+
+		double IBlock.LineHeight => 0;
+
+		LineStackingStrategy IBlock.LineStackingStrategy => LineStackingStrategy.MaxHeight;
+
+		TextTrimming IBlock.TextTrimming => TextTrimming.None;
+
+		int IBlock.MaxLines => 0;
 	}
 }

@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public void SetTextNative(string text) => Text = text;
+		public void SetText(string text) => Text = text;
 
 		private void Initialize()
 		{

@@ -15,11 +15,11 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 {
 	internal class TextBoxViewExtension : ITextBoxViewExtension
 	{
-		private readonly TextBoxView _owner;
+		private readonly NativeTextBoxView _owner;
 		private ContentControl? _contentElement;
 		private WpfTextViewTextBox? _currentInputWidget;
 
-		public TextBoxViewExtension(TextBoxView owner)
+		public TextBoxViewExtension(NativeTextBoxView owner)
 		{
 			_owner = owner ?? throw new ArgumentNullException(nameof(owner));
 		}

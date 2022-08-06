@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal void SetTextNative(string text)
+		internal void SetText(string text)
 		{
 			var textSafe = text ?? string.Empty;
 			if (textSafe != Text)
@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml.Controls
 			if (Owner != null) // OnTextChanged is called before the ctor has been executed...
 			{
 				var text = Owner.ProcessTextInput(Text);
-				SetTextNative(text);
+				SetText(text);
 			}
 		}
 

@@ -451,6 +451,17 @@ namespace Uno.UI
 			/// </remarks>
 			public static bool UseLegacyInputScope { get; set; }
 #endif
+
+#if __SKIA__
+			/// <summary>
+			/// This property defaults to <see langword="false"/>, which means a native WPF or GTK text box will be overlayed when
+			/// the TextBox is focused. Set to <see langword="true"/> to use a Skia-only TextBox implementation instead.
+			/// </summary>
+			/// <remarks>
+			/// This is available on Skia only.
+			/// </remarks>
+			public static bool UseSkiaOnlyImplementation { get; set; }
+#endif
 		}
 
 		public static class ScrollViewer

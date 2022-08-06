@@ -92,7 +92,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				_contentElement.Content = _textBoxView;
-				_textBoxView.SetTextNative(Text);
+				_textBoxView.SetText(Text);
 				InitializeProperties();
 			}
 		}
@@ -106,7 +106,7 @@ namespace Windows.UI.Xaml.Controls
 
 			var downHandled = RaiseEvent(KeyDownEvent, keyRoutedEventArgs);
 
-			keyRoutedEventArgs.Handled = false; // reset to unhandled for Up
+			keyRoutedEventArgs.Handled = false; // reset to unhandled for U
 			var upHandled = RaiseEvent(KeyUpEvent, keyRoutedEventArgs);
 
 			return downHandled || upHandled;
@@ -229,7 +229,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				_revealView.SetTextNative(Text);
+				_revealView.SetText(Text);
 				_revealView.Frame = _contentElement.Frame;
 				_contentElement.Content = _revealView;
 			}

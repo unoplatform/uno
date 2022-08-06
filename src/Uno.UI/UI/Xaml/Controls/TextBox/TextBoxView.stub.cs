@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Controls
 	internal partial class TextBoxView : FrameworkElement
 	{
 
-		internal void SetTextNative(string text)
+		internal void SetText(string text)
 		{
 
 		}

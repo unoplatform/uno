@@ -92,7 +92,7 @@ namespace Uno.UI.Skia.Platform
 			ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new FolderPickerExtension(o));
 			ApiExtensibility.Register(typeof(IFileSavePickerExtension), o => new FileSavePickerExtension(o));
 			ApiExtensibility.Register(typeof(IConnectionProfileExtension), o => new WindowsConnectionProfileExtension(o));
-			ApiExtensibility.Register<TextBoxView>(typeof(ITextBoxViewExtension), o => new TextBoxViewExtension(o));
+			ApiExtensibility.Register<NativeTextBoxView>(typeof(ITextBoxViewExtension), o => new TextBoxViewExtension(o));
 			ApiExtensibility.Register(typeof(ILauncherExtension), o => new LauncherExtension(o));
 			ApiExtensibility.Register(typeof(IClipboardExtension), o => new ClipboardExtensions(o));
 			ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), o => new AnalyticsInfoExtension());
@@ -324,7 +324,7 @@ namespace Uno.UI.Skia.Platform
 			_focusManager?.FocusRectManager?.RedrawFocusVisual();
 			if (_focusManager?.FocusedElement is TextBox textBox)
 			{
-				textBox.TextBoxView?.Extension?.InvalidateLayout();
+				textBox.TextBoxView?.InvalidateLayout();
 			}
 		}
 
