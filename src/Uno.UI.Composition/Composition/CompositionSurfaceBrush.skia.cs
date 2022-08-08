@@ -13,10 +13,8 @@ namespace Windows.UI.Composition
 			if (Surface is SkiaCompositionSurface scs)
 			{
 				var imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Repeat, SKShaderTileMode.Repeat, TransformMatrix.ToSKMatrix());
-				var opacity = 255 * Compositor.CurrentOpacity;
-				var filteredImageShader = SKShader.CreateColorFilter(imageShader, SKColorFilter.CreateBlendMode(new SKColor(0xFF, 0xFF, 0xFF, (byte)opacity), SKBlendMode.Modulate));
 
-				fillPaint.Shader = filteredImageShader;
+				fillPaint.Shader = imageShader;
 
 				fillPaint.IsAntialias = true;
 			}

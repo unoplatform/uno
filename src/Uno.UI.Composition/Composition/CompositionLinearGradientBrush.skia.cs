@@ -45,7 +45,7 @@ namespace Windows.UI.Composition
 			}
 
 			paint.Shader = shader;
-			paint.Color = SKColors.Black.WithAlpha((byte)(Compositor.CurrentOpacity * 255));
+			paint.Color = SKColors.Black;
 		}
 	}
 }
