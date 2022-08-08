@@ -17,7 +17,7 @@
     </ResourceDictionary.ThemeDictionaries>
 
     <Style TargetType="FlipViewItem" BasedOn="{StaticResource DefaultFlipViewItemStyle}" />
-
+    
     <Style x:Key="DefaultFlipViewItemStyle" TargetType="FlipViewItem">
         <Setter Property="Background" Value="{ThemeResource FlipViewItemBackground}" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -27,13 +27,16 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="FlipViewItem">
-                    <ContentPresenter Content="{TemplateBinding Content}"
+                    <!-- Uno specific - Explicitly setting ContentTemplateSelector -->
+                    <ContentPresenter
+                        Content="{TemplateBinding Content}"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         ContentTransitions="{TemplateBinding ContentTransitions}"
-                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"                                      
+                        ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"                        
                         Padding="{TemplateBinding Padding}"
                         HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                         VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
