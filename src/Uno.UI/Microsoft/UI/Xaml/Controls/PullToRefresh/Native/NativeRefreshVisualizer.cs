@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Xaml.Controls;
 
-public partial class NativeRefreshVisualizer : RefreshVisualizer
+internal partial class NativeRefreshVisualizer : RefreshVisualizer
 {
 }
 #endif
