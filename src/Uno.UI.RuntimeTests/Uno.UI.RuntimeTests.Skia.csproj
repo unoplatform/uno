@@ -32,6 +32,7 @@
 		<Compile Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\TestFramework\ActivePlatformsAttribute.cs">
 			<Link>UITests\_Engine\UnoUITests\ActivePlatformsAttribute.cs</Link>
 		</Compile>
+		<Compile Include="..\Uno.Foundation\Extensions\IsExternalInit.cs" Link="Extensions\IsExternalInit.cs" />
 		<Compile Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\**\Extensions\*.cs">
 			<Link>UITests\_Engine\SamplesAppUITests\%(RecursiveDir)%(FileName)%(Extension)</Link>
 		</Compile>
