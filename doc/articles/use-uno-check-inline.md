@@ -14,7 +14,7 @@
     ```
 1. Run the tool from the command prompt with the following command:
     ```
-    uno-check --pre
+    uno-check
     ```
 1. Follow the instructions indicated by the tool
 
@@ -32,7 +32,7 @@
     ```
 1. Run the tool from the command prompt with the following command:
     ```
-    uno-check --pre
+    uno-check
     ```
     If the above command fails, use the following:
     ```
@@ -55,7 +55,7 @@
     ```
 1. Run the tool from the command prompt with the following command:
     ```
-    uno-check --pre
+    uno-check
     ```
 1. Follow the instructions indicated by the tool
 
