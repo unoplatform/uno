@@ -2,7 +2,7 @@
 
 ## Using the `LottieVisualSource`:
 
-# [**WinUI 3**](#tab/windows)
+# [**WinUI 3**](#tab/winui)
 
 Add the following namespaces:
 ```xml
@@ -33,7 +33,7 @@ Additionally, on Skia targets (Gtk, WPF, Framebuffer), you'll need the following
 
 On Windows/WinAppSDK, [the support for Lottie is still pending](https://github.com/CommunityToolkit/Lottie-Windows/issues/478).
 
-# [**UWP**](#tab/windows)
+# [**UWP**](#tab/uwp)
 
 Add the following namespaces:
 ```xml
