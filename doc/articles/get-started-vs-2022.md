@@ -9,7 +9,7 @@ This getting started will guide you through the creation of an Uno Platform App 
 > To use Xamarin (as opposed to .NET 6 Mobile) and Visual Studio 2022 stable or 2019, [follow this guide](get-started-vs.md).
 
 ## Prerequisites
-To create Uno Platform applications you will need [**Visual Studio 2022 17.3 Stable**](https://visualstudio.microsoft.com/vs/):
+To create Uno Platform applications you will need [**Visual Studio 2022 17.3 or later**](https://visualstudio.microsoft.com/vs/):
 
 1. **ASP**.**NET and web** workload installed, along with .NET 6.0 (for WebAssembly development)
 
