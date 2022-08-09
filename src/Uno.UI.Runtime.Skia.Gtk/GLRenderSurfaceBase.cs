@@ -34,7 +34,7 @@ namespace Uno.UI.Runtime.Skia
 		private readonly DisplayInformation _displayInformation;
 		private FocusManager? _focusManager;
 
-		private float? _dpi = 1;
+		private float? _scale = 1;
 		private GRContext? _grContext;
 		private GRBackendRenderTarget? _renderTarget;
 		private SKSurface? _surface;
@@ -87,12 +87,11 @@ namespace Uno.UI.Runtime.Skia
 				_grContext = TryBuildGRContext();
 			}
 
-			var dpi = _dpi ?? 1f;
-			var scaledGuardBand = (int)(GuardBand * dpi);
-			// manage the drawing surface
-			var res = (int)Math.Max(1.0, Screen.Resolution / 96.0);
-			var w = (int)Math.Max(0, AllocatedWidth * dpi);
-			var h = (int)Math.Max(0, AllocatedHeight * dpi);
+			var scale = _scale ?? 1f;
+			var scaledGuardBand = (int)(GuardBand * scale);
+
+			var w = (int)Math.Max(0, AllocatedWidth * scale + scaledGuardBand);
+			var h = (int)Math.Max(0, AllocatedHeight * scale + scaledGuardBand);
 
 			if (_renderTarget == null || _surface == null || _renderTarget.Width != w || _renderTarget.Height != h)
 			{
@@ -109,7 +108,7 @@ namespace Uno.UI.Runtime.Skia
 
 				var glInfo = new GRGlFramebufferInfo((uint)framebuffer, colorType.ToGlSizedFormat());
 				
-				_renderTarget = new GRBackendRenderTarget(w + scaledGuardBand, h + scaledGuardBand, samples, stencil, glInfo);
+				_renderTarget = new GRBackendRenderTarget(w, h, samples, stencil, glInfo);
 
 				// create the surface
 				_surface?.Dispose();
@@ -129,15 +128,14 @@ namespace Uno.UI.Runtime.Skia
 			{
 				canvas.Clear(BackgroundColor);
 
-				if (_dpi != null)
+				if (_scale != null)
 				{
-					canvas.SetMatrix(SKMatrix.CreateScale((float)dpi, (float)dpi));
+					canvas.Scale(scale);
 				}
+
 				canvas.Translate(new SKPoint(0, GuardBand));
 
 				WUX.Window.Current.Compositor.Render(_surface);
-
-				canvas.SetMatrix(SKMatrix.CreateScale((float)1 / dpi, (float)1 / dpi));
 			}
 
 			// update the control
@@ -170,7 +168,7 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
-		protected abstract (int framebuffer, int stencil, int samples)GetGLBuffers();
+		protected abstract (int framebuffer, int stencil, int samples) GetGLBuffers();
 
 		protected abstract GRContext TryBuildGRContext();
 
@@ -199,6 +197,6 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
-		private void UpdateDpi() => _dpi = (float)_displayInformation.RawPixelsPerViewPixel;
+		private void UpdateDpi() => _scale = (float)_displayInformation.RawPixelsPerViewPixel;
 	}
 }
