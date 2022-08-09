@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
-using HarfBuzzSharp;
-using Windows.Foundation;
+using SkiaSharp;
 
 #nullable enable
 
@@ -17,6 +15,8 @@ namespace Windows.UI.Xaml.Documents.TextFormatting
 	internal sealed class Segment
 	{
 		private readonly IReadOnlyList<GlyphInfo>? _glyphs;
+		private SkiaSharp.SKPaint? _paint;
+		private readonly FontDetails? _fallbackFont;
 
 		/// <summary>
 		/// Gets either the LineBreak element or Run element that this segment was created from.
@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Documents.TextFormatting
 
 		private string DebugText => Inline is Run ? Text.ToString() : "{LineBreak}";
 
-		public Segment(Run run, FlowDirection direction, int start, int length, int leadingSpaceCount, int trailingSpaceCount, int lineBreakLength, bool wordBreakAfter, IReadOnlyList<GlyphInfo> glyphs)
+		public Segment(Run run, FlowDirection direction, int start, int length, int leadingSpaceCount, int trailingSpaceCount, int lineBreakLength, bool wordBreakAfter, IReadOnlyList<GlyphInfo> glyphs, FontDetails? fallbackFont)
 		{
 			Inline = run;
 			Direction = direction;
@@ -93,12 +93,35 @@ namespace Windows.UI.Xaml.Documents.TextFormatting
 			LineBreakAfter = lineBreakLength > 0;
 			WordBreakAfter = wordBreakAfter;
 			_glyphs = glyphs;
+			_fallbackFont = fallbackFont;
 		}
 
 		public Segment(LineBreak lineBreak)
 		{
 			Inline = lineBreak;
 			LineBreakAfter = true;
+		}
+
+		public FontDetails? FallbackFont => _fallbackFont;
+
+		internal SKPaint? Paint
+		{
+			get
+			{
+				if (_fallbackFont is not null)
+				{
+					var paint = _paint ??= new SKPaint(_fallbackFont.SKFont)
+					{
+						TextEncoding = SkiaSharp.SKTextEncoding.Utf16,
+						IsStroke = false,
+						IsAntialias = true,
+					};
+
+					return paint;
+
+				}
+				return default;
+			}
 		}
 	}
 }
