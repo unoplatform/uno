@@ -4,7 +4,7 @@ using WUXProgressRing = Windows.UI.Xaml.Controls.ProgressRing;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal class ProgressRingRefreshVisualizer : RefreshVisualizer
+internal partial class ProgressRingRefreshVisualizer : RefreshVisualizer
 {
 	public ProgressRingRefreshVisualizer()
 	{

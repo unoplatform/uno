@@ -5,7 +5,7 @@ using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal class ProgressRingRefreshInfoProviderAdapter : IRefreshInfoProviderAdapter
+internal partial class ProgressRingRefreshInfoProviderAdapter : IRefreshInfoProviderAdapter
 {
 	private readonly RefreshContainer _refreshContainer;
 	private IRefreshInfoProvider _refreshInfoProvider;
