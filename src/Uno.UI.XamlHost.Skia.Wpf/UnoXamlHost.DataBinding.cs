@@ -92,7 +92,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		private void PropagateDataContext()
 		{
 			var frameworkElement = _xamlSource.GetVisualTreeRoot() as WUX.FrameworkElement;
-			if (frameworkElement != null)
+			if (frameworkElement != null && frameworkElement.DataContext != DataContext)
 			{
 				// UnoXamlHost DataContext should flow through to UWP XAML content
 				frameworkElement.DataContext = DataContext;
