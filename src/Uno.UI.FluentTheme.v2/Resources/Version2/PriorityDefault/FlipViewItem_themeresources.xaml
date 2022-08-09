@@ -36,7 +36,7 @@
                         CornerRadius="{TemplateBinding CornerRadius}"
                         ContentTransitions="{TemplateBinding ContentTransitions}"
                         ContentTemplate="{TemplateBinding ContentTemplate}"                                      
-                        ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"                        
+                        ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
                         Padding="{TemplateBinding Padding}"
                         HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                         VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
