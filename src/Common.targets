@@ -13,7 +13,7 @@
 		<ShouldWriteErrorOnInvalidXaml>True</ShouldWriteErrorOnInvalidXaml>
 	</PropertyGroup>
 
-	<Target Name="_UnoFeatureDefines" BeforeTargets="BeforeCompile">
+	<Target Name="_UnoCommonFeatureDefines" BeforeTargets="BeforeCompile">
 
 		<PropertyGroup>
 			<UnoDefineConstants Condition="'$(MSBuildVersion)' &gt;= '15.4'">$(UnoDefineConstants);__IOS_11__</UnoDefineConstants>

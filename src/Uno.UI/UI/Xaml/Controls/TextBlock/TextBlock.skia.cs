@@ -15,6 +15,8 @@ using Windows.UI.Xaml.Media;
 using Uno.UI;
 using Windows.UI.Xaml.Documents.TextFormatting;
 
+#nullable enable
+
 namespace Windows.UI.Xaml.Controls
 {
 	partial class TextBlock : FrameworkElement, IBlock
@@ -26,11 +28,6 @@ namespace Windows.UI.Xaml.Controls
 			_textVisual = new TextVisual(Visual.Compositor, this);
 
 			Visual.Children.InsertAtBottom(_textVisual);
-		}
-
-		private int GetCharacterIndexAtPoint(Point point)
-		{
-			return -1; // Not supported yet
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
@@ -51,6 +48,29 @@ namespace Windows.UI.Xaml.Controls
 			_textVisual.Offset = new Vector3((float)padding.Left, (float)padding.Top, 0);
 
 			return base.ArrangeOverride(finalSize);
+		}
+
+		private Hyperlink? FindHyperlinkAt(Point point)
+		{
+			var padding = Padding;
+			var span = Inlines.GetRenderSegmentSpanAt(point - new Point(padding.Left, padding.Top), false);
+
+			if (span == null)
+			{
+				return null;
+			}
+
+			var inline = span.Segment.Inline;
+
+			while ((inline = inline.GetParent() as Inline) != null)
+			{
+				if (inline is Hyperlink hyperlink)
+				{
+					return hyperlink;
+				}
+			}
+
+			return null;
 		}
 
 		partial void OnInlinesChangedPartial()

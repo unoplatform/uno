@@ -9,6 +9,7 @@ using Uno.UI.Skia.Platform;
 using Uno.UI.Xaml.Controls.Extensions;
 using Point = Windows.Foundation.Point;
 using WpfCanvas = System.Windows.Controls.Canvas;
+using Uno.UI.XamlHost.Skia.Wpf.Hosting;
 
 namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 {
@@ -23,9 +24,18 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			_owner = owner ?? throw new ArgumentNullException(nameof(owner));
 		}
 
-		public bool IsNativeOverlayLayerInitialized => GetWindowTextInputLayer() is not null;
+		private WpfCanvas? GetWindowTextInputLayer()
+		{
+			if (_owner?.TextBox?.XamlRoot is not { } xamlRoot)
+			{
+				return null;
+			}
+
+			var host = XamlRootMap.GetHostForRoot(xamlRoot);
+			return host?.NativeOverlayLayer;
+		}
 		
-		private WpfCanvas? GetWindowTextInputLayer() => WpfHost.Current?.NativeOverlayLayer;
+		public bool IsNativeOverlayLayerInitialized => GetWindowTextInputLayer() is not null;
 
 		public void StartEntry()
 		{
@@ -56,6 +66,12 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 
 		public void EndEntry()
 		{
+			if (_currentInputWidget is null)
+			{
+				// No entry is in progress.
+				return;
+			}
+
 			if (GetInputText() is { } inputText)
 			{
 				_owner.UpdateTextFromNative(inputText);

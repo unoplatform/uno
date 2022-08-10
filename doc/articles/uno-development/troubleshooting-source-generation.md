@@ -20,6 +20,23 @@ Conversely, Uno.SourceGeneration generators can be used by setting this:
 </PropertyGroup>
 ```
 
+## Adding generated files C# pragma
+In some cases, the generated code may use patterns that cause C# to raise warnings, and in order to silence those warnings, the generated code can contain a set of custom C# pragma.
+
+To define a pragma, in your csproj add the following:
+```xml
+<ItemGroup>
+	<XamlGeneratorAnalyzerSuppressions Include="csharp-618 // Ignore obsolete members warnings" />
+</ItemGroup>
+```
+
+It is also possible to have `SuppressMessageAttribute` specified in the code, by using the following syntax:
+```xml
+<ItemGroup>
+    <XamlGeneratorAnalyzerSuppressions Include="mycategory.subcategory-CAT0042" />
+</ItemGroup>
+```
+
 ## Debugging the XAML Source Generator
 It is possible to step into the XAML generator by adding the following property:
 ```xml

@@ -34,6 +34,7 @@ using Uno;
 #if __SKIA__
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.Foundation.Extensibility;
+using MUXControlsTestApp.Utilities;
 #endif
 
 #if !HAS_UNO
@@ -77,22 +78,9 @@ namespace SamplesApp
 			ConfigureFeatureFlags();
 
 			AssertIssue1790ApplicationSettingsUsable();
-			AssertIssue8356();
 
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;
-		}
-
-		/// <summary>
-		/// Assert that Application Title is getting its value from manifest
-		/// </summary>
-		public void AssertIssue8356()
-		{
-#if __SKIA__
-			string SUT = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title;
-			string value = Windows.ApplicationModel.Package.Current.DisplayName;
-			Assert.AreEqual(SUT, value);
-#endif
 		}
 
 		/// <summary>
@@ -112,6 +100,18 @@ namespace SamplesApp
 
 			LaunchiOSWatchDog();
 #endif
+			var activationKind =
+#if HAS_UNO_WINUI
+				e.UWPLaunchActivatedEventArgs.Kind
+#else
+				e.Kind
+#endif
+				;
+
+			if (activationKind == ActivationKind.Launch)
+			{
+				AssertIssue8356();
+			}
 
 			var sw = Stopwatch.StartNew();
 			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
@@ -139,7 +139,7 @@ namespace SamplesApp
 
 		private static async Task<bool> HandleSkiaAutoScreenshots(LaunchActivatedEventArgs e)
 		{
-#if __SKIA__
+#if __SKIA__ || __MACOS__
 			var runAutoScreenshotsParam =
 			e.Arguments.Split(';').FirstOrDefault(a => a.StartsWith("--auto-screenshots"));
 
@@ -147,7 +147,6 @@ namespace SamplesApp
 
 			if (!string.IsNullOrEmpty(screenshotsPath))
 			{
-				var sw = Stopwatch.StartNew();
 				var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
 					_ =>
 					{
@@ -170,7 +169,7 @@ namespace SamplesApp
 
 		private static async Task<bool> HandleSkiaRuntimeTests(LaunchActivatedEventArgs e)
 		{
-#if __SKIA__
+#if __SKIA__ || __MACOS__
 			var runRuntimeTestsResultsParam =
 			e.Arguments.Split(';').FirstOrDefault(a => a.StartsWith("--runtime-tests"));
 
@@ -180,21 +179,13 @@ namespace SamplesApp
 			{
 				Console.WriteLine($"HandleSkiaRuntimeTests: {runtimeTestResultFilePath}");
 
-				_ = Window.Current.Dispatcher.RunIdleAsync(async _ =>
-				{
-					// let the app finish its startup
-					await Task.Delay(TimeSpan.FromSeconds(5));
+				// let the app finish its startup
+				await Task.Delay(TimeSpan.FromSeconds(5));
 
-					await Task.Run(
-						async () =>
-						{
-							await SampleControl.Presentation.SampleChooserViewModel.Instance.RunRuntimeTests(
-								CancellationToken.None,
-								runtimeTestResultFilePath,
-								() => System.Environment.Exit(0));
-						}
-					);
-				});
+				await SampleControl.Presentation.SampleChooserViewModel.Instance.RunRuntimeTests(
+					CancellationToken.None,
+					runtimeTestResultFilePath,
+					() => System.Environment.Exit(0));
 
 				return true;
 			}
@@ -484,6 +475,9 @@ namespace SamplesApp
 			Uno.UI.FeatureConfiguration.DatePicker.UseLegacyStyle = true;
 			Uno.UI.FeatureConfiguration.TimePicker.UseLegacyStyle = true;
 #endif
+#if __SKIA__
+			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
+#endif
 		}
 
 
@@ -601,12 +595,27 @@ namespace SamplesApp
 		}
 
 		/// <summary>
+		/// Assert that Application Title is getting its value from manifest
+		/// </summary>
+		public void AssertIssue8356()
+		{
+#if __SKIA__
+			string SUT = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title;
+			string value = Windows.ApplicationModel.Package.Current.DisplayName;
+			Assert.AreEqual(SUT, value);
+#endif
+		}
+
+		/// <summary>
 		/// Assert that the native overlay layer for Skia targets is initialized in time for UI to appear.
 		/// </summary>
 		public void AssertIssue8641NativeOverlayInitialized()
 		{
 #if __SKIA__
+			// Temporarily add a TextBox to the current page's content to verify native overlay is available
+			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
 			var textBox = new TextBox();
+			textBox.XamlRoot = rootFrame.XamlRoot;
 			var textBoxView = new TextBoxView(textBox);
 			ApiExtensibility.CreateInstance<ITextBoxViewExtension>(textBoxView, out var textBoxViewExtension);
 			Assert.IsTrue(textBoxViewExtension.IsNativeOverlayLayerInitialized);

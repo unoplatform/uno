@@ -8,5 +8,7 @@ namespace Uno.Devices.Sensors
 		bool IsDualScreen { get; }
 
 		bool? IsSpanned { get; }
+
+		bool SupportsSpanning { get; }
 	}
 }

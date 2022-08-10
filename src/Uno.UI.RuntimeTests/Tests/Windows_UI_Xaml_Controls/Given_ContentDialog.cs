@@ -20,6 +20,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public class Given_ContentDialog
 	{
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Not_FullSizeDesired()
 		{
 			var SUT = new MyContentDialog
@@ -47,6 +50,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_FullSizeDesired()
 		{
 			var SUT = new MyContentDialog
@@ -78,6 +84,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_DefaultButton_Not_Set()
 		{
 			var SUT = new MyContentDialog
@@ -109,6 +118,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_DefaultButton_Set()
 		{
 			var SUT = new MyContentDialog
@@ -140,6 +152,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_CloseDeferred()
 		{
 			var SUT = new MyContentDialog
@@ -256,15 +271,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// Fails because keyboard does not appear when TextBox is programmatically focussed, or appearance is not correctly registered - https://github.com/unoplatform/uno/issues/7995
 		[Ignore()]
 		[TestMethod]
-		public async Task When_Soft_Keyboard_And_VisibleBounds_Managed()
+		public async Task When_Soft_Keyboard_And_VisibleBounds_Native()
 		{
-			using (FeatureConfigurationHelper.UseManagedPopups())
+			using (FeatureConfigurationHelper.UseNativePopups())
 			{
 				await When_Soft_Keyboard_And_VisibleBounds();
 			}
 		}
-#endif
 
+		// Fails because keyboard does not appear when TextBox is programmatically focussed, or appearance is not correctly registered - https://github.com/unoplatform/uno/issues/7995
+		[Ignore()]
+		[TestMethod]
+		public async Task When_Soft_Keyboard_And_VisibleBounds_Managed()
+		{
+			await When_Soft_Keyboard_And_VisibleBounds();
+		}
+#endif
 
 		private async Task FocusTextBoxWithSoftKeyboard(TextBox textBox)
 		{

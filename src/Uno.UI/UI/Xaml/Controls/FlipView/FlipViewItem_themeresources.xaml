@@ -25,6 +25,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="FlipViewItem">
+					<!-- Uno specific - Explicitly setting ContentTemplateSelector -->
                     <ContentPresenter Content="{TemplateBinding Content}"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
@@ -32,6 +33,7 @@
                         CornerRadius="{TemplateBinding CornerRadius}"
                         ContentTransitions="{TemplateBinding ContentTransitions}"
                         ContentTemplate="{TemplateBinding ContentTemplate}"
+						ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
                         Padding="{TemplateBinding Padding}"
                         HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                         VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />

@@ -45,6 +45,11 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 		public string OutputPath { get; set; } = "";
 
 		[Required]
+		public string UnoUIPackageBasePath { get; set; } = "";
+
+		public string UnoRuntimeIdentifier { get; set; } = "";
+
+		[Required]
 		public Microsoft.Build.Framework.ITaskItem[]? ReferencePath { get; set; }
 
 		[Output]
@@ -275,13 +280,15 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 		{
 			if (ReferencePath != null)
 			{
+				var unoUIPackageBasePath = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(UnoUIPackageBasePath)));
+
 				foreach (var referencePath in ReferencePath)
 				{
 					var isReferenceAssembly = referencePath.GetMetadata("PathInPackage")?.StartsWith("ref/", StringComparison.OrdinalIgnoreCase) ?? false;
 					var hasConcreteAssembly = isReferenceAssembly && ReferencePath.Any(innerReference => HasConcreteAssemblyForReferenceAssembly(innerReference, referencePath));
 
 					var name = Path.GetFileName(referencePath.ItemSpec);
-					_referencedAssemblies.Add(referencePath.ItemSpec);
+					_referencedAssemblies.Add(RewriteReferencePath(referencePath.ItemSpec, unoUIPackageBasePath, UnoRuntimeIdentifier));
 				}
 
 				_searchPaths = ReferencePath
@@ -295,6 +302,18 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				{
 					_assemblyResolver.AddSearchDirectory(assembly);
 				}
+			}
+
+			string RewriteReferencePath(string referencePath, string unoUIPackageBasePath, string unoRuntimeIdentifier)
+			{
+				var separator = Path.DirectorySeparatorChar;
+				unoRuntimeIdentifier = unoRuntimeIdentifier.ToLowerInvariant();
+
+				return
+					(unoRuntimeIdentifier == "skia" || unoRuntimeIdentifier == "webassembly") &&
+						referencePath.StartsWith(unoUIPackageBasePath) ?
+							referencePath.Replace($"lib{separator}netstandard2.0", $"uno-runtime{separator}{unoRuntimeIdentifier}") :
+								referencePath;
 			}
 		}
 

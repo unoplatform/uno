@@ -1,15 +1,27 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
-// RootScale.h, RootScale.cpp
+﻿#nullable enable
 
-#nullable enable
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Core
 {
-	internal class RootScale
+	internal static class RootScale
 	{
-		//TODO Uno: Implement when required.
 		[NotImplemented]
 		internal static float GetRasterizationScaleForContentRoot(ContentRoot? contentRoot) => 1f;
+
+		internal static double GetRasterizationScaleForElement(DependencyObject element)
+		{
+			var rootScale = GetRootScaleForElement(element);
+			return rootScale ?? 1.0d;
+		}
+
+		internal static double? GetRootScaleForElement(DependencyObject element)
+		{
+			if (element is FrameworkElement fe)
+			{
+				return fe.GetScaleFactorForLayoutRounding();
+			}
+			return null;
+		}
 	}
 }

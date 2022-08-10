@@ -316,6 +316,8 @@ var MonoSupport;
             if (!jsCallDispatcher.dispatcherCallback) {
                 jsCallDispatcher.dispatcherCallback = Module.mono_bind_static_method("[Uno.UI.Dispatching] Uno.UI.Dispatching.CoreDispatcher:DispatcherCallback");
             }
+            // Use setImmediate to return avoid blocking the background thread
+            // on a sync call.
             window.setImmediate(() => {
                 try {
                     jsCallDispatcher.dispatcherCallback();
@@ -333,6 +335,7 @@ var MonoSupport;
 })(MonoSupport || (MonoSupport = {}));
 // Export the DotNet helper for WebAssembly.JSInterop.InvokeJSUnmarshalled
 window.DotNet = MonoSupport;
+// Export the main thread invoker for threading support
 MonoSupport.invokeOnMainThread = MonoSupport.jsCallDispatcher.invokeOnMainThread;
 // eslint-disable-next-line @typescript-eslint/no-namespace
 var Uno;
@@ -1122,19 +1125,19 @@ var Uno;
                 return null;
             }
             /**
-                * Set or replace the root content element.
+                * Set or replace the root element.
                 */
-            setRootContent(elementId) {
-                if (this.rootContent && Number(this.rootContent.id) === elementId) {
+            setRootElement(elementId) {
+                if (this.rootElement && Number(this.rootElement.id) === elementId) {
                     return null; // nothing to do
                 }
-                if (this.rootContent) {
+                if (this.rootElement) {
                     // Remove existing
-                    this.containerElement.removeChild(this.rootContent);
+                    this.containerElement.removeChild(this.rootElement);
                     if (WindowManager.isLoadEventsEnabled) {
-                        this.dispatchEvent(this.rootContent, "unloaded");
+                        this.dispatchEvent(this.rootElement, "unloaded");
                     }
-                    this.rootContent.classList.remove(WindowManager.unoRootClassName);
+                    this.rootElement.classList.remove(WindowManager.unoRootClassName);
                 }
                 if (!elementId) {
                     return null;
@@ -1142,13 +1145,13 @@ var Uno;
                 // set new root
                 const newRootElement = this.getView(elementId);
                 newRootElement.classList.add(WindowManager.unoRootClassName);
-                this.rootContent = newRootElement;
+                this.rootElement = newRootElement;
                 if (WindowManager.isLoadEventsEnabled) {
-                    this.dispatchEvent(this.rootContent, "loading");
+                    this.dispatchEvent(this.rootElement, "loading");
                 }
-                this.containerElement.appendChild(this.rootContent);
+                this.containerElement.appendChild(this.rootElement);
                 if (WindowManager.isLoadEventsEnabled) {
-                    this.dispatchEvent(this.rootContent, "loaded");
+                    this.dispatchEvent(this.rootElement, "loaded");
                 }
                 this.setAsArranged(newRootElement); // patch because root is not measured/arranged
                 this.resize();
@@ -1728,7 +1731,7 @@ var Uno;
                 }
             }
             getIsConnectedToRootElement(element) {
-                const rootElement = this.rootContent;
+                const rootElement = this.rootElement;
                 if (!rootElement) {
                     return false;
                 }

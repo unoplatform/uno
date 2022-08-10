@@ -20,15 +20,7 @@
 		  <ProjectItem TargetFileName="uno-fluentui-assets.ttf" ReplaceParameters="false">uno-fluentui-assets.ttf</ProjectItem>
 		</Folder>
 	  </Folder>
-	  <Folder Name="Properties" TargetFolderName="Properties">
-		<ProjectItem TargetFileName="AssemblyInfo.cs" ReplaceParameters="true">assemblyinfo.cs</ProjectItem>
-		<ProjectItem TargetFileName="Resources.Designer.cs" ReplaceParameters="true">Resources.Designer.cs</ProjectItem>
-		<ProjectItem TargetFileName="Resources.resx" ReplaceParameters="true">Resources.resx</ProjectItem>
-		<ProjectItem TargetFileName="Settings.Designer.cs" ReplaceParameters="true">Settings.Designer.cs</ProjectItem>
-		<ProjectItem TargetFileName="Settings.settings" ReplaceParameters="true">Settings.settings</ProjectItem>
-	  </Folder>
 
-	  <ProjectItem TargetFileName="App.config" ReplaceParameters="true">App.config</ProjectItem>
 	  <ProjectItem TargetFileName="App.xaml" ReplaceParameters="true">App.xaml</ProjectItem>
 	  <ProjectItem TargetFileName="App.xaml.cs" ReplaceParameters="true">App.xaml.cs</ProjectItem>
 	  <ProjectItem TargetFileName="MainWindow.xaml" ReplaceParameters="true">MainWindow.xaml</ProjectItem>

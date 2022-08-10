@@ -16067,7 +16067,8 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="FlipViewItem">
-          <ContentPresenter Content="{TemplateBinding Content}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+          <!-- Uno specific - Explicitly setting ContentTemplateSelector -->
+          <ContentPresenter Content="{TemplateBinding Content}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
         </ControlTemplate>
       </Setter.Value>
     </Setter>
@@ -16445,6 +16446,7 @@
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="BorderBrush" Value="{ThemeResource InfoBarBorderBrush}" />
     <Setter Property="BorderThickness" Value="{ThemeResource InfoBarBorderThickness}" />
+    <Setter Property="AutomationProperties.LandmarkType" Value="Custom" />
     <contract7Present:Setter Property="AutomationProperties.IsDialog" Value="True" />
     <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
     <Setter Property="Template">
@@ -16540,7 +16542,7 @@
               </Grid>
               <Viewbox x:Name="UserIconBox" Grid.Column="0" Visibility="Collapsed" VerticalAlignment="Top" MaxWidth="{ThemeResource InfoBarIconFontSize}" MaxHeight="{ThemeResource InfoBarIconFontSize}" Margin="{ThemeResource InfoBarIconMargin}" Child="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.IconElement}" />
               <primitives:InfoBarPanel Grid.Column="1" Margin="{StaticResource InfoBarPanelMargin}" HorizontalOrientationPadding="{StaticResource InfoBarPanelHorizontalOrientationPadding}" VerticalOrientationPadding="{StaticResource InfoBarPanelVerticalOrientationPadding}">
-                <TextBlock x:Name="Title" Text="{TemplateBinding Title}" Foreground="{ThemeResource InfoBarTitleForeground}" primitives:InfoBarPanel.HorizontalOrientationMargin="{StaticResource InfoBarTitleHorizontalOrientationMargin}" primitives:InfoBarPanel.VerticalOrientationMargin="{StaticResource InfoBarTitleVerticalOrientationMargin}" TextWrapping="WrapWholeWords" AutomationProperties.LandmarkType="Navigation" FontWeight="{StaticResource InfoBarTitleFontWeight}" FontSize="{StaticResource InfoBarTitleFontSize}" />
+                <TextBlock x:Name="Title" Text="{TemplateBinding Title}" Foreground="{ThemeResource InfoBarTitleForeground}" primitives:InfoBarPanel.HorizontalOrientationMargin="{StaticResource InfoBarTitleHorizontalOrientationMargin}" primitives:InfoBarPanel.VerticalOrientationMargin="{StaticResource InfoBarTitleVerticalOrientationMargin}" TextWrapping="WrapWholeWords" FontWeight="{StaticResource InfoBarTitleFontWeight}" FontSize="{StaticResource InfoBarTitleFontSize}" />
                 <TextBlock x:Name="Message" Text="{TemplateBinding Message}" Foreground="{ThemeResource InfoBarMessageForeground}" primitives:InfoBarPanel.HorizontalOrientationMargin="{StaticResource InfoBarMessageHorizontalOrientationMargin}" primitives:InfoBarPanel.VerticalOrientationMargin="{StaticResource InfoBarMessageVerticalOrientationMargin}" TextWrapping="WrapWholeWords" FontWeight="{StaticResource InfoBarMessageFontWeight}" FontSize="{StaticResource InfoBarMessageFontSize}" />
                 <ContentPresenter primitives:InfoBarPanel.HorizontalOrientationMargin="{StaticResource InfoBarActionHorizontalOrientationMargin}" primitives:InfoBarPanel.VerticalOrientationMargin="{StaticResource InfoBarActionVerticalOrientationMargin}" VerticalAlignment="Top" Content="{TemplateBinding ActionButton}">
                   <ContentPresenter.Resources>

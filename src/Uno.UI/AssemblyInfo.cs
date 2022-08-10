@@ -12,6 +12,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests.Wasm")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.Lottie")]
+[assembly: InternalsVisibleTo("Uno.UI.XamlHost")]
 [assembly: InternalsVisibleTo("SamplesApp")]
 [assembly: InternalsVisibleTo("SamplesApp.Droid")]
 [assembly: InternalsVisibleTo("SamplesApp.macOS")]

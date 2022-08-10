@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Media;
 using Uno.UI.DataBinding;
 using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Input;
+using Uno.UI.Xaml.Core;
 
 #if XAMARIN_IOS
 using UIKit;
@@ -67,7 +68,15 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 			else
 			{
-				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+				Rect visibleBounds;
+				if (XamlRoot.VisualTree.ContentRoot.Type == ContentRootType.CoreWindow)
+				{
+					visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+				}
+				else
+				{
+					visibleBounds = XamlRoot.Bounds;
+				}
 				visibleBounds.Width = Math.Min(availableSize.Width, visibleBounds.Width);
 				visibleBounds.Height = Math.Min(availableSize.Height, visibleBounds.Height);
 
@@ -155,7 +164,15 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				// Defer to the popup owner the responsibility to place the popup (e.g. ComboBox)
 
-				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+				Rect visibleBounds;
+				if (XamlRoot.VisualTree.ContentRoot.Type == ContentRootType.CoreWindow)
+				{
+					visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+				}
+				else
+				{
+					visibleBounds = XamlRoot.Bounds;
+				}
 				visibleBounds.Width = Math.Min(finalSize.Width, visibleBounds.Width);
 				visibleBounds.Height = Math.Min(finalSize.Height, visibleBounds.Height);
 

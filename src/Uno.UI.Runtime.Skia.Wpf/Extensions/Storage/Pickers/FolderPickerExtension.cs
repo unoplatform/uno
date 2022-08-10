@@ -48,7 +48,7 @@ namespace Uno.Extensions.Storage.Pickers
 			{
                 try
                 {
-					string path = NativeMethods.SHGetPathFromIDListLong(pidl);
+					var path = NativeMethods.SHGetPathFromIDListLong(pidl);
 					if (!string.IsNullOrEmpty(path))
 						return new StorageFolder(path);
                 }
@@ -177,7 +177,7 @@ namespace Uno.Extensions.Storage.Pickers
 			internal static extern IntPtr SendMessage(HandleRef hWnd, uint msg, int wParam, int lParam);
 
 
-			internal static string SHGetKnownFolderPath(Guid rfid, uint dwFlags = 0, IntPtr hToken = default(IntPtr))
+			internal static string? SHGetKnownFolderPath(Guid rfid, uint dwFlags = 0, IntPtr hToken = default(IntPtr))
 			{
 				IntPtr pszPath;
 				SHGetKnownFolderPath(rfid, dwFlags, hToken, out pszPath);

@@ -119,8 +119,8 @@ namespace Uno.UI.Tests.BorderTests
 		}
 
 		[TestMethod]
-#if NET461 || __IOS__ || __ANDROID__ // Broken on Android for now
-		[Ignore("Layout engine is incomplete on net461 for arrange, ios needs actual layout pass")]
+#if NET461 || __IOS__ || __ANDROID__ || __MACOS__ // Broken on Android for now
+		[Ignore("Layout engine is incomplete on net461 for arrange, ios & macOS needs actual layout pass")]
 #endif
 		public void When_Top_Align_Nested_With_Margin()
 		{

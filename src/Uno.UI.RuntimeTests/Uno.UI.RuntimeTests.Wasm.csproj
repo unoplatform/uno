@@ -43,7 +43,9 @@
 
 	<Import Project="UnitTestsImport.props"/>
 	
+
 	<ItemGroup>
+		<EmbeddedResource Include="Assets\Border_Snapshot.bgra8" />
 		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>

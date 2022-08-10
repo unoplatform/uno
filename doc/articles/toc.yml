@@ -326,6 +326,8 @@
               items:
                 - name: Overview
                   href: features/uno-cupertino.md
+            - name: Uno Islands
+              href: guides/uno-islands.md
             - name: Working with the Skia+GTK head
               href: features/using-skia-gtk.md
             - name: Working with the Skia+WPF head

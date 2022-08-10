@@ -439,10 +439,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_foregroundChanged.Disposable = null;
+
 			if (Foreground?.SupportsAssignAndObserveBrush ?? false)
 			{
-				_foregroundChanged.Disposable =
-					Brush.AssignAndObserveBrush(Foreground, c => refreshForeground(), refreshForeground);
+				_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(Foreground, c => refreshForeground(), refreshForeground);
 			}
 
 			refreshForeground();
@@ -930,6 +930,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool HasHyperlink => _hyperlinks.Any();
 
+#if !__SKIA__
 		private Hyperlink FindHyperlinkAt(Point point)
 		{
 			var characterIndex = GetCharacterIndexAtPoint(point);
@@ -939,6 +940,7 @@ namespace Windows.UI.Xaml.Controls
 
 			return hyperlink;
 		}
+#endif
 #endif
 
 		#endregion

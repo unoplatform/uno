@@ -55,7 +55,7 @@ namespace Windows.UI.Composition
 			}
 		}
 
-		private void RenderVisual(SKSurface surface, Visual visual)
+		internal void RenderVisual(SKSurface surface, Visual visual)
 		{
 			if (visual.Opacity != 0 && visual.IsVisible)
 			{
@@ -91,14 +91,6 @@ namespace Windows.UI.Composition
 
 				visual.Render(surface);
 
-				if (visual is ContainerVisual containerVisual)
-				{
-					var children = containerVisual.GetChildrenInRenderOrder();
-					for (var i = 0; i < children.Count; i++)
-					{
-						RenderVisual(surface, children[i]);
-					}
-				}
 
 				surface.Canvas.Restore();
 			}

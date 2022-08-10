@@ -6,6 +6,9 @@ using Uno.WinUI.Runtime.Skia.LinuxFB;
 using Windows.UI.Core;
 using Uno.Foundation.Extensibility;
 using System.ComponentModel;
+using Uno.UI.Xaml.Core;
+using Uno.Foundation.Logging;
+using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -40,6 +43,12 @@ namespace Uno.UI.Runtime.Skia
 			_eventLoop = new EventLoop();
 		}
 
+		/// <summary>
+		/// Provides a display scale to override framebuffer default scale
+		/// </summary>
+		/// <remarks>This value can be overriden by the UNO_DISPLAY_SCALE_OVERRIDE environment variable</remarks>
+		public float? DisplayScale { get; set; }
+
 		public void Run()
 		{
 			_eventLoop.Schedule(Initialize);
@@ -49,9 +58,11 @@ namespace Uno.UI.Runtime.Skia
 
 		private void Initialize()
 		{
+			_isDispatcherThread = true;
+
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new CoreWindowExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new ApplicationViewExtension(o));
-			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new DisplayInformationExtension(o));
+			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new DisplayInformationExtension(o, DisplayScale));
 
 			void Dispatch(System.Action d)
 				=> _eventLoop.Schedule(() => d());
@@ -60,6 +71,19 @@ namespace Uno.UI.Runtime.Skia
 			{
 				var app = _appBuilder();
 				app.Host = this;
+
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Display Information: " +
+						$"{_renderer?.FrameBufferDevice.ScreenSize.Width}x{_renderer?.FrameBufferDevice.ScreenSize.Height} " +
+						$"({_renderer?.FrameBufferDevice.ScreenPhysicalDimensions} mm), " +
+						$"PixelFormat: {_renderer?.FrameBufferDevice.PixelFormat}, " +
+						$"ResolutionScale: {DisplayInformation.GetForCurrentView().ResolutionScale}, " +
+						$"LogicalDpi: {DisplayInformation.GetForCurrentView().LogicalDpi}, " +
+						$"RawPixelsPerViewPixel: {DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel}, " +
+						$"DiagonalSizeInInches: {DisplayInformation.GetForCurrentView().DiagonalSizeInInches}, " +
+						$"ScreenInRawPixels: {DisplayInformation.GetForCurrentView().ScreenWidthInRawPixels}x{DisplayInformation.GetForCurrentView().ScreenHeightInRawPixels}");
+				}
 			}
 
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
@@ -68,7 +92,26 @@ namespace Uno.UI.Runtime.Skia
 			_renderer = new Renderer();
 			_displayInformationExtension!.Renderer = _renderer;
 
+			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
+
 			WUX.Application.StartWithArguments(CreateApp);
+		}
+
+		private void OnCoreWindowContentRootSet(object? sender, object e)
+		{
+			var xamlRoot = CoreServices.Instance
+				.ContentRootCoordinator
+				.CoreWindowContentRoot?
+				.GetOrCreateXamlRoot();
+
+			if (xamlRoot is null)
+			{
+				throw new InvalidOperationException("XamlRoot was not properly initialized");
+			}
+
+			xamlRoot.InvalidateRender += _renderer!.InvalidateRender;
+
+			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 		}
 	}
 }

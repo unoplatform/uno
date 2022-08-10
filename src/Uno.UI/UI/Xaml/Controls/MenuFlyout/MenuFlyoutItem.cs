@@ -739,10 +739,7 @@ namespace Windows.UI.Xaml.Controls
 			return new MenuFlyoutItemAutomationPeer(this);
 		}
 
-		string GetPlainText()
-		{
-			return Text;
-		}
+		private protected override string GetPlainText() => Text;
 
 		internal string KeyboardAcceleratorTextOverrideImpl
 		{

@@ -9,6 +9,8 @@ using Windows.UI.Text;
 using Windows.UI.Xaml.Documents.TextFormatting;
 using Windows.UI.Xaml.Media;
 
+#nullable enable
+
 namespace Windows.UI.Xaml.Documents
 {
 	partial class InlineCollection
@@ -20,7 +22,7 @@ namespace Windows.UI.Xaml.Documents
 		private Size _lastArrangedSize;
 
 		/// <summary>
-		/// Measures a block-level inline collection, i.e. one that belongs to a TextBlock or Paragraph.
+		/// Measures a block-level inline collection, i.e. one that belongs to a TextBlock (or Paragraph, in the future).
 		/// </summary>
 		internal Size Measure(Size availableSize)
 		{
@@ -35,7 +37,7 @@ namespace Windows.UI.Xaml.Documents
 			var wrapping = parent.TextWrapping;
 			int maxLines = parent.MaxLines;
 
-			double lineHeight = parent.LineHeight;
+			float lineHeight = (float)parent.LineHeight;
 			var lineStackingStrategy = lineHeight == 0 ? LineStackingStrategy.MaxHeight : parent.LineStackingStrategy;
 
 			_renderLines.Clear();
@@ -47,21 +49,21 @@ namespace Windows.UI.Xaml.Documents
 			float widestLineWidth = 0;
 
 			float x = 0;
+			float height = 0;
 
 			foreach (var inline in _collection.SelectMany(InlineExtensions.Enumerate))
 			{
 				if (inline is LineBreak lineBreak)
 				{
 					Segment breakSegment = new(lineBreak);
-					RenderSegmentSpan breakSegmentSpan = new(breakSegment, 0, 0, 0, 0);
+					RenderSegmentSpan breakSegmentSpan = new(breakSegment, 0, 0, 0, 0, 0, 0);
 					lineSegmentSpans.Add(breakSegmentSpan);
 
 					MoveToNextLine(currentLineWrapped: false);
 				}
 				else if (inline is Run run)
 				{
-					// TODO: rethink character spacing implementation to properly handle trailing spacing on a line
-					// float characterSpacing = (float)run.FontSize * run.CharacterSpacing / 1000;
+					float characterSpacing = (float)run.FontSize * run.CharacterSpacing / 1000;
 
 					foreach (var segment in run.Segments)
 					{
@@ -71,7 +73,7 @@ namespace Windows.UI.Xaml.Documents
 
 						// Exclude leading spaces at the start of the line only if the previous line ended because it was wrapped and not because of a line break
 
-						int startGlyph = x == 0 && previousLineWrapped ? segment.LeadingSpaces : 0;
+						int start = x == 0 && previousLineWrapped ? segment.LeadingSpaces : 0;
 
 					BeginSegmentFitting:
 
@@ -80,33 +82,37 @@ namespace Windows.UI.Xaml.Documents
 							goto MaxLinesHit;
 						}
 
-						var gri = GetGlyphsRenderInfo(segment, startGlyph);
 						float remainingWidth = availableWidth - x;
+						(int length, float width) = GetSegmentRenderInfo(segment, start, characterSpacing);
 
 						// Check if whole segment fits
 
-						if (gri.Width <= remainingWidth)
+						if (width <= remainingWidth)
 						{
 							// Add in as many trailing spaces as possible
 
-							float widthWithoutTrailingSpaces = gri.Width;
+							float widthWithoutTrailingSpaces = width;
 							int end = segment.LineBreakAfter ? segment.Glyphs.Count - 1 : segment.Glyphs.Count;
+							int trailingSpaces = 0;
 
-							while (startGlyph + gri.Length < end && (gri.Width + segment.Glyphs[gri.Length].AdvanceX) is var newWidth && newWidth <= remainingWidth)
+							while (start + length < end &&
+								   (width + GetGlyphWidthWithSpacing(segment.Glyphs[length], characterSpacing)) is var newWidth &&
+								   newWidth <= remainingWidth)
 							{
-								gri.Width = newWidth;
-								gri.Length++;
+								width = newWidth;
+								length++;
+								trailingSpaces++;
 							}
 
-							RenderSegmentSpan segmentSpan = new(segment, startGlyph, gri.Length, gri.Width, widthWithoutTrailingSpaces);
+							RenderSegmentSpan segmentSpan = new(segment, start, length, trailingSpaces, characterSpacing, width, widthWithoutTrailingSpaces);
 							lineSegmentSpans.Add(segmentSpan);
-							x += gri.Width;
+							x += width;
 
 							if (segment.LineBreakAfter)
 							{
 								MoveToNextLine(currentLineWrapped: false);
 							}
-							else if (gri.Length < end)
+							else if (length < end)
 							{
 								MoveToNextLine(currentLineWrapped: true);
 							}
@@ -114,22 +120,24 @@ namespace Windows.UI.Xaml.Documents
 							continue;
 						}
 
-						if (startGlyph == 0 && segment.LeadingSpaces > 0)
-						{
-							// Render as many leading spaces as possible
+						// Whole segment does not fit so tack on as many leading spaces as possible
 
+						if (start == 0 && segment.LeadingSpaces > 0)
+						{
 							int spaces = 0;
-							float width = 0;
+							width = 0;
 
 							if (x == 0)
 							{
 								// minimum 1 space if this is the start of the line
 
 								spaces = 1;
-								width = segment.Glyphs[0].AdvanceX;
+								width = GetGlyphWidthWithSpacing(segment.Glyphs[0], characterSpacing);
 							}
 
-							while (spaces < segment.LeadingSpaces && (width + segment.Glyphs[spaces].AdvanceX) is var newWidth && newWidth < remainingWidth)
+							while (spaces < segment.LeadingSpaces &&
+								   (width + GetGlyphWidthWithSpacing(segment.Glyphs[spaces], characterSpacing)) is var newWidth &&
+								   newWidth < remainingWidth)
 							{
 								width = newWidth;
 								spaces++;
@@ -137,11 +145,11 @@ namespace Windows.UI.Xaml.Documents
 
 							if (width > 0)
 							{
-								RenderSegmentSpan segmentSpan = new(segment, 0, spaces, width, 0);
+								RenderSegmentSpan segmentSpan = new(segment, 0, spaces, 0, characterSpacing, width, 0);
 								lineSegmentSpans.Add(segmentSpan);
 								x += width;
 
-								startGlyph = segment.LeadingSpaces;
+								start = segment.LeadingSpaces;
 							}
 						}
 
@@ -159,9 +167,9 @@ namespace Windows.UI.Xaml.Documents
 						{
 							// Put the whole segment on the line and move to the next line.
 
-							RenderSegmentSpan segmentSpan = new(segment, startGlyph, gri.Length, gri.Width, gri.Width);
+							RenderSegmentSpan segmentSpan = new(segment, start, length, segment.TrailingSpaces, characterSpacing, width, width);
 							lineSegmentSpans.Add(segmentSpan);
-							x += gri.Width;
+							x += width;
 
 							MoveToNextLine(currentLineWrapped: !segment.LineBreakAfter);
 						}
@@ -169,19 +177,20 @@ namespace Windows.UI.Xaml.Documents
 						{
 							// Put as much of the segment on this line as possible then continue fitting the rest of the segment on the next line
 
-							int length = 1;
-							float width = segment.Glyphs[startGlyph].AdvanceX;
+							length = 1;
+							width = GetGlyphWidthWithSpacing(segment.Glyphs[start], characterSpacing);
 
-							while ((width + segment.Glyphs[startGlyph + length].AdvanceX) is var newWidth && newWidth < remainingWidth)
+							while ((width + GetGlyphWidthWithSpacing(segment.Glyphs[start + length], characterSpacing)) is var newWidth &&
+								   newWidth < remainingWidth)
 							{
 								width = newWidth;
 								length++;
 							}
 
-							RenderSegmentSpan segmentSpan = new(segment, startGlyph, length, width, width);
+							RenderSegmentSpan segmentSpan = new(segment, start, length, 0, characterSpacing, width, width);
 							lineSegmentSpans.Add(segmentSpan);
 							x += width;
-							startGlyph += length;
+							start += length;
 
 							MoveToNextLine(currentLineWrapped: true);
 							goto BeginSegmentFitting;
@@ -203,16 +212,6 @@ namespace Windows.UI.Xaml.Documents
 			}
 			else
 			{
-				double height = lineStackingStrategy switch
-				{
-					LineStackingStrategy.MaxHeight => lineHeight == 0 ?
-						_renderLines.Sum(r => r.GetMaxStackHeight()) :
-						_renderLines.Sum(r => Math.Max(r.GetMaxStackHeight(), lineHeight)),
-					LineStackingStrategy.BlockLineHeight => _renderLines.Count * lineHeight,
-					// BaselineToBaseline
-					_ => _renderLines[0].GetMaxAboveBaselineHeight() + (_renderLines.Count - 1) * lineHeight,
-				};
-
 				_lastDesiredSize = new Size(widestLineWidth, height);
 			}
 
@@ -220,9 +219,33 @@ namespace Windows.UI.Xaml.Documents
 
 			// Local functions
 
+			static float GetGlyphWidthWithSpacing(GlyphInfo glyph, float characterSpacing)
+			{
+				return glyph.AdvanceX > 0 ? glyph.AdvanceX + characterSpacing : glyph.AdvanceX;
+			}
+
+			// Gets rendering info for a segment, excluding any trailing spaces.
+
+			static (int Length, float Width) GetSegmentRenderInfo(Segment segment, int startGlyph, float characterSpacing)
+			{
+				var glyphs = segment.Glyphs;
+				int end = segment.LineBreakAfter ? glyphs.Count - 1 : glyphs.Count;
+				end -= segment.TrailingSpaces;
+
+				float width = 0;
+
+				for (int i = startGlyph; i < end; i++)
+				{
+					width += GetGlyphWidthWithSpacing(glyphs[i], characterSpacing);
+				}
+
+				return (end - startGlyph, width);
+			}
+
 			void MoveToNextLine(bool currentLineWrapped)
 			{
-				_renderLines.Add(new RenderLine(lineSegmentSpans));
+				var renderLine = new RenderLine(lineSegmentSpans, lineStackingStrategy, lineHeight, _renderLines.Count == 0, currentLineWrapped);
+				_renderLines.Add(renderLine);
 				lineSegmentSpans.Clear();
 
 				if (x > widestLineWidth)
@@ -231,25 +254,8 @@ namespace Windows.UI.Xaml.Documents
 				}
 
 				x = 0;
+				height += renderLine.Height;
 				previousLineWrapped = currentLineWrapped;
-			}
-
-			// Gets glyph rendering info for a segment, excluding any trailing spaces.
-
-			static (int Length, float Width) GetGlyphsRenderInfo(Segment segment, int start)
-			{
-				var glyphs = segment.Glyphs;
-				int end = segment.LineBreakAfter ? glyphs.Count - 1 : glyphs.Count;
-				end -= segment.TrailingSpaces;
-
-				float width = 0;
-
-				for (int i = start; i < end; i++)
-				{
-					width += glyphs[i].AdvanceX;
-				}
-
-				return (end - start, width);
 			}
 		}
 
@@ -286,77 +292,20 @@ namespace Windows.UI.Xaml.Documents
 			var parent = (IBlock)_collection.GetParent();
 			var alignment = parent.TextAlignment;
 
-			float lineHeight = (float)parent.LineHeight;
-			var lineStackingStrategy = lineHeight == 0 ? LineStackingStrategy.MaxHeight : parent.LineStackingStrategy;
-
-			bool firstLine = true;
-
 			float y = 0;
 
 			foreach (var line in _renderLines)
 			{
 				// TODO: (Performance) Stop rendering when the lines exceed the available height
 
-				float x = alignment switch
+				(float x, float justifySpaceOffset) = line.GetOffsets((float)_lastArrangedSize.Width, alignment);
+
+				y += line.Height;
+				float baselineOffsetY = line.BaselineOffsetY;
+
+				for (int s = 0; s < line.RenderOrderedSegmentSpans.Count; s++)
 				{
-					TextAlignment.Left => 0,
-					TextAlignment.Center => ((float)_lastArrangedSize.Width - line.WidthWithoutTrailingSpaces) / 2,
-					TextAlignment.Right => ((float)_lastArrangedSize.Width - line.Width),
-					_ => 0, //Justify (not supported yet)
-				};
-
-				float baselineOffsetY; // baseline offset for the current line
-
-				switch (lineStackingStrategy)
-				{
-					case LineStackingStrategy.MaxHeight:
-						float maxStackHeight = (float)line.GetMaxStackHeight();
-
-						if (lineHeight == 0)
-						{
-							y += maxStackHeight;
-							baselineOffsetY = -(float)line.GetMaxBelowBaselineHeight();
-						}
-						else
-						{
-							if (lineHeight < maxStackHeight)
-							{
-								y += maxStackHeight;
-								baselineOffsetY = -(float)line.GetMaxBelowBaselineHeight();
-
-							}
-							else
-							{
-								y += lineHeight;
-								baselineOffsetY = GetBaselineOffsetY(line, lineHeight, maxStackHeight);
-							}
-						}
-
-						break;
-
-					case LineStackingStrategy.BlockLineHeight:
-						y += lineHeight;
-						baselineOffsetY = GetBaselineOffsetY(line, lineHeight, (float)line.GetMaxStackHeight());
-						break;
-
-					default: // LineStackingStrategy.BaselineToBaseline:
-						if (firstLine)
-						{
-							y = (float)line.GetMaxAboveBaselineHeight();
-							baselineOffsetY = 0;
-						}
-						else
-						{
-							y += lineHeight;
-							baselineOffsetY = GetBaselineOffsetY(line, lineHeight, (float)line.GetMaxStackHeight());
-						}
-
-						break;
-				}
-
-				for (int s = 0; s < line.SegmentSpans.Count; s++)
-				{
-					var segmentSpan = line.SegmentSpans[s];
+					var segmentSpan = line.RenderOrderedSegmentSpans[s];
 
 					if (segmentSpan.GlyphsLength == 0)
 					{
@@ -381,7 +330,7 @@ namespace Windows.UI.Xaml.Documents
 					if ((decorations & allDecorations) != 0)
 					{
 						var metrics = paint.FontMetrics;
-						float width = s == line.SegmentSpans.Count - 1 ? segmentSpan.WidthWithoutTrailingSpaces : segmentSpan.Width;
+						float width = s == line.RenderOrderedSegmentSpans.Count - 1 ? segmentSpan.WidthWithoutTrailingSpaces : segmentSpan.Width;
 
 						if ((decorations & TextDecorations.Underline) != 0)
 						{
@@ -393,7 +342,7 @@ namespace Windows.UI.Xaml.Documents
 						if ((decorations & TextDecorations.Strikethrough) != 0)
 						{
 							// TODO: what should default thickness/position be if metrics does not contain it?
-							float yPos = y + baselineOffsetY + (metrics.StrikeoutPosition ?? -paint.TextSize / 2);
+							float yPos = y + baselineOffsetY + (metrics.StrikeoutPosition ?? paint.TextSize / -2);
 							DrawDecoration(canvas, x, yPos, width, metrics.StrikeoutThickness ?? 1, paint);
 						}
 					}
@@ -408,12 +357,18 @@ namespace Windows.UI.Xaml.Documents
 						for (int i = 0; i < segmentSpan.GlyphsLength; i++)
 						{
 							var glyphInfo = segment.Glyphs[segmentSpan.GlyphsStart + i];
+
+							if (glyphInfo.AdvanceX > 0)
+							{
+								x += segmentSpan.CharacterSpacing;
+							}
+
 							glyphs[i] = glyphInfo.GlyphId;
-							positions[i] = new SKPoint(x + glyphInfo.OffsetX, glyphInfo.OffsetY);
+							positions[i] = new SKPoint(x + glyphInfo.OffsetX - segmentSpan.CharacterSpacing, glyphInfo.OffsetY);
 							x += glyphInfo.AdvanceX;
 						}
 					}
-					else // RightToLeft
+					else // FlowDirection.RightToLeft
 					{
 						// Enumerate clusters in reverse order to draw left-to-right
 
@@ -431,6 +386,12 @@ namespace Windows.UI.Xaml.Documents
 							for (int j = i; j < i + clusterGlyphCount; j++)
 							{
 								var glyphInfo = segment.Glyphs[segmentSpan.GlyphsStart + j];
+
+								if (glyphInfo.AdvanceX > 0)
+								{
+									x += segmentSpan.CharacterSpacing;
+								}
+
 								glyphs[j] = glyphInfo.GlyphId;
 								positions[j] = new SKPoint(x + glyphInfo.OffsetX, glyphInfo.OffsetY);
 								x += glyphInfo.AdvanceX;
@@ -440,25 +401,9 @@ namespace Windows.UI.Xaml.Documents
 
 					using var textBlob = textBlobBuilder.Build();
 					canvas.DrawText(textBlob, 0, y + baselineOffsetY, paint);
+
+					x += justifySpaceOffset * segmentSpan.TrailingSpaces;
 				}
-
-				firstLine = false;
-			}
-
-			// Local functions:
-
-			// Gets the offset of the baseline for a render line based on a custom line height. Scales the default baseline offset by the ratio of the default
-			// line height to the custom line height.
-
-			static float GetBaselineOffsetY(RenderLine line, float lineHeight, float maxStackHeight)
-			{
-				if (maxStackHeight == 0)
-				{
-					return 0;
-				}
-
-				var defaultBaselineOffsetY = -(float)line.GetMaxBelowBaselineHeight();
-				return defaultBaselineOffsetY * lineHeight / maxStackHeight;
 			}
 
 			static void DrawDecoration(SKCanvas canvas, float x, float y, float width, float thickness, SKPaint paint)
@@ -468,6 +413,62 @@ namespace Windows.UI.Xaml.Documents
 				canvas.DrawLine(x, y, x + width, y, paint);
 				paint.IsStroke = false;
 			}
+        }
+
+		internal RenderLine? GetRenderLineAt(double y, bool extendedSelection)
+		{
+			if (_renderLines.Count == 0)
+			{
+				return null;
+			}
+
+			RenderLine line;
+			float lineY = 0;
+			int i = 0;
+
+			do
+			{
+				line = _renderLines[i++];
+				lineY += line.Height;
+
+				if (y <= lineY && (extendedSelection || y >= lineY - line.Height))
+				{
+					return line;
+				}
+			} while (i < _renderLines.Count);
+
+			return extendedSelection ? line : null;
+		}
+
+		internal RenderSegmentSpan? GetRenderSegmentSpanAt(Point point, bool extendedSelection)
+		{
+			var parent = (IBlock)_collection.GetParent();
+
+			var line = GetRenderLineAt(point.Y, extendedSelection);
+
+			if (line == null)
+			{
+				return null;
+			}
+
+			RenderSegmentSpan span;
+			(float spanX, float justifySpaceOffset) = line.GetOffsets((float)_lastArrangedSize.Width, parent.TextAlignment);
+			int i = 0;
+
+			do
+			{
+				span = line.RenderOrderedSegmentSpans[i++];
+				spanX += span.Width;
+
+				if (point.X <= spanX && (extendedSelection || point.X >= spanX - span.Width))
+				{
+					return span;
+				}
+
+				spanX += justifySpaceOffset * span.TrailingSpaces;
+			} while (i < line.RenderOrderedSegmentSpans.Count);
+
+			return extendedSelection ? span : null;
 		}
 	}
 }

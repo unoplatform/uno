@@ -4,17 +4,17 @@
 
 1. Open a command-line prompt, Windows Terminal if you have it installed, or else Command Prompt or Windows Powershell from the Start menu.
 
-1. Install the tool by running the following command from the command prompt:
+1. a. Install the tool by running the following command from the command prompt:
     ```
     dotnet tool install -g uno.check
     ```
-    To update the tool, if you already have an existing one:
+   b. To update the tool, if you already have an existing one:
     ```
     dotnet tool update -g uno.check
     ```
 1. Run the tool from the command prompt with the following command:
     ```
-    uno-check --pre
+    uno-check
     ```
 1. Follow the instructions indicated by the tool
 
@@ -22,17 +22,17 @@
 
 1. Open a Terminal.
 
-1. Install the tool by running the following command from the command prompt:
+1. a. Install the tool by running the following command from the command prompt:
     ```
     dotnet tool install -g uno.check
     ```
-    To update the tool, if you already have an existing one:
+   b. To update the tool, if you already have an existing one:
     ```
     dotnet tool update -g uno.check
     ```
 1. Run the tool from the command prompt with the following command:
     ```
-    uno-check --pre
+    uno-check
     ```
     If the above command fails, use the following:
     ```
@@ -45,17 +45,17 @@
 
 1. Open a Terminal.
 
-1. Install the tool by running the following command from the command prompt:
+1. a. Install the tool by running the following command from the command prompt:
     ```
     dotnet tool install -g uno.check
     ```
-    To update the tool, if you already have an existing one:
+   b. To update the tool, if you already have an existing one:
     ```
     dotnet tool update -g uno.check
     ```
 1. Run the tool from the command prompt with the following command:
     ```
-    uno-check --pre
+    uno-check
     ```
 1. Follow the instructions indicated by the tool
 

@@ -82,7 +82,7 @@ dotnet new unoapp-uwp-net6 -o MyApp
 A more advanced example that will not generate the android and macOS heads:
 
 ```
-dotnet new unoapp-uwp-net6 -o MyApp -mobile=false
+dotnet new unoapp-uwp-net6 -o MyApp --Mobile=false
 ```
 
 ## Uno Platform Extensions

@@ -1,11 +1,11 @@
 # WinUI 3 and Uno Platform
 
-WinUI 3 is the [next generation of Microsoft's Windows UI library](https://docs.microsoft.com/en-us/windows/apps/winui/). Scheduled for release in 2021, it succeeds the UWP XAML framework as Microsoft's actively-developed native UI platform. WinUI 3 supports Windows Desktop apps through [Project Reunion](https://docs.microsoft.com/en-us/windows/apps/project-reunion/).
+WinUI 3 is the [next generation of Microsoft's Windows UI library](https://docs.microsoft.com/windows/apps/winui/). It succeeds the UWP XAML framework as Microsoft's actively-developed native UI platform for Windows. WinUI 3 supports Windows Desktop apps through [Windows AppSDK](https://docs.microsoft.com/windows/apps/windows-app-sdk/).
 
 Since WinUI 3 and UWP XAML are very similar in their API, Uno Platform offers compatibility with both. This article goes further into the differences and how they apply to Uno.
 
 > [!TIP]
-> If you just want to add WinUI 2 controls to your Uno Platform project, [check the guide here](features/using-winui2.md).
+> If you just want to add WinUI controls to your Uno Platform project, [check the guide here](features/using-winui2.md).
 
 ## How does WinUI 3 differ from UWP XAML?
 
@@ -21,7 +21,7 @@ Below the surface, the differences are more substantial. The UWP XAML stack is p
 
 WinUI 3 is also decoupled from the application model. The UWP XAML stack is only compatible with the 'UWP model' in which the application runs in a secure sandbox. WinUI 3 is compatible both with the 'UWP model' and with the traditional 'Win32' or 'desktop' application model in which the application has largely-unrestricted access to the rest of the OS. 
 
-## How does this affect Uno?
+## How does this affect Uno Platform?
 
 Uno Platform is only affected by the API change - the technical changes don't apply on non-Windows platforms.
 
@@ -35,11 +35,11 @@ The questions below should help guide you to the best choice when creating a new
 
 #### Do you use 3rd-party libraries?
 
-Because WinUI 3 is still in preview, compatible versions of 3rd-party libraries are not yet available in many cases. If you depend (or expect to depend) on these libraries, the UWP XAML API may be the way to go for now.
+While 3rd party vendors have offerings for both UWP and WinUI, UWP has been in the market longer. From Uno Platform perspective either will work, or if not, contact us at our [Discord channel](https://discord.com/invite/eBHZSKG).
 
-#### Do you want to use .NET 5?
+#### Do you want to use .NET 5 or 6?
 
-WinUI 3 applications using the Win32 application model can use .NET 5 and C# 9 right now, whereas UWP currently doesn't support .NET 5 and there's no firm date that it will be added. 
+WinUI 3 applications using the Win32 application model can use .NET 5 and latest C# versions right now. Microsoft has announced they will not invest into moving UWP to .NET 5 or later. However, this does not change anything for Uno Platform users, as described in this [blog](https://platform.uno/blog/recent-uwp-and-net-5-net-6-news-and-uno-platform-plans/).
 
 Note that not all non-Windows platforms support .NET 5, see a [full support matrix here](net-version-support.md).
 

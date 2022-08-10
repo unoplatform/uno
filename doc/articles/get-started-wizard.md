@@ -32,7 +32,7 @@ XAML Intellisense [is not working properly](https://developercommunity.visualstu
 To work around this issue, close all XAML editors, open a C# file and select 'UWP' in the top-left drop-down list of the text editor sector. Once selected, re-open the XAML file.
 
 #### Error MSB3030: Could not copy the file "MyProject.Shared\MainPage.xbf" because it was not found.
-This issue is present in Visual Studio 17.2 and 17.3 Preview 1, and can be addressed by [taking a look at this issue](https://github.com/unoplatform/uno/discussions/5007#discussioncomment-2583741).
+This issue is present in Visual Studio 17.2 and 17.3, and can be addressed by [taking a look at this issue](https://github.com/unoplatform/uno/discussions/5007#discussioncomment-2583741).
 
 #### `InitializeComponent` or `x:Name` variable is not available in code-behind
 Visual Studio [does not refresh the intellisense cache](https://developercommunity.visualstudio.com/content/problem/588021/the-compile-itemgroup-intellisense-cache-is-not-re.html) properly, causing variables to be incorrectly defined.

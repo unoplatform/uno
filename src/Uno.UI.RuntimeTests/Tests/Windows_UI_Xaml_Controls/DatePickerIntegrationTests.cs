@@ -750,7 +750,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 #else
 				var flyoutPopup = VisualTreeHelper.GetOpenPopupsForXamlRoot(datePicker.XamlRoot)[0];
 #endif
-				var datepickerFlyoutPresenter = GetDatePickerFlyoutPresenter();
+				var datepickerFlyoutPresenter = GetDatePickerFlyoutPresenter(datePicker.XamlRoot);
 
 				// The flyout popup, the flyout presenter and the button should have an RTL flow direction.
 				// The DatePicker itself should remain in LTR flow direction.
@@ -1096,9 +1096,9 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			});
 		}
 
-		private DatePickerFlyoutPresenter GetDatePickerFlyoutPresenter()
+		private DatePickerFlyoutPresenter GetDatePickerFlyoutPresenter(XamlRoot xamlRoot)
 		{
-			return FlyoutHelper.GetOpenFlyoutPresenter() as DatePickerFlyoutPresenter;
+			return FlyoutHelper.GetOpenFlyoutPresenter(xamlRoot) as DatePickerFlyoutPresenter;
 		}
 
 		private void VerifyDatesAreEqual(Calendar expected, DateTimeOffset actual)

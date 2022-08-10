@@ -6,6 +6,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using System;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
+using Uno.UI.Xaml.Core;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
@@ -78,7 +79,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				if (newIsOpen)
 				{
+#if !__SKIA__ // The OpenPopup method should be moved out of Window in general https://github.com/unoplatform/uno/issues/8978
 					_closePopup.Disposable = Window.Current.OpenPopup(this);
+#else
+					var currentXamlRoot = XamlRoot ?? CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot;
+					_closePopup.Disposable = currentXamlRoot?.OpenPopup(this);
+#endif
 					PopupPanel.Visibility = Visibility.Visible;
 				}
 				else

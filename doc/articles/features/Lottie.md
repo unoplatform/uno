@@ -2,7 +2,7 @@
 
 ## Using the `LottieVisualSource`:
 
-# [**WinUI 3**](#tab/windows)
+# [**WinUI 3**](#tab/winui)
 
 Add the following namespaces:
 ```xml
@@ -28,12 +28,12 @@ On all Uno Platform targets, you'll need the following packages:
   * `Uno.WinUI.Lottie` (for the `LottieVisualSource`)
 
 Additionally, on Skia targets (Gtk, WPF, Framebuffer), you'll need the following packages:
-    * `SkiaSharp.Views.Uno.WinUI` version 2.88.1-preview.71 or later
-    * `SkiaSharp.Skottie` version 2.88.1-preview.71 or later
+    * `SkiaSharp.Views.Uno.WinUI` version 2.88.1-preview.79 or later
+    * `SkiaSharp.Skottie` version 2.88.1-preview.79 or later
 
 On Windows/WinAppSDK, [the support for Lottie is still pending](https://github.com/CommunityToolkit/Lottie-Windows/issues/478).
 
-# [**UWP**](#tab/windows)
+# [**UWP**](#tab/uwp)
 
 Add the following namespaces:
 ```xml
@@ -59,8 +59,8 @@ On WASM, Xamarin.Android, Xamarin.iOS and Xamarin.macOS, you'll need the followi
 
 On Skia targets (Gtk, WPF, Framebuffer), you'll need the following packages:
   * `Uno.UI.Lottie` (for the `LottieVisualSource`)
-  * `SkiaSharp.Views.Uno` version 2.88.1-preview.71 or later
-  * `SkiaSharp.Skottie` version 2.88.1-preview.71 or later
+  * `SkiaSharp.Views.Uno` version 2.88.1-preview.79 or later
+  * `SkiaSharp.Skottie` version 2.88.1-preview.79 or later
 
 On UWP, you'll need to reference the following packages in your head project:
   * `Microsoft.Toolkit.Uwp.UI.Lottie` (for the `LottieVisualSource`)

@@ -27,15 +27,10 @@ using Microsoft.Extensions.Logging;
 using Uno.Logging;
 #endif
 
-#if XAMARIN || UNO_REFERENCE_API
 using Windows.UI.Xaml.Controls;
-#else
 using Windows.Graphics.Imaging;
 using Windows.Graphics.Display;
-using Windows.UI.Xaml.Media;
-using Windows.UI;
-using Windows.UI.Xaml.Controls;
-#endif
+using Uno.UI.Extensions;
 
 namespace SampleControl.Presentation
 {
@@ -75,6 +70,8 @@ namespace SampleControl.Presentation
 		private Section _lastSection = Section.Library;
 		private readonly Stack<Section> _previousSections = new Stack<Section>();
 		private bool _isRecordAllTests = false;
+		private static readonly Windows.UI.Xaml.Media.SolidColorBrush _screenshotBackground =
+	new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.White);
 
 		// A static instance used during UI Testing automation
 		public static SampleChooserViewModel Instance { get; private set; }
@@ -280,10 +277,10 @@ namespace SampleControl.Presentation
 					async () =>
 					{
 						try {
-						  await RecordAllTestsInner(folderName, ct, doneAction);
+							await RecordAllTestsInner(folderName, ct, doneAction);
 						}
 						finally {
-						  _isRecordAllTests = false;
+							_isRecordAllTests = false;
 						}
 					});
 			}
@@ -300,6 +297,7 @@ namespace SampleControl.Presentation
 		{
 			try
 			{
+				var rootFolder = await GetStorageFolderFromNameOrCreate(ct, folderName);
 #if TRACK_REFS
 				var initialInactiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetInactiveViewReferencesStats();
 				var initialActiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats();
@@ -334,6 +332,8 @@ namespace SampleControl.Presentation
 					_log.Debug($"Generating tests for {tests.Count()} test in {folderName}");
 				}
 
+				var target = new Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap();
+
 				foreach (var sample in tests)
 				{
 					try
@@ -367,8 +367,10 @@ namespace SampleControl.Presentation
 							await Task.Delay(500, ct);
 
 							Console.WriteLine($"Generating screenshot for {fileName}");
-
-							await GenerateBitmap(ct, folderName, fileName, content);
+							var file = await rootFolder.CreateFileAsync(fileName + ".png",
+								CreationCollisionOption.ReplaceExisting
+								).AsTask(ct);
+							await GenerateBitmap(ct, target, file, content, GetScreenshotConstraints());
 						}
 						catch (Exception e)
 						{
@@ -461,7 +463,7 @@ namespace SampleControl.Presentation
 				if (ContentPhone is FrameworkElement fe
 					&& fe.FindName("UnitTestsRootControl") is Uno.UI.Samples.Tests.UnitTestsControl unitTests)
 				{
-					await unitTests.RunTests(ct, UnitTestEngineConfig.Default);
+					await Task.Run(() => unitTests.RunTests(ct, UnitTestEngineConfig.Default));
 
 					File.WriteAllText(testResultsFilePath, unitTests.NUnitTestResultsDocument, System.Text.Encoding.Unicode);
 				}
@@ -1022,8 +1024,15 @@ description: {sample.Description}";
 			{
 				try
 				{
-					var folderPath = ApplicationData.Current.LocalFolder.Path;
-					File.WriteAllText(Path.Combine(folderPath, SampleChooserFileAddress + key), json);
+					var folder = await StorageFolder.GetFolderFromPathAsync(ApplicationData.Current.LocalFolder.Path);
+					var file = await folder.OpenStreamForWriteAsync(SampleChooserFileAddress + key, CreationCollisionOption.ReplaceExisting);
+					using (var writer = new StreamWriter(file, encoding: System.Text.Encoding.UTF8))
+					using (var jsonWriter = new Newtonsoft.Json.JsonTextWriter(writer))
+					{
+						var ser = Newtonsoft.Json.JsonSerializer.CreateDefault();
+						ser.Serialize(jsonWriter, value);
+						jsonWriter.Flush();
+					}
 				}
 				catch (IOException e)
 				{
@@ -1043,7 +1052,12 @@ description: {sample.Description}";
 				try
 				{
 					var folderPath = ApplicationData.Current.LocalFolder.Path;
-					json = File.ReadAllText(Path.Combine(folderPath, SampleChooserFileAddress + key));
+					var filePath = Path.Combine(folderPath, SampleChooserFileAddress + key);
+					if (File.Exists(filePath))
+					{
+						json = File.ReadAllText(filePath);
+					}
+					
 				}
 				catch (IOException e)
 				{
@@ -1064,6 +1078,91 @@ description: {sample.Description}";
 			}
 #endif
 			return defaultValue != null ? defaultValue() : default(T);
+		}
+
+
+		private async Task DumpOutputFolderName(CancellationToken ct, string folderName)
+		{
+			var folder = await GetStorageFolderFromNameOrCreate(ct, folderName);
+
+			if (_log.IsEnabled(LogLevel.Debug))
+			{
+				_log.Debug($"Output folder for tests: {folder.Path}");
+			}
+		}
+
+		private async Task GenerateBitmap(CancellationToken ct
+			, Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap targetBitmap
+			, StorageFile file
+			, FrameworkElement content
+			, (double MinWidth, double MinHeight, double Width, double Height) constraints)
+		{
+#if __WASM__
+			throw new NotSupportedException($"GenerateBitmap is not supported by this platform");
+#else
+			var element = content?.Parent is FrameworkElement parent
+				? parent
+				: (FrameworkElement)content ?? throw new Exception("Invalid element");
+
+			(double oldMinWidth, double oldMinHeight, double oldWidth, double oldHeight)
+				= (element.MinWidth, element.MinHeight, element.Width, element.Height);
+			try
+			{
+				element.MinWidth = constraints.MinWidth;
+				element.MinHeight = constraints.MinHeight;
+				element.Width = constraints.Width;
+				element.Height = constraints.Height;
+
+				var border = element.FindFirstChild<Border>();
+
+				if (border != null)
+				{
+					border.Background = _screenshotBackground;
+				}
+
+				element.InvalidateMeasure();
+				element.InvalidateArrange();
+				await Task.Yield();
+				element.Measure(new Windows.Foundation.Size(constraints.Width, constraints.Height));
+				element.Arrange(new Windows.Foundation.Rect(0, 0, constraints.Width, constraints.Height));
+
+				await Task.Yield();
+				targetBitmap = new Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap();
+
+				await targetBitmap.RenderAsync(element).AsTask(ct);
+
+				content.DataContext = null;
+
+				var pixels = await targetBitmap.GetPixelsAsync().AsTask(ct);
+
+				using (var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite).AsTask(ct))
+				{
+					var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, fileStream).AsTask(ct);
+
+					encoder.SetPixelData(
+						BitmapPixelFormat.Bgra8,
+						BitmapAlphaMode.Ignore,
+						(uint)targetBitmap.PixelWidth,
+						(uint)targetBitmap.PixelHeight,
+						DisplayInformation.GetForCurrentView().RawDpiX,
+						DisplayInformation.GetForCurrentView().RawDpiY,
+						pixels.ToArray()
+					);
+
+					await encoder.FlushAsync().AsTask(ct);
+				}
+			}
+			catch (Exception ex)
+			{
+				_log.Error(ex.Message);
+			}
+			finally
+			{
+				(element.MinWidth, element.MinHeight, element.Width, element.Height) =
+					(oldMinWidth, oldMinHeight, oldWidth, oldHeight);
+				await Task.Yield();
+			}
+#endif
 		}
 	}
 }

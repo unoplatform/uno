@@ -1,5 +1,5 @@
 #nullable enable
-
+using SkiaSharp;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -38,4 +38,16 @@ public partial class ContainerVisual : Visual
 		}
 		IsChildrenRenderOrderDirty = false;
 	}
+
+	internal override void Render(SKSurface surface)
+	{
+		var compositor = this.Compositor;
+		var children = GetChildrenInRenderOrder();
+		var childrenCount = children.Count;
+		for (int i = 0; i < childrenCount; i++)
+		{
+			compositor.RenderVisual(surface, children[i]);
+		}
+	}
+
 }

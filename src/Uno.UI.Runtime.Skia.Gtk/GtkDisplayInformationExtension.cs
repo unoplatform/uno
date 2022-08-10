@@ -29,15 +29,21 @@ internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 
 	public uint ScreenWidthInRawPixels => (uint)_window.Display.GetMonitorAtWindow(_window.Window).Workarea.Width;
 
-	public float LogicalDpi => _dpi ??= GetLogicalDpi();
+	public float LogicalDpi
+		// GetLogicalDpi cannot be used here to get the actual
+		// scale factor, as GTK does not support fractional scaling.
+		// For instance, 2.5x will become 2x.
+		=> _dpi ??= _window.Display.GetMonitorAtWindow(_window.Window).ScaleFactor * DisplayInformation.BaseDpi;
 
 	public double RawPixelsPerViewPixel => LogicalDpi / DisplayInformation.BaseDpi;
 
 	public ResolutionScale ResolutionScale => (ResolutionScale)(int)(RawPixelsPerViewPixel * 100.0);
 
-	private void OnDpiChanged(object sender, EventArgs args)
+	public double? DiagonalSizeInInches => null;
+
+	private void OnDpiChanged(object? sender, EventArgs args)
 	{
-		_dpi = GetLogicalDpi();
+		_dpi = _window.Display.GetMonitorAtWindow(_window.Window).ScaleFactor * DisplayInformation.BaseDpi;
 		_displayInformation.NotifyDpiChanged();
 	}
 

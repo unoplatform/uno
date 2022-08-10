@@ -34,7 +34,7 @@ For a larger example and features demo:
 * Supported platforms:
     * Windows 10 and Windows 11 (via the standard UWP and WinUI Toolkit)
     * Windows 7 (via Skia)
-    * iOS, macOS and Android (via [Xamarin](https://www.visualstudio.com/xamarin/) and [.NET] (https://dotnet.microsoft.com/))
+    * iOS, macOS and Android (via [Xamarin](https://www.visualstudio.com/xamarin/) and [.NET](https://dotnet.microsoft.com/))
     * WebAssembly through the [.NET Runtime WebAssembly SDK](https://github.com/dotnet/runtime/tree/main/src/mono/wasm)
     * Linux through Skia (Gtk and FrameBuffer)
 * Dev loop:

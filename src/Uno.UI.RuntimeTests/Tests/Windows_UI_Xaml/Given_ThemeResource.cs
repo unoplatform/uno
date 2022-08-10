@@ -21,6 +21,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if NETFX_CORE
 		[Ignore("Fails on UWP with 'The parameter is incorrect.'")]
 #endif
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_ThemeResource_Binding_In_Template()
 		{
 			using (StyleHelper.UseAppLevelResources(new App_Level_Resources()))

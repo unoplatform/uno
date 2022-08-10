@@ -96,7 +96,8 @@ namespace Windows.UI.Xaml.Controls
 				return null;
 			}
 
-			if (view.Layer?.Transform.IsIdentity ?? true)
+			var layer = view.Layer;
+			if (layer == null)
 			{
 				// Transform is identity anyway, or Layer is null
 				return null;
@@ -104,13 +105,17 @@ namespace Windows.UI.Xaml.Controls
 
 			// If NSView.Transform is not identity, then modifying the frame will give undefined behavior. (https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIView_Class/#//apple_ref/occ/instp/NSView/transform)
 			// We have either already applied the transform to the new frame, or we will reset the transform straight after.
-			var transform = view.Layer.Transform;
-			view.Layer.Transform = CATransform3D.Identity;
+			var transform = layer.Transform;
+			if (transform.IsIdentity)
+			{
+				return null;
+			}
+			transform = CATransform3D.Identity;
 			return Disposable.Create(reapplyTransform);
 
 			void reapplyTransform()
 			{
-				view.Layer.Transform = transform;
+				layer.Transform = transform;
 			}
 		}
 	}

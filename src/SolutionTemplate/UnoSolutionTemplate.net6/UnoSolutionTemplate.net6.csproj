@@ -100,9 +100,6 @@
     <None Include="Skia.Linux.FrameBuffer\UnoQuickStart.Skia.Linux.FrameBuffer.csproj" />
     <None Include="Skia.WPF\App.xaml.cs" />
     <None Include="Skia.WPF\MainWindow.xaml.cs" />
-    <None Include="Skia.WPF\Properties\AssemblyInfo.cs" />
-    <None Include="Skia.WPF\Properties\Resources.Designer.cs" />
-    <None Include="Skia.WPF\Properties\Settings.Designer.cs" />
     <None Include="Skia.Gtk\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Skia.Gtk\Program.cs" />
     <None Include="Mobile\Android\Main.Android.cs" />
@@ -116,9 +113,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Skia.Gtk\UnoQuickStart.Skia.Gtk.csproj" />
-    <None Include="Skia.WPF\App.config" />
     <None Include="Skia.WPF\Assets\Fonts\uno-fluentui-assets.ttf" />
-    <None Include="Skia.WPF\Properties\Settings.settings" />
     <None Include="Skia.WPF\UnoQuickStart.Skia.Wpf.csproj" />
     <None Include="Wasm\Program.cs" />
     <None Include="Shared\App.xaml.cs" />
@@ -248,9 +243,6 @@
     <Content Include="__TemplateIcon.png" />
     <None Include="Wasm\Wasm.net6.vstemplate" />
     <Content Include="Wasm\UnoQuickStart.Wasm.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Skia.WPF\Properties\Resources.resx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Skia.WPF\App.xaml" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 
@@ -11,6 +12,7 @@ namespace Windows.Storage.Streams
 	/// </summary>
 	public sealed partial class DataWriter : IDataWriter, IDisposable
 	{
+		private readonly IOutputStream _outputStream = null;
 		private MemoryStream _memoryStream = null;
 
 		/// <summary>
@@ -19,6 +21,11 @@ namespace Windows.Storage.Streams
 		public DataWriter()
 		{
 			_memoryStream = new MemoryStream();
+		}
+
+		public DataWriter(IOutputStream outputStream) : this()
+		{
+			_outputStream = outputStream;
 		}
 
 		/// <summary>
@@ -176,8 +183,8 @@ namespace Windows.Storage.Streams
 		/// Writes a date and time value to the output stream.
 		/// </summary>
 		/// <param name="value">The value.</param>
-		public void WriteDateTime( DateTimeOffset value)
-		{ 
+		public void WriteDateTime(DateTimeOffset value)
+		{
 			// Implementation in UWP is using Win32 FileTime format (starting on 1st January 1601)
 			// As contrary to Win32 however also supports pre-1601 dates
 			var epoch1601 = new DateTimeOffset(1601, 1, 1, 0, 0, 0, TimeSpan.Zero);
@@ -275,6 +282,19 @@ namespace Windows.Storage.Streams
 				Array.Reverse(chunk);
 			}
 			_memoryStream.Write(chunk, 0, chunk.Length);
+		}
+
+
+		public DataWriterStoreOperation StoreAsync() =>
+			new DataWriterStoreOperation(StoreTaskAsync().AsAsyncOperation<uint>());
+
+		private async Task<uint> StoreTaskAsync()
+		{
+			var cancelToken = new CancellationTokenSource();
+			var inBuffer = _memoryStream.GetBuffer();
+			await _outputStream.WriteAsync(inBuffer, 0, (int)_memoryStream.Length, cancelToken.Token);
+			await _outputStream.FlushAsync();
+			return (uint)inBuffer.Length;
 		}
 	}
 }

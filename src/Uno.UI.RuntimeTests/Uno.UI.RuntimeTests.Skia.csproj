@@ -41,6 +41,7 @@
 	<Import Project="UITestsImport.props" />
 
 	<ItemGroup>
+		<EmbeddedResource Include="Assets\Border_Snapshot.bgra8" />
 		<EmbeddedResource Include="LinkerDefinition.Skia.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>

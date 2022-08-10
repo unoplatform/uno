@@ -43,7 +43,7 @@ namespace Uno.Extensions.Storage.Pickers
 
 			dialog.SetCurrentFolder(PickerHelpers.GetInitialDirectory(_picker.SuggestedStartLocation));
 
-			StorageFolder folder = null;
+			StorageFolder? folder = null;
 			if (dialog.Run() == (int)ResponseType.Accept)
 			{
 				folder = await StorageFolder.GetFolderFromPathAsync(dialog.Filename);

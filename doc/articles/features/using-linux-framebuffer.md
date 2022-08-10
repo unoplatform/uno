@@ -34,6 +34,13 @@ The app will start and display on the first available framebuffer device.
 
 Documentation on other hardware targets are [available here](https://github.com/dotnet/core/blob/main/release-notes/5.0/5.0-supported-os.md).
 
+## DPI Scaling support
+Whenever possible, the `FrameBufferHost` will try to detect the actual DPI scale to use when rendering the UI, based on the physical information provided by the FrameBuffer driver. If the value cannot be determined, a scale of `1.0` is used.
+
+The automatic scaling can be overriden in two ways:
+- Set a value using `FrameBufferHost.DisplayScale`
+- Set a value through the `UNO_DISPLAY_SCALE_OVERRIDE` environment variable. This value has precedence over the value specified in `FrameBufferHost.DisplayScale`
+
 ## Additional dependencies
 
 If your device is significantly trimmed down for installed packages, you'll need to install :

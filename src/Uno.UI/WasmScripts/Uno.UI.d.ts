@@ -100,6 +100,7 @@ declare namespace MonoSupport {
         private static registrations;
         private static methodMap;
         private static _isUnoRegistered;
+        private static dispatcherCallback;
         /**
          * Registers a instance for a specified identier
          * @param identifier the scope name
@@ -126,7 +127,6 @@ declare namespace MonoSupport {
          */
         private static cacheMethod;
         private static getMethodMapId;
-        private static dispatcherCallback;
         static invokeOnMainThread(): void;
     }
 }
@@ -175,7 +175,7 @@ declare namespace Uno.UI {
             */
         static initNative(pParams: number): boolean;
         private containerElement;
-        private rootContent;
+        private rootElement;
         private cursorStyleElement;
         private allActiveElementsById;
         private uiElementRegistrations;
@@ -429,9 +429,9 @@ declare namespace Uno.UI {
          */
         private getEventExtractor;
         /**
-            * Set or replace the root content element.
+            * Set or replace the root element.
             */
-        setRootContent(elementId?: number): string;
+        setRootElement(elementId?: number): string;
         /**
             * Set a view as a child of another one.
             *
