@@ -137,7 +137,11 @@ namespace Uno.AuthenticationBroker
 			tcsResponse = new TaskCompletionSource<WebAuthenticationResult>();
 			currentRedirectUri = callbackUrl;
 
-			if (!(await StartCustomTabsActivity(url)))
+			// Make sure that cancellation terminates the corresponding task
+			ct.Register(() => tcsResponse?.TrySetCanceled());
+
+
+			if (!(await StartCustomTabsActivity(url, ct)))
 			{
 				// Fall back to opening the system-registered browser if necessary
 				var urlOriginalString = url.OriginalString;
@@ -148,7 +152,7 @@ namespace Uno.AuthenticationBroker
 			return await tcsResponse.Task;
 		}
 
-		private async Task<bool> StartCustomTabsActivity(Uri url)
+		private async Task<bool> StartCustomTabsActivity(Uri url, CancellationToken ct)
 		{
 			// Is only set to true if BindServiceAsync succeeds and no exceptions are thrown
 			var success = false;
@@ -157,7 +161,7 @@ namespace Uno.AuthenticationBroker
 			var customTabsActivityManager = CustomTabsActivityManager.From(parentActivity);
 			try
 			{
-				if (await BindServiceAsync(customTabsActivityManager))
+				if (await BindServiceAsync(customTabsActivityManager, ct))
 				{
 					var customTabsIntent = new CustomTabsIntent.Builder(customTabsActivityManager.Session)
 						.SetShowTitle(true)
@@ -181,15 +185,24 @@ namespace Uno.AuthenticationBroker
 			return success;
 		}
 
-		static Task<bool> BindServiceAsync(CustomTabsActivityManager manager)
+		static Task<bool> BindServiceAsync(CustomTabsActivityManager manager, CancellationToken ct)
 		{
+			var isConnected = false;
 			var tcs = new TaskCompletionSource<bool>();
 
+
+			ct.Register(() =>
+			{
+				tcs.TrySetCanceled();
+				Disconnect();
+			});
+
 			manager.CustomTabsServiceConnected += OnCustomTabsServiceConnected;
+			isConnected = true;
 
 			if (!manager.BindService())
 			{
-				manager.CustomTabsServiceConnected -= OnCustomTabsServiceConnected;
+				Disconnect();
 				tcs.TrySetResult(false);
 			}
 
@@ -197,9 +210,19 @@ namespace Uno.AuthenticationBroker
 
 			void OnCustomTabsServiceConnected(ComponentName name, CustomTabsClient client)
 			{
-				manager.CustomTabsServiceConnected -= OnCustomTabsServiceConnected;
+				Disconnect();
 				tcs.TrySetResult(true);
 			}
+
+			void Disconnect()
+			{
+				if (isConnected)
+				{
+					isConnected = false;
+					manager.CustomTabsServiceConnected -= OnCustomTabsServiceConnected;
+				}
+			}
+
 		}
 
 		internal static bool IsIntentSupported(Intent intent, string? expectedPackageName)
