@@ -11,7 +11,6 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
-using static Windows.UI.Xaml.Controls.CollectionChangedOperation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -55,6 +54,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse(firstButton.Focus(FocusState.Programmatic));
 		}
 
+#if HAS_UNO
 		[TestMethod]
 		public async Task When_Button_Flyout_TemplateBinding()
 		{
@@ -86,6 +86,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				VisualTreeHelper.CloseAllPopups();
 			}
 		}
+#endif
 
 		private async Task RunIsExecutingCommandCommon(IsExecutingCommand command)
 		{
