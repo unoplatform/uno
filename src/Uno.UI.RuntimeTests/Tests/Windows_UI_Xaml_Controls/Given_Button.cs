@@ -53,7 +53,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse(firstButton.Focus(FocusState.Programmatic));
 		}
 
-#if HAS_UNO
+#if HAS_UNO && !__MACOS__
 		[TestMethod]
 		public async Task When_Button_Flyout_TemplateBinding()
 		{
