@@ -58,7 +58,6 @@ namespace Uno.UI.Controls
 
 		internal event Action FrameChanged;
 
-		private WeakReference<CoreWindow> _owner;
 		private ICoreWindowEvents _ownerEvents;
 
 		/// <summary>
@@ -108,7 +107,7 @@ namespace Uno.UI.Controls
 				{
 					if (_ownerEvents is { })
 					{
-						RaiseKeyEvent(_ownerEvents.RaiseKeyDown, args);
+						_ownerEvents.RaiseKeyDown(args);
 						handled |= true;
 					}
 				}
@@ -157,14 +156,8 @@ namespace Uno.UI.Controls
 
 		internal void SetOwner(CoreWindow owner)
 		{
-			_owner = new WeakReference<CoreWindow>(owner);
 			_ownerEvents = (ICoreWindowEvents)owner;
 		}
-
-		internal CoreWindow GetOwner() =>
-			_owner != null && _owner.TryGetTarget(out var target) && target is { }
-			? target
-			: null;
 
 		/// <summary>
 		/// The behavior to use to bring the focused item into view when opening the keyboard.
@@ -176,13 +169,6 @@ namespace Uno.UI.Controls
 		/// The padding to add at top or bottom when bringing the focused item in the view when opening the keyboard.
 		/// </summary>
 		public int FocusedViewBringIntoViewOnKeyboardOpensPadding { get; set; }
-
-		private void RaiseKeyEvent(Action<KeyEventArgs> raisePointerEvent, KeyEventArgs args)
-		{
-			_ = GetOwner()?.Dispatcher.RunAsync(
-				CoreDispatcherPriority.High,
-				() => raisePointerEvent(args));
-		}
 
 		private void OnApplicationEnteredBackground(object sender, NSNotificationEventArgs e)
 		{
