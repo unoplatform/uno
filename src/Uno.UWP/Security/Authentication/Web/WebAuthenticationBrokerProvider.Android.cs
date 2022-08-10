@@ -91,7 +91,7 @@ namespace Uno.AuthenticationBroker
 				// Only handle schemes we expect
 				if (!CanHandleCallback(currentRedirectUri, intentUri))
 				{
-					tcsResponse.TrySetException(new InvalidOperationException($"Invalid Redirect URI, detected `{intentUri}` but expected a URI in the format of `{currentRedirectUri}`"));
+					tcsResponse.TrySetException(new InvalidOperationException($"Invalid Redirect URI, detected `{intentUri}` but expected a URI in the format of `{currentRedirectUri}`. Check that the redirect/callback uri matches the DataScheme specified in the class that overrides from WebAuthenticationBrokerActivityBase"));
 					return false;
 				}
 
