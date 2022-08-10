@@ -124,11 +124,15 @@ namespace Uno.AuthenticationBroker
 
 			// Try to find the activity for the callback intent
 			if (!IsIntentSupported(intent, packageName))
+			{
 				throw new InvalidOperationException($"You must subclass the `{nameof(WebAuthenticationBrokerActivityBase)}` and create an IntentFilter for it which matches your `{nameof(callbackUrl)}`.");
+			}
 
 			// Cancel any previous task that's still pending
 			if (tcsResponse?.Task != null && !tcsResponse.Task.IsCompleted)
+			{
 				tcsResponse.TrySetCanceled();
+			}
 
 			tcsResponse = new TaskCompletionSource<WebAuthenticationResult>();
 			currentRedirectUri = callbackUrl;
@@ -171,13 +175,7 @@ namespace Uno.AuthenticationBroker
 			}
 			finally
 			{
-				try
-				{
-					customTabsActivityManager.Client?.Dispose();
-				}
-				finally
-				{
-				}
+				customTabsActivityManager.Client?.Dispose();
 			}
 
 			return success;
@@ -207,7 +205,9 @@ namespace Uno.AuthenticationBroker
 		internal static bool IsIntentSupported(Intent intent, string? expectedPackageName)
 		{
 			if (Application.Context is not Context ctx || ctx.PackageManager is not PackageManager pm)
+			{
 				return false;
+			}
 
 			return intent.ResolveActivity(pm) is ComponentName c && c.PackageName == expectedPackageName;
 		}
@@ -215,12 +215,16 @@ namespace Uno.AuthenticationBroker
 		internal static bool CanHandleCallback(Uri expectedUrl, Uri callbackUrl)
 		{
 			if (!callbackUrl.Scheme.Equals(expectedUrl.Scheme, StringComparison.OrdinalIgnoreCase))
+			{
 				return false;
+			}
 
 			if (!string.IsNullOrEmpty(expectedUrl.Host))
 			{
 				if (!callbackUrl.Host.Equals(expectedUrl.Host, StringComparison.OrdinalIgnoreCase))
+				{
 					return false;
+				}
 			}
 
 			return true;
