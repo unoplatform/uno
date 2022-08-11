@@ -16,6 +16,7 @@ using Uno.UI;
 using Windows.Devices.Sensors;
 using Windows.Gaming.Input;
 using Windows.Graphics.Display;
+using Windows.Security.Authentication.Web;
 using Windows.Storage.Pickers;
 using Windows.System;
 using Windows.UI.ViewManagement;
@@ -247,7 +248,7 @@ namespace Windows.UI.Xaml
 
 			RaiseConfigurationChanges();
 
-			WebAuthenticationBrokerProvider.OnMainActivityResumed();
+			WebAuthenticationBroker.OnResume();
 		}
 
 		protected override void OnPause()

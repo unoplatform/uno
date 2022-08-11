@@ -8893,6 +8893,9 @@
 			<Member
 				fullName="System.Void Windows.Storage.Streams.DataWriterStoreOperation..ctor()"
 				reason="Not part of UWP API" />
+			<Member
+				fullName="System.Threading.Tasks.Task Uno.AuthenticationBroker.WebAuthenticationBrokerProvider.LaunchBrowserCore(Windows.Security.Authentication.Web.WebAuthenticationOptions options, System.Uri requestUri, System.Uri callbackUri, System.Threading.CancellationToken ct)"
+				reason="Protected method no longer used or required" />
 		</Methods>
 		<Properties>
 			<Member
