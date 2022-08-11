@@ -43,7 +43,11 @@ namespace Windows.Storage.Pickers
 
 			documentPicker.ShouldShowFileExtensions = true;
 			documentPicker.Delegate = new FileOpenPickerDelegate(completionSource);
-			documentPicker.PresentationController.Delegate = new FileOpenPickerPresentationControllerDelegate(completionSource);
+
+			if (documentPicker.PresentationController != null)
+			{
+				documentPicker.PresentationController.Delegate = new FileOpenPickerPresentationControllerDelegate(completionSource);
+			}
 
 			await rootController.PresentViewControllerAsync(documentPicker, true);
 
