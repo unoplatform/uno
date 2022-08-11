@@ -54,7 +54,7 @@
 			<TextBlock Text="Remote source" />
 
 			<TextBlock Text="None" />
-			<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
+			<Image Source="https://TODO/testing.jpg"
 				   Stretch="None"
 				   Width="300"
 				   Height="250"
@@ -62,7 +62,7 @@
 				   HorizontalAlignment="Right" />
 
 			<TextBlock Text="Uniform" />
-			<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
+			<Image Source="https://TODO/testing.jpg"
 				   Stretch="Uniform"
 				   Width="300"
 				   Height="250"
@@ -70,7 +70,7 @@
 				   HorizontalAlignment="Right" />
 
 			<TextBlock Text="UniformToFill" />
-			<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
+			<Image Source="https://TODO/testing.jpg"
 				   Stretch="UniformToFill"
 				   Width="300"
 				   Height="250"
@@ -78,7 +78,7 @@
 				   HorizontalAlignment="Right" />
 
 			<TextBlock Text="Fill" />
-			<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
+			<Image Source="https://TODO/testing.jpg"
 				   Stretch="Fill"
 				   Width="300"
 				   Height="250"
