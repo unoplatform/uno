@@ -143,13 +143,18 @@ namespace Uno.UI.Tests
 
 			var r = CreateUnreferenced();
 
-			Assert.IsNotNull(r.ownerRef.Target);
-			Assert.IsNotNull(r.targetRef.Target);
-			Assert.IsNotNull(r.refref.Target);
+			void ScopedTest()
+			{
+				Assert.IsNotNull(r.ownerRef.Target);
+				Assert.IsNotNull(r.targetRef.Target);
+				Assert.IsNotNull(r.refref.Target);
 
-			Assert.AreEqual(0, WeakReferencePool.PooledReferences);
+				Assert.AreEqual(0, WeakReferencePool.PooledReferences);
+			}
 
-			GCCondition(5, () => r.refref.Target == null);
+			ScopedTest();
+
+			GCCondition(50, () => r.refref.Target == null);
 
 			Assert.IsNull(r.refref.Target);
 
