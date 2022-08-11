@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
+using Uno.Extensions;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -48,6 +52,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// The button cannot be refocused
 			Assert.IsFalse(firstButton.Focus(FocusState.Programmatic));
 		}
+
+#if HAS_UNO && !__MACOS__
+		[TestMethod]
+		public async Task When_Button_Flyout_TemplateBinding()
+		{
+			try
+			{
+				var SUT = new Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.ButtonControls.Button_Flyout_TemplateBinding();
+
+				WindowHelper.WindowContent = SUT;
+
+				await WindowHelper.WaitForIdle();
+
+				var innerButton = SUT.FindName("innerButton") as Button;
+				Assert.IsNotNull(innerButton);
+				innerButton.RaiseClick();
+
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var popups = VisualTreeHelper.GetOpenPopups(Windows.UI.Xaml.Window.Current);
+
+				var innerFlyoutItem = popups.Select(p
+					=> ((p.Child as MenuFlyoutPresenter)?.TemplatedRoot as FrameworkElement)?.FindName("innerFlyoutItem") as MenuFlyoutItem).Trim().FirstOrDefault();
+
+				Assert.IsNotNull(innerFlyoutItem);
+
+				Assert.AreEqual("42", innerFlyoutItem.Text);
+			}
+			finally
+			{
+				VisualTreeHelper.CloseAllPopups();
+			}
+		}
+#endif
 
 		private async Task RunIsExecutingCommandCommon(IsExecutingCommand command)
 		{
