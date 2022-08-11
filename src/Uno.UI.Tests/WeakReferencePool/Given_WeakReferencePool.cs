@@ -145,6 +145,10 @@ namespace Uno.UI.Tests
 
 			void ScopedTest()
 			{
+				// This change is needed after some unknown scoped references 
+				// changes in .NET Framework. Adding an explicit method to contain
+				// the references makes the test work properly.
+
 				Assert.IsNotNull(r.ownerRef.Target);
 				Assert.IsNotNull(r.targetRef.Target);
 				Assert.IsNotNull(r.refref.Target);
