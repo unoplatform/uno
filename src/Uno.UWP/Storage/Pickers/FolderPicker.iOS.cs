@@ -30,7 +30,11 @@ namespace Windows.Storage.Pickers
 				UIUserInterfaceStyle.Light : UIUserInterfaceStyle.Dark;
 
 			documentPicker.Delegate = new FolderPickerDelegate(completionSource);
-			documentPicker.PresentationController.Delegate = new FolderPickerPresentationControllerDelegate(completionSource);
+
+			if (documentPicker.PresentationController != null)
+			{
+				documentPicker.PresentationController.Delegate = new FolderPickerPresentationControllerDelegate(completionSource);
+			}
 
 			await rootController.PresentViewControllerAsync(documentPicker, true);
 
