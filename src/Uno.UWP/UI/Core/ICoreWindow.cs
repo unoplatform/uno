@@ -33,5 +33,17 @@ namespace Windows.UI.Core
 		/// Specifies the event that occurs when the window visibility is changed.
 		/// </summary>
 		event TypedEventHandler<CoreWindow, VisibilityChangedEventArgs> VisibilityChanged;
+
+#if __IOS__
+		/// <summary>
+		/// Specifies the event that occurs when the window Key is Down.
+		/// </summary>
+		public event TypedEventHandler<CoreWindow, KeyEventArgs> KeyDown;
+
+		/// <summary>
+		/// Specifies the event that occurs when the window Key is Up.
+		/// </summary>
+		public event TypedEventHandler<CoreWindow, KeyEventArgs> KeyUp;
+#endif
 	}
 }
