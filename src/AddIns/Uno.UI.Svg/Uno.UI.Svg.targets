@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<ItemGroup>
+		<UnoRuntimeEnabledPackage Include="Uno.UI.Svg"  PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.ui.svg.targets'" />
+		<UnoRuntimeEnabledPackage Include="Uno.WinUI.Svg"  PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.winui.svg.targets'" />
+	</ItemGroup>
+
+	<Target Name="_ValidateSvgDependencySkia"
+			BeforeTargets="CoreCompile"
+			Condition="'$(IsUnoHead)'=='true' and '$(UnoRuntimeIdentifier)'=='Skia'">
+
+		<PropertyGroup>
+			<_SkiaSharpPackageName Condition="'$(MSBuildThisFile)'=='uno.ui.svg.targets'">SkiaSharp.Views.Uno</_SkiaSharpPackageName>
+			<_SkiaSharpPackageName Condition="'$(MSBuildThisFile)'=='uno.winui.svg.targets'">SkiaSharp.Views.Uno.WinUI</_SkiaSharpPackageName>
+		</PropertyGroup>
+		<ItemGroup>
+			<_SkiaSharpViewsRefs Include="@(RuntimeCopyLocalItems)" Condition="'%(RuntimeCopyLocalItems.NuGetPackageId)' == '$(_SkiaSharpPackageName)'" />
+		</ItemGroup>
+
+		<Error Condition="'@(_SkiaSharpViewsRefs)'==''" Text="In order to use Uno Svg support, the '$(_SkiaSharpPackageName)' NuGet Package (2.88.1-preview.79 or later) must be referenced in the project. You can add &lt;PackageReference Include=&quot;$(_SkiaSharpPackageName)&quot; Version=&quot;2.88.1-preview.79&quot; /> to your project." />
+	</Target>
+</Project>

@@ -8,108 +8,101 @@ using Windows.Storage.Streams;
 using Windows.UI.Core;
 using Uno;
 
-namespace Windows.UI.Xaml.Media.Imaging
+namespace Windows.UI.Xaml.Media.Imaging;
+
+/// <summary>
+/// Provides a source object for properties that use a Scalable Vector Graphics (SVG) source. You can define a SvgImageSource
+/// by using a Uniform Resource Identifier (URI) that references a SVG file, or by calling SetSourceAsync(IRandomAccessStream)
+/// and supplying a stream.
+/// </summary>
+public partial class SvgImageSource : ImageSource
 {
-	public partial class SvgImageSource : ImageSource
+	private SvgImageSourceLoadStatus? _lastStatus;
+
+#if __NETSTD__
+	private IRandomAccessStream _stream;
+#endif
+
+	/// <summary>
+	/// Initializes a new instance of the SvgImageSource class.
+	/// </summary>
+	public SvgImageSource()
 	{
-		private SvgImageSourceLoadStatus? _lastStatus;
+		InitPartial();
+	}
 
-#if __NETSTD__
-		private IRandomAccessStream _stream;
-#endif
+	/// <summary>
+	/// Initializes a new instance of the SvgImageSource class, using the supplied Uniform Resource Identifier (URI).
+	/// </summary>
+	/// <param name="uriSource"></param>
+	public SvgImageSource(Uri uriSource)
+	{
+		UriSource = uriSource;
 
-		public Uri UriSource
+		InitPartial();
+	}
+	
+	private void OnUriSourceChanged(DependencyPropertyChangedEventArgs e)
+	{
+		if (!object.Equals(e.OldValue, e.NewValue))
 		{
-			get => (Uri)GetValue(UriSourceProperty);
-			set => SetValue(UriSourceProperty, value);
+			UnloadImageData();
 		}
-
-		public static DependencyProperty UriSourceProperty { get; } =
-			DependencyProperty.Register(
-				nameof(UriSource), typeof(Uri),
-				typeof(SvgImageSource),
-				new FrameworkPropertyMetadata(default(Uri), (s, e) => (s as SvgImageSource)?.OnUriSourceChanged(e)));
-
-		private void OnUriSourceChanged(DependencyPropertyChangedEventArgs e)
-		{
-			if (!object.Equals(e.OldValue, e.NewValue))
-			{
-				UnloadImageData();
-			}
-			InitFromUri(e.NewValue as Uri);
+		InitFromUri(e.NewValue as Uri);
 #if __NETSTD__
+		InvalidateSource();
+#endif
+	}
+
+	public IAsyncOperation<SvgImageSourceLoadStatus> SetSourceAsync(IRandomAccessStream streamSource)
+	{
+		async Task<SvgImageSourceLoadStatus> SetSourceAsync(
+			CancellationToken ct,
+			AsyncOperation<SvgImageSourceLoadStatus> _)
+		{
+			if (streamSource == null)
+			{
+				//Same behavior as windows, although the documentation does not mention it!!!
+				throw new ArgumentException(nameof(streamSource));
+			}
+
+			_lastStatus = null;
+
+#if __NETSTD__
+			_stream = streamSource.CloneStream();
+
+			var tcs = new TaskCompletionSource<SvgImageSourceLoadStatus>();
+
+			using var x = Subscribe(OnChanged);
+
 			InvalidateSource();
-#endif
-		}
 
-		public SvgImageSource()
-		{
-			InitPartial();
-		}
+			return await tcs.Task;
 
-		public SvgImageSource(Uri uriSource)
-		{
-			UriSource = uriSource;
-
-			InitPartial();
-		}
-
-		public IAsyncOperation<SvgImageSourceLoadStatus> SetSourceAsync(IRandomAccessStream streamSource)
-		{
-			async Task<SvgImageSourceLoadStatus> SetSourceAsync(
-				CancellationToken ct,
-				AsyncOperation<SvgImageSourceLoadStatus> _)
+			void OnChanged(ImageData data)
 			{
-				if (streamSource == null)
-				{
-					//Same behavior as windows, although the documentation does not mention it!!!
-					throw new ArgumentException(nameof(streamSource));
-				}
-
-				_lastStatus = null;
-
-#if __NETSTD__
-				_stream = streamSource.CloneStream();
-
-				var tcs = new TaskCompletionSource<SvgImageSourceLoadStatus>();
-
-				using var x = Subscribe(OnChanged);
-
-				InvalidateSource();
-
-				return await tcs.Task;
-
-				void OnChanged(ImageData data)
-				{
-					tcs.TrySetResult(_lastStatus ?? SvgImageSourceLoadStatus.Other);
-				}
-#else
-				Stream = streamSource.CloneStream().AsStream();
-				return SvgImageSourceLoadStatus.Success;
-#endif
+				tcs.TrySetResult(_lastStatus ?? SvgImageSourceLoadStatus.Other);
 			}
-
-			return AsyncOperation<SvgImageSourceLoadStatus>.FromTask(SetSourceAsync);
+#else
+			Stream = streamSource.CloneStream().AsStream();
+			return SvgImageSourceLoadStatus.Success;
+#endif
 		}
 
-		partial void InitPartial();
+		return AsyncOperation<SvgImageSourceLoadStatus>.FromTask(SetSourceAsync);
+	}
 
-		private void RaiseImageFailed(SvgImageSourceLoadStatus loadStatus)
-		{
-			_lastStatus = loadStatus;
-			OpenFailed?.Invoke(this, new SvgImageSourceFailedEventArgs(loadStatus));
-		}
+	partial void InitPartial();
 
-		private void RaiseImageOpened()
-		{
-			_lastStatus = SvgImageSourceLoadStatus.Success;
-			Opened?.Invoke(this, new SvgImageSourceOpenedEventArgs());
-		}
+	private void RaiseImageFailed(SvgImageSourceLoadStatus loadStatus)
+	{
+		_lastStatus = loadStatus;
+		OpenFailed?.Invoke(this, new SvgImageSourceFailedEventArgs(loadStatus));
+	}
 
-#pragma warning disable 67
-		public event TypedEventHandler<SvgImageSource, SvgImageSourceFailedEventArgs> OpenFailed;
-
-		public event TypedEventHandler<SvgImageSource, SvgImageSourceOpenedEventArgs> Opened;
-#pragma warning restore 67
+	private void RaiseImageOpened()
+	{
+		_lastStatus = SvgImageSourceLoadStatus.Success;
+		Opened?.Invoke(this, new SvgImageSourceOpenedEventArgs());
 	}
 }
