@@ -26,7 +26,6 @@
 	  <ProjectItem TargetFileName="App.xaml.cs" ReplaceParameters="true">App.xaml.cs</ProjectItem>
 	  <ProjectItem TargetFileName="MainWindow.xaml" ReplaceParameters="true">MainWindow.xaml</ProjectItem>
 	  <ProjectItem TargetFileName="MainWindow.xaml.cs" ReplaceParameters="true">MainWindow.xaml.cs</ProjectItem>
-	  <ProjectItem TargetFileName="app.manifest" ReplaceParameters="true">app.manifest</ProjectItem>
 	</Project>
   </TemplateContent>
 </VSTemplate>
