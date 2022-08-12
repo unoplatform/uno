@@ -11,7 +11,6 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using NUnit.Framework;
 using Uno.UITest;
-using Windows.UI;
 using static System.Math;
 
 #if HAS_UNO || NETFX_CORE
