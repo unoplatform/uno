@@ -369,11 +369,21 @@ namespace Uno.UI
 
 		public static class TextBox
 		{
+
 			/// <summary>
 			/// Determines if the caret is visible or not.
 			/// </summary>
 			/// <remarks>This feature is used to avoid screenshot comparisons false positives</remarks>
 			public static bool HideCaret { get; set; } = false;
+
+#if __IOS__
+			/// <summary>
+			/// As of iOS 16 Beta 4, the selection events are crashing the application. This feature configuration is added
+			/// to provide the ability to restore the original behavior if/when the underlying UIKit is fixed.
+			/// See https://github.com/unoplatform/uno/issues/9430 for additional details.
+			/// </summary>
+			public static bool IOS16EnableSelectionSupport { get; set; }
+#endif
 		}
 
 		public static class ScrollViewer
