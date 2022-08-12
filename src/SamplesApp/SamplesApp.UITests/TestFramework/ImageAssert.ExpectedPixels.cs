@@ -7,7 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Uno.UITest;
 
-#if HAS_UNO
+#if HAS_UNO || NETFX_CORE
 using Windows.UI;
 
 using Rectangle = System.Drawing.Rectangle;
@@ -190,7 +190,7 @@ public record struct ExpectedPixels
 
 	private static Color GetColorFromString(string colorCode) =>
 		string.IsNullOrWhiteSpace(colorCode)
-#if HAS_UNO
+#if HAS_UNO || NETFX_CORE
 			? Colors.Transparent
 			: (Color)XamlBindingHelper.ConvertValue(typeof(Color), colorCode);
 #else

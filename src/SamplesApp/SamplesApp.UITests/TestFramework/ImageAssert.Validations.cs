@@ -14,7 +14,7 @@ using Uno.UITest;
 using Windows.UI;
 using static System.Math;
 
-#if HAS_UNO
+#if HAS_UNO || NETFX_CORE
 using Windows.UI;
 
 using Rectangle = System.Drawing.Rectangle;
@@ -128,7 +128,7 @@ public static partial class ImageAssert
 	{
 		var expectedColor = expectation.Values[pixel.Y, pixel.X];
 
-#if HAS_UNO
+#if HAS_UNO || NETFX_CORE
 		if (expectedColor == Colors.Transparent)
 #else
 		if (expectedColor.IsEmpty)
