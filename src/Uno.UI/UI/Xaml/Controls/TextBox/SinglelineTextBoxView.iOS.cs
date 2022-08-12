@@ -10,6 +10,10 @@ using Windows.UI.Xaml.Media;
 using Uno.UI.Controls;
 using Windows.UI;
 using Uno.Disposables;
+using Foundation;
+using Uno.Foundation.Logging;
+using Uno.UI;
+using static Uno.UI.FeatureConfiguration;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -19,6 +23,8 @@ namespace Windows.UI.Xaml.Controls
 		private readonly WeakReference<TextBox> _textBox;
 		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
 
+		private static bool _issue9430WarnSingle = false;
+
 		public SinglelineTextBoxView(TextBox textBox)
 		{
 			_textBox = new WeakReference<TextBox>(textBox);
@@ -26,6 +32,26 @@ namespace Windows.UI.Xaml.Controls
 			InitializeBinder();
 			Initialize();
 		}
+
+		internal static SinglelineTextBoxView CreateSinglelineTextBoxView(TextBox textBox)
+		{
+			if (UIDevice.CurrentDevice.CheckSystemVersion(16, 0) && !FeatureConfiguration.TextBox.IOS16EnableSelectionSupport)
+			{
+				if (!_issue9430WarnSingle && typeof(SinglelineTextBoxView).Log().IsEnabled(LogLevel.Error))
+				{
+					_issue9430WarnSingle = true;
+					typeof(SinglelineTextBoxView).Log().Error($"TextBox selection events are disabled on iOS 16. See https://github.com/unoplatform/uno/issues/9430 for additional details.");
+				}
+
+				return new SinglelineTextBoxView(textBox);
+			}
+			else
+			{
+				return new SinglelineTextBoxViewWithSelection(textBox);
+			}
+		}
+
+		internal TextBox TextBox => _textBox.GetTarget();
 
 		private void OnEditingChanged(object sender, EventArgs e)
 		{
@@ -198,6 +224,17 @@ namespace Windows.UI.Xaml.Controls
 		{
 			UpdateFont();
 		}
+	}
+
+	/// <summary>
+	/// Workaround for https://github.com/unoplatform/uno/issues/9430
+	/// </summary>
+	internal partial class SinglelineTextBoxViewWithSelection : SinglelineTextBoxView
+	{
+		public SinglelineTextBoxViewWithSelection(TextBox textBox)
+			: base(textBox)
+		{
+		}
 
 		public override UITextRange SelectedTextRange
 		{
@@ -207,7 +244,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			set
 			{
-				var textBox = _textBox.GetTarget();
+				var textBox = TextBox;
 
 				if (textBox != null && base.SelectedTextRange != value)
 				{
