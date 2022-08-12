@@ -434,6 +434,7 @@ namespace Uno.UI
 
 		public static class TextBox
 		{
+
 			/// <summary>
 			/// Determines if the caret is visible or not.
 			/// </summary>
@@ -450,6 +451,15 @@ namespace Uno.UI
 			/// This is available on Android only
 			/// </remarks>
 			public static bool UseLegacyInputScope { get; set; }
+#endif
+
+#if __IOS__
+			/// <summary>
+			/// As of iOS 16 Beta 4, the selection events are crashing the application. This feature configuration is added
+			/// to provide the ability to restore the original behavior if/when the underlying UIKit is fixed.
+			/// See https://github.com/unoplatform/uno/issues/9430 for additional details.
+			/// </summary>
+			public static bool IOS16EnableSelectionSupport { get; set; }
 #endif
 		}
 
