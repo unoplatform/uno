@@ -775,6 +775,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitFor(() => list.Items.Count == 19);
 
+			// Force rebuild the layout so that TranslateTransform picks up
+			// the updated values
+			ScrollBy(list, 0); // Scroll to top
+			ScrollBy(list, 100000); // Scroll to end
+
 			await WindowHelper.WaitForEqual(181, () => GetTop(list.ContainerFromItem(18) as ListViewItem, container), tolerance: 2);
 		}
 

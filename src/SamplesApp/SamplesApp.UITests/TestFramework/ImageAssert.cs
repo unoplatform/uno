@@ -216,11 +216,11 @@ namespace SamplesApp.UITests.TestFramework
 		#endregion
 
 		#region HasColorAt
-		public static void HasColorAt(ScreenshotInfo screenshot, float x, float y, string expectedColorCode, byte tolerance = 0, [CallerLineNumber] int line = 0)
-			=> HasColorAtImpl(screenshot, (int)x, (int)y, ColorCodeParser.Parse(expectedColorCode), tolerance, line);
+		public static void HasColorAt(ScreenshotInfo screenshot, float x, float y, string expectedColorCode, byte tolerance = 0, double scale = 1.0, [CallerLineNumber] int line = 0)
+			=> HasColorAtImpl(screenshot, (int)x, (int)y, ColorCodeParser.Parse(expectedColorCode), tolerance, scale, line);
 
-		public static void HasColorAt(ScreenshotInfo screenshot, float x, float y, Color expectedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
-			=> HasColorAtImpl(screenshot, (int)x, (int)y, expectedColor, tolerance, line);
+		public static void HasColorAt(ScreenshotInfo screenshot, float x, float y, Color expectedColor, byte tolerance = 0, double scale = 1.0, [CallerLineNumber] int line = 0)
+			=> HasColorAtImpl(screenshot, (int)x, (int)y, expectedColor, tolerance, scale, line);
 
 		/// <summary>
 		/// Asserts that a given screenshot has a color anywhere at a given rectangle.
@@ -243,9 +243,12 @@ namespace SamplesApp.UITests.TestFramework
 			Assert.Fail($"Expected '{ToArgbCode(expectedColor)}' in rectangle '{rect}'.");
 		}
 
-		private static void HasColorAtImpl(ScreenshotInfo screenshot, int x, int y, Color expectedColor, byte tolerance, int line)
+		private static void HasColorAtImpl(ScreenshotInfo screenshot, int x, int y, Color expectedColor, byte tolerance, double scale, int line)
 		{
 			var bitmap = screenshot.GetBitmap();
+
+			x = (int)(x*scale);
+			y = (int)(y *scale);
 
 			if (bitmap.Width <= x || bitmap.Height <= y)
 			{

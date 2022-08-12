@@ -61,33 +61,36 @@ namespace Uno.UI.Controls
 		/// <param name="pageController">The controller of the page</param>
 		public static void PageWillAppear(UIViewController pageController)
 		{
-			var topCommandBar = pageController.FindTopCommandBar();
-			if (topCommandBar != null)
+			if (pageController.NavigationController is not null)
 			{
-				if (topCommandBar.Visibility == Visibility.Visible)
+				var topCommandBar = pageController.FindTopCommandBar();
+				if (topCommandBar != null)
 				{
-					SetNavigationBar(topCommandBar, pageController.NavigationController.NavigationBar);
+					if (topCommandBar.Visibility == Visibility.Visible)
+					{
+						SetNavigationBar(topCommandBar, pageController.NavigationController.NavigationBar);
 
-					// When the CommandBar is visible, we need to call SetNavigationBarHidden
-					// AFTER it has been rendered. Otherwise, it causes a bug introduced
-					// in iOS 11 in which the BackButtonIcon is not rendered properly.
-					pageController.NavigationController.SetNavigationBarHidden(hidden: false, animated: true);
+						// When the CommandBar is visible, we need to call SetNavigationBarHidden
+						// AFTER it has been rendered. Otherwise, it causes a bug introduced
+						// in iOS 11 in which the BackButtonIcon is not rendered properly.
+						pageController.NavigationController.SetNavigationBarHidden(hidden: false, animated: true);
+					}
+					else
+					{
+						// Even if the CommandBar should technically be collapsed,
+						// we don't hide it using the NavigationController because it
+						// automatically disables the back gesture.
+						// In order to visually hide it, the CommandBarRenderer
+						// will hide the native view using the UIView.Hidden property.
+						pageController.NavigationController.SetNavigationBarHidden(hidden: false, animated: true);
+
+						SetNavigationBar(topCommandBar, pageController.NavigationController.NavigationBar);
+					}
 				}
-				else
+				else // No CommandBar
 				{
-					// Even if the CommandBar should technically be collapsed,
-					// we don't hide it using the NavigationController because it
-					// automatically disables the back gesture.
-					// In order to visually hide it, the CommandBarRenderer
-					// will hide the native view using the UIView.Hidden property.
-					pageController.NavigationController.SetNavigationBarHidden(hidden: false, animated: true);
-
-					SetNavigationBar(topCommandBar, pageController.NavigationController.NavigationBar);
+					pageController.NavigationController.SetNavigationBarHidden(true, true);
 				}
-			}
-			else // No CommandBar
-			{
-				pageController.NavigationController.SetNavigationBarHidden(true, true);
 			}
 		}
 
