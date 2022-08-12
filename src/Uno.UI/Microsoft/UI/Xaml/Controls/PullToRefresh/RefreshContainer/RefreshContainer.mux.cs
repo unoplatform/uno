@@ -82,9 +82,6 @@ public partial class RefreshContainer : ContentControl
 		//IControlProtected thisAsControlProtected = this;
 		m_root = (Panel)GetTemplateChild("Root");
 		m_refreshVisualizerPresenter = (Panel)GetTemplateChild("RefreshVisualizerPresenter");
-#if HAS_UNO
-		//m_refreshVisualizerPresenter.Visibility = Visibility.Collapsed;
-#endif
 		// END: Populate template children
 
 		if (m_root != null)
