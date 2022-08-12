@@ -87,6 +87,11 @@ namespace Windows.UI.Xaml.Media
 
 		internal static Uri TryCreateUriFromString(string url)
 		{
+			if (url is null)
+			{
+				return null;
+			}
+
 			if (url.StartsWith("/"))
 			{
 				url = MsAppXScheme + "://" + url;
@@ -139,13 +144,29 @@ namespace Windows.UI.Xaml.Media
 
 		partial void InitFromResource(Uri uri);
 
-		public static implicit operator ImageSource(string url)
+		public static implicit operator ImageSource(string stringSource)
 		{
-			//This check is done in order to force a null to return if a empty string is passed.
-			return url.IsNullOrWhiteSpace() ? null : new BitmapImage(url);
+			var uri = TryCreateUriFromString(stringSource);
+			return (ImageSource)uri;
 		}
 
-		public static implicit operator ImageSource(Uri uri) => new BitmapImage(uri);
+		public static implicit operator ImageSource(Uri uri)
+		{
+			if (uri is null)
+			{
+				return null;
+			}
+
+			//This check is done in order to force a null to return if a empty string is passed.
+			if (uri.LocalPath.EndsWith(".svg", StringComparison.InvariantCultureIgnoreCase))
+			{
+				return new SvgImageSource(uri);
+			}
+			else
+			{
+				return new BitmapImage(uri);
+			}
+		}
 
 		public static implicit operator ImageSource(Stream stream)
 		{
