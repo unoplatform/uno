@@ -195,7 +195,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 
 			var result = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
 
-			ImageAssert.HasColorAt(result, x, expectedY, _items[from], tolerance: 10);
+			ImageAssert.HasColorAt(result, x * GetDisplayScreenScaling(), expectedY * GetDisplayScreenScaling(), _items[from], tolerance: 10);
 			Assert.IsTrue(op.GetDependencyPropertyValue<string>("Text").Contains("Move"));
 		}
 
@@ -221,8 +221,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 			var result = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
 			if (from is 2 or 4)
 			{
-				ImageAssert.HasColorAt(result, x, expectedY, _items[2], tolerance: 10);
-				ImageAssert.HasColorAt(result, x, expectedY + _itemHeight, _items[4], tolerance: 10);
+				ImageAssert.HasColorAt(result, x * GetDisplayScreenScaling(), expectedY * GetDisplayScreenScaling(), _items[2], tolerance: 10);
+				ImageAssert.HasColorAt(result, x * GetDisplayScreenScaling(), (expectedY + _itemHeight) * GetDisplayScreenScaling(), _items[4], tolerance: 10);
 			}
 			else
 			{
