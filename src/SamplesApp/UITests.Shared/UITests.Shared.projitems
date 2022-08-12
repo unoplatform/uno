@@ -361,6 +361,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Toolkit\ElevatedView_Tester.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Toolkit\Elevation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5060,6 +5064,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Toolkit\ElevatedView_Dimensions.xaml.cs">
       <DependentUpon>ElevatedView_Dimensions.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Toolkit\ElevatedView_Tester.xaml.cs">
+      <DependentUpon>ElevatedView_Tester.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Toolkit\Elevation.xaml.cs">
       <DependentUpon>Elevation.xaml</DependentUpon>
