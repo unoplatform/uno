@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.FlipViewPages;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -87,7 +91,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_Flipview_Items_Modified()
 		{
-		   
 			var itemsSource = new ObservableCollection<string>();
 			AddItem(itemsSource);
 			AddItem(itemsSource);
@@ -121,6 +124,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		}
 
+		[TestMethod]
+		public async Task When_Flipview_DataTemplateSelector()
+		{
+			var dataContext = new When_Flipview_DataTemplateSelector_DataContext();
 
+			var page = new FlipView_TemplateSelectorPage();
+			page.DataContext = dataContext;
+
+			WindowHelper.WindowContent = page;
+			await WindowHelper.WaitForLoaded(page);
+
+			FlipView SUT = page.MyFlipView;
+
+			for (var i = 0; i < SUT.Items.Count; i++)
+			{
+				var item = SUT.Items[i];
+				Assert.AreEqual(SUT.SelectedIndex, i, "Has the SelectedIndex the expected value?");
+
+				var textBlockName = Convert.ToInt32(item) % 2 == 0 ? "TextPair" : "TextOdd";
+
+				var textblock = SUT.FindName(textBlockName) as TextBlock;
+				Assert.IsNotNull(textblock, "Was the expected Template was applied?");
+				Assert.AreEqual(item.ToString(), textblock?.Text, "Has the TextBlock the expected value?");
+
+				if (i < SUT.Items.Count-1)
+				{
+					SUT.SelectedIndex = i + 1;
+					await WindowHelper.WaitForIdle();
+				}
+			}
+		}
+
+		public class When_Flipview_DataTemplateSelector_DataContext
+		{
+			public IEnumerable<int> Items { get; set; } = Enumerable.Range(1, 6);
+		}
 	}
 }
