@@ -18,8 +18,8 @@
   <ItemGroup>
 	<PackageReference Update="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.9" />
 	<!-- Keep aligned with MSBuild extras' default ExtrasUwpMetaPackageVersion -->
-	<PackageReference Update="Uno.SourceGenerationTasks" Version="4.0.2" />
-	<PackageReference Update="Uno.SourceGeneration" Version="4.0.2" />
+	<PackageReference Update="Uno.SourceGenerationTasks" Version="4.1.0" />
+	<PackageReference Update="Uno.SourceGeneration" Version="4.1.0" />
 	<PackageReference Update="Uno.Core.Extensions" Version="4.0.1" />
 	<PackageReference Update="Uno.Core.Extensions.Logging" Version="4.0.1" />
 	<PackageReference Update="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
