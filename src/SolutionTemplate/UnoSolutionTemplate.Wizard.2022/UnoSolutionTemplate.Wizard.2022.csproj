@@ -83,7 +83,7 @@
       <Version>16.0.374-pre</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK">
-      <Version>17.1.32210.191</Version>
+      <Version>17.3.32804.24</Version>
     </PackageReference>
     <PackageReference Include="VSSDK.TemplateWizardInterface">
       <Version>12.0.4</Version>
