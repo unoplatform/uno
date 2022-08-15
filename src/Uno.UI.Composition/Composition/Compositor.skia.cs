@@ -13,11 +13,13 @@ namespace Windows.UI.Composition
 		private readonly Stack<float> _opacityStack = new Stack<float>();
 		private float _currentOpacity = 1.0f;
 		private bool _isDirty = false;
+		private SKColorFilter? _currentOpacityColorFilter;
 
 		private OpacityDisposable PushOpacity(float opacity)
 		{
 			_opacityStack.Push(_currentOpacity);
 			_currentOpacity *= opacity;
+			_currentOpacityColorFilter = null;
 
 			return new OpacityDisposable(this);
 		}
@@ -34,12 +36,34 @@ namespace Windows.UI.Composition
 			public void Dispose()
 			{
 				Compositor._currentOpacity = Compositor._opacityStack.Pop();
+				Compositor._currentOpacityColorFilter?.Dispose();
+				Compositor._currentOpacityColorFilter = null;
 			}
 		}
 
 		internal ContainerVisual? RootVisual { get; set; }
 
 		internal float CurrentOpacity => _currentOpacity;
+		internal SKColorFilter? CurrentOpacityColorFilter
+		{
+			get
+			{
+				if (_currentOpacity != 1.0f)
+				{
+					if (_currentOpacityColorFilter is null)
+					{
+						var opacity = 255 * _currentOpacity;
+						_currentOpacityColorFilter = SKColorFilter.CreateBlendMode(new SKColor(0xFF, 0xFF, 0xFF, (byte)opacity), SKBlendMode.Modulate);
+					}
+
+					return _currentOpacityColorFilter;
+				}
+				else
+				{
+					return null;
+				}
+			}
+		}
 
 		internal void Render(SKSurface surface)
 		{
