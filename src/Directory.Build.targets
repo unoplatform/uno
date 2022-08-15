@@ -57,7 +57,7 @@
 	<PackageReference Update="SkiaSharp.NativeAssets.Android" Version="2.88.1-preview.79" />
 	<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="2.88.1-preview.79" />
 	<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="2.88.1-preview.79" />
-	<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="2.88.1-preview.79" />
+	<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="2.88.1-preview.108" />
 
 	<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="2.8.2.1-preview.79" />
 	<PackageReference Update="HarfBuzzSharp.NativeAssets.Tizen" Version="2.8.2.1-preview.79" />
