@@ -9,6 +9,8 @@ using System.ComponentModel;
 using Uno.UI.Xaml.Core;
 using Uno.Foundation.Logging;
 using Windows.Graphics.Display;
+using Uno.Extensions;
+using System.Threading;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -21,6 +23,9 @@ namespace Uno.UI.Runtime.Skia
 		private readonly EventLoop _eventLoop;
 		private Renderer? _renderer;
 		private DisplayInformationExtension? _displayInformationExtension;
+		private ApplicationExtension? _applicationExtension;
+		private Thread _consoleInterceptionThread;
+		private ManualResetEvent _terminationGate = new(false);
 
 		/// <summary>
 		/// Creates a host for a Uno Skia FrameBuffer application.
@@ -51,9 +56,38 @@ namespace Uno.UI.Runtime.Skia
 
 		public void Run()
 		{
+			StartConsoleInterception();
+
 			_eventLoop.Schedule(Initialize);
 
-			System.Console.ReadLine();
+			_terminationGate.WaitOne();
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Application is exiting");
+			}
+		}
+
+		private void StartConsoleInterception()
+		{
+			_consoleInterceptionThread = new(() => {
+
+				// Loop until Application.Current.Exit() is invoked
+				while (!_applicationExtension?.ShouldExit ?? true)
+				{
+					// Read the console keys without showing them on screen.
+					// The keyboard input is handled by libinput. 
+					Console.ReadKey(true);
+				}
+
+				// The process asked to exit
+				_terminationGate.Set();
+			});
+
+			// The thread must not block the process from exiting
+			_consoleInterceptionThread.IsBackground = true;
+			
+			_consoleInterceptionThread.Start();
 		}
 
 		private void Initialize()
@@ -62,6 +96,7 @@ namespace Uno.UI.Runtime.Skia
 
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new CoreWindowExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new ApplicationViewExtension(o));
+			ApiExtensibility.Register<Application>(typeof(Uno.UI.Xaml.IApplicationExtension), o => _applicationExtension = new ApplicationExtension(o));
 			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new DisplayInformationExtension(o, DisplayScale));
 
 			void Dispatch(System.Action d)
@@ -83,6 +118,20 @@ namespace Uno.UI.Runtime.Skia
 						$"RawPixelsPerViewPixel: {DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel}, " +
 						$"DiagonalSizeInInches: {DisplayInformation.GetForCurrentView().DiagonalSizeInInches}, " +
 						$"ScreenInRawPixels: {DisplayInformation.GetForCurrentView().ScreenWidthInRawPixels}x{DisplayInformation.GetForCurrentView().ScreenHeightInRawPixels}");
+				}
+
+				if (_applicationExtension is not null)
+				{
+					// Register the exit handler to terminate the app gracefully
+					_applicationExtension.ExitRequested += (s, e) => {
+
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().Debug($"Application has requested an exit");
+						}
+						
+						_terminationGate.Set();
+					};
 				}
 			}
 
