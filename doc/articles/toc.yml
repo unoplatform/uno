@@ -39,7 +39,7 @@
         - name: Philosophy
           href: concepts/overview/philosophy-of-uno.md
         - name: How Uno Works
-          href: how-uno-works.mmd
+          href: how-uno-works.md
 
     - name: Learn
       items:
@@ -231,7 +231,7 @@
         - name: Non-UI APIs
           items:
             - name: Accelerometer
-              href: accelerometer.md
+              href: features/accelerometer.md
             - name: App Actions
               href: features/windows-ui-startscreen.md
             - name: App Close Handler
@@ -290,8 +290,6 @@
               href: features/windows-applicationmodel-datatransfer.md
             - name: SMS
               href: features/windows-applicationmodel-chat.md
-            - name: Sensors
-              href: features/windows-devices-sensors.md
             - name: Settings
               href: features/settings.md               
             - name: Speech Recognition
@@ -328,8 +326,12 @@
               items:
                 - name: Overview
                   href: features/uno-cupertino.md
+            - name: Uno Islands
+              href: guides/uno-islands.md
             - name: Working with the Skia+GTK head
               href: features/using-skia-gtk.md
+            - name: Working with the Skia+WPF head
+              href: features/using-skia-wpf.md
             - name: Working with the Linux Framebuffer support
               href: features/using-linux-framebuffer.md
             - name: Fluent icon font
@@ -511,14 +513,14 @@
             href: uno-development/Uno-UI-XAML-ResourceTrimming.md
 
 - name: Extensions
-  topicHref: external/uno.extensions/doc/00-Introduction.html
+  topicHref: external/uno.extensions/doc/Overview/ExtensionsOverviewAndGettingStarted.html
   href: external/uno.extensions/doc/toc.yml
 - name: Themes
-  topicHref: external/uno.themes/doc/getting-started.md
+  topicHref: external/uno.themes/doc/themes-overview.html
   href: external/uno.themes/doc/toc.yml
 - name: Toolkit
   topicHref: external/uno.toolkit.ui/doc/getting-started.md
   href: external/uno.toolkit.ui/doc/toc.yml
 - name: Figma
-  topicHref: external/figma-docs/getting-started-uno-figma.md
+  topicHref: external/figma-docs/overview/getting-started-uno-figma.md
   href: external/figma-docs/toc.yml

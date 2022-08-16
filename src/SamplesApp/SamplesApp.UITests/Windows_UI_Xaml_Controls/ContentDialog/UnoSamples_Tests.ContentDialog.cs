@@ -384,9 +384,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Simple");
 
 			var showDialogButton = _app.Marked("showDialog1");
-			var statusBarBackground = _app.Marked("statusBarBackground");
 			var dialogSpace = _app.Marked("DialogSpace"); // from ContentDialog default ControlTemplate
 			var primaryButton = _app.Marked("PrimaryButton");
+			var statusBarHeight = _app.Marked("statusBarHeight");
 
 			// initial state
 			_app.WaitForElement(showDialogButton);
@@ -417,15 +417,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			{
 				if (AppInitializer.GetLocalPlatform() == Platform.Android)
 				{
-					// the status bar area needs to be excluded for image comparison
-					var screen = _app.GetScreenDimensions();
-					var statusBarRect = _app.GetRect(statusBarBackground);
+					var height = int.Parse(statusBarHeight.GetText());
 
+					// the status bar area should be excluded for image comparison
+					// 24dp is default height of status bar
+					var screen = _app.GetScreenDimensions();
 					return new Rectangle(
 						0,
-						(int)statusBarRect.Height,
+						height,
 						(int)screen.Width,
-						(int)screen.Height - (int)statusBarRect.Height
+						(int)screen.Height - height
 					);
 				}
 				else

@@ -216,7 +216,7 @@ namespace Microsoft.UI.Xaml.Controls
 		void MoveFocusFromClearedIndex(int clearedIndex)
 		{
 			UIElement focusedChild = null;
-			var focusCandidate = FindFocusCandidate(clearedIndex, focusedChild);
+			var focusCandidate = FindFocusCandidate(clearedIndex, out focusedChild);
 			if (focusCandidate != null)
 			{
 				FocusState focusState = FocusState.Programmatic;
@@ -240,7 +240,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		Control FindFocusCandidate(int clearedIndex, UIElement focusedChild)
+		Control FindFocusCandidate(int clearedIndex, out UIElement focusedChild)
 		{
 			// Walk through all the children and find elements with index before and after the cleared index.
 			// Note that during a delete the next element would now have the same index.
@@ -280,9 +280,10 @@ namespace Microsoft.UI.Xaml.Controls
 			// Find the next element if one exists, if not use the previous element.
 			// If the container itself is not focusable, find a descendent that is.
 			Control focusCandidate = null;
+			focusedChild = null;
 			if (nextElement != null)
 			{
-				//focusedChild = nextElement as UIElement;
+				focusedChild = nextElement as UIElement;
 				focusCandidate = nextElement as Control;
 				if (focusCandidate == null)
 				{
@@ -294,20 +295,19 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			// TODO UNO: Case declared as useless by intellisense
-			//if (focusCandidate == null && previousElement != null)
-			//{
-			//	focusedChild = previousElement as UIElement;
-			//	focusCandidate = previousElement as Control;
-			//	if (previousElement == null)
-			//	{
-			//		var lastFocus = FocusManager.FindLastFocusableElement(previousElement);
-			//		if (lastFocus != null)
-			//		{
-			//			focusCandidate = lastFocus as Control;
-			//		}
-			//	}
-			//}
+			if (focusCandidate == null && previousElement != null)
+			{
+				focusedChild = previousElement as UIElement;
+				focusCandidate = previousElement as Control;
+				if (previousElement == null)
+				{
+					var lastFocus = FocusManager.FindLastFocusableElement(previousElement);
+					if (lastFocus != null)
+					{
+						focusCandidate = lastFocus as Control;
+					}
+				}
+			}
 
 			return focusCandidate;
 		}

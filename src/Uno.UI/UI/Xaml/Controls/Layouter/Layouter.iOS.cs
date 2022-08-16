@@ -36,10 +36,6 @@ namespace Windows.UI.Xaml.Controls
 
 			// With iOS, a child may return a size that fits that is larger than the suggested size.
 			// We don't want that with respects to the Xaml model, so we cap the size to the input constraints.
-			if (nfloat.IsNaN((nfloat)ret.Width) || nfloat.IsNaN((nfloat)ret.Height))
-			{
-				ret.ToString();
-			}
 
 			if (!(view is FrameworkElement) && view is IFrameworkElement ife)
 			{
@@ -52,10 +48,10 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			var w = nfloat.IsNaN((nfloat)ret.Width) ? double.PositiveInfinity : Math.Min(slotSize.Width, ret.Width);
-			var h = nfloat.IsNaN((nfloat)ret.Height) ? double.PositiveInfinity : Math.Min(slotSize.Height, ret.Height);
+			ret.Width = double.IsNaN(ret.Width) ? double.PositiveInfinity : Math.Min(slotSize.Width, ret.Width);
+			ret.Height = double.IsNaN(ret.Height) ? double.PositiveInfinity : Math.Min(slotSize.Height, ret.Height);
 
-			return new Size(w, h);
+			return ret;
 		}
 
 		protected void ArrangeChildOverride(View view, Rect frame)

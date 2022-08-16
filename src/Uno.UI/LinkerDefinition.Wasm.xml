@@ -24,6 +24,10 @@
       <method name="DispatchSystemThemeChange" />
       <method name="DispatchVisibilityChange" />
 	</type>
+
+	<type fullname="Uno.UI.Xaml.Controls.SystemFocusVisual">
+		<method name="DispatchNativePositionChange" />
+	</type>
   </assembly>
 
   <assembly fullname="Uno">
@@ -34,6 +38,10 @@
 	<type fullname="Windows.UI.Core.SystemNavigationManager" />
     <type fullname="Windows.Devices.Midi.MidiInPort">
       <method name="DispatchMessage" />
+    </type>
+    <type fullname="Windows.Gaming.Input.Gamepad">
+      <method name="DispatchGamepadAdded" />
+      <method name="DispatchGamepadRemoved" />
     </type>
     <type fullname="Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher">
       <method name="DispatchStateChanged" />

@@ -75,6 +75,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Skia.WPF\App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </None>
+    <None Include="Skia.WPF\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </None>
     <None Include="Mobile\Android\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Mobile\Android\environment.conf" />
     <None Include="Mobile\iOS\Entitlements.plist" />
@@ -98,16 +104,9 @@
     <None Include="Skia.Linux.FrameBuffer\Program.cs" />
     <None Include="Skia.Linux.FrameBuffer\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Skia.Linux.FrameBuffer\UnoQuickStart.Skia.Linux.FrameBuffer.csproj" />
-    <None Include="Skia.WPF\Program.cs" />
-    <None Include="Skia.WPF.Host\App.xaml.cs" />
-    <None Include="Skia.WPF.Host\MainWindow.xaml.cs" />
-    <None Include="Skia.WPF.Host\app.manifest" />
-    <None Include="Skia.WPF.Host\Properties\AssemblyInfo.cs" />
-    <None Include="Skia.WPF.Host\Properties\Resources.Designer.cs" />
-    <None Include="Skia.WPF.Host\Properties\Settings.Designer.cs" />
+    <None Include="Skia.WPF\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Skia.Gtk\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Skia.Gtk\Program.cs" />
-    <None Include="Skia.Gtk\app.manifest" />
     <None Include="Mobile\Android\Main.Android.cs" />
     <None Include="Mobile\Android\MainActivity.Android.cs" />
     <None Include="Mobile\iOS\Main.iOS.cs" />
@@ -119,10 +118,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Skia.Gtk\UnoQuickStart.Skia.Gtk.csproj" />
-    <None Include="Skia.WPF.Host\App.config" />
-    <None Include="Skia.WPF.Host\Assets\Fonts\uno-fluentui-assets.ttf" />
-    <None Include="Skia.WPF.Host\Properties\Settings.settings" />
-    <None Include="Skia.WPF.Host\UnoQuickStart.Skia.Wpf.Host.csproj" />
     <None Include="Skia.WPF\UnoQuickStart.Skia.Wpf.csproj" />
     <None Include="Wasm\Program.cs" />
     <None Include="Shared\App.xaml.cs" />
@@ -175,12 +170,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <VSTemplate Include="Skia.WPF.Host\SkiaWpfHost.winui.net6.vstemplate">
-      <SubType>Designer</SubType>
-    </VSTemplate>
-    <VSTemplate Include="Skia.WPF\SkiaWpf.winui.net6.vstemplate">
-      <SubType>Designer</SubType>
-    </VSTemplate>
     <VSTemplate Include="Skia.Gtk\SkiaGtk.winui.net6.vstemplate">
       <SubType>Designer</SubType>
     </VSTemplate>
@@ -249,8 +238,7 @@
     <Content Include="Skia.Gtk\__TemplateIcon.png" />
     <Content Include="Skia.Linux.FrameBuffer\__PreviewImage.png" />
     <Content Include="Skia.Linux.FrameBuffer\__TemplateIcon.png" />
-    <Content Include="Skia.WPF.Host\__PreviewImage.png" />
-    <Content Include="Skia.WPF.Host\__TemplateIcon.png" />
+    <VSTemplate Include="Skia.WPF\SkiaWpf.winui.net6.vstemplate" />
     <Content Include="Skia.WPF\__PreviewImage.png" />
     <Content Include="Skia.WPF\__TemplateIcon.png" />
     <Content Include="Wasm\Assets\SplashScreen.png" />
@@ -275,13 +263,15 @@
     <Content Include="Wasm\UnoQuickStart.Wasm.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Skia.WPF.Host\Properties\Resources.resx" />
+    <None Include="Skia.WPF\App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Skia.WPF\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Skia.WPF.Host\App.xaml" />
-    <None Include="Skia.WPF.Host\MainWindow.xaml" />
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

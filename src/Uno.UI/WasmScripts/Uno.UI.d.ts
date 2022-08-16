@@ -100,6 +100,7 @@ declare namespace MonoSupport {
         private static registrations;
         private static methodMap;
         private static _isUnoRegistered;
+        private static dispatcherCallback;
         /**
          * Registers a instance for a specified identier
          * @param identifier the scope name
@@ -126,6 +127,7 @@ declare namespace MonoSupport {
          */
         private static cacheMethod;
         private static getMethodMapId;
+        static invokeOnMainThread(): void;
     }
 }
 declare const config: any;
@@ -173,7 +175,7 @@ declare namespace Uno.UI {
             */
         static initNative(pParams: number): boolean;
         private containerElement;
-        private rootContent;
+        private rootElement;
         private cursorStyleElement;
         private allActiveElementsById;
         private uiElementRegistrations;
@@ -427,9 +429,9 @@ declare namespace Uno.UI {
          */
         private getEventExtractor;
         /**
-            * Set or replace the root content element.
+            * Set or replace the root element.
             */
-        setRootContent(elementId?: number): string;
+        setRootElement(elementId?: number): string;
         /**
             * Set a view as a child of another one.
             *
@@ -842,6 +844,20 @@ declare namespace Windows.Devices.Sensors {
         private static readingChangedHandler;
     }
 }
+declare namespace Windows.Gaming.Input {
+    class Gamepad {
+        private static dispatchGamepadAdded;
+        private static dispatchGamepadRemoved;
+        static getConnectedGamepadIds(): string;
+        static getReading(id: number): string;
+        static startGamepadAdded(): void;
+        static endGamepadAdded(): void;
+        static startGamepadRemoved(): void;
+        static endGamepadRemoved(): void;
+        private static onGamepadConnected;
+        private static onGamepadDisconnected;
+    }
+}
 declare namespace Windows.Graphics.Display {
     class DisplayInformation {
         private static readonly DpiCheckInterval;
@@ -1247,6 +1263,19 @@ declare namespace Windows.UI.Xaml.Media.Animation {
         private _delayRequestId?;
         private _frameRequestId?;
         private _isEnabled;
+    }
+}
+declare namespace Windows.UI.Xaml.Input {
+    class FocusVisual {
+        private static focusVisualId;
+        private static focusVisual;
+        private static focusedElement;
+        private static currentDispatchTimeout?;
+        private static dispatchPositionChange;
+        static attachVisual(focusVisualId: number, focusedElementId: number): void;
+        static detachVisual(): void;
+        private static onDocumentScroll;
+        static updatePosition(): void;
     }
 }
 declare class WindowManagerAddViewParams {

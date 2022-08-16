@@ -36,12 +36,19 @@
 		<Compile Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\TestFramework\ActivePlatformsAttribute.cs">
 			<Link>UITests\_Engine\UnoUITests\ActivePlatformsAttribute.cs</Link>
 		</Compile>
+		<Compile Include="..\SamplesApp\SamplesApp.UITests\TestFramework\ImageAssert.ExpectedPixels.cs" Link="Helpers\ImageAssert.ExpectedPixels.cs" />
+		<Compile Include="..\SamplesApp\SamplesApp.UITests\TestFramework\ImageAssert.Validations.cs" Link="Helpers\ImageAssert.Validations.cs" />
+		<Compile Include="..\Uno.Foundation\Extensions\IsExternalInit.cs" Link="Extensions\IsExternalInit.cs" />
 		<Compile Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\**\Extensions\*.cs">
 			<Link>UITests\_Engine\SamplesAppUITests\%(RecursiveDir)%(FileName)%(Extension)</Link>
 		</Compile>
 	</ItemGroup>
 
 	<Import Project="UnitTestsImport.props" />
+
+	<ItemGroup>
+		<EmbeddedResource Include="Assets\Border_Snapshot.bgra8" />
+	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
 		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
@@ -88,6 +95,9 @@
 		<Page Remove="@(Page)" />
 		<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.18362'">
+		<Page Remove="$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -161,7 +161,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private DependencyPropertyChangedEventArgs CreateInitialValueChangerEventArgs(DependencyProperty property, object oldValue, object newValue) => new DependencyPropertyChangedEventArgs(property, oldValue, DependencyPropertyValuePrecedences.DefaultValue, newValue, DependencyPropertyValuePrecedences.DefaultValue);
 
-		#region Text DependencyProperty
+#region Text DependencyProperty
 
 		public string Text
 		{
@@ -264,9 +264,9 @@ namespace Windows.UI.Xaml.Controls
 					_isTextChangedPending = false;
 				}
 			}
-			
+
 			_textBoxView?.SetTextNative(Text);
-		
+
 		}
 
 
@@ -694,7 +694,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextAlignmentChangedPartial(DependencyPropertyChangedEventArgs e);
 
-		#endregion
+#endregion
 
 		public string SelectedText
 		{
@@ -754,6 +754,7 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateVisualState();
 		}
+
 		partial void OnFocusStateChangedPartial(FocusState focusState);
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
@@ -995,7 +996,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateKeyboardThemePartial();
 		}
 
-		partial void UpdateKeyboardThemePartial();		
+		partial void UpdateKeyboardThemePartial();
 
 		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
 		{

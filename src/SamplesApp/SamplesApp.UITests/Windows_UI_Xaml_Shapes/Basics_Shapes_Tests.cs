@@ -155,8 +155,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 						}
 
 						using (var actual = (Bitmap)testResult)
-						{ 
-							var scale = _app.GetDisplayScreenScaling();
+						{
+							var scale = 1d;
 							ImageAssert.AreAlmostEqual(expected, ImageAssert.FirstQuadrant, actual, ImageAssert.FirstQuadrant, scale, tolerance.Value);
 						}
 					}

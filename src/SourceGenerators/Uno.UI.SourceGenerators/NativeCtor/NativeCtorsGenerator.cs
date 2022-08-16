@@ -27,7 +27,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 
 		public void Execute(GeneratorExecutionContext context)
 		{
-			if (!DesignTimeHelper.IsDesignTime(context))
+			if (!DesignTimeHelper.IsDesignTime(context) && PlatformHelper.IsValidPlatform(context))
 			{
 
 				var visitor = new SerializationMethodsGenerator(context);

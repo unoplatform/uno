@@ -1,5 +1,5 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
-<!-- MUX Reference InfoBar_themeresources.xaml, commit 6cc8dbb-->
+<!-- MUX Reference InfoBar_themeresources.xaml, commit ba45dbd -->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
@@ -13,12 +13,13 @@
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="{ThemeResource InfoBarBorderBrush}" />
         <Setter Property="BorderThickness" Value="{ThemeResource InfoBarBorderThickness}" />
+        <Setter Property="AutomationProperties.LandmarkType" Value="Custom" />
         <contract7Present:Setter Property="AutomationProperties.IsDialog" Value="True"/>
         <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:InfoBar">
-                    <Border x:Name="ContentRoot" 
+                    <Border x:Name="ContentRoot"
                         VerticalAlignment="Top"
                         Background="{ThemeResource InfoBarInformationalSeverityBackgroundBrush}"
                         BorderBrush="{TemplateBinding BorderBrush}"
@@ -26,7 +27,7 @@
                         contract7Present:CornerRadius="{TemplateBinding CornerRadius}">
 
                         <VisualStateManager.VisualStateGroups>
-                            
+
                             <VisualStateGroup x:Name="SeverityLevels">
                                 <VisualState x:Name="Informational"/>
 
@@ -72,7 +73,7 @@
                                         <Setter Target="StandardIconArea.Visibility" Value="Collapsed"/>
                                     </VisualState.Setters>
                                 </VisualState>
-                                
+
                                 <VisualState x:Name="NoIconVisible"/>
                             </VisualStateGroup>
 
@@ -127,7 +128,7 @@
 
                             <Grid x:Name="StandardIconArea"
                                 Visibility="Collapsed">
-                                
+
                                 <TextBlock x:Name="IconBackground"
                                     Grid.Column="0"
                                     VerticalAlignment="Top"
@@ -169,7 +170,6 @@
                                     primitives:InfoBarPanel.HorizontalOrientationMargin="{StaticResource InfoBarTitleHorizontalOrientationMargin}"
                                     primitives:InfoBarPanel.VerticalOrientationMargin="{StaticResource InfoBarTitleVerticalOrientationMargin}"
                                     TextWrapping="WrapWholeWords"
-                                    AutomationProperties.LandmarkType="Navigation"
                                     FontWeight="{StaticResource InfoBarTitleFontWeight}"
                                     FontSize="{StaticResource InfoBarTitleFontSize}"/>
 

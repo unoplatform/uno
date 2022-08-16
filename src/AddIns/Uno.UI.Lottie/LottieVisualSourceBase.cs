@@ -14,6 +14,8 @@ using Windows.UI.Xaml.Media;
 using Uno;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.Extensions;
+using Uno.Helpers;
 
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
@@ -80,8 +82,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		}
 
 
-#if !(__WASM__ || __ANDROID__ || __IOS__ || __MACOS__)
-
+#if !(__WASM__ || (__ANDROID__ && !NET6_0) || (__IOS__ && !NET6_0) || (__MACOS__ && !NET6_0) || HAS_SKOTTIE)
 		public void Play(double fromProgress, double toProgress, bool looped)
 		{
 			throw new NotImplementedException();
@@ -123,6 +124,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		}
 
 		private readonly Size CompositionSize = default;
+		private async Task InnerUpdate(CancellationToken ct)
+		{
+			throw new NotSupportedException("Lottie on this platform is not supported yet.");
+		}
 #endif
 
 		private readonly SerialDisposable _updateDisposable = new SerialDisposable();
@@ -139,13 +144,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				var t = InnerUpdate(cts.Token);
 			}
 		}
-
-#if __NETSTD__ && !__WASM__
-		private async Task InnerUpdate(CancellationToken ct)
-		{
-			throw new NotSupportedException("Lottie on this platform is not supported yet.");
-		}
-#endif
 
 		/// <summary>
 		/// If the payload needs to be altered before being feed to the player
@@ -242,6 +240,20 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				return json;
 			}
 
+			if (uri.IsLocalResource())
+			{
+				var file = await StorageFile.GetFileFromApplicationUriAsync(uri).AsTask(ct);
+				var value = await file.OpenAsync(FileAccessMode.Read).AsTask(ct);
+
+				return value;
+			}
+			else if (uri.IsAppData())
+			{
+				var fileStream = File.OpenRead(AppDataUriEvaluator.ToPath(uri));
+
+				return fileStream.AsInputStream();
+			}
+
 			return IsPayloadNeedsToBeUpdated
 				? await DownloadJsonFromUri(uri, ct)
 				: null;
@@ -281,13 +293,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private async Task<IInputStream?> DownloadJsonFromUri(Uri uri, CancellationToken ct)
 		{
-			if(uri.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase))
-			{
-				var storageFile = await StorageFile.GetFileFromApplicationUriAsync(uri).AsTask(ct);
-				var storageFileStream = await storageFile.OpenReadAsync().AsTask(ct);
-				return storageFileStream.GetInputStreamAt(0);
-			}
-
 			using var client = new HttpClient();
 
 			using var response = await client.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, ct);

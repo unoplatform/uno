@@ -1,12 +1,12 @@
 ﻿{
   "$schema": "http://json.schemastore.org/vs-2017.3.host",
   "name": {
-    "text": "Cross-Platform App"
+    "text": "Cross-Platform App (WinUI)"
   },
   "description": {
-    "text": "Solution template for creating a cross-platform XAML app with the Uno Platform that targets UWP, Android, iOS, macOS, WebAssembly, Skia/Tizen, Skia/WPF and Skia/GTK for Linux."
+    "text": "Solution template for creating a cross-platform XAML app with the Uno Platform that targets WinUI 3 for Windows, Android, iOS, macOS, WebAssembly, Skia/WPF, and Skia/GTK for Linux."
   },
-  "order": 610,
+  "order": 612,
   "icon": "uno-logo.png",
   "learnMoreLink": "https://github.com/unoplatform/uno",
   "uiFilters": [
@@ -22,9 +22,16 @@
   },
   "symbolInfo": [
     {
+      "id": "windowsPublisherName",
+      "name": {
+        "text": "Provides the value to use for the Windows head publisher"
+      },
+      "isVisible": "true"
+    },
+    {
       "id": "WebAssembly",
       "name": {
-        "text": "Add support for WebAssembly"
+        "text": "Enables the WebAssembly platform support project"
       },
       "isVisible": "true"
     },
@@ -50,23 +57,16 @@
       "isVisible": "true"
     },
     {
-      "id": "skia-gtk",
-      "name": {
-        "text": "Add support for Skia/GTK (Linux, macOS, Windows 7/10)"
-      },
-      "isVisible": "true"
-    },
-    {
       "id": "skia-wpf",
       "name": {
-        "text": "Add support for Skia/WPF (Windows 7/10)"
+        "text": "Enables the Skia/WPF platform support project"
       },
       "isVisible": "true"
     },
     {
-      "id": "skia-linux-fb",
+      "id": "skia-gtk",
       "name": {
-        "text": "Add support for Skia/Linux FrameBuffer"
+        "text": "Enables the Skia/GTK platform support project"
       },
       "isVisible": "true"
     },
@@ -76,13 +76,6 @@
         "text": "Adds the Visual Studio Code Debugging support files for WebAssembly"
       },
       "isVisible": "false"
-    },
-    {
-      "id": "windowsPublisherName",
-      "name": {
-        "text": "Provides the value to use for the Windows head publisher"
-      },
-      "isVisible": "true"
     }
   ]
 }

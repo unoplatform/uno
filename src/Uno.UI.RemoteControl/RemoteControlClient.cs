@@ -127,7 +127,19 @@ namespace Uno.UI.RemoteControl
 						this.Log().Trace($"Connecting to [{serverUri}]");
 					}
 
-					await s.ConnectAsync(serverUri, ct);
+					try
+					{
+						await s.ConnectAsync(serverUri, ct);
+					}
+					catch(Exception e)
+					{
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace($"Connecting to [{serverUri}] failed: {e.Message}");
+						}
+
+						throw;
+					}
 
 					return (serverUri, s);
 				}
@@ -147,6 +159,21 @@ namespace Uno.UI.RemoteControl
 
 					var timeout = Task.Delay(30000);
 					var completed = await Task.WhenAny(connections.Select(c => c.task).Concat(timeout));
+
+					// Wait for any non-faulted task
+					while (completed.IsFaulted)
+					{
+						var tasks = connections.Select(c => c.task).Where(t => t.Status != TaskStatus.Faulted).ToArray();
+
+						if (tasks.Length > 0)
+						{
+							completed = await Task.WhenAny(tasks.Concat(timeout));
+						}
+						else
+						{
+							break;
+						}
+					}
 
 					foreach (var connection in connections)
 					{

@@ -14,6 +14,9 @@ using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
 using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
 using Microsoft.UI.Xaml.Controls;
 using System;
+using Private.Infrastructure;
+using System.Threading.Tasks;
+using Uno.UI.RuntimeTests;
 
 #if USING_TAEF
 using WEX.TestExecution;
@@ -38,12 +41,13 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 	using VirtualizingLayout = Microsoft.UI.Xaml.Controls.VirtualizingLayout;
 
 	[TestClass]
+	[RequiresFullWindow]
 	public class ItemTemplateTests : MUXApiTestBase
 	{
 		[TestMethod]
-		public void ValidateRecycling()
+		public async Task ValidateRecycling()
 		{
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				var elementFactory = new RecyclingElementFactory()
 				{
@@ -109,12 +113,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 		// Validate data context propagation and template selection
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
-		public void ValidateBindingAndTemplateSelection()
+		public async Task ValidateBindingAndTemplateSelection()
 		{
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				var staticTemplate = (DataTemplate)XamlReader.Load(
 				   @"<DataTemplate  xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
@@ -150,7 +151,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					repeater: ref repeater
 				);
 
-				Content.UpdateLayout();
+				await UpdateLayoutWithWaitAsync();
 
 				Verify.AreEqual(numItems, VisualTreeHelper.GetChildrenCount(repeater));
 				for (int i = 0; i < numItems; i++)
@@ -172,12 +173,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
-		public void ValidateCustomRecyclingElementFactory()
+		public async Task ValidateCustomRecyclingElementFactory()
 		{
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				var itemTemplate = (DataTemplate)XamlReader.Load(
 						@"<DataTemplate  xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
@@ -210,7 +208,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				   repeater: ref repeater
 				);
 
-				Content.UpdateLayout();
+				await UpdateLayoutWithWaitAsync();
+
 				Verify.AreEqual(numItems, VisualTreeHelper.GetChildrenCount(repeater));
 				for (int i = 0; i < numItems; i++)
 				{
@@ -221,12 +220,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
-		public void ValidateRecyclingElementFactoryWithSingleTemplate()
+		public async Task ValidateRecyclingElementFactoryWithSingleTemplate()
 		{
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				var itemTemplate = (DataTemplate)XamlReader.Load(
 						@"<DataTemplate  xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
@@ -262,7 +258,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				   repeater: ref repeater
 				);
 
-				Content.UpdateLayout();
+				await UpdateLayoutWithWaitAsync();
+				
 				Verify.AreEqual(numItems, VisualTreeHelper.GetChildrenCount(repeater));
 				for (int i = 0; i < numItems; i++)
 				{
@@ -273,12 +270,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
-		public void ValidateDataTemplateAsItemTemplate()
+		public async Task ValidateDataTemplateAsItemTemplate()
 		{
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				var dataTemplate = (DataTemplate)XamlReader.Load(
 						@"<DataTemplate  xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
@@ -295,7 +289,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				   repeater: ref repeater
 				);
 
-				Content.UpdateLayout();
+				await UpdateLayoutWithWaitAsync();
 				Verify.AreEqual(numItems, VisualTreeHelper.GetChildrenCount(repeater));
 				for (int i = 0; i < numItems; i++)
 				{
@@ -304,7 +298,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				}
 
 				repeater.ItemsSource = null;
-				Content.UpdateLayout();
+				await UpdateLayoutWithWaitAsync();
 
 				// In versions below RS5 we faked the recycling behaivor on data template
 				// so we can get to the recycle pool that we addded internally in ItemsRepeater.
@@ -319,12 +313,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
-		public void ValidateDataTemplateSelectorAsItemTemplate()
+		public async Task ValidateDataTemplateSelectorAsItemTemplate()
 		{
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				var dataTemplateOdd = (DataTemplate)XamlReader.Load(
 						@"<DataTemplate  xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
@@ -350,7 +341,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				   repeater: ref repeater
 				);
 
-				Content.UpdateLayout();
+				await UpdateLayoutWithWaitAsync();
 				Verify.AreEqual(numItems, VisualTreeHelper.GetChildrenCount(repeater));
 				for (int i = 0; i < numItems; i++)
 				{
@@ -360,7 +351,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				}
 
 				repeater.ItemsSource = null;
-				Content.UpdateLayout();
+				await UpdateLayoutWithWaitAsync();
 
 				// In versions below RS5 we faked the recycling behaivor on data template
 				// so we can get to the recycle pool that we addded internally in ItemsRepeater.
@@ -387,10 +378,10 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		public void ValidateNoSizeWhenEmptyDataTemplate()
+		public async Task ValidateNoSizeWhenEmptyDataTemplate()
 		{
 			ItemsRepeater repeater = null;
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				var elementFactory = new RecyclingElementFactory();
 				elementFactory.RecyclePool = new RecyclePool();
@@ -412,10 +403,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-		public void ValidateCorrectSizeWhenEmptyDataTemplateInSelector()
+		public async Task ValidateCorrectSizeWhenEmptyDataTemplateInSelector()
 		{
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				var dataTemplateOdd = (DataTemplate)XamlReader.Load(
 						@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
@@ -440,7 +430,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				repeater.HorizontalAlignment = HorizontalAlignment.Left;
 				Content = repeater;
 
-				Content.UpdateLayout();
+				await UpdateLayoutWithWaitAsync();
 				Verify.AreEqual(numItems, VisualTreeHelper.GetChildrenCount(repeater));
 				for (int i = 0; i < numItems; i++)
 				{
@@ -462,22 +452,27 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 
 				repeater.ItemsSource = null;
-				Content.UpdateLayout();
+				await UpdateLayoutWithWaitAsync();
 			});
 		}
 
 		[TestMethod]
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-		public void ValidateReyclingElementFactoryWithNoTemplate()
+		public async Task ValidateReyclingElementFactoryWithNoTemplate()
 		{
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				var elementFactory = new RecyclingElementFactoryDerived()
 				{
 					RecyclePool = new RecyclePool()
 				};
 
-				Verify.Throws<COMException>(delegate
+				Verify.Throws<
+#if HAS_UNO // Uno throws a more specific exception
+					InvalidOperationException
+#else
+					COMException
+#endif
+				>(delegate
 				{
 					var context = (ElementFactoryGetArgs)RepeaterTestHooks.CreateRepeaterElementFactoryGetArgs();
 					context.Parent = null;
@@ -490,12 +485,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 		// Validate ability to create and use a view generator from scratch
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
-		public void ValidateCustomElementFactory()
+		public async Task ValidateCustomElementFactory()
 		{
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				ItemsRepeater repeater = null;
 				const int numItems = 10;
@@ -517,7 +509,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				   repeater: ref repeater
 				);
 
-				Content.UpdateLayout();
+				await UpdateLayoutWithWaitAsync();
 				for (int i = 0; i < numItems; i++)
 				{
 					var element = (Button)repeater.TryGetElement(i);
@@ -527,27 +519,24 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
-		public void ValidateTemplateSwitchingRefreshesElementsVirtualizingLayout()
+		public async Task ValidateTemplateSwitchingRefreshesElementsVirtualizingLayout()
 		{
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				ValidateTemplateSwitchingRefreshesElements(new StackLayout());
 			});
 		}
 
 		[TestMethod]
-		public void ValidateTemplateSwitchingRefreshesElementsNonVirtualizingLayout()
+		public async Task ValidateTemplateSwitchingRefreshesElementsNonVirtualizingLayout()
 		{
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				ValidateTemplateSwitchingRefreshesElements(new NonVirtualStackLayout());
 			});
 		}
 
-		public void ValidateTemplateSwitchingRefreshesElements(Layout layout)
+		public async Task ValidateTemplateSwitchingRefreshesElements(Layout layout)
 		{
 			var dataTemplate1 = (DataTemplate)XamlReader.Load(
 					 @"<DataTemplate  xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
@@ -568,7 +557,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			   repeater: ref repeater
 			);
 
-			Content.UpdateLayout();
+			await UpdateLayoutWithWaitAsync();
 			Verify.AreEqual(numItems, VisualTreeHelper.GetChildrenCount(repeater));
 			for (int i = 0; i < numItems; i++)
 			{
@@ -577,7 +566,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			}
 
 			repeater.ItemTemplate = dataTemplate2;
-			Content.UpdateLayout();
+			await UpdateLayoutWithWaitAsync();
 
 			// The old elements have been recycled but still parented under this repeater.
 			Verify.AreEqual(numItems * 2, VisualTreeHelper.GetChildrenCount(repeater));
@@ -589,12 +578,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
-		public void ValidateNullItemTemplateAndContainerInItems()
+		public async Task ValidateNullItemTemplateAndContainerInItems()
 		{
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				const int numItems = 10;
 				ItemsRepeater repeater = null;
@@ -606,7 +592,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					repeater: ref repeater
 				);
 
-				Content.UpdateLayout();
+				await UpdateLayoutWithWaitAsync();
 
 				Verify.AreEqual(numItems, VisualTreeHelper.GetChildrenCount(repeater));
 				
@@ -625,12 +611,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
-		public void VerifySelectTemplateLayoutFallback()
+		public async Task VerifySelectTemplateLayoutFallback()
 		{
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				var dataTemplateOdd = (DataTemplate)XamlReader.Load(
 						@"<DataTemplate  xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
@@ -655,7 +638,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				   repeater: ref repeater
 				);
 
-				Content.UpdateLayout();
+				await UpdateLayoutWithWaitAsync();
 
 				Verify.AreEqual(numItems, VisualTreeHelper.GetChildrenCount(repeater));
 				for (int i = 0; i < numItems; i++)
@@ -676,11 +659,13 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
-#if UNO_REFERENCE_API // https://github.com/unoplatform/uno/issues/4529
 		[TestMethod]
-		public void VerifyNullTemplateGivesMeaningfullError()
+#if HAS_UNO
+		[Ignore("In case of Uno Platform, exception during layout does not bubble up (intentionally).")]
+#endif
+		public async Task VerifyNullTemplateGivesMeaningfullError()
 		{
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				ItemsRepeater repeater = null;
 				const int numItems = 10;
@@ -696,7 +681,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				bool threwException = false;
 				try
 				{
-					Content.UpdateLayout();
+					await UpdateLayoutWithWaitAsync();
 				} catch(Exception e)
 				{
 					threwException = true;
@@ -707,7 +692,12 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				Content = null;
 			});
 		}
-#endif
+
+		private async Task UpdateLayoutWithWaitAsync()
+		{
+			Content.UpdateLayout();
+			await TestServices.WindowHelper.WaitForIdle();
+		}
 
 		private ItemsRepeaterScrollHost CreateAndInitializeRepeater(
 			object itemsSource,

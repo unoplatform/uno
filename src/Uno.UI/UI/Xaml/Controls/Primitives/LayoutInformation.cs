@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	partial class LayoutInformation
 	{
-		private static readonly UnsafeWeakAttachedDictionary<object, string> _layoutProperties = new UnsafeWeakAttachedDictionary<object, string>();
+		private static readonly UnsafeWeakAttachedDictionary<object, string> _layoutProperties = new();
 
 		#region AvailableSize
 		public static Size GetAvailableSize(UIElement element)
@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					iue.DesiredSize = desiredSize;
 					break;
 				default:
-					_layoutProperties.GetValue(view, "desiredSize", () => default(Size));
+					_layoutProperties.SetValue(view, "desiredSize", desiredSize);
 					break;
 			}
 		}

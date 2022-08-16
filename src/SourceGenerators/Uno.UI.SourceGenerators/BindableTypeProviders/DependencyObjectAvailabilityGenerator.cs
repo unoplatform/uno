@@ -51,7 +51,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				{
 					var validPlatform = PlatformHelper.IsValidPlatform(context);
 					var isDesignTime = DesignTimeHelper.IsDesignTime(context);
-					var isApplication = Helpers.IsApplication(context);
+					var isApplication = PlatformHelper.IsApplication(context);
 
 					if (!bool.TryParse(context.GetMSBuildPropertyValue("UnoXamlResourcesTrimming"), out _xamlResourcesTrimming))
 					{

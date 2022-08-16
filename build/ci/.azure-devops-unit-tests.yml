@@ -42,6 +42,7 @@ jobs:
   - template: templates/gitversion.yml
   - template: templates/dotnet-install.yml
   - template: templates/jdk-setup.yml
+  - template: templates/update-vs-components.yml
 
   - task: MSBuild@1
     inputs:
@@ -49,6 +50,8 @@ jobs:
       msbuildArguments: /r /p:CheckExclusions=True /p:Configuration=Release /nodeReuse:true /detailedsummary /m $(ADDITIONAL_FLAGS) # /bl:$(build.artifactstagingdirectory)\build.binlog
 
   - task: VisualStudioTestPlatformInstaller@1
+    inputs:
+      versionSelector: latestStable
 
   - task: VSTest@2
     inputs:

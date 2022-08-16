@@ -166,34 +166,25 @@ namespace Windows.UI.Xaml
 				{
 					throw new InvalidOperationException("The root visual could not be created.");
 				}
-			}
 
-			_rootBorder.Child = _content = content;
-			if (content != null)
-			{
-				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && !_rootVisual.IsLoaded)
+				// Load the root element in DOM
+				
+				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
 				{
 					UIElement.LoadingRootElement(_rootVisual);
 				}
 
-				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootContent({_rootVisual.HtmlId});");
+				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootElement({_rootVisual.HtmlId});");
 
-				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && !_rootVisual.IsLoaded)
+				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
 				{
 					UIElement.RootElementLoaded(_rootVisual);
 				}
-			}
-			else
-			{
-				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootContent();");
-
-				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && _rootVisual.IsLoaded)
-				{
-					UIElement.RootElementUnloaded(_rootVisual);
-				}
+				
+				UpdateRootAttributes();
 			}
 
-			UpdateRootAttributes();
+			_rootBorder.Child = _content = content;
 		}
 
 		private UIElement InternalGetContent() => _content;

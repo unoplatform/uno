@@ -18,6 +18,7 @@ using Uno.UI.Samples.Controls;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.Storage;
 
 namespace SampleControl.Presentation
 {
@@ -50,101 +51,18 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		private async Task DumpOutputFolderName(CancellationToken ct, string folderName)
+		private async Task<StorageFolder> GetStorageFolderFromNameOrCreate(CancellationToken ct, string folderName)
 		{
-			var fullPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), folderName);
-
-			Console.WriteLine($"Output folder for tests: {fullPath}");
+			var root = new StorageFolder(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+			var folder = await root.CreateFolderAsync(folderName,
+				CreationCollisionOption.OpenIfExists
+				).AsTask(ct);
+			return folder;
 		}
 
-		private async Task GenerateBitmap(CancellationToken ct, string folderName, string fileName, IFrameworkElement content)
-		{
-			var nativeView = content as View;
+		private (double MinWidth, double MinHeight, double Width, double Height) GetScreenshotConstraints()
+			=> (400, 400, 1024, 1024);
 
-			try
-			{
-				SetSoftwareRendering(nativeView, enabled: true);
-
-				content.MinWidth = 400;
-				content.MinHeight = 400;
-				nativeView.SetBackgroundColor(Colors.White);
-
-				nativeView.Measure(
-					ViewHelper.MakeMeasureSpec(1024, MeasureSpecMode.AtMost),
-					ViewHelper.MakeMeasureSpec(1024, MeasureSpecMode.AtMost)
-				);
-
-				nativeView.Layout(0, 0, nativeView.MeasuredWidth, nativeView.MeasuredHeight);
-
-				// Allow for the view to layout and render itself properly by allowing two 
-				// dispatcher loops.
-				await Task.Yield();
-				await Task.Yield();
-
-				var captureView = (nativeView?.Parent as View) ?? nativeView;
-
-				var screenshot = CaptureView(captureView);
-
-				var fullPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), folderName);
-				var filePath = System.IO.Path.Combine(fullPath, fileName);
-
-				Directory.CreateDirectory(fullPath);
-
-				using (var stream = File.OpenWrite(filePath))
-				{
-					await screenshot.CompressAsync(Bitmap.CompressFormat.Png, 100, stream);
-				}
-
-				Console.WriteLine($"Wrote screenshot to: {filePath}");
-			}
-			finally
-			{
-				SetSoftwareRendering(nativeView, enabled: false);
-
-				// Force re-rendering so that the software internally allocated memory is released.
-				nativeView.Layout(0, 0, nativeView.MeasuredWidth, nativeView.MeasuredHeight);
-			}
-		}
-
-		/// <summary>
-		/// Forces all descendent views to render using the software renderer instead
-		/// of the hardware renderer.
-		/// </summary>
-		/// <remarks>
-		/// This allows for harware-only surfaces, like overlays, to be visible in the 
-		/// the screenshots.
-		/// </remarks>
-		private static void SetSoftwareRendering(View nativeView, bool enabled)
-		{
-			var layerType = enabled ? LayerType.Software : LayerType.Hardware;
-
-			nativeView.SetLayerType(layerType, null);
-
-			foreach (var child in (nativeView as ViewGroup).EnumerateAllChildren(maxDepth: 1024))
-			{
-				child.SetLayerType(layerType, null);
-			}
-		}
-
-		Bitmap renderSurface;
-
-		private Bitmap CaptureView(View view)
-		{
-			if(renderSurface == null || renderSurface.Width != view.Width || renderSurface.Height != view.Height)
-			{
-				renderSurface?.Dispose();
-				renderSurface = null;
-
-				renderSurface = Bitmap.CreateBitmap(view.Width, view.Height, Bitmap.Config.Argb8888);
-			}
-
-			using (var canvas = new Android.Graphics.Canvas(renderSurface))
-			{
-				view.Draw(canvas);
-
-				return renderSurface;
-			}
-		}
 	}
 }
 #endif

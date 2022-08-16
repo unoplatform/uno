@@ -6,6 +6,9 @@ using Uno;
 using Uno.Helpers.Theming;
 using Windows.Foundation;
 using Windows.UI.Core;
+#if __MACOS__
+using AppKit; 
+#endif
 
 namespace Windows.UI.ViewManagement
 {
@@ -23,6 +26,15 @@ namespace Windows.UI.ViewManagement
 		{
 			_weakReference = new WeakReference<UISettings>(this);
 			_instances.TryAdd(_weakReference, null);
+
+
+#if __MACOS__ && NET6_0_OR_GREATER
+			NSColor.Notifications.ObserveSystemColorsChanged((sender, eventArgs) =>
+			{
+				OnColorValuesChanged();
+			});
+#endif
+
 		}
 
 		~UISettings()
@@ -53,6 +65,12 @@ namespace Windows.UI.ViewManagement
 			var systemTheme = SystemThemeHelper.SystemTheme;
 			return desiredColor switch
 			{
+
+#if __MACOS__ && NET6_0_OR_GREATER
+				UIColorType.Background => NSColor.ControlBackground,
+				UIColorType.Foreground => NSColor.ControlText,
+				UIColorType.Accent => NSColor.ControlAccent,
+#else
 				UIColorType.Background =>
 					systemTheme == SystemTheme.Light ? Colors.White : Colors.Black,
 				UIColorType.Foreground =>
@@ -60,6 +78,8 @@ namespace Windows.UI.ViewManagement
 				// The accent color values match SystemResources.xaml in Uno.UI
 				// as we can't access Application resources from here directly.
 				UIColorType.Accent => Color.FromArgb(255, 51, 153, 255),
+#endif
+
 				UIColorType.AccentDark1 => Color.FromArgb(255, 0, 90, 158),
 				UIColorType.AccentDark2 => Color.FromArgb(255, 0, 66, 117),
 				UIColorType.AccentDark3 => Color.FromArgb(255, 0, 38, 66),

@@ -14,7 +14,7 @@ namespace Uno.Samples.UITest.Generator
 {
 	public class SnapShotTestGenerator : SourceGenerator
 	{
-		private const int GroupCount = 4;
+		private const int GroupCount = 5;
 
 		private INamedTypeSymbol _sampleControlInfoSymbol;
 		private INamedTypeSymbol _sampleSymbol;

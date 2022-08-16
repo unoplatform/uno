@@ -152,10 +152,14 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					builder.AppendLineInvariant($"using Uno.Disposables;");
 					builder.AppendLineInvariant($"using System.Runtime.CompilerServices;");
 					builder.AppendLineInvariant($"using Uno.UI;");
+					builder.AppendLineInvariant($"using Uno.UI.Controls;");
 					builder.AppendLineInvariant($"using Uno.UI.DataBinding;");
 					builder.AppendLineInvariant($"using Windows.UI.Xaml;");
 					builder.AppendLineInvariant($"using Windows.UI.Xaml.Data;");
 					builder.AppendLineInvariant($"using Uno.Diagnostics.Eventing;");
+					builder.AppendLineInvariant("#if __MACOS__");
+					builder.AppendLineInvariant("using AppKit;");
+					builder.AppendLineInvariant("#endif");
 
 					using (builder.BlockInvariant($"namespace {typeSymbol.ContainingNamespace}"))
 					{
@@ -640,7 +644,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			private void WriteDispose(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
 			{
-				var hasDispose = typeSymbol.Is(_androidViewSymbol) || typeSymbol.Is(_iosViewSymbol) || typeSymbol.Is(_macosViewSymbol);
+				var hasDispose = typeSymbol.Is(_iosViewSymbol) || typeSymbol.Is(_macosViewSymbol);
 
 				if (hasDispose)
 				{
@@ -666,14 +670,27 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 							// a native representation via the IntPtr ctor, particularly on iOS.
 							__Store?.Dispose();
 
+#if __IOS__
 							var subviews = Subviews;
 
-							RequestCollect(subviews);
-
-							foreach (var v in subviews)
+							if (subviews.Length > 0)
 							{{
-								v.RemoveFromSuperview();
+								BinderCollector.RequestCollect();
+								foreach (var v in subviews)
+								{{
+									v.RemoveFromSuperview();
+								}}
 							}}
+#elif __MACOS__
+							// avoids the managed array (and items) allocation(s) since we do not need them
+							if (this.GetSubviewsCount() > 0)
+							{{
+								BinderCollector.RequestCollect();
+
+								// avoids multiple native calls to remove subviews
+								Subviews = Array.Empty<NSView>();
+							}}
+#endif
 
 							base.Dispose(disposing);
 
@@ -683,19 +700,12 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						{{
 							GC.ReRegisterForFinalize(this);
 
-							Dispatcher.RunIdleAsync(_ => Dispose());
-						}}
-					}}
-
-#if __IOS__
-					private void RequestCollect(UIKit.UIView[] subviews)
-#elif __MACOS__
-					private void RequestCollect(AppKit.NSView[] subviews)
+#if !(NET6_0_OR_GREATER && __MACOS__)
+							// net6.0-macos uses CoreCLR (not mono) and the notification mechanism is different
+							// workaround for mono's https://github.com/xamarin/xamarin-macios/issues/15089
+							NSObjectMemoryRepresentation.RemoveInFinalizerQueueFlag(this);
 #endif
-					{{
-						if(subviews.Length != 0)
-						{{
-							BinderCollector.RequestCollect();
+							Dispatcher.RunIdleAsync(_ => Dispose());
 						}}
 					}}
 #endif

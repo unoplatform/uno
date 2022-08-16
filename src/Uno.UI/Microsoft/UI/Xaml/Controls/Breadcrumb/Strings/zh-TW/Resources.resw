@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AutomationNameEllipsisBreadcrumbBarItem" xml:space="preserve">
-    <value>更多主題</value>
+    <value>更多資訊</value>
     <comment>The automation name for the BreadcrumbBar ellipsis button.</comment>
   </data>
   <data name="BreadcrumbBarItemLocalizedControlType" xml:space="preserve">

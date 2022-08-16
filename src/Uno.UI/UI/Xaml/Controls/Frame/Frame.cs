@@ -398,10 +398,10 @@ namespace Windows.UI.Xaml.Controls
 			SetValue(SourcePageTypeProperty, entry.SourcePageType);
 			SetValue(CurrentSourcePageTypeProperty, entry.SourcePageType);
 
+			Navigated?.Invoke(this, navigationEvent);
+			
 			previousEntry?.Instance.OnNavigatedFrom(navigationEvent);
 			CurrentEntry.Instance.OnNavigatedTo(navigationEvent);
-
-			Navigated?.Invoke(this, navigationEvent);
 
 			return true;
 		}

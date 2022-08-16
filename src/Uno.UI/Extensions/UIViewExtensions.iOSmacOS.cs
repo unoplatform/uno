@@ -4,14 +4,16 @@ using Uno.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml;
 using Uno.Foundation.Logging;
 using Uno.UI.Controls;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
+
+#if !NET6_0_OR_GREATER
+using NativeHandle = System.IntPtr;
 #endif
 
 #if XAMARIN_IOS_UNIFIED
@@ -485,17 +487,14 @@ namespace AppKit
 
 		public static void AddBorder(this _View thisButton, float borderThickness = 1, _Color borderColor = null)
 		{
+			var layer = thisButton.Layer;
 			if (borderColor != null)
 			{
-				thisButton.Layer.BorderColor = borderColor.CGColor;
+				layer.BorderColor = borderColor.CGColor;
 			}
 			if (borderThickness > 0)
 			{
-				if (Math.Abs(borderThickness - 1f) < float.Epsilon && ViewHelper.IsRetinaDisplay)
-				{
-					borderThickness = (float)ViewHelper.OnePixel;
-				}
-				thisButton.Layer.BorderWidth = borderThickness;
+				layer.BorderWidth = ViewHelper.GetConvertedPixel(borderThickness);
 			}
 		}
 
@@ -686,6 +685,31 @@ namespace AppKit
 #elif __MACOS__
 			view.NeedsDisplay = true;
 #endif
+		}
+
+#if __MACOS__
+		static readonly NativeHandle selSubviewsHandle = Selector.GetHandle("subviews");
+#endif
+
+		[DllImport("/usr/lib/libobjc.dylib", EntryPoint="objc_msgSendSuper")]
+		private extern static NativeHandle NativeHandle_objc_msgSendSuper(NativeHandle receiver, IntPtr selector);
+
+		private static NativeHandle GetSubviewsHandle(this _View view)
+		{
+#if __IOS__
+			return NativeHandle_objc_msgSendSuper(view.SuperHandle, Selector.GetHandle("subviews"));
+#elif __MACOS__
+			return NativeHandle_objc_msgSendSuper(view.SuperHandle, selSubviewsHandle);
+#endif
+		}
+
+		[DllImport("/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation")]
+		private extern static /* CFIndex */ nint CFArrayGetCount(/* CFArrayRef */ NativeHandle theArray);
+
+		internal static nint GetSubviewsCount(this _View view)
+		{
+			var handle = view.GetSubviewsHandle();
+			return CFArrayGetCount(handle);
 		}
 	}
 }

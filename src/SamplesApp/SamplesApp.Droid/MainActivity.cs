@@ -7,6 +7,7 @@ using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Microsoft.Identity.Client;
 using Uno.UI.ViewManagement;
+using Uno.AuthenticationBroker;
 
 namespace SamplesApp.Droid
 {
@@ -97,5 +98,14 @@ namespace SamplesApp.Droid
 	{
 	}
 
+
+	[Activity(NoHistory = true, LaunchMode = LaunchMode.SingleTop, Exported = true)]
+	[IntentFilter(
+	new[] { Android.Content.Intent.ActionView },
+	Categories = new[] { Android.Content.Intent.CategoryDefault, Android.Content.Intent.CategoryBrowsable },
+	DataScheme = "wab")]
+	public class WebAuthenticationBrokerActivity : WebAuthenticationBrokerActivityBase
+	{
+	}
 }
 

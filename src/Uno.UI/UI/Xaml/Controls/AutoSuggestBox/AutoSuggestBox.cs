@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.Linq;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
@@ -28,7 +29,7 @@ namespace Windows.UI.Xaml.Controls
 		private Grid _layoutRoot;
 		private ListView _suggestionsList;
 		private Button _queryButton;
-		private AutoSuggestionBoxTextChangeReason _textChangeReason;
+		private AutoSuggestionBoxTextChangeReason _textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
 		private string userInput;
 		private BindingPath _textBoxBinding;
 
@@ -325,8 +326,11 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private void SubmitSearch()
-		{
-			QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(_suggestionsList.SelectedItem, Text));
+	    {
+			var finalResult = _suggestionsList.SelectedItem ?? GetObjectText(Text);
+
+			QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(finalResult is "" ? null : finalResult, userInput));			
+
 			IsSuggestionListOpen = false;
 		}
 

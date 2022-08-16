@@ -157,6 +157,11 @@ fi
 echo Response file:
 cat $UNO_TESTS_RESPONSE_FILE
 
+## Show the tests list
+mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \
+    @$UNO_TESTS_RESPONSE_FILE --explore \
+	|| true
+
 ## Run NUnit tests
 mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \
     @$UNO_TESTS_RESPONSE_FILE \

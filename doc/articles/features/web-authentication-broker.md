@@ -64,60 +64,6 @@ public class MyBrokerImplementation : Uno.AuthenticationBroker.IWebAuthenticatio
 
 This implementation can also published as a NuGet package and it will be discovered automatically by the Uno tooling during compilation.
 
-### Android: Custom Implementation for AndroidX Chrome Custom Tabs
-
-1. Add references to following NuGet packages:
-
-   * `Xamarin.Android.Support.CustomTabs`
-   * `Xamarin.AndroidX.Lifecycle.LiveData`
-   * `Xamarin.AndroidX.Browser`
-
-2. Directly in the Android head project, create a class inheriting from `WebAuthenticationBrokerProvider`:
-
-   ``` csharp
-   public class ChromeCustomTabsProvider : Uno.AuthenticationBroker.WebAuthenticationBrokerProvider
-   {   
-   }
-   ```
-
-3. Override the `LaunchBrowserCore` virtual method:
-
-   ``` csharp
-   public class ChromeCustomTabsProvider : Uno.AuthenticationBroker.WebAuthenticationBrokerProvider
-   {   
-       protected override async Task LaunchBrowserCore(
-                   WebAuthenticationOptions options,
-                   Uri requestUri,
-                   Uri callbackUri,
-                   CancellationToken ct)
-       {
-           var builder = new CustomTabsIntent.Builder();
-   		var intent = builder.Build();
-   		intent.LaunchUrl(
-               ContextHelper.Current,
-               Android.Net.Uri.Parse(requestUri.OriginalString));
-       }
-   }
-   ```
-
-4. Register the override in the `Application` constructor in the `Main.cs` file:
-
-   ```csharp
-   public Application(IntPtr javaReference, JniHandleOwnership transfer)
-   	: base(() => new App(), javaReference, transfer)
-   {
-   	ConfigureUniversalImageLoader();
-           
-       // ---- Add the following lines ----
-       // Register a custom implementation of WebAuthenticationBroker
-       // by using the AndroidX Chrome Custom Tabs on Android.
-       Uno.Foundation.Extensibility.ApiExtensibility.Register(
-   		typeof(IWebAuthenticationBrokerProvider),
-   		_ => new ChromeCustomTabsProvider());
-       // ---------------------------------
-   }
-   ```
-
 ### WebAssembly: How to use `<iframe>` instead of a browser window
 
 On WebAssembly, it is possible to use an in-application `<iframe>` instead of opening a new window. Beware **the authentication server must support this mode**.

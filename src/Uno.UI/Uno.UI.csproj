@@ -172,8 +172,6 @@
 	<ItemGroup>
 		<Compile Include="Mixins\Android\BaseActivity.Callbacks.g.cs" />
 		<Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
-		<Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />		
-		<Compile Include="Mixins\DependencyPropertyMixins.g.cs" />
 		<Compile Include="Mixins\DependencyPropertyMixins.g.cs" />
 	</ItemGroup>
 
@@ -194,6 +192,8 @@
 		-->
 		<ItemGroup>
 			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Memory'" />
+			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Buffers'" />
+
 			<Reference Remove="@(_ReferenceToRemove)" />
 		</ItemGroup>
 	</Target>
@@ -201,6 +201,7 @@
 	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac))">
 		<ItemGroup>
 			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
+			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Buffers'" />
 			<ReferencePath Remove="@(_ReferencePathToRemove)" />
 		</ItemGroup>
 	</Target>

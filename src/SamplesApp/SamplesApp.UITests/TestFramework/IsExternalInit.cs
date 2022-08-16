@@ -3,8 +3,7 @@ using System.Linq;
 
 namespace System.Runtime.CompilerServices;
 
-#if !NET5_0 && !NET6_0
-#pragma warning disable CS0436
+#if !NET5_0 && !NET6_0_OR_GREATER
 public class IsExternalInit
 {
 }

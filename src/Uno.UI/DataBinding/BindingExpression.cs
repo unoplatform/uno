@@ -164,7 +164,7 @@ namespace Windows.UI.Xaml.Data
 		/// <param name="value">The expected current value of the target</param>
 		public void UpdateSource(object value)
 		{
-			if (_IsCurrentlyPushing || _IsCurrentlyPushingTwoWay)
+			if ((_IsCurrentlyPushing || _IsCurrentlyPushingTwoWay))
 			{
 				return;
 			}
@@ -594,8 +594,21 @@ namespace Windows.UI.Xaml.Data
 
 		private void SetTargetValueSafe(object v)
 		{
-			if (_IsCurrentlyPushingTwoWay)
+			if (_IsCurrentlyPushingTwoWay && ParentBinding.CompiledSource == null)
 			{
+				// For normal bindings, the source update through a converter
+				// is ignored. Therefore, only the ConvertBack method is invoked as
+				// the UpdateSource method is ignored because a two-way binding is
+				// in progress.
+				//
+				// For x:Bind, a source update through the converter raises
+				// a property change, which is in turn sent back to the target
+				// after another Convert invocation.
+				//
+				// There is no loop happening because the binding engine is ignoring
+				// the UpdateSource invocation from the target as a two-way binding
+				// is still happening.
+
 				return;
 			}
 

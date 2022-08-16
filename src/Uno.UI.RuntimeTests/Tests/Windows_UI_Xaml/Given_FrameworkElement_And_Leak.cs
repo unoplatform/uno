@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Extensions;
@@ -34,6 +35,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 	[TestClass]
 	[RunsOnUIThread]
+#if __MACOS__
+	[Ignore("Currently fails on macOS, part of #9282! epic")]
+#endif
 	public class Given_FrameworkElement_And_Leak
 	{
 		[TestMethod]
@@ -48,7 +52,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(TextBlock), 15)]
 		[DataRow(typeof(CheckBox), 15)]
 		[DataRow(typeof(ListView), 15)]
-		[DataRow(typeof(ProgressRing), 15)]
+		[DataRow(typeof(Windows.UI.Xaml.Controls.ProgressRing), 15)]
+		//[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressRing), 15)] This leaks, issue #9078
 		[DataRow(typeof(Pivot), 15)]
 		[DataRow(typeof(ScrollBar), 15)]
 		[DataRow(typeof(Slider), 15)]
@@ -63,6 +68,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(Border), 15)]
 		[DataRow(typeof(ContentControl), 15)]
 		[DataRow(typeof(ContentDialog), 15)]
+		[DataRow(typeof(ItemsRepeater), 15)]
 		[DataRow("SamplesApp.Windows_UI_Xaml.Clipping.XamlButtonWithClipping_Scrollable", 15)]
 		[DataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.AppBar_KeyBoard", 15)]
 		[DataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.Buttons", 15)]

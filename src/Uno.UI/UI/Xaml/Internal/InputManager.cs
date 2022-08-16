@@ -4,20 +4,26 @@
 
 #nullable enable
 
+using System;
 using Uno.UI.Xaml.Input;
+using Windows.Devices.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.Xaml.Core
 {
-	internal class InputManager
+	internal partial class InputManager
 	{
 		private ContentRoot _contentRoot;
 
 		public InputManager(ContentRoot contentRoot)
 		{
 			_contentRoot = contentRoot;
+
+			InitializeManagedPointers();
 		}
+
+		partial void InitializeManagedPointers();
 
 		//TODO Uno: Set along with user input - this needs to be adjusted soon
 		internal InputDeviceType LastInputDeviceType { get; set; } = InputDeviceType.None;

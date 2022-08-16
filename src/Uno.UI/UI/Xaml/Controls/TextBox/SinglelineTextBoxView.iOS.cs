@@ -12,6 +12,9 @@ using Uno.UI.Controls;
 using Windows.UI;
 using Uno.Disposables;
 using Foundation;
+using Uno.Foundation.Logging;
+using Uno.UI;
+using static Uno.UI.FeatureConfiguration;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -21,7 +24,7 @@ namespace Windows.UI.Xaml.Controls
 		private readonly WeakReference<TextBox> _textBox;
 		private readonly SerialDisposable _foregroundChanged = new();
 
-		private string _restoreOnNextKeyStroke;
+		private static bool _issue9430WarnSingle = false;
 
 		public SinglelineTextBoxView(TextBox textBox)
 		{
@@ -31,36 +34,25 @@ namespace Windows.UI.Xaml.Controls
 			Initialize();
 		}
 
-		/// <inheritdoc />
-		public override bool SecureTextEntry
+		internal static SinglelineTextBoxView CreateSinglelineTextBoxView(TextBox textBox)
 		{
-			get => base.SecureTextEntry;
-			set
+			if (UIDevice.CurrentDevice.CheckSystemVersion(16, 0) && !FeatureConfiguration.TextBox.IOS16EnableSelectionSupport)
 			{
-				if (base.SecureTextEntry != value)
+				if (!_issue9430WarnSingle && typeof(SinglelineTextBoxView).Log().IsEnabled(LogLevel.Error))
 				{
-					if (value)
-					{
-						// Disable auto-fill for now, does not work properly. The auto-filled value never becomes available on base.Text and blocks input on the soft keyboard.
-						if (UIDevice.CurrentDevice.CheckSystemVersion(12, 0))
-						{
-							base.TextContentType = UITextContentType.OneTimeCode;
-						}
-						else if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
-						{
-							base.TextContentType = NSString.Empty;
-						}
-
-						// When we enable the "secure" mode, iOS will auto-magically clear the value on next key stroke
-						// (Without invoking the "ShouldClear" nor any callback except "DidChangeSelection" multiple times).
-						// The only way is to keep ref of the current text and restore it on next text change (expected to be an empty string).
-						_restoreOnNextKeyStroke = base.Text;
-					}
-
-					base.SecureTextEntry = value;
+					_issue9430WarnSingle = true;
+					typeof(SinglelineTextBoxView).Log().Error($"TextBox selection events are disabled on iOS 16. See https://github.com/unoplatform/uno/issues/9430 for additional details.");
 				}
+
+				return new SinglelineTextBoxView(textBox);
+			}
+			else
+			{
+				return new SinglelineTextBoxViewWithSelection(textBox);
 			}
 		}
+
+		internal TextBox TextBox => _textBox.GetTarget();
 
 		public override string Text
 		{
@@ -79,15 +71,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnEditingChanged(object sender, EventArgs e)
 		{
-			if (_restoreOnNextKeyStroke is { Length: > 0 } text)
-			{
-				base.Text = text + base.Text;
-				_restoreOnNextKeyStroke = default;
-			}
-			else
-			{
-				OnTextChanged();
-			}
+			OnTextChanged();
 		}
 
 		private void OnTextChanged()
@@ -123,6 +107,21 @@ namespace Windows.UI.Xaml.Controls
 		{
 			this.EditingChanged -= OnEditingChanged;
 			this.EditingDidEnd -= OnEditingChanged;
+		}
+
+		//Forces the secure UITextField to maintain its current value upon regaining focus
+		public override bool BecomeFirstResponder()
+		{
+			var result = base.BecomeFirstResponder();
+
+			if (SecureTextEntry)
+			{
+				var text = Text;
+				Text = string.Empty;
+				InsertText(text);
+			}
+
+			return result;
 		}
 
 		public override CGSize SizeThatFits(CGSize size)
@@ -239,6 +238,17 @@ namespace Windows.UI.Xaml.Controls
 
 		public void Select(int start, int length)
 			=> SelectedTextRange = this.GetTextRange(start: start, end: start + length);
+	}
+
+	/// <summary>
+	/// Workaround for https://github.com/unoplatform/uno/issues/9430
+	/// </summary>
+	internal partial class SinglelineTextBoxViewWithSelection : SinglelineTextBoxView
+	{
+		public SinglelineTextBoxViewWithSelection(TextBox textBox)
+			: base(textBox)
+		{
+		}
 
 		public override UITextRange SelectedTextRange
 		{
@@ -248,7 +258,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			set
 			{
-				var textBox = _textBox.GetTarget();
+				var textBox = TextBox;
 
 				if (textBox != null && base.SelectedTextRange != value)
 				{

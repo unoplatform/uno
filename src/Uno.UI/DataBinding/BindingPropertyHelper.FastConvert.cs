@@ -53,10 +53,8 @@ namespace Uno.UI.DataBinding
 		{
 			output = null;
 
-			if (
-				input is string stringInput
-				&& FastStringConvert(outputType, stringInput, ref output)
-			)
+			if (input is string stringInput &&
+				FastStringConvert(outputType, stringInput, ref output))
 			{
 				return true;
 			}
@@ -154,7 +152,7 @@ namespace Uno.UI.DataBinding
 		{
 			if (input is double doubleInput)
 			{
-				if(outputType == typeof(float))
+				if (outputType == typeof(float))
 				{
 					output = (float)doubleInput;
 					return true;
@@ -363,33 +361,75 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastStringToInputScope(Type outputType, string input, ref object output)
 		{
-			if (outputType == typeof(Windows.UI.Xaml.Input.InputScope))
+			if (outputType != typeof(Windows.UI.Xaml.Input.InputScope)) return false;
+
+			var nameValue = input.ToLowerInvariant().Trim() switch
 			{
-				object nameValue = null;
-				if (FastEnumConvert(typeof(Windows.UI.Xaml.Input.InputScopeNameValue), input, ref nameValue))
+				"0" or "default" => Windows.UI.Xaml.Input.InputScopeNameValue.Default,
+				"1" or "url" => Windows.UI.Xaml.Input.InputScopeNameValue.Url,
+				"5" or "emailsmtpaddress" => Windows.UI.Xaml.Input.InputScopeNameValue.EmailSmtpAddress,
+				"7" or "personalfullname" => Windows.UI.Xaml.Input.InputScopeNameValue.PersonalFullName,
+				"20" or "currencyamountandsymbol" => Windows.UI.Xaml.Input.InputScopeNameValue.CurrencyAmountAndSymbol,
+				"21" or "currencyamount" => Windows.UI.Xaml.Input.InputScopeNameValue.CurrencyAmount,
+				"23" or "datemonthnumber" => Windows.UI.Xaml.Input.InputScopeNameValue.DateMonthNumber,
+				"24" or "datedaynumber" => Windows.UI.Xaml.Input.InputScopeNameValue.DateDayNumber,
+				"25" or "dateyear" => Windows.UI.Xaml.Input.InputScopeNameValue.DateYear,
+				"28" or "digits" => Windows.UI.Xaml.Input.InputScopeNameValue.Digits,
+				"29" or "number" => Windows.UI.Xaml.Input.InputScopeNameValue.Number,
+				"31" or "password" => Windows.UI.Xaml.Input.InputScopeNameValue.Password,
+				"32" or "telephonenumber" => Windows.UI.Xaml.Input.InputScopeNameValue.TelephoneNumber,
+				"33" or "telephonecountrycode" => Windows.UI.Xaml.Input.InputScopeNameValue.TelephoneCountryCode,
+				"34" or "telephoneareacode" => Windows.UI.Xaml.Input.InputScopeNameValue.TelephoneAreaCode,
+				"35" or "telephonelocalnumber" => Windows.UI.Xaml.Input.InputScopeNameValue.TelephoneLocalNumber,
+				"37" or "timehour" => Windows.UI.Xaml.Input.InputScopeNameValue.TimeHour,
+				"38" or "timeminutesorseconds" => Windows.UI.Xaml.Input.InputScopeNameValue.TimeMinutesOrSeconds,
+				"39" or "numberfullwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.NumberFullWidth,
+				"40" or "alphanumerichalfwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.AlphanumericHalfWidth,
+				"41" or "alphanumericfullwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.AlphanumericFullWidth,
+				"44" or "hiragana" => Windows.UI.Xaml.Input.InputScopeNameValue.Hiragana,
+				"45" or "katakanahalfwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.KatakanaHalfWidth,
+				"46" or "katakanafullwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.KatakanaFullWidth,
+				"47" or "hanja" => Windows.UI.Xaml.Input.InputScopeNameValue.Hanja,
+				"48" or "hangulhalfwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.HangulHalfWidth,
+				"49" or "hangulfullwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.HangulFullWidth,
+				"50" or "search" => Windows.UI.Xaml.Input.InputScopeNameValue.Search,
+				"51" or "formula" => Windows.UI.Xaml.Input.InputScopeNameValue.Formula,
+				"52" or "searchincremental" => Windows.UI.Xaml.Input.InputScopeNameValue.SearchIncremental,
+				"53" or "chinesehalfwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.ChineseHalfWidth,
+				"54" or "chinesefullwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.ChineseFullWidth,
+				"55" or "nativescript" => Windows.UI.Xaml.Input.InputScopeNameValue.NativeScript,
+				"57" or "text" => Windows.UI.Xaml.Input.InputScopeNameValue.Text,
+				"58" or "chat" => Windows.UI.Xaml.Input.InputScopeNameValue.Chat,
+				"59" or "nameorphonenumber" => Windows.UI.Xaml.Input.InputScopeNameValue.NameOrPhoneNumber,
+				"60" or "emailnameoraddress" => Windows.UI.Xaml.Input.InputScopeNameValue.EmailNameOrAddress,
+				"62" or "maps" => Windows.UI.Xaml.Input.InputScopeNameValue.Maps,
+				"63" or "numericpassword" => Windows.UI.Xaml.Input.InputScopeNameValue.NumericPassword,
+				"64" or "numericpin" => Windows.UI.Xaml.Input.InputScopeNameValue.NumericPin,
+				"65" or "alphanumericpin" => Windows.UI.Xaml.Input.InputScopeNameValue.AlphanumericPin,
+				"67" or "formulanumber" => Windows.UI.Xaml.Input.InputScopeNameValue.FormulaNumber,
+				"68" or "chatwithoutemoji" => Windows.UI.Xaml.Input.InputScopeNameValue.ChatWithoutEmoji,
+
+				_ => throw new InvalidOperationException($"Failed to create a '{outputType.FullName}' from the text '{input}'."),
+			};
+			output = new Windows.UI.Xaml.Input.InputScope
+			{
+				Names =
 				{
-					output = new Windows.UI.Xaml.Input.InputScope
+					new Windows.UI.Xaml.Input.InputScopeName
 					{
-						Names = {
-							new Windows.UI.Xaml.Input.InputScopeName
-							{
-								NameValue = (Windows.UI.Xaml.Input.InputScopeNameValue)nameValue
-							}
-						}
-					};
-
-					return true;
+						NameValue = nameValue
+					}
 				}
-			}
+			};
 
-			return false;
+			return true;
 		}
 
 		private static bool FastStringToToolTip(Type outputType, string input, ref object output)
 		{
 			if (outputType == typeof(Windows.UI.Xaml.Controls.ToolTip))
 			{
-				output = new Windows.UI.Xaml.Controls.ToolTip {Content = input};
+				output = new Windows.UI.Xaml.Controls.ToolTip { Content = input };
 				return true;
 			}
 
@@ -406,7 +446,6 @@ namespace Uno.UI.DataBinding
 
 			return false;
 		}
-
 
 		private static bool FastStringToKeySpline(Type outputType, string input, ref object output)
 		{
@@ -585,44 +624,20 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastStringToTextAlignmentConvert(Type outputType, string input, ref object output)
 		{
-			if (outputType == typeof(TextAlignment))
+			if (outputType != typeof(TextAlignment)) return false;
+
+			output = input.ToLowerInvariant().Trim() switch
 			{
-				switch (input.ToLowerInvariant())
-				{
-					case "center":
-						output = TextAlignment.Center;
-						return true;
+				"0" or "center" => TextAlignment.Center,
+				"1" or "left" or "start" => TextAlignment.Left,
+				"2" or "right" or "end" => TextAlignment.Right,
+				"3" or "justify" => TextAlignment.Justify,
+				"4" or "detectfromcontent" => TextAlignment.DetectFromContent,
 
-					case "left":
-						output = TextAlignment.Left;
-						return true;
+				_ => throw new InvalidOperationException($"Failed to create a '{outputType.FullName}' from the text '{input}'."),
+			};
 
-					case "start":
-						output = TextAlignment.Start;
-						return true;
-
-					case "right":
-						output = TextAlignment.Right;
-						return true;
-
-					case "end":
-						output = TextAlignment.End;
-						return true;
-
-					case "justify":
-						output = TextAlignment.Justify;
-						return true;
-
-					case "detectfromcontent":
-						output = TextAlignment.DetectFromContent;
-						return true;
-
-					default:
-						throw new InvalidOperationException($"The value {input} is not a valid {nameof(TextAlignment)}");
-				}
-			}
-
-			return false;
+			return true;
 		}
 
 		private static bool FastStringToGridLengthConvert(Type outputType, string input, ref object output)
@@ -801,24 +816,18 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastStringToOrientationConvert(Type outputType, string input, ref object output)
 		{
-			if (outputType == typeof(Windows.UI.Xaml.Controls.Orientation))
+			if (outputType != typeof(Windows.UI.Xaml.Controls.Orientation)) return false;
+
+			var lowered = input.ToLowerInvariant();
+			output = input.ToLowerInvariant().Trim() switch
 			{
-				switch (input.ToLowerInvariant())
-				{
-					case "vertical":
-						output = Windows.UI.Xaml.Controls.Orientation.Vertical;
-						return true;
+				"0" or "vertical" => Windows.UI.Xaml.Controls.Orientation.Vertical,
+				"1" or "horizontal" => Windows.UI.Xaml.Controls.Orientation.Horizontal,
 
-					case "horizontal":
-						output = Windows.UI.Xaml.Controls.Orientation.Horizontal;
-						return true;
+				_ => throw new InvalidOperationException($"Failed to create a '{outputType.FullName}' from the text '{input}'."),
+			};
 
-					default:
-						throw new InvalidOperationException($"The value {input} is not a valid {nameof(Windows.UI.Xaml.Controls.Orientation)}");
-				}
-			}
-
-			return false;
+			return true;
 		}
 
 		private static bool FastStringToThicknessConvert(Type outputType, string input, ref object output)
@@ -834,152 +843,84 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastStringToVerticalAlignmentConvert(Type outputType, string input, ref object output)
 		{
-			if (outputType == typeof(VerticalAlignment))
+			if (outputType != typeof(VerticalAlignment)) return false;
+
+			output = input.ToLowerInvariant().Trim() switch
 			{
-				switch (input.ToLowerInvariant())
-				{
-					case "center":
-						output = VerticalAlignment.Center;
-						return true;
+				"0" or "top" => VerticalAlignment.Top,
+				"1" or "center" => VerticalAlignment.Center,
+				"2" or "bottom" => VerticalAlignment.Bottom,
+				"3" or "stretch" => VerticalAlignment.Stretch,
 
-					case "top":
-						output = VerticalAlignment.Top;
-						return true;
+				_ => throw new InvalidOperationException($"Failed to create a '{outputType.FullName}' from the text '{input}'."),
+			};
 
-					case "bottom":
-						output = VerticalAlignment.Bottom;
-						return true;
-
-					case "stretch":
-						output = VerticalAlignment.Stretch;
-						return true;
-
-					default:
-						throw new InvalidOperationException($"The value {input} is not a valid {nameof(VerticalAlignment)}");
-				}
-			}
-
-			return false;
+			return true;
 		}
 
 		private static bool FastStringToHorizontalAlignmentConvert(Type outputType, string input, ref object output)
 		{
-			if (outputType == typeof(HorizontalAlignment))
+			if (outputType != typeof(HorizontalAlignment)) return false;
+
+			output = input.ToLowerInvariant().Trim() switch
 			{
-				switch (input.ToLowerInvariant())
-				{
-					case "center":
-						output = HorizontalAlignment.Center;
-						return true;
+				"0" or "left" => HorizontalAlignment.Left,
+				"1" or "center" => HorizontalAlignment.Center,
+				"2" or "right" => HorizontalAlignment.Right,
+				"3" or "stretch" => HorizontalAlignment.Stretch,
 
-					case "left":
-						output = HorizontalAlignment.Left;
-						return true;
+				_ => throw new InvalidOperationException($"Failed to create a '{outputType.FullName}' from the text '{input}'."),
+			};
 
-					case "right":
-						output = HorizontalAlignment.Right;
-						return true;
-
-					case "stretch":
-						output = HorizontalAlignment.Stretch;
-						return true;
-
-					default:
-						throw new InvalidOperationException($"The value {input} is not a valid {nameof(HorizontalAlignment)}");
-				}
-			}
-
-			return false;
+			return true;
 		}
 
 		private static bool FastStringToVisibilityConvert(Type outputType, string input, ref object output)
 		{
-			if (outputType == typeof(Visibility))
+			if (outputType != typeof(Visibility)) return false;
+
+			output = input.ToLowerInvariant().Trim() switch
 			{
-				switch (input.ToLowerInvariant())
-				{
-					case "visible":
-						output = Visibility.Visible;
-						return true;
+				"0" or "visible" => Visibility.Visible,
+				"1" or "collapsed" => Visibility.Collapsed,
 
-					case "collapsed":
-						output = Visibility.Collapsed;
-						return true;
+				_ => throw new InvalidOperationException($"Failed to create a '{outputType.FullName}' from the text '{input}'."),
+			};
 
-					default:
-						throw new InvalidOperationException($"The value {input} is not a valid {nameof(Visibility)}");
-				}
-			}
-
-			return false;
+			return true;
 		}
 
 		private static bool FastStringToFontWeightConvert(Type outputType, string input, ref object output)
 		{
-			if (outputType == typeof(FontWeight))
+			if (outputType != typeof(FontWeight)) return false;
+
+			// Note that list is hard coded to avoid the cold path cost of reflection.
+			output = input.ToLowerInvariant().Trim() switch
 			{
-				// Note that list is hard coded to avoid the cold path cost of reflection.
+				"100" or "thin" => FontWeights.Thin,
+				"200" or "extralight" => FontWeights.ExtraLight,
+				"250" or "semilight" => FontWeights.SemiLight,
+				"300" or "light" => FontWeights.Light,
+				"400" or "normal" => FontWeights.Normal,
+				"500" or "medium" => FontWeights.Medium,
+				"600" or "semibold" => FontWeights.SemiBold,
+				"700" or "bold" => FontWeights.Bold,
+				"800" or "extrabold" => FontWeights.ExtraBold,
+				"900" or "black" => FontWeights.Black,
+				"950" or "extrablack" => FontWeights.ExtraBlack,
 
-				switch (input.ToLowerInvariant())
-				{
-					case "thin":
-						output = FontWeights.Thin;
-						return true;
-					case "extralight":
-						output = FontWeights.ExtraLight;
-						return true;
-					case "ultralight":
-						output = FontWeights.UltraLight;
-						return true;
-					case "semilight":
-						output = FontWeights.SemiLight;
-						return true;
-					case "light":
-						output = FontWeights.Light;
-						return true;
-					case "normal":
-						output = FontWeights.Normal;
-						return true;
-					case "regular":
-						output = FontWeights.Regular;
-						return true;
-					case "medium":
-						output = FontWeights.Medium;
-						return true;
-					case "semibold":
-						output = FontWeights.SemiBold;
-						return true;
-					case "demibold":
-						output = FontWeights.DemiBold;
-						return true;
-					case "bold":
-						output = FontWeights.Bold;
-						return true;
-					case "ultrabold":
-						output = FontWeights.UltraBold;
-						return true;
-					case "extrabold":
-						output = FontWeights.ExtraBold;
-						return true;
-					case "black":
-						output = FontWeights.Black;
-						return true;
-					case "heavy":
-						output = FontWeights.Heavy;
-						return true;
-					case "extrablack":
-						output = FontWeights.ExtraBlack;
-						return true;
-					case "ultrablack":
-						output = FontWeights.UltraBlack;
-						return true;
+				// legacy wpf aliases
+				"ultralight" => FontWeights.UltraLight, // 200 ExtraLight
+				"regular" => FontWeights.Regular, // 400 Normal
+				"demibold" => FontWeights.DemiBold, // 600 SemiBold
+				"ultrabold" => FontWeights.UltraBold, // 800 ExtraBold
+				"heavy" => FontWeights.Heavy, // 900 Black
+				"ultrablack" => FontWeights.UltraBlack, // 950 ExtraBlack
 
-					default:
-						throw new InvalidOperationException($"The value {input} is not a valid {nameof(FontWeight)}");
-				}
-			}
+				_ => throw new InvalidOperationException($"Failed to create a '{outputType.FullName}' from the text '{input}'."),
+			};
 
-			return false;
+			return true;
 		}
 
 		private static bool FastStringToUriConvert(Type outputType, string input, ref object output)

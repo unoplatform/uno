@@ -28,7 +28,6 @@
 
 	<ItemGroup>
 		<None Remove="tsconfig.json" />
-		<Compile Include="..\..\Uno.UWP\Storage\Helpers\AssetsPathBuilder.wasm.cs" Link="AssetsPathBuilder.wasm.cs" />
 		<Content Include="tsconfig.json" />
 	</ItemGroup>
 	

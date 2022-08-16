@@ -63,6 +63,12 @@ namespace Uno.UI.Samples.Tests
 		private List<TestCaseResult> _testCases = new List<TestCaseResult>();
 		private TestRun _currentRun;
 
+		// On WinUI/UWP dependency properties cannot be accessed outside of
+		// UI thread. This field caches the current value so it can be accessed
+		// asynchronously during test enumeration.
+		private int _ciTestsGroupCountCache = -1;
+		private int _ciTestGroupCache = -1;
+		
 		public UnitTestsControl()
 		{
 			this.InitializeComponent();
@@ -76,6 +82,9 @@ namespace Uno.UI.Samples.Tests
 					unitTestContentRoot.Content = elt;
 				}
 			);
+
+			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow =
+				Windows.UI.Xaml.Window.Current;
 
 			DataContext = null;
 
@@ -128,7 +137,13 @@ namespace Uno.UI.Samples.Tests
 		}
 
 		public static readonly DependencyProperty CITestGroupProperty =
-			DependencyProperty.Register("CITestGroup", typeof(int), typeof(UnitTestsControl), new PropertyMetadata(-1));
+			DependencyProperty.Register("CITestGroup", typeof(int), typeof(UnitTestsControl), new PropertyMetadata(-1, OnCITestGroupChanged));
+
+		private static void OnCITestGroupChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			var unitTestsControl = (UnitTestsControl)d;
+			unitTestsControl._ciTestGroupCache = (int)e.NewValue;
+		}
 
 		/// <summary>
 		/// Defines the test group for splitting runtime tests on CI
@@ -140,7 +155,13 @@ namespace Uno.UI.Samples.Tests
 		}
 
 		public static readonly DependencyProperty CITestGroupCountProperty =
-			DependencyProperty.Register("CITestGroupCount", typeof(int), typeof(UnitTestsControl), new PropertyMetadata(-1));
+			DependencyProperty.Register("CITestGroupCount", typeof(int), typeof(UnitTestsControl), new PropertyMetadata(-1, OnCITestsGroupCountChanged));
+
+		private static void OnCITestsGroupCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			var unitTestsControl = (UnitTestsControl)d;
+			unitTestsControl._ciTestsGroupCountCache = (int)e.NewValue;
+		}
 
 		public string NUnitTestResultsDocument
 		{
@@ -910,7 +931,7 @@ namespace Uno.UI.Samples.Tests
 
 			return from type in types
 				   where type.GetTypeInfo().GetCustomAttribute(typeof(TestClassAttribute)) != null
-				   where CITestGroupCount == -1 || (CITestGroupCount != -1 && (GetTypeTestGroup(type) % CITestGroupCount) == CITestGroup)
+				   where _ciTestsGroupCountCache == -1 || (_ciTestsGroupCountCache != -1 && (GetTypeTestGroup(type) % _ciTestsGroupCountCache) == _ciTestGroupCache)
 				   orderby type.Name
 				   let info = BuildType(type)
 				   where info.Type is { }

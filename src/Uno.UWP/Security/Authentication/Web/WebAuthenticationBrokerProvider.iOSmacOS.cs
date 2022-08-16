@@ -99,6 +99,10 @@ namespace Uno.AuthenticationBroker
 				throw new InvalidOperationException(message);
 			}
 
+			// Both ASWebAuthenticationSession and SFAuthenticationSession accept a scheme
+			// as the second parameter, not a full url. This will cause issues if the callbackuri
+			// is a fully defined url
+			var scheme = callbackUri.Scheme;
 
 #if __IOS__
 			if (UIDevice.CurrentDevice.CheckSystemVersion(12, 0))
@@ -107,7 +111,7 @@ namespace Uno.AuthenticationBroker
 			if (new Version((int)osVersion.Major, (int)osVersion.Minor) >= new Version(10, 15))
 #endif
 			{
-				var aswas = new ASWebAuthenticationSession(startUrl, callbackUrl, AuthSessionCallback);
+				var aswas = new ASWebAuthenticationSession(startUrl, callbackUrlScheme: scheme, AuthSessionCallback);
 				was = aswas;
 
 #if __IOS__
@@ -142,7 +146,7 @@ namespace Uno.AuthenticationBroker
 			{
 				if (UIDevice.CurrentDevice.CheckSystemVersion(11, 0))
 				{
-					var sfwas = new SFAuthenticationSession(startUrl, callbackUrl, AuthSessionCallback);
+					var sfwas = new SFAuthenticationSession(startUrl, callbackUrlScheme: scheme, AuthSessionCallback);
 					was = sfwas;
 
 					if (!sfwas.Start())

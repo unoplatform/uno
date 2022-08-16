@@ -1,0 +1,74 @@
+name: Update WinUI Generate Branch
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  UnoCheck_Version: '1.4.1'
+  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/8c7f669060a6cca50f71bb0845281c424ad7eb0d/manifests/uno.ui-preview.manifest.json'
+
+jobs:
+  build:
+    name: update-winui-branch
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    
+    - name: Setup .NET Core v6
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.300'
+
+    - name: Setup GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9.9
+      with:
+        versionSpec: '5.x'
+
+    - name: GitVersion
+      id: gitversion
+      uses: gittools/actions/gitversion/execute@v0.9.9
+      with:
+        useConfigFile: true
+        configFilePath: gitversion.yml
+
+    - name: setup git config
+      run: |
+        git config user.name "GitHub Actions Bot"
+        git config user.email "<>"
+
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.1
+
+    - run: |
+       echo "JAVA_HOME=$env:JAVA_HOME_11_X64" >> $env:GITHUB_ENV
+       echo "JavaSdkDirectory=$env:JAVA_HOME_11_X64" >> $env:GITHUB_ENV
+      name: Select JDK 11
+
+    - run: |
+        & dotnet tool update --global uno.check --version $env:UnoCheck_Version --add-source https://api.nuget.org/v3/index.json
+        & uno-check -v --ci --non-interactive --fix --skip xcode --skip gtk3 --skip vswin --skip vsmac --manifest $env:UnoCheck_Manifest
+      name: Install .NET Workloads
+
+    - name: Convert source tree to WinUI
+      run: |
+        cd $env:GITHUB_WORKSPACE\src\Uno.WinUIRevert
+        dotnet run "$env:GITHUB_WORKSPACE"
+
+    - name: Run API Sync Tool
+      run: |
+        cd $env:GITHUB_WORKSPACE\build
+        msbuild Uno.UI.Build.csproj "/p:CombinedConfiguration=Release|AnyCPU" /m /t:RunAPISyncTool /bl
+
+    - name: commit
+      run: |
+        git add .
+        git commit -m "Update WinUI Autoconvert from $env:GITHUB_SHA"
+        git checkout generated/$env:GITHUB_REF_NAME/winui-autoconvert
+        git merge -X theirs $env:GITHUB_REF_NAME
+        git push origin generated/$env:GITHUB_REF_NAME/winui-autoconvert

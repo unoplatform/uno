@@ -1,27 +1,12 @@
 ﻿#pragma warning disable 105 // Disabled until the tree is migrate to WinUI
 
 using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Reflection;
 using System.Linq;
 using System.Collections.Generic;
-using System.Diagnostics;
 using SampleControl.Entities;
-using Uno.UI.Samples.Controls;
-using Uno.UI.Samples.Entities;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Globalization;
 using Windows.UI.Xaml.Data;
-using Windows.ApplicationModel.Core;
-using Windows.UI.Core;
-using Windows.Storage;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml;
-using System.IO;
-using Uno.Disposables;
-using System.ComponentModel;
 using Uno.UI.Common;
 using Microsoft.UI.Xaml.Controls;
 

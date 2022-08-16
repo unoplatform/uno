@@ -57,7 +57,7 @@ namespace Windows.UI.Composition
 						TileMode, transform.PreConcat(matrix));
 
 				paint.Shader = shader;
-				paint.Color = SKColors.Black.WithAlpha((byte)(Compositor.CurrentOpacity * 255));
+				paint.Color = SKColors.Black;
 			}
 			else
 			{
@@ -71,7 +71,7 @@ namespace Windows.UI.Composition
 					color = Colors[Colors.Length - 1];
 				}
 
-				double alpha = (color.Alpha / 255.0) * Compositor.CurrentOpacity;
+				double alpha = (color.Alpha / 255.0);
 				paint.Color = color.WithAlpha((byte)(alpha * 255));
 			}
 		}

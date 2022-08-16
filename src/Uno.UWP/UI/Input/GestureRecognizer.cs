@@ -124,6 +124,13 @@ namespace Windows.UI.Input
 			_manipulation?.Update(value);
 		}
 
+		// Manipulation <Completed|InertiaStaring> has to be raised BEFORE the pointer up
+		// The allows users to update the manipulation before anything else.
+		internal void ProcessBeforeUpEvent(PointerPoint value, bool isRelevant)
+		{
+			_manipulation?.Remove(value);
+		}
+
 		public void ProcessUpEvent(PointerPoint value) => ProcessUpEvent(value, true);
 
 		internal void ProcessUpEvent(PointerPoint value, bool isRelevant)

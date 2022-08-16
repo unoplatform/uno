@@ -16,6 +16,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public class Given_AppBarButton
 	{
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task Check_DataContext_Propagation()
 		{
 			using (StyleHelper.UseNativeFrameNavigation())

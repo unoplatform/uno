@@ -87,6 +87,10 @@
 		public const string SR_PagerControlPreviousPageButtonTextName = "PagerControlPreviousPageButtonText";
 		public const string SR_PagerControlNextPageButtonTextName = "PagerControlNextPageButtonText";
 		public const string SR_PagerControlLastPageButtonTextName = "PagerControlLastPageButtonText";
+		public const string SR_PipsPagerNameText = "PipsPagerNameText";
+		public const string SR_PipsPagerNextPageButtonText = "PipsPagerNextPageButtonText";
+		public const string SR_PipsPagerPreviousPageButtonText = "PipsPagerPreviousPageButtonText";
+		public const string SR_PipsPagerPageText = "PipsPagerPageText";
 		public const string SR_PlaceAfterString = "PlaceAfterString";
 		public const string SR_PlaceBeforeString = "PlaceBeforeString";
 		public const string SR_PlaceBetweenString = "PlaceBetweenString";
@@ -96,6 +100,7 @@
 		public const string SR_ProgressBarPausedStatus = "ProgressBarPausedStatus";
 		public const string SR_ProgressBarErrorStatus = "ProgressBarErrorStatus";
 		public const string SR_RatingLocalizedControlType = "RatingLocalizedControlType";
+		public const string SR_BreadcrumbBarItemLocalizedControlType = "BreadcrumbBarItemLocalizedControlType";
 		public const string SR_SplitButtonSecondaryButtonName = "SplitButtonSecondaryButtonName";
 		public const string SR_ProofingMenuItemLabel = "ProofingMenuItemLabel";
 		public const string SR_TextCommandLabelCut = "TextCommandLabelCut";
@@ -144,6 +149,8 @@
 		public const string SR_InfoBarClosedNotification = "InfoBarClosedNotification";
 		public const string SR_InfoBarCustomLandmarkName = "InfoBarCustomLandmarkName";
 		public const string SR_InfoBarCloseButtonTooltip = "InfoBarCloseButtonTooltip";
+
+		public const string SR_AutomationNameEllipsisBreadcrumbBarItem = "AutomationNameEllipsisBreadcrumbBarItem";
 
 		public const string IR_NoiseAsset_256X256_PNG = "NoiseAsset_256X256_PNG";
 

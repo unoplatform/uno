@@ -343,6 +343,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			OnOpening();
 			Opening?.Invoke(this, EventArgs.Empty);
 			Open();
+			SynchronizeContentTemplatedParent();
 			IsOpen = true;
 
 			// **************************************************************************************
@@ -360,6 +361,16 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			});
 		}
 
+		private void SynchronizeContentTemplatedParent()
+		{
+			// Manual propagation of the templated parent to the content property
+			// until we get the propagation running properly
+			if (_popup.Child is FrameworkElement content)
+			{
+				content.TemplatedParent = TemplatedParent;
+			}
+		}
+		
 		private void SetTargetPosition(Point targetPoint)
 		{
 			m_isTargetPositionSet = true;

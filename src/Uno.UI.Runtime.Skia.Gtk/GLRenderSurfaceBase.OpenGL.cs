@@ -28,7 +28,7 @@ namespace Uno.UI.Runtime.Skia
 		[Conditional("DEBUG")]
 		private void ValidateOpenGL()
 		{
-			if (_gl != null)
+			if (_gl == null)
 			{
 				throw new InvalidOperationException($"_gl cannot be null");
 			}

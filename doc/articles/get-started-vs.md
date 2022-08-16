@@ -2,9 +2,13 @@
 
 ## Prerequisites
 * [**Visual Studio 2019 16.3 or later**](https://visualstudio.microsoft.com/), with:
-    * **Universal Windows Platform** workload installed.
+    * **Universal Windows Platform** workload installed. 
 
       ![visual-studio-installer-uwp](Assets/quick-start/vs-install-uwp.png)
+
+    * **All Windows SDKS 10.0.17763 or later** must be selected (on the right side of the installer)
+
+      ![visual-studio-installer-uwp](Assets/quick-start/vs-install-uwp-sdks.png)
 
 	* **Mobile development with .NET (Xamarin)** workload installed.
 

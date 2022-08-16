@@ -47,6 +47,8 @@ There is no way to persist a secured data in a Web browser. Even if we generate 
 there is no safe place to store this key except by relying on server components, which broke the offline support (and Progressive Web App).
 So currently we preferred to **not** implement the `PasswordVault`. It will throw a `NotSupportedException` when you try to create a new instance.
 
+***
+
 ## PasswordCredential
 This class is implemented, however it never hides the password like the UWP does.
 This means that the[`RetrievePassword`](https://docs.microsoft.com/en-us/uwp/api/windows.security.credentials.passwordcredential.retrievepassword#Windows_Security_Credentials_PasswordCredential_RetrievePassword) does nothing,

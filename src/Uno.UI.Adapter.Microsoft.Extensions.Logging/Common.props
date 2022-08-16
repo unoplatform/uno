@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" PrivateAssets="all" />
+    <PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" PrivateAssets="all" />
   </ItemGroup>
 
   <Import Project="..\Uno.CrossTargetting.props" />

@@ -302,7 +302,7 @@ public App()
 {
 #if __IOS__
     ApiExtensibility.Register(
-        typeof(Uno.Ehttps://twitter.com/thebookisclosed/status/1375006215189753860?s=19xtensions.Storage.Pickers.IFileSavePickerExtension), 
+        typeof(Uno.Extensions.Storage.Pickers.IFileSavePickerExtension), 
         picker => new CustomFileSavePickerExtension(picker));
 #endif
 }

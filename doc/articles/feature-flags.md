@@ -30,6 +30,14 @@ Use `Uno.UI.FeatureConfiguration.Font.MaximumTextScaleFactor` to control this.
 
 ## Popups
 
+### Native Popups
+
+On Android it is possible to use a native popup implementation, which is integrated into the system for `Popup`- and `Flyout`-derived UI. Prior to Uno Platform 3.5, native popups were used by default. On Uno Platform 3.5 or later, we made the managed implementation the default.
+
+If you require native popups for your use case, set the `Uno.UI.FeatureConfiguration.Popup.UseNativePopup` to `true`.
+
+### Light Dismiss Default
+
 In older versions of Uno Platforms, the `Popup.IsLightDismissEnabled` dependency property defaulted to `true`. In UWP/WinUI and Uno 4.1 and newer, it correctly defaults to `false`. If your code depended on the old behavior, you can set the `Uno.UI.FeatureConfiguration.Popup.EnableLightDismissByDefault` property to `true` to override this.
 
 ## MessageDialog

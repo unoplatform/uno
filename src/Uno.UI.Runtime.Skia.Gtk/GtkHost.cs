@@ -27,11 +27,9 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using UnoApplication = Windows.UI.Xaml.Application;
 using WUX = Windows.UI.Xaml;
-using Uno.UI.Runtime.Skia.GTK.System.Profile;
-using Uno.UI.Runtime.Skia.Helpers;
-using Uno.UI.Runtime.Skia.Helpers.Dpi;
-using System.Runtime.InteropServices;
+using Uno.UI.Xaml.Core;
 using System.ComponentModel;
+using Uno.Disposables;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -43,14 +41,16 @@ namespace Uno.UI.Runtime.Skia
 		private static bool _isDispatcherThread = false;
 
 		private readonly Func<WUX.Application> _appBuilder;
+		private IRenderSurface _renderSurface;
 		private static Gtk.Window _window;
-		private static Gtk.EventBox _eventBox;
+		private static UnoEventBox _eventBox;
 		private Widget _area;
 		private Fixed _fix;
 		private GtkDisplayInformationExtension _displayInformationExtension;
+		private CompositeDisposable _registrations = new();
 
 		public static Gtk.Window Window => _window;
-		public static Gtk.EventBox EventBox => _eventBox;
+		internal static UnoEventBox EventBox => _eventBox;
 
 		/// <summary>
 		/// Gets or sets the current Skia Render surface type.
@@ -79,6 +79,8 @@ namespace Uno.UI.Runtime.Skia
 
 		public void Run()
 		{
+			Windows.UI.Xaml.Documents.Inline.ApplyHarfbuzzWorkaround();
+
 			Gtk.Application.Init();
 			SetupTheme();
 
@@ -97,7 +99,7 @@ namespace Uno.UI.Runtime.Skia
 			ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), o => new SystemNavigationManagerPreviewExtension(_window));
 
 			_isDispatcherThread = true;
-			_window = new Gtk.Window("Uno Host");
+			_window = new Gtk.Window("GTK Host");
 			Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 			if (preferredWindowSize != Size.Empty)
 			{
@@ -152,8 +154,10 @@ namespace Uno.UI.Runtime.Skia
 
 			var overlay = new Overlay();
 
-			_eventBox = new EventBox();
-			_area = BuildRenderSurfaceType();
+			_eventBox = new UnoEventBox();
+
+			_renderSurface = BuildRenderSurfaceType();
+			_area = (Widget)_renderSurface;
 			_fix = new Fixed();
 			overlay.Add(_area);
 			overlay.AddOverlay(_fix);
@@ -186,11 +190,60 @@ namespace Uno.UI.Runtime.Skia
 				app.Host = this;
 			}
 
+			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
+			
 			WUX.Application.StartWithArguments(CreateApp);
 
+			_window.Title = Windows.ApplicationModel.Package.Current.DisplayName;
+
+			RegisterForBackgroundColor();
+			
 			UpdateWindowPropertiesFromPackage();
 
 			Gtk.Application.Run();
+		}
+
+		private void RegisterForBackgroundColor()
+		{
+			if (_area is IRenderSurface renderSurface)
+			{
+				void Update()
+				{
+					if (WUX.Window.Current.Background is WUX.Media.SolidColorBrush brush)
+					{
+						renderSurface.BackgroundColor = brush.Color;
+					}
+					else
+					{
+						if (this.Log().IsEnabled(LogLevel.Warning))
+						{
+							this.Log().Warn($"This platform only supports SolidColorBrush for the Window background");
+						}
+					}
+
+				}
+
+				Update();
+
+				_registrations.Add(WUX.Window.Current.RegisterBackgroundChangedEvent((s, e) => Update()));
+			}
+		}
+		
+		private void OnCoreWindowContentRootSet(object sender, object e)
+		{
+			var xamlRoot = CoreServices.Instance
+				.ContentRootCoordinator
+				.CoreWindowContentRoot?
+				.GetOrCreateXamlRoot();
+
+			if (xamlRoot is null)
+			{
+				throw new InvalidOperationException("XamlRoot was not properly initialized");
+			}
+
+			xamlRoot.InvalidateRender += _renderSurface.InvalidateRender;
+
+			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 		}
 
 		private void WindowClosing(object sender, DeleteEventArgs args)
@@ -214,9 +267,9 @@ namespace Uno.UI.Runtime.Skia
 			Gtk.Main.Quit();
 		}
 
-		private Widget BuildRenderSurfaceType()
+		private IRenderSurface BuildRenderSurfaceType()
 		{
-			if(RenderSurfaceType == null)
+			if (RenderSurfaceType == null)
 			{
 				if (OpenGLESRenderSurface.IsSupported)
 				{

@@ -8836,6 +8836,92 @@
 				reason="Not part of UWP API" />
 		</Properties>
 	</IgnoreSet>
+	<IgnoreSet baseVersion="4.3.8">
+		<Types>
+		</Types>
+
+		<Methods>
+			<Member
+				fullName="System.Void Windows.Gaming.Input.Gamepad..ctor()"
+				reason="Not part of UWP API" />
+		</Methods>
+		<Properties>
+		</Properties>
+	</IgnoreSet>
+	<IgnoreSet baseVersion="4.4.13">
+		<Types>
+		</Types>
+		<Methods>
+			<Member
+				fullName="System.Void Windows.UI.UIContext..ctor()"
+				reason="Not part of UWP API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.RangeBase.OnMinimumChanged(System.Double oldValue, System.Double newValue)"
+				reason="Parameter names were incorrect" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.RangeBase.OnMaximumChanged(System.Double oldValue, System.Double newValue)"
+				reason="Parameter names were incorrect" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.RangeBase.OnSmallChangeChanged(System.Double oldValue, System.Double newValue)"
+				reason="Parameter names were incorrect" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.RangeBase.OnSmallChangeChanged(System.Double oldValue, System.Double newValue)"
+				reason="Not part of public API" />
+			<Member
+				fullName="System.Double Windows.UI.Xaml.Controls.Primitives.RangeBase.get_ActualValue()"
+				reason="Not part of public API" />
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Primitives.RangeBase.get_ActualValueProperty()"
+				reason="Not part of public API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.Primitives.RangeBase.OnActualValueChanged(System.Double oldValue, System.Double newValue)"
+				reason="Not part of public API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer..ctor()"
+				reason="Not part of public API" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer..ctor(System.Object instance)"
+				reason="Not part of public API" />
+			<!-- BEGIN BitmapEncoder -->
+			<Member
+				fullName="System.Void Windows.Graphics.Imaging.BitmapEncoder..ctor()"
+				reason="Add private ctor for initialize BitmapEncoder" />
+			<Member
+				fullName="System.Void Windows.Graphics.Imaging.BitmapEncoder::.ctor()"
+				reason="Add private ctor for initialize BitmapEncoder" />
+			<!-- END BitmapEncoder API -->
+			<Member
+				fullName="System.Void Windows.Storage.Streams.DataWriterStoreOperation..ctor()"
+				reason="Not part of UWP API" />
+			<Member
+				fullName="System.Threading.Tasks.Task Uno.AuthenticationBroker.WebAuthenticationBrokerProvider.LaunchBrowserCore(Windows.Security.Authentication.Web.WebAuthenticationOptions options, System.Uri requestUri, System.Uri callbackUri, System.Threading.CancellationToken ct)"
+				reason="Protected method no longer used or required" />
+			<!-- BEGIN iOS 16 workaround -->
+			<Member
+				fullName="UIKit.UITextRange Windows.UI.Xaml.Controls.SinglelineTextBoxView::get_SelectedTextRange()"
+				reason="Workaround for iOS 16" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.SinglelineTextBoxView::set_SelectedTextRange(UIKit.UITextRange value)"
+				reason="Workaround for iOS 16" />
+			<!-- END iOS 16 workaround -->
+		</Methods>
+		<Properties>
+			<Member
+				fullName="System.Double Windows.UI.Xaml.Controls.Primitives.RangeBase::ActualValue()"
+				reason="Not part of public API" />		
+			<Member
+				fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.Primitives.RangeBase::ActualValueProperty()"
+				reason="Not part of public API" />
+			<Member
+				fullName="System.Boolean Windows.UI.Xaml.Controls.SinglelineTextBoxView::SecureTextEntry()"
+				reason="Removed no-longer-needed override" />
+			<!-- BEGIN iOS 16 workaround -->
+			<Member
+				fullName="UIKit.UITextRange Windows.UI.Xaml.Controls.SinglelineTextBoxView::SelectedTextRange()"
+				reason="Workaround for iOS 16" />
+			<!-- END iOS 16 workaround -->
+		</Properties>
+	</IgnoreSet>
 	<!--
 	Supported nodes (please keep at the bottom of this file):
 	<IgnoreSet baseVersion="0.0.0">

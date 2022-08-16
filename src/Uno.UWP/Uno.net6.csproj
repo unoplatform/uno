@@ -36,6 +36,7 @@
 		<AndroidResgenNamespace>Uno.UWP</AndroidResgenNamespace>
 		
 		<UnoSourceGeneratorCaptureGenerationHostOutput>true</UnoSourceGeneratorCaptureGenerationHostOutput>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
@@ -52,6 +53,7 @@
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<PackageReference Include="Xamarin.AndroidX.Fragment" />
+		<PackageReference Include="Xamarin.AndroidX.Browser"  Version="1.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

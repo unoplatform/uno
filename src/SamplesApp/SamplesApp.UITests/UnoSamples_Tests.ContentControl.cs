@@ -44,11 +44,11 @@ namespace SamplesApp.UITests
 		{
 			Run("Uno.UI.Samples.Content.UITests.ContentPresenter.ContentPresenter_Changing_ContentTemplate");
 
-			Assert.IsFalse(_app.Marked("ContentViewBorder").HasResults());
+			Assert.IsFalse(_app.Marked("ContentViewBorder").HasResults(), "Failed to get ContentViewBorder (1)");
 
 			_app.FastTap(c => c.Marked("ToggleTemplateButton"));
 
-			Assert.IsTrue(_app.Marked("ContentViewBorder").HasResults());
+			Assert.IsTrue(_app.Marked("ContentViewBorder").HasResults(), "Failed to get ContentViewBorder (2)");
 
 		}
 
@@ -58,11 +58,11 @@ namespace SamplesApp.UITests
 		{
 			Run("Uno.UI.Samples.Content.UITests.ContentControlTestsControl.ContentControl_Changing_ContentTemplate");
 
-			Assert.IsFalse(_app.Marked("ContentViewBorder").HasResults());
+			Assert.IsFalse(_app.Marked("ContentViewBorder").HasResults(), "Failed to get ContentViewBorder (1)");
 
 			_app.FastTap(c => c.Marked("ToggleTemplateButton"));
 
-			Assert.IsTrue(_app.Marked("ContentViewBorder").HasResults());
+			Assert.IsTrue(_app.Marked("ContentViewBorder").HasResults(), "Failed to get ContentViewBorder (2)");
 
 		}
 	}

@@ -28,6 +28,7 @@
       "Uno.UI.RemoteControl.VS\\Uno.UI.RemoteControl.VS.csproj",
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.net6.csproj",
       "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.net6.csproj",
+      "Uno.UI.XamlHost\\Uno.UI.XamlHost.net6.csproj",
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.net6.csproj",
       "Uno.UI\\Uno.UI.net6.csproj",
       "Uno.UWP\\Uno.net6.csproj",

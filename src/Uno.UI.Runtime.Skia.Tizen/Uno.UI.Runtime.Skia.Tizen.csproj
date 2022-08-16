@@ -26,6 +26,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp.Views" />
+		<PackageReference Include="SkiaSharp.Harfbuzz" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.Tizen" />
 	</ItemGroup>
 	
 	<ItemGroup>

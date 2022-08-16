@@ -35,7 +35,8 @@ namespace Uno.UI.Media
 			if (Owner is FrameworkElement element && !element.IsLoaded)
 			{
 				_isDeferring = true;
-				element.Layer.Opacity = 0;
+				var layer = element.Layer;
+				layer.Opacity = 0;
 				element.Loaded += DeferredInitialize;
 
 				_deferredInitialization = Disposable.Create(CompleteInitialization);
@@ -56,7 +57,7 @@ namespace Uno.UI.Media
 					element.Loaded -= DeferredInitialize;
 
 					_isDeferring = false;
-					element.Layer.Opacity = 1;
+					layer.Opacity = 1;
 
 					if (!_isDisposed)
 					{
@@ -77,13 +78,14 @@ namespace Uno.UI.Media
 
 		private void InitializeOrigin()
 		{
-			var oldFrame = Owner.Layer.Frame;
+			var layer = Owner.Layer;
+			var oldFrame = layer.Frame;
 
-			Owner.Layer.AnchorPoint = CurrentOrigin;
+			layer.AnchorPoint = CurrentOrigin;
 
 			// Restore the old frame to correct the offset potentially introduced by changing AnchorPoint. This is safe to do since we know
 			// that the transform is currently identity.
-			Owner.Layer.Frame = oldFrame;
+			layer.Frame = oldFrame;
 		}
 
 		partial void Apply(bool isSizeChanged, bool isOriginChanged)
@@ -94,14 +96,15 @@ namespace Uno.UI.Media
 				return;
 			}
 #endif
+			var layer = Owner.Layer;
 			if (Transform.IsAnimating)
 			{
 				// While animating the transform, we let the Animator apply the transform by itself, so do not update the Transform
 				if (!_wasAnimating)
 				{
 					// At the beginning of the animation make sure we disable all properties of the transform
-					Owner.Layer.AnchorPoint = GPUFloatValueAnimator.GetAnchorForAnimation(Transform, CurrentOrigin, CurrentSize);
-					Owner.Layer.Transform = CoreAnimation.CATransform3D.Identity;
+					layer.AnchorPoint = GPUFloatValueAnimator.GetAnchorForAnimation(Transform, CurrentOrigin, CurrentSize);
+					layer.Transform = CoreAnimation.CATransform3D.Identity;
 
 					_wasAnimating = true;
 				}
@@ -112,8 +115,8 @@ namespace Uno.UI.Media
 			{
 				// Make sure to fully restore the transform at the end of an animation
 
-				Owner.Layer.AnchorPoint = CurrentOrigin;
-				Owner.Layer.Transform = _transform = Transform.MatrixCore.ToTransform3D();
+				layer.AnchorPoint = CurrentOrigin;
+				layer.Transform = _transform = Transform.MatrixCore.ToTransform3D();
 
 				_wasAnimating = false;
 
@@ -124,15 +127,15 @@ namespace Uno.UI.Media
 			{
 				// As we use the 'AnchorPoint', the transform matrix is independent of the size of the control
 				// But the layouter expects from us that we restore the transform on each measuring phase
-				Owner.Layer.Transform = _transform;
+				layer.Transform = _transform;
 			}
 			else if (isOriginChanged)
 			{
-				Owner.Layer.AnchorPoint = CurrentOrigin;
+				layer.AnchorPoint = CurrentOrigin;
 			}
 			else
 			{
-				Owner.Layer.Transform = _transform = Transform.MatrixCore.ToTransform3D();
+				layer.Transform = _transform = Transform.MatrixCore.ToTransform3D();
 			}
 		}
 

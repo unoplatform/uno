@@ -59,6 +59,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly RoslynMetadataHelper _metadataHelper;
 
 		/// <summary>
+		/// Path to output all the intermediate generated code, per process.
+		/// </summary>
+		/// <remarks>
+		/// This is useful to troubleshoot transient generation issues in the context of
+		/// C# hot reload.
+		/// </remarks>
+		private string? _historicalOutputGenerationPath;
+
+		/// <summary>
 		/// If set, code generated from XAML will be annotated with the source method and line # in XamlFileGenerator, for easier debugging.
 		/// </summary>
 		private readonly bool _shouldAnnotateGeneratedXaml = false;
@@ -123,8 +132,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_projectDirectory = Path.GetDirectoryName(_projectFullPath)
 				?? throw new InvalidOperationException($"MSBuild property MSBuildProjectFullPath value {_projectFullPath} is not valid");
 
-			var xamlItems = context.GetMSBuildItems("Page")
-				.Concat(context.GetMSBuildItems("ApplicationDefinition"));
+			_historicalOutputGenerationPath = context.GetMSBuildPropertyValue("UnoXamlHistoricalOutputGenerationPath") is { Length: > 0 } value ? value : null;
+
+			var pageItems = GetWinUIItems("Page").Concat(GetWinUIItems("UnoPage"));
+			var applicationDefinitionItems = GetWinUIItems("ApplicationDefinition").Concat(GetWinUIItems("UnoApplicationDefinition"));
+
+			var xamlItems = pageItems
+				.Concat(applicationDefinitionItems)
+				.ToArray();
 
 			_xamlSourceFiles = xamlItems.Select(i => i.Identity).ToArray();
 
@@ -207,6 +222,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isWasm = context.GetMSBuildPropertyValue("DefineConstantsProperty")?.Contains("__WASM__") ?? false;
 			_isDesignTimeBuild = Helpers.DesignTimeHelper.IsDesignTime(context);
 		}
+
+		private static bool IsWinUIItem(MSBuildItem item)
+			=> item.GetMetadataValue("XamlRuntime") is { } xamlRuntime
+				? xamlRuntime == "WinUI" || string.IsNullOrWhiteSpace(xamlRuntime)
+				: true;
+
+		private IEnumerable<MSBuildItem> GetWinUIItems(string name)
+			=> _generatorContext
+				.GetMSBuildItems(name)
+				.Where(IsWinUIItem);
 
 		/// <summary>
 		/// Get the file location as seen in the IDE, used for ResourceDictionary.Source resolution.
@@ -334,8 +359,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				TrackGenerationDone(stopwatch.Elapsed);
 
-				return outputFiles.ToArray();
+				if(_historicalOutputGenerationPath is { Length: > 0 } path)
+				{
+					// Dumps all the generated files to the output folder
+					// in separate folder to troubleshoot transient compilation issues.
 
+					var dumpPath = Path.Combine(path, $"{DateTime.Now:yyyyMMdd-HHmmss-ffff}-{Process.GetCurrentProcess().ProcessName}");
+
+					Directory.CreateDirectory(dumpPath);
+
+					foreach(var file in outputFiles)
+					{
+						File.WriteAllText(Path.Combine(dumpPath	, file.Key), file.Value);
+					}
+				}
+
+				return outputFiles.ToArray();
 			}
 			catch (OperationCanceledException)
 			{

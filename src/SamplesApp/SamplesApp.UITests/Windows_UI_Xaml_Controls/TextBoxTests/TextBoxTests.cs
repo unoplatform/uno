@@ -559,6 +559,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			// initial state
 			_app.WaitForElement(target);
+			target.SetDependencyPropertyValue("TextWrapping", "Wrap");
 			var multilineReadonlyTextRect = target.FirstResult().Rect.ToRectangle();
 
 			// remove readonly
@@ -657,6 +658,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			_app.FastTap("btnDouble");
 			_app.WaitForElement("Test");
+			_app.Marked("Test").SetDependencyPropertyValue("TextWrapping", "Wrap");
 			var height2 = _app.GetLogicalRect("Test").Height;
 
 			using var _ = new AssertionScope();

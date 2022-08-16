@@ -148,6 +148,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 #endif
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task VerifySmallWidthAndHeightDoNotCrash()
 		{
 			PersonPicture personPicture = null;

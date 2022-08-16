@@ -22,28 +22,29 @@
 		<dependency id="Xamarin.AndroidX.AppCompat" version="1.3.1.3" />
 		<dependency id="Xamarin.AndroidX.RecyclerView" version="1.2.1.3" />
 		<dependency id="Xamarin.AndroidX.Activity" version="1.3.1.2" />
-		<dependency id="Uno.SourceGenerationTasks" version="4.0.2" />
+		<dependency id="Xamarin.AndroidX.Browser"  version="1.0.0" />
+		<dependency id="Uno.SourceGenerationTasks" version="4.1.0" />
 		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 	  </group>
 
 	  <!-- net6.0-ios -->
 	  <group targetFramework="net6.0-ios">
-		<dependency id="Uno.SourceGenerationTasks" version="4.0.2" />
+		<dependency id="Uno.SourceGenerationTasks" version="4.1.0" />
 		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 	  </group>
 
 	  <!-- net6.0-maccatalyst -->
 	  <group targetFramework="net6.0-maccatalyst">
-		<dependency id="Uno.SourceGenerationTasks" version="4.0.2" />
+		<dependency id="Uno.SourceGenerationTasks" version="4.1.0" />
 		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 	  </group>
 
 	  <!-- net6.0-macos -->
 	  <group targetFramework="net6.0-macos">
-		<dependency id="Uno.SourceGenerationTasks" version="4.0.2" />
+		<dependency id="Uno.SourceGenerationTasks" version="4.1.0" />
 		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 	  </group>
@@ -55,7 +56,8 @@
 		<dependency id="Xamarin.AndroidX.RecyclerView" version="1.1.0" />
 		<dependency id="Xamarin.AndroidX.Fragment" version="1.1.0" />
 		<dependency id="Xamarin.AndroidX.Activity" version="1.1.0" />
-		<dependency id="Uno.SourceGenerationTasks" version="4.0.2" />
+		<dependency id="Xamarin.AndroidX.Browser"  version="1.0.0" />
+		<dependency id="Uno.SourceGenerationTasks" version="4.1.0" />
 		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 		<dependency id="System.Collections.Immutable" version="1.3.1" />
@@ -67,7 +69,8 @@
 		<dependency id="Xamarin.AndroidX.AppCompat" version="1.3.1.3" />
 		<dependency id="Xamarin.AndroidX.RecyclerView" version="1.2.1.3" />
 		<dependency id="Xamarin.AndroidX.Activity" version="1.3.1.2" />
-		<dependency id="Uno.SourceGenerationTasks" version="4.0.2" />
+		<dependency id="Xamarin.AndroidX.Browser"  version="1.0.0" />
+		<dependency id="Uno.SourceGenerationTasks" version="4.1.0" />
 		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 		<dependency id="System.Collections.Immutable" version="1.3.1" />
@@ -75,7 +78,7 @@
 
 	  <!-- iOS -->
 	  <group targetFramework="xamarinios10">
-		<dependency id="Uno.SourceGenerationTasks" version="4.0.2" />
+		<dependency id="Uno.SourceGenerationTasks" version="4.1.0" />
 		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 		<dependency id="System.Collections.Immutable" version="1.3.1" />
@@ -83,7 +86,7 @@
 
 	  <!-- macOS -->
 	  <group targetFramework="xamarinmac20">
-		<dependency id="Uno.SourceGenerationTasks" version="4.0.2" />
+		<dependency id="Uno.SourceGenerationTasks" version="4.1.0" />
 		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 		<dependency id="System.Collections.Immutable" version="1.3.1" />
@@ -91,7 +94,7 @@
 
 	  <!-- .NET Standard 2.0 -->
 	  <group targetFramework="netstandard2.0">
-		<dependency id="Uno.SourceGenerationTasks" version="4.0.2" />
+		<dependency id="Uno.SourceGenerationTasks" version="4.1.0" />
 		<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 		<dependency id="System.Numerics.Vectors" version="4.5.0" />
 		<dependency id="System.Runtime.InteropServices.WindowsRuntime" version="4.3.0" />
@@ -254,7 +257,7 @@
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\$winuisourcepath$\Uno.UI.Toolkit*.pri" target="lib\$winuitargetpath$" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Release\$winuisourcepath$\Uno.UI.Toolkit\**" target="lib\$winuitargetpath$\Uno.UI.Toolkit" />
 
-	<!-- Android 9.0 -->
+	<!-- Android 11.0 -->
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.dll" target="lib\MonoAndroid11.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.pdb" target="lib\MonoAndroid11.0" />
 	<file src="..\src\Uno.UI\Bin\Release\MonoAndroid11.0\Uno.Foundation.dll" target="lib\MonoAndroid11.0" />
@@ -574,6 +577,7 @@
 	<file src="Uno.WinUI.targets" target="buildTransitive\net6.0-ios" />
 	<file src="Uno.WinUI.targets" target="buildTransitive\net6.0-maccatalyst" />
 	<file src="Uno.WinUI.targets" target="buildTransitive\net6.0-macos" />
+	<file src="Uno.WinUI.targets" target="buildTransitive\net5.0-windows" />
 
 	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\MonoAndroid" />
 	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\xamarinios10" />
@@ -583,6 +587,17 @@
 	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net6.0-ios" />
 	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net6.0-maccatalyst" />
 	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net6.0-macos" />
+	<file src="uno.winui.cross-runtime.targets" target="buildTransitive\net5.0-windows" />
+
+	<file src="uno.winui.common.targets" target="buildTransitive\MonoAndroid" />
+	<file src="uno.winui.common.targets" target="buildTransitive\xamarinios10" />
+	<file src="uno.winui.common.targets" target="buildTransitive\xamarinmac20" />
+	<file src="uno.winui.common.targets" target="buildTransitive\netstandard2.0" />
+	<file src="uno.winui.common.targets" target="buildTransitive\net6.0-android30.0" />
+	<file src="uno.winui.common.targets" target="buildTransitive\net6.0-ios" />
+	<file src="uno.winui.common.targets" target="buildTransitive\net6.0-maccatalyst" />
+	<file src="uno.winui.common.targets" target="buildTransitive\net6.0-macos" />
+	<file src="uno.winui.common.targets" target="buildTransitive\net5.0-windows" />
 
 	<file src="uno.winui.single-project.targets" target="buildTransitive\MonoAndroid" />
 	<file src="uno.winui.single-project.targets" target="buildTransitive\xamarinios10" />
@@ -592,6 +607,7 @@
 	<file src="uno.winui.single-project.targets" target="buildTransitive\net6.0-ios" />
 	<file src="uno.winui.single-project.targets" target="buildTransitive\net6.0-maccatalyst" />
 	<file src="uno.winui.single-project.targets" target="buildTransitive\net6.0-macos" />
+	<file src="uno.winui.single-project.targets" target="buildTransitive\net5.0-windows" />
 
 	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\MonoAndroid" />
 	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\xamarinios10" />
@@ -601,6 +617,7 @@
 	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net6.0-ios" />
 	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net6.0-maccatalyst" />
 	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net6.0-macos" />
+	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net5.0-windows" />
 
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\MonoAndroid" />
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\xamarinios10" />
@@ -610,6 +627,7 @@
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\net6.0-ios" />
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\net6.0-maccatalyst" />
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\net6.0-macos" />
+	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="buildTransitive\net5.0-windows" />
 
 	<!-- Force UAP to ignore netstandard 2.0 -->
 	<file src="uno.winui.win.targets" target="buildTransitive\uap10.0.16299\uno.winui.targets" />
@@ -620,9 +638,6 @@
 
 	<file src="uno.winui.win.targets" target="buildTransitive\uap10.0.18362\uno.winui.targets" />
 	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\uap10.0.18362" />
-
-	<file src="uno.winui.win.targets" target="buildTransitive\net5.0-windows\uno.winui.targets" />
-	<file src="uno.winui.runtime-replace.targets" target="buildTransitive\net5.0-windows" />
 
 	<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" target="buildTransitive" />
   </files>
