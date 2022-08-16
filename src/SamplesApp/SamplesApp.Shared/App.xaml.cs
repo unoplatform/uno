@@ -618,9 +618,7 @@ namespace SamplesApp
 		public void AssertIssue8356()
 		{
 #if __SKIA__
-			string SUT = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title;
-			string value = Windows.ApplicationModel.Package.Current.DisplayName;
-			Assert.AreEqual(SUT, value);
+			Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement_ApplicationView.Given_ApplicationView.StartupTitle = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title;
 #endif
 		}
 
