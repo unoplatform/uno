@@ -131,11 +131,29 @@ namespace SamplesApp
 			AssertIssue8641NativeOverlayInitialized();
 
 			Windows.UI.Xaml.Window.Current.Activate();
-
+			
 			ApplicationView.GetForCurrentView().Title = "Uno Samples";
+#if __SKIA__ && DEBUG
+			AppendRepositoryPathToTitleBar();			
+#endif
 
 			HandleLaunchArguments(e);
 		}
+
+#if __SKIA__ && DEBUG
+		private void AppendRepositoryPathToTitleBar()
+		{
+			var fullPath = Package.Current.InstalledLocation.Path;
+			var srcSamplesApp = $"{Path.DirectorySeparatorChar}src{Path.DirectorySeparatorChar}SamplesApp";
+			var repositoryPath = fullPath;			
+			if (fullPath.IndexOf(srcSamplesApp) is int index && index > 0)
+			{
+				repositoryPath = fullPath.Substring(0, index);
+			}
+
+			ApplicationView.GetForCurrentView().Title += $" ({repositoryPath})";
+		}
+#endif
 
 		private static async Task<bool> HandleSkiaAutoScreenshots(LaunchActivatedEventArgs e)
 		{
