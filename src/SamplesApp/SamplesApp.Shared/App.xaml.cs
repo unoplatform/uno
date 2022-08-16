@@ -151,7 +151,7 @@ namespace SamplesApp
 				repositoryPath = fullPath.Substring(0, index);
 			}
 
-			ApplicationView.GetForCurrentView().Title += " (" + repositoryPath + ")";			
+			ApplicationView.GetForCurrentView().Title += $" ({repositoryPath})";
 		}
 #endif
 
