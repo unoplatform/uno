@@ -29,6 +29,8 @@
 		<AndroidPackageFormat>apk</AndroidPackageFormat>
 		
 		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>
+
+		<UnoXamlResourcesTrimming Condition="'$(Configuration)'!='Debug'">true</UnoXamlResourcesTrimming>
 	</PropertyGroup>
 	
 	<PropertyGroup>
