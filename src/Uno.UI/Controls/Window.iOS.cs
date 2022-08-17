@@ -80,6 +80,50 @@ namespace Uno.UI.Controls
 			FocusedViewBringIntoViewOnKeyboardOpensPadding = 20;
 		}
 
+		public override void PressesEnded(NSSet<UIPress> presses, UIPressesEvent evt)
+		{
+			var handled = false;
+
+#if __MACCATALYST__
+			foreach (UIPress press in presses)
+			{
+				var virtualKey = VirtualKeyHelper.FromKeyCode(press.Key.KeyCode);
+
+				var args = new KeyEventArgs(
+					"keyboard",
+					virtualKey,
+					new CorePhysicalKeyStatus
+					{
+						ScanCode = (uint)press.Key.KeyCode,
+						RepeatCount = 1,
+					});
+
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"PressesEnded: {press.Key.KeyCode} -> {virtualKey}");
+				}
+
+				try
+				{
+					if (_ownerEvents is { })
+					{
+						_ownerEvents.RaiseKeyUp(args);
+						handled |= true;
+					}
+				}
+				catch (Exception e)
+				{
+					Application.Current.RaiseRecoverableUnhandledException(e);
+				}
+			}
+#endif
+
+			if (!handled)
+			{
+				base.PressesEnded(presses, evt);
+			}
+		}
+
 		public override void PressesBegan(NSSet<UIPress> presses, UIPressesEvent evt)
 		{
 			var handled = false;
