@@ -10,11 +10,9 @@
 
 	<Page.Resources>
 		<ResourceDictionary>
-			<DataTemplate x:Key="ItemTemplatePair">
-				<Grid x:Name="GridPair"
-					  x:FieldModifier="public"
-					  Background="Blue">
-					<TextBlock x:Name ="TextPair"
+			<DataTemplate x:Key="ItemTemplateEven">
+				<Grid Background="Blue">
+					<TextBlock x:Name ="TextEven"
 							   x:FieldModifier="public"
 							   Text="{Binding .}"
 							   FontSize="45"
@@ -24,9 +22,7 @@
 				</Grid>
 			</DataTemplate>
 			<DataTemplate x:Key="ItemTemplateOdd">
-				<Grid x:Name="GridOdd"
-					  x:FieldModifier="public"
-					  Background="Green">
+				<Grid Background="Green">
 					<TextBlock x:Name ="TextOdd"
 							   x:FieldModifier="public"
 							   Text="{Binding .}"
@@ -37,7 +33,7 @@
 				</Grid>
 			</DataTemplate>
 			<local:FlipViewTemplateSelector x:Key="MyFlipViewTemplateSelector"
-											TemplatePair="{StaticResource ItemTemplatePair}"
+											TemplateEven="{StaticResource ItemTemplateEven}"
 											TemplateOdd ="{StaticResource ItemTemplateOdd}" />
 		</ResourceDictionary>
 	</Page.Resources>
