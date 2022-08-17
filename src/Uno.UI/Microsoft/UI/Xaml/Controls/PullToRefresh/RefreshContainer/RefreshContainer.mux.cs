@@ -1,10 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference RefreshContainer.cpp, commit de78834
-
-#if !__ANDROID__ && !__IOS__
-using Microsoft.UI.Private.Controls;
-using Uno.UI.Xaml.Controls;
+﻿using Microsoft.UI.Private.Controls;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -68,14 +62,18 @@ public partial class RefreshContainer : ContentControl
 
 		DefaultStyleKey = typeof(RefreshContainer);
 
-#if !HAS_UNO
-		m_refreshInfoProviderAdapter = new ScrollViewerIRefreshInfoProviderAdapter(PullDirection, null);
-#else
-		m_refreshInfoProviderAdapter = new StubRefreshInfoProviderAdapter();
+#if HAS_UNO
+		SetDefaultRefreshInfoProviderAdapter();
 #endif
 		m_hasDefaultRefreshInfoProviderAdapter = true;
 		OnRefreshInfoProviderAdapterChanged();
+
+#if HAS_UNO
+		InitializePlatformPartial();
+#endif
 	}
+
+	partial void InitializePlatformPartial();
 
 	protected override void OnApplyTemplate()
 	{
@@ -95,7 +93,9 @@ public partial class RefreshContainer : ContentControl
 		m_refreshVisualizer = Visualizer;
 		if (m_refreshVisualizer == null)
 		{
-			Visualizer = new RefreshVisualizer();
+#if HAS_UNO
+			SetDefaultRefreshVisualizer();
+#endif
 			m_hasDefaultRefreshVisualizer = true;
 		}
 		else
@@ -107,10 +107,11 @@ public partial class RefreshContainer : ContentControl
 		m_refreshPullDirection = PullDirection;
 		OnPullDirectionChangedImpl();
 #if HAS_UNO
-		// Force InfoProvider to be initialized
-		OnVisualizerSizeChanged(null, null);
+		OnApplyTemplatePartial();
 #endif
 	}
+
+	partial void OnApplyTemplatePartial();
 
 	/// <summary>
 	/// Initiates an update of the content.
@@ -161,6 +162,7 @@ public partial class RefreshContainer : ContentControl
 				m_refreshVisualizerPresenter.Children.Add(m_refreshVisualizer);
 			}
 		}
+		OnRefreshVisualizerChangedPartial();
 
 		if (m_refreshVisualizer != null)
 		{
@@ -168,6 +170,8 @@ public partial class RefreshContainer : ContentControl
 			m_refreshVisualizer.RefreshRequested += OnVisualizerRefreshRequested;
 		}
 	}
+
+	partial void OnRefreshVisualizerChangedPartial();
 
 	private void OnPullDirectionChanged(DependencyPropertyChangedEventArgs args)
 	{
@@ -233,10 +237,8 @@ public partial class RefreshContainer : ContentControl
 				m_refreshVisualizer.ActualHeight == DEFAULT_PULL_DIMENSION_SIZE &&
 				m_refreshVisualizer.ActualWidth == DEFAULT_PULL_DIMENSION_SIZE)
 			{
-#if !HAS_UNO
-				m_refreshInfoProviderAdapter = new ScrollViewerIRefreshInfoProviderAdapter(PullDirection, null);
-#else
-				m_refreshInfoProviderAdapter = new StubRefreshInfoProviderAdapter();
+#if HAS_UNO
+				SetDefaultRefreshInfoProviderAdapter();
 #endif
 				OnRefreshInfoProviderAdapterChanged();
 			}
@@ -338,10 +340,8 @@ public partial class RefreshContainer : ContentControl
 		//PTR_TRACE_INFO(this, TRACE_MSG_METH_FLT_FLT_FLT_FLT, METH_NAME, this, args.PreviousSize().Width, args.PreviousSize().Height, args.NewSize().Width, args.NewSize().Height);
 		if (m_hasDefaultRefreshInfoProviderAdapter)
 		{
-#if !HAS_UNO
-		m_refreshInfoProviderAdapter = new ScrollViewerIRefreshInfoProviderAdapter(PullDirection, null);
-#else
-			m_refreshInfoProviderAdapter = new StubRefreshInfoProviderAdapter();
+#if HAS_UNO
+			SetDefaultRefreshInfoProviderAdapter();
 #endif
 			OnRefreshInfoProviderAdapterChanged();
 		}
@@ -396,6 +396,4 @@ public partial class RefreshContainer : ContentControl
 		m_hasDefaultRefreshInfoProviderAdapter = false;
 		OnRefreshInfoProviderAdapterChanged();
 	}
-
 }
-#endif

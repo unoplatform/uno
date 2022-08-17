@@ -373,81 +373,83 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 				matrixTransform = new MatrixTransform();
 				m_content.RenderTransform = matrixTransform;
 			}
+#endif
 
-			//switch (m_state)
-			//{
-			//	case RefreshVisualizerState.Idle:
-			//		m_content.Opacity = MINIMUM_INDICATOR_OPACITY;
-			//		matrixTransform.Matrix = new Matrix(Matrix3x2.CreateRotation(m_startingRotationAngle));
-			//		//On RS2 and above we achieve the parallax animation using the Translation property, so we set the appropriate field here.
-			//		if (SharedHelpers.IsRS2OrHigher())
-			//		{
-			//			contentVisual.Properties.InsertVector3("Translation", new Vector3(0.0f, 0.0f, 0.0f));
-			//		}
-			//		else
-			//		{
-			//			contentVisual.Offset = new Vector3(0.0f, 0.0f, 0.0f);
-			//		}
+#if !HAS_UNO
+			switch (m_state)
+			{
+				case RefreshVisualizerState.Idle:
+					m_content.Opacity = MINIMUM_INDICATOR_OPACITY;
+					matrixTransform.Matrix = new Matrix(Matrix3x2.CreateRotation(m_startingRotationAngle));
+					//On RS2 and above we achieve the parallax animation using the Translation property, so we set the appropriate field here.
+					if (SharedHelpers.IsRS2OrHigher())
+					{
+						contentVisual.Properties.InsertVector3("Translation", new Vector3(0.0f, 0.0f, 0.0f));
+					}
+					else
+					{
+						contentVisual.Offset = new Vector3(0.0f, 0.0f, 0.0f);
+					}
 
-			//		break;
-			//	case RefreshVisualizerState.Peeking:
-			//		m_content.Opacity = 1.0f;
-			//		contentVisual.RotationAngle = m_startingRotationAngle;
-			//		break;
-			//	case RefreshVisualizerState.Interacting:
-			//		m_content.Opacity = MINIMUM_INDICATOR_OPACITY;
-			//		ExecuteInteractingAnimations();
-			//		break;
-			//	case RefreshVisualizerState.Pending:
-			//		ExecuteScaleUpAnimation();
-			//		m_content.Opacity = 1.0f;
-			//		contentVisual.RotationAngle = m_startingRotationAngle;
-			//		break;
-			//	case RefreshVisualizerState.Refreshing:
-			//		ExecuteExecutingRotationAnimation();
-			//		m_content.Opacity = 1.0f;
-			//		if (m_root != null)
-			//		{
-			//			float GetTranslationRatio()
-			//			{
-			//				if (m_refreshInfoProvider is { } refreshInfoProvider)
-			//				{
-			//					return (1.0f - (float)(refreshInfoProvider.ExecutionRatio)) * PARALLAX_POSITION_RATIO;
-			//				}
-			//				return 1.0f;
-			//			}
-			//			float translationRatio = GetTranslationRatio();
-			//			translationRatio = IsPullDirectionFar() ? -1.0f * translationRatio : translationRatio;
-			//			//On RS2 and above we achieve the parallax animation using the Translation property, so we set the appropriate field here.
-			//			if (SharedHelpers.IsRS2OrHigher())
-			//			{
-			//				if (IsPullDirectionVertical())
-			//				{
-			//					contentVisual.Properties.InsertVector3("Translation", new Vector3(0.0f, translationRatio * (float)m_root.ActualHeight, 0.0f));
-			//				}
-			//				else
-			//				{
-			//					contentVisual.Properties.InsertVector3("Translation", new Vector3(translationRatio * (float)m_root.ActualWidth, 0.0f, 0.0f));
-			//				}
-			//			}
-			//			else
-			//			{
-			//				if (IsPullDirectionVertical())
-			//				{
-			//					contentVisual.Offset = new Vector3(0.0f, translationRatio * (float)m_root.ActualHeight, 0.0f);
-			//				}
-			//				else
-			//				{
-			//					contentVisual.Offset = new Vector3(translationRatio * (float)m_root.ActualHeight, 0.0f, 0.0f);
-			//				}
-			//			}
-			//		}
+					break;
+				case RefreshVisualizerState.Peeking:
+					m_content.Opacity = 1.0f;
+					contentVisual.RotationAngle = m_startingRotationAngle;
+					break;
+				case RefreshVisualizerState.Interacting:
+					m_content.Opacity = MINIMUM_INDICATOR_OPACITY;
+					ExecuteInteractingAnimations();
+					break;
+				case RefreshVisualizerState.Pending:
+					ExecuteScaleUpAnimation();
+					m_content.Opacity = 1.0f;
+					contentVisual.RotationAngle = m_startingRotationAngle;
+					break;
+				case RefreshVisualizerState.Refreshing:
+					ExecuteExecutingRotationAnimation();
+					m_content.Opacity = 1.0f;
+					if (m_root != null)
+					{
+						float GetTranslationRatio()
+						{
+							if (m_refreshInfoProvider is { } refreshInfoProvider)
+							{
+								return (1.0f - (float)(refreshInfoProvider.ExecutionRatio)) * PARALLAX_POSITION_RATIO;
+							}
+							return 1.0f;
+						}
+						float translationRatio = GetTranslationRatio();
+						translationRatio = IsPullDirectionFar() ? -1.0f * translationRatio : translationRatio;
+						//On RS2 and above we achieve the parallax animation using the Translation property, so we set the appropriate field here.
+						if (SharedHelpers.IsRS2OrHigher())
+						{
+							if (IsPullDirectionVertical())
+							{
+								contentVisual.Properties.InsertVector3("Translation", new Vector3(0.0f, translationRatio * (float)m_root.ActualHeight, 0.0f));
+							}
+							else
+							{
+								contentVisual.Properties.InsertVector3("Translation", new Vector3(translationRatio * (float)m_root.ActualWidth, 0.0f, 0.0f));
+							}
+						}
+						else
+						{
+							if (IsPullDirectionVertical())
+							{
+								contentVisual.Offset = new Vector3(0.0f, translationRatio * (float)m_root.ActualHeight, 0.0f);
+							}
+							else
+							{
+								contentVisual.Offset = new Vector3(translationRatio * (float)m_root.ActualHeight, 0.0f, 0.0f);
+							}
+						}
+					}
 
-			//		break;
-			//	default:
-			//		MUX_ASSERT(false);
-			//		break;
-			//}
+					break;
+				default:
+					MUX_ASSERT(false);
+					break;
+			}
 #endif
 		}
 	}

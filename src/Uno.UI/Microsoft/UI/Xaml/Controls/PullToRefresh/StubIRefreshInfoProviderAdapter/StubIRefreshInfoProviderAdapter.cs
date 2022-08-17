@@ -4,9 +4,9 @@ using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal class StubRefreshInfoProviderAdapter : IRefreshInfoProviderAdapter
+internal class StubIRefreshInfoProviderAdapter : IRefreshInfoProviderAdapter
 {
-	private readonly StubRefreshInfoProvider _stubRefreshInfoProvider = new StubRefreshInfoProvider();
+	private readonly StubIRefreshInfoProvider _stubRefreshInfoProvider = new StubIRefreshInfoProvider();
 
 	public IRefreshInfoProvider AdaptFromTree(UIElement root, Size visualizerSize) => _stubRefreshInfoProvider;
 
@@ -14,4 +14,6 @@ internal class StubRefreshInfoProviderAdapter : IRefreshInfoProviderAdapter
 	{
 		refreshVisualizerAnimatableContainer.Visibility = Visibility.Collapsed;
 	}
+	
+	public void Dispose() { }
 }

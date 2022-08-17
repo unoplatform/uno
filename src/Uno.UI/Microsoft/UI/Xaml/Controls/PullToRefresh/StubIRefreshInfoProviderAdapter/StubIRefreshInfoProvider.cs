@@ -7,7 +7,7 @@ using Windows.UI.Composition;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal class StubRefreshInfoProvider : IRefreshInfoProvider
+internal class StubIRefreshInfoProvider : IRefreshInfoProvider
 {
 	public bool IsInteractingForRefresh => false;
 

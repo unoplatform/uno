@@ -17,6 +17,7 @@
       <StackPanel Orientation="Horizontal">
           <Button x:Name="RotateButton" AutomationProperties.Name="RotateButton" Content="Rotate Visualizer Location" Width="200" Margin="2"/>
           <Button x:Name="ChangeAlignment" AutomationProperties.Name="ChangeAlignment" Content="Change Alignment" Width="200" Margin="2"/>
+		  <Button x:Name="ChangeVisualizer" Content="Change Visualizer" Width="200" Margin="2" />
       </StackPanel>
       <Button x:Name="AddOrRemoveRefreshDelay" AutomationProperties.Name="AddOrRemoveRefreshDelay" Content="Add/Remove Refresh Delay" Width="200" Margin="2"/>
         <StackPanel Orientation="Horizontal">
