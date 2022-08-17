@@ -15,10 +15,18 @@
 		<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
-	
+
+	<PropertyGroup Condition="'$(TargetFramework)'=='net461'">
+		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
+	</PropertyGroup>
+
 	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
 		<DefineConstants>$(DefineConstants);UNO_REFERENCE_API</DefineConstants>
 	</PropertyGroup>
@@ -40,18 +48,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Issue5054.xaml" />
-	  <None Remove="NamedColorsTest.xaml" />
-	  <None Remove="NonDPAssignableTest.xaml" />
-	  <None Remove="StoryboardTargetTest.xaml" />
-	  <None Remove="ThemeResourcesTest.xaml" />
-	  <None Remove="VSM.SetterComplexValue.xaml" />
-	  <None Remove="xNameResources.xaml" />
 	  <PRIResource Include="Resources.resw" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Page Remove="StoryboardTargetTest.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -66,7 +63,7 @@
 		<ProjectReference Include="..\..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" />
 	</ItemGroup>
 	
-	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFramework)'=='netstandard2.0'">
+	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net461'">
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj" />
@@ -77,34 +74,8 @@
 		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj" />
 		<ProjectReference Include="..\XamlGenerationTests.Core\XamlGenerationTests.Core.csproj" />
 	</ItemGroup>
-
-		
-	<ItemGroup>
-	  <None Update="ColorCodesTest - Copy.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="CreateFromString.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="FieldModifiers.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="Localization_Implicit.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="XamlLocalResources.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	</ItemGroup>
-
-		
-	<ItemGroup>
-	  <Page Update="NonDPAssignableTest.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </Page>
-	</ItemGroup>
 	
-	<Import Project="..\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFramework)'=='netstandard2.0'" />
+	<Import Project="..\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net461'" />
 
 	<Import Project="..\..\Common.targets" />
 
