@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Uno.Foundation;
+using Uno.UI.DataBinding;
+using Windows.Storage.Helpers;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -26,7 +28,7 @@ namespace Windows.UI.Xaml.Media
 				return loader;
 			}
 
-			private IList<WeakReference>? _waitingList;
+			private IList<ManagedWeakReference>? _waitingList;
 
 			private FontLoader(FontFamily fontFamily)
 			{
@@ -72,8 +74,8 @@ namespace Windows.UI.Xaml.Media
 
 					if (uri.IsAbsoluteUri && uri.Scheme is "ms-appx")
 					{
-						// TODO-AGNÈS: resolve managed path here
-						uri = new Uri(uri.PathAndQuery.TrimStart('/'), UriKind.Relative);
+						var assetUri = AssetsPathBuilder.BuildAssetUri(uri.PathAndQuery.TrimStart('/').ToString());
+						uri = new Uri(assetUri, UriKind.RelativeOrAbsolute);
 					}
 
 					return true;
@@ -121,10 +123,9 @@ namespace Windows.UI.Xaml.Media
 					return; // already loaded: nothing to do
 				}
 
-				var weak = new WeakReference(uiElement);
+				var weak = WeakReferencePool.RentSelfWeakReference(uiElement);
 
-				// TODO-AGNÈS: use weak reference pooling instead
-				(_waitingList ??= new List<WeakReference>()).Add(weak);
+				(_waitingList ??= new List<ManagedWeakReference>()).Add(weak);
 
 				if (IsLoading)
 				{
