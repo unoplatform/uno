@@ -11,7 +11,7 @@ namespace UITests.Toolkit
 	{
 		private int _elevation;
 		private int _radius;
-		private string _color = "#000000";
+		private string _color = "#FF000000";
 
 		public ElevatedView_Tester()
 		{
@@ -68,7 +68,7 @@ namespace UITests.Toolkit
 				var g = (byte)System.Convert.ToUInt32(colorString.Substring(4, 2), 16);
 				var b = (byte)System.Convert.ToUInt32(colorString.Substring(6, 2), 16);
 				//get the color
-				return Color.FromArgb(255, r, g, b);
+				return Color.FromArgb(a, r, g, b);
 			}
 			catch
 			{

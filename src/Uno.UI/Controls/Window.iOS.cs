@@ -21,7 +21,6 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.System;
-using Windows.UI.Core;
 
 #if NET6_0_OR_GREATER
 using ObjCRuntime;
