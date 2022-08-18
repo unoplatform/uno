@@ -119,10 +119,6 @@
 		</ProjectReference>
 	</ItemGroup>
 
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="UI\Xaml\Media\Imaging\SvgImageSource.Properties.cs" />
-	</ItemGroup>
-
 	<Target Name="VS16Mac_RemoveSystemMemory" BeforeTargets="ResolveAssemblyReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and $([MSBuild]::IsOsPlatform('OSX'))">
 		<!--
 				VS4Mac seems to process System.Memory differently, and removes
