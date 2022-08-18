@@ -100,9 +100,10 @@ namespace Uno.UI.Toolkit
 			{
 				if (elevation > 0)
 				{
+					// Values for 1dp elevation according to https://material.io/guidelines/resources/shadows.html#shadows-illustrator
 					const float x = 0.28f;
-					const float y = 0.92f * 0.5f;
-					const float blur = 0.18f;
+					const float y = 0.92f * 0.5f; // Looks more accurate than the recommended 0.92f.
+					const float blur = 0.17f;
 
 #if __MACOS__
 					view.WantsLayer = true;
@@ -129,11 +130,13 @@ namespace Uno.UI.Toolkit
 			{
 				if (elevation > 0)
 				{
+					// Values for 1dp elevation according to https://material.io/guidelines/resources/shadows.html#shadows-illustrator
 					const double x = 0.25d;
-					const double y = 0.92f * 0.5f;
-					const double blur = 0.3f;
+					const double y = 0.92f * 0.5f; // Looks more accurate than the recommended 0.92f.
+					const double blur = 0.5f;
+					var color = Color.FromArgb((byte)(shadowColor.A * .35), shadowColor.R, shadowColor.G, shadowColor.B);
 
-					var str = $"{(x * elevation).ToStringInvariant()}px {(y * elevation).ToStringInvariant()}px {(blur * elevation).ToStringInvariant()}px {shadowColor.ToCssString()}";
+					var str = $"{(x * elevation).ToStringInvariant()}px {(y * elevation).ToStringInvariant()}px {(blur * elevation).ToStringInvariant()}px {color.ToCssString()}";
 					uiElement.SetStyle("box-shadow", str);
 					uiElement.SetCssClasses("noclip");
 				}
@@ -149,7 +152,7 @@ namespace Uno.UI.Toolkit
 				var visual = uiElement.Visual;
 				const float x = 0.28f;
 				const float y = 0.92f * 0.5f;
-				const float blur = 0.18f;
+				const float blur = 0.17f;
 
 				var dx = (float)elevation * x;
 				var dy = (float)elevation * y;
@@ -178,8 +181,9 @@ namespace Uno.UI.Toolkit
 				spriteVisual.Size = newSize;
 				if (elevation > 0)
 				{
+					// Values for 1dp elevation according to https://material.io/guidelines/resources/shadows.html#shadows-illustrator
 					const float x = 0.25f;
-					const float y = 0.92f * 0.5f;
+					const float y = 0.92f * 0.5f; // Looks more accurate than the recommended 0.92f.
 					const float blur = 0.5f;
 
 					var shadow = compositor.CreateDropShadow();
@@ -221,6 +225,7 @@ namespace Uno.UI.Toolkit
 					}
 
 					shadow.Color = shadowColor;
+					shadow.Opacity = shadowColor.A/255f;
 					spriteVisual.Shadow = shadow;
 				}
 
