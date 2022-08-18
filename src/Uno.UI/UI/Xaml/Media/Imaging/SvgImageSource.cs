@@ -54,6 +54,14 @@ public partial class SvgImageSource : ImageSource
 #endif
 	}
 
+	/// <summary>
+	/// Sets the source SVG for a SvgImageSource by accessing a stream and processing the result asynchronously.
+	/// </summary>
+	/// <param name="streamSource">The stream source that sets the SVG source value.</param>
+	/// <returns>
+	/// A SvgImageSourceLoadStatus value that indicates whether the operation was successful.
+	/// If it failed, indicates the reason for the failure.
+	/// </returns>
 	public IAsyncOperation<SvgImageSourceLoadStatus> SetSourceAsync(IRandomAccessStream streamSource)
 	{
 		async Task<SvgImageSourceLoadStatus> SetSourceAsync(
@@ -75,6 +83,7 @@ public partial class SvgImageSource : ImageSource
 
 			using var x = Subscribe(OnChanged);
 
+
 			InvalidateSource();
 
 			return await tcs.Task;
@@ -94,13 +103,13 @@ public partial class SvgImageSource : ImageSource
 
 	partial void InitPartial();
 
-	private void RaiseImageFailed(SvgImageSourceLoadStatus loadStatus)
+	internal void RaiseImageFailed(SvgImageSourceLoadStatus loadStatus)
 	{
 		_lastStatus = loadStatus;
 		OpenFailed?.Invoke(this, new SvgImageSourceFailedEventArgs(loadStatus));
 	}
 
-	private void RaiseImageOpened()
+	internal void RaiseImageOpened()
 	{
 		_lastStatus = SvgImageSourceLoadStatus.Success;
 		Opened?.Invoke(this, new SvgImageSourceOpenedEventArgs());

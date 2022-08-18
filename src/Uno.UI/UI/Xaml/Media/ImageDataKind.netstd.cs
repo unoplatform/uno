@@ -22,6 +22,11 @@ namespace Windows.UI.Xaml.Media
 		DataUri,
 
 		/// <summary>
+		/// A byte array.
+		/// </summary>
+		ByteArray,
+
+		/// <summary>
 		/// The image failed to load (cf. The Error property)
 		/// </summary>
 		Error = 256
