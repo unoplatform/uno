@@ -87,7 +87,9 @@ then
 	# Create emulator
 	echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -n "$AVD_NAME" --abi "x86_64" -k "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;x86_64" --sdcard 128M --force
 
-	echo "hw.cpu.ncore=2" >> $AVD_CONFIG_FILE
+	# based on https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops&tabs=yaml#hardware
+	# >> Agents that run macOS images are provisioned on Mac pros with a 3 core CPU, 14 GB of RAM, and 14 GB of SSD disk space.
+	echo "hw.cpu.ncore=3" >> $AVD_CONFIG_FILE
 
 	echo $ANDROID_HOME/emulator/emulator -list-avds
 
@@ -100,7 +102,7 @@ then
 	$ANDROID_HOME/platform-tools/adb devices
 
 	# Start emulator in background
-	nohup $ANDROID_HOME/emulator/emulator -avd "$AVD_NAME" -skin 1280x800 -memory 2048 -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim > /dev/null 2>&1 &
+	nohup $ANDROID_HOME/emulator/emulator -avd "$AVD_NAME" -skin 1280x800 -memory 4096 -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim > /dev/null 2>&1 &
 
 	# Wait for the emulator to finish booting
 	source $BUILD_SOURCESDIRECTORY/build/test-scripts/android-uitest-wait-systemui.sh 500
