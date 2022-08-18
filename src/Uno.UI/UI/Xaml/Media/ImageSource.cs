@@ -157,8 +157,8 @@ namespace Windows.UI.Xaml.Media
 				return null;
 			}
 
-			//This check is done in order to force a null to return if a empty string is passed.
-			if (uri.LocalPath.EndsWith(".svg", StringComparison.InvariantCultureIgnoreCase))
+			if (uri.LocalPath.EndsWith(".svg", StringComparison.InvariantCultureIgnoreCase) ||
+				uri.LocalPath.EndsWith(".svgz", StringComparison.InvariantCultureIgnoreCase))
 			{
 				return new SvgImageSource(uri);
 			}
