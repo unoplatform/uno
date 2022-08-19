@@ -103,7 +103,7 @@ namespace Uno.UI.Toolkit
 					// Values for 1dp elevation according to https://material.io/guidelines/resources/shadows.html#shadows-illustrator
 					const float x = 0.28f;
 					const float y = 0.92f * 0.5f; // Looks more accurate than the recommended 0.92f.
-					const float blur = 0.17f;
+					const float blur = 0.18f;
 
 #if __MACOS__
 					view.WantsLayer = true;
@@ -152,7 +152,7 @@ namespace Uno.UI.Toolkit
 				var visual = uiElement.Visual;
 				const float x = 0.28f;
 				const float y = 0.92f * 0.5f;
-				const float blur = 0.17f;
+				const float blur = 0.18f;
 
 				var dx = (float)elevation * x;
 				var dy = (float)elevation * y;
