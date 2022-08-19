@@ -109,6 +109,9 @@ jobs:
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
 
+    # See https://github.com/unoplatform/uno/issues/9550
+    UNO_UITEST_IGNORE_IMAGEASSERTS: True
+
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
 
