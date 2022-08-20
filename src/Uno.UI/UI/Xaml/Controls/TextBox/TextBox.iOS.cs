@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Controls
 						return;
 					}
 
-					_textBoxView = SinglelineTextBoxView.CreateSinglelineTextBoxView(this);
+					_textBoxView = new SinglelineTextBoxView(this);
 
 					_contentElement.Content = _textBoxView;
 					_textBoxView.SetTextNative(Text);
