@@ -374,7 +374,11 @@ namespace SamplesApp.UITests.TestFramework
 		}
 		#endregion
 
-		private static void TryIgnoreImageAssert()
+
+		/// <summary>
+		/// See https://github.com/unoplatform/uno/issues/9550
+		/// </summary>
+		internal static void TryIgnoreImageAssert()
 		{
 			if (IgnoreImageAsserts)
 			{
