@@ -1,8 +1,10 @@
 using CoreGraphics;
+using ObjCRuntime;
 using Uno.UI.DataBinding;
 using Uno.UI.Views.Controls;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 using UIKit;
 using Uno.Extensions;
@@ -17,32 +19,12 @@ namespace Windows.UI.Xaml.Controls
 		private SinglelineTextBoxDelegate _delegate;
 		private readonly WeakReference<TextBox> _textBox;
 
-		private static bool _issue9430WarnSingle = false;
-
 		public SinglelineTextBoxView(TextBox textBox)
 		{
 			_textBox = new WeakReference<TextBox>(textBox);
 
 			InitializeBinder();
 			Initialize();
-		}
-
-		internal static SinglelineTextBoxView CreateSinglelineTextBoxView(TextBox textBox)
-		{
-			if (UIDevice.CurrentDevice.CheckSystemVersion(16, 0) && !FeatureConfiguration.TextBox.IOS16EnableSelectionSupport)
-			{
-				if (!_issue9430WarnSingle && typeof(SinglelineTextBoxView).Log().IsEnabled(LogLevel.Error))
-				{
-					_issue9430WarnSingle = true;
-					typeof(SinglelineTextBoxView).Log().Error($"TextBox selection events are disabled on iOS 16. See https://github.com/unoplatform/uno/issues/9430 for additional details.");
-				}
-
-				return new SinglelineTextBoxView(textBox);
-			}
-			else
-			{
-				return new SinglelineTextBoxViewWithSelection(textBox);
-			}
 		}
 
 		internal TextBox TextBox => _textBox.GetTarget();
@@ -213,32 +195,31 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public void Select(int start, int length)
-			=> SelectedTextRange = this.GetTextRange(start: start, end: start + length);
-	}
+			=> SelectedTextRange = this.GetTextRange(start: start, end: start + length).GetHandle();
 
-	/// <summary>
-	/// Workaround for https://github.com/unoplatform/uno/issues/9430
-	/// </summary>
-	internal partial class SinglelineTextBoxViewWithSelection : SinglelineTextBoxView
-	{
-		public SinglelineTextBoxViewWithSelection(TextBox textBox)
-			: base(textBox)
-		{
-		}
+		/// <summary>
+		/// Workaround for https://github.com/unoplatform/uno/issues/9430
+		/// </summary>
+		[DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSendSuper")]
+		static extern IntPtr IntPtr_objc_msgSendSuper(IntPtr receiver, IntPtr selector);
 
-		public override UITextRange SelectedTextRange
+		[DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSendSuper")]
+		static extern void void_objc_msgSendSuper(IntPtr receiver, IntPtr selector, IntPtr arg);
+
+		[Export("selectedTextRange")]
+		public new IntPtr SelectedTextRange
 		{
 			get
 			{
-				return base.SelectedTextRange;
+				return IntPtr_objc_msgSendSuper(SuperHandle, Selector.GetHandle("selectedTextRange"));
 			}
 			set
 			{
 				var textBox = TextBox;
 
-				if (textBox != null && base.SelectedTextRange != value)
+				if (textBox != null && IntPtr_objc_msgSendSuper(SuperHandle, Selector.GetHandle("selectedTextRange")) != value)
 				{
-					base.SelectedTextRange = value;
+					void_objc_msgSendSuper(SuperHandle, Selector.GetHandle("setSelectedTextRange:"), value);
 					textBox.OnSelectionChanged();
 				}
 			}
