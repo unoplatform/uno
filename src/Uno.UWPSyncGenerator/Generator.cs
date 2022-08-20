@@ -1008,7 +1008,7 @@ namespace Uno.UWPSyncGenerator
 				if (
 					method.MethodKind == MethodKind.Constructor
 					&& type.TypeKind != TypeKind.Interface
-					&& !SkipMethod(type, method)
+					&& !SkipMethod(method)
 					&& type.Name != "DependencyObject"
 					&& (
 						!type.IsValueType
