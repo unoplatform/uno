@@ -71,28 +71,6 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 
 		[Test]
 		[AutoRetry]
-		public void DecimalFormatterTest()
-		{
-			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.NumberBoxPage");
-
-			var numBox = _app.Marked("TestNumberBox");
-			Assert.AreEqual(0, numBox.GetDependencyPropertyValue<double>("Value"));
-
-			_app.FastTap("MinCheckBox");
-			_app.FastTap("MaxCheckBox");
-			_app.Marked("CustomFormatterButton").FastTap();
-
-			numBox.ClearText();
-			numBox.EnterText("۱٫۷");
-			_app.PressEnter();
-			_app.PressEnter();
-
-			Assert.AreEqual("۱٫۷۵", numBox.GetDependencyPropertyValue<string>("Text"));
-			Assert.AreEqual(1.75, numBox.GetDependencyPropertyValue<double>("Value"));
-		}
-
-		[Test]
-		[AutoRetry]
 		public void MinMaxTest()
 		{
 			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.NumberBoxPage");

@@ -36,7 +36,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		[AutoRetry]
 		public void DecimalFormatterTest()
 		{
-			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.MUX_Test");
+			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.NumberBoxPage");
 
 			var numBox = _app.Marked("TestNumberBox");
 			Assert.AreEqual(double.NaN, numBox.GetDependencyPropertyValue<double>("Value"));
