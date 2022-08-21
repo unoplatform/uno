@@ -572,15 +572,53 @@ namespace Windows.UI.Xaml.Markup.Reader
 					var addMethod = propertyInfo.PropertyType.GetMethod("Add", new[] { typeof(object), typeof(object) })
 						?? throw new InvalidOperationException($"The property {propertyInfo} type does not provide an Add method (Line {member.LineNumber}:{member.LinePosition}");
 
-					if(propertyInfo.GetMethod == null)
+					if (propertyInfo.GetMethod == null)
 					{
 						throw new InvalidOperationException($"The property {propertyInfo} does not provide a getter (Line {member.LineNumber}:{member.LinePosition}");
 					}
 
-					var propertyInstance = propertyInfo.GetMethod.Invoke(instance, null);
+					var targetDictionary = (ResourceDictionary)propertyInfo.GetMethod.Invoke(instance, null);
+
+					var dictionaryObjects = member.Objects;
+
+					if (member.Objects.Count == 1
+						&& member.Objects.First() is { } innerDictionary
+						&& TypeResolver.FindType(innerDictionary.Type) == typeof(ResourceDictionary))
+					{
+						if (innerDictionary.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries") is { } themeDictionaries)
+						{
+							foreach (var themeDictionary in themeDictionaries.Objects)
+							{
+								targetDictionary.ThemeDictionaries.Add(
+									GetResourceKey(themeDictionary),
+									LoadObject(themeDictionary, rootInstance));
+							}
+						}
+
+						if (innerDictionary.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries") is { } mergedDictionaries)
+						{
+							foreach (var mergedDictionary in mergedDictionaries.Objects)
+							{
+								var newInstance = LoadObject(mergedDictionary, rootInstance);
+								if (newInstance is ResourceDictionary instanceAsDictionary)
+								{
+									targetDictionary.MergedDictionaries.Add(instanceAsDictionary);
+								}
+								else
+								{
+									throw new InvalidOperationException($"An object of type {newInstance?.GetType()} is not supported on MergedDictionaries");
+								}
+							}
+						}
+
+						if (innerDictionary.Members.FirstOrDefault(m => m.Member.Name == "_UnknownContent") is { } unknownContent)
+						{
+							dictionaryObjects = unknownContent.Objects;
+						}
+					}
 
 					List<IDependencyObjectStoreProvider> delayResolutionList = new();
-					foreach (var child in member.Objects)
+					foreach (var child in dictionaryObjects)
 					{
 						var item = LoadObject(child, rootInstance: rootInstance);
 
@@ -595,7 +633,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 							throw new InvalidOperationException($"No target type was specified (Line {member.LineNumber}:{member.LinePosition}");
 						}
 
-						addMethod.Invoke(propertyInstance, new[] { resourceKey ?? resourceTargetType, item });
+						targetDictionary.Add(resourceKey ?? resourceTargetType, item);
 
 						if (HasAnyResourceMarkup(child) && item is IDependencyObjectStoreProvider provider)
 						{
@@ -603,13 +641,10 @@ namespace Windows.UI.Xaml.Markup.Reader
 						}
 					}
 
-					if (propertyInstance is ResourceDictionary dictionary)
+					// Delay resolve static resources
+					foreach (var delayedItem in delayResolutionList)
 					{
-						// Delay resolve static resources
-						foreach (var delayedItem in delayResolutionList)
-						{
-							delayedItem.Store.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading, dictionary);
-						}
+						delayedItem.Store.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading, targetDictionary);
 					}
 				}
 				else if (propertyInfo.SetMethod?.IsPublic == true &&

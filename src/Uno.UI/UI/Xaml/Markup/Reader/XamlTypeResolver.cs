@@ -308,9 +308,19 @@ namespace Windows.UI.Xaml.Markup.Reader
 					}
 				}
 
-				var fullName = isKnownNamespace ? ns?.Prefix + ":" + type.Name : type.Name;
+				string getFullName()
+				{
+					if (!isKnownNamespace && type.PreferredXamlNamespace.StartsWith("using:"))
+					{
+						return type.PreferredXamlNamespace.TrimStart("using:") + "." + type.Name;
+					}
+					else
+					{
+						return isKnownNamespace ? ns?.Prefix + ":" + type.Name : type.Name;
+					}
+				}
 
-				return _findType(fullName);
+				return _findType(getFullName());
 			}
 			else
 			{
