@@ -577,7 +577,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 						throw new InvalidOperationException($"The property {propertyInfo} does not provide a getter (Line {member.LineNumber}:{member.LinePosition}");
 					}
 
-					var targetDictionary = (ResourceDictionary)propertyInfo.GetMethod.Invoke(instance, null);
+					var targetDictionary = (ResourceDictionary)propertyInfo.GetMethod.Invoke(instance, null)!;
 
 					var dictionaryObjects = member.Objects;
 
