@@ -1233,7 +1233,27 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.AreEqual(1, SUT.LeftItems.Count);
 			Assert.AreEqual("qwe", SUT.LeftItems[0].Text);
 		}
-		
+
+		[TestMethod]
+		public void When_StaticResource_In_ResourceDictionary()
+		{
+			var s = GetContent(nameof(When_StaticResource_In_ResourceDictionary));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+
+			var panel = r.FindName("panel") as StackPanel;
+			Assert.IsNotNull(panel);
+
+			var c2 = (Color)panel.Resources["c2"];
+			var b2 = (SolidColorBrush)panel.Resources["b2"];
+
+			r.ForceLoaded();
+
+			c2 = (Color)panel.Resources["c2"];
+			b2 = (SolidColorBrush)panel.Resources["b2"];
+
+			Assert.AreEqual(b2.Color, c2);
+		}
+
 		/// <summary>
 		/// XamlReader.Load the xaml and type-check result.
 		/// </summary>
