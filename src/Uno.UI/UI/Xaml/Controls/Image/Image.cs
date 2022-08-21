@@ -267,7 +267,6 @@ namespace Windows.UI.Xaml.Controls
 		
 		protected override Size MeasureOverride(Size availableSize)
 		{
-
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug(ToString() + $" measuring with availableSize={availableSize}");

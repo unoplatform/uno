@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Globalization;
-using Windows.Foundation;
-using Windows.UI.Xaml.Media;
-using Uno.Diagnostics.Eventing;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Media.Imaging;
-using Uno.Disposables;
-using Windows.Storage.Streams;
-using System.Runtime.InteropServices;
-
-using Windows.UI;
-using Windows.UI.Composition;
+using System.Linq;
 using System.Numerics;
+using Uno.Disposables;
+using Uno.Foundation.Logging;
+using Windows.Foundation;
+using Windows.UI.Composition;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -24,6 +18,7 @@ namespace Windows.UI.Xaml.Controls
 		private CompositionSurfaceBrush _surfaceBrush;
 		private readonly SpriteVisual _imageSprite;
 
+		// TODO: ImageOpened and ImageFailed should be implemented #9533
 #pragma warning disable CS0067 // not used in skia
 		public event RoutedEventHandler ImageOpened;
 		public event ExceptionRoutedEventHandler ImageFailed;
@@ -37,23 +32,80 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnSourceChanged(ImageSource newValue)
 		{
-			if (newValue is ImageSource source)
+			_sourceDisposable.Disposable = null;
+
+			if (newValue is SvgImageSource svgImageSource)
 			{
-				_sourceDisposable.Disposable = source.Subscribe(img =>
-				{
-					_currentSurface = img.Value;
-					_surfaceBrush = Visual.Compositor.CreateSurfaceBrush(_currentSurface);
-					_imageSprite.Brush = _surfaceBrush;
-					InvalidateMeasure();
-				});
+				InitializeSvgSource(svgImageSource);
 			}
+			else if (newValue is ImageSource source)
+			{
+				InitializeImageSource(source);
+			}
+		}
+
+		private void InitializeSvgSource(SvgImageSource source)
+		{
+			var canvas = source.GetCanvas();
+			AddChild(canvas);
+			_sourceDisposable.Disposable = Disposable.Create(() =>
+			{
+				RemoveChild(canvas);
+			});
+		}
+
+		private void InitializeImageSource(ImageSource source)
+		{
+			_sourceDisposable.Disposable = source.Subscribe(img =>
+			{
+				_currentSurface = img.Value;
+				_surfaceBrush = Visual.Compositor.CreateSurfaceBrush(_currentSurface);
+				_imageSprite.Brush = _surfaceBrush;
+				InvalidateMeasure();
+			});
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
+			if (Source is SvgImageSource)
+			{
+				return MeasureSvgSource(availableSize);
+			}
+			else if (Source is ImageSource)
+			{
+				return MeasureImageSource(availableSize);
+			}
+			else
+			{
+				return default;
+			}
+		}
+
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			if (Source is SvgImageSource)
+			{
+				return ArrangeSvgSource(finalSize);
+			}
+			else if (Source is ImageSource)
+			{
+				return ArrangeImageSource(finalSize);
+			}
+			else
+			{
+				return default;
+			}
+		}
+
+		private Size MeasureSvgSource(Size availableSize)
+		{
+			return _lastMeasuredSize;
+		}
+
+		private Size MeasureImageSource(Size availableSize)
+		{
 			if (_currentSurface?.Image != null)
 			{
-
 				_lastMeasuredSize = new Size(_currentSurface.Image.Width, _currentSurface.Image.Height);
 
 				Size ret;
@@ -95,7 +147,20 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override Size ArrangeOverride(Size finalSize)
+		private Size ArrangeSvgSource(Size finalSize)
+		{
+			var svgChild = GetChildren().FirstOrDefault();
+			if (svgChild is null)
+			{
+				// SVG canvas not yet created
+				return default;
+			}
+
+			svgChild.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
+			return finalSize;
+		}
+
+		private Size ArrangeImageSource(Size finalSize)
 		{
 			if (_currentSurface?.Image != null)
 			{
@@ -126,6 +191,5 @@ namespace Windows.UI.Xaml.Controls
 				return default;
 			}
 		}
-
 	}
 }
