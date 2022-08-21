@@ -1246,6 +1246,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var c2 = (Color)panel.Resources["c2"];
 			var b2 = (SolidColorBrush)panel.Resources["b2"];
 
+			Assert.AreEqual(b2.Color, c2);
+			Assert.AreEqual(Colors.Green, b2.Color);
+
 			r.ForceLoaded();
 
 			c2 = (Color)panel.Resources["c2"];
@@ -1266,6 +1269,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var c2 = (Color)panel.Resources["c2"];
 			var b2 = (SolidColorBrush)panel.Resources["b2"];
 
+			Assert.AreEqual(b2.Color, c2);
+
 			r.ForceLoaded();
 
 			c2 = (Color)panel.Resources["c2"];
@@ -1285,6 +1290,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 
 			var c2 = (Color)panel.Resources["c2"];
 			var b2 = (SolidColorBrush)panel.Resources["b2"];
+
+			Assert.AreEqual(b2.Color, c2);
 
 			r.ForceLoaded();
 
@@ -1308,6 +1315,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 
 			var c2 = (Color)panel.Resources["c2"];
 			var b2 = (SolidColorBrush)panel.Resources["b2"];
+
+			Assert.AreEqual(b2.Color, c2);
 
 			r.ForceLoaded();
 
