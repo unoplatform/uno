@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml.Controls
 		private readonly SerialDisposable _sourceDisposable = new SerialDisposable();
 
 		//Set just as image source is going to be set (which may be dispatched)
-		private ImageSource _openedImage;
+		private ImageSource _openedSource;
 
 		//Set after image source fetch has successfully resolved
 		private ImageSource _successfullyOpenedImage;
@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml.Controls
 		private bool? _hasFiniteBounds;
 		private Size _layoutSize;
 
-		private NativeImage _native;
+		private NativeImageView _nativeImageView;
 
 		public static new class TraceProvider
 		{
@@ -60,24 +60,7 @@ namespace Windows.UI.Xaml.Controls
 			public const int Image_SetImageStop = 6;
 		}
 
-		public event RoutedEventHandler ImageOpened;
-		public event ExceptionRoutedEventHandler ImageFailed;
 
-		private Color? _monochromeColor;
-
-		/// <summary>
-		/// When set, the resulting image is tentatively converted to Monochrome.
-		/// </summary>
-		internal Color? MonochromeColor
-		{
-			get => _monochromeColor;
-			set
-			{
-				_monochromeColor = value;
-				// Force loading the image.
-				OnSourceChanged(Source, forceReload: true);
-			}
-		}
 
 		protected virtual void OnImageFailed(ImageSource imageSource)
 		{
@@ -100,38 +83,7 @@ namespace Windows.UI.Xaml.Controls
 			_successfullyOpenedImage = imageSource;
 		}
 
-#region Stretch
-		public Stretch Stretch
-		{
-			get { return (Stretch)this.GetValue(StretchProperty); }
-			set { this.SetValue(StretchProperty, value); }
-		}
-
-		// Using a DependencyProperty as the backing store for Stretch.  This enables animation, styling, binding, etc...
-		public static DependencyProperty StretchProperty { get ; } =
-			DependencyProperty.Register("Stretch", typeof(Stretch), typeof(Image), new FrameworkPropertyMetadata(Stretch.Uniform, (s, e) =>
-			((Image)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
-
 		partial void OnStretchChanged(Stretch newValue, Stretch oldValue);
-#endregion
-
-#region Source
-		public ImageSource Source
-		{
-			get { return (ImageSource)this.GetValue(SourceProperty); }
-			set { this.SetValue(SourceProperty, value); }
-		}
-
-		// Using a DependencyProperty as the backing store for Source.  This enables animation, styling, binding, etc...
-		public static DependencyProperty SourceProperty { get ; } =
-			DependencyProperty.Register(
-				"Source",
-				typeof(ImageSource),
-				typeof(Image),
-				new FrameworkPropertyMetadata(
-					defaultValue: null,
-					propertyChangedCallback: (s, e) => ((Image)s).OnSourceChanged((ImageSource)e.NewValue))
-				);
 
 		private void OnSourceChanged(ImageSource newValue, bool forceReload = false)
 		{
@@ -142,7 +94,7 @@ namespace Windows.UI.Xaml.Controls
 
 				void OnInvalidated(object sdn, EventArgs args)
 				{
-					_openedImage = null;
+					_openedSource = null;
 					TryOpenImage();
 				}
 			}
@@ -154,7 +106,7 @@ namespace Windows.UI.Xaml.Controls
 						{
 							if (!object.Equals(e.OldValue, e.NewValue))
 							{
-								_openedImage = null;
+								_openedSource = null;
 								TryOpenImage();
 							}
 						}
@@ -163,8 +115,6 @@ namespace Windows.UI.Xaml.Controls
 
 			TryOpenImage(forceReload);
 		}
-
-#endregion
 
 		internal override bool IsViewHit() => Source?.HasSource() ?? false;
 
@@ -185,10 +135,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_imageFetchDisposable.Disposable = null;
-			if (_successfullyOpenedImage != _openedImage)
+			if (_successfullyOpenedImage != _openedSource)
 			{
 				//Dispatched image fetch did not resolve, so we force it to be rescheduled next time TryOpenImage is called
-				_openedImage = null;
+				_openedSource = null;
 			}
 		}
 
@@ -260,11 +210,6 @@ namespace Windows.UI.Xaml.Controls
 			return base.ToString() + ";Source={0}".InvariantCultureFormat(Source?.ToString() ?? "[null]");
 		}
 
-		protected override AutomationPeer OnCreateAutomationPeer()
-		{
-			return new ImageAutomationPeer(this);
-		}
-		
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -427,7 +372,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
-				if (_openedImage != null)
+				if (_openedSource != null)
 				{
 					var renderedSize = finalSize.LogicalToPhysicalPixels();
 					var loadedSize = SourceImageSize.LogicalToPhysicalPixels();

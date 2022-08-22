@@ -1,20 +1,15 @@
-﻿using Foundation;
-using Uno.Diagnostics.Eventing;
-using Uno.Extensions;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Foundation;
 using UIKit;
+using Uno.Diagnostics.Eventing;
+using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Media;
 using Windows.UI.Core;
-using Uno.Disposables;
-
 
 namespace Windows.UI.Xaml.Media
 {
@@ -51,18 +46,15 @@ namespace Windows.UI.Xaml.Media
 		protected ImageSource(UIImage image)
 		{
 			_isOriginalSourceUIImage = true;
-			_imageData = image;
+			_imageData = ImageData.FromNative(image);
 		}
 
-		private UIImage _imageData;
+		private ImageData _imageData;
 
 		internal string BundleName { get; private set; }
 		internal string BundlePath { get; private set; }
 
-		static public implicit operator ImageSource(UIImage image)
-		{
-			return new ImageSource(image);
-		}
+		static public implicit operator ImageSource(UIImage image) => new ImageSource(image);
 
 		public bool HasSource()
 		{
@@ -70,7 +62,7 @@ namespace Windows.UI.Xaml.Media
 				|| Stream != null
 				|| WebUri != null
 				|| FilePath.HasValueTrimmed()
-				|| _imageData != null
+				|| _imageData.HasData
 				|| HasBundle;
 		}
 
@@ -83,11 +75,19 @@ namespace Windows.UI.Xaml.Media
 		/// Open bundle is using either the name of the bundle (for 
 		/// android compatibility), or the path to the bundle for Windows compatibility.
 		/// </summary>
-		internal UIImage OpenBundle()
+		internal ImageData OpenBundle()
 		{
-			_imageData = OpenBundleFromString(BundleName) ?? OpenBundleFromString(BundlePath);
+			var image = OpenBundleFromString(BundleName) ?? OpenBundleFromString(BundlePath);
+			if (image is not null)
+			{
+				_imageData = ImageData.FromNative(image);
+			}
+			else
+			{
+				_imageData = ImageData.Empty;
+			}
 
-			if (_imageData == null)
+			if (!_imageData.HasData)
 			{
 				this.Log().ErrorFormat("Unable to locate bundle resource [{0}]", BundlePath ?? BundleName);
 			}
@@ -110,13 +110,13 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		private protected virtual bool IsSourceReady => false;
 
-		private protected virtual bool TryOpenSourceSync([NotNullWhen(true)] out UIImage image)
+		private protected virtual bool TryOpenSourceSync([NotNullWhen(true)] out ImageData image)
 		{
 			image = default;
 			return false;
 		}
 
-		private protected virtual bool TryOpenSourceAsync([NotNullWhen(true)] out Task<UIImage> asyncImage)
+		private protected virtual bool TryOpenSourceAsync(CancellationToken ct, [NotNullWhen(true)] out Task<ImageData> asyncImage)
 		{
 			asyncImage = default;
 			return false;
@@ -130,9 +130,9 @@ namespace Windows.UI.Xaml.Media
 		/// This is only intended to convert **uncompressed data already in memory**,
 		/// and should not be used to decompress a JPEG for instance, even if the already in memory.
 		/// </remarks>
-		internal bool TryOpenSync(out UIImage image)
+		internal bool TryOpenSync(out ImageData image)
 		{
-			if (_imageData != null)
+			if (_imageData.HasData)
 			{
 				image = _imageData;
 				return true;
@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml.Media
 			return false;
 		}
 
-		internal async Task<UIImage> Open(CancellationToken ct)
+		internal async Task<ImageData> Open(CancellationToken ct)
 		{
 			using (
 			   _trace.WriteEventActivity(
@@ -159,7 +159,7 @@ namespace Windows.UI.Xaml.Media
 			{
 				if (ct.IsCancellationRequested)
 				{
-					return null;
+					return ImageData.Empty;
 				}
 
 				if (IsSourceReady && TryOpenSourceSync(out var img))
@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Media
 					return _imageData = img;
 				}
 
-				if (IsSourceReady && TryOpenSourceAsync(out var asyncImg))
+				if (IsSourceReady && TryOpenSourceAsync(ct, out var asyncImg))
 				{
 					return _imageData = await asyncImg;
 				}
@@ -177,14 +177,30 @@ namespace Windows.UI.Xaml.Media
 					Stream.Position = 0;
 					using (var data = NSData.FromStream(Stream))
 					{
-						return _imageData = UIImage.LoadFromData(data);
+						var nativeImage = UIImage.LoadFromData(data);
+						if (nativeImage is not null)
+						{
+							return _imageData = ImageData.FromNative(nativeImage);
+						}
+						else
+						{
+							return ImageData.Empty;
+						}
 					}
 				}
 
 				if (FilePath.HasValue())
 				{
 					var uri = new Uri(FilePath);
-					return _imageData = UIImage.FromFile(FilePath);
+					var nativeImage = UIImage.FromFile(FilePath);
+					if (nativeImage is not null)
+					{
+						return _imageData = ImageData.FromNative(nativeImage);
+					}
+					else
+					{
+						return _imageData = ImageData.Empty;
+					}
 				}
 
 				if (HasBundle)
@@ -217,13 +233,21 @@ namespace Windows.UI.Xaml.Media
 
 					if (localFileUri == null)
 					{
-						return null;
+						return ImageData.Empty;
 					}
 
 					if (SupportsAsyncFromBundle)
 					{
 						// Since iOS9, UIImage.FromBundle is thread safe.
-						_imageData = UIImage.FromBundle(localFileUri.LocalPath);
+						var nativeImage = UIImage.FromBundle(localFileUri.LocalPath);
+						if (nativeImage is not null)
+						{
+							return _imageData = ImageData.FromNative(nativeImage);
+						}
+						else
+						{
+							return _imageData = ImageData.Empty;
+						}
 					}
 					else
 					{
@@ -236,13 +260,29 @@ namespace Windows.UI.Xaml.Media
 									// FromBundle calls UIImage:fromName which caches the decoded image.
 									// This is done to avoid decoding images from the byte array returned 
 									// from the cache.
-									_imageData = UIImage.FromBundle(localFileUri.LocalPath);
+									var nativeImage = UIImage.FromBundle(localFileUri.LocalPath);
+									if (nativeImage is not null)
+									{
+										_imageData = ImageData.FromNative(nativeImage);
+									}
+									else
+									{
+										_imageData = ImageData.Empty;
+									}
 								}
 								else
 								{
 									// On iOS 7, FromBundle doesn't work. We can use this method instead.
 									// Note that we must use OriginalString and not LocalPath.
-									_imageData = UIImage.LoadFromData(NSData.FromUrl(new NSUrl(localFileUri.OriginalString)));
+									var nativeImage = UIImage.LoadFromData(NSData.FromUrl(new NSUrl(localFileUri.OriginalString)));
+									if (nativeImage is not null)
+									{
+										_imageData = ImageData.FromNative(nativeImage);
+									}
+									else
+									{
+										_imageData = ImageData.Empty;
+									}
 								}
 							}).AsTask(ct);
 					}
@@ -260,7 +300,7 @@ namespace Windows.UI.Xaml.Media
 			if (ct.IsCancellationRequested)
 			{
 				return;
-			} 
+			}
 
 			using (var url = new NSUrl(WebUri.AbsoluteUri))
 			{
@@ -286,11 +326,18 @@ namespace Windows.UI.Xaml.Media
 							{
 								this.Log().LogError(NSHttpUrlResponse.LocalizedStringForStatusCode(response.StatusCode));
 							}
-
 						}
 						else
 						{
-							_imageData = UIImage.LoadFromData(result.Data);
+							var image = UIImage.LoadFromData(result.Data);
+							if (image is not null)
+							{
+								_imageData = ImageData.FromNative(image);
+							}
+							else
+							{
+								_imageData = ImageData.Empty;
+							}
 						}
 					}
 					catch (NSErrorException e)
@@ -356,10 +403,10 @@ namespace Windows.UI.Xaml.Media
 
 		private void DisposeUIImage()
 		{
-			if (_imageData != null)
+			if (_imageData.Kind == ImageDataKind.NativeImage)
 			{
-				_imageData.Dispose();
-				_imageData = null;
+				_imageData.NativeImage?.Dispose();
+				_imageData = ImageData.Empty;
 			}
 		}
 

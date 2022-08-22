@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 

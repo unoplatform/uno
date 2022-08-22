@@ -1,4 +1,5 @@
-﻿#nullable enable
+﻿#pragma warning disable CS0169
+#nullable enable
 
 namespace Windows.UI.Xaml.Controls;
 
