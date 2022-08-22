@@ -8722,6 +8722,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\couch.svg" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\heart.svg" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\heliocentric.svg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.svg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.webp" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.heic" />
