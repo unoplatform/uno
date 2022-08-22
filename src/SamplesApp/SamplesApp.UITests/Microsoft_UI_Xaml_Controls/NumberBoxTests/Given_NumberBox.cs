@@ -12,9 +12,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 	{
 		private void EnterTextInNumberBox(QueryEx numberBox, string text)
 		{
-			numberBox.ClearText();
-			numberBox.EnterText(text);
-			_app.PressEnter();
+			numberBox.SetDependencyPropertyValue("Value", text);
 		}
 
 		[Test]
