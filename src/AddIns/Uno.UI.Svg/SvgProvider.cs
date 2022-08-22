@@ -1,8 +1,13 @@
 ﻿#nullable enable
 
 using System;
+using System.IO;
+using ShimSkiaSharp;
+using Svg.Skia;
 using Uno.UI.Xaml.Media.Imaging.Svg;
+using Windows.Foundation;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace Uno.UI.Svg;
@@ -10,7 +15,9 @@ namespace Uno.UI.Svg;
 [Preserve]
 public partial class SvgProvider : ISvgProvider
 {
-	private SvgImageSource _owner;
+	private readonly SvgImageSource _owner;
+
+	private SKSvg? _skSvg;
 
 	public SvgProvider(object owner)
 	{
@@ -20,23 +27,47 @@ public partial class SvgProvider : ISvgProvider
 		}
 
 		_owner = svgImageSource;
+		_owner.Subscribe(OnSourceOpened);
 	}
 
-	public UIElement GetCanvas()
+	public event EventHandler? SourceLoaded;
+
+	internal SKSvg? SkSvg => _skSvg;
+
+	public bool IsParsed => _skSvg?.Picture is not null;
+	
+	public Size SourceSize
 	{
-		return new SvgCanvas(_owner);
+		get
+		{
+			if (_skSvg?.Picture?.CullRect is { } rect)
+			{
+				return new Size(rect.Width, rect.Height);
+			}
+			
+			return default;
+		}
 	}
 
-	public UIElement? GetImage(SvgImageSource imageSource)
+	public UIElement GetCanvas() => new SvgCanvas(_owner, this);
+
+	private void OnSourceOpened(ImageData imageData)
 	{
-		_owner.RaiseImageOpened();
-		return null;
-		//imageSource.RasterizePixelHeight
-		//var svg = new SKSvg();
-
-		//svg.Load(stream);
-
-		//SKXamlCanvas canvas = new SKXamlCanvas();
-		//canvas.(svg.Picture);
+		try
+		{
+			_skSvg = new SKSvg();
+			using (var memoryStream = new MemoryStream(imageData.Data))
+			{
+				_skSvg.Load(memoryStream);
+			}
+			_owner.RaiseImageOpened();
+			SourceLoaded?.Invoke(this, EventArgs.Empty);
+		}
+		catch (Exception)
+		{
+			_skSvg?.Dispose();
+			_skSvg = null;
+			_owner.RaiseImageFailed(SvgImageSourceLoadStatus.InvalidFormat);
+		}
 	}
 }

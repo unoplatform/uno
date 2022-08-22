@@ -15,15 +15,19 @@ namespace Uno.UI.Svg;
 internal partial class SvgCanvas : SKXamlCanvas
 {
 	private readonly SvgImageSource _svgImageSource;
-	private SKSvg? _skSvg;
+	private readonly SvgProvider _svgProvider;
 	private readonly CompositeDisposable _disposables = new();
+	private SKMatrix _currentScaleMatrix = default;
 
-	public SvgCanvas(SvgImageSource svgImageSource)
+	public SvgCanvas(SvgImageSource svgImageSource, SvgProvider svgProvider)
 	{
 		_svgImageSource = svgImageSource;
+		_svgProvider = svgProvider;
+
 		SizeChanged += SvgCanvas_SizeChanged;
 
-		_disposables.Add(_svgImageSource.Subscribe(OnSourceOpened));
+		_svgProvider.SourceLoaded += SvgProviderSourceOpened;
+		_disposables.Add(() => _svgProvider.SourceLoaded -= SvgProviderSourceOpened);
 		_disposables.Add(_svgImageSource.RegisterDisposablePropertyChangedCallback(SvgImageSource.UriSourceProperty, SourcePropertyChanged));
 		_disposables.Add(_svgImageSource.RegisterDisposablePropertyChangedCallback(SvgImageSource.RasterizePixelHeightProperty, SourcePropertyChanged));
 		_disposables.Add(_svgImageSource.RegisterDisposablePropertyChangedCallback(SvgImageSource.RasterizePixelWidthProperty, SourcePropertyChanged));
@@ -40,76 +44,76 @@ internal partial class SvgCanvas : SKXamlCanvas
 
 	private void SvgCanvas_SizeChanged(object sender, Windows.UI.Xaml.SizeChangedEventArgs args) => Invalidate();
 
-	protected override Size MeasureOverride(Size availableSize)
+	private void SvgProviderSourceOpened(object sender, EventArgs e)
 	{
-		if (_skSvg?.Picture != null)
-		{
-			// TODO:MZ: Handle case where SVG is rasterized
-			var measuredSize = new Size(_skSvg.Picture.CullRect.Width, _skSvg.Picture.CullRect.Height);
-			return measuredSize;
-			//Size ret;
-
-			//if (
-			//	double.IsInfinity(availableSize.Width)
-			//	&& double.IsInfinity(availableSize.Height)
-			//)
-			//{
-			//	ret = measuredSize;
-			//}
-			//else
-			//{
-			//	ret = ImageSizeHelper.AdjustSize(availableSize, measuredSize);
-			//}
-
-			// Always making sure the ret size isn't bigger than the available size for an image with a fixed width or height
-			//ret = new Size(
-			//	!Double.IsNaN(Width) && (ret.Width > availableSize.Width) ? availableSize.Width : ret.Width,
-			//	!Double.IsNaN(Height) && (ret.Height > availableSize.Height) ? availableSize.Height : ret.Height
-			//);
-
-			//if (this.Log().IsEnabled(LogLevel.Debug))
-			//{
-			//	this.Log().LogDebug($"Measure {this} availableSize:{availableSize} measuredSize:{_lastMeasuredSize} ret:{ret} Stretch: {Stretch} Width:{Width} Height:{Height}");
-			//}
-		}
-		else
-		{
-			return default;
-		}
+		InvalidateMeasure();
+		Invalidate();
 	}
+
+	//protected override Size MeasureOverride(Size availableSize)
+	//{
+	//	if (_skSvg?.Picture != null)
+	//	{
+	//		// TODO:MZ: Handle case where SVG is rasterized
+	//		var measuredSize = new Size(_skSvg.Picture.CullRect.Width, _skSvg.Picture.CullRect.Height);
+	//		return measuredSize;
+	//		//Size ret;
+
+	//		//if (
+	//		//	double.IsInfinity(availableSize.Width)
+	//		//	&& double.IsInfinity(availableSize.Height)
+	//		//)
+	//		//{
+	//		//	ret = measuredSize;
+	//		//}
+	//		//else
+	//		//{
+	//		//	ret = ImageSizeHelper.AdjustSize(availableSize, measuredSize);
+	//		//}
+
+	//		// Always making sure the ret size isn't bigger than the available size for an image with a fixed width or height
+	//		//ret = new Size(
+	//		//	!Double.IsNaN(Width) && (ret.Width > availableSize.Width) ? availableSize.Width : ret.Width,
+	//		//	!Double.IsNaN(Height) && (ret.Height > availableSize.Height) ? availableSize.Height : ret.Height
+	//		//);
+
+	//		//if (this.Log().IsEnabled(LogLevel.Debug))
+	//		//{
+	//		//	this.Log().LogDebug($"Measure {this} availableSize:{availableSize} measuredSize:{_lastMeasuredSize} ret:{ret} Stretch: {Stretch} Width:{Width} Height:{Height}");
+	//		//}
+	//	}
+	//	else
+	//	{
+	//		return default;
+	//	}
+	//}
 
 	protected override Size ArrangeOverride(Size finalSize)
 	{
-		return base.ArrangeOverride(finalSize);
-	}
+		finalSize = base.ArrangeOverride(finalSize);
 
-	private void OnSourceOpened(ImageData obj)
-	{
-		try
+		SKMatrix scaleMatrix = default;
+		if (_svgProvider.SkSvg?.Picture?.CullRect is { } rect)
 		{
-			_skSvg = new SKSvg();
-			using var memoryStream = new MemoryStream(obj.Data);
-			_skSvg.Load(memoryStream);
-			InvalidateMeasure();
+			scaleMatrix = SKMatrix.CreateScale((float)finalSize.Width / rect.Width, (float)finalSize.Height / rect.Height);
+			
+		}
+
+		if (scaleMatrix != _currentScaleMatrix)
+		{
+			_currentScaleMatrix = scaleMatrix;
 			Invalidate();
 		}
-		catch (Exception)
-		{
-			_svgImageSource.RaiseImageFailed(SvgImageSourceLoadStatus.InvalidFormat);
-		}
+
+		return finalSize;
 	}
+
 
 	protected override void OnPaintSurface(SKPaintSurfaceEventArgs e)
 	{
-		if (_skSvg is not null)
+		if (_svgProvider.SkSvg?.Picture is { } picture)
 		{
-			var scale = SKMatrix.CreateScale(0.5f, 0.5f);
-			var image = Parent as Image;
-			var width = ActualWidth;
-			var height = ActualHeight;
-			var fit = _skSvg.Picture!.CullRect.AspectFit(new SKSize((float)width, (float)height));
-			//scale = SKMatrix.CreateScale((float)fit.Width / (float)_skSvg.Picture!.CullRect.Width, (float)fit.Height / (float)_skSvg.Picture!.CullRect.Height);
-			e.Surface.Canvas.DrawPicture(_skSvg.Picture, ref scale);
+			e.Surface.Canvas.DrawPicture(picture, ref _currentScaleMatrix);
 		}
 		if (double.IsNaN(_svgImageSource.RasterizePixelHeight) && double.IsNaN(_svgImageSource.RasterizePixelWidth))
 		{
