@@ -1246,12 +1246,113 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var c2 = (Color)panel.Resources["c2"];
 			var b2 = (SolidColorBrush)panel.Resources["b2"];
 
+			Assert.AreEqual(b2.Color, c2);
+			Assert.AreEqual(Windows.UI.Colors.Green, b2.Color);
+
 			r.ForceLoaded();
 
 			c2 = (Color)panel.Resources["c2"];
 			b2 = (SolidColorBrush)panel.Resources["b2"];
 
 			Assert.AreEqual(b2.Color, c2);
+		}
+
+		[TestMethod]
+		public void When_StaticResource_In_Explicit_ResourceDictionary()
+		{
+			var s = GetContent(nameof(When_StaticResource_In_Explicit_ResourceDictionary));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+
+			var panel = r.FindName("panel") as StackPanel;
+			Assert.IsNotNull(panel);
+
+			var c2 = (Color)panel.Resources["c2"];
+			var b2 = (SolidColorBrush)panel.Resources["b2"];
+
+			Assert.AreEqual(b2.Color, c2);
+
+			r.ForceLoaded();
+
+			c2 = (Color)panel.Resources["c2"];
+			b2 = (SolidColorBrush)panel.Resources["b2"];
+
+			Assert.AreEqual(b2.Color, c2);
+		}
+
+		[TestMethod]
+		public void When_StaticResource_In_Explicit_ResourceDictionary_And_ThemeResources()
+		{
+			var s = GetContent(nameof(When_StaticResource_In_Explicit_ResourceDictionary_And_ThemeResources));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+
+			var panel = r.FindName("panel") as StackPanel;
+			Assert.IsNotNull(panel);
+
+			var c2 = (Color)panel.Resources["c2"];
+			var b2 = (SolidColorBrush)panel.Resources["b2"];
+
+			Assert.AreEqual(b2.Color, c2);
+
+			r.ForceLoaded();
+
+			c2 = (Color)panel.Resources["c2"];
+			b2 = (SolidColorBrush)panel.Resources["b2"];
+
+			var c3 = (Color)panel.Resources["c3"];
+			var b3 = (SolidColorBrush)panel.Resources["b3"];
+
+			Assert.AreEqual(b3.Color, c3);
+		}
+
+		[TestMethod]
+		public void When_StaticResource_In_Explicit_ResourceDictionary_And_MergedDictionaries()
+		{
+			var s = GetContent(nameof(When_StaticResource_In_Explicit_ResourceDictionary_And_MergedDictionaries));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+
+			var panel = r.FindName("panel") as StackPanel;
+			Assert.IsNotNull(panel);
+
+			var c2 = (Color)panel.Resources["c2"];
+			var b2 = (SolidColorBrush)panel.Resources["b2"];
+
+			Assert.AreEqual(b2.Color, c2);
+
+			r.ForceLoaded();
+
+			c2 = (Color)panel.Resources["c2"];
+			b2 = (SolidColorBrush)panel.Resources["b2"];
+
+			Assert.AreEqual(b2.Color, c2);
+
+			var c3 = (Color)panel.Resources["c3"];
+			var b3 = (SolidColorBrush)panel.Resources["b3"];
+
+			Assert.AreEqual(b3.Color, c3);
+
+			var c4 = (Color)panel.Resources["c4"];
+			var b4 = (SolidColorBrush)panel.Resources["b4"];
+
+			Assert.AreEqual(b4.Color, c4);
+		}
+
+		[TestMethod]
+		public void When_StaticResource_MergedDictionaries_Fluent()
+		{
+			var s = GetContent(nameof(When_StaticResource_MergedDictionaries_Fluent));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+
+			var panel = r.FindName("panel") as StackPanel;
+			Assert.IsNotNull(panel);
+
+			var t1 = (Color)panel.Resources["c1"];
+
+			r.ForceLoaded();
+
+			var b1 = (SolidColorBrush)panel.Resources["b1"];
+
+			Assert.AreEqual(t1, Windows.UI.Colors.Red);
+			Assert.AreEqual(t1, b1.Color);
 		}
 
 		/// <summary>
