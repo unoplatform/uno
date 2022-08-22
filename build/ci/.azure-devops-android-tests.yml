@@ -103,7 +103,7 @@ jobs:
   - Android_Build_Net6_For_Tests
   - SamplesApp_UITests_Build
 
-  timeoutInMinutes: 60
+  timeoutInMinutes: 90
   variables:
     CI_Build: true
     SourceLinkEnabled: false
