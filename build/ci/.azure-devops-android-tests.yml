@@ -7,7 +7,7 @@ parameters:
 jobs:
 
 - job: Android_Build_Net6_For_Tests
-  displayName: 'Android UI Tests (Net6 Build)'
+  displayName: 'Build net6 Android UI Tests'
 
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
@@ -51,7 +51,7 @@ jobs:
       ArtifactType: Container
 
 - job: Android_Build_For_Tests
-  displayName: 'Android UI Tests (Build)'
+  displayName: 'Build Android UI Tests'
 
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
@@ -97,7 +97,7 @@ jobs:
       ArtifactType: Container
 
 - job: Android_Tests
-  displayName: 'Android UI Tests (Run)'
+  displayName: 'Run Android UI Tests'
   dependsOn:
   - Android_Build_For_Tests
   - Android_Build_Net6_For_Tests
@@ -240,6 +240,7 @@ jobs:
     clean: true
 
   - task: DownloadBuildArtifacts@0
+    displayName: 'Download SamplesApp UnitTests'
     inputs:
         artifactName: $(SAMPLEAPP_ARTIFACT_NAME)
         downloadPath: '$(build.sourcesdirectory)/build'

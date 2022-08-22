@@ -98,10 +98,6 @@ jobs:
   - template: templates/dotnet-install.yml
   - template: templates/optimize-roslyn-mono.yml
 
-  - template: templates/nuget-cache.yml
-    parameters:
-      nugetPackages: $(NUGET_PACKAGES)
-
   - task: DownloadBuildArtifacts@0
     inputs:
         artifactName: uno-macos-artifacts
@@ -154,10 +150,6 @@ jobs:
     
   - template: templates/dotnet-install.yml
   - template: templates/optimize-roslyn-mono.yml
-
-  - template: templates/nuget-cache.yml
-    parameters:
-      nugetPackages: $(NUGET_PACKAGES)
 
   - task: DownloadBuildArtifacts@0
     inputs:
