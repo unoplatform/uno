@@ -17,7 +17,7 @@ jobs:
     ## and the UNO_UITEST_BUCKET_ID property. For example, a bucket count
     ## of 3 implies that UNO_UITEST_BUCKET_ID will be [1;2;3] in the jobs
     ## matrix.
-    UNO_UITEST_BUCKET_COUNT: 3
+    UNO_UITEST_BUCKET_COUNT: 5
 
   steps:
   - checkout: self

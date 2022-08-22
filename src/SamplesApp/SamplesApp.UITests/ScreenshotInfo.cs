@@ -2,6 +2,7 @@
 using System;
 using System.Drawing;
 using System.IO;
+using SamplesApp.UITests.TestFramework;
 
 namespace SamplesApp.UITests
 {
@@ -22,7 +23,12 @@ namespace SamplesApp.UITests
 
 		public static implicit operator ScreenshotInfo(FileInfo fi) => new ScreenshotInfo(fi, fi.Name);
 
-		public Bitmap GetBitmap() => _bitmap ??= new Bitmap(File.FullName);
+		public Bitmap GetBitmap()
+		{
+			ImageAssert.TryIgnoreImageAssert();
+
+			return _bitmap ??= new Bitmap(File.FullName);
+		}
 
 		public int Width => GetBitmap().Width;
 		

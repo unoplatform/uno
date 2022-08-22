@@ -103,11 +103,14 @@ jobs:
   - Android_Build_Net6_For_Tests
   - SamplesApp_UITests_Build
 
-  timeoutInMinutes: 120
+  timeoutInMinutes: 60
   variables:
     CI_Build: true
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
+
+    # See https://github.com/unoplatform/uno/issues/9550
+    UNO_UITEST_IGNORE_IMAGEASSERTS: True
 
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
@@ -143,6 +146,26 @@ jobs:
         ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_NAME: Automated
         UNO_UITEST_BUCKET_ID: 3 ## Note: Align with UNO_UITEST_BUCKET_COUNT
+        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
+        TARGETPLATFORM_NAME: xamarin
+        FAILBUILD_ON_FAILURE: true
+        UITEST_TEST_TIMEOUT: '270000'
+        ALLOW_RERUN: true
+
+      Android_9.0_Group_04:
+        ANDROID_SIMULATOR_APILEVEL: 28
+        UITEST_TEST_MODE_NAME: Automated
+        UNO_UITEST_BUCKET_ID: 4 ## Note: Align with UNO_UITEST_BUCKET_COUNT
+        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
+        TARGETPLATFORM_NAME: xamarin
+        FAILBUILD_ON_FAILURE: true
+        UITEST_TEST_TIMEOUT: '270000'
+        ALLOW_RERUN: true
+
+      Android_9.0_Group_05:
+        ANDROID_SIMULATOR_APILEVEL: 28
+        UITEST_TEST_MODE_NAME: Automated
+        UNO_UITEST_BUCKET_ID: 5 ## Note: Align with UNO_UITEST_BUCKET_COUNT
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
         TARGETPLATFORM_NAME: xamarin
         FAILBUILD_ON_FAILURE: true
