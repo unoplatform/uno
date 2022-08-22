@@ -21,7 +21,9 @@ namespace Windows.ApplicationModel
 		{
 			try
 			{
+#pragma warning disable CS0618 // Type or member is obsolete
 				var installer = ContextHelper.Current.PackageManager.GetInstallerPackageName(ContextHelper.Current.PackageName);
+#pragma warning restore CS0618 // Type or member is obsolete
 				return !installer.HasValue();
 			}
 			catch(Exception)
