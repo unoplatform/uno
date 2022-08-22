@@ -9,6 +9,22 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-		<Image Width="300" Height="400" Source="/Assets/Formats/uno-overalls.svg" />
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+		<StackPanel Spacing="4">
+			<ComboBox ItemsSource="{x:Bind Sources}" SelectedItem="{x:Bind SelectedSource, Mode=TwoWay}" Header="SVG image" />
+			<ComboBox ItemsSource="{x:Bind Stretches}" SelectedItem="{x:Bind SelectedStretch, Mode=TwoWay}" Header="Stretch" />
+			<TextBox Text="{x:Bind ImageWidth, Mode=TwoWay}" Header="Image width" />
+			<TextBox Text="{x:Bind ImageHeight, Mode=TwoWay}" Header="Image height" />
+			<TextBox Text="{x:Bind RasterizedWidth, Mode=TwoWay}" Header="Rasterized width" />
+			<TextBox Text="{x:Bind RasterizedHeight, Mode=TwoWay}" Header="Rasterized height" />
+		</StackPanel>
+		
+		<Grid Grid.Row="1">
+			<Image x:Name="ImageElement" />
+		</Grid>
 	</Grid>
 </Page>
