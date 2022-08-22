@@ -20,7 +20,7 @@ To light-up the Uno Islands feature, we need to reference several Uno Platform N
 <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-    <PackageReference Include="Uno.WinUI.Skia.Wpf" Version="4.5.0-dev.453" />
+    <PackageReference Include="Uno.WinUI.Skia.Wpf" Version="4.5.0" />
     <PackageReference Include="Uno.WinUI.RemoteControl" Version="4.5.0-dev.453" Condition="'$(Configuration)'=='Debug'" />
     <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.5.0-dev.453" />
     <PackageReference Include="Uno.WinUI.XamlHost" Version="4.5.0-dev.453" />
@@ -63,7 +63,7 @@ And now use the `UnoXamlHost` control to host the Uno Platform island:
 
 ## Data-binding
 
-The WPF `DataContext` is automatically propagated to the Uno Island-hosted controls, which makes it possible to use MVVM-based approach. Suppose we update the `MainWindow.xaml.cs` as follows:
+The WPF `DataContext` is automatically propagated to the Uno Island-hosted controls, which makes it possible to use an MVVM-based approach. Suppose we update the `MainWindow.xaml.cs` as follows:
 
 ```csharp
 public partial class MainWindow : Window
