@@ -4,6 +4,8 @@ using System.Windows.Markup;
 
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml", System.Windows.Markup.XamlConstants.BaseXamlNamespace, AssemblyName = "Uno.UI")]
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", System.Windows.Markup.XamlConstants.BaseXamlNamespace, AssemblyName = "Uno.UI")]
+[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", System.Windows.Markup.XamlConstants.RootUINamespace, AssemblyName = "Uno.UI")]
+[assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", System.Windows.Markup.XamlConstants.RootUINamespace, AssemblyName = "Uno")]
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", System.Windows.Markup.XamlConstants.Namespaces.Controls, AssemblyName = "Uno.UI")]
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", System.Windows.Markup.XamlConstants.Namespaces.Primitives, AssemblyName = "Uno.UI")]
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", System.Windows.Markup.XamlConstants.Namespaces.Text, AssemblyName = "Uno.UI")]
