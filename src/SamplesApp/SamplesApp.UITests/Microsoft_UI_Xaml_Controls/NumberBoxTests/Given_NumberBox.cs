@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using FluentAssertions;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
@@ -12,7 +11,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 	{
 		private void EnterTextInNumberBox(QueryEx numberBox, string text)
 		{
-			numberBox.SetDependencyPropertyValue("Value", text);
+			numberBox.SetDependencyPropertyValue("Text", text);
 		}
 
 		[Test]
@@ -87,7 +86,6 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 
 			Console.Write("Assert that typing '123' in the NumberBox changes the value to 100");
 			EnterTextInNumberBox(numBox, "123");
-			_app.PressEnter();
 
 			Assert.AreEqual(100, numBox.GetDependencyPropertyValue<double>("Value"));
 
