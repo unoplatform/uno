@@ -47,7 +47,6 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 
 			EnterTextInNumberBox(numBox, "۱٫۷");
 			_app.PressEnter();
-			_app.PressEnter();
 
 			Assert.AreEqual("۱٫۷۵", numBox.GetDependencyPropertyValue<string>("Text"));
 			Assert.AreEqual(1.75, numBox.GetDependencyPropertyValue<double>("Value"));

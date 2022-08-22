@@ -12,10 +12,9 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 	{
 		private void EnterTextInNumberBox(QueryEx numberBox, string text)
 		{
-			var inputBox = numberBox.Descendant().Marked("InputBox");
-			inputBox.FastTap();
-			_app.WaitForFocus(inputBox);
-			_app.EnterText(text);
+			numberBox.ClearText();
+			numberBox.EnterText(text);
+			_app.PressEnter();
 		}
 
 		[Test]
