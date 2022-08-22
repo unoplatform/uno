@@ -229,7 +229,7 @@ jobs:
 
       # Android 10 testing is disabled because of https://github.com/microsoft/appcenter/issues/1451
       # Android_10.0:
-      #   ANDROID_SIMULATOR_APILEVEL: 29
+      #   ANDROID_SIMULATOR_APILEVEL: 28
       #   UITEST_TEST_MODE_NAME: Automated
 
   steps:
