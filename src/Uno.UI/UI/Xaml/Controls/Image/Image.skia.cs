@@ -46,11 +46,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private void InitializeSvgSource(SvgImageSource source)
 		{
-			var canvas = source.GetCanvas();
-			AddChild(canvas);
+			_svgCanvas = source.GetCanvas();
+			AddChild(_svgCanvas);
 			_sourceDisposable.Disposable = Disposable.Create(() =>
 			{
-				RemoveChild(canvas);
+				RemoveChild(_svgCanvas);
+				_svgCanvas = null;
 			});
 		}
 
