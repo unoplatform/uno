@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Shapes
 {
-	internal class BorderLayerRenderer
+	partial class BorderLayerRenderer
 	{
 		private LayoutState _currentState;
 
