@@ -3,32 +3,11 @@ using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Uno.Foundation.Extensibility;
-using Uno.Foundation.Logging;
-using Uno.UI.Xaml.Media.Imaging.Svg;
-using Windows.Graphics.Display;
-using Windows.Graphics.Imaging;
-using Windows.UI.Composition;
 
 namespace Windows.UI.Xaml.Media.Imaging;
 
 partial class SvgImageSource
 {
-	private ISvgProvider _svgProvider;
-
-	partial void InitPartial()
-	{
-		if (!ApiExtensibility.CreateInstance(this, out _svgProvider))
-		{
-			if (this.Log().IsEnabled(LogLevel.Error))
-			{
-				this.Log().LogError("To use SVG on this platform, make sure to install the Uno.UI.Svg package.");
-			}
-		}
-	}
-
-	internal UIElement GetCanvas() => _svgProvider.GetCanvas();
-
 	private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
 	{
 		asyncImage = TryOpenSourceAsync(ct);

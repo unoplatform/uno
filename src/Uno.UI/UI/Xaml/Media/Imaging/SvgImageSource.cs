@@ -28,7 +28,7 @@ public partial class SvgImageSource : ImageSource
 	/// </summary>
 	public SvgImageSource()
 	{
-		InitPartial();
+		Initialize();
 	}
 
 	/// <summary>
@@ -39,6 +39,14 @@ public partial class SvgImageSource : ImageSource
 	{
 		UriSource = uriSource;
 
+		Initialize();
+	}
+
+	private void Initialize()
+	{
+#if __IOS__ || __MACOS__ || __SKIA__
+		InitSvgProvider();
+#endif
 		InitPartial();
 	}
 	
