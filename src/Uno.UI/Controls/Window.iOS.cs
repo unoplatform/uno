@@ -80,6 +80,58 @@ namespace Uno.UI.Controls
 			FocusedViewBringIntoViewOnKeyboardOpensPadding = 20;
 		}
 
+		public override void PressesEnded(NSSet<UIPress> presses, UIPressesEvent evt)
+		{
+			var handled = false;
+
+#if __MACCATALYST__
+			foreach (UIPress press in presses)
+			{
+				var virtualKey = VirtualKeyHelper.FromKeyCode(press.Key.KeyCode);
+
+				var args = new KeyEventArgs(
+					"keyboard",
+					virtualKey,
+					new CorePhysicalKeyStatus
+					{
+						ScanCode = (uint)press.Key.KeyCode,
+						RepeatCount = 1,
+					});
+
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"PressesEnded: {press.Key.KeyCode} -> {virtualKey}");
+				}
+
+				try
+				{
+					if (_ownerEvents is { })
+					{
+						_ownerEvents.RaiseKeyUp(args);
+
+						var routerArgs = new KeyRoutedEventArgs(this, virtualKey)
+						{
+							CanBubbleNatively = false
+						};
+
+						(FocusManager.GetFocusedElement() as FrameworkElement)?.RaiseEvent(UIElement.KeyUpEvent, routerArgs);
+
+						handled = true;
+					}
+				}
+				catch (Exception e)
+				{
+					Application.Current.RaiseRecoverableUnhandledException(e);
+				}
+			}
+#endif
+
+			if (!handled)
+			{
+				base.PressesEnded(presses, evt);
+			}
+		}
+
 		public override void PressesBegan(NSSet<UIPress> presses, UIPressesEvent evt)
 		{
 			var handled = false;
@@ -108,7 +160,15 @@ namespace Uno.UI.Controls
 					if (_ownerEvents is { })
 					{
 						_ownerEvents.RaiseKeyDown(args);
-						handled |= true;
+
+						var routerArgs = new KeyRoutedEventArgs(this, virtualKey)
+						{
+							CanBubbleNatively = false
+						};
+
+						(FocusManager.GetFocusedElement() as FrameworkElement)?.RaiseEvent(UIElement.KeyDownEvent, routerArgs);
+
+						handled = true;
 					}
 				}
 				catch (Exception e)
@@ -154,14 +214,11 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		internal void SetOwner(CoreWindow owner)
-		{
-			_ownerEvents = (ICoreWindowEvents)owner;
-		}
+		internal void SetOwner(CoreWindow owner) => _ownerEvents = (ICoreWindowEvents)owner;
 
 		/// <summary>
 		/// The behavior to use to bring the focused item into view when opening the keyboard.
-		/// Null means that auto bring into view on keayboard opening is disabled.
+		/// Null means that auto bring into view on keyboard opening is disabled.
 		/// </summary>
 		public BringIntoViewMode? FocusedViewBringIntoViewOnKeyboardOpensMode { get; set; }
 
