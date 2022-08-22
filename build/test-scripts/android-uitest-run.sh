@@ -44,6 +44,8 @@ export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-resul
 export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
 export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-android-automated-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME.xml
 
+mkdir -p $UNO_UITEST_SCREENSHOT_PATH
+
 if [ $(wc -l < "$UNO_TESTS_FAILED_LIST") -eq 1 ];
 then
 	# The test results file only contains the re-run marker and no
@@ -134,8 +136,6 @@ cp $UNO_UITEST_ANDROIDAPK_PATH $BUILD_ARTIFACTSTAGINGDIRECTORY
 cd $BUILD_SOURCESDIRECTORY/build
 
 mono nuget/NuGet.exe install NUnit.ConsoleRunner -Version $NUNIT_VERSION
-
-mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
 # Move to the screenshot directory so that the output path is the proper one, as
 # required by Xamarin.UITest
