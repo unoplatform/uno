@@ -1,16 +1,8 @@
-using System;
-using Uno.UI.Views.Controls;
-using Windows.UI.Xaml;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
-using Uno.Disposables;
-using Windows.UI.Xaml.Controls;
-using Uno.UI.Controls;
-using Windows.UI.Xaml.Shapes;
-using Windows.UI.Xaml.Media;
-
-using UIKit;
 using CoreGraphics;
+using UIKit;
+using Uno.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -98,7 +90,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (backgroundImage == null)
 				{
-					(Background as ImageBrush)?.ImageSource?.TryOpenSync(out backgroundImage);
+					ImageData backgroundImageData = default;
+					(Background as ImageBrush)?.ImageSource?.TryOpenSync(out backgroundImageData);
+
+					if (backgroundImageData.Kind == ImageDataKind.NativeImage)
+					{
+						backgroundImage = backgroundImageData.NativeImage;
+					}
 				}
 
 				_borderRenderer.UpdateLayer(

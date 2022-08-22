@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 			remove => _htmlImage.UnregisterEventHandler("error", value, GenericEventHandlers.RaiseExceptionRoutedEventHandler);
 		}
 
-		partial void OnSourceChanged(ImageSource newValue)
+		partial void OnSourceChanged(ImageSource newValue, bool forceReload = false)
 		{
 			UpdateHitTest();
 

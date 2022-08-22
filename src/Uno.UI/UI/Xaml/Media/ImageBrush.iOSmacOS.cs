@@ -9,6 +9,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Uno.Disposables;
 using Windows.UI.Core;
+using Uno.UI.Xaml.Media;
 
 #if __IOS__
 using UIKit;
@@ -34,9 +35,11 @@ namespace Windows.UI.Xaml.Media
 				oldValue?.Dispose();
 				_imageScheduler.Disposable = null;
 			}
-			else if (newValue.TryOpenSync(out var image))
+			else if (
+				newValue.TryOpenSync(out var imageData) &&
+				imageData.Kind == ImageDataKind.NativeImage)
 			{
-				SetImage(image);
+				SetImage(imageData.NativeImage);
 				oldValue?.Dispose();
 				_imageScheduler.Disposable = null;
 			}
@@ -55,14 +58,14 @@ namespace Windows.UI.Xaml.Media
 			using var cd = new CancellationDisposable();
 			_imageScheduler.Disposable = cd;
 
-			var image = await Task.Run(() => newValue.Open(cd.Token), cd.Token);
+			var imageData = await Task.Run(() => newValue.Open(cd.Token), cd.Token);
 
-			if (cd.Token.IsCancellationRequested)
+			if (cd.Token.IsCancellationRequested || imageData.Kind != ImageDataKind.NativeImage)
 			{
 				return;
 			}
 
-			SetImage(image);
+			SetImage(imageData.NativeImage);
 		}
 
 		private void SetImage(_Image image,  bool failIfNull = true)
