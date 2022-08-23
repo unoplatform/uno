@@ -21,7 +21,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_Devices
 {
-	[SampleControlInfo("Windows.Devices", "HingeAngleSensor", description: "Demonstrates use of Windows.Devices.Sensors.HingeAngleSensor", viewModelType: typeof(HingeAngleSensorTestsViewModel))]
+	[SampleControlInfo("Windows.Devices", "HingeAngleSensor", description: "Demonstrates use of Windows.Devices.Sensors.HingeAngleSensor", viewModelType: typeof(HingeAngleSensorTestsViewModel), ignoreInSnapshotTests: true)]
 	public sealed partial class HingeAngleSensorTests : UserControl
 	{
 		public HingeAngleSensorTests()

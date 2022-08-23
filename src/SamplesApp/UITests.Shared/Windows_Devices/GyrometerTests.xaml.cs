@@ -11,7 +11,7 @@ using Windows.UI.Xaml.Data;
 
 namespace UITests.Shared.Windows_Devices
 {
-	[SampleControlInfo("Windows.Devices", "Gyrometer", description: "Demonstrates use of Windows.Devices.Sensors.Gyrometer", viewModelType: typeof(GyrometerTestsViewModel))]
+	[SampleControlInfo("Windows.Devices", "Gyrometer", description: "Demonstrates use of Windows.Devices.Sensors.Gyrometer", viewModelType: typeof(GyrometerTestsViewModel), ignoreInSnapshotTests: true)]
 	public sealed partial class GyrometerTests : UserControl
 	{
 		public GyrometerTests()
