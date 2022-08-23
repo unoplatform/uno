@@ -185,8 +185,7 @@ namespace SamplesApp.UITests
 			}
 
 			var title = GetCurrentStepTitle(stepName);
-
-			var fileInfo = _app.Screenshot(title);
+			var fileInfo = GetNativeScreenshot(title);
 
 			var fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileInfo.Name);
 			if (fileNameWithoutExt != title)
@@ -217,6 +216,18 @@ namespace SamplesApp.UITests
 			}
 
 			return new ScreenshotInfo(fileInfo, stepName);
+		}
+
+		private FileInfo GetNativeScreenshot(string title)
+		{
+			if (AppInitializer.GetLocalPlatform() == Platform.Android)
+			{
+				return _app.GetInAppScreenshot();
+			}
+			else
+			{
+				return _app.Screenshot(title);
+			}
 		}
 
 		private static string GetCurrentStepTitle(string stepName) =>
