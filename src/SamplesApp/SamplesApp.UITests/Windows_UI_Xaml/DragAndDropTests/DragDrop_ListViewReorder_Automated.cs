@@ -79,6 +79,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 		public void When_Reorder_To_Last() => Test_Reorder(3, 5);
 
 		[Test]
+		[Ignore("Flaky test. Tracked by https://github.com/unoplatform/uno/issues/9080")]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)] // TODO: support drag-and-drop testing on mobile https://github.com/unoplatform/Uno.UITest/issues/31
 		public void When_Reorder_To_Last_2() => Test_Reorder(3, 6 /* out of range */, expectedTo: 5);
