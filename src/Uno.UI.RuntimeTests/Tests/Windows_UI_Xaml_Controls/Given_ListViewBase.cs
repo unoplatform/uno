@@ -2476,22 +2476,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(count < source.Length, $"Native ListView is not {(count.HasValue ? $"virtualized (count={count})" : "loaded")}.");
 
 			// scroll to bottom
-#if __ANDROID__
-			lv.NativePanel.SmoothScrollToPosition(lv.Items.Count - 1);
-#elif __IOS__
-			if (lv.NativePanel is { } native)
-			{
-				// find last no-empty section to scroll
-				var path = Enumerable.Range(0, (int)native.NumberOfSections()).Reverse()
-					.Select(x => new { Section = x, Index = native.NumberOfItemsInSection(x) - 1 })
-					.Where(x => x.Index > 0)
-					.FirstOrDefault();
-				if (path != null)
-				{
-					native.ScrollToItem(NSIndexPath.FromRowSection(path.Index, path.Section), UICollectionViewScrollPosition.Bottom, animated: true);
-				}
-			}
-#endif
+			Uno.UI.Helpers.ListViewHelper.SmoothScroll(lv, lv.Items.Count - 1);
 			await Task.Delay(2000);
 			await WindowHelper.WaitForIdle();
 
