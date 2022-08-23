@@ -179,7 +179,7 @@ jobs:
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
         TARGETPLATFORM_NAME: xamarin
         FAILBUILD_ON_FAILURE: true
-        ALLOW_RERUN: true
+        ALLOW_RERUN: false
         UITEST_TEST_TIMEOUT: '270000'
 
       Android_9.0_RuntimeTests_00:
