@@ -9,6 +9,7 @@ using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.ListViewPages;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
+using Foundation;
 using UIKit;
 #elif __MACOS__
 using AppKit;
@@ -2449,6 +2450,64 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Enumerable.Range(0, source.LastIndex).Reverse().FirstOrDefault(x => list.ContainerFromIndex(x) != null)
 			);
 		}
+
+#if __IOS__ || __ANDROID__
+		[TestMethod]
+		public async Task When_Smooth_Scrolling()
+		{
+			// setup
+			var container = new Grid { Height = 210, VerticalAlignment = VerticalAlignment.Bottom };
+
+			var source = Enumerable.Range(0, 50).ToArray();
+			var lv = new ListView
+			{
+				ItemsSource = source,
+				ItemTemplate = FixedSizeItemTemplate, // height=29
+				ItemContainerStyle = BasicContainerStyle,
+			};
+			container.Children.Add(lv);
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(lv);
+			await Task.Delay(1000);
+
+			// check the listview doesnt already have all items materialized
+			var count = lv.NativePanel?.GetChildren().Count();
+			Assert.IsTrue(count < source.Length, $"Native ListView is not {(count.HasValue ? $"virtualized (count={count})" : "loaded")}.");
+
+			// scroll to bottom
+#if __ANDROID__
+			lv.NativePanel.SmoothScrollToPosition(lv.Items.Count - 1);
+#elif __IOS__
+			if (lv.NativePanel is { } native)
+			{
+				// find last no-empty section to scroll
+				var path = Enumerable.Range(0, (int)native.NumberOfSections()).Reverse()
+					.Select(x => new { Section = x, Index = native.NumberOfItemsInSection(x) - 1 })
+					.Where(x => x.Index > 0)
+					.FirstOrDefault();
+				if (path != null)
+				{
+					native.ScrollToItem(NSIndexPath.FromRowSection(path.Index, path.Section), UICollectionViewScrollPosition.Bottom, animated: true);
+				}
+			}
+#endif
+			await Task.Delay(2000);
+			await WindowHelper.WaitForIdle();
+
+			// check if the last item is now materialized
+			var materialized = lv.NativePanel.GetChildren()
+				.Reverse()
+#if __ANDROID__
+				.Select(x => (x as ListViewItem)?.Content as int?)
+#elif __IOS__
+				.Select(x => ((x as ListViewBaseInternalContainer)?.Content as ListViewItem)?.Content as int?)
+#endif
+				.ToArray();
+			Assert.IsTrue(materialized.Contains(source.Last()), $"Failed to scroll. materialized: {string.Join(",", materialized)}");
+		}
+#endif
+
 
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
 
