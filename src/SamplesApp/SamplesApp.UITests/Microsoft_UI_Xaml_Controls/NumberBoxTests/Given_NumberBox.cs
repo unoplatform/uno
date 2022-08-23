@@ -60,7 +60,6 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 
 			Console.WriteLine("Assert that incrementing after typing in a value validates the text first.");
 			EnterTextInNumberBox(numBox, "50");
-			_app.PressEnter();
 			upButton.FastTap();
 			Assert.AreEqual(55, numBox.GetDependencyPropertyValue<double>("Value"));
 		}
