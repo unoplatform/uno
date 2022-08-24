@@ -7,7 +7,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.Repeater
 {
-	[Sample("ItemsRepeater")]
+	[Sample("ItemsRepeater", IgnoreInSnapshotTests = true)]
 	public sealed partial class FlowLayout_Simple : Page
 	{
 		public FlowLayout_Simple()
