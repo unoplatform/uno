@@ -408,32 +408,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			var dialogClosedScreenshot = CurrentTestTakeScreenShot("3 ContentDialog Closed");
 
 			// compare
-			var comparableRect = GetOsComparableRect();
-			ImageAssert.AreNotEqual(initialScreenshot, dialogOpenedScreenshot, comparableRect);
-			ImageAssert.AreEqual(dialogOpenedScreenshot, dialogStillOpenedScreenshot, comparableRect);
-			ImageAssert.AreNotEqual(dialogStillOpenedScreenshot, dialogClosedScreenshot, comparableRect);
+			ImageAssert.AreNotEqual(initialScreenshot, dialogOpenedScreenshot);
+			ImageAssert.AreEqual(dialogOpenedScreenshot, dialogStillOpenedScreenshot);
+			ImageAssert.AreNotEqual(dialogStillOpenedScreenshot, dialogClosedScreenshot);
 
-			Rectangle? GetOsComparableRect()
-			{
-				if (AppInitializer.GetLocalPlatform() == Platform.Android)
-				{
-					var height = int.Parse(statusBarHeight.GetText());
-
-					// the status bar area should be excluded for image comparison
-					// 24dp is default height of status bar
-					var screen = _app.GetScreenDimensions();
-					return new Rectangle(
-						0,
-						height,
-						(int)screen.Width,
-						(int)screen.Height - height
-					);
-				}
-				else
-				{
-					return default;
-				}
-			}
 		}
 
 		[Test]
