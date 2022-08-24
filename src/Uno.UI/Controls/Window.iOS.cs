@@ -286,7 +286,8 @@ namespace Uno.UI.Controls
 			}
 			if (multilineTextBoxView != null && multilineTextBoxView.IsFirstResponder)
 			{
-				viewRectInScrollView = multilineTextBoxView.GetCaretRectForPosition(multilineTextBoxView.SelectedTextRange.Start);
+				using var range = Runtime.GetNSObject<UITextRange>(multilineTextBoxView.SelectedTextRange);
+				viewRectInScrollView = multilineTextBoxView.GetCaretRectForPosition(range.Start);
 
 				// We need to add an additional margins because the caret is too tight to the text. The font is cutoff under the keyboard.
 				viewRectInScrollView.Y -= KeyboardMargin;
