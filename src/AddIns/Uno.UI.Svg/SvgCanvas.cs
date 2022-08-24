@@ -6,6 +6,7 @@ using SkiaSharp.Views.UWP;
 using Svg.Skia;
 using Uno.Disposables;
 using Windows.Foundation;
+using Windows.Graphics.Display;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -131,18 +132,13 @@ internal partial class SvgCanvas :
 
 	protected override void OnPaintSurface(SKPaintGLSurfaceEventArgs e)
 	{
+		var scale = (float)GetScaleFactorForLayoutRounding();
+		e.Surface.Canvas.SetMatrix(SKMatrix.CreateScale(scale, scale));
 		e.Surface.Canvas.Clear(SKColors.Transparent);
 		if (_svgProvider.SkSvg?.Picture is { } picture)
 		{
 			e.Surface.Canvas.DrawPicture(picture, ref _currentScaleMatrix);
 		}
-		if (double.IsNaN(_svgImageSource.RasterizePixelHeight) && double.IsNaN(_svgImageSource.RasterizePixelWidth))
-		{
-			// Draw as actual vectors
-		}
-		else
-		{
-			// Draw as bitmap
-		}
+		//TODO: Pre-rasterization support
 	}
 }
