@@ -510,6 +510,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Android)]
+		[Ignore("Android 31 or later does not bring the keyboard up https://github.com/unoplatform/uno/issues/9080")]
 		public void TextBox_Readonly_ShouldNotBringUpKeyboard()
 		{
 			Run("Uno.UI.Samples.UITests.TextBoxControl.TextBox_IsReadOnly");

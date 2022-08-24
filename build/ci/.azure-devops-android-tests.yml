@@ -7,7 +7,7 @@ parameters:
 jobs:
 
 - job: Android_Build_Net6_For_Tests
-  displayName: 'Android UI Tests (Net6 Build)'
+  displayName: 'Build net6 Android UI Tests'
 
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
@@ -51,7 +51,7 @@ jobs:
       ArtifactType: Container
 
 - job: Android_Build_For_Tests
-  displayName: 'Android UI Tests (Build)'
+  displayName: 'Build Android UI Tests'
 
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
@@ -97,7 +97,7 @@ jobs:
       ArtifactType: Container
 
 - job: Android_Tests
-  displayName: 'Android UI Tests (Run)'
+  displayName: 'Run Android UI Tests'
   dependsOn:
   - Android_Build_For_Tests
   - Android_Build_Net6_For_Tests
@@ -108,9 +108,6 @@ jobs:
     CI_Build: true
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
-
-    # See https://github.com/unoplatform/uno/issues/9550
-    UNO_UITEST_IGNORE_IMAGEASSERTS: True
 
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
@@ -179,7 +176,7 @@ jobs:
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
         TARGETPLATFORM_NAME: xamarin
         FAILBUILD_ON_FAILURE: true
-        ALLOW_RERUN: false
+        ALLOW_RERUN: true
         UITEST_TEST_TIMEOUT: '270000'
 
       Android_9.0_RuntimeTests_00:
@@ -232,7 +229,7 @@ jobs:
 
       # Android 10 testing is disabled because of https://github.com/microsoft/appcenter/issues/1451
       # Android_10.0:
-      #   ANDROID_SIMULATOR_APILEVEL: 29
+      #   ANDROID_SIMULATOR_APILEVEL: 28
       #   UITEST_TEST_MODE_NAME: Automated
 
   steps:
@@ -240,6 +237,7 @@ jobs:
     clean: true
 
   - task: DownloadBuildArtifacts@0
+    displayName: 'Download SamplesApp UnitTests'
     inputs:
         artifactName: $(SAMPLEAPP_ARTIFACT_NAME)
         downloadPath: '$(build.sourcesdirectory)/build'

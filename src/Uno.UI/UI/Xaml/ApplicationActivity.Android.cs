@@ -282,6 +282,8 @@ namespace Windows.UI.Xaml
 			Windows.UI.Xaml.Application.Current.OnSystemThemeChanged();
 		}
 
+#pragma warning disable CS0618 // deprecated members
+#pragma warning disable CS0672 // deprecated members
 		public override void OnBackPressed()
 		{
 			var handled = Windows.UI.Core.SystemNavigationManager.GetForCurrentView().RequestBack();
@@ -290,6 +292,8 @@ namespace Windows.UI.Xaml
 				base.OnBackPressed();
 			}
 		}
+#pragma warning restore CS0618 // deprecated members
+#pragma warning restore CS0672 // deprecated members
 
 		protected override void OnNewIntent(Intent intent)
 		{
