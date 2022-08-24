@@ -295,18 +295,6 @@ jobs:
 
     displayName: Run Android Tests
 
-    env:
-      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
-      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
-      ANDROID_SIMULATOR_APILEVEL: $(ANDROID_SIMULATOR_APILEVEL)
-      UITEST_TEST_MODE_NAME: "$(UITEST_TEST_MODE_NAME)"
-      UNO_UITEST_BUCKET_ID: "$(UNO_UITEST_BUCKET_ID)"
-      UITEST_TEST_TIMEOUT: "$(UITEST_TEST_TIMEOUT)"
-      SAMPLEAPP_ARTIFACT_NAME: "$(SAMPLEAPP_ARTIFACT_NAME)"
-      TARGETPLATFORM_NAME: "$(TARGETPLATFORM_NAME)"
-      UITEST_RUNTIME_TEST_GROUP: "$(UITEST_RUNTIME_TEST_GROUP)"
-      UITEST_RUNTIME_TEST_GROUP_COUNT: "$(UITEST_RUNTIME_TEST_GROUP_COUNT)"
-
   - task: PublishTestResults@2
     condition: always()
     inputs:
@@ -323,16 +311,6 @@ jobs:
 
     displayName: Run Android Tests
     condition: eq(variables.ALLOW_RERUN, 'true')
-
-    env:
-      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
-      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
-      ANDROID_SIMULATOR_APILEVEL: $(ANDROID_SIMULATOR_APILEVEL)
-      UITEST_TEST_MODE_NAME: "$(UITEST_TEST_MODE_NAME)"
-      UNO_UITEST_BUCKET_ID: "$(UNO_UITEST_BUCKET_ID)"
-      UITEST_TEST_TIMEOUT: "$(UITEST_TEST_TIMEOUT)"
-      SAMPLEAPP_ARTIFACT_NAME: "$(SAMPLEAPP_ARTIFACT_NAME)"
-      TARGETPLATFORM_NAME: "$(TARGETPLATFORM_NAME)"
 
   - task: PublishTestResults@2
     condition: eq(variables.ALLOW_RERUN, 'true')
