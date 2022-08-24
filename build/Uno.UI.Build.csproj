@@ -136,7 +136,6 @@
 	</Target>
 
 	<Target Name="BuildCI">
-		<Exec Command="npm i" WorkingDirectory="..\src\SamplesApp\SamplesApp.Wasm.UITests" />
 
 		<MSBuild Properties="Configuration=Release_NoSamples;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest;PackageVersion=$(GITVERSION_SemVer)"
              Projects="..\src\Uno.UI.sln"
