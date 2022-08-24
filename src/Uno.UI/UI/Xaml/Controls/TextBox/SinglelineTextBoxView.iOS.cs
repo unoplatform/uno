@@ -225,10 +225,10 @@ namespace Windows.UI.Xaml.Controls
 		/// Workaround for https://github.com/unoplatform/uno/issues/9430
 		/// </summary>
 		[DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSendSuper")]
-		static extern IntPtr IntPtr_objc_msgSendSuper(IntPtr receiver, IntPtr selector);
+		static internal extern IntPtr IntPtr_objc_msgSendSuper(IntPtr receiver, IntPtr selector);
 
 		[DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSendSuper")]
-		static extern void void_objc_msgSendSuper(IntPtr receiver, IntPtr selector, IntPtr arg);
+		static internal extern void void_objc_msgSendSuper(IntPtr receiver, IntPtr selector, IntPtr arg);
 
 		[Export("selectedTextRange")]
 		public new IntPtr SelectedTextRange
@@ -241,7 +241,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var textBox = TextBox;
 
-				if (textBox != null && IntPtr_objc_msgSendSuper(SuperHandle, Selector.GetHandle("selectedTextRange")) != value)
+				if (textBox != null && SelectedTextRange != value)
 				{
 					void_objc_msgSendSuper(SuperHandle, Selector.GetHandle("setSelectedTextRange:"), value);
 					textBox.OnSelectionChanged();
