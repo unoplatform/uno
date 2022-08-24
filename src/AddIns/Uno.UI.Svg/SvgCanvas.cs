@@ -76,44 +76,6 @@ internal partial class SvgCanvas : SkiaCanvas
 		Invalidate();
 	}
 
-	//protected override Size MeasureOverride(Size availableSize)
-	//{
-	//	if (_skSvg?.Picture != null)
-	//	{
-	//		// TODO:MZ: Handle case where SVG is rasterized
-	//		var measuredSize = new Size(_skSvg.Picture.CullRect.Width, _skSvg.Picture.CullRect.Height);
-	//		return measuredSize;
-	//		//Size ret;
-
-	//		//if (
-	//		//	double.IsInfinity(availableSize.Width)
-	//		//	&& double.IsInfinity(availableSize.Height)
-	//		//)
-	//		//{
-	//		//	ret = measuredSize;
-	//		//}
-	//		//else
-	//		//{
-	//		//	ret = ImageSizeHelper.AdjustSize(availableSize, measuredSize);
-	//		//}
-
-	//		// Always making sure the ret size isn't bigger than the available size for an image with a fixed width or height
-	//		//ret = new Size(
-	//		//	!Double.IsNaN(Width) && (ret.Width > availableSize.Width) ? availableSize.Width : ret.Width,
-	//		//	!Double.IsNaN(Height) && (ret.Height > availableSize.Height) ? availableSize.Height : ret.Height
-	//		//);
-
-	//		//if (this.Log().IsEnabled(LogLevel.Debug))
-	//		//{
-	//		//	this.Log().LogDebug($"Measure {this} availableSize:{availableSize} measuredSize:{_lastMeasuredSize} ret:{ret} Stretch: {Stretch} Width:{Width} Height:{Height}");
-	//		//}
-	//	}
-	//	else
-	//	{
-	//		return default;
-	//	}
-	//}
-
 	protected override Size ArrangeOverride(Size finalSize)
 	{
 		finalSize = base.ArrangeOverride(finalSize);

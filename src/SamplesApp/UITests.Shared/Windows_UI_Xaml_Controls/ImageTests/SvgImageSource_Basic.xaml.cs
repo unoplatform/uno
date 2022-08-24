@@ -20,6 +20,7 @@ public sealed partial class SvgImageSource_Basic : Page
 	public SvgImageSource_Basic()
 	{
 		this.InitializeComponent();
+		OnPropertyChanged();
 	}
 
 	public string[] Sources { get; } = new string[]
