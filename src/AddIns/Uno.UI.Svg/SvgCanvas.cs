@@ -12,15 +12,17 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using SKMatrix = SkiaSharp.SKMatrix;
+#if __IOS__ || __MACOS__
+using SkiaCanvas = SkiaSharp.Views.UWP.SKSwapChainPanel;
+using SkiaPaintEventArgs = SkiaSharp.Views.UWP.SKPaintGLSurfaceEventArgs;
+#else
+using SkiaCanvas = SkiaSharp.Views.UWP.SKXamlCanvas;
+using SkiaPaintEventArgs = SkiaSharp.Views.UWP.SKPaintSurfaceEventArgs;
+#endif
 
 namespace Uno.UI.Svg;
 
-internal partial class SvgCanvas :
-#if __IOS__ || __MACOS__
-	SKSwapChainPanel
-#else
-	SKXamlCanvas
-#endif
+internal partial class SvgCanvas : SkiaCanvas
 {
 	private readonly SvgImageSource _svgImageSource;
 	private readonly SvgProvider _svgProvider;
@@ -48,7 +50,9 @@ internal partial class SvgCanvas :
 	{
 		Invalidate();
 
-#if __IOS__ || __MACOS__
+#if __MACCATALYST__
+		this.Opaque = false;		
+#elif __IOS__ || __MACOS__
 		// The SKGLTextureView is opaque by default, so we poke at the tree
 		// to change the opacity of the first view of the SKSwapChainPanel
 		// to make it transparent.
@@ -130,7 +134,7 @@ internal partial class SvgCanvas :
 	}
 
 
-	protected override void OnPaintSurface(SKPaintGLSurfaceEventArgs e)
+	protected override void OnPaintSurface(SkiaPaintEventArgs e)
 	{
 		var scale = (float)GetScaleFactorForLayoutRounding();
 		e.Surface.Canvas.SetMatrix(SKMatrix.CreateScale(scale, scale));
