@@ -103,11 +103,14 @@ jobs:
   - Android_Build_Net6_For_Tests
   - SamplesApp_UITests_Build
 
-  timeoutInMinutes: 120
+  timeoutInMinutes: 90
   variables:
     CI_Build: true
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
+
+    # See https://github.com/unoplatform/uno/issues/9550
+    UNO_UITEST_IGNORE_IMAGEASSERTS: True
 
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
@@ -149,6 +152,26 @@ jobs:
         UITEST_TEST_TIMEOUT: '270000'
         ALLOW_RERUN: true
 
+      Android_9.0_Group_04:
+        ANDROID_SIMULATOR_APILEVEL: 28
+        UITEST_TEST_MODE_NAME: Automated
+        UNO_UITEST_BUCKET_ID: 4 ## Note: Align with UNO_UITEST_BUCKET_COUNT
+        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
+        TARGETPLATFORM_NAME: xamarin
+        FAILBUILD_ON_FAILURE: true
+        UITEST_TEST_TIMEOUT: '270000'
+        ALLOW_RERUN: true
+
+      Android_9.0_Group_05:
+        ANDROID_SIMULATOR_APILEVEL: 28
+        UITEST_TEST_MODE_NAME: Automated
+        UNO_UITEST_BUCKET_ID: 5 ## Note: Align with UNO_UITEST_BUCKET_COUNT
+        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
+        TARGETPLATFORM_NAME: xamarin
+        FAILBUILD_ON_FAILURE: true
+        UITEST_TEST_TIMEOUT: '270000'
+        ALLOW_RERUN: true
+
       Android_9.0_Snapshots:
         ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_NAME: Snapshots
@@ -156,13 +179,39 @@ jobs:
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
         TARGETPLATFORM_NAME: xamarin
         FAILBUILD_ON_FAILURE: true
-        ALLOW_RERUN: true
+        ALLOW_RERUN: false
         UITEST_TEST_TIMEOUT: '270000'
 
-      Android_9.0_RuntimeTests:
+      Android_9.0_RuntimeTests_00:
         ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_NAME: RuntimeTests
         UNO_UITEST_BUCKET_ID: RuntimeTests
+        UITEST_RUNTIME_TEST_GROUP: 0
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
+        TARGETPLATFORM_NAME: xamarin
+        FAILBUILD_ON_FAILURE: true
+        ALLOW_RERUN: false
+        UITEST_TEST_TIMEOUT: '2600000'
+
+      Android_9.0_RuntimeTests_01:
+        ANDROID_SIMULATOR_APILEVEL: 28
+        UITEST_TEST_MODE_NAME: RuntimeTests
+        UNO_UITEST_BUCKET_ID: RuntimeTests
+        UITEST_RUNTIME_TEST_GROUP: 1
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+        SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
+        TARGETPLATFORM_NAME: xamarin
+        FAILBUILD_ON_FAILURE: true
+        ALLOW_RERUN: false
+        UITEST_TEST_TIMEOUT: '2600000'
+
+      Android_9.0_RuntimeTests_02:
+        ANDROID_SIMULATOR_APILEVEL: 28
+        UITEST_TEST_MODE_NAME: RuntimeTests
+        UNO_UITEST_BUCKET_ID: RuntimeTests
+        UITEST_RUNTIME_TEST_GROUP: 1
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-build
         TARGETPLATFORM_NAME: xamarin
         FAILBUILD_ON_FAILURE: true
@@ -246,20 +295,10 @@ jobs:
 
     displayName: Run Android Tests
 
-    env:
-      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
-      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
-      ANDROID_SIMULATOR_APILEVEL: $(ANDROID_SIMULATOR_APILEVEL)
-      UITEST_TEST_MODE_NAME: "$(UITEST_TEST_MODE_NAME)"
-      UNO_UITEST_BUCKET_ID: "$(UNO_UITEST_BUCKET_ID)"
-      UITEST_TEST_TIMEOUT: "$(UITEST_TEST_TIMEOUT)"
-      SAMPLEAPP_ARTIFACT_NAME: "$(SAMPLEAPP_ARTIFACT_NAME)"
-      TARGETPLATFORM_NAME: "$(TARGETPLATFORM_NAME)"
-
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(UITEST_TEST_MODE_NAME)/$(UNO_UITEST_BUCKET_ID)/$(TARGETPLATFORM_NAME) Test Run (FAIL_TESTS_ON_NO_RERUN $(FAIL_TESTS_ON_NO_RERUN))'
+      testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(UITEST_TEST_MODE_NAME)/$(UNO_UITEST_BUCKET_ID)/$(TARGETPLATFORM_NAME)/$(UITEST_RUNTIME_TEST_GROUP) Test Run (FAIL_TESTS_ON_NO_RERUN $(FAIL_TESTS_ON_NO_RERUN))'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
       # don't fail on failed tests, second run will do it
@@ -272,16 +311,6 @@ jobs:
 
     displayName: Run Android Tests
     condition: eq(variables.ALLOW_RERUN, 'true')
-
-    env:
-      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
-      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
-      ANDROID_SIMULATOR_APILEVEL: $(ANDROID_SIMULATOR_APILEVEL)
-      UITEST_TEST_MODE_NAME: "$(UITEST_TEST_MODE_NAME)"
-      UNO_UITEST_BUCKET_ID: "$(UNO_UITEST_BUCKET_ID)"
-      UITEST_TEST_TIMEOUT: "$(UITEST_TEST_TIMEOUT)"
-      SAMPLEAPP_ARTIFACT_NAME: "$(SAMPLEAPP_ARTIFACT_NAME)"
-      TARGETPLATFORM_NAME: "$(TARGETPLATFORM_NAME)"
 
   - task: PublishTestResults@2
     condition: eq(variables.ALLOW_RERUN, 'true')
