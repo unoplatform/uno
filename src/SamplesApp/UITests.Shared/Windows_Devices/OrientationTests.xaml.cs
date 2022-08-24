@@ -6,7 +6,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_Devices
 {
-	[SampleControlInfo("Windows.Devices", "Orientation")]
+	[SampleControlInfo("Windows.Devices", "Orientation", ignoreInSnapshotTests: true)]
 
 	public sealed partial class OrientationTests : Page
 	{
