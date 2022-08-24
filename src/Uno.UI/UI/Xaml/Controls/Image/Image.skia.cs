@@ -137,7 +137,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (Source is SvgImageSource)
 				{
-					_svgCanvas.Arrange(new Rect(finalPosition.X, finalPosition.Y, roundedSize.X, roundedSize.Y));
+					_svgCanvas?.Arrange(new Rect(finalPosition.X, finalPosition.Y, roundedSize.X, roundedSize.Y));
 					return finalSize;
 				}
 				else

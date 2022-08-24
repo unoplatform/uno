@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using ShimSkiaSharp;
 using SkiaSharp;
 using SkiaSharp.Views.UWP;
 using Svg.Skia;
@@ -9,10 +10,16 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using SKMatrix = SkiaSharp.SKMatrix;
 
 namespace Uno.UI.Svg;
 
-internal partial class SvgCanvas : SKXamlCanvas
+internal partial class SvgCanvas :
+#if __IOS__ || __MACOS__
+	SKSwapChainPanel
+#else
+	SKXamlCanvas
+#endif
 {
 	private readonly SvgImageSource _svgImageSource;
 	private readonly SvgProvider _svgProvider;
@@ -36,7 +43,21 @@ internal partial class SvgCanvas : SKXamlCanvas
 		Unloaded += SvgCanvas_Unloaded;
 	}
 
-	private void SvgCanvas_Loaded(object sender, RoutedEventArgs e) => Invalidate();
+	private void SvgCanvas_Loaded(object sender, RoutedEventArgs e)
+	{
+		Invalidate();
+
+#if __IOS__ || __MACOS__
+		// The SKGLTextureView is opaque by default, so we poke at the tree
+		// to change the opacity of the first view of the SKSwapChainPanel
+		// to make it transparent.
+		if (Subviews.Length == 1 &&
+			Subviews[0] is GLKit.GLKView texture)
+		{
+			texture.Opaque = false;
+		}
+#endif
+	}
 
 	private void SvgCanvas_Unloaded(object sender, RoutedEventArgs e) => _disposables.Dispose();
 
@@ -96,7 +117,6 @@ internal partial class SvgCanvas : SKXamlCanvas
 		if (_svgProvider.SkSvg?.Picture?.CullRect is { } rect)
 		{
 			scaleMatrix = SKMatrix.CreateScale((float)finalSize.Width / rect.Width, (float)finalSize.Height / rect.Height);
-			
 		}
 
 		if (scaleMatrix != _currentScaleMatrix)
@@ -109,8 +129,9 @@ internal partial class SvgCanvas : SKXamlCanvas
 	}
 
 
-	protected override void OnPaintSurface(SKPaintSurfaceEventArgs e)
+	protected override void OnPaintSurface(SKPaintGLSurfaceEventArgs e)
 	{
+		e.Surface.Canvas.Clear(SKColors.Transparent);
 		if (_svgProvider.SkSvg?.Picture is { } picture)
 		{
 			e.Surface.Canvas.DrawPicture(picture, ref _currentScaleMatrix);

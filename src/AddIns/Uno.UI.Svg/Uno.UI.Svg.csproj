@@ -25,6 +25,10 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
+
+		<PackageReference Include="Svg.Skia" />
+		<PackageReference Include="SkiaSharp.Views.Uno" Condition="'$(UNO_UWP_BUILD)'=='true'" />
+		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" $(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac) ">
@@ -36,11 +40,8 @@
 	<Import Project="..\..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj" />
 	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Svg.Skia" />
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />

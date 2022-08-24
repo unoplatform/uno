@@ -7,6 +7,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Windows.UI.Xaml.Controls;
 
@@ -64,7 +65,11 @@ public partial class Image
 		// Use "Bounds" over "Frame" because it includes all transforms
 		var availableSize = Bounds.Size.ToFoundationSize();
 
-		if (SourceImageSize.Width == 0 || SourceImageSize.Height == 0 || availableSize.Width == 0 || availableSize.Height == 0 || (!_nativeImageView?.HasImage ?? true))
+		if (SourceImageSize.Width == 0 ||
+			SourceImageSize.Height == 0 ||
+			availableSize.Width == 0 ||
+			availableSize.Height == 0 ||
+			(!_nativeImageView?.HasImage ?? true))
 		{
 			return; // nothing to do
 		}

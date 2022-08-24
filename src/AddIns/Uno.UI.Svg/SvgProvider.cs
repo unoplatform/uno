@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using ShimSkiaSharp;
 using Svg.Skia;
+using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Media.Imaging.Svg;
 using Windows.Foundation;
 using Windows.UI.Xaml;
@@ -27,7 +28,10 @@ public partial class SvgProvider : ISvgProvider
 		}
 
 		_owner = svgImageSource;
+#if __SKIA__
 		_owner.Subscribe(OnSourceOpened);
+		// TODO:MZ: Unsubscribe?
+#endif
 	}
 
 	public event EventHandler? SourceLoaded;
@@ -51,12 +55,12 @@ public partial class SvgProvider : ISvgProvider
 
 	public UIElement GetCanvas() => new SvgCanvas(_owner, this);
 
-	private void OnSourceOpened(ImageData imageData)
+	private void OnSourceOpened(byte[] svgBytes)
 	{
 		try
 		{
 			_skSvg = new SKSvg();
-			using (var memoryStream = new MemoryStream(imageData.Data))
+			using (var memoryStream = new MemoryStream(svgBytes))
 			{
 				_skSvg.Load(memoryStream);
 			}
@@ -70,4 +74,6 @@ public partial class SvgProvider : ISvgProvider
 			_owner.RaiseImageFailed(SvgImageSourceLoadStatus.InvalidFormat);
 		}
 	}
+
+	public void NotifySourceOpened(byte[] svgBytes) => OnSourceOpened(svgBytes);
 }
