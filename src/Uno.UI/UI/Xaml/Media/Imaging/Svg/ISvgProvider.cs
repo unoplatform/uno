@@ -6,7 +6,7 @@ using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Media.Imaging.Svg;
 
-internal interface ISvgProvider
+public interface ISvgProvider
 {
 	UIElement GetCanvas();
 
@@ -15,4 +15,6 @@ internal interface ISvgProvider
 	Size SourceSize { get; }
 
 	event EventHandler? SourceLoaded;
+
+	void NotifySourceOpened(byte[] imageData);
 }

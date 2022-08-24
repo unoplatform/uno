@@ -181,7 +181,7 @@ namespace Windows.UI.Xaml.Media
 		/// Downloads an image from the provided Uri.
 		/// </summary>
 		/// <returns>n Uri containing a local path for the downloaded image.</returns>
-		private async Task<Uri> Download(CancellationToken ct, Uri uri)
+		internal async Task<Uri> Download(CancellationToken ct, Uri uri)
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{

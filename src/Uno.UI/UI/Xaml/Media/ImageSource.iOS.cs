@@ -15,10 +15,10 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class ImageSource
 	{
-		private static readonly bool SupportsAsyncFromBundle;
-		private static readonly bool SupportsFromBundle;
-
 		private readonly bool _isOriginalSourceUIImage;
+
+		internal static readonly bool SupportsAsyncFromBundle;
+		internal static readonly bool SupportsFromBundle;
 
 		static ImageSource()
 		{
@@ -376,7 +376,7 @@ namespace Windows.UI.Xaml.Media
 			// not be able to restore it later (from a WebUri, BundleName, file path, etc.)
 			if (!_isOriginalSourceUIImage)
 			{
-				DisposeUIImage();
+				DisposeImageData();
 			}
 		}
 
@@ -398,16 +398,17 @@ namespace Windows.UI.Xaml.Media
 
 		partial void DisposePartial()
 		{
-			DisposeUIImage();
+			DisposeImageData();
 		}
 
-		private void DisposeUIImage()
+		private void DisposeImageData()
 		{
 			if (_imageData.Kind == ImageDataKind.NativeImage)
 			{
 				_imageData.NativeImage?.Dispose();
-				_imageData = ImageData.Empty;
 			}
+
+			_imageData = ImageData.Empty;
 		}
 
 		public override string ToString()

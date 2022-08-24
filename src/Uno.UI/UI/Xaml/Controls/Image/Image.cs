@@ -16,6 +16,7 @@ using Uno.Foundation.Logging;
 
 using Windows.UI;
 using Windows.UI.Core;
+using System.Numerics;
 
 #if XAMARIN_IOS
 using UIKit;
@@ -97,6 +98,20 @@ namespace Windows.UI.Xaml.Controls
 					_openedSource = null;
 					TryOpenImage();
 				}
+			}
+			else if (newValue is SvgImageSource svgImageSource)
+			{
+				_sourceDisposable.Disposable =
+					Source?.RegisterDisposablePropertyChangedCallback(
+						SvgImageSource.UriSourceProperty, (o, e) =>
+						{
+							if (!object.Equals(e.OldValue, e.NewValue))
+							{
+								_openedSource = null;
+								TryOpenImage(true);
+							}
+						}
+					);
 			}
 			else
 			{
@@ -406,9 +421,26 @@ namespace Windows.UI.Xaml.Controls
 			}
 #endif
 
-			// 
-			base.ArrangeOverride(finalSize);
-			return finalSize;
+#if __IOS__ || __MACOS__
+			if (Source is SvgImageSource svgImageSource && _svgCanvas is not null)
+			{
+				// Calculate the resulting space required on screen for the image;
+				var containerSize = this.MeasureSource(finalSize, svgImageSource.SourceSize);
+
+				// Calculate the position of the image to follow stretch and alignment requirements
+				var finalPosition = LayoutRound(this.ArrangeSource(finalSize, containerSize));
+				var roundedSize = LayoutRound(new Vector2((float)containerSize.Width, (float)containerSize.Height));
+
+				_svgCanvas.Arrange(new Rect(finalPosition.X, finalPosition.Y, roundedSize.X, roundedSize.Y));
+				return finalSize;
+			}
+			else
+			{
+				return base.ArrangeOverride(finalSize);
+			}
+#else
+			return base.ArrangeOverride(finalSize);
+#endif
 		}
 	}
 }

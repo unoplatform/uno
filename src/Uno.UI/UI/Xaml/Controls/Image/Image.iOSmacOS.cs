@@ -15,6 +15,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Media.Imaging;
 using Uno.UI.Xaml.Media;
 using Uno.Disposables;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -43,6 +44,11 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public Image() { }
+
+		partial void OnStretchChanged(Stretch newValue, Stretch oldValue)
+		{
+			UpdateContentMode(newValue);
+		}
 
 		private void TryOpenImage(bool forceReload = false)
 		{
@@ -140,15 +146,15 @@ namespace Windows.UI.Xaml.Controls
 
 				if (_openedSource is SvgImageSource svgImageSource && imageData.Kind == ImageDataKind.ByteArray)
 				{
-					SetSvgSource(imageData.ByteArray);
+					SetSvgSource(svgImageSource, imageData.ByteArray);
 				}
-				else if (_openedSource is { } && imageData.Kind == ImageDataKind.NativeImage)
+				else if (_openedSource is { } source && imageData.Kind == ImageDataKind.NativeImage)
 				{
-					SetNativeImage(imageData.NativeImage);
+					SetNativeImage(source, imageData.NativeImage);
 				}
 				else
 				{
-					SetNativeImage(null);
+					SetNativeImage(null, null);
 				}
 			}
 
@@ -165,13 +171,22 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private void SetSvgSource(SvgImageSource svgImageSource, byte[] byteArray)
-		{
-			_svgCanvas = svgImageSource.GetCanvas();
+		{			
+			_childViewDisposable.Disposable = null;
 
-			SourceImageSize = image?.Size.ToFoundationSize() ?? default(Size);
+			_svgCanvas = svgImageSource.GetCanvas();
+			AddSubview(_svgCanvas);
+
+			_childViewDisposable.Disposable = Disposable.Create(() =>
+			{
+				_svgCanvas.RemoveFromSuperview();
+				_svgCanvas = null;
+			});
+
+			SourceImageSize = svgImageSource.SourceSize;
 		}
 
-		private void SetNativeImage(_UIImage image)
+		private void SetNativeImage(ImageSource imageSource, _UIImage image)
 		{
 			using (
 				_imageTrace.WriteEventActivity(
@@ -181,7 +196,7 @@ namespace Windows.UI.Xaml.Controls
 				)
 			)
 			{
-				if (MonochromeColor != null)
+				if (MonochromeColor != null && image != null)
 				{
 					image = image.AsMonochrome(MonochromeColor.Value);
 				}
@@ -192,29 +207,13 @@ namespace Windows.UI.Xaml.Controls
 
 				SourceImageSize = image?.Size.ToFoundationSize() ?? default(Size);
 			}
-
-			InvalidateMeasure();
-
-			if (_nativeImageView.HasImage)
-			{
-				OnImageOpened(image);
-			}
-			else
-			{
-				OnImageFailed(image);
-			}
-		}
-
-		private void TryCreateSourceHostView()
-		{
-			if (Source is SvgImageSource svgImageSource)
-			_childViewDisposable.Disposable = null;
 		}
 
 		private void TryCreateNativeImageView()
 		{
 			if (_nativeImageView is null)
 			{
+				_childViewDisposable.Disposable = null;
 				var imageView = new NativeImageView();
 				_nativeImageView = imageView;
 
@@ -222,13 +221,12 @@ namespace Windows.UI.Xaml.Controls
 
 				UpdateContentMode(Stretch);
 
-				_childViewDisposable.Disposable = Disposable.Create(() => imageView.RemoveFromSuperview());
+				_childViewDisposable.Disposable = Disposable.Create(() =>
+				{
+					imageView.RemoveFromSuperview();
+					_nativeImageView = null;
+				});
 			}
-		}
-
-		private void TryCreateSvgCanvas()
-		{
-			if (_svgCanvas is null && )
 		}
 
 		private void SetNeedsLayoutOrDisplay()

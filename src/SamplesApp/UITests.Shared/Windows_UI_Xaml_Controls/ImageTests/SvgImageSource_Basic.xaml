@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
@@ -22,9 +22,11 @@
 			<TextBox Text="{x:Bind RasterizedWidth, Mode=TwoWay}" Header="Rasterized width" />
 			<TextBox Text="{x:Bind RasterizedHeight, Mode=TwoWay}" Header="Rasterized height" />
 		</StackPanel>
-		
+
 		<Grid Grid.Row="1">
-			<Image x:Name="ImageElement" />
+			<Border HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="Black" BorderThickness="2">
+				<Image x:Name="ImageElement" />
+			</Border>
 		</Grid>
 	</Grid>
 </Page>
