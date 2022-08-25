@@ -14,7 +14,6 @@ using Uno.UI.Controls;
 using Windows.UI;
 using Uno.Disposables;
 using Foundation;
-using Uno.Foundation.Logging;
 using Uno.UI;
 using static Uno.UI.FeatureConfiguration;
 
