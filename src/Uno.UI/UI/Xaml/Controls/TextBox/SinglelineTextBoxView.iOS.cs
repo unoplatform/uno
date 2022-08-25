@@ -11,6 +11,10 @@ using Uno.Extensions;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Controls;
 using Windows.UI;
+using Uno.Disposables;
+using Foundation;
+using Uno.UI;
+using static Uno.UI.FeatureConfiguration;
 
 namespace Windows.UI.Xaml.Controls
 {
