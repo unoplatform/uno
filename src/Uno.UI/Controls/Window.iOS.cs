@@ -20,10 +20,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 namespace Uno.UI.Controls
 {
