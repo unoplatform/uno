@@ -64,7 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="CrossTargetedLibrary.csproj" />
-    <VSTemplate Include="CrossTargetedLibrary.vstemplate">
+    <VSTemplate Include="CrossTargetedLibrary.Net6.vstemplate">
       <OutputSubPath>Uno Platform</OutputSubPath>
     </VSTemplate>
   </ItemGroup>

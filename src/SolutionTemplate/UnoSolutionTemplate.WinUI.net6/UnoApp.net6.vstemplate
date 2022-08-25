@@ -4,7 +4,7 @@
 		<Description>A solution for creating an Uno Platform C# &amp; XAML application for WinUI, WebAssembly, Android, iOS, Mac Catalyst, macOS and Linux</Description>
 		<ProjectType>CSharp</ProjectType>
 		<ProjectSubType />
-		<SortOrder>1000</SortOrder>
+		<SortOrder>100</SortOrder>
 		<CreateNewFolder>true</CreateNewFolder>
 		<DefaultName>App</DefaultName>
 		<ProvideDefaultName>true</ProvideDefaultName>
