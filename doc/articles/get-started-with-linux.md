@@ -49,7 +49,7 @@ Now let's run the application:
 - Install GTK3:
     ```
     sudo apt update
-    sudo apt-get install gtk+3.0 mesa-utils libgl1-mesa-glx
+    sudo apt-get install gtk+3.0 mesa-utils libgl1-mesa-glx ttf-mscorefonts-installer
     ```
 - Install dotnet core 3.1
     ```
@@ -68,7 +68,7 @@ Now let's run the application:
 - Install GTK3:
     ```
     sudo apt update
-    sudo apt install libgtk-3-dev mesa-utils libgl1-mesa-glx
+    sudo apt install libgtk-3-dev mesa-utils libgl1-mesa-glx ttf-mscorefonts-installer
     ```
 - Install dotnet core 3.1 and 5.0
     ```
@@ -97,6 +97,8 @@ Now let's run the application:
     ```bash
     dotnet new -i Uno.ProjectTemplates.Dotnet
     ```
+
+You may also need to [install the Microsoft fonts](https://wiki.archlinux.org/title/Microsoft_fonts) manually.
 ***
 
 [!include[getting-help](use-uno-check-inline.md)]
