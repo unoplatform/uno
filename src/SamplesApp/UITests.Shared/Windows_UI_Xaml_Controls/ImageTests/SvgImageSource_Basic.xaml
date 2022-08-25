@@ -15,7 +15,13 @@
 		</Grid.RowDefinitions>
 
 		<StackPanel Spacing="4">
-			<ComboBox ItemsSource="{x:Bind Sources}" SelectedItem="{x:Bind SelectedSource, Mode=TwoWay}" Header="SVG image" />
+			<ComboBox ItemsSource="{x:Bind Sources}" SelectedItem="{x:Bind SelectedSource, Mode=TwoWay}" Header="SVG image">
+				<ComboBox.ItemTemplate>
+					<DataTemplate x:DataType="local:SvgSource">
+						<TextBlock Text="{x:Bind Name}" />
+					</DataTemplate>
+				</ComboBox.ItemTemplate>
+			</ComboBox>
 			<ComboBox ItemsSource="{x:Bind Stretches}" SelectedItem="{x:Bind SelectedStretch, Mode=TwoWay}" Header="Stretch" />
 			<TextBox Text="{x:Bind ImageWidth, Mode=TwoWay}" Header="Image width" />
 			<TextBox Text="{x:Bind ImageHeight, Mode=TwoWay}" Header="Image height" />

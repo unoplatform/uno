@@ -8729,6 +8729,8 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.webp" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.heic" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.pdf" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\bookstack.svg" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\chef.svg" />
     <None Include="$(MSBuildThisFileDirectory)ItemExclusions.props" />
   </ItemGroup>
   <ItemGroup>
