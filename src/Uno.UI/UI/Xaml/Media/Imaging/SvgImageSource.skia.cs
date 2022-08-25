@@ -3,6 +3,7 @@ using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Media.Imaging;
 
@@ -47,7 +48,7 @@ partial class SvgImageSource
 		}
 		catch (Exception e)
 		{
-			return new ImageData() { Error = e };
+			return ImageData.FromError(e);
 		}
 
 		return default;
