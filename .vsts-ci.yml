@@ -83,21 +83,27 @@ jobs:
     xCodeRoot: '$(xCodeRoot)'
     XamarinSDKVersion: '$(XamarinSDKVersion)'
 
-- template: build/ci/.azure-devops-android-tests.yml
-  parameters:
-    vmWindowsImage: '$(windowsHostedVMImage)'
-    vmMacOSImage: '$(macOSVMImage)'
-    xCodeRoot: '$(xCodeRoot)'
-    XamarinSDKVersion: '$(XamarinSDKVersion)'
+# Disabled because of recent agents changes in VS 17.3 and deprecated macOS build agents.
+#- template: build/ci/.azure-devops-android-tests.yml
+#  parameters:
+#    vmWindowsImage: '$(windowsHostedVMImage)'
+#    vmMacOSImage: '$(macOSVMImage)'
+#    xCodeRoot: '$(xCodeRoot)'
+#    XamarinSDKVersion: '$(XamarinSDKVersion)'
 
-- template: build/ci/.azure-devops-ios-tests.yml
-  parameters:
-    vmImage: '$(macOSVMImage)'
-    xCodeRootBuild: '$(xCodeRoot)'
-    XamarinSDKVersionBuild: '$(XamarinSDKVersion)'
-    xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
-    XamarinSDKVersionTest: '$(XamarinSDKVersion_iOS_UITests)'
+#- template: build/ci/.azure-devops-ios-tests.yml
+#  parameters:
+#    vmImage: '$(macOSVMImage)'
+#    vmImageTest: '$(macOSVMImage_UITests)'
+#    xCodeRootBuild: '$(xCodeRoot)'
+#    XamarinSDKVersionBuild: '$(XamarinSDKVersion)'
+#    xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
+#    XamarinSDKVersionTest: '$(XamarinSDKVersion_iOS_UITests)'
 
-- template: build/ci/.azure-devops-screenshot-compare.yml
-  parameters:
-    vmImage: '$(windowsHostedVMImage)'
+#- template: build/ci/.azure-devops-screenshot-compare.yml
+#  parameters:
+#    vmImage: '$(windowsHostedVMImage)'
+
+#- template: build/ci/.azure-devops-vs2022-vsix.yml
+#  parameters:
+#    vmImage: '$(windows2022HostedVMImage)'
