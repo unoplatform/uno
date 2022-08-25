@@ -73,8 +73,8 @@ public sealed partial class SvgImageSource_Basic : Page
 		new("Heart (relative)", new Uri("/Assets/Formats/heart.svg", UriKind.Relative)),
 		new("Chef (app-data)", new Uri("ms-appdata:///Local/svg/chef.svg")),
 		new("Bookstack (app-data)", new Uri("ms-appdata:///Local/svg/bookstack.svg")),
-		new("Apple (web)", new Uri("https://upload.wikimedia.org/wikipedia/commons/2/22/UnaManzana1.svg")),
-		new("Road crossing (web)", new Uri("https://upload.wikimedia.org/wikipedia/commons/c/cc/Road_Crossing_Sign_in_Grey_Scale_01.svg"))
+		new("Apple (web)", new Uri("https://raw.githubusercontent.com/unoplatform/uno/56069e83325786e0a652fdedfda7bbd9f0cee224/src/SamplesApp/UITests.Shared/Assets/Formats/apple.svg")),
+		new("Road crossing (web)", new Uri("https://raw.githubusercontent.com/unoplatform/uno/56069e83325786e0a652fdedfda7bbd9f0cee224/src/SamplesApp/UITests.Shared/Assets/Formats/roadcrossing.svg"))
 	};
 
 	public string[] Stretches { get; } = Enum.GetNames(typeof(Stretch)).ToArray();

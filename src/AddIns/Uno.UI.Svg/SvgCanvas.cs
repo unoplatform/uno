@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using SKMatrix = SkiaSharp.SKMatrix;
+using Windows.ApplicationModel.Activation;
 #if __IOS__ || __MACOS__
 using SkiaCanvas = SkiaSharp.Views.UWP.SKSwapChainPanel;
 using SkiaPaintEventArgs = SkiaSharp.Views.UWP.SKPaintGLSurfaceEventArgs;
@@ -27,7 +28,7 @@ internal partial class SvgCanvas : SkiaCanvas
 	private readonly SvgImageSource _svgImageSource;
 	private readonly SvgProvider _svgProvider;
 	private readonly CompositeDisposable _disposables = new();
-	private SKMatrix _currentScaleMatrix = default;
+	private Size _lastArrangeSize = default;
 
 	public SvgCanvas(SvgImageSource svgImageSource, SvgProvider svgProvider)
 	{
@@ -73,28 +74,16 @@ internal partial class SvgCanvas : SkiaCanvas
 	private void SvgProviderSourceOpened(object sender, EventArgs e)
 	{
 		InvalidateMeasure();
-		Invalidate();
+		InvalidateArrange();
 	}
 
 	protected override Size ArrangeOverride(Size finalSize)
 	{
 		finalSize = base.ArrangeOverride(finalSize);
-
-		SKMatrix scaleMatrix = default;
-		if (_svgProvider.SkSvg?.Picture?.CullRect is { } rect)
-		{
-			scaleMatrix = SKMatrix.CreateScale((float)finalSize.Width / rect.Width, (float)finalSize.Height / rect.Height);
-		}
-
-		if (scaleMatrix != _currentScaleMatrix)
-		{
-			_currentScaleMatrix = scaleMatrix;
-			Invalidate();
-		}
-
-		return finalSize;
+		_lastArrangeSize = finalSize;
+		Invalidate();
+		return finalSize;	
 	}
-
 
 	protected override void OnPaintSurface(SkiaPaintEventArgs e)
 	{
@@ -103,8 +92,25 @@ internal partial class SvgCanvas : SkiaCanvas
 		e.Surface.Canvas.Clear(SKColors.Transparent);
 		if (_svgProvider.SkSvg?.Picture is { } picture)
 		{
-			e.Surface.Canvas.DrawPicture(picture, ref _currentScaleMatrix);
+			var svgScaleMatrix = CreateScaleMatrix();
+			e.Surface.Canvas.DrawPicture(picture, ref svgScaleMatrix);
 		}
 		//TODO: Pre-rasterization support
+	}
+
+	private SKMatrix CreateScaleMatrix()
+	{
+		if (_lastArrangeSize == default)
+		{
+			return SKMatrix.Identity;
+		}
+
+		SKMatrix scaleMatrix = default;
+		if (_svgProvider.SkSvg?.Picture?.CullRect is { } rect)
+		{
+			scaleMatrix = SKMatrix.CreateScale((float)_lastArrangeSize.Width / rect.Width, (float)_lastArrangeSize.Height / rect.Height);
+		}
+
+		return scaleMatrix;
 	}
 }
