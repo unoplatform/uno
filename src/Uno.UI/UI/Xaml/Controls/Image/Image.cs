@@ -432,6 +432,7 @@ namespace Windows.UI.Xaml.Controls
 				var roundedSize = LayoutRound(new Vector2((float)containerSize.Width, (float)containerSize.Height));
 
 				_svgCanvas.Arrange(new Rect(finalPosition.X, finalPosition.Y, roundedSize.X, roundedSize.Y));
+				_svgCanvas.Clip = new RectangleGeometry() { Rect = new Rect(0, 0, finalSize.Width, finalSize.Height) };
 				return finalSize;
 			}
 			else
