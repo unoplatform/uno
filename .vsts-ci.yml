@@ -33,6 +33,7 @@ pr:
     # don't trigger the CI if only docs files are changed
     - doc/*
     - '**/*.md'
+    - '*.md'
 
 resources:
   containers:
