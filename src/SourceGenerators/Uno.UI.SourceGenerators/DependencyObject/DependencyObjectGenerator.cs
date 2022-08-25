@@ -161,7 +161,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					builder.AppendLineInvariant("using AppKit;");
 					builder.AppendLineInvariant("#endif");
 
-					using (builder.BlockInvariant($"namespace {typeSymbol.ContainingNamespace}"))
+					using (typeSymbol.ContainingNamespace.IsGlobalNamespace ? DisposableAction.NoOp : builder.BlockInvariant($"namespace {typeSymbol.ContainingNamespace}"))
 					{
 						using (GenerateNestingContainers(builder, typeSymbol))
 						{
@@ -176,7 +176,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 							using (builder.BlockInvariant($"partial class {typeSymbol.Name} : IDependencyObjectStoreProvider, IWeakReferenceProvider{internalDependencyObject}"))
 							{
-								GenerateDependencyObjectImplementation(typeSymbol, builder);
+								GenerateDependencyObjectImplementation(typeSymbol, builder, hasDispatcherQueue: _dependencyObjectSymbol!.GetMembers("DispatcherQueue").Any());
 								GenerateIBinderImplementation(typeSymbol, builder);
 							}
 						}
@@ -869,14 +869,15 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 			}
 
-			private void GenerateDependencyObjectImplementation(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
+			private void GenerateDependencyObjectImplementation(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder, bool hasDispatcherQueue)
 			{
 				builder.AppendLineInvariant(@"private DependencyObjectStore __storeBackingField;");
 				builder.AppendLineInvariant(@"public Windows.UI.Core.CoreDispatcher Dispatcher => Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher;");
 
-				builder.AppendLineInvariant(@"#if HAS_UNO_WINUI");
-				builder.AppendLineInvariant(@"public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue {{ get; }} = global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();");
-				builder.AppendLineInvariant(@"#endif");
+				if (hasDispatcherQueue)
+				{
+					builder.AppendLineInvariant(@"public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue {{ get; }} = global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();");
+				}
 
 				using (builder.BlockInvariant($"private DependencyObjectStore __Store"))
 				{

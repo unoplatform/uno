@@ -23,6 +23,8 @@ namespace Uno
 {
     internal class DisposableAction : IDisposable
     {
+		internal readonly static DisposableAction NoOp = new DisposableAction(() => { });
+
         public DisposableAction(Action action)
         {
             Action = action;
