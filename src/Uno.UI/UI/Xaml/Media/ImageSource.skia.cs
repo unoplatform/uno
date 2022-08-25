@@ -27,6 +27,11 @@ namespace Windows.UI.Xaml.Media
 			WebUri = uri;
 		}
 
+		partial void CleanupResource()
+		{
+			WebUri = null;
+		}
+
 		internal void UnloadImageData() { }
 	}
 }

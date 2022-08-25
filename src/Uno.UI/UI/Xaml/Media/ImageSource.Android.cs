@@ -118,6 +118,12 @@ namespace Windows.UI.Xaml.Media
 			ResourceId = Uno.Helpers.DrawableHelper.FindResourceIdFromPath(ResourceString);
 		}
 
+		partial void CleanupResource()
+		{
+			ResourceString = null;
+			ResourceId = null;
+		}
+
 		/// <summary>
 		/// Set ImageLoader to be used for this case.
 		/// </summary>

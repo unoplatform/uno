@@ -20,6 +20,11 @@ namespace Windows.UI.Xaml.Media
 			WebUri = new Uri(uri.PathAndQuery.TrimStart("/"), UriKind.Relative);
 		}
 
+		partial void CleanupResource()
+		{
+			WebUri = null;
+		}
+
 		private protected async Task<ImageData> OpenFromStream(IRandomAccessStreamWithContentType stream, Action<ulong, ulong?>? progress, CancellationToken ct)
 		{
 			try
