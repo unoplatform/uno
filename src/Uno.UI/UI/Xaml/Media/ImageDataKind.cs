@@ -29,6 +29,11 @@ internal enum ImageDataKind
 	NativeImage,
 
 	/// <summary>
+	/// Skia composition surface.
+	/// </summary>
+	CompositionSurface,
+
+	/// <summary>
 	/// The image failed to load (cf. The Error property)
 	/// </summary>
 	Error = 256

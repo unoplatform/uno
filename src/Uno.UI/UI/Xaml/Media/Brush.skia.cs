@@ -214,7 +214,7 @@ namespace Windows.UI.Xaml.Media
 
 			brush.Subscribe(data =>
 			{
-				surfaceBrush.Surface = data.Value;
+				surfaceBrush.Surface = data.CompositionSurface;
 			}).DisposeWith(disposables);
 
 			brushSetter(surfaceBrush);

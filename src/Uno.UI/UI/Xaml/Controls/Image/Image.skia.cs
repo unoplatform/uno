@@ -18,12 +18,6 @@ namespace Windows.UI.Xaml.Controls
 		private CompositionSurfaceBrush _surfaceBrush;
 		private readonly SpriteVisual _imageSprite;
 
-		// TODO: ImageOpened and ImageFailed should be implemented #9533
-#pragma warning disable CS0067 // not used in skia
-		public event RoutedEventHandler ImageOpened;
-		public event ExceptionRoutedEventHandler ImageFailed;
-#pragma warning restore CS0067
-
 		public Image()
 		{
 			_imageSprite = Visual.Compositor.CreateSpriteVisual();
@@ -66,7 +60,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_sourceDisposable.Disposable = source.Subscribe(img =>
 			{
-				_currentSurface = img.Value;
+				_currentSurface = img.CompositionSurface;
 				_surfaceBrush = Visual.Compositor.CreateSurfaceBrush(_currentSurface);
 				_imageSprite.Brush = _surfaceBrush;
 				InvalidateMeasure();

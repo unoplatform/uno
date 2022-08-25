@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.Storage.Streams;
 using Windows.UI.Core;

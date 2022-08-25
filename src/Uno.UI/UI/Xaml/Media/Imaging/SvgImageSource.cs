@@ -7,6 +7,7 @@ using Windows.Foundation;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
 using Uno;
+using Uno.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Media.Imaging;
 

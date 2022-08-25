@@ -17,6 +17,7 @@ using Uno.Diagnostics.Eventing;
 using Windows.UI.Xaml.Media.Imaging;
 using Uno.Disposables;
 using Windows.Devices.Enumeration;
+using Uno.UI.Xaml.Media;
 
 
 #if !IS_UNO
@@ -108,11 +109,7 @@ namespace Windows.UI.Xaml.Media
 			catch (Exception error)
 			{
 				this.Log().Error($"Error loading image: {error}");
-				OnOpened(new ImageData
-				{
-					Kind = ImageDataKind.Error,
-					Error = error
-				});
+				OnOpened(ImageData.FromError(error));
 			}
 		}
 
@@ -135,11 +132,7 @@ namespace Windows.UI.Xaml.Media
 			}
 			catch (Exception error)
 			{
-				OnOpened(new ImageData
-				{
-					Kind = ImageDataKind.Error,
-					Error = error
-				});
+				OnOpened(ImageData.FromError(error));
 			}
 		}
 

@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using Windows.UI.Composition;
 
 #if __IOS__
 using _UIImage = UIKit.UIImage;
@@ -15,15 +16,15 @@ namespace Uno.UI.Xaml.Media;
 /// </summary>
 internal partial struct ImageData
 {
-	public static ImageData FromBytes(byte[] data) => new ImageData(data);
-
+	public static ImageData FromBytes(byte[] data) => new(data);
+	
 	private ImageData(byte[] data)
 	{
 		Kind = ImageDataKind.ByteArray;
 		ByteArray = data ?? throw new ArgumentNullException(nameof(data));
 	}
 
-	public static ImageData FromError(Exception exception) => new ImageData(exception);
+	public static ImageData FromError(Exception exception) => new(exception);
 
 	private ImageData(Exception exception)
 	{
@@ -38,6 +39,16 @@ internal partial struct ImageData
 	{
 		Kind = ImageDataKind.NativeImage;
 		NativeImage = uiImage ?? throw new ArgumentNullException(nameof(uiImage));
+	}
+#endif
+
+#if __SKIA__
+	public static ImageData FromCompositionSurface(SkiaCompositionSurface compositionSurface) => new(compositionSurface);
+
+	private ImageData(SkiaCompositionSurface compositionSurface)
+	{
+		Kind = ImageDataKind.CompositionSurface;
+		CompositionSurface = compositionSurface;
 	}
 #endif
 
@@ -56,7 +67,7 @@ internal partial struct ImageData
 
 	public string? Value { get; } = null;
 #elif __SKIA__
-	public SkiaCompositionSurface? Value { get; } = null;
+	public SkiaCompositionSurface? CompositionSurface { get; } = null;
 #elif __IOS__ || __MACOS__
 	public _UIImage? NativeImage { get; } = null;
 #endif
@@ -70,10 +81,12 @@ internal partial struct ImageData
 #if __IOS__ || __MACOS__
 			ImageDataKind.NativeImage => $"Native UIImage: {NativeImage}",
 #endif
-#if __WASM__ || __SKIA__
-			_ => $"{Kind}: {Value}"
-#else
-			_ => $"{Kind}"
+#if __SKIA__
+			ImageDataKind.CompositionSurface => $"CompositionSurface: {CompositionSurface}",
 #endif
+#if __WASM__
+			ImageDataKind.Value => $"Value: {Value}",
+#endif
+			_ => $"{Kind}"
 		};
 }

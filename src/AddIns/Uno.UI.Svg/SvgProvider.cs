@@ -29,8 +29,14 @@ public partial class SvgProvider : ISvgProvider
 
 		_owner = svgImageSource;
 #if __SKIA__
-		_owner.Subscribe(OnSourceOpened);
-		// TODO:MZ: Unsubscribe?
+		_owner.Subscribe(imageData =>
+		{
+			if (imageData.Kind != ImageDataKind.ByteArray || imageData.ByteArray is null)
+			{
+				throw new InvalidOperationException("SVG image data are not available.");
+			}
+			OnSourceOpened(imageData.ByteArray);
+		});
 #endif
 	}
 
@@ -75,5 +81,7 @@ public partial class SvgProvider : ISvgProvider
 		}
 	}
 
+	// TODO: This is used by iOS/macOS while Skia uses subscription. This behavior
+	// should be aligned in the future so only one of the approaches is applied.
 	public void NotifySourceOpened(byte[] svgBytes) => OnSourceOpened(svgBytes);
 }
