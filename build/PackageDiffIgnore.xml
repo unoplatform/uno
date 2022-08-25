@@ -8903,6 +8903,12 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Controls.SinglelineTextBoxView::set_SelectedTextRange(UIKit.UITextRange value)"
 				reason="Workaround for iOS 16" />
+			<Member
+				fullName="UIKit.UITextRange Windows.UI.Xaml.Controls.MultilineTextBoxView::get_SelectedTextRange()"
+				reason="Workaround for iOS 16" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.MultilineTextBoxView::set_SelectedTextRange(UIKit.UITextRange value)"
+				reason="Workaround for iOS 16" />
 			<!-- END iOS 16 workaround -->
 		</Methods>
 		<Properties>
@@ -8918,6 +8924,9 @@
 			<!-- BEGIN iOS 16 workaround -->
 			<Member
 				fullName="UIKit.UITextRange Windows.UI.Xaml.Controls.SinglelineTextBoxView::SelectedTextRange()"
+				reason="Workaround for iOS 16" />
+			<Member
+				fullName="UIKit.UITextRange Windows.UI.Xaml.Controls.MultilineTextBoxView::SelectedTextRange()"
 				reason="Workaround for iOS 16" />
 			<!-- END iOS 16 workaround -->
 		</Properties>
