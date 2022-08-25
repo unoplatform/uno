@@ -52,12 +52,13 @@ namespace Windows.UI.Xaml.Shapes
 
 		private SkiaGeometrySource2D GetGeometry(Rect finalRect)
 		{
-			var strokeThickness = StrokeThickness;
+			var strokeThickness = (float)ActualStrokeThickness;
+			var halfStrokeThickiness = strokeThickness / 2;
 			var radiusX = RadiusX;
 			var radiusY = RadiusY;
 
-			var offset = new Vector2((float)(finalRect.Left), (float)(finalRect.Top));
-			var size = new Vector2((float)finalRect.Width, (float)finalRect.Height);
+			var offset = new Vector2((float)(finalRect.Left + halfStrokeThickiness), (float)(finalRect.Top + halfStrokeThickiness));
+			var size = new Vector2((float)(finalRect.Width - strokeThickness), (float)(finalRect.Height - strokeThickness));
 			
 			SkiaGeometrySource2D geometry;
 			if (radiusX == 0 || radiusY == 0)

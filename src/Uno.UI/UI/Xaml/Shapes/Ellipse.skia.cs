@@ -37,8 +37,16 @@ namespace Windows.UI.Xaml.Shapes
 
 		private SkiaGeometrySource2D GetGeometry(Rect renderingArea)
 		{
+			var strokeThickness = (float)ActualStrokeThickness;
+			var halfStrokeThickness = strokeThickness / 2;
+
 			var geometry = new SkiaGeometrySource2D();
-			geometry.Geometry.AddOval(new SKRect((float)renderingArea.X, (float)renderingArea.Y, (float)renderingArea.Right, (float)renderingArea.Bottom));
+			var rect = new SKRect(
+				(float)renderingArea.X + halfStrokeThickness,
+				(float)renderingArea.Y + halfStrokeThickness,
+				(float)renderingArea.Right - halfStrokeThickness,
+				(float)renderingArea.Bottom - halfStrokeThickness);
+			geometry.Geometry.AddOval(rect);
 
 			return geometry;
 		}
