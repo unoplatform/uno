@@ -74,18 +74,18 @@ jobs:
     xCodeRoot: '$(xCodeRoot)'
     XamarinSDKVersion: '$(XamarinSDKVersion)'
 
-- template: build/ci/.azure-devops-android-tests.yml
-  parameters:
-    vmImage: '$(macOSVMImage)'
-    xCodeRoot: '$(xCodeRoot)'
-    XamarinSDKVersion: '$(XamarinSDKVersion)'
+# - template: build/ci/.azure-devops-android-tests.yml
+#   parameters:
+#     vmImage: '$(macOSVMImage)'
+#     xCodeRoot: '$(xCodeRoot)'
+#     XamarinSDKVersion: '$(XamarinSDKVersion)'
 
-- template: build/ci/.azure-devops-ios-tests.yml
-  parameters:
-    vmImage: '$(macOSVMImage)'
-    xCodeRoot: '$(xCodeRoot)'
-    XamarinSDKVersion: '$(XamarinSDKVersion)'
+# - template: build/ci/.azure-devops-ios-tests.yml
+#   parameters:
+#     vmImage: '$(macOSVMImage)'
+#     xCodeRoot: '$(xCodeRoot)'
+#     XamarinSDKVersion: '$(XamarinSDKVersion)'
 
-- template: build/ci/.azure-devops-screenshot-compare.yml
-  parameters:
-    vmImage: '$(windowsHostedVMImage)'
+# - template: build/ci/.azure-devops-screenshot-compare.yml
+#   parameters:
+#     vmImage: '$(windowsHostedVMImage)'
