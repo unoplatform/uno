@@ -278,6 +278,12 @@ namespace Windows.UI.Xaml.Media
 				: null;
 		}
 
+		partial void CleanupResource()
+		{
+			BundlePath = null;
+			BundleName = null;
+		}
+
 		partial void DisposePartial()
 		{
 			DisposeUIImage();

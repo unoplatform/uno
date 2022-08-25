@@ -117,6 +117,10 @@ namespace Windows.UI.Xaml.Media
 				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart("/"));
 			}
 
+			CleanupResource();
+			FilePath = null;
+			WebUri = null;
+			
 			if (uri.IsLocalResource())
 			{
 				InitFromResource(uri);
@@ -143,6 +147,8 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		partial void InitFromResource(Uri uri);
+
+		partial void CleanupResource();
 
 		public static implicit operator ImageSource(string stringSource)
 		{
