@@ -19,6 +19,11 @@ using Uno.UI.Controls;
 using Uno.Logging;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using ObjCRuntime;
 
 namespace Uno.UI.Controls
 {
