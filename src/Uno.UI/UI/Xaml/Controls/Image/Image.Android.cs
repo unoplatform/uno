@@ -255,7 +255,7 @@ namespace Windows.UI.Xaml.Controls
 
 				_imageFetchDisposable.Disposable = disposable;
 
-				var bitmap = await newImageSource.Open(disposable.Token, _nativeImageView, _targetWidth, _targetHeight);
+				var imageData = await newImageSource.Open(disposable.Token, _nativeImageView, _targetWidth, _targetHeight);
 
 				if (newImageSource.IsImageLoadedToUiDirectly)
 				{
@@ -265,6 +265,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
+					var bitmap = imageData.Bitmap;
 					_nativeImageView.SetImageBitmap(bitmap);
 
 					if (bitmap != null)
