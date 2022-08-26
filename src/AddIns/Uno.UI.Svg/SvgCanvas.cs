@@ -13,7 +13,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using SKMatrix = SkiaSharp.SKMatrix;
 using Windows.ApplicationModel.Activation;
-#if __IOS__ || __MACOS__
+#if __IOS__ || __MACOS__ || __ANDROID__
 using SkiaCanvas = SkiaSharp.Views.UWP.SKSwapChainPanel;
 using SkiaPaintEventArgs = SkiaSharp.Views.UWP.SKPaintGLSurfaceEventArgs;
 #else
