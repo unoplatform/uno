@@ -40,12 +40,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				{
 					if (uri.Scheme == "http" || uri.Scheme == "https")
 					{
-						image = new ImageData
-						{
-							Kind = ImageDataKind.Url,
-							Value = uri.AbsoluteUri,
-							Source = this
-						};
+						image = ImageData.FromUrl(uri.AbsoluteUri, this);
 					}
 
 					// TODO: Implement ms-appdata
@@ -53,12 +48,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				else
 				{
 					var path = AssetsPathBuilder.BuildAssetUri(uri.OriginalString);
-					image = new ImageData
-					{
-						Kind = ImageDataKind.Url,
-						Value = path,
-						Source = this
-					};
+					image = ImageData.FromUrl(path, this);
 				}
 
 				return image.Kind != default;

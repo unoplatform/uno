@@ -19,11 +19,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 			{
 				var value = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.rawPixelsToBase64EncodeImage(" + pinnedData + ", " + PixelWidth + ", " + PixelHeight + ");");
 
-				image = new ImageData
-				{
-					Kind = ImageDataKind.DataUri,
-					Value = value
-				};
+				image = ImageData.FromDataUri(value);
+				
 				return true;
 			}
 			finally

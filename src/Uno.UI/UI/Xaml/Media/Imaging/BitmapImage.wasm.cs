@@ -88,32 +88,22 @@ namespace Windows.UI.Xaml.Media.Imaging
 					{
 						if (uri.Scheme == "http" || uri.Scheme == "https")
 						{
-							return new ImageData
-							{
-								Kind = ImageDataKind.Url,
-								Value = uri.AbsoluteUri,
-								Source = source
-							};
+							return ImageData.FromUrl(uri, source);
 						}
 
 						// TODO: Implement ms-appdata
-						return new ImageData();
+						return ImageData.Empty;
 					}
 
 					// POTENTIAL BUG HERE: if the "fetch" failed, the application
 					// will never retry to fetch it again.
 					var assets = await _assets.Value;
 
-					return new ImageData
-					{
-						Kind = ImageDataKind.Url,
-						Value = GetScaledPath(uri.OriginalString, assets, scaleOverride),
-						Source = source
-					};
+					return ImageData.FromUrl(GetScaledPath(uri.OriginalString, assets, scaleOverride), source);
 				}
 				catch (Exception e)
 				{
-					return new ImageData { Kind = ImageDataKind.Error, Error = e };
+					return ImageData.FromError(e);
 				}
 			}
 
