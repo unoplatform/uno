@@ -61,8 +61,6 @@ namespace Windows.UI.Xaml.Controls
 			public const int Image_SetImageStop = 6;
 		}
 
-
-
 		protected virtual void OnImageFailed(ImageSource imageSource)
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))

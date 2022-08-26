@@ -8,7 +8,7 @@ using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
-	internal partial class NativeImage : ImageView
+	internal partial class NativeImageView : ImageView
 	{
 		private bool _skipLayoutRequest;
 		private bool _skipRecolor;
@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private Image Owner => Parent as Image;
 
-		public NativeImage() : base(ContextHelper.Current) { }
+		public NativeImageView() : base(ContextHelper.Current) { }
 
 		public override void SetImageDrawable(Drawable drawable)
 		{
