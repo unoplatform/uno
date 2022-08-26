@@ -4,6 +4,7 @@ using Windows.Foundation;
 using Windows.Storage.Streams;
 using Android.Graphics;
 using Android.Graphics.Drawables;
+using Uno.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Media.Imaging
 {
@@ -11,7 +12,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 	{
 		private protected override bool IsSourceReady => true;
 
-		private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out Bitmap image)
+		private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
 		{
 			var drawableBuffer = new int[PixelWidth * PixelHeight];
 			var sourceBuffer = _buffer.ToArray();
@@ -29,8 +30,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 				drawableBuffer[i] = (a << 24) | (r << 16) | (g << 8) | b;
 			}
 
-			image = Bitmap.CreateBitmap(drawableBuffer, PixelWidth, PixelHeight, Bitmap.Config.Argb8888);
-			return true;
+			image = ImageData.FromBitmap(Bitmap.CreateBitmap(drawableBuffer, PixelWidth, PixelHeight, Bitmap.Config.Argb8888));
+			return image.HasData;
 		}
 	}
 }

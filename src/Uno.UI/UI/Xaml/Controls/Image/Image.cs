@@ -1,22 +1,21 @@
 ﻿#if !NET461 && !UNO_REFERENCE_API
-using Uno.Extensions;
-using Uno.Diagnostics.Eventing;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
-using Uno.Disposables;
 using System.Threading;
 using System.Threading.Tasks;
-using Uno.UI;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.Foundation;
+using Uno.Diagnostics.Eventing;
+using Uno.Disposables;
+using Uno.Extensions;
 using Uno.Foundation.Logging;
-
+using Uno.UI;
+using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Core;
-using System.Numerics;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 
 #if XAMARIN_IOS
 using UIKit;
@@ -399,6 +398,22 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
+#if __IOS__ || __MACOS__ || __ANDROID__
+			if (Source is SvgImageSource svgImageSource && _svgCanvas is not null)
+			{
+				// Calculate the resulting space required on screen for the image;
+				var containerSize = this.MeasureSource(finalSize, svgImageSource.SourceSize);
+
+				// Calculate the position of the image to follow stretch and alignment requirements
+				var finalPosition = LayoutRound(this.ArrangeSource(finalSize, containerSize));
+				var roundedSize = LayoutRound(new Vector2((float)containerSize.Width, (float)containerSize.Height));
+
+				_svgCanvas.Arrange(new Rect(finalPosition.X, finalPosition.Y, roundedSize.X, roundedSize.Y));
+				_svgCanvas.Clip = new RectangleGeometry() { Rect = new Rect(0, 0, finalSize.Width, finalSize.Height) };
+				return finalSize;
+			}
+#endif
+
 #if __ANDROID__
 			// Images on UWP are always clipped to the control's boundaries.
 			var physicalSize = finalSize.LogicalToPhysicalPixels();
@@ -419,27 +434,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 #endif
 
-#if __IOS__ || __MACOS__
-			if (Source is SvgImageSource svgImageSource && _svgCanvas is not null)
-			{
-				// Calculate the resulting space required on screen for the image;
-				var containerSize = this.MeasureSource(finalSize, svgImageSource.SourceSize);
-
-				// Calculate the position of the image to follow stretch and alignment requirements
-				var finalPosition = LayoutRound(this.ArrangeSource(finalSize, containerSize));
-				var roundedSize = LayoutRound(new Vector2((float)containerSize.Width, (float)containerSize.Height));
-
-				_svgCanvas.Arrange(new Rect(finalPosition.X, finalPosition.Y, roundedSize.X, roundedSize.Y));
-				_svgCanvas.Clip = new RectangleGeometry() { Rect = new Rect(0, 0, finalSize.Width, finalSize.Height) };
-				return finalSize;
-			}
-			else
-			{
-				return base.ArrangeOverride(finalSize);
-			}
-#else
 			return base.ArrangeOverride(finalSize);
-#endif
 		}
 	}
 }

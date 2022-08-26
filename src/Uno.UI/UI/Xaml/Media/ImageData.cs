@@ -8,6 +8,8 @@ using Windows.UI.Xaml.Media;
 using _UIImage = UIKit.UIImage;
 #elif __MACOS__
 using _UIImage = AppKit.NSImage;
+#elif __ANDROID__
+using Android.Graphics;
 #endif
 
 namespace Uno.UI.Xaml.Media;
@@ -68,6 +70,22 @@ internal partial struct ImageData
 		Value = url;
 		Source = source;
 	}
+#elif __ANDROID__
+	public static ImageData FromBitmap(Bitmap? bitmap)
+	{
+		if (bitmap is null)
+		{
+			return ImageData.Empty;
+		}
+		
+		return new ImageData(bitmap);
+	}
+
+	private ImageData(Bitmap bitmap)
+	{
+		Kind = ImageDataKind.NativeImage;
+		Bitmap = bitmap ?? throw new ArgumentNullException(nameof(bitmap));
+	}
 #endif
 
 	public static ImageData Empty { get; } = new ImageData();
@@ -84,10 +102,12 @@ internal partial struct ImageData
 	public _UIImage? NativeImage { get; } = null;
 #elif __SKIA__
 	public SkiaCompositionSurface? CompositionSurface { get; } = null;
-#elif __WASM__         
+#elif __WASM__
 	internal ImageSource? Source { get; } = null;
 
 	public string? Value { get; } = null;
+#elif __ANDROID__
+	public Bitmap? Bitmap { get; } = null;
 #endif
 	
 	public override string ToString() =>
