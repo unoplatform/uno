@@ -198,9 +198,6 @@ namespace Windows.UI.Xaml.Controls
 			UpdateFont();
 		}
 
-		public void Select(int start, int length)
-			=> SelectedTextRange = this.GetTextRange(start: start, end: start + length).GetHandle();
-
 		/// <summary>
 		/// Workaround for https://github.com/unoplatform/uno/issues/9430
 		/// </summary>
