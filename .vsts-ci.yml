@@ -62,10 +62,11 @@ jobs:
   parameters:
     poolName: '$(windowsScaledPool)'
 
-- template: build/ci/.azure-devops-project-template-tests.yml
-  parameters:
-    vmImageWindows: '$(windowsHostedVMImage)'
-    vmImageLinux: '$(linuxVMImage)'
+# Disabled because not published
+#- template: build/ci/.azure-devops-project-template-tests.yml
+#  parameters:
+#    vmImageWindows: '$(windowsHostedVMImage)'
+#    vmImageLinux: '$(linuxVMImage)'
 
 - template: build/ci/.azure-devops-uap.yml
   parameters:
@@ -81,9 +82,10 @@ jobs:
     vmMacImage: '$(macOSVMImage)'
     poolName: '$(windowsScaledPool)'
 
-- template: build/ci/.azure-devops-docs.yml
-  parameters:
-    vmImage: '$(windowsHostedVMImage)'
+# Disabled because not published
+#- template: build/ci/.azure-devops-docs.yml
+#  parameters:
+#    vmImage: '$(windowsHostedVMImage)'
 
 - template: build/ci/.azure-devops-samplesapp-uitests-build.yml
   parameters:
