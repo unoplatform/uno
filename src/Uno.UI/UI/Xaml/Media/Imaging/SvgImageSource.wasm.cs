@@ -9,6 +9,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using static Windows.UI.Xaml.Media.Imaging.BitmapImage;
 using Windows.Storage.Helpers;
+using Uno.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Media.Imaging
 {
