@@ -161,7 +161,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					builder.AppendLineInvariant("using AppKit;");
 					builder.AppendLineInvariant("#endif");
 
-					using (typeSymbol.ContainingNamespace.IsGlobalNamespace ? DisposableAction.NoOp : builder.BlockInvariant($"namespace {typeSymbol.ContainingNamespace}"))
+					using (typeSymbol.ContainingNamespace.IsGlobalNamespace ? NullDisposable.Instance : builder.BlockInvariant($"namespace {typeSymbol.ContainingNamespace}"))
 					{
 						using (GenerateNestingContainers(builder, typeSymbol))
 						{
