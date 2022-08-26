@@ -60,9 +60,10 @@ jobs:
 #  parameters:
 #    vmImage: '$(windowsHostedVMImage)'
 
-- template: build/ci/.azure-devops-docs.yml
-  parameters:
-    vmImage: '$(windowsHostedVMImage)'
+# Disabled because not published
+#- template: build/ci/.azure-devops-docs.yml
+#  parameters:
+#    vmImage: '$(windowsHostedVMImage)'
 
 - template: build/ci/.azure-devops-wasm-uitests.yml
   parameters:
