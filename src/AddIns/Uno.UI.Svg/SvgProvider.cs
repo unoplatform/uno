@@ -81,7 +81,7 @@ public partial class SvgProvider : ISvgProvider
 		}
 	}
 
-	// TODO: This is used by iOS/macOS while Skia uses subscription. This behavior
+	// TODO: This is used by iOS/macOS/Android while Skia uses subscription. This behavior
 	// should be aligned in the future so only one of the approaches is applied.
 	public void NotifySourceOpened(byte[] svgBytes) => OnSourceOpened(svgBytes);
 }

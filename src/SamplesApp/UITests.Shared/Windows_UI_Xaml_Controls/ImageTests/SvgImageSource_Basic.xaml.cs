@@ -67,7 +67,7 @@ public sealed partial class SvgImageSource_Basic : Page
 
 	public SvgSource[] Sources { get; } = new SvgSource[]
 	{
-		new("Uno Overalls (ms-appx)", new Uri("ms-appx:///Assets/Formats/uno-overalls.svg")),
+		new("Calendar (ms-appx)", new Uri("ms-appx:///Assets/Formats/czcalendar.svg")),
 		new("Couch (ms-appx)", new Uri("ms-appx:///Assets/Formats/couch.svg")),
 		new("Heliocentric (relative)", new Uri("/Assets/Formats/heliocentric.svg", UriKind.Relative)),
 		new("Heart (relative)", new Uri("/Assets/Formats/heart.svg", UriKind.Relative)),
