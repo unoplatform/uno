@@ -50,12 +50,23 @@ internal partial struct ImageData
 		CompositionSurface = compositionSurface;
 	}
 #elif __WASM__
-	public static FromDataUri(string dataUri) => new ImageData(dataUri);
+	public static ImageData FromDataUri(string dataUri) => new ImageData(ImageDataKind.DataUri, dataUri);
+	
+	public static ImageData FromUrl(Uri url, ImageSource source) => new ImageData(url.ToString(), source);
+	
+	public static ImageData FromUrl(string url, ImageSource source) => new ImageData(url, source);
 
-	private ImageData(string dataUri)
+	private ImageData(ImageDataKind kind, string value)
 	{
-		Kind = ImageDataKind.DataUri;
-		Value = dataUri;
+		Kind = kind;
+		Value = value;
+	}
+
+	private ImageData(string url, ImageSource source)
+	{
+		Kind = ImageDataKind.Url;
+		Value = url;
+		Source = source;
 	}
 #endif
 
@@ -92,7 +103,8 @@ internal partial struct ImageData
 			ImageDataKind.CompositionSurface => $"CompositionSurface: {CompositionSurface}",
 #endif
 #if __WASM__
-			ImageDataKind.Value => $"Value: {Value}",
+			ImageDataKind.DataUri => $"DataUri: {Value}",
+			ImageDataKind.Url => $"Url: {Value}, Source: {Source}",
 #endif
 			_ => $"{Kind}"
 		};
