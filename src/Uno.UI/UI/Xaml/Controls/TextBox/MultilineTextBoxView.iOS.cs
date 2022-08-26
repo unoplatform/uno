@@ -237,8 +237,5 @@ namespace Windows.UI.Xaml.Controls
 		{
 			UpdateFont();
 		}
-
-		public void Select(int start, int length)
-			=> SelectedTextRange = this.GetTextRange(start: start, end: start + length).GetHandle();
 	}
 }
