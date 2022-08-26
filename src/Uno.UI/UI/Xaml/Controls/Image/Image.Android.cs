@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Controls
 			if (
 				(Source?.UseTargetSize ?? false)
 				&& (arrangeSize.Width > _previousArrangeSize.Width || arrangeSize.Height > _previousArrangeSize.Height)
-				&& _openedImage != null
+				&& _openedSource != null
 			)
 			{
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
@@ -113,7 +113,7 @@ namespace Windows.UI.Xaml.Controls
 						$" Image is being reloaded because the target size has changed ({_previousArrangeSize.Width}x{_previousArrangeSize.Height} to {arrangeSize.Width}x{arrangeSize.Height})");
 				}
 
-				_openedImage = null;
+				_openedSource = null;
 			}
 
 			_previousArrangeSize = arrangeSize;
@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var imageSource = Source;
 
-			if (!forceReload && _openedImage == imageSource)
+			if (!forceReload && _openedSource == imageSource)
 			{
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().Debug(this.ToString() + " TryOpenImage - proceeding");
 			}
 
-			_openedImage = null;
+			_openedSource = null;
 			_successfullyOpenedImage = null;
 
 			using (
@@ -209,7 +209,7 @@ namespace Windows.UI.Xaml.Controls
 						throw new NotSupportedException("The provided ImageSource is not supported.");
 					}
 
-					_openedImage = imageSource;
+					_openedSource = imageSource;
 				}
 				catch (OperationCanceledException)
 				{
@@ -226,11 +226,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private void TryCreateNative()
 		{
-			if (_native == null)
+			if (_nativeImageView == null)
 			{
-				_native = new NativeImage();
+				_nativeImageView = new NativeImageView();
 
-				AddView(_native);
+				AddView(_nativeImageView);
 
 				UpdateMatrix(_lastLayoutSize);
 			}
@@ -255,7 +255,7 @@ namespace Windows.UI.Xaml.Controls
 
 				_imageFetchDisposable.Disposable = disposable;
 
-				var bitmap = await newImageSource.Open(disposable.Token, _native, _targetWidth, _targetHeight);
+				var bitmap = await newImageSource.Open(disposable.Token, _nativeImageView, _targetWidth, _targetHeight);
 
 				if (newImageSource.IsImageLoadedToUiDirectly)
 				{
@@ -265,7 +265,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					_native.SetImageBitmap(bitmap);
+					_nativeImageView.SetImageBitmap(bitmap);
 
 					if (bitmap != null)
 					{
@@ -307,7 +307,7 @@ namespace Windows.UI.Xaml.Controls
 
 			Func<CancellationToken, Task> setResource = async (ct) =>
 			{
-				_native.SetImageResource(newImageSource.ResourceId.Value);
+				_nativeImageView.SetImageResource(newImageSource.ResourceId.Value);
 				OnImageOpened(newImageSource);
 			};
 
@@ -338,7 +338,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		private async Task SetSourceDrawableAsync(CancellationToken ct, ImageSource newImageSource)
 		{
-			_native.SetImageDrawable(newImageSource.BitmapDrawable);
+			_nativeImageView.SetImageDrawable(newImageSource.BitmapDrawable);
 			OnImageOpened(newImageSource);
 		}
 
@@ -356,7 +356,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private async Task SetSourceBitmapAsync(CancellationToken ct, (ImageSource src, Bitmap data) image)
 		{
-			_native.SetImageBitmap(image.data);
+			_nativeImageView.SetImageBitmap(image.data);
 			OnImageOpened(image.src);
 		}
 
@@ -376,7 +376,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// Internally, SetImageBitmap calls SetImageDrawable but creates a new BitmapDrawable. 
 			// So it's better to use SetImageDrawable.
-			_native?.SetImageDrawable(null);
+			_nativeImageView?.SetImageDrawable(null);
 		}
 
 		partial void OnStretchChanged(Stretch newValue, Stretch oldValue)
@@ -390,12 +390,12 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="frameSize">In logical pixels</param>
 		internal void UpdateMatrix(Windows.Foundation.Size frameSize)
 		{
-			if (_native == null)
+			if (_nativeImageView == null)
 			{
 				return;
 			}
 
-			_native.SetScaleType(ImageView.ScaleType.Matrix);
+			_nativeImageView.SetScaleType(ImageView.ScaleType.Matrix);
 
 			if (SourceImageSize.Width == 0 || SourceImageSize.Height == 0 || frameSize.Width == 0 || frameSize.Height == 0)
 			{
@@ -416,7 +416,7 @@ namespace Windows.UI.Xaml.Controls
 			var matrix = new Android.Graphics.Matrix();
 			matrix.PostScale((float)scaleX, (float)scaleY);
 			matrix.PostTranslate(translateX, translateY);
-			_native.ImageMatrix = matrix;
+			_nativeImageView.ImageMatrix = matrix;
 		}
 	}
 }
