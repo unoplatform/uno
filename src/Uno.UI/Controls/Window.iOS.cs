@@ -20,10 +20,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 namespace Uno.UI.Controls
 {
@@ -286,7 +283,8 @@ namespace Uno.UI.Controls
 			}
 			if (multilineTextBoxView != null && multilineTextBoxView.IsFirstResponder)
 			{
-				viewRectInScrollView = multilineTextBoxView.GetCaretRectForPosition(multilineTextBoxView.SelectedTextRange.Start);
+				using var range = ObjCRuntime.Runtime.GetNSObject<UITextRange>(multilineTextBoxView.SelectedTextRange);
+				viewRectInScrollView = multilineTextBoxView.GetCaretRectForPosition(range.Start);
 
 				// We need to add an additional margins because the caret is too tight to the text. The font is cutoff under the keyboard.
 				viewRectInScrollView.Y -= KeyboardMargin;
