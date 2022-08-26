@@ -2,6 +2,7 @@
 
 using System;
 using Windows.UI.Composition;
+using Windows.UI.Xaml.Media;
 
 #if __IOS__
 using _UIImage = UIKit.UIImage;
@@ -40,15 +41,21 @@ internal partial struct ImageData
 		Kind = ImageDataKind.NativeImage;
 		NativeImage = uiImage ?? throw new ArgumentNullException(nameof(uiImage));
 	}
-#endif
-
-#if __SKIA__
+#elif __SKIA__
 	public static ImageData FromCompositionSurface(SkiaCompositionSurface compositionSurface) => new(compositionSurface);
 
 	private ImageData(SkiaCompositionSurface compositionSurface)
 	{
 		Kind = ImageDataKind.CompositionSurface;
 		CompositionSurface = compositionSurface;
+	}
+#elif __WASM__
+	public static FromDataUri(string dataUri) => new ImageData(dataUri);
+
+	private ImageData(string dataUri)
+	{
+		Kind = ImageDataKind.DataUri;
+		Value = dataUri;
 	}
 #endif
 
@@ -62,16 +69,16 @@ internal partial struct ImageData
 
 	public byte[]? ByteArray { get; } = null;
 
-#if __WASM__
+#if __IOS__ || __MACOS__
+	public _UIImage? NativeImage { get; } = null;
+#elif __SKIA__
+	public SkiaCompositionSurface? CompositionSurface { get; } = null;
+#elif __WASM__         
 	internal ImageSource? Source { get; } = null;
 
 	public string? Value { get; } = null;
-#elif __SKIA__
-	public SkiaCompositionSurface? CompositionSurface { get; } = null;
-#elif __IOS__ || __MACOS__
-	public _UIImage? NativeImage { get; } = null;
 #endif
-
+	
 	public override string ToString() =>
 		Kind switch
 		{

@@ -5,6 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
+using Uno.UI.Xaml.Media;
 
 #if !IS_UNO
 using Uno.Web.Query;
@@ -34,17 +35,13 @@ namespace Windows.UI.Xaml.Media
 
 				ReportImageLoaded();
 
-				return new ImageData
-				{
-					Kind = ImageDataKind.DataUri,
-					Value = "data:" + stream.ContentType + ";base64," + encodedBytes
-				};
+				return ImageData.FromDataUri("data:" + stream.ContentType + ";base64," + encodedBytes);
 			}
 			catch (Exception ex)
 			{
 				ReportImageFailed(ex.Message);
 
-				return new ImageData {Kind = ImageDataKind.Error, Error = ex};
+				return ImageData.FromError(ex);
 			}
 		}
 

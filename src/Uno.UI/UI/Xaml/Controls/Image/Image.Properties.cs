@@ -48,6 +48,7 @@ partial class Image
 				Stretch.Uniform,
 				(s, e) => ((Image)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
 
+#if !__WASM__
 	/// <summary>
 	/// Occurs when there is an error associated with image retrieval or format.
 	/// </summary>
@@ -57,4 +58,5 @@ partial class Image
 	/// Occurs when the image source is downloaded and decoded with no failure. You can use this event to determine the natural size of the image source.
 	/// </summary>
 	public event RoutedEventHandler ImageOpened;
+#endif
 }

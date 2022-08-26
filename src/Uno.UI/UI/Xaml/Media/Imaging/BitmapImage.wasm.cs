@@ -11,6 +11,7 @@ using Uno.Foundation;
 using Windows.Graphics.Display;
 using Windows.Storage.Helpers;
 using Windows.Storage.Streams;
+using Uno.UI.Xaml.Media;
 using Path = global::System.IO.Path;
 
 namespace Windows.UI.Xaml.Media.Imaging

@@ -5,6 +5,7 @@ using Windows.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Shapes
 {
