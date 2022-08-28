@@ -148,6 +148,29 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
+				Action imageOpened = () =>
+				{
+					TryOpenImage(forceReload: true);
+					OnImageOpened(newValue);
+				};
+
+				Action imageFailed = () =>
+				{
+					TryOpenImage(forceReload: true);
+					OnImageFailed(newValue);
+				};
+
+				if (newValue is BitmapImage bitmapImage)
+				{
+					bitmapImage.ImageOpened += (_, _) => imageOpened();
+					bitmapImage.ImageFailed += (_, _) => imageFailed();
+				}
+				else if (newValue is SvgImageSource svgImageSource)
+				{
+					svgImageSource.Opened += (_, _) => imageOpened();
+					svgImageSource.OpenFailed += (_, _) => imageFailed();
+				}
+
 				_sourceDisposable.Disposable =
 					Source?.RegisterDisposablePropertyChangedCallback(
 						BitmapImage.UriSourceProperty, (o, e) =>
