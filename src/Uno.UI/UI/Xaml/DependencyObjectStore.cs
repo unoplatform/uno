@@ -498,7 +498,7 @@ namespace Windows.UI.Xaml
 						);
 					}
 
-					RaiseCallbacks(actualInstanceAlias, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
+					RaiseCallbacks(actualInstanceAlias, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence, value == DependencyProperty.UnsetValue);
 				}
 #if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				finally
@@ -1714,7 +1714,8 @@ namespace Windows.UI.Xaml
 			object? previousValue,
 			DependencyPropertyValuePrecedences previousPrecedence,
 			object? newValue,
-			DependencyPropertyValuePrecedences newPrecedence
+			DependencyPropertyValuePrecedences newPrecedence,
+			bool isUnsetValue
 		)
 		{
 			var hasPropagationBypass = _propagationBypass.Count != 0 || _propagationBypassed.Count != 0;
@@ -1731,7 +1732,7 @@ namespace Windows.UI.Xaml
 					_propagationBypassed[propertyPath!] = previousValue;
 				}
 
-				InvokeCallbacks(actualInstanceAlias, propertyDetails.Property, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence, bypassesPropagation);
+				InvokeCallbacks(actualInstanceAlias, propertyDetails.Property, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence, isUnsetValue, bypassesPropagation);
 			}
 			else if (
 				hasPropagationBypass
@@ -1744,7 +1745,7 @@ namespace Windows.UI.Xaml
 				var unpropagatedPrevious = _propagationBypassed[propertyPath!];
 				_propagationBypassed.Remove(propertyPath!);
 
-				InvokeCallbacks(actualInstanceAlias, propertyDetails.Property, propertyDetails, unpropagatedPrevious, previousPrecedence, newValue, newPrecedence);
+				InvokeCallbacks(actualInstanceAlias, propertyDetails.Property, propertyDetails, unpropagatedPrevious, previousPrecedence, newValue, newPrecedence, isUnsetValue);
 			}
 			else if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
@@ -1762,6 +1763,7 @@ namespace Windows.UI.Xaml
 			DependencyPropertyValuePrecedences previousPrecedence,
 			object? newValue,
 			DependencyPropertyValuePrecedences newPrecedence,
+			bool isUnsetValue,
 			bool bypassesPropagation = false
 		)
 		{
@@ -1824,7 +1826,7 @@ namespace Windows.UI.Xaml
 			propertyMetadata.RaisePropertyChanged(actualInstanceAlias, eventArgs);
 
 			// Ensure binding is propagated
-			OnDependencyPropertyChanged(propertyDetails, eventArgs);
+			OnDependencyPropertyChanged(propertyDetails, eventArgs, isUnsetValue);
 
 			// Raise the common property change callback of WinUI
 			// This is raised *after* the data bound properties are updated

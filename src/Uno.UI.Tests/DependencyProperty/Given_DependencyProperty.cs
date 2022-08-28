@@ -1815,6 +1815,17 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(42, SUT.GetValue(MyDependencyObjectWithDefaultValueOverride.MyPropertyProperty));
 		}
 
+		[TestMethod]
+		public void ClearValue()
+		{
+			var SUT = new MainPage();
+			Assert.AreEqual(true, SUT.MyCheckBox.IsChecked);
+			Assert.AreEqual(true, SUT.MyModel.IsChecked);
+			SUT.MyButton.RaiseClick();
+			Assert.AreEqual(false, SUT.MyCheckBox.IsChecked);
+			Assert.AreEqual(true, SUT.MyModel.IsChecked);
+		}
+
 		private class MyDependencyObject : FrameworkElement
 		{
 			internal static readonly DependencyProperty PropAProperty = DependencyProperty.Register(
@@ -2075,4 +2086,72 @@ namespace Uno.UI.Tests.BinderTests
 
 
 	#endregion
+    public sealed partial class MainPage : Page
+	{
+		public readonly Button MyButton;
+		public readonly CheckBox MyCheckBox;
+		public readonly Model MyModel;
+
+		public class Model
+		{
+			private bool isChecked = true;
+
+			public bool IsChecked
+			{
+				get => isChecked;
+				set
+				{
+					if (isChecked == value)
+						return;
+
+					isChecked = value;                                                              // !!! place breakpoint here to see the difference between WASM and WindowsAppSDK
+				}
+			}
+		}
+
+		public MainPage()
+		{
+			MyCheckBox = new CheckBox();
+			MyCheckBox.Unchecked += CheckBox_CheckedChanged;
+			MyCheckBox.Checked += CheckBox_CheckedChanged;
+			MyButton = new Button
+			{
+				Content = "Click me",
+			};
+			MyModel = new Model();
+			Content = new StackPanel
+			{
+				Orientation = Orientation.Horizontal,
+				Children =
+				{
+					MyCheckBox.Bind(MyModel, nameof(Model.IsChecked)),
+					MyButton.OnClick((s, e) => MyCheckBox.ClearValue(CheckBox.IsCheckedProperty)),     // !!! this will set Model.IsChecked = false, which is wrong. It only should 'remove' the binding,
+				}
+			};
+		}
+
+		private void CheckBox_CheckedChanged(object sender, RoutedEventArgs e) { }
+	}
+
+	public static class Extensions
+	{
+		public static TElement Bind<TElement>(this TElement element, object source, string path = null, IValueConverter converter = null, object converterParameter = null, BindingMode mode = BindingMode.TwoWay) where TElement : FrameworkElement
+		{
+			element.SetBinding(CheckBox.IsCheckedProperty, new Binding
+			{
+				Converter = converter,
+				ConverterParameter = converterParameter ?? element,
+				Mode = mode,
+				Path = string.IsNullOrEmpty(path) ? null : new PropertyPath(path),
+				Source = source ?? element,
+			});
+			return element;
+		}
+
+		public static TElement OnClick<TElement>(this TElement element, RoutedEventHandler handler) where TElement : Button
+		{
+			element.Click += handler;
+			return element;
+		}
+	}
 }

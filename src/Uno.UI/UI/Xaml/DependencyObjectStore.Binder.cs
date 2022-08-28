@@ -509,7 +509,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Sets the specified source <paramref name="value"/> on <paramref name="property"/>
 		/// </summary>
-		internal void SetBindingValue(DependencyPropertyDetails propertyDetails, object value)
+		private void SetBindingValue(DependencyPropertyDetails propertyDetails, object value)
 		{
 			var unregisteringInheritedProperties = _unregisteringInheritedProperties || _parentUnregisteringInheritedProperties;
 			if (unregisteringInheritedProperties)
@@ -562,9 +562,17 @@ namespace Windows.UI.Xaml
 			return null;
 		}
 
-		private void OnDependencyPropertyChanged(DependencyPropertyDetails propertyDetails, DependencyPropertyChangedEventArgs args)
+		private void OnDependencyPropertyChanged(DependencyPropertyDetails propertyDetails, DependencyPropertyChangedEventArgs args, bool isUnsetValue)
 		{
-			SetBindingValue(propertyDetails, args.NewValue);
+			if (isUnsetValue)
+			{
+				propertyDetails.ClearBinding();
+			}
+			else
+			{
+				SetBindingValue(propertyDetails, args.NewValue);
+			}
+
 
 			GetPropertyInheritanceConfiguration(
 				propertyDetails: propertyDetails,
