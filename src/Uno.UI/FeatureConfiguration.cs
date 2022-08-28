@@ -319,6 +319,7 @@ namespace Uno.UI
 
 		public static class TextBox
 		{
+
 			/// <summary>
 			/// Determines if the caret is visible or not.
 			/// </summary>

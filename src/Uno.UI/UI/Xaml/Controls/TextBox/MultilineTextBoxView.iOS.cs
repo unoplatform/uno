@@ -13,6 +13,8 @@ using Uno.UI;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Controls;
 using Windows.UI;
+using Uno.Disposables;
+using ObjCRuntime;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -203,17 +205,21 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public override UITextRange SelectedTextRange
+		/// <summary>
+		/// Workaround for https://github.com/unoplatform/uno/issues/9430
+		/// </summary>
+		[Export("selectedTextRange")]
+		public new IntPtr SelectedTextRange
 		{
 			get
 			{
-				return base.SelectedTextRange;
+				return SinglelineTextBoxView.IntPtr_objc_msgSendSuper(SuperHandle, Selector.GetHandle("selectedTextRange"));
 			}
 			set
 			{
-				if (base.SelectedTextRange != value)
+				if (SelectedTextRange != value)
 				{
-					base.SelectedTextRange = value;
+					SinglelineTextBoxView.void_objc_msgSendSuper(SuperHandle, Selector.GetHandle("setSelectedTextRange:"), value);
 					_textBox.GetTarget()?.OnSelectionChanged();
 				}
 			}
