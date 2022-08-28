@@ -132,7 +132,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		{
 			if (DownloadProgress is { } evt)
 			{
-				evt?.Invoke(this, new DownloadProgressEventArgs {Progress = progress});
+				evt.Invoke(this, new DownloadProgressEventArgs {Progress = progress});
 
 			}
 		}
@@ -141,7 +141,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		{
 			if (ImageFailed is { } evt)
 			{
-				evt?.Invoke(this, args);
+				evt.Invoke(this, args);
 			}
 		}
 
@@ -149,7 +149,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		{
 			if (ImageFailed is { } evt)
 			{
-				evt?.Invoke(this, new ExceptionRoutedEventArgs(this, ex.Message));
+				evt.Invoke(this, new ExceptionRoutedEventArgs(this, ex.Message));
 			}
 		}
 
@@ -157,8 +157,13 @@ namespace Windows.UI.Xaml.Media.Imaging
 		{
 			if (ImageOpened is { } evt)
 			{
-				evt?.Invoke(this, new RoutedEventArgs(this));
+				evt.Invoke(this, new RoutedEventArgs(this));
 			}
+		}
+
+		internal override void ReportImageLoaded()
+		{
+			RaiseImageOpened();
 		}
 	}
 }

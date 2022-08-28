@@ -176,11 +176,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 			};
 		}
 
-		internal override void ReportImageLoaded()
-		{
-			RaiseImageOpened();
-		}
-
 		internal override void ReportImageFailed(string errorMessage)
 		{
 			RaiseImageFailed(new Exception("Unable to load image: " + errorMessage));

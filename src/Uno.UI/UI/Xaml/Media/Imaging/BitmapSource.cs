@@ -67,7 +67,10 @@ namespace Windows.UI.Xaml.Media.Imaging
 		/// Helper for Uno... not part of UWP contract
 		/// </summary>
 		public void SetSource(Stream streamSource)
-			=> SetSourceCore(streamSource.AsRandomAccessStream());
+		{
+			SetSourceCore(streamSource.AsRandomAccessStream());
+			ForceLoad(CancellationToken.None);
+		}
 
 		/// <summary>
 		/// Helper for Uno... not part of UWP contract
@@ -79,7 +82,10 @@ namespace Windows.UI.Xaml.Media.Imaging
 		}
 
 		public void SetSource(IRandomAccessStream streamSource)
-			=> SetSourceCore(streamSource);
+		{
+			SetSourceCore(streamSource);
+			ForceLoad(CancellationToken.None);
+		}
 
 		public IAsyncAction SetSourceAsync(IRandomAccessStream streamSource)
 		{
@@ -123,6 +129,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 			{
 				tcs.TrySetResult(null);
 			}
+#else
+			ReportImageLoaded();
 #endif
 		}
 

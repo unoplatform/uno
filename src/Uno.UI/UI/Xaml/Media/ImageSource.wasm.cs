@@ -42,16 +42,5 @@ namespace Windows.UI.Xaml.Media
 				return new ImageData {Kind = ImageDataKind.Error, Error = ex};
 			}
 		}
-
-		internal virtual void ReportImageLoaded()
-		{
-
-		}
-
-		internal virtual void ReportImageFailed(string errorMessage)
-		{
-
-		}
-
 	}
 }

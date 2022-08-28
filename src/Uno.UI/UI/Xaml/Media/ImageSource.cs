@@ -177,6 +177,14 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 
+		internal virtual void ReportImageLoaded()
+		{
+		}
+
+		internal virtual void ReportImageFailed(string errorMessage)
+		{
+		}
+
 		private Uri _webUri;
 
 		internal Uri WebUri

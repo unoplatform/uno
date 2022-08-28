@@ -106,6 +106,10 @@ namespace Windows.UI.Xaml.Media.Imaging
 			Opened?.Invoke(this, new SvgImageSourceOpenedEventArgs());
 		}
 
+		internal override void ReportImageLoaded() => RaiseImageOpened();
+
+		internal override void ReportImageFailed(string errorMessage) => RaiseImageFailed(SvgImageSourceLoadStatus.Other);
+
 #pragma warning disable 67
 		public event TypedEventHandler<SvgImageSource, SvgImageSourceFailedEventArgs> OpenFailed;
 
