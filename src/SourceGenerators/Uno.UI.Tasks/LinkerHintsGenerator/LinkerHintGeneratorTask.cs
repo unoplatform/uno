@@ -29,7 +29,6 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 #endif
 
 		private List<string> _referencedAssemblies = new List<string>();
-		private string[] _searchPaths = Array.Empty<string>();
 		private DefaultAssemblyResolver? _assemblyResolver;
 
 		[Required]
@@ -128,7 +127,15 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 		{
 			var linkerPath = Path.Combine(ILLinkerPath, "illink.dll");
 
-			var linkerSearchPaths = string.Join(" ", _referencedAssemblies.Select(Path.GetDirectoryName).Distinct().Select(p => $"-d \"{p}\" "));
+			var referencedAssemblies = string.Join(" ", _referencedAssemblies
+				// Java interop does not link properly when included in our own
+				// set of parameters provided to the linker.
+				// As we're skipping unresolved symbols already, and that
+				// we do not need a functioning output, we can remove the assembly
+				// altogether.
+				.Where(r => !r.EndsWith("Java.Interop.dll"))
+				.Distinct()
+				.Select(r => $"-reference \"{r}\" "));
 
 			var parameters = new List<string>()
 			{
@@ -140,7 +147,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				$"-b true",
 				$"-a {AssemblyPath}",
 				$"-out {outputPath}",
-				linkerSearchPaths,
+				referencedAssemblies,
 				features,
 			};
 
@@ -150,7 +157,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 			Directory.CreateDirectory(OutputPath);
 
-			var res = StartProcess("dotnet", $"{linkerPath} @{file}", CurrentProjectPath);
+			var res = StartProcess("dotnet", $"\"{linkerPath}\" @{file}", CurrentProjectPath);
 
 			if (!string.IsNullOrEmpty(res.error))
 			{
@@ -291,14 +298,14 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 					_referencedAssemblies.Add(RewriteReferencePath(referencePath.ItemSpec, unoUIPackageBasePath, UnoRuntimeIdentifier));
 				}
 
-				_searchPaths = ReferencePath
+				var searchPaths = ReferencePath
 						.Select(p => Path.GetDirectoryName(p.ItemSpec))
 						.Distinct()
 						.ToArray();
 
 				_assemblyResolver = new DefaultAssemblyResolver();
 
-				foreach (var assembly in _searchPaths)
+				foreach (var assembly in searchPaths)
 				{
 					_assemblyResolver.AddSearchDirectory(assembly);
 				}

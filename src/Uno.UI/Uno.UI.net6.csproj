@@ -42,6 +42,8 @@
 
 		<!-- Disable WPF targets -->
 		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
+
+		<UnoXamlResourcesTrimming Condition="'$(Configuration)'!='Debug'">true</UnoXamlResourcesTrimming>
 	</PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
