@@ -123,4 +123,12 @@ public partial class SvgImageSource : ImageSource
 		_lastStatus = SvgImageSourceLoadStatus.Success;
 		Opened?.Invoke(this, new SvgImageSourceOpenedEventArgs());
 	}
+
+	private async Task<ImageData> ReadFromStreamAsync(Stream stream, CancellationToken ct)
+	{
+		var memoryStream = new MemoryStream();
+		await stream.CopyToAsync(memoryStream, ct);
+		var data = memoryStream.ToArray();
+		return ImageData.FromBytes(data);
+	}
 }
