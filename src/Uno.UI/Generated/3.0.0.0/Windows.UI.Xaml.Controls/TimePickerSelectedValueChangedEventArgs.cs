@@ -2,32 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class TimePickerSelectedValueChangedEventArgs 
+	public partial class TimePickerValueChangedEventArgs
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan? NewTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan? TimePickerSelectedValueChangedEventArgs.NewTime is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan? OldTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan? TimePickerSelectedValueChangedEventArgs.OldTime is not implemented in Uno.");
-			}
-		}
-		#endif
-		// Forced skipping of method Windows.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs.OldTime.get
-		// Forced skipping of method Windows.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs.NewTime.get
+		// Skipping already declared property NewTime
+		// Skipping already declared property OldTime
+		// Forced skipping of method Windows.UI.Xaml.Controls.TimePickerValueChangedEventArgs.OldTime.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.TimePickerValueChangedEventArgs.NewTime.get
 	}
 }

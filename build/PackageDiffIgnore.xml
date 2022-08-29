@@ -8904,6 +8904,13 @@
 				fullName="System.Void Windows.UI.Xaml.Controls.SinglelineTextBoxView::set_SelectedTextRange(UIKit.UITextRange value)"
 				reason="Workaround for iOS 16" />
 			<!-- END iOS 16 workaround -->
+
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs..ctor()"
+				reason="Constructor is internal on UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.TimePickerValueChangedEventArgs..ctor()"
+				reason="Constructor is internal on UWP" />
 		</Methods>
 		<Properties>
 			<Member
