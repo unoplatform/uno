@@ -3,74 +3,73 @@ using System;
 using System.IO;
 using Windows.Foundation;
 
-namespace Windows.Storage.Streams
+namespace Windows.Storage.Streams;
+
+public partial class InMemoryRandomAccessStream: IStreamWrapper
 {
-	public partial class InMemoryRandomAccessStream: IStreamWrapper
+	private readonly MemoryStream _stream;
+	public InMemoryRandomAccessStream() =>
+		_stream = new();
+
+	private InMemoryRandomAccessStream(MemoryStream stream) =>
+		_stream = stream;
+
+	public ulong Size
 	{
-		private readonly MemoryStream _stream;
-		public InMemoryRandomAccessStream() =>
-			_stream = new();
+		get => (ulong)_stream.Length;
+		set => _stream.SetLength((long)value);
+	}
 
-		private InMemoryRandomAccessStream(MemoryStream stream) =>
-			_stream = stream;
+	public bool CanRead => _stream.CanRead;
 
-		public ulong Size
+	public bool CanWrite => _stream.CanWrite;
+
+	public ulong Position => (ulong)_stream.Position;
+
+	public void Seek(ulong position) => _stream.Position = (long)position;
+
+	public IRandomAccessStream CloneStream()
+	{
+		var destination = new MemoryStream();
+		_stream.Position = 0;
+		_stream.CopyTo(destination);
+		return new InMemoryRandomAccessStream(destination);
+	}
+
+	public void Dispose() => _stream.Dispose();
+
+	Stream IStreamWrapper.FindStream() => _stream;
+
+	public IAsyncOperationWithProgress<IBuffer, uint> ReadAsync(IBuffer buffer, uint count, InputStreamOptions options) =>
+		_stream.ReadAsyncOperation(buffer, count, options);
+
+	public IAsyncOperationWithProgress<uint, uint> WriteAsync(IBuffer buffer) =>
+		_stream.WriteAsyncOperation(buffer);
+
+	public IAsyncOperation<bool> FlushAsync() =>
+		_stream.FlushAsyncOperation();
+
+	public IInputStream GetInputStreamAt(ulong position)
+	{
+		if (!CanRead)
 		{
-			get => (ulong)_stream.Length;
-			set => _stream.SetLength((long)value);
+			throw new NotSupportedException("It has not been opened for read.");
 		}
 
-		public bool CanRead => _stream.CanRead;
+		_stream.Seek((long)position, SeekOrigin.Begin);
 
-		public bool CanWrite => _stream.CanWrite;
+		return new InputStreamOverStream(_stream);
+	}
 
-		public ulong Position => (ulong)_stream.Position;
-
-		public void Seek(ulong position) => _stream.Position = (long)position;
-
-		public IRandomAccessStream CloneStream()
+	public IOutputStream GetOutputStreamAt(ulong position)
+	{
+		if (!CanWrite)
 		{
-			var destination = new MemoryStream();
-			_stream.Position = 0;
-			_stream.CopyTo(destination);
-			return new InMemoryRandomAccessStream(destination);
+			throw new NotSupportedException("It has not been opened for write.");
 		}
 
-		public void Dispose() => _stream.Dispose();
+		_stream.Seek((long)position, SeekOrigin.Begin);
 
-		Stream IStreamWrapper.FindStream() => _stream;
-
-		public IAsyncOperationWithProgress<IBuffer, uint> ReadAsync(IBuffer buffer, uint count, InputStreamOptions options) =>
-			_stream.ReadAsyncOperation(buffer, count, options);
-
-		public IAsyncOperationWithProgress<uint, uint> WriteAsync(IBuffer buffer) =>
-			_stream.WriteAsyncOperation(buffer);
-
-		public IAsyncOperation<bool> FlushAsync() =>
-			_stream.FlushAsyncOperation();
-
-		public IInputStream GetInputStreamAt(ulong position)
-		{
-			if (!CanRead)
-			{
-				throw new NotSupportedException("The file has not been opened for read.");
-			}
-
-			_stream.Seek((long)position, SeekOrigin.Begin);
-
-			return new InputStreamOverStream(_stream);
-		}
-
-		public IOutputStream GetOutputStreamAt(ulong position)
-		{
-			if (!CanWrite)
-			{
-				throw new NotSupportedException("The file has not been opened for write.");
-			}
-
-			_stream.Seek((long)position, SeekOrigin.Begin);
-
-			return new OutputStreamOverStream(_stream);
-		}
+		return new OutputStreamOverStream(_stream);
 	}
 }
