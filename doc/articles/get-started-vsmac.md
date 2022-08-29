@@ -17,7 +17,7 @@ In order to create a new Uno Project, you'll need to install the [`dotnet new` U
 1. To create a new project, from the command line:
     ```
     cd src
-    dotnet new unoapp-net6 -o MyApp01
+    dotnet new unoapp -o MyApp01
     ```
 
 1. Once created, open the `MyApp-vsmac.slnf` file
