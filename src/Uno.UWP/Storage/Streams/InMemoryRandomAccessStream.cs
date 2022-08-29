@@ -1,5 +1,7 @@
 ﻿#nullable enable
+using System;
 using System.IO;
+using Windows.Foundation;
 
 namespace Windows.Storage.Streams
 {
@@ -37,5 +39,38 @@ namespace Windows.Storage.Streams
 		public void Dispose() => _stream.Dispose();
 
 		Stream IStreamWrapper.FindStream() => _stream;
+
+		public IAsyncOperationWithProgress<IBuffer, uint> ReadAsync(IBuffer buffer, uint count, InputStreamOptions options) =>
+			_stream.ReadAsyncOperation(buffer, count, options);
+
+		public IAsyncOperationWithProgress<uint, uint> WriteAsync(IBuffer buffer) =>
+			_stream.WriteAsyncOperation(buffer);
+
+		public IAsyncOperation<bool> FlushAsync() =>
+			_stream.FlushAsyncOperation();
+
+		public IInputStream GetInputStreamAt(ulong position)
+		{
+			if (!CanRead)
+			{
+				throw new NotSupportedException("The file has not been opened for read.");
+			}
+
+			_stream.Seek((long)position, SeekOrigin.Begin);
+
+			return new InputStreamOverStream(_stream);
+		}
+
+		public IOutputStream GetOutputStreamAt(ulong position)
+		{
+			if (!CanWrite)
+			{
+				throw new NotSupportedException("The file has not been opened for write.");
+			}
+
+			_stream.Seek((long)position, SeekOrigin.Begin);
+
+			return new OutputStreamOverStream(_stream);
+		}
 	}
 }
