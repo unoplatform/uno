@@ -1,10 +1,11 @@
-﻿using System.IO;
+﻿#nullable enable
+using System.IO;
 
 namespace Windows.Storage.Streams
 {
 	public partial class InMemoryRandomAccessStream: IStreamWrapper
 	{
-		private MemoryStream _stream;
+		private readonly MemoryStream _stream;
 		public InMemoryRandomAccessStream() =>
 			_stream = new();
 
