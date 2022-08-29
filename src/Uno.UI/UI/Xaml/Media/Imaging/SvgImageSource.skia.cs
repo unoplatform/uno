@@ -54,14 +54,6 @@ partial class SvgImageSource
 		return default;
 	}
 
-	private async Task<ImageData> ReadFromStreamAsync(Stream stream)
-	{
-		var memoryStream = new MemoryStream();
-		await stream.CopyToAsync(memoryStream);
-		var data = memoryStream.ToArray();
-		return ImageData.FromBytes(data);
-	}
-
 	private static string GetApplicationPath(string rawPath)
 	{
 		var originalLocalPath =
