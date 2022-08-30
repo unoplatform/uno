@@ -50,40 +50,42 @@ jobs:
 #    vmImageWindows: '$(windowsHostedVMImage)'
 #    vmImageLinux: '$(linuxVMImage)'
 
-- template: build/ci/.azure-devops-uap.yml
-  parameters:
-    vmImage: '$(windowsHostedVMImage)'
+# Disabled because of recent agents changes in VS 17.3
+#- template: build/ci/.azure-devops-uap.yml
+#  parameters:
+#    vmImage: '$(windowsHostedVMImage)'
 
 - template: build/ci/.azure-devops-unit-tests.yml
   parameters:
     vmImage: '$(windowsHostedVMImage)'
 
-- template: build/ci/.azure-devops-skia-tests.yml
-  parameters:
-    vmImage: '$(windowsHostedVMImage)'
+#- template: build/ci/.azure-devops-skia-tests.yml
+#  parameters:
+#    vmImage: '$(windowsHostedVMImage)'
 
 # Disabled because not published
 #- template: build/ci/.azure-devops-docs.yml
 #  parameters:
 #    vmImage: '$(windowsHostedVMImage)'
 
-- template: build/ci/.azure-devops-samplesapp-uitests-build.yml
-  parameters:
-    vmImage: '$(windowsHostedVMImage)'
+      # Disabled because of recent agents changes in VS 17.3
+#- template: build/ci/.azure-devops-samplesapp-uitests-build.yml
+#  parameters:
+#    vmImage: '$(windowsHostedVMImage)'
 
-- template: build/ci/.azure-devops-wasm-uitests.yml
-  parameters:
-    vmImage: '$(linuxVMImage)'
+#- template: build/ci/.azure-devops-wasm-uitests.yml
+#  parameters:
+#    vmImage: '$(linuxVMImage)'
 
-- template: build/ci/.azure-devops-wasm-cs9-preview-validation.yml
-  parameters:
-    vmImage: '$(linuxVMImage)'
+#- template: build/ci/.azure-devops-wasm-cs9-preview-validation.yml
+#  parameters:
+#    vmImage: '$(linuxVMImage)'
 
-- template: build/ci/.azure-devops-macos.yml
-  parameters:
-    vmImage: '$(macOSVMImage)'
-    xCodeRoot: '$(xCodeRoot)'
-    XamarinSDKVersion: '$(XamarinSDKVersion)'
+#- template: build/ci/.azure-devops-macos.yml
+#  parameters:
+#    vmImage: '$(macOSVMImage)'
+#    xCodeRoot: '$(xCodeRoot)'
+#    XamarinSDKVersion: '$(XamarinSDKVersion)'
 
 # Disabled because of recent agents changes in VS 17.3 and deprecated macOS build agents.
 #- template: build/ci/.azure-devops-android-tests.yml
@@ -93,6 +95,7 @@ jobs:
 #    xCodeRoot: '$(xCodeRoot)'
 #    XamarinSDKVersion: '$(XamarinSDKVersion)'
 
+# Disabled because of recent agents changes in VS 17.3
 #- template: build/ci/.azure-devops-ios-tests.yml
 #  parameters:
 #    vmImage: '$(macOSVMImage)'
@@ -102,10 +105,12 @@ jobs:
 #    xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
 #    XamarinSDKVersionTest: '$(XamarinSDKVersion_iOS_UITests)'
 
+# Disabled because of recent agents changes in VS 17.3
 #- template: build/ci/.azure-devops-screenshot-compare.yml
 #  parameters:
 #    vmImage: '$(windowsHostedVMImage)'
 
+# Disabled because of recent agents changes in VS 17.3
 #- template: build/ci/.azure-devops-vs2022-vsix.yml
 #  parameters:
 #    vmImage: '$(windows2022HostedVMImage)'
