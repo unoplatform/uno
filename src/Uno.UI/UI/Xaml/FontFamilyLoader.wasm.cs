@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using Uno.Foundation;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
@@ -20,6 +21,7 @@ class FontFamilyLoader
 	private readonly FontFamily _fontFamily;
 	private string? _externalSource;
 	private IList<ManagedWeakReference>? _waitingList;
+	private TaskCompletionSource<bool>? _loadOperation;
 
 	public string CssFontName { get; private set; }
 
@@ -113,8 +115,7 @@ class FontFamilyLoader
 				typeof(FontFamilyLoader).Log().Debug($"Font sucessfully loaded: {loader._fontFamily.Source} ({_loadersFromCssName.Count} loaders active)");
 			}
 
-			loader.IsLoading = false;
-			loader.IsLoaded = true;
+			loader.SetLoadCompleted(true);
 
 			if (loader._waitingList is { Count: > 0 })
 			{
@@ -152,19 +153,7 @@ class FontFamilyLoader
 				typeof(FontFamilyLoader).Log().Warn($"Failed to load the font [{loader._fontFamily.Source}] could not be loaded. ({_loadersFromCssName.Count} loaders active)");
 			}
 
-			loader.IsLoading = false;
-			loader.IsLoaded = true;
-
-			if (loader._waitingList is { Count: > 0 })
-			{
-				foreach (var waiting in loader._waitingList)
-				{
-					if (waiting.IsAlive && waiting.Target is UIElement ue)
-					{
-						ue.InvalidateMeasure();
-					}
-				}
-			}
+			loader.SetLoadCompleted(false);
 
 			loader._waitingList = null;
 		}
@@ -175,6 +164,13 @@ class FontFamilyLoader
 				typeof(FontFamilyLoader).Log().Warn($"Unable to mark font [{cssFontName}] as loaded, the was already loaded. ({_loadersFromCssName.Count} loaders active)");
 			}
 		}
+	}
+
+	private void SetLoadCompleted(bool result)
+	{
+		IsLoading = false;
+		IsLoaded = true;
+		_loadOperation?.TrySetResult(result);
 	}
 
 	/// <summary>
@@ -200,7 +196,11 @@ class FontFamilyLoader
 		LoadFontAsync();
 	}
 
-	internal void LoadFontAsync()
+	/// <summary>
+	/// Loads a font asynchronously
+	/// </summary>
+	/// <returns>A task indicating if the font loaded sucessfuly</returns>
+	internal async Task<bool> LoadFontAsync()
 	{
 		if (IsLoaded || IsLoading)
 		{
@@ -209,7 +209,7 @@ class FontFamilyLoader
 				this.Log().Debug($"Font is already loaded: {_fontFamily.Source}");
 			}
 
-			return; // Already loaded
+			return true; // Already loaded
 		}
 
 		IsLoading = true;
@@ -228,6 +228,9 @@ class FontFamilyLoader
 		{
 			WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.FontFamily.forceFontUsage(\"{CssFontName}\")");
 		}
+
+		_loadOperation = new TaskCompletionSource<bool>();
+		return await _loadOperation.Task;
 	}
 
 	private class FontFamilyComparer : IEqualityComparer<FontFamily>

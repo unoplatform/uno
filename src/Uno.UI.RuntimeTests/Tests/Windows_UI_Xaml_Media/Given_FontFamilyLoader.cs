@@ -21,7 +21,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		[DataRow("https://raw.githubusercontent.com/unoplatform/uno/8751b7af65f5426d3a1f91274b8663465452411c/src/SamplesApp/UITests.Shared/Assets/RemoteFonts/antikytheraoutlineital.woff")]
 		[DataRow("https://raw.githubusercontent.com/unoplatform/uno/8751b7af65f5426d3a1f91274b8663465452411c/src/SamplesApp/UITests.Shared/Assets/RemoteFonts/antikytheraoutline.woff")]
 		[DataRow("https://raw.githubusercontent.com/unoplatform/uno/8751b7af65f5426d3a1f91274b8663465452411c/src/SamplesApp/UITests.Shared/Assets/RemoteFonts/GALACTIC%20VANGUARDIAN%20NCV.woff")]
-		public async Task With_msappx_Source_With_Qualifier(string fontPath)
+		public async Task With_FontPath(string fontPath)
 		{
 			var SUT = new TextBlock() {
 				Text="Hellow Uno!",
@@ -44,6 +44,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 			Assert.IsFalse(loader.IsLoading, "IsLoading");
 			Assert.IsTrue(loader.IsLoaded, "IsLoaded");
+		}
+
+		[TestMethod]
+		public async Task When_FailedLoading()
+		{
+			var family = new FontFamily("https://raw.githubusercontent.com/unoplatform/uno/8751b7af65f5426d3a1f91274b8663465452411c/src/SamplesApp/UITests.Shared/Assets/RemoteFonts/INVALIDFONT.woff");
+			var loader = FontFamilyLoader.GetLoaderForFontFamily(family);
+			Assert.IsFalse(await loader.LoadFontAsync());
 		}
 	}
 }
