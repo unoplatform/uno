@@ -2476,7 +2476,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(count < source.Length, $"Native ListView is not {(count.HasValue ? $"virtualized (count={count})" : "loaded")}.");
 
 			// scroll to bottom
-			Uno.UI.Helpers.ListViewHelper.SmoothScroll(lv, lv.Items.Count - 1);
+			Uno.UI.Helpers.ListViewHelper.SmoothScrollToIndex(lv, lv.Items.Count - 1);
 			await Task.Delay(2000);
 			await WindowHelper.WaitForIdle();
 
