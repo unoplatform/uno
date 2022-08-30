@@ -9,13 +9,17 @@ using Windows.Storage.Helpers;
 
 namespace Windows.UI.Xaml.Media;
 
+/// <summary>
+/// WebAssembly-specific asynchronous font loader
+/// </summary>
 class FontFamilyLoader
 {
-	private static readonly Dictionary<FontFamily, FontFamilyLoader> _loaders = new();
+	private static readonly Dictionary<FontFamily, FontFamilyLoader> _loaders = new(new FontFamilyComparer());
 	private static readonly Dictionary<string, FontFamilyLoader> _loadersFromCssName = new();
 
 	private readonly FontFamily _fontFamily;
 	private string? _externalSource;
+	private IList<ManagedWeakReference>? _waitingList;
 
 	public string CssFontName { get; private set; }
 
@@ -23,6 +27,9 @@ class FontFamilyLoader
 
 	public bool IsLoading { get; private set; }
 
+	/// <summary>
+	/// Gets a loader for the specific <see cref="FontFamily"/>
+	/// </summary>
 	internal static FontFamilyLoader GetLoaderForFontFamily(FontFamily forFamily)
 	{
 		if (_loaders.TryGetValue(forFamily, out var loader))
@@ -36,9 +43,7 @@ class FontFamilyLoader
 		return loader;
 	}
 
-	private IList<ManagedWeakReference>? _waitingList;
-
-	public FontFamilyLoader(FontFamily fontFamily)
+	private FontFamilyLoader(FontFamily fontFamily)
 	{
 		_fontFamily = fontFamily;
 
@@ -94,6 +99,9 @@ class FontFamilyLoader
 		return false;
 	}
 
+	/// <summary>
+	/// Typescript-invoked method to notify that a font has been loaded properly
+	/// </summary>
 	internal static void NotifyFontLoaded(string cssFontName)
 	{
 		if (_loadersFromCssName.TryGetValue(cssFontName, out var loader))
@@ -130,6 +138,9 @@ class FontFamilyLoader
 		}
 	}
 
+	/// <summary>
+	/// Typescript-invoked method to notify that a font failed to load properly
+	/// </summary>
 	internal static void NotifyFontLoadFailed(string cssFontName)
 	{
 		if (_loadersFromCssName.TryGetValue(cssFontName, out var loader))
@@ -166,6 +177,10 @@ class FontFamilyLoader
 		}
 	}
 
+	/// <summary>
+	/// Registers a <see cref="UIElement"/> for measure invalidation
+	/// when a font has been loaded.
+	/// </summary>
 	internal void RegisterRemeasureOnFontLoaded(UIElement uiElement)
 	{
 		if (IsLoaded)
@@ -213,5 +228,14 @@ class FontFamilyLoader
 		{
 			WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.FontFamily.forceFontUsage(\"{CssFontName}\")");
 		}
+	}
+
+	private class FontFamilyComparer : IEqualityComparer<FontFamily>
+	{
+		public bool Equals(FontFamily x, FontFamily y)
+			=> string.Equals(x.Source, y.Source, StringComparison.OrdinalIgnoreCase);
+
+		public int GetHashCode(FontFamily obj)
+			=> obj.Source.GetHashCode();
 	}
 }

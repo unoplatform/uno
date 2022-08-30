@@ -23,13 +23,7 @@ namespace Windows.UI.Xaml.Media
 		/// Use this to launch the loading of a font before it is actually required to
 		/// minimize loading time and prevent potential flicking.
 		/// </summary>
-		public static void Preload(FontFamily family) => family._loader.LoadFontAsync();
-
-		/// <summary>
-		/// Use this to launch the loading of a font before it is actually required to
-		/// minimize loading time and prevent potential flicking.
-		/// </summary>
-		public static void Preload(string familyName) => Preload(new FontFamily(familyName));
+		internal static void Preload(FontFamily family) => family._loader.LoadFontAsync();
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal void RegisterForInvalidateMeasureOnFontLoaded(UIElement uiElement)
