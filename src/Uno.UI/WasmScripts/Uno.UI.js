@@ -4780,15 +4780,19 @@ var Windows;
             (function (Media) {
                 class FontFamily {
                     static async loadFont(fontFamilyName, fontSource) {
-                        // Launch the loading of the font
-                        const font = new FontFace(fontFamilyName, `url(${fontSource})`);
-                        // Wait for the font to be loaded
-                        await font.load();
-                        // Make it available to document
-                        document.fonts.add(font);
-                        await FontFamily.forceFontUsage(fontFamilyName);
-                        // Notify font as loaded to application
-                        FontFamily.notifyFontLoaded(fontFamilyName);
+                        try {
+                            // Launch the loading of the font
+                            const font = new FontFace(fontFamilyName, `url(${fontSource})`);
+                            // Wait for the font to be loaded
+                            await font.load();
+                            // Make it available to document
+                            document.fonts.add(font);
+                            await FontFamily.forceFontUsage(fontFamilyName);
+                        }
+                        catch (e) {
+                            console.debug(`Font failed to load ${e}`);
+                            FontFamily.notifyFontLoadFailed(fontFamilyName);
+                        }
                     }
                     static async forceFontUsage(fontFamilyName) {
                         // Force the browser to use it
@@ -4802,13 +4806,22 @@ var Windows;
                         await new Promise((ok, err) => requestAnimationFrame(() => ok(null)));
                         // Remove dummy element
                         document.body.removeChild(dummyHiddenElement);
+                        // Notify font as loaded to application
+                        FontFamily.notifyFontLoaded(fontFamilyName);
                     }
                     static notifyFontLoaded(fontFamilyName) {
                         if (!FontFamily.managedNotifyFontLoaded) {
                             FontFamily.managedNotifyFontLoaded =
-                                Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Media.FontFamily:NotifyFontLoaded");
+                                Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Media.FontFamilyLoader:NotifyFontLoaded");
                         }
                         FontFamily.managedNotifyFontLoaded(fontFamilyName);
+                    }
+                    static notifyFontLoadFailed(fontFamilyName) {
+                        if (!FontFamily.managedNotifyFontLoadFailed) {
+                            FontFamily.managedNotifyFontLoadFailed =
+                                Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Media.FontFamilyLoader:NotifyFontLoadFailed");
+                        }
+                        FontFamily.managedNotifyFontLoadFailed(fontFamilyName);
                     }
                 }
                 Media.FontFamily = FontFamily;

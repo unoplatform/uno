@@ -28,6 +28,11 @@
 	<type fullname="Uno.UI.Xaml.Controls.SystemFocusVisual">
 		<method name="DispatchNativePositionChange" />
 	</type>
+
+	<type fullname="Windows.UI.Xaml.Media.FontFamilyLoader">
+		<method name="NotifyFontLoaded" />
+		<method name="NotifyFontLoadFailed" />
+	</type>
   </assembly>
 
   <assembly fullname="Uno">

@@ -2,19 +2,28 @@
 
 	export class FontFamily {
 
+		private static managedNotifyFontLoaded?: (fontFamilyName: string) => void;
+		private static managedNotifyFontLoadFailed?: (fontFamilyName: string) => void;
+
 		public static async loadFont(fontFamilyName: string, fontSource: string): Promise<void> {
-			// Launch the loading of the font
-			const font = new FontFace(fontFamilyName, `url(${fontSource})`);
 
-			// Wait for the font to be loaded
-			await font.load();
+			try {
+				// Launch the loading of the font
+				const font = new FontFace(fontFamilyName, `url(${fontSource})`);
 
-			// TODO-AGNÈS: Handle load error to set the loader to "IsLoaded" to prevent leaking in the waiting list
+				// Wait for the font to be loaded
+				await font.load();
 
-			// Make it available to document
-			document.fonts.add(font);
+				// Make it available to document
+				document.fonts.add(font);
 
-			await FontFamily.forceFontUsage(fontFamilyName);
+				await FontFamily.forceFontUsage(fontFamilyName);
+			}
+			catch(e) {
+				console.debug(`Font failed to load ${e}`);
+
+				FontFamily.notifyFontLoadFailed(fontFamilyName);
+			}
 		}
 
 		public static async forceFontUsage(fontFamilyName: string): Promise<void> {
@@ -37,16 +46,24 @@
 			FontFamily.notifyFontLoaded(fontFamilyName);
 		}
 
-		private static managedNotifyFontLoaded?: (fontFamilyName: string) => void;
-
 		private static notifyFontLoaded(fontFamilyName: string): void {
 
 			if (!FontFamily.managedNotifyFontLoaded) {
 				FontFamily.managedNotifyFontLoaded =
-					(<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Media.FontFamily:NotifyFontLoaded");
+					(<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Media.FontFamilyLoader:NotifyFontLoaded");
 			}
 
 			FontFamily.managedNotifyFontLoaded(fontFamilyName);
+		}
+
+		private static notifyFontLoadFailed(fontFamilyName: string): void {
+
+			if (!FontFamily.managedNotifyFontLoadFailed) {
+				FontFamily.managedNotifyFontLoadFailed =
+					(<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Media.FontFamilyLoader:NotifyFontLoadFailed");
+			}
+
+			FontFamily.managedNotifyFontLoadFailed(fontFamilyName);
 		}
 	}
 }

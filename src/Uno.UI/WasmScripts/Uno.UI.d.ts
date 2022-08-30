@@ -1280,10 +1280,12 @@ declare namespace Windows.UI.Xaml.Input {
 }
 declare namespace Windows.UI.Xaml.Media {
     class FontFamily {
+        private static managedNotifyFontLoaded?;
+        private static managedNotifyFontLoadFailed?;
         static loadFont(fontFamilyName: string, fontSource: string): Promise<void>;
         static forceFontUsage(fontFamilyName: string): Promise<void>;
-        private static managedNotifyFontLoaded?;
         private static notifyFontLoaded;
+        private static notifyFontLoadFailed;
     }
 }
 declare class WindowManagerAddViewParams {

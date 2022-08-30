@@ -10,9 +10,9 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class FontFamily
 	{
-		private FontLoader _loader;
+		private FontFamilyLoader _loader;
 
-		partial void Init(string fontName) => _loader = FontLoader.GetLoaderForFontFamily(this);
+		partial void Init(string fontName) => _loader = FontFamilyLoader.GetLoaderForFontFamily(this);
 
 		/// <summary>
 		/// Contains the font-face name to use in CSS.
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Media
 		/// Use this to launch the loading of a font before it is actually required to
 		/// minimize loading time and prevent potential flicking.
 		/// </summary>
-		public static void Preload(FontFamily family) => family._loader.LaunchLoading();
+		public static void Preload(FontFamily family) => family._loader.LoadFontAsync();
 
 		/// <summary>
 		/// Use this to launch the loading of a font before it is actually required to
@@ -36,13 +36,6 @@ namespace Windows.UI.Xaml.Media
 		{
 			_loader.RegisterRemeasureOnFontLoaded(uiElement);
 		}
-
-		/// <summary>
-		/// Callback from javascript when the font is loaded in the browser.
-		/// </summary>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Preserve]
-		public static void NotifyFontLoaded(string cssFontName) => FontLoader.NotifyFontLoaded(cssFontName);
 	}
 }
 #endif

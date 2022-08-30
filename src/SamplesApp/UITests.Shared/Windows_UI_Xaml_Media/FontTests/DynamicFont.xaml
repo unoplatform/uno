@@ -10,13 +10,13 @@
 
     <StackPanel Spacing="20">
 		<Border BorderBrush="Blue" BorderThickness="3" HorizontalAlignment="Left">
-			<TextBlock FontSize="20" FontFamily="msappx:///Assets/Fonts/Even Badder Mofo.ttf#EvenBadderMofo">(ms-appx) This is a test</TextBlock>
+			<TextBlock FontSize="20" FontFamily="ms-appx:///Assets/Fonts/Even Badder Mofo.ttf#EvenBadderMofo">(ms-appx) This is a test</TextBlock>
 		</Border>
 		<Border BorderBrush="Blue" BorderThickness="3" HorizontalAlignment="Left">
-			<TextBlock FontSize="20" FontFamily="msappx:///Assets/Fonts/FamilyGuy-4grW.ttf">(ms-appx) This is a test</TextBlock>
+			<TextBlock FontSize="20" FontFamily="ms-appx:///Assets/Fonts/FamilyGuy-4grW.ttf">(ms-appx) This is a test</TextBlock>
 	    </Border>
 		<Border BorderBrush="Blue" BorderThickness="3" HorizontalAlignment="Left">
-			<TextBlock FontSize="20" FontFamily="msappx:///Assets/Fonts/Nillambari-K7y1W.ttf">(ms-appx) This is a test</TextBlock>
+			<TextBlock FontSize="20" FontFamily="ms-appx:///Assets/Fonts/Nillambari-K7y1W.ttf">(ms-appx) This is a test</TextBlock>
 	    </Border>
 		<Border BorderBrush="Blue" BorderThickness="3" HorizontalAlignment="Left">
 			<TextBlock FontSize="20" FontFamily="https://fonts.cdnfonts.com/s/71084/antikythera.woff">(https) This is a test rendering a string using external uri. [WASM ONLY]</TextBlock>
