@@ -127,28 +127,6 @@ When the application is multi-targetted, this approach is simpler because no CSS
         Value="ms-appx:///Assets/Fonts/yourfont.ttf" />
 ```
 
-
-> [!NOTE]
-> The `#` part is optional and is there for cross-platform compatibilty. It is completely ignored on Uno WASM and can be omitted.
-
-### Fonts preloading
-
-On Wasm platform, fonts files are loaded by the browser and can take time to load, resulting in a performance degradation and potential flicking when the font is actually available for rendering. In order to prevent this, it is possible to instruct the browser to preload the font before the rendering:
-
-``` csharp
-// Preloading of font families on Wasm. Add this before the Application.Start() in the Program.cs
-
-public static void main(string[] orgs)
-{
-    // Add this in your application to preload a font.
-    // You can add more than one, but preload too much fonts could hurt user experience.
-    // IMPORTANT: The string parameter should be exactly the same string (including casing)
-    //            used as FontFamily in the application.
-    Windows.UI.Xaml.Media.FontFamily.Preload("ms-appx:///Assets/Fonts/yourfont01.ttf#ApplicationFont01");
-    Windows.UI.Xaml.Media.FontFamily.Preload("https://fonts.cdnfonts.com/s/71084/antikythera.woff#Antikythera");
-    Windows.UI.Xaml.Media.FontFamily.Preload("Roboto");
-    
-    Windows.UI.Xaml.Application.Start(_ => _app = new App());
 Will match:
 
 ```css
@@ -158,8 +136,31 @@ Will match:
 }
 ```
 
+> [!NOTE]
+> The `#` part is optional and is there for cross-platform compatibilty. It is completely ignored on Uno WASM and can be omitted.
+
 > [!TIP]
 > Even if the font is defined in CSS, it could still be useful to preload it, since the browser won't parse the font file until is it actually used by the content. Preloading it will force the browser to do this sooner, resulting in a better user experience. This will also prevent the application from doing a new _measure_ phase once the font is loaded.
+
+### Fonts preloading on WebAssembly
+
+On Wasm platform, fonts files are loaded by the browser and can take time to load, resulting in a performance degradation and potential flicking when the font is actually available for rendering. In order to prevent this, it is possible to instruct the browser to preload the font before the rendering:
+
+``` csharp
+// Preloading of font families on Wasm. Add this before the Application.Start() in the Program.cs
+
+public static void main(string[] orgs)
+{
+    // Add this in your application to preload a font.
+    // You can add more than one, but preload too many fonts could hurt user experience.
+    // IMPORTANT: The string parameter should be exactly the same string (including casing)
+    //            used as FontFamily in the application.
+    Windows.UI.Xaml.Media.FontFamilyHelper.Preload("ms-appx:///Assets/Fonts/yourfont01.ttf#ApplicationFont01");
+    Windows.UI.Xaml.Media.FontFamilyHelper.Preload("https://fonts.cdnfonts.com/s/71084/antikythera.woff#Antikythera");
+    Windows.UI.Xaml.Media.FontFamilyHelper.Preload("Roboto");
+    
+    Windows.UI.Xaml.Application.Start(_ => _app = new App());
+```
 
 ## Custom Fonts on macOS
 

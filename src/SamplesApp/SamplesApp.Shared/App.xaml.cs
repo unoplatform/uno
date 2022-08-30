@@ -422,9 +422,6 @@ namespace SamplesApp
 				builder.SetMinimumLevel(LogLevel.Debug);
 #endif
 
-
-				builder.AddFilter("Windows.UI.Xaml.Media.FontFamilyLoader", LogLevel.Debug);
-
 				// Runtime Tests control logging
 				builder.AddFilter("Uno.UI.Samples.Tests", LogLevel.Information);
 
