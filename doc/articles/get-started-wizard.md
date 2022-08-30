@@ -49,6 +49,16 @@ Event handlers [cannot be automatically](https://github.com/unoplatform/uno/issu
 
 A workaround is to use the [`x:Bind` to events feature](features/windows-ui-xaml-xbind.md#examples). This feature allows to use a simpler syntax like `<Button Click="{x:Bind MyClick}" />` and declare a simple method `private void MyClick() { }` in the code-behind.
 
+#### `Don't know how to marshal a return value of type 'System.IntPtr'`
+[This issue](https://github.com/unoplatform/uno/issues/9430) may happen for Uno.UI 4.4.20 and later when deploying an application using the iOS Simulator or MacCatalyst when the application contains a `TextBox`.
+
+In order to fix this, add the following to your csproj (Xamarin, `net6.0-ios`, `net6.0-maccatalyst`):
+```xml
+<PropertyGroup>
+  <MtouchExtraArgs>$(MtouchExtraArgs) --registrar=static</MtouchExtraArgs>
+</PropertyGroup>
+```
+
 #### Build error `Failed to generate AOT layout`
 
 When building for WebAssembly with AOT mode enabled, the following error may appear:
