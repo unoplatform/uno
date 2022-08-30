@@ -15,6 +15,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using ScrollView = Android.Widget.ScrollView;
+using UnoScrollViewer = Windows.UI.Xaml.Controls.ScrollViewer;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -54,10 +55,17 @@ public partial class NativeRefreshControl : SwipeRefreshLayout, IShadowChildrenP
 
 		if (_descendantScrollable != null)
 		{
+			if (_descendantScrollable is UnoScrollViewer unoScrollViewer)
+			{
+				return unoScrollViewer.VerticalOffset > 0;
+			}
+			else
+			{
 #pragma warning disable CS0618 // Type or member is obsolete
-			var canScrollUp = ViewCompat.CanScrollVertically(_descendantScrollable, -1);
+				var canScrollUp = ViewCompat.CanScrollVertically(_descendantScrollable, -1);
 #pragma warning restore CS0618 // Type or member is obsolete
-			return canScrollUp;
+				return canScrollUp;
+			}
 		}
 		return base.CanChildScrollUp();
 	}
@@ -179,7 +187,7 @@ public partial class NativeRefreshControl : SwipeRefreshLayout, IShadowChildrenP
 					// (False specifies that the element will not be discovered as a descendant scroller)
 					var element = (child as FrameworkElement);
 					
-					if (v is ScrollView || v is AbsListView || v is RecyclerView)
+					if (v is ScrollView || v is AbsListView || v is RecyclerView || v is UnoScrollViewer)
 					{
 						yield return v;
 					}

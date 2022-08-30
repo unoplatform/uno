@@ -12,12 +12,12 @@ public static class VisibilityExtensions
 }
 
 [EditorBrowsable(EditorBrowsableState.Never)]
-[Obsolete]
+[Obsolete("'VisiblityExtensions' is obsolete. Use 'VisibilityExtensions' instead.")]
 public static class VisiblityExtensions
 {
 	// This class is for binary compatibility before the typo was corrected in its name.
 	[EditorBrowsable(EditorBrowsableState.Never)]
-	[Obsolete]
+	[Obsolete("'VisiblityExtensions.IsHidden' is obsolete. Use 'VisibilityExtensions.IsHidden' instead.")]
 	public static bool IsHidden(Visibility visibility) => visibility.IsHidden();
 
 }

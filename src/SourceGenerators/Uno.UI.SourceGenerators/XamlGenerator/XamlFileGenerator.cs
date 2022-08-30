@@ -489,7 +489,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 									BuildComponentFields(componentBuilder);
 
-									BuildCompiledBindings(componentBuilder, _xClassName.ClassName);
+									BuildCompiledBindings(componentBuilder);
 
 									_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
 									_generationRunFileInfo.ComponentCode = componentBuilder.ToString();
@@ -549,7 +549,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				EnsureXClassName();
-				BuildCompiledBindingsInitializer(writer, _xClassName.ClassName, controlBaseType);
+				BuildCompiledBindingsInitializer(writer, controlBaseType);
 
 				if (isDirectUserControlChild)
 				{
@@ -991,18 +991,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private (string bindingsInterfaceName, string bindingsClassName) GetBindingsTypeNames(string className)
 			=> ($"I{className}_Bindings", $"{className}_Bindings");
 
-		private void BuildCompiledBindingsInitializer(IndentedStringBuilder writer, string className, INamedTypeSymbol controlBaseType)
+		private void BuildCompiledBindingsInitializer(IndentedStringBuilder writer, INamedTypeSymbol controlBaseType)
 		{
 			TryAnnotateWithGeneratorSource(writer);
+
+			EnsureXClassName();
+
 			var hasXBindExpressions = CurrentScope.XBindExpressions.Count != 0;
 			var hasResourceExtensions = CurrentScope.Components.Any(c => HasMarkupExtensionNeedingComponent(c.XamlObject));
 			var isFrameworkElement =
-				IsType(className, _frameworkElementSymbol)              // The current type may not have a base type as it is defined in XAML,
+				IsType(_xClassName.ToString(), _frameworkElementSymbol)              // The current type may not have a base type as it is defined in XAML,
 				|| IsType(controlBaseType, _frameworkElementSymbol);    // so look at the control base type extracted from the XAML.
 
 			if (hasXBindExpressions || hasResourceExtensions)
 			{
-				writer.AppendLineInvariant($"Bindings = new {GetBindingsTypeNames(className).bindingsClassName}(this);");
+				writer.AppendLineInvariant($"Bindings = new {GetBindingsTypeNames(_xClassName.ClassName).bindingsClassName}(this);");
 			}
 
 			if (isFrameworkElement && (hasXBindExpressions || hasResourceExtensions))
@@ -1020,7 +1023,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineInvariant(";");
 			}
 		}
-
 		private void BuildCompiledBindingsInitializerForTemplate(IIndentedStringBuilder writer)
 		{
 			TryAnnotateWithGeneratorSource(writer);
@@ -1091,14 +1093,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private void BuildCompiledBindings(IndentedStringBuilder writer, string className)
+		private void BuildCompiledBindings(IndentedStringBuilder writer)
 		{
+			EnsureXClassName();
+
 			var hasXBindExpressions = CurrentScope.XBindExpressions.Count != 0;
 			var hasResourceExtensions = CurrentScope.Components.Any(c => HasMarkupExtensionNeedingComponent(c.XamlObject));
 
 			if (hasXBindExpressions || hasResourceExtensions)
 			{
-				var (bindingsInterfaceName, bindingsClassName) = GetBindingsTypeNames(className);
+				var (bindingsInterfaceName, bindingsClassName) = GetBindingsTypeNames(_xClassName.ClassName);
 
 				using (writer.BlockInvariant($"private interface {bindingsInterfaceName}"))
 				{
@@ -1117,12 +1121,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					writer.AppendLineInvariant("#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING");
 					writer.AppendLineInvariant("{0}", $"private global::System.WeakReference _ownerReference;");
-					writer.AppendLineInvariant("{0}", $"private {className} Owner {{ get => ({className})_ownerReference?.Target; set => _ownerReference = new global::System.WeakReference(value); }}");
+					writer.AppendLineInvariant("{0}", $"private {_xClassName} Owner {{ get => ({_xClassName})_ownerReference?.Target; set => _ownerReference = new global::System.WeakReference(value); }}");
 					writer.AppendLineInvariant("#else");
-					writer.AppendLineInvariant("{0}", $"private {className} Owner {{ get; set; }}");
+					writer.AppendLineInvariant("{0}", $"private {_xClassName} Owner {{ get; set; }}");
 					writer.AppendLineInvariant("#endif");
 
-					using (writer.BlockInvariant($"public {bindingsClassName}({className} owner)"))
+					using (writer.BlockInvariant($"public {bindingsClassName}({_xClassName} owner)"))
 					{
 						writer.AppendLineInvariant($"Owner = owner;");
 					}

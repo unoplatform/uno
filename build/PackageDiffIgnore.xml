@@ -8848,7 +8848,7 @@
 		<Properties>
 		</Properties>
 	</IgnoreSet>
-	<IgnoreSet baseVersion="4.4.13">
+	<IgnoreSet baseVersion="4.4.20">
 		<Types>
 		</Types>
 		<Methods>
@@ -8903,7 +8903,20 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Controls.SinglelineTextBoxView::set_SelectedTextRange(UIKit.UITextRange value)"
 				reason="Workaround for iOS 16" />
+			<Member
+				fullName="UIKit.UITextRange Windows.UI.Xaml.Controls.MultilineTextBoxView::get_SelectedTextRange()"
+				reason="Workaround for iOS 16" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.MultilineTextBoxView::set_SelectedTextRange(UIKit.UITextRange value)"
+				reason="Workaround for iOS 16" />
 			<!-- END iOS 16 workaround -->
+
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs..ctor()"
+				reason="Constructor is internal on UWP" />
+			<Member
+				fullName="System.Void Windows.UI.Xaml.Controls.TimePickerValueChangedEventArgs..ctor()"
+				reason="Constructor is internal on UWP" />
 		</Methods>
 		<Properties>
 			<Member
@@ -8918,6 +8931,9 @@
 			<!-- BEGIN iOS 16 workaround -->
 			<Member
 				fullName="UIKit.UITextRange Windows.UI.Xaml.Controls.SinglelineTextBoxView::SelectedTextRange()"
+				reason="Workaround for iOS 16" />
+			<Member
+				fullName="UIKit.UITextRange Windows.UI.Xaml.Controls.MultilineTextBoxView::SelectedTextRange()"
 				reason="Workaround for iOS 16" />
 			<!-- END iOS 16 workaround -->
 		</Properties>

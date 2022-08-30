@@ -3,7 +3,7 @@ parameters:
 
 jobs:
 - job: SamplesApp_UITests_Build
-  displayName: 'SamplesApp UI Tests (Build)'
+  displayName: 'Build SamplesApp UI Tests'
   
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -22,6 +22,10 @@ jobs:
   steps:
   - checkout: self
     clean: true
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
 
   - template: templates/dotnet-install.yml
 

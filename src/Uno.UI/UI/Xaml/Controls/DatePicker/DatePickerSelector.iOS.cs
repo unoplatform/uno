@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 			_picker.Calendar = new NSCalendar(NSCalendarType.Gregorian);
 
 			UpdatePickerStyle();
-			UpdateTheme();
+			OverrideUIDatePickerTheme();
 
 			UpdatePickerValue(Date, animated: false);
 
@@ -236,7 +236,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void UpdateTheme()
+		internal static void OverrideUIDatePickerTheme()
 		{
 			// Force the background of the UIDatePicker to allow for proper
 			// readability.

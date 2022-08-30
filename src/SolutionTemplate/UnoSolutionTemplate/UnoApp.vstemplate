@@ -4,7 +4,7 @@
 		<Description>Template for creating a multi-platform C# &amp; XAML application targeting UWP, WebAssembly, Android, iOS, macOS and Linux</Description>
 		<ProjectType>CSharp</ProjectType>
 		<ProjectSubType />
-		<SortOrder>1000</SortOrder>
+		<SortOrder>300</SortOrder>
 		<CreateNewFolder>true</CreateNewFolder>
 		<DefaultName>App</DefaultName>
 		<ProvideDefaultName>true</ProvideDefaultName>

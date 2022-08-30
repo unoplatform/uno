@@ -452,15 +452,6 @@ namespace Uno.UI
 			/// </remarks>
 			public static bool UseLegacyInputScope { get; set; }
 #endif
-
-#if __IOS__
-			/// <summary>
-			/// As of iOS 16 Beta 4, the selection events are crashing the application. This feature configuration is added
-			/// to provide the ability to restore the original behavior if/when the underlying UIKit is fixed.
-			/// See https://github.com/unoplatform/uno/issues/9430 for additional details.
-			/// </summary>
-			public static bool IOS16EnableSelectionSupport { get; set; }
-#endif
 		}
 
 		public static class ScrollViewer
@@ -657,6 +648,23 @@ namespace Uno.UI
 			/// Important: This flag will only have an impact on iOS 14 devices
 			/// </remarks>
 			public static bool UseLegacyStyle { get; set; } = false;
+#endif
+		}
+
+		public static class TimePickerFlyout
+		{
+#if __ANDROID__
+			/// <summary>
+			/// Gets or sets whether the <see cref="Windows.UI.Xaml.Controls.TimePickerFlyout"/> uses legacy time setting.
+			/// Legacy time setting is about preserving days, seconds, and milliseconds of
+			/// <see cref="Windows.UI.Xaml.Controls.TimePickerFlyout.Time"/>.
+			/// </summary>
+			/// <remarks>
+			/// This flag defaults to <see langword="false"/> to match UWP behavior, where a value set from UI is
+			/// only hours and minutes, and any previously set (programmatically) days, seconds, or milliseconds are cleared.
+			/// This flag is Android only.
+			/// </remarks>
+			public static bool UseLegacyTimeSetting { get; set; }
 #endif
 		}
 

@@ -3,7 +3,7 @@ parameters:
 
 jobs:
 - job: net6_win_build
-  displayName: 'Build .NET 6 Build (Windows)'
+  displayName: 'Build net6 Binaries'
   timeoutInMinutes: 90
 
   pool: ${{ parameters.poolName }}

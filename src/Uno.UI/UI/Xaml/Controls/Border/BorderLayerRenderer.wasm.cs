@@ -8,7 +8,7 @@ using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml.Shapes
 {
-	internal class BorderLayerRenderer
+	partial class BorderLayerRenderer
 	{
 		private Brush _background;
 		private (Brush, Thickness) _border;

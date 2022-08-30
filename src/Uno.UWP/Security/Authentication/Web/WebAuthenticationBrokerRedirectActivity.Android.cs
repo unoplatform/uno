@@ -1,4 +1,6 @@
 ﻿#nullable enable
+#pragma warning disable CS0618 // obsolete members
+
 using Android.App;
 using Android.Content.PM;
 using Android.Content;

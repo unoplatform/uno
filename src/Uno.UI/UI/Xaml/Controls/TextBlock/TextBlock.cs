@@ -455,7 +455,7 @@ namespace Windows.UI.Xaml.Controls
 		#region IsTextSelectionEnabled Dependency Property
 
 #if !__WASM__
-		[NotImplemented]
+		[NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
 		public bool IsTextSelectionEnabled
 		{
@@ -464,7 +464,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 #if !__WASM__
-		[NotImplemented]
+		[NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
 		public static DependencyProperty IsTextSelectionEnabledProperty { get; } =
 			DependencyProperty.Register(

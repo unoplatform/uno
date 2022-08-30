@@ -2,6 +2,16 @@
 using Windows.Foundation;
 using Windows.UI.Xaml;
 
+#if XAMARIN_ANDROID
+using View = Android.Views.View;
+#elif XAMARIN_IOS_UNIFIED
+using View = UIKit.UIView;
+#elif __MACOS__
+using View = AppKit.NSView;
+#else
+using View = Windows.UI.Xaml.UIElement;
+#endif
+
 namespace Uno.UI.Xaml.Controls;
 
 internal partial class RPNode
@@ -13,6 +23,10 @@ internal partial class RPNode
 		m_isHorizontalLeaf = true;
 		m_isVerticalLeaf = true;
 		m_constraints = RPConstraints.None;
+
+#if HAS_UNO // Handling of native controls.
+		_nativeView = element as View;
+#endif
 	}
 
 	// RPState flag checks.
@@ -73,5 +87,10 @@ internal partial class RPNode
 	internal RPNode m_alignRightWithNode;
 	internal RPNode m_alignBottomWithNode;
 
-	private DependencyObject m_element;
+	private readonly DependencyObject m_element;
+
+#if HAS_UNO
+	// Uno specific: Handling of native controls.
+	private readonly View _nativeView;
+#endif
 }
