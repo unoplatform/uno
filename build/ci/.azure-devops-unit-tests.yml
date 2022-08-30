@@ -11,8 +11,9 @@ jobs:
 
   strategy:
     matrix:
-      Default_Compiler:
-        ADDITIONAL_FLAGS: ''
+      # Disabled because of recent agents changes in VS 17.3
+      #Default_Compiler:
+      #  ADDITIONAL_FLAGS: ''
 
       # Keep for future previews
       # Preview:
