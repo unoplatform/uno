@@ -50,17 +50,19 @@ jobs:
 #    vmImageWindows: '$(windowsHostedVMImage)'
 #    vmImageLinux: '$(linuxVMImage)'
 
-- template: build/ci/.azure-devops-uap.yml
-  parameters:
-    vmImage: '$(windowsHostedVMImage)'
+# Disabled because not published
+#- template: build/ci/.azure-devops-uap.yml
+#  parameters:
+#    vmImage: '$(windowsHostedVMImage)'
 
 - template: build/ci/.azure-devops-unit-tests.yml
   parameters:
     vmImage: '$(windowsHostedVMImage)'
 
-- template: build/ci/.azure-devops-skia-tests.yml
-  parameters:
-    vmImage: '$(windowsHostedVMImage)'
+# Disabled because not published
+#- template: build/ci/.azure-devops-skia-tests.yml
+#  parameters:
+#    vmImage: '$(windowsHostedVMImage)'
 
 # Disabled because not published
 #- template: build/ci/.azure-devops-docs.yml
