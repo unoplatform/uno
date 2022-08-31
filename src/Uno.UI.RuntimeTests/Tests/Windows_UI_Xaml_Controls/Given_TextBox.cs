@@ -493,6 +493,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var renderer = new RenderTargetBitmap();
 			await renderer.RenderAsync(SUT);
 			var si = new RawBitmap(renderer, SUT);
+			await si.Populate();
 
 			ImageAssert.DoesNotHaveColorInRectangle(si, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), si.Size), Colors.Red, tolerance: 20);
 		}
