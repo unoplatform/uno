@@ -51,6 +51,28 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		public override bool ResignFirstResponder()
+		{
+			RemoveEllipsis();
+			return base.ResignFirstResponder();
+		}
+
+		private void RemoveEllipsis()
+		{
+			// iOS shows ellipsis when text overflows that we don't want.
+			// This removes the ellipsis. See https://stackoverflow.com/a/61762392/5108631
+			if (AttributedText?.MutableCopy() is NSMutableAttributedString newAttributedText)
+			{
+				var paragraphStyle = new NSMutableParagraphStyle()
+				{
+					LineBreakMode = UILineBreakMode.Clip,
+				};
+
+				newAttributedText.AddAttribute(UIStringAttributeKey.ParagraphStyle, value: paragraphStyle, range: new NSRange(start: 0, len: newAttributedText.Length));
+				AttributedText = newAttributedText;
+			}
+		}
+
 		private void OnEditingChanged(object sender, EventArgs e)
 		{
 			OnTextChanged();

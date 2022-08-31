@@ -65,6 +65,25 @@ public static partial class ImageAssert
 		Assert.Fail($"Expected '{ToArgbCode(expectedColor)}' in rectangle '{rect}'.");
 	}
 
+	/// <summary>
+	/// Asserts that a given screenshot has a color anywhere at a given rectangle.
+	/// </summary>
+	public static void DoesNotHaveColorInRectangle(RawBitmap screenshot, Rectangle rect, Color unexpectedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
+	{
+		var bitmap = screenshot;
+		for (var x = rect.Left; x < rect.Right; x++)
+		{
+			for (var y = rect.Top; y < rect.Bottom; y++)
+			{
+				var pixel = bitmap.GetPixel(x, y);
+				if (AreSameColor(unexpectedColor, pixel, tolerance, out _))
+				{
+					Assert.Fail($"Didn't expect '{ToArgbCode(unexpectedColor)}' in rectangle '{rect}'.");
+				}
+			}
+		}
+	}
+
 	private static async Task HasColorAtImpl(RawBitmap screenshot, int x, int y, Color expectedColor, byte tolerance, int line)
 	{
 		await screenshot.Populate();

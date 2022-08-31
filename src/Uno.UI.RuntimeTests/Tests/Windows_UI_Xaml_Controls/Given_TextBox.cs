@@ -10,6 +10,7 @@ using static Private.Infrastructure.TestServices;
 using Windows.UI.Xaml;
 using Windows.UI;
 using FluentAssertions;
+using Windows.UI.Xaml.Media.Imaging;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -473,5 +474,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, textBox.SelectionStart);
 			Assert.AreEqual(0, textBox.SelectionLength);
 		}
+
+		[TestMethod]
+		public async Task When_Text_Overflows()
+		{
+			// iOS used to produce ellipsis when text overflows.
+			// We make the text overflow with spaces (has no color),
+			// then we assert that we don't have red pixels in the textbox.
+			var SUT = new TextBox
+			{
+				Text = new string(' ', 100),
+				Width = 100,
+				Foreground = Colors.Red,
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+			var renderer = new RenderTargetBitmap();
+			await renderer.RenderAsync(SUT);
+			var si = new RawBitmap(renderer, SUT);
+
+			ImageAssert.DoesNotHaveColorInRectangle(si, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), si.Size), Colors.Red, tolerance: 20);
+		}
+
 	}
 }
