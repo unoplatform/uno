@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>net461</TargetFrameworks>
-		<NoWarn>1998;4014;67</NoWarn>
+		<NoWarn>1998;4014;67;CA1014</NoWarn>
 		<OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
