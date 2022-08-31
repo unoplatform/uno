@@ -10,6 +10,7 @@ using SamplesApp.UITests.TestFramework;
 using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 {
@@ -904,15 +905,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			_app.FastTap("ShowHideButton");
 
-#if __WASM__
-			var textBoxRect2 = ToPhysicalRect(_app.WaitForElement("MyTextBox")[0].Rect);
+			if (AppInitializer.GetLocalPlatform() == Platform.Browser)
+			{
+				var textBoxRect2 = ToPhysicalRect(_app.WaitForElement("MyTextBox")[0].Rect);
 
-			// Assert that after clicking, MyTextBox goes out of screen (hidden).
-			Assert.AreEqual(-100000 + textBoxRect.X, textBoxRect2.X);
-			Assert.AreEqual(-100000 + textBoxRect.Y, textBoxRect2.Y);
-#else
-			_app.WaitForNoElement("MyTextBox");
-#endif
+				// Assert that after clicking, MyTextBox goes out of screen (hidden).
+				Assert.AreEqual(-100000 + textBoxRect.X, textBoxRect2.X);
+				Assert.AreEqual(-100000 + textBoxRect.Y, textBoxRect2.Y);
+			}
+			else
+			{
+				_app.WaitForNoElement("MyTextBox");
+			}
+
 			var buttonRect2 = ToPhysicalRect(_app.WaitForElement("ShowHideButton")[0].Rect);
 
 			// Assert that after clicking, ShowHideButton moves up (because MyTextBox is collapsed)
