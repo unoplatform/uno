@@ -17,6 +17,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		[DataRow("ms-appx:///Assets/Fonts/Even Badder Mofo.ttf#EvenBadderMofo")]
 		[DataRow("ms-appx:///Assets/Fonts/FamilyGuy-4grW.ttf")]
 		[DataRow("ms-appx:///Assets/Fonts/Nillambari-K7y1W.ttf")]
+		[DataRow("Assets/Fonts/Nillambari-K7y1W.ttf")]
+		[DataRow("/Assets/Fonts/Nillambari-K7y1W.ttf")]
+		[DataRow("Assets/Fonts/Even Badder Mofo.ttf")]
+		[DataRow("Assets/Fonts/Even Badder Mofo.ttf#EvenBadderMofo")]
+		[DataRow("/Assets/Fonts/Even Badder Mofo.ttf#EvenBadderMofo")]
 		[DataRow("https://raw.githubusercontent.com/unoplatform/uno/8751b7af65f5426d3a1f91274b8663465452411c/src/SamplesApp/UITests.Shared/Assets/RemoteFonts/antikythera.woff")]
 		[DataRow("https://raw.githubusercontent.com/unoplatform/uno/8751b7af65f5426d3a1f91274b8663465452411c/src/SamplesApp/UITests.Shared/Assets/RemoteFonts/antikytheraoutlineital.woff")]
 		[DataRow("https://raw.githubusercontent.com/unoplatform/uno/8751b7af65f5426d3a1f91274b8663465452411c/src/SamplesApp/UITests.Shared/Assets/RemoteFonts/antikytheraoutline.woff")]
@@ -44,6 +49,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 			Assert.IsFalse(loader.IsLoading, "IsLoading");
 			Assert.IsTrue(loader.IsLoaded, "IsLoaded");
+			Assert.IsTrue(await loader.LoadFontAsync());
 		}
 
 		[TestMethod]

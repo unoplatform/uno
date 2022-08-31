@@ -3,9 +3,11 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Uno;
+using Windows.Storage.Helpers;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -13,14 +15,68 @@ namespace Windows.UI.Xaml.Media
 	{
 		private FontFamilyLoader _loader;
 
-		partial void Init(string fontName)
-			=> _loader = FontFamilyLoader.GetLoaderForFontFamily(this);
 
 		/// <summary>
 		/// Contains the font-face name to use in CSS.
 		/// </summary>
-		internal string CssFontName
-			=> _loader.CssFontName;
+		internal string CssFontName { get; private set; }
+
+		internal string? ExternalSource { get; private set; }
+
+		partial void Init(string fontName)
+		{
+			ParseSource(Source);
+			_loader = FontFamilyLoader.GetLoaderForFontFamily(this);
+		}
+
+		[MemberNotNull(nameof(CssFontName))]
+		private void ParseSource(string source)
+		{
+			var sourceParts = source.Split(new[] { '#' }, 2, StringSplitOptions.RemoveEmptyEntries);
+
+			if (sourceParts.Length > 0)
+			{
+				if (TryGetExternalUri(sourceParts[0], out var externalUri) && externalUri is { })
+				{
+					ExternalSource = externalUri.OriginalString;
+					CssFontName = "font" + ExternalSource.GetHashCode();
+				}
+				else
+				{
+					CssFontName = sourceParts[sourceParts.Length == 2 ? 1 : 0];
+				}
+			}
+			else
+			{
+				throw new InvalidOperationException("FontFamily source cannot be empty");
+			}
+		}
+
+		private static bool TryGetExternalUri(string? source, out Uri? uri)
+		{
+			if (source is not null && (source.IndexOf('.') > -1 || source.IndexOf('/') > -1))
+			{
+				uri = new Uri(source, UriKind.RelativeOrAbsolute);
+
+				if (!uri.IsAbsoluteUri || source.StartsWith("/"))
+				{
+					// Support for implicit ms-appx resolution
+					var assetUri = AssetsPathBuilder.BuildAssetUri(Uri.EscapeUriString(source.TrimStart('/')));
+					uri = new Uri(assetUri, UriKind.RelativeOrAbsolute);
+				}
+
+				if (uri.IsAbsoluteUri && uri.Scheme is "ms-appx")
+				{
+					var assetUri = AssetsPathBuilder.BuildAssetUri(uri.PathAndQuery.TrimStart('/'));
+					uri = new Uri(assetUri, UriKind.RelativeOrAbsolute);
+				}
+
+				return true;
+			}
+
+			uri = default;
+			return false;
+		}
 
 		/// <summary>
 		/// Use this to launch the loading of a font before it is actually required to

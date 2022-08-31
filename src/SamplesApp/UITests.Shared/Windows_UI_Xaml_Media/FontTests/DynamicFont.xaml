@@ -12,6 +12,18 @@
 				BorderThickness="3"
 				HorizontalAlignment="Left">
 			<TextBlock FontSize="20"
+					   FontFamily="Assets/Fonts/Even Badder Mofo.ttf#EvenBadderMofo">relative path</TextBlock>
+		</Border>
+		<Border BorderBrush="Blue"
+				BorderThickness="3"
+				HorizontalAlignment="Left">
+			<TextBlock FontSize="20"
+					   FontFamily="/Assets/Fonts/Even Badder Mofo.ttf#EvenBadderMofo">absolute path</TextBlock>
+		</Border>
+		<Border BorderBrush="Blue"
+				BorderThickness="3"
+				HorizontalAlignment="Left">
+			<TextBlock FontSize="20"
 					   FontFamily="ms-appx:///Assets/Fonts/Even Badder Mofo.ttf#EvenBadderMofo">(ms-appx) This is a test</TextBlock>
 		</Border>
 		<Border BorderBrush="Blue"

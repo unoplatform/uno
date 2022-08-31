@@ -21,7 +21,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			var fontName = "My font name";
 			var fontFamilyPath = $"/Assets/Data/Fonts/MyFont.ttf#{fontName}";
 			var fontFamily = new FontFamily(fontFamilyPath);
-			Assert.AreEqual(fontName, fontFamily.CssFontName);
+			Assert.IsTrue(fontFamily.CssFontName.StartsWith("font"));
 		}
 
 		[TestMethod]
@@ -30,7 +30,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			var fontName = "FontName";
 			var fontFamilyPath = $"/Assets/Data/Fonts/{fontName}.ttf";			
 			var fontFamily = new FontFamily(fontFamilyPath);
-			Assert.AreEqual(fontName, fontFamily.CssFontName);
+			Assert.IsTrue(fontFamily.CssFontName.StartsWith("font"));
 		}
 
 		[TestMethod]
@@ -39,7 +39,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			var fontName = "Msappx font name";
 			var fontFamilyPath = $"ms-appx:///Assets/Data/Fonts/MyFont.ttf#{fontName}";
 			var fontFamily = new FontFamily(fontFamilyPath);
-			Assert.AreEqual(fontName, fontFamily.CssFontName);
+			Assert.IsTrue(fontFamily.CssFontName.StartsWith("font"));
 		}
 
 		[TestMethod]
@@ -48,7 +48,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			var fontName = "Font name";
 			var fontFamilyPath = $"SomeFont.woff2#{fontName}";
 			var fontFamily = new FontFamily(fontFamilyPath);
-			Assert.AreEqual(fontName, fontFamily.CssFontName);
+			Assert.IsTrue(fontFamily.CssFontName.StartsWith("font"));
 		}
 	}
 }

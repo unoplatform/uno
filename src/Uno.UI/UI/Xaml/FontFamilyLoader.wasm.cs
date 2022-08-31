@@ -13,17 +13,14 @@ namespace Windows.UI.Xaml.Media;
 /// <summary>
 /// WebAssembly-specific asynchronous font loader
 /// </summary>
-class FontFamilyLoader
+internal class FontFamilyLoader
 {
 	private static readonly Dictionary<FontFamily, FontFamilyLoader> _loaders = new(new FontFamilyComparer());
 	private static readonly Dictionary<string, FontFamilyLoader> _loadersFromCssName = new();
 
 	private readonly FontFamily _fontFamily;
-	private string? _externalSource;
 	private IList<ManagedWeakReference>? _waitingList;
 	private TaskCompletionSource<bool>? _loadOperation;
-
-	public string CssFontName { get; private set; }
 
 	public bool IsLoaded { get; private set; }
 
@@ -54,51 +51,7 @@ class FontFamilyLoader
 			this.Log().Debug($"Creating font loader for {fontFamily.Source}");
 		}
 
-		ParseSource(fontFamily.Source);
-
 		_loaders.Add(fontFamily, this);
-	}
-
-	[MemberNotNull(nameof(CssFontName))]
-	private void ParseSource(string source)
-	{
-		var sourceParts = source.Split(new[] { '#' }, 2, StringSplitOptions.RemoveEmptyEntries);
-
-		if (sourceParts.Length > 0)
-		{
-			if (TryGetExternalUri(sourceParts[0], out var externalUri) && externalUri is { })
-			{
-				_externalSource = externalUri.OriginalString;
-				CssFontName = "font" + _externalSource.GetHashCode();
-			}
-			else
-			{
-				CssFontName = sourceParts[sourceParts.Length == 2 ? 1 : 0];
-			}
-		}
-		else
-		{
-			throw new InvalidOperationException("FontFamily source cannot be empty");
-		}
-	}
-
-	private static bool TryGetExternalUri(string? source, out Uri? uri)
-	{
-		if (source is not null && (source.IndexOf('.') > -1 || source.IndexOf('/') > -1))
-		{
-			uri = new Uri(source, UriKind.RelativeOrAbsolute);
-
-			if (uri.IsAbsoluteUri && uri.Scheme is "ms-appx")
-			{
-				var assetUri = AssetsPathBuilder.BuildAssetUri(uri.PathAndQuery.TrimStart('/').ToString());
-				uri = new Uri(assetUri, UriKind.RelativeOrAbsolute);
-			}
-
-			return true;
-		}
-
-		uri = default;
-		return false;
 	}
 
 	/// <summary>
@@ -202,43 +155,59 @@ class FontFamilyLoader
 	/// <returns>A task indicating if the font loaded sucessfuly</returns>
 	internal async Task<bool> LoadFontAsync()
 	{
-		if (IsLoaded || IsLoading)
+		try
 		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			if (IsLoaded || IsLoading)
 			{
-				this.Log().Debug($"Font is already loaded: {_fontFamily.Source}");
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Font is already loaded: {_fontFamily.Source}");
+				}
+
+				return _loadOperation != null
+					? await _loadOperation.Task
+					: true; // Already loaded
 			}
 
-			return true; // Already loaded
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Loading font: {_fontFamily.Source} ({_fontFamily.CssFontName}/{_fontFamily.ExternalSource}, {_loadersFromCssName.Count} loaders active)");
+			}
+
+			IsLoading = true;
+			_loadersFromCssName.Add(_fontFamily.CssFontName, this);
+
+			if (_fontFamily.ExternalSource is { Length: > 0 })
+			{
+				WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.FontFamily.loadFont(\"{_fontFamily.CssFontName}\",\"{_fontFamily.ExternalSource}\")");
+			}
+			else
+			{
+				WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.FontFamily.forceFontUsage(\"{_fontFamily.CssFontName}\")");
+			}
+
+			_loadOperation = new TaskCompletionSource<bool>();
+			return await _loadOperation.Task;
 		}
-
-		IsLoading = true;
-		_loadersFromCssName.Add(CssFontName, this);
-
-		if (this.Log().IsEnabled(LogLevel.Debug))
+		catch(Exception e)
 		{
-			this.Log().Debug($"Loading font: {_fontFamily.Source} ({_fontFamily.CssFontName}/{_externalSource}, {_loadersFromCssName.Count} loaders active)");
-		}
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"Failed loading font: {_fontFamily.Source} ({_fontFamily.CssFontName}/{_fontFamily.ExternalSource}, {_loadersFromCssName.Count} loaders active)", e);
+			}
 
-		if (_externalSource is { Length: > 0 })
-		{
-			WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.FontFamily.loadFont(\"{CssFontName}\",\"{_externalSource}\")");
-		}
-		else
-		{
-			WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.FontFamily.forceFontUsage(\"{CssFontName}\")");
-		}
+			NotifyFontLoadFailed(_fontFamily.CssFontName);
 
-		_loadOperation = new TaskCompletionSource<bool>();
-		return await _loadOperation.Task;
+			return false;
+		}
 	}
 
 	private class FontFamilyComparer : IEqualityComparer<FontFamily>
 	{
 		public bool Equals(FontFamily x, FontFamily y)
-			=> string.Equals(x.Source, y.Source, StringComparison.OrdinalIgnoreCase);
+			=> string.Equals(x.CssFontName, y.CssFontName, StringComparison.OrdinalIgnoreCase);
 
 		public int GetHashCode(FontFamily obj)
-			=> obj.Source.GetHashCode();
+			=> obj.CssFontName.GetHashCode();
 	}
 }
