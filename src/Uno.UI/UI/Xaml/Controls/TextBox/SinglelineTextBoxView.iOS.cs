@@ -208,7 +208,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public void Select(int start, int length)
-			=> SelectedTextRange = this.GetTextRange(start: start, end: start + length).GetHandle();
+			=> SelectedTextRange = (this.GetTextRange(start: start, end: start + length) as INativeObject).Handle;
 
 		/// <summary>
 		/// Workaround for https://github.com/unoplatform/uno/issues/9430

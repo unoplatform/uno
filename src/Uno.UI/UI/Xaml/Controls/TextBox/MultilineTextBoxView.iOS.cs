@@ -239,6 +239,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public void Select(int start, int length)
-			=> SelectedTextRange = this.GetTextRange(start: start, end: start + length).GetHandle();
+			=> SelectedTextRange = (this.GetTextRange(start: start, end: start + length) as INativeObject).Handle;
 	}
 }
