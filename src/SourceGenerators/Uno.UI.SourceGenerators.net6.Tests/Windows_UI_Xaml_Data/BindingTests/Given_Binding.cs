@@ -1,5 +1,4 @@
-﻿#if NET6_0_OR_GREATER
-namespace Uno.UI.SourceGenerators.Tests.Windows_UI_Xaml_Data.BindingTests;
+﻿namespace Uno.UI.SourceGenerators.Tests.Windows_UI_Xaml_Data.BindingTests;
 
 using static XamlCodeGeneratorHelper;
 
@@ -37,4 +36,3 @@ public class Given_Binding
 		diagnostics.Should().BeEmpty();
 	}
 }
-#endif

@@ -1,5 +1,4 @@
-﻿#if NET6_0_OR_GREATER
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Uno.UI.SourceGenerators.XamlGenerator;
@@ -86,4 +85,3 @@ internal static class XamlCodeGeneratorHelper
 			.ToArray();
 	}
 }
-#endif

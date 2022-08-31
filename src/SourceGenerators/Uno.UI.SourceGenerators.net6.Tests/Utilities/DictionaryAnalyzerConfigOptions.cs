@@ -1,5 +1,4 @@
-﻿#if NET6_0_OR_GREATER
-using Microsoft.CodeAnalysis.Diagnostics;
+﻿using Microsoft.CodeAnalysis.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Uno.UI.SourceGenerators.Tests;
@@ -13,9 +12,8 @@ internal sealed class DictionaryAnalyzerConfigOptions : AnalyzerConfigOptions
         Properties = properties;
     }
 
-	public override bool TryGetValue(string key, [MaybeNullWhen(false)] out string value)
+	public override bool TryGetValue(string key, /*[NotNullWhen(true)] [MaybeNullWhen(false)]*/ out string value)
 	{
-        return Properties.TryGetValue(key, out value);
+        return Properties.TryGetValue(key, out value!);
     }
 }
-#endif

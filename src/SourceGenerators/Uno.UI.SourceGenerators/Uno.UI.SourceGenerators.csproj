@@ -110,8 +110,8 @@
 
 	<ItemGroup>
 		<InternalsVisibleTo Include="SourceGeneratorsConsole" />
-		<InternalsVisibleTo Include="$(AssemblyName).Tests" />
-		<InternalsVisibleTo Include="$(AssemblyName).Tests.Net6" />
+		<InternalsVisibleTo Include="Uno.UI.SourceGenerators.net6.Tests" />
+		<InternalsVisibleTo Include="Uno.UI.SourceGenerators.Tests" />
 	</ItemGroup>
 
 	<ItemGroup>

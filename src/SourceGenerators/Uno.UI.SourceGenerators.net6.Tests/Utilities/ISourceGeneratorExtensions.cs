@@ -1,5 +1,4 @@
-﻿#if NET6_0_OR_GREATER
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -57,4 +56,3 @@ internal static class ISourceGeneratorExtensions
 		return (driver, diagnostics);
 	}
 }
-#endif

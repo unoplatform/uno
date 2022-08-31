@@ -1,5 +1,4 @@
-﻿#if NET6_0_OR_GREATER
-namespace Uno.UI.SourceGenerators.Tests.Windows_UI_Xaml_Controls.GridTests;
+﻿namespace Uno.UI.SourceGenerators.Tests.Windows_UI_Xaml_Controls.GridTests;
 
 using static XamlCodeGeneratorHelper;
 
@@ -11,9 +10,19 @@ public class Given_Grid
 	{
 		var diagnostics = await RunXamlCodeGeneratorForFileAsync(
 			xamlFileName: "Grid_Uses_Both_Syntaxes.xaml",
-			subFolder: Path.Combine("SourceGenerators", "Uno.UI.SourceGenerators.Tests", "Windows_UI_Xaml_Controls", "GridTests", "Controls"));
+			subFolder: Path.Combine("SourceGenerators", "Uno.UI.SourceGenerators.net6.Tests", "Windows_UI_Xaml_Controls", "GridTests", "Controls"));
 
 		diagnostics.Should().NotBeEmpty();
+	}
+
+	[TestMethod]
+	public async Task Failing_Test()
+	{
+		var diagnostics = await RunXamlCodeGeneratorForFileAsync(
+			xamlFileName: "Grid_Uses_Both_Syntaxes.xaml",
+			subFolder: Path.Combine("SourceGenerators", "Uno.UI.SourceGenerators.net6.Tests", "Windows_UI_Xaml_Controls", "GridTests", "Controls"));
+
+		diagnostics.Should().BeEmpty();
 	}
 
 	[TestMethod]
@@ -46,4 +55,3 @@ public class Given_Grid
 		diagnostics.Should().BeEmpty();
 	}
 }
-#endif
