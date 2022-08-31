@@ -651,6 +651,23 @@ namespace Uno.UI
 #endif
 		}
 
+		public static class TimePickerFlyout
+		{
+#if __ANDROID__
+			/// <summary>
+			/// Gets or sets whether the <see cref="Windows.UI.Xaml.Controls.TimePickerFlyout"/> uses legacy time setting.
+			/// Legacy time setting is about preserving days, seconds, and milliseconds of
+			/// <see cref="Windows.UI.Xaml.Controls.TimePickerFlyout.Time"/>.
+			/// </summary>
+			/// <remarks>
+			/// This flag defaults to <see langword="false"/> to match UWP behavior, where a value set from UI is
+			/// only hours and minutes, and any previously set (programmatically) days, seconds, or milliseconds are cleared.
+			/// This flag is Android only.
+			/// </remarks>
+			public static bool UseLegacyTimeSetting { get; set; }
+#endif
+		}
+
 		public static class CommandBar
 		{
 #if __IOS__
