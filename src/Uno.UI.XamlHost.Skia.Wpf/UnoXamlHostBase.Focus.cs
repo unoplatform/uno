@@ -142,7 +142,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
             return origin;
         }
 
-        private bool _onTakeFocusRequested = false;
+        //private bool _onTakeFocusRequested;
 
         /// <summary>
         /// Handles the <see cref="WUX.Hosting.DesktopWindowXamlSource.TakeFocusRequested" /> event.
@@ -162,8 +162,8 @@ namespace Uno.UI.XamlHost.Skia.Wpf
             }
             else
             {
-                _onTakeFocusRequested = true;
-                try
+                //_onTakeFocusRequested = true;
+                //try
                 {
                     // Last focus request is not initiated by us, so continue
                     _lastFocusRequest = e.Request.CorrelationId;
@@ -171,10 +171,10 @@ namespace Uno.UI.XamlHost.Skia.Wpf
                     var request = new System.Windows.Input.TraversalRequest(direction);
                     MoveFocus(request);
                 }
-                finally
-                {
-                    _onTakeFocusRequested = false;
-                }
+                //finally
+                //{
+                //    _onTakeFocusRequested = false;
+                //}
             }
         }
 
