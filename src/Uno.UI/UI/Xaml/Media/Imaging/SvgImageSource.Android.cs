@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
+using Android.Content.Res;
 using Android.Graphics;
 using Android.OS;
 using Android.Provider;
@@ -34,7 +36,11 @@ partial class SvgImageSource
 		var imageData = await TryReadImageDataAsync(ct);
 		if (imageData.Kind == ImageDataKind.ByteArray)
 		{
-			_svgProvider.NotifySourceOpened(imageData.ByteArray);
+			if (_svgProvider is null)
+			{
+				this.Log().LogWarning("Uno.UI.Svg package needs to be installed to use SVG on this platform.");
+			}
+			_svgProvider?.NotifySourceOpened(imageData.ByteArray);
 		}
 		return imageData;
 	}
@@ -46,6 +52,11 @@ partial class SvgImageSource
 			if (ResourceId.HasValue)
 			{
 				return await FetchSvgResource(ct, ResourceId.Value);
+			}
+
+			if (ResourceString is not null)
+			{
+				return await FetchSvgAssetAsync(ct, ResourceString);
 			}
 
 			if (Stream != null)
@@ -76,7 +87,7 @@ partial class SvgImageSource
 					{
 						return ImageData.Empty;
 					}
-					
+
 					using var fileStream = File.OpenRead(FilePath);
 					return await ReadFromStreamAsync(fileStream, ct);
 				}
@@ -86,7 +97,7 @@ partial class SvgImageSource
 					var response = await client.GetAsync(UriSource, HttpCompletionOption.ResponseContentRead, ct);
 					using var imageStream = await response.Content.ReadAsStreamAsync();
 					return await ReadFromStreamAsync(imageStream, ct);
-				}				
+				}
 			}
 
 			return ImageData.Empty;
@@ -101,5 +112,12 @@ partial class SvgImageSource
 	{
 		var rawResourceStream = ContextHelper.Current.Resources.OpenRawResource(resourceId);
 		return await ReadFromStreamAsync(rawResourceStream, ct);
+	}
+
+	private async Task<ImageData> FetchSvgAssetAsync(CancellationToken ct, string assetPath)
+	{
+		AssetManager assets = ContextHelper.Current.Assets;
+		using var stream = assets.Open(assetPath);
+		return await ReadFromStreamAsync(stream, ct);
 	}
 }

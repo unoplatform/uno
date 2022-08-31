@@ -62,6 +62,15 @@ internal partial class SvgCanvas : SkiaCanvas
 		{
 			texture.Opaque = false;
 		}
+#elif __ANDROID__
+		// The SKGLTextureView is opaque by default, so we poke at the tree
+		// to change the opacity of the first view of the SKSwapChainPanel
+		// to make it transparent.
+		if (ChildCount == 1 &&
+			GetChildAt(0) is Android.Views.TextureView texture)
+		{
+			texture.SetOpaque(false);
+		}
 #endif
 	}
 

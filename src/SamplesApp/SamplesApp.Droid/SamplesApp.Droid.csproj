@@ -117,6 +117,10 @@
       <Project>{2569663D-293A-4A1D-BB84-AA8C7B4B7F92}</Project>
       <Name>Uno.UI.MSAL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.csproj">
+      <Project>{48d0ed69-7ed9-4e10-9fcf-9cfd63118082}</Project>
+      <Name>Uno.UI.Svg</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj">
       <Project>{528AE586-5DF3-4DAD-AA5C-F12F4D5E0605}</Project>
       <Name>Uno.Foundation</Name>
