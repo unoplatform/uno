@@ -78,8 +78,10 @@ namespace Windows.UI.Xaml.Controls
 				_targetWidth = physicalSize.Width.SelectOrDefault(w => w != 0 ? (int?)w : null);
 				_targetHeight = physicalSize.Height.SelectOrDefault(h => h != 0 ? (int?)h : null);
 
-
-				TryOpenImage();
+				if (Source is not SvgImageSource)
+				{
+					TryOpenImage();
+				}
 			}
 		}
 
@@ -133,6 +135,8 @@ namespace Windows.UI.Xaml.Controls
 				}
 				return;
 			}
+			
+			_imageFetchDisposable.Disposable = null;
 
 			if (imageSource != null && imageSource.UseTargetSize)
 			{
@@ -185,11 +189,11 @@ namespace Windows.UI.Xaml.Controls
 					}
 					else if (imageSource.ResourceId.HasValue)
 					{
-						var dummy = SetSourceResource(imageSource);
+						SetSourceResource(imageSource);
 					}
 					else if (imageSource is SvgImageSource)
 					{
-						var dummy = SetSourceUriOrStreamAsync(imageSource);
+						Execute(ct => SetSourceUriOrStreamAsync(imageSource, ct));
 					}
 					else if (imageSource.FilePath.HasValue() || imageSource.WebUri != null || imageSource.Stream != null)
 					{
@@ -208,7 +212,7 @@ namespace Windows.UI.Xaml.Controls
 							return;
 						}
 
-						var dummy = SetSourceUriOrStreamAsync(imageSource);
+						Execute(ct => SetSourceUriOrStreamAsync(imageSource, ct));
 					}
 					else
 					{
@@ -255,7 +259,7 @@ namespace Windows.UI.Xaml.Controls
 			return (Stretch == Stretch.Uniform || Stretch == Stretch.None) && (double.IsNaN(Width) || double.IsNaN(Height));
 		}
 
-		private async Task SetSourceUriOrStreamAsync(ImageSource newImageSource)
+		private async Task SetSourceUriOrStreamAsync(ImageSource newImageSource, CancellationToken token)
 		{
 			// The Jupiter behavior is to reset the visual right away, displaying nothing
 			// then show the new image. We're rescheduling the work below, so there is going
@@ -264,11 +268,7 @@ namespace Windows.UI.Xaml.Controls
 
 			try
 			{
-				var disposable = new CancellationDisposable();
-
-				_imageFetchDisposable.Disposable = disposable;
-
-				var imageData = await newImageSource.Open(disposable.Token, _nativeImageView, _targetWidth, _targetHeight);
+				var imageData = await newImageSource.Open(token, _nativeImageView, _targetWidth, _targetHeight);
 
 				if (newImageSource.IsImageLoadedToUiDirectly)
 				{
@@ -284,7 +284,7 @@ namespace Windows.UI.Xaml.Controls
 				//If a remote image is fetched a second time, it may be set synchronously (eg if the image is cached) within a layout pass (ie from OnLayoutPartial). In this case, we must dispatch RequestLayout for the image control to be measured correctly.
 				if (MustDispatchSetSource())
 				{
-					Dispatch(async ct => RequestLayout());
+					Dispatch(async ct => RequestLayout(), token);
 				}
 			}
 			catch (Exception ex)
@@ -308,8 +308,9 @@ namespace Windows.UI.Xaml.Controls
 				{
 					SetSvgSource(svgImageSource, imageData.ByteArray);
 					InvalidateMeasure();
+					InvalidateArrange();
 				}
-				else if (_openedSource is { } source)
+				else if (_openedSource is { } source && imageData.HasData)
 				{
 					SetNativeImage(imageData);
 				}
@@ -352,7 +353,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateSourceImageSize(svgImageSource.SourceSize);
 		}
 
-		private async Task SetSourceResource(ImageSource newImageSource)
+		private void SetSourceResource(ImageSource newImageSource)
 		{
 			// The Jupiter behavior is to reset the visual right away, displaying nothing
 			// then show the new image. We're rescheduling the work below, so there is going
@@ -366,7 +367,7 @@ namespace Windows.UI.Xaml.Controls
 			int imageWidth = o.OutWidth;
 			int imageHeight = o.OutHeight;
 
-			Func<CancellationToken, Task> setResource = async (ct) =>
+			Action<CancellationToken> setResource = (ct) =>
 			{
 				_nativeImageView.SetImageResource(newImageSource.ResourceId.Value);
 				OnImageOpened(newImageSource);
@@ -378,11 +379,13 @@ namespace Windows.UI.Xaml.Controls
 					|| MustDispatchSetSource()
 				)
 			{
-				Dispatch(setResource);
+				var disposable = new CancellationDisposable();
+				_imageFetchDisposable.Disposable = disposable;
+				Dispatch(setResource, disposable.Token);
 			}
 			else
 			{
-				var unused = setResource(CancellationToken.None);
+				setResource(CancellationToken.None);
 			}
 		}
 
@@ -390,14 +393,16 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (MustDispatchSetSource())
 			{
-				Dispatch(ct => SetSourceDrawableAsync(ct, newImageSource));
+				var disposable = new CancellationDisposable();
+				_imageFetchDisposable.Disposable = disposable;
+				Dispatch(ct => SetNativeViewSourceDrawable(newImageSource), disposable.Token);
 			}
 			else
 			{
-				var unused = SetSourceDrawableAsync(CancellationToken.None, newImageSource);
+				SetNativeViewSourceDrawable(newImageSource);
 			}
 		}
-		private async Task SetSourceDrawableAsync(CancellationToken ct, ImageSource newImageSource)
+		private void SetNativeViewSourceDrawable(ImageSource newImageSource)
 		{
 			_nativeImageView.SetImageDrawable(newImageSource.BitmapDrawable);
 			OnImageOpened(newImageSource);
@@ -407,15 +412,17 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (MustDispatchSetSource())
 			{
-				Dispatch(ct => SetSourceBitmapAsync(ct, image));
+				var disposable = new CancellationDisposable();
+				_imageFetchDisposable.Disposable = disposable;
+				Dispatch(ct => SetNativeViewSourceBitmap(ct, image), disposable.Token);
 			}
 			else
 			{
-				var unused = SetSourceBitmapAsync(CancellationToken.None, image);
+				SetNativeViewSourceBitmap(CancellationToken.None, image);
 			}
 		}
 
-		private async Task SetSourceBitmapAsync(CancellationToken ct, (ImageSource src, Bitmap data) image)
+		private void SetNativeViewSourceBitmap(CancellationToken ct, (ImageSource src, Bitmap data) image)
 		{
 			_nativeImageView.SetImageBitmap(image.data);
 			OnImageOpened(image.src);
