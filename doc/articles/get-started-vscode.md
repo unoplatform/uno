@@ -129,9 +129,9 @@ Note that C# Hot Reload is not available when running with the debugger. In orde
 An existing application needs additional changes to be debugged properly.
 
 1. At the root of the workspace, create a folder named `.vscode`
-2. Inside this folder, create a file named `launch.json` and copy the [contents of this file](https://github.com/unoplatform/uno/blob/master/src/SolutionTemplate/Uno.ProjectTemplates.Dotnet/content/unoapp-net6/.vscode/launch.json).
+2. Inside this folder, create a file named `launch.json` and copy the [contents of this file](https://github.com/unoplatform/uno/blob/master/src/SolutionTemplate/Uno.ProjectTemplates.Dotnet/content/unoapp/.vscode/launch.json).
 3. Replace all instances of `UnoQuickStart` with your application's name in `launch.json`.
-4. Inside this folder, create a file named `tasks.json` and copy the [contents of this file](https://github.com/unoplatform/uno/blob/master/src/SolutionTemplate/Uno.ProjectTemplates.Dotnet/content/unoapp-net6/.vscode/tasks.json).
+4. Inside this folder, create a file named `tasks.json` and copy the [contents of this file](https://github.com/unoplatform/uno/blob/master/src/SolutionTemplate/Uno.ProjectTemplates.Dotnet/content/unoapp/.vscode/tasks.json).
 
 ### Known limitations for Code support
 - C# Debugging is not supported when running in a remote Linux Container, Code Spaces or GitPod.
