@@ -13,7 +13,7 @@ internal static class ISourceGeneratorExtensions
 		AnalyzerConfigOptionsProvider options,
 		SyntaxTree[] syntaxTrees,
 		AdditionalText[] additionalTexts,
-		IReadOnlyCollection<string> preprocessorSymbols,
+		IEnumerable<string>? preprocessorSymbols,
 		CancellationToken cancellationToken = default)
 	{
 		var skiaFolder = Path.Combine("..", "..", "..", "..", "..", "Uno.UI", "bin", "Uno.UI.Skia", "Debug", "netstandard2.0");

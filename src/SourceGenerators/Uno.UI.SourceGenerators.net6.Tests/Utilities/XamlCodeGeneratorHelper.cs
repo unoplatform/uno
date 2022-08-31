@@ -24,39 +24,18 @@ internal static class XamlCodeGeneratorHelper
 		var cs = File.ReadAllText(
 			Path.Combine(folder, xamlFileName + ".cs"));
 
-		var baseGlobalOptions = new Dictionary<string, string>
-		{
-			["build_property.MSBuildProjectFullPath"] = folder,
-			["build_property.RootNamespace"] = "RandomNamespace",
-		};
-		var baseAdditionalTextOptions = new Dictionary<string, string>
-		{
-			["build_metadata.AdditionalFiles.SourceItemGroup"] = "Page",
-		};
-		var basePreprocessorSymbols = new List<string>();
-		if (globalOptions != null)
-		{
-			foreach (var pair in globalOptions)
-			{
-				baseGlobalOptions[pair.Key] = pair.Value;
-			}
-		}
-		if (additionalTextOptions != null)
-		{
-			foreach (var pair in additionalTextOptions)
-			{
-				baseAdditionalTextOptions[pair.Key] = pair.Value;
-			}
-		}
-		if (preprocessorSymbols != null)
-		{
-			basePreprocessorSymbols.AddRange(preprocessorSymbols);
-		}
+		globalOptions ??= new Dictionary<string, string>();
+		globalOptions.Add("build_property.MSBuildProjectFullPath", folder);
+		globalOptions.Add("build_property.RootNamespace", "RandomNamespace");
+
+		additionalTextOptions ??= new Dictionary<string, string>();
+		additionalTextOptions.Add("build_metadata.AdditionalFiles.SourceItemGroup", "Page");
+
 		var options = new DictionaryAnalyzerConfigOptionsProvider(
-			globalOptions: baseGlobalOptions,
+			globalOptions: globalOptions,
 			additionalTextOptions: new Dictionary<string, Dictionary<string, string>>
 			{
-				[xaml.Path] = baseAdditionalTextOptions,
+				[xaml.Path] = additionalTextOptions,
 			});
 
 		var (generator, diagnostics) = await new XamlCodeGenerator().RunAsync(
@@ -65,7 +44,7 @@ internal static class XamlCodeGeneratorHelper
 				text: cs,
 				cancellationToken: cancellationToken) },
 			additionalTexts: new[] { xaml },
-			preprocessorSymbols: basePreprocessorSymbols,
+			preprocessorSymbols: preprocessorSymbols,
 			cancellationToken);
 		var runResult = generator.GetRunResult();
 
