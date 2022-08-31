@@ -18,21 +18,35 @@ dotnet new unoapp -o MyApp
 
 You'll get a set of projects, including one named `MyApp.Skia.Linux.FrameBuffer`.
 
-You can build this app by navigating to the `MyApp..Skia.Linux.FrameBuffer` and type the following:
+You can build this app by navigating to the `MyApp.Skia.Linux.FrameBuffer` and type the following:
 
 ```
 dotnet run
 ```
 
+The app will start and display on the first available framebuffer device. To change the active framebuffer, set the device name in the `FRAMEBUFFER` environment variable.
+
+`dotnet run` uses the `Debug` configuration, which will show logging information in the current terminal and may overwrite the UI content.
+
+To read the logging information, either:
+- Launch the application from a different terminal (through SSH, for instance)
+- Launch the app using `dotnet run > logging.txt 2>&1`, then launch `tail -f logging.txt` in another terminal.
+
+Once the application is running, you can exit the application with:
+- `Ctrl+C`
+- `F12`, a key configuration found in the `Program.cs` file of your project which invokes `Application.Current.Exit()`
+
+## Creating a standalone app
 You can create a standalone publication folder using the following:
 
 ```
 dotnet publish -c Release -r linux-x64 --self-contained true
 ```
 
-The app will start and display on the first available framebuffer device.
+> [!NOTE]
+> When using the `Release` configuration, logging is disabled for performance considerations. You can restore logging in the App.xaml.cs file.
 
-Documentation on other hardware targets are [available here](https://github.com/dotnet/core/blob/main/release-notes/5.0/5.0-supported-os.md).
+Documentation on other hardware targets are [available here](https://github.com/dotnet/core/blob/main/release-notes/6.0/supported-os.md).
 
 ## DPI Scaling support
 Whenever possible, the `FrameBufferHost` will try to detect the actual DPI scale to use when rendering the UI, based on the physical information provided by the FrameBuffer driver. If the value cannot be determined, a scale of `1.0` is used.

@@ -388,6 +388,8 @@
               href: how-to-host-a-webassembly-app.md
             - name: Updating to WinUI 3.0
               href: updating-to-winui3.md
+            - name: Migrating from Xamarin to .NET 6
+              href: migrating-from-xamarin-to-net6.md
         - name: Debugging
           items:
             - name: Troubleshooting build errors

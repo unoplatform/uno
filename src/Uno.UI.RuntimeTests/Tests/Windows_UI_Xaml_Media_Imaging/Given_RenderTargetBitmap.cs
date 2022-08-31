@@ -73,7 +73,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			{
 				var pixel = i / 4;
 				var component = i % 4;
-				Assert.AreEqual(rawBorderSnapshot[i], pixelsArray[i], $"The {map[component]} chanal of pixel {pixel} is not same. Expected {rawBorderSnapshot[i]:x2} found {pixelsArray[i]:x2}.");
+				Assert.AreEqual(rawBorderSnapshot[i], pixelsArray[i], $"The {map[component]} channel of pixel {pixel} is not same. Expected {rawBorderSnapshot[i]:x2} found {pixelsArray[i]:x2}.");
 			}
 		}
 	}

@@ -16,8 +16,8 @@
 
 	<Import Project="$(SourceGeneratorBasePath)Uno.UI.SourceGenerators.props" />
 	<Import Project="$(UnoUIMSBuildTasksTargetPath)Uno.UI.Tasks.targets" />
-	<Target Name="_UnoFeatureDefines"
-            BeforeTargets="BeforeCompile">
+
+	<Target Name="_UnoWinUICommonFeatureDefines" AfterTargets="PrepareForBuild">
 
 		<!-- 
 			Defines Uno features. 
@@ -28,20 +28,15 @@
 			of breaking changes.
 		-->
 		<PropertyGroup>
-			<UnoDefineConstants>$(UnoDefineConstants);HAS_UNO</UnoDefineConstants>
-			<UnoDefineConstants Condition="$(_IsUnoWinUIPackage)">$(UnoDefineConstants);HAS_UNO_WINUI</UnoDefineConstants>
-			<UnoDefineConstants>$(UnoDefineConstants);UNO_HAS_FRAMEWORKELEMENT_MEASUREOVERRIDE</UnoDefineConstants>
-			<UnoDefineConstants>$(UnoDefineConstants);UNO_HAS_NO_IDEPENDENCYOBJECT</UnoDefineConstants>
+			<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
+			<DefineConstants Condition="$(_IsUnoWinUIPackage)">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
+			<DefineConstants>$(DefineConstants);UNO_HAS_FRAMEWORKELEMENT_MEASUREOVERRIDE</DefineConstants>
+			<DefineConstants>$(DefineConstants);UNO_HAS_NO_IDEPENDENCYOBJECT</DefineConstants>
 		</PropertyGroup>
 
 		<PropertyGroup Condition="'$(TargetFrameworkIdentifier)'=='.NETStandard' or '$(TargetFrameworkIdentifier)'=='.NETCoreApp'">
-			<UnoDefineConstants>$(UnoDefineConstants);UNO_REFERENCE_API</UnoDefineConstants>
+			<DefineConstants>$(DefineConstants);UNO_REFERENCE_API</DefineConstants>
 		</PropertyGroup>
-
-		<!-- Merge the UnoDefineConstants with the existing constants -->
-		<CreateProperty Value="$(DefineConstants);$(UnoDefineConstants)">
-			<Output TaskParameter="Value" PropertyName="DefineConstants" />
-		</CreateProperty>
 
 	</Target>
 
@@ -197,6 +192,24 @@
 
 		<Error Text="This version of the Android SDK ($(_CurrentTrimmedAndroidSDLVersion)) is not supported by Uno Platform. You must change the &quot;Compile using Android version:&quot; field in the android project property with at least version $(UnoUIMinAndroidSDKVersion)."
 					 Condition="'$(_CurrentTrimmedAndroidSDLVersion)' &lt; '$(UnoUIMinAndroidSDKVersion)'" />
+	</Target>
+
+	<!-- Validation for https://github.com/unoplatform/uno/issues/9430 and the static registrar requirement -->
+	<Target Name="_ValidateIOSStaticRegistrar"
+			BeforeTargets="BeforeBuild"
+			Condition="
+			'$(UnoDisableValidateIOSStaticRegistrar)'==''
+			and (
+				('$(TargetFramework)'=='net6.0-ios' and '$(RuntimeIdentifier)'=='iossimulator-x64')
+				or ('$(ProjectTypeGuids)'=='{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' and '$(Platform)'=='iPhoneSimulator')
+			)
+			and (
+				'$(MtouchExtraArgs)'!=''
+				and !$(MtouchExtraArgs.Contains('--registrar:static'))
+				and !$(MtouchExtraArgs.Contains('--registrar=static'))
+			)
+			">
+		<Error Text="Building for the iOS Simulator requires the use of the static registrar. Make sure that `MtouchExtraArgs` contains `--registrar:static`. See https://github.com/unoplatform/uno/issues/9430 for more details." />
 	</Target>
 
 </Project>

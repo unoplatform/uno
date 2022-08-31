@@ -32,7 +32,7 @@ XAML Intellisense [is not working properly](https://developercommunity.visualstu
 To work around this issue, close all XAML editors, open a C# file and select 'UWP' in the top-left drop-down list of the text editor sector. Once selected, re-open the XAML file.
 
 #### Error MSB3030: Could not copy the file "MyProject.Shared\MainPage.xbf" because it was not found.
-This issue is present in Visual Studio 17.2 and 17.3 Preview 1, and can be addressed by [taking a look at this issue](https://github.com/unoplatform/uno/discussions/5007#discussioncomment-2583741).
+This issue is present in Visual Studio 17.2 and 17.3, and can be addressed by [taking a look at this issue](https://github.com/unoplatform/uno/discussions/5007#discussioncomment-2583741).
 
 #### `InitializeComponent` or `x:Name` variable is not available in code-behind
 Visual Studio [does not refresh the intellisense cache](https://developercommunity.visualstudio.com/content/problem/588021/the-compile-itemgroup-intellisense-cache-is-not-re.html) properly, causing variables to be incorrectly defined.
@@ -48,6 +48,16 @@ In order to clear the **Error List** window, build the whole solution completely
 Event handlers [cannot be automatically](https://github.com/unoplatform/uno/issues/1348#issuecomment-520300471) added using the XAML editor. 
 
 A workaround is to use the [`x:Bind` to events feature](features/windows-ui-xaml-xbind.md#examples). This feature allows to use a simpler syntax like `<Button Click="{x:Bind MyClick}" />` and declare a simple method `private void MyClick() { }` in the code-behind.
+
+#### `Don't know how to marshal a return value of type 'System.IntPtr'`
+[This issue](https://github.com/unoplatform/uno/issues/9430) may happen for Uno.UI 4.4.20 and later when deploying an application using the iOS Simulator or MacCatalyst when the application contains a `TextBox`.
+
+In order to fix this, add the following to your csproj (Xamarin, `net6.0-ios`, `net6.0-maccatalyst`):
+```xml
+<PropertyGroup>
+  <MtouchExtraArgs>$(MtouchExtraArgs) --registrar=static</MtouchExtraArgs>
+</PropertyGroup>
+```
 
 #### Build error `Failed to generate AOT layout`
 

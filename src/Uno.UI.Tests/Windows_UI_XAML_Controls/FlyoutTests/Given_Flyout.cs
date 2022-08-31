@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
+using Uno.UI.Tests.Windows_UI_XAML_Controls.FlyoutTests.Controls;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -229,6 +230,33 @@ namespace Uno.UI.Tests.FlyoutTests
 				Assert.AreEqual(214d, presenter.ActualWidth);
 				Assert.AreEqual(641d, presenter.ActualHeight);
 			}
+		}
+
+		[TestMethod]
+		public void When_Xaml_And_Conflicting_ClassName()
+		{
+			// This particular test is validating that the class is not using
+			// another type with the same non-qualified name, which can cause
+			// base type lookups to be invalid.
+
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var SUT = new Grid() { Name = "test" };
+
+			var flyout = new Windows_UI_XAML_Controls.FlyoutTests.Controls.SettingsFlyout()
+			{
+				Placement = Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Bottom
+			};
+
+			var button = new Button()
+			{
+				Width = 5,
+				Flyout = flyout
+			};
+
+			SUT.AddChild(button);
+
+			app.HostView.Children.Add(SUT);
 		}
 	}
 }

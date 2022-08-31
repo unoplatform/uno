@@ -42,11 +42,19 @@ jobs:
   - template: templates/gitversion.yml
   - template: templates/dotnet-install.yml
   - template: templates/jdk-setup.yml
+  - template: templates/update-vs-components.yml
 
   - task: MSBuild@1
     inputs:
       solution: src/Uno.UI-UnitTests-only.slnf
-      msbuildArguments: /r /p:CheckExclusions=True /p:Configuration=Release /nodeReuse:true /detailedsummary /m $(ADDITIONAL_FLAGS) # /bl:$(build.artifactstagingdirectory)\build.binlog
+      msbuildArguments: /r /p:CheckExclusions=True /p:Configuration=Release /nodeReuse:true /p:TargetFrameworksCI=net461 /detailedsummary /m $(ADDITIONAL_FLAGS) /bl:$(build.artifactstagingdirectory)\unit-tests-build.binlog
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: NugetPackages-Artifacts
+      ArtifactType: Container
 
   - task: VisualStudioTestPlatformInstaller@1
     inputs:

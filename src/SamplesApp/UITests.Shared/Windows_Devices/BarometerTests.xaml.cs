@@ -20,7 +20,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_Devices
 {
-    [SampleControlInfo("Windows.Devices", "Barometer", description: "Demonstrates use of Windows.Devices.Sensors.Barometer", viewModelType: typeof(BarometerTestsViewModel))]
+    [SampleControlInfo("Windows.Devices", "Barometer", description: "Demonstrates use of Windows.Devices.Sensors.Barometer", viewModelType: typeof(BarometerTestsViewModel), ignoreInSnapshotTests: true)]
     public sealed partial class BarometerTests : UserControl
     {
         public BarometerTests()

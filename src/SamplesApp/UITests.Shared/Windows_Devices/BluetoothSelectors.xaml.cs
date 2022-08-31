@@ -8,7 +8,7 @@ using Windows.Devices.Bluetooth;
 
 namespace UITests.Shared.Windows_Devices
 {
-	[SampleControlInfo("Windows.Devices", "BluetoothSelectors", description: "Demonstrates use of Windows.Devices.Bluetooth*.GetDeviceSelector*")]
+	[SampleControlInfo("Windows.Devices", "BluetoothSelectors", description: "Demonstrates use of Windows.Devices.Bluetooth*.GetDeviceSelector*", ignoreInSnapshotTests: true)]
 	public sealed partial class BluetoothSelectors : UserControl
 	{
 		public BluetoothSelectors()

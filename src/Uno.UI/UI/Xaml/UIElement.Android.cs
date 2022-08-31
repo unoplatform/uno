@@ -417,6 +417,8 @@ namespace Windows.UI.Xaml
 				return jObject;
 			}
 
+#pragma warning disable CS0618 // deprecated members
+
 			var type = dpValue.GetType();
 			if (type == typeof(bool))
 			{
@@ -424,9 +426,7 @@ namespace Windows.UI.Xaml
 			}
 			else if (type == typeof(sbyte))
 			{
-#pragma warning disable CS0618 // Byte.Byte(sbyte) is obsolete in API 31
 				return new Java.Lang.Byte((sbyte)dpValue);
-#pragma warning restore CS0618 // Byte.Byte(sbyte) is obsolete in API 31
 			}
 			else if (type == typeof(char))
 			{
@@ -434,9 +434,7 @@ namespace Windows.UI.Xaml
 			}
 			else if (type == typeof(short))
 			{
-#pragma warning disable CS0618 // Short.Short(short) is obsolete in API 31
 				return new Java.Lang.Short((short)dpValue);
-#pragma warning restore CS0618 // Short.Short(short) is obsolete in API 31
 			}
 			else if (type == typeof(int))
 			{
@@ -461,6 +459,7 @@ namespace Windows.UI.Xaml
 
 			// If all else fails, just return the string representation of the DP's value
 			return new Java.Lang.String(dpValue.ToString());
+#pragma warning restore CS0618 // deprecated members
 		}
 
 #if DEBUG

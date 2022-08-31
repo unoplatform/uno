@@ -20,10 +20,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
-
-#if NET6_0_OR_GREATER
+using Windows.System;
 using ObjCRuntime;
-#endif
 
 namespace Uno.UI.Controls
 {
@@ -56,6 +54,8 @@ namespace Uno.UI.Controls
 
 		internal event Action FrameChanged;
 
+		private ICoreWindowEvents _ownerEvents;
+
 		/// <summary>
 		/// ctor.
 		/// </summary>
@@ -76,9 +76,103 @@ namespace Uno.UI.Controls
 			FocusedViewBringIntoViewOnKeyboardOpensPadding = 20;
 		}
 
+		public override void PressesEnded(NSSet<UIPress> presses, UIPressesEvent evt)
+		{
+			var handled = false;
+
+#if __MACCATALYST__
+			foreach (UIPress press in presses)
+			{
+				var virtualKey = VirtualKeyHelper.FromKeyCode(press.Key.KeyCode);
+
+				var args = new KeyEventArgs(
+					"keyboard",
+					virtualKey,
+					new CorePhysicalKeyStatus
+					{
+						ScanCode = (uint)press.Key.KeyCode,
+						RepeatCount = 1,
+					});
+
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"PressesEnded: {press.Key.KeyCode} -> {virtualKey}");
+				}
+
+				try
+				{
+					if (_ownerEvents is { })
+					{
+						_ownerEvents.RaiseKeyUp(args);
+
+						var routerArgs = new KeyRoutedEventArgs(this, virtualKey)
+						{
+							CanBubbleNatively = false
+						};
+
+						(FocusManager.GetFocusedElement() as FrameworkElement)?.RaiseEvent(UIElement.KeyUpEvent, routerArgs);
+
+						handled = true;
+					}
+				}
+				catch (Exception e)
+				{
+					Application.Current.RaiseRecoverableUnhandledException(e);
+				}
+			}
+#endif
+
+			if (!handled)
+			{
+				base.PressesEnded(presses, evt);
+			}
+		}
+
 		public override void PressesBegan(NSSet<UIPress> presses, UIPressesEvent evt)
 		{
 			var handled = false;
+
+#if __MACCATALYST__
+			foreach (UIPress press in presses)
+			{
+				var virtualKey = VirtualKeyHelper.FromKeyCode(press.Key.KeyCode);
+
+				var args = new KeyEventArgs(
+					"keyboard",
+					virtualKey,
+					new CorePhysicalKeyStatus
+					{
+						ScanCode = (uint)press.Key.KeyCode,
+						RepeatCount = 1,
+					});
+
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"PressesBegan: {press.Key.KeyCode} -> {virtualKey}");
+				}
+
+				try
+				{
+					if (_ownerEvents is { })
+					{
+						_ownerEvents.RaiseKeyDown(args);
+
+						var routerArgs = new KeyRoutedEventArgs(this, virtualKey)
+						{
+							CanBubbleNatively = false
+						};
+
+						(FocusManager.GetFocusedElement() as FrameworkElement)?.RaiseEvent(UIElement.KeyDownEvent, routerArgs);
+
+						handled = true;
+					}
+				}
+				catch (Exception e)
+				{
+					Application.Current.RaiseRecoverableUnhandledException(e);
+				}
+			}
+#else
 			var focusInputHandler = Uno.UI.Xaml.Core.CoreServices.Instance.MainRootVisual?.AssociatedVisualTree?.UnoFocusInputHandler;
 			if (Uno.WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus && focusInputHandler != null)
 			{
@@ -109,16 +203,18 @@ namespace Uno.UI.Controls
 					}
 				}
 			}
-
+#endif
 			if (!handled)
 			{
 				base.PressesBegan(presses, evt);
 			}
 		}
 
+		internal void SetOwner(CoreWindow owner) => _ownerEvents = (ICoreWindowEvents)owner;
+
 		/// <summary>
 		/// The behavior to use to bring the focused item into view when opening the keyboard.
-		/// Null means that auto bring into view on keayboard opening is disabled.
+		/// Null means that auto bring into view on keyboard opening is disabled.
 		/// </summary>
 		public BringIntoViewMode? FocusedViewBringIntoViewOnKeyboardOpensMode { get; set; }
 
@@ -149,7 +245,7 @@ namespace Uno.UI.Controls
 				{
 					// For some strange reasons, on iOS 8, when the app is sent in background (while the keyboard is open ?) and then restored,
 					// when user re-opens the keyboard we will get some HitTest also for touches which are made upon the keyboard.
-					// In this case we have to send back the currently focused view in order to prevent EndEditing which will cause 
+					// In this case we have to send back the currently focused view in order to prevent EndEditing which will cause
 					// the keyboard to disappear and the feeling that touches are going "through the keyboard".
 
 					return _focusedView;
@@ -273,12 +369,12 @@ namespace Uno.UI.Controls
 			var keyboardOverlap = scrollViewRectInWindow.Bottom - keyboardTop;
 			if (keyboardOverlap > 0)
 			{
-				scrollView.ContentInset = new UIEdgeInsets(0, 0, keyboardOverlap, 0);
+				scrollView.ContentInset = new UIEdgeInsets(0f, 0f, keyboardOverlap, 0f);
 			}
 
 			var viewRectInScrollView = CGRect.Empty;
 
-			//if the view is a multilineTextBox, we want to based our ScrollRectToVisible logic on caret position not on the bottom of the multilineTextBox view 
+			//if the view is a multilineTextBox, we want to based our ScrollRectToVisible logic on caret position not on the bottom of the multilineTextBox view
 			var multilineTextBoxView = view as Windows.UI.Xaml.Controls.MultilineTextBoxView;
 			if (multilineTextBoxView == null)
 			{
@@ -286,7 +382,8 @@ namespace Uno.UI.Controls
 			}
 			if (multilineTextBoxView != null && multilineTextBoxView.IsFirstResponder)
 			{
-				viewRectInScrollView = multilineTextBoxView.GetCaretRectForPosition(multilineTextBoxView.SelectedTextRange.Start);
+				using var range = Runtime.GetNSObject<UITextRange>(multilineTextBoxView.SelectedTextRange);
+				viewRectInScrollView = multilineTextBoxView.GetCaretRectForPosition(range.Start);
 
 				// We need to add an additional margins because the caret is too tight to the text. The font is cutoff under the keyboard.
 				viewRectInScrollView.Y -= KeyboardMargin;

@@ -208,7 +208,7 @@ namespace UnoSolutionTemplate.Wizard
 
 			OpenWelcomePage();
 			SetStartupProject();
-			SetUWPAnyCPUBuildableAndDeployable();
+			SetBuildableAndDeployable();
 			SetDefaultConfiguration();
 		}
 
@@ -349,18 +349,18 @@ namespace UnoSolutionTemplate.Wizard
 			{
 				if (_dte?.Solution.SolutionBuild is SolutionBuild2 val)
 				{
-						var uwpProject = GetAllProjects().FirstOrDefault(s => s.Name.EndsWith(".Windows", StringComparison.OrdinalIgnoreCase));
+					var startupProject = GetAllProjects().FirstOrDefault(s => s.Name.EndsWith(".Windows", StringComparison.OrdinalIgnoreCase));
 
-						if (uwpProject is { })
-						{
-							val.StartupProjects = uwpProject.UniqueName;
-						}
+					if (startupProject is { })
+					{
+						val.StartupProjects = startupProject.UniqueName;
+					}
 
-						var x86Config = val.SolutionConfigurations
-							.Cast<SolutionConfiguration2>()
-							.FirstOrDefault(c => c.Name == "Debug" && c.PlatformName == "x86");
+					var x86Config = val.SolutionConfigurations
+						.Cast<SolutionConfiguration2>()
+						.FirstOrDefault(c => c.Name == "Debug" && c.PlatformName == "x86");
 
-						x86Config?.Activate();
+					x86Config?.Activate();
 				}
 				else
 				{
@@ -373,23 +373,35 @@ namespace UnoSolutionTemplate.Wizard
 			}
 		}
 
-		private void SetUWPAnyCPUBuildableAndDeployable()
+		private void SetBuildableAndDeployable()
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
 
-			if (_dte?.Solution.SolutionBuild is SolutionBuild2 val)
+			if (_dte?.Solution.SolutionBuild is SolutionBuild2 solutionBuild)
 			{
-				try
-				{
-					var anyCpuConfig = val.SolutionConfigurations
-						.Cast<SolutionConfiguration2>()
-						.FirstOrDefault(c => c.Name == "Debug" && c.PlatformName == "Any CPU");
+				SetConfiurationDeployable(solutionBuild, "Debug", "Any CPU", ".Windows.csproj");
+				SetConfiurationDeployable(solutionBuild, "Release", "Any CPU", ".Windows.csproj");
 
+				SetConfiurationDeployable(solutionBuild, "Debug", "Any CPU", ".Mobile.csproj");
+				SetConfiurationDeployable(solutionBuild, "Release", "Any CPU", ".Mobile.csproj");
+			}
+		}
+
+		private static void SetConfiurationDeployable(SolutionBuild2 val, string configuration, string platformName, string projectSuffix)
+		{
+			try
+			{
+				var anyCpuConfig = val.SolutionConfigurations
+										.Cast<SolutionConfiguration2>()
+										.FirstOrDefault(c => c.Name == configuration && c.PlatformName == platformName);
+
+				if (anyCpuConfig != null)
+				{
 					foreach (SolutionConfiguration2 solutionConfiguration2 in val.SolutionConfigurations)
 					{
 						foreach (SolutionContext solutionContext in anyCpuConfig.SolutionContexts)
 						{
-							if (solutionContext.ProjectName.EndsWith(".Windows.csproj"))
+							if (solutionContext.ProjectName.EndsWith(projectSuffix))
 							{
 								solutionContext.ShouldBuild = true;
 								solutionContext.ShouldDeploy = true;
@@ -397,9 +409,9 @@ namespace UnoSolutionTemplate.Wizard
 						}
 					}
 				}
-				catch (Exception)
-				{
-				}
+			}
+			catch (Exception)
+			{
 			}
 		}
 

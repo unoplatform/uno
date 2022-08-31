@@ -3,7 +3,7 @@ parameters:
 
 jobs:
 - job: Wasm_UITests_Build
-  displayName: 'WebAssembly UI Tests (Build)'
+  displayName: 'Build WebAssembly UI Tests'
   container: nv-bionic-wasm
 
   dependsOn: Pipeline_Validations
@@ -21,12 +21,9 @@ jobs:
   - template: templates/gitversion.yml
   - template: templates/dotnet-install.yml
 
-  - task: CacheBeta@0
-    condition: eq(variables['enable_package_cache'], 'true')
-    inputs:
-      key: nuget | $(Agent.OS) | $(Agent.JobName) | $(build.sourcesdirectory)/**/*.csproj | $(build.sourcesdirectory)/**/Directory.Build.targets | $(build.sourcesdirectory)/**/Directory.Build.props
-      path: $(NUGET_PACKAGES)
-    displayName: Cache NuGet packages
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
     
   - template: templates/optimize-roslyn-mono.yml
   - template: templates/dotnet-install.yml

@@ -14,7 +14,8 @@ namespace Uno.UI.Runtime.Skia
 	class Renderer
 	{
 		private FrameBufferDevice _fbDev;
-		private SKBitmap? bitmap;
+		private SKBitmap? _bitmap;
+		private bool _needsScanlineCopy;
 		private int renderCount = 0;
 		private DisplayInformation? _displayInformation;
 
@@ -49,14 +50,16 @@ namespace Uno.UI.Runtime.Skia
 			var info = new SKImageInfo(width, height, _fbDev.PixelFormat, SKAlphaType.Premul);
 
 			// reset the bitmap if the size has changed
-			if (bitmap == null || info.Width != bitmap.Width || info.Height != bitmap.Height)
+			if (_bitmap == null || info.Width != _bitmap.Width || info.Height != _bitmap.Height)
 			{
-				bitmap = new SKBitmap(width, height, _fbDev.PixelFormat, SKAlphaType.Premul);
+				_bitmap = new SKBitmap(width, height, _fbDev.PixelFormat, SKAlphaType.Premul);
 
-				WUX.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(rawScreenSize.Width / scale, rawScreenSize.Height / scale));
+				_needsScanlineCopy = _fbDev.RowBytes != _bitmap.BytesPerPixel * width;
+
+				WUX.Window.Current.OnNativeSizeChanged(new Size(rawScreenSize.Width / scale, rawScreenSize.Height / scale));
 			}
 
-			using (var surface = SKSurface.Create(info, bitmap.GetPixels(out _)))
+			using (var surface = SKSurface.Create(info, _bitmap.GetPixels(out _)))
 			{
 				surface.Canvas.Clear(SKColors.White);
 
@@ -65,7 +68,25 @@ namespace Uno.UI.Runtime.Skia
 				WUX.Window.Current.Compositor.Render(surface);
 
 				_fbDev.VSync();
-				Libc.memcpy(_fbDev.BufferAddress, bitmap.GetPixels(out _), new IntPtr(_fbDev.RowBytes * height));
+
+				if (_needsScanlineCopy)
+				{
+					var pixels = _bitmap.GetPixels(out _);
+					var bitmapRowBytes = _bitmap.RowBytes;
+					var bitmapBytesPerPixel = _bitmap.BytesPerPixel;
+
+					for (int line = 0; line < height; line++)
+					{
+						Libc.memcpy(
+							_fbDev.BufferAddress + line * _fbDev.RowBytes,
+							pixels + line * bitmapRowBytes,
+							new IntPtr(width * bitmapBytesPerPixel));
+					}
+				}
+				else
+				{
+					Libc.memcpy(_fbDev.BufferAddress, _bitmap.GetPixels(out _), new IntPtr(_fbDev.RowBytes * height));
+				}
 			}
 		}
 	}

@@ -43,8 +43,8 @@ namespace Uno.UI.Runtime.Skia
 			_screenInfo.bits_per_pixel switch
 			{
 				32 => _screenInfo.blue.offset == 16
-					? SKColorType.Rgba8888
-					: SKColorType.Bgra8888,
+					? SKColorType.Bgra8888
+					: SKColorType.Rgba8888,
 				16 => _screenInfo.red.offset == 11
 					? SKColorType.Rgb565
 					: throw new NotSupportedException($"RGB555 is not supported by Uno Platform"),

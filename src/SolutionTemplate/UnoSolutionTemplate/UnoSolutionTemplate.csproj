@@ -84,10 +84,8 @@
     <None Include="Skia.WPF\Program.cs" />
     <None Include="Skia.WPF.Host\App.xaml.cs" />
     <None Include="Skia.WPF.Host\MainWindow.xaml.cs" />
-    <None Include="Skia.WPF.Host\app.manifest" />
     <None Include="Skia.Gtk\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Skia.Gtk\Program.cs" />
-    <None Include="Skia.Gtk\app.manifest" />
     <None Include="macOS\AppDelegate.cs" />
     <None Include="macOS\Main.cs" />
     <None Include="macOS\Properties\AssemblyInfo.cs" />

@@ -131,11 +131,29 @@ namespace SamplesApp
 			AssertIssue8641NativeOverlayInitialized();
 
 			Windows.UI.Xaml.Window.Current.Activate();
-
+			
 			ApplicationView.GetForCurrentView().Title = "Uno Samples";
+#if __SKIA__ && DEBUG
+			AppendRepositoryPathToTitleBar();			
+#endif
 
 			HandleLaunchArguments(e);
 		}
+
+#if __SKIA__ && DEBUG
+		private void AppendRepositoryPathToTitleBar()
+		{
+			var fullPath = Package.Current.InstalledLocation.Path;
+			var srcSamplesApp = $"{Path.DirectorySeparatorChar}src{Path.DirectorySeparatorChar}SamplesApp";
+			var repositoryPath = fullPath;			
+			if (fullPath.IndexOf(srcSamplesApp) is int index && index > 0)
+			{
+				repositoryPath = fullPath.Substring(0, index);
+			}
+
+			ApplicationView.GetForCurrentView().Title += $" ({repositoryPath})";
+		}
+#endif
 
 		private static async Task<bool> HandleSkiaAutoScreenshots(LaunchActivatedEventArgs e)
 		{
@@ -600,9 +618,7 @@ namespace SamplesApp
 		public void AssertIssue8356()
 		{
 #if __SKIA__
-			string SUT = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title;
-			string value = Windows.ApplicationModel.Package.Current.DisplayName;
-			Assert.AreEqual(SUT, value);
+			Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement_ApplicationView.Given_ApplicationView.StartupTitle = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title;
 #endif
 		}
 

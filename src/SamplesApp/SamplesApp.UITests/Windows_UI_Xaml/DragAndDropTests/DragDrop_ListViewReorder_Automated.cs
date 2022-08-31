@@ -79,6 +79,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 		public void When_Reorder_To_Last() => Test_Reorder(3, 5);
 
 		[Test]
+		[Ignore("Flaky test. Tracked by https://github.com/unoplatform/uno/issues/9080")]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)] // TODO: support drag-and-drop testing on mobile https://github.com/unoplatform/Uno.UITest/issues/31
 		public void When_Reorder_To_Last_2() => Test_Reorder(3, 6 /* out of range */, expectedTo: 5);
@@ -195,7 +196,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 
 			var result = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
 
-			ImageAssert.HasColorAt(result, x, expectedY, _items[from], tolerance: 10);
+			ImageAssert.HasColorAt(result, x * GetDisplayScreenScaling(), expectedY * GetDisplayScreenScaling(), _items[from], tolerance: 10);
 			Assert.IsTrue(op.GetDependencyPropertyValue<string>("Text").Contains("Move"));
 		}
 
@@ -221,8 +222,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 			var result = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
 			if (from is 2 or 4)
 			{
-				ImageAssert.HasColorAt(result, x, expectedY, _items[2], tolerance: 10);
-				ImageAssert.HasColorAt(result, x, expectedY + _itemHeight, _items[4], tolerance: 10);
+				ImageAssert.HasColorAt(result, x * GetDisplayScreenScaling(), expectedY * GetDisplayScreenScaling(), _items[2], tolerance: 10);
+				ImageAssert.HasColorAt(result, x * GetDisplayScreenScaling(), (expectedY + _itemHeight) * GetDisplayScreenScaling(), _items[4], tolerance: 10);
 			}
 			else
 			{

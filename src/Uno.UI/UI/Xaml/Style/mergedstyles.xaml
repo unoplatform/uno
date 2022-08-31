@@ -186,7 +186,8 @@
       <SolidColorBrush x:Key="RefreshContainerForegroundBrush" Color="White" />
       <SolidColorBrush x:Key="RefreshContainerBackgroundBrush" Color="Transparent" />
       <SolidColorBrush x:Key="RefreshVisualizerForeground" Color="White" />
-      <SolidColorBrush x:Key="RefreshVisualizerBackground" Color="Transparent" />
+      <not_android:SolidColorBrush x:Key="RefreshVisualizerBackground" Color="Transparent" />
+      <android:SolidColorBrush x:Key="RefreshVisualizerBackground" Color="Black" />
       <StaticResource x:Key="RadioButtonsHeaderForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
       <StaticResource x:Key="RadioButtonsHeaderForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
       <StaticResource x:Key="RatingControlUnselectedForeground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
@@ -1070,7 +1071,8 @@
       <SolidColorBrush x:Key="RefreshContainerForegroundBrush" Color="Black" />
       <SolidColorBrush x:Key="RefreshContainerBackgroundBrush" Color="Transparent" />
       <SolidColorBrush x:Key="RefreshVisualizerForeground" Color="Black" />
-      <SolidColorBrush x:Key="RefreshVisualizerBackground" Color="Transparent" />
+      <not_android:SolidColorBrush x:Key="RefreshVisualizerBackground" Color="Transparent" />
+      <android:SolidColorBrush x:Key="RefreshVisualizerBackground" Color="White" />
       <StaticResource x:Key="RadioButtonsHeaderForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
       <StaticResource x:Key="RadioButtonsHeaderForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
       <StaticResource x:Key="RatingControlUnselectedForeground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
@@ -6848,12 +6850,13 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="controls:RefreshContainer">
-          <Grid>
+          <Grid x:Name="Root">
             <uno:NativeRefreshControl x:Name="NativeRefreshControl">
               <uno:NativeRefreshControl.Content>
                 <ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" Background="Transparent" />
               </uno:NativeRefreshControl.Content>
             </uno:NativeRefreshControl>
+            <Grid x:Name="RefreshVisualizerPresenter" />
           </Grid>
         </ControlTemplate>
       </Setter.Value>
@@ -11530,7 +11533,8 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="FlipViewItem">
-          <ContentPresenter Content="{TemplateBinding Content}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+          <!-- Uno specific - Explicitly setting ContentTemplateSelector -->
+          <ContentPresenter Content="{TemplateBinding Content}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
         </ControlTemplate>
       </Setter.Value>
     </Setter>

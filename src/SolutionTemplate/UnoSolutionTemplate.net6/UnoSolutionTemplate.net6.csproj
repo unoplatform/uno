@@ -100,10 +100,8 @@
     <None Include="Skia.Linux.FrameBuffer\UnoQuickStart.Skia.Linux.FrameBuffer.csproj" />
     <None Include="Skia.WPF\App.xaml.cs" />
     <None Include="Skia.WPF\MainWindow.xaml.cs" />
-    <None Include="Skia.WPF\app.manifest" />
     <None Include="Skia.Gtk\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Skia.Gtk\Program.cs" />
-    <None Include="Skia.Gtk\app.manifest" />
     <None Include="Mobile\Android\Main.Android.cs" />
     <None Include="Mobile\Android\MainActivity.Android.cs" />
     <None Include="Mobile\iOS\Main.iOS.cs" />

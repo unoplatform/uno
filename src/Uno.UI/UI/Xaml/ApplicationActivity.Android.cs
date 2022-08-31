@@ -16,6 +16,7 @@ using Uno.UI;
 using Windows.Devices.Sensors;
 using Windows.Gaming.Input;
 using Windows.Graphics.Display;
+using Windows.Security.Authentication.Web;
 using Windows.Storage.Pickers;
 using Windows.System;
 using Windows.UI.ViewManagement;
@@ -247,7 +248,7 @@ namespace Windows.UI.Xaml
 
 			RaiseConfigurationChanges();
 
-			WebAuthenticationBrokerProvider.OnMainActivityResumed();
+			WebAuthenticationBroker.OnResume();
 		}
 
 		protected override void OnPause()
@@ -281,6 +282,8 @@ namespace Windows.UI.Xaml
 			Windows.UI.Xaml.Application.Current.OnSystemThemeChanged();
 		}
 
+#pragma warning disable CS0618 // deprecated members
+#pragma warning disable CS0672 // deprecated members
 		public override void OnBackPressed()
 		{
 			var handled = Windows.UI.Core.SystemNavigationManager.GetForCurrentView().RequestBack();
@@ -289,6 +292,8 @@ namespace Windows.UI.Xaml
 				base.OnBackPressed();
 			}
 		}
+#pragma warning restore CS0618 // deprecated members
+#pragma warning restore CS0672 // deprecated members
 
 		protected override void OnNewIntent(Intent intent)
 		{

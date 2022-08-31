@@ -14,7 +14,6 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<ApplicationManifest>app.manifest</ApplicationManifest>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -48,5 +47,6 @@
 
 	<Import Project="..\..\..\build\*.Skia.Gtk.props" />
 	<Import Project="..\..\..\build\*.Skia.Gtk.targets" />
+	<Import Project="..\..\..\build\uno.winui.runtime-replace.targets" />
 
 </Project>

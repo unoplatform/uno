@@ -139,6 +139,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // fails on iOS https://github.com/unoplatform/uno/issues/9080
 		public void ListView_ObservableCollection_Unused_Space()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_ObservableCollection_Unused_Space");
