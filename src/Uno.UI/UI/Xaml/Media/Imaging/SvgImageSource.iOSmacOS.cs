@@ -31,7 +31,11 @@ partial class SvgImageSource
 		var imageData = await TryReadImageDataAsync(ct);
 		if (imageData.Kind == ImageDataKind.ByteArray)
 		{
-			_svgProvider.NotifySourceOpened(imageData.ByteArray);
+			if (_svgProvider is null)
+			{
+				this.Log().LogWarning("Uno.UI.Svg package needs to be installed to use SVG on this platform.");
+			}
+			_svgProvider?.NotifySourceOpened(imageData.ByteArray);
 		}
 		return imageData;
 	}

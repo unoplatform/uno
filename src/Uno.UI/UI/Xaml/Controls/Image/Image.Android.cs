@@ -16,6 +16,7 @@ using System.Threading;
 using Uno.UI;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Storage.Streams;
+using Uno.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -23,6 +24,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private bool _isInLayout;
 		private double _sourceImageScale = 1;
+		private SerialDisposable _childViewDisposable = new SerialDisposable();
 		private Windows.Foundation.Size _sourceImageSize;
 		private Windows.Foundation.Size SourceImageSize
 		{
@@ -171,7 +173,7 @@ namespace Windows.UI.Xaml.Controls
 						return;
 					}
 
-					TryCreateNative();
+					TryCreateNativeImageView();
 
 					if (imageSource.TryOpenSync(out var bitmap))
 					{
@@ -184,6 +186,10 @@ namespace Windows.UI.Xaml.Controls
 					else if (imageSource.ResourceId.HasValue)
 					{
 						var dummy = SetSourceResource(imageSource);
+					}
+					else if (imageSource is SvgImageSource)
+					{
+						var dummy = SetSourceUriOrStreamAsync(imageSource);
 					}
 					else if (imageSource.FilePath.HasValue() || imageSource.WebUri != null || imageSource.Stream != null)
 					{
@@ -202,7 +208,7 @@ namespace Windows.UI.Xaml.Controls
 							return;
 						}
 
-						var dummy = SetSourceUriOrStream(imageSource);
+						var dummy = SetSourceUriOrStreamAsync(imageSource);
 					}
 					else
 					{
@@ -224,15 +230,22 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void TryCreateNative()
+		private void TryCreateNativeImageView()
 		{
 			if (_nativeImageView == null)
 			{
+				_childViewDisposable.Disposable = null;
 				_nativeImageView = new NativeImageView();
 
 				AddView(_nativeImageView);
 
 				UpdateMatrix(_lastLayoutSize);
+
+				_childViewDisposable.Disposable = Disposable.Create(() =>
+				{
+					RemoveView(_nativeImageView);
+					_nativeImageView = null;
+				});
 			}
 		}
 
@@ -242,7 +255,7 @@ namespace Windows.UI.Xaml.Controls
 			return (Stretch == Stretch.Uniform || Stretch == Stretch.None) && (double.IsNaN(Width) || double.IsNaN(Height));
 		}
 
-		private async Task SetSourceUriOrStream(ImageSource newImageSource)
+		private async Task SetSourceUriOrStreamAsync(ImageSource newImageSource)
 		{
 			// The Jupiter behavior is to reset the visual right away, displaying nothing
 			// then show the new image. We're rescheduling the work below, so there is going
@@ -265,17 +278,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					var bitmap = imageData.Bitmap;
-					_nativeImageView.SetImageBitmap(bitmap);
-
-					if (bitmap != null)
-					{
-						OnImageOpened(newImageSource);
-					}
-					else
-					{
-						OnImageFailed(newImageSource);
-					}
+					SetImageData(imageData);
 				}
 
 				//If a remote image is fetched a second time, it may be set synchronously (eg if the image is cached) within a layout pass (ie from OnLayoutPartial). In this case, we must dispatch RequestLayout for the image control to be measured correctly.
@@ -290,6 +293,63 @@ namespace Windows.UI.Xaml.Controls
 
 				OnImageFailed(newImageSource);
 			}
+		}
+
+		private void SetImageData(ImageData imageData)
+		{
+			using (
+			_imageTrace.WriteEventActivity(
+				TraceProvider.Image_SetImageStart,
+				TraceProvider.Image_SetImageStop,
+				new object[] { this.GetDependencyObjectId() }))
+			{
+
+				if (_openedSource is SvgImageSource svgImageSource && imageData.Kind == ImageDataKind.ByteArray)
+				{
+					SetSvgSource(svgImageSource, imageData.ByteArray);
+					InvalidateMeasure();
+				}
+				else if (_openedSource is { } source)
+				{
+					SetNativeImage(imageData);
+				}
+				else
+				{
+					SetNativeImage(ImageData.Empty);
+				}
+			}
+
+			if (imageData.HasData)
+			{
+				OnImageOpened(_openedSource);
+			}
+			else
+			{
+				OnImageFailed(_openedSource);
+			}
+		}
+
+		private void SetNativeImage(ImageData imageData)
+		{
+			TryCreateNativeImageView();
+			var bitmap = imageData.Bitmap;
+			_nativeImageView.SetImageBitmap(bitmap);
+		}
+
+		private void SetSvgSource(SvgImageSource svgImageSource, byte[] byteArray)
+		{
+			_childViewDisposable.Disposable = null;
+
+			_svgCanvas = svgImageSource.GetCanvas();
+			AddView(_svgCanvas);
+
+			_childViewDisposable.Disposable = Disposable.Create(() =>
+			{
+				RemoveView(_svgCanvas);
+				_svgCanvas = null;
+			});
+
+			UpdateSourceImageSize(svgImageSource.SourceSize);
 		}
 
 		private async Task SetSourceResource(ImageSource newImageSource)
@@ -382,7 +442,14 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnStretchChanged(Stretch newValue, Stretch oldValue)
 		{
-			UpdateMatrix(_lastLayoutSize);
+			if (_openedSource is SvgImageSource)
+			{
+				InvalidateArrange();
+			}
+			else
+			{
+				UpdateMatrix(_lastLayoutSize);
+			}
 		}
 
 		/// <summary>
