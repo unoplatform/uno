@@ -57,10 +57,9 @@ internal static class XamlCodeGeneratorHelper
 		}
 
 		return diagnostics
-			// I temporarily removed the hidden diagnostics, but potentially there is a problem in that they are
-			// All hidden diagnostics are unnecessary using directives
+			// I temporarily removed the unnecessary using directives.
 			// I think the problem here is that the generated code shouldn't use using directives at all
-			.Where(static diagnostic => diagnostic.Severity != DiagnosticSeverity.Hidden)
+			.Where(static diagnostic => diagnostic.Id != "CS8019") // CS8019: unused using directive
 			.ToArray();
 	}
 }
