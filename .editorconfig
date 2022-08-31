@@ -345,6 +345,7 @@ dotnet_diagnostic.CA1844.severity = none
 dotnet_diagnostic.CA1018.severity = none
 dotnet_diagnostic.CA1846.severity = none
 dotnet_diagnostic.CA1847.severity = none
+dotnet_diagnostic.CA1014.severity = none
 
 dotnet_analyzer_diagnostic.category-Design.severity = none
 dotnet_analyzer_diagnostic.category-Usage.severity = none
