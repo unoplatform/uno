@@ -21,14 +21,18 @@ Conversely, Uno.SourceGeneration generators can be used by setting this:
 ```
 
 ## Adding generated files C# pragma
+
 In some cases, the generated code may use patterns that cause C# to raise warnings, and in order to silence those warnings, the generated code can contain a set of custom C# pragma.
 
 To define a pragma, in your csproj add the following:
+
 ```xml
 <ItemGroup>
 	<XamlGeneratorAnalyzerSuppressions Include="csharp-618 // Ignore obsolete members warnings" />
 </ItemGroup>
 ```
+
+Note that `csharp-` prefix is necessary, whether it's a compiler warning or an analyzer warning.
 
 It is also possible to have `SuppressMessageAttribute` specified in the code, by using the following syntax:
 ```xml
