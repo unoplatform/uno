@@ -893,5 +893,27 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			using var screenshot = TakeScreenshot("PasswordBox Description", new ScreenshotOptions() { IgnoreInSnapshotCompare = true });
 			ImageAssert.HasColorAt(screenshot, passwordBoxRect.X + passwordBoxRect.Width / 2, passwordBoxRect.Y + passwordBoxRect.Height - 50, Color.Red);
 		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_Visibility()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_Visibility", skipInitialScreenshot: true);
+			var textBoxRect = ToPhysicalRect(_app.WaitForElement("MyTextBox")[0].Rect);
+			var buttonRect = ToPhysicalRect(_app.WaitForElement("ShowHideButton")[0].Rect);
+
+			_app.FastTap("ShowHideButton");
+
+			var textBoxRect2 = ToPhysicalRect(_app.WaitForElement("MyTextBox")[0].Rect);
+			var buttonRect2 = ToPhysicalRect(_app.WaitForElement("ShowHideButton")[0].Rect);
+
+			// Assert that after clicking, MyTextBox goes out of screen (hidden).
+			Assert.AreEqual(-100000 + textBoxRect.X, textBoxRect2.X);
+			Assert.AreEqual(-100000 + textBoxRect.Y, textBoxRect2.Y);
+
+			// Assert that after clicking, ShowHideButton moves up (because MyTextBox is collapsed)
+			Assert.Less(buttonRect2.Y, buttonRect.Y);
+			Assert.AreEqual(textBoxRect.Height, buttonRect.Y - buttonRect2.Y);
+		}
 	}
 }
