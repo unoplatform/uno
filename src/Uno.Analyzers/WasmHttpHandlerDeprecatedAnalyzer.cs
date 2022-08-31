@@ -13,7 +13,7 @@ namespace Uno.Analyzers
 	public class WasmHttpHandlerDeprecatedAnalyzer : DiagnosticAnalyzer
 	{
 		internal const string Title = "'WasmHttpHandler' is deprecated";
-		internal const string MessageFormat = "'WasmHttpHandler' is deprecated";
+		internal const string MessageFormat = "'WasmHttpHandler' is deprecated, use 'HttpClient' and 'HttpHandler' instead.";
 		internal const string Category = "Usage";
 
 		internal static DiagnosticDescriptor Rule = new(
