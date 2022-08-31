@@ -171,25 +171,38 @@ namespace Windows.UI.Xaml.Controls
 			return CanDowngradeLayoutRequest && !double.IsNaN(Width) && !double.IsNaN(Height);
 		}
 
-		private void Dispatch(Func<CancellationToken, Task> handler)
+		private void Dispatch(Func<CancellationToken, Task> handler, CancellationToken ct)
 		{
-			var cd = new CancellationDisposable();
-
 			Dispatcher.RunAsync(
 				CoreDispatcherPriority.Normal,
-				() => handler(cd.Token)
-			).AsTask(cd.Token);
-
-			_imageFetchDisposable.Disposable = cd;
+				() => handler(ct)
+			).AsTask(ct);
 		}
 
-		private void Execute(Func<CancellationToken, Task> handler)
+		private void Dispatch(Action<CancellationToken> handler, CancellationToken ct)
+		{
+			Dispatcher.RunAsync(
+				CoreDispatcherPriority.Normal,
+				() =>
+				{
+					handler(ct);
+				}
+			).AsTask(ct);
+		}
+
+		private async void Execute(Func<CancellationToken, Task> handler)
 		{
 			var cd = new CancellationDisposable();
-
-			var dummy = handler(cd.Token);
-
 			_imageFetchDisposable.Disposable = cd;
+
+			try
+			{
+				await handler(cd.Token);
+			}
+			catch (Exception ex)
+			{
+				this.Log().LogError("Failed executing async operation.", ex);
+			}
 		}
 
 		/// <summary>
@@ -232,6 +245,11 @@ namespace Windows.UI.Xaml.Controls
 			SetTargetImageSize(availableSize);
 
 			var size = InnerMeasureOverride(availableSize);
+
+			if (_svgCanvas is not null)
+			{
+				_svgCanvas.Measure(availableSize);
+			}
 
 			return size;
 		}
@@ -401,6 +419,9 @@ namespace Windows.UI.Xaml.Controls
 #if __IOS__ || __MACOS__ || __ANDROID__
 			if (Source is SvgImageSource svgImageSource && _svgCanvas is not null)
 			{
+#if __ANDROID__
+				ClipBounds = null;
+#endif
 				// Calculate the resulting space required on screen for the image;
 				var containerSize = this.MeasureSource(finalSize, svgImageSource.SourceSize);
 
