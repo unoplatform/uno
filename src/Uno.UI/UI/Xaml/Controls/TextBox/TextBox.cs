@@ -759,6 +759,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
+			base.OnVisibilityChanged(oldValue, newValue);
 			if (newValue == Visibility.Visible)
 			{
 				UpdateVisualState();

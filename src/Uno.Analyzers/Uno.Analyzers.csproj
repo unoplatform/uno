@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="UnoNotImplementedAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WasmHttpHandlerDeprecatedAnalyzer.cs" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

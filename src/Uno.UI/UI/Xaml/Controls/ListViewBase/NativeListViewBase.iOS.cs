@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// This property enables animations when using the ScrollIntoView Method.
 		/// </summary>
-		public bool AnimateScrollIntoView { get; set; }
+		public bool AnimateScrollIntoView { get; set; } = Uno.UI.FeatureConfiguration.ListViewBase.AnimateScrollIntoView;
 		#endregion
 
 		#region Members

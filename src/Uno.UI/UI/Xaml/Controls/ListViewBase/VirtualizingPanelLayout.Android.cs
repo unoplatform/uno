@@ -2654,5 +2654,47 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return message + $" - {name}, line {lineNumber}";
 		}
+
+		public override void SmoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state, int position)
+		{
+			var scroller = new VirtualizingPanelSmoothScroller(this, state);
+			scroller.TargetPosition = position;
+
+			StartSmoothScroll(scroller);
+		}
+
+		private class VirtualizingPanelSmoothScroller : LinearSmoothScroller
+		{
+			private const float BaseDuration = 250f, ScalableDuration = 150f; // in ms
+
+			private readonly VirtualizingPanelLayout _layout;
+			private readonly RecyclerView.State _state;
+
+			public VirtualizingPanelSmoothScroller(VirtualizingPanelLayout layout, RecyclerView.State state) : base(ContextHelper.Current)
+			{
+				_layout = layout;
+				_state = state;
+			}
+
+			public override PointF ComputeScrollVectorForPosition(int targetPosition) => _layout.ComputeScrollVectorForPosition(targetPosition);
+			
+			// The time (in ms) it should take for each pixel. For instance, if returned value is 2 ms,
+			// it means scrolling 1000 pixels with LinearInterpolation should take 2 seconds.
+			protected override float CalculateSpeedPerPixel(Android.Util.DisplayMetrics displayMetrics)
+			{
+				var scrollLength = _layout.ScrollOrientation == Orientation.Horizontal
+					? _layout.ComputeHorizontalScrollRange(_state)
+					: _layout.ComputeVerticalScrollRange(_state);
+				var screenLength = _layout.ScrollOrientation == Orientation.Horizontal
+					? displayMetrics.WidthPixels
+					: displayMetrics.HeightPixels;
+
+				// scaled with distance: 250ms at 0 distance, capped at 400ms for more than 1 screen
+				var scaling = scrollLength < screenLength ? Math.Pow((double)scrollLength / screenLength, 3) : 1;
+				var duration = BaseDuration + ScalableDuration * scaling;
+
+				return (float)duration / scrollLength;
+			}
+		}
 	}
 }
