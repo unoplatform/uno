@@ -225,7 +225,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 					GenerateTypeTable(writer);
 
-					writer.AppendLineInvariant(@"#if DEBUG");
+					writer.AppendLineInvariant(@"#if DEBUG && !UNO_DISABLE_KNOWN_MISSING_TYPES");
 					writer.AppendLineInvariant(@"private global::System.Collections.Generic.List<global::System.Type> _knownMissingTypes = new global::System.Collections.Generic.List<global::System.Type>();");
 					writer.AppendLineInvariant(@"#endif");
 
@@ -641,7 +641,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				{
 					writer.AppendLineInvariant(@"var bindableType = GetBindableTypeByFullName(type.FullName);");
 
-					writer.AppendLineInvariant(@"#if DEBUG");
+					writer.AppendLineInvariant(@"#if DEBUG && !UNO_DISABLE_KNOWN_MISSING_TYPES");
 					using (writer.BlockInvariant(@"lock(_knownMissingTypes)"))
 					{
 						using (writer.BlockInvariant(@"if(bindableType == null && !_knownMissingTypes.Contains(type) && !type.IsGenericType && !type.IsAbstract)"))
