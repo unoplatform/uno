@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Documents;
 using Windows.UI.Text;
 using Windows.Foundation.Metadata;
 using Color = Windows.UI.Color;
+using Windows.UI.Xaml.Resources;
 
 #if XAMARIN_ANDROID
 using _View = Android.Views.View;
@@ -711,11 +712,12 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				ProcessBindingMarkupNode(instance, rootInstance, member);
 			}
-			else if (IsStaticResourceMarkupNode(member) || IsThemeResourceMarkupNode(member))
+			else if (IsStaticResourceMarkupNode(member) || IsThemeResourceMarkupNode(member) || IsCustomResourceMarkupNode(member))
 			{
 				ProcessStaticResourceMarkupNode(instance, member, propertyInfo);
 			}
 		}
+
 
 		private void ProcessStaticResourceMarkupNode(object instance, XamlMemberDefinition member, PropertyInfo? propertyInfo)
 		{
@@ -725,24 +727,37 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				var keyName = resourceNode.Members.FirstOrDefault()?.Value?.ToString();
 				var dependencyProperty = TypeResolver.FindDependencyProperty(member);
-
 				if (keyName != null
 					&& dependencyProperty != null
 					&& instance is DependencyObject dependencyObject)
 				{
-					ResourceResolver.ApplyResource(
-						dependencyObject,
-						dependencyProperty,
-						keyName,
-						isThemeResourceExtension: IsThemeResourceMarkupNode(member),
-						isHotReloadSupported: true);
-
-					if (instance is FrameworkElement fe)
+					if (IsCustomResourceMarkupNode(member))
 					{
-						fe.Loading += delegate
+						string objectType = dependencyObject.GetType().FullName;
+						string propertyName = dependencyProperty.Name;
+						string propertyType = dependencyProperty.Type.FullName;
+						var resource = CustomXamlResourceLoader.Current?.GetResourceInternal(keyName, objectType, propertyName, propertyType);
+						if (resource != null && resource.GetType() == dependencyProperty.Type)
 						{
-							fe.UpdateResourceBindings();
-						};
+							dependencyObject.SetValue(dependencyProperty, resource);
+						}
+					}
+					else
+					{
+						ResourceResolver.ApplyResource(
+							dependencyObject,
+							dependencyProperty,
+							keyName,
+							isThemeResourceExtension: IsThemeResourceMarkupNode(member),
+							isHotReloadSupported: true);
+
+						if (instance is FrameworkElement fe)
+						{
+							fe.Loading += delegate
+							{
+								fe.UpdateResourceBindings();
+							};
+						}
 					}
 				}
 				else if (propertyInfo != null)
@@ -791,6 +806,9 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 		private bool IsThemeResourceMarkupNode(XamlMemberDefinition member)
 			=> member.Objects.Any(o => o.Type.Name == "ThemeResource");
+
+		private bool IsCustomResourceMarkupNode(XamlMemberDefinition member)
+			=> member.Objects.Any(o => o.Type.Name == "CustomResource");
 
 		private bool IsResourcesProperty(PropertyInfo propertyInfo)
 			=> propertyInfo.Name == "Resources" && propertyInfo.PropertyType == typeof(ResourceDictionary);
@@ -849,7 +867,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				// further up in the tree.
 			}
 
-			if(bindingNode == null && templateBindingNode == null && xBindNode == null)
+			if (bindingNode == null && templateBindingNode == null && xBindNode == null)
 			{
 				throw new InvalidOperationException("Unable to find Binding or TemplateBinding or x:Bind node");
 			}
@@ -996,6 +1014,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 					|| m.Type.Name == "Bind"
 					|| m.Type.Name == "StaticResource"
 					|| m.Type.Name == "ThemeResource"
+					|| m.Type.Name == "CustomResource"
 					|| m.Type.Name == "TemplateBinding"
 				)
 				.Any();
