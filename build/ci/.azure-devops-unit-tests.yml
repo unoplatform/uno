@@ -47,7 +47,7 @@ jobs:
   # We need to build Skia for generator unit testing. Otherwise, tests will throw exceptions.
   - task: MSBuild@1
     inputs:
-      solution: src/Uno.UI-Skia-only.slnf
+      solution: src/Uno.UI/Uno.UI.Skia.csproj
       msbuildArguments: /r /p:CheckExclusions=True /p:Configuration=Debug /nodeReuse:true /p:TargetFrameworksCI=netstandard2.0 /detailedsummary /m $(ADDITIONAL_FLAGS) /bl:$(build.artifactstagingdirectory)\skia-for-unit-tests-build.binlog
 
   - task: MSBuild@1
