@@ -127,7 +127,7 @@ public partial class SvgImageSource : ImageSource
 	private async Task<ImageData> ReadFromStreamAsync(Stream stream, CancellationToken ct)
 	{
 		var memoryStream = new MemoryStream();
-		await stream.CopyToAsync(memoryStream, ct);
+		await stream.CopyToAsync(memoryStream, 81920, ct);
 		var data = memoryStream.ToArray();
 		return ImageData.FromBytes(data);
 	}
