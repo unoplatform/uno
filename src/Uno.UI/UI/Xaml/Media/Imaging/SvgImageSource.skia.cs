@@ -26,24 +26,24 @@ partial class SvgImageSource
 					var client = new HttpClient();
 					var response = await client.GetAsync(UriSource, HttpCompletionOption.ResponseContentRead, ct);
 					using var imageStream = await response.Content.ReadAsStreamAsync();
-					return await ReadFromStreamAsync(imageStream);
+					return await ReadFromStreamAsync(imageStream, ct);
 				}
 				else if (UriSource.Scheme == "ms-appx")
 				{
 					var path = UriSource.PathAndQuery;
 					path = GetApplicationPath(path);
 					using var fileStream = File.OpenRead(path);
-					return await ReadFromStreamAsync(fileStream);
+					return await ReadFromStreamAsync(fileStream, ct);
 				}
 				else if (UriSource.Scheme == "ms-appdata")
 				{
 					using var fileStream = File.OpenRead(FilePath);
-					return await ReadFromStreamAsync(fileStream);
+					return await ReadFromStreamAsync(fileStream, ct);
 				}
 			}
 			else if (_stream != null)
 			{
-				return await ReadFromStreamAsync(_stream.AsStream());
+				return await ReadFromStreamAsync(_stream.AsStream(), ct);
 			}
 		}
 		catch (Exception e)

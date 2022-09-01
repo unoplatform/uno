@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class Image 
 	{
-		#if false || false || NET461 || false || false || false || false
+		#if false || false || false || false || false || false || false
 		[global::Uno.NotImplemented("NET461")]
 		public  global::Windows.UI.Xaml.Media.Stretch Stretch
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false || false || false
+		#if false || false || false || false || false || false || false
 		[global::Uno.NotImplemented("NET461")]
 		public  global::Windows.UI.Xaml.Media.ImageSource Source
 		{
@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.Image), 
 			new FrameworkPropertyMetadata(default(global::Windows.Media.PlayTo.PlayToSource)));
 		#endif
-		#if false || false || NET461 || false || false || false || false
+		#if false || false || false || false || false || false || false
 		[global::Uno.NotImplemented("NET461")]
 		public static global::Windows.UI.Xaml.DependencyProperty SourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.Image), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ImageSource)));
 		#endif
-		#if false || false || NET461 || false || false || false || false
+		#if false || false || false || false || false || false || false
 		[global::Uno.NotImplemented("NET461")]
 		public static global::Windows.UI.Xaml.DependencyProperty StretchProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -122,7 +122,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.Image.StretchProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Image.NineGridProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Image.PlayToSourceProperty.get
-		#if false || false || NET461 || false || false || false || false
+		#if false || false || false || false || false || false || false
 		[global::Uno.NotImplemented("NET461")]
 		public  event global::Windows.UI.Xaml.ExceptionRoutedEventHandler ImageFailed
 		{
@@ -138,7 +138,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false || false || false
+		#if false || false || false || false || false || false || false
 		[global::Uno.NotImplemented("NET461")]
 		public  event global::Windows.UI.Xaml.RoutedEventHandler ImageOpened
 		{
