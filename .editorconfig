@@ -355,4 +355,32 @@ dotnet_analyzer_diagnostic.category-Naming.severity = none
 dotnet_analyzer_diagnostic.category-Reliability.severity = none
 dotnet_analyzer_diagnostic.category-Security.severity = none
 
+# Disable slow security analyzers
+dotnet_diagnostic.CA5403.severity = none # CA5403: Do not hard-code certificate
+dotnet_diagnostic.CA3011.severity = none # CA3011: Review code for DLL injection vulnerabilities
+dotnet_diagnostic.CA3008.severity = none # CA3008: Review code for XPath injection vulnerabilities
+dotnet_diagnostic.CA3006.severity = none # CA3006: Review code for process command injection vulnerabilities
+dotnet_diagnostic.CA5390.severity = none # CA5390: Do not hard-code encryption key
+dotnet_diagnostic.CA3010.severity = none # CA3010: Review code for XAML injection vulnerabilities
+dotnet_diagnostic.CA3012.severity = none # CA3012: Review code for regex injection vulnerabilities
+dotnet_diagnostic.CA3007.severity = none # CA3007: Review code for open redirect vulnerabilities
+dotnet_diagnostic.CA5380.severity = none # CA5380: Do Not Add Certificates To Root Store
+dotnet_diagnostic.CA5381.severity = none # CA5381: Ensure Certificates Are Not Added To Root Store
+dotnet_diagnostic.CA5401.severity = none # CA5401: Do not use CreateEncryptor with non-default IV
+dotnet_diagnostic.CA5402.severity = none # CA5402: Use CreateEncryptor with the default IV
+dotnet_diagnostic.CA3009.severity = none # CA3009: Review code for XML injection vulnerabilities
+dotnet_diagnostic.CA3001.severity = none # CA3001: Review code for SQL injection vulnerabilities
+dotnet_diagnostic.CA5399.severity = none # CA5399: HttpClients should enable certificate revocation list checks
+dotnet_diagnostic.CA5400.severity = none # CA5400: Ensure HttpClient certificate revocation list check is not disabled
+dotnet_diagnostic.CA3003.severity = none # CA3003: Review code for file path injection vulnerabilities
+dotnet_diagnostic.CA2301.severity = none # CA2301: Do not call BinaryFormatter.Deserialize without first setting BinaryFormatter.Binder
+dotnet_diagnostic.CA2302.severity = none # CA2302: Ensure BinaryFormatter.Binder is set before calling BinaryFormatter.Deserialize
+dotnet_diagnostic.CA5387.severity = none # CA5387: Do Not Use Weak Key Derivation Function With Insufficient Iteration Count
+dotnet_diagnostic.CA5388.severity = none # CA5388: Ensure Sufficient Iteration Count When Using Weak Key Derivation Function
+dotnet_diagnostic.CA5389.severity = none # CA5389: Do Not Add Archive Item's Path To The Target File System Path
+dotnet_diagnostic.CA2327.severity = none # CA2327: Do not use insecure JsonSerializerSettings
+dotnet_diagnostic.CA2328.severity = none # CA2328: Ensure that JsonSerializerSettings are secure
+dotnet_diagnostic.CA2329.severity = none # CA2329: Do not deserialize with JsonSerializer using an insecure configuration
+dotnet_diagnostic.CA2330.severity = none # CA2330: Ensure that JsonSerializer has a secure configuration when deserializing
+
 dotnet_code_quality.CA1822.api_surface = private, internal
