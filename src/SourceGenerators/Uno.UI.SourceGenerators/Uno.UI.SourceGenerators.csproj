@@ -109,7 +109,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<InternalsVisibleTo Include="SourceGeneratorsConsole" />
 		<InternalsVisibleTo Include="Uno.UI.SourceGenerators.net6.Tests" />
 		<InternalsVisibleTo Include="Uno.UI.SourceGenerators.Tests" />
 	</ItemGroup>
