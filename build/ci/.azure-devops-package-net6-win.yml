@@ -4,7 +4,7 @@ parameters:
 jobs:
 - job: net6_win_build
   displayName: 'Build net6 Binaries'
-  timeoutInMinutes: 120
+  timeoutInMinutes: 90
 
   pool: ${{ parameters.poolName }}
   
