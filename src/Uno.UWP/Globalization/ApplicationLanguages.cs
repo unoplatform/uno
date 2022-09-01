@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Uno.Foundation.Logging;
 using Uno.UI;
 
 namespace Windows.Globalization
@@ -79,11 +80,28 @@ namespace Windows.Globalization
 				Languages = languages.Distinct().ToArray();
 			}
 
-			var primaryLanguage = Languages.First();
-			var primaryCulture = CreateCulture(primaryLanguage);
+			var primaryLanguage = Languages.FirstOrDefault();
 
-			CultureInfo.CurrentCulture = primaryCulture;
-			CultureInfo.CurrentUICulture = primaryCulture;
+			if(primaryLanguage is not null)
+			{
+				if (typeof(ApplicationLanguages).Log().IsEnabled(LogLevel.Debug))
+				{
+					typeof(ApplicationLanguages).Log().Debug($"Using {primaryLanguage} as primary language");
+				}
+
+				var primaryCulture = CreateCulture(primaryLanguage);
+
+				CultureInfo.CurrentCulture = primaryCulture;
+				CultureInfo.CurrentUICulture = primaryCulture;
+			}
+			else
+			{
+				if (typeof(ApplicationLanguages).Log().IsEnabled(LogLevel.Warning))
+				{
+					typeof(ApplicationLanguages).Log().Warn($"Unable to determine the default culture, using invariant culture");
+				}
+			}
+
 		}
 
 		private static Regex _cultureFormatRegex;
