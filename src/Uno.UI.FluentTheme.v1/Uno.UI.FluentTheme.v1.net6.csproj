@@ -23,7 +23,8 @@
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
 
-		<UnoXamlResourcesTrimming Condition="'$(Configuration)'!='Debug'">true</UnoXamlResourcesTrimming>
+		<!-- Disabled because of LinkerDefinitionMergerTask performance issues https://github.com/unoplatform/uno/issues/9632 -->
+		<!--<UnoXamlResourcesTrimming Condition="'$(Configuration)'!='Debug'">true</UnoXamlResourcesTrimming>-->
 	</PropertyGroup>
 
 	<ItemGroup>
