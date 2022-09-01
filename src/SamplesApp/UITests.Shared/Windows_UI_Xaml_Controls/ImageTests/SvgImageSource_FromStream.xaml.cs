@@ -32,8 +32,8 @@ public sealed partial class SvgImageSource_FromStream : Page
 
 	public SvgSource[] Sources { get; } = new SvgSource[]
 	{
-		new("Calendar", new Uri("ms-appx:///Assets/Formats/czcalendar.svg")),
 		new("Couch", new Uri("ms-appx:///Assets/Formats/couch.svg")),
+		new("Calendar", new Uri("ms-appx:///Assets/Formats/czcalendar.svg")),
 		new("Heliocentric", new Uri("ms-appx:///Assets/Formats/heliocentric.svg")),
 		new("Heart", new Uri("ms-appx:///Assets/Formats/heart.svg")),
 		new("Chef", new Uri("ms-appx:///Assets/Formats/chef.svg")),

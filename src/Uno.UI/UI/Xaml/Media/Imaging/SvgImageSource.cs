@@ -73,6 +73,9 @@ public partial class SvgImageSource : ImageSource
 	/// </returns>
 	public IAsyncOperation<SvgImageSourceLoadStatus> SetSourceAsync(IRandomAccessStream streamSource)
 	{
+#if __IOS__ || __MACOS__
+		_imageData = ImageData.Empty;
+#endif
 		async Task<SvgImageSourceLoadStatus> SetSourceAsync(
 			CancellationToken ct,
 			AsyncOperation<SvgImageSourceLoadStatus> _)
@@ -103,12 +106,16 @@ public partial class SvgImageSource : ImageSource
 			}
 #else
 			Stream = streamSource.CloneStream().AsStream();
+			StreamLoaded?.Invoke(this, EventArgs.Empty);
+
 			return SvgImageSourceLoadStatus.Success;
 #endif
 		}
 
 		return AsyncOperation<SvgImageSourceLoadStatus>.FromTask(SetSourceAsync);
 	}
+
+	internal event EventHandler StreamLoaded;
 
 	partial void InitPartial();
 
@@ -126,6 +133,11 @@ public partial class SvgImageSource : ImageSource
 
 	private async Task<ImageData> ReadFromStreamAsync(Stream stream, CancellationToken ct)
 	{
+		if (stream.CanSeek && stream.Position != 0)
+		{
+			stream.Position = 0;
+		}
+		
 		var memoryStream = new MemoryStream();
 		await stream.CopyToAsync(memoryStream, 81920, ct);
 		var data = memoryStream.ToArray();

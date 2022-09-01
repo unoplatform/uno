@@ -1,8 +1,6 @@
 ﻿#if !NET461 && !UNO_REFERENCE_API
 using System;
-using System.Collections.Generic;
 using System.Numerics;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Diagnostics.Eventing;
@@ -11,9 +9,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Foundation;
-using Windows.UI;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 
@@ -85,7 +81,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnSourceChanged(ImageSource newValue, bool forceReload = false)
 		{
-			if (newValue is WriteableBitmap wb)
+			if (Source is null)
+			{
+				_sourceDisposable.Disposable = null;
+			}
+			else if (newValue is WriteableBitmap wb)
 			{
 				wb.Invalidated += OnInvalidated;
 				_sourceDisposable.Disposable = Disposable.Create(() => wb.Invalidated -= OnInvalidated);
@@ -98,7 +98,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else if (newValue is SvgImageSource svgImageSource)
 			{
-				_sourceDisposable.Disposable =
+				var compositeDisposable = new CompositeDisposable();
+				compositeDisposable.Add(
 					Source?.RegisterDisposablePropertyChangedCallback(
 						SvgImageSource.UriSourceProperty, (o, e) =>
 						{
@@ -108,11 +109,16 @@ namespace Windows.UI.Xaml.Controls
 								TryOpenImage(true);
 							}
 						}
-					);
+				));
+				svgImageSource.StreamLoaded += ForceReloadSource;
+				compositeDisposable.Add(() => svgImageSource.StreamLoaded -= ForceReloadSource);
+
+				_sourceDisposable.Disposable = compositeDisposable;
 			}
 			else
 			{
-				_sourceDisposable.Disposable =
+				var compositeDisposable = new CompositeDisposable();
+				compositeDisposable.Add(
 					Source?.RegisterDisposablePropertyChangedCallback(
 						BitmapImage.UriSourceProperty, (o, e) =>
 						{
@@ -122,10 +128,24 @@ namespace Windows.UI.Xaml.Controls
 								TryOpenImage();
 							}
 						}
-					);
+					));
+
+				if (Source is BitmapSource bitmapSource)
+				{
+					bitmapSource.StreamLoaded += ForceReloadSource;
+					compositeDisposable.Add(() => bitmapSource.StreamLoaded -= ForceReloadSource);
+				}
+				
+				_sourceDisposable.Disposable = compositeDisposable;
 			}
 
 			TryOpenImage(forceReload);
+		}
+
+		private void ForceReloadSource(object sender, EventArgs args)
+		{
+			_openedSource = null;
+			TryOpenImage(true);
 		}
 
 		internal override bool IsViewHit() => Source?.HasSource() ?? false;
@@ -133,7 +153,7 @@ namespace Windows.UI.Xaml.Controls
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
-			TryOpenImage();
+			OnSourceChanged(Source, false);
 		}
 
 		private protected override void OnUnloaded()
@@ -147,6 +167,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_imageFetchDisposable.Disposable = null;
+			_sourceDisposable.Disposable = null;
 			if (_successfullyOpenedImage != _openedSource)
 			{
 				//Dispatched image fetch did not resolve, so we force it to be rescheduled next time TryOpenImage is called

@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Media
 			_imageData = ImageData.FromNative(image);
 		}
 
-		private ImageData _imageData;
+		private protected ImageData _imageData;
 
 		internal string BundleName { get; private set; }
 		internal string BundlePath { get; private set; }
