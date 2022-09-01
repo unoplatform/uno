@@ -21,29 +21,28 @@ namespace Windows.UI.Xaml.Controls;
 
 public partial class Image
 {
-
 	private void UpdateContentMode(Stretch stretch)
 	{
-		if (_native == null)
+		if (_nativeImageView == null)
 		{
 			return;
 		}
 		switch (stretch)
 		{
 			case Stretch.Uniform:
-				_native.ImageScaling = NSImageScale.AxesIndependently;
+				_nativeImageView.ImageScaling = NSImageScale.AxesIndependently;
 				break;
 
 			case Stretch.None:
-				_native.ImageScaling = NSImageScale.None;
+				_nativeImageView.ImageScaling = NSImageScale.None;
 				break;
 
 			case Stretch.UniformToFill:
-				_native.ImageScaling = NSImageScale.ProportionallyUpOrDown;
+				_nativeImageView.ImageScaling = NSImageScale.ProportionallyUpOrDown;
 				break;
 
 			case Stretch.Fill:
-				_native.ImageScaling = NSImageScale.ProportionallyUpOrDown;
+				_nativeImageView.ImageScaling = NSImageScale.ProportionallyUpOrDown;
 				break;
 
 			default:

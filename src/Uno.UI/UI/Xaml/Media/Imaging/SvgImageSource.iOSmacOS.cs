@@ -5,7 +5,6 @@ using System;
 using Uno.UI.Xaml.Media;
 using System.Net.Http;
 using Foundation;
-using UIKit;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
@@ -13,6 +12,12 @@ using Windows.Storage;
 using Windows.Storage.Streams;
 using CoreFoundation;
 using Windows.UI.Xaml.Shapes;
+
+#if __IOS__
+using UIKit;
+#else
+using AppKit;
+#endif
 
 namespace Windows.UI.Xaml.Media.Imaging;
 
@@ -110,62 +115,79 @@ partial class SvgImageSource
 			return ImageData.Empty;
 		}
 
-		using (var url = new NSUrl(WebUri.AbsoluteUri))
+		using var url = new NSUrl(WebUri.AbsoluteUri);
+#if __IOS__
+		using var request = NSUrlRequest.FromUrl(url);
+		NSUrlSessionDataTask task;
+		var awaitable = DefaultSession.CreateDataTaskAsync(request, out task);
+		ct.Register(OnCancel);
+		try
 		{
-			using (var request = NSUrlRequest.FromUrl(url))
+			task.Resume(); // We need to call this manually https://bugzilla.xamarin.com/show_bug.cgi?id=28425#c3
+			var result = await awaitable;
+			task = null;
+			var response = result.Response as NSHttpUrlResponse;
+
+			if (ct.IsCancellationRequested)
 			{
-				NSUrlSessionDataTask task;
-				var awaitable = DefaultSession.CreateDataTaskAsync(request, out task);
-				ct.Register(OnCancel);
-				try
+				return ImageData.Empty;
+			}
+			else if (!IsSuccessful(response.StatusCode))
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					task.Resume(); // We need to call this manually https://bugzilla.xamarin.com/show_bug.cgi?id=28425#c3
-					var result = await awaitable;
-					task = null;
-					var response = result.Response as NSHttpUrlResponse;
-
-					if (ct.IsCancellationRequested)
-					{
-						return ImageData.Empty;
-					}
-					else if (!IsSuccessful(response.StatusCode))
-					{
-						if (this.Log().IsEnabled(LogLevel.Error))
-						{
-							this.Log().LogError(NSHttpUrlResponse.LocalizedStringForStatusCode(response.StatusCode));
-						}
-					}
-					else
-					{
-						var bytes = result.Data.ToArray();
-						return ImageData.FromBytes(bytes);
-					}
+					this.Log().LogError(NSHttpUrlResponse.LocalizedStringForStatusCode(response.StatusCode));
 				}
-				catch (NSErrorException e)
-				{
-					// This can occur for various reasons: download was cancelled, NSAppTransportSecurity blocks download, host couldn't be resolved...
-					if (ct.IsCancellationRequested)
-					{
-						if (this.Log().IsEnabled(LogLevel.Debug))
-						{
-							this.Log().LogDebug(e.ToString());
-						}
-					}
-					else if (this.Log().IsEnabled(LogLevel.Error))
-					{
-						this.Log().LogError(e.ToString());
-					}
-				}
-
-				void OnCancel()
-				{
-					// Cancel the current download
-					task?.Cancel();
-				}
-
-				bool IsSuccessful(nint status) => status < 300;
+			}
+			else
+			{
+				var bytes = result.Data.ToArray();
+				return ImageData.FromBytes(bytes);
 			}
 		}
+		catch (NSErrorException e)
+		{
+			// This can occur for various reasons: download was cancelled, NSAppTransportSecurity blocks download, host couldn't be resolved...
+			if (ct.IsCancellationRequested)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug(e.ToString());
+				}
+			}
+			else if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().LogError(e.ToString());
+			}
+		}
+
+		void OnCancel()
+		{
+			// Cancel the current download
+			task?.Cancel();
+		}
+
+		bool IsSuccessful(nint status) => status < 300;
+#else
+		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+		{
+			this.Log().Debug($"Loading image from [{WebUri.OriginalString}]");
+		}
+
+#pragma warning disable CS0618
+		// fallback on the platform's loader
+		using var data = NSData.FromUrl(url, NSDataReadingOptions.Mapped, out var error);
+		if (error != null)
+		{
+			this.Log().Error(error.LocalizedDescription);
+		}
+		else
+		{
+			var bytes = data.ToArray();
+			return ImageData.FromBytes(bytes);
+		}
+
+#endif
 
 		return ImageData.Empty;
 	}

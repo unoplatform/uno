@@ -14,6 +14,7 @@ using Windows.UI.Core;
 using Uno.Disposables;
 
 using AppKit;
+using Uno.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -34,10 +35,13 @@ namespace Windows.UI.Xaml.Media
 		protected ImageSource(NSImage image)
 		{
 			_isOriginalSourceUIImage = true;
-			ImageData = image;
+			_imageData = ImageData.FromNative(image);
 		}
 
-		internal NSImage ImageData { get; private set; }
+		private protected ImageData _imageData;
+
+		internal ImageData ImageData => _imageData;
+
 		internal string BundleName { get; private set; }
 		internal string BundlePath { get; private set; }
 
@@ -52,7 +56,7 @@ namespace Windows.UI.Xaml.Media
 				|| Stream != null
 				|| WebUri != null
 				|| FilePath.HasValueTrimmed()
-				|| ImageData != null
+				|| _imageData.HasData
 				|| HasBundle;
 		}
 
@@ -64,16 +68,25 @@ namespace Windows.UI.Xaml.Media
 		/// <summary>
 		/// Open the image from the app's main bundle.
 		/// </summary>
-		internal NSImage OpenBundle()
+		internal ImageData OpenBundle()
 		{
-			ImageData = OpenResourceFromString(BundlePath) ?? OpenResourceFromString(BundleName);
+			var image = OpenResourceFromString(BundlePath) ?? OpenResourceFromString(BundleName);
 
-			if (ImageData == null)
+			if (image is not null)
+			{
+				_imageData = ImageData.FromNative(image);
+			}
+			else
+			{
+				_imageData = ImageData.Empty;
+			}
+
+			if (!_imageData.HasData)
 			{
 				this.Log().ErrorFormat("Unable to locate bundle resource [{0}]", BundlePath ?? BundleName);
 			}
 
-			return ImageData;
+			return _imageData;
 		}
 
 		private static NSImage OpenResourceFromString(string name)
@@ -93,13 +106,13 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		private protected virtual bool IsSourceReady => false;
 
-		private protected virtual bool TryOpenSourceSync(out NSImage image)
+		private protected virtual bool TryOpenSourceSync(out ImageData image)
 		{
 			image = default;
 			return false;
 		}
 
-		private protected virtual bool TryOpenSourceAsync(out Task<NSImage> asyncImage)
+		private protected virtual bool TryOpenSourceAsync(CancellationToken ct, out Task<ImageData> asyncImage)
 		{
 			asyncImage = default;
 			return false;
@@ -113,11 +126,11 @@ namespace Windows.UI.Xaml.Media
 		/// This is only intended to convert **uncompressed data already in memory**,
 		/// and should not be used to decompress a JPEG for instance, even if the already in memory.
 		/// </remarks>
-		internal bool TryOpenSync(out NSImage image)
+		internal bool TryOpenSync(out ImageData image)
 		{
-			if (ImageData != null)
+			if (_imageData.HasData)
 			{
-				image = ImageData;
+				image = _imageData;
 				return true;
 			}
 
@@ -130,7 +143,7 @@ namespace Windows.UI.Xaml.Media
 			return false;
 		}
 
-		internal async Task<NSImage> Open(CancellationToken ct)
+		internal async Task<ImageData> Open(CancellationToken ct)
 		{
 			using (
 			   _trace.WriteEventActivity(
@@ -142,30 +155,45 @@ namespace Windows.UI.Xaml.Media
 			{
 				if (ct.IsCancellationRequested)
 				{
-					return null;
+					return ImageData.Empty;
 				}
 
 				if (IsSourceReady && TryOpenSourceSync(out var img))
 				{
-					return ImageData = img;
+					return _imageData = img;
 				}
 
-				if (IsSourceReady && TryOpenSourceAsync(out var asyncImg))
+				if (IsSourceReady && TryOpenSourceAsync(ct, out var asyncImg))
 				{
-					return ImageData = await asyncImg;
+					return _imageData = await asyncImg;
 				}
 
 				if (Stream != null)
 				{
 					Stream.Position = 0;
-					return ImageData = NSImage.FromStream(Stream);
+					var nativeImage = NSImage.FromStream(Stream);
+
+					if (nativeImage is not null)
+					{
+						return _imageData = ImageData.FromNative(nativeImage);
+					}
+					else
+					{
+						return ImageData.Empty;
+					}
 				}
 
 				if (FilePath.HasValue())
 				{
-					using (var file = File.OpenRead(FilePath))
+					await using var file = File.OpenRead(FilePath);
+					var nativeImage = NSImage.FromStream(file);
+					if (nativeImage is not null)
 					{
-						return ImageData = NSImage.FromStream(file);
+						return _imageData = ImageData.FromNative(nativeImage);
+					}
+					else
+					{
+						return _imageData = ImageData.Empty;
 					}
 				}
 
@@ -175,11 +203,11 @@ namespace Windows.UI.Xaml.Media
 						CoreDispatcherPriority.Normal,
 						async () =>
 						{
-							ImageData = OpenBundle();
+							_imageData = OpenBundle();
 						}
 					);
 
-					return ImageData;
+					return _imageData;
 				}
 
 				if (Downloader == null)
@@ -192,18 +220,26 @@ namespace Windows.UI.Xaml.Media
 
 					if (localFileUri == null)
 					{
-						return null;
+						return ImageData.Empty;
 					}
 
 					await CoreDispatcher.Main.RunAsync(
 						CoreDispatcherPriority.Normal,
 						async () =>
 						{
-							ImageData = NSImage.ImageNamed(localFileUri.LocalPath);
+							var nativeImage = NSImage.ImageNamed(localFileUri.LocalPath);
+							if (nativeImage is not null)
+							{
+								_imageData = ImageData.FromNative(nativeImage);
+							}
+							else
+							{
+								_imageData = ImageData.Empty;
+							}
 						}).AsTask(ct);
 				}
 
-				return ImageData;
+				return _imageData;
 			}
 		}
 
@@ -225,8 +261,6 @@ namespace Windows.UI.Xaml.Media
 		{
 			using (var url = new NSUrl(WebUri.AbsoluteUri))
 			{
-				NSError error;
-
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Loading image from [{WebUri.OriginalString}]");
@@ -234,7 +268,7 @@ namespace Windows.UI.Xaml.Media
 
 #pragma warning disable CS0618
 				// fallback on the platform's loader
-				using (var data = NSData.FromUrl(url, NSDataReadingOptions.Mapped, out error))
+				using (var data = NSData.FromUrl(url, NSDataReadingOptions.Mapped, out var error))
 #pragma warning restore CS0618
 				{
 					if (error != null)
@@ -243,7 +277,15 @@ namespace Windows.UI.Xaml.Media
 					}
 					else
 					{
-						ImageData = new NSImage(data);
+						var image = new NSImage(data);
+						if (image is not null)
+						{
+							_imageData = ImageData.FromNative(image);
+						}
+						else
+						{
+							_imageData = ImageData.Empty;
+						}
 					}
 				}
 			}
@@ -258,7 +300,7 @@ namespace Windows.UI.Xaml.Media
 			// not be able to restore it later (from a WebUri, BundleName, file path, etc.)
 			if (!_isOriginalSourceUIImage)
 			{
-				DisposeUIImage();
+				DisposeImageData();
 			}
 		}
 
@@ -286,21 +328,22 @@ namespace Windows.UI.Xaml.Media
 
 		partial void DisposePartial()
 		{
-			DisposeUIImage();
+			DisposeImageData();
 		}
 
-		private void DisposeUIImage()
+		private void DisposeImageData()
 		{
-			if (ImageData != null)
+			if (_imageData.Kind == ImageDataKind.NativeImage)
 			{
-				ImageData.Dispose();
-				ImageData = null;
+				_imageData.NativeImage?.Dispose();
 			}
+
+			_imageData = ImageData.Empty;
 		}
 
 		public override string ToString()
 		{
-			var source = Stream ?? WebUri ?? FilePath ?? (object)ImageData ?? BundlePath ?? BundleName ?? "[No source]";
+			var source = Stream ?? WebUri ?? FilePath ?? (object)_imageData.NativeImage ?? BundlePath ?? BundleName ?? "[No source]";
 			return "ImageSource: {0}".InvariantCultureFormat(source);
 		}
 	}

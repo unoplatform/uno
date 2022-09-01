@@ -52,8 +52,8 @@ internal partial class SvgCanvas : SkiaCanvas
 		Invalidate();
 
 #if __MACCATALYST__
-		this.Opaque = false;		
-#elif __IOS__ || __MACOS__
+		this.Opaque = false;
+#elif __IOS__
 		// The SKGLTextureView is opaque by default, so we poke at the tree
 		// to change the opacity of the first view of the SKSwapChainPanel
 		// to make it transparent.
@@ -91,7 +91,7 @@ internal partial class SvgCanvas : SkiaCanvas
 		finalSize = base.ArrangeOverride(finalSize);
 		_lastArrangeSize = finalSize;
 		Invalidate();
-		return finalSize;	
+		return finalSize;
 	}
 
 	protected override void OnPaintSurface(SkiaPaintEventArgs e)
