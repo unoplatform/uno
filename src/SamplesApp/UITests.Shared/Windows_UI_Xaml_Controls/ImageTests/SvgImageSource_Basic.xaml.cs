@@ -41,34 +41,23 @@ public sealed partial class SvgImageSource_Basic : Page
 		var appDataSvgs = new string[] { "chef.svg", "bookstack.svg" };
 		var localFolder = ApplicationData.Current.LocalFolder;
 		var folder = await localFolder.CreateFolderAsync("svg", CreationCollisionOption.OpenIfExists);
-		TempLog("Created/opened svg folder");
 
 		foreach (var appDataSvg in appDataSvgs)
 		{
-			TempLog("Processing " + appDataSvg);
 			var item = await folder.TryGetItemAsync(appDataSvg);
-			TempLog("Svg " + appDataSvg + " exists: " + (item != null));
 			if (item is null)
 			{
 				var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///Assets/Formats/{appDataSvg}"));
 				await file.CopyAsync(folder);
-				TempLog("Svg " + appDataSvg + " copied: " + ((await folder.TryGetItemAsync(appDataSvg)) != null));
 			}
 		}
-		TempLog("Done copying appdata svgs.");
 	}
-
-	private void TempLog(string log)
-	{
-		Console.WriteLine(log);
-		global::System.Diagnostics.Debug.WriteLine(log);
-		this.Log().LogError(log);
-	}
-
+	
 	public SvgSource[] Sources { get; } = new SvgSource[]
 	{
 		new("Calendar (ms-appx)", new Uri("ms-appx:///Assets/Formats/czcalendar.svg")),
 		new("Couch (ms-appx)", new Uri("ms-appx:///Assets/Formats/couch.svg")),
+		new("Home (ms-appx)", new Uri("ms-appx:///Assets/Formats/home.svg")),
 		new("Heliocentric (relative)", new Uri("/Assets/Formats/heliocentric.svg", UriKind.Relative)),
 		new("Heart (relative)", new Uri("/Assets/Formats/heart.svg", UriKind.Relative)),
 		new("Chef (app-data)", new Uri("ms-appdata:///Local/svg/chef.svg")),

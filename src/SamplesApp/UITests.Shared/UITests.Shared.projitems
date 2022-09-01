@@ -1853,6 +1853,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_FromStream.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_Icons.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -6160,6 +6164,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_Basic.xaml.cs">
       <DependentUpon>SvgImageSource_Basic.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_FromStream.xaml.cs">
+      <DependentUpon>SvgImageSource_FromStream.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_Icons.xaml.cs">
       <DependentUpon>SvgImageSource_Icons.xaml</DependentUpon>
     </Compile>
@@ -8739,6 +8746,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\bookstack.svg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\chef.svg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\czcalendar.svg" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\home.svg" />
     <None Include="$(MSBuildThisFileDirectory)ItemExclusions.props" />
   </ItemGroup>
   <ItemGroup>
