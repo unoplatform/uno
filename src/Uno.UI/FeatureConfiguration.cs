@@ -323,6 +323,18 @@ namespace Uno.UI
 			/// the default value at the UWP default of 4.0.
 			/// </summary>
 			public static double? DefaultCacheLength = 1.0;
+
+#if __IOS__ || __ANDROID__
+			/// <summary>
+			/// Sets a flag indicating whether <see cref="Windows.UI.Xaml.Controls.ListViewBase.ScrollIntoView(object)"/> will be animated smoothly or instant.
+			/// </summary>
+			/// <remarks>
+			/// Regardless of the value set, <see cref="Uno.UI.Helpers.ListViewHelper.InstantScrollToIndex(Windows.UI.Xaml.Controls.ListViewBase, int)"/>
+			/// and <see cref="Uno.UI.Helpers.ListViewHelper.SmoothScrollToIndex(Windows.UI.Xaml.Controls.ListViewBase, int)"/>
+			/// can be used to force a specific behavior.
+			/// </remarks>
+			public static bool AnimateScrollIntoView { get; set; } = true;
+#endif
 		}
 
 #if __ANDROID__
