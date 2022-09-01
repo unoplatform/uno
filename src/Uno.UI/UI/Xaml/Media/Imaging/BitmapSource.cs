@@ -125,7 +125,11 @@ namespace Windows.UI.Xaml.Media.Imaging
 				tcs.TrySetResult(null);
 			}
 #endif
+
+			StreamLoaded?.Invoke(this, EventArgs.Empty);
 		}
+
+		internal event EventHandler StreamLoaded;
 
 		public override string ToString()
 		{

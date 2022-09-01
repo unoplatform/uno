@@ -1,22 +1,18 @@
-﻿using Android.Graphics;
-using Android.Graphics.Drawables;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Android.Graphics;
 using Android.Views;
 using Android.Widget;
-using Uno;
+using Uno.Diagnostics.Eventing;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Uno.Diagnostics.Eventing;
-using Windows.UI.Xaml.Media;
-using System;
-using System.Collections.Generic;
-using Windows.Foundation;
-using Uno.Disposables;
-using System.Threading.Tasks;
-using System.Threading;
 using Uno.UI;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.Storage.Streams;
 using Uno.UI.Xaml.Media;
+using Windows.Foundation;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -135,7 +131,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				return;
 			}
-			
+
 			_imageFetchDisposable.Disposable = null;
 
 			if (imageSource != null && imageSource.UseTargetSize)
@@ -179,6 +175,7 @@ namespace Windows.UI.Xaml.Controls
 
 					TryCreateNativeImageView();
 
+					_openedSource = imageSource;
 					if (imageSource.TryOpenSync(out var bitmap))
 					{
 						SetSourceBitmap((imageSource, bitmap));
@@ -216,15 +213,14 @@ namespace Windows.UI.Xaml.Controls
 					}
 					else
 					{
+						_openedSource = null;
 						throw new NotSupportedException("The provided ImageSource is not supported.");
 					}
-
-					_openedSource = imageSource;
 				}
 				catch (OperationCanceledException)
 				{
 					// We may not have opened the image correctly, try next time.
-					Source = null;
+					_openedSource = null;
 				}
 				catch (Exception e)
 				{
