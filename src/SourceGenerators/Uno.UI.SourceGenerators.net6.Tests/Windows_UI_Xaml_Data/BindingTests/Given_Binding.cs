@@ -12,7 +12,7 @@ public class Given_Binding
 			xamlFileName: "Binding_Xaml_Object_With_Common_Properties.xaml",
 			subFolder: Path.Combine("Uno.UI.Tests", "Windows_UI_Xaml_Data", "BindingTests", "Controls"));
 
-		diagnostics.Should().BeEmpty();
+		diagnostics.AssertDiagnostics();
 	}
 
 	[TestMethod]
@@ -22,7 +22,7 @@ public class Given_Binding
 			xamlFileName: "Binding_Xaml_Object_With_Xaml_Object_Properties.xaml",
 			subFolder: Path.Combine("Uno.UI.Tests", "Windows_UI_Xaml_Data", "BindingTests", "Controls"));
 
-		diagnostics.Should().BeEmpty();
+		diagnostics.AssertDiagnostics();
 	}
 
 	[TestMethod]
@@ -33,6 +33,6 @@ public class Given_Binding
 			subFolder: Path.Combine("Uno.UI.Tests", "Windows_UI_Xaml_Data", "BindingTests", "Controls"),
 			preprocessorSymbols: new[] { "UNO_REFERENCE_API", });
 
-		diagnostics.Should().BeEmpty();
+		diagnostics.AssertDiagnostics();
 	}
 }

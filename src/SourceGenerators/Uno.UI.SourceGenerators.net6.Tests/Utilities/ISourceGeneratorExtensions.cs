@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -8,6 +9,44 @@ namespace Uno.UI.SourceGenerators.Tests;
 
 internal static class ISourceGeneratorExtensions
 {
+	private class TestDiagnosticComparer : IEqualityComparer<DiagnosticResult>
+	{
+		public static TestDiagnosticComparer Instance { get; } = new();
+
+		public bool Equals(DiagnosticResult x, DiagnosticResult y)
+		{
+			return x.Id == y.Id && x.Severity == y.Severity && x.Message == y.Message;
+		}
+
+		public int GetHashCode(DiagnosticResult obj) => HashCode.Combine(obj.Id, obj.Severity, obj.Message);
+	}
+
+	private static string ConstructString(this IEnumerable<DiagnosticResult> diagnostics)
+	{
+		var builder = new StringBuilder();
+		foreach (var diagnostic in diagnostics)
+		{
+			builder.AppendLine($"new DiagnosticResult(\"{diagnostic.Id}\", DiagnosticSeverity.{diagnostic.Severity}).WithMessage(@\"{diagnostic.Message}\"),");
+		}
+
+		return builder.ToString();
+	}
+
+	public static void AssertDiagnostics(this IEnumerable<Diagnostic> actualDiagnostics, params DiagnosticResult[] expectedDiagnostics)
+	{
+		var actualDiagnosticResults = actualDiagnostics.Select(d => new DiagnosticResult(d.Id, d.Severity).WithMessage(d.GetMessage()));
+		var areEquivalent = expectedDiagnostics.SequenceEqual(actualDiagnosticResults, TestDiagnosticComparer.Instance);
+		if (!areEquivalent)
+		{
+			Assert.Fail($@"
+Expected:
+{expectedDiagnostics.ConstructString()}
+
+Actual:
+{actualDiagnosticResults.ConstructString()}");
+		}
+	}
+
 	public static async Task<(GeneratorDriver Driver, ImmutableArray<Diagnostic> Diagnostics)> RunAsync(
 		this ISourceGenerator generator,
 		AnalyzerConfigOptionsProvider options,
@@ -16,20 +55,9 @@ internal static class ISourceGeneratorExtensions
 		IEnumerable<string>? preprocessorSymbols,
 		CancellationToken cancellationToken = default)
 	{
-		var skiaFolder = Path.Combine("..", "..", "..", "..", "..", "Uno.UI", "bin", "Uno.UI.Skia", "Debug", "netstandard2.0");
-		if (!Directory.Exists(skiaFolder))
-		{
-			throw new InvalidOperationException(
-				"These tests require a project built by Uno.UI.Skia in Debug mode. Please build it using Uno.UI-Skia-only.slnf");
-		}
-
-		var referenceAssemblies = ReferenceAssemblies.Net.Net60;
+		var referenceAssemblies = ReferenceAssemblies.Net.Net60.AddPackages(ImmutableArray.Create(
+			new PackageIdentity("Uno.UI", "4.5.0-dev.697")));
 		var references = await referenceAssemblies.ResolveAsync(null, cancellationToken);
-		references = references
-			.Add(MetadataReference.CreateFromFile(Path.Combine(skiaFolder, "Uno.dll")))
-			.Add(MetadataReference.CreateFromFile(Path.Combine(skiaFolder, "Uno.Foundation.dll")))
-			.Add(MetadataReference.CreateFromFile(Path.Combine(skiaFolder, "Uno.UI.dll")))
-			.Add(MetadataReference.CreateFromFile(Path.Combine(skiaFolder, "Uno.UI.Composition.dll")));
 
 		var compilation = (Compilation)CSharpCompilation
 			.Create(
@@ -42,7 +70,7 @@ internal static class ISourceGeneratorExtensions
 			.Create(generator)
 			.WithUpdatedParseOptions(new CSharpParseOptions(
 				preprocessorSymbols: preprocessorSymbols))
-			.AddAdditionalTexts(ImmutableArray.Create(additionalTexts))
+			.AddAdditionalTexts(additionalTexts.ToImmutableArray())
 			.WithUpdatedAnalyzerConfigOptions(options)
 			.RunGeneratorsAndUpdateCompilation(
 				compilation,
