@@ -31,5 +31,23 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 
 			ImageAssert.HasColorAt(screenshot, numberBoxRect.X + numberBoxRect.Width / 2, numberBoxRect.Y + numberBoxRect.Height - 50, Color.Red);
 		}
+
+		[Test]
+		[AutoRetry]
+		public void DecimalFormatterTest()
+		{
+			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.NumberBoxPage");
+
+			var numBox = _app.Marked("TestNumberBox");
+			Assert.AreEqual(double.NaN, numBox.GetDependencyPropertyValue<double>("Value"));
+
+			_app.FastTap("MinCheckBox");
+			_app.FastTap("MaxCheckBox");
+			_app.Marked("CustomFormatterCheckBox").SetDependencyPropertyValue("IsChecked", "True");
+			EnterTextInNumberBox(numBox, "۱٫۷");
+
+			Assert.AreEqual("۱٫۷۵", numBox.GetDependencyPropertyValue<string>("Text"));
+			Assert.AreEqual(1.7, numBox.GetDependencyPropertyValue<double>("Value"));
+		}
 	}
 }
