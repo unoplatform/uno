@@ -4,7 +4,7 @@ parameters:
 jobs:
 - job: generic_win_build
   displayName: 'Build Generic Binaries'
-  timeoutInMinutes: 90
+  timeoutInMinutes: 120
   
   dependsOn: Pipeline_Validations
 
