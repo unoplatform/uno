@@ -15,12 +15,6 @@ using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 
-//TODO Uno: Workaround for https://github.com/unoplatform/uno/issues/134
-#if NETFX_CORE
-using Popup = Windows.UI.Xaml.Controls.Primitives.Popup;
-#else
-#endif
-
 namespace Windows.UI.Xaml.Input
 {
 	public partial class FocusManager
