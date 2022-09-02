@@ -19,17 +19,25 @@ using System.Reflection;
 using Gtk;
 using Silk.NET.OpenGL;
 using Silk.NET.Core.Loader;
+using Silk.NET.Core.Contexts;
 
 namespace Uno.UI.Runtime.Skia
 {
 
 	internal class OpenGLRenderSurface : GLRenderSurfaceBase
 	{
+		private static readonly DefaultNativeContext _nativeContext;
+
+		static OpenGLRenderSurface()
+		{
+			_nativeContext = new Silk.NET.Core.Contexts.DefaultNativeContext(new GLCoreLibraryNameContainer().GetLibraryName());
+		}
+
 		public OpenGLRenderSurface()
 		{
 			SetRequiredVersion(3, 3);
 
-			_gl = new GL(new Silk.NET.Core.Contexts.DefaultNativeContext(new GLCoreLibraryNameContainer().GetLibraryName()));
+			_gl = new GL(_nativeContext);
 		}
 
 		public static bool IsSupported
@@ -41,9 +49,7 @@ namespace Uno.UI.Runtime.Skia
 
 				try
 				{
-					var ctx = new Silk.NET.Core.Contexts.DefaultNativeContext(new GLCoreLibraryNameContainer().GetLibraryName());
-
-					var isAvailable = ctx.TryGetProcAddress("glGetString", out _);
+					var isAvailable = _nativeContext.TryGetProcAddress("glGetString", out _);
 
 					return isAvailable && !isMacOs;
 				}
@@ -69,15 +75,25 @@ namespace Uno.UI.Runtime.Skia
 		}
 
 		protected override GRContext TryBuildGRContext()
+			=> CreateGRGLContext();
+
+		internal static GRContext CreateGRGLContext()
 		{
 			var glInterface = GRGlInterface.Create();
 
-			if(glInterface == null)
+			if (glInterface == null)
 			{
 				throw new NotSupportedException($"OpenGL is not supported in this system");
 			}
 
-			return GRContext.CreateGl(glInterface);
+			var context = GRContext.CreateGl(glInterface);
+
+			if (context == null)
+			{
+				throw new NotSupportedException($"OpenGL is not supported in this system (failed to create context)");
+			}
+
+			return context;
 		}
 
 		// Extracted from https://github.com/dotnet/Silk.NET/blob/23f9bd4d67ad21c69fbd69cc38a62fb2c0ec3927/src/OpenGL/Silk.NET.OpenGL/GLCoreLibraryNameContainer.cs
