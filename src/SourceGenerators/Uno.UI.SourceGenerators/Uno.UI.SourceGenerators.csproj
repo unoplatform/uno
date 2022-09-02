@@ -6,13 +6,12 @@
 		<WarningsAsErrors>true</WarningsAsErrors>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		
+
 		<!-- This target must always be built, regardless of the CI override -->
 		<TargetFrameworksOverrideInvariant>netstandard2.0</TargetFrameworksOverrideInvariant>
 	</PropertyGroup>
-	
+
 	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
 		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
 		<PackageReference Include="Microsoft.Build" Version="15.4.8" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Engine" Version="15.4.8" ExcludeAssets="runtime" />
@@ -45,7 +44,7 @@
 		</PackageReference>
 		<PackageReference Include="Uno.SourceGeneration" />
 	</ItemGroup>
-	
+
 	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net5.0'">
 		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions">
 			<Version>3.1.6</Version>
