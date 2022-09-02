@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
     <Version Condition="'$(GITVERSION_MajorMinorPatch)' != '' and '$(GITVERSION_CommitsSinceVersionSource)' != ''">$(GITVERSION_MajorMinorPatch).$(GITVERSION_CommitsSinceVersionSource)</Version>
   </PropertyGroup>
 
