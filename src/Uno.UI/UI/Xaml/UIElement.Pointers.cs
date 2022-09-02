@@ -1013,8 +1013,6 @@ namespace Windows.UI.Xaml
 				GestureRecognizer.ProcessBeforeUpEvent(currentPoint, !ctx.IsInternal || isOverOrCaptured);
 			}
 
-			handledInManaged |= SetPressed(args, false, ctx);
-
 			// Note: We process the UpEvent between Release and Exited as the gestures like "Tap"
 			//		 are fired between those events.
 			if (IsGestureRecognizerCreated)
@@ -1029,6 +1027,8 @@ namespace Windows.UI.Xaml
 					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessDropped(args);
 				}
 			}
+
+			handledInManaged |= SetPressed(args, false, ctx);
 
 #if !UNO_HAS_MANAGED_POINTERS && !__ANDROID__ && !__WASM__ // Captures release are handled a root level (RootVisual for Android and WASM)
 			// We release the captures on up but only after the released event and processed the gesture
