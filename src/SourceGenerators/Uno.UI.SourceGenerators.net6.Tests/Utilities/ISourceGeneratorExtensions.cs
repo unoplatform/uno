@@ -56,7 +56,7 @@ Actual:
 		CancellationToken cancellationToken = default)
 	{
 		var referenceAssemblies = ReferenceAssemblies.Net.Net60.AddPackages(ImmutableArray.Create(
-			new PackageIdentity("Uno.UI", "4.5.0-dev.697")));
+			new PackageIdentity("Uno.UI", "4.4.20")));
 		var references = await referenceAssemblies.ResolveAsync(null, cancellationToken);
 
 		var compilation = (Compilation)CSharpCompilation
