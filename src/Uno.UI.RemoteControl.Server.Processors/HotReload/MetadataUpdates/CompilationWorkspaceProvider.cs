@@ -131,7 +131,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 				}
 
 				var assembly = new AssemblyName(e.Name);
-				var basePath = Path.GetDirectoryName(new Uri(typeof(CompilationWorkspaceProvider).Assembly.CodeBase).LocalPath);
+				var basePath = Path.GetDirectoryName(new Uri(typeof(CompilationWorkspaceProvider).Assembly.Location).LocalPath);
 
 				Console.WriteLine($"Searching for [{assembly}] from [{basePath}]");
 
@@ -161,7 +161,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 					if (duplicates.Length != 0)
 					{
-						Console.WriteLine($"Selecting first occurrence of assembly [{e.Name}] which can be found at [{duplicates.Select(d => d.CodeBase).JoinBy("; ")}]");
+						Console.WriteLine($"Selecting first occurrence of assembly [{e.Name}] which can be found at [{duplicates.Select(d => d.Location).JoinBy("; ")}]");
 					}
 
 					return loadedAsm[0];
@@ -179,7 +179,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 						{
 							var output = Assembly.LoadFrom(filePath);
 
-							Console.WriteLine($"Loaded [{output.GetName()}] from [{output.CodeBase}]");
+							Console.WriteLine($"Loaded [{output.GetName()}] from [{output.Location}]");
 
 							return output;
 						}
