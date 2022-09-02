@@ -183,7 +183,7 @@
              ContinueOnError="true" />
 	</Target>
 
-	<Target Name="ValidateUnoUIAndroid" BeforeTargets="BeforeBuild" Condition="'$(AndroidApplication)'!='' and '$(TargetFrameworkVersion)'!=''">
+	<Target Name="ValidateUnoUIAndroid" BeforeTargets="BeforeBuild" Condition="'$(AndroidApplication)'!='' and '$(TargetFrameworkVersion)'!='' and '$(_AndroidApiLevel)'!=''">
 
 		<PropertyGroup Condition="'$(NETCoreAppMaximumVersion)'!='' and '$(NETCoreAppMaximumVersion)'&gt;='6.0'">
 			<UnoUIMinAndroidSDKVersion>30</UnoUIMinAndroidSDKVersion>
