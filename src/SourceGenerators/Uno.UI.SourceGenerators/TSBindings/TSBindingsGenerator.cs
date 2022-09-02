@@ -34,7 +34,11 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 		public void Execute(GeneratorExecutionContext context)
 		{
-			if (!DesignTimeHelper.IsDesignTime(context) && PlatformHelper.IsValidPlatform(context))
+			if (!DesignTimeHelper.IsDesignTime(context)
+				&& PlatformHelper.IsValidPlatform(context)
+
+				// This generator is only valid inside of Uno.UI
+				&& context.Compilation.AssemblyName.Equals("Uno.UI", StringComparison.OrdinalIgnoreCase))
 			{
 				_bindingsPaths = context.GetMSBuildPropertyValue("TSBindingsPath")?.ToString();
 				_sourceAssemblies = context.GetMSBuildItems("TSBindingAssemblySource").Select(i => i.Identity).ToArray();

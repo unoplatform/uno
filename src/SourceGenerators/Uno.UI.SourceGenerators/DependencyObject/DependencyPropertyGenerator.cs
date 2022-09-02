@@ -25,7 +25,10 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 		public void Execute(GeneratorExecutionContext context)
 		{
-			if (PlatformHelper.IsValidPlatform(context))
+			if (PlatformHelper.IsValidPlatform(context)
+
+				// This generator is only valid inside of Uno.UI
+				&& (context.Compilation.AssemblyName?.Equals("Uno.UI", StringComparison.OrdinalIgnoreCase) ?? false))
 			{
 				var visitor = new SerializationMethodsGenerator(context);
 				visitor.Visit(context.Compilation.SourceModule);
