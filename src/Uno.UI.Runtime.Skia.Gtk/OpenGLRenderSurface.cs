@@ -20,24 +20,23 @@ using Gtk;
 using Silk.NET.OpenGL;
 using Silk.NET.Core.Loader;
 using Silk.NET.Core.Contexts;
+using static Uno.UI.Runtime.Skia.OpenGLESRenderSurface;
 
 namespace Uno.UI.Runtime.Skia
 {
 
 	internal class OpenGLRenderSurface : GLRenderSurfaceBase
 	{
-		private static readonly DefaultNativeContext _nativeContext;
+		private static DefaultNativeContext? _nativeContext;
 
-		static OpenGLRenderSurface()
-		{
-			_nativeContext = new Silk.NET.Core.Contexts.DefaultNativeContext(new GLCoreLibraryNameContainer().GetLibraryName());
-		}
+		private static DefaultNativeContext NativeContext
+			=> _nativeContext ??= new Silk.NET.Core.Contexts.DefaultNativeContext(new GLCoreLibraryNameContainer().GetLibraryName());
 
 		public OpenGLRenderSurface()
 		{
 			SetRequiredVersion(3, 3);
 
-			_gl = new GL(_nativeContext);
+			_gl = new GL(NativeContext);
 		}
 
 		public static bool IsSupported
@@ -49,7 +48,7 @@ namespace Uno.UI.Runtime.Skia
 
 				try
 				{
-					var isAvailable = _nativeContext.TryGetProcAddress("glGetString", out _);
+					var isAvailable = NativeContext.TryGetProcAddress("glGetString", out _);
 
 					return isAvailable && !isMacOs;
 				}

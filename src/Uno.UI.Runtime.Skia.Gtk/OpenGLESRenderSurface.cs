@@ -26,16 +26,14 @@ namespace Uno.UI.Runtime.Skia
 
 	internal class OpenGLESRenderSurface : GLRenderSurfaceBase
 	{
-		private static readonly DefaultNativeContext _nativeContext;
+		private static DefaultNativeContext? _nativeContext;
 
-		static OpenGLESRenderSurface()
-		{
-			_nativeContext = new Silk.NET.Core.Contexts.DefaultNativeContext(new OpenGLESLibraryNameContainer().GetLibraryName());
-		}
+		private static DefaultNativeContext NativeContext
+			=> _nativeContext ??= new Silk.NET.Core.Contexts.DefaultNativeContext(new OpenGLESLibraryNameContainer().GetLibraryName());
 
 		public OpenGLESRenderSurface()
 		{
-			_glES = new GL(_nativeContext);
+			_glES = new GL(NativeContext);
 			_isGLES = true;
 		}
 
@@ -112,7 +110,7 @@ namespace Uno.UI.Runtime.Skia
 		{
 			var glInterface = GRGlInterface.CreateGles(proc =>
 			{
-				if (_nativeContext.TryGetProcAddress(proc, out var addr))
+				if (NativeContext.TryGetProcAddress(proc, out var addr))
 				{
 					return addr;
 				}
