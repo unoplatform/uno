@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// If true, there may be lazily-set values in the dictionary that need to be initialized.
 		/// </summary>
-		private bool _hasUnmaterializedItems = false;
+		private bool _hasUnmaterializedItems;
 
 		public ResourceDictionary()
 		{

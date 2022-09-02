@@ -8,7 +8,7 @@ namespace Windows.UI.Composition;
 public partial class ContainerVisual : Visual
 {
 	private List<Visual>? _childrenInRenderOrder;
-	private bool _hasCustomRenderOrder = false;
+	private bool _hasCustomRenderOrder;
 
 	internal bool IsChildrenRenderOrderDirty { get; set; }
 

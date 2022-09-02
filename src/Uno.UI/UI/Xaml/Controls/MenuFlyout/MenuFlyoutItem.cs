@@ -49,10 +49,10 @@ namespace Windows.UI.Xaml.Controls
 		// UNO TODO
 		// IDisposable m_epMenuFlyoutItemClickEventCallback;
 
-		double m_maxKeyboardAcceleratorTextWidth = 0;
+		double m_maxKeyboardAcceleratorTextWidth;
 		TextBlock m_tpKeyboardAcceleratorTextBlock;
 
-		bool m_isTemplateApplied = false;
+		bool m_isTemplateApplied;
 
 		#region CommandParameter
 

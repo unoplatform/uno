@@ -30,7 +30,7 @@ namespace Uno.UI.DataBinding
 		/// <summary>
 		/// Determines if the binder details class monitoring is enabled by default.
 		/// </summary>
-		public static bool IsBinderDetailsEnabled { get; set; } = false;
+		public static bool IsBinderDetailsEnabled { get; set; }
 
 		public BinderDetails(DependencyObject owner)
 		{

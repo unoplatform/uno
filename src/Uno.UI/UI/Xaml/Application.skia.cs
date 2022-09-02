@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml
 {
 	public partial class Application : IApplicationEvents
 	{
-		private static bool _startInvoked = false;
+		private static bool _startInvoked;
 		private static string _arguments = "";
 
 		private readonly IApplicationExtension? _applicationExtension;

@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 {
 	internal class XamlStringParser
 	{
-		private int _depth = 0;
+		private int _depth;
 
 		public XamlStringParser()
 		{

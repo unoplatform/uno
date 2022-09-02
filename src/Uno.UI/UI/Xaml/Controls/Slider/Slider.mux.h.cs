@@ -110,8 +110,8 @@ public partial class Slider
 	private uint _capturedPointerId;
 
 	// Holds the value of the slider at the moment of engagement, used to handle cancel-disengagements where we reset the value.
-	private double _preEngagementValue = 0.0;
+	private double _preEngagementValue;
 
-	private bool _disengagedWithA = false;
+	private bool _disengagedWithA;
 
 }

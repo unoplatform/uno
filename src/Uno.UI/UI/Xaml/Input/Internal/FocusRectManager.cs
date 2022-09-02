@@ -22,7 +22,7 @@ namespace Uno.UI.Xaml.Input
 	/// </remarks>
 	internal class FocusRectManager
 	{
-		private SystemFocusVisual? _focusVisual = null;
+		private SystemFocusVisual? _focusVisual;
 
 		[NotImplemented]
 		internal void OnFocusedElementKeyPressed()

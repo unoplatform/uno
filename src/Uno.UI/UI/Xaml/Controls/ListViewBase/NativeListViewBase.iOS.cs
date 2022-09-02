@@ -69,18 +69,18 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region Members
-		private bool _needsReloadData = false;
+		private bool _needsReloadData;
 		/// <summary>
 		/// ReloadData() has been called, but the layout hasn't been updated. During this window, in-place modifications to the
 		/// collection (InsertItems, etc) shouldn't be called because they will result in a NSInternalInconsistencyException
 		/// </summary>
-		private bool _needsLayoutAfterReloadData = false;
+		private bool _needsLayoutAfterReloadData;
 		/// <summary>
 		/// List was empty last time ReloadData() was called. If inserting items into an empty collection we should do a refresh instead, 
 		/// to work around a UICollectionView bug https://stackoverflow.com/questions/12611292/uicollectionview-assertion-failure
 		/// </summary>
-		private bool _listEmptyLastRefresh = false;
-		private bool _isReloadDataDispatched = false;
+		private bool _listEmptyLastRefresh;
+		private bool _isReloadDataDispatched;
 
 		private readonly SerialDisposable _scrollIntoViewSubscription = new SerialDisposable();
 		#endregion

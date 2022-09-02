@@ -197,7 +197,7 @@ namespace Windows.UI.Xaml
 		}
 
 #if DEBUG
-		private long _arrangeCount = 0;
+		private long _arrangeCount;
 #endif
 
 		/// <summary>

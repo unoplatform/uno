@@ -16,7 +16,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 	{
 		private const string JsType = "Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceClassProvider";
 
-		private readonly bool _isInput = false;
+		private readonly bool _isInput;
 
 		public MidiDeviceClassProviderBase(bool isInput) => _isInput = isInput;
 

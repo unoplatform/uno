@@ -41,7 +41,7 @@ namespace Windows.UI.Core
 
 	internal partial class CoreWindowExtension : ICoreWindowExtension
 	{
-		private bool _cursorHidden = false;
+		private bool _cursorHidden;
 		private CoreCursor _pointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
 
 		/// <inheritdoc />

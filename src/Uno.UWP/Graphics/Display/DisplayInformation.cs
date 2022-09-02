@@ -39,7 +39,7 @@ namespace Windows.Graphics.Display
 			}
 		}		
 
-		public bool StereoEnabled { get; private set; } = false;
+		public bool StereoEnabled { get; private set; }
 
 		public static DisplayInformation GetForCurrentView() => InternalGetForCurrentView();
 

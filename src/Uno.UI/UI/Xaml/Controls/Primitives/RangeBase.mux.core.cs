@@ -4,7 +4,7 @@ namespace Windows.UI.Xaml.Controls.Primitives;
 
 public abstract partial class RangeBase : Control
 {
-	private double m_uncoercedValue = 0;
+	private double m_uncoercedValue;
 
 	// TODO Uno specific:
 	// WinUI uses a custom SetValue "override" that controls the SetValue flow propagation itself.

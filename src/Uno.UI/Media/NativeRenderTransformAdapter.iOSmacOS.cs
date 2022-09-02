@@ -15,7 +15,7 @@ namespace Uno.UI.Media
 	partial class NativeRenderTransformAdapter
 	{
 		private CATransform3D _transform = CATransform3D.Identity;
-		private bool _wasAnimating = false;
+		private bool _wasAnimating;
 
 #if __MACOS__
 		private bool _isDisposed;

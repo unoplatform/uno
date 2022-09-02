@@ -24,7 +24,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string[] _excludeXamlNamespaces;
 		private readonly string[] _includeXamlNamespaces;
 		private readonly RoslynMetadataHelper _metadataHelper;
-		private int _depth = 0;
+		private int _depth;
 
 		public XamlFileParser(string[] excludeXamlNamespaces, string[] includeXamlNamespaces, RoslynMetadataHelper roslynMetadataHelper)
 		{

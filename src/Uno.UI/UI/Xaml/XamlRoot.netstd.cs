@@ -7,10 +7,10 @@ namespace Windows.UI.Xaml;
 
 public sealed partial class XamlRoot
 {
-	private bool _isMeasureWaiting = false;
-	private bool _isArrangeWaiting = false;
-	private bool _isMeasuringOrArranging = false;
-	private bool _renderQueued = false;
+	private bool _isMeasureWaiting;
+	private bool _isArrangeWaiting;
+	private bool _isMeasuringOrArranging;
+	private bool _renderQueued;
 	
 	internal event Action InvalidateRender = () => { };
 

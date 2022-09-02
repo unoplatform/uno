@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class AcrylicBrush
 	{
-		private static bool? _isStockBlurSupported = null;
+		private static bool? _isStockBlurSupported;
 
 		private const float AndroidBlurRadius = 20;
 		private const float StyledBlurRadius = 64;
@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Media
 		/// However due to a bug in the Xamarin framework https://github.com/xamarin/xamarin-android/issues/4548, debugging is impossible with this mode (causes SIGSEGV).
 		/// A suggestion would be to set it to false for debug, and to true for releases.
 		/// </summary>
-		public static bool ThrowStopExceptionOnDraw { get; set; } = false;
+		public static bool ThrowStopExceptionOnDraw { get; set; }
 
 		private bool IsAndroidBlurPropertySet => AndroidBlurRadius > 0;
 

@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Controls
 		/// or when no ItemAnimator is set) that need special attention.
 		/// </remarks>
 		private bool _needsUpdateAfterCollectionChange;
-		private bool _isRecycleLayoutRequested = false;
+		private bool _isRecycleLayoutRequested;
 		/// <summary>
 		/// If we're moving an item from before the topmost visible item to after it, then its position will immediately decrease
 		/// by one. We should decrement the seed to anticipate this and prevent it jumping out of view.
@@ -101,7 +101,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// The pending expected adjustment to the position as a result of requested scroll, used while reordering to correct the pointer position.
 		/// </summary>
-		private int _pendingReorderScrollAdjustment = 0;
+		private int _pendingReorderScrollAdjustment;
 
 		private bool IsReordering => GetAndUpdateReorderingIndex() != null;
 

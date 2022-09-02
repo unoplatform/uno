@@ -13,7 +13,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 	internal abstract class MidiDeviceClassProviderBase : IDeviceClassProvider
 	{
 		// https://github.com/xamarin/ios-samples/tree/master/CoreMidiSample
-		private readonly bool _isInput = false;
+		private readonly bool _isInput;
 
 		private MidiClient _client;
 

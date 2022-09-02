@@ -82,13 +82,13 @@ namespace Uno.UI.Controls.Legacy
 		private DataTemplateSelector _itemTemplateSelector;
 		private ICommand _itemClickCommand;
 		private DataTemplate _itemTemplate;
-		private bool _needsReloadData = false;
+		private bool _needsReloadData;
 		/// <summary>
 		/// ReloadData() has been called, but the layout hasn't been updated. During this window, in-place modifications to the
 		/// collection (InsertItems, etc) shouldn't be called because they will result in a NSInternalInconsistencyException
 		/// </summary>
-		private bool _needsLayoutAfterReloadData = false;
-		private bool _lastCollectionChangedActionWasReset = false;
+		private bool _needsLayoutAfterReloadData;
+		private bool _lastCollectionChangedActionWasReset;
 		#endregion
 
 		#region Properties

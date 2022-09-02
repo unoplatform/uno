@@ -30,7 +30,7 @@ namespace Uno.UI
 			return Compare(this, other);
 		}
 
-		public static IndexPath Zero { get; } = new IndexPath();
+		public static IndexPath Zero { get; }
 
 		public static IndexPath NotFound { get; } = new IndexPath(-1, 0);
 

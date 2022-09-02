@@ -15,7 +15,7 @@ namespace Private.Infrastructure
 
 		public class Utilities
 		{
-			internal static bool IsXBox { get; } = false;
+			internal static bool IsXBox { get; }
 			internal static void VerifyMockDCompOutput(MockDComp.SurfaceComparison comparison, string step) { }
 			internal static void VerifyMockDCompOutput(MockDComp.SurfaceComparison comparison) { }
 

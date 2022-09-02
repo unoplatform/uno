@@ -114,11 +114,11 @@ namespace Windows.UI.Input
 
 		// Supported only on MacOS
 		[NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float XTilt { get; internal set; } = 0f;
+		public float XTilt { get; internal set; }
 
 		// Supported only on MacOS
 		[NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float YTilt { get; internal set; } = 0f;
+		public float YTilt { get; internal set; }
 
 		[NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 		public int MouseWheelDelta { get; internal set; }

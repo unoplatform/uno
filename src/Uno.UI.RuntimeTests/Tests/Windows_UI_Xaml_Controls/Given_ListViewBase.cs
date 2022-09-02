@@ -2584,7 +2584,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #region Helper classes
 	public partial class OnItemsChangedListView : ListView
 	{
-		public Action ItemsChangedAction = null;
+		public Action ItemsChangedAction;
 
 		protected override void OnItemsChanged(object e)
 		{

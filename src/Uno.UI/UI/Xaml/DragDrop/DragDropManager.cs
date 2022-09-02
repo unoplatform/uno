@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <inheritdoc />
-		public bool AreConcurrentOperationsEnabled { get; set; } = false;
+		public bool AreConcurrentOperationsEnabled { get; set; }
 
 		/// <inheritdoc />
 		public void BeginDragAndDrop(CoreDragInfo info, ICoreDropOperationTarget? target = null)

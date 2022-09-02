@@ -19,9 +19,9 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ToggleSwitch
 	{
-		private bool _isDragging = false;
-		private bool _wasDragged = false;
-		private bool _isPointerOver = false;
+		private bool _isDragging;
+		private bool _wasDragged;
+		private bool _isPointerOver;
 
 		private double _knobTranslation;
 		private double _minKnobTranslation;

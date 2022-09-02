@@ -1511,7 +1511,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			return IndexPath.CreateFromIndices(path);
 		}
 
-		private static int _nextData = 0;
+		private static int _nextData;
 		private struct TreeWalkNodeInfo
 		{
 			public object Current { get; set; }

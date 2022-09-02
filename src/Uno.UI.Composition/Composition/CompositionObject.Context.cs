@@ -10,7 +10,7 @@ namespace Windows.UI.Composition
 		private class ContextStore
 		{
 			private readonly object _lock = new object();
-			private List<ContextEntry>? _contextEntries = null;
+			private List<ContextEntry>? _contextEntries;
 
 			public ContextStore()
 			{

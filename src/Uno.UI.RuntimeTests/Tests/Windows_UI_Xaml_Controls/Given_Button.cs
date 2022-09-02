@@ -147,7 +147,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public class IsExecutingCommand : ICommand
 		{
 			private readonly bool _synchronousCompletion;
-			private bool IsExecuting = false;
+			private bool IsExecuting;
 
 			public IsExecutingCommand(bool synchronousCompletion)
 			{
@@ -178,7 +178,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		public class NeverEndingCommand : ICommand
 		{
-			private bool _wasStarted = false;
+			private bool _wasStarted;
 
 			public NeverEndingCommand()
 			{

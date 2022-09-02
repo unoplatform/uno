@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml.Input
 
 		internal bool CanceledByDirectManipulation { get; set; }
 
-		public bool IsGenerated { get; } = false; // Generated events are not supported by UNO
+		public bool IsGenerated { get; } // Generated events are not supported by UNO
 
 		public bool Handled { get; set; }
 

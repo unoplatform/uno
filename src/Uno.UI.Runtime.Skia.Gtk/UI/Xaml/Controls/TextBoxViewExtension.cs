@@ -32,8 +32,8 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 		private GdkPoint _lastPosition = new GdkPoint(-1, -1);
 		private GdkSize _lastSize = new GdkSize(-1, -1);
 
-		private int? _selectionStartCache = null;
-		private int? _selectionLengthCache = null;
+		private int? _selectionStartCache;
+		private int? _selectionLengthCache;
 
 		private readonly SerialDisposable _textChangedDisposable = new SerialDisposable();
 

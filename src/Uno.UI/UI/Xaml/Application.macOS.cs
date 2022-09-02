@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml
 		private readonly NSString _themeChangedNotification = new NSString("AppleInterfaceThemeChangedNotification");
 		private readonly Selector _modeSelector = new Selector("themeChanged:");
 
-		private NSUrl[] _launchUrls = null;
+		private NSUrl[] _launchUrls;
 
 		static partial void InitializePartialStatic()
 		{

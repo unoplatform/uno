@@ -40,10 +40,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 #endif
 
 		public bool UseHardwareAcceleration { get; set; }
-#if __SKIA__
-			// SkiaSharp.Views.Uno uses the underlying canvas for hardware acceleration.
-			= false;
-#else
+#if !__SKIA__ // SkiaSharp.Views.Uno uses the underlying canvas for hardware acceleration.
 			= true;
 #endif
 
