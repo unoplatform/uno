@@ -142,11 +142,15 @@ namespace Uno.UI.Runtime.Skia
 				Gtk.Application.RunIteration(false);
 			}
 
-			GLib.Idle.Add(delegate
+			DispatchNativeSingle(d);
+		}
+
+		private void DispatchNativeSingle(System.Action d)
+			=> GLib.Idle.Add(delegate
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"Iteration");
+					this.Log().Trace($"Dispatch Iteration");
 				}
 
 				try
@@ -160,7 +164,6 @@ namespace Uno.UI.Runtime.Skia
 
 				return false;
 			});
-		}
 
 		private void SetupRenderSurface()
 		{
@@ -175,7 +178,7 @@ namespace Uno.UI.Runtime.Skia
 				_window.Add(validationSurface);
 				_window.ShowAll();
 
-				DispatchNative(ValidatedSurface);
+				DispatchNativeSingle(ValidatedSurface);
 
 				async void ValidatedSurface()
 				{
@@ -190,7 +193,7 @@ namespace Uno.UI.Runtime.Skia
 						RenderSurfaceType = await validationSurface.GetSurfaceTypeAsync();
 
 						// Continue on the GTK main thread
-						DispatchNative(() =>
+						DispatchNativeSingle(() =>
 						{
 							if (this.Log().IsEnabled(LogLevel.Debug))
 							{
