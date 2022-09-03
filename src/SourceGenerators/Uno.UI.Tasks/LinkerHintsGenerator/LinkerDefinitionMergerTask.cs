@@ -121,6 +121,8 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				try
 				{
 					File.OpenWrite(filePath).Dispose();
+
+					break;
 				}
 				catch
 				{
