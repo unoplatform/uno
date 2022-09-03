@@ -733,7 +733,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					if (IsCustomResourceMarkupNode(member))
 					{
-						string objectType = dependencyObject.GetType().FullName;
+						string objectType = dependencyObject.GetType().FullName ?? "";
 						string propertyName = dependencyProperty.Name;
 						string propertyType = dependencyProperty.Type.FullName;
 						var resource = CustomXamlResourceLoader.Current?.GetResourceInternal(keyName, objectType, propertyName, propertyType);
