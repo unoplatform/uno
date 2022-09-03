@@ -15,44 +15,27 @@
 //
 // ******************************************************************
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 
 namespace Uno.Extensions
 {
-    internal static class IndentedStringBuilderExtensions
+	internal static class IndentedStringBuilderExtensions
     {
-		public static void AppendLine(this IIndentedStringBuilder builder, IFormatProvider formatProvider, string pattern, params object[] replacements)
+		public static void AppendLineIndented(this IIndentedStringBuilder builder, string pattern)
 		{
-			builder.AppendFormat(formatProvider, pattern, replacements);
+			builder.AppendIndented(pattern);
 			builder.AppendLine();
 		}
 
-		public static void AppendLine(this IIndentedStringBuilder builder, IFormatProvider formatProvider, int indentLevel, string pattern, params object[] replacements)
+		public static void AppendLineInvariantIndented(this IIndentedStringBuilder builder, string pattern, params object[] replacements)
 		{
-			builder.AppendFormat(formatProvider, pattern.Indent(indentLevel), replacements);
-			builder.AppendLine();
-		}
-
-		public static void AppendLineInvariant(this IIndentedStringBuilder builder, string pattern, params object[] replacements)
-		{
-			builder.AppendLine(CultureInfo.InvariantCulture, pattern, replacements);
-		}
-		
-		/// <summary>
-		/// Sane version of <see cref="IndentedStringBuilder.AppendLine(string)"/> that actually appends a newline.
-		/// </summary>
-		/// <param name="text">The string to append.</param>
-		public static void AppendLine2(this IIndentedStringBuilder builder, string text)
-		{
-			builder.AppendLine(text);
+			builder.AppendFormatIndented(CultureInfo.InvariantCulture, pattern, replacements);
 			builder.AppendLine();
 		}
 
 		public static IDisposable Indent(this IIndentedStringBuilder builder, string opening, string closing = null)
 		{
-			builder.AppendLine2(opening);
+			builder.AppendLineIndented(opening);
 			var block = builder.Indent();
 
 			return new DisposableAction(() =>
@@ -60,24 +43,19 @@ namespace Uno.Extensions
 				block.Dispose();
 				if (closing != null)
 				{
-					builder.AppendLine2(closing);
+					builder.AppendLineIndented(closing);
 				}
 			});
-		}
-
-		public static void AppendLineInvariant(this IIndentedStringBuilder builder, int indentLevel, string pattern, params object[] replacements)
-		{
-			builder.AppendLine(CultureInfo.InvariantCulture, indentLevel, pattern, replacements);
-		}
-
-		public static void AppendFormatInvariant(this IIndentedStringBuilder builder, string pattern, params object[] replacements)
-		{
-			builder.AppendFormat(CultureInfo.InvariantCulture, pattern, replacements);
 		}
 
 		public static IDisposable BlockInvariant(this IIndentedStringBuilder builder, string pattern, params object[] parameters)
 		{
 			return builder.Block(CultureInfo.InvariantCulture, pattern, parameters);
+		}
+
+		public static IDisposable BlockInvariant(this IIndentedStringBuilder builder, string pattern)
+		{
+			return builder.Block(CultureInfo.InvariantCulture, pattern);
 		}
 	}
 }

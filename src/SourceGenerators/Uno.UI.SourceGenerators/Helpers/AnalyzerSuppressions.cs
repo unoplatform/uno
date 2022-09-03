@@ -23,7 +23,7 @@ namespace Uno.UI.SourceGenerators
 
 			foreach(var suppress in suppresses)
 			{
-				writer.AppendLineInvariant(suppress);
+				writer.AppendLineIndented(suppress);
 			}
 		}
 		
@@ -44,7 +44,7 @@ namespace Uno.UI.SourceGenerators
 
 			foreach(var suppress in suppresses)
 			{
-				writer.AppendLineInvariant(suppress);
+				writer.AppendLineIndented(suppress);
 			}
 		}
 	}
