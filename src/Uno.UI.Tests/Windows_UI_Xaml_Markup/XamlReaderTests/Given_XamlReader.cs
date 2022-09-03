@@ -323,10 +323,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 				Assert.IsNotNull(tb);
 				Assert.AreEqual(resourceValue, tb.Text);
 
+				var objectType = tb.GetType().FullName;
+				var propertyName = nameof(tb.Text);
+				var propertyType = tb.Text.GetType().FullName;
+
 				Assert.AreEqual(loader.LastResourceId, resourceKey);
-				Assert.AreEqual(loader.LastObjectType, tb.GetType().FullName);
-				Assert.AreEqual(loader.LastPropertyName, nameof(tb.Text));
-				Assert.AreEqual(loader.LastPropertyType, tb.Text.GetType().FullName);
+				Assert.AreEqual(loader.LastObjectType, objectType);
+				Assert.AreEqual(loader.LastPropertyName, propertyName);
+				Assert.AreEqual(loader.LastPropertyType, propertyType);
 			}
 			finally
 			{
