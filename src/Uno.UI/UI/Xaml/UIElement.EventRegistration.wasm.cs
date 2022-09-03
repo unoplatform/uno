@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml
 
 			private List<InvocationItem> _invocationList = new List<InvocationItem>();
 			private List<InvocationItem> _pendingInvocationList;
-			private bool _isSubscribed = false;
+			private bool _isSubscribed;
 			private bool _isDispatching;
 
 			public EventRegistration(

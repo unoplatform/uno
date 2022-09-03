@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	internal partial class CommandBarElementCollection : IObservableVector<ICommandBarElement>, IVector<ICommandBarElement>
 	{
-		bool m_notifyCollectionChanging = false;
-		CommandBar? m_parent = null;
+		bool m_notifyCollectionChanging;
+		CommandBar? m_parent;
 	}
 }

@@ -43,7 +43,7 @@ namespace Uno.UI.RemoteControl.VS
 		private System.Diagnostics.Process _process;
 
 		private int RemoteControlServerPort;
-		private bool _closing = false;
+		private bool _closing;
 
 		public EntryPoint(DTE2 dte2, string toolsPath, AsyncPackage asyncPackage, Action<Func<Task<Dictionary<string, string>>>> globalPropertiesProvider)
 		{

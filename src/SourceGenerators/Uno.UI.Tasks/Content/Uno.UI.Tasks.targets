@@ -122,6 +122,11 @@
 	</ItemGroup>
 
 	<PropertyGroup>
+		<_UnoLinkerHintGeneratorILLinkerPath>$(MSBuildThisFileDirectory)\..\..\tools\linker</_UnoLinkerHintGeneratorILLinkerPath>
+		<_UnoLinkerHintGeneratorILLinkerPath
+			Condition="'$(TargetFrameworkIdentifier)'=='.NETCoreApp' and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '6.0')) and '$(ILLinkTasksAssembly)'!=''"
+			>$([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly)))\..\net$(TargetFrameworkVersion.Substring(1))</_UnoLinkerHintGeneratorILLinkerPath>
+
 		<_UnoUIPackageBasePath Condition="'%(UnoRuntimeEnabledPackage.Identity)'=='Uno.UI' or '%(UnoRuntimeEnabledPackage.Identity)'=='Uno.WinUI'">%(UnoRuntimeEnabledPackage.PackageBasePath)</_UnoUIPackageBasePath>
 	</PropertyGroup>
 
@@ -130,7 +135,7 @@
 		AssemblyPath="$(IntermediateOutputPath)$(TargetFileName)"
 		OutputPath="$(ProjectDir)$(IntermediateOutputPath)/linkerhints"
 		ReferencePath="@(_UnoLinkerHintsPass1AssembliesForReferencePaths)"
-		ILLinkerPath="$(MSBuildThisFileDirectory)\..\..\tools\linker"
+		ILLinkerPath="$(_UnoLinkerHintGeneratorILLinkerPath)"
 		UnoUIPackageBasePath="$(_UnoUIPackageBasePath)"
 		UnoRuntimeIdentifier="$(UnoRuntimeIdentifier)">
 	  <Output TaskParameter="OutputFeatures"

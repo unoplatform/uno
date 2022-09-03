@@ -681,7 +681,7 @@ namespace Windows.UI.Xaml.Controls
 		private CGSize? _measuredContentSize;
 		private readonly SerialDisposable _contentChangedDisposable = new SerialDisposable();
 		private bool _needsLayout = true;
-		private bool _interceptSetNeedsLayout = false;
+		private bool _interceptSetNeedsLayout;
 
 		private WeakReference<NativeListViewBase> _ownerRef;
 		public NativeListViewBase Owner

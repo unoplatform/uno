@@ -38,12 +38,13 @@
 		<UnoForceProcessPRIResource>true</UnoForceProcessPRIResource>
 
 		<!-- Generate automation IDs in debug builds, use by UI tests. -->
-    <IsUiAutomationMappingEnabled Condition="'$(Configuration)'=='Debug'">true</IsUiAutomationMappingEnabled>
+		<IsUiAutomationMappingEnabled Condition="'$(Configuration)'=='Debug'">true</IsUiAutomationMappingEnabled>
 
 		<!-- Disable WPF targets -->
 		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
 
-		<UnoXamlResourcesTrimming Condition="'$(Configuration)'!='Debug'">true</UnoXamlResourcesTrimming>
+		<!-- Disabled because of LinkerDefinitionMergerTask performance issues https://github.com/unoplatform/uno/issues/9632 -->
+		<!--<UnoXamlResourcesTrimming Condition="'$(Configuration)'!='Debug'">true</UnoXamlResourcesTrimming>-->
 	</PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />

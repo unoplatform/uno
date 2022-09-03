@@ -89,6 +89,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 			}
 		}
 
-		private ObservableCollection<T> _data = null;
+		private ObservableCollection<T> _data;
 	}
 }

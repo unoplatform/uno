@@ -117,7 +117,7 @@ namespace Windows.UI.Xaml.Controls
 		private UICollectionViewUpdateItem[] _updateItems;
 
 		private (Point Location, object Item, UICollectionViewLayoutAttributes LayoutAttributes)? _reorderingState;
-		private NSIndexPath _reorderingDropTarget = null;
+		private NSIndexPath _reorderingDropTarget;
 		/// <summary>
 		/// Pre-reorder item positions, stored while applying provisional positions during drag-to-reorder
 		/// </summary>

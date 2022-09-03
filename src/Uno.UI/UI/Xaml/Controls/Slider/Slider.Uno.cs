@@ -6,7 +6,7 @@ public partial class Slider
 {
 	private readonly SerialDisposable _prepareStateToken = new SerialDisposable();
 	private readonly SerialDisposable _sliderContainerToken = new SerialDisposable();
-	private bool _isTemplateApplied = false;
+	private bool _isTemplateApplied;
 
 	private void Slider_Loaded(object sender, RoutedEventArgs e)
 	{

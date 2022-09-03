@@ -15,7 +15,10 @@ namespace Uno.UI
 {
 	public abstract partial class BaseFragment : Fragment, DependencyObject, View.IOnTouchListener
 	{
+#pragma warning disable CA1805 // Do not initialize unnecessarily
+		// TODO: This field is ALWAYS false. Either remove it or assign when appropriate.
 		private bool _isDisposed = false;
+#pragma warning restore CA1805 // Do not initialize unnecessarily
 
 		private readonly Func<IFragmentTracker> _tracker;
 

@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls
 		public event EventHandler<object>? DropDownClosed;
 		public event EventHandler<object>? DropDownOpened;
 
-		private bool _areItemTemplatesForwarded = false;
+		private bool _areItemTemplatesForwarded;
 
 		private IPopup? _popup;
 		private Border? _popupBorder;
@@ -595,7 +595,7 @@ namespace Windows.UI.Xaml.Controls
 		/// This is required by some apps trying to emulate the native iPhone look for ComboBox.
 		/// The standard popup layouter works like on Windows, and doesn't stretch to take the full size of the screen.
 		/// </remarks>
-		public bool IsPopupFullscreen { get; set; } = false;
+		public bool IsPopupFullscreen { get; set; }
 
 		private void UpdateDropDownState()
 		{

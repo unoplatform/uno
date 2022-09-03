@@ -71,8 +71,8 @@ namespace Uno.UI.Controls
 		private ManipulationMode _manipulationMode = ManipulationMode.None;
 
 		//Zoom
-		private System.Drawing.PointF _previousPoint = new System.Drawing.PointF();
-		private System.Drawing.PointF _manipulationStart = new System.Drawing.PointF();
+		private System.Drawing.PointF _previousPoint;
+		private System.Drawing.PointF _manipulationStart;
 		private float[] _m;
 
 		//Scaling

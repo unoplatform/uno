@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml.Tests.Common
 	{
 		public StringBuilder EventOrder;
 		private readonly List<Guid> correlationIdList = new List<Guid>();
-		private Guid lastCorrelationId = new Guid();
+		private Guid lastCorrelationId;
 		private readonly FrameworkElement[] ElementsToTest;
 		private readonly Hyperlink[] HyperlinksToTest;
 		public FocusEventOrderingTester(FrameworkElement[] elements, StringBuilder eventOrder)

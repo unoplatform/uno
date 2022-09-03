@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml
 		private readonly Application _app;
 		private Intent _lastHandledIntent;
 
-		private bool _isRunning = false;
+		private bool _isRunning;
 
 		public delegate Windows.UI.Xaml.Application AppBuilder();
 

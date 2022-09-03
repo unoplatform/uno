@@ -25,12 +25,15 @@ namespace Windows.UI.Xaml.Controls
 		};
 
 		PlacementMode m_placementMode = PlacementMode.Undetermined;
-		bool m_hideInProgress = false;
-		bool m_hasPreparedContent = false;
-		bool m_isShowing = false;
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
+		bool m_hideInProgress;
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
+
+		bool m_hasPreparedContent;
+		bool m_isShowing;
 		Storyboard? m_layoutAdjustmentsForInputPaneStoryboard;
 
-		double m_dialogMinHeight = 0;
+		double m_dialogMinHeight;
 		#endregion
 
 		private protected override void ChangeVisualState(bool useTransitions)

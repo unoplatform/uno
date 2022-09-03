@@ -85,8 +85,8 @@ namespace Windows.UI.Xaml.Controls
 
 		// True if we are in a Measure/Arrange pass. We need this to make sure that we don't change the SelectedIndex due to
 		// the scroll position changing during a resize.
-		bool m_inMeasure = false;
-		bool m_inArrange = false;
+		bool m_inMeasure;
+		bool m_inArrange;
 
 		// Saved SnapPointsTypes. These are saved in the beginning of an animation and restored when the animation is completed.
 		SnapPointsType m_verticalSnapPointsType;
@@ -100,7 +100,7 @@ namespace Windows.UI.Xaml.Controls
 
 		bool m_keepNavigationButtonsVisible;
 
-		bool m_moveFocusToSelectedItem = false;
+		bool m_moveFocusToSelectedItem;
 
 		private readonly SerialDisposable _fixOffsetSubscription = new SerialDisposable();
 		private readonly SerialDisposable _buttonsFadeOutTimerSubscription = new SerialDisposable();

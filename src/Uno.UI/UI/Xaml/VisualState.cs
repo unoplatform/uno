@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml
 	[ContentProperty(Name = "Storyboard")]
 	public sealed partial class VisualState : DependencyObject
 	{
-		private Action lazyBuilder = null;
+		private Action lazyBuilder;
 
 		public VisualState()
 		{

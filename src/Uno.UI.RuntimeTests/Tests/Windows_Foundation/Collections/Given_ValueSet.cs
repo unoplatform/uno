@@ -12,7 +12,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Foundation.Collections
 	{
 
 		ValueSet _testSet = new();
-		static bool _wasEventFired = false;
+		static bool _wasEventFired;
 
 		[TestInitialize]
 		public void Init()

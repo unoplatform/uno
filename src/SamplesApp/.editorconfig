@@ -1,0 +1,3 @@
+[*.cs]
+dotnet_analyzer_diagnostic.category-Performance.severity = none
+dotnet_diagnostic.CA1805.severity = none

@@ -24,7 +24,7 @@ See these sections for information about using Uno Platform with:
 In the terminal, type the following to create a new project:
 
 ```bash
-dotnet new unoapp -o MyApp -ios=false -android=false -macos=false -skia-tizen=false -skia-wpf=false -skia-linux-fb=false --vscode
+dotnet new unoapp -o MyApp -mobile=false --skia-wpf=false --skia-linux-fb=false --vscode
 ```
 
 > `MyApp` is the name you want to give to your project.

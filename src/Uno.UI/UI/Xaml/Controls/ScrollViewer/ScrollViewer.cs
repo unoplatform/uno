@@ -55,7 +55,9 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollViewer : ContentControl, IFrameworkTemplatePoolAware
 	{
-		private bool m_isInConstantVelocityPan = false;
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
+		private bool m_isInConstantVelocityPan;
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
 
 		private static class Parts
 		{
@@ -645,13 +647,13 @@ namespace Windows.UI.Xaml.Controls
 		/// Determines if the vertical scrolling is allowed or not.
 		/// Unlike the Visibility of the scroll bar, this will also applies to the mousewheel!
 		/// </summary>
-		internal bool ComputedIsHorizontalScrollEnabled { get; private set; } = false;
+		internal bool ComputedIsHorizontalScrollEnabled { get; private set; }
 
 		/// <summary>
 		/// Determines if the vertical scrolling is allowed or not.
 		/// Unlike the Visibility of the scroll bar, this will also applies to the mousewheel!
 		/// </summary>
-		internal bool ComputedIsVerticalScrollEnabled { get; private set; } = false;
+		internal bool ComputedIsVerticalScrollEnabled { get; private set; }
 
 		internal double MinHorizontalOffset => 0;
 

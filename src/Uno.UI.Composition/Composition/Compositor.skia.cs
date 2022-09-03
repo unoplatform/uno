@@ -12,7 +12,7 @@ namespace Windows.UI.Composition
 	{
 		private readonly Stack<float> _opacityStack = new Stack<float>();
 		private float _currentOpacity = 1.0f;
-		private bool _isDirty = false;
+		private bool _isDirty;
 		private SKColorFilter? _currentOpacityColorFilter;
 
 		private OpacityDisposable PushOpacity(float opacity)

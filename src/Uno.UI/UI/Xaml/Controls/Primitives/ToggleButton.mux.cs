@@ -10,7 +10,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class ToggleButton
 	{
-		private bool _skipCreateAutomationPeer = false;
+		private bool _skipCreateAutomationPeer;
 
 		private protected override void Initialize()
 		{

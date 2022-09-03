@@ -19,14 +19,14 @@ namespace Windows.UI.Xaml.Controls
 		internal bool m_templatedParentHandlesMouseButton;
 
 		// Indicates whether ScrollViewer should ignore mouse wheel scroll events (not zoom).
-		internal bool ArePointerWheelEventsIgnored { get; set; } = false;
+		internal bool ArePointerWheelEventsIgnored { get; set; }
 		internal bool IsInManipulation => IsInDirectManipulation || m_isInConstantVelocityPan;
 
 		/// <summary>
 		/// Gets or set whether the <see cref="ScrollViewer"/> will allow scrolling outside of the ScrollViewer's Child bound.
 		/// </summary>
 		///
-		private bool _forceChangeToCurrentView = false;
+		private bool _forceChangeToCurrentView;
 		internal bool ForceChangeToCurrentView
 		{
 			get => _forceChangeToCurrentView;

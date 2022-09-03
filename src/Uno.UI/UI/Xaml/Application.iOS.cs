@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml
 		private bool _suspended;
 		internal bool IsSuspended => _suspended;
 
-		private bool _preventSecondaryActivationHandling = false;
+		private bool _preventSecondaryActivationHandling;
 
 		public Application()
 		{

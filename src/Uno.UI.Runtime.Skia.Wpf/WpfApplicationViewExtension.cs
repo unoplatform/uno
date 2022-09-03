@@ -26,7 +26,7 @@ namespace Uno.UI.Skia.Platform
 			set => _mainWpfWindow.Title = value;
 		}
 
-		private bool _isFullScreen = false;
+		private bool _isFullScreen;
 		private (WindowStyle WindowStyle, WindowState WindowState) _previousModes;
 
 		public void SetPreferredMinSize(Windows.Foundation.Size size)

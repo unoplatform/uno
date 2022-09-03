@@ -94,7 +94,7 @@ namespace Windows.UI.Xaml
 		private readonly Dictionary<DependencyProperty, ManagedWeakReference> _inheritedForwardedProperties = new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default);
 		private Stack<DependencyPropertyValuePrecedences?>? _overriddenPrecedences;
 
-		private static long _propertyChangedToken = 0;
+		private static long _propertyChangedToken;
 		private readonly Dictionary<long, IDisposable> _propertyChangedTokens = new Dictionary<long, IDisposable>();
 
 		private bool _registeringInheritedProperties;

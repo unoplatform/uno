@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		[Uno.UnoOnly]
 		public bool UseCollectionAnimations { get; set; } = true;
 
-		private bool _animateScrollIntoView;
+		private bool _animateScrollIntoView = Uno.UI.FeatureConfiguration.ListViewBase.AnimateScrollIntoView;
 		public bool AnimateScrollIntoView
 		{
 			get { return _animateScrollIntoView; }

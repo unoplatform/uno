@@ -25,7 +25,7 @@ namespace Uno.UI.Runtime.Skia
 {
 	internal partial class TizenCoreWindowExtension : ICoreWindowExtension
 	{
-		private static int _currentFrameId = 0;
+		private static int _currentFrameId;
 
 		private readonly Windows.UI.Core.CoreWindow _owner;
 		private readonly ICoreWindowEvents _ownerEvents;
