@@ -309,7 +309,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			{
 				var loader = new TestCustomXamlResourceLoader();
 				var resourceValue = "This is a CustomResource.";
-				var resourceKey = "MyCustomResource";
+				var resourceKey = "myCustomResource";
 				loader.TestCustomResources[resourceKey] = resourceValue;
 				Windows.UI.Xaml.Resources.CustomXamlResourceLoader.Current = loader;
 

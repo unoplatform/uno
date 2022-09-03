@@ -22,7 +22,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		    LastObjectType = objectType;
 		    LastPropertyName = propertyName;
 		    LastPropertyType = propertyType;
-			if (TestCustomResources.ContainsKey(resourceId) && TestCustomResources[resourceId].GetType().Name == propertyType)
+			if (TestCustomResources.ContainsKey(resourceId) && TestCustomResources[resourceId].GetType().FullName == propertyType)
 			{
 				return TestCustomResources[resourceId];
 			}
