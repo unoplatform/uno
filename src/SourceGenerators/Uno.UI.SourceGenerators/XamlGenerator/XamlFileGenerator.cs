@@ -12,7 +12,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Uno.Roslyn;
-using Uno;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 using System.Runtime.CompilerServices;
 using Uno.UI.Xaml;
@@ -1330,7 +1329,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var propertyName = GetInitializerNameForResourceKey(index);
 				if (_topLevelQualifiedKeys.ContainsKey((theme, key)))
 				{
-					throw new InvalidOperationException($"Dictionary Item {resource?.Type?.Name} has duplicate key `{key}` { (theme != null ? $" in theme {theme}" : "")}.");
+					throw new InvalidOperationException($"Dictionary Item {resource?.Type?.Name} has duplicate key `{key}` {(theme != null ? $" in theme {theme}" : "")}.");
 				}
 				var isStaticResourceAlias = resource.Type.Name == "StaticResource";
 				if (!isStaticResourceAlias)
@@ -1587,7 +1586,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				using (writer.BlockInvariant("namespace {0}", className.Namespace))
 				{
-					
 					AnalyzerSuppressionsGenerator.Generate(writer, _analyzerSuppressions);
 					using (writer.BlockInvariant("public sealed partial class {0} : {1}", className.ClassName, GetGlobalizedTypeName(controlBaseType.ToDisplayString())))
 					{
@@ -3620,7 +3618,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						var eventTarget = XBindExpressionParser.RestoreSinglePath(bind.Members.First().Value?.ToString());
 
-						if(eventTarget == null)
+						if (eventTarget == null)
 						{
 							throw new InvalidOperationException("x:Bind event path cannot by empty");
 						}
@@ -3962,7 +3960,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					if (templateBindingNode != null)
 					{
-						return(
+						return (
 							templateBindingNode.Members,
 							new[] { "RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent)" }
 						);
@@ -3997,7 +3995,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					else
 					{
 						var pocoBuilder = isOwnerDependencyObject ? "" : $"GetDependencyObjectForXBind().";
-						
+
 						using (writer.Indent($"{prefix}{pocoBuilder}SetBinding(", $"){postfix}"))
 						{
 							writer.AppendLine2($"\"{member.Member.Name}\",");
@@ -4707,7 +4705,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return ParseTimeSpan(GetMemberValue());
 
 					case XamlConstants.Types.Duration:
-						return $"new Duration({ ParseTimeSpan(GetMemberValue()) })";
+						return $"new Duration({ParseTimeSpan(GetMemberValue())})";
 
 					case "System.TimeSpan":
 						return ParseTimeSpan(GetMemberValue());
@@ -5008,7 +5006,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else
 			{
-				memberValue = string.Join(", ", ColorCodeParser.ParseColorCode(memberValue));
+				memberValue = ColorCodeParser.ParseColorCode(memberValue);
 
 				return "SolidColorBrushHelper.FromARGB({0})".InvariantCultureFormat(memberValue);
 			}
@@ -5068,7 +5066,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else
 			{
-				memberValue = string.Join(", ", ColorCodeParser.ParseColorCode(memberValue));
+				memberValue = ColorCodeParser.ParseColorCode(memberValue);
 
 				return $"{GlobalPrefix}{XamlConstants.Types.ColorHelper}.FromARGB({memberValue})";
 			}
@@ -6348,7 +6346,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			memberValue = memberValue.Trim('{', '}');
 
 			if (isDouble)
-            {
+			{
 				// UWP does that for double but not for float.
 				memberValue = IgnoreStartingFromFirstSpaceIgnoreLeading(memberValue);
 			}
