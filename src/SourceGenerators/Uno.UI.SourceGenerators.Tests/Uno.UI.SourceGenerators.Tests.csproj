@@ -16,6 +16,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj" />
+		<ProjectReference Include="..\Uno.UI.InternalSourceGenerators\Uno.UI.InternalSourceGenerators.csproj" />
 	</ItemGroup>
 	
 </Project>
