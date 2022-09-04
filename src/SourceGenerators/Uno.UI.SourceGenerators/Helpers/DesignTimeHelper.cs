@@ -1,15 +1,12 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Uno.Roslyn;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
+#else
+using Uno.Roslyn;
 #endif
 
 namespace Uno.UI.SourceGenerators.Helpers

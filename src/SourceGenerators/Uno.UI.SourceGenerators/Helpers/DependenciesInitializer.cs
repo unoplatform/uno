@@ -4,9 +4,6 @@ using System.IO;
 using System.Reflection;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
-using Uno.Roslyn;
-using System.Diagnostics;
-using Microsoft.CodeAnalysis;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
