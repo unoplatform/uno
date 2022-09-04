@@ -56,6 +56,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _projectFullPath;
 		private readonly bool _outputSourceComments = true;
 		private readonly bool _xamlResourcesTrimming;
+		private bool _shouldWriteErrorOnInvalidXaml;
 		private readonly RoslynMetadataHelper _metadataHelper;
 
 		/// <summary>
@@ -166,7 +167,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (bool.TryParse(context.GetMSBuildPropertyValue("ShouldWriteErrorOnInvalidXaml"), out var shouldWriteErrorOnInvalidXaml))
 			{
-				XamlFileGenerator.ShouldWriteErrorOnInvalidXaml = shouldWriteErrorOnInvalidXaml;
+				_shouldWriteErrorOnInvalidXaml = shouldWriteErrorOnInvalidXaml;
 			}
 
 			if (!bool.TryParse(context.GetMSBuildPropertyValue("IsUiAutomationMappingEnabled") ?? "", out _isUiAutomationMappingEnabled))
@@ -336,6 +337,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									isUiAutomationMappingEnabled: _isUiAutomationMappingEnabled,
 									uiAutomationMappings: _uiAutomationMappings,
 									defaultLanguage: _defaultLanguage,
+									shouldWriteErrorOnInvalidXaml: _shouldWriteErrorOnInvalidXaml,
 									isWasm: _isWasm,
 									isDebug: _isDebug,
 									isHotReloadEnabled: _isHotReloadEnabled,

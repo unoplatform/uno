@@ -223,6 +223,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool isUiAutomationMappingEnabled,
 			Dictionary<string, string[]> uiAutomationMappings,
 			string defaultLanguage,
+			bool shouldWriteErrorOnInvalidXaml,
 			bool isWasm,
 			bool isDebug,
 			bool isHotReloadEnabled,
@@ -287,6 +288,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_iOSViewSymbol = FindType("UIKit.UIView");
 			_appKitViewSymbol = FindType("AppKit.NSView");
 			_xamlConversionTypes = _metadataHelper.GetAllTypesAttributedWith(GetType(XamlConstants.Types.CreateFromStringAttribute)).ToList();
+			ShouldWriteErrorOnInvalidXaml = shouldWriteErrorOnInvalidXaml;
 
 			_isWasm = isWasm;
 
@@ -298,7 +300,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Indicates if the code generation should write #error in the generated code (and break at compile time) or write a // Warning, which would be silent.
 		/// </summary>
 		/// <remarks>Initial behavior is to write // Warning, hence the default value to false, but we suggest setting this to true.</remarks>
-		public static bool ShouldWriteErrorOnInvalidXaml { get; set; }
+		public bool ShouldWriteErrorOnInvalidXaml { get; }
 
 		public string GenerateFile()
 		{
