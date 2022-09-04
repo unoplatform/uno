@@ -2,7 +2,9 @@
 #nullable enable
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -14,7 +16,7 @@ using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 using Uno.Roslyn;
 using Windows.Foundation.Metadata;
 using System.Threading;
-using System.IO;
+using Microsoft.CodeAnalysis.Text;
 
 #if NETFRAMEWORK
 using GeneratorExecutionContext = Uno.SourceGeneration.GeneratorExecutionContext;
@@ -22,18 +24,26 @@ using GeneratorExecutionContext = Uno.SourceGeneration.GeneratorExecutionContext
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
-	internal class XamlFileParser
+	internal partial class XamlFileParser
 	{
+		private static readonly ConcurrentDictionary<CachedFileKey, CachedFile> _cachedFiles = new();
+		private static readonly TimeSpan _cacheEntryLifetime = new TimeSpan(hours: 1, minutes: 0, seconds: 0);
+		private readonly string _excludeXamlNamespacesProperty;
+		private readonly string _includeXamlNamespacesProperty;
 		private readonly string[] _excludeXamlNamespaces;
 		private readonly string[] _includeXamlNamespaces;
 		private readonly RoslynMetadataHelper _metadataHelper;
 		private int _depth;
 
-		public XamlFileParser(string[] excludeXamlNamespaces, string[] includeXamlNamespaces, RoslynMetadataHelper roslynMetadataHelper)
+		public XamlFileParser(string excludeXamlNamespaces, string includeXamlNamespaces, RoslynMetadataHelper roslynMetadataHelper)
 		{
-			_excludeXamlNamespaces = excludeXamlNamespaces;
-			_includeXamlNamespaces = includeXamlNamespaces;
-			this._metadataHelper = roslynMetadataHelper;
+			_excludeXamlNamespacesProperty = excludeXamlNamespaces;
+			_excludeXamlNamespaces = excludeXamlNamespaces.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+			_includeXamlNamespacesProperty = includeXamlNamespaces;
+			_includeXamlNamespaces = includeXamlNamespaces.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			
+			_metadataHelper = roslynMetadataHelper;
 		}
 
 		public XamlFileDefinition[] ParseFiles(Uno.Roslyn.MSBuildItem[] xamlSourceFiles, CancellationToken cancellationToken)
@@ -46,6 +56,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.ToArray()!;
 		}
 
+		private static void ClearCache()
+		{
+			_cachedFiles.Remove(kvp => DateTimeOffset.Now - kvp.Value.LastTimeUsed > _cacheEntryLifetime);
+		}
+
 		private XamlFileDefinition? ParseFile(AdditionalText file, CancellationToken cancellationToken)
 		{
 			try
@@ -53,7 +68,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 #if DEBUG
 				Console.WriteLine("Pre-processing XAML file: {0}", file);
 #endif
-				var document = ApplyIgnorables(file, cancellationToken);
+
+				var document = ApplyIgnorables(file, cancellationToken, out var sourceText);
+				var cachedFileKey = new CachedFileKey(_includeXamlNamespacesProperty, _excludeXamlNamespacesProperty, file.Path, sourceText.GetChecksum());
+				if (_cachedFiles.TryGetValue(cachedFileKey, out var cached))
+				{
+					_cachedFiles[cachedFileKey] = cached.WithUpdatedLastTimeUsed();
+					ClearCache();
+					return cached.XamlFileDefinition;
+				}
+
+				ClearCache();
 
 				// Initialize the reader using an empty context, because when the tasl
 				// is run under the BeforeCompile in VS IDE, the loaded assemblies are used 
@@ -69,7 +94,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						cancellationToken.ThrowIfCancellationRequested();
 
-						return Visit(reader, file.Path);
+						var xamlFileDefinition = Visit(reader, file.Path);
+						_cachedFiles[cachedFileKey] = new CachedFile(DateTimeOffset.Now, xamlFileDefinition);
+						return xamlFileDefinition;
 					}
 				}
 
@@ -93,16 +120,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private XmlReader ApplyIgnorables(AdditionalText file, CancellationToken cancellationToken)
+		private XmlReader ApplyIgnorables(AdditionalText file, CancellationToken cancellationToken, out SourceText sourceTextOut)
 		{
-			var sourceText = file.GetText(cancellationToken);
+			var sourceText = file.GetText(cancellationToken)!;
 			if (sourceText is null)
 			{
 				throw new Exception($"Failed to read additional file '{file.Path}'");
 			}
 
+			sourceTextOut = sourceText;
+
 			var originalString = sourceText.ToString();
-      StringBuilder adjusted;
+			StringBuilder adjusted;
 
 			var document = new XmlDocument();
 			document.LoadXml(originalString);
@@ -117,7 +146,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (ignorables == null && !shouldCreateIgnorable && !hasxBind)
 			{
 				// No need to modify file
-				return XmlReader.Create(file.Path);
+				return XmlReader.Create(new StringReader(originalString));
 			}
 
 			var originalIgnorables = ignorables?.Value ?? "";

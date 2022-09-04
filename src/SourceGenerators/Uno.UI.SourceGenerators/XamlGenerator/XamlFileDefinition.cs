@@ -47,11 +47,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			get => _shortId ?? -1;
 			set
 			{
-				if (_shortId != null)
-				{
-					throw new InvalidOperationException($"{nameof(ShortId)} should not be set more than once.");
-				}
-
 				_shortId = value;
 			}
 		}
