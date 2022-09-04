@@ -175,8 +175,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			{
 				var propertyName = memberSymbol.Name.TrimEnd("Property", StringComparison.Ordinal);
 
-				var getMethodSymbol = ownerType.GetMethods().FirstOrDefault(m => m.Name == "Get" + propertyName);
-				var setMethodSymbol = ownerType.GetMethods().FirstOrDefault(m => m.Name == "Set" + propertyName);
+				var getMethodSymbol = ownerType.GetMethodsWithName("Get" + propertyName).FirstOrDefault();
+				var setMethodSymbol = ownerType.GetMethodsWithName("Set" + propertyName).FirstOrDefault();
 
 				if (getMethodSymbol == null)
 				{
@@ -282,13 +282,13 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					}
 				}
 
-				if (coerceCallback || propertyOwnerType.GetMethods().Any(m => m.Name == "Coerce" + propertyName))
+				if (coerceCallback || propertyOwnerType.GetMethodsWithName("Coerce" + propertyName).Any())
 				{
 					builder.AppendLineIndented($"\t\t, coerceValueCallback: (instance, baseValue) => Coerce{propertyName}(instance, ({propertyTypeName})baseValue)");
 				}
 
 				changedCallbackName ??= $"On{propertyName}Changed";
-				var propertyChangedMethods = propertyOwnerType.GetMethods().Where(m => m.Name == changedCallbackName).ToArray();
+				var propertyChangedMethods = propertyOwnerType.GetMethodsWithName(changedCallbackName).ToArray();
 				if (changedCallback || (propertyChangedMethods?.Any() ?? false))
 				{
 					if (propertyChangedMethods.FirstOrDefault(IsCallbackWithDPChangedArgs) is { } callbackWithEventArgs)
@@ -330,7 +330,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			{
 				var propertyName = memberSymbol.Name.TrimEnd("Property", StringComparison.Ordinal);
 
-				var propertySymbol = ownerType.GetProperties().FirstOrDefault(m => m.Name == propertyName);
+				var propertySymbol = ownerType.GetPropertiesWithName(propertyName).FirstOrDefault();
 
 				if(propertySymbol == null)
 				{
@@ -398,13 +398,13 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					builder.AppendLineIndented($"\t\t, backingFieldUpdateCallback: On{propertyName}BackingFieldUpdate");
 				}
 
-				if (coerceCallback || propertySymbol.ContainingType.GetMethods().Any(m => m.Name == "Coerce" + propertyName))
+				if (coerceCallback || propertySymbol.ContainingType.GetMethodsWithName("Coerce" + propertyName).Any())
 				{
 					builder.AppendLineIndented($"\t\t, coerceValueCallback: (instance, baseValue) => (({containingTypeName})instance).Coerce{propertyName}(baseValue)");
 				}
 
 				changedCallbackName ??= $"On{propertyName}Changed";
-				var propertyChangedMethods = propertySymbol.ContainingType.GetMethods().Where(m => m.Name == changedCallbackName).ToArray();
+				var propertyChangedMethods = propertySymbol.ContainingType.GetMethodsWithName(changedCallbackName).ToArray();
 				if (changedCallback || propertyChangedMethods.Any())
 				{
 					if (propertyChangedMethods.FirstOrDefault(IsCallbackWithDPChangedArgs) is { } callbackWithEventArgs)
@@ -483,7 +483,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				var defaultValueMethodName = $"Get{propertyName}DefaultValue()";
 				if (defaultValue.HasValue && !string.IsNullOrEmpty(defaultValue.Value.Key))
 				{
-					if (ownerType.GetMethods().Any(m => m.Name == defaultValueMethodName))
+					if (ownerType.GetMethodsWithName(defaultValueMethodName).Any())
 					{
 						builder.AppendLineIndented($"#error The generated property {propertyName} cannot contains both a DefaultValue and the {defaultValueMethodName} method.");
 					}

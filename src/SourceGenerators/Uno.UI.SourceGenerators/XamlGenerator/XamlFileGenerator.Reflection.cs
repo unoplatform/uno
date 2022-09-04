@@ -419,7 +419,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var resolvedType = type;
 
 					var property = resolvedType.GetAllPropertiesWithName(propertyName).FirstOrDefault();
-					var setMethod = resolvedType.GetMethods().FirstOrDefault(p => p.Name == "Set" + propertyName);
+					var setMethod = resolvedType.GetMethodsWithName("Set" + propertyName).FirstOrDefault();
 
 					if (property != null)
 					{
@@ -556,7 +556,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return true;
 				}
 
-				var setMethod = type?.GetMethods().FirstOrDefault(p => p.Name == "Set" + name);
+				var setMethod = type?.GetMethodsWithName("Set" + name).FirstOrDefault();
 				if (setMethod is { IsStatic: true, Parameters: { Length: 2 } })
 				{
 					return true;
@@ -584,7 +584,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			do
 			{
-				var setMethod = type?.GetMethods().FirstOrDefault(p => p.Name == "Set" + name);
+				var setMethod = type?.GetMethodsWithName("Set" + name).FirstOrDefault();
 
 				if (setMethod != null && setMethod.IsStatic && setMethod.Parameters.Length == 2)
 				{

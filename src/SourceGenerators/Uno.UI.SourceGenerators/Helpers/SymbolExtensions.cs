@@ -125,6 +125,8 @@ namespace Microsoft.CodeAnalysis
 
 		public static IEnumerable<IPropertySymbol> GetProperties(this INamedTypeSymbol symbol) => symbol.GetMembers().OfType<IPropertySymbol>();
 
+		public static IEnumerable<IPropertySymbol> GetPropertiesWithName(this INamedTypeSymbol symbol, string name) => symbol.GetMembers(name).OfType<IPropertySymbol>();
+
 		public static IEnumerable<IEventSymbol> GetAllEvents(this INamedTypeSymbol? symbol)
 		{
 			do

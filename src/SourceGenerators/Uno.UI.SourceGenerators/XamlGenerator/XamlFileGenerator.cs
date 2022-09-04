@@ -3237,7 +3237,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 									var getterMethod = $"Get{member.Member.Name}";
 
-									if (ownerType.GetMethods().Any(m => m.Name == getterMethod))
+									if (ownerType.GetMethodsWithName(getterMethod).Any())
 									{
 										// Attached property
 										writer.AppendLineIndented(
@@ -3672,14 +3672,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										};
 									}
 
-									var method = currentType?.GetMethods().FirstOrDefault(m => m.Name == parts.Last())
+									var method = currentType?.GetMethodsWithName(parts.Last()).FirstOrDefault()
 										?? throw new InvalidOperationException($"Failed to find {parts.Last()} on {currentType}");
 
 									return method;
 								}
 								else
 								{
-									return sourceType?.GetMethods().FirstOrDefault(m => m.Name == eventTarget)
+									return sourceType?.GetMethodsWithName(eventTarget ?? "").FirstOrDefault()
 										?? throw new InvalidOperationException($"Failed to find {eventTarget} on {sourceType}");
 								}
 							}
@@ -4334,9 +4334,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (_metadataHelper.FindTypeByFullName(className) is INamedTypeSymbol typeSymbol)
 			{
-				var isStaticMethod = typeSymbol.GetMethods().Any(m => m.IsStatic && m.Name == memberName);
-				var isStaticProperty = typeSymbol.GetProperties().Any(m => m.Name == memberName && m.IsStatic);
-				var isStaticField = typeSymbol.GetFields().Any(m => m.Name == memberName && m.IsStatic);
+				var isStaticMethod = typeSymbol.GetMethodsWithName(memberName).Any(m => m.IsStatic);
+				var isStaticProperty = typeSymbol.GetPropertiesWithName(memberName).Any(m => m.IsStatic);
+				var isStaticField = typeSymbol.GetFieldsWithName(memberName).Any(m => m.IsStatic);
 				var isEnum = typeSymbol.TypeKind == TypeKind.Enum;
 
 				return isStaticMethod || isStaticProperty || isStaticField || (!isTopLevelMember && isEnum);
@@ -4817,10 +4817,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				var hasImplictToString = propertyType
-					.GetMethods()
-					.Any(m =>
-						m.Name == "op_Implicit"
-						&& m.Parameters.FirstOrDefault().SelectOrDefault(p => SymbolEqualityComparer.Default.Equals(p?.Type, _stringSymbol))
+					.GetMethodsWithName("op_Implicit")
+					.Any(m => m.Parameters.FirstOrDefault().SelectOrDefault(p => SymbolEqualityComparer.Default.Equals(p?.Type, _stringSymbol))
 					);
 
 				if (hasImplictToString
