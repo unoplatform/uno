@@ -55,7 +55,7 @@
 
 		<!-- Explicitly included to remove all assets from Uno dependencies coming from SkiaSharp.Views.* -->
 		<PackageReference Include="Uno.UI" Version="4.4.5" ExcludeAssets="all" IncludeAssets="none" PrivateAssets="all" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
-		<PackageReference Include="Uno.WinUI" Version="4.4.5" ExcludeAssets="all" IncludeAssets="none" PrivateAssets="all" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+		<PackageReference Include="Uno.WinUI" Version="4.4.20" ExcludeAssets="all" IncludeAssets="none" PrivateAssets="all" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-android'">
