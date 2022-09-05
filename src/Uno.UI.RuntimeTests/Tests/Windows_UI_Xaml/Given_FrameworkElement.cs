@@ -19,6 +19,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Private.Infrastructure;
 using MUXControlsTestApp.Utilities;
+using Windows.UI.Xaml.Automation;
 #if __IOS__
 using UIKit;
 #endif
@@ -580,6 +581,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			panel.Children.Add(tbNativeTyped);
 
 			Assert.AreEqual(1, panel.Children.Count);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Set_Name()
+		{
+			var SUT = new FrameworkElement();
+			SUT.Name = "Test";
+			var dpName = SUT.GetValue(FrameworkElement.NameProperty);
+			Assert.AreEqual("Test", dpName);
+			var automationId = SUT.GetValue(AutomationProperties.AutomationIdProperty);
+			Assert.AreEqual("Test", automationId);
+		}
+		
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Set_NameProperty()
+		{
+			var SUT = new FrameworkElement();
+			SUT.SetValue(FrameworkElement.NameProperty, "Test");
+			var name = SUT.Name;
+			Assert.AreEqual("Test", name);
+			var automationId = SUT.GetValue(AutomationProperties.AutomationIdProperty);
+			Assert.AreEqual("Test", automationId);
 		}
 
 		[TestMethod]
