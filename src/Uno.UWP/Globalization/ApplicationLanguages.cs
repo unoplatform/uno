@@ -80,7 +80,7 @@ namespace Windows.Globalization
 				Languages = languages.Distinct().ToArray();
 			}
 
-			var primaryLanguage = Languages.FirstOrDefault();
+			var primaryLanguage = Languages.Count > 0 ? Languages[0] : null;
 
 			if(primaryLanguage is not null)
 			{

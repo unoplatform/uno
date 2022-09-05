@@ -85,7 +85,7 @@ namespace Windows.UI.Xaml.Controls
 			_adapter?.NotifyDataSetChanged();
 			if (_pager != null)
 			{
-				_pager.OffscreenPageLimit = Items.Count();
+				_pager.OffscreenPageLimit = Items.Count;
 			}
 			_tabStrip?.Update();
 		}

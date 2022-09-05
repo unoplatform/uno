@@ -3263,7 +3263,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										closureName
 									);
 
-									if (member.Objects.Count() == 1)
+									if (member.Objects.Count == 1)
 									{
 										BuildChild(writer, member, member.Objects.First());
 									}
@@ -6217,7 +6217,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (type != null)
 				{
 					var q = from m in type.Constructors
-							where m.Parameters.Count() == 1
+							where m.Parameters.Length == 1
 							where SymbolEqualityComparer.Default.Equals(m.Parameters.First().Type, _androidContentContextSymbol)
 							select m;
 

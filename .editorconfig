@@ -238,6 +238,11 @@ dotnet_diagnostic.RS0030.severity = error
 dotnet_analyzer_diagnostic.category-Performance.severity = none #error - Uncomment when all violations are fixed.
 
 dotnet_diagnostic.CA1805.severity = error
+dotnet_diagnostic.CA1826.severity = error
+dotnet_diagnostic.CA1827.severity = error
+dotnet_diagnostic.CA1828.severity = error
+dotnet_diagnostic.CA1829.severity = error
+
 dotnet_diagnostic.CA1061.severity = none
 dotnet_diagnostic.CA1802.severity = none
 dotnet_diagnostic.CA1014.severity = none
@@ -290,7 +295,6 @@ dotnet_diagnostic.CA1508.severity = none
 dotnet_diagnostic.CA2008.severity = none
 dotnet_diagnostic.CA1810.severity = none
 dotnet_diagnostic.CA1309.severity = none
-dotnet_diagnostic.CA1829.severity = none
 dotnet_diagnostic.CA3075.severity = none
 dotnet_diagnostic.CA1815.severity = none
 dotnet_diagnostic.CA1819.severity = none
@@ -302,7 +306,6 @@ dotnet_diagnostic.CA2214.severity = none
 dotnet_diagnostic.CA1033.severity = none
 dotnet_diagnostic.CA2213.severity = none
 dotnet_diagnostic.CA1068.severity = none
-dotnet_diagnostic.CA1826.severity = none
 dotnet_diagnostic.CA2016.severity = none
 dotnet_diagnostic.CA1835.severity = none
 dotnet_diagnostic.CA1069.severity = none

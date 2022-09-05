@@ -35,7 +35,7 @@ namespace Windows.Storage.Pickers
 		private async Task<StorageFile?> PickSingleFileTaskAsync(CancellationToken token)
 		{
 			var files = await PickFilesAsync(false, token);
-			return files.FirstOrDefault();
+			return files.Count > 0 ? files[0] : null;
 		}
 
 		private async Task<IReadOnlyList<StorageFile>> PickMultipleFilesTaskAsync(CancellationToken token)
