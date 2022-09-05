@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿
 <Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
@@ -23,9 +23,9 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="FluentAssertions" />
+		<PackageReference Include="FluentAssertions" Version="$(FluentAssertionsVersion)" />
 		<PackageReference Include="MSTest.TestFramework" />
-		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Uno.SourceGenerationTasks" Version="$(UnoSourceGenerationTasksVersion)" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -32,7 +32,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp.Views.WPF" />
-		<PackageReference Include="SkiaSharp.Harfbuzz" />
+		<PackageReference Include="SkiaSharp.Harfbuzz" Version="$(SkiaSharpHarfbuzzVersion)" />
 	</ItemGroup>
 
 	<ItemGroup>

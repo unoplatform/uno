@@ -45,7 +45,7 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Uno.SourceGenerationTasks" Version="$(UnoSourceGenerationTasksVersion)" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-android'">

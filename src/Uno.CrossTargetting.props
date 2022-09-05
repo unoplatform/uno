@@ -27,9 +27,7 @@
 
   <!---->
 
-  <Target Name="SetNoWarn"
-				  BeforeTargets="Build"
-				  Condition=" '$(TargetFramework)' == 'net461' ">
+  <Target Name="SetNoWarn" BeforeTargets="Build" Condition=" '$(TargetFramework)' == 'net461' ">
 
 	<!--
 		This target is the equivalent to this property group, until this
@@ -40,9 +38,7 @@
 		-->
 
 	<CreateProperty Value="$(NoWarn);67;0649">
-	  <Output
-			  TaskParameter="Value"
-			  PropertyName="NoWarn" />
+	  <Output TaskParameter="Value" PropertyName="NoWarn" />
 	</CreateProperty>
   </Target>
 
@@ -116,7 +112,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="xamarin.build.download" />
+	<PackageReference Include="xamarin.build.download" Version="$(xamarinbuilddownloadVersion)" />
   </ItemGroup>
 
   <ItemGroup Condition=" ($(IsMonoAndroid) or $(IsXamarinIOS)) and '$(ExtrasIsReferenceAssembly)'!='' ">
@@ -131,10 +127,7 @@
 	<Message Text="Building target framework: $(TargetFramework)" Importance="high" Condition="'$(TargetFramework)'!=''" />
   </Target>
 
-  <Target Name="_UnoOverrideNuget"
-		AfterTargets="AfterBuild"
-		DependsOnTargets="BuiltProjectOutputGroup"
-		Condition="'$(UnoNugetOverrideVersion)'!='' and ('$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference')">
+  <Target Name="_UnoOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!='' and ('$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference')">
 
 	<PropertyGroup>
 	  <_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
@@ -150,15 +143,11 @@
 	<MakeDir Directories="$(_TargetNugetFolder)" />
 
     <!-- Add override file to notify a developer that the used package is modified -->
-    <WriteLinestoFile File="$(_TargetNugetFolder)\.packageoverride"
-             Lines="$([System.DateTime]::Now.ToString('yyyyMMddTHHmmss')) from $(MSBuildThisFileDirectory)"
-             Overwrite="True" />
+    <WriteLinestoFile File="$(_TargetNugetFolder)\.packageoverride" Lines="$([System.DateTime]::Now.ToString('yyyyMMddTHHmmss')) from $(MSBuildThisFileDirectory)" Overwrite="True" />
 	<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder) and $(_TargetNugetRefFolder)" />
 
-	<Copy SourceFiles="@(_OutputFiles)"
-		  DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-	<Copy SourceFiles="@(_OutputRefFiles)"
-		  DestinationFiles="@(_OutputRefFiles->'$(_TargetNugetRefFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+	<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+	<Copy SourceFiles="@(_OutputRefFiles)" DestinationFiles="@(_OutputRefFiles-&gt;'$(_TargetNugetRefFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 
 
@@ -180,7 +169,7 @@
 
 	<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
 
-	<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-	<Copy SourceFiles="@(_DebugSymbolsIntermediatePath)" DestinationFiles="@(_DebugSymbolsIntermediatePath->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+	<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+	<Copy SourceFiles="@(_DebugSymbolsIntermediatePath)" DestinationFiles="@(_DebugSymbolsIntermediatePath-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 </Project>

@@ -35,7 +35,7 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Uno.SourceGenerationTasks" Version="$(UnoSourceGenerationTasksVersion)" />
 	</ItemGroup>
 
 	<Import Project="..\..\Common.targets" />
@@ -48,30 +48,30 @@
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
 
-		<PackageReference Include="SkiaSharp.Skottie" />
+		<PackageReference Include="SkiaSharp.Skottie" Version="$(SkiaSharpSkottieVersion)" />
 		
-		<PackageReference Include="SkiaSharp.Views.Uno" Condition="'$(UNO_UWP_BUILD)'=='true'" />
-		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+		<PackageReference Include="SkiaSharp.Views.Uno" Condition="'$(UNO_UWP_BUILD)'=='true'" Version="$(SkiaSharpViewsUnoVersion)" />
+		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Condition="'$(UNO_UWP_BUILD)'!='true'" Version="$(SkiaSharpViewsUnoWinUIVersion)" />
 
 		<!-- Explicitly included to remove all assets from Uno dependencies coming from SkiaSharp.Views.* -->
-		<PackageReference Include="Uno.UI" Version="4.4.5" ExcludeAssets="all" IncludeAssets="none" PrivateAssets="all" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
-		<PackageReference Include="Uno.WinUI" Version="4.4.5" ExcludeAssets="all" IncludeAssets="none" PrivateAssets="all" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+		<PackageReference Include="Uno.UI" Version="$(UnoUIVersion)" ExcludeAssets="all" IncludeAssets="none" PrivateAssets="all" Condition="'$(UNO_UWP_BUILD)'=='true'" />
+		<PackageReference Include="Uno.WinUI" Version="$(UnoWinUIVersion)" ExcludeAssets="all" IncludeAssets="none" PrivateAssets="all" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-android'">
-		<PackageReference Include="SkiaSharp.NativeAssets.Android" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Android" Version="$(SkiaSharpNativeAssetsAndroidVersion)" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-ios'">
-		<PackageReference Include="SkiaSharp.NativeAssets.iOS" />
+		<PackageReference Include="SkiaSharp.NativeAssets.iOS" Version="$(SkiaSharpNativeAssetsiOSVersion)" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">
-		<PackageReference Include="SkiaSharp.NativeAssets.MacCatalyst" />
+		<PackageReference Include="SkiaSharp.NativeAssets.MacCatalyst" Version="$(SkiaSharpNativeAssetsMacCatalystVersion)" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-macos'">
-		<PackageReference Include="SkiaSharp.NativeAssets.macos" />
+		<PackageReference Include="SkiaSharp.NativeAssets.macos" Version="$(SkiaSharpNativeAssetsmacosVersion)" />
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
@@ -79,8 +79,8 @@
 	<Target Name="_CleanupReferences" BeforeTargets="CoreCompile">
 		<!-- Required when building under VS to remove analyzer references coming from the Uno.UI/Uno.WinUI transitive references -->
 		<ItemGroup>
-			<Analyzer Remove="@(Analyzer)" Condition="'%(Analyzer.NugetPackageId)'=='Uno.UI'"/>
-			<Analyzer Remove="@(Analyzer)" Condition="'%(Analyzer.NugetPackageId)'=='Uno.WinUI'"/>
+			<Analyzer Remove="@(Analyzer)" Condition="'%(Analyzer.NugetPackageId)'=='Uno.UI'" />
+			<Analyzer Remove="@(Analyzer)" Condition="'%(Analyzer.NugetPackageId)'=='Uno.WinUI'" />
 		</ItemGroup>
 	</Target>
 
@@ -99,7 +99,7 @@
 
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
 
-		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
 </Project>

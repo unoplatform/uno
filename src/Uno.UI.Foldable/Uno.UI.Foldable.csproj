@@ -37,14 +37,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Version="1.0.0.3-beta02" />
+		<PackageReference Include="Uno.SourceGenerationTasks" Version="$(UnoSourceGenerationTasksVersion)" />
+		<PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Version="$(XamarinAndroidXWindowWindowJavaVersion)" />
 	</ItemGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0' or '$(TargetFramework)' == 'MonoAndroid12.0'">
-		<PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Version="1.0.0.3-beta02" />
+		<PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Version="$(XamarinAndroidXWindowWindowJavaVersion)" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac)">
@@ -69,8 +69,8 @@
 
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
 
-		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
 
 	<ItemGroup>
@@ -84,6 +84,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include=".\..\Common\uno.png" Pack="true" PackagePath="\" Visible="false"/>
+		<None Include=".\..\Common\uno.png" Pack="true" PackagePath="\" Visible="false" />
 	</ItemGroup>
 </Project>

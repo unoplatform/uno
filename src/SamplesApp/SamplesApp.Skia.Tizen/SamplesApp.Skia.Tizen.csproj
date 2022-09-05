@@ -16,7 +16,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="SkiaSharp.Views" />
+		<PackageReference Include="SkiaSharp.Views" Version="$(SkiaSharpViewsVersion)" />
 	</ItemGroup>
 
 	<ItemGroup>

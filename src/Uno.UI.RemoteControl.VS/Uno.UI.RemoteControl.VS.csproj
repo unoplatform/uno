@@ -19,21 +19,21 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
-		<PackageReference Include="EnvDTE100" Version="10.0.3" />
+		<PackageReference Include="EnvDTE100" Version="$(EnvDTE100Version)" />
 		<PackageReference Include="Microsoft.Build" Version="15.1.548" />
 		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem" Version="15.0.751" />
-		<PackageReference Include="Microsoft.VisualStudio.Shell.15.0" Version="15.9.28307" />
-		<PackageReference Include="Microsoft.VisualStudio.Shell.Framework" Version="15.9.28307" />
-		<PackageReference Include="Microsoft.VisualStudio.Shell.Interop" Version="7.10.6073" />
+		<PackageReference Include="Microsoft.VisualStudio.Shell.15.0" Version="$(MicrosoftVisualStudioShell150Version)" />
+		<PackageReference Include="Microsoft.VisualStudio.Shell.Framework" Version="$(MicrosoftVisualStudioShellFrameworkVersion)" />
+		<PackageReference Include="Microsoft.VisualStudio.Shell.Interop" Version="$(MicrosoftVisualStudioShellInteropVersion)" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-		<PackageReference Include="microsoft.visualstudio.threading.analyzers" Version="16.10.56" />
+		<PackageReference Include="microsoft.visualstudio.threading.analyzers" Version="$(microsoftvisualstudiothreadinganalyzersVersion)" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net48'">
-		<PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.0-previews-2-31512-422" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.2.2141" />
+		<PackageReference Include="Microsoft.VisualStudio.SDK" Version="$(MicrosoftVisualStudioSDKVersion)" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.VSSDK.BuildTools" Version="$(MicrosoftVSSDKBuildToolsVersion)" />
 		<PackageReference Include="Newtonsoft.Json" version="12.0.3" />
-		<PackageReference Include="NuGet.VisualStudio" version="4.5.0" />
+		<PackageReference Include="NuGet.VisualStudio" version="4.5.0" Version="$(NuGetVisualStudioVersion)" />
 		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem" Version="16.0.374-pre" />
 	</ItemGroup>
 
@@ -53,8 +53,8 @@
 		</ItemGroup>
 		<MakeDir Directories="$(_TargetNugetFolder)" />
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
-		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
 
 	<Target Name="_ForceRemoveAnalyzers" BeforeTargets="CoreCompile" Condition="$([MSBuild]::IsOsPlatform('Linux'))">

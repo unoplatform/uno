@@ -36,7 +36,7 @@
 	<Import Project="..\Uno.CrossTargetting.props" />
 	
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Uno.SourceGenerationTasks" Version="$(UnoSourceGenerationTasksVersion)" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -20,7 +20,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Uno.SourceGenerationTasks" Version="$(UnoSourceGenerationTasksVersion)" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net461'">
@@ -56,7 +56,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="xamarin.build.download" />
+		<PackageReference Include="xamarin.build.download" Version="$(xamarinbuilddownloadVersion)" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(IsMonoAndroid)">

@@ -34,14 +34,14 @@
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
+		<PackageReference Include="Microsoft.Win32.Registry" Version="$(MicrosoftWin32RegistryVersion)" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
-		<PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" />
-		<PackageReference Include="SkiaSharp" />
-		<PackageReference Include="SkiaSharp.Harfbuzz" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="$(SkiaSharpNativeAssetsLinuxVersion)" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" Version="$(HarfBuzzSharpNativeAssetsLinuxVersion)" />
+		<PackageReference Include="SkiaSharp" Version="$(SkiaSharpVersion)" />
+		<PackageReference Include="SkiaSharp.Harfbuzz" Version="$(SkiaSharpHarfbuzzVersion)" />
 	</ItemGroup>
 
 	<ItemGroup>

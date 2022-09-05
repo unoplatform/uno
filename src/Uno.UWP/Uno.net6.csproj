@@ -46,14 +46,14 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Uno.SourceGenerationTasks" Version="$(UnoSourceGenerationTasksVersion)" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-android'">
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<PackageReference Include="Xamarin.AndroidX.Fragment" />
-		<PackageReference Include="Xamarin.AndroidX.Browser"  Version="1.0.0" />
+		<PackageReference Include="Xamarin.AndroidX.Browser" Version="$(XamarinAndroidXBrowserVersion)" />
 	</ItemGroup>
 
 	<ItemGroup>

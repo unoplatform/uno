@@ -26,9 +26,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Jellyfin.SkiaSharp.NativeAssets.LinuxArm" Version="1.68.0" />
-		<PackageReference Include="SkiaSharp" />
-		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
+		<PackageReference Include="Jellyfin.SkiaSharp.NativeAssets.LinuxArm" Version="$(JellyfinSkiaSharpNativeAssetsLinuxArmVersion)" />
+		<PackageReference Include="SkiaSharp" Version="$(SkiaSharpVersion)" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="$(SkiaSharpNativeAssetsLinuxVersion)" />
 		<PackageReference Include="GtkSharp" Version="3.24.24.4" />
 	</ItemGroup>
 

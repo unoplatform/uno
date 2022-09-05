@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿
 <Project Sdk="Microsoft.NET.Sdk">
 	
 	<PropertyGroup>
@@ -30,9 +30,9 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="FluentAssertions" />
+		<PackageReference Include="FluentAssertions" Version="$(FluentAssertionsVersion)" />
 		<PackageReference Include="MSTest.TestFramework" />
-		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Uno.SourceGenerationTasks" Version="$(UnoSourceGenerationTasksVersion)" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.net6.csproj" />
 	</ItemGroup>
 
@@ -48,7 +48,7 @@
 		</Compile>
 	</ItemGroup>
 
-	<Import Project="UnitTestsImport.props"/>
+	<Import Project="UnitTestsImport.props" />
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.net6.csproj" />

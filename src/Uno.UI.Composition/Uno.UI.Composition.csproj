@@ -1,4 +1,4 @@
-<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
   
   <PropertyGroup>
     <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid12.0;net461;netstandard2.0</TargetFrameworks>
@@ -43,7 +43,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Uno.SourceGenerationTasks" Version="$(UnoSourceGenerationTasksVersion)" />
 		<PackageReference Include="System.Memory" Version="4.5.2" />
 	</ItemGroup>
 

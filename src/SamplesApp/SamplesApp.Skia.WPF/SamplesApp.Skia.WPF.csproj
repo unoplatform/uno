@@ -24,7 +24,7 @@
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../../netcore-build-windows.props"/>
+	<Import Project="../../netcore-build-windows.props" />
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
@@ -51,7 +51,7 @@
 	<ItemGroup>
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
 		<PackageReference Include="SkiaSharp.Views.WPF" Version="2.88.1-preview.79" />
-		<PackageReference Include="SkiaSharp.Views.Uno" />
+		<PackageReference Include="SkiaSharp.Views.Uno" Version="$(SkiaSharpViewsUnoVersion)" />
 	</ItemGroup>
 
 	<ItemGroup>

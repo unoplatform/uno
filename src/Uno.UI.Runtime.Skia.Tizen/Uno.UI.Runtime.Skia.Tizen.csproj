@@ -25,9 +25,9 @@
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
-		<PackageReference Include="SkiaSharp.Views" />
-		<PackageReference Include="SkiaSharp.Harfbuzz" />
-		<PackageReference Include="HarfBuzzSharp.NativeAssets.Tizen" />
+		<PackageReference Include="SkiaSharp.Views" Version="$(SkiaSharpViewsVersion)" />
+		<PackageReference Include="SkiaSharp.Harfbuzz" Version="$(SkiaSharpHarfbuzzVersion)" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.Tizen" Version="$(HarfBuzzSharpNativeAssetsTizenVersion)" />
 	</ItemGroup>
 	
 	<ItemGroup>

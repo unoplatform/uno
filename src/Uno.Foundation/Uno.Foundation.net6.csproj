@@ -25,8 +25,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Uno.Diagnostics.Eventing" />
+		<PackageReference Include="Uno.SourceGenerationTasks" Version="$(UnoSourceGenerationTasksVersion)" />
+		<PackageReference Include="Uno.Diagnostics.Eventing" Version="$(UnoDiagnosticsEventingVersion)" />
 	</ItemGroup>
 
 	<ItemGroup>

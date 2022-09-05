@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
@@ -16,19 +16,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.Reactive" Version="5.0.0" />
+		<PackageReference Include="System.Reactive" Version="$(SystemReactiveVersion)" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
-		<PackageReference Include="Uno.Core.Extensions" />
-		<PackageReference Include="Uno.Core.Extensions.Disposables" />
+		<PackageReference Include="Uno.Core.Extensions" Version="$(UnoCoreExtensionsVersion)" />
+		<PackageReference Include="Uno.Core.Extensions.Disposables" Version="$(UnoCoreExtensionsDisposablesVersion)" />
 	</ItemGroup>
 		
 	<ItemGroup Condition="'$(TargetFramework)'=='net6.0'">
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.0.1" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.0.1" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="$(MicrosoftCodeAnalysisCSharpFeaturesVersion)" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.0.1" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.0.1" />
-		<PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="$(SystemConfigurationConfigurationManagerVersion)" />
 		<PackageReference Include="Microsoft.Build">
 			<Version>16.5.0</Version>
 			<ExcludeAssets>runtime</ExcludeAssets>
@@ -62,8 +62,8 @@
 		</ItemGroup>
 		<MakeDir Directories="$(_TargetNugetFolder)" />
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
-		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
 
 	<Target Name="GetTargetPath" />

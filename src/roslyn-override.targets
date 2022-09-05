@@ -1,4 +1,4 @@
-<Project ToolsVersion="15.0">
+﻿<Project ToolsVersion="15.0">
 
   <!--
   This file is imported from Directory.Build.props as the nuget tooling
@@ -16,7 +16,7 @@
         <ItemGroup>
 
           <!--This override is used to validate the user of specific version of the C# Compiler-->
-          <PackageReference Include="Microsoft.Net.Compilers" Version="$(MicrosoftNetCompilerVersionOverride)">
+          <PackageReference Include="Microsoft.Net.Compilers" Version="$(MicrosoftNetCompilersVersion)">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
           </PackageReference>

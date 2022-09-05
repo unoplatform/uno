@@ -54,7 +54,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.2.0" />
+		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="$(MicrosoftIORecyclableMemoryStreamVersion)" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -96,6 +96,6 @@
 
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
 
-		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
 	</Target>
 </Project>

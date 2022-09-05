@@ -6,16 +6,16 @@
 	</PropertyGroup>
 
 	<ItemGroup> 
-		<PackageReference Include="FluentAssertions" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+		<PackageReference Include="FluentAssertions" Version="$(FluentAssertionsVersion)" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkVersion)" />
 		<PackageReference Include="NUnit" />
 		<PackageReference Include="NUnit3TestAdapter" /> 
-		<PackageReference Include="Xamarin.UITest" />
-		<PackageReference Include="Uno.UITest" />
-		<PackageReference Include="Uno.UITest.Selenium" />
-		<PackageReference Include="Uno.UITest.Xamarin" />
-		<PackageReference Include="Uno.UITest.Helpers" />
-		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Xamarin.UITest" Version="$(XamarinUITestVersion)" />
+		<PackageReference Include="Uno.UITest" Version="$(UnoUITestVersion)" />
+		<PackageReference Include="Uno.UITest.Selenium" Version="$(UnoUITestSeleniumVersion)" />
+		<PackageReference Include="Uno.UITest.Xamarin" Version="$(UnoUITestXamarinVersion)" />
+		<PackageReference Include="Uno.UITest.Helpers" Version="$(UnoUITestHelpersVersion)" />
+		<PackageReference Include="Uno.SourceGenerationTasks" Version="$(UnoSourceGenerationTasksVersion)" />
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
 	</ItemGroup> 
 	  

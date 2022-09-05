@@ -3,8 +3,8 @@
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../../netcore-build.props"/>
-	<Import Project="../../targetframework-override.props"/>
+	<Import Project="../../netcore-build.props" />
+	<Import Project="../../targetframework-override.props" />
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
@@ -25,7 +25,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />
+	  <PackageReference Include="Microsoft.Identity.Client" Version="$(MicrosoftIdentityClientVersion)" />
 	</ItemGroup>
 
 	<Import Project="..\..\Common.targets" />
@@ -57,8 +57,8 @@
 
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
 
-		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
 
 	<!-- Workaround for missing target running on .NET 5 -->

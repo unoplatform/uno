@@ -3,8 +3,8 @@
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../netcore-build.props"/>
-	<Import Project="../targetframework-override.props"/>
+	<Import Project="../netcore-build.props" />
+	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
@@ -29,7 +29,7 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<PackageReference Include="Uno.SourceGenerationTasks" Version="$(UnoSourceGenerationTasksVersion)" />
 	</ItemGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />

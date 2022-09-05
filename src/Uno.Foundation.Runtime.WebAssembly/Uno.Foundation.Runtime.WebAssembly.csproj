@@ -37,7 +37,7 @@
 	<Import Project="..\Uno.CrossTargetting.props" />
 	
 	<ItemGroup>
-		<PackageReference Include="Uno.Diagnostics.Eventing" />
+		<PackageReference Include="Uno.Diagnostics.Eventing" Version="$(UnoDiagnosticsEventingVersion)" />
 		<PackageReference Include="System.Collections.Immutable" Version="1.3.1" />
 	</ItemGroup>
 	
@@ -81,8 +81,8 @@
 
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
 
-		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
 
 </Project>

@@ -41,7 +41,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="$(MicrosoftIdentityClientVersion)" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' != 'uap10.0.18362'">
@@ -50,7 +50,7 @@
 
 	<Import Project="..\..\Common.targets" />
 	<Import Project="..\..\Uno.CrossTargetting.props" />
-	<Import Project="..\..\..\build\uno.winui.cross-runtime.targets"/>
+	<Import Project="..\..\..\build\uno.winui.cross-runtime.targets" />
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 
@@ -67,8 +67,8 @@
 
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
 
-		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB-&gt;'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
 
 
@@ -98,9 +98,7 @@
 		</ItemGroup>
 
 		<RemoveDuplicates Inputs="@(TfmSpecificPackageFile)">
-				<Output
-						TaskParameter="Filtered"
-						ItemName="FilteredTfmSpecificPackageFile"/>
+				<Output TaskParameter="Filtered" ItemName="FilteredTfmSpecificPackageFile" />
 		</RemoveDuplicates>
 
 		<ItemGroup>
