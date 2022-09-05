@@ -115,10 +115,6 @@
 	<GenerateLibraryLayout>true</GenerateLibraryLayout>
   </PropertyGroup>
 
-  <ItemGroup>
-	<PackageReference Include="xamarin.build.download" />
-  </ItemGroup>
-
   <ItemGroup Condition=" ($(IsMonoAndroid) or $(IsXamarinIOS)) and '$(ExtrasIsReferenceAssembly)'!='' ">
 	<!-- remove files included by msbuild extras -->
 	<Page Remove="@(Page)" />
