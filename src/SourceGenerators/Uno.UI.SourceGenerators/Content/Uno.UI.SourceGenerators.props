@@ -87,12 +87,12 @@
 		</When>
 		<Otherwise>
 			<PropertyGroup Condition="'$(UnoUIGeneratorsBinPath)'=='' and '$(WindowsAppSDKWinUI)'!='true'">
-				<_UnoUICommonGeneratorsBinPathInPackage>$(MSBuildThisFileDirectory)..\tools\uno-sourcegen</_UnoUICommonGeneratorsBinPathInPackage>
+				<_UnoUIGeneratorsBinPathInPackage>$(MSBuildThisFileDirectory)..\tools\uno-sourcegen</_UnoUIGeneratorsBinPathInPackage>
 				<_UnoUIGeneratorsBinPathInSource>$(MSBuildThisFileDirectory)..\bin\$(Configuration)\net461</_UnoUIGeneratorsBinPathInSource>
-				<_UnoUIInternalGeneratorsBinPathInSource>$(MSBuildThisFileDirectory)..\..\Uno.UI.InternalSourceGenerators\bin\$(Configuration)\net461</_UnoUIGeneratorsBinPathInSource>
-				<UnoUIGeneratorsBinPath Condition="exists('$(_UnoUICommonGeneratorsBinPathInPackage)')">$(_UnoUICommonGeneratorsBinPathInPackage)</UnoUIGeneratorsBinPath>
+				<_UnoUIInternalGeneratorsBinPathInSource>$(MSBuildThisFileDirectory)..\..\Uno.UI.InternalSourceGenerators\bin\$(Configuration)\net461</_UnoUIInternalGeneratorsBinPathInSource>
+				<UnoUIGeneratorsBinPath Condition="exists('$(_UnoUIGeneratorsBinPathInPackage)')">$(_UnoUIGeneratorsBinPathInPackage)</UnoUIGeneratorsBinPath>
 				<UnoUIGeneratorsBinPath Condition="exists('$(_UnoUIGeneratorsBinPathInSource)')">$(_UnoUIGeneratorsBinPathInSource)</UnoUIGeneratorsBinPath>
-				<UnoUIInternalGeneratorsBinPath Condition="exists('$(_UnoUICommonGeneratorsBinPathInPackage)')">$(_UnoUICommonGeneratorsBinPathInPackage)</UnoUIInternalGeneratorsBinPath>
+				<UnoUIInternalGeneratorsBinPath Condition="exists('$(_UnoUIGeneratorsBinPathInPackage)')">$(_UnoUIGeneratorsBinPathInPackage)</UnoUIInternalGeneratorsBinPath>
 				<UnoUIInternalGeneratorsBinPath Condition="exists('$(_UnoUIInternalGeneratorsBinPathInSource)')">$(_UnoUIInternalGeneratorsBinPathInSource)</UnoUIInternalGeneratorsBinPath>
 			</PropertyGroup>
 			<ItemGroup Condition="'$(WindowsAppSDKWinUI)'!='true'">
