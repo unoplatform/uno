@@ -93,7 +93,8 @@
 				<UnoUIGeneratorsBinPath Condition="exists('$(_UnoUIGeneratorsBinPathInSource)')">$(_UnoUIGeneratorsBinPathInSource)</UnoUIGeneratorsBinPath>
 			</PropertyGroup>
 			<ItemGroup Condition="'$(WindowsAppSDKWinUI)'!='true'">
-				<SourceGenerator Include="$(UnoUIGeneratorsBinPath)\Uno.UI.SourceGenerators.dll" />
+        <SourceGenerator Include="$(UnoUIGeneratorsBinPath)\Uno.UI.SourceGenerators.dll" />
+        <SourceGenerator Include="$(MSBuildThisFileDirectory)\..\..\Uno.UI.InternalSourceGenerators\bin\$(Configuration)\net461\Uno.UI.InternalSourceGenerators.dll" />
 			</ItemGroup>
 		</Otherwise>
 	</Choose>
