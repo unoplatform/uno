@@ -87,14 +87,17 @@
 		</When>
 		<Otherwise>
 			<PropertyGroup Condition="'$(UnoUIGeneratorsBinPath)'=='' and '$(WindowsAppSDKWinUI)'!='true'">
-				<_UnoUIGeneratorsBinPathInPackage>$(MSBuildThisFileDirectory)..\tools\uno-sourcegen</_UnoUIGeneratorsBinPathInPackage>
+				<_UnoUICommonGeneratorsBinPathInPackage>$(MSBuildThisFileDirectory)..\tools\uno-sourcegen</_UnoUICommonGeneratorsBinPathInPackage>
 				<_UnoUIGeneratorsBinPathInSource>$(MSBuildThisFileDirectory)..\bin\$(Configuration)\net461</_UnoUIGeneratorsBinPathInSource>
-				<UnoUIGeneratorsBinPath Condition="exists('$(_UnoUIGeneratorsBinPathInPackage)')">$(_UnoUIGeneratorsBinPathInPackage)</UnoUIGeneratorsBinPath>
+				<_UnoUIInternalGeneratorsBinPathInSource>$(MSBuildThisFileDirectory)..\..\Uno.UI.InternalSourceGenerators\bin\$(Configuration)\net461</_UnoUIGeneratorsBinPathInSource>
+				<UnoUIGeneratorsBinPath Condition="exists('$(_UnoUICommonGeneratorsBinPathInPackage)')">$(_UnoUICommonGeneratorsBinPathInPackage)</UnoUIGeneratorsBinPath>
 				<UnoUIGeneratorsBinPath Condition="exists('$(_UnoUIGeneratorsBinPathInSource)')">$(_UnoUIGeneratorsBinPathInSource)</UnoUIGeneratorsBinPath>
+				<UnoUIInternalGeneratorsBinPath Condition="exists('$(_UnoUICommonGeneratorsBinPathInPackage)')">$(_UnoUICommonGeneratorsBinPathInPackage)</UnoUIInternalGeneratorsBinPath>
+				<UnoUIInternalGeneratorsBinPath Condition="exists('$(_UnoUIInternalGeneratorsBinPathInSource)')">$(_UnoUIInternalGeneratorsBinPathInSource)</UnoUIInternalGeneratorsBinPath>
 			</PropertyGroup>
 			<ItemGroup Condition="'$(WindowsAppSDKWinUI)'!='true'">
-        <SourceGenerator Include="$(UnoUIGeneratorsBinPath)\Uno.UI.SourceGenerators.dll" />
-        <SourceGenerator Include="$(MSBuildThisFileDirectory)\..\..\Uno.UI.InternalSourceGenerators\bin\$(Configuration)\net461\Uno.UI.InternalSourceGenerators.dll" />
+				<SourceGenerator Include="$(UnoUIGeneratorsBinPath)\Uno.UI.SourceGenerators.dll" />
+				<SourceGenerator Include="$(UnoUIInternalGeneratorsBinPath)\Uno.UI.InternalSourceGenerators.dll" />
 			</ItemGroup>
 		</Otherwise>
 	</Choose>
