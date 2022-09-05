@@ -587,24 +587,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_Set_Name()
 		{
-			var SUT = new FrameworkElement();
+			var SUT = new Border();
 			SUT.Name = "Test";
 			var dpName = SUT.GetValue(FrameworkElement.NameProperty);
 			Assert.AreEqual("Test", dpName);
-			var automationId = SUT.GetValue(AutomationProperties.AutomationIdProperty);
-			Assert.AreEqual("Test", automationId);
 		}
 		
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Set_NameProperty()
 		{
-			var SUT = new FrameworkElement();
+			var SUT = new Border();
 			SUT.SetValue(FrameworkElement.NameProperty, "Test");
 			var name = SUT.Name;
 			Assert.AreEqual("Test", name);
-			var automationId = SUT.GetValue(AutomationProperties.AutomationIdProperty);
-			Assert.AreEqual("Test", automationId);
 		}
 
 		[TestMethod]
