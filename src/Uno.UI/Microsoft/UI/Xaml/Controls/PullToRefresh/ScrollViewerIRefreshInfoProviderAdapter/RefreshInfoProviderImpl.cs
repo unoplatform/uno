@@ -31,10 +31,10 @@ internal partial class RefreshInfoProviderImpl : IRefreshInfoProvider
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
 	}
 
-	~RefreshInfoProviderImpl()
-	{
+	//~RefreshInfoProviderImpl()
+	//{
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
-	}
+	//}
 
 	public RefreshInfoProviderImpl(RefreshPullDirection refreshPullDirection, Size refreshVisualizerSize, Compositor compositor)
 	{
