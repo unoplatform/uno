@@ -1,8 +1,5 @@
 ﻿
 <Project>
-  <PropertyGroup>
-	  <_Uno_XamlMerge_Task_Version>1.0.0</_Uno_XamlMerge_Task_Version>
-  </PropertyGroup>
   
   <ItemGroup>
 	  <PackageReference Include="Uno.XamlMerge.Task" Version="$(UnoXamlMergeTaskVersion)" />
@@ -24,9 +21,9 @@
 	  <XamlMergeInput Include="@(Page)" Exclude="@(_NonMergedXamlResources)" />
   </ItemGroup>
   
-  <Import Project="$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)\build\Uno.XamlMerge.Task.targets" Condition="'$(TargetFramework)' == '' and exists('$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)')" />
+  <Import Project="$(NuGetPackageRoot)\uno.xamlmerge.task\$(UnoXamlMergeTaskVersion)\build\Uno.XamlMerge.Task.targets" Condition="'$(TargetFramework)' == '' and exists('$(NuGetPackageRoot)\uno.xamlmerge.task\$(UnoXamlMergeTaskVersion)')" />
   
-  <Target Name="_GenerateMergedXaml" DependsOnTargets="GenerateMergedXaml" BeforeTargets="DispatchToInnerBuilds" Condition="'$(TargetFramework)' == '' and exists('$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)')">
+  <Target Name="_GenerateMergedXaml" DependsOnTargets="GenerateMergedXaml" BeforeTargets="DispatchToInnerBuilds" Condition="'$(TargetFramework)' == '' and exists('$(NuGetPackageRoot)\uno.xamlmerge.task\$(UnoXamlMergeTaskVersion)')">
   </Target>
   
 </Project>

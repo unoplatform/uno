@@ -1,8 +1,7 @@
 ﻿<Project>
   <PropertyGroup>
-    <MicrosoftNetCompilersVersion>$(MicrosoftNetCompilerVersionOverride)</MicrosoftNetCompilersVersion>
     <MicrosoftCodeAnalysisBannedApiAnalyzersVersion>3.0.0</MicrosoftCodeAnalysisBannedApiAnalyzersVersion>
-    <UnoXamlMergeTaskVersion>$(_Uno_XamlMerge_Task_Version)</UnoXamlMergeTaskVersion>
+    <UnoXamlMergeTaskVersion>1.0.0</UnoXamlMergeTaskVersion>
     <MicrosoftNETFrameworkReferenceAssembliesnet48Version>1.0.2</MicrosoftNETFrameworkReferenceAssembliesnet48Version>
     <MicrosoftNETFrameworkReferenceAssembliesnet472Version>1.0.2</MicrosoftNETFrameworkReferenceAssembliesnet472Version>
     <MicrosoftNETFrameworkReferenceAssembliesnet461Version>1.0.2</MicrosoftNETFrameworkReferenceAssembliesnet461Version>

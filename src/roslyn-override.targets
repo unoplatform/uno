@@ -16,7 +16,7 @@
         <ItemGroup>
 
           <!--This override is used to validate the user of specific version of the C# Compiler-->
-          <PackageReference Include="Microsoft.Net.Compilers" Version="$(MicrosoftNetCompilersVersion)">
+          <PackageReference Include="Microsoft.Net.Compilers" Version="$(MicrosoftNetCompilerVersionOverride)">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
           </PackageReference>
