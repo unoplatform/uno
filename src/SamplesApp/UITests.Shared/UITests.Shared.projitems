@@ -4045,6 +4045,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\FontTests\DynamicFont.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Geometry\ClosedFigurePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -7249,6 +7253,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\BrushesTests\SolidColorBrush_Color_Changed.xaml.cs">
       <DependentUpon>SolidColorBrush_Color_Changed.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\FontTests\DynamicFont.xaml.cs">
+      <DependentUpon>DynamicFont.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Geometry\ClosedFigurePage.xaml.cs">
       <DependentUpon>ClosedFigurePage.xaml</DependentUpon>
     </Compile>
@@ -8488,6 +8495,11 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\Diagnostics\movie_type_dbox.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\DropdownButton.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\FlipView.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\Even Badder Mofo.ttf" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\FamilyGuy-4grW.ttf" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\Nillambari-K7y1W.ttf" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\Renaiss-Italic.ttf" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\RoteFlora.ttf" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\uno-fluentui-assets.ttf" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\animated.gif" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Formats\uno-overalls.bmp" />
@@ -8515,6 +8527,10 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\MenuBar.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\MenuFlyout.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\RedSquare.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\RemoteFonts\antikythera.woff" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\RemoteFonts\antikytheraoutline.woff" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\RemoteFonts\antikytheraoutlineital.woff" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\RemoteFonts\GALACTIC VANGUARDIAN NCV.woff" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\square100.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_200_200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\theme-dark\ThemeTestImage.png" />
