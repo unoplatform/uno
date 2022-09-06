@@ -351,6 +351,11 @@ namespace Windows.UI.Xaml
 			{
 				Windows.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
 			}
+			
+			if (FeatureConfiguration.UIElement.AssignDOMXamlName)
+			{
+				Uno.UI.Xaml.WindowManagerInterop.SetName(HtmlId, newValue);
+			}
 		}
 
 		[GeneratedDependencyProperty(DefaultValue = "", ChangedCallback = true)]
@@ -359,15 +364,7 @@ namespace Windows.UI.Xaml
 		public string Name
 		{
 			get => GetNameValue();
-			set
-			{
-				SetNameValue(value);
-
-				if (FeatureConfiguration.UIElement.AssignDOMXamlName)
-				{
-					Uno.UI.Xaml.WindowManagerInterop.SetName(HtmlId, value);
-				}
-			}
+			set => SetNameValue(value);
 		}
 		
 		#endregion
