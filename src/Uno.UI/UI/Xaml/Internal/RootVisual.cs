@@ -182,6 +182,10 @@ namespace Uno.UI.Xaml.Core
 			}
 
 			ReleaseCaptures(args.Reset(canBubbleNatively: false));
+
+#if __WASM__
+			RemoveActivePointer(args.Pointer.PointerId);
+#endif
 		}
 
 		private static void ReleaseCaptures(PointerRoutedEventArgs routedArgs)

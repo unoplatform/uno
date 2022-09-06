@@ -241,19 +241,24 @@ public partial class UIElement : DependencyObject
 		}
 	}
 
-	private static readonly HashSet<uint> s_activePointers = new();
-	private static Dictionary<uint, uint> s_nativeToManagedPointerId = new();
+	private static readonly HashSet<uint> _activePointers = new();
+	private static readonly Dictionary<uint, uint> _nativeToManagedPointerId = new();
 
 	private static uint TransformPointerId(uint nativePointerId)
 	{
-		if (s_nativeToManagedPointerId.TryGetValue(nativePointerId, out var pointerId))
+		if (_nativeToManagedPointerId.TryGetValue(nativePointerId, out var pointerId))
 		{
 			return pointerId;
 		}
 
-		pointerId = s_activePointers.Count == 0 ? 1 : s_activePointers.Max() + 1;
-		s_nativeToManagedPointerId[nativePointerId] = pointerId;
+		pointerId = _activePointers.Count == 0 ? 1 : _activePointers.Max() + 1;
+		_nativeToManagedPointerId[nativePointerId] = pointerId;
 		return pointerId;
+	}
+
+	public static void RemoveActivePointer(uint pointerId)
+	{
+		_activePointers.Remove(pointerId);
 	}
 
 	private static PointerRoutedEventArgs ToPointerArgs(
@@ -267,11 +272,7 @@ public partial class UIElement : DependencyObject
 		var pointerId = TransformPointerId((uint)args.pointerId);
 		if ((NativePointerEvent)args.Event == NativePointerEvent.pointerdown)
 		{
-			s_activePointers.Add(pointerId);
-		}
-		else if ((NativePointerEvent)args.Event == NativePointerEvent.pointerup)
-		{
-			s_activePointers.Remove(pointerId);
+			_activePointers.Add(pointerId);
 		}
 
 		var pointerType = (PointerDeviceType)args.deviceType;
