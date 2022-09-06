@@ -81,6 +81,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _isDebug;
 		private readonly bool _isDesignTimeBuild;
 		private readonly string _relativePath;
+
+		/// <summary>
+		/// x:Name cache for the lookups performed in the document.
+		/// </summary>
+		private Dictionary<string, List<XamlObjectDefinition>> _nameCache = new();
+		
 		/// <summary>
 		/// True if the file currently being parsed contains a top-level ResourceDictionary definition.
 		/// </summary>
@@ -418,6 +424,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineIndented("");
 
 			var topLevelControl = _fileDefinition.Objects.First();
+
+			BuildNameCache(topLevelControl);
 
 			if (topLevelControl.Type.Name == "ResourceDictionary")
 			{
@@ -5869,6 +5877,30 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		/// <summary>
+		/// Builds the x:Name cache for faster lookups in <see cref="FindSubElementByName(XamlObjectDefinition, string)"/>.
+		/// </summary>
+		/// <remarks>
+		/// The lookup is performed by searching for the x:Name, then determine if one of the ancestors
+		/// is known. This avoids doing linear lookups at many levels recusively for the same nodes.
+		/// </remarks>
+		private void BuildNameCache(XamlObjectDefinition topLevelControl)
+		{
+			foreach (var element in EnumerateSubElements(topLevelControl))
+			{
+				var nameMember = FindMember(element, "Name");
+
+				if (nameMember?.Value is string name)
+				{
+					if (!_nameCache.TryGetValue(name, out var list))
+					{
+						_nameCache[name] = list = new();
+					}
+
+					list.Add(element);
+				}
+			}
+		}
+		/// <summary>
 		/// Statically finds a element by name, given a xaml element root
 		/// </summary>
 		/// <param name="xamlObject">The root from which to start the search</param>
@@ -5876,16 +5908,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <returns></returns>
 		private XamlObjectDefinition? FindSubElementByName(XamlObjectDefinition xamlObject, string elementName)
 		{
-			foreach (var element in EnumerateSubElements(xamlObject))
+			if (_nameCache.TryGetValue(elementName, out var list))
 			{
-				var nameMember = FindMember(element, "Name");
+				// Found a matching x:Name in the document, now find one that
+				// is a child of the xamlObject parameter.
 
-				if (nameMember?.Value?.ToString() == elementName)
+				foreach (var namedObject in list)
 				{
-					return element;
+					var current = namedObject;
+
+					do
+					{
+						if (ReferenceEquals(xamlObject, current))
+						{
+							return namedObject;
+						}
+
+						current = current.Owner;
+
+					} while (current is not null);
 				}
 			}
-
+			
 			return null;
 		}
 
