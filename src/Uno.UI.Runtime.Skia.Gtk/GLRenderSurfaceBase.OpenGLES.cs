@@ -28,7 +28,7 @@ namespace Uno.UI.Runtime.Skia
 		[Conditional("DEBUG")]
 		private void ValidateOpenGLES()
 		{
-			if (_gl == null)
+			if (_glES == null)
 			{
 				throw new InvalidOperationException($"_glES cannot be null");
 			}

@@ -13,6 +13,8 @@ namespace SkiaSharpExample
 		[STAThread]
 		public static void Main(string[] args)
 		{
+			SamplesApp.App.ConfigureFilters(); // Enable tracing of the host
+
 			ExceptionManager.UnhandledException += delegate (UnhandledExceptionArgs expArgs)
 			{
 				Console.WriteLine("GLIB UNHANDLED EXCEPTION" + expArgs.ExceptionObject.ToString());

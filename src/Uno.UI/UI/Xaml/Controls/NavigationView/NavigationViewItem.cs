@@ -86,10 +86,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		~NavigationViewItem()
-		{
-		}
-
 		protected override void OnApplyTemplate()
 		{
 			// Stop UpdateLocalVisualState before template is applied. Otherwise the visual may not the same as we expect
