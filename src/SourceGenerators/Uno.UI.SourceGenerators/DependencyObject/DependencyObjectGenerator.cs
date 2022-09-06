@@ -247,7 +247,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 				if (overridesWillMoveToSuperview)
 				{
-					builder.AppendIndented(@"
+					builder.AppendMultiLineIndented(@"
 						public override void WillMoveToSuperview(UIKit.UIView newsuper)
 						{
 							base.WillMoveToSuperview(newsuper);
@@ -286,7 +286,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 				if (overridesWillMoveToSuperview)
 				{
-					builder.AppendIndented(@"
+					builder.AppendMultiLineIndented(@"
 						public override void ViewWillMoveToSuperview(AppKit.NSView newsuper)
 						{
 							base.ViewWillMoveToSuperview(newsuper);

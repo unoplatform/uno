@@ -81,13 +81,13 @@ namespace Uno.Extensions
 
 		private void AppendIndented(string text, int indentCount)
 		{
-			_stringBuilder.Append(new string('\t', indentCount)); // TODO: Which is faster? this? or looping and appending a single tab each iteration?
+			_stringBuilder.Append('\t', indentCount);
 			_stringBuilder.Append(text);
 		}
 
 		public void AppendFormatIndented(IFormatProvider formatProvider, string text, params object[] replacements)
 		{
-			_stringBuilder.Append(new string('\t', CurrentLevel)); // TODO: Which is faster? this? or looping and appending a single tab each iteration?
+			_stringBuilder.Append('\t', CurrentLevel);
 			_stringBuilder.AppendFormat(formatProvider, text, replacements);
 		}
 
