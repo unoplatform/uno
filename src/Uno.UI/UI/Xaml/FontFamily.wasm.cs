@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Media
 		/// minimize loading time and prevent potential flicking.
 		/// </summary>
 		/// <returns>True is the font loaded successfuly, otherwise false.</returns>
-		internal static Task<bool> Preload(FontFamily family)
+		internal static Task<bool> PreloadAsync(FontFamily family)
 			=> family._loader.LoadFontAsync();
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

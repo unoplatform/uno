@@ -155,9 +155,9 @@ public static void main(string[] orgs)
     // You can add more than one, but preload too many fonts could hurt user experience.
     // IMPORTANT: The string parameter should be exactly the same string (including casing)
     //            used as FontFamily in the application.
-    Windows.UI.Xaml.Media.FontFamilyHelper.Preload("ms-appx:///Assets/Fonts/yourfont01.ttf#ApplicationFont01");
-    Windows.UI.Xaml.Media.FontFamilyHelper.Preload("https://fonts.cdnfonts.com/s/71084/antikythera.woff#Antikythera");
-    Windows.UI.Xaml.Media.FontFamilyHelper.Preload("Roboto");
+    Windows.UI.Xaml.Media.FontFamilyHelper.PreloadAsync("ms-appx:///Assets/Fonts/yourfont01.ttf#ApplicationFont01");
+    Windows.UI.Xaml.Media.FontFamilyHelper.PreloadAsync("https://fonts.cdnfonts.com/s/71084/antikythera.woff#Antikythera");
+    Windows.UI.Xaml.Media.FontFamilyHelper.PreloadAsync("Roboto");
     
     Windows.UI.Xaml.Application.Start(_ => _app = new App());
 ```
