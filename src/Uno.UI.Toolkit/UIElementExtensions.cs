@@ -224,7 +224,6 @@ namespace Uno.UI.Toolkit
 					}
 
 					shadow.Color = shadowColor;
-					shadow.Opacity = shadowColor.A/255f;
 					spriteVisual.Shadow = shadow;
 				}
 
