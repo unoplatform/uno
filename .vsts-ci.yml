@@ -19,10 +19,12 @@ resources:
 
 jobs:
 - template: .azure-devops-windows.yml
-- template: .azure-devops-docs.yml
-- template: .azure-devops-wasm-uitests.yml
-- template: .azure-devops-macos.yml
-- template: .azure-devops-android-tests.yml
-- template: .azure-devops-ios-tests.yml
+
+# Disabled because not packaged
+#- template: .azure-devops-docs.yml
+#- template: .azure-devops-wasm-uitests.yml
+#- template: .azure-devops-macos.yml
+#- template: .azure-devops-android-tests.yml
+#- template: .azure-devops-ios-tests.yml
 
 

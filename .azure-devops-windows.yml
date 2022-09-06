@@ -4,8 +4,7 @@ parameters:
 jobs:
 - job: VS_Latest
 
-  pool:
-    vmImage: 'vs2017-win2016'
+  pool: 'Windows2019-20200608'
 
   variables:
     CombinedConfiguration: Release|Any CPU
