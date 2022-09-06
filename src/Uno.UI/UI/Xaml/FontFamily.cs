@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -13,7 +14,7 @@ namespace Windows.UI.Xaml.Media
 			Init(familyName);
 
 			// This instance is immutable, we can cache the hash code.
-			_hashCode = Source.GetHashCode();
+			_hashCode = familyName.GetHashCode();
 		}
 
 		public string Source { get; }
@@ -22,6 +23,8 @@ namespace Windows.UI.Xaml.Media
 		public static implicit operator FontFamily(string familyName) => new FontFamily(familyName);
 
 		public static FontFamily Default { get; } = new FontFamily("Segoe UI");
+
+		public static FontFamily XamlAutoFontFamily => Default;
 
 		public override bool Equals(object obj)
 		{
@@ -42,7 +45,7 @@ namespace Windows.UI.Xaml.Media
 				return true;
 			}
 
-			return !ReferenceEquals(a, null) && a.Equals(b);
+			return a is not null && a.Equals(b);
 		}
 
 		public static bool operator !=(FontFamily a, FontFamily b)
@@ -52,7 +55,7 @@ namespace Windows.UI.Xaml.Media
 				return false;
 			}
 
-			return ReferenceEquals(a, null) || !a.Equals(b);
+			return a is null || !a.Equals(b);
 		}
 
 		partial void Init(string fontName);

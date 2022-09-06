@@ -102,13 +102,13 @@ namespace Uno.Xaml
 #endif
 		}
 
+#if SUPPORTS_LOAD_ASSEMBLIES
 		~XamlSchemaContext ()
 		{
-#if SUPPORTS_LOAD_ASSEMBLIES
 			if (reference_assemblies == null)
 				unhookAssemblyLoad?.Invoke();
-#endif
 		}
+#endif
 
 		IList<Assembly> reference_assemblies;
 

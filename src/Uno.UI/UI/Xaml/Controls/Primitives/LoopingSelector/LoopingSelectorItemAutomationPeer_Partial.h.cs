@@ -30,8 +30,6 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 		// private
 
-		~LoopingSelectorItemAutomationPeer() { }
-
 		//void InitializeImpl(
 		//	LoopingSelectorItem pOwner);
 
