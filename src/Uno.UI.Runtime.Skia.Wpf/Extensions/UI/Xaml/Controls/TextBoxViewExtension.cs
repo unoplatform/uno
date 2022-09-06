@@ -236,6 +236,9 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 		private System.Windows.Controls.PasswordBox CreatePasswordControl()
 		{
 			var passwordBox = new System.Windows.Controls.PasswordBox();
+			passwordBox.BorderBrush = System.Windows.Media.Brushes.Transparent;
+			passwordBox.Background = System.Windows.Media.Brushes.Transparent;
+			passwordBox.BorderThickness = new Thickness(0);
 			passwordBox.PasswordChanged += PasswordBoxViewPasswordChanged;
 			return passwordBox;
 		}
