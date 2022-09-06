@@ -1,24 +1,25 @@
 ﻿#nullable enable
 
+using System;
+using Android.App;
+using Android.Graphics;
+using AndroidBitmap = Android.Graphics.Bitmap;
 using AndroidCanvas = Android.Graphics.Canvas;
 using AndroidColor = Android.Graphics.Color;
 using AndroidPaint = Android.Graphics.Paint;
-using AndroidBitmap = Android.Graphics.Bitmap;
-using Android.Graphics;
-using System;
-using Android.App;
 
 namespace Uno.UI.Toolkit;
 
 partial class ElevatedView
 {
 	private const int MaximumRadius = 128;
-	
+
 	private AndroidCanvas? _shadowCanvas = null;
 	private AndroidPaint? _shadowPaint = null;
+	private AndroidPaint? _renderPaint = null;
 	private AndroidBitmap? _shadowBitmap = null;
 	private bool _invalidateShadow = true;
-	
+
 	protected override void DispatchDraw(Canvas canvas)
 	{
 		if (Elevation > 0)
@@ -49,6 +50,13 @@ partial class ElevatedView
 		_shadowCanvas ??= new AndroidCanvas();
 
 		_shadowPaint ??= new AndroidPaint
+		{
+			AntiAlias = true,
+			Dither = true,
+			FilterBitmap = true
+		};
+
+		_renderPaint ??= new AndroidPaint
 		{
 			AntiAlias = true,
 			Dither = true,
@@ -108,25 +116,13 @@ partial class ElevatedView
 
 					extractAlpha?.Recycle();
 				}
-
-				// Reset alpha to draw child with full alpha
-				if (solidColor != null)
-				{
-#pragma warning disable CA1416 // https://github.com/xamarin/xamarin-android/issues/6962
-					_shadowPaint.Color = ShadowColor;
-#pragma warning restore CA1416
-				}
-
-				// Draw shadow bitmap
-				if (_shadowCanvas != null && _shadowBitmap != null && !_shadowBitmap.IsRecycled)
-				{
-					canvas.DrawBitmap(_shadowBitmap, 0.0F, 0.0F, _shadowPaint);
-				}
 			}
-			else
-			{
-				DisposeShadow();
-			}
+		}
+
+		// Draw shadow bitmap
+		if (_shadowCanvas != null && _shadowBitmap != null && !_shadowBitmap.IsRecycled)
+		{
+			canvas.DrawBitmap(_shadowBitmap, 0.0F, 0.0F, _renderPaint);
 		}
 	}
 }
