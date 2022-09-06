@@ -311,11 +311,13 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			if (_currentTextBoxInputWidget != null)
 			{
 				_currentTextBoxInputWidget.Foreground = wpfBrush;
+				_currentTextBoxInputWidget.CaretBrush = wpfBrush;
 			}
 
 			if (_currentPasswordBoxInputWidget != null)
 			{
 				_currentPasswordBoxInputWidget.Foreground = wpfBrush;
+				_currentPasswordBoxInputWidget.CaretBrush = wpfBrush;
 			}
 		}
 	}
