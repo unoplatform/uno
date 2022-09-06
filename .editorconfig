@@ -6,13 +6,13 @@ trim_trailing_whitespace = true
 insert_final_newline = true
 end_of_line = crlf
 
-[{*.xaml, *.xml, *.targets, *.props}]
+[*.{xaml,xml,targets,props}]
 indent_style = tab
 
-[{*.cs, *.tt, *.java}]
+[*.{cs,tt,java}]
 indent_style = tab
 
-[{*.ts, *.json}]
+[*.{ts,json}]
 indent_style = tab
 
 [*.csproj]
@@ -28,7 +28,7 @@ indent_style = space
 tab_width = 2
 indent_size = 2
 
-[{*.yml, *.yaml}]
+[*.{yml,yaml}]
 indent_style = space
 
 [*.md]
@@ -238,6 +238,7 @@ dotnet_diagnostic.RS0030.severity = error
 dotnet_analyzer_diagnostic.category-Performance.severity = none #error - Uncomment when all violations are fixed.
 
 dotnet_diagnostic.CA1805.severity = error
+dotnet_diagnostic.CA1821.severity = error
 dotnet_diagnostic.CA1061.severity = none
 dotnet_diagnostic.CA1802.severity = none
 dotnet_diagnostic.CA1014.severity = none
@@ -326,7 +327,6 @@ dotnet_diagnostic.CA1806.severity = none
 dotnet_diagnostic.CA1834.severity = none
 dotnet_diagnostic.CA1713.severity = none
 dotnet_diagnostic.CA1054.severity = none
-dotnet_diagnostic.CA1821.severity = none
 dotnet_diagnostic.CA1055.severity = none
 dotnet_diagnostic.CA2002.severity = none
 dotnet_diagnostic.CA2109.severity = none

@@ -90,6 +90,7 @@ public partial class RefreshContainer : ContentControl
 			_refreshControl.EndRefreshing();
 			_refreshSubscription.Disposable = null;
 		}
+		_nativeScrollViewAttachment.Disposable = null;
 	}
 
 	protected override void OnContentChanged(object oldValue, object newValue)
@@ -111,6 +112,8 @@ public partial class RefreshContainer : ContentControl
 		// Inject the UIRefreshControl into the first scrollable element found in the hierarchy		
 		if (this.FindFirstChild<UIScrollView>() is { } scrollView)
 		{
+			_nativeScrollViewAttachment.Disposable = null;
+
 			_ownerScrollView = scrollView;
 
 			foreach (var existingRefresh in scrollView.Subviews.OfType<NativeRefreshControl>())

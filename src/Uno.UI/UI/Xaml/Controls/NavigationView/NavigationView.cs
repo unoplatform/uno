@@ -101,11 +101,6 @@ namespace Windows.UI.Xaml.Controls
 
 		private SerialDisposable _settingsItemSubscriptions = new SerialDisposable();
 
-		~NavigationView()
-		{
-
-		}
-
 		void UnhookEventsAndClearFields(bool isFromDestructor = false)
 		{
 		}
