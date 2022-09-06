@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Shapes
 {
-	internal partial class BorderLayerRenderer
+	partial class BorderLayerRenderer
 	{
 		public void UpdateLayer(
 			FrameworkElement owner,

@@ -144,9 +144,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 			public override bool CanRead { get; } = true;
 			public override bool CanSeek { get; } = true;
-			public override bool CanWrite { get; } = false;
+			public override bool CanWrite { get; }
 			public override long Length { get; } = 1024;
-			public override long Position { get; set; } = 0;
+			public override long Position { get; set; }
 		}
 	}
 }

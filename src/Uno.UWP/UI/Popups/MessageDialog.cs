@@ -89,7 +89,7 @@ public sealed partial class MessageDialog
 	/// This is the command that fires by default when users press the ENTER key.
 	/// Add the commands before you set the index.
 	/// </summary>
-	public uint DefaultCommandIndex { get; set; } = 0;
+	public uint DefaultCommandIndex { get; set; }
 
 	/// <summary>
 	/// Gets or sets the options for a MessageDialog.

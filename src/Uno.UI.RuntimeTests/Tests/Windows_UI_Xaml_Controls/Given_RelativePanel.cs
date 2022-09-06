@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Extensions;
 using Windows.Foundation;
+using Windows.Graphics.Display;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using static Private.Infrastructure.TestServices;
@@ -78,6 +79,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(new Rect(100, 100, 100, 100), border.GetRelativeBounds(SUT));
+		}
+
+		[TestMethod]
+		public async Task When_NativeElement()
+		{
+			var SUT = new RelativePanel()
+			{
+				Name = "test",
+				Width = 300,
+				Height = 300
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+#if __ANDROID__
+			var button = new Android.Widget.Button(ContextHelper.Current) { Text = "test" };
+			SUT.Children.Add(button);
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(48.0, button.MeasuredHeight / DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel);
+			Assert.AreEqual(88.0, button.MeasuredWidth / DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel);
+#elif __IOS__
+			var button = new UIKit.UIButton();
+			button.SetTitle("Test", UIKit.UIControlState.Normal);
+			SUT.Children.Add(button);
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(17.0, button.Frame.Width / DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel);
+			Assert.AreEqual(17.0, button.Frame.Height / DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel);
+#endif
 		}
 	}
 

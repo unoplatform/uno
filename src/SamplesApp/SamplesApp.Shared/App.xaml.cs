@@ -432,6 +432,9 @@ namespace SamplesApp
 				// RemoteControl and HotReload related
 				builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Information);
 
+				// Display Skia related information
+				builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Information);
+
 				// builder.AddFilter("Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug );
 				// builder.AddFilter("Windows.UI.Xaml.Controls.PopupPanel", LogLevel.Debug );
 
@@ -618,9 +621,7 @@ namespace SamplesApp
 		public void AssertIssue8356()
 		{
 #if __SKIA__
-			string SUT = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title;
-			string value = Windows.ApplicationModel.Package.Current.DisplayName;
-			Assert.AreEqual(SUT, value);
+			Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement_ApplicationView.Given_ApplicationView.StartupTitle = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title;
 #endif
 		}
 

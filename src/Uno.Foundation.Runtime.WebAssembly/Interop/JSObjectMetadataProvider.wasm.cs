@@ -27,7 +27,7 @@ namespace Uno.Foundation.Interop
 		private class ReflectionMetadata : IJSObjectMetadata
 		{
 			private readonly Type _type;
-			private static long _handles = 0L;
+			private static long _handles;
 
 			private bool _isPrototypeExported;
 			private Dictionary<string, MethodInfo> _methods;

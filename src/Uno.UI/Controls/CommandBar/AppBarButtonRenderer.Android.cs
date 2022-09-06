@@ -189,7 +189,7 @@ namespace Uno.UI.Controls
 		// ShowAsAction.CollapseActionView. This is for instance the case of the search view used in a lot of scenarios.
 		// To avoid this use case, we must explicitly set the size of the action view based on the real size of its content.
 		// That being said, at some point in the future, we will need to support advanced scenarios where the AppBarButton needs to be expandable.
-		private Size _measuredLogicalSize = default(Size);
+		private Size _measuredLogicalSize;
 
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 		{

@@ -30,8 +30,8 @@ namespace Windows.UI.Xaml.Controls
 		private TaskCompletionSource<ContentDialogResult> _tcs;
 		private readonly SerialDisposable _subscriptions = new SerialDisposable();
 		private readonly SerialDisposable _templateSubscriptions = new SerialDisposable();
-		private bool _hiding = false;
-		private bool _templateApplied = false;
+		private bool _hiding;
+		private bool _templateApplied;
 
 		private Border m_tpBackgroundElementPart;
 		private Border m_tpButton1HostPart;

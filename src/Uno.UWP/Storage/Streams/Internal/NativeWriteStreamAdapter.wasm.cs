@@ -15,8 +15,8 @@ namespace Uno.Storage.Streams.Internal
 
 		private readonly Guid _streamId;
 
-		private long _length = 0;
-		private long _position = 0;
+		private long _length;
+		private long _position;
 
 		private ConcurrentQueue<Func<Task>> _pendingTasks = new ConcurrentQueue<Func<Task>>();
 

@@ -11,7 +11,7 @@ namespace Uno.UI.Skia.Platform
 	{
 		private readonly DisplayInformation _displayInformation;
 
-		private float? _dpi = null;
+		private float? _dpi;
 
 		public WpfDisplayInformationExtension(object owner)
 		{

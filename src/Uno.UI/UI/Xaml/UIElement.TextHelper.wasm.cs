@@ -77,21 +77,19 @@ namespace Windows.UI.Xaml
 		{
 			if (localValue is UnsetValue)
 			{
-				this.ResetStyle("font-family");
+				ResetStyle("font-family");
 			}
-			else
+			else if (localValue is FontFamily font)
 			{
-				var value = (FontFamily)localValue;
-				if (value != null)
+				var actualFontFamily = font.Source;
+				if (actualFontFamily == "XamlAutoFontFamily")
 				{
-					var actualFontFamily = value.Source;
-					if (actualFontFamily == "XamlAutoFontFamily")
-					{
-						value = FontFamily.Default;
-					}
-
-					this.SetStyle("font-family", value.ParsedSource);
+					font = FontFamily.Default;
 				}
+
+				SetStyle("font-family", font.CssFontName);
+
+				font.RegisterForInvalidateMeasureOnFontLoaded(this);
 			}
 		}
 

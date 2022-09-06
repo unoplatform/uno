@@ -34,12 +34,13 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="local:RefreshContainer">
-					<Grid>
+					<Grid x:Name="Root">
 						<uno:NativeRefreshControl x:Name="NativeRefreshControl">
 							<uno:NativeRefreshControl.Content>
 								<ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" Background="Transparent" />
 							</uno:NativeRefreshControl.Content>
 						</uno:NativeRefreshControl>
+						<Grid x:Name="RefreshVisualizerPresenter"/>
 					</Grid>
 				</ControlTemplate>
 			</Setter.Value>

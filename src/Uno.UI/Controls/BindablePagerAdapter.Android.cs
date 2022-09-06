@@ -87,7 +87,7 @@ namespace Uno.UI.Controls
 
 			var view = GetBindableView(convertView, source, templateId, parent);
 
-			if (!_views.Keys.Contains(position))
+			if (!_views.ContainsKey(position))
 			{
 				_views.Add(position, view);
 			}

@@ -1,4 +1,4 @@
-# Get Started on Visual Studio 2019 and 2022 for Xamarin
+# Get Started on Visual Studio 2019 for Xamarin
 
 ## Prerequisites
 * [**Visual Studio 2019 16.3 or later**](https://visualstudio.microsoft.com/), with:

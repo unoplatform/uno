@@ -32,7 +32,7 @@ namespace MUXControlsTestApp.Samples
 
 
 		public static int OpenItems { get { return _counter; } }
-		private static int _counter = 0;
+		private static int _counter;
 
 		public DisposableUserControl()
 		{

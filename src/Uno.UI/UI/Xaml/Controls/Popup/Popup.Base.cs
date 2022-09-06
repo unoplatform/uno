@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class Popup : FrameworkElement, IPopup
 	{
-		private ManagedWeakReference _lastFocusedElement = null;
+		private ManagedWeakReference _lastFocusedElement;
 		private FocusState _lastFocusState = FocusState.Unfocused;
 
 		private IDisposable _openPopupRegistration;

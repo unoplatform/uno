@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml
 {
 	public partial class Application
 	{
-		private static bool _startInvoked = false;
+		private static bool _startInvoked;
 
 		public Application()
 		{

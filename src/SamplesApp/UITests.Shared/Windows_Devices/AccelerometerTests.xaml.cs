@@ -21,7 +21,7 @@ using Uno.Disposables;
 
 namespace UITests.Shared.Windows_Devices
 {
-    [SampleControlInfo("Windows.Devices", "Accelerometer", description: "Demonstrates use of Windows.Devices.Sensors.Accelerometer", viewModelType: typeof(AccelerometerTestsViewModel))]
+    [SampleControlInfo("Windows.Devices", "Accelerometer", description: "Demonstrates use of Windows.Devices.Sensors.Accelerometer", viewModelType: typeof(AccelerometerTestsViewModel), ignoreInSnapshotTests: true)]
     public sealed partial class AccelerometerTests : UserControl
     {
 

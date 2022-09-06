@@ -44,7 +44,7 @@ public partial class RelativePanel : Panel
 		desiredSize.Width = desiredSizeOfChildren.Width + borderSize.Width;
 		desiredSize.Height = desiredSizeOfChildren.Height + borderSize.Height;
 		return desiredSize;
-	
+
 		//// If this is a known error, we must throw the appropriate
 		//// exception based on the AgCode set by the helper class.
 		//// Otherwise we just fail normally.
@@ -81,56 +81,6 @@ public partial class RelativePanel : Panel
 			// based on the dependencies that each child has on its siblings, 
 			// if any.
 			m_graph.ResolveConstraints(this, core);
-		}			
+		}
 	}
-
-//		xref_ptr<CBrush> CRelativePanel::GetBorderBrush() const
-//		{
-//    if(!IsPropertyDefaultByIndex(KnownPropertyIndex::RelativePanel_BorderBrush))
-//    {
-//	CValue result;
-//		VERIFYHR(GetValueByIndex(KnownPropertyIndex::RelativePanel_BorderBrush, &result));
-//	return static_sp_cast<CBrush>(result.DetachObject());
-//}
-
-//	else
-//{
-//	return CPanel::GetBorderBrush();
-//}    
-//}
-
-//XTHICKNESS CRelativePanel::GetBorderThickness() const
-//{
-//    if(!IsPropertyDefaultByIndex(KnownPropertyIndex::RelativePanel_BorderThickness))
-//    {
-//	CValue result;
-//	VERIFYHR(GetValueByIndex(KnownPropertyIndex::RelativePanel_BorderThickness, &result));
-//	return *(result.AsThickness());
-//}
-
-//	else
-//{
-//	return CPanel::GetBorderThickness();
-//}
-    
-//}
-
-//private Thickness GetPadding() => (Thickness)GetValue(RelativePanel.PaddingProperty);
-
-//private CornerRadius GetCornerRadius()
-//{
-//	if (!IsPropertyDefaultByIndex(KnownPropertyIndex::RelativePanel_CornerRadius))
-//	{
-//		CValue result;
-//		VERIFYHR(GetValueByIndex(KnownPropertyIndex::RelativePanel_CornerRadius, &result));
-//		return *(result.AsCornerRadius());
-//	}
-
-//	else
-//	{
-//		return CPanel::GetCornerRadius();
-//	}
-//}
-
-//private BackgroundSizing GetBackgroundSizing() => (BackgroundSizing)GetValue(RelativePanel.BackgroundSizingProperty);
-    }
+}

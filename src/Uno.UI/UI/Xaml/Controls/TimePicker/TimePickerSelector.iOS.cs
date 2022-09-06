@@ -4,6 +4,7 @@ using System.Linq;
 using UIKit;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.Helpers.Theming;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.Globalization;
@@ -37,6 +38,7 @@ namespace Windows.UI.Xaml.Controls
 			_picker.Mode = UIDatePickerMode.Time;
 
 			UpdatePickerStyle();
+			DatePickerSelector.OverrideUIDatePickerTheme();
 			SetPickerTime(Time.RoundToNextMinuteInterval(MinuteIncrement));
 			SetPickerClockIdentifier(ClockIdentifier);
 			SaveInitialTime();
@@ -51,6 +53,7 @@ namespace Windows.UI.Xaml.Controls
 				parent.RemoveChild(_picker);
 				parent.AddSubview(_picker);
 			}
+
 		}
 
 		private void OnEditingDidBegin(object sender, EventArgs e)
@@ -67,6 +70,7 @@ namespace Windows.UI.Xaml.Controls
 		public void Initialize()
 		{
 			UpdatePickerStyle();
+			DatePickerSelector.OverrideUIDatePickerTheme();
 			SetPickerClockIdentifier(ClockIdentifier);
 			SetPickerMinuteIncrement(MinuteIncrement);
 		}

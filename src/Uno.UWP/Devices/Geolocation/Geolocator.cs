@@ -130,7 +130,7 @@ namespace Windows.Devices.Geolocation
 		/// <remarks>
 		///	Should be set to true on devices without GPS.
 		/// </remarks>
-		public static bool IsDefaultGeopositionRecommended { get; private set; } = false;
+		public static bool IsDefaultGeopositionRecommended { get; private set; }
 
 		/// <summary>
 		/// The status that indicates the ability of the Geolocator to provide location updates.

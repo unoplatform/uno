@@ -32,8 +32,8 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		private readonly Stopwatch _activeDuration = new Stopwatch();
 		private int _replayCount = 1;
-		private int _runningChildren = 0;
-		private bool _hasFillingChildren = false;
+		private int _runningChildren;
+		private bool _hasFillingChildren;
 
 		public Storyboard()
 		{

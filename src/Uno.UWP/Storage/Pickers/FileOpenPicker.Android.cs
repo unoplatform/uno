@@ -178,7 +178,7 @@ namespace Windows.Storage.Pickers
 						.Select(extension => MimeTypeService.GetFromExtension(extension))
 						.Distinct();
 
-					if (mimeTypesFromUno is null || mimeTypesFromUno.Count() < 1)
+					if (!mimeTypesFromUno.Any())
 					{
 						return new[] { "*/*" };
 					}

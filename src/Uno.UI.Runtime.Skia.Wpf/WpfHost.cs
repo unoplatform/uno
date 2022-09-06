@@ -55,11 +55,9 @@ namespace Uno.UI.Skia.Platform
 		private readonly Func<UnoApplication> _appBuilder;
 		private CompositeDisposable _registrations = new();
 
-		private bool _appStarted = false;
-		
 		[ThreadStatic] private static WpfHost? _current;
 
-		private WpfCanvas? _nativeOverlayLayer = null;
+		private WpfCanvas? _nativeOverlayLayer;
 		private bool ignorePixelScaling;
 		private FocusManager? _focusManager;
 		private bool _isVisible = true;
@@ -228,11 +226,6 @@ namespace Uno.UI.Skia.Platform
 
 		private void StartApp()
 		{
-			if (_appStarted)
-			{
-				return;
-			}
-			
 			void CreateApp(WinUI.ApplicationInitializationCallbackParams _)
 			{
 				var app = _appBuilder();

@@ -24,7 +24,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string[] _excludeXamlNamespaces;
 		private readonly string[] _includeXamlNamespaces;
 		private readonly RoslynMetadataHelper _metadataHelper;
-		private int _depth = 0;
+		private int _depth;
 
 		public XamlFileParser(string[] excludeXamlNamespaces, string[] includeXamlNamespaces, RoslynMetadataHelper roslynMetadataHelper)
 		{
@@ -469,10 +469,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return member;
 		}
 
-		private bool IsLiteralInlineText(object value, XamlMemberDefinition member, XamlObjectDefinition xamlObject)
+		private static bool IsLiteralInlineText(object value, XamlMemberDefinition member, XamlObjectDefinition xamlObject)
 		{
 			return value is string
-				&& (xamlObject.Type.Name == "TextBlock" || xamlObject.Type.Name == "Span")
+				&& (
+					xamlObject.Type.Name is "TextBlock"
+						or "Bold"
+						or "Hyperlink"
+						or "Italic"
+						or "Underline"
+						or "Span"
+						or "Paragraph"
+				)
 				&& (member.Member.Name == "_UnknownContent" || member.Member.Name == "Inlines");
 		}
 

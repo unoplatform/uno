@@ -69,6 +69,16 @@ namespace Uno.UI.Extensions
 			return Shrink(thisCGRect, numberOfPixels, numberOfPixels, numberOfPixels, numberOfPixels);
 		}
 
+		public static CGRect Shrink(this CGRect rect, Windows.UI.Xaml.Thickness thickness)
+		{
+			rect.X += (nfloat)thickness.Left;
+			rect.Y += (nfloat)thickness.Top;
+			rect.Width -= (nfloat)(thickness.Left + thickness.Right);
+			rect.Height -= (nfloat)(thickness.Top + thickness.Bottom);
+
+			return rect;
+		}
+
 		public static CGRect Shrink(this CGRect thisCGRect, nfloat left, nfloat top, nfloat right, nfloat bottom)
 		{
 			thisCGRect.X += left;

@@ -20,7 +20,7 @@ namespace Uno.UI.XamlHost;
 public static partial class XamlApplicationExtensions
 {
 	private static IXamlMetadataContainer _metadataContainer;
-	private static bool _initialized = false;
+	private static bool _initialized;
 
 	private static IXamlMetadataContainer GetCurrentProvider()
 	{

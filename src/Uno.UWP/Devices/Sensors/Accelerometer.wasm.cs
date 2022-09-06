@@ -12,7 +12,7 @@ namespace Windows.Devices.Sensors
 		private const string JsType = "Windows.Devices.Sensors.Accelerometer";
 		private const float Gravity = 9.81f;
 
-		private ShakeDetector _shakeDetector = null;
+		private ShakeDetector _shakeDetector;
 
 		private DateTimeOffset _lastReading = DateTimeOffset.MinValue;
 

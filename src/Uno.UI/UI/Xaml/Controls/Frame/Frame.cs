@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Frame : ContentControl
 	{
-		private bool _isNavigating = false;
+		private bool _isNavigating;
 
 		private string _navigationState;
 
