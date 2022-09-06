@@ -108,6 +108,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<InternalsVisibleTo Include="Uno.UI.SourceGenerators.net6.Tests" />
+		<InternalsVisibleTo Include="Uno.UI.SourceGenerators.Tests" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\System.Xaml\Uno.Xaml.csproj">
 			<Project>{1627740a-19d2-4d21-a0b2-66667038daf6}</Project>
 			<Name>Uno.Xaml</Name>

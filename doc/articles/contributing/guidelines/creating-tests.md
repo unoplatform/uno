@@ -67,6 +67,10 @@ These specifically target [the parser](https://github.com/unoplatform/uno/tree/m
 
 If you want to actually test that generated XAML produces correct behavior, which will be the case most of the time, you should use one of the other test types.
 
+### Source generator tests
+
+These can be used to assert that a given input to a given source generator produces specific expected diagnostics. They infrastructure for the tests easily allows to test the generator output exactly, but you should avoid that kind of assertion if you can. These tests exist in [`.UI.SourceGenerators.net6.Tests`](https://github.com/unoplatform/uno/tree/master/src/SourceGenerators/Uno.UI.SourceGenerators.net6.Tests).
+
 ### UI snapshot tests
 
 These are 'semi-automated' tests. For each sample in the [SamplesApp](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/UITests.Shared), a minimal UI test is [generated](https://github.com/unoplatform/uno/blob/master/src/SamplesApp/SamplesApp.UITests.Generator/SnapShotTestGenerator.cs) which simply runs the sample (which automatically takes a screenshot of the loaded sample). 
