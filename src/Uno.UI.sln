@@ -331,7 +331,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.XamlHost.Wasm", "Uno
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.XamlHost.Skia.Wpf", "Uno.UI.XamlHost.Skia.Wpf\Uno.UI.XamlHost.Skia.Wpf.csproj", "{1AB2D0BF-DF3C-44F4-88B7-334CC41C2988}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.UI.InternalSourceGenerators", "SourceGenerators\Uno.UI.InternalSourceGenerators\Uno.UI.InternalSourceGenerators.csproj", "{11A8ACA9-F8A2-4EC1-BC01-E29F2FA5AAA7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.UI.SourceGenerators.Internal", "SourceGenerators\Uno.UI.SourceGenerators.Internal\Uno.UI.SourceGenerators.Internal.csproj", "{11A8ACA9-F8A2-4EC1-BC01-E29F2FA5AAA7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

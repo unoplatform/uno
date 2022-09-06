@@ -169,7 +169,7 @@
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
-		<ProjectReference Include="..\SourceGenerators\Uno.UI.InternalSourceGenerators\Uno.UI.InternalSourceGenerators.csproj">
+		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators.Internal\Uno.UI.SourceGenerators.Internal.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>

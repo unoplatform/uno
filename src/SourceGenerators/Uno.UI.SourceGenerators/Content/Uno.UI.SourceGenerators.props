@@ -89,7 +89,7 @@
 			<PropertyGroup Condition="'$(UnoUIGeneratorsBinPath)'=='' and '$(WindowsAppSDKWinUI)'!='true'">
 				<_UnoUIGeneratorsBinPathInPackage>$(MSBuildThisFileDirectory)..\tools\uno-sourcegen</_UnoUIGeneratorsBinPathInPackage>
 				<_UnoUIGeneratorsBinPathInSource>$(MSBuildThisFileDirectory)..\bin\$(Configuration)\net461</_UnoUIGeneratorsBinPathInSource>
-				<_UnoUIInternalGeneratorsBinPathInSource>$(MSBuildThisFileDirectory)..\..\Uno.UI.InternalSourceGenerators\bin\$(Configuration)\net461</_UnoUIInternalGeneratorsBinPathInSource>
+				<_UnoUIInternalGeneratorsBinPathInSource>$(MSBuildThisFileDirectory)..\..\Uno.UI.SourceGenerators.Internal\bin\$(Configuration)\net461</_UnoUIInternalGeneratorsBinPathInSource>
 				<UnoUIGeneratorsBinPath Condition="exists('$(_UnoUIGeneratorsBinPathInPackage)')">$(_UnoUIGeneratorsBinPathInPackage)</UnoUIGeneratorsBinPath>
 				<UnoUIGeneratorsBinPath Condition="exists('$(_UnoUIGeneratorsBinPathInSource)')">$(_UnoUIGeneratorsBinPathInSource)</UnoUIGeneratorsBinPath>
 				<UnoUIInternalGeneratorsBinPath Condition="exists('$(_UnoUIGeneratorsBinPathInPackage)')">$(_UnoUIGeneratorsBinPathInPackage)</UnoUIInternalGeneratorsBinPath>
@@ -97,7 +97,7 @@
 			</PropertyGroup>
 			<ItemGroup Condition="'$(WindowsAppSDKWinUI)'!='true'">
 				<SourceGenerator Include="$(UnoUIGeneratorsBinPath)\Uno.UI.SourceGenerators.dll" />
-				<SourceGenerator Include="$(UnoUIInternalGeneratorsBinPath)\Uno.UI.InternalSourceGenerators.dll" />
+				<SourceGenerator Include="$(UnoUIInternalGeneratorsBinPath)\Uno.UI.SourceGenerators.Internal.dll" />
 			</ItemGroup>
 		</Otherwise>
 	</Choose>
@@ -107,15 +107,15 @@
 			Condition="exists('$(MSBuildThisFileDirectory)..\Uno.UI.SourceGenerators.csproj')">
 
 		<ItemGroup >
-			<_UnoAnalyzerExclusion1 Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\Microsoft.CodeAnalysis.*.dll" />
-			<_UnoAnalyzerExclusion1 Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\System.*.dll" />
-			<_UnoAnalyzerExclusion2 Include="$(MSBuildThisFileDirectory)..\..\Uno.UI.InternalSourceGenerators\bin\$(Configuration)\netstandard2.0\Microsoft.CodeAnalysis.*.dll" />
-			<_UnoAnalyzerExclusion2 Include="$(MSBuildThisFileDirectory)..\..\Uno.UI.InternalSourceGenerators\bin\$(Configuration)\netstandard2.0\System.*.dll" />
+			<_UnoAnalyzerExclusion Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\Microsoft.CodeAnalysis.*.dll" />
+			<_UnoAnalyzerExclusion Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\System.*.dll" />
+			<_UnoAnalyzerExclusionInternal Include="$(MSBuildThisFileDirectory)..\..\Uno.UI.SourceGenerators.Internal\bin\$(Configuration)\netstandard2.0\Microsoft.CodeAnalysis.*.dll" />
+			<_UnoAnalyzerExclusionInternal Include="$(MSBuildThisFileDirectory)..\..\Uno.UI.SourceGenerators.Internal\bin\$(Configuration)\netstandard2.0\System.*.dll" />
 
 			<Analyzer Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\*.dll"
-					Exclude="@(_UnoAnalyzerExclusion1)" />
-			<Analyzer Include="$(MSBuildThisFileDirectory)..\..\Uno.UI.InternalSourceGenerators\bin\$(Configuration)\netstandard2.0\*.dll"
-					Exclude="@(_UnoAnalyzerExclusion2)" />
+					Exclude="@(_UnoAnalyzerExclusion)" />
+			<Analyzer Include="$(MSBuildThisFileDirectory)..\..\Uno.UI.SourceGenerators.Internal\bin\$(Configuration)\netstandard2.0\*.dll"
+					Exclude="@(_UnoAnalyzerExclusionInternal)" />
 			<!-- generator is automatically included in nuget package, no need to add it here -->
 		</ItemGroup>
 	</Target>

@@ -12,7 +12,7 @@
       "SamplesApp\\SamplesApp.UnitTests.Shared\\SamplesApp.UnitTests.Shared.shproj",
       "SamplesApp\\UITests.Shared\\UITests.Shared.shproj",
       "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",
-      "SourceGenerators\\Uno.UI.InternalSourceGenerators\\Uno.UI.InternalSourceGenerators.csproj",
+      "SourceGenerators\\Uno.UI.SourceGenerators.Internal\\Uno.UI.SourceGenerators.Internal.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
       "T4Generator\\T4Generator.csproj",
