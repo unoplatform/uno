@@ -15,7 +15,7 @@
 							Or '$(LangVersion)' == 'default'
 							Or (
 								'$(LangVersion)'!=''
-								and $([MSBuild]::VersionGreaterThan($(LangVersion), '9.0'))
+								and '$(LangVersion)' &gt; '9.0'
 							)">true</_canUseRoslynAnalyzer>
 
 		<UnoUIUseRoslynSourceGenerators Condition="'$(UnoUIUseRoslynSourceGenerators)'=='' and '$(_isRoslynAnalyzerAvailable)' == 'true' and '$(_canUseRoslynAnalyzer)'=='true'">true</UnoUIUseRoslynSourceGenerators>
