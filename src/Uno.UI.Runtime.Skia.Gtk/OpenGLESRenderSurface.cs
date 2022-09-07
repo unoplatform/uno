@@ -110,9 +110,24 @@ namespace Uno.UI.Runtime.Skia
 		{
 			var glInterface = GRGlInterface.CreateGles(proc =>
 			{
-				if (NativeContext.TryGetProcAddress(proc, out var addr))
+				try
 				{
-					return addr;
+					if (NativeContext.TryGetProcAddress(proc, out var addr))
+					{
+						return addr;
+					}
+				}
+				catch(Exception e)
+				{
+					// In this context, the lamda is executed from a native context, where
+					// unhandled exceptions terminate the process. In this case, we can simply
+					// return NULL, causing glInterface to be null in return.
+
+
+					if (typeof(OpenGLESRenderSurface).Log().IsEnabled(LogLevel.Debug))
+					{
+						typeof(OpenGLESRenderSurface).Log().Debug($"OpenGL ES is not available {e.Message}");
+					}
 				}
 
 				return IntPtr.Zero;
