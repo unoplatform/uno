@@ -63,6 +63,11 @@ namespace Windows.UI.Xaml
 			_renderTransform?.UpdateSize(args.NewSize);
 		}
 
+		/// <summary>
+		/// Identifies the Name dependency property.
+		/// </summary>
+		public static new DependencyProperty NameProperty => UIElement.NameProperty;
+
 		#region Margin Dependency Property
 		[GeneratedDependencyProperty(
 			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
