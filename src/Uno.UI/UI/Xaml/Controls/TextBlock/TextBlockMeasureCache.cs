@@ -8,6 +8,7 @@ using Uno;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.Foundation.Logging;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -23,6 +24,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private readonly Dictionary<MeasureKey, MeasureEntry> _entries = new Dictionary<MeasureKey, MeasureEntry>(new MeasureKey.Comparer());
 		private readonly LinkedList<MeasureKey> _queue = new LinkedList<MeasureKey>();
+		
+		public static readonly TextBlockMeasureCache Instance = new TextBlockMeasureCache();
 
 		/// <summary>
 		/// Finds a cached measure for the provided <see cref="TextBlock"/> characteristics
