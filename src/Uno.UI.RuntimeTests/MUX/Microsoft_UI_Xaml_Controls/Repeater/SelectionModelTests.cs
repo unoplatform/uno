@@ -1375,9 +1375,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					Verify.AreEqual(selectionModel.SelectedItem, GetData(selectionModel, expectedSelected[0]));
 				}
 
-				int itemsCount = selectionModel.SelectedItems.Count();
+				int itemsCount = selectionModel.SelectedItems.Count;
 				Verify.AreEqual(selectionModel.Source != null ? expectedSelected.Count - selectedInnerNodes : 0, itemsCount);
-				int indicesCount = selectionModel.SelectedIndices.Count();
+				int indicesCount = selectionModel.SelectedIndices.Count;
 				Verify.AreEqual(expectedSelected.Count - selectedInnerNodes, indicesCount);
 			}
 

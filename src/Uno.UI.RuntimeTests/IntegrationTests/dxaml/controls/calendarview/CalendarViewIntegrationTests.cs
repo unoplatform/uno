@@ -2556,7 +2556,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 					});
 
 
-					for (var i = 0; i < testData.snapPoints.Count(); i++)
+					for (var i = 0; i < testData.snapPoints.Length; i++)
 					{
 						LOG_OUTPUT("scroll down to next snap point and wait for viewchanged event.");
 						TestServices.InputHelper.ScrollMouseWheel(cv, -1);

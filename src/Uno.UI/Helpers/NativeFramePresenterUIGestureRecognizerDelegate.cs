@@ -14,7 +14,7 @@ namespace Uno.UI.Helpers
 		}
 		public override bool ShouldBegin(UIGestureRecognizer recognizer)
 		{
-			return _navigationController()?.ViewControllers?.Count() > 1;
+			return _navigationController()?.ViewControllers?.Length > 1;
 		}
 	}
 }

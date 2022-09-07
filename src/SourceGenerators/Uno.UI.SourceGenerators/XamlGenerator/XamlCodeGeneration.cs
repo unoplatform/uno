@@ -647,7 +647,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 #if DEBUG
-			Console.Write(resourceKeys.Count() + " localization keys found");
+			Console.Write(resourceKeys.Length + " localization keys found");
 #endif
 			return resourceKeys;
 		}
