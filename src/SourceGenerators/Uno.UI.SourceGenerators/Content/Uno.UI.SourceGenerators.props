@@ -93,7 +93,7 @@
 				<UnoUIGeneratorsBinPath Condition="exists('$(_UnoUIGeneratorsBinPathInPackage)')">$(_UnoUIGeneratorsBinPathInPackage)</UnoUIGeneratorsBinPath>
 				<UnoUIGeneratorsBinPath Condition="exists('$(_UnoUIGeneratorsBinPathInSource)')">$(_UnoUIGeneratorsBinPathInSource)</UnoUIGeneratorsBinPath>
 				<UnoUIInternalGeneratorsBinPath Condition="exists('$(_UnoUIGeneratorsBinPathInPackage)')">$(_UnoUIGeneratorsBinPathInPackage)</UnoUIInternalGeneratorsBinPath>
-				<UnoUIInternalGeneratorsBinPath Condition="exists('$(_UnoUIInternalGeneratorsBinPathInSource)')">$(_UnoUIInternalGeneratorsBinPathInSource)</UnoUIInternalGeneratorsBinPath>
+				<UnoUIInternalGeneratorsBinPath Condition="'$(UnoUIInternalGeneratorsBinPath)'==''">$(_UnoUIInternalGeneratorsBinPathInSource)</UnoUIInternalGeneratorsBinPath>
 			</PropertyGroup>
 			<ItemGroup Condition="'$(WindowsAppSDKWinUI)'!='true'">
 				<SourceGenerator Include="$(UnoUIGeneratorsBinPath)\Uno.UI.SourceGenerators.dll" />
