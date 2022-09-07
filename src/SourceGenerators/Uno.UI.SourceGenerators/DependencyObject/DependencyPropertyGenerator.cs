@@ -175,8 +175,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			{
 				var propertyName = memberSymbol.Name.TrimEnd("Property", StringComparison.Ordinal);
 
-				var getMethodSymbol = ownerType.GetMethodsWithName("Get" + propertyName).FirstOrDefault();
-				var setMethodSymbol = ownerType.GetMethodsWithName("Set" + propertyName).FirstOrDefault();
+				var getMethodSymbol = ownerType.GetFirstMethodWithName("Get" + propertyName);
+				var setMethodSymbol = ownerType.GetFirstMethodWithName("Set" + propertyName);
 
 				if (getMethodSymbol == null)
 				{
@@ -282,7 +282,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					}
 				}
 
-				if (coerceCallback || propertyOwnerType.GetMethodsWithName("Coerce" + propertyName).Any())
+				if (coerceCallback || propertyOwnerType.GetFirstMethodWithName("Coerce" + propertyName) is not null)
 				{
 					builder.AppendLineIndented($"\t\t, coerceValueCallback: (instance, baseValue) => Coerce{propertyName}(instance, ({propertyTypeName})baseValue)");
 				}
@@ -398,7 +398,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					builder.AppendLineIndented($"\t\t, backingFieldUpdateCallback: On{propertyName}BackingFieldUpdate");
 				}
 
-				if (coerceCallback || propertySymbol.ContainingType.GetMethodsWithName("Coerce" + propertyName).Any())
+				if (coerceCallback || propertySymbol.ContainingType.GetFirstMethodWithName("Coerce" + propertyName) is not null)
 				{
 					builder.AppendLineIndented($"\t\t, coerceValueCallback: (instance, baseValue) => (({containingTypeName})instance).Coerce{propertyName}(baseValue)");
 				}
@@ -483,7 +483,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				var defaultValueMethodName = $"Get{propertyName}DefaultValue()";
 				if (defaultValue.HasValue && !string.IsNullOrEmpty(defaultValue.Value.Key))
 				{
-					if (ownerType.GetMethodsWithName(defaultValueMethodName).Any())
+					if (ownerType.GetFirstMethodWithName(defaultValueMethodName) is not null)
 					{
 						builder.AppendLineIndented($"#error The generated property {propertyName} cannot contains both a DefaultValue and the {defaultValueMethodName} method.");
 					}

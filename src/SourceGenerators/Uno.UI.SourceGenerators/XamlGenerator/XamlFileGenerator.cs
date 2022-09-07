@@ -3237,7 +3237,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 									var getterMethod = $"Get{member.Member.Name}";
 
-									if (ownerType.GetMethodsWithName(getterMethod).Any())
+									if (ownerType.GetFirstMethodWithName(getterMethod) is not null)
 									{
 										// Attached property
 										writer.AppendLineIndented(
@@ -3672,14 +3672,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										};
 									}
 
-									var method = currentType?.GetMethodsWithName(parts.Last()).FirstOrDefault()
+									var method = currentType?.GetFirstMethodWithName(parts.Last())
 										?? throw new InvalidOperationException($"Failed to find {parts.Last()} on {currentType}");
 
 									return method;
 								}
 								else
 								{
-									return sourceType?.GetMethodsWithName(eventTarget ?? "").FirstOrDefault()
+									return sourceType?.GetFirstMethodWithName(eventTarget ?? "")
 										?? throw new InvalidOperationException($"Failed to find {eventTarget} on {sourceType}");
 								}
 							}

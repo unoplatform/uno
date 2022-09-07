@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.ApplicationInsights.DataContracts;
 
 namespace Microsoft.CodeAnalysis
 {
@@ -265,6 +266,21 @@ namespace Microsoft.CodeAnalysis
 
 		public static IEnumerable<IMethodSymbol> GetMethodsWithName(this ITypeSymbol resolvedType, string name)
 			=> resolvedType.GetMembers(name).OfType<IMethodSymbol>();
+
+		public static IMethodSymbol? GetFirstMethodWithName(this ITypeSymbol resolvedType, string name)
+		{
+			var members = resolvedType.GetMembers(name);
+
+			for (int i = 0; i < members.Length; i++)
+			{
+				if (members[i] is IMethodSymbol method)
+				{
+					return method;
+				}
+			}
+
+			return null;
+		}
 
 		public static IEnumerable<IFieldSymbol> GetFields(this ITypeSymbol resolvedType)
 			=> resolvedType.GetMembers().OfType<IFieldSymbol>();
