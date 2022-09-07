@@ -149,7 +149,7 @@
 		Remove uno source generators when building under WinAppSDK
 		-->
 		<ItemGroup>
-			<_AnalyzerToRemove Include="@(Analyzer)" Condition="'%(FileName)'=='Uno.UI.SourceGenerators'" />
+			<_AnalyzerToRemove Include="@(Analyzer)" Condition="'%(FileName)'=='Uno.UI.SourceGenerators' or '%(FileName)'=='Uno.UI.SourceGenerators.Internal'" />
 			<Analyzer Remove="@(_AnalyzerToRemove)"/>
 		</ItemGroup>
 	</Target>
