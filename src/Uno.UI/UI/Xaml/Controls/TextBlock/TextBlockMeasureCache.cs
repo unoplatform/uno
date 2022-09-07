@@ -101,29 +101,6 @@ namespace Windows.UI.Xaml.Controls
 			entry.CacheMeasure(availableSize, measuredSize);
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="fontFamily"></param>
-		internal void Clear(FontFamily fontFamily)
-		{
-			List<MeasureKey> keysToRemove = new();
-
-			foreach(var item in _queue)
-			{
-				if (item.FontFamily.CssFontName == fontFamily.CssFontName)
-				{
-					keysToRemove.Add(item);
-				}
-			}
-
-			foreach(var keyToRemove in keysToRemove)
-			{
-				_queue.Remove(keyToRemove);
-				_entries.Remove(keyToRemove);
-			}
-		}
-
 		private void Scavenge()
 		{
 			while (_queue.Count >= MaxMeasureKeyEntries)
