@@ -109,7 +109,7 @@ namespace A.B
 			var type = compilation.GetTypeByMetadataName("A.B.C.D+E");
 			Assert.IsNotNull(type);
 			var builder = new IndentedStringBuilder();
-			var disposables = type.AddToIndentedStringBuilder(builder, builder => builder.AppendLineInvariant("[MyAttribute]"));
+			var disposables = type.AddToIndentedStringBuilder(builder, builder => builder.AppendLineIndented("[MyAttribute]"));
 			Assert.AreEqual(@"namespace A.B.C
 {
 	partial class D

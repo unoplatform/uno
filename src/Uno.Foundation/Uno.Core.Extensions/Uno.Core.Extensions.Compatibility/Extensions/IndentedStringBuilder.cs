@@ -15,7 +15,7 @@
 //
 // ******************************************************************
 using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace Uno.Extensions
@@ -23,7 +23,7 @@ namespace Uno.Extensions
 	/// <summary>
 	/// A C# code indented builder.
 	/// </summary>
-	internal class IndentedStringBuilder : IIndentedStringBuilder
+	internal sealed class IndentedStringBuilder : IIndentedStringBuilder
 	{
 		private readonly StringBuilder _stringBuilder;
 
@@ -39,54 +39,62 @@ namespace Uno.Extensions
 			_stringBuilder = stringBuilder;
 		}
 
-		public virtual IDisposable Indent(int count = 1)
+		public IDisposable Indent(int count = 1)
 		{
 			CurrentLevel += count;
 			return new DisposableAction(() => CurrentLevel -= count);
 		}
 
-		public virtual IDisposable Block(int count = 1)
+		public IDisposable Block(int count = 1)
 		{
 			var current = CurrentLevel;
 
 			CurrentLevel += count;
-			Append("{".Indent(current));
+			AppendIndented("{", current);
 			AppendLine();
 
 			return new DisposableAction(() =>
 			{
 				CurrentLevel -= count;
-				Append("}".Indent(current));
+				AppendIndented("}", current);
 				AppendLine();
 			});
 		}
 
-		public virtual IDisposable Block(IFormatProvider formatProvider, string pattern, params object[] parameters)
+		public IDisposable Block(IFormatProvider formatProvider, string pattern, params object[] parameters)
 		{
-			AppendFormat(formatProvider, pattern, parameters);
+			AppendFormatIndented(formatProvider, pattern, parameters);
 			AppendLine();
 
 			return Block();
 		}
 
-		public virtual void Append(string text)
+		public void Append(string text)
 		{
 			_stringBuilder.Append(text);
 		}
 
-		public virtual void AppendFormat(IFormatProvider formatProvider, string pattern, params object[] replacements)
+		public void AppendIndented(string text)
 		{
-			_stringBuilder.AppendFormat(formatProvider, pattern.Indent(CurrentLevel), replacements);
+			AppendIndented(text, CurrentLevel);
+		}
+
+		private void AppendIndented(string text, int indentCount)
+		{
+			_stringBuilder.Append('\t', indentCount);
+			_stringBuilder.Append(text);
+		}
+
+		public void AppendFormatIndented(IFormatProvider formatProvider, string text, params object[] replacements)
+		{
+			_stringBuilder.Append('\t', CurrentLevel);
+			_stringBuilder.AppendFormat(formatProvider, text, replacements);
 		}
 
 		/// <summary>
 		/// Appends a newline.
 		/// </summary>
-		/// <remarks>
-		/// This method presents correct behavior, as opposed to its <see cref="AppendLine(String)"/>
-		/// overload. Therefore, this method should be used whenever a newline is desired.
-		/// </remarks>
-		public virtual void AppendLine()
+		public void AppendLine()
 		{
 			_stringBuilder.AppendLine();
 		}
@@ -97,10 +105,9 @@ namespace Uno.Extensions
 		/// <param name="text">The string to append.</param>
 		/// <remarks>
 		/// Even though this method seems like it appends a newline, it doesn't. To append a
-		/// newline, call <see cref="AppendLine()"/> after this method, as the parameterless
-		/// overload has the correct behavior.
+		/// newline, call <see cref="AppendLine()"/> after this method.
 		/// </remarks>
-		public virtual void AppendLine(string text)
+		public void AppendMultiLineIndented(string text)
 		{
 			_stringBuilder.Append(text.Indent(CurrentLevel));
 		}
