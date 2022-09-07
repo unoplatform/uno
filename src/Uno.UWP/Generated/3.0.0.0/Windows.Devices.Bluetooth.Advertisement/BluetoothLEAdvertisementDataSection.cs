@@ -9,13 +9,6 @@ namespace Windows.Devices.Bluetooth.Advertisement
 	{
 		// Skipping already declared property DataType
 		// Skipping already declared property Data
-		#if __ANDROID__ || __IOS__ || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__")]
-		public BluetoothLEAdvertisementDataSection() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection", "BluetoothLEAdvertisementDataSection.BluetoothLEAdvertisementDataSection()");
-		}
-		#endif
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection.BluetoothLEAdvertisementDataSection()
 		// Skipping already declared method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection.BluetoothLEAdvertisementDataSection(byte, Windows.Storage.Streams.IBuffer)
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection.BluetoothLEAdvertisementDataSection(byte, Windows.Storage.Streams.IBuffer)
