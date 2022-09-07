@@ -33,7 +33,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		internal const string ParseContextPropertyName = "__ParseContext_";
 		internal const string ParseContextPropertyType = "global::Uno.UI.Xaml.XamlParseContext";
 
-		private readonly string[] _xamlSourceFiles;
+		private readonly Uno.Roslyn.MSBuildItem[] _xamlSourceFiles;
 		private readonly string[] _xamlSourceLinks;
 		private readonly string _targetPath;
 		private readonly string _defaultLanguage;
@@ -141,10 +141,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Concat(applicationDefinitionItems)
 				.ToArray();
 
-			_xamlSourceFiles = xamlItems.Select(i => i.Identity).ToArray();
+			_xamlSourceFiles = xamlItems;
 
-			_xamlSourceLinks = xamlItems.Select(GetSourceLink)
-				.ToArray();
+			_xamlSourceLinks = xamlItems.Select(GetSourceLink).ToArray();
 
 			_excludeXamlNamespaces = context.GetMSBuildPropertyValue("ExcludeXamlNamespacesProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -152,7 +151,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-			_resourceFiles = context.GetMSBuildItems("PRIResource").Select(i => i.Identity).ToArray();
+			_resourceFiles = context.GetMSBuildItemsWithAdditionalFiles("PRIResource").Select(i => i.Identity).ToArray();
 
 			if (bool.TryParse(context.GetMSBuildPropertyValue("UseUnoXamlParser"), out var useUnoXamlParser) && useUnoXamlParser)
 			{
@@ -205,7 +204,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_defaultLanguage = context.GetMSBuildPropertyValue("DefaultLanguage");
 
-			_uiAutomationMappings = context.GetMSBuildItems("CustomUiAutomationMemberMappingAdjusted")
+			_uiAutomationMappings = context.GetMSBuildItemsWithAdditionalFiles("CustomUiAutomationMemberMappingAdjusted")
 				.Select(i => new
 				{
 					Key = i.Identity,
@@ -223,20 +222,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isDesignTimeBuild = Helpers.DesignTimeHelper.IsDesignTime(context);
 		}
 
-		private static bool IsWinUIItem(MSBuildItem item)
+		private static bool IsWinUIItem(Uno.Roslyn.MSBuildItem item)
 			=> item.GetMetadataValue("XamlRuntime") is { } xamlRuntime
 				? xamlRuntime == "WinUI" || string.IsNullOrWhiteSpace(xamlRuntime)
 				: true;
 
-		private IEnumerable<MSBuildItem> GetWinUIItems(string name)
-			=> _generatorContext
-				.GetMSBuildItems(name)
-				.Where(IsWinUIItem);
+		private IEnumerable<Uno.Roslyn.MSBuildItem> GetWinUIItems(string name)
+			=> _generatorContext.GetMSBuildItemsWithAdditionalFiles(name).Where(IsWinUIItem);
 
 		/// <summary>
 		/// Get the file location as seen in the IDE, used for ResourceDictionary.Source resolution.
 		/// </summary>
-		private string GetSourceLink(MSBuildItem projectItemInstance)
+		private string GetSourceLink(Uno.Roslyn.MSBuildItem projectItemInstance)
 		{
 			var link = projectItemInstance.GetMetadataValue("Link");
 			var definingProjectFullPath = projectItemInstance.GetMetadataValue("DefiningProjectFullPath");

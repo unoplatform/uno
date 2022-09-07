@@ -79,7 +79,7 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 
 			IEnumerable<string> BuildSearchPath(string s)
 				=> context
-					.GetMSBuildItems(s)
+					.GetMSBuildItemsWithAdditionalFiles(s)
 					.Select(v => Path.IsPathRooted(v.Identity) ? v.Identity : Path.Combine(msBuildProjectDirectory, v.Identity));
 
 			var xamlPaths = from item in sources.SelectMany(BuildSearchPath)
