@@ -91,7 +91,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 #if HAS_UNO
 			return popups.Count(p => p.Child is not MessageDialogContentDialog);
 #else
-			return popups.Count();
+			return popups.Count;
 #endif
 		}
 	}

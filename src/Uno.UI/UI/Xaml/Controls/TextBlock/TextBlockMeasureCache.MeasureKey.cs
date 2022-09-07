@@ -89,6 +89,8 @@ namespace Windows.UI.Xaml.Controls
 			private readonly int _characterSpacing;
 			private readonly TextDecorations _textDecorations;
 
+			public FontFamily FontFamily => _fontFamily;
+
 			internal bool IsWrapping => _textWrapping != TextWrapping.NoWrap;
 			internal bool IsClipping => _textTrimming != TextTrimming.None;
 		}

@@ -165,7 +165,7 @@ namespace MonoTests.Uno.Xaml
 		public void GetXamlTypeAndAllXamlTypes ()
 		{
 			var ctx = new XamlSchemaContext (new Assembly [] {typeof (string).Assembly}); // build with corlib.
-			Assert.AreEqual (0, ctx.GetAllXamlTypes (XamlLanguage.Xaml2006Namespace).Count (), "#0"); // premise
+			Assert.AreEqual (0, ctx.GetAllXamlTypes (XamlLanguage.Xaml2006Namespace).Count, "#0"); // premise
 
 			var xt = ctx.GetXamlType (typeof (string));
 			Assert.IsNotNull (xt, "#1");
@@ -176,7 +176,7 @@ namespace MonoTests.Uno.Xaml
 			Assert.IsTrue (object.ReferenceEquals (ctx.GetXamlType (GetType ()), ctx.GetXamlType (GetType ())), "#4");
 
 			// after getting these types, it still returns 0. So it's not all about caching.
-			Assert.AreEqual (0, ctx.GetAllXamlTypes (XamlLanguage.Xaml2006Namespace).Count (), "#5");
+			Assert.AreEqual (0, ctx.GetAllXamlTypes (XamlLanguage.Xaml2006Namespace).Count, "#5");
 		}
 
 		[Test]
@@ -197,7 +197,7 @@ namespace MonoTests.Uno.Xaml
 			// There are some special types that have non-default name: MemberDefinition, PropertyDefinition
 
 			var l = ctx.GetAllXamlTypes (XamlLanguage.Xaml2006Namespace);
-			Assert.IsTrue (l.Count () > 40, "#1");
+			Assert.IsTrue (l.Count > 40, "#1");
 			Assert.IsTrue (l.Any (t => t.UnderlyingType == typeof (MemberDefinition)), "#2");
 			Assert.IsTrue (l.Any (t => t.Name == "AmbientAttribute"), "#3");
 			Assert.IsTrue (l.Any (t => t.Name == "XData"), "#4");

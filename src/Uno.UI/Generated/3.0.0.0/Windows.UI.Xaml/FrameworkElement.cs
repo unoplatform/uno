@@ -277,8 +277,8 @@ namespace Windows.UI.Xaml
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty NameProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Name), typeof(string), 
