@@ -3,20 +3,11 @@
 namespace Windows.UI.Xaml.Automation.Peers
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
 	public   enum AutomationOrientation 
 	{
-		#if false || false || false || false || false || false || false
-		None,
-		#endif
-		#if false || false || false || false || false || false || false
-		Horizontal,
-		#endif
-		#if false || false || false || false || false || false || false
-		Vertical,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationOrientation.None
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationOrientation.Horizontal
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationOrientation.Vertical
 	}
 	#endif
 }

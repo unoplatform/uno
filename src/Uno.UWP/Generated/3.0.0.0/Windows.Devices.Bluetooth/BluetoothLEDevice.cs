@@ -7,26 +7,8 @@ namespace Windows.Devices.Bluetooth
 	#endif
 	public  partial class BluetoothLEDevice : global::System.IDisposable
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  ulong BluetoothAddress
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ulong BluetoothLEDevice.BluetoothAddress is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Bluetooth.BluetoothConnectionStatus ConnectionStatus
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member BluetoothConnectionStatus BluetoothLEDevice.ConnectionStatus is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property BluetoothAddress
+		// Skipping already declared property ConnectionStatus
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string DeviceId
@@ -47,36 +29,9 @@ namespace Windows.Devices.Bluetooth
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Name
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string BluetoothLEDevice.Name is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Bluetooth.BluetoothLEAppearance Appearance
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member BluetoothLEAppearance BluetoothLEDevice.Appearance is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Bluetooth.BluetoothAddressType BluetoothAddressType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member BluetoothAddressType BluetoothLEDevice.BluetoothAddressType is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Name
+		// Skipping already declared property Appearance
+		// Skipping already declared property BluetoothAddressType
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Enumeration.DeviceInformation DeviceInformation

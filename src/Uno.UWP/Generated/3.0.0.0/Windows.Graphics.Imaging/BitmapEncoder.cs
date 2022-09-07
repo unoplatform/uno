@@ -89,76 +89,13 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::System.Guid BmpEncoderId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid BitmapEncoder.BmpEncoderId is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::System.Guid GifEncoderId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid BitmapEncoder.GifEncoderId is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::System.Guid JpegEncoderId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid BitmapEncoder.JpegEncoderId is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::System.Guid JpegXREncoderId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid BitmapEncoder.JpegXREncoderId is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::System.Guid PngEncoderId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid BitmapEncoder.PngEncoderId is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::System.Guid TiffEncoderId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid BitmapEncoder.TiffEncoderId is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::System.Guid HeifEncoderId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid BitmapEncoder.HeifEncoderId is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property BmpEncoderId
+		// Skipping already declared property GifEncoderId
+		// Skipping already declared property JpegEncoderId
+		// Skipping already declared property JpegXREncoderId
+		// Skipping already declared property PngEncoderId
+		// Skipping already declared property TiffEncoderId
+		// Skipping already declared property HeifEncoderId
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.EncoderInformation.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.BitmapProperties.get
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.BitmapContainerProperties.get

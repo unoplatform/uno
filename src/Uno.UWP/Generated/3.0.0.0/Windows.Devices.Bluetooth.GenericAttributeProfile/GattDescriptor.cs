@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class GattDescriptor 
@@ -31,16 +31,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Guid Uuid
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattDescriptor.Uuid is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Uuid
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor.ProtectionLevel.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor.ProtectionLevel.set
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattDescriptor.Uuid.get

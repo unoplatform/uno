@@ -2,71 +2,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth.Advertisement
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class BluetoothLEAdvertisement 
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string LocalName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string BluetoothLEAdvertisement.LocalName is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisement", "string BluetoothLEAdvertisement.LocalName");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFlags? Flags
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member BluetoothLEAdvertisementFlags? BluetoothLEAdvertisement.Flags is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisement", "BluetoothLEAdvertisementFlags? BluetoothLEAdvertisement.Flags");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataSection> DataSections
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<BluetoothLEAdvertisementDataSection> BluetoothLEAdvertisement.DataSections is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEManufacturerData> ManufacturerData
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<BluetoothLEManufacturerData> BluetoothLEAdvertisement.ManufacturerData is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::System.Guid> ServiceUuids
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<Guid> BluetoothLEAdvertisement.ServiceUuids is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		// Skipping already declared property LocalName
+		// Skipping already declared property Flags
+		// Skipping already declared property DataSections
+		// Skipping already declared property ManufacturerData
+		// Skipping already declared property ServiceUuids
+		#if __ANDROID__ || __IOS__ || false || false || false || false || false
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__")]
 		public BluetoothLEAdvertisement() 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisement", "BluetoothLEAdvertisement.BluetoothLEAdvertisement()");

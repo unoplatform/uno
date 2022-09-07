@@ -71,21 +71,20 @@ namespace Windows.UI.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreIndependentInputSourceController", "void CoreIndependentInputSourceController.Dispose()");
 		}
 		#endif
-		// These methods are commented out as they reference Composition namespace which would cause circular reference.
-		//#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		//[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		//public static global::Windows.UI.Core.CoreIndependentInputSourceController CreateForVisual( global::Windows.UI.Composition.Visual visual)
-		//{
-		//	throw new global::System.NotImplementedException("The member CoreIndependentInputSourceController CoreIndependentInputSourceController.CreateForVisual(Visual visual) is not implemented in Uno.");
-		//}
-		//#endif
-		//#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		//[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		//public static global::Windows.UI.Core.CoreIndependentInputSourceController CreateForIVisualElement( global::Windows.UI.Composition.IVisualElement visualElement)
-		//{
-		//	throw new global::System.NotImplementedException("The member CoreIndependentInputSourceController CoreIndependentInputSourceController.CreateForIVisualElement(IVisualElement visualElement) is not implemented in Uno.");
-		//}
-		//#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Core.CoreIndependentInputSourceController CreateForVisual( global::Windows.UI.Composition.Visual visual)
+		{
+			throw new global::System.NotImplementedException("The member CoreIndependentInputSourceController CoreIndependentInputSourceController.CreateForVisual(Visual visual) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.UI.Core.CoreIndependentInputSourceController CreateForIVisualElement( global::Windows.UI.Composition.IVisualElement visualElement)
+		{
+			throw new global::System.NotImplementedException("The member CoreIndependentInputSourceController CoreIndependentInputSourceController.CreateForIVisualElement(IVisualElement visualElement) is not implemented in Uno.");
+		}
+		#endif
 		// Processing: System.IDisposable
 	}
 }
