@@ -14,10 +14,10 @@ partial class ElevatedView
 {
 	private const int MaximumRadius = 128;
 
-	private AndroidCanvas? _shadowCanvas = null;
-	private AndroidPaint? _shadowPaint = null;
-	private AndroidPaint? _renderPaint = null;
-	private AndroidBitmap? _shadowBitmap = null;
+	private AndroidCanvas? _shadowCanvas;
+	private AndroidPaint? _shadowPaint;
+	private AndroidPaint? _renderPaint;
+	private AndroidBitmap? _shadowBitmap;
 	private bool _invalidateShadow = true;
 
 	protected override void DispatchDraw(Canvas canvas)
