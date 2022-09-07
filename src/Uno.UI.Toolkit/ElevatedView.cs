@@ -59,6 +59,9 @@ namespace Uno.UI.Toolkit
 
 #if HAS_UNO
 			Loaded += (snd, evt) => SynchronizeContentTemplatedParent();
+#if __ANDROID__
+			Unloaded += (snd, evt) => DisposeShadow();
+#endif
 
 			// Patch to deactivate the clipping by ContentControl
 			RenderTransform = new CompositeTransform();
