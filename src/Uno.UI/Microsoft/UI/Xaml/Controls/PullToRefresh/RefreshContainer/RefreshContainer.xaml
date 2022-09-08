@@ -19,7 +19,11 @@
 			<Setter.Value>
 			<ControlTemplate TargetType="local:RefreshContainer">
 				<Grid x:Name="Root" Background="{TemplateBinding Background}" >
-				<ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" Background="Transparent"/>
+				<ContentPresenter x:Name="ContentPresenter"
+								  Content="{TemplateBinding Content}"
+								  ContentTemplate="{TemplateBinding ContentTemplate}"
+								  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+								  Background="Transparent"/>
 				<Grid x:Name="RefreshVisualizerPresenter"/>
 				</Grid>
 			</ControlTemplate>
@@ -37,7 +41,11 @@
 					<Grid x:Name="Root">
 						<uno:NativeRefreshControl x:Name="NativeRefreshControl">
 							<uno:NativeRefreshControl.Content>
-								<ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" Background="Transparent" />
+								<ContentPresenter x:Name="ContentPresenter"
+									Content="{TemplateBinding Content}"
+									ContentTemplate="{TemplateBinding ContentTemplate}"
+									ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+									Background="Transparent"/>
 							</uno:NativeRefreshControl.Content>
 						</uno:NativeRefreshControl>
 						<Grid x:Name="RefreshVisualizerPresenter"/>

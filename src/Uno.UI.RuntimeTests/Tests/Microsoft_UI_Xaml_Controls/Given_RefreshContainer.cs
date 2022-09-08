@@ -14,6 +14,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Stretch_Child()
 		{
+			var grid = new Grid();
 			var refreshContainer = new Microsoft.UI.Xaml.Controls.RefreshContainer();
 			var child = new Border()
 			{
@@ -30,8 +31,9 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			child.Child = grandChild;
 			refreshContainer.Content = child;
-
-			WindowHelper.WindowContent = refreshContainer;
+			grid.Add(refreshContainer);
+			
+			WindowHelper.WindowContent = grid;
 
 			await WindowHelper.WaitForLoaded(grandChild);
 			await WindowHelper.WaitForLoaded(refreshContainer);
