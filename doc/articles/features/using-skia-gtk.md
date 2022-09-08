@@ -25,6 +25,28 @@ To do so, immediately before the line `host.Run()` in you `main.cs` file, add th
 host.RenderSurfaceType = RenderSurfaceType.Software;
 ```
 
+### Linux considerations
+When running under Linux, GTK can use OpenGL for the UI rendering but some restrictions can apply depending on the environment and available hardware.
+
+- When running under Wayland, to enable OpenGL acceleration, you may need to set the `GDK_BACKEND` environment variable to `x11` before running your application.
+- When running under Wayland and running with OpenGL ES 3.3 or later (using glxinfo to confirm), you may need to set the `GDK_GL` environment variable to `gles` before running your application.
+
+### Troubleshooting OpenGL integration
+Enabling debug logging messages for the GTK Host can help diagnose the render surface type selection.
+
+In your `App.xaml.cs` file, change the minimum log level to:
+```csharp
+builder.SetMinimumLevel(LogLevel.Debug);
+```
+Then change the logging level of the GTK Host to `Information` or `Debug`:
+```csharp
+builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Information);
+```
+You may also need to initialize the logging system earlier than what is found in Uno.UI's default templates by calling this in `Main`:
+```csharp
+YourAppNamespace.App.ConfigureFilters(); // Enable tracing of the GTK host
+```
+
 ## Upgrading to a later version of SkiaSharp
 
 By default Uno comes with a set of **SkiaSharp** dependencies set by the **[Uno.UI.Runtime.Skia.Gtk](https://nuget.info/packages/Uno.UI.Runtime.Skia.Gtk)** package. 
