@@ -11,6 +11,8 @@ using _View = UIKit.UIView;
 #elif __MACOS__
 using CoreGraphics;
 using _View = AppKit.NSView;
+#elif __ANDROID__
+using Android.Views;
 #endif
 
 
@@ -46,11 +48,7 @@ namespace Uno.UI.Toolkit
 		 *
 		 */
 
-#if __ANDROID__
-		private static readonly Color DefaultShadowColor = Colors.Black;
-#else
 		private static readonly Color DefaultShadowColor = Color.FromArgb(64, 0, 0, 0);
-#endif
 
 		private Border _border;
 		private Panel _shadowHost;
@@ -61,6 +59,9 @@ namespace Uno.UI.Toolkit
 
 #if HAS_UNO
 			Loaded += (snd, evt) => SynchronizeContentTemplatedParent();
+#if __ANDROID__
+			Unloaded += (snd, evt) => DisposeShadow();
+#endif
 
 			// Patch to deactivate the clipping by ContentControl
 			RenderTransform = new CompositeTransform();
@@ -194,9 +195,8 @@ namespace Uno.UI.Toolkit
 #elif __IOS__ || __MACOS__
 				this.SetElevationInternal(Elevation, ShadowColor, _border.BoundsPath);
 #elif __ANDROID__
-				// The elevation must be applied on the border, since
-				// it will get the right shape (with rounded corners)
-				_border.SetElevationInternal(Elevation, ShadowColor);
+				_invalidateShadow = true;
+				((ViewGroup)this).Invalidate();
 #elif __SKIA__
 				this.SetElevationInternal(Elevation, ShadowColor);
 #elif (NETFX_CORE || NETCOREAPP) && !HAS_UNO
@@ -212,6 +212,11 @@ namespace Uno.UI.Toolkit
 
 		protected override Windows.Foundation.Size ArrangeOverride(Windows.Foundation.Size finalSize)
 		{
+#if __ANDROID__
+			_invalidateShadow = true;
+			((ViewGroup)this).Invalidate();
+#endif
+
 			return base.ArrangeOverride(this.ApplySizeConstraints(finalSize));
 		}
 #endif
