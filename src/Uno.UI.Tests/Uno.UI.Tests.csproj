@@ -104,6 +104,7 @@
 		<Page Include="HotReload\Windows_UI_Xaml\**\*.xaml" />
 		<Page Include="App\**\*.xaml" />
 		<None Remove="Lottie\animation.json" />
+		<None Remove="Windows_UI_Xaml_Markup\XamlReaderTests\When_CustomResource.xamltest" />
 		<Page Include="..\SamplesApp\UITests.Shared\Windows_UI_Xaml\Resources\Test_Dictionary_Linked.xaml" Link="App/Linked/Test_Dictionary_Linked.xaml" />
 	</ItemGroup>
 	<ItemGroup>
