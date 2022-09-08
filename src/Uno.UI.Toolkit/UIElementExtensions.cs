@@ -100,10 +100,9 @@ namespace Uno.UI.Toolkit
 			{
 				if (elevation > 0)
 				{
-					// Values for 1dp elevation according to https://material.io/guidelines/resources/shadows.html#shadows-illustrator
-					const float x = 0.25f;
-					const float y = 0.92f * 0.5f; // Looks more accurate than the recommended 0.92f.
-					const float blur = 0.5f;
+					const float x = 0.28f;
+					const float y = 0.92f * 0.5f;
+					const float blur = 0.18f;
 
 #if __MACOS__
 					view.WantsLayer = true;
@@ -130,13 +129,11 @@ namespace Uno.UI.Toolkit
 			{
 				if (elevation > 0)
 				{
-					// Values for 1dp elevation according to https://material.io/guidelines/resources/shadows.html#shadows-illustrator
 					const double x = 0.25d;
-					const double y = 0.92f * 0.5f; // Looks more accurate than the recommended 0.92f.
-					const double blur = 0.5f;
-					var color = Color.FromArgb((byte)(shadowColor.A * .35), shadowColor.R, shadowColor.G, shadowColor.B);
+					const double y = 0.92f * 0.5f;
+					const double blur = 0.3f;
 
-					var str = $"{(x * elevation).ToStringInvariant()}px {(y * elevation).ToStringInvariant()}px {(blur * elevation).ToStringInvariant()}px {color.ToCssString()}";
+					var str = $"{(x * elevation).ToStringInvariant()}px {(y * elevation).ToStringInvariant()}px {(blur * elevation).ToStringInvariant()}px {shadowColor.ToCssString()}";
 					uiElement.SetStyle("box-shadow", str);
 					uiElement.SetCssClasses("noclip");
 				}
@@ -150,16 +147,14 @@ namespace Uno.UI.Toolkit
 			if (element is UIElement uiElement)
 			{
 				var visual = uiElement.Visual;
-
-				const float SHADOW_SIGMA_X_MODIFIER = 1f / 3.5f;
-				const float SHADOW_SIGMA_Y_MODIFIER = 1f / 3.5f;
-				float x = 0.3f;
-				float y = 0.92f * 0.5f;
+				const float x = 0.28f;
+				const float y = 0.92f * 0.5f;
+				const float blur = 0.18f;
 
 				var dx = (float)elevation * x;
 				var dy = (float)elevation * y;
-				var sigmaX = (float)elevation * SHADOW_SIGMA_X_MODIFIER;
-				var sigmaY = (float)elevation * SHADOW_SIGMA_Y_MODIFIER;
+				var sigmaX = (float)(blur * elevation);
+				var sigmaY = (float)(blur * elevation);
 				var shadow = new ShadowState(dx, dy, sigmaX, sigmaY, shadowColor);
 				visual.ShadowState = shadow;
 			}
@@ -183,9 +178,8 @@ namespace Uno.UI.Toolkit
 				spriteVisual.Size = newSize;
 				if (elevation > 0)
 				{
-					// Values for 1dp elevation according to https://material.io/guidelines/resources/shadows.html#shadows-illustrator
 					const float x = 0.25f;
-					const float y = 0.92f * 0.5f; // Looks more accurate than the recommended 0.92f.
+					const float y = 0.92f * 0.5f;
 					const float blur = 0.5f;
 
 					var shadow = compositor.CreateDropShadow();
@@ -227,7 +221,6 @@ namespace Uno.UI.Toolkit
 					}
 
 					shadow.Color = shadowColor;
-					shadow.Opacity = shadowColor.A/255f;
 					spriteVisual.Shadow = shadow;
 				}
 
