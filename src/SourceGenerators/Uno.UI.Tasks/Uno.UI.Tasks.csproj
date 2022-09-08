@@ -28,7 +28,7 @@
 			<Version>15.4.8</Version>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
-		<PackageReference Include="Mono.Cecil" Version="0.11.3" />
+		<PackageReference Include="Mono.Cecil" Version="0.11.4" />
 	</ItemGroup>
 
 	<ItemGroup>
