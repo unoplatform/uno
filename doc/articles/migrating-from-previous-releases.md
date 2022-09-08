@@ -6,10 +6,11 @@ This article details the migration steps required to migrate from one version to
 
 #### Uno Fluent Icon Font
 
-Uno Platform 4.5 and newer include a new Uno Fluent Icon font which is based on Windows 11 iconography style and replaces the existing font based on Segoe MDL2 Assets. If you have an existing Uno Platform application using older version of the font and want to update to the latest, two steps are needed:
+Uno Platform 4.5 and newer includes a new Uno Fluent Icon font which is based on Windows 11 iconography style and replaces the existing font based on Segoe MDL2 Assets. If you have an existing Uno Platform application using older version of the font and want to update to the latest, two steps are needed:
 
 1. Find all files with the name `uno-fluentui-assets.ttf` and replace them with the same file from [Uno.Fonts](https://github.com/unoplatform/uno.fonts/tree/master/webfonts).
-2. Inside of the WebAssembly project, find `Fonts.css` file and replace it with the one provided in [Uno.Fonts](https://github.com/unoplatform/uno.fonts/tree/master/webfonts).
+2. Inside of the WebAssembly project, find `Fonts.css` file and replace it with the one provided in [Uno.Fonts](https://github.com/unoplatform/uno.fonts/tree/master/webfonts), or use the WebAssembly project 
+ `Fonts.css` found when creating a new app with [`dotnet new unoapp`]([get-started-dotnet-new.md](https://github.com/unoplatform/uno/blob/master/doc/articles/get-started-dotnet-new.md)) or the Visual Studio **File/New project**.
 
 ### Uno 4.1
 
