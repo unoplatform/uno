@@ -243,7 +243,7 @@ public partial class UIElement : DependencyObject
 
 	private static readonly HashSet<uint> _activePointers = new();
 	private static readonly Dictionary<uint, uint> _nativeToManagedPointerId = new();
-	private static int _lastUsedId = 0;
+	private static int _lastUsedId;
 
 	private static uint TransformPointerId(uint nativePointerId)
 	{
