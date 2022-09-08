@@ -564,7 +564,7 @@ namespace Windows.UI.Xaml
 
 		private void OnDependencyPropertyChanged(DependencyPropertyDetails propertyDetails, DependencyPropertyChangedEventArgs args, bool isUnsetValue)
 		{
-			if (isUnsetValue && propertyDetails.GetBinding() is not { ParentBinding.RelativeSource.Mode: RelativeSourceMode.TemplatedParent })
+			if (isUnsetValue && args.OldPrecedence == DependencyPropertyValuePrecedences.Local)
 			{
 				propertyDetails.ClearBinding();
 			}
