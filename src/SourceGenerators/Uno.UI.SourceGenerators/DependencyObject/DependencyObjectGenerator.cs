@@ -16,20 +16,8 @@ using Uno.SourceGeneration;
 namespace Uno.UI.SourceGenerators.DependencyObject
 {
 	[Generator]
-	public class DependencyObjectGenerator : ISourceGenerator
+	public partial class DependencyObjectGenerator : ISourceGenerator
 	{
-		private static readonly DiagnosticDescriptor _descriptor = new(
-#pragma warning disable RS2008 // Enable analyzer release tracking
-			id: "Uno0003",
-#pragma warning restore RS2008 // Enable analyzer release tracking
-			title: "Native view shouldn't implement 'DependencyObject'",
-			messageFormat: "'{0}' shouldn't implement 'DependencyObject'. Inherit 'FrameworkElement' instead.",
-			category: "TODO",
-			DiagnosticSeverity.Error,
-			isEnabledByDefault: true,
-			helpLinkUri: "https://github.com/unoplatform/uno/issues/6758#issuecomment-898544729",
-			customTags: WellKnownDiagnosticTags.NotConfigurable);
-
 		public void Initialize(GeneratorInitializationContext context)
 		{
 			// Debugger.Launch();
@@ -116,15 +104,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				{
 					VisitNamedType(t);
 				}
-			}
-
-			private static void ReportDiagnostic(GeneratorExecutionContext context, Diagnostic diagnostic)
-			{
-#if NETFRAMEWORK
-				throw new InvalidOperationException(diagnostic.GetMessage());
-#else
-				context.ReportDiagnostic(diagnostic);
-#endif
 			}
 
 			private void ProcessType(INamedTypeSymbol typeSymbol)
