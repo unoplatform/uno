@@ -10,7 +10,7 @@
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
-		
+
 		<IsBindingProject Condition="'$(TargetFramework)' == 'net6.0-android'">true</IsBindingProject>
 		<_isWindows>$([MSBuild]::IsOsPlatform(Windows))</_isWindows>
 	</PropertyGroup>
@@ -23,10 +23,6 @@
 	<PropertyGroup>
 		<AndroidSdkBuildToolsVersion Condition="'$(AndroidSdkBuildToolsVersion)' == ''">28.0.3</AndroidSdkBuildToolsVersion>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Xamarin.Build.Download" Version="0.11.3" />
-	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-android'">
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />

@@ -7,7 +7,7 @@
 	<PropertyGroup>
 		<Product>$(AssemblyName) ($(TargetFramework))</Product>
 		<DefaultLanguage>en-US</DefaultLanguage>
-		
+
 		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
 		<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
 	</PropertyGroup>
@@ -19,7 +19,7 @@
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks"/>
 	</ItemGroup>
-		
+
 	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
 		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
 	</PropertyGroup>
@@ -36,14 +36,10 @@
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView"/>
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="xamarin.build.download" />
-	</ItemGroup>
-
 	<ItemGroup Condition="$(IsMonoAndroid)">
 		<ProjectReference Include="..\..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" />
 	</ItemGroup>
-	
+
 	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net461'">
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.csproj" />

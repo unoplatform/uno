@@ -100,7 +100,7 @@
 			<Link>Uno.UI\Extensions\%(RecursiveDir)%(FileName)%(Extension)</Link>
 		</Compile>
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<Page Remove="Themes\Generic.xaml" />
 		<Page Include="Themes\Generic.xaml" />
