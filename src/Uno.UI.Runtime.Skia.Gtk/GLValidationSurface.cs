@@ -2,6 +2,7 @@
 
 using System;
 using System.Threading.Tasks;
+using GLib;
 using Gtk;
 using Uno.Foundation.Logging;
 
@@ -23,6 +24,26 @@ namespace Uno.UI.Runtime.Skia
 			AutoRender = true;
 
 			Render += GLValidationSurface_Render;
+			Realized += GLValidationSurface_Realized;
+		}
+
+		private void GLValidationSurface_Realized(object? sender, EventArgs e)
+		{
+			if (Context == null)
+			{
+				// In this case, the UI is displaying "Unable to create a GL context"
+				// meaning that GTK was not able to be detected. This can happen on Raspberry Pi
+				// running using Wayland.
+				// This can be adjusted by setting `GDK_BACKEND=x11` to force a fallback on X11 rendering
+				// and enable the use of OpenGL (non-ES) rendering.
+
+				if (typeof(GLValidationSurface).Log().IsEnabled(LogLevel.Debug))
+				{
+					typeof(GLValidationSurface).Log().Debug($"GL Context realization failed");
+				}
+				
+				_result.TrySetResult(RenderSurfaceType.Software);
+			}
 		}
 
 		private void GLValidationSurface_Render(object o, RenderArgs args)
