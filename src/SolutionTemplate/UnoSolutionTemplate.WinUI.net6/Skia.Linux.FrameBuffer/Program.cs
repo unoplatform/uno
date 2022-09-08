@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.UI.Xaml;
+using System;
 using Uno.UI.Runtime.Skia;
+using Windows.UI.Core;
 
 namespace $ext_safeprojectname$
 {
