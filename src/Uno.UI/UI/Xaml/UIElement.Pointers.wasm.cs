@@ -243,6 +243,7 @@ public partial class UIElement : DependencyObject
 
 	private static readonly HashSet<uint> _activePointers = new();
 	private static readonly Dictionary<uint, uint> _nativeToManagedPointerId = new();
+	private static int _lastUsedId = 0;
 
 	private static uint TransformPointerId(uint nativePointerId)
 	{
@@ -251,13 +252,18 @@ public partial class UIElement : DependencyObject
 			return pointerId;
 		}
 
-		pointerId = _activePointers.Count == 0 ? 1 : _activePointers.Max() + 1;
+		pointerId = ++_lastUsedId;
 		_nativeToManagedPointerId[nativePointerId] = pointerId;
 		return pointerId;
 	}
 
 	public static void RemoveActivePointer(uint pointerId)
 	{
+		if (pointerId == _lastUsedId)
+		{
+			_lastUsedId--;
+		}
+
 		_activePointers.Remove(pointerId);
 	}
 
