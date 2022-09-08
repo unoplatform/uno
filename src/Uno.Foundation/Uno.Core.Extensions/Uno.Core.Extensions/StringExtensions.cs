@@ -244,7 +244,6 @@ namespace Uno.Extensions
 			return _newLineRegex.Value.Replace(text, new String('\t', indentCount));
 		}
 
-
 		/// <summary>
 		/// Uppercases the first character of the string.
 		/// If the string is <c>null</c> or <c>""</c> then it returns <c>string.Empty</c>

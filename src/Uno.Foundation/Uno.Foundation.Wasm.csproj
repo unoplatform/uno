@@ -3,8 +3,8 @@
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../netcore-build.props"/>
-	<Import Project="../targetframework-override.props"/>
+	<Import Project="../netcore-build.props" />
+	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<AssemblyName>Uno.Foundation</AssemblyName>
@@ -18,6 +18,10 @@
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Include="..\SourceGenerators\Uno.UI.SourceGenerators\Helpers\Nullable.cs" Link="Extensions\Nullable.cs" />
+	</ItemGroup>
 
 	<ItemGroup>
     <PackageReference Include="Uno.SourceGenerationTasks" />

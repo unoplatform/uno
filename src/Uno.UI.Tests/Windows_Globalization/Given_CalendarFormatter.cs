@@ -21,7 +21,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		{
 			var sut = new DateTimeFormatter(format, new[] {language});
 
-			var firstPattern = sut.Patterns.First();
+			var firstPattern = sut.Patterns[0];
 
 			using var _ = new AssertionScope();
 

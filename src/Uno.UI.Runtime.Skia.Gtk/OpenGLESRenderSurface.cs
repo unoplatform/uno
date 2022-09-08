@@ -19,15 +19,21 @@ using System.Reflection;
 using Gtk;
 using Silk.NET.OpenGLES;
 using Silk.NET.Core.Loader;
+using Silk.NET.Core.Contexts;
 
 namespace Uno.UI.Runtime.Skia
 {
 
 	internal class OpenGLESRenderSurface : GLRenderSurfaceBase
 	{
+		private static DefaultNativeContext? _nativeContext;
+
+		private static DefaultNativeContext NativeContext
+			=> _nativeContext ??= new Silk.NET.Core.Contexts.DefaultNativeContext(new OpenGLESLibraryNameContainer().GetLibraryName());
+
 		public OpenGLESRenderSurface()
 		{
-			_glES = new GL(new Silk.NET.Core.Contexts.DefaultNativeContext(new GLCoreLibraryNameContainer().GetLibraryName()));
+			_glES = new GL(NativeContext);
 			_isGLES = true;
 		}
 
@@ -58,9 +64,7 @@ namespace Uno.UI.Runtime.Skia
 
 				try
 				{
-					var ctx = new Silk.NET.Core.Contexts.DefaultNativeContext(new OpenGLESLibraryNameContainer().GetLibraryName());
-
-					using var glContext = CreateGRGLContext(ctx);
+					using var glContext = CreateGlEsInterface();
 
 					return glContext != null;
 				}
@@ -86,50 +90,55 @@ namespace Uno.UI.Runtime.Skia
 		}
 
 		protected override GRContext TryBuildGRContext()
-		{
-			var glInterface = CreateGRGLContext(_glES.Context);
+			=> CreateGRGLContext();
 
-			if(glInterface == null)
+		internal static GRContext CreateGRGLContext()
+		{
+			var glInterface = CreateGlEsInterface();
+
+			var context = GRContext.CreateGl(glInterface);
+
+			if (context == null)
 			{
-				throw new InvalidOperationException($"OpenGL ES is not available on this platform");
+				throw new InvalidOperationException($"OpenGL ES is not available on this platform (Context creation failed)");
 			}
 
-			return GRContext.CreateGl(glInterface);
+			return context;
 		}
 
-		private static GRGlInterface? CreateGRGLContext(Silk.NET.Core.Contexts.INativeContext context)
+		private static GRGlInterface CreateGlEsInterface()
 		{
-			return GRGlInterface.CreateGles(proc =>
+			var glInterface = GRGlInterface.CreateGles(proc =>
 			{
-				if (context.TryGetProcAddress(proc, out var addr))
+				try
 				{
-					return addr;
+					if (NativeContext.TryGetProcAddress(proc, out var addr))
+					{
+						return addr;
+					}
+				}
+				catch(Exception e)
+				{
+					// In this context, the lamda is executed from a native context, where
+					// unhandled exceptions terminate the process. In this case, we can simply
+					// return NULL, causing glInterface to be null in return.
+
+
+					if (typeof(OpenGLESRenderSurface).Log().IsEnabled(LogLevel.Debug))
+					{
+						typeof(OpenGLESRenderSurface).Log().Debug($"OpenGL ES is not available {e.Message}");
+					}
 				}
 
 				return IntPtr.Zero;
 			});
-		}
 
-		// Extracted from https://github.com/dotnet/Silk.NET/blob/23f9bd4d67ad21c69fbd69cc38a62fb2c0ec3927/src/OpenGL/Silk.NET.OpenGL/GLCoreLibraryNameContainer.cs
-		internal class GLCoreLibraryNameContainer : SearchPathContainer
-		{
-			/// <inheritdoc />
-			public override string Linux => "libGL.so.1";
+			if (glInterface == null)
+			{
+				throw new InvalidOperationException($"OpenGL ES is not available on this platform (GL Interface creation failed)");
+			}
 
-			/// <inheritdoc />
-			public override string MacOS => "/System/Library/Frameworks/OpenGL.framework/OpenGL";
-
-			/// <inheritdoc />
-			public override string Android => "libGL.so.1";
-
-			/// <inheritdoc />
-			public override string IOS => "/System/Library/Frameworks/OpenGL.framework/OpenGL";
-
-			/// <inheritdoc />
-			public override string Windows64 => "opengl32.dll";
-
-			/// <inheritdoc />
-			public override string Windows86 => "opengl32.dll";
+			return glInterface;
 		}
 
 		// https://github.com/dotnet/Silk.NET/blob/23f9bd4d67ad21c69fbd69cc38a62fb2c0ec3927/src/OpenGL/Silk.NET.OpenGLES/OpenGLESLibraryNameContainer.cs

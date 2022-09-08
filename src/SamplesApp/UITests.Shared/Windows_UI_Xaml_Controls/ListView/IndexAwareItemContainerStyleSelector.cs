@@ -24,7 +24,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 				return FirstItemStyle;
 			}
 			
-			var itemsCount = itemsControl.Items?.Count() ?? (itemsControl.ItemsSource as IEnumerable)?.Cast<object>().Count() ?? 0;
+			var itemsCount = itemsControl.Items?.Count ?? (itemsControl.ItemsSource as IEnumerable)?.Cast<object>().Count() ?? 0;
 			if (index == itemsCount - 1)
 			{
 				return LastItemStyle;

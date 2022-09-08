@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Windows.Foundation;
 using Uno;
 using CachedSize = Uno.CachedTuple<double, double>;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {

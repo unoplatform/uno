@@ -319,7 +319,7 @@ namespace Uno.UI.SourceGenerators.Telemetry.PersistenceChannel
 		{
 			string[] storageFiles = Directory.GetFiles(StorageFolder, "*.*");
 
-			_storageCountFiles = storageFiles.Count();
+			_storageCountFiles = storageFiles.Length;
 
 			long storageSizeInBytes = 0;
 			foreach (string file in storageFiles)

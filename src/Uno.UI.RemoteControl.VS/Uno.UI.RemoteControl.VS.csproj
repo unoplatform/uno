@@ -19,7 +19,6 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="All" />
 		<PackageReference Include="EnvDTE100" Version="10.0.3" />
 		<PackageReference Include="Microsoft.Build" Version="15.1.548" />
 		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem" Version="15.0.751" />

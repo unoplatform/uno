@@ -140,12 +140,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 				if (expected.LineBreakLength == 2)
 				{
 					Assert.AreEqual(expected.Text.Length - 1, result.Glyphs.Count);
-					Assert.AreEqual(start + expected.Text.Length - 2, result.Glyphs.Last().Cluster);
+					Assert.AreEqual(start + expected.Text.Length - 2, result.Glyphs[result.Glyphs.Count - 1].Cluster);
 				}
 				else
 				{
 					Assert.AreEqual(expected.Text.Length, result.Glyphs.Count);
-					Assert.AreEqual(start + expected.Text.Length - 1, result.Glyphs.Last().Cluster);
+					Assert.AreEqual(start + expected.Text.Length - 1, result.Glyphs[result.Glyphs.Count - 1].Cluster);
 				}
 
 				Assert.AreEqual(start, result.Glyphs[0].Cluster);
