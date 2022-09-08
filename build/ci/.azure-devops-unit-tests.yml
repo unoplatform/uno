@@ -68,14 +68,9 @@ jobs:
         !**\*Wasm.Test*.dll
         !**\*UITests.dll
         !**\*.RuntimeTests.dll
-        !**\Microsoft.CodeAnalysis.Analyzer.Testing.dll
-        !**\Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest.dll
-        !**\Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.dll
-        !**\Microsoft.CodeAnalysis.SourceGenerators.Testing.dll
-        !**\Microsoft.CodeAnalysis.Testing.Verifiers.MSTest.dll
-        !**\Microsoft.TestPlatform.PlatformAbstractions.dll
-        !**\Microsoft.VisualStudio.TestPlatform.ObjectModel.dll
-        !**\testhost.dll
+        !**\testhost*.*
+        !**\Microsoft*.dll
+
       vsTestVersion: toolsInstaller
       testRunTitle: $(Agent.JobName)
       testSelector: testAssemblies
