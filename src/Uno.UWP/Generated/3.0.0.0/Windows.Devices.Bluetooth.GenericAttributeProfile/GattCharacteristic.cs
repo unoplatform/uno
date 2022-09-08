@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class GattCharacteristic 
@@ -31,16 +31,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicProperties CharacteristicProperties
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member GattCharacteristicProperties GattCharacteristic.CharacteristicProperties is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property CharacteristicProperties
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattPresentationFormat> PresentationFormats
@@ -61,16 +52,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Guid Uuid
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristic.Uuid is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Uuid
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService Service

@@ -2,19 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Markup
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IXamlMetadataProvider 
 	{
-		#if false
-		global::Windows.UI.Xaml.Markup.IXamlType GetXamlType( global::System.Type type);
-		#endif
-		#if false
-		global::Windows.UI.Xaml.Markup.IXamlType GetXamlType( string fullName);
-		#endif
-		#if false
-		global::Windows.UI.Xaml.Markup.XmlnsDefinition[] GetXmlnsDefinitions();
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Markup.IXamlMetadataProvider.GetXamlType(System.Type)
+		// Skipping already declared method Windows.UI.Xaml.Markup.IXamlMetadataProvider.GetXamlType(string)
+		// Skipping already declared method Windows.UI.Xaml.Markup.IXamlMetadataProvider.GetXmlnsDefinitions()
 	}
 }
