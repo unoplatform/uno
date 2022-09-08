@@ -2,83 +2,23 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Markup
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IXamlType 
 	{
-		#if false
-		global::Windows.UI.Xaml.Markup.IXamlType BaseType
-		{
-			get;
-		}
-		#endif
-		#if false
-		global::Windows.UI.Xaml.Markup.IXamlMember ContentProperty
-		{
-			get;
-		}
-		#endif
-		#if false
-		string FullName
-		{
-			get;
-		}
-		#endif
-		#if false
-		bool IsArray
-		{
-			get;
-		}
-		#endif
-		#if false
-		bool IsBindable
-		{
-			get;
-		}
-		#endif
-		#if false
-		bool IsCollection
-		{
-			get;
-		}
-		#endif
-		#if false
-		bool IsConstructible
-		{
-			get;
-		}
-		#endif
-		#if false
-		bool IsDictionary
-		{
-			get;
-		}
-		#endif
-		#if false
-		bool IsMarkupExtension
-		{
-			get;
-		}
-		#endif
-		#if false
-		global::Windows.UI.Xaml.Markup.IXamlType ItemType
-		{
-			get;
-		}
-		#endif
-		#if false
-		global::Windows.UI.Xaml.Markup.IXamlType KeyType
-		{
-			get;
-		}
-		#endif
-		#if false
-		global::System.Type UnderlyingType
-		{
-			get;
-		}
-		#endif
+		// Skipping already declared property BaseType
+		// Skipping already declared property ContentProperty
+		// Skipping already declared property FullName
+		// Skipping already declared property IsArray
+		// Skipping already declared property IsBindable
+		// Skipping already declared property IsCollection
+		// Skipping already declared property IsConstructible
+		// Skipping already declared property IsDictionary
+		// Skipping already declared property IsMarkupExtension
+		// Skipping already declared property ItemType
+		// Skipping already declared property KeyType
+		// Skipping already declared property UnderlyingType
 		// Forced skipping of method Windows.UI.Xaml.Markup.IXamlType.BaseType.get
 		// Forced skipping of method Windows.UI.Xaml.Markup.IXamlType.ContentProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Markup.IXamlType.FullName.get
@@ -91,23 +31,11 @@ namespace Windows.UI.Xaml.Markup
 		// Forced skipping of method Windows.UI.Xaml.Markup.IXamlType.ItemType.get
 		// Forced skipping of method Windows.UI.Xaml.Markup.IXamlType.KeyType.get
 		// Forced skipping of method Windows.UI.Xaml.Markup.IXamlType.UnderlyingType.get
-		#if false
-		object ActivateInstance();
-		#endif
-		#if false
-		object CreateFromString( string value);
-		#endif
-		#if false
-		global::Windows.UI.Xaml.Markup.IXamlMember GetMember( string name);
-		#endif
-		#if false
-		void AddToVector( object instance,  object value);
-		#endif
-		#if false
-		void AddToMap( object instance,  object key,  object value);
-		#endif
-		#if false
-		void RunInitializer();
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Markup.IXamlType.ActivateInstance()
+		// Skipping already declared method Windows.UI.Xaml.Markup.IXamlType.CreateFromString(string)
+		// Skipping already declared method Windows.UI.Xaml.Markup.IXamlType.GetMember(string)
+		// Skipping already declared method Windows.UI.Xaml.Markup.IXamlType.AddToVector(object, object)
+		// Skipping already declared method Windows.UI.Xaml.Markup.IXamlType.AddToMap(object, object, object)
+		// Skipping already declared method Windows.UI.Xaml.Markup.IXamlType.RunInitializer()
 	}
 }
