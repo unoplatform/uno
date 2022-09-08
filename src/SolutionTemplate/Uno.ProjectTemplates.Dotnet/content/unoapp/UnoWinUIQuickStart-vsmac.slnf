@@ -4,7 +4,7 @@
     "projects": [
 		"UnoWinUIQuickStart.Shared\\UnoWinUIQuickStart.Shared.shproj",
 
-		#//#if (Mobile)
+		#//#if (mobile)
 		"UnoWinUIQuickStart.Mobile\\UnoWinUIQuickStart.Mobile.csproj",
 		#//#endif
 
