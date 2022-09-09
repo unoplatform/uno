@@ -65,7 +65,7 @@ namespace Uno.UI.Xaml.Media
 #pragma warning disable CS0162
 					if (DEBUG)
                     {
-                        throw e;
+                        throw;
                     }
                     else
                     {
