@@ -67,12 +67,18 @@
     Force the compilation using Roslyn Generators on net6.0 and later
     -->
     <UnoUIUseRoslynSourceGenerators Condition="$(TargetFramework.StartsWith('net6'))">true</UnoUIUseRoslynSourceGenerators>
-	  
-    <!--
+
+	<!--
     Force the compilation using Roslyn Generators on net461 (Unit Tests)
     -->
-    <UnoUIUseRoslynSourceGenerators Condition="'$(TargetFramework)'=='net461'">true</UnoUIUseRoslynSourceGenerators>
-  </PropertyGroup>
+	  <UnoUIUseRoslynSourceGenerators Condition="'$(TargetFramework)'=='net461'">true</UnoUIUseRoslynSourceGenerators>
+	  
+    <!--
+    Force the compilation using Roslyn Generators for Skia targets
+    -->
+    
+    <UnoUIUseRoslynSourceGenerators Condition="'$(MSBuildProjectName)'!='' and $(MSBuildProjectName.EndsWith('Skia'))">true</UnoUIUseRoslynSourceGenerators>
+</PropertyGroup>
 
   <!--
   Adjust the output paths for runtime project in order for those
@@ -198,12 +204,12 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <!-- Enable all the latest CA rules from 'Microsoft.CodeAnalysis.NetAnalyzers' as build warnings by default. Specific rules are disabled or downgraded in repo's editorconfig. -->
+    <!-- Enable performance CA rules from 'Microsoft.CodeAnalysis.NetAnalyzers' as build warnings by default. Specific rules are disabled or downgraded in repo's editorconfig. -->
     <AnalysisLevel>latest</AnalysisLevel>
-    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+    <AnalysisModePerformance>AllEnabledByDefault</AnalysisModePerformance>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(UnoDisableNetAnalyzers)'==''">
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0-preview1.22362.3" PrivateAssets="All" />
   </ItemGroup>
 

@@ -19,7 +19,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 	internal static partial class XBindExpressionParser
 	{
 		private const string XBindSubstitute = "↔↔";
-		private static readonly Regex NamedParam = new Regex(@"^(\w*)=(.*?)");
+		private static readonly Regex NamedParam = new(@"^(\w*)=(.*?)", RegexOptions.Compiled);
+		private static readonly Regex DocumentPaths = new("\"{x:Bind\\s(.*?)}\"", RegexOptions.Singleline | RegexOptions.Compiled);
 
 		/// <summary>
 		/// Rewrites all x:Bind expression Path property to be compatible with the System.Xaml parser.
@@ -34,13 +35,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 		/// </remarks>
 		internal static string RewriteDocumentPaths(string markup)
 		{
-			var result =
-				Regex.Replace(
-					markup,
-					 "\"{x:Bind\\s(.*?)}\"",
-					e => $"\"{{x:Bind {RewriteParameters(e.Groups[1].Value.Trim())}}}\"",
-					RegexOptions.Singleline
-				);
+			var result =DocumentPaths.Replace(
+				markup,
+				e => $"\"{{x:Bind {RewriteParameters(e.Groups[1].Value.Trim())}}}\""
+			);
 
 			return result;
 		}

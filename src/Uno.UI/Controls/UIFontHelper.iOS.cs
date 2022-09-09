@@ -251,7 +251,7 @@ namespace Windows.UI
 				var font = new StringBuilder(rootFontFamilyName);
 				if (fontWeight != FontWeights.Normal || fontStyle == FontStyle.Italic)
 				{
-					font.Append("-");
+					font.Append('-');
 					font.Append(GetFontWeight(fontWeight));
 					font.Append(GetFontStyle(fontStyle));
 				}

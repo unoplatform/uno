@@ -56,6 +56,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _projectFullPath;
 		private readonly bool _outputSourceComments = true;
 		private readonly bool _xamlResourcesTrimming;
+		private bool _shouldWriteErrorOnInvalidXaml;
 		private readonly RoslynMetadataHelper _metadataHelper;
 
 		/// <summary>
@@ -166,7 +167,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (bool.TryParse(context.GetMSBuildPropertyValue("ShouldWriteErrorOnInvalidXaml"), out var shouldWriteErrorOnInvalidXaml))
 			{
-				XamlFileGenerator.ShouldWriteErrorOnInvalidXaml = shouldWriteErrorOnInvalidXaml;
+				_shouldWriteErrorOnInvalidXaml = shouldWriteErrorOnInvalidXaml;
 			}
 
 			if (!bool.TryParse(context.GetMSBuildPropertyValue("IsUiAutomationMappingEnabled") ?? "", out _isUiAutomationMappingEnabled))
@@ -336,6 +337,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									isUiAutomationMappingEnabled: _isUiAutomationMappingEnabled,
 									uiAutomationMappings: _uiAutomationMappings,
 									defaultLanguage: _defaultLanguage,
+									shouldWriteErrorOnInvalidXaml: _shouldWriteErrorOnInvalidXaml,
 									isWasm: _isWasm,
 									isDebug: _isDebug,
 									isHotReloadEnabled: _isHotReloadEnabled,
@@ -733,7 +735,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									foreach (var ambientResource in _ambientGlobalResources)
 									{
-										if (ambientResource.GetMethods().Any(m => m.Name == "Initialize"))
+										if (ambientResource.GetFirstMethodWithName("Initialize") is not null)
 										{
 											writer.AppendLineIndented($"global::{ambientResource.GetFullName()}.Initialize();");
 										}
@@ -742,7 +744,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									foreach (var ambientResource in _ambientGlobalResources)
 									{
 										// Note: we do *not* call RegisterDefaultStyles for the current assembly, because those styles are treated as implicit styles, not default styles
-										if (ambientResource.GetMethods().Any(m => m.Name == "RegisterDefaultStyles"))
+										if (ambientResource.GetFirstMethodWithName("RegisterDefaultStyles") is not null)
 										{
 											writer.AppendLineIndented($"global::{ambientResource.GetFullName()}.RegisterDefaultStyles();");
 										}
@@ -750,7 +752,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 									foreach (var ambientResource in _ambientGlobalResources)
 									{
-										if (ambientResource.GetMethods().Any(m => m.Name == "RegisterResourceDictionariesBySource"))
+										if (ambientResource.GetFirstMethodWithName("RegisterResourceDictionariesBySource") is not null)
 										{
 											writer.AppendLineIndented($"global::{ambientResource.GetFullName()}.RegisterResourceDictionariesBySource();");
 										}
