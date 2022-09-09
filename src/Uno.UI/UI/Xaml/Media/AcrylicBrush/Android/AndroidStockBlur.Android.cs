@@ -60,12 +60,12 @@ namespace Uno.UI.Xaml.Media
                     _mRenderScript = RenderScript.Create(context);
                     _mBlurScript = ScriptIntrinsicBlur.Create(_mRenderScript, Element.U8_4(_mRenderScript));
                 }
-                catch (Android.Renderscripts.RSRuntimeException e)
+                catch (Android.Renderscripts.RSRuntimeException)
                 {
 #pragma warning disable CS0162
 					if (DEBUG)
                     {
-                        throw e;
+                        throw;
                     }
                     else
                     {
