@@ -4,18 +4,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using Uno.Extensions;
-using System.IO;
 using System.Reflection;
+using System.Text;
+using System.Xml;
+using Microsoft.CodeAnalysis;
+using Uno.Extensions;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
-using System.Text.RegularExpressions;
-using Windows.Foundation.Metadata;
 using Uno.UI.SourceGenerators.XamlGenerator.Utils;
-using System.Diagnostics;
 using Uno.Roslyn;
+using Windows.Foundation.Metadata;
+using System.Threading;
+using System.IO;
+
+#if NETFRAMEWORK
+using GeneratorExecutionContext = Uno.SourceGeneration.GeneratorExecutionContext;
+#endif
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -33,27 +36,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			this._metadataHelper = roslynMetadataHelper;
 		}
 
-		public XamlFileDefinition[] ParseFiles(string[] xamlSourceFiles, System.Threading.CancellationToken cancellationToken)
+		public XamlFileDefinition[] ParseFiles(Uno.Roslyn.MSBuildItem[] xamlSourceFiles, CancellationToken cancellationToken)
 		{
-			var files = new List<XamlFileDefinition>();
-
 			return xamlSourceFiles
 				.AsParallel()
 				.WithCancellation(cancellationToken)
-				.Select(f => ParseFile(f, cancellationToken))
+				.Select(f => ParseFile(f.File, cancellationToken))
 				.Where(f => f != null)
 				.ToArray()!;
 		}
 
-		private XamlFileDefinition? ParseFile(string file, System.Threading.CancellationToken cancellationToken)
+		private XamlFileDefinition? ParseFile(AdditionalText file, CancellationToken cancellationToken)
 		{
 			try
 			{
 #if DEBUG
 				Console.WriteLine("Pre-processing XAML file: {0}", file);
 #endif
-
-				var document = ApplyIgnorables(file);
+				var document = ApplyIgnorables(file, cancellationToken);
 
 				// Initialize the reader using an empty context, because when the tasl
 				// is run under the BeforeCompile in VS IDE, the loaded assemblies are used 
@@ -69,7 +69,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						cancellationToken.ThrowIfCancellationRequested();
 
-						return Visit(reader, file);
+						return Visit(reader, file.Path);
 					}
 				}
 
@@ -81,22 +81,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			catch (__uno::Uno.Xaml.XamlParseException e)
 			{
-				throw new XamlParsingException(e.Message, null, e.LineNumber, e.LinePosition, file);
+				throw new XamlParsingException(e.Message, null, e.LineNumber, e.LinePosition, file.Path);
 			}
 			catch (XmlException e)
 			{
-				throw new XamlParsingException(e.Message, null, e.LineNumber, e.LinePosition, file);
+				throw new XamlParsingException(e.Message, null, e.LineNumber, e.LinePosition, file.Path);
 			}
 			catch (Exception e)
 			{
-				throw new XamlParsingException($"Failed to parse file", e, 1, 1, file);
+				throw new XamlParsingException($"Failed to parse file", e, 1, 1, file.Path);
 			}
 		}
 
-		private XmlReader ApplyIgnorables(string file)
+		private XmlReader ApplyIgnorables(AdditionalText file, CancellationToken cancellationToken)
 		{
-			var originalString = File.ReadAllText(file);
-			StringBuilder adjusted;
+			var sourceText = file.GetText(cancellationToken);
+			if (sourceText is null)
+			{
+				throw new Exception($"Failed to read additional file '{file.Path}'");
+			}
+
+			var originalString = sourceText.ToString();
+      StringBuilder adjusted;
 
 			var document = new XmlDocument();
 			document.LoadXml(originalString);
@@ -111,7 +117,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (ignorables == null && !shouldCreateIgnorable && !hasxBind)
 			{
 				// No need to modify file
-				return XmlReader.Create(file);
+				return XmlReader.Create(file.Path);
 			}
 
 			var originalIgnorables = ignorables?.Value ?? "";
@@ -145,7 +151,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			else
 			{
 				// No existing Ignorable node, create one
-				var targetLine = File.ReadLines(file, Encoding.UTF8).First(l => !l.Trim().StartsWith("<!") && !l.IsNullOrWhiteSpace());
+				var targetLine = sourceText.Lines.Select(l => sourceText.ToString(l.Span)).First(l => !l.IsNullOrWhiteSpace() && !l.Trim().StartsWith("<!"))!;
 				if (targetLine.EndsWith(">"))
 				{
 					targetLine = targetLine.TrimEnd(">");
