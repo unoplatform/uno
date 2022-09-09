@@ -207,6 +207,7 @@
     <!-- Enable performance CA rules from 'Microsoft.CodeAnalysis.NetAnalyzers' as build warnings by default. Specific rules are disabled or downgraded in repo's editorconfig. -->
     <AnalysisLevel>latest</AnalysisLevel>
     <AnalysisModePerformance>AllEnabledByDefault</AnalysisModePerformance>
+	<UnoDisableNetAnalyzers Condition="'$(IsTestProject)' != 'true'">true</UnoDisableNetAnalyzers>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(UnoDisableNetAnalyzers)'==''">
