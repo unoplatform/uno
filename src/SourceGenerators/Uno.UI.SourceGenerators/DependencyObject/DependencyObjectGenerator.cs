@@ -225,9 +225,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			private void WriteToStringOverride(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
 			{
 				var hasNoToString = typeSymbol
-					.GetMethods()
-					.Where(m => IsNotDependencyObjectGeneratorSourceFile(m))
-					.None(m => m.Name == "ToString");
+					.GetMethodsWithName("ToString")
+					.None(m => IsNotDependencyObjectGeneratorSourceFile(m));
 
 				if (hasNoToString)
 				{
@@ -239,9 +238,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			{
 				var isiosView = typeSymbol.Is(_iosViewSymbol);
 				var hasNoWillMoveToSuperviewMethod = typeSymbol
-					.GetMethods()
-					.Where(m => IsNotDependencyObjectGeneratorSourceFile(m))
-					.None(m => m.Name == "WillMoveToSuperview");
+					.GetMethodsWithName("WillMoveToSuperview")
+					.None(m => IsNotDependencyObjectGeneratorSourceFile(m));
 
 				var overridesWillMoveToSuperview = isiosView && hasNoWillMoveToSuperviewMethod;
 
@@ -278,9 +276,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			{
 				var isiosView = typeSymbol.Is(_macosViewSymbol);
 				var hasNoWillMoveToSuperviewMethod = typeSymbol
-					.GetMethods()
-					.Where(m => IsNotDependencyObjectGeneratorSourceFile(m))
-					.None(m => m.Name == "ViewWillMoveToSuperview");
+					.GetMethodsWithName("ViewWillMoveToSuperview")
+					.None(m => IsNotDependencyObjectGeneratorSourceFile(m));
 
 				var overridesWillMoveToSuperview = isiosView && hasNoWillMoveToSuperviewMethod;
 
@@ -323,9 +320,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				var implementsIFrameworkElement = typeSymbol.Interfaces.Any(t => SymbolEqualityComparer.Default.Equals(t, _iFrameworkElementSymbol));
 				var hasOverridesAttachedToWindowAndroid = isAndroidView &&
 					typeSymbol
-					.GetMethods()
-					.Where(m => IsNotDependencyObjectGeneratorSourceFile(m))
-					.None(m => m.Name == "OnAttachedToWindow");
+					.GetMethodsWithName("OnAttachedToWindow")
+					.None(m => IsNotDependencyObjectGeneratorSourceFile(m));
 
 				if (isAndroidView || isAndroidActivity || isAndroidFragment)
 				{
@@ -448,10 +444,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			{
 				var hasOverridesAttachedToWindowiOS = typeSymbol.Is(_iosViewSymbol) &&
 									typeSymbol
-									.GetMethods()
-									.Where(m => m.Name == "MovedToWindow")
-									.Where(m => IsNotDependencyObjectGeneratorSourceFile(m))
-									.None();
+									.GetMethodsWithName("MovedToWindow")
+									.None(m => IsNotDependencyObjectGeneratorSourceFile(m));
 
 				if (hasOverridesAttachedToWindowiOS)
 				{
@@ -495,8 +489,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			{
 				var hasOverridesAttachedToWindowiOS = typeSymbol.Is(_macosViewSymbol) &&
 									typeSymbol
-									.GetMethods()
-									.Where(m => m.Name == "ViewDidMoveToWindow")
+									.GetMethodsWithName("ViewDidMoveToWindow")
 									.Where(m => IsNotDependencyObjectGeneratorSourceFile(m))
 									.None();
 
@@ -839,11 +832,9 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			private void WriteAndroidEqualityOverride(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
 			{
 				var hasEqualityOverride = typeSymbol
-					.GetMethods()
-					.Where(m => m.Name == "Equals")
-					.Where(m => IsNotDependencyObjectGeneratorSourceFile(m))
-					.None()
-					&& (typeSymbol.BaseType?.GetMethods().None(m => m.Name == "Equals" && m.IsSealed) ?? true);
+					.GetMethodsWithName("Equals")
+					.None(m => IsNotDependencyObjectGeneratorSourceFile(m))
+					&& (typeSymbol.BaseType?.GetMethodsWithName("Equals").None(m => m.IsSealed) ?? true);
 
 				if (hasEqualityOverride && typeSymbol.Is(_androidViewSymbol))
 				{
