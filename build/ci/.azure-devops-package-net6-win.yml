@@ -28,6 +28,9 @@ jobs:
     # Build validation is performed on other jobs
     UnoUIDisableNetCoreBuild: true
 
+    # Disable trimming for packages creation
+    PublishTrimmed: false
+
     # This is required to be able to use hard links as much as possible
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
 
