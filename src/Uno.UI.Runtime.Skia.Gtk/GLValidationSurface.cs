@@ -22,6 +22,7 @@ namespace Uno.UI.Runtime.Skia
 			HasDepthBuffer = false;
 			HasStencilBuffer = false;
 			AutoRender = true;
+			SetRequiredVersion(3, 3);
 
 			Render += GLValidationSurface_Render;
 			Realized += GLValidationSurface_Realized;
