@@ -1,6 +1,8 @@
+using System;
+
 namespace Windows.ApplicationModel
 {
-	public partial struct PackageVersion
+	public partial struct PackageVersion : IEquatable<PackageVersion>
 	{
 		internal PackageVersion(ushort major)
 		{
@@ -22,5 +24,21 @@ namespace Windows.ApplicationModel
 		public ushort Minor;
 		public ushort Build;
 		public ushort Revision;
+
+		public override bool Equals(object obj) => obj is PackageVersion version && Equals(version);
+		public bool Equals(PackageVersion other) => Major == other.Major && Minor == other.Minor && Build == other.Build && Revision == other.Revision;
+
+		public override int GetHashCode()
+		{
+			var hashCode = -1452750829;
+			hashCode = hashCode * -1521134295 + Major.GetHashCode();
+			hashCode = hashCode * -1521134295 + Minor.GetHashCode();
+			hashCode = hashCode * -1521134295 + Build.GetHashCode();
+			hashCode = hashCode * -1521134295 + Revision.GetHashCode();
+			return hashCode;
+		}
+
+		public static bool operator ==(PackageVersion left, PackageVersion right) => left.Equals(right);
+		public static bool operator !=(PackageVersion left, PackageVersion right) => !(left == right);
 	}
 }

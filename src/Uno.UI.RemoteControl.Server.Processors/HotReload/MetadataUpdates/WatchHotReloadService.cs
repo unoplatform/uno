@@ -20,7 +20,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 		private Action _endSession;
 		private object _targetInstance;
 
-		public readonly struct Update
+		public readonly struct Update : IEquatable<Update>
 		{
 			public readonly Guid ModuleId;
 			public readonly ImmutableArray<byte> ILDelta;
@@ -34,6 +34,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 				MetadataDelta = metadataDelta;
 				PdbDelta = pdbDelta;
 			}
+
+			public override bool Equals(object obj) => obj is Update update && Equals(update);
+			public bool Equals(Update other) => ModuleId.Equals(other.ModuleId) && ILDelta.Equals(other.ILDelta) && MetadataDelta.Equals(other.MetadataDelta) && PdbDelta.Equals(other.PdbDelta);
+			public override int GetHashCode() => HashCode.Combine(ModuleId, ILDelta, MetadataDelta, PdbDelta);
+
+			public static bool operator ==(Update left, Update right) => left.Equals(right);
+			public static bool operator !=(Update left, Update right) => !(left == right);
 		}
 
 		public WatchHotReloadService(HostWorkspaceServices services, string[] metadataUpdateCapabilities)

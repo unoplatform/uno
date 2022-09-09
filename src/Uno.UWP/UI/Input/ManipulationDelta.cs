@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using Windows.Foundation;
 
@@ -8,7 +9,7 @@ namespace Microsoft.UI.Input
 namespace Windows.UI.Input
 #endif
 {
-	public partial struct ManipulationDelta 
+	public partial struct ManipulationDelta : IEquatable<ManipulationDelta>
 	{
 		/// <summary>
 		/// A manipulation that does nothing.
@@ -55,5 +56,26 @@ namespace Windows.UI.Input
 		public override string ToString()
 			=> $"x:{Translation.X:N0};y:{Translation.Y:N0};θ:{Rotation:F2};s:{Scale:F2};e:{Expansion:F2}";
 
+		public override bool Equals(object obj) => obj is ManipulationDelta delta && Equals(delta);
+
+		public bool Equals(ManipulationDelta other)
+		{
+			return EqualityComparer<Point>.Default.Equals(Translation, other.Translation) &&
+				Scale == other.Scale && Rotation == other.Rotation &&
+				Expansion == other.Expansion;
+		}
+
+		public override int GetHashCode()
+		{
+			var hashCode = 626270564;
+			hashCode = hashCode * -1521134295 + Translation.GetHashCode();
+			hashCode = hashCode * -1521134295 + Scale.GetHashCode();
+			hashCode = hashCode * -1521134295 + Rotation.GetHashCode();
+			hashCode = hashCode * -1521134295 + Expansion.GetHashCode();
+			return hashCode;
+		}
+
+		public static bool operator ==(ManipulationDelta left, ManipulationDelta right) => left.Equals(right);
+		public static bool operator !=(ManipulationDelta left, ManipulationDelta right) => !(left == right);
 	}
 }
