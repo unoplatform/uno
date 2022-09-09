@@ -11,7 +11,7 @@
 	See DEVELOPMENT.md#Android for details.
 	-->
 	<Choose>
-		<When Condition="'$(TargetPlatformIdentifier)' == 'Android' and '$(AndroidApplication)' != 'true'">
+		<When Condition="('$(TargetPlatformIdentifier)' == 'Android' or '$(TargetFrameworkIdentifier)'=='MonoAndroid') and '$(AndroidApplication)' != 'true'">
 			<PropertyGroup >
 				<AndroidGenerateResourceDesigner>false</AndroidGenerateResourceDesigner>
 				<AndroidUseIntermediateDesignerFile>false</AndroidUseIntermediateDesignerFile>

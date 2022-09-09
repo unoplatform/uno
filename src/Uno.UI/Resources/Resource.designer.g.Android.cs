@@ -1,5 +1,12 @@
 ﻿namespace Uno.UI;
 
+//
+// This file is manually maintained and should not be modified to add partial qualifiers. If you
+// get a build error make sure that the Resource.designer.cs generation is effectively disabled.
+//
+// See the `doc/articles/building-uno-uid.md` documentation on how to modify this file.
+//
+
 [System.CodeDom.Compiler.GeneratedCode("Xamarin.Android.Build.Tasks", "12.3.99.48")]
 public class Resource
 {
