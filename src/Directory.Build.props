@@ -203,10 +203,10 @@
     <AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(UnoDisableNetAnalyzers)'==''">
-    <!-- Enable all the latest CA rules from 'Microsoft.CodeAnalysis.NetAnalyzers' as build warnings by default. Specific rules are disabled or downgraded in repo's editorconfig. -->
+  <PropertyGroup>
+    <!-- Enable performance CA rules from 'Microsoft.CodeAnalysis.NetAnalyzers' as build warnings by default. Specific rules are disabled or downgraded in repo's editorconfig. -->
     <AnalysisLevel>latest</AnalysisLevel>
-    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+    <AnalysisModePerformance>AllEnabledByDefault</AnalysisModePerformance>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(UnoDisableNetAnalyzers)'==''">
