@@ -18,9 +18,6 @@
 		<DefineConstants>$(DefineConstants);XAMARIN;IS_UNO</DefineConstants>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
-		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
-		<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
-
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 		

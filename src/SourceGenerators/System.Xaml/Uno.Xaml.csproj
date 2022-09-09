@@ -5,8 +5,6 @@
 
 		<DisableBuildTargetFramework>true</DisableBuildTargetFramework>
 
-		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
-		<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 		<OutputPath>bin\$(Configuration)\$(TargetFramework)\</OutputPath>

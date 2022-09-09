@@ -98,8 +98,6 @@
 
   <PropertyGroup Condition="$(IsMonoAndroid)">
 	<DefineConstants>$(DefineConstants);XAMARIN;XAMARIN_ANDROID</DefineConstants>
-	<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
-	<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.18362' and '$(TargetFramework)'!='net5.0-windows10.0.18362.0' ">

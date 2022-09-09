@@ -6,7 +6,31 @@
 	<Product>$(AssemblyName) ($(TargetFramework) $(UnoRuntimeIdentifier))</Product>
   </PropertyGroup>
 
-  <Target Name="AndroidResourceGenWorkaround" BeforeTargets="Build" Condition="'$(AndroidUseIntermediateDesignerFile)'=='True' and $(IsMonoAndroid) and '$(TargetFramework)'!='net6.0-android'">
+	<!--
+	Comment out this section if you need to update Resource.designer.cs files.
+	See DEVELOPMENT.md#Android for details.
+	-->
+	<Choose>
+		<When Condition="'$(TargetPlatformIdentifier)' == 'Android' and '$(AndroidApplication)' != 'true'">
+			<PropertyGroup >
+				<AndroidGenerateResourceDesigner>false</AndroidGenerateResourceDesigner>
+				<AndroidUseIntermediateDesignerFile>false</AndroidUseIntermediateDesignerFile>
+			</PropertyGroup>
+		</When>
+		<Otherwise>
+			<PropertyGroup>
+				<!--
+				This works around the fact that AndroidResgenFile is
+				automatically included as compiled file, even if AndroidUseIntermediateDesignerFile
+				is set to true.
+				-->
+				<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
+				<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
+			</PropertyGroup>
+		</Otherwise>
+	</Choose>
+
+	<Target Name="AndroidResourceGenWorkaround" BeforeTargets="Build" Condition="'$(AndroidUseIntermediateDesignerFile)'=='True' and $(IsMonoAndroid) and '$(TargetFramework)'!='net6.0-android'">
 	<MakeDir Directories="obj\$(TargetFramework)\Resources" />
 	<WriteLinesToFile File="$(AndroidResgenFile)" Lines="// Empty Content from uno.ui Directory.Build.targets." />
   </Target>
