@@ -239,7 +239,7 @@
     <Error Condition="!$(_MyMdpiAsset.Contains('-nodpi'))" Text="The file nodpi-validationresource.jpeg does not exist under drawable-nodpi directory" />
   </Target>
   <Target Name="_ValidateAndroidSupportedAbis" BeforeTargets="BeforeBuild">
-    <Error Condition="'$(AndroidSupportedAbis)' != 'armeabi-v7a;x86;x86_64;arm64-v8a'" Text="The target list isn't correct, it must be 'armeabi-v7a;x86;x86_64;arm64-v8a'" />
+    <Error Condition="'$(UnoDisableValidateAndroidSupportedAbis)'=='' and '$(AndroidSupportedAbis)' != 'armeabi-v7a;x86;x86_64;arm64-v8a'" Text="The target list isn't correct, it must be 'armeabi-v7a;x86;x86_64;arm64-v8a'" />
   </Target>
   <Target Name="_FilterInvalidMacOSmsorlibReference" BeforeTargets="BeforeBuild">
     <!--Condition="$([MSBuild]::IsOsPlatform('OSX'))"-->
