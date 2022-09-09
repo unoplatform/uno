@@ -69,12 +69,13 @@ partial class ElevatedView
 		{
 			var viewHeight = ActualHeight;
 			var viewWidth = ActualWidth;
+			var scaleFactor = GetScaleFactorForLayoutRounding();
 
 			// If bounds is zero
 			if (viewHeight != 0 && viewWidth != 0)
 			{
-				var bitmapHeight = viewHeight + MaximumRadius;
-				var bitmapWidth = viewWidth + MaximumRadius;
+				var bitmapHeight = (viewHeight + MaximumRadius) * scaleFactor;
+				var bitmapWidth = (viewWidth + MaximumRadius) * scaleFactor;
 
 				// Reset bitmap to bounds
 				_shadowBitmap = AndroidBitmap.CreateBitmap(
@@ -109,8 +110,8 @@ partial class ElevatedView
 						_shadowPaint.SetMaskFilter(new BlurMaskFilter(radius, BlurMaskFilter.Blur.Normal));
 					}
 
-					float shadowOffsetX = (float)Elevation * x;
-					float shadowOffsetY = (float)Elevation * y;
+					float shadowOffsetX = (float)(Elevation * x * scaleFactor);
+					float shadowOffsetY = (float)(Elevation * y * scaleFactor);
 
 					_shadowCanvas.DrawBitmap(extractAlpha!, (int)shadowOffsetX, (int)shadowOffsetY, _shadowPaint);
 
