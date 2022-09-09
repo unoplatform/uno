@@ -237,150 +237,70 @@ dotnet_diagnostic.RS0030.severity = error
 
 dotnet_analyzer_diagnostic.category-Performance.severity = none #error - Uncomment when all violations are fixed.
 
+# CA1805: Do not initialize unnecessarily
 dotnet_diagnostic.CA1805.severity = error
-dotnet_diagnostic.CA1821.severity = error
-dotnet_diagnostic.CA1061.severity = none
-dotnet_diagnostic.CA1802.severity = none
-dotnet_diagnostic.CA1014.severity = none
-dotnet_diagnostic.CA1066.severity = none
-dotnet_diagnostic.CA1063.severity = none
-dotnet_diagnostic.CA1001.severity = none
-dotnet_diagnostic.CA1050.severity = none
-dotnet_diagnostic.CA5394.severity = none
-dotnet_diagnostic.CA1052.severity = none
-dotnet_diagnostic.CA1816.severity = none
-dotnet_diagnostic.CA2225.severity = none
-dotnet_diagnostic.CA1310.severity = none
-dotnet_diagnostic.CA1062.severity = none
-dotnet_diagnostic.CA2208.severity = none
-dotnet_diagnostic.CA1305.severity = none
-dotnet_diagnostic.CA1200.severity = none
-dotnet_diagnostic.CA1010.severity = none
-dotnet_diagnostic.CA1019.severity = none
-dotnet_diagnostic.CA1813.severity = none
-dotnet_diagnostic.CA1051.severity = none
-dotnet_diagnostic.CA1715.severity = none
-dotnet_diagnostic.CA1711.severity = none
-dotnet_diagnostic.CA1720.severity = none
-dotnet_diagnostic.CA1724.severity = none
-dotnet_diagnostic.CA1307.severity = none
-dotnet_diagnostic.CA1825.severity = none
-dotnet_diagnostic.CA2000.severity = none
-dotnet_diagnostic.CA1507.severity = none
-dotnet_diagnostic.CA2215.severity = none
-dotnet_diagnostic.CA1725.severity = none
-dotnet_diagnostic.CA1065.severity = none
-dotnet_diagnostic.CA1024.severity = none
-dotnet_diagnostic.CA1801.severity = none
-dotnet_diagnostic.CA2201.severity = none
-dotnet_diagnostic.CA2241.severity = none
-dotnet_diagnostic.CA2242.severity = none
-dotnet_diagnostic.CA1823.severity = none
-dotnet_diagnostic.CA1822.severity = none
-dotnet_diagnostic.CA1030.severity = none
-dotnet_diagnostic.CA1031.severity = none
-dotnet_diagnostic.CA1064.severity = none
-dotnet_diagnostic.CA1067.severity = none
-dotnet_diagnostic.CA1012.severity = none
-dotnet_diagnostic.CA1034.severity = none
-dotnet_diagnostic.CA1812.severity = none
-dotnet_diagnostic.CA1032.severity = none
-dotnet_diagnostic.CA1508.severity = none
-dotnet_diagnostic.CA1308.severity = none
-dotnet_diagnostic.CA1508.severity = none
-dotnet_diagnostic.CA2008.severity = none
-dotnet_diagnostic.CA1810.severity = none
-dotnet_diagnostic.CA1309.severity = none
-dotnet_diagnostic.CA1829.severity = none
-dotnet_diagnostic.CA3075.severity = none
-dotnet_diagnostic.CA1815.severity = none
+
+# CA1819: Properties should not return arrays
 dotnet_diagnostic.CA1819.severity = none
-dotnet_diagnostic.CA1710.severity = none
-dotnet_diagnostic.CA1003.severity = none
-dotnet_diagnostic.CA2007.severity = none
-dotnet_diagnostic.CA1716.severity = none
-dotnet_diagnostic.CA2214.severity = none
-dotnet_diagnostic.CA1033.severity = none
-dotnet_diagnostic.CA2213.severity = none
-dotnet_diagnostic.CA1068.severity = none
-dotnet_diagnostic.CA1826.severity = none
-dotnet_diagnostic.CA2016.severity = none
-dotnet_diagnostic.CA1835.severity = none
-dotnet_diagnostic.CA1069.severity = none
-dotnet_diagnostic.CA1008.severity = none
-dotnet_diagnostic.CA1028.severity = none
-dotnet_diagnostic.CA2217.severity = none
-dotnet_diagnostic.CA2227.severity = none
-dotnet_diagnostic.CA1056.severity = none
-dotnet_diagnostic.CA2211.severity = none
-dotnet_diagnostic.CA1707.severity = none
-dotnet_diagnostic.CA1721.severity = none
-dotnet_diagnostic.CA1040.severity = none
-dotnet_diagnostic.CA1002.severity = none
-dotnet_diagnostic.CA2249.severity = none
-dotnet_diagnostic.CA2245.severity = none
-dotnet_diagnostic.CA1820.severity = none
-dotnet_diagnostic.CA5350.severity = none
-dotnet_diagnostic.CA5401.severity = none
-dotnet_diagnostic.CA2234.severity = none
+
+# CA1821: Remove empty Finalizers
+dotnet_diagnostic.CA1821.severity = error
+
+# CA1826: Do not use Enumerable methods on indexable collections
+dotnet_diagnostic.CA1826.severity = error
+
+# CA1827: Do not use Count() or LongCount() when Any() can be used
+dotnet_diagnostic.CA1827.severity = error
+
+# CA1828: Do not use CountAsync() or LongCountAsync() when AnyAsync() can be used
+dotnet_diagnostic.CA1828.severity = error
+
+# CA1829: Use Length/Count property instead of Count() when available
+dotnet_diagnostic.CA1829.severity = error
+
+# CA1802: Use literals where appropriate
+dotnet_diagnostic.CA1802.severity = none
+
+# CA1806: Do not ignore method results
 dotnet_diagnostic.CA1806.severity = none
-dotnet_diagnostic.CA1834.severity = none
-dotnet_diagnostic.CA1713.severity = none
-dotnet_diagnostic.CA1054.severity = none
-dotnet_diagnostic.CA1055.severity = none
-dotnet_diagnostic.CA2002.severity = none
-dotnet_diagnostic.CA2109.severity = none
-dotnet_diagnostic.CA1304.severity = none
-dotnet_diagnostic.CA2237.severity = none
-dotnet_diagnostic.CA2119.severity = none
-dotnet_diagnostic.CA1708.severity = none
-dotnet_diagnostic.CA1044.severity = none
-dotnet_diagnostic.CA1303.severity = none
-dotnet_diagnostic.CA5389.severity = none
-dotnet_diagnostic.CA1848.severity = none
-dotnet_diagnostic.CA1849.severity = none
-dotnet_diagnostic.CA2254.severity = none
-dotnet_diagnostic.CA1027.severity = none
-dotnet_diagnostic.CA1840.severity = none
+
+# CA1810: Initialize reference type static fields inline
+dotnet_diagnostic.CA1810.severity = none
+
+# CA1812: Avoid uninstantiated internal classes
+dotnet_diagnostic.CA1812.severity = none
+
+# CA1815: Override equals and operator equals on value types
+dotnet_diagnostic.CA1815.severity = none
+
+# CA1813: Avoid unsealed attributes
+dotnet_diagnostic.CA1813.severity = none
+
+# CA1820: Test for empty strings using string length
+dotnet_diagnostic.CA1820.severity = none
+
+# CA1822: Mark members as static
+dotnet_diagnostic.CA1822.severity = none
+
+# CA1823: Avoid unused private fields
+dotnet_diagnostic.CA1823.severity = none
+
+# CA1825: Avoid zero-length array allocations
+dotnet_diagnostic.CA1825.severity = none
+
+# CA1835: Prefer the 'Memory'-based overloads for 'ReadAsync' and 'WriteAsync'
+dotnet_diagnostic.CA1835.severity = none
+
+# CA1844: Provide memory-based overrides of async methods when subclassing 'Stream'
 dotnet_diagnostic.CA1844.severity = none
-dotnet_diagnostic.CA1018.severity = none
+
+# CA1846: Prefer 'AsSpan' over 'Substring'
 dotnet_diagnostic.CA1846.severity = none
+
+# CA1847: Use char literal for a single character lookup
 dotnet_diagnostic.CA1847.severity = none
 
-dotnet_analyzer_diagnostic.category-Design.severity = none
-dotnet_analyzer_diagnostic.category-Usage.severity = none
-dotnet_analyzer_diagnostic.category-Globalization.severity = none
-dotnet_analyzer_diagnostic.category-Maintainability.severity = none
-dotnet_analyzer_diagnostic.category-Naming.severity = none
-dotnet_analyzer_diagnostic.category-Reliability.severity = none
-dotnet_analyzer_diagnostic.category-Security.severity = none
-
-# Disable slow security analyzers
-dotnet_diagnostic.CA5403.severity = none # CA5403: Do not hard-code certificate
-dotnet_diagnostic.CA3011.severity = none # CA3011: Review code for DLL injection vulnerabilities
-dotnet_diagnostic.CA3008.severity = none # CA3008: Review code for XPath injection vulnerabilities
-dotnet_diagnostic.CA3006.severity = none # CA3006: Review code for process command injection vulnerabilities
-dotnet_diagnostic.CA5390.severity = none # CA5390: Do not hard-code encryption key
-dotnet_diagnostic.CA3010.severity = none # CA3010: Review code for XAML injection vulnerabilities
-dotnet_diagnostic.CA3012.severity = none # CA3012: Review code for regex injection vulnerabilities
-dotnet_diagnostic.CA3007.severity = none # CA3007: Review code for open redirect vulnerabilities
-dotnet_diagnostic.CA5380.severity = none # CA5380: Do Not Add Certificates To Root Store
-dotnet_diagnostic.CA5381.severity = none # CA5381: Ensure Certificates Are Not Added To Root Store
-dotnet_diagnostic.CA5401.severity = none # CA5401: Do not use CreateEncryptor with non-default IV
-dotnet_diagnostic.CA5402.severity = none # CA5402: Use CreateEncryptor with the default IV
-dotnet_diagnostic.CA3009.severity = none # CA3009: Review code for XML injection vulnerabilities
-dotnet_diagnostic.CA3001.severity = none # CA3001: Review code for SQL injection vulnerabilities
-dotnet_diagnostic.CA5399.severity = none # CA5399: HttpClients should enable certificate revocation list checks
-dotnet_diagnostic.CA5400.severity = none # CA5400: Ensure HttpClient certificate revocation list check is not disabled
-dotnet_diagnostic.CA3003.severity = none # CA3003: Review code for file path injection vulnerabilities
-dotnet_diagnostic.CA2301.severity = none # CA2301: Do not call BinaryFormatter.Deserialize without first setting BinaryFormatter.Binder
-dotnet_diagnostic.CA2302.severity = none # CA2302: Ensure BinaryFormatter.Binder is set before calling BinaryFormatter.Deserialize
-dotnet_diagnostic.CA5387.severity = none # CA5387: Do Not Use Weak Key Derivation Function With Insufficient Iteration Count
-dotnet_diagnostic.CA5388.severity = none # CA5388: Ensure Sufficient Iteration Count When Using Weak Key Derivation Function
-dotnet_diagnostic.CA5389.severity = none # CA5389: Do Not Add Archive Item's Path To The Target File System Path
-dotnet_diagnostic.CA2327.severity = none # CA2327: Do not use insecure JsonSerializerSettings
-dotnet_diagnostic.CA2328.severity = none # CA2328: Ensure that JsonSerializerSettings are secure
-dotnet_diagnostic.CA2329.severity = none # CA2329: Do not deserialize with JsonSerializer using an insecure configuration
-dotnet_diagnostic.CA2330.severity = none # CA2330: Ensure that JsonSerializer has a secure configuration when deserializing
+# CA1849: Call async methods when in an async method
+dotnet_diagnostic.CA1849.severity = none
 
 dotnet_code_quality.CA1822.api_surface = private, internal

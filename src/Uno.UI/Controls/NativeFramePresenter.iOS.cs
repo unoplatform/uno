@@ -325,7 +325,7 @@ namespace Uno.UI.Controls
 							if (newItem != null
 								&& e.NewStartingIndex == (collection.Count - 1)
 								&& (frameRequest.NavigationMode == NavigationMode.New || frameRequest.NavigationMode == NavigationMode.Forward)
-								&& newItem.SourcePageType == frameRequest.BackStackPageTypes.LastOrDefault())
+								&& newItem.SourcePageType == (frameRequest.BackStackPageTypes.Count == 0 ? null : frameRequest.BackStackPageTypes[frameRequest.BackStackPageTypes.Count - 1]))
 							{
 								return true;
 							}

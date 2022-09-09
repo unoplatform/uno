@@ -32,8 +32,8 @@ namespace Uno.UI.Tests.Windows_Data_Xml.DomTests
 			{
 				Assert.IsInstanceOfType(childNode, typeof(XmlElement));				
 			}
-			Assert.AreEqual("title", childNodes.First().NodeName);
-			Assert.AreEqual("para", childNodes.Last().NodeName);
+			Assert.AreEqual("title", childNodes[0].NodeName);
+			Assert.AreEqual("para", childNodes[(int)childNodes.Length - 1].NodeName);
 		}
 
 		[TestMethod]

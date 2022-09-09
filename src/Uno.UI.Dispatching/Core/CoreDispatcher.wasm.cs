@@ -24,7 +24,7 @@ namespace Uno.UI.Dispatching
 		{
 			if (typeof(CoreDispatcher).Log().IsEnabled(LogLevel.Trace))
 			{
-				typeof(CoreDispatcher).Log().Trace($"[tid:{Thread.CurrentThread.ManagedThreadId}]: CoreDispatcher.DispatcherCallback()");
+				typeof(CoreDispatcher).Log().Trace($"[tid:{Environment.CurrentManagedThreadId}]: CoreDispatcher.DispatcherCallback()");
 			}
 
 			Main.DispatchItems();
@@ -41,10 +41,10 @@ namespace Uno.UI.Dispatching
 		{
 			if (typeof(CoreDispatcher).Log().IsEnabled(LogLevel.Trace))
 			{
-				typeof(CoreDispatcher).Log().Trace($"[tid:{Thread.CurrentThread.ManagedThreadId}]: CoreDispatcher.Initialize IsThreadingSupported:{IsThreadingSupported}");
+				typeof(CoreDispatcher).Log().Trace($"[tid:{Environment.CurrentManagedThreadId}]: CoreDispatcher.Initialize IsThreadingSupported:{IsThreadingSupported}");
 			}
 
-			if (IsThreadingSupported && Thread.CurrentThread.ManagedThreadId != 1)
+			if (IsThreadingSupported && Environment.CurrentManagedThreadId != 1)
 			{
 				throw new InvalidOperationException($"CoreDispatcher must be initialized on the main Javascript thread");
 			}
@@ -54,13 +54,13 @@ namespace Uno.UI.Dispatching
 		public static bool HasThreadAccessOverride { get; set; }
 
 		private bool GetHasThreadAccess()
-			=> IsThreadingSupported ? Thread.CurrentThread.ManagedThreadId == 1 : HasThreadAccessOverride;
+			=> IsThreadingSupported ? Environment.CurrentManagedThreadId == 1 : HasThreadAccessOverride;
 
 		partial void EnqueueNative()
 		{
 			if (typeof(CoreDispatcher).Log().IsEnabled(LogLevel.Trace))
 			{
-				typeof(CoreDispatcher).Log().Trace($"[tid:{Thread.CurrentThread.ManagedThreadId}]: CoreDispatcher.EnqueueNative()");
+				typeof(CoreDispatcher).Log().Trace($"[tid:{Environment.CurrentManagedThreadId}]: CoreDispatcher.EnqueueNative()");
 			}
 
 			if (DispatchOverride == null)

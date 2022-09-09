@@ -2,4 +2,5 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation.Collections
 {
+	// Skipped type, see SkippedType method
 }

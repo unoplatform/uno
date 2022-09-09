@@ -2,16 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Markup
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IDataTemplateComponent 
 	{
-		#if false
-		void Recycle();
-		#endif
-		#if false
-		void ProcessBindings( object item,  int itemIndex,  int phase, out int nextPhase);
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Markup.IDataTemplateComponent.Recycle()
+		// Skipping already declared method Windows.UI.Xaml.Markup.IDataTemplateComponent.ProcessBindings(object, int, int, out int)
 	}
 }

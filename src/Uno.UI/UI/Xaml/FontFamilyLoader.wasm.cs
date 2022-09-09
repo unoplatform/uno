@@ -72,6 +72,8 @@ internal class FontFamilyLoader
 
 			if (loader._waitingList is { Count: > 0 })
 			{
+				Controls.TextBlockMeasureCache.Instance.Clear(loader._fontFamily);
+				
 				foreach (var waiting in loader._waitingList)
 				{
 					if (waiting.IsAlive && waiting.Target is UIElement ue)

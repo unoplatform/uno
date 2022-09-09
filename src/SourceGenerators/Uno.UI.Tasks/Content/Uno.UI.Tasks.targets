@@ -11,8 +11,8 @@
 
   <UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" />
   <UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.Assets.RetargetAssets_v0" />
-  <UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerHintGeneratorTask_v0" />
-  <UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerDefinitionMergerTask_v0" />
+  <UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerHintGeneratorTask_v0" TaskFactory="TaskHostFactory" />
+  <UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerDefinitionMergerTask_v0" TaskFactory="TaskHostFactory" />
 
   <!--
   This task transforms all the Content files and PRIResources into resources files compatible for each platform.
@@ -87,7 +87,11 @@
   -->
 
   <Target Name="_UnoLinkerHintsSubstitutionsMerge"
-	  Condition="'$(UnoXamlResourcesTrimming)'=='true'"
+	  Condition="
+		'$(DesignTimeBuild)' != 'true'
+		and '$(BuildingInsideUnoSourceGenerator)' == ''
+		and '$(SkipCompilerExecution)' == ''
+		and '$(UnoXamlResourcesTrimming)'=='true'"
 	  AfterTargets="CoreCompile">
 
 	<ItemGroup>

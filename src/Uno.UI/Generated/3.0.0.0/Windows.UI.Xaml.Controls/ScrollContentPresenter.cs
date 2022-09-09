@@ -190,13 +190,7 @@ namespace Windows.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ScrollContentPresenter", "void ScrollContentPresenter.SetVerticalOffset(double offset)");
 		}
 		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.Foundation.Rect MakeVisible( global::Windows.UI.Xaml.UIElement visual,  global::Windows.Foundation.Rect rectangle)
-		{
-			throw new global::System.NotImplementedException("The member Rect ScrollContentPresenter.MakeVisible(UIElement visual, Rect rectangle) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.ScrollContentPresenter.MakeVisible(Windows.UI.Xaml.UIElement, Windows.Foundation.Rect)
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollContentPresenter.CanContentRenderOutsideBounds.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollContentPresenter.CanContentRenderOutsideBounds.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollContentPresenter.SizesContentToTemplatedParent.get

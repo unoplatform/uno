@@ -2,181 +2,28 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public static partial class GattProtocolError 
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static byte AttributeNotFound
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte GattProtocolError.AttributeNotFound is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static byte AttributeNotLong
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte GattProtocolError.AttributeNotLong is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static byte InsufficientAuthentication
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte GattProtocolError.InsufficientAuthentication is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static byte InsufficientAuthorization
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte GattProtocolError.InsufficientAuthorization is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static byte InsufficientEncryption
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte GattProtocolError.InsufficientEncryption is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static byte InsufficientEncryptionKeySize
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte GattProtocolError.InsufficientEncryptionKeySize is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static byte InsufficientResources
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte GattProtocolError.InsufficientResources is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static byte InvalidAttributeValueLength
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte GattProtocolError.InvalidAttributeValueLength is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static byte InvalidHandle
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte GattProtocolError.InvalidHandle is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static byte InvalidOffset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte GattProtocolError.InvalidOffset is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static byte InvalidPdu
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte GattProtocolError.InvalidPdu is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static byte PrepareQueueFull
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte GattProtocolError.PrepareQueueFull is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static byte ReadNotPermitted
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte GattProtocolError.ReadNotPermitted is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static byte RequestNotSupported
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte GattProtocolError.RequestNotSupported is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static byte UnlikelyError
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte GattProtocolError.UnlikelyError is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static byte UnsupportedGroupType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte GattProtocolError.UnsupportedGroupType is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static byte WriteNotPermitted
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member byte GattProtocolError.WriteNotPermitted is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property AttributeNotFound
+		// Skipping already declared property AttributeNotLong
+		// Skipping already declared property InsufficientAuthentication
+		// Skipping already declared property InsufficientAuthorization
+		// Skipping already declared property InsufficientEncryption
+		// Skipping already declared property InsufficientEncryptionKeySize
+		// Skipping already declared property InsufficientResources
+		// Skipping already declared property InvalidAttributeValueLength
+		// Skipping already declared property InvalidHandle
+		// Skipping already declared property InvalidOffset
+		// Skipping already declared property InvalidPdu
+		// Skipping already declared property PrepareQueueFull
+		// Skipping already declared property ReadNotPermitted
+		// Skipping already declared property RequestNotSupported
+		// Skipping already declared property UnlikelyError
+		// Skipping already declared property UnsupportedGroupType
+		// Skipping already declared property WriteNotPermitted
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.InvalidHandle.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.ReadNotPermitted.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattProtocolError.WriteNotPermitted.get

@@ -307,7 +307,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 					await RunOnUIThread.ExecuteAsync(() =>
 					{
-						var flyout = VisualTreeHelper.GetOpenPopups(Window.Current).Last();
+						var openPopups = VisualTreeHelper.GetOpenPopups(Window.Current);
+						var flyout = openPopups[openPopups.Count - 1];
 						Verify.IsNotNull(flyout, "Flyout could not be retrieved");
 						var ellipsisItemsRepeater = TestUtilities.FindDescendents<ItemsRepeater>(flyout).Single();
 						Verify.IsNotNull(ellipsisItemsRepeater, "The underlying flyout items repeater (1) could not be retrieved");
@@ -388,7 +389,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 					await RunOnUIThread.ExecuteAsync(() =>
 					{
-						var flyout = VisualTreeHelper.GetOpenPopups(Window.Current).Last();
+						var openPopups = VisualTreeHelper.GetOpenPopups(Window.Current);
+						var flyout = openPopups[openPopups.Count - 1];
 						Verify.IsNotNull(flyout, "Flyout could not be retrieved");
 						var ellipsisItemsRepeater = TestUtilities.FindDescendents<ItemsRepeater>(flyout).Single();
 						Verify.IsNotNull(ellipsisItemsRepeater, "The underlying flyout items repeater (1) could not be retrieved");
