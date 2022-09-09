@@ -16,7 +16,7 @@ using Uno.SourceGeneration;
 namespace Uno.UI.SourceGenerators.DependencyObject
 {
 	[Generator]
-	public class DependencyObjectGenerator : ISourceGenerator
+	public partial class DependencyObjectGenerator : ISourceGenerator
 	{
 		public void Initialize(GeneratorInitializationContext context)
 		{
@@ -124,15 +124,18 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					{
 						if (typeSymbol.Is(_iosViewSymbol))
 						{
-							throw new InvalidOperationException("A 'UIKit.UIView' shouldn't implement 'DependencyObject'. Inherit 'FrameworkElement' instead.");
+							ReportDiagnostic(_context, Diagnostic.Create(_descriptor, typeSymbol.Locations[0], "UIKit.UIView"));
+							return;
 						}
 						else if (typeSymbol.Is(_androidViewSymbol))
 						{
-							throw new InvalidOperationException("An 'Android.Views.View' shouldn't implement 'DependencyObject'. Inherit 'FrameworkElement' instead.");
+							ReportDiagnostic(_context, Diagnostic.Create(_descriptor, typeSymbol.Locations[0], "Android.Views.View"));
+							return;
 						}
 						else if (typeSymbol.Is(_macosViewSymbol))
 						{
-							throw new InvalidOperationException("An 'AppKit.NSView' shouldn't implement 'DependencyObject'. Inherit 'FrameworkElement' instead.");
+							ReportDiagnostic(_context, Diagnostic.Create(_descriptor, typeSymbol.Locations[0], "AppKit.NSView"));
+							return;
 						}
 					}
 
