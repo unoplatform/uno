@@ -72,11 +72,19 @@
     Force the compilation using Roslyn Generators on net461 (Unit Tests)
     -->
 	  <UnoUIUseRoslynSourceGenerators Condition="'$(TargetFramework)'=='net461'">true</UnoUIUseRoslynSourceGenerators>
-	  
-    <!--
+
+	  <!--
+    Force the compilation using Roslyn Generators on monoandroid
+    -->
+	  <UnoUIUseRoslynSourceGenerators Condition="'$(TargetFramework)'=='monoandroid11.0' or '$(TargetFramework)'=='monoandroid12.0'">true</UnoUIUseRoslynSourceGenerators>
+	  <!--
+    Force the compilation using Roslyn Generators on xamarinios
+    -->
+	  <UnoUIUseRoslynSourceGenerators Condition="'$(TargetFramework)'=='xamarinios10'">true</UnoUIUseRoslynSourceGenerators>
+
+	  <!--
     Force the compilation using Roslyn Generators for Skia targets
     -->
-    
     <UnoUIUseRoslynSourceGenerators Condition="'$(MSBuildProjectName)'!='' and $(MSBuildProjectName.EndsWith('Skia'))">true</UnoUIUseRoslynSourceGenerators>
 </PropertyGroup>
 
