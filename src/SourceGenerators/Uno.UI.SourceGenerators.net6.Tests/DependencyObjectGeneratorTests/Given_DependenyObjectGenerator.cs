@@ -1,6 +1,4 @@
 ﻿using Microsoft.CodeAnalysis.Testing;
-using Uno.UI.SourceGenerators.DependencyObject;
-using Microsoft.CodeAnalysis.Testing.Verifiers;
 using System.Collections.Immutable;
 using Uno.UI.SourceGenerators.ImplementedRoutedEvents;
 using Uno.UI.SourceGenerators.Tests.Verifiers;
