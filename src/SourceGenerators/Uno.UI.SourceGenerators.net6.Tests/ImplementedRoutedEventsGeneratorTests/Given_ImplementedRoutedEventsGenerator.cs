@@ -29,21 +29,6 @@ namespace Uno.UI.Xaml
 }
 ";
 
-		private string _routedEventFlagSource = null!;
-
-		[TestInitialize]
-		public void Initialize()
-		{
-			LoadRoutedEventFlagSource();
-		}
-
-		private void LoadRoutedEventFlagSource()
-		{
-			using var stream = typeof(Given_ImplementedRoutedEventsGenerator).Assembly.GetManifestResourceStream("Uno.UI.SourceGenerators.net6.Tests.RoutedEventFlag.cs");
-			using var reader = new StreamReader(stream!);
-			_routedEventFlagSource = reader.ReadToEnd();
-		}
-
 		private async Task TestGeneratorAsync(string inputSource, params GeneratedFile[] generatedFiles)
 		{
 			var test = new Verify.Test
@@ -51,7 +36,7 @@ namespace Uno.UI.Xaml
 				ReferenceAssemblies = s_defaultWithUno,
 				TestState =
 				{
-					Sources = { Stub, _routedEventFlagSource, inputSource },
+					Sources = { Stub, inputSource },
 				},
 			};
 			test.TestState.GeneratedSources.AddRange(generatedFiles.Select(f => (f.Path, f.Source)));
