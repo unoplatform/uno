@@ -1,11 +1,11 @@
 ﻿using Microsoft.CodeAnalysis.Testing;
 using System.Collections.Immutable;
-using Uno.UI.SourceGenerators.ImplementedRoutedEvents;
+using Uno.UI.SourceGenerators.DependencyObject;
 using Uno.UI.SourceGenerators.Tests.Verifiers;
 
 namespace Uno.UI.SourceGenerators.Tests.DependencyObjectGeneratorTests;
 
-using Verify = CSharpSourceGeneratorVerifier<ImplementedRoutedEventsGenerator>;
+using Verify = CSharpSourceGeneratorVerifier<DependencyObjectGenerator>;
 
 [TestClass]
 public class Given_DependenyObjectGenerator

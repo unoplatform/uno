@@ -142,12 +142,28 @@ public class ImplementedRoutedEventsGenerator : ISourceGenerator
 			}
 		}
 
+		/// <summary>
+		/// Checks whether the given TypeDeclarationSyntax is partial, and all parents are also partial
+		/// </summary>
+		private static bool IsPartialChainOfTypes(TypeDeclarationSyntax typeDeclaration)
+		{
+			if (typeDeclaration.Modifiers.Any(SyntaxKind.PartialKeyword))
+			{
+				// We have partial modifier, now we check the parent.
+				// If the parent isn't TypeDeclarationSyntax (e.g, CompilationUnitSyntax or NamespaceDeclarationSyntax), then
+				// we are good. Otherwise, recurse.
+				return typeDeclaration.Parent is not TypeDeclarationSyntax parent || IsPartialChainOfTypes(parent);
+			}
+
+			return false;
+		}
+
 		private void ProcessType(INamedTypeSymbol type)
 		{
 			if (!type.IsAbstract &&
 				type.Is(_uiElementSymbol) &&
-				type.DeclaringSyntaxReferences[0].GetSyntax() is TypeDeclarationSyntax { Modifiers: { } modifiers } &&
-				modifiers.Any(SyntaxKind.PartialKeyword))
+				type.DeclaringSyntaxReferences[0].GetSyntax() is TypeDeclarationSyntax typeDeclaration &&
+				IsPartialChainOfTypes(typeDeclaration))
 			{
 				var builder = new StringBuilder("global::Uno.UI.Xaml.RoutedEventFlag.None");
 				
