@@ -8,13 +8,11 @@ using Windows.UI.Xaml.Controls;
 namespace Uno.UI.RuntimeTests.Tests.ImplementedRoutedEventArgsGeneratorTest
 {
 	[TestClass]
-	[RunsOnUIThread]
 	public partial class ImplementedRoutedEventArgsGeneratorTests
 	{
 		private static void AssertRoutedEvent(Type type, RoutedEventFlag expected)
 		{
 			Assert.IsTrue(UIElementGeneratedProxy.TryGetImplementedRoutedEvents(type, out var actual));
-			var args = new object[] { type, expected };
 			Assert.AreEqual(expected, actual);
 		}
 
@@ -29,7 +27,7 @@ namespace Uno.UI.RuntimeTests.Tests.ImplementedRoutedEventArgsGeneratorTest
 		{
 			// It's okay to adjust the following assert if more events are needed and implemented in the future.
 			// This test is focused more of the source generator rather than Button functionality.
-			AssertRoutedEvent(typeof(Button), RoutedEventFlag.PointerEntered | RoutedEventFlag.PointerPressed | RoutedEventFlag.PointerReleased);
+			AssertRoutedEvent(typeof(Button), RoutedEventFlag.PointerEntered | RoutedEventFlag.PointerPressed | RoutedEventFlag.PointerReleased | RoutedEventFlag.PointerExited | RoutedEventFlag.PointerMoved | RoutedEventFlag.PointerCaptureLost | RoutedEventFlag.KeyDown | RoutedEventFlag.KeyUp | RoutedEventFlag.GotFocus | RoutedEventFlag.LostFocus);
 		}
 	}
 }
