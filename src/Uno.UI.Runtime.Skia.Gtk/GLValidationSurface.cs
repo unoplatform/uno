@@ -86,6 +86,8 @@ namespace Uno.UI.Runtime.Skia
 			{
 				if (OpenGLRenderSurface.IsSupported)
 				{
+					OpenGLRenderSurface.TryValidateExtensions();
+
 					using var ctx = OpenGLRenderSurface.CreateGRGLContext();
 
 					if (ctx != null)
