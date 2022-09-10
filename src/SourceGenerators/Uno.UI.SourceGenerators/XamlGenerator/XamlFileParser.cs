@@ -4,18 +4,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using Uno.Extensions;
-using System.IO;
 using System.Reflection;
+using System.Text;
+using System.Xml;
+using Microsoft.CodeAnalysis;
+using Uno.Extensions;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
-using System.Text.RegularExpressions;
-using Windows.Foundation.Metadata;
 using Uno.UI.SourceGenerators.XamlGenerator.Utils;
-using System.Diagnostics;
 using Uno.Roslyn;
+using Windows.Foundation.Metadata;
+using System.Threading;
+using System.IO;
+
+#if NETFRAMEWORK
+using GeneratorExecutionContext = Uno.SourceGeneration.GeneratorExecutionContext;
+#endif
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -33,27 +36,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			this._metadataHelper = roslynMetadataHelper;
 		}
 
-		public XamlFileDefinition[] ParseFiles(string[] xamlSourceFiles, System.Threading.CancellationToken cancellationToken)
+		public XamlFileDefinition[] ParseFiles(Uno.Roslyn.MSBuildItem[] xamlSourceFiles, CancellationToken cancellationToken)
 		{
-			var files = new List<XamlFileDefinition>();
-
 			return xamlSourceFiles
 				.AsParallel()
 				.WithCancellation(cancellationToken)
-				.Select(f => ParseFile(f, cancellationToken))
+				.Select(f => ParseFile(f.File, cancellationToken))
 				.Where(f => f != null)
 				.ToArray()!;
 		}
 
-		private XamlFileDefinition? ParseFile(string file, System.Threading.CancellationToken cancellationToken)
+		private XamlFileDefinition? ParseFile(AdditionalText file, CancellationToken cancellationToken)
 		{
 			try
 			{
 #if DEBUG
 				Console.WriteLine("Pre-processing XAML file: {0}", file);
 #endif
-
-				var document = ApplyIgnorables(file);
+				var document = ApplyIgnorables(file, cancellationToken);
 
 				// Initialize the reader using an empty context, because when the tasl
 				// is run under the BeforeCompile in VS IDE, the loaded assemblies are used 
@@ -69,7 +69,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						cancellationToken.ThrowIfCancellationRequested();
 
-						return Visit(reader, file);
+						return Visit(reader, file.Path);
 					}
 				}
 
@@ -81,36 +81,43 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			catch (__uno::Uno.Xaml.XamlParseException e)
 			{
-				throw new XamlParsingException(e.Message, null, e.LineNumber, e.LinePosition, file);
+				throw new XamlParsingException(e.Message, null, e.LineNumber, e.LinePosition, file.Path);
 			}
 			catch (XmlException e)
 			{
-				throw new XamlParsingException(e.Message, null, e.LineNumber, e.LinePosition, file);
+				throw new XamlParsingException(e.Message, null, e.LineNumber, e.LinePosition, file.Path);
 			}
 			catch (Exception e)
 			{
-				throw new XamlParsingException($"Failed to parse file", e, 1, 1, file);
+				throw new XamlParsingException($"Failed to parse file", e, 1, 1, file.Path);
 			}
 		}
 
-		private XmlReader ApplyIgnorables(string file)
+		private XmlReader ApplyIgnorables(AdditionalText file, CancellationToken cancellationToken)
 		{
-			var adjusted = File.ReadAllText(file);
+			var sourceText = file.GetText(cancellationToken);
+			if (sourceText is null)
+			{
+				throw new Exception($"Failed to read additional file '{file.Path}'");
+			}
+
+			var originalString = sourceText.ToString();
+      StringBuilder adjusted;
 
 			var document = new XmlDocument();
-			document.LoadXml(adjusted);
+			document.LoadXml(originalString);
 
 			var (ignorables, shouldCreateIgnorable) = FindIgnorables(document);
 			var conditionals = FindConditionals(document);
 
 			shouldCreateIgnorable |= conditionals.ExcludedConditionals.Count > 0;
 
-			var hasxBind = adjusted.Contains("{x:Bind", StringComparison.Ordinal);
+			var hasxBind = originalString.Contains("{x:Bind", StringComparison.Ordinal);
 
 			if (ignorables == null && !shouldCreateIgnorable && !hasxBind)
 			{
 				// No need to modify file
-				return XmlReader.Create(file);
+				return XmlReader.Create(file.Path);
 			}
 
 			var originalIgnorables = ignorables?.Value ?? "";
@@ -131,20 +138,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 #if DEBUG
 				Console.WriteLine("Ignorable XAML namespaces: {0} for {1}", ignorables.Value, file);
 #endif
+				adjusted = new StringBuilder(originalString);
 
 				// change the namespaces using textreplace, to keep the formatting and have proper
 				// line/position reporting.
-				adjusted = adjusted
+				adjusted
 					.Replace(
 						"Ignorable=\"{0}\"".InvariantCultureFormat(originalIgnorables),
 						"Ignorable=\"{0}\"".InvariantCultureFormat(ignorables.Value)
-					)
-					.TrimEnd("\r\n");
+					);
 			}
 			else
 			{
 				// No existing Ignorable node, create one
-				var targetLine = File.ReadLines(file, Encoding.UTF8).First(l => !l.Trim().StartsWith("<!") && !l.IsNullOrWhiteSpace());
+				var targetLine = sourceText.Lines.Select(l => sourceText.ToString(l.Span)).First(l => !l.IsNullOrWhiteSpace() && !l.Trim().StartsWith("<!"))!;
 				if (targetLine.EndsWith(">"))
 				{
 					targetLine = targetLine.TrimEnd(">");
@@ -165,18 +172,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				var replacement = "{0}{1} {2}:Ignorable=\"{3}\"".InvariantCultureFormat(targetLine, mcString, mcName, newIgnoredFlat);
 				adjusted = ReplaceFirst(
-						adjusted,
-						targetLine,
-						replacement
-					)
-					.TrimEnd("\r\n");
+					originalString,
+					targetLine,
+					replacement
+				);
 			}
 
 			// Replace the ignored namespaces with unique urns so that same urn that are placed in Ignored attribute
 			// are ignored independently.
 			foreach (var n in newIgnored)
 			{
-				adjusted = adjusted
+				adjusted
 					.Replace(
 						"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, document.DocumentElement?.GetNamespaceOfPrefix(n)),
 						"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, Guid.NewGuid())
@@ -193,7 +199,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (!originalPrefix.StartsWith("using:"))
 					{
-						adjusted = adjusted
+						adjusted
 							.Replace(
 								"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, document.DocumentElement.GetNamespaceOfPrefix(n)),
 								"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, document.DocumentElement.GetNamespaceOfPrefix(""))
@@ -206,7 +212,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				var valueSplit = includedCond.Value.Split('?');
 				// Strip the conditional part, so the namespace can be parsed correctly by the Xaml reader
-				adjusted = adjusted
+				adjusted
 					.Replace(
 						includedCond.OuterXml,
 						"{0}=\"{1}\"".InvariantCultureFormat(includedCond.Name, valueSplit[0])
@@ -219,20 +225,29 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// support quotes in positional markup extensions parameters.
 				// Note that the UWP preprocessor does not need to apply those replacements as the
 				// x:Bind expressions are being removed during the first phase and replaced by "connections".
-				adjusted = XBindExpressionParser.RewriteDocumentPaths(adjusted);
+				adjusted = new(XBindExpressionParser.RewriteDocumentPaths(adjusted.ToString()));
 			}
 
-			return XmlReader.Create(new StringReader(adjusted));
+			return XmlReader.Create(new StringReader(adjusted.ToString().TrimEnd("\r\n")));
 		}
 
-		private static string ReplaceFirst(string targetString, string oldValue, string newValue)
+		private static StringBuilder ReplaceFirst(string targetString, string oldValue, string newValue)
 		{
 			var index = targetString.IndexOf(oldValue, StringComparison.InvariantCulture);
 			if (index < 0)
 			{
 				throw new InvalidOperationException();
 			}
-			return targetString.Substring(0, index) + newValue + targetString.Substring(index + oldValue.Length);
+
+			var result = new StringBuilder(targetString.Length + newValue.Length);
+
+			result.Append(targetString, 0, index);
+			result.Append(newValue);
+
+			var secondBlockStart = index + oldValue.Length;
+			result.Append(targetString, secondBlockStart, targetString.Length - secondBlockStart);
+
+			return result;
 		}
 
 		private (XmlNode? Ignorables, bool ShouldCreateIgnorable) FindIgnorables(XmlDocument document)
