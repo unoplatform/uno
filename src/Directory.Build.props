@@ -76,7 +76,7 @@
 	  <!--
     Force the compilation using Roslyn Generators on monoandroid
     -->
-	  <UnoUIUseRoslynSourceGenerators Condition="'$(TargetFramework)'=='monoandroid11.0' or '$(TargetFramework)'=='monoandroid12.0'">true</UnoUIUseRoslynSourceGenerators>
+	  <UnoUIUseRoslynSourceGenerators Condition="'$(TargetFramework)'=='monoandroid11.0' or '$(TargetFramework)'=='monoandroid12.0' or '$(TargetFramework)'=='xamarinmac20'">true</UnoUIUseRoslynSourceGenerators>
 	  <!--
     Force the compilation using Roslyn Generators on xamarinios
     -->
