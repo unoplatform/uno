@@ -25,6 +25,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<EmbeddedResource Include="..\..\Uno.UI\UI\Xaml\RoutedEventFlag.cs" Link="RoutedEventFlag.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
 		<PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />

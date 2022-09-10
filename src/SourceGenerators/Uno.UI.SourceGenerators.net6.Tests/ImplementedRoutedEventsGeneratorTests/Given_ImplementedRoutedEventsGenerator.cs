@@ -10,12 +10,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.SourceGenerators.ImplementedRoutedEvents;
 using Uno.UI.SourceGenerators.Tests.Verifiers;
 
-namespace Uno.UI.SourceGenerators.Tests
+namespace Uno.UI.SourceGenerators.Tests.ImplementedRoutedEventsGeneratorTests
 {
 	using Verify = CSharpSourceGeneratorVerifier<ImplementedRoutedEventsGenerator>;
 
 	[TestClass]
-	public class ImplementedRoutedEventsGeneratorTests
+	public class Given_ImplementedRoutedEventsGenerator
 	{
 		private static readonly ReferenceAssemblies s_defaultWithUno = ReferenceAssemblies.Default.AddPackages(
 			ImmutableArray.Create(new PackageIdentity("Uno.UI", "4.2.6"))); // UPDATE with a version that has a Control.GetImplementedRoutedEvents available.
@@ -150,7 +150,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void LoadRoutedEventFlagSource()
 		{
-			using var stream = typeof(ImplementedRoutedEventsGeneratorTests).Assembly.GetManifestResourceStream("Uno.UI.SourceGenerators.MSCA.Tests.RoutedEventFlag.cs");
+			using var stream = typeof(ImplementedRoutedEventsGeneratorTests).Assembly.GetManifestResourceStream("Uno.UI.SourceGenerators.net6.Tests.RoutedEventFlag.cs");
 			using var reader = new StreamReader(stream);
 			_routedEventFlagSource = reader.ReadToEnd();
 		}
