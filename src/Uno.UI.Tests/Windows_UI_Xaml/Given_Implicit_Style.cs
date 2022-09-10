@@ -301,10 +301,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			}
 		}
 
-		public partial class SubControl : Control { }
-		public partial class SubButtonBase : Windows.UI.Xaml.Controls.Primitives.ButtonBase { }
-		public partial class SubRangeBase : Windows.UI.Xaml.Controls.Primitives.RangeBase { }
-		public partial class SubNavigationViewItem : NavigationViewItem { }
+		public class SubControl : Control { }
+		public class SubButtonBase : Windows.UI.Xaml.Controls.Primitives.ButtonBase { }
+		public class SubRangeBase : Windows.UI.Xaml.Controls.Primitives.RangeBase { }
+		public class SubNavigationViewItem : NavigationViewItem { }
 
 	}
 }
