@@ -30,7 +30,7 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - powershell: dotnet msbuild src/SamplesApp/SamplesApp.Skia.Gtk/SamplesApp.Skia.Gtk.csproj /r /m /p:Configuration=Release /detailedsummary /m # /bl:$(build.artifactstagingdirectory)\build.binlog
+  - powershell: dotnet msbuild src/SamplesApp/SamplesApp.Skia.Gtk/SamplesApp.Skia.Gtk.csproj /r /m /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build.binlog
     displayName: Build GTK Head
 
   - task: PublishBuildArtifacts@1
@@ -40,7 +40,7 @@ jobs:
       ArtifactName: skia-gtk-samples-app
       ArtifactType: Container
 
-  - powershell: dotnet msbuild src/SamplesApp/SamplesApp.Skia.WPF/SamplesApp.Skia.WPF.csproj /r /m /p:Configuration=Release /detailedsummary /m # /bl:$(build.artifactstagingdirectory)\build.binlog
+  - powershell: dotnet msbuild src/SamplesApp/SamplesApp.Skia.WPF/SamplesApp.Skia.WPF.csproj /r /m /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build.binlog
     displayName: Build WPF Head
 
   - task: PublishBuildArtifacts@1
