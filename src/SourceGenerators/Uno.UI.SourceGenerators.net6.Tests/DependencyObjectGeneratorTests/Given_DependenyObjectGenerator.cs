@@ -1,17 +1,20 @@
 ﻿using Microsoft.CodeAnalysis.Testing;
-using Microsoft.CodeAnalysis.CSharp.Testing;
 using Uno.UI.SourceGenerators.DependencyObject;
 using Microsoft.CodeAnalysis.Testing.Verifiers;
 using System.Collections.Immutable;
+using Uno.UI.SourceGenerators.ImplementedRoutedEvents;
+using Uno.UI.SourceGenerators.Tests.Verifiers;
 
 namespace Uno.UI.SourceGenerators.Tests.DependencyObjectGeneratorTests;
+
+using Verify = CSharpSourceGeneratorVerifier<ImplementedRoutedEventsGenerator>;
 
 [TestClass]
 public class Given_DependenyObjectGenerator
 {
 	private async Task TestAndroid(string testCode, params DiagnosticResult[] expectedDiagnostics)
 	{
-		var test = new CSharpSourceGeneratorTest<DependencyObjectGenerator, MSTestVerifier>()
+		var test = new Verify.Test
 		{
 			TestState =
 			{

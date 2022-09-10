@@ -1,12 +1,7 @@
 ﻿using System.Collections.Immutable;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.SourceGenerators.ImplementedRoutedEvents;
 using Uno.UI.SourceGenerators.Tests.Verifiers;
 
@@ -18,7 +13,7 @@ namespace Uno.UI.SourceGenerators.Tests.ImplementedRoutedEventsGeneratorTests
 	public class Given_ImplementedRoutedEventsGenerator
 	{
 		private static readonly ReferenceAssemblies s_defaultWithUno = ReferenceAssemblies.Default.AddPackages(
-			ImmutableArray.Create(new PackageIdentity("Uno.UI", "4.2.6"))); // UPDATE with a version that has a Control.GetImplementedRoutedEvents available.
+			ImmutableArray.Create(new PackageIdentity("Uno.UI", "4.4.20"))); // UPDATE with a version that has a Control.GetImplementedRoutedEvents available.
 
 		// TODO: Remove and use s_defaultWithUno when we have a version with Control.GetImplementedRoutedEvents available.
 		private const string Stub = @"
@@ -140,7 +135,7 @@ namespace Windows.UI.Xaml.Controls
 }
 ");
 
-		private string _routedEventFlagSource;
+		private string _routedEventFlagSource = null!;
 
 		[TestInitialize]
 		public void Initialize()
@@ -150,8 +145,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void LoadRoutedEventFlagSource()
 		{
-			using var stream = typeof(ImplementedRoutedEventsGeneratorTests).Assembly.GetManifestResourceStream("Uno.UI.SourceGenerators.net6.Tests.RoutedEventFlag.cs");
-			using var reader = new StreamReader(stream);
+			using var stream = typeof(Given_ImplementedRoutedEventsGenerator).Assembly.GetManifestResourceStream("Uno.UI.SourceGenerators.net6.Tests.RoutedEventFlag.cs");
+			using var reader = new StreamReader(stream!);
 			_routedEventFlagSource = reader.ReadToEnd();
 		}
 
