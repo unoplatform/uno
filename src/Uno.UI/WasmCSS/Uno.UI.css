@@ -155,6 +155,10 @@ embed.uno-frameworkelement.uno-unarranged {
   background-color: transparent;
 }
 
+.uno-textbox {
+    cursor: text;
+}
+
 .uno-textelement {
   position: relative;
 }
