@@ -18,6 +18,8 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 
+using PointerIdentifier = Windows.Devices.Input.PointerIdentifier;
+
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 #else
@@ -241,19 +243,18 @@ public partial class UIElement : DependencyObject
 		}
 	}
 
-	private static readonly HashSet<uint> _activePointers = new();
-	private static readonly Dictionary<uint, uint> _nativeToManagedPointerId = new();
+	private static readonly Dictionary<PointerIdentifier, uint> _nativeToManagedPointerId = new();
 	private static uint _lastUsedId;
 
-	private static uint TransformPointerId(uint nativePointerId)
+	private static uint TransformPointerId(PointerIdentifier nativePointerIdentifier)
 	{
-		if (_nativeToManagedPointerId.TryGetValue(nativePointerId, out var pointerId))
+		if (_nativeToManagedPointerId.TryGetValue(nativePointerIdentifier, out var pointerId))
 		{
 			return pointerId;
 		}
 
 		pointerId = ++_lastUsedId;
-		_nativeToManagedPointerId[nativePointerId] = pointerId;
+		_nativeToManagedPointerId[nativePointerIdentifier] = pointerId;
 		return pointerId;
 	}
 
@@ -263,8 +264,6 @@ public partial class UIElement : DependencyObject
 		{
 			_lastUsedId--;
 		}
-
-		_activePointers.Remove(pointerId);
 	}
 
 	private static PointerRoutedEventArgs ToPointerArgs(
@@ -275,13 +274,9 @@ public partial class UIElement : DependencyObject
 		const int cancel = (int)NativePointerEvent.pointercancel;
 		const int exitOrUp = (int)(NativePointerEvent.pointerout | NativePointerEvent.pointerup);
 
-		var pointerId = TransformPointerId((uint)args.pointerId);
-		if ((NativePointerEvent)args.Event == NativePointerEvent.pointerdown)
-		{
-			_activePointers.Add(pointerId);
-		}
-
 		var pointerType = (PointerDeviceType)args.deviceType;
+		var pointerId = TransformPointerId(new PointerIdentifier((Windows.Devices.Input.PointerDeviceType)pointerType, (uint)args.pointerId));
+		
 		var src = GetElementFromHandle(args.srcHandle) ?? (UIElement)snd;
 		var position = new Point(args.x, args.y);
 		var isInContact = args.buttons != 0;
