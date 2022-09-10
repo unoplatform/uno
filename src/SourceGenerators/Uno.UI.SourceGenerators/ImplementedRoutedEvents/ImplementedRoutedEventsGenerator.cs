@@ -27,7 +27,7 @@ public class ImplementedRoutedEventsGenerator : ISourceGenerator
 
 	public void Execute(GeneratorExecutionContext context)
 	{
-		if (!DesignTimeHelper.IsDesignTime(context))
+		if (!DesignTimeHelper.IsDesignTime(context) && PlatformHelper.IsValidPlatform(context))
 		{
 			var uiElementSymbol = context.Compilation.GetTypeByMetadataName(XamlConstants.Types.UIElement);
 			if (uiElementSymbol is null)
