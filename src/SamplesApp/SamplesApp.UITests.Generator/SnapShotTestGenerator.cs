@@ -8,18 +8,24 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Uno.RoslynHelpers;
-using Uno.SourceGeneration;
+using Uno.Samples.UITest.Generator.Helper;
 
 namespace Uno.Samples.UITest.Generator
 {
-	public class SnapShotTestGenerator : SourceGenerator
+	[Generator]
+	public class SnapShotTestGenerator : ISourceGenerator
 	{
 		private const int GroupCount = 5;
 
 		private INamedTypeSymbol _sampleControlInfoSymbol;
 		private INamedTypeSymbol _sampleSymbol;
 
-		public override void Execute(SourceGeneratorContext context)
+		public void Initialize(GeneratorInitializationContext context)
+		{
+
+		}
+
+		public void Execute(GeneratorExecutionContext context)
 		{
 #if DEBUG
 			// Debugger.Launch();
@@ -30,9 +36,11 @@ namespace Uno.Samples.UITest.Generator
 			}
 		}
 
-		private void GenerateTests(SourceGeneratorContext context, string assembly)
+		private void GenerateTests(GeneratorExecutionContext context, string assembly)
 		{
 			var compilation = GetCompilation(context, assembly);
+
+			context.AddSource("debug", $"// inner compilation:{compilation.compilation.Assembly.Name}");
 
 			_sampleControlInfoSymbol = compilation.compilation.GetTypeByMetadataName("Uno.UI.Samples.Controls.SampleControlInfoAttribute");
 			_sampleSymbol = compilation.compilation.GetTypeByMetadataName("Uno.UI.Samples.Controls.SampleAttribute");
@@ -52,7 +60,7 @@ namespace Uno.Samples.UITest.Generator
 
 		private (string[] categories, string name, bool ignoreInSnapshotTests, bool isManual) GetSampleInfo(INamedTypeSymbol symbol, AttributeData attr)
 		{
-			if (attr.AttributeClass == _sampleControlInfoSymbol)
+			if (SymbolEqualityComparer.Default.Equals(attr.AttributeClass, _sampleControlInfoSymbol))
 			{
 				return (
 					categories: new[] { GetConstructorParameterValue(attr, "category")?.ToString() ?? "Default" },
@@ -120,7 +128,7 @@ namespace Uno.Samples.UITest.Generator
 
 		private void GenerateTests(
 			string assembly,
-			SourceGeneratorContext context,
+			GeneratorExecutionContext context,
 			IEnumerable<(INamedTypeSymbol symbol, string[] categories, string name, bool ignoreInSnapshotTests, bool isManual)> symbols)
 		{
 			var groups =
@@ -141,7 +149,7 @@ namespace Uno.Samples.UITest.Generator
 
 				builder.AppendLineInvariant("using System;");
 
-				using (builder.BlockInvariant($"namespace {context.GetProjectInstance().GetPropertyValue("RootNamespace")}.Snap"))
+				using (builder.BlockInvariant($"namespace {context.GetMSBuildPropertyValue("RootNamespace")}.Snap"))
 				{
 					builder.AppendLineInvariant("[global::NUnit.Framework.TestFixture]");
 
@@ -181,17 +189,17 @@ namespace Uno.Samples.UITest.Generator
 					}
 				}
 
-				context.AddCompilationUnit(groupName, builder.ToString());
+				context.AddSource(groupName, builder.ToString());
 			}
 		}
 
 		private object Sanitize(string category)
 			=> string.Join("", category.Select(c => char.IsLetterOrDigit(c) ? c : '_'));
 
-		private (Compilation compilation, Project project) GetCompilation(SourceGeneratorContext context, string assembly)
+		private (Compilation compilation, Project project) GetCompilation(GeneratorExecutionContext context, string assembly)
 		{
 			// Used to get the reference assemblies
-			var devEnvDir = context.GetProjectInstance().GetPropertyValue("MSBuildExtensionsPath");
+			var devEnvDir = context.GetMSBuildPropertyValue("MSBuildExtensionsPath");
 
 			if (devEnvDir.StartsWith("*"))
 			{
@@ -220,9 +228,9 @@ namespace Uno.Samples.UITest.Generator
 			return (compilation, project);
 		}
 
-		private static Project AddFiles(SourceGeneratorContext context, Project project, string baseName)
+		private static Project AddFiles(GeneratorExecutionContext context, Project project, string baseName)
 		{
-			var sourcePath = Path.Combine(Path.GetDirectoryName(context.Project.FilePath), "..", baseName);
+			var sourcePath = Path.Combine(context.GetMSBuildPropertyValue("MSBuildProjectDirectory"), "..", baseName);
 			foreach (var file in Directory.GetFiles(sourcePath, "*.cs", SearchOption.AllDirectories))
 			{
 				project = project.AddDocument(Path.GetFileName(file), File.ReadAllText(file)).Project;

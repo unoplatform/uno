@@ -8,16 +8,20 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Uno.RoslynHelpers;
-using Uno.SourceGeneration;
 
 namespace Uno.Samples.UITest.Generator
 {
-	public class SamplesListGenerator : SourceGenerator
+	[Generator]
+	public class SamplesListGenerator : ISourceGenerator
 	{
 		private INamedTypeSymbol _sampleControlInfoSymbol;
 		private INamedTypeSymbol _sampleSymbol;
 
-		public override void Execute(SourceGeneratorContext context)
+		public void Initialize(GeneratorInitializationContext context)
+		{
+		}
+
+		public void Execute(GeneratorExecutionContext context)
 		{
 #if DEBUG
 			// Debugger.Launch();
@@ -28,7 +32,7 @@ namespace Uno.Samples.UITest.Generator
 			}
 		}
 
-		private void GenerateTests(SourceGeneratorContext context)
+		private void GenerateTests(GeneratorExecutionContext context)
 		{
 			_sampleControlInfoSymbol = context.Compilation.GetTypeByMetadataName("Uno.UI.Samples.Controls.SampleControlInfoAttribute");
 			_sampleSymbol = context.Compilation.GetTypeByMetadataName("Uno.UI.Samples.Controls.SampleAttribute");
@@ -43,7 +47,7 @@ namespace Uno.Samples.UITest.Generator
 			GenerateSamplesList(context, query);
 		}
 
-		private void GenerateSamplesList(SourceGeneratorContext context, IEnumerable<INamedTypeSymbol> query)
+		private void GenerateSamplesList(GeneratorExecutionContext context, IEnumerable<INamedTypeSymbol> query)
 		{
 			var builder = new IndentedStringBuilder();
 
@@ -65,7 +69,7 @@ namespace Uno.Samples.UITest.Generator
 				}
 			}
 
-			context.AddCompilationUnit("AllSamplesList", builder.ToString());
+			context.AddSource("AllSamplesList", builder.ToString());
 		}
 	}
 }

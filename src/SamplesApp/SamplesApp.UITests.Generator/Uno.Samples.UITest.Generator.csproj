@@ -9,8 +9,10 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
 		<PackageReference Include="Uno.RoslynHelpers" Version="1.2.0-dev.10" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="1.3.2" />
-		<PackageReference Include="Uno.SourceGeneration" />
+		<PackageReference Include="Microsoft.CodeAnalysis">
+			<Version>3.8.0</Version>
+			<ExcludeAssets>runtime</ExcludeAssets>
+		</PackageReference>
 		<PackageReference Include="System.ValueTuple" />
 	</ItemGroup>
 </Project>
