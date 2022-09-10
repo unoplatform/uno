@@ -3940,6 +3940,7 @@
 			<Member
 				fullName="System.Void Windows.UI.Notifications.BadgeUpdateManager..ctor()"
 				reason="Should not be public" />
+
 		</Methods>
 		<Properties>
 			<Member
@@ -8704,10 +8705,6 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.BringIntoViewRequestedEventArgs..ctor()"
 				reason="Does not exist in UWP" />
-
-			<Member
-				fullName="Uno.UI.Xaml.RoutedEventFlag Windows.UI.Xaml.Controls.Control.GetImplementedRoutedEvents(System.Type type)"
-				reason="Made virtual to make use of source generators" />
 
 			<!-- BEGIN .NET 6 RC 1 -->
 			<Member fullName="System.Void UIKit.UIViewExtensions.SetDimensions(UIKit.UIView view, System.Nullable`1&lt;ObjCRuntime.nfloat&gt; width, System.Nullable`1&lt;ObjCRuntime.nfloat&gt; height)" reason="net6 preview 14 breaking changes" />
