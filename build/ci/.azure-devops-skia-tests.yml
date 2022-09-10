@@ -40,13 +40,6 @@ jobs:
       ArtifactName: skia-gtk-samples-app
       ArtifactType: Container
 
-  - task: PublishBuildArtifacts@1
-    condition: always()
-    inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: skia-gtk-samples-app-binlog
-      ArtifactType: Container
-
   - powershell: dotnet msbuild src/SamplesApp/SamplesApp.Skia.WPF/SamplesApp.Skia.WPF.csproj /r /m /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-wpf.binlog
     displayName: Build WPF Head
 
@@ -61,7 +54,7 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: skia-wpf-samples-app-binlog
+      ArtifactName: skia-samples-app-binlog
       ArtifactType: Container
 
 ##
