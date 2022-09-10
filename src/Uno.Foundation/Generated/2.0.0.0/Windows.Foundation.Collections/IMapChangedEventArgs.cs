@@ -7,18 +7,8 @@ namespace Windows.Foundation.Collections
 	#endif
 	public  partial interface IMapChangedEventArgs<K> 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Foundation.Collections.CollectionChange CollectionChange
-		{
-			get;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		K Key
-		{
-			get;
-		}
-		#endif
+		// Skipping already declared property CollectionChange
+		// Skipping already declared property Key
 		// Forced skipping of method Windows.Foundation.Collections.IMapChangedEventArgs<K>.CollectionChange.get
 		// Forced skipping of method Windows.Foundation.Collections.IMapChangedEventArgs<K>.Key.get
 	}

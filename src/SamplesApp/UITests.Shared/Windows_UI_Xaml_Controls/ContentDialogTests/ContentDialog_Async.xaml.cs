@@ -20,7 +20,7 @@ using _Button = Windows.UI.Xaml.Controls.Button;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 {
-	[SampleControlInfo("ContentDialog", "ContentDialog_Async", description: "Tests for ContentDialog async mechanism")]
+	[SampleControlInfo("Dialogs", "ContentDialog_Async", description: "Tests for ContentDialog async mechanism")]
     public sealed partial class ContentDialog_Async : UserControl
     {
 		private ContentDialog dialog;

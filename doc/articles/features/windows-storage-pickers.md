@@ -109,8 +109,12 @@ fileSavePicker.FileTypeChoices.Add("Plain Text", new List<string>() { ".txt", ".
 StorageFile saveFile = await fileSavePicker.PickSaveFileAsync();
 if (saveFile != null)
 {
+    CachedFileManager.DeferUpdates(saveFile);
+
     // Save file was picked, you can now write in it
     await FileIO.WriteTextAsync(saveFile, "Hello, world!");
+
+    await CachedFileManager.CompleteUpdatesAsync(saveFile);
 }
 else
 {
@@ -118,7 +122,10 @@ else
 }
 ```
 
-**Notes**: While the `SuggestedStartLocation` has no effect, it must be set for UWP. You must declare at least one item for `FileTypeChoices`. Each has a description and one or more extensions.
+**Notes**: 
+The `CachedFileManager` only has effect on Windows and on WebAssembly (see below in the [WebAssembly](#WebAssembly) section)
+
+While the `SuggestedStartLocation` has no effect, it must be set for UWP. You must declare at least one item for `FileTypeChoices`. Each has a description and one or more extensions.
 
 ## Picker configuration
 
@@ -168,7 +175,7 @@ For the download picker, the experience requires the use of [`CachedFileManager`
 
 The `CachedFileManager` class works transparently with both the **Download picker** and the **File System Access API**, which means you can write a single snippet of code that handles both scenarios correctly:
 
-```c#
+```csharp
 var savePicker = new FileSavePicker():
 savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
 savePicker.FileTypeChoices.Add("Text file", new List<string>() { ".txt" });
@@ -176,7 +183,7 @@ savePicker.SuggestedFileName = "New Document";
 
 // For download picker, no dialog is actually triggered here
 // and a temporary file is returned immediately.
-// For Fil System Access API, this triggers the picker to allow
+// For File System Access API, this triggers the picker to allow
 // user to select a local file.
 var file = await savePicker.PickSaveFileAsync();
 
@@ -192,11 +199,40 @@ await FileIO.WriteTextAsync(file, "Hello, world!");
 await CachedFileManager.CompleteUpdatesAsync(file);
 ```
 
+### Checking whether File System Access API is supported
+
+In some cases, you might want to check whether File System Access API is supported in the current runtime environment. A typical reason might be to ensure only **Save As** functionality is available to the user when the browser only supports download pickers. You can utilize the WASM specific `Uno.Storage.Pickers.FileSystemAccessApiInformation` API:
+
+```csharp
+#if __WASM__
+if (FileSystemAccessApiInformation.IsOpenPickerSupported)
+{
+    // File System Access API open picker is available.
+}
+
+if (FileSystemAccessApiInformation.IsSavePickerSupported)
+{
+    // File System Access API open picker is available.
+}
+
+if (FileSystemAccessApiInformation.AreFilePickersSupported)
+{
+    // Both file open and file save pickers from the 
+    // File System Access API are available.
+}
+
+if (FileSystemAccessApiInformation.IsFolderPickerSupported)
+{
+    // File System Access API folder picker is available.
+}
+#endif
+```
+
 ### Checking the source of opened file
 
 To know how the file needs to be handled, you need to check the type of storage provider it comes from. To do this, access the `Provider` property of the file:
 
-```c#
+```csharp
 if (file.Provider.Id == "jsfileaccessapi")
 {
     // File was picked using File System Access pickers.
@@ -214,7 +250,7 @@ The local files have provider ID of `computer`, which matches the UWP behavior. 
 
 By default, Uno Platform attempts to use File System Access API and falls back to download/upload pickers if not available. To control this behavior, you can use `WinRTFeatureConfiguration`:
 
-```c#
+```csharp
 #if __WASM__
 Uno.WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = 
     WasmPickerConfiguration.FileSystemAccessApiWithFallback;
@@ -237,7 +273,7 @@ iOS does not offer a built-in `FileSavePicker` experience. Luckily it is possibl
 
 To provide your own custom implementation, create a class that implements the `IFileSavePickerExtension` which is only available on iOS. This class must have a `public` constructor with a `object` parameter. This will actually be an instance of `FileSavePicker` when invoked later. Then implement the `PickSaveFileAsync` method:
 
-```c#
+```csharp
 #if __IOS__
 namespace Custom.Pickers
 {
@@ -261,12 +297,12 @@ namespace Custom.Pickers
 
 When done, register this extension in `App.xaml.cs`:
 
-```c#
+```csharp
 public App()
 {
 #if __IOS__
     ApiExtensibility.Register(
-        typeof(Uno.Ehttps://twitter.com/thebookisclosed/status/1375006215189753860?s=19xtensions.Storage.Pickers.IFileSavePickerExtension), 
+        typeof(Uno.Extensions.Storage.Pickers.IFileSavePickerExtension), 
         picker => new CustomFileSavePickerExtension(picker));
 #endif
 }

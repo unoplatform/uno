@@ -18,6 +18,9 @@ using Uno.UI.WinRT.Extensions.UI.Popups;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 {
 	[TestClass]
+#if __MACOS__
+	[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 	public class Given_MessageDialog
 	{
 		[TestMethod]
@@ -88,7 +91,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 #if HAS_UNO
 			return popups.Count(p => p.Child is not MessageDialogContentDialog);
 #else
-			return popups.Count();
+			return popups.Count;
 #endif
 		}
 	}

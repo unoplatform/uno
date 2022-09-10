@@ -8,8 +8,8 @@ namespace Windows.Phone.Devices.Notification
 	public partial class VibrationDevice
 	{
 		private const string JsType = "Windows.Phone.Devices.Notification.VibrationDevice";
-		private static VibrationDevice _instance = null;
-		private static bool _initializationAttempted = false;
+		private static VibrationDevice _instance;
+		private static bool _initializationAttempted;
 
 		private VibrationDevice()
 		{

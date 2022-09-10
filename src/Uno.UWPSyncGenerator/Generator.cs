@@ -98,6 +98,7 @@ namespace Uno.UWPSyncGenerator
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Phone.PhoneContract")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Networking.Connectivity.WwanContract")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.ApplicationModel.Calls.CallsPhoneContract")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.UI.Xaml.Hosting.HostingContract")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.Web.WebView2.Core")
 						  let asm = _referenceCompilation.GetAssemblyOrModuleSymbol(externalRedfs) as IAssemblySymbol
 						  where asm != null
@@ -502,6 +503,10 @@ namespace Uno.UWPSyncGenerator
 			{
 				case "Windows.Foundation.IAsyncOperation<TResult>":
 					// Skipped to include generic variance.
+					return true;
+
+				case "Windows.Foundation.Collections.ValueSet":
+					// Skipped to include nullable annotations.
 					return true;
 
 				case "Windows.Foundation.Uri":

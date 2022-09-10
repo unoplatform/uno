@@ -60,5 +60,9 @@ namespace Windows.UI.Xaml
 		internal bool IsGestureEvent { get; }
 		[Pure]
 		internal bool IsDragAndDropEvent { get; }
+
+		/// <inheritdoc />
+		public override string ToString()
+			=> Name;
 	}
 }

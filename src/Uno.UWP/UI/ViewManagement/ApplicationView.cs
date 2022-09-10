@@ -143,7 +143,7 @@ namespace Windows.UI.ViewManagement
 			}
 			else if (viewMode == ApplicationViewMode.Spanning)
 			{
-				return (_applicationViewSpanningRects as INativeDualScreenProvider)?.IsDualScreen == true;
+				return (_applicationViewSpanningRects as INativeDualScreenProvider)?.SupportsSpanning == true;
 			}
 
 			return false;

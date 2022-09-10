@@ -1071,6 +1071,9 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 #if __SKIA__
 		[RequiresFullWindow]
 #endif
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task VerifyButtonState()
 		{
 			TestCleanupWrapper cleanup;
@@ -2553,7 +2556,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 					});
 
 
-					for (var i = 0; i < testData.snapPoints.Count(); i++)
+					for (var i = 0; i < testData.snapPoints.Length; i++)
 					{
 						LOG_OUTPUT("scroll down to next snap point and wait for viewchanged event.");
 						TestServices.InputHelper.ScrollMouseWheel(cv, -1);

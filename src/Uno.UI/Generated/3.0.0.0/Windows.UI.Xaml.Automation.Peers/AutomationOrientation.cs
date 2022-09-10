@@ -2,18 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation.Peers
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	public   enum AutomationOrientation 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		None = 0,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Horizontal = 1,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Vertical = 2,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationOrientation.None
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationOrientation.Horizontal
+		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationOrientation.Vertical
 	}
 	#endif
 }

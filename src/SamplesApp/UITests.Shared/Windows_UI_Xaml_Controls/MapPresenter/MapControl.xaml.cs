@@ -17,7 +17,7 @@ using Uno.Logging;
 
 namespace Uno.UI.Samples.Content.UITests.MapControl
 {
-	[SampleControlInfo("Map", "MapControl")]
+	[SampleControlInfo("Mapping", "MapControl")]
 	public sealed partial class MapControl : UserControl
 	{
 #pragma warning disable CS0109

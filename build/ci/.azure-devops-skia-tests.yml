@@ -8,7 +8,6 @@ jobs:
   displayName: 'Skia Samples App Build'
   timeoutInMinutes: 60
 
-  #pool: ${{ parameters.poolName }}
   pool:
     vmImage: ${{ parameters.vmImage }}
 
@@ -27,6 +26,10 @@ jobs:
   - template: templates/gitversion.yml
   - template: templates/dotnet-install.yml
 
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
   - powershell: dotnet msbuild src/SamplesApp/SamplesApp.Skia.Gtk/SamplesApp.Skia.Gtk.csproj /r /m /p:Configuration=Release /detailedsummary /m # /bl:$(build.artifactstagingdirectory)\build.binlog
     displayName: Build GTK Head
 
@@ -43,7 +46,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     condition: always()
     inputs:
-      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.WPF\bin\Release\netcoreapp3.1
+      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.WPF\bin\Release\net5.0-windows
       ArtifactName: skia-wpf-samples-app
       ArtifactType: Container
 
@@ -52,10 +55,9 @@ jobs:
 ##
 
 - job: Skia_Gtk_Screenshot_Tests
-  displayName: 'Skia Samples App Snapshot Tests'
+  displayName: 'Skia GTK Snapshot Tests'
   timeoutInMinutes: 60
 
-  #pool: ${{ parameters.poolName }}
   pool:
     vmImage: ${{ parameters.vmMacImage }}
 
@@ -68,14 +70,13 @@ jobs:
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/dotnet-install.yml
-  #- template: templates/gtk-install.yml
   - template: templates/gtk-install-macos.yml
 
   - script: |
         cd $(build.sourcesdirectory)/build/skia-gtk-samples-app
         dotnet SamplesApp.Skia.Gtk.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-gtk-screenshots
 
-    displayName: Run Skia UI Snapshot Tests
+    displayName: Run Skia GTK Snapshot Tests
 
   - task: PublishBuildArtifacts@1
     condition: always()
@@ -85,10 +86,9 @@ jobs:
       ArtifactType: Container
 
 - job: Skia_Gtk_Runtime_Tests_Build
-  displayName: 'Skia Samples App Runtime Tests'
+  displayName: 'Skia GTK Runtime Tests'
   timeoutInMinutes: 30
 
-  #pool: ${{ parameters.poolName }}
   pool:
     vmImage: ${{ parameters.vmMacImage }}
 
@@ -101,7 +101,6 @@ jobs:
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/dotnet-install.yml
-  #- template: templates/gtk-install.yml
   - template: templates/gtk-install-macos.yml
 
   - script: |
@@ -118,3 +117,67 @@ jobs:
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-gtk-runtime-tests-results.xml'
       failTaskOnFailedTests: true
 
+##
+## WPF
+##
+
+- job: Skia_Wpf_Screenshot_Tests
+  displayName: 'Skia WPF Snapshot Tests'
+  timeoutInMinutes: 60
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  dependsOn: Skia_Tests_Build
+
+  steps:
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: skia-wpf-samples-app
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: templates/dotnet-install.yml
+
+  - script: |
+        cd $(build.sourcesdirectory)/build/skia-wpf-samples-app
+        dotnet SamplesApp.Skia.Wpf.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-wpf-screenshots
+
+    displayName: Run Skia WPF Snapshot Tests
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-results
+      ArtifactType: Container
+
+- job: Skia_Wpf_Runtime_Tests_Build
+  displayName: 'Skia WPF Runtime Tests'
+  timeoutInMinutes: 30
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  dependsOn: Skia_Tests_Build
+
+  steps:
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: skia-wpf-samples-app
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: templates/dotnet-install.yml
+
+  - script: |
+        cd $(build.sourcesdirectory)/build/skia-wpf-samples-app
+        dotnet SamplesApp.Skia.Wpf.dll --runtime-tests=$(build.sourcesdirectory)/build/skia-wpf-runtime-tests-results.xml
+
+    displayName: Run Skia WPF Runtime Tests
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'Skia WPF Runtime Tests'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/skia-wpf-runtime-tests-results.xml'
+      failTaskOnFailedTests: true

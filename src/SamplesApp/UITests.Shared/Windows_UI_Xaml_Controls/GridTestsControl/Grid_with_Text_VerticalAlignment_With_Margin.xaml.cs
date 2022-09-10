@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 {
-	[SampleControlInfo("GridTestsControl", "Grid_with_Text_VerticalAlignment_With_Margin")]
+	[SampleControlInfo("Grid", "Grid_with_Text_VerticalAlignment_With_Margin")]
 	public sealed partial class Grid_with_Text_VerticalAlignment_With_Margin : UserControl
 	{
 		public Grid_with_Text_VerticalAlignment_With_Margin()

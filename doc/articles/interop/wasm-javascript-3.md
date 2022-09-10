@@ -16,7 +16,7 @@ Let's create an application illustrating how to use this feature.
 
 📝 This part is very short because it is similar to the previous article ([part 2](wasm-javascript-2.md)):
 
-1. Create a `Multi-Platform App (Uno Platform|Xamarin)` project and name it `FlatpickrDemo`.
+1. Create a `Uno Platform App` project and name it `FlatpickrDemo`.
 2. Right-click on the `.Wasm` project in the _Solution Explorer_ and pick `Set as Startup Project`.
 3. Update to latest _stable_ version of `Uno.*` dependencies.
 4. Compile & Run to make sure everything works.

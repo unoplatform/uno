@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 {
-	[SampleControlInfo("ContentControlTestsControl", "ContentControl_WithInlineContent")]
+	[SampleControlInfo("ContentControl", "ContentControl_WithInlineContent")]
 	public sealed partial class ContentControl_WithInlineContent : UserControl
     {
         public ContentControl_WithInlineContent()

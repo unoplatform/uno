@@ -27,7 +27,7 @@ namespace Windows.Networking.Connectivity
 		[Preserve]
 		public static int DispatchStatusChanged()
 		{
-			_networkStatusChanged?.Invoke(null);
+			OnNetworkStatusChanged();
 			return 0;
 		}
 	}

@@ -312,6 +312,22 @@ var MonoSupport;
         static getMethodMapId(methodHandle) {
             return methodHandle + "";
         }
+        static invokeOnMainThread() {
+            if (!jsCallDispatcher.dispatcherCallback) {
+                jsCallDispatcher.dispatcherCallback = Module.mono_bind_static_method("[Uno.UI.Dispatching] Uno.UI.Dispatching.CoreDispatcher:DispatcherCallback");
+            }
+            // Use setImmediate to return avoid blocking the background thread
+            // on a sync call.
+            window.setImmediate(() => {
+                try {
+                    jsCallDispatcher.dispatcherCallback();
+                }
+                catch (e) {
+                    console.error(`Unhandled dispatcher exception: ${e} (${e.stack})`);
+                    throw e;
+                }
+            });
+        }
     }
     jsCallDispatcher.registrations = new Map();
     jsCallDispatcher.methodMap = {};
@@ -319,6 +335,8 @@ var MonoSupport;
 })(MonoSupport || (MonoSupport = {}));
 // Export the DotNet helper for WebAssembly.JSInterop.InvokeJSUnmarshalled
 window.DotNet = MonoSupport;
+// Export the main thread invoker for threading support
+MonoSupport.invokeOnMainThread = MonoSupport.jsCallDispatcher.invokeOnMainThread;
 // eslint-disable-next-line @typescript-eslint/no-namespace
 var Uno;
 (function (Uno) {
@@ -1107,19 +1125,19 @@ var Uno;
                 return null;
             }
             /**
-                * Set or replace the root content element.
+                * Set or replace the root element.
                 */
-            setRootContent(elementId) {
-                if (this.rootContent && Number(this.rootContent.id) === elementId) {
+            setRootElement(elementId) {
+                if (this.rootElement && Number(this.rootElement.id) === elementId) {
                     return null; // nothing to do
                 }
-                if (this.rootContent) {
+                if (this.rootElement) {
                     // Remove existing
-                    this.containerElement.removeChild(this.rootContent);
+                    this.containerElement.removeChild(this.rootElement);
                     if (WindowManager.isLoadEventsEnabled) {
-                        this.dispatchEvent(this.rootContent, "unloaded");
+                        this.dispatchEvent(this.rootElement, "unloaded");
                     }
-                    this.rootContent.classList.remove(WindowManager.unoRootClassName);
+                    this.rootElement.classList.remove(WindowManager.unoRootClassName);
                 }
                 if (!elementId) {
                     return null;
@@ -1127,13 +1145,13 @@ var Uno;
                 // set new root
                 const newRootElement = this.getView(elementId);
                 newRootElement.classList.add(WindowManager.unoRootClassName);
-                this.rootContent = newRootElement;
+                this.rootElement = newRootElement;
                 if (WindowManager.isLoadEventsEnabled) {
-                    this.dispatchEvent(this.rootContent, "loading");
+                    this.dispatchEvent(this.rootElement, "loading");
                 }
-                this.containerElement.appendChild(this.rootContent);
+                this.containerElement.appendChild(this.rootElement);
                 if (WindowManager.isLoadEventsEnabled) {
-                    this.dispatchEvent(this.rootContent, "loaded");
+                    this.dispatchEvent(this.rootElement, "loaded");
                 }
                 this.setAsArranged(newRootElement); // patch because root is not measured/arranged
                 this.resize();
@@ -1648,7 +1666,8 @@ var Uno;
                 document.body.appendChild(this.containerElement);
                 window.addEventListener("resize", x => this.resize());
                 window.addEventListener("contextmenu", x => {
-                    if (!(x.target instanceof HTMLInputElement)) {
+                    if (!(x.target instanceof HTMLInputElement) ||
+                        x.target.classList.contains("context-menu-disabled")) {
                         x.preventDefault();
                     }
                 });
@@ -1712,7 +1731,7 @@ var Uno;
                 }
             }
             getIsConnectedToRootElement(element) {
-                const rootElement = this.rootContent;
+                const rootElement = this.rootElement;
                 if (!rootElement) {
                     return false;
                 }
@@ -2663,6 +2682,76 @@ var Windows;
             Sensors.Magnetometer = Magnetometer;
         })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
     })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Gaming;
+    (function (Gaming) {
+        var Input;
+        (function (Input) {
+            class Gamepad {
+                static getConnectedGamepadIds() {
+                    const gamepads = navigator.getGamepads();
+                    const separator = ";";
+                    var result = '';
+                    for (var gamepad of gamepads) {
+                        if (gamepad) {
+                            result += gamepad.index + separator;
+                        }
+                    }
+                    return result;
+                }
+                static getReading(id) {
+                    var gamepad = navigator.getGamepads()[id];
+                    if (!gamepad) {
+                        return "";
+                    }
+                    var result = "";
+                    result += gamepad.timestamp;
+                    result += '*';
+                    for (var axisId = 0; axisId < gamepad.axes.length; axisId++) {
+                        if (axisId != 0) {
+                            result += '|';
+                        }
+                        result += gamepad.axes[axisId];
+                    }
+                    result += '*';
+                    for (var buttonId = 0; buttonId < gamepad.buttons.length; buttonId++) {
+                        if (buttonId != 0) {
+                            result += '|';
+                        }
+                        result += gamepad.buttons[buttonId].value;
+                    }
+                    return result;
+                }
+                static startGamepadAdded() {
+                    window.addEventListener("gamepadconnected", Gamepad.onGamepadConnected);
+                }
+                static endGamepadAdded() {
+                    window.removeEventListener("gamepadconnected", Gamepad.onGamepadConnected);
+                }
+                static startGamepadRemoved() {
+                    window.addEventListener("gamepaddisconnected", Gamepad.onGamepadDisconnected);
+                }
+                static endGamepadRemoved() {
+                    window.removeEventListener("gamepaddisconnected", Gamepad.onGamepadDisconnected);
+                }
+                static onGamepadConnected(e) {
+                    if (!Gamepad.dispatchGamepadAdded) {
+                        Gamepad.dispatchGamepadAdded = Module.mono_bind_static_method("[Uno] Windows.Gaming.Input.Gamepad:DispatchGamepadAdded");
+                    }
+                    Gamepad.dispatchGamepadAdded(e.gamepad.index.toString());
+                }
+                static onGamepadDisconnected(e) {
+                    if (!Gamepad.dispatchGamepadRemoved) {
+                        Gamepad.dispatchGamepadRemoved = Module.mono_bind_static_method("[Uno] Windows.Gaming.Input.Gamepad:DispatchGamepadRemoved");
+                    }
+                    Gamepad.dispatchGamepadRemoved(e.gamepad.index.toString());
+                }
+            }
+            Input.Gamepad = Gamepad;
+        })(Input = Gaming.Input || (Gaming.Input = {}));
+    })(Gaming = Windows.Gaming || (Windows.Gaming = {}));
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
@@ -4632,6 +4721,110 @@ var Windows;
                     RenderingLoopAnimator.activeInstances = {};
                     Animation.RenderingLoopAnimator = RenderingLoopAnimator;
                 })(Animation = Media.Animation || (Media.Animation = {}));
+            })(Media = Xaml.Media || (Xaml.Media = {}));
+        })(Xaml = UI.Xaml || (UI.Xaml = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var Xaml;
+        (function (Xaml) {
+            var Input;
+            (function (Input) {
+                class FocusVisual {
+                    static attachVisual(focusVisualId, focusedElementId) {
+                        FocusVisual.focusVisualId = focusVisualId;
+                        FocusVisual.focusVisual = Uno.UI.WindowManager.current.getView(focusVisualId);
+                        FocusVisual.focusedElement = Uno.UI.WindowManager.current.getView(focusedElementId);
+                        document.addEventListener("scroll", FocusVisual.onDocumentScroll, true);
+                    }
+                    static detachVisual() {
+                        document.removeEventListener("scroll", FocusVisual.onDocumentScroll, true);
+                        FocusVisual.focusVisualId = null;
+                    }
+                    static onDocumentScroll() {
+                        if (!FocusVisual.dispatchPositionChange) {
+                            FocusVisual.dispatchPositionChange = Module.mono_bind_static_method("[Uno.UI] Uno.UI.Xaml.Controls.SystemFocusVisual:DispatchNativePositionChange");
+                        }
+                        FocusVisual.updatePosition();
+                        // Throttle managed notification while actively scrolling
+                        if (FocusVisual.currentDispatchTimeout) {
+                            clearTimeout(FocusVisual.currentDispatchTimeout);
+                        }
+                        FocusVisual.currentDispatchTimeout = setTimeout(() => FocusVisual.dispatchPositionChange(FocusVisual.focusVisualId), 100);
+                    }
+                    static updatePosition() {
+                        const focusVisual = FocusVisual.focusVisual;
+                        const focusedElement = FocusVisual.focusedElement;
+                        const boundingRect = focusedElement.getBoundingClientRect();
+                        const centerX = boundingRect.x + boundingRect.width / 2;
+                        const centerY = boundingRect.y + boundingRect.height / 2;
+                        focusVisual.style.setProperty("left", boundingRect.x + "px");
+                        focusVisual.style.setProperty("top", boundingRect.y + "px");
+                    }
+                }
+                Input.FocusVisual = FocusVisual;
+            })(Input = Xaml.Input || (Xaml.Input = {}));
+        })(Xaml = UI.Xaml || (UI.Xaml = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var Xaml;
+        (function (Xaml) {
+            var Media;
+            (function (Media) {
+                class FontFamily {
+                    static async loadFont(fontFamilyName, fontSource) {
+                        try {
+                            // Launch the loading of the font
+                            const font = new FontFace(fontFamilyName, `url(${fontSource})`);
+                            // Wait for the font to be loaded
+                            await font.load();
+                            // Make it available to document
+                            document.fonts.add(font);
+                            await FontFamily.forceFontUsage(fontFamilyName);
+                        }
+                        catch (e) {
+                            console.debug(`Font failed to load ${e}`);
+                            FontFamily.notifyFontLoadFailed(fontFamilyName);
+                        }
+                    }
+                    static async forceFontUsage(fontFamilyName) {
+                        // Force the browser to use it
+                        const dummyHiddenElement = document.createElement("p");
+                        dummyHiddenElement.style.fontFamily = fontFamilyName;
+                        dummyHiddenElement.style.opacity = "0";
+                        dummyHiddenElement.style.pointerEvents = "none";
+                        dummyHiddenElement.innerText = fontFamilyName;
+                        document.body.appendChild(dummyHiddenElement);
+                        // Yield an animation frame
+                        await new Promise((ok, err) => requestAnimationFrame(() => ok(null)));
+                        // Remove dummy element
+                        document.body.removeChild(dummyHiddenElement);
+                        // Notify font as loaded to application
+                        FontFamily.notifyFontLoaded(fontFamilyName);
+                    }
+                    static notifyFontLoaded(fontFamilyName) {
+                        if (!FontFamily.managedNotifyFontLoaded) {
+                            FontFamily.managedNotifyFontLoaded =
+                                Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Media.FontFamilyLoader:NotifyFontLoaded");
+                        }
+                        FontFamily.managedNotifyFontLoaded(fontFamilyName);
+                    }
+                    static notifyFontLoadFailed(fontFamilyName) {
+                        if (!FontFamily.managedNotifyFontLoadFailed) {
+                            FontFamily.managedNotifyFontLoadFailed =
+                                Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Media.FontFamilyLoader:NotifyFontLoadFailed");
+                        }
+                        FontFamily.managedNotifyFontLoadFailed(fontFamilyName);
+                    }
+                }
+                Media.FontFamily = FontFamily;
             })(Media = Xaml.Media || (Xaml.Media = {}));
         })(Xaml = UI.Xaml || (UI.Xaml = {}));
     })(UI = Windows.UI || (Windows.UI = {}));

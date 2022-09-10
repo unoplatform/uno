@@ -2,27 +2,25 @@
 using System;
 using AppKit;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.ApplicationModel;
-using ObjCRuntime;
-using Windows.Graphics.Display;
 using Uno.UI.Services;
 using System.Globalization;
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using System.Linq;
 
 using Selector = ObjCRuntime.Selector;
-using Windows.System.Profile;
 using Windows.UI.Core;
 using Uno.Foundation.Extensibility;
-using Uno.Helpers;
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 #else
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
+#endif
+
+#if !NET6_0_OR_GREATER
+using NativeHandle = System.IntPtr;
+#else
+using NativeHandle = ObjCRuntime.NativeHandle;
 #endif
 
 namespace Windows.UI.Xaml
@@ -33,7 +31,7 @@ namespace Windows.UI.Xaml
 		private readonly NSString _themeChangedNotification = new NSString("AppleInterfaceThemeChangedNotification");
 		private readonly Selector _modeSelector = new Selector("themeChanged:");
 
-		private NSUrl[] _launchUrls = null;
+		private NSUrl[] _launchUrls;
 
 		static partial void InitializePartialStatic()
 		{
@@ -49,7 +47,7 @@ namespace Windows.UI.Xaml
 			SubscribeBackgroundNotifications();
 		}
 
-		public Application(IntPtr handle) : base(handle)
+		public Application(NativeHandle handle) : base(handle)
 		{
 
 		}

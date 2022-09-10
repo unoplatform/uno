@@ -1,8 +1,8 @@
-﻿using System;
+﻿#if !NET6_0_OR_GREATER
+using System;
 using System.Threading;
 using Android.Animation;
 using Android.Widget;
-using Com.Airbnb.Lottie;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using Android.Views;
@@ -10,6 +10,8 @@ using Uno.Disposables;
 using Uno.UI;
 using ViewHelper = Uno.UI.ViewHelper;
 using System.Threading.Tasks;
+
+using Com.Airbnb.Lottie;
 
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
@@ -260,3 +262,4 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		}
 	}
 }
+#endif

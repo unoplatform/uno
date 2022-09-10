@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Media.Animation
 	{
 		private readonly Stopwatch _activeDuration = new Stopwatch();
 		private int _replayCount = 1;
-		private ColorOffset? _startingValue = null;
+		private ColorOffset? _startingValue;
 		private ColorOffset _finalValue;
 
 		private List<IValueAnimator> _animators;
@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			return base.GetCalculatedDuration();
 		}
 
-		bool _wasBeginScheduled = false;
+		bool _wasBeginScheduled;
 		void ITimeline.Begin()
 		{
 			if (!_wasBeginScheduled)

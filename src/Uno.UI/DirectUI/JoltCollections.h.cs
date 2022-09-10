@@ -118,10 +118,10 @@ namespace DirectUI
 			m_nCurrentIndex = 0;
 		}
 
-		~IteratorBase()
-		{
+		//~IteratorBase()
+		//{
 			//IsDebuggerPresent(); // TODO UNO
-		}
+		//}
 
 		protected abstract T GetCurrent();
 		protected abstract void SetCurrent(T current);
@@ -1477,7 +1477,7 @@ namespace DirectUI
 
 		// BEGIN UNO Specific
 
-		public bool IsReadOnly { get; } = false;
+		public bool IsReadOnly { get; }
 		public new T this[int index]
 		{
 			get => GetAt((uint)index);

@@ -27,10 +27,10 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using UnoApplication = Windows.UI.Xaml.Application;
 using WUX = Windows.UI.Xaml;
-using Uno.UI.Runtime.Skia.GTK.System.Profile;
-using Uno.UI.Runtime.Skia.Helpers;
-using Uno.UI.Runtime.Skia.Helpers.Dpi;
-using System.Runtime.InteropServices;
+using Uno.UI.Xaml.Core;
+using System.ComponentModel;
+using Uno.Disposables;
+using System.Collections.Generic;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -42,36 +42,49 @@ namespace Uno.UI.Runtime.Skia
 		private static bool _isDispatcherThread = false;
 
 		private readonly Func<WUX.Application> _appBuilder;
+		private IRenderSurface _renderSurface;
 		private static Gtk.Window _window;
-		private static Gtk.EventBox _eventBox;
+		private static UnoEventBox _eventBox;
 		private Widget _area;
 		private Fixed _fix;
 		private GtkDisplayInformationExtension _displayInformationExtension;
+		private CompositeDisposable _registrations = new();
+
+		private record PendingWindowStateChangedInfo(Gdk.WindowState newState, Gdk.WindowState changedMask);
+		private List<PendingWindowStateChangedInfo> _pendingWindowStateChanged = new();
 
 		public static Gtk.Window Window => _window;
-		public static Gtk.EventBox EventBox => _eventBox;
-
-		public RenderSurfaceType RenderSurfaceType { get; set; }
-			= RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
-				? RenderSurfaceType.Software // OpenGL support on macOS is currently broken
-				: RenderSurfaceType.OpenGL;
+		internal static UnoEventBox EventBox => _eventBox;
 
 		/// <summary>
-		/// Creates a host for a Uno Skia GTK application.
+		/// Gets or sets the current Skia Render surface type.
 		/// </summary>
-		/// <param name="appBuilder">App builder.</param>
-		/// <param name="args">Deprecated, value ignored.</param>
-		/// <remarks>
-		/// Args are obsolete and will be removed in the future. Environment.CommandLine is used instead
-		/// to fill LaunchEventArgs.Arguments.
-		/// </remarks>
-		public GtkHost(Func<WUX.Application> appBuilder, string[] args)
+		/// <remarks>If <c>null</c>, the host will try to determine the most compatible mode.</remarks>
+		public RenderSurfaceType? RenderSurfaceType { get; set; }
+
+        /// <summary>
+        /// Creates a host for a Uno Skia GTK application.
+        /// </summary>
+        /// <param name="appBuilder">App builder.</param>
+        /// <param name="args">Deprecated, value ignored.</param>
+        /// <remarks>
+        /// Args are obsolete and will be removed in the future. Environment.CommandLine is used instead
+        /// to fill LaunchEventArgs.Arguments.
+        /// </remarks>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+		public GtkHost(Func<WUX.Application> appBuilder, string[] args) : this(appBuilder)
+		{
+		}
+
+		public GtkHost(Func<WUX.Application> appBuilder)
 		{
 			_appBuilder = appBuilder;
 		}
 
 		public void Run()
 		{
+			Windows.UI.Xaml.Documents.Inline.ApplyHarfbuzzWorkaround();
+
 			Gtk.Application.Init();
 			SetupTheme();
 
@@ -90,7 +103,7 @@ namespace Uno.UI.Runtime.Skia
 			ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), o => new SystemNavigationManagerPreviewExtension(_window));
 
 			_isDispatcherThread = true;
-			_window = new Gtk.Window("Uno Host");
+			_window = new Gtk.Window("GTK Host");
 			Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 			if (preferredWindowSize != Size.Empty)
 			{
@@ -111,47 +124,119 @@ namespace Uno.UI.Runtime.Skia
 
 			_window.DeleteEvent += WindowClosing;
 
-			void Dispatch(System.Action d)
-			{
-				if (Gtk.Application.EventsPending())
-				{
-					Gtk.Application.RunIteration(false);
-				}
-
-				GLib.Idle.Add(delegate
-				{
-					if (this.Log().IsEnabled(LogLevel.Trace))
-					{
-						this.Log().Trace($"Iteration");
-					}
-
-					try
-					{
-						d();
-					}
-					catch (Exception e)
-					{
-						Console.WriteLine(e);
-					}
-
-					return false;
-				});
-			}
-
-			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
+			Windows.UI.Core.CoreDispatcher.DispatchOverride = DispatchNative;
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 
 			_window.WindowStateEvent += OnWindowStateChanged;
+			_window.ShowAll();
 
+			SetupRenderSurface();
+
+			Gtk.Application.Run();
+		}
+
+		void DispatchNative(System.Action d)
+		{
+			if (Gtk.Application.EventsPending())
+			{
+				Gtk.Application.RunIteration(false);
+			}
+
+			DispatchNativeSingle(d);
+		}
+
+		private void DispatchNativeSingle(System.Action d)
+			=> GLib.Idle.Add(delegate
+			{
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"Dispatch Iteration");
+				}
+
+				try
+				{
+					d();
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine(e);
+				}
+
+				return false;
+			});
+
+		private void SetupRenderSurface()
+		{
+			TryReadRenderSurfaceTypeEnvironment();
+
+			if (RenderSurfaceType == null)
+			{
+				// Create a temporary surface to automatically detect
+				// the OpenGL environment that can be used on the system.
+				GLValidationSurface validationSurface = new();
+
+				_window.Add(validationSurface);
+				_window.ShowAll();
+
+				DispatchNativeSingle(ValidatedSurface);
+
+				async void ValidatedSurface()
+				{
+					try
+					{
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().Debug($"Auto-detecting surface type");
+						}
+
+						// Wait for a realization of the GLValidationSurface
+						RenderSurfaceType = await validationSurface.GetSurfaceTypeAsync();
+
+						// Continue on the GTK main thread
+						DispatchNativeSingle(() =>
+						{
+							if (this.Log().IsEnabled(LogLevel.Debug))
+							{
+								this.Log().Debug($"Auto-detected {RenderSurfaceType} rendering");
+							}
+
+							_window.Remove(validationSurface);
+
+							FinalizeStartup();
+						});
+					}
+					catch (Exception e)
+					{
+						if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							this.Log().Error($"Auto-detected failed", e);
+						}
+					}
+				}
+			}
+			else
+			{
+				FinalizeStartup();
+			}
+		}
+
+		private void FinalizeStartup()
+		{
 			var overlay = new Overlay();
 
-			_eventBox = new EventBox();
-			_area = BuildRenderSurfaceType();
+			_eventBox = new UnoEventBox();
+
+			_renderSurface = BuildRenderSurfaceType();
+			_area = (Widget)_renderSurface;
 			_fix = new Fixed();
 			overlay.Add(_area);
 			overlay.AddOverlay(_fix);
 			_eventBox.Add(overlay);
 			_window.Add(_eventBox);
+
+			// Show the whole tree again, since we may have
+			// swapped the content with the GLValidationSurface.
+			_window.ShowAll();
 
 			if (this.Log().IsEnabled(LogLevel.Information))
 			{
@@ -171,7 +256,7 @@ namespace Uno.UI.Runtime.Skia
 			/* avoids double invokes at window level */
 			_area.AddEvents((int)GtkCoreWindowExtension.RequestedEvents);
 
-			_window.ShowAll();
+			ReplayPendingWindowStateChanges();
 
 			void CreateApp(ApplicationInitializationCallbackParams _)
 			{
@@ -179,11 +264,70 @@ namespace Uno.UI.Runtime.Skia
 				app.Host = this;
 			}
 
+			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
+
 			WUX.Application.StartWithArguments(CreateApp);
 
-			UpdateWindowPropertiesFromPackage();
+			_window.Title = Windows.ApplicationModel.Package.Current.DisplayName;
 
-			Gtk.Application.Run();
+			RegisterForBackgroundColor();
+
+			UpdateWindowPropertiesFromPackage();
+		}
+
+		private void TryReadRenderSurfaceTypeEnvironment()
+		{
+			if (Enum.TryParse(Environment.GetEnvironmentVariable("UNO_RENDER_SURFACE_TYPE"), out RenderSurfaceType surfaceType))
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Overriding RnderSurfaceType using command line with {surfaceType}");
+				}
+
+				RenderSurfaceType = surfaceType;
+			}
+		}
+		private void RegisterForBackgroundColor()
+		{
+			if (_area is IRenderSurface renderSurface)
+			{
+				void Update()
+				{
+					if (WUX.Window.Current.Background is WUX.Media.SolidColorBrush brush)
+					{
+						renderSurface.BackgroundColor = brush.Color;
+					}
+					else
+					{
+						if (this.Log().IsEnabled(LogLevel.Warning))
+						{
+							this.Log().Warn($"This platform only supports SolidColorBrush for the Window background");
+						}
+					}
+
+				}
+
+				Update();
+
+				_registrations.Add(WUX.Window.Current.RegisterBackgroundChangedEvent((s, e) => Update()));
+			}
+		}
+		
+		private void OnCoreWindowContentRootSet(object sender, object e)
+		{
+			var xamlRoot = CoreServices.Instance
+				.ContentRootCoordinator
+				.CoreWindowContentRoot?
+				.GetOrCreateXamlRoot();
+
+			if (xamlRoot is null)
+			{
+				throw new InvalidOperationException("XamlRoot was not properly initialized");
+			}
+
+			xamlRoot.InvalidateRender += _renderSurface.InvalidateRender;
+
+			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 		}
 
 		private void WindowClosing(object sender, DeleteEventArgs args)
@@ -207,31 +351,66 @@ namespace Uno.UI.Runtime.Skia
 			Gtk.Main.Quit();
 		}
 
-		private Widget BuildRenderSurfaceType()
+		private IRenderSurface BuildRenderSurfaceType()
 			=> RenderSurfaceType switch
 			{
-				RenderSurfaceType.Software => new SoftwareRenderSurface(),
-				RenderSurfaceType.OpenGL => new GLRenderSurface(),
+				Skia.RenderSurfaceType.OpenGLES => new OpenGLESRenderSurface(),
+				Skia.RenderSurfaceType.OpenGL => new OpenGLRenderSurface(),
+				Skia.RenderSurfaceType.Software => new SoftwareRenderSurface(),
 				_ => throw new InvalidOperationException($"Unsupported RenderSurfaceType {RenderSurfaceType}")
 			};
 
 		private void OnWindowStateChanged(object o, WindowStateEventArgs args)
 		{
+			var newState = args.Event.NewWindowState;
+			var changedMask = args.Event.ChangedMask;
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"OnWindowStateChanged: {newState}/{changedMask}");
+			}
+
+			if (_area != null)
+			{
+				ProcessWindowStateChanged(newState, changedMask);
+			}
+			else
+			{
+				// Store state changes to replay once the application has been
+				// initalized completely (initialization can be delayed if the render
+				// surface is automatically detected).
+				_pendingWindowStateChanged?.Add(new(newState, changedMask));
+			}
+		}
+
+		private void ReplayPendingWindowStateChanges()
+		{
+			if(_pendingWindowStateChanged is not null)
+			{
+				foreach(var state in _pendingWindowStateChanged)
+				{
+					ProcessWindowStateChanged(state.newState, state.changedMask);
+				}
+
+				_pendingWindowStateChanged = null;
+			}
+		}
+
+		private static void ProcessWindowStateChanged(Gdk.WindowState newState, Gdk.WindowState changedMask)
+		{
 			var winUIApplication = WUX.Application.Current;
 			var winUIWindow = WUX.Window.Current;
-			var newState = args.Event.NewWindowState;
-			var changedState = args.Event.ChangedMask;
 
 			var isVisible =
 				!(newState.HasFlag(Gdk.WindowState.Withdrawn) ||
 				newState.HasFlag(Gdk.WindowState.Iconified));
 
 			var isVisibleChanged =
-				changedState.HasFlag(Gdk.WindowState.Withdrawn) ||
-				changedState.HasFlag(Gdk.WindowState.Iconified);
+				changedMask.HasFlag(Gdk.WindowState.Withdrawn) ||
+				changedMask.HasFlag(Gdk.WindowState.Iconified);
 
 			var focused = newState.HasFlag(Gdk.WindowState.Focused);
-			var focusChanged = changedState.HasFlag(Gdk.WindowState.Focused);
+			var focusChanged = changedMask.HasFlag(Gdk.WindowState.Focused);
 
 			if (!focused && focusChanged)
 			{
@@ -242,7 +421,7 @@ namespace Uno.UI.Runtime.Skia
 			{
 				if (isVisible)
 				{
-					winUIApplication?.RaiseLeavingBackground(() => winUIWindow?.OnVisibilityChanged(true));					
+					winUIApplication?.RaiseLeavingBackground(() => winUIWindow?.OnVisibilityChanged(true));
 				}
 				else
 				{

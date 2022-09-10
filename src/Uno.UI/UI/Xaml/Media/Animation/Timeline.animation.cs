@@ -33,8 +33,8 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			private readonly Stopwatch _activeDuration = new Stopwatch();
 			private int _replayCount = 1;
-			private T? _startingValue = null;
-			private T? _endValue = null;
+			private T? _startingValue;
+			private T? _endValue;
 
 			// Initialize the field with zero capacity, as it may stay empty more often than it is being used.
 			private readonly CompositeDisposable _subscriptions = new CompositeDisposable(0);

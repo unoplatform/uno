@@ -2,6 +2,7 @@
 using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Helpers;
+using Uno.UI.Xaml.Core;
 
 namespace Windows.UI.Xaml.Controls
 {

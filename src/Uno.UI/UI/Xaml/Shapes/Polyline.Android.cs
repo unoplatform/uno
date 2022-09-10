@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				return null;
 			}
-			var output = new Android.Graphics.Path();
+			var output = GetOrCreatePath();
 
 			output.MoveTo((float)coords[0].X, (float)coords[0].Y);
 			for (var i = 1; i < coords.Count; i++)

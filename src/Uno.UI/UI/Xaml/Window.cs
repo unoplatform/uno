@@ -12,7 +12,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
-
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml
 {
@@ -22,8 +22,10 @@ namespace Windows.UI.Xaml
 	public sealed partial class Window
 	{
 		private CoreWindowActivationState? _lastActivationState;
+		private Brush _background;
 
 		private List<WeakEventHelper.GenericEventHandler> _sizeChangedHandlers = new List<WeakEventHelper.GenericEventHandler>();
+		private List<WeakEventHelper.GenericEventHandler> _backgroundChangedHandlers;
 
 #if HAS_UNO_WINUI
 		public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; } = global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
@@ -64,6 +66,8 @@ namespace Windows.UI.Xaml
 					this.Log().Warn("Unable to raise WindowCreatedEvent, there is no active Application");
 				}
 			}
+
+			Background = SolidColorBrushHelper.White;
 		}
 
 		public UIElement Content
@@ -87,6 +91,7 @@ namespace Windows.UI.Xaml
 						oldRoot.SizeChanged -= RootSizeChanged;
 					}
 				}
+				
 				if (value != null)
 				{
 					value.IsWindowRoot = true;
@@ -96,9 +101,14 @@ namespace Windows.UI.Xaml
 
 				if (value is FrameworkElement newRoot)
 				{
-					newRoot.SizeChanged += RootSizeChanged;
+					newRoot.SizeChanged += RootSizeChanged;					
 				}
-				XamlRoot.Current.NotifyChanged();
+
+				oldContent?.XamlRoot?.NotifyChanged();
+				if (value?.XamlRoot != oldContent?.XamlRoot)
+				{
+					value?.XamlRoot?.NotifyChanged();
+				}
 			}
 		}
 
@@ -217,10 +227,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void RootSizeChanged(object sender, SizeChangedEventArgs args)
-		{
-			XamlRoot.Current.NotifyChanged();
-		}
+		private void RootSizeChanged(object sender, SizeChangedEventArgs args) => _rootVisual.XamlRoot.NotifyChanged();
 
 		private void RaiseSizeChanged(Windows.UI.Core.WindowSizeChangedEventArgs windowSizeChangedEventArgs)
 		{
@@ -240,7 +247,32 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#region Drag and Drop
+		internal Brush Background
+		{
+			get => _background;
+			set
+			{
+				_background = value;
+
+				if (_backgroundChangedHandlers != null)
+				{
+					foreach (var action in _backgroundChangedHandlers)
+					{
+						action(this, EventArgs.Empty);
+					}
+				}
+			}
+		}
+
+		internal IDisposable RegisterBackgroundChangedEvent(EventHandler handler)
+			=> WeakEventHelper.RegisterEvent(
+				_backgroundChangedHandlers ??= new(),
+				handler,
+				(h, s, e) =>
+					(h as EventHandler)?.Invoke(s, (EventArgs)e)
+			);
+
+		#region Drag and Drop
 		private DragRoot _dragRoot;
 
 		internal DragDropManager DragDrop { get; private set; }
@@ -283,6 +315,6 @@ namespace Windows.UI.Xaml
 				}
 			}
 		}
-#endregion
+		#endregion
 	}
 }

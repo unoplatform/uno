@@ -4,5 +4,6 @@
 	{
 		Software,
 		OpenGL,
+		OpenGLES,
 	}
 }

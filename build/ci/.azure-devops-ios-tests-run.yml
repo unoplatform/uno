@@ -98,6 +98,8 @@ jobs:
       UITEST_SNAPSHOTS_ONLY: "${{ parameters.UITEST_SNAPSHOTS_ONLY }}"
       UITEST_SNAPSHOTS_GROUP: "${{ parameters.UITEST_SNAPSHOTS_GROUP }}"
       UITEST_AUTOMATED_GROUP: "${{ parameters.UITEST_AUTOMATED_GROUP }}"
+      UITEST_RUNTIME_TEST_GROUP: "${{ parameters.UITEST_RUNTIME_TEST_GROUP }}"
+      UITEST_RUNTIME_TEST_GROUP_COUNT: "${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}"
       UITEST_TEST_TIMEOUT: "${{ parameters.UITEST_TEST_TIMEOUT }}"
       UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/ios-uitest-build/SamplesApp.app"
 
@@ -125,6 +127,8 @@ jobs:
       UITEST_SNAPSHOTS_ONLY: "${{ parameters.UITEST_SNAPSHOTS_ONLY }}"
       UITEST_SNAPSHOTS_GROUP: "${{ parameters.UITEST_SNAPSHOTS_GROUP }}"
       UITEST_AUTOMATED_GROUP: "${{ parameters.UITEST_AUTOMATED_GROUP }}"
+      UITEST_RUNTIME_TEST_GROUP: "${{ parameters.UITEST_RUNTIME_TEST_GROUP }}"
+      UITEST_RUNTIME_TEST_GROUP_COUNT: "${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}"
       UITEST_TEST_TIMEOUT: "${{ parameters.UITEST_TEST_TIMEOUT }}"
       UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/ios-uitest-build/SamplesApp.app"
 
@@ -142,7 +146,7 @@ jobs:
     condition: always()
     inputs:
       testResultsFiles: '$(build.sourcesdirectory)/build/RuntimeTestResults*.xml'
-      testRunTitle: 'iOS Runtime Tests Run'
+      testRunTitle: 'iOS Runtime Tests Run ($(Agent.JobName))'
       testResultsFormat: 'NUnit'
       failTaskOnFailedTests: true
 

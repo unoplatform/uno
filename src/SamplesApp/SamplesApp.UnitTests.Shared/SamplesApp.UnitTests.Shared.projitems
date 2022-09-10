@@ -11,11 +11,11 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewMode.Commands.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewMode.Properties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.wasm.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.macOS.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.Android.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.iOS.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.netstd.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.skia.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Presentation\SampleChooserViewModel.Uwa.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Behaviors\ListViewBaseCommand.cs" />

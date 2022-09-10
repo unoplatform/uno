@@ -40,6 +40,9 @@
 		<Compile Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\TestFramework\ActivePlatformsAttribute.cs">
 			<Link>UITests\_Engine\UnoUITests\ActivePlatformsAttribute.cs</Link>
 		</Compile>
+		<Compile Include="..\SamplesApp\SamplesApp.UITests\TestFramework\ImageAssert.ExpectedPixels.cs" Link="Helpers\ImageAssert.ExpectedPixels.cs" />
+		<Compile Include="..\SamplesApp\SamplesApp.UITests\TestFramework\ImageAssert.Validations.cs" Link="Helpers\ImageAssert.Validations.cs" />
+		<Compile Include="..\Uno.Foundation\Extensions\IsExternalInit.cs" Link="Extensions\IsExternalInit.cs" />
 		<Compile Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\**\Extensions\*.cs">
 			<Link>UITests\_Engine\SamplesAppUITests\%(RecursiveDir)%(FileName)%(Extension)</Link>
 		</Compile>
@@ -77,6 +80,14 @@
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <AndroidAsset Remove="Assets\Border_Snapshot.bgra8" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <EmbeddedResource Include="Assets\Border_Snapshot.bgra8" />
 	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />

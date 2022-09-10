@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.Linq;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
@@ -28,7 +29,7 @@ namespace Windows.UI.Xaml.Controls
 		private Grid _layoutRoot;
 		private ListView _suggestionsList;
 		private Button _queryButton;
-		private AutoSuggestionBoxTextChangeReason _textChangeReason;
+		private AutoSuggestionBoxTextChangeReason _textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
 		private string userInput;
 		private BindingPath _textBoxBinding;
 
@@ -228,6 +229,7 @@ namespace Windows.UI.Xaml.Controls
 			if (_textBox != null)
 			{
 				_textBox.KeyDown += OnTextBoxKeyDown;
+				_textBox.LostFocus += OnTextBoxLostFocus;
 			}
 
 			if (_queryButton != null)
@@ -251,6 +253,7 @@ namespace Windows.UI.Xaml.Controls
 			if (_textBox != null)
 			{
 				_textBox.KeyDown -= OnTextBoxKeyDown;
+				_textBox.LostFocus -= OnTextBoxLostFocus;
 			}
 
 			if (_queryButton != null)
@@ -325,8 +328,16 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private void SubmitSearch()
+	    {
+			var finalResult = _suggestionsList.SelectedItem ?? GetObjectText(Text);
+
+			QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(finalResult is "" ? null : finalResult, userInput));			
+
+			IsSuggestionListOpen = false;
+		}
+
+		private void OnTextBoxLostFocus(object sender, RoutedEventArgs e)
 		{
-			QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(null, Text));
 			IsSuggestionListOpen = false;
 		}
 

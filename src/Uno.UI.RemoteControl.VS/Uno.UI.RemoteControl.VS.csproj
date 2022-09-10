@@ -19,7 +19,6 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="All" />
 		<PackageReference Include="EnvDTE100" Version="10.0.3" />
 		<PackageReference Include="Microsoft.Build" Version="15.1.548" />
 		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem" Version="15.0.751" />
@@ -36,7 +35,6 @@
 		<PackageReference Include="Newtonsoft.Json" version="12.0.3" />
 		<PackageReference Include="NuGet.VisualStudio" version="4.5.0" />
 		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem" Version="16.0.374-pre" />
-		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>

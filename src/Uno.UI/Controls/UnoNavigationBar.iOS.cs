@@ -5,6 +5,11 @@ using CoreGraphics;
 using Windows.UI.Xaml;
 using Foundation;
 using UIKit;
+using ObjCRuntime;
+
+#if !NET6_0_OR_GREATER
+using NativeHandle = System.IntPtr;
+#endif
 
 namespace Uno.UI.Controls
 {
@@ -35,7 +40,7 @@ namespace Uno.UI.Controls
 			InitializeBinder();
 		}
 
-		public UnoNavigationBar(IntPtr handle)
+		public UnoNavigationBar(NativeHandle handle)
 			: base(handle)
 		{
 			InitializeBinder();

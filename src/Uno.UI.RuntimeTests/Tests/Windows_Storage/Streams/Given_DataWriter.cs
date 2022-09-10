@@ -2,12 +2,13 @@
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Extensions;
+using Windows.Foundation;
+using Windows.Storage;
 using Windows.Storage.Streams;
 using UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding;
 
-namespace Uno.UI.Tests.Windows_Storage.Streams
+namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 {
 	[TestClass]
 	public class When_DataWriter
@@ -40,7 +41,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 			}
 
 			var buffer = writer.DetachBuffer();
-			var reader = DataReader.FromBuffer(buffer);			
+			var reader = DataReader.FromBuffer(buffer);
 
 			try
 			{
@@ -763,5 +764,35 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 			var bytes = dataWriter.DetachBuffer().ToArray();
 			CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, bytes);
 		}
+
+		[TestMethod]
+		public async Task When_StoreAsync()
+		{
+			var localFolder = ApplicationData.Current.LocalFolder;
+
+			var createdFile = await localFolder.CreateFileAsync(
+				GenerateRandomFileName(),
+				CreationCollisionOption.ReplaceExisting);
+			try
+			{
+				var expected = "Test StoreAsync";
+				using (var stream = await createdFile.OpenAsync(FileAccessMode.ReadWrite))
+				using (var dataWriter = new DataWriter(stream))
+				{
+					dataWriter.WriteString(expected);
+					await dataWriter.StoreAsync();
+				}
+
+				// Read from file
+				var actual = await FileIO.ReadTextAsync(createdFile);
+				Assert.AreEqual(expected, actual);
+			}
+			finally
+			{
+				await createdFile.DeleteAsync();
+			}
+		}
+
+		private string GenerateRandomFileName() => $"{Guid.NewGuid()}.txt";
 	}
 }

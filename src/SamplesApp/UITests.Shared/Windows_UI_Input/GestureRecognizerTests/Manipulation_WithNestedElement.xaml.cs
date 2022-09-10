@@ -6,7 +6,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Input.GestureRecognizerTests
 {
-	[Sample("Gesture recognizer")]
+	[Sample("Gesture Recognizer")]
 	public sealed partial class Manipulation_WithNestedElement : Page
 	{
 		public Manipulation_WithNestedElement()

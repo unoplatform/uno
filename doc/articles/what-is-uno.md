@@ -2,9 +2,9 @@
 
 Uno Platform is a cross-platform application framework which lets you write an application once in XAML and C#, and deploy it to [any target platform](getting-started/requirements.md). 
 
-Uno Platform's application API is compatible with Microsoft's [UWP application API](https://docs.microsoft.com/en-us/windows/uwp/get-started/), and also with the upcoming [WinUI 3 API](https://docs.microsoft.com/en-us/windows/apps/winui/winui3/). In fact, when your application runs on Windows, it's just an ordinary UWP (or WinUI 3) application. 
+Uno Platform's application API is compatible with Microsoft's [WinUI 3 API](https://docs.microsoft.com/en-us/windows/apps/winui/winui3/) and the older [UWP application API](https://docs.microsoft.com/en-us/windows/uwp/get-started/). In fact, when your application runs on Windows, it's just an ordinary WinUI 3 (or UWP) application. 
 
-This means that existing UWP code is compatible with the Uno Platform. Existing UWP libraries can be recompiled for use in Uno Platform applications. A number of [3rd-party libraries](supported-libraries.md) have been ported to Uno Platform.
+This means that existing WinUI or UWP code is compatible with the Uno Platform. Existing WinUI or UWP libraries can be recompiled for use in Uno Platform applications. A number of [3rd-party libraries](supported-libraries.md) have been ported to Uno Platform.
 
 ![High-level architecture diagram - WinUI on Windows, Uno.UI on other platforms](Assets/high-level-architecture-copy.png)
 

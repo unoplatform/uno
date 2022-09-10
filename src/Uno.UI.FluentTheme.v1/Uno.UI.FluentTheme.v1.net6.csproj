@@ -22,6 +22,9 @@
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
+
+		<!-- Disabled because of LinkerDefinitionMergerTask performance issues https://github.com/unoplatform/uno/issues/9632 -->
+		<!--<UnoXamlResourcesTrimming Condition="'$(Configuration)'!='Debug'">true</UnoXamlResourcesTrimming>-->
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -35,4 +38,5 @@
 	<Import Project="..\Uno.CrossTargetting.props" />
 	<Import Project="FluentMerge.targets" />
 
+	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 </Project>

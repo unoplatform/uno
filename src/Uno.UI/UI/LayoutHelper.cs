@@ -364,6 +364,15 @@ namespace Uno.UI
 				return rect1;
 			}
 
+			if (rect1.IsInfinite)
+			{
+				return rect2;
+			}
+			else if (rect2.IsInfinite)
+			{
+				return rect1;
+			}
+
 			var left = Math.Max(rect1.Left, rect2.Left);
 			var right = Math.Min(rect1.Right, rect2.Right);
 			var top = Math.Max(rect1.Top, rect2.Top);

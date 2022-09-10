@@ -21,7 +21,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[SampleControlInfo("ScrollViewer")]
+	[SampleControlInfo("Scrolling")]
 	public sealed partial class ScrollViewer_Clipping : Page
 	{
 		public ScrollViewer_Clipping()

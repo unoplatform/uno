@@ -7,7 +7,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_System
 {
-	[Sample("Windows.System", "MemoryManagerTests")]
+	[Sample("Windows.System")]
 	public sealed partial class MemoryManagerTests : Page
     {
         public MemoryManagerTests()

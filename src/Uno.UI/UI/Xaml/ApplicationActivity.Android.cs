@@ -11,9 +11,12 @@ using Android.Views.InputMethods;
 using Uno.AuthenticationBroker;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.Gaming.Input.Internal;
 using Uno.UI;
 using Windows.Devices.Sensors;
+using Windows.Gaming.Input;
 using Windows.Graphics.Display;
+using Windows.Security.Authentication.Web;
 using Windows.Storage.Pickers;
 using Windows.System;
 using Windows.UI.ViewManagement;
@@ -93,17 +96,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public void DismissKeyboard()
-		{
-			var windowToken = CurrentFocus?.WindowToken;
-
-			if (windowToken != null)
-			{
-				var inputManager = (InputMethodManager)GetSystemService(InputMethodService);
-				inputManager.HideSoftInputFromWindow(windowToken, HideSoftInputFlags.None);
-			}
-		}
-
 		public override bool DispatchKeyEvent(KeyEvent e)
 		{
 			var handled = false;
@@ -144,12 +136,38 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			if (!handled)
+			if (Gamepad.TryHandleKeyEvent(e))
 			{
-				return base.DispatchKeyEvent(e);
+				return true;
 			}
 
-			return true;
+			if (!handled)
+			{
+				handled = base.DispatchKeyEvent(e);
+			}
+
+			return handled;
+		}
+
+		public override bool DispatchGenericMotionEvent(MotionEvent e)
+		{
+			if (Gamepad.OnGenericMotionEvent(e))
+			{
+				return true;
+			}
+
+			return base.DispatchGenericMotionEvent(e);
+		}
+
+		public void DismissKeyboard()
+		{
+			var windowToken = CurrentFocus?.WindowToken;
+
+			if (windowToken != null)
+			{
+				var inputManager = (InputMethodManager)GetSystemService(InputMethodService);
+				inputManager.HideSoftInputFromWindow(windowToken, HideSoftInputFlags.None);
+			}
 		}
 
 		public void SetOrientation(ScreenOrientation orientation)
@@ -230,7 +248,7 @@ namespace Windows.UI.Xaml
 
 			RaiseConfigurationChanges();
 
-			WebAuthenticationBrokerProvider.OnMainActivityResumed();
+			WebAuthenticationBroker.OnResume();
 		}
 
 		protected override void OnPause()
@@ -264,6 +282,8 @@ namespace Windows.UI.Xaml
 			Windows.UI.Xaml.Application.Current.OnSystemThemeChanged();
 		}
 
+#pragma warning disable CS0618 // deprecated members
+#pragma warning disable CS0672 // deprecated members
 		public override void OnBackPressed()
 		{
 			var handled = Windows.UI.Core.SystemNavigationManager.GetForCurrentView().RequestBack();
@@ -272,6 +292,8 @@ namespace Windows.UI.Xaml
 				base.OnBackPressed();
 			}
 		}
+#pragma warning restore CS0618 // deprecated members
+#pragma warning restore CS0672 // deprecated members
 
 		protected override void OnNewIntent(Intent intent)
 		{

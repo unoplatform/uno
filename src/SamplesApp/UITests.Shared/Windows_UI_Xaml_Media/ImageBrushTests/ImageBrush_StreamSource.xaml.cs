@@ -19,7 +19,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 {
-	[Sample]
+	[Sample("Brushes")]
 	public sealed partial class ImageBrush_StreamSource : UserControl
 	{
 		public static DependencyProperty MySourceProperty { get; } =

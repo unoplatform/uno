@@ -1,3 +1,50 @@
+function setTocHeight() {
+    if($(window).width() < 767) {
+        let headerHeight = $("#header-container").outerHeight();
+        let breadcrumbHeight = $("#breadcrumb").outerHeight();
+        let tocToggleHeight = $(".btn.toc-toggle.collapse").outerHeight();
+        let sidefilterHeight = 65; //65px from sidefilter height
+        let intViewportHeight = window.innerHeight;
+        let sidenavPaddingTop = parseInt($(".sidenav").css('padding-top'));
+        let maxHeightToc = intViewportHeight - (headerHeight + breadcrumbHeight + tocToggleHeight + sidefilterHeight + sidenavPaddingTop);
+        $(".sidetoc").css("max-height", maxHeightToc);
+    } else {
+        $(".sidetoc").css("max-height", "none");
+    }
+}
+
+function updateTocHeightOnResize() {
+    $(window).on('resize', function () {
+        setTocHeight();
+    });
+}
+
+function setSidenavTop() {
+    let headerHeight = $("#header-container").outerHeight();
+    let breadcrumbHeight = $("#breadcrumb").outerHeight();
+    let tocToggleHeight = $(".btn.toc-toggle.collapse").outerHeight();
+    let sidefilterHeight = $(".sidefilter").outerHeight();
+    let sidenavTop = headerHeight + breadcrumbHeight;
+    let sidefilterTop = headerHeight + breadcrumbHeight;
+    let sidetocTop = sidefilterTop + sidefilterHeight;
+    let articleMarginTopDesk = sidenavTop + tocToggleHeight + 30; //30px from .sidenav padding top and bottom
+    let articleMarginTopMobile = sidenavTop;
+    $(".sidenav").css("top", sidenavTop);
+    $(".sidefilter").css("top", sidenavTop);
+    $(".sidetoc").css("top", sidetocTop);
+    if($(window).width() < 767) {
+        $(".body-content .article").attr("style", "margin-top:" + (articleMarginTopDesk + 5) + "px !important");
+    } else {
+        $(".body-content .article").attr("style", "margin-top:" + (articleMarginTopMobile + 5) + "px !important");
+    }
+}
+
+function updateSidenavTopOnResize() {
+    $(window).on('resize', function () {
+        setSidenavTop();
+    });
+}
+
 function renderSidebar() {
 
     const sideToggleSideToc = $('#sidetoggle .sidetoc')[0];
@@ -26,7 +73,13 @@ function renderSidebar() {
             sidetoc.addClass('shiftup');
         }
 
+        if (window.location.href.indexOf("articles/intro.html") > -1 && $(window).width() > 850) {
+            $('.nav.level1 li:eq(1)').addClass(expanded);
+        }
+
         renderBreadcrumb();
+        setSidenavTop();
+        setTocHeight();
     }
 
     function registerTocEvents() {

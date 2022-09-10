@@ -1,4 +1,5 @@
-﻿#if !__IOS__ && !__ANDROID__
+﻿#nullable enable
+#if !__IOS__ && !__ANDROID__ && !__SKIA__ && !__MACOS__
 #define NOT_IMPLEMENTED
 #endif
 
@@ -11,14 +12,29 @@ using Windows.Storage.Streams;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Buffer = Windows.Storage.Streams.Buffer;
+using System.Buffers;
 
 namespace Windows.UI.Xaml.Media.Imaging
 {
 #if NOT_IMPLEMENTED
 	[global::Uno.NotImplemented()]
 #endif
-	public partial class RenderTargetBitmap
+	public partial class RenderTargetBitmap: IDisposable
 	{
+		private static void Swap(ref byte a, ref byte b)
+		{
+			(a, b) = (b, a);
+		}
+
+		[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		private static void SwapRB(ref byte[] buffer, int byteCount)
+		{
+			for (int i = 0; i < byteCount; i += 4)
+			{
+				//Swap R and B chanal
+				Swap(ref buffer![i], ref buffer![i + 2]);
+			}
+		}
 #if NOT_IMPLEMENTED
 		internal const bool IsImplemented = false;
 #else
@@ -57,24 +73,23 @@ namespace Windows.UI.Xaml.Media.Imaging
 		{
 			get => (int)GetValue(PixelHeightProperty);
 			private set => SetValue(PixelHeightProperty, value);
-		} 
+		}
 		#endregion
 
-		private byte[] _buffer;
+		private byte[]? _buffer;
+		private int _bufferSize;
 
 #if NOT_IMPLEMENTED
 		[global::Uno.NotImplemented()]
 #endif
-		public IAsyncAction RenderAsync(UIElement element, int scaledWidth, int scaledHeight)
+		public IAsyncAction RenderAsync(UIElement? element, int scaledWidth, int scaledHeight)
 			=> AsyncAction.FromTask(async ct =>
 			{
 				try
 				{
-					_buffer = RenderAsPng(element, new Size(scaledWidth, scaledHeight));
-
-					PixelWidth = scaledWidth;
-					PixelHeight = scaledHeight;
-
+					UIElement elementToRender = element
+						?? Window.Current.Content;
+					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(elementToRender, ref _buffer, new Size(scaledWidth, scaledHeight));
 #if __WASM__ || __SKIA__
 					InvalidateSource();
 #endif
@@ -88,16 +103,15 @@ namespace Windows.UI.Xaml.Media.Imaging
 #if NOT_IMPLEMENTED
 		[global::Uno.NotImplemented()]
 #endif
-		public IAsyncAction RenderAsync(UIElement element)
+		public IAsyncAction RenderAsync(UIElement? element)
 			=> AsyncAction.FromTask(async ct =>
 			{
 				try
 				{
-					_buffer = RenderAsPng(element);
+					UIElement elementToRender = element
+						?? Window.Current.Content;
 
-					PixelWidth = (int)element.ActualSize.X;
-					PixelHeight = (int)element.ActualSize.Y;
-
+					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(elementToRender, ref _buffer);
 #if __WASM__ || __SKIA__
 					InvalidateSource();
 #endif
@@ -114,12 +128,36 @@ namespace Windows.UI.Xaml.Media.Imaging
 		public IAsyncOperation<IBuffer> GetPixelsAsync()
 			=> AsyncOperation<IBuffer>.FromTask(async (op, ct) =>
 			{
-				return new Buffer(_buffer);
+				if (_buffer is null)
+				{
+					return new Buffer(Array.Empty<byte>());
+				}
+				return new Buffer(_buffer.AsMemory().Slice(0,_bufferSize));
 			});
 
 #if NOT_IMPLEMENTED
-		private static byte[] RenderAsPng(UIElement element, Size? scaledSize = null)
+		private (int ByteCount,int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref byte[]? buffer, Size? scaledSize = null)
 			=> throw new NotImplementedException("RenderTargetBitmap is not supported on this platform.");
 #endif
+
+		private static void EnsureBuffer(ref byte[]? buffer, int length)
+		{
+			if (buffer is null)
+			{
+				buffer = ArrayPool<byte>.Shared.Rent(length);
+			}
+			else if (buffer.Length < length)
+			{
+				ArrayPool<byte>.Shared.Return(buffer);
+				buffer = ArrayPool<byte>.Shared.Rent(length);
+			}
+		}
+		void IDisposable.Dispose()
+		{
+			if (_buffer is { })
+			{
+				ArrayPool<byte>.Shared.Return(_buffer);
+			}
+		}
 	}
 }

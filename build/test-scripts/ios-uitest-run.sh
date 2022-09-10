@@ -83,7 +83,7 @@ export UNO_UITEST_PLATFORM=iOS
 export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME
 
 export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
-export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-ios-$SCREENSHOTS_FOLDERNAME-${UITEST_SNAPSHOTS_GROUP=automated}-${UITEST_AUTOMATED_GROUP=automated}.txt
+export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-ios-$SCREENSHOTS_FOLDERNAME-${UITEST_SNAPSHOTS_GROUP=automated}-${UITEST_AUTOMATED_GROUP=automated}-${UITEST_RUNTIME_TEST_GROUP=automated}.txt
 export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
 export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/Release/SamplesApp.UITests.dll
 export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/ios-automated
@@ -157,6 +157,11 @@ fi
 echo Response file:
 cat $UNO_TESTS_RESPONSE_FILE
 
+## Show the tests list
+mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \
+    @$UNO_TESTS_RESPONSE_FILE --explore \
+	|| true
+
 ## Run NUnit tests
 mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \
     @$UNO_TESTS_RESPONSE_FILE \
@@ -168,26 +173,26 @@ date
 # export the simulator logs
 export LOG_FILEPATH=$UNO_UITEST_SCREENSHOT_PATH/_logs
 export TMP_LOG_FILEPATH=/tmp/DeviceLog-`date +"%Y%m%d%H%M%S"`.logarchive
-export LOG_FILEPATH_FULL=$LOG_FILEPATH/DeviceLog-$UITEST_AUTOMATED_GROUP-`date +"%Y%m%d%H%M%S"`.txt
+export LOG_FILEPATH_FULL=$LOG_FILEPATH/DeviceLog-$UITEST_AUTOMATED_GROUP-${UITEST_RUNTIME_TEST_GROUP=automated}-`date +"%Y%m%d%H%M%S"`.txt
 
 mkdir -p $LOG_FILEPATH
 xcrun simctl spawn booted log collect --output $TMP_LOG_FILEPATH
 log show --style syslog $TMP_LOG_FILEPATH > $LOG_FILEPATH_FULL
 
-if grep -xFe "mini-generic-sharing.c:899" $LOG_FILEPATH_FULL
+if grep -cq "mini-generic-sharing.c:899" $LOG_FILEPATH_FULL
 then
 	# The application may crash without known cause, add a marker so the job can be restarted in that case.
-    echo "##[error]UNOBLD001: mini-generic-sharing.c:899 assertion reached (https://github.com/unoplatform/uno/issues/8167)"
+    echo "##vso[task.logissue type=error]UNOBLD001: mini-generic-sharing.c:899 assertion reached (https://github.com/unoplatform/uno/issues/8167)"
 fi
 
-if grep -xFe "Unhandled managed exception: Watchdog failed" $LOG_FILEPATH_FULL
+if grep -cq "Unhandled managed exception: Watchdog failed" $LOG_FILEPATH_FULL
 then
 	# The application UI thread stalled
-    echo "##[error]UNOBLD002: Unknown failure, UI Thread Watchdog failed"
+    echo "##vso[task.logissue type=error]UNOBLD002: Unknown failure, UI Thread Watchdog failed"
 fi
 
 if [ ! -f "$UNO_ORIGINAL_TEST_RESULTS" ]; then
-	echo "##[error]UNOBLD003: ERROR: The test results file $UNO_ORIGINAL_TEST_RESULTS does not exist (did nunit crash ?)"
+	echo "##vso[task.logissue type=error]UNOBLD003: ERROR: The test results file $UNO_ORIGINAL_TEST_RESULTS does not exist (did nunit crash ?)"
 	return 1
 fi
 

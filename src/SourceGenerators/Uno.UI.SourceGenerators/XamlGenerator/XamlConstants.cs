@@ -33,6 +33,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string MediaAnimation = BaseXamlNamespace + ".Media.Animation";
 			public const string Shapes = BaseXamlNamespace + ".Shapes";
 			public const string Input = BaseXamlNamespace + ".Input";
+			public const string Automation = BaseXamlNamespace + ".Automation";
 
 			public static readonly string[] PresentationNamespaces =
 			{
@@ -46,6 +47,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				Data,
 				Documents,
 				Text,
+				Automation,
 				"System",
 			};
 

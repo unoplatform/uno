@@ -13,7 +13,7 @@
 				<DataTemplate>
 					<Image Width="50"
 					   Stretch="Uniform"
-					   Source="http://homepages.cae.wisc.edu/~ece533/images/fruits.png" />
+					   Source="/Assets/test_image_200_200.png" />
 			</DataTemplate>
 		</ListView.ItemTemplate>
 	</ListView>

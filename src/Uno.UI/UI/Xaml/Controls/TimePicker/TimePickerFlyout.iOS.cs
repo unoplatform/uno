@@ -213,7 +213,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private void Accept()
 		{
+			var oldTime = Time;
 			_timeSelector?.SaveTime();
+			TimePicked?.Invoke(this, new TimePickedEventArgs(oldTime, Time));
 			Hide(false);
 		}
 

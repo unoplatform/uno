@@ -1,0 +1,66 @@
+# Orientation sensor
+
+> [!TIP]
+> This article covers Uno-specific information for SimpleOrientationSensor. For a full description of the feature and instructions on using it, consult the UWP documentation: https://docs.microsoft.com/en-us/uwp/api/windows.devices.sensors.simpleOrientationSensor
+
+ * The `Windows.Devices.Sensors.SimpleOrientationSensor` class allows you to determine the general orientation of the device.
+
+## Supported features
+
+| Feature        |  Windows  | Android |  iOS  |  Web (WASM)  | macOS | Linux (Skia)  | Win 7 (Skia) | 
+|---------------|-------|-------|-------|-------|-------|-------|-|
+| `GetDefault`         | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
+| `ReadingChanged` | ✔ | ✔ | ✔ | ✔ | ✖ | ✖| ✖ |
+
+## Using SimpleOrientationSensor with Uno
+ 
+ * The `GetDefault` method is available on all targets and will return `null` on those which do not support `SimpleOrientationSensor` or devices that do not have such a sensor.
+ * Ensure to unsubscribe from the `ReadingChanged` event when you no longer need the readings, so that the sensor is no longer active to avoid unnecessary battery consumption.
+
+## Example
+
+### Capturing sensor readings
+
+```csharp
+var simpleOrientationSensor = SimpleOrientationSensor.GetDefault();
+simpleOrientationSensor.ReadingChanged += SimpleOrientationSensor_ReadingChanged;
+
+private async void SimpleOrientationSensor_ReadingChanged(object sender, SimpleOrientationSensorReadingChangedEventArgs args)
+{
+    // If you want to update the UI in some way, ensure the Dispatcher is used,
+    // as the ReadingChanged event handler does not run on the UI thread.
+    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+    {
+        switch (orientation)
+        {
+            case SimpleOrientation.NotRotated:
+                tb.Text = "Not Rotated";
+                break;
+            case SimpleOrientation.Rotated90DegreesCounterclockwise:
+                tb.Text = "Rotated 90 Degrees Counterclockwise";
+                break;
+            case SimpleOrientation.Rotated180DegreesCounterclockwise:
+                tb.Text = "Rotated 180 Degrees Counterclockwise";
+                break;
+            case SimpleOrientation.Rotated270DegreesCounterclockwise:
+                tb.Text = "Rotated 270 Degrees Counterclockwise";
+                break;
+            case SimpleOrientation.Faceup:
+                tb.Text = "Faceup";
+                break;
+            case SimpleOrientation.Facedown:
+                tb.Text = "Facedown";
+                break;
+            default:
+                tb.Text = "Unknown orientation";
+                break;
+        }
+    });
+}
+```
+
+### Unsubscribing from the readings
+
+```csharp
+simpleOrientationSensor.ReadingChanged -= SimpleOrientationSensor_ReadingChanged;
+```

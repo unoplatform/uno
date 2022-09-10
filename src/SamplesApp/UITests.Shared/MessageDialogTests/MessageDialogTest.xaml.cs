@@ -12,7 +12,7 @@ namespace UITests.Shared.MessageDialogTests
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[Sample("MessageDialogTest")]
+	[Sample("Dialogs")]
 	public sealed partial class MessageDialogTest : Page
     {
 		private IAsyncOperation<IUICommand> _asyncOperation;

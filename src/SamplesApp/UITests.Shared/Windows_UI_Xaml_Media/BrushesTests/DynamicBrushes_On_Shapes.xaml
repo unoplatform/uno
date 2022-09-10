@@ -14,7 +14,7 @@
 				<Ellipse x:Name="shape1" Width="50" Height="60" />
 				<Rectangle x:Name="shape2" Width="50" Height="60">
 					<Rectangle.Fill>
-						<ImageBrush ImageSource="ms-appx:///Assets/uno-overalls.jpg" />
+						<ImageBrush ImageSource="ms-appx:///Assets/Formats/uno-overalls.jpg" />
 					</Rectangle.Fill>
 				</Rectangle>
 				<Path x:Name="shape3" Width="60" Height="60" Stretch="UniformToFill" Data="M 100 100 L 300 100 L 200 300 z" />

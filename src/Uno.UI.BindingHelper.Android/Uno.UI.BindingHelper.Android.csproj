@@ -9,7 +9,7 @@
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
-		
+
 		<IsBindingProject Condition="'$(TargetFramework)' == 'MonoAndroid11.0' or '$(TargetFramework)' == 'MonoAndroid12.0'">true</IsBindingProject>
 		<_isWindows>$([MSBuild]::IsOsPlatform(Windows))</_isWindows>
 
@@ -30,7 +30,6 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0'">
-		<PackageReference Include="Xamarin.Build.Download" Version="0.11.1" />
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
@@ -102,7 +101,7 @@
 		<_CompileUnoJavaBeforeTargets Include="_GetLibraryImports" />
 		<_CompileUnoJavaBeforeTargets Include="ExportJarToXml" />
 
-		<_CompileUnoJavaAfterTargets Include="_ExtractLibraryProjectImports" />  <!--This target generates the \lp\**\classes.jar--> 
+		<_CompileUnoJavaAfterTargets Include="_ExtractLibraryProjectImports" />  <!--This target generates the \lp\**\classes.jar-->
 	</ItemGroup>
 
 	<Target Name="_CompileUnoJava" Condition="'$(DesignTimeBuild)' != 'true'" BeforeTargets="@(_CompileUnoJavaBeforeTargets)" AfterTargets="@(_CompileUnoJavaAfterTargets)" Inputs="@(_JavaFile)" Outputs="@(EmbeddedJar)" DependsOnTargets="_CompileUnoJavaCreateOutputs;@(XamarinBuildRestoreResources)">

@@ -26,6 +26,9 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 {
 	[TestClass]
 	[RequiresFullWindow]
+#if __MACOS__
+	[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 	public class FocusTests
 	{
 		private enum FocusAsyncMethod
@@ -1267,7 +1270,6 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 			}
 		}
 
-		//TODO:MZ:Fails
 		[TestMethod]
 		[TestProperty("Description", "Verify that TryAsync fails when trying to focus a non-focusable element")]
 		[TestProperty("Hosting:Mode", "UAP")] // fails in WPF mode due to final release queue is not empty cleanup issue
@@ -1506,7 +1508,6 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 
-		//TODO:MZ:Fails
 		[TestMethod]
 		[TestProperty("Description", "Verify that we can[can't] focus focusable[non-focusable] stackpanel with Tab/ Shift+Tab")]
 		[TestProperty("Hosting:Mode", "UAP")]   // Bug 24196441: Focus engagement bugs in lifted islands

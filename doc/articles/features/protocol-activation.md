@@ -89,7 +89,7 @@ Note that in line with UWP, if the application is not running, the `OnLaunched` 
 
 A full application lifecycle handling with shared logic between `OnLaunched` and `OnActivated` could look as follows:
 
-```c#
+```csharp
 protected override void OnLaunched(LaunchActivatedEventArgs e)
 {
     var rootFrame = GetOrCreateRootFrame(e);

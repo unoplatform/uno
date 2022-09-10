@@ -23,7 +23,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_Devices
 {
-    [SampleControlInfo("Windows.Devices", "Magnetometer", description: "Demonstrates use of Windows.Devices.Sensors.Magnetometer", viewModelType: typeof(MagnetometerTestsViewModel))]
+    [SampleControlInfo("Windows.Devices", "Magnetometer", description: "Demonstrates use of Windows.Devices.Sensors.Magnetometer", viewModelType: typeof(MagnetometerTestsViewModel), ignoreInSnapshotTests: true)]
     public sealed partial class MagnetometerTests : UserControl
     {
         public MagnetometerTests()

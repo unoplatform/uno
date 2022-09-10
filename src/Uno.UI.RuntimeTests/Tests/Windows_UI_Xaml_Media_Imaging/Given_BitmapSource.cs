@@ -9,6 +9,8 @@ using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media.Imaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
+using Windows.Storage;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 {
@@ -56,6 +58,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 			Assert.IsTrue(success);
 		}
+
+#if __SKIA__ // Not yet supported on the other platforms (https://github.com/unoplatform/uno/issues/8909)
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_MsAppData()
+		{
+			var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/ingredient3.png"));
+			await file.CopyAsync(ApplicationData.Current.LocalFolder, "ingredient3.png", NameCollisionOption.ReplaceExisting);
+
+			var image = new Image();
+			WindowHelper.WindowContent = image;
+
+			var sut = new BitmapImage();
+			sut.UriSource = new Uri("ms-appdata:///local/ingredient3.png");
+
+			image.Source = sut;
+
+			TaskCompletionSource<bool> tcs = new();
+			sut.ImageOpened += (s, e) => tcs.TrySetResult(true);
+
+			await tcs.Task;
+		}
+#endif
 
 #if !WINDOWS_UWP
 		[TestMethod]
@@ -119,9 +144,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 			public override bool CanRead { get; } = true;
 			public override bool CanSeek { get; } = true;
-			public override bool CanWrite { get; } = false;
+			public override bool CanWrite { get; }
 			public override long Length { get; } = 1024;
-			public override long Position { get; set; } = 0;
+			public override long Position { get; set; }
 		}
 	}
 }

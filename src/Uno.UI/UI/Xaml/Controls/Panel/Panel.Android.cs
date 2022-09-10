@@ -27,9 +27,6 @@ namespace Windows.UI.Xaml.Controls
 		public Panel()
 		{
 			Initialize();
-
-			this.RegisterLoadActions(UpdateBorder, () => _borderRenderer.Clear());
-
 		}
 
 		protected override void OnChildViewAdded(View child)
@@ -43,6 +40,16 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void Initialize();
+
+		partial void OnLoadedPartial()
+		{
+			UpdateBorder();
+		}
+
+		partial void OnUnloadedPartial()
+		{
+			_borderRenderer.Clear();
+		}
 
 		partial void UpdateBorder()
 		{

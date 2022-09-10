@@ -47,7 +47,7 @@ $debug = $default + '-c' + 'Debug'
 $release = $default + '-c' + 'Release'
 
 # UWP
-dotnet new unoapp -n UnoApp ((Get-TemplateConfiguration -wasm 1 -wasmVsCode 1 -skiaGtk 1 -skiaLinuxFB 1) + '--skia-tizen=false')
+dotnet new unoapp-uwp -n UnoApp ((Get-TemplateConfiguration -wasm 1 -wasmVsCode 1 -skiaGtk 1 -skiaLinuxFB 1) + '--skia-tizen=false')
 
 dotnet build $debug UnoApp/UnoApp.Wasm/UnoApp.Wasm.csproj
 Assert-ExitCodeIsZero
@@ -68,7 +68,7 @@ dotnet build $release UnoApp/UnoApp.Skia.Linux.FrameBuffer/UnoApp.Skia.Linux.Fra
 Assert-ExitCodeIsZero
 
 # WinUI
-dotnet new unoapp-winui -n UnoAppWinUI (Get-TemplateConfiguration -wasm 1 -wasmVsCode 1 -skiaGtk 1 -skiaLinuxFB 1)
+dotnet new unoapp-winui-xamarin -n UnoAppWinUI (Get-TemplateConfiguration -wasm 1 -wasmVsCode 1 -skiaGtk 1 -skiaLinuxFB 1)
 
 dotnet build $debug UnoAppWinUI/UnoAppWinUI.Wasm/UnoAppWinUI.Wasm.csproj
 Assert-ExitCodeIsZero

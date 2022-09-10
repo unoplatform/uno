@@ -38,10 +38,13 @@
 		<UnoForceProcessPRIResource>true</UnoForceProcessPRIResource>
 
 		<!-- Generate automation IDs in debug builds, use by UI tests. -->
-    <IsUiAutomationMappingEnabled Condition="'$(Configuration)'=='Debug'">true</IsUiAutomationMappingEnabled>
+		<IsUiAutomationMappingEnabled Condition="'$(Configuration)'=='Debug'">true</IsUiAutomationMappingEnabled>
 
 		<!-- Disable WPF targets -->
 		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
+
+		<!-- Disabled because of LinkerDefinitionMergerTask performance issues https://github.com/unoplatform/uno/issues/9632 -->
+		<!--<UnoXamlResourcesTrimming Condition="'$(Configuration)'!='Debug'">true</UnoXamlResourcesTrimming>-->
 	</PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
@@ -102,7 +105,6 @@
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="System.Memory" Version="4.5.2" />
-		<PackageReference Include="xamarin.build.download" Version="0.11.1" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-android'">
@@ -132,7 +134,7 @@
 		<EmbeddedResource Include="LinkerDefinition.$(TargetFramework).xml" Condition="exists('LinkerDefinition.$(TargetFramework).xml')">
 		  <LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>
-		<EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRingIntdeterminate.json" />
+		<EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\*.json" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
@@ -206,6 +208,8 @@
 		-->
 		<ItemGroup>
 			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Memory'" />
+			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Buffers'" />
+
 			<Reference Remove="@(_ReferenceToRemove)" />
 		</ItemGroup>
 	</Target>
@@ -213,10 +217,10 @@
 	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac))">
 		<ItemGroup>
 			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
+			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Buffers'" />
 			<ReferencePath Remove="@(_ReferencePathToRemove)" />
 		</ItemGroup>
 	</Target>
-
 	<Import Project="MixinGeneration.targets" />
 	<Import Project="XamlMerge.targets" />
 

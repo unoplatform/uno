@@ -15,7 +15,7 @@ using Windows.UI.Xaml.Navigation;
 		  
 namespace UITests.Shared.Windows_UI_Xaml_Controls.MenuFlyoutTests
 {
-	[Uno.UI.Samples.Controls.SampleControlInfo("MenuFlyout", "MenuFlyoutItem_Hierarchy")]
+	[Uno.UI.Samples.Controls.SampleControlInfo("Flyouts", "MenuFlyoutItem_Hierarchy")]
     public sealed partial class MenuFlyoutItem_Hierarchy : UserControl
     {
         public MenuFlyoutItem_Hierarchy()

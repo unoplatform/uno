@@ -21,7 +21,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml.WindowTests
 {
-	[Sample("Window", Description = "There should be a fully visible orange border.")]
+	[Sample("Windowing", Description = "There should be a fully visible orange border.")]
 	public sealed partial class Window_ContentIsFullyVisible : UserControl
 	{
 		public Window_ContentIsFullyVisible()

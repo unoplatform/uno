@@ -15,7 +15,7 @@ See these sections for information about using Uno Platform with:
 * The [Uno Platform Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=unoplatform.vscode) Extension
 * For Windows, install the [GTK+ 3 runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases) (See [this uno-check issue](https://github.com/unoplatform/uno.check/issues/12))
 
-You can use [`uno-check`](https://github.com/unoplatform/uno.check) to make your installation compatible with Uno Platform.
+[!include[getting-help](use-uno-check-inline.md)]
 
 ## Developing an Uno Platform project
 
@@ -24,7 +24,7 @@ You can use [`uno-check`](https://github.com/unoplatform/uno.check) to make your
 In the terminal, type the following to create a new project:
 
 ```bash
-dotnet new unoapp -o MyApp -ios=false -android=false -macos=false -skia-tizen=false -skia-wpf=false -skia-linux-fb=false --vscode
+dotnet new unoapp -o MyApp -mobile=false --skia-wpf=false --skia-linux-fb=false --vscode
 ```
 
 > `MyApp` is the name you want to give to your project.
@@ -42,7 +42,7 @@ This will create a solution that only contains the WebAssembly and Skia+GTK plat
     > For this command to work you need to previously have configured Visual Studio Code to be launched from the terminal.
 
 1. Visual Studio Code will ask to restore the NuGet packages.
-1. Once the project has been loaded, in the status bar, `MyApp.sln` is selected by default. Select `MyApp.Wasm.csproj` or `MyApp.Skia.Gtk.csproj` instead.
+1. Once the project has been loaded, in the status bar at the bottom left of VS Code, `MyApp.sln` is selected by default. Select `MyApp.Wasm.csproj` or `MyApp.Skia.Gtk.csproj` instead.
 
 ## Modify the template
 
@@ -98,40 +98,40 @@ Note that C# Hot Reload is not available when running with the debugger. In orde
 ## Using code snippets
 
 ### Adding a new Page
-    1. In the MyApp.Shared folder, create a new file named `Page2.xaml`
-    2. Type `page` then press the `tab` key to add the page markup
-    3. Adjust the name and namespaces as needed
-    4. In the MyApp.Shared folder, create a new file named `Page2.xaml.cs`
-    5. Type `page` then press the `tab` key to add the page code-behind C#
-    6. Adjust the name and namespaces as needed
+1. In the MyApp.Shared folder, create a new file named `Page2.xaml`
+2. Type `page` then press the `tab` key to add the page markup
+3. Adjust the name and namespaces as needed
+4. In the MyApp.Shared folder, create a new file named `Page2.xaml.cs`
+5. Type `page` then press the `tab` key to add the page code-behind C#
+6. Adjust the name and namespaces as needed
 
 ### Adding a new UserControl
-    1. In the MyApp.Shared folder, create a new file named `UserControl1.xaml`
-    2. Type `usercontrol` then press they `tab` key to add the page markup
-    3. Adjust the name and namespaces as needed
-    4. In the MyApp.Shared folder, create a new file named `UserControl1.xaml.cs`
-    5. Type `usercontrol` then press the `tab` key to add the page code-behind C#
-    6. Adjust the name and namespaces as needed
+1. In the MyApp.Shared folder, create a new file named `UserControl1.xaml`
+2. Type `usercontrol` then press they `tab` key to add the page markup
+3. Adjust the name and namespaces as needed
+4. In the MyApp.Shared folder, create a new file named `UserControl1.xaml.cs`
+5. Type `usercontrol` then press the `tab` key to add the page code-behind C#
+6. Adjust the name and namespaces as needed
 
 ### Adding a new ResourceDictionary
-    1. In the MyApp.Shared folder, create a new file named `ResourceDictionary1.xaml`
-    2. Type `resourcedict` then press they `tab` key to add the page markup
+1. In the MyApp.Shared folder, create a new file named `ResourceDictionary1.xaml`
+2. Type `resourcedict` then press they `tab` key to add the page markup
 
 ### Other snippets
-    * `rd` creates a new `RowDefinition`
-    * `cd` creates a new `ColumnDefinition`
-    * `tag` creates a new XAML tag
-    * `set` creates a new `Style` setter
-    * `ctag` creates a new `TextBlock` close XAML tag
+* `rd` creates a new `RowDefinition`
+* `cd` creates a new `ColumnDefinition`
+* `tag` creates a new XAML tag
+* `set` creates a new `Style` setter
+* `ctag` creates a new `TextBlock` close XAML tag
 
 ## Updating an existing application to work with VS Code
 
 An existing application needs additional changes to be debugged properly.
 
 1. At the root of the workspace, create a folder named `.vscode`
-2. Inside this folder, create a file named `launch.json` and copy the [contents of this file](https://github.com/unoplatform/uno/blob/master/src/SolutionTemplate/Uno.ProjectTemplates.Dotnet/content/unoapp-net6/.vscode/launch.json).
+2. Inside this folder, create a file named `launch.json` and copy the [contents of this file](https://github.com/unoplatform/uno/blob/master/src/SolutionTemplate/Uno.ProjectTemplates.Dotnet/content/unoapp/.vscode/launch.json).
 3. Replace all instances of `UnoQuickStart` with your application's name in `launch.json`.
-4. Inside this folder, create a file named `tasks.json` and copy the [contents of this file](https://github.com/unoplatform/uno/blob/master/src/SolutionTemplate/Uno.ProjectTemplates.Dotnet/content/unoapp-net6/.vscode/tasks.json).
+4. Inside this folder, create a file named `tasks.json` and copy the [contents of this file](https://github.com/unoplatform/uno/blob/master/src/SolutionTemplate/Uno.ProjectTemplates.Dotnet/content/unoapp/.vscode/tasks.json).
 
 ### Known limitations for Code support
 - C# Debugging is not supported when running in a remote Linux Container, Code Spaces or GitPod.
@@ -140,7 +140,7 @@ An existing application needs additional changes to be debugged properly.
 
 ## Troubleshooting Uno Platform VS Code issues
 
-If you're not sure whether your environment is correctly configured for Uno Platform development, running the [`uno-check` command-line tool](uno-check.md) should be your first step.
+If you're not sure whether your environment is correctly configured for Uno Platform development, running the [`uno-check` command-line tool](external/uno.check/doc/using-uno-check.md) should be your first step.
 
 The Uno Platform extension provides multiple output windows to troubleshoot its activities:
 - **Uno Platform**, which indicates general messages about the extension
@@ -149,6 +149,4 @@ The Uno Platform extension provides multiple output windows to troubleshoot its 
 
 If the extension is not behaving properly, try using the `Developer: Reload Window` (or `Ctrl+R`) command in the palette.
 
-## Getting Help
-
-If you continue experiencing issues with Visual Studio and Uno Platform, please visit our [Discord](https://www.platform.uno/discord) - #uno-platform channel or [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform) where our engineering team and community will be able to help you. 
+[!include[getting-help](getting-help.md)]

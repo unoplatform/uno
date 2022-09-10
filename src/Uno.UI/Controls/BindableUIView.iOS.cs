@@ -11,6 +11,7 @@ using Uno.Collections;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
+using ObjCRuntime;
 
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
@@ -18,6 +19,10 @@ using UIKit;
 #elif XAMARIN_IOS
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
+#endif
+
+#if !NET6_0_OR_GREATER
+using NativeHandle = System.IntPtr;
 #endif
 
 namespace Uno.UI.Controls
@@ -79,7 +84,7 @@ namespace Uno.UI.Controls
 			ClipsToBounds = false;
 		}
 
-		public BindableUIView(IntPtr handle)
+		public BindableUIView(NativeHandle handle)
 			: base(handle)
 		{
 			Initialize();

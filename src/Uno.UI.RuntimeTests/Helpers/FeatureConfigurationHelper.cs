@@ -35,16 +35,16 @@ namespace Uno.UI.RuntimeTests.Helpers
 		}
 
 		/// <summary>
-		/// On Android, ensure that managed popups are used for the duration of the test. On other platforms this is a no-op.
+		/// On Android, ensure that native popups are used for the duration of the test. On other platforms this is a no-op.
 		/// </summary>
-		public static IDisposable UseManagedPopups()
+		public static IDisposable UseNativePopups()
 		{
 #if !__ANDROID__
 			return null;
 #else
-			Assert.IsTrue(FeatureConfiguration.Popup.UseNativePopup); // If/when the default changes in SamplesApp, supplementary tests should be modified to test the new non-default
-			FeatureConfiguration.Popup.UseNativePopup = false;
-			return Disposable.Create(() => FeatureConfiguration.Popup.UseNativePopup = true);
+			Assert.IsFalse(FeatureConfiguration.Popup.UseNativePopup);
+			FeatureConfiguration.Popup.UseNativePopup = true;
+			return Disposable.Create(() => FeatureConfiguration.Popup.UseNativePopup = false);
 #endif
 		}
 	}

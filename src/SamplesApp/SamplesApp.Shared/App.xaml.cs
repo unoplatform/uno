@@ -31,6 +31,12 @@ using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Logging;
 using Uno;
 
+#if __SKIA__
+using Uno.UI.Xaml.Controls.Extensions;
+using Uno.Foundation.Extensibility;
+using MUXControlsTestApp.Utilities;
+#endif
+
 #if !HAS_UNO
 using Uno.Logging;
 #endif
@@ -71,32 +77,10 @@ namespace SamplesApp
 
 			ConfigureFeatureFlags();
 
-			AssertIssue1790();
+			AssertIssue1790ApplicationSettingsUsable();
 
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;
-		}
-
-		/// <summary>
-		/// Assert that ApplicationData.Current.[LocalFolder|RoamingFolder] is usable in the constructor of App.xaml.cs on all platforms.
-		/// </summary>
-		/// <seealso href="https://github.com/unoplatform/uno/issues/1741"/>
-		public void AssertIssue1790()
-		{
-#if !__SKIA__ // SKIA TODO
-			void AssertIsUsable(Windows.Storage.ApplicationDataContainer container)
-			{
-				const string issue1790 = nameof(issue1790);
-
-				container.Values.Remove(issue1790);
-				container.Values.Add(issue1790, "ApplicationData.Current.[LocalFolder|RoamingFolder] is usable in the constructor of App.xaml.cs on this platform.");
-
-				Assert.IsTrue(container.Values.ContainsKey(issue1790));
-			}
-
-			AssertIsUsable(Windows.Storage.ApplicationData.Current.LocalSettings);
-			AssertIsUsable(Windows.Storage.ApplicationData.Current.RoamingSettings);
-#endif
 		}
 
 		/// <summary>
@@ -116,6 +100,18 @@ namespace SamplesApp
 
 			LaunchiOSWatchDog();
 #endif
+			var activationKind =
+#if HAS_UNO_WINUI
+				e.UWPLaunchActivatedEventArgs.Kind
+#else
+				e.Kind
+#endif
+				;
+
+			if (activationKind == ActivationKind.Launch)
+			{
+				AssertIssue8356();
+			}
 
 			var sw = Stopwatch.StartNew();
 			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
@@ -131,16 +127,37 @@ namespace SamplesApp
 			}
 #endif
 			InitializeFrame(e.Arguments);
-			Windows.UI.Xaml.Window.Current.Activate();
 
+			AssertIssue8641NativeOverlayInitialized();
+
+			Windows.UI.Xaml.Window.Current.Activate();
+			
 			ApplicationView.GetForCurrentView().Title = "Uno Samples";
+#if __SKIA__ && DEBUG
+			AppendRepositoryPathToTitleBar();			
+#endif
 
 			HandleLaunchArguments(e);
 		}
 
+#if __SKIA__ && DEBUG
+		private void AppendRepositoryPathToTitleBar()
+		{
+			var fullPath = Package.Current.InstalledLocation.Path;
+			var srcSamplesApp = $"{Path.DirectorySeparatorChar}src{Path.DirectorySeparatorChar}SamplesApp";
+			var repositoryPath = fullPath;			
+			if (fullPath.IndexOf(srcSamplesApp) is int index && index > 0)
+			{
+				repositoryPath = fullPath.Substring(0, index);
+			}
+
+			ApplicationView.GetForCurrentView().Title += $" ({repositoryPath})";
+		}
+#endif
+
 		private static async Task<bool> HandleSkiaAutoScreenshots(LaunchActivatedEventArgs e)
 		{
-#if __SKIA__
+#if __SKIA__ || __MACOS__
 			var runAutoScreenshotsParam =
 			e.Arguments.Split(';').FirstOrDefault(a => a.StartsWith("--auto-screenshots"));
 
@@ -148,7 +165,6 @@ namespace SamplesApp
 
 			if (!string.IsNullOrEmpty(screenshotsPath))
 			{
-				var sw = Stopwatch.StartNew();
 				var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
 					_ =>
 					{
@@ -171,7 +187,7 @@ namespace SamplesApp
 
 		private static async Task<bool> HandleSkiaRuntimeTests(LaunchActivatedEventArgs e)
 		{
-#if __SKIA__
+#if __SKIA__ || __MACOS__
 			var runRuntimeTestsResultsParam =
 			e.Arguments.Split(';').FirstOrDefault(a => a.StartsWith("--runtime-tests"));
 
@@ -181,21 +197,13 @@ namespace SamplesApp
 			{
 				Console.WriteLine($"HandleSkiaRuntimeTests: {runtimeTestResultFilePath}");
 
-				_ = Window.Current.Dispatcher.RunIdleAsync(async _ =>
-				{
-					// let the app finish its startup
-					await Task.Delay(TimeSpan.FromSeconds(5));
+				// let the app finish its startup
+				await Task.Delay(TimeSpan.FromSeconds(5));
 
-					await Task.Run(
-						async () =>
-						{
-							await SampleControl.Presentation.SampleChooserViewModel.Instance.RunRuntimeTests(
-								CancellationToken.None,
-								runtimeTestResultFilePath,
-								() => System.Environment.Exit(0));
-						}
-					);
-				});
+				await SampleControl.Presentation.SampleChooserViewModel.Instance.RunRuntimeTests(
+					CancellationToken.None,
+					runtimeTestResultFilePath,
+					() => System.Environment.Exit(0));
 
 				return true;
 			}
@@ -424,6 +432,9 @@ namespace SamplesApp
 				// RemoteControl and HotReload related
 				builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Information);
 
+				// Display Skia related information
+				builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Information);
+
 				// builder.AddFilter("Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug );
 				// builder.AddFilter("Windows.UI.Xaml.Controls.PopupPanel", LogLevel.Debug );
 
@@ -484,6 +495,9 @@ namespace SamplesApp
 #if __IOS__
 			Uno.UI.FeatureConfiguration.DatePicker.UseLegacyStyle = true;
 			Uno.UI.FeatureConfiguration.TimePicker.UseLegacyStyle = true;
+#endif
+#if __SKIA__
+			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
 #endif
 		}
 
@@ -580,5 +594,51 @@ namespace SamplesApp
 #endif
 
 		public static bool IsTestDone(string testId) => int.TryParse(testId, out var id) ? _doneTests.Contains(id) : false;
+
+		/// <summary>
+		/// Assert that ApplicationData.Current.[LocalFolder|RoamingFolder] is usable in the constructor of App.xaml.cs on all platforms.
+		/// </summary>
+		/// <seealso href="https://github.com/unoplatform/uno/issues/1741"/>
+		public void AssertIssue1790ApplicationSettingsUsable()
+		{
+			void AssertIsUsable(Windows.Storage.ApplicationDataContainer container)
+			{
+				const string issue1790 = nameof(issue1790);
+
+				container.Values.Remove(issue1790);
+				container.Values.Add(issue1790, "ApplicationData.Current.[LocalFolder|RoamingFolder] is usable in the constructor of App.xaml.cs on this platform.");
+
+				Assert.IsTrue(container.Values.ContainsKey(issue1790));
+			}
+
+			AssertIsUsable(Windows.Storage.ApplicationData.Current.LocalSettings);
+			AssertIsUsable(Windows.Storage.ApplicationData.Current.RoamingSettings);
+		}
+
+		/// <summary>
+		/// Assert that Application Title is getting its value from manifest
+		/// </summary>
+		public void AssertIssue8356()
+		{
+#if __SKIA__
+			Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement_ApplicationView.Given_ApplicationView.StartupTitle = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title;
+#endif
+		}
+
+		/// <summary>
+		/// Assert that the native overlay layer for Skia targets is initialized in time for UI to appear.
+		/// </summary>
+		public void AssertIssue8641NativeOverlayInitialized()
+		{
+#if __SKIA__
+			// Temporarily add a TextBox to the current page's content to verify native overlay is available
+			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
+			var textBox = new TextBox();
+			textBox.XamlRoot = rootFrame.XamlRoot;
+			var textBoxView = new TextBoxView(textBox);
+			ApiExtensibility.CreateInstance<ITextBoxViewExtension>(textBoxView, out var textBoxViewExtension);
+			Assert.IsTrue(textBoxViewExtension.IsNativeOverlayLayerInitialized);
+#endif
+		}
 	}
 }

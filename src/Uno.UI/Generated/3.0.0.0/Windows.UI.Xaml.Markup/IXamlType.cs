@@ -2,83 +2,23 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Markup
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IXamlType 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.UI.Xaml.Markup.IXamlType BaseType
-		{
-			get;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.UI.Xaml.Markup.IXamlMember ContentProperty
-		{
-			get;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		string FullName
-		{
-			get;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		bool IsArray
-		{
-			get;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		bool IsBindable
-		{
-			get;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		bool IsCollection
-		{
-			get;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		bool IsConstructible
-		{
-			get;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		bool IsDictionary
-		{
-			get;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		bool IsMarkupExtension
-		{
-			get;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.UI.Xaml.Markup.IXamlType ItemType
-		{
-			get;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.UI.Xaml.Markup.IXamlType KeyType
-		{
-			get;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::System.Type UnderlyingType
-		{
-			get;
-		}
-		#endif
+		// Skipping already declared property BaseType
+		// Skipping already declared property ContentProperty
+		// Skipping already declared property FullName
+		// Skipping already declared property IsArray
+		// Skipping already declared property IsBindable
+		// Skipping already declared property IsCollection
+		// Skipping already declared property IsConstructible
+		// Skipping already declared property IsDictionary
+		// Skipping already declared property IsMarkupExtension
+		// Skipping already declared property ItemType
+		// Skipping already declared property KeyType
+		// Skipping already declared property UnderlyingType
 		// Forced skipping of method Windows.UI.Xaml.Markup.IXamlType.BaseType.get
 		// Forced skipping of method Windows.UI.Xaml.Markup.IXamlType.ContentProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Markup.IXamlType.FullName.get
@@ -91,23 +31,11 @@ namespace Windows.UI.Xaml.Markup
 		// Forced skipping of method Windows.UI.Xaml.Markup.IXamlType.ItemType.get
 		// Forced skipping of method Windows.UI.Xaml.Markup.IXamlType.KeyType.get
 		// Forced skipping of method Windows.UI.Xaml.Markup.IXamlType.UnderlyingType.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		object ActivateInstance();
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		object CreateFromString( string value);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.UI.Xaml.Markup.IXamlMember GetMember( string name);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void AddToVector( object instance,  object value);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void AddToMap( object instance,  object key,  object value);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void RunInitializer();
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Markup.IXamlType.ActivateInstance()
+		// Skipping already declared method Windows.UI.Xaml.Markup.IXamlType.CreateFromString(string)
+		// Skipping already declared method Windows.UI.Xaml.Markup.IXamlType.GetMember(string)
+		// Skipping already declared method Windows.UI.Xaml.Markup.IXamlType.AddToVector(object, object)
+		// Skipping already declared method Windows.UI.Xaml.Markup.IXamlType.AddToMap(object, object, object)
+		// Skipping already declared method Windows.UI.Xaml.Markup.IXamlType.RunInitializer()
 	}
 }

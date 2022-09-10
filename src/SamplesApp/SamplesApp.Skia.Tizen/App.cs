@@ -12,7 +12,7 @@ namespace SamplesApp.Skia.Tizen
 	{
 		static void Main(string[] args)
 		{
-			var host = new TizenHost(() => new SamplesApp.App(), args);
+			var host = new TizenHost(() => new SamplesApp.App());
 			host.Run();
 		}
 	}

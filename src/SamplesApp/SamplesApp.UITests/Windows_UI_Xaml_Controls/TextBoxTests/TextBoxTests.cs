@@ -10,6 +10,7 @@ using SamplesApp.UITests.TestFramework;
 using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 {
@@ -510,6 +511,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Android)]
+		[Ignore("Android 31 or later does not bring the keyboard up https://github.com/unoplatform/uno/issues/9080")]
 		public void TextBox_Readonly_ShouldNotBringUpKeyboard()
 		{
 			Run("Uno.UI.Samples.UITests.TextBoxControl.TextBox_IsReadOnly");
@@ -559,6 +561,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			// initial state
 			_app.WaitForElement(target);
+			target.SetDependencyPropertyValue("TextWrapping", "Wrap");
 			var multilineReadonlyTextRect = target.FirstResult().Rect.ToRectangle();
 
 			// remove readonly
@@ -657,6 +660,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			_app.FastTap("btnDouble");
 			_app.WaitForElement("Test");
+			_app.Marked("Test").SetDependencyPropertyValue("TextWrapping", "Wrap");
 			var height2 = _app.GetLogicalRect("Test").Height;
 
 			using var _ = new AssertionScope();
@@ -889,6 +893,36 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			var passwordBoxRect = ToPhysicalRect(_app.WaitForElement("DescriptionPasswordBox")[0].Rect);
 			using var screenshot = TakeScreenshot("PasswordBox Description", new ScreenshotOptions() { IgnoreInSnapshotCompare = true });
 			ImageAssert.HasColorAt(screenshot, passwordBoxRect.X + passwordBoxRect.Width / 2, passwordBoxRect.Y + passwordBoxRect.Height - 50, Color.Red);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_Visibility()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_Visibility", skipInitialScreenshot: true);
+			var textBoxRect = ToPhysicalRect(_app.WaitForElement("MyTextBox")[0].Rect);
+			var buttonRect = ToPhysicalRect(_app.WaitForElement("ShowHideButton")[0].Rect);
+
+			_app.FastTap("ShowHideButton");
+
+			if (AppInitializer.GetLocalPlatform() == Platform.Browser)
+			{
+				var textBoxRect2 = ToPhysicalRect(_app.WaitForElement("MyTextBox")[0].Rect);
+
+				// Assert that after clicking, MyTextBox goes out of screen (hidden).
+				Assert.AreEqual(-100000 + textBoxRect.X, textBoxRect2.X);
+				Assert.AreEqual(-100000 + textBoxRect.Y, textBoxRect2.Y);
+			}
+			else
+			{
+				_app.WaitForNoElement("MyTextBox");
+			}
+
+			var buttonRect2 = ToPhysicalRect(_app.WaitForElement("ShowHideButton")[0].Rect);
+
+			// Assert that after clicking, ShowHideButton moves up (because MyTextBox is collapsed)
+			Assert.Less(buttonRect2.Y, buttonRect.Y);
+			Assert.AreEqual(textBoxRect.Height, buttonRect.Y - buttonRect2.Y);
 		}
 	}
 }

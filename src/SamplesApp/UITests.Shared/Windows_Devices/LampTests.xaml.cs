@@ -11,11 +11,12 @@ using EventHandler = System.EventHandler;
 
 namespace UITests.Shared.Windows_Devices
 {
-	[SampleControlInfo(
+	[Sample(
 		"Windows.Devices",
-		"Lamp",
-		description: "Demonstrates the Windows.Devices.Lights.Lamp",
-		viewModelType: typeof(LampTestsViewModel))]
+		Name = "Lamp",
+		Description = "Demonstrates the Windows.Devices.Lights.Lamp",
+		ViewModelType = typeof(LampTestsViewModel),
+		IgnoreInSnapshotTests = true)]
 	public sealed partial class LampTests : Page
 	{
 		public LampTests()

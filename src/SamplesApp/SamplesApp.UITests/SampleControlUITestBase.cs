@@ -47,6 +47,10 @@ namespace SamplesApp.UITests
 			AppInitializer.TestEnvironment.WebAssemblyHeadless = false;
 #endif
 
+			// Uncomment to align with your own environment
+			// Environment.SetEnvironmentVariable("ANDROID_HOME", @"C:\Program Files (x86)\Android\android-sdk");
+			// Environment.SetEnvironmentVariable("JAVA_HOME", @"C:\Program Files\Microsoft\jdk-11.0.12.7-hotspot");
+
 			// Start the app only once, so the tests runs don't restart it
 			// and gain some time for the tests.
 			AppInitializer.ColdStartApp();
@@ -185,8 +189,7 @@ namespace SamplesApp.UITests
 			}
 
 			var title = GetCurrentStepTitle(stepName);
-
-			var fileInfo = _app.Screenshot(title);
+			var fileInfo = GetNativeScreenshot(title);
 
 			var fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileInfo.Name);
 			if (fileNameWithoutExt != title)
@@ -219,10 +222,23 @@ namespace SamplesApp.UITests
 			return new ScreenshotInfo(fileInfo, stepName);
 		}
 
+		private FileInfo GetNativeScreenshot(string title)
+		{
+			if (AppInitializer.GetLocalPlatform() == Platform.Android)
+			{
+				return _app.GetInAppScreenshot();
+			}
+			else
+			{
+				return _app.Screenshot(title);
+			}
+		}
+
 		private static string GetCurrentStepTitle(string stepName) =>
 					$"{TestContext.CurrentContext.Test.Name}_{stepName}"
 						.Replace(" ", "_")
 						.Replace(".", "_")
+						.Replace(":", "_")
 						.Replace("(", "")
 						.Replace(")", "")
 						.Replace("\"", "")

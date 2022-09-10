@@ -14,7 +14,7 @@ using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 
 namespace MUXControlsTestApp
 {
-	[Sample("GradientBrush", Name = "RadialGradientBrush")]
+	[Sample("Brushes", Name = "RadialGradientBrush")]
 	public sealed partial class RadialGradientBrushPage : Page
 	{
 		public RadialGradientBrush DynamicGradientBrush;

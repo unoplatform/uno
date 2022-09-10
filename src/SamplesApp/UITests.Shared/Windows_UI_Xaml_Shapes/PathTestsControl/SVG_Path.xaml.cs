@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Shapes.PathTestsControl
 {
-    [Sample("PathTestsControl")]
+    [Sample("Path")]
     public sealed partial class SVG_Path : Page
     {
         public SVG_Path()

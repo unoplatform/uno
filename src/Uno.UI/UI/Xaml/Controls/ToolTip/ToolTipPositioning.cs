@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 	internal static class ToolTipPositioning
 	{
 		// UNO TODO
-		private static bool IsLefthandedUser() => true;
+		internal static bool IsLefthandedUser() => true;
 
 		private static Size ConstrainSize(
 			Size size,

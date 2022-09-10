@@ -21,14 +21,14 @@ namespace Windows.Devices.Midi
 	public partial class MidiOutPort : IDisposable
 	{
 		private readonly MidiManager _midiManager;
-		private readonly MidiDeviceInfo _deviceInfo = null;
-		private readonly MidiDeviceInfo.PortInfo _portInfo = null;		
+		private readonly MidiDeviceInfo _deviceInfo;
+		private readonly MidiDeviceInfo.PortInfo _portInfo;
 
 		/// <summary>
 		/// This is not a bug, Android uses "input" for output.
 		/// </summary>
-		private MidiInputPort _midiPort = null;
-		private MidiDevice _midiDevice = null;
+		private MidiInputPort _midiPort;
+		private MidiDevice _midiDevice;
 
 		private MidiOutPort(
 			string deviceId,

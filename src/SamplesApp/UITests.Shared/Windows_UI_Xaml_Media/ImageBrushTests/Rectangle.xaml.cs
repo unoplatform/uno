@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 {
-	[SampleControlInfo("ImageBrushTestControl", "Rectangle")]
+	[SampleControlInfo("Brushes", "Rectangle")]
 	public sealed partial class Rectangle : UserControl
 	{
 		public Rectangle()

@@ -117,13 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ApplicationName" xml:space="preserve">
+	<data name="ApplicationName" xml:space="preserve">
     <value>App70-en</value>
   </data>
-  <data name="Given_ResourceLoader.When_LocalizedResource" xml:space="preserve">
+	<data name="Given_ResourceLoader.When_LocalizedResource" xml:space="preserve">
     <value>Text in 'en'</value>
   </data>
-  <data name="ThemeRadioButtons.Header" xml:space="preserve">
+	<data name="ThemeRadioButtons.Header" xml:space="preserve">
     <value>Header in 'en'</value>
+  </data>
+  <data name="TestEmptyConverterText.ValueIfNotNull" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TestEmptyConverterText.ValueIfNull" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="TestEmptyResource" xml:space="preserve">
+    <value />
   </data>
 </root>

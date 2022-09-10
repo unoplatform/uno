@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Windows.UI.Core;
 using Uno.Extensions.Specialized;
 using Uno.Foundation;
+using System.Threading;
 
 namespace Windows.ApplicationModel.DataTransfer
 {
@@ -36,25 +37,15 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			var dataPackage = new DataPackage();
 
-			dataPackage.SetDataProvider(
-				StandardDataFormats.Text,
-				async ct =>
-				{
-					var text = string.Empty;
-					await Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
-						Uno.UI.Dispatching.CoreDispatcherPriority.High,
-						async _ => text = await GetClipboardText());
-
-					return text;
-				});
+			dataPackage.SetDataProvider(StandardDataFormats.Text, async ct => await GetClipboardText(ct));
 			
 			return dataPackage.GetView();
 		}
 
-		private static async Task<string> GetClipboardText()
+		private static async Task<string> GetClipboardText(CancellationToken ct)
 		{
 			var command = $"{JsType}.getText();";
-			var text = await WebAssemblyRuntime.InvokeAsync(command);
+			var text = await WebAssemblyRuntime.InvokeAsync(command, ct);
 
 			return text;
 		}

@@ -49,12 +49,12 @@ namespace Uno.Xaml
 
 			if (raw.Length == 0 || raw[0] != '{')
 			{
-				throw Error("Invalid markup extension attribute. It should begin with '{{', but was {0}", raw);
+				throw Error("Invalid markup extension attribute. Expected '{{' not found at the start: \"{0}\"", raw);
 			}
 
 			if (raw.Length >= 2 && raw[1] == '}')
 			{
-				throw Error("Markup extension can not begin with an '{}' escape: '{0}'", raw);
+				throw Error("Markup extension can not begin with an '{}' escape: \"{0}\"", raw);
 			}
 
 			var ret = new ParsedMarkupExtensionInfo();
@@ -62,7 +62,13 @@ namespace Uno.Xaml
 			{
 				// Any character after the final closing bracket is not accepted. Therefore, the last character should be '}'.
 				// Ideally, we should still ran the entire markup through the parser to get a more meaningful error.
-				throw Error("Expected '}}' in the markup extension attribute: '{0}'", raw);
+				if (raw.TrimEnd() is string trimmed && trimmed[trimmed.Length - 1] == '}')
+				{
+					// Technically this is salvageable, but since uwp throws on this, we will do the same.
+					throw Error("White space is not allowed after end of markup extension: \"{0}\"", raw);
+				}
+
+				throw Error("Expected '}}' in the markup extension attribute: \"{0}\"", raw);
 			}
 
 			var nameSeparatorIndex = raw.IndexOf(' ');

@@ -1,35 +1,109 @@
 #nullable enable
 
-using System;
-using System.Collections.Generic;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
+using Windows.Graphics.Display;
 
-namespace Windows.UI.Xaml
+namespace Windows.UI.Xaml;
+
+/// <summary>
+/// Represents a tree of XAML content and information about the context in which it is hosted.
+/// </summary>
+/// <remarks>
+/// Effectively a public API wrapper around VisualTree.
+/// </remarks>
+public sealed partial class XamlRoot
 {
-	/// <summary>
-	/// Represents a tree of XAML content and information about the context in which it is hosted.
-	/// </summary>
-	/// <remarks>
-	/// Effectively a public API wrapper around VisualTree.
-	/// </remarks>
-	public sealed partial class XamlRoot
+	internal XamlRoot(VisualTree visualTree)
 	{
-		private XamlRoot() { }
+		VisualTree = visualTree;
+	}
 
-		internal static XamlRoot Current { get; } = new XamlRoot();
+	/// <summary>
+	/// Occurs when a property of XamlRoot has changed.
+	/// </summary>
+	public event TypedEventHandler<XamlRoot, XamlRootChangedEventArgs>? Changed;
 
-		public event TypedEventHandler<XamlRoot, XamlRootChangedEventArgs>? Changed;
+	// TODO:MZ: This might not be a border potentially, behaves differently on XamlIslands https://github.com/unoplatform/uno/issues/8978
+	/// <summary>
+	/// Gets the root element of the XAML element tree.
+	/// </summary>
+	public UIElement? Content =>
+		VisualTree.ContentRoot.Type == ContentRootType.CoreWindow ?
+			Windows.UI.Xaml.Window.Current?.Content : VisualTree.PublicRootVisual;
 
-		public UIElement? Content => Window.Current?.Content;
-
-		public Size Size => Content?.RenderSize ?? Size.Empty;
-
-		public double RasterizationScale
-			=> global::Windows.Graphics.Display.DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
-
-		internal void NotifyChanged()
+	//TODO Uno specific: This logic is most likely not implemented here in MUX:
+	/// <summary>
+	/// Gets the width and height of the content area.
+	/// </summary>
+	public Size Size
+	{
+		get
 		{
-			Changed?.Invoke(this, new XamlRootChangedEventArgs());
+			if (VisualTree.ContentRoot.Type == ContentRootType.CoreWindow)
+			{
+				return Content?.RenderSize ?? Size.Empty;
+			}
+
+			var rootElement = VisualTree.RootElement;
+			if (rootElement is RootVisual)
+			{
+				// TODO: Support multiple windows! https://github.com/unoplatform/uno/issues/8978[windows]
+				return Window.Current.Bounds.Size;
+			}
+			else if (rootElement is XamlIslandRoot xamlIslandRoot)
+			{
+				var width = !double.IsNaN(xamlIslandRoot.Width) ? xamlIslandRoot.Width : 0;
+				var height = !double.IsNaN(xamlIslandRoot.Height) ? xamlIslandRoot.Height : 0;
+				return new Size(width,  height);
+			}
+
+			return default;
 		}
+	}
+
+	//TODO Uno specific: This logic is most likely not implemented here in MUX:
+	internal Rect Bounds
+	{
+		get
+		{
+			var rootElement = VisualTree.RootElement;
+			if (rootElement is RootVisual rootVisual)
+			{
+				//TODO: Support multiple windows! https://github.com/unoplatform/uno/issues/8978[windows]
+				return Window.Current.Bounds;
+			}
+			else if (rootElement is XamlIslandRoot xamlIslandRoot)
+			{
+				var width = !double.IsNaN(xamlIslandRoot.Width) ? xamlIslandRoot.Width : 0;
+				var height = !double.IsNaN(xamlIslandRoot.Height) ? xamlIslandRoot.Height : 0;				
+				return new Rect(0, 0, width, height);
+			}
+
+			return default;
+		}
+	}
+
+	/// <summary>
+	/// Gets a value that represents the number of raw (physical) pixels for each view pixel.
+	/// </summary>
+	public double RasterizationScale => DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+
+	/// <summary>
+	/// Gets a value that indicates whether the XamlRoot is visible.
+	/// </summary>
+	public bool IsHostVisible { get; internal set; } // TODO: This should reflect the actual state of the visual tree
+
+#if !HAS_UNO_WINUI // This is a UWP-only property
+	/// <summary>
+	/// Gets the context identifier for the view.
+	/// </summary>
+	public UIContext UIContext { get; } = new UIContext();
+#endif
+
+	internal void NotifyChanged()
+	{
+		Changed?.Invoke(this, new XamlRootChangedEventArgs());
 	}
 }

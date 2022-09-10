@@ -28,7 +28,7 @@ namespace Uno.Extensions.Storage.Pickers
 				commitText = _picker.CommitButtonText;
 			}
 
-			FileChooserDialog dialog = new FileChooserDialog(
+			using FileChooserDialog dialog = new FileChooserDialog(
 			"Save File",
 			GtkHost.Window,
 			FileChooserAction.Save,
@@ -49,7 +49,7 @@ namespace Uno.Extensions.Storage.Pickers
 				file = await StorageFile.GetFileFromPathAsync(dialog.Filename);				
 			}
 
-			dialog.Destroy();
+			
 			return file;
 		}
 	}

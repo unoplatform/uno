@@ -5,7 +5,17 @@ trigger:
       - release/beta/*
       - release/stable/*
       - feature/*
-
+      
+  paths:
+    include:
+    - '/'
+    exclude:
+    - .dependabot/
+    - .github/
+    # don't trigger the CI if only docs files are changed
+    - doc/*
+    - '**/*.md'
+    
 pr: 
   branches:
     include:
@@ -20,8 +30,10 @@ pr:
     exclude:
     - .dependabot/
     - .github/
+    # don't trigger the CI if only docs files are changed
     - doc/*
-    - .all-contributorsrc
+    - '**/*.md'
+    - '*.md'
 
 resources:
   containers:
@@ -40,6 +52,8 @@ variables:
   XamarinSDKVersion: 6_12_12
   xCodeRoot_iOS_UITests: '/Applications/Xcode_13.2.1.app'
   XamarinSDKVersion_iOS_UITests: 6_12_12
+
+  enable_package_cache: true
 
 jobs:
 - template: build/ci/.azure-devops-commitsar.yml

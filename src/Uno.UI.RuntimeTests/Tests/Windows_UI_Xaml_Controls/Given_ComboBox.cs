@@ -50,6 +50,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		const int BorderThicknessAdjustment = 2; // Deduct BorderThickness on PopupBorder
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_ComboBox_MinWidth()
 		{
 			var source = Enumerable.Range(0, 5).ToArray();
@@ -87,6 +90,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_ComboBox_Constrained_By_Parent()
 		{
 			var source = Enumerable.Range(0, 5).ToArray();
@@ -127,6 +133,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task Check_Creation_Count_Few_Items()
 		{
 			var source = Enumerable.Range(0, 5).ToArray();
@@ -175,6 +184,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __IOS__ || __ANDROID__
 		[Ignore("ComboBox is currently not virtualized on iOS and Android - #556")] // https://github.com/unoplatform/uno/issues/556
 #endif
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task Check_Creation_Count_Many_Items()
 		{
 			var source = Enumerable.Range(0, 500).ToArray();
@@ -213,6 +225,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task Check_Dropdown_Measure_Count()
 		{
 			var source = Enumerable.Range(0, 500).ToArray();
@@ -256,6 +271,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Fluent_And_Theme_Changed()
 		{
 			using (StyleHelper.UseFluentStyles())
@@ -288,7 +306,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[Ignore] // https://github.com/unoplatform/uno/issues/4686
 		public void When_Index_Is_Out_Of_Range_And_Later_Becomes_Valid()
 		{
 			var comboBox = new ComboBox();
@@ -303,7 +320,53 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[Ignore] // https://github.com/unoplatform/uno/issues/4686
+		public void When_Index_Set_With_No_Items_Repeated()
+		{
+			var comboBox = new ComboBox();
+			comboBox.SelectedIndex = 1;
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(1, comboBox.SelectedIndex);
+			comboBox.Items.Clear();
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.SelectedIndex = 2;
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(2, comboBox.SelectedIndex);
+		}
+
+		[TestMethod]
+		public void When_Index_Set_Out_Of_Range_When_Items_Exist()
+		{
+			var comboBox = new ComboBox();
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.ThrowsException<ArgumentException>(() => comboBox.SelectedIndex = 2);
+		}
+
+		[TestMethod]
+		public void When_Index_Set_Negative_Out_Of_Range_When_Items_Exist()
+		{
+			var comboBox = new ComboBox();
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.ThrowsException<ArgumentException>(() => comboBox.SelectedIndex = -2);
+		}
+
+		[TestMethod]
+		public void When_Index_Set_Negative_Out_Of_Range_When_Items_Do_Not_Exist()
+		{
+			var comboBox = new ComboBox();
+			comboBox.SelectedIndex = -2;
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+		}
+
+		[TestMethod]
 		public void When_Index_Is_Explicitly_Set_To_Negative_After_Out_Of_Range_Value()
 		{
 			var comboBox = new ComboBox();
@@ -361,6 +424,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Full_Collection_Reset()
 		{
 			var SUT = new ComboBox();

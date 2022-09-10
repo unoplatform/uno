@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.RadioMenuFlyoutItemTests
 {
-    [Sample("RadioMenuFlyoutItem")]
+    [Sample("Flyouts")]
     public sealed partial class RadioMenuFlyoutItemPage : Page
     {
 		Dictionary<string, TextBlock> itemStates;

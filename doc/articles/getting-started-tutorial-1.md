@@ -1,15 +1,17 @@
 # Create a Single Page App with Uno Platform
 
 [Download the complete sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Getting-Started-Tutorial-1)  
--- Estimated time to complete: 10 minutes --
+
+> [!NOTE] 
+> Estimated time to complete: 10 minutes
 
 In this tutorial you will learn how to:
 
 - Add the Uno Platform Project Templates to Visual Studio
 - Create a new Project with Uno Platform
-- Use the ElementName property for element-to-element binding
+- Use the `ElementName` property for element-to-element binding
 
-The tutorial walks you through creating a small multi-platform application with Uno Platform – a small app containing only a simple horizontal slider control.  
+The tutorial walks you through creating a small multi-platform application with Uno Platform – a small app containing only a simple horizontal slider control.
 Also, you will learn how to run your applications on all platforms supported by Uno Platform.
 
 <div class="NOTE alert alert-info">
@@ -25,15 +27,19 @@ Also, you will learn how to run your applications on all platforms supported by 
 
     ![](Assets/tutorial01/newproject1.PNG)
 
-2. Search for the `Uno` templates, select the `Multi-Platform App (Uno Platform|Xamarin)` then click `Next`.  
+1. Search for the `Uno` templates, select the `Uno Platform App` then click `Next`.  
 
     ![](Assets/tutorial01/newproject2.PNG)
 
-3. Name your app then click `Next`.
+1. Name your app then click `Next`.
 
-4. In your `Shared` project, open up `MainPage.xaml`
+1. Choose a list of platforms, including **WebAssembly** and **WinUI**
 
-5. Add a `StackPanel` around your `TextBlock`
+    ![](Assets/tutorial01/newproject4.PNG)
+
+1. In your `Shared` project, open up `MainPage.xaml`
+
+1. Add a `StackPanel` around your `TextBlock`
     ```xml
     <Grid>
         <StackPanel>
@@ -42,7 +48,7 @@ Also, you will learn how to run your applications on all platforms supported by 
     </Grid>
     ```
 
-6. Add a `Slider`
+1. Add a `Slider`
     ```xml
     <Grid>
         <StackPanel>
@@ -52,7 +58,7 @@ Also, you will learn how to run your applications on all platforms supported by 
     </Grid>
     ```
 
-7. Bind the `Text` value of your `TextBlock` to the value of the `Slider`
+1. Bind the `Text` value of your `TextBlock` to the value of the `Slider`
     ```xml
     <Grid>
         <StackPanel>
@@ -62,15 +68,16 @@ Also, you will learn how to run your applications on all platforms supported by 
     </Grid>
     ```
 
-8. Select `UWP` as the Startup Project, select the `x86` platform, then `Run`  
-   Note: To change the startup project from the Solution Explorer, right-click the desired project and choose "Set as StartUp Project" from the context-sensitive menu that is displayed. You can also choose this menu item from the Project menu.
+1. Select `Windows` as the Startup Project, select the `x86` platform, then `Run`  
+   > [!NOTE] 
+   > To change the startup project from the Solution Explorer, right-click the desired project and choose **Set as StartUp Project** from the context-sensitive menu that is displayed. You can also choose this menu item from the Project menu.
 
-    ![build-uwp](Assets/build-uwp.JPG)
+    ![build-winui](Assets/build-winui.png)
 
     Result!  
     ![uwp-slider-demo](Assets/uwp-slider-demo.gif)
 
-9. Select `WASM` as the Startup Project and `Run`  
+1. Select `WASM` as the Startup Project and `Run`  
 
     ![build-wasm](Assets/build-wasm.JPG)
 

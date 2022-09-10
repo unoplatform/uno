@@ -28,7 +28,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.RatingControlTests
 {
-	[Sample("RatingControl", "WinUI")]
+	[Sample("RatingControl", "MUX")]
 	public sealed partial class RatingControlPage : Page
 	{
 		UIElement _secondTextBlockUI;

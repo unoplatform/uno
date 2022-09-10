@@ -21,7 +21,7 @@ using Uno.UI.Samples.Controls;
 namespace MUXControlsTestApp
 {
 
-	//[Sample("NavigationView", "WinUI")]
+	//[Sample("NavigationView", "MUX")]
     public sealed partial class NavigationViewInitPage : TestPage
 	{
         ObservableCollection<string> m_menuItems;

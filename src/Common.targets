@@ -1,31 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <!--
-  This target needs to be defined in all projects
-  until we can override the Publish to not fail for cross-target
-  projects that don't publish anything.
-  -->
-  <Target Name="CreateAppPackage" />
+	<!--
+	This target needs to be defined in all projects
+	until we can override the Publish to not fail for cross-target
+	projects that don't publish anything.
+	-->
+	<Target Name="CreateAppPackage" />
 
 	<PropertyGroup>
 		<!-- Enable ShouldWriteErrorOnInvalidXaml for all the sample and test projects of this solution -->
 		<ShouldWriteErrorOnInvalidXaml>True</ShouldWriteErrorOnInvalidXaml>
 	</PropertyGroup>
+	
+	<Target Name="_UnoCommonFeatureDefines" AfterTargets="PrepareForBuild">
 
-	<Target Name="_UnoFeatureDefines" BeforeTargets="BeforeCompile">
-
-		<PropertyGroup>
-			<UnoDefineConstants Condition="'$(MSBuildVersion)' &gt;= '15.4'">$(UnoDefineConstants);__IOS_11__</UnoDefineConstants>
+		<PropertyGroup Condition="'$(MSBuildVersion)' &gt;= '15.4'">
+			<DefineConstants>$(DefineConstants);__IOS_11__</DefineConstants>
 		</PropertyGroup>
 
-		<!-- Merge the UnoDefineConstants with the existing constants -->
-		<CreateProperty Value="$(DefineConstants);$(UnoDefineConstants)">
-			<Output TaskParameter="Value" PropertyName="DefineConstants" />
-		</CreateProperty>
-
 	</Target>
-  
-  <!-- Import the override as the nuget tooling in VS is skipping ItemGroup conditions for legacy projects -->
-  <Import Project="roslyn-override.targets" Condition="'$(MicrosoftNetCompilerVersionOverride)'!=''"/>
+
+	<!-- Import the override as the nuget tooling in VS is skipping ItemGroup conditions for legacy projects -->
+	<Import Project="roslyn-override.targets" Condition="'$(MicrosoftNetCompilerVersionOverride)'!=''"/>
+
 </Project>

@@ -38,7 +38,17 @@ namespace Uno.UI.Behaviors
 			if (textBox == null)
 				return;
 
-			textBox.RegisterLoadActions(() => RegisterTextChanged(textBox), () => UnregisterTextChanged(textBox));
+#if XAMARIN_ANDROID
+			if (textBox.IsLoaded())
+#else
+			if (textBox.Window != null)
+#endif
+			{
+				RegisterTextChanged(textBox);
+			}
+
+			textBox.Loaded += (s, e) => RegisterTextChanged(textBox);
+			textBox.Unloaded += (s, e) => UnregisterTextChanged(textBox);
 		}
 
 		private static void RegisterTextChanged(TextBox textBox)

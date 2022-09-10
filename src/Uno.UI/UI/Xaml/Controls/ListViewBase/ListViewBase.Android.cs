@@ -322,13 +322,19 @@ namespace Windows.UI.Xaml.Controls
 			// occurring during scrolling are not always properly picked up by the layouting/rendering engine.
 			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
-				var index = IndexFromItem(item);
-				if (index < 0)
+				if (IndexFromItem(item) is var index and >= 0)
 				{
-					return;
+					if (Uno.UI.FeatureConfiguration.ListViewBase.AnimateScrollIntoView)
+					{
+						NativePanel?.SmoothScrollToPosition(index);
+					}
+					else
+					{
+						var displayPosition = ConvertIndexToDisplayPosition(index);
+
+						NativePanel?.ScrollIntoView(displayPosition, alignment);
+					}
 				}
-				var displayPosition = ConvertIndexToDisplayPosition(index);
-				NativePanel?.ScrollIntoView(displayPosition, alignment);
 			});
 		}
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
@@ -8,6 +9,7 @@ using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using Windows.UI.Xaml;
 using Windows.UI;
+using FluentAssertions;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -125,6 +127,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Calling_Select_With_In_Range_Values()
 		{
 			var textBox = new TextBox
@@ -143,6 +148,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Calling_Select_With_Out_Of_Range_Length()
 		{
 			var textBox = new TextBox
@@ -161,6 +169,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Calling_Select_With_Out_Of_Range_Start()
 		{
 			var textBox = new TextBox
@@ -182,6 +193,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[Ignore("Disabled as not working properly. See https://github.com/unoplatform/uno/issues/8016")]
 #endif
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_SelectionStart_Set()
 		{
 			var textBox = new TextBox
@@ -220,6 +234,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[Ignore("Disabled as not working properly. See https://github.com/unoplatform/uno/issues/8016")]
 #endif
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Focus_Changes_SelectionStart_Preserved()
 		{
 			var textBox = new TextBox
@@ -294,6 +311,79 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(contentPresenter.Foreground, foregroundColor);
 		}
 
+#if __ANDROID__
+		[TestMethod]
+		public async Task When_Text_IsWrapping_Set()
+		{
+			var textbox = new TextBox();
+
+			textbox.Width = 100;
+			StackPanel panel = new() { Orientation = Orientation.Vertical };
+			panel.Children.Add(textbox);
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(textbox);
+			var originalActualHeigth = textbox.ActualHeight;
+			textbox.Text = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremaaaaaaaaaaaaaaaaaa";
+			textbox.TextWrapping = TextWrapping.Wrap;
+			await WindowHelper.WaitForIdle();
+			textbox.ActualHeight.Should().BeGreaterThan(originalActualHeigth);
+		}
+
+
+		[TestMethod]
+		public async Task When_Text_IsNoWrap_Set()
+		{
+			var textbox = new TextBox();
+
+			textbox.Width = 100;
+			StackPanel panel = new() { Orientation = Orientation.Vertical };
+			panel.Children.Add(textbox);
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(textbox);
+			var originalActualHeigth = textbox.ActualHeight;
+			textbox.Text = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremaaaaaaaaaaaaaaaaaa";
+			textbox.TextWrapping = TextWrapping.NoWrap;
+			await WindowHelper.WaitForIdle();
+			textbox.ActualHeight.Should().Be(originalActualHeigth);
+		}
+
+
+		[TestMethod]
+		public async Task When_AcceptsReturn_Set()
+		{
+			var textbox = new TextBox();
+
+			textbox.Width = 100;
+			StackPanel panel = new() { Orientation = Orientation.Vertical };
+			panel.Children.Add(textbox);
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(textbox);
+			var originalActualHeigth = textbox.ActualHeight;
+			textbox.AcceptsReturn = true;
+			textbox.Text = "Sed ut perspiciatis unde omnis iste natus \nerror sit voluptatem accusantium doloremaaaaaaaaaaaaaaaaaa";
+			await WindowHelper.WaitForIdle();
+			textbox.ActualHeight.Should().BeGreaterThan(originalActualHeigth * 2);
+		}
+
+		[TestMethod]
+		public async Task When_AcceptsReturn_Set_On_Init()
+		{
+			var textbox = new TextBox();
+			textbox.AcceptsReturn = true;
+			textbox.Text = "Sed ut perspiciatis unde omnis iste natus \nerror sit voluptatem accusantium doloremaaaaaaaaaaaaaaaaaa";
+			textbox.Width = 100;
+
+			StackPanel panel = new() { Orientation = Orientation.Vertical };
+			panel.Children.Add(textbox);
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(textbox);
+			var originalActualHeigth = textbox.ActualHeight;
+			textbox.AcceptsReturn = false;
+			await WindowHelper.WaitForIdle();
+			textbox.ActualHeight.Should().BeLessThan(originalActualHeigth / 2);
+		}
+#endif
+
 		[TestMethod]
 		public async Task When_SelectedText_StartZero()
 		{
@@ -315,6 +405,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_SelectedText_EndOfText()
 		{
 			var textBox = new TextBox
@@ -334,6 +427,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_SelectedText_MiddleOfText()
 		{
 			var textBox = new TextBox
@@ -354,6 +450,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_SelectedText_AllTextToEmpty()
 		{
 			var textBox = new TextBox

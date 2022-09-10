@@ -19,7 +19,7 @@ namespace DirectUI
 	{
 		private static readonly Lazy<DXamlCore> _current = new Lazy<DXamlCore>(() => new DXamlCore());
 
-		private Dictionary<string, List<WeakReference<RadioButton>>>? _radioButtonGroupsByName = null;
+		private Dictionary<string, List<WeakReference<RadioButton>>>? _radioButtonGroupsByName;
 
 		private BuildTreeService? _buildTreeService;
 		private BudgetManager? _budgetManager;

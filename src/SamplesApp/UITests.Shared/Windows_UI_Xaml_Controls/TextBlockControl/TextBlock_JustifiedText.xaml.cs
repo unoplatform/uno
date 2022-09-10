@@ -5,7 +5,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.TextBlockControl
 {
-	[Sample("TextBlockControl", "TextBlock_JustifiedText")]
+	[Sample("TextBlock")]
     public sealed partial class TextBlock_JustifiedText : Page
     {
         public TextBlock_JustifiedText()

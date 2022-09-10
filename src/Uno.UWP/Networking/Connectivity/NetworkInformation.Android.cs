@@ -109,7 +109,7 @@ namespace Windows.Networking.Connectivity
 							string androCanonical = interfaceAddress.Address.CanonicalHostName;
 							// seems like == androCanonical
 							string androHostName = interfaceAddress.Address.HostName;
-							bool androIPv46 = (interfaceAddress.Address.GetAddress().Count() == 4);
+							bool androIPv46 = (interfaceAddress.Address.GetAddress().Length == 4);
 
 							// we have all required data from Android, and we can use them
 							HostName newHost = new HostName();

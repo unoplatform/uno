@@ -9,6 +9,7 @@ using Uno.UI.Samples.Controls;
 namespace UITests.Windows_UI_Xaml_Controls.UIElementCollectionTests
 {
 	[Sample(
+		"UIElement",
 		Description= "This test asserts that an element inserted after the first draw is really inserted at the right place",
 		IgnoreInSnapshotTests=false)]
 	public sealed partial class UIElementCollection_Insert : Page

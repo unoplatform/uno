@@ -11,7 +11,7 @@ Uno Platform is a cross-platform application framework which lets you write an a
 Uno Platform is an [open-source project](https://github.com/unoplatform/Uno) with many contributors. It was developed internally by [nventive](https://nventive.com) from 2013-2018, and has been open source since 2018. It's maintained by [nventive](https://nventive.com).
 
 #### Where can I get support?
-Support is available through [Stack Overflow](https://stackoverflow.com/questions/tagged/uno-platform), [Twitter account](https://twitter.com/unoplatform), Discord www.platform.uno/discord - #uno-platform channel and email [info@platform.uno](mailto:info@platform.uno).
+Support is available through [GitHub Discussions](https://github.com/unoplatform/uno/discussions) or [Discord](https://www.platform.uno/discord) - #uno-platform channel where our engineering team and community will be able to help you.
 
 #### How can I get involved?
 There are lots of ways to contribute to the Uno Platform and we appreciate all the help we get from the community. You can provide feedback, report bugs, give suggestions, contribute code, and participate in the platform discussions. If you're interested, the [contributors' guide](uno-development/contributing-intro.md) is a great place to start.
@@ -44,15 +44,9 @@ The best course of action is to do a POC and our team is happy to assist you in 
 
 ## Technologies
 
-#### What is Universal Windows Platform (UWP)?
-
-Universal Windows Platform (UWP) is an API created by Microsoft and first introduced in Windows 10. The purpose of this platform is to help develop universal apps that run on Windows 10, Windows 10 Mobile, Xbox One and HoloLens without the need to be re-written for each. It supports Windows app development using C++, C#, VB.NET, and XAML. The API is implemented in C++, and supported in C++, VB.NET, C#, F# and JavaScript. Designed as an extension to the Windows Runtime platform first introduced in Windows Server 2012 and Windows 8, UWP allows developers to create apps that will potentially run on multiple types of devices.
-
-Visit Microsoft's documentation for a primer on UWP : https://docs.microsoft.com/en-us/windows/uwp/get-started/
-
 #### What is WinUI 3?
 
-WinUI 3 is the [next generation of Microsoft's Windows UI library](https://docs.microsoft.com/en-us/windows/apps/winui/), scheduled for stable release in 2021.
+WinUI 3 is the [next generation of Microsoft's Windows UI library](https://docs.microsoft.com/en-us/windows/apps/winui/).
 
 From [Microsoft](https://docs.microsoft.com/en-us/windows/apps/winui/):
 
@@ -61,8 +55,14 @@ From [Microsoft](https://docs.microsoft.com/en-us/windows/apps/winui/):
 
 Read more about [Uno and WinUI 3](uwp-vs-winui3.md).
 
-#### How is Uno Platform different from Xamarin.Forms or Avalonia?
-Multiple techniques can be used to render UI, ranging from rendering pixels in a Frame Buffer (Avalonia), to rendering only using platform-provided controls (Xamarin.Forms). 
+#### What is Universal Windows Platform (UWP)?
+
+Universal Windows Platform (UWP) is an API created by Microsoft and first introduced in Windows 10. The purpose of this platform is to help develop universal apps that run on Windows 10, Windows 10 Mobile, Xbox One and HoloLens without the need to be re-written for each. It supports Windows app development using C++, C#, VB.NET, and XAML. The API is implemented in C++, and supported in C++, VB.NET, C#, F# and JavaScript. Designed as an extension to the Windows Runtime platform first introduced in Windows Server 2012 and Windows 8, UWP allows developers to create apps that will potentially run on multiple types of devices.
+
+Visit Microsoft's documentation for a primer on UWP : https://docs.microsoft.com/en-us/windows/uwp/get-started/
+
+#### How is Uno Platform different from Xamarin.Forms, MAUI or Avalonia?
+Multiple techniques can be used to render UI, ranging from rendering pixels in a Frame Buffer (Avalonia), to rendering only using platform-provided controls (Xamarin.Forms, MAUI). 
 
 While the former provides a high flexibility in terms of rendering fidelity and the ability to add new platforms, it has the drawback of not following the platform native behaviors. For instance, interactions with text boxes, has to be re-implemented completely in order to match the native behavior, and has to be updated regularly to follow platform updates. This approach also makes it very difficult to integrate native UI components "in-canvas", such as Map or Browser controls.
 

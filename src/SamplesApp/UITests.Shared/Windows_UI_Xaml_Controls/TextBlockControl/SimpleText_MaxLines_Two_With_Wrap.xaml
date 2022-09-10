@@ -62,7 +62,7 @@
 				TextTrimming="CharacterEllipsis"
 				LineHeight="{Binding Value, ElementName=lineheight}"
 				MaxLines="2">
-				<Run FontWeight="Bold">WRAPPING (WrapWholeWords/CharacterEllipsis)/MaxLines=2</Run> This is a very very very very long text that *should* wrap because it goes out of the screen
+				<Run FontWeight="Bold">WRAPPING (Wrap/CharacterEllipsis)/MaxLines=2</Run> This is a very very very very long text that *should* wrap because it goes out of the screen
 			</TextBlock>
 		</Border>
 		<Border Width="{Binding Value, ElementName=slider}" Height="{Binding Value, ElementName=sliderV}" Background="Yellow" x:Name="border4">
@@ -73,7 +73,7 @@
 				TextTrimming="CharacterEllipsis"
 				LineHeight="{Binding Value, ElementName=lineheight}"
 				MaxLines="2">
-				<Run FontWeight="Bold">WRAPPING (Wrap/CharacterEllipsis)/MaxLines=2</Run> This is a very very very very long text that *should* wrap because it goes out of the screen
+				<Run FontWeight="Bold">WRAPPING (WrapWholeWords/CharacterEllipsis)/MaxLines=2</Run> This is a very very very very long text that *should* wrap because it goes out of the screen
 			</TextBlock>
 		</Border>
 	</StackPanel>

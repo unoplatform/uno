@@ -1,57 +1,95 @@
 ﻿#if __WASM__
+#nullable enable
+
 using System;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using Uno;
+using Windows.Storage.Helpers;
 
 namespace Windows.UI.Xaml.Media
 {
 	public partial class FontFamily
 	{
+		private FontFamilyLoader _loader;
+
+
+		/// <summary>
+		/// Contains the font-face name to use in CSS.
+		/// </summary>
+		internal string CssFontName { get; private set; }
+
+		internal string? ExternalSource { get; private set; }
+
 		partial void Init(string fontName)
 		{
-			ParsedSource = ParseFontFamilySource(fontName);
+			ParseSource(Source);
+			_loader = FontFamilyLoader.GetLoaderForFontFamily(this);
+		}
+
+		[MemberNotNull(nameof(CssFontName))]
+		private void ParseSource(string source)
+		{
+			var sourceParts = source.Split(new[] { '#' }, 2, StringSplitOptions.RemoveEmptyEntries);
+
+			if (sourceParts.Length > 0)
+			{
+				if (TryGetExternalUri(sourceParts[0], out var externalUri) && externalUri is { })
+				{
+					ExternalSource = externalUri.OriginalString;
+					CssFontName = "font" + ExternalSource.GetHashCode();
+				}
+				else
+				{
+					CssFontName = sourceParts[sourceParts.Length == 2 ? 1 : 0];
+				}
+			}
+			else
+			{
+				throw new InvalidOperationException("FontFamily source cannot be empty");
+			}
+		}
+
+		private static bool TryGetExternalUri(string? source, out Uri? uri)
+		{
+			if (source is not null && (source.IndexOf('.') > -1 || source.IndexOf('/') > -1))
+			{
+				uri = new Uri(source, UriKind.RelativeOrAbsolute);
+
+				if (!uri.IsAbsoluteUri || source.StartsWith("/"))
+				{
+					// Support for implicit ms-appx resolution
+					var assetUri = AssetsPathBuilder.BuildAssetUri(Uri.EscapeUriString(source.TrimStart('/')));
+					uri = new Uri(assetUri, UriKind.RelativeOrAbsolute);
+				}
+
+				if (uri.IsAbsoluteUri && uri.Scheme is "ms-appx")
+				{
+					var assetUri = AssetsPathBuilder.BuildAssetUri(uri.PathAndQuery.TrimStart('/'));
+					uri = new Uri(assetUri, UriKind.RelativeOrAbsolute);
+				}
+
+				return true;
+			}
+
+			uri = default;
+			return false;
 		}
 
 		/// <summary>
-		/// Contains the parsed font family for use in WASM
-		/// (matches CSS @font-face's font-family)
+		/// Use this to launch the loading of a font before it is actually required to
+		/// minimize loading time and prevent potential flicking.
 		/// </summary>
-		internal string ParsedSource { get; private set; }
+		/// <returns>True is the font loaded successfuly, otherwise false.</returns>
+		internal static Task<bool> PreloadAsync(FontFamily family)
+			=> family._loader.LoadFontAsync();
 
-		private string ParseFontFamilySource(string familyName)
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal void RegisterForInvalidateMeasureOnFontLoaded(UIElement uiElement)
 		{
-			const string ForwardSlash = "/";
-			const string Hash = "#";
-			const string Dot = ".";
-			if (string.IsNullOrEmpty(familyName))
-			{
-				throw new ArgumentException("Font family name must not be empty string nor null", nameof(familyName));
-			}
-			//check if family name is a pure name or a path
-			if (familyName.Contains(ForwardSlash) || familyName.Contains(Hash))
-			{
-				//we have a path to font family name, parse just the name itself
-				//there are two possible formats:
-				//1) "some/path/to/font/MyNiceFont.ttf#My Nice Font" (actually works even with pure "MyNiceFont.ttf#My Font")
-				//   -> we extract the part after #
-
-				var hashFontNameStart = familyName.LastIndexOf(Hash);
-				if (hashFontNameStart != -1)
-				{
-					return familyName.Substring(hashFontNameStart + 1);
-				}
-
-				//or 
-				//2) "some/path/to/font/MyNiceFont.ttf"
-				//   -> we fall back to the font file name
-
-				var slashFontNameStart = familyName.LastIndexOf(ForwardSlash) + 1; //works even if slash is not present at all -> 0				
-				var extensionStart = familyName.LastIndexOf(Dot);
-				if (extensionStart < slashFontNameStart) //no dot after slash
-				{
-					extensionStart = familyName.Length;
-				}
-				return familyName.Substring(slashFontNameStart, extensionStart - slashFontNameStart);
-			}
-			return familyName;
+			_loader.RegisterRemeasureOnFontLoaded(uiElement);
 		}
 	}
 }

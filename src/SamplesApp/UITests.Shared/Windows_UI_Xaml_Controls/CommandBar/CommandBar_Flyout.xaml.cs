@@ -17,9 +17,9 @@ using Windows.UI.Xaml.Navigation;
 namespace Uno.UI.Samples.Content.UITests.CommandBar
 {
 #if __WASM__
-	[SampleControlInfo("CommandBar", "Flyout", ignoreInSnapshotTests: true)]
+	[SampleControlInfo("CommandBar", "Flyouts", ignoreInSnapshotTests: true)]
 #else
-	[SampleControlInfo("CommandBar", "Flyout")]
+	[SampleControlInfo("CommandBar", "Flyouts")]
 #endif
     public sealed partial class CommandBar_Flyout : UserControl
     {

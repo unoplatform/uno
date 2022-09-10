@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml.XamlRoot
 {
-	[Sample("XamlRoot", Description = "")]
+	[Sample("Windowing", Description = "")]
 	public sealed partial class XamlRoot_Properties : UserControl
 	{
 		public XamlRoot_Properties()

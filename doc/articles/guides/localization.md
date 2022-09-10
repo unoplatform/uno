@@ -5,48 +5,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
 > [!TIP]
 > The complete source code that goes along with this guide is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [Localization](https://github.com/unoplatform/Uno.Samples/tree/master/UI/LocalizationSamples/Localization)
 
-## Prerequisites
-
-# [Visual Studio for Windows](#tab/tabid-vswin)
-
-* [Visual Studio 2019 16.3 or later](http://www.visualstudio.com/downloads/)
-  * **Universal Windows Platform** workload installed
-  * **Mobile Development with .NET (Xamarin)** workload installed
-  * **ASP**.**NET and web** workload installed
-  * [Uno Platform Extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) installed
-
-# [VS Code](#tab/tabid-vscode)
-
-* [**Visual Studio Code**](https://code.visualstudio.com/)
-
-* [**Mono**](https://www.mono-project.com/download/stable/)
-
-* **.NET Core SDK**
-    * [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1) (**version 3.1.8 (SDK 3.1.402)** or later)
-    * [.NET Core 5.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (**version 5.0 (SDK 5.0.100)** or later)
-
-    > Use `dotnet --version` from the terminal to get the version installed.
-
-# [Visual Studio for Mac](#tab/tabid-vsmac)
-
-* [**Visual Studio for Mac 8.8**](https://visualstudio.microsoft.com/vs/mac/)
-* [**Xcode**](https://apps.apple.com/us/app/xcode/id497799835?mt=12) 10.0 or higher
-* An [**Apple ID**](https://support.apple.com/en-us/HT204316)
-* **.NET Core SDK**
-    * [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1) (**version 3.1.8 (SDK 3.1.402)** or later)
-    * [.NET Core 5.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (**version 5.0 (SDK 5.0.100)** or later)
-* [**GTK+3**](https://formulae.brew.sh/formula/gtk+3) for running the Skia/GTK projects
-
-# [JetBrains Rider](#tab/tabid-rider)
-
-* [**Rider Version 2020.2+**](https://www.jetbrains.com/rider/download/)
-* [**Rider Xamarin Android Support Plugin**](https://plugins.jetbrains.com/plugin/12056-rider-xamarin-android-support/) (you may install it directly from Rider)
-
-***
-
-<br>
-
-> [!Tip]
+> [!TIP]
 > For a step-by-step guide to installing the prerequisites for your preferred IDE and environment, consult the [Get Started guide](../get-started.md).
 
 ## Step-by-steps

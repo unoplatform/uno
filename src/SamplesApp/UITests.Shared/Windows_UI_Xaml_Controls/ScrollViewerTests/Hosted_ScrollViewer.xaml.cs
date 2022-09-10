@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests
 {
-	[SampleControlInfo("ScrollViewer", nameof(Hosted_ScrollViewer), description: "Test the ability of a ScrollViewer's content in have a proper TemplatedParent)")]
+	[SampleControlInfo("Scrolling", nameof(Hosted_ScrollViewer), description: "Test the ability of a ScrollViewer's content in have a proper TemplatedParent)")]
 	public sealed partial class Hosted_ScrollViewer : UserControl
 	{
 		public Hosted_ScrollViewer()

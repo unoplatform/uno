@@ -39,8 +39,8 @@ namespace Windows.UI.Xaml.Controls
 		};
 
 		// Cache these objects for the view as they are expensive to query via GetForCurrentView() calls.
-		ApplicationView m_applicationView = null;
-		UIViewSettings m_uiViewSettings = null;
+		ApplicationView m_applicationView;
+		UIViewSettings m_uiViewSettings;
 
 
 		// Visual components
@@ -51,7 +51,11 @@ namespace Windows.UI.Xaml.Controls
 		Button m_paneSearchButton;
 		Button m_backButton;
 		TextBlock m_paneTitleTextBlock;
-		Grid m_buttonHolderGrid = null;
+
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
+		Grid m_buttonHolderGrid;
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
+
 		ListView m_leftNavListView;
 		ListView m_topNavListView;
 		Button m_topNavOverflowButton;
@@ -80,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 		ContentControl m_paneCustomContentOnTopPane;
 		ContentControl m_paneFooterOnTopPane;
 
-		int m_indexOfLastSelectedItemInTopNav = 0;
+		int m_indexOfLastSelectedItemInTopNav;
 		object m_lastSelectedItemPendingAnimationInTopNav;
 		List<int> m_itemsRemovedFromMenuFlyout = new List<int>();
 
@@ -100,34 +104,34 @@ namespace Windows.UI.Xaml.Controls
 		SerialDisposable m_layoutUpdatedToken = new SerialDisposable();
 		//winrt::UIElement::AccessKeyInvoked_revoker m_accessKeyInvokedRevoker =;
 
-		bool m_wasForceClosed = false;
-		bool m_isClosedCompact = false;
-		bool m_blockNextClosingEvent = false;
-		bool m_initialListSizeStateSet = false;
+		bool m_wasForceClosed;
+		bool m_isClosedCompact;
+		bool m_blockNextClosingEvent;
+		bool m_initialListSizeStateSet;
 
 		TopNavigationViewDataProvider m_topDataProvider;
 
-		bool m_appliedTemplate = false;
+		bool m_appliedTemplate;
 
 		// flag is used to stop recursive call. eg:
 		// Customer select an item from SelectedItem property->ChangeSelection update ListView->LIstView raise OnSelectChange(we want stop here)->change property do do animation again.
 		// Customer clicked listview->listview raised OnSelectChange->SelectedItem property changed->ChangeSelection->Undo the selection by SelectedItem(prevItem) (we want it stop here)->ChangeSelection again ->...
-		bool m_shouldIgnoreNextSelectionChange = false;
+		bool m_shouldIgnoreNextSelectionChange;
 
 		// If SelectedItem is set by API, ItemInvoked should not be raised. 
-		bool m_shouldRaiseInvokeItemInSelectionChange = false;
+		bool m_shouldRaiseInvokeItemInSelectionChange;
 
 		// Because virtualization for ItemsStackPanel, not all containers are realized. It request another round of MeasureOverride
-		bool m_shouldInvalidateMeasureOnNextLayoutUpdate = false;
+		bool m_shouldInvalidateMeasureOnNextLayoutUpdate;
 
 		// during measuring, we should ignore SelectChange in overflow, otherwise it enters deadloop.
-		bool m_shouldIgnoreOverflowItemSelectionChange = false;
+		bool m_shouldIgnoreOverflowItemSelectionChange;
 
 		// when exchanging items between overflow and primary, it cause selectionchange. and then item invoked, and may cause MeasureOverride like customer changed something.
-		bool m_shouldIgnoreNextMeasureOverride = false;
+		bool m_shouldIgnoreNextMeasureOverride;
 
 		// A flag to track that the selectionchange is caused by selection a item in topnav overflow menu
-		bool m_selectionChangeFromOverflowMenu = false;
+		bool m_selectionChangeFromOverflowMenu;
 
 		TopNavigationViewLayoutState m_topNavigationMode = TopNavigationViewLayoutState.InitStep1;
 
@@ -135,13 +139,13 @@ namespace Windows.UI.Xaml.Controls
 		double m_topNavigationRecoveryGracePeriodWidth = 5.0;
 
 		// Avoid layout cycle on InitStep2
-		int m_measureOnInitStep2Count = 0;
+		int m_measureOnInitStep2Count;
 
 		// There are three ways to change IsPaneOpen:
 		// 1, customer call IsPaneOpen=true/false directly or nav.IsPaneOpen is binding with a variable and the value is changed.
 		// 2, customer click ToggleButton or splitView.IsPaneOpen->nav.IsPaneOpen changed because of window resize
 		// 3, customer changed PaneDisplayMode.
 		// 2 and 3 are internal implementation and will call by ClosePane/OpenPane. the flag is to indicate 1 if it's false
-		bool m_isOpenPaneForInteraction = false;
+		bool m_isOpenPaneForInteraction;
 	}
 }

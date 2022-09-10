@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 {
-	[Sample("MenuFlyout")]
+	[Sample("Flyouts")]
 	public sealed partial class MenuFlyout_Nested_5639 : UserControl
 	{
 		public MenuFlyout_Nested_5639()

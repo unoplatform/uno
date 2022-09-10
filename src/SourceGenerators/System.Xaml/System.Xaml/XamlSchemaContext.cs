@@ -102,13 +102,13 @@ namespace Uno.Xaml
 #endif
 		}
 
+#if SUPPORTS_LOAD_ASSEMBLIES
 		~XamlSchemaContext ()
 		{
-#if SUPPORTS_LOAD_ASSEMBLIES
 			if (reference_assemblies == null)
 				unhookAssemblyLoad?.Invoke();
-#endif
 		}
+#endif
 
 		IList<Assembly> reference_assemblies;
 
@@ -120,7 +120,9 @@ namespace Uno.Xaml
 		XamlType [] empty_xaml_types = new XamlType [0];
 		List<XamlType> run_time_types = new List<XamlType> ();
 		object gate = new object();
+#if SUPPORTS_LOAD_ASSEMBLIES
 		Action unhookAssemblyLoad;
+#endif
 
 		public bool FullyQualifyAssemblyNamesInClrNamespaces { get; private set; }
 

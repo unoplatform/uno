@@ -21,7 +21,7 @@ namespace MUXControlsTestApp
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-	[Sample("NavigationView", "WinUI")]
+	[Sample("NavigationView", "MUX")]
     public sealed partial class NavigationViewInfoBadgeTestPage : MUXControlsTestApp.TestPage
 	{
         public NavigationViewInfoBadgeTestPage()

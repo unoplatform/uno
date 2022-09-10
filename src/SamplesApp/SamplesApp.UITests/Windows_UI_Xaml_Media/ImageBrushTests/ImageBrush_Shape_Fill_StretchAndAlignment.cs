@@ -18,25 +18,27 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.ImageBrushTests
 		private const string red = "#ED1C24";
 		private const string green = "#008000";
 		private const string white = "#FFFFFF";
+
+		private const int SingleStretchTestTimeout = 3 * 60 * 1000;
+		
 		private readonly ExpectedColor[] _expectedColors = GetExpectedColors();
 
 		[Test]
 		[AutoRetry]
-		[Timeout(7 * 60 * 1000)]
-		public void When_StretchAndAlignment()
+		[Timeout(SingleStretchTestTimeout)]
+		public void When_StretchAndAlignment([Values] Stretch stretch)
 		{
 			try
 			{
 				Run("UITests.Windows_UI_Xaml_Media.ImageBrushTests.ImageBrushShapeStretchesAlignments");
 				_app.SetOrientationPortrait();
 
-
 				_app.WaitForElement("MyRectangle");
 
+				SetProperty("MyStretch", "SelectedIndex", ((int)stretch).ToString());
 
-				foreach (var expected in _expectedColors)
+				foreach (var expected in _expectedColors.Where(e => e.Stretch == stretch))
 				{
-					SetProperty("MyStretch", "SelectedIndex", ((int)expected.Stretch).ToString());
 					SetProperty("MyAlignmentX", "SelectedIndex", ((int)expected.AlignmentX).ToString());
 					SetProperty("MyAlignmentY", "SelectedIndex", ((int)expected.AlignmentY).ToString());
 
@@ -129,7 +131,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.ImageBrushTests
 			Bottom,
 		}
 
-		private enum Stretch : int
+		public enum Stretch : int
 		{
 			Fill = 0,
 			None,

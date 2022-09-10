@@ -19,12 +19,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private Func<XamlMember, IEventSymbol?>? _findEventType;
 		private Func<INamedTypeSymbol, Dictionary<string, IEventSymbol>>? _getEventsForType;
 		private Func<INamedTypeSymbol, string[]>? _findLocalizableDeclaredProperties;
-		private (string ns, string className) _className;
+		private XClassName? _xClassName;
 		private string[]? _clrNamespaces;
 		private readonly static Func<INamedTypeSymbol, IPropertySymbol?> _findContentProperty;
 		private readonly static Func<INamedTypeSymbol, string, bool> _isAttachedProperty;
 		private readonly static Func<INamedTypeSymbol, string, INamedTypeSymbol> _getAttachedPropertyType;
 		private readonly static Func<INamedTypeSymbol, bool> _isTypeImplemented;
+
+		record XClassName(string Namespace, string ClassName, INamedTypeSymbol? Symbol)
+		{
+			public override string ToString()
+				=> Symbol?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Included))
+				?? Namespace + "." + ClassName;
+		}
 
 		private void InitCaches()
 		{
@@ -412,7 +419,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var resolvedType = type;
 
 					var property = resolvedType.GetAllPropertiesWithName(propertyName).FirstOrDefault();
-					var setMethod = resolvedType.GetMethods().FirstOrDefault(p => p.Name == "Set" + propertyName);
+					var setMethod = resolvedType.GetFirstMethodWithName("Set" + propertyName);
 
 					if (property != null)
 					{
@@ -549,7 +556,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return true;
 				}
 
-				var setMethod = type?.GetMethods().FirstOrDefault(p => p.Name == "Set" + name);
+				var setMethod = type?.GetFirstMethodWithName("Set" + name);
 				if (setMethod is { IsStatic: true, Parameters: { Length: 2 } })
 				{
 					return true;
@@ -577,7 +584,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			do
 			{
-				var setMethod = type?.GetMethods().FirstOrDefault(p => p.Name == "Set" + name);
+				var setMethod = type?.GetFirstMethodWithName("Set" + name);
 
 				if (setMethod != null && setMethod.IsStatic && setMethod.Parameters.Length == 2)
 				{

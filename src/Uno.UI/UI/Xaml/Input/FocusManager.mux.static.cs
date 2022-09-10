@@ -15,12 +15,6 @@ using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 
-//TODO Uno: Workaround for https://github.com/unoplatform/uno/issues/134
-#if NETFX_CORE
-using Popup = Windows.UI.Xaml.Controls.Primitives.Popup;
-#else
-#endif
-
 namespace Windows.UI.Xaml.Input
 {
 	public partial class FocusManager
@@ -360,6 +354,8 @@ namespace Windows.UI.Xaml.Input
 				// We need to start and complete the async operation since this is a no-op
 
 				spFocusAsyncOperation.CoreSetResults(new FocusMovementResult());
+				spFocusAsyncOperation.CoreFireCompletion();
+				return asyncOperation;
 			}
 
 			// TODO Uno specific: Do not use async operations, only simulated

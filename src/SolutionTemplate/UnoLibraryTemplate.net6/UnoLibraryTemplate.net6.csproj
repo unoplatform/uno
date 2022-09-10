@@ -8,6 +8,7 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>15.0</OldToolsVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -19,7 +20,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UnoLibraryTemplate</RootNamespace>
     <AssemblyName>UnoLibraryTemplate</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <GeneratePkgDefFile>false</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>false</IncludeAssemblyInVSIXContainer>
@@ -63,7 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="CrossTargetedLibrary.csproj" />
-    <VSTemplate Include="CrossTargetedLibrary.vstemplate">
+    <VSTemplate Include="CrossTargetedLibrary.Net6.vstemplate">
       <OutputSubPath>Uno Platform</OutputSubPath>
     </VSTemplate>
   </ItemGroup>

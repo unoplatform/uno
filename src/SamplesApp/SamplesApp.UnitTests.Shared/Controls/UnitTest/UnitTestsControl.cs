@@ -27,6 +27,8 @@ using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Newtonsoft.Json;
+using System.Text;
+using System.Security.Cryptography;
 
 #if HAS_UNO
 using Uno.Foundation.Logging;
@@ -61,6 +63,12 @@ namespace Uno.UI.Samples.Tests
 		private List<TestCaseResult> _testCases = new List<TestCaseResult>();
 		private TestRun _currentRun;
 
+		// On WinUI/UWP dependency properties cannot be accessed outside of
+		// UI thread. This field caches the current value so it can be accessed
+		// asynchronously during test enumeration.
+		private int _ciTestsGroupCountCache = -1;
+		private int _ciTestGroupCache = -1;
+		
 		public UnitTestsControl()
 		{
 			this.InitializeComponent();
@@ -74,6 +82,9 @@ namespace Uno.UI.Samples.Tests
 					unitTestContentRoot.Content = elt;
 				}
 			);
+
+			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow =
+				Windows.UI.Xaml.Window.Current;
 
 			DataContext = null;
 
@@ -115,6 +126,42 @@ namespace Uno.UI.Samples.Tests
 		// Using a DependencyProperty as the backing store for IsRunningOnCI.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty IsRunningOnCIProperty =
 			DependencyProperty.Register("IsRunningOnCI", typeof(bool), typeof(UnitTestsControl), new PropertyMetadata(false));
+
+		/// <summary>
+		/// Defines the test group for splitting runtime tests on CI
+		/// </summary>
+		public int CITestGroup
+		{
+			get => (int)GetValue(CITestGroupProperty);
+			set => SetValue(CITestGroupProperty, value);
+		}
+
+		public static readonly DependencyProperty CITestGroupProperty =
+			DependencyProperty.Register("CITestGroup", typeof(int), typeof(UnitTestsControl), new PropertyMetadata(-1, OnCITestGroupChanged));
+
+		private static void OnCITestGroupChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			var unitTestsControl = (UnitTestsControl)d;
+			unitTestsControl._ciTestGroupCache = (int)e.NewValue;
+		}
+
+		/// <summary>
+		/// Defines the test group for splitting runtime tests on CI
+		/// </summary>
+		public int CITestGroupCount
+		{
+			get => (int)GetValue(CITestGroupCountProperty);
+			set => SetValue(CITestGroupCountProperty, value);
+		}
+
+		public static readonly DependencyProperty CITestGroupCountProperty =
+			DependencyProperty.Register("CITestGroupCount", typeof(int), typeof(UnitTestsControl), new PropertyMetadata(-1, OnCITestsGroupCountChanged));
+
+		private static void OnCITestsGroupCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			var unitTestsControl = (UnitTestsControl)d;
+			unitTestsControl._ciTestsGroupCountCache = (int)e.NewValue;
+		}
 
 		public string NUnitTestResultsDocument
 		{
@@ -884,10 +931,22 @@ namespace Uno.UI.Samples.Tests
 
 			return from type in types
 				   where type.GetTypeInfo().GetCustomAttribute(typeof(TestClassAttribute)) != null
+				   where _ciTestsGroupCountCache == -1 || (_ciTestsGroupCountCache != -1 && (GetTypeTestGroup(type) % _ciTestsGroupCountCache) == _ciTestGroupCache)
 				   orderby type.Name
 				   let info = BuildType(type)
 				   where info.Type is { }
 				   select info;
+		}
+
+		private static SHA1 _sha1 = SHA1.Create();
+
+		private int GetTypeTestGroup(Type type)
+		{
+			// Compute a stable hash of the full metadata name
+			var buffer = Encoding.UTF8.GetBytes(type.FullName);
+			var hash = _sha1.ComputeHash(buffer);
+
+			return (int)BitConverter.ToUInt64(hash, 0);
 		}
 
 		private static UnitTestClassInfo BuildType(Type type)

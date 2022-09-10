@@ -10,21 +10,12 @@ namespace Windows.Graphics.Display
 
 		private static DisplayInformation InternalGetForCurrentView() => _lazyInstance.Value;
 
-		private NSObject _didChangeScreenParametersObserver = null;
+		private NSObject _didChangeScreenParametersObserver;
 
 		public DisplayOrientations CurrentOrientation
 		{
-			get
-			{
-				if (NSScreen.MainScreen.Frame.Width > NSScreen.MainScreen.Frame.Height)
-				{
-					return DisplayOrientations.Landscape;
-				}
-				else
-				{
-					return DisplayOrientations.Portrait;
-				}
-			}
+			get;
+			private set;
 		}
 
 		/// <summary>
@@ -36,33 +27,69 @@ namespace Windows.Graphics.Display
 
 		public uint ScreenHeightInRawPixels
 		{
-			get
-			{
-				var screenSize = NSScreen.MainScreen.Frame.Size;
-				var scale = NSScreen.MainScreen.BackingScaleFactor;
-				return (uint)(screenSize.Height * scale);
-			}
+			get;
+			private set;
 		}
 
 		public uint ScreenWidthInRawPixels
 		{
-			get
-			{
-				var screenSize = NSScreen.MainScreen.Frame.Size;
-				var scale = NSScreen.MainScreen.BackingScaleFactor;
-				return (uint)(screenSize.Width * scale);
-			}
+			get;
+			private set;
 		}
 
-		public double RawPixelsPerViewPixel => NSScreen.MainScreen.BackingScaleFactor;
+		public double RawPixelsPerViewPixel
+		{
+			get;
+			private set;
+		}
 
 		/// <summary>
 		/// Scale of 1 is considered @1x, which is the equivalent of 96.0 or 100% for UWP.
 		/// https://developer.apple.com/documentation/uikit/uiscreen/1617836-scale
 		/// </summary>
-		public float LogicalDpi => (float)(NSScreen.MainScreen.BackingScaleFactor * BaseDpi);
+		public float LogicalDpi
+		{
+			get;
+			private set;
+		}
 
-		public ResolutionScale ResolutionScale => (ResolutionScale)(int)(NSScreen.MainScreen.BackingScaleFactor * 100.0);
+		public ResolutionScale ResolutionScale
+		{
+			get;
+			private set;
+		}
+
+		private void Update()
+		{
+			var screen = NSScreen.MainScreen;
+			var rect = screen.ConvertRectToBacking(screen.Frame);
+
+			ScreenHeightInRawPixels = (uint)rect.Height;
+			ScreenWidthInRawPixels = (uint)rect.Width;
+			RawPixelsPerViewPixel = screen.BackingScaleFactor;
+
+			CurrentOrientation = ScreenWidthInRawPixels > ScreenHeightInRawPixels
+				? DisplayOrientations.Landscape : DisplayOrientations.Portrait;
+
+			LogicalDpi = (float)(RawPixelsPerViewPixel * BaseDpi);
+
+			ResolutionScale = (ResolutionScale)(int)(RawPixelsPerViewPixel * 100.0);
+		}
+
+		partial void Initialize()
+		{
+			NSNotificationCenter
+				.DefaultCenter
+				.AddObserver(
+					NSWindow.DidChangeScreenNotification,
+					n =>
+					{
+						Update();
+					}
+				);
+			// we are notified on changes but we're already on a screen so let's initialize
+			Update();
+		}
 
 		partial void StartOrientationChanged() => ObserveDisplayMetricsChanges();
 

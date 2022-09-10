@@ -34,7 +34,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 		public String Content { get; set; }
 	}
 
-	[Sample("TabView", "WinUI")]
+	[Sample("TabView", "MUX")]
 	public sealed partial class TabViewPage : Page
 	{
 		int _newTabNumber = 1;

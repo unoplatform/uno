@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.TouchEventsTests
 {
-	[SampleControlInfo("Touch", "TouchRotated", description: "Button inside a rotated Grid. The touch should still work.")]
+	[SampleControlInfo("Pointers", "TouchRotated", description: "Button inside a rotated Grid. The touch should still work.")]
 	public sealed partial class TouchRotated : UserControl
 	{
 		public TouchRotated()

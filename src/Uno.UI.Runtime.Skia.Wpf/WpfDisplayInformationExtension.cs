@@ -11,7 +11,7 @@ namespace Uno.UI.Skia.Platform
 	{
 		private readonly DisplayInformation _displayInformation;
 
-		private float? _dpi = null;
+		private float? _dpi;
 
 		public WpfDisplayInformationExtension(object owner)
 		{
@@ -30,6 +30,8 @@ namespace Uno.UI.Skia.Platform
 		public double RawPixelsPerViewPixel => LogicalDpi / DisplayInformation.BaseDpi;
 
 		public ResolutionScale ResolutionScale => (ResolutionScale)(int)(RawPixelsPerViewPixel * 100.0);
+
+		public double? DiagonalSizeInInches => null;
 
 		private void OnDpiChanged(object sender, DpiChangedEventArgs e)
 		{

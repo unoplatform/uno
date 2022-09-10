@@ -21,7 +21,7 @@ using DisplayRegionHelperTestApi = Microsoft.UI.Xaml.Controls.DisplayRegionHelpe
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests
 {
-	[Sample("MUX", "WinUI", Name= "TwoPaneView")]
+	[Sample("MUX", Name= "TwoPaneView")]
 	public sealed partial class TwoPaneViewPage : Page
     {
         // Need to be the same as c_defaultMinWideModeWidth/c_defaultMinTallModeHeight in TwoPaneViewFactory.cpp

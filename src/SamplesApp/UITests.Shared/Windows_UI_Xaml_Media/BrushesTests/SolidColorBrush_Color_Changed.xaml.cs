@@ -19,7 +19,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Media.BrushesTests
 {
-	[Sample]
+	[Sample("Brushes")]
 	public sealed partial class SolidColorBrush_Color_Changed : UserControl
 	{
 		public SolidColorBrush_Color_Changed()

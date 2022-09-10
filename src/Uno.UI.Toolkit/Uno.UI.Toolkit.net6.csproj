@@ -24,6 +24,9 @@
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
+
+		<!-- Disabled because of LinkerDefinitionMergerTask performance issues https://github.com/unoplatform/uno/issues/9632 -->
+		<!--<UnoXamlResourcesTrimming Condition="'$(Configuration)'!='Debug'">true</UnoXamlResourcesTrimming>-->
 	</PropertyGroup>
 
 	<!--Workaround to prevent build to fail because the project has too many dependencies when checking support libraries versions.
@@ -41,6 +44,12 @@
   <ItemGroup>
     <PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
+
+	<PropertyGroup>
+	  <UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
+	</PropertyGroup>
+	
+	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI\Uno.UI.net6.csproj">

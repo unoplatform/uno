@@ -19,3 +19,4 @@ jobs:
 
     condition: ne(variables['System.PullRequest.PullRequestNumber'], '')
 
+  - template: templates/generate-changelog.yml

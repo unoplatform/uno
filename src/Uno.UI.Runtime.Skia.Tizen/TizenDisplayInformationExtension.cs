@@ -31,6 +31,8 @@ namespace Uno.UI.Runtime.Skia
 
 		public ResolutionScale ResolutionScale => (ResolutionScale)(int)(LogicalDpi / 1.60f);
 
+		public double? DiagonalSizeInInches => null;
+
 		private int GetDpi()
 		{
 			// TV has fixed DPI value (72)

@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Media;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 {
-	[Sample("NumberBox", "WinUI")]
+	[Sample("NumberBox", "MUX")]
 	public sealed partial class NumberBox_ExpressionTest : Page
 	{
 		const double resetValue = double.NaN;

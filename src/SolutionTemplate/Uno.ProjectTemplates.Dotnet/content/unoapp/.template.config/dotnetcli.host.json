@@ -5,33 +5,9 @@
       "longName": "webassembly",
       "shortName": "wasm"
     },
-    "iOS": {
-      "longName": "ios",
-      "shortName": "ios"
-    },
-    "Android": {
-      "longName": "android",
-      "shortName": "android"
-    },
-    "macOS": {
-      "longName": "macos",
-      "shortName": "macos"
-    },
-    "skia-wpf": {
-      "longName": "skia-wpf",
-      "shortName": "skia-wpf"
-    },
-    "skia-gtk": {
-      "longName": "skia-gtk",
-      "shortName": "skia-gtk"
-    },
-    "skia-tizen": {
-      "longName": "skia-tizen",
-      "shortName": "skia-tizen"
-    },
-    "skia-linux-fb": {
-      "longName": "skia-linux-fb",
-      "shortName": "skia-linux-fb"
+    "mobile": {
+      "longName": "mobile",
+      "shortName": "mobile"
     }
   }
 }

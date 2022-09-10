@@ -17,6 +17,7 @@ jobs:
     - iOS_Snapshot_Tests_Group_02
     - iOS_Snapshot_Tests_Group_03
     - iOS_Snapshot_Tests_Group_04
+    - macOS_Screenshot_Tests
 
   condition: or(succeeded(), and(failed(), ge(variables['System.StageAttempt'], 5)))
 
@@ -77,5 +78,5 @@ jobs:
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: wasm-uitests-compare-results
+      ArtifactName: uitests-compare-results
       ArtifactType: Container

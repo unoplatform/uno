@@ -12,13 +12,15 @@
       "type": "pwa-chrome",
       "request": "launch",
       "url": "http://localhost:5000",
-      "webRoot": "${workspaceFolder}/UnoQuickStart.Wasm",
+      "webRoot": "${workspaceFolder}/UnoWinUIQuickStart.Wasm",
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
+      "timeout": 30000,
       "server": {
         "runtimeExecutable": "dotnet",
         "program": "run",
         "outputCapture": "std",
-        "cwd": "${workspaceFolder}/UnoQuickStart.Wasm"
+        "timeout": 30000,
+        "cwd": "${workspaceFolder}/UnoWinUIQuickStart.Wasm"
       }
     },
     {
@@ -30,12 +32,12 @@
       "request": "launch",
       "preLaunchTask": "build-skia-gtk",
       // If you have changed target frameworks, make sure to update the program path.
-      "program": "${workspaceFolder}/UnoQuickStart.Skia.Gtk/bin/Debug/net5.0/UnoQuickStart.Skia.Gtk.dll",
+      "program": "${workspaceFolder}/UnoWinUIQuickStart.Skia.Gtk/bin/Debug/net6.0/UnoWinUIQuickStart.Skia.Gtk.dll",
       "args": [],
       "env": {
         "DOTNET_MODIFIABLE_ASSEMBLIES": "debug"
       },
-      "cwd": "${workspaceFolder}/UnoQuickStart.Skia.Gtk",
+      "cwd": "${workspaceFolder}/UnoWinUIQuickStart.Skia.Gtk",
       // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
       "console": "internalConsole",
       "stopAtEntry": false

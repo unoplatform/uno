@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml
 			get => false; // Not implemented on macOS yet
 		}
 
-		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
+		internal bool ClippingIsSetByCornerRadius { get; set; }
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml
 			base.OnNativeKeyDown(evt);
 		}
 
-		private NSEventModifierMask _lastFlags = (NSEventModifierMask)0;
+		private NSEventModifierMask _lastFlags;
 
 		private protected override void OnNativeFlagsChanged(NSEvent evt)
 		{
@@ -262,18 +262,20 @@ namespace Windows.UI.Xaml
 			{
 				if (!ClippingIsSetByCornerRadius)
 				{
-					if (Layer != null)
+					var emptyClipLayer = Layer;
+					if (emptyClipLayer != null)
 					{
-						this.Layer.Mask = null;
+						emptyClipLayer.Mask = null;
 					}
 				}
 				return;
 			}
 
 			WantsLayer = true;
-			if (Layer != null)
+			var layer = Layer;
+			if (layer != null)
 			{
-				this.Layer.Mask = new CAShapeLayer
+				layer.Mask = new CAShapeLayer
 				{
 					Path = CGPath.FromRect(rect.ToCGRect())
 				};

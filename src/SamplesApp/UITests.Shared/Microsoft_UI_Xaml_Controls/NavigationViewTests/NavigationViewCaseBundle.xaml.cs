@@ -13,7 +13,7 @@ using Uno.UI.Samples.Controls;
 
 namespace MUXControlsTestApp
 {
-	//[Sample("NavigationView", "WinUI")]
+	//[Sample("NavigationView", "MUX")]
 	public sealed partial class NavigationViewCaseBundle : TestPage
 	{
         public NavigationViewCaseBundle()

@@ -10,7 +10,7 @@ namespace Windows.UI.Xaml.Media
 		private const string CssSupportCondition =
 			"(backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px))";
 
-		private static bool? _isBackdropFilterSupported = null;
+		private static bool? _isBackdropFilterSupported;
 
 		/// <summary>
         /// Subscribes to AcrylicBrush for a given UI element and applies it.

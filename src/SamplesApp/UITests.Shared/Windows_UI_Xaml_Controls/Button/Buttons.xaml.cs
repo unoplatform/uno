@@ -12,7 +12,7 @@ using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
-	[SampleControlInfo("Button", "Buttons")]
+	[SampleControlInfo("Buttons", "Buttons")]
 	public sealed partial class Buttons : UserControl
 	{
 		private ButtonsViewModel _viewModel;

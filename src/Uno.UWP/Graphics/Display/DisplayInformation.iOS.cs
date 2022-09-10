@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,37 +35,37 @@ namespace Windows.Graphics.Display
 
 		public uint ScreenHeightInRawPixels
 		{
-			get
-			{
-				var screenSize = UIScreen.MainScreen.Bounds.Size;
-				var scale = UIScreen.MainScreen.NativeScale;
-				return (uint)(screenSize.Height * scale);
-			}
+			get;
+			private set;
 		}
 
 		public uint ScreenWidthInRawPixels
 		{
-			get
-			{
-				var screenSize = UIScreen.MainScreen.Bounds.Size;
-				var scale = UIScreen.MainScreen.NativeScale;
-				return (uint)(screenSize.Width * scale);
-			}
+			get;
+			private set;
 		}
 
-		public double RawPixelsPerViewPixel => UIScreen.MainScreen.NativeScale;
+		public double RawPixelsPerViewPixel
+		{
+			get;
+			private set;
+		}
 
+		/// <summary>
+		/// Scale of 1 is considered @1x, which is the equivalent of 96.0 or 100% for UWP.
+		/// https://developer.apple.com/documentation/uikit/uiscreen/1617836-scale
+		/// </summary>
 		public float LogicalDpi
 		{
-			get
-			{
-				// Scale of 1 is considered @1x, which is the equivalent of 96.0 or 100% for UWP.
-				// https://developer.apple.com/documentation/uikit/uiscreen/1617836-scale
-				return (float)(UIScreen.MainScreen.Scale * BaseDpi);
-			}
+			get;
+			private set;
 		}
 
-		public ResolutionScale ResolutionScale => (ResolutionScale)(int)(UIScreen.MainScreen.Scale * 100.0);
+		public ResolutionScale ResolutionScale
+		{
+			get;
+			private set;
+		}
 
 		/// <summary>
 		/// Sets the NativeOrientation property 
@@ -104,6 +103,35 @@ namespace Windows.Graphics.Display
 				default:
 					return DisplayOrientations.None;
 			}
+		}
+
+		private void Update()
+		{
+			var screen = UIScreen.MainScreen;
+			var bounds = screen.Bounds;
+
+			RawPixelsPerViewPixel = screen.NativeScale;
+			ScreenHeightInRawPixels = (uint)(bounds.Height * RawPixelsPerViewPixel);
+			ScreenWidthInRawPixels = (uint)(bounds.Width * RawPixelsPerViewPixel);
+
+			LogicalDpi = (float)(RawPixelsPerViewPixel * BaseDpi);
+
+			ResolutionScale = (ResolutionScale)(int)(RawPixelsPerViewPixel * 100.0);
+		}
+
+		partial void Initialize()
+		{
+			NSNotificationCenter
+				.DefaultCenter
+				.AddObserver(
+					UIScreen.ModeDidChangeNotification,
+					n =>
+					{
+						Update();
+					}
+				);
+			// we are notified on changes but we're already on a screen so let's initialize
+			Update();
 		}
 
 		partial void StartOrientationChanged() => ObserveDisplayMetricsChanges();
@@ -170,4 +198,3 @@ namespace Windows.Graphics.Display
 		}
 	}
 }
-#endif

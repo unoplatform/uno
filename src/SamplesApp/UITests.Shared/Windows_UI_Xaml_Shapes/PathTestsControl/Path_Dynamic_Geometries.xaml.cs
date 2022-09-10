@@ -6,7 +6,7 @@ using Windows.UI.Xaml.Data;
 
 namespace UITests.Windows_UI_Xaml_Shapes.PathTestsControl
 {
-	[Sample]
+	[Sample("Path")]
 	public sealed partial class Path_Dynamic_Geometries : Page
 	{
 		public Path_Dynamic_Geometries()

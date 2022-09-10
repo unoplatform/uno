@@ -34,7 +34,9 @@
 
 * **iOS** on Windows: An attached Mac is needed, the iOS simulator will open on the Mac.
 
-* **Android** on Linux: Xamarin.Android does not natively support linux development. Rider has been capable of Android development on Linux in the past, but [previous directions are considered obsolete.](https://rider-support.jetbrains.com/hc/en-us/articles/360000557259--Obsolete-How-to-develop-Xamarin-Android-applications-on-Linux-with-Rider) As of this comment (3 Nov 2021) [Xamarin Android builds on linux fail](https://github.com/xamarin/xamarin-android).
+* **Android** on Linux: Xamarin.Android does not natively support Linux development. Rider has been capable of Android development on Linux in the past, but [previous directions are considered obsolete.](https://rider-support.jetbrains.com/hc/en-us/articles/360000557259--Obsolete-How-to-develop-Xamarin-Android-applications-on-Linux-with-Rider) As of this comment (3 Nov 2021) [Xamarin Android builds on Linux fail](https://github.com/xamarin/xamarin-android).
+
+[!include[getting-help](use-uno-check-inline.md)]
 
 ## Creating a new Uno Platform project
 
@@ -87,8 +89,6 @@ You will be able to build the UWP project, however, Rider currently does not sup
 
 ### Troubleshooting Uno Platform Installation Issues
 
-If you're not sure whether your environment is correctly configured for Uno Platform development, running the [`uno-check` command-line tool](uno-check.md) should be your first step.
+If you're not sure whether your environment is correctly configured for Uno Platform development, running the [`uno-check` command-line tool](external/uno.check/doc/using-uno-check.md) should be your first step.
 
-### Getting Help
-
-If you continue experiencing issues with Visual Studio and Uno Platform, please visit our [Discord](https://www.platform.uno/discord) - #uno-platform channel or [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform) where our engineering team and community will be able to help you. 
+[!include[getting-help](getting-help.md)]

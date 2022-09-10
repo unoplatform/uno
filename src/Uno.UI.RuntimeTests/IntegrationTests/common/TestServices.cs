@@ -15,7 +15,7 @@ namespace Private.Infrastructure
 
 		public class Utilities
 		{
-			internal static bool IsXBox { get; } = false;
+			internal static bool IsXBox { get; }
 			internal static void VerifyMockDCompOutput(MockDComp.SurfaceComparison comparison, string step) { }
 			internal static void VerifyMockDCompOutput(MockDComp.SurfaceComparison comparison) { }
 
@@ -50,7 +50,7 @@ namespace Private.Infrastructure
 #if __WASM__
 			action();
 #else
-			await WindowHelper.RootElement.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => action());
+			await WindowHelper.RootElementDispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => action());
 #endif
 		}
 

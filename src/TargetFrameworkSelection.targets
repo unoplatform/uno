@@ -42,6 +42,13 @@
       <TargetFrameworksOverride Condition="'$(MSBuildVersion)' &gt;= '15.4'">$(TargetFrameworks)</TargetFrameworksOverride>
       <TargetFrameworksOverride Condition="'$(CI_Build)'!='' and '$(TargetFrameworksCI)'!='' and '$(UITestsEnabled)'==''">$(TargetFrameworksCI)</TargetFrameworksOverride>
 
+
+		<!-- Allow projects to specify an always-built target framework -->
+		<TargetFrameworksOverride Condition="
+			'$(TargetFrameworksOverrideInvariant)'!=''
+			and '$(TargetFrameworksOverrideInvariant)'!='$(TargetFrameworksOverride)'">
+		  $(TargetFrameworksOverride);$(TargetFrameworksOverrideInvariant)</TargetFrameworksOverride>
+
       <_CanOverrideFramework>false</_CanOverrideFramework>
       <_CanOverrideFramework Condition="'$(BuildTargetFramework)' !='' and '$(DisableBuildTargetFramework)' =='' and '$(ExcludeRestorePackageImports)'!='true' and '$(DesignTimeBuild)' != 'true' and $(TargetFrameworks.Contains($(BuildTargetFramework)))">true</_CanOverrideFramework>
 

@@ -5,9 +5,22 @@ parameters:
   xCodeRootBuild: ''
   XamarinSDKVersionBuild: ''
 
+  # Align with SnapShotTestGenerator.GroupCount
+  SNAPSHOT_GROUPS:
+  - key: '00'
+    value: '01'
+  - key: '01'
+    value: '02'
+  - key: '02'
+    value: '03'
+  - key: '03'
+    value: '04'
+  - key: '04'
+    value: '05'
+
 jobs:
 - job: iOS_Build
-  displayName: 'iOS Samples App UI Tests (Build)'
+  displayName: 'Build iOS Samples App UI Tests'
 
   dependsOn: Pipeline_Validations
 
@@ -102,16 +115,53 @@ jobs:
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
 
+##
+## Runtime tests
+##
 - template: .azure-devops-ios-tests-run.yml
   parameters:
     nugetPackages: $(NUGET_PACKAGES)
-    JobName: 'iOS_Automated_Tests_Runtime_Tests'
-    JobDisplayName: 'iOS Automated Runtime Tests'
+    JobName: 'iOS_Automated_Tests_Runtime_Tests_group_0'
+    JobDisplayName: 'iOS Automated Runtime Tests Group 0'
     JobTimeoutInMinutes: 60
     vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: false
     UITEST_TEST_TIMEOUT: '3600000'
     UITEST_AUTOMATED_GROUP: 4
+    UITEST_RUNTIME_TEST_GROUP: 0
+    UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+    UITEST_ALLOW_RERUN: 'false'
+    xCodeRoot: ${{ parameters.xCodeRootTest }}
+    XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
+
+- template: .azure-devops-ios-tests-run.yml
+  parameters:
+    nugetPackages: $(NUGET_PACKAGES)
+    JobName: 'iOS_Automated_Tests_Runtime_Tests_group_1'
+    JobDisplayName: 'iOS Automated Runtime Tests Group 1'
+    JobTimeoutInMinutes: 60
+    vmImage: ${{ parameters.vmImageTest }}
+    UITEST_SNAPSHOTS_ONLY: false
+    UITEST_TEST_TIMEOUT: '3600000'
+    UITEST_AUTOMATED_GROUP: 4
+    UITEST_RUNTIME_TEST_GROUP: 1
+    UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+    UITEST_ALLOW_RERUN: 'false'
+    xCodeRoot: ${{ parameters.xCodeRootTest }}
+    XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
+
+- template: .azure-devops-ios-tests-run.yml
+  parameters:
+    nugetPackages: $(NUGET_PACKAGES)
+    JobName: 'iOS_Automated_Tests_Runtime_Tests_group_2'
+    JobDisplayName: 'iOS Automated Runtime Tests Group 2'
+    JobTimeoutInMinutes: 60
+    vmImage: ${{ parameters.vmImageTest }}
+    UITEST_SNAPSHOTS_ONLY: false
+    UITEST_TEST_TIMEOUT: '3600000'
+    UITEST_AUTOMATED_GROUP: 4
+    UITEST_RUNTIME_TEST_GROUP: 2
+    UITEST_RUNTIME_TEST_GROUP_COUNT: 3
     UITEST_ALLOW_RERUN: 'false'
     xCodeRoot: ${{ parameters.xCodeRootTest }}
     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
@@ -129,58 +179,17 @@ jobs:
 #     xCodeRoot: ${{ parameters.xCodeRootTest }}
 #     XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
 
-- template: .azure-devops-ios-tests-run.yml
-  parameters:
-    nugetPackages: $(NUGET_PACKAGES)
-    JobName: 'iOS_Snapshot_Tests_Group_01'
-    JobDisplayName: 'iOS Snapshot Tests Group 01'
-    JobTimeoutInMinutes: 45
-    vmImage: ${{ parameters.vmImageTest }}
-    UITEST_SNAPSHOTS_ONLY: true
-    UITEST_SNAPSHOTS_GROUP: 00
-    UITEST_TEST_TIMEOUT: '270000'
-    UITEST_ALLOW_RERUN: 'true'
-    xCodeRoot: ${{ parameters.xCodeRootTest }}
-    XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
-
-- template: .azure-devops-ios-tests-run.yml
-  parameters:
-    nugetPackages: $(NUGET_PACKAGES)
-    JobName: 'iOS_Snapshot_Tests_Group_02'
-    JobDisplayName: 'iOS Snapshot Tests Group 02'
-    JobTimeoutInMinutes: 70
-    vmImage: ${{ parameters.vmImageTest }}
-    UITEST_SNAPSHOTS_ONLY: true
-    UITEST_SNAPSHOTS_GROUP: 01
-    UITEST_TEST_TIMEOUT: '270000'
-    UITEST_ALLOW_RERUN: 'true'
-    xCodeRoot: ${{ parameters.xCodeRootTest }}
-    XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
-
-- template: .azure-devops-ios-tests-run.yml
-  parameters:
-    nugetPackages: $(NUGET_PACKAGES)
-    JobName: 'iOS_Snapshot_Tests_Group_03'
-    JobDisplayName: 'iOS Snapshot Tests Group 03'
-    JobTimeoutInMinutes: 45
-    vmImage: ${{ parameters.vmImageTest }}
-    UITEST_SNAPSHOTS_ONLY: true
-    UITEST_SNAPSHOTS_GROUP: 02
-    UITEST_TEST_TIMEOUT: '270000'
-    UITEST_ALLOW_RERUN: 'true'
-    xCodeRoot: ${{ parameters.xCodeRootTest }}
-    XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
-
-- template: .azure-devops-ios-tests-run.yml
-  parameters:
-    nugetPackages: $(NUGET_PACKAGES)
-    JobName: 'iOS_Snapshot_Tests_Group_04'
-    JobDisplayName: 'iOS Snapshot Tests Group 04'
-    JobTimeoutInMinutes: 45
-    vmImage: ${{ parameters.vmImageTest }}
-    UITEST_SNAPSHOTS_ONLY: true
-    UITEST_SNAPSHOTS_GROUP: 03
-    UITEST_TEST_TIMEOUT: '270000'
-    UITEST_ALLOW_RERUN: 'true'
-    xCodeRoot: ${{ parameters.xCodeRootTest }}
-    XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
+- ${{ each snapshotGroup in parameters.SNAPSHOT_GROUPS }}:
+  - template: .azure-devops-ios-tests-run.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+      JobName: 'iOS_Snapshot_Tests_Group_${{ snapshotGroup.value }}'
+      JobDisplayName: 'iOS Snapshot Tests Group ${{ snapshotGroup.value }}'
+      JobTimeoutInMinutes: 45
+      vmImage: ${{ parameters.vmImageTest }}
+      UITEST_SNAPSHOTS_ONLY: true
+      UITEST_SNAPSHOTS_GROUP: ${{ snapshotGroup.key }}
+      UITEST_TEST_TIMEOUT: '270000'
+      UITEST_ALLOW_RERUN: 'true'
+      xCodeRoot: ${{ parameters.xCodeRootTest }}
+      XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}

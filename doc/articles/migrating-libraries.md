@@ -1,4 +1,4 @@
-# Migrating a UWP-only class library to an Uno Platform class library
+# Migrating a WinUI or UWP class library to an Uno Platform class library
 
 This article describes how to port a class library for UWP to one that supports multiple target platforms using Uno. 
 
@@ -6,15 +6,15 @@ It assumes you're using Visual Studio for Windows, but the steps are similar if 
 
 ## Prerequisites
 
-Follow the instructions to [set up your development environment for Uno Platform with Visual Studio for Windows](get-started-vs.md), or another supported IDE such as [VS Code](get-started-vscode.md).
+Follow the instructions to [set up your development environment for Uno Platform](get-started.md).
 
 ## Applying Uno Platform project structure
 
-Turning a UWP-only class library into an Uno cross-platform class library entails changing the contents of the existing `.csproj` file. The easiest way to do that is to create a temporary Uno class library, and copy its contents into the existing `.csproj` file. The steps in detail:
+Adding Uno Platform support to an existing class library entails changing the contents of the existing `.csproj` file. The easiest way to do that is to create a temporary Uno class library and copy its contents into the existing `.csproj` file. The steps in detail:
 
-1. Open the solution containing the UWP-only library you wish to convert.
+1. Open the solution containing the WinUI/UWP-only library you wish to convert.
 
-2. Create a **Cross-Platform Library (Uno Platform)** project in the same solution, and name it `TempUno`.
+2. Create an **Uno Platform Library** project in the same solution, and name it `TempUno`.
 
 3. Let's say we want to convert a library called 'CoolControls'. Right-click on the `CoolControls` project, and choose **Unload Project**.
 

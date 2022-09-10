@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
 {
@@ -86,7 +87,7 @@ namespace Windows.UI.Xaml
 			}
 		} 
 
-		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
+		internal bool ClippingIsSetByCornerRadius { get; set; }
 
 		public void AddChild(UIElement child, int? index = null)
 		{
@@ -215,7 +216,26 @@ namespace Windows.UI.Xaml
 
 		internal UIElement FindFirstChild() => _children.FirstOrDefault();
 
-		public string Name { get; set; }
+		#region Name Dependency Property
+
+		private void OnNameChanged(string oldValue, string newValue)
+		{
+			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
+			{
+				Windows.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
+			}
+		}
+
+		[GeneratedDependencyProperty(DefaultValue = "", ChangedCallback = true)]
+		internal static DependencyProperty NameProperty { get; } = CreateNameProperty();
+
+		public string Name
+		{
+			get => GetNameValue();
+			set => SetNameValue(value);
+		}
+
+		#endregion
 
 		partial void InitializeCapture();
 
@@ -251,7 +271,7 @@ namespace Windows.UI.Xaml
 		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
 		{
 			LayoutSlotWithMarginsAndAlignments =
-				VisualTreeHelper.GetParent(this) is UIElement parent && parent is not RootVisual
+				VisualTreeHelper.GetParent(this) is UIElement parent and not RootVisual
 					? finalRect.DeflateBy(parent.GetBorderThickness())
 					: finalRect;
 

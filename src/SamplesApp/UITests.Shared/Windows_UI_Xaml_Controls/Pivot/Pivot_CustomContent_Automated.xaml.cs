@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Pivot
 {
-	[SampleControlInfo("Pivot Tests", nameof(Pivot_CustomContent_Automated))]
+	[SampleControlInfo("Pivot", nameof(Pivot_CustomContent_Automated))]
 	public sealed partial class Pivot_CustomContent_Automated : UserControl
 	{
 		public Pivot_CustomContent_Automated()

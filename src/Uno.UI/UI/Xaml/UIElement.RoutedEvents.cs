@@ -809,7 +809,7 @@ namespace Windows.UI.Xaml
 
 		internal struct BubblingContext
 		{
-			public static readonly BubblingContext Bubble = default;
+			public static readonly BubblingContext Bubble;
 
 			public static readonly BubblingContext NoBubbling = new() { Mode = BubblingMode.NoBubbling };
 

@@ -7,73 +7,13 @@ namespace Windows.UI.Xaml.Automation.Peers
 	#endif
 	public  partial class RangeBaseAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer,global::Windows.UI.Xaml.Automation.Provider.IRangeValueProvider
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsReadOnly
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool RangeBaseAutomationPeer.IsReadOnly is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double LargeChange
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double RangeBaseAutomationPeer.LargeChange is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double Maximum
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double RangeBaseAutomationPeer.Maximum is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double Minimum
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double RangeBaseAutomationPeer.Minimum is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double SmallChange
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double RangeBaseAutomationPeer.SmallChange is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double Value
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double RangeBaseAutomationPeer.Value is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public RangeBaseAutomationPeer( global::Windows.UI.Xaml.Controls.Primitives.RangeBase owner) : base(owner)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer", "RangeBaseAutomationPeer.RangeBaseAutomationPeer(RangeBase owner)");
-		}
-		#endif
+		// Skipping already declared property IsReadOnly
+		// Skipping already declared property LargeChange
+		// Skipping already declared property Maximum
+		// Skipping already declared property Minimum
+		// Skipping already declared property SmallChange
+		// Skipping already declared property Value
+		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.RangeBaseAutomationPeer(Windows.UI.Xaml.Controls.Primitives.RangeBase)
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.RangeBaseAutomationPeer(Windows.UI.Xaml.Controls.Primitives.RangeBase)
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.IsReadOnly.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.LargeChange.get
@@ -81,13 +21,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.Minimum.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.SmallChange.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.Value.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetValue( double value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer", "void RangeBaseAutomationPeer.SetValue(double value)");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.RangeBaseAutomationPeer.SetValue(double)
 		// Processing: Windows.UI.Xaml.Automation.Provider.IRangeValueProvider
 	}
 }

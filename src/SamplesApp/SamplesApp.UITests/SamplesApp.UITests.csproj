@@ -33,6 +33,7 @@
 
 	<ItemGroup>
 	  <Folder Include="MessageDialogTests\" />
+	  <Folder Include="Windows_UI_Xaml_Media_Imaging\RenderTargetBitmap_Tests_ExpectedResults\" />
 	  <Folder Include="Windows_UI_Xaml_Shapes\Basics_Shapes_Tests_EpectedResults\" />
 	</ItemGroup>
 
@@ -49,6 +50,9 @@
 		<Compile Include="$(MSBuildThisFileDirectory)..\..\Uno.UWP\Devices\Input\PointerDeviceType.cs">
 			<Link>TestFramework\PointerDeviceType.cs</Link>
 		</Compile>
+	  <None Update="Windows_UI_Xaml_Media_Imaging\RenderTargetBitmap_Tests_ExpectedResults\Border.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 </Project>

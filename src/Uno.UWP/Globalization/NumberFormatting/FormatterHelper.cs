@@ -21,7 +21,7 @@ namespace Uno.Globalization.NumberFormatting
 
 		public bool IsZeroSigned { get; set; }
 
-		public int SignificantDigits { get; set; } = 0;
+		public int SignificantDigits { get; set; }
 
 		public bool TryValidate(double value, out string text)
 		{

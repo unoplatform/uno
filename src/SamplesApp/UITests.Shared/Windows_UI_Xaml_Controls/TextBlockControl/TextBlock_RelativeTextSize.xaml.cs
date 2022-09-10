@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.TextBlockControl
 {
-	[Sample]
+	[Sample("TextBlock")]
 	public sealed partial class TextBlock_RelativeTextSize : Page
 	{
 		public TextBlock_RelativeTextSize()

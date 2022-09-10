@@ -2,21 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Background
 {
-	#if false 
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class BackgroundTaskRegistration : global::Windows.ApplicationModel.Background.IBackgroundTaskRegistration,global::Windows.ApplicationModel.Background.IBackgroundTaskRegistration2,global::Windows.ApplicationModel.Background.IBackgroundTaskRegistration3
 	{
-		#if false 
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Name
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string BackgroundTaskRegistration.Name is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Name
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Guid TaskId
@@ -27,16 +18,7 @@ namespace Windows.ApplicationModel.Background
 			}
 		}
 		#endif
-		#if false 
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.Background.IBackgroundTrigger Trigger
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IBackgroundTrigger BackgroundTaskRegistration.Trigger is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Trigger
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup TaskGroup

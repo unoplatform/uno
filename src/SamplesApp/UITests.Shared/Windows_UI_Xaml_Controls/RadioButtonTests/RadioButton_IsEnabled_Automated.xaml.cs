@@ -5,7 +5,7 @@ using Windows.UI.Xaml.Controls;
 namespace UITests.Shared.Windows_UI_Xaml_Controls.RadioButtonTests
 {
 
-	[SampleControlInfo]
+	[Sample("Buttons")]
 	public sealed partial class RadioButton_IsEnabled_Automated : UserControl
 	{
 		public RadioButton_IsEnabled_Automated()

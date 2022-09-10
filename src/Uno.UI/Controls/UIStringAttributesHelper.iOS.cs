@@ -77,6 +77,7 @@ namespace Uno.UI
 			var font = UIFontHelper.TryGetFont((float)tuple.fontSize, tuple.fontWeight, tuple.fontStyle, tuple.fontFamily, tuple.preferredBodyFontSize);
 			var attributes = new UIStringAttributes()
 			{
+				// TODO: Handle other brushes.
 				ForegroundColor = Brush.GetColorWithOpacity(tuple.foreground),
 				Font = font,
 				BaselineOffset = GetBaselineOffset(),

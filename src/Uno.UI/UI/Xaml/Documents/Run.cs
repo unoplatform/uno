@@ -12,8 +12,8 @@ namespace Windows.UI.Xaml.Documents
 
 		public string Text
 		{
-			get { return (string)this.GetValue(TextProperty); }
-			set { this.SetValue(TextProperty, value); }
+			get { return (string)GetValue(TextProperty); }
+			set { SetValue(TextProperty, value); }
 		}
 
 		public static DependencyProperty TextProperty { get ; } =
@@ -33,7 +33,8 @@ namespace Windows.UI.Xaml.Documents
 		public void OnTextChanged()
 		{
 			OnTextChangedPartial();
-			this.InvalidateInlines();
+			InvalidateInlines(true);
+			InvalidateSegmentsPartial();
 		}
 
 		partial void OnTextChangedPartial();
@@ -43,49 +44,55 @@ namespace Windows.UI.Xaml.Documents
 		protected override void OnForegroundChanged()
 		{
 			base.OnForegroundChanged();
-			this.InvalidateInlines();
+			InvalidateInlines(false);
 		}
 
 		protected override void OnFontFamilyChanged()
 		{
 			base.OnFontFamilyChanged();
-			this.InvalidateInlines();
+			InvalidateInlines(false);
+			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnFontSizeChanged()
 		{
 			base.OnFontSizeChanged();
-			this.InvalidateInlines();
+			InvalidateInlines(false);
+			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnFontStyleChanged()
 		{
 			base.OnFontStyleChanged();
-			this.InvalidateInlines();
+			InvalidateInlines(false);
+			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnFontWeightChanged()
 		{
 			base.OnFontWeightChanged();
-			this.InvalidateInlines();
+			InvalidateInlines(false);
+			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnBaseLineAlignmentChanged()
 		{
 			base.OnBaseLineAlignmentChanged();
-			this.InvalidateInlines();
+			InvalidateInlines(false);
 		}
 
 		protected override void OnCharacterSpacingChanged()
 		{
 			base.OnCharacterSpacingChanged();
-			this.InvalidateInlines();
+			InvalidateInlines(false);
 		}
 
 		protected override void OnTextDecorationsChanged()
 		{
 			base.OnTextDecorationsChanged();
-			this.InvalidateInlines();
+			InvalidateInlines(false);
 		}
+
+		partial void InvalidateSegmentsPartial();
 	}
 }

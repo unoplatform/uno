@@ -37,7 +37,7 @@ using AppKit;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 {
-	[SampleControlInfo("Button", "Button_UseUWPDefaultStyles", description: "Demonstrates correct operation of UseUWPDefaultStyles flag.")]
+	[SampleControlInfo("Buttons", "Button_UseUWPDefaultStyles", description: "Demonstrates correct operation of UseUWPDefaultStyles flag.")]
 	public sealed partial class Button_UseUWPDefaultStyles : UserControl
 	{
 		public Button_UseUWPDefaultStyles()

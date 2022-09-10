@@ -1,4 +1,4 @@
-# Get Started - Select your development environment
+### Select your development environment
 
 Welcome to Uno Platform! You'll be creating cross-platform applications with XAML and C# in no time.
 
@@ -6,20 +6,14 @@ To set up your development environment, first select the operating system you're
 
 **I am developing on...**
 
- - [Windows](#developing-on-windows)
- - [macOS](#developing-on-macos)
- - [Linux](#developing-on-linux)
+# [**Windows**](#tab/windows)
 
- ## Developing on Windows
-
-If you're developing on Windows, we recommend you use **Visual Studio**, for the richest XAML development experience and broadest platform coverage. 
+If you're developing on Windows, we recommend you use [**Visual Studio 2022**](get-started-vs-2022.md), for the richest XAML development experience and broadest platform coverage. 
 
 If you already use and love **JetBrains Rider** or **Visual Studio Code**, you can also use them to develop Uno Platform applications. Check the support matrix below to see which target platforms they support.
 
 **Choose the IDE you want to use:**
 
- - [Get started with Visual Studio 2019 for Windows](get-started-vs.md)
- - [Get started with Visual Studio 2022 for Windows](get-started-vs-2022.md)
  - [Get started with VS Code, Codespaces and GitPod](get-started-vscode.md)
  - [Get started with Rider](get-started-rider.md)
 
@@ -35,10 +29,7 @@ If you already use and love **JetBrains Rider** or **Visual Studio Code**, you c
 
  † You'll need to be connected to a Mac to run and debug iOS apps from Windows.
 
- ***
- <br>
-
- ## Developing on macOS
+# [**macOS**](#tab/macos)
 
 You can use **Visual Studio for Mac**, **JetBrains Rider**, or **Visual Studio Code** to build Uno Platform applications on macOS. See the support matrix below for supported target platforms.
 
@@ -57,10 +48,7 @@ You can use **Visual Studio for Mac**, **JetBrains Rider**, or **Visual Studio C
 | [**Codespaces / Gitpod**](get-started-vscode.md)  | ❌                      | ❌     | ❌ | ✔️                | ❌    | ✔️    | ✔️               | ✔️                   |
 | [**JetBrains Rider**](get-started-rider.md)       | ❌                      | ✔️     | ✔️ | ✔️                | ✔️    | ✔️    | ✔️               | ❌                   |
 
-***
- <br>
-
- ## Developing on Linux
+# [**Linux**](#tab/linux)
 
  You can use either **JetBrains Rider** or **Visual Studio Code** to build Uno Platform applications on Linux. See the support matrix below for supported target platforms.
  
@@ -82,3 +70,5 @@ You can use **Visual Studio for Mac**, **JetBrains Rider**, or **Visual Studio C
 † Notes:
 
 * **Android** on Linux: Xamarin.Android does not natively support linux development. Rider has been capable of Android development on Linux in the past, but [previous directions are considered obsolete.](https://rider-support.jetbrains.com/hc/en-us/articles/360000557259--Obsolete-How-to-develop-Xamarin-Android-applications-on-Linux-with-Rider) As of this comment (3 Nov 2021) [Xamarin Android builds on linux fail](https://github.com/xamarin/xamarin-android).
+
+***

@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.MenuFlyout
 {
-	[SampleControlInfo("Flyout", "MenuFlyout_Simple", typeof(MenuFlyoutViewModel))]
+	[SampleControlInfo("Flyouts", "MenuFlyout_Simple", typeof(MenuFlyoutViewModel))]
 	public sealed partial class MenuFlyout_Simple : UserControl
 	{
 		public MenuFlyout_Simple()

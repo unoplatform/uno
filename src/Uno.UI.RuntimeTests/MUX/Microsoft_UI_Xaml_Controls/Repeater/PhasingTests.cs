@@ -1,5 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference PhasingTests.cs, commit e7e0823
+
+// Uno specific: Avoiding the use of ManualResetEvent in favor of WaitFor
+// to handle lack of threading in WASM.
 
 using Common;
 using MUXControlsTestApp.Utilities;
@@ -26,6 +30,9 @@ using RecyclePool = Microsoft.UI.Xaml.Controls.RecyclePool;
 using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
 using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
 using RepeaterTestHooks = Microsoft.UI.Private.Controls.RepeaterTestHooks;
+using Uno.UI.RuntimeTests;
+using Private.Infrastructure;
+using System.Threading.Tasks;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
@@ -34,18 +41,16 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 	// Bug 17377723: crash in CControlTemplate::CreateXBindConnector in RS5.
 	[TestClass]
+	[RequiresFullWindow]
+#if __MACOS__
+	[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 	public class PhasingTests : MUXApiTestBase
 	{
 		const int expectedLastRealizedIndex = 8;
 
-		public PhasingTests()
-		{
-			ElementPhasingManager.ProcessedCalls = null;
-		}
-
 		[TestMethod]
-		[Ignore("UNO: ManualResetEvent not supported on WASM for now, also fails randomly on iOS with invalid reported phase https://github.com/unoplatform/uno/issues/4529")]
-		public void ValidatePhaseInvokeAndOrdering()
+		public async Task ValidatePhaseInvokeAndOrdering()
 		{
 			if (!PlatformConfiguration.IsOsVersionGreaterThan(OSVersion.Redstone2))
 			{
@@ -55,29 +60,29 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 			ItemsRepeater repeater = null;
 			int numPhases = 6; // 0 to 5
-			ManualResetEvent buildTreeCompleted = new ManualResetEvent(false);
+			bool buildTreeCompleted = false;
 
 			RunOnUIThread.Execute(() =>
 			{
 				var itemTemplate = (DataTemplate)XamlReader.Load(
 					   @"<DataTemplate  xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
-							<Button Width='100' Height='100'/>
-						</DataTemplate>");
+                            <Button Width='100' Height='100'/>
+                        </DataTemplate>");
 				repeater = new ItemsRepeater()
 				{
 					ItemsSource = Enumerable.Range(0, 10),
 					ItemTemplate = new CustomElementFactory(numPhases),
 					Layout = new StackLayout(),
 				};
-				
+
 				repeater.ElementPrepared += (sender, args) =>
 				{
 					if (args.Index == expectedLastRealizedIndex)
 					{
-						Log.Comment("Item 8 Created!" );
+						Log.Comment("Item 8 Created!");
 						RepeaterTestHooks.BuildTreeCompleted += (sender1, args1) =>
 						{
-							buildTreeCompleted.Set();
+							buildTreeCompleted = true;
 						};
 					}
 				};
@@ -95,30 +100,26 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				// CompositionTarget.Rendering += (sender, args) => { Log.Comment("Rendering"); }; // debugging aid
 			});
 
-			if(buildTreeCompleted.WaitOne(TimeSpan.FromMilliseconds(2000)))
+			await TestServices.WindowHelper.WaitFor(() => buildTreeCompleted, 2000);
+			if (buildTreeCompleted)
 			{
 				RunOnUIThread.Execute(() =>
 				{
-					try
-					{
-						var calls = ElementPhasingManager.ProcessedCalls;
+					var calls = ElementPhasingManager.ProcessedCalls;
 
-						Verify.AreEqual(9, calls.Count);
-						calls[0].RemoveAt(0); // Remove the create we did for first measure.
-						foreach (var index in calls.Keys)
+					Verify.AreEqual(9, calls.Count);
+					calls[0].RemoveAt(0); // Remove the create we did for first measure.
+					foreach (var index in calls.Keys)
+					{
+						var phases = calls[index];
+						Verify.AreEqual(6, phases.Count);
+						for (int i = 0; i < phases.Count; i++)
 						{
-							var phases = calls[index];
-							Verify.AreEqual(6, phases.Count);
-							for (int i = 0; i < phases.Count; i++)
-							{
-								Verify.AreEqual(i, phases[i]);
-							}
+							Verify.AreEqual(i, phases[i]);
 						}
 					}
-					finally
-					{
-						ElementPhasingManager.ProcessedCalls.Clear();
-					}
+
+					ElementPhasingManager.ProcessedCalls.Clear();
 				});
 			}
 			else
@@ -128,19 +129,18 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		[Ignore("UNO: ManualResetEvent not supported on WASM for now, also fails randomly on iOS with invalid reported phase https://github.com/unoplatform/uno/issues/4529")]
-		public void ValidateXBindWithoutPhasing()
+		public async Task ValidateXBindWithoutPhasing()
 		{
 			ItemsRepeater repeater = null;
 			int numPhases = 1; // Just Phase 0 for x:Bind
-			ManualResetEvent ElementLoadedCompleted = new ManualResetEvent(false);
+			bool ElementLoadedCompleted = false;
 
 			RunOnUIThread.Execute(() =>
 			{
 				var itemTemplate = (DataTemplate)XamlReader.Load(
 					   @"<DataTemplate  xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
-							<Button Width='100' Height='100'/>
-						</DataTemplate>");
+                            <Button Width='100' Height='100'/>
+                        </DataTemplate>");
 				repeater = new ItemsRepeater()
 				{
 					ItemsSource = Enumerable.Range(0, 10),
@@ -153,7 +153,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					if (args.Index == expectedLastRealizedIndex)
 					{
 						Log.Comment("Item 8 Created!");
-						ElementLoadedCompleted.Set();
+						ElementLoadedCompleted = true;
 					}
 				};
 
@@ -168,26 +168,22 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				};
 			});
 
-			if(ElementLoadedCompleted.WaitOne(TimeSpan.FromMilliseconds(2000)))
+			await TestServices.WindowHelper.WaitFor(() => ElementLoadedCompleted, 2000);
+			if (ElementLoadedCompleted)
 			{
 				RunOnUIThread.Execute(() =>
 				{
 					var calls = ElementPhasingManager.ProcessedCalls;
 
-					try
+					Verify.AreEqual(calls.Count, 9);
+					calls[0].RemoveAt(0); // Remove the create we did for first measure.
+					foreach (var index in calls.Keys)
 					{
-						Verify.AreEqual(calls.Count, 9);
-						calls[0].RemoveAt(0); // Remove the create we did for first measure.
-						foreach (var index in calls.Keys)
-						{
-							var phases = calls[index];
-							Verify.AreEqual(1, phases.Count); // Just phase 0
-						}
+						var phases = calls[index];
+						Verify.AreEqual(1, phases.Count); // Just phase 0
 					}
-					finally
-					{
-						ElementPhasingManager.ProcessedCalls.Clear();
-					}
+
+					ElementPhasingManager.ProcessedCalls.Clear();
 				});
 			}
 			else
@@ -270,7 +266,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 				ProcessedCalls[_data].Add(phase);
 
-				nextPhase = phase >= _numPhases -1 ? -1 : phase + 1;
+				nextPhase = phase >= _numPhases - 1 ? -1 : phase + 1;
 				Log.Comment(string.Format("Index:{0}  Phase:{1}  NextPhase:{2}", item.ToString(), phase, nextPhase));
 			}
 		}

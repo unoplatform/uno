@@ -1,8 +1,10 @@
 using CoreGraphics;
+using ObjCRuntime;
 using Uno.UI.DataBinding;
 using Uno.UI.Views.Controls;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 using UIKit;
 using Uno.Extensions;
@@ -12,6 +14,9 @@ using Uno.UI.Controls;
 using Windows.UI;
 using Uno.Disposables;
 using Foundation;
+using Uno.Foundation.Logging;
+using Uno.UI;
+using static Uno.UI.FeatureConfiguration;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -21,8 +26,6 @@ namespace Windows.UI.Xaml.Controls
 		private readonly WeakReference<TextBox> _textBox;
 		private readonly SerialDisposable _foregroundChanged = new();
 
-		private string _restoreOnNextKeyStroke;
-
 		public SinglelineTextBoxView(TextBox textBox)
 		{
 			_textBox = new WeakReference<TextBox>(textBox);
@@ -31,36 +34,7 @@ namespace Windows.UI.Xaml.Controls
 			Initialize();
 		}
 
-		/// <inheritdoc />
-		public override bool SecureTextEntry
-		{
-			get => base.SecureTextEntry;
-			set
-			{
-				if (base.SecureTextEntry != value)
-				{
-					if (value)
-					{
-						// Disable auto-fill for now, does not work properly. The auto-filled value never becomes available on base.Text and blocks input on the soft keyboard.
-						if (UIDevice.CurrentDevice.CheckSystemVersion(12, 0))
-						{
-							base.TextContentType = UITextContentType.OneTimeCode;
-						}
-						else if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
-						{
-							base.TextContentType = NSString.Empty;
-						}
-
-						// When we enable the "secure" mode, iOS will auto-magically clear the value on next key stroke
-						// (Without invoking the "ShouldClear" nor any callback except "DidChangeSelection" multiple times).
-						// The only way is to keep ref of the current text and restore it on next text change (expected to be an empty string).
-						_restoreOnNextKeyStroke = base.Text;
-					}
-
-					base.SecureTextEntry = value;
-				}
-			}
-		}
+		internal TextBox TextBox => _textBox.GetTarget();
 
 		public override string Text
 		{
@@ -79,15 +53,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnEditingChanged(object sender, EventArgs e)
 		{
-			if (_restoreOnNextKeyStroke is { Length: > 0 } text)
-			{
-				base.Text = text + base.Text;
-				_restoreOnNextKeyStroke = default;
-			}
-			else
-			{
-				OnTextChanged();
-			}
+			OnTextChanged();
 		}
 
 		private void OnTextChanged()
@@ -111,19 +77,33 @@ namespace Windows.UI.Xaml.Controls
 			{
 				IsKeyboardHiddenOnEnter = true
 			};
+		}
 
-			RegisterLoadActions(
-				() =>
-				{
-					this.EditingChanged += OnEditingChanged;
-					this.EditingDidEnd += OnEditingChanged;
-				},
-				() =>
-				{
-					this.EditingChanged -= OnEditingChanged;
-					this.EditingDidEnd -= OnEditingChanged;
-				}
-			);
+		partial void OnLoadedPartial()
+		{
+			this.EditingChanged += OnEditingChanged;
+			this.EditingDidEnd += OnEditingChanged;
+		}
+
+		partial void OnUnloadedPartial()
+		{
+			this.EditingChanged -= OnEditingChanged;
+			this.EditingDidEnd -= OnEditingChanged;
+		}
+
+		//Forces the secure UITextField to maintain its current value upon regaining focus
+		public override bool BecomeFirstResponder()
+		{
+			var result = base.BecomeFirstResponder();
+
+			if (SecureTextEntry)
+			{
+				var text = Text;
+				Text = string.Empty;
+				InsertText(text);
+			}
+
+			return result;
 		}
 
 		public override CGSize SizeThatFits(CGSize size)
@@ -239,21 +219,31 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public void Select(int start, int length)
-			=> SelectedTextRange = this.GetTextRange(start: start, end: start + length);
+			=> SelectedTextRange = this.GetTextRange(start: start, end: start + length).GetHandle();
 
-		public override UITextRange SelectedTextRange
+		/// <summary>
+		/// Workaround for https://github.com/unoplatform/uno/issues/9430
+		/// </summary>
+		[DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSendSuper")]
+		static internal extern IntPtr IntPtr_objc_msgSendSuper(IntPtr receiver, IntPtr selector);
+
+		[DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSendSuper")]
+		static internal extern void void_objc_msgSendSuper(IntPtr receiver, IntPtr selector, IntPtr arg);
+
+		[Export("selectedTextRange")]
+		public new IntPtr SelectedTextRange
 		{
 			get
 			{
-				return base.SelectedTextRange;
+				return IntPtr_objc_msgSendSuper(SuperHandle, Selector.GetHandle("selectedTextRange"));
 			}
 			set
 			{
-				var textBox = _textBox.GetTarget();
+				var textBox = TextBox;
 
-				if (textBox != null && base.SelectedTextRange != value)
+				if (textBox != null && SelectedTextRange != value)
 				{
-					base.SelectedTextRange = value;
+					void_objc_msgSendSuper(SuperHandle, Selector.GetHandle("setSelectedTextRange:"), value);
 					textBox.OnSelectionChanged();
 				}
 			}

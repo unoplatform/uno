@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
-	[SampleControlInfo("Button", "RadioButton_Multiple_Unnamed_Groups", typeof(ButtonTestsViewModel))]
+	[SampleControlInfo("Buttons", "RadioButton_Multiple_Unnamed_Groups", typeof(ButtonTestsViewModel))]
 
 	public sealed partial class RadioButton_Multiple_Unnamed_Groups : UserControl
 	{

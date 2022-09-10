@@ -109,7 +109,7 @@ This guide will walk you through the necessary steps to setup and to use the [`U
     </Application.Resources>
     ```
 
-### Section 2: Using Uno.Material library
+### Section 2: Using Uno.Toolkit.UI library
 1. Let's add a few controls with the Material style to `MainPage.xaml`:
     ```xml
     <Page x:Class="UnoMaterialSample.MainPage"
@@ -133,10 +133,10 @@ This guide will walk you through the necessary steps to setup and to use the [`U
         </Grid>
     <Page>
     ```
-1. Now we'll add a few new controls that are defined in the Material package - `Card`, `ChipGroup`, `Chip`, and `Divider`:
+1. Now we'll add a few new controls that are defined in the Toolkit.UI package - `Card`, `ChipGroup`, `Chip`, and `Divider`:
     ```xml
     <Page ...
-          xmlns:material="using:Uno.Material.Controls">
+          xmlns:utu="using:Uno.Toolkit.UI">
 
         <Grid toolkit:VisibleBoundsPadding.PaddingMask="Top" >
             <ScrollViewer>
@@ -145,30 +145,30 @@ This guide will walk you through the necessary steps to setup and to use the [`U
                     <!-- ... -->
 
                     <!-- material controls -->
-                    <material:Divider SubHeader="Uno.Material Controls:" Style="{StaticResource MaterialDividerStyle}" />
-                    <material:Card HeaderContent="Material Design"
+                    <utu:Divider SubHeader="Uno.Material Controls:" Style="{StaticResource MaterialDividerStyle}" />
+                    <utu:Card HeaderContent="Material Design"
                             SupportingContent="Material is a design system created by Google to help teams build high-quality digital experiences for Android, iOS, Flutter, and the web."
                             Style="{StaticResource MaterialOutlinedCardStyle}">
-                        <material:Card.HeaderContentTemplate>
+                        <utu:Card.HeaderContentTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding}" Margin="16,14,16,0" Style="{ThemeResource MaterialHeadline6}" />
                             </DataTemplate>
-                        </material:Card.HeaderContentTemplate>
-                        <material:Card.SupportingContentTemplate>
+                        </utu:Card.HeaderContentTemplate>
+                        <utu:Card.SupportingContentTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding}" Margin="16,0,16,14" Style="{ThemeResource MaterialBody2}" />
                             </DataTemplate>
-                        </material:Card.SupportingContentTemplate>
-                    </material:Card>
-                    <material:ChipGroup SelectionMode="Multiple" Style="{StaticResource MaterialFilledInputChipGroupStyle}">
-                        <material:Chip Content="Uno" />
-                        <material:Chip Content="Material" />
-                        <material:Chip Content="Controls" />
-                    </material:ChipGroup>
+                        </utu:Card.SupportingContentTemplate>
+                    </utu:Card>
+                    <utu:ChipGroup SelectionMode="Multiple" Style="{StaticResource MaterialFilledInputChipGroupStyle}">
+                        <utu:Chip Content="Uno" />
+                        <utu:Chip Content="Material" />
+                        <utu:Chip Content="Controls" />
+                    </utu:ChipGroup>
                 </StackPanel>
             </ScrollViewer>
         </Grid>
-    <Page>
+    </Page>
     ```
 
 > [!TIP]
@@ -304,10 +304,4 @@ See the completed sample on GitHub: [UnoMaterialSample](https://github.com/unopl
 
 ***
 
-## Help! I'm having trouble
-
-> [!TIP]
-> If you ran into difficulties with any part of this guide, you can:
->
-> * Ask for help on our [Discord channel](https://www.platform.uno/discord) - #uno-platform
-> * Ask a question on [Stack Overflow](https://stackoverflow.com/questions/tagged/uno-platform) with the 'uno-platform' tag
+[!include[getting-help](getting-help.md)]

@@ -32,8 +32,8 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 		private GdkPoint _lastPosition = new GdkPoint(-1, -1);
 		private GdkSize _lastSize = new GdkSize(-1, -1);
 
-		private int? _selectionStartCache = null;
-		private int? _selectionLengthCache = null;
+		private int? _selectionStartCache;
+		private int? _selectionLengthCache;
 
 		private readonly SerialDisposable _textChangedDisposable = new SerialDisposable();
 
@@ -42,6 +42,8 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			_owner = owner ?? throw new ArgumentNullException(nameof(owner));
 			_window = window ?? throw new ArgumentNullException(nameof(window));
 		}
+
+		public bool IsNativeOverlayLayerInitialized => GetWindowTextInputLayer() is not null;
 
 		public static TextBoxViewExtension? ActiveTextBoxView { get; private set; }
 
@@ -420,15 +422,14 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 
 		public void SetForeground(Windows.UI.Xaml.Media.Brush brush)
 		{
-			if (brush is SolidColorBrush scb)
+			if (_currentInputWidget is not null && brush is SolidColorBrush scb)
 			{
-				_currentInputWidget?.OverrideColor(StateFlags.Normal, new Gdk.RGBA
-				{
-					Red = scb.ColorWithOpacity.R,
-					Green = scb.ColorWithOpacity.G,
-					Blue = scb.ColorWithOpacity.B,
-					Alpha = scb.ColorWithOpacity.A
-				});
+				var provider = new CssProvider();
+				var color = $"rgba({scb.ColorWithOpacity.R},{scb.ColorWithOpacity.G},{scb.ColorWithOpacity.B},{scb.ColorWithOpacity.A})";
+				var data = $".textbox_foreground {{ caret-color: {color}; color: {color} }}";
+				provider.LoadFromData(data);
+				StyleContext.AddProviderForScreen(Gdk.Screen.Default, provider, priority: uint.MaxValue);
+				_currentInputWidget.StyleContext.AddClass("textbox_foreground");
 			}
 		}
 	}

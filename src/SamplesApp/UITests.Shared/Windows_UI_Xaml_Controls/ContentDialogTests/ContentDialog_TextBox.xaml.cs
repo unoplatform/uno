@@ -19,7 +19,7 @@ using _TextBox = Windows.UI.Xaml.Controls.TextBox;
 
 namespace UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 {
-	[Sample("ContentDialog", IsManualTest = true, IgnoreInSnapshotTests = true)]
+	[Sample("Dialogs", IsManualTest = true, IgnoreInSnapshotTests = true)]
     public sealed partial class ContentDialog_TextBox : UserControl
     {
 #if __ANDROID__

@@ -48,12 +48,15 @@ namespace Windows.UI.Xaml
 {
 	public partial class Application
 	{
-		private bool _initializationComplete = false;
+		private bool _initializationComplete;
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private ApplicationTheme? _requestedTheme;
+#pragma warning disable CA1805 // Do not initialize unnecessarily
+		// TODO: This field is ALWAYS false. Either remove it or assign when appropriate.
 		private bool _systemThemeChangesObserved = false;
+#pragma warning restore CA1805 // Do not initialize unnecessarily
 		private SpecializedResourceDictionary.ResourceKey _requestedThemeForResources;
-		private bool _isInBackground = false;
+		private bool _isInBackground;
 
 		static Application()
 		{
@@ -171,7 +174,7 @@ namespace Windows.UI.Xaml
 			_ => throw new InvalidOperationException("Application's RequestedTheme is invalid."),
 		};
 
-		internal bool IsThemeSetExplicitly { get; private set; } = false;
+		internal bool IsThemeSetExplicitly { get; private set; }
 
 		internal void SetExplicitRequestedTheme(ApplicationTheme? explicitTheme)
 		{

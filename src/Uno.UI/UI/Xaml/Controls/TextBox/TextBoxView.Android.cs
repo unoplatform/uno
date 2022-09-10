@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Controls
 	internal partial class TextBoxView : EditText, DependencyObject
 	{
 		private bool _isRunningTextChanged;
-		private bool _isInitialized = false;
+		private bool _isInitialized;
 
 		private readonly ManagedWeakReference? _ownerRef;
 		internal TextBox? Owner => _ownerRef?.Target as TextBox;
@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Controls
 			_ownerRef = WeakReferencePool.RentWeakReference(this, owner);
 			InitializeBinder();
 
-			base.SetSingleLine(true);
+			UpdateSingleLineMode();
 
 			//This Background color is set to remove the native android underline on the EditText.
 			this.SetBackgroundColor(Colors.Transparent);
@@ -61,6 +61,16 @@ namespace Windows.UI.Xaml.Controls
 				 Android.Views.ViewGroup.LayoutParams.WrapContent,
 				 Android.Views.ViewGroup.LayoutParams.WrapContent
 			);
+		}
+
+		internal void UpdateSingleLineMode()
+		{
+			if (Owner is { } owner)
+			{
+				SetMaxLines(owner.AcceptsReturn ? int.MaxValue : 1);
+
+				base.SetSingleLine(owner.TextWrapping == TextWrapping.NoWrap && !owner.AcceptsReturn);
+			}
 		}
 
 		internal void SetTextNative(string text)
@@ -120,7 +130,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private class EditTextCursorColorChanger
 		{
-			private static bool _prepared = false;
+			private static bool _prepared;
 			private static Field? _editorField;
 			private static Field? _cursorDrawableField;
 			private static Field? _cursorDrawableResField;

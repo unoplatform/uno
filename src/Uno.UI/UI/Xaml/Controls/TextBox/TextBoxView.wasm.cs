@@ -18,7 +18,8 @@ namespace Windows.UI.Xaml.Controls
 		private readonly TextBox _textBox;
 		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
 
-		private bool _isReadOnly = false;
+		private bool _browserContextMenuEnabled = true;
+		private bool _isReadOnly;
 
 		public Brush Foreground
 		{
@@ -62,6 +63,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			SetAttribute("tabindex", "0");
+			UpdateContextMenuEnabling();
 		}
 
 		private event EventHandler HtmlInput
@@ -141,6 +143,23 @@ namespace Windows.UI.Xaml.Controls
 			else
 			{
 				RemoveAttribute("readonly");
+			}
+		}
+
+		internal void UpdateContextMenuEnabling()
+		{
+			// _browserContextMenuEnabled flag is used to avoid unnecessary round-trips
+			// to JS when the value didn't change.
+
+			if (_textBox?.ContextFlyout is not null && _browserContextMenuEnabled)
+			{
+				SetCssClasses("context-menu-disabled");
+				_browserContextMenuEnabled = false;
+			}
+			else if (_textBox?.ContextFlyout is null && !_browserContextMenuEnabled)
+			{
+				UnsetCssClasses("context-menu-disabled");
+				_browserContextMenuEnabled = true;
 			}
 		}
 

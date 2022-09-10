@@ -20,6 +20,10 @@ using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
 
+#if !NET6_0_OR_GREATER
+using NativeHandle = System.IntPtr;
+#endif
+
 namespace Windows.UI.Xaml
 {
 	[Register("UnoAppDelegate")]
@@ -28,7 +32,7 @@ namespace Windows.UI.Xaml
 		private bool _suspended;
 		internal bool IsSuspended => _suspended;
 
-		private bool _preventSecondaryActivationHandling = false;
+		private bool _preventSecondaryActivationHandling;
 
 		public Application()
 		{
@@ -39,7 +43,7 @@ namespace Windows.UI.Xaml
 			SubscribeBackgroundNotifications();
 		}
 
-		public Application(IntPtr handle) : base(handle)
+		public Application(NativeHandle handle) : base(handle)
 		{
 		}
 

@@ -11,6 +11,8 @@ using _View = UIKit.UIView;
 #elif __MACOS__
 using CoreGraphics;
 using _View = AppKit.NSView;
+#elif __ANDROID__
+using Android.Views;
 #endif
 
 
@@ -20,7 +22,7 @@ namespace Uno.UI.Toolkit
 	[TemplatePart(Name = "PART_Border", Type = typeof(Border))]
 	[TemplatePart(Name = "PART_ShadowHost", Type = typeof(Grid))]
 	public sealed partial class ElevatedView : Control
-#if !NETFX_CORE && !NETCOREAPP
+#if HAS_UNO
 		, ICustomClippingElement
 #endif
 	{
@@ -46,11 +48,7 @@ namespace Uno.UI.Toolkit
 		 *
 		 */
 
-#if __ANDROID__
-		private static readonly Color DefaultShadowColor = Colors.Black;
-#else
 		private static readonly Color DefaultShadowColor = Color.FromArgb(64, 0, 0, 0);
-#endif
 
 		private Border _border;
 		private Panel _shadowHost;
@@ -59,8 +57,11 @@ namespace Uno.UI.Toolkit
 		{
 			DefaultStyleKey = typeof(ElevatedView);
 
-#if !NETFX_CORE && !NETCOREAPP
+#if HAS_UNO
 			Loaded += (snd, evt) => SynchronizeContentTemplatedParent();
+#if __ANDROID__
+			Unloaded += (snd, evt) => DisposeShadow();
+#endif
 
 			// Patch to deactivate the clipping by ContentControl
 			RenderTransform = new CompositeTransform();
@@ -114,7 +115,7 @@ namespace Uno.UI.Toolkit
 			set => SetValue(ElevatedContentProperty, value);
 		}
 
-#if !NETFX_CORE && !NETCOREAPP
+#if HAS_UNO
 		public new static DependencyProperty BackgroundProperty { get ; } = DependencyProperty.Register(
 			"Background",
 			typeof(Brush),
@@ -178,7 +179,7 @@ namespace Uno.UI.Toolkit
 				return; // not initialized yet
 			}
 
-#if !NETFX_CORE && !NETCOREAPP
+#if HAS_UNO
 			SynchronizeContentTemplatedParent();
 #endif
 
@@ -194,24 +195,28 @@ namespace Uno.UI.Toolkit
 #elif __IOS__ || __MACOS__
 				this.SetElevationInternal(Elevation, ShadowColor, _border.BoundsPath);
 #elif __ANDROID__
-				// The elevation must be applied on the border, since
-				// it will get the right shape (with rounded corners)
-				_border.SetElevationInternal(Elevation, ShadowColor);
+				_invalidateShadow = true;
+				((ViewGroup)this).Invalidate();
 #elif __SKIA__
 				this.SetElevationInternal(Elevation, ShadowColor);
-#elif NETFX_CORE || NETCOREAPP
+#elif (NETFX_CORE || NETCOREAPP) && !HAS_UNO
 				_border.SetElevationInternal(Elevation, ShadowColor, _shadowHost as DependencyObject, CornerRadius);
 #endif
 			}
 		}
 
-#if !NETFX_CORE && !NETCOREAPP
+#if HAS_UNO
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => false; // Never clip, since it will remove the shadow
 
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 
 		protected override Windows.Foundation.Size ArrangeOverride(Windows.Foundation.Size finalSize)
 		{
+#if __ANDROID__
+			_invalidateShadow = true;
+			((ViewGroup)this).Invalidate();
+#endif
+
 			return base.ArrangeOverride(this.ApplySizeConstraints(finalSize));
 		}
 #endif

@@ -1,6 +1,12 @@
 @import "../variables";
 
 .sideaffix {
+  overflow: auto;
+
+  .affix ul > li.active > ul, .affix ul > li.active > a:before, .affix ul > li > a:hover:before {
+    white-space: normal;
+  }
+
   .contribution-link {
     font-size: 16px !important;
   }

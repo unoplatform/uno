@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml.xLoadTests
 {
-	[Sample("xLoad", Name = "xLoad_FindName")]
+	[Sample("x:Load", Name = "xLoad_FindName")]
 	public sealed partial class xLoad_FindName : UserControl
     {
         public xLoad_FindName()

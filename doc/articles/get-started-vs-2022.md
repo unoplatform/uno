@@ -1,110 +1,93 @@
 # Get Started on Visual Studio 2022
 
-> This section is covering releases of .NET 6 and Visual Studio 2022. It is a work in progress.
+This getting started will guide you through the creation of an Uno Platform App using C# and .NET, based in the WinUI 3 XAML.
+
+> [!TIP] 
+> This guide covers development on Windows using Visual Studio. If you want to use another environment or IDE, see our [general getting started](get-started.md).
+
+> [!IMPORTANT] 
+> To use Xamarin (as opposed to .NET 6 Mobile) and Visual Studio 2019, [follow this guide](get-started-vs.md).
 
 ## Prerequisites
-* [**Visual Studio 2022 17.0 or later**](https://visualstudio.microsoft.com/), with:
-    * **Universal Windows Platform** workload installed.
+To create Uno Platform applications you will need [**Visual Studio 2022 17.3 or later**](https://visualstudio.microsoft.com/vs/):
 
-    ![visual-studio-installer-uwp](Assets/quick-start/vs-install-uwp.png)
-
-	* **Mobile development with .NET (Xamarin)** workload installed.
-
-    ![visual-studio-installer-xamarin](Assets/quick-start/vs-install-xamarin.png)
-    * Starting from **[Visual Studio 2022 17.2 Preview 2](https://visualstudio.microsoft.com/vs/preview)**, select the **.NET Maui (Preview)** optional component (Installs the .NET 6 Android and iOS workloads)
-        * The iOS Remote Simulator installed (for iOS development)
-	    * A working Mac with Visual Studio for Mac, Xcode 13.3 or later installed (for iOS development)
-	    * Google's Android x86 emulators or a physical Android device (for Android development)
-
-    * **ASP**.**NET and web** workload installed, along with .NET 6.0 (for WebAssembly development)
+1. **ASP**.**NET and web** workload installed, along with .NET 6.0 (for WebAssembly development)
 
     ![visual-studio-installer-web](Assets/quick-start/vs-install-web.png)
 
-For more information about these prerequisites, see [Installing Xamarin](https://docs.microsoft.com/en-us/xamarin/get-started/installation/). For information about connecting Visual Studio to a Mac build host, see [Pair to Mac for Xamarin.iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
+1. **.NET Multi-platform App UI development** workload installed.
 
-## Finalize your environment setup using uno-check
-* Install the uno-check tool:
-   ```
-   dotnet tool install -g Uno.Check
-   ```
-* Run the uno-check tool:
-   ```
-   uno-check
-   ```
+    ![visual-studio-installer-dotnet-mobile](Assets/quick-start/vs-install-dotnet-mobile.png)
 
-Follow the steps indicated by the tool.
+1. **.NET desktop development** workload installed.
 
-## Installing the Uno Platform Solution Templates with Visual Studio
+    ![visual-studio-installer-dotnet](Assets/quick-start/vs-install-dotnet.png)    
+    
+1. **Universal Windows Platform** workload installed.
+
+    ![visual-studio-installer-uwp](Assets/quick-start/vs-install-uwp.png)
+
+> [!IMPORTANT] 
+> To build Xamarin-based projects in Visual Studio 2022, in Visual Studio's installer `Individual components` tab, search for Xamarin and select `Xamarin` and `Xamarin Remoted Simulator`. See [this section on migrating Xamarin projects](migrating-from-xamarin-to-net6.md) to .NET 6, 
+
+> [!NOTE]
+> For information about connecting Visual Studio to a Mac build host to build iOS apps, see [Pairing to a Mac for Xamarin.iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
+
+[!include[getting-help](use-uno-check-inline.md)]
+
+## Install the Solution Templates
 
 1. Launch Visual Studio 2022, then click `Continue without code`. Click `Extensions` -> `Manage Extensions` from the Menu Bar.
 
     ![](Assets/tutorial01/manage-extensions.png)
 
-2. In the Extension Manager expand the **Online** node and search for `Uno`, install the <code>Uno Platform Solution Templates</code> extension or download it from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin), then restart Visual Studio.
+2. In the Extension Manager expand the **Online** node and search for `Uno`, install the <code>Uno Platform Solution Templates</code> extension or download it from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022), then restart Visual Studio.
 
     ![](Assets/tutorial01/uno-extensions.PNG)
 
-## Create an application from the Xamarin solution template
+## Create an application
 
-To easily create a multi-platform application:
-* Create a new C# solution using the **Multi-Platform App (Uno Platform|Xamarin)** template, from Visual Studio's **Start Page**:
+To create an Uno Platform app:
+1. Create a new C# solution using the **Uno Platform App** template, from Visual Studio's **Start Page**
+1. Choose the list of targets platforms you want to be generated
 
-![new project](Assets/quick-start/vsix-new-project.png)
-* Right click on the Solution and select `Manage NuGet Packages for Solution` from the context menu.
-* Update the follow NuGet packages to the latest:
-  - `Uno.UI`
-  - `Uno.UI.WebAssembly`
-  - `Uno.UI.Skia.Gtk`, `Uno.UI.Skia.Wpf`, `Uno.UI.Skia.Tizen`, `Uno.UI.Skia.Linux.FrameBuffer`
-* To debug the iOS head, select the `Debug|iPhoneSimulator` configuration
-* To debug the Android head, select the `Debug|Any CPU` configuration
-* To debug the UWP head, select the `Debug|x86` configuration
-* To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctr+F5** or choose `Start without debugging` from the Debug menu. To enable full debugging, see these [debugging instructions](debugging-wasm.md).
+    > [!TIP] 
+    > If you do not select platforms, you still can [add them later](guides/how-to-add-platforms-existing-project.md).
+   
+    ![visual-studio-installer-web](Assets/quick-start/vsix-new-project-options.png)
 
+1. Wait for the projects to be created, and their dependencies to be restored
 
-## Create an application from the .NET 6 Mobile Preview solution template
-
-> .NET 6 Mobile support is currently in Preview, following Microsoft's support status. As of Uno 4.1, .NET 6 Mobile Preview 14 and above is supported with [Visual Studio 2022 17.2 Preview 2](https://visualstudio.microsoft.com/vs/preview). Previous releases of Visual Studio are not supported.
-
-### Prerequisite
-Run the uno-check tool using the preview channel:
-```
-uno-check --pre
-```
-
-To create a multi-platform application:
-* Create a new C# solution using the **Multi-Platform App (Uno Platform|net6)** template, from Visual Studio's **Start Page**
-* Right click on the Solution and select `Manage NuGet Packages for Solution` from the context menu.
-* Update to the latest NuGet package named `Uno.UI`.
-* To debug the iOS:
-    - In the "Debug toolbar" drop down, select framework `net6.0-ios`
-    - Select an active device
-* To debug the Android platform:
-    - In the "Debug toolbar" drop down, select framework `net6.0-android`
-    - Select an active device in "Device" sub-menu
-* To debug the UWP head:
+1. To debug the **Windows** head:
+    - Right click on the `MyApp.Windows` project, select **Set as startup project**
     - Select the `Debug|x86` configuration
-    - Debug the project
-* To run the WebAssembly (Wasm) head:
-   - Select **IIS Express** and press **Ctrl+F5** or choose 'Start without debugging' from the menu.
+    - Press the `MyApp.Windows` button to deploy the app
+    - If you've not enabled Developer Mode, the Settings app should open to the appropriate page. Turn on Developer Mode and accept the disclaimer.
+1. To run the **WebAssembly** (Wasm) head:
+    - Right click on the `MyApp.Wasm` project, select **Set as startup project**
+    - Press the `MyApp.Wasm` button to deploy the app
+1. To debug for **iOS**:
+    - Right click on the `MyApp.Mobile` project, select **Set as startup project**
+    - In the "Debug toolbar" drop down, select framework `net6.0-ios`:
 
+      ![visual-studio-installer-web](Assets/quick-start/net6-ios-debug.png)
+      
+    - Select an active device
+1. To debug the **Android** platform:
+    - Right click on the `MyApp.Mobile` project, select **Set as startup project**
+    - In the **Debug toolbar** drop down, select framework `net6.0-android`
+    - Select an active device in "Device" sub-menu
+
+You're all set! You can now head to [our tutorials](getting-started-tutorial-1.md) on how to work on your Uno Platform app.
+
+> [!NOTE] 
 > Debugging either the macOS and macCatalyst targets is not supported from Visual Studio on Windows.
 
-### Make sure XAML Intellisense is enabled
+## Troubleshooting Installation Issues
 
-[Intellisense](https://docs.microsoft.com/en-us/visualstudio/ide/using-intellisense) is supported in XAML when the UWP head is active:
-![xaml-intellisense](Assets/quick-start/xaml-intellisense.png)
+You may encounter installation and/or post-installation Visual Studio issues for which workarounds exist. Please see [Common Issues](https://platform.uno/docs/articles/get-started-wizard.html) we have documented.
 
-If XAML Intellisense isn't working on a freshly-created project, try the following steps:
-1. Build the UWP head.
-2. Close all XAML documents.
-3. Close and reopen Visual Studio.
-4. Reopen XAML documents.
+[!include[getting-help](getting-help.md)]
 
-### Troubleshooting Visual Studio and Uno Platform Installation Issues
-
-You may encounter  installation and/or post-installation Visual Studio issues for which workarounds exist. Please see [Common Issues](https://platform.uno/docs/articles/get-started-wizard.html) we have documented.
-
-If you're not sure whether your environment is correctly configured for Uno Platform development, running the [`uno-check` command-line tool](uno-check.md) should be your first step.
-
-### Getting Help
-If you continue experiencing issues with Visual Studio and Uno Platform, please visit our [Discord](https://www.platform.uno/discord) - #uno-platform channel or [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform) where our engineering team and community will be able to help you. 
+## Further reading
+- [Special considerations for the WinAppSDK project](features/winapp-sdk-specifics.md)

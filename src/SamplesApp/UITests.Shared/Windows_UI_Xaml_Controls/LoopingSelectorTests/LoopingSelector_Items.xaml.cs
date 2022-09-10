@@ -10,7 +10,7 @@ using Uno.UI;
 
 namespace UITests.Windows_UI_Xaml_Controls.LoopingSelectorTests
 {
-	[Sample("Primitives")]
+	[Sample("LoopingSelector")]
 	public sealed partial class LoopingSelector_Items : Page
 	{
 		private static readonly IList<object> _items = new [] {
