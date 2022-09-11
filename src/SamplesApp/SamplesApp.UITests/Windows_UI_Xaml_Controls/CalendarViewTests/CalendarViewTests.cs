@@ -11,7 +11,6 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CalendarViewTests
 {
 	[TestFixture]
-	[ActivePlatforms(Platform.
 	public partial class CalendarViewTests : SampleControlUITestBase
 	{
 		[Test]
