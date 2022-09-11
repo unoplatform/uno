@@ -457,7 +457,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Browser | Platform.Android)] // Test timed-out on iOS
+		[ActivePlatforms(Platform.Browser, Platform.Android)] // Test timed-out on iOS
 		public void When_TextAlignment_Then_Layout_Is_Correct()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_LayoutAlignment");
