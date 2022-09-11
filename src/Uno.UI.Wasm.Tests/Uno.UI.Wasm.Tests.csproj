@@ -5,17 +5,28 @@
 
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsbindings</TSBindingsPath>
 		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
+
+		<!-- Required for TSBinding tests -->
+		<UnoRewriteEmbeddedResources>true</UnoRewriteEmbeddedResources>
+		<CompileTypeScriptDependsOn>CoreCompile; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
+
+		<UnoUIUseRoslynSourceGenerators>true</UnoUIUseRoslynSourceGenerators>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="tsconfig.json" />
-    <Content Include="tsconfig.json" />
- 		<ConfigFiles Include="tsconfig.json" />
- </ItemGroup>
+	<ItemGroup>
+		<CompilerVisibleProperty Include="TSBindingsPath" />
+		<CompilerVisibleItemMetadata Include="TSBindingAssemblySource" MetadataName="FullPath" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Remove="tsconfig.json" />
+		<Content Include="tsconfig.json" />
+		<ConfigFiles Include="tsconfig.json" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" />
@@ -39,6 +50,4 @@
 	</PropertyGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
-
-
 </Project>

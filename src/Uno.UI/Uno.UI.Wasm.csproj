@@ -47,6 +47,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<CompilerVisibleProperty Include="TSBindingsPath" />
+		<CompilerVisibleItemMetadata Include="TSBindingAssemblySource" MetadataName="FullPath" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <EmbeddedResource Include="LinkerDefinition.Wasm.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 	  </EmbeddedResource>
@@ -102,7 +107,7 @@
 	<PropertyGroup>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
 
-		<CompileTypeScriptDependsOn>_UnoSourceGenerator; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
+		<CompileTypeScriptDependsOn>CoreCompile; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
 	</PropertyGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />

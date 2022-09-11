@@ -115,12 +115,12 @@
 		'$(DesignTimeBuild)' != 'true'
 		and '$(BuildingInsideUnoSourceGenerator)' == ''
 		and '$(SkipCompilerExecution)' == ''
-		and '$(UnoXamlResourcesTrimming)'=='true'"
+		and ('$(UnoXamlResourcesTrimming)'=='true' or '$(UnoRewriteEmbeddedResources)'=='true')"
 		AfterTargets="CoreCompile;_UnoLinkerHintsSubstitutionsMerge">
 
 		<ItemGroup>
 			<!-- Filter ReferenceCopyLocalPaths as it may contain pdbs as well -->
-			<UnoEmbeddedResourcesInjectionAssembliesForReferencePaths
+			<_UnoEmbeddedResourcesInjectionAssembliesForReferencePaths
 					Include="@(ReferencePath)"
 				  Condition="'%(Extension)' == '.dll'" />
 		</ItemGroup>
@@ -128,7 +128,7 @@
 		<EmbeddedResourceInjectorTask_v0
 			EmbeddedResources="@(EmbeddedResource)"
 			TargetAssembly="$(IntermediateOutputPath)$(TargetFileName)"
-			ReferencePath="@(_UnoLinkerHintsPass1AssembliesForReferencePaths)"
+			ReferencePath="@(_UnoEmbeddedResourcesInjectionAssembliesForReferencePaths)"
 			  />
 	</Target>
 
