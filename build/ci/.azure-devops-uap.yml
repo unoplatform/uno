@@ -32,7 +32,7 @@ jobs:
 
   - task: MSBuild@1
     inputs:
-      solution: src/SamplesApp/SamplesApp.UWP/SamplesApp.UWP.csproj
+      solution: src/Uno.UI-Windows-only.slnf
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
