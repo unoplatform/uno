@@ -115,7 +115,8 @@
 			<Analyzer Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\*.dll"
 					Exclude="@(_UnoAnalyzerExclusion)" />
 			<Analyzer Include="$(MSBuildThisFileDirectory)..\..\Uno.UI.SourceGenerators.Internal\bin\$(Configuration)\netstandard2.0\*.dll"
-					Exclude="@(_UnoAnalyzerExclusionInternal)" />
+					Exclude="@(_UnoAnalyzerExclusionInternal)"
+					Condition="'$(UnoUIUseRoslynSourceGenerators)'!='true'"/>
 			<!-- generator is automatically included in nuget package, no need to add it here -->
 		</ItemGroup>
 	</Target>
