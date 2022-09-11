@@ -15,11 +15,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Remove="Results\**\*.*" />
-		<None Include="Results\**\*.*" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<Compile Remove="**\*.xaml.cs" />
 		<None Include="**\*.xaml.cs" />
 	</ItemGroup>
