@@ -44,49 +44,58 @@ namespace Uno.UI.Tasks.EmbeddedResourceInjector
 
 		public override bool Execute()
 		{
-			// Debugger.Launch();
-
-			if (EmbeddedResources != null)
+			try
 			{
-				Log.LogMessage(DefaultLogMessageLevel, $"Writing embedded files to {TargetAssembly}");
+				// Debugger.Launch();
 
-				var resolver = new DefaultAssemblyResolver();
-				foreach(var path in BuildReferencesPaths())
+				if (EmbeddedResources != null)
 				{
-					resolver.AddSearchDirectory(path);
-				}
+					Log.LogMessage(DefaultLogMessageLevel, $"Writing embedded files to {TargetAssembly}");
 
-				using (var asm = AssemblyDefinition.ReadAssembly(TargetAssembly, new ReaderParameters() { AssemblyResolver = resolver, ReadSymbols = true, ReadWrite = true } ))
-                {
-					foreach (var embeddedResource in EmbeddedResources)
+					var resolver = new DefaultAssemblyResolver();
+					foreach (var path in BuildReferencesPaths())
 					{
-						var logicalName = embeddedResource.GetMetadata("LogicalName");
-
-						Log.LogMessage(MessageImportance.Low, $"Embedding file {embeddedResource.ItemSpec} as {logicalName}");
-
-						// Remove existing resources with the same name
-						var existingResources = asm.MainModule.Resources
-							.OfType<EmbeddedResource>()
-							.Where(r => r.Name == logicalName)
-							.ToArray();
-
-						foreach (var existingResource in existingResources)
-						{
-							asm.MainModule.Resources.Remove(existingResource);
-						}
-
-						// Add the new merged content
-						asm.MainModule.Resources.Add(new EmbeddedResource(logicalName, ManifestResourceAttributes.Public, File.ReadAllBytes(embeddedResource.GetMetadata("FullPath"))));
+						resolver.AddSearchDirectory(path);
 					}
 
-					asm.Write(new WriterParameters() { WriteSymbols = true });
+					using (var asm = AssemblyDefinition.ReadAssembly(TargetAssembly, new ReaderParameters() { AssemblyResolver = resolver, ReadSymbols = true, ReadWrite = true }))
+					{
+						foreach (var embeddedResource in EmbeddedResources)
+						{
+							var logicalName = embeddedResource.GetMetadata("LogicalName");
+
+							Log.LogMessage(MessageImportance.Low, $"Embedding file {embeddedResource.ItemSpec} as {logicalName}");
+
+							// Remove existing resources with the same name
+							var existingResources = asm.MainModule.Resources
+								.OfType<EmbeddedResource>()
+								.Where(r => r.Name == logicalName)
+								.ToArray();
+
+							foreach (var existingResource in existingResources)
+							{
+								asm.MainModule.Resources.Remove(existingResource);
+							}
+
+							// Add the new merged content
+							asm.MainModule.Resources.Add(new EmbeddedResource(logicalName, ManifestResourceAttributes.Public, File.ReadAllBytes(embeddedResource.GetMetadata("FullPath"))));
+						}
+
+						asm.Write(new WriterParameters() { WriteSymbols = true });
+					}
+
+					WaitForUnlockedFile(TargetAssembly);
+					WaitForUnlockedFile(Path.ChangeExtension(TargetAssembly, "pdb"));
 				}
 
-				WaitForUnlockedFile(TargetAssembly);
-				WaitForUnlockedFile(Path.ChangeExtension(TargetAssembly, "pdb"));
+				return true;
 			}
-
-			return true;
+			catch(Exception e)
+			{
+				// Require because the task is running out of process
+				// and can't marshal non-CLR known exceptions.
+				throw new Exception(e.ToString());
+			}
 		}
 
 		private string[] BuildReferencesPaths() => ReferencePath
