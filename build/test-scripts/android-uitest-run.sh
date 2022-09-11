@@ -2,6 +2,9 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+# echo commands
+set -x
+
 export BUILDCONFIGURATION=Release
 export NUNIT_VERSION=3.12.0
 
@@ -34,11 +37,14 @@ export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$S
 export UNO_UITEST_PLATFORM=Android
 export UNO_UITEST_ANDROIDAPK_PATH=$BUILD_SOURCESDIRECTORY/build/$SAMPLEAPP_ARTIFACT_NAME/android/uno.platform.unosampleapp-Signed.apk
 export IsUiAutomationMappingEnabled=true
+export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP=automated}
 
 export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
-export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-android-$ANDROID_SIMULATOR_APILEVEL-$SCREENSHOTS_FOLDERNAME-$UNO_UITEST_BUCKET_ID-$TARGETPLATFORM_NAME.txt
+export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-android-$ANDROID_SIMULATOR_APILEVEL-$SCREENSHOTS_FOLDERNAME-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$TARGETPLATFORM_NAME.txt
 export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
 export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-android-automated-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME.xml
+
+mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
 if [ $(wc -l < "$UNO_TESTS_FAILED_LIST") -eq 1 ];
 then
@@ -53,12 +59,14 @@ cd $BUILD_SOURCESDIRECTORY/build
 # This block allows to override the Android SDK
 # disabled until hosted agents move to macOS 11
 #
-# export ANDROID_HOME=$BUILD_SOURCESDIRECTORY/build/android-sdk
-#wget https://dl.google.com/android/repository/commandlinetools-mac-7302050_latest.zip
-#unzip commandlinetools-mac-7302050_latest.zip
-#rm commandlinetools-mac-7302050_latest.zip
-#mkdir -p $ANDROID_HOME/cmdline-tools/latest
-#cp -R cmdline-tools/ $ANDROID_HOME/sdk/cmdline-tools/latest/
+export ANDROID_HOME=$BUILD_SOURCESDIRECTORY/build/android-sdk
+export ANDROID_SDK_ROOT=$BUILD_SOURCESDIRECTORY/build/android-sdk
+export CMDLINETOOLS=commandlinetools-mac-8512546_latest.zip
+mkdir -p $ANDROID_HOME
+wget https://dl.google.com/android/repository/$CMDLINETOOLS
+unzip $CMDLINETOOLS -d $ANDROID_HOME/cmdline-tools
+rm $CMDLINETOOLS
+mv $ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest
 
 # uncomment the following lines to override the installed Xamarin.Android SDK
 # wget -nv https://jenkins.mono-project.com/view/Xamarin.Android/job/xamarin-android-d16-2/49/Azure/processDownloadRequest/xamarin-android/xamarin-android/bin/BuildRelease/Xamarin.Android.Sdk-OSS-9.4.0.59_d16-2_6d9b105.pkg
@@ -70,13 +78,13 @@ AVD_CONFIG_FILE=~/.android/avd/$AVD_NAME.avd/config.ini
 if [[ ! -f $AVD_CONFIG_FILE ]];
 then
 	# Install AVD files
-	echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'tools'| tr '\r' '\n' | uniq
-	echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'platform-tools'  | tr '\r' '\n' | uniq
-	echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'build-tools;28.0.3' | tr '\r' '\n' | uniq
-	echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'platforms;android-28' | tr '\r' '\n' | uniq
-	echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'extras;android;m2repository' | tr '\r' '\n' | uniq
-	echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'system-images;android-28;google_apis_playstore;x86' | tr '\r' '\n' | uniq
-	echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;x86" | tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'tools'| tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'platform-tools'  | tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'build-tools;33.0.0' | tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'platforms;android-28' | tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'extras;android;m2repository' | tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'system-images;android-28;google_apis_playstore;x86_64' | tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;x86_64" | tr '\r' '\n' | uniq
 
 	if [[ -f $ANDROID_HOME/platform-tools/platform-tools/adb ]]
 	then
@@ -85,9 +93,14 @@ then
 	fi
 
 	# Create emulator
-	echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -n "$AVD_NAME" --abi "x86" -k "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;x86" --sdcard 128M --force
+	echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd -n "$AVD_NAME" --abi "x86_64" -k "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;x86_64" --sdcard 128M --force
 
-	echo "hw.cpu.ncore=2" >> $AVD_CONFIG_FILE
+	# based on https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops&tabs=yaml#hardware
+	# >> Agents that run macOS images are provisioned on Mac pros with a 3 core CPU, 14 GB of RAM, and 14 GB of SSD disk space.
+	echo "hw.cpu.ncore=3" >> $AVD_CONFIG_FILE
+
+	# Bump the heap size as the tests are stressing the application
+	echo "vm.heapSize=256M" >> $AVD_CONFIG_FILE
 
 	echo $ANDROID_HOME/emulator/emulator -list-avds
 
@@ -100,7 +113,7 @@ then
 	$ANDROID_HOME/platform-tools/adb devices
 
 	# Start emulator in background
-	nohup $ANDROID_HOME/emulator/emulator -avd "$AVD_NAME" -skin 1280x800 -memory 2048 -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim > /dev/null 2>&1 &
+	nohup $ANDROID_HOME/emulator/emulator -avd "$AVD_NAME" -skin 1280x800 -memory 4096 -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim > $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME/android-emulator-log-$UNO_UITEST_BUCKET_ID-$UITEST_TEST_MODE_NAME.txt 2>&1 &
 
 	# Wait for the emulator to finish booting
 	source $BUILD_SOURCESDIRECTORY/build/test-scripts/android-uitest-wait-systemui.sh 500
@@ -126,8 +139,6 @@ cp $UNO_UITEST_ANDROIDAPK_PATH $BUILD_ARTIFACTSTAGINGDIRECTORY
 cd $BUILD_SOURCESDIRECTORY/build
 
 mono nuget/NuGet.exe install NUnit.ConsoleRunner -Version $NUNIT_VERSION
-
-mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
 # Move to the screenshot directory so that the output path is the proper one, as
 # required by Xamarin.UITest
@@ -159,7 +170,7 @@ mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nuni
     @$UNO_TESTS_RESPONSE_FILE || true
 
 ## Dump the emulator's system log
-$ANDROID_HOME/platform-tools/adb shell logcat -d > $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_TEST_MODE_NAME.txt
+$ANDROID_HOME/platform-tools/adb shell logcat -d > $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$UITEST_TEST_MODE_NAME.txt
 
 if [ ! -f "$UNO_ORIGINAL_TEST_RESULTS" ]; then
 	echo "ERROR: The test results file $UNO_ORIGINAL_TEST_RESULTS does not exist (did nunit crash ?)"

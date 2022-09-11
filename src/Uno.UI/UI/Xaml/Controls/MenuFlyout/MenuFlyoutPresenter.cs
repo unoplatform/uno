@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool m_isSubPresenter;
 
-		private int m_depth = 0;
+		private int m_depth;
 
 		private FlyoutBase.MajorPlacementMode m_mostRecentPlacement;
 

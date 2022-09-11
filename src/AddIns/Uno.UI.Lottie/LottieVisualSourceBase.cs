@@ -123,7 +123,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			throw new NotImplementedException();
 		}
 
+#pragma warning disable CA1805 // Do not initialize unnecessarily
 		private readonly Size CompositionSize = default;
+#pragma warning restore CA1805 // Do not initialize unnecessarily
+
 		private async Task InnerUpdate(CancellationToken ct)
 		{
 			throw new NotSupportedException("Lottie on this platform is not supported yet.");

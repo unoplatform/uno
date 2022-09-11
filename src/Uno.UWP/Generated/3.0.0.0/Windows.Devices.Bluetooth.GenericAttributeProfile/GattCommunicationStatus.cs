@@ -2,21 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	public   enum GattCommunicationStatus 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Success = 0,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Unreachable = 1,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ProtocolError = 2,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AccessDenied = 3,
-		#endif
+		// Skipping already declared field Windows.Devices.Bluetooth.GenericAttributeProfile.GattCommunicationStatus.Success
+		// Skipping already declared field Windows.Devices.Bluetooth.GenericAttributeProfile.GattCommunicationStatus.Unreachable
+		// Skipping already declared field Windows.Devices.Bluetooth.GenericAttributeProfile.GattCommunicationStatus.ProtocolError
+		// Skipping already declared field Windows.Devices.Bluetooth.GenericAttributeProfile.GattCommunicationStatus.AccessDenied
 	}
 	#endif
 }

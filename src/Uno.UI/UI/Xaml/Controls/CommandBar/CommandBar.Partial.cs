@@ -79,26 +79,26 @@ namespace Windows.UI.Xaml.Controls
 		ItemsPresenter? m_tpOverflowPresenterItemsPresenter;
 		FrameworkElement? m_tpWindowedPopupPadding;
 
-		double m_overflowContentMinWidth = 0;
-		double m_overflowContentTouchMinWidth = 0;
+		double m_overflowContentMinWidth;
+		double m_overflowContentTouchMinWidth;
 		double m_overflowContentMaxWidth = 480;
 
 		// Restorable primary command minimum width from overflow to the primary command collection
-		double m_restorablePrimaryCommandMinWidth = 0;
+		double m_restorablePrimaryCommandMinWidth;
 
 
 #pragma warning disable CS0414
 #pragma warning disable CS0649
-		bool m_skipProcessTabStopOverride = false;
+		bool m_skipProcessTabStopOverride;
 #pragma warning restore CS0414
 #pragma warning restore CS0649
 		// DirectUI::InputDeviceType m_inputDeviceTypeUsedToOpen = DirectUI::InputDeviceType::Touch;
 
 
-		bool m_hasAlreadyFiredOverflowChangingEvent = false;
-		bool m_hasAppBarSeparatorInOverflow = false;
+		bool m_hasAlreadyFiredOverflowChangingEvent;
+		bool m_hasAppBarSeparatorInOverflow;
 		bool m_isDynamicOverflowEnabled = true;
-		int m_SecondaryCommandStartIndex = 0;
+		int m_SecondaryCommandStartIndex;
 
 		OverflowInitialFocusItem m_overflowInitialFocusItem = OverflowInitialFocusItem.None;
 
@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml.Controls
 		ICommandBarElement? m_focusedElementPriorToCollectionOrSizeChange;
 		FocusState m_focusStatePriorToCollectionOrSizeChange;
 
-		double m_lastAvailableWidth = 0;
+		double m_lastAvailableWidth;
 
 		IMenu? IMenu.ParentMenu
 		{

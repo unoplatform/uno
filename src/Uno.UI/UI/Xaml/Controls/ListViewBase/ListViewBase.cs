@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml.Controls
 		/// When this flag is set, the ListViewBase will process every notification from <see cref="INotifyCollectionChanged"/> as if it 
 		/// were a 'Reset', triggering a complete refresh of the list. By default this is false.
 		/// </summary>
-		public bool RefreshOnCollectionChanged { get; set; } = false;
+		public bool RefreshOnCollectionChanged { get; set; }
 
 		internal override bool IsSingleSelection => SelectionMode == ListViewSelectionMode.Single;
 		private bool IsSelectionMultiple => SelectionMode == ListViewSelectionMode.Multiple || SelectionMode == ListViewSelectionMode.Extended;

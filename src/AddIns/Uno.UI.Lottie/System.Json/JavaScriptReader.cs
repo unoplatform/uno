@@ -15,8 +15,8 @@ namespace System.Runtime.Serialization.Json
     internal class JavaScriptReader
     {
         private readonly TextReader _r;
-        private int _line = 1, _column = 0;
-        private int _peek;
+        private int _line = 1, _column;
+		private int _peek;
         private bool _has_peek;
         private bool _prev_lf;
 

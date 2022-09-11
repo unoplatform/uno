@@ -32,7 +32,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private IReporter _reporter = new Reporter();
 		private IDeltaApplier _deltaApplier;
 
-		private bool _useRoslynHotReload = false;
+		private bool _useRoslynHotReload;
 
 		private void InitializeMetadataUpdater(ConfigureServer configureServer)
 		{

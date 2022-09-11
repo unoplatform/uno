@@ -41,7 +41,7 @@ The format is the same as Windows, as follows:
 ```xml
 <Setter Property="FontFamily" Value="/Assets/Fonts/yourfont.ttf#Your Font Name" />
 ```
-    or
+or
 
 ```xml
 <Setter Property="FontFamily" Value="ms-appx:///Assets/Fonts/yourfont.ttf#Your Font Name" />
@@ -49,36 +49,79 @@ The format is the same as Windows, as follows:
 
 ## Custom fonts on WebAssembly
 
-Adding a custom font is done through the use of WebFonts, using a data-URI:
+There is 3 ways to use fonts on WebAssembly platform:
+
+1. Referencing a **font defined in CSS**: Use a font defined using a `@font-face` CSS clause.
+
+   > [!NOTE]
+   > This was the only available way to define and use a custom font before Uno.UI v4.4. This is useful if the application is using externally referenced CSS as those commonly available on a CDN.
+
+2. Referencing a **font file in application assets**: Use a font file (any web comptatible file format, such as `.ttf`, `.woff`, etc...). This can also be used to reference a font hosted elsewhere using http address.
+
+### Adding a custom font defined in CSS
+
+First, the font needs to be defined in CSS.
 
 ```css
+/* First way: defined locally using data uri */
 @font-face {
-  font-family: "Symbols";
-  /* winjs-symbols.woff2: https://github.com/Microsoft/fonts/tree/master/Symbols */
+  font-family: "RobotoAsBase64"; /* XAML: <FontFamily>RobotoAsBase64</FontFamily> */
   src: url(data:application/x-font-woff;charset=utf-8;base64,d09GMgABAAA...) format('woff');
 }
+
+/* Second way: defined locally using external uri targetting the font file */
+@font-face {
+  font-family: "Roboto"; /* XAML: <FontFamily>CssRoboto</FontFamily> */
+  src: url(/Roboto.woff) format('woff');
+}
+
+/* Third way: Use an external font definition, optionally hosted on a CDN. */
+@import url('http://fonts.cdnfonts.com/css/antikythera'); /* XAML: <FontFamily>Antikythera</FontFamily> + others available */
 ```
 
-This type of declaration is required to avoid measuring errors if the font requested by a `TextBlock` or a `FontIcon` needs to be downloaded first. Specifying it using a data-URI ensures the font is readily available.
+Second, you can use it in XAML in this way:
 
-The font names are referenced based on the `#` name, so:
+``` xml
+<!-- XAML usage of CSS defined font -->
 
+<TextBlock FontFamily="MyCustomFontAsBase64">This text should be rendered using the font defined as base64 in CSS.</TextBlock>
+
+<TextBlock FontFamily="CssRoboto">This text should be rendered using the roboto.woff font referenced in CSS.</TextBlock>
+
+<TextBlock FontFamily="Antikythera">This text should be rendered using the Antikythera font hosted on a CDN.</TextBlock>
+```
+
+> [!NOTE]
+> This approach is nice and pretty flexible, but not friendly for multi-targetting. Until Uno.UI v4.4, it was the only way to defined custom fonts on this platform.
+
+### Added a custom font from a file defined as application assets
+
+When the application is multi-targetted, this approach is simpler because no CSS manipulation is required.
+
+1. Add font file as `Content` build action in the application's head project.
+
+2. Reference it using the format is the same as Windows:
+
+   ```xml
+   <Setter Property="FontFamily" Value="/Assets/Fonts/yourfont01.ttf#Roboto" />
+   ```
 ```xml
 <Setter Property="FontFamily"
         Value="ms-appx:///Assets/Fonts/yourfont.ttf#Your Font Name" />
 ```
 
-Will match the following `@font-face`:
+   or
 
-```css
-@font-face {
-  font-family: "Roboto";
-  ...
-}
-```
+   ```xml
+   <Setter Property="FontFamily" Value="ms-appx:///Assets/Fonts/yourfont01.ttf#Roboto" />
+   ```
 
-In case your `FontFamily` value does not contain `#`, Uno falls back to the font file name. Hence for:
+   or
 
+   ```xml
+   <!-- This is exclusive to Wasm platform -->
+   <Setter Property="FontFamily" Value="https://fonts.cdnfonts.com/s/71084/antikythera.woff#Antikythera" />
+   ```
 ```xml
 <Setter Property="FontFamily"
         Value="ms-appx:///Assets/Fonts/yourfont.ttf" />
@@ -92,6 +135,35 @@ Will match:
   ...
 }
 ```
+
+> [!NOTE]
+> The `#` part is optional and is there for cross-platform compatibilty. It is completely ignored on Uno WASM and can be omitted.
+
+> [!TIP]
+> Even if the font is defined in CSS, it could still be useful to preload it, since the browser won't parse the font file until is it actually used by the content. Preloading it will force the browser to do this sooner, resulting in a better user experience. This will also prevent the application from doing a new _measure_ phase once the font is loaded.
+
+### Fonts preloading on WebAssembly
+
+On Wasm platform, fonts files are loaded by the browser and can take time to load, resulting in a performance degradation and potential flicking when the font is actually available for rendering. In order to prevent this, it is possible to instruct the browser to preload the font before the rendering:
+
+``` csharp
+// Preloading of font families on Wasm. Add this before the Application.Start() in the Program.cs
+
+public static void main(string[] orgs)
+{
+    // Add this in your application to preload a font.
+    // You can add more than one, but preload too many fonts could hurt user experience.
+    // IMPORTANT: The string parameter should be exactly the same string (including casing)
+    //            used as FontFamily in the application.
+    Uno.UI.Xaml.Media.FontFamilyHelper.PreloadAsync("ms-appx:///Assets/Fonts/yourfont01.ttf#ApplicationFont01");
+    Uno.UI.Xaml.Media.FontFamilyHelper.PreloadAsync("https://fonts.cdnfonts.com/s/71084/antikythera.woff#Antikythera");
+
+    // Preloads a font which has been specified as a CSS font, either with a data uri or a remote resource.
+    Uno.UI.Xaml.Media.FontFamilyHelper.PreloadAsync("Roboto");
+    
+    Windows.UI.Xaml.Application.Start(_ => _app = new App());
+```
+
 ## Custom Fonts on macOS
 
 Fonts must be placed in the `Resources/Fonts` folder of the head project, be marked as

@@ -2,21 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Enumeration
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DeviceAccessInformation 
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Enumeration.DeviceAccessStatus CurrentStatus
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DeviceAccessStatus DeviceAccessInformation.CurrentStatus is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property CurrentStatus
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.AccessChanged.add
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.AccessChanged.remove
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.CurrentStatus.get

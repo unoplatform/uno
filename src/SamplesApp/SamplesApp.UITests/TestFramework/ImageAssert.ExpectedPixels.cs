@@ -107,7 +107,7 @@ public record struct ExpectedPixels
 
 	public ExpectedPixels Pixels(_Bitmap source)
 	{
-		var colors = new Color[source.Width, source.Height];
+		var colors = new Color[source.Height, source.Width];
 		for (var py = 0; py < source.Height; py++)
 			for (var px = 0; px < source.Width; px++)
 			{

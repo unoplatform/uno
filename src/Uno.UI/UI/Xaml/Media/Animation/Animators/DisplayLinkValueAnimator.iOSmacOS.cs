@@ -26,12 +26,12 @@ namespace Windows.UI.Xaml.Media.Animation
 		private NSTimer _timer;
 #endif
 
-		private double _startTime = 0;
+		private double _startTime;
 
 		private bool _isDisposed;
 		private bool _isAttachedToLooper;
 
-		protected IEasingFunction _easingFunction = null;
+		protected IEasingFunction _easingFunction;
 
 		public void Start()
 		{

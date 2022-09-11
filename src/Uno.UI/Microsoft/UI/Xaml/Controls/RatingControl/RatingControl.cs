@@ -69,12 +69,12 @@ namespace Microsoft.UI.Xaml.Controls
 			RecycleEvents(true /* useSafeGet */);
 		}
 
-		~RatingControl()
-		{
+		//~RatingControl()
+		//{
 			// We only need to use safe_get in the deruction loop
 			// We don't need to unload events
 			// RecycleEvents(true /* useSafeGet */);
-		}
+		//}
 
 		private float RenderingRatingFontSize()
 		{

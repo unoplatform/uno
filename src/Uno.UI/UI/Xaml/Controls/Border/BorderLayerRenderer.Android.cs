@@ -21,7 +21,7 @@ using Rect = Windows.Foundation.Rect;
 
 namespace Windows.UI.Xaml.Controls
 {
-	internal class BorderLayerRenderer
+	partial class BorderLayerRenderer
 	{
 		private const double __opaqueAlpha = 255;
 

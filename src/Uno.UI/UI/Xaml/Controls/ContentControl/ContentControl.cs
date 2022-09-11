@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private DataTemplate? _dataTemplateUsedLastUpdate;
 
-		private bool _canCreateTemplateWithoutParent = false;
+		private bool _canCreateTemplateWithoutParent;
 
 		/// <summary>
 		/// Flag to determine if the current content has been overridden.

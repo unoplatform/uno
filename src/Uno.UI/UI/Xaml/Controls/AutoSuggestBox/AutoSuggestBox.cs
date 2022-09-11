@@ -229,6 +229,7 @@ namespace Windows.UI.Xaml.Controls
 			if (_textBox != null)
 			{
 				_textBox.KeyDown += OnTextBoxKeyDown;
+				_textBox.LostFocus += OnTextBoxLostFocus;
 			}
 
 			if (_queryButton != null)
@@ -252,6 +253,7 @@ namespace Windows.UI.Xaml.Controls
 			if (_textBox != null)
 			{
 				_textBox.KeyDown -= OnTextBoxKeyDown;
+				_textBox.LostFocus -= OnTextBoxLostFocus;
 			}
 
 			if (_queryButton != null)
@@ -331,6 +333,11 @@ namespace Windows.UI.Xaml.Controls
 
 			QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(finalResult is "" ? null : finalResult, userInput));			
 
+			IsSuggestionListOpen = false;
+		}
+
+		private void OnTextBoxLostFocus(object sender, RoutedEventArgs e)
+		{
 			IsSuggestionListOpen = false;
 		}
 

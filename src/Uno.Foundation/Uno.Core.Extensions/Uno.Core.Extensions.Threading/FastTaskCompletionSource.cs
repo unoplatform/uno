@@ -92,7 +92,7 @@ namespace Uno.Threading
 		/// </remarks>
 		public Exception Exception => ExceptionInfo?.SourceException;
 
-		private static SpinWait _spin = new SpinWait();
+		private static SpinWait _spin;
 
 		/// <summary>
 		/// Set the termination as "Canceled"

@@ -13,7 +13,7 @@ namespace Uno.Devices.Midi.Internal
 	{
 		private const string JsType = "Uno.Devices.Midi.Internal.WasmMidiAccess";
 
-		private static bool _webMidiAccessible = false;
+		private static bool _webMidiAccessible;
 
 		public static async Task<bool> RequestAsync()
 		{

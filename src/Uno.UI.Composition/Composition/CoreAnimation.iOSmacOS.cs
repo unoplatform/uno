@@ -21,7 +21,7 @@ namespace Windows.UI.Composition
 	{
 		private const double __millisecondsPerSecond = 1000d;
 
-		private static int _id = 0;
+		private static int _id;
 
 		private readonly CALayer _layer;
 		private readonly string _property;

@@ -23,8 +23,8 @@ namespace Private.Infrastructure
 	{
 		public static class WindowHelper
 		{
-			private static Windows.UI.Xaml.Window _currentTestWindow = null;
-			private static UIElement _originalWindowContent = null;
+			private static Windows.UI.Xaml.Window _currentTestWindow;
+			private static UIElement _originalWindowContent;
 
 			public static Windows.UI.Xaml.Window CurrentTestWindow
 			{

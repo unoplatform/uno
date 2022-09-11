@@ -120,20 +120,16 @@ namespace UnoSolutionTemplate.Wizard
 		{
 			try
 			{
-				if (_dte?.Solution.SolutionBuild is SolutionBuild2 val)
+				if (_dte?.Solution.SolutionBuild is SolutionBuild val)
 				{
-						var uwpProject = GetAllProjects().FirstOrDefault(s => s.Name.EndsWith(".UWP", StringComparison.OrdinalIgnoreCase));
+					var uwpProject = GetAllProjects().FirstOrDefault(s => s.Name.EndsWith(".UWP", StringComparison.OrdinalIgnoreCase));
 
-						if (uwpProject is { })
-						{
-							val.StartupProjects = uwpProject.UniqueName;
-						}
+					if (uwpProject is { })
+					{
+						val.StartupProjects = uwpProject.UniqueName;
+					}
 
-						var x86Config = val.SolutionConfigurations
-							.Cast<SolutionConfiguration2>()
-							.FirstOrDefault(c => c.Name == "Debug" && c.PlatformName == "x86");
-
-						x86Config?.Activate();
+					GetSolutionConfiguration(val, "Debug", "x86")?.Activate();
 				}
 				else
 				{
@@ -146,17 +142,30 @@ namespace UnoSolutionTemplate.Wizard
 			}
 		}
 
+		private static SolutionConfiguration GetSolutionConfiguration(SolutionBuild solutionBuild, string configuration, string platformName)
+			=> solutionBuild
+				.SolutionConfigurations
+				.Cast<SolutionConfiguration>()
+				.FirstOrDefault(c =>
+				{
+					// Use reflection to get to SolutionConfiguration2 because VS 2019 references don't match runtime types on VS 2022.
+					var solutionPlatformName = c.GetType()
+						.GetProperty("EnvDTE80.SolutionConfiguration2.PlatformName", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+						?.GetValue(c)
+						?.ToString();
+
+					return c.Name == configuration && platformName == solutionPlatformName;
+				});
+
 		private void SetUWPAnyCPUBuildableAndDeployable()
 		{
-			if (_dte?.Solution.SolutionBuild is SolutionBuild2 val)
+			if (_dte?.Solution.SolutionBuild is SolutionBuild val)
 			{
 				try
 				{
-					var anyCpuConfig = val.SolutionConfigurations
-						.Cast<SolutionConfiguration2>()
-						.FirstOrDefault(c => c.Name == "Debug" && c.PlatformName == "Any CPU");
+					var anyCpuConfig = GetSolutionConfiguration(val, "Debug", "Any CPU");
 
-					foreach (SolutionConfiguration2 solutionConfiguration2 in val.SolutionConfigurations)
+					foreach (SolutionConfiguration solutionConfiguration2 in val.SolutionConfigurations)
 					{
 						foreach (SolutionContext solutionContext in anyCpuConfig.SolutionContexts)
 						{

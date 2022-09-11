@@ -4,6 +4,8 @@
 		<IsPackable>false</IsPackable>
 		<NoWarn>1998</NoWarn>
 		<OutputPath>..\Build\Tests\bin\$(Configuration)_$(Platform)\</OutputPath>
+
+		<CodeAnalysisVersionForAnalyzersTests>3.8.0</CodeAnalysisVersionForAnalyzersTests>
 	</PropertyGroup>
 	
 	<ItemGroup>
@@ -13,21 +15,13 @@
 		<PackageReference Include="MSTest.TestFramework">
 			<Version>2.1.2</Version>
 		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis">
-			<Version>3.3.1</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.Common">
-			<Version>3.3.1</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp">
-			<Version>3.3.1</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
-			<Version>3.3.1</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common">
-			<Version>3.3.1</Version>
-		</PackageReference>
+
+		<PackageReference Include="Microsoft.CodeAnalysis" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
+
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.MSTest">
 			<Version>1.1.1</Version>
 		</PackageReference>

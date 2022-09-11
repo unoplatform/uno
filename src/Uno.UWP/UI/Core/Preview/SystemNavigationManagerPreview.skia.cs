@@ -7,7 +7,7 @@ namespace Windows.UI.Core.Preview;
 
 public partial class SystemNavigationManagerPreview
 {
-	private ISystemNavigationManagerPreviewExtension? _extension = null;
+	private ISystemNavigationManagerPreviewExtension? _extension;
 
 	partial void InitializePlatform()
 	{

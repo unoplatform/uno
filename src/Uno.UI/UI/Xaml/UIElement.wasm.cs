@@ -197,7 +197,7 @@ namespace Windows.UI.Xaml
 		}
 
 #if DEBUG
-		private long _arrangeCount = 0;
+		private long _arrangeCount;
 #endif
 
 		/// <summary>
@@ -342,21 +342,32 @@ namespace Windows.UI.Xaml
 		}
 
 		private Rect _arranged;
-		private string _name;
+
+		#region Name Dependency Property
+
+		private void OnNameChanged(string oldValue, string newValue)
+		{
+			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
+			{
+				Windows.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
+			}
+			
+			if (FeatureConfiguration.UIElement.AssignDOMXamlName)
+			{
+				Uno.UI.Xaml.WindowManagerInterop.SetName(HtmlId, newValue);
+			}
+		}
+
+		[GeneratedDependencyProperty(DefaultValue = "", ChangedCallback = true)]
+		public static DependencyProperty NameProperty { get; } = CreateNameProperty();
 
 		public string Name
 		{
-			get => _name;
-			set
-			{
-				_name = value;
-
-				if (FeatureConfiguration.UIElement.AssignDOMXamlName)
-				{
-					Uno.UI.Xaml.WindowManagerInterop.SetName(HtmlId, _name);
-				}
-			}
+			get => GetNameValue();
+			set => SetNameValue(value);
 		}
+		
+		#endregion
 
 		partial void OnUidChangedPartial()
 		{

@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		#endregion
 
 		private byte[]? _buffer;
-		private int _bufferSize = 0;
+		private int _bufferSize;
 
 #if NOT_IMPLEMENTED
 		[global::Uno.NotImplemented()]

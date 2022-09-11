@@ -53,7 +53,7 @@ namespace Uno.UI.TestComparer
 
                 foreach (var run in validRuns.Select((v, i) => new { Index = i, Value = v }))
                 {
-                    Console.WriteLine($"Getting run {run.Index + 1} of {validRuns.Count()} for {run.Value.Platform} at {run.Value.Date}...");
+                    Console.WriteLine($"Getting run {run.Index + 1} of {validRuns.Length} for {run.Value.Platform} at {run.Value.Date}...");
 
                     var runName = $"{run.Value.Date:yyyyMMdd-hhmmss}-{run.Value.Id}";
                     var fullPath = Path.Combine(basePath, run.Value.Platform, runName);

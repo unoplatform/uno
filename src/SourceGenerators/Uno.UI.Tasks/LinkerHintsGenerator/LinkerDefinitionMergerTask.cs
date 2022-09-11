@@ -82,8 +82,20 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				}
 
 				using (var asm = AssemblyDefinition.ReadAssembly(TargetAssembly, new ReaderParameters() { AssemblyResolver = resolver, ReadSymbols = true, ReadWrite = true } ))
-				{
-					asm.MainModule.Resources.Add(new EmbeddedResource(TargetResourceName, ManifestResourceAttributes.Public, File.ReadAllBytes(outputPath)));
+                {
+                    // Clean existing resources with the same name
+                    var existingResources = asm.MainModule.Resources
+                        .OfType<EmbeddedResource>()
+                        .Where(r => r.Name.EndsWith(TargetResourceName, StringComparison.OrdinalIgnoreCase))
+                        .ToArray();
+
+                    foreach(var existingResource in existingResources)
+                    {
+                        asm.MainModule.Resources.Remove(existingResource);
+                    }
+
+                    // Add the new merged content
+                    asm.MainModule.Resources.Add(new EmbeddedResource(TargetResourceName, ManifestResourceAttributes.Public, File.ReadAllBytes(outputPath)));
 
 					asm.Write(new WriterParameters() { WriteSymbols = true });
 				}
@@ -109,6 +121,8 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				try
 				{
 					File.OpenWrite(filePath).Dispose();
+
+					break;
 				}
 				catch
 				{

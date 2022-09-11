@@ -77,7 +77,7 @@ public partial class Viewbox // Viewbox.h
 
 	//DirectUI::StretchDirection m_stretchDirection = DirectUI::StretchDirection::Both;
 	//DirectUI::Stretch m_stretch = DirectUI::Stretch::Uniform;
-	private Border m_pContainerVisual = null;
+	private Border m_pContainerVisual;
 	#endregion
 
 	#region protected:

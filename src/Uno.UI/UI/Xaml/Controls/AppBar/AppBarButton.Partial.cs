@@ -35,8 +35,8 @@ namespace Windows.UI.Xaml.Controls
 		bool m_isTemplateApplied;
 
 		// We need to adjust our visual state to account for CommandBarElements that have keyboard accelerator text.
-		bool m_isWithKeyboardAcceleratorText = false;
-		double m_maxKeyboardAcceleratorTextWidth = 0;
+		bool m_isWithKeyboardAcceleratorText;
+		double m_maxKeyboardAcceleratorTextWidth;
 
 		// If we have a keyboard accelerator attached to us and the app has not set a tool tip on us,
 		// then we'll create our own tool tip.  We'll use this flag to indicate that we can unset or
@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Controls
 		CascadingMenuHelper? m_menuHelper;
 
 		// Helpers to track the current opened state of the flyout.
-		bool m_isFlyoutClosing = false;
+		bool m_isFlyoutClosing;
 		SerialDisposable m_flyoutOpenedHandler = new SerialDisposable();
 		SerialDisposable m_flyoutClosedHandler = new SerialDisposable();
 		SerialDisposable _contentChangedHandler = new SerialDisposable();

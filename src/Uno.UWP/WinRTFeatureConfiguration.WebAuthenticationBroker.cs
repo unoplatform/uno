@@ -18,7 +18,7 @@ namespace Uno
 			/// Set the default return Uri. If not defined (null), the default provider
 			/// will try to determine it automatically.
 			/// </summary>
-			public static Uri? DefaultReturnUri { get; set; } = null;
+			public static Uri? DefaultReturnUri { get; set; }
 
 #if __WASM__
 
@@ -52,7 +52,7 @@ namespace Uno
 			/// (iOS 13+, MacOS 10.15+) If Ephemeral Web Browser Session should be used.
 			/// That means no cookies is preserved between sessions.
 			/// </summary>
-			public static bool PrefersEphemeralWebBrowserSession { get; set; } = false;
+			public static bool PrefersEphemeralWebBrowserSession { get; set; }
 #endif
 		}
 	}

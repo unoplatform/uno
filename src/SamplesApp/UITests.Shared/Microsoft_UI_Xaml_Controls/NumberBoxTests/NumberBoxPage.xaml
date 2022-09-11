@@ -41,6 +41,28 @@
 				<ComboBoxItem Content="Inline" />
 			</ComboBox>
 
+			<ComboBox x:Name="TextAlignmentComboBox"
+					  AutomationProperties.Name="TextAlignmentComboBox"
+					  Header="TextAlignment"
+					  SelectedIndex="0"
+					  SelectionChanged="TextAlignment_Changed">
+				<ComboBoxItem Content="Left" />
+				<ComboBoxItem Content="Center" />
+				<ComboBoxItem Content="Right" />
+			</ComboBox>
+
+			<ComboBox x:Name="InputScopeComboBox"
+					  AutomationProperties.Name="InputScopeComboBox"
+					  Header="InputScope"
+					  SelectedIndex="0"
+					  SelectionChanged="InputScope_Changed">
+				<ComboBoxItem Content="Number" />
+				<ComboBoxItem Content="Default" />
+				<ComboBoxItem Content="CurrencyAmountAndSymbol" />
+				<ComboBoxItem Content="TelephoneNumber" />
+				<ComboBoxItem Content="Formula" />
+			</ComboBox>
+
 			<CheckBox x:Name="EnabledCheckBox"
 					  AutomationProperties.Name="EnabledCheckBox"
 					  IsChecked="True"
@@ -100,10 +122,14 @@
 									ValueChanged="MaxValueChanged" />
 			</StackPanel>
 
-			<Button x:Name="CustomFormatterButton"
-					AutomationProperties.Name="CustomFormatterButton"
+			<!-- Uno Specific: Using CheckBox instead of Button because Button goes out of screen bounds and cannot be clicked -->
+			<!-- With the checkbox, we can set IsChecked DP directly -->
+			<CheckBox x:Name="CustomFormatterCheckBox"
+					AutomationProperties.Name="CustomFormatterCheckBox"
 					Content="Custom Formatter"
-					Click="CustomFormatterButton_Click"
+					IsChecked="False"
+					Checked="CustomFormatterCheckBox_CheckChanged"
+					Unchecked="CustomFormatterCheckBox_CheckChanged"
 					Margin="0,4,0,0" />
 
 			<Button x:Name="SetTextButton"
@@ -123,45 +149,134 @@
 					Content="Set value to NaN"
 					Click="SetNaNButton_Click"
 					Margin="0,4,0,0" />
+
+			<Button x:Name="SetTwoWayBoundValueNaNButton"
+					AutomationProperties.Name="SetTwoWayBoundValueNaNButton"
+					Content="Set two way bound value to NaN"
+					Click="SetTwoWayBoundNaNButton_Click" Margin="0,4,0,0" />
+
+			<Button x:Name="ToggleHeaderValueButton"
+					AutomationProperties.Name="ToggleHeaderValueButton"
+					Content="Toggle header for clipping issue"
+					Click="ToggleHeaderValueButton_Click"
+					Margin="0,4,0,0" />
+
+			<Button x:Name="ToggleHeaderTemplateValueButton"
+					AutomationProperties.Name="ToggleHeaderTemplateValueButton"
+					Content="Toggle header template"
+					Click="ToggleHeaderTemplateValueButton_Click"
+					Margin="0,4,0,0" />
+
 		</StackPanel>
 
 		<Grid Grid.Column="1">
 
 			<StackPanel HorizontalAlignment="Center"
 						VerticalAlignment="Center"
+                        Orientation="Vertical"
 						contract5Present:Spacing="4">
-				<controls:NumberBox x:Name="TestNumberBox"
-									AutomationProperties.Name="TestNumberBox"
-									Header="NumberBox"
-									PlaceholderText="Text"
-									ValueChanged="NumberBoxValueChanged"
-									SmallChange="{x:Bind SmallChangeNumberBox.Value, Mode=OneWay}"
-									LargeChange="{x:Bind LargeChangeNumberBox.Value, Mode=OneWay}"
-									AcceptsExpression="{x:Bind ExpressionCheckBox.IsChecked.Value, Mode=OneWay}"
-									IsWrapEnabled="{x:Bind WrapCheckBox.IsChecked.Value, Mode=OneWay}"
-									IsEnabled="{x:Bind EnabledCheckBox.IsChecked.Value, Mode=OneWay}" />
+				<!--Standard NumberBox test UI -->
+				<StackPanel>
+					<controls:NumberBox
+                        MinWidth="150"
+                        x:Name="TestNumberBox"
+                        Description="Description text"
+                        Header="TestNumberBox"
+                        PlaceholderText="Text"
+                        ValueChanged="NumberBoxValueChanged"
+                        SmallChange="{x:Bind SmallChangeNumberBox.Value, Mode=OneWay}"
+                        LargeChange="{x:Bind LargeChangeNumberBox.Value, Mode=OneWay}"
+                        AcceptsExpression="{x:Bind ExpressionCheckBox.IsChecked.Value, Mode=OneWay}"
+                        IsWrapEnabled="{x:Bind WrapCheckBox.IsChecked.Value, Mode=OneWay}"
+                        IsEnabled="{x:Bind EnabledCheckBox.IsChecked.Value, Mode=OneWay}" />
 
-				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="Value:"
-							   Margin="0,0,5,0" />
-					<TextBlock x:Name="NewValueTextBox"
-							   AutomationProperties.Name="NewValueTextBox"
-							   Text="0" />
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="Value:"
+								   Margin="0,0,5,0" />
+						<TextBlock x:Name="NewValueTextBox"
+								   AutomationProperties.Name="NewValueTextBox"
+								   Text="0" />
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="Old Value:"
+								   Margin="0,0,5,0" />
+						<TextBlock x:Name="OldValueTextBox"
+								   AutomationProperties.Name="OldValueTextBox" />
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="Text:"
+								   Margin="0,0,5,0" />
+						<TextBlock x:Name="TextTextBox"
+								   AutomationProperties.Name="TextTextBox"
+								   Text="0" />
+					</StackPanel>
 				</StackPanel>
 
-				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="Old Value:"
-							   Margin="0,0,5,0" />
-					<TextBlock x:Name="OldValueTextBox"
-							   AutomationProperties.Name="OldValueTextBox" />
+				<!-- NumberBox for nested scrolling bug(s)-->
+				<StackPanel Margin="30,0,0,0">
+					<TextBlock>NumberBox inside ScrollViewer test</TextBlock>
+					<ScrollViewer x:Name="ScrollviewerWithScroll" Height="50"
+                                  Width="200"
+                            ViewChanged="ScrollviewerWithScroll_ViewChanged">
+						<StackPanel>
+							<controls:NumberBox x:Name="NumberBoxInScroller"
+                                    AutomationProperties.Name="NumberBoxInScroller"/>
+							<controls:NumberBox/>
+							<controls:NumberBox/>
+						</StackPanel>
+					</ScrollViewer>
+
+					<TextBlock x:Name="VerticalOffsetDisplayBlock" Text="0"
+                            AutomationProperties.Name="VerticalOffsetDisplayBlock"/>
 				</StackPanel>
 
+				<!-- NumberBox two way binding with x:Bind -->
+				<StackPanel>
+					<controls:NumberBox Header="TwoWayBinding" x:Name="TwoWayBoundNumberBox"
+                              Value="{x:Bind DataModelWithINPC.Value, Mode=TwoWay}" />
+					<TextBlock x:Name="TwoWayBoundNumberBoxValue" AutomationProperties.Name="TwoWayBoundNumberBoxValue" />
+				</StackPanel>
+
+				<!-- Testing alignment with textbox and without specified header -->
 				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="Text:"
-							   Margin="0,0,5,0" />
-					<TextBlock x:Name="TextTextBox"
-							   AutomationProperties.Name="TextTextBox"
-							   Text="0" />
+					<TextBox MaxHeight="30" VerticalAlignment="Top"/>
+					<controls:NumberBox x:Name="HeaderTestingNumberBox" MaxHeight="32" VerticalAlignment="Top" PlaceholderText="I should not be clipped without header"/>
+					<controls:NumberBox x:Name="HeaderTestingNumberBoxTwo" MaxHeight="32" VerticalAlignment="Top">
+						<controls:NumberBox.HeaderTemplate>
+							<DataTemplate>
+								<TextBlock AutomationProperties.Name="HeaderTemplateBeforeApplayTemplateTest"  Text="MyText"/>
+							</DataTemplate>
+						</controls:NumberBox.HeaderTemplate>
+					</controls:NumberBox>
+					<controls:NumberBox>
+						<controls:NumberBox.Header>
+							<TextBlock AutomationProperties.Name="HeaderBeforeApplyTemplateTest" Text="TestNumberBox"/>
+						</controls:NumberBox.Header>
+					</controls:NumberBox>
+					<controls:NumberBox x:Name="HeaderTemplateTestingNumberBox"/>
+				</StackPanel>
+
+				<!-- FontSize propagation -->
+				<controls:NumberBox Header="Header text" FontSize="50"/>
+
+				<StackPanel Orientation="Horizontal" Height="50">
+					<controls:NumberBox PlaceholderText="Number"/>
+					<TextBox PlaceholderText="Text"/>
+					<AutoSuggestBox PlaceholderText="Auto"/>
+					<!--Not yet implemented in Uno. https://github.com/unoplatform/uno/issues/3848 https://github.com/unoplatform/uno/issues/81 -->
+					<!--<RichEditBox PlaceholderText="Rich"/>-->
+				</StackPanel>
+
+				<!-- Property propagation -->
+				<StackPanel Orientation="Horizontal">
+					<TextBox Header="Header text" FontSize="14" Foreground="{ThemeResource SystemAccentColor}"
+                        Padding="20" Margin="20" BorderThickness="5" BorderBrush="Red"
+                        Height="100" Width="200"/>
+					<controls:NumberBox Header="Header text" FontSize="14" Foreground="{ThemeResource SystemAccentColor}" SpinButtonPlacementMode="Inline"
+                        Padding="20" Margin="20" BorderThickness="5" BorderBrush="Red"
+                        Height="100" Width="200"/>
 				</StackPanel>
 			</StackPanel>
 		</Grid>

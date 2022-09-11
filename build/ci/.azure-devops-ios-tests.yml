@@ -20,7 +20,7 @@ parameters:
 
 jobs:
 - job: iOS_Build
-  displayName: 'iOS Samples App UI Tests (Build)'
+  displayName: 'Build iOS Samples App UI Tests'
 
   dependsOn: Pipeline_Validations
 

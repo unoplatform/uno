@@ -201,7 +201,7 @@ namespace Windows.UI
 		{
 			//If only one font exists for this family name, use it. Otherwise we will need to inspect the file for the right font name
 			var fontNames = UIFont.FontNamesForFamilyName(familyName);
-			return fontNames.Count() == 1 ? UIFont.FromName(fontNames[0], size) : null;
+			return fontNames.Length == 1 ? UIFont.FromName(fontNames[0], size) : null;
 		}
 
 		private static UIFont GetFontFromFile(nfloat size, string file)
@@ -251,7 +251,7 @@ namespace Windows.UI
 				var font = new StringBuilder(rootFontFamilyName);
 				if (fontWeight != FontWeights.Normal || fontStyle == FontStyle.Italic)
 				{
-					font.Append("-");
+					font.Append('-');
 					font.Append(GetFontWeight(fontWeight));
 					font.Append(GetFontStyle(fontStyle));
 				}

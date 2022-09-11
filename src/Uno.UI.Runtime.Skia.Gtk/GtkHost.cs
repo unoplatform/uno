@@ -30,6 +30,7 @@ using WUX = Windows.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using System.ComponentModel;
 using Uno.Disposables;
+using System.Collections.Generic;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -48,6 +49,9 @@ namespace Uno.UI.Runtime.Skia
 		private Fixed _fix;
 		private GtkDisplayInformationExtension _displayInformationExtension;
 		private CompositeDisposable _registrations = new();
+
+		private record PendingWindowStateChangedInfo(Gdk.WindowState newState, Gdk.WindowState changedMask);
+		private List<PendingWindowStateChangedInfo> _pendingWindowStateChanged = new();
 
 		public static Gtk.Window Window => _window;
 		internal static UnoEventBox EventBox => _eventBox;
@@ -120,38 +124,104 @@ namespace Uno.UI.Runtime.Skia
 
 			_window.DeleteEvent += WindowClosing;
 
-			void Dispatch(System.Action d)
-			{
-				if (Gtk.Application.EventsPending())
-				{
-					Gtk.Application.RunIteration(false);
-				}
-
-				GLib.Idle.Add(delegate
-				{
-					if (this.Log().IsEnabled(LogLevel.Trace))
-					{
-						this.Log().Trace($"Iteration");
-					}
-
-					try
-					{
-						d();
-					}
-					catch (Exception e)
-					{
-						Console.WriteLine(e);
-					}
-
-					return false;
-				});
-			}
-
-			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
+			Windows.UI.Core.CoreDispatcher.DispatchOverride = DispatchNative;
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 
 			_window.WindowStateEvent += OnWindowStateChanged;
+			_window.ShowAll();
 
+			SetupRenderSurface();
+
+			Gtk.Application.Run();
+		}
+
+		void DispatchNative(System.Action d)
+		{
+			if (Gtk.Application.EventsPending())
+			{
+				Gtk.Application.RunIteration(false);
+			}
+
+			DispatchNativeSingle(d);
+		}
+
+		private void DispatchNativeSingle(System.Action d)
+			=> GLib.Idle.Add(delegate
+			{
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"Dispatch Iteration");
+				}
+
+				try
+				{
+					d();
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine(e);
+				}
+
+				return false;
+			});
+
+		private void SetupRenderSurface()
+		{
+			TryReadRenderSurfaceTypeEnvironment();
+
+			if (RenderSurfaceType == null)
+			{
+				// Create a temporary surface to automatically detect
+				// the OpenGL environment that can be used on the system.
+				GLValidationSurface validationSurface = new();
+
+				_window.Add(validationSurface);
+				_window.ShowAll();
+
+				DispatchNativeSingle(ValidatedSurface);
+
+				async void ValidatedSurface()
+				{
+					try
+					{
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().Debug($"Auto-detecting surface type");
+						}
+
+						// Wait for a realization of the GLValidationSurface
+						RenderSurfaceType = await validationSurface.GetSurfaceTypeAsync();
+
+						// Continue on the GTK main thread
+						DispatchNativeSingle(() =>
+						{
+							if (this.Log().IsEnabled(LogLevel.Debug))
+							{
+								this.Log().Debug($"Auto-detected {RenderSurfaceType} rendering");
+							}
+
+							_window.Remove(validationSurface);
+
+							FinalizeStartup();
+						});
+					}
+					catch (Exception e)
+					{
+						if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							this.Log().Error($"Auto-detected failed", e);
+						}
+					}
+				}
+			}
+			else
+			{
+				FinalizeStartup();
+			}
+		}
+
+		private void FinalizeStartup()
+		{
 			var overlay = new Overlay();
 
 			_eventBox = new UnoEventBox();
@@ -163,6 +233,10 @@ namespace Uno.UI.Runtime.Skia
 			overlay.AddOverlay(_fix);
 			_eventBox.Add(overlay);
 			_window.Add(_eventBox);
+
+			// Show the whole tree again, since we may have
+			// swapped the content with the GLValidationSurface.
+			_window.ShowAll();
 
 			if (this.Log().IsEnabled(LogLevel.Information))
 			{
@@ -182,7 +256,7 @@ namespace Uno.UI.Runtime.Skia
 			/* avoids double invokes at window level */
 			_area.AddEvents((int)GtkCoreWindowExtension.RequestedEvents);
 
-			_window.ShowAll();
+			ReplayPendingWindowStateChanges();
 
 			void CreateApp(ApplicationInitializationCallbackParams _)
 			{
@@ -191,18 +265,28 @@ namespace Uno.UI.Runtime.Skia
 			}
 
 			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
-			
+
 			WUX.Application.StartWithArguments(CreateApp);
 
 			_window.Title = Windows.ApplicationModel.Package.Current.DisplayName;
 
 			RegisterForBackgroundColor();
-			
-			UpdateWindowPropertiesFromPackage();
 
-			Gtk.Application.Run();
+			UpdateWindowPropertiesFromPackage();
 		}
 
+		private void TryReadRenderSurfaceTypeEnvironment()
+		{
+			if (Enum.TryParse(Environment.GetEnvironmentVariable("UNO_RENDER_SURFACE_TYPE"), out RenderSurfaceType surfaceType))
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Overriding RnderSurfaceType using command line with {surfaceType}");
+				}
+
+				RenderSurfaceType = surfaceType;
+			}
+		}
 		private void RegisterForBackgroundColor()
 		{
 			if (_area is IRenderSurface renderSurface)
@@ -268,54 +352,65 @@ namespace Uno.UI.Runtime.Skia
 		}
 
 		private IRenderSurface BuildRenderSurfaceType()
-		{
-			if (RenderSurfaceType == null)
-			{
-				if (OpenGLESRenderSurface.IsSupported)
-				{
-					RenderSurfaceType = Skia.RenderSurfaceType.OpenGLES;
-				}
-				else if (OpenGLRenderSurface.IsSupported)
-				{
-					RenderSurfaceType = Skia.RenderSurfaceType.OpenGL;
-				}
-				else
-				{
-					RenderSurfaceType = Skia.RenderSurfaceType.Software;
-				}
-			}
-
-			if (this.Log().IsEnabled(LogLevel.Information))
-			{
-				this.Log().LogInfo($"Using {RenderSurfaceType} render surface");
-			}
-
-			return RenderSurfaceType switch
+			=> RenderSurfaceType switch
 			{
 				Skia.RenderSurfaceType.OpenGLES => new OpenGLESRenderSurface(),
 				Skia.RenderSurfaceType.OpenGL => new OpenGLRenderSurface(),
 				Skia.RenderSurfaceType.Software => new SoftwareRenderSurface(),
 				_ => throw new InvalidOperationException($"Unsupported RenderSurfaceType {RenderSurfaceType}")
 			};
-		}
 
 		private void OnWindowStateChanged(object o, WindowStateEventArgs args)
 		{
+			var newState = args.Event.NewWindowState;
+			var changedMask = args.Event.ChangedMask;
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"OnWindowStateChanged: {newState}/{changedMask}");
+			}
+
+			if (_area != null)
+			{
+				ProcessWindowStateChanged(newState, changedMask);
+			}
+			else
+			{
+				// Store state changes to replay once the application has been
+				// initalized completely (initialization can be delayed if the render
+				// surface is automatically detected).
+				_pendingWindowStateChanged?.Add(new(newState, changedMask));
+			}
+		}
+
+		private void ReplayPendingWindowStateChanges()
+		{
+			if(_pendingWindowStateChanged is not null)
+			{
+				foreach(var state in _pendingWindowStateChanged)
+				{
+					ProcessWindowStateChanged(state.newState, state.changedMask);
+				}
+
+				_pendingWindowStateChanged = null;
+			}
+		}
+
+		private static void ProcessWindowStateChanged(Gdk.WindowState newState, Gdk.WindowState changedMask)
+		{
 			var winUIApplication = WUX.Application.Current;
 			var winUIWindow = WUX.Window.Current;
-			var newState = args.Event.NewWindowState;
-			var changedState = args.Event.ChangedMask;
 
 			var isVisible =
 				!(newState.HasFlag(Gdk.WindowState.Withdrawn) ||
 				newState.HasFlag(Gdk.WindowState.Iconified));
 
 			var isVisibleChanged =
-				changedState.HasFlag(Gdk.WindowState.Withdrawn) ||
-				changedState.HasFlag(Gdk.WindowState.Iconified);
+				changedMask.HasFlag(Gdk.WindowState.Withdrawn) ||
+				changedMask.HasFlag(Gdk.WindowState.Iconified);
 
 			var focused = newState.HasFlag(Gdk.WindowState.Focused);
-			var focusChanged = changedState.HasFlag(Gdk.WindowState.Focused);
+			var focusChanged = changedMask.HasFlag(Gdk.WindowState.Focused);
 
 			if (!focused && focusChanged)
 			{
@@ -326,7 +421,7 @@ namespace Uno.UI.Runtime.Skia
 			{
 				if (isVisible)
 				{
-					winUIApplication?.RaiseLeavingBackground(() => winUIWindow?.OnVisibilityChanged(true));					
+					winUIApplication?.RaiseLeavingBackground(() => winUIWindow?.OnVisibilityChanged(true));
 				}
 				else
 				{

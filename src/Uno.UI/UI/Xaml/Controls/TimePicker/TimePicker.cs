@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using Uno.Extensions;
 using Uno.UI;
+using Windows.Foundation;
 using Windows.Globalization;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -34,6 +35,10 @@ namespace Windows.UI.Xaml.Controls
 		private ContentPresenter _headerContentPresenter;
 		private bool _isLoaded;
 		private bool _isViewReady;
+		private bool _bypassTimeAndSelectedTimeChanged;
+
+		public event EventHandler<TimePickerValueChangedEventArgs> TimeChanged;
+		public event TypedEventHandler<TimePicker, TimePickerSelectedValueChangedEventArgs> SelectedTimeChanged;
 
 		public TimePicker()
 		{
@@ -47,21 +52,80 @@ namespace Windows.UI.Xaml.Controls
 		public TimeSpan Time
 		{
 			get => (TimeSpan)this.GetValue(TimeProperty);
-			set => this.SetValue(TimeProperty, value);
+			set
+			{
+				ValidateTimeSpanForTimeProperty(value);
+				this.SetValue(TimeProperty, value);
+			}
 		}
 
-		public static DependencyProperty TimeProperty { get ; } =
+		public static DependencyProperty TimeProperty { get; } =
 			DependencyProperty.Register(
 				nameof(Time),
 				typeof(TimeSpan),
 				typeof(TimePicker),
 				new FrameworkPropertyMetadata(
-					defaultValue: DateTime.Now.TimeOfDay,
+					defaultValue: new TimeSpan(-1),
 					options: FrameworkPropertyMetadataOptions.None,
-					propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnTimeChangedPartial((TimeSpan)e.OldValue, (TimeSpan)e.NewValue),
-					coerceValueCallback: (s, e) => e is TimeSpan ts ? new TimeSpan(ts.Days, ts.Hours, ts.Minutes, 0) : TimeSpan.Zero)
+					propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnTimeChanged((TimeSpan)e.OldValue, (TimeSpan)e.NewValue),
+					coerceValueCallback: (s, e) => ((TimePicker)s)?.CoerceTime((TimeSpan)e))
 				);
 
+		private static void ValidateTimeSpanForTimeProperty(TimeSpan span)
+		{
+			if (span < new TimeSpan(-1))
+			{
+				throw new ArgumentException("Value does not fall within the expected range.");
+			}
+		}
+
+		private TimeSpan CoerceTime(TimeSpan ts)
+		{
+			ValidateTimeSpanForTimeProperty(ts);
+			if (ts == new TimeSpan(-1))
+			{
+				return ts;
+			}
+			return new TimeSpan(ts.Days, ts.Hours, ts.Minutes, 0);
+		}
+#endregion
+
+#region SelectedTime DependencyProperty
+		public TimeSpan? SelectedTime
+		{
+			get => (TimeSpan?)this.GetValue(SelectedTimeProperty);
+			set
+			{
+				ValidateTimeSpanForSelectedTimeProperty(value);
+				this.SetValue(SelectedTimeProperty, value);
+			}
+		}
+
+		public static DependencyProperty SelectedTimeProperty { get; } =
+			DependencyProperty.Register(
+				nameof(SelectedTime),
+				typeof(TimeSpan?),
+				typeof(TimePicker),
+				new FrameworkPropertyMetadata(
+					defaultValue: null,
+					FrameworkPropertyMetadataOptions.None,
+					propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnSelectedTimeChanged((TimeSpan?)e.OldValue, (TimeSpan?)e.NewValue),
+					coerceValueCallback: (s, e) => ((TimePicker)s)?.CoerceSelectedTime((TimeSpan?)e))
+				);
+
+		private static void ValidateTimeSpanForSelectedTimeProperty(TimeSpan? span)
+		{
+			if (span.HasValue)
+			{
+				ValidateTimeSpanForTimeProperty(span.Value);
+			}
+		}
+
+		private TimeSpan? CoerceSelectedTime(TimeSpan? ts)
+		{
+			ValidateTimeSpanForSelectedTimeProperty(ts);
+			return ts;
+		}
 #endregion
 
 #region MinuteIncrement DependencyProperty
@@ -256,18 +320,73 @@ namespace Windows.UI.Xaml.Controls
 					ClockIdentifier = this.ClockIdentifier
 				};
 
-				BindToFlyout(nameof(Time));
+				_flyoutButton.Flyout.Opening += Flyout_Opening;
+				((TimePickerFlyout)_flyoutButton.Flyout).TimePicked += TimePicker_TimePicked;
+
 				BindToFlyout(nameof(MinuteIncrement));
 				BindToFlyout(nameof(ClockIdentifier));
 				_flyoutButton.Flyout.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
 				_flyoutButton.Flyout.BindToEquivalentProperty(this, nameof(LightDismissOverlayBackground));
+
+				void Flyout_Opening(object sender, object e)
+				{
+					if (sender is TimePickerFlyout timePickerFlyout)
+					{
+						var time = Time;
+						timePickerFlyout.Time = time == new TimeSpan(-1) ? DateTime.Now.TimeOfDay : time;
+					}
+				}
+
+				void TimePicker_TimePicked(TimePickerFlyout sender, TimePickedEventArgs args)
+				{
+					Time = sender.Time;
+				}
 #endif
 			}
 		}
 
-		void OnTimeChangedPartial(TimeSpan oldTime, TimeSpan newTime)
+		private void OnTimeChanged(TimeSpan oldTime, TimeSpan newTime)
+		{
+			if (_bypassTimeAndSelectedTimeChanged)
+			{
+				return;
+			}
+
+			try
+			{
+				_bypassTimeAndSelectedTimeChanged = true;
+				TimeSpan? newSelectedTime = newTime == new TimeSpan(-1) ? null : newTime;
+				var oldSelectedTime = SelectedTime;
+				SelectedTime = newSelectedTime;
+				TimeChanged?.Invoke(this, new TimePickerValueChangedEventArgs(oldTime, newTime));
+				SelectedTimeChanged?.Invoke(this, new TimePickerSelectedValueChangedEventArgs(oldSelectedTime, newSelectedTime));
+			}
+			finally
+			{
+				_bypassTimeAndSelectedTimeChanged = false;
+			}
+		}
+
+		private void OnSelectedTimeChanged(TimeSpan? oldSelectedTime, TimeSpan? newSelectedTime)
 		{
 			UpdateDisplayedDate();
+
+			if (_bypassTimeAndSelectedTimeChanged)
+			{
+				return;
+			}
+
+			try
+			{
+				_bypassTimeAndSelectedTimeChanged = true;
+				Time = newSelectedTime ?? new TimeSpan(-1);
+				TimeChanged?.Invoke(this, new TimePickerValueChangedEventArgs(oldSelectedTime ?? new TimeSpan(-1), newSelectedTime ?? new TimeSpan(-1)));
+				SelectedTimeChanged?.Invoke(this, new TimePickerSelectedValueChangedEventArgs(oldSelectedTime, newSelectedTime));
+			}
+			finally
+			{
+				_bypassTimeAndSelectedTimeChanged = false;
+			}
 		}
 
 		partial void OnClockIdentifierChangedPartial(string oldClockIdentifier, string newClockIdentifier)
@@ -284,21 +403,42 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateDisplayedDate()
 		{
-			var dateTime = DateTime.Today.Add(Time);
+			var selectedTime = SelectedTime;
 			var isTwelveHour = ClockIdentifier == ClockIdentifiers.TwelveHour;
-			if (_hourTextBlock != null)
+			if (selectedTime is null)
 			{
-				// http://stackoverflow.com/questions/3459677/datetime-tostringh-causes-exception
-				_hourTextBlock.Text = dateTime.ToString(isTwelveHour ? "%h" : "%H", CultureInfo.CurrentCulture);
+				if (_hourTextBlock != null)
+				{
+					_hourTextBlock.Text = "hour";
+				}
+				if (_minuteTextBlock != null)
+				{
+					_minuteTextBlock.Text = "minute";
+				}
+				if (_periodTextBlock != null)
+				{
+					_periodTextBlock.Text = isTwelveHour ? "AM" : string.Empty;
+				}
 			}
-			if (_minuteTextBlock != null)
+			else
 			{
-				_minuteTextBlock.Text = dateTime.ToString("mm", CultureInfo.CurrentCulture);
+
+				var dateTime = DateTime.Today.Add(selectedTime.Value);
+				if (_hourTextBlock != null)
+				{
+					// http://stackoverflow.com/questions/3459677/datetime-tostringh-causes-exception
+					_hourTextBlock.Text = dateTime.ToString(isTwelveHour ? "%h" : "%H", CultureInfo.CurrentCulture);
+				}
+				if (_minuteTextBlock != null)
+				{
+					_minuteTextBlock.Text = dateTime.ToString("mm", CultureInfo.CurrentCulture);
+				}
+				if (_periodTextBlock != null)
+				{
+					_periodTextBlock.Text = isTwelveHour ? dateTime.ToString("tt", CultureInfo.CurrentCulture) : string.Empty;
+				}
 			}
-			if (_periodTextBlock != null)
-			{
-				_periodTextBlock.Text = isTwelveHour ? dateTime.ToString("tt", CultureInfo.CurrentCulture) : string.Empty;
-			}
+
 			if (_thirdTextBlockColumn != null)
 			{
 				_thirdTextBlockColumn.Width = isTwelveHour ? "*" : "0";

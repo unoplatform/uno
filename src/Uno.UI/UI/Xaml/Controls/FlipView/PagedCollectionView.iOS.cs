@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal bool InDraggingEnded { get; set; } = false;
+		internal bool InDraggingEnded { get; set; }
 
 		public override bool Dragging => base.Dragging && !InDraggingEnded;
 

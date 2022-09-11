@@ -8,8 +8,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls
 {
 	public partial class Button_Command_Leak : Page
 	{
-		private Button _buttonInField = null;
-
 		public Button_Command_Leak()
 		{
 			InitializeComponent();

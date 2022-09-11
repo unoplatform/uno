@@ -28,7 +28,7 @@ namespace Uno.UI.Controls
 
 		private readonly Grid _pageStack;
 		private Frame _frame;
-		private bool _isUpdatingStack = false;
+		private bool _isUpdatingStack;
 		private PageStackEntry _currentEntry;
 		private Queue<(PageStackEntry pageEntry, NavigationEventArgs args)> _stackUpdates = new Queue<(PageStackEntry, NavigationEventArgs)>();
 

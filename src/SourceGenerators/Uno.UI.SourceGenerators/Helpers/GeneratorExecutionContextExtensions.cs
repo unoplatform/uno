@@ -1,19 +1,24 @@
 ﻿#nullable enable
-#if NETSTANDARD || NET5_0
+
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+
+#if NETFRAMEWORK
+using Uno.SourceGeneration;
+#endif
+
 
 namespace Uno.Roslyn
 {
 	internal static class GeneratorExecutionContextExtensions
 	{
 		private const string SourceItemGroupMetadata = "build_metadata.AdditionalFiles.SourceItemGroup";
-		public static void AddCompilationUnit(this GeneratorExecutionContext context, string name, string source)
-			=> context.AddSource(name, SourceText.From(source, Encoding.UTF8));
 
+#if NETSTANDARD || NET5_0
 		public static string GetMSBuildPropertyValue(
 			this GeneratorExecutionContext context,
 			string name,
@@ -22,12 +27,16 @@ namespace Uno.Roslyn
 			context.AnalyzerConfigOptions.GlobalOptions.TryGetValue($"build_property.{name}", out var value);
 			return value ?? defaultValue;
 		}
-		public static IEnumerable<MSBuildItem> GetMSBuildItems(this GeneratorExecutionContext context, string name)
+
+		public static bool TryGetOptionValue(this GeneratorExecutionContext context, AdditionalText textFile, string key, [NotNullWhen(true)] out string? value)
+		{
+			return context.AnalyzerConfigOptions.GetOptions(textFile).TryGetValue(key, out value);
+		}
+#endif
+		public static IEnumerable<Uno.Roslyn.MSBuildItem> GetMSBuildItemsWithAdditionalFiles(this GeneratorExecutionContext context, string name)
 		=> context
 			.AdditionalFiles
-			.Where(f => context.AnalyzerConfigOptions
-				.GetOptions(f)
-				.TryGetValue(SourceItemGroupMetadata, out var sourceItemGroup)
+			.Where(f => context.TryGetOptionValue(f, SourceItemGroupMetadata, out var sourceItemGroup)
 				&& sourceItemGroup == name)
 			.Select(f => new MSBuildItem(f, context))
 			.ToArray();
@@ -38,7 +47,6 @@ namespace Uno.Roslyn
 	/// </summary>
 	public class MSBuildItem
 	{
-		private readonly AdditionalText File;
 		private readonly GeneratorExecutionContext Context;
 
 		internal MSBuildItem(AdditionalText file, GeneratorExecutionContext context)
@@ -52,6 +60,8 @@ namespace Uno.Roslyn
 		/// </summary>
 		public string Identity => File.Path;
 
+		public AdditionalText File { get; }
+
 		/// <summary>
 		/// Gets a metadata for this item
 		/// </summary>
@@ -59,12 +69,9 @@ namespace Uno.Roslyn
 		/// <returns>The metadata value</returns>
 		public string GetMetadataValue(string name)
 		{
-			Context.AnalyzerConfigOptions
-				.GetOptions(File)
-				.TryGetValue("build_metadata.AdditionalFiles." + name, out var metadataValue);
+			Context.TryGetOptionValue(File, "build_metadata.AdditionalFiles." + name, out var metadataValue);
 
 			return string.IsNullOrEmpty(metadataValue) ? "" : metadataValue!;
 		}
 	}
 }
-#endif

@@ -47,7 +47,14 @@ jobs:
   - task: MSBuild@1
     inputs:
       solution: src/Uno.UI-UnitTests-only.slnf
-      msbuildArguments: /r /p:CheckExclusions=True /p:Configuration=Release /nodeReuse:true /detailedsummary /m $(ADDITIONAL_FLAGS) # /bl:$(build.artifactstagingdirectory)\build.binlog
+      msbuildArguments: /r /p:CheckExclusions=True /p:Configuration=Release /nodeReuse:true /p:TargetFrameworksCI=net461 /detailedsummary /m $(ADDITIONAL_FLAGS) /bl:$(build.artifactstagingdirectory)\unit-tests-build.binlog
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: NugetPackages-Artifacts
+      ArtifactType: Container
 
   - task: VisualStudioTestPlatformInstaller@1
     inputs:
@@ -61,6 +68,9 @@ jobs:
         !**\*Wasm.Test*.dll
         !**\*UITests.dll
         !**\*.RuntimeTests.dll
+        !**\testhost*.*
+        !**\Microsoft*.dll
+
       vsTestVersion: toolsInstaller
       testRunTitle: $(Agent.JobName)
       testSelector: testAssemblies

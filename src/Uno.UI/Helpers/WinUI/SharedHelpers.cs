@@ -31,13 +31,13 @@ namespace Uno.UI.Helpers.WinUI
 {
 	internal class SharedHelpers
 	{
-#pragma warning disable CS0414
-		private static bool s_isOnXboxInitialized = false;
-		private static bool s_isOnXbox = false;
-#pragma warning restore CS0414
+#if HAS_UNO && !(NET461 || __NETSTD_REFERENCE__)
+		private static bool s_isOnXboxInitialized;
+		private static bool s_isOnXbox;
+#endif
 
-		private static bool s_isMouseModeEnabledInitialized = false;
-		private static bool s_isMouseModeEnabled = false;
+		private static bool s_isMouseModeEnabledInitialized;
+		private static bool s_isMouseModeEnabled;
 
 		static SharedHelpers()
 		{
@@ -295,7 +295,7 @@ namespace Uno.UI.Helpers.WinUI
 			return s_isDisplayRegionGetForCurrentViewAvailable.Value;
 		}
 
-		static bool s_areFacadesAvailable = false;
+		static bool s_areFacadesAvailable;
 		public static bool IsTranslationFacadeAvailable(UIElement element)
 		{
 			// s_areFacadesAvailable = (element.try_as<Windows.UI.Xaml.IUIElement9>() != null)
@@ -763,7 +763,7 @@ namespace Uno.UI.Helpers.WinUI
 		}
 
 		// Be cautious: this function may introduce memory leak because Source holds strong reference to target too
-		// There’s an intermediary object – the BindingExpression when BindingOperations::SetBinding
+		// Thereï¿½s an intermediary object ï¿½ the BindingExpression when BindingOperations::SetBinding
 		// For example, if source is NavigationView and target is content control,
 		// and there is strong reference: NavigationView -> ContentControl
 		// BindingExpression.Source also make a strong reference to NavigationView

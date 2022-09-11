@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Data
 			set => _explicitSourceStore = WeakReferencePool.RentWeakReference(this, value);
 		}
 
-		private BindingPath[] _updateSources = null;
+		private BindingPath[] _updateSources;
 
 		public string TargetName => TargetPropertyDetails.Property.Name;
 

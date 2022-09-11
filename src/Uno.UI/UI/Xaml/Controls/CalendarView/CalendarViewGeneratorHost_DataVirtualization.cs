@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// BEGIN UNO Specific
 
-		public bool IsReadOnly { get; } = false;
+		public bool IsReadOnly { get; }
 		public int Count => (int)Size();
 		public object this[int index]
 		{

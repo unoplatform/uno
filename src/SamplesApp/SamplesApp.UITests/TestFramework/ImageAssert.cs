@@ -19,6 +19,18 @@ namespace SamplesApp.UITests.TestFramework
 {
 	public static partial class ImageAssert
 	{
+		private static bool IgnoreImageAsserts { get; } = false;
+
+		static ImageAssert()
+		{
+			// Provides the ability to mark as ignored tests using ImageAssert.
+			// See https://github.com/unoplatform/uno/issues/9550
+			if (bool.TryParse(Environment.GetEnvironmentVariable("UNO_UITEST_IGNORE_IMAGEASSERTS"), out var ignoreImageAsserts))
+			{
+				IgnoreImageAsserts = ignoreImageAsserts;
+			}
+		}
+
 		public static Rectangle FirstQuadrant { get; } = new Rectangle(0, 0, int.MaxValue, int.MaxValue);
 
 		#region Are[Almost]Equal
@@ -81,9 +93,12 @@ namespace SamplesApp.UITests.TestFramework
 			PixelTolerance tolerance,
 			[CallerLineNumber] int line = 0)
 		{
+			TryIgnoreImageAssert();
+
 			var actualBitmap = actual.GetBitmap();
 			AreEqualImpl(expected, expectedRect, actual, actualBitmap, actualRect, expectedToActualScale, tolerance, line);
 		}
+
 
 		private static void AreEqualImpl(
 			ScreenshotInfo expected,
@@ -95,6 +110,8 @@ namespace SamplesApp.UITests.TestFramework
 			PixelTolerance tolerance,
 			[CallerLineNumber] int line = 0)
 		{
+			TryIgnoreImageAssert();
+
 			using var assertionScope = new AssertionScope($"{expected.StepName}<=={actual}");
 			assertionScope.AddReportable("expectedRect", expectedRect.ToString());
 			assertionScope.AddReportable("actualRect", actualRect.ToString());
@@ -122,6 +139,8 @@ namespace SamplesApp.UITests.TestFramework
 			PixelTolerance tolerance,
 			[CallerLineNumber] int line = 0)
 		{
+			TryIgnoreImageAssert();
+
 			var expectedBitmap = expected.GetBitmap();
 
 			if (expectedRect != FirstQuadrant && actualRect != FirstQuadrant)
@@ -202,6 +221,8 @@ namespace SamplesApp.UITests.TestFramework
 					PixelTolerance tolerance,
 					int line)
 		{
+			TryIgnoreImageAssert();
+
 			var result = EqualityCheck(expected, expectedRect, actual, actualBitmap, actualRect, expectedToActualScale, tolerance, line);
 
 			if (!result.areEqual)
@@ -227,6 +248,8 @@ namespace SamplesApp.UITests.TestFramework
 		/// </summary>
 		public static void HasColorInRectangle(ScreenshotInfo screenshot, Rectangle rect, Color expectedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
 		{
+			TryIgnoreImageAssert();
+
 			var bitmap = screenshot.GetBitmap();
 			for (var x = rect.Left; x < rect.Right; x++)
 			{
@@ -245,6 +268,8 @@ namespace SamplesApp.UITests.TestFramework
 
 		private static void HasColorAtImpl(ScreenshotInfo screenshot, int x, int y, Color expectedColor, byte tolerance, double scale, int line)
 		{
+			TryIgnoreImageAssert();
+
 			var bitmap = screenshot.GetBitmap();
 
 			x = (int)(x*scale);
@@ -290,6 +315,8 @@ namespace SamplesApp.UITests.TestFramework
 
 		private static void DoesNotHaveColorAtImpl(ScreenshotInfo screenshot, int x, int y, Color excludedColor, byte tolerance, int line)
 		{
+			TryIgnoreImageAssert();
+
 			var bitmap = screenshot.GetBitmap();
 			if (bitmap.Width <= x || bitmap.Height <= y)
 			{
@@ -324,6 +351,8 @@ namespace SamplesApp.UITests.TestFramework
 		#region HasPixels
 		public static void HasPixels(ScreenshotInfo actual, params ExpectedPixels[] expectations)
 		{
+			TryIgnoreImageAssert();
+
 			var bitmap = actual.GetBitmap();
 			using var assertionScope = new AssertionScope("ImageAssert");
 
@@ -344,5 +373,17 @@ namespace SamplesApp.UITests.TestFramework
 			}
 		}
 		#endregion
+
+
+		/// <summary>
+		/// See https://github.com/unoplatform/uno/issues/9550
+		/// </summary>
+		internal static void TryIgnoreImageAssert()
+		{
+			if (IgnoreImageAsserts)
+			{
+				Assert.Ignore("UNO_UITEST_IGNORE_IMAGEASSERTS was set, ignoring test which uses ImageAssert");
+			}
+		}
 	}
 }

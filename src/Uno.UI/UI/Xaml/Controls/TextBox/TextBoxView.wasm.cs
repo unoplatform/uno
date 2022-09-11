@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Controls
 		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
 
 		private bool _browserContextMenuEnabled = true;
-		private bool _isReadOnly = false;
+		private bool _isReadOnly;
 
 		public Brush Foreground
 		{

@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Documents;
 using Windows.UI.Text;
 using Windows.Foundation.Metadata;
 using Color = Windows.UI.Color;
+using Windows.UI.Xaml.Resources;
 
 #if XAMARIN_ANDROID
 using _View = Android.Views.View;
@@ -572,7 +573,53 @@ namespace Windows.UI.Xaml.Markup.Reader
 					var addMethod = propertyInfo.PropertyType.GetMethod("Add", new[] { typeof(object), typeof(object) })
 						?? throw new InvalidOperationException($"The property {propertyInfo} type does not provide an Add method (Line {member.LineNumber}:{member.LinePosition}");
 
-					foreach (var child in member.Objects)
+					if (propertyInfo.GetMethod == null)
+					{
+						throw new InvalidOperationException($"The property {propertyInfo} does not provide a getter (Line {member.LineNumber}:{member.LinePosition}");
+					}
+
+					var targetDictionary = (ResourceDictionary)propertyInfo.GetMethod.Invoke(instance, null)!;
+
+					var dictionaryObjects = member.Objects;
+
+					if (member.Objects.Count == 1
+						&& member.Objects.First() is { } innerDictionary
+						&& TypeResolver.FindType(innerDictionary.Type) == typeof(ResourceDictionary))
+					{
+						if (innerDictionary.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries") is { } themeDictionaries)
+						{
+							foreach (var themeDictionary in themeDictionaries.Objects)
+							{
+								targetDictionary.ThemeDictionaries.Add(
+									GetResourceKey(themeDictionary),
+									LoadObject(themeDictionary, rootInstance));
+							}
+						}
+
+						if (innerDictionary.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries") is { } mergedDictionaries)
+						{
+							foreach (var mergedDictionary in mergedDictionaries.Objects)
+							{
+								var newInstance = LoadObject(mergedDictionary, rootInstance);
+								if (newInstance is ResourceDictionary instanceAsDictionary)
+								{
+									targetDictionary.MergedDictionaries.Add(instanceAsDictionary);
+								}
+								else
+								{
+									throw new InvalidOperationException($"An object of type {newInstance?.GetType()} is not supported on MergedDictionaries");
+								}
+							}
+						}
+
+						if (innerDictionary.Members.FirstOrDefault(m => m.Member.Name == "_UnknownContent") is { } unknownContent)
+						{
+							dictionaryObjects = unknownContent.Objects;
+						}
+					}
+
+					List<IDependencyObjectStoreProvider> delayResolutionList = new();
+					foreach (var child in dictionaryObjects)
 					{
 						var item = LoadObject(child, rootInstance: rootInstance);
 
@@ -587,14 +634,18 @@ namespace Windows.UI.Xaml.Markup.Reader
 							throw new InvalidOperationException($"No target type was specified (Line {member.LineNumber}:{member.LinePosition}");
 						}
 
-						if(propertyInfo.GetMethod == null)
+						targetDictionary.Add(resourceKey ?? resourceTargetType, item);
+
+						if (HasAnyResourceMarkup(child) && item is IDependencyObjectStoreProvider provider)
 						{
-							throw new InvalidOperationException($"The property {propertyInfo} does not provide a getter (Line {member.LineNumber}:{member.LinePosition}");
+							delayResolutionList.Add(provider);
 						}
+					}
 
-						var propertyInstance = propertyInfo.GetMethod.Invoke(instance, null);
-
-						addMethod.Invoke(propertyInstance, new[] { resourceKey ?? resourceTargetType, item });
+					// Delay resolve static resources
+					foreach (var delayedItem in delayResolutionList)
+					{
+						delayedItem.Store.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading, targetDictionary);
 					}
 				}
 				else if (propertyInfo.SetMethod?.IsPublic == true &&
@@ -661,7 +712,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				ProcessBindingMarkupNode(instance, rootInstance, member);
 			}
-			else if (IsStaticResourceMarkupNode(member) || IsThemeResourceMarkupNode(member))
+			else if (IsStaticResourceMarkupNode(member) || IsThemeResourceMarkupNode(member) || IsCustomResourceMarkupNode(member))
 			{
 				ProcessStaticResourceMarkupNode(instance, member, propertyInfo);
 			}
@@ -680,20 +731,35 @@ namespace Windows.UI.Xaml.Markup.Reader
 					&& dependencyProperty != null
 					&& instance is DependencyObject dependencyObject)
 				{
-					ResourceResolver.ApplyResource(
-						dependencyObject,
-						dependencyProperty,
-						keyName,
-						isThemeResourceExtension: IsThemeResourceMarkupNode(member),
-						isHotReloadSupported: true);
-
-					if (instance is FrameworkElement fe)
+					if (IsCustomResourceMarkupNode(member))
 					{
-						fe.Loading += delegate
+						var objectType = dependencyObject.GetType().FullName;
+						var propertyName = dependencyProperty.Name;
+						var propertyType = dependencyProperty.Type.FullName;
+						var resource = CustomXamlResourceLoader.Current?.GetResourceInternal(keyName, objectType, propertyName, propertyType);
+						if (resource != null && resource.GetType() == dependencyProperty.Type)
 						{
-							fe.UpdateResourceBindings();
-						};
+							dependencyObject.SetValue(dependencyProperty, resource);
+						}
 					}
+					else
+					{
+						ResourceResolver.ApplyResource(
+							dependencyObject,
+							dependencyProperty,
+							keyName,
+							isThemeResourceExtension: IsThemeResourceMarkupNode(member),
+							isHotReloadSupported: true);
+
+						if (instance is FrameworkElement fe)
+						{
+							fe.Loading += delegate
+							{
+								fe.UpdateResourceBindings();
+							};
+						}
+					}
+
 				}
 				else if (propertyInfo != null)
 				{
@@ -741,6 +807,9 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 		private bool IsThemeResourceMarkupNode(XamlMemberDefinition member)
 			=> member.Objects.Any(o => o.Type.Name == "ThemeResource");
+
+		private bool IsCustomResourceMarkupNode(XamlMemberDefinition member)
+			=> member.Objects.Any(o => o.Type.Name == "CustomResource");
 
 		private bool IsResourcesProperty(PropertyInfo propertyInfo)
 			=> propertyInfo.Name == "Resources" && propertyInfo.PropertyType == typeof(ResourceDictionary);
@@ -917,6 +986,27 @@ namespace Windows.UI.Xaml.Markup.Reader
 		private bool IsBindingMarkupNode(XamlMemberDefinition member)
 			=> member.Objects.Any(o => o.Type.Name == "Binding" || o.Type.Name == "TemplateBinding" || o.Type.Name == "Bind");
 
+		private bool HasAnyResourceMarkup(XamlObjectDefinition member)
+		{
+			foreach (var childMember in member.Members)
+			{
+				if (IsStaticResourceMarkupNode(childMember) || IsThemeResourceMarkupNode(childMember))
+				{
+					return true;
+				}
+
+				foreach (var childObject in member.Objects)
+				{
+					if (HasAnyResourceMarkup(childObject))
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
 		private static bool IsMarkupExtension(XamlMemberDefinition member)
 			=> member
 				.Objects
@@ -925,6 +1015,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 					|| m.Type.Name == "Bind"
 					|| m.Type.Name == "StaticResource"
 					|| m.Type.Name == "ThemeResource"
+					|| m.Type.Name == "CustomResource"
 					|| m.Type.Name == "TemplateBinding"
 				)
 				.Any();

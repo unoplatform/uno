@@ -10,7 +10,7 @@ namespace Windows.Graphics.Display
 
 		private static DisplayInformation InternalGetForCurrentView() => _lazyInstance.Value;
 
-		private NSObject _didChangeScreenParametersObserver = null;
+		private NSObject _didChangeScreenParametersObserver;
 
 		public DisplayOrientations CurrentOrientation
 		{

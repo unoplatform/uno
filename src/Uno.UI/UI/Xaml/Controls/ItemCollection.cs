@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly IList<object> _inner = new List<object>();
 
-		private IList<object> _itemsSource = null;
+		private IList<object> _itemsSource;
 		private readonly SerialDisposable _itemsSourceCollectionChangeDisposable = new SerialDisposable();
 
 		public event VectorChangedEventHandler<object> VectorChanged;
@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public int Count => _itemsSource == null ? _inner.Count : _itemsSource.Count();
+		public int Count => _itemsSource == null ? _inner.Count : _itemsSource.Count;
 
 		public uint Size => (uint)Count;
 

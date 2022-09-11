@@ -9,7 +9,7 @@ namespace Windows.UI.ViewManagement
 	public partial class ApplicationViewTitleBar
 	{
 		private const string JsClassName = "Windows.UI.ViewManagement.ApplicationViewTitleBar";
-		private Color? _backgroundColor = null;
+		private Color? _backgroundColor;
 
 		public Color? BackgroundColor
 		{

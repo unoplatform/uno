@@ -26,6 +26,10 @@ jobs:
   - template: templates/gitversion.yml
   - template: templates/dotnet-install.yml
 
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
   - powershell: dotnet msbuild src/SamplesApp/SamplesApp.Skia.Gtk/SamplesApp.Skia.Gtk.csproj /r /m /p:Configuration=Release /detailedsummary /m # /bl:$(build.artifactstagingdirectory)\build.binlog
     displayName: Build GTK Head
 

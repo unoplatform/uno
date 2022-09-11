@@ -329,7 +329,7 @@ namespace SampleControl.Presentation
 
 				if (_log.IsEnabled(LogLevel.Debug))
 				{
-					_log.Debug($"Generating tests for {tests.Count()} test in {folderName}");
+					_log.Debug($"Generating tests for {tests.Length} test in {folderName}");
 				}
 
 				var target = new Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap();
