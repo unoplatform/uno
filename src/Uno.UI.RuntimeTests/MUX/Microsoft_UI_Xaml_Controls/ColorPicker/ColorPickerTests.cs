@@ -215,6 +215,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
+#if __WASM__
+		[Ignore("WaitOne doesn't work on mono.")]
+#endif
 		public void ValidateFractionalWidthDoesNotCrash()
 		{
 			ColorSpectrum colorSpectrum = null;
