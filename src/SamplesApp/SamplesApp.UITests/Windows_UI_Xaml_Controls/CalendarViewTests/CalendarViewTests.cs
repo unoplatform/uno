@@ -11,10 +11,12 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CalendarViewTests
 {
 	[TestFixture]
+	[ActivePlatforms(Platform.
 	public partial class CalendarViewTests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Browser)]
 		public void When_Theme_Changed_No_Crash()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.CalendarView.CalendarView_Theming");
