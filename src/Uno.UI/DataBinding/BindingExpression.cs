@@ -9,7 +9,7 @@ using System.Windows.Input;
 using Uno;
 using Uno.UI.DataBinding;
 using Uno.Presentation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Globalization;
 using System.Reflection;
 using Uno.UI;
@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Data
 			set => _explicitSourceStore = WeakReferencePool.RentWeakReference(this, value);
 		}
 
-		private BindingPath[] _updateSources = null;
+		private BindingPath[] _updateSources;
 
 		public string TargetName => TargetPropertyDetails.Property.Name;
 
@@ -164,7 +164,7 @@ namespace Windows.UI.Xaml.Data
 		/// <param name="value">The expected current value of the target</param>
 		public void UpdateSource(object value)
 		{
-			if (_IsCurrentlyPushing || _IsCurrentlyPushingTwoWay)
+			if ((_IsCurrentlyPushing || _IsCurrentlyPushingTwoWay))
 			{
 				return;
 			}
@@ -224,7 +224,7 @@ namespace Windows.UI.Xaml.Data
 			}
 			catch (Exception exception)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 				{
 					this.Log().Error($"Failed to set the source value for x:Bind path [{ParentBinding.Path}]", exception);
 				}
@@ -349,7 +349,7 @@ namespace Windows.UI.Xaml.Data
 		{
 			if (_isElementNameSource || ExplicitSource != null && !_isCompiledSource)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("Applying explicit source {0} on {1}", ExplicitSource?.GetType(), _view.Target?.GetType());
 				}
@@ -362,7 +362,7 @@ namespace Windows.UI.Xaml.Data
 		{
 			if (_isCompiledSource && ExplicitSource != null)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("Applying compiled source {0} on {1}", ExplicitSource.GetType(), _view.Target?.GetType());
 				}
@@ -553,7 +553,7 @@ namespace Windows.UI.Xaml.Data
 					// if no FallbackValue was specified.
 					ApplyFallbackValue(useTypeDefaultValue: false);
 
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Binding path does not provide a value [{TargetPropertyDetails}] on [{_targetOwnerType}], using fallback value");
 					}
@@ -577,7 +577,7 @@ namespace Windows.UI.Xaml.Data
 					{
 						ApplyFallbackValue();
 
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 						{
 							this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
 						}
@@ -594,8 +594,21 @@ namespace Windows.UI.Xaml.Data
 
 		private void SetTargetValueSafe(object v)
 		{
-			if (_IsCurrentlyPushingTwoWay)
+			if (_IsCurrentlyPushingTwoWay && ParentBinding.CompiledSource == null)
 			{
+				// For normal bindings, the source update through a converter
+				// is ignored. Therefore, only the ConvertBack method is invoked as
+				// the UpdateSource method is ignored because a two-way binding is
+				// in progress.
+				//
+				// For x:Bind, a source update through the converter raises
+				// a property change, which is in turn sent back to the target
+				// after another Convert invocation.
+				//
+				// There is no loop happening because the binding engine is ignoring
+				// the UpdateSource invocation from the target as a two-way binding
+				// is still happening.
+
 				return;
 			}
 
@@ -604,7 +617,7 @@ namespace Windows.UI.Xaml.Data
 
 		private void SetTargetValueSafe(object v, bool useTargetNullValue)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat(
 					"{0}.SetTargetValueSafe({1}) (p:{2}, h:{3:X8})",
@@ -632,7 +645,7 @@ namespace Windows.UI.Xaml.Data
 					}
 					catch (Exception e)
 					{
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 						{
 							this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
 						}

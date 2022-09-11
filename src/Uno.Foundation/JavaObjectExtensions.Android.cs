@@ -2,8 +2,7 @@
 using System.Text;
 using Android.Runtime;
 using System;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
 
 namespace Uno.Extensions
 {
@@ -29,14 +28,14 @@ namespace Uno.Extensions
 			}
 			else
 			{
-				if (instance.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				if (instance.Log().IsEnabled(LogLevel.Warning))
 				{
-					instance.Log().WarnFormat(
-						"Native invocation discarded for {0} at {1}:{2} ({3}). The object may not have been disposed properly by its owner."
+					instance.Log().Warn(
+						string.Format("Native invocation discarded for {0} at {1}:{2} ({3}). The object may not have been disposed properly by its owner."
 						, instance.GetType()
 						, member
 						, line
-						, filePath
+						, filePath)
 					);
 				}
 			}

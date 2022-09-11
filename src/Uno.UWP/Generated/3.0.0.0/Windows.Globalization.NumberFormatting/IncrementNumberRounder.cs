@@ -2,11 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Globalization.NumberFormatting
 {
-#if false || false || false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-#endif
-	public partial class IncrementNumberRounder : global::Windows.Globalization.NumberFormatting.INumberRounder
+	#endif
+	public  partial class IncrementNumberRounder : global::Windows.Globalization.NumberFormatting.INumberRounder
 	{
+		// Skipping already declared property RoundingAlgorithm
+		// Skipping already declared property Increment
+		// Skipping already declared method Windows.Globalization.NumberFormatting.IncrementNumberRounder.IncrementNumberRounder()
+		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.IncrementNumberRounder()
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  int RoundInt32( int value)
@@ -42,7 +46,7 @@ namespace Windows.Globalization.NumberFormatting
 			throw new global::System.NotImplementedException("The member float IncrementNumberRounder.RoundSingle(float value) is not implemented in Uno.");
 		}
 		#endif
-		
+		// Skipping already declared method Windows.Globalization.NumberFormatting.IncrementNumberRounder.RoundDouble(double)
 		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.RoundingAlgorithm.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.RoundingAlgorithm.set
 		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.Increment.get

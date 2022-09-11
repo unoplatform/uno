@@ -19,9 +19,9 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ToggleSwitch
 	{
-		private bool _isDragging = false;
-		private bool _wasDragged = false;
-		private bool _isPointerOver = false;
+		private bool _isDragging;
+		private bool _wasDragged;
+		private bool _isPointerOver;
 
 		private double _knobTranslation;
 		private double _minKnobTranslation;
@@ -219,7 +219,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="dependencyProperty"></param>
 		/// <param name="value"></param>
-		private bool GetDefaultValue2(DependencyProperty dependencyProperty, out object? value)
+		internal override bool GetDefaultValue2(DependencyProperty dependencyProperty, out object? value)
 		{
 			var core = DXamlCore.Current;
 			if (dependencyProperty == OnContentProperty)
@@ -234,8 +234,8 @@ namespace Windows.UI.Xaml.Controls
 				value = offString;
 				return true;
 			}
-			value = null;
-			return false;
+
+			return base.GetDefaultValue2(dependencyProperty, out value);
 		}
 
 		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)

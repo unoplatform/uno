@@ -39,9 +39,12 @@ namespace UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonImage
 
 	        var navigationBar = parent.FindFirstChild<UnoNavigationBar>();
 
-	        var image = navigationBar.BackIndicatorImage;
-	        ExpectedImage.Source = image;
+			var image = (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
+				? navigationBar.CompactAppearance.BackIndicatorImage
+				: navigationBar.BackIndicatorImage;
+
+			ExpectedImage.Source = image;
 #endif
-        }
+		}
     }
 }

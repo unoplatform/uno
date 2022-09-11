@@ -1,8 +1,10 @@
 using CoreGraphics;
+using ObjCRuntime;
 using Uno.UI.DataBinding;
 using Uno.UI.Views.Controls;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 using UIKit;
 using Uno.Extensions;
@@ -11,6 +13,10 @@ using Windows.UI.Xaml.Media;
 using Uno.UI.Controls;
 using Windows.UI;
 using Uno.Disposables;
+using Foundation;
+using Uno.Foundation.Logging;
+using Uno.UI;
+using static Uno.UI.FeatureConfiguration;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -18,7 +24,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private SinglelineTextBoxDelegate _delegate;
 		private readonly WeakReference<TextBox> _textBox;
-		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
+		private readonly SerialDisposable _foregroundChanged = new();
 
 		public SinglelineTextBoxView(TextBox textBox)
 		{
@@ -28,28 +34,26 @@ namespace Windows.UI.Xaml.Controls
 			Initialize();
 		}
 
-		private void OnEditingChanged(object sender, EventArgs e)
-		{
-			OnTextChanged();
-		}
+		internal TextBox TextBox => _textBox.GetTarget();
 
 		public override string Text
 		{
-			get
-			{
-				return base.Text;
-			}
-
+			get => base.Text;
 			set
 			{
 				// The native control will ignore a value of null and retain an empty string. We coalesce the null to prevent a spurious empty string getting bounced back via two-way binding.
-				value = value ?? string.Empty;
+				value ??= string.Empty;
 				if (base.Text != value)
 				{
 					base.Text = value;
 					OnTextChanged();
 				}
 			}
+		}
+
+		private void OnEditingChanged(object sender, EventArgs e)
+		{
+			OnTextChanged();
 		}
 
 		private void OnTextChanged()
@@ -73,19 +77,33 @@ namespace Windows.UI.Xaml.Controls
 			{
 				IsKeyboardHiddenOnEnter = true
 			};
+		}
 
-			RegisterLoadActions(
-				() =>
-				{
-					this.EditingChanged += OnEditingChanged;
-					this.EditingDidEnd += OnEditingChanged;
-				},
-				() =>
-				{
-					this.EditingChanged -= OnEditingChanged;
-					this.EditingDidEnd -= OnEditingChanged;
-				}
-			);
+		partial void OnLoadedPartial()
+		{
+			this.EditingChanged += OnEditingChanged;
+			this.EditingDidEnd += OnEditingChanged;
+		}
+
+		partial void OnUnloadedPartial()
+		{
+			this.EditingChanged -= OnEditingChanged;
+			this.EditingDidEnd -= OnEditingChanged;
+		}
+
+		//Forces the secure UITextField to maintain its current value upon regaining focus
+		public override bool BecomeFirstResponder()
+		{
+			var result = base.BecomeFirstResponder();
+
+			if (SecureTextEntry)
+			{
+				var text = Text;
+				Text = string.Empty;
+				InsertText(text);
+			}
+
+			return result;
 		}
 
 		public override CGSize SizeThatFits(CGSize size)
@@ -201,21 +219,31 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public void Select(int start, int length)
-			=> SelectedTextRange = this.GetTextRange(start: start, end: start + length);
+			=> SelectedTextRange = this.GetTextRange(start: start, end: start + length).GetHandle();
 
-		public override UITextRange SelectedTextRange
+		/// <summary>
+		/// Workaround for https://github.com/unoplatform/uno/issues/9430
+		/// </summary>
+		[DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSendSuper")]
+		static internal extern IntPtr IntPtr_objc_msgSendSuper(IntPtr receiver, IntPtr selector);
+
+		[DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSendSuper")]
+		static internal extern void void_objc_msgSendSuper(IntPtr receiver, IntPtr selector, IntPtr arg);
+
+		[Export("selectedTextRange")]
+		public new IntPtr SelectedTextRange
 		{
 			get
 			{
-				return base.SelectedTextRange;
+				return IntPtr_objc_msgSendSuper(SuperHandle, Selector.GetHandle("selectedTextRange"));
 			}
 			set
 			{
-				var textBox = _textBox.GetTarget();
+				var textBox = TextBox;
 
-				if (textBox != null && base.SelectedTextRange != value)
+				if (textBox != null && SelectedTextRange != value)
 				{
-					base.SelectedTextRange = value;
+					void_objc_msgSendSuper(SuperHandle, Selector.GetHandle("setSelectedTextRange:"), value);
 					textBox.OnSelectionChanged();
 				}
 			}

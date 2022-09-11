@@ -8,18 +8,18 @@
 	xmlns:ios="http://uno.ui/ios"
 	xmlns:android="http://uno.ui/android"
 	xmlns:xamarin="http://uno.ui/xamarin"
-	xmlns:wasm="http://uno.ui/xamarin"
+	xmlns:wasm="http://uno.ui/wasm"
 	mc:Ignorable="d xamarin ios android wasm">
 
 
 	<!-- Default style for Windows.UI.Xaml.Controls.ProgressRing -->
-    <wasm:Style x:Key="ProgressRingEllipseStyle" TargetType="Ellipse">
+    <Style x:Key="ProgressRingEllipseStyle" TargetType="Ellipse">
 	    <Setter Property="Opacity" Value="0" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
-    </wasm:Style>
+    </Style>
 	
-	<wasm:Style TargetType="ProgressRing">
+	<Style x:Key="DefaultWuxProgressRingStyle"  TargetType="ProgressRing">
 		<Setter Property="Background" Value="Transparent" />
 		<Setter Property="Foreground" Value="{ThemeResource SystemControlHighlightAccentBrush}" />
 		<Setter Property="IsHitTestVisible" Value="False" />
@@ -280,9 +280,9 @@
 		    </ControlTemplate>
 		  </Setter.Value>
 		</Setter>
-	</wasm:Style>
+	</Style>
 
-	<android:Style TargetType="ProgressRing">
+	<android:Style TargetType="ProgressRing" x:Key="NativeWuxProgressRingStyle">
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ProgressRing">
@@ -292,7 +292,7 @@
 		</Setter>
 	</android:Style>
 
-	<ios:Style TargetType="ProgressRing">
+	<ios:Style TargetType="ProgressRing" x:Key="NativeWuxProgressRingStyle">
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ProgressRing">
@@ -301,5 +301,7 @@
 			</Setter.Value>
 		</Setter>
 	</ios:Style>
+
+	<Style TargetType="ProgressRing" BasedOn="{StaticResource DefaultWuxProgressRingStyle}" />
 
 </ResourceDictionary>

@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using System.Collections.Generic;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Disposables;
 using System.Linq;
 using Windows.Devices.Input;
@@ -19,7 +19,7 @@ using System.Collections;
 using System.Numerics;
 using System.Reflection;
 using Windows.UI.Xaml.Markup;
-using Microsoft.Extensions.Logging;
+
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
 using System.Text;
@@ -47,6 +47,8 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement
 	{
+		public Style AppliedDefaultStyle { get; protected set; }
+
 		/// <summary>
 		/// Debugging helper method to get a list of the set value at each precedence for a DependencyProperty.
 		/// </summary>
@@ -203,6 +205,34 @@ namespace Windows.UI.Xaml
 			}
 
 			return current as FrameworkElement;
+		}
+
+		internal View[] GetAllAncestorsDebug()
+		{
+			return GetInner().ToArray();
+
+			IEnumerable<View> GetInner()
+			{
+				var current = this.GetVisualTreeParent();
+				while (current != null)
+				{
+					yield return current;
+					current = current.GetVisualTreeParent();
+				}
+			}
+		}
+
+		internal string[] GetAllAncestorsAsStrings()
+		{
+			return GetAllAncestorsDebug().Select(v =>
+				{
+					if (v is FrameworkElement fe && !fe.Name.IsNullOrEmpty())
+					{
+						return $"{fe.Name}({fe.GetType().Name})";
+					}
+					return v.GetType().Name;
+				})
+				.ToArray();
 		}
 
 		/// <summary>

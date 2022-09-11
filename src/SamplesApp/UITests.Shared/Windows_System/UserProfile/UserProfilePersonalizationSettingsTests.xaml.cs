@@ -36,7 +36,7 @@ namespace UITests.Windows_System.UserProfile
 			this.DataContextChanged += UserProfilePersonalizationSettingsTests_DataContextChanged;
 		}
 
-		public UserProfilePersonalizationSettingsTestsViewModel Model { get; private set; }
+		internal UserProfilePersonalizationSettingsTestsViewModel Model { get; private set; }
 
 		private void UserProfilePersonalizationSettingsTests_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{
@@ -44,7 +44,7 @@ namespace UITests.Windows_System.UserProfile
 		}
 	}
 
-	public class UserProfilePersonalizationSettingsTestsViewModel : ViewModelBase
+	internal class UserProfilePersonalizationSettingsTestsViewModel : ViewModelBase
 	{
 		private UserProfilePersonalizationSettings _personalizationSettings;
 

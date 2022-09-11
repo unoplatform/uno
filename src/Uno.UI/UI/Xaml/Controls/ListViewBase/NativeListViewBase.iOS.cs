@@ -11,11 +11,10 @@ using Uno.Disposables;
 using Windows.UI.Core;
 using Uno.UI.Controls;
 using System.ComponentModel;
-using Windows.UI.Input;
 using Uno.Extensions.Specialized;
 using Windows.UI.Xaml.Controls.Primitives;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 using Uno.UI;
 using Windows.UI.Xaml.Data;
 using Uno.UI.Extensions;
@@ -25,6 +24,13 @@ using Foundation;
 using UIKit;
 using CoreGraphics;
 using CoreAnimation;
+#endif
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.UI.Input;
+using Windows.Devices.Input;
 #endif
 
 namespace Windows.UI.Xaml.Controls
@@ -59,22 +65,22 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// This property enables animations when using the ScrollIntoView Method.
 		/// </summary>
-		public bool AnimateScrollIntoView { get; set; } = false;
+		public bool AnimateScrollIntoView { get; set; } = Uno.UI.FeatureConfiguration.ListViewBase.AnimateScrollIntoView;
 		#endregion
 
 		#region Members
-		private bool _needsReloadData = false;
+		private bool _needsReloadData;
 		/// <summary>
 		/// ReloadData() has been called, but the layout hasn't been updated. During this window, in-place modifications to the
 		/// collection (InsertItems, etc) shouldn't be called because they will result in a NSInternalInconsistencyException
 		/// </summary>
-		private bool _needsLayoutAfterReloadData = false;
+		private bool _needsLayoutAfterReloadData;
 		/// <summary>
 		/// List was empty last time ReloadData() was called. If inserting items into an empty collection we should do a refresh instead, 
 		/// to work around a UICollectionView bug https://stackoverflow.com/questions/12611292/uicollectionview-assertion-failure
 		/// </summary>
-		private bool _listEmptyLastRefresh = false;
-		private bool _isReloadDataDispatched = false;
+		private bool _listEmptyLastRefresh;
+		private bool _isReloadDataDispatched;
 
 		private readonly SerialDisposable _scrollIntoViewSubscription = new SerialDisposable();
 		#endregion
@@ -211,7 +217,11 @@ namespace Windows.UI.Xaml.Controls
 					{
 						base.InsertItems(indexPaths);
 					}
+#if NET6_0_OR_GREATER
+					catch (Exception e)
+#else
 					catch (MonoTouchException e)
+#endif
 					{
 						this.Log().Error("Error when updating collection", e);
 					}
@@ -235,7 +245,11 @@ namespace Windows.UI.Xaml.Controls
 					{
 						base.InsertSections(sections);
 					}
+#if NET6_0_OR_GREATER
+					catch (Exception e)
+#else
 					catch (MonoTouchException e)
+#endif
 					{
 						this.Log().Error("Error when updating collection", e);
 					}
@@ -259,7 +273,11 @@ namespace Windows.UI.Xaml.Controls
 					{
 						base.DeleteItems(indexPaths);
 					}
+#if NET6_0_OR_GREATER
+					catch (Exception e)
+#else
 					catch (MonoTouchException e)
+#endif
 					{
 						this.Log().Error("Error when updating collection", e);
 					}
@@ -283,7 +301,11 @@ namespace Windows.UI.Xaml.Controls
 					{
 						base.DeleteSections(sections);
 					}
+#if NET6_0_OR_GREATER
+					catch (Exception e)
+#else
 					catch (MonoTouchException e)
+#endif
 					{
 						this.Log().Error("Error when updating collection", e);
 					}
@@ -559,6 +581,7 @@ namespace Windows.UI.Xaml.Controls
 					var cd = new CancellationDisposable();
 					_scrollIntoViewSubscription.Disposable = cd;
 					//Item is present but no items are visible, probably being called on first load. Dispatch so that it actually does something.
+
 					Dispatcher.RunAsync(CoreDispatcherPriority.Normal, DispatchedScrollInner).AsTask(cd.Token);
 				}
 				else
@@ -754,7 +777,7 @@ namespace Windows.UI.Xaml.Controls
 			set { NativeLayout.Padding = value; }
 		}
 
-		#region Touches
+#region Touches
 		private TouchesManager _touchesManager;
 
 		internal TouchesManager TouchesManager => _touchesManager ??= new NativeListViewBaseTouchesManager(this);
@@ -785,6 +808,6 @@ namespace Windows.UI.Xaml.Controls
 			protected override void SetCanCancel(bool canCancel)
 				=> _listView.CanCancelContentTouches = canCancel;
 		}
-		#endregion
+#endregion
 	}
 }

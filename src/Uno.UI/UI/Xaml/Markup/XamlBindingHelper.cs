@@ -1,7 +1,7 @@
 ﻿using System;
 using Uno;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 

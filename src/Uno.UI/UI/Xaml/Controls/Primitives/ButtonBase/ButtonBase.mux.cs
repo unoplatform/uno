@@ -22,21 +22,21 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private Point _pointerPosition = Point.Zero;
 
 		// True if the SPACE or ENTER key is currently pressed, false otherwise.
-		private bool _isSpaceOrEnterKeyDown = false;
+		private bool _isSpaceOrEnterKeyDown;
 
 		// True if the NAVIGATION_ACCEPT or GAMEPAD_A vkey is currently pressed, false otherwise.
-		private bool _isNavigationAcceptOrGamepadAKeyDown = false;
+		private bool _isNavigationAcceptOrGamepadAKeyDown;
 
 		// True if the pointer's left button is currently down, false otherwise.
-		private bool _isPointerLeftButtonDown = false;
+		private bool _isPointerLeftButtonDown;
 
 		// True if ENTER key is equivalent to SPACE
-		private bool _keyboardNavigationAcceptsReturn = false;
+		private bool _keyboardNavigationAcceptsReturn;
 
 		// On pointer released we perform some actions depending on control. We decide to whether to perform them
 		// depending on some parameters including but not limited to whether released is followed by a pressed, which
 		// mouse button is pressed, what type of pointer is it etc. This boolean keeps our decision.
-		private bool _shouldPerformActions = false;
+		private bool _shouldPerformActions;
 
 		// Whether the button should handle keyboard ENTER and SPACE key input.
 		// HubSection's header button sets this to false for non-interactive headers so that they
@@ -62,11 +62,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			SetAcceptsReturn(true);
 
 			Loaded += OnLoaded;
+			//TODO Uno specific: Call LeaveImpl to simulate leaving visual tree
+			Unloaded += (s, e) => LeaveImpl();
 		}
 
 		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
-			//ButtonBaseGenerated.OnPropertyChanged2(args);
+			base.OnPropertyChanged2(args);
 
 			if (args.Property == ClickModeProperty)
 			{
@@ -202,7 +204,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// </summary>
 		/// <param name="oldValue">Old value.</param>
 		/// <param name="newValue">New value.</param>
-		private void OnCommandChanged(object oldValue, object newValue)
+		private protected virtual void OnCommandChanged(object oldValue, object newValue)
 		{
 			// Remove handler for CanExecuteChanged from the old value
 			if (_canExecuteChangedHandler.Disposable != null)
@@ -299,7 +301,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="args">Event args.</param>
-		private void OnLoaded(object sender, RoutedEventArgs args) => UpdateVisualState(false);
+		private void OnLoaded(object sender, RoutedEventArgs args)
+		{
+			UpdateVisualState(false);
+			// TODO Uno specific: Call EnterImpl to simulate entering visual tree
+			EnterImpl();
+		}
 
 		/// <summary>
 		/// GotFocus event handler.
@@ -730,7 +737,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			ExecuteCommand();
 		}
 
-		private void ProgrammaticClick() => OnClick();
+		internal void ProgrammaticClick() => OnClick();
 
 		private protected void SetAcceptsReturn(bool value) => _keyboardNavigationAcceptsReturn = value;
 	}

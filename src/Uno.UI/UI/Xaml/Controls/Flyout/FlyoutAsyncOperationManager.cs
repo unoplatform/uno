@@ -212,12 +212,12 @@ namespace Windows.UI.Xaml.Controls
 			AssertInvariants();
 		}
 
-		private void OnOpening(object sender, EventArgs eventArgs)
+		private void OnOpening(object sender, object eventArgs)
 		{
 			m_flyoutState = FlyoutState.Open;
 		}
 
-		private void OnClosed(object sender, EventArgs eventArgs)
+		private void OnClosed(object sender, object eventArgs)
 		{
 			AssertInvariants();
 

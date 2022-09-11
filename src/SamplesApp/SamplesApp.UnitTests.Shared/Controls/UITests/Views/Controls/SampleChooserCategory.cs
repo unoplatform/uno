@@ -46,5 +46,17 @@ namespace SampleControl.Entities
 					? 1
 					: string.Compare(Category, other.Category, StringComparison.InvariantCultureIgnoreCase);
 		}
+
+		public static bool operator ==(SampleChooserCategory left, SampleChooserCategory right) => Equals(left, right);
+
+		public static bool operator !=(SampleChooserCategory left, SampleChooserCategory right) => !Equals(left, right);
+
+		public static bool operator <(SampleChooserCategory left, SampleChooserCategory right) => left.CompareTo(right) < 0;
+
+		public static bool operator >(SampleChooserCategory left, SampleChooserCategory right) => left.CompareTo(right) > 0;
+
+		public static bool operator <=(SampleChooserCategory left, SampleChooserCategory right) => left.CompareTo(right) <= 0;
+
+		public static bool operator >=(SampleChooserCategory left, SampleChooserCategory right) => left.CompareTo(right) >= 0;
 	}
 }

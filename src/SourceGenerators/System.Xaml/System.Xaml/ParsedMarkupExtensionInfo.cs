@@ -8,10 +8,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -32,17 +32,6 @@ namespace Uno.Xaml
 {
 	internal class ParsedMarkupExtensionInfo
 	{
-		/// <summary>
-		/// This regex returns the members of a binding expression which are separated 
-		/// by commas but keeps the commas inside the member value.
-		/// e.g. [Property], ConverterParameter='A', TargetNullValue='B', FallbackValue='C,D,E,F' returns
-		/// - [Property]
-		/// - ConverterParameter='A'
-		/// - TargetNullValue='B'
-		/// - FallbackValue='C,D,E,F'
-		/// </summary>
-		private static Regex BindingMembersRegex = new Regex("[^'\",]+'[^^']+'|[^'\",]+\"[^\"]+\"|[^,]+");
-
 		Dictionary<XamlMember, object> args = new Dictionary<XamlMember, object>();
 		public Dictionary<XamlMember, object> Arguments
 		{
@@ -60,23 +49,31 @@ namespace Uno.Xaml
 
 			if (raw.Length == 0 || raw[0] != '{')
 			{
-				throw Error("Invalid markup extension attribute. It should begin with '{{', but was {0}", raw);
+				throw Error("Invalid markup extension attribute. Expected '{{' not found at the start: \"{0}\"", raw);
+			}
+
+			if (raw.Length >= 2 && raw[1] == '}')
+			{
+				throw Error("Markup extension can not begin with an '{}' escape: \"{0}\"", raw);
 			}
 
 			var ret = new ParsedMarkupExtensionInfo();
-			int idx = raw.LastIndexOf('}');
-
-			if (idx < 0)
+			if (raw[raw.Length - 1] != '}')
 			{
-				throw Error("Expected '}}' in the markup extension attribute: '{0}'", raw);
-			}
-				
-			raw = raw.Substring(1, idx - 1);
-			idx = raw.IndexOf(' ');
-			string name = idx < 0 ? raw : raw.Substring(0, idx);
+				// Any character after the final closing bracket is not accepted. Therefore, the last character should be '}'.
+				// Ideally, we should still ran the entire markup through the parser to get a more meaningful error.
+				if (raw.TrimEnd() is string trimmed && trimmed[trimmed.Length - 1] == '}')
+				{
+					// Technically this is salvageable, but since uwp throws on this, we will do the same.
+					throw Error("White space is not allowed after end of markup extension: \"{0}\"", raw);
+				}
 
-			XamlTypeName xtn;
-			if (!XamlTypeName.TryParse(name, nsResolver, out xtn))
+				throw Error("Expected '}}' in the markup extension attribute: \"{0}\"", raw);
+			}
+
+			var nameSeparatorIndex = raw.IndexOf(' ');
+			var name = nameSeparatorIndex != -1 ? raw.Substring(1, nameSeparatorIndex - 1) : raw.Substring(1, raw.Length - 2);
+			if (!XamlTypeName.TryParse(name, nsResolver, out var xtn))
 			{
 				throw Error("Failed to parse type name '{0}'", name);
 			}
@@ -84,26 +81,17 @@ namespace Uno.Xaml
 			var xt = sctx.GetXamlType(xtn) ?? new XamlType(xtn.Namespace, xtn.Name, null, sctx);
 			ret.Type = xt;
 
-			if (idx < 0)
+			if (nameSeparatorIndex < 0)
 				return ret;
 
-			var valueWithoutBinding = raw.Substring(idx + 1, raw.Length - idx - 1);
+			var valueWithoutBinding = raw.Substring(nameSeparatorIndex + 1, raw.Length - 1 - (nameSeparatorIndex + 1));
+			var vpairs = SliceParameters(valueWithoutBinding, raw);
 
-			var vpairs = BindingMembersRegex.Matches(valueWithoutBinding)
-				.Cast<Match>()
-				.Select(m => m.Value.Trim())
-				.ToList();
-
-			if (vpairs.Count == 0)
-			{
-				vpairs.Add(valueWithoutBinding);
-			}
-			
 			List<string> posPrms = null;
 			XamlMember lastMember = null;
 			foreach (var vpair in vpairs)
 			{
-				idx = vpair.IndexOf('=');
+				var idx = vpair.IndexOf('=');
 
 				// FIXME: unescape string (e.g. comma)
 				if (idx < 0)
@@ -202,6 +190,53 @@ namespace Uno.Xaml
 		static Exception Error(string format, params object[] args)
 		{
 			return new XamlParseException(String.Format(format, args));
+		}
+
+		internal static IEnumerable<string> SliceParameters(string vargs, string raw)
+		{
+			vargs = vargs.Trim();
+
+			// We need to split the parameters by the commas, but with two catches:
+			// 1. Nested markup extension can also contains multiple parameters, but they are a single parameter to the current context
+			// 2. Comma can appear within a single-quoted string.
+			// 3. a little bit of #1 and a little bit #2...
+			// While we can use regex to match #1 and #2, #3 cannot be solved with regex.
+
+			// It seems that single-quot(`'`) can't be escaped when used in the parameters.
+			// So we don't have to worry about escaping it.
+
+			var isInQuot = false;
+			var bracketDepth = 0;
+			var lastSliceIndex = -1;
+
+			for (int i = 0; i < vargs.Length; i++)
+			{
+				var c = vargs[i];
+				if (false) { }
+				else if (c == '\'') isInQuot = !isInQuot;
+				else if (isInQuot) { }
+				else if (c == '{') bracketDepth++;
+				else if (c == '}')
+				{
+					bracketDepth--;
+					if (bracketDepth > 0)
+					{
+						throw Error("Unexpected '}}' in markup extension: '{0}'", raw);
+					}
+				}
+				else if (c == ',' && bracketDepth == 0)
+				{
+					yield return vargs.Substring(lastSliceIndex + 1, i - lastSliceIndex - 1).Trim();
+					lastSliceIndex = i;
+				}
+			}
+
+			if (bracketDepth > 0)
+			{
+				throw Error("Expected '}}' in markup extension:", raw);
+			}
+
+			yield return vargs.Substring(lastSliceIndex + 1).Trim();
 		}
 	}
 }

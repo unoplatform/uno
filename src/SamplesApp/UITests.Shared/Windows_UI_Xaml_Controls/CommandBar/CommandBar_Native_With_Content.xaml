@@ -47,23 +47,25 @@
 					Content="Click me (Android only)"
 					Click="OnClick"
 					Height="50" />
-			<TextBlock x:Name="result" Text="none" />
+			<TextBlock x:Name="result"
+					   Text="none" />
 		</StackPanel>
 
-		<android:CommandBar x:Name="MyCommandBar"
-							Style="{StaticResource MyNativeDefaultCommandBar}"
-							Background="Gray">
-			<CommandBar.Content>
-				<TextBlock Text="Hello Title 2 !"
-						   VerticalAlignment="Center"
-						   Foreground="Black"
-						   Style="{StaticResource CommandBarTypo}"
-						   x:Name="InnerTextBlock" />
-			</CommandBar.Content>
-			<CommandBar.PrimaryCommands>
-				<AppBarButton Content="Hello">
-				</AppBarButton>
-			</CommandBar.PrimaryCommands>
-		</android:CommandBar>
+		<android:Grid>
+			<CommandBar x:Name="MyCommandBar"
+						  Style="{StaticResource MyNativeDefaultCommandBar}"
+						  Background="Gray">
+				<CommandBar.Content>
+					<TextBlock Text="Hello Title 2 !"
+							   VerticalAlignment="Center"
+							   Foreground="Black"
+							   Style="{StaticResource CommandBarTypo}"
+							   x:Name="InnerTextBlock" />
+				</CommandBar.Content>
+				<CommandBar.PrimaryCommands>
+					<AppBarButton Content="Hello" />
+				</CommandBar.PrimaryCommands>
+			</CommandBar>
+		</android:Grid>
 	</Grid>
 </Page>

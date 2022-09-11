@@ -401,10 +401,10 @@
                                 DisplayMode="Inline"
                                 IsPaneOpen="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsPaneOpen, Mode=TwoWay}"
                                 IsTabStop="False"
-                                OpenPaneLength="{TemplateBinding OpenPaneLength}"
+                                OpenPaneLength="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneWidth}"
                                 PaneBackground="{ThemeResource NavigationViewDefaultPaneBackground}"
                                 Grid.Row="1"
-                                contract7Present:CornerRadius="{ThemeResource OverlayCornerRadius}">
+                                contract7Present:CornerRadius="{Binding Source={ThemeResource OverlayCornerRadius}, Converter={StaticResource RightCornerRadiusFilterConverter}}">
                                 
                                 <SplitView.Pane>
                                     <Grid 
@@ -615,7 +615,7 @@
                             <Grid
                                 x:Name="ShadowCaster"
                                 Grid.RowSpan="2"
-                                Width="{TemplateBinding OpenPaneLength}"
+                                Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneWidth}"
                                 HorizontalAlignment="Left">
                                 <Grid.RenderTransform>
                                     <CompositeTransform x:Name="ShadowCasterTransform" />
@@ -731,7 +731,6 @@
                                 <VisualState x:Name="OnTopNavigationPrimary">
                                     <VisualState.Setters>
                                         <Setter Target="NavigationViewItemPresenter.Margin" Value="{ThemeResource TopNavigationViewItemMargin}"/>
-                                        <Setter Target="NavigationViewItemPresenter.Foreground" Value="{ThemeResource TopNavigationViewItemForeground}" />
                                         <Setter Target="NavigationViewItemPresenter.Style" Value="{StaticResource MUX_NavigationViewItemPresenterStyleWhenOnTopPane}" />
                                         <contract7NotPresent:Setter Target="ChildrenFlyout.Placement" Value="Bottom"/>
                                         <contract7Present:Setter Target="ChildrenFlyout.Placement" Value="BottomEdgeAlignedLeft"/>
@@ -748,6 +747,7 @@
                         <primitives:NavigationViewItemPresenter
                             x:Name="NavigationViewItemPresenter"
                             Icon="{TemplateBinding Icon}"
+                            InfoBadge="{TemplateBinding InfoBadge}"
                             ContentTransitions="{TemplateBinding ContentTransitions}"
                             ContentTemplate="{TemplateBinding ContentTemplate}"
                             Padding="{TemplateBinding Padding}"

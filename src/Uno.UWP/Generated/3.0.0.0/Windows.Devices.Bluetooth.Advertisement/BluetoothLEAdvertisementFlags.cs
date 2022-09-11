@@ -2,30 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth.Advertisement
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
-	public   enum BluetoothLEAdvertisementFlags 
+	#if false || false || false || false || false || false || false
+	[global::System.FlagsAttribute]
+	public   enum BluetoothLEAdvertisementFlags : uint
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		None,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		LimitedDiscoverableMode,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		GeneralDiscoverableMode,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ClassicNotSupported,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		DualModeControllerCapable,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		DualModeHostCapable,
-		#endif
+		// Skipping already declared field Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFlags.None
+		// Skipping already declared field Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFlags.LimitedDiscoverableMode
+		// Skipping already declared field Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFlags.GeneralDiscoverableMode
+		// Skipping already declared field Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFlags.ClassicNotSupported
+		// Skipping already declared field Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFlags.DualModeControllerCapable
+		// Skipping already declared field Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFlags.DualModeHostCapable
 	}
 	#endif
 }

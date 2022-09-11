@@ -3,13 +3,13 @@ parameters:
 
 jobs:
 - job: Wasm_cs9_Build
-  displayName: 'WebAssembly Build (C# 9.0 Compiler)'
+  displayName: 'WebAssembly Samples App Build'
   container: nv-bionic-wasm
 
   pool:
     vmImage: ${{ parameters.vmImage }}
 
-  dependsOn: Commitsar
+  dependsOn: Pipeline_Validations
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
@@ -20,6 +20,10 @@ jobs:
 
   - template: templates/dotnet-install.yml
 
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
   # Disabled for the next round of C# updates for forward validations
   # - bash: |
   #     msbuild /r /p:Configuration=Release /p:UnoTargetFrameworkOverride=netstandard2.0 /p:LangVersion=preview /p:UnoUIUseRoslynSourceGenerators=true /p:MicrosoftNetCompilerVersionOverride=3.8.0-3.final src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj  /bl:$(build.artifactstagingdirectory)/build-cs9-preview-$(GitVersion.FullSemVer).binlog
@@ -27,7 +31,7 @@ jobs:
   #   displayName: 'Build sample app (netstandard2.0)'
 
   - bash: |
-      dotnet msbuild /r /p:Configuration=Release /p:UnoTargetFrameworkOverride=netstandard2.0 /p:LangVersion=9.0 /p:UnoUIUseRoslynSourceGenerators=true src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj  /bl:$(build.artifactstagingdirectory)/build-cs9-preview-$(GitVersion.FullSemVer).binlog
+      dotnet msbuild /r /p:Configuration=Release /p:UnoTargetFrameworkOverride=netstandard2.0 /p:UnoUIUseRoslynSourceGenerators=true src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj  /bl:$(build.artifactstagingdirectory)/build-cs9-preview-$(GitVersion.FullSemVer).binlog
 
     displayName: 'Build sample app (netstandard2.0)'
 

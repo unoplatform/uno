@@ -12,7 +12,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using Uno.Disposables;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Windows.Input;
 using Windows.UI.Xaml.Controls;
 using System.Diagnostics;
@@ -60,7 +60,7 @@ namespace Uno.UI.Controls.Legacy
 		private Style _itemContainerStyle;
 		private GroupStyle _groupStyle;
 		private DataTemplate _headerTemplate;
-		private bool _needsRefresh = false;
+		private bool _needsRefresh;
 		private IEnumerable _items;
 		private HeaderWrapper _headerWrapper;
 		private FooterWrapper _footerWrapper;

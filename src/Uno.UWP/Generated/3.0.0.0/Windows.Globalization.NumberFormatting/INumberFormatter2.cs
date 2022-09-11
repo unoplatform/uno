@@ -2,19 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Globalization.NumberFormatting
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface INumberFormatter2 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		string FormatInt( long value);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		string FormatUInt( ulong value);
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		string FormatDouble( double value);
-		#endif
+		// Skipping already declared method Windows.Globalization.NumberFormatting.INumberFormatter2.FormatInt(long)
+		// Skipping already declared method Windows.Globalization.NumberFormatting.INumberFormatter2.FormatUInt(ulong)
+		// Skipping already declared method Windows.Globalization.NumberFormatting.INumberFormatter2.FormatDouble(double)
 	}
 }

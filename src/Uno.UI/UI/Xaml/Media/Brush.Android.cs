@@ -163,7 +163,7 @@ namespace Windows.UI.Xaml.Media
 			return Disposable.Empty;
 		}
 
-		internal static Drawable GetBackgroundDrawable(Brush background, Windows.Foundation.Rect drawArea, Paint fillPaint, Path maskingPath = null)
+		internal static Drawable GetBackgroundDrawable(Brush background, Windows.Foundation.Rect drawArea, Paint fillPaint, Path maskingPath = null, bool antiAlias = true)
 		{
 			if (background is ImageBrush)
 			{
@@ -195,6 +195,7 @@ namespace Windows.UI.Xaml.Media
 			var paint = drawable.Paint;
 			paint.Color = fillPaint.Color;
 			paint.SetShader(fillPaint.Shader);
+			paint.AntiAlias = antiAlias;
 			return drawable;
 		}
 	}

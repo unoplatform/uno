@@ -759,13 +759,7 @@ namespace Windows.UI.Xaml.Controls
 			throw new global::System.NotImplementedException("The member TextPointer RichTextBlock.GetPositionFromPoint(Point point) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool Focus( global::Windows.UI.Xaml.FocusState value)
-		{
-			throw new global::System.NotImplementedException("The member bool RichTextBlock.Focus(FocusState value) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.RichTextBlock.Focus(Windows.UI.Xaml.FocusState)
 		// Forced skipping of method Windows.UI.Xaml.Controls.RichTextBlock.TextIndent.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.RichTextBlock.TextIndent.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.RichTextBlock.MaxLines.get

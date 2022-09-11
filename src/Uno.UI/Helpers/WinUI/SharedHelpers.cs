@@ -6,6 +6,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
@@ -30,13 +31,18 @@ namespace Uno.UI.Helpers.WinUI
 {
 	internal class SharedHelpers
 	{
-#pragma warning disable CS0414
-		private static bool s_isOnXboxInitialized = false;
-		private static bool s_isOnXbox = false;
-#pragma warning restore CS0414
+#if HAS_UNO && !(NET461 || __NETSTD_REFERENCE__)
+		private static bool s_isOnXboxInitialized;
+		private static bool s_isOnXbox;
+#endif
 
-		private static bool s_isMouseModeEnabledInitialized = false;
-		private static bool s_isMouseModeEnabled = false;
+		private static bool s_isMouseModeEnabledInitialized;
+		private static bool s_isMouseModeEnabled;
+
+		static SharedHelpers()
+		{
+			isApiContractVxAvailable = new Dictionary<ushort, bool>();
+		}
 
 		public static bool IsSystemDll() => false;
 
@@ -255,6 +261,17 @@ namespace Uno.UI.Helpers.WinUI
 			return s_isScrollContentPresenterSizesContentToTemplatedParentAvailable.Value;
 		}
 
+		static bool? s_isBringIntoViewOptionsVerticalAlignmentRatioAvailable;
+		public static bool IsBringIntoViewOptionsVerticalAlignmentRatioAvailable()
+		{
+			if (s_isBringIntoViewOptionsVerticalAlignmentRatioAvailable == null) {
+				s_isBringIntoViewOptionsVerticalAlignmentRatioAvailable =
+					IsRS4OrHigher() ||
+					ApiInformation.IsPropertyPresent("Windows.UI.Xaml.BringIntoViewOptions", "VerticalAlignmentRatio");
+			}
+			return s_isBringIntoViewOptionsVerticalAlignmentRatioAvailable.Value;
+		}
+
 		static bool? s_isFrameworkElementInvalidateViewportAvailable;
 		public static bool IsFrameworkElementInvalidateViewportAvailable()
 		{
@@ -278,7 +295,7 @@ namespace Uno.UI.Helpers.WinUI
 			return s_isDisplayRegionGetForCurrentViewAvailable.Value;
 		}
 
-		static bool s_areFacadesAvailable = false;
+		static bool s_areFacadesAvailable;
 		public static bool IsTranslationFacadeAvailable(UIElement element)
 		{
 			// s_areFacadesAvailable = (element.try_as<Windows.UI.Xaml.IUIElement9>() != null)
@@ -368,23 +385,25 @@ namespace Uno.UI.Helpers.WinUI
 			return s_IsIsLoadedAvailable.Value;
 		}
 
-		static bool isAPIContractVxAvailableInitialized = false;
-		static bool isAPIContractVxAvailable = false;
 		private static bool s_dynamicScrollbarsDirty = true;
 		private static bool s_dynamicScrollbars;
+		private static readonly Dictionary<ushort, bool> isApiContractVxAvailable;
 
 		public static bool IsAPIContractVxAvailable(ushort apiVersion)
 		{
-			if (!isAPIContractVxAvailableInitialized)
+			// Uno specific: WinUI caches using static variables inside of a template function,
+			// which creates a separate cache for eache apiVersion value. Instead, we use a dictionary
+			// for the same functionality.
+			if (!isApiContractVxAvailable.TryGetValue(apiVersion, out var available))
 			{
-				isAPIContractVxAvailableInitialized = true;
-				isAPIContractVxAvailable =
+				available =
 					IsSystemDll() ?
 					true :
 					ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", apiVersion);
+				isApiContractVxAvailable[apiVersion] = available;
 			}
 
-			return isAPIContractVxAvailable;
+			return available;
 		}
 
 		// base helpers
@@ -483,7 +502,7 @@ namespace Uno.UI.Helpers.WinUI
 
 		public static bool IsOnXbox()
 		{
-#if HAS_UNO
+#if HAS_UNO && !(NET461 || __NETSTD_REFERENCE__)
 			if (!s_isOnXboxInitialized)
 			{
 				var deviceFamily = AnalyticsInfo.VersionInfo.DeviceFamily;
@@ -744,7 +763,7 @@ namespace Uno.UI.Helpers.WinUI
 		}
 
 		// Be cautious: this function may introduce memory leak because Source holds strong reference to target too
-		// There’s an intermediary object – the BindingExpression when BindingOperations::SetBinding
+		// Thereï¿½s an intermediary object ï¿½ the BindingExpression when BindingOperations::SetBinding
 		// For example, if source is NavigationView and target is content control,
 		// and there is strong reference: NavigationView -> ContentControl
 		// BindingExpression.Source also make a strong reference to NavigationView

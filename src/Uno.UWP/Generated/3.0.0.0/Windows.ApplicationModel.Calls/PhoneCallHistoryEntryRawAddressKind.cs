@@ -2,18 +2,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Calls
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum PhoneCallHistoryEntryRawAddressKind 
 	{
-		#if false
-		PhoneNumber,
-		#endif
-		#if false
-		Custom,
-		#endif
+		// Skipping already declared field Windows.ApplicationModel.Calls.PhoneCallHistoryEntryRawAddressKind.PhoneNumber
+		// Skipping already declared field Windows.ApplicationModel.Calls.PhoneCallHistoryEntryRawAddressKind.Custom
 	}
 	#endif
 }

@@ -11,8 +11,12 @@ using UIKit;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
+
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 
 namespace Windows.UI
 {
@@ -60,7 +64,12 @@ namespace Windows.UI
 				return size;
 			}
 
-			return size * (basePreferredSize / DefaultUIFontPreferredBodyFontSize) ?? (float)1.0;
+			var originalScale = (basePreferredSize / DefaultUIFontPreferredBodyFontSize) ?? (float)1.0;
+			if (FeatureConfiguration.Font.MaximumTextScaleFactor is float scaleFactor)
+			{
+				return size * (nfloat)Math.Min(originalScale, scaleFactor);
+			}
+			return size * originalScale;
 		}
 
 		private static UIFont InternalTryGetFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, FontFamily requestedFamily, nfloat? basePreferredSize)
@@ -90,7 +99,7 @@ namespace Windows.UI
 			return ApplyStyle(UIFont.SystemFontOfSize(size, fontWeight.ToUIFontWeight()), size, fontStyle);
 		}
 
-		#region Load Custom Font
+#region Load Custom Font
 		private static UIFont GetCustomFont(nfloat size, string fontPath, FontWeight fontWeight, FontStyle fontStyle)
 		{
 			UIFont font;
@@ -192,7 +201,7 @@ namespace Windows.UI
 		{
 			//If only one font exists for this family name, use it. Otherwise we will need to inspect the file for the right font name
 			var fontNames = UIFont.FontNamesForFamilyName(familyName);
-			return fontNames.Count() == 1 ? UIFont.FromName(fontNames[0], size) : null;
+			return fontNames.Length == 1 ? UIFont.FromName(fontNames[0], size) : null;
 		}
 
 		private static UIFont GetFontFromFile(nfloat size, string file)
@@ -228,9 +237,9 @@ namespace Windows.UI
 				}
 			}
 		}
-		#endregion
+#endregion
 
-		#region Load System Font
+#region Load System Font
 		private static UIFont GetSystemFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle, string fontFamilyName)
 		{
 			//based on Fonts available @ http://iosfonts.com/
@@ -242,7 +251,7 @@ namespace Windows.UI
 				var font = new StringBuilder(rootFontFamilyName);
 				if (fontWeight != FontWeights.Normal || fontStyle == FontStyle.Italic)
 				{
-					font.Append("-");
+					font.Append('-');
 					font.Append(GetFontWeight(fontWeight));
 					font.Append(GetFontStyle(fontStyle));
 				}
@@ -328,6 +337,6 @@ namespace Windows.UI
 			}
 			return string.Empty;
 		}
-		#endregion
+#endregion
 	}
 }

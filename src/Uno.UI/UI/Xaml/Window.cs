@@ -9,9 +9,10 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
-using Uno.Logging;
+using Windows.UI.Xaml.Controls.Primitives;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
-using Microsoft.Extensions.Logging;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml
 {
@@ -21,8 +22,14 @@ namespace Windows.UI.Xaml
 	public sealed partial class Window
 	{
 		private CoreWindowActivationState? _lastActivationState;
+		private Brush _background;
 
 		private List<WeakEventHelper.GenericEventHandler> _sizeChangedHandlers = new List<WeakEventHelper.GenericEventHandler>();
+		private List<WeakEventHelper.GenericEventHandler> _backgroundChangedHandlers;
+
+#if HAS_UNO_WINUI
+		public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; } = global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+#endif
 
 #pragma warning disable 67
 		/// <summary>
@@ -54,11 +61,13 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 				{
 					this.Log().Warn("Unable to raise WindowCreatedEvent, there is no active Application");
 				}
 			}
+
+			Background = SolidColorBrushHelper.White;
 		}
 
 		public UIElement Content
@@ -82,6 +91,7 @@ namespace Windows.UI.Xaml
 						oldRoot.SizeChanged -= RootSizeChanged;
 					}
 				}
+				
 				if (value != null)
 				{
 					value.IsWindowRoot = true;
@@ -91,9 +101,14 @@ namespace Windows.UI.Xaml
 
 				if (value is FrameworkElement newRoot)
 				{
-					newRoot.SizeChanged += RootSizeChanged;
+					newRoot.SizeChanged += RootSizeChanged;					
 				}
-				XamlRoot.Current.NotifyChanged();
+
+				oldContent?.XamlRoot?.NotifyChanged();
+				if (value?.XamlRoot != oldContent?.XamlRoot)
+				{
+					value?.XamlRoot?.NotifyChanged();
+				}
 			}
 		}
 
@@ -167,7 +182,7 @@ namespace Windows.UI.Xaml
 				_sizeChangedHandlers,
 				handler,
 				(h, s, e) =>
-					(h as Windows.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (Windows.UI.Core.WindowSizeChangedEventArgs)e)
+					(h as Windows.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e)
 			);
 		}
 
@@ -212,23 +227,52 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void RootSizeChanged(object sender, SizeChangedEventArgs args)
-		{
-			XamlRoot.Current.NotifyChanged();
-		}
+		private void RootSizeChanged(object sender, SizeChangedEventArgs args) => _rootVisual.XamlRoot.NotifyChanged();
 
 		private void RaiseSizeChanged(Windows.UI.Core.WindowSizeChangedEventArgs windowSizeChangedEventArgs)
 		{
-			SizeChanged?.Invoke(this, windowSizeChangedEventArgs);
+			var baseSizeChanged = new WindowSizeChangedEventArgs(windowSizeChangedEventArgs.Size) { Handled = windowSizeChangedEventArgs.Handled };
+
+			SizeChanged?.Invoke(this, baseSizeChanged);
+
+			windowSizeChangedEventArgs.Handled = baseSizeChanged.Handled;
+
 			CoreWindow.GetForCurrentThread()?.OnSizeChanged(windowSizeChangedEventArgs);
+
+			baseSizeChanged.Handled = windowSizeChangedEventArgs.Handled;
 
 			foreach (var action in _sizeChangedHandlers)
 			{
-				action(this, windowSizeChangedEventArgs);
+				action(this, baseSizeChanged);
 			}
 		}
 
-#region Drag and Drop
+		internal Brush Background
+		{
+			get => _background;
+			set
+			{
+				_background = value;
+
+				if (_backgroundChangedHandlers != null)
+				{
+					foreach (var action in _backgroundChangedHandlers)
+					{
+						action(this, EventArgs.Empty);
+					}
+				}
+			}
+		}
+
+		internal IDisposable RegisterBackgroundChangedEvent(EventHandler handler)
+			=> WeakEventHelper.RegisterEvent(
+				_backgroundChangedHandlers ??= new(),
+				handler,
+				(h, s, e) =>
+					(h as EventHandler)?.Invoke(s, (EventArgs)e)
+			);
+
+		#region Drag and Drop
 		private DragRoot _dragRoot;
 
 		internal DragDropManager DragDrop { get; private set; }
@@ -271,6 +315,6 @@ namespace Windows.UI.Xaml
 				}
 			}
 		}
-#endregion
+		#endregion
 	}
 }

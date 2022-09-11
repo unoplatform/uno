@@ -21,16 +21,16 @@ The other approach is to use the [Stetho package](https://www.nuget.org/packages
 Unfortunately neither of these approaches give you an easy way to inspect properties defined on UIElement, FrameworkElement, and other managed types. You can however look at native properties to obtain information like layout size, opacity, etc. 
 
 ## iOS 
-In principle it's possible to use XCode's 'Debug View Hierarchy' feature on any iOS app, including Uno apps. The steps are the following:
+In principle it's possible to use Xcode's 'Debug View Hierarchy' feature on any iOS app, including Uno apps. The steps are the following:
 
-1. Launch XCode
+1. Launch Xcode
 2. Create a dummy iOS app (or open an existing one) - you won't actually run this app.
 3. Run the app whose layout you wish to inspect.
 4. Set the device or simulator you're using as the active device in the upper toolbar.
 5. Select Debug -> Attach to Process -> [name of the app]
 6. Once the debugger has successfully attached, select Debug -> View Debugging -> Capture View Hierarchy.
 
-In practice, XCode is somewhat temperamental, and this approach may fail for some apps. It's recommended to fall back on the breakpoint-based inspection method described below. 
+In practice, Xcode is somewhat temperamental, and this approach may fail for some apps. It's recommended to fall back on the breakpoint-based inspection method described below. 
 
 ## Web 
 For an Uno.WASM app you can simply use the layout inspection tools built into whatever browser you're using. For example, for Chrome, open the 'Developer tools' panel (`F12`) and select the 'Elements' tab, or just right-click any element in the visual tree and choose 'Inspect.'

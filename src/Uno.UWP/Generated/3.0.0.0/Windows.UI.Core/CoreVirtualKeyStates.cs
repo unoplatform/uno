@@ -3,10 +3,8 @@
 namespace Windows.UI.Core
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
-	public   enum CoreVirtualKeyStates 
+	[global::System.FlagsAttribute]
+	public   enum CoreVirtualKeyStates : uint
 	{
 		// Skipping already declared field Windows.UI.Core.CoreVirtualKeyStates.None
 		// Skipping already declared field Windows.UI.Core.CoreVirtualKeyStates.Down

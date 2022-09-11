@@ -1,7 +1,6 @@
-﻿#if false
-
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference SelectionModelTests.cs, commit 6ab6d30
 
 using MUXControlsTestApp.Utilities;
 using System.Collections;
@@ -1376,9 +1375,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					Verify.AreEqual(selectionModel.SelectedItem, GetData(selectionModel, expectedSelected[0]));
 				}
 
-				int itemsCount = selectionModel.SelectedItems.Count();
+				int itemsCount = selectionModel.SelectedItems.Count;
 				Verify.AreEqual(selectionModel.Source != null ? expectedSelected.Count - selectedInnerNodes : 0, itemsCount);
-				int indicesCount = selectionModel.SelectedIndices.Count();
+				int indicesCount = selectionModel.SelectedIndices.Count;
 				Verify.AreEqual(expectedSelected.Count - selectedInnerNodes, indicesCount);
 			}
 
@@ -1512,7 +1511,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			return IndexPath.CreateFromIndices(path);
 		}
 
-		private static int _nextData = 0;
+		private static int _nextData;
 		private struct TreeWalkNodeInfo
 		{
 			public object Current { get; set; }
@@ -1536,4 +1535,3 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		private int _intProperty;
 	}
 }
-#endif

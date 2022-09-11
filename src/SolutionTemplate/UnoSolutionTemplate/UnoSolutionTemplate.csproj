@@ -35,7 +35,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UnoSolutionTemplate</RootNamespace>
     <AssemblyName>UnoSolutionTemplate</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <GeneratePkgDefFile>false</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>false</IncludeAssemblyInVSIXContainer>
@@ -84,9 +84,6 @@
     <None Include="Skia.WPF\Program.cs" />
     <None Include="Skia.WPF.Host\App.xaml.cs" />
     <None Include="Skia.WPF.Host\MainWindow.xaml.cs" />
-    <None Include="Skia.WPF.Host\Properties\AssemblyInfo.cs" />
-    <None Include="Skia.WPF.Host\Properties\Resources.Designer.cs" />
-    <None Include="Skia.WPF.Host\Properties\Settings.Designer.cs" />
     <None Include="Skia.Gtk\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Skia.Gtk\Program.cs" />
     <None Include="macOS\AppDelegate.cs" />
@@ -138,9 +135,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Skia.Gtk\UnoQuickStart.Skia.Gtk.csproj" />
-    <None Include="Skia.WPF.Host\App.config" />
     <None Include="Skia.WPF.Host\Assets\Fonts\uno-fluentui-assets.ttf" />
-    <None Include="Skia.WPF.Host\Properties\Settings.settings" />
     <None Include="Skia.WPF.Host\UnoQuickStart.Skia.Wpf.Host.csproj" />
     <None Include="Skia.WPF\UnoQuickStart.Skia.Wpf.csproj" />
     <None Include="Wasm\Program.cs" />
@@ -259,9 +254,6 @@
     <Content Include="__TemplateIcon.png" />
     <None Include="Wasm\Wasm.vstemplate" />
     <Content Include="Wasm\UnoQuickStart.Wasm.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Skia.WPF.Host\Properties\Resources.resx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Skia.WPF.Host\App.xaml" />

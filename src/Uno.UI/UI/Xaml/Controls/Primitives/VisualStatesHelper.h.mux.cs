@@ -23,5 +23,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		public int dragItemsCount;
 
 		public FocusState focusState;
+
+		/// <inheritdoc />
+		public override string ToString()
+			=> $"isEnabled: {isEnabled} | isSelected: {isSelected} | isPressed: {isPressed} | isPointerOver: {isPointerOver} | isMultiSelect: {isMultiSelect} | isDragging: {isDragging} | isItemDragPrimary: {isItemDragPrimary} | isInsideListView: {isInsideListView} | isDragVisualCaptured: {isDragVisualCaptured} | isHolding: {isHolding} | canDrag: {canDrag} | canReorder: {canReorder} | isDraggedOver: {isDraggedOver} | dragItemsCount: {dragItemsCount} | focusState: {focusState}"
+		;
 	}
 }

@@ -4,14 +4,18 @@ using System.Linq;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Microsoft.Extensions.Logging;
+
 using Uno.Disposables;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno;
 using Windows.Devices.Haptics;
 
+#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+namespace Microsoft.UI.Input
+#else
 namespace Windows.UI.Input
+#endif
 {
 	public partial class GestureRecognizer
 	{
@@ -27,7 +31,7 @@ namespace Windows.UI.Input
 
 		internal const long DragWithTouchMinDelayTicks = TimeSpan.TicksPerMillisecond * 300; // https://docs.microsoft.com/en-us/windows/uwp/design/input/drag-and-drop#open-a-context-menu-on-an-item-you-can-drag-with-touch
 
-		private readonly ILogger _log;
+		private readonly Logger _log;
 		private IDictionary<uint, Gesture> _gestures = new Dictionary<uint, Gesture>(_defaultGesturesSize);
 		private Manipulation _manipulation;
 		private GestureSettings _gestureSettings;
@@ -118,6 +122,13 @@ namespace Windows.UI.Input
 			}
 
 			_manipulation?.Update(value);
+		}
+
+		// Manipulation <Completed|InertiaStaring> has to be raised BEFORE the pointer up
+		// The allows users to update the manipulation before anything else.
+		internal void ProcessBeforeUpEvent(PointerPoint value, bool isRelevant)
+		{
+			_manipulation?.Remove(value);
 		}
 
 		public void ProcessUpEvent(PointerPoint value) => ProcessUpEvent(value, true);

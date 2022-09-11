@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// In case if Button has set Flyout property, get associated Flyout and open it next to this Button.
 		/// </summary>
-		private void OpenAssociatedFlyout() => Flyout?.ShowAt(this);
+		private protected virtual void OpenAssociatedFlyout() => Flyout?.ShowAt(this);
 
 		// TODO Uno: Keyboard accelerators not supported yet.
 		//private void OnProcessKeyboardAcceleratorsImplLocal()

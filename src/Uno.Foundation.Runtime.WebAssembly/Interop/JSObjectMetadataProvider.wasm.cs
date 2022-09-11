@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using Uno.Disposables;
-using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
+using Uno.Foundation.Runtime.WebAssembly.Helpers;
 
 namespace Uno.Foundation.Interop
 {
@@ -28,7 +27,7 @@ namespace Uno.Foundation.Interop
 		private class ReflectionMetadata : IJSObjectMetadata
 		{
 			private readonly Type _type;
-			private static long _handles = 0L;
+			private static long _handles;
 
 			private bool _isPrototypeExported;
 			private Dictionary<string, MethodInfo> _methods;
@@ -89,7 +88,7 @@ namespace Uno.Foundation.Interop
 				var namespaces = _type.Namespace.Split('.');
 				var methods = _type
 					.GetMethods(BindingFlags.Instance | BindingFlags.Public)
-					.Where(method => method.GetParameters().None(p => p.ParameterType != typeof(string))) // we support only string parameters for now
+					.Where(method => !method.GetParameters().Any(p => p.ParameterType != typeof(string))) // we support only string parameters for now
 					.ToList();
 
 				// When multiple methods have the same name, we cannot determine which is the right one to call.
@@ -98,7 +97,7 @@ namespace Uno.Foundation.Interop
 				var duplicateMethods = methods.GroupBy(m => m.Name).Where(g => g.Count() > 1).SelectMany(g => g).ToList();
 				if (duplicateMethods.Count > 0)
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+					if (this.Log().IsEnabled(LogLevel.Warning))
 					{
 						// We log only methods, which are not declared by Uno/WinUI directly.
 						var reportMethods = duplicateMethods
@@ -171,7 +170,7 @@ namespace Uno.Foundation.Interop
 
 					var indent = builder.Indent();
 
-					return Disposable.Create(() =>
+					return new DisposableAction(() =>
 					{
 						indent.Dispose();
 						if (index == 0)

@@ -37,7 +37,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			_app.WaitForDependencyPropertyValue(theDatePicker, "DataContext", "UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.Models.DatePickerViewModel");
 
 			// Open flyout
-			theDatePicker.Tap();
+			theDatePicker.FastTap();
 
 			_app.WaitForElement(datePickerFlyout);
 
@@ -61,12 +61,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			_app.WaitForNoElement(datePickerFlyout);
 
 			// Open flyout
-			theDatePicker.Tap();
+			theDatePicker.FastTap();
 
 			_app.WaitForElement(datePickerFlyout);
 
 			//_app.TapCoordinates(10, 10);
-			_app.Marked("DismissButton").Tap();
+			_app.Marked("DismissButton").FastTap();
 
 			_app.WaitForNoElement(datePickerFlyout);
 		}
@@ -90,7 +90,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			using var screenshotNotOpened = TakeScreenshot("NotOpenedPicker", ignoreInSnapshotCompare: true);
 
 			// Open flyout
-			theDatePicker.Tap();
+			theDatePicker.FastTap();
 
 			if (Helpers.Platform == Platform.Android)
 			{
@@ -111,7 +111,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 
 			ImageAssert.AreNotEqual(screenshotNotOpened, screenshotOpened);
 
-			_app.Marked("btn").Tap();
+			_app.Marked("btn").FastTap();
 
 			using var screenshotClosed = TakeScreenshot("ClosedPicker", ignoreInSnapshotCompare: true);
 
@@ -328,6 +328,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			}
 
 			_app.FastTap("DismissButton");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void CalendarDatePicker_With_Description()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.CalendarView.CalendarDatePicker_Description", skipInitialScreenshot: true);
+			var autoSuggestBoxRect = ToPhysicalRect(_app.WaitForElement("DescriptionCalendarDatePicker")[0].Rect);
+			using var screenshot = TakeScreenshot("CalendarDatePicker Description", new ScreenshotOptions() { IgnoreInSnapshotCompare = true });
+			ImageAssert.HasColorAt(screenshot, autoSuggestBoxRect.X + autoSuggestBoxRect.Width / 2, autoSuggestBoxRect.Y + autoSuggestBoxRect.Height - 150, Color.Red);
 		}
 	}
 }

@@ -88,6 +88,8 @@ The [`check_toc` script](https://github.com/unoplatform/uno/blob/master/doc/arti
 
 Sometimes you may want to run DocFX locally to validate that changes you've made look good in html. To do so you'll first need to generate the 'implemented views' documentation.
 
+### Run DocFX locally
+
 To run DocFX locally and check the resulting html:
 
 1. Open the `Uno.UI-Tools.slnf` solution filter in the `src` folder with Visual Studio. 
@@ -98,3 +100,21 @@ To run DocFX locally and check the resulting html:
 6. Open a Powershell window in the `tools` folder.
 7. Run the following command: `.\docfx "C:\src\Uno.UI\doc\docfx.json" -o C:\src\Uno.UI\docs-local-dist`, replacing `C:\src\Uno.UI` with your local path to the Uno.UI repository.
 8. When DocFX runs successfully, it will create the html output at `C:\src\Uno.UI\docs-local-dist\_site`, which you can now view or mount on a local server.
+
+### Use a local server
+
+You can use `dotnet-serve` as a simple command-line HTTP server for example.
+
+1. Install `dotnet-serve` using the following command: `dotnet tool install --global dotnet-serve`. For more info about its usage and options, 
+[please refer to the documentation](https://github.com/natemcmaster/dotnet-serve).
+2. Using the command prompt, navigate to `C:\src\Uno.UI\docs-local-dist\_site` (replacing `C:\src\Uno.UI` with your local path to the Uno.UI repository) and run the following command `dotnet serve -o -S`. This will start a simple server with HTTPS and open the browser directly.
+
+## Run the documentation generation performance test
+
+If needed, you can also run a script that will give you a performance summary for the documentation generation.
+
+To run the script on Windows:
+1. Make sure crosstargeting_override.props is not defininig UnoTargetFrameworkOverride
+2. Open a Developer Command Prompt for Visual Studio (2019 or 2022)
+3. Go the the uno\build folder (not the uno\src\build folder)
+4. Run the `run-doc-generation.cmd` script; make sure to follow the instructions

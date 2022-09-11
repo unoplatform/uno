@@ -19,7 +19,7 @@ namespace Uno.UI
 		/// ElementNameSubject and TargetProperty path to only keep weak references
 		/// to their targets.
 		/// </summary>
-		private static ConditionalWeakTable<DependencyObject, object> _contextAssociation = new ConditionalWeakTable<DependencyObject, object>();
+		private static readonly ConditionalWeakTable<DependencyObject, object> _contextAssociation = new ConditionalWeakTable<DependencyObject, object>();
 
 		/// <summary>
 		/// Set the rendering phase, defined via x:Phase.
@@ -49,7 +49,7 @@ namespace Uno.UI
 
 		public static void SetBaseUri(FrameworkElement target, string uri)
 		{
-			if (target is FrameworkElement fe)
+			if (target is { } fe)
 			{
 				fe.BaseUri = new Uri(uri);
 			}
@@ -63,8 +63,72 @@ namespace Uno.UI
 		/// code alive alonside the top-level control of thete.
 		/// </remarks>
 		public static void AddObjectReference(DependencyObject target, object context)
+			=> _contextAssociation.Add(target, context);
+
+		/// <summary>
+		/// This is the equivalent of <see cref="FeatureConfiguration.UIElement.UseInvalidateMeasurePath"/>
+		/// but just for a specific element (and its descendants) in the visual tree.
+		/// </summary>
+		/// <remarks>
+		/// This will have no effect if <see cref="FeatureConfiguration.UIElement.UseInvalidateMeasurePath"/>
+		/// is set to false.
+		/// </remarks>
+		public static void SetUseMeasurePathDisabled(UIElement element, bool state = true, bool eager = true, bool invalidate = true)
 		{
-			_contextAssociation.Add(target, context);
+			element.IsMeasureDirtyPathDisabled = state;
+
+			if (eager)
+			{
+				using var children = element.GetChildren().GetEnumerator();
+				while (children.MoveNext())
+				{
+					if (children.Current is FrameworkElement child)
+					{
+						SetUseMeasurePathDisabled(child, state, eager: true, invalidate);
+					}
+				}
+			}
+
+			if (invalidate)
+			{
+				element.InvalidateMeasure();
+			}
 		}
+
+		public static bool GetUseMeasurePathDisabled(FrameworkElement element)
+			=> element.IsMeasureDirtyPathDisabled;
+
+		/// <summary>
+		/// This is the equivalent of <see cref="FeatureConfiguration.UIElement.UseInvalidateArrangePath"/>
+		/// but just for a specific element (and its descendants) in the visual tree.
+		/// </summary>
+		/// <remarks>
+		/// This will have no effect if <see cref="FeatureConfiguration.UIElement.UseInvalidateArrangePath"/>
+		/// is set to false.
+		/// </remarks>
+		public static void SetUseArrangePathDisabled(UIElement element, bool state = true, bool eager = true, bool invalidate = true)
+		{
+			element.IsArrangeDirtyPathDisabled = state;
+
+			if (eager)
+			{
+				using var children = element.GetChildren().GetEnumerator();
+				while (children.MoveNext())
+				{
+					if (children.Current is FrameworkElement child)
+					{
+						SetUseArrangePathDisabled(child, state, eager: true, invalidate);
+					}
+				}
+			}
+
+			if (invalidate)
+			{
+				element.InvalidateArrange();
+			}
+		}
+
+		public static bool GetUseArrangePathDisabled(FrameworkElement element)
+			=> element.IsArrangeDirtyPathDisabled;
 	}
 }

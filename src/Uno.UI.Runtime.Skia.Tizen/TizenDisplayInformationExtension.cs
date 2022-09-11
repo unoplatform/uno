@@ -31,6 +31,8 @@ namespace Uno.UI.Runtime.Skia
 
 		public ResolutionScale ResolutionScale => (ResolutionScale)(int)(LogicalDpi / 1.60f);
 
+		public double? DiagonalSizeInInches => null;
+
 		private int GetDpi()
 		{
 			// TV has fixed DPI value (72)
@@ -43,16 +45,6 @@ namespace Uno.UI.Runtime.Skia
 			SystemInfo.TryGetValue("http://tizen.org/feature/screen.dpi", out int dpi);
 #pragma warning restore CS0618 // Type or member is obsolete
 			return dpi;
-		}
-
-		public void StartDpiChanged()
-		{
-
-		}
-
-		public void StopDpiChanged()
-		{
-
 		}
 	}
 }

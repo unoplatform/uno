@@ -12,7 +12,7 @@ using Windows.UI.Core;
 using System.Threading.Tasks;
 using System.Threading;
 using Windows.Foundation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml.Automation.Peers;

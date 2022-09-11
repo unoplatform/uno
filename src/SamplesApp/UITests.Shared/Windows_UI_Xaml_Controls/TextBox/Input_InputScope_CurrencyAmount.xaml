@@ -12,7 +12,7 @@
     <controls:SampleControl SampleDescription="This textbox should allow decimal numbers">
 		<controls:SampleControl.SampleContent>
 			<DataTemplate>
-				<TextBox Header="Enter currency amount:"
+				<TextBox x:Name="CurrencyTextBox" Header="Enter currency amount:"
 						 InputScope="CurrencyAmount" />
 			</DataTemplate>
 		</controls:SampleControl.SampleContent>

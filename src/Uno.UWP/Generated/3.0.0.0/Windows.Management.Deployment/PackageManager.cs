@@ -446,5 +446,12 @@ namespace Windows.Management.Deployment
 			throw new global::System.NotImplementedException("The member PackageStubPreference PackageManager.GetPackageStubPreference(string packageFamilyName) is not implemented in Uno.");
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Management.Deployment.DeploymentResult, global::Windows.Management.Deployment.DeploymentProgress> ProvisionPackageForAllUsersAsync( string mainPackageFamilyName,  global::Windows.Management.Deployment.PackageAllUserProvisioningOptions options)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<DeploymentResult, DeploymentProgress> PackageManager.ProvisionPackageForAllUsersAsync(string mainPackageFamilyName, PackageAllUserProvisioningOptions options) is not implemented in Uno.");
+		}
+		#endif
 	}
 }

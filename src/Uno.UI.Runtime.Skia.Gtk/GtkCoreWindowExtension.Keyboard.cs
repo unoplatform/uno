@@ -8,10 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Gdk;
 using Gtk;
-using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
-using Uno.Logging;
 using Uno.UI.Runtime.Skia;
 using Uno.UI.Runtime.Skia.GTK.Extensions;
 using Windows.ApplicationModel;
@@ -21,6 +19,7 @@ using Windows.System;
 using Windows.UI.Composition;
 using Windows.UI.Core;
 using Windows.UI.Input;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia
 {

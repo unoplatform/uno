@@ -9,7 +9,7 @@ using Uno;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
@@ -17,6 +17,7 @@ using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 
@@ -41,11 +42,18 @@ namespace Windows.UI.Xaml
 		private void Init()
 		{
 			Dispatcher = CoreDispatcher.Main;
-			CoreWindow = new CoreWindow();
+			CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
 		}
 
 		internal static void InvalidateMeasure()
 		{
+			Current?.InnerInvalidateMeasure();
+		}
+
+		internal static void InvalidateArrange()
+		{
+			// Right now, both measure & arrange invalidations
+			// are done in the same loop
 			Current?.InnerInvalidateMeasure();
 		}
 
@@ -55,7 +63,7 @@ namespace Windows.UI.Xaml
 			{
 				_invalidateRequested = true;
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("DispatchInvalidateMeasure scheduled");
 				}
@@ -74,17 +82,24 @@ namespace Windows.UI.Xaml
 
 		private void DispatchInvalidateMeasure()
 		{
-			if (_rootVisual != null)
+			if (_rootVisual is null)
+			{
+				return;
+			}
+
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				var sw = Stopwatch.StartNew();
 				_rootVisual.Measure(Bounds.Size);
 				_rootVisual.Arrange(Bounds);
 				sw.Stop();
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug($"DispatchInvalidateMeasure: {sw.Elapsed}");
-				}
+				this.Log().Debug($"DispatchInvalidateMeasure: {sw.Elapsed}");
+			}
+			else
+			{
+				_rootVisual.Measure(Bounds.Size);
+				_rootVisual.Arrange(Bounds);
 			}
 		}
 
@@ -107,7 +122,7 @@ namespace Windows.UI.Xaml
 
 			if (newBounds != Bounds)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"OnNativeSizeChanged: {size}");
 				}
@@ -151,49 +166,32 @@ namespace Windows.UI.Xaml
 				{
 					throw new InvalidOperationException("The root visual could not be created.");
 				}
-			}
 
-			_rootBorder.Child = _content = content;
-			if (content != null)
-			{
-				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && !_rootVisual.IsLoaded)
+				// Load the root element in DOM
+				
+				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
 				{
 					UIElement.LoadingRootElement(_rootVisual);
 				}
 
-				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootContent({_rootVisual.HtmlId});");
+				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootElement({_rootVisual.HtmlId});");
 
-				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && !_rootVisual.IsLoaded)
+				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
 				{
 					UIElement.RootElementLoaded(_rootVisual);
 				}
-			}
-			else
-			{
-				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootContent();");
-
-				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && _rootVisual.IsLoaded)
-				{
-					UIElement.RootElementUnloaded(_rootVisual);
-				}
+				
+				UpdateRootAttributes();
 			}
 
-			UpdateRootAttributes();
+			_rootBorder.Child = _content = content;
 		}
 
 		private UIElement InternalGetContent() => _content;
 
 		private UIElement InternalGetRootElement() => _rootVisual!;
 
-		private static Window InternalGetCurrentWindow()
-		{
-			if (_current == null)
-			{
-				_current = new Window();
-			}
-
-			return _current;
-		}
+		private static Window InternalGetCurrentWindow() => _current ??= new Window();
 
 		internal void UpdateRootAttributes()
 		{
@@ -214,7 +212,7 @@ namespace Windows.UI.Xaml
 
 		internal IDisposable OpenPopup(Popup popup)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Creating popup");
 			}
@@ -231,7 +229,7 @@ namespace Windows.UI.Xaml
 				Disposable.Create(() =>
 				{
 
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Closing popup");
 					}

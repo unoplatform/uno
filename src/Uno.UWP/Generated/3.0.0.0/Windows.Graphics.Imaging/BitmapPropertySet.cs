@@ -88,10 +88,6 @@ namespace Windows.Graphics.Imaging
 			{
 				throw new global::System.NotSupportedException();
 			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -99,10 +95,6 @@ namespace Windows.Graphics.Imaging
 		public global::System.Collections.Generic.ICollection<global::Windows.Graphics.Imaging.BitmapTypedValue> Values
 		{
 			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
 			{
 				throw new global::System.NotSupportedException();
 			}
@@ -157,10 +149,6 @@ namespace Windows.Graphics.Imaging
 			{
 				throw new global::System.NotSupportedException();
 			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -168,10 +156,6 @@ namespace Windows.Graphics.Imaging
 		public bool IsReadOnly
 		{
 			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
 			{
 				throw new global::System.NotSupportedException();
 			}

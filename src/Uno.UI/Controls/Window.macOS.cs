@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml;
 using Uno.UI.Controls;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Core.Preview;
@@ -25,6 +25,11 @@ using Windows.Devices.Input;
 using Windows.System;
 using Windows.UI.Input;
 using Point = Windows.Foundation.Point;
+
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+using NSDraggingInfo = AppKit.INSDraggingInfo;
+#endif
 
 namespace Uno.UI.Controls
 {
@@ -42,6 +47,7 @@ namespace Uno.UI.Controls
 
 		private readonly InputPane _inputPane;
 		private WeakReference<NSScrollView> _scrollViewModifiedForKeyboard;
+		private static PointerEventArgs _previous;
 
 		/// <summary>
 		/// ctor.
@@ -97,23 +103,23 @@ namespace Uno.UI.Controls
 				switch (evt.Type)
 				{
 					case NSEventType.MouseEntered:
-						CoreWindowEvents?.RaisePointerEntered(ToPointerArgs(evt, posInWindow));
+						CoreWindowEvents?.RaisePointerEntered(BuildPointerArgs(evt, posInWindow));
 						break;
 
 					case NSEventType.MouseExited:
-						CoreWindowEvents?.RaisePointerExited(ToPointerArgs(evt, posInWindow));
+						CoreWindowEvents?.RaisePointerExited(BuildPointerArgs(evt, posInWindow));
 						break;
 
 					case NSEventType.LeftMouseDown:
 					case NSEventType.OtherMouseDown:
 					case NSEventType.RightMouseDown:
-						CoreWindowEvents?.RaisePointerPressed(ToPointerArgs(evt, posInWindow));
+						CoreWindowEvents?.RaisePointerPressed(BuildPointerArgs(evt, posInWindow));
 						break;
 
 					case NSEventType.LeftMouseUp:
 					case NSEventType.OtherMouseUp:
 					case NSEventType.RightMouseUp:
-						CoreWindowEvents?.RaisePointerReleased(ToPointerArgs(evt, posInWindow));
+						CoreWindowEvents?.RaisePointerReleased(BuildPointerArgs(evt, posInWindow));
 						break;
 
 					case NSEventType.MouseMoved:
@@ -123,11 +129,11 @@ namespace Uno.UI.Controls
 					case NSEventType.TabletPoint:
 					case NSEventType.TabletProximity:
 					case NSEventType.DirectTouch:
-						CoreWindowEvents?.RaisePointerMoved(ToPointerArgs(evt, posInWindow));
+						CoreWindowEvents?.RaisePointerMoved(BuildPointerArgs(evt, posInWindow));
 						break;
 
 					case NSEventType.ScrollWheel:
-						CoreWindowEvents?.RaisePointerWheelChanged(ToPointerArgs(evt, posInWindow));
+						CoreWindowEvents?.RaisePointerWheelChanged(BuildPointerArgs(evt, posInWindow));
 						break;
 				}
 
@@ -150,16 +156,7 @@ namespace Uno.UI.Controls
 
 		internal ICoreWindowEvents CoreWindowEvents { private get; set; }
 
-		private static PointerEventArgs ToPointerArgs(NSEvent nativeEvent, Point posInWindow)
-		{
-			var point = GetPointerPoint(nativeEvent, posInWindow);
-			var modifiers = GetVirtualKeyModifiers(nativeEvent);
-			var args = new PointerEventArgs(point, modifiers);
-
-			return args;
-		}
-
-		private static PointerPoint GetPointerPoint(NSEvent nativeEvent, Point posInWindow)
+		private static PointerEventArgs BuildPointerArgs(NSEvent nativeEvent, Point posInWindow)
 		{
 			var frameId = ToFrameId(nativeEvent.Timestamp);
 			var timestamp = ToTimestamp(nativeEvent.Timestamp);
@@ -169,9 +166,15 @@ namespace Uno.UI.Controls
 				? (uint)nativeEvent.PointingDeviceID()
 				: (uint)1;
 			var isInContact = GetIsInContact(nativeEvent);
-			var properties = GetPointerProperties(nativeEvent, pointerDeviceType);
+			var properties = GetPointerProperties(nativeEvent, pointerDeviceType).SetUpdateKindFromPrevious(_previous?.CurrentPoint.Properties);
+			var modifiers = GetVirtualKeyModifiers(nativeEvent);
 
-			return new PointerPoint(frameId, timestamp, pointerDevice, pointerId, posInWindow, posInWindow, isInContact, properties);
+			var point = new PointerPoint(frameId, timestamp, pointerDevice, pointerId, posInWindow, posInWindow, isInContact, properties);
+			var args = new PointerEventArgs(point, modifiers);
+
+			_previous = args;
+
+			return args;
 		}
 
 		private static PointerPointProperties GetPointerProperties(NSEvent nativeEvent, PointerDeviceType pointerType)
@@ -484,7 +487,7 @@ namespace Uno.UI.Controls
 		/// <param name="draggingInfo">Information about the dragging session from the sender.</param>
 		/// <returns>True if the destination accepts the drag operation; otherwise, false. </returns>
 		[Export("prepareForDragOperation:")] // Do not remove
-		internal virtual bool PrepareForDragOperation(AppKit.NSDraggingInfo draggingInfo)
+		internal virtual bool PrepareForDragOperation(NSDraggingInfo draggingInfo)
 		{
 			// Always return true as UWP doesn't really have an equivalent step.
 			// Drop is accepted within DraggingEntered (drag entered event in UWP).
@@ -606,12 +609,12 @@ namespace Uno.UI.Controls
 			{
 				Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
 				Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
-				Windows.UI.Xaml.Application.Current?.OnEnteredBackground();
+				Windows.UI.Xaml.Application.Current?.RaiseEnteredBackground(null);
 			}
 
 			public override void DidDeminiaturize(NSNotification notification)
 			{
-				Windows.UI.Xaml.Application.Current?.OnLeavingBackground();
+				Windows.UI.Xaml.Application.Current?.RaiseLeavingBackground(null);
 				Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
 				Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
 			}
@@ -641,23 +644,20 @@ namespace Uno.UI.Controls
 				var manager = SystemNavigationManagerPreview.GetForCurrentView();
 				if (!manager.HasConfirmedClose)
 				{
-					manager.OnCloseRequested();
-					if (!manager.HasConfirmedClose)
-					{
-						// Close was either deferred or canceled synchronously.
+					if (!manager.RequestAppClose())
+                    {
 						return false;
-					}
+                    }
 				}
 
-				// closing should continue, perform suspension
-
+				// Closing should continue, perform suspension.
 				if (!Application.Current.Suspended)
 				{
-					Application.Current.OnSuspending();
+					Application.Current.RaiseSuspending();
 					return Application.Current.Suspended;
 				}
 
-				// all prerequisites passed, can safely close
+				// All prerequisites passed, can safely close.
 				return true;
 			}
 		}

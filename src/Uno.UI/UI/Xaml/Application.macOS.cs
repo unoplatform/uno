@@ -2,27 +2,25 @@
 using System;
 using AppKit;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.ApplicationModel;
-using ObjCRuntime;
-using Windows.Graphics.Display;
 using Uno.UI.Services;
 using System.Globalization;
-using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Linq;
-using Microsoft.Extensions.Logging;
+
 using Selector = ObjCRuntime.Selector;
-using Windows.System.Profile;
 using Windows.UI.Core;
 using Uno.Foundation.Extensibility;
-using Uno.Helpers;
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 #else
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
+#endif
+
+#if !NET6_0_OR_GREATER
+using NativeHandle = System.IntPtr;
+#else
+using NativeHandle = ObjCRuntime.NativeHandle;
 #endif
 
 namespace Windows.UI.Xaml
@@ -33,7 +31,7 @@ namespace Windows.UI.Xaml
 		private readonly NSString _themeChangedNotification = new NSString("AppleInterfaceThemeChangedNotification");
 		private readonly Selector _modeSelector = new Selector("themeChanged:");
 
-		private NSUrl[] _launchUrls = null;
+		private NSUrl[] _launchUrls;
 
 		static partial void InitializePartialStatic()
 		{
@@ -49,7 +47,7 @@ namespace Windows.UI.Xaml
 			SubscribeBackgroundNotifications();
 		}
 
-		public Application(IntPtr handle) : base(handle)
+		public Application(NativeHandle handle) : base(handle)
 		{
 
 		}
@@ -87,22 +85,17 @@ namespace Windows.UI.Xaml
 			}
 			if (!handled)
 			{
-				OnLaunched(new LaunchActivatedEventArgs());
+				var argumentsString = GetCommandLineArgsWithoutExecutable();
+
+				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, argumentsString));
 			}
 		}
 
-		partial void OnSuspendingPartial()
-		{
-			var operation = new SuspendingOperation(DateTime.Now.AddSeconds(30), () =>
+		private SuspendingOperation CreateSuspendingOperation() =>
+			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(0), () =>
 			{
 				Suspended = true;
-				NSApplication.SharedApplication.KeyWindow.PerformClose(null);
 			});
-
-			Suspending?.Invoke(this, new SuspendingEventArgs(operation));
-
-			operation.EventRaiseCompleted();
-		}
 
 		/// <summary>
 		/// This method enables UI Tests to get the output path
@@ -153,7 +146,13 @@ namespace Windows.UI.Xaml
 
 		partial void ObserveSystemThemeChanges()
 		{
-			NSDistributedNotificationCenter.GetDefaultCenter().AddObserver(
+			NSDistributedNotificationCenter
+#if NET6_0_OR_GREATER
+				.DefaultCenter
+#else
+				.GetDefaultCenter()
+#endif
+				.AddObserver(
 				this,
 				_modeSelector,
 				_themeChangedNotification,
@@ -173,21 +172,20 @@ namespace Windows.UI.Xaml
 			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationHiddenNotification, OnEnteredBackground);
 			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationShownNotification, OnLeavingBackground);
 			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationActivatedNotification, OnActivated);
-			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationDeactivatedNotification, OnDeactivated);
+			NSNotificationCenter.DefaultCenter.AddObserver(NSApplication.ApplicationDeactivatedNotification, OnDeactivated);			
 		}
 
 		private void OnEnteredBackground(NSNotification notification)
 		{
 			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
-			EnteredBackground?.Invoke(this, new EnteredBackgroundEventArgs());
 
-			OnSuspending();
+			RaiseEnteredBackground(null);
 		}
 
 		private void OnLeavingBackground(NSNotification notification)
 		{
-			LeavingBackground?.Invoke(this, new LeavingBackgroundEventArgs());
-			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
+			RaiseResuming();
+			RaiseLeavingBackground(() => Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true));
 		}
 
 		private void OnActivated(NSNotification notification)

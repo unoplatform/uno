@@ -61,7 +61,7 @@ namespace Uno.ReferenceImplComparer
 						// and that the hierarchy will be adjusted for wasm to match skia.
 						&& referenceType.BaseType?.FullName != "Windows.UI.Xaml.Shapes.ArbitraryShapeBase")
 					{
-						Console.WriteLine($"{referenceType.FullName} base type is different {referenceType.BaseType?.FullName} in reference, {runtimeType.BaseType?.FullName} in {identifier}");
+						Console.Error.WriteLine($"Error: {referenceType.FullName} base type is different {referenceType.BaseType?.FullName} in reference, {runtimeType.BaseType?.FullName} in {identifier}");
 						hasError = true;
 					}
 
@@ -72,8 +72,8 @@ namespace Uno.ReferenceImplComparer
 				}
 				else
 				{
+					Console.Error.WriteLine($"Error: The type {referenceType} is missing from ");
 					hasError = true;
-					Console.WriteLine($"The type {referenceType} is missing from ");
 				}
 			}
 
@@ -89,7 +89,7 @@ namespace Uno.ReferenceImplComparer
 			{
 				if (!runtimeMembersLookup.ContainsKey(referenceMember.ToString()))
 				{
-					Console.WriteLine($"The member {referenceMember} cannot be found in {identifier}");
+					Console.Error.WriteLine($"Error: The member {referenceMember} cannot be found in {identifier}");
 					hasError = true;
 				}
 			}

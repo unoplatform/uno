@@ -4,14 +4,15 @@ root = true
 tab_width = 4
 trim_trailing_whitespace = true
 insert_final_newline = true
+end_of_line = crlf
 
-[{*.xaml, *.xml, *.targets, *.props}]
+[*.{xaml,xml,targets,props}]
 indent_style = tab
 
-[{*.cs, *.tt, *.java}]
+[*.{cs,tt,java}]
 indent_style = tab
 
-[{*.ts, *.json}]
+[*.{ts,json}]
 indent_style = tab
 
 [*.csproj]
@@ -27,11 +28,18 @@ indent_style = space
 tab_width = 2
 indent_size = 2
 
-[{*.yml, *.yaml}]
+[*.{yml,yaml}]
 indent_style = space
 
 [*.md]
 indent_style = space
+
+# Workaround https://github.com/unoplatform/uno/issues/6883
+[**/Generated/**/*.cs]
+generated_code = true
+
+[CyclomaticComplexityWalker.cs]
+generated_code = true
 
 [*.cs]
 # http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers#csharp_indent_block_contents
@@ -226,3 +234,73 @@ dotnet_style_qualification_for_property = false:suggestion
 # RS0030: Do not used banned APIs
 # https://github.com/dotnet/roslyn-analyzers/blob/main/src/Microsoft.CodeAnalysis.BannedApiAnalyzers/BannedApiAnalyzers.Help.md
 dotnet_diagnostic.RS0030.severity = error
+
+dotnet_analyzer_diagnostic.category-Performance.severity = none #error - Uncomment when all violations are fixed.
+
+# CA1805: Do not initialize unnecessarily
+dotnet_diagnostic.CA1805.severity = error
+
+# CA1819: Properties should not return arrays
+dotnet_diagnostic.CA1819.severity = none
+
+# CA1821: Remove empty Finalizers
+dotnet_diagnostic.CA1821.severity = error
+
+# CA1826: Do not use Enumerable methods on indexable collections
+dotnet_diagnostic.CA1826.severity = error
+
+# CA1827: Do not use Count() or LongCount() when Any() can be used
+dotnet_diagnostic.CA1827.severity = error
+
+# CA1828: Do not use CountAsync() or LongCountAsync() when AnyAsync() can be used
+dotnet_diagnostic.CA1828.severity = error
+
+# CA1829: Use Length/Count property instead of Count() when available
+dotnet_diagnostic.CA1829.severity = error
+
+# CA1802: Use literals where appropriate
+dotnet_diagnostic.CA1802.severity = none
+
+# CA1806: Do not ignore method results
+dotnet_diagnostic.CA1806.severity = none
+
+# CA1810: Initialize reference type static fields inline
+dotnet_diagnostic.CA1810.severity = none
+
+# CA1812: Avoid uninstantiated internal classes
+dotnet_diagnostic.CA1812.severity = none
+
+# CA1815: Override equals and operator equals on value types
+dotnet_diagnostic.CA1815.severity = none
+
+# CA1813: Avoid unsealed attributes
+dotnet_diagnostic.CA1813.severity = none
+
+# CA1820: Test for empty strings using string length
+dotnet_diagnostic.CA1820.severity = none
+
+# CA1822: Mark members as static
+dotnet_diagnostic.CA1822.severity = none
+
+# CA1823: Avoid unused private fields
+dotnet_diagnostic.CA1823.severity = none
+
+# CA1825: Avoid zero-length array allocations
+dotnet_diagnostic.CA1825.severity = none
+
+# CA1835: Prefer the 'Memory'-based overloads for 'ReadAsync' and 'WriteAsync'
+dotnet_diagnostic.CA1835.severity = none
+
+# CA1844: Provide memory-based overrides of async methods when subclassing 'Stream'
+dotnet_diagnostic.CA1844.severity = none
+
+# CA1846: Prefer 'AsSpan' over 'Substring'
+dotnet_diagnostic.CA1846.severity = none
+
+# CA1847: Use char literal for a single character lookup
+dotnet_diagnostic.CA1847.severity = none
+
+# CA1849: Call async methods when in an async method
+dotnet_diagnostic.CA1849.severity = none
+
+dotnet_code_quality.CA1822.api_surface = private, internal

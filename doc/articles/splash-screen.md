@@ -69,7 +69,7 @@ This article covers how to add a splash screen to your application.
     > [!NOTE]
     > Regardless if you provide a single image or multiple images, you would always refer to this image as `SplashScreen.png`.
 
-1. Add these images under the `Assets\` folder of the `.shared` project, and set their build action as `Content`.
+1. Add these images under the `Assets\` folder of the `.Shared` project, right-click on each image, go to `Properties` and set their build action as `Content`.
 
 
 ## Step 2 - UWP
@@ -110,7 +110,7 @@ This article covers how to add a splash screen to your application.
         </item>
     </layer-list>
     ```
- 1. Make sure `splash.xml` is added as an AndroidResource in the Droid project file.
+ 1. Make sure `splash.xml` is added as an `AndroidResource` in the Droid project file : `[Project-name].Droid.csproj`.
     This is not always done automatically, especially if `splash.xml` is created and added outside the IDE.
     ```xml
     <ItemGroup>
@@ -137,7 +137,7 @@ This article covers how to add a splash screen to your application.
     - Right-click the `.iOS` project > Add > New Item ...
     - Visual C# > Apple > Empty Storyboard
 
-1. In the `Toolbox` window, drag and drop a `View Controller` and then an `ImageView` inside the `View Controller`. 
+1. In the `Toolbox` window, drag and drop a `View Controller` and then an `ImageView` inside the `View Controller`. Enable the `Is initial View Controller`-flag on the `View Controller`.
 
     ![viewcontroller-imageview](Assets/viewcontroller-imageview.png)
 
@@ -170,7 +170,7 @@ This article covers how to add a splash screen to your application.
 
 1. In the `.WASM` project, navigate to `WasmScripts/AppManifest.js` 
 
-1. Add your splash screen image
+2. Add your splash screen image
 
     ```js
     var UnoAppManifest = {
@@ -182,6 +182,10 @@ This article covers how to add a splash screen to your application.
 
     > [!NOTE]
     > Currently, you need to set an explicit scale for the splash screen image.
+
+The `splashScreenColor` property allows you to set the background color for the splash screen. If you want to make the splash screen theme-aware, you can omit this property or set it to `"transparent"`.
+
+If you use the theme-aware splash screen background, you can also set the `darkThemeBackgroundColor` and `lightThemeBackgroundColor` properties to adjust the background color for each theme. Default values are `"#202020"` for dark theme and `"#F3F3F3"` for light theme.
 
 ## Table of scales
 

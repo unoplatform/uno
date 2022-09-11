@@ -16,7 +16,7 @@ using CoreGraphics;
 using Foundation;
 using CoreAnimation;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Composition;
 using Uno.UI;
 using Uno.UI.Extensions;
@@ -127,7 +127,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			InitializeCoreAnimation();
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat("Starting GPU Float value animator on property {0}.", _bindingPath.LastOrDefault().PropertyName);
 			}
@@ -202,7 +202,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			ReleaseCoreAnimation();
 		}
 
-		public bool IsRunning => _valueAnimator.IsRunning;
+		public bool IsRunning => _valueAnimator?.IsRunning ?? false;
 
 		public long StartDelay
 		{
@@ -401,15 +401,25 @@ namespace Windows.UI.Xaml.Media.Animation
 		private NSValue ToCASkewTransform(float angleX, float angleY)
 		{
 			var matrix = CGAffineTransform.MakeIdentity();
-			matrix.yx = (float)Math.Tan(MathEx.ToRadians(angleY));
-			matrix.xy = (float)Math.Tan(MathEx.ToRadians(angleX));
+			var b = (float)Math.Tan(MathEx.ToRadians(angleY));
+			var c = (float)Math.Tan(MathEx.ToRadians(angleX));
+
+#if NET6_0_OR_GREATER
+			matrix.B = b;
+			matrix.C = c;
+#else
+#pragma warning disable CS0618
+			matrix.yx = b;
+			matrix.xy = c;
+#pragma warning restore CS0618
+#endif
 
 			return NSValue.FromCATransform3D(CATransform3D.MakeFromAffine(matrix));
 		}
 
 		private void FinalizeAnimation(UnoCoreAnimation.CompletedInfo completedInfo)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat("Finalizing animation for GPU Float value animator on property {0}.", _bindingPath.LastOrDefault().PropertyName);
 			}

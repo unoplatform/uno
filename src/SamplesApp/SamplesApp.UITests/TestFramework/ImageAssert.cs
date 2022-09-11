@@ -17,8 +17,20 @@ using static System.Math;
 
 namespace SamplesApp.UITests.TestFramework
 {
-	public static class ImageAssert
+	public static partial class ImageAssert
 	{
+		private static bool IgnoreImageAsserts { get; } = false;
+
+		static ImageAssert()
+		{
+			// Provides the ability to mark as ignored tests using ImageAssert.
+			// See https://github.com/unoplatform/uno/issues/9550
+			if (bool.TryParse(Environment.GetEnvironmentVariable("UNO_UITEST_IGNORE_IMAGEASSERTS"), out var ignoreImageAsserts))
+			{
+				IgnoreImageAsserts = ignoreImageAsserts;
+			}
+		}
+
 		public static Rectangle FirstQuadrant { get; } = new Rectangle(0, 0, int.MaxValue, int.MaxValue);
 
 		#region Are[Almost]Equal
@@ -81,9 +93,12 @@ namespace SamplesApp.UITests.TestFramework
 			PixelTolerance tolerance,
 			[CallerLineNumber] int line = 0)
 		{
+			TryIgnoreImageAssert();
+
 			var actualBitmap = actual.GetBitmap();
 			AreEqualImpl(expected, expectedRect, actual, actualBitmap, actualRect, expectedToActualScale, tolerance, line);
 		}
+
 
 		private static void AreEqualImpl(
 			ScreenshotInfo expected,
@@ -95,6 +110,8 @@ namespace SamplesApp.UITests.TestFramework
 			PixelTolerance tolerance,
 			[CallerLineNumber] int line = 0)
 		{
+			TryIgnoreImageAssert();
+
 			using var assertionScope = new AssertionScope($"{expected.StepName}<=={actual}");
 			assertionScope.AddReportable("expectedRect", expectedRect.ToString());
 			assertionScope.AddReportable("actualRect", actualRect.ToString());
@@ -122,6 +139,8 @@ namespace SamplesApp.UITests.TestFramework
 			PixelTolerance tolerance,
 			[CallerLineNumber] int line = 0)
 		{
+			TryIgnoreImageAssert();
+
 			var expectedBitmap = expected.GetBitmap();
 
 			if (expectedRect != FirstQuadrant && actualRect != FirstQuadrant)
@@ -202,6 +221,8 @@ namespace SamplesApp.UITests.TestFramework
 					PixelTolerance tolerance,
 					int line)
 		{
+			TryIgnoreImageAssert();
+
 			var result = EqualityCheck(expected, expectedRect, actual, actualBitmap, actualRect, expectedToActualScale, tolerance, line);
 
 			if (!result.areEqual)
@@ -216,15 +237,43 @@ namespace SamplesApp.UITests.TestFramework
 		#endregion
 
 		#region HasColorAt
-		public static void HasColorAt(ScreenshotInfo screenshot, float x, float y, string expectedColorCode, byte tolerance = 0, [CallerLineNumber] int line = 0)
-			=> HasColorAtImpl(screenshot, (int)x, (int)y, ColorCodeParser.Parse(expectedColorCode), tolerance, line);
+		public static void HasColorAt(ScreenshotInfo screenshot, float x, float y, string expectedColorCode, byte tolerance = 0, double scale = 1.0, [CallerLineNumber] int line = 0)
+			=> HasColorAtImpl(screenshot, (int)x, (int)y, ColorCodeParser.Parse(expectedColorCode), tolerance, scale, line);
 
-		public static void HasColorAt(ScreenshotInfo screenshot, float x, float y, Color expectedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
-			=> HasColorAtImpl(screenshot, (int)x, (int)y, expectedColor, tolerance, line);
+		public static void HasColorAt(ScreenshotInfo screenshot, float x, float y, Color expectedColor, byte tolerance = 0, double scale = 1.0, [CallerLineNumber] int line = 0)
+			=> HasColorAtImpl(screenshot, (int)x, (int)y, expectedColor, tolerance, scale, line);
 
-		private static void HasColorAtImpl(ScreenshotInfo screenshot, int x, int y, Color expectedColor, byte tolerance, int line)
+		/// <summary>
+		/// Asserts that a given screenshot has a color anywhere at a given rectangle.
+		/// </summary>
+		public static void HasColorInRectangle(ScreenshotInfo screenshot, Rectangle rect, Color expectedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
 		{
+			TryIgnoreImageAssert();
+
 			var bitmap = screenshot.GetBitmap();
+			for (var x = rect.Left; x < rect.Right; x++)
+			{
+				for (var y = rect.Top; y < rect.Bottom; y++)
+				{
+					var pixel = bitmap.GetPixel(x, y);
+					if (AreSameColor(expectedColor, pixel, tolerance, out _))
+					{
+						return;
+					}
+				}
+			}
+
+			Assert.Fail($"Expected '{ToArgbCode(expectedColor)}' in rectangle '{rect}'.");
+		}
+
+		private static void HasColorAtImpl(ScreenshotInfo screenshot, int x, int y, Color expectedColor, byte tolerance, double scale, int line)
+		{
+			TryIgnoreImageAssert();
+
+			var bitmap = screenshot.GetBitmap();
+
+			x = (int)(x*scale);
+			y = (int)(y *scale);
 
 			if (bitmap.Width <= x || bitmap.Height <= y)
 			{
@@ -266,6 +315,8 @@ namespace SamplesApp.UITests.TestFramework
 
 		private static void DoesNotHaveColorAtImpl(ScreenshotInfo screenshot, int x, int y, Color excludedColor, byte tolerance, int line)
 		{
+			TryIgnoreImageAssert();
+
 			var bitmap = screenshot.GetBitmap();
 			if (bitmap.Width <= x || bitmap.Height <= y)
 			{
@@ -300,6 +351,8 @@ namespace SamplesApp.UITests.TestFramework
 		#region HasPixels
 		public static void HasPixels(ScreenshotInfo actual, params ExpectedPixels[] expectations)
 		{
+			TryIgnoreImageAssert();
+
 			var bitmap = actual.GetBitmap();
 			using var assertionScope = new AssertionScope("ImageAssert");
 
@@ -321,156 +374,16 @@ namespace SamplesApp.UITests.TestFramework
 		}
 		#endregion
 
-		#region Validation core (ExpectedPixels)
-		private static bool Validate(ExpectedPixels expectation, Bitmap actualBitmap, double expectedToActualScale, StringBuilder report)
+
+		/// <summary>
+		/// See https://github.com/unoplatform/uno/issues/9550
+		/// </summary>
+		internal static void TryIgnoreImageAssert()
 		{
-			report.AppendLine($"{expectation.Name}:");
-
-			bool isSuccess;
-			switch (expectation.Tolerance.OffsetKind)
+			if (IgnoreImageAsserts)
 			{
-				case LocationToleranceKind.PerRange:
-					isSuccess = GetLocationOffsets(expectation)
-						.Any(offset => GetPixelCoordinates(expectation)
-							.All(pixel => ValidatePixel(actualBitmap, expectation, expectedToActualScale, pixel, offset, report)));
-					break;
-
-				case LocationToleranceKind.PerPixel:
-					isSuccess = GetPixelCoordinates(expectation)
-						.All(pixel => GetLocationOffsets(expectation)
-							.Any(offset => ValidatePixel(actualBitmap, expectation, expectedToActualScale, pixel, offset, report)));
-					break;
-
-				default:
-					throw new ArgumentOutOfRangeException(nameof(expectation.Tolerance.OffsetKind));
-			}
-
-			if (isSuccess) // otherwise the report has already been full-filled
-			{
-				report?.AppendLine("\tOK");
-			}
-			return isSuccess;
-		}
-
-		private static IEnumerable<(int x, int y)> GetLocationOffsets(ExpectedPixels expectation)
-		{
-			for (var offsetX = 0; offsetX <= expectation.Tolerance.Offset.x; offsetX++)
-			for (var offsetY = 0; offsetY <= expectation.Tolerance.Offset.y; offsetY++)
-			{
-				yield return (offsetX, offsetY);
-				if (offsetX > 0)
-				{
-					yield return (-offsetX, offsetY);
-				}
-
-				if (offsetY > 0)
-				{
-					yield return (offsetX, -offsetY);
-				}
-
-				if (offsetX > 0 && offsetY > 0)
-				{
-					yield return (-offsetX, -offsetY);
-				}
+				Assert.Ignore("UNO_UITEST_IGNORE_IMAGEASSERTS was set, ignoring test which uses ImageAssert");
 			}
 		}
-
-		private static IEnumerable<Point> GetPixelCoordinates(ExpectedPixels expectation)
-		{
-			var stepX = (int)Math.Max(1, expectation.Tolerance.DiscreteValidation.x);
-			var stepY = (int)Math.Max(1, expectation.Tolerance.DiscreteValidation.y);
-
-			for (var lin = 0; lin < expectation.Values.GetLength(0); lin+= stepY)
-			for (var col = 0; col < expectation.Values.GetLength(1); col+= stepX)
-			{
-				yield return new Point(col, lin);
-			}
-		}
-
-		private static bool ValidatePixel(
-			Bitmap actualBitmap,
-			ExpectedPixels expectation,
-			double expectedToActualScale,
-			Point pixel,
-			(int x, int y) offset,
-			StringBuilder report)
-		{
-			var expectedColor = expectation.Values[pixel.Y, pixel.X];
-			if (expectedColor.IsEmpty)
-			{
-				return true;
-			}
-
-			var actualX = (int) ((expectation.Location.X + pixel.X) * expectedToActualScale + offset.x);
-			var actualY = (int) ((expectation.Location.Y + pixel.Y) * expectedToActualScale + offset.y);
-			if (actualX < 0 || actualY < 0
-				|| actualX >= actualBitmap.Width || actualY >= actualBitmap.Height)
-			{
-				return false;
-			}
-
-			var actualColor = actualBitmap.GetPixel(actualX, actualY);
-			if (AreSameColor(expectedColor, actualColor, expectation.Tolerance.Color, out var difference, expectation.Tolerance.ColorKind))
-			{
-				return true;
-			}
-
-			if (report != null && offset == default) // Generate report only for offset 0,0
-			{
-				// If possible we dump the location in the source coordinates space.
-				var expectedLocation = expectation.SourceLocation.HasValue
-					? $"[{expectation.SourceLocation.Value.X + pixel.X},{expectation.SourceLocation.Value.Y + pixel.Y}] "
-					: "";
-
-				report.AppendLine($"{pixel.X},{pixel.Y}: expected: {expectedLocation}{ToArgbCode(expectedColor)} | actual: [{actualX},{actualY}] {ToArgbCode(actualColor)}");
-				report.AppendLine($"\ta tolerance of {difference} [{expectation.Tolerance.ColorKind}] would be required for this test to pass.");
-				report.AppendLine($"\tCurrent: {expectation.Tolerance}");
-
-			}
-
-			return false;
-		}
-		#endregion
-
-		private static Rectangle Normalize(Rectangle rect, Size size)
-			=> new Rectangle(
-				rect.X < 0 ? size.Width + rect.X : rect.X,
-				rect.Y < 0 ? size.Height + rect.Y : rect.Y,
-				Math.Min(rect.Width, size.Width),
-				Math.Min(rect.Height, size.Height));
-
-		private static bool AreSameColor(Color a, Color b, byte tolerance, out int currentDifference, ColorToleranceKind kind = ColorToleranceKind.Exclusive)
-		{
-			switch (kind)
-			{
-				case ColorToleranceKind.Cumulative:
-				{
-					currentDifference =
-						Abs(a.A - b.A) +
-						Abs(a.R - b.R) +
-						Abs(a.G - b.G) +
-						Abs(a.B - b.B);
-					return currentDifference < tolerance;
-				}
-
-				case ColorToleranceKind.Exclusive:
-				{
-					// comparing ARGB values, because 'named colors' are not considered equal to their unnamed equivalents(!)
-					var va = Abs(a.A - b.A);
-					var vr = Abs(a.R - b.R);
-					var vg = Abs(a.G - b.G);
-					var vb = Abs(a.B - b.B);
-
-					currentDifference = Max(Max(va, vr), Max(vg, vb));
-
-					return currentDifference <= tolerance;
-				}
-
-				default: throw new ArgumentOutOfRangeException(nameof(kind));
-			}
-		}
-
-		private static string ToArgbCode(Color color)
-			=> $"{color.A:X2}{color.R:X2}{color.G:X2}{color.B:X2}";
 	}
 }

@@ -6,10 +6,10 @@ namespace Uno.Helpers
 {
 	internal static class VisualTreeHelperProxy
 	{
-		private static Action? _closeAllPopups;
+		private static Action? _closeAllFlyouts;
 
-		public static void CloseAllPopups() => _closeAllPopups?.Invoke();
+		public static void CloseAllFlyouts() => _closeAllFlyouts?.Invoke();
 
-		public static void SetCloseAllPopupsAction(Action closeAllPopups) => _closeAllPopups = closeAllPopups;
+		public static void SetCloseAllFlyoutsAction(Action closeAllFlyouts) => _closeAllFlyouts = closeAllFlyouts;
 	}
 }

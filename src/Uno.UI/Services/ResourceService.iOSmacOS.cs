@@ -32,9 +32,13 @@ namespace Uno.UI.Services
 			// If key is nil and value is non-nil, returns value.
 			// If key is not found and value is nil or an empty string, returns key.
 			// If key is not found and value is non-nil and not empty, return value.
+#if NET6_0_OR_GREATER
+			var localizedString = bundle.GetLocalizedString(id, KeyNotFoundValue, null);
+#else
 #pragma warning disable CS0618 // Type or member is obsolete
 			var localizedString = bundle.LocalizedString(id, KeyNotFoundValue, null);
 #pragma warning restore CS0618 // Type or member is obsolete
+#endif
 
 			if (localizedString == KeyNotFoundValue)
 			{

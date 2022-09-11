@@ -6,17 +6,17 @@ using System.Linq;
 using Windows.UI.Xaml.Markup;
 using Uno.Extensions;
 using Windows.UI.Core;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Diagnostics;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = "KeyFrames")]
 	public partial class DoubleAnimationUsingKeyFrames : Timeline, ITimeline
-    {
+	{
 		private readonly Stopwatch _activeDuration = new Stopwatch();
 		private int _replayCount = 1;
-		private double? _startingValue = null;
+		private double? _startingValue;
 		private double _finalValue;
 
 		private List<IValueAnimator> _animators;
@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			return base.GetCalculatedDuration();
 		}
 
-		bool _wasBeginScheduled = false;
+		bool _wasBeginScheduled;
 		void ITimeline.Begin()
 		{
 			if (!_wasBeginScheduled)
@@ -77,7 +77,6 @@ namespace Windows.UI.Xaml.Media.Animation
 						return; // nothing to do
 					}
 					_wasBeginScheduled = false;
-                    _subscriptions.Clear(); //Dispose all and start a new
 
 					_activeDuration.Restart();
 					_replayCount = 1;
@@ -157,20 +156,20 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		void ITimeline.SkipToFill()
 		{
-			if (_currentAnimator != null && _currentAnimator.IsRunning)
+			if (_currentAnimator is { IsRunning: true })
 			{
 				_currentAnimator.Cancel();//Stop the animator if it is running
 				_startingValue = null;
 			}
 
-			SetValue(_finalValue);//Set property to its final value
+			SetValue(KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).LastOrDefault()?.Value);//Set property to its final value
 
 			OnEnd();
 		}
 
 		void ITimeline.Deactivate()
 		{
-			if (_currentAnimator != null && _currentAnimator.IsRunning)
+			if (_currentAnimator is { IsRunning: true })
 			{
 				_currentAnimator.Cancel();//Stop the animator if it is running
 				_startingValue = null;
@@ -191,7 +190,8 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// </summary>
 		private void Play()
 		{
-			InitializeAnimators();//Create the animator
+			_subscriptions.Clear(); // Dispose all current animators
+			InitializeAnimators(); // Create the animator
 
 			if (!EnableDependentAnimation && this.GetIsDependantAnimation())
 			{ // Don't start the animator its a dependent animation
@@ -267,7 +267,7 @@ namespace Windows.UI.Xaml.Media.Animation
 					OnAnimatorEnd(i);
 				};
 				++index;
-            }
+			}
 		}
 
 		private void OnAnimatorEnd(int i)
@@ -277,7 +277,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			// if it's the last animation part, in the end of the DoubleAnimationUsingKeyFrames
 			if (nextAnimatorIndex == KeyFrames.Count)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("DoubleAnimationUsingKeyFrames has ended.");
 				}
@@ -288,7 +288,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			else
 			{
 				_currentAnimator = _animators[nextAnimatorIndex];
-                _currentAnimator.Start();
+				_currentAnimator.Start();
 			}
 		}
 
@@ -315,6 +315,8 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// </summary>
 		private void OnEnd()
 		{
+			_subscriptions.Clear(); // Dispose all current animators
+
 			// If the animation was GPU based, remove the animated value
 			if (NeedsRepeat(_activeDuration, _replayCount))
 			{

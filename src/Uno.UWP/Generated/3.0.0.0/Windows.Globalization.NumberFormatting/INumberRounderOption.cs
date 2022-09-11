@@ -2,18 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Globalization.NumberFormatting
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface INumberRounderOption 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Globalization.NumberFormatting.INumberRounder NumberRounder
-		{
-			get;
-			set;
-		}
-		#endif
+		// Skipping already declared property NumberRounder
 		// Forced skipping of method Windows.Globalization.NumberFormatting.INumberRounderOption.NumberRounder.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.INumberRounderOption.NumberRounder.set
 	}

@@ -6,7 +6,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:xamarin="http://uno.ui/xamarin"
-    xmlns:local="using:Windows.UI.Xaml.Controls"
+    xmlns:navViewLocal="using:Windows.UI.Xaml.Controls"
 	mc:Ignorable="d">
 
 	<!-- Superseeded by the Microsoft.UI.XAML.NavigationView styles -->

@@ -5,7 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using SamplesApp.UITests._Utils;
 using SamplesApp.UITests.TestFramework;
+using SamplesApp.UITests.Windows_UI_Xaml_Controls.FrameworkElementTests;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
@@ -30,6 +32,29 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 			using var after = TakeScreenshot("After property change");
 
 			ImageAssert.AreEqual(before, after);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void Check_CornerRadius_Border_Basic()
+		{
+			const string white = "#FFFFFF";
+
+			// Verify that border is drawn with CornerRadius
+			Run("Uno.UI.Samples.UITests.BorderTestsControl.Border_CornerRadius", skipInitialScreenshot: true);
+
+			var sample = _app.GetPhysicalRect("Sample1");
+			var eighth = sample.Width / 8;
+
+			using var result = TakeScreenshot("sample");
+
+			ImageAssert.HasPixels(
+				result,
+				ExpectedPixels.At(sample.X + eighth, sample.Y + eighth).Named("top left corner").Pixel(white),
+				ExpectedPixels.At(sample.Right - eighth, sample.Y + eighth).Named("top right corner").Pixel(white),
+				ExpectedPixels.At(sample.Right - eighth, sample.Bottom - eighth).Named("bottom right corner").Pixel(white),
+				ExpectedPixels.At(sample.X + eighth, sample.Bottom - eighth).Named("bottom left corner").Pixel(white)
+			);
 		}
 
 		[Test]
@@ -182,6 +207,61 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 
 			// The color near the start is reddish.
 			ImageAssert.HasColorAt(screenshot, (float)(textBoxRect.CenterX - 0.45 * textBoxRect.Width), textBoxRect.Y, Color.Red, tolerance: 20);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void Border_CornerRadius_GradientBrush()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.BorderTests.Border_CornerRadius_Gradient");
+
+			var textBoxRect = _app.GetPhysicalRect("RedBorder");
+
+			using var screenshot = TakeScreenshot("Screenshot");
+
+			ImageAssert.HasColorAt(screenshot, textBoxRect.CenterX, textBoxRect.CenterY, Color.FromArgb(0, 255, 0));
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android)]
+		public void Border_AntiAlias()
+		{
+			const string firstRectBlueish = "#ffd8d8ff";
+			const string secondRectBlueish = "#ff9e9eff";
+
+			Run("UITests.Windows_UI_Xaml_Controls.BorderTests.BorderAntiAlias");
+
+			var firstBorderRect = _app.GetPhysicalRect("firstBorder");
+			var secondBorderRect = _app.GetPhysicalRect("secondBorder");
+			
+			using var screenshot = TakeScreenshot(nameof(Border_AntiAlias));
+
+			ImageAssert.HasColorInRectangle(
+					screenshot,
+					firstBorderRect.ToRectangle(),
+					ColorCodeParser.Parse(firstRectBlueish)
+				);
+
+			ImageAssert.HasPixels(
+					screenshot,
+					ExpectedPixels
+						.At($"top-left", secondBorderRect.X, secondBorderRect.Y)
+						.WithPixelTolerance(1, 1)
+						.Pixel(secondRectBlueish),
+					ExpectedPixels
+						.At($"top-right", secondBorderRect.Right, secondBorderRect.Y)
+						.WithPixelTolerance(1, 1)
+						.Pixel(secondRectBlueish),
+					ExpectedPixels
+						.At($"bottom-right", secondBorderRect.Right, secondBorderRect.Bottom)
+						.WithPixelTolerance(1, 1)
+						.Pixel(secondRectBlueish),
+					ExpectedPixels
+						.At($"bottom-left", secondBorderRect.X, secondBorderRect.Bottom)
+						.WithPixelTolerance(1, 1)
+						.Pixel(secondRectBlueish)
+				);
 		}
 
 		private void SetBorderProperty(string borderName, string propertyName, string value)

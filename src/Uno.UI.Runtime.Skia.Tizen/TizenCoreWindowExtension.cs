@@ -12,8 +12,7 @@ using Windows.UI.Input;
 using Windows.UI.Xaml;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
 using TizenWindow = ElmSharp.Window;
 using Windows.System;
 using System.Threading;
@@ -26,7 +25,7 @@ namespace Uno.UI.Runtime.Skia
 {
 	internal partial class TizenCoreWindowExtension : ICoreWindowExtension
 	{
-		private static int _currentFrameId = 0;
+		private static int _currentFrameId;
 
 		private readonly Windows.UI.Core.CoreWindow _owner;
 		private readonly ICoreWindowEvents _ownerEvents;
@@ -34,6 +33,8 @@ namespace Uno.UI.Runtime.Skia
 		private readonly EcoreEvent _mouseIn;
 		private readonly GestureLayer _gestureLayer;
 		private readonly UnoCanvas _canvas;
+
+		private PointerEventArgs _previous;
 
 		public CoreCursor PointerCursor
 		{
@@ -84,12 +85,12 @@ namespace Uno.UI.Runtime.Skia
 		{
 			try
 			{
-				var properties = BuildProperties(true, false);
+				var properties = BuildProperties(true, false).SetUpdateKindFromPrevious(_previous?.CurrentPoint.Properties);
 				var modifiers = VirtualKeyModifiers.None;
 				var point = GetPoint(data.X2, data.Y2);
 
 				_ownerEvents.RaisePointerMoved(
-					new PointerEventArgs(
+					_previous = new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
 							frameId: GetNextFrameId(),
 							timestamp: Math.Max(data.VerticalSwipeTimestamp, data.HorizontalSwipeTimestamp),
@@ -116,12 +117,12 @@ namespace Uno.UI.Runtime.Skia
 		{
 			try
 			{
-				var properties = BuildProperties(true, false);
+				var properties = BuildProperties(true, false).SetUpdateKindFromPrevious(_previous?.CurrentPoint.Properties);
 				var modifiers = VirtualKeyModifiers.None;
 				var point = GetPoint(data.X, data.Y);
 
 				_ownerEvents.RaisePointerPressed(
-					new PointerEventArgs(
+					_previous = new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
 							frameId: GetNextFrameId(),
 							timestamp: (uint)data.Timestamp,
@@ -146,12 +147,12 @@ namespace Uno.UI.Runtime.Skia
 		{
 			try
 			{
-				var properties = BuildProperties(false, false);
+				var properties = BuildProperties(false, false).SetUpdateKindFromPrevious(_previous?.CurrentPoint.Properties);
 				var modifiers = VirtualKeyModifiers.None;
 				var point = GetPoint(data.X, data.Y);
 
 				_ownerEvents.RaisePointerReleased(
-					new PointerEventArgs(
+					_previous = new PointerEventArgs(
 						new Windows.UI.Input.PointerPoint(
 							frameId: GetNextFrameId(),
 							timestamp: (uint)data.Timestamp,

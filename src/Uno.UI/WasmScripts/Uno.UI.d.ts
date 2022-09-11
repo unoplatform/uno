@@ -100,6 +100,7 @@ declare namespace MonoSupport {
         private static registrations;
         private static methodMap;
         private static _isUnoRegistered;
+        private static dispatcherCallback;
         /**
          * Registers a instance for a specified identier
          * @param identifier the scope name
@@ -126,6 +127,7 @@ declare namespace MonoSupport {
          */
         private static cacheMethod;
         private static getMethodMapId;
+        static invokeOnMainThread(): void;
     }
 }
 declare const config: any;
@@ -173,7 +175,7 @@ declare namespace Uno.UI {
             */
         static initNative(pParams: number): boolean;
         private containerElement;
-        private rootContent;
+        private rootElement;
         private cursorStyleElement;
         private allActiveElementsById;
         private uiElementRegistrations;
@@ -339,6 +341,12 @@ declare namespace Uno.UI {
         setElementColorNative(pParam: number): boolean;
         private setElementColorInternal;
         /**
+        * Sets the fill property of the specified element
+        */
+        setElementFill(elementId: number, color: number): string;
+        setElementFillNative(pParam: number): boolean;
+        private setElementFillInternal;
+        /**
         * Sets the background color property of the specified element
         */
         setElementBackgroundColor(pParam: number): boolean;
@@ -391,17 +399,6 @@ declare namespace Uno.UI {
             * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
             */
         registerEventOnViewNative(pParams: number): boolean;
-        registerPointerEventsOnView(pParams: number): void;
-        static onPointerEventReceived(evt: PointerEvent): void;
-        static dispatchPointerEvent(element: HTMLElement | SVGElement, evt: PointerEvent): void;
-        static onPointerEnterReceived(evt: PointerEvent): void;
-        static onPointerLeaveReceived(evt: PointerEvent): void;
-        private processPendingLeaveEvent;
-        private _isPendingLeaveProcessingEnabled;
-        /**
-         * Ensure that any pending leave event are going to be processed (cf @see processPendingLeaveEvent )
-         */
-        private ensurePendingLeaveEventProcessing;
         /**
             * Add an event handler to a html element.
             *
@@ -409,13 +406,6 @@ declare namespace Uno.UI {
             * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
             */
         private registerEventOnViewInternal;
-        /**
-         * pointer event extractor to be used with registerEventOnView
-         * @param evt
-         */
-        private static pointerEventExtractor;
-        private static _wheelLineSize;
-        private static get wheelLineSize();
         /**
          * keyboard event extractor to be used with registerEventOnView
          * @param evt
@@ -439,9 +429,9 @@ declare namespace Uno.UI {
          */
         private getEventExtractor;
         /**
-            * Set or replace the root content element.
+            * Set or replace the root element.
             */
-        setRootContent(elementId?: number): string;
+        setRootElement(elementId?: number): string;
         /**
             * Set a view as a child of another one.
             *
@@ -590,6 +580,10 @@ declare namespace Uno.UI {
 interface PointerEvent {
     isOver(this: PointerEvent, element: HTMLElement | SVGElement): boolean;
     isOverDeep(this: PointerEvent, element: HTMLElement | SVGElement): boolean;
+    /**
+     * Indicates if the pointer is over the given 'element' and there no other element above it (i.e. given 'element' is top most).
+     */
+    isDirectlyOver(this: PointerEvent, element: HTMLElement | SVGElement): boolean;
 }
 declare namespace Uno.UI.Interop {
     class AsyncInteropHelper {
@@ -750,6 +744,13 @@ declare namespace Windows.Devices.Geolocation {
         private static getAccurateCurrentPosition;
     }
 }
+declare module Windows.Devices.Input {
+    enum PointerDeviceType {
+        Touch = 0,
+        Pen = 1,
+        Mouse = 2
+    }
+}
 declare namespace Windows.Devices.Midi {
     class MidiInPort {
         private static dispatchMessage;
@@ -841,6 +842,20 @@ declare namespace Windows.Devices.Sensors {
         static startReading(): void;
         static stopReading(): void;
         private static readingChangedHandler;
+    }
+}
+declare namespace Windows.Gaming.Input {
+    class Gamepad {
+        private static dispatchGamepadAdded;
+        private static dispatchGamepadRemoved;
+        static getConnectedGamepadIds(): string;
+        static getReading(id: number): string;
+        static startGamepadAdded(): void;
+        static endGamepadAdded(): void;
+        static startGamepadRemoved(): void;
+        static endGamepadRemoved(): void;
+        private static onGamepadConnected;
+        private static onGamepadDisconnected;
     }
 }
 declare namespace Windows.Graphics.Display {
@@ -1022,7 +1037,8 @@ declare namespace Uno.Storage {
 }
 declare namespace Windows.Storage {
     class StorageFolder {
-        private static _isInit;
+        private static _isInitialized;
+        private static _isSynchronizing;
         private static dispatchStorageInitialized;
         /**
          * Determine if IndexDB is available, some browsers and modes disable it.
@@ -1038,7 +1054,9 @@ declare namespace Windows.Storage {
         static setupStorage(path: string): void;
         private static onStorageInitialized;
         /**
-         * Synchronize the IDBFS memory cache back to IndexDB
+         * Synchronize the IDBFS memory cache back to IndexedDB
+         * populate: requests the filesystem to be popuplated from the IndexedDB
+         * onSynchronized: function invoked when the synchronization finished
          * */
         private static synchronizeFileSystem;
     }
@@ -1096,6 +1114,11 @@ declare namespace Uno.Storage.Streams {
         static writeAsync(streamId: string, dataArrayPointer: number, offset: number, count: number, position: number): Promise<string>;
         static closeAsync(streamId: string): Promise<string>;
         static truncateAsync(streamId: string, length: number): Promise<string>;
+    }
+}
+declare namespace Windows.System {
+    class MemoryManager {
+        static getAppMemoryUsage(): any;
     }
 }
 interface Navigator {
@@ -1189,12 +1212,44 @@ declare namespace Windows.UI.Xaml {
         Dark = "Dark"
     }
 }
+declare namespace Windows.UI.Xaml {
+    enum NativePointerEvent {
+        pointerover = 1,
+        pointerout = 2,
+        pointerdown = 4,
+        pointerup = 8,
+        pointercancel = 16,
+        pointermove = 32,
+        wheel = 64
+    }
+    class UIElement_Pointers {
+        private static _dispatchPointerEventMethod;
+        private static _dispatchPointerEventArgs;
+        private static _dispatchPointerEventResult;
+        static setPointerEventArgs(pArgs: number): void;
+        static setPointerEventResult(pArgs: number): void;
+        static subscribePointerEvents(pParams: number): void;
+        static unSubscribePointerEvents(pParams: number): void;
+        private static onPointerEventReceived;
+        private static onPointerOutReceived;
+        private static dispatchPointerEvent;
+        private static _wheelLineSize;
+        private static get wheelLineSize();
+        private static toNativePointerEventArgs;
+        private static toNativeEvent;
+        private static toPointerDeviceType;
+    }
+}
+declare namespace Windows.UI.Xaml {
+    class UIElement extends Windows.UI.Xaml.UIElement_Pointers {
+    }
+}
 declare namespace Windows.UI.Xaml.Media.Animation {
-    class RenderingLoopFloatAnimator {
+    class RenderingLoopAnimator {
         private managedHandle;
         private static activeInstances;
         static createInstance(managedHandle: string, jsHandle: number): void;
-        static getInstance(jsHandle: number): RenderingLoopFloatAnimator;
+        static getInstance(jsHandle: number): RenderingLoopAnimator;
         static destroyInstance(jsHandle: number): void;
         private constructor();
         SetStartFrameDelay(delay: number): void;
@@ -1210,91 +1265,28 @@ declare namespace Windows.UI.Xaml.Media.Animation {
         private _isEnabled;
     }
 }
-declare class ApplicationDataContainer_ClearParams {
-    Locality: string;
-    static unmarshal(pData: number): ApplicationDataContainer_ClearParams;
+declare namespace Windows.UI.Xaml.Input {
+    class FocusVisual {
+        private static focusVisualId;
+        private static focusVisual;
+        private static focusedElement;
+        private static currentDispatchTimeout?;
+        private static dispatchPositionChange;
+        static attachVisual(focusVisualId: number, focusedElementId: number): void;
+        static detachVisual(): void;
+        private static onDocumentScroll;
+        static updatePosition(): void;
+    }
 }
-declare class ApplicationDataContainer_ContainsKeyParams {
-    Key: string;
-    Value: string;
-    Locality: string;
-    static unmarshal(pData: number): ApplicationDataContainer_ContainsKeyParams;
-}
-declare class ApplicationDataContainer_ContainsKeyReturn {
-    ContainsKey: boolean;
-    marshal(pData: number): void;
-}
-declare class ApplicationDataContainer_GetCountParams {
-    Locality: string;
-    static unmarshal(pData: number): ApplicationDataContainer_GetCountParams;
-}
-declare class ApplicationDataContainer_GetCountReturn {
-    Count: number;
-    marshal(pData: number): void;
-}
-declare class ApplicationDataContainer_GetKeyByIndexParams {
-    Locality: string;
-    Index: number;
-    static unmarshal(pData: number): ApplicationDataContainer_GetKeyByIndexParams;
-}
-declare class ApplicationDataContainer_GetKeyByIndexReturn {
-    Value: string;
-    marshal(pData: number): void;
-}
-declare class ApplicationDataContainer_GetValueByIndexParams {
-    Locality: string;
-    Index: number;
-    static unmarshal(pData: number): ApplicationDataContainer_GetValueByIndexParams;
-}
-declare class ApplicationDataContainer_GetValueByIndexReturn {
-    Value: string;
-    marshal(pData: number): void;
-}
-declare class ApplicationDataContainer_RemoveParams {
-    Locality: string;
-    Key: string;
-    static unmarshal(pData: number): ApplicationDataContainer_RemoveParams;
-}
-declare class ApplicationDataContainer_RemoveReturn {
-    Removed: boolean;
-    marshal(pData: number): void;
-}
-declare class ApplicationDataContainer_SetValueParams {
-    Key: string;
-    Value: string;
-    Locality: string;
-    static unmarshal(pData: number): ApplicationDataContainer_SetValueParams;
-}
-declare class ApplicationDataContainer_TryGetValueParams {
-    Key: string;
-    Locality: string;
-    static unmarshal(pData: number): ApplicationDataContainer_TryGetValueParams;
-}
-declare class ApplicationDataContainer_TryGetValueReturn {
-    Value: string;
-    HasValue: boolean;
-    marshal(pData: number): void;
-}
-declare class DragDropExtensionEventArgs {
-    eventName: string;
-    allowedOperations: string;
-    acceptedOperation: string;
-    dataItems: string;
-    timestamp: number;
-    x: number;
-    y: number;
-    id: number;
-    buttons: number;
-    shift: boolean;
-    ctrl: boolean;
-    alt: boolean;
-    static unmarshal(pData: number): DragDropExtensionEventArgs;
-    marshal(pData: number): void;
-}
-declare class StorageFolderMakePersistentParams {
-    Paths_Length: number;
-    Paths: Array<string>;
-    static unmarshal(pData: number): StorageFolderMakePersistentParams;
+declare namespace Windows.UI.Xaml.Media {
+    class FontFamily {
+        private static managedNotifyFontLoaded?;
+        private static managedNotifyFontLoadFailed?;
+        static loadFont(fontFamilyName: string, fontSource: string): Promise<void>;
+        static forceFontUsage(fontFamilyName: string): Promise<void>;
+        private static notifyFontLoaded;
+        private static notifyFontLoadFailed;
+    }
 }
 declare class WindowManagerAddViewParams {
     HtmlId: number;
@@ -1457,6 +1449,11 @@ declare class WindowManagerSetElementColorParams {
     Color: number;
     static unmarshal(pData: number): WindowManagerSetElementColorParams;
 }
+declare class WindowManagerSetElementFillParams {
+    HtmlId: number;
+    Color: number;
+    static unmarshal(pData: number): WindowManagerSetElementFillParams;
+}
 declare class WindowManagerSetElementTransformParams {
     HtmlId: number;
     M11: number;
@@ -1520,4 +1517,156 @@ declare class WindowManagerSetXUidParams {
     HtmlId: number;
     Uid: string;
     static unmarshal(pData: number): WindowManagerSetXUidParams;
+}
+declare namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core {
+    class DragDropExtensionEventArgs {
+        eventName: string;
+        allowedOperations: string;
+        acceptedOperation: string;
+        dataItems: string;
+        timestamp: number;
+        x: number;
+        y: number;
+        id: number;
+        buttons: number;
+        shift: boolean;
+        ctrl: boolean;
+        alt: boolean;
+        static unmarshal(pData: number): DragDropExtensionEventArgs;
+        marshal(pData: number): void;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_ClearParams {
+        Locality: string;
+        static unmarshal(pData: number): ApplicationDataContainer_ClearParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_ContainsKeyParams {
+        Key: string;
+        Value: string;
+        Locality: string;
+        static unmarshal(pData: number): ApplicationDataContainer_ContainsKeyParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_ContainsKeyReturn {
+        ContainsKey: boolean;
+        marshal(pData: number): void;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_GetCountParams {
+        Locality: string;
+        static unmarshal(pData: number): ApplicationDataContainer_GetCountParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_GetCountReturn {
+        Count: number;
+        marshal(pData: number): void;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_GetKeyByIndexParams {
+        Locality: string;
+        Index: number;
+        static unmarshal(pData: number): ApplicationDataContainer_GetKeyByIndexParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_GetKeyByIndexReturn {
+        Value: string;
+        marshal(pData: number): void;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_GetValueByIndexParams {
+        Locality: string;
+        Index: number;
+        static unmarshal(pData: number): ApplicationDataContainer_GetValueByIndexParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_GetValueByIndexReturn {
+        Value: string;
+        marshal(pData: number): void;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_RemoveParams {
+        Locality: string;
+        Key: string;
+        static unmarshal(pData: number): ApplicationDataContainer_RemoveParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_RemoveReturn {
+        Removed: boolean;
+        marshal(pData: number): void;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_SetValueParams {
+        Key: string;
+        Value: string;
+        Locality: string;
+        static unmarshal(pData: number): ApplicationDataContainer_SetValueParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_TryGetValueParams {
+        Key: string;
+        Locality: string;
+        static unmarshal(pData: number): ApplicationDataContainer_TryGetValueParams;
+    }
+}
+declare namespace Windows.Storage {
+    class ApplicationDataContainer_TryGetValueReturn {
+        Value: string;
+        HasValue: boolean;
+        marshal(pData: number): void;
+    }
+}
+declare namespace Windows.Storage {
+    class StorageFolderMakePersistentParams {
+        Paths_Length: number;
+        Paths: Array<string>;
+        static unmarshal(pData: number): StorageFolderMakePersistentParams;
+    }
+}
+declare namespace Windows.UI.Xaml {
+    class NativePointerEventArgs {
+        HtmlId: number;
+        Event: number;
+        pointerId: number;
+        x: number;
+        y: number;
+        ctrl: boolean;
+        shift: boolean;
+        buttons: number;
+        buttonUpdate: number;
+        deviceType: number;
+        srcHandle: number;
+        timestamp: number;
+        pressure: number;
+        wheelDeltaX: number;
+        wheelDeltaY: number;
+        hasRelatedTarget: boolean;
+        marshal(pData: number): void;
+    }
+}
+declare namespace Windows.UI.Xaml {
+    class NativePointerEventResult {
+        Result: number;
+        static unmarshal(pData: number): NativePointerEventResult;
+    }
+}
+declare namespace Windows.UI.Xaml {
+    class NativePointerSubscriptionParams {
+        HtmlId: number;
+        Events: number;
+        static unmarshal(pData: number): NativePointerSubscriptionParams;
+    }
 }

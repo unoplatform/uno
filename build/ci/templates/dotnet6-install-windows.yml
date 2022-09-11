@@ -1,27 +1,34 @@
 parameters:
-  DotNetVersion: '6.0.100-rc.1.21452.64'
-  MauiCheck_Version: '0.8.5'
-  MauiCheck_Manifest: 'https://raw.githubusercontent.com/Redth/dotnet-maui-check/d469cb3804d68ad52a1bfec041b95a8800acf4ab/manifests/maui-preview.manifest.json'
+  DotNetVersion: '6.0.400'
+  UnoCheck_Version: '1.5.4'
+  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/34b1a60f5c1c51604b47362781969dde46979fd5/manifests/uno.ui.manifest.json'
 
 steps:
 
-  ## Required until .NET 6 installs properly on Windows using UseDotnet
-  - powershell: |
-      $ProgressPreference = 'SilentlyContinue'
-      Invoke-WebRequest -Uri "https://dot.net/v1/dotnet-install.ps1" -OutFile dotnet-install.ps1
-      & .\dotnet-install.ps1 -Version ${{ parameters.DotNetVersion }} -InstallDir "$env:ProgramFiles\dotnet\" -Verbose
-      & dotnet --list-sdks
-    displayName: Install .NET ${{ parameters.DotNetVersion }}
-    errorActionPreference: stop
+  # Required until .NET 6 installs properly on Windows using UseDotnet
+  # using preview builds
+  #- powershell: |
+  #    $ProgressPreference = 'SilentlyContinue'
+  #    Invoke-WebRequest -Uri "https://dot.net/v1/dotnet-install.ps1" -OutFile dotnet-install.ps1
+  #    & .\dotnet-install.ps1 -Version ${{ parameters.DotNetVersion }} -InstallDir "$env:ProgramFiles\dotnet\" -Verbose
+  #    & dotnet --list-sdks
+  #  displayName: Install .NET ${{ parameters.DotNetVersion }}
+  #  errorActionPreference: stop
+  #  retryCountOnTaskFailure: 3
+  - task: UseDotNet@2
+    displayName: 'Use .NET Core SDK ${{ parameters.DotNetVersion }}'
+    retryCountOnTaskFailure: 3
+    inputs:
+      packageType: sdk
+      version: ${{ parameters.DotNetVersion }}
+      includePreviewVersions: true
 
-  - pwsh: |
-      echo "##vso[task.setvariable variable=JAVA_HOME]$(JAVA_HOME_11_X64)"
-      echo "##vso[task.setvariable variable=JavaSdkDirectory]$(JAVA_HOME_11_X64)"
-    displayName: Select JDK 11
+  - template: jdk-setup.yml
     
   - powershell: |
-      & dotnet tool update --global redth.net.maui.check --version ${{ parameters.MauiCheck_Version }} --add-source https://api.nuget.org/v3/index.json
-      & maui-check -v --ci --non-interactive --fix --skip xcode --skip vswin --skip vsmac --manifest ${{ parameters.MauiCheck_Manifest }}
+      & dotnet tool update --global uno.check --version ${{ parameters.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
+      & uno-check -v --ci --non-interactive --fix --skip xcode --skip gtk3 --skip vswin --skip vsmac --manifest ${{ parameters.UnoCheck_Manifest }}
     displayName: Install .NET Workloads
     errorActionPreference: continue
     ignoreLASTEXITCODE: true
+    retryCountOnTaskFailure: 3

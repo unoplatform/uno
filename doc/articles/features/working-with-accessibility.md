@@ -145,6 +145,7 @@ When the value of `WinRTFeatureConfiguration.Accessiblity.HighContrast` is chang
 - Use a converter to trim long text. While a `TextBlock` might ellipsize long text, the screen reader will read the entire text provided.
 - Avoid creating custom controls when you can use built-in ones. If you must, make sure to implement and provide an appropriate `AutomationPeer`.
 - You can disable accessibility focus of native elements using `android:ImportantForAccessibility="No"` and `ios:IsAccessibilityElement="False"`.
+- `ContentControl` based controls (`Button`, `CheckBox`, ...) automatically use the string representation of their `Content` property. In order for the `AutomationProperties.AutomationId` property to be selectable, add `AutomationProperties.AccessibilityView="Raw"` to the control as well.
 
 ## Enabling the screen reader
 

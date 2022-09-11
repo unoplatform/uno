@@ -13,10 +13,6 @@ namespace Windows.ApplicationModel.Calls
 			'+', ';', '=', '?', '#', '-'
 		};
 
-		internal PhoneCallManager()
-		{
-		}
-
 		public static void ShowPhoneCallUI(string phoneNumber, string displayName)
 		{
 			if (phoneNumber == null)

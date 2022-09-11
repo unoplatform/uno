@@ -21,6 +21,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresFullWindow]
 		public async Task When_NavigateForward()
 		{
 			var style = Windows.UI.Xaml.Application.Current.Resources["NativeDefaultFrame"] as Style;
@@ -51,6 +52,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresFullWindow]
 		public async Task When_NavigateBackSkipingPages()
 		{
 			var style = Windows.UI.Xaml.Application.Current.Resources["NativeDefaultFrame"] as Style;

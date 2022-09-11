@@ -40,7 +40,7 @@ namespace Microsoft.UI.Xaml.Controls
 				ClearSelection(true /* resetAnchor */, false /* raiseSelectionChanged */);
 				m_rootNode.Source = value;
 				OnSelectionChanged();
-				RaisePropertyChanged("Source");
+				RaisePropertyChanged(nameof(Source));
 			}
 		}
 
@@ -66,7 +66,7 @@ namespace Microsoft.UI.Xaml.Controls
 						SelectWithPathImpl(firstSelectionIndexPath, true /* select */, true /* raiseSelectionChanged */);
 					}
 
-					RaisePropertyChanged("SingleSelect");
+					RaisePropertyChanged(nameof(SingleSelect));
 				}
 			}
 		}
@@ -445,19 +445,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 		ICustomProperty ICustomPropertyProvider.GetCustomProperty(string name)
 		{
-			//TODO: MZ: Not implemented, maybe not used currently
-			//// Exposing SelectedItem through ICustomPropertyProvider so that Binding can work 
-			//// for SelectedItem. This is requried since SelectedItem is not a dependency proeprty and
-			//// is evaluated when requested.
-			//if (name == "SelectedItem")
-			//{
-			//	var selectedItemCustomProperty = new CustomProperty(
-			//		"SelectedItem" /* name */,
-			//		typeof(object) /* typeName */,
-			//		(target) => ((SelectionModel)target).SelectedItem /* getter */,
-			//		null /* setter */);
-			//	return selectedItemCustomProperty;
-			//}
+			// Exposing SelectedItem through ICustomPropertyProvider so that Binding can work 
+			// for SelectedItem. This is requried since SelectedItem is not a dependency proeprty and
+			// is evaluated when requested.
+			if (name == "SelectedItem")
+			{
+				var selectedItemCustomProperty = new CustomProperty(
+					nameof(SelectedItem) /* name */,
+					typeof(object) /* typeName */,
+					(target) => ((SelectionModel)target).SelectedItem /* getter */,
+					null /* setter */);
+				return selectedItemCustomProperty;
+			}
 
 			return null;
 		}

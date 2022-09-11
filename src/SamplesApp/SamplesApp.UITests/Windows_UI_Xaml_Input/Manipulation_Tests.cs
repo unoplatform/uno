@@ -91,7 +91,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 			_app.PinchToZoomInCoordinates(target.Rect.CenterX, target.Rect.CenterY, TimeSpan.FromSeconds(.1));
 
-			var resultStr = _app.Marked("Output").GetDependencyPropertyValue<string>("Text");
+			var resultStr = new QueryEx(q => q.All().Marked("Output")).GetDependencyPropertyValue<string>("Text");
 			var result = Parse(resultStr);
 
 			Assert.AreEqual(2.0, result.cumulative.Scale);

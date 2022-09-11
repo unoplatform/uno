@@ -1,13 +1,5 @@
 ﻿#if XAMARIN || __WASM__
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Uno.Logging;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
 using _WebView = Windows.UI.Xaml.Controls.WebView;
 
 namespace Uno.UI.Samples.Behaviors
@@ -45,7 +37,7 @@ namespace Uno.UI.Samples.Behaviors
 
 		private static void OnSourceStringChanged(object d, DependencyPropertyChangedEventArgs e)
 		{
-			(d as _WebView).NavigateToString(e.NewValue.ToString());
+			(d as _WebView)?.NavigateToString(e.NewValue?.ToString() ?? string.Empty);
 		}
 	}
 }

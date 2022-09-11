@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using Windows.UI.Xaml;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Extensions
 {

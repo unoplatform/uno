@@ -2,12 +2,13 @@
 	<PropertyGroup>
 		<TargetFrameworks>net461</TargetFrameworks>
 		<IsPackable>false</IsPackable>
-		<NoWarn>1998;4014;67</NoWarn>
+		<NoWarn>1998;4014;67;CA1824</NoWarn>
 		<OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<UseUnoXamlParser>true</UseUnoXamlParser>
 		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<UnoForceHotReloadCodeGen>true</UnoForceHotReloadCodeGen>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -28,18 +29,17 @@
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
 		<PackageReference Include="MSTest.TestAdapter" />
     <PackageReference Include="MSTest.TestFramework" />
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Moq">
-      <Version>4.16.0</Version>
+      <Version>4.17.2</Version>
     </PackageReference>
     <PackageReference Include="System.Collections.Immutable">
       <Version>1.7.0</Version>
     </PackageReference>
     <PackageReference Include="Uno.SourceGenerationTasks" />
-    <PackageReference Include="Uno.Core" />
   </ItemGroup>
 
 	<ItemGroup>
@@ -101,20 +101,28 @@
 		<Page Include="Windows_UI_Xaml_Controls\**\*.xaml" />
 		<Page Include="ResourceLoader\Controls\**\*.xaml" />
 		<Page Include="Windows_UI_Xaml_Markup\**\*.xaml" />
+		<Page Include="HotReload\Windows_UI_Xaml\**\*.xaml" />
 		<Page Include="App\**\*.xaml" />
 		<None Remove="Lottie\animation.json" />
+		<None Remove="Windows_UI_Xaml_Markup\XamlReaderTests\When_CustomResource.xamltest" />
 		<Page Include="..\SamplesApp\UITests.Shared\Windows_UI_Xaml\Resources\Test_Dictionary_Linked.xaml" Link="App/Linked/Test_Dictionary_Linked.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Compile Include="..\Uno.UI.RuntimeTests\Helpers\SizeAssertion.cs" Link="Extensions\SizeAssertion.cs" />
+	  <Compile Include="..\Uno.UI.RuntimeTests\Tests\Windows_UI_Xaml_Controls\Given_ListViewBase_Items.cs" Link="Windows_UI_XAML_Controls\ListViewBaseTests\Given_ListViewBase_Items.cs" />
+	  <Compile Include="..\Uno.UI.RuntimeTests\Tests\Windows_UI_Xaml_Controls\GroupingObservableCollection.cs" Link="Windows_UI_XAML_Controls\ListViewBaseTests\GroupingObservableCollection.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
+		<ProjectReference Include="..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj" />
 		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />
 		<ProjectReference Include="..\Uno.UI.Tests.ViewLibrary\Uno.UI.Tests.ViewLibrary.csproj" />
 		<ProjectReference Include="..\Uno.UI.Tests.ViewLibraryProps\Uno.UI.Tests.ViewLibraryProps.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>

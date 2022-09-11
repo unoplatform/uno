@@ -12,6 +12,8 @@ using Windows.UI.Input.Spatial;
 
 using ResourceKey = Windows.UI.Xaml.SpecializedResourceDictionary.ResourceKey;
 using System.Runtime.CompilerServices;
+using Windows.UI.Xaml.Data;
+using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml
 {
@@ -20,6 +22,7 @@ namespace Windows.UI.Xaml
 		private readonly SpecializedResourceDictionary _values = new SpecializedResourceDictionary();
 		private readonly List<ResourceDictionary> _mergedDictionaries = new List<ResourceDictionary>();
 		private ResourceDictionary _themeDictionaries;
+		private ManagedWeakReference _sourceDictionary;
 
 		/// <summary>
 		/// This event is fired when a key that has value of type <see cref="ResourceDictionary"/> is added or changed in the current <see cref="ResourceDictionary" />
@@ -29,7 +32,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// If true, there may be lazily-set values in the dictionary that need to be initialized.
 		/// </summary>
-		private bool _hasUnmaterializedItems = false;
+		private bool _hasUnmaterializedItems;
 
 		public ResourceDictionary()
 		{
@@ -249,6 +252,7 @@ namespace Windows.UI.Xaml
 			{
 				_hasUnmaterializedItems = true;
 				_values[resourceKey] = new LazyInitializer(ResourceResolver.CurrentScope, resourceInitializer);
+				ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
 			}
 			else
 			{
@@ -416,11 +420,16 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Copy another dictionary's contents, this is used when setting the <see cref="Source"/> property
 		/// </summary>
-		private void CopyFrom(ResourceDictionary source)
+		internal void CopyFrom(ResourceDictionary source)
 		{
 			_values.Clear();
 			_mergedDictionaries.Clear();
 			_themeDictionaries?.Clear();
+
+			// In a foreign library that uses merged-dict with 'Source=...', there can be multiple instances of res-dict from one single xaml file.
+			// And, the instance referenced in App.xaml may not be the same one used in merged-dict of library-a\textbox.xaml.
+			// In order to ensure the theme updates covers all of them, we need to keep track of this source instance for theme updates before it is lost.
+			_sourceDictionary = WeakReferencePool.RentWeakReference(this, source);
 
 			_values.AddRange(source._values);
 			_mergedDictionaries.AddRange(source._mergedDictionaries);
@@ -431,10 +440,10 @@ namespace Windows.UI.Xaml
 		}
 
 		public global::System.Collections.Generic.ICollection<object> Keys
-			=> _values.Keys.Select(k => ConvertKey(k.Key)).ToList();
+			=> _values.Keys.Select(k => ConvertKey(k)).ToList();
 
 		private static object ConvertKey(ResourceKey resourceKey)
-			=> resourceKey.IsType ? Type.GetType(resourceKey.Key) : (object)resourceKey.Key;
+			=> resourceKey.TypeKey ?? (object)resourceKey.Key;
 
 		// TODO: this doesn't handle lazy initializers or aliases
 		public global::System.Collections.Generic.ICollection<object> Values => _values.Values;
@@ -486,11 +495,11 @@ namespace Windows.UI.Xaml
 				var aliased = kvp.Value;
 				if (TryResolveAlias(ref aliased))
 				{
-					yield return new KeyValuePair<object, object>(ConvertKey(kvp.Key.Key), aliased);
+					yield return new KeyValuePair<object, object>(ConvertKey(kvp.Key), aliased);
 				}
 				else
 				{
-					yield return new KeyValuePair<object, object>(ConvertKey(kvp.Key.Key), kvp.Value);
+					yield return new KeyValuePair<object, object>(ConvertKey(kvp.Key), kvp.Value);
 				}
 			}
 		}
@@ -540,19 +549,24 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Update theme bindings on DependencyObjects in the dictionary.
 		/// </summary>
-		internal void UpdateThemeBindings()
+		internal void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{
 			foreach (var item in _values.Values)
 			{
-				if (item is IDependencyObjectStoreProvider provider && provider.Store.Parent == null)
+				if (item is IDependencyObjectStoreProvider provider)
 				{
-					provider.Store.UpdateResourceBindings(isThemeChangedUpdate: true, containingDictionary: this);
+					provider.Store.UpdateResourceBindings(updateReason, containingDictionary: this);
 				}
 			}
 
 			foreach (var mergedDict in _mergedDictionaries)
 			{
-				mergedDict.UpdateThemeBindings();
+				mergedDict.UpdateThemeBindings(updateReason);
+			}
+
+			if (_sourceDictionary?.Target is ResourceDictionary target)
+			{
+				target.UpdateThemeBindings(updateReason);
 			}
 		}
 
@@ -593,6 +607,8 @@ namespace Windows.UI.Xaml
 		}
 
 		internal static object GetStaticResourceAliasPassthrough(string resourceKey, XamlParseContext parseContext) => new StaticResourceAliasRedirect(resourceKey, parseContext);
+
+		internal static ResourceKey GetActiveTheme() => Themes.Active;
 
 		internal static void SetActiveTheme(SpecializedResourceDictionary.ResourceKey key)
 			=> Themes.Active = key;

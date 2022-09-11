@@ -12,7 +12,7 @@ using System.Windows.Input;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Windows.Foundation;

@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		void SeekAlignedToLastTick(TimeSpan offset);
 		void SkipToFill();
 		void Deactivate();
-		event EventHandler<object> Completed;
-		event EventHandler<object> Failed;
+		void RegisterListener(ITimelineListener storyboard);
+		void UnregisterListener(ITimelineListener storyboard);
 	}
 }

@@ -3,25 +3,22 @@
 namespace Windows.Media.Playback
 {
 	#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-	#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-	[global::Uno.NotImplemented]
-	#endif
 	public   enum MediaPlayerError 
 	{
 		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		Unknown,
+		Unknown = 0,
 		#endif
 		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		Aborted,
+		Aborted = 1,
 		#endif
 		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		NetworkError,
+		NetworkError = 2,
 		#endif
 		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		DecodingError,
+		DecodingError = 3,
 		#endif
 		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		SourceNotSupported,
+		SourceNotSupported = 4,
 		#endif
 	}
 	#endif

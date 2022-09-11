@@ -1,6 +1,6 @@
 # Building Uno.UI for macOS using Visual Studio for Mac
 
-Building Uno.UI for the MacOS platform using vs4mac requires Visual Studio for Mac 8.1 or later.
+Building Uno.UI for the macOS platform using vs4mac requires Visual Studio for Mac 8.1 or later.
 
 Steps:
 
@@ -19,7 +19,7 @@ Support for building the `Uno.UI` solution is still somewhat unstable, this is a
  * If NuGet restore fails when building from the IDE, or if it gets stuck for some other reason, try building from the command line. Open a terminal session in the `uno/src` folder and use the following command:
 
    ``` shell
-   msbuild /m /r SamplesApp/SamplesApp.macOS/SamplesApp.macOS.csproj`
+   msbuild /m /r SamplesApp/SamplesApp.macOS/SamplesApp.macOS.csproj
    ```
 
    Then reopen Visual Studio and try to launch the sample again.

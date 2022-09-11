@@ -23,6 +23,8 @@ On WASM, the `NativeDefault[Control]` styles are currently only aliases to the `
 
 An application can set native styles as the default for supported controls by setting the static flag `Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStyles = false;` somewhere in app code (typically from the `App()` constructor in `App.xaml.cs`). It's also possible to configure only certain control types to default to the native style, by adding an entry to `UseUWPDefaultStylesOverride` for that type. For example, to default to native styling for every `ToggleSwitch` in the app, you would add the following code: `Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStylesOverride[typeof(ToggleSwitch)] = false;`
 
+The default Uno app template includes Fluent control styles in the application. If enabling native control styles globally, these Fluent resources **should be removed from `App.xaml`**, by removing `<XamlControlsResources />` from the `Resources.MergedDictionaries` declaration.
+
 ### Native navigation styles
 
 Since there are several controls that participate in navigation (`Frame`, `CommandBar`, `AppBarButton`), which should all be configured in the same way if native Frame navigation is used, there's a convenience method for configuring them all to use native styles:
@@ -35,7 +37,9 @@ Since there are several controls that participate in navigation (`Frame`, `Comma
 
 ### Example
 
-This sample shows how you'd enable native styles globally for your whole app:
+This sample shows how you'd enable native styles globally for your whole app. You need to modify both `App.xaml.cs` and `App.xaml`:
+
+App.xaml.cs:
 
 ```csharp
 	public sealed partial class App : Application
@@ -62,6 +66,18 @@ This sample shows how you'd enable native styles globally for your whole app:
 			// Uno.UI.FeatureConfiguration.Style.ConfigureNativeFrameNavigation();
 #endif
 		}
+```
+
+App.xaml:
+
+```diff
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+-                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" /> <!-- Remove Fluent styles to allow native styles from framework to be used -->
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
 ```
 
 

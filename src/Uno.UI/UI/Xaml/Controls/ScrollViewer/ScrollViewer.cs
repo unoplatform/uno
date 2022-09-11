@@ -10,17 +10,18 @@ using System.Diagnostics;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Windows.Devices.Input;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Uno;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -43,11 +44,20 @@ using _ScrollContentPresenter = Windows.UI.Xaml.Controls.ScrollContentPresenter;
 using _ScrollContentPresenter = Windows.UI.Xaml.Controls.IScrollContentPresenter;
 #endif
 
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollViewer : ContentControl, IFrameworkTemplatePoolAware
 	{
-		private bool m_isInConstantVelocityPan = false;
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
+		private bool m_isInConstantVelocityPan;
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
 
 		private static class Parts
 		{
@@ -83,7 +93,7 @@ namespace Windows.UI.Xaml.Controls
 				public const string ExpandedWithoutAnimation = "ScrollBarSeparatorExpandedWithoutAnimation";
 				public const string CollapsedWithoutAnimation = "ScrollBarSeparatorCollapsedWithoutAnimation";
 
-				// On WinUI3 visuals states are prefixed with "ScrolBar***s***" (with a trailing 's')
+				// On WinUI3 visuals states are prefixed with "ScrollBar***s***" (with a trailing 's')
 				//public const string Collapsed = "ScrollBarsSeparatorCollapsed";
 				//public const string CollapsedDisabled = "ScrollBarsSeparatorCollapsedDisabled"; // Not supported yet
 				//public const string Expanded = "ScrollBarsSeparatorExpanded";
@@ -119,19 +129,20 @@ namespace Windows.UI.Xaml.Controls
 		{
 			DefaultStyleKey = typeof(ScrollViewer);
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-			// On Skia, the Scrolling is managed by the ScrollContentPresenter (as UWP), which is flagged as IsScrollPort.
-			// Note: We should still add support for the zoom factor ... which is not yet supported on Skia.
-			// Note 2: This as direct consequences in UIElement.GetTransform and VisualTreeHelper.SearchDownForTopMostElementAt
-			UIElement.RegisterAsScrollPort(this);
-#endif
-
 			UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewer.GetUpdatesMode(this);
 			InitializePartial();
 
 			Loaded += AttachScrollBars;
 			Unloaded += DetachScrollBars;
 			Unloaded += ResetScrollIndicator;
+
+			this.RegisterParentChangedCallback(this, (_, _, args) =>
+			{
+				if (args.NewParent is null)
+				{
+					ClearContentTemplatedParent(Content);
+				}
+			});
 		}
 
 		partial void InitializePartial();
@@ -554,7 +565,7 @@ namespace Windows.UI.Xaml.Controls
 			private set => SetValue(VerticalOffsetProperty, value);
 		}
 
-		public static DependencyProperty VerticalOffsetProperty =
+		public static DependencyProperty VerticalOffsetProperty { get; } =
 			DependencyProperty.Register(
 				"VerticalOffset",
 				typeof(double),
@@ -574,7 +585,7 @@ namespace Windows.UI.Xaml.Controls
 			private set => SetValue(HorizontalOffsetProperty, value);
 		}
 
-		public static DependencyProperty HorizontalOffsetProperty =
+		public static DependencyProperty HorizontalOffsetProperty { get; } =
 			DependencyProperty.Register(
 				"HorizontalOffset",
 				typeof(double),
@@ -591,6 +602,16 @@ namespace Windows.UI.Xaml.Controls
 #pragma warning disable 649 // unused member for Unit tests
 		private _ScrollContentPresenter? _presenter;
 #pragma warning restore 649 // unused member for Unit tests
+
+		/// <summary>
+		/// Gets the ScrollContentPresenter resolved from the template.
+		/// Be aware that on iOS and Android this might be only a wrapper onto the NativeScrollContentPresenter.
+		/// </summary>
+		/// <remarks>
+		/// This is a temporary workaround until the NativeSCP knows its managed SCP and will most probably been removed in a near .
+		/// Try to avoid usage of this property as much as possible!
+		/// </remarks>
+		internal ScrollContentPresenter? Presenter { get; private set; }
 
 		/// <summary>
 		/// Gets the size of the Viewport used in the **CURRENT** (cf. remarks) or last measure
@@ -626,14 +647,13 @@ namespace Windows.UI.Xaml.Controls
 		/// Determines if the vertical scrolling is allowed or not.
 		/// Unlike the Visibility of the scroll bar, this will also applies to the mousewheel!
 		/// </summary>
-		internal bool ComputedIsHorizontalScrollEnabled { get; private set; } = false;
+		internal bool ComputedIsHorizontalScrollEnabled { get; private set; }
 
 		/// <summary>
 		/// Determines if the vertical scrolling is allowed or not.
 		/// Unlike the Visibility of the scroll bar, this will also applies to the mousewheel!
 		/// </summary>
-		internal bool ComputedIsVerticalScrollEnabled { get; private set; } = false;
-
+		internal bool ComputedIsVerticalScrollEnabled { get; private set; }
 
 		internal double MinHorizontalOffset => 0;
 
@@ -703,9 +723,11 @@ namespace Windows.UI.Xaml.Controls
 			else if (Content is FrameworkElement fe)
 			{
 				var explicitHeight = fe.Height;
+				var extentHeight = 0d;
+				var extentWidth = 0d;
 				if (explicitHeight.IsFinite())
 				{
-					ExtentHeight = explicitHeight;
+					extentHeight = explicitHeight;
 				}
 				else
 				{
@@ -713,13 +735,22 @@ namespace Windows.UI.Xaml.Controls
 						fe.ActualHeight > 0 &&
 						fe.VerticalAlignment == VerticalAlignment.Stretch;
 
-					ExtentHeight = canUseActualHeightAsExtent ? fe.ActualHeight : fe.DesiredSize.Height;
+					extentHeight = canUseActualHeightAsExtent ? fe.ActualHeight : fe.DesiredSize.Height;
 				}
+
+#if __WASM__
+				// Issue needs to be fixed first for WASM for Bottom Margin missing
+				// Details here: https://github.com/unoplatform/uno/issues/7000
+				ExtentHeight = extentHeight + fe.Margin.Top;
+#else
+				ExtentHeight = extentHeight + fe.Margin.Top + fe.Margin.Bottom;
+#endif
+
 
 				var explicitWidth = fe.Width;
 				if (explicitWidth.IsFinite())
 				{
-					ExtentWidth = explicitWidth;
+					extentWidth = explicitWidth;
 				}
 				else
 				{
@@ -727,8 +758,16 @@ namespace Windows.UI.Xaml.Controls
 						fe.ActualWidth > 0 &&
 						fe.HorizontalAlignment == HorizontalAlignment.Stretch;
 
-					ExtentWidth = canUseActualWidthAsExtent ? fe.ActualWidth : fe.DesiredSize.Width;
+					extentWidth = canUseActualWidthAsExtent ? fe.ActualWidth : fe.DesiredSize.Width;
 				}
+
+#if __WASM__
+				// Issue needs to be fixed first for WASM for Right Margin missing
+				// Details here: https://github.com/unoplatform/uno/issues/7000
+				ExtentWidth = extentWidth + fe.Margin.Left;
+#else
+				ExtentWidth = extentWidth + fe.Margin.Left + fe.Margin.Right;
+#endif
 			}
 			else
 			{
@@ -736,8 +775,31 @@ namespace Windows.UI.Xaml.Controls
 				ExtentWidth = 0;
 			}
 
-			ScrollableHeight = Math.Max(ExtentHeight - ViewportHeight, 0);
-			ScrollableWidth = Math.Max(ExtentWidth - ViewportWidth, 0);
+			var scrollableHeight = Math.Max(ExtentHeight - ViewportHeight, 0);
+			// On Skia, the ExtentHeight can include a rounding error, which may cause
+			// unwanted ScrollBar to pop in and out of existence.
+			if (scrollableHeight < 0.1)
+			{
+				scrollableHeight = 0;
+			}
+
+			ScrollableHeight = scrollableHeight;
+
+			var scrollableWidth = Math.Max(ExtentWidth - ViewportWidth, 0);
+			// On Skia, the ExtentWidth can include a rounding error, which may cause
+			// unwanted ScrollBar to pop in and out of existence.
+			if (scrollableWidth < 0.1)
+			{
+				scrollableWidth = 0;
+			}
+
+			ScrollableWidth = scrollableWidth;
+
+			if (Presenter is not null)
+			{
+				Presenter.ExtentHeight = ExtentHeight;
+				Presenter.ExtentWidth = ExtentWidth;
+			}
 
 			UpdateComputedVerticalScrollability(invalidate: false);
 			UpdateComputedHorizontalScrollability(invalidate: false);
@@ -772,7 +834,7 @@ namespace Windows.UI.Xaml.Controls
 
 #if !UNO_HAS_MANAGED_SCROLL_PRESENTER
 			// Support for the native scroll bars (delegated to the native _presenter).
-			_presenter.VerticalScrollBarVisibility = ComputeNativeScrollBarVisibility(scrollable, visibility, mode, _verticalScrollbar);
+			_presenter.NativeVerticalScrollBarVisibility = ComputeNativeScrollBarVisibility(scrollable, visibility, mode, _verticalScrollbar);
 			if (invalidate && _verticalScrollbar is null)
 			{
 				InvalidateMeasure(); // Useless for managed ScrollBar, it will invalidate itself if needed.
@@ -809,7 +871,7 @@ namespace Windows.UI.Xaml.Controls
 
 #if !UNO_HAS_MANAGED_SCROLL_PRESENTER
 			// Support for the native scroll bars (delegated to the native _presenter).
-			_presenter.HorizontalScrollBarVisibility = ComputeNativeScrollBarVisibility(scrollable, visibility, mode, _horizontalScrollbar);
+			_presenter.NativeHorizontalScrollBarVisibility = ComputeNativeScrollBarVisibility(scrollable, visibility, mode, _horizontalScrollbar);
 			if (invalidate && _horizontalScrollbar is null)
 			{
 				InvalidateMeasure(); // Useless for managed ScrollBar, it will invalidate itself if needed.
@@ -882,7 +944,7 @@ namespace Windows.UI.Xaml.Controls
 
 			_isTemplateApplied = _presenter != null;
 
-#if __WASM__
+#if __WASM__ || __SKIA__
 			if (_presenter != null && ForceChangeToCurrentView)
 			{
 				_presenter.ForceChangeToCurrentView = ForceChangeToCurrentView;
@@ -895,12 +957,12 @@ namespace Windows.UI.Xaml.Controls
 			_isHorizontalScrollBarMaterialized = false;
 
 #if __IOS__ || __ANDROID__
-			if (scpTemplatePart is ScrollContentPresenter scp)
+			if (scpTemplatePart is ScrollContentPresenter scp && scp.Native is null)
 			{
-				// For Android/iOS/MacOS, ensure that the ScrollContentPresenter contains a native scroll viewer,
-				// which will handle the actual scrolling
+				// For Android and iOS, ensure that the ScrollContentPresenter contains a native SCP,
+				// which will handle the actual scrolling.
 				var nativeSCP = new NativeScrollContentPresenter(this);
-				scp.Content = nativeSCP;
+				scp.Content = scp.Native = nativeSCP;
 				_presenter = nativeSCP;
 			}
 #endif
@@ -908,6 +970,11 @@ namespace Windows.UI.Xaml.Controls
 			if (scpTemplatePart is ScrollContentPresenter presenter)
 			{
 				presenter.ScrollOwner = this;
+				Presenter = presenter;
+			}
+			else
+			{
+				Presenter = null;
 			}
 
 			// We update the scrollability properties here in order to make sure to set the right scrollbar visibility
@@ -942,17 +1009,20 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		#region Content and TemplatedParent forwarding to the ScrollContentPresenter
-		protected override void OnContentChanged(object oldValue, object newValue)
+#region Content and TemplatedParent forwarding to the ScrollContentPresenter
+		protected override void OnContentChanged(object? oldValue, object? newValue)
 		{
-			base.OnContentChanged(oldValue, newValue);
-
-			if (_presenter != null)
+			if (oldValue is not null && !ReferenceEquals(oldValue, newValue))
 			{
 				// remove the explicit templated parent propagation
 				// for the lack of TemplatedParentScope support
 				ClearContentTemplatedParent(oldValue);
+			}
 
+			base.OnContentChanged(oldValue, newValue);
+
+			if (_presenter is not null)
+			{
 				ApplyScrollContentPresenterContent(newValue);
 			}
 
@@ -961,7 +1031,7 @@ namespace Windows.UI.Xaml.Controls
 			_snapPointsInfo = newValue as IScrollSnapPointsInfo;
 		}
 
-		private void ApplyScrollContentPresenterContent(object content)
+		private void ApplyScrollContentPresenterContent(object? content)
 		{
 			// Stop the automatic propagation of the templated parent on the Content
 			// This prevents issues when the a ScrollViewer is hosted in a control template
@@ -1022,16 +1092,16 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void ClearContentTemplatedParent(object oldContent)
+		private void ClearContentTemplatedParent(object? oldContent)
 		{
 			if (oldContent is IDependencyObjectStoreProvider provider)
 			{
 				provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 			}
 		}
-		#endregion
+#endregion
 
-		#region Managed scroll bars support
+#region Managed scroll bars support
 		private bool _isTemplateApplied;
 		private ScrollBar? _verticalScrollbar;
 		private ScrollBar? _horizontalScrollbar;
@@ -1196,10 +1266,10 @@ namespace Windows.UI.Xaml.Controls
 				disableAnimation: immediate,
 				shouldSnap: true);
 		}
-		#endregion
+#endregion
 
 		// Presenter to Control, i.e. OnPresenterScrolled
-		internal void OnScrollInternal(double horizontalOffset, double verticalOffset, bool isIntermediate)
+		internal void OnPresenterScrolled(double horizontalOffset, double verticalOffset, bool isIntermediate)
 		{
 			var h = horizontalOffset == HorizontalOffset ? null : (double?)horizontalOffset;
 			var v = verticalOffset == VerticalOffset ? null : (double?)verticalOffset;
@@ -1237,35 +1307,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private DispatcherQueueTimer? _snapPointsTimer;
-		private double? _horizontalOffsetForSnapPoints;
-		private double? _verticalOffsetForSnapPoints;
-
-		private void DelayedMoveToSnapPoint()
-		{
-			var h = _horizontalOffsetForSnapPoints;
-			var v = _verticalOffsetForSnapPoints;
-
-			AdjustOffsetsForSnapPoints(ref h, ref v, ZoomFactor);
-
-			if ((h == null || h == HorizontalOffset) && (v == null || v == VerticalOffset))
-			{
-				return; // already on a snap point
-			}
-
-			ChangeViewCore(
-				horizontalOffset: h,
-				verticalOffset: v,
-				zoomFactor: null,
-				disableAnimation: false,
-				shouldSnap: false);
-
-			_horizontalOffsetForSnapPoints = null;
-			_verticalOffsetForSnapPoints = null;
-		}
-
 		// Presenter to Control, i.e. OnPresenterZoomed
-		internal void OnZoomInternal(float zoomFactor)
+		internal void OnPresenterZoomed(float zoomFactor)
 		{
 			ZoomFactor = zoomFactor;
 
@@ -1275,6 +1318,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateZoomedContentAlignment();
 		}
 
+#region Deferred update (i.e. ViewChanged) support
 		private bool _hasPendingUpdate;
 		private double _pendingHorizontalOffset;
 		private double _pendingVerticalOffset;
@@ -1305,16 +1349,46 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdatePartial(isIntermediate);
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-			// Effective viewport support
-			ScrollOffsets = new Point(_pendingHorizontalOffset, _pendingVerticalOffset);
-			InvalidateViewport();
-#endif
-
 			ViewChanged?.Invoke(this, new ScrollViewerViewChangedEventArgs { IsIntermediate = isIntermediate });
 		}
 
 		partial void UpdatePartial(bool isIntermediate);
+#endregion
+
+#region SnapPoints enforcement
+		private DispatcherQueueTimer? _snapPointsTimer;
+		private double? _horizontalOffsetForSnapPoints;
+		private double? _verticalOffsetForSnapPoints;
+
+		private void DelayedMoveToSnapPoint()
+		{
+			var h = _horizontalOffsetForSnapPoints;
+			var v = _verticalOffsetForSnapPoints;
+
+			AdjustOffsetsForSnapPoints(ref h, ref v, ZoomFactor);
+
+			if ((h == null || h == HorizontalOffset) && (v == null || v == VerticalOffset))
+			{
+				return; // already on a snap point
+			}
+
+			ChangeViewCore(
+				horizontalOffset: h,
+				verticalOffset: v,
+				zoomFactor: null,
+				disableAnimation: false,
+				shouldSnap: false);
+
+			_horizontalOffsetForSnapPoints = null;
+			_verticalOffsetForSnapPoints = null;
+		}
+#endregion
+
+		public void ScrollToHorizontalOffset(double offset)
+			=> ChangeView(offset, null, null, false);
+
+		public void ScrollToVerticalOffset(double offset)
+			=> ChangeView(null, offset, null, false);
 
 		/// <summary>
 		/// Causes the ScrollViewer to load a new view into the viewport using the specified offsets and zoom factor, and optionally disables scrolling animation.
@@ -1385,7 +1459,7 @@ namespace Windows.UI.Xaml.Controls
 			return ChangeViewNative(horizontalOffset, verticalOffset, zoomFactor, disableAnimation);
 		}
 
-		#region Scroll indicators visual states (Managed scroll bars only)
+#region Scroll indicators visual states (Managed scroll bars only)
 
 		private static readonly TimeSpan _indicatorResetDelay = FeatureConfiguration.ScrollViewer.DefaultAutoHideDelay ?? TimeSpan.FromSeconds(4);
 		private static readonly bool _indicatorResetDisabled = _indicatorResetDelay == TimeSpan.MaxValue;
@@ -1492,39 +1566,6 @@ namespace Windows.UI.Xaml.Controls
 				VisualStateManager.GoToState(this, VisualStates.ScrollBarsSeparator.Collapsed, true);
 			}
 		}
-		#endregion
-
-		public void ScrollToHorizontalOffset(double offset)
-		{
-			_ = ChangeView(offset, null, null, false);
-		}
-
-		public void ScrollToVerticalOffset(double offset)
-		{
-			_ = ChangeView(null, offset, null, false);
-		}
-
-		// Indicates whether ScrollViewer should ignore mouse wheel scroll events (not zoom).
-		public bool ArePointerWheelEventsIgnored { get; set; } = false;
-
-		internal bool BringIntoViewport(Rect bounds,
-			bool skipDuringTouchContact,
-			bool skipAnimationWhileRunning,
-			bool animate)
-		{
-#if __WASM__
-			return ChangeView(bounds.X, bounds.Y, null, true);
-#else
-			return ChangeView(bounds.X, bounds.Y, null, !animate);
-#endif
-		}
-
-		internal bool IsInManipulation => IsInDirectManipulation || m_isInConstantVelocityPan;
-
-		/// <summary>
-		/// Gets or set whether the <see cref="ScrollViewer"/> will allow scrolling outside of the ScrollViewer's Child bound.
-		/// </summary>		
-		internal bool ForceChangeToCurrentView { get; set; } = false;
-
+#endregion
 	}
 }

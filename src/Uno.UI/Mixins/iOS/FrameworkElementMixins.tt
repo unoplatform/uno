@@ -15,12 +15,12 @@
 #if __IOS__
 <# 
 	AddClass("Windows.UI.Xaml", "FrameworkElement", defineSetNeedsLayout: false, defineLayoutSubviews: false, hasAttachedToWindow: false, overridesAttachedToWindow: true, hasLayouter: true);
-	AddClass("Windows.UI.Xaml.Controls", "NativeListViewBase", hasAttachedToWindow: false, overridesAttachedToWindow: true, defineSetNeedsLayout: false, defineLayoutSubviews: false);
-	AddClass("Windows.UI.Xaml.Controls", "NativeScrollContentPresenter", hasAttachedToWindow: false, overridesAttachedToWindow: true, defineSetNeedsLayout: false, defineLayoutSubviews: false);
-	AddClass("Windows.UI.Xaml.Controls", "MultilineTextBoxView", isUIControl: false, hasAttachedToWindow: true, overridesAttachedToWindow: false, isNewBackground: false);
-	AddClass("Windows.UI.Xaml.Controls", "Picker", hasAttachedToWindow: true);
-	AddClass("Windows.UI.Xaml.Controls", "SinglelineTextBoxView", isUIControl: true, hasAttachedToWindow: true, overridesAttachedToWindow: false, isNewBackground: true);
-	AddClass("Uno.UI.Controls.Legacy", "ListViewBase", hasAttachedToWindow: false, overridesAttachedToWindow: true, defineSetNeedsLayout: false, defineLayoutSubviews: false);
+	AddClass("Windows.UI.Xaml.Controls", "NativeListViewBase", hasAttachedToWindow: false, overridesAttachedToWindow: true, defineSetNeedsLayout: false, defineLayoutSubviews: false, derivesFromFrameworkElement: false);
+	AddClass("Windows.UI.Xaml.Controls", "NativeScrollContentPresenter", hasAttachedToWindow: false, overridesAttachedToWindow: true, defineSetNeedsLayout: false, defineLayoutSubviews: false, derivesFromFrameworkElement: false);
+	AddClass("Windows.UI.Xaml.Controls", "MultilineTextBoxView", isUIControl: false, hasAttachedToWindow: true, overridesAttachedToWindow: false, isNewBackground: false, derivesFromFrameworkElement: false);
+	AddClass("Windows.UI.Xaml.Controls", "Picker", hasAttachedToWindow: true, derivesFromFrameworkElement: false);
+	AddClass("Windows.UI.Xaml.Controls", "SinglelineTextBoxView", isUIControl: true, hasAttachedToWindow: true, overridesAttachedToWindow: false, isNewBackground: true, derivesFromFrameworkElement: false);
+	AddClass("Uno.UI.Controls.Legacy", "ListViewBase", hasAttachedToWindow: false, overridesAttachedToWindow: true, defineSetNeedsLayout: false, defineLayoutSubviews: false, derivesFromFrameworkElement: false);
 #>
 <#@include file="..\..\UI\Xaml\IFrameworkElementImplementation.iOS.tt"#>
 #endif

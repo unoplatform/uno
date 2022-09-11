@@ -103,16 +103,31 @@ namespace Windows.UI.Xaml.Controls
 
 		//CDefinitionBase GetColumnNoRef(CUIElement pChild);
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		void SetGridFlags(GridFlags mask)
 		{
 			m_gridFlags |= mask;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		bool TrySetGridFlags(GridFlags mask)
+		{
+			if (HasGridFlags(mask))
+			{
+				return false;
+			}
+
+			m_gridFlags |= mask;
+			return true;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		void ClearGridFlags(GridFlags mask)
 		{
 			m_gridFlags &= ~mask;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		bool HasGridFlags(GridFlags mask)
 		{
 			return (m_gridFlags & mask) == mask;
@@ -262,23 +277,25 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void InvalidateDefinitions()
 		{
-			SetGridFlags(GridFlags.DefinitionsChanged);
-			InvalidateMeasure();
+			if (TrySetGridFlags(GridFlags.DefinitionsChanged))
+			{
+				InvalidateMeasure();
+			}
 		}
 
 		// public
 
-		CRowDefinitionCollection m_pRowDefinitions = null; // User specified rows.
-		CColumnDefinitionCollection m_pColumnDefinitions = null; // User specified columns.
+		CRowDefinitionCollection m_pRowDefinitions; // User specified rows.
+		CColumnDefinitionCollection m_pColumnDefinitions; // User specified columns.
 
 		// private
-		CRowDefinitionCollection m_pRows = null; // Effective row collection.
-		CColumnDefinitionCollection m_pColumns = null; // Effective column collection.
+		CRowDefinitionCollection m_pRows; // Effective row collection.
+		CColumnDefinitionCollection m_pColumns; // Effective column collection.
 
 		// This is a temporary storage that is released after arrange.
 		// Note the ScopeExit in ArrangeOveride
-		DefinitionBase[] m_ppTempDefinitions = null; // Temporary definitions storage.
-		Xuint m_cTempDefinitions = 0; // Size in elements of temporary definitions storage
+		DefinitionBase[] m_ppTempDefinitions; // Temporary definitions storage.
+		Xuint m_cTempDefinitions; // Size in elements of temporary definitions storage
 
 
 		GridFlags

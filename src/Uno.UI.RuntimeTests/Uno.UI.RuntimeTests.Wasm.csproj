@@ -13,6 +13,7 @@
 		
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
+		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
 	</PropertyGroup>
 
 	<!--Workaround to prevent build to fail because the project has too many dependencies when checking support libraries versions. 
@@ -25,38 +26,29 @@
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Uno.Core.Build" />
 		<ProjectReference Include="..\Uno.UI.Runtime.WebAssembly\Uno.UI.Runtime.WebAssembly.csproj" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Wasm.csproj" />
 		<Reference Include="System.Xml" />
 		<Reference Include="System.Xml.Linq" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'!='uap10.0.17763'">
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_UI_Xaml\FrameworkElementTests\*.cs">
-			<Link>UnitTests\Windows_UI_Xaml\FrameworkElementTests\%(RecursiveDir)%(FileName)%(Extension)</Link>
+	<ItemGroup>
+		<Compile Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\TestFramework\ActivePlatformsAttribute.cs">
+			<Link>UITests\_Engine\UnoUITests\ActivePlatformsAttribute.cs</Link>
 		</Compile>
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_UI_XAML_Controls\GridTests\Given_Grid_And_Min_Max.cs">
-			<Link>UnitTests\Windows_UI_Xaml_Controls\GridTests\%(RecursiveDir)%(FileName)%(Extension)</Link>
-		</Compile>
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_UI_XAML_Controls\GridTests\Context.cs">
-			<Link>UnitTests\Windows_UI_Xaml_Controls\GridTests\%(RecursiveDir)%(FileName)%(Extension)</Link>
-		</Compile>
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_UI_XAML_Controls\BorderTests\*.cs">
-			<Link>UnitTests\Windows_UI_Xaml_Controls\BorderTests\%(RecursiveDir)%(FileName)%(Extension)</Link>
-		</Compile>
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_Globalization\Given_Rounder.cs">
-			<Link>UnitTests\Windows_Globalization\%(RecursiveDir)%(FileName)%(Extension)</Link>
-		</Compile>
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_Globalization\Given_SignificantDigitsNumberRounder.cs">
-			<Link>UnitTests\Windows_Globalization\%(RecursiveDir)%(FileName)%(Extension)</Link>
-		</Compile>
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_Globalization\Given_IncrementNumberRounder.cs">
-			<Link>UnitTests\Windows_Globalization\%(RecursiveDir)%(FileName)%(Extension)</Link>
+		<Compile Include="..\SamplesApp\SamplesApp.UITests\TestFramework\ImageAssert.ExpectedPixels.cs" Link="Helpers\ImageAssert.ExpectedPixels.cs" />
+		<Compile Include="..\SamplesApp\SamplesApp.UITests\TestFramework\ImageAssert.Validations.cs" Link="Helpers\ImageAssert.Validations.cs" />
+		<Compile Include="..\Uno.Foundation\Extensions\IsExternalInit.cs" Link="Extensions\IsExternalInit.cs" />
+		<Compile Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\**\Extensions\*.cs">
+			<Link>UITests\_Engine\SamplesAppUITests\%(RecursiveDir)%(FileName)%(Extension)</Link>
 		</Compile>
 	</ItemGroup>
 
+	<Import Project="UnitTestsImport.props"/>
+	
+
 	<ItemGroup>
+		<EmbeddedResource Include="Assets\Border_Snapshot.bgra8" />
 		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>
@@ -75,10 +67,10 @@
 		<Reference Include="System.json" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.17763'">
+	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.18362'">
 		<PackageReference Include="System.Numerics.Vectors" Version="4.3.0" />
 	</ItemGroup>
-	<PropertyGroup Condition="'$(TargetFramework)'=='uap10.0.17763'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='uap10.0.18362'">
 		<DefineConstants>$(DefineConstants);WINDOWS_UWP</DefineConstants>
 	</PropertyGroup>
 

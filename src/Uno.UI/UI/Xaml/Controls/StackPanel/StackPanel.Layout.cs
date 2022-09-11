@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Windows.Foundation;
 using System.Text;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno;
 using Uno.UI;
 
@@ -87,7 +87,7 @@ namespace Windows.UI.Xaml.Controls
 			var isHorizontal = Orientation == Windows.UI.Xaml.Controls.Orientation.Horizontal;
 			var previousChildSize = 0.0;
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"StackPanel/{Name}: Arranging {Children.Count} children.");
 			}

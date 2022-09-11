@@ -9,7 +9,7 @@ namespace SamplesApp.UITests
 {
 	public partial class Constants
 	{
-		public const string WebAssemblyDefaultUri = "http://localhost:55838/";
+		public const string WebAssemblyDefaultUri = "https://localhost:44375/";
 		public const string iOSAppName = "uno.platform.uitestsample";
 		public const string AndroidAppName = "uno.platform.unosampleapp";
 		public const string iOSDeviceNameOrId = "iPad Pro (12.9-inch) (4th generation)";

@@ -2,7 +2,7 @@
 using CoreMotion;
 using Foundation;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.Devices.Sensors
 {
@@ -19,7 +19,7 @@ namespace Windows.Devices.Sensors
 			if (_motionManager.DeviceMotionAvailable) // DeviceMotion is not available on all devices. iOS4+
 			{
 				var operationQueue = (NSOperationQueue.CurrentQueue == null || NSOperationQueue.CurrentQueue == NSOperationQueue.MainQueue) ? new NSOperationQueue() : NSOperationQueue.CurrentQueue;
-				this.Log().ErrorIfEnabled(() => "DeviceMotion is available");
+				this.Log().Error("DeviceMotion is available");
 				_motionManager.DeviceMotionUpdateInterval = _updateInterval;
 				_motionManager.StartDeviceMotionUpdates(operationQueue, (motion, error) =>
 				{
@@ -28,7 +28,7 @@ namespace Windows.Devices.Sensors
 			}
 			else // For iOS devices that don't support CoreMotion
 			{
-				this.Log().ErrorIfEnabled(() => "SimpleOrientationSensor failed to initialize because CoreMotion is not available");
+				this.Log().Error("SimpleOrientationSensor failed to initialize because CoreMotion is not available");
 			}
 		}
 

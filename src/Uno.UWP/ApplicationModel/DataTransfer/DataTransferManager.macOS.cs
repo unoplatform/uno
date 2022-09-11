@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using AppKit;
 using CoreGraphics;
 using Foundation;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 
 namespace Windows.ApplicationModel.DataTransfer
@@ -28,49 +30,61 @@ namespace Windows.ApplicationModel.DataTransfer
 
 			var view = window.ContentView;
 
-			var dataPackageView = dataPackage.GetView();
-
-			var sharedData = new List<NSObject>();
-
-			if (dataPackageView.Contains(StandardDataFormats.Text))
+			if (view != null)
 			{
-				var text = await dataPackageView.GetTextAsync();
-				sharedData.Add(new NSString(text));
-			}
+				var dataPackageView = dataPackage.GetView();
 
-			var uri = await GetSharedUriAsync(dataPackageView);
-			if (uri != null)
-			{
-				sharedData.Add(NSUrl.FromString(uri.OriginalString));
-			}
+				var sharedData = new List<NSObject>();
 
-			CGRect targetRect;
-			if (options.SelectionRect != null)
-			{
-				targetRect = options.SelectionRect.Value;
+				if (dataPackageView.Contains(StandardDataFormats.Text))
+				{
+					var text = await dataPackageView.GetTextAsync();
+					sharedData.Add(new NSString(text));
+				}
+
+				var uri = await GetSharedUriAsync(dataPackageView);
+				if (uri != null && NSUrl.FromString(uri.OriginalString) is { } nsUrl)
+				{
+					sharedData.Add(nsUrl);
+				}
+
+				CGRect targetRect;
+				if (options.SelectionRect != null)
+				{
+					targetRect = options.SelectionRect.Value;
+				}
+				else
+				{
+					// Try to center the picker within the window
+					targetRect = new CGRect(
+						view.Bounds.Width / 2f - DefaultPickerWidth / 2,
+						view.Bounds.Height / 2 - DefaultPickerHeight / 2,
+						0,
+						0);
+				}
+
+				var picker = new NSSharingServicePicker(sharedData.ToArray());
+
+				var completionSource = new TaskCompletionSource<bool>();
+
+				picker.DidChooseSharingService += (s, e) =>
+				{
+					completionSource.SetResult(e.Service != null);
+				};
+
+				picker.ShowRelativeToRect(targetRect, view, NSRectEdge.MinYEdge);
+
+				return await completionSource.Task;
 			}
 			else
 			{
-				// Try to center the picker within the window
-				targetRect = new CGRect(
-					view.Bounds.Width / 2f - DefaultPickerWidth / 2,
-					view.Bounds.Height / 2 - DefaultPickerHeight / 2,
-					0,
-					0);
+				if (typeof(DataTransferManager).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(DataTransferManager).Log().LogError($"The current Window.ContentView is null, unable to run ShowShareUIAsync");
+				}
+
+				return false;
 			}
-
-			var picker = new NSSharingServicePicker(sharedData.ToArray());
-
-			var completionSource = new TaskCompletionSource<bool>();
-
-			picker.DidChooseSharingService += (s, e) =>
-			{
-				completionSource.SetResult(e.Service != null);
-			};
-
-			picker.ShowRelativeToRect(targetRect, view, NSRectEdge.MinYEdge);
-
-			return await completionSource.Task;
 		}
 	}
 }

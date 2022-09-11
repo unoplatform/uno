@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 {
-	[SampleControlInfo("GridTestsControl", "GridWithColumnSpan")]
+	[SampleControlInfo("Grid", "GridWithColumnSpan")]
 	public sealed partial class GridWithColumnSpan : UserControl
 	{
 		public GridWithColumnSpan()

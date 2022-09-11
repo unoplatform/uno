@@ -1,10 +1,11 @@
 ﻿using Android.Graphics;
 using Android.Graphics.Drawables;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -13,7 +14,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Android.Provider;
-using Microsoft.Extensions.Logging;
+
 using Uno.UI;
 using Uno;
 
@@ -114,7 +115,7 @@ namespace Windows.UI.Xaml.Media
 		partial void InitFromResource(Uri uri)
 		{
 			ResourceString = uri.PathAndQuery.TrimStart(new[] { '/' });
-			ResourceId = Uno.Helpers.DrawableHelper.FindResourceId(ResourceString);
+			ResourceId = Uno.Helpers.DrawableHelper.FindResourceIdFromPath(ResourceString);
 		}
 
 		/// <summary>
@@ -136,13 +137,13 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		private protected virtual bool IsSourceReady => false;
 
-		private protected virtual bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out Bitmap image)
+		private protected virtual bool TryOpenSourceSync(int? targetWidth, int? targetHeight, [NotNullWhen(true)] out Bitmap image)
 		{
 			image = default;
 			return false;
 		}
 
-		private protected virtual bool TryOpenSourceAsync(int? targetWidth, int? targetHeight, out Task<Bitmap> asyncImage)
+		private protected virtual bool TryOpenSourceAsync(int? targetWidth, int? targetHeight, [NotNullWhen(true)] out Task<Bitmap> asyncImage)
 		{
 			asyncImage = default;
 			return false;
@@ -167,7 +168,7 @@ namespace Windows.UI.Xaml.Media
 
 		internal async Task<Bitmap> Open(CancellationToken ct, Android.Widget.ImageView targetImage = null, int? targetWidth = null, int? targetHeight = null)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug(this.ToString() + $" Open(tw:{targetWidth}x{targetHeight})");
 			}
@@ -250,7 +251,7 @@ namespace Windows.UI.Xaml.Media
 				}
 				else
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().DebugFormat("Using ImageLoader to get {0}", WebUri);
 					}

@@ -2,45 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class NoFocusCandidateFoundEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool Handled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool NoFocusCandidateFoundEventArgs.Handled is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.NoFocusCandidateFoundEventArgs", "bool NoFocusCandidateFoundEventArgs.Handled");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Input.FocusNavigationDirection Direction
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FocusNavigationDirection NoFocusCandidateFoundEventArgs.Direction is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Input.FocusInputDeviceKind InputDevice
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FocusInputDeviceKind NoFocusCandidateFoundEventArgs.InputDevice is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Handled
+		// Skipping already declared property Direction
+		// Skipping already declared property InputDevice
 		// Forced skipping of method Windows.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.Direction.get
 		// Forced skipping of method Windows.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Xaml.Input.NoFocusCandidateFoundEventArgs.Handled.set

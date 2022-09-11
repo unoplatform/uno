@@ -94,13 +94,13 @@ namespace Uno.UI.Tests.TextBoxTests
 			var textChangingCount = 0;
 			var beforeTextChangingCount = 0;
 			textBox.BeforeTextChanging += (tb, e) =>
-			  {
-				  beforeTextChangingCount++;
-				  if (e.NewText == "Papaya")
-				  {
-					  e.Cancel = true;
-				  }
-			  };
+			{
+				beforeTextChangingCount++;
+				if (e.NewText == "Papaya")
+				{
+					e.Cancel = true;
+				}
+			};
 			textBox.TextChanging += (tb, e) => textChangingCount++;
 			textBox.Text = "Chirimoya";
 			Assert.AreEqual("Chirimoya", textBox.Text);
@@ -114,6 +114,84 @@ namespace Uno.UI.Tests.TextBoxTests
 
 			textBox.Text = "Chirimoya";
 			Assert.AreEqual(2, beforeTextChangingCount);
+		}
+
+		[TestMethod]
+		public void When_Multi_Line_Text_And_Not_AcceptsReturn()
+		{
+			var textBox = new TextBox();
+			Assert.AreEqual(false, textBox.AcceptsReturn);
+			textBox.Text = "Hello\nWorld";
+			Assert.AreEqual("Hello", textBox.Text);
+
+			textBox.Text = "Hello\rWorld";
+			Assert.AreEqual("Hello", textBox.Text);
+		}
+
+		[TestMethod]
+		public void When_Multi_Line_Text_And_Not_AcceptsReturn_After_Text_Was_Set()
+		{
+			var textBox = new TextBox();
+
+			textBox.AcceptsReturn = true;
+			textBox.Text = "Hello\nWorld";
+			Assert.AreEqual("Hello\nWorld", textBox.Text);
+
+			textBox.AcceptsReturn = false;
+			Assert.AreEqual("Hello", textBox.Text);
+		}
+
+		[TestMethod]
+		public void When_SelectedText_StartZero()
+		{
+			var sut = new TextBox();
+			sut.Text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+			sut.SelectionStart = 0;
+			sut.SelectionLength = 0;
+			sut.SelectedText = "1234";
+
+			Assert.AreEqual("1234ABCDEFGHIJKLMNOPQRSTUVWXYZ", sut.Text);
+		}
+
+		[TestMethod]
+		public void When_SelectedText_EndOfText()
+		{
+			var sut = new TextBox();
+			sut.Text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+			sut.SelectionStart = 26;
+			sut.SelectedText = "1234";
+
+			Assert.AreEqual("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234", sut.Text);
+		}
+
+		[TestMethod]
+		public void When_SelectedText_MiddleOfText()
+		{
+			var sut = new TextBox();
+			sut.Text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+			sut.SelectionStart = 2;
+			sut.SelectionLength = 22;
+			sut.SelectedText = "1234";
+
+			Assert.AreEqual("AB1234YZ", sut.Text);
+		}
+
+		[TestMethod]
+		public void When_SelectedText_AllTextToEmpty()
+		{
+			var sut = new TextBox();
+			sut.Text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+			sut.SelectionStart = 0;
+			sut.SelectionLength = 26;
+			sut.SelectedText = String.Empty;
+
+			Assert.AreEqual(String.Empty, sut.Text);
+			Assert.AreEqual(0, sut.SelectionStart);
+			Assert.AreEqual(0, sut.SelectionLength);
 		}
 
 		public class MySource : System.ComponentModel.INotifyPropertyChanged

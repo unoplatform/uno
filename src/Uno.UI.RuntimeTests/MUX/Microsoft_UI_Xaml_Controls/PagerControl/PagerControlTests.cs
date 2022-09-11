@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			});
 		}
 
-#if !__WASM__ && !__ANDROID__// IdleSynchronizer.Wait(); is not supported on WASM
+#if !__WASM__ && !__ANDROID__ && !__SKIA__// IdleSynchronizer.Wait(); is not supported on WASM
 		[TestMethod]
 		public void VerifyNumberPanelButtonUIABehavior()
 		{

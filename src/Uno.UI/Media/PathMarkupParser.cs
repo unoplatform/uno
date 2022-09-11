@@ -211,7 +211,7 @@ namespace Uno.Media
 			}
 
 			// Uno specific: Extra arguments.
-			_geometryContext.BeginFigure(_currentPoint, true, false);
+			_geometryContext.BeginFigure(_currentPoint, true);
 
 			_beginFigurePoint = _currentPoint;
 
@@ -538,8 +538,6 @@ namespace Uno.Media
 			return span.Slice(i);
 		}
 
-		// Uno docs: Implementation (currently) different than Avalonia due to:
-		// https://github.com/unoplatform/uno/issues/2855
 		private bool ReadBool(ref ReadOnlySpan<char> span)
 		{
 			span = SkipWhitespace(span);

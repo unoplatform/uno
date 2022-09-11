@@ -140,10 +140,45 @@ namespace Uno.UI
 
 		public AndConstraint<RectAssertion> Be(Rect expectedRect, double? epsilon = null, string because = null, params object[] becauseArgs)
 		{
-			using (new AssertionScope(_rect.ToString()))
+			using (new AssertionScope(AssertionScope.Current?.Context + _rect))
 			{
-				new Size(_rect.Width, _rect.Height).Should(_epsilon).Be(new Size(expectedRect.Width, expectedRect.Height), epsilon, because, becauseArgs);
-				new Point(_rect.X, _rect.Y).Should(_epsilon).Be(new Point(expectedRect.X, expectedRect.Y), epsilon, because, becauseArgs);
+				// Note: We do NOT compare Size and Point, as Rect.Empty will throw in Size ctor on UWP.
+
+				if (double.IsInfinity(expectedRect.X))
+				{
+					_rect.X.Should().Be(expectedRect.X, because + " (X)", becauseArgs);
+				}
+				else
+				{
+					_rect.X.Should().BeApproximately(expectedRect.X, epsilon ?? _epsilon, because + " (X)", becauseArgs);
+				}
+
+				if (double.IsInfinity(expectedRect.Y))
+				{
+					_rect.Y.Should().Be(expectedRect.Y, because + " (Y)", becauseArgs);
+				}
+				else
+				{
+					_rect.Y.Should().BeApproximately(expectedRect.Y, epsilon ?? _epsilon, because + " (Y)", becauseArgs);
+				}
+
+				if (double.IsInfinity(expectedRect.Width))
+				{
+					_rect.Width.Should().Be(expectedRect.Width, because + " (width)", becauseArgs);
+				}
+				else
+				{
+					_rect.Width.Should().BeApproximately(expectedRect.Width, epsilon ?? _epsilon, because + " (width)", becauseArgs);
+				}
+
+				if (double.IsInfinity(expectedRect.Height))
+				{
+					_rect.Height.Should().Be(expectedRect.Height, because + " (height)", becauseArgs);
+				}
+				else
+				{
+					_rect.Height.Should().BeApproximately(expectedRect.Height, epsilon ?? _epsilon, because + " (height)", becauseArgs);
+				}
 			}
 
 			return new AndConstraint<RectAssertion>(this);

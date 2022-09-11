@@ -7,7 +7,7 @@
 
 	<ItemGroup> 
 		<PackageReference Include="FluentAssertions" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
 		<PackageReference Include="NUnit" />
 		<PackageReference Include="NUnit3TestAdapter" /> 
 		<PackageReference Include="Xamarin.UITest" />
@@ -33,11 +33,24 @@
 
 	<ItemGroup>
 	  <Folder Include="MessageDialogTests\" />
+	  <Folder Include="Windows_UI_Xaml_Media_Imaging\RenderTargetBitmap_Tests_ExpectedResults\" />
 	  <Folder Include="Windows_UI_Xaml_Shapes\Basics_Shapes_Tests_EpectedResults\" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <None Update="Windows_UI_Xaml_Shapes\Basics_Shapes_Tests_EpectedResults\*.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="$(MSBuildThisFileDirectory)..\..\Uno.UI.RuntimeTests\Helpers\InjectedPointerAttribute.cs">
+			<Link>TestFramework\InjectedPointerAttribute.cs</Link>
+		</Compile>
+		<Compile Include="$(MSBuildThisFileDirectory)..\..\Uno.UWP\Devices\Input\PointerDeviceType.cs">
+			<Link>TestFramework\PointerDeviceType.cs</Link>
+		</Compile>
+	  <None Update="Windows_UI_Xaml_Media_Imaging\RenderTargetBitmap_Tests_ExpectedResults\Border.png">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>

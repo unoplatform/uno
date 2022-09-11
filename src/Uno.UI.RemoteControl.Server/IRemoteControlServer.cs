@@ -6,6 +6,8 @@ namespace Uno.UI.RemoteControl.Host
 {
 	public interface IRemoteControlServer
 	{
+		string GetServerConfiguration(string key);
+
 		Task SendFrame(IMessage fileReload);
 	}
 }

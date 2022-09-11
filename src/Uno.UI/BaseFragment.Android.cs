@@ -1,7 +1,7 @@
 using Android.App;
 using Android.Views;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
@@ -15,7 +15,10 @@ namespace Uno.UI
 {
 	public abstract partial class BaseFragment : Fragment, DependencyObject, View.IOnTouchListener
 	{
+#pragma warning disable CA1805 // Do not initialize unnecessarily
+		// TODO: This field is ALWAYS false. Either remove it or assign when appropriate.
 		private bool _isDisposed = false;
+#pragma warning restore CA1805 // Do not initialize unnecessarily
 
 		private readonly Func<IFragmentTracker> _tracker;
 
@@ -112,7 +115,7 @@ namespace Uno.UI
 			{
 				base.Dispose(disposing);
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("Disposing {0}", disposing);
 				}

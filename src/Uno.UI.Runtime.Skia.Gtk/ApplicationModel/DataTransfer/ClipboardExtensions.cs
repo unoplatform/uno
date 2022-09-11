@@ -6,13 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Gdk;
 using Gtk;
-using Microsoft.Extensions.Logging;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Extensions;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
+using Uno.Foundation.Logging;
 using Clipboard = Gtk.Clipboard;
 
 namespace Uno.UI.Runtime.Skia.GTK.Extensions.ApplicationModel.DataTransfer

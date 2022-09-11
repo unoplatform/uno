@@ -47,6 +47,35 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_Simple_Add_And_Retrieve_Type_Key()
+		{
+			var rd = new ResourceDictionary();
+
+			// NOTE: Intentionally using a type outside of Uno.UI to prevent regressions if someone thought to use Type.GetType.
+			// See: https://stackoverflow.com/a/1825156/5108631
+			// Type.GetType(...) only works when the type is found in either mscorlib.dll or the currently executing assembly.
+			rd[typeof(Given_ResourceDictionary)] = nameof(When_Simple_Add_And_Retrieve_Type_Key);
+
+			var retrieved = rd[typeof(Given_ResourceDictionary)];
+
+			Assert.IsTrue(rd.ContainsKey(typeof(Given_ResourceDictionary)));
+			Assert.IsFalse(rd.ContainsKey("Uno.UI.Tests.Windows_UI_Xaml.Given_ResourceDictionary"));
+
+			Assert.AreEqual(nameof(When_Simple_Add_And_Retrieve_Type_Key), retrieved);
+
+			rd.TryGetValue(typeof(Given_ResourceDictionary), out var retrieved2);
+			Assert.AreEqual(nameof(When_Simple_Add_And_Retrieve_Type_Key), retrieved2);
+
+			var key = rd.Keys.Single();
+			Assert.AreEqual(typeof(Given_ResourceDictionary), key);
+
+			foreach (var kvp in rd)
+			{
+				Assert.AreEqual(typeof(Given_ResourceDictionary), kvp.Key);
+			}
+		}
+
+		[TestMethod]
 		public void When_Key_Not_Present()
 		{
 			var rd = new ResourceDictionary();
@@ -713,6 +742,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_Relative_Path_With_Leading_Slash_From_Non_Root()
+		{
+			var withSlash = XamlFilePathHelper.ResolveAbsoluteSource("Dictionaries/App.xaml", "/App/Xaml/Test_Dictionary.xaml");
+			var withoutSlash = XamlFilePathHelper.ResolveAbsoluteSource("Dictionaries/App.xaml", "App/Xaml/Test_Dictionary.xaml");
+
+			Assert.AreEqual("App/Xaml/Test_Dictionary.xaml", withSlash);
+			Assert.AreEqual("Dictionaries/App/Xaml/Test_Dictionary.xaml", withoutSlash);
+		}
+
+		[TestMethod]
 		public void When_SharedHelpers_FindResource()
 		{
 			var rdInner = new ResourceDictionary();
@@ -873,6 +912,28 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			dictionary.ThemeDictionaries.Remove("Default");
 			Assert.IsFalse(dictionary.TryGetValue("TestKey", out _));
+		}
+
+		[TestMethod]
+		public void When_Lazy()
+		{
+			var dictionary = new ResourceDictionary();
+			var brush = new SolidColorBrush { Color = Colors.Red };
+			dictionary.TryGetValue("TestKey", out _);
+
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			dictionary.ThemeDictionaries.Add("Light", new WeakResourceInitializer(app, o =>
+				new ResourceDictionary
+				{
+					["TestKey"] = new WeakResourceInitializer(o, _ => brush)
+				}));
+
+
+			// Make sure the cache is updated.
+			Assert.IsTrue(dictionary.TryGetValue("TestKey", out var testValue));
+			Assert.AreEqual(brush, testValue);
+
 		}
 
 		[TestMethod]

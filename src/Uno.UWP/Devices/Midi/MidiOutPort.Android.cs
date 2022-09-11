@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 using Android.Content;
 using Android.Media.Midi;
 using Android.Runtime;
-using Microsoft.Extensions.Logging;
+
 using Uno.Devices.Enumeration.Internal;
 using Uno.Devices.Enumeration.Internal.Providers.Midi;
 using Uno.Devices.Midi.Internal;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Devices.Enumeration;
 using Windows.Foundation;
@@ -20,14 +21,14 @@ namespace Windows.Devices.Midi
 	public partial class MidiOutPort : IDisposable
 	{
 		private readonly MidiManager _midiManager;
-		private readonly MidiDeviceInfo _deviceInfo = null;
-		private readonly MidiDeviceInfo.PortInfo _portInfo = null;		
+		private readonly MidiDeviceInfo _deviceInfo;
+		private readonly MidiDeviceInfo.PortInfo _portInfo;
 
 		/// <summary>
 		/// This is not a bug, Android uses "input" for output.
 		/// </summary>
-		private MidiInputPort _midiPort = null;
-		private MidiDevice _midiDevice = null;
+		private MidiInputPort _midiPort;
+		private MidiDevice _midiDevice;
 
 		private MidiOutPort(
 			string deviceId,

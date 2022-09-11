@@ -1,11 +1,8 @@
-﻿using NUnit.Framework;
-using SamplesApp.UITests.TestFramework;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using NUnit.Framework;
+using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
@@ -120,6 +117,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Ignore iOS for timeout using Xamarin.UITest 3.2 (or iOS 15) https://github.com/unoplatform/uno/issues/8013
 		public void ComboBoxTests_Fullscreen_Popup_Generic()
 		{
 			Run("SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.ComboBox_FullScreen_Popup");
@@ -278,6 +276,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 			Assert.AreEqual("Item:", text1, "item #4 should be now selected with ItemTemplate");
 			Assert.AreEqual("5", text2, "item #4 (value: 5) should be now selected with ItemTemplate");
 		});
+
+		[Test]
+		[AutoRetry]
+		public void ComboBox_With_Description()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ComboBox.ComboBox_Description", skipInitialScreenshot: true);
+			var comboBox = _app.WaitForElement("DescriptionComboBox")[0];			
+			using var screenshot = TakeScreenshot("ComboBox Description", new ScreenshotOptions() { IgnoreInSnapshotCompare = true });
+			ImageAssert.HasColorAt(screenshot, comboBox.Rect.X + comboBox.Rect.Width / 2, comboBox.Rect.Y + comboBox.Rect.Height - 150, Color.Red);
+		}
 
 		public void ComboBoxTests_PlaceholderText_Impl(string targetName, int selectionIndex, Action<QueryEx> selectionValidation)
 		{

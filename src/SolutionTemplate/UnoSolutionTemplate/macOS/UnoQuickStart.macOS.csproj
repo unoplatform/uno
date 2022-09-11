@@ -70,7 +70,7 @@
 	<ItemGroup>
 		<PackageReference Include="Uno.UI" Version="2.2.0" />
 		<PackageReference Include="Uno.UI.RemoteControl" Version="2.2.0" Condition="'$(Configuration)'=='Debug'" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="3.0.5" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
 	</ItemGroup>
 	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" />

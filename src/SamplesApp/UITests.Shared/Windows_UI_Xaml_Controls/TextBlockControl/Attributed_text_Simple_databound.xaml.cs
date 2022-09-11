@@ -4,7 +4,7 @@ using Uno.UI.Samples.Presentation.SamplePages;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[SampleControlInfo(viewModelType: typeof(TextBlockViewModel), ignoreInSnapshotTests: true /*Databound to current date and time*/)]
+	[SampleControlInfo("TextBlock", viewModelType: typeof(TextBlockViewModel), ignoreInSnapshotTests: true /*Databound to current date and time*/)]
 	public sealed partial class Attributed_text_Simple_databound : UserControl
 	{
 		public Attributed_text_Simple_databound()

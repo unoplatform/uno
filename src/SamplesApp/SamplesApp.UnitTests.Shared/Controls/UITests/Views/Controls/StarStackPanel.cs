@@ -421,8 +421,7 @@ namespace Uno.UI.Samples.Controls
 
 		private static void InvalidateLayoutOnChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			var panel = d as StarStackPanel;
-			if (panel == null)
+			if (d is not StarStackPanel panel)
 			{
 				return;
 			}
@@ -634,7 +633,6 @@ namespace Uno.UI.Samples.Controls
 		}
 		#endregion
 
-#if !__ANDROID__ && !__IOS__ && !UNO_REFERENCE_API //In Uno, Padding is (incorrectly) defined on Panel
 		#region Padding DependencyProperty
 
 		public Thickness Padding
@@ -648,7 +646,6 @@ namespace Uno.UI.Samples.Controls
 			DependencyProperty.Register("Padding", typeof(Thickness), typeof(StarStackPanel), new PropertyMetadata(default(Thickness), InvalidateLayoutOnChanged));
 
 		#endregion
-#endif
 
 		#region struct Record
 		private struct Record

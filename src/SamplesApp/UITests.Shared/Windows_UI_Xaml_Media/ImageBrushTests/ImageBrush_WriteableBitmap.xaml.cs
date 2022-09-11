@@ -18,7 +18,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Media.ImageBrushTests
 {
-	[Sample("ImageBrushTestControl", "WriteableBitmap", IgnoreInSnapshotTests = true)]
+	[Sample("Brushes", "WriteableBitmap", IgnoreInSnapshotTests = true)]
 	public sealed partial class ImageBrush_WriteableBitmap : Page
 	{
 		public ImageBrush_WriteableBitmap()

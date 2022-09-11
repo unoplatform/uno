@@ -2,30 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Geolocation.Geofencing
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum GeofenceMonitorStatus 
 	{
-		#if false
-		Ready,
-		#endif
-		#if false
-		Initializing,
-		#endif
-		#if false
-		NoData,
-		#endif
-		#if false
-		Disabled,
-		#endif
-		#if false
-		NotInitialized,
-		#endif
-		#if false
-		NotAvailable,
-		#endif
+		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.GeofenceMonitorStatus.Ready
+		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.GeofenceMonitorStatus.Initializing
+		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.GeofenceMonitorStatus.NoData
+		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.GeofenceMonitorStatus.Disabled
+		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.GeofenceMonitorStatus.NotInitialized
+		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.GeofenceMonitorStatus.NotAvailable
 	}
 	#endif
 }

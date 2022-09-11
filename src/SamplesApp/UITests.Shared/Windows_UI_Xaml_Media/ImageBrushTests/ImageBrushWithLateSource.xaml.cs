@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 {
-	[SampleControlInfo("ImageBrushTestControl", "ImageBrushWithLateSource")]
+	[SampleControlInfo("Brushes", "ImageBrushWithLateSource")]
 	public sealed partial class ImageBrushWithLateSource : UserControl
 	{
 		public ImageBrushWithLateSource()

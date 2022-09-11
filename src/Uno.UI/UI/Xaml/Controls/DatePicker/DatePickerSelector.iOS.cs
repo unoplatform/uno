@@ -5,10 +5,11 @@ using Foundation;
 using UIKit;
 using Uno.UI.Extensions;
 using Uno.Extensions;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 using Uno.UI;
 using Windows.Globalization;
+using Uno.Helpers.Theming;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -62,6 +63,7 @@ namespace Windows.UI.Xaml.Controls
 			_picker.Calendar = new NSCalendar(NSCalendarType.Gregorian);
 
 			UpdatePickerStyle();
+			OverrideUIDatePickerTheme();
 
 			UpdatePickerValue(Date, animated: false);
 
@@ -219,12 +221,38 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
+			if (UIDevice.CurrentDevice.CheckSystemVersion(15, 0))
+			{
+				_picker.PreferredDatePickerStyle = UIDatePickerStyle.Wheels;
+
+				return;
+			}
+
 			if (UIDevice.CurrentDevice.CheckSystemVersion(13, 4))
 			{
 				_picker.PreferredDatePickerStyle = FeatureConfiguration.DatePicker.UseLegacyStyle
 																			? UIDatePickerStyle.Wheels
 																			: UIDatePickerStyle.Inline;
 			}
+		}
+
+		internal static void OverrideUIDatePickerTheme()
+		{
+			// Force the background of the UIDatePicker to allow for proper
+			// readability.
+			UIDatePicker.Appearance.BackgroundColor =
+				SystemThemeHelper.SystemTheme == SystemTheme.Dark
+				? UIColor.Black
+				: UIColor.White;
+
+			// UIDatePicker does not allow for fine-grained control of its appearance:
+			// https://developer.apple.com/documentation/uikit/uidatepicker
+			//
+			// UIDatePicker.Appearance.TintColor does not have any effect either, even when set
+			// before the control is attached to the visual tree.
+			//
+			// Additionally, as of iOS 15, the following action does not have an effect on the UIDatePicker
+			// _picker.SetValueForKey(UIColor.Yellow, new NSString("textColor"));
 		}
 	}
 }

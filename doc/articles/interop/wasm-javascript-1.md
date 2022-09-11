@@ -151,7 +151,7 @@ Here is a list of helper methods used to facilitate the integration with the HTM
 
 ## Invoke JavaScript code From C#
 
-Whenever there's a need to invoke a JavaScript code in the browser, the `WebAssembly.WebAssemblyRuntime` static class should be used. There is also helpers you can call as _extension methods_ on the elements.
+Whenever there's a need to invoke a JavaScript code in the browser, the `Uno.Foundation.WebAssemblyRuntime` static class should be used. There is also helpers you can call as _extension methods_ on the elements.
 
 ``` csharp
 // Invoke javascript synchronously

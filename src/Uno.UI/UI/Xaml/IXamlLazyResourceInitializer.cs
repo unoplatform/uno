@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
-using Microsoft.Extensions.Logging;
+
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.UI.DataBinding;

@@ -7,7 +7,7 @@ using EventHandler = System.EventHandler;
 
 namespace Uno.UI.Samples.Content.UITests.MenuFlyout
 {
-	public class MenuFlyoutViewModel : ViewModelBase
+	internal class MenuFlyoutViewModel : ViewModelBase
 	{
 		private string _selectedOption = string.Empty;
 

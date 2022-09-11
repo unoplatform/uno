@@ -1,7 +1,7 @@
 ﻿using System;
 using Uno.Extensions;
 using Uno.Foundation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using System.Globalization;
 

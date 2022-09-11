@@ -2,12 +2,18 @@ using System;
 using Uno.Client;
 using Uno.Disposables;
 using Windows.Foundation;
-using Windows.UI.Input;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using ICommand = System.Windows.Input.ICommand;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -43,10 +49,10 @@ namespace Windows.UI.Xaml.Controls
 		// UNO TODO
 		// IDisposable m_epMenuFlyoutItemClickEventCallback;
 
-		double m_maxKeyboardAcceleratorTextWidth = 0;
+		double m_maxKeyboardAcceleratorTextWidth;
 		TextBlock m_tpKeyboardAcceleratorTextBlock;
 
-		bool m_isTemplateApplied = false;
+		bool m_isTemplateApplied;
 
 		#region CommandParameter
 
@@ -733,10 +739,7 @@ namespace Windows.UI.Xaml.Controls
 			return new MenuFlyoutItemAutomationPeer(this);
 		}
 
-		string GetPlainText()
-		{
-			return Text;
-		}
+		private protected override string GetPlainText() => Text;
 
 		internal string KeyboardAcceleratorTextOverrideImpl
 		{

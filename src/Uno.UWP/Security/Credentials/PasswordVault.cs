@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading;
 using Windows.Storage;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.Security.Credentials
 {

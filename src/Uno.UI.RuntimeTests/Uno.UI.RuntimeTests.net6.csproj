@@ -16,6 +16,7 @@
 		once transitive dependencies have been updated.
 		-->
 		<NoWarn>$(NoWarn);NU1703</NoWarn>
+		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
@@ -34,30 +35,20 @@
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.net6.csproj" />
 	</ItemGroup>
-	
-	<ItemGroup Condition="'$(TargetFramework)'!='uap10.0.17763'">
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_UI_Xaml\FrameworkElementTests\*.cs">
-			<Link>UnitTests\Windows_UI_Xaml\FrameworkElementTests\%(RecursiveDir)%(FileName)%(Extension)</Link>
+
+	<ItemGroup>
+		<Compile Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\TestFramework\ActivePlatformsAttribute.cs">
+			<Link>UITests\_Engine\UnoUITests\ActivePlatformsAttribute.cs</Link>
 		</Compile>
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_UI_XAML_Controls\GridTests\Given_Grid_And_Min_Max.cs">
-			<Link>UnitTests\Windows_UI_Xaml_Controls\GridTests\%(RecursiveDir)%(FileName)%(Extension)</Link>
-		</Compile>
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_UI_XAML_Controls\GridTests\Context.cs">
-			<Link>UnitTests\Windows_UI_Xaml_Controls\GridTests\%(RecursiveDir)%(FileName)%(Extension)</Link>
-		</Compile>
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_UI_XAML_Controls\BorderTests\*.cs">
-			<Link>UnitTests\Windows_UI_Xaml_Controls\BorderTests\%(RecursiveDir)%(FileName)%(Extension)</Link>
-		</Compile>
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_Globalization\Given_Rounder.cs">
-			<Link>UnitTests\Windows_Globalization\%(RecursiveDir)%(FileName)%(Extension)</Link>
-		</Compile>
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_Globalization\Given_SignificantDigitsNumberRounder.cs">
-			<Link>UnitTests\Windows_Globalization\%(RecursiveDir)%(FileName)%(Extension)</Link>
-		</Compile>
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_Globalization\Given_IncrementNumberRounder.cs">
-			<Link>UnitTests\Windows_Globalization\%(RecursiveDir)%(FileName)%(Extension)</Link>
+		<Compile Include="..\SamplesApp\SamplesApp.UITests\TestFramework\ImageAssert.ExpectedPixels.cs" Link="Helpers\ImageAssert.ExpectedPixels.cs" />
+		<Compile Include="..\SamplesApp\SamplesApp.UITests\TestFramework\ImageAssert.Validations.cs" Link="Helpers\ImageAssert.Validations.cs" />
+		<Compile Include="..\Uno.Foundation\Extensions\IsExternalInit.cs" Link="Extensions\IsExternalInit.cs" />
+		<Compile Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\**\Extensions\*.cs">
+			<Link>UITests\_Engine\SamplesAppUITests\%(RecursiveDir)%(FileName)%(Extension)</Link>
 		</Compile>
 	</ItemGroup>
+
+	<Import Project="UnitTestsImport.props"/>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.net6.csproj" />
@@ -89,6 +80,14 @@
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <AndroidAsset Remove="Assets\Border_Snapshot.bgra8" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <EmbeddedResource Include="Assets\Border_Snapshot.bgra8" />
 	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />

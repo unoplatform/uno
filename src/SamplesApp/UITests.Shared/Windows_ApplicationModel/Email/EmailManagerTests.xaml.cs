@@ -40,7 +40,7 @@ namespace UITests.Shared.Windows_ApplicationModel.Email
 		}
 	}
 
-	public class EmailManagerViewModel : ViewModelBase
+	internal class EmailManagerViewModel : ViewModelBase
 	{
 		private string _to = "";
 		private string _cc = "";

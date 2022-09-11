@@ -12,7 +12,7 @@ using Windows.UI.Core;
 using Uno;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 
@@ -793,7 +793,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		public int TotalItemsCount => Host?.Count ?? 0;
 
-		public int TotalGroupCount = 0;
+		public int TotalGroupCount;
 
 		// Uno only
 		private readonly CalendarPanel _owner;

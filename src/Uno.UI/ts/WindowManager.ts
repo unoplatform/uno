@@ -140,7 +140,7 @@ namespace Uno.UI {
 		}
 
 		private containerElement: HTMLDivElement;
-		private rootContent: HTMLElement;
+		private rootElement: HTMLElement;
 
 		private cursorStyleElement: HTMLElement;
 
@@ -279,7 +279,7 @@ namespace Uno.UI {
 			}
 
 			if (contentDefinition) {
-				let classes = element.classList.value; 
+				let classes = element.classList.value;
 				for (const className of uiElementRegistration.classNames) {
 					classes += " uno-" + className;
 				}
@@ -737,6 +737,26 @@ namespace Uno.UI {
 		}
 
 		/**
+		* Sets the fill property of the specified element
+		*/
+		public setElementFill(elementId: number, color: number): string {
+			this.setElementColorInternal(elementId, color);
+			return "ok";
+		}
+
+		public setElementFillNative(pParam: number): boolean {
+			const params = WindowManagerSetElementFillParams.unmarshal(pParam);
+			this.setElementFillInternal(params.HtmlId, params.Color);
+			return true;
+		}
+
+		private setElementFillInternal(elementId: number, color: number): void {
+			const element = this.getView(elementId);
+
+			element.style.setProperty("fill", this.numberToCssColor(color));
+		}
+
+		/**
 		* Sets the background color property of the specified element
 		*/
 		public setElementBackgroundColor(pParam: number): boolean {
@@ -886,140 +906,6 @@ namespace Uno.UI {
 			return true;
 		}
 
-		public registerPointerEventsOnView(pParams: number): void {
-			const params = WindowManagerRegisterPointerEventsOnViewParams.unmarshal(pParams);
-			const element = this.getView(params.HtmlId);
-
-			element.addEventListener("pointerenter", WindowManager.onPointerEnterReceived);
-			element.addEventListener("pointerleave", WindowManager.onPointerLeaveReceived);
-			element.addEventListener("pointerdown", WindowManager.onPointerEventReceived);
-			element.addEventListener("pointerup", WindowManager.onPointerEventReceived);
-			element.addEventListener("pointercancel", WindowManager.onPointerEventReceived);
-		}
-
-		public static onPointerEventReceived(evt: PointerEvent): void {
-			WindowManager.dispatchPointerEvent(evt.currentTarget as HTMLElement | SVGElement, evt);
-		}
-
-		public static dispatchPointerEvent(element: HTMLElement | SVGElement, evt: PointerEvent): void {
-			const payload = WindowManager.pointerEventExtractor(evt);
-			const result = WindowManager.current.dispatchEvent(element, evt.type, payload);
-			if (result & HtmlEventDispatchResult.StopPropagation) {
-				evt.stopPropagation();
-			}
-			if (result & HtmlEventDispatchResult.PreventDefault) {
-				evt.preventDefault();
-			}
-		}
-
-		public static onPointerEnterReceived(evt: PointerEvent): void {
-			const element = evt.currentTarget as HTMLElement | SVGElement;
-			const e = evt as any;
-
-			if (e.explicitOriginalTarget) { // FF only
-
-				// It happens on FF that when another control which is over the 'element' has been updated, like text or visibility changed,
-				// we receive a pointer enter/leave of an element which is under an element that is capable to handle pointers,
-				// which is unexpected as the "pointerenter" should not bubble.
-				// So we have to validate that this event is effectively due to the pointer entering the control.
-				// We achieve this by browsing up the elements under the pointer (** not the visual tree**) 
-
-				for (let elt of document.elementsFromPoint(evt.pageX, evt.pageY)) {
-					if (elt == element) {
-						// We found our target element, we can raise the event and stop the loop
-						WindowManager.onPointerEventReceived(evt);
-						return;
-					}
-
-					let htmlElt = elt as HTMLElement;
-					if (htmlElt.style.pointerEvents != "none") {
-						// This 'htmlElt' is handling the pointers events, this mean that we can stop the loop.
-						// However, if this 'htmlElt' is one of our child it means that the event was legitimate
-						// and we have to raise it for the 'element'.
-						while (htmlElt.parentElement) {
-							htmlElt = htmlElt.parentElement;
-							if (htmlElt == element) {
-								WindowManager.onPointerEventReceived(evt);
-								return;
-							}
-						}
-
-						// We found an element this is capable to handle the pointers but which is not one of our child
-						// (probably a sibling which is covering the element). It means that the pointerEnter/Leave should
-						// not have bubble to the element, and we can mute it.
-						return;
-					}
-				}
-			} else {
-				WindowManager.onPointerEventReceived(evt);
-			}
-		}
-
-		public static onPointerLeaveReceived(evt: PointerEvent): void {
-			const element = evt.currentTarget as HTMLElement | SVGElement;
-			const e = evt as any;
-
-			if (e.explicitOriginalTarget // FF only
-				&& e.explicitOriginalTarget !== element
-				&& (event as PointerEvent).isOver(element)) {
-
-				// If the event was re-targeted, it's suspicious as the leave event should not bubble
-				// This happens on FF when another control which is over the 'element' has been updated, like text or visibility changed.
-				// So we have to validate that this event is effectively due to the pointer leaving the element.
-				// We achieve that by buffering it until the next few 'pointermove' on document for which we validate the new pointer location.
-
-				// It's common to get a move right after the leave with the same pointer's location,
-				// so we wait up to 3 pointer move before dropping the leave event.
-				let attempt = 3;
-
-				WindowManager.current.ensurePendingLeaveEventProcessing();
-				WindowManager.current.processPendingLeaveEvent = (move: PointerEvent) => {
-					if (!move.isOverDeep(element)) {
-						// Raising deferred pointerleave on element " + element.id);
-						// Note The 'evt.currentTarget' is available only while in the event handler.
-						//		So we manually keep a reference ('element') and explicit dispatch event to it.
-						//		https://developer.mozilla.org/en-US/docs/Web/API/Event/currentTarget
-						WindowManager.dispatchPointerEvent(element, evt);
-
-						WindowManager.current.processPendingLeaveEvent = null;
-					} else if (--attempt <= 0) {
-						// Drop deferred pointerleave on element " + element.id);
-
-						WindowManager.current.processPendingLeaveEvent = null;
-					} else {
-						// Requeue deferred pointerleave on element " + element.id);
-					}
-				};
-
-			} else {
-				WindowManager.onPointerEventReceived(evt);
-			}
-		}
-
-		private processPendingLeaveEvent: (evt: PointerEvent) => void;
-
-		private _isPendingLeaveProcessingEnabled: boolean;
-
-		/**
-		 * Ensure that any pending leave event are going to be processed (cf @see processPendingLeaveEvent )
-		 */
-		private ensurePendingLeaveEventProcessing() {
-			if (this._isPendingLeaveProcessingEnabled) {
-				return;
-			}
-
-			// Register an event listener on move in order to process any pending event (leave).
-			document.addEventListener(
-				"pointermove",
-				evt => {
-					if (this.processPendingLeaveEvent) {
-						this.processPendingLeaveEvent(evt as PointerEvent);
-					}
-				},
-				true); // in the capture phase to get it as soon as possible, and to make sure to respect the events ordering
-			this._isPendingLeaveProcessingEnabled = true;
-		}
-
 		/**
 			* Add an event handler to a html element.
 			*
@@ -1049,96 +935,6 @@ namespace Uno.UI {
 			};
 
 			element.addEventListener(eventName, eventHandler, onCapturePhase);
-		}
-
-		/**
-		 * pointer event extractor to be used with registerEventOnView
-		 * @param evt
-		 */
-		private static pointerEventExtractor(evt: PointerEvent|WheelEvent): string {
-			if (!evt) {
-				return "";
-			}
-
-			let src = evt.target as HTMLElement | SVGElement;
-			if (src instanceof SVGElement) {
-				// The XAML SvgElement are UIElement in Uno (so they have a XamlHandle),
-				// but as on WinUI they are not part of the visual tree, they should not be used as OriginalElement.
-				// Instead we should use the actual parent <svg /> which is the XAML Shape.
-				const shape = (src as any).ownerSVGElement;
-				if (shape) {
-					src = shape;
-				}
-			} else if (src instanceof HTMLImageElement) {
-				// Same as above for images (<img /> == HtmlImage, we use the parent <div /> which is the XAML Image).
-				src = src.parentElement;
-			}
-
-			let srcHandle = "0";
-			while (src) {
-				let handle = src.getAttribute("XamlHandle");
-				if (handle) {
-					srcHandle = handle;
-					break;
-				}
-
-				src = src.parentElement;
-			}
-
-			let pointerId: number, pointerType: string, pressure: number;
-			let wheelDeltaX: number, wheelDeltaY: number;
-			if (evt instanceof WheelEvent) {
-				pointerId = (evt as any).mozInputSource ? 0 : 1; // Try to match the mouse pointer ID 0 for FF, 1 for others
-				pointerType = "mouse";
-				pressure = 0.5; // like WinUI
-				wheelDeltaX = evt.deltaX;
-				wheelDeltaY = evt.deltaY;
-
-				switch (evt.deltaMode) {
-					case WheelEvent.DOM_DELTA_LINE: // Actually this is supported only by FF
-						const lineSize = WindowManager.wheelLineSize;
-						wheelDeltaX *= lineSize;
-						wheelDeltaY *= lineSize;
-						break;
-					case WheelEvent.DOM_DELTA_PAGE:
-						wheelDeltaX *= document.documentElement.clientWidth;
-						wheelDeltaY *= document.documentElement.clientHeight;
-						break;
-				}
-			} else {
-				pointerId = evt.pointerId;
-				pointerType = evt.pointerType;
-				pressure = evt.pressure;
-				wheelDeltaX = 0;
-				wheelDeltaY = 0;
-			}
-
-			return `${pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.buttons};${evt.button};${pointerType};${srcHandle};${evt.timeStamp};${pressure};${wheelDeltaX};${wheelDeltaY}`;
-		}
-
-		private static _wheelLineSize : number = undefined;
-		private static get wheelLineSize(): number {
-			// In web browsers, scroll might happen by pixels, line or page.
-			// But WinUI works only with pixels, so we have to convert it before send the value to the managed code.
-			// The issue is that there is no easy way get the "size of a line", instead we have to determine the CSS "line-height"
-			// defined in the browser settings. 
-			// https://stackoverflow.com/questions/20110224/what-is-the-height-of-a-line-in-a-wheel-event-deltamode-dom-delta-line
-			if (this._wheelLineSize == undefined) {
-				const el = document.createElement("div");
-				el.style.fontSize = "initial";
-				el.style.display = "none";
-				document.body.appendChild(el);
-				const fontSize = window.getComputedStyle(el).fontSize;
-				document.body.removeChild(el);
-
-				this._wheelLineSize = fontSize ? parseInt(fontSize) : 16; /* 16 = The current common default font size */
-
-				// Based on observations, even if the event reports 3 lines (the settings of windows),
-				// the browser will actually scroll of about 6 lines of text.
-				this._wheelLineSize *= 2.0;
-			}
-
-			return this._wheelLineSize;
 		}
 
 		/**
@@ -1207,8 +1003,6 @@ namespace Uno.UI {
 				//
 
 				switch (eventExtractorId) {
-					case 1:
-						return WindowManager.pointerEventExtractor;
 					case 3:
 						return this.keyboardEventExtractor;
 
@@ -1232,21 +1026,21 @@ namespace Uno.UI {
 		}
 
 		/**
-			* Set or replace the root content element.
+			* Set or replace the root element.
 			*/
-		public setRootContent(elementId?: number): string {
-			if (this.rootContent && Number(this.rootContent.id) === elementId) {
+		public setRootElement(elementId?: number): string {
+			if (this.rootElement && Number(this.rootElement.id) === elementId) {
 				return null; // nothing to do
 			}
 
-			if (this.rootContent) {
+			if (this.rootElement) {
 				// Remove existing
-				this.containerElement.removeChild(this.rootContent);
+				this.containerElement.removeChild(this.rootElement);
 
 				if (WindowManager.isLoadEventsEnabled) {
-					this.dispatchEvent(this.rootContent, "unloaded");
+					this.dispatchEvent(this.rootElement, "unloaded");
 				}
-				this.rootContent.classList.remove(WindowManager.unoRootClassName);
+				this.rootElement.classList.remove(WindowManager.unoRootClassName);
 			}
 
 			if (!elementId) {
@@ -1257,16 +1051,16 @@ namespace Uno.UI {
 			const newRootElement = this.getView(elementId) as HTMLElement;
 			newRootElement.classList.add(WindowManager.unoRootClassName);
 
-			this.rootContent = newRootElement;
+			this.rootElement = newRootElement;
 
 			if (WindowManager.isLoadEventsEnabled) {
-				this.dispatchEvent(this.rootContent, "loading");
+				this.dispatchEvent(this.rootElement, "loading");
 			}
 
-			this.containerElement.appendChild(this.rootContent);
+			this.containerElement.appendChild(this.rootElement);
 
 			if (WindowManager.isLoadEventsEnabled) {
-				this.dispatchEvent(this.rootContent, "loaded");
+				this.dispatchEvent(this.rootElement, "loaded");
 			}
 			this.setAsArranged(newRootElement); // patch because root is not measured/arranged
 
@@ -1487,7 +1281,7 @@ namespace Uno.UI {
 			*
 			* @param maxWidth string containing width in pixels. Empty string means infinite.
 			* @param maxHeight string containing height in pixels. Empty string means infinite.
-		    * @param measureContent if we're interested by the content of the control (<img>'s image, <input>'s text...)
+			* @param measureContent if we're interested by the content of the control (<img>'s image, <input>'s text...)
 			*/
 		public measureView(viewId: string, maxWidth: string, maxHeight: string, measureContent: boolean = true): string {
 
@@ -1687,7 +1481,7 @@ namespace Uno.UI {
 			const opts = <ScrollToOptions>({
 				left: params.HasLeft ? params.Left : undefined,
 				top: params.HasTop ? params.Top : undefined,
-				behavior: <ScrollBehavior>(params.DisableAnimation ? "auto" : "smooth")
+				behavior: <ScrollBehavior>(params.DisableAnimation ? "instant" : "smooth")
 			});
 
 			elt.scrollTo(opts);
@@ -1933,7 +1727,8 @@ namespace Uno.UI {
 
 			window.addEventListener("resize", x => this.resize());
 			window.addEventListener("contextmenu", x => {
-				if (!(x.target instanceof HTMLInputElement)) {
+				if (!(x.target instanceof HTMLInputElement) ||
+					x.target.classList.contains("context-menu-disabled")) {
 					x.preventDefault();
 				}
 			})
@@ -2010,7 +1805,7 @@ namespace Uno.UI {
 		}
 
 		private getIsConnectedToRootElement(element: HTMLElement | SVGElement): boolean {
-			const rootElement = this.rootContent;
+			const rootElement = this.rootElement;
 
 			if (!rootElement) {
 				return false;

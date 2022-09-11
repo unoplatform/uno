@@ -67,8 +67,8 @@ namespace Windows.UI.Xaml.Automation
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationAnnotation.AutomationAnnotation(Windows.UI.Xaml.Automation.AnnotationType, Windows.UI.Xaml.UIElement)
-		#if __ANDROID__ || __IOS__ || NET461 || false || false || false || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public AutomationAnnotation() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.AutomationAnnotation", "AutomationAnnotation.AutomationAnnotation()");

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Uno.Disposables;
 using Windows.UI.Xaml.Data;
@@ -213,7 +213,7 @@ namespace Windows.UI.Xaml.Documents
 			set => SetValue(CharacterSpacingProperty, value);
 		}
 
-		public static DependencyProperty CharacterSpacingProperty =
+		public static DependencyProperty CharacterSpacingProperty { get; } =
 			DependencyProperty.Register(
 				"CharacterSpacing",
 				typeof(int),
@@ -242,10 +242,10 @@ namespace Windows.UI.Xaml.Documents
 			set { SetValue(TextDecorationsProperty, value); }
 		}
 
-		public static DependencyProperty TextDecorationsProperty =
+		public static DependencyProperty TextDecorationsProperty { get; } =
 			DependencyProperty.Register(
 				"TextDecorations",
-				typeof(int),
+				typeof(uint),
 				typeof(TextElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextDecorations.None,

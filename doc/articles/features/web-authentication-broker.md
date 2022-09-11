@@ -10,7 +10,7 @@
 * It is not possible for applications to clear cookies for the authentication server when this one is from another origin. The only way clear cookies is to deploy the app and the authentication server on the same site (sharing the same origin).
 * You can change the size and the initial title of the open window by setting corresponding settings in `WinRTFeatureConfiguration.WebAuthenticationBroker` .
 
-## Usage on iOS & MacOS
+## Usage on iOS & macOS
 
 * The *redirect URI* **MUST** use a custom scheme URI and this scheme must be registered in the `Info.plist` of the application.
 * Default *redirect URI* will be `<scheme>:/authentication-callback`. Ex: `my-app-auth:/authentication-callback`
@@ -20,11 +20,11 @@
 
 * The *redirect URI* **MUST** use a custom scheme URI. This one will launch a special *Activity* declared in the application.
 
-* You **MUST** declare an activity inheriting from `WebAuthenticationBrokerActivityBase` in the Android head:
+* You **MUST** declare an activity inheriting from `WebAuthenticationBrokerActivityBase` in the Android head. Note the `[Activity]` attribute needs to include `Exported = true` if you are targeting Android 12.
 
   ``` csharp
   // Android: add this class near the MainActivity, in the head project
-  [Activity(NoHistory = true, LaunchMode = LaunchMode.SingleTop)]
+  [Activity(NoHistory = true, LaunchMode = LaunchMode.SingleTop, Exported = true)]
   [IntentFilter(
   	new[] {Android.Content.Intent.ActionView},
   	Categories = new[] {Android.Content.Intent.CategoryDefault, Android.Content.Intent.CategoryBrowsable},
@@ -63,60 +63,6 @@ public class MyBrokerImplementation : Uno.AuthenticationBroker.IWebAuthenticatio
 ```
 
 This implementation can also published as a NuGet package and it will be discovered automatically by the Uno tooling during compilation.
-
-### Android: Custom Implementation for AndroidX Chrome Custom Tabs
-
-1. Add references to following NuGet packages:
-
-   * `Xamarin.Android.Support.CustomTabs`
-   * `Xamarin.AndroidX.Lifecycle.LiveData`
-   * `Xamarin.AndroidX.Browser`
-
-2. Directly in the Android head project, create a class inheriting from `WebAuthenticationBrokerProvider`:
-
-   ``` csharp
-   public class ChromeCustomTabsProvider : Uno.AuthenticationBroker.WebAuthenticationBrokerProvider
-   {   
-   }
-   ```
-
-3. Override the `LaunchBrowserCore` virtual method:
-
-   ``` csharp
-   public class ChromeCustomTabsProvider : Uno.AuthenticationBroker.WebAuthenticationBrokerProvider
-   {   
-       protected override async Task LaunchBrowserCore(
-                   WebAuthenticationOptions options,
-                   Uri requestUri,
-                   Uri callbackUri,
-                   CancellationToken ct)
-       {
-           var builder = new CustomTabsIntent.Builder();
-   		var intent = builder.Build();
-   		intent.LaunchUrl(
-               ContextHelper.Current,
-               Android.Net.Uri.Parse(requestUri.OriginalString));
-       }
-   }
-   ```
-
-4. Register the override in the `Application` constructor in the `Main.cs` file:
-
-   ```csharp
-   public Application(IntPtr javaReference, JniHandleOwnership transfer)
-   	: base(() => new App(), javaReference, transfer)
-   {
-   	ConfigureUniversalImageLoader();
-           
-       // ---- Add the following lines ----
-       // Register a custom implementation of WebAuthenticationBroker
-       // by using the AndroidX Chrome Custom Tabs on Android.
-       Uno.Foundation.Extensibility.ApiExtensibility.Register(
-   		typeof(IWebAuthenticationBrokerProvider),
-   		_ => new ChromeCustomTabsProvider());
-       // ---------------------------------
-   }
-   ```
 
 ### WebAssembly: How to use `<iframe>` instead of a browser window
 

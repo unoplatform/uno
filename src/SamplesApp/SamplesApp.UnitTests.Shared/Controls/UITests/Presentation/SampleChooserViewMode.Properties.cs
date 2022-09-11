@@ -1,26 +1,12 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Reflection;
+﻿#pragma warning disable 105 // Disabled until the tree is migrate to WinUI
+
+using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Diagnostics;
 using SampleControl.Entities;
-using Uno.UI.Samples.Controls;
-using Uno.UI.Samples.Entities;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Globalization;
 using Windows.UI.Xaml.Data;
-using Windows.ApplicationModel.Core;
-using Windows.UI.Core;
-using Windows.Storage;
 using Uno.Extensions;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml;
-using System.IO;
-using Uno.Disposables;
-using System.ComponentModel;
 using Uno.UI.Common;
 using Microsoft.UI.Xaml.Controls;
 
@@ -53,6 +39,7 @@ namespace SampleControl.Presentation
 		private bool _isAnyContentVisible = false;
 		private bool _contentAttachedToWindow;
 		private bool _useFluentStyles;
+		private bool _useDarkTheme;
 		private object _contentPhone = null;
 		private string _searchTerm = "";
 
@@ -410,10 +397,26 @@ namespace SampleControl.Presentation
 					Application.Current.Resources.MergedDictionaries.Remove(_fluentResources);
 				}
 #if HAS_UNO
-				Application.Current.Resources?.UpdateThemeBindings();
-				Uno.UI.ResourceResolver.UpdateSystemThemeBindings();
-				Application.PropagateThemeChanged(Windows.UI.Xaml.Window.Current.Content);
+				// Force the in app styles to reload
+				var updateReason = ResourceUpdateReason.ThemeResource;
+				Application.Current.Resources?.UpdateThemeBindings(updateReason);
+				Uno.UI.ResourceResolver.UpdateSystemThemeBindings(updateReason);
+				Application.PropagateResourcesChanged(Windows.UI.Xaml.Window.Current.Content, updateReason);
 #endif
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool UseDarkTheme
+		{
+			get => _useDarkTheme;
+			set
+			{
+				_useDarkTheme = value;
+				if (Windows.UI.Xaml.Window.Current.Content is FrameworkElement root)
+				{
+					root.RequestedTheme = _useDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
+				}
 				RaisePropertyChanged();
 			}
 		}

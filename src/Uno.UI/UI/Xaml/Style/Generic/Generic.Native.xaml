@@ -21,6 +21,7 @@
 					xmlns:macos="http://uno.ui/macos"
 					xmlns:net461="http://uno.ui/net461"
 					xmlns:not_wasm="http://uno.ui/not_wasm"
+					xmlns:toolkit="using:Uno.UI.Toolkit"
 					mc:Ignorable="d xamarin ios android skia wasm not_wasm net461 macos">
 
 	<!-- Default native Button styles -->
@@ -401,11 +402,13 @@
 		BasedOn="{StaticResource XamlDefaultPivot}" />
 
 	<ios:Style x:Key="NativeDefaultCommandBar"
-			   TargetType="CommandBar">
+				TargetType="CommandBar">
 		<Setter Property="Background"
 				Value="{x:Null}" />
 		<Setter Property="Foreground"
 				Value="{x:Null}" />
+		<Setter Property="uBehaviors:InternalVisibleBoundsPadding.PaddingMask"
+				Value="Top" />
 		<Setter Property="HorizontalAlignment"
 				Value="Stretch" />
 		<Setter Property="VerticalAlignment"
@@ -413,11 +416,9 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="CommandBar">
-					<!-- We use BorderBrush instead of Background to ensure that semi-transparent background of Grid and NativeCommandBarPresenter don't add up -->
-					<Border BorderBrush="{TemplateBinding Background}"
-							BorderThickness="{TemplateBinding Padding}">
+					<Border BorderThickness="{TemplateBinding Padding}">
 						<!-- TODO: 1px line -->
-						<NativeCommandBarPresenter />
+						<NativeCommandBarPresenter Height="44" />
 					</Border>
 				</ControlTemplate>
 			</Setter.Value>
@@ -430,6 +431,8 @@
 				Value="{x:Null}" />
 		<Setter Property="Foreground"
 				Value="{x:Null}" />
+		<Setter Property="uBehaviors:InternalVisibleBoundsPadding.PaddingMask"
+				Value="Top" />
 		<Setter Property="HorizontalAlignment"
 				Value="Stretch" />
 		<Setter Property="VerticalAlignment"

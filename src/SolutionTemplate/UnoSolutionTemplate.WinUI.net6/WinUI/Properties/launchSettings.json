@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "$ext_safeprojectname$.Windows": {
+      "commandName": "MsixPackage"
+    }
+  }
+}

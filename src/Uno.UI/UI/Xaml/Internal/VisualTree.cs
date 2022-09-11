@@ -5,13 +5,16 @@
 #nullable enable
 
 using System;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Input;
+using Uno.UI.Xaml.Islands;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
@@ -588,17 +591,15 @@ namespace Uno.UI.Xaml.Core
 		[NotImplemented]
 		private static UIElement? GetXamlIslandRootForElement(DependencyObject? pObject)
 		{
-			return null;
-			//TODO Uno: XamlIslandRoot not needed for now.
 			//if (!pObject || !pObject->GetContext()->HasXamlIslands())
 			//{
 			//	return nullptr;
 			//}
-			//if (VisualTree * visualTree = GetForElementNoRef(pObject))
-			//{
-			//	return do_pointer_cast<CXamlIslandRoot>(visualTree->m_rootElement);
-			//}
-			//return null;
+			if (GetForElement(pObject) is VisualTree visualTree)
+			{
+				return visualTree.RootElement;
+			}
+			return null;
 		}
 
 		internal static VisualTree? GetForElement(DependencyObject? element, LookupOptions options = LookupOptions.WarningIfNotFound)
@@ -665,32 +666,32 @@ namespace Uno.UI.Xaml.Core
 					}
 				}
 
-				//if (currentAncestor.GetTypeIndex() == KnownTypeIndex::XamlIsland)
-				//{
-				//	return static_cast<CXamlIslandRoot*>(currentAncestor)->GetVisualTreeNoRef();
-				//}
-				//else
-				if (currentAncestor is RootVisual rootVisual)
+				if (currentAncestor is XamlIslandRoot xamlIslandRoot)
+				{
+					return xamlIslandRoot.ContentRoot.VisualTree;
+				}
+				else if (currentAncestor is RootVisual rootVisual)
 				{
 					return rootVisual.AssociatedVisualTree;
 				}
 
+				DependencyObject? nextAncestor = null;
 				//TODO Uno: Uncomment and implement
-				//DependencyObject? nextAncestor = null;
-				//if (currentAncestor.DoesAllowMultipleAssociation() && currentAncestor.GetParentCount() > 1)
-				//{
-				//	// We cannot travese up a tree through a multiply associated element.  Our goal is to support DOs being
-				//	// shared between XAML trees.  We've seen cases where we traverse up the tree through CSetter objects,
-				//	// so for now we allow the traversal if there's one unique parent.  TODO: This could be fragile?  Allowing
-				//	// the traversal to happen when the parent count is 1 means that if this element gets another parent later,
-				//	// we're now in an inconsistent state.
-				//	// Bug 19548424: Investigate places where an element entering the tree doesn't have a unique VisualTree ptr
-				//}
-				//else
-				//{
-				//	nextAncestor = currentAncestor.GetParentInternal(false /* public parent only */);
-				//}
+				if (false)//currentAncestor.DoesAllowMultipleAssociation() && currentAncestor.GetParentCount() > 1)
+				{
+					// We cannot travese up a tree through a multiply associated element.  Our goal is to support DOs being
+					// shared between XAML trees.  We've seen cases where we traverse up the tree through CSetter objects,
+					// so for now we allow the traversal if there's one unique parent.  TODO: This could be fragile?  Allowing
+					// the traversal to happen when the parent count is 1 means that if this element gets another parent later,
+					// we're now in an inconsistent state.
+					// Bug 19548424: Investigate places where an element entering the tree doesn't have a unique VisualTree ptr
+				}
+				else
+				{
+					nextAncestor = currentAncestor.GetParentInternal(false /* public parent only */);
+				}
 
+				//TODO Uno: Uncomment and implement
 				////
 				//// We have a few tricks to figure out which VisualTree an element may be associated with.
 				//// There is now a cached weak VisualTree pointer on each DO that we update when we do a live
@@ -743,7 +744,7 @@ namespace Uno.UI.Xaml.Core
 				//	}
 				//}
 
-				//currentAncestor = nextAncestor;
+				currentAncestor = nextAncestor;
 			}
 			if (result == null)
 			{
@@ -769,11 +770,9 @@ namespace Uno.UI.Xaml.Core
 
 		internal XamlRoot GetOrCreateXamlRoot()
 		{
-			if (XamlRoot == null)
+			if (XamlRoot is null)
 			{
-				//TODO Uno: Our current implementation has only a single XAML root.
-				//In the future we may want to support multiple.
-				XamlRoot = XamlRoot.Current;
+				XamlRoot = new XamlRoot(this);
 			}
 
 			return XamlRoot;

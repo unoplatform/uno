@@ -1,52 +1,91 @@
 #if __IOS__ || __ANDROID__ || __WASM__ || __MACOS__
 #pragma warning disable 67
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
+using Uno.Helpers;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Foundation.Metadata;
+
 namespace Windows.Devices.Geolocation
 {
+	/// <summary>
+	/// Provides access to the current geographic location.
+	/// </summary>
 	public sealed partial class Geolocator
 	{
 		private const uint DefaultAccuracyInMeters = 500;
-		private const uint HighAccuracyInMeters = 10;		
+		private const uint HighAccuracyInMeters = 10;
 
-		private static readonly object _syncLock = new object();
+		private static readonly object _syncLock = new();
 
-		//using ConcurrentDictionary as concurrent HashSet (https://stackoverflow.com/questions/18922985/concurrent-hashsett-in-net-framework), byte is throwaway
-		private static ConcurrentDictionary<Geolocator, byte> _statusChangedSubscriptions = new ConcurrentDictionary<Geolocator, byte>();
+		// Using ConcurrentDictionary as concurrent HashSet (https://stackoverflow.com/questions/18922985/concurrent-hashsett-in-net-framework), byte is throwaway
+		private static readonly ConcurrentDictionary<Geolocator, byte> _statusChangedSubscriptions = new ConcurrentDictionary<Geolocator, byte>();
 
-		private TypedEventHandler<Geolocator, StatusChangedEventArgs> _statusChanged;
-		private TypedEventHandler<Geolocator, PositionChangedEventArgs> _positionChanged;			
+		private readonly StartStopEventWrapper<TypedEventHandler<Geolocator, StatusChangedEventArgs>> _statusChangedWrapper;
+		private readonly StartStopEventWrapper<TypedEventHandler<Geolocator, PositionChangedEventArgs>> _positionChangedWrapper;
 
 		private PositionAccuracy _desiredAccuracy = PositionAccuracy.Default;
+
 		private uint? _desiredAccuracyInMeters = DefaultAccuracyInMeters;
+
 		private uint _actualDesiredAccuracyInMeters = DefaultAccuracyInMeters;
 
 		/// <summary>
-		/// By default null, can be set by the user when no better option exists
+		/// Initializes a new Geolocator object.
 		/// </summary>
-		public static BasicGeoposition? DefaultGeoposition { get; set; }
+		public Geolocator()
+		{
+			_statusChangedWrapper = new StartStopEventWrapper<TypedEventHandler<Geolocator, StatusChangedEventArgs>>(
+				() => StartStatusChanged(),
+				() => StopStatusChanged(),
+				_syncLock);
+			_positionChangedWrapper = new StartStopEventWrapper<TypedEventHandler<Geolocator, PositionChangedEventArgs>>(
+				() => StartPositionChanged(),
+				() => StopPositionChanged(),
+				_syncLock);
+
+			PlatformInitialize();
+		}
+
+		partial void PlatformInitialize();
+
+		~Geolocator()
+		{
+			StopStatusChanged();
+			PlatformDestruct();
+		}
+
+		partial void PlatformDestruct();
 
 		/// <summary>
-		/// Ideally should be set to true on devices without GPS capabilities, keep false as default
+		/// Raised when the ability of the Geolocator to provide updated location changes.
 		/// </summary>
-		public static bool IsDefaultGeopositionRecommended { get; private set; } = false;
+		public event TypedEventHandler<Geolocator, StatusChangedEventArgs> StatusChanged
+		{
+			add => _statusChangedWrapper.AddHandler(value);
+			remove => _statusChangedWrapper.RemoveHandler(value);
+		}
 
 		/// <summary>
-		/// Default is NotInitialized in line with UWP
+		/// Raised when the location is updated.
 		/// </summary>
-		public PositionStatus LocationStatus { get; private set; } = PositionStatus.NotInitialized;
+		public event TypedEventHandler<Geolocator, PositionChangedEventArgs> PositionChanged
+		{
+			add => _positionChangedWrapper.AddHandler(value);
+			remove => _positionChangedWrapper.RemoveHandler(value);
+		}
 
 		/// <summary>
-		/// Setting overwrites <see cref="_actualDesiredAccuracyInMeters"/> but does not overwrite <see cref="DesiredAccuracyInMeters"/> directly.
+		/// Gets or sets the location manually entered into the system by the user, to be utilized if no better options exist.
+		/// </summary>
+		public static BasicGeoposition? DefaultGeoposition { get; set; }		
+
+		/// <summary>
+		/// The accuracy level at which the Geolocator provides location updates.
+		/// </summary>
+		/// <remarks>
+		/// Does not overwrite <see cref="DesiredAccuracyInMeters"/> directly.
 		/// Default is equivalent to 500 meters, High is equivalent to 10 meters
 		/// Matches UWP behavior <see href="https://docs.microsoft.com/en-us/uwp/api/windows.devices.geolocation.geolocator.desiredaccuracy#remarks">Docs</see> 
-		/// </summary>
+		/// </remarks>
 		public PositionAccuracy DesiredAccuracy
 		{
 			get => _desiredAccuracy;
@@ -60,9 +99,12 @@ namespace Windows.Devices.Geolocation
 		}
 
 		/// <summary>
-		/// Setting overwrites <see cref="_actualDesiredAccuracyInMeters"/> but does not overwrite <see cref="DesiredAccuracy"/> directly.
-		/// Matches UWP behavior <see href="https://docs.microsoft.com/en-us/uwp/api/windows.devices.geolocation.geolocator.desiredaccuracy#remarks">Docs</see> 
+		/// Gets or sets the desired accuracy in meters for data returned from the location service.
 		/// </summary>
+		/// <remarks>
+		/// Does not overwrite <see cref="DesiredAccuracy"/>. When set to null, <see cref="DesiredAccuracy" /> is reapplied.
+		/// Matches UWP behavior <see href="https://docs.microsoft.com/en-us/uwp/api/windows.devices.geolocation.geolocator.desiredaccuracy#remarks">Docs</see> 
+		/// </remarks>
 		public uint? DesiredAccuracyInMeters
 		{
 			get => _desiredAccuracyInMeters;
@@ -75,11 +117,27 @@ namespace Windows.Devices.Geolocation
 				}
 				else
 				{
-					//force set DesiredAccuracy so that its ActualDesiredAccuracyInMeters rule is applied
+					// Force set DesiredAccuracy so that its ActualDesiredAccuracyInMeters rule is applied
 					DesiredAccuracy = DesiredAccuracy;
+					OnDesiredAccuracyInMetersChanged();
 				}
 			}
 		}
+
+		/// <summary>
+		/// Indicates whether the user should be prompted to set a default location manually.
+		/// </summary>
+		/// <remarks>
+		///	Should be set to true on devices without GPS.
+		/// </remarks>
+		public static bool IsDefaultGeopositionRecommended { get; private set; }
+
+		/// <summary>
+		/// The status that indicates the ability of the Geolocator to provide location updates.
+		/// </summary>
+		public PositionStatus LocationStatus { get; private set; } = PositionStatus.NotInitialized;
+
+		partial void OnDesiredAccuracyInMetersChanged();
 
 		internal uint ActualDesiredAccuracyInMeters
 		{
@@ -92,74 +150,19 @@ namespace Windows.Devices.Geolocation
 					OnActualDesiredAccuracyInMetersChanged();
 				}
 			}
-		}
+		}		
 
-		public event TypedEventHandler<Geolocator, StatusChangedEventArgs> StatusChanged
-		{
-			add
-			{
-				lock (_syncLock)
-				{
-					bool isFirstSubscriber = _statusChanged == null;
-					_statusChanged += value;
-					if (isFirstSubscriber)
-					{
-						StartStatusChanged();
-					}
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_statusChanged -= value;
-					if (_statusChanged == null)
-					{
-						StopStatusChanged();
-					}
-				}
-			}
-		}
-
-		public event TypedEventHandler<Geolocator, PositionChangedEventArgs> PositionChanged
-		{
-			add
-			{
-				lock (_syncLock)
-				{
-					bool isFirstSubscriber = _positionChanged == null;
-					_positionChanged += value;
-					if (isFirstSubscriber)
-					{
-						StartPositionChanged();
-					}
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_positionChanged -= value;
-					if (_positionChanged == null)
-					{
-						StopPositionChanged();
-					}
-				}
-			}
-		}
-			   
 		/// <summary>
 		/// Broadcasts status change to all subscribed Geolocator instances
 		/// </summary>
 		/// <param name="positionStatus"></param>
-		private static void BroadcastStatus(PositionStatus positionStatus)
+		private static void BroadcastStatusChanged(PositionStatus positionStatus)
 		{
-			foreach (var key in _statusChangedSubscriptions.Keys)
+			foreach (var subscriber in _statusChangedSubscriptions.Keys)
 			{
-				key.OnStatusChanged(positionStatus);
+				subscriber.OnStatusChanged(positionStatus);
 			}
 		}
-
 
 		private void StartStatusChanged() => _statusChangedSubscriptions.TryAdd(this, 0);
 
@@ -167,7 +170,7 @@ namespace Windows.Devices.Geolocation
 
 		partial void StartPositionChanged();
 
-		partial void StopPositionChanged();		
+		partial void StopPositionChanged();
 
 		partial void OnActualDesiredAccuracyInMetersChanged();
 
@@ -177,7 +180,7 @@ namespace Windows.Devices.Geolocation
 		/// <param name="geoposition">Geoposition</param>
 		private void OnPositionChanged(Geoposition geoposition)
 		{
-			_positionChanged?.Invoke(this, new PositionChangedEventArgs(geoposition));
+			_positionChangedWrapper.Event?.Invoke(this, new PositionChangedEventArgs(geoposition));
 		}
 
 		/// <summary>
@@ -196,7 +199,7 @@ namespace Windows.Devices.Geolocation
 			}
 
 			LocationStatus = status;
-			_statusChanged?.Invoke(this, new StatusChangedEventArgs(status));
+			_statusChangedWrapper.Event?.Invoke(this, new StatusChangedEventArgs(status));
 		}
 	}
 }

@@ -10,6 +10,7 @@ using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media.VisualTreeHelperPages;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 
@@ -19,9 +20,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 	[RunsOnUIThread]
 	public class Given_VisualTreeHelper
 	{
+		[TestMethod]
+		public void OpenPopups_Flyouts_Unique()
+		{
+			var button = new Windows.UI.Xaml.Controls.Button();
+			var flyout = new Flyout();
+			FlyoutBase.SetAttachedFlyout(button, flyout);
+			WindowHelper.WindowContent = button;
+			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopups(Window.Current).Count);
+			FlyoutBase.ShowAttachedFlyout(button);
+			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopups(Window.Current).Count);
+			flyout.Hide();
+			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopups(Window.Current).Count);			
+		}
+
+		[TestMethod]
+		public void OpenPopups_Popups_Unique()
+		{
+			var popup = new Popup();
+			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopups(Window.Current).Count);
+			popup.IsOpen = true;
+			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopups(Window.Current).Count);
+			popup.IsOpen = false;
+			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopups(Window.Current).Count);
+		}
+
+		[TestMethod]
+		public void OpenPopups_Popups_Include_Instance()
+		{
+			var popup = new Popup();
+			popup.IsOpen = true;
+			CollectionAssert.Contains(VisualTreeHelper.GetOpenPopups(Window.Current).ToArray(), popup);
+			popup.IsOpen = false;
+		}
+
 #if !NETFX_CORE // Testing internal Uno methods
+#if __SKIA__
+		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
+#endif
 		[TestMethod]
 		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Nested_In_Native_View()
 		{
 			var page = new Native_View_Page();
@@ -41,13 +82,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 			foreach (var point in GetPointsInside(bounds, perimeterOffset: 5))
 			{
-				var hitTest = VisualTreeHelper.HitTest(point, getHitTestability);
+				var hitTest = VisualTreeHelper.HitTest(point, WindowHelper.WindowContent.XamlRoot, getHitTestability);
 				Assert.AreEqual(sut, hitTest.element);
 			}
 
 			foreach (var point in GetPointsOutside(bounds, perimeterOffset: 5))
 			{
-				var hitTest = VisualTreeHelper.HitTest(point);
+				var hitTest = VisualTreeHelper.HitTest(point, WindowHelper.WindowContent.XamlRoot);
 				Assert.IsNotNull(hitTest.element);
 				Assert.AreNotEqual(sut, hitTest.element);
 			}

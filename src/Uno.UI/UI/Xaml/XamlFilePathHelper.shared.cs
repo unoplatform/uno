@@ -27,9 +27,12 @@ namespace Uno.UI.Xaml
 				var trimmedPath = relativeTargetPath.TrimStart(AppXIdentifier);
 				return trimmedPath;
 			}
-
-			// Strip leading forward-slash, if any, to match the path the target file is indexed by
-			relativeTargetPath = relativeTargetPath.TrimStart(new[] { '/' });
+			else if (relativeTargetPath.StartsWith("/", StringComparison.Ordinal))
+			{
+				// Paths that start with '/' mean they're relative to the root (ie, absolute paths).
+				// We remove the leading / because that's what the callers expect.
+				return relativeTargetPath.Substring(1);
+			}
 
 			var originDirectory = Path.GetDirectoryName(origin);
 			if (originDirectory.IsNullOrWhiteSpace())
@@ -42,8 +45,8 @@ namespace Uno.UI.Xaml
 			return absoluteTargetPath.Replace('\\', '/');
 		}
 
-		internal static bool IsAbsolutePath(string relativeTargetPath) => relativeTargetPath.StartsWith(AppXIdentifier, StringComparison.InvariantCulture)
-			|| relativeTargetPath.StartsWith(MSResourceIdentifier, StringComparison.InvariantCulture);
+		internal static bool IsAbsolutePath(string relativeTargetPath) => relativeTargetPath.StartsWith(AppXIdentifier, StringComparison.Ordinal)
+			|| relativeTargetPath.StartsWith(MSResourceIdentifier, StringComparison.Ordinal);
 
 		internal static string GetWinUIThemeResourceUrl(int version) => string.Format(WinUIThemeResourceURLFormatString, version);
 

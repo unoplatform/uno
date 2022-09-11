@@ -47,10 +47,6 @@ namespace Windows.ApplicationModel.Resources.Core
 			{
 				throw new global::System.NotSupportedException();
 			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -61,10 +57,6 @@ namespace Windows.ApplicationModel.Resources.Core
 			{
 				throw new global::System.NotSupportedException();
 			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -72,10 +64,6 @@ namespace Windows.ApplicationModel.Resources.Core
 		public global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Resources.Core.ResourceMap> Values
 		{
 			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
 			{
 				throw new global::System.NotSupportedException();
 			}
@@ -105,10 +93,6 @@ namespace Windows.ApplicationModel.Resources.Core
 		public int Count
 		{
 			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
 			{
 				throw new global::System.NotSupportedException();
 			}

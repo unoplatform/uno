@@ -4,6 +4,7 @@ using Uno.UI.Samples.Controls;
 using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
+using System.Threading;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 {
@@ -77,6 +78,14 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 				var messageDialog = new Windows.UI.Popups.MessageDialog("\"Sample \\\"force escape test\\\" \\n \\t \\r continued sample.\"");
 				
 				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => await messageDialog.ShowAsync());
+			};
+
+			WithProgrammaticDismissal.Tapped += (snd, evt) =>
+			{
+				var messageDialog = new Windows.UI.Popups.MessageDialog("It will dismiss in 2000 ms", "Programatically Dismiss");
+
+				var cts = new CancellationTokenSource(2000);
+				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => await messageDialog.ShowAsync().AsTask(cts.Token));
 			};
 		}
 

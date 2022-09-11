@@ -47,9 +47,20 @@ namespace Windows.ApplicationModel.ConversationalAgent
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.ConversationalAgent.SignalDetectorResourceKind> UnavailableSystemResources
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<SignalDetectorResourceKind> DetectionConfigurationAvailabilityInfo.UnavailableSystemResources is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.IsEnabled.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.HasSystemResourceAccess.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.HasPermission.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.HasLockScreenPermission.get
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationAvailabilityInfo.UnavailableSystemResources.get
 	}
 }

@@ -8,7 +8,7 @@ using EventHandler = System.EventHandler;
 
 namespace Uno.UI.Samples.Presentation.SamplePages
 {
-	public class ListViewSelectionsViewModel : ViewModelBase
+	internal class ListViewSelectionsViewModel : ViewModelBase
 	{
 		private string _selectedName = "";
 

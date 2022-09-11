@@ -9,7 +9,7 @@ The complete sample code can be found here: [StatusBarThemeColor](https://github
 
 1. Create a new Uno Platform application, following the instructions [here](../get-started.md).
 2. In `MainPage.xaml`, add a `<CommandBar>`:
-    > On iOS, the status bar color cannot be set directly, so it is done via through a `CommandBar` placed in the page. You could also use any XAML element like `<Grid>` or `<Border>` to achieve a similar effect, if your application doesn't use navigation or doesn't use native navigation. This is because the page content can go under the status bar. In fact, you usually have to add padding to avoid that (see next step).
+    > On iOS, the status bar color cannot be set directly, so it is done via a `CommandBar` placed in the page. You could also use any XAML element like `<Grid>` or `<Border>` to achieve a similar effect, if your application doesn't use navigation or doesn't use native navigation. This is because the page content can go under the status bar. In fact, you usually have to add padding to avoid that (see next step).
     ```xml
     <Grid>
         <Grid.RowDefinitions>
@@ -50,11 +50,11 @@ The complete sample code can be found here: [StatusBarThemeColor](https://github
     public CommandBar GetCommandBar() => MyCommandBar;
     ```
 
-5. In `App.xaml.cs`, enable the native frame navigation to use the native style for `CommandBar`, instead of the UWP style:
+5. In `App.xaml.cs`, enable the native frame navigation to use the native style for `CommandBar`, instead of the UWP style. Make sure that the `#if ... #endif` block is before `this.InitializeComponent()`:
     ```cs
     public App()
     {
-        ConfigureFilters(global::Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory);
+        /***/
 
     #if __IOS__ || __ANDROID__
         // Enable native frame navigation.
@@ -146,6 +146,8 @@ The complete sample code can be found here: [StatusBarThemeColor](https://github
         }
     #endif
     }
+
+8. Change the theme of your device to validate the result.
 
 ## Concluding remarks
 

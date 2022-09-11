@@ -2,6 +2,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+#pragma warning disable 105 // remove when moving to WinUI tree
+
 using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
@@ -77,7 +79,7 @@ namespace Microsoft.UI.Xaml.Controls
 			templateSettings.SetValue(PagerControlTemplateSettings.NumberPanelItemsProperty, m_numberPanelElements);
 			SetValue(TemplateSettingsProperty, templateSettings);
 
-			DefaultStyleKey = typeof(PagerControl);
+			SetDefaultStyleKey(this);
 		}
 
 		~PagerControl()
@@ -142,6 +144,7 @@ namespace Microsoft.UI.Xaml.Controls
 				m_comboBox = comboBox;
 				if (comboBox != null)
 				{
+					FillComboBoxCollectionToSize(NumberOfPages);
 					comboBox.SelectedIndex = SelectedPageIndex - 1;
 					AutomationProperties.SetName(comboBox, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_PagerControlPageTextName));
 					comboBox.SelectionChanged += ComboBoxSelectionChanged;
@@ -171,6 +174,29 @@ namespace Microsoft.UI.Xaml.Controls
 			OnDisplayModeChanged();
 			UpdateOnEdgeButtonVisualStates();
 			OnNumberOfPagesChanged(0);
+
+			// Update button visibilities
+			OnButtonVisibilityChanged(FirstButtonVisibility,
+				c_firstPageButtonVisibleVisualState,
+				c_firstPageButtonNotVisibleVisualState,
+				c_firstPageButtonHiddenVisualState,
+				0);
+			OnButtonVisibilityChanged(PreviousButtonVisibility,
+				c_previousPageButtonVisibleVisualState,
+				c_previousPageButtonNotVisibleVisualState,
+				c_previousPageButtonHiddenVisualState,
+				0);
+			OnButtonVisibilityChanged(NextButtonVisibility,
+				c_nextPageButtonVisibleVisualState,
+				c_nextPageButtonNotVisibleVisualState,
+				c_nextPageButtonHiddenVisualState,
+				NumberOfPages - 1);
+			OnButtonVisibilityChanged(LastButtonVisibility,
+				c_lastPageButtonVisibleVisualState,
+				c_lastPageButtonNotVisibleVisualState,
+				c_lastPageButtonHiddenVisualState,
+				NumberOfPages - 1);
+
 			OnSelectedPageIndexChange(-1);
 		}
 

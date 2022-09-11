@@ -23,8 +23,11 @@ namespace Windows.UI.ViewManagement
 			switch (foregroundType)
 			{
 				case StatusBarForegroundType.Dark:
-					// The status bar foreground on iOS is dark by default
-					UIApplication.SharedApplication.StatusBarStyle = UIStatusBarStyle.Default;
+					// iOS 13 and above requires explicit configuration of darkContent for light backgrounds statusbar
+					// https://developer.apple.com/documentation/uikit/uistatusbarstyle/darkcontent
+					UIApplication.SharedApplication.StatusBarStyle = UIDevice.CurrentDevice.CheckSystemVersion(13, 0)
+						? UIStatusBarStyle.DarkContent
+						: UIStatusBarStyle.Default;
 					break;
 				case StatusBarForegroundType.Light:
 					UIApplication.SharedApplication.StatusBarStyle = UIStatusBarStyle.LightContent;

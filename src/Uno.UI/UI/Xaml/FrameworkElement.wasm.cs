@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Controls;
 using Windows.Foundation;
 using View = Windows.UI.Xaml.UIElement;
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml
 				The propagation of this loaded state is also made by the UIElement.
 		 */
 
-		private void NativeOnLoading(object sender, RoutedEventArgs args)
+		private void NativeOnLoading(FrameworkElement sender, object args)
 		{
 			OnLoadingPartial();
 
@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml
 			// properties that affect the visual tree.
 			foreach (var child in _children)
 			{
-				(child as FrameworkElement)?.InternalDispatchEvent("loading", args);
+				(child as FrameworkElement)?.InternalDispatchEvent("loading", args as EventArgs);
 			}
 		}
 
@@ -129,8 +129,8 @@ namespace Windows.UI.Xaml
 
 		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
 
-		private event RoutedEventHandler _loading;
-		public event RoutedEventHandler Loading
+		private event TypedEventHandler<FrameworkElement, object> _loading;
+		public event TypedEventHandler<FrameworkElement, object> Loading
 		{
 			add
 			{
@@ -233,6 +233,11 @@ namespace Windows.UI.Xaml
 		}
 
 		internal override bool IsEnabledOverride() => IsEnabled && base.IsEnabledOverride();
+
+		/// <summary>
+		/// Identifies the Name dependency property.
+		/// </summary>
+		public static new DependencyProperty NameProperty => UIElement.NameProperty;
 
 		#region Margin Dependency Property
 		[GeneratedDependencyProperty(

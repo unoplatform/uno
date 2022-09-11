@@ -7,16 +7,7 @@ namespace Windows.UI.Xaml.Input
 	#endif
 	public  partial class FocusManagerGotFocusEventArgs 
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Guid CorrelationId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid FocusManagerGotFocusEventArgs.CorrelationId is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property CorrelationId
 		// Skipping already declared property NewFocusedElement
 		// Forced skipping of method Windows.UI.Xaml.Input.FocusManagerGotFocusEventArgs.NewFocusedElement.get
 		// Forced skipping of method Windows.UI.Xaml.Input.FocusManagerGotFocusEventArgs.CorrelationId.get

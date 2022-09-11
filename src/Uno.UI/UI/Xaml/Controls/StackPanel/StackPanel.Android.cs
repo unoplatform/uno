@@ -1,6 +1,6 @@
 ﻿using Android.Views;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Controls;
 using System;
 using System.Collections.Generic;

@@ -7,409 +7,43 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class CalendarDatePicker : global::Windows.UI.Xaml.Controls.Control
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string PlaceholderText
-		{
-			get
-			{
-				return (string)this.GetValue(PlaceholderTextProperty);
-			}
-			set
-			{
-				this.SetValue(PlaceholderTextProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset MinDate
-		{
-			get
-			{
-				return (global::System.DateTimeOffset)this.GetValue(MinDateProperty);
-			}
-			set
-			{
-				this.SetValue(MinDateProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset MaxDate
-		{
-			get
-			{
-				return (global::System.DateTimeOffset)this.GetValue(MaxDateProperty);
-			}
-			set
-			{
-				this.SetValue(MaxDateProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsTodayHighlighted
-		{
-			get
-			{
-				return (bool)this.GetValue(IsTodayHighlightedProperty);
-			}
-			set
-			{
-				this.SetValue(IsTodayHighlightedProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsOutOfScopeEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsOutOfScopeEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsOutOfScopeEnabledProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsGroupLabelVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(IsGroupLabelVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(IsGroupLabelVisibleProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsCalendarOpen
-		{
-			get
-			{
-				return (bool)this.GetValue(IsCalendarOpenProperty);
-			}
-			set
-			{
-				this.SetValue(IsCalendarOpenProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.DataTemplate HeaderTemplate
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.DataTemplate)this.GetValue(HeaderTemplateProperty);
-			}
-			set
-			{
-				this.SetValue(HeaderTemplateProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  object Header
-		{
-			get
-			{
-				return (object)this.GetValue(HeaderProperty);
-			}
-			set
-			{
-				this.SetValue(HeaderProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Globalization.DayOfWeek FirstDayOfWeek
-		{
-			get
-			{
-				return (global::Windows.Globalization.DayOfWeek)this.GetValue(FirstDayOfWeekProperty);
-			}
-			set
-			{
-				this.SetValue(FirstDayOfWeekProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.CalendarViewDisplayMode DisplayMode
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.CalendarViewDisplayMode)this.GetValue(DisplayModeProperty);
-			}
-			set
-			{
-				this.SetValue(DisplayModeProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DayOfWeekFormat
-		{
-			get
-			{
-				return (string)this.GetValue(DayOfWeekFormatProperty);
-			}
-			set
-			{
-				this.SetValue(DayOfWeekFormatProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DateFormat
-		{
-			get
-			{
-				return (string)this.GetValue(DateFormatProperty);
-			}
-			set
-			{
-				this.SetValue(DateFormatProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset? Date
-		{
-			get
-			{
-				return (global::System.DateTimeOffset?)this.GetValue(DateProperty);
-			}
-			set
-			{
-				this.SetValue(DateProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Style CalendarViewStyle
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Style)this.GetValue(CalendarViewStyleProperty);
-			}
-			set
-			{
-				this.SetValue(CalendarViewStyleProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string CalendarIdentifier
-		{
-			get
-			{
-				return (string)this.GetValue(CalendarIdentifierProperty);
-			}
-			set
-			{
-				this.SetValue(CalendarIdentifierProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.LightDismissOverlayMode LightDismissOverlayMode
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.LightDismissOverlayMode)this.GetValue(LightDismissOverlayModeProperty);
-			}
-			set
-			{
-				this.SetValue(LightDismissOverlayModeProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  object Description
-		{
-			get
-			{
-				return (object)this.GetValue(DescriptionProperty);
-			}
-			set
-			{
-				this.SetValue(DescriptionProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CalendarIdentifierProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CalendarIdentifier), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
-			new FrameworkPropertyMetadata(default(string)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CalendarViewStyleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CalendarViewStyle), typeof(global::Windows.UI.Xaml.Style), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Style)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DateFormatProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DateFormat), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
-			new FrameworkPropertyMetadata(default(string)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DateProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Date), typeof(global::System.DateTimeOffset?), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
-			new FrameworkPropertyMetadata(default(global::System.DateTimeOffset?)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DayOfWeekFormatProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DayOfWeekFormat), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
-			new FrameworkPropertyMetadata(default(string)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DisplayModeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DisplayMode), typeof(global::Windows.UI.Xaml.Controls.CalendarViewDisplayMode), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.CalendarViewDisplayMode)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FirstDayOfWeekProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FirstDayOfWeek), typeof(global::Windows.Globalization.DayOfWeek), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
-			new FrameworkPropertyMetadata(default(global::Windows.Globalization.DayOfWeek)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HeaderProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Header), typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
-			new FrameworkPropertyMetadata(default(object)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HeaderTemplateProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HeaderTemplate), typeof(global::Windows.UI.Xaml.DataTemplate), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsCalendarOpenProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsCalendarOpen), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsGroupLabelVisibleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsGroupLabelVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsOutOfScopeEnabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsOutOfScopeEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsTodayHighlightedProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsTodayHighlighted), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MaxDateProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MaxDate), typeof(global::System.DateTimeOffset), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
-			new FrameworkPropertyMetadata(default(global::System.DateTimeOffset)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MinDateProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MinDate), typeof(global::System.DateTimeOffset), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
-			new FrameworkPropertyMetadata(default(global::System.DateTimeOffset)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderTextProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PlaceholderText), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
-			new FrameworkPropertyMetadata(default(string)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty LightDismissOverlayModeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(LightDismissOverlayMode), typeof(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DescriptionProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Description), typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.CalendarDatePicker), 
-			new FrameworkPropertyMetadata(default(object)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public CalendarDatePicker() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.CalendarDatePicker", "CalendarDatePicker.CalendarDatePicker()");
-		}
-		#endif
+		// Skipping already declared property PlaceholderText
+		// Skipping already declared property MinDate
+		// Skipping already declared property MaxDate
+		// Skipping already declared property IsTodayHighlighted
+		// Skipping already declared property IsOutOfScopeEnabled
+		// Skipping already declared property IsGroupLabelVisible
+		// Skipping already declared property IsCalendarOpen
+		// Skipping already declared property HeaderTemplate
+		// Skipping already declared property Header
+		// Skipping already declared property FirstDayOfWeek
+		// Skipping already declared property DisplayMode
+		// Skipping already declared property DayOfWeekFormat
+		// Skipping already declared property DateFormat
+		// Skipping already declared property Date
+		// Skipping already declared property CalendarViewStyle
+		// Skipping already declared property CalendarIdentifier
+		// Skipping already declared property LightDismissOverlayMode
+		// Skipping already declared property Description
+		// Skipping already declared property CalendarIdentifierProperty
+		// Skipping already declared property CalendarViewStyleProperty
+		// Skipping already declared property DateFormatProperty
+		// Skipping already declared property DateProperty
+		// Skipping already declared property DayOfWeekFormatProperty
+		// Skipping already declared property DisplayModeProperty
+		// Skipping already declared property FirstDayOfWeekProperty
+		// Skipping already declared property HeaderProperty
+		// Skipping already declared property HeaderTemplateProperty
+		// Skipping already declared property IsCalendarOpenProperty
+		// Skipping already declared property IsGroupLabelVisibleProperty
+		// Skipping already declared property IsOutOfScopeEnabledProperty
+		// Skipping already declared property IsTodayHighlightedProperty
+		// Skipping already declared property MaxDateProperty
+		// Skipping already declared property MinDateProperty
+		// Skipping already declared property PlaceholderTextProperty
+		// Skipping already declared property LightDismissOverlayModeProperty
+		// Skipping already declared property DescriptionProperty
+		// Skipping already declared method Windows.UI.Xaml.Controls.CalendarDatePicker.CalendarDatePicker()
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarDatePicker.CalendarDatePicker()
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarDatePicker.Date.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarDatePicker.Date.set
@@ -451,6 +85,8 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarDatePicker.Opened.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarDatePicker.Closed.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarDatePicker.Closed.remove
+		// Skipping already declared method Windows.UI.Xaml.Controls.CalendarDatePicker.SetDisplayDate(System.DateTimeOffset)
+		// Skipping already declared method Windows.UI.Xaml.Controls.CalendarDatePicker.SetYearDecadeDisplayDimensions(int, int)
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarDatePicker.LightDismissOverlayMode.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarDatePicker.LightDismissOverlayMode.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarDatePicker.Description.get
@@ -489,5 +125,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
+		// Skipping already declared event Windows.UI.Xaml.Controls.CalendarDatePicker.Closed
+		// Skipping already declared event Windows.UI.Xaml.Controls.CalendarDatePicker.DateChanged
+		// Skipping already declared event Windows.UI.Xaml.Controls.CalendarDatePicker.Opened
 	}
 }

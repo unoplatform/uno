@@ -14,9 +14,9 @@ namespace Uno.UI.Runtime.Skia
 		{
 			PaintSurface += UnoCanvas_PaintSurface;
 			Resized += UnoCanvas_Resized;
-
-			WUX.Window.InvalidateRender += () => Invalidate();
 		}
+
+		internal void InvalidateRender() => Invalidate();
 
 		private void UnoCanvas_Resized(object sender, EventArgs e)
 		{
@@ -45,7 +45,7 @@ namespace Uno.UI.Runtime.Skia
 			var scale = (float)ScalingInfo.ScalingFactor;
 			e.Surface.Canvas.Scale(scale);
 
-			WUX.Window.Current.Compositor.Render(e.Surface, e.Info);
+			WUX.Window.Current.Compositor.Render(e.Surface);
 		}
 	}
 }

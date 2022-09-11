@@ -74,23 +74,45 @@ namespace Windows.UI.Xaml.Controls
 		// an appropriate size.
 		const double ScrollViewerMinHeightToReflowAroundOcclusions = 32.0f;
 
-		private readonly IScrollStrategy _strategy;
-		
-		private ScrollViewer Scroller => ScrollOwner as ScrollViewer;
+		private /*readonly - partial*/ IScrollStrategy _strategy;
 
-		public bool CanHorizontallyScroll { get; set; }
+		private bool _canHorizontallyScroll;
+		public bool CanHorizontallyScroll
+		{
+			get => _canHorizontallyScroll
+#if __SKIA__
+			|| _forceChangeToCurrentView
+#endif
+			;
+			set => _canHorizontallyScroll = value;
+		}
 
-		public bool CanVerticallyScroll { get; set; }
+		private bool _canVerticallyScroll;
+		public bool CanVerticallyScroll
+		{
+			get => _canVerticallyScroll
+#if __SKIA__
+			|| _forceChangeToCurrentView
+#endif
+			;
+			set => _canVerticallyScroll = value;
+		}
 
 		public double HorizontalOffset { get; private set; }
 
 		public double VerticalOffset { get; private set; }
 
+		public double ExtentHeight { get; internal set; }
+
+		public double ExtentWidth { get; internal set; }
+
 		internal Size ScrollBarSize => new Size(0, 0);
 
 		internal Size? CustomContentExtent => null;
 
-		public ScrollContentPresenter()
+		private object RealContent => Content;
+
+		partial void InitializePartial()
 		{
 #if __SKIA__
 			_strategy = CompositorScrollStrategy.Instance;
@@ -108,10 +130,6 @@ namespace Windows.UI.Xaml.Controls
 			ManipulationStarting += PrepareTouchScroll;
 			ManipulationDelta += UpdateTouchScroll;
 			ManipulationCompleted += CompleteTouchScroll;
-
-			// On Skia and macOS (as UWP), the Scrolling is managed by the ScrollContentPresenter, not the ScrollViewer.
-			// Note: This as direct consequences in UIElement.GetTransform and VisualTreeHelper.SearchDownForTopMostElementAt
-			RegisterAsScrollPort(this);
 		}
 
 		public void SetVerticalOffset(double offset)
@@ -189,9 +207,9 @@ namespace Windows.UI.Xaml.Controls
 				_strategy.Update(contentElt, HorizontalOffset, VerticalOffset, 1, disableAnimation);
 			}
 
-			Scroller?.OnScrollInternal(HorizontalOffset, VerticalOffset, isIntermediate);
+			Scroller?.OnPresenterScrolled(HorizontalOffset, VerticalOffset, isIntermediate);
 
-			// Note: We do not capture the offset so if they are altered in the OnScrollInternal,
+			// Note: We do not capture the offset so if they are altered in the OnPresenterScrolled,
 			//		 we will apply only the final ScrollOffsets and only once.
 			ScrollOffsets = new Point(HorizontalOffset, VerticalOffset);
 			InvalidateViewport();
@@ -237,6 +255,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private void PrepareTouchScroll(object sender, ManipulationStartingRoutedEventArgs e)
 		{
+			if (e.Container != this)
+			{
+				// This gesture is coming from a nested element, we just ignore it!
+				return;
+			}
+
 			if (e.Pointer.Type != PointerDeviceType.Touch)
 			{
 				e.Mode = ManipulationModes.None;
@@ -255,14 +279,22 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private void UpdateTouchScroll(object sender, ManipulationDeltaRoutedEventArgs e)
-			=> Set(
+		{
+			if (e.Container != this) // No needs to check the pointer type, if the manip is local it's touch, otherwise it was cancelled in starting.
+			{
+				// This gesture is coming from a nested element, we just ignore it!
+				return;
+			}
+
+			Set(
 				horizontalOffset: HorizontalOffset - e.Delta.Translation.X,
 				verticalOffset: VerticalOffset - e.Delta.Translation.Y,
 				isIntermediate: true);
+		}
 
 		private void CompleteTouchScroll(object sender, ManipulationCompletedRoutedEventArgs e)
 		{
-			if (e.PointerDeviceType != PointerDeviceType.Touch)
+			if (e.Container != this || (PointerDeviceType)e.PointerDeviceType != PointerDeviceType.Touch)
 			{
 				return;
 			}

@@ -1,24 +1,19 @@
 ﻿using UIKit;
+using Windows.System.Profile.Internal;
 
-namespace Windows.System.Profile
+namespace Windows.System.Profile;
+
+public static partial class AnalyticsInfo
 {
-	public static partial class AnalyticsInfo
+	private static UnoDeviceForm GetDeviceForm()
 	{
-		private static UnoDeviceForm GetDeviceForm()
+		return UIDevice.CurrentDevice.UserInterfaceIdiom switch
 		{
-			switch (UIDevice.CurrentDevice.UserInterfaceIdiom)
-			{
-				case UIUserInterfaceIdiom.Phone:
-					return UnoDeviceForm.Mobile;
-				case UIUserInterfaceIdiom.Pad:
-					return UnoDeviceForm.Tablet;
-				case UIUserInterfaceIdiom.TV:
-					return UnoDeviceForm.Television;
-				case UIUserInterfaceIdiom.CarPlay:
-					return UnoDeviceForm.Car;
-				default:
-					return UnoDeviceForm.Unknown;
-			}
-		}
+			UIUserInterfaceIdiom.Phone => UnoDeviceForm.Mobile,
+			UIUserInterfaceIdiom.Pad => UnoDeviceForm.Tablet,
+			UIUserInterfaceIdiom.TV => UnoDeviceForm.Television,
+			UIUserInterfaceIdiom.CarPlay => UnoDeviceForm.Car,
+			_ => UnoDeviceForm.Unknown,
+		};
 	}
 }

@@ -5,7 +5,7 @@ namespace Windows.Phone.UI.Input
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class HardwareButtons 
+	public static partial class HardwareButtons 
 	{
 		// Forced skipping of method Windows.Phone.UI.Input.HardwareButtons.BackPressed.add
 		// Forced skipping of method Windows.Phone.UI.Input.HardwareButtons.BackPressed.remove

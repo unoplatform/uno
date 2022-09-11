@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Windows.Foundation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Extensions;
 using Android.App;
 using Windows.UI.Xaml;
@@ -90,7 +90,7 @@ namespace Uno.UI
 				MinLogicalValue = (int.MinValue + 1) / _cachedDensity;
 			}
 
-			if (typeof(ViewHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (typeof(ViewHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				typeof(ViewHelper).Log().DebugFormat("Display Scale is {0}", Scale);
 			}
@@ -466,6 +466,10 @@ namespace Uno.UI
 				// This ensures it's disabled for everything using ScaledDensity (e.g. TextBlock, TextBox, AppBarButton, etc.)
 				// https://developer.xamarin.com/api/property/Android.Util.DisplayMetrics.ScaledDensity/
 				displayMetrics.ScaledDensity = displayMetrics.Density;
+			}
+			else if (FeatureConfiguration.Font.MaximumTextScaleFactor is float scaleFactor)
+			{
+				displayMetrics.ScaledDensity = Math.Min(displayMetrics.ScaledDensity, scaleFactor);
 			}
 		}
 	}

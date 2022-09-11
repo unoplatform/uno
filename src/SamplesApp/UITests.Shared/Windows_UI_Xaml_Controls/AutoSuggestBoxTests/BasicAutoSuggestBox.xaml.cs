@@ -82,7 +82,8 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.AutoSuggestBoxTests
 		private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
 		{
 			querys += 1;
-			query.Text = "QuerySubmitted: " + querys + " " + args.QueryText;
+			query.Text = "QuerySubmitted: " + querys + " " + args.QueryText + " " + nameof(args.ChosenSuggestion) + ">>" + args?.ChosenSuggestion ?? "NULL";
+			
 		}
 	}
 }

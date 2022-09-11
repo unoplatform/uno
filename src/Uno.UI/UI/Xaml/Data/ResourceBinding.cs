@@ -17,11 +17,11 @@ namespace Windows.UI.Xaml.Data
 		/// </summary>
 		public SpecializedResourceDictionary.ResourceKey ResourceKey { get; }
 
-		/// <summary>
-		/// True if the original assignation used the ThemeResource extension, false if it used StaticResource. (This determines whether it
-		/// should be updated when the active theme changes.)
-		/// </summary>
+		public ResourceUpdateReason UpdateReason { get; }
+
 		public bool IsThemeResourceExtension { get; }
+
+		public bool IsPersistent => UpdateReason != ResourceUpdateReason.StaticResourceLoading;
 
 		public object? ParseContext { get; }
 
@@ -32,10 +32,10 @@ namespace Windows.UI.Xaml.Data
 		/// </summary>
 		public BindingPath? SetterBindingPath { get; }
 
-		public ResourceBinding(SpecializedResourceDictionary.ResourceKey resourceKey, bool isThemeResourceExtension, object? parseContext, DependencyPropertyValuePrecedences precedence, BindingPath? setterBindingPath)
+		public ResourceBinding(SpecializedResourceDictionary.ResourceKey resourceKey, ResourceUpdateReason updateReason, object? parseContext, DependencyPropertyValuePrecedences precedence, BindingPath? setterBindingPath)
 		{
 			ResourceKey = resourceKey;
-			IsThemeResourceExtension = isThemeResourceExtension;
+			UpdateReason = updateReason;
 			ParseContext = parseContext;
 			Precedence = precedence;
 			SetterBindingPath = setterBindingPath;

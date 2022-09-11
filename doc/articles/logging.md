@@ -6,12 +6,13 @@ Virtually every production level application should utilize some form of logging
 
 The Uno platform makes use of the Microsoft logging NuGet packages to provide comprehensive logging support.
 
-> [!IMPORTANT]
-> Due to current limitations regarding logging in WASM, Uno currently supports version 1.1.1 of the **Microsoft.Extensions.Logging** package and associated packages.
-
 ### Configuring logging
 
 The standard Uno template configures logging in the **Shared** project **App.xaml.cs** file.
+
+1. Add the [`Uno.UI.Adapter.Microsoft.Extensions.Logging`](https://www.nuget.org/packages/Uno.UI.Adapter.Microsoft.Extensions.Logging/) NuGet package to your platform projects.
+1. In the iOS project, add the [`Uno.Extensions.Logging.OSLog`](https://www.nuget.org/packages/Uno.Extensions.Logging.OSLog/) NuGet package to your platform projects.
+1. In the WebAssembly project, add the [`Uno.Extensions.Logging.WebAssembly.Console`](https://www.nuget.org/packages/Uno.Extensions.Logging.WebAssembly.Console/) NuGet package to your platform projects.
 
 1. In the **Shared** project and open the **App.xaml.cs** file.
 
@@ -20,7 +21,7 @@ The standard Uno template configures logging in the **Shared** project **App.xam
     ```csharp
     public App()
     {
-        ConfigureFilters(global::Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory);
+        InitializeLogging();
     ```
 
     Notice that Uno provides a logger factory implementation.
@@ -28,66 +29,85 @@ The standard Uno template configures logging in the **Shared** project **App.xam
 1. Locate the **ConfigureFilters** method and review the code:
 
     ```csharp
-    /// <summary>
-    /// Configures global logging
-    /// </summary>
-    /// <param name="factory"></param>
-    static void ConfigureFilters(ILoggerFactory factory)
+
+    private static void InitializeLogging()
     {
-        factory
-            .WithFilter(new FilterLoggerSettings
-                {
-                    { "Uno", LogLevel.Warning },
-                    { "Windows", LogLevel.Warning },
+#if DEBUG
+		// Logging is disabled by default for release builds, as it incurs a significant
+		// initialization cost from Microsoft.Extensions.Logging setup. If startup performance
+		// is a concern for your application, keep this disabled. If you're running on web or 
+		// desktop targets, you can use url or command line parameters to enable it yourself.
+		//
+		// For more performance documentation: https://platform.uno/docs/articles/Uno-UI-Performance.html
 
-                    // Debug JS interop
-                    // { "Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug },
+        var factory = LoggerFactory.Create(builder =>
+        {
+#if __WASM__
+            builder.AddProvider(new global::Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
+#elif __IOS__
+            builder.AddProvider(new global::Uno.Extensions.Logging.OSLogLoggerProvider());
+#elif NETFX_CORE
+            builder.AddDebug();
+#else
+            builder.AddConsole();
+#endif
 
-                    // Generic XAML events
-                    // { "Windows.UI.Xaml", LogLevel.Debug },
-                    // { "Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug },
-                    // { "Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug },
-                    // { "Windows.UI.Xaml.UIElement", LogLevel.Debug },
+            // Exclude logs below this level
+            builder.SetMinimumLevel(LogLevel.Information);
 
-                    // Layouter specific messages
-                    // { "Windows.UI.Xaml.Controls", LogLevel.Debug },
-                    // { "Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug },
-                    // { "Windows.UI.Xaml.Controls.Panel", LogLevel.Debug },
-                    // { "Windows.Storage", LogLevel.Debug },
+            // Default filters for Uno Platform namespaces
+            builder.AddFilter("Uno", LogLevel.Warning);
+            builder.AddFilter("Windows", LogLevel.Warning);
+            builder.AddFilter("Microsoft", LogLevel.Warning);
 
-                    // Binding related messages
-                    // { "Windows.UI.Xaml.Data", LogLevel.Debug },
+            // Generic Xaml events
+            // builder.AddFilter("Windows.UI.Xaml", LogLevel.Debug );
+            // builder.AddFilter("Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug );
+            // builder.AddFilter("Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug );
+            // builder.AddFilter("Windows.UI.Xaml.UIElement", LogLevel.Debug );
+            // builder.AddFilter("Windows.UI.Xaml.FrameworkElement", LogLevel.Trace );
 
-                    // DependencyObject memory references tracking
-                    // { "ReferenceHolder", LogLevel.Debug },
+            // Layouter specific messages
+            // builder.AddFilter("Windows.UI.Xaml.Controls", LogLevel.Debug );
+            // builder.AddFilter("Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug );
+            // builder.AddFilter("Windows.UI.Xaml.Controls.Panel", LogLevel.Debug );
 
-                    // ListView-related messages
-                    // { "Windows.UI.Xaml.Controls.ListViewBase", LogLevel.Debug },
-                    // { "Windows.UI.Xaml.Controls.ListView", LogLevel.Debug },
-                    // { "Windows.UI.Xaml.Controls.GridView", LogLevel.Debug },
-                    // { "Windows.UI.Xaml.Controls.VirtualizingPanelLayout", LogLevel.Debug },
-                    // { "Windows.UI.Xaml.Controls.NativeListViewBase", LogLevel.Debug },
-                    // { "Windows.UI.Xaml.Controls.ListViewBaseSource", LogLevel.Debug }, //iOS
-                    // { "Windows.UI.Xaml.Controls.ListViewBaseInternalContainer", LogLevel.Debug }, //iOS
-                    // { "Windows.UI.Xaml.Controls.NativeListViewBaseAdapter", LogLevel.Debug }, //Android
-                    // { "Windows.UI.Xaml.Controls.BufferViewCache", LogLevel.Debug }, //Android
-                    // { "Windows.UI.Xaml.Controls.VirtualizingPanelGenerator", LogLevel.Debug }, //WASM
-                }
-            )
-            .AddConsole(LogLevel.Information);
+            // builder.AddFilter("Windows.Storage", LogLevel.Debug );
+
+            // Binding related messages
+            // builder.AddFilter("Windows.UI.Xaml.Data", LogLevel.Debug );
+            // builder.AddFilter("Windows.UI.Xaml.Data", LogLevel.Debug );
+
+            // Binder memory references tracking
+            // builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Debug );
+
+            // RemoteControl and HotReload related
+            // builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Information);
+
+            // Debug JS interop
+            // builder.AddFilter("Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug );
+        });
+
+        global::Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = factory;
+
+#if HAS_UNO
+		global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
+#endif
+
+#endif // DEBUG
     }
     ```
 
     Notice that the logging levels of various categories can be added and configured.
 
     > [!NOTE]
-    > Notice that console logging is configured by default- `.AddConsole(LogLevel.Information);`. This **does not** log output to the Visual Studio console when running a UWP app. The next task details how to add UWP logging.
+    > Notice that console logging is configured by default- `.AddConsole();`. This **does not** log output to the Visual Studio console when running a UWP app. The next task details how to add UWP logging.
 
 ## Adding UWP logging
 
 In order to support logging to the debug output view in Visual Studio, complete the following steps
 
-1. To install the, **IdentityModel** NuGet package, right-click the solution, and select **Manage NuGet packages for solution...**
+1. To install the, **Microsoft.Extensions.Logging.Debug** NuGet package, right-click the solution, and select **Manage NuGet packages for solution...**
 
 1. In the **Manage Packages for Solution** UI, select the **Browse** tab, search for **Microsoft.Extensions.Logging.Debug** and select it in the search results.
 
@@ -206,3 +226,38 @@ The logging behavior can be configured using feature flags:
     Uno.UI.FeatureConfiguration.ApiInformation.NotImplementedLogLevel = LogLevel.Debug; // Raise not implemented usages as Debug messages
     ```
     This can be used to suppress the not implemented output, if it's not useful.
+
+## IOS Unhandled Exception
+
+```Unhandled Exception:
+System.InvalidOperationException: A suitable constructor for type 'Microsoft.Extensions.Options.OptionsMonitor`1[Microsoft.Extensions.Logging.LoggerFilterOptions]' could not be located. Ensure the type is concrete and services are registered for all parameters of a public constructor.
+```
+
+If you are getting the above exception when running on iOS and the Linker Behavior is set to "Link All" it is likely that the IL linker is removing some logging classes.
+See [Linking Xamarin.iOS Apps](https://docs.microsoft.com/en-us/xamarin/ios/deploy-test/linker?tabs=macos)
+
+One option is to use `linkskip` file to exclude the assemblies causing issues.
+Add the following to your `mtouch` arguments:
+
+```
+--linkskip=Uno.Extensions.Logging.OSLog 
+--linkskip=Microsoft.Extensions.Options
+```
+
+The other option is to add a [custom linker definition file](https://docs.microsoft.com/en-us/xamarin/cross-platform/deploy-test/linker)
+
+```
+<linker> 
+  <assembly fullname="YOUR PROJECT ASSEMBLIES" />
+  
+  <assembly fullname="Microsoft.Extensions.Options" />
+
+  <assembly fullname="System.Net.Http" />
+
+  <assembly fullname="System.Core">
+    <!-- This is required by JSon.NET and any expression.Compile caller -->
+    <type fullname="System.Linq.Expressions*" />
+  </assembly>
+</linker>
+```
+

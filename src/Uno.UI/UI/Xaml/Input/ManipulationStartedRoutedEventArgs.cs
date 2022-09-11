@@ -1,7 +1,12 @@
-using Windows.Devices.Input;
 using Windows.Foundation;
-using Windows.UI.Input;
 using Uno.UI.Xaml.Input;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace Windows.UI.Xaml.Input
 {
@@ -11,8 +16,8 @@ namespace Windows.UI.Xaml.Input
 
 		public ManipulationStartedRoutedEventArgs() { }
 
-		internal ManipulationStartedRoutedEventArgs(UIElement container, GestureRecognizer recognizer, ManipulationStartedEventArgs args)
-			: base(container)
+		internal ManipulationStartedRoutedEventArgs(UIElement source, UIElement container, GestureRecognizer recognizer, ManipulationStartedEventArgs args)
+			: base(source)
 		{
 			Container = container;
 
@@ -28,7 +33,7 @@ namespace Windows.UI.Xaml.Input
 		/// Gets identifiers of all pointer that has been involved in that manipulation.
 		/// </summary>
 		/// <remarks>All pointers are expected to have the same <see cref="PointerIdentifier.Type"/>.</remarks>
-		internal PointerIdentifier[] Pointers { get; }
+		internal Windows.Devices.Input.PointerIdentifier[] Pointers { get; }
 
 		public bool Handled { get; set; }
 

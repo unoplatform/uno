@@ -6,14 +6,15 @@
 		<WarningsAsErrors>true</WarningsAsErrors>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+		<!-- This target must always be built, regardless of the CI override -->
+		<TargetFrameworksOverrideInvariant>netstandard2.0</TargetFrameworksOverrideInvariant>
 	</PropertyGroup>
-	
+
 	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.18.0" />
+		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
 		<PackageReference Include="Microsoft.Build" Version="15.4.8" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Engine" Version="15.4.8" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.4.8" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.4.8" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.CodeAnalysis">
 			<Version>3.3.1</Version>
@@ -41,23 +42,22 @@
 		<PackageReference Include="Mono.Cecil">
 			<Version>0.10.1</Version>
 		</PackageReference>
-		<PackageReference Include="Uno.Core" />
 		<PackageReference Include="Uno.SourceGeneration" />
 	</ItemGroup>
-	
+
 	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net5.0'">
 		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions">
 			<Version>3.1.6</Version>
 		</PackageReference>
-		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.18.0" />
+		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
 		<PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis">
 			<Version>3.8.0</Version>
+			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
 		<PackageReference Include="Mono.Cecil">
 			<Version>0.10.1</Version>
 		</PackageReference>
-		<PackageReference Include="Uno.Core" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -97,10 +97,20 @@
 		<Compile Include="..\..\Uno.UI\UI\Xaml\XamlFilePathHelper.shared.cs">
 			<Link>Helpers\XamlFilePathHelper.shared.cs</Link>
 		</Compile>
+		<Compile Include="..\..\Uno.Foundation.Runtime.WebAssembly\Interop\TSInteropMessageAttribute.wasm.cs">
+			<Link>TSBindings\TSInteropMessageAttribute.cs</Link>
+		</Compile>
 	</ItemGroup>
+
+	<Import Project="..\..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.props" />
 
 	<ItemGroup>
 		<None Include="Content\Uno.UI.SourceGenerators.props" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="Uno.UI.SourceGenerators.net6.Tests" />
+		<InternalsVisibleTo Include="Uno.UI.SourceGenerators.Tests" />
 	</ItemGroup>
 
 	<ItemGroup>

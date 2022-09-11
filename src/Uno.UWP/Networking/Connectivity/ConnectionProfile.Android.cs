@@ -9,8 +9,9 @@ using Android.Content;
 using Android.Net;
 using Android.OS;
 using Android.Telecom;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Extensions;
 using AndroidConnectivityManager = Android.Net.ConnectivityManager;

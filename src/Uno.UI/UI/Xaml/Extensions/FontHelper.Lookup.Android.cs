@@ -12,8 +12,8 @@ using System.Linq;
 using Android.OS;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 using Uno.Collections;
 
 namespace Windows.UI.Xaml

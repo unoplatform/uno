@@ -3,9 +3,6 @@
 namespace Windows.System
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
 	public   enum LaunchQuerySupportType 
 	{
 		// Skipping already declared field Windows.System.LaunchQuerySupportType.Uri

@@ -18,11 +18,11 @@ using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Input;
 using Uno.Extensions;
-using Uno.Logging;
 using DragEventArgs = System.Windows.DragEventArgs;
 using Point = Windows.Foundation.Point;
 using UIElement = Windows.UI.Xaml.UIElement;
 using Window = System.Windows.Window;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Skia.Platform
 {
@@ -37,12 +37,15 @@ namespace Uno.UI.Skia.Platform
 
 			var host = WpfHost.Current;
 
-			host.AllowDrop = true;
+			if (host is not null) // TODO: Add support for multiple XamlRoots
+			{
+				host.AllowDrop = true;
 
-			host.DragEnter += OnHostDragEnter;
-			host.DragOver += OnHostDragOver;
-			host.DragLeave += OnHostDragLeave;
-			host.Drop += OnHostDrop;
+				host.DragEnter += OnHostDragEnter;
+				host.DragOver += OnHostDragOver;
+				host.DragLeave += OnHostDragLeave;
+				host.Drop += OnHostDrop;
+			}
 		}
 
 		private void OnHostDragEnter(object sender, DragEventArgs e)
@@ -276,7 +279,7 @@ namespace Uno.UI.Skia.Platform
 			}
 
 			/// <inheritdoc />
-			public Point GetPosition(object? relativeTo)
+			public Point GetPosition(object relativeTo)
 			{
 				var rawWpfPosition = _wpfArgs.GetPosition(WpfHost.Current);
 				var rawPosition = new Point(rawWpfPosition.X, rawWpfPosition.Y);

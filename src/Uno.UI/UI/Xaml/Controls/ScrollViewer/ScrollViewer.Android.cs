@@ -2,7 +2,7 @@
 using Android.Views;
 using Android.Widget;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;
 using System;
@@ -15,7 +15,7 @@ using System.Drawing;
 using System.Threading.Tasks;
 using Windows.UI.Core;
 using Uno.UI;
-using Microsoft.Extensions.Logging;
+
 using static Uno.Extensions.MathEx;
 
 namespace Windows.UI.Xaml.Controls

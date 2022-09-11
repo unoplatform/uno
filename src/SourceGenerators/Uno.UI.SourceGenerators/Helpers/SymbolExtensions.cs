@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.ApplicationInsights.DataContracts;
 
 namespace Microsoft.CodeAnalysis
 {
@@ -14,10 +15,118 @@ namespace Microsoft.CodeAnalysis
 	/// </summary>
 	internal static class SymbolExtensions
 	{
+		// This is the same as MinimallyQualifiedFormat, but adds the SymbolDisplayGenericsOptions.IncludeVariance.
+		private static SymbolDisplayFormat s_format = new SymbolDisplayFormat(
+			globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Omitted,
+			genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters | SymbolDisplayGenericsOptions.IncludeVariance,
+			memberOptions:
+				SymbolDisplayMemberOptions.IncludeParameters |
+				SymbolDisplayMemberOptions.IncludeType |
+				SymbolDisplayMemberOptions.IncludeRef |
+				SymbolDisplayMemberOptions.IncludeContainingType,
+			kindOptions:
+				SymbolDisplayKindOptions.IncludeMemberKeyword,
+			parameterOptions:
+				SymbolDisplayParameterOptions.IncludeName |
+				SymbolDisplayParameterOptions.IncludeType |
+				SymbolDisplayParameterOptions.IncludeParamsRefOut |
+				SymbolDisplayParameterOptions.IncludeDefaultValue,
+			localOptions: SymbolDisplayLocalOptions.IncludeType,
+			miscellaneousOptions:
+				SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers |
+				SymbolDisplayMiscellaneousOptions.UseSpecialTypes |
+				SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier);
+
 		private static bool IsRoslyn34OrEalier { get; }
 			= typeof(INamedTypeSymbol).Assembly.GetVersionNumber() <= new Version("3.4");
 
+
+		/// <summary>
+		/// Given an <see cref="INamedTypeSymbol"/>, add the symbol declaration (including parent classes/namespaces) to the given <see cref="IIndentedStringBuilder"/>.
+		/// </summary>
+		/// <remarks>
+		/// <para>IMPORTANT: The returned stack must be disposed after putting everything for the given <see cref="INamedTypeSymbol"/>.</para>
+		/// <para>Example usage:</para>
+		/// <code><![CDATA[
+		/// var stack = myClass.AddToIndentedStringBuilder(builder);
+		/// using (builder.BlockInvariant("public static void M()"))
+		/// {
+		///     builder.AppendLineInvariant("Console.WriteLine(\"Hello world\")");
+		/// }
+		/// 
+		/// while (disposables.Count > 0)
+		/// {
+		///     disposables.Pop().Dispose();
+		/// }
+		/// ]]></code>
+		/// <para>NOTE: Another possible implementation is to accept an <see cref="Action"/> as a parameter to generate the type members, execute the action here, and also dispose
+		/// the stack here. The advantage is that callers don't need to worry about disposing the stack.</para>
+		/// </remarks>
+		public static Stack<IDisposable> AddToIndentedStringBuilder(this INamedTypeSymbol namedTypeSymbol, IIndentedStringBuilder builder, Action<IIndentedStringBuilder>? beforeClassHeaderAction = null)
+		{
+			var stack = new Stack<string>();
+			ISymbol symbol = namedTypeSymbol;
+			while (symbol != null)
+			{
+				if (symbol is INamespaceSymbol namespaceSymbol)
+				{
+					if (!namespaceSymbol.IsGlobalNamespace)
+					{
+						stack.Push($"namespace {namespaceSymbol}");
+					}
+
+					break;
+				}
+				else if (symbol is INamedTypeSymbol namedSymbol)
+				{
+					stack.Push(GetDeclarationHeaderFromNamedTypeSymbol(namedSymbol));
+				}
+				else
+				{
+					throw new InvalidOperationException($"Unexpected symbol type {symbol}");
+				}
+
+				symbol = symbol.ContainingSymbol;
+			}
+
+			var outputDisposableStack = new Stack<IDisposable>();
+			while (stack.Count > 0)
+			{
+				if (stack.Count == 1)
+				{
+					// Only the original symbol is left (usually a class header). Execute the given action before adding the class (usually this adds attributes).
+					beforeClassHeaderAction?.Invoke(builder);
+				}
+
+				outputDisposableStack.Push(builder.BlockInvariant(stack.Pop()));
+			}
+
+			return outputDisposableStack;
+		}
+
+		public static string GetDeclarationHeaderFromNamedTypeSymbol(this INamedTypeSymbol namedTypeSymbol)
+		{
+			// Interfaces are implicitly abstract, but they can't explicitly have the abstract modifier.
+			var abstractKeyword = namedTypeSymbol.IsAbstract && !namedTypeSymbol.IsAbstract ? "abstract " : string.Empty;
+			var staticKeyword = namedTypeSymbol.IsStatic ? "static " : string.Empty;
+
+			// records are not handled.
+			var typeKeyword = namedTypeSymbol.TypeKind switch
+			{
+				TypeKind.Class => "class ",
+				TypeKind.Interface => "interface ",
+				TypeKind.Struct => "struct ",
+				_ => throw new ArgumentException($"Unexpected type kind {namedTypeSymbol.TypeKind}")
+			};
+			
+			var declarationIdentifier = namedTypeSymbol.ToDisplayString(s_format);
+
+			return $"{abstractKeyword}{staticKeyword}partial {typeKeyword}{declarationIdentifier}";
+		}
+
 		public static IEnumerable<IPropertySymbol> GetProperties(this INamedTypeSymbol symbol) => symbol.GetMembers().OfType<IPropertySymbol>();
+
+		public static IEnumerable<IPropertySymbol> GetPropertiesWithName(this INamedTypeSymbol symbol, string name) => symbol.GetMembers(name).OfType<IPropertySymbol>();
 
 		public static IEnumerable<IEventSymbol> GetAllEvents(this INamedTypeSymbol? symbol)
 		{
@@ -157,6 +266,21 @@ namespace Microsoft.CodeAnalysis
 
 		public static IEnumerable<IMethodSymbol> GetMethodsWithName(this ITypeSymbol resolvedType, string name)
 			=> resolvedType.GetMembers(name).OfType<IMethodSymbol>();
+
+		public static IMethodSymbol? GetFirstMethodWithName(this ITypeSymbol resolvedType, string name)
+		{
+			var members = resolvedType.GetMembers(name);
+
+			for (int i = 0; i < members.Length; i++)
+			{
+				if (members[i] is IMethodSymbol method)
+				{
+					return method;
+				}
+			}
+
+			return null;
+		}
 
 		public static IEnumerable<IFieldSymbol> GetFields(this ITypeSymbol resolvedType)
 			=> resolvedType.GetMembers().OfType<IFieldSymbol>();
@@ -462,5 +586,17 @@ namespace Microsoft.CodeAnalysis
 
 			return type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 		}
+
+		public static TypedConstant? FindNamedArg(this AttributeData attribute, string argName)
+			=> attribute.NamedArguments is { IsDefaultOrEmpty: false } args
+				&& args.FirstOrDefault(arg => arg.Key == argName) is { Key: not null } arg
+					? arg.Value
+					: null;
+
+		public static T? GetNamedValue<T>(this AttributeData attribute, string argName)
+			where T : Enum
+			=> attribute.FindNamedArg(argName) is { IsNull: false, Kind: TypedConstantKind.Enum } arg && arg.Type!.Name == typeof(T).Name
+				? (T)arg.Value!
+				: default(T?);
 	}
 }

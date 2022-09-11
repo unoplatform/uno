@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.Collections;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;
 
@@ -199,7 +199,7 @@ namespace Windows.UI.Xaml
 		{
 			details.SetSourceValue(value);
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat("Set binding value [{0}] from [{1}].", details.Property.Name, _ownerType);
 			}

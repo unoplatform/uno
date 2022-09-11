@@ -21,10 +21,11 @@ namespace Uno.Extensions
 				.OriginalString
 				.Split(new[] { '?', '&' }, StringSplitOptions.RemoveEmptyEntries)
 				.Select(p => p.Split(new[] { '=' }))
-				.Where(parts => parts.Count() > 1)
+				.Where(parts => parts.Length > 1)
 				.ToDictionary(parts => parts[0], parts => String.Join("=", parts.Skip(1)));
 		}
 
+		internal static Uri TrimEndUriSlash(this Uri uri) => new (uri.OriginalString.TrimEnd("/"));
 
 		/// <summary>
 		/// Get extension of the traget file of the uri.

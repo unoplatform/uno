@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +11,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Windows.UI.Xaml.Markup;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -245,7 +246,162 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(4, CounterGrid2.BindCount);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task Check_ItemContainerStyle_TextBlock()
+		{
+			var containerStyle = (Style)XamlReader.Load(
+			   @"<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' TargetType='TextBlock'> 
+		                        <Setter Property='Foreground' Value='Green'/>
+		                    </Style>");
+			var itemStyle = (Style)XamlReader.Load(
+			   @"<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' TargetType='TextBlock'> 
+		                        <Setter Property='Foreground' Value='Red'/>
+		                    </Style>");
+
+
+
+			var source = new[]
+			{
+				new TextBlock { Text = "First" },
+				new TextBlock { Text = "Second", Style = itemStyle },
+				new TextBlock { Text = "Third" },
+			};
+
+			var SUT = new ItemsControl()
+			{
+				ItemContainerStyle = containerStyle,
+				ItemsSource = source,
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+
+			TextBlock firstTb = null;
+			await WindowHelper.WaitFor(() => (firstTb = SUT.ContainerFromItem(source[0]) as TextBlock) != null);
+
+			TextBlock secondTb = null;
+			await WindowHelper.WaitFor(() => (secondTb = SUT.ContainerFromItem(source[1]) as TextBlock) != null);
+
+			TextBlock thirdTb = null;
+			await WindowHelper.WaitFor(() => (thirdTb = SUT.ContainerFromItem(source[2]) as TextBlock) != null);
+
+			Assert.AreEqual(firstTb.Style, containerStyle);
+			Assert.AreEqual(secondTb.Style, itemStyle);
+			Assert.AreEqual(thirdTb.Style, containerStyle);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task Check_ItemContainerStyle_ContentControl()
+		{
+			var containerStyle = (Style)XamlReader.Load(
+			   @"<Style xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
+		   TargetType=""ContentControl"">
+           <Setter Property=""Foreground"" Value=""Red""/>
+		<Setter Property=""Template"">
+			<Setter.Value>
+				<ControlTemplate TargetType=""ContentControl"">
+						<ContentPresenter Content=""{TemplateBinding Content}""
+                                          Foreground=""{TemplateBinding Foreground}""
+										  ContentTemplate=""{TemplateBinding ContentTemplate}"" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>");
+			var itemStyle = (Style)XamlReader.Load(
+			   @"<Style xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
+		   TargetType=""ContentControl"">
+           <Setter Property=""Foreground"" Value=""Green""/>
+		<Setter Property=""Template"">
+			<Setter.Value>
+				<ControlTemplate TargetType=""ContentControl"">
+						<ContentPresenter Content=""{TemplateBinding Content}""
+                                          Foreground=""{TemplateBinding Foreground}""
+										  ContentTemplate=""{TemplateBinding ContentTemplate}"" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>");
+
+
+
+			var source = new[]
+			{
+				new ContentControl { Content = "First"},
+				new ContentControl { Content = "Second", Style = itemStyle},
+				new ContentControl { Content = "Third"},
+			};
+
+			var SUT = new ItemsControl()
+			{
+				ItemContainerStyle = containerStyle,
+				ItemsSource = source,
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+
+			ContentControl first = null;
+			await WindowHelper.WaitFor(() => (first = SUT.ContainerFromItem(source[0]) as ContentControl) != null);
+
+			ContentControl second = null;
+			await WindowHelper.WaitFor(() => (second = SUT.ContainerFromItem(source[1]) as ContentControl) != null);
+
+			ContentControl third = null;
+			await WindowHelper.WaitFor(() => (third = SUT.ContainerFromItem(source[2]) as ContentControl) != null);
+
+			Assert.AreEqual(first.Style, containerStyle);
+			Assert.AreEqual(second.Style, itemStyle);
+			Assert.AreEqual(third.Style, containerStyle);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_NestedItemsControl_RecycleTemplate()
+		{
+			var template = (DataTemplate)XamlReader.Load(@"
+				<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+					<ItemsControl ItemsSource='{Binding NestedSource}'
+								  BorderBrush='Black' BorderThickness='1'>
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Rectangle Fill='Red' Height='50' Width='50' />
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</DataTemplate>
+			".Replace('\'', '"'));
+			var initialSource = new object[] { new { NestedSource = new object[1] }, };
+			var resetSource = new object[] { new { NestedSource = new object[0] }, };
+			var SUT = new ItemsControl()
+			{
+				ItemsSource = initialSource,
+				ItemTemplate = template,
+			};
+			WindowHelper.WindowContent = SUT;
+
+			var item = default(ContentPresenter);
+
+			// [initial stage]: load the nested ItemsControl with items, so it has an initial height
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitFor(() => (item = SUT.ContainerFromItem(initialSource[0]) as ContentPresenter) != null, message: "initial state: failed to find the item");
+			Assert.AreEqual(50, item.ActualHeight, delta: 1.0, "initial state: expecting the item to have an starting height of 50");
+
+			// [reset stage]: ItemsSource is reset with empty NestedSource, and we expected the height to be RE-measured
+			SUT.ItemsSource = resetSource;
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => (item = SUT.ContainerFromItem(resetSource[0]) as ContentPresenter) != null, message: "reset state: failed to find the item");
+			Assert.AreEqual(0, item.ActualHeight, "reset state: expecting the item's height to be remeasured to 0");
+		}
+
 	}
+
 	internal partial class ContentControlItemsControl : ItemsControl
 	{
 		protected override DependencyObject GetContainerForItemOverride() => new ContentControl();

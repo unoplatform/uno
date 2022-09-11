@@ -1,21 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Uno.UI.Samples.Controls;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+﻿using Uno.UI.Samples.Controls;
 using Windows.System.Profile;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace UITests.Shared.Windows_System.Profile
 {
@@ -29,6 +14,21 @@ namespace UITests.Shared.Windows_System.Profile
             DeviceFormTextBlock.Text = AnalyticsInfo.DeviceForm;
             DeviceFamilyTextBlock.Text = AnalyticsInfo.VersionInfo.DeviceFamily;
             DeviceFamilyVersionTextBlock.Text = AnalyticsInfo.VersionInfo.DeviceFamilyVersion;
-        }
+
+			try
+			{
+				ulong v = ulong.Parse(AnalyticsInfo.VersionInfo.DeviceFamilyVersion);
+				var v1 = (ushort)((v & 0xFFFF000000000000L) >> 48);
+				var v2 = (ushort)((v & 0x0000FFFF00000000L) >> 32);
+				var v3 = (ushort)((v & 0x00000000FFFF0000L) >> 16);
+				var v4 = (ushort)((v & 0x000000000000FFFFL));
+				var decodedVersion = $"{v1}.{v2}.{v3}.{v4}";
+				DecodedDeviceFamilyVersionTextBlock.Text = decodedVersion;
+			}
+			catch
+			{
+				DecodedDeviceFamilyVersionTextBlock.Text = "Invalid version string";
+			}
+		}
     }
 }

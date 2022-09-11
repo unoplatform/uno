@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Controls
 			set => base.FocusState = value;
 		}
 
-		public static new DependencyProperty FocusStateProperty = UIElement.FocusStateProperty;
+		public static new DependencyProperty FocusStateProperty => UIElement.FocusStateProperty;
 
 		public new bool IsTabStop
 		{
@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Controls
 			set => base.IsTabStop = value;
 		}
 
-		public static new DependencyProperty IsTabStopProperty = UIElement.IsTabStopProperty;
+		public static new DependencyProperty IsTabStopProperty => UIElement.IsTabStopProperty;
 
 		public new int TabIndex
 		{

@@ -11,7 +11,7 @@ namespace Windows.UI.Text
 			Weight = weight;
 		}
 
-		public ushort Weight { get; set; }
+		public ushort Weight;
 
 		public override int GetHashCode() => Weight.GetHashCode();
 

@@ -1,0 +1,331 @@
+@import "../variables";
+@import "breakpoints";
+
+/**
+ * General notes:
+ * This file is modifying the elementor menu as simply as it can. The selector are a bit hard to
+ * understand because we cannot add class or ids on the menu.
+ *
+ * This is a modified version of the css in the header.scss file from the main website.
+ * It was modified as little as possible, but they are quite different.
+ *
+ * Pixel are preferred as unit since the body font size is not the same as the website.
+ * This causes relative units (em, rem) to behave differently.
+ */
+
+.visibility-opacity-transition {
+  @include media-breakpoint-up(lg) {
+    visibility: hidden;
+
+    list-style: none;
+
+    transition: visibility 100ms, opacity 100ms ease-in-out;
+    opacity: 0;
+  }
+}
+
+#header-container {
+  display: flex;
+  position: fixed;
+  background: #fff;
+
+  width: 100%;
+  min-height: 75px;
+
+  padding: 16px 32px;
+  border-bottom: 1px solid #f4f2f3;
+
+  justify-content: space-between;
+
+  z-index: 9999;
+
+  &::after,
+  &::before {
+    content: none;
+  }
+
+  #menu-menu-principal {
+    float: right;
+
+    list-style: none;
+
+    @include media-breakpoint-down(lg) {
+      width: 100%;
+    }
+
+    @include media-breakpoint-up(lg) {
+      display: flex;
+    }
+  }
+
+
+  #header-logo-container {
+    width: 36px;
+    vertical-align: middle;
+
+    img {
+      width: 100%;
+    }
+
+    @include media-breakpoint-up(lg) {
+      width: 120px;
+    }
+  }
+
+  .navbar-toggle {
+    padding: 0;
+    margin: 10px 0;
+    display: none !important;
+
+    .icon-bar {
+      background: $darkgray;
+      width: 20px;
+    }
+
+    .icon-bar + .icon-bar {
+      margin-top: 3px;
+    }
+
+    @media (max-width: 979px) {
+      display: block !important;
+    }
+  }
+
+  .navbar-brand {
+    height: auto;
+  }
+
+  nav {
+    a {
+      padding: 10px;
+
+      font-size: 16px;
+      font-weight: 600;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 16px;
+      letter-spacing: normal;
+      text-transform: uppercase;
+      color: $black;
+
+      &:hover,
+      &:focus {
+        border-radius: 4px;
+        background-color: transparentize($turquoise, 0.8);
+      }
+    }
+
+    /**
+     * Top level menu items
+     */
+    & > ul > li {
+      margin: 0 16px;
+      align-self: center;
+
+      /**
+       * has-children means there is a submenu
+       */
+      &.has-children {
+        // actual submenu
+        position: relative;
+
+        & > ul {
+          @extend .visibility-opacity-transition;
+          width: inherit;
+
+          @include media-breakpoint-up(lg) {
+            display: flex;
+            position: absolute;
+            padding: 24px 48px;
+            top: 170% !important;
+            left: -100% !important;
+
+            flex-direction: column;
+
+            border-radius: 4px;
+            box-shadow: 0 0 20px 2px rgba(36, 36, 36, 0.2);
+            background-color: $white;
+          }
+
+          li {
+            display: flex;
+          }
+
+          a {
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 20px;
+            text-transform: none;
+
+            transition: 0s;
+          }
+
+          .column-title {
+            flex-direction: column;
+
+            & > a {
+              cursor: default;
+
+              font-weight: 700;
+              line-height: normal !important;
+              color: $black;
+
+              &:hover,
+              &:focus {
+                background-color: transparent;
+              }
+            }
+
+            ul {
+              width: 192px;
+              padding: 0;
+            }
+          }
+
+          // sub-menu columns
+          ul {
+            @extend .visibility-opacity-transition;
+            display: flex;
+            position: inherit;
+
+            flex-direction: column;
+
+            a {
+              border-left: 0;
+            }
+          }
+        }
+
+        // shows the submenu
+        &:hover > ul {
+          visibility: visible;
+          opacity: 1;
+
+          /**
+           * This selector makes sure the submenu of a submenu appears under it
+           * instead of on hover. This is to displays submenus as columns.
+           */
+          &:not([style*="display: none;"]) {
+            .has-children {
+              ul {
+                visibility: visible;
+                opacity: 1;
+              }
+            }
+          }
+        }
+      }
+
+      /**
+       * row-menu : the row menu class puts the first element of the menu in a row
+       *            instead of a column (default). This makes it possible to have
+       *            multiple columns side by side by add the row-menu class in wordpress.
+       */
+      &.row-menu > ul {
+        flex-direction: row;
+      }
+
+    }
+  }
+
+  .get-started-btn {
+    a {
+      display: block;
+      border: none;
+      border-radius: 8px;
+
+      margin-left: 0;
+      padding: 8px 32px;
+
+      font-size: 16px;
+      font-weight: 700;
+      min-width: 125px;
+      text-align: center;
+      text-transform: none;
+      color: $black;
+
+      background-color: $turquoise;
+      background: linear-gradient(to top, $blue 50%, $turquoise 50%);
+      background-size: 100% 200%;
+      background-position:left top;
+      transition:all 0.5s cubic-bezier(.69,.04,.9,.65);
+
+      &:hover {
+        color: $white;
+        background-position:bottom left;
+      }
+    }
+  }
+}
+
+#navbar {
+  @media (max-width: 979px) {
+
+    overflow: auto !important;
+    
+    position: fixed;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    top: 75px;
+    left: 0;
+
+    text-align: left;
+
+    background: #fff;
+
+    &.collapse {
+      display: none!important;
+    }
+    &.collapse.in {
+      display: block!important;
+    }
+
+    .menu {
+      display: block;
+      margin: 0;
+      padding: 0 0 10px 0;
+
+      li {
+        display: block;
+        padding: 0;
+
+        &.has-children {
+          position: relative;
+
+          ul {
+            position: relative;
+            max-height: 0;
+            padding: 0;
+
+            overflow: hidden;
+            transition: all .5s ease;
+          }
+
+          &.open {
+            ul {
+              max-height: 1500px;
+            }
+          }
+        }
+      }
+
+      a {
+        display: block;
+        padding: 10px 25px;
+
+        line-height: 1.4;
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+.subnav {
+  position: fixed;
+  top: 75px;
+  width: 100%;
+  z-index: 999;
+  background-color: #f8f8f8;
+}

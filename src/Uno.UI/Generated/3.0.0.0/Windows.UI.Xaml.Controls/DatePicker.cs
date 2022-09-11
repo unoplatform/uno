@@ -8,62 +8,32 @@ namespace Windows.UI.Xaml.Controls
 	public  partial class DatePicker : global::Windows.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property YearVisible
+		// Skipping already declared property YearFormat
+		// Skipping already declared property Orientation
 		// Skipping already declared property MonthVisible
+		// Skipping already declared property MonthFormat
 		// Skipping already declared property MinYear
 		// Skipping already declared property MaxYear
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.DataTemplate HeaderTemplate
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.DataTemplate)this.GetValue(HeaderTemplateProperty);
-			}
-			set
-			{
-				this.SetValue(HeaderTemplateProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  object Header
-		{
-			get
-			{
-				return (object)this.GetValue(HeaderProperty);
-			}
-			set
-			{
-				this.SetValue(HeaderProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property HeaderTemplate
+		// Skipping already declared property Header
 		// Skipping already declared property DayVisible
+		// Skipping already declared property DayFormat
 		// Skipping already declared property Date
+		// Skipping already declared property CalendarIdentifier
 		// Skipping already declared property LightDismissOverlayMode
 		// Skipping already declared property SelectedDate
+		// Skipping already declared property CalendarIdentifierProperty
 		// Skipping already declared property DateProperty
+		// Skipping already declared property DayFormatProperty
 		// Skipping already declared property DayVisibleProperty
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HeaderProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Header), typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.DatePicker), 
-			new FrameworkPropertyMetadata(default(object)));
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HeaderTemplateProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HeaderTemplate), typeof(global::Windows.UI.Xaml.DataTemplate), 
-			typeof(global::Windows.UI.Xaml.Controls.DatePicker), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
-#endif
+		// Skipping already declared property HeaderProperty
+		// Skipping already declared property HeaderTemplateProperty
 		// Skipping already declared property MaxYearProperty
 		// Skipping already declared property MinYearProperty
+		// Skipping already declared property MonthFormatProperty
 		// Skipping already declared property MonthVisibleProperty
+		// Skipping already declared property OrientationProperty
+		// Skipping already declared property YearFormatProperty
 		// Skipping already declared property YearVisibleProperty
 		// Skipping already declared property LightDismissOverlayModeProperty
 		// Skipping already declared property SelectedDateProperty

@@ -5,6 +5,10 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 using static System.Double;
 
+#if NET6_0_OR_GREATER && (__IOS__ || __MACOS__)
+using ObjCRuntime;
+#endif
+
 namespace Uno.UI
 {
 	internal static partial class LayoutHelper
@@ -356,6 +360,15 @@ namespace Uno.UI
 		internal static Rect? IntersectWith(this Rect rect1, Rect rect2)
 		{
 			if(rect1.Equals(rect2))
+			{
+				return rect1;
+			}
+
+			if (rect1.IsInfinite)
+			{
+				return rect2;
+			}
+			else if (rect2.IsInfinite)
 			{
 				return rect1;
 			}

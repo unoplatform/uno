@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using System.Text;
 using CoreGraphics;
-using Uno.Extensions;
-using Microsoft.Extensions.Logging;
-using Uno.Logging;
-using Windows.Foundation;
 using UIKit;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+using Windows.Foundation;
+
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
-	public sealed partial class ListViewBaseScrollContentPresenter : ContentPresenter, IScrollContentPresenter
+	public sealed partial class ListViewBaseScrollContentPresenter : IScrollContentPresenter
 	{
 		public CGPoint UpperScrollLimit => NativePanel?.UpperScrollLimit ?? CGPoint.Empty;
 
@@ -22,6 +25,44 @@ namespace Windows.UI.Xaml.Controls
 
 		Size? IScrollContentPresenter.CustomContentExtent => NativePanel?.ContentSize;
 
+		CGPoint IUIScrollView.ContentOffset => NativePanel?.ContentOffset ?? default(CGPoint);
+
+		nfloat IUIScrollView.ZoomScale => NativePanel?.ZoomScale ?? default(nfloat);
+
+		void IUIScrollView.ApplyZoomScale(nfloat scale, bool animated)
+		{
+			if (NativePanel == null)
+			{
+				return;
+			}
+
+			if (animated)
+			{
+				NativePanel.SetZoomScale(scale, animated);
+			}
+			else
+			{
+				NativePanel.ZoomScale = scale;
+			}
+		}
+
+		void IUIScrollView.ApplyContentOffset(CGPoint contentOffset, bool animated)
+		{
+			if (NativePanel == null)
+			{
+				return;
+			}
+
+			if (animated)
+			{
+				NativePanel.SetContentOffset(contentOffset, animated);
+			}
+			else
+			{
+				NativePanel.ContentOffset = contentOffset;
+			}
+		}
+
 		public void SetContentOffset(CGPoint contentOffset, bool animated)
 		{
 			NativePanel?.SetContentOffset(contentOffset, animated);
@@ -32,9 +73,12 @@ namespace Windows.UI.Xaml.Controls
 			NativePanel?.SetZoomScale(scale, animated);
 		}
 
-		public Rect MakeVisible(UIElement visual, Rect rectangle)
-		{
-			return rectangle;
-		}
+		bool INativeScrollContentPresenter.Set(
+			double? horizontalOffset,
+			double? verticalOffset,
+			float? zoomFactor,
+			bool disableAnimation,
+			bool isIntermediate)
+			=> throw new NotImplementedException();
 	}
 }

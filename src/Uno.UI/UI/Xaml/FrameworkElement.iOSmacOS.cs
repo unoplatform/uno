@@ -6,13 +6,15 @@ using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
 using Windows.Foundation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 
 #if __IOS__
 using _View = UIKit.UIView;
+using ObjCRuntime;
 #elif __MACOS__
 using _View = AppKit.NSView;
+using ObjCRuntime;
 #endif
 
 namespace Windows.UI.Xaml
@@ -32,24 +34,14 @@ namespace Windows.UI.Xaml
 
 		internal CGSize? XamlMeasure(CGSize availableSize)
 		{
-			// If set layout has not been called, we can 
-			// return a previously cached result for the same available size.
-			if (
-				!IsMeasureDirty
-				&& _lastAvailableSize.HasValue
-				&& availableSize == _lastAvailableSize
-			)
+			if (((ILayouterElement)this).XamlMeasureInternal(availableSize, _lastAvailableSize, out var measuredSize))
 			{
-				return _lastMeasure;
+				_lastAvailableSize = availableSize;
+				_lastMeasure = measuredSize;
+				SetLayoutFlags(LayoutFlag.ArrangeDirty);
 			}
 
-			_lastAvailableSize = availableSize;
-			IsMeasureDirty = false;
-
-			var result = _layouter.Measure(SizeFromUISize(availableSize));
-
-			// Result here exclude the margins on the element
-			return _lastMeasure = result.LogicalToPhysicalPixels();
+			return _lastMeasure;
 		}
 
 		/// <summary>
@@ -74,8 +66,8 @@ namespace Windows.UI.Xaml
 
 		protected Size SizeFromUISize(CGSize size)
 		{
-			var width = nfloat.IsNaN(size.Width) ? float.PositiveInfinity : size.Width;
-			var height = nfloat.IsNaN(size.Height) ? float.PositiveInfinity : size.Height;
+			var width = nfloat.IsNaN(size.Width) ? double.PositiveInfinity : (double)size.Width;
+			var height = nfloat.IsNaN(size.Height) ? double.PositiveInfinity : (double)size.Height;
 
 			return new Size(width, height).PhysicalToLogicalPixels();
 		}
@@ -84,8 +76,8 @@ namespace Windows.UI.Xaml
 		{
 			var size = SizeFromUISize(rect.Size);
 			var location = new Point(
-				nfloat.IsNaN(rect.X) ? float.PositiveInfinity : rect.X,
-				nfloat.IsNaN(rect.Y) ? float.PositiveInfinity : rect.Y);
+				nfloat.IsNaN(rect.X) ? double.PositiveInfinity : (double)rect.X,
+				nfloat.IsNaN(rect.Y) ? double.PositiveInfinity : (double)rect.Y);
 
 			return new Rect(location.LogicalToPhysicalPixels(), size.LogicalToPhysicalPixels());
 		}

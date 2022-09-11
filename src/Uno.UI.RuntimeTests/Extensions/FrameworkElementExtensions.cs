@@ -15,5 +15,11 @@ namespace Uno.UI.RuntimeTests.Extensions
 		/// </summary>
 		public static Rect GetOnScreenBounds(this FrameworkElement element)
 			=> element.TransformToVisual(null).TransformBounds(new Rect(0, 0, element.ActualWidth, element.ActualHeight));
+
+		/// <summary>
+		/// Get bounds of <paramref name="element"/> relative to <paramref name="relativeTo"/>.
+		/// </summary>
+		public static Rect GetRelativeBounds(this FrameworkElement element, FrameworkElement relativeTo)
+			=> element.TransformToVisual(relativeTo).TransformBounds(new Rect(0, 0, element.ActualWidth, element.ActualHeight));
 	}
 }

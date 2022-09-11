@@ -12,8 +12,6 @@ using Windows.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Input;
-using Windows.Devices.Input;
 using Windows.Foundation.Collections;
 using Windows.System;
 using Windows.UI.Xaml.Automation.Peers;
@@ -23,6 +21,14 @@ using Uno.UI.Xaml;
 using Uno.Disposables;
 using DirectUI;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Input;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -65,7 +71,7 @@ namespace Windows.UI.Xaml.Controls
 		bool m_showNavigationButtons;
 
 		// Stores a value to whether a FocusRect should be shown.
-		//bool m_ShouldShowFocusRect;
+		bool m_ShouldShowFocusRect;
 
 		// Dispatcher timer causing the buttons to fade out after FLIP_VIEW_BUTTONS_SHOW_DURATION_MS.
 		DispatcherTimer m_tpButtonsFadeOutTimer;
@@ -79,8 +85,8 @@ namespace Windows.UI.Xaml.Controls
 
 		// True if we are in a Measure/Arrange pass. We need this to make sure that we don't change the SelectedIndex due to
 		// the scroll position changing during a resize.
-		bool m_inMeasure = false;
-		bool m_inArrange = false;
+		bool m_inMeasure;
+		bool m_inArrange;
 
 		// Saved SnapPointsTypes. These are saved in the beginning of an animation and restored when the animation is completed.
 		SnapPointsType m_verticalSnapPointsType;
@@ -94,7 +100,7 @@ namespace Windows.UI.Xaml.Controls
 
 		bool m_keepNavigationButtonsVisible;
 
-		bool m_moveFocusToSelectedItem = false;
+		bool m_moveFocusToSelectedItem;
 
 		private readonly SerialDisposable _fixOffsetSubscription = new SerialDisposable();
 		private readonly SerialDisposable _buttonsFadeOutTimerSubscription = new SerialDisposable();
@@ -102,7 +108,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void InitializePartial()
 		{
 			m_showNavigationButtons = false;
-			//m_ShouldShowFocusRect = false;
+			m_ShouldShowFocusRect = false;
 			m_animateNewIndex = false;
 			m_verticalSnapPointsType = SnapPointsType.None;
 			m_horizontalSnapPointsType = SnapPointsType.None;
@@ -339,7 +345,7 @@ namespace Windows.UI.Xaml.Controls
 		// Calculates the rectangle to be brought into view from the index.
 		private Rect CalculateBounds(int index)
 		{
-			Rect emptyRect = Rect.Empty;
+			Rect emptyRect = default;
 			bool isVertical = false;
 			Orientation physicalOrientation = Orientation.Vertical;
 			double width = 0;
@@ -698,7 +704,7 @@ namespace Windows.UI.Xaml.Controls
 
 			spPointer = pArgs.Pointer;
 			if (spPointer == null) throw new ArgumentNullException();
-			pointerDeviceType = spPointer.PointerDeviceType;
+			pointerDeviceType = (PointerDeviceType)spPointer.PointerDeviceType;
 
 			if (pointerDeviceType == PointerDeviceType.Touch)
 			{
@@ -721,7 +727,7 @@ namespace Windows.UI.Xaml.Controls
 
 			spPointer = pArgs.Pointer;
 			if (spPointer == null) throw new ArgumentNullException();
-			pointerDeviceType = spPointer.PointerDeviceType;
+			pointerDeviceType = (PointerDeviceType)spPointer.PointerDeviceType;
 
 			if (PointerDeviceType.Touch != pointerDeviceType)
 			{
@@ -745,13 +751,13 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnItemsChanged(object e)
 		{
-			base.OnItemsChanged(e);
-
 			int currentSelectedIndex = 0;
 			int previousSelectedIndex = 0;
 			bool savedSkipAnimationOnce = m_skipAnimationOnce;
 
 			previousSelectedIndex = SelectedIndex;
+
+			base.OnItemsChanged(e); // TODO: this currently will never modify SelectedIndex, because the base method doesn't do anything. As part of work to align selection handling better with WinUI, the logic to update SelectedIndex on collection changes should move to Selector.OnItemsChanged() (which currently doesn't exist).
 
 			currentSelectedIndex = SelectedIndex;
 			if (previousSelectedIndex < 0 ||
@@ -828,7 +834,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-
+		// TODO: This should override a base class method!
 		void NotifyOfSourceChanged(IObservableVector<DependencyObject> pSender, IVectorChangedEventArgs e)
 		{
 			CollectionChange action = CollectionChange.Reset;
@@ -946,6 +952,7 @@ namespace Windows.UI.Xaml.Controls
 		// Create FlipViewAutomationPeer to represent the FlipView.
 		protected override AutomationPeer OnCreateAutomationPeer(/*out xaml_automation_peers.IAutomationPeer ppAutomationPeer*/)
 		{
+			// TODO: Should return FlipViewAutomationPeer
 			//FlipViewAutomationPeer spFlipViewAutomationPeer;
 			//IFlipViewAutomationPeerFactory spFlipViewAPFactory;
 			//IActivationFactory spActivationFactory;
@@ -1070,8 +1077,6 @@ namespace Windows.UI.Xaml.Controls
 			bool nothingNext = false;
 			Orientation physicalOrientation = Orientation.Vertical;
 			bool isVertical = false;
-			//bool bIgnore = false;
-			//bool bHasFocus = false;
 
 			// Determine the correct button/previous/next visibility
 			var spItems = Items;
@@ -1128,23 +1133,22 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			//TODO: Martin please remember to uncomment this once the Focus Manager is completed.
-			//bHasFocus = HasFocus();
-			//if (bHasFocus)
-			//{
-			//	if (m_ShouldShowFocusRect)
-			//	{					
-			//		bIgnore = GoToState(bUseTransitions, "Focused");
-			//	}
-			//	else
-			//	{
-			//		bIgnore = GoToState(bUseTransitions, "PointerFocused");
-			//	}
-			//}
-			//else
-			//{
-			//	bIgnore = GoToState(bUseTransitions, "Unfocused");
-			//}
+			var bHasFocus = HasFocus();
+			if (bHasFocus)
+			{
+				if (m_ShouldShowFocusRect)
+				{
+					GoToState(bUseTransitions, "Focused");
+				}
+				else
+				{
+					GoToState(bUseTransitions, "PointerFocused");
+				}
+			}
+			else
+			{
+				GoToState(bUseTransitions, "Unfocused");
+			}
 		}
 
 		double GetDesiredItemWidth()
@@ -1273,124 +1277,113 @@ namespace Windows.UI.Xaml.Controls
 		// GotFocus event handler.
 		protected override void OnGotFocus(RoutedEventArgs pArgs)
 		{
+			FocusState focusState = FocusState.Unfocused;
+
+			var pControl = this;
+
 			base.OnGotFocus(pArgs);
 
-			//TODO: Martin please remember to uncomment this once the Focus Manager is completed.
+			m_moveFocusToSelectedItem = false;
 
-			//FocusState focusState = FocusState.Unfocused;
-			//bool hasFocus = false;
+			if (!pControl.IsFocusEngagementEnabled || pControl.IsFocusEngaged)
+			{
+				var hasFocus = HasFocus();
 
-			//bool isOriginalSource = false;
+				if (hasFocus)
+				{
+					DependencyObject spOriginalSource;
 
-			//var pControl = this;
+					spOriginalSource = pArgs.OriginalSource as DependencyObject;
+					//Need to show Focus visual for FlipView whenever an item in a FlipView item has focus.
+					if (spOriginalSource != null)
+					{
+						UIElement spFocusedElement;
 
-			//base.OnGotFocus(pArgs);
+						//Need focus state to show focus rect only when keyboard focus.
+						spFocusedElement = spOriginalSource as UIElement;
 
-			//m_moveFocusToSelectedItem = false;
+						if (spFocusedElement != null)
+						{
+							focusState = spFocusedElement.FocusState;
+						}
 
-			//if (!pControl.IsFocusEngagementEnabled() || pControl.IsFocusEngaged())
-			//{
-			//	hasFocus = HasFocus();
+						if (FocusState.Keyboard == focusState)
+						{
+							var contentRoot = VisualTree.GetContentRootForElement(this);
+							if (contentRoot.InputManager.LastInputDeviceType == InputDeviceType.GamepadOrRemote)
+							{
+								m_keepNavigationButtonsVisible = false;
+							}
 
-			//	if (hasFocus)
-			//	{
-			//		DependencyObject spOriginalSource;
+							// Keyboard should show buttons
+							m_ShouldShowFocusRect = true;
+							ResetButtonsFadeOutTimer();
+						}
+						else
+						{
+							m_ShouldShowFocusRect = false;
+						}
 
-			//		spOriginalSource = pArgs.OriginalSource as DependencyObject;
-			//		//Need to show Focus visual for FlipView whenever an item in a FlipView item has focus.
-			//		if (spOriginalSource != null)
-			//		{
-			//			UIElement spFocusedElement;
+						//ctl.are_equal(spOriginalSource, this, &isOriginalSource);
 
-			//			//Need focus state to show focus rect only when keyboard focus.
-			//			spFocusedElement = spOriginalSource as UIElement;
-
-			//			if (spFocusedElement != null)
-			//			{
-			//				focusState = spFocusedElement.FocusState;
-			//			}
-
-			//			if (FocusState.Keyboard == focusState)
-			//			{
-			//				//CContentRoot contentRoot = VisualTree.GetContentRootForElement(GetHandle());
-			//				//if (contentRoot.GetInputManager().GetLastInputDeviceType() == InputDeviceType.GamepadOrRemote)
-			//				//{
-			//				//	m_keepNavigationButtonsVisible = false;
-			//				//}
-
-			//				// Keyboard should show buttons
-			//				m_ShouldShowFocusRect = true;
-			//				ResetButtonsFadeOutTimer();
-			//			}
-			//			else
-			//			{
-			//				m_ShouldShowFocusRect = false;
-			//			}
-
-			//			//ctl.are_equal(spOriginalSource, this, &isOriginalSource);
-
-			//			//If the FlipView is the item getting the focus then focus needs to be set to one of its items.
-			//			if (spOriginalSource == this)
-			//			{
-			//				IsSelectionActive = hasFocus;
-			//				SetFocusedItem(m_iFocusedIndex < 0 ? 0 : m_iFocusedIndex, true);
-			//			}
-			//			else
-			//			{
-			//				int selectedIndex = 0;
-			//				selectedIndex = SelectedIndex;
-			//				if (selectedIndex >= 0)
-			//				{
-			//					DependencyObject spContainer;
-			//					spContainer = ContainerFromIndex(selectedIndex);
-			//					if (spContainer == null)
-			//					{
-			//						// If we get focus when there is no container for the current item, we want to move focus
-			//						// to the selected item once it is available.
-			//						m_moveFocusToSelectedItem = true;
-			//					}
-			//				}
-			//			}
-			//			UpdateVisualState(true);
-			//		}
-			//	}
-			//}
+						//If the FlipView is the item getting the focus then focus needs to be set to one of its items.
+						if (spOriginalSource == this)
+						{
+							IsSelectionActive = hasFocus;
+							SetFocusedItem(m_iFocusedIndex < 0 ? 0 : m_iFocusedIndex, true);
+						}
+						else
+						{
+							int selectedIndex = 0;
+							selectedIndex = SelectedIndex;
+							if (selectedIndex >= 0)
+							{
+								DependencyObject spContainer;
+								spContainer = ContainerFromIndex(selectedIndex);
+								if (spContainer == null)
+								{
+									// If we get focus when there is no container for the current item, we want to move focus
+									// to the selected item once it is available.
+									m_moveFocusToSelectedItem = true;
+								}
+							}
+						}
+						UpdateVisualState(true);
+					}
+				}
+			}
 		}
 
-		// GotFocus event handler.
+		// LostFocus event handler.
 		protected override void OnLostFocus(RoutedEventArgs pArgs)
 		{
 			base.OnLostFocus(pArgs);
 
-			//TODO: Martin please remember to uncomment this once the Focus Manager is completed.
+			DependencyObject spOriginalSource;
 
-			//DependencyObject spOriginalSource;
-			//bool hasFocus = false;
-			//bool isOriginalSource = false;
+			var hasFocus = HasFocus();
 
-			//hasFocus = HasFocus();
+			if (pArgs == null) throw new ArgumentNullException();
 
-			//if (pArgs == null) throw new ArgumentNullException();
+			spOriginalSource = pArgs.OriginalSource as DependencyObject;
 
-			//spOriginalSource = pArgs.OriginalSource as DependencyObject;
+			//ctl.are_equal(spOriginalSource, this, &isOriginalSource);
 
-			////ctl.are_equal(spOriginalSource, this, &isOriginalSource);
+			if (spOriginalSource == this)
+			{
+				IsSelectionActive = hasFocus;
+				if (hasFocus)
+				{
+					SetFocusedItem(m_iFocusedIndex < 0 ? 0 : m_iFocusedIndex, true);
+				}
+			}
 
-			//if (spOriginalSource == this)
-			//{
-			//	IsSelectionActive = hasFocus;
-			//	if (hasFocus)
-			//	{
-			//		SetFocusedItem(m_iFocusedIndex < 0 ? 0 : m_iFocusedIndex, true);
-			//	}
-			//}
-
-			//if (!hasFocus)
-			//{
-			//	m_moveFocusToSelectedItem = false;
-			//	m_ShouldShowFocusRect = false;
-			//	UpdateVisualState(true);
-			//}
+			if (!hasFocus)
+			{
+				m_moveFocusToSelectedItem = false;
+				m_ShouldShowFocusRect = false;
+				UpdateVisualState(true);
+			}
 		}
 
 		protected override void OnPointerCaptureLost(PointerRoutedEventArgs pArgs)
@@ -1410,7 +1403,7 @@ namespace Windows.UI.Xaml.Controls
 		void HandlePointerLostOrCanceled(PointerRoutedEventArgs pArgs)
 		{
 			PointerPoint spPointerPoint;
-			PointerDevice spPointerDevice;
+			Windows.Devices.Input.PointerDevice spPointerDevice;
 			PointerDeviceType nPointerDeviceType = PointerDeviceType.Touch;
 
 			if (pArgs == null) throw new ArgumentNullException();
@@ -1420,32 +1413,31 @@ namespace Windows.UI.Xaml.Controls
 			if (spPointerPoint == null) throw new ArgumentNullException();
 			spPointerDevice = spPointerPoint.PointerDevice;
 			if (spPointerDevice == null) throw new ArgumentNullException();
-			nPointerDeviceType = spPointerDevice.PointerDeviceType;
+			nPointerDeviceType = (PointerDeviceType)spPointerDevice.PointerDeviceType;
 			if (nPointerDeviceType == PointerDeviceType.Touch)
 			{
-				//m_ShouldShowFocusRect = false;
+				m_ShouldShowFocusRect = false;
 				UpdateVisualState(true);
 			}
 		}
 
-		// Handle the custom propery changed event and call the OnPropertyChanged2 methods.
-		//void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
-		//{
-		//	switch (args.Property.Name)
-		//	{
-		//		case "Visibility":
-		//			OnVisibilityChanged();
-		//			break;
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			switch (args.Property.Name)
+			{
+				case "Visibility":
+					OnVisibilityChanged();
+					break;
 
-		//		case "SelectedIndex":
-		//			{
-		//				OnSelectedIndexChanged((int) args.OldValue, (int) args.NewValue);
-		//			}
-		//			break;
-		//	}
+				case "SelectedIndex":
+					{
+						OnSelectedIndexChanged((int)args.OldValue, (int)args.NewValue);
+					}
+					break;
+			}
 
-		//	//base.OnPropertyChanged2(args);
-		//}
+			base.OnPropertyChanged2(args);
+		}
 
 
 		internal override void OnSelectedIndexChanged(int oldSelectedIndex, int newSelectedIndex)
@@ -1512,6 +1504,9 @@ namespace Windows.UI.Xaml.Controls
 
 					m_tpFixOffsetTimer?.Stop();
 
+					// UNO: force previous/next buttons' visibility to update immediately
+					UpdateVisualState();
+
 					//m_tpScrollViewer?.InvalidateScrollInfo();
 					// When the application is not being rendered, there is no need to animate
 					// the view change. Instead, a view jump is performed to minimize the CPU cost.
@@ -1551,16 +1546,14 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Called when the IsEnabled property changes.
-		void OnIsEnabledChanged(/*IsEnabledChangedEventArgs pArgs*/)
+		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
 		{
-			bool bIsEnabled = false;
+			base.OnIsEnabledChanged(e);
 
-			//FlipViewGenerated.OnIsEnabledChanged(pArgs);
-
-			bIsEnabled = IsEnabled;
+			var bIsEnabled = IsEnabled;
 			if (!bIsEnabled)
 			{
-				//m_ShouldShowFocusRect = false;
+				m_ShouldShowFocusRect = false;
 				HideButtonsImmediately();
 			}
 
@@ -1568,7 +1561,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Update the visual states when the Visibility property is changed.
-		void OnVisibilityChanged()
+		private void OnVisibilityChanged()
 		{
 			Visibility visibility = Visibility.Collapsed;
 
@@ -1576,7 +1569,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (Visibility.Visible != visibility)
 			{
-				//m_ShouldShowFocusRect = false;
+				m_ShouldShowFocusRect = false;
 				HideButtonsImmediately();
 			}
 
@@ -1597,7 +1590,8 @@ namespace Windows.UI.Xaml.Controls
 
 				spNewDispatcherTimer = new DispatcherTimer();
 
-				_fixOffsetSubscription.Disposable = Disposable.Create(() => {
+				_fixOffsetSubscription.Disposable = Disposable.Create(() =>
+				{
 					spNewDispatcherTimer.Stop();
 					spNewDispatcherTimer.Tick -= FixOffset;
 				});
@@ -1641,7 +1635,8 @@ namespace Windows.UI.Xaml.Controls
 
 				spNewDispatcherTimer = new DispatcherTimer();
 
-				_buttonsFadeOutTimerSubscription.Disposable = Disposable.Create(() => {
+				_buttonsFadeOutTimerSubscription.Disposable = Disposable.Create(() =>
+				{
 					spNewDispatcherTimer.Stop();
 					spNewDispatcherTimer.Tick -= ButtonsFadeOutTimerTickHandler;
 				});

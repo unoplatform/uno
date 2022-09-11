@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>xamarinmac20;MonoAndroid11.0;xamarinios10;net461;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid10.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+		<TargetFrameworks>xamarinmac20;MonoAndroid12.0;xamarinios10;net461;netstandard2.0</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid12.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
@@ -9,7 +9,7 @@
 	<PropertyGroup>
 		<AssemblyName>Uno.UI</AssemblyName>
 		<RootNamespace>Uno.UI</RootNamespace>
-		<DefineConstants>$(DefineConstants);IS_UNO</DefineConstants>
+		<DefineConstants>$(DefineConstants);IS_UNO;IS_UNO_UI_PROJECT</DefineConstants>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<BuildForLiveUnitTesting>false</BuildForLiveUnitTesting>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
@@ -84,11 +84,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Uno.Core" />
-		<PackageReference Include="Uno.Core.Build" />
-		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0">
-			<PrivateAssets>all</PrivateAssets>
-		</PackageReference>
 		<PackageReference Include="System.Memory" Version="4.5.2" />
 	</ItemGroup>
 
@@ -99,7 +94,7 @@
 		<PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid10.0'">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid12.0'">
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
@@ -114,7 +109,11 @@
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
-		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="'$(TargetFramework)' == 'MonoAndroid11.0' or '$(TargetFramework)' == 'MonoAndroid10.0'">
+		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="'$(TargetFramework)' == 'MonoAndroid11.0' or '$(TargetFramework)' == 'MonoAndroid12.0'">
+			<TreatAsPackageReference>false</TreatAsPackageReference>
+		</ProjectReference>
+
+		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.csproj">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
 	</ItemGroup>
@@ -173,8 +172,6 @@
 	<ItemGroup>
 		<Compile Include="Mixins\Android\BaseActivity.Callbacks.g.cs" />
 		<Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
-		<Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />		
-		<Compile Include="Mixins\DependencyPropertyMixins.g.cs" />
 		<Compile Include="Mixins\DependencyPropertyMixins.g.cs" />
 	</ItemGroup>
 
@@ -195,6 +192,8 @@
 		-->
 		<ItemGroup>
 			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Memory'" />
+			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Buffers'" />
+
 			<Reference Remove="@(_ReferenceToRemove)" />
 		</ItemGroup>
 	</Target>
@@ -202,11 +201,13 @@
 	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac))">
 		<ItemGroup>
 			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
+			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Buffers'" />
 			<ReferencePath Remove="@(_ReferencePathToRemove)" />
 		</ItemGroup>
 	</Target>
 
 	<Import Project="MixinGeneration.targets" />
+	<Import Project="XamlMerge.targets" />
 
 	<!-- If any ItemGroup appears here with Remove=XXX, they should be deleted -->
 

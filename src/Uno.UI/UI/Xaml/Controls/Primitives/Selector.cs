@@ -22,6 +22,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	{
 		private protected ScrollViewer m_tpScrollViewer;
 
+		private protected IVirtualizingPanel VirtualizingPanel => ItemsPanelRoot as IVirtualizingPanel;
+
 		private protected int m_iFocusedIndex;
 
 		private protected bool m_skipScrollIntoView;
@@ -36,7 +38,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private BindingPath _selectedValueBindingPath;
 		private bool _disableRaiseSelectionChanged;
 		//private int m_lastFocusedIndex;
-		private bool m_inCollectionChange = false;
+
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
+		private bool m_inCollectionChange;
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
 
 		/// <summary>
 		/// This is always true for <see cref="FlipView"/> and <see cref="ComboBox"/>, and depends on the value of <see cref="ListViewBase.SelectionMode"/> for <see cref="ListViewBase"/>.
@@ -231,9 +236,54 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set => this.SetValue(SelectedIndexProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for SelectedIndex.  This enables animation, styling, binding, etc...
 		public static DependencyProperty SelectedIndexProperty { get; } =
-			DependencyProperty.Register("SelectedIndex", typeof(int), typeof(Selector), new FrameworkPropertyMetadata(-1));
+			DependencyProperty.Register(
+				nameof(SelectedIndex),
+				typeof(int),
+				typeof(Selector),
+				new FrameworkPropertyMetadata(-1, coerceValueCallback: CoerceSelectedIndex));
+
+		private int _uncoercedSelectedIndex = -1;
+
+		private static object CoerceSelectedIndex(DependencyObject dependencyObject, object baseValue)
+		{
+			var owner = (Selector)dependencyObject;
+			var desiredIndex = (int)baseValue;
+			if (desiredIndex == -1)
+			{
+				owner._uncoercedSelectedIndex = -1;
+				return -1;
+			}
+
+			var itemCount = owner.NumberOfItems;
+			if (itemCount > 0)
+			{
+				// Some items already exist.
+				// We validate bounds and throw if index differs from uncoerced.
+				if (desiredIndex < -1 || desiredIndex >= itemCount)
+				{
+					if (desiredIndex != owner._uncoercedSelectedIndex)
+					{
+						throw new ArgumentException(
+							nameof(baseValue),
+							"SelectedIndex cannot be set to invalid value when items are present");
+					}
+					else
+					{
+						// Ignore change.
+						return -1;
+					}
+				}
+				owner._uncoercedSelectedIndex = -1;
+				return desiredIndex;
+			}
+			else
+			{
+				// No items exist, store uncoerced and set to -1;
+				owner._uncoercedSelectedIndex = desiredIndex;
+				return -1;
+			}
+		}
 
 		internal virtual void OnSelectedIndexChanged(int oldSelectedIndex, int newSelectedIndex)
 		{
@@ -350,7 +400,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			else
 			{
 				_collectionViewSubscription.Disposable = null;
-				SelectedIndex = -1;
+				ResetIndexIfNeeded();
 			}
 		}
 
@@ -394,7 +444,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					if (selectedIndexToSet >= newIndex)
 					{
 						selectedIndexToSet += c.NewItems.Count;
-						SelectedIndex = selectedIndexToSet;
+						SelectedIndex = Math.Min(NumberOfItems - 1, selectedIndexToSet);
 					}
 					break;
 				case NotifyCollectionChangedAction.Remove:
@@ -403,13 +453,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						if (selectedIndexToSet >= oldIndex && selectedIndexToSet < oldIndex + c.OldItems.Count)
 						{
 							//Deset if selected item is being removed
-							SelectedIndex = -1;
+							ResetIndexIfNeeded();
 						}
 						else if (selectedIndexToSet >= oldIndex + c.OldItems.Count)
 						{
 							//Decrement SelectedIndex if items are removed before it
 							selectedIndexToSet -= c.OldItems.Count;
-							SelectedIndex = selectedIndexToSet;
+							SelectedIndex = Math.Max(-1, selectedIndexToSet);
 						}
 					}
 					break;
@@ -419,7 +469,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						if (selectedIndexToSet >= oldIndex && selectedIndexToSet < oldIndex + c.OldItems.Count)
 						{
 							//Deset if selected item is being replaced
-							SelectedIndex = -1;
+							ResetIndexIfNeeded();
 						}
 					}
 					break;
@@ -431,11 +481,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						if (item == null || !item.Equals(SelectedItem))
 						{
 							// If selected item and index no longer coincide, unselect the selection
-							SelectedIndex = -1;
+							ResetIndexIfNeeded();
 						}
 					}
 					break;
 			}
+
+			OnItemsChanged(c);
 		}
 
 		internal override void OnItemsSourceGroupsChanged(object sender, NotifyCollectionChangedEventArgs c)
@@ -470,7 +522,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						if (selectedIndexPath >= oldIndexPath && selectedIndexPath < oldIndexPathLast)
 						{
 							//Deset if selected item is in group being removed
-							SelectedIndex = -1;
+							ResetIndexIfNeeded();
 						}
 						else if (selectedIndexPath >= oldIndexPathLast)
 						{
@@ -491,28 +543,41 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						if (selectedIndexPath >= oldIndexPath && selectedIndexPath < oldIndexPathLast)
 						{
 							//Deset if selected item is in group being replaced
-							SelectedIndex = -1;
+							ResetIndexIfNeeded();
 						}
 					}
 					break;
 				case NotifyCollectionChangedAction.Reset:
-					SelectedIndex = -1;
+					ResetIndexIfNeeded();
 					break;
 			}
 		}
 
 		internal void OnItemClicked(SelectorItem selectorItem) => OnItemClicked(IndexFromContainer(selectorItem));
 
-		internal virtual void OnItemClicked(int clickedIndex) { }
+		internal virtual void OnItemClicked(int clickedIndex)
+		{
+			if (ItemsSource is ICollectionView collectionView)
+			{
+				//NOTE: Windows seems to call MoveCurrentTo(item); we set position instead to have expected behavior when you have duplicate items in the list.
+				collectionView.MoveCurrentToPosition(clickedIndex);
 
-		protected override void OnItemsChanged(object e)
+				// The CollectionView may have intercepted the change
+				clickedIndex = collectionView.CurrentPosition;
+			}
+
+			SelectedIndex = clickedIndex;
+		}
+
+		private void OnItemsChanged(NotifyCollectionChangedEventArgs e)
 		{
 			if (
 				// When ItemsSource is set, we get collection changes from it directly (and it's not possible to directly modify Items)
-				ItemsSource == null &&
-				e is IVectorChangedEventArgs iVCE
+				ItemsSource == null
 			)
 			{
+				var iVCE = e.ToVectorChangedEventArgs();
+
 				if (iVCE.CollectionChange == CollectionChange.ItemChanged
 					|| (iVCE.CollectionChange == CollectionChange.ItemInserted && iVCE.Index < Items.Count))
 				{
@@ -522,25 +587,39 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					{
 						ChangeSelectedItem(selectorItem, false, true);
 					}
-					// If the item is inserted before the currently selected one, increase the selected index.
-					else if (iVCE.CollectionChange == CollectionChange.ItemInserted && (int)iVCE.Index <= SelectedIndex)
-					{
-						SelectedIndex++;
-					}
 				}
 				else if (iVCE.CollectionChange == CollectionChange.ItemRemoved)
 				{
 					// If the removed item is the currently selected one, Set SelectedIndex to -1
 					if ((int)iVCE.Index == SelectedIndex)
 					{
-						SelectedIndex = -1;
-					}
-					// But if it's before the currently selected one, decrement SelectedIndex
-					else if ((int)iVCE.Index < SelectedIndex)
-					{
-						SelectedIndex--;
+						ResetIndexIfNeeded();
 					}
 				}
+				//Prevent SelectedIndex been >= Items.Count
+				var sItem = ItemFromIndex(SelectedIndex);
+
+				if (sItem == null || !sItem.Equals(SelectedItem))
+				{
+					ResetIndexIfNeeded();
+				}
+			}
+
+			if (_uncoercedSelectedIndex > -1 && _uncoercedSelectedIndex < NumberOfItems)
+			{
+				SelectedIndex = _uncoercedSelectedIndex;
+			}
+		}
+
+		/// <summary>
+		/// Sets SelectedIndex to -1 if not already set to this value.
+		/// This is needed to ensure Selector code does not clear the uncoerced value.
+		/// </summary>
+		private void ResetIndexIfNeeded()
+		{
+			if (SelectedIndex != -1)
+			{
+				SelectedIndex = -1;
 			}
 		}
 
@@ -611,6 +690,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			base.Refresh();
 			_itemTemplatesThatArentContainers.Clear();
+			RefreshPartial();
 		}
 
 
@@ -776,5 +856,18 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			return !isItemsHostInvalid && isInLiveTree && !m_skipScrollIntoView && !m_inCollectionChange;
 		}
+
+		partial void RefreshPartial();
+
+
+		/// <summary>
+		/// Is the managed implementation for virtualized lists (ItemsStackPanel, ItemsWrapGrid, CarouselPanel etc) used on this platform?
+		/// </summary>
+		internal const bool UsesManagedLayouting =
+#if __IOS__ || __ANDROID__
+			false;
+#else
+			true;
+#endif
 	}
 }

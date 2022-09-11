@@ -9,14 +9,14 @@ using Windows.UI.Xaml.Data;
 
 namespace UITests.Windows_Devices
 {
-	[SampleControlInfo("Windows.Devices", "LightSensor", description: "Demonstrates use of Windows.Devices.Sensors.LightSensor", viewModelType: typeof(LightSensorTestsViewModel))]
+	[SampleControlInfo("Windows.Devices", "LightSensor", description: "Demonstrates use of Windows.Devices.Sensors.LightSensor", viewModelType: typeof(LightSensorTestsViewModel), ignoreInSnapshotTests: true)]
 	public sealed partial class LightSensorTests : Page
 	{
 		public LightSensorTests() => InitializeComponent();
 	}
 
 	[Bindable]
-	public class LightSensorTestsViewModel : ViewModelBase
+	internal class LightSensorTestsViewModel : ViewModelBase
 	{
 		private readonly LightSensor _LightSensor = null;
 		private bool _readingChangedAttached;

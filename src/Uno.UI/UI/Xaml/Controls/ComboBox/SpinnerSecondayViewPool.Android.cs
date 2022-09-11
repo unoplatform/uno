@@ -3,7 +3,7 @@ using Android.Views;
 using Android.Widget;
 using Java.Lang.Reflect;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Controls;
 using System;
@@ -95,7 +95,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (view != null)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("Reusing unassigned view {0}", view);
 				}

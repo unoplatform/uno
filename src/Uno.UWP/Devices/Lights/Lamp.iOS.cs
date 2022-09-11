@@ -88,7 +88,7 @@ namespace Windows.Devices.Lights
 
 		private static Lamp TryCreateInstance()
 		{
-			var captureDevice = AVCaptureDevice.GetDefaultDevice(AVMediaType.Video);
+			var captureDevice = AVCaptureDevice.GetDefaultDevice(AVMediaTypes.Video.GetConstant());
 
 			var lampAvailable =
 				captureDevice != null &&

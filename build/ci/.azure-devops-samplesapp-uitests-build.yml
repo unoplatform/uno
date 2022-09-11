@@ -3,12 +3,12 @@ parameters:
 
 jobs:
 - job: SamplesApp_UITests_Build
-  displayName: 'SamplesApp UI Tests (Build)'
+  displayName: 'Build SamplesApp UI Tests'
   
   pool:
     vmImage: ${{ parameters.vmImage }}
     
-  dependsOn: Commitsar
+  dependsOn: Pipeline_Validations
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
@@ -17,11 +17,17 @@ jobs:
     ## and the UNO_UITEST_BUCKET_ID property. For example, a bucket count
     ## of 3 implies that UNO_UITEST_BUCKET_ID will be [1;2;3] in the jobs
     ## matrix.
-    UNO_UITEST_BUCKET_COUNT: 3
+    UNO_UITEST_BUCKET_COUNT: 5
 
   steps:
   - checkout: self
     clean: true
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  - template: templates/dotnet-install.yml
 
   - task: MSBuild@1
     displayName: 'Build UI Tests'

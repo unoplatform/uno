@@ -1,7 +1,6 @@
 ﻿#if HAS_UNO
-using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml;
-using Uno.Logging;
 
 namespace Uno.UI.Samples.Content.UITests.WebView
 {
@@ -75,7 +74,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 			var message = $"NavigationStarting @ {args.Uri} [{sender.Source}]";
 
 			SetMessage(sender, message);
-			sender.Log().DebugIfEnabled(() => message);
+			sender.Log().Debug(message);
 		}
 
 		private static void WebView_NavigationFailed(object sender, Windows.UI.Xaml.Controls.WebViewNavigationFailedEventArgs e)
@@ -84,7 +83,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 			var message = $"NavigationFailed {e.WebErrorStatus} @ {e.Uri} [{webView.Source}]";
 
 			SetMessage(webView, message);
-			sender.Log().DebugIfEnabled(() => message);
+			sender.Log().Debug(message);
 		}
 
 		private static void WebView_NavigationCompleted(Windows.UI.Xaml.Controls.WebView sender, Windows.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs args)
@@ -92,7 +91,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 			var message = $"NavigationCompleted @ {args.Uri} [{sender.Source}]";
 
 			SetMessage(sender, message);
-			sender.Log().DebugIfEnabled(() => message);
+			sender.Log().Debug(message);
 		}
 	}
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Specialized;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
@@ -10,6 +11,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
+using System.Collections.ObjectModel;
+
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -47,6 +50,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		const int BorderThicknessAdjustment = 2; // Deduct BorderThickness on PopupBorder
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_ComboBox_MinWidth()
 		{
 			var source = Enumerable.Range(0, 5).ToArray();
@@ -84,6 +90,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_ComboBox_Constrained_By_Parent()
 		{
 			var source = Enumerable.Range(0, 5).ToArray();
@@ -124,6 +133,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task Check_Creation_Count_Few_Items()
 		{
 			var source = Enumerable.Range(0, 5).ToArray();
@@ -172,6 +184,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __IOS__ || __ANDROID__
 		[Ignore("ComboBox is currently not virtualized on iOS and Android - #556")] // https://github.com/unoplatform/uno/issues/556
 #endif
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task Check_Creation_Count_Many_Items()
 		{
 			var source = Enumerable.Range(0, 500).ToArray();
@@ -210,6 +225,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task Check_Dropdown_Measure_Count()
 		{
 			var source = Enumerable.Range(0, 500).ToArray();
@@ -253,6 +271,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Fluent_And_Theme_Changed()
 		{
 			using (StyleHelper.UseFluentStyles())
@@ -285,7 +306,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[Ignore] // https://github.com/unoplatform/uno/issues/4686
 		public void When_Index_Is_Out_Of_Range_And_Later_Becomes_Valid()
 		{
 			var comboBox = new ComboBox();
@@ -300,7 +320,53 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[Ignore] // https://github.com/unoplatform/uno/issues/4686
+		public void When_Index_Set_With_No_Items_Repeated()
+		{
+			var comboBox = new ComboBox();
+			comboBox.SelectedIndex = 1;
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(1, comboBox.SelectedIndex);
+			comboBox.Items.Clear();
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.SelectedIndex = 2;
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(2, comboBox.SelectedIndex);
+		}
+
+		[TestMethod]
+		public void When_Index_Set_Out_Of_Range_When_Items_Exist()
+		{
+			var comboBox = new ComboBox();
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.ThrowsException<ArgumentException>(() => comboBox.SelectedIndex = 2);
+		}
+
+		[TestMethod]
+		public void When_Index_Set_Negative_Out_Of_Range_When_Items_Exist()
+		{
+			var comboBox = new ComboBox();
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.ThrowsException<ArgumentException>(() => comboBox.SelectedIndex = -2);
+		}
+
+		[TestMethod]
+		public void When_Index_Set_Negative_Out_Of_Range_When_Items_Do_Not_Exist()
+		{
+			var comboBox = new ComboBox();
+			comboBox.SelectedIndex = -2;
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+		}
+
+		[TestMethod]
 		public void When_Index_Is_Explicitly_Set_To_Negative_After_Out_Of_Range_Value()
 		{
 			var comboBox = new ComboBox();
@@ -314,5 +380,153 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			comboBox.Items.Add(new ComboBoxItem());
 			Assert.AreEqual(-1, comboBox.SelectedIndex); // Will no longer become 2
 		}
+
+		[TestMethod]
+		public async Task When_Collection_Reset()
+		{
+			var SUT = new ComboBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+
+				var c = new MyObservableCollection<string>();
+				c.Add("One");
+				c.Add("Two");
+				c.Add("Three");
+
+				SUT.ItemsSource = c;
+
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(SUT.Items.Count, 3);
+
+				using (c.BatchUpdate())
+				{
+					c.Add("Four");
+					c.Add("Five");
+				}
+
+				SUT.IsDropDownOpen = true;
+
+				// Items are materialized when the popup is opened
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(SUT.Items.Count, 5);
+				Assert.IsNotNull(SUT.ContainerFromItem("One"));
+				Assert.IsNotNull(SUT.ContainerFromItem("Four"));
+				Assert.IsNotNull(SUT.ContainerFromItem("Five"));
+			}
+			finally
+			{
+				SUT.IsDropDownOpen = false;
+			}
+		}
+
+#if HAS_UNO
+		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Full_Collection_Reset()
+		{
+			var SUT = new ComboBox();
+			SUT.ItemTemplate = new DataTemplate(() => {
+
+				var tb = new TextBlock();
+				tb.SetBinding(TextBlock.TextProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });
+				tb.SetBinding(TextBlock.NameProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });
+
+				return tb;
+			});
+
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+
+				var c = new MyObservableCollection<ItemModel>();
+				c.Add(new ItemModel { Text = "One" });
+				c.Add(new ItemModel { Text = "Two" });
+				c.Add(new ItemModel { Text = "Three" });
+
+				SUT.ItemsSource = c;
+
+				await WindowHelper.WaitForIdle();
+				SUT.IsDropDownOpen = true;
+
+				await WindowHelper.WaitForIdle();
+				SUT.IsDropDownOpen = false;
+
+				Assert.AreEqual(SUT.Items.Count, 3);
+
+				using (c.BatchUpdate())
+				{
+					c.Clear();
+					c.Add(new ItemModel { Text = "Five" });
+					c.Add(new ItemModel { Text = "Six" });
+					c.Add(new ItemModel { Text = "Seven" });
+				}
+
+				SUT.IsDropDownOpen = true;
+
+				// Items are materialized when the popup is opened
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(3, SUT.Items.Count);
+				Assert.IsNotNull(SUT.ContainerFromItem(c[0]));
+				Assert.IsNotNull(SUT.ContainerFromItem(c[1]));
+				Assert.IsNotNull(SUT.ContainerFromItem(c[2]));
+
+				Assert.IsNotNull(SUT.FindName("Seven"));
+				Assert.IsNotNull(SUT.FindName("Five"));
+				Assert.IsNotNull(SUT.FindName("Six"));
+			}
+			finally
+			{
+				SUT.IsDropDownOpen = false;
+			}
+		}
+#endif
+
+		public class ItemModel
+		{
+			public string Text { get; set; }
+
+			public override string ToString() => Text;
+		}
+
+		public class MyObservableCollection<TType> : ObservableCollection<TType>
+		{
+			private int _batchUpdateCount;
+
+			public IDisposable BatchUpdate()
+			{
+				++_batchUpdateCount;
+
+				return Uno.Disposables.Disposable.Create(Release);
+
+				void Release()
+				{
+					if (--_batchUpdateCount <= 0)
+					{
+						OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+					}
+				}
+			}
+
+			protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+			{
+				if (_batchUpdateCount > 0)
+				{
+					return;
+				}
+
+				base.OnCollectionChanged(e);
+			}
+
+			public void Append(TType item) => Add(item);
+
+			public TType GetAt(int index) => this[index];
+		}
+
 	}
 }

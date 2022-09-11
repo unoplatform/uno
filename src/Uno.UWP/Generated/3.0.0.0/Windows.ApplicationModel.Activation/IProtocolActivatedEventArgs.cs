@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.Activation
 {
 	#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || false
-	[global::Uno.NotImplemented]
+	[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 	#endif
 	public  partial interface IProtocolActivatedEventArgs : global::Windows.ApplicationModel.Activation.IActivatedEventArgs
 	{

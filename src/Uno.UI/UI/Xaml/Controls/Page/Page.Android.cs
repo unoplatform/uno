@@ -1,6 +1,6 @@
 ﻿using Android.Views;
 using Android.Widget;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Uno.UI.Controls;

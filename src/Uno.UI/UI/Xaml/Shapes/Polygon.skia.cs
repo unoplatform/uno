@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Shapes
 
 			var streamGeometry = GeometryHelper.Build(c =>
 			{
-				c.BeginFigure(points[0], true, false);
+				c.BeginFigure(points[0], true);
 				for (var i = 1; i < points.Count; i++)
 				{
 					c.LineTo(points[i], true, false);

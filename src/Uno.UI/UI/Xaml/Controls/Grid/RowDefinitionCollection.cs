@@ -71,6 +71,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public int Count => _inner.Count;
 
+		public uint Size => (uint)_inner.Count;
+
 		public bool IsReadOnly => false;
 
 		/// <summary>

@@ -2,11 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Globalization
 {
-	#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class ApplicationLanguages 
+	public static partial class ApplicationLanguages 
 	{
+		// Skipping already declared property PrimaryLanguageOverride
+		// Skipping already declared property Languages
+		// Skipping already declared property ManifestLanguages
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::System.Collections.Generic.IReadOnlyList<string> GetLanguagesForUser( global::Windows.System.User user)

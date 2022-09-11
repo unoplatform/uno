@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Microsoft.UI.Xaml.Controls">
 
-    <Style x:Key="DefaultTwoPaneViewStyle" TargetType="local:TwoPaneView">
+    <!-- <Style x:Key="DefaultTwoPaneViewStyle" TargetType="local:TwoPaneView">
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="MinWideModeWidth" Value="641"/>
@@ -87,6 +87,6 @@
         </Setter>
     </Style>
 
-    <Style TargetType="local:TwoPaneView" BasedOn="{StaticResource DefaultTwoPaneViewStyle}" />
+    <Style TargetType="local:TwoPaneView" BasedOn="{StaticResource DefaultTwoPaneViewStyle}" /> -->
 
 </ResourceDictionary>

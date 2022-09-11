@@ -143,10 +143,6 @@ namespace Windows.Devices.Lights.Effects
 			{
 				throw new global::System.NotSupportedException();
 			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
 		}
 		#endif
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Devices.Lights.Effects.ILampArrayEffect>
@@ -173,10 +169,6 @@ namespace Windows.Devices.Lights.Effects
 		public int Count
 		{
 			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
 			{
 				throw new global::System.NotSupportedException();
 			}

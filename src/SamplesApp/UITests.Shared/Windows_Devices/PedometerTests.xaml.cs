@@ -29,7 +29,8 @@ namespace UITests.Shared.Windows_Devices
 		"Windows.Devices",
 		"Pedometer",
 		description: "Demonstrates the Windows.Devices.Sensors.Pedometer",
-		viewModelType: typeof(PedometerTestsViewModel))]
+		viewModelType: typeof(PedometerTestsViewModel),
+		ignoreInSnapshotTests: true)]
     public sealed partial class PedometerTests : UserControl
     {
         public PedometerTests()
@@ -38,7 +39,7 @@ namespace UITests.Shared.Windows_Devices
         }
     }
 
-	public class PedometerTestsViewModel : ViewModelBase
+	internal class PedometerTestsViewModel : ViewModelBase
 	{
 		private Pedometer _pedometer = null;
 		private string _pedometerStatus;

@@ -101,18 +101,26 @@ namespace MUXControlsTestApp.Utilities
 			}
 		}
 
-		public static async Task ExecuteAsync(Action action)
-		{
-			await ExecuteAsync(CoreApplication.MainView, action);
-		}
+		public static async Task ExecuteAsync(Action action) =>
+			await ExecuteAsync(CoreApplication.MainView, async () => action());
 
-		public static async Task ExecuteAsync(CoreApplicationView whichView, Action action)
+		public static async Task ExecuteAsync(Func<Task> task) =>
+			await ExecuteAsync(CoreApplication.MainView, task);
+
+		public static async Task ExecuteAsync(CoreApplicationView whichView, Action action) =>
+			await ExecuteAsync(whichView, async () => action());
+
+		public static async Task ExecuteAsync(CoreApplicationView whichView, Func<Task> task)
 		{
 			Exception exception = null;
 			var dispatcher = whichView.Dispatcher;
-			if (dispatcher.HasThreadAccess)
+			if (dispatcher.HasThreadAccess
+#if __WASM__
+				|| !dispatcher.IsThreadingSupported
+#endif
+				)
 			{
-				action();
+				await task();
 			}
 			else
 			{
@@ -120,7 +128,7 @@ namespace MUXControlsTestApp.Utilities
 				// the splash screen is dismissed (i.e. that the window content is present).
 				var workComplete = new AutoResetEvent(false);
 #if MUX
-			App.RunAfterSplashScreenDismissed(() =>
+				App.RunAfterSplashScreenDismissed(() =>
 #endif
 				{
 					// If the Splash screen dismissal happens on the UI thread, run the action right now.
@@ -128,7 +136,7 @@ namespace MUXControlsTestApp.Utilities
 					{
 						try
 						{
-							action();
+							await task();
 						}
 						catch (Exception e)
 						{
@@ -144,10 +152,10 @@ namespace MUXControlsTestApp.Utilities
 					{
 						// Otherwise queue the work to the UI thread and then set the completion event on that thread.
 						await dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-							() => {
+							async () => {
 								try
 								{
-									action();
+									await task();
 								}
 								catch (Exception e)
 								{
@@ -155,7 +163,7 @@ namespace MUXControlsTestApp.Utilities
 									throw;
 								}
 								finally // Unblock calling thread even if action() throws
-							{
+								{
 									workComplete.Set();
 								}
 							});

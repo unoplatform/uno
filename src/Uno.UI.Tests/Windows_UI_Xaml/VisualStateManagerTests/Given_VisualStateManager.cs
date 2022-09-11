@@ -234,6 +234,20 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests
 			}
 		}
 
+		[TestMethod]
+		public void When_CustomManager_Then_UseIt()
+		{
+			var (control, group) = Setup();
+			var vsm = new CustomManager();
+			VisualStateManager.SetCustomVisualStateManager((FrameworkElement)control.TemplatedRoot, vsm);
+
+			VisualStateManager.GoToState(control, "state1", true);
+			VisualStateManager.GoToState(control, "state2", true);
+
+			Assert.IsTrue(new[] { "state1", "state2" }.SequenceEqual(vsm.States));
+		}
+
+
 		private static (Control control, VisualStateGroup states) Setup()
 		{
 			var control = new Control { Name = "control", Tag = "initial", Template = new ControlTemplate(() => new Grid()) };
@@ -247,7 +261,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests
 		}
 
 		private static VisualState State(int id)
-			=> new VisualState
+			=> new()
 			{
 				Name = "state" + id,
 				Setters = {new Setter(new TargetPropertyPath("control", "Tag"), "state" + id)}
@@ -303,6 +317,18 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests
 			internal void Unset()
 			{
 				IsActive = false;
+			}
+		}
+
+		private class CustomManager : VisualStateManager
+		{
+			public List<string> States { get; } = new();
+
+			/// <inheritdoc />
+			protected override bool GoToStateCore(Control control, FrameworkElement templateRoot, string stateName, VisualStateGroup @group, VisualState state, bool useTransitions)
+			{
+				States.Add(stateName);
+				return base.GoToStateCore(control, templateRoot, stateName, @group, state, useTransitions);
 			}
 		}
 	}

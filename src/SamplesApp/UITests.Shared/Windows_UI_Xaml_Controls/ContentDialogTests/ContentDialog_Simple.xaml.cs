@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Uno.UI;
 using Uno.UI.Common;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
@@ -19,12 +20,23 @@ using ICommand = System.Windows.Input.ICommand;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 {
-	[SampleControlInfo("ContentDialog", "ContentDialog_Simple")]
+	[SampleControlInfo("Dialogs", "ContentDialog_Simple")]
 	public sealed partial class ContentDialog_Simple : UserControl
 	{
 		public ContentDialog_Simple()
 		{
 			this.InitializeComponent();
+
+#if __ANDROID__
+			var window = (ContextHelper.Current as global::Android.App.Activity).Window;
+			var rect = new global::Android.Graphics.Rect();
+			window.DecorView.GetWindowVisibleDisplayFrame(rect);
+			int height = rect.Top;
+			int contentViewTop =
+				window.FindViewById(global::Android.Views.Window.IdAndroidContent).Top;
+			int titleBarHeight = contentViewTop - height;
+			statusBarHeight.Text = titleBarHeight.ToString();
+#endif
 		}
 
 		private async void OnMyButtonClick(object sender, object args)

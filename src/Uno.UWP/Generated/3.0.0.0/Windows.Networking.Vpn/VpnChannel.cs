@@ -241,6 +241,41 @@ namespace Windows.Networking.Vpn
 		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.CurrentRequestTransportContext.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  void AppendVpnReceivePacketBuffer( global::Windows.Networking.Vpn.VpnPacketBuffer decapsulatedPacketBuffer)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnChannel", "void VpnChannel.AppendVpnReceivePacketBuffer(VpnPacketBuffer decapsulatedPacketBuffer)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  void AppendVpnSendPacketBuffer( global::Windows.Networking.Vpn.VpnPacketBuffer encapsulatedPacketBuffer)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnChannel", "void VpnChannel.AppendVpnSendPacketBuffer(VpnPacketBuffer encapsulatedPacketBuffer)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  void FlushVpnReceivePacketBuffers()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnChannel", "void VpnChannel.FlushVpnReceivePacketBuffers()");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  void FlushVpnSendPacketBuffers()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnChannel", "void VpnChannel.FlushVpnSendPacketBuffers()");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Foundation.Collections.ValueSet ActivateForeground( string packageRelativeAppId,  global::Windows.Foundation.Collections.ValueSet sharedContext)
+		{
+			throw new global::System.NotImplementedException("The member ValueSet VpnChannel.ActivateForeground(string packageRelativeAppId, ValueSet sharedContext) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void ProcessEventAsync( object thirdPartyPlugIn,  object @event)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnChannel", "void VpnChannel.ProcessEventAsync(object thirdPartyPlugIn, object @event)");

@@ -29,12 +29,15 @@ namespace Windows.UI.Xaml.Controls
 			=> SetLeftValue(obj, value);
 
 
-		[GeneratedDependencyProperty(DefaultValue = 0.0d, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, Options = FrameworkPropertyMetadataOptions.AutoConvert)]
+		[GeneratedDependencyProperty(DefaultValue = 0.0d, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsArrange)]
 		public static DependencyProperty LeftProperty { get ; } = CreateLeftProperty();
 
 		private static void OnLeftChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			(dependencyObject as IFrameworkElement)?.InvalidateArrange();
+			if (dependencyObject is IFrameworkElement { Parent: IFrameworkElement parent })
+			{
+				parent.InvalidateArrange();
+			}
 
 #if __WASM__
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties && dependencyObject is UIElement element)
@@ -54,12 +57,15 @@ namespace Windows.UI.Xaml.Controls
 		public static void SetTop(DependencyObject obj, double value)
 			=> SetTopValue(obj, value);
 
-		[GeneratedDependencyProperty(DefaultValue = 0.0d, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, Options = FrameworkPropertyMetadataOptions.AutoConvert)]
+		[GeneratedDependencyProperty(DefaultValue = 0.0d, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsArrange)]
 		public static DependencyProperty TopProperty { get ; } = CreateTopProperty();
 
 		private static void OnTopChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			(dependencyObject as IFrameworkElement)?.InvalidateArrange();
+			if (dependencyObject is IFrameworkElement { Parent: IFrameworkElement parent })
+			{
+				parent.InvalidateArrange();
+			}
 
 #if __WASM__
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties && dependencyObject is UIElement element)

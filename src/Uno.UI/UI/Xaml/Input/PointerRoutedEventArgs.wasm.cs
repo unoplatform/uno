@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Globalization;
-using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Input;
 using Uno.Foundation;
 using Uno.UI.Xaml;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace Windows.UI.Xaml.Input
 {
@@ -24,6 +29,7 @@ namespace Windows.UI.Xaml.Input
 			PointerDeviceType pointerType,
 			Point absolutePosition,
 			bool isInContact,
+			bool isInRange,
 			WindowManagerInterop.HtmlPointerButtonsState buttons,
 			WindowManagerInterop.HtmlPointerButtonUpdate buttonUpdate,
 			VirtualKeyModifiers keys,
@@ -40,7 +46,7 @@ namespace Windows.UI.Xaml.Input
 			_wheel = wheel;
 
 			FrameId = ToFrameId(timestamp);
-			Pointer = new Pointer(pointerId, pointerType, isInContact, isInRange: true);
+			Pointer = new Pointer(pointerId, pointerType, isInContact, isInRange);
 			KeyModifiers = keys;
 			OriginalSource = source;
 		}
@@ -48,7 +54,7 @@ namespace Windows.UI.Xaml.Input
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
 			var timestamp = ToTimeStamp(_timestamp);
-			var device = PointerDevice.For(Pointer.PointerDeviceType);
+			var device = Windows.Devices.Input.PointerDevice.For((Windows.Devices.Input.PointerDeviceType)Pointer.PointerDeviceType);
 			var rawPosition = _absolutePosition;
 			var position = relativeTo == null
 				? rawPosition

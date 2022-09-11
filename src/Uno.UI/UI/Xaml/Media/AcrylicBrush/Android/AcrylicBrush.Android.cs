@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Media
 
 				// Fall back to solid color
 				var fillPaint = GetFillPaint(Rect.Empty);
-				ExecuteWithNoRelayout(state.Owner, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(this, state.DrawArea, fillPaint, state.MaskingPath)));
+				ExecuteWithNoRelayout(state.Owner, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(this, state.DrawArea, fillPaint, state.MaskingPath, antiAlias: false)));
 
 				if (state.FallbackDisposable.Disposable == null)
 				{

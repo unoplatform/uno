@@ -7,7 +7,7 @@ Uno has a new multiplatform font. The new font must be added manually to each pl
 ## Font files
 The font is in this repository https://github.com/unoplatform/uno.fonts. The necessary files can be downloaded here: https://github.com/unoplatform/uno.fonts/tree/master/webfonts
 
->When downloading any of the Font files you can either clone or get the whole repository as a zip or if you want to download one file at the time you can do so by clicking on the specific file you want to download and then click on the Github built-in download button.
+>When downloading any of the Font files you can either clone or get the whole repository as a zip or if you want to download one file at the time you can do so by clicking on the specific file you want to download and then click on the GitHub built-in download button.
 >
 > Make sure not to right-click on the file and use 'Save Link As', as this may result in a corrupted file.
 

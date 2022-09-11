@@ -11,9 +11,7 @@ This guide will walk you through the necessary steps to set up and use the [`Uno
 ## Step-by-steps
 ### Section 1: Setup Uno.Cupertino
 1. Create a new Uno Platform application, following the instructions [here](../get-started.md).
-1. Add NuGet package `Uno.Cupertino` to each of project heads by:
-    > [!NOTE]
-    > You may have to check the `[x] Include Prerelease` to find this package, as there are currently no stable release.
+1. Add NuGet package `Uno.Cupertino` to each of project heads:
 
     > [!NOTE]
     > The project heads refer to the projects targeted to a specific platforms:
@@ -88,19 +86,19 @@ This guide will walk you through the necessary steps to set up and use the [`Uno
                 </StackPanel>
             </ScrollViewer>
         </Grid>
-    <Page>
+    </Page>
     ```
 
 > [!TIP]
 > You can find the style names using these methods:
-> - "Feature" section of Uno.Themes README: https://github.com/unoplatform/Uno.Themes#features
-> - Going through the source code of control styles: https://github.com/unoplatform/Uno.Themes/tree/master/src/library/Uno.Cupertino/Styles/Controls
+> - "Feature" section of Uno.Themes README [here](https://github.com/unoplatform/Uno.Themes#features)
+> - Going through the [source code](https://github.com/unoplatform/Uno.Themes/tree/master/src/library/Uno.Cupertino/Styles/Controls) of control styles
 > - Check out the [Uno.Gallery web app](https://gallery.platform.uno/) (Click on the `<>` button to view xaml source)
 
 ### Section 3: Overriding Color Palette
 1. Create the nested folders `Styles\` and then `Styles\Application\` under the `.Shared` project
 1. Add a new Resource Dictionary `ColorPaletteOverride.xaml` under `Styles\Application\`
-1. Replace the content of that `ResourceDictionary` with the source from: https://github.com/unoplatform/Uno.Themes/blob/master/src/library/Uno.Cupertino/Styles/Application/ColorPalette.xaml
+1. Replace the content of that `ResourceDictionary` with the source from [here](https://github.com/unoplatform/Uno.Themes/blob/master/src/library/Uno.Cupertino/Styles/Application/ColorPalette.xaml)
 1. Make a few changes to the colors:
     > Here we are replacing the last 2 characters with 00, essentially dropping the blue-channel
     ```xml
@@ -126,9 +124,8 @@ This guide will walk you through the necessary steps to set up and use the [`Uno
 			<ResourceDictionary.MergedDictionaries>
 				<!-- ... -->
 
-	-			<CupertinoColors xmlns="using:Uno.Cupertino" />
-	+			<CupertinoColors xmlns="using:Uno.Cupertino" 
-   +                            ColorPaletteOverrideSource=ms-appx:///Styles/Application/ColorPaletteOverride.xaml" />
+                <CupertinoColors xmlns="using:Uno.Cupertino" 
+                                 OverrideSource="ms-appx:///Styles/Application/ColorPaletteOverride.xaml" />
 				<CupertinoResources xmlns="using:Uno.Cupertino" />
 
 				<!-- ... -->
@@ -137,6 +134,45 @@ This guide will walk you through the necessary steps to set up and use the [`Uno
 	</Application.Resources>
     ```
 1. Run the app, you should now see the controls using your new color scheme.
+
+
+### Section 4: Fonts
+By default, Uno.Cupertino will attempt to apply a FontFamily with a name of `SF Pro` to its controls. This FontFamily resource is given the key `CupertinoFontFamily`. If there is no FontFamily with name `SF Pro` loaded into your application, the default system font will be used. You can override this default behavior by providing an `OverrideSource` to the `<CupertinoFonts />` initialization within your `App.xaml`.
+
+1. Install your custom font following the steps [here](../features/custom-fonts.md)
+1. Create the nested folders `Styles\` and then `Styles\Application\` under the `.Shared` project
+1. Add a new Resource Dictionary `CupertinoFontsOverride.xaml` under `Styles\Application\`
+1. Add your custom font with the resource key `CupertinoFontFamily`:
+    ```xml
+    <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+        <FontFamily x:Key="CupertinoFontFamily">ms-appx:///Assets/Fonts/Material/RobotoMono-VariableFont_wght.ttf#Roboto Mono</FontFamily>
+        
+    </ResourceDictionary>
+    ```
+1. In `App.xaml`, add the line that initializes the `CupertinoFonts` to include the new font override:
+    ```xml
+    <Application.Resources>
+    <ResourceDictionary>
+        <ResourceDictionary.MergedDictionaries>
+            <!-- ... -->
+
+            <!-- Load Cupertino Font with OverrideSource -->
+            <CupertinoFonts xmlns="using:Uno.Cupertino"
+                        OverrideSource="ms-appx:///Styles/Application/CupertinoFontsOverride.xaml" />
+            
+            <!-- Load the Cupertino control resources -->
+            <CupertinoResources xmlns="using:Uno.Cupertino" />
+
+            <!-- ... -->
+        </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+    </Application.Resources>
+    ```
+1. Run the app, you should now see the controls using your new FontFamily.
+
 
 ## Get the complete code
 

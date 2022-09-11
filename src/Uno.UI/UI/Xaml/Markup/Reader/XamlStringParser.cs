@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.IO;
 using System.Reflection;
 using Uno.Xaml;
@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 {
 	internal class XamlStringParser
 	{
-		private int _depth = 0;
+		private int _depth;
 
 		public XamlStringParser()
 		{
@@ -170,15 +170,17 @@ namespace Windows.UI.Xaml.Markup.Reader
 			return member;
 		}
 
-		private bool IsLiteralInlineText(object value, XamlMemberDefinition member, XamlObjectDefinition xamlObject)
+		private static bool IsLiteralInlineText(object value, XamlMemberDefinition member, XamlObjectDefinition xamlObject)
 		{
 			return value is string
 				&& (
-					xamlObject.Type.Name == nameof(Controls.TextBlock)
-					|| xamlObject.Type.Name == nameof(Documents.Bold)
-					|| xamlObject.Type.Name == nameof(Documents.Hyperlink)
-					|| xamlObject.Type.Name == nameof(Documents.Italic)
-					|| xamlObject.Type.Name == nameof(Documents.Underline)
+					xamlObject.Type.Name is nameof(Controls.TextBlock)
+						or nameof(Documents.Bold)
+						or nameof(Documents.Hyperlink)
+						or nameof(Documents.Italic)
+						or nameof(Documents.Underline)
+						or nameof(Documents.Span)
+						or nameof(Documents.Paragraph)
 				)
 				&& (member.Member.Name == "_UnknownContent" || member.Member.Name == "Inlines");
 		}

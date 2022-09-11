@@ -2,104 +2,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Web.Http
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class HttpCookie : global::Windows.Foundation.IStringable
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Value
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string HttpCookie.Value is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpCookie", "string HttpCookie.Value");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool Secure
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool HttpCookie.Secure is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpCookie", "bool HttpCookie.Secure");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool HttpOnly
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool HttpCookie.HttpOnly is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpCookie", "bool HttpCookie.HttpOnly");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset? Expires
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? HttpCookie.Expires is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpCookie", "DateTimeOffset? HttpCookie.Expires");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Domain
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string HttpCookie.Domain is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Name
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string HttpCookie.Name is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Path
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string HttpCookie.Path is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpCookie( string name,  string domain,  string path) 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpCookie", "HttpCookie.HttpCookie(string name, string domain, string path)");
-		}
-		#endif
+		// Skipping already declared property Value
+		// Skipping already declared property Secure
+		// Skipping already declared property HttpOnly
+		// Skipping already declared property Expires
+		// Skipping already declared property Domain
+		// Skipping already declared property Name
+		// Skipping already declared property Path
+		// Skipping already declared method Windows.Web.Http.HttpCookie.HttpCookie(string, string, string)
 		// Forced skipping of method Windows.Web.Http.HttpCookie.HttpCookie(string, string, string)
 		// Forced skipping of method Windows.Web.Http.HttpCookie.Name.get
 		// Forced skipping of method Windows.Web.Http.HttpCookie.Domain.get
@@ -112,12 +27,6 @@ namespace Windows.Web.Http
 		// Forced skipping of method Windows.Web.Http.HttpCookie.Secure.set
 		// Forced skipping of method Windows.Web.Http.HttpCookie.Value.get
 		// Forced skipping of method Windows.Web.Http.HttpCookie.Value.set
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public override string ToString()
-		{
-			throw new global::System.NotImplementedException("The member string HttpCookie.ToString() is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.Web.Http.HttpCookie.ToString()
 	}
 }

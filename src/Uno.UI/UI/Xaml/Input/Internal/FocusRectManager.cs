@@ -4,8 +4,9 @@
 
 #nullable enable
 
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core.Rendering;
 using Windows.UI.Xaml;
@@ -21,7 +22,7 @@ namespace Uno.UI.Xaml.Input
 	/// </remarks>
 	internal class FocusRectManager
 	{
-		private SystemFocusVisual? _focusVisual = null;
+		private SystemFocusVisual? _focusVisual;
 
 		[NotImplemented]
 		internal void OnFocusedElementKeyPressed()

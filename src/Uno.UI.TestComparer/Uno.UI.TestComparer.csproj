@@ -2,36 +2,38 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net472</TargetFramework>
-	  <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-  </PropertyGroup>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<UseWPF>true</UseWPF>
+		<NoWarn>SYSLIB0014;CS1998</NoWarn>
+	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="Properties\launchSettings.json" />
-	</ItemGroup>	
+		<None Remove="Properties\launchSettings.json" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-		<PackageReference Include="Microsoft.AppCenter" Version="4.4.0" />
+		<PackageReference Include="Microsoft.AppCenter" Version="4.5.3" />
 		<PackageReference Include="Microsoft.VisualStudio.Services.InteractiveClient" Version="16.153.0" />
 		<PackageReference Include="Microsoft.TeamFoundationServer.Client" Version="16.153.0" />
-		<PackageReference Include="NUnit" Version="3.13.2" />
-		<PackageReference Include="NUnit.Engine" Version="3.11.1" />
-		<PackageReference Include="Refit" Version="6.0.94" />
+		<PackageReference Include="NUnit" Version="3.13.3" />
+		<PackageReference Include="NUnit.Engine" Version="3.14.0" />
+		<PackageReference Include="Refit" Version="6.3.2" />
 		<PackageReference Include="Mono.Options" Version="6.6.0.161" />
 		<PackageReference Include="System.IO.Compression" Version="4.3.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Properties\" />
+		<Folder Include="Properties\" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Reference Include="PresentationCore" />
-	  <Reference Include="PresentationFramework" />
-	  <Reference Include="System.Windows.Forms" />
-	  <Reference Include="WindowsBase" />
+		<Reference Include="PresentationCore" />
+		<Reference Include="PresentationFramework" />
+		<Reference Include="System.Windows.Forms" />
+		<Reference Include="WindowsBase" />
 	</ItemGroup>
 
 </Project>

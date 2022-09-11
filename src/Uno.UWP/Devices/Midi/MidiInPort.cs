@@ -1,9 +1,10 @@
 ﻿#if !NET461 && !__SKIA__ && !__NETSTD_REFERENCE__
 using System;
-using Microsoft.Extensions.Logging;
+
 using Uno.Devices.Enumeration.Internal;
 using Uno.Devices.Midi.Internal;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 
 namespace Windows.Devices.Midi

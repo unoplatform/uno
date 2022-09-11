@@ -7,6 +7,15 @@ body {
   height: 100%;
   width: 100%;
   overflow: hidden;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  /*
+    Disable **browsers** touch (and pen) manipulations support.
+    Remarks: This has no relation with the UIElement.ManipulationMode which are handled in managed code.
+             It only ensures that uno will always get ALL pointer events instead of being stolen by the browser for its internal gesture detection.
+             This will also disable left and right swipe gesture to navigate through browser's history.
+    Remarks 2: If applied only on the root of the app, this won't break the scrolling (unlike if applied on all UIElement).
+  */
+  touch-action: none;
 }
 
 .uno-root-element {
@@ -21,8 +30,7 @@ body {
   display: inline;
   outline: none;
   /*
-      Disable pointer events by default to match HitTestVisibilityProperty
-      default value
+    Disable pointer events by default to match HitTestVisibilityProperty default value.
   */
   pointer-events: none;
   /*
@@ -177,7 +185,7 @@ embed.uno-frameworkelement.uno-unarranged {
 
   .uno-scrollcontentpresenter.scroll-x-hidden {
     overflow-x: auto; /* We must not use "hidden" to allow native scrolling interaction like mouse wheel */
-    scrollbar-width: none; /* scrollbar-height has no effect on FF, using scrollbar-width works on all browsers (non standard proeprty) */
+    scrollbar-width: none; /* scrollbar-height has no effect on FF, using scrollbar-width works on all browsers (non standard property) */
   }
 
   .uno-scrollcontentpresenter.scroll-x-hidden::-webkit-scrollbar {

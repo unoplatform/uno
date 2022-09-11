@@ -2,27 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Radios
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum RadioKind 
 	{
-		#if false
-		Other,
-		#endif
-		#if false
-		WiFi,
-		#endif
-		#if false
-		MobileBroadband,
-		#endif
-		#if false
-		Bluetooth,
-		#endif
-		#if false
-		FM,
-		#endif
+		// Skipping already declared field Windows.Devices.Radios.RadioKind.Other
+		// Skipping already declared field Windows.Devices.Radios.RadioKind.WiFi
+		// Skipping already declared field Windows.Devices.Radios.RadioKind.MobileBroadband
+		// Skipping already declared field Windows.Devices.Radios.RadioKind.Bluetooth
+		// Skipping already declared field Windows.Devices.Radios.RadioKind.FM
 	}
 	#endif
 }

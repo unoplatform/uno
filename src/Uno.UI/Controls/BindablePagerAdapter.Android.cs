@@ -15,7 +15,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using Uno.Extensions;
 using System.Windows.Input;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Object = Java.Lang.Object;
 using Uno.Extensions.Specialized;
 
@@ -87,7 +87,7 @@ namespace Uno.UI.Controls
 
 			var view = GetBindableView(convertView, source, templateId, parent);
 
-			if (!_views.Keys.Contains(position))
+			if (!_views.ContainsKey(position))
 			{
 				_views.Add(position, view);
 			}

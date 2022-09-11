@@ -15,7 +15,6 @@ using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 using Windows.Storage;
 using Uno.Extensions;
-using Uno.Logging;
 using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml;
 using System.IO;
@@ -53,6 +52,7 @@ namespace SampleControl.Presentation
 			ReloadCurrentTestCommand = new DelegateCommand(() => ReloadCurrentTest(CancellationToken.None)) { CanExecuteEnabled = false };
 			LoadNextTestCommand = new DelegateCommand(() => LoadNextTest(CancellationToken.None)) { CanExecuteEnabled = false };
 			ShowTestInformationCommand = new DelegateCommand(() => ShowTestInformation(CancellationToken.None)) { CanExecuteEnabled = false };
+			OpenRuntimeTestsCommand = new DelegateCommand(() => OpenRuntimeTests(CancellationToken.None));
 
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 		}
@@ -66,5 +66,6 @@ namespace SampleControl.Presentation
 		public ICommand ReloadCurrentTestCommand { get; private set; }
 		public ICommand LoadNextTestCommand { get; private set; }
 		public ICommand ShowTestInformationCommand { get; private set; }
+		public ICommand OpenRuntimeTestsCommand { get; private set; }
 	}
 }

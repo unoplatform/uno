@@ -4,13 +4,29 @@ This article explains how to build Uno.UI locally, for instance if you wish to c
 
 ## Prerequisites
 
-- Visual Studio 2019 (16.6 or later) or 2022 (17.0 Preview 2 or later)
+- Visual Studio 2022 (17.0 or later)
     - `Mobile Development with .NET` (Xamarin) development
     - `Visual Studio extensions development` (for the VSIX projects)
+    - `MAUI Preview` (In VS 2022 17.1 Preview 1 or later, for .NET 6 Android/iOS support)
     - `ASP.NET and Web Development`
     - `.NET Core cross-platform development`
-    - `UWP Development`, install all recent UWP SDKs, starting from 10.0.14393 (or above or equal to `TargetPlatformVersion` line [in this file](https://github.com/unoplatform/uno/blob/master/src/Uno.CrossTargetting.props))
+    - `UWP Development`, install all recent UWP SDKs, starting from 10.0.18362 (or above or equal to `TargetPlatformVersion` line [in this file](https://github.com/unoplatform/uno/blob/master/src/Uno.CrossTargetting.props))
 - Install (**Tools** / **Android** / **Android SDK manager**) all Android SDKs starting from 7.1 (or the Android versions `TargetFrameworks` [list used here](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.BindingHelper.Android/Uno.UI.BindingHelper.Android.csproj))
+- Run [Uno.Check](https://github.com/unoplatform/uno.check) on your dev machine to setup .NET 6 Android/iOS workloads
+
+## Recommended Windows hardware
+
+Loading and building the Uno.UI solution is a resource intensive task. As a result, opening it in Visual Studio 2022 requires a minimum hardware configuration to avoid spending time waiting for builds.
+
+**Minimum configuration:**
+- Intel i7 (8th gen) or equivalent
+- 16 GB of RAM
+- 250GB of Fast SSD
+
+**Optimal configuration:**
+- Intel i9 or equivalent
+- 32 GB of RAM
+- 500GB M2 SSD
 
 ## Building Uno.UI for a single target platform
 
@@ -29,7 +45,7 @@ This is due to limitations in the legacy .NET versions used by Xamarin projects.
 1. In `crosstargeting_override.props`, uncomment the line `<UnoTargetFrameworkOverride>netstandard2.0</UnoTargetFrameworkOverride>`
 1. Set the build target inside ``<UnoTargetFrameworkOverride></UnoTargetFrameworkOverride>`` to the identifier for the target platform you wish to build for. (Identifiers for each platform are listed in the file.) Save the file.
 1. If you are debugging for `net6.0-XX` targets (`ios`, `android`, `maccatalyst` or `macos`)
-   - Ensure that you are running VS 2022 Preview 2 or later
+   - Ensure that you are running VS 2022 17.1 Preview 1 or later
    - Replace the contents of the `global.json` file with the contents of `global-net6.json`
 1. In the `src` folder, look for the solution filter (`.slnf` file) corresponding to the target platform override you've set, which will be named `Uno.UI-[Platform]-only.slnf`, and open it.
 1. To confirm that everything works:
@@ -64,7 +80,23 @@ Inside Visual Studio, the number of platforms is restricted to limit the compila
 
 See [instructions here](building-uno-macos.md) for building Uno.UI for the macOS platform.
 
+## Troubleshooting build issues
+Here are some tips when building the Uno solution and failures happen:
+- Make sure to be on the latest master commit
+- Try to close VS 2022, delete the `src/.vs` folder, then try rebuilding the solution
+- If the `.vs` deletion did not help, run `git clean -fdx` (after having closed visual studio) before building again
+- Make sure to have a valid `UnoTargetFrameworkOverride` which matches your solution filter
+- Make sure to have the Windows SDK `18362` installed
+
 ## Other build-related topics 
+
+### Building the reference assemblies for Skia and WebAssembly
+
+Skia and WebAssembly use a custom bait-and-switch technique for assemblies for which the `netstandard2.0` target framework assemblies (called reference assemblies) found in nuget packages (`lib` folder) are only used for building applications. At the end of a head build, those referene assemblies are replaced by public API compatible assemblies located in the `uno-runtime` folder of nuget packages.
+
+When developing a feature using solution filters, if new public APIs are added, building the Uno.UI solution will not update the reference assemblies, causing applications or libraries using the overriden nuget cache to be unable to use those newly added APIs.
+
+In order to update those reference assemblies, set `<UnoTargetFrameworkOverride>netstandard2.0</UnoTargetFrameworkOverride>`, then open either the android or iOS solution filters, then build the `Uno.UI` project (and only this one, the other projects in the solution will fail to build). Doing this will generate the proper assemblies with the new APIs to be used in application or libraries using the cache override.
 
 ### Using the Package Diff tool
 

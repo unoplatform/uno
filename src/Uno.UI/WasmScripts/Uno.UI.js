@@ -105,7 +105,7 @@ var Windows;
                     }
                     else {
                         if (!CoreDispatcher._coreDispatcherCallback) {
-                            CoreDispatcher._coreDispatcherCallback = Module.mono_bind_static_method("[Uno] Windows.UI.Core.CoreDispatcher:DispatcherCallback");
+                            CoreDispatcher._coreDispatcherCallback = Module.mono_bind_static_method("[Uno.UI.Dispatching] Uno.UI.Dispatching.CoreDispatcher:DispatcherCallback");
                         }
                     }
                 }
@@ -265,6 +265,7 @@ var MonoSupport;
                     jsCallDispatcher.registerScope("UnoStatic_Windows_Storage_StorageFolder", Windows.Storage.StorageFolder);
                     jsCallDispatcher.registerScope("UnoStatic_Windows_Storage_ApplicationDataContainer", Windows.Storage.ApplicationDataContainer);
                     jsCallDispatcher.registerScope("UnoStatic_Windows_ApplicationModel_DataTransfer_DragDrop_Core_DragDropExtension", Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension);
+                    jsCallDispatcher.registerScope("UnoStatic_Windows_UI_Xaml_UIElement", Windows.UI.Xaml.UIElement);
                     jsCallDispatcher._isUnoRegistered = true;
                 }
                 const { ns, methodName } = jsCallDispatcher.parseIdentifier(identifier);
@@ -311,6 +312,22 @@ var MonoSupport;
         static getMethodMapId(methodHandle) {
             return methodHandle + "";
         }
+        static invokeOnMainThread() {
+            if (!jsCallDispatcher.dispatcherCallback) {
+                jsCallDispatcher.dispatcherCallback = Module.mono_bind_static_method("[Uno.UI.Dispatching] Uno.UI.Dispatching.CoreDispatcher:DispatcherCallback");
+            }
+            // Use setImmediate to return avoid blocking the background thread
+            // on a sync call.
+            window.setImmediate(() => {
+                try {
+                    jsCallDispatcher.dispatcherCallback();
+                }
+                catch (e) {
+                    console.error(`Unhandled dispatcher exception: ${e} (${e.stack})`);
+                    throw e;
+                }
+            });
+        }
     }
     jsCallDispatcher.registrations = new Map();
     jsCallDispatcher.methodMap = {};
@@ -318,6 +335,8 @@ var MonoSupport;
 })(MonoSupport || (MonoSupport = {}));
 // Export the DotNet helper for WebAssembly.JSInterop.InvokeJSUnmarshalled
 window.DotNet = MonoSupport;
+// Export the main thread invoker for threading support
+MonoSupport.invokeOnMainThread = MonoSupport.jsCallDispatcher.invokeOnMainThread;
 // eslint-disable-next-line @typescript-eslint/no-namespace
 var Uno;
 (function (Uno) {
@@ -888,6 +907,22 @@ var Uno;
                 element.style.setProperty("color", this.numberToCssColor(color));
             }
             /**
+            * Sets the fill property of the specified element
+            */
+            setElementFill(elementId, color) {
+                this.setElementColorInternal(elementId, color);
+                return "ok";
+            }
+            setElementFillNative(pParam) {
+                const params = WindowManagerSetElementFillParams.unmarshal(pParam);
+                this.setElementFillInternal(params.HtmlId, params.Color);
+                return true;
+            }
+            setElementFillInternal(elementId, color) {
+                const element = this.getView(elementId);
+                element.style.setProperty("fill", this.numberToCssColor(color));
+            }
+            /**
             * Sets the background color property of the specified element
             */
             setElementBackgroundColor(pParam) {
@@ -997,117 +1032,6 @@ var Uno;
                 this.registerEventOnViewInternal(params.HtmlId, params.EventName, params.OnCapturePhase, params.EventExtractorId);
                 return true;
             }
-            registerPointerEventsOnView(pParams) {
-                const params = WindowManagerRegisterPointerEventsOnViewParams.unmarshal(pParams);
-                const element = this.getView(params.HtmlId);
-                element.addEventListener("pointerenter", WindowManager.onPointerEnterReceived);
-                element.addEventListener("pointerleave", WindowManager.onPointerLeaveReceived);
-                element.addEventListener("pointerdown", WindowManager.onPointerEventReceived);
-                element.addEventListener("pointerup", WindowManager.onPointerEventReceived);
-                element.addEventListener("pointercancel", WindowManager.onPointerEventReceived);
-            }
-            static onPointerEventReceived(evt) {
-                WindowManager.dispatchPointerEvent(evt.currentTarget, evt);
-            }
-            static dispatchPointerEvent(element, evt) {
-                const payload = WindowManager.pointerEventExtractor(evt);
-                const result = WindowManager.current.dispatchEvent(element, evt.type, payload);
-                if (result & UI.HtmlEventDispatchResult.StopPropagation) {
-                    evt.stopPropagation();
-                }
-                if (result & UI.HtmlEventDispatchResult.PreventDefault) {
-                    evt.preventDefault();
-                }
-            }
-            static onPointerEnterReceived(evt) {
-                const element = evt.currentTarget;
-                const e = evt;
-                if (e.explicitOriginalTarget) { // FF only
-                    // It happens on FF that when another control which is over the 'element' has been updated, like text or visibility changed,
-                    // we receive a pointer enter/leave of an element which is under an element that is capable to handle pointers,
-                    // which is unexpected as the "pointerenter" should not bubble.
-                    // So we have to validate that this event is effectively due to the pointer entering the control.
-                    // We achieve this by browsing up the elements under the pointer (** not the visual tree**) 
-                    for (let elt of document.elementsFromPoint(evt.pageX, evt.pageY)) {
-                        if (elt == element) {
-                            // We found our target element, we can raise the event and stop the loop
-                            WindowManager.onPointerEventReceived(evt);
-                            return;
-                        }
-                        let htmlElt = elt;
-                        if (htmlElt.style.pointerEvents != "none") {
-                            // This 'htmlElt' is handling the pointers events, this mean that we can stop the loop.
-                            // However, if this 'htmlElt' is one of our child it means that the event was legitimate
-                            // and we have to raise it for the 'element'.
-                            while (htmlElt.parentElement) {
-                                htmlElt = htmlElt.parentElement;
-                                if (htmlElt == element) {
-                                    WindowManager.onPointerEventReceived(evt);
-                                    return;
-                                }
-                            }
-                            // We found an element this is capable to handle the pointers but which is not one of our child
-                            // (probably a sibling which is covering the element). It means that the pointerEnter/Leave should
-                            // not have bubble to the element, and we can mute it.
-                            return;
-                        }
-                    }
-                }
-                else {
-                    WindowManager.onPointerEventReceived(evt);
-                }
-            }
-            static onPointerLeaveReceived(evt) {
-                const element = evt.currentTarget;
-                const e = evt;
-                if (e.explicitOriginalTarget // FF only
-                    && e.explicitOriginalTarget !== element
-                    && event.isOver(element)) {
-                    // If the event was re-targeted, it's suspicious as the leave event should not bubble
-                    // This happens on FF when another control which is over the 'element' has been updated, like text or visibility changed.
-                    // So we have to validate that this event is effectively due to the pointer leaving the element.
-                    // We achieve that by buffering it until the next few 'pointermove' on document for which we validate the new pointer location.
-                    // It's common to get a move right after the leave with the same pointer's location,
-                    // so we wait up to 3 pointer move before dropping the leave event.
-                    let attempt = 3;
-                    WindowManager.current.ensurePendingLeaveEventProcessing();
-                    WindowManager.current.processPendingLeaveEvent = (move) => {
-                        if (!move.isOverDeep(element)) {
-                            // Raising deferred pointerleave on element " + element.id);
-                            // Note The 'evt.currentTarget' is available only while in the event handler.
-                            //		So we manually keep a reference ('element') and explicit dispatch event to it.
-                            //		https://developer.mozilla.org/en-US/docs/Web/API/Event/currentTarget
-                            WindowManager.dispatchPointerEvent(element, evt);
-                            WindowManager.current.processPendingLeaveEvent = null;
-                        }
-                        else if (--attempt <= 0) {
-                            // Drop deferred pointerleave on element " + element.id);
-                            WindowManager.current.processPendingLeaveEvent = null;
-                        }
-                        else {
-                            // Requeue deferred pointerleave on element " + element.id);
-                        }
-                    };
-                }
-                else {
-                    WindowManager.onPointerEventReceived(evt);
-                }
-            }
-            /**
-             * Ensure that any pending leave event are going to be processed (cf @see processPendingLeaveEvent )
-             */
-            ensurePendingLeaveEventProcessing() {
-                if (this._isPendingLeaveProcessingEnabled) {
-                    return;
-                }
-                // Register an event listener on move in order to process any pending event (leave).
-                document.addEventListener("pointermove", evt => {
-                    if (this.processPendingLeaveEvent) {
-                        this.processPendingLeaveEvent(evt);
-                    }
-                }, true); // in the capture phase to get it as soon as possible, and to make sure to respect the events ordering
-                this._isPendingLeaveProcessingEnabled = true;
-            }
             /**
                 * Add an event handler to a html element.
                 *
@@ -1130,86 +1054,6 @@ var Uno;
                     }
                 };
                 element.addEventListener(eventName, eventHandler, onCapturePhase);
-            }
-            /**
-             * pointer event extractor to be used with registerEventOnView
-             * @param evt
-             */
-            static pointerEventExtractor(evt) {
-                if (!evt) {
-                    return "";
-                }
-                let src = evt.target;
-                if (src instanceof SVGElement) {
-                    // The XAML SvgElement are UIElement in Uno (so they have a XamlHandle),
-                    // but as on WinUI they are not part of the visual tree, they should not be used as OriginalElement.
-                    // Instead we should use the actual parent <svg /> which is the XAML Shape.
-                    const shape = src.ownerSVGElement;
-                    if (shape) {
-                        src = shape;
-                    }
-                }
-                else if (src instanceof HTMLImageElement) {
-                    // Same as above for images (<img /> == HtmlImage, we use the parent <div /> which is the XAML Image).
-                    src = src.parentElement;
-                }
-                let srcHandle = "0";
-                while (src) {
-                    let handle = src.getAttribute("XamlHandle");
-                    if (handle) {
-                        srcHandle = handle;
-                        break;
-                    }
-                    src = src.parentElement;
-                }
-                let pointerId, pointerType, pressure;
-                let wheelDeltaX, wheelDeltaY;
-                if (evt instanceof WheelEvent) {
-                    pointerId = evt.mozInputSource ? 0 : 1; // Try to match the mouse pointer ID 0 for FF, 1 for others
-                    pointerType = "mouse";
-                    pressure = 0.5; // like WinUI
-                    wheelDeltaX = evt.deltaX;
-                    wheelDeltaY = evt.deltaY;
-                    switch (evt.deltaMode) {
-                        case WheelEvent.DOM_DELTA_LINE: // Actually this is supported only by FF
-                            const lineSize = WindowManager.wheelLineSize;
-                            wheelDeltaX *= lineSize;
-                            wheelDeltaY *= lineSize;
-                            break;
-                        case WheelEvent.DOM_DELTA_PAGE:
-                            wheelDeltaX *= document.documentElement.clientWidth;
-                            wheelDeltaY *= document.documentElement.clientHeight;
-                            break;
-                    }
-                }
-                else {
-                    pointerId = evt.pointerId;
-                    pointerType = evt.pointerType;
-                    pressure = evt.pressure;
-                    wheelDeltaX = 0;
-                    wheelDeltaY = 0;
-                }
-                return `${pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.buttons};${evt.button};${pointerType};${srcHandle};${evt.timeStamp};${pressure};${wheelDeltaX};${wheelDeltaY}`;
-            }
-            static get wheelLineSize() {
-                // In web browsers, scroll might happen by pixels, line or page.
-                // But WinUI works only with pixels, so we have to convert it before send the value to the managed code.
-                // The issue is that there is no easy way get the "size of a line", instead we have to determine the CSS "line-height"
-                // defined in the browser settings. 
-                // https://stackoverflow.com/questions/20110224/what-is-the-height-of-a-line-in-a-wheel-event-deltamode-dom-delta-line
-                if (this._wheelLineSize == undefined) {
-                    const el = document.createElement("div");
-                    el.style.fontSize = "initial";
-                    el.style.display = "none";
-                    document.body.appendChild(el);
-                    const fontSize = window.getComputedStyle(el).fontSize;
-                    document.body.removeChild(el);
-                    this._wheelLineSize = fontSize ? parseInt(fontSize) : 16; /* 16 = The current common default font size */
-                    // Based on observations, even if the event reports 3 lines (the settings of windows),
-                    // the browser will actually scroll of about 6 lines of text.
-                    this._wheelLineSize *= 2.0;
-                }
-                return this._wheelLineSize;
             }
             /**
              * keyboard event extractor to be used with registerEventOnView
@@ -1265,8 +1109,6 @@ var Uno;
                     // NOTE TO MAINTAINERS: Keep in sync with Windows.UI.Xaml.UIElement.HtmlEventExtractor
                     //
                     switch (eventExtractorId) {
-                        case 1:
-                            return WindowManager.pointerEventExtractor;
                         case 3:
                             return this.keyboardEventExtractor;
                         case 2:
@@ -1283,19 +1125,19 @@ var Uno;
                 return null;
             }
             /**
-                * Set or replace the root content element.
+                * Set or replace the root element.
                 */
-            setRootContent(elementId) {
-                if (this.rootContent && Number(this.rootContent.id) === elementId) {
+            setRootElement(elementId) {
+                if (this.rootElement && Number(this.rootElement.id) === elementId) {
                     return null; // nothing to do
                 }
-                if (this.rootContent) {
+                if (this.rootElement) {
                     // Remove existing
-                    this.containerElement.removeChild(this.rootContent);
+                    this.containerElement.removeChild(this.rootElement);
                     if (WindowManager.isLoadEventsEnabled) {
-                        this.dispatchEvent(this.rootContent, "unloaded");
+                        this.dispatchEvent(this.rootElement, "unloaded");
                     }
-                    this.rootContent.classList.remove(WindowManager.unoRootClassName);
+                    this.rootElement.classList.remove(WindowManager.unoRootClassName);
                 }
                 if (!elementId) {
                     return null;
@@ -1303,13 +1145,13 @@ var Uno;
                 // set new root
                 const newRootElement = this.getView(elementId);
                 newRootElement.classList.add(WindowManager.unoRootClassName);
-                this.rootContent = newRootElement;
+                this.rootElement = newRootElement;
                 if (WindowManager.isLoadEventsEnabled) {
-                    this.dispatchEvent(this.rootContent, "loading");
+                    this.dispatchEvent(this.rootElement, "loading");
                 }
-                this.containerElement.appendChild(this.rootContent);
+                this.containerElement.appendChild(this.rootElement);
                 if (WindowManager.isLoadEventsEnabled) {
-                    this.dispatchEvent(this.rootContent, "loaded");
+                    this.dispatchEvent(this.rootElement, "loaded");
                 }
                 this.setAsArranged(newRootElement); // patch because root is not measured/arranged
                 this.resize();
@@ -1634,7 +1476,7 @@ var Uno;
                 const opts = ({
                     left: params.HasLeft ? params.Left : undefined,
                     top: params.HasTop ? params.Top : undefined,
-                    behavior: (params.DisableAnimation ? "auto" : "smooth")
+                    behavior: (params.DisableAnimation ? "instant" : "smooth")
                 });
                 elt.scrollTo(opts);
                 return true;
@@ -1824,7 +1666,8 @@ var Uno;
                 document.body.appendChild(this.containerElement);
                 window.addEventListener("resize", x => this.resize());
                 window.addEventListener("contextmenu", x => {
-                    if (!(x.target instanceof HTMLInputElement)) {
+                    if (!(x.target instanceof HTMLInputElement) ||
+                        x.target.classList.contains("context-menu-disabled")) {
                         x.preventDefault();
                     }
                 });
@@ -1888,7 +1731,7 @@ var Uno;
                 }
             }
             getIsConnectedToRootElement(element) {
-                const rootElement = this.rootContent;
+                const rootElement = this.rootElement;
                 if (!rootElement) {
                     return false;
                 }
@@ -1952,7 +1795,6 @@ var Uno;
             WindowManager.initMethods();
             UI.HtmlDom.initPolyfills();
         })();
-        WindowManager._wheelLineSize = undefined;
         WindowManager.MAX_WIDTH = `${Number.MAX_SAFE_INTEGER}vw`;
         WindowManager.MAX_HEIGHT = `${Number.MAX_SAFE_INTEGER}vh`;
         UI.WindowManager = WindowManager;
@@ -1989,6 +1831,33 @@ PointerEvent.prototype.isOverDeep = function (element) {
             }
         }
     }
+};
+PointerEvent.prototype.isDirectlyOver = function (element) {
+    if (!this.isOver(element)) {
+        return false;
+    }
+    for (let elt of document.elementsFromPoint(this.clientX, this.clientY)) {
+        if (elt === element) {
+            // We found our target element, so the pointer effectively over it.
+            return true;
+        }
+        let htmlElt = elt;
+        if (htmlElt.style.pointerEvents !== "none") {
+            // This 'htmlElt' is handling the pointers events, this mean that we can stop the loop.
+            // However, if this 'htmlElt' is one of the children of the element it means that the pointer is over element.
+            while (htmlElt.parentElement) {
+                htmlElt = htmlElt.parentElement;
+                if (htmlElt === element) {
+                    return true;
+                }
+            }
+            // We found an element this is capable to handle the pointers but which is not a child of 'element'
+            // (a sibling which is covering the element ... like a PopupRoot).
+            // It means that the pointer is not ** DIRECTLY ** over the element.
+            return false;
+        }
+    }
+    return false;
 };
 var Uno;
 (function (Uno) {
@@ -2247,7 +2116,7 @@ var Windows;
                             // We must keep a reference to the dataTransfer in order to be able to retrieve data items
                             this._pendingDropData = evt.dataTransfer;
                             // Prepare args
-                            let args = new DragDropExtensionEventArgs();
+                            let args = new Core.DragDropExtensionEventArgs();
                             args.id = this._pendingDropId;
                             args.eventName = evt.type;
                             args.timestamp = evt.timeStamp;
@@ -2277,7 +2146,7 @@ var Windows;
                                 args.marshal(DragDropExtension._dispatchDragDropArgs);
                                 DragDropExtension._dispatchDropEventMethod();
                                 // Read response from managed code
-                                args = DragDropExtensionEventArgs.unmarshal(DragDropExtension._dispatchDragDropArgs);
+                                args = Core.DragDropExtensionEventArgs.unmarshal(DragDropExtension._dispatchDragDropArgs);
                                 evt.dataTransfer.dropEffect = (args.acceptedOperation);
                             }
                             finally {
@@ -2568,6 +2437,21 @@ var Windows;
 (function (Windows) {
     var Devices;
     (function (Devices) {
+        var Input;
+        (function (Input) {
+            let PointerDeviceType;
+            (function (PointerDeviceType) {
+                PointerDeviceType[PointerDeviceType["Touch"] = 0] = "Touch";
+                PointerDeviceType[PointerDeviceType["Pen"] = 1] = "Pen";
+                PointerDeviceType[PointerDeviceType["Mouse"] = 2] = "Mouse";
+            })(PointerDeviceType = Input.PointerDeviceType || (Input.PointerDeviceType = {}));
+        })(Input = Devices.Input || (Devices.Input = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
         var Midi;
         (function (Midi) {
             class MidiInPort {
@@ -2798,6 +2682,76 @@ var Windows;
             Sensors.Magnetometer = Magnetometer;
         })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
     })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Gaming;
+    (function (Gaming) {
+        var Input;
+        (function (Input) {
+            class Gamepad {
+                static getConnectedGamepadIds() {
+                    const gamepads = navigator.getGamepads();
+                    const separator = ";";
+                    var result = '';
+                    for (var gamepad of gamepads) {
+                        if (gamepad) {
+                            result += gamepad.index + separator;
+                        }
+                    }
+                    return result;
+                }
+                static getReading(id) {
+                    var gamepad = navigator.getGamepads()[id];
+                    if (!gamepad) {
+                        return "";
+                    }
+                    var result = "";
+                    result += gamepad.timestamp;
+                    result += '*';
+                    for (var axisId = 0; axisId < gamepad.axes.length; axisId++) {
+                        if (axisId != 0) {
+                            result += '|';
+                        }
+                        result += gamepad.axes[axisId];
+                    }
+                    result += '*';
+                    for (var buttonId = 0; buttonId < gamepad.buttons.length; buttonId++) {
+                        if (buttonId != 0) {
+                            result += '|';
+                        }
+                        result += gamepad.buttons[buttonId].value;
+                    }
+                    return result;
+                }
+                static startGamepadAdded() {
+                    window.addEventListener("gamepadconnected", Gamepad.onGamepadConnected);
+                }
+                static endGamepadAdded() {
+                    window.removeEventListener("gamepadconnected", Gamepad.onGamepadConnected);
+                }
+                static startGamepadRemoved() {
+                    window.addEventListener("gamepaddisconnected", Gamepad.onGamepadDisconnected);
+                }
+                static endGamepadRemoved() {
+                    window.removeEventListener("gamepaddisconnected", Gamepad.onGamepadDisconnected);
+                }
+                static onGamepadConnected(e) {
+                    if (!Gamepad.dispatchGamepadAdded) {
+                        Gamepad.dispatchGamepadAdded = Module.mono_bind_static_method("[Uno] Windows.Gaming.Input.Gamepad:DispatchGamepadAdded");
+                    }
+                    Gamepad.dispatchGamepadAdded(e.gamepad.index.toString());
+                }
+                static onGamepadDisconnected(e) {
+                    if (!Gamepad.dispatchGamepadRemoved) {
+                        Gamepad.dispatchGamepadRemoved = Module.mono_bind_static_method("[Uno] Windows.Gaming.Input.Gamepad:DispatchGamepadRemoved");
+                    }
+                    Gamepad.dispatchGamepadRemoved(e.gamepad.index.toString());
+                }
+            }
+            Input.Gamepad = Gamepad;
+        })(Input = Gaming.Input || (Gaming.Input = {}));
+    })(Gaming = Windows.Gaming || (Windows.Gaming = {}));
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
@@ -3172,8 +3126,8 @@ var Windows;
              * Try to get a value from localStorage
              * */
             static tryGetValue(pParams, pReturn) {
-                const params = ApplicationDataContainer_TryGetValueParams.unmarshal(pParams);
-                const ret = new ApplicationDataContainer_TryGetValueReturn();
+                const params = Storage.ApplicationDataContainer_TryGetValueParams.unmarshal(pParams);
+                const ret = new Storage.ApplicationDataContainer_TryGetValueReturn();
                 const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
                 if (localStorage.hasOwnProperty(storageKey)) {
                     ret.HasValue = true;
@@ -3190,7 +3144,7 @@ var Windows;
              * Set a value to localStorage
              * */
             static setValue(pParams) {
-                const params = ApplicationDataContainer_SetValueParams.unmarshal(pParams);
+                const params = Storage.ApplicationDataContainer_SetValueParams.unmarshal(pParams);
                 const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
                 localStorage.setItem(storageKey, params.Value);
                 return true;
@@ -3199,8 +3153,8 @@ var Windows;
              * Determines if a key is contained in localStorage
              * */
             static containsKey(pParams, pReturn) {
-                const params = ApplicationDataContainer_ContainsKeyParams.unmarshal(pParams);
-                const ret = new ApplicationDataContainer_ContainsKeyReturn();
+                const params = Storage.ApplicationDataContainer_ContainsKeyParams.unmarshal(pParams);
+                const ret = new Storage.ApplicationDataContainer_ContainsKeyReturn();
                 const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
                 ret.ContainsKey = localStorage.hasOwnProperty(storageKey);
                 ret.marshal(pReturn);
@@ -3210,8 +3164,8 @@ var Windows;
              * Gets a key by index in localStorage
              * */
             static getKeyByIndex(pParams, pReturn) {
-                const params = ApplicationDataContainer_GetKeyByIndexParams.unmarshal(pParams);
-                const ret = new ApplicationDataContainer_GetKeyByIndexReturn();
+                const params = Storage.ApplicationDataContainer_GetKeyByIndexParams.unmarshal(pParams);
+                const ret = new Storage.ApplicationDataContainer_GetKeyByIndexReturn();
                 let localityIndex = 0;
                 let returnKey = "";
                 const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
@@ -3232,8 +3186,8 @@ var Windows;
              * Determines the number of items contained in localStorage
              * */
             static getCount(pParams, pReturn) {
-                const params = ApplicationDataContainer_GetCountParams.unmarshal(pParams);
-                const ret = new ApplicationDataContainer_GetCountReturn();
+                const params = Storage.ApplicationDataContainer_GetCountParams.unmarshal(pParams);
+                const ret = new Storage.ApplicationDataContainer_GetCountReturn();
                 ret.Count = 0;
                 const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
                 for (let i = 0; i < localStorage.length; i++) {
@@ -3249,7 +3203,7 @@ var Windows;
              * Clears items contained in localStorage
              * */
             static clear(pParams) {
-                const params = ApplicationDataContainer_ClearParams.unmarshal(pParams);
+                const params = Storage.ApplicationDataContainer_ClearParams.unmarshal(pParams);
                 const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
                 const itemsToRemove = [];
                 for (let i = 0; i < localStorage.length; i++) {
@@ -3267,8 +3221,8 @@ var Windows;
              * Removes an item contained in localStorage
              * */
             static remove(pParams, pReturn) {
-                const params = ApplicationDataContainer_RemoveParams.unmarshal(pParams);
-                const ret = new ApplicationDataContainer_RemoveReturn();
+                const params = Storage.ApplicationDataContainer_RemoveParams.unmarshal(pParams);
+                const ret = new Storage.ApplicationDataContainer_RemoveReturn();
                 const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
                 ret.Removed = localStorage.hasOwnProperty(storageKey);
                 if (ret.Removed) {
@@ -3281,8 +3235,8 @@ var Windows;
              * Gets a key by index in localStorage
              * */
             static getValueByIndex(pParams, pReturn) {
-                const params = ApplicationDataContainer_GetValueByIndexParams.unmarshal(pParams);
-                const ret = new ApplicationDataContainer_GetKeyByIndexReturn();
+                const params = Storage.ApplicationDataContainer_GetValueByIndexParams.unmarshal(pParams);
+                const ret = new Storage.ApplicationDataContainer_GetKeyByIndexReturn();
                 let localityIndex = 0;
                 let returnKey = "";
                 const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
@@ -3621,9 +3575,17 @@ var Windows;
              * Setup the storage persistence of a given set of paths.
              * */
             static makePersistent(pParams) {
-                const params = StorageFolderMakePersistentParams.unmarshal(pParams);
+                const params = Storage.StorageFolderMakePersistentParams.unmarshal(pParams);
                 for (var i = 0; i < params.Paths.length; i++) {
                     this.setupStorage(params.Paths[i]);
+                }
+                // Ensure to sync pseudo file system on unload (and periodically for safety)
+                if (!this._isInitialized) {
+                    // Request an initial sync to populate the file system
+                    StorageFolder.synchronizeFileSystem(true, () => StorageFolder.onStorageInitialized());
+                    window.addEventListener("beforeunload", () => this.synchronizeFileSystem(false));
+                    setInterval(() => this.synchronizeFileSystem(false), 10000);
+                    this._isInitialized = true;
                 }
             }
             /**
@@ -3648,19 +3610,6 @@ var Windows;
                 console.debug("Making persistent: " + path);
                 FS.mkdir(path);
                 FS.mount(IDBFS, {}, path);
-                // Ensure to sync pseudo file system on unload (and periodically for safety)
-                if (!this._isInit) {
-                    // Request an initial sync to populate the file system
-                    FS.syncfs(true, err => {
-                        if (err) {
-                            console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
-                        }
-                        StorageFolder.onStorageInitialized();
-                    });
-                    window.addEventListener("beforeunload", this.synchronizeFileSystem);
-                    setInterval(this.synchronizeFileSystem, 10000);
-                    this._isInit = true;
-                }
             }
             static onStorageInitialized() {
                 if (!StorageFolder.dispatchStorageInitialized) {
@@ -3670,17 +3619,27 @@ var Windows;
                 StorageFolder.dispatchStorageInitialized();
             }
             /**
-             * Synchronize the IDBFS memory cache back to IndexDB
+             * Synchronize the IDBFS memory cache back to IndexedDB
+             * populate: requests the filesystem to be popuplated from the IndexedDB
+             * onSynchronized: function invoked when the synchronization finished
              * */
-            static synchronizeFileSystem() {
-                FS.syncfs(err => {
-                    if (err) {
-                        console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
-                    }
-                });
+            static synchronizeFileSystem(populate, onSynchronized = null) {
+                if (!StorageFolder._isSynchronizing) {
+                    StorageFolder._isSynchronizing = true;
+                    FS.syncfs(populate, err => {
+                        StorageFolder._isSynchronizing = false;
+                        if (onSynchronized) {
+                            onSynchronized();
+                        }
+                        if (err) {
+                            console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
+                        }
+                    });
+                }
             }
         }
-        StorageFolder._isInit = false;
+        StorageFolder._isInitialized = false;
+        StorageFolder._isSynchronizing = false;
         Storage.StorageFolder = StorageFolder;
     })(Storage = Windows.Storage || (Windows.Storage = {}));
 })(Windows || (Windows = {}));
@@ -4007,8 +3966,10 @@ var Uno;
                 }
                 static async closeAsync(streamId) {
                     var instance = NativeFileWriteStream._streamMap.get(streamId);
-                    await instance._stream.close();
-                    NativeFileWriteStream._streamMap.delete(streamId);
+                    if (instance) {
+                        await instance._stream.close();
+                        NativeFileWriteStream._streamMap.delete(streamId);
+                    }
                     return "";
                 }
                 static async truncateAsync(streamId, length) {
@@ -4022,6 +3983,24 @@ var Uno;
         })(Streams = Storage.Streams || (Storage.Streams = {}));
     })(Storage = Uno.Storage || (Uno.Storage = {}));
 })(Uno || (Uno = {}));
+var Windows;
+(function (Windows) {
+    var System;
+    (function (System) {
+        class MemoryManager {
+            static getAppMemoryUsage() {
+                if (typeof Module === "object") {
+                    // Returns an approximate memory usage for the current wasm module.
+                    // Initial buffer size is determine by the initial wasm memory defined in
+                    // emscripten.
+                    return Module.HEAPU8.length;
+                }
+                return 0;
+            }
+        }
+        System.MemoryManager = MemoryManager;
+    })(System = Windows.System || (Windows.System = {}));
+})(Windows || (Windows = {}));
 var WakeLockType;
 (function (WakeLockType) {
     WakeLockType["screen"] = "screen";
@@ -4397,23 +4376,294 @@ var Windows;
     (function (UI) {
         var Xaml;
         (function (Xaml) {
+            var WindowManager = Uno.UI.WindowManager;
+            var HtmlEventDispatchResult = Uno.UI.HtmlEventDispatchResult;
+            var PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+            let NativePointerEvent;
+            (function (NativePointerEvent) {
+                NativePointerEvent[NativePointerEvent["pointerover"] = 1] = "pointerover";
+                NativePointerEvent[NativePointerEvent["pointerout"] = 2] = "pointerout";
+                NativePointerEvent[NativePointerEvent["pointerdown"] = 4] = "pointerdown";
+                NativePointerEvent[NativePointerEvent["pointerup"] = 8] = "pointerup";
+                NativePointerEvent[NativePointerEvent["pointercancel"] = 16] = "pointercancel";
+                // Optional pointer events
+                NativePointerEvent[NativePointerEvent["pointermove"] = 32] = "pointermove";
+                NativePointerEvent[NativePointerEvent["wheel"] = 64] = "wheel";
+            })(NativePointerEvent = Xaml.NativePointerEvent || (Xaml.NativePointerEvent = {}));
+            class UIElement_Pointers {
+                static setPointerEventArgs(pArgs) {
+                    if (!Xaml.UIElement._dispatchPointerEventMethod) {
+                        Xaml.UIElement._dispatchPointerEventMethod = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.UIElement:OnNativePointerEvent");
+                    }
+                    Xaml.UIElement._dispatchPointerEventArgs = pArgs;
+                }
+                static setPointerEventResult(pArgs) {
+                    if (!Xaml.UIElement._dispatchPointerEventMethod) {
+                        Xaml.UIElement._dispatchPointerEventMethod = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.UIElement:OnNativePointerEvent");
+                    }
+                    Xaml.UIElement._dispatchPointerEventResult = pArgs;
+                }
+                static subscribePointerEvents(pParams) {
+                    const params = Windows.UI.Xaml.NativePointerSubscriptionParams.unmarshal(pParams);
+                    const element = WindowManager.current.getView(params.HtmlId);
+                    if (params.Events & NativePointerEvent.pointerover) {
+                        element.addEventListener("pointerover", Xaml.UIElement.onPointerEventReceived);
+                    }
+                    if (params.Events & NativePointerEvent.pointerout) {
+                        element.addEventListener("pointerout", Xaml.UIElement.onPointerOutReceived);
+                    }
+                    if (params.Events & NativePointerEvent.pointerdown) {
+                        element.addEventListener("pointerdown", Xaml.UIElement.onPointerEventReceived);
+                    }
+                    if (params.Events & NativePointerEvent.pointerup) {
+                        element.addEventListener("pointerup", Xaml.UIElement.onPointerEventReceived);
+                    }
+                    if (params.Events & NativePointerEvent.pointercancel) {
+                        element.addEventListener("pointercancel", Xaml.UIElement.onPointerEventReceived);
+                    }
+                    if (params.Events & NativePointerEvent.pointermove) {
+                        element.addEventListener("pointermove", Xaml.UIElement.onPointerEventReceived);
+                    }
+                    if (params.Events & NativePointerEvent.wheel) {
+                        element.addEventListener("wheel", Xaml.UIElement.onPointerEventReceived);
+                    }
+                }
+                static unSubscribePointerEvents(pParams) {
+                    const params = Windows.UI.Xaml.NativePointerSubscriptionParams.unmarshal(pParams);
+                    const element = WindowManager.current.getView(params.HtmlId);
+                    if (!element) {
+                        return;
+                    }
+                    if (params.Events & NativePointerEvent.pointerover) {
+                        element.removeEventListener("pointerover", Xaml.UIElement.onPointerEventReceived);
+                    }
+                    if (params.Events & NativePointerEvent.pointerout) {
+                        element.removeEventListener("pointerout", Xaml.UIElement.onPointerOutReceived);
+                    }
+                    if (params.Events & NativePointerEvent.pointerdown) {
+                        element.removeEventListener("pointerdown", Xaml.UIElement.onPointerEventReceived);
+                    }
+                    if (params.Events & NativePointerEvent.pointerup) {
+                        element.removeEventListener("pointerup", Xaml.UIElement.onPointerEventReceived);
+                    }
+                    if (params.Events & NativePointerEvent.pointercancel) {
+                        element.removeEventListener("pointercancel", Xaml.UIElement.onPointerEventReceived);
+                    }
+                    if (params.Events & NativePointerEvent.pointermove) {
+                        element.removeEventListener("pointermove", Xaml.UIElement.onPointerEventReceived);
+                    }
+                    if (params.Events & NativePointerEvent.wheel) {
+                        element.removeEventListener("wheel", Xaml.UIElement.onPointerEventReceived);
+                    }
+                }
+                static onPointerEventReceived(evt) {
+                    Xaml.UIElement.dispatchPointerEvent(evt.currentTarget, evt);
+                }
+                static onPointerOutReceived(evt) {
+                    const element = evt.currentTarget;
+                    if (evt.relatedTarget && evt.isDirectlyOver(element)) {
+                        // The 'pointerout' event is bubbling so we get the event when the pointer is going out of a nested element,
+                        // but pointer is still over the current element.
+                        // So here we check if the event is effectively because the pointer is leaving the bounds of the current element.
+                        // If not, we stopPropagation so parent won't have to check it again and again.
+                        // Note: We don't have to do that for the "enter" as we anyway maintain the IsOver state in managed.
+                        // Note: If relatedTarget is null it means that pointer is no longer on the app at all
+                        //		 (alt + tab for mouse, finger removed from screen, pen out of detection range)
+                        //		 If so, we have to forward the exit in all cases.
+                        evt.stopPropagation();
+                        return;
+                    }
+                    Xaml.UIElement.onPointerEventReceived(evt);
+                }
+                static dispatchPointerEvent(element, evt) {
+                    if (!evt) {
+                        return;
+                    }
+                    const args = Xaml.UIElement.toNativePointerEventArgs(evt);
+                    args.HtmlId = Number(element.getAttribute("XamlHandle"));
+                    args.marshal(Xaml.UIElement._dispatchPointerEventArgs);
+                    Xaml.UIElement._dispatchPointerEventMethod();
+                    const response = Windows.UI.Xaml.NativePointerEventResult.unmarshal(Xaml.UIElement._dispatchPointerEventResult);
+                    if (response.Result & HtmlEventDispatchResult.StopPropagation) {
+                        evt.stopPropagation();
+                    }
+                    if (response.Result & HtmlEventDispatchResult.PreventDefault) {
+                        evt.preventDefault();
+                    }
+                }
+                static get wheelLineSize() {
+                    // In web browsers, scroll might happen by pixels, line or page.
+                    // But WinUI works only with pixels, so we have to convert it before send the value to the managed code.
+                    // The issue is that there is no easy way get the "size of a line", instead we have to determine the CSS "line-height"
+                    // defined in the browser settings. 
+                    // https://stackoverflow.com/questions/20110224/what-is-the-height-of-a-line-in-a-wheel-event-deltamode-dom-delta-line
+                    if (this._wheelLineSize == undefined) {
+                        const el = document.createElement("div");
+                        el.style.fontSize = "initial";
+                        el.style.display = "none";
+                        document.body.appendChild(el);
+                        const fontSize = window.getComputedStyle(el).fontSize;
+                        document.body.removeChild(el);
+                        this._wheelLineSize = fontSize ? parseInt(fontSize) : 16; /* 16 = The current common default font size */
+                        // Based on observations, even if the event reports 3 lines (the settings of windows),
+                        // the browser will actually scroll of about 6 lines of text.
+                        this._wheelLineSize *= 2.0;
+                    }
+                    return this._wheelLineSize;
+                }
+                //#endregion
+                //#region Helpers
+                static toNativePointerEventArgs(evt) {
+                    let src = evt.target;
+                    if (src instanceof SVGElement) {
+                        // The XAML SvgElement are UIElement in Uno (so they have a XamlHandle),
+                        // but as on WinUI they are not part of the visual tree, they should not be used as OriginalElement.
+                        // Instead we should use the actual parent <svg /> which is the XAML Shape.
+                        const shape = src.ownerSVGElement;
+                        if (shape) {
+                            src = shape;
+                        }
+                    }
+                    else if (src instanceof HTMLImageElement) {
+                        // Same as above for images (<img /> == HtmlImage, we use the parent <div /> which is the XAML Image).
+                        src = src.parentElement;
+                    }
+                    let srcHandle = "0";
+                    while (src) {
+                        const handle = src.getAttribute("XamlHandle");
+                        if (handle) {
+                            srcHandle = handle;
+                            break;
+                        }
+                        src = src.parentElement;
+                    }
+                    let pointerId, pointerType, pressure;
+                    let wheelDeltaX, wheelDeltaY;
+                    if (evt instanceof WheelEvent) {
+                        pointerId = evt.mozInputSource ? 0 : 1; // Try to match the mouse pointer ID 0 for FF, 1 for others
+                        pointerType = PointerDeviceType.Mouse;
+                        pressure = 0.5; // like WinUI
+                        wheelDeltaX = evt.deltaX;
+                        wheelDeltaY = evt.deltaY;
+                        switch (evt.deltaMode) {
+                            case WheelEvent.DOM_DELTA_LINE: // Actually this is supported only by FF
+                                const lineSize = Xaml.UIElement.wheelLineSize;
+                                wheelDeltaX *= lineSize;
+                                wheelDeltaY *= lineSize;
+                                break;
+                            case WheelEvent.DOM_DELTA_PAGE:
+                                wheelDeltaX *= document.documentElement.clientWidth;
+                                wheelDeltaY *= document.documentElement.clientHeight;
+                                break;
+                        }
+                    }
+                    else {
+                        pointerId = evt.pointerId;
+                        pointerType = Xaml.UIElement.toPointerDeviceType(evt.pointerType);
+                        pressure = evt.pressure;
+                        wheelDeltaX = 0;
+                        wheelDeltaY = 0;
+                    }
+                    const args = new Windows.UI.Xaml.NativePointerEventArgs();
+                    args.Event = Xaml.UIElement.toNativeEvent(evt.type);
+                    args.pointerId = pointerId;
+                    args.x = evt.clientX;
+                    args.y = evt.clientY;
+                    args.ctrl = evt.ctrlKey;
+                    args.shift = evt.shiftKey;
+                    args.hasRelatedTarget = evt.relatedTarget !== null;
+                    args.buttons = evt.buttons;
+                    args.buttonUpdate = evt.button;
+                    args.deviceType = pointerType;
+                    args.srcHandle = Number(srcHandle);
+                    args.timestamp = evt.timeStamp;
+                    args.pressure = pressure;
+                    args.wheelDeltaX = wheelDeltaX;
+                    args.wheelDeltaY = wheelDeltaY;
+                    return args;
+                }
+                static toNativeEvent(eventName) {
+                    switch (eventName) {
+                        case "pointerover":
+                            return NativePointerEvent.pointerover;
+                        case "pointerout":
+                            return NativePointerEvent.pointerout;
+                        case "pointerdown":
+                            return NativePointerEvent.pointerdown;
+                        case "pointerup":
+                            return NativePointerEvent.pointerup;
+                        case "pointercancel":
+                            return NativePointerEvent.pointercancel;
+                        case "pointermove":
+                            return NativePointerEvent.pointermove;
+                        case "wheel":
+                            return NativePointerEvent.wheel;
+                        default:
+                            return undefined;
+                    }
+                }
+                static toPointerDeviceType(type) {
+                    switch (type) {
+                        case "touch":
+                            return PointerDeviceType.Touch;
+                        case "pen":
+                            // Note: As of 2019-11-28, once pen pressed events pressed/move/released are reported as TOUCH on Firefox
+                            //		 https://bugzilla.mozilla.org/show_bug.cgi?id=1449660
+                            return PointerDeviceType.Pen;
+                        case "mouse":
+                        default:
+                            return PointerDeviceType.Mouse;
+                    }
+                }
+            }
+            //#region WheelLineSize
+            UIElement_Pointers._wheelLineSize = undefined;
+            Xaml.UIElement_Pointers = UIElement_Pointers;
+        })(Xaml = UI.Xaml || (UI.Xaml = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+/// <reference path="UIElement.Pointers.ts" />
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var Xaml;
+        (function (Xaml) {
+            class UIElement extends Windows.UI.Xaml.UIElement_Pointers {
+            }
+            Xaml.UIElement = UIElement;
+        })(Xaml = UI.Xaml || (UI.Xaml = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var Xaml;
+        (function (Xaml) {
             var Media;
             (function (Media) {
                 var Animation;
                 (function (Animation) {
-                    class RenderingLoopFloatAnimator {
+                    class RenderingLoopAnimator {
                         constructor(managedHandle) {
                             this.managedHandle = managedHandle;
                             this._isEnabled = false;
                         }
                         static createInstance(managedHandle, jsHandle) {
-                            RenderingLoopFloatAnimator.activeInstances[jsHandle] = new RenderingLoopFloatAnimator(managedHandle);
+                            RenderingLoopAnimator.activeInstances[jsHandle] = new RenderingLoopAnimator(managedHandle);
                         }
                         static getInstance(jsHandle) {
-                            return RenderingLoopFloatAnimator.activeInstances[jsHandle];
+                            return RenderingLoopAnimator.activeInstances[jsHandle];
                         }
                         static destroyInstance(jsHandle) {
-                            delete RenderingLoopFloatAnimator.activeInstances[jsHandle];
+                            var instance = RenderingLoopAnimator.getInstance(jsHandle);
+                            // If the JSObjectHandle is being disposed before the animator is stopped (GC collecting JSObjectHandle before the animator)
+                            // we won't be able to DisableFrameReporting anymore.
+                            if (instance) {
+                                instance.DisableFrameReporting();
+                            }
+                            delete RenderingLoopAnimator.activeInstances[jsHandle];
                         }
                         SetStartFrameDelay(delay) {
                             this.unscheduleFrame();
@@ -4468,382 +4718,117 @@ var Windows;
                             });
                         }
                     }
-                    RenderingLoopFloatAnimator.activeInstances = {};
-                    Animation.RenderingLoopFloatAnimator = RenderingLoopFloatAnimator;
+                    RenderingLoopAnimator.activeInstances = {};
+                    Animation.RenderingLoopAnimator = RenderingLoopAnimator;
                 })(Animation = Media.Animation || (Media.Animation = {}));
             })(Media = Xaml.Media || (Xaml.Media = {}));
         })(Xaml = UI.Xaml || (UI.Xaml = {}));
     })(UI = Windows.UI || (Windows.UI = {}));
 })(Windows || (Windows = {}));
-/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
-class ApplicationDataContainer_ClearParams {
-    static unmarshal(pData) {
-        const ret = new ApplicationDataContainer_ClearParams();
-        {
-            const ptr = Module.getValue(pData + 0, "*");
-            if (ptr !== 0) {
-                ret.Locality = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.Locality = null;
-            }
-        }
-        return ret;
-    }
-}
-/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
-class ApplicationDataContainer_ContainsKeyParams {
-    static unmarshal(pData) {
-        const ret = new ApplicationDataContainer_ContainsKeyParams();
-        {
-            const ptr = Module.getValue(pData + 0, "*");
-            if (ptr !== 0) {
-                ret.Key = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.Key = null;
-            }
-        }
-        {
-            const ptr = Module.getValue(pData + 4, "*");
-            if (ptr !== 0) {
-                ret.Value = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.Value = null;
-            }
-        }
-        {
-            const ptr = Module.getValue(pData + 8, "*");
-            if (ptr !== 0) {
-                ret.Locality = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.Locality = null;
-            }
-        }
-        return ret;
-    }
-}
-/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
-class ApplicationDataContainer_ContainsKeyReturn {
-    marshal(pData) {
-        Module.setValue(pData + 0, this.ContainsKey, "i32");
-    }
-}
-/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
-class ApplicationDataContainer_GetCountParams {
-    static unmarshal(pData) {
-        const ret = new ApplicationDataContainer_GetCountParams();
-        {
-            const ptr = Module.getValue(pData + 0, "*");
-            if (ptr !== 0) {
-                ret.Locality = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.Locality = null;
-            }
-        }
-        return ret;
-    }
-}
-/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
-class ApplicationDataContainer_GetCountReturn {
-    marshal(pData) {
-        Module.setValue(pData + 0, this.Count, "i32");
-    }
-}
-/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
-class ApplicationDataContainer_GetKeyByIndexParams {
-    static unmarshal(pData) {
-        const ret = new ApplicationDataContainer_GetKeyByIndexParams();
-        {
-            const ptr = Module.getValue(pData + 0, "*");
-            if (ptr !== 0) {
-                ret.Locality = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.Locality = null;
-            }
-        }
-        {
-            ret.Index = Number(Module.getValue(pData + 4, "i32"));
-        }
-        return ret;
-    }
-}
-/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
-class ApplicationDataContainer_GetKeyByIndexReturn {
-    marshal(pData) {
-        {
-            const stringLength = lengthBytesUTF8(this.Value);
-            const pString = Module._malloc(stringLength + 1);
-            stringToUTF8(this.Value, pString, stringLength + 1);
-            Module.setValue(pData + 0, pString, "*");
-        }
-    }
-}
-/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
-class ApplicationDataContainer_GetValueByIndexParams {
-    static unmarshal(pData) {
-        const ret = new ApplicationDataContainer_GetValueByIndexParams();
-        {
-            const ptr = Module.getValue(pData + 0, "*");
-            if (ptr !== 0) {
-                ret.Locality = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.Locality = null;
-            }
-        }
-        {
-            ret.Index = Number(Module.getValue(pData + 4, "i32"));
-        }
-        return ret;
-    }
-}
-/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
-class ApplicationDataContainer_GetValueByIndexReturn {
-    marshal(pData) {
-        {
-            const stringLength = lengthBytesUTF8(this.Value);
-            const pString = Module._malloc(stringLength + 1);
-            stringToUTF8(this.Value, pString, stringLength + 1);
-            Module.setValue(pData + 0, pString, "*");
-        }
-    }
-}
-/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
-class ApplicationDataContainer_RemoveParams {
-    static unmarshal(pData) {
-        const ret = new ApplicationDataContainer_RemoveParams();
-        {
-            const ptr = Module.getValue(pData + 0, "*");
-            if (ptr !== 0) {
-                ret.Locality = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.Locality = null;
-            }
-        }
-        {
-            const ptr = Module.getValue(pData + 4, "*");
-            if (ptr !== 0) {
-                ret.Key = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.Key = null;
-            }
-        }
-        return ret;
-    }
-}
-/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
-class ApplicationDataContainer_RemoveReturn {
-    marshal(pData) {
-        Module.setValue(pData + 0, this.Removed, "i32");
-    }
-}
-/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
-class ApplicationDataContainer_SetValueParams {
-    static unmarshal(pData) {
-        const ret = new ApplicationDataContainer_SetValueParams();
-        {
-            const ptr = Module.getValue(pData + 0, "*");
-            if (ptr !== 0) {
-                ret.Key = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.Key = null;
-            }
-        }
-        {
-            const ptr = Module.getValue(pData + 4, "*");
-            if (ptr !== 0) {
-                ret.Value = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.Value = null;
-            }
-        }
-        {
-            const ptr = Module.getValue(pData + 8, "*");
-            if (ptr !== 0) {
-                ret.Locality = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.Locality = null;
-            }
-        }
-        return ret;
-    }
-}
-/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
-class ApplicationDataContainer_TryGetValueParams {
-    static unmarshal(pData) {
-        const ret = new ApplicationDataContainer_TryGetValueParams();
-        {
-            const ptr = Module.getValue(pData + 0, "*");
-            if (ptr !== 0) {
-                ret.Key = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.Key = null;
-            }
-        }
-        {
-            const ptr = Module.getValue(pData + 4, "*");
-            if (ptr !== 0) {
-                ret.Locality = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.Locality = null;
-            }
-        }
-        return ret;
-    }
-}
-/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
-class ApplicationDataContainer_TryGetValueReturn {
-    marshal(pData) {
-        {
-            const stringLength = lengthBytesUTF8(this.Value);
-            const pString = Module._malloc(stringLength + 1);
-            stringToUTF8(this.Value, pString, stringLength + 1);
-            Module.setValue(pData + 0, pString, "*");
-        }
-        Module.setValue(pData + 4, this.HasValue, "i32");
-    }
-}
-/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
-class DragDropExtensionEventArgs {
-    static unmarshal(pData) {
-        const ret = new DragDropExtensionEventArgs();
-        {
-            const ptr = Module.getValue(pData + 0, "*");
-            if (ptr !== 0) {
-                ret.eventName = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.eventName = null;
-            }
-        }
-        {
-            const ptr = Module.getValue(pData + 4, "*");
-            if (ptr !== 0) {
-                ret.allowedOperations = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.allowedOperations = null;
-            }
-        }
-        {
-            const ptr = Module.getValue(pData + 8, "*");
-            if (ptr !== 0) {
-                ret.acceptedOperation = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.acceptedOperation = null;
-            }
-        }
-        {
-            const ptr = Module.getValue(pData + 12, "*");
-            if (ptr !== 0) {
-                ret.dataItems = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.dataItems = null;
-            }
-        }
-        {
-            ret.timestamp = Number(Module.getValue(pData + 16, "double"));
-        }
-        {
-            ret.x = Number(Module.getValue(pData + 24, "double"));
-        }
-        {
-            ret.y = Number(Module.getValue(pData + 32, "double"));
-        }
-        {
-            ret.id = Number(Module.getValue(pData + 40, "i32"));
-        }
-        {
-            ret.buttons = Number(Module.getValue(pData + 44, "i32"));
-        }
-        {
-            ret.shift = Boolean(Module.getValue(pData + 48, "i32"));
-        }
-        {
-            ret.ctrl = Boolean(Module.getValue(pData + 52, "i32"));
-        }
-        {
-            ret.alt = Boolean(Module.getValue(pData + 56, "i32"));
-        }
-        return ret;
-    }
-    marshal(pData) {
-        {
-            const stringLength = lengthBytesUTF8(this.eventName);
-            const pString = Module._malloc(stringLength + 1);
-            stringToUTF8(this.eventName, pString, stringLength + 1);
-            Module.setValue(pData + 0, pString, "*");
-        }
-        {
-            const stringLength = lengthBytesUTF8(this.allowedOperations);
-            const pString = Module._malloc(stringLength + 1);
-            stringToUTF8(this.allowedOperations, pString, stringLength + 1);
-            Module.setValue(pData + 4, pString, "*");
-        }
-        {
-            const stringLength = lengthBytesUTF8(this.acceptedOperation);
-            const pString = Module._malloc(stringLength + 1);
-            stringToUTF8(this.acceptedOperation, pString, stringLength + 1);
-            Module.setValue(pData + 8, pString, "*");
-        }
-        {
-            const stringLength = lengthBytesUTF8(this.dataItems);
-            const pString = Module._malloc(stringLength + 1);
-            stringToUTF8(this.dataItems, pString, stringLength + 1);
-            Module.setValue(pData + 12, pString, "*");
-        }
-        Module.setValue(pData + 16, this.timestamp, "double");
-        Module.setValue(pData + 24, this.x, "double");
-        Module.setValue(pData + 32, this.y, "double");
-        Module.setValue(pData + 40, this.id, "i32");
-        Module.setValue(pData + 44, this.buttons, "i32");
-        Module.setValue(pData + 48, this.shift, "i32");
-        Module.setValue(pData + 52, this.ctrl, "i32");
-        Module.setValue(pData + 56, this.alt, "i32");
-    }
-}
-/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
-class StorageFolderMakePersistentParams {
-    static unmarshal(pData) {
-        const ret = new StorageFolderMakePersistentParams();
-        {
-            ret.Paths_Length = Number(Module.getValue(pData + 0, "i32"));
-        }
-        {
-            const pArray = Module.getValue(pData + 4, "*");
-            if (pArray !== 0) {
-                ret.Paths = new Array();
-                for (var i = 0; i < ret.Paths_Length; i++) {
-                    const value = Module.getValue(pArray + i * 4, "*");
-                    if (value !== 0) {
-                        ret.Paths.push(String(MonoRuntime.conv_string(value)));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var Xaml;
+        (function (Xaml) {
+            var Input;
+            (function (Input) {
+                class FocusVisual {
+                    static attachVisual(focusVisualId, focusedElementId) {
+                        FocusVisual.focusVisualId = focusVisualId;
+                        FocusVisual.focusVisual = Uno.UI.WindowManager.current.getView(focusVisualId);
+                        FocusVisual.focusedElement = Uno.UI.WindowManager.current.getView(focusedElementId);
+                        document.addEventListener("scroll", FocusVisual.onDocumentScroll, true);
                     }
-                    else {
-                        ret.Paths.push(null);
+                    static detachVisual() {
+                        document.removeEventListener("scroll", FocusVisual.onDocumentScroll, true);
+                        FocusVisual.focusVisualId = null;
+                    }
+                    static onDocumentScroll() {
+                        if (!FocusVisual.dispatchPositionChange) {
+                            FocusVisual.dispatchPositionChange = Module.mono_bind_static_method("[Uno.UI] Uno.UI.Xaml.Controls.SystemFocusVisual:DispatchNativePositionChange");
+                        }
+                        FocusVisual.updatePosition();
+                        // Throttle managed notification while actively scrolling
+                        if (FocusVisual.currentDispatchTimeout) {
+                            clearTimeout(FocusVisual.currentDispatchTimeout);
+                        }
+                        FocusVisual.currentDispatchTimeout = setTimeout(() => FocusVisual.dispatchPositionChange(FocusVisual.focusVisualId), 100);
+                    }
+                    static updatePosition() {
+                        const focusVisual = FocusVisual.focusVisual;
+                        const focusedElement = FocusVisual.focusedElement;
+                        const boundingRect = focusedElement.getBoundingClientRect();
+                        const centerX = boundingRect.x + boundingRect.width / 2;
+                        const centerY = boundingRect.y + boundingRect.height / 2;
+                        focusVisual.style.setProperty("left", boundingRect.x + "px");
+                        focusVisual.style.setProperty("top", boundingRect.y + "px");
                     }
                 }
-            }
-            else {
-                ret.Paths = null;
-            }
-        }
-        return ret;
-    }
-}
+                Input.FocusVisual = FocusVisual;
+            })(Input = Xaml.Input || (Xaml.Input = {}));
+        })(Xaml = UI.Xaml || (UI.Xaml = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var Xaml;
+        (function (Xaml) {
+            var Media;
+            (function (Media) {
+                class FontFamily {
+                    static async loadFont(fontFamilyName, fontSource) {
+                        try {
+                            // Launch the loading of the font
+                            const font = new FontFace(fontFamilyName, `url(${fontSource})`);
+                            // Wait for the font to be loaded
+                            await font.load();
+                            // Make it available to document
+                            document.fonts.add(font);
+                            await FontFamily.forceFontUsage(fontFamilyName);
+                        }
+                        catch (e) {
+                            console.debug(`Font failed to load ${e}`);
+                            FontFamily.notifyFontLoadFailed(fontFamilyName);
+                        }
+                    }
+                    static async forceFontUsage(fontFamilyName) {
+                        // Force the browser to use it
+                        const dummyHiddenElement = document.createElement("p");
+                        dummyHiddenElement.style.fontFamily = fontFamilyName;
+                        dummyHiddenElement.style.opacity = "0";
+                        dummyHiddenElement.style.pointerEvents = "none";
+                        dummyHiddenElement.innerText = fontFamilyName;
+                        document.body.appendChild(dummyHiddenElement);
+                        // Yield an animation frame
+                        await new Promise((ok, err) => requestAnimationFrame(() => ok(null)));
+                        // Remove dummy element
+                        document.body.removeChild(dummyHiddenElement);
+                        // Notify font as loaded to application
+                        FontFamily.notifyFontLoaded(fontFamilyName);
+                    }
+                    static notifyFontLoaded(fontFamilyName) {
+                        if (!FontFamily.managedNotifyFontLoaded) {
+                            FontFamily.managedNotifyFontLoaded =
+                                Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Media.FontFamilyLoader:NotifyFontLoaded");
+                        }
+                        FontFamily.managedNotifyFontLoaded(fontFamilyName);
+                    }
+                    static notifyFontLoadFailed(fontFamilyName) {
+                        if (!FontFamily.managedNotifyFontLoadFailed) {
+                            FontFamily.managedNotifyFontLoadFailed =
+                                Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Media.FontFamilyLoader:NotifyFontLoadFailed");
+                        }
+                        FontFamily.managedNotifyFontLoadFailed(fontFamilyName);
+                    }
+                }
+                Media.FontFamily = FontFamily;
+            })(Media = Xaml.Media || (Xaml.Media = {}));
+        })(Xaml = UI.Xaml || (UI.Xaml = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerAddViewParams {
     static unmarshal(pData) {
@@ -5352,6 +5337,19 @@ class WindowManagerSetElementColorParams {
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetElementFillParams {
+    static unmarshal(pData) {
+        const ret = new WindowManagerSetElementFillParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.Color = Module.HEAPU32[(pData + 4) >> 2];
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetElementTransformParams {
     static unmarshal(pData) {
         const ret = new WindowManagerSetElementTransformParams();
@@ -5601,3 +5599,567 @@ class WindowManagerSetXUidParams {
         return ret;
     }
 }
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+var Windows;
+(function (Windows) {
+    var ApplicationModel;
+    (function (ApplicationModel) {
+        var DataTransfer;
+        (function (DataTransfer) {
+            var DragDrop;
+            (function (DragDrop) {
+                var Core;
+                (function (Core) {
+                    class DragDropExtensionEventArgs {
+                        static unmarshal(pData) {
+                            const ret = new DragDropExtensionEventArgs();
+                            {
+                                const ptr = Module.getValue(pData + 0, "*");
+                                if (ptr !== 0) {
+                                    ret.eventName = String(Module.UTF8ToString(ptr));
+                                }
+                                else {
+                                    ret.eventName = null;
+                                }
+                            }
+                            {
+                                const ptr = Module.getValue(pData + 4, "*");
+                                if (ptr !== 0) {
+                                    ret.allowedOperations = String(Module.UTF8ToString(ptr));
+                                }
+                                else {
+                                    ret.allowedOperations = null;
+                                }
+                            }
+                            {
+                                const ptr = Module.getValue(pData + 8, "*");
+                                if (ptr !== 0) {
+                                    ret.acceptedOperation = String(Module.UTF8ToString(ptr));
+                                }
+                                else {
+                                    ret.acceptedOperation = null;
+                                }
+                            }
+                            {
+                                const ptr = Module.getValue(pData + 12, "*");
+                                if (ptr !== 0) {
+                                    ret.dataItems = String(Module.UTF8ToString(ptr));
+                                }
+                                else {
+                                    ret.dataItems = null;
+                                }
+                            }
+                            {
+                                ret.timestamp = Number(Module.getValue(pData + 16, "double"));
+                            }
+                            {
+                                ret.x = Number(Module.getValue(pData + 24, "double"));
+                            }
+                            {
+                                ret.y = Number(Module.getValue(pData + 32, "double"));
+                            }
+                            {
+                                ret.id = Number(Module.getValue(pData + 40, "i32"));
+                            }
+                            {
+                                ret.buttons = Number(Module.getValue(pData + 44, "i32"));
+                            }
+                            {
+                                ret.shift = Boolean(Module.getValue(pData + 48, "i32"));
+                            }
+                            {
+                                ret.ctrl = Boolean(Module.getValue(pData + 52, "i32"));
+                            }
+                            {
+                                ret.alt = Boolean(Module.getValue(pData + 56, "i32"));
+                            }
+                            return ret;
+                        }
+                        marshal(pData) {
+                            {
+                                const stringLength = lengthBytesUTF8(this.eventName);
+                                const pString = Module._malloc(stringLength + 1);
+                                stringToUTF8(this.eventName, pString, stringLength + 1);
+                                Module.setValue(pData + 0, pString, "*");
+                            }
+                            {
+                                const stringLength = lengthBytesUTF8(this.allowedOperations);
+                                const pString = Module._malloc(stringLength + 1);
+                                stringToUTF8(this.allowedOperations, pString, stringLength + 1);
+                                Module.setValue(pData + 4, pString, "*");
+                            }
+                            {
+                                const stringLength = lengthBytesUTF8(this.acceptedOperation);
+                                const pString = Module._malloc(stringLength + 1);
+                                stringToUTF8(this.acceptedOperation, pString, stringLength + 1);
+                                Module.setValue(pData + 8, pString, "*");
+                            }
+                            {
+                                const stringLength = lengthBytesUTF8(this.dataItems);
+                                const pString = Module._malloc(stringLength + 1);
+                                stringToUTF8(this.dataItems, pString, stringLength + 1);
+                                Module.setValue(pData + 12, pString, "*");
+                            }
+                            Module.setValue(pData + 16, this.timestamp, "double");
+                            Module.setValue(pData + 24, this.x, "double");
+                            Module.setValue(pData + 32, this.y, "double");
+                            Module.setValue(pData + 40, this.id, "i32");
+                            Module.setValue(pData + 44, this.buttons, "i32");
+                            Module.setValue(pData + 48, this.shift, "i32");
+                            Module.setValue(pData + 52, this.ctrl, "i32");
+                            Module.setValue(pData + 56, this.alt, "i32");
+                        }
+                    }
+                    Core.DragDropExtensionEventArgs = DragDropExtensionEventArgs;
+                })(Core = DragDrop.Core || (DragDrop.Core = {}));
+            })(DragDrop = DataTransfer.DragDrop || (DataTransfer.DragDrop = {}));
+        })(DataTransfer = ApplicationModel.DataTransfer || (ApplicationModel.DataTransfer = {}));
+    })(ApplicationModel = Windows.ApplicationModel || (Windows.ApplicationModel = {}));
+})(Windows || (Windows = {}));
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class ApplicationDataContainer_ClearParams {
+            static unmarshal(pData) {
+                const ret = new ApplicationDataContainer_ClearParams();
+                {
+                    const ptr = Module.getValue(pData + 0, "*");
+                    if (ptr !== 0) {
+                        ret.Locality = String(Module.UTF8ToString(ptr));
+                    }
+                    else {
+                        ret.Locality = null;
+                    }
+                }
+                return ret;
+            }
+        }
+        Storage.ApplicationDataContainer_ClearParams = ApplicationDataContainer_ClearParams;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class ApplicationDataContainer_ContainsKeyParams {
+            static unmarshal(pData) {
+                const ret = new ApplicationDataContainer_ContainsKeyParams();
+                {
+                    const ptr = Module.getValue(pData + 0, "*");
+                    if (ptr !== 0) {
+                        ret.Key = String(Module.UTF8ToString(ptr));
+                    }
+                    else {
+                        ret.Key = null;
+                    }
+                }
+                {
+                    const ptr = Module.getValue(pData + 4, "*");
+                    if (ptr !== 0) {
+                        ret.Value = String(Module.UTF8ToString(ptr));
+                    }
+                    else {
+                        ret.Value = null;
+                    }
+                }
+                {
+                    const ptr = Module.getValue(pData + 8, "*");
+                    if (ptr !== 0) {
+                        ret.Locality = String(Module.UTF8ToString(ptr));
+                    }
+                    else {
+                        ret.Locality = null;
+                    }
+                }
+                return ret;
+            }
+        }
+        Storage.ApplicationDataContainer_ContainsKeyParams = ApplicationDataContainer_ContainsKeyParams;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class ApplicationDataContainer_ContainsKeyReturn {
+            marshal(pData) {
+                Module.setValue(pData + 0, this.ContainsKey, "i32");
+            }
+        }
+        Storage.ApplicationDataContainer_ContainsKeyReturn = ApplicationDataContainer_ContainsKeyReturn;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class ApplicationDataContainer_GetCountParams {
+            static unmarshal(pData) {
+                const ret = new ApplicationDataContainer_GetCountParams();
+                {
+                    const ptr = Module.getValue(pData + 0, "*");
+                    if (ptr !== 0) {
+                        ret.Locality = String(Module.UTF8ToString(ptr));
+                    }
+                    else {
+                        ret.Locality = null;
+                    }
+                }
+                return ret;
+            }
+        }
+        Storage.ApplicationDataContainer_GetCountParams = ApplicationDataContainer_GetCountParams;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class ApplicationDataContainer_GetCountReturn {
+            marshal(pData) {
+                Module.setValue(pData + 0, this.Count, "i32");
+            }
+        }
+        Storage.ApplicationDataContainer_GetCountReturn = ApplicationDataContainer_GetCountReturn;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class ApplicationDataContainer_GetKeyByIndexParams {
+            static unmarshal(pData) {
+                const ret = new ApplicationDataContainer_GetKeyByIndexParams();
+                {
+                    const ptr = Module.getValue(pData + 0, "*");
+                    if (ptr !== 0) {
+                        ret.Locality = String(Module.UTF8ToString(ptr));
+                    }
+                    else {
+                        ret.Locality = null;
+                    }
+                }
+                {
+                    ret.Index = Number(Module.getValue(pData + 4, "i32"));
+                }
+                return ret;
+            }
+        }
+        Storage.ApplicationDataContainer_GetKeyByIndexParams = ApplicationDataContainer_GetKeyByIndexParams;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class ApplicationDataContainer_GetKeyByIndexReturn {
+            marshal(pData) {
+                {
+                    const stringLength = lengthBytesUTF8(this.Value);
+                    const pString = Module._malloc(stringLength + 1);
+                    stringToUTF8(this.Value, pString, stringLength + 1);
+                    Module.setValue(pData + 0, pString, "*");
+                }
+            }
+        }
+        Storage.ApplicationDataContainer_GetKeyByIndexReturn = ApplicationDataContainer_GetKeyByIndexReturn;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class ApplicationDataContainer_GetValueByIndexParams {
+            static unmarshal(pData) {
+                const ret = new ApplicationDataContainer_GetValueByIndexParams();
+                {
+                    const ptr = Module.getValue(pData + 0, "*");
+                    if (ptr !== 0) {
+                        ret.Locality = String(Module.UTF8ToString(ptr));
+                    }
+                    else {
+                        ret.Locality = null;
+                    }
+                }
+                {
+                    ret.Index = Number(Module.getValue(pData + 4, "i32"));
+                }
+                return ret;
+            }
+        }
+        Storage.ApplicationDataContainer_GetValueByIndexParams = ApplicationDataContainer_GetValueByIndexParams;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class ApplicationDataContainer_GetValueByIndexReturn {
+            marshal(pData) {
+                {
+                    const stringLength = lengthBytesUTF8(this.Value);
+                    const pString = Module._malloc(stringLength + 1);
+                    stringToUTF8(this.Value, pString, stringLength + 1);
+                    Module.setValue(pData + 0, pString, "*");
+                }
+            }
+        }
+        Storage.ApplicationDataContainer_GetValueByIndexReturn = ApplicationDataContainer_GetValueByIndexReturn;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class ApplicationDataContainer_RemoveParams {
+            static unmarshal(pData) {
+                const ret = new ApplicationDataContainer_RemoveParams();
+                {
+                    const ptr = Module.getValue(pData + 0, "*");
+                    if (ptr !== 0) {
+                        ret.Locality = String(Module.UTF8ToString(ptr));
+                    }
+                    else {
+                        ret.Locality = null;
+                    }
+                }
+                {
+                    const ptr = Module.getValue(pData + 4, "*");
+                    if (ptr !== 0) {
+                        ret.Key = String(Module.UTF8ToString(ptr));
+                    }
+                    else {
+                        ret.Key = null;
+                    }
+                }
+                return ret;
+            }
+        }
+        Storage.ApplicationDataContainer_RemoveParams = ApplicationDataContainer_RemoveParams;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class ApplicationDataContainer_RemoveReturn {
+            marshal(pData) {
+                Module.setValue(pData + 0, this.Removed, "i32");
+            }
+        }
+        Storage.ApplicationDataContainer_RemoveReturn = ApplicationDataContainer_RemoveReturn;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class ApplicationDataContainer_SetValueParams {
+            static unmarshal(pData) {
+                const ret = new ApplicationDataContainer_SetValueParams();
+                {
+                    const ptr = Module.getValue(pData + 0, "*");
+                    if (ptr !== 0) {
+                        ret.Key = String(Module.UTF8ToString(ptr));
+                    }
+                    else {
+                        ret.Key = null;
+                    }
+                }
+                {
+                    const ptr = Module.getValue(pData + 4, "*");
+                    if (ptr !== 0) {
+                        ret.Value = String(Module.UTF8ToString(ptr));
+                    }
+                    else {
+                        ret.Value = null;
+                    }
+                }
+                {
+                    const ptr = Module.getValue(pData + 8, "*");
+                    if (ptr !== 0) {
+                        ret.Locality = String(Module.UTF8ToString(ptr));
+                    }
+                    else {
+                        ret.Locality = null;
+                    }
+                }
+                return ret;
+            }
+        }
+        Storage.ApplicationDataContainer_SetValueParams = ApplicationDataContainer_SetValueParams;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class ApplicationDataContainer_TryGetValueParams {
+            static unmarshal(pData) {
+                const ret = new ApplicationDataContainer_TryGetValueParams();
+                {
+                    const ptr = Module.getValue(pData + 0, "*");
+                    if (ptr !== 0) {
+                        ret.Key = String(Module.UTF8ToString(ptr));
+                    }
+                    else {
+                        ret.Key = null;
+                    }
+                }
+                {
+                    const ptr = Module.getValue(pData + 4, "*");
+                    if (ptr !== 0) {
+                        ret.Locality = String(Module.UTF8ToString(ptr));
+                    }
+                    else {
+                        ret.Locality = null;
+                    }
+                }
+                return ret;
+            }
+        }
+        Storage.ApplicationDataContainer_TryGetValueParams = ApplicationDataContainer_TryGetValueParams;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class ApplicationDataContainer_TryGetValueReturn {
+            marshal(pData) {
+                {
+                    const stringLength = lengthBytesUTF8(this.Value);
+                    const pString = Module._malloc(stringLength + 1);
+                    stringToUTF8(this.Value, pString, stringLength + 1);
+                    Module.setValue(pData + 0, pString, "*");
+                }
+                Module.setValue(pData + 4, this.HasValue, "i32");
+            }
+        }
+        Storage.ApplicationDataContainer_TryGetValueReturn = ApplicationDataContainer_TryGetValueReturn;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class StorageFolderMakePersistentParams {
+            static unmarshal(pData) {
+                const ret = new StorageFolderMakePersistentParams();
+                {
+                    ret.Paths_Length = Number(Module.getValue(pData + 0, "i32"));
+                }
+                {
+                    const pArray = Module.getValue(pData + 4, "*");
+                    if (pArray !== 0) {
+                        ret.Paths = new Array();
+                        for (var i = 0; i < ret.Paths_Length; i++) {
+                            const value = Module.getValue(pArray + i * 4, "*");
+                            if (value !== 0) {
+                                ret.Paths.push(String(MonoRuntime.conv_string(value)));
+                            }
+                            else {
+                                ret.Paths.push(null);
+                            }
+                        }
+                    }
+                    else {
+                        ret.Paths = null;
+                    }
+                }
+                return ret;
+            }
+        }
+        Storage.StorageFolderMakePersistentParams = StorageFolderMakePersistentParams;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var Xaml;
+        (function (Xaml) {
+            class NativePointerEventArgs {
+                marshal(pData) {
+                    Module.setValue(pData + 0, this.HtmlId, "*");
+                    Module.setValue(pData + 4, this.Event, "i8");
+                    Module.setValue(pData + 8, this.pointerId, "double");
+                    Module.setValue(pData + 16, this.x, "double");
+                    Module.setValue(pData + 24, this.y, "double");
+                    Module.setValue(pData + 32, this.ctrl, "i32");
+                    Module.setValue(pData + 36, this.shift, "i32");
+                    Module.setValue(pData + 40, this.buttons, "i32");
+                    Module.setValue(pData + 44, this.buttonUpdate, "i32");
+                    Module.setValue(pData + 48, this.deviceType, "i32");
+                    Module.setValue(pData + 52, this.srcHandle, "i32");
+                    Module.setValue(pData + 56, this.timestamp, "double");
+                    Module.setValue(pData + 64, this.pressure, "double");
+                    Module.setValue(pData + 72, this.wheelDeltaX, "double");
+                    Module.setValue(pData + 80, this.wheelDeltaY, "double");
+                    Module.setValue(pData + 88, this.hasRelatedTarget, "i32");
+                }
+            }
+            Xaml.NativePointerEventArgs = NativePointerEventArgs;
+        })(Xaml = UI.Xaml || (UI.Xaml = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var Xaml;
+        (function (Xaml) {
+            class NativePointerEventResult {
+                static unmarshal(pData) {
+                    const ret = new NativePointerEventResult();
+                    {
+                        ret.Result = Number(Module.getValue(pData + 0, "i8"));
+                    }
+                    return ret;
+                }
+            }
+            Xaml.NativePointerEventResult = NativePointerEventResult;
+        })(Xaml = UI.Xaml || (UI.Xaml = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var Xaml;
+        (function (Xaml) {
+            class NativePointerSubscriptionParams {
+                static unmarshal(pData) {
+                    const ret = new NativePointerSubscriptionParams();
+                    {
+                        ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+                    }
+                    {
+                        ret.Events = Number(Module.getValue(pData + 4, "i8"));
+                    }
+                    return ret;
+                }
+            }
+            Xaml.NativePointerSubscriptionParams = NativePointerSubscriptionParams;
+        })(Xaml = UI.Xaml || (UI.Xaml = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));

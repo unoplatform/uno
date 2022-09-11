@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Uno.Devices.Sensors;
 using Uno.Foundation.Extensibility;
 using Windows.Foundation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Extensions;
 using Uno.Devices.Sensors.Helpers;
 
@@ -13,9 +13,9 @@ namespace Windows.Devices.Sensors
 	{
 		private static readonly object _syncLock = new object();
 
-		private static bool _initializationAttempted = false;
+		private static bool _initializationAttempted;
 		private static HingeAngleSensor _instance;
-		private static INativeHingeAngleSensor _hingeAngleSensor = null;
+		private static INativeHingeAngleSensor _hingeAngleSensor;
 
 		private TypedEventHandler<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs> _readingChanged;
 
@@ -83,7 +83,7 @@ namespace Windows.Devices.Sensors
 			{
 				if (_hingeAngleSensor == null && !ApiExtensibility.CreateInstance(owner, out _hingeAngleSensor))
 				{
-					owner.Log().Warn("You need to reference Uno.UI.DualScreen NuGet package from your project to use this feature.");
+					owner.Log().Warn("You need to reference Uno.UI.Foldable NuGet package from your project to use this feature.");
 				}
 			}
 		}

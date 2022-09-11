@@ -1,6 +1,6 @@
 ﻿using System;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml
 {

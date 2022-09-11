@@ -3,7 +3,7 @@
 using System;
 using Uno.Extensions;
 using Uno.Foundation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Uno.Helpers.Theming
 {
@@ -24,7 +24,7 @@ namespace Uno.Helpers.Theming
 			{
 				if (Enum.TryParse(serializedTheme, out SystemTheme theme))
 				{
-					if (typeof(SystemThemeHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
+					if (typeof(SystemThemeHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Information))
 					{
 						typeof(SystemThemeHelper).Log().Info("Setting OS preferred theme: " + theme);
 					}
@@ -36,7 +36,7 @@ namespace Uno.Helpers.Theming
 				}
 			}
 			//OS has no preference or API not implemented, use light as default
-			if (typeof(SystemThemeHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
+			if (typeof(SystemThemeHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Information))
 			{
 				typeof(SystemThemeHelper).Log().Info("No preferred theme, using Light instead");
 			}

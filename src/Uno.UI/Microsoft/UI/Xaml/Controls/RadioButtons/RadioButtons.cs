@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#pragma warning disable 105 // remove when moving to WinUI tree
+
+using System.Collections.Generic;
 using Microsoft.UI.Private.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Helpers.WinUI;

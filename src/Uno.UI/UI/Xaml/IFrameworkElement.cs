@@ -12,6 +12,8 @@ using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Controls;
 using Uno.UI;
 using Windows.Foundation;
+using Windows.UI.Xaml.Controls.Primitives;
+using Uno.Foundation.Logging;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -30,6 +32,9 @@ using Font = UIKit.UIFont;
 using CoreGraphics;
 using _Size = Windows.Foundation.Size;
 using Point = Windows.Foundation.Point;
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 #elif __MACOS__
 using AppKit;
 using View = AppKit.NSView;
@@ -38,6 +43,9 @@ using Font = AppKit.NSFont;
 using CoreGraphics;
 using _Size = Windows.Foundation.Size;
 using Point = Windows.Foundation.Point;
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 #elif __WASM__
 using nint = System.Int32;
 using nfloat = System.Double;
@@ -184,29 +192,48 @@ namespace Windows.UI.Xaml
 		{
 			return e.FindName(name) as IFrameworkElement;
 		}
-
+#if !UNO_REFERENCE_API
+		// This extension method is not needed for Skia
+		// nor Wasm, since all elements in visual tree are
+		// of type UIElement
 		public static void InvalidateMeasure(this IFrameworkElement e)
 		{
+			switch (e)
+			{
+				case FrameworkElement fe:
+					fe.InvalidateMeasure();
+					break;
+				case View view:
 #if XAMARIN_ANDROID
-			var UnoViewGroup = e as UnoViewGroup;
+					view.RequestLayout();
 
-			if (UnoViewGroup != null)
-			{
-				// Use a non-virtual version of the RequestLayout method, for performance.
-				UnoViewGroup.RequestLayout();
-			}
-			else
-			{
-				(e as View).RequestLayout();
-			}
+					// Invalidate the first "managed" parent to
+					// ensure its .MeasureOverride() gets called
+					var parent = view.Parent;
+					while (parent is { })
+					{
+						if (parent is UIElement uie)
+						{
+							uie.InvalidateMeasure();
+							break;
+						}
+
+						parent = parent.Parent;
+					}
+
 #elif XAMARIN_IOS
-			(e as View).SetNeedsLayout();
+					view.SetNeedsLayout();
 #elif __MACOS__
-			(e as View).NeedsLayout = true;
-#elif __WASM__
-			Window.InvalidateMeasure();
+					view.NeedsLayout = true;
 #endif
+					break;
+
+				default:
+					e.Log().Warn("Calling InvalidateMeasure on a UIElement that is not a FrameworkElement has no effect.");
+					break;
+			}
 		}
+#endif
 
 		public static IFrameworkElement FindName(IFrameworkElement e, IEnumerable<View> subviews, string name)
 		{
@@ -227,7 +254,7 @@ namespace Windows.UI.Xaml
 				// to better match Windows behaviour
 				var content =
 					(e as ContentControl)?.Content as IFrameworkElement ??
-					(e as PopupBase)?.Child as IFrameworkElement;
+					(e as Controls.Primitives.Popup)?.Child as IFrameworkElement;
 
 				if (content != null)
 				{

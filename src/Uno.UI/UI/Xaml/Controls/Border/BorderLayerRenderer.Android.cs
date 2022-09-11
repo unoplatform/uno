@@ -21,7 +21,7 @@ using Rect = Windows.Foundation.Rect;
 
 namespace Windows.UI.Xaml.Controls
 {
-	internal class BorderLayerRenderer
+	partial class BorderLayerRenderer
 	{
 		private const double __opaqueAlpha = 255;
 
@@ -47,58 +47,51 @@ namespace Windows.UI.Xaml.Controls
 			Brush borderBrush,
 			CornerRadius cornerRadius,
 			Thickness padding,
-			bool willUpdateMeasures = false
-			)
+			bool willUpdateMeasures = false)
 		{
-			// This is required because android Height and Width are hidden by Control.
-			var baseView = view as View;
-
-			var logicalDrawArea = view.LayoutSlot;
-			// Set origin to 0, because drawArea should be in the coordinates of the view itself
-			logicalDrawArea.X = 0;
-			logicalDrawArea.Y = 0;
-			var drawArea = logicalDrawArea.LogicalToPhysicalPixels();
+			var drawArea = new Rect(default, view.LayoutSlotWithMarginsAndAlignments.Size.LogicalToPhysicalPixels());
 			var newState = new LayoutState(drawArea, background, borderThickness, borderBrush, cornerRadius, padding);
 			var previousLayoutState = _currentState;
 
-			if (!newState.Equals(previousLayoutState))
+			if (newState.Equals(previousLayoutState))
 			{
-				bool imageHasChanged = newState.BackgroundImageSource != previousLayoutState?.BackgroundImageSource;
-				bool shouldDisposeEagerly = imageHasChanged || newState.BackgroundImageSource == null;
-				if (shouldDisposeEagerly)
-				{
-
-					// Clear previous value anyway in order to make sure the previous values are unset before the new ones.
-					// This prevents the case where a second update would set a new background and then set the background to null when disposing the previous.
-					_layerDisposable.Disposable = null;
-				}
-
-				Action onImageSet = null;
-				var disposable = InnerCreateLayers(view, drawArea, background, backgroundSizing, borderThickness, borderBrush, cornerRadius, () => onImageSet?.Invoke());
-
-				// Most of the time we immediately dispose the previous layer. In the case where we're using an ImageBrush,
-				// and the backing image hasn't changed, we dispose the previous layer at the moment the new background is applied,
-				// to prevent a visible flicker.
-				if (shouldDisposeEagerly)
-				{
-					_layerDisposable.Disposable = disposable;
-				}
-				else
-				{
-					onImageSet = () => _layerDisposable.Disposable = disposable;
-				}
-
-				if (willUpdateMeasures)
-				{
-					view.RequestLayout();
-				}
-				else
-				{
-					view.Invalidate();
-				}
-
-				_currentState = newState;
+				return;
 			}
+
+			var imageHasChanged = newState.BackgroundImageSource != previousLayoutState?.BackgroundImageSource;
+			var shouldDisposeEagerly = imageHasChanged || newState.BackgroundImageSource == null;
+			if (shouldDisposeEagerly)
+			{
+				// Clear previous value anyway in order to make sure the previous values are unset before the new ones.
+				// This prevents the case where a second update would set a new background and then set the background to null when disposing the previous.
+				_layerDisposable.Disposable = null;
+			}
+
+			Action onImageSet = null;
+			var disposable = InnerCreateLayers(view, drawArea, background, backgroundSizing, borderThickness, borderBrush, cornerRadius, () => onImageSet?.Invoke());
+
+			// Most of the time we immediately dispose the previous layer. In the case where we're using an ImageBrush,
+			// and the backing image hasn't changed, we dispose the previous layer at the moment the new background is applied,
+			// to prevent a visible flicker.
+			if (shouldDisposeEagerly)
+			{
+				_layerDisposable.Disposable = disposable;
+			}
+			else
+			{
+				onImageSet = () => _layerDisposable.Disposable = disposable;
+			}
+
+			if (willUpdateMeasures)
+			{
+				view.RequestLayout();
+			}
+			else
+			{
+				view.Invalidate();
+			}
+
+			_currentState = newState;
 		}
 
 		/// <summary>
@@ -110,7 +103,8 @@ namespace Windows.UI.Xaml.Controls
 			_currentState = null;
 		}
 
-		private static IDisposable InnerCreateLayers(BindableView view,
+		private static IDisposable InnerCreateLayers(
+			BindableView view,
 			Rect drawArea,
 			Brush background,
 			BackgroundSizing backgroundSizing,
@@ -123,14 +117,13 @@ namespace Windows.UI.Xaml.Controls
 
 			var physicalBorderThickness = borderThickness.LogicalToPhysicalPixels();
 			var isInnerBorderSizing = backgroundSizing == BackgroundSizing.InnerBorderEdge;
-			var adjustedArea =
-				isInnerBorderSizing
-					? drawArea.DeflateBy(physicalBorderThickness)
-					: drawArea;
+			var adjustedArea = isInnerBorderSizing
+				? drawArea.DeflateBy(physicalBorderThickness)
+				: drawArea;
 
 			if (cornerRadius != 0)
 			{
-				if (view is UIElement uiElement && uiElement.FrameRoundingAdjustment is { } fra)
+				if ((view as UIElement)?.FrameRoundingAdjustment is { } fra)
 				{
 					drawArea.Height += fra.Height;
 					drawArea.Width += fra.Width;
@@ -209,7 +202,7 @@ namespace Windows.UI.Xaml.Controls
 					else
 					{
 						var fillPaint = background?.GetFillPaint(drawArea) ?? new Paint() { Color = Android.Graphics.Color.Transparent };
-						ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, fillPaint, backgroundPath)));
+						ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, fillPaint, backgroundPath, antiAlias: false)));
 					}
 					disposables.Add(() => ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(null)));
 				}
@@ -371,6 +364,7 @@ namespace Windows.UI.Xaml.Controls
 							var lineDrawable = new PaintDrawable();
 							lineDrawable.Shape = new PathShape(line, viewSize.Width, viewSize.Height);
 							var paint = lineDrawable.Paint;
+							paint.AntiAlias = false;
 							paint.Color = strokePaint.Color;
 							paint.SetShader(strokePaint.Shader);
 							paint.StrokeWidth = (float)physicalBorderThickness.Top;
@@ -393,6 +387,7 @@ namespace Windows.UI.Xaml.Controls
 							var lineDrawable = new PaintDrawable();
 							lineDrawable.Shape = new PathShape(line, viewSize.Width, viewSize.Height);
 							var paint = lineDrawable.Paint;
+							paint.AntiAlias = false;
 							paint.Color = strokePaint.Color;
 							paint.SetShader(strokePaint.Shader);
 							paint.StrokeWidth = (float)physicalBorderThickness.Right;
@@ -415,6 +410,7 @@ namespace Windows.UI.Xaml.Controls
 							var lineDrawable = new PaintDrawable();
 							lineDrawable.Shape = new PathShape(line, viewSize.Width, viewSize.Height);
 							var paint = lineDrawable.Paint;
+							paint.AntiAlias = false;
 							paint.Color = strokePaint.Color;
 							paint.SetShader(strokePaint.Shader);
 							paint.StrokeWidth = (float)physicalBorderThickness.Bottom;
@@ -437,6 +433,7 @@ namespace Windows.UI.Xaml.Controls
 							var lineDrawable = new PaintDrawable();
 							lineDrawable.Shape = new PathShape(line, viewSize.Width, viewSize.Height);
 							var paint = lineDrawable.Paint;
+							paint.AntiAlias = false;
 							paint.Color = strokePaint.Color;
 							paint.SetShader(strokePaint.Shader);
 							paint.StrokeWidth = (float)physicalBorderThickness.Left;

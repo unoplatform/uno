@@ -7,6 +7,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 	#endif
 	public  partial class SvgImageSource : global::Windows.UI.Xaml.Media.ImageSource
 	{
+		// Skipping already declared property UriSource
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  double RasterizePixelWidth
@@ -51,21 +52,10 @@ namespace Windows.UI.Xaml.Media.Imaging
 			typeof(global::Windows.UI.Xaml.Media.Imaging.SvgImageSource), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		// Skipping already declared property UriSource
-		// Skipping already declared property RasterizePixelWidth
-		// Skipping already declared property RasterizePixelHeight
-		// Skipping already declared property RasterizePixelHeightProperty
-		// Skipping already declared property RasterizePixelWidthProperty
 		// Skipping already declared property UriSourceProperty
 		// Skipping already declared method Windows.UI.Xaml.Media.Imaging.SvgImageSource.SvgImageSource()
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.SvgImageSource.SvgImageSource()
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public SvgImageSource( global::System.Uri uriSource) 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Imaging.SvgImageSource", "SvgImageSource.SvgImageSource(Uri uriSource)");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Media.Imaging.SvgImageSource.SvgImageSource(System.Uri)
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.SvgImageSource.SvgImageSource(System.Uri)
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.SvgImageSource.UriSource.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.SvgImageSource.UriSource.set

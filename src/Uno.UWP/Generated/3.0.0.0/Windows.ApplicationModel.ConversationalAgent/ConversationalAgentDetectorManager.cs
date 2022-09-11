@@ -45,6 +45,20 @@ namespace Windows.ApplicationModel.ConversationalAgent
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<ActivationSignalDetector>> ConversationalAgentDetectorManager.GetActivationSignalDetectorsAsync(ActivationSignalDetectorKind kind) is not implemented in Uno.");
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector GetActivationSignalDetectorFromId( string detectorId)
+		{
+			throw new global::System.NotImplementedException("The member ActivationSignalDetector ConversationalAgentDetectorManager.GetActivationSignalDetectorFromId(string detectorId) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector> GetActivationSignalDetectorFromIdAsync( string detectorId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ActivationSignalDetector> ConversationalAgentDetectorManager.GetActivationSignalDetectorFromIdAsync(string detectorId) is not implemented in Uno.");
+		}
+		#endif
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentDetectorManager.Default.get
 	}
 }

@@ -513,13 +513,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 			var immutableHostRect = new Rectangle((int)host.X, (int)host.Y, (int)host.Width, (int)host.Height);
 
 			// Run the first half of the animation
-			_app.Marked("StartButton").Tap();
+			_app.Marked("StartButton").FastTap();
 			_app.WaitForDependencyPropertyValue(status, "Text", "Paused");
 
 			using var half = TakeScreenshot("half", ignoreInSnapshotCompare: true);
 
 			// Complete the animation
-			_app.Marked("ResumeButton").Tap();
+			_app.Marked("ResumeButton").FastTap();
 			_app.WaitForDependencyPropertyValue(status, "Text", "Completed");
 
 			using var final = TakeScreenshot("final", ignoreInSnapshotCompare: true);

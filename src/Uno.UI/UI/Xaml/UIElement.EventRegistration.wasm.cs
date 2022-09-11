@@ -5,10 +5,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
-using Microsoft.Extensions.Logging;
+
 using Uno;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
 using Windows.UI.Xaml.Controls;
@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml
 
 			private List<InvocationItem> _invocationList = new List<InvocationItem>();
 			private List<InvocationItem> _pendingInvocationList;
-			private bool _isSubscribed = false;
+			private bool _isSubscribed;
 			private bool _isDispatching;
 
 			public EventRegistration(
@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml
 			{
 				_isDispatching = true;
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"{_owner}: Dispatching event {_eventName}");
 				}
@@ -327,7 +327,6 @@ namespace Windows.UI.Xaml
 		internal enum HtmlEventExtractor : int
 		{
 			None = 0,
-			PointerEventExtractor = 1, // See PayloadToPointerArgs
 			TappedEventExtractor = 2,
 			KeyboardEventExtractor = 3,
 			FocusEventExtractor = 4,
@@ -336,7 +335,7 @@ namespace Windows.UI.Xaml
 		}
 
 		[Flags]
-		internal enum HtmlEventDispatchResult
+		internal enum HtmlEventDispatchResult : byte
 		{
 			/// <summary>
 			/// Event has been dispatched properly, but there is no specific action to take.

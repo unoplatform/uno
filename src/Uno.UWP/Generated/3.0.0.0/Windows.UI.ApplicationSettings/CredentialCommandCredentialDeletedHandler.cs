@@ -3,6 +3,6 @@
 namespace Windows.UI.ApplicationSettings
 {
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public delegate void CredentialCommandCredentialDeletedHandler(global::Windows.UI.ApplicationSettings.CredentialCommand @command);
+	public delegate void CredentialCommandCredentialDeletedHandler(global::Windows.UI.ApplicationSettings.CredentialCommand command);
 	#endif
 }

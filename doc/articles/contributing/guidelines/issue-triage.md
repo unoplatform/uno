@@ -32,7 +32,7 @@ Is something unclear? Do we need to improve our documentation or samples?
 Community support requests should be directed to:
 
 * Our [documentation](https://platform.uno/docs/) and [troubleshooting guide](https://platform.uno/docs/troubleshooting-guide).
-* [Stack Overflow](https://stackoverflow.com/questions/tagged/uno-platform).
+* [GitHub Discussions](https://github.com/unoplatform/uno/discussions)
 * The [Discord Channel #uno-platform](https://discord.gg/eBHZSKG)
 * On [Twitter using the #unoplatform](https://twitter.com/search?q=%23unoplatform) hashtag.
 

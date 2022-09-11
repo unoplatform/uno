@@ -10,7 +10,7 @@ Uno Platform supports authoring apps using [WinUI 3's API](uwp-vs-winui3.md). Th
     - `Uno.UI` becomes `Uno.WinUI`
     - `Uno.UI.RemoteControl` becomes `Uno.WinUI.RemoteControl`
     - `Uno.UI.Lottie` becomes `Uno.WinUI.Lottie`
-    - `Uno.UI.DualScreen` becomes `Uno.WinUI.DualScreen`
+    - `Uno.UI.Foldable` becomes `Uno.WinUI.Foldable`
 - **String replacements:**
     - `Windows.UI.Xaml` becomes `Microsoft.UI.Xaml`
     - `Windows.UI.Composition` becomes `Microsoft.UI.Composition`

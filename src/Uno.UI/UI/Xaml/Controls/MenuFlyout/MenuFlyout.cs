@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool m_openWindowed = true;
 
-		private bool m_openingWindowedInProgress = false;
+		private bool m_openingWindowedInProgress;
 
 		public MenuFlyout()
 		{
@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private protected override void OnClosing(ref bool cancel)
+		internal override void OnClosing(ref bool cancel)
 		{
 			base.OnClosing(ref cancel);
 
@@ -371,7 +371,10 @@ namespace Windows.UI.Xaml.Controls
 				Control presenter = GetPresenter();
 				MenuFlyoutPresenter menuFlyoutPresenter = presenter as MenuFlyoutPresenter;
 
-				menuFlyoutPresenter.IsSubPresenter = value != null;
+				if (menuFlyoutPresenter is { })
+				{
+					menuFlyoutPresenter.IsSubPresenter = value != null;
+				}
 			}
 		}
 

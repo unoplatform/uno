@@ -28,7 +28,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.RatingControlTests
 {
-	[Sample("RatingControl", "WinUI")]
+	[Sample("RatingControl", "MUX")]
 	public sealed partial class RatingControlPage : Page
 	{
 		UIElement _secondTextBlockUI;
@@ -83,6 +83,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RatingControlTests
 			//CheckBox cb = checkBox as CheckBox;
 			//FrameDetails.Text = Window.Current.Bounds.ToString() + " " + cb.IsChecked.ToString();
 
+#if !HAS_UNO
 			if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.RatingControl"))
 			{
 				var wuxcRatingControl = new Windows.UI.Xaml.Controls.RatingControl();
@@ -91,6 +92,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RatingControlTests
 				AutomationProperties.SetAutomationId(wuxcRatingControl, "wuxcRatingControl");
 				this.mainStackPanel.Children.Add(wuxcRatingControl);
 			}
+#endif
 		}
 
 		DependencyObject SearchVisualTree(DependencyObject root, string name)

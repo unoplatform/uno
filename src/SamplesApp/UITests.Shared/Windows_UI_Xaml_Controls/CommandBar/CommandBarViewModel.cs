@@ -7,7 +7,7 @@ using Windows.UI.Core;
 
 namespace Uno.UI.Samples.Presentation.SamplePages
 {
-	public class CommandBarViewModel : ViewModelBase
+	internal class CommandBarViewModel : ViewModelBase
 	{
 		private string _dynamicTitle;
 		private string _dynamicSubTitle1;

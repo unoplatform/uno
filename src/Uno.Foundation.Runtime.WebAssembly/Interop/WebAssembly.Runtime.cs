@@ -9,6 +9,8 @@ namespace WebAssembly
 	[Obfuscation(Feature = "renaming", Exclude = true)]
 	internal sealed class Runtime
 	{
+		internal static bool RethrowNativeExceptions { get; set; } = true;
+
 		/// <summary>
 		/// Mono specific internal call.
 		/// </summary>
@@ -30,15 +32,23 @@ namespace WebAssembly
 		internal static string InvokeJS(string str)
 		{
 			int exceptionResult;
-			var r = PlatformHelper.IsNetCore
-			? NetCoreInvokeJS(str, out exceptionResult)
-			: MonoInvokeJS(str, out exceptionResult);
+			var result = PlatformHelper.IsNetCore
+				? NetCoreInvokeJS(str, out exceptionResult)
+				: MonoInvokeJS(str, out exceptionResult);
 
 			if (exceptionResult != 0)
 			{
-				Console.Error.WriteLine($"Error #{exceptionResult} \"{r}\" executing javascript: \"{str}\"");
+				var errorMessage = $"Error #{exceptionResult} \"{result}\" executing javascript: \"{str}\"";
+				if (RethrowNativeExceptions)
+				{
+					throw new InvalidOperationException(errorMessage);
+				}
+				else
+				{
+					Console.Error.WriteLine(errorMessage);
+				}
 			}
-			return r;
+			return result;
 		}
 	}
 
@@ -51,6 +61,11 @@ namespace WebAssembly
 			[MethodImpl(MethodImplOptions.InternalCall)]
 			[EditorBrowsable(EditorBrowsableState.Never)]
 			public static extern IntPtr InvokeJSUnmarshalled(out string exceptionMessage, string functionIdentifier, IntPtr arg0, IntPtr arg1, IntPtr arg2);
+
+			// Uno-Specific implementation for https://github.com/dotnet/runtime/issues/69409.
+			// To be removed when the runtime will support the main SynchronizationContext.
+			[MethodImplAttribute(MethodImplOptions.InternalCall)]
+			public static extern void InvokeOnMainThread();
 		}
 	}
 }

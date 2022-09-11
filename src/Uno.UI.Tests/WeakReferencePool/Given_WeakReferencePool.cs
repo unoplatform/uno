@@ -143,13 +143,22 @@ namespace Uno.UI.Tests
 
 			var r = CreateUnreferenced();
 
-			Assert.IsNotNull(r.ownerRef.Target);
-			Assert.IsNotNull(r.targetRef.Target);
-			Assert.IsNotNull(r.refref.Target);
+			void ScopedTest()
+			{
+				// This change is needed after some unknown scoped references 
+				// changes in .NET Framework. Adding an explicit method to contain
+				// the references makes the test work properly.
 
-			Assert.AreEqual(0, WeakReferencePool.PooledReferences);
+				Assert.IsNotNull(r.ownerRef.Target);
+				Assert.IsNotNull(r.targetRef.Target);
+				Assert.IsNotNull(r.refref.Target);
 
-			GCCondition(5, () => r.refref.Target == null);
+				Assert.AreEqual(0, WeakReferencePool.PooledReferences);
+			}
+
+			ScopedTest();
+
+			GCCondition(50, () => r.refref.Target == null);
 
 			Assert.IsNull(r.refref.Target);
 

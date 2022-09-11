@@ -11,7 +11,7 @@ using Windows.Storage;
 using Windows.Storage.Streams;
 using Uno;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.ApplicationModel.DataTransfer
 {

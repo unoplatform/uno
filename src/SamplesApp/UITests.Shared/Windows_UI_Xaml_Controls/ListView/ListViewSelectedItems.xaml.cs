@@ -1,8 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Uno.Extensions;
-using Uno.Logging;
 using Uno.UI.Samples.Controls;
+
+#if HAS_UNO
+using Uno.Foundation.Logging;
+#else
+using Microsoft.Extensions.Logging;
+using Uno.Logging;
+#endif
 
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -12,6 +18,14 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 	[SampleControlInfo("ListView", "ListViewSelectedItems")]
 	public sealed partial class ListViewSelectedItems : UserControl
 	{
+#pragma warning disable CS0109
+#if HAS_UNO
+		private new readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(ControlWithTouchEvent));
+#else
+		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(ControlWithTouchEvent));
+#endif
+#pragma warning restore CS0109
+
 		public ListViewSelectedItems()
 		{
 			this.InitializeComponent();
@@ -31,12 +45,12 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			var selectedItems = SelectedItemsListView.SelectedItems;
 			if (!selectedItems.Contains(itemClicked))
 			{
-				this.Log().Warn($"Adding {itemClicked} to SelectedItems.");
+				_log.Warn($"Adding {itemClicked} to SelectedItems.");
 				selectedItems.Add(itemClicked);
 			}
 			else
 			{
-				this.Log().Warn($"Removing {itemClicked} from SelectedItems.");
+				_log.Warn($"Removing {itemClicked} from SelectedItems.");
 				selectedItems.Remove(itemClicked);
 			}
 		}
@@ -50,7 +64,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 		{
 
 			var text = $"SelectionChanged event: AddedItems={EnumerableToDisplayString(e.AddedItems)}, RemovedItems={EnumerableToDisplayString(e.RemovedItems)}";
-			this.Log().Warn(text);
+			_log.Warn(text);
 			SelectionChangedTextBlock.Text = text;
 		}
 
@@ -61,7 +75,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 
 		private void ClearSelectedItem(object sender, RoutedEventArgs e)
 		{
-			this.Log().Warn("Clearing selected items");
+			_log.Warn("Clearing selected items");
 			SelectedItemsListView.SelectedItems.Clear();
 		}
 

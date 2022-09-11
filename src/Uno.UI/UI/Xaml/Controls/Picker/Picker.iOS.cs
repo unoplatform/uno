@@ -14,6 +14,10 @@ using System.Windows.Input;
 using CoreGraphics;
 using Uno.Extensions.Specialized;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
 	/// <summary>

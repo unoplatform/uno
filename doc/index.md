@@ -25,7 +25,7 @@ uid: front-page
 
 </span>
 
-</div>       
+</div>
 </div>
 
 <div class="col-md-6 col-xs-12 headerbox">
@@ -39,8 +39,8 @@ uid: front-page
 
 </span>
 
-</div>       
-</div> 
+</div>
+</div>
 
 <div class="clearfix"></div>
 
@@ -55,8 +55,8 @@ uid: front-page
 
 </span>
 
-</div>       
-</div>       
+</div>
+</div>
 
 <div class="col-md-6 col-xs-12 headerbox">
 <div class="headerbox-inner clearfix">
@@ -69,8 +69,9 @@ uid: front-page
 
 </span>
 
-</div>       
 </div>
-</div>       
+</div>
+</div>
 
 </div>
+</section>

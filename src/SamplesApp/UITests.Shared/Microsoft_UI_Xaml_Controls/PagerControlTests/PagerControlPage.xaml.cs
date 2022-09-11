@@ -1,4 +1,6 @@
-﻿using System.Collections.Specialized;
+﻿#pragma warning disable 105 // Disabled until the tree is migrate to WinUI
+
+using System.Collections.Specialized;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml;
@@ -7,7 +9,7 @@ using Windows.UI.Xaml.Media;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.PagerControlTests
 {
-	[Sample("PagerControl", "WinUI")]
+	[Sample("PagerControl", "MUX")]
 	public sealed partial class PagerControlPage : Page
 	{
 		ComboBox pagerComboBox;
@@ -22,13 +24,9 @@ namespace UITests.Microsoft_UI_Xaml_Controls.PagerControlTests
 		public PagerControlPage()
 		{
 			this.InitializeComponent();
-#if HAS_UNO
 			this.Loaded += OnLoad;
-#endif
-
 		}
 
-#if HAS_UNO
 		private void OnLoad(object sender, RoutedEventArgs args)
 		{
 			PagerDisplayModeComboBox.SelectionChanged += OnDisplayModeChanged;
@@ -127,12 +125,34 @@ namespace UITests.Microsoft_UI_Xaml_Controls.PagerControlTests
 			ComboBoxIsEnabledCheckBox.IsChecked = pagerComboBox?.IsEnabled;
 		}
 
+		private void CheckIfButtonsHiddenButtonClicked(object sender, RoutedEventArgs args)
+		{
+			var rootGrid = VisualTreeHelper.GetChild(TemplateButtonVisibilitySetPager, 0);
+			var backButtonsPanel = VisualTreeHelper.GetChild(rootGrid, 0);
+			var firstPageButtonTemplatePager = VisualTreeHelper.GetChild(backButtonsPanel, 0) as Button;
+			var previousPageButtonTemplatePager = VisualTreeHelper.GetChild(backButtonsPanel, 1) as Button;
+
+			var forwardButtonsPanel = VisualTreeHelper.GetChild(rootGrid, 4);
+			var nextPageButtonTemplatePager = VisualTreeHelper.GetChild(forwardButtonsPanel, 0) as Button;
+			var lastPageButtonTemplatePager = VisualTreeHelper.GetChild(forwardButtonsPanel, 1) as Button;
+
+			int violationCount = 0;
+			violationCount += (firstPageButtonTemplatePager?.Visibility == Visibility.Collapsed || firstPageButton?.Opacity == 0) ? 0 : 1;
+			violationCount += (previousPageButtonTemplatePager?.Visibility == Visibility.Collapsed || previousPageButton?.Opacity == 0) ? 0 : 1;
+			violationCount += (nextPageButtonTemplatePager?.Visibility == Visibility.Collapsed || nextPageButton?.Opacity == 0) ? 0 : 1;
+			violationCount += (lastPageButtonTemplatePager?.Visibility == Visibility.Collapsed || lastPageButton?.Opacity == 0) ? 0 : 1;
+
+			CheckIfButtonsHiddenLabel.Text = violationCount == 0 ? "Passed" : "Failed";
+		}
+
 		private void OnSelectedIndexChanged(PagerControl sender, PagerControlSelectedIndexChangedEventArgs args)
 		{
+			// Uno workaround
 			if (PreviousPageTextBlock == null)
 			{
 				return;
 			}
+
 			UpdateNumberPanelContentTextBlock(this, null);
 			PreviousPageTextBlock.Text = args.PreviousPageIndex.ToString();
 			CurrentPageTextBlock.Text = args.NewPageIndex.ToString();
@@ -258,6 +278,5 @@ namespace UITests.Microsoft_UI_Xaml_Controls.PagerControlTests
 
 			LastPageButtonVisibilityCheckBox.IsChecked = lastPageButton?.Visibility == Visibility.Visible && lastPageButton?.Opacity != 0;
 		}
-#endif
 	}
 }

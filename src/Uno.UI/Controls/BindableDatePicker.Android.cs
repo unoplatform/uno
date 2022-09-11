@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Java.Lang.Reflect;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Controls
 {
@@ -96,21 +96,21 @@ namespace Uno.UI.Controls
 			}
 			catch (SecurityException)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 				{
 					this.Log().Error("Can't hide " + string.Join(", ", memberNames));
 				}
 			}
 			catch (IllegalArgumentException)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 				{
 					this.Log().Error("Can't hide " + string.Join(", ", memberNames));
 				}
 			}
 			catch (IllegalAccessException)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 				{
 					this.Log().Error("Can't hide " + string.Join(", ", memberNames));
 				}

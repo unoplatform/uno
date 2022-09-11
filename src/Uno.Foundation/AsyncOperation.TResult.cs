@@ -35,6 +35,11 @@ namespace Windows.Foundation
 				Status = AsyncStatus.Completed;
 				return result;
 			}
+			catch (OperationCanceledException)
+			{
+				Status = AsyncStatus.Canceled;
+				throw;
+			}
 			catch (Exception e)
 			{
 				ErrorCode = e;
@@ -68,7 +73,10 @@ namespace Windows.Foundation
 			set
 			{
 				_status = value;
-				_onCompleted?.Invoke(this, AsyncStatus.Error);
+
+				// Note: No need to check if the 'value' is a final state, the 'Sarted' state is set in ctor,
+				//		 i.e. before the '_onCompleted' is being set.
+				_onCompleted?.Invoke(this, value);
 			}
 		}
 

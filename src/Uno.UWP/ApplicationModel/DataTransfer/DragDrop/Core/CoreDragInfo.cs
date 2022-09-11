@@ -9,7 +9,7 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {

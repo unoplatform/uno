@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  
+
   <ItemGroup>
     <UnoRuntimeEnabledPackage Include="Uno.UI.RemoteControl" PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.ui.remotecontrol.targets'" />
     <UnoRuntimeEnabledPackage Include="Uno.WinUI.RemoteControl"  PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.winui.remotecontrol.targets'"  />
@@ -10,5 +10,34 @@
     <!-- Keep the inner path with '/' separator -->
     <UnoRemoteControlProcessorsPath Condition="'$(SolutionFileName)'!='Uno.UI.sln'">$(MSBuildThisFileDirectory)../tools/rc/processors</UnoRemoteControlProcessorsPath>
   </PropertyGroup>
+
+  <Target Name="GetRemoteControlHostPath">
+	<PropertyGroup>
+	  <_IsRCClientRemote>false</_IsRCClientRemote>
+	  <_IsRCClientRemote Condition="'$(PkgUno_Wasm_Bootstrap_DevServer)'!=''">true</_IsRCClientRemote>
+	</PropertyGroup>
+    <Message Text="&lt;RemoteControlHostPath&gt;$(MSBuildThisFileDirectory)../tools/rc/host/net6.0/Uno.UI.RemoteControl.Host.dll&lt;/RemoteControlHostPath&gt;" Importance="High" />
+    <Message Text="&lt;IntermediateOutputPath&gt;$(MSBuildProjectDirectory)/$(IntermediateOutputPath)&lt;/IntermediateOutputPath&gt;" Importance="High" />
+    <Message Text="&lt;IsRCClientRemote&gt;$(_IsRCClientRemote)&lt;/IsRCClientRemote&gt;" Importance="High" />
+  </Target>
+
+  <Target Name="InjectRemoteControlHost" BeforeTargets="BeforeBuild" Condition="exists('$(IntermediateOutputPath)\RemoteControlHost.config')">
+	
+	  <ItemGroup>
+	    <WasmShellMonoEnvironment Include="DOTNET_MODIFIABLE_ASSEMBLIES" Value="debug" />
+	  </ItemGroup>
+	
+    <ReadLinesFromFile File="$(IntermediateOutputPath)\RemoteControlHost.config" >
+      <Output TaskParameter="Lines" ItemName="_RemoteControlHostContent"/>
+    </ReadLinesFromFile>
+
+    <CreateProperty
+        Value="@(_RemoteControlHostContent)">
+      <Output
+          TaskParameter="Value"
+          PropertyName="UnoRemoteControlHost" />
+    </CreateProperty>
+
+  </Target>
 
 </Project>

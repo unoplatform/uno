@@ -5,8 +5,29 @@ namespace Windows.ApplicationModel.Background
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class BackgroundExecutionManager 
+	public static partial class BackgroundExecutionManager 
 	{
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.Foundation.IAsyncOperation<bool> RequestAccessKindForModernStandbyAsync( global::Windows.ApplicationModel.Background.BackgroundAccessRequestKind requestedAccess,  string reason)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> BackgroundExecutionManager.RequestAccessKindForModernStandbyAsync(BackgroundAccessRequestKind requestedAccess, string reason) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.ApplicationModel.Background.BackgroundAccessStatus GetAccessStatusForModernStandby()
+		{
+			throw new global::System.NotImplementedException("The member BackgroundAccessStatus BackgroundExecutionManager.GetAccessStatusForModernStandby() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.ApplicationModel.Background.BackgroundAccessStatus GetAccessStatusForModernStandby( string applicationId)
+		{
+			throw new global::System.NotImplementedException("The member BackgroundAccessStatus BackgroundExecutionManager.GetAccessStatusForModernStandby(string applicationId) is not implemented in Uno.");
+		}
+		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> RequestAccessKindAsync( global::Windows.ApplicationModel.Background.BackgroundAccessRequestKind requestedAccess,  string reason)

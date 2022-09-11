@@ -1,21 +1,22 @@
 {{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
 
 <div id="sidetoggle">
-  <div>
-    <div class="sidefilter">
-      <form role="search" id="search" >
-        <input type="text" id="search-query" autocomplete="off"  placeholder="Search Docs..." onsubmit="if(event.keyCode==13) {return false;}">
-      </form>
-      <div id="search-results">
-        <div class="sr-items"></div>
-      </div>
+    <div>
+        <div class="sidefilter">
+            <form role="search" id="search">
+                <input type="text" id="search-query" aria-label="search box" autocomplete="off"
+                       placeholder="Search Docs..." onsubmit="if(e.key === 'Enter') {return false;}">
+            </form>
+            <div id="search-results">
+                <div class="sr-items"></div>
+            </div>
+        </div>
+        <div class="sidetoc">
+            <div class="toc" id="toc">
+                {{^leaf}}
+                    {{>partials/li}}
+                {{/leaf}}
+            </div>
+        </div>
     </div>
-    <div class="sidetoc">
-      <div class="toc" id="toc">
-        {{^leaf}}
-          {{>partials/li}}
-        {{/leaf}}
-      </div>
-    </div>
-  </div>
 </div>

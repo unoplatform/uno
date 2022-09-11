@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Media.Animation;
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private DataTemplate? _dataTemplateUsedLastUpdate;
 
-		private bool _canCreateTemplateWithoutParent = false;
+		private bool _canCreateTemplateWithoutParent;
 
 		/// <summary>
 		/// Flag to determine if the current content has been overridden.
@@ -374,7 +374,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetContentTemplateRootToPlaceholder()
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat("No ContentTemplate was specified for {0} and content is not a UIView, defaulting to TextBlock.", GetType().Name);
 			}

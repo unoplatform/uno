@@ -9,7 +9,7 @@ using NavigationViewItem = Microsoft.UI.Xaml.Controls.NavigationViewItem;
 
 namespace MUXControlsTestApp
 {
-	[Sample("NavigationView", "WinUI")]
+	[Sample("NavigationView", "MUX")]
     public sealed partial class NavigationViewTopNavOverflowButtonPage : TestPage
 	{
         public NavigationViewTopNavOverflowButtonPage()

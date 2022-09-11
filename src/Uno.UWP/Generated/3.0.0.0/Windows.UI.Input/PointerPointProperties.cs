@@ -7,16 +7,7 @@ namespace Windows.UI.Input
 	#endif
 	public  partial class PointerPointProperties 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Rect ContactRect
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Rect PointerPointProperties.ContactRect is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property ContactRect
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Rect ContactRectRaw
@@ -28,16 +19,7 @@ namespace Windows.UI.Input
 		}
 		#endif
 		// Skipping already declared property IsBarrelButtonPressed
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsCanceled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool PointerPointProperties.IsCanceled is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property IsCanceled
 		// Skipping already declared property IsEraser
 		// Skipping already declared property IsHorizontalMouseWheel
 		// Skipping already declared property IsInRange
@@ -58,28 +40,10 @@ namespace Windows.UI.Input
 		// Skipping already declared property IsXButton1Pressed
 		// Skipping already declared property IsXButton2Pressed
 		// Skipping already declared property MouseWheelDelta
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float Orientation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float PointerPointProperties.Orientation is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Orientation
 		// Skipping already declared property PointerUpdateKind
 		// Skipping already declared property Pressure
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool TouchConfidence
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool PointerPointProperties.TouchConfidence is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property TouchConfidence
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  float Twist
@@ -90,26 +54,8 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  float XTilt
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float PointerPointProperties.XTilt is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  float YTilt
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float PointerPointProperties.YTilt is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property XTilt
+		// Skipping already declared property YTilt
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  float? ZDistance

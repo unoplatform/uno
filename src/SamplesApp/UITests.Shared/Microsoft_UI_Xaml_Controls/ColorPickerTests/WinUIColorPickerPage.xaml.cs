@@ -16,7 +16,7 @@ using ColorSpectrumShape = Microsoft.UI.Xaml.Controls.ColorSpectrumShape;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.ColorPickerTests
 {
-	[Sample("ColorPicker", "WinUI", Name="WinUIColorPickerPage")]
+	[Sample("ColorPicker", "MUX", Name="WinUIColorPickerPage")]
     public sealed partial class WinUIColorPickerPage : UserControl
     {
         ToolTip colorNameToolTip;

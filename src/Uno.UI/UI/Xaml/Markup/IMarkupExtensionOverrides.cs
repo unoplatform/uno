@@ -9,5 +9,7 @@ namespace Windows.UI.Xaml.Markup
 	public partial interface IMarkupExtensionOverrides
 	{
 		object ProvideValue();
+
+		object ProvideValue(IXamlServiceProvider serviceProvider);
 	}
 }

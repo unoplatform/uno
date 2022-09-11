@@ -23,7 +23,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_Devices
 {
-    [SampleControlInfo("Windows.Devices", "Magnetometer", description: "Demonstrates use of Windows.Devices.Sensors.Magnetometer", viewModelType: typeof(MagnetometerTestsViewModel))]
+    [SampleControlInfo("Windows.Devices", "Magnetometer", description: "Demonstrates use of Windows.Devices.Sensors.Magnetometer", viewModelType: typeof(MagnetometerTestsViewModel), ignoreInSnapshotTests: true)]
     public sealed partial class MagnetometerTests : UserControl
     {
         public MagnetometerTests()
@@ -33,7 +33,7 @@ namespace UITests.Shared.Windows_Devices
     }
 
     [Bindable]
-    public class MagnetometerTestsViewModel : ViewModelBase
+	internal class MagnetometerTestsViewModel : ViewModelBase
     {
         private readonly Magnetometer _magnetometer = null;
         private bool _readingChangedAttached;
@@ -65,13 +65,13 @@ namespace UITests.Shared.Windows_Devices
             }));
         }
 
-        public Command AttachReadingChangedCommand => new Command((p) =>
+		public Command AttachReadingChangedCommand => new Command((p) =>
         {
             _magnetometer.ReadingChanged += Magnetometer_ReadingChanged;
             ReadingChangedAttached = true;
         });
 
-        public Command DetachReadingChangedCommand => new Command((p) =>
+		public Command DetachReadingChangedCommand => new Command((p) =>
         {
             _magnetometer.ReadingChanged -= Magnetometer_ReadingChanged;
             ReadingChangedAttached = false;

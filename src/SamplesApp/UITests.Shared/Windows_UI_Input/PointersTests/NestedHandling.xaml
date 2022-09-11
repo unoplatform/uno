@@ -9,15 +9,41 @@
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition />
+			<ColumnDefinition />
+		</Grid.ColumnDefinitions>
+		
+		<Grid.RowDefinitions>
+			<RowDefinition />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
 		<Border Width="300" Height="300" Background="DeepSkyBlue" x:Name="_container">
-			<Border Width="200" Height="200" Background="DeepPink" x:Name="_nested">
-				
+			<Border Width="200" Height="200" x:Name="_intermediate">
+				<Border Background="DeepPink" x:Name="_nested" />
 			</Border>
 		</Border>
 
-		<StackPanel Orientation="Horizontal">
-			<TextBlock Text="Result: " />
+		<StackPanel Orientation="Horizontal" Grid.Row="1">
+			<TextBlock Text="Pressed/Release result: " />
 			<TextBlock Text="**not run**" x:Name="_result" />
+		</StackPanel>
+
+		<Border Grid.Column="1"  Width="300" Height="300" Background="DeepSkyBlue" x:Name="_sample2_container">
+			<Border Width="200" Height="200" x:Name="_sample2_intermediate">
+				<Border x:Name="_sample2_intermediate2">
+					<Border Background="DeepPink" x:Name="_sample2_nested" />
+				</Border>
+			</Border>
+		</Border>
+
+		<StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
+			<TextBlock Text="Entered result: " />
+			<TextBlock Text="**not run**" x:Name="_enterResult" />
+
+			<TextBlock Text=" | Exited result: " />
+			<TextBlock Text="**not run**" x:Name="_exitResult" />
 		</StackPanel>
 	</Grid>
 </Page>

@@ -75,25 +75,33 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 				Log.LogMessage(DefaultLogMessageLevel, $"Writing substitution file to {TargetAssembly}");
 
-				var tempFile = Path.GetTempFileName();
-
 				var resolver = new DefaultAssemblyResolver();
 				foreach(var path in BuildReferencesPaths())
 				{
 					resolver.AddSearchDirectory(path);
 				}
 
-				using (var asm = AssemblyDefinition.ReadAssembly(TargetAssembly, new ReaderParameters() { AssemblyResolver = resolver } ))
-				{
-					asm.MainModule.Resources.Add(new EmbeddedResource(TargetResourceName, ManifestResourceAttributes.Public, File.ReadAllBytes(outputPath)));
+				using (var asm = AssemblyDefinition.ReadAssembly(TargetAssembly, new ReaderParameters() { AssemblyResolver = resolver, ReadSymbols = true, ReadWrite = true } ))
+                {
+                    // Clean existing resources with the same name
+                    var existingResources = asm.MainModule.Resources
+                        .OfType<EmbeddedResource>()
+                        .Where(r => r.Name.EndsWith(TargetResourceName, StringComparison.OrdinalIgnoreCase))
+                        .ToArray();
 
-					asm.Write(tempFile);
+                    foreach(var existingResource in existingResources)
+                    {
+                        asm.MainModule.Resources.Remove(existingResource);
+                    }
+
+                    // Add the new merged content
+                    asm.MainModule.Resources.Add(new EmbeddedResource(TargetResourceName, ManifestResourceAttributes.Public, File.ReadAllBytes(outputPath)));
+
+					asm.Write(new WriterParameters() { WriteSymbols = true });
 				}
 
 				WaitForUnlockedFile(TargetAssembly);
-
-				File.Delete(TargetAssembly);
-				File.Move(tempFile, TargetAssembly);
+				WaitForUnlockedFile(Path.ChangeExtension(TargetAssembly, "pdb"));
 			}
 
 			return true;
@@ -113,6 +121,8 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				try
 				{
 					File.OpenWrite(filePath).Dispose();
+
+					break;
 				}
 				catch
 				{

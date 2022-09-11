@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml
 
 		public Window()
 		{
-			CoreWindow = new CoreWindow();
+			CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
 
 			InitializeCommon();
 		}

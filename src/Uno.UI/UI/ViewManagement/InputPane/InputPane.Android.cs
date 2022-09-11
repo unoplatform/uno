@@ -44,7 +44,7 @@ namespace Windows.UI.ViewManagement
 
 			if (Visible && FocusManager.GetFocusedElement() is UIElement focusedElement)
 			{
-				var scrollContentViewer = focusedElement.FindFirstParent<IScrollContentPresenter>();
+				var scrollContentViewer = focusedElement.FindFirstParent<ScrollContentPresenter>();
 				if (scrollContentViewer != null)
 				{
 					_padScrollContentPresenter = scrollContentViewer.Pad(OccludedRect);

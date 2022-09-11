@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {

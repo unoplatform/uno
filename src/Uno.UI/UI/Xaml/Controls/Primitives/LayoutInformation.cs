@@ -1,11 +1,12 @@
-﻿using Windows.Foundation;
+﻿using System.Runtime.CompilerServices;
+using Windows.Foundation;
 using Uno.Collections;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
 	partial class LayoutInformation
 	{
-		private static readonly UnsafeWeakAttachedDictionary<object, string> _layoutProperties = new UnsafeWeakAttachedDictionary<object, string>();
+		private static readonly UnsafeWeakAttachedDictionary<object, string> _layoutProperties = new();
 
 		#region AvailableSize
 		public static Size GetAvailableSize(UIElement element)
@@ -55,6 +56,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		internal static Size GetDesiredSize(UIElement element)
 			=> element.DesiredSize;
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static Size GetDesiredSize(object view)
 		{
 			switch (view)
@@ -74,7 +76,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					iue.DesiredSize = desiredSize;
 					break;
 				default:
-					_layoutProperties.GetValue(view, "desiredSize", () => default(Size));
+					_layoutProperties.SetValue(view, "desiredSize", desiredSize);
 					break;
 			}
 		}

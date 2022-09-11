@@ -15,7 +15,6 @@
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)Resources\UnoPlatformPackage.ico" />
     <Content Include="$(MSBuildThisFileDirectory)uno-fluentui-assets.ttf" />
-    <Content Include="$(MSBuildThisFileDirectory)winjs-symbols.ttf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)app.config" />

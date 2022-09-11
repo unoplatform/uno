@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_ApplicationModel_Resources_ResourceLoader
 {
-	[SampleControlInfo("ResourceLoader", "ResourceLoader_Simple")]
+	[SampleControlInfo("Resources", "ResourceLoader_Simple")]
 	public sealed partial class ResourceLoader_Simple : UserControl
 	{
 		public ResourceLoader_Simple()

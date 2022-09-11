@@ -2,32 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AccessKeyInvokedEventArgs 
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool Handled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AccessKeyInvokedEventArgs.Handled is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.AccessKeyInvokedEventArgs", "bool AccessKeyInvokedEventArgs.Handled");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public AccessKeyInvokedEventArgs() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.AccessKeyInvokedEventArgs", "AccessKeyInvokedEventArgs.AccessKeyInvokedEventArgs()");
-		}
-		#endif
+		// Skipping already declared property Handled
+		// Skipping already declared method Windows.UI.Xaml.Input.AccessKeyInvokedEventArgs.AccessKeyInvokedEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Input.AccessKeyInvokedEventArgs.AccessKeyInvokedEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Input.AccessKeyInvokedEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Xaml.Input.AccessKeyInvokedEventArgs.Handled.set

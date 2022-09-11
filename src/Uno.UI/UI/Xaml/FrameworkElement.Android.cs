@@ -1,13 +1,15 @@
 ﻿using Android.Views;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Controls;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Windows.Foundation;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI.Services;
 using Uno.Diagnostics.Eventing;
 
@@ -20,7 +22,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// The parent of the <see cref="FrameworkElement"/> in the visual tree, which may differ from its <see cref="Parent"/> (ie if it's a child of a native view).
 		/// </summary>
-		internal IViewParent VisualParent => (this as View).Parent;
+		internal IViewParent NativeVisualParent => (this as View).Parent;
 
 		public FrameworkElement()
 		{
@@ -157,7 +159,7 @@ namespace Windows.UI.Xaml
 			// see StretchAffectsMeasure for details.
 			this.SetValue(
 				StretchAffectsMeasureProperty,
-				!(VisualParent is DependencyObject),
+				!(NativeVisualParent is DependencyObject),
 				DependencyPropertyValuePrecedences.DefaultValue
 			);
 		}
@@ -187,50 +189,12 @@ namespace Windows.UI.Xaml
 
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 		{
-			try
-			{
-				var availableSize = ViewHelper.LogicalSizeFromSpec(widthMeasureSpec, heightMeasureSpec);
+			((ILayouterElement)this).OnMeasureInternal(widthMeasureSpec, heightMeasureSpec);
+		}
 
-				var measuredSizelogical = _layouter.Measure(availableSize);
-
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				{
-					this.Log().DebugFormat(
-						"[{0}/{1}] OnMeasure1({2}, {3}) (parent: {4}/{5})",
-						GetType(),
-						Name,
-						measuredSizelogical.Width,
-						measuredSizelogical.Height,
-						ViewHelper.MeasureSpecGetSize(widthMeasureSpec),
-						ViewHelper.MeasureSpecGetSize(heightMeasureSpec)
-					);
-				}
-
-				var measuredSize = measuredSizelogical.LogicalToPhysicalPixels();
-
-				if (StretchAffectsMeasure)
-				{
-					if (HorizontalAlignment == HorizontalAlignment.Stretch && !double.IsPositiveInfinity(availableSize.Width))
-					{
-						measuredSize.Width = ViewHelper.MeasureSpecGetSize(widthMeasureSpec);
-					}
-
-					if (VerticalAlignment == VerticalAlignment.Stretch && !double.IsPositiveInfinity(availableSize.Height))
-					{
-						measuredSize.Height = ViewHelper.MeasureSpecGetSize(heightMeasureSpec);
-					}
-				}
-
-				// Report our final dimensions.
-				SetMeasuredDimension(
-					(int)measuredSize.Width,
-					(int)measuredSize.Height
-				);
-			}
-			catch(Exception e)
-			{
-				Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
-			}
+		void ILayouterElement.SetMeasuredDimensionInternal(int width, int height)
+		{
+			SetMeasuredDimension(width, height);
 		}
 
 		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom)
@@ -239,22 +203,27 @@ namespace Windows.UI.Xaml
 			{
 				base.OnLayoutCore(changed, left, top, right, bottom);
 
-				Size newSize;
-				if (ArrangeLogicalSize is Rect als)
+				Rect finalRect;
+				if (TransientArrangeFinalRect is Rect tafr)
 				{
 					// If the parent element is from managed code,
 					// we can recover the "Arrange" with double accuracy.
 					// We use that because the conversion to android's "int" is loosing too much precision.
-					newSize = new Size(als.Width, als.Height);
+					finalRect = tafr;
 				}
 				else
 				{
 					// Here the "arrange" is coming from a native element,
 					// so we convert those measurements to logical ones.
-					newSize = new Size(right - left, bottom - top).PhysicalToLogicalPixels();
+					finalRect = new Rect(left, top, right - left, bottom - top).PhysicalToLogicalPixels();
+
+					// We also need to set the LayoutSlot as it was not set by the parent.
+					// Note: This is only an approximation of the LayoutSlot as margin and alignment might already been applied at this point.
+					LayoutInformation.SetLayoutSlot(this, finalRect);
+					LayoutSlotWithMarginsAndAlignments = finalRect;
 				}
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat(
 						"[{0}/{1}] OnLayoutCore({2}, {3}, {4}, {5}) (parent: {5},{6})",
@@ -267,20 +236,18 @@ namespace Windows.UI.Xaml
 				}
 
 				var previousSize = AssignedActualSize;
-				AssignedActualSize = newSize;
+				AssignedActualSize = finalRect.Size;
 
 				if (
 					// If the layout has changed, but the final size has not, this is just a translation.
 					// So unless there was a layout requested, we can skip arranging the children.
-					(changed && _lastLayoutSize != newSize)
+					(changed && _lastLayoutSize != finalRect.Size)
 
 					// Even if nothing changed, but a layout was requested, arrange the children.
 					|| IsLayoutRequested
 				)
 				{
-					_lastLayoutSize = newSize;
-
-					var finalRect = new Rect(0, 0, newSize.Width, newSize.Height);
+					_lastLayoutSize = finalRect.Size;
 
 					OnBeforeArrange();
 
@@ -289,10 +256,10 @@ namespace Windows.UI.Xaml
 					OnAfterArrange();
 				}
 
-				if (previousSize != newSize)
+				if (previousSize != finalRect.Size)
 				{
-					SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, newSize));
-					_renderTransform?.UpdateSize(newSize);
+					SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, finalRect.Size));
+					_renderTransform?.UpdateSize(finalRect.Size);
 				}
 			}
 			catch (Exception e)

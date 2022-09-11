@@ -19,13 +19,18 @@ using AppKit;
 using CoreGraphics;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation.Provider;
 using Windows.UI.Xaml.Automation;
 using Uno.UI.Xaml;
 using Uno.UI.Extensions;
+
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 <#
 	foreach(var mixin in _mixins) {
 #>
@@ -143,7 +148,7 @@ namespace <#= mixin.NamespaceName #>
 			}
 		}
 
-		public event TypedEventHandler<DependencyObject, object> Loading;
+		public event TypedEventHandler<FrameworkElement, object> Loading;
 
 		public event RoutedEventHandler Loaded;
 
@@ -193,10 +198,10 @@ namespace <#= mixin.NamespaceName #>
 			// Resolve the property only once, to avoid paying the cost of the interop.
 			var actualSuperview = Superview;
 
-            if(actualSuperview is FrameworkElement fe)
-            {
-                fe.InvalidateMeasure();
-            }
+			if(actualSuperview is FrameworkElement fe)
+			{
+				fe.InvalidateMeasure();
+			}
 			else if (actualSuperview is IFrameworkElement ife)
 			{
 				ife.InvalidateMeasure();
@@ -231,8 +236,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public virtual string Name
 		{
-            get => GetNameValue();
-            set => SetNameValue(value);
+			get => GetNameValue();
+			set => SetNameValue(value);
 		}
 		#endregion
 
@@ -242,8 +247,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public virtual Thickness Margin
 		{
-            get => GetMarginValue();
-            set => SetMarginValue(value);
+			get => GetMarginValue();
+			set => SetMarginValue(value);
 		}
 		private static Thickness GetMarginDefaultValue() => Thickness.Empty;
 		#endregion
@@ -255,8 +260,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public HorizontalAlignment HorizontalAlignment
 		{
-            get => GetHorizontalAlignmentValue();
-            set => SetHorizontalAlignmentValue(value);
+			get => GetHorizontalAlignmentValue();
+			set => SetHorizontalAlignmentValue(value);
 		}
 		#endregion
 
@@ -267,8 +272,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public VerticalAlignment VerticalAlignment
 		{
-            get => GetVerticalAlignmentValue();
-            set => SetVerticalAlignmentValue(value);
+			get => GetVerticalAlignmentValue();
+			set => SetVerticalAlignmentValue(value);
 		}
 		#endregion
 
@@ -278,8 +283,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public double Width
 		{
-            get => GetWidthValue();
-            set => SetWidthValue(value);
+			get => GetWidthValue();
+			set => SetWidthValue(value);
 		}
 		#endregion
 
@@ -289,8 +294,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public double Height
 		{
-            get => GetHeightValue();
-            set => SetHeightValue(value);
+			get => GetHeightValue();
+			set => SetHeightValue(value);
 		}
 		#endregion
 
@@ -300,8 +305,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public double MinWidth
 		{
-            get => GetMinWidthValue();
-            set => SetMinWidthValue(value);
+			get => GetMinWidthValue();
+			set => SetMinWidthValue(value);
 		}
 		#endregion
 
@@ -311,8 +316,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public double MinHeight
 		{
-            get => GetMinHeightValue();
-            set => SetMinHeightValue(value);
+			get => GetMinHeightValue();
+			set => SetMinHeightValue(value);
 		}
 		#endregion
 
@@ -322,8 +327,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public double MaxWidth
 		{
-            get => GetMaxWidthValue();
-            set => SetMaxWidthValue(value);
+			get => GetMaxWidthValue();
+			set => SetMaxWidthValue(value);
 		}
 		#endregion
 
@@ -333,8 +338,8 @@ namespace <#= mixin.NamespaceName #>
 
 		public double MaxHeight
 		{
-            get => GetMaxHeightValue();
-            set => SetMaxHeightValue(value);
+			get => GetMaxHeightValue();
+			set => SetMaxHeightValue(value);
 		}
 		#endregion
 
@@ -361,12 +366,13 @@ namespace <#= mixin.NamespaceName #>
 #endif
 
 				CoreAnimation.CATransform3D? oldTransform = null;
-				if (Layer != null && !Layer.Transform.IsIdentity)
+				var layer = Layer;
+				if (layer != null && !layer.Transform.IsIdentity)
 				{
 					// If NSView.Transform is not identity, then modifying the frame will give undefined behavior. (https://developer.apple.com/library/ios/documentation/UIKit/Reference/NSView_Class/#//apple_ref/occ/instp/NSView/transform)
 					// We reapply the transform based on the new size straight after.
-					oldTransform = Layer.Transform;
-					Layer.Transform = CoreAnimation.CATransform3D.Identity;
+					oldTransform = layer.Transform;
+					layer.Transform = CoreAnimation.CATransform3D.Identity;
 				}
 
 				base.Frame = value;
@@ -384,13 +390,13 @@ namespace <#= mixin.NamespaceName #>
 					else if (oldTransform.HasValue)
 					{
 						// We grudgingly support setting the native transform directly without going through RenderTransform.
-						Layer.Transform = oldTransform.Value;
+						layer.Transform = oldTransform.Value;
 					}
 				}
 				else if (oldTransform.HasValue)
 				{
 					// We grudgingly support setting the native transform directly without going through RenderTransform.
-					Layer.Transform = oldTransform.Value;
+					layer.Transform = oldTransform.Value;
 				}
 			}
 		}
@@ -542,7 +548,7 @@ namespace <#= mixin.NamespaceName #>
 		internal virtual void OnLoading()
 		{
 			OnLoadingPartial();
-			Loading?.Invoke(this, null);
+			Loading?.Invoke(<#= mixin.LoadingInvokeArgument #>, null);
 			OnPostLoading();
 		}
 
@@ -703,7 +709,6 @@ namespace <#= mixin.NamespaceName #>
 			}
 		}
 		#endregion
-
 #endif
 
 #if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
@@ -878,17 +883,18 @@ namespace <#= mixin.NamespaceName #>
 			{
 				WantsLayer = true;
 
+				var layer = Layer;
 				if(e.NewValue is SolidColorBrush scb)
 				{
-					Layer.BackgroundColor = scb.ColorWithOpacity;
+					layer.BackgroundColor = scb.ColorWithOpacity;
 
 					_brushColorChanged.Disposable = scb.RegisterDisposablePropertyChangedCallback(
 						SolidColorBrush.ColorProperty,
-						(s, colorArg) => Layer.BackgroundColor = (s as SolidColorBrush).ColorWithOpacity
+						(s, colorArg) => layer.BackgroundColor = (s as SolidColorBrush).ColorWithOpacity
 					);
 					_brushOpacityChanged.Disposable = scb.RegisterDisposablePropertyChangedCallback(
 						SolidColorBrush.OpacityProperty,
-						(s, colorArg) => Layer.BackgroundColor = (s as SolidColorBrush).ColorWithOpacity
+						(s, colorArg) => layer.BackgroundColor = (s as SolidColorBrush).ColorWithOpacity
 					);
 				}
 				else
@@ -897,15 +903,15 @@ namespace <#= mixin.NamespaceName #>
 					_brushOpacityChanged.Disposable = null;
 					if(e.NewValue is GradientBrush gb)
 					{
-						Layer.BackgroundColor = gb.FallbackColorWithOpacity;
+						layer.BackgroundColor = gb.FallbackColorWithOpacity;
 					}
 					else
 					{
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 						{
 							this.Log().Warn("Brush is not a SolidColorBrush, ignoring");
 						}
-						Layer.BackgroundColor = SolidColorBrushHelper.Transparent.Color;
+						layer.BackgroundColor = SolidColorBrushHelper.Transparent.Color;
 					}
 				}
 			}
@@ -958,15 +964,15 @@ namespace <#= mixin.NamespaceName #>
 			OnGenericPropertyUpdatedPartial(args);
 
 #if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
-            if(this is FrameworkElement fe)
-            {
-                fe.InvalidateMeasure();
-            }
+			if(this is FrameworkElement fe)
+			{
+				fe.InvalidateMeasure();
+			}
 #else
-            if(this is IFrameworkElement ife)
-            {
-                ife.InvalidateMeasure();
-            }
+			if(this is IFrameworkElement ife)
+			{
+				ife.InvalidateMeasure();
+			}
 #endif
 		}
 
@@ -1012,7 +1018,7 @@ namespace <#= mixin.NamespaceName #>
 
 
 #if !<#= mixin.HasAutomationPeer #> // HasAutomationPeer
-        private AutomationPeer _automationPeer;
+		private AutomationPeer _automationPeer;
 
 		private AutomationPeer OnCreateAutomationPeerOverride()
 		{
@@ -1026,28 +1032,28 @@ namespace <#= mixin.NamespaceName #>
 
 		protected virtual AutomationPeer OnCreateAutomationPeer()
 		{
-		    if (OnCreateAutomationPeerOverride() is AutomationPeer automationPeer)
-		 	{
-		 		return automationPeer;
-		 	}
+			if (OnCreateAutomationPeerOverride() is AutomationPeer automationPeer)
+			{
+				return automationPeer;
+			}
 
-	     	if (AutomationProperties.GetName(this) is string name && !string.IsNullOrEmpty(name))
-		 	{
-		 		return new FrameworkElementAutomationPeer(this);
-		 	}
+			if (AutomationProperties.GetName(this) is string name && !string.IsNullOrEmpty(name))
+			{
+				return new FrameworkElementAutomationPeer(this);
+			}
 
-		 	return null;
+			return null;
 		}
 
 
 		public virtual string GetAccessibilityInnerText() // TODO: internal
 		{
-		 	if (GetAccessibilityInnerTextOverride() is string innerText)
-		 	{
-		 		return innerText;
-		 	}
+			if (GetAccessibilityInnerTextOverride() is string innerText)
+			{
+				return innerText;
+			}
 
-		 	return null;
+			return null;
 		}
 
 		public AutomationPeer GetAutomationPeer() // TODO: internal
@@ -1091,7 +1097,8 @@ namespace <#= mixin.NamespaceName #>
 		bool overridesAttachedToWindow = false,
 		bool isNewBackground = false,
 		bool hasAutomationPeer = false,
-		bool hasLayouter = false
+		bool hasLayouter = false,
+		bool derivesFromFrameworkElement = true
 	)
 	{
 		_mixins.Add(
@@ -1106,7 +1113,8 @@ namespace <#= mixin.NamespaceName #>
 				IsNewBackground = isNewBackground ? "new" : "",
 				IsFrameworkElement = className == "FrameworkElement" ? "true" : "false",
 				HasAutomationPeer = hasAutomationPeer ? "true" : "false",
-				HasLayouter = hasLayouter ? "true" : "false"
+				HasLayouter = hasLayouter ? "true" : "false",
+				LoadingInvokeArgument = derivesFromFrameworkElement ? "this" : "null"
 			}
 		);
 	}
@@ -1124,6 +1132,7 @@ namespace <#= mixin.NamespaceName #>
 		public string IsFrameworkElement;
 		public string HasAutomationPeer;
 		public string HasLayouter;
+		public string LoadingInvokeArgument;
 	}
 
 	private List<MixinParams> _mixins = new List<MixinParams>();

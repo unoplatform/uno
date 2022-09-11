@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using Windows.UI.Core;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
+
 #if __IOS__
 using View = UIKit.UIView;
 #else
@@ -16,7 +16,7 @@ using Android.Views;
 
 #nullable enable
 
-namespace Windows.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	partial class PlacementPopupPanel
 	{

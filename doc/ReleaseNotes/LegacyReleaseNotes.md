@@ -55,8 +55,8 @@
 - Add support for WinUI 2.3 [`NumberBox`](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.numberbox?view=winui-2.3)
 - Add support of the `UIElement.RightTapped` event (The context menu won't appear anymore on WASM, except for the `TextBox`)
 - Add support of the `UIElement.Holding` event
-- [MacOS] Support for `ScrollViewer`
-- [MacOS] Support for `LinearGradientBrush`
+- [macOS] Support for `ScrollViewer`
+- [macOS] Support for `LinearGradientBrush`
 - Add support for [TwoPaneView](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.twopaneview?view=winui-2.3) control.
 - Add support for `ApplicationView.GetSpanningRects`
 - Add base support for API Extensibility through `Uno.Foundation.Extensibility.ApiExtensibility` and `ApiExtensionAttribute`
@@ -85,7 +85,7 @@
 - [#2465] Raising macOS Button Click event
 - [#2506] `DesignMode.DesignMode2Enabled` no longer throws (is always `false` on non-UWP platforms)
 - [#915] FontFamily values are now properly parsed on WebAssembly, updated docs with new info
-- [#2213] Fixed `ApplicationData` on MacOS, added support for `LocalSettings`
+- [#2213] Fixed `ApplicationData` on macOS, added support for `LocalSettings`
 - Made macOS Samples app skeleton runnable (temporarily removed ApplicationData check on startup, fixed reference), added xamarinmacos20 to crosstargeting_override sample
 - [#2230] `DisplayInformation` leaks memory
 - [WASM] Shapes now update when their Fill brush's Color changes
@@ -114,7 +114,7 @@
 - [#1956] Fis iOS invalid final state when switching visual state before current state's animation is completed.
 - Fix `Selector` support for IsSelected (#1606)
 - [Android] 164249 fixed TextBox.Text flickering when using custom IInputFilter with MaxLength set
-- [MacOS] Fix exceptions when modifying UIElementCollection, layouting view with null `Layer`
+- [macOS] Fix exceptions when modifying UIElementCollection, layouting view with null `Layer`
 - Fix invalid conversion when using ThemeResource (e.g. Color resource to Brush property)
 - Fix XamlBindingHelper.Convert double to GridLength
 - [Android] Adjust `TextBlock.TextDecorations` is not updating properly
@@ -574,7 +574,7 @@
  * [Wasm] Fix `ListView` recycling when the `XamlParent` is not available for `AutoSuggestBox`
  * 147405 Fix NRE on some MediaTransportControl controls
  * #139 Update Uno.SourceGenerationTasks to improve build performance
- * Update `Uno.UI.Toolkit` base UWP sdk to 17763
+ * Update `Uno.UI.Toolkit` base UWP sdk to 18362
  * [Wasm] Fixes items measured after being removed from their parent appear in the visual tree, on top of every other items.
  * [Wasm] Fixes lements may not be removed form the global active DOM elements tracking map
  * [Wasm] Disable the root element scrolling (bounce) on touch devices

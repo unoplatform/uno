@@ -76,6 +76,9 @@ Here's what to look for:
            </TextBlock.Foreground>
        </TextBlock>
        ```
+- Resources
+    - Avoid using `x:Name` in `ResourceDictionary` as those force early instanciation of the resource
+    - Use [`Uno.XamlMerge.Task`](https://github.com/unoplatform/uno.xamlmerge.task) to merge all top-level App.xaml resource dictionaries
 
 ## Advanced performance Tracing
 

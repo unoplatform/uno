@@ -14,15 +14,17 @@ namespace SamplesApp.UITests.TestFramework
 	/// maximum number of times.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-	public partial class AutoRetryAttribute : NUnitAttribute, IRepeatTest, IWrapSetUpTearDown
+	public partial class AutoRetryAttribute : NUnitAttribute, IRepeatTest
 	{
+		public const int AutoRetryDefaultCount = 2;
+
 		private readonly int _tryCount;
 
 		/// <summary>
 		/// Construct a <see cref="RetryAttribute" />
 		/// </summary>
 		/// <param name="tryCount">The maximum number of times the test should be run if it fails</param>
-		public AutoRetryAttribute(int tryCount = 3)
+		public AutoRetryAttribute(int tryCount = AutoRetryDefaultCount)
 		{
 			_tryCount = tryCount;
 		}

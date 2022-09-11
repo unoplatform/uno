@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItem.cpp, commit 574e5ed
+// MUX reference NavigationViewItem.cpp, commit 2562ac6
 
 #if __ANDROID__
 // For performance considerations, we prefer to delay pressed and over state in order to avoid
@@ -15,7 +15,6 @@ using System.Collections.Specialized;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
-using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Xaml;
@@ -28,6 +27,13 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 using FlyoutBase = Windows.UI.Xaml.Controls.Primitives.FlyoutBase;
 using FlyoutBaseClosingEventArgs = Windows.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs;
 using NavigationViewItemAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.UI.Input;
+using Windows.Devices.Input;
+#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -295,10 +301,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void SuggestedToolTipChanged(object newContent)
 		{
-			var potentialString = newContent as IPropertyValue;
+			var potentialString = newContent;
 			bool validStringableToolTip = potentialString != null
-				&& potentialString.Type == PropertyType.String
-				&& !string.IsNullOrEmpty(potentialString.GetString());
+				&& potentialString is string stringData
+				&& !string.IsNullOrEmpty(stringData);
 
 			object newToolTipContent = null;
 			if (validStringableToolTip)
@@ -342,6 +348,11 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateVisualStateNoTransition();
 		}
 
+		private void OnInfoBadgePropertyChanged(DependencyPropertyChangedEventArgs args)
+		{
+			UpdateVisualStateForInfoBadge();
+		}
+
 		private void OnMenuItemsPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
 			UpdateRepeaterItemsSource();
@@ -378,6 +389,15 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private void UpdateVisualStateForInfoBadge()
+		{
+			if (m_navigationViewItemPresenter is { } presenter)
+			{
+				var stateName = ShouldShowInfoBadge() ? "InfoBadgeVisible" : "InfoBadgeCollapsed";
+				VisualStateManager.GoToState(presenter, stateName, false /*useTransitions*/);
+			}
+		}
+
 		private void UpdateVisualStateForClosedCompact()
 		{
 			if (GetPresenter() is { } presenter)
@@ -399,8 +419,8 @@ namespace Microsoft.UI.Xaml.Controls
 				case NavigationViewRepeaterPosition.LeftFooter:
 					if (SharedHelpers.IsRS4OrHigher() && Application.Current.FocusVisualKind == FocusVisualKind.Reveal)
 					{
-						// OnLeftNavigationReveal is introduced in RS6. 
-						// Will fallback to stateName for the customer who re-template rs5 NavigationViewItem
+						// OnLeftNavigationReveal is introduced in RS6 and only in the V1 style.
+						// Fallback to OnLeftNavigation for other styles.
 						if (VisualStateManager.GoToState(this, NavigationViewItemHelper.c_OnLeftNavigationReveal, false /*useTransitions*/))
 						{
 							handled = true;
@@ -409,13 +429,15 @@ namespace Microsoft.UI.Xaml.Controls
 					break;
 				case NavigationViewRepeaterPosition.TopPrimary:
 				case NavigationViewRepeaterPosition.TopFooter:
+					stateName = NavigationViewItemHelper.c_OnTopNavigationPrimary;
 					if (SharedHelpers.IsRS4OrHigher() && Application.Current.FocusVisualKind == FocusVisualKind.Reveal)
 					{
-						stateName = NavigationViewItemHelper.c_OnTopNavigationPrimaryReveal;
-					}
-					else
-					{
-						stateName = NavigationViewItemHelper.c_OnTopNavigationPrimary;
+						// OnTopNavigationPrimaryReveal is introduced in RS6 and only in the V1 style.
+						// Fallback to c_OnTopNavigationPrimary for other styles.
+						if (VisualStateManager.GoToState(this, NavigationViewItemHelper.c_OnTopNavigationPrimaryReveal, false /*useTransitions*/))
+						{
+							handled = true;
+						}
 					}
 					break;
 				case NavigationViewRepeaterPosition.TopOverflow:
@@ -535,11 +557,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// TODO: Override?
-		private new void UpdateVisualState(bool useTransitions)
+		internal override void UpdateVisualState(bool useTransitions)
 		{
 			if (!m_appliedTemplate)
+			{
 				return;
+			}
 
 			UpdateVisualStateForPointer();
 
@@ -563,6 +586,8 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateVisualStateForToolTip();
 
 			UpdateVisualStateForIconAndContent(shouldShowIcon, shouldShowContent);
+
+			UpdateVisualStateForInfoBadge();
 
 			// visual state for focus state. top navigation use it to provide different visual for selected and selected+focused
 			UpdateVisualStateForKeyboardFocusedState();
@@ -687,6 +712,11 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool ShouldShowIcon()
 		{
 			return Icon != null;
+		}
+
+		private bool ShouldShowInfoBadge()
+		{
+			return InfoBadge != null;
 		}
 
 		private bool ShouldEnableToolTip()

@@ -30,7 +30,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				}
 			}
 
-			return (new string[0], false);
+			return (Array.Empty<string>(), false);
 		}
 
 		internal static string Rewrite(string contextName, string rawFunction, Func<string, bool> isStaticMethod)

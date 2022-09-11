@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Uno.Extensions;
-using Uno.Logging;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -17,6 +16,13 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+#if HAS_UNO
+using Uno.Foundation.Logging;
+#else
+using Microsoft.Extensions.Logging;
+using Uno.Logging;
+#endif
+
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace UITests.Shared.Windows_UI_Xaml_Media.Transform
@@ -24,6 +30,14 @@ namespace UITests.Shared.Windows_UI_Xaml_Media.Transform
 	[SampleControlInfo("Transform", "Transformed_Ancestor_And_UI_Blocked", ignoreInSnapshotTests: true, description: "Animation in transformed hierarchy, under simulated heavy UI load. Animation should remain smooth on Android 8+ devices.")]
 	public sealed partial class Transformed_Ancestor_And_UI_Blocked : UserControl
 	{
+#pragma warning disable CS0109
+#if HAS_UNO
+		private new readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(Transformed_Ancestor_And_UI_Blocked));
+#else
+		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(Transformed_Ancestor_And_UI_Blocked));
+#endif
+#pragma warning restore CS0109
+
 		private bool _isLoaded;
 
 		public Transformed_Ancestor_And_UI_Blocked()
@@ -67,7 +81,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Media.Transform
 			}
 			catch (Exception e)
 			{
-				this.Log().Error("Failed", e);
+				_log.Error("Failed", e);
 			}
 		}
 

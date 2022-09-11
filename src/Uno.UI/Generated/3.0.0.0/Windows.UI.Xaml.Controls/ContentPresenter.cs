@@ -137,20 +137,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.BackgroundSizing BackgroundSizing
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.BackgroundSizing)this.GetValue(BackgroundSizingProperty);
-			}
-			set
-			{
-				this.SetValue(BackgroundSizingProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property BackgroundSizing
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty CharacterSpacingProperty { get; } = 
@@ -225,14 +212,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property PaddingProperty
 		// Skipping already declared property TextWrappingProperty
 		// Skipping already declared property VerticalContentAlignmentProperty
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty BackgroundSizingProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(BackgroundSizing), typeof(global::Windows.UI.Xaml.Controls.BackgroundSizing), 
-			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.BackgroundSizing)));
-		#endif
+		// Skipping already declared property BackgroundSizingProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.ContentPresenter.ContentPresenter()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ContentPresenter.ContentPresenter()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ContentPresenter.Content.get

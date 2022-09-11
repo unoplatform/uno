@@ -6,7 +6,7 @@ using System.Text;
 using System.Linq;
 using Uno.Diagnostics.Eventing;
 using Windows.UI.Core;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using System.Diagnostics;
 
@@ -33,8 +33,8 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			private readonly Stopwatch _activeDuration = new Stopwatch();
 			private int _replayCount = 1;
-			private T? _startingValue = null;
-			private T? _endValue = null;
+			private T? _startingValue;
+			private T? _endValue;
 
 			// Initialize the field with zero capacity, as it may stay empty more often than it is being used.
 			private readonly CompositeDisposable _subscriptions = new CompositeDisposable(0);
@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			public void SkipToFill()
 			{
-				if (_animator != null && _animator.IsRunning)
+				if (_animator is { IsRunning: true })
 				{
 					_animator.Cancel();//Stop the animator if it is running
 					_startingValue = null;
@@ -255,9 +255,9 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			private void OnAnimatorAnimationEnd(object sender, EventArgs e)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
-					this.Log().Debug("DoubleAnimation has ended.");
+					this.Log().Debug("TimeLine has ended.");
 				}
 
 				OnEnd();
@@ -275,7 +275,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			/// </summary>
 			private void Play()
 			{
-				InitializeAnimator();//Create the animator
+				_animator?.Dispose();
+				InitializeAnimator(); // Create the animator
 
 				if (!EnableDependentAnimation && _owner.GetIsDependantAnimation())
 				{ // Don't start the animator its a dependent animation
@@ -330,6 +331,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			/// </summary>
 			private void OnEnd()
 			{
+				_animator?.Dispose();
+
 				// If the animation was GPU based, remove the animated value
 				if (NeedsRepeat(_activeDuration, _replayCount))
 				{
@@ -381,7 +384,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			/// </summary>
 			private void OnAnimatorCancelled(object sender, EventArgs e)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("DoubleAnimation was cancelled.");
 				}

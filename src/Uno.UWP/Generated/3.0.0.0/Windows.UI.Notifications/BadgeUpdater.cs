@@ -3,7 +3,7 @@
 namespace Windows.UI.Notifications
 {
 	#if __ANDROID__ || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
+	[global::Uno.NotImplemented("__ANDROID__")]
 	#endif
 	public  partial class BadgeUpdater 
 	{

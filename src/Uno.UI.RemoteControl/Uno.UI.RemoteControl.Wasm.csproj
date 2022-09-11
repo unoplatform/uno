@@ -36,6 +36,10 @@
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
 	</ItemGroup>
+	
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Messages\KeepAliveMessage.cs" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
@@ -45,17 +49,13 @@
 
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-		<PackageReference Include="Uno.MonoAnalyzers" />
+		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Wasm.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Wasm.csproj" />
-	</ItemGroup>
-	
-	<ItemGroup>
-		<PackageReference Include="Uno.Wasm.WebSockets" Version="1.1.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(DocsGeneration)'==''">

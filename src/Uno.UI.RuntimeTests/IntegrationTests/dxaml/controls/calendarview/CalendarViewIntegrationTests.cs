@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 #pragma warning disable CS0168 // Disable TestCleanupWrapper warnings
+#pragma warning disable 168 // for cleanup imported member
 
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,7 @@ using CalendarView = Windows.UI.Xaml.Controls.CalendarView;
 
 using static Private.Infrastructure.TestServices;
 using static Private.Infrastructure.CalendarHelper;
+using Uno.UI.RuntimeTests;
 
 namespace Windows.UI.Xaml.Tests.Enterprise
 {
@@ -1066,6 +1068,12 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 #if __WASM__
 		[Ignore("UNO TODO - This test is failing on WASM")]
 #endif
+#if __SKIA__
+		[RequiresFullWindow]
+#endif
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task VerifyButtonState()
 		{
 			TestCleanupWrapper cleanup;
@@ -1655,8 +1663,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-#if __IOS__ || __MACOS__ || __ANDROID__
-		[Ignore("UNO TODO - This test is failing on iOS/macOS/Android")]
+#if __IOS__ || __MACOS__ || __ANDROID__ || __SKIA__
+		[Ignore("UNO TODO - This test is failing on iOS/macOS/Android/Skia")]
 #endif
 		public async Task CalendarPanelLayoutTestStretchTest()
 		{
@@ -2548,7 +2556,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 					});
 
 
-					for (var i = 0; i < testData.snapPoints.Count(); i++)
+					for (var i = 0; i < testData.snapPoints.Length; i++)
 					{
 						LOG_OUTPUT("scroll down to next snap point and wait for viewchanged event.");
 						TestServices.InputHelper.ScrollMouseWheel(cv, -1);

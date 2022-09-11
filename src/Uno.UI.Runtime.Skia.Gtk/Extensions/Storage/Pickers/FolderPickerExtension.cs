@@ -27,7 +27,7 @@ namespace Uno.Extensions.Storage.Pickers
 				commitText = _picker.CommitButtonText;
 			}
 
-			FileChooserDialog dialog = new FileChooserDialog(
+			using FileChooserDialog dialog = new FileChooserDialog(
 				"Select Folder",
 				GtkHost.Window,
 				FileChooserAction.SelectFolder,
@@ -43,13 +43,12 @@ namespace Uno.Extensions.Storage.Pickers
 
 			dialog.SetCurrentFolder(PickerHelpers.GetInitialDirectory(_picker.SuggestedStartLocation));
 
-			StorageFolder folder = null;
+			StorageFolder? folder = null;
 			if (dialog.Run() == (int)ResponseType.Accept)
 			{
 				folder = await StorageFolder.GetFolderFromPathAsync(dialog.Filename);
 			}
 
-			dialog.Destroy();
 			return folder;
 		}
 	}

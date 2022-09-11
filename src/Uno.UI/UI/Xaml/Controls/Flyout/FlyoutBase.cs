@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using Microsoft.Extensions.Logging;
+
 using Uno;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
@@ -26,16 +27,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class FlyoutBase : DependencyObject
 	{
-		public event EventHandler Opened;
-		public event EventHandler Closed;
-		public event EventHandler Opening;
+		public event EventHandler<object> Opened;
+		public event EventHandler<object> Closed;
+		public event EventHandler<object> Opening;
 		public event TypedEventHandler<FlyoutBase, FlyoutBaseClosingEventArgs> Closing;
-
-		private bool _isOpen = false;
 
 		internal bool m_isPositionedAtPoint;
 
-		protected internal Windows.UI.Xaml.Controls.Popup _popup;
+		protected internal Popup _popup;
 		private bool _isLightDismissEnabled = true;
 		private readonly SerialDisposable _sizeChangedDisposable = new SerialDisposable();
 
@@ -62,13 +61,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			if (_popup == null)
 			{
-				ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "FlyoutLightDismissOverlayBackground", isThemeResourceExtension: true);
+				ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "FlyoutLightDismissOverlayBackground", isThemeResourceExtension: true, isHotReloadSupported: true);
 
 				var child = CreatePresenter();
-				_popup = new Windows.UI.Xaml.Controls.Popup()
+				_popup = new Popup()
 				{
 					Child = child,
 					IsLightDismissEnabled = _isLightDismissEnabled,
+					AssociatedFlyout = this,
 				};
 
 				SynchronizePropertyToPopup(Popup.TemplatedParentProperty, TemplatedParent);
@@ -126,6 +126,17 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					.Create(() => child.SizeChanged -= handler);
 			}
 		}
+
+		public bool IsOpen
+		{
+			get => (bool)GetValue(IsOpenProperty);
+			private set => SetValue(IsOpenProperty, value);
+		}
+		public static DependencyProperty IsOpenProperty { get; } =
+			DependencyProperty.Register(
+				nameof(IsOpen), typeof(bool),
+				typeof(FlyoutBase),
+				new FrameworkPropertyMetadata(default(bool)));
 
 		#region Placement
 
@@ -233,7 +244,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal void Hide(bool canCancel)
 		{
-			if (!_isOpen)
+			if (!IsOpen)
 			{
 				return;
 			}
@@ -242,16 +253,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				bool cancel = false;
 				OnClosing(ref cancel);
-				var closing = new FlyoutBaseClosingEventArgs();
-				Closing?.Invoke(this, closing);
-				if (cancel || closing.Cancel)
+				if (cancel)
 				{
 					return;
 				}
 			}
 
 			Close();
-			_isOpen = false;
+			IsOpen = false;
 			OnClosed();
 			Closed?.Invoke(this, EventArgs.Empty);
 		}
@@ -275,7 +284,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			m_hasPlacementOverride = false;
 
-			if (_isOpen)
+			if (IsOpen)
 			{
 				if (placementTarget == Target)
 				{
@@ -316,7 +325,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						throw new ArgumentException("Invalid flyout position");
 					}
 
-					// UNO TODO: clamp position within contentRect
+					var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+					positionValue = new Point(
+						positionValue.X.Clamp(visibleBounds.Left, visibleBounds.Right),
+						positionValue.Y.Clamp(visibleBounds.Top, visibleBounds.Bottom));
 
 					SetTargetPosition(positionValue);
 				}
@@ -331,7 +343,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			OnOpening();
 			Opening?.Invoke(this, EventArgs.Empty);
 			Open();
-			_isOpen = true;
+			SynchronizeContentTemplatedParent();
+			IsOpen = true;
 
 			// **************************************************************************************
 			// UNO-FIX: Defer the raising of the Opened event to ensure everything is well
@@ -340,7 +353,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			// **************************************************************************************
 			{
-				if (_isOpen)
+				if (IsOpen)
 				{
 					OnOpened();
 					Opened?.Invoke(this, EventArgs.Empty);
@@ -348,6 +361,16 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			});
 		}
 
+		private void SynchronizeContentTemplatedParent()
+		{
+			// Manual propagation of the templated parent to the content property
+			// until we get the propagation running properly
+			if (_popup.Child is FrameworkElement content)
+			{
+				content.TemplatedParent = TemplatedParent;
+			}
+		}
+		
 		private void SetTargetPosition(Point targetPoint)
 		{
 			m_isTargetPositionSet = true;
@@ -365,7 +388,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private protected virtual void OnOpening() { }
 
-		private protected virtual void OnClosing(ref bool cancel) { }
+		internal virtual void OnClosing(ref bool cancel)
+		{
+
+			var closing = new FlyoutBaseClosingEventArgs();
+			Closing?.Invoke(this, closing);
+			cancel = closing.Cancel;
+		}
 
 		private protected virtual void OnClosed()
 		{
@@ -432,7 +461,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			flyout?.ShowAt(flyoutOwner);
 		}
 
-		internal static Rect CalculateAvailableWindowRect(bool isMenuFlyout, Controls.Popup popup, object placementTarget, bool hasTargetPosition, Point positionPoint, bool isFull)
+		internal static Rect CalculateAvailableWindowRect(bool isMenuFlyout, Popup popup, object placementTarget, bool hasTargetPosition, Point positionPoint, bool isFull)
 		{
 			// UNO TODO: UWP also uses values coming from the input pane and app bars, if any.
 			// Make sure of migrate to XamlRoot: https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.xamlroot

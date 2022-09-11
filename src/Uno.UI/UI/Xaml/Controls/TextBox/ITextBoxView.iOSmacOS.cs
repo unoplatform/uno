@@ -30,5 +30,16 @@ namespace Windows.UI.Xaml.Controls
 		Brush Foreground { get; set; }
 		void SetTextNative(string text);
 		void Select(int start, int length);
+
+#if NET6_0_OR_GREATER && __IOS__
+		UITextAutocapitalizationType AutocapitalizationType { get; set; }
+		UITextAutocorrectionType AutocorrectionType { get; set; }
+		UIKeyboardType KeyboardType { get; set; }
+		UIKeyboardAppearance KeyboardAppearance { get; set; }
+		UIReturnKeyType ReturnKeyType { get; set; }
+		bool EnablesReturnKeyAutomatically { get; set; }
+		bool SecureTextEntry { get; set; }
+		UITextSpellCheckingType SpellCheckingType { get; set; }
+#endif
 	}
 }

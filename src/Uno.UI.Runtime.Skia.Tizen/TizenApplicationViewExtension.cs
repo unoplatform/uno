@@ -1,7 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
-using Uno.Extensions;
-using Windows.UI.ViewManagement;
+﻿using Windows.UI.ViewManagement;
 using TizenWindow = ElmSharp.Window;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia
 {

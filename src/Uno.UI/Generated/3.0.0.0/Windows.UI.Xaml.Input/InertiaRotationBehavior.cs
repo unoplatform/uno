@@ -2,39 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class InertiaRotationBehavior 
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double DesiredRotation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double InertiaRotationBehavior.DesiredRotation is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.InertiaRotationBehavior", "double InertiaRotationBehavior.DesiredRotation");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double DesiredDeceleration
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double InertiaRotationBehavior.DesiredDeceleration is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.InertiaRotationBehavior", "double InertiaRotationBehavior.DesiredDeceleration");
-			}
-		}
-		#endif
+		// Skipping already declared property DesiredRotation
+		// Skipping already declared property DesiredDeceleration
 		// Forced skipping of method Windows.UI.Xaml.Input.InertiaRotationBehavior.DesiredDeceleration.get
 		// Forced skipping of method Windows.UI.Xaml.Input.InertiaRotationBehavior.DesiredDeceleration.set
 		// Forced skipping of method Windows.UI.Xaml.Input.InertiaRotationBehavior.DesiredRotation.get

@@ -7,31 +7,14 @@ using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Uno.UI;
+using Uno.Helpers.Activities;
+
+
 
 namespace Windows.Storage.Pickers
 {
 	public partial class FileSavePicker
 	{
-		internal const int RequestCode = 6003;
-		private static TaskCompletionSource<Intent?>? _currentFileOpenPickerRequest;
-
-		internal static bool TryHandleIntent(Intent intent, Result resultCode)
-		{
-			if (_currentFileOpenPickerRequest == null)
-			{
-				return false;
-			}
-			if (resultCode == Result.Canceled)
-			{
-				_currentFileOpenPickerRequest.SetResult(null);
-			}
-			else
-			{
-				_currentFileOpenPickerRequest.SetResult(intent);
-			}
-			return true;
-		}
-
 		private async Task<StorageFile?> PickSaveFileTaskAsync(CancellationToken token)
 		{
 			if (!(ContextHelper.Current is Activity appActivity))
@@ -43,21 +26,24 @@ namespace Windows.Storage.Pickers
 
 			var intent = new Intent(action);
 			intent.SetType("*/*");
-
+			intent.AddCategory(Intent.CategoryOpenable);
 			var mimeTypes = GetMimeTypes();
-			intent.PutExtra(Intent.ExtraMimeTypes, mimeTypes);
+
+			this.ParseMimeTypeForXml(mimeTypes);
+
+            foreach (var mime in mimeTypes)
+            {
+				intent.PutExtra(Intent.ExtraMimeTypes, mime);
+			}
 
 			if (!string.IsNullOrEmpty(SuggestedFileName))
 			{
 				intent.PutExtra(Intent.ExtraTitle, SuggestedFileName);
 			}
 
-			_currentFileOpenPickerRequest = new TaskCompletionSource<Intent?>();
-
-			appActivity.StartActivityForResult(intent, RequestCode);
-
-			var resultIntent = await _currentFileOpenPickerRequest.Task;
-			_currentFileOpenPickerRequest = null;
+			var activity = await AwaitableResultActivity.StartAsync();
+			var result = await activity.StartActivityForResultAsync(intent, cacellationToken: token);
+			var resultIntent = result?.Intent;			
 
 			if (resultIntent?.Data != null)
 			{
@@ -78,6 +64,20 @@ namespace Windows.Storage.Pickers
 			return null;
 		}
 
+		private void ParseMimeTypeForXml(string[]? mimes)
+		{
+			if (mimes is not null)
+			{
+				for (int i = 0; i < mimes.Length; i++)
+				{
+					if (mimes[i] == XmlIncorrectMimeToActionCreateDocument)
+					{
+						mimes[i] = XmlCorrectMimeToActionCreateDocument;
+					}
+				}
+			}
+		}
+
 		private string[] GetMimeTypes()
 		{
 			return FileTypeChoices
@@ -86,6 +86,9 @@ namespace Windows.Storage.Pickers
 				.Distinct()
 				.ToArray();
 		}
+
+		private const string XmlCorrectMimeToActionCreateDocument = "application/xhtml+xml";
+		private const string XmlIncorrectMimeToActionCreateDocument = "application/xml";
 
 	}
 }

@@ -92,11 +92,15 @@ namespace Windows.UI.Xaml
 
 		public bool IsReadOnly => ((ICollection<T>)_list).IsReadOnly;
 
+		private protected virtual void ValidateItem(T item) { }
+
 		public T this[int index]
 		{
 			get => _list[index];
 			set
 			{
+				ValidateItem(value);
+
 				var originalValue = _list[index];
 
 				if (!ReferenceEquals(originalValue, value))
@@ -118,6 +122,8 @@ namespace Windows.UI.Xaml
 
 		public void Insert(int index, T item)
 		{
+			ValidateItem(item);
+
 			EnsureNotLocked();
 
 			_list.Insert(index, item);
@@ -141,6 +147,8 @@ namespace Windows.UI.Xaml
 		public void Add(T item)
 		{
 			EnsureNotLocked();
+
+			ValidateItem(item);
 
 			_list.Add(item);
 

@@ -24,7 +24,7 @@ using MUXControlsTestApp.Utilities;
 
 namespace MUXControlsTestApp
 {
-	//[Sample("NavigationView", "WinUI")]
+	//[Sample("NavigationView", "MUX")]
     public sealed partial class NavigationViewTopNavStorePage : TestPage
 	{
         ObservableCollection<NavigationViewItemBase> m_menuItems;

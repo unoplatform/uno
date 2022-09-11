@@ -12,6 +12,7 @@
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="100" />
 			<ColumnDefinition />
+			<ColumnDefinition MaxWidth="250" />
 		</Grid.ColumnDefinitions>
 
 		<StackPanel>
@@ -57,19 +58,29 @@
 			ManipulationInertiaStarting="OnManipInertiaStarting"
 			ManipulationCompleted="OnManipCompleted"/>
 
-		<TextBlock
-			x:Name="Output"
-			Grid.Column="1"
-			FontSize="10"
-			TextWrapping="Wrap"
-			IsHitTestVisible="False" />
+		<ScrollViewer
+			Grid.Column="2"
+			VerticalScrollMode="Auto"
+			VerticalScrollBarVisibility="Auto"
+			HorizontalScrollMode="Auto"
+			HorizontalScrollBarVisibility="Auto">
+			<StackPanel>
+				<TextBlock
+					x:Name="Output"
+					FontSize="10"
+					IsHitTestVisible="False" />
 
-		<TextBlock
-			x:Name="Previous"
-			Grid.Column="1"
-			Margin="0,20,0,0"
-			FontSize="8"
-			TextWrapping="Wrap"
-			IsHitTestVisible="False" />
+				<TextBlock
+					x:Name="MoveOutput"
+					FontSize="8"
+					IsHitTestVisible="False" />
+
+				<TextBlock
+					x:Name="Previous"
+					Margin="0,5,0,0"
+					FontSize="8"
+					IsHitTestVisible="False" />
+			</StackPanel>
+		</ScrollViewer>
 	</Grid>
 </Page>

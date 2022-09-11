@@ -2,231 +2,33 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class BluetoothLEAppearanceCategories 
+	public static partial class BluetoothLEAppearanceCategories 
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static ushort BarcodeScanner
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEAppearanceCategories.BarcodeScanner is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static ushort BloodPressure
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEAppearanceCategories.BloodPressure is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static ushort Clock
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEAppearanceCategories.Clock is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static ushort Computer
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEAppearanceCategories.Computer is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static ushort Cycling
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEAppearanceCategories.Cycling is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static ushort Display
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEAppearanceCategories.Display is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static ushort EyeGlasses
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEAppearanceCategories.EyeGlasses is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static ushort GlucoseMeter
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEAppearanceCategories.GlucoseMeter is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static ushort HeartRate
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEAppearanceCategories.HeartRate is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static ushort HumanInterfaceDevice
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEAppearanceCategories.HumanInterfaceDevice is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static ushort Keyring
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEAppearanceCategories.Keyring is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static ushort MediaPlayer
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEAppearanceCategories.MediaPlayer is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static ushort OutdoorSportActivity
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEAppearanceCategories.OutdoorSportActivity is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static ushort Phone
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEAppearanceCategories.Phone is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static ushort PulseOximeter
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEAppearanceCategories.PulseOximeter is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static ushort RemoteControl
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEAppearanceCategories.RemoteControl is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static ushort RunningWalking
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEAppearanceCategories.RunningWalking is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static ushort Tag
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEAppearanceCategories.Tag is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static ushort Thermometer
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEAppearanceCategories.Thermometer is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static ushort Uncategorized
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEAppearanceCategories.Uncategorized is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static ushort Watch
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEAppearanceCategories.Watch is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static ushort WeightScale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ushort BluetoothLEAppearanceCategories.WeightScale is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property BarcodeScanner
+		// Skipping already declared property BloodPressure
+		// Skipping already declared property Clock
+		// Skipping already declared property Computer
+		// Skipping already declared property Cycling
+		// Skipping already declared property Display
+		// Skipping already declared property EyeGlasses
+		// Skipping already declared property GlucoseMeter
+		// Skipping already declared property HeartRate
+		// Skipping already declared property HumanInterfaceDevice
+		// Skipping already declared property Keyring
+		// Skipping already declared property MediaPlayer
+		// Skipping already declared property OutdoorSportActivity
+		// Skipping already declared property Phone
+		// Skipping already declared property PulseOximeter
+		// Skipping already declared property RemoteControl
+		// Skipping already declared property RunningWalking
+		// Skipping already declared property Tag
+		// Skipping already declared property Thermometer
+		// Skipping already declared property Uncategorized
+		// Skipping already declared property Watch
+		// Skipping already declared property WeightScale
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.Uncategorized.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.Phone.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothLEAppearanceCategories.Computer.get

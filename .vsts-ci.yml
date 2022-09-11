@@ -5,7 +5,17 @@ trigger:
       - release/beta/*
       - release/stable/*
       - feature/*
-
+      
+  paths:
+    include:
+    - '/'
+    exclude:
+    - .dependabot/
+    - .github/
+    # don't trigger the CI if only docs files are changed
+    - doc/*
+    - '**/*.md'
+    
 pr: 
   branches:
     include:
@@ -20,8 +30,10 @@ pr:
     exclude:
     - .dependabot/
     - .github/
+    # don't trigger the CI if only docs files are changed
+    - doc/*
+    - '**/*.md'
     - '*.md'
-    - .all-contributorsrc
 
 resources:
   containers:
@@ -30,18 +42,25 @@ resources:
 
 variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  windowsHostedVMImage: 'windows-2019'
+  windows2019HostedVMImage: 'windows-2019'
   windows2022HostedVMImage: 'windows-2022'
-  windowsScaledPool: 'Windows2019-20201210-0'
+  windowsScaledPool: 'Windows2022-20211130'
   linuxVMImage: 'ubuntu-latest'
-  macOSVMImage: 'macOS-10.15'
-  xCodeRoot: '/Applications/Xcode_12.3.app'
-  XamarinSDKVersion: 6_12_4
-  xCodeRoot_iOS_UITests: '/Applications/Xcode_11.5.app'
-  XamarinSDKVersion_iOS_UITests: 6_10_0
+  macOSVMImage: 'macOS-11'
+  macOSVMImage_UITests: 'macOS-11'
+  xCodeRoot: '/Applications/Xcode_13.2.1.app'
+  XamarinSDKVersion: 6_12_12
+  xCodeRoot_iOS_UITests: '/Applications/Xcode_13.2.1.app'
+  XamarinSDKVersion_iOS_UITests: 6_12_12
+
+  enable_package_cache: true
 
 jobs:
 - template: build/ci/.azure-devops-commitsar.yml
+  parameters:
+    vmImage: '$(linuxVMImage)'
+
+- template: build/ci/.azure-devops-pipeline-validations.yml
   parameters:
     vmImage: '$(linuxVMImage)'
 
@@ -59,28 +78,30 @@ jobs:
 
 - template: build/ci/.azure-devops-project-template-tests.yml
   parameters:
-    vmImageWindows: '$(windowsHostedVMImage)'
+    vmImageWindows: '$(windows2022HostedVMImage)'
     vmImageLinux: '$(linuxVMImage)'
 
 - template: build/ci/.azure-devops-uap.yml
   parameters:
-    vmImage: '$(windowsHostedVMImage)'
+    vmImage: '$(windows2022HostedVMImage)'
 
 - template: build/ci/.azure-devops-unit-tests.yml
   parameters:
-    vmImage: '$(windowsHostedVMImage)'
+    vmImage: '$(windows2022HostedVMImage)'
 
 - template: build/ci/.azure-devops-skia-tests.yml
   parameters:
-    vmImage: '$(windowsHostedVMImage)'
+    vmImage: '$(windows2022HostedVMImage)'
+    vmMacImage: '$(macOSVMImage)'
+    poolName: '$(windows2022HostedVMImage)'
 
 - template: build/ci/.azure-devops-docs.yml
   parameters:
-    vmImage: '$(windowsHostedVMImage)'
+    vmImage: '$(windows2022HostedVMImage)'
 
 - template: build/ci/.azure-devops-samplesapp-uitests-build.yml
   parameters:
-    vmImage: '$(windowsHostedVMImage)'
+    vmImage: '$(windows2022HostedVMImage)'
 
 - template: build/ci/.azure-devops-wasm-uitests.yml
   parameters:
@@ -98,7 +119,7 @@ jobs:
 
 - template: build/ci/.azure-devops-android-tests.yml
   parameters:
-    vmWindowsImage: '$(windowsHostedVMImage)'
+    vmWindowsImage: '$(windows2019HostedVMImage)'
     vmMacOSImage: '$(macOSVMImage)'
     xCodeRoot: '$(xCodeRoot)'
     XamarinSDKVersion: '$(XamarinSDKVersion)'
@@ -106,6 +127,7 @@ jobs:
 - template: build/ci/.azure-devops-ios-tests.yml
   parameters:
     vmImage: '$(macOSVMImage)'
+    vmImageTest: '$(macOSVMImage_UITests)'
     xCodeRootBuild: '$(xCodeRoot)'
     XamarinSDKVersionBuild: '$(XamarinSDKVersion)'
     xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
@@ -113,7 +135,7 @@ jobs:
 
 - template: build/ci/.azure-devops-screenshot-compare.yml
   parameters:
-    vmImage: '$(windowsHostedVMImage)'
+    vmImage: '$(windows2022HostedVMImage)'
 
 - template: build/ci/.azure-devops-vs2022-vsix.yml
   parameters:

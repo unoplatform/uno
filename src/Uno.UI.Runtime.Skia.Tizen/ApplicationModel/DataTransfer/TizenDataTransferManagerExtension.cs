@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Tizen.Applications;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Tizen.Helpers;
 using Windows.ApplicationModel.DataTransfer;
 

@@ -2,77 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Pickers
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class FolderPicker 
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Pickers.PickerViewMode ViewMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PickerViewMode FolderPicker.ViewMode is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FolderPicker", "PickerViewMode FolderPicker.ViewMode");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Pickers.PickerLocationId SuggestedStartLocation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PickerLocationId FolderPicker.SuggestedStartLocation is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FolderPicker", "PickerLocationId FolderPicker.SuggestedStartLocation");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string SettingsIdentifier
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string FolderPicker.SettingsIdentifier is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FolderPicker", "string FolderPicker.SettingsIdentifier");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string CommitButtonText
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string FolderPicker.CommitButtonText is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FolderPicker", "string FolderPicker.CommitButtonText");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<string> FileTypeFilter
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<string> FolderPicker.FileTypeFilter is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property ViewMode
+		// Skipping already declared property SuggestedStartLocation
+		// Skipping already declared property SettingsIdentifier
+		// Skipping already declared property CommitButtonText
+		// Skipping already declared property FileTypeFilter
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Collections.ValueSet ContinuationData
@@ -93,13 +32,7 @@ namespace Windows.Storage.Pickers
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-		public FolderPicker() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FolderPicker", "FolderPicker.FolderPicker()");
-		}
-		#endif
+		// Skipping already declared method Windows.Storage.Pickers.FolderPicker.FolderPicker()
 		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.FolderPicker()
 		// Forced skipping of method Windows.Storage.Pickers.FolderPicker.ContinuationData.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

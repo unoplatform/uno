@@ -2,11 +2,9 @@
 
 #if __WASM__ || __IOS__ || __ANDROID__ || __MACOS__ || __SKIA__
 using System;
-using Windows.Foundation;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
-using Uno.Extensions;
 using System.Threading.Tasks;
+using Uno.Foundation.Logging;
+using Windows.Foundation;
 
 namespace Windows.ApplicationModel.DataTransfer
 {
@@ -27,18 +25,11 @@ namespace Windows.ApplicationModel.DataTransfer
 		public static void ShowShareUI(ShareUIOptions options)
 		{
 			var dataTransferManager = _instance.Value;
-			var args = new DataRequestedEventArgs((dataRequest)=>ContinueShowShareUI(options, dataRequest.Data));
+			var args = new DataRequestedEventArgs((dataRequest) => ContinueShowShareUI(options, dataRequest.Data));
 			dataTransferManager.DataRequested?.Invoke(dataTransferManager, args);
 
-			// Data retrieval may be done asynchronously, check for deferral use
-			if (!args.Request.IsDeferred)
-			{
-				ContinueShowShareUI(options, args.Request.Data);
-			}
-			else
-			{
-				args.Request.EventRaiseCompleted();
-			}
+			// Data retrieval may be done asynchronously
+			args.Request.DeferralManager.EventRaiseCompleted();
 		}
 
 		private static async void ContinueShowShareUI(ShareUIOptions options, DataPackage dataPackage)

@@ -14,9 +14,17 @@
 		/// </summary>
 		Left = 1,
 		/// <summary>
+		/// The beginning of the text is aligned to the edge of the container.
+		/// </summary>
+		Start = 1,
+		/// <summary>
 		/// Text is aligned to the right edge of the container.
 		/// </summary>
 		Right = 2,
+		/// <summary>
+		/// The end of the text is aligned to the edge of the container.
+		/// </summary>
+		End = 2,
 		/// <summary>
 		/// Text is justified within the container.
 		/// </summary>

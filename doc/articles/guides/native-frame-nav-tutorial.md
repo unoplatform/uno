@@ -21,7 +21,7 @@ The complete sample code can be found here: [NativeFrameNav](https://github.com/
 
             <CommandBar Grid.Row="0" Content="CHANGE_THE_TEXT_HERE" />
             <StackPanel Grid.Row="1">
-                <TextBlock Text="CHANGE_THE_TEXT_HERE" />>
+                <TextBlock Text="CHANGE_THE_TEXT_HERE" />
             </StackPanel>
         </Grid>
         ```
@@ -63,7 +63,7 @@ The complete sample code can be found here: [NativeFrameNav](https://github.com/
     ```cs
     public App()
     {
-        ConfigureFilters(global::Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory);
+        InitializeLogging();
 
     #if __IOS__ || __ANDROID__
         Uno.UI.FeatureConfiguration.Style.ConfigureNativeFrameNavigation();

@@ -3,10 +3,8 @@
 namespace Windows.UI.Input
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
-	public   enum GestureSettings 
+	[global::System.FlagsAttribute]
+	public   enum GestureSettings : uint
 	{
 		// Skipping already declared field Windows.UI.Input.GestureSettings.None
 		// Skipping already declared field Windows.UI.Input.GestureSettings.Tap

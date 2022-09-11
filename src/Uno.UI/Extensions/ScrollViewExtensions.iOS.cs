@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Drawing;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 #if XAMARIN_IOS_UNIFIED
 using UIKit;
 using CoreGraphics;

@@ -24,6 +24,11 @@ namespace Windows.Foundation
 		/// </summary>
 		public void Complete() => _handler?.Invoke();
 
-		public void Close() { }
+		public void Close() => Complete();
+
+		/// <summary>
+		/// Completes the deferral (calls <see cref="Complete" />).
+		/// </summary>
+		public void Dispose() => Complete();
 	}
 }

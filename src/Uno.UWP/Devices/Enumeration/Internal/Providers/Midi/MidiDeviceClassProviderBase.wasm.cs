@@ -3,9 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+
 using Uno.Devices.Midi.Internal;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Windows.Devices.Enumeration;
 using static Uno.Foundation.WebAssemblyRuntime;
 
@@ -15,7 +16,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 	{
 		private const string JsType = "Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceClassProvider";
 
-		private readonly bool _isInput = false;
+		private readonly bool _isInput;
 
 		public MidiDeviceClassProviderBase(bool isInput) => _isInput = isInput;
 

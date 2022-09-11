@@ -33,11 +33,19 @@ namespace Windows.Graphics.Capture
 		// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureItem.Closed.remove
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Graphics.Capture.GraphicsCaptureItem CreateFromVisual( global::Windows.UI.Composition.Visual visual)
+		public static global::Windows.Graphics.Capture.GraphicsCaptureItem TryCreateFromWindowId( global::Windows.UI.WindowId windowId)
 		{
-			throw new global::System.NotImplementedException("The member GraphicsCaptureItem GraphicsCaptureItem.CreateFromVisual(Visual visual) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member GraphicsCaptureItem GraphicsCaptureItem.TryCreateFromWindowId(WindowId windowId) is not implemented in Uno.");
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Windows.Graphics.Capture.GraphicsCaptureItem TryCreateFromDisplayId( global::Windows.Graphics.DisplayId displayId)
+		{
+			throw new global::System.NotImplementedException("The member GraphicsCaptureItem GraphicsCaptureItem.TryCreateFromDisplayId(DisplayId displayId) is not implemented in Uno.");
+		}
+		#endif
+		// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureItem.CreateFromVisual(Windows.UI.Composition.Visual)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Capture.GraphicsCaptureItem, object> Closed

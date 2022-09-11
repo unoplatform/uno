@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml
 		public readonly struct ResourceKey
 		{
 			public readonly string Key;
-			public readonly bool IsType;
+			public readonly Type TypeKey;
 			public readonly uint HashCode;
 
 			public static ResourceKey Empty { get; } = new ResourceKey(false);
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml
 			private ResourceKey(bool dummy)
 			{
 				Key = null;
-				IsType = false;
+				TypeKey = null;
 				HashCode = 0;
 			}
 
@@ -54,14 +54,14 @@ namespace Windows.UI.Xaml
 				if (key is string s)
 				{
 					Key = s;
-					IsType = false;
-					HashCode = (uint)(s.GetHashCode() ^ IsType.GetHashCode());
+					TypeKey = null;
+					HashCode = (uint)s.GetHashCode();
 				}
 				else if (key is Type t)
 				{
-					Key = t.ToString();
-					IsType = true;
-					HashCode = (uint)(t.GetHashCode() ^ IsType.GetHashCode());
+					Key = t.FullName;
+					TypeKey = t;
+					HashCode = (uint)t.GetHashCode();
 				}
 				else if (key is ResourceKey)
 				{
@@ -72,8 +72,8 @@ namespace Windows.UI.Xaml
 				else
 				{
 					Key = key.ToString();
-					IsType = false;
-					HashCode = (uint)(key.GetHashCode() ^ IsType.GetHashCode());
+					TypeKey = null;
+					HashCode = (uint)key.GetHashCode();
 				}
 			}
 
@@ -84,8 +84,8 @@ namespace Windows.UI.Xaml
 			public ResourceKey(string key)
 			{
 				Key = key;
-				IsType = false;
-				HashCode = (uint)(key.GetHashCode() ^ IsType.GetHashCode());
+				TypeKey = null;
+				HashCode = (uint)key.GetHashCode();
 			}
 
 			/// <summary>
@@ -94,16 +94,16 @@ namespace Windows.UI.Xaml
 			/// <param name="key">A string typed key</param>
 			public ResourceKey(Type key)
 			{
-				Key = key.ToString();
-				IsType = true;
-				HashCode = (uint)(key.GetHashCode() ^ IsType.GetHashCode());
+				Key = key.FullName;
+				TypeKey = key;
+				HashCode = (uint)key.GetHashCode();
 			}
 
 			/// <summary>
 			/// Compares this instance with another ResourceKey instance
 			/// </summary>
-			public bool Equals(ResourceKey other)
-				=> IsType == other.IsType && Key == other.Key;
+			public bool Equals(in ResourceKey other)
+				=> TypeKey == other.TypeKey && Key == other.Key;
 
 
 			public static implicit operator ResourceKey(string key)
@@ -300,7 +300,7 @@ namespace Windows.UI.Xaml
 			{
 				Debug.Assert(_entries != null, "expected entries to be != null");
 
-				uint hashCode = (uint)key.HashCode;
+				uint hashCode = key.HashCode;
 				int i = GetBucket(hashCode);
 				Entry[] entries = _entries;
 				uint length = (uint)entries.Length;

@@ -3,6 +3,8 @@
 
 // MUX reference NavigationViewPage.xaml, commit 426e54f
 
+#pragma warning disable 105 // Disabled until the tree is migrate to WinUI
+
 using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -31,7 +33,7 @@ using Uno.UI.Samples.Controls;
 
 namespace MUXControlsTestApp
 {
-	[Sample("NavigationView", "WinUI")]
+	[Sample("NavigationView", "MUX")]
     public sealed partial class NavigationViewPage : TestPage
 	{
         private int m_newItemIndex = 0;

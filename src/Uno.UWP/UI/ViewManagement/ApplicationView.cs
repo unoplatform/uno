@@ -8,9 +8,9 @@ using Windows.Foundation;
 using Uno.Devices.Sensors;
 using Uno.Foundation.Extensibility;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+
 using Windows.Storage;
 
 namespace Windows.UI.ViewManagement
@@ -26,6 +26,11 @@ namespace Windows.UI.ViewManagement
 		private ApplicationViewTitleBar _titleBar = new ApplicationViewTitleBar();
 		private IReadOnlyList<Rect> _defaultSpanningRects;
 		private IApplicationViewSpanningRects _applicationViewSpanningRects;
+
+		private void Initialize()
+		{
+			_instance = this;
+		}
 
 		[global::Uno.NotImplemented]
 		public int Id => 1;
@@ -54,7 +59,8 @@ namespace Windows.UI.ViewManagement
 			return true;
 		}
 
-		public Foundation.Rect VisibleBounds { get; private set; }
+		private Rect _visibleBounds;
+		public Foundation.Rect VisibleBounds { get => VisibleBoundsOverride ?? _visibleBounds; private set => _visibleBounds = value; }
 
 		/// <summary>
 		/// All other platforms: equivalent to <see cref="VisibleBounds"/>.
@@ -65,10 +71,20 @@ namespace Windows.UI.ViewManagement
 		/// </summary>
 		internal Rect TrueVisibleBounds =>
 #if __ANDROID__
-			_trueVisibleBounds;
+			VisibleBoundsOverride ?? _trueVisibleBounds;
 #else
 			VisibleBounds;
 #endif
+
+		/// <summary>
+		/// If set, overrides the 'real' visible bounds. Used for testing visible bounds-related behavior on devices that have no native
+		/// 'unsafe area'.
+		/// </summary>
+		internal Rect? VisibleBoundsOverride
+		{
+			get;
+			set;
+		}
 
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, object> VisibleBoundsChanged;
 
@@ -127,7 +143,7 @@ namespace Windows.UI.ViewManagement
 			}
 			else if (viewMode == ApplicationViewMode.Spanning)
 			{
-				return (_applicationViewSpanningRects as INativeDualScreenProvider)?.IsDualScreen == true;
+				return (_applicationViewSpanningRects as INativeDualScreenProvider)?.SupportsSpanning == true;
 			}
 
 			return false;
@@ -142,7 +158,7 @@ namespace Windows.UI.ViewManagement
 					return Task.FromResult(true);
 				}
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 				{
 					this.Log().LogWarning(
 						$"Cannot not enter view mode {viewMode}, " +
@@ -179,7 +195,7 @@ namespace Windows.UI.ViewManagement
 			{
 				VisibleBounds = newVisibleBounds;
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Updated visible bounds {VisibleBounds}");
 				}

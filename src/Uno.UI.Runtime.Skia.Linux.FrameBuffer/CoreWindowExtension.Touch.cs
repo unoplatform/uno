@@ -8,7 +8,6 @@
 #nullable enable
 
 using System;
-using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Windows.Devices.Input;
 using Windows.Foundation;
@@ -19,8 +18,7 @@ using Uno.UI.Runtime.Skia.Native;
 using static Uno.UI.Runtime.Skia.Native.LibInput;
 using static Windows.UI.Input.PointerUpdateKind;
 using static Uno.UI.Runtime.Skia.Native.libinput_event_type;
-
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -43,8 +41,8 @@ namespace Uno.UI.Runtime.Skia
 					|| rawEventType == LIBINPUT_EVENT_TOUCH_MOTION)
 				{
 					currentPosition = new Point(
-						x: libinput_event_touch_get_x_transformed(rawTouchEvent, (int)_displayInformation.ScreenWidthInRawPixels),
-						y: libinput_event_touch_get_y_transformed(rawTouchEvent, (int)_displayInformation.ScreenHeightInRawPixels));
+						x: libinput_event_touch_get_x_transformed(rawTouchEvent, (int)(_displayInformation.ScreenWidthInRawPixels / _displayInformation.RawPixelsPerViewPixel)),
+						y: libinput_event_touch_get_y_transformed(rawTouchEvent, (int)(_displayInformation.ScreenHeightInRawPixels /_displayInformation.RawPixelsPerViewPixel)));
 
 					_activePointers[pointerId] = currentPosition;
 				}

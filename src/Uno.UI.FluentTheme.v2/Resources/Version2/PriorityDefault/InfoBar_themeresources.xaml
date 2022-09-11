@@ -1,4 +1,5 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<!-- MUX Reference InfoBar_themeresources.xaml, commit 775568c -->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -56,24 +57,24 @@
         </ResourceDictionary>
 
         <ResourceDictionary x:Key="HighContrast">
-            <SolidColorBrush x:Key="InfoBarErrorSeverityBackgroundBrush" Color="{ThemeResource SystemColorWindowColor}" />
-            <SolidColorBrush x:Key="InfoBarWarningSeverityBackgroundBrush" Color="{ThemeResource SystemColorWindowColor}" />
-            <SolidColorBrush x:Key="InfoBarSuccessSeverityBackgroundBrush" Color="{ThemeResource SystemColorWindowColor}" />
-            <SolidColorBrush x:Key="InfoBarInformationalSeverityBackgroundBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <StaticResource x:Key="InfoBarErrorSeverityBackgroundBrush" ResourceKey="SystemColorWindowColorBrush" />
+            <StaticResource x:Key="InfoBarWarningSeverityBackgroundBrush" ResourceKey="SystemColorWindowColorBrush" />
+            <StaticResource x:Key="InfoBarSuccessSeverityBackgroundBrush" ResourceKey="SystemColorWindowColorBrush" />
+            <StaticResource x:Key="InfoBarInformationalSeverityBackgroundBrush" ResourceKey="SystemColorWindowColorBrush" />
 
-            <StaticResource x:Key="InfoBarErrorSeverityIconBackground" ResourceKey="SystemColorHighlightColor" />
-            <StaticResource x:Key="InfoBarWarningSeverityIconBackground" ResourceKey="SystemColorHighlightColor" />
-            <StaticResource x:Key="InfoBarSuccessSeverityIconBackground" ResourceKey="SystemColorHighlightColor" />
-            <StaticResource x:Key="InfoBarInformationalSeverityIconBackground" ResourceKey="SystemColorHighlightColor" />
+            <StaticResource x:Key="InfoBarErrorSeverityIconBackground" ResourceKey="SystemColorHighlightColorBrush" />
+            <StaticResource x:Key="InfoBarWarningSeverityIconBackground" ResourceKey="SystemColorHighlightColorBrush" />
+            <StaticResource x:Key="InfoBarSuccessSeverityIconBackground" ResourceKey="SystemColorHighlightColorBrush" />
+            <StaticResource x:Key="InfoBarInformationalSeverityIconBackground" ResourceKey="SystemColorHighlightColorBrush" />
 
-            <StaticResource x:Key="InfoBarErrorSeverityIconForeground" ResourceKey="SystemColorHighlightTextColor" />
-            <StaticResource x:Key="InfoBarWarningSeverityIconForeground" ResourceKey="SystemColorHighlightTextColor" />
-            <StaticResource x:Key="InfoBarSuccessSeverityIconForeground" ResourceKey="SystemColorHighlightTextColor" />
-            <StaticResource x:Key="InfoBarInformationalSeverityIconForeground" ResourceKey="SystemColorHighlightTextColor" />
+            <StaticResource x:Key="InfoBarErrorSeverityIconForeground" ResourceKey="SystemColorHighlightTextColorBrush" />
+            <StaticResource x:Key="InfoBarWarningSeverityIconForeground" ResourceKey="SystemColorHighlightTextColorBrush" />
+            <StaticResource x:Key="InfoBarSuccessSeverityIconForeground" ResourceKey="SystemColorHighlightTextColorBrush" />
+            <StaticResource x:Key="InfoBarInformationalSeverityIconForeground" ResourceKey="SystemColorHighlightTextColorBrush" />
 
-            <StaticResource x:Key="InfoBarTitleForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
-            <StaticResource x:Key="InfoBarMessageForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
-            <StaticResource x:Key="InfoBarHyperlinkButtonForeground" ResourceKey="SystemControlHyperlinkTextBrush" />
+            <StaticResource x:Key="InfoBarTitleForeground" ResourceKey="SystemColorWindowTextColorBrush" />
+            <StaticResource x:Key="InfoBarMessageForeground" ResourceKey="SystemColorWindowTextColorBrush" />
+            <StaticResource x:Key="InfoBarHyperlinkButtonForeground" ResourceKey="SystemColorHotlightColorBrush" />
 
             <StaticResource x:Key="InfoBarBorderBrush" ResourceKey="SystemControlTransientBorderBrush" />
             <Thickness x:Key="InfoBarBorderThickness">2</Thickness>

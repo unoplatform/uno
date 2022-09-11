@@ -57,6 +57,16 @@ namespace Windows.ApplicationModel.AppExtensions
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  string AppUserModelId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AppExtension.AppUserModelId is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.Id.get
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.DisplayName.get
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.Description.get
@@ -76,5 +86,6 @@ namespace Windows.ApplicationModel.AppExtensions
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFolder> AppExtension.GetPublicFolderAsync() is not implemented in Uno.");
 		}
 		#endif
+		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtension.AppUserModelId.get
 	}
 }

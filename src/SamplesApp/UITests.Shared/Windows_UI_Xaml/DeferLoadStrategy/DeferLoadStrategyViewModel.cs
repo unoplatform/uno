@@ -8,7 +8,7 @@ using Windows.UI.Xaml;
 
 namespace Uno.UI.Samples.Presentation.SamplePages
 {
-	public class DeferLoadStrategyViewModel : ViewModelBase
+	internal class DeferLoadStrategyViewModel : ViewModelBase
 	{
 		private Visibility _lateVisibility = Visibility.Collapsed;
 

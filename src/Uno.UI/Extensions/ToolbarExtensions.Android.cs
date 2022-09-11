@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Extensions
 {
@@ -29,7 +29,7 @@ namespace Uno.UI.Extensions
 			}
 			catch (Exception exception)
 			{
-				if (toolbar.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				if (toolbar.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 				{
 					toolbar.Log().Warn("Failed to get Toolbar's TitleTextColor.", exception);
 				}

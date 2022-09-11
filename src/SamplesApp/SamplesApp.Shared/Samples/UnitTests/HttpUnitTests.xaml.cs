@@ -6,7 +6,7 @@ using Uno.UI.Samples.Controls;
 
 namespace SamplesApp.Samples.UnitTests
 {
-	[SampleControlInfo("Unit Tests", "Wasm Http Handler")]
+	[Sample("WebAssembly", Name = "Wasm Http Handler")]
 	public sealed partial class HttpUnitTests : Page
 	{
 		public HttpUnitTests()

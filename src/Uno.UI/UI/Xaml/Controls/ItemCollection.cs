@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly IList<object> _inner = new List<object>();
 
-		private IList<object> _itemsSource = null;
+		private IList<object> _itemsSource;
 		private readonly SerialDisposable _itemsSourceCollectionChangeDisposable = new SerialDisposable();
 
 		public event VectorChangedEventHandler<object> VectorChanged;
@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public int Count => _itemsSource == null ? _inner.Count : _itemsSource.Count();
+		public int Count => _itemsSource == null ? _inner.Count : _itemsSource.Count;
 
 		public uint Size => (uint)Count;
 
@@ -197,36 +197,108 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else if (itemsSource is INotifyCollectionChanged existingObservable)
 			{
-				// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
-				// remove the handler.
-				NotifyCollectionChangedEventHandler handler = OnItemsSourceCollectionChanged;
-				_itemsSourceCollectionChangeDisposable.Disposable = Disposable.Create(() =>
-					existingObservable.CollectionChanged -= handler
-				);
-				existingObservable.CollectionChanged += handler;
+				ObserveCollectionChangedInner(existingObservable);
 			}
 			else if (itemsSource is IObservableVector<object> observableVector)
 			{
-				// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
-				// remove the handler.
-				VectorChangedEventHandler<object> handler = OnItemsSourceVectorChanged;
-				_itemsSourceCollectionChangeDisposable.Disposable = Disposable.Create(() =>
-					observableVector.VectorChanged -= handler
-				);
-				observableVector.VectorChanged += handler;
+				ObserveCollectionChangedInner(observableVector);
 			}
 			else if (itemsSource is IObservableVector genericObservableVector)
 			{
-				VectorChangedEventHandler handler = OnItemsSourceVectorChanged;
-				_itemsSourceCollectionChangeDisposable.Disposable = Disposable.Create(() =>
-					genericObservableVector.UntypedVectorChanged -= handler
-				);
-				genericObservableVector.UntypedVectorChanged += handler;
+				ObserveCollectionChangedInner(genericObservableVector);
 			}
 			else
 			{
 				_itemsSourceCollectionChangeDisposable.Disposable = null;
 			}
+		}
+
+		private void ObserveCollectionChangedInner(INotifyCollectionChanged existingObservable)
+		{
+			var thatRef = new WeakReference(this);
+
+			void handler(object s, NotifyCollectionChangedEventArgs e)
+			{
+				// Wrap the registered delegate to avoid creating a strong
+				// reference to this ItemsCollection. The ItemsCollection is holding
+				// a reference to the items source, so it won`t be collected
+				// unless unset.Note that this block is not extracted to a separate
+				// helper to avoid the cost of creating additional delegates.
+
+				if (thatRef.Target is ItemCollection that)
+				{
+					that.OnItemsSourceCollectionChanged(s, e);
+				}
+				else
+				{
+					existingObservable.CollectionChanged -= handler;
+				}
+			}
+
+			// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
+			// remove the handler.
+			_itemsSourceCollectionChangeDisposable.Disposable = Disposable.Create(() =>
+				existingObservable.CollectionChanged -= handler
+			);
+			existingObservable.CollectionChanged += handler;
+		}
+
+		private void ObserveCollectionChangedInner(IObservableVector<object> observableVector)
+		{
+			var thatRef = new WeakReference(this);
+
+			void handler(IObservableVector<object> s, IVectorChangedEventArgs e)
+			{
+				// Wrap the registered delegate to avoid creating a strong
+				// reference to this ItemsCollection.The ItemsCollection is holding
+				// a reference to the items source, so it won`t be collected
+				// unless unset.Note that this block is not extracted to a separate
+				// helper to avoid the cost of creating additional delegates.
+
+				if (thatRef.Target is ItemCollection that)
+				{
+					that.OnItemsSourceVectorChanged(s, e);
+				}
+				else
+				{
+					observableVector.VectorChanged -= handler;
+				}
+			}
+
+			// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
+			// remove the handler.
+			_itemsSourceCollectionChangeDisposable.Disposable = Disposable.Create(() =>
+				observableVector.VectorChanged -= handler
+			);
+			observableVector.VectorChanged += handler;
+		}
+
+		private void ObserveCollectionChangedInner(IObservableVector genericObservableVector)
+		{
+			var thatRef = new WeakReference(this);
+
+			void handler(object s, IVectorChangedEventArgs e)
+			{
+				// Wrap the registered delegate to avoid creating a strong
+				// reference to this ItemsCollection.The ItemsCollection is holding
+				// a reference to the items source, so it won`t be collected
+				// unless unset.Note that this block is not extracted to a separate
+				// helper to avoid the cost of creating additional delegates.
+
+				if (thatRef.Target is ItemCollection that)
+				{
+					that.OnItemsSourceVectorChanged(s, e);
+				}
+				else
+				{
+					genericObservableVector.UntypedVectorChanged -= handler;
+				}
+			}
+
+			_itemsSourceCollectionChangeDisposable.Disposable = Disposable.Create(() =>
+				genericObservableVector.UntypedVectorChanged -= handler
+			);
+			genericObservableVector.UntypedVectorChanged += handler;
 		}
 
 		private void OnItemsSourceVectorChanged(object sender, IVectorChangedEventArgs args)

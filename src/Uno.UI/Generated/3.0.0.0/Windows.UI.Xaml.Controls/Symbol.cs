@@ -2,10 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false || false
-#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-#endif
+	#if false || false || false || false || false || false || false
 	public   enum Symbol 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.Symbol.Previous
@@ -206,5 +203,5 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared field Windows.UI.Xaml.Controls.Symbol.Print
 		// Skipping already declared field Windows.UI.Xaml.Controls.Symbol.XboxOneConsole
 	}
-#endif
+	#endif
 }

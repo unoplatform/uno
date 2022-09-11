@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Uno.Extensions;
+using Uno.Foundation.Runtime.WebAssembly.Helpers;
 
 namespace Uno.Foundation.Interop
 {
@@ -19,7 +19,7 @@ namespace Uno.Foundation.Interop
 		{
 			private readonly string? _jsDisposeMethodName;
 
-			private int _isDisposed = 0;
+			private int _isDisposed;
 
 			/// <summary>
 			/// DO NOT USE, use <see cref="TSInteropMarshaller.Allocate{T}"/> instead.

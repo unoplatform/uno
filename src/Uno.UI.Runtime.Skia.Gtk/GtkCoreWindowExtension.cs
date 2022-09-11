@@ -1,19 +1,25 @@
-﻿using System;
+﻿#nullable enable
+//#define TRACE_NATIVE_POINTER_EVENTS
+
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Gdk;
 using Gtk;
 using Uno.Extensions;
-using Uno.Logging;
 using Uno.UI.Runtime.Skia.GTK.Extensions;
 using Windows.Devices.Input;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
 using static Windows.UI.Input.PointerUpdateKind;
 using Device = Gtk.Device;
 using Exception = System.Exception;
+using Windows.UI.Xaml;
+using Uno.UI.Xaml.Core;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -24,7 +30,7 @@ namespace Uno.UI.Runtime.Skia
 
 		private const int _maxKnownDevices = 63;
 		private const int _knownDeviceScavengeCount = 16;
-		private readonly Dictionary<PointerIdentifier, (Gdk.Device dev, uint ts)> _knownDevices = new Dictionary<PointerIdentifier, (Gdk.Device dev, uint ts)>(_maxKnownDevices + 1);
+		private readonly Dictionary<PointerIdentifier, (Gdk.Device dev, uint ts)> _knownDevices = new(_maxKnownDevices + 1);
 
 		internal const Gdk.EventMask RequestedEvents =
 			Gdk.EventMask.EnterNotifyMask
@@ -45,7 +51,6 @@ namespace Uno.UI.Runtime.Skia
 			set => GtkHost.Window.Window.Cursor = value.ToCursor();
 		}
 
-
 		public GtkCoreWindowExtension(object owner)
 		{
 			_owner = (CoreWindow)owner;
@@ -57,15 +62,22 @@ namespace Uno.UI.Runtime.Skia
 			GtkHost.EventBox.AddEvents((int)RequestedEvents);
 
 			// Use GtkEventBox to fix Wayland titlebar events
-			GtkHost.EventBox.EnterNotifyEvent += OnWindowEnterEvent;
-			GtkHost.EventBox.LeaveNotifyEvent += OnWindowLeaveEvent;
-			GtkHost.EventBox.ButtonPressEvent += OnWindowButtonPressEvent;
-			GtkHost.EventBox.ButtonReleaseEvent += OnWindowButtonReleaseEvent;
-			GtkHost.EventBox.MotionNotifyEvent += OnWindowMotionEvent;
-			GtkHost.EventBox.ScrollEvent += OnWindowScrollEvent;
-			GtkHost.EventBox.TouchEvent += OnWindowTouchEvent;
-			GtkHost.EventBox.ProximityInEvent += OnWindowProximityInEvent;
-			GtkHost.EventBox.ProximityOutEvent += OnWindowProximityOutEvent;
+			// Note: On some devices (e.g. raspberryPI - seems to be devices that are not supporting multi-touch?),
+			//		 touch events are not going through the OnTouchEvent but are instead sent as "emulated" mouse (cf. EventHelper.GetPointerEmulated).
+			//		 * For that kind of devices we are also supporting the touch in other handlers.
+			//		   We don't have to inject Entered and Exited events as they are also simulated by the system.
+			//		 * When a device properly send the touch events through the OnTouchEvent,
+			//		   system does not "emulate the mouse" so this method should not be invoked.
+			//		   That's the purpose of the UnoEventBox.
+			GtkHost.EventBox.EnterNotifyEvent += OnEnterEvent;
+			GtkHost.EventBox.LeaveNotifyEvent += OnLeaveEvent;
+			GtkHost.EventBox.ButtonPressEvent += OnButtonPressEvent;
+			GtkHost.EventBox.ButtonReleaseEvent += OnButtonReleaseEvent;
+			GtkHost.EventBox.MotionNotifyEvent += OnMotionEvent;
+			GtkHost.EventBox.ScrollEvent += OnScrollEvent;
+			GtkHost.EventBox.Touched += OnTouchedEvent; //Note: we don't use the TouchEvent for the reason explained in the UnoEventBox!
+			GtkHost.EventBox.ProximityInEvent += OnProximityInEvent;
+			GtkHost.EventBox.ProximityOutEvent += OnProximityOutEvent;
 
 			InitializeKeyboard();
 		}
@@ -98,13 +110,13 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
-		private void OnWindowEnterEvent(object o, EnterNotifyEventArgs args)
+		private void OnEnterEvent(object o, EnterNotifyEventArgs args)
 		{
 			try
 			{
 				if (AsPointerArgs(args.Event) is { } ptArgs)
 				{
-					_ownerEvents.RaisePointerEntered(ptArgs);
+					RaisePointerEntered(ptArgs);
 				}
 			}
 			catch (Exception e)
@@ -113,19 +125,17 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
-		private void OnWindowLeaveEvent(object o, LeaveNotifyEventArgs args)
+		private void OnLeaveEvent(object o, LeaveNotifyEventArgs args)
 		{
 			try
 			{
-				// The Ungrab mode event is triggered after click 
-				// even when the pointer does not leave the window.
-				// This may need to be removed when we implement
-				// native pointer capture support properly.
+				// The Ungrab mode event is triggered after click even when the pointer does not leave the window.
+				// This may need to be removed when we implement native pointer capture support properly.
 				if (args.Event.Mode != CrossingMode.Ungrab)
-				{
+				{	
 					if (AsPointerArgs(args.Event) is { } ptArgs)
 					{
-						_ownerEvents.RaisePointerExited(ptArgs);
+						RaisePointerExited(ptArgs);
 					}
 				}
 			}
@@ -135,13 +145,13 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
-		private void OnWindowButtonPressEvent(object o, ButtonPressEventArgs args)
+		private void OnButtonPressEvent(object o, ButtonPressEventArgs args)
 		{
 			try
 			{
 				if (AsPointerArgs(args.Event) is { } ptArgs)
 				{
-					_ownerEvents.RaisePointerPressed(ptArgs);
+					RaisePointerPressed(ptArgs);
 				}
 			}
 			catch (Exception e)
@@ -150,13 +160,13 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
-		private void OnWindowButtonReleaseEvent(object o, ButtonReleaseEventArgs args)
+		private void OnButtonReleaseEvent(object o, ButtonReleaseEventArgs args)
 		{
 			try
 			{
 				if (AsPointerArgs(args.Event) is { } ptArgs)
 				{
-					_ownerEvents.RaisePointerReleased(ptArgs);
+					RaisePointerReleased(ptArgs);
 				}
 			}
 			catch (Exception e)
@@ -165,13 +175,13 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
-		private void OnWindowMotionEvent(object o, MotionNotifyEventArgs args) // a.k.a. move
+		private void OnMotionEvent(object o, MotionNotifyEventArgs args) // a.k.a. move
 		{
 			try
 			{
 				if (AsPointerArgs(args.Event) is { } ptArgs)
 				{
-					_ownerEvents.RaisePointerMoved(ptArgs);
+					RaisePointerMoved(ptArgs);
 				}
 			}
 			catch (Exception e)
@@ -180,13 +190,13 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
-		private void OnWindowScrollEvent(object o, ScrollEventArgs args)
+		private void OnScrollEvent(object o, ScrollEventArgs args)
 		{
 			try
 			{
 				if (AsPointerArgs(args.Event) is { } ptArgs)
 				{
-					_ownerEvents.RaisePointerWheelChanged(ptArgs);
+					RaisePointerWheelChanged(ptArgs);
 				}
 			}
 			catch (Exception e)
@@ -195,32 +205,32 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
-		private void OnWindowTouchEvent(object o, TouchEventArgs args)
+		private void OnTouchedEvent(object? o, EventTouch evt)
 		{
 			try
 			{
-				// Note: We DO NOT used the args.Event as it's causing an InvalidCastException as of 2021-03-09
-				if (args.Args.FirstOrDefault() is Gdk.Event evt
-					&& AsPointerArgs(evt) is { } ptArgs)
+				if (AsPointerArgs(evt) is { } ptArgs)
 				{
 					switch (evt.Type)
 					{
 						case EventType.TouchBegin:
-							_ownerEvents.RaisePointerEntered(ptArgs);
-							_ownerEvents.RaisePointerPressed(ptArgs);
+							RaisePointerEntered(ptArgs);
+							RaisePointerPressed(ptArgs);
 							break;
 
 						case EventType.TouchEnd:
-							_ownerEvents.RaisePointerReleased(ptArgs);
-							_ownerEvents.RaisePointerExited(ptArgs);
+							RaisePointerReleased(ptArgs);
+							RaisePointerExited(ptArgs);
+							break;
+
+						case EventType.TouchUpdate:
+							RaisePointerMoved(ptArgs);
 							break;
 
 						case EventType.TouchCancel:
-							_ownerEvents.RaisePointerMoved(ptArgs);
+							RaisePointerCancelled(ptArgs);
 							break;
 					}
-
-					_ownerEvents.RaisePointerMoved(ptArgs);
 				}
 			}
 			catch (Exception e)
@@ -229,13 +239,13 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
-		private void OnWindowProximityOutEvent(object o, ProximityOutEventArgs args)
+		private void OnProximityOutEvent(object o, ProximityOutEventArgs args)
 		{
 			try
 			{
 				if (AsPointerArgs(args.Event) is { } ptArgs)
 				{
-					_ownerEvents.RaisePointerExited(ptArgs);
+					RaisePointerExited(ptArgs);
 				}
 			}
 			catch (Exception e)
@@ -244,13 +254,13 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
-		private void OnWindowProximityInEvent(object o, ProximityInEventArgs args)
+		private void OnProximityInEvent(object o, ProximityInEventArgs args)
 		{
 			try
 			{
 				if (AsPointerArgs(args.Event) is { } ptArgs)
 				{
-					_ownerEvents.RaisePointerEntered(ptArgs);
+					RaisePointerEntered(ptArgs);
 				}
 			}
 			catch (Exception e)
@@ -280,38 +290,48 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
-		private PointerEventArgs AsPointerArgs(Event evt)
+		private PointerEventArgs? AsPointerArgs(EventTouch evt)
+			=> AsPointerArgs(
+				evt.Device, PointerDeviceType.Touch, (uint?)evt.Sequence?.Handle ?? 1u,
+				evt.Type, evt.Time,
+				evt.XRoot, evt.YRoot,
+				evt.X, evt.Y,
+				(ModifierType)evt.State,
+				evt: null);
+
+		private PointerEventArgs? AsPointerArgs(Event evt)
 		{
 			var dev = EventHelper.GetSourceDevice(evt); // We use GetSourceDevice (and not GetDevice) in order to get the TouchScreen device
-			var pointerDevice = ToPointerDevice(dev);
-			var pointerDeviceType = pointerDevice.PointerDeviceType;
-
-			if (pointerDeviceType == PointerDeviceType.Touch)
-			{
-				var type = evt.Type;
-				if (type != EventType.TouchBegin
-					&& type != EventType.TouchUpdate
-					&& type != EventType.TouchEnd
-					&& type != EventType.TouchCancel)
-				{
-					// Touch events are sent twice by the OnWindowTouchEvent and the ButtonPressed/Released and MotionEvent.
-					// As the pointerId (a.k.a sequence) is available only for touch events, we mute events coming from the mouse handlers.
-					return null;
-				}
-			}
-
+			var type = evt.Type;
 			var time = EventHelper.GetTime(evt);
-			EventHelper.GetRootCoords(evt, out var x, out var y);
-			var rawPosition = new Windows.Foundation.Point(x, y);
-			EventHelper.GetCoords(evt, out x, out y);
-			var position = new Windows.Foundation.Point(x, y);
+			EventHelper.GetRootCoords(evt, out var rootX, out var rootY);
+			EventHelper.GetCoords(evt, out var x, out var y);
 			EventHelper.GetState(evt, out var state);
 
-			var pointerId = 1u;
+			return AsPointerArgs(
+				dev, GetDeviceType(dev), 1u,
+				type, time,
+				rootX, rootY,
+				x, y,
+				state,
+				evt);
+		}
+
+		private PointerEventArgs? AsPointerArgs(
+			Gdk.Device dev, PointerDeviceType devType, uint pointerId,
+			EventType evtType, uint time,
+			double rootX, double rootY,
+			double x, double y,
+			ModifierType state,
+			Event? evt)
+		{
+			var pointerDevice = PointerDevice.For(devType);
+			var rawPosition = new Windows.Foundation.Point(rootX, rootY);
+			var position = new Windows.Foundation.Point(x, y);
 			var modifiers = GetKeyModifiers(state);
 			var properties = new PointerPointProperties();
 
-			switch (evt.Type)
+			switch (evtType)
 			{
 				case EventType.TouchBegin:
 					properties.PointerUpdateKind = PointerUpdateKind.LeftButtonPressed;
@@ -322,7 +342,7 @@ namespace Uno.UI.Runtime.Skia
 					properties.PointerUpdateKind = PointerUpdateKind.LeftButtonReleased;
 					break;
 
-				case EventType.ButtonPress when EventHelper.GetButton(evt, out var button):
+				case EventType.ButtonPress when EventHelper.GetButton(evt!, out var button):
 					properties.PointerUpdateKind = button switch
 					{
 						1 => LeftButtonPressed,
@@ -334,7 +354,7 @@ namespace Uno.UI.Runtime.Skia
 					};
 					break;
 
-				case EventType.ButtonRelease when EventHelper.GetButton(evt, out var button):
+				case EventType.ButtonRelease when EventHelper.GetButton(evt!, out var button):
 					properties.PointerUpdateKind = button switch
 					{
 						1 => LeftButtonReleased,
@@ -346,7 +366,7 @@ namespace Uno.UI.Runtime.Skia
 					};
 					break;
 
-				case EventType.Scroll when EventHelper.GetScrollDeltas(evt, out var scrollX, out var scrollY):
+				case EventType.Scroll when EventHelper.GetScrollDeltas(evt!, out var scrollX, out var scrollY):
 					var isHorizontal = scrollY == 0;
 					properties.IsHorizontalMouseWheel = isHorizontal;
 					properties.MouseWheelDelta = (int)(isHorizontal ? scrollX : scrollY);
@@ -361,8 +381,7 @@ namespace Uno.UI.Runtime.Skia
 				// https://gtk-rs.org/docs/gdk/struct.ModifierType.html
 
 				case PointerDeviceType.Touch:
-					properties.IsLeftButtonPressed = evt.Type != EventType.TouchEnd && evt.Type != EventType.TouchCancel;
-					pointerId = ((uint?)EventHelper.GetEventSequence(evt)?.Handle) ?? 0u;
+					properties.IsLeftButtonPressed = evtType is not EventType.TouchEnd and not EventType.TouchCancel;
 					break;
 
 				case PointerDeviceType.Mouse:
@@ -379,13 +398,23 @@ namespace Uno.UI.Runtime.Skia
 					// We accept it as a known limitation that with uno the flag is set as soon as the barrel is pressed,
 					// not matter is the pen was already in contact with the screen or not.
 					properties.IsRightButtonPressed = properties.IsBarrelButtonPressed;
-					properties.IsEraser = dev.Source == InputSource.Eraser;
-					if (EventHelper.GetAxis(evt, AxisUse.Pressure, out var pressure))
+					properties.IsEraser = dev.Source is InputSource.Eraser;
+					if (EventHelper.GetAxis(evt!, AxisUse.Pressure, out var pressure))
 					{
 						properties.Pressure = (float)Math.Min(1.0, pressure);
 					}
+					if (EventHelper.GetAxis(evt!, AxisUse.Xtilt, out var xTilt))
+					{
+						properties.XTilt = (float)xTilt;
+					}
+					if (EventHelper.GetAxis(evt!, AxisUse.Ytilt, out var yTilt))
+					{
+						properties.YTilt = (float)yTilt;
+					}
 					break;
 			}
+
+			properties.IsInRange = true;
 
 			var pointerPoint = new Windows.UI.Input.PointerPoint(
 				frameId: time,
@@ -423,7 +452,7 @@ namespace Uno.UI.Runtime.Skia
 			return modifiers;
 		}
 
-		private static PointerDevice ToPointerDevice(Gdk.Device sourceDevice)
+		private static PointerDeviceType GetDeviceType(Gdk.Device sourceDevice)
 		{
 			switch (sourceDevice.Source)
 			{
@@ -433,18 +462,88 @@ namespace Uno.UI.Runtime.Skia
 				case InputSource.Eraser:
 				case InputSource.TabletPad: // the device is a "pad", a collection of buttons, rings and strips found in drawing tablets.
 				case InputSource.Cursor: // the device is a graphics tablet “puck” or similar device.
-					return PointerDevice.For(PointerDeviceType.Pen);
+					return PointerDeviceType.Pen;
 
 				case InputSource.Touchscreen:
-					return PointerDevice.For(PointerDeviceType.Touch);
+					return PointerDeviceType.Touch;
 
 				case InputSource.Mouse:
 				default:
-					return PointerDevice.For(PointerDeviceType.Mouse);
+					return PointerDeviceType.Mouse;
 			}
 		}
 
 		private static bool IsPressed(ModifierType state, ModifierType mask, PointerUpdateKind update, PointerUpdateKind pressed, PointerUpdateKind released)
 			=> update == pressed || (state.HasFlag(mask) && update != released);
+
+
+#if TRACE_NATIVE_POINTER_EVENTS
+		private void RaisePointerEntered(PointerEventArgs ptArgs, [CallerMemberName] string caller = null)
+		{
+			Trace($"[Entered] ({caller}) {ptArgs}");
+			_ownerEvents.RaisePointerEntered(ptArgs);
+		}
+
+		private void RaisePointerExited(PointerEventArgs ptArgs, [CallerMemberName] string caller = null)
+		{
+			Trace($"[Exited] ({caller}) {ptArgs}");
+			_ownerEvents.RaisePointerExited(ptArgs);
+		}
+
+		private void RaisePointerPressed(PointerEventArgs ptArgs, [CallerMemberName] string caller = null)
+		{
+			Trace($"[Pressed] ({caller}) {ptArgs}");
+			_ownerEvents.RaisePointerPressed(ptArgs);
+		}
+
+		private void RaisePointerReleased(PointerEventArgs ptArgs, [CallerMemberName] string caller = null)
+		{
+			Trace($"[Released] ({caller}) {ptArgs}");
+			_ownerEvents.RaisePointerReleased(ptArgs);
+		}
+
+		private void RaisePointerMoved(PointerEventArgs ptArgs, [CallerMemberName] string caller = null)
+		{
+			Trace($"[Moved] ({caller}) {ptArgs}");
+			_ownerEvents.RaisePointerMoved(ptArgs);
+		}
+
+		private void RaisePointerCancelled(PointerEventArgs ptArgs, [CallerMemberName] string caller = null)
+		{
+			Trace($"[Cancelled] ({caller}) {ptArgs}");
+			_ownerEvents.RaisePointerCancelled(ptArgs);
+		}
+
+		private void RaisePointerWheelChanged(PointerEventArgs ptArgs, [CallerMemberName] string caller = null)
+		{
+			Trace($"[Wheel] ({caller}) {ptArgs}");
+			_ownerEvents.RaisePointerWheelChanged(ptArgs);
+		}
+
+		private void Trace(string text)
+			=> Console.WriteLine(text);
+
+#else
+		private void RaisePointerEntered(PointerEventArgs ptArgs)
+			=> _ownerEvents.RaisePointerEntered(ptArgs);
+
+		private void RaisePointerExited(PointerEventArgs ptArgs)
+			=> _ownerEvents.RaisePointerExited(ptArgs);
+
+		private void RaisePointerPressed(PointerEventArgs ptArgs)
+			=> _ownerEvents.RaisePointerPressed(ptArgs);
+
+		private void RaisePointerReleased(PointerEventArgs ptArgs)
+			=> _ownerEvents.RaisePointerReleased(ptArgs);
+
+		private void RaisePointerMoved(PointerEventArgs ptArgs)
+			=> _ownerEvents.RaisePointerMoved(ptArgs);
+
+		private void RaisePointerCancelled(PointerEventArgs ptArgs)
+			=> _ownerEvents.RaisePointerCancelled(ptArgs);
+
+		private void RaisePointerWheelChanged(PointerEventArgs ptArgs)
+			=> _ownerEvents.RaisePointerWheelChanged(ptArgs);
+#endif
 	}
 }

@@ -243,6 +243,48 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentActivationResult> RequestActivationAsync( global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentActivationKind activationKind)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ConversationalAgentActivationResult> ConversationalAgentSession.RequestActivationAsync(ConversationalAgentActivationKind activationKind) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentActivationResult RequestActivation( global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentActivationKind activationKind)
+		{
+			throw new global::System.NotImplementedException("The member ConversationalAgentActivationResult ConversationalAgentSession.RequestActivation(ConversationalAgentActivationKind activationKind) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Foundation.IAsyncAction SetSupportLockScreenActivationAsync( bool lockScreenActivationSupported)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction ConversationalAgentSession.SetSupportLockScreenActivationAsync(bool lockScreenActivationSupported) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  void SetSupportLockScreenActivation( bool lockScreenActivationSupported)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession", "void ConversationalAgentSession.SetSupportLockScreenActivation(bool lockScreenActivationSupported)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentVoiceActivationPrerequisiteKind> GetMissingPrerequisites()
+		{
+			throw new global::System.NotImplementedException("The member IReadOnlyList<ConversationalAgentVoiceActivationPrerequisiteKind> ConversationalAgentSession.GetMissingPrerequisites() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentVoiceActivationPrerequisiteKind>> GetMissingPrerequisitesAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<ConversationalAgentVoiceActivationPrerequisiteKind>> ConversationalAgentSession.GetMissingPrerequisitesAsync() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession", "void ConversationalAgentSession.Dispose()");

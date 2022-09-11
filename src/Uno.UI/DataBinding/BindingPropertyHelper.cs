@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Globalization;
 using System.Reflection;
 using Uno.UI.DataBinding;
@@ -15,7 +15,7 @@ using Uno;
 using Windows.UI.Xaml;
 using System.Collections;
 using Uno.Conversion;
-using Microsoft.Extensions.Logging;
+
 using Windows.UI.Xaml.Data;
 using System.Dynamic;
 using System.Runtime.CompilerServices;
@@ -40,7 +40,7 @@ namespace Uno.UI.DataBinding
 
     internal static partial class BindingPropertyHelper
 	{
-		private static readonly ILogger _log = typeof(BindingPropertyHelper).Log();
+		private static readonly Logger _log = typeof(BindingPropertyHelper).Log();
 
 		//
 		// Warning: These dictionaries are here in place of memoized Funcs for performance
@@ -60,6 +60,17 @@ namespace Uno.UI.DataBinding
 		{
 			MethodInvokerBuilder = DefaultInvokerBuilder;
 			Conversion = new DefaultConversionExtensions();
+		}
+
+		internal static void ClearCaches()
+		{
+			_getValueGetter.Clear();
+			_getValueSetter.Clear();
+			_getPrecedenceSpecificValueGetter.Clear();
+			_getSubstituteValueGetter.Clear();
+			_getValueUnsetter.Clear();
+			_isEvent.Clear();
+			_getPropertyType.Clear();
 		}
 
 		private static Func<object, object?[], object?> DefaultInvokerBuilder(MethodInfo method)
@@ -275,7 +286,7 @@ namespace Uno.UI.DataBinding
 				using (Performance.Measure("InternalGetPropertyType.Reflection"))
 #endif
 				{
-					if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						_log.Debug($"GetPropertyType({type}, {property}) [Reflection]");
 					}
@@ -322,7 +333,7 @@ namespace Uno.UI.DataBinding
 						return attachedPropertyGetter.ReturnType;
 					}
 
-					if (type.IsPrimitive && property == "Value")
+					if (type.IsValueType && property == "Value")
 					{
 						// This case is trying assuming that Value for a primitive is used for the case
 						// of a Nullable primitive.
@@ -534,7 +545,7 @@ namespace Uno.UI.DataBinding
 				using (Performance.Measure("InternalGetValueGetter.Reflection"))
 #endif
 				{
-					if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						_log.Debug($"GetValueGetter({type}, {property}) [Reflection]");
 					}
@@ -610,7 +621,7 @@ namespace Uno.UI.DataBinding
 			using (Performance.Measure("InternalGetValueGetter.Reflection2"))
 #endif
 			{
-				if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					_log.Debug($"GetValueGetter({type}, {property}) [Reflection]");
 				}
@@ -713,7 +724,7 @@ namespace Uno.UI.DataBinding
 				}
 
 				if (
-					type.IsPrimitive
+					type.IsValueType
 					&& property == "Value"
 				)
 				{
@@ -793,7 +804,7 @@ namespace Uno.UI.DataBinding
 				using (Performance.Measure("InternalGetValueSetter.Reflection"))
 #endif
 				{
-					if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						_log.Debug($"GetValueSetter({type}, {property}) [Reflection]");
 					}
@@ -868,7 +879,7 @@ namespace Uno.UI.DataBinding
 			using (Performance.Measure("InternalGetValueSetter.Reflection"))
 #endif
 			{
-				if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					_log.Debug($"GetValueSetter({type}, {property}) [Reflection]");
 				}

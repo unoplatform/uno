@@ -20,7 +20,8 @@ using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Automation.Peers;
 using Uno;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 
 #if XAMARIN_IOS
 using UIKit;
@@ -35,6 +36,7 @@ namespace Windows.UI.Xaml.Controls
 		private string _inlinesText; // Text derived from the content of Inlines
 		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
 
+		private bool _skipInlinesChangedTextSetter;
 
 #if !UNO_REFERENCE_API
 		public TextBlock()
@@ -86,12 +88,26 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal void InvalidateInlines() => OnInlinesChanged();
-
-		private void OnInlinesChanged()
+		internal void InvalidateInlines(bool updateText)
 		{
-			Text = _inlinesText = string.Concat(Inlines.Select(InlineExtensions.GetText));
-			UpdateHyperlinks();
+			if (updateText)
+			{
+				if (Inlines.Count == 1 && Inlines[0] is Run run)
+				{
+					_inlinesText = run.Text;
+				}
+				else
+				{
+					_inlinesText = string.Concat(Inlines.Select(InlineExtensions.GetText));
+				}
+
+				if (!_skipInlinesChangedTextSetter)
+				{
+					Text = _inlinesText;
+				}
+
+				UpdateHyperlinks();
+			}
 
 			OnInlinesChangedPartial();
 			InvalidateTextBlock();
@@ -423,10 +439,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_foregroundChanged.Disposable = null;
+
 			if (Foreground?.SupportsAssignAndObserveBrush ?? false)
 			{
-				_foregroundChanged.Disposable =
-					Brush.AssignAndObserveBrush(Foreground, c => refreshForeground(), refreshForeground);
+				_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(Foreground, c => refreshForeground(), refreshForeground);
 			}
 
 			refreshForeground();
@@ -439,7 +455,7 @@ namespace Windows.UI.Xaml.Controls
 		#region IsTextSelectionEnabled Dependency Property
 
 #if !__WASM__
-		[NotImplemented]
+		[NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
 		public bool IsTextSelectionEnabled
 		{
@@ -448,7 +464,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 #if !__WASM__
-		[NotImplemented]
+		[NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
 		public static DependencyProperty IsTextSelectionEnabledProperty { get; } =
 			DependencyProperty.Register(
@@ -576,7 +592,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(PaddingProperty, value);
 		}
 
-		public static DependencyProperty PaddingProperty =
+		public static DependencyProperty PaddingProperty { get; } =
 			DependencyProperty.Register(
 				"Padding",
 				typeof(Thickness),
@@ -603,7 +619,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(CharacterSpacingProperty, value);
 		}
 
-		public static DependencyProperty CharacterSpacingProperty =
+		public static DependencyProperty CharacterSpacingProperty { get; } =
 			DependencyProperty.Register(
 				"CharacterSpacing",
 				typeof(int),
@@ -633,10 +649,10 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(TextDecorationsProperty, value);
 		}
 
-		public static DependencyProperty TextDecorationsProperty =
+		public static DependencyProperty TextDecorationsProperty { get; } =
 			DependencyProperty.Register(
 				"TextDecorations",
-				typeof(int),
+				typeof(uint),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextDecorations.None,
@@ -700,15 +716,20 @@ namespace Windows.UI.Xaml.Controls
 
 			if (ReadLocalValue(TextProperty) is UnsetValue)
 			{
+				_skipInlinesChangedTextSetter = true;
 				Inlines.Clear();
+				_skipInlinesChangedTextSetter = false;
 				ClearTextPartial();
 			}
 			else if (text != _inlinesText)
 			{
 				// Inlines must be updated
+				_skipInlinesChangedTextSetter = true;
 				Inlines.Clear();
 				ClearTextPartial();
+				_skipInlinesChangedTextSetter = true;
 				Inlines.Add(new Run { Text = text });
+				_skipInlinesChangedTextSetter = false;
 			}
 		}
 
@@ -909,6 +930,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool HasHyperlink => _hyperlinks.Any();
 
+#if !__SKIA__
 		private Hyperlink FindHyperlinkAt(Point point)
 		{
 			var characterIndex = GetCharacterIndexAtPoint(point);
@@ -918,6 +940,7 @@ namespace Windows.UI.Xaml.Controls
 
 			return hyperlink;
 		}
+#endif
 #endif
 
 		#endregion
@@ -938,14 +961,16 @@ namespace Windows.UI.Xaml.Controls
 		private protected override double GetActualWidth() => DesiredSize.Width;
 		private protected override double GetActualHeight() => DesiredSize.Height;
 
-		internal override void UpdateThemeBindings()
+		internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
 		{
-			base.UpdateThemeBindings();
+			base.UpdateThemeBindings(updateReason);
 
 			SetDefaultForeground(ForegroundProperty);
 		}
 
 		internal override bool CanHaveChildren() => true;
+
+		public new bool Focus(FocusState value) => base.Focus(value);
 
 		internal override bool IsFocusable =>
 			/*IsActive() &&*/ //TODO Uno: No concept of IsActive in Uno yet.

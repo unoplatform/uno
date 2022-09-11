@@ -2,10 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Windows.UI.Input;
 using Windows.UI.Xaml.Controls;
 using UIKit;
 using WebKit;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.UI.Input;
+using Windows.Devices.Input;
+#endif
 
 namespace Windows.UI.Xaml
 {
@@ -51,9 +57,11 @@ namespace Windows.UI.Xaml
 					manager = listView.NativePanel.TouchesManager; // We only propagates the touches manager of the nested native ListView/UICollectionView
 					return true;
 
+#if !__MACCATALYST__
 				case UIWebView uiWebView:
 					manager = _scrollViews.GetValue(uiWebView.ScrollView, sv => new ScrollViewTouchesManager((UIScrollView)sv));
 					return true;
+#endif
 
 				case WKWebView wkWebView:
 					manager = _scrollViews.GetValue(wkWebView.ScrollView, sv => new ScrollViewTouchesManager((UIScrollView)sv));

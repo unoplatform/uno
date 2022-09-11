@@ -3,9 +3,10 @@
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls"
 					xmlns:mux="using:Microsoft.UI.Xaml.Controls"
+					xmlns:xamarin="http://uno.ui/xamarin"
 					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-					mc:Ignorable="d">
+					mc:Ignorable="d xamarin">
 	<Style x:Key="BasicListViewContainerStyle"
 		   TargetType="ListViewItem">
 		<Setter Property="Template">
@@ -29,7 +30,8 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="ListViewItem">
 					<ContentPresenter Content="{TemplateBinding Content}"
-									  ContentTemplate="{TemplateBinding ContentTemplate}" />
+									  ContentTemplate="{TemplateBinding ContentTemplate}"
+									  xamarin:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
@@ -82,6 +84,9 @@
 	<ItemsPanelTemplate x:Key="MeasureCountCarouselPanel">
 		<local:MeasureCountCarouselPanel />
 	</ItemsPanelTemplate>
+	<ItemsPanelTemplate x:Key="NonVirtualizingItemsPanel">
+		<StackPanel />
+	</ItemsPanelTemplate>
 	<Style x:Key="ListViewContainerMarginStyle"
 		   TargetType="ListViewItem"
 		   BasedOn="{StaticResource BasicListViewContainerStyle}">
@@ -102,6 +107,11 @@
 		<local:CounterGrid>
 			<TextBlock Text="{Binding}" />
 		</local:CounterGrid>
+	</DataTemplate>
+	<DataTemplate x:Key="ReuseCounterItemTemplate">
+		<local:ReuseCountGrid>
+			<TextBlock Text="{Binding}" />
+		</local:ReuseCountGrid>
 	</DataTemplate>
 	<DataTemplate x:Key="SelectableItemTemplateA">
 		<TextBlock x:Name="TextBlockInTemplate"
@@ -197,11 +207,416 @@
 					Background="DodgerBlue" />
 		</local:CounterGrid>
 	</DataTemplate>
+	<DataTemplate x:Key="NV286_Template">
+		<Border x:Name="ItemBorder"
+				Width="130"
+				BorderBrush="Brown"
+				BorderThickness="1"
+				CornerRadius="4">
+			<TextBlock Text="{Binding}"
+					   HorizontalAlignment="Center" />
+		</Border>
+	</DataTemplate>
 
 	<DataTemplate x:Key="When_Available_Breadth_Changes_Template">
 		<Border x:Name="ContainerBorder">
-			<TextBlock x:Name="ContentTextBlock" Text="{Binding}"
+			<TextBlock x:Name="ContentTextBlock"
+					   Text="{Binding}"
 					   TextWrapping="Wrap" />
 		</Border>
 	</DataTemplate>
+
+	<DataTemplate x:Name="RedSelectableTemplate">
+		<Border Background="Red"
+				BorderBrush="DarkRed"
+				BorderThickness="2"
+				CornerRadius="5"
+				Height="95"
+				MinWidth="100">
+			<local:CounterGrid>
+				<TextBlock Text="{Binding DisplayString}" />
+			</local:CounterGrid>
+		</Border>
+	</DataTemplate>
+	<DataTemplate x:Name="GreenSelectableTemplate">
+		<Border Background="Green"
+				BorderBrush="DarkGreen"
+				BorderThickness="2"
+				CornerRadius="5"
+				Height="125"
+				MinWidth="100">
+			<local:CounterGrid>
+				<TextBlock Text="{Binding DisplayString}" />
+			</local:CounterGrid>
+		</Border>
+	</DataTemplate>
+	<DataTemplate x:Name="BeigeSelectableTemplate">
+		<Border Background="Beige"
+				BorderBrush="SaddleBrown"
+				BorderThickness="2"
+				CornerRadius="5"
+				Height="54"
+				MinWidth="100">
+			<local:CounterGrid>
+				<TextBlock Text="{Binding DisplayString}" />
+			</local:CounterGrid>
+		</Border>
+	</DataTemplate>
+
+	<DataTemplate x:Key="SelectableBoundTemplateA">
+		<Border BorderBrush="Green"
+				BorderThickness="2"
+				CornerRadius="5">
+			<TextBlock Text="{Binding}" />
+		</Border>
+	</DataTemplate>
+	<DataTemplate x:Key="SelectableBoundTemplateB">
+		<Border BorderBrush="Red"
+				BorderThickness="2"
+				CornerRadius="5">
+			<TextBlock Text="{Binding}" />
+		</Border>
+	</DataTemplate>
+
+	<DataTemplate x:Key="BoundHeightItemTemplate">
+		<Border x:Name="ItemBorder"
+				MinWidth="130"
+				Height="{Binding ItemHeight}"
+				BorderBrush="Brown"
+				BorderThickness="1"
+				CornerRadius="4">
+			<TextBlock x:Name="DisplayStringTextBlock"
+					   Text="{Binding DisplayString}"
+					   HorizontalAlignment="Center" />
+		</Border>
+	</DataTemplate>
+
+	<Style x:Key="MyGridViewItemStyle"
+               TargetType="GridViewItem">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="TabNavigation" Value="Local" />
+		<Setter Property="IsHoldingEnabled" Value="True" />
+		<Setter Property="HorizontalContentAlignment" Value="Center" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="MinWidth" Value="0" />
+		<Setter Property="MinHeight" Value="0" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="GridViewItem">
+					<Grid x:Name="ContentBorder">
+						<Rectangle x:Name="BorderRectangle"
+                                       Width="100"
+                                       Height="100"
+                                       IsHitTestVisible="False"
+                                       Fill="Green"
+                                       Stroke="Red"
+                                       StrokeThickness="2" />
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- Material TextBox -->
+
+	<x:String x:Key="ClearGlyphPathData">M10.661012,7.5689991L7.5990001,10.650999 12.939089,15.997999 7.5990001,21.336999 10.661012,24.405 16.007082,19.065 21.369997,24.405 24.430058,21.336999 24.429081,21.336 19.088991,15.998999 24.429081,10.662001 21.345095,7.5819996 16.007082,12.919001z M15.997072,0C24.828983,0 31.994999,7.1770013 31.994999,15.999998 31.994999,24.826997 24.828007,31.999999 15.997072,31.999999 7.1569835,31.999999 1.5270052E-07,24.826997 0,15.999998 1.5270052E-07,7.1799997 7.1569835,0 15.997072,0z</x:String>
+
+	<Style x:Name="DeleteButtonStyle"
+		   TargetType="Button">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Grid x:Name="ButtonLayoutGrid"
+						  Background="Transparent">
+
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="CommonStates">
+								<VisualState x:Name="Normal" />
+								<VisualState x:Name="PointerOver" />
+								<VisualState x:Name="Pressed" />
+								<VisualState x:Name="Disabled">
+									<VisualState.Setters>
+										<Setter Target="ButtonLayoutGrid.Opacity"
+												Value="0" />
+									</VisualState.Setters>
+								</VisualState>
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+
+						<Path x:Name="GlyphElement"
+							  Data="{StaticResource ClearGlyphPathData}"
+							  Fill="{StaticResource TextBoxIconColorBrush}"
+							  VerticalAlignment="Center"
+							  HorizontalAlignment="Center"
+							  Stretch="Uniform"
+							  Width="16"
+							  Height="16"
+							  AutomationProperties.AccessibilityView="Raw" />
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="MaterialOutlinedTextBoxStyle"
+		   TargetType="TextBox">
+		<Setter Property="Background"
+				Value="Transparent" />
+		<Setter Property="Foreground"
+				Value="#000000" />
+		<Setter Property="PlaceholderForeground"
+				Value="#DEFFFFFF" />
+		<Setter Property="BorderThickness"
+				Value="1" />
+		<Setter Property="BorderBrush"
+				Value="#DEFFFFFF" />
+		<Setter Property="CornerRadius"
+				Value="4" />
+
+		<Setter Property="HorizontalContentAlignment"
+				Value="Left" />
+		<Setter Property="VerticalContentAlignment"
+				Value="Center" />
+		<Setter Property="Padding"
+				Value="12,16" />
+		<Setter Property="MinHeight"
+				Value="50" />
+
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="TextBox">
+					<Grid x:Name="Root"
+						  Background="{TemplateBinding Background}"
+						  BorderBrush="{TemplateBinding BorderBrush}"
+						  BorderThickness="{TemplateBinding BorderThickness}"
+						  CornerRadius="{TemplateBinding CornerRadius}"
+						  Padding="{TemplateBinding Padding}">
+
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="CommonStates">
+								<VisualState x:Name="Normal" />
+								<VisualState x:Name="PointerOver" />
+								<VisualState x:Name="Pressed" />
+
+								<VisualState x:Name="Disabled">
+									<VisualState.Setters>
+										<Setter Target="Root.BorderBrush"
+												Value="#000000" />
+
+										<!-- Important: There is a Test validating this value -->
+										<Setter Target="ContentElement.Foreground"
+												Value="#0000FF" />
+										<!-- In this case the opacity is not applied to the brush -->
+										<Setter Target="ContentElement.Opacity"
+												Value="0.38" />
+										<Setter Target="PlaceholderElement.Foreground"
+												Value="#000000" />
+									</VisualState.Setters>
+								</VisualState>
+
+								<VisualState x:Name="Focused">
+									<VisualState.Setters>
+										<Setter Target="Root.BorderBrush"
+												Value="#5B4CF5" />
+										<Setter Target="PlaceholderElement.Foreground"
+												Value="#5B4CF5" />
+									</VisualState.Setters>
+								</VisualState>
+							</VisualStateGroup>
+							<VisualStateGroup x:Name="ButtonStates">
+								<VisualState x:Name="ButtonVisible">
+									<VisualState.Setters>
+										<Setter Target="DeleteButton.Visibility"
+												Value="Visible" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="ButtonCollapsed" />
+							</VisualStateGroup>
+							<VisualStateGroup x:Name="HeaderStates">
+								<VisualState x:Name="NotEmpty">
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="PlaceholderElement_CompositeTransform"
+														 Storyboard.TargetProperty="TranslateY"
+														 Duration="0:0:0.25"
+														 To="-11" >
+											<DoubleAnimation.EasingFunction>
+												<CubicEase EasingMode="EaseInOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+
+										<!-- ContentElement TranslateY value changing depending if there is a PlaceholderText or not -->
+										<DoubleAnimation Storyboard.TargetName="ContentElement_CompositeTransform"
+														 Storyboard.TargetProperty="TranslateY"
+														 Duration="0:0:0.25">
+											<DoubleAnimation.EasingFunction>
+												<CubicEase EasingMode="EaseInOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+
+										<DoubleAnimation Storyboard.TargetName="PlaceholderElement_CompositeTransform"
+														 Storyboard.TargetProperty="ScaleX"
+														 Duration="0:0:0.25"
+														 To="0.7">
+											<DoubleAnimation.EasingFunction>
+												<CubicEase EasingMode="EaseInOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+
+										<DoubleAnimation Storyboard.TargetName="PlaceholderElement_CompositeTransform"
+														 Storyboard.TargetProperty="ScaleY"
+														 Duration="0:0:0.25"
+														 To="0.7" >
+											<DoubleAnimation.EasingFunction>
+												<CubicEase EasingMode="EaseInOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+									</Storyboard>
+								</VisualState>
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+
+						<ContentPresenter x:Name="IconPresenter"
+										  HorizontalAlignment="Center"
+										  MaxHeight="34"
+										  MaxWidth="34"
+										  MinWidth="25"
+										  Margin="0,0,8,0"
+										  VerticalAlignment="Bottom"
+										  Visibility="Visible" />
+
+						<ScrollViewer x:Name="ContentElement"
+									  Grid.Column="1"
+									  HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+									  HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
+									  IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+									  IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
+									  IsTabStop="False"
+									  IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
+									  VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
+									  VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+									  VerticalAlignment="Bottom"
+									  ZoomMode="Disabled"
+									  AutomationProperties.AccessibilityView="Raw">
+							<ScrollViewer.RenderTransform>
+								<CompositeTransform x:Name="ContentElement_CompositeTransform" />
+							</ScrollViewer.RenderTransform>
+						</ScrollViewer>
+
+						<TextBlock x:Name="PlaceholderElement"
+								   Grid.Column="1"
+								   Foreground="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}}"
+								   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+								   IsHitTestVisible="False"
+								   RenderTransformOrigin="0,0.5"
+								   Text="{TemplateBinding PlaceholderText}"
+								   TextAlignment="{TemplateBinding TextAlignment}"
+								   TextWrapping="{TemplateBinding TextWrapping}"
+								   VerticalAlignment="Top">
+							<TextBlock.RenderTransform>
+								<CompositeTransform x:Name="PlaceholderElement_CompositeTransform" />
+							</TextBlock.RenderTransform>
+						</TextBlock>
+
+						<Button x:Name="DeleteButton"
+								Grid.Column="2"
+								Foreground="{TemplateBinding BorderBrush}"
+								IsTabStop="False"
+								Style="{StaticResource DeleteButtonStyle}"
+								VerticalAlignment="Bottom"
+								Visibility="Collapsed"
+								AutomationProperties.AccessibilityView="Raw" />
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<Style x:Key="FocusableListViewItemStyle" TargetType="ListViewItem">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ListViewItem">
+					<Border
+                          x:Name="Border"
+                          Margin="{TemplateBinding Margin}"
+                          Background="{TemplateBinding Background}"
+                          BorderBrush="{TemplateBinding BorderBrush}"
+                          BorderThickness="{TemplateBinding BorderThickness}"
+                          CornerRadius="{TemplateBinding CornerRadius}">
+						<ContentPresenter
+                              x:Name="ContentPresenter"
+                              Padding="{TemplateBinding Padding}"
+                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                              Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                              ContentTransitions="{TemplateBinding ContentTransitions}"
+                              FontFamily="{TemplateBinding FontFamily}"
+                              FontSize="{TemplateBinding FontSize}"
+                              FontWeight="{TemplateBinding FontWeight}"
+                              Foreground="{TemplateBinding Foreground}" />
+
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="CommonStates">
+								<VisualState x:Name="Normal" />
+								<VisualState x:Name="Disabled">
+									<VisualState.Setters>
+										<Setter Target="Border.Opacity" Value="0.56" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="PointerOver">
+									<VisualState.Setters>
+										<Setter Target="ContentPresenter.Foreground" Value="#00809B" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="PointerOverSelected">
+									<VisualState.Setters>
+										<Setter Target="Border.Background" Value="#E4F1F4" />
+										<Setter Target="ContentPresenter.Foreground" Value="#00809B" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="PointerOverPressed">
+									<VisualState.Setters>
+										<Setter Target="Border.Background" Value="#E4F1F4" />
+										<Setter Target="ContentPresenter.Foreground" Value="#00809B" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="Pressed">
+									<VisualState.Setters>
+										<Setter Target="Border.Background" Value="#E4F1F4" />
+										<Setter Target="ContentPresenter.Foreground" Value="#00809B" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="PressedSelected">
+									<VisualState.Setters>
+										<Setter Target="Border.Background" Value="#E4F1F4" />
+										<Setter Target="ContentPresenter.Foreground" Value="#00809B" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="Selected">
+									<VisualState.Setters>
+										<Setter Target="Border.Background" Value="#E4F1F4" />
+										<Setter Target="ContentPresenter.Foreground" Value="#00809B" />
+									</VisualState.Setters>
+								</VisualState>
+							</VisualStateGroup>
+							<VisualStateGroup x:Name="FocusStates">
+								<VisualState x:Name="Focused">
+									<VisualState.Setters>
+										<Setter Target="ContentPresenter.Foreground" Value="#00809B" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="Unfocused" />
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
 </ResourceDictionary>

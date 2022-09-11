@@ -31,7 +31,20 @@ namespace Windows.UI.Xaml
 				currentSuperview?.InsertSubview(newContent, currentPosition);
 				return newContent;
 #elif __MACOS__
-				currentSuperview.AddSubview(newContent, NSWindowOrderingMode.Above, currentSuperview.Subviews[Math.Max(0, currentPosition-1)]);
+				if (currentSuperview is {})
+				{
+					if (currentSuperview.Subviews.Length > 0)
+					{
+						var position = Math.Max(0, currentPosition - 1);
+						currentSuperview.AddSubview(newContent,
+													NSWindowOrderingMode.Above,
+													currentSuperview.Subviews[position]);
+					}
+					else
+					{
+						currentSuperview.AddSubview(newContent);
+					}
+				}
 				return newContent;
 #endif
 			}

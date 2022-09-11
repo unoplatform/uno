@@ -9,6 +9,16 @@ namespace Windows.Media.Devices
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Media.Devices.CameraOcclusionInfo CameraOcclusionInfo
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CameraOcclusionInfo VideoDeviceController.CameraOcclusionInfo is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Devices.CaptureUse PrimaryUse
 		{
 			get
@@ -18,26 +28,6 @@ namespace Windows.Media.Devices
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.VideoDeviceController", "CaptureUse VideoDeviceController.PrimaryUse");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Devices.LowLagPhotoControl LowLagPhoto
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member LowLagPhotoControl VideoDeviceController.LowLagPhoto is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Devices.FlashControl FlashControl
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FlashControl VideoDeviceController.FlashControl is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -53,21 +43,21 @@ namespace Windows.Media.Devices
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Devices.RegionsOfInterestControl RegionsOfInterestControl
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member RegionsOfInterestControl VideoDeviceController.RegionsOfInterestControl is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Devices.IsoSpeedControl IsoSpeedControl
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member IsoSpeedControl VideoDeviceController.IsoSpeedControl is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Media.Devices.LowLagPhotoControl LowLagPhoto
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member LowLagPhotoControl VideoDeviceController.LowLagPhoto is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -98,6 +88,26 @@ namespace Windows.Media.Devices
 			get
 			{
 				throw new global::System.NotImplementedException("The member SceneModeControl VideoDeviceController.SceneModeControl is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Media.Devices.RegionsOfInterestControl RegionsOfInterestControl
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member RegionsOfInterestControl VideoDeviceController.RegionsOfInterestControl is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Media.Devices.FlashControl FlashControl
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member FlashControl VideoDeviceController.FlashControl is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -143,21 +153,21 @@ namespace Windows.Media.Devices
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Devices.Core.VariablePhotoSequenceController VariablePhotoSequenceController
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member VariablePhotoSequenceController VideoDeviceController.VariablePhotoSequenceController is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Devices.PhotoConfirmationControl PhotoConfirmationControl
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member PhotoConfirmationControl VideoDeviceController.PhotoConfirmationControl is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Media.Devices.Core.VariablePhotoSequenceController VariablePhotoSequenceController
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member VariablePhotoSequenceController VideoDeviceController.VariablePhotoSequenceController is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -177,21 +187,21 @@ namespace Windows.Media.Devices
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Devices.ExposurePriorityVideoControl ExposurePriorityVideoControl
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ExposurePriorityVideoControl VideoDeviceController.ExposurePriorityVideoControl is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Devices.AdvancedPhotoControl AdvancedPhotoControl
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member AdvancedPhotoControl VideoDeviceController.AdvancedPhotoControl is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Media.Devices.ExposurePriorityVideoControl ExposurePriorityVideoControl
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ExposurePriorityVideoControl VideoDeviceController.ExposurePriorityVideoControl is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -257,51 +267,21 @@ namespace Windows.Media.Devices
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Media.Devices.DigitalWindowControl DigitalWindowControl
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DigitalWindowControl VideoDeviceController.DigitalWindowControl is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Devices.MediaDeviceControl Hue
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Hue is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Devices.MediaDeviceControl Exposure
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Exposure is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Devices.MediaDeviceControl Contrast
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Contrast is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Devices.MediaDeviceControl Brightness
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Brightness is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Devices.MediaDeviceControl Roll
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Roll is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -317,21 +297,11 @@ namespace Windows.Media.Devices
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Devices.MediaDeviceControl BacklightCompensation
+		public  global::Windows.Media.Devices.MediaDeviceControl Contrast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.BacklightCompensation is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Devices.MediaDeviceControl Focus
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Focus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Contrast is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -347,6 +317,36 @@ namespace Windows.Media.Devices
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Media.Devices.MediaDeviceControl BacklightCompensation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.BacklightCompensation is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Media.Devices.MediaDeviceControl Brightness
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Brightness is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Media.Devices.MediaDeviceControl Exposure
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Exposure is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Devices.MediaDeviceControl Tilt
 		{
 			get
@@ -357,11 +357,31 @@ namespace Windows.Media.Devices
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Media.Devices.MediaDeviceControl Roll
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Roll is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Devices.MediaDeviceControl Pan
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Pan is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Media.Devices.MediaDeviceControl Focus
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Focus is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -479,6 +499,8 @@ namespace Windows.Media.Devices
 		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.VideoTemporalDenoisingControl.get
 		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.InfraredTorchControl.get
 		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.PanelBasedOptimizationControl.get
+		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.DigitalWindowControl.get
+		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.CameraOcclusionInfo.get
 		// Processing: Windows.Media.Devices.IMediaDeviceController
 	}
 }

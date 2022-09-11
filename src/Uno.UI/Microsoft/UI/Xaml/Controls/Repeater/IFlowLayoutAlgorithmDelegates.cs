@@ -5,7 +5,12 @@ using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal partial interface IFlowLayoutAlgorithmDelegates
+#if HAS_UNO_WINUI
+	public
+#else
+	internal
+#endif
+	partial interface IFlowLayoutAlgorithmDelegates
 	{
 		Size Algorithm_GetMeasureSize(int index, Size availableSize, VirtualizingLayoutContext context);
 

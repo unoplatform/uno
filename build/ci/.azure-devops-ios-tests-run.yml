@@ -7,6 +7,7 @@ parameters:
   JobDisplayName: ''
   UITEST_SNAPSHOTS_ONLY: ''
   UITEST_SNAPSHOTS_GROUP: ''
+  UITEST_ALLOW_RERUN: ''
   nugetPackages: ''
 
 jobs:
@@ -25,6 +26,7 @@ jobs:
     CI_Build: true
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
+    UITEST_ALLOW_RERUN: ${{ parameters.UITEST_ALLOW_RERUN }}
 
   steps:
   - checkout: self
@@ -68,9 +70,25 @@ jobs:
     # https://github.com/actions/virtual-environments/issues/1932
     displayName: Apply workaround for Azure Devops issue 1932
 
+
+  - task: PowerShell@2
+    displayName: 'Fill Rerun Variable'
+    inputs:
+      ## Expression evaluation for task parameters is not supported
+      ## Invert UITEST_ALLOW_RERUN in a task
+      targetType: inline
+      script: |
+        Set-PSDebug -Trace 1
+        if( "${{ parameters.UITEST_ALLOW_RERUN }}" -eq "false") {
+          $val = "true"
+        } else {
+          $val = "false"
+        }
+        echo "##vso[task.setvariable variable=FAIL_TESTS_ON_NO_RERUN]$val"
+
   ## First UI Tests run (https://github.com/unoplatform/uno/issues/6714)
   - bash: |
-      $(build.sourcesdirectory)/build/ios-uitest-run.sh
+      $(build.sourcesdirectory)/build/test-scripts/ios-uitest-run.sh
 
     displayName: Run iOS Simulator Tests
 
@@ -80,6 +98,9 @@ jobs:
       UITEST_SNAPSHOTS_ONLY: "${{ parameters.UITEST_SNAPSHOTS_ONLY }}"
       UITEST_SNAPSHOTS_GROUP: "${{ parameters.UITEST_SNAPSHOTS_GROUP }}"
       UITEST_AUTOMATED_GROUP: "${{ parameters.UITEST_AUTOMATED_GROUP }}"
+      UITEST_RUNTIME_TEST_GROUP: "${{ parameters.UITEST_RUNTIME_TEST_GROUP }}"
+      UITEST_RUNTIME_TEST_GROUP_COUNT: "${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}"
+      UITEST_TEST_TIMEOUT: "${{ parameters.UITEST_TEST_TIMEOUT }}"
       UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/ios-uitest-build/SamplesApp.app"
 
   - task: PublishTestResults@2
@@ -91,13 +112,14 @@ jobs:
 
       # don't fail on failed tests, second run will do it
       # see https://github.com/unoplatform/uno/issues/6714
-      failTaskOnFailedTests: false
+      failTaskOnFailedTests: $(FAIL_TESTS_ON_NO_RERUN)
 
   ## Second UI Tests run (https://github.com/unoplatform/uno/issues/6714)
   - bash: |
-      $(build.sourcesdirectory)/build/ios-uitest-run.sh
+      $(build.sourcesdirectory)/build/test-scripts/ios-uitest-run.sh
 
     displayName: Run iOS Simulator Tests (re-run)
+    condition: eq(variables.UITEST_ALLOW_RERUN, 'true')
 
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
@@ -105,10 +127,13 @@ jobs:
       UITEST_SNAPSHOTS_ONLY: "${{ parameters.UITEST_SNAPSHOTS_ONLY }}"
       UITEST_SNAPSHOTS_GROUP: "${{ parameters.UITEST_SNAPSHOTS_GROUP }}"
       UITEST_AUTOMATED_GROUP: "${{ parameters.UITEST_AUTOMATED_GROUP }}"
+      UITEST_RUNTIME_TEST_GROUP: "${{ parameters.UITEST_RUNTIME_TEST_GROUP }}"
+      UITEST_RUNTIME_TEST_GROUP_COUNT: "${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}"
+      UITEST_TEST_TIMEOUT: "${{ parameters.UITEST_TEST_TIMEOUT }}"
       UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/ios-uitest-build/SamplesApp.app"
 
   - task: PublishTestResults@2
-    condition: always()
+    condition: eq(variables.UITEST_ALLOW_RERUN, 'true')
     inputs:
       testRunTitle: 'iOS Test Run ($(Agent.JobName))'
       testResultsFormat: 'NUnit'
@@ -121,7 +146,7 @@ jobs:
     condition: always()
     inputs:
       testResultsFiles: '$(build.sourcesdirectory)/build/RuntimeTestResults*.xml'
-      testRunTitle: 'iOS Runtime Tests Run'
+      testRunTitle: 'iOS Runtime Tests Run ($(Agent.JobName))'
       testResultsFormat: 'NUnit'
       failTaskOnFailedTests: true
 

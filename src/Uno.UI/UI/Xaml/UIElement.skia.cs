@@ -8,22 +8,21 @@ using System.Linq;
 using Windows.UI.Composition;
 using System.Numerics;
 using Windows.Foundation.Metadata;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
-		internal Size _unclippedDesiredSize;
-		internal Point _visualOffset;
 		private ContainerVisual _visual;
 		internal double _canvasTop;
 		internal double _canvasLeft;
@@ -31,8 +30,6 @@ namespace Windows.UI.Xaml
 
 		public UIElement()
 		{
-			_log = this.Log();
-			_logDebug = _log.IsEnabled(LogLevel.Debug) ? _log : null;
 			_isFrameworkElement = this is FrameworkElement;
 
 			Initialize();
@@ -43,6 +40,8 @@ namespace Windows.UI.Xaml
 
 			UpdateHitTest();
 		}
+
+		internal bool IsChildrenRenderOrderDirty { get; set; } = true;
 
 		partial void InitializeKeyboard();
 
@@ -88,12 +87,7 @@ namespace Windows.UI.Xaml
 			}
 		} 
 
-		/// <summary>
-		/// The origin of the view's bounds relative to its parent.
-		/// </summary>
-		internal Point RelativePosition => _visualOffset;
-
-		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
+		internal bool ClippingIsSetByCornerRadius { get; set; }
 
 		public void AddChild(UIElement child, int? index = null)
 		{
@@ -123,7 +117,7 @@ namespace Windows.UI.Xaml
 			child.SetParent(this);
 			OnAddingChild(child);
 
-			if (index is int actualIndex && actualIndex != _children.Count)
+			if (index is { } actualIndex && actualIndex != _children.Count)
 			{
 				var currentVisual = _children[actualIndex];
 				_children.Insert(actualIndex, child);
@@ -136,8 +130,33 @@ namespace Windows.UI.Xaml
 			}
 
 			OnChildAdded(child);
+			Visual.IsChildrenRenderOrderDirty = true;
 
+			// Reset to original (invalidated) state
+			child.ResetLayoutFlags();
+
+			if (IsMeasureDirtyPathDisabled)
+			{
+				FrameworkElementHelper.SetUseMeasurePathDisabled(child); // will invalidate too
+			}
+			else
+			{
+				child.InvalidateMeasure();
+			}
+
+			if (IsArrangeDirtyPathDisabled)
+			{
+				FrameworkElementHelper.SetUseArrangePathDisabled(child); // will invalidate too
+			}
+			else
+			{
+				child.InvalidateArrange();
+			}
+
+			// Force a new measure of this element (the parent of the new child)
 			InvalidateMeasure();
+			InvalidateArrange();
+
 		}
 
 		internal void MoveChildTo(int oldIndex, int newIndex)
@@ -150,12 +169,27 @@ namespace Windows.UI.Xaml
 			if (_children.Remove(child))
 			{
 				InnerRemoveChild(child);
+
+				// Force a new measure of this element
+				InvalidateMeasure();
+
 				return true;
 			}
-			else
+
+			return false;
+		}
+
+		internal UIElement ReplaceChild(int index, UIElement child)
+		{
+			var previous = _children[index];
+
+			if (!ReferenceEquals(child, previous))
 			{
-				return false;
+				RemoveChild(previous);
+				AddChild(child, index);
 			}
+
+			return previous;
 		}
 
 		internal void ClearChildren()
@@ -172,13 +206,36 @@ namespace Windows.UI.Xaml
 		private void InnerRemoveChild(UIElement child)
 		{
 			child.SetParent(null);
-			Visual?.Children.Remove(child.Visual);
+			if (Visual != null)
+			{
+				Visual.Children.Remove(child.Visual);
+				Visual.IsChildrenRenderOrderDirty = true;
+			}
 			OnChildRemoved(child);
 		}
 
 		internal UIElement FindFirstChild() => _children.FirstOrDefault();
 
-		public string Name { get; set; }
+		#region Name Dependency Property
+
+		private void OnNameChanged(string oldValue, string newValue)
+		{
+			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
+			{
+				Windows.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
+			}
+		}
+
+		[GeneratedDependencyProperty(DefaultValue = "", ChangedCallback = true)]
+		internal static DependencyProperty NameProperty { get; } = CreateNameProperty();
+
+		public string Name
+		{
+			get => GetNameValue();
+			set => SetNameValue(value);
+		}
+
+		#endregion
 
 		partial void InitializeCapture();
 
@@ -197,7 +254,14 @@ namespace Windows.UI.Xaml
 			{
 				LayoutInformation.SetDesiredSize(this, new Size(0, 0));
 				_size = new Size(0, 0);
-			}			
+			}
+
+			if (FeatureConfiguration.UIElement.UseInvalidateMeasurePath && this.GetParent() is UIElement parent)
+			{
+				// Need to invalidate the parent when the visibility changes to ensure its
+				// algorithm is doing its layout properly.
+				parent.InvalidateMeasure();
+			}
 		}
 
 		partial void OnRenderTransformSet()
@@ -207,7 +271,7 @@ namespace Windows.UI.Xaml
 		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
 		{
 			LayoutSlotWithMarginsAndAlignments =
-				VisualTreeHelper.GetParent(this) is UIElement parent
+				VisualTreeHelper.GetParent(this) is UIElement parent and not RootVisual
 					? finalRect.DeflateBy(parent.GetBorderThickness())
 					: finalRect;
 
@@ -245,7 +309,10 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				this.Log().DebugIfEnabled(() => $"{this}: ArrangeVisual({_currentFinalRect}) -- SKIPPED (no change)");
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"{this}: ArrangeVisual({_currentFinalRect}) -- SKIPPED (no change)");
+				}
 			}
 		}
 

@@ -6,7 +6,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 {
-	[SampleControlInfo("Button", "Overlapped_Buttons")]
+	[SampleControlInfo("Buttons", "Overlapped_Buttons")]
 	public sealed partial class Overlapped_Buttons : Page
 	{
 		private Dictionary<string, int> clicks = new Dictionary<string, int>();

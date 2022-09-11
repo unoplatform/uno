@@ -49,7 +49,7 @@
 				<Setter Property="BorderThickness"
 						Value="0,0,0,1" />
 				<Setter Property="Background"
-						Value="{StaticResource Color08Brush}" />
+						Value="{StaticResource ApplicationPageBackgroundThemeBrush}" />
 				<Setter Property="Height"
 								Value="50" />
 			</Style>
@@ -181,7 +181,7 @@
 						<RowDefinition Height="*" />
 					</Grid.RowDefinitions>
 
-					<TextBox Text="{Binding SearchTerm, Mode=TwoWay}"
+					<TextBox Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 							 Style="{StaticResource SearchTextBoxStyle}"
 							 PlaceholderText="Search"
 							 Margin="8" />
@@ -252,7 +252,7 @@
 			</VisualStateGroup>
 		</VisualStateManager.VisualStateGroups>
 		<SplitView.Pane>
-			<Grid Background="{StaticResource Color08Brush}"
+			<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
 				  BorderBrush="LightGray"
 				  BorderThickness="0,0,1,0"
 				  toolkit:VisibleBoundsPadding.PaddingMask="All">
@@ -266,15 +266,37 @@
 				<!-- LIBRARY (Categories)-->
 				<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
 					  Visibility="{Binding CategoryVisibility, Converter={StaticResource TrueToVisible}}">
-					<TextBlock Style="{StaticResource Typo03}"
-							   VerticalAlignment="Center"
-							   HorizontalAlignment="Center"
-							   Text="Library" />
-					<!-- Record All Tests Button -->
+
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+					
+					<!-- Runtime tests button -->
 					<Button Style="{StaticResource IconButtonStyle}"
 							VerticalAlignment="Center"
 							HorizontalAlignment="Right"
-							Command="{Binding RecordAllTestsCommandCommand}">
+							Command="{Binding OpenRuntimeTestsCommand}">
+						<u:PathControl Style="{StaticResource Icon_RuntimeTests}"
+									   Margin="5,0" />
+					</Button>
+
+					<!-- Title -->
+					<TextBlock
+						Grid.Column="1"
+						Style="{StaticResource Typo03}"
+						VerticalAlignment="Center"
+						HorizontalAlignment="Center"
+						Text="Library" />
+					
+					<!-- Record All Tests Button -->
+					<Button
+						Grid.Column="2"
+						Style="{StaticResource IconButtonStyle}"
+						VerticalAlignment="Center"
+						HorizontalAlignment="Right"
+						Command="{Binding RecordAllTestsCommandCommand}">
 						<u:PathControl Style="{StaticResource Icon_RunAll}"
 									   Margin="5,0" />
 					</Button>
@@ -339,7 +361,7 @@
 								ContentTemplate="{StaticResource SearchList}" />
 
 				<!--NAVIGATION BUTTONS-->
-				<Border Background="{StaticResource Color08Brush}"
+				<Border Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
 						
 						BorderThickness="0,1,0,0"
 						BorderBrush="{StaticResource Color05Brush}"
@@ -431,6 +453,7 @@
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="50" />
 						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
@@ -530,6 +553,11 @@
 							  Grid.Column="8"
 							  IsChecked="{Binding UseFluentStyles, Mode=TwoWay}"
 							  Style="{x:Null}"/>
+					<!-- Dark theme check box -->
+					<CheckBox Grid.Column="9"
+							  IsChecked="{Binding UseDarkTheme, Mode=TwoWay}">
+						<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEC46;" />
+					</CheckBox>
 				</Grid>
 
 				<!-- Sample Content -->

@@ -38,6 +38,14 @@ namespace Uno.UI.Tests.ResourceLoaderTests
 		}
 
 		[TestMethod]
+		public void When_Empty_Resource()
+		{
+			_ResourceLoader.DefaultLanguage = "en";
+
+			Assert.AreEqual("", _ResourceLoader.GetForCurrentView().GetString("TestEmptyResource"));
+		}
+
+		[TestMethod]
 		public void When_ResourceFile_Neutral_Both()
 		{
 			void setResources(string language)

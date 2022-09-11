@@ -27,9 +27,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnItemsChanged(e);
 
-			if (HasItems)
+			if (HasItems && SelectedIndex < 0)
 			{
-				this.SelectedIndex = 0;
+				SelectedIndex = 0;
 			}
 		}
 

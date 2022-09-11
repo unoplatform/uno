@@ -9,26 +9,25 @@ using Uno.Helpers;
 using Windows.Foundation;
 using Windows.UI.Core;
 
-namespace Windows.UI.Popups
+namespace Windows.UI.Popups;
+
+public partial class MessageDialog
 {
-	public partial class MessageDialog
+	private static readonly SemaphoreSlim _viewControllerAccess = new SemaphoreSlim(1, 1);
+
+	private IAsyncOperation<IUICommand> ShowNativeAsync(CancellationToken ct)
 	{
-		private static readonly SemaphoreSlim _viewControllerAccess = new SemaphoreSlim(1, 1);
+		VisualTreeHelperProxy.CloseAllFlyouts();
 
-		public IAsyncOperation<IUICommand> ShowAsync()
-		{
-			VisualTreeHelperProxy.CloseAllPopups();
+		var command = $"Uno.UI.WindowManager.current.alert(\"{Uno.Foundation.WebAssemblyRuntime.EscapeJs(Content)}\");";
+		Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
 
-			var command = $"Uno.UI.WindowManager.current.alert(\"{Uno.Foundation.WebAssemblyRuntime.EscapeJs(Content)}\");";
-			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
+		return AsyncOperation.FromTask<IUICommand>(
+			async ct => new UICommand("OK") // TODO: Localize (PBI 28711)
+		);
+	}
 
-			return AsyncOperation.FromTask<IUICommand>(
-				async ct => new UICommand("OK") // TODO: Localize (PBI 28711)
-			);
-		}
-
-		partial void ValidateCommands()
-		{
-		}
+	partial void ValidateCommandsNative()
+	{
 	}
 }

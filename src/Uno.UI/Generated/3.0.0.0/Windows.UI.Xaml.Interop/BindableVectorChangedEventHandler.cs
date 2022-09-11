@@ -3,6 +3,6 @@
 namespace Windows.UI.Xaml.Interop
 {
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public delegate void BindableVectorChangedEventHandler(global::Windows.UI.Xaml.Interop.IBindableObservableVector @vector, object @e);
+	public delegate void BindableVectorChangedEventHandler(global::Windows.UI.Xaml.Interop.IBindableObservableVector vector, object e);
 	#endif
 }

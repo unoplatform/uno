@@ -8,7 +8,7 @@ using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml.Shapes
 {
-	internal class BorderLayerRenderer
+	partial class BorderLayerRenderer
 	{
 		private Brush _background;
 		private (Brush, Thickness) _border;
@@ -132,7 +132,8 @@ namespace Windows.UI.Xaml.Shapes
 								("background-origin", "content-box"),
 								("background-position", imgBrush.ToCssPosition()),
 								("background-size", imgBrush.ToCssBackgroundSize()),
-								("background-image", "url(" + img.Value + ")")
+								("background-image", "url(" + img.Value + ")"),
+								("background-repeat", "no-repeat")
 							);
 							break;
 					}

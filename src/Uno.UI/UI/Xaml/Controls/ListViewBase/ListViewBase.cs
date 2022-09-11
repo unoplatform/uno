@@ -20,31 +20,31 @@ using Uno.Extensions.Specialized;
 using System.Collections;
 using System.Linq;
 using Windows.UI.Xaml.Controls.Primitives;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Disposables;
 using Uno.Client;
 using System.Threading.Tasks;
 using System.Threading;
 using Windows.Foundation;
 using Uno.UI;
+using Windows.UI.Xaml.Input;
+using Windows.System;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class ListViewBase : Selector
 	{
-		internal ScrollViewer ScrollViewer { get; private set; }
-		IVirtualizingPanel VirtualizingPanel => ItemsPanelRoot as IVirtualizingPanel;
-
 		/// <summary>
 		/// When this flag is set, the ListViewBase will process every notification from <see cref="INotifyCollectionChanged"/> as if it 
 		/// were a 'Reset', triggering a complete refresh of the list. By default this is false.
 		/// </summary>
-		public bool RefreshOnCollectionChanged { get; set; } = false;
+		public bool RefreshOnCollectionChanged { get; set; }
 
 		internal override bool IsSingleSelection => SelectionMode == ListViewSelectionMode.Single;
 		private bool IsSelectionMultiple => SelectionMode == ListViewSelectionMode.Multiple || SelectionMode == ListViewSelectionMode.Extended;
 		private bool _modifyingSelectionInternally;
 		private readonly List<object> _oldSelectedItems = new List<object>();
+
 		/// <summary>
 		/// Whether an incremental data loading request is currently under way.
 		/// </summary>
@@ -71,6 +71,92 @@ namespace Windows.UI.Xaml.Controls
 				TryLoadFirstItem();
 			}
 			return base.ArrangeOverride(finalSize);
+		}
+
+		protected override void OnKeyDown(KeyRoutedEventArgs args)
+		{
+			base.OnKeyDown(args);
+
+			if (!args.Handled)
+			{
+				args.Handled = TryHandleKeyDown(args);
+			}
+		}
+
+		internal bool TryHandleKeyDown(KeyRoutedEventArgs args)
+		{
+			if (!IsEnabled)
+			{
+				return false;
+			}
+
+			var focusedContainer = FocusManager.GetFocusedElement() as SelectorItem;
+
+			if (args.Key == VirtualKey.Enter ||
+				args.Key == VirtualKey.Space)
+			{
+				// Invoke focused
+				if (focusedContainer != null)
+				{
+					OnItemClicked(focusedContainer);
+				}
+			}
+			else if (args.Key == VirtualKey.Down)
+			{
+				return TryMoveKeyboardFocusAndSelection(+1, focusedContainer);
+			}
+			else if (args.Key == VirtualKey.Up)
+			{
+				return TryMoveKeyboardFocusAndSelection(-1, focusedContainer);
+			}
+			return false;
+		}
+
+		private bool TryMoveKeyboardFocusAndSelection(int offset, SelectorItem focusedContainer)
+		{
+			var focusedIndex = SelectedIndex;
+			if (focusedContainer != null)
+			{
+				focusedIndex = IndexFromContainer(focusedContainer);
+			}
+
+			var index = focusedIndex + offset;
+			if (!IsIndexValid(index))
+			{
+				return false;
+			}
+
+			// If selection mode is single, moving focus also selects the item
+			if (SelectionMode == ListViewSelectionMode.Single)
+			{
+				SelectedIndex = index;
+			}
+
+			var container = ContainerFromIndex(index);
+			if (container is not SelectorItem item)
+			{
+				return false;
+			}
+
+			item.StartBringIntoView(new BringIntoViewOptions()
+			{
+				AnimationDesired = false
+			});
+			item.Focus(FocusState.Keyboard);
+			return true;
+		}
+
+		private bool IsIndexValid(int index) => index >= 0 && index < NumberOfItems;
+
+		private int GetFocusedItemIndex()
+		{
+			var focusedItem = FocusManager.GetFocusedElement() as SelectorItem;
+			if (focusedItem != null)
+			{
+				return IndexFromContainer(focusedItem);
+			}
+
+			return -1;
 		}
 
 		private void OnSelectedItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -338,8 +424,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnApplyTemplate();
 
-			ScrollViewer = this.GetTemplateChild("ScrollViewer") as ScrollViewer;
-
 			OnApplyTemplatePartial();
 		}
 		partial void OnApplyTemplatePartial();
@@ -369,6 +453,8 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override void OnItemClicked(int clickedIndex)
 		{
+			// Note: don't call base.OnItemClicked(), because we override the default single-selection-only handling
+
 			var item = ItemFromIndex(clickedIndex);
 			if (IsItemClickEnabled)
 			{
@@ -461,14 +547,14 @@ namespace Windows.UI.Xaml.Controls
 						completeRefresh();
 						return;
 					}
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Inserting {args.NewItems.Count} items starting at {args.NewStartingIndex}");
 					}
 
 					// Because new items are added, the containers for existing items with higher indices
 					// will be moved, and we must make sure to increase their indices
-					SaveContainersForIndexRepair(args.NewStartingIndex, args.NewItems.Count);
+					SaveContainersBeforeAddForIndexRepair(args.NewItems, args.NewStartingIndex, args.NewItems.Count);
 					AddItems(args.NewStartingIndex, args.NewItems.Count, section);
 					RepairIndices();
 
@@ -481,18 +567,18 @@ namespace Windows.UI.Xaml.Controls
 						completeRefresh();
 						return;
 					}
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Deleting {args.OldItems.Count} items starting at {args.OldStartingIndex}");
 					}
-          
-					SaveContainersForIndexRepair(args.OldStartingIndex, -args.OldItems.Count);
+
+					SaveContainersBeforeRemoveForIndexRepair(args.OldStartingIndex, args.OldItems.Count);
 					RemoveItems(args.OldStartingIndex, args.OldItems.Count, section);
 					RepairIndices();
 
 					break;
 				case NotifyCollectionChangedAction.Replace:
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Replacing {args.NewItems.Count} items starting at {args.NewStartingIndex}");
 					}
@@ -527,16 +613,55 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="startingIndex">The minimum index of containers we care about.</param>
 		/// <param name="indexChange">How does the index change.</param>
-		private void SaveContainersForIndexRepair(int startingIndex, int indexChange)
+		private void SaveContainersBeforeAddForIndexRepair(IList addedItems, int startingIndex, int indexChange)
 		{
 			_containersForIndexRepair.Clear();
 			foreach (var container in MaterializedContainers)
 			{
 				var currentIndex = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);
-				if (currentIndex >= startingIndex)
+				if (currentIndex is -1 && container is ContentControl ctrl)
+				{
+					var offset = addedItems.IndexOf(ctrl.Content);
+					if (offset >= 0)
+					{
+						_containersForIndexRepair.Add(container, startingIndex + offset);
+					}
+				}
+				else if (currentIndex >= startingIndex)
 				{
 					// we store the index, that should be set after the collection change
 					_containersForIndexRepair.Add(container, currentIndex + indexChange);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Stores materialized containers starting a given index, so that their
+		/// ItemsControl.IndexForContainerProperty can be updated after the collection changes.		
+		/// </summary>
+		/// <param name="startingIndex">The minimum index of containers we care about.</param>
+		/// <param name="indexChange">How does the index change.</param>
+		private void SaveContainersBeforeRemoveForIndexRepair(int startingIndex, int indexChange)
+		{
+			_containersForIndexRepair.Clear();
+
+			var firstRemainingIndex = startingIndex + indexChange;
+			foreach (var container in MaterializedContainers)
+			{
+				var currentIndex = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);
+				if (currentIndex < startingIndex)
+				{
+					continue;
+				}
+
+				if (currentIndex < firstRemainingIndex)
+				{
+					_containersForIndexRepair.Add(container, -1);
+				}
+				else
+				{
+					// we store the index, that should be set after the collection change
+					_containersForIndexRepair.Add(container, currentIndex - indexChange);
 				}
 			}
 		}
@@ -547,7 +672,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private void RepairIndices()
 		{
-			foreach(var containerPair in _containersForIndexRepair)
+			foreach (var containerPair in _containersForIndexRepair)
 			{
 				containerPair.Key.SetValue(ItemsControl.IndexForItemContainerProperty, containerPair.Value);
 			}
@@ -704,7 +829,18 @@ namespace Windows.UI.Xaml.Controls
 				if (container != null)
 				{
 					var item = GetDisplayItemFromIndexPath(unoIndexPath);
-					PrepareContainerForIndex(container, flatIndex);
+#if __IOS__ || __ANDROID__ // TODO: The managed ListView should similarly go through the recycling to use the proper container matching the new template
+					if (HasTemplateChanged(((FrameworkElement)container).DataContext, item))
+					{
+						// If items are using different templates, we should go through the native replace operation, to use a container
+						// with the right template.
+						NativeReplaceItems(i, 1, section);
+					}
+					else
+#endif
+					{
+						PrepareContainerForIndex(container, flatIndex);
+					}
 				}
 				else
 				{
@@ -713,6 +849,19 @@ namespace Windows.UI.Xaml.Controls
 					NativeReplaceItems(i, 1, section);
 				}
 			}
+		}
+
+		/// <summary>
+		/// Does <paramref name="newItem"/> resolve to a different template than <paramref name="oldItem"/>?
+		/// </summary>
+		private bool HasTemplateChanged(object oldItem, object newItem)
+		{
+			if (ItemTemplateSelector == null)
+			{
+				return false;
+			}
+
+			return ResolveItemTemplate(oldItem) != ResolveItemTemplate(newItem);
 		}
 
 		partial void NativeReplaceItems(int firstItem, int count, int section);
@@ -756,16 +905,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			return false;
-		}
-
-		protected override void OnItemsChanged(object e)
-		{
-
-			if (ItemsSource == null) // We're only interested when Items is modified directly, ie iff ItemsSource is not set
-			{
-				Refresh(); // Ensure item views are updated correctly if Items collection is manipulated 
-			}
-			base.OnItemsChanged(e);
 		}
 
 		/// <summary>
@@ -832,7 +971,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			catch (Exception e)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 				{
 					this.Log().Warn($"{nameof(LoadMoreItemsAsync)} failed.", e);
 				}
@@ -849,15 +988,5 @@ namespace Windows.UI.Xaml.Controls
 				TryLoadMoreItems();
 			}
 		}
-
-		/// <summary>
-		/// Is the ListView.managed implementation used on this platform?
-		/// </summary>
-		internal static bool UsesManagedLayouting =>
-#if __IOS__ || __ANDROID__
-			false;
-#else
-			true;
-#endif
 	}
 }

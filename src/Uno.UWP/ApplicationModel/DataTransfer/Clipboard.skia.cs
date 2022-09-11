@@ -3,11 +3,12 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
 
 namespace Windows.ApplicationModel.DataTransfer
 {

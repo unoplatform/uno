@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Uno.Disposables;
 using System.Text;
 using Windows.UI.Xaml.Input;
@@ -22,7 +23,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			public const string Pressed = "Pressed";
 			public const string OverSelected = "PointerOverSelected"; // "SelectedPointerOver" for ListBoxItem, ComboBoxItem and PivotHeaderItem
 			public const string PressedSelected = "PressedSelected"; // "SelectedPressed" for ListBoxItem, ComboBoxItem and PivotHeaderItem
-
 			// On ListViewItem and GridViewItem we also have this state declared in default style,
 			// however it seems to never been activated
 			// public const string OverPressed = "PointerOverPressed";
@@ -41,6 +41,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			End,
 			Clicked
 		}
+
+		private static readonly Stopwatch _chronometer = Stopwatch.StartNew();
 
 		/// <summary>
 		/// Delay time before setting the pressed state of an item to false, to allow time for the Pressed visual state to be drawn and perceived. 
@@ -66,14 +68,17 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private string _currentState;
 		private uint _goToStateRequest;
-		private DateTime _pauseStateUpdateUntil;
+		private TimeSpan _pauseStateUpdateUntil;
+		private bool _canRaiseClickOnPointerRelease;
 
 		public SelectorItem()
 		{
-
+			AddHandler(ManipulationStartedEvent, _onManipulationStarted, handledEventsToo: true);
 		}
 
 		private Selector Selector => ItemsControl.ItemsControlFromItemContainer(this) as Selector;
+
+		internal override UIElement VisualParent => Selector ?? base.VisualParent;
 
 		private bool IsItemClickEnabled
 		{
@@ -137,12 +142,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private void UpdateCommonStates(ManipulationUpdateKind manipulationUpdate = ManipulationUpdateKind.None)
 		{
-			var state = GetState(IsEnabled, IsSelected, IsPointerOver, HasPointerCapture);
-
 			// On Windows, the pressed state appears only after a few, and won't appear at all if you quickly start to scroll with the finger.
 			// So here we make sure to delay the beginning of a manipulation to match this behavior (and avoid flickering when scrolling)
 			// We also make sure that when user taps (Enter->Pressed->Move*->Release->Exit) on the item, he is able to see the pressed (selected) state.
-			var request = ++_goToStateRequest;
+			var state = GetState(IsEnabled, IsSelected, IsPointerOver, _canRaiseClickOnPointerRelease);
+			var requestId = ++_goToStateRequest; // Request ID is use to ensure to apply only the last requested state.
 
 			TimeSpan delay; // delay to apply the 'state'
 			bool pause; // should we force a pause after applying the 'state'
@@ -157,7 +161,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				_currentState = pressedState;
 				VisualStateManager.GoToState(this, pressedState, true);
 
-				_pauseStateUpdateUntil = DateTime.Now + MinTimeBetweenPressStates;
+				_pauseStateUpdateUntil = _chronometer.Elapsed + MinTimeBetweenPressStates;
 
 				delay = MinTimeBetweenPressStates;
 				pause = false;
@@ -172,7 +176,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 			else
 			{
-				delay = _pauseStateUpdateUntil - DateTime.Now;
+				delay = _pauseStateUpdateUntil - _chronometer.Elapsed;
 				pause = false;
 			}
 
@@ -187,7 +191,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				{
 					await Task.Delay(delay);
 
-					if (_goToStateRequest != request)
+					if (_goToStateRequest != requestId
+						// If element has been unloaded (e.g. click on a ComboBoxItem) native animations of the target state won't run.
+						// Then even if on next load we request UpdateCommonStates,
+						// the VSM will determine that state didn't changed and will just ignore the request.
+						// Note: The issue is probably in the VSM to allow a GoToState while not in visual tree,
+						//		 but this is the most common case and teh safest place to patch.
+						|| !IsLoaded)
 					{
 						return;
 					}
@@ -197,7 +207,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (pause)
 					{
-						_pauseStateUpdateUntil = DateTime.Now + MinTimeBetweenPressStates;
+						_pauseStateUpdateUntil = _chronometer.Elapsed + MinTimeBetweenPressStates;
 					}
 				});
 			}
@@ -270,6 +280,17 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			=> _pressedOverride = isPressed;
 #endif
 
+		private static readonly ManipulationStartedEventHandler _onManipulationStarted = (snd, _) =>
+		{
+			if (snd is SelectorItem that)
+			{
+				// If children are dealing with manipulation (like a SwipeControl),
+				// we don't want to trigger the ItemClick nor the selection,
+				// even if the pointer remained on this SelectorItem during the whole manipulation.
+				that._canRaiseClickOnPointerRelease = false;
+			}
+		};
+
 		/// <inheritdoc />
 		protected override void OnPointerEntered(PointerRoutedEventArgs args)
 		{
@@ -283,14 +304,18 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			if (ShouldHandlePressed
 				&& IsItemClickEnabled
 				&& args.GetCurrentPoint(this).Properties.IsLeftButtonPressed
-				&& CapturePointer(args.Pointer))
+				&& CapturePointer(args.Pointer, PointerCaptureKind.Implicit) is not PointerCaptureResult.Failed)
 			{
-				args.Handled = true;
+				// Note: We do allow PointerCaptureResult.AlreadyCaptured as if element has been flagged as CanDrag
+				//		 (common in ListView that do allow re-ordering ;) ),
+				//		 the pointer might have already been captured for this SelectorItem.
+
+				_canRaiseClickOnPointerRelease = true;
 			}
 
-#if !__WASM__
+			args.Handled = ShouldHandlePressed;
+
 			Focus(FocusState.Pointer);
-#endif
 
 			base.OnPointerPressed(args);
 			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.Begin);
@@ -300,21 +325,23 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
 		{
 			ManipulationUpdateKind update;
-			if (IsCaptured(args.Pointer))
+			if (_canRaiseClickOnPointerRelease)
 			{
+				_canRaiseClickOnPointerRelease = false;
+
 				update = ManipulationUpdateKind.Clicked;
 				Selector?.OnItemClicked(this);
 
 				// This should be automatically done by the pointers due to release, but if for any reason
 				// the state is invalid, this makes sure to not keep invalid capture longer than needed.
-				ReleasePointerCapture(args.Pointer);
-
-				args.Handled = true;
+				ReleasePointerCapture(args.Pointer.UniqueId, kinds: PointerCaptureKind.Implicit);
 			}
 			else
 			{
 				update = ManipulationUpdateKind.End;
 			}
+
+			args.Handled = ShouldHandlePressed;
 
 			base.OnPointerReleased(args);
 			UpdateCommonStatesWithoutNeedsLayout(update);
@@ -324,7 +351,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		protected override void OnPointerExited(PointerRoutedEventArgs args)
 		{
 			// Not like a Button, if the pointer goes out of this item, we abort the ItemClick
-			ReleasePointerCapture(args.Pointer);
+			_canRaiseClickOnPointerRelease = false;
+			ReleasePointerCapture(args.Pointer.UniqueId, kinds: PointerCaptureKind.Implicit);
 
 			base.OnPointerExited(args);
 			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.End);
@@ -333,6 +361,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// <inheritdoc />
 		protected override void OnPointerCanceled(PointerRoutedEventArgs args)
 		{
+			_canRaiseClickOnPointerRelease = false;
+
 			base.OnPointerCanceled(args);
 			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.End);
 		}
@@ -340,8 +370,22 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// <inheritdoc />
 		protected override void OnPointerCaptureLost(PointerRoutedEventArgs args)
 		{
+			_canRaiseClickOnPointerRelease = false;
+
 			base.OnPointerCaptureLost(args);
 			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.End);
+		}
+
+		protected override void OnGotFocus(RoutedEventArgs e)
+		{
+			base.OnGotFocus(e);
+			ChangeVisualState(true);
+		}
+
+		protected override void OnLostFocus(RoutedEventArgs e)
+		{
+			base.OnLostFocus(e);
+			ChangeVisualState(true);
 		}
 
 		private IDisposable InterceptSetNeedsLayout()
@@ -357,6 +401,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private protected override void ChangeVisualState(bool useTransitions)
 		{
+			// !!!!!! WARNING: This method is actually not used (at least on skia and wasm) !!!!!!
+			// cf. UpdateCommonStates instead ...
+
 			base.ChangeVisualState(useTransitions);
 
 			if (IsListViewBaseItem)

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Threading.Tasks;
+using MUXControlsTestApp.Utilities;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -8,12 +11,12 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 {
 	internal static class FlyoutHelper
 	{
-		public static FrameworkElement GetOpenFlyoutPresenter()
+		public static FrameworkElement GetOpenFlyoutPresenter(XamlRoot xamlRoot)
 		{
 #if NETFX_CORE
 			var popups = VisualTreeHelper.GetOpenPopups(Window.Current);
 #else
-			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(XamlRoot.Current);
+			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(xamlRoot);
 #endif
 			if (popups.Count != 1)
 			{
@@ -46,6 +49,29 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 		public static void ValidateOpenFlyoutOverlayBrush(string name)
 		{
 			throw new NotImplementedException();
+		}
+
+		public static async Task<Border> CreateTarget(
+			double width,
+			double height,
+			Thickness margin,
+			HorizontalAlignment halign,
+			VerticalAlignment valign)
+		{
+			Border target = null;
+
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
+				target = new Border();
+				target.Background = new SolidColorBrush(Colors.RoyalBlue);
+				target.Height = height;
+				target.Width = width;
+				target.Margin = margin;
+				target.HorizontalAlignment = halign;
+				target.VerticalAlignment = valign;
+			});
+
+			return target;
 		}
 	}
 

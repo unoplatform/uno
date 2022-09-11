@@ -67,6 +67,16 @@ namespace Windows.ApplicationModel.ConversationalAgent
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  string DetectorId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ActivationSignalDetector.DetectorId is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector.ProviderId.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector.Kind.get
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector.CanCreateConfigurations.get
@@ -143,5 +153,48 @@ namespace Windows.ApplicationModel.ConversationalAgent
 			throw new global::System.NotImplementedException("The member IAsyncAction ActivationSignalDetector.RemoveConfigurationAsync(string signalId, string modelId) is not implemented in Uno.");
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<string>> GetAvailableModelIdsForSignalIdAsync( string signalId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IList<string>> ActivationSignalDetector.GetAvailableModelIdsForSignalIdAsync(string signalId) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::System.Collections.Generic.IList<string> GetAvailableModelIdsForSignalId( string signalId)
+		{
+			throw new global::System.NotImplementedException("The member IList<string> ActivationSignalDetector.GetAvailableModelIdsForSignalId(string signalId) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationCreationResult> CreateConfigurationWithResultAsync( string signalId,  string modelId,  string displayName)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ActivationSignalDetectionConfigurationCreationResult> ActivationSignalDetector.CreateConfigurationWithResultAsync(string signalId, string modelId, string displayName) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationCreationResult CreateConfigurationWithResult( string signalId,  string modelId,  string displayName)
+		{
+			throw new global::System.NotImplementedException("The member ActivationSignalDetectionConfigurationCreationResult ActivationSignalDetector.CreateConfigurationWithResult(string signalId, string modelId, string displayName) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationRemovalResult> RemoveConfigurationWithResultAsync( string signalId,  string modelId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ActivationSignalDetectionConfigurationRemovalResult> ActivationSignalDetector.RemoveConfigurationWithResultAsync(string signalId, string modelId) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationRemovalResult RemoveConfigurationWithResult( string signalId,  string modelId)
+		{
+			throw new global::System.NotImplementedException("The member ActivationSignalDetectionConfigurationRemovalResult ActivationSignalDetector.RemoveConfigurationWithResult(string signalId, string modelId) is not implemented in Uno.");
+		}
+		#endif
+		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector.DetectorId.get
 	}
 }

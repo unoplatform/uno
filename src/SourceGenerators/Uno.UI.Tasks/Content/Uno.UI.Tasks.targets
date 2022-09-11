@@ -11,8 +11,8 @@
 
   <UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" />
   <UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.Assets.RetargetAssets_v0" />
-  <UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerHintGeneratorTask_v0" />
-  <UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerDefinitionMergerTask_v0" />
+  <UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerHintGeneratorTask_v0" TaskFactory="TaskHostFactory" />
+  <UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerDefinitionMergerTask_v0" TaskFactory="TaskHostFactory" />
 
   <!--
   This task transforms all the Content files and PRIResources into resources files compatible for each platform.
@@ -21,7 +21,7 @@
   to inject Uno properly. Failing to add this task early enough makes X.A and X.I miss the generated resource files.
   -->
   <Target Name="UnoResourcesGeneration"
-			  BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent"
+			  BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent;_CollectBundleResources"
 			  DependsOnTargets="ResolveProjectReferences"
 			  Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == ''">
 
@@ -51,7 +51,7 @@
   </Target>
 
   <Target Name="UnoAssetsGeneration"
-			  BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent"
+			  BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent;_CollectBundleResources"
 			  DependsOnTargets="ResolveProjectReferences"
 			  Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == '' and ('$(XamarinProjectType)'!='' or '$(UnoForceProcessPRIResource)'!='')">
 	<!-- Assets -->
@@ -62,6 +62,7 @@
 						TargetPlatform="$(XamarinProjectType)"
 						DefaultLanguage="$(DefaultLanguage)"
 						ContentItems="@(Content)"
+						AndroidAssetsPrefix="$(MonoAndroidAssetsPrefix)"
 						Condition="'$(XamarinProjectType)'!=''">
 	  <Output TaskParameter="Assets"
 					  ItemName="Assets" />
@@ -86,7 +87,11 @@
   -->
 
   <Target Name="_UnoLinkerHintsSubstitutionsMerge"
-	  Condition="'$(UnoXamlResourcesTrimming)'=='true'"
+	  Condition="
+		'$(DesignTimeBuild)' != 'true'
+		and '$(BuildingInsideUnoSourceGenerator)' == ''
+		and '$(SkipCompilerExecution)' == ''
+		and '$(UnoXamlResourcesTrimming)'=='true'"
 	  AfterTargets="CoreCompile">
 
 	<ItemGroup>
@@ -111,7 +116,7 @@
 
   <Target Name="_UnoLinkerHintsPass1"
 		Condition="'$(IsUnoHead)'=='true' and '$(UnoXamlResourcesTrimming)'=='true'"
-		BeforeTargets="BuildDist">
+		BeforeTargets="BuildDist;PrepareForILLink">
 
 	<ItemGroup>
 	  <!-- Filter ReferenceCopyLocalPaths as it may contain pdbs as well -->
@@ -120,18 +125,29 @@
 			  Condition="'%(Extension)' == '.dll'" />
 	</ItemGroup>
 
+	<PropertyGroup>
+		<_UnoLinkerHintGeneratorILLinkerPath>$(MSBuildThisFileDirectory)\..\..\tools\linker</_UnoLinkerHintGeneratorILLinkerPath>
+		<_UnoLinkerHintGeneratorILLinkerPath
+			Condition="'$(TargetFrameworkIdentifier)'=='.NETCoreApp' and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '6.0')) and '$(ILLinkTasksAssembly)'!=''"
+			>$([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly)))\..\net$(TargetFrameworkVersion.Substring(1))</_UnoLinkerHintGeneratorILLinkerPath>
+
+		<_UnoUIPackageBasePath Condition="'%(UnoRuntimeEnabledPackage.Identity)'=='Uno.UI' or '%(UnoRuntimeEnabledPackage.Identity)'=='Uno.WinUI'">%(UnoRuntimeEnabledPackage.PackageBasePath)</_UnoUIPackageBasePath>
+	</PropertyGroup>
+
 	<LinkerHintGeneratorTask_v0
 		CurrentProjectPath="$(MSBuildProjectDirectory)"
 		AssemblyPath="$(IntermediateOutputPath)$(TargetFileName)"
 		OutputPath="$(ProjectDir)$(IntermediateOutputPath)/linkerhints"
 		ReferencePath="@(_UnoLinkerHintsPass1AssembliesForReferencePaths)"
-		ILLinkerPath="$(MSBuildThisFileDirectory)\..\..\tools\linker">
+		ILLinkerPath="$(_UnoLinkerHintGeneratorILLinkerPath)"
+		UnoUIPackageBasePath="$(_UnoUIPackageBasePath)"
+		UnoRuntimeIdentifier="$(UnoRuntimeIdentifier)">
 	  <Output TaskParameter="OutputFeatures"
 			   ItemName="_LinkerHintOutputFeatures" />
 	</LinkerHintGeneratorTask_v0>
 
 	<ItemGroup>
-	  <RuntimeHostConfigurationOption Include="@(_LinkerHintOutputFeatures)" />
+	  <RuntimeHostConfigurationOption Include="@(_LinkerHintOutputFeatures)" Trim="true" />
 	</ItemGroup>
   </Target>
   

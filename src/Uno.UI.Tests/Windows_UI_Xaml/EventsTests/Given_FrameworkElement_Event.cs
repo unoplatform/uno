@@ -15,6 +15,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.EventsTests
 	[TestClass]
 	public class Given_FrameworkElement_Event
 	{
+		[TestInitialize]
+		public void Init()
+		{
+			UnitTestsApp.App.EnsureApplication();
+		}
+
 		[TestMethod]
 		public void When_DataTemplateEvent()
 		{

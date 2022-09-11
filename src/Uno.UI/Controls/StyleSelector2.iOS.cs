@@ -4,7 +4,7 @@ namespace Uno.UI.Views.Controls
 {
 	public partial class StyleSelector2 : DependencyObject
 	{
-		Style _style = default(Style);
+		Style _style;
 
 		public Style Style {
 			get {

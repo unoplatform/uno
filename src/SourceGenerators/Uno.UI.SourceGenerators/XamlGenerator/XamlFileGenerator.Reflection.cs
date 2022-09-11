@@ -19,12 +19,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private Func<XamlMember, IEventSymbol?>? _findEventType;
 		private Func<INamedTypeSymbol, Dictionary<string, IEventSymbol>>? _getEventsForType;
 		private Func<INamedTypeSymbol, string[]>? _findLocalizableDeclaredProperties;
-		private (string ns, string className) _className;
+		private XClassName? _xClassName;
 		private string[]? _clrNamespaces;
 		private readonly static Func<INamedTypeSymbol, IPropertySymbol?> _findContentProperty;
 		private readonly static Func<INamedTypeSymbol, string, bool> _isAttachedProperty;
 		private readonly static Func<INamedTypeSymbol, string, INamedTypeSymbol> _getAttachedPropertyType;
 		private readonly static Func<INamedTypeSymbol, bool> _isTypeImplemented;
+
+		record XClassName(string Namespace, string ClassName, INamedTypeSymbol? Symbol)
+		{
+			public override string ToString()
+				=> Symbol?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Included))
+				?? Namespace + "." + ClassName;
+		}
 
 		private void InitCaches()
 		{
@@ -42,7 +49,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.FirstOrDefault()
 				?.Namespace ?? "";
 
-			_clrNamespaces = _knownNamespaces?.UnoGetValueOrDefault(defaultXmlNamespace, new string[0]);
+			_clrNamespaces = _knownNamespaces?.UnoGetValueOrDefault(defaultXmlNamespace, Array.Empty<string>());
 		}
 
 		/// <summary>
@@ -62,6 +69,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			return fullTargetType;
+		}
+
+		private string GetGlobalizedTypeName(XamlType type)
+		{
+			var fullTypeName = type.Name;
+			var knownType = FindType(type);
+			if (knownType == null && type.PreferredXamlNamespace.StartsWith("using:"))
+			{
+				fullTypeName = type.PreferredXamlNamespace.TrimStart("using:") + "." + type.Name;
+			}
+			if (knownType != null)
+			{
+				// Override the using with the type that was found in the list of loaded assemblies
+				fullTypeName = knownType.ToDisplayString();
+			}
+
+			return GetGlobalizedTypeName(fullTypeName);
 		}
 
 		private bool IsType(XamlType xamlType, XamlType? baseType)
@@ -359,7 +383,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Search for the type the clr namespaces registered with the xml namespace
 			if (xamlMember.DeclaringType != null)
 			{
-				var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(xamlMember.DeclaringType.PreferredXamlNamespace, new string[0]);
+				var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(xamlMember.DeclaringType.PreferredXamlNamespace, Array.Empty<string>());
 
 				foreach (var clrNamespace in clrNamespaces)
 				{
@@ -395,7 +419,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var resolvedType = type;
 
 					var property = resolvedType.GetAllPropertiesWithName(propertyName).FirstOrDefault();
-					var setMethod = resolvedType.GetMethods().FirstOrDefault(p => p.Name == "Set" + propertyName);
+					var setMethod = resolvedType.GetFirstMethodWithName("Set" + propertyName);
 
 					if (property != null)
 					{
@@ -532,7 +556,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return true;
 				}
 
-				var setMethod = type?.GetMethods().FirstOrDefault(p => p.Name == "Set" + name);
+				var setMethod = type?.GetFirstMethodWithName("Set" + name);
 				if (setMethod is { IsStatic: true, Parameters: { Length: 2 } })
 				{
 					return true;
@@ -560,7 +584,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			do
 			{
-				var setMethod = type?.GetMethods().FirstOrDefault(p => p.Name == "Set" + name);
+				var setMethod = type?.GetFirstMethodWithName("Set" + name);
 
 				if (setMethod != null && setMethod.IsStatic && setMethod.Parameters.Length == 2)
 				{
@@ -748,7 +772,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				// Remove the namespace conditionals declaration
 				var trimmedNamespace = type.PreferredXamlNamespace.Split('?').First();
-				var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(trimmedNamespace, new string[0]);
+				var clrNamespaces = _knownNamespaces.UnoGetValueOrDefault(trimmedNamespace, Array.Empty<string>());
 
 				foreach (var clrNamespace in clrNamespaces)
 				{

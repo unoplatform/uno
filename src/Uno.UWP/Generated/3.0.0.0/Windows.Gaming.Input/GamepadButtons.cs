@@ -2,69 +2,29 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Gaming.Input
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
-	public   enum GamepadButtons 
+	#if false || false || false || false || false || false || false
+	[global::System.FlagsAttribute]
+	public   enum GamepadButtons : uint
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		None,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Menu,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		View,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		A,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		B,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		X,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Y,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		DPadUp,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		DPadDown,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		DPadLeft,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		DPadRight,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		LeftShoulder,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		RightShoulder,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		LeftThumbstick,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		RightThumbstick,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Paddle1,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Paddle2,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Paddle3,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Paddle4,
-		#endif
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.None
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.Menu
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.View
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.A
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.B
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.X
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.Y
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.DPadUp
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.DPadDown
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.DPadLeft
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.DPadRight
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.LeftShoulder
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.RightShoulder
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.LeftThumbstick
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.RightThumbstick
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.Paddle1
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.Paddle2
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.Paddle3
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.Paddle4
 	}
 	#endif
 }

@@ -6,7 +6,7 @@ using System.Text;
 using System.Linq;
 using Uno.Diagnostics.Eventing;
 using Windows.UI.Core;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Media.Animation
 {

@@ -2,11 +2,15 @@
 using System.Diagnostics.Contracts;
 using Windows.Foundation;
 
+#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+namespace Microsoft.UI.Input
+#else
 namespace Windows.UI.Input
+#endif
 {
 	public partial struct ManipulationVelocities
 	{
-		internal static ManipulationVelocities Empty { get; } = new ManipulationVelocities();
+		internal static ManipulationVelocities Empty { get; }
 
 		/// <summary>
 		/// The expansion, or scaling, velocity in device-independent pixel (DIP) per millisecond.

@@ -21,7 +21,7 @@ using Windows.UI.Xaml.Media.Imaging;
 namespace UITests.Shared.Windows_Storage.Pickers
 {
 	[Sample("Windows.Storage", ViewModelType = typeof(FileSavePickerTestsViewModel), IsManualTest = true,
-		Description = "Allows testing all features of FileSavePicker. Currently not supported on Android, iOS, macOS and GTK. Not selecting a file should not cause an exception")]
+		Description = "Allows testing all features of FileSavePicker. Not selecting a file should not cause an exception.")]
 	public sealed partial class FileSavePickerTests : Page
 	{
 		public FileSavePickerTests()
@@ -35,10 +35,10 @@ namespace UITests.Shared.Windows_Storage.Pickers
 			ViewModel = args.NewValue as FileSavePickerTestsViewModel;
 		}
 
-		public FileSavePickerTestsViewModel ViewModel { get; private set; }
+		internal FileSavePickerTestsViewModel ViewModel { get; private set; }
 	}
 
-	public class FileSavePickerTestsViewModel : ViewModelBase
+	internal class FileSavePickerTestsViewModel : ViewModelBase
 	{
 		private string _errorMessage = string.Empty;
 		private string _statusMessage = string.Empty;
@@ -271,7 +271,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 		}
 	}
 
-	public class FileTypeChoiceViewModel : ViewModelBase
+	internal class FileTypeChoiceViewModel : ViewModelBase
 	{
 		private string _name = string.Empty;
 

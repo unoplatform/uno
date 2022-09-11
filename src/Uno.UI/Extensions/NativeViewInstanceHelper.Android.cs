@@ -1,6 +1,6 @@
 ﻿using Android.Runtime;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -67,7 +67,7 @@ namespace Uno.UI
 
 						foreach (var type in cachedTypes)
 						{
-							if (typeof(NativeInstanceHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+							if (typeof(NativeInstanceHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 							{
 								typeof(NativeInstanceHelper).Log().DebugFormat("Pre-fecthing native type information {0}", type);
                             }

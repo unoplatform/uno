@@ -4,10 +4,13 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Uno.Disposables;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
+using Windows.ApplicationModel.Core;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Core;
@@ -23,7 +26,7 @@ using XamlWindow = Windows.UI.Xaml.Window;
 
 namespace UITests.Windows_UI_Core
 {
-	[SampleControlInfo("Windows.UI.Core", viewModelType: typeof(WindowActivationViewModel))]
+	[SampleControlInfo("Windows.UI.Core", controlName: "Application/Window lifecycle events", viewModelType: typeof(WindowActivationViewModel), isManualTest: true)]
 	public sealed partial class WindowActivationTests : Page
 	{
 		public WindowActivationTests()
@@ -32,7 +35,7 @@ namespace UITests.Windows_UI_Core
 			DataContextChanged += WindowActivationTests_DataContextChanged;
 		}
 
-		public WindowActivationViewModel Model { get; private set; }
+		internal WindowActivationViewModel Model { get; private set; }
 
 		private void WindowActivationTests_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{
@@ -40,7 +43,7 @@ namespace UITests.Windows_UI_Core
 		}
 	}
 
-	public class WindowActivationViewModel : ViewModelBase
+	internal class WindowActivationViewModel : ViewModelBase
 	{
 		private string _changeTime;
 		private CoreWindowActivationState? _coreWindowActivationState;
@@ -54,6 +57,12 @@ namespace UITests.Windows_UI_Core
 			XamlWindow.Current.VisibilityChanged += WindowVisibilityChanged;
 			Application.Current.EnteredBackground += AppEnteredBackground;
 			Application.Current.LeavingBackground += AppLeavingBackground;
+			CoreApplication.EnteredBackground += CoreApplicationEnteredBackground;
+			CoreApplication.LeavingBackground += CoreApplicationLeavingBackground;
+			Application.Current.Suspending += ApplicationSuspending;
+			Application.Current.Resuming += ApplicationResuming;
+			CoreApplication.Suspending += CoreApplicationResuming;
+			CoreApplication.Resuming += CoreApplicationResuming;
 
 			Disposables.Add(() =>
 			{
@@ -62,12 +71,20 @@ namespace UITests.Windows_UI_Core
 				XamlWindow.Current.VisibilityChanged -= WindowVisibilityChanged;
 				Application.Current.EnteredBackground -= AppEnteredBackground;
 				Application.Current.LeavingBackground -= AppLeavingBackground;
+				CoreApplication.EnteredBackground -= CoreApplicationEnteredBackground;
+				CoreApplication.LeavingBackground -= CoreApplicationLeavingBackground;
+				Application.Current.Suspending -= ApplicationSuspending;
+				Application.Current.Resuming -= ApplicationResuming;
+				CoreApplication.Suspending -= CoreApplicationResuming;
+				CoreApplication.Resuming -= CoreApplicationResuming;
 			});
-		}
+		}		
 
 		public ObservableCollection<string> History { get; } = new ObservableCollection<string>();
 
 		public ICommand ClearHistoryCommand => GetOrCreateCommand(() => History.Clear());
+
+		public ICommand CopyToClipboardCommand => GetOrCreateCommand(() => CopyToClipboard());
 
 		public CoreWindowActivationState? CoreWindowActivationState
 		{
@@ -88,6 +105,8 @@ namespace UITests.Windows_UI_Core
 				RaisePropertyChanged();
 			}
 		}
+
+		public bool SimulateDeferrals { get; set; }
 
 		public string WindowVisibility
 		{
@@ -135,14 +154,86 @@ namespace UITests.Windows_UI_Core
 		}
 
 
-		private void AppLeavingBackground(object sender, Windows.ApplicationModel.LeavingBackgroundEventArgs e)
+		private async void AppLeavingBackground(object sender, Windows.ApplicationModel.LeavingBackgroundEventArgs e)
 		{
-			AddHistory("Application.LeavingBackground");
+			AddHistory("Application.LeavingBackground started");
+			if (SimulateDeferrals)
+			{
+				var deferral = e.GetDeferral();
+				await Task.Delay(500);
+				deferral.Complete();
+			}
+			AddHistory("Application.LeavingBackground ended");
 		}
 
-		private void AppEnteredBackground(object sender, Windows.ApplicationModel.EnteredBackgroundEventArgs e)
+		private async void CoreApplicationLeavingBackground(object sender, Windows.ApplicationModel.LeavingBackgroundEventArgs e)
 		{
-			AddHistory("Application.EnteredBackground");
+			AddHistory("CoreApplication.LeavingBackground started");
+			if (SimulateDeferrals)
+			{
+				var deferral = e.GetDeferral();
+				await Task.Delay(500);
+				deferral.Complete();
+			}
+			AddHistory("CoreApplication.LeavingBackground ended");
+		}
+
+		private async void AppEnteredBackground(object sender, Windows.ApplicationModel.EnteredBackgroundEventArgs e)
+		{
+			AddHistory("Application.EnteredBackground started");
+			if (SimulateDeferrals)
+			{
+				var deferral = e.GetDeferral();
+				await Task.Delay(500);
+				deferral.Complete();
+			}
+			AddHistory("Application.EnteredBackground ended");
+		}
+
+		private async void CoreApplicationEnteredBackground(object sender, Windows.ApplicationModel.EnteredBackgroundEventArgs e)
+		{
+			AddHistory("CoreApplication.EnteredBackground started");
+			if (SimulateDeferrals)
+			{
+				var deferral = e.GetDeferral();
+				await Task.Delay(500);
+				deferral.Complete();
+			}
+			AddHistory("CoreApplication.EnteredBackground ended");
+		}
+
+		private void ApplicationResuming(object sender, object e)
+		{
+			AddHistory("Application.Resuming");
+		}
+
+		private void CoreApplicationResuming(object sender, object e)
+		{
+			AddHistory("CoreApplication.Resuming");
+		}
+
+		private async void CoreApplicationSuspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
+		{
+			AddHistory("CoreApplication.Suspending started");
+			if (SimulateDeferrals)
+			{
+				var deferral = e.SuspendingOperation.GetDeferral();
+				await Task.Delay(500);
+				deferral.Complete();
+			}
+			AddHistory("CoreApplication.Suspending ended");
+		}
+
+		private async void ApplicationSuspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
+		{
+			AddHistory("Application.Suspending started");
+			if (SimulateDeferrals)
+			{
+				var deferral = e.SuspendingOperation.GetDeferral();
+				await Task.Delay(500);
+				deferral.Complete();
+			}
+			AddHistory("Application.Suspending ended");
 		}
 
 		private void AddHistory(string eventName)
@@ -152,6 +243,13 @@ namespace UITests.Windows_UI_Core
 				$"{DateTime.Now.ToLongTimeString()} | {eventName} | State: {CoreWindowActivationState} " +
 				$"| Mode: {CoreWindow.GetForCurrentThread().ActivationMode} | Visibility: {XamlWindow.Current.Visible}";
 			History.Insert(0, historyItem);
+		}
+
+		private void CopyToClipboard()
+		{
+			var dataPackage = new DataPackage();
+			dataPackage.SetText(string.Join(Environment.NewLine, History));
+			Clipboard.SetContent(dataPackage);
 		}
 	}
 }

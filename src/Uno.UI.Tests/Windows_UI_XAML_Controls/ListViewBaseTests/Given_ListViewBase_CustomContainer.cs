@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -83,6 +84,57 @@ namespace Uno.UI.Tests.ItemsControlTests_CustomContainer
 			Assert.IsTrue(container.IsGeneratedContainer);
 			Assert.IsFalse(container.ContentTemplateRoot is MyCustomItemContainer);
 			Assert.AreEqual(42, container.DataContext);
+		}
+
+		[TestMethod]
+		public void When_ObservableCollection()
+		{
+			var count = 0;
+			var panel = new StackPanel();
+
+			var itemsPresenter = new MyItemsControl();
+
+			var itemTemplate = new DataTemplate(() =>
+			{
+				count++;
+				return new Border();
+			});
+
+			var SUT = new MyItemsControl()
+			{
+				ItemsPanelRoot = panel,
+				ItemTemplate = itemTemplate,
+				Template = new ControlTemplate(() => new ItemsPresenter()),
+			};
+
+			SUT.ApplyTemplate();
+
+			Assert.AreEqual(0, count);
+
+			var collection = new ObservableCollection<int>();
+			SUT.ItemsSource = collection;
+
+			Assert.AreEqual(0, count);
+
+			collection.Add(1);
+
+			Assert.AreEqual(1, count);
+
+			collection.Add(42);
+
+			Assert.AreEqual(2, count);
+
+			collection.Add(43);
+
+			Assert.AreEqual(3, count);
+
+			collection.RemoveAt(0);
+
+			Assert.AreEqual(3, count);
+
+			collection[0] = 44;
+
+			Assert.AreEqual(FeatureConfiguration.FrameworkTemplate.IsPoolingEnabled ? 3 : 4, count);
 		}
 	}
 

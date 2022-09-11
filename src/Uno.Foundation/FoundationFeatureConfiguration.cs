@@ -32,5 +32,19 @@ namespace Uno
 			[DefaultValue(_defaultAllowNegativeWidthHeight)]
 			public static bool AllowNegativeWidthHeight { get; set; } = _defaultAllowNegativeWidthHeight;
 		}
+
+#if __WASM__
+		public static class Runtime
+		{
+			/// <summary>
+			/// Indicates if exception thrown in javascript should be rethrown in managed code.
+			/// </summary>
+			public static bool RethrowNativeExceptions
+			{
+				get => WebAssembly.Runtime.RethrowNativeExceptions;
+				set => WebAssembly.Runtime.RethrowNativeExceptions = value;
+			}
+		}
+#endif
 	}
 }

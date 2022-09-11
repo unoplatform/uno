@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 
@@ -177,6 +179,11 @@ namespace Windows.UI.Xaml
 
 		private void Materialize(bool isVisibilityChanged)
 		{
+			if(this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"ElementStub.Materialize(isVibilityChanged: {isVisibilityChanged})");
+			}
+
 			if (_content == null && !_isMaterializing)
 			{
 #if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
@@ -203,15 +210,20 @@ namespace Windows.UI.Xaml
 #if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				}
 				finally
+#endif
 				{
 					_isMaterializing = false;
 				}
-#endif
 			}
 		}
 
 		private void Dematerialize()
 		{
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"ElementStub.Dematerialize()");
+			}
+
 			if (_content != null)
 			{
 				var newView = SwapViews(oldView: (FrameworkElement)_content, newViewProvider: () => this as View);

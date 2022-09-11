@@ -12,8 +12,8 @@ using System.Threading.Tasks;
 using Uno.UI;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Foundation;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 using Windows.UI;
 using Windows.UI.Core;
 
@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 		/// This should generally be left false, but may be required in cases that the image is rapidly unloaded and reloaded, or that 
 		/// OnUnloaded/OnDetachedFromWindow is improperly called when the view isn't really being removed, and performance/stability is affected.
 		/// </summary>
-		public bool PreserveStateOnUnload { get; set; } = false;
+		public bool PreserveStateOnUnload { get; set; }
 
 		private readonly static IEventProvider _imageTrace = Tracing.Get(TraceProvider.Id);
 
@@ -39,6 +39,7 @@ namespace Windows.UI.Xaml.Controls
 
 		//Set just as image source is going to be set (which may be dispatched)
 		private ImageSource _openedImage;
+
 		//Set after image source fetch has successfully resolved
 		private ImageSource _successfullyOpenedImage;
 
@@ -62,14 +63,25 @@ namespace Windows.UI.Xaml.Controls
 		public event RoutedEventHandler ImageOpened;
 		public event ExceptionRoutedEventHandler ImageFailed;
 
+		private Color? _monochromeColor;
+
 		/// <summary>
 		/// When set, the resulting image is tentatively converted to Monochrome.
 		/// </summary>
-		internal Color? MonochromeColor { get; set; }
+		internal Color? MonochromeColor
+		{
+			get => _monochromeColor;
+			set
+			{
+				_monochromeColor = value;
+				// Force loading the image.
+				OnSourceChanged(Source, forceReload: true);
+			}
+		}
 
 		protected virtual void OnImageFailed(ImageSource imageSource)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug(this.ToString() + " Image failed to open");
 			}
@@ -79,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected virtual void OnImageOpened(ImageSource imageSource)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug(this.ToString() + " Image opened successfully");
 			}
@@ -118,10 +130,10 @@ namespace Windows.UI.Xaml.Controls
 				typeof(Image),
 				new FrameworkPropertyMetadata(
 					defaultValue: null,
-					propertyChangedCallback: (s, e) => ((Image)s).OnSourceChanged((ImageSource)e.OldValue, (ImageSource)e.NewValue))
+					propertyChangedCallback: (s, e) => ((Image)s).OnSourceChanged((ImageSource)e.NewValue))
 				);
 
-		private void OnSourceChanged(ImageSource oldValue, ImageSource newValue)
+		private void OnSourceChanged(ImageSource newValue, bool forceReload = false)
 		{
 			if (newValue is WriteableBitmap wb)
 			{
@@ -149,7 +161,7 @@ namespace Windows.UI.Xaml.Controls
 					);
 			}
 
-			TryOpenImage();
+			TryOpenImage(forceReload);
 		}
 
 #endregion
@@ -256,7 +268,7 @@ namespace Windows.UI.Xaml.Controls
 		protected override Size MeasureOverride(Size availableSize)
 		{
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug(ToString() + $" measuring with availableSize={availableSize}");
 			}
@@ -313,7 +325,7 @@ namespace Windows.UI.Xaml.Controls
 
 				var containerSize = this.MeasureSource(availableSize, sourceSize);
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug(ToString() + $" measuring with Stretch.Uniform with availableSize={constrainedAvailableSize}, returning desiredSize={containerSize}");
 				}
@@ -361,7 +373,7 @@ namespace Windows.UI.Xaml.Controls
 						break;
 				}
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug(ToString() + $" measuring with knownWidth={knownWidth} with availableSize={constrainedAvailableSize}, returning desiredSize={desiredSize}");
 				}
@@ -392,7 +404,7 @@ namespace Windows.UI.Xaml.Controls
 						break;
 				}
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug(ToString() + $" measuring with knownHeight={knownHeight} with availableSize={constrainedAvailableSize}, returning desiredSize={desiredSize}");
 				}
@@ -405,7 +417,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug(ToString() + $" arranging with finalSize={finalSize}");
 			}

@@ -201,7 +201,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void InvokeOnScroll()
 		{
-			XamlParent?.ScrollViewer?.OnScrollInternal(
+			XamlParent?.ScrollViewer?.Presenter?.OnNativeScroll(
 				ViewHelper.PhysicalToLogicalPixels(NativeLayout.HorizontalOffset),
 				ViewHelper.PhysicalToLogicalPixels(NativeLayout.VerticalOffset),
 				isIntermediate: _isInAnimatedScroll

@@ -1,14 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;xamarinios10;monoandroid11.0;xamarinmac20;uap10.0.17763</TargetFrameworks>
-		
+		<TargetFrameworks>netstandard2.0;xamarinios10;monoandroid12.0;xamarinmac20;uap10.0.18362</TargetFrameworks>
+		<TargetFrameworksCI>netstandard2.0;xamarinios10;monoandroid11.0;monoandroid12.0;xamarinmac20;uap10.0.18362</TargetFrameworksCI>
+
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 		
 		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Reference</UnoRuntimeIdentifier>
 
 		<NoWarn>$(NoWarn);CS0168;CS0219;CS0067;CS0162</NoWarn>
+		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
@@ -29,30 +31,23 @@
 		<Reference Include="System.Xml" />
 		<Reference Include="System.Xml.Linq" />
 	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)'!='uap10.0.17763'">
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_UI_Xaml\FrameworkElementTests\*.cs">
-			<Link>UnitTests\Windows_UI_Xaml\FrameworkElementTests\%(RecursiveDir)%(FileName)%(Extension)</Link>
+
+	<ItemGroup>
+		<Compile Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\TestFramework\ActivePlatformsAttribute.cs">
+			<Link>UITests\_Engine\UnoUITests\ActivePlatformsAttribute.cs</Link>
 		</Compile>
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_UI_XAML_Controls\GridTests\Given_Grid_And_Min_Max.cs">
-			<Link>UnitTests\Windows_UI_Xaml_Controls\GridTests\%(RecursiveDir)%(FileName)%(Extension)</Link>
-		</Compile>
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_UI_XAML_Controls\GridTests\Context.cs">
-			<Link>UnitTests\Windows_UI_Xaml_Controls\GridTests\%(RecursiveDir)%(FileName)%(Extension)</Link>
-		</Compile>
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_UI_XAML_Controls\BorderTests\*.cs">
-			<Link>UnitTests\Windows_UI_Xaml_Controls\BorderTests\%(RecursiveDir)%(FileName)%(Extension)</Link>
-		</Compile>
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_Globalization\Given_Rounder.cs">
-			<Link>UnitTests\Windows_Globalization\%(RecursiveDir)%(FileName)%(Extension)</Link>
+		<Compile Include="..\SamplesApp\SamplesApp.UITests\TestFramework\ImageAssert.ExpectedPixels.cs" Link="Helpers\ImageAssert.ExpectedPixels.cs" />
+		<Compile Include="..\SamplesApp\SamplesApp.UITests\TestFramework\ImageAssert.Validations.cs" Link="Helpers\ImageAssert.Validations.cs" />
+		<Compile Include="..\Uno.Foundation\Extensions\IsExternalInit.cs" Link="Extensions\IsExternalInit.cs" />
+		<Compile Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\**\Extensions\*.cs">
+			<Link>UITests\_Engine\SamplesAppUITests\%(RecursiveDir)%(FileName)%(Extension)</Link>
 		</Compile>
 	</ItemGroup>
+
+	<Import Project="UnitTestsImport.props" />
+
 	<ItemGroup>
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_Globalization\Given_SignificantDigitsNumberRounder.cs">
-			<Link>UnitTests\Windows_Globalization\%(RecursiveDir)%(FileName)%(Extension)</Link>
-		</Compile>
-		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_Globalization\Given_IncrementNumberRounder.cs">
-			<Link>UnitTests\Windows_Globalization\%(RecursiveDir)%(FileName)%(Extension)</Link>
-		</Compile>
+		<EmbeddedResource Include="Assets\Border_Snapshot.bgra8" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
@@ -74,14 +69,20 @@
 		<Reference Include="System.json" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.17763'">
+	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.18362'">
 		<PackageReference Include="System.Numerics.Vectors" Version="4.3.0" />
 		<PackageReference Include="Microsoft.UI.Xaml" Version="2.7.0-prerelease.210816001" />
+		
+		<PackageReference Include="Uno.Core.Extensions.Logging" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
+		<PackageReference Include="Uno.Core.Extensions.Disposables" />
+		<PackageReference Include="Uno.Core.Extensions.Compatibility" />
+		<PackageReference Include="Uno.Core.Extensions" />
 
 		<!-- We remove Unit tests imported from MUX on UAP as they are usualy heavily relying on internal classes.-->
 		<Compile Remove="$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.cs" />
 	</ItemGroup>
-	<PropertyGroup Condition="'$(TargetFramework)'=='uap10.0.17763'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='uap10.0.18362'">
 		<!--SkipMicrosoftUIXamlCheckTargetPlatformVersion is required for Microsoft.UI.Xaml as we only validate compilation on UAP-->
 		<SkipMicrosoftUIXamlCheckTargetPlatformVersion>true</SkipMicrosoftUIXamlCheckTargetPlatformVersion>
 		<DefineConstants>$(DefineConstants);WINDOWS_UWP</DefineConstants>
@@ -94,6 +95,9 @@
 		<Page Remove="@(Page)" />
 		<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.18362'">
+		<Page Remove="$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -114,12 +118,6 @@
 	
 	<ItemGroup>
 		<Compile Include="Tests\Windows_UI_Xaml_Controls\HtmlElementAttributeTests\Given_HtmlElementAttribute.Wasm.cs" />
-	</ItemGroup>
-	
-	<ItemGroup>
-		<Page Update="Tests\Windows_UI_Xaml\Controls\xLoad_xBind.xaml">
-			<SubType>Designer</SubType>
-		</Page>
 	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />

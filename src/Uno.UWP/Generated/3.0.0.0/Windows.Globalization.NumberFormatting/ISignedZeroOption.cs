@@ -2,18 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Globalization.NumberFormatting
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface ISignedZeroOption 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		bool IsZeroSigned
-		{
-			get;
-			set;
-		}
-		#endif
+		// Skipping already declared property IsZeroSigned
 		// Forced skipping of method Windows.Globalization.NumberFormatting.ISignedZeroOption.IsZeroSigned.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.ISignedZeroOption.IsZeroSigned.set
 	}

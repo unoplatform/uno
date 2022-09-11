@@ -14,6 +14,6 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<TextBlock Grid.Row="0" TextWrapping="Wrap"  x:Name="timeSince" />
-		<TextBlock Grid.Row="1" TextWrapping="Wrap"  Text="This is mainly for mobile. It should not take longer than 1 or 2 seconds for the orientation event to happen once orientation changes."/>
+		<TextBlock Grid.Row="1" TextWrapping="Wrap"  Text="This is mainly for mobile. It should not take longer than 1 or 2 seconds for the orientation event to happen once orientation changes." x:Name="message"/>
 	</Grid>
 </Page>

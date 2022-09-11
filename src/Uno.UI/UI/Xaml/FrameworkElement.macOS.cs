@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
 using Windows.Foundation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using AppKit;
 
@@ -47,8 +47,8 @@ namespace Windows.UI.Xaml
 
 			if (!IsMeasureDirty)
 			{
-				IsArrangeDirty = true;
-				IsMeasureDirty = true;
+				InvalidateMeasure();
+				InvalidateArrange();
 
 				if (Parent is FrameworkElement fe)
 				{
@@ -70,14 +70,15 @@ namespace Windows.UI.Xaml
 			{
 				_inLayoutSubviews = true;
 
+				var bounds = Bounds.Size;
 				if (IsMeasureDirty)
 				{
-					XamlMeasure(Bounds.Size);
+					XamlMeasure(bounds);
 				}
 
 				OnBeforeArrange();
 
-				var size = SizeFromUISize(Bounds.Size);
+				var size = SizeFromUISize(bounds);
 
 				_layouter.Arrange(new Rect(0, 0, size.Width, size.Height));
 
@@ -90,8 +91,8 @@ namespace Windows.UI.Xaml
 			finally
 			{
 				_inLayoutSubviews = false;
-				IsMeasureDirty = false;
-				IsArrangeDirty = false;
+
+				ClearLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.ArrangeDirty);
 			}
 		}
 

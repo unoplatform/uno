@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Controls;
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
 
-	[SampleControlInfo("ButtonTestsControl", nameof(ToggleSwitch_IsEnable_Automated))]
+	[SampleControlInfo("Buttons", nameof(ToggleSwitch_IsEnable_Automated))]
 	public sealed partial class ToggleSwitch_IsEnable_Automated : UserControl
 	{
 

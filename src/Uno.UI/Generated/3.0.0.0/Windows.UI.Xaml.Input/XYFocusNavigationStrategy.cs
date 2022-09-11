@@ -2,24 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum XYFocusNavigationStrategy 
 	{
-		#if false
-		Auto,
-		#endif
-		#if false
-		Projection,
-		#endif
-		#if false
-		NavigationDirectionDistance,
-		#endif
-		#if false
-		RectilinearDistance,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Input.XYFocusNavigationStrategy.Auto
+		// Skipping already declared field Windows.UI.Xaml.Input.XYFocusNavigationStrategy.Projection
+		// Skipping already declared field Windows.UI.Xaml.Input.XYFocusNavigationStrategy.NavigationDirectionDistance
+		// Skipping already declared field Windows.UI.Xaml.Input.XYFocusNavigationStrategy.RectilinearDistance
 	}
 	#endif
 }

@@ -1,35 +1,37 @@
-﻿# ListViewBase in Uno
+﻿# ListViewBase in Uno Platform
 
-Uno's implementation of ListViewBase supports shared styling and template use with UWP apps, whilst internally delegating to the native 
-list view on each platform for high performance. This document explains how Uno's implementation differs internally from Windows.
+Uno Platform's implementation of ListViewBase supports shared styling and template use with UWP apps, whilst internally delegating to the native list view on Android and iOS for high performance. This document explains how Uno's implementation differs in some details from Windows.
+
+For contributors, [in-depth documentation on the internals of ListView is available](../uno-development/listviewbase-internals.md).
 
 ## Style reuse
 
 This is a stripped-down view of the default style for ListView in Uno:
 
 ```xml
-	<!-- Default style for Windows.UI.Xaml.Controls.ListView -->
-	<xamarin:Style TargetType="ListView">
-		<Setter Property="ItemsPanel">
-			<Setter.Value>
-				<ItemsPanelTemplate>
-					<ItemsStackPanel Orientation="Vertical" />
-				</ItemsPanelTemplate>
-			</Setter.Value>
-		</Setter>
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="ListView">
-					<Border>
-						<ScrollViewer x:Name="ScrollViewer"
-									  xamarin:Style="{StaticResource ListViewBaseScrollViewerStyle}">
-							<ItemsPresenter/>
-						</ScrollViewer>
-					</Border>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</xamarin:Style>
+<!-- Default style for Windows.UI.Xaml.Controls.ListView -->
+<xamarin:Style TargetType="ListView">
+  <Setter Property="ItemsPanel">
+    <Setter.Value>
+      <ItemsPanelTemplate>
+        <ItemsStackPanel Orientation="Vertical" />
+      </ItemsPanelTemplate>
+    </Setter.Value>
+  </Setter>
+  <Setter Property="Template">
+    <Setter.Value>
+      <ControlTemplate TargetType="ListView">
+        <Border>
+          <ScrollViewer
+              x:Name="ScrollViewer"
+              xamarin:Style="{StaticResource ListViewBaseScrollViewerStyle}">
+            <ItemsPresenter/>
+          </ScrollViewer>
+        </Border>
+      </ControlTemplate>
+    </Setter.Value>
+  </Setter>
+</xamarin:Style>
 ```
 
 As on Windows, the ItemsPanelTemplate can be set; ItemsStackPanel and ItemsWrapGrid are the supported panels, and each of these supports most of the same properties as on Windows.
@@ -37,21 +39,21 @@ As on Windows, the ItemsPanelTemplate can be set; ItemsStackPanel and ItemsWrapG
 In fact there is only one difference from the Windows style, which is a custom Style on the ScrollViewer element. Below is the custom ScrollViewer style in its entirety:
 
 ```xml
-	<!--This is a Uno-only Style which removes the ScrollContentPresenter, in order for ListViewBase to use the default Windows style (nearly)
-	while delegating to a native implementation for performance.-->
-	<xamarin:Style TargetType="ScrollViewer"
-				   x:Key="ListViewBaseScrollViewerStyle">
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="ScrollViewer">
-					<ListViewBaseScrollContentPresenter x:Name="ScrollContentPresenter"
-														Content="{TemplateBinding Content}"
-														ContentTemplate="{TemplateBinding ContentTemplate}"
-														ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"/>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</xamarin:Style>
+<!-- This is a Uno-only Style which removes the ScrollContentPresenter, in order for ListViewBase to use the default Windows style (nearly)
+     while delegating to a native implementation for performance. -->
+<xamarin:Style TargetType="ScrollViewer" x:Key="ListViewBaseScrollViewerStyle">
+  <Setter Property="Template">
+    <Setter.Value>
+      <ControlTemplate TargetType="ScrollViewer">
+        <ListViewBaseScrollContentPresenter
+            x:Name="ScrollContentPresenter"
+            Content="{TemplateBinding Content}"
+            ContentTemplate="{TemplateBinding ContentTemplate}"
+            ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"/>
+      </ControlTemplate>
+    </Setter.Value>
+  </Setter>
+</xamarin:Style>
 ```
 
 This style replaces the internal `ScrollPresenter` with a `ListViewBaseScrollContentPresenter`, for reasons explained below. Custom 
@@ -154,15 +156,6 @@ ScrollViewer + ScrollContentPresenter.
 |                                                    |   |                                                    |
 +----------------------------------------------------+   +----------------------------------------------------+
 ```
-
-### Internal classes
-
-| Uno class | Android base class | iOS base class | Description |
-| --- | --- | --- | --- |
-| NativeListViewBase | AndroidX.RecyclerView.Widget.RecyclerView | UIKit.UICollectionView | Native list view, parent of item views. |
-| ItemsStackPanelLayout(ItemsWrapGridLayout) | RecyclerView.LayoutManager | UIKit.UICollectionViewLayout | Tells NativeListViewBase how to lay out its items. Bridge for ItemsStackPanel(ItemsWrapGrid). |
-| NativeListViewBaseAdapter(Android), ListViewBaseSource(iOS) | RecyclerView.Adapter | UIKit.UICollectionViewSource | Handles creation and reuse of item views. No direct UWP equivalent. |
-| ScrollingViewCache | RecyclerView.ViewCacheExtension | - | Additional virtualization handling on Android which optimizes scroll performance. |
 
 ### Other differences from UWP
  

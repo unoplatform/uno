@@ -20,8 +20,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			DefaultStyleKey = typeof(ToggleSwitch);
 
-			this.RegisterDefaultValueProvider(GetDefaultValue2);
-
 			//TODO Uno specific: Calling prepare state here, but should be called from DXamlCore.
 			PrepareState();
 		}

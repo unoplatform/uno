@@ -4,9 +4,9 @@
 
 DatePicker is use to select a specific date.
 
-*Button showing date open the date picker popup. 
-*Bind to the Date property of the control to set initial time.
-*Done/OK button save the new selected date. 
+* Button showing date open the date picker popup.
+* Bind to the Date property of the control to set initial time.
+* Done/OK button save the new selected date.
 
 ### Device-specific implementation quirks
 
@@ -35,3 +35,6 @@ Since **iOS14** the native `DatePicker` changed the way it's presented. By defau
 ```csharp
 Uno.UI.FeatureConfiguration.DatePicker.UseLegacyStyle = true;
 ```
+
+> [!IMPORTANT]
+> This feature flag is required and will only affect iOS 14 devices. As of **iOS 15**, the preferred style for the DatePicker is again the one found in iOS13 and earlier.

@@ -1,20 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Private.Infrastructure;
-using static Private.Infrastructure.TestServices;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Shapes;
-using Windows.UI.Xaml.Media;
-using Windows.UI;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Windows.UI;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
+using Windows.Foundation;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -44,7 +40,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				HorizontalScrollMode = ScrollMode.Disabled,
 				Height = 100,
 				Width = 100,
-				Content = new Border {Height = 200, Width = 50}
+				Content = new Border { Height = 200, Width = 50 }
 			};
 			WindowHelper.WindowContent = sut;
 
@@ -128,6 +124,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_ScrollViewer_Resized()
 		{
 			var content = new Border
@@ -137,13 +137,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Background = new SolidColorBrush(Colors.Cyan)
 			};
 
-			var sut = new ScrollViewer {Content = content};
+			var sut = new ScrollViewer { Content = content };
 
-			var container = new Border {Child = sut};
+			var container = new Border { Child = sut };
 
 			WindowHelper.WindowContent = container;
-
-			await WindowHelper.WaitForLoaded(content);
 
 			using var _ = new AssertionScope();
 
@@ -188,6 +186,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Presenter_Doesnt_Take_Up_All_Space()
 		{
 			const int ContentWidth = 700;
@@ -217,6 +218,219 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(ContentWidth, SUT.ExtentWidth);
 			Assert.AreEqual(ContentWidth - PresenterActualWidth, SUT.ScrollableWidth);
 			;
+		}
+		
+		[TestMethod]
+#if __WASM__
+		// Issue needs to be fixed first for WASM for Right and Bottom Margin missing
+		// Details here: https://github.com/unoplatform/uno/issues/7000
+		[Ignore]
+#endif
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_ScrollViewer_Centered_With_Margin_Inside_Tall_Rectangle()
+		{
+			const int ContentHeight = 300;
+			const int ContentMargin = 10;
+			var content = new Border
+			{
+				Width = 300,
+				Height = ContentHeight,
+				Margin = new Thickness(ContentMargin),
+				Background = new SolidColorBrush(Colors.DeepPink)
+			};
+			var SUT = new ScrollViewer
+			{
+				Background = new SolidColorBrush(Colors.Pink),
+				Width = 50,
+				Height = double.NaN,
+				HorizontalAlignment = HorizontalAlignment.Center,
+				VerticalAlignment = VerticalAlignment.Center,
+				Content = content
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForLoaded(content);
+
+			const double ScrollViewerHeight = ContentHeight + 2 * ContentMargin;
+			await WindowHelper.WaitForEqual(ScrollViewerHeight, () => SUT.ActualHeight);
+
+			Assert.AreEqual(ScrollViewerHeight, SUT.ExtentHeight);
+		}
+
+		[TestMethod]
+#if __WASM__
+		// Issue needs to be fixed first for WASM for Right and Bottom Margin missing
+		// Details here: https://github.com/unoplatform/uno/issues/7000
+		[Ignore]
+#endif
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_ScrollViewer_Centered_With_Margin_Inside_Wide_Rectangle()
+		{
+			const int ContentWidth = 300;
+			const int ContentMargin = 10;
+			var content = new Border
+			{
+				Height = 300,
+				Width = ContentWidth,
+				Margin = new Thickness(ContentMargin),
+				Background = new SolidColorBrush(Colors.DeepPink)
+			};
+			var SUT = new ScrollViewer
+			{
+				Background = new SolidColorBrush(Colors.Pink),
+				Height = 50,
+				Width = double.NaN,
+				HorizontalAlignment = HorizontalAlignment.Center,
+				VerticalAlignment = VerticalAlignment.Center,
+				Content = content
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForLoaded(content);
+
+			const double ScrollViewerWidth = ContentWidth + 2 * ContentMargin;
+			await WindowHelper.WaitForEqual(ScrollViewerWidth, () => SUT.ActualWidth);
+
+			Assert.AreEqual(ScrollViewerWidth, SUT.ExtentWidth);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282! epic")]
+#endif
+		public async Task When_Direct_Content_BringIntoView()
+		{
+			var scrollViewer = new ScrollViewer()
+			{
+				Height = 200,
+				Width = 200
+			};
+			var rectangle = new Border()
+			{
+				Background = new SolidColorBrush(Colors.Red),
+				Margin = new Thickness(0, 500, 0, 0),
+				Width = 100,
+				Height = 100
+			};
+			scrollViewer.Content = rectangle;
+			WindowHelper.WindowContent = scrollViewer;
+			await WindowHelper.WaitForLoaded(scrollViewer);
+			bool viewChanged = false;
+			scrollViewer.ViewChanged += (s, e) =>
+			{
+				viewChanged = true;
+			};
+
+			rectangle.StartBringIntoView(new BringIntoViewOptions() { AnimationDesired = false });
+
+			await WindowHelper.WaitFor(() => viewChanged);
+
+			Assert.AreEqual(400, scrollViewer.VerticalOffset, 5);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Nested_Scroll_BringIntoView()
+		{
+			var outerScrollViewer = new ScrollViewer()
+			{
+				Background = new SolidColorBrush(Colors.Yellow),
+				Height = 300,
+				Width = 200,
+				Padding = new Thickness(20, 20, 20, 20)
+			};
+
+			var innerScrollViewer = new ScrollViewer()
+			{
+				Background = new SolidColorBrush(Colors.Blue),
+				Height = 200,
+				Margin = new Thickness(0, 400, 0, 0),
+				Padding = new Thickness(20, 20, 20, 20)
+			};
+
+			var item = new Border()
+			{
+				Background = new SolidColorBrush(Colors.Red),
+				Margin = new Thickness(0, 600, 0, 0),
+				Width = 100,
+				Height = 100
+			};
+
+			innerScrollViewer.Content = item;
+			outerScrollViewer.Content = innerScrollViewer;
+			WindowHelper.WindowContent = outerScrollViewer;
+			await WindowHelper.WaitForLoaded(outerScrollViewer);
+
+			bool outerViewChanged = false;
+
+			item.BringIntoViewRequested += (s, e) =>
+			{
+				Assert.AreEqual(false, e.AnimationDesired);
+				Assert.AreEqual(false, e.Handled);
+				Assert.IsTrue(double.IsNaN(e.HorizontalAlignmentRatio));
+				Assert.IsTrue(double.IsNaN(e.VerticalAlignmentRatio));
+				Assert.AreEqual(0, e.HorizontalOffset);
+				Assert.AreEqual(0, e.VerticalOffset);
+				Assert.AreEqual(item, e.OriginalSource);
+				Assert.AreEqual(item, e.TargetElement);
+				Assert.AreEqual(new Rect(0, 0, 100, 100), e.TargetRect);
+			};
+
+			innerScrollViewer.BringIntoViewRequested += (s, e) =>
+			{
+				Assert.AreEqual(false, e.AnimationDesired);
+				Assert.AreEqual(false, e.Handled);
+				Assert.IsTrue(double.IsNaN(e.HorizontalAlignmentRatio));
+				Assert.IsTrue(double.IsNaN(e.VerticalAlignmentRatio));
+				Assert.AreEqual(0, e.HorizontalOffset);
+				Assert.AreEqual(0, e.VerticalOffset);
+#if HAS_UNO // These values differ slightly from ScrollViewer's due to the fact that our implementation is based on the newer ScrollView control
+				Assert.AreEqual(item, e.OriginalSource);
+				Assert.AreEqual(innerScrollViewer, e.TargetElement);
+				Assert.AreEqual(new Rect(0, 60, 100, 100), e.TargetRect);
+#endif
+			};
+
+			outerScrollViewer.BringIntoViewRequested += (s, e) =>
+			{
+				Assert.AreEqual(false, e.AnimationDesired);
+				Assert.AreEqual(false, e.Handled);
+				Assert.IsTrue(double.IsNaN(e.HorizontalAlignmentRatio));
+				Assert.IsTrue(double.IsNaN(e.VerticalAlignmentRatio));
+				Assert.AreEqual(0, e.HorizontalOffset);
+				Assert.AreEqual(0, e.VerticalOffset);
+#if HAS_UNO // These values differ slightly from ScrollViewer's due to the fact that our implementation is based on the newer ScrollView control
+				Assert.AreEqual(item, e.OriginalSource);
+				Assert.AreEqual(outerScrollViewer, e.TargetElement);
+				Assert.AreEqual(new Rect(20, 160, 100, 100), e.TargetRect);
+#endif
+			};
+
+			outerScrollViewer.ViewChanged += (s, e) =>
+			{
+				outerViewChanged = true;
+			};
+
+			item.StartBringIntoView(new BringIntoViewOptions() { AnimationDesired = false });
+
+			await WindowHelper.WaitFor(() => outerViewChanged);
+
+			Assert.AreEqual(0, innerScrollViewer.HorizontalOffset);
+			Assert.AreEqual(540, innerScrollViewer.VerticalOffset);
+			Assert.AreEqual(0, outerScrollViewer.HorizontalOffset);
+			Assert.AreEqual(320, outerScrollViewer.VerticalOffset);
 		}
 	}
 }

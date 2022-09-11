@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using Uno.UI.DataBinding;
 using Windows.Foundation.Collections;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media.Animation;
 
@@ -14,7 +15,7 @@ namespace Windows.UI.Xaml
 	[ContentProperty(Name = "Storyboard")]
 	public sealed partial class VisualState : DependencyObject
 	{
-		private Action lazyBuilder = null;
+		private Action lazyBuilder;
 
 		public VisualState()
 		{
@@ -170,14 +171,14 @@ namespace Windows.UI.Xaml
 
 				if (Storyboard is IDependencyObjectStoreProvider storyboardProvider)
 				{
-					storyboardProvider.Store.UpdateResourceBindings(true);
+					storyboardProvider.Store.UpdateResourceBindings(ResourceUpdateReason.ThemeResource);
 				}
 
 				foreach(var setter in Setters)
 				{
 					if (setter is IDependencyObjectStoreProvider setterProvider)
 					{
-						setterProvider.Store.UpdateResourceBindings(true);
+						setterProvider.Store.UpdateResourceBindings(ResourceUpdateReason.ThemeResource);
 					}
 				}
 			}

@@ -3,8 +3,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
@@ -20,9 +21,15 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			var actualAvailableSize = CalculateDialogAvailableSize(availableSize);
+			return base.MeasureOverride(actualAvailableSize);
+		}
+
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().LogDebug($"ArrangeOverride ContentDialogPopupPanel {finalSize}");
 			}
@@ -35,9 +42,9 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				var desiredSize = elem.DesiredSize;
-				var rect = CalculateDialogPlacement(desiredSize);
+				var rect = CalculateDialogPlacement(desiredSize, finalSize);
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().LogDebug($"Arranging ContentDialogPopupPanel {desiredSize} to {rect}");
 				}
@@ -48,27 +55,45 @@ namespace Windows.UI.Xaml.Controls
 			return finalSize;
 		}
 
-		private Rect CalculateDialogPlacement(Size desiredSize)
+		private Size CalculateDialogAvailableSize(Size availableSize)
 		{
 			var visibleBounds = ApplicationView.GetForCurrentView().TrueVisibleBounds;
 
+			if (availableSize.Width > visibleBounds.Width)
+			{
+				availableSize.Width = visibleBounds.Width;
+			}
+			if (availableSize.Height > visibleBounds.Height)
+			{
+				availableSize.Height = visibleBounds.Height;
+			}
+
+			return availableSize;
+		}
+
+		private Rect CalculateDialogPlacement(Size desiredSize, Size finalSize)
+		{
+			var visibleBounds = ApplicationView.GetForCurrentView().TrueVisibleBounds;
+
+			var maximumWidth = Math.Min(visibleBounds.Width, finalSize.Width);
+			var maximumHeight = Math.Min(visibleBounds.Height, finalSize.Height);
+
 			// Make sure the desiredSize fits in visibleBounds
-			if (desiredSize.Width > visibleBounds.Width)
-			{
-				desiredSize.Width = visibleBounds.Width;
-			}
-			if (desiredSize.Height > visibleBounds.Height)
-			{
-				desiredSize.Height = visibleBounds.Height;
-			}
+			var actualWidth = Math.Min(desiredSize.Width, maximumWidth);
+			var actualHeight = Math.Min(desiredSize.Height, maximumHeight);
 
-			var  finalPosition = new Point(
-						x: (visibleBounds.Width - desiredSize.Width) / 2.0,
-						y: (visibleBounds.Height - desiredSize.Height) / 2.0);
-
-			var finalRect = new Rect(finalPosition, desiredSize);
+			var finalRect = new Rect(
+				(maximumWidth - actualWidth) / 2,
+				(maximumHeight - actualHeight) / 2,
+				actualWidth,
+				actualHeight
+			);
 
 			return finalRect;
 		}
+
+		// The ContentDialog backdrop (aka 'smoke layer') doesn't light-dismiss, but does block pointer interactions. On WinUI this is implemented by adding
+		// a second Popup containing a stretched Rectangle. To keep things simple, we just block pointers from passing from here.
+		internal override bool IsViewHit() => true;
 	}
 }

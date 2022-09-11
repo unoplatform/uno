@@ -1,15 +1,22 @@
-﻿using CoreAnimation;
-using CoreGraphics;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Uno.Disposables;
-using Windows.UI.Xaml.Media;
-using Uno.UI.Extensions;
+using System.Linq;
+using Windows.Foundation;
 using Windows.UI;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using CoreAnimation;
+using CoreGraphics;
 using CoreImage;
 using Foundation;
+using Uno.Disposables;
 using Uno.Extensions;
-using Windows.UI.Xaml.Controls;
+using Uno.UI;
+using Uno.UI.Extensions;
+
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 
 #if __IOS__
 using UIKit;
@@ -25,9 +32,9 @@ using _Image = AppKit.NSImage;
 
 namespace Windows.UI.Xaml.Shapes
 {
-	internal class BorderLayerRenderer
+	partial class BorderLayerRenderer
 	{
-		private LayoutState _currentState;
+		private LayoutState _previousLayoutState;
 
 		private SerialDisposable _layerDisposable = new SerialDisposable();
 
@@ -55,22 +62,23 @@ namespace Windows.UI.Xaml.Shapes
 			var bounds = owner.Bounds;
 			var area = new CGRect(0, 0, bounds.Width, bounds.Height);
 
-			var newState = new LayoutState(area, background, backgroundSizing, borderThickness, borderBrush, cornerRadius, backgroundImage);
-			var previousLayoutState = _currentState;
-
-			if (!newState.Equals(previousLayoutState))
+			var newState = new LayoutState(area, borderBrush, borderThickness, cornerRadius, background, backgroundImage, backgroundSizing);
+			if (!newState.Equals(_previousLayoutState))
 			{
 #if __MACOS__
 				owner.WantsLayer = true;
 #endif
 
 				_layerDisposable.Disposable = null;
-				_layerDisposable.Disposable = InnerCreateLayer(owner as UIElement, owner.Layer, newState);
+				_layerDisposable.Disposable = InnerCreateLayer(owner as UIElement, owner.Layer, newState, out var updatedBoundsPath);
 
-				_currentState = newState;
+				_previousLayoutState = newState;
+
+				return updatedBoundsPath;
 			}
 
-			return newState.BoundsPath;
+			
+			return null; // no change
 		}
 
 		/// <summary>
@@ -79,59 +87,46 @@ namespace Windows.UI.Xaml.Shapes
 		internal void Clear()
 		{
 			_layerDisposable.Disposable = null;
-			_currentState = null;
+			_previousLayoutState = null;
 		}
 
-		private static IDisposable InnerCreateLayer(UIElement owner, CALayer parent, LayoutState state)
+		private static IDisposable InnerCreateLayer(UIElement owner, CALayer parent, LayoutState state, out CGPath updatedBoundsPath)
 		{
+			updatedBoundsPath = null;
+
+			// nothing to draw, until the control is measured or when is measured to be 0
+			if (state.Area.IsEmpty)
+			{
+				return Disposable.Empty;
+			}
+
 			var area = state.Area;
 			var background = state.Background;
 			var borderThickness = state.BorderThickness;
 			var borderBrush = state.BorderBrush;
 			var cornerRadius = state.CornerRadius;
+			var backgroundSizing = state.BackgroundSizing;
 
 			var disposables = new CompositeDisposable();
 			var sublayers = new List<CALayer>();
 
-			var heightOffset = ((float)borderThickness.Top / 2) + ((float)borderThickness.Bottom / 2);
-			var widthOffset = ((float)borderThickness.Left / 2) + ((float)borderThickness.Right / 2);
-			var halfWidth = (float)area.Width / 2;
-			var halfHeight = (float)area.Height / 2;
-			var adjustedArea = area;
-			adjustedArea = adjustedArea.Shrink(
-				(nfloat)borderThickness.Left,
-				(nfloat)borderThickness.Top,
-				(nfloat)borderThickness.Right,
-				(nfloat)borderThickness.Bottom
-			);
+			var adjustedArea = area.Shrink(borderThickness);
 
 			if (cornerRadius != CornerRadius.None)
 			{
-				var maxOuterRadius = Math.Max(0, Math.Min(halfWidth - widthOffset, halfHeight - heightOffset));
-				var maxInnerRadius = Math.Max(0, Math.Min(halfWidth, halfHeight));
-
-				cornerRadius = new CornerRadius(
-					Math.Min(cornerRadius.TopLeft, maxOuterRadius),
-					Math.Min(cornerRadius.TopRight, maxOuterRadius),
-					Math.Min(cornerRadius.BottomRight, maxOuterRadius),
-					Math.Min(cornerRadius.BottomLeft, maxOuterRadius));
-
-				var innerCornerRadius = new CornerRadius(
-					Math.Min(cornerRadius.TopLeft, maxInnerRadius),
-					Math.Min(cornerRadius.TopRight, maxInnerRadius),
-					Math.Min(cornerRadius.BottomRight, maxInnerRadius),
-					Math.Min(cornerRadius.BottomLeft, maxInnerRadius));
-
 				var outerLayer = new CAShapeLayer();
-				var innerLayer = new CAShapeLayer();
-				innerLayer.FillColor = null;
+				var backgroundLayer = new CAShapeLayer();
+				backgroundLayer.FillColor = null;
 				outerLayer.FillRule = CAShapeLayer.FillRuleEvenOdd;
 				outerLayer.LineWidth = 0;
 
-				
-				var path = GetRoundedRect(cornerRadius, innerCornerRadius, area, adjustedArea);
-				var innerPath = GetRoundedPath(cornerRadius, adjustedArea);
-				var outerPath = GetRoundedPath(cornerRadius, area);
+				var path = GetRoundedBorder(area, adjustedArea, cornerRadius, borderThickness);
+				var outerPath = GetRoundedPath(default, area, cornerRadius, borderThickness);
+				var innerPath = GetRoundedPath(default, adjustedArea, cornerRadius, borderThickness, inner: true);
+
+				var isInnerBorderEdge = backgroundSizing == BackgroundSizing.InnerBorderEdge;
+				var backgroundPath = isInnerBorderEdge ? innerPath : outerPath;
+				var backgroundArea = isInnerBorderEdge ? adjustedArea : area;
 
 				var insertionIndex = 0;
 
@@ -139,17 +134,17 @@ namespace Windows.UI.Xaml.Shapes
 				{
 					var fillMask = new CAShapeLayer()
 					{
-						Path = innerPath,
+						Path = backgroundPath,
 						Frame = area,
 						// We only use the fill color to create the mask area
 						FillColor = _Color.White.CGColor,
 					};
 
-					CreateGradientBrushLayers(area, adjustedArea, parent, sublayers, ref insertionIndex, gradientBackground, fillMask);
+					CreateGradientBrushLayers(area, backgroundArea, parent, sublayers, ref insertionIndex, gradientBackground, fillMask);
 				}
 				else if (background is SolidColorBrush scbBackground)
 				{
-					Brush.AssignAndObserveBrush(scbBackground, color => innerLayer.FillColor = color)
+					Brush.AssignAndObserveBrush(scbBackground, color => backgroundLayer.FillColor = color)
 						.DisposeWith(disposables);
 				}
 				else if (background is ImageBrush imgBackground)
@@ -159,47 +154,47 @@ namespace Windows.UI.Xaml.Shapes
 					{
 						var fillMask = new CAShapeLayer()
 						{
-							Path = innerPath,
+							Path = backgroundPath,
 							Frame = area,
 							// We only use the fill color to create the mask area
 							FillColor = _Color.White.CGColor,
 						};
 
-						CreateImageBrushLayers(area, adjustedArea, parent, sublayers, ref insertionIndex, imgBackground, fillMask);
+						CreateImageBrushLayers(area, backgroundArea, parent, sublayers, ref insertionIndex, imgBackground, fillMask);
 					}
 				}
 				else if (background is AcrylicBrush acrylicBrush)
 				{
 					var fillMask = new CAShapeLayer()
 					{
-						Path = innerPath,
+						Path = backgroundPath,
 						Frame = area,
 						// We only use the fill color to create the mask area
 						FillColor = _Color.White.CGColor,
 					};
 
-					acrylicBrush.Subscribe(owner, area, adjustedArea, parent, sublayers, ref insertionIndex, fillMask)
+					acrylicBrush.Subscribe(owner, area, backgroundArea, parent, sublayers, ref insertionIndex, fillMask)
 						.DisposeWith(disposables);
 				}
 				else if (background is XamlCompositionBrushBase unsupportedCompositionBrush)
 				{
-					Brush.AssignAndObserveBrush(unsupportedCompositionBrush, color => innerLayer.FillColor = color)
+					Brush.AssignAndObserveBrush(unsupportedCompositionBrush, color => backgroundLayer.FillColor = color)
 						.DisposeWith(disposables);
 				}
 				else
 				{
-					innerLayer.FillColor = Colors.Transparent;
+					backgroundLayer.FillColor = Colors.Transparent;
 				}
 
 				outerLayer.Path = path;
-				innerLayer.Path = innerPath;
+				backgroundLayer.Path = backgroundPath;
 
 				sublayers.Add(outerLayer);
-				sublayers.Add(innerLayer);
+				sublayers.Add(backgroundLayer);
 				parent.AddSublayer(outerLayer);
-				parent.InsertSublayer(innerLayer, insertionIndex);
+				parent.InsertSublayer(backgroundLayer, insertionIndex);
 
-				if (borderBrush is SolidColorBrush scbBorder)
+				if (borderBrush is SolidColorBrush scbBorder || borderBrush == null)
 				{
 					Brush.AssignAndObserveBrush(borderBrush, color =>
 					{
@@ -235,26 +230,29 @@ namespace Windows.UI.Xaml.Shapes
 					owner.ClippingIsSetByCornerRadius = true;
 				}
 
-				state.BoundsPath = outerPath;
+				updatedBoundsPath = outerPath;
 			}
 			else
 			{
+				var backgroundLayer = new CAShapeLayer();
+				backgroundLayer.FillColor = null;
+
+				var outerPath = GetRectangularPath(default, area);
+				var innerPath = GetRectangularPath(default, adjustedArea, inner: true);
+
+				var isInnerBorderEdge = backgroundSizing == BackgroundSizing.InnerBorderEdge;
+				var backgroundPath = isInnerBorderEdge ? innerPath : outerPath;
+				var backgroundArea = isInnerBorderEdge ? adjustedArea : area;
+
+				var insertionIndex = 0;
+
 				if (background is GradientBrush gradientBackground)
 				{
-					var fullArea = new CGRect(
-						area.X + borderThickness.Left,
-						area.Y + borderThickness.Top,
-						area.Width - borderThickness.Left - borderThickness.Right,
-						area.Height - borderThickness.Top - borderThickness.Bottom);
-
-					var insideArea = new CGRect(CGPoint.Empty, fullArea.Size);
-					var insertionIndex = 0;
-
-					CreateGradientBrushLayers(fullArea, insideArea, parent, sublayers, ref insertionIndex, gradientBackground, fillMask: null);
+					CreateGradientBrushLayers(area, backgroundArea, parent, sublayers, ref insertionIndex, gradientBackground, fillMask: null);
 				}
 				else if (background is SolidColorBrush scbBackground)
 				{
-					Brush.AssignAndObserveBrush(scbBackground, c => parent.BackgroundColor = c)
+					Brush.AssignAndObserveBrush(scbBackground, c => backgroundLayer.FillColor = c)
 						.DisposeWith(disposables);
 
 					// This is required because changing the CornerRadius changes the background drawing 
@@ -267,49 +265,31 @@ namespace Windows.UI.Xaml.Shapes
 					var bgSrc = imgBackground.ImageSource;
 					if (bgSrc != null && bgSrc.TryOpenSync(out var uiImage) && uiImage.Size != CGSize.Empty)
 					{
-						var fullArea = new CGRect(
-								area.X + borderThickness.Left,
-								area.Y + borderThickness.Top,
-								area.Width - borderThickness.Left - borderThickness.Right,
-								area.Height - borderThickness.Top - borderThickness.Bottom);
-
-						var insideArea = new CGRect(CGPoint.Empty, fullArea.Size);
-						var insertionIndex = 0;
-
-						CreateImageBrushLayers(fullArea, insideArea, parent, sublayers, ref insertionIndex, imgBackground, fillMask: null);
+						CreateImageBrushLayers(area, backgroundArea, parent, sublayers, ref insertionIndex, imgBackground, fillMask: null);
 					}
 				}
 				else if (background is AcrylicBrush acrylicBrush)
 				{
-					var fullArea = new CGRect(
-							area.X + borderThickness.Left,
-							area.Y + borderThickness.Top,
-							area.Width - borderThickness.Left - borderThickness.Right,
-							area.Height - borderThickness.Top - borderThickness.Bottom);
-
-					var insideArea = new CGRect(CGPoint.Empty, fullArea.Size);
-					var insertionIndex = 0;
-
-					acrylicBrush.Subscribe(owner, fullArea, insideArea, parent, sublayers, ref insertionIndex, fillMask: null);
+					acrylicBrush.Subscribe(owner, area, backgroundArea, parent, sublayers, ref insertionIndex, fillMask: null);
 				}
 				else if (background is XamlCompositionBrushBase unsupportedCompositionBrush)
 				{
-					Brush.AssignAndObserveBrush(unsupportedCompositionBrush, color => parent.BackgroundColor = color)
+					Brush.AssignAndObserveBrush(unsupportedCompositionBrush, color => backgroundLayer.FillColor = color)
 						.DisposeWith(disposables);
 
-					// This is required because changing the CornerRadius changes the background drawing 
+					// This is required because changing the CornerRadius changes the background drawing
 					// implementation and we don't want a rectangular background behind a rounded background.
-					Disposable.Create(() => parent.BackgroundColor = null)
+					Disposable.Create(() => backgroundLayer.FillColor = null)
 						.DisposeWith(disposables);
 				}
 				else
 				{
-					parent.BackgroundColor = Colors.Transparent;
+					backgroundLayer.FillColor = Colors.Transparent;
 				}
 
 				if (borderThickness != Thickness.Empty)
 				{
-					var borderPath = GetRoundedRect(CornerRadius.None, CornerRadius.None, area, adjustedArea);
+					var borderPath = GetRectangularBorder(area, adjustedArea);
 					var layer = new CAShapeLayer();
 
 					layer.FillRule = CAShapeLayer.FillRuleEvenOdd;
@@ -319,7 +299,7 @@ namespace Windows.UI.Xaml.Shapes
 					// Must be inserted below the other subviews, which may happen when
 					// the current view has subviews.
 					sublayers.Add(layer);
-					parent.InsertSublayer(layer, 0);
+					parent.AddSublayer(layer);
 
 					if (borderBrush is SolidColorBrush scbBorder)
 					{
@@ -343,7 +323,20 @@ namespace Windows.UI.Xaml.Shapes
 
 				}
 
-				state.BoundsPath = CGPath.FromRect(parent.Bounds);
+				backgroundLayer.Path = backgroundPath;
+
+				sublayers.Add(backgroundLayer);
+				parent.InsertSublayer(backgroundLayer, insertionIndex);
+
+				parent.Mask = new CAShapeLayer()
+				{
+					Path = outerPath,
+					Frame = area,
+					// We only use the fill color to create the mask area
+					FillColor = _Color.White.CGColor,
+				};
+
+				updatedBoundsPath = outerPath;
 			}
 
 			disposables.Add(() =>
@@ -364,41 +357,129 @@ namespace Windows.UI.Xaml.Shapes
 		}
 
 		/// <summary>
-		/// Creates a rounded-rectangle path from the nominated bounds and corner radius.
+		/// Get a path that describes the rounded border.
 		/// </summary>
-		private static CGPath GetRoundedRect(CornerRadius cornerRadius, CornerRadius innerCornerRadius, CGRect area, CGRect insetArea)
+		private static CGPath GetRoundedBorder(Rect bbox, Rect innerBbox, CornerRadius cr, Thickness bt)
 		{
 			var path = new CGPath();
 
-			GetRoundedPath(cornerRadius, area, path);
-			GetRoundedPath(innerCornerRadius, insetArea, path, clockwise: false);
+			if (bbox is { Width: > 0, Height: > 0 })
+			{
+				GetRoundedPath(path, bbox, cr, bt);
+
+				if (innerBbox is { Width: > 0, Height: > 0 })
+				{
+					GetRoundedPath(path, innerBbox, cr, bt, inner: true);
+				}
+			}
+
 			return path;
 		}
 
-		private static CGPath GetRoundedPath(CornerRadius cornerRadius, CGRect area, CGPath path = null, bool clockwise = true)
+		/// <summary>
+		/// Get the inner/outer contours of the rounded border.
+		/// </summary>
+		private static CGPath GetRoundedPath(CGPath path, Rect bbox, CornerRadius cr, Thickness bt, bool inner = false)
 		{
-			path ??= new CGPath();
-			// How AddArcToPoint works:
-			// http://www.twistedape.me.uk/blog/2013/09/23/what-arctopointdoes/
+			path ??= new();
 
-			if (clockwise)
+			/* reference diagram:
+			 *  outer   inner
+			 * A1───2B D6───5C
+			 * 0     3 7     4
+			 * 7     4 0     3
+			 * D6───5C A1───2B
+			 */
+
+			// the inner contour needs to be drawn in counter-clockwise (against the outer one),
+			// otherwise the gradient brush paint will not exclude the inner region.
+			var corners = !inner
+				? new[] { Corner.TopLeft, Corner.TopRight, Corner.BottomRight, Corner.BottomLeft }  // outer -> clockwise
+				: new[] { Corner.BottomLeft, Corner.BottomRight, Corner.TopRight, Corner.TopLeft }; // inner -> counter-clockwise
+
+			for (int i = 0; i < corners.Length; i++)
 			{
-				path.MoveToPoint(area.GetMidX(), area.Y);
-				path.AddArcToPoint(area.Right, area.Top, area.Right, area.GetMidY(), (float)cornerRadius.TopRight);
-				path.AddArcToPoint(area.Right, area.Bottom, area.GetMidX(), area.Bottom, (float)cornerRadius.BottomRight);
-				path.AddArcToPoint(area.Left, area.Bottom, area.Left, area.GetMidY(), (float)cornerRadius.BottomLeft);
-				path.AddArcToPoint(area.Left, area.Top, area.GetMidX(), area.Top, (float)cornerRadius.TopLeft);
-				path.AddLineToPoint(area.GetMidX(), area.Y);
+				var corner = corners[i];
+				var cornerBbox = CalculateBorderEllipseBbox(bbox, corner, cr, bt, inner);
+
+				if (i == 0)
+				{
+					// p0 and p7 are not necessarily the same point, so it needs to be calculated from cornerBbox and not bbox.
+					// note: here, we are looking for mid-point between A-0, not p0.
+					path.MoveToPoint(GetRelativePoint(cornerBbox, numpadDirection: 4));
+				}
+
+				// no rounded corner to draw if there is no area
+				if (cornerBbox.Width > 0 && cornerBbox.Height > 0)
+				{
+					var pCorner = GetCorner(cornerBbox, corner);
+					var pNextMid = GetRelativePoint(cornerBbox, numpadDirection: (!inner
+						? new[] { 8, 6, 2, 4 }
+						: new[] { 2, 6, 8, 4 }
+					)[i]);
+
+					// given that AddArcToPoint can only draw arc of a circle (with equal width, height, and diameter),
+					// we have to scale the Y-axis, so that the ellipse becomes a perfect circle,
+					// and use a reverse scale transform on the drawing of arc to achieve the desired result.
+					var scaleY = cornerBbox.Width / cornerBbox.Height;
+					var scaleTransform = CGAffineTransform.MakeScale(1, (nfloat)(cornerBbox.Height / cornerBbox.Width));
+					pCorner.Y *= scaleY;
+					pNextMid.Y *= scaleY;
+
+					// How AddArcToPoint works: https://stackoverflow.com/a/18992153
+					path.AddArcToPoint(scaleTransform, (nfloat)pCorner.X, (nfloat)pCorner.Y, (nfloat)pNextMid.X, (nfloat)pNextMid.Y, radius: (nfloat)cornerBbox.Width / 2);
+				}
+				else
+				{
+					// however, we still need to drawn a line to that corner
+					path.AddLineToPoint(GetCorner(cornerBbox, corner));
+				}
 			}
-			else
+
+			path.CloseSubpath();
+
+			return path;
+		}
+
+		/// <summary>
+		/// Get a path that describes the border.
+		/// </summary>
+		private static CGPath GetRectangularBorder(Rect bbox, Rect innerBbox)
+		{
+			var path = new CGPath();
+
+			if (bbox is { Width: > 0, Height: > 0 })
 			{
-				path.MoveToPoint(area.GetMidX(), area.Y);
-				path.AddArcToPoint(area.Left, area.Top, area.Left, area.GetMidY(), (float)cornerRadius.TopLeft);
-				path.AddArcToPoint(area.Left, area.Bottom, area.GetMidX(), area.Bottom, (float)cornerRadius.BottomLeft);
-				path.AddArcToPoint(area.Right, area.Bottom, area.Right, area.GetMidY(), (float)cornerRadius.BottomRight);
-				path.AddArcToPoint(area.Right, area.Top, area.GetMidX(), area.Top, (float)cornerRadius.TopRight);
-				path.AddLineToPoint(area.GetMidX(), area.Y);
+				GetRectangularPath(path, bbox);
+
+				if (innerBbox is { Width: > 0, Height: > 0 })
+				{
+					GetRectangularPath(path, innerBbox, inner: true);
+				}
 			}
+
+			return path;
+		}
+
+		/// <summary>
+		/// Get the inner/outer contours of the rectangular border.
+		/// </summary>
+		private static CGPath GetRectangularPath(CGPath path, Rect bbox, bool inner = false)
+		{
+			path ??= new();
+
+			// the inner contour needs to be drawn in counter-clockwise (against the outer one),
+			// otherwise the gradient brush paint will not exclude the inner region.
+			var corners = !inner
+				? new[] { Corner.TopLeft, Corner.TopRight, Corner.BottomRight, Corner.BottomLeft }  // outer -> clockwise
+				: new[] { Corner.BottomLeft, Corner.BottomRight, Corner.TopRight, Corner.TopLeft }; // inner -> counter-clockwise
+
+			path.MoveToPoint(GetRelativePoint(bbox, 4));
+			foreach (var corner in corners)
+			{
+				path.AddLineToPoint(GetCorner(bbox, corner));
+			}
+			path.CloseSubpath();
 
 			return path;
 		}
@@ -478,50 +559,12 @@ namespace Windows.UI.Xaml.Shapes
 			sublayers.Add(gradientContainerLayer);
 		}
 
-		private class LayoutState : IEquatable<LayoutState>
+		private record LayoutState(
+			CGRect Area,
+			Brush BorderBrush, Thickness BorderThickness, CornerRadius CornerRadius,
+			Brush Background, _Image BackgroundImage, BackgroundSizing BackgroundSizing)
 		{
-			public readonly CGRect Area;
-			public readonly Brush Background;
-			public readonly BackgroundSizing BackgroundSizing;
-			public readonly Brush BorderBrush;
-			public readonly Thickness BorderThickness;
-			public readonly CornerRadius CornerRadius;
-			public readonly _Image BackgroundImage;
-
-			internal CGPath BoundsPath { get; set; }
-
-			public LayoutState(
-				CGRect area,
-				Brush background,
-				BackgroundSizing backgroundSizing,
-				Thickness borderThickness,
-				Brush borderBrush,
-				CornerRadius cornerRadius,
-				_Image backgroundImage)
-			{
-				Area = area;
-				Background = background;
-				BackgroundSizing = backgroundSizing;
-				BorderBrush = borderBrush;
-				CornerRadius = cornerRadius;
-				BorderThickness = borderThickness;
-				BackgroundImage = backgroundImage;
-			}
-
-			public override int GetHashCode()
-				=> (Background?.GetHashCode() ?? 0 + BorderBrush?.GetHashCode() ?? 0) + (int)BackgroundSizing;
-
-			public override bool Equals(object obj) => Equals(obj as LayoutState);
-
-			public bool Equals(LayoutState other) =>
-				other != null
-				&& other.Area == Area
-				&& (other.Background?.Equals(Background) ?? false)
-				&& other.BackgroundSizing == BackgroundSizing
-				&& (other.BorderBrush?.Equals(BorderBrush) ?? false)
-				&& other.BorderThickness == BorderThickness
-				&& other.CornerRadius == CornerRadius
-				&& ReferenceEquals(other.BackgroundImage, BackgroundImage);
+			// internal CGPath BoundsPath { get; set; }
 		}
 	}
 }

@@ -4,6 +4,12 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 
+#if HAS_UNO_WINUI
+using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+#else
+using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
+#endif
+
 namespace Windows.UI.Xaml
 {
 	public partial class AdaptiveTrigger : StateTriggerBase
@@ -15,7 +21,7 @@ namespace Windows.UI.Xaml
 			UpdateState();
 		}
 
-		private void OnCurrentWindowSizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e) =>
+		private void OnCurrentWindowSizeChanged(object sender, WindowSizeChangedEventArgs e) =>
 			UpdateState();
 
 		private void UpdateState()
@@ -45,7 +51,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		#region MinWindowHeight DependencyProperty
+#region MinWindowHeight DependencyProperty
 
 		public double MinWindowHeight
 		{
@@ -62,9 +68,9 @@ namespace Windows.UI.Xaml
 			UpdateState();
 		}
 
-		#endregion
+#endregion
 
-		#region MinWindowWidth DependencyProperty
+#region MinWindowWidth DependencyProperty
 
 		public double MinWindowWidth
 		{
@@ -82,7 +88,7 @@ namespace Windows.UI.Xaml
 			UpdateState();
 		}
 
-		#endregion
+#endregion
 
 		internal override void OnOwnerChanged()
 		{

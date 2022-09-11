@@ -2,63 +2,26 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum StandardUICommandKind 
 	{
-		#if false
-		None,
-		#endif
-		#if false
-		Cut,
-		#endif
-		#if false
-		Copy,
-		#endif
-		#if false
-		Paste,
-		#endif
-		#if false
-		SelectAll,
-		#endif
-		#if false
-		Delete,
-		#endif
-		#if false
-		Share,
-		#endif
-		#if false
-		Save,
-		#endif
-		#if false
-		Open,
-		#endif
-		#if false
-		Close,
-		#endif
-		#if false
-		Pause,
-		#endif
-		#if false
-		Play,
-		#endif
-		#if false
-		Stop,
-		#endif
-		#if false
-		Forward,
-		#endif
-		#if false
-		Backward,
-		#endif
-		#if false
-		Undo,
-		#endif
-		#if false
-		Redo,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.None
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Cut
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Copy
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Paste
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.SelectAll
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Delete
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Share
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Save
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Open
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Close
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Pause
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Play
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Stop
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Forward
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Backward
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Undo
+		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Redo
 	}
 	#endif
 }

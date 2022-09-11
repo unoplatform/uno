@@ -36,10 +36,10 @@ namespace UITests.Windows_Storage
 			}
 		}
 
-		public NativeStorageRuntimeTestsViewModel ViewModel { get; private set; }
+		internal NativeStorageRuntimeTestsViewModel ViewModel { get; private set; }
 	}
 
-	public class NativeStorageRuntimeTestsViewModel : ViewModelBase
+	internal class NativeStorageRuntimeTestsViewModel : ViewModelBase
 	{
 		public UnitTestsControl UnitTestsControl { get; set; }
 

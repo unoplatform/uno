@@ -10,12 +10,10 @@ namespace Windows.UI.Xaml
 	{
 		internal ImageSource? Content { get; set; }
 
-		internal Point? Anchor { get; private set; }
+		internal Point? Anchor { get; set; }
 
 		public void SetContentFromBitmapImage(BitmapImage bitmapImage)
-		{
-			Content = bitmapImage;
-		}
+			=> SetContentFromBitmapImage(bitmapImage, default);
 
 		public void SetContentFromBitmapImage(BitmapImage bitmapImage, Point anchorPoint)
 		{

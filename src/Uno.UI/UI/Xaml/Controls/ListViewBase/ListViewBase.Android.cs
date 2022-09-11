@@ -7,8 +7,8 @@ using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.UI;
 using Windows.UI.Xaml.Controls.Primitives;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 using System;
 using AndroidX.RecyclerView.Widget;
 using AndroidX.AppCompat.Widget;
@@ -163,6 +163,14 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override int IndexFromContainerInner(DependencyObject container)
 		{
+			if (_isProcessingReorder)
+			{
+				// When we process a re-ordering, the "attached" indexes (IndexForItemContainerProperty) are known to be valid,
+				// but the native (NativePanel) is not (moved item is still at it's original location / index).
+
+				return base.IndexFromContainerInner(container);
+			}
+
 			if (NativePanel != null)
 			{
 				var selectorItem = container as SelectorItem;
@@ -314,13 +322,19 @@ namespace Windows.UI.Xaml.Controls
 			// occurring during scrolling are not always properly picked up by the layouting/rendering engine.
 			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
-				var index = IndexFromItem(item);
-				if (index < 0)
+				if (IndexFromItem(item) is var index and >= 0)
 				{
-					return;
+					if (Uno.UI.FeatureConfiguration.ListViewBase.AnimateScrollIntoView)
+					{
+						NativePanel?.SmoothScrollToPosition(index);
+					}
+					else
+					{
+						var displayPosition = ConvertIndexToDisplayPosition(index);
+
+						NativePanel?.ScrollIntoView(displayPosition, alignment);
+					}
 				}
-				var displayPosition = ConvertIndexToDisplayPosition(index);
-				NativePanel?.ScrollIntoView(displayPosition, alignment);
 			});
 		}
 

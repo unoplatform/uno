@@ -3,7 +3,7 @@ using Uno.UI.Samples.UITests.Helpers;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.WebView
 {
-	public class WebViewViewModel : ViewModelBase
+	internal class WebViewViewModel : ViewModelBase
 	{
 		private const string SampleHtml = @"
 <!DOCTYPE html>

@@ -3,6 +3,7 @@
   <PropertyGroup>
     <MinimumVisualStudioVersion>17.0</MinimumVisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -15,7 +16,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UnoSolutionTemplate.VSIX._2022</RootNamespace>
     <AssemblyName>UnoSolutionTemplate.VSIX.2022</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <UseCodebase>true</UseCodebase>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
@@ -56,10 +57,15 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.0-previews-3-31605-261" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.0.3155-preview3" />
-    <PackageReference Include="Newtonsoft.Json" version="12.0.3" />
-    <PackageReference Include="NuGet.VisualStudio" version="4.5.0" />
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.3.32804.24" ExcludeAssets="runtime">
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.3.2093">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" version="13.0.1" />
+    <PackageReference Include="NuGet.VisualStudio" version="17.3.0" />
     <PackageReference Include="Microsoft.VisualStudio.ProjectSystem">
       <Version>16.0.374-pre</Version>
     </PackageReference>
@@ -86,18 +92,31 @@
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
     </ProjectReference>
-    <ProjectReference Include="..\UnoSolutionTemplate.net6\UnoSolutionTemplate.net6.csproj">
-      <Project>{9ced7610-7819-4a41-b2c4-3724ebb4c81b}</Project>
-      <Name>UnoSolutionTemplate.net6</Name>
+    <ProjectReference Include="..\UnoSolutionTemplate.WinUI.net6\UnoSolutionTemplate.WinUI.net6.csproj">
+      <Project>{042F79A0-E0BB-4DED-8BC8-419700B9EE30}</Project>
+      <Name>UnoSolutionTemplate.WinUI.net6</Name>
       <VSIXSubPath>ProjectTemplates</VSIXSubPath>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
     </ProjectReference>
-    <ProjectReference Include="..\UnoSolutionTemplate.Wizard\UnoSolutionTemplate.Wizard.csproj">
-      <Project>{d8dbbd63-8c85-46a8-9455-9b678c2f713f}</Project>
-      <Name>UnoSolutionTemplate.Wizard</Name>
+    <ProjectReference Include="..\UnoSolutionTemplate.Wizard.2019\UnoSolutionTemplate.Wizard.2019.csproj">
+      <Project>{D8DBBD63-8C85-46A8-9455-9B678C2F713F}</Project>
+      <Name>UnoSolutionTemplate.Wizard.2019</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
+    <ProjectReference Include="..\UnoSolutionTemplate.Wizard.2022\UnoSolutionTemplate.Wizard.2022.csproj">
+      <Project>{138FF660-5EE6-475B-828C-81F96E9BE142}</Project>
+      <Name>UnoSolutionTemplate.Wizard.2022</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
+    <ProjectReference Include="..\UnoSolutionTemplate\UnoSolutionTemplate.csproj">
+      <Project>{5C7C339E-B73C-4FDA-87AF-E8003C0FF2AB}</Project>
+      <Name>UnoSolutionTemplate</Name>
+      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

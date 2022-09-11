@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using CoreAnimation;
 using CoreGraphics;
 using Foundation;
-using Microsoft.Extensions.Logging;
+
 using UIKit;
 using Uno.Extensions;
 using Uno.UI;
@@ -19,6 +20,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using UIViewExtensions = UIKit.UIViewExtensions;
+using ObjCRuntime;
 
 namespace Windows.UI.Xaml
 {
@@ -30,21 +32,36 @@ namespace Windows.UI.Xaml
 			InitializePointers();
 		}
 
-		/// <summary>
-		/// Determines if InvalidateMeasure has been called
-		/// </summary>
-		internal bool IsMeasureDirty { get; private protected set; }
+		public override void MovedToWindow()
+		{
+			base.MovedToWindow();
 
-		/// <summary>
-		/// Determines if InvalidateArrange has been called
-		/// </summary>
-		internal bool IsArrangeDirty { get; private protected set; }
+			if (this.Window != null)
+			{
+				OnLoadedForPointers();
+			}
+			else
+			{
+				OnUnloadedForPointers();
+			}
+		}
 
-		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
+		internal bool IsMeasureDirtyPath
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => false; // Not implemented on iOS yet
+		}
+
+		internal bool IsArrangeDirtyPath
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => false; // Not implemented on iOS yet
+		}
+
+		internal bool ClippingIsSetByCornerRadius { get; set; }
 
 		partial void ApplyNativeClip(Rect rect)
 		{
-
 			if (rect.IsEmpty
 				|| double.IsPositiveInfinity(rect.X)
 				|| double.IsPositiveInfinity(rect.Y)
@@ -77,21 +94,25 @@ namespace Windows.UI.Xaml
 
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
 		{
-			var newVisibility = (Visibility)newValue;
+			var isNewVisibilityHidden = newValue.IsHidden();
 
-			if (base.Hidden != newVisibility.IsHidden())
+			if (base.Hidden == isNewVisibilityHidden)
 			{
-				base.Hidden = newVisibility.IsHidden();
-				InvalidateMeasure();
-
-				if (newVisibility == Visibility.Visible)
-				{
-					// This recursively invalidates the layout of all subviews
-					// to ensure LayoutSubviews is called and views get updated.
-					// Failing to do this can cause some views to remain collapsed.
-					SetSubviewsNeedLayout();
-				}
+				return;
 			}
+
+			base.Hidden = isNewVisibilityHidden;
+			InvalidateMeasure();
+
+			if (isNewVisibilityHidden)
+			{
+				return;
+			}
+
+			// This recursively invalidates the layout of all subviews
+			// to ensure LayoutSubviews is called and views get updated.
+			// Failing to do this can cause some views to remain collapsed.
+			SetSubviewsNeedLayout();
 		}
 
 		public override bool Hidden
@@ -162,6 +183,12 @@ namespace Windows.UI.Xaml
 
 						switch (parent)
 						{
+							case ListViewBaseInternalContainer listViewBaseInternalContainer:
+								// In the case of ListViewBaseInternalContainer, the first managed parent is normally ItemsPresenter. We omit
+								// the offset since it's incorporated separately via the layout slot propagated to ListViewItem + the scroll offset.
+								parentElement = listViewBaseInternalContainer.FindFirstParent<UIElement>();
+								return true;
+
 							case UIElement eltParent:
 								// We found a UIElement in the parent hierarchy, we compute the X/Y offset between the
 								// first parent 'view' and this 'elt', and return it.

@@ -4,7 +4,13 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 
+#if HAS_UNO_WINUI
+using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+#else
+using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
+#endif
+
 namespace Windows.UI.Xaml
 {
-	public delegate void WindowSizeChangedEventHandler(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e);
+	public delegate void WindowSizeChangedEventHandler(object sender, WindowSizeChangedEventArgs e);
 }

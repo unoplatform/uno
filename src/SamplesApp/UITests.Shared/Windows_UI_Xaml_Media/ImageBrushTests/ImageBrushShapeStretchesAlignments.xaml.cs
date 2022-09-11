@@ -21,7 +21,7 @@ namespace UITests.Windows_UI_Xaml_Media.ImageBrushTests
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[Sample("ImageBrushTestControl", Name = "ImageBrushShapeStretchesAlignments")]
+	[Sample("Brushes", Name = "ImageBrushShapeStretchesAlignments")]
 	public sealed partial class ImageBrushShapeStretchesAlignments : Page
 	{
 		public ImageBrushShapeStretchesAlignments()

@@ -7,6 +7,10 @@ using System.Linq;
 using Uno.Disposables;
 using Windows.UI.Xaml.Controls;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;

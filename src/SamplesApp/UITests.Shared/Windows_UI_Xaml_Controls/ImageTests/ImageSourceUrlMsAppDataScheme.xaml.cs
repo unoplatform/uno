@@ -22,7 +22,7 @@ using Windows.UI.Xaml.Navigation;
 namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 {
 	[SampleControlInfo(category: "Image", viewModelType: typeof(ImageSourceUrlMsAppDataSchemeViewModel))]
-	public sealed partial class ImageSourceUrlMsAppDataScheme : Page
+	internal sealed partial class ImageSourceUrlMsAppDataScheme : Page
     {
         public ImageSourceUrlMsAppDataScheme()
         {
@@ -32,11 +32,14 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 
 		private async void ImageSourceUrlMsAppDataScheme_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{
-			await((ImageSourceUrlMsAppDataSchemeViewModel)DataContext).LoadAsync();
+			if (DataContext is ImageSourceUrlMsAppDataSchemeViewModel viewModel)
+			{
+				await viewModel.LoadAsync();
+			}			
 		}
 	}
 
-	public class ImageSourceUrlMsAppDataSchemeViewModel : ViewModelBase
+	internal class ImageSourceUrlMsAppDataSchemeViewModel : ViewModelBase
 	{
 		public ImageSourceUrlMsAppDataSchemeViewModel(CoreDispatcher dispatcher)
 			: base(dispatcher)

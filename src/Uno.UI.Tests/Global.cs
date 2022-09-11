@@ -21,12 +21,13 @@ namespace Uno.UI.Tests
 #if false // DEBUG // debug logging is generally very verbose and slows down testing. Enable when needed.
 				var logLevel = LogLevel.Debug;
 #else
-				var logLevel = LogLevel.Information;
+				var logLevel = LogLevel.None;
 #endif
 				builder.SetMinimumLevel(logLevel);
-				builder.AddConsole(o => o.LogToStandardErrorThreshold = logLevel);
+				builder.AddConsole();
 			});
 
+			Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
 			Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = factory;
 		}
 	}

@@ -173,6 +173,20 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Devices.Display.Core.DisplayPresentationRate? PhysicalPresentationRate
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DisplayPresentationRate? DisplayPath.PhysicalPresentationRate is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "DisplayPresentationRate? DisplayPath.PhysicalPresentationRate");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.View.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.Target.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.Status.get
@@ -209,5 +223,7 @@ namespace Windows.Devices.Display.Core
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.Properties.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.PhysicalPresentationRate.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.PhysicalPresentationRate.set
 	}
 }

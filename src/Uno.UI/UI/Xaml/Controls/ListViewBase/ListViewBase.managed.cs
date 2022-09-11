@@ -11,19 +11,24 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ListViewBase
 	{
-		private int PageSize => throw new NotImplementedException();
-
-		private protected override bool ShouldItemsControlManageChildren => !(ItemsPanelRoot is IVirtualizingPanel);
-
-		private protected override void Refresh()
+		private int PageSize
 		{
-			base.Refresh();
-
-			if (VirtualizingPanel != null)
+			get
 			{
-				VirtualizingPanel.GetLayouter().Refresh();
+				if (VirtualizingPanel is null)
+				{
+					return 0;
+				}
 
-				InvalidateMeasure();
+				var layouter = VirtualizingPanel.GetLayouter();
+				var firstVisibleIndex = layouter.FirstVisibleIndex;
+				var lastVisibleIndex = layouter.LastVisibleIndex;
+				if (lastVisibleIndex == -1)
+				{
+					return 0;
+				}
+
+				return lastVisibleIndex - firstVisibleIndex + 1;
 			}
 		}
 
@@ -70,7 +75,10 @@ namespace Windows.UI.Xaml.Controls
 
 		private void TryLoadMoreItems()
 		{
-			//TODO: ISupportIncrementalLoading
+			if (VirtualizingPanel.GetLayouter() is { } layouter)
+			{
+				TryLoadMoreItems(layouter.LastVisibleIndex);
+			}
 		}
 	}
 }

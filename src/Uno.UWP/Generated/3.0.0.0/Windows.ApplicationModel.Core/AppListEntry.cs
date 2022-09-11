@@ -27,6 +27,16 @@ namespace Windows.ApplicationModel.Core
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.ApplicationModel.AppInfo AppInfo
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member AppInfo AppListEntry.AppInfo is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.DisplayInfo.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -43,5 +53,6 @@ namespace Windows.ApplicationModel.Core
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppListEntry.LaunchForUserAsync(User user) is not implemented in Uno.");
 		}
 		#endif
+		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.AppInfo.get
 	}
 }

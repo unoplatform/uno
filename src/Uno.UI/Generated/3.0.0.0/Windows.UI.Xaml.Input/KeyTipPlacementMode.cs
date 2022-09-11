@@ -2,33 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum KeyTipPlacementMode 
 	{
-		#if false
-		Auto,
-		#endif
-		#if false
-		Bottom,
-		#endif
-		#if false
-		Top,
-		#endif
-		#if false
-		Left,
-		#endif
-		#if false
-		Right,
-		#endif
-		#if false
-		Center,
-		#endif
-		#if false
-		Hidden,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Input.KeyTipPlacementMode.Auto
+		// Skipping already declared field Windows.UI.Xaml.Input.KeyTipPlacementMode.Bottom
+		// Skipping already declared field Windows.UI.Xaml.Input.KeyTipPlacementMode.Top
+		// Skipping already declared field Windows.UI.Xaml.Input.KeyTipPlacementMode.Left
+		// Skipping already declared field Windows.UI.Xaml.Input.KeyTipPlacementMode.Right
+		// Skipping already declared field Windows.UI.Xaml.Input.KeyTipPlacementMode.Center
+		// Skipping already declared field Windows.UI.Xaml.Input.KeyTipPlacementMode.Hidden
 	}
 	#endif
 }

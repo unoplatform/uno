@@ -9,7 +9,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 2. Click `Create a new project`
 
    ![Create new project](assets/image-20200325113112235.png)
-3. **Search for "Uno"** and pick `Cross-Platform App (Uno Platform)`.
+3. **Search for "Uno"** and pick `Uno Platform App`.
 
    ![Search for Uno](assets/image-20200325113532758.png)
    Select it and click `Next`.
@@ -164,6 +164,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
    > For the Uno Wasm Bootstrapper to take those files automatically and load them with the application, they have to be put as embedded resources. A future version of Uno may remove this requirement.
 7. Compile & run
 8. Once loaded, press F12 and go into the `Sources` tab. Both `prism.js` & `prism.css` files should be loaded this time.
+
    ![Prism Loaded in browser](assets/image-20200414143931953.png)
 ## 4. Invoke JavaScript from Managed Code
 🎯  In this section, PrismJS is used from the app.
@@ -237,6 +238,6 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 This sample is a very simple integration as there is no _callback_ from HTML to managed code and _PrismJS_ is a self-contained framework (it does not download any other JavaScript dependencies).
 Some additional improvements can be done to make the code more production ready:
 * **Make the control multi-platform**. A simple way would be to use a WebView on other platforms, giving the exact same text-rendering framework everywhere. The code of this sample won't compile on other targets.
-* **Create script files instead of generating dynamic JavaScript**. That would have the advantage of improving performance and make it easier to debug the code. A few projects are also using TypeScript to generate JavaScript. This approach is done by Uno itself for the `Uno.UI.Wasm` project: https://github.com/unoplatform/uno/tree/master/src/Uno.UI.Wasm.
+* **Create script files instead of generating dynamic JavaScript**. That would have the advantage of improving performance and make it easier to debug the code. A few projects are also using TypeScript to generate JavaScript. This approach is done by Uno itself for the `Uno.UI.Wasm` project: https://github.com/unoplatform/uno/blob/master/src/Uno.UI/Uno.UI.Wasm.csproj.
 * **Support more PrismJS features**. There are many [_plugins_ for PrismJS](https://prismjs.com/#plugins) that can be used. Most of them are very easy to implement.
 * [Continue with Part 3](wasm-javascript-3.md) - an integration of a more complex library with callbacks to application.

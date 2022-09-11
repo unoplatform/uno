@@ -7,26 +7,8 @@ namespace Windows.Storage
 	#endif
 	public  partial class StorageFile : global::Windows.Storage.IStorageFile,global::Windows.Storage.Streams.IInputStreamReference,global::Windows.Storage.Streams.IRandomAccessStreamReference,global::Windows.Storage.IStorageItem,global::Windows.Storage.IStorageItemProperties,global::Windows.Storage.IStorageItemProperties2,global::Windows.Storage.IStorageItem2,global::Windows.Storage.IStorageItemPropertiesWithProvider,global::Windows.Storage.IStorageFilePropertiesWithAvailability,global::Windows.Storage.IStorageFile2
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string ContentType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string StorageFile.ContentType is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string FileType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string StorageFile.FileType is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property ContentType
+		// Skipping already declared property FileType
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsAvailable
@@ -81,123 +63,30 @@ namespace Windows.Storage
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.StorageProvider Provider
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member StorageProvider StorageFile.Provider is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Provider
 		// Forced skipping of method Windows.Storage.StorageFile.FileType.get
 		// Forced skipping of method Windows.Storage.StorageFile.ContentType.get
 		// Skipping already declared method Windows.Storage.StorageFile.OpenAsync(Windows.Storage.FileAccessMode)
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageStreamTransaction> OpenTransactedWriteAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageStreamTransaction> StorageFile.OpenTransactedWriteAsync() is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CopyAsync( global::Windows.Storage.IStorageFolder destinationFolder)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> StorageFile.CopyAsync(IStorageFolder destinationFolder) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CopyAsync( global::Windows.Storage.IStorageFolder destinationFolder,  string desiredNewName)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> StorageFile.CopyAsync(IStorageFolder destinationFolder, string desiredNewName) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CopyAsync( global::Windows.Storage.IStorageFolder destinationFolder,  string desiredNewName,  global::Windows.Storage.NameCollisionOption option)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> StorageFile.CopyAsync(IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction CopyAndReplaceAsync( global::Windows.Storage.IStorageFile fileToReplace)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StorageFile.CopyAndReplaceAsync(IStorageFile fileToReplace) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction MoveAsync( global::Windows.Storage.IStorageFolder destinationFolder)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StorageFile.MoveAsync(IStorageFolder destinationFolder) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction MoveAsync( global::Windows.Storage.IStorageFolder destinationFolder,  string desiredNewName)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StorageFile.MoveAsync(IStorageFolder destinationFolder, string desiredNewName) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction MoveAsync( global::Windows.Storage.IStorageFolder destinationFolder,  string desiredNewName,  global::Windows.Storage.NameCollisionOption option)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StorageFile.MoveAsync(IStorageFolder destinationFolder, string desiredNewName, NameCollisionOption option) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction MoveAndReplaceAsync( global::Windows.Storage.IStorageFile fileToReplace)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StorageFile.MoveAndReplaceAsync(IStorageFile fileToReplace) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction RenameAsync( string desiredName)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StorageFile.RenameAsync(string desiredName) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction RenameAsync( string desiredName,  global::Windows.Storage.NameCollisionOption option)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StorageFile.RenameAsync(string desiredName, NameCollisionOption option) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.Storage.StorageFile.OpenTransactedWriteAsync()
+		// Skipping already declared method Windows.Storage.StorageFile.CopyAsync(Windows.Storage.IStorageFolder)
+		// Skipping already declared method Windows.Storage.StorageFile.CopyAsync(Windows.Storage.IStorageFolder, string)
+		// Skipping already declared method Windows.Storage.StorageFile.CopyAsync(Windows.Storage.IStorageFolder, string, Windows.Storage.NameCollisionOption)
+		// Skipping already declared method Windows.Storage.StorageFile.CopyAndReplaceAsync(Windows.Storage.IStorageFile)
+		// Skipping already declared method Windows.Storage.StorageFile.MoveAsync(Windows.Storage.IStorageFolder)
+		// Skipping already declared method Windows.Storage.StorageFile.MoveAsync(Windows.Storage.IStorageFolder, string)
+		// Skipping already declared method Windows.Storage.StorageFile.MoveAsync(Windows.Storage.IStorageFolder, string, Windows.Storage.NameCollisionOption)
+		// Skipping already declared method Windows.Storage.StorageFile.MoveAndReplaceAsync(Windows.Storage.IStorageFile)
+		// Skipping already declared method Windows.Storage.StorageFile.RenameAsync(string)
+		// Skipping already declared method Windows.Storage.StorageFile.RenameAsync(string, Windows.Storage.NameCollisionOption)
 		// Skipping already declared method Windows.Storage.StorageFile.DeleteAsync()
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction DeleteAsync( global::Windows.Storage.StorageDeleteOption option)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StorageFile.DeleteAsync(StorageDeleteOption option) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.Storage.StorageFile.DeleteAsync(Windows.Storage.StorageDeleteOption)
 		// Skipping already declared method Windows.Storage.StorageFile.GetBasicPropertiesAsync()
 		// Forced skipping of method Windows.Storage.StorageFile.Name.get
 		// Forced skipping of method Windows.Storage.StorageFile.Path.get
 		// Forced skipping of method Windows.Storage.StorageFile.Attributes.get
 		// Forced skipping of method Windows.Storage.StorageFile.DateCreated.get
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsOfType( global::Windows.Storage.StorageItemTypes type)
-		{
-			throw new global::System.NotImplementedException("The member bool StorageFile.IsOfType(StorageItemTypes type) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStreamWithContentType> OpenReadAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStreamWithContentType> StorageFile.OpenReadAsync() is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.Storage.StorageFile.IsOfType(Windows.Storage.StorageItemTypes)
+		// Skipping already declared method Windows.Storage.StorageFile.OpenReadAsync()
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IInputStream> OpenSequentialReadAsync()
@@ -251,36 +140,12 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageItemThumbnail> StorageFile.GetScaledImageAsThumbnailAsync(ThumbnailMode mode, uint requestedSize, ThumbnailOptions options) is not implemented in Uno.");
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetParentAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFolder> StorageFile.GetParentAsync() is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsEqual( global::Windows.Storage.IStorageItem item)
-		{
-			throw new global::System.NotImplementedException("The member bool StorageFile.IsEqual(IStorageItem item) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.Storage.StorageFile.GetParentAsync()
+		// Skipping already declared method Windows.Storage.StorageFile.IsEqual(Windows.Storage.IStorageItem)
 		// Forced skipping of method Windows.Storage.StorageFile.Provider.get
 		// Forced skipping of method Windows.Storage.StorageFile.IsAvailable.get
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> OpenAsync( global::Windows.Storage.FileAccessMode accessMode,  global::Windows.Storage.StorageOpenOptions options)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> StorageFile.OpenAsync(FileAccessMode accessMode, StorageOpenOptions options) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageStreamTransaction> OpenTransactedWriteAsync( global::Windows.Storage.StorageOpenOptions options)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageStreamTransaction> StorageFile.OpenTransactedWriteAsync(StorageOpenOptions options) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.Storage.StorageFile.OpenAsync(Windows.Storage.FileAccessMode, Windows.Storage.StorageOpenOptions)
+		// Skipping already declared method Windows.Storage.StorageFile.OpenTransactedWriteAsync(Windows.Storage.StorageOpenOptions)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> GetFileFromPathForUserAsync( global::Windows.System.User user,  string path)
@@ -288,6 +153,8 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> StorageFile.GetFileFromPathForUserAsync(User user, string path) is not implemented in Uno.");
 		}
 		#endif
+		// Skipping already declared method Windows.Storage.StorageFile.GetFileFromPathAsync(string)
+		// Skipping already declared method Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(System.Uri)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CreateStreamedFileAsync( string displayNameWithExtension,  global::Windows.Storage.StreamedFileDataRequestedHandler dataRequested,  global::Windows.Storage.Streams.IRandomAccessStreamReference thumbnail)

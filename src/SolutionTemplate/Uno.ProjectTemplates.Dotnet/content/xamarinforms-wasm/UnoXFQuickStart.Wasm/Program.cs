@@ -50,6 +50,10 @@ namespace UnoXFQuickStart.Wasm
             factory
                 .AddConsole(LogLevel.Error);
 #endif
+
+#if HAS_UNO
+			global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
+#endif
 //-:cnd:noEmit
         }
     }

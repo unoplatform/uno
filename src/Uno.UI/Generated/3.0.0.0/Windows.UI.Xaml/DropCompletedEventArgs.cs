@@ -2,21 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DropCompletedEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.DataTransfer.DataPackageOperation DropResult
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DataPackageOperation DropCompletedEventArgs.DropResult is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property DropResult
 		// Forced skipping of method Windows.UI.Xaml.DropCompletedEventArgs.DropResult.get
 	}
 }

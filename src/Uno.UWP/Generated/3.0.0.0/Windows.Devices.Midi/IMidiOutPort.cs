@@ -3,7 +3,7 @@
 namespace Windows.Devices.Midi
 {
 	#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || false
-	[global::Uno.NotImplemented]
+	[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 	#endif
 	public  partial interface IMidiOutPort : global::System.IDisposable
 	{

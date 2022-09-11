@@ -1,16 +1,22 @@
 ﻿using System;
 using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Samples.Controls;
 
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
+
 namespace UITests.Windows_UI_Input.GestureRecognizerTests
 {
-	[Sample("Gesture recognizer")]
+	[Sample("Gesture Recognizer")]
 	public sealed partial class Manipulation_Inertia : Page
 	{
 		public Manipulation_Inertia()

@@ -49,7 +49,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private class SelectedItemsEnumerator : IEnumerator<T>
 		{
 			private readonly IReadOnlyList<T> m_selectedItems = null;
-			private int m_currentIndex = 0;
+			private int m_currentIndex = -1;
 
 			public SelectedItemsEnumerator(IReadOnlyList<T> selectedItems)
 			{
@@ -91,7 +91,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			public void Reset() => m_currentIndex = 0;
+			public void Reset() => m_currentIndex = -1;
 		}
 
 		#endregion

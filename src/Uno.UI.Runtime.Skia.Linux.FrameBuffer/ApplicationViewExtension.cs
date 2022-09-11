@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using Uno.Extensions;
+﻿using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 

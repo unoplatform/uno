@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				return false;
 			}
 
-			if (timeline.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (timeline.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				timeline.Log().Debug("This Dependent animation will not run, EnableDependentAnimation is set to false");
 			}

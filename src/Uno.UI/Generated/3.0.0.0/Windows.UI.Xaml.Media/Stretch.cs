@@ -3,9 +3,6 @@
 namespace Windows.UI.Xaml.Media
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
 	public   enum Stretch 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Media.Stretch.None

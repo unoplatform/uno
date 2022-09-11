@@ -4,7 +4,7 @@ using Uno.Disposables;
 using System.Text;
 using CoreGraphics;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Controls.Primitives;
 using UIKit;
@@ -12,7 +12,7 @@ using UIKit;
 namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = "Child")]
-	public partial class Popover : PopupBase
+	public partial class Popover : NativePopupBase
 	{
 		private const double DefaultPopoverWidth = 320;
 
@@ -146,5 +146,21 @@ namespace Windows.UI.Xaml.Controls
 
 			_popoverSubscription.Disposable = null;
         }
+
+		public new UIKit.UIView Anchor
+		{
+			get => (UIKit.UIView)this.GetValue(AnchorProperty);
+			set => SetValue(AnchorProperty, value);
+		}
+
+		public static DependencyProperty AnchorProperty { get; } =
+			DependencyProperty.Register(
+				name: "Anchor",
+				propertyType: typeof(UIKit.UIView),
+				ownerType: typeof(Popover),
+				typeMetadata: new FrameworkPropertyMetadata(
+					defaultValue: (UIKit.UIView)null,
+					options: FrameworkPropertyMetadataOptions.None)
+			);
 	}
 }

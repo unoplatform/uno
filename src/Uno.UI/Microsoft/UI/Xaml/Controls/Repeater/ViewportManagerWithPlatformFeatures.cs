@@ -2,6 +2,8 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // ItemsRepeater.h, ItemsRepeater.cpp, commit 1cf9f1c
 
+#pragma warning disable 105 // remove when moving to WinUI tree
+
 using System;
 using System.Diagnostics;
 using Windows.Foundation;

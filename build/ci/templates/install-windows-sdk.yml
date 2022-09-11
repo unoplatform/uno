@@ -3,4 +3,5 @@ parameters:
 
 steps:
   - powershell: .\build\Install-WindowsSdkISO.ps1 ${{parameters.sdkVersion}}
-    displayName: Insider SDK
+    displayName: Install Windows SDK ${{parameters.sdkVersion}}
+    retryCountOnTaskFailure: 3

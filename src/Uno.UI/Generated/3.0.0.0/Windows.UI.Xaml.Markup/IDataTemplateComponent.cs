@@ -2,16 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Markup
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IDataTemplateComponent 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void Recycle();
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void ProcessBindings( object item,  int itemIndex,  int phase, out int nextPhase);
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Markup.IDataTemplateComponent.Recycle()
+		// Skipping already declared method Windows.UI.Xaml.Markup.IDataTemplateComponent.ProcessBindings(object, int, int, out int)
 	}
 }

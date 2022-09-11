@@ -3,8 +3,9 @@ using System;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Web;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 
 namespace Uno.Helpers
 {

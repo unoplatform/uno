@@ -3,9 +3,9 @@
 namespace Windows.ApplicationModel.DataTransfer
 {
 	#if false || false || NET461 || false || false || false || false
-	[global::Uno.NotImplemented]
+	[global::Uno.NotImplemented("NET461")]
 	#endif
-	public  partial class StandardDataFormats 
+	public static partial class StandardDataFormats 
 	{
 		#if false || false || NET461 || false || false || false || false
 		[global::Uno.NotImplemented("NET461")]

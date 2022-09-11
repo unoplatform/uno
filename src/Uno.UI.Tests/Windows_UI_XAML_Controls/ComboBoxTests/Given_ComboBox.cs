@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml;
 using Uno.UI.Tests.App.Xaml;
 using System.Windows.Data;
@@ -25,7 +26,7 @@ namespace Uno.UI.Tests.ComboBoxTests
 		{
 			var itemsPresenter = new ItemsPresenter();
 
-			var popup = new PopupBase()
+			var popup = new Popup()
 			{
 				Child = itemsPresenter
 			};
@@ -34,7 +35,7 @@ namespace Uno.UI.Tests.ComboBoxTests
 			{
 				Children =
 				{
-					popup.Name<PopupBase>("Popup"),
+					popup.Name<Popup>("Popup"),
 					new Border().Name<Border>("PopupBorder")
 				}
 			};

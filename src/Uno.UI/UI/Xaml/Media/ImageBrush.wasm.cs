@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using System.Globalization;
 using System.Collections.Generic;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
-using Uno.Logging;
+
+using Uno.Foundation.Logging;
 using System.Collections.Concurrent;
 
 namespace Windows.UI.Xaml.Media
@@ -43,8 +43,8 @@ namespace Windows.UI.Xaml.Media
 			{
 				Stretch.Fill => "100% 100%",
 				Stretch.None => "auto",
-				Stretch.Uniform => "auto", // patch for now
-				Stretch.UniformToFill => "auto", // patch for now
+				Stretch.Uniform => "contain", // patch for now
+				Stretch.UniformToFill => "cover",
 				_ => "auto"
 			};
 		}

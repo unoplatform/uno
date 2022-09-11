@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Shapes
 {
-	internal class BorderLayerRenderer
+	partial class BorderLayerRenderer
 	{
 		private LayoutState _currentState;
 
@@ -94,8 +94,9 @@ namespace Windows.UI.Xaml.Shapes
 			var widthOffset = ((float)borderThickness.Left / 2) + ((float)borderThickness.Right / 2);
 			var halfWidth = (float)area.Width / 2;
 			var halfHeight = (float)area.Height / 2;
-			var adjustedArea = area;
-			adjustedArea = adjustedArea.DeflateBy(borderThickness);
+			var adjustedArea = state.BackgroundSizing == BackgroundSizing.InnerBorderEdge
+				? area.DeflateBy(borderThickness)
+				: area;
 
 			if (cornerRadius != CornerRadius.None)
 			{
@@ -170,12 +171,12 @@ namespace Windows.UI.Xaml.Shapes
 				{
 					backgroundArea = CreateImageLayer(compositor, disposables, borderThickness, adjustedArea, backgroundShape, backgroundArea, imgBackground);
 				}
-				else 
+				else
 				{
 					Brush.AssignAndObserveBrush(background, compositor, brush => backgroundShape.FillBrush = brush)
 						.DisposeWith(disposables);
 
-					// This is required because changing the CornerRadius changes the background drawing 
+					// This is required because changing the CornerRadius changes the background drawing
 					// implementation and we don't want a rectangular background behind a rounded background.
 					Disposable.Create(() => backgroundShape.FillBrush = null)
 						.DisposeWith(disposables);
@@ -184,7 +185,7 @@ namespace Windows.UI.Xaml.Shapes
 				var geometrySource = new SkiaGeometrySource2D();
 				var geometry = geometrySource.Geometry;
 
-				geometry.AddRect(backgroundArea.ToSKRect());
+				geometry.AddRect(adjustedArea.ToSKRect());
 
 				backgroundShape.Geometry = compositor.CreatePathGeometry(new CompositionPath(geometrySource));
 
@@ -255,7 +256,7 @@ namespace Windows.UI.Xaml.Shapes
 						});
 					}
 				}
-				
+
 				sublayers.Add(shapeVisual);
 
 				// Must be inserted below the other subviews, which may happen when

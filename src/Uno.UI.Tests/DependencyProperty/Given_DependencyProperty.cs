@@ -1398,6 +1398,68 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
+		public void When_NullableStructRecordPropertyBinding()
+		{
+			var SUT = new Windows.UI.Xaml.Controls.Border();
+			var propertyOwner = new NullableStructRecordPropertyOwner()
+			{
+				MyProperty = null
+			};
+			SUT.Tag = propertyOwner;
+
+			var o2 = new Windows.UI.Xaml.Controls.Border();
+			o2.SetBinding(
+				Windows.UI.Xaml.Controls.Border.TagProperty,
+				new Binding()
+				{
+					Path = "Tag.MyProperty.Value.OtherProperty",
+					Mode = BindingMode.OneWay,
+					CompiledSource = SUT
+				}
+			);
+
+			o2.ApplyXBind();
+
+			Assert.IsNull(o2.Tag);
+
+			propertyOwner.MyProperty
+				= new NullableStructRecordPropertyOwner.MyRecord("42");
+
+			Assert.AreEqual("42", o2.Tag);
+		}
+
+		[TestMethod]
+		public void When_StructRecordWithValuePropertyBinding()
+		{
+			var SUT = new Windows.UI.Xaml.Controls.Border();
+			var propertyOwner = new StructRecordWithValuePropertyOwner()
+			{
+				MyProperty = new StructRecordWithValuePropertyOwner.MyRecord()
+			};
+			SUT.Tag = propertyOwner;
+
+			var o2 = new Windows.UI.Xaml.Controls.Border();
+			o2.SetBinding(
+				Windows.UI.Xaml.Controls.Border.TagProperty,
+				new Binding()
+				{
+					Path = "Tag.MyProperty.Value",
+					Mode = BindingMode.OneWay,
+					CompiledSource = SUT
+				}
+			);
+
+			o2.ApplyXBind();
+
+			Assert.IsNull(o2.Tag);
+
+			propertyOwner.MyProperty
+				= new StructRecordWithValuePropertyOwner.MyRecord("42");
+
+			Assert.AreEqual("42", o2.Tag);
+		}
+
+		[TestMethod]
 		public void When_DataContext_Changing()
 		{
 			var SUT = new NullablePropertyOwner();
@@ -1900,14 +1962,59 @@ namespace Uno.UI.Tests.BinderTests
 
 	}
 
-	partial class MyDependencyObjectWithDefaultValueOverride : DependencyObject
+	partial class NullableStructRecordPropertyOwner : FrameworkElement
+	{
+		public MyRecord? MyProperty
+		{
+			get => (MyRecord?)GetValue(MyPropertyProperty);
+			set => SetValue(MyPropertyProperty, value);
+		}
+
+		public static readonly DependencyProperty MyPropertyProperty =
+			DependencyProperty.Register(
+				nameof(MyProperty),
+				typeof(MyRecord?),
+				typeof(NullableStructRecordPropertyOwner),
+				new PropertyMetadata(null, DataReady));
+
+		private static void DataReady(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+
+		}
+
+		public readonly record struct MyRecord(string OtherProperty);
+	}
+
+	partial class StructRecordWithValuePropertyOwner : FrameworkElement
+	{
+		public MyRecord MyProperty
+		{
+			get => (MyRecord)GetValue(MyPropertyProperty);
+			set => SetValue(MyPropertyProperty, value);
+		}
+
+		public static readonly DependencyProperty MyPropertyProperty =
+			DependencyProperty.Register(
+				nameof(MyProperty),
+				typeof(MyRecord),
+				typeof(StructRecordWithValuePropertyOwner),
+				new PropertyMetadata(null, DataReady));
+
+		private static void DataReady(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+
+		}
+
+		public readonly record struct MyRecord(string Value);
+	}
+
+	partial class MyDependencyObjectWithDefaultValueOverride : FrameworkElement
 	{
 		public MyDependencyObjectWithDefaultValueOverride()
 		{
-			this.RegisterDefaultValueProvider(OnProvideDefaultValue);
 		}
 
-		private bool OnProvideDefaultValue(DependencyProperty property, out object defaultValue)
+		internal override bool GetDefaultValue2(DependencyProperty property, out object defaultValue)
 		{
 			if (property == MyPropertyProperty)
 			{
@@ -1916,8 +2023,7 @@ namespace Uno.UI.Tests.BinderTests
 				return true;
 			}
 
-			defaultValue = null;
-			return false;
+			return base.GetDefaultValue2(property, out defaultValue);
 		}
 
 		public int MyProperty

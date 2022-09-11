@@ -15,7 +15,7 @@
 	<PropertyGroup>
 		<AssemblyName>Uno.UI</AssemblyName>
 		<RootNamespace>Uno.UI</RootNamespace>
-		<DefineConstants>$(DefineConstants);IS_UNO</DefineConstants>
+		<DefineConstants>$(DefineConstants);IS_UNO;IS_UNO_UI_PROJECT</DefineConstants>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<BuildForLiveUnitTesting>false</BuildForLiveUnitTesting>
 		<NoWarn>$(NoWarn);NU1701;1572;1587;419;1574;1711;1734;CS0105</NoWarn>
@@ -38,10 +38,13 @@
 		<UnoForceProcessPRIResource>true</UnoForceProcessPRIResource>
 
 		<!-- Generate automation IDs in debug builds, use by UI tests. -->
-    <IsUiAutomationMappingEnabled Condition="'$(Configuration)'=='Debug'">true</IsUiAutomationMappingEnabled>
+		<IsUiAutomationMappingEnabled Condition="'$(Configuration)'=='Debug'">true</IsUiAutomationMappingEnabled>
 
 		<!-- Disable WPF targets -->
 		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
+
+		<!-- Disabled because of LinkerDefinitionMergerTask performance issues https://github.com/unoplatform/uno/issues/9632 -->
+		<!--<UnoXamlResourcesTrimming Condition="'$(Configuration)'!='Debug'">true</UnoXamlResourcesTrimming>-->
 	</PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
@@ -79,10 +82,6 @@
 
 	<ItemGroup>
 		<None Include="Extensions\CGSizeExtensions.iOSmacOS.cs" />
-		<None Include="Mixins\Android\BaseActivity.Callbacks.g.cs">
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
-		</None>
 		<None Include="Mixins\Android\FrameworkElementMixins.g.cs">
 		  <DesignTime>True</DesignTime>
 		  <AutoGen>True</AutoGen>
@@ -105,13 +104,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Uno.Core" />
-		<PackageReference Include="Uno.Core.Build" />
-		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0">
-		  <PrivateAssets>all</PrivateAssets>
-		</PackageReference>
 		<PackageReference Include="System.Memory" Version="4.5.2" />
-		<PackageReference Include="xamarin.build.download" Version="0.4.11" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-android'">
@@ -132,13 +125,16 @@
 		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.net6.csproj" Condition="'$(TargetFramework)' == 'net6.0-android'">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
+		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.net6.csproj">
+			<TreatAsPackageReference>false</TreatAsPackageReference>
+		</ProjectReference>
 	</ItemGroup>
 
 	<ItemGroup>
 		<EmbeddedResource Include="LinkerDefinition.$(TargetFramework).xml" Condition="exists('LinkerDefinition.$(TargetFramework).xml')">
 		  <LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>
-		<EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRingIntdeterminate.json" />
+		<EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\*.json" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
@@ -212,6 +208,8 @@
 		-->
 		<ItemGroup>
 			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Memory'" />
+			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Buffers'" />
+
 			<Reference Remove="@(_ReferenceToRemove)" />
 		</ItemGroup>
 	</Target>
@@ -219,10 +217,11 @@
 	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences" Condition="'$(MSBuildVersion)' &gt;= '16.0' and ($(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac))">
 		<ItemGroup>
 			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
+			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Buffers'" />
 			<ReferencePath Remove="@(_ReferencePathToRemove)" />
 		</ItemGroup>
 	</Target>
-
 	<Import Project="MixinGeneration.targets" />
+	<Import Project="XamlMerge.targets" />
 
 </Project>

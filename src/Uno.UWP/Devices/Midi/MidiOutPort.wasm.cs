@@ -10,7 +10,7 @@ using System.Web;
 using Uno.Devices.Enumeration.Internal;
 using Uno.Devices.Enumeration.Internal.Providers.Midi;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Devices.Enumeration;
 using Windows.Foundation;
 using Windows.Storage.Streams;

@@ -33,9 +33,7 @@ namespace Windows.Storage.Streams
 		// Skipping already declared method Windows.Storage.Streams.IDataWriter.WriteTimeSpan(System.TimeSpan)
 		// Skipping already declared method Windows.Storage.Streams.IDataWriter.WriteString(string)
 		// Skipping already declared method Windows.Storage.Streams.IDataWriter.MeasureString(string)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Storage.Streams.DataWriterStoreOperation StoreAsync();
-		#endif
+		// Skipping already declared method Windows.Storage.Streams.IDataWriter.StoreAsync()
 		// Skipping already declared method Windows.Storage.Streams.IDataWriter.FlushAsync()
 		// Skipping already declared method Windows.Storage.Streams.IDataWriter.DetachBuffer()
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

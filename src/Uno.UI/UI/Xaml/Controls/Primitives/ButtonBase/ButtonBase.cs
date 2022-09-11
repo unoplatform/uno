@@ -9,7 +9,7 @@ using System.Windows.Input;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
 using Uno.Extensions.Specialized;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.System;
@@ -216,7 +216,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			try
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("Executing command");
 				}

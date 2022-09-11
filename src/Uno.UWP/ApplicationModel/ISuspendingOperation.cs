@@ -1,11 +1,22 @@
-﻿using System;
+﻿#nullable enable
 
-namespace Windows.ApplicationModel
+using System;
+
+namespace Windows.ApplicationModel;
+
+/// <summary>
+/// Provides information about an app suspending operation.
+/// </summary>
+public partial interface ISuspendingOperation
 {
-	public partial interface ISuspendingOperation
-	{
-		DateTimeOffset Deadline { get; }
+	/// <summary>
+	/// Gets the time remaining before a delayed app suspending operation continues.
+	/// </summary>
+	DateTimeOffset Deadline { get; }
 
-		SuspendingDeferral GetDeferral();
-	}
+	/// <summary>
+	/// Requests that the app suspending operation be delayed.
+	/// </summary>
+	/// <returns>The suspension deferral.</returns>
+	SuspendingDeferral GetDeferral();
 }

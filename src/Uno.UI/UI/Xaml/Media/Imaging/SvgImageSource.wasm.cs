@@ -6,7 +6,7 @@ using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.Storage.Streams;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using static Windows.UI.Xaml.Media.Imaging.BitmapImage;
 using Windows.Storage.Helpers;
 

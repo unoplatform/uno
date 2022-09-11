@@ -7,7 +7,7 @@ using Windows.UI.Core;
 
 namespace Uno.UI.Samples.Presentation.SamplePages
 {
-	public class TextBlockViewModel : ViewModelBase
+	internal class TextBlockViewModel : ViewModelBase
 	{
 		private string _currentDate;
 		private long _increasingSize;

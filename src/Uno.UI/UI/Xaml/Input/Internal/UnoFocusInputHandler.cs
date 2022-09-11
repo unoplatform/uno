@@ -11,7 +11,7 @@ namespace Uno.UI.Xaml.Input
 	{
 		private readonly RootVisual _rootVisual;
 
-		private bool _isShiftDown = false;
+		private bool _isShiftDown;
 
 		public UnoFocusInputHandler(RootVisual rootVisual)
 		{
@@ -107,7 +107,12 @@ namespace Uno.UI.Xaml.Input
 				focusCandidateFound |= directionalFocusInfo.FocusCandidateFound;
 				directionalFocusEnabled |= directionalFocusInfo.DirectionalFocusEnabled;
 
-				if (!focusCandidateFound && directionalFocusInfo.ShouldBubble)
+				if (!directionalFocusInfo.ShouldBubble)
+				{
+					break;
+				}
+
+				if (!focusCandidateFound)
 				{
 					source = source.GetParent() as DependencyObject;
 				}

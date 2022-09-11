@@ -17,7 +17,7 @@ using Java.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.UI;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Disposables;
 using Windows.Foundation;
 

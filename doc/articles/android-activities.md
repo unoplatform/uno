@@ -10,3 +10,27 @@
 
 ## Creating/Using Android Activities
 At the root of every Android Uno app, lies a `BaseActivity` class that extends from `Android.Support.V7.App.AppCompatActivity` which is part of the [Android v7 AppCompat Support Library](https://developer.android.com/topic/libraries/support-library/features.html#v7-appcompat). If you ever need to create a new Activity within your app or within Uno you must be sure to extend `BaseActivity` and, if you need to apply a Theme to the activity, ensure that the Theme you set is a `Theme.AppCompat` theme (or descendant).
+
+## Accessing Android main activity events
+
+Uno Platform provides an API to get access to the events/overrides invoked in the main activity (commonly inheriting from `UI.Xaml.ApplicationActivity`) outside of the activity class.
+
+In order to get access to these events, you can write the following:
+
+```csharp
+using Uno.UI.ViewManagement;
+
+App()
+{
+    // ...
+    ApplicationViewHelper.GetBaseActivityEvents().Create += OnCreateEvent;
+    // ...
+}
+
+private void OnCreateEvent(Android.OS.Bundle savedInstanceState)
+{
+
+}
+```
+
+Note that some events are raised early during the application lifecyle and may need to be registered from the `App` constructor.

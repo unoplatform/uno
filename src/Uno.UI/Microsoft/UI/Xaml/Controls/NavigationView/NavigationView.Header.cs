@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationView.h, commit 996c2e5
+// MUX reference NavigationView.h, commit 3ac8fc1
 
 using System.Collections.Generic;
 using Uno.Disposables;
@@ -184,6 +184,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private TopNavigationViewLayoutState m_topNavigationMode = TopNavigationViewLayoutState.Uninitialized;
 
+		private readonly List<NavigationViewItem> m_itemsWithRevokerObjects = new List<NavigationViewItem>();
+
 		// A threshold to stop recovery from overflow to normal happens immediately on resize.
 		private float m_topNavigationRecoveryGracePeriodWidth = 5.0f;
 
@@ -203,6 +205,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool m_TabKeyPrecedesFocusChange = false;
 
 		private bool m_isLeftPaneTitleEmpty = false;
+
+		private double m_openPaneWidth = 320.0;
 
 		#region Uno specific
 

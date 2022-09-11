@@ -3,7 +3,8 @@ using System;
 using System.Linq;
 using UIKit;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
+using Uno.Helpers.Theming;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.Globalization;
@@ -24,7 +25,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_picker == null)
 			{
-				this.Log().DebugIfEnabled(() => $"No {nameof(UIDatePicker)} was found in the visual hierarchy.");
+				this.Log().Debug($"No {nameof(UIDatePicker)} was found in the visual hierarchy.");
 				return;
 			}
 
@@ -37,6 +38,7 @@ namespace Windows.UI.Xaml.Controls
 			_picker.Mode = UIDatePickerMode.Time;
 
 			UpdatePickerStyle();
+			DatePickerSelector.OverrideUIDatePickerTheme();
 			SetPickerTime(Time.RoundToNextMinuteInterval(MinuteIncrement));
 			SetPickerClockIdentifier(ClockIdentifier);
 			SaveInitialTime();
@@ -51,6 +53,7 @@ namespace Windows.UI.Xaml.Controls
 				parent.RemoveChild(_picker);
 				parent.AddSubview(_picker);
 			}
+
 		}
 
 		private void OnEditingDidBegin(object sender, EventArgs e)
@@ -67,6 +70,7 @@ namespace Windows.UI.Xaml.Controls
 		public void Initialize()
 		{
 			UpdatePickerStyle();
+			DatePickerSelector.OverrideUIDatePickerTheme();
 			SetPickerClockIdentifier(ClockIdentifier);
 			SetPickerMinuteIncrement(MinuteIncrement);
 		}
@@ -157,6 +161,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_picker == null)
 			{
+				return;
+			}
+
+			if (UIDevice.CurrentDevice.CheckSystemVersion(15, 0))
+			{
+				_picker.PreferredDatePickerStyle = UIDatePickerStyle.Wheels;
+
 				return;
 			}
 

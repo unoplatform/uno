@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Notifications
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class TileNotification 
@@ -35,23 +35,8 @@ namespace Windows.UI.Notifications
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Data.Xml.Dom.XmlDocument Content
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member XmlDocument TileNotification.Content is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public TileNotification( global::Windows.Data.Xml.Dom.XmlDocument content) 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileNotification", "TileNotification.TileNotification(XmlDocument content)");
-		}
-		#endif
+		// Skipping already declared property Content
+		// Skipping already declared method Windows.UI.Notifications.TileNotification.TileNotification(Windows.Data.Xml.Dom.XmlDocument)
 		// Forced skipping of method Windows.UI.Notifications.TileNotification.TileNotification(Windows.Data.Xml.Dom.XmlDocument)
 		// Forced skipping of method Windows.UI.Notifications.TileNotification.Content.get
 		// Forced skipping of method Windows.UI.Notifications.TileNotification.ExpirationTime.set

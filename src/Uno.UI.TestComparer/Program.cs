@@ -249,6 +249,10 @@ namespace Umbrella.UI.TestComparer
 			var success = !compareResult.Tests.Any(t => t.ResultRun.LastOrDefault()?.HasChanged ?? false);
 			var successCount = compareResult.Tests.Count(t => t.ResultRun.LastOrDefault()?.HasChanged ?? false);
 
+			// Symlinks folder
+			var symlinksBasePath = Path.GetFullPath(Path.Combine(basePath, "..", $"test-comparer-{Guid.NewGuid()}"));
+			Directory.CreateDirectory(symlinksBasePath);
+
 			var doc = new XmlDocument();
 			var rootNode = doc.CreateElement("test-run");
 			doc.AppendChild(rootNode);
@@ -330,14 +334,14 @@ namespace Umbrella.UI.TestComparer
 					var attachmentsNode = doc.CreateElement("attachments");
 					testCaseNode.AppendChild(attachmentsNode);
 
-					AddAttachment(doc, attachmentsNode, lastTestRun.FilePath, "Result output");
+					AddAttachment(doc, attachmentsNode, BuildSymlink(basePath, symlinksBasePath, lastTestRun.FolderIndex, lastTestRun.FilePath), "Result output");
 
 					if (!testRunSuccess)
 					{
-						AddAttachment(doc, attachmentsNode, lastTestRun.DiffResultImage, "Image diff");
+						AddAttachment(doc, attachmentsNode, BuildSymlink(basePath, symlinksBasePath, lastTestRun.FolderIndex, lastTestRun.DiffResultImage), "Image diff");
 
 						var previousRun = run.ResultRun.ElementAtOrDefault(run.ResultRun.Count - 2);
-						AddAttachment(doc, attachmentsNode, previousRun.FilePath, "Previous result output");
+						AddAttachment(doc, attachmentsNode, BuildSymlink(basePath, symlinksBasePath, previousRun.FolderIndex, previousRun.FilePath), "Previous result output");
 					}
 				}
 			}
@@ -346,6 +350,26 @@ namespace Umbrella.UI.TestComparer
 			{
 				doc.WriteTo(file);
 			}
+		}
+
+		private static string BuildSymlink(string basePath, string symlinksBasePath, int folderIndex, string originalFilePath)
+		{
+			if (!string.IsNullOrEmpty(originalFilePath))
+			{
+				var relativeSourceFilePath = Path.GetRelativePath(basePath, originalFilePath);
+				var targetLinkPath = Path.Combine(symlinksBasePath, Path.GetDirectoryName(relativeSourceFilePath), $"{folderIndex}-{Path.GetFileName(relativeSourceFilePath)}");
+
+				Directory.CreateDirectory(Path.GetDirectoryName(targetLinkPath));
+
+				if (!File.Exists(targetLinkPath))
+				{
+					File.CreateSymbolicLink(targetLinkPath, originalFilePath);
+				}
+
+				return targetLinkPath;
+			}
+
+			return null;
 		}
 
 		private static string SanitizeTestName(string testName)
@@ -358,7 +382,7 @@ namespace Umbrella.UI.TestComparer
 
 			var filePathNode = doc.CreateElement("filePath");
 			attachmentNode.AppendChild(filePathNode);
-			filePathNode.InnerText = filePath;
+			filePathNode.InnerText =  @"\\?\" + filePath;
 
 			var descriptionNode = doc.CreateElement("description");
 			attachmentNode.AppendChild(descriptionNode);

@@ -138,7 +138,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endregion
 
-		private void DatePickerFlyout_Opening(object sender, EventArgs e)
+		private void DatePickerFlyout_Opening(object sender, object e)
 		{
 			InitializeContent();
 			var date = Date;
@@ -158,7 +158,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateSelectorDate(date);
 		}
 
-		private void DatePickerFlyout_Closed(object sender, EventArgs e)
+		private void DatePickerFlyout_Closed(object sender, object e)
 		{
 			_selector.Cancel();
 		}

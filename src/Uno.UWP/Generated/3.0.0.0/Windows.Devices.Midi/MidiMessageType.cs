@@ -3,9 +3,6 @@
 namespace Windows.Devices.Midi
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
 	public   enum MidiMessageType 
 	{
 		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.None

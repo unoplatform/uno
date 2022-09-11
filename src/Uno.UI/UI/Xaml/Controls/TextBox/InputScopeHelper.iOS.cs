@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
     {
 		public static UITextAutocapitalizationType ConvertInputScopeToCapitalization(InputScope value)
 		{
-			switch (GetInputScopeName(value))
+			switch (value.GetFirstInputScopeNameValue())
 			{
 				case InputScopeNameValue.PersonalFullName:
 					return UITextAutocapitalizationType.Sentences;
@@ -25,13 +25,20 @@ namespace Windows.UI.Xaml.Controls
 
 		public static UIKeyboardType ConvertInputScopeToKeyboardType(InputScope value)
 		{
-			switch (GetInputScopeName(value) ?? InputScopeNameValue.Default)
+			switch (value.GetFirstInputScopeNameValue())
 			{
 				default:
 					return UIKeyboardType.Default;
 
 				case InputScopeNameValue.Number:
+				case InputScopeNameValue.DateDayNumber:
+				case InputScopeNameValue.DateMonthNumber:
+				case InputScopeNameValue.DateYear:
+				case InputScopeNameValue.Digits:
 					return UIKeyboardType.NumberPad;
+
+				case InputScopeNameValue.NameOrPhoneNumber:
+					return UIKeyboardType.NamePhonePad;
 
 				case InputScopeNameValue.NumberFullWidth:
 				case InputScopeNameValue.NumericPin:
@@ -47,16 +54,13 @@ namespace Windows.UI.Xaml.Controls
 					return UIKeyboardType.PhonePad;
 
 				case InputScopeNameValue.Search:
-					return UIKeyboardType.Default;
+					return UIKeyboardType.WebSearch;
 
 				case InputScopeNameValue.EmailNameOrAddress:
 				case InputScopeNameValue.EmailSmtpAddress:
 					return UIKeyboardType.EmailAddress;
 			}
 		}
-
-		private static InputScopeNameValue? GetInputScopeName(InputScope value)
-			=> value?.Names?.FirstOrDefault()?.NameValue;
 
 		public static InputScopeNameValue ConvertInputScope(UIKeyboardType keyboardType)
 		{

@@ -7,6 +7,7 @@ using Windows.Foundation;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using View = Windows.UI.Xaml.FrameworkElement;
+using Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls;
 
 namespace Uno.UI.Tests.GridTests
 {
@@ -1010,23 +1011,26 @@ namespace Uno.UI.Tests.GridTests
 				.GridRow(1)
 			);
 
-			SUT.Measure(new Size(20, 20));
-			SUT.Arrange(new Rect(0, 0, 20, 20));
+			var measureAvailableSize = new Size(20, 20);
+			var arrangeFinalRect = new Rect(default, measureAvailableSize);
 
-			Assert.AreEqual(new Rect(0, 0, 20, 20), child.Arranged);
+			SUT.Measure(measureAvailableSize);
+			SUT.Arrange(arrangeFinalRect);
+
+			child.Arranged.Should().Be(arrangeFinalRect);
 
 			var row1 = new RowDefinition { Height = new GridLength(5) };
 			SUT.RowDefinitions.Add(row1);
 			SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
 
-			SUT.Measure(new Size(20, 20));
-			SUT.Arrange(new Rect(0, 0, 20, 20));
+			SUT.Measure(measureAvailableSize);
+			SUT.Arrange(arrangeFinalRect);
 
-			Assert.AreEqual(new Rect(0, 5, 20, 10), child.Arranged);
+			child.Arranged.Should().Be(new Rect(0, 5, 20, 10));
 
-			SUT.InvalidateMeasureCallCount.Should().Be(2);
+			SUT.InvalidateMeasureCallCount.Should().Be(1);
 			row1.Height = new GridLength(10);
-			SUT.InvalidateMeasureCallCount.Should().Be(3);
+			SUT.InvalidateMeasureCallCount.Should().Be(2);
 		}
 
 		[TestMethod]
@@ -1061,9 +1065,9 @@ namespace Uno.UI.Tests.GridTests
 
 			child.Arranged.Should().Be(new Rect(5, 0, 10, 20));
 
-			SUT.InvalidateMeasureCallCount.Should().Be(2);
+			SUT.InvalidateMeasureCallCount.Should().Be(1);
 			col1.Width = new GridLength(10);
-			SUT.InvalidateMeasureCallCount.Should().Be(3);
+			SUT.InvalidateMeasureCallCount.Should().Be(2);
 		}
 
 		[TestMethod]
@@ -1075,7 +1079,6 @@ namespace Uno.UI.Tests.GridTests
 
 			SUT.ForceLoaded();
 
-
 			SUT.Measure(new Size(20, 20));
 			SUT.Arrange(new Rect(0, 0, 20, 20));
 
@@ -1083,13 +1086,26 @@ namespace Uno.UI.Tests.GridTests
 
 			SUT.ColumnDefinitions.Add(ColumnDefinition1 = new ColumnDefinition { Width = new GridLength(5) });
 			SUT.InvalidateMeasureCallCount.Should().Be(1);
+
+			SUT.Measure(new Size(20, 20)); // need to remeasure for the invalidation to be called again
+
 			SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
 			SUT.InvalidateMeasureCallCount.Should().Be(2);
 
 			ColumnDefinition1.MaxWidth = 22;
+			SUT.InvalidateMeasureCallCount.Should().Be(2); // Already invalidated, no new invalidations should be done
+
+			SUT.Measure(new Size(20, 20)); // need to remeasure for the invalidation to be called again
+
+			ColumnDefinition1.MaxWidth = 23;
 			SUT.InvalidateMeasureCallCount.Should().Be(3);
 
 			ColumnDefinition1.MinWidth = 5;
+			SUT.InvalidateMeasureCallCount.Should().Be(3); // Already invalidated, no new invalidations should be done
+
+			SUT.Measure(new Size(20, 20)); // need to remeasure for the invalidation to be called again
+
+			ColumnDefinition1.MinWidth = 6;
 			SUT.InvalidateMeasureCallCount.Should().Be(4);
 		}
 
@@ -1430,6 +1446,87 @@ namespace Uno.UI.Tests.GridTests
 
 			SUT.Measure(new Size(800, 800));
 			Assert.AreEqual(new Size(20, 20), knob.DesiredSize);
+		}
+
+		[TestMethod]
+		public void When_Grid_Uses_Common_Syntax()
+		{
+			using var _ = new AssertionScope();
+			var SUT = new Grid_Uses_Common_Syntax();
+
+			SUT.ForceLoaded();
+
+			SUT.grid.Should().NotBeNull();
+			SUT.grid.RowDefinitions.Should().BeEquivalentTo(new[]
+			{
+				new RowDefinition { Height = new GridLength(1, GridUnitType.Star) },
+				new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) },
+				new RowDefinition { Height = new GridLength(25, GridUnitType.Pixel) },
+				new RowDefinition { Height = new GridLength(14, GridUnitType.Pixel) },
+				new RowDefinition { Height = new GridLength(20, GridUnitType.Pixel) },
+			});
+			SUT.grid.ColumnDefinitions.Should().BeEquivalentTo(new[]
+			{
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+				new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) },
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+				new ColumnDefinition { Width = new GridLength(300, GridUnitType.Pixel) },
+			});
+		}
+
+		[TestMethod]
+		public void When_Grid_Uses_New_Succinct_Syntax()
+		{
+			using var _ = new AssertionScope();
+			var SUT = new Grid_Uses_New_Succinct_Syntax();
+
+			SUT.ForceLoaded();
+
+			SUT.grid.Should().NotBeNull();
+			SUT.grid.RowDefinitions.Should().BeEquivalentTo(new[]
+			{
+				new RowDefinition { Height = new GridLength(1, GridUnitType.Star) },
+				new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) },
+				new RowDefinition { Height = new GridLength(25, GridUnitType.Pixel) },
+				new RowDefinition { Height = new GridLength(14, GridUnitType.Pixel) },
+				new RowDefinition { Height = new GridLength(20, GridUnitType.Pixel) },
+			});
+			SUT.grid.ColumnDefinitions.Should().BeEquivalentTo(new[]
+			{
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+				new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) },
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+				new ColumnDefinition { Width = new GridLength(300, GridUnitType.Pixel) },
+			});
+		}
+
+		[TestMethod]
+		public void When_Grid_Uses_New_Assigned_ContentProperty_Syntax()
+		{
+			using var _ = new AssertionScope();
+			var SUT = new Grid_Uses_New_Assigned_ContentProperty_Syntax();
+
+			SUT.ForceLoaded();
+
+			SUT.grid.Should().NotBeNull();
+			SUT.grid.RowDefinitions.Should().BeEquivalentTo(new[]
+			{
+				new RowDefinition { Height = new GridLength(1, GridUnitType.Star) },
+				new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) },
+				new RowDefinition { Height = new GridLength(25, GridUnitType.Pixel) },
+				new RowDefinition { Height = new GridLength(14, GridUnitType.Pixel) },
+				new RowDefinition { Height = new GridLength(20, GridUnitType.Pixel) },
+			});
+			SUT.grid.ColumnDefinitions.Should().BeEquivalentTo(new[]
+			{
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+				new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) },
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) },
+				new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+				new ColumnDefinition { Width = new GridLength(300, GridUnitType.Pixel) },
+			});
 		}
 	}
 }

@@ -28,6 +28,13 @@ UI tests contribute significantly to the CI build time, and for many purposes a 
 > [!IMPORTANT]
 > Running the UI tests won't automatically rebuild the SamplesApp. If you add or modify samples, make sure to re-deploy the SamplesApp before you try to run UI tests against your modifications.
 
+### Troubleshooting 
+- For Android, ensure that your system-level environment variables `JAVA_HOME` and `ANDROID_HOME` are set to the same values as the ones set in Visual Studio's Xamarin Android options panel. Note that you may need to restart Visual Studio once the variables have been set. You may need to set these values if you get this message when running tests:
+   ```
+   Failed to execute: C:\Program Files\Android\Jdk\microsoft_dist_openjdk_1.8.0.25\bin\keytool.exe -J-Duser.language=en -list -v -alias androiddebugkey -keystore
+   ```
+- For Android, ensure that you are running hardware accelerated emulators. See [this documentation for details](https://docs.microsoft.com/en-us/xamarin/android/get-started/installation/android-emulator/hardware-acceleration?pivots=windows).
+
 ## Adding a new test
 
 1. Typically the first step is to [add a sample to the SamplesApp](working-with-the-samples-apps.md) that repros the bug you're fixing or demonstrates the functionality you're adding, unless you can do so with an existing sample.
@@ -104,7 +111,7 @@ Running UI Tests in iOS Simulators on macOS requires, as of VS4Mac 8.4, to build
 In a terminal, run the following:
 ``` bash
 cd build
-./local-ios-uitest-run.sh
+./test-scripts/local-ios-uitest-run.sh
 ```
 
 The Uno.UI solution will build, and the UI tests will run. You may need to adjust some of the parameters in the script, such as:

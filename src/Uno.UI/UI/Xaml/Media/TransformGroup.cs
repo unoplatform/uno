@@ -7,7 +7,7 @@ using System.Numerics;
 using System.Text;
 using Windows.UI.Xaml.Markup;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 #if __ANDROID__
 using _View = Android.Views.View;
 #elif __IOS__

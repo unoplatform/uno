@@ -32,6 +32,10 @@ using Uno.ApplicationModel.DataTransfer;
 using Uno.UI.Runtime.Skia.Tizen.ApplicationModel.DataTransfer;
 using Uno.UI.Runtime.Skia.Tizen.System;
 using Uno.Extensions.System;
+using Windows.System.Profile.Internal;
+using System.ComponentModel;
+using Windows.UI.Core;
+using Uno.UI.Xaml.Core;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -43,17 +47,20 @@ namespace Uno.UI.Runtime.Skia
 		private readonly TizenApplication _tizenApplication;
 		private readonly Func<WinUI.Application> _appBuilder;
 		private readonly TizenWindow _window;
-		private readonly string[] _args;
 
 		public static TizenHost Current => _current;
 
 		/// <summary>
-		/// Creates a WpfHost element to host a Uno-Skia into a WPF application.
+		/// Creates a host for a Uno Skia Tizen application.
 		/// </summary>
-		/// <remarks>
-		/// If args are omitted, those from Environment.GetCommandLineArgs() will be used.
-		/// </remarks>
-		public TizenHost(Func<WinUI.Application> appBuilder, string[] args = null)
+		/// <param name="appBuilder">App builder.</param>
+		/// <param name="args">Arguments.</param>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public TizenHost(Func<WinUI.Application> appBuilder, string[]? args = null) : this(appBuilder)
+		{
+		}
+		
+		public TizenHost(Func<WinUI.Application> appBuilder)
 		{
 			Elementary.Initialize();
 			Elementary.ThemeOverlay();
@@ -61,28 +68,12 @@ namespace Uno.UI.Runtime.Skia
 			_current = this;
 
 			_appBuilder = appBuilder;
-			_args = args;
-
-
-			_args ??= Environment
-				.GetCommandLineArgs()
-				.Skip(1)
-				.ToArray();
-
-			bool EnqueueNative(DispatcherQueuePriority priority, DispatcherQueueHandler callback)
-			{
-				EcoreMainloop.PostAndWakeUp(() => callback());
-
-				return true;
-			}
-
-			Windows.System.DispatcherQueue.EnqueueNativeOverride = EnqueueNative;
 
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = (d) => EcoreMainloop.PostAndWakeUp(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => EcoreMainloop.IsMainThread;
 
 			_tizenApplication = new TizenApplication(this);
-			_tizenApplication.Run(_args);
+			_tizenApplication.Run(Environment.GetCommandLineArgs());
 		}
 
 		public void Run()
@@ -109,7 +100,27 @@ namespace Uno.UI.Runtime.Skia
 				new Windows.Foundation.Size(
 					_tizenApplication.Window.ScreenSize.Width,
 					_tizenApplication.Window.ScreenSize.Height));
-			WinUI.Application.Start(CreateApp, _args);
+
+			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
+
+			WinUI.Application.StartWithArguments(CreateApp);
+		}
+
+		private void OnCoreWindowContentRootSet(object? sender, object e)
+		{
+			var xamlRoot = CoreServices.Instance
+				.ContentRootCoordinator
+				.CoreWindowContentRoot?
+				.GetOrCreateXamlRoot();
+
+			if (xamlRoot is null)
+			{
+				throw new InvalidOperationException("XamlRoot was not properly initialized");
+			}
+
+			xamlRoot.InvalidateRender += _tizenApplication!.Canvas.InvalidateRender;
+
+			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 		}
 	}
 }

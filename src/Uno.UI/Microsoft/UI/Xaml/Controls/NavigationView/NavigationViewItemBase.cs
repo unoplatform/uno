@@ -100,6 +100,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				OnApplyTemplate();
 			}
+			UpdateVisualState(false);
 		}
 #endif
 	}

@@ -5,15 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
-
-#if WINDOWS_UWP
-using Windows.UI.Xaml.Controls.Primitives;
-#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 {
@@ -22,6 +19,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 	{
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_NoScrollViewer_Then_ShowMoreThanFirstItem()
 		{
 			var sut = new ItemsRepeater
@@ -46,15 +46,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			await TestServices.WindowHelper.WaitForIdle();
 			sut.UpdateLayout();
 
-			var second = sut
-				.GetAllChildren()
-				.OfType<TextBlock>()
-				.FirstOrDefault(t => t.Text == "Item_2");
+			try
+			{
+				await RetryAssert(() =>
+				{
+					var second = sut
+						.GetAllChildren()
+						.OfType<TextBlock>()
+						.FirstOrDefault(t => t.Text == "Item_2");
 
-			popup.IsOpen = false;
-			TestServices.WindowHelper.WindowContent = null;
+					Assert.IsNotNull(second);
+				});
+			}
+			finally
+			{
+				popup.IsOpen = false;
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
 
-			Assert.IsNotNull(second);
+		private async Task RetryAssert(Action assertion)
+		{
+			var attempt = 0;
+			while (true)
+			{
+				try
+				{
+					assertion();
+
+					break;
+				}
+				catch (Exception e)
+				{
+					if (attempt++ >= 30)
+					{
+						throw;
+					}
+
+					await Task.Delay(10);
+				}
+			}
 		}
 	}
 }

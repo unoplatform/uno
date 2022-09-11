@@ -1,14 +1,14 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
   <PropertyGroup>
-		<TargetFrameworks>MonoAndroid11.0;xamarinios10</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid10.0;xamarinios10</TargetFrameworksCI>
+		<TargetFrameworks>MonoAndroid12.0;xamarinios10</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid12.0;xamarinios10</TargetFrameworksCI>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 	</PropertyGroup>
 	
 	<PropertyGroup>
     <Authors>nventive</Authors>
     <PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
-    <PackageIconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</PackageIconUrl>
+    <PackageIcon>uno.png</PackageIcon>
     <RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
     <Description>This package provides the ability for Uno Platform based apps to use the MapControl</Description>
     <Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
@@ -16,6 +16,11 @@
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Maps</PackageId>
   </PropertyGroup>
 	
+
+	<ItemGroup>
+		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" Visible="false"/>
+	</ItemGroup>
+
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 	</PropertyGroup>
@@ -36,8 +41,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Uno.Core" />
-		<PackageReference Include="Uno.Core.Build" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid11.0'">
@@ -46,7 +49,7 @@
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" PrivateAssets="none" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid10.0'">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid12.0'">
 		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="71.1600.0" />
 		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="71.1610.0" />
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" PrivateAssets="none" />

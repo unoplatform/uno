@@ -17,7 +17,7 @@ namespace Windows.Storage
 				throw new InvalidOperationException("Uri is not using the ms-appx scheme");
 			}
 
-			var path = uri.PathAndQuery.TrimStart(new char[] { '/' });
+			var path = Uri.UnescapeDataString(uri.PathAndQuery).TrimStart(new char[] { '/' });
 
 			var resourcePathname = global::System.IO.Path.Combine(Package.Current.InstalledLocation.Path, path);
 

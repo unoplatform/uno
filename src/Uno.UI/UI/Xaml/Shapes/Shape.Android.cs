@@ -1,19 +1,10 @@
 ﻿using Android.Graphics;
-using Windows.UI.Xaml.Controls;
-using System;
-using Uno.Logging;
-using Uno.Extensions;
-using System.Drawing;
+using Uno.Foundation.Logging;
 using Uno.UI;
-using Windows.UI.Xaml.Media;
 using System.Linq;
-using Uno.Disposables;
-using System.Collections.Generic;
-using Android.Graphics.Drawables;
-using Android.Graphics.Drawables.Shapes;
-using Android.Views;
-using System.Numerics;
+using Windows.UI.Xaml.Media;
 using Canvas = Android.Graphics.Canvas;
+using System;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -21,6 +12,7 @@ namespace Windows.UI.Xaml.Shapes
 	{
 		private Android.Graphics.Path _path;
 		private Windows.Foundation.Rect _drawArea;
+		protected Windows.Foundation.Rect _logicalRenderingArea;
 
 		protected bool HasStroke
 		{
@@ -67,11 +59,17 @@ namespace Windows.UI.Xaml.Shapes
 			double renderOriginX = 0d,
 			double renderOriginY = 0d)
 		{
-			_path = path;
-			if (_path == null)
+			if (path == null)
 			{
+				if (_path != null)
+				{
+					_path = null;
+					_drawArea = new RectF();
+					Invalidate();
+				}
 				return;
 			}
+			_path = path;
 
 			var matrix = new Android.Graphics.Matrix();
 
@@ -81,7 +79,7 @@ namespace Windows.UI.Xaml.Shapes
 			_path.Transform(matrix);
 
 			_drawArea = GetPathBoundingBox(_path);
-			
+
 			_drawArea.Width = size?.Width ?? _drawArea.Width;
 			_drawArea.Height = size?.Height ?? _drawArea.Height;
 
@@ -161,7 +159,7 @@ namespace Windows.UI.Xaml.Shapes
 				}
 				else
 				{
-					this.Log().ErrorIfEnabled(() => "StrokeDashArray containing an odd number of values is not supported on Android.");
+					this.Log().Error("StrokeDashArray containing an odd number of values is not supported on Android.");
 				}
 			}
 		}
@@ -173,6 +171,53 @@ namespace Windows.UI.Xaml.Shapes
 			var pathBounds = new RectF();
 			path.ComputeBounds(pathBounds, true);
 			return pathBounds;
+		}
+
+		protected Android.Graphics.Path GetOrCreatePath()
+		{
+			_path?.Reset();
+			return _path ?? new Android.Graphics.Path();
+		}
+
+		protected Windows.Foundation.Rect TransformToLogical(Windows.Foundation.Rect renderingArea)
+		{
+			//Android's path rendering logic rounds values down to the nearest int, make sure we round up here instead using the ViewHelper scaling logic
+			var physicalRenderingArea = renderingArea.LogicalToPhysicalPixels();
+			if (FrameRoundingAdjustment is { } fra)
+			{
+				physicalRenderingArea.Height += fra.Height;
+				physicalRenderingArea.Width += fra.Width;
+			}
+
+			var logicalRenderingArea = physicalRenderingArea.PhysicalToLogicalPixels();
+			logicalRenderingArea.X = renderingArea.X;
+			logicalRenderingArea.Y = renderingArea.Y;
+
+			return logicalRenderingArea;
+		}
+
+		protected Windows.Foundation.Size BasicArrangeOverride(Windows.Foundation.Size finalSize, Action<Android.Graphics.Path> action)
+		{
+			var (shapeSize, renderingArea) = ArrangeRelativeShape(finalSize);
+
+			if (renderingArea.Width > 0 && renderingArea.Height > 0)
+			{
+				var logicalRenderingArea = TransformToLogical(renderingArea);
+
+				if (!_logicalRenderingArea.Equals(logicalRenderingArea))
+				{
+					_logicalRenderingArea = logicalRenderingArea;
+					Android.Graphics.Path path = GetOrCreatePath();
+					action(path);
+					Render(path);
+				}
+			}
+			else if (_path != null)
+			{
+				Render(null);
+			}
+
+			return shapeSize;
 		}
 	}
 }

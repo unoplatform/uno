@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.UI.Xaml.Media;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Drawing;
 using System.Linq;
 using Uno.Disposables;

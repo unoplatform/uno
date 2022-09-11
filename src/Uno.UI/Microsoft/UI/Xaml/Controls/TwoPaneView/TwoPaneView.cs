@@ -1,60 +1,66 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference TwoPaneView.properties.cpp, commit 4be817e
+
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
+#if HAS_UNO_WINUI
+using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+#else
+using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
+#endif
+
 namespace Microsoft.UI.Xaml.Controls
 {
+	/// <summary>
+	/// Represents a container with two views that size and position content
+	/// in the available space, either side-by-side or top-bottom.
+	/// </summary>
 	public partial class TwoPaneView : Windows.UI.Xaml.Controls.Control
 	{
-		const string c_pane1ScrollViewerName = "PART_Pane1ScrollViewer";
-		const string c_pane2ScrollViewerName = "PART_Pane2ScrollViewer";
+		private const string c_pane1ScrollViewerName = "PART_Pane1ScrollViewer";
+		private const string c_pane2ScrollViewerName = "PART_Pane2ScrollViewer";
 
-		const string c_columnLeftName = "PART_ColumnLeft";
-		const string c_columnMiddleName = "PART_ColumnMiddle";
-		const string c_columnRightName = "PART_ColumnRight";
-		const string c_rowTopName = "PART_RowTop";
-		const string c_rowMiddleName = "PART_RowMiddle";
-		const string c_rowBottomName = "PART_RowBottom";
+		private const string c_columnLeftName = "PART_ColumnLeft";
+		private const string c_columnMiddleName = "PART_ColumnMiddle";
+		private const string c_columnRightName = "PART_ColumnRight";
+		private const string c_rowTopName = "PART_RowTop";
+		private const string c_rowMiddleName = "PART_RowMiddle";
+		private const string c_rowBottomName = "PART_RowBottom";
 
-		ViewMode m_currentMode = ViewMode.None;
-
-		bool m_loaded = false;
-
-		//Control.Loaded_revoker m_pane1LoadedRevoker;
-		//Control.Loaded_revoker m_pane2LoadedRevoker;
-
-		ColumnDefinition m_columnLeft;
-		ColumnDefinition m_columnMiddle;
-		ColumnDefinition m_columnRight;
-		RowDefinition m_rowTop;
-		RowDefinition m_rowMiddle;
-		RowDefinition m_rowBottom;
-
-
+		/// <summary>
+		/// Initializes a new instance of the TwoPaneView class.
+		/// </summary>
 		public TwoPaneView()
 		{
 			DefaultStyleKey = typeof(TwoPaneView);
 
 			SizeChanged += OnSizeChanged;
-			Windows.UI.Xaml.Window.Current.SizeChanged += OnWindowSizeChanged;
+			var window = Windows.UI.Xaml.Window.Current;
+			window.SizeChanged += OnWindowSizeChanged;
+			m_windowSizeChangedRevoker.Disposable = Disposable.Create(() => window.SizeChanged -= OnWindowSizeChanged);
 
-			this.RegisterDisposablePropertyChangedCallback((e, s, a) => OnPropertyChanged(a));
+			// TODO Uno specific: Revoke events - https://github.com/microsoft/microsoft-ui-xaml/issues/6357
+			Unloaded += (s, e) =>
+			{
+				m_windowSizeChangedRevoker.Disposable = null;
+				m_pane1LoadedRevoker.Disposable = null;
+				m_pane2LoadedRevoker.Disposable = null;
+			};
 		}
 
 		protected override void OnApplyTemplate()
 		{
 			m_loaded = true;
 
-			// UNO TODO
-			//SetScrollViewerProperties(c_pane1ScrollViewerName, m_pane1LoadedRevoker);
-			//SetScrollViewerProperties(c_pane2ScrollViewerName, m_pane2LoadedRevoker);
+			SetScrollViewerProperties(c_pane1ScrollViewerName, m_pane1LoadedRevoker);
+			SetScrollViewerProperties(c_pane2ScrollViewerName, m_pane2LoadedRevoker);
 
 			if (GetTemplateChild(c_columnLeftName) is ColumnDefinition column)
 			{
@@ -82,7 +88,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void SetScrollViewerProperties(string scrollViewerName, CompositeDisposable disposable)
+		private void SetScrollViewerProperties(string scrollViewerName, SerialDisposable revoker)
 		{
 			if (SharedHelpers.IsRS5OrHigher())
 			{
@@ -90,44 +96,39 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					if (SharedHelpers.IsScrollContentPresenterSizesContentToTemplatedParentAvailable())
 					{
-						//	revoker = scrollViewer.Loaded(auto_revoke, { this, &OnScrollViewerLoaded });
-					}
-
-					if (SharedHelpers.IsScrollViewerReduceViewportForCoreInputViewOcclusionsAvailable())
-					{
-						scrollViewer.ReduceViewportForCoreInputViewOcclusions = true;
+						scrollViewer.Loaded += OnScrollViewerLoaded;
+						revoker.Disposable = Disposable.Create(() => scrollViewer.Loaded -= OnScrollViewerLoaded);
 					}
 				}
 			}
 		}
 
-		void OnScrollViewerLoaded(object sender, RoutedEventArgs args)
+		private void OnScrollViewerLoaded(object sender, RoutedEventArgs args)
 		{
 			if (sender is FrameworkElement scrollViewer)
 			{
-				// UNO TODO
-				//var scrollContentPresenterFE = SharedHelpers.FindInVisualTreeByName(scrollViewer, "ScrollContentPresenter");
-				//if (scrollContentPresenterFE)
-				//{
-				//	if (scrollContentPresenterFE is ScrollContentPresenter scrollContentPresenter)
-				//	{
-				//		scrollContentPresenter.SizesContentToTemplatedParent = true;
-				//	}
-				//}
+				var scrollContentPresenterFE = SharedHelpers.FindInVisualTreeByName(scrollViewer, "ScrollContentPresenter");
+				if (scrollContentPresenterFE != null)
+				{
+					if (scrollContentPresenterFE is ScrollContentPresenter scrollContentPresenter)
+					{
+						scrollContentPresenter.SizesContentToTemplatedParent = true;
+					}
+				}
 			}
 		}
 
-		void OnWindowSizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs args)
+		private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs args)
 		{
 			UpdateMode();
 		}
 
-		void OnSizeChanged(object sender, SizeChangedEventArgs args)
+		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			UpdateMode();
 		}
 
-		void UpdateMode()
+		private void UpdateMode()
 		{
 			// Don't bother running this logic until after we hit OnApplyTemplate.
 			if (!m_loaded) return;
@@ -204,12 +205,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void UpdateRowsColumns(ViewMode newMode, DisplayRegionHelperInfo info, Rect rcControl)
+		private void UpdateRowsColumns(ViewMode newMode, DisplayRegionHelperInfo info, Rect rcControl)
 		{
 			if (m_columnLeft != null && m_columnMiddle != null && m_columnRight != null && m_rowTop != null && m_rowMiddle != null && m_rowBottom != null)
 			{
 				// Reset split lengths
-				m_columnMiddle.Width = new GridLength (0, GridUnitType.Pixel);
+				m_columnMiddle.Width = new GridLength(0, GridUnitType.Pixel);
 				m_rowMiddle.Height = new GridLength(0, GridUnitType.Pixel);
 
 				// Set columns lengths
@@ -247,32 +248,32 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						m_columnMiddle.Width = new GridLength(rc2.X - rc1.Width, GridUnitType.Pixel);
 
-						m_columnLeft.Width = new GridLength(rc1.Width - rcControl.X , GridUnitType.Pixel);
+						m_columnLeft.Width = new GridLength(rc1.Width - rcControl.X, GridUnitType.Pixel);
 
 						// UNO TODO: Max is needed when regions don't match the Window size orientation
-						m_columnRight.Width = new GridLength(Math.Max(0, rc2.Width - ((rcWindow.Width - rcControl.Width) - rcControl.X)) , GridUnitType.Pixel);
+						m_columnRight.Width = new GridLength(Math.Max(0, rc2.Width - ((rcWindow.Width - rcControl.Width) - rcControl.X)), GridUnitType.Pixel);
 					}
 					else
 					{
 						m_rowMiddle.Height = new GridLength(rc2.Y - rc1.Height, GridUnitType.Pixel);
 
-						m_rowTop.Height = new GridLength(rc1.Height - rcControl.Y , GridUnitType.Pixel);
+						m_rowTop.Height = new GridLength(rc1.Height - rcControl.Y, GridUnitType.Pixel);
 
 						// UNO TODO: Max is needed when regions don't match the Window size orientation
-						m_rowBottom.Height = new GridLength(Math.Max(0, rc2.Height - ((rcWindow.Height - rcControl.Height) - rcControl.Y)) , GridUnitType.Pixel);
+						m_rowBottom.Height = new GridLength(Math.Max(0, rc2.Height - ((rcWindow.Height - rcControl.Height) - rcControl.Y)), GridUnitType.Pixel);
 					}
 				}
 			}
 		}
 
-		Rect GetControlRect()
+		private Rect GetControlRect()
 		{
 			// Find out where this control is in the window
 			GeneralTransform transform = TransformToVisual(DisplayRegionHelper.WindowElement());
-			return transform.TransformBounds(new Rect ( 0, 0, (float)ActualWidth, (float)ActualHeight ));
+			return transform.TransformBounds(new Rect(0, 0, (float)ActualWidth, (float)ActualHeight));
 		}
 
-		bool IsInMultipleRegions(DisplayRegionHelperInfo info, Rect rcControl)
+		private bool IsInMultipleRegions(DisplayRegionHelperInfo info, Rect rcControl)
 		{
 			bool isInMultipleRegions = false;
 
@@ -280,7 +281,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				Rect rc1 = info.Regions[0];
 				Rect rc2 = info.Regions[1];
-				Rect rcWindow = DisplayRegionHelper.WindowRect();
 
 				if (info.Mode == TwoPaneViewMode.Wide)
 				{
@@ -303,7 +303,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return isInMultipleRegions;
 		}
 
-		void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
+		private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
 			var property = args.Property;
 

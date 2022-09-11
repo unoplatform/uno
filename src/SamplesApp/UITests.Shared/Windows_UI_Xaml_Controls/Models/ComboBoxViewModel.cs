@@ -9,7 +9,7 @@ using EventHandler = System.EventHandler;
 namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 {
 	[Bindable]
-	public class ComboBoxViewModel : ViewModelBase
+	internal class ComboBoxViewModel : ViewModelBase
 	{
 		private string _header;
 		private const string HeaderText = "Please select:";

@@ -1,3 +1,4 @@
+using Windows.System;
 using Windows.UI.Core;
 
 namespace Windows.ApplicationModel.Core
@@ -13,6 +14,8 @@ namespace Windows.ApplicationModel.Core
 		public CoreWindow CoreWindow => CoreWindow.Main;
 
 		public CoreDispatcher Dispatcher => CoreDispatcher.Main;
+
+		public DispatcherQueue DispatcherQueue { get; } = DispatcherQueue.GetForCurrentThread();
 
 		public CoreApplicationViewTitleBar TitleBar
 		{

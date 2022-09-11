@@ -102,22 +102,18 @@
 	<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.17763' ">
+  <PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.18362' and '$(TargetFramework)'!='net5.0-windows10.0.18362.0' ">
 	<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0.17763' ">
-	<TargetPlatformVersion>10.0.17763.0</TargetPlatformVersion>
-	<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0.18362' ">
+	<TargetPlatformVersion>10.0.18362.0</TargetPlatformVersion>
+	<TargetPlatformMinVersion>10.0.18362.0</TargetPlatformMinVersion>
 	<DefineConstants>$(DefineConstants);NETFX_CORE</DefineConstants>
 
 	<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 	<GenerateLibraryLayout>true</GenerateLibraryLayout>
   </PropertyGroup>
-
-  <ItemGroup>
-	<PackageReference Include="xamarin.build.download" />
-  </ItemGroup>
 
   <ItemGroup Condition=" ($(IsMonoAndroid) or $(IsXamarinIOS)) and '$(ExtrasIsReferenceAssembly)'!='' ">
 	<!-- remove files included by msbuild extras -->

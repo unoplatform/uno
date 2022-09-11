@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -28,7 +28,7 @@ namespace Uno.UI.Controls
 
 		private readonly Grid _pageStack;
 		private Frame _frame;
-		private bool _isUpdatingStack = false;
+		private bool _isUpdatingStack;
 		private PageStackEntry _currentEntry;
 		private Queue<(PageStackEntry pageEntry, NavigationEventArgs args)> _stackUpdates = new Queue<(PageStackEntry, NavigationEventArgs)>();
 
@@ -129,15 +129,26 @@ namespace Uno.UI.Controls
 						await newPage.AnimateAsync(GetEnterAnimation());
 						newPage.ClearAnimation();
 					}
-					if (FeatureConfiguration.NativeFramePresenter.AndroidUnloadInactivePages && oldPage != null)
+					if (oldPage is not null)
 					{
-						_pageStack.Children.Remove(oldPage);
+						if (FeatureConfiguration.NativeFramePresenter.AndroidUnloadInactivePages)
+						{
+							_pageStack.Children.Remove(oldPage);
+						}
+						else
+						{
+							oldPage.Visibility = Visibility.Collapsed;
+						}
 					}
 					break;
 				case NavigationMode.Back:
 					if (FeatureConfiguration.NativeFramePresenter.AndroidUnloadInactivePages)
 					{
 						_pageStack.Children.Insert(0, newPage);
+					}
+					else
+					{
+						newPage.Visibility = Visibility.Visible;
 					}
 					if (GetIsAnimated(oldEntry))
 					{

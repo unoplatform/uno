@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 #if __ANDROID__
 using INativeObject = Android.Runtime.IJavaObject;
 #elif __IOS__

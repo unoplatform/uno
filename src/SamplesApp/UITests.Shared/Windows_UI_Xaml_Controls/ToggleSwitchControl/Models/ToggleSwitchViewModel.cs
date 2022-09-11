@@ -7,7 +7,7 @@ using EventHandler = System.EventHandler;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ToggleSwitchControl.Models
 {
-	public class ToggleSwitchViewModel : ViewModelBase
+	internal class ToggleSwitchViewModel : ViewModelBase
 	{
 		private bool _isOn = true;
 		private bool _isOn2 = true;

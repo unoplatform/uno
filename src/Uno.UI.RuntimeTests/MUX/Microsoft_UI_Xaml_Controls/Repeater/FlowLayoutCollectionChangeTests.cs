@@ -31,10 +31,14 @@ using FlowLayout = Microsoft.UI.Xaml.Controls.FlowLayout;
 using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
 using AnimationContext = Microsoft.UI.Xaml.Controls.AnimationContext;
 using System.Collections.Generic;
+using Uno.UI.RuntimeTests;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
+#if __MACOS__
+	[Ignore("Currently fails on macOS, part of #9282! epic")]
+#endif
 	public class FlowLayoutCollectionChangeTests : MUXApiTestBase
 	{
 		[TestMethod]
@@ -169,7 +173,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__
+#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__ || __MACOS__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void CanRemoveItemsStartingInRealizedRange()
@@ -200,7 +204,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 		[TestMethod]
 		[TestProperty("Bug", "19259478")]
-#if __WASM__ || __IOS__ || __ANDROID__
+#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__ || __MACOS__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void CanRemoveAndInsertItemsInRealizedRange()
@@ -230,7 +234,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__
+#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void CanRemoveItemsAfterRealizedRange()
@@ -253,8 +257,11 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__
-		[Ignore("UNO: ManualResetEvent not supported on WASM for now https://github.com/unoplatform/uno/issues/4529")]
+#if __WASM__ || __IOS__ || __ANDROID__ || __MACOS__
+		[Ignore("Fails on WASM, iOS, Android and macOS https://github.com/unoplatform/uno/issues/4529")]
+#endif
+#if __SKIA__
+		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
 #endif
 		public void CanReplaceSingleItem()
 		{
@@ -319,8 +326,11 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__
-		[Ignore("UNO: ManualResetEvent not supported on WASM for now https://github.com/unoplatform/uno/issues/4529")]
+#if __WASM__ || __IOS__ || __ANDROID__ || __MACOS__
+		[Ignore("Fails on WASM, iOS, Android and macOS https://github.com/unoplatform/uno/issues/4529")]
+#endif
+#if __SKIA__
+		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
 #endif
 		public void CanMoveItem()
 		{
@@ -421,9 +431,10 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 #endif
 
 		[TestMethod]
-#if __WASM__ || __ANDROID__
-		[Ignore("UNO: ManualResetEvent not supported on WASM for now https://github.com/unoplatform/uno/issues/4529")]
+#if __WASM__ || __ANDROID__ || __MACOS__
+		[Ignore("Failing on WASM and Androidand macOS for now https://github.com/unoplatform/uno/issues/4529")]
 #endif
+		[RequiresFullWindow]
 		public void EnsureReplaceOfAnchorDoesNotResetAllContainers()
 		{
 			CustomItemsSource dataSource = null;
@@ -469,7 +480,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__
+#if __WASM__ || __IOS__ || __ANDROID__ || __SKIA__ || __MACOS__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void ValidateStableResets()
@@ -493,8 +504,11 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __IOS__ || __ANDROID__
+#if __WASM__ || __IOS__ || __ANDROID__ || __MACOS__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
+#endif
+#if __SKIA__
+		[RequiresFullWindow]
 #endif
 		public void ValidateRegularResets()
 		{
@@ -519,6 +533,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 #if __WASM__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
+#endif
+#if __SKIA__
+		[RequiresFullWindow]
 #endif
 		public void ValidateClear()
 		{

@@ -16,10 +16,10 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(123, (uint)5, 123)]
 		public void When_UsingVariousSignificantDigits(double value, uint significantDigits, double expected)
 		{
-			SignificantDigitsNumberRounder rounder = new SignificantDigitsNumberRounder();
-			rounder.SignificantDigits = significantDigits;
+			var sut = new SignificantDigitsNumberRounder();
+			sut.SignificantDigits = significantDigits;
 
-			var rounded = rounder.RoundDouble(value);
+			var rounded = sut.RoundDouble(value);
 			Assert.AreEqual(expected, rounded);
 		}
 
@@ -166,11 +166,11 @@ namespace Uno.UI.Tests.Windows_Globalization
 
 		private void When_UsingARoundingAlgorithmCore(double value, RoundingAlgorithm roundingAlgorithm, double expected)
 		{
-			SignificantDigitsNumberRounder rounder = new SignificantDigitsNumberRounder();
-			rounder.SignificantDigits = 2;
-			rounder.RoundingAlgorithm = roundingAlgorithm;
+			var sut = new SignificantDigitsNumberRounder();
+			sut.SignificantDigits = 2;
+			sut.RoundingAlgorithm = roundingAlgorithm;
 
-			var rounded = rounder.RoundDouble(value);
+			var rounded = sut.RoundDouble(value);
 			Assert.AreEqual(expected, rounded);
 		}
 
@@ -178,15 +178,15 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[TestMethod]
 		public void When_RoundingAlgorithm_Is_None_Then_Should_Throw()
 		{
-			SignificantDigitsNumberRounder rounder = new SignificantDigitsNumberRounder();
-			Assert.ThrowsException<ArgumentException>(() => rounder.RoundingAlgorithm = RoundingAlgorithm.None);
+			var sut = new SignificantDigitsNumberRounder();
+			Assert.ThrowsException<ArgumentException>(() => sut.RoundingAlgorithm = RoundingAlgorithm.None);
 		}
 
 		[TestMethod]
 		public void When_SignificantDigits_Is_Zero_Then_Should_Throw()
 		{
-			SignificantDigitsNumberRounder rounder = new SignificantDigitsNumberRounder();
-			Assert.ThrowsException<ArgumentException>(() => rounder.SignificantDigits = 0);
+			var sut = new SignificantDigitsNumberRounder();
+			Assert.ThrowsException<ArgumentException>(() => sut.SignificantDigits = 0);
 		}
 	}
 }

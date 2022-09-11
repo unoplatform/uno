@@ -6,7 +6,7 @@ using Windows.UI.Core;
 
 namespace UITests.Shared.Windows_UI_Xaml.xBind
 {
-	public class XbindViewModel : ViewModelBase
+	internal class XbindViewModel : ViewModelBase
 	{
 		private string _stringValue;
 		public string StringValue

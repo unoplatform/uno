@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.BitmapIconTests
 {
-	[Sample("IconElement")]
+	[Sample("Icons")]
 	public sealed partial class BitmapIcon_Sizing : Page
     {
         public BitmapIcon_Sizing()

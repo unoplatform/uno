@@ -2,31 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CalendarDatePickerDateChangedEventArgs 
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset? NewDate
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? CalendarDatePickerDateChangedEventArgs.NewDate is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset? OldDate
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? CalendarDatePickerDateChangedEventArgs.OldDate is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property NewDate
+		// Skipping already declared property OldDate
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs.NewDate.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs.OldDate.get
 	}

@@ -3,9 +3,6 @@
 namespace Windows.UI.Xaml.Controls
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
 	public   enum AutoSuggestionBoxTextChangeReason 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.AutoSuggestionBoxTextChangeReason.UserInput

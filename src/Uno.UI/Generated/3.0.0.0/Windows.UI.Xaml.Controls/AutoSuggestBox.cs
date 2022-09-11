@@ -31,20 +31,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  object Description
-		{
-			get
-			{
-				return (object)this.GetValue(DescriptionProperty);
-			}
-			set
-			{
-				this.SetValue(DescriptionProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property Description
 		// Skipping already declared property AutoMaximizeSuggestionAreaProperty
 		// Skipping already declared property HeaderProperty
 		// Skipping already declared property IsSuggestionListOpenProperty
@@ -63,14 +50,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DescriptionProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Description), typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox), 
-			new FrameworkPropertyMetadata(default(object)));
-		#endif
+		// Skipping already declared property DescriptionProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.AutoSuggestBox.AutoSuggestBox()
 		// Forced skipping of method Windows.UI.Xaml.Controls.AutoSuggestBox.AutoSuggestBox()
 		// Forced skipping of method Windows.UI.Xaml.Controls.AutoSuggestBox.MaxSuggestionListHeight.get

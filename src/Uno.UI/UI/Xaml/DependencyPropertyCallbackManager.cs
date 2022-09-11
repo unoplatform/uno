@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml
     internal class DependencyPropertyCallbackManager : IDisposable
     {
         private readonly LinkedList<PropertyChangedCallback> _callbacks = new LinkedList<PropertyChangedCallback>();
-        private readonly static ArrayPool<PropertyChangedCallback> _pool = ArrayPool<PropertyChangedCallback>.Create(100, 100);
+        private readonly static ArrayPool<PropertyChangedCallback> _pool = ArrayPool<PropertyChangedCallback>.Shared;
         private PropertyChangedCallback[] _callbacksShadow;
         private int _id;
 		private bool _disposed;

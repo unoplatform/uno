@@ -12,7 +12,7 @@ using ICommand = System.Windows.Input.ICommand;
 
 namespace Uno.UI.Samples.Presentation.SamplePages
 {
-	public class TextBoxViewModel : ViewModelBase
+	internal class TextBoxViewModel : ViewModelBase
 	{
 		private const string HeaderText = "Please type:";
 		private const string HeaderVisible = "Header visible";

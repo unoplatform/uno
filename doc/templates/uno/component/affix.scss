@@ -1,0 +1,60 @@
+@import "../variables";
+
+.sideaffix {
+  overflow: auto;
+
+  .affix ul > li.active > ul, .affix ul > li.active > a:before, .affix ul > li > a:hover:before {
+    white-space: normal;
+  }
+
+  .contribution-link {
+    font-size: 16px !important;
+  }
+
+  #affix {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.5;
+    height: auto;
+    a {
+      color: $darkgray;
+    }
+
+    ul > li.active > a {
+      font-weight: bold;
+      &:before {
+        color: $darkgray;
+      }
+      ul > li.active > a {
+        font-weight: bold;
+        &:before {
+          color: $darkgray;
+        }
+      }
+    }
+
+    ul ul > li > a:before {
+      top: 2px;
+    }
+    li:last-child {
+      padding-bottom: 16px;
+      margin-bottom: 0;
+    }
+
+    .title {
+      text-transform: none;
+      font-size: 20px;
+    }
+
+    .level1::before {
+      width: 75%;
+      border-top: 1px solid $lightgray;
+    }
+
+    .level1::after {
+      width: 75%;
+      border-top: 1px solid $lightgray;
+    }
+  }
+}
+

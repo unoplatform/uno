@@ -2,21 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage
 {
-	#if false
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
-	public   enum StorageOpenOptions 
+	#if false || false || false || false || false || false || false
+	[global::System.FlagsAttribute]
+	public   enum StorageOpenOptions : uint
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		None,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AllowOnlyReaders,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		AllowReadersAndWriters,
-		#endif
+		// Skipping already declared field Windows.Storage.StorageOpenOptions.None
+		// Skipping already declared field Windows.Storage.StorageOpenOptions.AllowOnlyReaders
+		// Skipping already declared field Windows.Storage.StorageOpenOptions.AllowReadersAndWriters
 	}
 	#endif
 }

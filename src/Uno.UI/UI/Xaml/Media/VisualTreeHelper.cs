@@ -16,8 +16,11 @@ using Uno.Extensions;
 using Uno.Disposables;
 using Windows.Globalization.DateTimeFormatting;
 using Windows.UI.Core;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+using Windows.UI.Xaml.Controls.Primitives;
+using Uno.UI.Xaml.Core;
+using Uno.UI.DataBinding;
 
 #if __IOS__
 using UIKit;
@@ -39,14 +42,34 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class VisualTreeHelper
 	{
-		private static readonly List<WeakReference<IPopup>> _openPopups = new List<WeakReference<IPopup>>();
+		private static readonly List<ManagedWeakReference> _openPopups = new();
 
 		internal static IDisposable RegisterOpenPopup(IPopup popup)
 		{
-			var weakPopup = new WeakReference<IPopup>(popup);
+			CleanupPopupReferences();
 
-			_openPopups.AddDistinct(weakPopup);
-			return Disposable.Create(() => _openPopups.Remove(weakPopup));
+			var popupRegistration = _openPopups.FirstOrDefault(
+				p => !p.IsDisposed && p.Target == popup);
+
+			if (popupRegistration is null)
+			{
+				popupRegistration = WeakReferencePool.RentWeakReference(popup, popup);
+
+				_openPopups.Add(popupRegistration);
+			}
+
+			return Disposable.Create(() => _openPopups.Remove(popupRegistration));
+		}
+
+		private static void CleanupPopupReferences()
+		{
+			for (int i = _openPopups.Count - 1; i >= 0; i--)
+			{
+				if (_openPopups[i].IsDisposed || _openPopups[i].Target is null)
+				{
+					_openPopups.RemoveAt(i);
+				}
+			}
 		}
 
 		[Uno.NotImplemented]
@@ -139,37 +162,70 @@ namespace Windows.UI.Xaml.Media
 
 		public static IReadOnlyList<Popup> GetOpenPopups(Window window)
 		{
+			CleanupPopupReferences();
+
 			return _openPopups
-				.Select(WeakReferenceExtensions.GetTarget)
+				.Where(p => !p.IsDisposed)
+				.Select(p => p.Target)
 				.OfType<Popup>()
+				.Distinct()
 				.ToList()
 				.AsReadOnly();
 		}
 
+		private static IReadOnlyList<Popup> GetOpenFlyoutPopups()
+		{
+			CleanupPopupReferences();
+
+			return _openPopups
+				.Where(p => !p.IsDisposed)
+				.Select(p => p.Target)
+				.OfType<Popup>()
+				.Distinct()
+				.Where(p => p.IsForFlyout)
+				.ToList().AsReadOnly();
+		}
+
 		public static IReadOnlyList<Popup> GetOpenPopupsForXamlRoot(XamlRoot xamlRoot)
 		{
-			if (xamlRoot == XamlRoot.Current)
+			if (xamlRoot == Window.Current.RootElement.XamlRoot)
 			{
 				return GetOpenPopups(Window.Current);
 			}
 
-			return new Popup[0];
+			return Array.Empty<Popup>();
 		}
 
 
 		public static DependencyObject/* ? */ GetParent(DependencyObject reference)
 		{
+			DependencyObject realParent = null;
 #if XAMARIN
-			return (reference as _ViewGroup)?
+			realParent = (reference as _ViewGroup)?
 				.FindFirstParent<DependencyObject>();
 #else
-			return reference.GetParent() as DependencyObject;
+			realParent = reference.GetParent() as DependencyObject;
 #endif
+
+			if (realParent is null && reference is _ViewGroup uiElement)
+			{
+				return uiElement.GetVisualTreeParent() as DependencyObject;
+			}
+
+			return realParent;
 		}
 
 		internal static void CloseAllPopups()
 		{
 			foreach (var popup in GetOpenPopups(Window.Current))
+			{
+				popup.IsOpen = false;
+			}
+		}
+
+		internal static void CloseAllFlyouts()
+		{
+			foreach (var popup in GetOpenFlyoutPopups())
 			{
 				popup.IsOpen = false;
 			}
@@ -278,6 +334,11 @@ namespace Windows.UI.Xaml.Media
 #endif
 		}
 
+		internal static UIElement ReplaceChild(UIElement view, int index, UIElement child)
+		{
+			throw new NotImplementedException("ReplaceChild not implemented on this platform.");
+		}
+
 		internal static IReadOnlyList<_View> ClearChildren(UIElement view)
 		{
 #if __ANDROID__
@@ -308,6 +369,7 @@ namespace Windows.UI.Xaml.Media
 
 		internal static (UIElement? element, Branch? stale) HitTest(
 			Point position,
+			XamlRoot? xamlRoot,
 			GetHitTestability? getTestability = null,
 			Predicate<UIElement>? isStale = null
 #if TRACE_HIT_TESTING
@@ -319,7 +381,7 @@ namespace Windows.UI.Xaml.Media
 			)
 		{
 #endif
-			if (Window.Current.RootElement is UIElement root)
+			if (xamlRoot?.VisualTree.RootElement is UIElement root)
 			{
 				return SearchDownForTopMostElementAt(position, root, getTestability ?? DefaultGetTestability, isStale);
 			}
@@ -361,14 +423,11 @@ namespace Windows.UI.Xaml.Media
 			var layoutSlot = element.LayoutSlotWithMarginsAndAlignments;
 
 			// The maximum region where the current element and its children might draw themselves
-			// TODO: Get the real clipping rect! For now we assume no clipping.
 			// This is expressed in element coordinate space.
-			// For some controls imported from WinUI, such as NavigationView, 
-			// the Clip property may be significant. 
-			var clippingBounds = element.Clip?.Bounds ?? Rect.Infinite;
+			var clippingBounds = element.Viewport;
 
 			// The region where the current element draws itself.
-			// Be aware that children might be out of this rendering bounds if no clipping defined. TODO: .Intersect(clippingBounds)
+			// Be aware that children might be out of this rendering bounds if no clipping defined.
 			// This is expressed in element coordinate space.
 			var renderingBounds = new Rect(new Point(), layoutSlot.Size);
 
@@ -389,33 +448,33 @@ namespace Windows.UI.Xaml.Media
 				renderingBounds = parentToElement.Transform(renderingBounds);
 			}
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-			// On Skia, the Scrolling is managed by the ScrollContentPresenter (as UWP), which is flagged as IsScrollPort.
-			// Note: We should still add support for the zoom factor ... which is not yet supported on Skia.
+#if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling and zooming which has already been included.
 			if (element is ScrollViewer sv)
 			{
+				// Note: We check only the zoom factor as scroll offsets are handled at SCP level using the IsScrollPort
 				var zoom = sv.ZoomFactor;
 
 				TRACE($"- scroller: x={sv.HorizontalOffset} | y={sv.VerticalOffset} | zoom={zoom}");
 
-				// Note: This is probably wrong for skia as the zoom is probably also handled by the ScrollContentPresenter
 				posRelToElement.X /= zoom;
 				posRelToElement.Y /= zoom;
 
-				posRelToElement.X += sv.HorizontalOffset;
-				posRelToElement.Y += sv.VerticalOffset;
-
-				renderingBounds = new Rect(renderingBounds.Location, new Size(sv.ExtentWidth, sv.ExtentHeight));
+				clippingBounds.Width *= zoom;
+				clippingBounds.Height *= zoom;
 			}
-			else
-#endif
-#if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling which has already been included.
-			if (element.IsScrollPort)
+
+			if (element.IsScrollPort) // Managed SCP or custom scroller
 			{
 				posRelToElement.X += element.ScrollOffsets.X;
 				posRelToElement.Y += element.ScrollOffsets.Y;
+
+				clippingBounds.X += element.ScrollOffsets.X;
+				clippingBounds.Y += element.ScrollOffsets.Y;
 			}
 #endif
+
+			// Apply the effective clipping on the rendering bounds
+			renderingBounds = renderingBounds.IntersectWith(clippingBounds) ?? Rect.Empty;
 
 			TRACE($"- layoutSlot: {layoutSlot.ToDebugString()}");
 			TRACE($"- renderBounds (relative to element): {renderingBounds.ToDebugString()}");
@@ -508,6 +567,15 @@ namespace Windows.UI.Xaml.Media
 			}
 
 			return root;
+		}
+
+		internal static IEnumerable<DependencyObject> EnumerateAncestors(DependencyObject o)
+		{
+			while ((o as FrameworkElement)?.Parent is { } parent)
+			{
+				yield return parent;
+				o = parent;
+			}
 		}
 
 		#region Helpers
@@ -612,7 +680,7 @@ namespace Windows.UI.Xaml.Media
 			}
 #endif
 		}
-#endregion
+		#endregion
 
 		internal struct Branch
 		{

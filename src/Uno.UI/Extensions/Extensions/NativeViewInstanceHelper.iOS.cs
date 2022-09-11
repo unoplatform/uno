@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using System.Threading;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI
 {
@@ -81,7 +81,7 @@ namespace Uno.UI
 							.Select(t => Type.GetType(t, false))
 							.Trim();
 
-						if (typeof(NativeInstanceHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						if (typeof(NativeInstanceHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 						{
 							typeof(NativeInstanceHelper).Log().Debug($"Loading {types.Length} Objective-C mappings");
 						}
@@ -114,7 +114,7 @@ namespace Uno.UI
 			{
 				_persisted = true;
 
-				if (typeof(NativeInstanceHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (typeof(NativeInstanceHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					typeof(NativeInstanceHelper).Log().Debug($"Writing Objective-C mappings to {_statsFilePath}");
 				}
@@ -174,7 +174,7 @@ namespace Uno.UI
 				}
 				else
 				{
-					if (typeof(NativeInstanceHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+					if (typeof(NativeInstanceHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 					{
 						typeof(NativeInstanceHelper).Log().Debug("Failed to find registrar type, cannot persist Objective-C mappings.");
 					}
@@ -182,7 +182,7 @@ namespace Uno.UI
 			}
 			else
 			{
-				if (typeof(NativeInstanceHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				if (typeof(NativeInstanceHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 				{
 					typeof(NativeInstanceHelper).Log().Debug("Failed to find registrar type, cannot persist Objective-C mappings.");
 				}

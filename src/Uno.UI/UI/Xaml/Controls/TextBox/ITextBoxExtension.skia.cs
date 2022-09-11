@@ -1,14 +1,19 @@
 ﻿using Windows.Foundation;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Xaml.Controls.Extensions
 {
 	internal interface ITextBoxViewExtension
     {
+		bool IsNativeOverlayLayerInitialized { get; }
+		
 		void StartEntry();
 
 		void EndEntry();
 
 		void UpdateNativeView();
+
+		void InvalidateLayout();
 
 		void UpdateSize();
 
@@ -23,5 +28,7 @@ namespace Uno.UI.Xaml.Controls.Extensions
 		int GetSelectionStart();
 
 		int GetSelectionLength();
+
+		void SetForeground(Brush brush);
 	}
 }

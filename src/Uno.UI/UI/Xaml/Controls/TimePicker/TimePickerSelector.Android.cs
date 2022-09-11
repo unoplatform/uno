@@ -2,7 +2,7 @@
 
 using System;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.Globalization;
@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Binding(nameof(MinuteIncrement), nameof(MinuteIncrement), Content, BindingMode.TwoWay);
 				this.Binding(nameof(ClockIdentifier), nameof(ClockIdentifier), Content, BindingMode.TwoWay);
 			}
-			else if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			else if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"No native TimePicker was found in the visual hierarchy.");
 			}

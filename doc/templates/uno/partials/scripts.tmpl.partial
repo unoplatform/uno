@@ -1,0 +1,17 @@
+<!-- Mermaid -->
+<!-- Lets you create diagrams and visualizations using text and code. -->
+<script type="text/javascript" src="{{_rel}}styles/docfx.vendor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.1/highlight.min.js"></script>
+<script src="https://unpkg.com/highlightjs-dotnetconfig@0.9.3/dist/dotnetconfig.min.js"></script>
+<script type="text/javascript" src="{{_rel}}styles/docfx.js"></script>
+<script type="text/javascript" src="{{_rel}}styles/main.js"></script>
+<!-- Mermaid version will need to be bumped here when this issue is fixed : https://github.com/mermaid-js/mermaid/issues/1984 -->
+<script type="text/javascript" src="https://unpkg.com/mermaid@8.14.0/dist/mermaid.min.js"
+integrity="sha384-atOyb0FxAgN9LyAc6PEf9BjgwLISyansgdH8/VXQH8p2o5vfrRgmGIJ2Sg22L0A0"
+crossorigin="anonymous"></script>
+<script>
+mermaid.initialize({
+startOnLoad: false
+});
+mermaid.init(undefined, ".lang-mermaid");
+</script>

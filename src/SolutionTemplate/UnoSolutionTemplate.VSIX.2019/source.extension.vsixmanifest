@@ -19,7 +19,7 @@
     </Dependencies>
     <Assets>
         <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="UnoSolutionTemplate" d:TargetPath="|UnoSolutionTemplate;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
-        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="UnoSolutionTemplate.Wizard" Path="|UnoSolutionTemplate.Wizard|" AssemblyName="|UnoSolutionTemplate.Wizard;AssemblyName|" />
+        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="UnoSolutionTemplate.Wizard.2019" Path="|UnoSolutionTemplate.Wizard.2019|" AssemblyName="|UnoSolutionTemplate.Wizard.2019;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="UnoLibraryTemplate" d:TargetPath="|UnoLibraryTemplate;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
         <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="UnoItemTemplate" d:TargetPath="|UnoItemTemplate;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 
@@ -12,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 	internal static class ToolTipPositioning
 	{
 		// UNO TODO
-		private static bool IsLefthandedUser() => true;
+		internal static bool IsLefthandedUser() => true;
 
 		private static Size ConstrainSize(
 			Size size,

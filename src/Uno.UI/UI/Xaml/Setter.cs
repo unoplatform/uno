@@ -4,9 +4,9 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
@@ -31,6 +31,8 @@ namespace Windows.UI.Xaml
 		private readonly SetterValueProviderHandler? _valueProvider;
 		private object? _value;
 		private int _targetNameResolutionFailureCount;
+		private DependencyProperty? _property;
+		private TargetPropertyPath? _target;
 
 		public object? Value
 		{
@@ -43,19 +45,44 @@ namespace Windows.UI.Xaml
 
 				return _value;
 			}
-			set => _value = value;
+			set
+			{
+				ValidateIsSealed();
+
+				_value = value;
+			}
+		}
+
+		private void ValidateIsSealed()
+		{
+			if (IsSealed)
+			{
+				throw new InvalidOperationException($"The setter is sealed and cannot be modified");
+			}
 		}
 
 		public TargetPropertyPath? Target
 		{
-			get;
-			set;
+			get => _target;
+			set
+			{
+				ValidateIsSealed();
+				_target = value;
+			}
 		}
 
 		/// <summary>
 		/// The property being set by this setter
 		/// </summary>
-		public DependencyProperty? Property { get; set; }
+		public DependencyProperty? Property
+		{
+			get => _property;
+			set
+			{
+				ValidateIsSealed();
+				_property = value;
+			}
+		}
 
 		/// <summary>
 		/// The name of the ThemeResource applied to the value, if any, as an optimized key.
@@ -63,6 +90,8 @@ namespace Windows.UI.Xaml
 		internal SpecializedResourceDictionary.ResourceKey? ThemeResourceKey { get; set; }
 
 		internal XamlParseContext? ThemeResourceContext { get; set; }
+
+		internal ResourceUpdateReason ResourceBindingUpdateReason { get; set; }
 
 		public Setter(DependencyProperty targetProperty, object value)
 		{
@@ -96,7 +125,7 @@ namespace Windows.UI.Xaml
 			{
 				if (ThemeResourceKey.HasValue)
 				{
-					ResourceResolver.ApplyResource(o, Property, ThemeResourceKey.Value, isThemeResourceExtension: true, context: ThemeResourceContext, precedence: null);
+					ResourceResolver.ApplyResource(o, Property, ThemeResourceKey.Value, ResourceBindingUpdateReason, context: ThemeResourceContext, precedence: null);
 				}
 				else
 				{
@@ -116,7 +145,7 @@ namespace Windows.UI.Xaml
 
 			if (path != null)
 			{
-				if (ThemeResourceKey.HasValue && ResourceResolver.ApplyVisualStateSetter(ThemeResourceKey.Value, ThemeResourceContext, path, precedence))
+				if (ThemeResourceKey.HasValue && ResourceResolver.ApplyVisualStateSetter(ThemeResourceKey.Value, ThemeResourceContext, path, precedence, ResourceBindingUpdateReason))
 				{
 					// Applied as theme binding, no need to do more
 					return;

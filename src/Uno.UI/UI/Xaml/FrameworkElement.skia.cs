@@ -6,12 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Controls;
 using Windows.Foundation;
 using View = Windows.UI.Xaml.UIElement;
 using System.Collections;
-using Microsoft.Extensions.Logging;
+
 using Uno.UI.Xaml;
 using System.Numerics;
 
@@ -62,6 +62,11 @@ namespace Windows.UI.Xaml
 			SizeChanged?.Invoke(this, args);
 			_renderTransform?.UpdateSize(args.NewSize);
 		}
+
+		/// <summary>
+		/// Identifies the Name dependency property.
+		/// </summary>
+		public static new DependencyProperty NameProperty => UIElement.NameProperty;
 
 		#region Margin Dependency Property
 		[GeneratedDependencyProperty(
@@ -225,8 +230,8 @@ namespace Windows.UI.Xaml
 			OnGenericPropertyUpdatedPartial(args);
 		}
 
-		private event RoutedEventHandler _loading;
-		public event RoutedEventHandler Loading
+		private event TypedEventHandler<FrameworkElement, object> _loading;
+		public event TypedEventHandler<FrameworkElement, object> Loading
 		{
 			add
 			{

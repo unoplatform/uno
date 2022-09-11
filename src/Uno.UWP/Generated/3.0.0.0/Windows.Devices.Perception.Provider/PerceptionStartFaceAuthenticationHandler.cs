@@ -3,6 +3,6 @@
 namespace Windows.Devices.Perception.Provider
 {
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public delegate bool PerceptionStartFaceAuthenticationHandler(global::Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup @sender);
+	public delegate bool PerceptionStartFaceAuthenticationHandler(global::Windows.Devices.Perception.Provider.PerceptionFaceAuthenticationGroup sender);
 	#endif
 }

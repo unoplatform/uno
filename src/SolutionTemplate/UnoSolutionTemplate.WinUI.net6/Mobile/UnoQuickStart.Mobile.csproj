@@ -1,0 +1,88 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  	<PropertyGroup>
+		<TargetFrameworks>$if$($UseAndroid$ == True)net6.0-android;$endif$$if$($UseIOS$ == True)net6.0-ios;$endif$$if$($UseCatalyst$ == True)net6.0-maccatalyst;$endif$$if$($UseAppKit$ == True)net6.0-macos$endif$</TargetFrameworks>
+		<SingleProject>true</SingleProject>
+		<OutputType>Exe</OutputType>
+
+		<RuntimeIdentifier Condition="'$(TargetFramework)' == 'net6.0-ios'">iossimulator-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="'$(TargetFramework)' == 'net6.0-macos'">osx-x64</RuntimeIdentifier>
+
+		<!-- Debugger workaround https://github.com/dotnet/maui-samples/blob/8aa6b8780b12e97b157514c3bdc54bb4a13001cd/HelloMacCatalyst/HelloMacCatalyst.csproj#L7 -->
+		<!-- <MtouchExtraArgs Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">$(MtouchExtraArgs) -setenv:MONO_THREADS_SUSPEND=preemptive</MtouchExtraArgs> -->
+
+		<!-- Required for C# Hot Reload, except for macOS which uses CoreCLR (not Mono) -->
+		<!-- Disabled because of https://github.com/dotnet/runtime/issues/68808 -->
+		<!--<UseInterpreter Condition="'$(Configuration)' == 'Debug' and '$(TargetFramework)' != 'net6.0-maccatalyst' and '$(TargetFramework)' != 'net6.0-macos'">True</UseInterpreter>-->
+
+		<IsUnoHead>true</IsUnoHead>
+
+		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net6.0-ios'">14.2</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">14.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net6.0-android'">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="'$(TargetFramework)'=='net6.0-macos'">10.14</SupportedOSPlatformVersion>
+  	</PropertyGroup>
+
+  	<ItemGroup>
+    	<PackageReference Include="Uno.WinUI" Version="4.2.6" />
+		<PackageReference Include="Uno.WinUI.RemoteControl" Version="4.2.6" Condition="'$(Configuration)'=='Debug'" />
+		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.2.6" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
+	</ItemGroup>
+
+	<Choose>
+
+		<When Condition="'$(TargetFramework)'=='net6.0-android'">
+			<ItemGroup>
+				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.4.0.4" />
+				<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
+			</ItemGroup>
+			<ItemGroup>
+				    <AndroidEnvironment Include="Android/environment.conf" />
+			</ItemGroup>
+		</When>
+
+		<When Condition="'$(TargetFramework)'=='net6.0-ios'">
+		  	<PropertyGroup Condition="'$(TargetFramework)'=='net6.0-ios'">
+				<MtouchExtraArgs>$(MtouchExtraArgs) --setenv=MONO_GC_PARAMS=soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
+
+				<!-- See https://github.com/unoplatform/uno/issues/9430 for more details. -->
+				<MtouchExtraArgs>$(MtouchExtraArgs) --registrar:static</MtouchExtraArgs>
+
+				<!-- https://github.com/xamarin/xamarin-macios/issues/14812 -->
+				<MtouchExtraArgs>$(MtouchExtraArgs) --marshal-objectivec-exceptions:disable</MtouchExtraArgs>
+			</PropertyGroup>
+			<ItemGroup>
+				<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.4.0" />
+			</ItemGroup>
+		</When>
+
+		<When Condition="'$(TargetFramework)'=='net6.0-maccatalyst'">
+			<PropertyGroup>
+				<!-- Configure the GC -->
+				<MtouchExtraArgs>$(MtouchExtraArgs) --setenv=MONO_GC_PARAMS=soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
+
+				<!-- Required for unknown crash as of .NET 6 Mobile Preview 13 -->
+				<MtouchExtraArgs>$(MtouchExtraArgs) --registrar:static</MtouchExtraArgs>
+
+				<!-- https://github.com/xamarin/xamarin-macios/issues/14812 -->
+				<MtouchExtraArgs>$(MtouchExtraArgs) --marshal-objectivec-exceptions:disable</MtouchExtraArgs>
+
+				<!-- Full globalization is required for Uno -->
+				<InvariantGlobalization>false</InvariantGlobalization>
+			</PropertyGroup>
+
+			<ItemGroup>
+				<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.4.0" />
+			</ItemGroup>
+		</When>
+
+		<When Condition="'$(TargetFramework)'=='net6.0-macos'">
+			<PropertyGroup>
+			</PropertyGroup>
+		</When>
+	</Choose>
+
+	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" />
+</Project>

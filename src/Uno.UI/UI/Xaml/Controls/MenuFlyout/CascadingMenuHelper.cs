@@ -4,15 +4,20 @@ using System.Linq;
 using System.Text;
 using Uno.Disposables;
 using Uno.UI.Xaml.Core;
-using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -721,7 +726,7 @@ namespace Windows.UI.Xaml.Controls
 		internal void OnPresenterSizeChanged(
 			object pSender,
 			SizeChangedEventArgs args,
-			Controls.Popup popup)
+			Popup popup)
 		{
 			Control ownerAsControl = m_wpOwner?.Target as Control;
 

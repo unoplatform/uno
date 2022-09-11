@@ -2,36 +2,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Maps
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum MapStyle 
 	{
-		#if false
-		None,
-		#endif
-		#if false
-		Road,
-		#endif
-		#if false
-		Aerial,
-		#endif
-		#if false
-		AerialWithRoads,
-		#endif
-		#if false
-		Terrain,
-		#endif
-		#if false
-		Aerial3D,
-		#endif
-		#if false
-		Aerial3DWithRoads,
-		#endif
-		#if false
-		Custom,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapStyle.None
+		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapStyle.Road
+		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapStyle.Aerial
+		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapStyle.AerialWithRoads
+		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapStyle.Terrain
+		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapStyle.Aerial3D
+		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapStyle.Aerial3DWithRoads
+		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapStyle.Custom
 	}
 	#endif
 }

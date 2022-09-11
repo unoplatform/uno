@@ -2,16 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Input;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.UI;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
@@ -478,7 +483,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			//UNREFERENCED_PARAMETER(pEventArgs);
 			var nPointerDeviceType = PointerDeviceType.Touch;
 			PointerPoint spPointerPoint;
-			PointerDevice spPointerDevice;
+			Windows.Devices.Input.PointerDevice spPointerDevice;
 
 			spPointerPoint = pEventArgs.GetCurrentPoint(null);
 			if (spPointerPoint == null)
@@ -492,7 +497,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				throw new ArgumentNullException();
 			}
 
-			nPointerDeviceType = spPointerDevice.PointerDeviceType;
+			nPointerDeviceType = (PointerDeviceType)spPointerDevice.PointerDeviceType;
 			if (nPointerDeviceType != PointerDeviceType.Touch)
 			{
 				GoToState("PointerOver", false);

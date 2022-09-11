@@ -4,6 +4,7 @@
   xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)"
   xmlns:contract6NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,6)"
   xmlns:contract5NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)"
+  xmlns:local="using:Windows.UI.Xaml.Controls"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Default">
@@ -211,15 +212,15 @@
     <Thickness x:Key="AppBarToggleButtonTextLabelOnRightMargin">8,16,12,10</Thickness>
     <Thickness x:Key="AppBarToggleButtonOverflowTextLabelPadding">0,5,0,8</Thickness>
 
-    <Style TargetType="AppBarToggleButton" BasedOn="{StaticResource DefaultAppBarToggleButtonStyle}" />
+    <Style TargetType="local:AppBarToggleButton" BasedOn="{StaticResource DefaultAppBarToggleButtonStyle}" />
 
-    <Style x:Key="AppBarToggleButtonOverflowStyle" TargetType="AppBarToggleButton" BasedOn="{StaticResource DefaultAppBarToggleButtonStyle}">
+    <Style x:Key="AppBarToggleButtonOverflowStyle" TargetType="local:AppBarToggleButton" BasedOn="{StaticResource DefaultAppBarToggleButtonStyle}">
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="Width" Value="NaN" />
     </Style>
 
     <!-- LabelOnRightStyle is retired since RS3, We still need it for RS2 or RS3 -->
-    <Style x:Key="DefaultAppBarToggleButtonStyle" TargetType="AppBarToggleButton">
+    <Style x:Key="DefaultAppBarToggleButtonStyle" TargetType="local:AppBarToggleButton">
         <Setter Property="Background" Value="{ThemeResource AppBarToggleButtonBackground}" />
         <Setter Property="Foreground" Value="{ThemeResource AppBarToggleButtonForeground}" />
         <Setter Property="BorderBrush" Value="{ThemeResource AppBarToggleButtonBorderBrush}" />
@@ -237,13 +238,13 @@
         <contract7Present:Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="AppBarToggleButton">
+                <ControlTemplate TargetType="local:AppBarToggleButton">
                     <Grid x:Name="Root"
                         Background="Transparent"
                         MinWidth="{TemplateBinding MinWidth}"
                         MaxWidth="{TemplateBinding MaxWidth}">
                         <contract5NotPresent:Grid.Resources>
-                            <Style x:Name="LabelOnRightStyle" TargetType="AppBarToggleButton">
+                            <Style x:Name="LabelOnRightStyle" TargetType="local:AppBarToggleButton">
                                 <Setter Property="Width" Value="NaN" />
                             </Style>
                         </contract5NotPresent:Grid.Resources>

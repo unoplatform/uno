@@ -21,6 +21,12 @@ jobs:
       artifactName: NugetPackages
 
   - template: templates/gitversion.yml
+  - template: templates/jdk-setup.yml
+  - template: templates/update-vs-components.yml
+
+  - template: templates/install-windows-sdk.yml
+    parameters:
+      sdkVersion: '18362' # Align with TargetPlatformVersion in templates
 
   - script: copy $(System.ArtifactsDirectory)\NugetPackages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
     displayName: Copy Artifacts to PackageCache
@@ -28,7 +34,7 @@ jobs:
   - script: dotnet new -i $(System.ArtifactsDirectory)\NugetPackages\vslatest\Uno.ProjectTemplates.Dotnet*.nupkg
     displayName: Install Project Templates
 
-  - powershell: build\run-template-tests.ps1
+  - powershell: build\test-scripts\run-template-tests.ps1
     displayName: Run Project Templates Tests
     env:
       NUGET_CI_CONFIG: $(Build.SourcesDirectory)\src\nuget.ci.config
@@ -48,8 +54,12 @@ jobs:
       artifactName: NugetPackages
 
   - template: templates/gitversion.yml
-
   - template: templates/dotnet6-install-windows.yml
+  - template: templates/update-vs-components.yml
+
+  - template: templates/install-windows-sdk.yml
+    parameters:
+      sdkVersion: '18362' # Align with TargetPlatformVersion in templates
 
   - script: copy $(System.ArtifactsDirectory)\NugetPackages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
     displayName: Copy Artifacts to PackageCache
@@ -57,7 +67,7 @@ jobs:
   - script: dotnet new -i $(System.ArtifactsDirectory)\NugetPackages\vslatest\Uno.ProjectTemplates.Dotnet*.nupkg
     displayName: Install Project Templates
 
-  - powershell: build\run-net6-template-tests.ps1
+  - powershell: build\test-scripts\run-net6-template-tests.ps1
     displayName: Run Project Templates Tests
     env:
       NUGET_CI_CONFIG: $(Build.SourcesDirectory)\src\nuget.ci.net6.config
@@ -91,7 +101,7 @@ jobs:
   - script: dotnet new -i $(System.ArtifactsDirectory)/NugetPackages/vslatest/Uno.ProjectTemplates.Dotnet*.nupkg
     displayName: Install Project Templates
 
-  - pwsh: build/run-template-tests-linux.ps1
+  - pwsh: build/test-scripts/run-template-tests-linux.ps1
     displayName: Run Project Templates Tests
     env:
       NUGET_CI_CONFIG: $(Build.SourcesDirectory)/src/nuget.ci.config

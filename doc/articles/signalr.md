@@ -32,9 +32,11 @@ public void ConfigureServices(IServiceCollection services)
             );
         }
 ```
-In your `Configure` method, add your `Hubs` endpoint
+In your `Configure` method, add your CORS policy and `Hubs` endpoint
 
 ``` csharp
+  app.UseCors("CorsPolicy");
+
   app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
@@ -42,4 +44,4 @@ In your `Configure` method, add your `Hubs` endpoint
             });
 ```
 
-You now have a SignalR service you can use with your Uno application! 
+You now have a SignalR service that you can use with your Uno application!

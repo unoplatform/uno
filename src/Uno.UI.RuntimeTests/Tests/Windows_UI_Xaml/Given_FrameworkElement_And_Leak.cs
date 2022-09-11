@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Extensions;
@@ -34,6 +35,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 	[TestClass]
 	[RunsOnUIThread]
+#if __MACOS__
+	[Ignore("Currently fails on macOS, part of #9282! epic")]
+#endif
 	public class Given_FrameworkElement_And_Leak
 	{
 		[TestMethod]
@@ -41,13 +45,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(XamlEvent_Leak_UserControl_xBind), 15)]
 		[DataRow(typeof(XamlEvent_Leak_UserControl_xBind_Event), 15)]
 		[DataRow(typeof(XamlEvent_Leak_TextBox), 15)]
+		[DataRow(typeof(Animation_Leak), 15)]
 		[DataRow(typeof(TextBox), 15)]
 		[DataRow(typeof(Button), 15)]
 		[DataRow(typeof(RadioButton), 15)]
 		[DataRow(typeof(TextBlock), 15)]
 		[DataRow(typeof(CheckBox), 15)]
 		[DataRow(typeof(ListView), 15)]
-		[DataRow(typeof(ProgressRing), 15)]
+		[DataRow(typeof(Windows.UI.Xaml.Controls.ProgressRing), 15)]
+		//[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressRing), 15)] This leaks, issue #9078
 		[DataRow(typeof(Pivot), 15)]
 		[DataRow(typeof(ScrollBar), 15)]
 		[DataRow(typeof(Slider), 15)]
@@ -58,14 +64,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(Canvas), 15)]
 		[DataRow(typeof(AutoSuggestBox), 15)]
 		[DataRow(typeof(AppBar), 15)]
+		[DataRow(typeof(CommandBar), 15)]
 		[DataRow(typeof(Border), 15)]
 		[DataRow(typeof(ContentControl), 15)]
 		[DataRow(typeof(ContentDialog), 15)]
+		[DataRow(typeof(ItemsRepeater), 15)]
 		[DataRow("SamplesApp.Windows_UI_Xaml.Clipping.XamlButtonWithClipping_Scrollable", 15)]
 		[DataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.AppBar_KeyBoard", 15)]
 		[DataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.Buttons", 15)]
 		[DataRow("UITests.Windows_UI_Xaml.xLoadTests.xLoad_Test_For_Leak", 15)]
 		[DataRow("UITests.Windows_UI_Xaml_Controls.ToolTip.ToolTip_LeakTest", 15)]
+		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.Button_Command_Leak", 15)]
+		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ItemsControl_ItemsSource_Leak", 15)]
+#if !__WASM__ && !__IOS__ // Disabled - https://github.com/unoplatform/uno/issues/7860
+		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ContentDialog_Leak", 15)]
+#endif
 		public async Task When_Add_Remove(object controlTypeRaw, int count)
 		{
 #if TRACK_REFS
@@ -186,6 +199,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				TrackDependencyObject(item);
 				rootContainer.Content = item;
 				await TestServices.WindowHelper.WaitForIdle();
+
+				if (item is IExtendedLeakTest extendedTest)
+				{
+					await extendedTest.WaitForTestToComplete();
+				}
 
 				// Add all children to the tracking
 				foreach (var child in item.EnumerateAllChildren(maxDepth: 200).OfType<UIElement>())

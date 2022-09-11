@@ -2,11 +2,14 @@
 
 using System;
 using Windows.Devices.Input;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
 using Uno.UI.Core;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Input;
+using Uno.Foundation.Logging;
+using Windows.UI.ViewManagement;
 
 namespace Windows.UI.Core
 {
@@ -22,7 +25,10 @@ namespace Windows.UI.Core
 		private Point? _pointerPosition;
 		private CoreWindowActivationState _lastActivationState;
 
-		internal CoreWindow()
+		internal static CoreWindow GetOrCreateForCurrentThread()
+			=> _current ??= new CoreWindow();
+
+		private CoreWindow()
 		{
 			_current = this;
 			Main ??= this;
@@ -48,9 +54,15 @@ namespace Windows.UI.Core
 		internal static CoreWindow? Main { get; private set; }
 
 		/// <summary>
+		/// Gets a Rect value containing the height and width of the application window in units of effective (view) pixels.
+		/// </summary>
+		public Rect Bounds { get; private set; }
+		/// <summary>
 		/// Gets the event dispatcher for the window.
 		/// </summary>
 		public CoreDispatcher Dispatcher => CoreDispatcher.Main;
+
+		public DispatcherQueue DispatcherQueue { get; } = DispatcherQueue.GetForCurrentThread();
 
 		/// <summary>
 		/// Gets the client coordinates of the pointer.
@@ -95,7 +107,8 @@ namespace Windows.UI.Core
 			=> KeyboardStateTracker.GetKeyState(virtualKey);
 
 		internal static void SetInvalidateRender(Action invalidateRender)
-			=> _invalidateRender = invalidateRender;
+			// Currently we don't support multi-windowing, so only the first window can set the InvalidateRender
+			=> _invalidateRender ??= invalidateRender;
 
 		internal static void QueueInvalidateRender()
 			=> _invalidateRender?.Invoke();
@@ -117,10 +130,21 @@ namespace Windows.UI.Core
 		}
 
 		internal void OnSizeChanged(WindowSizeChangedEventArgs windowSizeChangedEventArgs)
-			=> SizeChanged?.Invoke(this, windowSizeChangedEventArgs);
+		{
+			//Windows.Bounds doesn't implemment X an Y Windows Origin as well.
+			var newBounds = new Rect(0,0,windowSizeChangedEventArgs.Size.Width, windowSizeChangedEventArgs.Size.Height);
+			if (newBounds != Bounds)
+			{
+				Bounds = newBounds;
+			}
+
+			SizeChanged?.Invoke(this, windowSizeChangedEventArgs);
+		}
 
 		internal interface IPointerEventArgs
 		{
+			object OriginalSource { get; }
+
 			PointerIdentifier Pointer { get; }
 
 			PointerPoint GetLocation(object? relativeTo);

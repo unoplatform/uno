@@ -1,28 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
-using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
-using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 {
 	public partial class NumberBoxTests : SampleControlUITestBase
 	{
+		private void EnterTextInNumberBox(QueryEx numberBox, string text)
+		{
+			numberBox.SetDependencyPropertyValue("Text", text);
+		}
+
 		[Test]
 		[AutoRetry]
 		public void UpDownTest()
 		{
-			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.MUX_Test");
+			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.NumberBoxPage");
 
 			var numBox = _app.Marked("TestNumberBox");
-			Assert.AreEqual(0, numBox.GetDependencyPropertyValue<double>("Value"));
+			numBox.SetDependencyPropertyValue("Value", "0");
 
 			numBox.SetDependencyPropertyValue("SpinButtonPlacementMode", "Inline");
 
@@ -60,9 +59,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			Assert.AreEqual(100, numBox.GetDependencyPropertyValue<double>("Value"));
 
 			Console.WriteLine("Assert that incrementing after typing in a value validates the text first.");
-			numBox.ClearText();
-			numBox.EnterText("50");
-			_app.PressEnter();
+			EnterTextInNumberBox(numBox, "50");
 			upButton.FastTap();
 			Assert.AreEqual(55, numBox.GetDependencyPropertyValue<double>("Value"));
 		}
@@ -71,7 +68,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		[AutoRetry]
 		public void MinMaxTest()
 		{
-			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.MUX_Test");
+			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.NumberBoxPage");
 
 			_app.FastTap("MinCheckBox");
 			_app.FastTap("MaxCheckBox");
@@ -87,9 +84,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			Assert.AreEqual(0, numBox.GetDependencyPropertyValue<double>("Value"));
 
 			Console.Write("Assert that typing '123' in the NumberBox changes the value to 100");
-			numBox.ClearText();
-			numBox.EnterText("123");
-			_app.PressEnter();
+			EnterTextInNumberBox(numBox, "123");
 
 			Assert.AreEqual(100, numBox.GetDependencyPropertyValue<double>("Value"));
 
@@ -116,7 +111,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		[AutoRetry]
 		public void UpDownEnabledTest()
 		{
-			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.MUX_Test");
+			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.NumberBoxPage");
 
 			var numBox = _app.Marked("TestNumberBox");
 
@@ -128,13 +123,18 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			_app.FastTap("MinCheckBox");
 			_app.FastTap("MaxCheckBox");
 
+			Console.WriteLine("Verify that spin buttons are disabled if value is NaN.");
+			Assert.False(upButton.GetDependencyPropertyValue<bool>("IsEnabled"));
+			Assert.IsFalse(downButton.GetDependencyPropertyValue<bool>("IsEnabled"));
+
+
 			Console.WriteLine("Assert that when Value is at Minimum, the down spin button is disabled.");
+			numBox.SetDependencyPropertyValue("Value", "0");
 			Assert.IsTrue(upButton.GetDependencyPropertyValue<bool>("IsEnabled"));
 			Assert.IsFalse(downButton.GetDependencyPropertyValue<bool>("IsEnabled"));
 
 			Console.WriteLine("Assert that when Value is at Maximum, the up spin button is disabled.");
 			numBox.SetDependencyPropertyValue("Value", "100");
-
 			Assert.IsFalse(upButton.GetDependencyPropertyValue<bool>("IsEnabled"));
 			Assert.IsTrue(downButton.GetDependencyPropertyValue<bool>("IsEnabled"));
 
@@ -147,27 +147,19 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			Console.WriteLine("Assert that when Maximum is updated the up button is updated also.");
 			var maxBox = _app.Marked("MaxNumberBox");
 			maxBox.SetDependencyPropertyValue("Value", "200");
-
 			Assert.IsTrue(upButton.GetDependencyPropertyValue<bool>("IsEnabled"));
 			Assert.IsTrue(downButton.GetDependencyPropertyValue<bool>("IsEnabled"));
 
-			Console.WriteLine("Assert that spin buttons are disabled if value is NaN.");
-			numBox.SetDependencyPropertyValue("Value", "NaN");
-
-			Assert.IsFalse(upButton.GetDependencyPropertyValue<bool>("IsEnabled"));
-			Assert.IsFalse(downButton.GetDependencyPropertyValue<bool>("IsEnabled"));
 
 			numBox.SetDependencyPropertyValue("ValidationMode", "Disabled");
 
 			Console.WriteLine("Assert that when validation is off, spin buttons are enabled");
 			numBox.SetDependencyPropertyValue("Value", "0");
-
 			Assert.IsTrue(upButton.GetDependencyPropertyValue<bool>("IsEnabled"));
 			Assert.IsTrue(downButton.GetDependencyPropertyValue<bool>("IsEnabled"));
 
 			Console.WriteLine("...except in the NaN case");
 			numBox.SetDependencyPropertyValue("Value", "NaN");
-
 			Assert.IsFalse(upButton.GetDependencyPropertyValue<bool>("IsEnabled"));
 			Assert.IsFalse(downButton.GetDependencyPropertyValue<bool>("IsEnabled"));
 		}

@@ -4,8 +4,9 @@ using System.Text;
 using Uno.Extensions;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
-using Microsoft.Extensions.Logging;
-using Uno.Logging;
+using ObjCRuntime;
+
+using Uno.Foundation.Logging;
 
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
@@ -13,6 +14,10 @@ using UIKit;
 #elif XAMARIN_IOS
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
+#endif
+
+#if !NET6_0_OR_GREATER
+using NativeHandle = System.IntPtr;
 #endif
 
 namespace Uno.UI.Views.Controls
@@ -28,7 +33,7 @@ namespace Uno.UI.Views.Controls
 			InitializeBinder();
 		}
 
-		public BindableUIButton(IntPtr handle)
+		public BindableUIButton(NativeHandle handle)
 			: base(handle)
 		{
 			InitializeBinder();

@@ -11,7 +11,7 @@ using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Uno.Foundation;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Threading;
 using Uno.UI;
 using Uno.UI.Xaml;
@@ -19,7 +19,7 @@ using Uno;
 using System.Web;
 using System.Collections.Specialized;
 using Uno.Helpers;
-using Microsoft.Extensions.Logging;
+
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml
 {
 	public partial class Application
 	{
-		private static bool _startInvoked = false;
+		private static bool _startInvoked;
 
 		public Application()
 		{
@@ -66,15 +66,17 @@ namespace Windows.UI.Xaml
 			var window = Windows.UI.Xaml.Window.Current;
 			if (isVisible)
 			{
-				application?.LeavingBackground?.Invoke(application, new LeavingBackgroundEventArgs());
-				window?.OnVisibilityChanged(true);
-				window?.OnActivated(CoreWindowActivationState.CodeActivated);
+				application?.RaiseLeavingBackground(()=>
+				{
+					window?.OnVisibilityChanged(true);
+					window?.OnActivated(CoreWindowActivationState.CodeActivated);
+				});
 			}
 			else
 			{
 				window?.OnActivated(CoreWindowActivationState.Deactivated);
 				window?.OnVisibilityChanged(false);
-				application?.EnteredBackground?.Invoke(application, new EnteredBackgroundEventArgs());
+				application?.RaiseEnteredBackground(null);
 			}
 
 			return 0;
@@ -110,7 +112,7 @@ namespace Windows.UI.Xaml
 
 				var arguments = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.findLaunchArguments()");
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("Launch arguments: " + arguments);
 				}
@@ -134,21 +136,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal static void DispatchSuspending()
 		{
-			Current?.OnSuspending();
-		}
-
-		partial void OnSuspendingPartial()
-		{
-			var completed = false;
-			var operation = new SuspendingOperation(DateTime.Now.AddSeconds(0), () => completed = true);
-
-			Suspending?.Invoke(this, new SuspendingEventArgs(operation));
-			operation.EventRaiseCompleted();
-
-			if (!completed && this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().LogWarning($"This platform does not support asynchronous Suspending deferral. Code executed after the of the method called by Suspending may not get executed.");
-			}
+			Current?.RaiseSuspending();
 		}
 
 		private void ObserveApplicationVisibility()

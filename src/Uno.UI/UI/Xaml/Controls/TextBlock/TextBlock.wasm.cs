@@ -6,7 +6,7 @@ using Windows.UI.Xaml.Documents;
 using Uno.Extensions;
 using Uno.Foundation;
 using System.Linq;
-using Microsoft.Extensions.Logging;
+
 using Windows.UI.Text;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
@@ -17,7 +17,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private const int MaxMeasureCache = 50;
 
-		private static TextBlockMeasureCache _cache = new TextBlockMeasureCache();
 		private bool _fontStyleChanged;
 		private bool _fontWeightChanged;
 		private bool _textChanged;
@@ -102,7 +101,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (UseInlinesFastPath)
 			{
-				if (_cache.FindMeasuredSize(this, availableSize) is Size desiredSize)
+				if (TextBlockMeasureCache.Instance.FindMeasuredSize(this, availableSize) is Size desiredSize)
 				{
 					UnoMetrics.TextBlock.MeasureCacheHits++;
 					return desiredSize;
@@ -112,7 +111,7 @@ namespace Windows.UI.Xaml.Controls
 					UnoMetrics.TextBlock.MeasureCacheMisses++;
 					desiredSize = MeasureView(availableSize);
 
-					_cache.CacheMeasure(this, availableSize, desiredSize);
+					TextBlockMeasureCache.Instance.CacheMeasure(this, availableSize, desiredSize);
 
 					return desiredSize;
 				}

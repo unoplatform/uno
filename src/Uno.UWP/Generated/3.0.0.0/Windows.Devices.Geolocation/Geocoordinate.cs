@@ -19,6 +19,16 @@ namespace Windows.Devices.Geolocation
 		// Skipping already declared property PositionSource
 		// Skipping already declared property SatelliteData
 		// Skipping already declared property PositionSourceTimestamp
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  bool IsRemoteSource
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool Geocoordinate.IsRemoteSource is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Latitude.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Longitude.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Altitude.get
@@ -31,5 +41,6 @@ namespace Windows.Devices.Geolocation
 		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.SatelliteData.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Point.get
 		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.PositionSourceTimestamp.get
+		// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.IsRemoteSource.get
 	}
 }

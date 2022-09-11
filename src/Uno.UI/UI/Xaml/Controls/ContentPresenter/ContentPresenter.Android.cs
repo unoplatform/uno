@@ -1,6 +1,6 @@
 ﻿using Android.Views;
 using Android.Widget;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Uno.UI.Controls;
@@ -27,8 +27,6 @@ namespace Windows.UI.Xaml.Controls
 			InitializeContentPresenter();
 
 			IFrameworkElementHelper.Initialize(this);
-
-			this.RegisterLoadActions(UpdateBorder, () => _borderRenderer.Clear());
 		}
 
 		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom)

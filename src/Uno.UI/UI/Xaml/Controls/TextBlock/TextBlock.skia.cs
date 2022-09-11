@@ -13,17 +13,15 @@ using Windows.UI.Composition.Interactions;
 using Uno.Disposables;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
+using Windows.UI.Xaml.Documents.TextFormatting;
+
+#nullable enable
 
 namespace Windows.UI.Xaml.Controls
 {
-	partial class TextBlock : FrameworkElement
+	partial class TextBlock : FrameworkElement, IBlock
 	{
 		private readonly TextVisual _textVisual;
-		private readonly SerialDisposable _foregroundColorChanged = new SerialDisposable();
-		private readonly SerialDisposable _foregroundOpacityChanged = new SerialDisposable();
-
-		public Size _lastMeasure;
-		private Size _lastDesiredSize;
 
 		public TextBlock()
 		{
@@ -32,61 +30,74 @@ namespace Windows.UI.Xaml.Controls
 			Visual.Children.InsertAtBottom(_textVisual);
 		}
 
-		private int GetCharacterIndexAtPoint(Point point)
-		{
-			throw new NotSupportedException();
-		}
-
-		partial void OnForegroundChangedPartial()
-		{
-			var colorBrush = Foreground as SolidColorBrush;
-
-			if (colorBrush != null)
-			{
-				_foregroundColorChanged.Disposable = colorBrush.RegisterDisposablePropertyChangedCallback(
-					SolidColorBrush.ColorProperty,
-					(s, colorArg) => _textVisual.UpdateForeground()
-				);
-				_foregroundOpacityChanged.Disposable = colorBrush.RegisterDisposablePropertyChangedCallback(
-					SolidColorBrush.OpacityProperty,
-					(s, _) => _textVisual.UpdateForeground()
-				);
-			}
-			else
-			{
-				_foregroundColorChanged.Disposable = null;
-				_foregroundOpacityChanged.Disposable = null;
-			}
-
-			_textVisual.UpdateForeground();
-		}
-
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			_lastMeasure = availableSize;
 			var padding = Padding;
+			var availableSizeWithoutPadding = availableSize.Subtract(padding);
+			var desiredSize = Inlines.Measure(availableSizeWithoutPadding);
 
-			// available size considering padding
-			var availableSizeWithoutPadding = availableSize.Subtract(Padding);
-
-			var desiredSize = _textVisual.Measure(availableSizeWithoutPadding);
-
-			_lastDesiredSize = desiredSize.Add(padding);
-
-			return new Size(_lastDesiredSize.Width, _lastDesiredSize.Height);
+			return desiredSize.Add(padding);
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			if (_lastDesiredSize != finalSize)
-			{
-				_lastMeasure = finalSize;
-				_lastDesiredSize = _textVisual.Measure(finalSize);
-			}
-
-			_textVisual.Size = new Vector2((float)_lastDesiredSize.Width, (float)_lastDesiredSize.Height);
+			var padding = Padding;
+			var availableSizeWithoutPadding = finalSize.Subtract(padding);
+			var arrangedSizeWithoutPadding = Inlines.Arrange(availableSizeWithoutPadding);
+			_textVisual.Size = new Vector2((float)arrangedSizeWithoutPadding.Width, (float)arrangedSizeWithoutPadding.Height);
+			_textVisual.Offset = new Vector3((float)padding.Left, (float)padding.Top, 0);
 
 			return base.ArrangeOverride(finalSize);
+		}
+
+		private Hyperlink? FindHyperlinkAt(Point point)
+		{
+			var padding = Padding;
+			var span = Inlines.GetRenderSegmentSpanAt(point - new Point(padding.Left, padding.Top), false);
+
+			if (span == null)
+			{
+				return null;
+			}
+
+			var inline = span.Segment.Inline;
+
+			while ((inline = inline.GetParent() as Inline) != null)
+			{
+				if (inline is Hyperlink hyperlink)
+				{
+					return hyperlink;
+				}
+			}
+
+			return null;
+		}
+
+		partial void OnInlinesChangedPartial()
+		{
+			Inlines.InvalidateMeasure();
+		}
+
+		// Invalidate Inlines measure when any IBlock properties used during measuring change:
+
+		partial void OnMaxLinesChangedPartial()
+		{
+			Inlines.InvalidateMeasure();
+		}
+
+		partial void OnTextWrappingChangedPartial()
+		{
+			Inlines.InvalidateMeasure();
+		}
+
+		partial void OnLineHeightChangedPartial()
+		{
+			Inlines.InvalidateMeasure();
+		}
+
+		partial void OnLineStackingStrategyChangedPartial()
+		{
+			Inlines.InvalidateMeasure();
 		}
 	}
 }

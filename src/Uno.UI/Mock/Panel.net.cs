@@ -32,6 +32,6 @@ namespace Windows.UI.Xaml.Controls
 			=> Children.OfType<View>().ToArray<View>();
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadiusInternal != CornerRadius.None;
 	}
 }

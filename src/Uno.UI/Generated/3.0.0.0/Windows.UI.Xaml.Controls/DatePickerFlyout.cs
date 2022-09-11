@@ -13,12 +13,20 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property MaxYear
 		// Skipping already declared property DayVisible
 		// Skipping already declared property Date
+		// Skipping already declared property CalendarIdentifier
+		// Skipping already declared property YearFormat
+		// Skipping already declared property MonthFormat
+		// Skipping already declared property DayFormat
+		// Skipping already declared property CalendarIdentifierProperty
 		// Skipping already declared property DateProperty
 		// Skipping already declared property DayVisibleProperty
 		// Skipping already declared property MaxYearProperty
 		// Skipping already declared property MinYearProperty
 		// Skipping already declared property MonthVisibleProperty
 		// Skipping already declared property YearVisibleProperty
+		// Skipping already declared property DayFormatProperty
+		// Skipping already declared property MonthFormatProperty
+		// Skipping already declared property YearFormatProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.DatePickerFlyout.DatePickerFlyout()
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyout.DatePickerFlyout()
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyout.CalendarIdentifier.get
@@ -37,6 +45,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyout.MaxYear.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyout.DatePicked.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyout.DatePicked.remove
+		// Skipping already declared method Windows.UI.Xaml.Controls.DatePickerFlyout.ShowAtAsync(Windows.UI.Xaml.FrameworkElement)
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyout.DayFormat.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyout.DayFormat.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyout.MonthFormat.get
@@ -53,5 +62,6 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyout.YearVisibleProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyout.MinYearProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyout.MaxYearProperty.get
+		// Skipping already declared event Windows.UI.Xaml.Controls.DatePickerFlyout.DatePicked
 	}
 }

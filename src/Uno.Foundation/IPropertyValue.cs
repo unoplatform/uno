@@ -54,7 +54,7 @@ namespace Windows.Foundation
 
 		/// <summary>Returns the date and time value stored as a property value.</summary>
 		/// <returns>The value.</returns>
-		DateTime GetDateTime();
+		DateTimeOffset GetDateTime();
 
 		TimeSpan GetTimeSpan();
 

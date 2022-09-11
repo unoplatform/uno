@@ -7,18 +7,13 @@
 using System;
 using System.Threading.Tasks;
 using DirectUI;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
-
-//TODO Uno: Workaround for https://github.com/unoplatform/uno/issues/134
-#if NETFX_CORE
-using Popup = Windows.UI.Xaml.Controls.Primitives.Popup;
-#else
-#endif
 
 namespace Windows.UI.Xaml.Input
 {
@@ -359,6 +354,8 @@ namespace Windows.UI.Xaml.Input
 				// We need to start and complete the async operation since this is a no-op
 
 				spFocusAsyncOperation.CoreSetResults(new FocusMovementResult());
+				spFocusAsyncOperation.CoreFireCompletion();
+				return asyncOperation;
 			}
 
 			// TODO Uno specific: Do not use async operations, only simulated
@@ -509,13 +506,13 @@ namespace Windows.UI.Xaml.Input
 		/// <param name="focusNavigationDirection">Focus direction.</param>
 		/// <returns>True if focus was set.</returns>
 		internal static bool SetFocusedElementWithDirection(
-			 DependencyObject pElement,
+			 DependencyObject? pElement,
 			 FocusState focusState,
 			 bool animateIfBringIntoView,
 			 bool forceBringIntoView,
 			 FocusNavigationDirection focusNavigationDirection)
 		{
-			DependencyObject spElementToFocus = pElement;
+			DependencyObject? spElementToFocus = pElement;
 			Control? spControlToFocus;
 			bool pFocusUpdated = false;
 

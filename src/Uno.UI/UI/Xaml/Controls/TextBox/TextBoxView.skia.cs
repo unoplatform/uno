@@ -1,9 +1,10 @@
 ﻿#nullable enable
 
 using System;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls.Extensions;
 using Windows.UI.Xaml.Media;
 
@@ -11,7 +12,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	internal class TextBoxView
 	{
-		private readonly ITextBoxViewExtension _textBoxExtension;
+		private readonly ITextBoxViewExtension? _textBoxExtension;
 
 		private readonly WeakReference<TextBox> _textBox;
 		private readonly bool _isPasswordBox;
@@ -32,6 +33,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		internal ITextBoxViewExtension? Extension => _textBoxExtension;
+
 		public TextBox? TextBox
 		{
 			get
@@ -50,11 +53,10 @@ namespace Windows.UI.Xaml.Controls
 
 		public TextBlock DisplayBlock { get; } = new TextBlock();
 
-
 		internal void SetTextNative(string text)
 		{
 			// TODO: Inheritance hierarchy is wrong in Uno. PasswordBox shouldn't inherit TextBox.
-			// This needs to be moved to PasswordBox when it's separated from TextBox (likely in Uno 4).
+			// This needs to be moved to PasswordBox if it's separated from TextBox.
 			if (_isPasswordBox && !_isPasswordRevealed)
 			{
 				// TODO: PasswordChar isn't currently implemented. It should be used here when implemented.
@@ -70,10 +72,14 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void Select(int start, int length)
 		{
-			_textBoxExtension.Select(start, length);
+			_textBoxExtension?.Select(start, length);
 		}
 
-		internal void OnForegroundChanged(Brush brush) => DisplayBlock.Foreground = brush;
+		internal void OnForegroundChanged(Brush brush)
+		{
+			DisplayBlock.Foreground = brush;
+			_textBoxExtension?.SetForeground(brush);
+		}
 
 		internal void OnFocusStateChanged(FocusState focusState)
 		{
@@ -81,11 +87,20 @@ namespace Windows.UI.Xaml.Controls
 			{
 				DisplayBlock.Opacity = 0;
 				_textBoxExtension?.StartEntry();
+				
+				var selectionStart = this.GetSelectionStart();
+
+				if (selectionStart == 0)
+				{
+					int cursorPosition = selectionStart + TextBox?.Text?.Length ?? 0;
+
+					_textBoxExtension?.Select(cursorPosition, 0);
+				}				
 			}
 			else
 			{
 				_textBoxExtension?.EndEntry();
-				DisplayBlock.Opacity = 1;
+				DisplayBlock.Opacity = 1;								
 			}
 		}
 

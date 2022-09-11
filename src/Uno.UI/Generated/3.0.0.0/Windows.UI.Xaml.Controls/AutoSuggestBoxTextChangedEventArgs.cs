@@ -13,6 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.AutoSuggestBoxTextChangedEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.Reason.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.Reason.set
+		// Skipping already declared method Windows.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.CheckCurrent()
 		// Forced skipping of method Windows.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs.ReasonProperty.get
 	}
 }

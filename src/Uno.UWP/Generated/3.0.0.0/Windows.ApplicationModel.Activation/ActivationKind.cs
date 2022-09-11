@@ -3,9 +3,6 @@
 namespace Windows.ApplicationModel.Activation
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
 	public   enum ActivationKind 
 	{
 		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.Launch
@@ -39,32 +36,26 @@ namespace Windows.ApplicationModel.Activation
 		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.Print3DWorkflow
 		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.DialReceiver
 		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.DevicePairing
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.UserDataAccountsProvider
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.FilePickerExperience
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.LockScreenComponent
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.ContactPanel
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.PrintWorkflowForegroundTask
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.GameUIProvider
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.StartupTask
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.CommandLineLaunch
+		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.BarcodeScannerProvider
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		UserDataAccountsProvider,
+		PrintSupportJobUI = 1023,
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		FilePickerExperience,
+		PrintSupportSettingsUI = 1024,
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		LockScreenComponent,
+		PhoneCallActivation = 1025,
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ContactPanel,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		PrintWorkflowForegroundTask,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		GameUIProvider,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		StartupTask,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		CommandLineLaunch,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		BarcodeScannerProvider,
+		VpnForeground = 1026,
 		#endif
 	}
 	#endif

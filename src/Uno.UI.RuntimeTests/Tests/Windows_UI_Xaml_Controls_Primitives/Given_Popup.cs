@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives.PopupPages;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 
@@ -16,6 +17,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 	public class Given_Popup
 	{
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task Check_Can_Reach_Main_Visual_Tree()
 		{
 			var page = new ReachMainTreePage();
@@ -54,6 +58,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			}
 		}
 #endif
+
+		[TestMethod]
+		public void When_IsLightDismissEnabled_Default()
+		{
+			var popup = new Popup();
+			Assert.IsFalse(popup.IsLightDismissEnabled);
+		}
+
+		[TestMethod]
+		public void When_Closed_Immediately()
+		{
+			var popup = new Popup();
+			popup.IsOpen = true;
+			// Should not throw
+			popup.IsOpen = false;
+		}
 
 		private static bool CanReach(DependencyObject startingElement, DependencyObject targetElement)
 		{

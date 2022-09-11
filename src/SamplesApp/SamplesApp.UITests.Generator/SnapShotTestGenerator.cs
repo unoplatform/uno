@@ -14,7 +14,7 @@ namespace Uno.Samples.UITest.Generator
 {
 	public class SnapShotTestGenerator : SourceGenerator
 	{
-		private const int GroupCount = 4;
+		private const int GroupCount = 5;
 
 		private INamedTypeSymbol _sampleControlInfoSymbol;
 		private INamedTypeSymbol _sampleSymbol;
@@ -114,24 +114,25 @@ namespace Uno.Samples.UITest.Generator
 				.Select((p, i) => (p, i))
 				.Single(p => p.p.Name == name)
 				.i;
-	
+
 		private string AlignName(string v)
-			=> v.Replace("/", "_").Replace(" ", "_").Replace("-", "_");
+			=> v.Replace("/", "_").Replace(" ", "_").Replace("-", "_").Replace(":", "_");
 
 		private void GenerateTests(
 			string assembly,
 			SourceGeneratorContext context,
 			IEnumerable<(INamedTypeSymbol symbol, string[] categories, string name, bool ignoreInSnapshotTests, bool isManual)> symbols)
 		{
-			var groups = 
-				from symbol in symbols.Select((v, i) => (index:i, value:v))
+			var groups =
+				from symbol in symbols.Select((v, i) => (index: i, value: v))
 				group symbol by symbol.index / 50 into g
-				select new {
+				select new
+				{
 					Index = g.Key,
 					Symbols = g.AsEnumerable().Select(v => v.value)
 				};
 
-			foreach(var group in groups)
+			foreach (var group in groups)
 			{
 				string sanitizedAssemblyName = assembly.Replace(".", "_");
 				var groupName = $"Generated_{sanitizedAssemblyName}_{group.Index:000}";
@@ -154,13 +155,16 @@ namespace Uno.Samples.UITest.Generator
 							builder.AppendLineInvariant("[global::NUnit.Framework.Test]");
 							builder.AppendLineInvariant($"[global::NUnit.Framework.Description(\"runGroup:{group.Index % GroupCount:00}, automated:{test.symbol.ToDisplayString()}\")]");
 
-							if (test.ignoreInSnapshotTests)
+							var (ignored, ignoreReason) = (test.ignoreInSnapshotTests, test.isManual) switch
 							{
-								builder.AppendLineInvariant("[global::NUnit.Framework.Ignore(\"ignoreInSnapshotTests is set for attribute\")]");
-							}
-							if (test.isManual)
+								(true, true) => (true, "ignoreInSnapshotTests and isManual are set for attribute"),
+								(true, false) => (true, "ignoreInSnapshotTests is are set for attribute"),
+								(false, true) => (true, "isManualTest is set for attribute"),
+								_ => (false, default),
+							};
+							if (ignored)
 							{
-								builder.AppendLineInvariant("[global::NUnit.Framework.Ignore(\"isManualTest is set for attribute\")]");
+								builder.AppendLineInvariant($"[global::NUnit.Framework.Ignore(\"{ignoreReason}\")]");
 							}
 
 							builder.AppendLineInvariant("[global::SamplesApp.UITests.TestFramework.AutoRetry]");
@@ -181,11 +185,8 @@ namespace Uno.Samples.UITest.Generator
 			}
 		}
 
-		private object Sanitize(string category) 
-			=> category
-				.Replace(" ", "_")
-				.Replace("-", "_")
-				.Replace(".", "_");
+		private object Sanitize(string category)
+			=> string.Join("", category.Select(c => char.IsLetterOrDigit(c) ? c : '_'));
 
 		private (Compilation compilation, Project project) GetCompilation(SourceGeneratorContext context, string assembly)
 		{

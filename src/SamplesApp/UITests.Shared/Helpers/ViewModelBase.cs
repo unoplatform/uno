@@ -17,7 +17,7 @@ using Windows.UI.Xaml;
 namespace Uno.UI.Samples.UITests.Helpers
 {
 	[Windows.UI.Xaml.Data.Bindable]
-	public class ViewModelBase : INotifyPropertyChanged, IDisposable
+	internal class ViewModelBase : INotifyPropertyChanged, IDisposable
 	{
 		public CoreDispatcher Dispatcher { get; }
 

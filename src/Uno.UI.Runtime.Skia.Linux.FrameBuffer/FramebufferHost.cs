@@ -5,6 +5,12 @@ using WUX = Windows.UI.Xaml;
 using Uno.WinUI.Runtime.Skia.LinuxFB;
 using Windows.UI.Core;
 using Uno.Foundation.Extensibility;
+using System.ComponentModel;
+using Uno.UI.Xaml.Core;
+using Uno.Foundation.Logging;
+using Windows.Graphics.Display;
+using Uno.Extensions;
+using System.Threading;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -13,59 +19,148 @@ namespace Uno.UI.Runtime.Skia
 		[ThreadStatic]
 		private static bool _isDispatcherThread = false;
 
-		private string[] _args;
 		private Func<Application> _appBuilder;
 		private readonly EventLoop _eventLoop;
 		private Renderer? _renderer;
 		private DisplayInformationExtension? _displayInformationExtension;
+		private ApplicationExtension? _applicationExtension;
+		private Thread _consoleInterceptionThread;
+		private ManualResetEvent _terminationGate = new(false);
 
-		public FrameBufferHost(Func<WUX.Application> appBuilder, string[] args)
+		/// <summary>
+		/// Creates a host for a Uno Skia FrameBuffer application.
+		/// </summary>
+		/// <param name="appBuilder">App builder.</param>
+		/// <param name="args">Deprecated, value ignored.</param>		
+		/// <remarks>
+		/// Args are obsolete and will be removed in the future. Environment.CommandLine is used instead
+		/// to fill LaunchEventArgs.Arguments.
+		/// </remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public FrameBufferHost(Func<WUX.Application> appBuilder, string[] args) : this(appBuilder)
 		{
-			_args = args;
+		}
+
+		public FrameBufferHost(Func<WUX.Application> appBuilder)
+		{
 			_appBuilder = appBuilder;
 
 			_eventLoop = new EventLoop();
 		}
 
+		/// <summary>
+		/// Provides a display scale to override framebuffer default scale
+		/// </summary>
+		/// <remarks>This value can be overriden by the UNO_DISPLAY_SCALE_OVERRIDE environment variable</remarks>
+		public float? DisplayScale { get; set; }
+
 		public void Run()
 		{
+			StartConsoleInterception();
+
 			_eventLoop.Schedule(Initialize);
 
-			System.Console.ReadLine();
+			_terminationGate.WaitOne();
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Application is exiting");
+			}
+		}
+
+		private void StartConsoleInterception()
+		{
+			_consoleInterceptionThread = new(() => {
+
+				// Loop until Application.Current.Exit() is invoked
+				while (!_applicationExtension?.ShouldExit ?? true)
+				{
+					// Read the console keys without showing them on screen.
+					// The keyboard input is handled by libinput. 
+					Console.ReadKey(true);
+				}
+
+				// The process asked to exit
+				_terminationGate.Set();
+			});
+
+			// The thread must not block the process from exiting
+			_consoleInterceptionThread.IsBackground = true;
+			
+			_consoleInterceptionThread.Start();
 		}
 
 		private void Initialize()
 		{
+			_isDispatcherThread = true;
+
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new CoreWindowExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new ApplicationViewExtension(o));
-			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new DisplayInformationExtension(o));
-
-			_renderer = new Renderer();
-			_displayInformationExtension!.Renderer = _renderer;
-
-			bool EnqueueNative(DispatcherQueuePriority priority, DispatcherQueueHandler callback)
-			{
-				_eventLoop.Schedule(() => callback());
-
-				return true;
-			}
+			ApiExtensibility.Register<Application>(typeof(Uno.UI.Xaml.IApplicationExtension), o => _applicationExtension = new ApplicationExtension(o));
+			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new DisplayInformationExtension(o, DisplayScale));
 
 			void Dispatch(System.Action d)
-			{
-				_eventLoop.Schedule(() => d());
-			}
-
-			Windows.System.DispatcherQueue.EnqueueNativeOverride = EnqueueNative;
-			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
-			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+				=> _eventLoop.Schedule(() => d());
 
 			void CreateApp(ApplicationInitializationCallbackParams _)
 			{
 				var app = _appBuilder();
 				app.Host = this;
+
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Display Information: " +
+						$"{_renderer?.FrameBufferDevice.ScreenSize.Width}x{_renderer?.FrameBufferDevice.ScreenSize.Height} " +
+						$"({_renderer?.FrameBufferDevice.ScreenPhysicalDimensions} mm), " +
+						$"PixelFormat: {_renderer?.FrameBufferDevice.PixelFormat}, " +
+						$"ResolutionScale: {DisplayInformation.GetForCurrentView().ResolutionScale}, " +
+						$"LogicalDpi: {DisplayInformation.GetForCurrentView().LogicalDpi}, " +
+						$"RawPixelsPerViewPixel: {DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel}, " +
+						$"DiagonalSizeInInches: {DisplayInformation.GetForCurrentView().DiagonalSizeInInches}, " +
+						$"ScreenInRawPixels: {DisplayInformation.GetForCurrentView().ScreenWidthInRawPixels}x{DisplayInformation.GetForCurrentView().ScreenHeightInRawPixels}");
+				}
+
+				if (_applicationExtension is not null)
+				{
+					// Register the exit handler to terminate the app gracefully
+					_applicationExtension.ExitRequested += (s, e) => {
+
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().Debug($"Application has requested an exit");
+						}
+						
+						_terminationGate.Set();
+					};
+				}
 			}
 
-			WUX.Application.Start(CreateApp, _args);
+			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
+			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+
+			_renderer = new Renderer();
+			_displayInformationExtension!.Renderer = _renderer;
+
+			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
+
+			WUX.Application.StartWithArguments(CreateApp);
+		}
+
+		private void OnCoreWindowContentRootSet(object? sender, object e)
+		{
+			var xamlRoot = CoreServices.Instance
+				.ContentRootCoordinator
+				.CoreWindowContentRoot?
+				.GetOrCreateXamlRoot();
+
+			if (xamlRoot is null)
+			{
+				throw new InvalidOperationException("XamlRoot was not properly initialized");
+			}
+
+			xamlRoot.InvalidateRender += _renderer!.InvalidateRender;
+
+			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 		}
 	}
 }

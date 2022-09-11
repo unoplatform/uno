@@ -39,7 +39,7 @@ namespace UITests.Windows_UI_Input.PointersTests
 			_nested.PointerMoved += (snd, e) =>
 			{
 				// We filter out half of the events to validate that handled events are not always invalidly bubbled.
-				if (even) 
+				if (even)
 				{
 					containerMoveCount++;
 				}
@@ -55,6 +55,59 @@ namespace UITests.Windows_UI_Input.PointersTests
 			_container.PointerPressed += (snd, e) => _result.Text = "Pressed FAIL";
 			_container.PointerMoved += (snd, e) => nestedMoveCount++;
 			_container.PointerReleased += (snd, e) => _result.Text += $" | Released {(nestedMoveCount == containerMoveCount ? "SUCCESS" : "FAIL")}";
+
+
+			_sample2_container.AddHandler(
+				PointerEnteredEvent,
+				new PointerEventHandler((snd, e) =>
+				{
+					if (e.OriginalSource == _sample2_nested
+						|| e.OriginalSource == _sample2_intermediate2
+						|| e.OriginalSource == _sample2_intermediate)
+					{
+						_enterResult.Text += "FAILED (container)";
+					}
+				}),
+				handledEventsToo: true);
+			_sample2_intermediate.AddHandler(
+				PointerEnteredEvent,
+				new PointerEventHandler((snd, e) => _enterResult.Text += "SUCCESS"),
+				handledEventsToo: true);
+			_sample2_intermediate2.AddHandler(
+				PointerExitedEvent,
+				new PointerEventHandler((snd, e) => _exitResult.Text += "FAILED (intermediate 2)"),
+				handledEventsToo: false);
+			_sample2_nested.PointerEntered += (snd, e) =>
+			{
+				e.Handled = true;
+				_enterResult.Text = "ENTERED ";
+			};
+
+			_sample2_container.AddHandler(
+				PointerExitedEvent,
+				new PointerEventHandler((snd, e) =>
+				{
+					if (e.OriginalSource == _sample2_nested
+						|| e.OriginalSource == _sample2_intermediate2
+						|| e.OriginalSource == _sample2_intermediate)
+					{
+						_exitResult.Text += "FAILED (container)";
+					}
+				}),
+				handledEventsToo: true);
+			_sample2_intermediate.AddHandler(
+				PointerExitedEvent,
+				new PointerEventHandler((snd, e) => _exitResult.Text += "SUCCESS"),
+				handledEventsToo: true);
+			_sample2_intermediate2.AddHandler(
+				PointerExitedEvent,
+				new PointerEventHandler((snd, e) => _exitResult.Text += "FAILED (intermediate 2)"),
+				handledEventsToo: false);
+			_sample2_nested.PointerExited += (snd, e) =>
+			{
+				e.Handled = true;
+				_exitResult.Text = "EXITED ";
+			};
 		}
 	}
 }

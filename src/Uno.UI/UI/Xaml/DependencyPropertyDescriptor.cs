@@ -1,6 +1,6 @@
 ﻿using System;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml
 {
@@ -80,7 +80,7 @@ namespace Windows.UI.Xaml
 					}
 					else
 					{
-						if (typeof(DependencyPropertyDescriptor).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						if (typeof(DependencyPropertyDescriptor).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 						{
 							typeof(DependencyPropertyDescriptor).Log().DebugFormat($"The property path [{propertyPath}] is not formatted properly (must only access one property)");
 						}
@@ -88,7 +88,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					if (typeof(DependencyPropertyDescriptor).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (typeof(DependencyPropertyDescriptor).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						typeof(DependencyPropertyDescriptor).Log().DebugFormat($"The property path [{propertyPath}] is not formatted properly (must have exactly one ':')");
 					}

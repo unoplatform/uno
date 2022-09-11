@@ -14,22 +14,23 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Globalization;
 using Windows.UI.Core;
 using Windows.Storage;
-using Uno.Extensions;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml;
 using System.IO;
 using Windows.UI.Popups;
+using Uno.Extensions;
+using Uno.UI.Samples.Tests;
 
-#if XAMARIN || UNO_REFERENCE_API
-using Windows.UI.Xaml.Controls;
+#if HAS_UNO
+using Uno.Foundation.Logging;
 #else
+using Microsoft.Extensions.Logging;
+using Uno.Logging;
+#endif
+
+using Windows.UI.Xaml.Controls;
 using Windows.Graphics.Imaging;
 using Windows.Graphics.Display;
-using Windows.UI.Xaml.Media;
-using Windows.UI;
-using Windows.UI.Xaml.Controls;
-#endif
+using Uno.UI.Extensions;
 
 namespace SampleControl.Presentation
 {
@@ -47,6 +48,14 @@ namespace SampleControl.Presentation
 #else
 		private const int _numberOfRecentSamplesVisible = 0;
 #endif
+
+#if HAS_UNO
+		private Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(SampleChooserViewModel));
+#else
+		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(SampleChooserViewModel));
+#endif
+
+
 		private List<SampleChooserCategory> _categories;
 
 		private readonly Uno.Threading.AsyncLock _fileLock = new Uno.Threading.AsyncLock();
@@ -60,6 +69,9 @@ namespace SampleControl.Presentation
 
 		private Section _lastSection = Section.Library;
 		private readonly Stack<Section> _previousSections = new Stack<Section>();
+		private bool _isRecordAllTests = false;
+		private static readonly Windows.UI.Xaml.Media.SolidColorBrush _screenshotBackground =
+	new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.White);
 
 		// A static instance used during UI Testing automation
 		public static SampleChooserViewModel Instance { get; private set; }
@@ -93,9 +105,9 @@ namespace SampleControl.Presentation
 
 			_categories = GetSamples();
 
-			if (this.Log().IsEnabled(LogLevel.Information))
+			if (_log.IsEnabled(LogLevel.Information))
 			{
-				this.Log().Info($"Found {_categories.SelectMany(c => c.SamplesContent).Distinct().Count()} sample(s) in {_categories.Count} categories.");
+				_log.Info($"Found {_categories.SelectMany(c => c.SamplesContent).Distinct().Count()} sample(s) in {_categories.Count} categories.");
 			}
 		}
 
@@ -188,7 +200,7 @@ namespace SampleControl.Presentation
 
 					if (currentContent == null)
 					{
-						this.Log().Debug($"No current Sample Control selected.");
+						_log.Debug($"No current Sample Control selected.");
 						return;
 					}
 
@@ -196,7 +208,7 @@ namespace SampleControl.Presentation
 					builder.AppendLine($"Dump for '{currentContent.GetType().FullName}':");
 					PrintViewHierarchy(currentContent, builder);
 					var toLog = builder.ToString();
-					this.Log().Debug(toLog);
+					_log.Debug(toLog);
 				});
 		}
 
@@ -253,6 +265,7 @@ namespace SampleControl.Presentation
 		{
 			try
 			{
+				_isRecordAllTests = true;
 				IsSplitVisible = false;
 
 				var folderName = Path.Combine(screenShotPath, "UITests-" + DateTime.Now.ToString("yyyyMMdd-hhmmssfff", CultureInfo.InvariantCulture));
@@ -263,14 +276,19 @@ namespace SampleControl.Presentation
 					CoreDispatcherPriority.Normal,
 					async () =>
 					{
-						await RecordAllTestsInner(folderName, ct, doneAction);
+						try {
+							await RecordAllTestsInner(folderName, ct, doneAction);
+						}
+						finally {
+							_isRecordAllTests = false;
+						}
 					});
 			}
 			catch (Exception e)
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
+				if (_log.IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error("RecordAllTests exception", e);
+					_log.Error("RecordAllTests exception", e);
 				}
 			}
 		}
@@ -279,6 +297,7 @@ namespace SampleControl.Presentation
 		{
 			try
 			{
+				var rootFolder = await GetStorageFolderFromNameOrCreate(ct, folderName);
 #if TRACK_REFS
 				var initialInactiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetInactiveViewReferencesStats();
 				var initialActiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats();
@@ -308,10 +327,12 @@ namespace SampleControl.Presentation
 					.Where(testInfo => _targetsToSkip.None(testInfo.Matches))
 					.ToArray();
 
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				if (_log.IsEnabled(LogLevel.Debug))
 				{
-					this.Log().Debug($"Generating tests for {tests.Count()} test in {folderName}");
+					_log.Debug($"Generating tests for {tests.Length} test in {folderName}");
 				}
+
+				var target = new Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap();
 
 				foreach (var sample in tests)
 				{
@@ -322,7 +343,7 @@ namespace SampleControl.Presentation
 						var activeStats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats();
 #endif
 
-						var fileName = $"{sample.Category.Category}-{sample.Sample.ControlName}.png";
+						var fileName = $"{SanitizeScreenshotFileName(sample.Category.Category + "-" + sample.Sample.ControlName)}.png";
 
 						try
 						{
@@ -330,9 +351,9 @@ namespace SampleControl.Presentation
 
 							LogMemoryStatistics();
 
-							if (this.Log().IsEnabled(LogLevel.Debug))
+							if (_log.IsEnabled(LogLevel.Debug))
 							{
-								this.Log().Debug($"Generating {folderName}\\{fileName}");
+								_log.Debug($"Generating {folderName}\\{fileName}");
 							}
 
 							await ShowNewSection(ct, Section.SamplesContent);
@@ -346,21 +367,23 @@ namespace SampleControl.Presentation
 							await Task.Delay(500, ct);
 
 							Console.WriteLine($"Generating screenshot for {fileName}");
-
-							await GenerateBitmap(ct, folderName, fileName, content);
+							var file = await rootFolder.CreateFileAsync(fileName + ".png",
+								CreationCollisionOption.ReplaceExisting
+								).AsTask(ct);
+							await GenerateBitmap(ct, target, file, content, GetScreenshotConstraints());
 						}
 						catch (Exception e)
 						{
-							this.Log().Error($"Failed to execute test for {fileName}", e);
+							_log.Error($"Failed to execute test for {fileName}", e);
 						}
 
 #if TRACK_REFS
 						Uno.UI.DataBinding.BinderReferenceHolder.LogInactiveViewReferencesStatsDiff(inactiveStats);
 						Uno.UI.DataBinding.BinderReferenceHolder.LogActiveViewReferencesStatsDiff(activeStats);
 #endif
-						if (this.Log().IsEnabled(LogLevel.Debug))
+						if (_log.IsEnabled(LogLevel.Debug))
 						{
-							this.Log().Debug($"Initial diff");
+							_log.Debug($"Initial diff");
 						}
 #if TRACK_REFS
 						Uno.UI.DataBinding.BinderReferenceHolder.LogInactiveViewReferencesStatsDiff(initialInactiveStats);
@@ -369,18 +392,18 @@ namespace SampleControl.Presentation
 					}
 					catch (Exception e)
 					{
-						if (this.Log().IsEnabled(LogLevel.Error))
+						if (_log.IsEnabled(LogLevel.Error))
 						{
-							this.Log().Error("Exception", e);
+							_log.Error("Exception", e);
 						}
 					}
 				}
 
 				ContentPhone = null;
 
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				if (_log.IsEnabled(LogLevel.Debug))
 				{
-					this.Log().Debug($"Final binder reference stats");
+					_log.Debug($"Final binder reference stats");
 				}
 
 #if TRACK_REFS
@@ -390,9 +413,9 @@ namespace SampleControl.Presentation
 			}
 			catch (Exception e)
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
+				if (_log.IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error("RecordAllTests exception", e);
+					_log.Error("RecordAllTests exception", e);
 				}
 			}
 			finally
@@ -401,6 +424,53 @@ namespace SampleControl.Presentation
 				doneAction?.Invoke();
 
 				IsSplitVisible = true;
+			}
+		}
+
+		private object SanitizeScreenshotFileName(string fileName) =>
+			fileName
+				.Replace(":", "_")
+				.Replace("/", "_")
+				.Replace("\\", "_")
+				.Replace("\\", "_");
+
+		internal async Task OpenRuntimeTests(CancellationToken ct)
+		{
+			IsSplitVisible = false;
+
+			var testQuery = from category in _categories
+							from sample in category.SamplesContent
+							where sample.ControlType == typeof(SamplesApp.Samples.UnitTests.UnitTestsPage)
+							select sample;
+
+			var runtimeTests = testQuery.FirstOrDefault();
+
+			if (runtimeTests == null)
+			{
+				throw new InvalidOperationException($"Unable to find UnitTestsPage");
+			}
+
+			var content = await UpdateContent(ct, runtimeTests) as FrameworkElement;
+			ContentPhone = content;
+		}
+
+		internal async Task RunRuntimeTests(CancellationToken ct, string testResultsFilePath, Action doneAction = null)
+		{
+			try
+			{
+				await OpenRuntimeTests(ct);
+
+				if (ContentPhone is FrameworkElement fe
+					&& fe.FindName("UnitTestsRootControl") is Uno.UI.Samples.Tests.UnitTestsControl unitTests)
+				{
+					await Task.Run(() => unitTests.RunTests(ct, UnitTestEngineConfig.Default));
+
+					File.WriteAllText(testResultsFilePath, unitTests.NUnitTestResultsDocument, System.Text.Encoding.Unicode);
+				}
+			}
+			finally
+			{
+				doneAction?.Invoke();
 			}
 		}
 
@@ -413,6 +483,10 @@ namespace SampleControl.Presentation
 
 				void Update(SampleChooserContent newContent)
 				{
+					if (_isRecordAllTests)
+					{
+						return;
+					}
 					var unused = Window.Current.Dispatcher.RunAsync(
 						CoreDispatcherPriority.Normal,
 						async () =>
@@ -482,7 +556,7 @@ namespace SampleControl.Presentation
 			var unused = Window.Current.Dispatcher.RunAsync(
 				CoreDispatcherPriority.Normal, async () =>
 				{
-					await Task.Delay(500);
+					await Task.Delay(200);
 
 					if (!currentSearch.IsCancellationRequested)
 					{
@@ -526,9 +600,9 @@ namespace SampleControl.Presentation
 			}
 			catch (Exception e)
 			{
-				if (this.Log().IsEnabled(LogLevel.Warning))
+				if (_log.IsEnabled(LogLevel.Warning))
 				{
-					this.Log().Warn("Get last run tests failed, returning empty list", e);
+					_log.Warn("Get last run tests failed, returning empty list", e);
 				}
 				return new List<SampleChooserContent>();
 			}
@@ -749,9 +823,9 @@ description: {sample.Description}";
 			}
 			catch (Exception e)
 			{
-				if (this.Log().IsEnabled(LogLevel.Warning))
+				if (_log.IsEnabled(LogLevel.Warning))
 				{
-					this.Log().Warn("Get favorite samples failed, returning empty list", e);
+					_log.Warn("Get favorite samples failed, returning empty list", e);
 				}
 				return new List<SampleChooserContent>();
 			}
@@ -950,12 +1024,19 @@ description: {sample.Description}";
 			{
 				try
 				{
-					var folderPath = ApplicationData.Current.LocalFolder.Path;
-					File.WriteAllText(Path.Combine(folderPath, SampleChooserFileAddress + key), json);
+					var folder = await StorageFolder.GetFolderFromPathAsync(ApplicationData.Current.LocalFolder.Path);
+					var file = await folder.OpenStreamForWriteAsync(SampleChooserFileAddress + key, CreationCollisionOption.ReplaceExisting);
+					using (var writer = new StreamWriter(file, encoding: System.Text.Encoding.UTF8))
+					using (var jsonWriter = new Newtonsoft.Json.JsonTextWriter(writer))
+					{
+						var ser = Newtonsoft.Json.JsonSerializer.CreateDefault();
+						ser.Serialize(jsonWriter, value);
+						jsonWriter.Flush();
+					}
 				}
 				catch (IOException e)
 				{
-					this.Log().Error(e.Message);
+					_log.Error(e.Message);
 				}
 			}
 #endif
@@ -971,11 +1052,16 @@ description: {sample.Description}";
 				try
 				{
 					var folderPath = ApplicationData.Current.LocalFolder.Path;
-					json = File.ReadAllText(Path.Combine(folderPath, SampleChooserFileAddress + key));
+					var filePath = Path.Combine(folderPath, SampleChooserFileAddress + key);
+					if (File.Exists(filePath))
+					{
+						json = File.ReadAllText(filePath);
+					}
+					
 				}
 				catch (IOException e)
 				{
-					this.Log().Error(e.Message);
+					_log.Error(e.Message);
 				}
 			}
 
@@ -987,11 +1073,96 @@ description: {sample.Description}";
 				}
 				catch (Exception ex)
 				{
-					this.Log().Error($"Could not deserialize Sample chooser file {key}.", ex);
+					_log.Error($"Could not deserialize Sample chooser file {key}.", ex);
 				}
 			}
 #endif
 			return defaultValue != null ? defaultValue() : default(T);
+		}
+
+
+		private async Task DumpOutputFolderName(CancellationToken ct, string folderName)
+		{
+			var folder = await GetStorageFolderFromNameOrCreate(ct, folderName);
+
+			if (_log.IsEnabled(LogLevel.Debug))
+			{
+				_log.Debug($"Output folder for tests: {folder.Path}");
+			}
+		}
+
+		private async Task GenerateBitmap(CancellationToken ct
+			, Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap targetBitmap
+			, StorageFile file
+			, FrameworkElement content
+			, (double MinWidth, double MinHeight, double Width, double Height) constraints)
+		{
+#if __WASM__
+			throw new NotSupportedException($"GenerateBitmap is not supported by this platform");
+#else
+			var element = content?.Parent is FrameworkElement parent
+				? parent
+				: (FrameworkElement)content ?? throw new Exception("Invalid element");
+
+			(double oldMinWidth, double oldMinHeight, double oldWidth, double oldHeight)
+				= (element.MinWidth, element.MinHeight, element.Width, element.Height);
+			try
+			{
+				element.MinWidth = constraints.MinWidth;
+				element.MinHeight = constraints.MinHeight;
+				element.Width = constraints.Width;
+				element.Height = constraints.Height;
+
+				var border = element.FindFirstChild<Border>();
+
+				if (border != null)
+				{
+					border.Background = _screenshotBackground;
+				}
+
+				element.InvalidateMeasure();
+				element.InvalidateArrange();
+				await Task.Yield();
+				element.Measure(new Windows.Foundation.Size(constraints.Width, constraints.Height));
+				element.Arrange(new Windows.Foundation.Rect(0, 0, constraints.Width, constraints.Height));
+
+				await Task.Yield();
+				targetBitmap = new Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap();
+
+				await targetBitmap.RenderAsync(element).AsTask(ct);
+
+				content.DataContext = null;
+
+				var pixels = await targetBitmap.GetPixelsAsync().AsTask(ct);
+
+				using (var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite).AsTask(ct))
+				{
+					var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, fileStream).AsTask(ct);
+
+					encoder.SetPixelData(
+						BitmapPixelFormat.Bgra8,
+						BitmapAlphaMode.Ignore,
+						(uint)targetBitmap.PixelWidth,
+						(uint)targetBitmap.PixelHeight,
+						DisplayInformation.GetForCurrentView().RawDpiX,
+						DisplayInformation.GetForCurrentView().RawDpiY,
+						pixels.ToArray()
+					);
+
+					await encoder.FlushAsync().AsTask(ct);
+				}
+			}
+			catch (Exception ex)
+			{
+				_log.Error(ex.Message);
+			}
+			finally
+			{
+				(element.MinWidth, element.MinHeight, element.Width, element.Height) =
+					(oldMinWidth, oldMinHeight, oldWidth, oldHeight);
+				await Task.Yield();
+			}
+#endif
 		}
 	}
 }

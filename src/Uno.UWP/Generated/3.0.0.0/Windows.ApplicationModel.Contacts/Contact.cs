@@ -2,25 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Contacts
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Contact 
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IRandomAccessStreamReference Thumbnail
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference Contact.Thumbnail is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.Contact", "IRandomAccessStreamReference Contact.Thumbnail");
-			}
-		}
-		#endif
+		// Skipping already declared property Thumbnail
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string Name
@@ -45,34 +32,8 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Id
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Contact.Id is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.Contact", "string Contact.Id");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Notes
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Contact.Notes is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.Contact", "string Contact.Notes");
-			}
-		}
-		#endif
+		// Skipping already declared property Id
+		// Skipping already declared property Notes
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Contacts.ContactConnectedServiceAccount> ConnectedServiceAccounts
@@ -83,26 +44,8 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Contacts.ContactEmail> Emails
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<ContactEmail> Contact.Emails is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Contacts.ContactAddress> Addresses
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<ContactAddress> Contact.Addresses is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Emails
+		// Skipping already declared property Addresses
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Contacts.ContactDate> ImportantDates
@@ -133,16 +76,7 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Contacts.ContactPhone> Phones
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<ContactPhone> Contact.Phones is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Phones
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Collections.IPropertySet ProviderProperties
@@ -173,20 +107,7 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IRandomAccessStreamReference SourceDisplayPicture
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference Contact.SourceDisplayPicture is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.Contact", "IRandomAccessStreamReference Contact.SourceDisplayPicture");
-			}
-		}
-		#endif
+		// Skipping already declared property SourceDisplayPicture
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string TextToneToken
@@ -201,20 +122,7 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DisplayNameOverride
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Contact.DisplayNameOverride is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.Contact", "string Contact.DisplayNameOverride");
-			}
-		}
-		#endif
+		// Skipping already declared property DisplayNameOverride
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.DateTimeOffset DisplayPictureUserUpdateTime
@@ -229,20 +137,7 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Nickname
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Contact.Nickname is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.Contact", "string Contact.Nickname");
-			}
-		}
-		#endif
+		// Skipping already declared property Nickname
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string RemoteId
@@ -281,26 +176,8 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IRandomAccessStreamReference LargeDisplayPicture
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference Contact.LargeDisplayPicture is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IRandomAccessStreamReference SmallDisplayPicture
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference Contact.SmallDisplayPicture is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property LargeDisplayPicture
+		// Skipping already declared property SmallDisplayPicture
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string SortName
@@ -321,16 +198,7 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string FullName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Contact.FullName is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property FullName
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsAggregate
@@ -361,114 +229,14 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string YomiGivenName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Contact.YomiGivenName is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.Contact", "string Contact.YomiGivenName");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string HonorificNameSuffix
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Contact.HonorificNameSuffix is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.Contact", "string Contact.HonorificNameSuffix");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string YomiFamilyName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Contact.YomiFamilyName is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.Contact", "string Contact.YomiFamilyName");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string MiddleName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Contact.MiddleName is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.Contact", "string Contact.MiddleName");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string LastName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Contact.LastName is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.Contact", "string Contact.LastName");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string HonorificNamePrefix
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Contact.HonorificNamePrefix is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.Contact", "string Contact.HonorificNamePrefix");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string FirstName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Contact.FirstName is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.Contact", "string Contact.FirstName");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DisplayName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string Contact.DisplayName is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property YomiGivenName
+		// Skipping already declared property HonorificNameSuffix
+		// Skipping already declared property YomiFamilyName
+		// Skipping already declared property MiddleName
+		// Skipping already declared property LastName
+		// Skipping already declared property HonorificNamePrefix
+		// Skipping already declared property FirstName
+		// Skipping already declared property DisplayName
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string YomiDisplayName
@@ -479,13 +247,7 @@ namespace Windows.ApplicationModel.Contacts
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public Contact() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.Contact", "Contact.Contact()");
-		}
-		#endif
+		// Skipping already declared method Windows.ApplicationModel.Contacts.Contact.Contact()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.Contact()
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.Name.get
 		// Forced skipping of method Windows.ApplicationModel.Contacts.Contact.Name.set

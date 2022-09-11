@@ -10,9 +10,9 @@ using Android.Content;
 using Android.Graphics;
 using Android.OS;
 using Android.Views;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Controls;
 using Uno.UI.Xaml.Media;
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class AcrylicBrush
 	{
-		private static bool? _isStockBlurSupported = null;
+		private static bool? _isStockBlurSupported;
 
 		private const float AndroidBlurRadius = 20;
 		private const float StyledBlurRadius = 64;
@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Media
 		/// However due to a bug in the Xamarin framework https://github.com/xamarin/xamarin-android/issues/4548, debugging is impossible with this mode (causes SIGSEGV).
 		/// A suggestion would be to set it to false for debug, and to true for releases.
 		/// </summary>
-		public static bool ThrowStopExceptionOnDraw { get; set; } = false;
+		public static bool ThrowStopExceptionOnDraw { get; set; }
 
 		private bool IsAndroidBlurPropertySet => AndroidBlurRadius > 0;
 
@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			if (this.Log().IsEnabled(LogLevel.Information))
 			{
-				this.Log().LogInformation("Renderer::EnableBlur()");
+				this.Log().Info("Renderer::EnableBlur()");
 			}
 
 			if (state.BlurView == null)
@@ -107,7 +107,7 @@ namespace Windows.UI.Xaml.Media
 
 			if (this.Log().IsEnabled(LogLevel.Information))
 			{
-				this.Log().LogInformation("Renderer::EnableBlur() => adding pre draw listener");
+				this.Log().Info("Renderer::EnableBlur() => adding pre draw listener");
 			}
 
 			var blurViewWrapper = new ContentPresenter()
@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml.Media
 
 			if (this.Log().IsEnabled(LogLevel.Information))
 			{
-				this.Log().LogInformation("Renderer::DisableBlur() => removing pre draw listener");
+				this.Log().Info("Renderer::DisableBlur() => removing pre draw listener");
 			}
 
 			state.Owner.RemoveView(state.BlurViewWrapper);

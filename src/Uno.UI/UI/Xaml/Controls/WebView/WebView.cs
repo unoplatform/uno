@@ -27,8 +27,11 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly Uri BlankUri = new Uri(BlankUrl);
 
 		private object _internalSource;
-		private bool _isLoaded;
 		private string _invokeScriptResponse = string.Empty;
+
+#pragma warning disable CS0414 // not used in skia
+		private bool _isLoaded;
+#pragma warning restore CS0414
 
 		public WebView()
 		{

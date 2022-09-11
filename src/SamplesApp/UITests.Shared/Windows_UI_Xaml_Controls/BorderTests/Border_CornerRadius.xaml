@@ -12,6 +12,13 @@
 	
 	<ScrollViewer>
 		<StackPanel>
+			<Border	x:Name="Sample1"
+					Background="Red"
+					Width="100"
+					Height="100"
+					CornerRadius="50" />
+
+			<Border Height="30" />
 			<Border Width="100"
 					Height="50"
 					CornerRadius="4"

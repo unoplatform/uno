@@ -19,11 +19,10 @@ For complete instructions on using Uno Material in your projects, including a se
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
 
                 <!-- Load Material Color Palette with optional ColorPaletteOverrideSource -->
-                <MaterialColors xmlns="using:Uno.Material"
-								ColorPaletteOverrideSource="ms-appx:///ColorPaletteOverride.xaml" />
+                <MaterialColors xmlns="using:Uno.Material" ColorPaletteOverrideSource="ms-appx:///ColorPaletteOverride.xaml" />
 
                 <!-- Load the Material control resources -->
-				<MaterialResources xmlns="using:Uno.Material" />
+                <MaterialResources xmlns="using:Uno.Material" />
 
                 <!-- Application's custom styles -->
                 <!-- other ResourceDictionaries -->
@@ -44,7 +43,7 @@ Prior to the `1.0` release, the initialization of Material resources was require
     ```diff
     protected override void OnLaunched(LaunchActivatedEventArgs e)
     {
-    -    Material.Resources.Init(this, colorPaletteOverride: new ResourceDictionary() { Source = new Uri("ms-appx:///ColorPaletteOverride.xaml") });
+    -   Material.Resources.Init(this, colorPaletteOverride: new ResourceDictionary() { Source = new Uri("ms-appx:///ColorPaletteOverride.xaml") });
 
         // App init...
     }
@@ -56,13 +55,13 @@ Prior to the `1.0` release, the initialization of Material resources was require
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <!-- Load WinUI resources -->
-				<XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls"/>
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls"/>
 
     +           <!-- Load Material Color Palette with optional ColorPaletteOverrideSource -->
     +           <MaterialColors xmlns="using:Uno.Material" ColorPaletteOverrideSource="ms-appx:///ColorPaletteOverride.xaml" />
 
-    +            <!-- Load the Material control resources -->
-	+			<MaterialResources xmlns="using:Uno.Material" />
+    +           <!-- Load the Material control resources -->
+    +           <MaterialResources xmlns="using:Uno.Material" />
 
                 <!-- Application's custom styles -->
                 <!-- other ResourceDictionaries -->
@@ -104,8 +103,8 @@ Control|Resource Key
 `BottomNavigationBar`|MaterialBottomNavigationBarStyle
 `BottomNavigationBarItem`|MaterialBottomNavigationBarItemStyle
 `Card`|MaterialAvatarElevatedCardStyle<br>MaterialAvatarOutlinedCardStyle<br>MaterialBaseCardStyle<br>MaterialElevatedCardStyle<br>MaterialOutlinedCardStyle<br>MaterialSmallMediaElevatedCardStyle<br>MaterialSmallMediaOutlinedCardStyle
-`Chip`|MaterialChipStyle<br>MaterialOutlinedChipStyle<br>MaterialPrimaryChipStyle<br>MaterialPrimaryOutlinedChipStyle
-`ChipGroup`|MaterialChipGroupStyle
+`Chip`|MaterialFilledInputChipStyle<br>MaterialFilledChoiceChipStyle<br>MaterialFilledFilterChipStyle<br>MaterialFilledActionChipStyle<br>MaterialOutlinedInputChipStyle<br>MaterialOutlinedChoiceChipStyle<br>MaterialOutlinedFilterChipStyle<br>MaterialOutlinedActionChipStyle
+`ChipGroup`|MaterialFilledInputChipGroupStyle<br>MaterialFilledChoiceChipGroupStyle<br>MaterialFilledFilterChipGroupStyle<br>MaterialFilledActionChipGroupStyle<br>MaterialOutlinedInputChipGroupStyle<br>MaterialOutlinedChoiceChipGroupStyle<br>MaterialOutlinedFilterChipGroupStyle<br>MaterialOutlinedActionChipGroupStyle
 `Divider`|MaterialDividerStyle
 `ExpandingBottomSheet`|MaterialExpandingBottomSheetStyle
 `ModalStandardBottomSheet`|MaterialModalStandardBottomSheetStyle

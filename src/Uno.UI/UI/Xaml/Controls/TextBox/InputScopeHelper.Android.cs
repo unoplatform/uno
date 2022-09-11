@@ -24,7 +24,8 @@ namespace Windows.UI.Xaml.Controls
 		internal static InputTypes ConvertToRemoveSuggestions(InputTypes value, bool forceRemove)
 		{
 			value |= InputTypes.TextFlagNoSuggestions;
-			if (forceRemove)
+
+			if (forceRemove && (value & InputTypes.MaskVariation) == 0)
 			{
 				value |= InputTypes.TextVariationVisiblePassword;
 			}

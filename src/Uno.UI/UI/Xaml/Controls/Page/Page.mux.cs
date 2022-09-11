@@ -6,8 +6,9 @@
 
 using System;
 using System.Runtime.CompilerServices;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
@@ -49,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 					focusManager.InitialFocus = true;
 
 					TrySetFocusedElement(spFirstFocusableElementDO);
-					
+
 					focusManager.InitialFocus = false;
 				}
 

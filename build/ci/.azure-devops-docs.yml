@@ -4,7 +4,7 @@ parameters:
 jobs:
 - job: Documentation
   displayName: 'Documentation WebSite'
-  dependsOn: Commitsar
+  dependsOn: Pipeline_Validations
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -25,6 +25,8 @@ jobs:
   - template: templates/install-windows-sdk.yml
 
   - template: templates/gitversion.yml
+  - template: templates/jdk-setup.yml
+  - template: templates/update-vs-components.yml
 
   - task: NuGetToolInstaller@0
     inputs:

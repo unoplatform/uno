@@ -7,20 +7,7 @@ namespace Windows.UI.Xaml.Media
 	#endif
 	public  partial class GradientBrush : global::Windows.UI.Xaml.Media.Brush
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.GradientSpreadMethod SpreadMethod
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.GradientSpreadMethod)this.GetValue(SpreadMethodProperty);
-			}
-			set
-			{
-				this.SetValue(SpreadMethodProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property SpreadMethod
 		// Skipping already declared property MappingMode
 		// Skipping already declared property GradientStops
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -47,14 +34,7 @@ namespace Windows.UI.Xaml.Media
 		#endif
 		// Skipping already declared property GradientStopsProperty
 		// Skipping already declared property MappingModeProperty
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SpreadMethodProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SpreadMethod), typeof(global::Windows.UI.Xaml.Media.GradientSpreadMethod), 
-			typeof(global::Windows.UI.Xaml.Media.GradientBrush), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.GradientSpreadMethod)));
-		#endif
+		// Skipping already declared property SpreadMethodProperty
 		// Skipping already declared method Windows.UI.Xaml.Media.GradientBrush.GradientBrush()
 		// Forced skipping of method Windows.UI.Xaml.Media.GradientBrush.GradientBrush()
 		// Forced skipping of method Windows.UI.Xaml.Media.GradientBrush.SpreadMethod.get

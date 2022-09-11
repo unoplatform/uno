@@ -12,12 +12,16 @@ using Uno.Diagnostics.Eventing;
 using Uno;
 using Uno.UI.DataBinding;
 using System.Linq;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 using System.Collections.Specialized;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using Windows.Foundation;
+
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -113,7 +117,7 @@ namespace Windows.UI.Xaml.Controls
 		private UICollectionViewUpdateItem[] _updateItems;
 
 		private (Point Location, object Item, UICollectionViewLayoutAttributes LayoutAttributes)? _reorderingState;
-		private NSIndexPath _reorderingDropTarget = null;
+		private NSIndexPath _reorderingDropTarget;
 		/// <summary>
 		/// Pre-reorder item positions, stored while applying provisional positions during drag-to-reorder
 		/// </summary>
@@ -134,6 +138,30 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
+
+		private double _itemsPresenterMinWidth;
+		internal double ItemsPresenterMinWidth
+		{
+			get => _itemsPresenterMinWidth;
+			set
+			{
+				_itemsPresenterMinWidth = value;
+				InvalidateLayout();
+			}
+		}
+
+		private double itemsPresenterMinHeight;
+		internal double ItemsPresenterMinHeight
+		{
+			get => itemsPresenterMinHeight;
+			set
+			{
+				itemsPresenterMinHeight = value;
+				InvalidateLayout();
+			}
+		}
+
+		private Size ItemsPresenterMinSize => new Size(ItemsPresenterMinWidth, ItemsPresenterMinHeight);
 
 		private double InitialExtentPadding => ScrollOrientation == Orientation.Vertical ? Padding.Top : Padding.Left;
 		private double FinalExtentPadding => ScrollOrientation == Orientation.Vertical ? Padding.Bottom : Padding.Right;
@@ -266,18 +294,20 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				var measured = PrepareLayout(false);
+				var measured = PrepareLayoutIfNeeded(false);
 				if (_lastElement != null && HasDynamicElementSizes)
 				{
 					if (ScrollOrientation == Orientation.Vertical)
 					{
-						return new CGSize(measured.Width, DynamicContentExtent);
+						measured = new CGSize(measured.Width, DynamicContentExtent);
 					}
 					else
 					{
-						return new CGSize(DynamicContentExtent, measured.Height);
+						measured = new CGSize(DynamicContentExtent, measured.Height);
 					}
 				}
+
+				measured = LayoutHelper.Max(measured, ItemsPresenterMinSize);
 				return measured;
 			}
 		}
@@ -300,7 +330,7 @@ namespace Windows.UI.Xaml.Controls
 			//If data reload is scheduled, call it immediately to avoid NSInternalInconsistencyException caused by supplying layoutAttributes for index paths that the list doesn't 'know about'
 			if (Owner?.NeedsReloadData ?? false)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("LVBL: Calling immediate data reload");
 				}
@@ -309,7 +339,7 @@ namespace Windows.UI.Xaml.Controls
 				Owner.ReloadDataIfNeeded();
 			}
 
-			PrepareLayout(true);
+			PrepareLayoutIfNeeded(true);
 		}
 
 		public override void PrepareForCollectionViewUpdates(UICollectionViewUpdateItem[] updateItems)
@@ -380,7 +410,7 @@ namespace Windows.UI.Xaml.Controls
 		public CGSize SizeThatFits(CGSize size)
 		{
 			TrySetHasConsumedUnusedSpace();
-			return PrepareLayout(false, size);
+			return PrepareLayoutIfNeeded(false, size);
 		}
 
 		/// <summary>
@@ -391,7 +421,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <returns>The total collection size</returns>
 		/// <remarks>This is called by overridden methods which need to know the total dimensions of the panel content. If a full relayout is required,
 		/// it calls <see cref="PrepareLayoutInternal(bool, bool, CGSize)"/>; otherwise it returns a cached value.</remarks>
-		private CGSize PrepareLayout(bool createLayoutInfo, CGSize? size = null)
+		private CGSize PrepareLayoutIfNeeded(bool createLayoutInfo, CGSize? size = null)
 		{
 			using (
 			   _trace.WriteEventActivity(
@@ -424,7 +454,7 @@ namespace Windows.UI.Xaml.Controls
 
 					if (createLayoutInfo)
 					{
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 						{
 							this.Log().Debug("Created new layout info.");
 						}
@@ -883,7 +913,7 @@ namespace Windows.UI.Xaml.Controls
 						frameOffset = sectionMin;
 					}
 
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug) && frameOffset != (axisIndex == 0 ? frame.X : frame.Y))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug) && frameOffset != (axisIndex == 0 ? frame.X : frame.Y))
 					{
 						this.Log().Debug($"Sticky group header adjustment: offsetting header for group {section} by {frameOffset - (axisIndex == 0 ? frame.X : frame.Y)}");
 					}
@@ -989,7 +1019,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_dirtyState = DirtyState.NeedsRelayout;
 			}
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Invalidating layout with dirty state={_dirtyState}");
 			}
@@ -1128,7 +1158,7 @@ namespace Windows.UI.Xaml.Controls
 				else //No group headers, ie this is an update for the list header
 				{
 					//Offset all items
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Applying offset of {extentDifference} to all items");
 					}
@@ -1234,7 +1264,7 @@ namespace Windows.UI.Xaml.Controls
 			if (applyOffsetToThis)
 			{
 				//Update group header, if it's not the one that triggered the update
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Applying offset of {extentDifference} to group header for section {groupHeaderLayout.IndexPath.Section}");
 				}
@@ -1243,7 +1273,7 @@ namespace Windows.UI.Xaml.Controls
 				_inlineHeaderFrames[groupHeaderLayout.IndexPath.Section] = AdjustExtentOffset(_inlineHeaderFrames[groupHeaderLayout.IndexPath.Section], extentDifference);
 			}
 			//Update all items in this group
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Applying offset of {extentDifference} to each item in section {groupHeaderLayout.IndexPath.Section}");
 			}
@@ -1458,12 +1488,17 @@ namespace Windows.UI.Xaml.Controls
 
 		internal Uno.UI.IndexPath? CompleteReorderingItem(FrameworkElement element, object item)
 		{
+			var dropTarget = _reorderingDropTarget?.ToIndexPath();
+			CleanupReordering();
+			return dropTarget;
+		}
+
+		internal void CleanupReordering()
+		{
 			_reorderingState = null;
 			ResetReorderedLayoutAttributes();
-			var dropTarget = _reorderingDropTarget?.ToIndexPath();
 			_reorderingDropTarget = null;
 			InvalidateLayout();
-			return dropTarget;
 		}
 
 		/// <summary>
@@ -1475,14 +1510,14 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_reorderingState is { } reorderingState && reorderingState.LayoutAttributes is { } draggedAttributes)
 			{
-				var dropTargetAttributes = GetLayoutAttributesUnderPoint(reorderingState.Location);
+				var dropTargetAttributes = FindLayoutAttributesClosestOfPoint(reorderingState.Location);
 				if (dropTargetAttributes == draggedAttributes)
 				{
 					// The item being dragged is currently under the point, no need to shift any items
 					dropTargetAttributes = null;
 				}
 				_reorderingDropTarget = dropTargetAttributes?.IndexPath;
-				if (dropTargetAttributes != null)
+				if (dropTargetAttributes is not null)
 				{
 					var preDragDraggedFrame = draggedAttributes.Frame;
 
@@ -1548,20 +1583,33 @@ namespace Windows.UI.Xaml.Controls
 			_preReorderFrames.Clear();
 		}
 
-		private UICollectionViewLayoutAttributes GetLayoutAttributesUnderPoint(Point point)
+		private UICollectionViewLayoutAttributes FindLayoutAttributesClosestOfPoint(Point point)
 		{
+			var adjustedPoint = AdjustExtentOffset(point, GetExtent(Owner.ContentOffset));
+
+			var closestDistance = double.MaxValue;
+			var closestElement = default(UICollectionViewLayoutAttributes);
+
 			foreach (var dict in _itemLayoutInfos.Values)
 			{
 				foreach (var layoutAttributes in dict.Values)
 				{
-					if (DoesLayoutAttributesContainDraggedPoint(point, layoutAttributes))
+					var distance = ((Rect)layoutAttributes.Frame).GetDistance(adjustedPoint);
+					if (distance == 0)
 					{
+						// Fast path: we found the element that is under the element
 						return layoutAttributes;
+					}
+
+					if (distance < closestDistance)
+					{
+						closestDistance = distance;
+						closestElement = layoutAttributes;
 					}
 				}
 			}
 
-			return null;
+			return closestElement;
 		}
 
 		private bool DoesLayoutAttributesContainDraggedPoint(Point point, UICollectionViewLayoutAttributes layoutAttributes)

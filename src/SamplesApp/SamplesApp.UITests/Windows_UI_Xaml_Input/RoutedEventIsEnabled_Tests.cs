@@ -17,7 +17,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			Run(XamlTestPage);
 
 			var button = _app.Marked("DisabledButton");
-			button.Tap();
+			button.FastTap();
 
 			var result = _app.Marked("EventInfoTextBlock");
 

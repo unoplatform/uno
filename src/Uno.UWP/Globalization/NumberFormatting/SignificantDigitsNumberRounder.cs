@@ -79,7 +79,7 @@ namespace Windows.Globalization.NumberFormatting
 			}
 
 			var integerPart = (int)Math.Truncate(value);
-			var integerPartLength = (uint)GetIntegerLength(integerPart);
+			var integerPartLength = (uint)integerPart.GetLength();
 			var diffLength = SignificantDigits - integerPartLength;
 
 			if (SignificantDigits < integerPartLength)
@@ -93,16 +93,6 @@ namespace Windows.Globalization.NumberFormatting
 			}
 
 			return Rounder.Round(value, (int)diffLength, RoundingAlgorithm);
-		}
-
-		private static int GetIntegerLength(int input)
-		{
-			if (input == 0)
-			{
-				return 1;
-			}
-
-			return (int)Math.Floor(Math.Log10(Math.Abs(input))) + 1;
 		}
 	}
 }

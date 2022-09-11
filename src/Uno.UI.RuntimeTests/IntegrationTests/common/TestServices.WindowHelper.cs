@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Tests.Enterprise;
+using Windows.UI.Core;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -23,30 +23,38 @@ namespace Private.Infrastructure
 	{
 		public static class WindowHelper
 		{
-			private static UIElement _originalWindowContent = null;
+			private static Windows.UI.Xaml.Window _currentTestWindow;
+			private static UIElement _originalWindowContent;
+
+			public static Windows.UI.Xaml.Window CurrentTestWindow
+			{
+				get
+				{
+					if (_currentTestWindow is null)
+					{
+						throw new InvalidOperationException("Current test window not set.");
+					}
+					return _currentTestWindow;
+				}
+				set => _currentTestWindow = value;
+			}
 
 			public static bool UseActualWindowRoot { get; set; }
 
 			public static UIElement WindowContent
 			{
-				get
-				{
-					if (UseActualWindowRoot)
-					{
-						return Windows.UI.Xaml.Window.Current.Content;
-					}
-					return EmbeddedTestRootControl.Content as UIElement;
-				}
-
+				get => UseActualWindowRoot
+					? CurrentTestWindow.Content
+					: EmbeddedTestRoot.getContent?.Invoke();
 				internal set
 				{
 					if (UseActualWindowRoot)
 					{
-						Windows.UI.Xaml.Window.Current.Content = value;
+						CurrentTestWindow.Content = value;
 					}
-					else if (EmbeddedTestRootControl is ContentControl content)
+					else if (EmbeddedTestRoot.setContent is { } setter)
 					{
-						content.Content = value;
+						setter(value);
 					}
 					else
 					{
@@ -57,28 +65,45 @@ namespace Private.Infrastructure
 
 			public static void SaveOriginalWindowContent()
 			{
-				_originalWindowContent = Windows.UI.Xaml.Window.Current.Content;
+				_originalWindowContent = CurrentTestWindow.Content;
 			}
 
 			public static void RestoreOriginalWindowContent()
 			{
 				if (_originalWindowContent != null)
 				{
-					Windows.UI.Xaml.Window.Current.Content = _originalWindowContent;
+					CurrentTestWindow.Content = _originalWindowContent;
 					_originalWindowContent = null;
 				}
 			}
 
-			public static ContentControl EmbeddedTestRootControl { get; set; }
+			public static (UIElement control, Func<UIElement> getContent, Action<UIElement> setContent) EmbeddedTestRoot { get; set; }
 
 			public static UIElement RootElement => UseActualWindowRoot ?
-					Windows.UI.Xaml.Window.Current.Content :
-					EmbeddedTestRootControl;
+				CurrentTestWindow.Content : EmbeddedTestRoot.control;
+
+			// Dispatcher is a separate property, as accessing CurrentTestWindow.COntent when
+			// not on the UI thread will throw an exception in WinUI.
+			public static CoreDispatcher RootElementDispatcher => UseActualWindowRoot ?
+				CurrentTestWindow.Dispatcher : EmbeddedTestRoot.control.Dispatcher;
+
+			internal static Page SetupSimulatedAppPage()
+			{
+				var spFrame = new Frame();
+
+				var spRootFrameAsCC = spFrame as ContentControl;
+
+				var spRootFrameAsUI = spRootFrameAsCC as UIElement;
+				WindowContent = spRootFrameAsUI;
+
+				spFrame.Navigate(typeof(Page));
+				return spRootFrameAsCC.Content as Page;
+			}
 
 			internal static async Task WaitForIdle()
 			{
-				await RootElement.Dispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
-				await RootElement.Dispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
+				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
+				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
 			}
 
 			/// <summary>
@@ -92,21 +117,58 @@ namespace Private.Infrastructure
 			/// </remarks>
 			internal static async Task WaitForLoaded(FrameworkElement element)
 			{
-				await WaitFor(IsLoaded, message: $"{element} loaded");
-				bool IsLoaded()
+				async Task Do()
 				{
-					if (element.ActualHeight == 0 || element.ActualWidth == 0)
+					bool IsLoaded()
 					{
-						return false;
+						if (element.ActualHeight == 0 || element.ActualWidth == 0)
+						{
+							return false;
+						}
+
+						if (element is Control control && control.FindFirstChild<FrameworkElement>(includeCurrent: false) == null)
+						{
+							return false;
+						}
+
+						if (element is ListView listView && listView.Items.Count > 0 && listView.ContainerFromIndex(0) == null)
+						{
+							// If it's a ListView, wait for items to be populated
+							return false;
+						}
+
+						return true;
 					}
 
-					if (element is Control control && control.FindFirstChild<FrameworkElement>(includeCurrent: false) == null)
-					{
-						return false;
-					}
-
-					return true;
+					await WaitFor(IsLoaded, message: $"{element} loaded");
 				}
+#if __WASM__   // Adjust for re-layout failures in When_Inline_Items_SelectedIndex, When_Observable_ItemsSource_And_Added, When_Presenter_Doesnt_Take_Up_All_Space
+				await Do();
+#else
+				if (element.Dispatcher.HasThreadAccess)
+				{
+					await Do();
+				}
+				else
+				{
+					TaskCompletionSource<bool> cts = new();
+
+					_ = element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+					{
+						try
+						{
+
+							cts.TrySetResult(true);
+						}
+						catch (Exception e)
+						{
+							cts.TrySetException(e);
+						}
+					});
+
+					await cts.Task;
+				}
+#endif
 			}
 
 			internal static async Task WaitForRelayouted(FrameworkElement frameworkElement)

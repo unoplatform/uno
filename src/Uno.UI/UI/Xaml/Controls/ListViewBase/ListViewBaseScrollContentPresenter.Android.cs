@@ -1,19 +1,24 @@
-﻿using Microsoft.Extensions.Logging;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Uno.UI;
 using Uno.Disposables;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public sealed partial class ListViewBaseScrollContentPresenter : ContentPresenter, IScrollContentPresenter
+	public sealed partial class ListViewBaseScrollContentPresenter : IScrollContentPresenter, INativeScrollContentPresenter
 	{
-
-		private Thickness _oldPadding;
+		// NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
+		//
+		// This class is about to be replaced by an implementation of INativeScrollContentPresenter which only adapts the 'NativePanel'.
+		// For now it inherits from the ScrollContentPresenter as it's used directly in teh SV template,
+		// and also sets itself as the Native implementation (acts as the adapter to the NativePanel for now)
+		// 
+		// NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE 
 
 		public bool IsZoomEnabled { get; set; }
 		public float MinimumZoomScale { get; set; }
@@ -37,61 +42,35 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		void IScrollContentPresenter.SmoothScrollTo(int physicalDeltaX, int physicalDeltaY)
+			=> NativePanel?.SmoothScrollTo(physicalDeltaX, physicalDeltaY);
+
 		public override void ScrollTo(int x, int y)
 		{
 			NativePanel?.ScrollTo(x, y);
 		}
 
-		public void SmoothScrollTo(int x, int y)
+		Thickness INativeScrollContentPresenter.Padding
 		{
-			NativePanel?.SmoothScrollTo(x, y);
-		}
-
-		IDisposable IScrollContentPresenter.Pad(Rect occludedRect)
-		{
-			var viewPortPoint = UIElement.TransformToVisual(this, null).TransformPoint(new Point());
-			var viewPortSize = new Size(ActualWidth, ActualHeight);
-			var viewPortRect = new Rect(viewPortPoint, viewPortSize);
-			var intersection = viewPortRect;
-			intersection.Intersect(occludedRect);
-
-			if (!intersection.IsEmpty)
+			get => NativePanel?.Padding ?? default;
+			set
 			{
-				_oldPadding = NativePanel.Padding;
-				SetOccludedRectPadding(new Thickness(_oldPadding.Left, _oldPadding.Top, _oldPadding.Right, intersection.Height));
+				if (NativePanel is {} native)
+				{
+					native.Padding = value;
+				}
 			}
-
-			return Disposable.Create(() => SetOccludedRectPadding(_oldPadding));
 		}
 
-		private Thickness _occludedRectPadding;
-		private void SetOccludedRectPadding(Thickness occludedRectPadding)
-		{	
-			_occludedRectPadding = occludedRectPadding;
-			NativePanel.Padding = occludedRectPadding;
-		}
+		void INativeScrollContentPresenter.SmoothScrollBy(int physicalDeltaX, int physicalDeltaY)
+			=> NativePanel?.SmoothScrollBy(physicalDeltaX, physicalDeltaY);
 
-		public Rect MakeVisible(UIElement visual, Rect rectangle)
-		{
-			if (visual is FrameworkElement fe)
-			{
-				var scrollRect = new Rect(
-					_occludedRectPadding.Left,
-					_occludedRectPadding.Top,
-					ActualWidth - _occludedRectPadding.Right,
-					ActualHeight - _occludedRectPadding.Bottom
-				);
-
-				var visualPoint = UIElement.TransformToVisual(visual, null).TransformPoint(new Point());
-				var visualRect = new Rect(visualPoint, new Size(fe.ActualWidth, fe.ActualHeight));
-
-				var deltaX = Math.Min(visualRect.Left - scrollRect.Left, Math.Max(0, visualRect.Right - scrollRect.Right));
-				var deltaY = Math.Min(visualRect.Top - scrollRect.Top, Math.Max(0, visualRect.Bottom - scrollRect.Bottom));
-
-				NativePanel.SmoothScrollBy(ViewHelper.LogicalToPhysicalPixels(deltaX), ViewHelper.LogicalToPhysicalPixels(deltaY));
-			}
-
-			return rectangle;
-		}
+		bool INativeScrollContentPresenter.Set(
+			double? horizontalOffset,
+			double? verticalOffset,
+			float? zoomFactor,
+			bool disableAnimation,
+			bool isIntermediate)
+			=> throw new NotImplementedException();
 	}
 }

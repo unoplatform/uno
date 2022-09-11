@@ -14,8 +14,8 @@ using Uno.UI.Samples.Controls;
 namespace MUXControlsTestApp
 {
 
-	[SampleControlInfo("DropDownButton", "MUX Page")]
-	public sealed partial class DropDownButtonPage
+	[Sample("MUX","Buttons")]
+	public sealed partial class DropDownButtonPage : UserControl
 	{
 		private int _clickCount = 0;
 		private int _flyoutOpenedCount = 0;

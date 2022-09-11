@@ -7,16 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class RowDefinitionCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Controls.RowDefinition>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Controls.RowDefinition>
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint RowDefinitionCollection.Size is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Size
 		// Forced skipping of method Windows.UI.Xaml.Controls.RowDefinitionCollection.GetAt(uint)
 		// Forced skipping of method Windows.UI.Xaml.Controls.RowDefinitionCollection.Size.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.RowDefinitionCollection.GetView()

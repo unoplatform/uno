@@ -1,9 +1,10 @@
 ﻿#if !__NETSTD_REFERENCE__
-using Windows.Foundation;
 using System;
 using System.Diagnostics;
-using Windows.UI.Xaml.Controls.Primitives;
 using System.Runtime.CompilerServices;
+using Uno.UI;
+using Windows.Foundation;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml
 {
@@ -11,16 +12,16 @@ namespace Windows.UI.Xaml
 	{
 		private Size _size;
 
-		private bool _isMeasureValid = false;
-		private bool _isArrangeValid = false;
-
 		public Size DesiredSize => Visibility == Visibility.Collapsed ? new Size(0, 0) : ((IUIElement)this).DesiredSize;
 
-		internal bool IsMeasureDirty => !_isMeasureValid;
-		internal bool IsArrangeDirty => !_isArrangeValid;
+		internal void SetDesiredSize(Size size)
+		{
+			var iUIElement = ((IUIElement)this);
+			iUIElement.DesiredSize = size;
+		}
 
 		/// <summary>
-		/// When set, measure and invalidate requests will not be propagated further up the visual tree, ie they won't trigger a relayout.
+		/// When set, measure and invalidate requests will not be propagated further up the visual tree, ie they won't trigger a re-layout.
 		/// Used where repeated unnecessary measure/arrange passes would be unacceptable for performance (eg scrolling in a list).
 		/// </summary>
 		internal bool ShouldInterceptInvalidate { get; set; }
@@ -32,19 +33,58 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			// TODO: Figure out why this condition breaks layouting in some cases
-			//if (_isMeasureValid)
+			if (IsMeasureDirty)
 			{
-				_isMeasureValid = false;
-				_isArrangeValid = false;
-				if (this.GetParent() is UIElement parent)
+				return; // already dirty
+			}
+
+			SetLayoutFlags(LayoutFlag.MeasureDirty);
+
+			if (FeatureConfiguration.UIElement.UseInvalidateMeasurePath && !IsMeasureDirtyPathDisabled)
+			{
+				InvalidateParentMeasureDirtyPath();
+			}
+			else
+			{
+				(this.GetParent() as UIElement)?.InvalidateMeasure();
+				if (IsVisualTreeRoot)
 				{
-					parent.InvalidateMeasure();
-				}
-				else
-				{
+#if __SKIA__
+					XamlRoot.InvalidateMeasure();
+#else
 					Window.InvalidateMeasure();
+#endif
 				}
+			}
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void InvalidateMeasureDirtyPath()
+		{
+			if (IsMeasureDirtyOrMeasureDirtyPath)
+			{
+				return; // Already invalidated
+			}
+
+			SetLayoutFlags(LayoutFlag.MeasureDirtyPath);
+
+			InvalidateParentMeasureDirtyPath();
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal void InvalidateParentMeasureDirtyPath()
+		{
+			if (this.GetParent() is UIElement parent) //TODO: Should this use VisualTree.GetParent as fallback? https://github.com/unoplatform/uno/issues/8978
+			{
+				parent.InvalidateMeasureDirtyPath();
+			}
+			else if (IsVisualTreeRoot)
+			{
+#if __SKIA__
+				XamlRoot.InvalidateMeasure();
+#else
+				Window.InvalidateMeasure();
+#endif
 			}
 		}
 
@@ -55,25 +95,66 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			if (_isArrangeValid)
+			if (IsArrangeDirty)
 			{
-				_isArrangeValid = false;
-				if (this.GetParent() is UIElement parent)
+				return; // Already dirty
+			}
+
+			SetLayoutFlags(LayoutFlag.ArrangeDirty);
+
+			if (FeatureConfiguration.UIElement.UseInvalidateArrangePath && !IsArrangeDirtyPathDisabled)
+			{
+				InvalidateParentArrangeDirtyPath();
+			}
+			else
+			{
+				(this.GetParent() as UIElement)?.InvalidateArrange();
+				if (IsVisualTreeRoot)
 				{
-					parent.InvalidateArrange();
+#if __SKIA__
+					XamlRoot.InvalidateArrange();
+#else
+					Window.InvalidateArrange();
+#endif
 				}
-				else
-				{
-					Window.InvalidateMeasure();
-				}
+			}
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void InvalidateArrangeDirtyPath()
+		{
+			if (IsArrangeDirtyOrArrangeDirtyPath)
+			{
+				return; // Already invalidated
+			}
+
+			SetLayoutFlags(LayoutFlag.ArrangeDirtyPath);
+
+			InvalidateParentArrangeDirtyPath();
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void InvalidateParentArrangeDirtyPath()
+		{
+			if (this.GetParent() is UIElement parent) //TODO: Should this use VisualTree.GetParent as fallback? https://github.com/unoplatform/uno/issues/8978
+			{
+				parent.InvalidateArrangeDirtyPath();
+			}
+			else //TODO: Why not check IsVisualTreeRoot as in InvalidateParentMeasureDirtyPath?
+			{
+#if __SKIA__
+				XamlRoot?.InvalidateArrange();
+#else
+				Window.InvalidateArrange();
+#endif
 			}
 		}
 
 		public void Measure(Size availableSize)
 		{
-			if (!(this is FrameworkElement))
+			if (!_isFrameworkElement)
 			{
-				return;
+				return; // Only FrameworkElements are measurable
 			}
 
 			if (double.IsNaN(availableSize.Width) || double.IsNaN(availableSize.Height))
@@ -81,21 +162,15 @@ namespace Windows.UI.Xaml
 				throw new InvalidOperationException($"Cannot measure [{GetType()}] with NaN");
 			}
 
-			var isCloseToPreviousMeasure = availableSize == LastAvailableSize;
-
 			if (Visibility == Visibility.Collapsed)
 			{
-				if (!isCloseToPreviousMeasure)
+				if (availableSize == LastAvailableSize)
 				{
-					_isMeasureValid = false;
-					LayoutInformation.SetAvailableSize(this, availableSize);
+					return;
 				}
 
-				return;
-			}
+				SetLayoutFlags(LayoutFlag.MeasureDirty);
 
-			if (_isMeasureValid && isCloseToPreviousMeasure)
-			{
 				return;
 			}
 
@@ -129,13 +204,98 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void DoMeasure(Size availableSize)
 		{
-			InvalidateArrange();
+			var isFirstMeasure = !IsLayoutFlagSet(LayoutFlag.FirstMeasureDone);
 
-			MeasureCore(availableSize);
-			LayoutInformation.SetAvailableSize(this, availableSize);
-			_isMeasureValid = true;
+			var isDirty =
+				isFirstMeasure
+				|| (availableSize != LastAvailableSize)
+				|| IsMeasureDirty
+				|| !FeatureConfiguration.UIElement.UseInvalidateMeasurePath // dirty_path disabled globally
+				|| IsMeasureDirtyPathDisabled;
+
+			var isMeasureDirtyPath = IsMeasureDirtyPath;
+
+			if (!isDirty && !isMeasureDirtyPath)
+			{
+				return; // Nothing to do
+			}
+
+			if (isFirstMeasure)
+			{
+				SetLayoutFlags(LayoutFlag.FirstMeasureDone);
+			}
+
+			var remainingTries = MaxLayoutIterations;
+
+			while (--remainingTries > 0)
+			{
+				if (isDirty)
+				{
+					// We must reset the flag **BEFORE** doing the actual measure, so the elements are able to re-invalidate themselves
+					ClearLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.MeasureDirtyPath);
+
+					// The dirty flag is explicitly set on this element
+#if DEBUG
+					try
+#endif
+					{
+						MeasureCore(availableSize);
+						InvalidateArrange();
+					}
+#if DEBUG
+					catch (Exception ex)
+					{
+						_log.Error($"Error measuring {this}", ex);
+						throw;
+					}
+					finally
+#endif
+					{
+						LayoutInformation.SetAvailableSize(this, availableSize);
+					}
+
+					break;
+				}
+
+				// isMeasureDirtyPath is always true here
+				ClearLayoutFlags(LayoutFlag.MeasureDirtyPath);
+
+				// The dirty flag is set on one of the descendents:
+				// it will bypass the current element's MeasureOverride()
+				// since it shouldn't produce a different result and it's
+				// just a waste of precious CPU time to call it.
+				var children = GetChildren().GetEnumerator();
+
+				//foreach (var child in children)
+				while (children.MoveNext())
+				{
+					if (children.Current is { IsMeasureDirtyOrMeasureDirtyPath: true } child)
+					{
+						// If the child is dirty (or is a path to a dirty descendant child),
+						// We're remeasuring it.
+
+						var previousDesiredSize = child.DesiredSize;
+						child.Measure(child.LastAvailableSize);
+						if (child.DesiredSize != previousDesiredSize)
+						{
+							isDirty = true;
+							break;
+						}
+					}
+				}
+
+				children.Dispose(); // no "using" operator here to prevent an implicit try-catch on Wasm
+
+				if (isDirty)
+				{
+					continue;
+				}
+
+				break;
+			}
 		}
 
 		internal virtual void MeasureCore(Size availableSize)
@@ -145,26 +305,31 @@ namespace Windows.UI.Xaml
 
 		public void Arrange(Rect finalRect)
 		{
-			if (!(this is FrameworkElement))
+			if (!_isFrameworkElement)
 			{
 				return;
 			}
+
+			var firstArrangeDone = IsFirstArrangeDone;
 
 			if (Visibility == Visibility.Collapsed
 				// If the layout is clipped, and the arranged size is empty, we can skip arranging children
 				// This scenario is particularly important for the Canvas which always sets its desired size
 				// zero, even after measuring its children.
-				|| (finalRect == default && (this is ICustomClippingElement clipElement ? clipElement.AllowClippingToLayoutSlot : true)))
+				|| (firstArrangeDone
+					&& finalRect == default
+					&& (this is not ICustomClippingElement clipElement || clipElement.AllowClippingToLayoutSlot)))
 			{
 				LayoutInformation.SetLayoutSlot(this, finalRect);
 				HideVisual();
-				_isArrangeValid = true;
+				ClearLayoutFlags(LayoutFlag.ArrangeDirty | LayoutFlag.ArrangeDirtyPath);
 				return;
 			}
 
-			if (_isArrangeValid && finalRect == LayoutSlot)
+			if (firstArrangeDone && !IsArrangeDirtyOrArrangeDirtyPath && finalRect == LayoutSlot)
 			{
-				return;
+				ClearLayoutFlags(LayoutFlag.ArrangeDirty | LayoutFlag.ArrangeDirtyPath);
+				return; // Calling Arrange would be a waste of CPU time here.
 			}
 
 			if (IsVisualTreeRoot)
@@ -196,23 +361,88 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void DoArrange(Rect finalRect)
 		{
-			ShowVisual();
+			var isFirstArrange = !IsLayoutFlagSet(LayoutFlag.FirstArrangeDone);
 
-			// We must store the updated slot before natively arranging the element,
-			// so the updated value can be read by indirect code that is being invoked on arrange.
-			// For instance, the EffectiveViewPort computation reads that value to detect slot changes (cf. PropagateEffectiveViewportChange)
-			LayoutInformation.SetLayoutSlot(this, finalRect);
+			var isDirty =
+				isFirstArrange
+				|| IsArrangeDirty
+				|| finalRect != LayoutSlot;
 
-			ArrangeCore(finalRect);
-			_isArrangeValid = true;
+			if (!isDirty && !IsArrangeDirtyPath)
+			{
+				return; // Nothing do to
+			}
+
+			var remainingTries = MaxLayoutIterations;
+
+			while (--remainingTries > 0)
+			{
+				if (IsMeasureDirtyOrMeasureDirtyPath)
+				{
+					DoMeasure(LastAvailableSize);
+				}
+
+				if (isDirty)
+				{
+					ShowVisual();
+
+					// We must store the updated slot before natively arranging the element,
+					// so the updated value can be read by indirect code that is being invoked on arrange.
+					// For instance, the EffectiveViewPort computation reads that value to detect slot changes (cf. PropagateEffectiveViewportChange)
+					LayoutInformation.SetLayoutSlot(this, finalRect);
+
+					// We must reset the flag **BEFORE** doing the actual arrange, so the elements are able to re-invalidate themselves
+					ClearLayoutFlags(LayoutFlag.ArrangeDirty | LayoutFlag.ArrangeDirtyPath);
+
+					ArrangeCore(finalRect);
+
+					SetLayoutFlags(LayoutFlag.FirstArrangeDone);
+
+					break;
+				}
+				else if (IsArrangeDirtyPath)
+				{
+					ClearLayoutFlags(LayoutFlag.ArrangeDirtyPath);
+
+					var children = GetChildren().GetEnumerator();
+
+					while (children.MoveNext())
+					{
+						var child = children.Current;
+
+						if (child is { IsArrangeDirtyOrArrangeDirtyPath: true })
+						{
+							var previousRenderSize = child.RenderSize;
+							child.Arrange(child.LayoutSlot);
+
+							if (child.RenderSize != previousRenderSize)
+							{
+								isDirty = true;
+								break;
+							}
+						}
+					}
+
+					children.Dispose(); // no "using" operator here to prevent an implicit try-catch on Wasm
+
+					if (!isDirty)
+					{
+						break;
+					}
+				}
+				else
+				{
+					break;
+				}
+			}
+
 		}
 
 		partial void HideVisual();
 		partial void ShowVisual();
-
-		
 
 		internal virtual void ArrangeCore(Rect finalRect)
 		{

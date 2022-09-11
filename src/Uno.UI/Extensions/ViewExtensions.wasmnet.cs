@@ -6,7 +6,7 @@ using Uno.Disposables;
 using System.Text;
 
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml;
 using Uno.UI.Extensions;
 using System.Drawing;

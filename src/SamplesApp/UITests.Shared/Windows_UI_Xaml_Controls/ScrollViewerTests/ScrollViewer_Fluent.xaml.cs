@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 {
-	[Sample("ScrollViewer")]
+	[Sample("Scrolling")]
 	public sealed partial class ScrollViewer_Fluent : UserControl
 	{
 		public ScrollViewer_Fluent()

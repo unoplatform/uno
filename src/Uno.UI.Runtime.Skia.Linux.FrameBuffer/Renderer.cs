@@ -4,73 +4,89 @@ using System.Text;
 using Windows.Foundation;
 using SkiaSharp;
 using Uno.Extensions;
-using Uno.Logging;
 using WUX = Windows.UI.Xaml;
 using Uno.UI.Runtime.Skia.Native;
+using Uno.Foundation.Logging;
+using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia
 {
 	class Renderer
 	{
 		private FrameBufferDevice _fbDev;
-		private SKBitmap? bitmap;
-		private int renderCount = 0;
+		private SKBitmap? _bitmap;
+		private bool _needsScanlineCopy;
+		private int renderCount;
+		private DisplayInformation? _displayInformation;
 
 		public Renderer()
 		{
 			_fbDev = new FrameBufferDevice();
 			_fbDev.Init();
 
-			var resolution = _fbDev.ScreenSize;
-
-			WUX.Window.InvalidateRender
-			+= () =>
-			{
-				Invalidate();
-			};
-			
-			WUX.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(resolution.Width, resolution.Height));
+			WUX.Window.Current.ToString();
 		}
 
-		public Size PixelSize => _fbDev.ScreenSize;
+		public FrameBufferDevice FrameBufferDevice => _fbDev;
+
+		internal void InvalidateRender() => Invalidate();
 
 		void Invalidate()
 		{
-			int width, height;
-
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Trace))
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
 				this.Log().Trace($"Render {renderCount++}");
 			}
 
-			var dpi = 1;
+			_displayInformation ??= DisplayInformation.GetForCurrentView();
 
-			var resolution = _fbDev.ScreenSize;
+			var scale = _displayInformation.RawPixelsPerViewPixel;
 
-			width = (int)resolution.Width;
-			height = (int)resolution.Height;
+			var rawScreenSize = _fbDev.ScreenSize;
 
-			var scaledWidth = (int)(width * dpi);
-			var scaledHeight = (int)(height * dpi);
+			int width = (int)rawScreenSize.Width;
+			int height = (int)rawScreenSize.Height;
 
-			var info = new SKImageInfo(scaledWidth, scaledHeight, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
+			var info = new SKImageInfo(width, height, _fbDev.PixelFormat, SKAlphaType.Premul);
 
 			// reset the bitmap if the size has changed
-			if (bitmap == null || info.Width != bitmap.Width || info.Height != bitmap.Height)
+			if (_bitmap == null || info.Width != _bitmap.Width || info.Height != _bitmap.Height)
 			{
-				bitmap = new SKBitmap(scaledWidth, scaledHeight, _fbDev.PixelFormat, SKAlphaType.Premul);
+				_bitmap = new SKBitmap(width, height, _fbDev.PixelFormat, SKAlphaType.Premul);
+
+				_needsScanlineCopy = _fbDev.RowBytes != _bitmap.BytesPerPixel * width;
+
+				WUX.Window.Current.OnNativeSizeChanged(new Size(rawScreenSize.Width / scale, rawScreenSize.Height / scale));
 			}
 
-			using (var surface = SKSurface.Create(info, bitmap.GetPixels(out _)))
+			using (var surface = SKSurface.Create(info, _bitmap.GetPixels(out _)))
 			{
 				surface.Canvas.Clear(SKColors.White);
 
-				surface.Canvas.Scale((float)dpi);
+				surface.Canvas.Scale((float)scale);
 
-				WUX.Window.Current.Compositor.Render(surface, info);
+				WUX.Window.Current.Compositor.Render(surface);
 
 				_fbDev.VSync();
-				Libc.memcpy(_fbDev.BufferAddress, bitmap.GetPixels(out _), new IntPtr(_fbDev.RowBytes * height));
+
+				if (_needsScanlineCopy)
+				{
+					var pixels = _bitmap.GetPixels(out _);
+					var bitmapRowBytes = _bitmap.RowBytes;
+					var bitmapBytesPerPixel = _bitmap.BytesPerPixel;
+
+					for (int line = 0; line < height; line++)
+					{
+						Libc.memcpy(
+							_fbDev.BufferAddress + line * _fbDev.RowBytes,
+							pixels + line * bitmapRowBytes,
+							new IntPtr(width * bitmapBytesPerPixel));
+					}
+				}
+				else
+				{
+					Libc.memcpy(_fbDev.BufferAddress, _bitmap.GetPixels(out _), new IntPtr(_fbDev.RowBytes * height));
+				}
 			}
 		}
 	}

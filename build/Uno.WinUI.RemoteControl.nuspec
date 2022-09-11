@@ -1,54 +1,59 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata minClientVersion="5.0">
-    <id>Uno.UI.RemoteControl</id>
-    <version>0.1.0.0</version>
-    <title>Uno.UI.RemoteControl</title>
-    <authors>nventive</authors>
-    <owners>nventive</owners>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <projectUrl>https://platform.uno/</projectUrl>
-    <license type="expression">Apache-2.0</license>
-    <iconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</iconUrl>
-    <description>Remote Control module for Uno Platform projects, such as XAML Hot Reload.</description>
-    <copyright>Copyright (C) 2015-2019 nventive inc. - all rights reserved</copyright>
-    <repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
+	<id>Uno.UI.RemoteControl</id>
+	<version>0.1.0.0</version>
+	<title>Uno.UI.RemoteControl</title>
+	<authors>nventive</authors>
+	<owners>nventive</owners>
+	<requireLicenseAcceptance>false</requireLicenseAcceptance>
+	<projectUrl>https://platform.uno/</projectUrl>
+	<license type="expression">Apache-2.0</license>
+	<icon>uno.png</icon>
+	<description>Remote Control module for Uno Platform projects, such as XAML Hot Reload.</description>
+	<copyright>Copyright (C) 2015-2019 nventive inc. - all rights reserved</copyright>
+	<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 
-    <dependencies>
+	<dependencies>
 
-	  <!-- Android 9.0 -->
+	  <!-- Android 11.0 -->
 	  <group targetFramework="MonoAndroid11.0">
 		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 
 		<dependency id="Newtonsoft.Json" version="12.0.2" />
+		<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.2.0" />
 	  </group>
-	  
-	  <!-- Android 10.0 -->
-	  <group targetFramework="MonoAndroid10.0">
+
+	  <!-- Android 12.0 -->
+	  <group targetFramework="MonoAndroid12.0">
 		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 
 		<dependency id="Newtonsoft.Json" version="12.0.2" />
+		<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.2.0" />
 	  </group>
 
 	  <!-- iOS -->
-      <group targetFramework="xamarinios10">
-        <dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+	  <group targetFramework="xamarinios10">
+		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 
-        <dependency id="Newtonsoft.Json" version="12.0.2" />
-      </group>
+		<dependency id="Newtonsoft.Json" version="12.0.2" />
+		<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.2.0" />
+	  </group>
 
-      <!-- macOS -->
-      <group targetFramework="xamarinmac20">
-        <dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+	  <!-- macOS -->
+	  <group targetFramework="xamarinmac20">
+		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 
-        <dependency id="Newtonsoft.Json" version="12.0.2" />
-      </group>
+		<dependency id="Newtonsoft.Json" version="12.0.2" />
+		<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.2.0" />
+	  </group>
 
 	  <!-- net6.0-ios -->
 	  <group targetFramework="net6.0-ios">
 		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 
 		<dependency id="Newtonsoft.Json" version="12.0.2" />
+		<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.2.0" />
 	  </group>
 
 	  <!-- net6.0-maccatalyst -->
@@ -56,6 +61,7 @@
 		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 
 		<dependency id="Newtonsoft.Json" version="12.0.2" />
+		<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.2.0" />
 	  </group>
 
 	  <!-- net6.0-macos -->
@@ -63,6 +69,7 @@
 		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 
 		<dependency id="Newtonsoft.Json" version="12.0.2" />
+		<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.2.0" />
 	  </group>
 
 	  <!-- net6.0-android -->
@@ -70,32 +77,34 @@
 		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 
 		<dependency id="Newtonsoft.Json" version="12.0.2" />
+		<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.2.0" />
 	  </group>
 
 	  <!-- .NET Standard 2.0 -->
-      <group targetFramework="netstandard2.0">
-        <dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+	  <group targetFramework="netstandard2.0">
+		<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 
-        <dependency id="Newtonsoft.Json" version="12.0.2" />
-        <dependency id="Uno.Wasm.WebSockets" version="1.1.0" />
-      </group>
-    </dependencies>
+		<dependency id="Newtonsoft.Json" version="12.0.2" />
+		<dependency id="Uno.Wasm.WebSockets" version="1.1.0" />
+		<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.2.0" />
+	  </group>
+	</dependencies>
 
-    <references>
-      <!-- .NET Standard 2.0 -->
-      <group targetFramework="netstandard2.0">
-        <reference file="Uno.UI.RemoteControl.dll" />
-      </group>
+	<references>
+	  <!-- .NET Standard 2.0 -->
+	  <group targetFramework="netstandard2.0">
+		<reference file="Uno.UI.RemoteControl.dll" />
+	  </group>
 
-      <!-- iOS -->
-      <group targetFramework="xamarinios10">
-        <reference file="Uno.UI.RemoteControl.dll" />
-      </group>
+	  <!-- iOS -->
+	  <group targetFramework="xamarinios10">
+		<reference file="Uno.UI.RemoteControl.dll" />
+	  </group>
 
-      <!-- macOS -->
-      <group targetFramework="xamarinmac20">
-        <reference file="Uno.UI.RemoteControl.dll" />
-      </group>
+	  <!-- macOS -->
+	  <group targetFramework="xamarinmac20">
+		<reference file="Uno.UI.RemoteControl.dll" />
+	  </group>
 
 	  <!-- Android 9.0 -->
 	  <group targetFramework="MonoAndroid11.0">
@@ -103,7 +112,7 @@
 	  </group>
 
 	  <!-- Android 10.0 -->
-	  <group targetFramework="MonoAndroid10.0">
+	  <group targetFramework="MonoAndroid12.0">
 		<reference file="Uno.UI.RemoteControl.dll" />
 	  </group>
 
@@ -119,17 +128,18 @@
 
 	</references>
   </metadata>
-  
+
   <files>
-    <!-- Remote Control -->
-    <file src="..\src\Uno.UI.RemoteControl\bin\Release\netstandard2.0\Uno.UI.RemoteControl.dll" target="lib\netstandard2.0" />
-    <file src="..\src\Uno.UI.RemoteControl\bin\Release\netstandard2.0\Uno.UI.RemoteControl.pdb" target="lib\netstandard2.0" />
+	<file src="..\src\Common\uno.png" target="/" />
+	<!-- Remote Control -->
+	<file src="..\src\Uno.UI.RemoteControl\bin\Release\netstandard2.0\Uno.UI.RemoteControl.dll" target="lib\netstandard2.0" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Release\netstandard2.0\Uno.UI.RemoteControl.pdb" target="lib\netstandard2.0" />
 
 	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid11.0\Uno.UI.RemoteControl.dll" target="lib\MonoAndroid11.0" />
 	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid11.0\Uno.UI.RemoteControl.pdb" target="lib\MonoAndroid11.0" />
 
-	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid10.0\Uno.UI.RemoteControl.dll" target="lib\MonoAndroid10.0" />
-	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid10.0\Uno.UI.RemoteControl.pdb" target="lib\MonoAndroid10.0" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid12.0\Uno.UI.RemoteControl.dll" target="lib\MonoAndroid12.0" />
+	<file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid12.0\Uno.UI.RemoteControl.pdb" target="lib\MonoAndroid12.0" />
 
 	<file src="..\src\Uno.UI.RemoteControl\bin\Release\xamarinios10\Uno.UI.RemoteControl.dll" target="lib\xamarinios10" />
 	<file src="..\src\Uno.UI.RemoteControl\bin\Release\xamarinios10\Uno.UI.RemoteControl.pdb" target="lib\xamarinios10" />
@@ -150,8 +160,10 @@
 	<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.net6\Release\net6.0-macos\Uno.UI.RemoteControl.pdb" target="lib\net6.0-macos" />
 
 	<!-- Processors -->
-	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\netcoreapp3.1\Uno.UI.RemoteControl.Server.Processors.dll" target="tools\rc\processors" />
-	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\netcoreapp3.1\Uno.UI.RemoteControl.Server.Processors.pdb" target="tools\rc\processors" />
+	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\netcoreapp3.1\*.dll" target="tools\rc\processors\netcoreapp3.1" />
+	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\netcoreapp3.1\*.pdb" target="tools\rc\processors\netcoreapp3.1" />
+	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net6.0\*.dll" target="tools\rc\processors\net6.0" />
+	<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net6.0\*.pdb" target="tools\rc\processors\net6.0" />
 
 	<!-- Build targets -->
 	<file src="..\src\Uno.UI.RemoteControl\buildTransitive\*" target="buildTransitive" />
@@ -163,17 +175,18 @@
 	<file src="..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Skia\Release\netstandard2.0\Uno.UI.RemoteControl.*" target="uno-runtime\skia" />
 
 	<!-- Remote Control host and integration -->
-    <file src="..\src\Uno.UI.RemoteControl.Host\bin\Release\netcoreapp3.1\*.*" target="tools\rc\host" />
+	<file src="..\src\Uno.UI.RemoteControl.Host\bin\Release\netcoreapp3.1\*.*" target="tools\rc\host\netcoreapp3.1" />
+	<file src="..\src\Uno.UI.RemoteControl.Host\bin\Release\net6.0\*.*" target="tools\rc\host\net6.0" />
 	<file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net461\*.dll" target="tools\rc\16.0" />
 	<file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net461\Newtonsoft.Json.dll" target="tools\rc\16.0" />
 	<file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net461\*.pdb" target="tools\rc\16.0" />
 	<file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net48\*.dll" target="tools\rc\17.0" />
 	<file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net48\*.pdb" target="tools\rc\17.0" />
 	<file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net48\Newtonsoft.Json.dll" target="tools\rc\17.0" />
-	
+
 	<!-- Force UAP/netx-win to ignore netstandard 2.0 -->
 	<file src="_._" target="build\uap10.0.16299" />
-	<file src="_._" target="build\uap10.0.17763" />
+	<file src="_._" target="build\uap10.0.18362" />
 	<file src="_._" target="build\net5.0-windows" />
   </files>
 </package>

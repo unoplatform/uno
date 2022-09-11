@@ -14,7 +14,8 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
+using Uno.UI.Extensions;
 
 namespace Windows.UI.Xaml
 {
@@ -61,18 +62,19 @@ namespace Windows.UI.Xaml
 				var target = await UpdateTarget(dragInfo, dragUIOverride, ct);
 				if (!target.HasValue)
 				{
+					dragUIOverride.Clear(); // For safety only, this should have already de done in the 'UpdateTarget' if needed.
 					return DataPackageOperation.None;
 				}
 
 				var (element, args) = target.Value;
-				element.RaiseDragEnterOrOver(args);
+				(args.OriginalSource as UIElement)!.RaiseDragEnterOrOver(args);
 
 				if (args.Deferral is { } deferral)
 				{
 					await deferral.Completed(ct);
 				}
 
-				UpdateState(args);
+				UpdateState(element, args);
 
 				return args.AcceptedOperation;
 			});
@@ -108,8 +110,8 @@ namespace Windows.UI.Xaml
 					return DataPackageOperation.None;
 				}
 
-				var (element, args) = target.Value;
-				element.RaiseDrop(args);
+				(_, var args) = target.Value;
+				(args.OriginalSource as UIElement)!.RaiseDrop(args);
 
 				if (args.Deferral is { } deferral)
 				{
@@ -119,13 +121,14 @@ namespace Windows.UI.Xaml
 				return args.AcceptedOperation;
 			});
 
-		private async Task<(UIElement element, global::Windows.UI.Xaml.DragEventArgs args)?> UpdateTarget(
+		private async Task<(UIElement dropTarget, global::Windows.UI.Xaml.DragEventArgs args)?> UpdateTarget(
 			CoreDragInfo dragInfo,
 			CoreDragUIOverride? dragUIOverride,
 			CancellationToken ct)
 		{
 			var target = VisualTreeHelper.HitTest(
 				dragInfo.Position,
+				Window.Current.RootElement.XamlRoot, //TODO: Choose proper XamlRoot https://github.com/unoplatform/uno/issues/8978
 				getTestability: GetDropHitTestability,
 				isStale: elt => elt.IsDragOver(dragInfo.SourceId));
 
@@ -150,15 +153,29 @@ namespace Windows.UI.Xaml
 				{
 					await deferral.Completed(ct);
 				}
+
+				// Note: We don't clear the 'dragUIOverride' here as even if we are leaving some UI elements,
+				//		 the 'dropTarget' (computed below) might still be the same.
 			}
 
 			if (target.element is null)
 			{
+				// When we don't find any target, we should make sure to reset the uiOverride data
+				// as it's the same instance which is re-used by the DragOperation (like UWP).
+				dragUIOverride?.Clear();
+
 				return null;
 			}
 
+			// We search here for the real drop target in order to properly associate the 'state' to the element that effectively allows the drop,
+			// so we won't reset 'state' and clear 'dragUiOverride' when we are only moving from a nested element to another of the same 'dropTarget'.
+			// (like from a LVItem to another one from the same LV).
+			var dropTarget = target.element.FindFirstParent<UIElement>(elt => elt.AllowDrop, includeCurrent: true);
+			global::System.Diagnostics.Debug.Assert(dropTarget is not null);
+			dropTarget ??= target.element; // Safety only!
+
 			DragEventArgs args;
-			if (target.element is {} && _pendingDropTargets.TryGetValue(target.element, out var state))
+			if (_pendingDropTargets.TryGetValue(dropTarget, out var state))
 			{
 				args = new DragEventArgs(target.element!, dragInfo, state.uiOverride)
 				{
@@ -167,15 +184,20 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
+				// When we reach a new target UI element, we should make sure to reset the uiOverride data
+				// as it's the same instance which is re-used by the DragOperation (like UWP).
+				// It's the responsibility to the new 'target.element', to configure the whole UI override.
+				dragUIOverride?.Clear();
+
 				args = new DragEventArgs(target.element!, dragInfo, new DragUIOverride(dragUIOverride ?? new CoreDragUIOverride()));
 			}
 
-			return (target.element!, args);
+			return (dropTarget, args);
 		}
 
-		private void UpdateState(DragEventArgs args)
+		private void UpdateState(UIElement dropTarget, DragEventArgs args)
 		{
-			_pendingDropTargets[(UIElement)args.OriginalSource] = (args.DragUIOverride, args.AcceptedOperation);
+			_pendingDropTargets[dropTarget] = (args.DragUIOverride, args.AcceptedOperation);
 		}
 	}
 }

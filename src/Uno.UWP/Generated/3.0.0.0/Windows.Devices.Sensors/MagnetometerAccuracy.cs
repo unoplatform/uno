@@ -3,9 +3,6 @@
 namespace Windows.Devices.Sensors
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
 	public   enum MagnetometerAccuracy 
 	{
 		// Skipping already declared field Windows.Devices.Sensors.MagnetometerAccuracy.Unknown

@@ -5,13 +5,10 @@
 	</PropertyGroup>
 
 	<Import Project="../netcore-build.props" />
-	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<Authors>nventive</Authors>
-		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
-		<PackageIconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</PackageIconUrl>
 		<PackageIcon>uno.png</PackageIcon>
 		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<Description>This package provides the platform support for Skia in Uno Platform projects.</Description>
@@ -20,23 +17,28 @@
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Gtk</PackageId>
 
 		<RootNamespace>Uno.UI.Runtime.Skia</RootNamespace>
-	
+
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
+		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" Visible="false" />
 	</ItemGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
-		<!--<PackageReference Include="SkiaSharp.Views" />-->
+		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" />
+		<PackageReference Include="Silk.NET.OpenGLES" Version="2.16.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" />
+		<PackageReference Include="SkiaSharp.Harfbuzz" />
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="GtkSharp" />
 	</ItemGroup>

@@ -25,7 +25,7 @@ using System.Collections.Generic;
 
 namespace Uno.Xaml
 {
-	public interface IRootObjectProvider
+	internal interface IRootObjectProvider
 	{
 		object RootObject { get; }
 	}

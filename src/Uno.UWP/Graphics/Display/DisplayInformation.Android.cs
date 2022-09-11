@@ -158,56 +158,56 @@ namespace Windows.Graphics.Display
 		{
 			using (var windowManager = CreateWindowManager())
 			{
-				int width = _cachedDisplayMetrics.WidthPixels;
-				int height = _cachedDisplayMetrics.HeightPixels;
+					int width = _cachedDisplayMetrics.WidthPixels;
+					int height = _cachedDisplayMetrics.HeightPixels;
 
-				if (width == height)
-				{
-					//square device, can't tell orientation
-					return DisplayOrientations.None;
-				}
-
-				if (NativeOrientation == DisplayOrientations.Portrait)
-				{
-					switch (_cachedRotation)
+					if (width == height)
 					{
-						case SurfaceOrientation.Rotation0:
-							return DisplayOrientations.Portrait;
-						case SurfaceOrientation.Rotation90:
-							return DisplayOrientations.Landscape;
-						case SurfaceOrientation.Rotation180:
-							return DisplayOrientations.PortraitFlipped;
-						case SurfaceOrientation.Rotation270:
-							return DisplayOrientations.LandscapeFlipped;
-						default:
-							//invalid rotation
-							return DisplayOrientations.None;
+						//square device, can't tell orientation
+						return DisplayOrientations.None;
+					}
+
+					if (NativeOrientation == DisplayOrientations.Portrait)
+					{
+						switch (_cachedRotation)
+						{
+							case SurfaceOrientation.Rotation0:
+								return DisplayOrientations.Portrait;
+							case SurfaceOrientation.Rotation90:
+								return DisplayOrientations.Landscape;
+							case SurfaceOrientation.Rotation180:
+								return DisplayOrientations.PortraitFlipped;
+							case SurfaceOrientation.Rotation270:
+								return DisplayOrientations.LandscapeFlipped;
+							default:
+								//invalid rotation
+								return DisplayOrientations.None;
+						}
+					}
+					else if (NativeOrientation == DisplayOrientations.Landscape)
+					{
+						//device is landscape or square
+						switch (_cachedRotation)
+						{
+							case SurfaceOrientation.Rotation0:
+								return DisplayOrientations.Landscape;
+							case SurfaceOrientation.Rotation90:
+								return DisplayOrientations.Portrait;
+							case SurfaceOrientation.Rotation180:
+								return DisplayOrientations.LandscapeFlipped;
+							case SurfaceOrientation.Rotation270:
+								return DisplayOrientations.PortraitFlipped;
+							default:
+								//invalid rotation
+								return DisplayOrientations.None;
+						}
+					}
+					else
+					{
+						//fallback
+						return DisplayOrientations.None;
 					}
 				}
-				else if (NativeOrientation == DisplayOrientations.Landscape)
-				{
-					//device is landscape or square
-					switch (_cachedRotation)
-					{
-						case SurfaceOrientation.Rotation0:
-							return DisplayOrientations.Landscape;
-						case SurfaceOrientation.Rotation90:
-							return DisplayOrientations.Portrait;
-						case SurfaceOrientation.Rotation180:
-							return DisplayOrientations.LandscapeFlipped;
-						case SurfaceOrientation.Rotation270:
-							return DisplayOrientations.PortraitFlipped;
-						default:
-							//invalid rotation
-							return DisplayOrientations.None;
-					}
-				}
-				else
-				{
-					//fallback
-					return DisplayOrientations.None;
-				}
-			}
 		}
 
 		private IWindowManager CreateWindowManager()
@@ -238,11 +238,18 @@ namespace Windows.Graphics.Display
 			using var windowManager = CreateWindowManager();
 			if (windowManager.DefaultDisplay is { } defaultDisplay)
 			{
-#pragma warning disable CS0618 // GetRealMetrics is obsolete in API 31
-				defaultDisplay.GetRealMetrics(displayMetrics);
-#pragma warning restore CS0618 // GetRealMetrics is obsolete in API 31
 
-				_cachedDisplayMetrics = new DisplayMetricsCache(displayMetrics);
+				if (Android.OS.Build.VERSION.SdkInt <= Android.OS.BuildVersionCodes.R)
+				{
+#pragma warning disable CS0618 // GetRealMetrics is obsolete in API 31
+					defaultDisplay.GetRealMetrics(displayMetrics);
+#pragma warning restore CS0618 // GetRealMetrics is obsolete in API 31
+					_cachedDisplayMetrics = new DisplayMetricsCache(displayMetrics);
+				}
+				else
+				{
+					_cachedDisplayMetrics = new DisplayMetricsCache(windowManager.CurrentWindowMetrics, Android.Content.Res.Resources.System?.Configuration);
+				}
 				_cachedRotation = windowManager.DefaultDisplay.Rotation;
 			}
 			else
@@ -264,6 +271,20 @@ namespace Windows.Graphics.Display
 				Ydpi = displayMetric.Ydpi;
 			}
 
+			public DisplayMetricsCache(WindowMetrics windowMetric, Android.Content.Res.Configuration? configuration)
+			{
+				HeightPixels = windowMetric.Bounds.Height();
+				WidthPixels = windowMetric.Bounds.Width();
+				if(configuration != null)
+				{
+					Xdpi = configuration.DensityDpi;
+					Ydpi = configuration.DensityDpi;
+					Density = configuration.DensityDpi/160;
+					ScaledDensity = Density;
+					DensityDpi = ConvertIntToDensityEnum(configuration.DensityDpi);
+				}
+			}
+
 			public float Density { get; }
 
 			public DisplayMetricsDensity DensityDpi { get; }
@@ -277,6 +298,42 @@ namespace Windows.Graphics.Display
 			public float Xdpi { get; }
 
 			public float Ydpi { get; }
+
+			private DisplayMetricsDensity ConvertIntToDensityEnum(int DPI)
+			{
+				return DPI switch
+				{
+					120 => DisplayMetricsDensity.Low,
+					160 => DisplayMetricsDensity.Medium,
+					240 => DisplayMetricsDensity.High,
+					320 => DisplayMetricsDensity.Xhigh,
+					480 => DisplayMetricsDensity.Xxhigh,
+					640 => DisplayMetricsDensity.Xxxhigh,
+
+					213 => DisplayMetricsDensity.Tv,
+
+					< 120 => DisplayMetricsDensity.Low,
+					< 160 => DisplayMetricsDensity.D140,
+					< 180 => DisplayMetricsDensity.D180,
+					< 200 => DisplayMetricsDensity.D200,
+					< 220 => DisplayMetricsDensity.D220,
+					< 260 => DisplayMetricsDensity.D220,
+					< 280 => DisplayMetricsDensity.D280,
+
+					< 300 => DisplayMetricsDensity.D300,
+					< 340 => DisplayMetricsDensity.D340,
+					< 360 => DisplayMetricsDensity.D360,
+					< 400 => DisplayMetricsDensity.D400,
+					< 420 => DisplayMetricsDensity.D420,
+					< 440 => DisplayMetricsDensity.D440,
+					< 450 => DisplayMetricsDensity.D450,
+					< 560 => DisplayMetricsDensity.D560,
+
+					_ => DisplayMetricsDensity.D600
+				};
+
+			}
+
 		}
 	}
 }

@@ -2,24 +2,65 @@
 
 This article details the migration steps required to migrate from one version to the next.
 
-### Uno 2.x to Uno 3.0
+### Uno Platform 4.5
 
-Migrating from Uno 2.x to Uno 3.0 requires a small set of changes in the code and configuration.
+#### Uno Fluent Icon Font
 
-- **Android 8.0** is not supported anymore, you'll need to update to **Android 9.0** or **10.0**.
-- For Android, you'll need to update the `Main.cs` file from:
+Uno Platform 4.5 and newer includes a new Uno Fluent Icon font which is based on Windows 11 iconography style and replaces the existing font based on Segoe MDL2 Assets. If you have an existing Uno Platform application using older version of the font and want to update to the latest, two steps are needed:
+
+1. Find all files with the name `uno-fluentui-assets.ttf` and replace them with the same file from [Uno.Fonts](https://github.com/unoplatform/uno.fonts/tree/master/webfonts).
+2. Inside of the WebAssembly project, find `Fonts.css` file and replace it with the one provided in [Uno.Fonts](https://github.com/unoplatform/uno.fonts/tree/master/webfonts), or use the WebAssembly project 
+ `Fonts.css` found when creating a new app with [`dotnet new unoapp`]([get-started-dotnet-new.md](https://github.com/unoplatform/uno/blob/master/doc/articles/get-started-dotnet-new.md)) or the Visual Studio **File/New project**.
+
+### Uno 4.1
+
+### Android 12 support
+Uno 4.1 removes the support for the Android SDK 10 and adds support for Android 12. Note that Android 10  versions and below are still supported at runtime, but you'll need to have Android 11 SDK or later to build an Uno Platform App. You can upgrade to Android 11 or 12 using the `Compile using Android version: (Targer Framework)` option in Visual Studio Android project properties.
+
+Additionally, here are some specific hints about the migration to Android 12:
+- If you are building with Android 12 on Azure Devops Hosted Agents (macOS or Windows), you'll need two updates:
+    - Use the JDK 11, using the following step:
+        ```yml
+        - pwsh: |
+            echo "##vso[task.setvariable variable=JAVA_HOME]$(JAVA_HOME_11_X64)"
+            echo "##vso[task.setvariable variable=JavaSdkDirectory]$(JAVA_HOME_11_X64)"
+        displayName: Select JDK 11
+        ```
+    - You may need to [add the following property](https://github.com/tdevere/AppCenterSupportDocs/blob/main/Build/Could_not_determine_API_level_for_$TargetFrameworkVersion_of_v12.0.md) to your android csproj:
+        ```xml
+        <PropertyGroup>
+            <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
+        </PropertyGroup>
+        ```
+- The AndroidX libraries need to be at specific versions to avoid [an upstream android issue](https://docs.microsoft.com/en-us/answers/questions/650236/error-androidattrlstar-not-found-after-upgrading-n.html). The Uno Platform NuGet packages are using those versions automatically, but if you override those packages, make sure to avoid direct or indirect dependencies on `Xamarin.AndroidX.Core(>=1.7.0.1)`. For reference, [view this page](https://github.com/unoplatform/uno/blob/533c5316cbe7537bb2f4a542b46a52b96c75004a/build/Uno.WinUI.nuspec#L66-L69) to get the packages versions used by Uno Platform.
+
+
+### Uno 4.0
+
+Uno 4.0 introduces a set of binary and source breaking changes required to align with the Windows App SDK 1.0.
+
+To migrate your application to Uno 4.0:
+- Update all `Uno.UI.*` nuget packages to 4.0
+- Add a package reference to `Uno.UI.Adapter.Microsoft.Extensions.Logging` to all your project heads (Except `.Desktop` for WinUI projects, and `.Windows` for UWP projects)
+- In your `ConfigureLogging` method, add the following block at the end:
     ```csharp
-	: base(new App(), javaReference, transfer)
+    #if HAS_UNO
+	global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
+    #endif
     ```
-    to
+- If you are using `ApiInformation.NotImplementedLogLevel`, use the following code instead:
     ```csharp
-	: base(() => new App(), javaReference, transfer)
+    global::Uno.UI.FeatureConfiguration.ApiInformation.NotImplementedLogLevel = global::Uno.Foundation.Logging.LogLevel.Debug; // Raise not implemented usages as Debug messages
     ```
-- For WebAssembly, in the `YourProject.Wasm.csproj`:
-    - Change `<PackageReference Include="Uno.UI" Version="2.4.4" />` to `<PackageReference Include="Uno.UI.WebAssembly" Version="3.0.12" />`
-    - Remove `<WasmHead>true</WasmHead>`
-    - You can remove `__WASM__` in `DefineConstants`
-- The symbols font has been updated, and the name needs to be updated. For more information, see [this article](uno-fluent-assets.md).
+- Many other smaller breaking changes that may have previously forced `#if HAS_UNO` conditionals, such as:
+    - `FrameworkElement.DataContextChanged` signature
+    - `FrameworkElement.Loading` signature
+    - `Popup` is now correctly in the `Primitives` namespace
+    - `FlyoutBase` event signatures
+- Uno.UI packages no longer depend on `Uno.Core`.
+  If you did depend on types or extensions provided by this package, you can take a direct dependency on it, or
+  use one of the sub packages created to limit the number of transitive dependencies.
+- The `Uno.UI.DualScreen` package is now renamed as` Uno.UI.Foldable`
 
 ### Uno 3.6 
 
@@ -124,3 +165,23 @@ If your WebAssembly project is using the `netstandard2.0` TargetFramework, migra
 - Add a reference to the `Microsoft.Windows.Compatibility` package to `5.0.1`
 
 You may also want to apply the changes from the section above (logger updates) to benefits from the update to .NET 5.
+
+### Uno 2.x to Uno 3.0
+
+Migrating from Uno 2.x to Uno 3.0 requires a small set of changes in the code and configuration.
+
+- **Android 8.0** is not supported anymore, you'll need to update to **Android 9.0** or **10.0**.
+- For Android, you'll need to update the `Main.cs` file from:
+    ```csharp
+	: base(new App(), javaReference, transfer)
+    ```
+    to
+    ```csharp
+	: base(() => new App(), javaReference, transfer)
+    ```
+- For WebAssembly, in the `YourProject.Wasm.csproj`:
+    - Change `<PackageReference Include="Uno.UI" Version="2.4.4" />` to `<PackageReference Include="Uno.UI.WebAssembly" Version="3.0.12" />`
+    - Remove `<WasmHead>true</WasmHead>`
+    - You can remove `__WASM__` in `DefineConstants`
+- The symbols font has been updated, and the name needs to be updated. For more information, see [this article](uno-fluent-assets.md).
+

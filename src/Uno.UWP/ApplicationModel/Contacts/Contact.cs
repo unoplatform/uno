@@ -5,8 +5,8 @@ using System.Linq;
 using Uno;
 using Windows.Foundation.Collections;
 using Windows.Storage.Streams;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 using Uno.Extensions;
 
 namespace Windows.ApplicationModel.Contacts

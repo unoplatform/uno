@@ -24,7 +24,7 @@ namespace Uno.UI.Xaml
 		//When users set double.MaxValue to scroll to the end of the page Javascript doesn't scroll.
 		private const double MAX_SCROLLING_OFFSET = 1_000_000_000_000_000_000;
 
-		private static bool UseJavascriptEval =>
+		private static bool UseJavascriptEval { get; } =
 			!WebAssemblyRuntime.IsWebAssembly || FeatureConfiguration.Interop.ForceJavascriptInterop;
 
 		#region Init
@@ -865,7 +865,7 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
-		#region SetVisibility
+		#region SetElementColor
 
 		internal static void SetElementColor(IntPtr htmlId, Color color)
 		{
@@ -891,6 +891,39 @@ namespace Uno.UI.Xaml
 		[TSInteropMessage]
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerSetElementColorParams
+		{
+			public IntPtr HtmlId;
+
+			public uint Color;
+		}
+		#endregion
+
+		#region SetElementFill
+
+		internal static void SetElementFill(IntPtr htmlId, Color color)
+		{
+			var colorAsInteger = color.ToCssInteger();
+
+			if (UseJavascriptEval)
+			{
+				var command = $"Uno.UI.WindowManager.current.setElementFill(\"{htmlId}\", {color});";
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerSetElementFillParams()
+				{
+					HtmlId = htmlId,
+					Color = colorAsInteger,
+				};
+
+				TSInteropMarshaller.InvokeJS("Uno:setElementFillNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetElementFillParams
 		{
 			public IntPtr HtmlId;
 

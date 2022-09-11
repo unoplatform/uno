@@ -1,14 +1,16 @@
 
 using System;
 using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.Linq;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 
@@ -27,7 +29,7 @@ namespace Windows.UI.Xaml.Controls
 		private Grid _layoutRoot;
 		private ListView _suggestionsList;
 		private Button _queryButton;
-		private AutoSuggestionBoxTextChangeReason _textChangeReason;
+		private AutoSuggestionBoxTextChangeReason _textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
 		private string userInput;
 		private BindingPath _textBoxBinding;
 
@@ -48,12 +50,20 @@ namespace Windows.UI.Xaml.Controls
 			_suggestionsList = GetTemplateChild("SuggestionsList") as ListView;
 			_queryButton = GetTemplateChild("QueryButton") as Button;
 
+			// Uno specific: If the user enabled the legacy behavior for popup light dismiss default
+			// we force it to false explicitly to make sure the AutoSuggestBox works correctly.
+			if(FeatureConfiguration.Popup.EnableLightDismissByDefault)
+			{
+				_popup.IsLightDismissEnabled = false;
+			}
+
 #if __ANDROID__
 			_popup.DisableFocus();
 #endif
 
 			UpdateQueryButton();
 			UpdateTextBox();
+			UpdateDescriptionVisibility(true);
 
 			_textBoxBinding = new BindingPath("Text", null) { DataContext = _textBox, ValueChangedListener = this };
 
@@ -109,7 +119,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_suggestionsList != null)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("ItemsChanged, refreshing suggestion list");
 				}
@@ -219,6 +229,7 @@ namespace Windows.UI.Xaml.Controls
 			if (_textBox != null)
 			{
 				_textBox.KeyDown += OnTextBoxKeyDown;
+				_textBox.LostFocus += OnTextBoxLostFocus;
 			}
 
 			if (_queryButton != null)
@@ -242,6 +253,7 @@ namespace Windows.UI.Xaml.Controls
 			if (_textBox != null)
 			{
 				_textBox.KeyDown -= OnTextBoxKeyDown;
+				_textBox.LostFocus -= OnTextBoxLostFocus;
 			}
 
 			if (_queryButton != null)
@@ -296,7 +308,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnSuggestionListItemClick(object sender, ItemClickEventArgs e)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Suggestion item clicked {e.ClickedItem}");
 			}
@@ -307,7 +319,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnQueryButtonClick(object sender, RoutedEventArgs e)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Query button clicked");
 			}
@@ -316,8 +328,16 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private void SubmitSearch()
+	    {
+			var finalResult = _suggestionsList.SelectedItem ?? GetObjectText(Text);
+
+			QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(finalResult is "" ? null : finalResult, userInput));			
+
+			IsSuggestionListOpen = false;
+		}
+
+		private void OnTextBoxLostFocus(object sender, RoutedEventArgs e)
 		{
-			QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(null, Text));
 			IsSuggestionListOpen = false;
 		}
 
@@ -325,7 +345,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (e.Key == Windows.System.VirtualKey.Enter)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Enter key pressed");
 				}
@@ -437,6 +457,21 @@ namespace Windows.UI.Xaml.Controls
 					Reason = tb._textChangeReason,
 					Owner = tb
 				});
+			}
+		}
+
+		private void UpdateDescriptionVisibility(bool initialization)
+		{
+			if (initialization && Description == null)
+			{
+				// Avoid loading DescriptionPresenter element in template if not needed.
+				return;
+			}
+
+			var descriptionPresenter = this.FindName("DescriptionPresenter") as ContentPresenter;
+			if (descriptionPresenter != null)
+			{
+				descriptionPresenter.Visibility = Description != null ? Visibility.Visible : Visibility.Collapsed;
 			}
 		}
 	}

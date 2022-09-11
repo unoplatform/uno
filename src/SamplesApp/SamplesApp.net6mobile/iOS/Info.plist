@@ -13,7 +13,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>MinimumOSVersion</key>
-	<string>9.0</string>
+	<string>10.0</string>
 	<key>UIDeviceFamily</key>
 	<array>
 		<integer>1</integer>
@@ -57,14 +57,14 @@
 	<string>TODO NSLocationUsageDescription</string>
 	<key>CFBundleURLTypes</key>
 	<array>
-	  <dict>
-        <key>CFBundleURLName</key>
-        <string>Uno Samples Test scheme</string>
-		<key>CFBundleURLSchemes</key>
-		<array>
-		  <string>uno-samples-test</string>
-		</array>
-	  </dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>Uno Samples Test scheme</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>uno-samples-test</string>
+			</array>
+		</dict>
 	</array>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>

@@ -2,16 +2,21 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Windows.Devices.Input;
-using Windows.UI.Input;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Android.Runtime;
 using Android.Views;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.UI.Input;
+using Windows.Devices.Input;
+#endif
 
 namespace Windows.UI.Xaml
 {
@@ -37,6 +42,10 @@ namespace Windows.UI.Xaml
 				=> _target.OnNativeMotionEvent(nativeEvent, view, true);
 		}
 
+		partial void InitializePointersPartial()
+		{
+			ArePointersEnabled = true;
+		}
 
 		partial void AddPointerHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{
@@ -56,7 +65,7 @@ namespace Windows.UI.Xaml
 
 		protected sealed override bool OnNativeMotionEvent(MotionEvent nativeEvent, View originalSource, bool isInView)
 		{
-			if (IsPointersSuspended)
+			if (!ArePointersEnabled)
 			{
 				return false;
 			}
@@ -106,7 +115,7 @@ namespace Windows.UI.Xaml
 					return OnNativePointerEnter(args);
 				case MotionEventActions.HoverExit when !args.Pointer.IsInContact:
 					// When a mouse button is pressed or pen touches the screen (a.k.a. becomes in contact), we receive an HoverExit before the Down.
-					// We validate here if pointer 'isInContact' (which is the case for HoverExit when mouse button pressed / pen touch  the screen)
+					// We validate here if pointer 'isInContact' (which is the case for HoverExit when mouse button pressed / pen touched the screen)
 					// and we ignore them (as on UWP Exit is raised only when pointer moves out of bounds of the control, no matter the pressed state).
 					// As a side effect we will have to update the hover state on each Move in order to handle the case of press -> move out -> release.
 					return OnNativePointerExited(args);
@@ -115,14 +124,31 @@ namespace Windows.UI.Xaml
 
 				case MotionEventActions.Down when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
 				case MotionEventActions.PointerDown when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
-					return OnNativePointerEnter(args) | OnNativePointerDown(args);
+					// We don't have any enter / exit on Android for touches, so we explicitly generate one on down / up.
+					// That event args is requested to bubble in managed code only (args.CanBubbleNatively = false),
+					// so we follow the same sequence as UWP (the whole tree gets entered before the pressed),
+					// and we make sure that the event will bubble through the whole tree, no matter if the Pressed event is handle or not.
+					// Note: Parents will also try to raise the "Enter" but they will be silent since the pointer is already considered as pressed.
+					args.CanBubbleNatively = false;
+					OnNativePointerEnter(args);
+					return OnNativePointerDown(args.Reset());
 				case PointerRoutedEventArgs.StylusWithBarrelDown:
 				case MotionEventActions.Down:
 				case MotionEventActions.PointerDown:
 					return OnNativePointerDown(args);
 				case MotionEventActions.Up when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
 				case MotionEventActions.PointerUp when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
-					return OnNativePointerUp(args) | OnNativePointerExited(args);
+					// For touch pointer, in the RootVisual we will redispatch this event to raise exit,
+					// but if the event has been handled, we need to raise it after the 'up' has been processed.
+					if (OnNativePointerUp(args))
+					{
+						Uno.UI.Xaml.Core.RootVisual.ProcessPointerUp(args, isAfterHandledUp: true);
+						return true;
+					}
+					else
+					{
+						return false;
+					}
 				case PointerRoutedEventArgs.StylusWithBarrelUp:
 				case MotionEventActions.Up:
 				case MotionEventActions.PointerUp:
@@ -132,9 +158,9 @@ namespace Windows.UI.Xaml
 				// So on each POINTER_MOVE we make sure to update the pressed state if it does not match.
 				// Note: We can also have HOVER_MOVE with barrel button pressed, so we make sure to "PointerDown" only for Mouse.
 				case MotionEventActions.HoverMove when args.Pointer.PointerDeviceType == PointerDeviceType.Mouse && args.HasPressedButton && !IsPressed(args.Pointer):
-					return OnNativePointerDown(args) | OnNativePointerMoveWithOverCheck(args, isInView);
+					return OnNativePointerDown(args) | OnNativePointerMoveWithOverCheck(args.Reset(), isInView);
 				case MotionEventActions.HoverMove when !args.HasPressedButton && IsPressed(args.Pointer):
-					return OnNativePointerUp(args) | OnNativePointerMoveWithOverCheck(args, isInView);
+					return OnNativePointerUp(args) | OnNativePointerMoveWithOverCheck(args.Reset(), isInView);
 
 				case PointerRoutedEventArgs.StylusWithBarrelMove:
 				case MotionEventActions.Move:
@@ -155,6 +181,13 @@ namespace Windows.UI.Xaml
 					return false;
 			}
 		}
+
+		/// <summary>
+		/// Used by the VisualRoot to redispatch a pointer exit on pointer up
+		/// </summary>
+		/// <param name="args"></param>
+		internal void RedispatchPointerExited(PointerRoutedEventArgs args)
+			=> OnNativePointerExited(args.Reset(canBubbleNatively: false));
 
 		partial void OnManipulationModeChanged(ManipulationModes oldMode, ManipulationModes newMode)
 			=> IsNativeMotionEventsInterceptForbidden = newMode == ManipulationModes.None;

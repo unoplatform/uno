@@ -3,12 +3,13 @@
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
 	
-	<Import Project="../netcore-build.props"/>
-	<Import Project="../targetframework-override.props"/>
+	<Import Project="../netcore-build.props" />
+	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<DefineConstants>$(DefineConstants);IS_UNO_FOUNDATION_RUNTIME_WEBASSEMBLY_PROJECT</DefineConstants>
 		
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
@@ -18,11 +19,11 @@
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 	</PropertyGroup>
 	
+
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<Authors>nventive</Authors>
 		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
-		<PackageIconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</PackageIconUrl>
 		<PackageIcon>uno.png</PackageIcon>
 		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<Description>This package provides the .NET interoperability support for WebAssembly in Uno Platform projects.</Description>
@@ -36,11 +37,12 @@
 	<Import Project="..\Uno.CrossTargetting.props" />
 	
 	<ItemGroup>
-    <PackageReference Include="Uno.Core" />
-		<PackageReference Include="Uno.MonoAnalyzers" Condition="!$(_IsNetCore)">
-			<PrivateAssets>all</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="Uno.Diagnostics.Eventing" Version="1.0.0-dev.4" />
+		<PackageReference Include="Uno.Diagnostics.Eventing" />
+		<PackageReference Include="System.Collections.Immutable" Version="1.3.1" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(_IsNetStd) or $(_IsNet)">
@@ -55,6 +57,12 @@
 
 	<ItemGroup>
 	  <UpToDateCheckInput Remove="AssemblyInfo.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions\CachedTuple.cs" Link="Helpers\CachedTuple.cs" />
+	  <Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions\FuncMemoizeExtensions.cs" Link="Helpers\FuncMemoizeExtensions.cs" />
+	  <Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions\Funcs.cs" Link="Helpers\Funcs.cs" />
 	</ItemGroup>
 
 	<Target Name="_UnoUIRemoteControlOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">

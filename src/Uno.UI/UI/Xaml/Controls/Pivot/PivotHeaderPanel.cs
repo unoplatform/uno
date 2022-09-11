@@ -9,9 +9,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	{
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			var borderAndPaddingSize = BorderAndPaddingSize;
-			availableSize = availableSize.Subtract(borderAndPaddingSize);
-
 			var desiredSize = default(Size);
 			var slotSize = availableSize;
 
@@ -30,16 +27,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				desiredSize.Height = Math.Max(desiredSize.Height, measuredSize.Height);
 			}
 
-			return desiredSize.Add(borderAndPaddingSize);
+			return desiredSize;
 		}
 
 		protected override Size ArrangeOverride(Size arrangeSize)
 		{
-			var borderAndPaddingSize = BorderAndPaddingSize;
-			arrangeSize = arrangeSize.Subtract(borderAndPaddingSize);
-
-			var childRectangle = new Windows.Foundation.Rect(BorderThickness.Left + Padding.Left, BorderThickness.Top + Padding.Top, arrangeSize.Width, arrangeSize.Height);
-
+			var childRectangle = new Windows.Foundation.Rect(0d, 0d, arrangeSize.Width, arrangeSize.Height);
 
 			var previousChildSize = 0.0;
 
@@ -60,7 +53,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				ArrangeElement(view, childRectangle);
 			}
 
-			return arrangeSize.Add(borderAndPaddingSize);
+			return arrangeSize;
 		}
 	}
 }

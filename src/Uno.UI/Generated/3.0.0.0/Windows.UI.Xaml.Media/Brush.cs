@@ -7,10 +7,12 @@ namespace Windows.UI.Xaml.Media
 	#endif
 	public  partial class Brush : global::Windows.UI.Xaml.DependencyObject,global::Windows.UI.Composition.IAnimationObject
 	{
+		// Skipping already declared property Transform
 		// Skipping already declared property RelativeTransform
 		// Skipping already declared property Opacity
 		// Skipping already declared property OpacityProperty
 		// Skipping already declared property RelativeTransformProperty
+		// Skipping already declared property TransformProperty
 		// Skipping already declared method Windows.UI.Xaml.Media.Brush.Brush()
 		// Forced skipping of method Windows.UI.Xaml.Media.Brush.Brush()
 		// Forced skipping of method Windows.UI.Xaml.Media.Brush.Opacity.get

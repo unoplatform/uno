@@ -1,48 +1,41 @@
 #if !NET461
+#nullable enable
 
-namespace Windows.Networking.Connectivity
+using Uno.Helpers;
+
+namespace Windows.Networking.Connectivity;
+
+/// <summary>
+/// Provides access to network connection information for the local machine.
+/// </summary>
+public static partial class NetworkInformation
 {
-	public static partial class NetworkInformation
+	private static StartStopEventWrapper<NetworkStatusChangedEventHandler> _networkStatusChanged;
+
+	static NetworkInformation()
 	{
-		private static readonly object _syncLock = new object();
-
-		private static NetworkStatusChangedEventHandler _networkStatusChanged = null;
-
-		/// <summary>
-		/// Gets the connection profile associated with the internet connection currently used by the local machine.
-		/// </summary>
-		/// <returns>The profile for the connection currently used to connect the machine to the Internet,
-		/// or null if there is no connection profile with a suitable connection.</returns>
-		public static ConnectionProfile GetInternetConnectionProfile() => ConnectionProfile.GetInternetConnectionProfile();
-
-		public static event NetworkStatusChangedEventHandler NetworkStatusChanged
-		{
-			add
-			{
-				lock (_syncLock)
-				{
-					var isFirstSubscriber = _networkStatusChanged == null;
-					_networkStatusChanged += value;
-					if (isFirstSubscriber)
-					{
-						StartNetworkStatusChanged();
-					}
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_networkStatusChanged -= value;
-					if (_networkStatusChanged == null)
-					{
-						StopNetworkStatusChanged();
-					}
-				}
-			}
-		}		
-
-		internal static void OnNetworkStatusChanged() => _networkStatusChanged?.Invoke(null);
+		_networkStatusChanged = new(
+			StartNetworkStatusChanged,
+			StopNetworkStatusChanged);
 	}
+	
+	/// <summary>
+	/// Gets the connection profile associated with the internet connection currently used by the local machine.
+	/// </summary>
+	/// <returns>The profile for the connection currently used to connect the machine to the Internet,
+	/// or null if there is no connection profile with a suitable connection.</returns>
+	public static ConnectionProfile GetInternetConnectionProfile() => ConnectionProfile.GetInternetConnectionProfile();
+
+	/// <summary>
+	/// Occurs when the network status changes for a connection.
+	/// </summary>
+	public static event NetworkStatusChangedEventHandler NetworkStatusChanged
+	{
+		add => _networkStatusChanged.AddHandler(value);
+		remove => _networkStatusChanged.RemoveHandler(value);
+	}
+
+	internal static void OnNetworkStatusChanged() =>
+		_networkStatusChanged.Event?.Invoke(null);
 }
 #endif

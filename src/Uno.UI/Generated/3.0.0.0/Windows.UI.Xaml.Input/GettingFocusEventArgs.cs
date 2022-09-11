@@ -2,103 +2,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class GettingFocusEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.DependencyObject NewFocusedElement
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DependencyObject GettingFocusEventArgs.NewFocusedElement is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.GettingFocusEventArgs", "DependencyObject GettingFocusEventArgs.NewFocusedElement");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool Handled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool GettingFocusEventArgs.Handled is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.GettingFocusEventArgs", "bool GettingFocusEventArgs.Handled");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool Cancel
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool GettingFocusEventArgs.Cancel is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.GettingFocusEventArgs", "bool GettingFocusEventArgs.Cancel");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Input.FocusNavigationDirection Direction
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FocusNavigationDirection GettingFocusEventArgs.Direction is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.FocusState FocusState
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FocusState GettingFocusEventArgs.FocusState is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Input.FocusInputDeviceKind InputDevice
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FocusInputDeviceKind GettingFocusEventArgs.InputDevice is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.DependencyObject OldFocusedElement
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DependencyObject GettingFocusEventArgs.OldFocusedElement is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Guid CorrelationId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GettingFocusEventArgs.CorrelationId is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property NewFocusedElement
+		// Skipping already declared property Handled
+		// Skipping already declared property Cancel
+		// Skipping already declared property Direction
+		// Skipping already declared property FocusState
+		// Skipping already declared property InputDevice
+		// Skipping already declared property OldFocusedElement
+		// Skipping already declared property CorrelationId
 		// Forced skipping of method Windows.UI.Xaml.Input.GettingFocusEventArgs.OldFocusedElement.get
 		// Forced skipping of method Windows.UI.Xaml.Input.GettingFocusEventArgs.NewFocusedElement.get
 		// Forced skipping of method Windows.UI.Xaml.Input.GettingFocusEventArgs.NewFocusedElement.set
@@ -109,20 +25,8 @@ namespace Windows.UI.Xaml.Input
 		// Forced skipping of method Windows.UI.Xaml.Input.GettingFocusEventArgs.InputDevice.get
 		// Forced skipping of method Windows.UI.Xaml.Input.GettingFocusEventArgs.Cancel.get
 		// Forced skipping of method Windows.UI.Xaml.Input.GettingFocusEventArgs.Cancel.set
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool TryCancel()
-		{
-			throw new global::System.NotImplementedException("The member bool GettingFocusEventArgs.TryCancel() is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool TrySetNewFocusedElement( global::Windows.UI.Xaml.DependencyObject element)
-		{
-			throw new global::System.NotImplementedException("The member bool GettingFocusEventArgs.TrySetNewFocusedElement(DependencyObject element) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Input.GettingFocusEventArgs.TryCancel()
+		// Skipping already declared method Windows.UI.Xaml.Input.GettingFocusEventArgs.TrySetNewFocusedElement(Windows.UI.Xaml.DependencyObject)
 		// Forced skipping of method Windows.UI.Xaml.Input.GettingFocusEventArgs.CorrelationId.get
 	}
 }

@@ -32,5 +32,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.VisualStateManagerTests
 			_app.WaitForDependencyPropertyValue(border02, "Background", "[SolidColorBrush #FF800080]");
 			_app.WaitForDependencyPropertyValue(border03, "Background", "[SolidColorBrush #FFFFA500]");
 		}
+
+		[Test]
+		[AutoRetry]
+		public void When_Forever_Storyboard()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml.VisualStateTests.VisualState_Forever_Events");
+
+			_app.FastTap("MyButton");
+			_app.WaitForDependencyPropertyValue("LogsTextBlock", "Text", "Changing to: Blinking\nChanged to: Blinking\n");
+		}
 	}
 }

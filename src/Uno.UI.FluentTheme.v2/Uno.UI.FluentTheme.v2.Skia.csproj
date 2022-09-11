@@ -16,7 +16,9 @@
 		<Deterministic>true</Deterministic>
 		
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
-	
+
+		<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
+
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
 	</PropertyGroup>
@@ -31,5 +33,7 @@
 
 	<Import Project="..\Uno.CrossTargetting.props" />
 	<Import Project="FluentMerge.targets" />
+
+	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
 </Project>

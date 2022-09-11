@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 
@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml
 
 			IsAutoPropertyInheritanceEnabled = false;
 
-			this.RegisterParentChangedCallback(
+			this.RegisterParentChangedCallbackStrong(
 				key: this,
 				handler: (instance, key, handler)
 					=> OnOwnerChanged()
@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml
 		{
 			if (CurrentPrecedence == precedence)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat($"StateTrigger [{GetType().Name}] (owner={Owner?.Owner ?? (object)"<null>"}/{Owner ?? (object)"<null>"}) precedence:{precedence} [DUPLICATED: IGNORED]");
 				}
@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml
 				return; // nothing to do
 			}
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat($"StateTrigger [{GetType().Name}] (owner={Owner?.Owner ?? (object)"<null>"}/{Owner ?? (object)"<null>"}) precedence:{precedence}");
 			}
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml
 			Owner?.Owner?.RefreshStateTriggers();
 		}
 
-		internal StateTriggerPrecedence CurrentPrecedence { get; set; } = 0;
+		internal StateTriggerPrecedence CurrentPrecedence { get; set; }
 
 		internal VisualState Owner => this.GetParent() as VisualState;
 

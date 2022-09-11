@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Linq;
 using Windows.Foundation;
@@ -6,7 +8,11 @@ using Uno.Extensions;
 using static System.Math;
 using static System.Double;
 
+#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+namespace Microsoft.UI.Input
+#else
 namespace Windows.UI.Input
+#endif
 {
 	public partial class GestureRecognizer
 	{

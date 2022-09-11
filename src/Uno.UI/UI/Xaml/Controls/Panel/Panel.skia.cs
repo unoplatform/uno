@@ -1,5 +1,5 @@
 ﻿using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Controls;
 using System;
 using System.Linq;
@@ -44,9 +44,9 @@ namespace Windows.UI.Xaml.Controls
 					this,
 					Background,
 					InternalBackgroundSizing,
-					BorderThickness,
-					BorderBrush,
-					CornerRadius,
+					BorderThicknessInternal,
+					BorderBrushInternal,
+					CornerRadiusInternal,
 					null
 				);
 			}
@@ -104,6 +104,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadiusInternal != CornerRadius.None;
 	}
 }

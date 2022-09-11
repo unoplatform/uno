@@ -376,7 +376,7 @@ As mentioned earlier, the navigation implementation differs between Silverlight 
 
     The WASM version of the application will look similar to:
 
-    ![Web Assembly version of the Time Entry app](assets/WASM-HomePage.png)
+    ![WebAssembly version of the Time Entry app](assets/WASM-HomePage.png)
 
 ## Next unit: String resources
 

@@ -1,4 +1,6 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿#pragma warning disable 105 // Disabled until the tree is migrate to WinUI
+
+using Microsoft.UI.Xaml.Controls;
 using MUXControlsTestApp.Utilities;
 using System;
 using System.Collections.Generic;

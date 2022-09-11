@@ -1,7 +1,7 @@
 using Android.Views;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Controls;
 using Windows.UI.Xaml.Data;
 using System;

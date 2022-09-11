@@ -1,7 +1,16 @@
 parameters:
   dotnetInstallationPath: ''
+  skipCacheDownload: ''
 
 steps:
+
+  - task: DownloadBuildArtifacts@0
+    condition: ne('${{parameters.skipCacheDownload}}', 'true')
+    displayName: 'Download GitVersion Cache'
+    retryCountOnTaskFailure: 3
+    inputs:
+        artifactName: gitversion_cache
+        downloadPath: '$(build.sourcesdirectory)/.git'
 
   # This step changes the PR version ID so that produced nuget packages can be tied
   # to specific builds. This can be used to create canaries from PR artifacts.
@@ -15,13 +24,23 @@ steps:
 
   - task: UseDotNet@2
     displayName: 'Use .Net Core runtime 5.0.3'
+    retryCountOnTaskFailure: 3
     inputs:
       packageType: runtime
       version: 5.0.3
       installationPath: '${{parameters.dotnetInstallationPath}}'
 
   - task: UseDotNet@2
+    displayName: 'Use .Net Core runtime 6.0.4'
+    retryCountOnTaskFailure: 3
+    inputs:
+      packageType: runtime
+      version: 6.0.4
+      installationPath: '${{parameters.dotnetInstallationPath}}'
+
+  - task: UseDotNet@2
     displayName: 'Use .Net Core runtime 3.1.12'
+    retryCountOnTaskFailure: 3
     inputs:
       packageType: runtime
       version: 3.1.12
@@ -34,10 +53,12 @@ steps:
     displayName: Adjust nuget.org source
 
   - task: gitversion/setup@0
+    retryCountOnTaskFailure: 3
     inputs:
       versionSpec: '5.6.8'
 
   - task: gitversion/execute@0
+    retryCountOnTaskFailure: 3
     inputs:
       updateAssemblyInfo: 'False'
       useConfigFile: true
@@ -55,3 +76,10 @@ steps:
 
     condition: eq(variables['Build.Reason'], 'PullRequest')
     displayName: Update GITVERSION.SemVer for PullRequests
+
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/.git/gitversion_cache
+      ArtifactName: gitversion_cache
+      ArtifactType: Container

@@ -22,8 +22,16 @@ namespace Windows.UI.Xaml.Media.Animation
 				SetValue(newValue);
 				return;
 			}
-
-			// TODO
+			// TODO: https://github.com/unoplatform/uno/issues/2947
+			else
+			{
+				// since there is no gpu-bound implementation,
+				// make sure at least a value is set when the animation is ended/paused.
+				if (!currentAnimator.IsRunning)
+				{
+					SetValue(_finalValue);
+				}
+			}
 		}
 	}
 }

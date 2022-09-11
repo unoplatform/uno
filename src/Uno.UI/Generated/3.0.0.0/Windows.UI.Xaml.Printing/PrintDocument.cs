@@ -25,8 +25,8 @@ namespace Windows.UI.Xaml.Printing
 			typeof(global::Windows.UI.Xaml.Printing.PrintDocument), 
 			new FrameworkPropertyMetadata(default(global::Windows.Graphics.Printing.IPrintDocumentSource)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || false || false || false || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public PrintDocument() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Printing.PrintDocument", "PrintDocument.PrintDocument()");

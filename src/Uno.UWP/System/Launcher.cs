@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
+
 using Windows.UI.Core;
 
 namespace Windows.System

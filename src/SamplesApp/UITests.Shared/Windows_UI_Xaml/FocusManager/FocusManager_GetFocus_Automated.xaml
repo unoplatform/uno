@@ -17,7 +17,7 @@
 		<Border Background="LightGray"
 						Margin="0,8,0,0">
 		  <TextBlock x:Name="TxtCurrentFocused"
-							   Text="FocusedElement"
+							   Text="&lt;none&gt;"
 							   FontSize="18"
 							   FontWeight="Bold"
 							   TextAlignment="Center"

@@ -3,9 +3,6 @@
 namespace Windows.Networking
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
 	public   enum HostNameType 
 	{
 		// Skipping already declared field Windows.Networking.HostNameType.DomainName

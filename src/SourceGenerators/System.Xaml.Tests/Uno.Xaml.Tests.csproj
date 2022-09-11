@@ -1,15 +1,15 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
-    <TargetFramework>net462</TargetFramework>
+    <TargetFramework>net461</TargetFramework>
     <DefineConstants>$(DefineConstants);NET_4_0;NET_4_5;NET_4_6;MONO;WIN_PLATFORM;MULTIPLEX_OS</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="NUnit" Version="3.13.2" />
+		<PackageReference Include="NUnit" Version="3.13.3" />
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-		<PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
+		<PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
 	</ItemGroup>
 	
 	<ItemGroup>

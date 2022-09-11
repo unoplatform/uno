@@ -2,8 +2,8 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media
 {
-	#if __ANDROID__ || __IOS__ || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
+	#if __ANDROID__ || __IOS__ || NET461 || false || false || __NETSTD_REFERENCE__ || __MACOS__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__NETSTD_REFERENCE__", "__MACOS__")]
 	#endif
 	public  partial class EllipseGeometry : global::Windows.UI.Xaml.Media.Geometry
 	{
@@ -73,8 +73,8 @@ namespace Windows.UI.Xaml.Media
 			typeof(global::Windows.UI.Xaml.Media.EllipseGeometry), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || NET461 || false || false || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public EllipseGeometry() 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.EllipseGeometry", "EllipseGeometry.EllipseGeometry()");

@@ -30,7 +30,7 @@ namespace Windows.UI
 		{
 			var builder = new StringBuilder(10);
 
-			builder.Append("#");
+			builder.Append('#');
 			builder.Append(R.ToString("X2", CultureInfo.InvariantCulture));
 			builder.Append(G.ToString("X2", CultureInfo.InvariantCulture));
 			builder.Append(B.ToString("X2", CultureInfo.InvariantCulture));

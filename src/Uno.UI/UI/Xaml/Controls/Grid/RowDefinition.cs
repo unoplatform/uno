@@ -14,11 +14,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			InitializeBinder();
 			IsAutoPropertyInheritanceEnabled = false;
+		}
 
-			this.RegisterDisposablePropertyChangedCallback((i, p, args) =>
-			{
-				InvalidateDefinition();
-			});
+		// This method is called from the generated IDependencyObjectInternal.OnPropertyChanged2 method
+		internal void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			InvalidateDefinition();
 		}
 
 		#region Height DependencyProperty

@@ -4,17 +4,17 @@
 
 TimePicker is use to select a specific time of the day in hour and minute (AM/PM).
 
-Button showing time open the time picker popup. 
+Button showing time open the time picker popup.
 Bind to the Time property of the control to set initial time.
 days, seconds and milliseconds of input timespan are ignored
 By default minute increment is set to 1
 if you assign a negative value or 0, it will use 1 minute increment
 if you assign a value over 30, it will use 30 minute increment
 While all increments under 30 minutes are valid, we recommend using 1,2,5,10,15,20,25,30 minute increment.
-If bound time is 2h03 and time increment is 5 than time picker initial pickable time will be 2h05 
-If bound time is 2h08 and time increment is 15 than time picker initial pickable time will be 2h15 
+If bound time is 2h03 and time increment is 5 than time picker initial pickable time will be 2h05
+If bound time is 2h08 and time increment is 15 than time picker initial pickable time will be 2h15
 Cancel button cancel the new time selection. You can also click outside the time picker to do the same.
-Done/OK button save the new selected time. 
+Done/OK button save the new selected time.
 
 ### Styles
 Time button style: TimePickerFlyoutButtonStyle
@@ -46,7 +46,7 @@ Some `ColorBrushes` are specific to **iOS** and could be changed by copying and 
 ```
 IOSTimePickerAcceptButtonForegroundBrush  Color="#055bb7"
 IOSTimePickerDismissButtonForegroundBrush  Color="#055bb7"
-IOSTimePickerHeaderBackgroundBrush  Color="{ThemeResource SystemListLowColor}" 
+IOSTimePickerHeaderBackgroundBrush  Color="{ThemeResource SystemListLowColor}"
 ```
 If you want to show a dimmed overlay underneath the picker, set the `TimePicker.LightDismissOverlayMode` property to `On`.
 
@@ -61,3 +61,6 @@ Since **iOS14** the native `TimePicker` changed the way it's presented. By defau
 ```csharp
 Uno.UI.FeatureConfiguration.TimePicker.UseLegacyStyle = true;
 ```
+
+> [!IMPORTANT]
+> This feature flag is required and will only affect iOS 14 devices. As of **iOS 15**, the preferred style for the DatePicker is again the one found in iOS13 and earlier.

@@ -3,19 +3,16 @@
 namespace Windows.Devices.Sensors
 {
 	#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
 	public   enum AccelerometerReadingType 
 	{
 		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Standard,
+		Standard = 0,
 		#endif
 		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Linear,
+		Linear = 1,
 		#endif
 		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Gravity,
+		Gravity = 2,
 		#endif
 	}
 	#endif

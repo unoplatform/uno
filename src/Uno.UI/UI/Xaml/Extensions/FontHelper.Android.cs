@@ -12,8 +12,8 @@ using System.Linq;
 using Android.OS;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 
 namespace Windows.UI.Xaml
 {
@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml
 
 			try
 			{
-				if (typeof(FontHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (typeof(FontHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					typeof(FontHelper).Log().Debug($"Searching for font [{fontFamily.Source}]");
 				}
@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml
 					source = source.TrimStart("/assets/", StringComparison.OrdinalIgnoreCase);
 					source = FontFamilyHelper.RemoveHashFamilyName(source);
 
-					if (typeof(FontHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (typeof(FontHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						typeof(FontHelper).Log().Debug($"Searching for font as asset [{source}]");
 					}
@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml
 			}
 			catch (Exception e)
 			{
-				if (typeof(FontHelper).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				if (typeof(FontHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 				{
 					typeof(FontHelper).Log().Error("Unable to find font", e);
 

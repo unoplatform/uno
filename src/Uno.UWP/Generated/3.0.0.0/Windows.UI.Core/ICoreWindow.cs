@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Core
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface ICoreWindow 
@@ -25,12 +25,7 @@ namespace Windows.UI.Core
 			get;
 		}
 		#endif
-		#if false
-		global::Windows.UI.Core.CoreDispatcher Dispatcher
-		{
-			get;
-		}
-		#endif
+		// Skipping already declared property Dispatcher
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.UI.Core.CoreWindowFlowDirection FlowDirection
 		{
@@ -58,12 +53,7 @@ namespace Windows.UI.Core
 			get;
 		}
 		#endif
-		#if false
-		bool Visible
-		{
-			get;
-		}
-		#endif
+		// Skipping already declared property Visible
 		// Forced skipping of method Windows.UI.Core.ICoreWindow.AutomationHostProvider.get
 		// Forced skipping of method Windows.UI.Core.ICoreWindow.Bounds.get
 		// Forced skipping of method Windows.UI.Core.ICoreWindow.CustomProperties.get
@@ -128,9 +118,7 @@ namespace Windows.UI.Core
 		// Forced skipping of method Windows.UI.Core.ICoreWindow.SizeChanged.remove
 		// Forced skipping of method Windows.UI.Core.ICoreWindow.VisibilityChanged.add
 		// Forced skipping of method Windows.UI.Core.ICoreWindow.VisibilityChanged.remove
-		#if false
-		 event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Core.CoreWindow, global::Windows.UI.Core.WindowActivatedEventArgs> Activated;
-		#endif
+		// Skipping already declared event Windows.UI.Core.ICoreWindow.Activated
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		 event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Core.CoreWindow, global::Windows.UI.Core.AutomationProviderRequestedEventArgs> AutomationProviderRequested;
 		#endif
@@ -143,10 +131,10 @@ namespace Windows.UI.Core
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		 event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Core.CoreWindow, global::Windows.UI.Core.InputEnabledEventArgs> InputEnabled;
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if __ANDROID__ || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		 event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Core.CoreWindow, global::Windows.UI.Core.KeyEventArgs> KeyDown;
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if __ANDROID__ || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		 event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Core.CoreWindow, global::Windows.UI.Core.KeyEventArgs> KeyUp;
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -170,14 +158,10 @@ namespace Windows.UI.Core
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		 event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Core.CoreWindow, global::Windows.UI.Core.PointerEventArgs> PointerWheelChanged;
 		#endif
-		#if false
-		 event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Core.CoreWindow, global::Windows.UI.Core.WindowSizeChangedEventArgs> SizeChanged;
-		#endif
+		// Skipping already declared event Windows.UI.Core.ICoreWindow.SizeChanged
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		 event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Core.CoreWindow, global::Windows.UI.Core.TouchHitTestingEventArgs> TouchHitTesting;
 		#endif
-		#if false
-		 event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Core.CoreWindow, global::Windows.UI.Core.VisibilityChangedEventArgs> VisibilityChanged;
-		#endif
+		// Skipping already declared event Windows.UI.Core.ICoreWindow.VisibilityChanged
 	}
 }

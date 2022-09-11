@@ -11,7 +11,12 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal partial class FlowLayoutAlgorithm : OrientationBasedMeasures
+	#if HAS_UNO_WINUI
+	public
+#else
+	internal
+#endif
+	partial class FlowLayoutAlgorithm : OrientationBasedMeasures
 	{
 		private enum GenerateDirection
 		{
@@ -59,7 +64,7 @@ namespace Microsoft.UI.Xaml.Controls
 			context.LayoutStateCore = null;
 		}
 
-		public Size Measure(
+		internal Size Measure(
 			Size availableSize,
 			VirtualizingLayoutContext context,
 			bool isWrapping,

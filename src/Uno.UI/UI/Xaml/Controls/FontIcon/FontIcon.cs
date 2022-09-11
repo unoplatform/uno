@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(string),
 				typeof(FontIcon),
 				new FrameworkPropertyMetadata(
-					null,
+					string.Empty,
 					(s, e) => ((FontIcon)s).OnGlyphChanged((string)e.NewValue)));
 
 		private void OnGlyphChanged(string newValue)
@@ -193,10 +193,9 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnForegroundChanged(DependencyPropertyChangedEventArgs e)
 		{
-			var solidColorBrush = e.NewValue as SolidColorBrush;
-			if (solidColorBrush != null && _textBlock != null)
+			if (_textBlock != null)
 			{
-				_textBlock.Foreground = solidColorBrush;
+				_textBlock.Foreground = e.NewValue as Brush;
 			}
 		}
 	}

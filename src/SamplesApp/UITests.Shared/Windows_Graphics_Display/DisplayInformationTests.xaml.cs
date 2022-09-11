@@ -20,7 +20,7 @@ namespace UITests.Shared.Windows_Graphics_Display
 		}
 	}
 
-	public class DisplayInformationTestsViewModel : ViewModelBase
+	internal class DisplayInformationTestsViewModel : ViewModelBase
 	{
 		private bool _dpiChangesOn = false;
 		private bool _orientationChangesOn = false;

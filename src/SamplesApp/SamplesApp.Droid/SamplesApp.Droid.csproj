@@ -15,18 +15,20 @@
     <AndroidApplication>true</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-    <TargetFrameworkVersion>v11.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v12.0</TargetFrameworkVersion>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
     <ResourcesDirectory>..\SamplesApp.Shared\Strings</ResourcesDirectory>
     <AndroidUseAapt2>true</AndroidUseAapt2>
+    <!-- Workaround for https://github.com/xamarin/xamarin-android/issues/6480 -->
+    <AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
   </PropertyGroup>
   <PropertyGroup>
     <IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>portable</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE;XAMARIN;HAS_UNO</DefineConstants>
@@ -34,16 +36,18 @@
     <WarningLevel>4</WarningLevel>
     <AndroidUseSharedRuntime>True</AndroidUseSharedRuntime>
     <AndroidLinkMode>None</AndroidLinkMode>
-    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
-    <BundleAssemblies>false</BundleAssemblies>
     <MandroidI18n />
-    <AndroidSupportedAbis>armeabi-v7a;x86;arm64-v8a</AndroidSupportedAbis>
+    <AndroidSupportedAbis>armeabi-v7a;x86;x86_64;arm64-v8a</AndroidSupportedAbis>
     <AndroidPackageFormat>apk</AndroidPackageFormat>
     <AndroidUseAapt2>true</AndroidUseAapt2>
+    <!-- Workaround for https://github.com/xamarin/xamarin-android/issues/6480 -->
+    <AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
+    <BundleAssemblies>false</BundleAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -60,14 +64,13 @@
     <EnableLLVM>false</EnableLLVM>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
     <BundleAssemblies>false</BundleAssemblies>
-    <AndroidSupportedAbis>armeabi-v7a;x86;arm64-v8a</AndroidSupportedAbis>
+    <AndroidSupportedAbis>armeabi-v7a;x86;x86_64;arm64-v8a</AndroidSupportedAbis>
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
     <AndroidEnableSGenConcurrent>true</AndroidEnableSGenConcurrent>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
     <Reference Include="Mono.Android.Export" />
-    <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression" />
@@ -85,31 +88,27 @@
     <PackageReference Include="Microsoft.Identity.Client">
       <Version>4.15.0</Version>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.3</Version>
-    </PackageReference>
     <PackageReference Include="Uno.CodeGen">
-      <Version>1.32.0</Version>
+      <Version>1.34.0</Version>
     </PackageReference>
-    <PackageReference Include="Uno.UniversalImageLoader" Version="1.9.35" />
+    <PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
     <PackageReference Include="Xamarin.AndroidX.AppCompat.AppCompatResources">
-      <Version>1.2.0.7</Version>
+      <Version>1.3.1.3</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.AndroidX.Browser">
-      <Version>1.0.0</Version>
-    </PackageReference>
+    <PackageReference Include="Xamarin.AndroidX.Browser"  Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
     <PackageReference Include="Uno.SourceGenerationTasks" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
-    <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.2.0.2" />
-    <PackageReference Include="Xamarin.AndroidX.Fragment" Version="1.3.0.1" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.4.0.1" />
+    <PackageReference Include="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
+    <PackageReference Include="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
+    <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
     <PackageReference Include="Uno.BenchmarkDotNet" Version="0.11.7-develop" />
     <PackageReference Include="Uno.BenchmarkDotNet.Annotations" Version="0.11.7-develop" />
-    <PackageReference Include="Xamarin.AndroidX.RecyclerView" Version="1.1.0.8" />
-    <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.2.0.7" />
+    <PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj">
@@ -124,9 +123,17 @@
       <Project>{528AE586-5DF3-4DAD-AA5C-F12F4D5E0605}</Project>
       <Name>Uno.Foundation</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Uno.UI.DualScreen\Uno.UI.DualScreen.csproj">
+    <ProjectReference Include="..\..\Uno.UI.Foldable\Uno.UI.Foldable.csproj">
       <Project>{c187cd35-e5b4-4054-99c2-5d85ad9d6c73}</Project>
-      <Name>Uno.UI.DualScreen</Name>
+      <Name>Uno.UI.Foldable</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Uno.UI.Composition\Uno.UI.Composition.csproj">
+      <Project>{39c20ebb-59d8-43e5-9cf6-390521c0c82a}</Project>
+      <Name>Uno.UI.Composition</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.csproj">
+      <Project>{ac6e2bd5-3902-46f4-8ea9-9bef09d8b39c}</Project>
+      <Name>Uno.UI.Dispatching</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Uno.UI.Maps\Uno.UI.Maps.csproj">
       <Project>{f25ccf70-5a21-4245-ae4e-342bc55f9e86}</Project>
@@ -156,17 +163,25 @@
       <Project>{58332380-4302-4259-8F36-AF572C53827F}</Project>
       <Name>Uno.UI.BindingHelper.Android</Name>
     </ProjectReference>
-		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj">
-			<Project>{535339e2-6c01-4478-9889-f6e76b1c00f4}</Project>
-			<Name>Uno.UI.FluentTheme</Name>
-		</ProjectReference>
-		<ProjectReference Include="..\..\Uno.UI.FluentTheme.v1\Uno.UI.FluentTheme.v1.csproj">
-			<Name>Uno.UI.FluentTheme.v1</Name>
-		</ProjectReference>
-		<ProjectReference Include="..\..\Uno.UI.FluentTheme.v2\Uno.UI.FluentTheme.v2.csproj">
-			<Name>Uno.UI.FluentTheme.v2</Name>
-		</ProjectReference>
-	</ItemGroup>
+    <ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj">
+      <Project>{535339e2-6c01-4478-9889-f6e76b1c00f4}</Project>
+      <Name>Uno.UI.FluentTheme</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Uno.UI.FluentTheme.v1\Uno.UI.FluentTheme.v1.csproj">
+      <Name>Uno.UI.FluentTheme.v1</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Uno.UI.FluentTheme.v2\Uno.UI.FluentTheme.v2.csproj">
+      <Name>Uno.UI.FluentTheme.v2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj">
+      <Project>{76875e6f-30f3-4225-821f-11a299bcbdb0}</Project>
+      <Name>Uno.Foundation.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj">
+      <Project>{637995af-2ddf-4b13-bde6-353bbd65250b}</Project>
+      <Name>Uno.UI.Adapter.Microsoft.Extensions.Logging</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
@@ -206,8 +221,7 @@
   <Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\Benchmarks.Shared\Benchmarks.Shared.projitems" Label="Shared" />
-	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" />
-  <Target Name="GenerateBuild" DependsOnTargets="SignAndroidPackage" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(UnoSampleAppDisableAPKGeneration)'==''" />
+  <Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
      Other similar extension points exist, see Microsoft.Common.targets.
 		<Target Name="BeforeBuild">
@@ -226,5 +240,23 @@
       <_MyMdpiAsset>%(_myFilteredGroup.LogicalName)</_MyMdpiAsset>
     </PropertyGroup>
     <Error Condition="!$(_MyMdpiAsset.Contains('-nodpi'))" Text="The file nodpi-validationresource.jpeg does not exist under drawable-nodpi directory" />
+  </Target>
+  <Target Name="_ValidateAndroidSupportedAbis" BeforeTargets="BeforeBuild">
+    <Error Condition="'$(AndroidSupportedAbis)' != 'armeabi-v7a;x86;x86_64;arm64-v8a'" Text="The target list isn't correct, it must be 'armeabi-v7a;x86;x86_64;arm64-v8a'" />
+  </Target>
+  <Target Name="_FilterInvalidMacOSmsorlibReference" BeforeTargets="BeforeBuild">
+    <!--Condition="$([MSBuild]::IsOsPlatform('OSX'))"-->
+    <!--
+		On macOS, starting from android 12, the tooling includes two versions of mscorlib:
+
+				CSC error CS1703: Multiple assemblies with equivalent identity have been imported: '/Library/Frameworks/Mono.framework/External/xbuild-frameworks/MonoAndroid/v1.0/mscorlib.dll'
+				and '/Library/Frameworks/Mono.framework/Versions/6.12.0/lib/mono/4.5/mscorlib.dll'. Remove one of the duplicate references.
+
+		We're removing one of the explicit reference for the build to continue.
+		-->
+    <ItemGroup>
+      <_FilteredExplicitReference Include="@(_ExplicitReference)" Condition="'%(_ExplicitReference.FileName)'=='mscorlib'" />
+      <_ExplicitReference Remove="@(_FilteredExplicitReference)" />
+    </ItemGroup>
   </Target>
 </Project>

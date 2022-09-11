@@ -1536,6 +1536,27 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		}
 
 		[TestMethod]
+		public void Drag_CompleteGesture()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Drag };
+			var drags = new List<DraggingEventArgs>();
+			sut.Dragging += (snd, e) => drags.Add(e);
+
+			using var _ = Touch();
+
+			sut.ProcessDownEvent(25, 25, ts: 0);
+			sut.ProcessMoveEvent(26, 26, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 1);
+			var start = sut.ProcessMoveEvent(50, 50, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 2);
+			var move = sut.ProcessMoveEvent(51, 51, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 1);
+			var end = sut.ProcessUpEvent(52, 52, ts: GestureRecognizer.DragWithTouchMinDelayTicks + 2);
+
+			drags.Should().BeEquivalentTo(
+				Drag(start, DraggingState.Started),
+				Drag(move, DraggingState.Continuing),
+				Drag(end, DraggingState.Completed));
+		}
+
+		[TestMethod]
 		public void Drag_And_Holding_Touch()
 		{
 			var delay = (ulong)Math.Max(GestureRecognizer.DragWithTouchMinDelayTicks, GestureRecognizer.HoldMinDelayTicks);

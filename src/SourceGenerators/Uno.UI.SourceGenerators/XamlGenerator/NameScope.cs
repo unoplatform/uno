@@ -1,10 +1,6 @@
 ﻿#nullable enable
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -19,6 +15,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public string Name => $"{Namespace.Replace(".", "")}{ClassName}";
 		public string Namespace { get; private set; }
 		public string ClassName { get; private set; }
+
+		/// <summary>
+		/// Used to detect duplicate x:Name and report error for those.
+		/// </summary>
+		public HashSet<string> DeclaredNames { get; } = new HashSet<string>();
 
 		public List<BackingFieldDefinition> BackingFields { get; } = new List<BackingFieldDefinition>();
 
@@ -36,7 +37,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public Dictionary<string, Subclass> Subclasses { get; } = new Dictionary<string, Subclass>();
 
-		public List<XamlObjectDefinition> Components { get; } = new List<XamlObjectDefinition>();
+		public List<ComponentDefinition> Components { get; } = new List<ComponentDefinition>();
 
 		public List<XamlObjectDefinition> XBindExpressions { get; } = new List<XamlObjectDefinition>();
 

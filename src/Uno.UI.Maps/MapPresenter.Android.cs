@@ -16,13 +16,13 @@ using Android.Gms.Maps.Model;
 using Android.Views;
 using Uno.Disposables;
 using Uno.Extensions;
-using Uno.Logging;
 using Uno.UI;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Markup;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Controls.Maps.Presenters
 {
@@ -86,7 +86,7 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 			_map = map;
 			_map.MyLocationEnabled = false;
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().Debug("GoogleMap instance is ready");
 			}

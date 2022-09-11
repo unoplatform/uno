@@ -148,6 +148,7 @@ namespace Windows.UI.Xaml
 			{
 				GridUnitType.Auto => "Auto",
 				GridUnitType.Pixel => $"{Value:f1}px",
+				GridUnitType.Star when Value == 1.0 => "*",
 				GridUnitType.Star => $"{Value:f1}*",
 				_ => "invalid"
 			};

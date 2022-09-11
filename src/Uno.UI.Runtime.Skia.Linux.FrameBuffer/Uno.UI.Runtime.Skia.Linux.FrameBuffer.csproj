@@ -13,7 +13,6 @@
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<Authors>nventive</Authors>
 		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
-		<PackageIconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</PackageIconUrl>
 		<PackageIcon>uno.png</PackageIcon>
 		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<Description>This package provides the platform support for Skia / Linux framebuffer in Uno Platform projects.</Description>
@@ -24,7 +23,7 @@
 		<RootNamespace>Uno.WinUI.Runtime.Skia.Linux.FrameBuffer</RootNamespace>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
-		
+
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
@@ -40,7 +39,9 @@
 
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" />
 		<PackageReference Include="SkiaSharp" />
+		<PackageReference Include="SkiaSharp.Harfbuzz" />
 	</ItemGroup>
 
 	<ItemGroup>

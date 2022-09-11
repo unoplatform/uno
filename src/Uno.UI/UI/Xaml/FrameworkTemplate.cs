@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml
 	
 	public partial class FrameworkTemplate : DependencyObject
 	{
-		private readonly FrameworkTemplateBuilder? _viewFactory;
+		internal readonly FrameworkTemplateBuilder? _viewFactory;
 		private readonly int _hashCode;
 		private readonly ManagedWeakReference? _ownerRef;
 

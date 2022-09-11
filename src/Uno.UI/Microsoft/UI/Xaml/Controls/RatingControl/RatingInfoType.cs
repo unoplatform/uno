@@ -1,11 +1,12 @@
-﻿// MUX Reference RatingControl.h, commit de78834
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference RatingControl.h, commit b853109
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+internal enum RatingInfoType
 {
-	internal enum RatingInfoType
-	{
-		None,
-		Font,
-		Image
-	}
+	None,
+	Font,
+	Image
 }

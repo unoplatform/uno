@@ -444,6 +444,9 @@ namespace Windows.UI.Xaml.Controls
 
 			// Cleanup
 			// return hr;
+
+			// Return allocated memory to the pool
+			spanStore.Dispose();
 		}
 
 		// Measure a child of the Grid by taking in consideration the properties of
@@ -1324,6 +1327,9 @@ namespace Windows.UI.Xaml.Controls
 
 				desiredSize.Width = GetDesiredInnerSize(m_pColumns) + combinedColumnSpacing;
 				desiredSize.Height = GetDesiredInnerSize(m_pRows) + combinedRowSpacing;
+
+				// Return memory to the array pool
+				cellCacheVector.Dispose();
 			}
 
 			desiredSize.Width += combinedThickness.Width;

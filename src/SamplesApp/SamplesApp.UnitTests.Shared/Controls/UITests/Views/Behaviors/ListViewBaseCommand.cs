@@ -1,8 +1,11 @@
 ﻿using System.Windows.Input;
 using System.Runtime.CompilerServices;
-using Uno.Extensions;
-using Uno.Logging;
 using Uno.UI.Samples.Helper;
+using Uno.Extensions;
+
+#if HAS_UNO
+using Uno.Foundation.Logging;
+#endif
 
 #if NETFX_CORE
 using Windows.ApplicationModel.Store;
@@ -10,6 +13,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
+using Microsoft.Extensions.Logging;
+using Uno.Logging;
 #elif XAMARIN || UNO_REFERENCE_API
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
@@ -26,9 +31,15 @@ namespace Uno.UI.Samples.Behaviors
 
 	public static class ListViewBaseCommand
 	{
+#if HAS_UNO
+		private static readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(ListViewBaseCommand));
+#else
+		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(ListViewBaseCommand));
+#endif
+
 		private static readonly ConditionalWeakTable<ListViewBase, ItemClickEventHandler> _registeredItemClickEventHandler = new ConditionalWeakTable<ListViewBase, ItemClickEventHandler>();
 
-		#region Attached Properties
+#region Attached Properties
 
 		public static DependencyProperty CommandProperty { get ; } =
 			DependencyProperty.RegisterAttached("Command", typeof(ICommand), typeof(ListViewBaseCommand), new PropertyMetadataHelper(new PropertyChangedCallback(OnCommandChanged)));
@@ -56,7 +67,7 @@ namespace Uno.UI.Samples.Behaviors
 			obj.SetValue(CommandParameterProperty, value);
 		}
 
-		#endregion
+#endregion
 
 		private static void OnCommandChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
 		{
@@ -65,7 +76,7 @@ namespace Uno.UI.Samples.Behaviors
 			{
 				if (!listView.IsItemClickEnabled)
 				{
-					sender.Log().Warn("IsItemClickEnabled is not enabled on the associated list. This must be enabled to make this behavior work");
+					_log.Warn("IsItemClickEnabled is not enabled on the associated list. This must be enabled to make this behavior work");
 				}
 
 				// Be sure to not have multiples handlers for the same listview command if command change.

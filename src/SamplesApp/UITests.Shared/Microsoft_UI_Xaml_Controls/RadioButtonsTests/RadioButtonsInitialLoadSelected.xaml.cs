@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests
 {
-	[Sample("RadioButtons", "WinUI")]
+	[Sample("Buttons", "MUX")]
 	public sealed partial class RadioButtonsInitialLoadSelected : Page
     {
         public RadioButtonsInitialLoadSelected()

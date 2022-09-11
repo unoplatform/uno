@@ -3,6 +3,6 @@
 namespace Windows.UI.Xaml.Input
 {
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public delegate void HoldingEventHandler(object @sender, global::Windows.UI.Xaml.Input.HoldingRoutedEventArgs @e);
+	public delegate void HoldingEventHandler(object sender, global::Windows.UI.Xaml.Input.HoldingRoutedEventArgs e);
 	#endif
 }

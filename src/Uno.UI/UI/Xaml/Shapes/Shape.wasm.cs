@@ -80,7 +80,7 @@ namespace Windows.UI.Xaml.Shapes
 			switch (fill)
 			{
 				case SolidColorBrush scb:
-					svgElement.SetStyle("fill", scb.ColorWithOpacity.ToHexString());
+					Uno.UI.Xaml.WindowManagerInterop.SetElementFill(svgElement.HtmlId, scb.ColorWithOpacity);
 					_fillBrushSubscription.Disposable = null;
 					break;
 				case ImageBrush ib:

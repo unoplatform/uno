@@ -182,6 +182,34 @@ namespace Windows.ApplicationModel.Calls
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.TransportDeviceId.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.ApplicationModel.Calls.PhoneLineDialResult DialWithResult( string number,  string displayName)
+		{
+			throw new global::System.NotImplementedException("The member PhoneLineDialResult PhoneLine.DialWithResult(string number, string displayName) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneLineDialResult> DialWithResultAsync( string number,  string displayName)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneLineDialResult> PhoneLine.DialWithResultAsync(string number, string displayName) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.ApplicationModel.Calls.PhoneCallsResult GetAllActivePhoneCalls()
+		{
+			throw new global::System.NotImplementedException("The member PhoneCallsResult PhoneLine.GetAllActivePhoneCalls() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneCallsResult> GetAllActivePhoneCallsAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneCallsResult> PhoneLine.GetAllActivePhoneCallsAsync() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneLine> FromIdAsync( global::System.Guid lineId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneLine> PhoneLine.FromIdAsync(Guid lineId) is not implemented in Uno.");

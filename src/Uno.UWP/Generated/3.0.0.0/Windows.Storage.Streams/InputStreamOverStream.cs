@@ -2,25 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Streams
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class InputStreamOverStream : global::Windows.Storage.Streams.IInputStream,global::System.IDisposable
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Storage.Streams.IBuffer, uint> ReadAsync( global::Windows.Storage.Streams.IBuffer buffer,  uint count,  global::Windows.Storage.Streams.InputStreamOptions options)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<IBuffer, uint> InputStreamOverStream.ReadAsync(IBuffer buffer, uint count, InputStreamOptions options) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.InputStreamOverStream", "void InputStreamOverStream.Dispose()");
-		}
-		#endif
+		// Skipping already declared method Windows.Storage.Streams.InputStreamOverStream.ReadAsync(Windows.Storage.Streams.IBuffer, uint, Windows.Storage.Streams.InputStreamOptions)
+		// Skipping already declared method Windows.Storage.Streams.InputStreamOverStream.Dispose()
 		// Processing: Windows.Storage.Streams.IInputStream
 		// Processing: System.IDisposable
 	}

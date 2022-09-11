@@ -3,6 +3,6 @@
 namespace Windows.UI.Xaml.Controls
 {
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public delegate void SectionsInViewChangedEventHandler(object @sender, global::Windows.UI.Xaml.Controls.SectionsInViewChangedEventArgs @e);
+	public delegate void SectionsInViewChangedEventHandler(object sender, global::Windows.UI.Xaml.Controls.SectionsInViewChangedEventArgs e);
 	#endif
 }

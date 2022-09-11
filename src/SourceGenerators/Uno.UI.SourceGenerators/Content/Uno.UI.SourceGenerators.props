@@ -1,33 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <!-- Legacy tasks to allow for smoother upgrade from Uno.UI.Tasks -->
-  <Target Name="XamlGeneration" />
-  <Target Name="BindableMetadataGenerator" />
+	<!-- Legacy tasks to allow for smoother upgrade from Uno.UI.Tasks -->
+	<Target Name="XamlGeneration" />
+	<Target Name="BindableMetadataGenerator" />
 
-  <PropertyGroup>
-	<_isRoslynAnalyzerAvailable Condition="'$(MSBuildVersion)' &gt;= '16.8'">true</_isRoslynAnalyzerAvailable>
-	<_canUseRoslynAnalyzer Condition="'$(LangVersion)' == 'preview' or ('$(LangVersion)'!='' and $(LangVersion.Contains('.')) and '$(LangVersion)'&gt;='9.0')">true</_canUseRoslynAnalyzer>
-	<UnoUIUseRoslynSourceGenerators Condition="'$(UnoUIUseRoslynSourceGenerators)'=='' and '$(_isRoslynAnalyzerAvailable)' == 'true' and '$(_canUseRoslynAnalyzer)'=='true'">true</UnoUIUseRoslynSourceGenerators>
-	<UnoUIUseRoslynSourceGenerators Condition="'$(UnoUIUseRoslynSourceGenerators)'==''">false</UnoUIUseRoslynSourceGenerators>
+	<PropertyGroup>
+		<_isRoslynAnalyzerAvailable Condition="'$(MSBuildVersion)' &gt;= '16.8'">true</_isRoslynAnalyzerAvailable>
 
-	<XamarinProjectType Condition="'$(ProjectTypeGuids)'=='{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' or $(TargetFramework.ToLower().StartsWith('xamarinios')) or '$(TargetPlatformIdentifier)' == 'ios' OR '$(TargetFramework)' == 'net6.0-ios'">ios</XamarinProjectType>
-	<XamarinProjectType Condition="'$(ProjectTypeGuids)'=='{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' or $(TargetFramework.ToLower().StartsWith('monoandroid')) or '$(TargetPlatformIdentifier)' == 'android' OR '$(TargetFramework)' == 'net6.0-android'">android</XamarinProjectType>
-	<XamarinProjectType Condition="'$(ProjectTypeGuids)'=='{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' or '$(TargetFramework)'=='xamarinmac20'">macos</XamarinProjectType>
-	<XamarinProjectType Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">wasm</XamarinProjectType>
-	<XamarinProjectType Condition="'$(UnoRuntimeIdentifier)'=='Skia'">skia</XamarinProjectType>
-	<XamarinProjectType Condition="'$(TargetFramework)'=='net461'">net461</XamarinProjectType>
-  </PropertyGroup>
+		<_canUseRoslynAnalyzer Condition="
+							'$(LangVersion)' == 'preview'
+							Or '$(LangVersion)' == 'latest'
+							Or '$(LangVersion)' == 'latestMajor'
+							Or '$(LangVersion)' == 'default'
+							Or (
+								'$(LangVersion)'!=''
+								and '$(LangVersion)' &gt; '9.0'
+							)">true</_canUseRoslynAnalyzer>
 
-  <Choose>
-	<When Condition="'$(UnoUIUseRoslynSourceGenerators)'=='true'">
-	  <!-- C# 9.0 Generator -->
+		<UnoUIUseRoslynSourceGenerators Condition="'$(UnoUIUseRoslynSourceGenerators)'=='' and '$(_isRoslynAnalyzerAvailable)' == 'true' and '$(_canUseRoslynAnalyzer)'=='true'">true</UnoUIUseRoslynSourceGenerators>
+		<UnoUIUseRoslynSourceGenerators Condition="'$(UnoUIUseRoslynSourceGenerators)'==''">false</UnoUIUseRoslynSourceGenerators>
 
-	 <PropertyGroup>
-	   <UnoUIUseRoslynSourceGeneratorsValue>$(UnoUIUseRoslynSourceGenerators)</UnoUIUseRoslynSourceGeneratorsValue>
-	 </PropertyGroup>
+		<XamarinProjectType Condition="'$(ProjectTypeGuids)'=='{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' or $(TargetFramework.ToLower().StartsWith('xamarinios')) or '$(TargetPlatformIdentifier)' == 'ios' OR '$(TargetFramework)' == 'net6.0-ios' OR '$(TargetFramework)' == 'net6.0-maccatalyst'">ios</XamarinProjectType>
+		<XamarinProjectType Condition="'$(ProjectTypeGuids)'=='{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' or $(TargetFramework.ToLower().StartsWith('monoandroid')) or '$(TargetPlatformIdentifier)' == 'android' OR '$(TargetFramework)' == 'net6.0-android'">android</XamarinProjectType>
+		<XamarinProjectType Condition="'$(ProjectTypeGuids)'=='{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}' or '$(TargetFramework)'=='xamarinmac20'">macos</XamarinProjectType>
+		<XamarinProjectType Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">wasm</XamarinProjectType>
+		<XamarinProjectType Condition="'$(UnoRuntimeIdentifier)'=='Skia'">skia</XamarinProjectType>
+		<XamarinProjectType Condition="'$(TargetFramework)'=='net461'">net461</XamarinProjectType>
+	</PropertyGroup>
 
-	  <ItemGroup>
+  <ItemGroup Condition="'$(WindowsAppSDKWinUI)'!='true'">
 		<CompilerVisibleProperty Include="TargetPlatformIdentifier" />
 		<CompilerVisibleProperty Include="TargetFramework" />
 		<CompilerVisibleProperty Include="ProjectTypeGuidsProperty" />
@@ -42,9 +44,12 @@
 		<CompilerVisibleProperty Include="BuildingProject" />
 		<CompilerVisibleProperty Include="DesignTimeBuild" />
 		<CompilerVisibleProperty Include="UnoUISourceGeneratorDebuggerBreak" />
+		<CompilerVisibleProperty Include="UnoXamlHistoricalOutputGenerationPath" />
+		<CompilerVisibleProperty Include="IsHotReloadHost" />
 
 		<CompilerVisibleProperty Include="UseWPF" />
 		<CompilerVisibleProperty Include="IsUnoHead" />
+		<CompilerVisibleProperty Include="WindowsAppSDKWinUI" />
 		<CompilerVisibleProperty Include="UnoRemoteControlPort" />
 		<CompilerVisibleProperty Include="UnoRemoteControlHost" />
 		<CompilerVisibleProperty Include="UnoRemoteControlProcessorsPath" />
@@ -64,346 +69,418 @@
 		<CompilerVisibleProperty Include="BaseIntermediateOutputPath"/>
 		<CompilerVisibleProperty Include="AssemblyName"/>
 
-		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
-		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Link" />
-        <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="FullPath" />
-        <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Identity" />
-	  </ItemGroup>
+	  <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
+	  <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Link" />
+	  <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="FullPath" />
+	  <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Identity" />
+	  <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="XamlRuntime" />
+  </ItemGroup>
 
-	</When>
-	<Otherwise>
-	  <PropertyGroup Condition="'$(UnoUIGeneratorsBinPath)'==''">
-		<_UnoUIGeneratorsBinPathInPackage>$(MSBuildThisFileDirectory)..\tools\uno-sourcegen</_UnoUIGeneratorsBinPathInPackage>
-		<_UnoUIGeneratorsBinPathInSource>$(MSBuildThisFileDirectory)..\bin\$(Configuration)\net461</_UnoUIGeneratorsBinPathInSource>
-		<UnoUIGeneratorsBinPath Condition="exists('$(_UnoUIGeneratorsBinPathInPackage)')">$(_UnoUIGeneratorsBinPathInPackage)</UnoUIGeneratorsBinPath>
-		<UnoUIGeneratorsBinPath Condition="exists('$(_UnoUIGeneratorsBinPathInSource)')">$(_UnoUIGeneratorsBinPathInSource)</UnoUIGeneratorsBinPath>
-	  </PropertyGroup>
-	  <ItemGroup>
-		<SourceGenerator Include="$(UnoUIGeneratorsBinPath)\Uno.UI.SourceGenerators.dll" />
-	  </ItemGroup>
-	</Otherwise>
-  </Choose>
+	<Choose>
+		<When Condition="'$(UnoUIUseRoslynSourceGenerators)'=='true' and '$(WindowsAppSDKWinUI)'!='true'">
+			<!-- C# 9.0 Generator -->
 
-  <Target Name="OverrideUnoSolutionTarget"
-		  BeforeTargets="CoreCompile"
-		  Condition="exists('$(MSBuildThisFileDirectory)..\Uno.UI.SourceGenerators.csproj')">
+			<PropertyGroup>
+				<UnoUIUseRoslynSourceGeneratorsValue>$(UnoUIUseRoslynSourceGenerators)</UnoUIUseRoslynSourceGeneratorsValue>
+			</PropertyGroup>
 
-	<ItemGroup >
-	  <Analyzer Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\*.dll" />
-	  <AdditionalFiles Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\*.dll"/>
-	  <!-- generator is automatically included in nuget package, no need to add it here -->
-	</ItemGroup>
-  </Target>
+		</When>
+		<Otherwise>
+			<PropertyGroup Condition="'$(UnoUIGeneratorsBinPath)'=='' and '$(WindowsAppSDKWinUI)'!='true'">
+				<_UnoUIGeneratorsBinPathInPackage>$(MSBuildThisFileDirectory)..\tools\uno-sourcegen</_UnoUIGeneratorsBinPathInPackage>
+				<_UnoUIGeneratorsBinPathInSource>$(MSBuildThisFileDirectory)..\bin\$(Configuration)\net461</_UnoUIGeneratorsBinPathInSource>
+				<UnoUIGeneratorsBinPath Condition="exists('$(_UnoUIGeneratorsBinPathInPackage)')">$(_UnoUIGeneratorsBinPathInPackage)</UnoUIGeneratorsBinPath>
+				<UnoUIGeneratorsBinPath Condition="exists('$(_UnoUIGeneratorsBinPathInSource)')">$(_UnoUIGeneratorsBinPathInSource)</UnoUIGeneratorsBinPath>
+			</PropertyGroup>
+			<ItemGroup Condition="'$(WindowsAppSDKWinUI)'!='true'">
+				<SourceGenerator Include="$(UnoUIGeneratorsBinPath)\Uno.UI.SourceGenerators.dll" />
+			</ItemGroup>
+		</Otherwise>
+	</Choose>
 
-  <ItemGroup>
+	<Target Name="OverrideUnoSolutionTarget"
+			BeforeTargets="CoreCompile"
+			Condition="exists('$(MSBuildThisFileDirectory)..\Uno.UI.SourceGenerators.csproj')">
 
-	<ExcludeXamlNamespaces Include="win" />
-	<ExcludeXamlNamespaces Include="not_mux" Condition="'$(UNO_UWP_BUILD)'!='true'" />
-	
-	<!-- iOS -->
-	<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="android" />
-	<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_ios" />
-	<!-- macOS -->
-	<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_macos" />
-	<!-- Android -->
-	<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="ios" />
-	<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_android" />
-	<!--WASM-->
-	<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="not_wasm" />
-	<!--Skia-->
-	<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_skia" />
+		<ItemGroup >
+			<_UnoAnalyzerExclusion Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\Microsoft.CodeAnalysis.*.dll" />
+			<_UnoAnalyzerExclusion Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\System.*.dll" />
 
-	<!-- 
+			<Analyzer Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\*.dll"
+					Exclude="@(_UnoAnalyzerExclusion)" />
+			<!-- generator is automatically included in nuget package, no need to add it here -->
+		</ItemGroup>
+	</Target>
+
+	<ItemGroup>
+
+		<ExcludeXamlNamespaces Include="win" />
+		<ExcludeXamlNamespaces Include="not_mux" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+
+		<!-- iOS -->
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="android" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="wasm" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="macos" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="skia" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_ios" />
+		<!-- macOS -->
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="android" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="ios" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="wasm" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="skia" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_macos" />
+		<!-- Android -->
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="ios" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="wasm" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="macos" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="skia" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_android" />
+		<!--WASM-->
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="android" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="ios" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="macos" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="skia" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="not_wasm" />
+		<!--Skia-->
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="android" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="ios" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="wasm" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="macos" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_skia" />
+
+		<!-- 
 			Those namespaces are to be *included* from the code generation,
 			regardless of their presence in the Ignorable section of a Xaml file.
 			-->
-	<IncludeXamlNamespaces Include="xamarin" />
-	<IncludeXamlNamespaces Include="not_win" />
-	<IncludeXamlNamespaces Include="legacy" />
-	<!-- iOS -->
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="ios" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_android" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_wasm" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_macos" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_skia" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_netstdref" />
-	<!-- macOS -->
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="macos" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_android" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_wasm" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_ios" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_skia" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_netstdref" />
-	<!-- Android -->
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="android" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_ios" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_wasm" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_macos" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_skia" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_netstdref" />
-	<!-- WASM -->
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="wasm" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="netstdref" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="not_ios" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="not_android" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="not_macos" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="not_skia" />
-	<!-- Skia -->
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="skia" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="netstdref" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_ios" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_android" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_macos" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_wasm" />
-	<!-- NET461 -->
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="net461" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_ios" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_android" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_wasm" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_macos" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_skia" />
-	<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_netstdref" />
+		<IncludeXamlNamespaces Include="xamarin" />
+		<IncludeXamlNamespaces Include="not_win" />
+		<IncludeXamlNamespaces Include="legacy" />
+		<!-- iOS -->
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="ios" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_android" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_wasm" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_macos" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_skia" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_netstdref" />
+		<!-- macOS -->
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="macos" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_android" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_wasm" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_ios" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_skia" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_netstdref" />
+		<!-- Android -->
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="android" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_ios" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_wasm" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_macos" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_skia" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_netstdref" />
+		<!-- WASM -->
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="wasm" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="netstdref" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="not_ios" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="not_android" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="not_macos" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="not_skia" />
+		<!-- Skia -->
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="skia" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="netstdref" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_ios" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_android" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_macos" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_wasm" />
+		<!-- NET461 -->
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="net461" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_ios" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_android" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_wasm" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_macos" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_skia" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_netstdref" />
 
-	<!--
-				A list of analyzer suppressions to include in every generated class.
-				This is required for roslyn analyzers that do not support the GeneratedCodeAttribute.
-			-->
-	<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV0056" />
-	<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV0058" />
-	<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV1003" />
-	<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV0085" />
-	<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV2001" />
-	<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV2003" />
-	<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV2004" />
-	<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV2005" />
-  </ItemGroup>
+		<!--
+		A list of analyzer suppressions to include in every generated class.
+		This is required for roslyn analyzers that do not support the GeneratedCodeAttribute.
+		-->
+		<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV0056" />
+		<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV0058" />
+		<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV1003" />
+		<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV0085" />
+		<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV2001" />
+		<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV2003" />
+		<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV2004" />
+		<XamlGeneratorAnalyzerSuppressions Include="nventive.Usage-NV2005" />
 
-  <PropertyGroup>
-	<OutputSourceComments Condition="'$(OutputSourceComments)'=='' And '$(Configuration)'=='Debug'">True</OutputSourceComments>
-	<OutputSourceComments Condition="'$(OutputSourceComments)'==''">False</OutputSourceComments>
-  </PropertyGroup>
+		<XamlGeneratorAnalyzerSuppressions Include="csharp-618 // Ignore obsolete members warnings" />
+		<XamlGeneratorAnalyzerSuppressions Include="csharp-105 // Ignore duplicate namespaces" />
+		<XamlGeneratorAnalyzerSuppressions Include="csharp-1591 // Ignore missing XML comment warnings" />
+		<XamlGeneratorAnalyzerSuppressions Include="csharp-CS8669 // Ignore annotation for nullable reference types" />
 
-  <!--Default UI automation member mappings-->
-  <ItemGroup Condition="@(CustomUiAutomationMemberMapping)==''">
-	<CustomUiAutomationMemberMapping Include="nVentive.Umbrella.Views.Controls.AsyncValuePresenter">
-	  <Mappings>
-		DataSource
-	  </Mappings>
-	</CustomUiAutomationMemberMapping>
-	<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.IItemsControl">
-	  <Mappings>
-		ItemsSource
-	  </Mappings>
-	</CustomUiAutomationMemberMapping>
-	<CustomUiAutomationMemberMapping Include="Uno.UI.Controls.BindableListView">
-	  <Mappings>
-		ItemsSource
-	  </Mappings>
-	</CustomUiAutomationMemberMapping>
-	<CustomUiAutomationMemberMapping Include="Uno.UI.Controls.BindableGridView">
-	  <Mappings>
-		ItemsSource
-	  </Mappings>
-	</CustomUiAutomationMemberMapping>
-	<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.ItemsControl">
-	  <Mappings>
-		ItemsSource
-	  </Mappings>
-	</CustomUiAutomationMemberMapping>
-	<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.PasswordBox">
-	  <Mappings>
-		Password
-	  </Mappings>
-	</CustomUiAutomationMemberMapping>
-	<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.TextBox">
-	  <Mappings>
-		Text
-		Uno.UI.Behaviors.TextBoxBehavior.Text
-		nVentive.Umbrella.Views.Behaviors.TextBoxBehavior.Text
-		nVentive.Umbrella.Views.Behaviors.PasswordBoxBehavior.Text
-	  </Mappings>
-	</CustomUiAutomationMemberMapping>
-	<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.Button">
-	  <Mappings>
-		Command
-	  </Mappings>
-	</CustomUiAutomationMemberMapping>
-	<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.ToggleButton">
-	  <Mappings>
-		IsChecked
-	  </Mappings>
-	</CustomUiAutomationMemberMapping>
-	<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.HyperlinkButton">
-	  <Mappings>
-		Command
-	  </Mappings>
-	</CustomUiAutomationMemberMapping>
-	<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.TextBlock">
-	  <Mappings>
-		Text
-	  </Mappings>
-	</CustomUiAutomationMemberMapping>
-	<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.Image">
-	  <Mappings>
-		Source
-	  </Mappings>
-	</CustomUiAutomationMemberMapping>
-	<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.DatePicker">
-	  <Mappings>
-		Date
-	  </Mappings>
-	</CustomUiAutomationMemberMapping>
-	<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.ComboBox">
-	  <Mappings>
-		ItemsSource
-	  </Mappings>
-	</CustomUiAutomationMemberMapping>
-  </ItemGroup>
+		<!--
+		Ignore disposable fields, Uno manages those on its own.
+		https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1001
+		-->
+		<XamlGeneratorAnalyzerSuppressions Include="dotnet-CA1001" />
+	</ItemGroup>
 
-  <!-- ListView -->
-  <ItemGroup Condition="$(DefineConstants.Contains('LEGACY_LISTVIEW'))">
-	<!-- All -->
-	<LegacyTypes Include="Uno.UI.Controls.Legacy.GridView" />
-	<LegacyTypes Include="Uno.UI.Controls.Legacy.ListView" />
-	<!-- iOS -->
-	<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.GridViewSource" />
-	<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.GridViewWrapGridLayout" />
-	<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewBase" />
-	<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewBaseLayout" />
-	<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewBaseLayoutTemplate" />
-	<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewBaseSource" />
-	<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewLayout" />
-	<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewSource" />
-	<!-- Android -->
-	<LegacyTypes Condition="'$(XamarinProjectType)'=='android'" Include="Uno.UI.Controls.Legacy.HorizontalGridView" />
-	<LegacyTypes Condition="'$(XamarinProjectType)'=='android'" Include="Uno.UI.Controls.Legacy.HorizontalListView" />
-	<!-- Umbrella -->
-	<LegacyTypes Include="nVentive.Umbrella.Views.Behaviors.Legacy.ActiveListViewBaseBehavior" />
-	<LegacyTypes Include="nVentive.Umbrella.Views.Behaviors.Legacy.GroupedCollectionBehavior" />
-	<LegacyTypes Include="nVentive.Umbrella.Views.Behaviors.Legacy.ListViewBringIntoViewSelectedItemBehavior" />
-  </ItemGroup>
+	<PropertyGroup>
+		<OutputSourceComments Condition="'$(OutputSourceComments)'=='' And '$(Configuration)'=='Debug'">True</OutputSourceComments>
+		<OutputSourceComments Condition="'$(OutputSourceComments)'==''">False</OutputSourceComments>
+	</PropertyGroup>
 
-  <Target Name="_IncludeXamlFiles" BeforeTargets="_UnoSourceGenerator" DependsOnTargets="_FillSourceGeneratorItemGroups">
-	<!-- 
+	<!--Default UI automation member mappings-->
+	<ItemGroup Condition="@(CustomUiAutomationMemberMapping)==''">
+		<CustomUiAutomationMemberMapping Include="nVentive.Umbrella.Views.Controls.AsyncValuePresenter">
+			<Mappings>
+				DataSource
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.IItemsControl">
+			<Mappings>
+				ItemsSource
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Uno.UI.Controls.BindableListView">
+			<Mappings>
+				ItemsSource
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Uno.UI.Controls.BindableGridView">
+			<Mappings>
+				ItemsSource
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.ItemsControl">
+			<Mappings>
+				ItemsSource
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.PasswordBox">
+			<Mappings>
+				Password
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.TextBox">
+			<Mappings>
+				Text
+				Uno.UI.Behaviors.TextBoxBehavior.Text
+				nVentive.Umbrella.Views.Behaviors.TextBoxBehavior.Text
+				nVentive.Umbrella.Views.Behaviors.PasswordBoxBehavior.Text
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.Button">
+			<Mappings>
+				Command
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.ToggleButton">
+			<Mappings>
+				IsChecked
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.HyperlinkButton">
+			<Mappings>
+				Command
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.TextBlock">
+			<Mappings>
+				Text
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.Image">
+			<Mappings>
+				Source
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.DatePicker">
+			<Mappings>
+				Date
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+		<CustomUiAutomationMemberMapping Include="Windows.UI.Xaml.Controls.ComboBox">
+			<Mappings>
+				ItemsSource
+			</Mappings>
+		</CustomUiAutomationMemberMapping>
+	</ItemGroup>
+
+	<!-- ListView -->
+	<ItemGroup Condition="$(DefineConstants.Contains('LEGACY_LISTVIEW'))">
+		<!-- All -->
+		<LegacyTypes Include="Uno.UI.Controls.Legacy.GridView" />
+		<LegacyTypes Include="Uno.UI.Controls.Legacy.ListView" />
+		<!-- iOS -->
+		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.GridViewSource" />
+		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.GridViewWrapGridLayout" />
+		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewBase" />
+		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewBaseLayout" />
+		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewBaseLayoutTemplate" />
+		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewBaseSource" />
+		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewLayout" />
+		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewSource" />
+		<!-- Android -->
+		<LegacyTypes Condition="'$(XamarinProjectType)'=='android'" Include="Uno.UI.Controls.Legacy.HorizontalGridView" />
+		<LegacyTypes Condition="'$(XamarinProjectType)'=='android'" Include="Uno.UI.Controls.Legacy.HorizontalListView" />
+		<!-- Umbrella -->
+		<LegacyTypes Include="nVentive.Umbrella.Views.Behaviors.Legacy.ActiveListViewBaseBehavior" />
+		<LegacyTypes Include="nVentive.Umbrella.Views.Behaviors.Legacy.GroupedCollectionBehavior" />
+		<LegacyTypes Include="nVentive.Umbrella.Views.Behaviors.Legacy.ListViewBringIntoViewSelectedItemBehavior" />
+	</ItemGroup>
+
+	<Target Name="_IncludeXamlFiles" BeforeTargets="_UnoSourceGenerator" DependsOnTargets="_FillSourceGeneratorItemGroups">
+		<!-- 
 		This group is created as part of a target to ensure the 
 		capture of target-defined Pages 
 		-->
-	<ItemGroup>
-	  <SourceGeneratorInput Include="@(Page);@(ApplicationDefinition)" />
-	</ItemGroup>
-  </Target>
-
-  <ItemGroup>
-	<UnoSourceGeneratorAdditionalProperty Include="ExcludeXamlNamespacesProperty" />
-	<UnoSourceGeneratorAdditionalProperty Include="IncludeXamlNamespacesProperty" />
-	<UnoSourceGeneratorAdditionalProperty Include="XamlGeneratorAnalyzerSuppressionsProperty" />
-	<UnoSourceGeneratorAdditionalProperty Include="LegacyTypesProperty" />
-	<UnoSourceGeneratorAdditionalProperty Include="UnoUIUseRoslynSourceGenerators" />
-	<UnoSourceGeneratorAdditionalProperty Include="ProjectTypeGuidsProperty" />
-	<UnoSourceGeneratorAdditionalProperty Include="DefineConstantsProperty" />
-	<UnoSourceGeneratorAdditionalProperty Include="IsUiAutomationMappingEnabled" />
-  </ItemGroup>
-
-  <Target Name="_FillSourceGeneratorItemGroups">
+		<ItemGroup>
+			<SourceGeneratorInput Include="@(Page);@(ApplicationDefinition);@(UnoPage);@(UnoApplicationDefinition)" />
+		</ItemGroup>
+	</Target>
 
 	<ItemGroup>
-		<CustomUiAutomationMemberMappingAdjusted Include="@(CustomUiAutomationMemberMapping)" Mappings="$([System.String]::new('%(Mappings)').Replace('&#x0A;',','))" />
+		<UnoSourceGeneratorAdditionalProperty Include="ExcludeXamlNamespacesProperty" />
+		<UnoSourceGeneratorAdditionalProperty Include="IncludeXamlNamespacesProperty" />
+		<UnoSourceGeneratorAdditionalProperty Include="XamlGeneratorAnalyzerSuppressionsProperty" />
+		<UnoSourceGeneratorAdditionalProperty Include="LegacyTypesProperty" />
+		<UnoSourceGeneratorAdditionalProperty Include="UnoUIUseRoslynSourceGenerators" />
+		<UnoSourceGeneratorAdditionalProperty Include="ProjectTypeGuidsProperty" />
+		<UnoSourceGeneratorAdditionalProperty Include="DefineConstantsProperty" />
+		<UnoSourceGeneratorAdditionalProperty Include="IsUiAutomationMappingEnabled" />
 	</ItemGroup>
 
-	<CreateProperty Value="@(ExcludeXamlNamespaces, ',')">
-	  <Output
-			  TaskParameter="Value"
-			  PropertyName="ExcludeXamlNamespacesProperty" />
-	</CreateProperty>
+	<Target Name="_FillSourceGeneratorItemGroups">
 
-	<CreateProperty Value="@(IncludeXamlNamespaces, ',')">
-	  <Output
-			  TaskParameter="Value"
-			  PropertyName="IncludeXamlNamespacesProperty" />
-	</CreateProperty>
+		<ItemGroup>
+			<CustomUiAutomationMemberMappingAdjusted Include="@(CustomUiAutomationMemberMapping)" Mappings="$([System.String]::new('%(Mappings)').Replace('&#x0A;',','))" />
+		</ItemGroup>
 
-	<CreateProperty Value="@(XamlGeneratorAnalyzerSuppressions, ',')">
-		<Output
-				TaskParameter="Value"
-				PropertyName="XamlGeneratorAnalyzerSuppressionsProperty" />
-	</CreateProperty>
+		<CreateProperty Value="@(ExcludeXamlNamespaces, ',')">
+			<Output
+					TaskParameter="Value"
+					PropertyName="ExcludeXamlNamespacesProperty" />
+		</CreateProperty>
 
-	<CreateProperty Value="@(LegacyTypes, ',')">
-		<Output
-				TaskParameter="Value"
-				PropertyName="LegacyTypesProperty" />
-	</CreateProperty>
+		<CreateProperty Value="@(IncludeXamlNamespaces, ',')">
+			<Output
+					TaskParameter="Value"
+					PropertyName="IncludeXamlNamespacesProperty" />
+		</CreateProperty>
 
-	<CreateProperty Value="$(ProjectTypeGuids.Replace(';',','))">
-		<Output
-				TaskParameter="Value"
-				PropertyName="ProjectTypeGuidsProperty" />
-	</CreateProperty>
+		<CreateProperty Value="@(XamlGeneratorAnalyzerSuppressions, ',')">
+			<Output
+					TaskParameter="Value"
+					PropertyName="XamlGeneratorAnalyzerSuppressionsProperty" />
+		</CreateProperty>
 
-	<CreateProperty Value="$(DefineConstants.Replace(';',','))">
-		<Output
-				TaskParameter="Value"
-				PropertyName="DefineConstantsProperty" />
-	</CreateProperty>
+		<CreateProperty Value="@(LegacyTypes, ',')">
+			<Output
+					TaskParameter="Value"
+					PropertyName="LegacyTypesProperty" />
+		</CreateProperty>
 
-  </Target>
+		<CreateProperty Value="$(ProjectTypeGuids.Replace(';',','))">
+			<Output
+					TaskParameter="Value"
+					PropertyName="ProjectTypeGuidsProperty" />
+		</CreateProperty>
 
-  <Target Name="_InjectAdditionalFiles" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;GenerateMSBuildEditorConfigFileCore" DependsOnTargets="_FillSourceGeneratorItemGroups">
-	<ItemGroup>
-	  <AdditionalFiles Include="@(Page)" SourceItemGroup="Page" />
-	  <AdditionalFiles Include="@(ApplicationDefinition)" SourceItemGroup="ApplicationDefinition" />
-	  <AdditionalFiles Include="@(PRIResource)" SourceItemGroup="PRIResource" />
-	  <AdditionalFiles Include="@(TSBindingAssemblySource)" SourceItemGroup="TSBindingAssemblySource" />
-	  <AdditionalFiles Include="@(Analyzer)" SourceItemGroup="Analyzer" />
+		<CreateProperty Value="$(DefineConstants.Replace(';',','))">
+			<Output
+					TaskParameter="Value"
+					PropertyName="DefineConstantsProperty" />
+		</CreateProperty>
 
-	  <_AdditionalFilesCleanup Include="@(AdditionalFiles)" />
-	  <AdditionalFiles Remove="@(_AdditionalFilesCleanup)" />
-	  <AdditionalFiles Condition="'@(_AdditionalFilesCleanup)'!=''" Include="@(_AdditionalFilesCleanup->'$([System.IO.Path]::GetFullPath('%(_AdditionalFilesCleanup.Identity)'))')" />
-	</ItemGroup>
-  </Target>
+	</Target>
 
-  <Target Name="UnoLogGeneratorsType" BeforeTargets="CoreCompile;_UnoSourceGenerator">
-	<Message Importance="high"
-		   Condition="'$(UnoUIUseRoslynSourceGenerators)'=='true'"
-		   Text="Uno.UI is using Roslyn generators" />
-	<Message Importance="high"
-		   Condition="'$(UnoUIUseRoslynSourceGenerators)'==''"
-		   Text="Uno.UI is using Uno.SourceGenerators" />
-  </Target>
+	<Target Name="_InjectAdditionalFiles" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;GenerateMSBuildEditorConfigFileCore" DependsOnTargets="_FillSourceGeneratorItemGroups">
+		<ItemGroup>
+			<AdditionalFiles Include="@(Page)" SourceItemGroup="Page" />
+			<AdditionalFiles Include="@(ApplicationDefinition)" SourceItemGroup="ApplicationDefinition" />
+			<AdditionalFiles Include="@(PRIResource)" SourceItemGroup="PRIResource" />
+			<AdditionalFiles Include="@(TSBindingAssemblySource)" SourceItemGroup="TSBindingAssemblySource" />
+			<AdditionalFiles Include="@(UnoPage)" SourceItemGroup="Page" />
+			<AdditionalFiles Include="@(UnoApplicationDefinition)" SourceItemGroup="ApplicationDefinition" />
 
-  <Target Name="_RemoveRoslynUnoSourceGeneration" BeforeTargets="CoreCompile" Condition="'$(UnoUIUseRoslynSourceGenerators)'=='false'">
-	<!---
+			<_AdditionalFilesCleanup Include="@(AdditionalFiles)" />
+			<AdditionalFiles Remove="@(_AdditionalFilesCleanup)" />
+			<AdditionalFiles Condition="'@(_AdditionalFilesCleanup)'!=''" Include="@(_AdditionalFilesCleanup->'$([System.IO.Path]::GetFullPath('%(_AdditionalFilesCleanup.Identity)'))')" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="UnoLogGeneratorsType" BeforeTargets="CoreCompile;_UnoSourceGenerator">
+		<Message Importance="low"
+			   Condition="'$(UnoUIUseRoslynSourceGenerators)'=='true'"
+			   Text="Uno.UI is using Roslyn generators" />
+		<Message Importance="low"
+			   Condition="'$(UnoUIUseRoslynSourceGenerators)'==''"
+			   Text="Uno.UI is using Uno.SourceGenerators" />
+
+		<WriteLinesToFile File="$(IntermediateOutputPath)\build-time-generator.touch" />
+	</Target>
+
+	<Target Name="_RemoveRoslynUnoSourceGeneration" BeforeTargets="CoreCompile" Condition="'$(UnoUIUseRoslynSourceGenerators)'=='false' or '$(WindowsAppSDKWinUI)'=='true'">
+		<!---
 	If the users explicitly disables Roslyn source generation, remove the analyzer item which is automatically added by Nuget.
 	-->
-	<ItemGroup>
-	  <_AnalyzerToRemove Include="@(Analyzer)" Condition="'%(FileName)'=='Uno.UI.SourceGenerators'" />
-	  <Analyzer Remove="@(_AnalyzerToRemove)"/>
-	</ItemGroup>
-  </Target>
+		<ItemGroup>
+			<_AnalyzerToRemove Include="@(Analyzer)" Condition="'%(FileName)'=='Uno.UI.SourceGenerators'" />
+			<Analyzer Remove="@(_AnalyzerToRemove)"/>
+		</ItemGroup>
+	</Target>
 
-  <Target Name="_UnoUIValidateLongPathSupport"
-		  BeforeTargets="CoreCompile"
-		  Condition="'$(MSBuildRuntimeType)'!='Core' and $([MSBuild]::IsOsPlatform(Windows)) and ( ('$(UnoUIUseRoslynSourceGenerators)'=='true' and '$(EmitCompilerGeneratedFiles)'=='true') or '$(MSBuildThisFileDirectory.Length)' &gt; 64)">
-	<!---
+	<Target Name="_UnoUIValidateLongPathSupport"
+			BeforeTargets="CoreCompile"
+			Condition="'$(MSBuildRuntimeType)'!='Core' and $([MSBuild]::IsOsPlatform(Windows)) and ( ('$(UnoUIUseRoslynSourceGenerators)'=='true' and '$(EmitCompilerGeneratedFiles)'=='true') or '$(MSBuildThisFileDirectory.Length)' &gt; 64)">
+		<!---
 	Validation for LongPath support (source https://github.com/dotnet/roslyn/blob/c8eecdb9563127988b3cb564a493eae9ef254a88/eng/build.ps1#L607)
 	https://docs.microsoft.com/en-us/archive/blogs/jeremykuhne/net-4-6-2-and-long-paths-on-windows-10#enabling-win32-long-path-support
 	-->
 
-	<Warning
-	  Condition="'$(registry:HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem@LongPathsEnabled)'!='1' and '$(UnoUIDisableLongPathWarning)'==''"
-	  Text="Windows LongPath support is not enabled, you may experience build errors. You can avoid these by enabling LongPath with &quot;reg ADD HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem /v LongPathsEnabled /t REG_DWORD /d 1&quot;, or disable this warning by setting UnoUIDisableLongPathWarning to true."/>
-  </Target>
+		<Warning
+		  Condition="'$(registry:HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem@LongPathsEnabled)'!='1' and '$(UnoUIDisableLongPathWarning)'==''"
+		  Text="Windows LongPath support is not enabled, you may experience build errors. You can avoid these by enabling LongPath with &quot;reg ADD HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem /v LongPathsEnabled /t REG_DWORD /d 1&quot;, or disable this warning by setting UnoUIDisableLongPathWarning to true."/>
+	</Target>
 
-  <Target Name="_UnoUIValidateInvalidRoslynPath"
-		  BeforeTargets="CoreCompile"
-		  Condition="'$(UnoUIUseRoslynSourceGenerators)'=='true'">
-	<!---
+	<Target Name="_UnoUIValidateInvalidRoslynPath"
+			BeforeTargets="CoreCompile"
+			Condition="'$(UnoUIUseRoslynSourceGenerators)'=='true'">
+		<!---
 	Validation '#' escaped path https://github.com/unoplatform/uno/issues/5953
 	-->
 
-	<Warning
-	  Condition="$(MSBuildProjectFullPath.Contains('#')) and '$(UnoUIDisable5953Warning)'==''"
-	  Text="The path to your project contains the '#' character, which causes known build issues. Try moving your project to a different location. (See https://github.com/unoplatform/uno/issues/5953 for more details)."/>
-  </Target>
+		<Warning
+		  Condition="$(MSBuildProjectFullPath.Contains('#')) and '$(UnoUIDisable5953Warning)'==''"
+		  Text="The path to your project contains the '#' character, which causes known build issues. Try moving your project to a different location. (See https://github.com/unoplatform/uno/issues/5953 for more details)."/>
+	</Target>
 
+	<Target Name="Roslyn51768Workaround"
+			BeforeTargets="BeforeBuild"
+					Condition="'$(DisableRoslyn51768Workaround)'==''">
+		<!-- Workaround for https://github.com/dotnet/roslyn/issues/51768 -->
+		<CreateProperty Value="$(IntermediateOutputPath)$(MSBuildProjectName).d$(DesignTimeBuild)-b$(BuildingProject).GeneratedMSBuildEditorConfig.editorconfig">
+			<Output
+				TaskParameter="Value"
+				PropertyName="GeneratedMSBuildEditorConfigFile" />
+		</CreateProperty>
+	</Target>
+
+	<Target Name="_GenerateReloadCookie" BeforeTargets="BeforeCompile" Condition="'$(DefaultLanguageSourceExtension)'=='.cs'">
+		<!-- Generate an empty C# file that OmniSharp can pick up when Uno has marked XAML files as modified -->
+		<WriteLinesToFile File="$(IntermediateOutputPath)\uno.reload.cookie.g.cs" />
+		<ItemGroup>
+			<Compile Include="$(IntermediateOutputPath)\uno.reload.cookie.g.cs" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="_WPFIssue6792_RemoveDuplicateAnalyzers" BeforeTargets="CoreCompile">
+		<!-- Work around https://github.com/dotnet/wpf/issues/6792, remove for .NET 6.0.500 or later -->
+
+		<ItemGroup>
+			<FilteredAnalyzer Include="@(Analyzer-&gt;Distinct())" />
+			<Analyzer Remove="@(Analyzer)" />
+			<Analyzer Include="@(FilteredAnalyzer)" />
+		</ItemGroup>
+	</Target>
 </Project>

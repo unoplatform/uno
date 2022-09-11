@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Xml;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.ApplicationModel.Email.DataProvider;
 using Windows.Storage;
@@ -64,8 +64,6 @@ namespace Windows.ApplicationModel
 		{
 			if(_entryAssembly != null && !_manifestParsed)
 			{
-				_manifestParsed = true;
-
 				var manifest = _entryAssembly.GetManifestResourceStream(PackageManifestName);
 
 				if (manifest != null)
@@ -80,10 +78,12 @@ namespace Windows.ApplicationModel
 
 						_displayName = doc.SelectSingleNode("/d:Package/d:Properties/d:DisplayName", nsmgr)?.InnerText ?? "";
 						_logo = doc.SelectSingleNode("/d:Package/d:Properties/d:Logo", nsmgr)?.InnerText ?? "";
+
+						_manifestParsed = true;
 					}
 					catch (Exception ex)
 					{
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 						{
 							this.Log().Error($"Failed to read manifest [{PackageManifestName}]", ex);
 						}
@@ -91,7 +91,7 @@ namespace Windows.ApplicationModel
 				}
 				else
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Skipping manifest reading, unable to find [{PackageManifestName}]");
 					}

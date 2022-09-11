@@ -21,9 +21,9 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Line CreateLine(GeneratorDirection fillDirection, double extentOffset, double availableBreadth, Uno.UI.IndexPath nextVisibleItem)
 		{
-			if (ShouldInsertReorderingView(extentOffset))
+			if (ShouldInsertReorderingView(extentOffset) && GetAndUpdateReorderingIndex() is { } reorderingIndex)
 			{
-				nextVisibleItem = GetAndUpdateReorderingIndex().Value;
+				nextVisibleItem = reorderingIndex;
 			}
 
 			var item = GetFlatItemIndex(nextVisibleItem);

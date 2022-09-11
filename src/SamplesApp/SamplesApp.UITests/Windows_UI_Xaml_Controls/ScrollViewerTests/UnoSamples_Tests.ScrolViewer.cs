@@ -92,6 +92,44 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 
 		[Test]
 		[AutoRetry]
+		// Issue needs to be fixed first for WASM for Right and Bottom Margin missing
+		// Details here: https://github.com/unoplatform/uno/issues/7000
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void ScrollViewer_Content_Margin()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Content_Margin");
+			_app.WaitForElement("ChildStatusTextBlock");
+			var rect = _app.GetPhysicalRect("OuterBorder");
+            var outsideColor = Color.LightBlue;
+			var insideColor = Color.Pink;
+
+			AssertCurrentColors("Before-Scrolled", insideColor, outsideColor, outsideColor, outsideColor, insideColor);
+
+			_app.FastTap("ScrollToRightBottomButton");
+			_app.Wait(TimeSpan.FromSeconds(5));
+			_app.WaitForText("ChildStatusTextBlock", "Scrolled");
+
+			AssertCurrentColors("After-Scrolled", insideColor, insideColor, outsideColor, outsideColor, outsideColor);
+
+			void AssertCurrentColors(string description, Color centerColor, Color topLeftColor, Color topRightColor, Color bottomLeftColor, Color bottomRightColor)
+			{
+				var screenshot = TakeScreenshot(description);
+
+				// Top / Left
+				ImageAssert.HasColorAt(screenshot, rect.X, rect.Y, topLeftColor);
+				// Top / Right
+				ImageAssert.HasColorAt(screenshot, rect.Right - LogicalToPhysical(1), rect.Y, topRightColor);
+				// Center
+				ImageAssert.HasColorAt(screenshot, rect.CenterX, rect.CenterY, centerColor);
+				// Bottom / Left
+				ImageAssert.HasColorAt(screenshot, rect.X, rect.Bottom - LogicalToPhysical(1), bottomLeftColor);
+				// Bottom / Right
+				ImageAssert.HasColorAt(screenshot, rect.Right - LogicalToPhysical(1), rect.Bottom - LogicalToPhysical(1), bottomRightColor);
+			}
+		}
+
+		[Test]
+		[AutoRetry]
 		public void ScrollViewer_Removed_And_Added()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Add_Remove");
@@ -127,13 +165,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Margin");
 
-			_app.Marked("size").SetDependencyPropertyValue("Value", "80");
+			_app.Marked("shapeWidth").SetDependencyPropertyValue("Value", "80");
+			_app.Marked("shapeHeight").SetDependencyPropertyValue("Value", "80");
 
 			_app.WaitForElement("ctl5");
 
 			using var screenshot = TakeScreenshot("test", ignoreInSnapshotCompare: true);
 
-			for(byte i=1; i<=5; i++)
+			for (byte i = 1; i <= 5; i++)
 			{
 				using var _ = new AssertionScope();
 
@@ -143,12 +182,73 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 
 				var physicalRect = _app.GetPhysicalRect($"ctl{i}");
 
+				// Left / Top
+				ImageAssert.HasColorAt(screenshot, physicalRect.X, physicalRect.Y, Color.Blue);
+				ImageAssert.HasColorAt(screenshot, physicalRect.X + LogicalToPhysical(1), physicalRect.Y + LogicalToPhysical(1), Color.Blue);
+				ImageAssert.HasColorAt(screenshot, physicalRect.CenterX, physicalRect.Y + 21, Color.Orange);
+				ImageAssert.HasColorAt(screenshot, physicalRect.X + LogicalToPhysical(11), physicalRect.Y + LogicalToPhysical(11), Color.Orange);
+				ImageAssert.HasColorAt(screenshot, physicalRect.X + LogicalToPhysical(23), physicalRect.Y + LogicalToPhysical(23), Color.Red);
+				// Right / Top
+				ImageAssert.HasColorAt(screenshot, physicalRect.Right - LogicalToPhysical(1), physicalRect.Y, Color.Blue);
+				ImageAssert.HasColorAt(screenshot, physicalRect.Right - LogicalToPhysical(2), physicalRect.Y + LogicalToPhysical(1), Color.Blue);
+				ImageAssert.HasColorAt(screenshot, physicalRect.Right - LogicalToPhysical(21), physicalRect.CenterY, Color.Orange);
+				ImageAssert.HasColorAt(screenshot, physicalRect.Right - LogicalToPhysical(12), physicalRect.Y + LogicalToPhysical(11), Color.Orange);
+				ImageAssert.HasColorAt(screenshot, physicalRect.Right - LogicalToPhysical(24), physicalRect.Y + LogicalToPhysical(23), Color.Red);
+				// Middle
 				ImageAssert.HasColorAt(screenshot, physicalRect.CenterX, physicalRect.CenterY, Color.Red);
-				ImageAssert.HasColorAt(screenshot, physicalRect.X + 5, physicalRect.Y + 5, Color.Orange);
-				ImageAssert.HasColorAt(screenshot, physicalRect.Right - 5, physicalRect.Y + 5, Color.Orange);
-				ImageAssert.HasColorAt(screenshot, physicalRect.X + 5, physicalRect.Bottom - 5, Color.Orange);
-				ImageAssert.HasColorAt(screenshot, physicalRect.Right - 5, physicalRect.Bottom - 5, Color.Orange);
+				// Left / Bottom
+				ImageAssert.HasColorAt(screenshot, physicalRect.X, physicalRect.Bottom - LogicalToPhysical(1), Color.Blue);
+				ImageAssert.HasColorAt(screenshot, physicalRect.X + LogicalToPhysical(1), physicalRect.Bottom - LogicalToPhysical(2), Color.Blue);
+				ImageAssert.HasColorAt(screenshot, physicalRect.X + LogicalToPhysical(21), physicalRect.CenterY, Color.Orange);
+				ImageAssert.HasColorAt(screenshot, physicalRect.X + LogicalToPhysical(11), physicalRect.Bottom - LogicalToPhysical(12), Color.Orange);
+				ImageAssert.HasColorAt(screenshot, physicalRect.X + LogicalToPhysical(23), physicalRect.Bottom - LogicalToPhysical(24), Color.Red);
+				// Right / Bottom
+				ImageAssert.HasColorAt(screenshot, physicalRect.Right - LogicalToPhysical(1), physicalRect.Bottom - LogicalToPhysical(1), Color.Blue);
+				ImageAssert.HasColorAt(screenshot, physicalRect.Right - LogicalToPhysical(2), physicalRect.Bottom - LogicalToPhysical(2), Color.Blue);
+				ImageAssert.HasColorAt(screenshot, physicalRect.CenterX, physicalRect.Bottom - LogicalToPhysical(21), Color.Orange);
+				ImageAssert.HasColorAt(screenshot, physicalRect.Right - LogicalToPhysical(12), physicalRect.Bottom - LogicalToPhysical(12), Color.Orange);
+				ImageAssert.HasColorAt(screenshot, physicalRect.Right - LogicalToPhysical(24), physicalRect.Bottom - LogicalToPhysical(24), Color.Red);
 
+			}
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ScrollViewer_Margin_Centered()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Margin_Centered");
+
+			_app.Marked("shapeWidth").SetDependencyPropertyValue("Value", "100");
+			_app.Marked("shapeHeight").SetDependencyPropertyValue("Value", "340");
+
+			_app.WaitForElement("ctl2");
+
+			using var screenshot = TakeScreenshot("test", ignoreInSnapshotCompare: true);
+
+			for (byte i = 1; i <= 2; i++)
+			{
+				using var _ = new AssertionScope();
+
+				var logicalRect = _app.GetLogicalRect($"ctl{i}");
+				logicalRect.Width.Should().Be(100);
+				logicalRect.Height.Should().Be(340);
+
+				var physicalRect = _app.GetPhysicalRect($"ctl{i}");
+
+				// Left / Top
+				ImageAssert.HasColorAt(screenshot, physicalRect.X + LogicalToPhysical(10), physicalRect.Y + LogicalToPhysical(10), Color.Orange);
+				ImageAssert.HasColorAt(screenshot, physicalRect.X + LogicalToPhysical(20), physicalRect.Y + LogicalToPhysical(20), Color.Red);
+				// Right / Top
+				ImageAssert.HasColorAt(screenshot, physicalRect.Right - LogicalToPhysical(11), physicalRect.Y + LogicalToPhysical(10), Color.Orange);
+				ImageAssert.HasColorAt(screenshot, physicalRect.Right - LogicalToPhysical(21), physicalRect.Y + LogicalToPhysical(20), Color.Red);
+				// Middle
+				ImageAssert.HasColorAt(screenshot, physicalRect.CenterX, physicalRect.CenterY, Color.Red);
+				// Left / Bottom
+				ImageAssert.HasColorAt(screenshot, physicalRect.X + LogicalToPhysical(10), physicalRect.Bottom - LogicalToPhysical(11), Color.Orange);
+				ImageAssert.HasColorAt(screenshot, physicalRect.X + LogicalToPhysical(20), physicalRect.Bottom - LogicalToPhysical(21), Color.Red);
+				// Right / Bottom
+				ImageAssert.HasColorAt(screenshot, physicalRect.Right - LogicalToPhysical(11), physicalRect.Bottom - LogicalToPhysical(11), Color.Orange);
+				ImageAssert.HasColorAt(screenshot, physicalRect.Right - LogicalToPhysical(21), physicalRect.Bottom - LogicalToPhysical(21), Color.Red);
 			}
 		}
 
@@ -174,7 +274,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 			_app.WaitForText("ButtonStatusTextBlock", "Clicked");
 
 			using var scrollIndicator = TakeScreenshot("Scroll indicators visible"); // If this takes a *really* long time the scroll indicators might have
-																			   // disappeared already... hopefully that doesn't happen
+																					 // disappeared already... hopefully that doesn't happen
 
 			ImageAssert.AreNotEqual(noScrollIndicator, scrollIndicator, rect);
 

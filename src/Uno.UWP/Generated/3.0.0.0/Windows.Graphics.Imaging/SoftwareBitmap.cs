@@ -2,8 +2,8 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Imaging
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented]
+	#if false || false || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
+	[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 	#endif
 	public  partial class SoftwareBitmap : global::System.IDisposable
 	{
@@ -35,8 +35,8 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.Graphics.Imaging.BitmapAlphaMode BitmapAlphaMode
 		{
 			get
@@ -45,8 +45,8 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.Graphics.Imaging.BitmapPixelFormat BitmapPixelFormat
 		{
 			get
@@ -55,8 +55,8 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 		public  bool IsReadOnly
 		{
 			get
@@ -65,8 +65,8 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 		public  int PixelHeight
 		{
 			get
@@ -75,8 +75,8 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 		public  int PixelWidth
 		{
 			get
@@ -85,16 +85,16 @@ namespace Windows.Graphics.Imaging
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public SoftwareBitmap( global::Windows.Graphics.Imaging.BitmapPixelFormat format,  int width,  int height) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "SoftwareBitmap.SoftwareBitmap(BitmapPixelFormat format, int width, int height)");
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.SoftwareBitmap(Windows.Graphics.Imaging.BitmapPixelFormat, int, int)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public SoftwareBitmap( global::Windows.Graphics.Imaging.BitmapPixelFormat format,  int width,  int height,  global::Windows.Graphics.Imaging.BitmapAlphaMode alpha) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "SoftwareBitmap.SoftwareBitmap(BitmapPixelFormat format, int width, int height, BitmapAlphaMode alpha)");
@@ -117,8 +117,8 @@ namespace Windows.Graphics.Imaging
 			throw new global::System.NotImplementedException("The member BitmapBuffer SoftwareBitmap.LockBuffer(BitmapBufferAccessMode mode) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 		public  void CopyTo( global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "void SoftwareBitmap.CopyTo(SoftwareBitmap bitmap)");
@@ -138,22 +138,22 @@ namespace Windows.Graphics.Imaging
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "void SoftwareBitmap.CopyToBuffer(IBuffer buffer)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.Graphics.Imaging.SoftwareBitmap GetReadOnlyView()
 		{
 			throw new global::System.NotImplementedException("The member SoftwareBitmap SoftwareBitmap.GetReadOnlyView() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 		public  void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "void SoftwareBitmap.Dispose()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Imaging.SoftwareBitmap Copy( global::Windows.Graphics.Imaging.SoftwareBitmap source)
 		{
 			throw new global::System.NotImplementedException("The member SoftwareBitmap SoftwareBitmap.Copy(SoftwareBitmap source) is not implemented in Uno.");
@@ -173,15 +173,15 @@ namespace Windows.Graphics.Imaging
 			throw new global::System.NotImplementedException("The member SoftwareBitmap SoftwareBitmap.Convert(SoftwareBitmap source, BitmapPixelFormat format, BitmapAlphaMode alpha) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Imaging.SoftwareBitmap CreateCopyFromBuffer( global::Windows.Storage.Streams.IBuffer source,  global::Windows.Graphics.Imaging.BitmapPixelFormat format,  int width,  int height)
 		{
 			throw new global::System.NotImplementedException("The member SoftwareBitmap SoftwareBitmap.CreateCopyFromBuffer(IBuffer source, BitmapPixelFormat format, int width, int height) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Graphics.Imaging.SoftwareBitmap CreateCopyFromBuffer( global::Windows.Storage.Streams.IBuffer source,  global::Windows.Graphics.Imaging.BitmapPixelFormat format,  int width,  int height,  global::Windows.Graphics.Imaging.BitmapAlphaMode alpha)
 		{
 			throw new global::System.NotImplementedException("The member SoftwareBitmap SoftwareBitmap.CreateCopyFromBuffer(IBuffer source, BitmapPixelFormat format, int width, int height, BitmapAlphaMode alpha) is not implemented in Uno.");

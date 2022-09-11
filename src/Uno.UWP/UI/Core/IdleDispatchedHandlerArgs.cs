@@ -6,18 +6,16 @@ namespace Windows.UI.Core
 {
     public partial class IdleDispatchedHandlerArgs
     {
-		private IsIdleHandler _handler;
+		private Uno.UI.Dispatching.IdleDispatchedHandlerArgs _originHandler;
 
-		internal delegate bool IsIdleHandler();
-
-		internal IdleDispatchedHandlerArgs(IsIdleHandler handler)
+		internal IdleDispatchedHandlerArgs(Uno.UI.Dispatching.IdleDispatchedHandlerArgs c)
 		{
-			_handler = handler;
-        }
+			_originHandler = c;
+		}
 
 		/// <summary>
 		/// Determines if the dispatcher is currently idle
 		/// </summary>
-		public bool IsDispatcherIdle => _handler();
+		public bool IsDispatcherIdle => _originHandler.IsDispatcherIdle;
     }
 }

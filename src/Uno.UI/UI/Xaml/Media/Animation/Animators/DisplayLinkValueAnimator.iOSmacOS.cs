@@ -26,12 +26,12 @@ namespace Windows.UI.Xaml.Media.Animation
 		private NSTimer _timer;
 #endif
 
-		private double _startTime = 0;
+		private double _startTime;
 
 		private bool _isDisposed;
 		private bool _isAttachedToLooper;
 
-		protected IEasingFunction _easingFunction = null;
+		protected IEasingFunction _easingFunction;
 
 		public void Start()
 		{
@@ -194,10 +194,15 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (_isAttachedToLooper)
 			{
-#if __IOS__
 				//Detach the _displayLink to the MainLoop (uiThread).
+#if __IOS__
+#if NET6_0_OR_GREATER
+				_displayLink?.RemoveFromRunLoop(NSRunLoop.Main, NSRunLoopMode.Default);//detaches from the UI thread
+				_displayLink?.RemoveFromRunLoop(NSRunLoop.Main, NSRunLoopMode.UITracking);
+#else
 				_displayLink?.RemoveFromRunLoop(NSRunLoop.Main, NSRunLoop.NSDefaultRunLoopMode);//detaches from the UI thread
 				_displayLink?.RemoveFromRunLoop(NSRunLoop.Main, NSRunLoop.UITrackingRunLoopMode);
+#endif
 				_displayLink = null;
 #endif
 				_isAttachedToLooper = false;

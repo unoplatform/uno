@@ -2,42 +2,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Pickers
 {
-#if false
-#if false
-	[global::Uno.NotImplemented]
-#endif
-	public enum PickerLocationId
+	#if false || false || false || false || false || false || false
+	public   enum PickerLocationId 
 	{
-#if false
-		DocumentsLibrary,
-#endif
-#if false
-		ComputerFolder,
-#endif
-#if false
-		Desktop,
-#endif
-#if false
-		Downloads,
-#endif
-#if false
-		HomeGroup,
-#endif
-#if false
-		MusicLibrary,
-#endif
-#if false
-		PicturesLibrary,
-#endif
-#if false
-		VideosLibrary,
-#endif
-#if false
-		Objects3D,
-#endif
-#if false
-		Unspecified,
-#endif
+		// Skipping already declared field Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary
+		// Skipping already declared field Windows.Storage.Pickers.PickerLocationId.ComputerFolder
+		// Skipping already declared field Windows.Storage.Pickers.PickerLocationId.Desktop
+		// Skipping already declared field Windows.Storage.Pickers.PickerLocationId.Downloads
+		// Skipping already declared field Windows.Storage.Pickers.PickerLocationId.HomeGroup
+		// Skipping already declared field Windows.Storage.Pickers.PickerLocationId.MusicLibrary
+		// Skipping already declared field Windows.Storage.Pickers.PickerLocationId.PicturesLibrary
+		// Skipping already declared field Windows.Storage.Pickers.PickerLocationId.VideosLibrary
+		// Skipping already declared field Windows.Storage.Pickers.PickerLocationId.Objects3D
+		// Skipping already declared field Windows.Storage.Pickers.PickerLocationId.Unspecified
 	}
-#endif
+	#endif
 }

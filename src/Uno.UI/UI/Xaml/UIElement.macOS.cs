@@ -4,12 +4,17 @@ using Windows.UI.Xaml.Input;
 using Windows.System;
 using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Uno.UI.Extensions;
 using AppKit;
 using CoreAnimation;
 using CoreGraphics;
+
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 
 namespace Windows.UI.Xaml
 {
@@ -19,19 +24,23 @@ namespace Windows.UI.Xaml
 		{
 			Initialize();
 			InitializePointers();
+
+			UpdateHitTest();
 		}
 
-		/// <summary>
-		/// Determines if InvalidateMeasure has been called
-		/// </summary>
-		internal bool IsMeasureDirty { get; private protected set; }
+		internal bool IsMeasureDirtyPath
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => false; // Not implemented on macOS yet
+		}
 
-		/// <summary>
-		/// Determines if InvalidateArrange has been called
-		/// </summary>
-		internal bool IsArrangeDirty { get; private protected set; }
+		internal bool IsArrangeDirtyPath
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => false; // Not implemented on macOS yet
+		}
 
-		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
+		internal bool ClippingIsSetByCornerRadius { get; set; }
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
@@ -43,23 +52,34 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
+		{
+			UpdateHitTest();
+		}
+
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
 		{
-			var newVisibility = (Visibility)newValue;
+			UpdateHitTest();
 
-			if (base.Hidden != newVisibility.IsHidden())
+			var isNewVisibilityHidden = newValue.IsHidden();
+
+			if (base.Hidden == isNewVisibilityHidden)
 			{
-				base.Hidden = newVisibility.IsHidden();
-				base.NeedsLayout = true;
-
-				if (newVisibility == Visibility.Visible)
-				{
-					// This recursively invalidates the layout of all subviews
-					// to ensure LayoutSubviews is called and views get updated.
-					// Failing to do this can cause some views to remain collapsed.
-					SetSubviewsNeedLayout();
-				}
+				return;
 			}
+
+			base.Hidden = isNewVisibilityHidden;
+			InvalidateMeasure();
+
+			if (isNewVisibilityHidden)
+			{
+				return;
+			}
+
+			// This recursively invalidates the layout of all subviews
+			// to ensure LayoutSubviews is called and views get updated.
+			// Failing to do this can cause some views to remain collapsed.
+			SetSubviewsNeedLayout();
 		}
 
 		public override bool Hidden
@@ -127,7 +147,7 @@ namespace Windows.UI.Xaml
 			base.OnNativeKeyDown(evt);
 		}
 
-		private NSEventModifierMask _lastFlags = (NSEventModifierMask)0;
+		private NSEventModifierMask _lastFlags;
 
 		private protected override void OnNativeFlagsChanged(NSEvent evt)
 		{
@@ -242,18 +262,20 @@ namespace Windows.UI.Xaml
 			{
 				if (!ClippingIsSetByCornerRadius)
 				{
-					if (Layer != null)
+					var emptyClipLayer = Layer;
+					if (emptyClipLayer != null)
 					{
-						this.Layer.Mask = null;
+						emptyClipLayer.Mask = null;
 					}
 				}
 				return;
 			}
 
 			WantsLayer = true;
-			if (Layer != null)
+			var layer = Layer;
+			if (layer != null)
 			{
-				this.Layer.Mask = new CAShapeLayer
+				layer.Mask = new CAShapeLayer
 				{
 					Path = CGPath.FromRect(rect.ToCGRect())
 				};

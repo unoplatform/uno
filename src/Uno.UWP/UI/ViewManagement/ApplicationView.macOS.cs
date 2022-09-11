@@ -4,7 +4,7 @@ using System.Text;
 using System.Runtime.CompilerServices;
 using AppKit;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using CoreGraphics;
 
@@ -19,7 +19,7 @@ namespace Windows.UI.ViewManagement
 		{
             VisibleBounds = windowBounds;
 
-			if(this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if(this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Updated visible bounds {VisibleBounds}");
 			}

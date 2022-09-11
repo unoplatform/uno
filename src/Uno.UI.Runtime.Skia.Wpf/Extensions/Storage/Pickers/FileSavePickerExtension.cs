@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -52,6 +53,10 @@ namespace Uno.Extensions.Storage.Pickers
 
 			if (saveFileDialog.ShowDialog() == true)
 			{
+				if (!File.Exists(saveFileDialog.FileName))
+				{
+					File.Create(saveFileDialog.FileName).Dispose();
+				}
 				return await StorageFile.GetFileFromPathAsync(saveFileDialog.FileName);
 			}
 			return null;

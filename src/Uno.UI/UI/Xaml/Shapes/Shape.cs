@@ -10,7 +10,7 @@ using Windows.Foundation;
 using Uno.Extensions;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -55,13 +55,13 @@ namespace Windows.UI.Xaml.Shapes
 				propertyChangedCallback: (s, e) => ((Shape)s).OnFillChanged((Brush)e.NewValue)
 #else
 				options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext | FrameworkPropertyMetadataOptions.LogicalChild,
-				propertyChangedCallback: (s, e) => ((Shape)s)._brushChanged.Disposable = Brush.AssignAndObserveBrush((Brush)e.NewValue, _ => ((Shape)s).InvalidateForFillChanged(), imageBrushCallback: () => ((Shape)s).InvalidateForFillChanged())
+				propertyChangedCallback: (s, e) => ((Shape)s)._brushChanged.Disposable = Brush.AssignAndObserveBrush((Brush)e.NewValue, _ => ((Shape)s).InvalidateForBrushChanged(), imageBrushCallback: () => ((Shape)s).InvalidateForBrushChanged())
 #endif
 			)
 		);
 		#endregion
 
-		private void InvalidateForFillChanged()
+		private void InvalidateForBrushChanged()
 		{
 			// The try-catch here is primarily for the benefit of Android. This callback is raised when (say) the brush color changes,
 			// which may happen when the system theme changes from light to dark. For app-level resources, a large number of views may
@@ -107,7 +107,8 @@ namespace Windows.UI.Xaml.Shapes
 #if LEGACY_SHAPE_MEASURE
 				propertyChangedCallback: (s, e) => ((Shape)s).OnStrokeUpdated((Brush)e.NewValue)
 #else
-				options: FrameworkPropertyMetadataOptions.AffectsArrange
+				options: FrameworkPropertyMetadataOptions.AffectsArrange,
+				propertyChangedCallback: (s, e) => ((Shape)s)._strokeBrushChanged.Disposable = Brush.AssignAndObserveBrush((Brush)e.NewValue, _ => ((Shape)s).InvalidateForBrushChanged(), imageBrushCallback: () => ((Shape)s).InvalidateForBrushChanged())
 #endif
 			)
 		);

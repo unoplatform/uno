@@ -3,10 +3,10 @@ parameters:
 
 jobs:
 - job: Wasm_UITests_Build
-  displayName: 'WebAssembly UI Tests (Build)'
+  displayName: 'Build WebAssembly UI Tests'
   container: nv-bionic-wasm
 
-  dependsOn: Commitsar
+  dependsOn: Pipeline_Validations
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -21,12 +21,9 @@ jobs:
   - template: templates/gitversion.yml
   - template: templates/dotnet-install.yml
 
-  - task: CacheBeta@0
-    condition: eq(variables['enable_package_cache'], 'true')
-    inputs:
-      key: nuget | $(Agent.OS) | $(Agent.JobName) | $(build.sourcesdirectory)/**/*.csproj | $(build.sourcesdirectory)/**/Directory.Build.targets | $(build.sourcesdirectory)/**/Directory.Build.props
-      path: $(NUGET_PACKAGES)
-    displayName: Cache NuGet packages
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
     
   - template: templates/optimize-roslyn-mono.yml
   - template: templates/dotnet-install.yml
@@ -96,10 +93,13 @@ jobs:
 
   - bash: |
       set -euo pipefail
+      set -x
       IFS=$'\n\t'
-      dotnet tool install dotnet-serve --version 1.8.15 --tool-path $BUILD_SOURCESDIRECTORY/build/tools
+      dotnet tool uninstall dotnet-serve -g || true
+      dotnet tool uninstall dotnet-serve --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
+      dotnet tool install dotnet-serve --version 1.8.15 --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
       export PATH="$PATH:$BUILD_SOURCESDIRECTORY/build/tools"
-      dotnet serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-net5.0" &
+      $BUILD_SOURCESDIRECTORY/build/tools/dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-net5.0" &
       cd $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Wasm.UITests
       npm install
       node app
@@ -140,14 +140,17 @@ jobs:
       net5_default:
         SITE_SUFFIX: 'net5.0'
         UITEST_AUTOMATED_GROUP: 'Default'
+        UITEST_TEST_TIMEOUT: '120000'
 
       net5_runtimetests:
         SITE_SUFFIX: 'net5.0'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
+        UITEST_TEST_TIMEOUT: '1800000'
 
       net5_benchmarks:
         SITE_SUFFIX: 'net5.0'
         UITEST_AUTOMATED_GROUP: 'Benchmarks'
+        UITEST_TEST_TIMEOUT: '120000'
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -187,12 +190,13 @@ jobs:
 
    ## First ui tests run
   - bash: |
-      chmod +x $BUILD_SOURCESDIRECTORY/build/run-automated-uitests.sh
-      $BUILD_SOURCESDIRECTORY/build/run-automated-uitests.sh
+      chmod +x $BUILD_SOURCESDIRECTORY/build/test-scripts/wasm-run-automated-uitests.sh
+      $BUILD_SOURCESDIRECTORY/build/test-scripts/wasm-run-automated-uitests.sh
 
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+      UITEST_TEST_TIMEOUT: "$(UITEST_TEST_TIMEOUT)"
       SITE_SUFFIX: "$(SITE_SUFFIX)"
 
     displayName: 'Running UI Tests'
@@ -208,8 +212,8 @@ jobs:
 
    ## Second ui tests run
   - bash: |
-      chmod +x $BUILD_SOURCESDIRECTORY/build/run-automated-uitests.sh
-      $BUILD_SOURCESDIRECTORY/build/run-automated-uitests.sh
+      chmod +x $BUILD_SOURCESDIRECTORY/build/test-scripts/wasm-run-automated-uitests.sh
+      $BUILD_SOURCESDIRECTORY/build/test-scripts/wasm-run-automated-uitests.sh
 
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"

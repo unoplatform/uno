@@ -17,8 +17,8 @@ namespace Uno.UI.Helpers.WinUI
 {
 	internal class DispatcherHelper
 	{
-		Windows.System.DispatcherQueue dispatcherQueue = null;
-		CoreDispatcher coreDispatcher = null;
+		Windows.System.DispatcherQueue dispatcherQueue;
+		CoreDispatcher coreDispatcher;
 
 		public DispatcherHelper(DependencyObject dependencyObject = null)
 		{

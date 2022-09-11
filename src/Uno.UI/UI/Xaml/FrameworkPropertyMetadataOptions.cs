@@ -13,17 +13,17 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Specifies that the property will be inherited for children controls
 		/// </summary>
-		Inherits = 1 << 0,
+		Inherits = 1 << 0, // 1
 
 		/// <summary>
 		/// Specifies that this property's value or values will inherit the DataContext of its or their parent.
 		/// </summary>
-		ValueInheritsDataContext = 1 << 1,
+		ValueInheritsDataContext = 1 << 1, // 2
 
 		/// <summary>
 		/// Forces the conversion of a set value to the type of a <see cref="DependencyProperty"/>
 		/// </summary>
-		AutoConvert = 1 << 2,
+		AutoConvert = 1 << 2, // 4
 
 		/// <summary>
 		/// Prevents this property's value or values from inheriting the DataContext of its or their parent.
@@ -32,32 +32,32 @@ namespace Windows.UI.Xaml
 		/// This is useful for framework properties of type <see cref="DependencyObject"/> for which ValueInheritsDataContext is enabled by default
 		/// (cf. <see cref="Default"/>).
 		/// </remarks>
-		ValueDoesNotInheritDataContext = 1 << 3,
+		ValueDoesNotInheritDataContext = 1 << 3, // 8
 
 		/// <summary>
 		/// Determines if the storage of this property's value should use a <see cref="Uno.UI.DataBinding.ManagedWeakReference"/> backing
 		/// </summary>
-		WeakStorage = 1 << 4,
+		WeakStorage = 1 << 4, // 16
 
 		/// <summary>
 		/// Automatic opt-in for <see cref="DependencyObjectExtensions.SetParent(object, object)"/> call.
 		/// </summary>
-		LogicalChild = 1 << 5,
+		LogicalChild = 1 << 5, // 32
 
 		/// <summary>
 		/// Updates to this property affect arrange on <see cref="FrameworkElement"/> <see cref="DependencyObject"/> instances.
 		/// </summary>
-		AffectsArrange = 1 << 6,
+		AffectsArrange = 1 << 6, // 64
 
 		/// <summary>
 		/// Updates to this property affect measure on <see cref="FrameworkElement"/> <see cref="DependencyObject"/> instances.
 		/// </summary>
-		AffectsMeasure = 1 << 7,
+		AffectsMeasure = 1 << 7, // 128
 
 		/// <summary>
 		/// Updates to this property affect render on <see cref="FrameworkElement"/> <see cref="DependencyObject"/> instances.
 		/// </summary>
-		AffectsRender = 1 << 8,
+		AffectsRender = 1 << 8, // 256
 
 		/// <summary>
 		/// The default options set when creating a <see cref="FrameworkPropertyMetadata"/>.

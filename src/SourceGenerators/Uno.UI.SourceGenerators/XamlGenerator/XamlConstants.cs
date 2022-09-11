@@ -31,6 +31,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string Media = BaseXamlNamespace + ".Media";
 			public const string MediaAnimation = BaseXamlNamespace + ".Media.Animation";
 			public const string Shapes = BaseXamlNamespace + ".Shapes";
+			public const string Automation = BaseXamlNamespace + ".Automation";
 
 			public static readonly string[] PresentationNamespaces =
 			{
@@ -44,6 +45,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				Data,
 				Documents,
 				Text,
+				Automation,
 				"System",
 			};
 
@@ -86,7 +88,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			// Text
 			public const string FontWeight = Namespaces.Text + ".FontWeight";
-			public const string FontWeights = Namespaces.Text + ".FontWeights";
+			public const string FontWeights = RootMUINamespace + ".Text.FontWeights";
 
 			// Misc
 			public const string Setter = BaseXamlNamespace + ".Setter";
@@ -120,12 +122,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string Panel = Namespaces.Controls + ".Panel";
 			public const string Button = Namespaces.Controls + ".Button";
 			public const string TextBox = Namespaces.Controls + ".TextBox";
+			public const string ColumnDefinition = Namespaces.Controls + ".ColumnDefinition";
+			public const string RowDefinition = Namespaces.Controls + ".RowDefinition";
 
 			// Documents
 			public const string Run = Namespaces.Documents + ".Run";
 			public const string Span = Namespaces.Documents + ".Span";
 
-			// MarkupExtension
+			// Markup
+			public const string MarkupHelper = "Uno.UI.Helpers.MarkupHelper";
 			public const string MarkupExtension = Markup + ".MarkupExtension";
 			public const string IMarkupExtensionOverrides = Markup + ".IMarkupExtensionOverrides";
 		}

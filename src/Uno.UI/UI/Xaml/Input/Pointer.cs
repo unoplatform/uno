@@ -3,7 +3,14 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using Uno;
+
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
 using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace Windows.UI.Xaml.Input
 {
@@ -20,7 +27,7 @@ namespace Windows.UI.Xaml.Input
 			IsInContact = isInContact;
 			IsInRange = isInRange;
 
-			UniqueId = new PointerIdentifier(type, id);
+			UniqueId = new Windows.Devices.Input.PointerIdentifier((Windows.Devices.Input.PointerDeviceType)type, id);
 		}
 
 #if __WASM__
@@ -29,14 +36,14 @@ namespace Windows.UI.Xaml.Input
 			PointerId = id;
 			PointerDeviceType = type;
 
-			UniqueId = new PointerIdentifier(type, id);
+			UniqueId = new Windows.Devices.Input.PointerIdentifier((Windows.Devices.Input.PointerDeviceType)type, id);
 		}
 #endif
 
 		/// <summary>
 		/// A unique identifier which contains <see cref="PointerDeviceType"/> and <see cref="PointerId"/>.
 		/// </summary>
-		internal PointerIdentifier UniqueId { get; }
+		internal Windows.Devices.Input.PointerIdentifier UniqueId { get; }
 
 		public uint PointerId { get; }
 

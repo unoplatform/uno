@@ -19,13 +19,13 @@ namespace Uno.UI.SourceGenerators.Telemetry
 {
 	public class Telemetry
 	{
-		internal static string CurrentSessionId = null;
+		internal static string CurrentSessionId;
 		private readonly int _senderCount;
-		private TelemetryClient _client = null;
-		private Dictionary<string, string> _commonProperties = null;
-		private Dictionary<string, double> _commonMeasurements = null;
+		private TelemetryClient _client;
+		private Dictionary<string, string> _commonProperties;
+		private Dictionary<string, double> _commonMeasurements;
 		private TelemetryConfiguration _telemetryConfig;
-		private Task _trackEventTask = null;
+		private Task _trackEventTask;
 		private PersistenceChannel.PersistenceChannel _persistenceChannel;
 		private const string InstrumentationKey = "9a44058e-1913-4721-a979-9582ab8bedce";
 		private const string TelemetryOptout = "UNO_PLATFORM_TELEMETRY_OPTOUT";
@@ -107,6 +107,7 @@ namespace Uno.UI.SourceGenerators.Telemetry
 		public void Dispose()
 		{
 			_persistenceChannel?.Dispose();
+			_telemetryConfig?.Dispose();
 		}
 
 		public void ThreadBlockingTrackEvent(string eventName, IDictionary<string, string> properties, IDictionary<string, double> measurements)

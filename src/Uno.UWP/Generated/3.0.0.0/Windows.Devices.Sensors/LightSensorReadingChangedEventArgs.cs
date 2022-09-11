@@ -2,21 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Sensors
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class LightSensorReadingChangedEventArgs 
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Sensors.LightSensorReading Reading
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member LightSensorReading LightSensorReadingChangedEventArgs.Reading is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Reading
 		// Forced skipping of method Windows.Devices.Sensors.LightSensorReadingChangedEventArgs.Reading.get
 	}
 }

@@ -7,56 +7,37 @@ This tutorial will walk through adding and implementing the DataGrid control but
 > [!TIP]
 > The complete source code that goes along with this guide is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [Uno Windows Community Toolkit Sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/UnoWCTDataGridSample)
 
-## Prerequisites
-
-# [Visual Studio for Windows](#tab/tabid-vswin)
-
-* [Visual Studio 2019 16.3 or later](http://www.visualstudio.com/downloads/)
-  * **Universal Windows Platform** workload installed
-  * **Mobile Development with .NET (Xamarin)** workload installed
-  * **ASP**.**NET and web** workload installed
-  * [Uno Platform Extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) installed
-
-# [VS Code](#tab/tabid-vscode)
-
-* [**Visual Studio Code**](https://code.visualstudio.com/)
-
-* [**Mono**](https://www.mono-project.com/download/stable/)
-
-* **.NET Core SDK**
-    * [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1) (**version 3.1.8 (SDK 3.1.402)** or later)
-    * [.NET Core 5.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (**version 5.0 (SDK 5.0.100)** or later)
-
-    > Use `dotnet --version` from the terminal to get the version installed.
-
-# [Visual Studio for Mac](#tab/tabid-vsmac)
-
-* [**Visual Studio for Mac 8.8**](https://visualstudio.microsoft.com/vs/mac/)
-* [**Xcode**](https://apps.apple.com/us/app/xcode/id497799835?mt=12) 10.0 or higher
-* An [**Apple ID**](https://support.apple.com/en-us/HT204316)
-* **.NET Core SDK**
-    * [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1) (**version 3.1.8 (SDK 3.1.402)** or later)
-    * [.NET Core 5.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (**version 5.0 (SDK 5.0.100)** or later)
-* [**GTK+3**](https://formulae.brew.sh/formula/gtk+3) for running the Skia/GTK projects
-
-# [JetBrains Rider](#tab/tabid-rider)
-
-* [**Rider Version 2020.2+**](https://www.jetbrains.com/rider/download/)
-* [**Rider Xamarin Android Support Plugin**](https://plugins.jetbrains.com/plugin/12056-rider-xamarin-android-support/) (you may install it directly from Rider)
-
-***
-
-<br>
-
 > [!Tip]
 > For a step-by-step guide to installing the prerequisites for your preferred IDE and environment, consult the [Get Started guide](get-started.md).
 
-## Package ids for Uno Platform
+## NuGet Packages for Uno Platform
 
 Uno has ported the Windows Community Toolkit for use in Uno applications to allow for use on Windows,
-Android, iOS, macOS, and WebAssembly.
+Android, iOS, macOS, mac Catalyst, Linux, and WebAssembly.
 
 The following packages are available:
+
+# [WinUI / WinAppSDK](#tab/tabid-winui)
+- [Uno.CommunityToolkit.WinUI](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI)
+- [Uno.CommunityToolkit.WinUI.Connectivity](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.Connectivity)
+- [Uno.CommunityToolkit.WinUI.DeveloperTools](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.DeveloperTools)
+- [Uno.CommunityToolkit.WinUI.UI](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.UI)
+- [Uno.CommunityToolkit.WinUI.UI.Animations](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.UI.Animations)
+- [Uno.CommunityToolkit.WinUI.UI.Behaviors](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.UI.Behaviors)
+- [Uno.CommunityToolkit.WinUI.UI.Controls](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.UI.Controls)
+- [Uno.CommunityToolkit.WinUI.UI.Controls.Core](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.UI.Controls.Core)
+- [Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid)
+- [Uno.CommunityToolkit.WinUI.UI.Controls.Input](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.UI.Controls.Input)
+- [Uno.CommunityToolkit.WinUI.UI.Controls.Layout](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.UI.Controls.Layout)
+- [Uno.CommunityToolkit.WinUI.UI.Controls.Markdown](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.UI.Controls.Markdown)
+- [Uno.CommunityToolkit.WinUI.UI.Controls.Media](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.UI.Controls.Media)
+- [Uno.CommunityToolkit.WinUI.UI.Controls.Primitives](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.UI.Controls.Primitives)
+- [Uno.CommunityToolkit.WinUI.UI.Media](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.UI.Media)
+
+These package ids are for Uno Platform (non-Windows) projects. For WinUI 3 projects, you should use the equivalent packages published by Microsoft (`CommunityToolkit.WinUI`, `CommunityToolkit.WinUI.UI.Controls` etc).
+
+# [UWP](#tab/tabid-uwp)
+
 - [Uno.Microsoft.Toolkit](https://www.nuget.org/packages/Uno.Microsoft.Toolkit )
 - [Uno.Microsoft.Toolkit.Parsers](https://www.nuget.org/packages/Uno.Microsoft.Toolkit.Parsers)
 - [Uno.Microsoft.Toolkit.Services](https://www.nuget.org/packages/Uno.Microsoft.Toolkit.Services)
@@ -70,7 +51,9 @@ The following packages are available:
 - [Uno.Microsoft.Toolkit.Uwp.UI.Controls.Graph](https://www.nuget.org/packages/Uno.Microsoft.Toolkit.UWP.UI.Controls.Graph)
 - [Uno.Microsoft.Toolkit.Uwp.Connectivity](https://www.nuget.org/packages/Uno.Microsoft.Toolkit.Uwp.Connectivity)
 
-These package ids are for Uno (ie non-Windows) projects. For UWP and WinUI 3 projects, you should use the equivalent package ids published by Microsoft (`Microsoft.Toolkit`, `Microsoft.Toolkit.Parsers` etc). 
+These package ids are for Uno (non-Windows) projects. For UWP project, you should use the equivalent packages published by Microsoft (`Microsoft.Toolkit`, `Microsoft.Toolkit.Parsers` etc).
+
+***
 
 ## Task 1 - Add Windows Community Toolkit to Uno Projects
   
@@ -78,13 +61,21 @@ These package ids are for Uno (ie non-Windows) projects. For UWP and WinUI 3 pro
 1. Install Nuget package for targeted control  
  ![datagrid-nuget](Assets/datagrid-nuget.JPG)  
 
-**Note:** Be aware of which versions of Uno.UI are compatible with the Nuget package of each control.  
-      If using version `3.0.0` or higher of `Uno.UI`, use version `6.1.0` or higher of `DataGrid` Nuget package.
-
-**Note:** For UWP and WinUI 3 projects, you should use the packages published by Microsoft that are **not** prefixed with `Uno.*`. 
+> [!NOTE]
+> For UWP and WinUI 3 projects, you should use the packages published by Microsoft that are **not** prefixed with `Uno.*`. 
       
 
 2. Add a reference to the UWP UI Controls 
+
+# [WinUI / WinAppSDK](#tab/tabid-winui)
+
+   In XAML:  
+    ```xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"```  
+  
+   In C#:  
+    ```using CommunityToolkit.WinUI.UI.Controls;```
+
+# [UWP](#tab/tabid-uwp)
 
    In XAML:  
     ```xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"```  
@@ -92,7 +83,7 @@ These package ids are for Uno (ie non-Windows) projects. For UWP and WinUI 3 pro
    In C#:  
     ```using Microsoft.Toolkit.Uwp;```
 
-3. Implement the control.
+***
 
 ## Task 2 - Add the DataGrid Control 
 
@@ -154,6 +145,29 @@ Culture=neutral, PublicKeyToken=null.
 
 To fix this, instead of adding the Uno version of the toolkit like the code below:
 
+# [WinUI / WinAppSDK](#tab/tabid-winui)
+
+```xml
+<ItemGroup>
+  <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls" Version="7.1.100" />
+</ItemGroup>
+```
+
+Add a conditional reference:
+
+```xml
+<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-windows10.0.18362.0'">
+  <PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
+</ItemGroup>
+<ItemGroup Condition="'$(TargetFramework)' != 'net6.0-windows10.0.18362.0'">
+  <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls" Version="7.1.100" />
+</ItemGroup>
+```
+
+You may need to replace `net6.0-windows10.0.18362.0` with the version defined in the `TargetFrameworks` node at the top of the csproj file.
+
+# [UWP](#tab/tabid-uwp)
+
 ```xml
 <ItemGroup>
   <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls" Version="7.0.0" />
@@ -163,15 +177,17 @@ To fix this, instead of adding the Uno version of the toolkit like the code belo
 Add a conditional reference:
 
 ```xml
-<ItemGroup Condition="'$(TargetFramework)' == 'uap10.0.17763'">
+<ItemGroup Condition="'$(TargetFramework)' == 'uap10.0.18362'">
   <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls" Version="7.0.0" />
 </ItemGroup>
-<ItemGroup Condition="'$(TargetFramework)' != 'uap10.0.17763'">
+<ItemGroup Condition="'$(TargetFramework)' != 'uap10.0.18362'">
   <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls" Version="7.0.0" />
 </ItemGroup>
 ```
 
-You may need to replace `uap10.0.17763` with the version defined in the `TargetFrameworks` node at the top of the csproj file.
+You may need to replace `uap10.0.18362` with the version defined in the `TargetFrameworks` node at the top of the csproj file.
+
+***
 
 ## See a working example with data
 
@@ -183,10 +199,4 @@ A working sample complete with data is available on GitHub: [Uno Windows Communi
 
 ***
 
-## Help! I'm having trouble
-
-> [!TIP]
-> If you ran into difficulties with any part of this guide, you can:
-> 
-> * Ask for help on our [Discord channel](https://www.platform.uno/discord) - #uno-platform
-> * Ask a question on [Stack Overflow](https://stackoverflow.com/questions/tagged/uno-platform) with the 'uno-platform' tag
+[!include[getting-help](getting-help.md)]

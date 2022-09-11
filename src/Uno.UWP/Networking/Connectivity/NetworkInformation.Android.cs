@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 using Android;
 using Android.App;
 using Android.Content;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.Networking.Connectivity.Internal;
 using Uno.UI;
 using Windows.Extensions;
@@ -108,7 +109,7 @@ namespace Windows.Networking.Connectivity
 							string androCanonical = interfaceAddress.Address.CanonicalHostName;
 							// seems like == androCanonical
 							string androHostName = interfaceAddress.Address.HostName;
-							bool androIPv46 = (interfaceAddress.Address.GetAddress().Count() == 4);
+							bool androIPv46 = (interfaceAddress.Address.GetAddress().Length == 4);
 
 							// we have all required data from Android, and we can use them
 							HostName newHost = new HostName();
@@ -155,7 +156,7 @@ namespace Windows.Networking.Connectivity
 			catch (Exception ex)
 			{
 				// Task delay should never crash, but just to be sure.
-				if (typeof(NetworkInformation).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				if (typeof(NetworkInformation).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 				{
 					typeof(NetworkInformation).Log().LogError($"Could not raise NetworkStatusChanged", ex);
 

@@ -152,12 +152,12 @@ namespace Windows.UI.Xaml.Media
 		{
 			var sb = new StringBuilder();
 
-			sb.Append("[");
+			sb.Append('[');
 			foreach (Point p in _points)
 			{
 				sb.Append(p.X + "," + p.Y + " ");
 			}
-			sb.Append("]");
+			sb.Append(']');
 
 			return sb.ToString();
 		}

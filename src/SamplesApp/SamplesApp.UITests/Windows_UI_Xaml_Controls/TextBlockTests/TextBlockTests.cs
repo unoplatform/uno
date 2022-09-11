@@ -345,7 +345,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 			var stackTextBlockName = "stackTextBlock";
 			var maxLineSlider = _app.Marked("slider");
-			
+
 			_app.WaitForElement(maxLineSlider);
 
 			var numberOfLines = 1;
@@ -536,6 +536,46 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 			{
 				ImageAssert.DoesNotHaveColorAt(selectableScreenshot, selectableTextBlock.CenterX, selectableTextBlock.CenterY, Color.White);
 			}
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)]
+		public void When_TextSize_Then_RelativeSize()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_RelativeTextSize");
+
+			var textBlockRect = _app.GetLogicalRect("textBlock");
+			var textBoxRect = _app.GetLogicalRect("textBox");
+
+			var textBlockHeight = textBlockRect.Height;
+			var textBoxHeight = textBoxRect.Height;
+
+			using var _ = new AssertionScope();
+
+			// textBlockRect.Y.Should().Be(textBoxRect.Y);
+
+			const float expectedHeight = 164f;
+			const float precision = 26f; // On iOS he result is 148 and MacOS it's 146
+			textBlockHeight.Should().BeApproximately(expectedHeight, precision);
+			textBoxHeight.Should().BeApproximately(expectedHeight, precision);
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)]
+		public void When_Foreground_Is_Brush()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.Foreground_Brushes");
+			var rect1 = _app.GetPhysicalRect("test1");
+			var rect2 = _app.GetPhysicalRect("test2");
+			var rect3 = _app.GetPhysicalRect("test3");
+			var rect4 = _app.GetPhysicalRect("test4");
+			using var screenshot = TakeScreenshot(nameof(When_Foreground_Is_Brush));
+			ImageAssert.HasColorAt(screenshot, rect1.X + 5, rect1.CenterY, Color.Blue, tolerance: 10);
+			ImageAssert.HasColorAt(screenshot, rect2.X + 5, rect2.CenterY, Color.Blue, tolerance: 10);
+			ImageAssert.HasColorAt(screenshot, rect3.X + 5, rect3.CenterY, Color.Blue, tolerance: 10);
+			ImageAssert.HasColorAt(screenshot, rect4.X + 5, rect4.CenterY, Color.Blue, tolerance: 10);
 		}
 	}
 }

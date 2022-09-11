@@ -3,10 +3,8 @@
 namespace Windows.ApplicationModel.DataTransfer
 {
 	#if false || false || false || false || false || false || false
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-	#endif
-	public   enum DataPackageOperation 
+	[global::System.FlagsAttribute]
+	public   enum DataPackageOperation : uint
 	{
 		// Skipping already declared field Windows.ApplicationModel.DataTransfer.DataPackageOperation.None
 		// Skipping already declared field Windows.ApplicationModel.DataTransfer.DataPackageOperation.Copy

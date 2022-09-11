@@ -18,6 +18,7 @@ using Microsoft.VisualStudio.ProjectSystem;
 using Microsoft.VisualStudio.ProjectSystem.Build;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Uno.UI.RemoteControl.VS.Helpers;
 using Task = System.Threading.Tasks.Task;
 
 #pragma warning disable VSTHRD010
@@ -42,7 +43,7 @@ namespace Uno.UI.RemoteControl.VS
 		private System.Diagnostics.Process _process;
 
 		private int RemoteControlServerPort;
-		private bool _closing = false;
+		private bool _closing;
 
 		public EntryPoint(DTE2 dte2, string toolsPath, AsyncPackage asyncPackage, Action<Func<Task<Dictionary<string, string>>>> globalPropertiesProvider)
 		{
@@ -216,15 +217,37 @@ namespace Uno.UI.RemoteControl.VS
 			}
 		}
 
+		private int GetDotnetMajorVersion()
+		{
+			var result = ProcessHelpers.RunProcess("dotnet", "--version", Path.GetDirectoryName(_dte.Solution.FileName));
+
+			if (result.exitCode != 0)
+			{
+				throw new InvalidOperationException($"Unable to detect current dotnet version (\"dotnet --version\" exited with code {result.exitCode})");
+			}
+
+			if (result.output.Contains("."))
+			{
+				if(int.TryParse(result.output.Substring(0, result.output.IndexOf('.')), out int majorVersion))
+				{
+					return majorVersion;
+				}
+			}
+
+			throw new InvalidOperationException($"Unable to detect current dotnet version (\"dotnet --version\" returned \"{result.output}\")");
+		}
+
 		private async Task StartServerAsync()
 		{
 			if (_process?.HasExited ?? true)
 			{
 				RemoteControlServerPort = GetTcpPort();
 
+				var runtimeVersionPath = GetDotnetMajorVersion() > 5 ? "netcoreapp3.1" : "net6.0";
+
 				var sb = new StringBuilder();
 
-				var hostBinPath = Path.Combine(_toolsPath, "host", "Uno.UI.RemoteControl.Host.dll");
+				var hostBinPath = Path.Combine(_toolsPath, "host", runtimeVersionPath, "Uno.UI.RemoteControl.Host.dll");
 				string arguments = $"\"{hostBinPath}\" --httpPort {RemoteControlServerPort}";
 				var pi = new ProcessStartInfo("dotnet", arguments)
 				{

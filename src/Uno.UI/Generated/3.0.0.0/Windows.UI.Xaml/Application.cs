@@ -10,34 +10,8 @@ namespace Windows.UI.Xaml
 		// Skipping already declared property Resources
 		// Skipping already declared property RequestedTheme
 		// Skipping already declared property DebugSettings
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.ApplicationRequiresPointerMode RequiresPointerMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ApplicationRequiresPointerMode Application.RequiresPointerMode is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Application", "ApplicationRequiresPointerMode Application.RequiresPointerMode");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.FocusVisualKind FocusVisualKind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FocusVisualKind Application.FocusVisualKind is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Application", "FocusVisualKind Application.FocusVisualKind");
-			}
-		}
-		#endif
+		// Skipping already declared property RequiresPointerMode
+		// Skipping already declared property FocusVisualKind
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.ApplicationHighContrastAdjustment HighContrastAdjustment
@@ -131,13 +105,7 @@ namespace Windows.UI.Xaml
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Application.Current.get
 		// Skipping already declared method Windows.UI.Xaml.Application.Start(Windows.UI.Xaml.ApplicationInitializationCallback)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void LoadComponent( object component,  global::System.Uri resourceLocator)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Application", "void Application.LoadComponent(object component, Uri resourceLocator)");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Application.LoadComponent(object, System.Uri)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void LoadComponent( object component,  global::System.Uri resourceLocator,  global::Windows.UI.Xaml.Controls.Primitives.ComponentResourceLocation componentResourceLocation)
@@ -148,37 +116,7 @@ namespace Windows.UI.Xaml
 		// Skipping already declared event Windows.UI.Xaml.Application.Resuming
 		// Skipping already declared event Windows.UI.Xaml.Application.Suspending
 		// Skipping already declared event Windows.UI.Xaml.Application.UnhandledException
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.UI.Xaml.EnteredBackgroundEventHandler EnteredBackground
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Application", "event EnteredBackgroundEventHandler Application.EnteredBackground");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Application", "event EnteredBackgroundEventHandler Application.EnteredBackground");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.UI.Xaml.LeavingBackgroundEventHandler LeavingBackground
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Application", "event LeavingBackgroundEventHandler Application.LeavingBackground");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Application", "event LeavingBackgroundEventHandler Application.LeavingBackground");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.Application.EnteredBackground
+		// Skipping already declared event Windows.UI.Xaml.Application.LeavingBackground
 	}
 }

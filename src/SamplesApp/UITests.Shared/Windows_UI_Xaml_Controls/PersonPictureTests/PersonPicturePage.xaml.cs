@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Shapes;
 
 namespace MUXControlsTestApp
 {
-	[SampleControlInfo("PersonPicture", "MUX Page")]
+	[Sample("MUX","PersonPicture")]
 	public sealed partial class PersonPicturePage
     {
         private Uri imageUri = new Uri("ms-appx:///Assets/ingredient2.png");
@@ -83,8 +83,10 @@ namespace MUXControlsTestApp
                 AutomationProperties.SetAccessibilityView(badgeEllipse, AccessibilityView.Content);
             }
 
-            CollectionViewSource cvs = rootGrid.FindName("cvs") as CollectionViewSource;
-            cvs.Source = GetGroupedPeople();
+			// Uno docs: This currently fails and returns null.
+			// https://github.com/unoplatform/uno/issues/7258
+			//CollectionViewSource cvs = rootGrid.FindName("cvs") as CollectionViewSource;
+			cvs.Source = GetGroupedPeople();
             cvs.IsSourceGrouped = true;
         }
 

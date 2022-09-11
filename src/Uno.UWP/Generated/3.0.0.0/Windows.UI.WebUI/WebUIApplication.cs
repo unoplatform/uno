@@ -5,7 +5,7 @@ namespace Windows.UI.WebUI
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class WebUIApplication 
+	public static partial class WebUIApplication 
 	{
 		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.NewWebUIViewCreated.add
 		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.NewWebUIViewCreated.remove

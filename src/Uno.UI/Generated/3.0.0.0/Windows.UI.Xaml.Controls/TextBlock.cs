@@ -371,13 +371,7 @@ namespace Windows.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TextBlock", "void TextBlock.Select(TextPointer start, TextPointer end)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool Focus( global::Windows.UI.Xaml.FocusState value)
-		{
-			throw new global::System.NotImplementedException("The member bool TextBlock.Focus(FocusState value) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.TextBlock.Focus(Windows.UI.Xaml.FocusState)
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBlock.SelectionHighlightColor.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBlock.SelectionHighlightColor.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBlock.MaxLines.get

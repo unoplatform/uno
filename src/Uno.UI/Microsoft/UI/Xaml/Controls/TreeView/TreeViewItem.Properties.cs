@@ -1,4 +1,4 @@
-﻿// MUX Reference TreeViewItem.properties.cpp, commit de78834
+﻿// MUX Reference TreeViewItem.properties.cpp, commit f56157d
 
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
@@ -119,7 +119,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the GlyphSize dependency property.
 		/// </summary>
 		public static DependencyProperty GlyphSizeProperty { get; } =
-			DependencyProperty.Register(nameof(GlyphSize), typeof(double), typeof(TreeViewItem), new FrameworkPropertyMetadata(12.0));
+			DependencyProperty.Register(nameof(GlyphSize), typeof(double), typeof(TreeViewItem), new FrameworkPropertyMetadata(8.0));
 
 		/// <summary>
 		/// Identifies the HasUnrealizedChildren dependency property.

@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Messages;
 using System.Runtime.Loader;
+using Microsoft.Extensions.Configuration;
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -22,10 +23,12 @@ namespace Uno.UI.RemoteControl.Host
 		private readonly Dictionary<string, IServerProcessor> _processors = new Dictionary<string, IServerProcessor>();
 
 		private WebSocket _socket;
-		private AssemblyLoadContext _loadContext;
+		private readonly IConfiguration _configuration;
+		private readonly AssemblyLoadContext _loadContext;
 
-		public RemoteControlServer()
+		public RemoteControlServer(IConfiguration configuration)
 		{
+			_configuration = configuration;
 			_loadContext = new AssemblyLoadContext(null, isCollectible: true);
 			_loadContext.Unloading += (e) => {
 				if (this.Log().IsEnabled(LogLevel.Debug))
@@ -40,6 +43,9 @@ namespace Uno.UI.RemoteControl.Host
 			}
 		}
 
+		string IRemoteControlServer.GetServerConfiguration(string key)
+			=> _configuration[key];
+
 		private void RegisterProcessor(IServerProcessor hotReloadProcessor)
 		{
 			_processors[hotReloadProcessor.Scope] = hotReloadProcessor;
@@ -51,9 +57,22 @@ namespace Uno.UI.RemoteControl.Host
 
 			while (await WebSocketHelper.ReadFrame(socket, ct) is Frame frame)
 			{
-				if (frame.Name == ProcessorsDiscovery.Name)
+				if (frame.Scope == "RemoteControlServer")
 				{
-					ProcessDiscoveryFrame(frame);
+					if (frame.Name == ProcessorsDiscovery.Name)
+					{
+						ProcessDiscoveryFrame(frame);
+					}
+
+					if (frame.Name == KeepAliveMessage.Name)
+					{
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().LogTrace($"Client Keepalive frame");
+						}
+
+						await SendFrame(new KeepAliveMessage());
+					}
 				}
 
 				if (_processors.TryGetValue(frame.Scope, out var processor))
@@ -82,9 +101,17 @@ namespace Uno.UI.RemoteControl.Host
 
 			var basePath = msg.BasePath.Replace('/', Path.DirectorySeparatorChar);
 
-			foreach (var file in Directory.GetFiles(basePath, "*.dll"))
+#if NET6_0_OR_GREATER
+			basePath = Path.Combine(basePath, "net6.0");
+#else
+			basePath = Path.Combine(basePath, "netcoreapp3.1");
+#endif
+
+			var assemblies = new List<System.Reflection.Assembly>();
+
+			foreach (var file in Directory.GetFiles(basePath, "Uno.*.dll"))
 			{
-				if(Path.GetFileNameWithoutExtension(file).Equals(serverAssemblyName, StringComparison.OrdinalIgnoreCase))
+				if (Path.GetFileNameWithoutExtension(file).Equals(serverAssemblyName, StringComparison.OrdinalIgnoreCase))
 				{
 					continue;
 				}
@@ -94,16 +121,24 @@ namespace Uno.UI.RemoteControl.Host
 					this.Log().LogDebug($"Discovery: Loading {file}");
 				}
 
-				var asm = _loadContext.LoadFromAssemblyPath(file);
+				assemblies.Add(_loadContext.LoadFromAssemblyPath(file));
+			}
 
-				foreach(var processorType in asm.GetTypes().Where(t => t.GetInterfaces().Any(i => i == typeof(IServerProcessor))))
+			foreach(var asm in assemblies)
+			{
+				var attributes = asm.GetCustomAttributes(typeof(ServerProcessorAttribute), false);
+
+				foreach (var processorAttribute in attributes)
 				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
+					if (processorAttribute is ServerProcessorAttribute processor)
 					{
-						this.Log().LogDebug($"Discovery: Registering {processorType}");
-					}
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().LogDebug($"Discovery: Registering {processor.ProcessorType}");
+						}
 
-					RegisterProcessor((IServerProcessor)Activator.CreateInstance(processorType, this));
+						RegisterProcessor((IServerProcessor)Activator.CreateInstance(processor.ProcessorType, this));
+					}
 				}
 			}
 		}

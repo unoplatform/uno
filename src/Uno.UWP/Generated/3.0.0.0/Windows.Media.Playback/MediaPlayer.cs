@@ -3,7 +3,7 @@
 namespace Windows.Media.Playback
 {
 	#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-	[global::Uno.NotImplemented]
+	[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	#endif
 	public  partial class MediaPlayer : global::System.IDisposable
 	{
@@ -531,13 +531,7 @@ namespace Windows.Media.Playback
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "void MediaPlayer.SetSurfaceSize(Size size)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Playback.MediaPlayerSurface GetSurface( global::Windows.UI.Composition.Compositor compositor)
-		{
-			throw new global::System.NotImplementedException("The member MediaPlayerSurface MediaPlayer.GetSurface(Compositor compositor) is not implemented in Uno.");
-		}
-		#endif
+		// Forced skipping of method Windows.Media.Playback.MediaPlayer.GetSurface(Windows.UI.Composition.Compositor)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void AddVideoEffect( string activatableClassId,  bool effectOptional,  global::Windows.Foundation.Collections.IPropertySet effectConfiguration)

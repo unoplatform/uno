@@ -2,21 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum GradientSpreadMethod 
 	{
-		#if false
-		Pad,
-		#endif
-		#if false
-		Reflect,
-		#endif
-		#if false
-		Repeat,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Media.GradientSpreadMethod.Pad
+		// Skipping already declared field Windows.UI.Xaml.Media.GradientSpreadMethod.Reflect
+		// Skipping already declared field Windows.UI.Xaml.Media.GradientSpreadMethod.Repeat
 	}
 	#endif
 }

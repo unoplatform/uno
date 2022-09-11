@@ -4,12 +4,12 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Media.Imaging;
 using Uno.Disposables;
 using Windows.Storage.Streams;
 using System.Runtime.InteropServices;
-using Microsoft.Extensions.Logging;
+
 using Windows.UI;
 
 namespace Windows.UI.Xaml.Controls
@@ -45,7 +45,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnImageFailed(object sender, ExceptionRoutedEventArgs e)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Image failed [{_currentImg.Source}]: {e.ErrorMessage}");
 			}
@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnImageOpened(object sender, RoutedEventArgs e)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Image opened [{(Source as BitmapSource)?.WebUri}]");
 			}
@@ -84,13 +84,13 @@ namespace Windows.UI.Xaml.Controls
 			remove => _htmlImage.UnregisterEventHandler("error", value, GenericEventHandlers.RaiseExceptionRoutedEventHandler);
 		}
 
-		partial void OnSourceChanged(DependencyPropertyChangedEventArgs e)
+		partial void OnSourceChanged(ImageSource newValue)
 		{
 			UpdateHitTest();
 
 			_lastMeasuredSize = _zeroSize;
 
-			if (e.NewValue is ImageSource source)
+			if (newValue is ImageSource source)
 			{
 				void OnSourceOpened(ImageData img)
 				{

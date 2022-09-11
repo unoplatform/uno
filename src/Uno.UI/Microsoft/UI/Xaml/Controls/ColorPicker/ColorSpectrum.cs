@@ -5,13 +5,11 @@ using System.Threading.Tasks;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Helpers.WinUI;
-using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
 using Windows.System.Threading;
 using Windows.UI;
 using Windows.UI.Core;
-using Windows.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
@@ -19,6 +17,13 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Shapes;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
@@ -919,8 +924,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			m_isPointerPressed = true;
 			m_shouldShowLargeSelection =
-				args.Pointer.PointerDeviceType == PointerDeviceType.Pen ||
-				args.Pointer.PointerDeviceType == PointerDeviceType.Touch;
+				(PointerDeviceType)args.Pointer.PointerDeviceType == PointerDeviceType.Pen ||
+				(PointerDeviceType)args.Pointer.PointerDeviceType == PointerDeviceType.Touch;
 
 			inputTarget.CapturePointer(args.Pointer);
 			UpdateColorFromPoint(args.GetCurrentPoint(inputTarget));

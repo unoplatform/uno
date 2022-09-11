@@ -14,19 +14,41 @@ namespace Windows.UI.Xaml.Markup
 	public class ComponentHolder
 	{
 		private ManagedWeakReference? _instanceRef;
+		private object? _instance; 
 
 		/// <summary>
 		/// Creates an instance of ComponentHolder
 		/// </summary>
-		public ComponentHolder() { }
+		public ComponentHolder() : this(true) { }
+
+		/// <summary>
+		/// Creates an instance of ComponentHolder
+		/// </summary>
+		public ComponentHolder(bool isWeak) { IsWeak = isWeak; }
 
 		/// <summary>
 		/// The component instance
 		/// </summary>
 		public object? Instance
 		{
-			get => _instanceRef?.Target;
-			set => _instanceRef = WeakReferencePool.RentWeakReference(this, value);
+			get => IsWeak ? _instanceRef?.Target : _instance;
+
+			set
+			{
+				if (IsWeak)
+				{
+					_instanceRef = WeakReferencePool.RentWeakReference(this, value);
+				}
+				else
+				{
+					_instance = value;
+				}
+			}
 		}
+
+		/// <summary>
+		/// Indicates if the reference stored in <see cref="Instance"/> is a weak reference.
+		/// </summary>
+		public bool IsWeak { get; }
 	}
 }

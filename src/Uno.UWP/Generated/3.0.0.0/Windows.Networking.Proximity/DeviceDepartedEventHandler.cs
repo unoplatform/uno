@@ -3,6 +3,6 @@
 namespace Windows.Networking.Proximity
 {
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public delegate void DeviceDepartedEventHandler(global::Windows.Networking.Proximity.ProximityDevice @sender);
+	public delegate void DeviceDepartedEventHandler(global::Windows.Networking.Proximity.ProximityDevice sender);
 	#endif
 }

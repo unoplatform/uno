@@ -1,10 +1,10 @@
-<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../../netcore-build.props"/>
-	<Import Project="../../targetframework-override.props"/>
+	<Import Project="../../netcore-build.props" />
+	<Import Project="../../targetframework-override.props" />
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
@@ -17,11 +17,16 @@
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 		<Nullable>enable</Nullable>
+		
+		<DefineConstants>$(DefineConstants);HAS_SKOTTIE</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
+		
+		<PackageReference Include="SkiaSharp.Skottie" />
+		<PackageReference Include="SkiaSharp.Views.Uno" Condition="'$(UNO_UWP_BUILD)'=='true'" />
+		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 	</ItemGroup>
 
 	<Import Project="..\..\Common.targets" />

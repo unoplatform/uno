@@ -1,7 +1,24 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
-		<TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
+		<TargetFrameworks>net5.0-windows</TargetFrameworks>		
+		<!--
+		Enable implicit dotnet runtime forward rolling, as a net5
+		project may run with net6 only SDK installed
+		-->
+		<RollForward>Major</RollForward>
 	</PropertyGroup>
+
+	<ItemGroup Label="AssemblyInfo">
+		<AssemblyAttribute Include="System.Runtime.InteropServices.ComVisibleAttribute">
+			<_Parameter1>false</_Parameter1>
+		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Windows.ThemeInfo">
+			<_Parameter1>System.Windows.ResourceDictionaryLocation.None</_Parameter1>
+			<_Parameter1_IsLiteral>true</_Parameter1_IsLiteral>
+			<_Parameter2>System.Windows.ResourceDictionaryLocation.SourceAssembly</_Parameter2>
+			<_Parameter2_IsLiteral>true</_Parameter2_IsLiteral>
+		</AssemblyAttribute>
+	</ItemGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
@@ -12,7 +29,6 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<UseWPF>true</UseWPF>
-	  <Prefer32Bit>true</Prefer32Bit>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net472'">
@@ -34,7 +50,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
-		<PackageReference Include="SkiaSharp.Views.WPF" Version="2.80.2" />
+		<PackageReference Include="SkiaSharp.Views.WPF" Version="2.88.1-preview.79" />
+		<PackageReference Include="SkiaSharp.Views.Uno" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -73,5 +90,6 @@
 
 	<Import Project="..\..\..\build\*.Skia.Wpf.props" />
 	<Import Project="..\..\..\build\*.Skia.Wpf.targets" />
+	<Import Project="..\..\..\build\uno.winui.runtime-replace.targets" />
 
 </Project>

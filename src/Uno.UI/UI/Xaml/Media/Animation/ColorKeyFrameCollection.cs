@@ -9,10 +9,6 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 		}
 
-		internal ColorKeyFrameCollection(DependencyObject owner, bool isAutoPropertyInheritanceEnabled) : base(owner,  isAutoPropertyInheritanceEnabled)
-		{
-		}
-
 		// Following members are for binary backward compatibility. They can be safely remove in an eventual "breaking" new version.
 		public new uint Size => base.Size;
 

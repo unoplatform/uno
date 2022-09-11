@@ -2,11 +2,25 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class LoopingSelector : global::Windows.UI.Xaml.Controls.Control
 	{
+		// Skipping already declared property ShouldLoop
+		// Skipping already declared property SelectedItem
+		// Skipping already declared property SelectedIndex
+		// Skipping already declared property Items
+		// Skipping already declared property ItemWidth
+		// Skipping already declared property ItemTemplate
+		// Skipping already declared property ItemHeight
+		// Skipping already declared property ItemHeightProperty
+		// Skipping already declared property ItemTemplateProperty
+		// Skipping already declared property ItemWidthProperty
+		// Skipping already declared property ItemsProperty
+		// Skipping already declared property SelectedIndexProperty
+		// Skipping already declared property SelectedItemProperty
+		// Skipping already declared property ShouldLoopProperty
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.LoopingSelector.ShouldLoop.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.LoopingSelector.ShouldLoop.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.LoopingSelector.Items.get
@@ -30,5 +44,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.LoopingSelector.ItemWidthProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.LoopingSelector.ItemHeightProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.LoopingSelector.ItemTemplateProperty.get
+		// Skipping already declared event Windows.UI.Xaml.Controls.Primitives.LoopingSelector.SelectionChanged
 	}
 }

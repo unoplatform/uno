@@ -16,7 +16,7 @@ using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Input;
-using Microsoft.Extensions.Logging;
+
 using Microsoft.UI.Xaml.Controls;
 using Uno;
 using Uno.Extensions;
@@ -24,7 +24,7 @@ using Uno.Foundation;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Interop;
 using Uno.Helpers.Serialization;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Storage.Internal;
 using Uno.UI;
 using Uno.UI.Xaml;
@@ -38,7 +38,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 	{
 		private const long _textReadTimeoutTicks = 10 * TimeSpan.TicksPerSecond;
 		private const string _jsType = "Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension";
-		private static readonly ILogger _log = typeof(DragDropExtension).Log();
+		private static readonly Logger _log = typeof(DragDropExtension).Log();
 
 		private static DragDropExtension? _current;
 

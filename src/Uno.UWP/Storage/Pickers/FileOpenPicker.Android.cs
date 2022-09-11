@@ -39,7 +39,7 @@ namespace Windows.Storage.Pickers
 		private async Task<StorageFile?> PickSingleFileTaskAsync(CancellationToken token)
 		{
 			var files = await PickFilesAsync(false, token);
-			return files.FirstOrDefault();
+			return files.Count == 0 ? null : files[0];
 		}
 
 		private async Task<IReadOnlyList<StorageFile>> PickMultipleFilesTaskAsync(CancellationToken token)
@@ -128,10 +128,75 @@ namespace Windows.Storage.Pickers
 				return new[] { "*/*" };
 			}
 
-			return FileTypeFilter
-				.Select(extension => MimeTypeService.GetFromExtension(extension))
-				.Distinct()
-				.ToArray();
+			List<string> mimeTypes = new List<string>();
+
+			using Android.Webkit.MimeTypeMap? mimeTypeMap = Android.Webkit.MimeTypeMap.Singleton;
+			if (mimeTypeMap is null )
+			{
+				// when map is unavailable (probably never happens, but Singleton returns nullable)
+				return new[] { "*/*" };
+			}
+
+			foreach (string oneExtensionForLoop in FileTypeFilter)
+            {
+				bool unknownExtensionPresent = false;
+
+				string oneExtension = oneExtensionForLoop;
+				if (oneExtension.StartsWith("."))
+				{
+					// Supported format from UWP, e.g. ".jpg"
+					oneExtension = oneExtension.Substring(1);
+				}
+
+				if(!mimeTypeMap.HasExtension(oneExtension))
+                {
+					// when there is unknown extension, we should show all files
+					unknownExtensionPresent = true;
+				}
+
+				string? mimeType = mimeTypeMap.GetMimeTypeFromExtension(oneExtension);
+				if (string.IsNullOrEmpty(mimeType))
+				{
+					// second check for unknown extension...
+					unknownExtensionPresent = true;
+				}
+				else
+				{
+#pragma warning disable CS8604 // Possible null reference argument.
+					// it cannot be null, as this is within "if", but still compiler complains about possible null reference
+					if (!mimeTypes.Contains(mimeType))
+					{
+						mimeTypes.Add(mimeType);
+					}
+#pragma warning restore CS8604 // Possible null reference argument.
+				}
+
+				if (unknownExtensionPresent)
+				{
+					// it is some unknown extension
+					var mimeTypesFromUno = FileTypeFilter
+						.Select(extension => MimeTypeService.GetFromExtension(extension))
+						.Distinct();
+
+					if (!mimeTypesFromUno.Any())
+					{
+						return new[] { "*/*" };
+					}
+
+					foreach(var oneUnoMimeType in mimeTypesFromUno)
+					{
+						if (!mimeTypes.Contains(oneUnoMimeType))
+						{
+							mimeTypes.Add(oneUnoMimeType);
+						}
+					}
+
+				}
+
+			}
+
+
+			return mimeTypes.ToArray();
 		}
 	}
 }

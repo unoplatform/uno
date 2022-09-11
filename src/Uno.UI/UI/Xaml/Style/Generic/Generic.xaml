@@ -4,9 +4,7 @@
 					xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-					xmlns:local="using:GenericApp.Views.Controls"
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-					xmlns:localConverters="using:GenericApp.Views.Converters"
 					xmlns:u="using:Uno.UI.Controls"
 					xmlns:xamarin="http://uno.ui/xamarin"
 					xmlns:ios="http://uno.ui/ios"
@@ -21,6 +19,7 @@
 					xmlns:native_android="using:Android.Widget"
 					xmlns:itemswrapgridpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypePresent(Windows.UI.Xaml.Controls.ItemsWrapGrid)"
 					xmlns:itemswrapgridnotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Windows.UI.Xaml.Controls.ItemsWrapGrid)"
+					xmlns:uwpOnly="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Microsoft.UI.Xaml.FrameworkElement)"
 					xmlns:uBehaviors="using:Uno.UI.Behaviors"
 					mc:Ignorable="d xamarin ios android not_wasm wasm netstdref not_netstdref macos skia">
 
@@ -217,9 +216,11 @@
 		</Setter>
 	</xamarin:Style>
 
-	<!--Default style for Windows.UI.Xaml.Controls.TextBox-->
+	<!--  Default style for Windows.UI.Xaml.Controls.TextBox  -->
+	<Thickness x:Key="TextBoxTopHeaderMargin">0,0,0,4</Thickness>
+
 	<Style x:Key="XamlDefaultTextBox"
-				   TargetType="TextBox">
+		   TargetType="TextBox">
 		<Setter Property="MinWidth"
 				Value="{ThemeResource TextControlThemeMinWidth}" />
 		<Setter Property="MinHeight"
@@ -341,73 +342,94 @@
 								<VisualState x:Name="ButtonCollapsed" />
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="*" />
 							<ColumnDefinition Width="Auto" />
 						</Grid.ColumnDefinitions>
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="*" />
-						</Grid.RowDefinitions>
-						<Border x:Name="BackgroundElement"
-								Grid.Row="1"
-								Background="{TemplateBinding Background}"
-								Margin="{TemplateBinding BorderThickness}"
-								Opacity="{ThemeResource TextControlBackgroundRestOpacity}"
-								CornerRadius="{TemplateBinding CornerRadius}"
-								Grid.ColumnSpan="2"
-								Grid.RowSpan="1" />
-						<Border x:Name="BorderElement"
-								Grid.Row="1"
-								BorderBrush="{TemplateBinding BorderBrush}"
-								BorderThickness="{TemplateBinding BorderThickness}"
-								CornerRadius="{TemplateBinding CornerRadius}"
-								Grid.ColumnSpan="2"
-								Grid.RowSpan="1" />
 						<ContentPresenter x:Name="HeaderContentPresenter"
-										  x:DeferLoadStrategy="Lazy"
-										  Visibility="Collapsed"
 										  Grid.Row="0"
-										  Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
-										  Margin="0,0,0,8"
+										  Grid.Column="0"
 										  Grid.ColumnSpan="2"
+										  Margin="{ThemeResource TextBoxTopHeaderMargin}"
+										  VerticalAlignment="Top"
+										  x:DeferLoadStrategy="Lazy"
 										  Content="{TemplateBinding Header}"
 										  ContentTemplate="{TemplateBinding HeaderTemplate}"
-										  FontWeight="Normal" />
+										  FontWeight="Normal"
+										  Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
+										  TextWrapping="Wrap"
+										  Visibility="Collapsed" />
+						<Border x:Name="BackgroundElement"
+								Grid.Row="1"
+								Grid.RowSpan="1"
+								Grid.ColumnSpan="2"
+								Margin="{TemplateBinding BorderThickness}"
+								Background="{TemplateBinding Background}"
+								CornerRadius="{TemplateBinding CornerRadius}"
+								Opacity="{ThemeResource TextControlBackgroundRestOpacity}" />
+						<Border x:Name="BorderElement"
+								Grid.Row="1"
+								Grid.RowSpan="1"
+								Grid.Column="0"
+								Grid.ColumnSpan="2"
+								MinWidth="{ThemeResource TextControlThemeMinWidth}"
+								MinHeight="{ThemeResource TextControlThemeMinHeight}"
+								Background="{TemplateBinding Background}"
+								BorderBrush="{TemplateBinding BorderBrush}"
+								BorderThickness="{TemplateBinding BorderThickness}"
+								Control.IsTemplateFocusTarget="True"
+								CornerRadius="{TemplateBinding CornerRadius}" />
 						<ScrollViewer x:Name="ContentElement"
 									  Grid.Row="1"
-									  HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
-									  HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-									  VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
-									  VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-									  IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
-									  IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
-									  IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+									  Grid.Column="0"
 									  Margin="{TemplateBinding BorderThickness}"
 									  Padding="{TemplateBinding Padding}"
-									  IsTabStop="False"
 									  AutomationProperties.AccessibilityView="Raw"
+									  HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+									  HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
+									  IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+									  IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
+									  IsTabStop="False"
+									  IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
+									  VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+									  VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
 									  ZoomMode="Disabled" />
-						<ContentControl x:Name="PlaceholderTextContentPresenter"
-										Grid.Row="1"
-										Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"
-										Margin="{TemplateBinding BorderThickness}"
-										Padding="{TemplateBinding Padding}"
-										IsTabStop="False"
-										Grid.ColumnSpan="2"
-										Content="{TemplateBinding PlaceholderText}"
-										IsHitTestVisible="False" />
+						<TextBlock x:Name="PlaceholderTextContentPresenter"
+								   Grid.Row="1"
+								   Grid.Column="0"
+								   Grid.ColumnSpan="2"
+								   Margin="{TemplateBinding BorderThickness}"
+								   Padding="{TemplateBinding Padding}"
+								   Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"
+								   IsHitTestVisible="False"
+								   Text="{TemplateBinding PlaceholderText}"
+								   TextAlignment="{TemplateBinding TextAlignment}"
+								   TextWrapping="{TemplateBinding TextWrapping}" />
 						<Button x:Name="DeleteButton"
 								Grid.Row="1"
-								Style="{StaticResource DeleteButtonStyle}"
-								BorderThickness="{TemplateBinding BorderThickness}"
-								Margin="{ThemeResource HelperButtonThemePadding}"
-								IsTabStop="False"
 								Grid.Column="1"
-								Visibility="Collapsed"
-								FontSize="{TemplateBinding FontSize}"
 								MinWidth="34"
-								VerticalAlignment="Stretch" />
+								Margin="{ThemeResource HelperButtonThemePadding}"
+								VerticalAlignment="Stretch"
+								AutomationProperties.AccessibilityView="Raw"
+								BorderThickness="{TemplateBinding BorderThickness}"
+								FontSize="{TemplateBinding FontSize}"
+								IsTabStop="False"
+								Style="{StaticResource DeleteButtonStyle}"
+								Visibility="Collapsed" />
+						<ContentPresenter x:Name="DescriptionPresenter"
+										  Grid.Row="2"
+										  Grid.Column="0"
+										  Grid.ColumnSpan="2"
+										  x:Load="False"
+										  AutomationProperties.AccessibilityView="Raw"
+										  Content="{TemplateBinding Description}"
+										  Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" />
 					</Grid>
 				</ControlTemplate>
 			</Setter.Value>
@@ -530,6 +552,7 @@
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
 						</Grid.RowDefinitions>
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="*" />
@@ -744,6 +767,13 @@
 										   HorizontalAlignment="Right"
 										   VerticalAlignment="Center"
 										   AutomationProperties.AccessibilityView="Raw" />
+						<ContentPresenter x:Name="DescriptionPresenter"
+										   Grid.Row="2"
+										   Grid.Column="0"
+										   Grid.ColumnSpan="2"
+										   Foreground="{ThemeResource SystemControlDescriptionTextForegroundBrush}"
+										   Content="{TemplateBinding Description}"
+										   x:Load="False"/>
 						<Popup x:Name="Popup">
 							<Border x:Name="PopupBorder"
 									Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
@@ -4405,6 +4435,7 @@
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
 						</Grid.RowDefinitions>
 						<Border x:Name="BackgroundElement"
 								Grid.Row="1"
@@ -4463,6 +4494,14 @@
 								FontSize="{TemplateBinding FontSize}"
 								VerticalAlignment="Stretch"
 								MinWidth="34" />
+						<ContentPresenter x:Name="DescriptionPresenter"
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Content="{TemplateBinding Description}"
+                            Foreground="{ThemeResource SystemControlDescriptionTextForegroundBrush}"
+                            AutomationProperties.AccessibilityView="Raw"
+                            x:Load="False"/>
 					</Grid>
 				</ControlTemplate>
 			</Setter.Value>
@@ -4563,8 +4602,8 @@
 		   BasedOn="{StaticResource XamlDefaultFrame}" />
 
 	<!-- Default style for Windows.UI.Xaml.Controls.ProgressBar -->
-	<Style x:Key="XamlDefaultProgressBar"
-				   TargetType="ProgressBar">
+	<uwpOnly:Style x:Key="XamlDefaultProgressBar"
+				   TargetType="uwpOnly:ProgressBar">
 		<Setter Property="Foreground"
 				Value="{ThemeResource SystemControlHighlightAccentBrush}" />
 		<Setter Property="Background"
@@ -4597,9 +4636,9 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</Style>
+	</uwpOnly:Style>
 
-	<Style TargetType="ProgressBar"
+	<uwpOnly:Style TargetType="uwpOnly:ProgressBar"
 		   BasedOn="{StaticResource XamlDefaultProgressBar}" />
 
 
@@ -5284,7 +5323,7 @@
 		</Setter>
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="local:Pivot">
+				<ControlTemplate TargetType="Pivot">
 					<Grid x:Name="RootElement"
 						  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
 						  VerticalAlignment="{TemplateBinding VerticalAlignment}"
@@ -5541,7 +5580,7 @@
 				Value="False" />
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="local:PivotItem">
+				<ControlTemplate TargetType="PivotItem">
 					<Grid Background="{TemplateBinding Background}"
 						  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
 						  VerticalAlignment="{TemplateBinding VerticalAlignment}">
@@ -5568,7 +5607,7 @@
 	</Style>
 
 	<!-- Default style for Windows.UI.Xaml.Controls.Primitives.PivotHeaderItem -->
-	<Style TargetType="local:PivotHeaderItem">
+	<Style TargetType="PivotHeaderItem">
 		<Setter Property="FontSize"
 				Value="{ThemeResource PivotHeaderItemFontSize}" />
 		<Setter Property="FontFamily"
@@ -5593,7 +5632,7 @@
 				Value="False" />
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="local:PivotHeaderItem">
+				<ControlTemplate TargetType="PivotHeaderItem">
 					<Grid x:Name="Grid"
 						  Background="{TemplateBinding Background}"
 						  Padding="{TemplateBinding Padding}">
@@ -6006,6 +6045,7 @@
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="*" />
+							<RowDefinition Height="Auto" />
 						</Grid.RowDefinitions>
 						<Border x:Name="BorderElement"
 							Grid.Row="1"
@@ -6070,7 +6110,13 @@
 							Width="{TemplateBinding Height}"
 							VerticalAlignment="Stretch"
 							AutomationProperties.AccessibilityView="Raw"/>
-
+                        <ContentPresenter x:Name="DescriptionPresenter"
+                            Grid.Row="2"
+                            Grid.ColumnSpan="3"
+                            Content="{TemplateBinding Description}"
+                            x:Load="False"
+                            Foreground="{ThemeResource SystemControlDescriptionTextForegroundBrush}"
+                            AutomationProperties.AccessibilityView="Raw" />
 					</Grid>
 				</ControlTemplate>
 			</Setter.Value>
@@ -6100,6 +6146,7 @@
 							PlaceholderText="{TemplateBinding PlaceholderText}"
 							Header="{TemplateBinding Header}"
 							Width="{TemplateBinding Width}"
+                            Description="{TemplateBinding Description}"
 							ScrollViewer.BringIntoViewOnFocusChange="False"
 							Canvas.ZIndex="0"
 							Margin="0"

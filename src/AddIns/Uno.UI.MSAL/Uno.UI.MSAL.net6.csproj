@@ -29,7 +29,6 @@
 	<PropertyGroup>
 		<Authors>nventive</Authors>
 		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
-		<PackageIconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</PackageIconUrl>
 		<PackageIcon>uno.png</PackageIcon>
 		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<Description>This package provides the extensions to MSAL (Microsoft.Identity.Client) for an Uno Platform application.</Description>

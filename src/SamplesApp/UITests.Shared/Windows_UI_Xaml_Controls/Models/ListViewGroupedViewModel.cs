@@ -12,7 +12,7 @@ using Uno.UI.Samples.UITests.Helpers;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 {
-	public class ListViewGroupedViewModel : ViewModelBase
+	internal class ListViewGroupedViewModel : ViewModelBase
 	{
 		Random _rnd = null;
 		private bool _areStickyHeadersEnabled;

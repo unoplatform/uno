@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl
 {
-	[SampleControlInfo("PathTestsControl", "Path_CircularWheel")]
+	[SampleControlInfo("Path", "Path_CircularWheel")]
 	public sealed partial class Path_CircularWheel : UserControl
 	{
 		public Path_CircularWheel()

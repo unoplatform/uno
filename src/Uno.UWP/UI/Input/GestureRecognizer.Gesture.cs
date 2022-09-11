@@ -8,11 +8,15 @@ using System.Reflection;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
-using Microsoft.Extensions.Logging;
-using Uno;
-using Uno.Logging;
 
+using Uno;
+using Uno.Foundation.Logging;
+
+#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+namespace Microsoft.UI.Input
+#else
 namespace Windows.UI.Input
+#endif
 {
 	public partial class GestureRecognizer
 	{
@@ -50,7 +54,7 @@ namespace Windows.UI.Input
 
 				Down = down;
 				PointerIdentifier = GetPointerIdentifier(down);
-				PointerType = down.PointerDevice.PointerDeviceType;
+				PointerType = (PointerDeviceType)down.PointerDevice.PointerDeviceType;
 
 				// This is how WinUI behaves: it will fire the double tap
 				// on Down for a double tap instead of the Up.
@@ -58,7 +62,7 @@ namespace Windows.UI.Input
 				{
 					IsCompleted = true;
 				}
-				else
+				else if (SupportsHolding())
 				{
 					StartHoldingTimer();
 				}
@@ -153,9 +157,9 @@ namespace Windows.UI.Input
 				var recognized = TryRecognizeRightTap() // We check right tap first as for touch a right tap is a press and hold of the finger :)
 					|| TryRecognizeTap();
 
-				if (!recognized && _recognizer._log.IsEnabled(LogLevel.Information))
+				if (!recognized && _recognizer._log.IsEnabled(LogLevel.Debug))
 				{
-					_recognizer._log.Info("No gesture recognized");
+					_recognizer._log.Debug("No gesture recognized");
 				}
 			}
 
@@ -248,38 +252,19 @@ namespace Windows.UI.Input
 
 			#region Holding timer
 			private bool SupportsHolding()
-			{
-				switch (PointerType)
+				=> PointerType switch
 				{
-					case PointerDeviceType.Mouse: return _settings.HasFlag(GestureSettings.HoldWithMouse);
-					default: return _settings.HasFlag(GestureSettings.Hold);
-				}
-			}
-
-			private bool NeedsHoldingTimer()
-			{
-				// When possible we don't start a timer for the Holding event, instead we rely on the fact that
-				// we get a lot of small moves due to the lack of precision of the capture device (pen and touch).
-				// Note: We rely on the same side effect for Drag detection (cf. Manipulation.IsBeginningOfDragManipulation).
-
-				switch (PointerType)
-				{
-					case PointerDeviceType.Mouse: return _settings.HasFlag(GestureSettings.HoldWithMouse);
-					case PointerDeviceType.Touch when DeviceHelper.IsSimulator: return true;
-					default: return false;
-				}
-			}
+					PointerDeviceType.Mouse => _settings.HasFlag(GestureSettings.HoldWithMouse),
+					_ => _settings.HasFlag(GestureSettings.Hold)
+				};
 
 			private void StartHoldingTimer()
 			{
-				if (NeedsHoldingTimer())
-				{
-					_holdingTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();
-					_holdingTimer.Interval = TimeSpan.FromTicks(HoldMinDelayTicks);
-					_holdingTimer.State = this;
-					_holdingTimer.Tick += OnHoldingTimerTick;
-					_holdingTimer.Start();
-				}
+				_holdingTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();
+				_holdingTimer.Interval = TimeSpan.FromTicks(HoldMinDelayTicks);
+				_holdingTimer.State = this;
+				_holdingTimer.Tick += OnHoldingTimerTick;
+				_holdingTimer.Start();
 			}
 
 			private void StopHoldingTimer()

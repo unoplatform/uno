@@ -1,7 +1,12 @@
-using Windows.Devices.Input;
 using Windows.Foundation;
-using Windows.UI.Input;
 using Uno.UI.Xaml.Input;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace Windows.UI.Xaml.Input
 {
@@ -11,8 +16,8 @@ namespace Windows.UI.Xaml.Input
 
 		public ManipulationDeltaRoutedEventArgs() { }
 
-		internal ManipulationDeltaRoutedEventArgs(UIElement container, GestureRecognizer recognizer, ManipulationUpdatedEventArgs args)
-			: base(container)
+		internal ManipulationDeltaRoutedEventArgs(UIElement source, UIElement container, GestureRecognizer recognizer, ManipulationUpdatedEventArgs args)
+			: base(source)
 		{
 			Container = container;
 
@@ -32,7 +37,7 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		/// <remarks>This collection might contains pointers that has been released.</remarks>
 		/// <remarks>All pointers are expected to have the same <see cref="PointerIdentifier.Type"/>.</remarks>
-		internal PointerIdentifier[] Pointers { get; }
+		internal Windows.Devices.Input.PointerIdentifier[] Pointers { get; }
 
 		public bool Handled { get; set; }
 

@@ -9,7 +9,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Core;
 using Uno.Disposables;
 
@@ -62,12 +62,11 @@ namespace Windows.UI.Xaml.Media
 		public bool HasBundle => BundlePath.HasValueTrimmed() || BundleName.HasValueTrimmed();
 
 		/// <summary>
-		/// Open bundle is using either the name of the bundle (for 
-		/// android compatibility), or the path to the bundle for Windows compatibility.
+		/// Open the image from the app's main bundle.
 		/// </summary>
 		internal NSImage OpenBundle()
 		{
-			ImageData = OpenBundleFromString(BundleName) ?? OpenResourceFromString(BundlePath);
+			ImageData = OpenResourceFromString(BundlePath) ?? OpenResourceFromString(BundleName);
 
 			if (ImageData == null)
 			{
@@ -77,28 +76,13 @@ namespace Windows.UI.Xaml.Media
 			return ImageData;
 		}
 
-		private static NSImage OpenBundleFromString(string bundle)
-		{
-			if (bundle.HasValueTrimmed())
-			{
-				return NSImage.ImageNamed(bundle);
-			}
-
-			return null;
-		}
-
 		private static NSImage OpenResourceFromString(string name)
 		{
 			if (name.HasValueTrimmed())
 			{
-				var extension = Path.GetExtension(name);
-				var fileName = name.Replace(extension, string.Empty);
-
-				var path = NSBundle.MainBundle.PathForResource(fileName, extension);
-
-				return !string.IsNullOrEmpty(path)
-								? new NSImage(path)
-								: null;
+				var path = Path.Combine(NSBundle.MainBundle.ResourcePath, name);
+				if (File.Exists(path))
+					return new NSImage(path);
 			}
 
 			return null;
@@ -239,18 +223,18 @@ namespace Windows.UI.Xaml.Media
 
 		private void DownloadUsingPlatformDownloader()
 		{
-			using (var url = new NSUrl(WebUri.OriginalString))
+			using (var url = new NSUrl(WebUri.AbsoluteUri))
 			{
 				NSError error;
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Loading image from [{WebUri.OriginalString}]");
 				}
 
 #pragma warning disable CS0618
 				// fallback on the platform's loader
-				using (var data = NSData.FromUrl(url, NSDataReadingOptions.Coordinated, out error))
+				using (var data = NSData.FromUrl(url, NSDataReadingOptions.Mapped, out error))
 #pragma warning restore CS0618
 				{
 					if (error != null)

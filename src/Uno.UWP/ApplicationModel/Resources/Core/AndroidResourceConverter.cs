@@ -11,7 +11,7 @@ using Uno.UI;
 
 #if HAS_UNO
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 #endif
 
 namespace Windows.ApplicationModel.Resources.Core
@@ -30,7 +30,7 @@ namespace Windows.ApplicationModel.Resources.Core
 				var language = GetLanguage(resourceCandidate.GetQualifierValue("language"), defaultLanguage);
 				var dpi = GetDpi(resourceCandidate.GetQualifierValue("scale"));
 				var theme = GetTheme(resourceCandidate.GetQualifierValue("theme"));
-				var fileName = AndroidResourceNameEncoder.Encode(Path.GetFileNameWithoutExtension(resourceCandidate.LogicalPath)) + Path.GetExtension(resourceCandidate.LogicalPath);
+				var fileName = AndroidResourceNameEncoder.EncodeDrawablePath(resourceCandidate.LogicalPath);
 				
 				return Path.Combine($"drawable{language}{theme}{dpi}", fileName);
 			}

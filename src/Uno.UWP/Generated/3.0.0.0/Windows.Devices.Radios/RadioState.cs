@@ -2,24 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Radios
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum RadioState 
 	{
-		#if false
-		Unknown,
-		#endif
-		#if false
-		On,
-		#endif
-		#if false
-		Off,
-		#endif
-		#if false
-		Disabled,
-		#endif
+		// Skipping already declared field Windows.Devices.Radios.RadioState.Unknown
+		// Skipping already declared field Windows.Devices.Radios.RadioState.On
+		// Skipping already declared field Windows.Devices.Radios.RadioState.Off
+		// Skipping already declared field Windows.Devices.Radios.RadioState.Disabled
 	}
 	#endif
 }

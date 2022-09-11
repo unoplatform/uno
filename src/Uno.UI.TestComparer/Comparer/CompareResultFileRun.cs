@@ -8,5 +8,6 @@
 		public string SourceFile { get; internal set; }
 		public string FilePath { get; internal set; }
 		public bool HasChanged { get; internal set; }
+		public int FolderIndex { get; internal set; }
 	}
 }

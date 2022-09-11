@@ -57,9 +57,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual("Is present", page.easpresentTextBlock.Text);
 			Assert.AreEqual("", page.easnotpresentTextBlock.Text);
 #else
-			// This will need to be adjusted if we ever implement... *checks notes*... Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation
-			Assert.AreEqual("", page.easpresentTextBlock.Text);
-			Assert.AreEqual("Is not present", page.easnotpresentTextBlock.Text);
+			// This will need to be adjusted if we ever implement... *checks notes*... Windows.UI.StartScreen.TileMixedRealityModel
+			Assert.AreEqual("", page.tilemixedpresentTextBlock.Text);
+			Assert.AreEqual("Is not present", page.tilemixednotpresentTextBlock.Text);
 #endif
 		}
 	}

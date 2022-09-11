@@ -5,8 +5,8 @@ using System.Text.RegularExpressions;
 using Windows.Foundation;
 using UIKit;
 using Uno.Extensions;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 using Foundation;
 
 namespace Windows.Services.Store

@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 using Android.Content.Res;
 using Uno;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
-using Windows.UI.Composition.Interactions;
 using Windows.Storage.Helpers;
+using Uno.Helpers;
 
 namespace Windows.Storage
 {
@@ -31,13 +31,12 @@ namespace Windows.Storage
 				throw new InvalidOperationException("Uri is not using the ms-appx scheme");
 			}
 
-			var path = AndroidResourceNameEncoder.EncodeResourcePath(uri.PathAndQuery.TrimStart(new char[] { '/' }));
+			var path = AndroidResourceNameEncoder.EncodeResourcePath(Uri.UnescapeDataString(uri.PathAndQuery).TrimStart(new char[] { '/' }));
 
 			// Read the contents of our asset
-			var assets = global::Android.App.Application.Context.Assets;
 			var outputCachePath = global::System.IO.Path.Combine(Android.App.Application.Context.CacheDir.AbsolutePath, path);
 
-			if (typeof(StorageFile).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (typeof(StorageFile).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				typeof(StorageFile).Log().Debug($"GetFileFromApplicationUriAsyncTask path:{path} outputCachePath:{outputCachePath}");
 			}
@@ -52,7 +51,20 @@ namespace Windows.Storage
 			{
 				Directory.CreateDirectory(global::System.IO.Path.GetDirectoryName(outputCachePath));
 
-				using var input = assets.Open(path);
+				Stream GetAsset()
+				{
+					if (DrawableHelper.FindResourceIdFromPath(path) is { } resourceId)
+					{
+						return ContextHelper.Current.Resources.OpenRawResource(resourceId);
+					}
+					else
+					{
+						var assets = global::Android.App.Application.Context.Assets;
+						return assets.Open(path);
+					}
+				}
+
+				using var input = GetAsset();
 				using var output = File.OpenWrite(outputCachePath);
 
 				await input.CopyToAsync(output);

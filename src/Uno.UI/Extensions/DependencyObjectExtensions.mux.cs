@@ -39,7 +39,7 @@ namespace Uno.UI.Extensions
 
 		internal static bool SetFocusedElement(
 			this DependencyObject sourceElement, // In WinUI this parameter does not exist, as the method is static on DependencyObject
-			DependencyObject pElementToFocus,
+			DependencyObject? pElementToFocus,
 			FocusState focusState,
 			bool animateIfBringIntoView,
 			bool isProcessingTab = false,
@@ -71,7 +71,7 @@ namespace Uno.UI.Extensions
 
 		internal static bool SetFocusedElementWithDirection(
 			this DependencyObject sourceElement, // In WinUI this parameter does not exist, as the method is static on DependencyObject
-			DependencyObject pFocusedElement,
+			DependencyObject? pFocusedElement,
 			FocusState focusState,
 			bool animateIfBringIntoView,
 			FocusNavigationDirection focusNavigationDirection,

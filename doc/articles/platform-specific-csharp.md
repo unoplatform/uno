@@ -33,7 +33,7 @@ The structure of an Uno app created with the default [Visual Studio template](ht
  | Android     | `__ANDROID__` |
  | iOS         | `__IOS__`     |
  | WebAssembly | `HAS_UNO_WASM`|
- | MacOS       | `__MACOS__`   |
+ | macOS       | `__MACOS__`   |
  | Skia        | `HAS_UNO_SKIA`|
  
 Note that you can combine conditionals with boolean operators, e.g. `#if __ANDROID__ || __IOS__`. 

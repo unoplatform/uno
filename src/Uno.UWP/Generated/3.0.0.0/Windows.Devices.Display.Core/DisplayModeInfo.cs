@@ -77,6 +77,16 @@ namespace Windows.Devices.Display.Core
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Devices.Display.Core.DisplayPresentationRate PhysicalPresentationRate
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DisplayPresentationRate DisplayModeInfo.PhysicalPresentationRate is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.SourceResolution.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.IsStereo.get
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.SourcePixelFormat.get
@@ -98,5 +108,6 @@ namespace Windows.Devices.Display.Core
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.Properties.get
+		// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.PhysicalPresentationRate.get
 	}
 }

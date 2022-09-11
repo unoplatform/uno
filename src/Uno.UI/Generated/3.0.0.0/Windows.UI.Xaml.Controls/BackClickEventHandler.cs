@@ -3,6 +3,6 @@
 namespace Windows.UI.Xaml.Controls
 {
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public delegate void BackClickEventHandler(object @sender, global::Windows.UI.Xaml.Controls.BackClickEventArgs @e);
+	public delegate void BackClickEventHandler(object sender, global::Windows.UI.Xaml.Controls.BackClickEventArgs e);
 	#endif
 }

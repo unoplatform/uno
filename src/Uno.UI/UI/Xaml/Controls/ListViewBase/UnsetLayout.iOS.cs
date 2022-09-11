@@ -5,6 +5,10 @@ using CoreGraphics;
 using UIKit;
 using Foundation;
 
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
 	/// <summary>

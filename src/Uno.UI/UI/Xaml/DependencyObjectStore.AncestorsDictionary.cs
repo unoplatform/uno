@@ -4,7 +4,7 @@ using System;
 using Uno.UI.DataBinding;
 using System.Collections.Generic;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Diagnostics.Eventing;
 using Uno.Disposables;
 using System.Linq;
@@ -49,6 +49,9 @@ namespace Windows.UI.Xaml
 
 			internal void Clear()
 				=> _entries.Clear();
+
+			internal void Dispose()
+				=> _entries.Dispose();
 		}
 	}
 }

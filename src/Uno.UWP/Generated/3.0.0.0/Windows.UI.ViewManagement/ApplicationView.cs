@@ -91,8 +91,8 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 		#endif
-		// Skipping already declared property DesiredBoundsMode
 		// Skipping already declared property VisibleBounds
+		// Skipping already declared property DesiredBoundsMode
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.ViewManagement.FullScreenSystemOverlayMode FullScreenSystemOverlayMode
@@ -182,20 +182,7 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.Size PreferredLaunchViewSize
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Size ApplicationView.PreferredLaunchViewSize is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "Size ApplicationView.PreferredLaunchViewSize");
-			}
-		}
-		#endif
+		// Skipping already declared property PreferredLaunchViewSize
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.Orientation.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.AdjacentToLeftDisplayEdge.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.AdjacentToRightDisplayEdge.get
@@ -241,41 +228,23 @@ namespace Windows.UI.ViewManagement
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 		public  bool TryResizeView( global::Windows.Foundation.Size value)
 		{
 			throw new global::System.NotImplementedException("The member bool ApplicationView.TryResizeView(Size value) is not implemented in Uno.");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 		public  void SetPreferredMinSize( global::Windows.Foundation.Size minSize)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "void ApplicationView.SetPreferredMinSize(Size minSize)");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.ViewMode.get
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsViewModeSupported( global::Windows.UI.ViewManagement.ApplicationViewMode viewMode)
-		{
-			throw new global::System.NotImplementedException("The member bool ApplicationView.IsViewModeSupported(ApplicationViewMode viewMode) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<bool> TryEnterViewModeAsync( global::Windows.UI.ViewManagement.ApplicationViewMode viewMode)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ApplicationView.TryEnterViewModeAsync(ApplicationViewMode viewMode) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<bool> TryEnterViewModeAsync( global::Windows.UI.ViewManagement.ApplicationViewMode viewMode,  global::Windows.UI.ViewManagement.ViewModePreferences viewModePreferences)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ApplicationView.TryEnterViewModeAsync(ApplicationViewMode viewMode, ViewModePreferences viewModePreferences) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.ViewManagement.ApplicationView.IsViewModeSupported(Windows.UI.ViewManagement.ApplicationViewMode)
+		// Skipping already declared method Windows.UI.ViewManagement.ApplicationView.TryEnterViewModeAsync(Windows.UI.ViewManagement.ApplicationViewMode)
+		// Skipping already declared method Windows.UI.ViewManagement.ApplicationView.TryEnterViewModeAsync(Windows.UI.ViewManagement.ApplicationViewMode, Windows.UI.ViewManagement.ViewModePreferences)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> TryConsolidateAsync()
@@ -322,7 +291,7 @@ namespace Windows.UI.ViewManagement
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static int GetApplicationViewIdForWindow( global::Windows.UI.Core.ICoreWindow window)
-	 	{
+		{
 			throw new global::System.NotImplementedException("The member int ApplicationView.GetApplicationViewIdForWindow(ICoreWindow window) is not implemented in Uno.");
 		}
 		#endif

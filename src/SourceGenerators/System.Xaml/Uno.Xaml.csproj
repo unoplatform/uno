@@ -1,7 +1,7 @@
-<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>xamarinmac20;net461;xamarinios10;MonoAndroid11.0;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>net461;MonoAndroid11.0;MonoAndroid10.0;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+		<TargetFrameworks>xamarinmac20;net461;xamarinios10;MonoAndroid12.0;netstandard2.0</TargetFrameworks>
+		<TargetFrameworksCI>net461;MonoAndroid11.0;MonoAndroid12.0;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworksCI>
 
 		<DisableBuildTargetFramework>true</DisableBuildTargetFramework>
 
@@ -12,6 +12,18 @@
 		<OutputPath>bin\$(Configuration)\$(TargetFramework)\</OutputPath>
 		<IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework)\</IntermediateOutputPath>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+
+		<!-- This target must always be built, regardless of the override -->
+		<TargetFrameworksOverrideInvariant>netstandard2.0</TargetFrameworksOverrideInvariant>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(MSBuildRuntimeType)' == 'Core'">
+		<!--
+		This target is used to build the with the net6-only filter, but uses netcore
+		and cannot build any xamarin targets.
+		-->
+		<TargetFrameworksCI>netstandard2.0</TargetFrameworksCI>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../../netcore-build.props"/>
@@ -30,11 +42,6 @@
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
 		<Reference Remove="System.Xaml" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Uno.MonoAnalyzers" />
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
 	</ItemGroup>
 
 	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />

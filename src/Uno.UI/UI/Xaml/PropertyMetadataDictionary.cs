@@ -59,5 +59,8 @@ namespace Windows.UI.Xaml
 
 			return metadata;
 		}
+
+		internal void Dispose()
+			=> _table.Dispose();
 	}
 }

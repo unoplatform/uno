@@ -60,9 +60,9 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override bool IsEnabledOverride() => IsEnabled && base.IsEnabledOverride();
 
-		internal override void UpdateThemeBindings()
+		internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
 		{
-			base.UpdateThemeBindings();
+			base.UpdateThemeBindings(updateReason);
 
 			//override the default value from dependency property based on application theme
 			SetDefaultForeground(ForegroundProperty);
@@ -200,7 +200,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private bool _applyTemplateShouldBeInvoked = false;
+		private bool _applyTemplateShouldBeInvoked;
 
 		private protected override void OnPostLoading()
 		{
@@ -224,7 +224,7 @@ namespace Windows.UI.Xaml.Controls
 			// registered first in event handlers.
 			// https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.control.onpointerpressed#remarks
 
-			var implementedEvents = GetImplementedRoutedEvents(GetType());
+			var implementedEvents = GetImplementedRoutedEventsForType(GetType());
 
 			if (implementedEvents.HasFlag(RoutedEventFlag.PointerPressed))
 			{
@@ -439,7 +439,7 @@ namespace Windows.UI.Xaml.Controls
 		/// The Content control uses this delayed creation as an optimization technique for layout creation, when controls
 		/// are created but not yet used.
 		/// </remarks>
-		protected virtual bool CanCreateTemplateWithoutParent { get; } = false;
+		protected virtual bool CanCreateTemplateWithoutParent { get; }
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
@@ -795,8 +795,11 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
+			// TODO Uno specific: Adding check for IsEnabledSuppressed here
+			// as we need to make sure that when a Command is executing, the control
+			// should not lose focus
 			bool shouldReevaluateFocus =
-				!IsEnabled && //!pControl->ParserOwnsParent()
+				!(IsEnabled || IsEnabledSuppressed) && //!pControl->ParserOwnsParent()
 				!AllowFocusWhenDisabled &&
 				// We just disabled this control, find if this control
 				//or one of its children had focus.
@@ -977,9 +980,6 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly RoutedEventHandler OnLostFocusHandler =
 			(object sender, RoutedEventArgs args) => ((Control)sender).OnLostFocus(args);
 
-		private static readonly Dictionary<Type, RoutedEventFlag> ImplementedRoutedEvents
-			= new Dictionary<Type, RoutedEventFlag>();
-
 		private static readonly Type[] _pointerArgsType = new[] { typeof(PointerRoutedEventArgs) };
 		private static readonly Type[] _tappedArgsType = new[] { typeof(TappedRoutedEventArgs) };
 		private static readonly Type[] _doubleTappedArgsType = new[] { typeof(DoubleTappedRoutedEventArgs) };
@@ -994,23 +994,12 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly Type[] _manipInertiaArgsType = new[] { typeof(ManipulationInertiaStartingRoutedEventArgs) };
 		private static readonly Type[] _manipCompletedArgsType = new[] { typeof(ManipulationCompletedRoutedEventArgs) };
 
-		protected static RoutedEventFlag GetImplementedRoutedEvents(Type type)
+		// TODO: GetImplementedRoutedEvents method can be removed as a breaking change.
+		protected static RoutedEventFlag GetImplementedRoutedEvents(Type type) => GetImplementedRoutedEventsForType(type);
+
+		internal static RoutedEventFlag EvaluateImplementedControlRoutedEvents(Type type)
 		{
-			// TODO: GetImplementedRoutedEvents() should be evaluated at compile-time
-			// and the result placed in a partial file.
-
-			if (ImplementedRoutedEvents.TryGetValue(type, out var result))
-			{
-				return result;
-			}
-
-			result = RoutedEventFlag.None;
-
-			var baseClass = type.BaseType;
-			if (baseClass == null || type == typeof(Control) || type == typeof(UIElement))
-			{
-				return result;
-			}
+			var result = RoutedEventFlag.None;
 
 			if (GetIsEventOverrideImplemented(type, nameof(OnPointerPressed), _pointerArgsType))
 			{
@@ -1137,22 +1126,7 @@ namespace Windows.UI.Xaml.Controls
 				result |= RoutedEventFlag.GotFocus;
 			}
 
-			return ImplementedRoutedEvents[type] = result;
-		}
-
-		private static bool GetIsEventOverrideImplemented(Type type, string name, Type[] args)
-		{
-			var method = type
-				.GetMethod(
-					name,
-					BindingFlags.NonPublic | BindingFlags.Instance,
-					null,
-					args,
-					null);
-
-			return method != null
-				&& method.IsVirtual
-				&& method.DeclaringType != typeof(Control);
+			return result;
 		}
 
 		/// <summary>

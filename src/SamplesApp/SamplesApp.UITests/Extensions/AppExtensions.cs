@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Uno.UITest;
 using Uno.UITest.Helpers;
+using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Extensions
 {
@@ -17,6 +18,9 @@ namespace SamplesApp.UITests.Extensions
 		private static float? _scaling;
 		public static float GetDisplayScreenScaling(this IApp app)
 		{
+#if IS_RUNTIME_UI_TESTS
+			return 1f;
+#else
 			return _scaling ?? (float)(_scaling = GetScaling());
 
 			float GetScaling()
@@ -33,6 +37,27 @@ namespace SamplesApp.UITests.Extensions
 					return 1f;
 				}
 			}
+#endif
+		}
+
+		public static FileInfo GetInAppScreenshot(this IApp app)
+		{
+#if IS_RUNTIME_UI_TESTS
+			return null;
+#else
+			var byte64Image = app.InvokeGeneric("browser:SampleRunner|GetScreenshot", "0")?.ToString();
+
+			var array = Convert.FromBase64String(byte64Image);
+
+			var outputFile = Path.GetTempFileName();
+			File.WriteAllBytes(outputFile, array);
+
+			var finalPath = Path.ChangeExtension(outputFile, ".png");
+
+			File.Move(outputFile, finalPath);
+
+			return new(finalPath);
+#endif
 		}
 	}
 }

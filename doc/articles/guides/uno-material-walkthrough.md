@@ -52,9 +52,7 @@ This guide will walk you through the necessary steps to setup and to use the [`U
 ## Step-by-steps
 ### Section 1: Setup Uno.Material
 1. Create a new Uno Platform application, following the instructions [here](../get-started.md).
-1. Add NuGet package `Uno.Material` to each of project heads by:
-    > [!NOTE]
-    > You may have to check the `[x] Include Prerelease` to find this package, as there are currently no stable release.
+1. Add NuGet package `Uno.Material` to each of project heads:
 
     > [!NOTE]
     > The project heads refer to the projects targeted to a specific platforms:
@@ -89,7 +87,7 @@ This guide will walk you through the necessary steps to setup and to use the [`U
         You can also copy-and-paste the following snippet into your .csproj file:
             <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.1.0" />
         ```
-        solution: Simply add the specific version of `Xamarin.AndroidX.Lifecycle.LiveData` to the `.Droid` project
+        The solution: Simply add the specific version of `Xamarin.AndroidX.Lifecycle.LiveData` to the `.Droid` project
 1. Add the following code inside `App.xaml`:
     ```xml
     <Application.Resources>
@@ -111,7 +109,7 @@ This guide will walk you through the necessary steps to setup and to use the [`U
     </Application.Resources>
     ```
 
-### Section 2: Using Uno.Material library
+### Section 2: Using Uno.Toolkit.UI library
 1. Let's add a few controls with the Material style to `MainPage.xaml`:
     ```xml
     <Page x:Class="UnoMaterialSample.MainPage"
@@ -135,10 +133,10 @@ This guide will walk you through the necessary steps to setup and to use the [`U
         </Grid>
     <Page>
     ```
-1. Now we'll add a few new controls that are defined in the Material package - `Card`, `ChipGroup`, `Chip`, and `Divider`:
+1. Now we'll add a few new controls that are defined in the Toolkit.UI package - `Card`, `ChipGroup`, `Chip`, and `Divider`:
     ```xml
     <Page ...
-          xmlns:material="using:Uno.Material.Controls">
+          xmlns:utu="using:Uno.Toolkit.UI">
 
         <Grid toolkit:VisibleBoundsPadding.PaddingMask="Top" >
             <ScrollViewer>
@@ -147,42 +145,42 @@ This guide will walk you through the necessary steps to setup and to use the [`U
                     <!-- ... -->
 
                     <!-- material controls -->
-                    <material:Divider SubHeader="Uno.Material Controls:" Style="{StaticResource MaterialDividerStyle}" />
-                    <material:Card HeaderContent="Material Design"
+                    <utu:Divider SubHeader="Uno.Material Controls:" Style="{StaticResource MaterialDividerStyle}" />
+                    <utu:Card HeaderContent="Material Design"
                             SupportingContent="Material is a design system created by Google to help teams build high-quality digital experiences for Android, iOS, Flutter, and the web."
                             Style="{StaticResource MaterialOutlinedCardStyle}">
-                        <material:Card.HeaderContentTemplate>
+                        <utu:Card.HeaderContentTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding}" Margin="16,14,16,0" Style="{ThemeResource MaterialHeadline6}" />
                             </DataTemplate>
-                        </material:Card.HeaderContentTemplate>
-                        <material:Card.SupportingContentTemplate>
+                        </utu:Card.HeaderContentTemplate>
+                        <utu:Card.SupportingContentTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding}" Margin="16,0,16,14" Style="{ThemeResource MaterialBody2}" />
                             </DataTemplate>
-                        </material:Card.SupportingContentTemplate>
-                    </material:Card>
-                    <material:ChipGroup SelectionMode="Multiple" Style="{StaticResource MaterialChipGroupStyle}">
-                        <material:Chip Content="Uno" Style="{StaticResource MaterialChipStyle}" />
-                        <material:Chip Content="Material" Style="{StaticResource MaterialChipStyle}" />
-                        <material:Chip Content="Controls" Style="{StaticResource MaterialChipStyle}" />
-                    </material:ChipGroup>
+                        </utu:Card.SupportingContentTemplate>
+                    </utu:Card>
+                    <utu:ChipGroup SelectionMode="Multiple" Style="{StaticResource MaterialFilledInputChipGroupStyle}">
+                        <utu:Chip Content="Uno" />
+                        <utu:Chip Content="Material" />
+                        <utu:Chip Content="Controls" />
+                    </utu:ChipGroup>
                 </StackPanel>
             </ScrollViewer>
         </Grid>
-    <Page>
+    </Page>
     ```
 
 > [!TIP]
 > You can find the style names using these methods:
-> - "Feature" section of Uno.Themes README: https://github.com/unoplatform/Uno.Themes#features
-> - Going through the source code of control styles: https://github.com/unoplatform/Uno.Themes/tree/master/src/library/Uno.Material/Styles/Controls
+> - "Feature" section of Uno.Themes README [here](https://github.com/unoplatform/Uno.Themes#features)
+> - Going through the [source code](https://github.com/unoplatform/Uno.Themes/tree/master/src/library/Uno.Material/Styles/Controls) of control styles
 > - Check out the [Uno.Gallery web app](https://gallery.platform.uno/) (Click on the `<>` button to view xaml source)
 
 ### Section 3: Overriding Color Palette
 1. Create the nested folders `Styles\` and then `Styles\Application\` under the `.Shared` project
 1. Add a new Resource Dictionary `ColorPaletteOverride.xaml` under `Styles\Application\`
-1. Replace the content of that res-dict with the source from: https://github.com/unoplatform/Uno.Themes/blob/master/src/library/Uno.Material/Styles/Application/ColorPalette.xaml
+1. Replace the content of that res-dict with the source from [here](https://github.com/unoplatform/Uno.Themes/blob/master/src/library/Uno.Material/Styles/Application/ColorPalette.xaml)
 1. Make a few changes to the color:
     > Here we are replacing the last 2 characters with 00, essentially dropping the blue-channel
     ```xml
@@ -238,9 +236,9 @@ This guide will walk you through the necessary steps to setup and to use the [`U
             <ResourceDictionary.MergedDictionaries>
                 <!-- ... -->
 
-                <!-- Load Material Color Palette with ColorPaletteOverrideSource -->
+                <!-- Load Material Color Palette with OverrideSource -->
 				<MaterialColors xmlns="using:Uno.Material"
-								ColorPaletteOverrideSource="ms-appx:///ColorPaletteOverride.xaml" />
+								OverrideSource="ms-appx:///ColorPaletteOverride.xaml" />
 
                 <!-- Load the Material control resources -->
 				<MaterialResources xmlns="using:Uno.Material" />
@@ -251,6 +249,44 @@ This guide will walk you through the necessary steps to setup and to use the [`U
     </Application.Resources>
     ```
 1. Run the app, you should now see the controls using your new color scheme.
+
+### Section 4: Fonts
+By default, Uno.Material will attempt to apply a FontFamily with a name of `Roboto` to its controls. This FontFamily resource is given the key `MaterialFontFamily`. If there is no FontFamily with name `Roboto` loaded into your application, the default system font will be used. You can override this default behavior by providing an `OverrideSource` to the `<MaterialFonts />` initialization within your `App.xaml`.
+
+1. Install your custom font following the steps [here](../features/custom-fonts.md)
+1. Create the nested folders `Styles\` and then `Styles\Application\` under the `.Shared` project
+1. Add a new Resource Dictionary `MaterialFontsOverride.xaml` under `Styles\Application\`
+1. Add your custom font with the resource key `MaterialFontFamily`:
+    ```xml
+    <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+        <FontFamily x:Key="MaterialFontFamily">ms-appx:///Assets/Fonts/Material/RobotoMono-VariableFont_wght.ttf#Roboto Mono</FontFamily>
+        
+    </ResourceDictionary>
+    ```
+1. In `App.xaml`, add the line that initializes the `MaterialFonts` to include the new font override:
+    ```xml
+    <Application.Resources>
+    <ResourceDictionary>
+        <ResourceDictionary.MergedDictionaries>
+            <!-- ... -->
+
+            <!-- Load Material Font with OverrideSource -->
+            <MaterialFonts xmlns="using:Uno.Material"
+                            OverrideSource="ms-appx:///MaterialFontsOverride.xaml" />
+            
+            <!-- Load the Material control resources -->
+            <MaterialResources xmlns="using:Uno.Material" />
+
+            <!-- ... -->
+        </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+    </Application.Resources>
+    ```
+1. Run the app, you should now see the controls using your new FontFamily.
+
 
 ## Note
 - Certain controls may require additional setup to setup and/or overriding color pallette. For details, see: [Uno.Material controls extra setup](../features/uno-material-controls-extra-setup.md)
@@ -268,10 +304,4 @@ See the completed sample on GitHub: [UnoMaterialSample](https://github.com/unopl
 
 ***
 
-## Help! I'm having trouble
-
-> [!TIP]
-> If you ran into difficulties with any part of this guide, you can:
->
-> * Ask for help on our [Discord channel](https://www.platform.uno/discord) - #uno-platform
-> * Ask a question on [Stack Overflow](https://stackoverflow.com/questions/tagged/uno-platform) with the 'uno-platform' tag
+[!include[getting-help](getting-help.md)]

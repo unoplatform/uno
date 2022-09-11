@@ -26,10 +26,13 @@ namespace Windows.UI.Xaml.Controls
 			DefaultStyleKey = typeof(PasswordBox);
 		}
 
+		public new void SelectAll() => base.SelectAll();
+
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 			RegisterSetPasswordScope();
+			UpdateDescriptionVisibility(true);
 		}
 
 		private void RegisterSetPasswordScope()
@@ -119,6 +122,18 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnPasswordChangedPartial(DependencyPropertyChangedEventArgs e);
 
 		#endregion
+
+		public new object Description
+		{
+			get => this.GetValue(DescriptionProperty);
+			set => this.SetValue(DescriptionProperty, value);
+		}
+
+		public static new global::Windows.UI.Xaml.DependencyProperty DescriptionProperty { get; } =
+			Windows.UI.Xaml.DependencyProperty.Register(
+				nameof(Description), typeof(object),
+				typeof(global::Windows.UI.Xaml.Controls.PasswordBox),
+				new FrameworkPropertyMetadata(default(object), propertyChangedCallback: (s, e) => (s as PasswordBox)?.UpdateDescriptionVisibility(false)));
 
 		protected override void OnTextChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -252,6 +267,21 @@ namespace Windows.UI.Xaml.Controls
 
 					VisualStateManager.GoToState(this, TextBoxConstants.ButtonCollapsedStateName, true);
 				}
+			}
+		}
+
+		private void UpdateDescriptionVisibility(bool initialization)
+		{
+			if (initialization && Description == null)
+			{
+				// Avoid loading DescriptionPresenter element in template if not needed.
+				return;
+			}
+
+			var descriptionPresenter = this.FindName("DescriptionPresenter") as ContentPresenter;
+			if (descriptionPresenter != null)
+			{
+				descriptionPresenter.Visibility = Description != null ? Visibility.Visible : Visibility.Collapsed;
 			}
 		}
 	}

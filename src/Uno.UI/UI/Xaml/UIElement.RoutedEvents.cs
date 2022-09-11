@@ -2,17 +2,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using Microsoft.Extensions.Logging;
-using Uno;
 using Uno.Extensions;
-using Uno.Logging;
-using Uno.UI;
+using System.Reflection;
+using Uno;
+using Uno.Foundation.Logging;
 using Uno.UI.Core;
 using Uno.UI.Extensions;
+using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
@@ -149,6 +148,11 @@ namespace Windows.UI.Xaml
 
 		public static RoutedEvent NoFocusCandidateFoundEvent { get; } = new RoutedEvent(RoutedEventFlag.NoFocusCandidateFound);
 
+		/// <summary>
+		/// Gets the identifier for the BringIntoViewRequested routed event.
+		/// </summary>
+		public static RoutedEvent BringIntoViewRequestedEvent { get; } = new RoutedEvent(RoutedEventFlag.BringIntoViewRequested);
+
 		private struct RoutedEventHandlerInfo
 		{
 			internal RoutedEventHandlerInfo(object handler, bool handledEventsToo)
@@ -265,6 +269,15 @@ namespace Windows.UI.Xaml
 		{
 			add => AddHandler(NoFocusCandidateFoundEvent, value, false);
 			remove => RemoveHandler(NoFocusCandidateFoundEvent, value);
+		}
+
+		/// <summary>
+		/// Occurs when StartBringIntoView is called on this element or one of its descendants.
+		/// </summary>
+		public event TypedEventHandler<UIElement, BringIntoViewRequestedEventArgs> BringIntoViewRequested
+		{
+			add => AddHandler(BringIntoViewRequestedEvent, value, false);
+			remove => RemoveHandler(BringIntoViewRequestedEvent, value);
 		}
 
 		public event PointerEventHandler PointerCanceled
@@ -673,7 +686,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			if (ctx.Mode.HasFlag(BubblingMode.IgnoreParents))
+			if (ctx.Mode.HasFlag(BubblingMode.IgnoreParents) || ctx.Root == this)
 			{
 				return isHandled;
 			}
@@ -701,7 +714,7 @@ namespace Windows.UI.Xaml
 			// [11] A parent is defined?
 			if (parent == null)
 			{
-				return true; // [12] processing finished
+				return isHandled; // [12] processing finished
 			}
 
 			// [13] Raise on parent
@@ -783,9 +796,9 @@ namespace Windows.UI.Xaml
 
 		internal struct BubblingContext
 		{
-			public static readonly BubblingContext Bubble = default;
+			public static readonly BubblingContext Bubble;
 
-			public static readonly BubblingContext NoBubbling = new BubblingContext { Mode = BubblingMode.NoBubbling };
+			public static readonly BubblingContext NoBubbling = new() { Mode = BubblingMode.NoBubbling };
 
 			/// <summary>
 			/// When bubbling in managed code, the <see cref="UIElement.RaiseEvent"/> will take care to raise the event on each parent,
@@ -793,10 +806,10 @@ namespace Windows.UI.Xaml
 			/// This value is used to flag events that are sent to element to maintain their internal state,
 			/// but which are not meant to initiate a new event bubbling (a.k.a. invoke the "RaiseEvent" again)
 			/// </summary>
-			public static readonly BubblingContext OnManagedBubbling = new BubblingContext { Mode = BubblingMode.NoBubbling, IsInternal = true };
+			public static readonly BubblingContext OnManagedBubbling = new() { Mode = BubblingMode.NoBubbling, IsInternal = true };
 
 			public static BubblingContext BubbleUpTo(UIElement root)
-				=> new BubblingContext { Root = root };
+				=> new() { Root = root };
 
 			/// <summary>
 			/// The mode to use for bubbling
@@ -819,7 +832,7 @@ namespace Windows.UI.Xaml
 			/// </remarks>
 			public bool IsInternal { get; set; }
 
-			public BubblingContext WithMode(BubblingMode mode) => new BubblingContext
+			public BubblingContext WithMode(BubblingMode mode) => new()
 			{
 				Mode = mode,
 				Root = Root,
@@ -955,6 +968,9 @@ namespace Windows.UI.Xaml
 					break;
 				case TypedEventHandler<UIElement, LosingFocusEventArgs> losingFocusHandler:
 					losingFocusHandler(this, (LosingFocusEventArgs)args);
+					break;
+				case TypedEventHandler<UIElement, BringIntoViewRequestedEventArgs> bringIntoViewRequestedHandler:
+					bringIntoViewRequestedHandler(this, (BringIntoViewRequestedEventArgs)args);
 					break;
 				default:
 					this.Log().Error($"The handler type {handler.GetType()} has not been registered for RoutedEvent");

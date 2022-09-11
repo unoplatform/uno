@@ -103,6 +103,7 @@ namespace Uno.UI
 					.Append(uiElement?.GetElementSpecificDetails())
 					.Append(uiElement?.GetElementGridOrCanvasDetails())
 					.Append(uiElement?.RenderTransform.GetTransformDetails())
+					.Append(uiElement?.GetLayoutDetails())
 					.AppendLine();
 			}
 		}

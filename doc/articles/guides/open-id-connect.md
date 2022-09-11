@@ -8,7 +8,7 @@ This article will document the usage of `IdentityModel.OidcClient` into a Uno ap
 
 ## Limitations
 
-- **Platforms**: The `WebAuthenticationBroker` is not supported on all platforms yet. For Uno 3.6 it is implemented only on WebAssembly, Android, iOS and MacOS.
+- **Platforms**: The `WebAuthenticationBroker` is not supported on all platforms yet. For Uno 3.6 it is implemented only on WebAssembly, Android, iOS and macOS.
 - **Return URI on WebAssembly**: Because of browser security restrictions, on WebAssembly, the return URL must be on the same origin as the application. On other platforms the best approach is to use a custom protocol scheme (like `my-application:`). For most applications, you may simply use the automatic discovery of return URLs, which will use the [`WebAuthenticationBroker.GetCurrentApplicationCallbackUri()` method](https://docs.microsoft.com/en-us/uwp/api/windows.security.authentication.web.webauthenticationbroker.getcurrentapplicationcallbackuri).
 - **Browser Anti-Popup Protection**: On WebAssembly, a foreign/public web site is usually used to authenticate the user. Doing this without losing the application context requires the opening of a new browser window. To ensure the window will open on all browsers without being denied, this new window **must be opened using the handling of a user interaction**. For this reason the IdentityModel.OidcClient's *automatic mode* can't be used because it's doing async processing (fetching the discovery endpoint) before opening the authentication browser.
 
@@ -18,7 +18,7 @@ This code uses the _IdentityServer_ demonstration endpoint with the following pa
 
 | Field     | Value                                     |
 | --------- | ----------------------------------------- |
-| Authority | `https://demo.itentityserver.io`          |
+| Authority | `https://demo.duendesoftware.com/`        |
 | ClientId  | `interactive.confidential`                |
 | Secret    | `secret`                                  |
 | Scopes    | `openid profile email api offline_access` |
@@ -39,10 +39,10 @@ Add the package [`IdentityModel.OidcClient`](https://www.nuget.org/packages/Iden
 
 **Android**
 
-Add the following class in the project of the Android Head:
+Add the following class in the project of the Android Head.
 
 ``` csharp
-[Activity(NoHistory = true, LaunchMode = LaunchMode.SingleTop)]
+[Activity(NoHistory = true, LaunchMode = LaunchMode.SingleTop, Exported = true)]
 [IntentFilter(
 	new[] {Android.Content.Intent.ActionView},
 	Categories = new[] {Android.Content.Intent.CategoryDefault, Android.Content.Intent.CategoryBrowsable},
@@ -52,11 +52,13 @@ public class WebAuthenticationBrokerActivity : WebAuthenticationBrokerActivityBa
 }
 ```
 
+Note the `[Activity]` attribute needs to include `Exported = true` if you are targeting Android 12.
+
 This activity will intercept the return URI and forward it to any waiting `WebAuthenticationBroker`.
 
 Note: it's using the system browser. Check the [WebAuthenticationBroker documentation](../features/web-authentication-broker.md) to use another mechanism.
 
-**iOS & MacOS**
+**iOS & macOS**
 
 Add the `oidc-auth:` custom scheme in `Info.plist` file.
 
@@ -84,25 +86,37 @@ There's nothing special for UWP. Any return Uri will work.  You can force it to 
 
 **WebAssembly**
 
-There's nothing special for UWP. The default _return Uri_ of the platform (`WebAuthenticationBroker.GetCurrentApplicationCallbackUri()`) will work with this sample and will default to `<origin>/authentication-callback`. It should be something like `http://localhost:5000/authentication-callback` when running locally using Kestrel.
+There's nothing special for WASM. The default _return Uri_ of the platform (`WebAuthenticationBroker.GetCurrentApplicationCallbackUri()`) will work with this sample and will default to `<origin>/authentication-callback`. It should be something like `http://localhost:5000/authentication-callback` when running locally using Kestrel.
 
-## Step 4 - Prepare the UI
+## Step 3 - Prepare the UI
 
-Add the following button in your application:
+Add the following lines in your application, in `[Project-name].Shared.MainPage.xaml`:
 
 ``` xml
-<StackPanel Orientation="Horizontal" Spacing="5">
-	<Button Click="SignIn_Clicked" x:Name="btnSignin" IsEnabled="False">Sign In</Button>
-    <Button Click="SignOut_Clicked" x:Name="btnSignout" IsEnabled="False">Sign Out</Button>
-</StackPanel>
+
+<!--Add this line with the other dependencies-->
+xmlns:toolkit="using:Uno.UI.Toolkit"
+
+<!--This will replace the initial Grid-->
+<Border toolkit:VisibleBoundsPadding.PaddingMask="All">
+        <StackPanel Spacing="10" Margin="10">
+            <StackPanel Orientation="Horizontal" Spacing="5">
+                <Button Click="SignIn_Clicked" x:Name="btnSignin" IsEnabled="False">Sign In</Button>
+                <Button Click="SignOut_Clicked" x:Name="btnSignout" IsEnabled="False">Sign Out</Button>
+            </StackPanel>
+            <TextBlock x:Name="txtAuthResult" />
+        </StackPanel>
+    </Border>
 ```
 
-## Step 5 - Prepare the Requesting Code
+## Step 4 - Prepare the Requesting Code
 
 Add the following code to the main page of your application:
 
 ``` csharp
-// Put this code in class of the MainPage.xaml.cs
+//add this namespace on top of the class
+using IdentityModel.OidcClient;
+// Put this code in the class of MainPage.xaml.cs
 
 public MainPage()
 {
@@ -121,14 +135,12 @@ private async void PrepareClient()
 	// Create options for endpoint discovery
 	var options = new OidcClientOptions
 	{
-		Authority = "https://demo.identityserver.io",
+		Authority = "https://demo.duendesoftware.com/",
 		ClientId = "interactive.confidential",
 		ClientSecret = "secret",
 		Scope = "openid profile email api offline_access",
 		RedirectUri = redirectUri,
 		PostLogoutRedirectUri = redirectUri,
-		ResponseMode = OidcClientOptions.AuthorizeResponseMode.Redirect,
-		Flow = OidcClientOptions.AuthenticationFlow.AuthorizationCode
 	};
 
     // Create the client. In production application, this is often created and stored
@@ -150,7 +162,7 @@ private async void PrepareClient()
 }
 ```
 
-## Step 6 - Proceed to Authentication
+## Step 5 - Proceed to Authentication
 
 Add following button handlers:
 
@@ -165,6 +177,7 @@ private async void SignIn_Clicked(object sender, RoutedEventArgs e)
  
 	if(userResult.ResponseStatus != WebAuthenticationStatus.Success)
     {
+		txtAuthResult.Text = "Canceled";
         // Error or user cancellation
         return;
     }
@@ -177,6 +190,7 @@ private async void SignIn_Clicked(object sender, RoutedEventArgs e)
     {
         var errorMessage = authenticationResult.Error;
         // TODO: do something with error message
+		txtAuthResult.Text = $"Error {errorMessage}";
         return;
     }
 
@@ -185,6 +199,7 @@ private async void SignIn_Clicked(object sender, RoutedEventArgs e)
  	var refreshToken = authenticationResult.RefreshToken;
 
 	// TODO: make something useful with the tokens
+	txtAuthResult.Text = $"Success, token is {token}";
 }
 
 private async void SignOut_Clicked(object sender, RoutedEventArgs e)
@@ -195,7 +210,7 @@ private async void SignOut_Clicked(object sender, RoutedEventArgs e)
 }
 ```
 
-## Step 7 - Finalize & Compile
+## Step 6 - Finalize & Compile
 
 **IMPORTANT FOR WEBASSEMBLY**
 

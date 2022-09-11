@@ -10,7 +10,7 @@ using EventHandler = System.EventHandler;
 namespace UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.Models
 {
 	[Bindable]
-	public class DatePickerViewModel : ViewModelBase
+	internal class DatePickerViewModel : ViewModelBase
 	{
 		private DateTimeOffset _date = DateTimeOffset.FromUnixTimeSeconds(1580655600); // 02/02/2020 @ 3:00pm (UTC) - Groundhog day!
 

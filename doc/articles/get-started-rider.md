@@ -8,7 +8,7 @@
 
 |                       | Windows (UWP/WinUI) | Android | iOS  | Wasm | macOS | Skia-GTK (Linux) | Skia-WPF |
 | --------------------- | ------------------- | ------- | ---- | ---- | ----- | -------- | -------- |
-| **Rider for Linux**   | ❌                   | ✔️       | ❌    | ✔️†   | ❌     | ✔️        | ❌        |
+| **Rider for Linux**   | ❌                   | ❌†      | ❌    | ✔️†   | ❌     | ✔️        | ❌        |
 | **Rider for Mac**     | ❌                   | ✔️       | ✔️    | ✔️†   | ✔️     | ✔️†       | ❌        |
 | **Rider for Windows** | ✔️                   | ✔️       | ✔️†   | ✔️†   | ❌     | ✔️        | ✔️        |
 
@@ -34,6 +34,10 @@
 
 * **iOS** on Windows: An attached Mac is needed, the iOS simulator will open on the Mac.
 
+* **Android** on Linux: Xamarin.Android does not natively support Linux development. Rider has been capable of Android development on Linux in the past, but [previous directions are considered obsolete.](https://rider-support.jetbrains.com/hc/en-us/articles/360000557259--Obsolete-How-to-develop-Xamarin-Android-applications-on-Linux-with-Rider) As of this comment (3 Nov 2021) [Xamarin Android builds on Linux fail](https://github.com/xamarin/xamarin-android).
+
+[!include[getting-help](use-uno-check-inline.md)]
+
 ## Creating a new Uno Platform project
 
 At this time, there isn't a template for the Rider IDE like there is for Visual Studio, so you can create a new project
@@ -56,9 +60,7 @@ You should now have a folder structure that looks like this:
 ![rider-folder-structure](Assets/quick-start/rider-folder-structure.JPG)
 
 ### Android
-1. Remove the following line from the `YourProject.Droid.csproj` file:  
-`<Target Name="GenerateBuild" DependsOnTargets="SignAndroidPackage" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''" />`
-2. Set Android as your startup project. Run.  
+1. Set Android as your startup project. Run.  
 ![run-android-rider](Assets/quick-start/run-android-rider.JPG)
 
 Note: Whether you're using a physical device or the emulator, the app will install but will not automatically open.
@@ -71,8 +73,8 @@ A new browser window will automatically run your application.
 
 Note: There is no debugging for Wasm within Rider, but you debug using the built in Chrome tools. 
 
-### MacOS
-You will be able to build the MacOS project.  
+### macOS
+You will be able to build the macOS project.  
 ![run-ios-rider](Assets/quick-start/run-ios-rider.JPG)  
 Alternatively, you can use a tool like VNC to run the simulator on a mac.  
 
@@ -87,8 +89,6 @@ You will be able to build the UWP project, however, Rider currently does not sup
 
 ### Troubleshooting Uno Platform Installation Issues
 
-If you're not sure whether your environment is correctly configured for Uno Platform development, running the [`uno-check` command-line tool](uno-check.md) should be your first step.
+If you're not sure whether your environment is correctly configured for Uno Platform development, running the [`uno-check` command-line tool](external/uno.check/doc/using-uno-check.md) should be your first step.
 
-### Getting Help
-
-If you continue experiencing issues with Visual Studio and Uno Platform, please visit our [Discord](https://www.platform.uno/discord) - #uno-platform channel or [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform) where our engineering team and community will be able to help you. 
+[!include[getting-help](getting-help.md)]

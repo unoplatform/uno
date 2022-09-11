@@ -5,24 +5,42 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": ".NET Core Launch (Uno Platform App)",
-      "type": "coreclr",
+      // Use IntelliSense to find out which attributes exist for C# debugging
+      // Use hover for the description of the existing attributes
+      // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
+      "name": "Debug (Chrome, WebAssembly)",
+      "type": "pwa-chrome",
       "request": "launch",
-      "program": "dotnet",
-      "args": [ "run" ],
-      "cwd": "${workspaceFolder}/UnoQuickStart.Wasm",
-      "env": {
+      "url": "http://localhost:5000",
+      "webRoot": "${workspaceFolder}/UnoWinUIQuickStart.Wasm",
+      "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
+      "timeout": 30000,
+      "server": {
+        "runtimeExecutable": "dotnet",
+        "program": "run",
+        "outputCapture": "std",
+        "timeout": 30000,
+        "cwd": "${workspaceFolder}/UnoWinUIQuickStart.Wasm"
       }
     },
     {
-      "name": ".NET Core Debug Uno Platform WebAssembly in Chrome",
-      "type": "pwa-chrome",
+      // Use IntelliSense to find out which attributes exist for C# debugging
+      // Use hover for the description of the existing attributes
+      // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
+      "name": "Skia.GTK (Debug)",
+      "type": "coreclr",
       "request": "launch",
-      "timeout": 30000,
-      // If you have changed the default port / launch URL make sure to update the expectation below
-      "url": "http://localhost:5000",
-      "webRoot": "${workspaceFolder}/UnoQuickStart.Wasm",
-      "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}"
+      "preLaunchTask": "build-skia-gtk",
+      // If you have changed target frameworks, make sure to update the program path.
+      "program": "${workspaceFolder}/UnoWinUIQuickStart.Skia.Gtk/bin/Debug/net6.0/UnoWinUIQuickStart.Skia.Gtk.dll",
+      "args": [],
+      "env": {
+        "DOTNET_MODIFIABLE_ASSEMBLIES": "debug"
+      },
+      "cwd": "${workspaceFolder}/UnoWinUIQuickStart.Skia.Gtk",
+      // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+      "console": "internalConsole",
+      "stopAtEntry": false
     }
   ]
 }

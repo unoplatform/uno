@@ -36,8 +36,8 @@
 	<x:Double x:Key="OtherResources01">280</x:Double>
 	<x:Double x:Key="OtherResources02">90</x:Double>
 
-	<x:Brush x:Key="ImplicitBrushConversion">Red</x:Brush>
-	<x:Brush x:Key="ImplicitBrushConversionCode">#123</x:Brush>
+	<Brush x:Key="ImplicitBrushConversion">Red</Brush>
+	<Brush x:Key="ImplicitBrushConversionCode">#123</Brush>
 
 	<GradientStop x:Key="ColorResource" Color="Yellow" />
 	<GradientStop x:Name="ColorResource_asName" Color="Yellow" />

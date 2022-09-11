@@ -27,9 +27,17 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnApplyTemplate();
 
-			this.RegisterDisposablePropertyChangedCallback(Button.FlyoutProperty, OnFlyoutPropertyChanged);
-
 			RegisterFlyoutEvents();
+		}
+
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			if (args.Property == Button.FlyoutProperty)
+			{
+				OnFlyoutPropertyChanged(this, args);
+			}
+
+			base.OnPropertyChanged2(args);
 		}
 
 		private void RegisterFlyoutEvents()

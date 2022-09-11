@@ -15,7 +15,7 @@ using Javax.Xml.Datatype;
 using Uno;
 using Uno.Extensions;
 using Uno.Disposables;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Android.Util;
 using Android.Graphics;
 using Android.Graphics.Drawables;
@@ -71,8 +71,8 @@ namespace Uno.UI.Controls
 		private ManipulationMode _manipulationMode = ManipulationMode.None;
 
 		//Zoom
-		private System.Drawing.PointF _previousPoint = new System.Drawing.PointF();
-		private System.Drawing.PointF _manipulationStart = new System.Drawing.PointF();
+		private System.Drawing.PointF _previousPoint;
+		private System.Drawing.PointF _manipulationStart;
 		private float[] _m;
 
 		//Scaling
@@ -249,7 +249,7 @@ namespace Uno.UI.Controls
 				}
 				else
 				{
-					this.Log().WarnFormat("Failed to load asset resource [{0}]", UriSource);
+					this.Log().Warn($"Failed to load asset resource [{UriSource}]");
 				}
 			}
 			else if (UriSource.StartsWith("file://", StringComparison.OrdinalIgnoreCase) || newUri.IsAppData())
@@ -284,9 +284,9 @@ namespace Uno.UI.Controls
 			}
 			else
 			{
-				_download.Disposable = CoreDispatcher.Main
+				_download.Disposable = Uno.UI.Dispatching.CoreDispatcher.Main
 					.RunAsync(
-						CoreDispatcherPriority.Normal, 
+						Uno.UI.Dispatching.CoreDispatcherPriority.Normal, 
 						async (ct) =>
 						{
 							var localUri = UriSource;
@@ -300,7 +300,7 @@ namespace Uno.UI.Controls
 										SetImageBitmap(b);
 									}
 
-									if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+									if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 									{
 										this.Log().DebugFormat("Bitmap set {0}", localUri);
 									}
@@ -329,7 +329,7 @@ namespace Uno.UI.Controls
 			{
 				Size? target = UseTargetSize ? (Size?)new Size(targetWidth, targetHeight) : null;
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("Using ImageLoader to get {0}", uri);
 				}
@@ -341,7 +341,7 @@ namespace Uno.UI.Controls
 #if !IS_UNO
 				return await Schedulers.Default.Run(async ct2 =>
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().DebugFormat("Initiated download from {0}", uri);
 					}

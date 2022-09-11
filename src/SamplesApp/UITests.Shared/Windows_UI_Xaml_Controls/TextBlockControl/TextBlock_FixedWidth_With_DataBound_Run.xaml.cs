@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {
-	[SampleControlInfo("TextBlockControl", "TextBlock_FixedWidth_With_DataBound_Run", typeof(TextBlockViewModel), description: "Description for sample of TextBlock_FixedWidth_With_DataBound_Run")]
+	[SampleControlInfo("TextBlock", "TextBlock_FixedWidth_With_DataBound_Run", typeof(TextBlockViewModel), description: "Description for sample of TextBlock_FixedWidth_With_DataBound_Run")]
 	public sealed partial class TextBlock_FixedWidth_With_DataBound_Run : UserControl
 	{
 		public TextBlock_FixedWidth_With_DataBound_Run()

@@ -4,8 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Microsoft.Extensions.Logging;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.Foundation.Metadata
 {
@@ -155,7 +154,7 @@ namespace Windows.Foundation.Metadata
 					{
 						_notImplementedOnce.Add(memberName);
 
-						Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory.CreateLogger(type).Log(NotImplementedLogLevel, message);
+						LogExtensionPoint.Factory.CreateLogger(type).Log(NotImplementedLogLevel, message);
 					}
 				}
 			}

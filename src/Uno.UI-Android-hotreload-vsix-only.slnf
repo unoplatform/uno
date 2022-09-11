@@ -11,7 +11,8 @@
       "SamplesApp\\UITests.Shared\\UITests.Shared.shproj",
       "SolutionTemplate\\UnoLibraryTemplate\\UnoLibraryTemplate.csproj",
       "SolutionTemplate\\UnoSolutionTemplate.VSIX\\UnoSolutionTemplate.VSIX.csproj",
-      "SolutionTemplate\\UnoSolutionTemplate.Wizard\\UnoSolutionTemplate.Wizard.csproj",
+      "SolutionTemplate\\UnoSolutionTemplate.Wizard.2019\\UnoSolutionTemplate.Wizard.2019.csproj",
+      "SolutionTemplate\\UnoSolutionTemplate.Wizard.2022\\UnoSolutionTemplate.Wizard.2022.csproj",
       "SolutionTemplate\\UnoSolutionTemplate\\UnoSolutionTemplate.csproj",
       "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
@@ -19,6 +20,7 @@
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.csproj",
       "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.csproj",
       "Uno.UI.FluentTheme.v2\\Uno.UI.FluentTheme.v2.csproj",
+      "Uno.UI.Composition\\Uno.UI.Composition.csproj",
       "T4Generator\\T4Generator.csproj",
       "Uno.Foundation\\Uno.Foundation.csproj",
       "Uno.UI.RemoteControl.Host\\Uno.UI.RemoteControl.Host.csproj",
@@ -32,7 +34,9 @@
       "Uno.UWP\\Uno.csproj",
       "UnoItemTemplate\\UnoItemTemplate.csproj",
       "Uno.UI.RemoteControl.Server.Processors\\Uno.UI.RemoteControl.Server.Processors.csproj",
-      "Uno.UI.RemoteControl.Server\\Uno.UI.RemoteControl.Server.csproj"
+      "Uno.UI.RemoteControl.Server\\Uno.UI.RemoteControl.Server.csproj",
+      "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",
+      "Uno.UI.Adapter.Microsoft.Logging.Extensions\\Uno.UI.Adapter.Microsoft.Logging.Extensions.csproj"
     ]
   }
 }

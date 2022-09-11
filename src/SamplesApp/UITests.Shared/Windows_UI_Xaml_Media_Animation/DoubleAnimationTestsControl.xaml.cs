@@ -10,11 +10,17 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Uno.Extensions;
-using Uno.Logging;
 using Uno.UI.Samples.Controls;
 
 using ICommand = System.Windows.Input.ICommand;
 using EventHandler = System.EventHandler;
+
+#if HAS_UNO
+using Uno.Foundation.Logging;
+#else
+using Microsoft.Extensions.Logging;
+using Uno.Logging;
+#endif
 
 namespace Uno.UI.Samples.Content.UITests
 {
@@ -22,6 +28,14 @@ namespace Uno.UI.Samples.Content.UITests
 
 	public sealed partial class DoubleAnimationTestsControl : UserControl
 	{
+#if HAS_UNO
+#pragma warning disable CS0109
+		private new readonly Logger _log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(ControlWithTouchEvent));
+#pragma warning restore CS0109
+#else
+		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(ControlWithTouchEvent));
+#endif
+
 		const int FrameRate = 500;
 
 		public DoubleAnimationTestsControl()
@@ -208,7 +222,7 @@ namespace Uno.UI.Samples.Content.UITests
 				}
 				catch (Exception e)
 				{
-					this.Log().Error("Failed", e);
+					_log.Error("Failed", e);
 				}
 			});
 #pragma warning restore CS4014

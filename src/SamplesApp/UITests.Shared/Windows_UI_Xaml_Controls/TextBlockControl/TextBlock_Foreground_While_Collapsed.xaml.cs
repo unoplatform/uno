@@ -19,7 +19,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 {
-	[SampleControlInfo(description: "Changing Foreground while synchronously setting TextBlock collapsed should show the new Foreground correctly when it becomes visible")]
+	[Sample("TextBlock", Description = "Changing Foreground while synchronously setting TextBlock collapsed should show the new Foreground correctly when it becomes visible")]
 	public sealed partial class TextBlock_Foreground_While_Collapsed : UserControl
 	{
 		public TextBlock_Foreground_While_Collapsed()

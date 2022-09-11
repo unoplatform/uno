@@ -3,7 +3,8 @@
 namespace Windows.Storage {
 
 	export class StorageFolder {
-		private static _isInit = false;
+		private static _isInitialized = false;
+		private static _isSynchronizing = false;
 		private static dispatchStorageInitialized: () => number;
 
 		/**
@@ -27,6 +28,17 @@ namespace Windows.Storage {
 
 			for (var i = 0; i < params.Paths.length; i++) {
 				this.setupStorage(params.Paths[i])
+			}
+
+			// Ensure to sync pseudo file system on unload (and periodically for safety)
+			if (!this._isInitialized) {
+				// Request an initial sync to populate the file system
+				StorageFolder.synchronizeFileSystem(true, () => StorageFolder.onStorageInitialized());
+
+				window.addEventListener("beforeunload", () => this.synchronizeFileSystem(false));
+				setInterval(() => this.synchronizeFileSystem(false), 10000);
+
+				this._isInitialized = true;
 			}
 		}
 
@@ -60,23 +72,6 @@ namespace Windows.Storage {
 			FS.mkdir(path);
 
 			FS.mount(IDBFS, {}, path);
-
-			// Ensure to sync pseudo file system on unload (and periodically for safety)
-			if (!this._isInit) {
-
-			// Request an initial sync to populate the file system
-				FS.syncfs(true, err => {
-					if (err) {
-						console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
-					}
-					StorageFolder.onStorageInitialized();
-				});
-
-				window.addEventListener("beforeunload", this.synchronizeFileSystem);
-				setInterval(this.synchronizeFileSystem, 10000);
-
-				this._isInit = true;
-			}
 		}
 
 		private static onStorageInitialized() {
@@ -89,13 +84,27 @@ namespace Windows.Storage {
 		}
 
 		/**
-		 * Synchronize the IDBFS memory cache back to IndexDB
+		 * Synchronize the IDBFS memory cache back to IndexedDB
+		 * populate: requests the filesystem to be popuplated from the IndexedDB
+		 * onSynchronized: function invoked when the synchronization finished
 		 * */
-		private static synchronizeFileSystem(): void {
-			FS.syncfs(err => {
-				if (err) {
-					console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
-			}});
+		private static synchronizeFileSystem(populate: boolean, onSynchronized: Function = null): void {
+
+			if (!StorageFolder._isSynchronizing) {
+				StorageFolder._isSynchronizing = true;
+
+				FS.syncfs(populate, err => {
+					StorageFolder._isSynchronizing = false;
+
+					if (onSynchronized) {
+						onSynchronized();
+					}
+
+					if (err) {
+						console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
+					}
+				});
+			}
 		}
 	}
 }

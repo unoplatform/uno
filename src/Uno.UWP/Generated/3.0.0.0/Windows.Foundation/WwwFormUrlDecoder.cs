@@ -46,10 +46,6 @@ namespace Windows.Foundation
 			{
 				throw new global::System.NotSupportedException();
 			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
 		}
 		#endif
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Foundation.IWwwFormUrlDecoderEntry>
@@ -76,10 +72,6 @@ namespace Windows.Foundation
 		public int Count
 		{
 			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
 			{
 				throw new global::System.NotSupportedException();
 			}

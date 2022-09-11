@@ -14,7 +14,7 @@
 	xmlns:uBehaviors="using:Uno.UI.Behaviors"
 	mc:Ignorable="d ios android wasm netstdref macos skia">
 
-	<!-- Default style for Windows.UI.Xaml.Controls.ScrollViewer -->
+	<!-- Default style for internal control Windows.UI.Xaml.DragView -->
 	<Style TargetType="DragView">
 		<Setter Property="IsTabStop" Value="False" />
 		<Setter Property="IsHitTestVisible" Value="False" />
@@ -26,14 +26,24 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="DragView">
 					<Grid HorizontalAlignment="Left" VerticalAlignment="Top">
-						<Image Visibility="{TemplateBinding ContentVisibility}" Source="{TemplateBinding Content}" Opacity=".8" />
+						<Image Visibility="{TemplateBinding ContentVisibility}" Source="{TemplateBinding Content}" Opacity=".8">
+							<Image.RenderTransform>
+								<TranslateTransform X="{TemplateBinding ContentAnchor.X}" Y="{TemplateBinding ContentAnchor.Y}" />
+							</Image.RenderTransform>
+						</Image>
 						<StackPanel
+							HorizontalAlignment="Left"
+							VerticalAlignment="Top"
 							Orientation="Horizontal"
 							BorderThickness="1"
 							BorderBrush="{StaticResource SystemControlForegroundChromeHighBrush}"
 							Background="{StaticResource SystemControlBackgroundChromeMediumLowBrush}"
 							Padding="2,5"
 							Visibility="{TemplateBinding TooltipVisibility}">
+							<StackPanel.RenderTransform>
+								<!-- The caption is above the pointer -->
+								<TranslateTransform Y="-40" />
+							</StackPanel.RenderTransform>
 							<TextBlock Visibility="{TemplateBinding GlyphVisiblity}" Text="{TemplateBinding Glyph}" Margin="3,0" />
 							<TextBlock Visibility="{TemplateBinding CaptionVisiblity}" Text="{TemplateBinding Caption}" Margin="3,0" />
 						</StackPanel>

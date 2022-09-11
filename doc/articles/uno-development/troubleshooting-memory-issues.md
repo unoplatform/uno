@@ -1,14 +1,22 @@
 # Troubleshooting Memory Issues 
 
-Uno provides a set of classes aimed at diagnosing memory issues related to leaking controls, whether it be from
+Uno Platform provides a set of classes aimed at diagnosing memory issues related to leaking controls, whether it be from
 an Uno.UI issue or from an invalid pattern in user code.
 
-## Enable Memory instances counter
-In your application, as early as possible in the initialization (generally in the App.xaml.cs
-constructor), add and call the following method:
+## WebAssembly memory profiling
+Starting from [Uno.Wasm.Bootstrap](https://github.com/unoplatform/Uno.Wasm.Bootstrap) 3.2, the Xamarin Profiler can be used to profile memory usage. See [this documentation](https://github.com/unoplatform/Uno.Wasm.Bootstrap#memory-profiling) for additional details.
 
-```
+## Enable Memory instances counter
+
+1. Install the `Uno.Core` NuGet package;
+2. In your application, as early as possible in the initialization (generally in the App.xaml.cs constructor), add and call the following method:
+
+``` csharp
 using Uno.UI.DataBinding;
+using Uno.UI.DataBinding;
+using System.Threading.Tasks;
+using Uno.Extensions;
+using Uno.Logging;
 
 // ....
 private void EnableViewsMemoryStatistics()
@@ -17,11 +25,10 @@ private void EnableViewsMemoryStatistics()
 	// Call this method to enable Views memory tracking.
 	// Make sure that you've added the following :
 	//
-	//  { "Uno.UI.DataBinding", LogLevel.Information }
+        //  builder.AddFilter("Uno.UI.DataBinding", LogLevel.Information );
 	//
 	// in the logger settings, so that the statistics are showing up.
 	//
-
 
 	var unused = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
 		CoreDispatcherPriority.Normal,
@@ -52,9 +59,13 @@ private void EnableViewsMemoryStatistics()
 	);
 }
 ```
-You'll also need to add the following logger filter:
+  You'll also need to add the following logger filter:
+```csharp
+builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Information );
 ```
-	{ "Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Information },
+  As well as this package NuGet (you will need to update to the latest Uno.UI nuget version):
+```xaml
+<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.0.13" />
 ```
 
 ## Interpreting the statistics output
@@ -72,7 +83,7 @@ cross references.
 
 This can happen when a Grid item has a strong field reference to its parent:
 
-```
+```csharp
 var myItem = new Grid(){ Tag = grid };
 grid.Children.Add(myItem);
 ```

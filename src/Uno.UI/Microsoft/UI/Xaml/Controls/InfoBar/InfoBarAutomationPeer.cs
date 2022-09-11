@@ -1,4 +1,6 @@
-﻿// MUX reference InfoBarAutomationPeer.cpp, commit 3125489
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX reference InfoBarAutomationPeer.cpp, commit 3125489
 
 using Microsoft.UI.Xaml.Controls;
 using Windows.UI.Xaml;
@@ -6,8 +8,15 @@ using Windows.UI.Xaml.Automation.Peers;
 
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
+	/// <summary>
+	/// Exposes InfoBar types to Microsoft UI Automation.
+	/// </summary>
 	public partial class InfoBarAutomationPeer : FrameworkElementAutomationPeer
 	{
+		/// <summary>
+		/// Initializes a new instance of the InfoBarAutomationPeer class.
+		/// </summary>
+		/// <param name="owner">The InfoBar control instance to create the peer for.</param>
 		public InfoBarAutomationPeer(InfoBar owner) : base(owner)
 		{
 		}

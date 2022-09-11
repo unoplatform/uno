@@ -8,8 +8,9 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
-                <!-- Place resources here -->
+                <!-- Add resource dictionaries here -->
             </ResourceDictionary.MergedDictionaries>
+            <!-- Add resources here -->
         </ResourceDictionary>
     </Application.Resources>
 

@@ -17,10 +17,12 @@
 		<AndroidUseAapt2>true</AndroidUseAapt2>
 		<GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
 		<AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
-		<TargetFrameworkVersion>v10.0</TargetFrameworkVersion>
+		<TargetFrameworkVersion>v12.0</TargetFrameworkVersion>
 		<AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
 		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
 		<ResourcesDirectory>..\$ext_safeprojectname$.Shared\Strings</ResourcesDirectory>
+		<!-- Workaround for https://github.com/xamarin/xamarin-android/issues/6480 -->
+		<AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<DebugSymbols>true</DebugSymbols>
@@ -32,6 +34,11 @@
 		<WarningLevel>4</WarningLevel>
 		<AndroidUseSharedRuntime>True</AndroidUseSharedRuntime>
 		<AndroidLinkMode>None</AndroidLinkMode>
+		<AndroidSupportedAbis>armeabi-v7a;x86;x86_64;arm64-v8a</AndroidSupportedAbis>
+		<!-- Workaround for https://github.com/xamarin/xamarin-android/issues/6480 -->
+		<AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
+		<AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
+		<BundleAssemblies>false</BundleAssemblies>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
 		<DebugType>portable</DebugType>
@@ -44,11 +51,15 @@
 		<WarningLevel>4</WarningLevel>
 		<AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
 		<AndroidLinkMode>SdkOnly</AndroidLinkMode>
-		<AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
+		<AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
 		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
 		<AotAssemblies>true</AotAssemblies>
 		<EnableLLVM>true</EnableLLVM>
 		<AndroidEnableSGenConcurrent>true</AndroidEnableSGenConcurrent>
+		<AndroidSupportedAbis>armeabi-v7a;x86;x86_64;arm64-v8a</AndroidSupportedAbis>
+		<BundleAssemblies>false</BundleAssemblies>
+		<AndroidPackageFormat>aab</AndroidPackageFormat>
+		<AndroidEnableProfiledAot>true</AndroidEnableProfiledAot>
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="Mono.Android" />
@@ -62,9 +73,9 @@
 	<ItemGroup>
 		<PackageReference Include="Uno.UI" Version="2.2.0" />
 		<PackageReference Include="Uno.UI.RemoteControl" Version="2.2.0" Condition="'$(Configuration)'=='Debug'" />
+		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="3.0.5" />
 		<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.33" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="MainActivity.cs" />
@@ -96,9 +107,6 @@
 	</ItemGroup>
 	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" />
 	<Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
-
-	<!-- This will force the generation of the APK when not building inside visual studio -->
-	<Target Name="GenerateBuild" DependsOnTargets="SignAndroidPackage" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''" />
 
 	<Target Name="Issue3897Workaround"
 		Condition=" '$(ManagedDesignTimeBuild)' == 'True' "

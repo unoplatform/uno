@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ToggleSplitButtonAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer,global::Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider,global::Windows.UI.Xaml.Automation.Provider.IToggleProvider
@@ -27,13 +27,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ToggleSplitButtonAutomationPeer( global::Windows.UI.Xaml.Controls.ToggleSplitButton owner) : base(owner)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ToggleSplitButtonAutomationPeer", "ToggleSplitButtonAutomationPeer.ToggleSplitButtonAutomationPeer(ToggleSplitButton owner)");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.ToggleSplitButtonAutomationPeer.ToggleSplitButtonAutomationPeer(Windows.UI.Xaml.Controls.ToggleSplitButton)
 		// Forced skipping of method Windows.UI.Xaml.Controls.ToggleSplitButtonAutomationPeer.ToggleSplitButtonAutomationPeer(Windows.UI.Xaml.Controls.ToggleSplitButton)
 		// Forced skipping of method Windows.UI.Xaml.Controls.ToggleSplitButtonAutomationPeer.ExpandCollapseState.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

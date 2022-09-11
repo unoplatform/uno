@@ -5,6 +5,7 @@ using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Markup;
 
@@ -726,10 +727,7 @@ namespace Windows.UI.Xaml.Controls
 			return null;
 		}
 
-		string GetPlainText()
-		{
-			return Text;
-		}
+		private protected override string GetPlainText() => Text;
 
 		bool ISubMenuOwner.IsSubMenuOpen => IsOpen;
 

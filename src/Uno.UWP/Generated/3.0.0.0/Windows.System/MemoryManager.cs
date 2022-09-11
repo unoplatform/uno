@@ -2,13 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System
 {
-	#if false || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class MemoryManager 
+	public static partial class MemoryManager 
 	{
-		#if false || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || __IOS__ || NET461 || false || false || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__IOS__", "NET461", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static ulong AppMemoryUsage
 		{
 			get
@@ -17,18 +17,9 @@ namespace Windows.System
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.System.AppMemoryUsageLevel AppMemoryUsageLevel
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AppMemoryUsageLevel MemoryManager.AppMemoryUsageLevel is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		// Skipping already declared property AppMemoryUsageLevel
+		#if false || __IOS__ || NET461 || false || false || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__IOS__", "NET461", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static ulong AppMemoryUsageLimit
 		{
 			get

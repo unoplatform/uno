@@ -5,6 +5,7 @@
   xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)"
   xmlns:contract6NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,6)"
   xmlns:contract5NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)"
+  xmlns:local="using:Windows.UI.Xaml.Controls"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Default">
@@ -107,15 +108,15 @@
     <Thickness x:Key="AppBarButtonInnerBorderCompactMargin">2,6,2,22</Thickness>
     <Thickness x:Key="AppBarButtonInnerBorderOverflowMargin">4,0,4,0</Thickness>
 
-    <Style TargetType="AppBarButton" BasedOn="{StaticResource DefaultAppBarButtonStyle}" />
+    <Style TargetType="local:AppBarButton" BasedOn="{StaticResource DefaultAppBarButtonStyle}" />
 
-    <Style x:Key="AppBarButtonOverflowStyle" TargetType="AppBarButton" BasedOn="{StaticResource DefaultAppBarButtonStyle}">
+    <Style x:Key="AppBarButtonOverflowStyle" TargetType="local:AppBarButton" BasedOn="{StaticResource DefaultAppBarButtonStyle}">
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="Width" Value="NaN" />
     </Style>
 
     <!-- LabelOnRightStyle is retired since RS3, We still need it for RS2 or RS3 -->
-    <Style x:Key="DefaultAppBarButtonStyle" TargetType="AppBarButton">
+    <Style x:Key="DefaultAppBarButtonStyle" TargetType="local:AppBarButton">
         <Setter Property="Background" Value="{ThemeResource AppBarButtonBackground}" />
         <Setter Property="Foreground" Value="{ThemeResource AppBarButtonForeground}" />
         <Setter Property="BorderBrush" Value="{ThemeResource AppBarButtonBorderBrush}" />
@@ -132,13 +133,13 @@
         <contract7Present:Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="AppBarButton">
+                <ControlTemplate TargetType="local:AppBarButton">
                     <Grid x:Name="Root"
                         Background="Transparent"
                         MinWidth="{TemplateBinding MinWidth}"
                         MaxWidth="{TemplateBinding MaxWidth}">
                         <contract5NotPresent:Grid.Resources>
-                            <Style x:Name="LabelOnRightStyle" TargetType="AppBarButton">
+                            <Style x:Name="LabelOnRightStyle" TargetType="local:AppBarButton">
                                 <Setter Property="Width" Value="NaN" />
                             </Style>
                         </contract5NotPresent:Grid.Resources>
@@ -373,10 +374,11 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
+                            <!-- UNO WORKAROUND: The ViewBox center should be horizontal Stretch but the Grid aligns the content left -->
                             <Viewbox x:Name="ContentViewbox"
                                 Height="{ThemeResource AppBarButtonContentHeight}"
                                 Margin="{ThemeResource AppBarButtonContentViewboxCollapsedMargin}"
-                                HorizontalAlignment="Stretch"
+                                HorizontalAlignment="Center"
                                 AutomationProperties.AccessibilityView="Raw" >
                                 <ContentPresenter x:Name="Content"
                                     Content="{TemplateBinding Icon}"

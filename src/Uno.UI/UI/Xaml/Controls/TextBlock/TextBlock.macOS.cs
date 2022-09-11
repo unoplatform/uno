@@ -9,13 +9,17 @@ using Foundation;
 using CoreGraphics;
 using Windows.UI.Text;
 using AppKit;
+using Uno.UI;
 using Windows.UI;
+
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class TextBlock : FrameworkElement
 	{
-
 		private bool _measureInvalidated;
 		private Size? _previousAvailableSize;
 		private Size _previousDesiredSize;
@@ -62,25 +66,17 @@ namespace Windows.UI.Xaml.Controls
 				// While DrawBackgroundForGlyphRange will draw the background mark for specified Glyphs DrawGlyphsForGlyphRange will draw the actual Glyphs.
 
 				// Note: This part of the code is called only under very specific situations. For most of the scenarios DrawString is used to draw the text.
-				_layoutManager?.DrawGlyphsForGlyphRange(new NSRange(0, (nint)_layoutManager.NumberOfGlyphs), _drawRect.Location);
+#if NET6_0_OR_GREATER
+				_layoutManager?.DrawGlyphs
+#else
+				_layoutManager?.DrawGlyphsForGlyphRange
+#endif
+					(new NSRange(0, (nint)_layoutManager.NumberOfGlyphs), _drawRect.Location);
 			}
 			else
 			{
 				_attributedString?.DrawString(_drawRect, NSStringDrawingOptions.UsesLineFragmentOrigin);
 			}
-		}
-
-		private CGRect GetDrawRect(CGRect rect)
-		{
-			// Reduce available size by Padding
-			rect.Width -= (nfloat)(Padding.Left + Padding.Right);
-			rect.Height -= (nfloat)(Padding.Top + Padding.Bottom);
-
-			// Offset drawing location by Padding
-			rect.X += (nfloat)Padding.Left;
-			rect.Y += (nfloat)Padding.Top;
-
-			return rect;
 		}
 
 		/// <summary>
@@ -97,19 +93,15 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size MeasureOverride(Size size)
 		{
-			var hasSameDesiredSize =
+			// `size` is used to compare with the previous one `_previousDesiredSize`
+			// We need to apply `Math.Ceiling` to compare them correctly
+			var isSameOrNarrower =
 				!_measureInvalidated
 				&& _previousAvailableSize != null
-				&& _previousDesiredSize.Width == size.Width
-				&& _previousDesiredSize.Height == size.Height;
+				&& _previousDesiredSize.Width <= Math.Ceiling(size.Width)
+				&& _previousDesiredSize.Height == Math.Ceiling(size.Height);
 
-			var isSingleLineNarrower =
-				!_measureInvalidated
-				&& _previousAvailableSize != null
-				&& _previousDesiredSize.Width <= size.Width
-				&& _previousDesiredSize.Height == size.Height;
-
-			if (hasSameDesiredSize || isSingleLineNarrower)
+			if (isSameOrNarrower)
 			{
 				return _previousDesiredSize;
 			}
@@ -120,12 +112,10 @@ namespace Windows.UI.Xaml.Controls
 
 				UpdateTypography();
 
-				var horizontalPadding = Padding.Left + Padding.Right;
-				var verticalPadding = Padding.Top + Padding.Bottom;
+				var padding = Padding;
 
 				// available size considering padding
-				size.Width -= horizontalPadding;
-				size.Height -= verticalPadding;
+				size = size.Subtract(padding);
 
 				var result = LayoutTypography(size);
 
@@ -135,34 +125,30 @@ namespace Windows.UI.Xaml.Controls
 					// This matches Windows where empty TextBlocks still have a height (especially useful when measuring ListView items with no DataContext)
 					var font = NSFontHelper.TryGetFont((float)FontSize*2, FontWeight, FontStyle, FontFamily);
 
-					var str = new NSAttributedString(Text, font);
+					using var str = new NSAttributedString(Text, font);
 
 					var rect = str.BoundingRectWithSize(size, NSStringDrawingOptions.UsesDeviceMetrics);
 					result = new Size(rect.Width, rect.Height);
 				}
 
-				result.Width += horizontalPadding;
-				result.Height += verticalPadding;
+				result = result.Add(padding);
 
-				return _previousDesiredSize = new CGSize(Math.Ceiling(result.Width), Math.Ceiling(result.Height));
+				return _previousDesiredSize = new Size(Math.Ceiling(result.Width), Math.Ceiling(result.Height));
 			}
 		}
 
 		protected override Size ArrangeOverride(Size size)
 		{
-			var horizontalPadding = Padding.Left + Padding.Right;
-			var verticalPadding = Padding.Top + Padding.Bottom;
+			var padding = Padding;
 
 			// final size considering padding
-			size.Width -= horizontalPadding;
-			size.Height -= verticalPadding;
+			size = size.Subtract(padding);
 
 			var result = LayoutTypography(size);
 
-			result.Width += horizontalPadding;
-			result.Height += verticalPadding;
+			result = result.Add(padding);
 
-			return new CGSize(Math.Ceiling(result.Width), Math.Ceiling(result.Height));
+			return new Size(Math.Ceiling(result.Width), Math.Ceiling(result.Height));
 		}
 
 #endregion
@@ -216,7 +202,6 @@ namespace Windows.UI.Xaml.Controls
 			var font = NSFontHelper.TryGetFont((float)FontSize, FontWeight, FontStyle, FontFamily);
 
 			attributes.Font = font;
-			attributes.ForegroundColor = Brush.GetColorWithOpacity(Foreground, Colors.Transparent).Value;
 
 			if (TextDecorations != TextDecorations.None)
 			{
@@ -266,6 +251,18 @@ namespace Windows.UI.Xaml.Controls
 			{
 				//CharacterSpacing is in 1/1000 of an em, iOS KerningAdjustment is in points. 1 em = 12 points
 				attributes.KerningAdjustment = (CharacterSpacing / 1000f) * 12;
+			}
+
+			// Foreground checks should be kept at the end since we **may** use the attributes to calculate text size
+			// for gradient brushes.
+			// TODO: Support other brushes (e.g. gradients):
+			if (Brush.TryGetColorWithOpacity(Foreground, out var color))
+			{
+				attributes.ForegroundColor = color;
+			}
+			else
+			{
+				attributes.ForegroundColor = Colors.Transparent;
 			}
 
 			return attributes;
@@ -362,7 +359,13 @@ namespace Windows.UI.Xaml.Controls
 				_textContainer.Size = size;
 				// Required for GetUsedRectForTextContainer to return a value.
 				_layoutManager.GetGlyphRange(_textContainer);
-				return _layoutManager.GetUsedRectForTextContainer(_textContainer).Size;
+				return _layoutManager
+#if NET6_0_OR_GREATER
+					.GetUsedRect
+#else
+					.GetUsedRectForTextContainer
+#endif
+						(_textContainer).Size;
 			}
 			else
 			{
@@ -386,9 +389,15 @@ namespace Windows.UI.Xaml.Controls
 			var partialFraction = (nfloat)0;
 			var pointInTextContainer = new CGPoint(point.X - _drawRect.X, point.Y - _drawRect.Y);
 
+#if NET6_0_OR_GREATER
+			var characterIndex = (int)_layoutManager.GetCharacterIndex
+				(pointInTextContainer, _layoutManager.TextContainers.FirstOrDefault(), out partialFraction);
+#else
 #pragma warning disable CS0618 // Type or member is obsolete (For VS2017 compatibility)
-			var characterIndex = (int)_layoutManager.CharacterIndexForPoint(pointInTextContainer, _layoutManager.TextContainers.FirstOrDefault(), ref partialFraction);
+			var characterIndex = (int)_layoutManager.CharacterIndexForPoint
+				(pointInTextContainer, _layoutManager.TextContainers.FirstOrDefault(), ref partialFraction);
 #pragma warning restore CS0618 // Type or member is obsolete
+#endif
 
 			return characterIndex;
 		}

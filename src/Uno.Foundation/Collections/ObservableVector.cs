@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation.Collections;
 
 namespace Windows.Foundation.Collections
 {
-	internal class ObservableVector<T> : IObservableVector<T>, IObservableVector
+	internal class ObservableVector<T> : IObservableVector<T>, IObservableVector, IList
 	{
 		private readonly List<T> _list = new List<T>();
 
@@ -38,7 +39,6 @@ namespace Windows.Foundation.Collections
 		public virtual void Add(T item)
 		{
 			_list.Add(item);
-
 			RaiseVectorChanged(CollectionChange.ItemInserted, _list.Count - 1);
 		}
 
@@ -95,6 +95,89 @@ namespace Windows.Foundation.Collections
 		{
 			VectorChanged?.Invoke(this, new VectorChangedEventArgs(change, (uint)index));
 			UntypedVectorChanged?.Invoke(this, new VectorChangedEventArgs(change, (uint)index));
+		}
+
+		bool IList.IsFixedSize => false;
+
+		object ICollection.SyncRoot => ((IList)_list).SyncRoot;
+
+		bool ICollection.IsSynchronized => false;
+
+		int IList.Add(object value)
+		{
+			if (value is T typedValue)
+			{
+				var ret = ((IList)this).Add(typedValue);
+				RaiseVectorChanged(CollectionChange.ItemInserted, _list.Count - 1);
+				return ret;
+			}
+			else
+			{
+				throw new ArgumentException($"Cannot add an instance of type {value?.GetType()}");
+			}
+		}
+
+		bool IList.Contains(object value)
+			=> GenericIndexOf(value) != -1;
+
+		int IList.IndexOf(object value)
+			=> GenericIndexOf(value);
+
+		private int GenericIndexOf(object value)
+		{
+			for (int i = 0; i < Count; i++)
+			{
+				if (object.Equals(this[i], value))
+				{
+					return i;
+				}
+			}
+
+			return -1;
+		}
+
+		void IList.Insert(int index, object value)
+		{
+			if (value is T typedValue)
+			{
+				Insert(index, typedValue);
+			}
+			else
+			{
+				throw new ArgumentException($"Cannot use an instance of type {value?.GetType()}");
+			}
+		}
+
+		void IList.Remove(object value)
+		{
+			if (value is T typedValue)
+			{
+				Remove(typedValue);
+			}
+		}
+
+		void ICollection.CopyTo(Array array, int index)
+		{
+			((IList)_list).CopyTo(array, index);
+		}
+
+		object IList.this[int index]
+		{
+			get
+			{
+				return this[index];
+			}
+			set
+			{
+				if (value is T typedValue)
+				{
+					this[index] = typedValue;
+				}
+				else
+				{
+					throw new ArgumentException($"Cannot use an instance of type {value?.GetType()}");
+				}
+			}
 		}
 	}
 }

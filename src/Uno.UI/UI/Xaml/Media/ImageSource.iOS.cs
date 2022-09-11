@@ -4,16 +4,17 @@ using Uno.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using UIKit;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Core;
 using Uno.Disposables;
-using Microsoft.Extensions.Logging;
+
 
 namespace Windows.UI.Xaml.Media
 {
@@ -109,13 +110,13 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		private protected virtual bool IsSourceReady => false;
 
-		private protected virtual bool TryOpenSourceSync(out UIImage image)
+		private protected virtual bool TryOpenSourceSync([NotNullWhen(true)] out UIImage image)
 		{
 			image = default;
 			return false;
 		}
 
-		private protected virtual bool TryOpenSourceAsync(out Task<UIImage> asyncImage)
+		private protected virtual bool TryOpenSourceAsync([NotNullWhen(true)] out Task<UIImage> asyncImage)
 		{
 			asyncImage = default;
 			return false;
@@ -259,9 +260,9 @@ namespace Windows.UI.Xaml.Media
 			if (ct.IsCancellationRequested)
 			{
 				return;
-			}
+			} 
 
-			using (var url = new NSUrl(WebUri.OriginalString))
+			using (var url = new NSUrl(WebUri.AbsoluteUri))
 			{
 				using (var request = NSUrlRequest.FromUrl(url))
 				{

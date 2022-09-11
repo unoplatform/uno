@@ -22,20 +22,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 		#endif
 		// Skipping already declared property Position
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode Placement
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member FlyoutPlacementMode FlyoutShowOptions.Placement is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Primitives.FlyoutShowOptions", "FlyoutPlacementMode FlyoutShowOptions.Placement");
-			}
-		}
-		#endif
+		// Skipping already declared property Placement
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Rect? ExclusionRect

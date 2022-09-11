@@ -7,14 +7,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Extensions.Logging;
+
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using static Microsoft.UI.Xaml.Controls._Tracing;
@@ -573,7 +574,7 @@ namespace Uno.UI.Xaml.Input
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().LogTrace($"XYFocus walk begin for direction {direction}");
+				this.Log().Trace($"XYFocus walk begin for direction {direction}");
 			}
 		}
 
@@ -581,7 +582,7 @@ namespace Uno.UI.Xaml.Input
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().LogTrace($"XYFocus candidate cache hit for direction {direction}");
+				this.Log().Trace($"XYFocus candidate cache hit for direction {direction}");
 			}
 		}
 
@@ -589,7 +590,7 @@ namespace Uno.UI.Xaml.Input
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().LogTrace($"XYFocus walk ended");
+				this.Log().Trace($"XYFocus walk ended");
 			}
 		}
 	}

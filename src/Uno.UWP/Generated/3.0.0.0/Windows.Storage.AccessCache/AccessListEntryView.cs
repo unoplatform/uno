@@ -31,10 +31,6 @@ namespace Windows.Storage.AccessCache
 			{
 				throw new global::System.NotSupportedException();
 			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
 		}
 		#endif
 		// Processing: System.Collections.Generic.IEnumerable<Windows.Storage.AccessCache.AccessListEntry>
@@ -61,10 +57,6 @@ namespace Windows.Storage.AccessCache
 		public int Count
 		{
 			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
 			{
 				throw new global::System.NotSupportedException();
 			}

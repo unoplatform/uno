@@ -13,9 +13,10 @@ using Android.Runtime;
 using Android.Views;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml;
 using Android.OS;
+using Windows.UI.ViewManagement;
 
 namespace Uno.UI
 {
@@ -55,7 +56,7 @@ namespace Uno.UI
 		/// </summary>
 		public static event EventHandler<CurrentActivityChangedEventArgs> CurrentChanged;
 
-		private static int _instanceCount = 0;
+		private static int _instanceCount;
 		private static Dictionary<int, BaseActivity> _instances = new Dictionary<int, BaseActivity>();
 		private static BaseActivity _current;
 
@@ -130,7 +131,7 @@ namespace Uno.UI
 		{
 			InitializeBinder();
 			ContextHelper.Current = this;
-			NotifyCreatingInstance();
+			Initialize();
 
 #if !IS_UNO
 			Performance.Increment(CreatedTotalBindableActivityCounter);
@@ -142,12 +143,21 @@ namespace Uno.UI
 		{
 			InitializeBinder();
 			ContextHelper.Current = this;
-			NotifyCreatingInstance();
+			Initialize();
 
 #if !IS_UNO
 			Performance.Increment(CreatedTotalBindableActivityCounter);
 			Performance.Increment(ActiveBindableActivityCounter);
 #endif
+		}
+
+		private void Initialize()
+		{
+			// Eagerly create the ApplicationView instance for IBaseActivityEvents
+			// to be useable (specifically for the Create event)
+			ApplicationView.GetForCurrentView();
+
+			NotifyCreatingInstance();
 		}
 
 		partial void InnerAttachedToWindow() => BinderAttachedToWindow();
@@ -184,8 +194,10 @@ namespace Uno.UI
 		{
 			SetAsCurrent();
 
-			Windows.UI.Xaml.Application.Current?.OnLeavingBackground();
-			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
+			Windows.UI.Xaml.Application.Current?.RaiseLeavingBackground(() =>
+			{
+				Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
+			});
 		}
 
 		partial void InnerRestart() => SetAsCurrent();
@@ -194,7 +206,7 @@ namespace Uno.UI
 		{
 			SetAsCurrent();			
 
-			Windows.UI.Xaml.Application.Current?.OnResuming();
+			Windows.UI.Xaml.Application.Current?.RaiseResuming();
 			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
 		}
 
@@ -210,8 +222,7 @@ namespace Uno.UI
 		{
 			ResignCurrent();
 
-			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
-			Windows.UI.Xaml.Application.Current?.OnSuspending();
+			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);			
 		}
 
 		partial void InnerStop()
@@ -219,7 +230,7 @@ namespace Uno.UI
 			ResignCurrent();
 
 			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
-			Windows.UI.Xaml.Application.Current?.OnEnteredBackground();
+			Windows.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Windows.UI.Xaml.Application.Current?.RaiseSuspending());
 		}
 
 		partial void InnerDestroy() => ResignCurrent();
@@ -298,7 +309,7 @@ namespace Uno.UI
 			{
 				base.Dispose(disposing);
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("Disposing {0}", disposing);
 				}

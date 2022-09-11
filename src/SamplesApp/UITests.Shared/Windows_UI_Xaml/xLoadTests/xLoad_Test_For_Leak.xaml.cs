@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml.xLoadTests
 {
-	[Sample("xLoad", Name = "xLoad_Test_For_Leak")]
+	[Sample("x:Load", Name = "xLoad_Test_For_Leak")]
 	public sealed partial class xLoad_Test_For_Leak : UserControl
     {
 		public bool IsLoad

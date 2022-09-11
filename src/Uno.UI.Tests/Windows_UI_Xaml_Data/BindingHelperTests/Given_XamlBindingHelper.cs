@@ -1,17 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Markup;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.CollectionViewTests
 {
-	[Microsoft.VisualStudio.TestTools.UnitTesting.TestClass]
+	[TestClass]
 	public class Given_XamlBindingHelper
 	{
 		[TestMethod]
@@ -45,6 +40,63 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.CollectionViewTests
 		public void When_ToTimeSpan(object value, string expected)
 		{
 			Assert.AreEqual(TimeSpan.Parse(expected), XamlBindingHelper.ConvertValue(typeof(TimeSpan), value));
+		}
+
+		[TestMethod]
+		[DataRow("4,5", 4, 5)]
+		[DataRow("4.5,5.7", 4.5, 5.7)]
+		[DataRow("4, 5", 4, 5)]
+		[DataRow("4.5, 5.7", 4.5, 5.7)]
+		[DataRow("4   ,     5", 4, 5)]
+		[DataRow("4.5   ,    5.7", 4.5, 5.7)]
+		[DataRow("   4   ,     5   ", 4, 5)]
+		[DataRow("  4.5   ,    5.7   ", 4.5, 5.7)]
+		public void When_ToPoint(string value, double expectedX, double expectedY)
+		{
+			Assert.AreEqual(new Point(expectedX, expectedY), XamlBindingHelper.ConvertValue(typeof(Point), value));
+		}
+
+		[TestMethod]
+		[DataRow("4,5", 4f, 5f)]
+		[DataRow("4.5,5.7", 4.5f, 5.7f)]
+		[DataRow("4, 5", 4f, 5f)]
+		[DataRow("4.5, 5.7", 4.5f, 5.7f)]
+		[DataRow("4   ,     5", 4f, 5f)]
+		[DataRow("4.5   ,    5.7", 4.5f, 5.7f)]
+		[DataRow("   4   ,     5   ", 4f, 5f)]
+		[DataRow("  4.5   ,    5.7   ", 4.5f, 5.7f)]
+		public void When_ToPointF(string value, float expectedX, float expectedY)
+		{
+			Assert.AreEqual(new System.Drawing.PointF(expectedX, expectedY), XamlBindingHelper.ConvertValue(typeof(System.Drawing.PointF), value));
+		}
+
+		[TestMethod]
+		[DataRow("", 0)]
+		[DataRow("0", 0)]
+		[DataRow("  0  ", 0)]
+		[DataRow("  0  5", 0)]
+		[DataRow("  10  5", 10)]
+		[DataRow("10  5", 10)]
+		[DataRow("10  ", 10)]
+		[DataRow("10", 10)]
+		public void When_ToInt(string value, int expected)
+		{
+			Assert.AreEqual(expected, XamlBindingHelper.ConvertValue(typeof(int), value));
+		}
+
+		[TestMethod]
+		[DataRow("", double.NaN)]
+		[DataRow("0", 0.0)]
+		[DataRow("  0  ", 0.0)]
+		[DataRow("  0  5", 0.0)]
+		[DataRow("  10.0  5", 10.0)]
+		[DataRow("10.0  5", 10.0)]
+		[DataRow("10.0  ", 10.0)]
+		[DataRow("10  ", 10.0)]
+		[DataRow("10.0", 10.0)]
+		public void When_ToDouble(string value, double expected)
+		{
+			Assert.AreEqual(expected, XamlBindingHelper.ConvertValue(typeof(double), value));
 		}
 	}
 }

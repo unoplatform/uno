@@ -3,11 +3,17 @@ using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
 using Uno.Disposables;
-using Windows.UI.Input;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
@@ -97,7 +103,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// It's used by core controls (e.g. ScrollViewer) where the ScrollBar's orientation will never change.
 		/// It's required as, unlike UWP, a control which is Visibility = Collapsed will get its template applied anyway.
 		/// </remarks>
-		internal bool IsFixedOrientation { get; set; } = false;
+		internal bool IsFixedOrientation { get; set; }
 
 		// Initializes a new instance of the ScrollBar class.
 		public ScrollBar()
@@ -819,7 +825,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		// Value indicating whether the ScrollBar reacts to user input or not.
-		private bool IsIgnoringUserInput
+		internal bool IsIgnoringUserInput
 		{
 			get => m_isIgnoringUserInput;
 			set => m_isIgnoringUserInput = value;
@@ -1146,6 +1152,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			pMouseIndicatorLength = 0.0;
 			pTouchIndicatorLength = 0.0;
 
+			// Uno workaround: If the scrollbar is smaller than the min size of the thumb,
+			//		we will try to set the visibility collapsed and then request to 'HideThumb',
+			//		which will drive uno to fall in an infinite layout cycle.
+			//		We instead cache the value and apply it only at the end.
+			double? m_tpElementHorizontalThumbWidth = default, m_tpElementVerticalThumbHeight = default, m_tpElementHorizontalPanningThumbWidth = default, m_tpElementVerticalPanningThumbHeight = default;
+			Visibility? m_tpElementHorizontalThumbVisibility = default, m_tpElementVerticalThumbVisibility = default, m_tpElementHorizontalPanningThumbVisibility = default, m_tpElementVerticalPanningThumbVisibility = default;
+
 			if (!hideThumb)
 			{
 				double minSize = 0.0;
@@ -1159,8 +1172,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 				double actualSize;
 				double actualSizeMinusRepeatButtonsLength;
+
 				if (orientation == Orientation.Horizontal &&
-m_tpElementHorizontalThumb != null)
+					m_tpElementHorizontalThumb != null)
 				{
 					if (maximum - minimum != 0)
 					{
@@ -1177,8 +1191,8 @@ m_tpElementHorizontalThumb != null)
 					}
 					else
 					{
-						m_tpElementHorizontalThumb.Visibility = Visibility.Visible;
-						m_tpElementHorizontalThumb.Width = result;
+						m_tpElementHorizontalThumbVisibility = Visibility.Visible;
+						m_tpElementHorizontalThumbWidth = result;
 						mouseIndicatorLengthWasSet = true;
 					}
 				}
@@ -1200,8 +1214,8 @@ m_tpElementHorizontalThumb != null)
 					}
 					else
 					{
-						m_tpElementVerticalThumb.Visibility = Visibility.Visible;
-						m_tpElementVerticalThumb.Height = result;
+						m_tpElementVerticalThumbVisibility = Visibility.Visible;
+						m_tpElementVerticalThumbHeight = result;
 						mouseIndicatorLengthWasSet = true;
 					}
 				}
@@ -1233,8 +1247,8 @@ m_tpElementHorizontalThumb != null)
 					}
 					else
 					{
-						m_tpElementHorizontalPanningThumb.Visibility = Visibility.Visible;
-						m_tpElementHorizontalPanningThumb.Width = result;
+						m_tpElementHorizontalPanningThumbVisibility = Visibility.Visible;
+						m_tpElementHorizontalPanningThumbWidth = result;
 						touchIndicatorLengthWasSet = true;
 					}
 				}
@@ -1255,8 +1269,8 @@ m_tpElementHorizontalThumb != null)
 					}
 					else
 					{
-						m_tpElementVerticalPanningThumb.Visibility = Visibility.Visible;
-						m_tpElementVerticalPanningThumb.Height = result;
+						m_tpElementVerticalPanningThumbVisibility = Visibility.Visible;
+						m_tpElementVerticalPanningThumbHeight = result;
 						touchIndicatorLengthWasSet = true;
 					}
 				}
@@ -1286,6 +1300,17 @@ m_tpElementHorizontalThumb != null)
 				{
 					m_tpElementVerticalPanningThumb.Visibility = Visibility.Collapsed;
 				}
+			}
+			else
+			{
+				if (m_tpElementHorizontalThumbWidth.HasValue) m_tpElementHorizontalThumb.Width = m_tpElementHorizontalThumbWidth.Value;
+				if (m_tpElementVerticalThumbHeight.HasValue) m_tpElementVerticalThumb.Height = m_tpElementVerticalThumbHeight.Value;
+				if (m_tpElementHorizontalPanningThumbWidth.HasValue) m_tpElementHorizontalPanningThumb.Width = m_tpElementHorizontalPanningThumbWidth.Value;
+				if (m_tpElementVerticalPanningThumbHeight.HasValue) m_tpElementVerticalPanningThumb.Height = m_tpElementVerticalPanningThumbHeight.Value;
+				if (m_tpElementHorizontalThumbVisibility.HasValue) m_tpElementHorizontalThumb.Visibility = m_tpElementHorizontalThumbVisibility.Value;
+				if (m_tpElementVerticalThumbVisibility.HasValue) m_tpElementVerticalThumb.Visibility = m_tpElementVerticalThumbVisibility.Value;
+				if (m_tpElementHorizontalPanningThumbVisibility.HasValue) m_tpElementHorizontalPanningThumb.Visibility = m_tpElementHorizontalPanningThumbVisibility.Value;
+				if (m_tpElementVerticalPanningThumbVisibility.HasValue) m_tpElementVerticalPanningThumb.Visibility = m_tpElementVerticalPanningThumbVisibility.Value;
 			}
 		}
 

@@ -27,12 +27,6 @@ namespace Windows.UI.Xaml.Controls
 			(current.Parent as ViewGroup).RemoveViewAndDispose(current);
 		}
 
-		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
-		{
-			UpdateItemsIfNeeded();
-			base.OnMeasure(widthMeasureSpec, heightMeasureSpec);
-		}
-
 		/// <summary>
 		/// Gets item for a particular 'display position.' For this purpose, if the source is grouped, it is treated as a flat list with the header items (groups themselves) placed contiguously after all of the group items.
 		/// </summary>

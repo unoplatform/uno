@@ -11,10 +11,13 @@ using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Shapes;
+
+#if !HAS_UNO_WINUI
+using Windows.UI.Xaml.Controls.Primitives;
+#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {

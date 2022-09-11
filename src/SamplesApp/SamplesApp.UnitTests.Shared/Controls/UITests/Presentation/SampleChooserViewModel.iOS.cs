@@ -2,23 +2,14 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Reflection;
 using System.Linq;
-using Uno.UI.Samples.Controls;
-using System.Collections;
-using System.Collections.Generic;
-using SampleControl.Entities;
-using Uno.Disposables;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using UIKit;
-using System.IO;
-using Foundation;
-using Windows.UI;
-using Uno.Extensions;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Windows.Storage;
+
+#if NET6_0_OR_GREATER
+using ObjCRuntime;
+#endif
 
 namespace SampleControl.Presentation
 {
@@ -51,54 +42,17 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		private async Task DumpOutputFolderName(CancellationToken ct, string folderName)
+		private async Task<StorageFolder> GetStorageFolderFromNameOrCreate(CancellationToken ct, string folderName)
 		{
-			var fullPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), folderName);
-
-			Console.WriteLine($"Output folder for tests: {fullPath}");
+			var root = new StorageFolder(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+			var folder = await root.CreateFolderAsync(folderName,
+				CreationCollisionOption.OpenIfExists
+				).AsTask(ct);
+			return folder;
 		}
 
-		private async Task GenerateBitmap(CancellationToken ct, string folderName, string fileName, IFrameworkElement content)
-		{
-			content.MinWidth = 400;
-			content.MinHeight = 400;
-			(content as UIView).BackgroundColor = Colors.White;
-
-			var size = (content as UIView).SizeThatFits(new CoreGraphics.CGSize(1024, 1024));
-
-			if (size.Width == nfloat.NaN || size.Height == nfloat.NaN)
-			{
-				size = new CoreGraphics.CGSize(1024, 1024);
-			}
-
-			UIGraphics.BeginImageContextWithOptions(size, true, 0);
-			var ctx = UIGraphics.GetCurrentContext();
-
-			(content as UIView)?.Layer.RenderInContext(ctx);
-
-			using (var img = UIGraphics.GetImageFromCurrentImageContext())
-			{
-				UIGraphics.EndImageContext();
-
-				var fullPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), folderName);
-				var filePath = Path.Combine(fullPath, fileName);
-
-				Directory.CreateDirectory(fullPath);
-
-				NSError error;
-				img.AsPNG().Save(filePath, true, out error);
-
-				if (error != null)
-				{
-					this.Log().Error(error.ToString());
-				}
-
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug($"Wrote screenshot to {filePath}");
-				}
-			}
-		}
+		private (double MinWidth, double MinHeight, double Width, double Height) GetScreenshotConstraints()
+			=> (400, 400, 1024, 1024);
 	}
 }
 #endif

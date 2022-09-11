@@ -12,10 +12,10 @@ namespace Windows.Graphics.Display
 {
 	public sealed partial class DisplayInformation
 	{
+		internal const float BaseDpi = 96.0f;
+
 		private float _lastKnownDpi;
 		private DisplayOrientations _lastKnownOrientation;
-
-		private const float BaseDpi = 96.0f;
 
 		private static readonly object _syncLock = new object();
 
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Display
 			}
 		}		
 
-		public bool StereoEnabled { get; private set; } = false;
+		public bool StereoEnabled { get; private set; }
 
 		public static DisplayInformation GetForCurrentView() => InternalGetForCurrentView();
 

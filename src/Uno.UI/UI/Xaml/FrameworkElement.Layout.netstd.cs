@@ -5,10 +5,10 @@ using System.Globalization;
 using System.Linq;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
-using Microsoft.Extensions.Logging;
+
 using Uno.UI;
 using static System.Math;
 using static Uno.UI.LayoutHelper;
@@ -98,7 +98,7 @@ namespace Windows.UI.Xaml
 
 			var desiredSize = MeasureOverride(frameworkAvailableSize);
 
-			_logDebug?.LogTrace($"{DepthIndentation}{FormatDebugName()}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize} minSize={minSize} maxSize={maxSize} marginSize={marginSize}");
+			_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize} minSize={minSize} maxSize={maxSize} marginSize={marginSize}");
 
 			if (
 				double.IsNaN(desiredSize.Width)
@@ -117,8 +117,10 @@ namespace Windows.UI.Xaml
 			_unclippedDesiredSize = desiredSize;
 
 			var clippedDesiredSize = desiredSize
-				.AtMost(availableSize)
+				.AtMost(maxSize)
 				.Add(marginSize)
+				// Making sure after adding margins that clipped DesiredSize is not bigger than the AvailableSize
+				.AtMost(availableSize)
 				// Margin may be negative
 				.AtLeastZero();
 
@@ -273,10 +275,7 @@ namespace Windows.UI.Xaml
 				var layoutFrame = new Rect(offset, clippedInkSize);
 
 				// Calculate clipped frame.
-				var clippedFrameWithParentOrigin =
-					layoutFrame
-						.IntersectWith(finalRect.DeflateBy(margin))
-					?? Rect.Empty;
+				var clippedFrameWithParentOrigin = layoutFrame.IntersectWith(finalRect.DeflateBy(margin)) ?? Rect.Empty;
 
 				// Rebase the origin of the clipped frame to layout
 				var clippedFrame = new Rect(

@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class TwoPaneView : global::Windows.UI.Xaml.Controls.Control
@@ -223,13 +223,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.TwoPaneView), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.TwoPaneViewWideModeConfiguration)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public TwoPaneView() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TwoPaneView", "TwoPaneView.TwoPaneView()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.TwoPaneView.TwoPaneView()
 		// Forced skipping of method Windows.UI.Xaml.Controls.TwoPaneView.TwoPaneView()
 		// Forced skipping of method Windows.UI.Xaml.Controls.TwoPaneView.Pane1.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.TwoPaneView.Pane1.set

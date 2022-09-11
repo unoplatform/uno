@@ -25,7 +25,7 @@
 							<Image 
 								 Width="50"
 								 Height="50"
-								 Source="http://homepages.cae.wisc.edu/~ece533/images/baboon.png"
+								 Source="/Assets/Diagnostics/avatar.png"
 								 VerticalAlignment="Center"
 								 HorizontalAlignment="Center"
 								 Stretch="Fill"
@@ -48,7 +48,7 @@
 							<Image 
 								 Width="50"
 								 Height="50"
-								 Source="http://homepages.cae.wisc.edu/~ece533/images/baboon.png"
+								 Source="/Assets/Diagnostics/avatar.png"
 								 VerticalAlignment="Center"
 								 HorizontalAlignment="Center"
 								 Stretch="Fill"
@@ -71,7 +71,7 @@
 							<Image 
 								 Width="50"
 								 Height="50"
-								 Source="http://homepages.cae.wisc.edu/~ece533/images/baboon.png"
+								 Source="/Assets/Diagnostics/avatar.png"
 								 VerticalAlignment="Center"
 								 HorizontalAlignment="Center"
 								 Stretch="Fill"
@@ -94,7 +94,7 @@
 							<Image 
 								 Width="50"
 								 Height="50"
-								 Source="http://homepages.cae.wisc.edu/~ece533/images/baboon.png"
+								 Source="/Assets/Diagnostics/avatar.png"
 								 VerticalAlignment="Center"
 								 HorizontalAlignment="Center"
 								 Stretch="Fill"
@@ -117,7 +117,7 @@
 							<Image 
 								 Width="50"
 								 Height="50"
-								 Source="http://homepages.cae.wisc.edu/~ece533/images/baboon.png"
+								 Source="/Assets/Diagnostics/avatar.png"
 								 VerticalAlignment="Center"
 								 HorizontalAlignment="Center"
 								 Stretch="Fill"
@@ -140,7 +140,7 @@
 							<Image 
 								 Width="50"
 								 Height="50"
-								 Source="http://homepages.cae.wisc.edu/~ece533/images/baboon.png"
+								 Source="/Assets/Diagnostics/avatar.png"
 								 VerticalAlignment="Center"
 								 HorizontalAlignment="Center"
 								 Stretch="Fill"
@@ -163,7 +163,7 @@
 							<Image 
 								 Width="50"
 								 Height="50"
-								 Source="http://homepages.cae.wisc.edu/~ece533/images/baboon.png"
+								 Source="/Assets/Diagnostics/avatar.png"
 								 VerticalAlignment="Center"
 								 HorizontalAlignment="Center"
 								 Stretch="Fill"

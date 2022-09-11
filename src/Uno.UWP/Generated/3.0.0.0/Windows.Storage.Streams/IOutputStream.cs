@@ -2,16 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Streams
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IOutputStream : global::System.IDisposable
 	{
-		#if false
-		global::Windows.Foundation.IAsyncOperationWithProgress<uint, uint> WriteAsync( global::Windows.Storage.Streams.IBuffer buffer);
-		#endif
-		#if false
-		global::Windows.Foundation.IAsyncOperation<bool> FlushAsync();
-		#endif
+		// Skipping already declared method Windows.Storage.Streams.IOutputStream.WriteAsync(Windows.Storage.Streams.IBuffer)
+		// Skipping already declared method Windows.Storage.Streams.IOutputStream.FlushAsync()
 	}
 }

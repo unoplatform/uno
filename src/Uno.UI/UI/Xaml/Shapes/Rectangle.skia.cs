@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml.Shapes
 
 			if (renderingArea.Width > 0 && renderingArea.Height > 0)
 			{
-				path = GetGeometry(renderingArea.Size);
+				path = GetGeometry(renderingArea);
 			}
 			else
 			{
@@ -50,14 +50,14 @@ namespace Windows.UI.Xaml.Shapes
 			return shapeSize;
 		}
 
-		private SkiaGeometrySource2D GetGeometry(Size finalSize)
+		private SkiaGeometrySource2D GetGeometry(Rect finalRect)
 		{
 			var strokeThickness = StrokeThickness;
 			var radiusX = RadiusX;
 			var radiusY = RadiusY;
 
-			var offset = new Vector2((float)(strokeThickness * 0.5), (float)(strokeThickness * 0.5));
-			var size = new Vector2((float)finalSize.Width, (float)finalSize.Height);
+			var offset = new Vector2((float)(finalRect.Left), (float)(finalRect.Top));
+			var size = new Vector2((float)finalRect.Width, (float)finalRect.Height);
 			
 			SkiaGeometrySource2D geometry;
 			if (radiusX == 0 || radiusY == 0)

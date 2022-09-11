@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Security.Authentication.Web;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Uno.AuthenticationBroker
 {
@@ -21,7 +21,14 @@ namespace Uno.AuthenticationBroker
 			{
 				// A default one is defined: we're using it instead of using
 				// a discovery mechanism.
+
+				//The Android Platform does not handle the last slash in Uri automatically
+#if __ANDROID__
+				return defaultUri.TrimEndUriSlash();
+#else
 				return defaultUri;
+#endif
+
 			}
 
 			var schemes = this.GetApplicationCustomSchemes().ToArray();
@@ -42,7 +49,11 @@ namespace Uno.AuthenticationBroker
 				this.Log().Warn(message);
 			}
 
-			return new Uri(schemes[0] + WinRTFeatureConfiguration.WebAuthenticationBroker.DefaultCallbackPath);
+			var uri = new Uri(schemes[0] + WinRTFeatureConfiguration.WebAuthenticationBroker.DefaultCallbackPath);
+#if __ANDROID__
+			uri = uri.TrimEndUriSlash();
+#endif
+			return uri;
 		}
 
 		public async Task<WebAuthenticationResult> AuthenticateAsync(

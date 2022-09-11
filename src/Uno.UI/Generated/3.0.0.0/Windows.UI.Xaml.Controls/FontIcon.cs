@@ -8,37 +8,11 @@ namespace Windows.UI.Xaml.Controls
 	public  partial class FontIcon 
 	{
 		// Skipping already declared property Glyph
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Text.FontWeight FontWeight
-		{
-			get
-			{
-				return (global::Windows.UI.Text.FontWeight)this.GetValue(FontWeightProperty);
-			}
-			set
-			{
-				this.SetValue(FontWeightProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property FontWeight
 		// Skipping already declared property FontStyle
 		// Skipping already declared property FontSize
 		// Skipping already declared property FontFamily
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsTextScaleFactorEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsTextScaleFactorEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsTextScaleFactorEnabledProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property IsTextScaleFactorEnabled
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool MirroredWhenRightToLeft
@@ -56,23 +30,9 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property FontFamilyProperty
 		// Skipping already declared property FontSizeProperty
 		// Skipping already declared property FontStyleProperty
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FontWeightProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FontWeight), typeof(global::Windows.UI.Text.FontWeight), 
-			typeof(global::Windows.UI.Xaml.Controls.FontIcon), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontWeight)));
-		#endif
+		// Skipping already declared property FontWeightProperty
 		// Skipping already declared property GlyphProperty
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsTextScaleFactorEnabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsTextScaleFactorEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.FontIcon), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
+		// Skipping already declared property IsTextScaleFactorEnabledProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty MirroredWhenRightToLeftProperty { get; } = 

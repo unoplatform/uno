@@ -37,6 +37,10 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			TestServices.VERIFY_ARE_EQUAL(actual, expected, message);
 		}
 
+		protected static void VERIFY_ARE_NOT_EQUAL<T>(T actual, T unexpected, string message = null)
+		{
+			TestServices.VERIFY_ARE_NOT_EQUAL(actual, unexpected, message);
+		}
 		protected static void VERIFY_IS_NULL(object value)
 		{
 			TestServices.VERIFY_IS_NULL(value);

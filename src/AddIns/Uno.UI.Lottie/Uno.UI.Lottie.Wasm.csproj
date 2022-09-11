@@ -28,7 +28,6 @@
 
 	<ItemGroup>
 		<None Remove="tsconfig.json" />
-		<Compile Include="..\..\Uno.UWP\Storage\Helpers\AssetsPathBuilder.wasm.cs" Link="AssetsPathBuilder.wasm.cs" />
 		<Content Include="tsconfig.json" />
 	</ItemGroup>
 	
@@ -38,9 +37,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" />
-		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0" Condition="!$(_IsNetCore)" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Uno.Core.Build" />
 	</ItemGroup>
 
 	<Import Project="..\..\Common.targets" />

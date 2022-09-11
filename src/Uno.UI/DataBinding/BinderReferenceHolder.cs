@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using System.Diagnostics;
 using System.ComponentModel;
@@ -51,7 +51,7 @@ namespace Uno.UI.DataBinding
 		private readonly Dictionary<IntPtr, System.Tuple<Type, WeakReference>> _newReferences = new Dictionary<IntPtr, System.Tuple<Type, WeakReference>>();
 		private readonly IntPtr _handle;
 
-		public static bool IsEnabled { get; set; } = false;
+		public static bool IsEnabled { get; set; }
 
 		public BinderReferenceHolder(Type type, object target)
 		{
@@ -208,7 +208,7 @@ namespace Uno.UI.DataBinding
 					sb.AppendFormatInvariant("\t{0}: {1}, [{2}]\r\n", activref.Item1, activref.Item2, string.Join(", ", activref.Item3));
 				}
 
-				if (IsEnabled && typeof(BinderReferenceHolder).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
+				if (IsEnabled && typeof(BinderReferenceHolder).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Information))
 				{
 					typeof(BinderReferenceHolder).Log().Info(sb.ToString());
 				}
@@ -250,7 +250,7 @@ namespace Uno.UI.DataBinding
 				sb.AppendFormatInvariant("\t{0}: {1}\r\n", activref.Type, activref.Diff);
 			}
 
-			if (IsEnabled && typeof(BinderReferenceHolder).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
+			if (IsEnabled && typeof(BinderReferenceHolder).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Information))
 			{
 				typeof(BinderReferenceHolder).Log().Info(sb.ToString());
 			}
@@ -293,14 +293,14 @@ namespace Uno.UI.DataBinding
 					sb.AppendFormatInvariant("\t{0}: {1}\r\n", rs.Item1, rs.Item2);
 				}
 
-				if (IsEnabled && typeof(BinderReferenceHolder).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
+				if (IsEnabled && typeof(BinderReferenceHolder).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Information))
 				{
 					typeof(BinderReferenceHolder).Log().Info(sb.ToString());
 				}
 			}
 			catch (Exception ex)
 			{
-				if (typeof(BinderReferenceHolder).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				if (typeof(BinderReferenceHolder).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 				{
 					typeof(BinderReferenceHolder).Log().Error("Failed to generate binders report", ex);
 				}
@@ -339,7 +339,7 @@ namespace Uno.UI.DataBinding
 
 		~BinderReferenceHolder()
 		{
-			if (IsEnabled && this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (IsEnabled && this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Collecting [{_type}]");
 			}

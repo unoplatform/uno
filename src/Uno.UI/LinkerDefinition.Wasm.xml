@@ -3,6 +3,9 @@
 	<type fullname="Uno.UI.Wasm.WasmHttpHandler" />
 
 	<type fullname="Windows.UI.Xaml.UIElement" />
+	<type fullname="Windows.UI.Xaml.UIElement">
+	  <method name="OnNativePointerEvent" />
+	</type>
 	<type fullname="Windows.UI.Xaml.Window" />
 	<type fullname="Windows.UI.Xaml.Media.BrushConverter" />
 	<type fullname="Windows.UI.Xaml.Media.ImageSourceConverter" />
@@ -21,6 +24,15 @@
       <method name="DispatchSystemThemeChange" />
       <method name="DispatchVisibilityChange" />
 	</type>
+
+	<type fullname="Uno.UI.Xaml.Controls.SystemFocusVisual">
+		<method name="DispatchNativePositionChange" />
+	</type>
+
+	<type fullname="Windows.UI.Xaml.Media.FontFamilyLoader">
+		<method name="NotifyFontLoaded" />
+		<method name="NotifyFontLoadFailed" />
+	</type>
   </assembly>
 
   <assembly fullname="Uno">
@@ -31,6 +43,10 @@
 	<type fullname="Windows.UI.Core.SystemNavigationManager" />
     <type fullname="Windows.Devices.Midi.MidiInPort">
       <method name="DispatchMessage" />
+    </type>
+    <type fullname="Windows.Gaming.Input.Gamepad">
+      <method name="DispatchGamepadAdded" />
+      <method name="DispatchGamepadRemoved" />
     </type>
     <type fullname="Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher">
       <method name="DispatchStateChanged" />

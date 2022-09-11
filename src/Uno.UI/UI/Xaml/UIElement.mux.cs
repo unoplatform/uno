@@ -11,6 +11,7 @@ using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using static Microsoft.UI.Xaml.Controls._Tracing;
@@ -27,7 +28,7 @@ namespace Windows.UI.Xaml
 		/// Set to True when the imminent Focus(FocusState) call needs to use an animation if bringing the focused
 		/// element into view.
 		/// </summary>
-		private bool _animateIfBringIntoView = false;
+		private bool _animateIfBringIntoView;
 
 		/// <summary>
 		/// If true focusmgr does not set the focus on children or the element. Notice that this flag only and only
@@ -98,7 +99,14 @@ namespace Windows.UI.Xaml
 			{
 				var pNext = pElement.GetUIElementAdjustedParentInternal(true /*public parents only*/);
 
-				if (pNext != null && pNext.Visibility == Visibility.Collapsed)
+				if (pNext?.Visibility == Visibility.Collapsed)
+				{
+					return false;
+				}
+
+				// TODO Uno specific: IsLeaving is not yet implemented on visual tree level,
+				// so we check if the Page is being navigated away from here instead.
+				if (pNext?.IsLeavingFrame == true) 
 				{
 					return false;
 				}

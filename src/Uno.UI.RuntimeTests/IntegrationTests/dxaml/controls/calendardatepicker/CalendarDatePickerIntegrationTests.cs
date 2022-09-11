@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+#pragma warning disable 168 // for cleanup imported member
+
 #if !WINDOWS_UWP
 
 using System.Linq;
@@ -25,6 +27,9 @@ using static Private.Infrastructure.CalendarHelper;
 namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 {
 	[TestClass]
+#if __MACOS__
+	[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 	public partial class CalendarDatePickerIntegrationTests : BaseDxamlTestClass
 	{
 		[ClassInitialize]

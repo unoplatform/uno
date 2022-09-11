@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Media.Animation;
 using System.Collections;
@@ -13,7 +13,7 @@ using Windows.Foundation;
 using Uno.UI;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
-using Microsoft.Extensions.Logging;
+
 using Uno.UI.Xaml;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -40,7 +40,7 @@ using ViewGroup = Windows.UI.Xaml.UIElement;
 namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = "Content")]
-	public partial class ContentPresenter : FrameworkElement, ICustomClippingElement
+	public partial class ContentPresenter : FrameworkElement, ICustomClippingElement, IFrameworkTemplatePoolAware
 	{
 		private bool _firstLoadResetDone;
 		private View _contentTemplateRoot;
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Flag indicating whether the content presenter uses implicit text block to render its content.
 		/// </summary>
-		internal bool IsUsingDefaultTemplate { get; private set; } = false;
+		internal bool IsUsingDefaultTemplate { get; private set; }
 
 		/// <summary>
 		/// Determines if the current ContentPresenter is hosting a native control.
@@ -413,17 +413,18 @@ namespace Windows.UI.Xaml.Controls
 
 		public HorizontalAlignment HorizontalContentAlignment
 		{
-			get { return (HorizontalAlignment)this.GetValue(HorizontalContentAlignmentProperty); }
-			set { this.SetValue(HorizontalContentAlignmentProperty, value); }
+			get => (HorizontalAlignment)this.GetValue(HorizontalContentAlignmentProperty);
+			set => this.SetValue(HorizontalContentAlignmentProperty, value);
 		}
 
 		public static DependencyProperty HorizontalContentAlignmentProperty { get; } =
 			DependencyProperty.Register(
-				"HorizontalContentAlignment",
+				nameof(HorizontalContentAlignment),
 				typeof(HorizontalAlignment),
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
 					HorizontalAlignment.Stretch,
+					FrameworkPropertyMetadataOptions.AffectsArrange,
 					(s, e) => ((ContentPresenter)s)?.OnHorizontalContentAlignmentChanged((HorizontalAlignment)e.OldValue, (HorizontalAlignment)e.NewValue)
 				)
 			);
@@ -431,7 +432,6 @@ namespace Windows.UI.Xaml.Controls
 		protected virtual void OnHorizontalContentAlignmentChanged(HorizontalAlignment oldHorizontalContentAlignment, HorizontalAlignment newHorizontalContentAlignment)
 		{
 			OnHorizontalContentAlignmentChangedPartial(oldHorizontalContentAlignment, newHorizontalContentAlignment);
-			SynchronizeHorizontalContentAlignment(newHorizontalContentAlignment);
 		}
 
 		partial void OnHorizontalContentAlignmentChangedPartial(HorizontalAlignment oldHorizontalContentAlignment, HorizontalAlignment newHorizontalContentAlignment);
@@ -442,17 +442,18 @@ namespace Windows.UI.Xaml.Controls
 
 		public VerticalAlignment VerticalContentAlignment
 		{
-			get { return (VerticalAlignment)this.GetValue(VerticalContentAlignmentProperty); }
-			set { this.SetValue(VerticalContentAlignmentProperty, value); }
+			get => (VerticalAlignment)this.GetValue(VerticalContentAlignmentProperty);
+			set => this.SetValue(VerticalContentAlignmentProperty, value);
 		}
 
 		public static DependencyProperty VerticalContentAlignmentProperty { get; } =
 			DependencyProperty.Register(
-				"VerticalContentAlignment",
+				nameof(VerticalContentAlignment),
 				typeof(VerticalAlignment),
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
 					VerticalAlignment.Stretch,
+					FrameworkPropertyMetadataOptions.AffectsArrange,
 					(s, e) => ((ContentPresenter)s)?.OnVerticalContentAlignmentChanged((VerticalAlignment)e.OldValue, (VerticalAlignment)e.NewValue)
 				)
 			);
@@ -460,7 +461,6 @@ namespace Windows.UI.Xaml.Controls
 		protected virtual void OnVerticalContentAlignmentChanged(VerticalAlignment oldVerticalContentAlignment, VerticalAlignment newVerticalContentAlignment)
 		{
 			OnVerticalContentAlignmentChangedPartial(oldVerticalContentAlignment, newVerticalContentAlignment);
-			SynchronizeVerticalContentAlignment(newVerticalContentAlignment);
 		}
 
 		partial void OnVerticalContentAlignmentChangedPartial(VerticalAlignment oldVerticalContentAlignment, VerticalAlignment newVerticalContentAlignment);
@@ -475,7 +475,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(PaddingProperty, value); }
 		}
 
-		public static DependencyProperty PaddingProperty =
+		public static DependencyProperty PaddingProperty { get; } =
 			DependencyProperty.Register(
 				"Padding",
 				typeof(Thickness),
@@ -503,7 +503,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(BorderThicknessProperty, value); }
 		}
 
-		public static DependencyProperty BorderThicknessProperty =
+		public static DependencyProperty BorderThicknessProperty { get; } =
 			DependencyProperty.Register(
 				"BorderThickness",
 				typeof(Thickness),
@@ -529,7 +529,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(BorderBrushProperty, value); }
 		}
 
-		public static DependencyProperty BorderBrushProperty =
+		public static DependencyProperty BorderBrushProperty { get; } =
 			DependencyProperty.Register(
 				"BorderBrush",
 				typeof(Brush),
@@ -552,7 +552,7 @@ namespace Windows.UI.Xaml.Controls
 		private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
 
 		[GeneratedDependencyProperty(ChangedCallback = true)]
-		public static DependencyProperty CornerRadiusProperty = CreateCornerRadiusProperty();
+		public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
 
 		public CornerRadius CornerRadius
 		{
@@ -689,8 +689,6 @@ namespace Windows.UI.Xaml.Controls
 				_contentTemplateRoot = value;
 
 				SynchronizeContentTemplatedParent();
-				SynchronizeVerticalContentAlignment();
-				SynchronizeHorizontalContentAlignment();
 
 				if (_contentTemplateRoot != null)
 				{
@@ -786,9 +784,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnLoaded();
 
-			ResetDataContextOnFirstLoad();
-
-			SetUpdateTemplate();
+			if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
+			{
+				SetUpdateTemplate();
+			}
 
 			// When the control is loaded, set the TemplatedParent
 			// as it may have been reset during the last unload.
@@ -797,7 +796,16 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
-		private void ResetDataContextOnFirstLoad()
+#if __ANDROID__ || __IOS__ || __MACOS__
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			_borderRenderer.Clear();
+		}
+#endif
+
+		private bool ResetDataContextOnFirstLoad()
 		{
 			if (!_firstLoadResetDone)
 			{
@@ -808,7 +816,18 @@ namespace Windows.UI.Xaml.Controls
 				this.ClearValue(DataContextProperty, DependencyPropertyValuePrecedences.Local);
 
 				TrySetDataContextFromContent(Content);
+
+				return true;
 			}
+
+			return false;
+		}
+
+		void IFrameworkTemplatePoolAware.OnTemplateRecycled()
+		{
+			// This needs to be cleared on recycle, to prevent
+			// SetUpdateTemplate from being skipped in OnLoaded.
+			_firstLoadResetDone = false;
 		}
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
@@ -846,7 +865,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					IsUsingDefaultTemplate = false;
 				}
-			}	
+			}
 
 			if (Content != null
 				&& !(Content is View)
@@ -855,7 +874,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Use basic default root for non-View Content if no template is supplied
 				SetContentTemplateRootToPlaceholder();
-			}			
+			}
 
 			if (ContentTemplateRoot == null && Content is View contentView && dataTemplate == null)
 			{
@@ -868,7 +887,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetContentTemplateRootToPlaceholder()
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().DebugFormat("No ContentTemplate was specified for {0} and content is not a UIView, defaulting to TextBlock.", GetType().Name);
 			}
@@ -948,83 +967,6 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void RegisterContentTemplateRoot();
 
-		private void SynchronizeHorizontalContentAlignment(HorizontalAlignment? alignment = null)
-		{
-			var childControl = ContentTemplateRoot as FrameworkElement;
-
-			if (childControl != null)
-			{
-				childControl.SetValue(
-					FrameworkElement.HorizontalAlignmentProperty,
-					alignment ?? HorizontalContentAlignment,
-					DependencyPropertyValuePrecedences.Inheritance
-				);
-			}
-			else
-			{
-				var childControl2 = ContentTemplateRoot as IFrameworkElement;
-
-				if (childControl2 != null)
-				{
-					// This case is for controls that implement IFrameworkElement, but do not inherit from FrameworkElement (like TextBlock).
-
-					var horizontalAlignmentProperty = DependencyProperty.GetProperty(ContentTemplateRoot.GetType(), "HorizontalAlignment");
-
-					if (horizontalAlignmentProperty != null)
-					{
-						childControl2.SetValue(
-							horizontalAlignmentProperty,
-							alignment ?? HorizontalContentAlignment,
-							DependencyPropertyValuePrecedences.Inheritance
-						);
-					}
-					else
-					{
-						throw new InvalidOperationException($"The property HorizontalAlignment should exist on type {ContentTemplateRoot.GetType()}");
-					}
-				}
-			}
-
-		}
-
-		private void SynchronizeVerticalContentAlignment(VerticalAlignment? alignment = null)
-		{
-			var childControl = ContentTemplateRoot as FrameworkElement;
-
-			if (childControl != null)
-			{
-				childControl.SetValue(
-					FrameworkElement.VerticalAlignmentProperty,
-					alignment ?? VerticalContentAlignment,
-					DependencyPropertyValuePrecedences.Inheritance
-				);
-			}
-			else
-			{
-				var childControl2 = ContentTemplateRoot as IFrameworkElement;
-
-				if (childControl2 != null)
-				{
-					// This case is for controls that implement IFrameworkElement, but do not inherit from FrameworkElement (like TextBlock).
-
-					var verticalAlignmentProperty = DependencyProperty.GetProperty(ContentTemplateRoot.GetType(), "VerticalAlignment");
-
-					if (verticalAlignmentProperty != null)
-					{
-						childControl2.SetValue(
-							verticalAlignmentProperty,
-							alignment ?? VerticalContentAlignment,
-							DependencyPropertyValuePrecedences.Inheritance
-						);
-					}
-					else
-					{
-						throw new InvalidOperationException($"The property VerticalAlignment should exist on type {ContentTemplateRoot.GetType()}");
-					}
-				}
-			}
-		}
-
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
 			// Don't call base, the UpdateBorder() method handles drawing the background.
@@ -1033,9 +975,9 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
-		internal override void UpdateThemeBindings()
+		internal override void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{
-			base.UpdateThemeBindings();
+			base.UpdateThemeBindings(updateReason);
 			SetDefaultForeground(ForegroundProperty);
 		}
 
@@ -1068,17 +1010,86 @@ namespace Windows.UI.Xaml.Controls
 				var padding = Padding;
 				var borderThickness = BorderThickness;
 
-				var finalRect = new Windows.Foundation.Rect(
+				var innerRect = new Windows.Foundation.Rect(
 					padding.Left + borderThickness.Left,
 					padding.Top + borderThickness.Top,
 					finalSize.Width - padding.Left - padding.Right - borderThickness.Left - borderThickness.Right,
 					finalSize.Height - padding.Top - padding.Bottom - borderThickness.Top - borderThickness.Bottom
 				);
 
-				base.ArrangeElement(child, finalRect);
+				var availableSize = new Size(innerRect.Width, innerRect.Height);
+
+				// Using GetElementDesiredSize to properly handle native controls.
+				var desiredSize = GetElementDesiredSize(child);
+
+				var contentWidth = HorizontalContentAlignment == HorizontalAlignment.Stretch ?
+					availableSize.Width : desiredSize.Width;
+				var contentHeight = VerticalContentAlignment == VerticalAlignment.Stretch ?
+					availableSize.Height : desiredSize.Height;
+				var contentSize = new Size(contentWidth, contentHeight);
+
+				var offset = CalculateContentOffset(availableSize, contentSize);
+
+				var arrangeRect = new Windows.Foundation.Rect(
+					innerRect.X + offset.X,
+					innerRect.Y + offset.Y,
+					contentSize.Width,
+					contentSize.Height);
+
+				ArrangeElement(child, arrangeRect);
 			}
 
 			return finalSize;
+		}
+
+		private Windows.Foundation.Point CalculateContentOffset(Size availableSize, Size contentSize)
+		{
+			var horizontalAlignment = HorizontalContentAlignment;
+			var verticalAlignment = VerticalContentAlignment;
+			
+			if (horizontalAlignment == HorizontalAlignment.Stretch &&
+				contentSize.Width > availableSize.Width)
+			{
+				horizontalAlignment = HorizontalAlignment.Left;
+			}
+
+			if (verticalAlignment == VerticalAlignment.Stretch &&
+				contentSize.Height > availableSize.Height)
+			{
+				verticalAlignment = VerticalAlignment.Top;
+			}
+
+			double offsetX;
+			if (horizontalAlignment == HorizontalAlignment.Center ||
+				horizontalAlignment == HorizontalAlignment.Stretch)
+			{
+				offsetX = (availableSize.Width - contentSize.Width) / 2;
+			}
+			else if (horizontalAlignment == HorizontalAlignment.Right)
+			{
+				offsetX = availableSize.Width - contentSize.Width;
+			}
+			else
+			{
+				offsetX = 0;
+			}
+
+			double offsetY;
+			if (verticalAlignment == VerticalAlignment.Center ||
+				verticalAlignment == VerticalAlignment.Stretch)
+			{
+				offsetY = (availableSize.Height - contentSize.Height) / 2;
+			}
+			else if (verticalAlignment == VerticalAlignment.Bottom)
+			{
+				offsetY = availableSize.Height - contentSize.Height;
+			}
+			else
+			{
+				offsetY = 0;
+			}
+
+			return new Windows.Foundation.Point(offsetX, offsetY);
 		}
 
 		protected override Size MeasureOverride(Size size)
@@ -1102,5 +1113,7 @@ namespace Windows.UI.Xaml.Controls
 		private protected override Thickness GetBorderThickness() => BorderThickness;
 
 		internal override bool CanHaveChildren() => true;
+
+		internal override bool IsViewHit() => Border.IsViewHitImpl(this);
 	}
 }

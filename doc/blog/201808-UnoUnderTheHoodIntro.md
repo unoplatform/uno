@@ -14,7 +14,7 @@ Uno is a cross-platform UI framework. You write an app in C\#
 and [UWP-flavoured XAML
 markup](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/). It
 runs on Windows because it's a UWP app. With Uno, it runs on Android,
-iOS, and (for the brave) in the browser via Web Assembly as well. 
+iOS, and (for the brave) in the browser via WebAssembly as well. 
 
 I drew a neat sketch of the tech stack. On iOS and Android, Uno
 uses [Xamarin](https://visualstudio.microsoft.com/xamarin/) to access

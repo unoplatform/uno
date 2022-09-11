@@ -69,6 +69,17 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
+		#region ContentAnchor
+		public static readonly DependencyProperty ContentAnchorProperty = DependencyProperty.Register(
+			"ContentAnchor", typeof(Point), typeof(DragView), new FrameworkPropertyMetadata(default(Point)));
+
+		public Point ContentAnchor
+		{
+			get => (Point)GetValue(ContentAnchorProperty);
+			private set => SetValue(ContentAnchorProperty, value);
+		}
+		#endregion
+
 		#region ContentVisibility
 		public static readonly DependencyProperty ContentVisibilityProperty = DependencyProperty.Register(
 			"ContentVisibility", typeof(Visibility), typeof(DragView), new FrameworkPropertyMetadata(default(Visibility)));
@@ -110,8 +121,8 @@ namespace Windows.UI.Xaml
 			// TODO: Make sure to not move the element out of the bounds of the window
 			_location = location;
 
-			_transform.X = location.X - (ActualWidth / 2);
-			_transform.Y = location.Y - 40; // The caption is above the pointer
+			_transform.X = location.X;
+			_transform.Y = location.Y;
 		}
 
 		public void Update(DataPackageOperation acceptedOperation, CoreDragUIOverride viewOverride)
@@ -132,7 +143,16 @@ namespace Windows.UI.Xaml
 			GlyphVisibility = ToVisibility(viewOverride.IsGlyphVisible);
 			Caption = caption!;
 			CaptionVisibility = ToVisibility(viewOverride.IsCaptionVisible && !string.IsNullOrWhiteSpace(caption));
-			Content = viewOverride.Content as ImageSource ?? _ui?.Content;
+			if (viewOverride.Content is ImageSource overriddenContent)
+			{
+				Content = overriddenContent;
+				ContentAnchor = viewOverride.ContentAnchor;
+			}
+			else
+			{
+				Content = _ui?.Content;
+				ContentAnchor = _ui?.Anchor ?? default;
+			}
 			ContentVisibility = ToVisibility(viewOverride.IsContentVisible);
 			TooltipVisibility = ToVisibility(viewOverride.IsGlyphVisible || viewOverride.IsCaptionVisible);
 			Visibility = Visibility.Visible;

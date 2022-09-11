@@ -1,10 +1,10 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>xamarinmac20;MonoAndroid11.0;xamarinios10;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid10.0;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+		<TargetFrameworks>xamarinmac20;MonoAndroid12.0;xamarinios10;netstandard2.0</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid11.0;MonoAndroid12.0;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworksCI>
 
-		<TargetFrameworks Condition="'$(UNO_UWP_BUILD)'=='true'">$(TargetFrameworks);uap10.0.17763</TargetFrameworks>
-		<TargetFrameworksCI Condition="'$(UNO_UWP_BUILD)'=='true'">$(TargetFrameworksCI);uap10.0.17763</TargetFrameworksCI>
+		<TargetFrameworks Condition="'$(UNO_UWP_BUILD)'=='true'">$(TargetFrameworks);uap10.0.18362</TargetFrameworks>
+		<TargetFrameworksCI Condition="'$(UNO_UWP_BUILD)'=='true'">$(TargetFrameworksCI);uap10.0.18362</TargetFrameworksCI>
 
 		<TargetFrameworks Condition="'$(UNO_UWP_BUILD)'!='true'">$(TargetFrameworks);net5.0-windows10.0.18362.0</TargetFrameworks>
 		<TargetFrameworksCI Condition="'$(UNO_UWP_BUILD)'!='true'">$(TargetFrameworksCI);net5.0-windows10.0.18362.0</TargetFrameworksCI>
@@ -29,6 +29,14 @@
 		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(TargetFramework)'=='net5.0-windows10.0.18362.0'">
+		<DefineConstants>$(DefineConstants);WINUI</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)'=='net461'">
+		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
+	</PropertyGroup>
+
 	<!--Workaround to prevent build to fail because the project has too many dependencies when checking support libraries versions.
 	(Introduced with support libraries 28.0.0.1) -->
 	<PropertyGroup>
@@ -43,8 +51,6 @@
 
   <ItemGroup>
     <PackageReference Include="Uno.SourceGenerationTasks" />
-    <PackageReference Include="Uno.Core" />
-		<PackageReference Include="Uno.Core.Build" />
 	</ItemGroup>
 
   <ItemGroup Condition=" $(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac) ">
@@ -58,18 +64,13 @@
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView"/>
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid10.0'">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid12.0'">
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4"/>
 		<PackageReference Include="Xamarin.AndroidX.AppCompat"/>
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView"/>
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="xamarin.build.download" />
-		<PackageReference Include="Uno.MonoAnalyzers" />
-	</ItemGroup>
-
-	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFrameworkIdentifier)'=='.NETStandard' or $(IsXamarinMac)">
+	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFrameworkIdentifier)'=='.NETStandard' or $(IsXamarinMac) or '$(TargetFramework)'=='net461'">
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj">
 			<Name>Uno.UI</Name>
 		</ProjectReference>
@@ -88,19 +89,18 @@
 		</ProjectReference>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net5.0-windows10.0.18362.0' or '$(TargetFramework)'=='uap10.0.17763'">
-		<PackageReference Include="Microsoft.ProjectReunion" Condition="'$(UNO_UWP_BUILD)'!='true'">
-			<Version>0.5.6</Version>
-		</PackageReference>
+	<ItemGroup Condition="'$(TargetFramework)'=='net5.0-windows10.0.18362.0' or '$(TargetFramework)'=='uap10.0.18362'">
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.196" Condition="'$(UNO_UWP_BUILD)'!='true'"/>
 
-		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.18362.16" Condition="'$(UNO_UWP_BUILD)'!='true'" />
-		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.18362.16" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.18362.21" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.18362.21" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 
 		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI\Extensions\DependencyObjectExtensions.cs">
 			<Link>Uno.UI\Extensions\%(RecursiveDir)%(FileName)%(Extension)</Link>
 		</Compile>
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<Page Remove="Themes\Generic.xaml" />
 		<Page Include="Themes\Generic.xaml" />
@@ -125,7 +125,7 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_OverrideTargetFramework Condition="'$(_OverrideTargetFramework)' == 'uap10.0.17763'">UAP</_OverrideTargetFramework>
+			<_OverrideTargetFramework Condition="'$(_OverrideTargetFramework)' == 'uap10.0.18362'">UAP</_OverrideTargetFramework>
 			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
       <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
 			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
@@ -142,6 +142,6 @@
 	</Target>
 
 	<!-- https://github.com/microsoft/microsoft-ui-xaml/issues/4503 -->
-	<Target Name="_CalculateXbfSupport" Condition="'$(TargetFramework)'=='uap10.0.17763'"/>
+	<Target Name="_CalculateXbfSupport" Condition="'$(TargetFramework)'=='uap10.0.18362'"/>
 
 </Project>

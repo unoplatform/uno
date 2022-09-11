@@ -24,10 +24,10 @@ namespace Windows.UI.Xaml.Documents
 			switch (_collection.GetParent())
 			{
 				case TextBlock textBlock:
-					textBlock.InvalidateInlines();
+					textBlock.InvalidateInlines(true);
 					break;
 				case Inline inline:
-					inline.InvalidateInlines();
+					inline.InvalidateInlines(true);
 					break;
 				default:
 					break;
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Documents
 #endif
 		}
 
-		public IEnumerator<Inline> GetEnumerator() => _collection.OfType<Inline>().GetEnumerator();
+		public IEnumerator<Inline> GetEnumerator() => _collection.GetEnumerator();
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Documents
 		public bool Contains(Inline item) => _collection.Contains(item);
 
 		/// <inheritdoc />
-		public void CopyTo(Inline[] array, int arrayIndex) => throw new NotSupportedException();
+		public void CopyTo(Inline[] array, int arrayIndex) => _collection.CopyTo(array, arrayIndex);
 
 		/// <inheritdoc />
 		public bool Remove(Inline item) => _collection.Remove(item);

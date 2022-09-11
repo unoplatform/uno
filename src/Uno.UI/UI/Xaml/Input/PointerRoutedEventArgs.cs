@@ -5,12 +5,17 @@ using System.Text;
 using System.Threading;
 using Windows.ApplicationModel.DataTransfer.DragDrop;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
-using Windows.Devices.Input;
 using Uno;
 using Uno.UI.Xaml.Input;
 using Windows.System;
 using Windows.UI.Core;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
 using Windows.UI.Input;
+#endif
 
 namespace Windows.UI.Xaml.Input
 {
@@ -31,8 +36,8 @@ namespace Windows.UI.Xaml.Input
 		}
 
 		/// <inheritdoc />
-		PointerPoint CoreWindow.IPointerEventArgs.GetLocation(object relativeTo)
-			=> GetCurrentPoint(relativeTo as UIElement);
+		Windows.UI.Input.PointerPoint CoreWindow.IPointerEventArgs.GetLocation(object relativeTo)
+			=> (Windows.UI.Input.PointerPoint)GetCurrentPoint(relativeTo as UIElement);
 
 		public IList<PointerPoint> GetIntermediatePoints(UIElement relativeTo)
 			=> new List<PointerPoint>(1) {GetCurrentPoint(relativeTo)};
@@ -41,7 +46,7 @@ namespace Windows.UI.Xaml.Input
 
 		internal bool CanceledByDirectManipulation { get; set; }
 
-		public bool IsGenerated { get; } = false; // Generated events are not supported by UNO
+		public bool IsGenerated { get; } // Generated events are not supported by UNO
 
 		public bool Handled { get; set; }
 
@@ -49,11 +54,26 @@ namespace Windows.UI.Xaml.Input
 
 		public Pointer Pointer { get; }
 
+		/// <summary>
+		/// Reset the internal state in order to re-use that event args to raise another event
+		/// </summary>
+		internal PointerRoutedEventArgs Reset(bool canBubbleNatively = PlatformSupportsNativeBubbling)
+		{
+			CanBubbleNatively = canBubbleNatively;
+			Handled = false;
+
+			return this;
+		}
+
+		internal bool IsPointCoordinatesOver(UIElement element)
+			=> new Rect(default, element.AssignedActualSize).Contains(GetCurrentPoint(element).Position);
+
 		/// <inheritdoc />
 		public override string ToString()
 			=> $"PointerRoutedEventArgs({Pointer}@{GetCurrentPoint(null).Position})";
 
-		PointerIdentifier CoreWindow.IPointerEventArgs.Pointer => Pointer.UniqueId;
+		Windows.Devices.Input.PointerIdentifier CoreWindow.IPointerEventArgs.Pointer => Pointer.UniqueId;
+
 		long IDragEventSource.Id => Pointer.UniqueId;
 		uint IDragEventSource.FrameId => FrameId;
 

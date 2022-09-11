@@ -2,32 +2,25 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Profile
 {
-	#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AnalyticsVersionInfo 
 	{
-		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  string DeviceFamily
+		// Skipping already declared property DeviceFamily
+		// Skipping already declared property DeviceFamilyVersion
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  string ProductName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AnalyticsVersionInfo.DeviceFamily is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  string DeviceFamilyVersion
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AnalyticsVersionInfo.DeviceFamilyVersion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AnalyticsVersionInfo.ProductName is not implemented in Uno.");
 			}
 		}
 		#endif
 		// Forced skipping of method Windows.System.Profile.AnalyticsVersionInfo.DeviceFamily.get
 		// Forced skipping of method Windows.System.Profile.AnalyticsVersionInfo.DeviceFamilyVersion.get
+		// Forced skipping of method Windows.System.Profile.AnalyticsVersionInfo.ProductName.get
 	}
 }

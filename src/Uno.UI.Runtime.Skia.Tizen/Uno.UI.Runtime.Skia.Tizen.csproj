@@ -8,7 +8,6 @@
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<Authors>nventive</Authors>
 		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
-		<PackageIconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</PackageIconUrl>
 		<PackageIcon>uno.png</PackageIcon>
 		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<Description>This package provides the platform support for Skia in Uno Platform projects.</Description>
@@ -20,13 +19,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
+		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" Visible="false" />
 	</ItemGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp.Views" />
+		<PackageReference Include="SkiaSharp.Harfbuzz" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.Tizen" />
 	</ItemGroup>
 	
 	<ItemGroup>

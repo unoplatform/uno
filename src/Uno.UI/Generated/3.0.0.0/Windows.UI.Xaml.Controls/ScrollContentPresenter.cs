@@ -7,52 +7,13 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class ScrollContentPresenter 
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  object ScrollOwner
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member object ScrollContentPresenter.ScrollOwner is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ScrollContentPresenter", "object ScrollContentPresenter.ScrollOwner");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool CanVerticallyScroll
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ScrollContentPresenter.CanVerticallyScroll is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ScrollContentPresenter", "bool ScrollContentPresenter.CanVerticallyScroll");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool CanHorizontallyScroll
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ScrollContentPresenter.CanHorizontallyScroll is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ScrollContentPresenter", "bool ScrollContentPresenter.CanHorizontallyScroll");
-			}
-		}
-		#endif
+		// Skipping already declared property ScrollOwner
+		// Skipping already declared property CanVerticallyScroll
+		// Skipping already declared property CanHorizontallyScroll
 		// Skipping already declared property ExtentHeight
 		// Skipping already declared property ExtentWidth
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || NET461 || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__NETSTD_REFERENCE__")]
 		public  double HorizontalOffset
 		{
 			get
@@ -61,8 +22,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || NET461 || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__NETSTD_REFERENCE__")]
 		public  double VerticalOffset
 		{
 			get
@@ -216,26 +177,20 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 		public  void SetHorizontalOffset( double offset)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ScrollContentPresenter", "void ScrollContentPresenter.SetHorizontalOffset(double offset)");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 		public  void SetVerticalOffset( double offset)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ScrollContentPresenter", "void ScrollContentPresenter.SetVerticalOffset(double offset)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Rect MakeVisible( global::Windows.UI.Xaml.UIElement visual,  global::Windows.Foundation.Rect rectangle)
-		{
-			throw new global::System.NotImplementedException("The member Rect ScrollContentPresenter.MakeVisible(UIElement visual, Rect rectangle) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.ScrollContentPresenter.MakeVisible(Windows.UI.Xaml.UIElement, Windows.Foundation.Rect)
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollContentPresenter.CanContentRenderOutsideBounds.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollContentPresenter.CanContentRenderOutsideBounds.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollContentPresenter.SizesContentToTemplatedParent.get

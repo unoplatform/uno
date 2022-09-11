@@ -22,7 +22,7 @@ namespace UITests.Windows_UI_Xaml.FocusTests
 			_buttons = FocusPanel.Children.OfType<Button>().ToArray();
 		}
 
-		public FocusVisualPropertiesViewModel ViewModel { get; private set; }
+		internal FocusVisualPropertiesViewModel ViewModel { get; private set; }
 
 		private void OnDataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{
@@ -43,7 +43,7 @@ namespace UITests.Windows_UI_Xaml.FocusTests
 		}
 	}
 
-	public class FocusVisualPropertiesViewModel : ViewModelBase
+	internal class FocusVisualPropertiesViewModel : ViewModelBase
 	{
 		private DispatcherTimer _timer = new DispatcherTimer()
 		{

@@ -20,7 +20,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 {
-	[SampleControlInfo("ContentDialog", "ContentDialog_ComboBox", description: "ContentDialog with a ComboBox inside")]
+	[SampleControlInfo("Dialogs", "ContentDialog_ComboBox", description: "ContentDialog with a ComboBox inside")]
 	public sealed partial class ContentDialog_ComboBox : UserControl
 	{
 		public ContentDialog_ComboBox()
@@ -42,7 +42,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 			var dummy = dialog.ShowAsync();
 		}
 
-		public class ComboBoxDialogViewModel : ViewModelBase
+		internal class ComboBoxDialogViewModel : ViewModelBase
 		{
 			public ComboBoxDialogViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 			{

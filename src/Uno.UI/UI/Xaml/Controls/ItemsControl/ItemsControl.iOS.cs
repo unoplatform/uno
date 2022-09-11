@@ -34,18 +34,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			current.RemoveFromSuperview();
 		}
-
-		public override void LayoutSubviews()
-		{
-			UpdateItemsIfNeeded();
-			base.LayoutSubviews();
-		}
-
-		public override CGSize SizeThatFits(CGSize size)
-		{
-			UpdateItemsIfNeeded();
-			return base.SizeThatFits(size);
-		}
 	}
 }
 

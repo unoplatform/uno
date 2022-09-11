@@ -8,7 +8,7 @@ using AndroidX.RecyclerView.Widget;
 using Android.Views;
 using Uno.Extensions;
 using Uno.UI;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Controls.Primitives;
 using Android.Graphics;
@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Controls
 		/// or when no ItemAnimator is set) that need special attention.
 		/// </remarks>
 		private bool _needsUpdateAfterCollectionChange;
-		private bool _isRecycleLayoutRequested = false;
+		private bool _isRecycleLayoutRequested;
 		/// <summary>
 		/// If we're moving an item from before the topmost visible item to after it, then its position will immediately decrease
 		/// by one. We should decrement the seed to anticipate this and prevent it jumping out of view.
@@ -101,7 +101,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// The pending expected adjustment to the position as a result of requested scroll, used while reordering to correct the pointer position.
 		/// </summary>
-		private int _pendingReorderScrollAdjustment = 0;
+		private int _pendingReorderScrollAdjustment;
 
 		private bool IsReordering => GetAndUpdateReorderingIndex() != null;
 
@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private ManagedWeakReference _xamlParentWeakReference;
 
-		public ListViewBase XamlParent
+		internal ListViewBase XamlParent
 		{
 			get => _xamlParentWeakReference?.Target as ListViewBase;
 			set
@@ -141,6 +141,30 @@ namespace Windows.UI.Xaml.Controls
 				RequestLayout();
 			}
 		}
+
+		private double _itemsPresenterMinWidth;
+		internal double ItemsPresenterMinWidth
+		{
+			get => _itemsPresenterMinWidth;
+			set
+			{
+				_itemsPresenterMinWidth = value;
+				RequestLayout();
+			}
+		}
+
+		private double itemsPresenterMinHeight;
+		internal double ItemsPresenterMinHeight
+		{
+			get => itemsPresenterMinHeight;
+			set
+			{
+				itemsPresenterMinHeight = value;
+				RequestLayout();
+			}
+		}
+
+		private int ItemsPresenterMinExtent => (int)ViewHelper.LogicalToPhysicalPixels(ScrollOrientation == Orientation.Vertical ? ItemsPresenterMinHeight : ItemsPresenterMinWidth);
 
 		private int InitialExtentPadding => (int)ViewHelper.LogicalToPhysicalPixels(ScrollOrientation == Orientation.Vertical ? Padding.Top : Padding.Left);
 		private int FinalExtentPadding => (int)ViewHelper.LogicalToPhysicalPixels(ScrollOrientation == Orientation.Vertical ? Padding.Bottom : Padding.Right);
@@ -622,7 +646,9 @@ namespace Windows.UI.Xaml.Controls
 					continue;
 				}
 
+#pragma warning disable CS0618 // Type or member is obsolete
 				if (vh.AdapterPosition != position)
+#pragma warning restore CS0618 // Type or member is obsolete
 				{
 					continue;
 				}
@@ -724,12 +750,34 @@ namespace Windows.UI.Xaml.Controls
 				remainingGroupExtent = remainingGroups * lastGroup.HeaderExtent;
 			}
 
+			CorrectForEstimationErrors();
+
 			var range = ContentOffset + remainingItemExtent + remainingGroupExtent + headerExtent + footerExtent +
 				//TODO: An inline group header might actually be the view at the bottom of the viewport, we should take this into account
 				GetChildEndWithMargin(base.GetChildAt(FirstItemView + ItemViewCount - 1));
 			Debug.Assert(range > 0, "Must report a non-negative scroll range.");
 			Debug.Assert(remainingItems == 0 || range > Extent, "If any items are non-visible, the content range must be greater than the viewport extent.");
-			return range;
+			return Math.Max(range, ItemsPresenterMinExtent);
+		}
+
+		/// <summary>
+		/// Correct the scroll offset, eg if items were added/removed or had their databound heights changed while they were scrolled out
+		/// of view.
+		/// </summary>
+		private void CorrectForEstimationErrors()
+		{
+			if (ContentOffset < 0)
+			{
+				// Scroll offset should always be non-negative
+				ContentOffset = 0;
+			}
+
+			var firstVisible = GetFirstVisibleIndexPath();
+			if (firstVisible.Row == 0 && firstVisible.Section == 0)
+			{
+				// If first item is in view, we can set ContentOffset exactly
+				ContentOffset = -GetContentStart();
+			}
 		}
 
 		/// <summary>
@@ -742,7 +790,9 @@ namespace Windows.UI.Xaml.Controls
 		private void ApplyOffset(int delta)
 		{
 			ContentOffset -= delta;
-			Debug.Assert(ContentOffset >= 0, "ContentOffset must be non-negative.");
+
+			CorrectForEstimationErrors();
+
 			foreach (var group in _groups)
 			{
 				group.Start += delta;
@@ -936,7 +986,19 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				return (child as FrameworkElement)?.AssignedActualSize ?? ViewHelper.PhysicalToLogicalPixels(new Size(child.Width, child.Height));
+				return GetMeasuredChildSize(child);
+			}
+		}
+
+		private static Size GetMeasuredChildSize(View child)
+		{
+			if (child is FrameworkElement fe)
+			{
+				return fe.AssignedActualSize.Add(fe.Margin);
+			}
+			else
+			{
+				return ViewHelper.PhysicalToLogicalPixels(new Size(child.Width, child.Height));
 			}
 		}
 
@@ -1137,8 +1199,9 @@ namespace Windows.UI.Xaml.Controls
 			int maxPossibleDelta;
 			if (fillDirection == GeneratorDirection.Forward)
 			{
+				var contentEnd = GetContentEnd();
 				// If this value is negative, collection dimensions are larger than all children and we should not scroll
-				maxPossibleDelta = Math.Max(0, GetContentEnd() - Extent);
+				maxPossibleDelta = Math.Max(0, contentEnd - Extent);
 				// In the rare case that GetContentStart() is positive (see below), permit a positive value.
 				maxPossibleDelta = Math.Max(GetContentStart(), maxPossibleDelta);
 			}
@@ -1529,7 +1592,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			if (groupToCreate / increment > targetGroupIndex / increment)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 				{
 					this.Log().Error($"Invalid state when creating new groups: leadingGroup.GroupIndex={leadingGroup?.GroupIndex}, targetGroupIndex={targetGroupIndex}, fillDirection={fillDirection}");
 				}
@@ -2177,9 +2240,18 @@ namespace Windows.UI.Xaml.Controls
 			_pendingReorder = null;
 
 			ViewCache.RemoveReorderingItem();
-			// We need a full refresh to properly re-arrange all items at their right location,
-			// ignoring the temp location of the dragged / reordered item.
-			RecycleLayout();
+
+			if (FeatureConfiguration.NativeListViewBase.ForceRecycleOnDrop)
+			{
+				// We need a full refresh to properly re-arrange all items at their right location,
+				// ignoring the temp location of the dragged / reordered item.
+				// Since https://github.com/unoplatform/uno/pull/8227 a full recycle pass seems to be no longer required.
+				RecycleLayout();
+			}
+			else
+			{
+				RequestLayout();
+			}
 		}
 
 		protected bool ShouldInsertReorderingView(GeneratorDirection direction, double physicalExtentOffset)
@@ -2312,9 +2384,14 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Return the farthest extent of all currently materialized content.
+		/// Return the farthest extent of all currently materialized content, including the extent of the notional 'panel' defined by the ItemsPresenter.
 		/// </summary>
-		private int GetContentEnd()
+		private int GetContentEnd() => Math.Max(GetItemsContentEnd(), ItemsPresenterMinExtent - ContentOffset);
+
+		/// <summary>
+		/// Return the farthest extent of all currently materialized content items. Most of the time <see cref="GetContentEnd"/> should be used instead.
+		/// </summary>
+		private int GetItemsContentEnd()
 		{
 			int contentEnd = GetLeadingGroup(GeneratorDirection.Forward)?.End ?? GetHeaderEnd();
 			if (FooterViewCount > 0)
@@ -2576,6 +2653,48 @@ namespace Windows.UI.Xaml.Controls
 		protected string GetAssertMessage(string message = "", [CallerMemberName] string name = null, [CallerLineNumber] int lineNumber = 0)
 		{
 			return message + $" - {name}, line {lineNumber}";
+		}
+
+		public override void SmoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state, int position)
+		{
+			var scroller = new VirtualizingPanelSmoothScroller(this, state);
+			scroller.TargetPosition = position;
+
+			StartSmoothScroll(scroller);
+		}
+
+		private class VirtualizingPanelSmoothScroller : LinearSmoothScroller
+		{
+			private const float BaseDuration = 250f, ScalableDuration = 150f; // in ms
+
+			private readonly VirtualizingPanelLayout _layout;
+			private readonly RecyclerView.State _state;
+
+			public VirtualizingPanelSmoothScroller(VirtualizingPanelLayout layout, RecyclerView.State state) : base(ContextHelper.Current)
+			{
+				_layout = layout;
+				_state = state;
+			}
+
+			public override PointF ComputeScrollVectorForPosition(int targetPosition) => _layout.ComputeScrollVectorForPosition(targetPosition);
+			
+			// The time (in ms) it should take for each pixel. For instance, if returned value is 2 ms,
+			// it means scrolling 1000 pixels with LinearInterpolation should take 2 seconds.
+			protected override float CalculateSpeedPerPixel(Android.Util.DisplayMetrics displayMetrics)
+			{
+				var scrollLength = _layout.ScrollOrientation == Orientation.Horizontal
+					? _layout.ComputeHorizontalScrollRange(_state)
+					: _layout.ComputeVerticalScrollRange(_state);
+				var screenLength = _layout.ScrollOrientation == Orientation.Horizontal
+					? displayMetrics.WidthPixels
+					: displayMetrics.HeightPixels;
+
+				// scaled with distance: 250ms at 0 distance, capped at 400ms for more than 1 screen
+				var scaling = scrollLength < screenLength ? Math.Pow((double)scrollLength / screenLength, 3) : 1;
+				var duration = BaseDuration + ScalableDuration * scaling;
+
+				return (float)duration / scrollLength;
+			}
 		}
 	}
 }

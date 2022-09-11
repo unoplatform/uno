@@ -4,7 +4,7 @@ using System;
 using System.Timers;
 using Uno.Disposables;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.Media.Playback;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Controls
 	public partial class MediaTransportControls : Control
 	{
 		private Windows.Media.Playback.MediaPlayer _mediaPlayer;
-		private bool _isScrubbing = false;
+		private bool _isScrubbing;
 		private SerialDisposable _subscriptions = new SerialDisposable();
 		
 		internal void SetMediaPlayer(Windows.Media.Playback.MediaPlayer mediaPlayer)
@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			catch (Exception ex)
 			{
-				this.Log().ErrorIfEnabled(() => $"Unable to unbind MediaTransportControls properly: {ex.Message}", ex);
+				this.Log().Error($"Unable to unbind MediaTransportControls properly: {ex.Message}", ex);
 			}
 		}
 

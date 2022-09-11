@@ -8,8 +8,8 @@ using Android.Views;
 using Uno.Extensions;
 using Uno.UI;
 using Windows.UI.Xaml.Controls.Primitives;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
+using Uno.Foundation.Logging;
+
 using Windows.Foundation;
 using Uno.UI.Extensions;
 

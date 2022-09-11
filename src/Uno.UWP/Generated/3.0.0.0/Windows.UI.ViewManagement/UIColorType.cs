@@ -2,42 +2,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.ViewManagement
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum UIColorType 
 	{
-		#if false
-		Background,
-		#endif
-		#if false
-		Foreground,
-		#endif
-		#if false
-		AccentDark3,
-		#endif
-		#if false
-		AccentDark2,
-		#endif
-		#if false
-		AccentDark1,
-		#endif
-		#if false
-		Accent,
-		#endif
-		#if false
-		AccentLight1,
-		#endif
-		#if false
-		AccentLight2,
-		#endif
-		#if false
-		AccentLight3,
-		#endif
-		#if false
-		Complement,
-		#endif
+		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.Background
+		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.Foreground
+		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.AccentDark3
+		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.AccentDark2
+		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.AccentDark1
+		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.Accent
+		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.AccentLight1
+		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.AccentLight2
+		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.AccentLight3
+		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.Complement
 	}
 	#endif
 }

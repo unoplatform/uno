@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Controls
 		private TextBlock m_pMainTextBlock;
 		private TextBlock m_pLabelTextBlock;
 
-		private Uno.WeakReference<CalendarView> m_wrOwner;
+		private WeakReference<CalendarView> m_wrOwner;
 
 		private const int s_maxNumberOfDensityBars = 10;
 
@@ -664,12 +664,13 @@ namespace Windows.UI.Xaml.Controls
 		private void SetOwner(CalendarView pOwner)
 		{
 			global::System.Diagnostics.Debug.Assert(!(m_wrOwner?.TryGetTarget(out _) ?? false));
-			m_wrOwner = new Uno.WeakReference<CalendarView>(pOwner);
+			m_wrOwner = new WeakReference<CalendarView>(pOwner);
 		}
 
 		private protected CalendarView GetOwner()
 		{
-			return m_wrOwner.Target;
+			m_wrOwner.TryGetTarget(out var target);
+			return target;
 		}
 
 		internal void SetDensityColors(

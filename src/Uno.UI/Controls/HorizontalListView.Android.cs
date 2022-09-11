@@ -35,7 +35,7 @@ using Android.Views;
 using Android.Widget;
 using Android.Content;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI;
 
 namespace Uno.UI.Controls

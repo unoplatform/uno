@@ -23,34 +23,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool AllowFocusWhenDisabled
-		{
-			get
-			{
-				return (bool)this.GetValue(AllowFocusWhenDisabledProperty);
-			}
-			set
-			{
-				this.SetValue(AllowFocusWhenDisabledProperty, value);
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool AllowFocusOnInteraction
-		{
-			get
-			{
-				return (bool)this.GetValue(AllowFocusOnInteractionProperty);
-			}
-			set
-			{
-				this.SetValue(AllowFocusOnInteractionProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property AllowFocusWhenDisabled
+		// Skipping already declared property AllowFocusOnInteraction
 		// Skipping already declared property Target
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -104,16 +78,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsOpen
-		{
-			get
-			{
-				return (bool)this.GetValue(IsOpenProperty);
-			}
-		}
-		#endif
+		// Skipping already declared property IsOpen
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.XamlRoot XamlRoot
@@ -161,22 +126,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase)));
 		#endif
 		// Skipping already declared property PlacementProperty
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AllowFocusOnInteractionProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AllowFocusOnInteraction), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AllowFocusWhenDisabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AllowFocusWhenDisabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
+		// Skipping already declared property AllowFocusOnInteractionProperty
+		// Skipping already declared property AllowFocusWhenDisabledProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty ElementSoundModeProperty { get; } = 
@@ -210,14 +161,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsOpenProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsOpen), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
+		// Skipping already declared property IsOpenProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty ShowModeProperty { get; } = 

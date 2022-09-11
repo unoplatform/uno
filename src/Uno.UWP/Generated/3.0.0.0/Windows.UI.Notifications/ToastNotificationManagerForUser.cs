@@ -29,6 +29,16 @@ namespace Windows.UI.Notifications
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Notifications.ToastNotificationMode NotificationMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ToastNotificationMode ToastNotificationManagerForUser.NotificationMode is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Notifications.ToastNotifier CreateToastNotifier()
 		{
 			throw new global::System.NotImplementedException("The member ToastNotifier ToastNotificationManagerForUser.CreateToastNotifier() is not implemented in Uno.");
@@ -69,6 +79,25 @@ namespace Windows.UI.Notifications
 		public  global::Windows.UI.Notifications.ToastCollectionManager GetToastCollectionManager( string appId)
 		{
 			throw new global::System.NotImplementedException("The member ToastCollectionManager ToastNotificationManagerForUser.GetToastCollectionManager(string appId) is not implemented in Uno.");
+		}
+		#endif
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationManagerForUser.NotificationMode.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationManagerForUser.NotificationModeChanged.add
+		// Forced skipping of method Windows.UI.Notifications.ToastNotificationManagerForUser.NotificationModeChanged.remove
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Notifications.ToastNotificationManagerForUser, object> NotificationModeChanged
+		{
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotificationManagerForUser", "event TypedEventHandler<ToastNotificationManagerForUser, object> ToastNotificationManagerForUser.NotificationModeChanged");
+			}
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotificationManagerForUser", "event TypedEventHandler<ToastNotificationManagerForUser, object> ToastNotificationManagerForUser.NotificationModeChanged");
+			}
 		}
 		#endif
 	}

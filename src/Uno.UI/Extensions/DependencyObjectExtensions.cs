@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.ApplicationModel.Background;
-using Uno.Extensions;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 
@@ -44,7 +43,7 @@ namespace Uno.UI.Extensions
 				yield return element;
 			}
 
-			for (var parent = (element as FrameworkElement).SelectOrDefault(e => e.Parent) ?? VisualTreeHelper.GetParent(element);
+			for (var parent = (element as FrameworkElement)?.Parent ?? VisualTreeHelper.GetParent(element);
 				parent != null;
 				parent = VisualTreeHelper.GetParent(parent))
 			{

@@ -7,11 +7,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using System.Collections.Generic;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Disposables;
-using System.Linq;
-using Windows.Devices.Input;
-using Windows.System;
 using Windows.UI.Xaml.Controls;
 using Uno.UI;
 using Uno;
@@ -22,7 +19,7 @@ using System.Collections;
 using System.Numerics;
 using System.Reflection;
 using Windows.UI.Xaml.Markup;
-using Microsoft.Extensions.Logging;
+
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
 using System.Text;
@@ -31,6 +28,8 @@ using Windows.UI.Xaml.Automation.Peers;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using System.Runtime.CompilerServices;
+using Windows.Graphics.Display;
+using Uno.UI.Extensions;
 
 #if __IOS__
 using UIKit;
@@ -40,8 +39,15 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IXUidProvider, IUIElement
 	{
+		private static readonly Dictionary<Type, RoutedEventFlag> ImplementedRoutedEvents
+			= new Dictionary<Type, RoutedEventFlag>();
+
+		private static readonly TypedEventHandler<UIElement, BringIntoViewRequestedEventArgs> OnBringIntoViewRequestedHandler =
+			(UIElement sender, BringIntoViewRequestedEventArgs args) => sender.OnBringIntoViewRequested(args);
+
+		private static readonly Type[] _bringIntoViewRequestedArgs = new[] { typeof(BringIntoViewRequestedEventArgs) };
+
 		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
-		private XamlRoot _xamlRoot = null;
 		private string _uid;
 
 		//private protected virtual void PrepareState() 
@@ -60,6 +66,10 @@ namespace Windows.UI.Xaml
 		// This are fulfilled by the ScrollViewer for the EffectiveViewport computation,
 		// but it should actually be computed based on clipping vs desired size.
 		internal Point ScrollOffsets { get; private protected set; }
+
+		// This is the local viewport of the element, i.e. where the element can draw content once clipping has been applied.
+		// This is expressed in local coordinate space.
+		internal Rect Viewport { get; private set; } = Rect.Infinite;
 		#endregion
 
 		/// <summary>
@@ -70,16 +80,94 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Is this view the top of the managed visual tree
 		/// </summary>
+		/// <remarks>This differs from the XamlRoot be being true for the root element of a native Popup.</remarks>
 		internal bool IsVisualTreeRoot { get; set; }
 
 		private void Initialize()
 		{
-			this.RegisterDefaultValueProvider(OnGetDefaultValue);
+			SubscribeToOverridenRoutedEvents();
+		}
+
+		private void SubscribeToOverridenRoutedEvents()
+		{
+			// Overridden Events are registered from constructor to ensure they are
+			// registered first in event handlers.
+			// https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.control.onpointerpressed#remarks
+
+			var implementedEvents = GetImplementedRoutedEventsForType(GetType());
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.BringIntoViewRequested))
+			{
+				BringIntoViewRequested += OnBringIntoViewRequestedHandler;
+			}
+		}
+
+		internal static RoutedEventFlag GetImplementedRoutedEventsForType(Type type)
+		{
+			// TODO: GetImplementedRoutedEvents() should be evaluated at compile-time
+			// and the result placed in a partial file.
+			if (ImplementedRoutedEvents.TryGetValue(type, out var result))
+			{
+				return result;
+			}
+
+			RoutedEventFlag implementedRoutedEvents;
+
+			var baseClass = type.BaseType;
+			if (baseClass == null || type == typeof(Control) || type == typeof(UIElement))
+			{
+				implementedRoutedEvents = RoutedEventFlag.None;
+			}
+			else
+			{
+				implementedRoutedEvents = EvaluateImplementedUIElementRoutedEvents(type);
+
+				if (typeof(Control).IsAssignableFrom(type))
+				{
+					implementedRoutedEvents |= Control.EvaluateImplementedControlRoutedEvents(type);
+				}
+			}
+
+			return ImplementedRoutedEvents[type] = implementedRoutedEvents;
+		}
+
+		internal static RoutedEventFlag EvaluateImplementedUIElementRoutedEvents(Type type)
+		{
+			RoutedEventFlag result = RoutedEventFlag.None;
+
+			if (GetIsEventOverrideImplemented(type, nameof(OnBringIntoViewRequested), _bringIntoViewRequestedArgs))
+			{
+				result |= RoutedEventFlag.BringIntoViewRequested;
+			}
+
+			return result;
+		}
+
+		private protected static bool GetIsEventOverrideImplemented(Type type, string name, Type[] args)
+		{
+			var method = type
+				.GetMethod(
+					name,
+					BindingFlags.NonPublic | BindingFlags.Instance,
+					null,
+					args,
+					null);
+
+			return method != null
+				&& method.IsVirtual
+				&& method.DeclaringType != typeof(UIElement)
+				&& method.DeclaringType != typeof(Control);
 		}
 
 		private protected virtual bool IsTabStopDefaultValue => false;
 
-		private bool OnGetDefaultValue(DependencyProperty property, out object defaultValue)
+		/// <summary>
+		/// Provide an instance-specific default value for the specified property
+		/// </summary>
+		/// <remarks>
+		/// In general, it is best do define the property default value using <see cref="PropertyMetadata"/>.
+		/// </remarks>
+		internal virtual bool GetDefaultValue2(DependencyProperty property, out object defaultValue)
 		{
 			if (property == KeyboardAcceleratorsProperty)
 			{
@@ -100,6 +188,8 @@ namespace Windows.UI.Xaml
 
 		internal Size AssignedActualSize { get; set; }
 
+		internal bool IsLeavingFrame { get; set; }
+
 		private protected virtual double GetActualWidth() => AssignedActualSize.Width;
 
 		private protected virtual double GetActualHeight() => AssignedActualSize.Height;
@@ -115,12 +205,6 @@ namespace Windows.UI.Xaml
 		}
 
 		partial void OnUidChangedPartial();
-
-		public XamlRoot XamlRoot
-		{
-			get => _xamlRoot ?? XamlRoot.Current;
-			set => _xamlRoot = value;
-		}
 
 		#region VirtualizationInformation
 		private VirtualizationInformation _virtualizationInformation;
@@ -287,6 +371,14 @@ namespace Windows.UI.Xaml
 					focusManager?.SetFocusOnNextFocusableElement(focusManager.GetRealFocusStateForFocusedElement(), true);
 				}
 			}
+
+			if (this.GetParent() is UIElement parent)
+			{
+				// Sometimes the measure algorithms are using the Visibility
+				// of their children. So we need to make sure they are reevaluated
+				// when visibility changes.
+				parent.InvalidateMeasure();
+			}
 		}
 
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue);
@@ -298,7 +390,7 @@ namespace Windows.UI.Xaml
 
 		internal static Matrix3x2 GetTransform(UIElement from, UIElement to)
 		{
-			var logInfoString = from.Log().IsEnabled(LogLevel.Information) ? new StringBuilder() : null;
+			var logInfoString = from.Log().IsEnabled(LogLevel.Debug) ? new StringBuilder() : null;
 			logInfoString?.Append($"{nameof(GetTransform)}(from: {from}, to: {to?.ToString() ?? "<null>"}) Offsets: [");
 
 			if (from == to)
@@ -344,30 +436,22 @@ namespace Windows.UI.Xaml
 					offsetY = layoutSlot.Y;
 				}
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-				// On Skia, the Scrolling is managed by the ScrollContentPresenter (as UWP), which is flagged as IsScrollPort.
-				// Note: We should still add support for the zoom factor ... which is not yet supported on Skia.
-				if (elt is ScrollViewer sv)
+#if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling and zooming which has already been included.
+				if (elt is ScrollViewer sv
+					// Don't adjust for scroll offsets if it's the ScrollViewer itself calling TransformToVisual
+					&& elt != from)
 				{
+					// Scroll offsets are handled at SCP level using the IsScrollPort
+
 					var zoom = sv.ZoomFactor;
 					if (zoom != 1)
 					{
 						matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
 						matrix *= Matrix3x2.CreateScale(zoom);
-
-						offsetX = -sv.HorizontalOffset;
-						offsetY = -sv.VerticalOffset;
-					}
-					else
-					{
-						offsetX -= sv.HorizontalOffset;
-						offsetY -= sv.VerticalOffset;
 					}
 				}
-				else
-#endif
-#if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling which has already been included.
-				if (elt.IsScrollPort) // Custom scroller
+
+				if (elt.IsScrollPort) // Managed SCP or custom scroller
 				{
 					offsetX -= elt.ScrollOffsets.X;
 					offsetY -= elt.ScrollOffsets.Y;
@@ -393,7 +477,7 @@ namespace Windows.UI.Xaml
 			if (logInfoString != null)
 			{
 				logInfoString.Append($"], matrix: {matrix}");
-				from.Log().LogInformation(logInfoString.ToString());
+				from.Log().LogDebug(logInfoString.ToString());
 			}
 			return matrix;
 		}
@@ -405,7 +489,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY)
 		{
-			var parent = this.GetParent();
+			var parent = VisualTreeHelper.GetParent(this);
 			switch (parent)
 			{
 				case UIElement elt:
@@ -478,7 +562,7 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
-		private const int MaxLayoutIterations = 250;
+		internal const int MaxLayoutIterations = 250;
 
 		public void UpdateLayout()
 		{
@@ -487,7 +571,7 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			var root = Windows.UI.Xaml.Window.Current.RootElement;
+			var root = XamlRoot?.VisualTree.RootElement;
 			if (root is null)
 			{
 				return;
@@ -535,7 +619,7 @@ namespace Windows.UI.Xaml
 				for (var i = 0; i < MaxLayoutIterations; i++)
 				{
 					// On Android, Measure and arrange are the same
-					if (root.IsMeasureDirty)
+					if (root.IsMeasureDirtyOrMeasureDirtyPath)
 					{
 						root.Measure(bounds.Size);
 						root.Arrange(bounds);
@@ -546,13 +630,13 @@ namespace Windows.UI.Xaml
 					}
 				}
 #else
-			for (var i = 0; i < MaxLayoutIterations; i++)
+			for (var i = MaxLayoutIterations; i > 0; i--)
 			{
-				if (root.IsMeasureDirty)
+				if (root.IsMeasureDirtyOrMeasureDirtyPath)
 				{
 					root.Measure(bounds.Size);
 				}
-				else if (root.IsArrangeDirty)
+				else if (root.IsArrangeDirtyOrArrangeDirtyPath)
 				{
 					root.Arrange(bounds);
 				}
@@ -599,7 +683,9 @@ namespace Windows.UI.Xaml
 		}
 
 		partial void ApplyNativeClip(Rect rect);
-		private protected virtual void OnViewportUpdated(Rect viewport) { } // Not "Changed" as it might be the same as previous
+
+		private protected virtual void OnViewportUpdated(Rect viewport) // Not "Changed" as it might be the same as previous
+			=> Viewport = viewport.IsEmpty ? Rect.Infinite : viewport; // If not clipped, we consider the viewport as infinite.
 
 		internal static object GetDependencyPropertyValueInternal(DependencyObject owner, string dependencyPropertyName)
 		{
@@ -629,7 +715,7 @@ namespace Windows.UI.Xaml
 
 				if (DependencyProperty.GetProperty(owner.GetType(), dependencyPropertyName) is DependencyProperty dp)
 				{
-					if (owner.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (owner.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						owner.Log().LogDebug($"SetDependencyPropertyValue({dependencyPropertyName}) = {value}");
 					}
@@ -640,7 +726,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					if (owner.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (owner.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						owner.Log().LogDebug($"Failed to find property [{dependencyPropertyName}] on [{owner}]");
 					}
@@ -653,15 +739,11 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		// This is part of the WinUI internal contract and is being invoked on each DP change
-		internal virtual void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
-		{
-		}
-
 		/// <summary>
 		/// Backing property for <see cref="LayoutInformation.GetAvailableSize(UIElement)"/>
 		/// </summary>
 		Size IUIElement.LastAvailableSize { get; set; }
+
 		/// <summary>
 		/// Gets the 'availableSize' of the last Measure
 		/// </summary>
@@ -671,12 +753,22 @@ namespace Windows.UI.Xaml
 		/// Backing property for <see cref="LayoutInformation.GetLayoutSlot(FrameworkElement)"/>
 		/// </summary>
 		Rect IUIElement.LayoutSlot { get; set; }
+
 		/// <summary>
-		/// Gets the 'finalSize' of the last Arrange
+		/// Gets the 'finalSize' of the last Arrange.
+		/// Be aware that it's the rect provided by the parent, **before** margins and alignment are being applied,
+		/// so the size of that rect can be different to the size get in the `ArrangeOverride`.
 		/// </summary>
+		/// <remarks>This is expressed in parent's coordinate space.</remarks>
 		internal Rect LayoutSlot => ((IUIElement)this).LayoutSlot;
 
-		internal Rect LayoutSlotWithMarginsAndAlignments { get; set; } = default;
+		/// <summary>
+		/// This is the <see cref="LayoutSlot"/> **after** margins and alignments has been applied.
+		/// It's somehow the region into which an element renders itself in its parent (before any RenderTransform).
+		/// This is the 'finalRect' of the last Arrange.
+		/// </summary>
+		/// <remarks>This is expressed in parent's coordinate space.</remarks>
+		internal Rect LayoutSlotWithMarginsAndAlignments { get; set; }
 
 		internal bool NeedsClipToSlot { get; set; }
 
@@ -699,10 +791,6 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public Size RenderSize { get; internal set; }
 
-		public virtual void Measure(Size availableSize)
-		{
-		}
-
 #if !UNO_REFERENCE_API
 		/// <summary>
 		/// This is the Frame that should be used as "available Size" for the Arrange phase.
@@ -710,25 +798,32 @@ namespace Windows.UI.Xaml
 		internal Rect? ClippedFrame;
 #endif
 
+		public virtual void Measure(Size availableSize)
+		{
+		}
+
 		public virtual void Arrange(Rect finalRect)
 		{
 		}
 
 		public void InvalidateMeasure()
 		{
-			if (this is IFrameworkElement frameworkElement)
-			{
-				IFrameworkElementHelper.InvalidateMeasure(frameworkElement);
-			}
-			else
-			{
-				this.Log().Warn("Calling InvalidateMeasure on a UIElement that is not a FrameworkElement has no effect.");
-			}
+#if XAMARIN_ANDROID
+			// Use a non-virtual version of the RequestLayout method, for performance.
+			base.RequestLayout();
+			SetLayoutFlags(LayoutFlag.MeasureDirty);
+#elif XAMARIN_IOS
+			SetNeedsLayout();
+			SetLayoutFlags(LayoutFlag.MeasureDirty);
+#elif __MACOS__
+			base.NeedsLayout = true;
+			SetLayoutFlags(LayoutFlag.MeasureDirty);
+#endif
 
 			OnInvalidateMeasure();
 		}
 
-		internal protected virtual void OnInvalidateMeasure()
+		protected internal virtual void OnInvalidateMeasure()
 		{
 		}
 
@@ -737,28 +832,10 @@ namespace Windows.UI.Xaml
 		{
 			InvalidateMeasure();
 #if __IOS__ || __MACOS__
-			IsArrangeDirty = true;
+			SetLayoutFlags(LayoutFlag.ArrangeDirty);
 #endif
 		}
 #endif
-
-		public void StartBringIntoView()
-		{
-			StartBringIntoView(new BringIntoViewOptions());
-		}
-
-		public void StartBringIntoView(BringIntoViewOptions options)
-		{
-#if __IOS__ || __ANDROID__
-			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-			{
-				// This currently doesn't support nested scrolling.
-				// This currently doesn't support BringIntoViewOptions.AnimationDesired.
-				var scrollContentPresenter = this.FindFirstParent<IScrollContentPresenter>();
-				scrollContentPresenter?.MakeVisible(this, options.TargetRect ?? Rect.Empty);
-			});
-#endif
-		}
 
 		internal virtual bool IsViewHit() => true;
 
@@ -872,7 +949,7 @@ namespace Windows.UI.Xaml
 		internal double GetScaleFactorForLayoutRounding()
 		{
 			// TODO use actual scaling based on current transforms.
-			return global::Windows.Graphics.Display.DisplayInformation.GetForCurrentView().LogicalDpi / 96.0f; // 100%
+			return global::Windows.Graphics.Display.DisplayInformation.GetForCurrentView().LogicalDpi / DisplayInformation.BaseDpi; // 100%
 		}
 
 		double XcpRound(double x)
@@ -933,5 +1010,15 @@ namespace Windows.UI.Xaml
 
 		[GeneratedDependencyProperty(DefaultValue = default(KeyboardNavigationMode))]
 		public static DependencyProperty TabFocusNavigationProperty { get; } = CreateTabFocusNavigationProperty();
+
+#if HAS_UNO_WINUI
+		// Skipping already declared property ActualSize
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public UI.Input.InputCursor ProtectedCursor
+		{
+			get;
+			set;
+		}
+#endif
 	}
 }

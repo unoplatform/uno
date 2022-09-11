@@ -139,9 +139,10 @@ namespace Uno.UI.TestComparer.Comparer
 
                         compareResultFileRun.ImageId = folderInfo.Id;
                         compareResultFileRun.ImageSha = folderInfo.IdSha;
-                        compareResultFileRun.FilePath = folderInfo.Path;
+						compareResultFileRun.FilePath = folderInfo.Path;
+						compareResultFileRun.FolderIndex = folderIndex;
 
-                        compareResultFileRun.HasChanged = hasChangedFromPrevious;
+						compareResultFileRun.HasChanged = hasChangedFromPrevious;
 
                         if (folderInfo != null)
                         {

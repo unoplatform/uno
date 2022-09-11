@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -7,22 +9,22 @@ using Windows.ApplicationModel;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using System.Threading;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.Foundation.Extensibility;
-using Microsoft.Extensions.Logging;
 
 namespace Windows.UI.Xaml
 {
 	public partial class Application : IApplicationEvents
 	{
-		private static bool _startInvoked = false;
-		private static string[] _args;
-		private readonly IApplicationExtension _applicationExtension;
+		private static bool _startInvoked;
+		private static string _arguments = "";
 
-		internal ISkiaHost Host { get; set; }
+		private readonly IApplicationExtension? _applicationExtension;
+
+		internal ISkiaHost? Host { get; set; }
 
 		public Application()
 		{
@@ -39,9 +41,9 @@ namespace Windows.UI.Xaml
 			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
 		}
 
-		internal static void Start(global::Windows.UI.Xaml.ApplicationInitializationCallback callback, string[] args)
+		internal static void StartWithArguments(global::Windows.UI.Xaml.ApplicationInitializationCallback callback)
 		{
-			_args = args;
+			_arguments = GetCommandLineArgsWithoutExecutable();
 			Start(callback);
 		}
 
@@ -78,11 +80,25 @@ namespace Windows.UI.Xaml
 				// Force init
 				Window.Current.ToString();
 
-				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, string.Join(";", _args)));
+				InitializationCompleted();
+
+				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, _arguments));
 			}
 		}
 
 		internal void ForceSetRequestedTheme(ApplicationTheme theme) => _requestedTheme = theme;
+
+		partial void ObserveSystemThemeChanges()
+		{
+			if (_applicationExtension != null)
+			{
+				_applicationExtension.SystemThemeChanged += SystemThemeChanged;
+			}
+
+			_systemThemeChangesObserved = true;
+		}
+
+		private void SystemThemeChanged(object sender, EventArgs e) => OnSystemThemeChanged();
 	}
 
 	internal interface IApplicationEvents

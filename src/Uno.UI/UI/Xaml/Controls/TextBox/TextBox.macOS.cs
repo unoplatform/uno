@@ -4,7 +4,7 @@ using Uno.UI.Extensions;
 using Uno.Extensions;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Input;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -138,7 +138,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private static bool IsTextPredictionEnabledErrorMessageShown = false;
+		private static bool IsTextPredictionEnabledErrorMessageShown;
 
 		public int SelectionStart
 		{

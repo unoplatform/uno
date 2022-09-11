@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:valueconverters="using:UITests.ValueConverters"
     mc:Ignorable="d"
+	x:DefaultBindMode="OneWay"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
@@ -14,36 +15,38 @@
 		<valueconverters:BoolNegationValueConverter x:Key="BoolNegation" />
 	</UserControl.Resources>
 
-	<ScrollViewer>
+	<ScrollViewer x:Name="RootView" Padding="20">
 		<StackPanel>
-			<Button Command="{Binding RequestAccessCommand}">Request access</Button>
+			<Button Command="{x:Bind ViewModel.RequestAccessCommand}">Request access</Button>
 			<TextBlock>
 			  <Run FontWeight="Bold">Geolocation access status: </Run>
-			  <Run Text="{Binding GeolocationAccessStatus}" />
+			  <Run Text="{x:Bind ViewModel.GeolocationAccessStatus}" />
 			</TextBlock>
 
 			<TextBox Margin="0,12,0,0" Header="Desired accuracy in meters" Text="{Binding DesiredAccuracyInMeters, Mode=TwoWay}" />
+			<TimePicker Name="uiMaxCacheTime" ClockIdentifier="24HourClock" Header="Max cache time (mm:ss)" SelectedTime="{Binding maximumAge, Mode=TwoWay}" />
+			<TimePicker Name="uiTimeout" ClockIdentifier="24HourClock" Header="Timeout (mm:ss)" SelectedTime="{Binding timeout, Mode=TwoWay}" />
 
-			<Button Margin="0,12,0,0" Command="{Binding GetGeopositionCommand}">Get geoposition</Button>
+			<Button Margin="0,12,0,0" Command="{x:Bind ViewModel.GetGeopositionCommand}">Get geoposition</Button>
 			<local:GeopositionDisplayControl Geoposition="{x:Bind ViewModel.Geoposition, Mode=OneWay}" />
 
-			<Button Margin="0,12,0,0" Command="{Binding AttachStatusChangedCommand}" IsEnabled="{Binding StatusChangedAttached, Converter={StaticResource BoolNegation}}">Attach StatusChanged</Button>
-			<Button Command="{Binding DetachStatusChangedCommand}" IsEnabled="{Binding StatusChangedAttached}">Detach StatusChanged</Button>
+			<Button Margin="0,12,0,0" Command="{x:Bind ViewModel.AttachStatusChangedCommand}" IsEnabled="{x:Bind ViewModel.StatusChangedAttached, Converter={StaticResource BoolNegation}}">Attach StatusChanged</Button>
+			<Button Command="{x:Bind ViewModel.DetachStatusChangedCommand}" IsEnabled="{x:Bind ViewModel.StatusChangedAttached}">Detach StatusChanged</Button>
 
 			<TextBlock>
 				<Run FontWeight="Bold">Position status: </Run>
-				<Run Text="{Binding PositionStatus}" />
+				<Run Text="{x:Bind ViewModel.PositionStatus}" />
 			</TextBlock>
 
-			<Button Margin="0,12,0,0" Command="{Binding AttachPositionChangedCommand}" IsEnabled="{Binding PositionChangedAttached, Converter={StaticResource BoolNegation}}">Attach PositionChanged
+			<Button Margin="0,12,0,0" Command="{x:Bind ViewModel.AttachPositionChangedCommand}" IsEnabled="{x:Bind ViewModel.PositionChangedAttached, Converter={StaticResource BoolNegation}}">Attach PositionChanged
 			</Button>
-			<Button Command="{Binding DetachPositionChangedCommand}" IsEnabled="{Binding PositionChangedAttached}">Detach PositionChanged</Button>
+			<Button Command="{x:Bind ViewModel.DetachPositionChangedCommand}" IsEnabled="{x:Bind ViewModel.PositionChangedAttached}">Detach PositionChanged</Button>
 
 			<local:GeopositionDisplayControl Geoposition="{x:Bind ViewModel.TrackedGeoposition, Mode=OneWay}" />
 
 			<TextBlock Margin="0,12,0,0">
 			  <Run FontWeight="Bold">Last error message: </Run>
-			  <Run Foreground="Red" Text="{Binding Error}" />
+			  <Run Foreground="Red" Text="{x:Bind ViewModel.Error}" />
 			</TextBlock>
 		</StackPanel>
 	</ScrollViewer>

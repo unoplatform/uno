@@ -31,10 +31,6 @@ namespace Windows.ApplicationModel.Resources.Core
 			{
 				throw new global::System.NotSupportedException();
 			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
 		}
 		#endif
 		// Processing: System.Collections.Generic.IEnumerable<Windows.ApplicationModel.Resources.Core.ResourceCandidate>
@@ -61,10 +57,6 @@ namespace Windows.ApplicationModel.Resources.Core
 		public int Count
 		{
 			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
 			{
 				throw new global::System.NotSupportedException();
 			}

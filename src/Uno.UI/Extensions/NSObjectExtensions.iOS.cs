@@ -1,6 +1,6 @@
 ﻿using Uno.Extensions;
 using System;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Windows.UI.Core;
 
 #if XAMARIN_IOS_UNIFIED

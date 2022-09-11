@@ -254,3 +254,7 @@ msbuild.binlog
 /src/Uno.UI.TestComparer/Properties/launchSettings.json
 
 src/AddIns/Uno.UI.MSAL/WasmScripts/*.d.ts
+/src/SourceGenerators/Uno.UI.SourceGenerators.net6.Tests/Results
+
+# external docs
+doc/articles/external

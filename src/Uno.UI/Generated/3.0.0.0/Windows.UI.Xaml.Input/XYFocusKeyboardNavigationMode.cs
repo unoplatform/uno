@@ -2,21 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
+	#if false || false || false || false || false || false || false
 	public   enum XYFocusKeyboardNavigationMode 
 	{
-		#if false
-		Auto,
-		#endif
-		#if false
-		Enabled,
-		#endif
-		#if false
-		Disabled,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Input.XYFocusKeyboardNavigationMode.Auto
+		// Skipping already declared field Windows.UI.Xaml.Input.XYFocusKeyboardNavigationMode.Enabled
+		// Skipping already declared field Windows.UI.Xaml.Input.XYFocusKeyboardNavigationMode.Disabled
 	}
 	#endif
 }

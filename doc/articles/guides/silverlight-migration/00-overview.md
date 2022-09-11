@@ -7,7 +7,7 @@ Despite the last version of Silverlight 5 being released back in 2011, the platf
 * Silverlight SDK available in Visual Studio 2012
   * Can be opened in Visual Studio 2017 and 2019 with the unofficial extension [Silverlight for Visual Studio](https://marketplace.visualstudio.com/items?itemName=RamiAbughazaleh.SilverlightProjectSystem)
 * Silverlight plugin runs in Internet Explorer 10 and 11 only
-* No Mac OS browser support
+* No macOS browser support
 
 If you maintain one of these Silverlight applications, it is time to consider migrating to a supported platform. For those that wish to continue with XAML and C#, the Uno Platform is a natural choice for continuing the delivery of such applications on Windows, iOS, Android, and WebAssembly.
 

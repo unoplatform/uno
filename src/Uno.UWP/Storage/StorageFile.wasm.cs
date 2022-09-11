@@ -22,7 +22,7 @@ namespace Windows.Storage
 				throw new InvalidOperationException("Uri is not using the ms-appx scheme");
 			}
 
-			var path = uri.PathAndQuery;
+			var path = Uri.UnescapeDataString(uri.PathAndQuery);
 
 			return await StorageFile.GetFileFromPathAsync(await AssetsManager.DownloadAsset(ct, path));
 		}

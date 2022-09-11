@@ -27,7 +27,7 @@ namespace Windows.UI
 			B = b;
 		}
 
-		public static readonly ColorOffset Zero = default;
+		public static readonly ColorOffset Zero;
 
 		public static ColorOffset FromArgb(int a, int r, int g, int b) => new ColorOffset(a, r, g, b);
 

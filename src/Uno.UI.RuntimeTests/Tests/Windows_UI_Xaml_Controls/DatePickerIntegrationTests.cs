@@ -7,7 +7,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.Extensions;
-using Uno.Logging;
 using Windows.UI.Xaml.Media;
 using Uno.Disposables;
 using Windows.Globalization.DateTimeFormatting;
@@ -16,6 +15,12 @@ using Windows.Foundation;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Uno.UI.RuntimeTests.MUX.Helpers;
+
+#if HAS_UNO
+using Uno.Foundation.Logging;
+#else
+using Uno.Logging;
+#endif
 
 namespace Microsoft.UI.Tests.Controls.DatePickerTests
 {
@@ -745,7 +750,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 #else
 				var flyoutPopup = VisualTreeHelper.GetOpenPopupsForXamlRoot(datePicker.XamlRoot)[0];
 #endif
-				var datepickerFlyoutPresenter = GetDatePickerFlyoutPresenter();
+				var datepickerFlyoutPresenter = GetDatePickerFlyoutPresenter(datePicker.XamlRoot);
 
 				// The flyout popup, the flyout presenter and the button should have an RTL flow direction.
 				// The DatePicker itself should remain in LTR flow direction.
@@ -1091,9 +1096,9 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			});
 		}
 
-		private DatePickerFlyoutPresenter GetDatePickerFlyoutPresenter()
+		private DatePickerFlyoutPresenter GetDatePickerFlyoutPresenter(XamlRoot xamlRoot)
 		{
-			return FlyoutHelper.GetOpenFlyoutPresenter() as DatePickerFlyoutPresenter;
+			return FlyoutHelper.GetOpenFlyoutPresenter(xamlRoot) as DatePickerFlyoutPresenter;
 		}
 
 		private void VerifyDatesAreEqual(Calendar expected, DateTimeOffset actual)

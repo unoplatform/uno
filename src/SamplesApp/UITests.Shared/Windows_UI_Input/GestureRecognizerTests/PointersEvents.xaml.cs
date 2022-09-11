@@ -9,18 +9,23 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using Windows.Devices.Input;
 using Windows.UI.Core;
-using Windows.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Documents;
 using Uno.Extensions;
 using Uno.Extensions.ValueType;
 
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.Devices.Input;
+using Windows.UI.Input;
+#endif
+
 namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 {
-	[SampleControlInfo("Gesture recognizer", "Pointer Events test bench")]
+	[SampleControlInfo("Gesture Recognizer", "Pointer Events test bench")]
 	public sealed partial class PointersEvents : Page
 	{
 		private static readonly IDictionary<string, ManipulationModes> _manipulationModes = new Dictionary<string, ManipulationModes>
@@ -215,7 +220,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 			if (args is PointerRoutedEventArgs pointer)
 			{
 				var expectedPointerType = (PointerDeviceType)Enum.Parse(typeof(PointerDeviceType), _pointerType.SelectedValue as string);
-				if (expectedPointerType != pointer.Pointer.PointerDeviceType)
+				if (expectedPointerType != (PointerDeviceType)pointer.Pointer.PointerDeviceType)
 				{
 					error += "pt_type ";
 					validity = EventValidity.Invalid;

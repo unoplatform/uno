@@ -11,7 +11,13 @@ using Windows.ApplicationModel;
 using Uno.Helpers.Theming;
 using Windows.UI.ViewManagement;
 using Uno.Extensions;
-using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using Uno.Foundation.Logging;
+using Windows.UI.Xaml.Data;
+using Uno.Foundation.Extensibility;
+using Windows.UI.Popups.Internal;
+using Windows.UI.Popups;
+using Uno.UI.WinRT.Extensions.UI.Popups;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -42,13 +48,15 @@ namespace Windows.UI.Xaml
 {
 	public partial class Application
 	{
-		private bool _initializationComplete = false;
+		private bool _initializationComplete;
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
-		private bool _themeSetExplicitly = false;
 		private ApplicationTheme? _requestedTheme;
+#pragma warning disable CA1805 // Do not initialize unnecessarily
+		// TODO: This field is ALWAYS false. Either remove it or assign when appropriate.
 		private bool _systemThemeChangesObserved = false;
+#pragma warning restore CA1805 // Do not initialize unnecessarily
 		private SpecializedResourceDictionary.ResourceKey _requestedThemeForResources;
-		private bool _isInBackground = false;
+		private bool _isInBackground;
 
 		static Application()
 		{
@@ -56,9 +64,16 @@ namespace Windows.UI.Xaml
 			ApiInformation.RegisterAssembly(typeof(Windows.Storage.ApplicationData).Assembly);
 
 			Uno.Helpers.DispatcherTimerProxy.SetDispatcherTimerGetter(() => new DispatcherTimer());
-			Uno.Helpers.VisualTreeHelperProxy.SetCloseAllPopupsAction(() => Media.VisualTreeHelper.CloseAllPopups());
+			Uno.Helpers.VisualTreeHelperProxy.SetCloseAllFlyoutsAction(() => Media.VisualTreeHelper.CloseAllFlyouts());
+
+			RegisterExtensions();
 
 			InitializePartialStatic();
+		}
+
+		private static void RegisterExtensions()
+		{
+			ApiExtensibility.Register<MessageDialog>(typeof(IMessageDialogExtension), dialog => new MessageDialogExtension(dialog));
 		}
 
 		static partial void InitializePartialStatic();
@@ -159,10 +174,12 @@ namespace Windows.UI.Xaml
 			_ => throw new InvalidOperationException("Application's RequestedTheme is invalid."),
 		};
 
+		internal bool IsThemeSetExplicitly { get; private set; }
+
 		internal void SetExplicitRequestedTheme(ApplicationTheme? explicitTheme)
 		{
 			// this flag makes sure the app will not respond to OS events
-			_themeSetExplicitly = explicitTheme.HasValue;
+			IsThemeSetExplicitly = explicitTheme.HasValue;
 			var theme = explicitTheme ?? GetDefaultSystemTheme();
 			SetRequestedTheme(theme);
 		}
@@ -202,7 +219,7 @@ namespace Windows.UI.Xaml
 		public void OnSystemThemeChanged()
 		{
 			// if user overrides theme, don't apply system theme
-			if (!_themeSetExplicitly)
+			if (!IsThemeSetExplicitly)
 			{
 				var theme = GetDefaultSystemTheme();
 				SetRequestedTheme(theme);
@@ -266,26 +283,57 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal void OnEnteredBackground()
+		internal void RaiseEnteredBackground(Action onComplete)
 		{
 			if (!_isInBackground)
 			{
 				_isInBackground = true;
-				EnteredBackground?.Invoke(this, new EnteredBackgroundEventArgs());
+				var enteredEventArgs = new EnteredBackgroundEventArgs(onComplete);
+				EnteredBackground?.Invoke(this, enteredEventArgs);
+				CoreApplication.RaiseEnteredBackground(enteredEventArgs);
+				var completedSynchronously = enteredEventArgs.DeferralManager.EventRaiseCompleted();
+
+				// Asynchronous suspension is not supported
+				if (!completedSynchronously && this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().LogWarning(
+						"Asynchronous entered background completion is not supported yet. " +
+						"Long running operations may be terminated prematurely.");
+				}
+			}
+			else
+			{
+				onComplete?.Invoke();
 			}
 		}
 
-		internal void OnLeavingBackground()
+		internal void RaiseLeavingBackground(Action onComplete)
 		{
 			if (_isInBackground)
 			{
 				_isInBackground = false;
-				LeavingBackground?.Invoke(this, new LeavingBackgroundEventArgs());
+				var leavingEventArgs = new LeavingBackgroundEventArgs(onComplete);
+				LeavingBackground?.Invoke(this, leavingEventArgs);
+				CoreApplication.RaiseLeavingBackground(leavingEventArgs);
+				var completedSynchronously = leavingEventArgs.DeferralManager.EventRaiseCompleted();
+
+				// Asynchronous suspension is not supported
+				if (!completedSynchronously && this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().LogWarning(
+						"Asynchronous leaving background completion is not supported yet. " +
+						"Application may resume before the operation completes.");
+				}
+			}
+			else
+			{
+				onComplete?.Invoke();
 			}
 		}
 
-		internal void OnResuming()
+		internal void RaiseResuming()
 		{
+			Resuming?.Invoke(null, null);
 			CoreApplication.RaiseResuming();
 
 			OnResumingPartial();
@@ -293,15 +341,34 @@ namespace Windows.UI.Xaml
 
 		partial void OnResumingPartial();
 
-		internal void OnSuspending()
+		internal void RaiseSuspending()
 		{
-			var suspendingEventArgs = new SuspendingEventArgs(new SuspendingOperation(DateTime.Now.AddSeconds(30)));
-			CoreApplication.RaiseSuspending(suspendingEventArgs);
+			var suspendingOperation = CreateSuspendingOperation();
+			var suspendingEventArgs = new SuspendingEventArgs(suspendingOperation);
 
-			OnSuspendingPartial();
+			Suspending?.Invoke(this, suspendingEventArgs);
+			CoreApplication.RaiseSuspending(suspendingEventArgs);			
+			var completedSynchronously = suspendingOperation.DeferralManager.EventRaiseCompleted();
+
+#if !__IOS__ && !__ANDROID__
+			// Asynchronous suspension is not supported on all targets, warn the user
+			if (!completedSynchronously && this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning(
+					"This platform does not support asynchronous Suspending deferral. " +
+					"Code executed after the of the method called by Suspending may not get executed.");
+			}
+#endif
 		}
 
-		partial void OnSuspendingPartial();
+#if !__IOS__ && !__ANDROID__ && !__MACOS__
+		/// <summary>
+		/// On platforms which don't support asynchronous suspension we indicate that with immediate
+		/// deadline and warning in logs.
+		/// </summary>
+		private SuspendingOperation CreateSuspendingOperation() =>
+			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(0), null);
+#endif
 
 		protected virtual void OnWindowCreated(global::Windows.UI.Xaml.WindowCreatedEventArgs args)
 		{
@@ -322,17 +389,21 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void OnRequestedThemeChanged()
+		internal void UpdateResourceBindingsForHotReload() => OnResourcesChanged(ResourceUpdateReason.HotReload);
+
+		internal void OnRequestedThemeChanged() => OnResourcesChanged(ResourceUpdateReason.ThemeResource);
+
+		private void OnResourcesChanged(ResourceUpdateReason updateReason)
 		{
 			if (GetTreeRoot() is { } root)
 			{
 				// Update theme bindings in application resources
-				Resources?.UpdateThemeBindings();
+				Resources?.UpdateThemeBindings(updateReason);
 
 				// Update theme bindings in system resources
-				ResourceResolver.UpdateSystemThemeBindings();
+				ResourceResolver.UpdateSystemThemeBindings(updateReason);
 
-				PropagateThemeChanged(root);
+				PropagateResourcesChanged(root, updateReason);
 			}
 
 			// Start from the real root, which may not be a FrameworkElement on some platforms
@@ -352,13 +423,13 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Propagate theme changed to <paramref name="instance"/> and its descendants, to have them update any theme bindings.
 		/// </summary>
-		internal static void PropagateThemeChanged(object instance)
+		internal static void PropagateResourcesChanged(object instance, ResourceUpdateReason updateReason)
 		{
 
 			// Update ThemeResource references that have changed
 			if (instance is FrameworkElement fe)
 			{
-				fe.UpdateThemeBindings();
+				fe.UpdateThemeBindings(updateReason);
 			}
 
 			//Try Panel.Children before ViewGroup.GetChildren - this results in fewer allocations
@@ -366,16 +437,46 @@ namespace Windows.UI.Xaml
 			{
 				foreach (object o in p.Children)
 				{
-					PropagateThemeChanged(o);
+					PropagateResourcesChanged(o, updateReason);
 				}
 			}
 			else if (instance is ViewGroup g)
 			{
 				foreach (object o in g.GetChildren())
 				{
-					PropagateThemeChanged(o);
+					PropagateResourcesChanged(o, updateReason);
 				}
 			}
+		}
+
+		private static string GetCommandLineArgsWithoutExecutable()
+		{
+			var args = Environment.GetCommandLineArgs();
+			if (args.Length <= 1)
+			{
+				return "";
+			}
+
+			// The first "argument" is actually application name, needs to be removed.
+			// May be wrapped in quotes.
+
+			var executable = args[0];
+			var rawCmd = Environment.CommandLine;
+
+			var index = rawCmd.IndexOf(executable);
+			if (index == 0)
+			{
+				rawCmd = rawCmd.Substring(executable.Length);
+			}
+			else if (index == 1)
+			{
+				// The executable is wrapped in quotes
+				rawCmd = rawCmd.Substring(executable.Length + 2);
+			}
+
+			// The whitespace on the start side of Arguments
+			// in UWP is trimmed whereas the ending is not.
+			return rawCmd.TrimStart();
 		}
 	}
 }

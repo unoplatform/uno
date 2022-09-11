@@ -11,7 +11,7 @@ Uno Platform is a cross-platform application framework which lets you write an a
 Uno Platform is an [open-source project](https://github.com/unoplatform/Uno) with many contributors. It was developed internally by [nventive](https://nventive.com) from 2013-2018, and has been open source since 2018. It's maintained by [nventive](https://nventive.com).
 
 #### Where can I get support?
-Support is available through [Stack Overflow](https://stackoverflow.com/questions/tagged/uno-platform), [Twitter account](https://twitter.com/unoplatform), Discord www.platform.uno/discord - #uno-platform channel and email [info@platform.uno](mailto:info@platform.uno).
+Support is available through [GitHub Discussions](https://github.com/unoplatform/uno/discussions) or [Discord](https://www.platform.uno/discord) - #uno-platform channel where our engineering team and community will be able to help you.
 
 #### How can I get involved?
 There are lots of ways to contribute to the Uno Platform and we appreciate all the help we get from the community. You can provide feedback, report bugs, give suggestions, contribute code, and participate in the platform discussions. If you're interested, the [contributors' guide](uno-development/contributing-intro.md) is a great place to start.
@@ -29,17 +29,24 @@ Consult [the list of supported WinUI controls](implemented-views.md).
 
 You can develop Uno Platform applications on Windows, macOS, or Linux. Supported IDEs include Visual Studio, Visual Studio Code, and Rider. Consult the [setup guide](get-started.md) for more details.
 
+#### Can I use VB.NET for Uno Platform applications?
+
+Much like the new UI technologies from Microsoft, Uno Platform doesn’t support creation of new applications using VB.NET.
+
+If you have an existing VB.NET application which you would like to port/modernize for cross-platform scenarios with Uno Platform, you should be able to reuse all of your VB.NET business logic. It needs to be built as .NET standard libraries, then used in a new Uno Platform app where only the new UI code would be defined in XAML with some glue in C#.
+To be exact, add "Class Library" VB project (not "Class Library (.Net Framework)", and not "Class Library (Universal Windows)"). Use ".Net Standard 2.0" as Target Framework.
+If you want to use this library for UWP app compatible with Windows Phone (e.g. Lumia), now unsupported by Microsoft, you have to change Target Framework to ".NET Standard 1.4" (in Project, Properties), as this is last .NET Standard version which can be used with projects targeting Windows 10 15063.
+To use this library in Uno heads for all platforms, add a reference to this library (the simplest way is to right click on "References" nodes inside these heads).
+You can use same Class Library also in your original, VB project. The same Class Library can also be used in any other .Net Standard compatible projects.
+Additionally, if you’d like to move any of your VB.NET code to C# you may be able to use automated tools such as https://converter.telerik.com
+
+The best course of action is to do a POC and our team is happy to assist you in validating Uno Platform’s fit. Please [contact us](https://platform.uno/contact) with any queries.
+
 ## Technologies
-
-#### What is Universal Windows Platform (UWP)?
-
-Universal Windows Platform (UWP) is an API created by Microsoft and first introduced in Windows 10. The purpose of this platform is to help develop universal apps that run on Windows 10, Windows 10 Mobile, Xbox One and HoloLens without the need to be re-written for each. It supports Windows app development using C++, C#, VB.NET, and XAML. The API is implemented in C++, and supported in C++, VB.NET, C#, F# and JavaScript. Designed as an extension to the Windows Runtime platform first introduced in Windows Server 2012 and Windows 8, UWP allows developers to create apps that will potentially run on multiple types of devices.
-
-Visit Microsoft's documentation for a primer on UWP : https://docs.microsoft.com/en-us/windows/uwp/get-started/
 
 #### What is WinUI 3?
 
-WinUI 3 is the [next generation of Microsoft's Windows UI library](https://docs.microsoft.com/en-us/windows/apps/winui/), scheduled for stable release in 2021.
+WinUI 3 is the [next generation of Microsoft's Windows UI library](https://docs.microsoft.com/en-us/windows/apps/winui/).
 
 From [Microsoft](https://docs.microsoft.com/en-us/windows/apps/winui/):
 
@@ -48,8 +55,14 @@ From [Microsoft](https://docs.microsoft.com/en-us/windows/apps/winui/):
 
 Read more about [Uno and WinUI 3](uwp-vs-winui3.md).
 
-#### How is Uno Platform different from Xamarin.Forms or Avalonia?
-Multiple techniques can be used to render UI, ranging from rendering pixels in a Frame Buffer (Avalonia), to rendering only using platform-provided controls (Xamarin.Forms). 
+#### What is Universal Windows Platform (UWP)?
+
+Universal Windows Platform (UWP) is an API created by Microsoft and first introduced in Windows 10. The purpose of this platform is to help develop universal apps that run on Windows 10, Windows 10 Mobile, Xbox One and HoloLens without the need to be re-written for each. It supports Windows app development using C++, C#, VB.NET, and XAML. The API is implemented in C++, and supported in C++, VB.NET, C#, F# and JavaScript. Designed as an extension to the Windows Runtime platform first introduced in Windows Server 2012 and Windows 8, UWP allows developers to create apps that will potentially run on multiple types of devices.
+
+Visit Microsoft's documentation for a primer on UWP : https://docs.microsoft.com/en-us/windows/uwp/get-started/
+
+#### How is Uno Platform different from Xamarin.Forms, MAUI or Avalonia?
+Multiple techniques can be used to render UI, ranging from rendering pixels in a Frame Buffer (Avalonia), to rendering only using platform-provided controls (Xamarin.Forms, MAUI). 
 
 While the former provides a high flexibility in terms of rendering fidelity and the ability to add new platforms, it has the drawback of not following the platform native behaviors. For instance, interactions with text boxes, has to be re-implemented completely in order to match the native behavior, and has to be updated regularly to follow platform updates. This approach also makes it very difficult to integrate native UI components "in-canvas", such as Map or Browser controls.
 

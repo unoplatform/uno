@@ -22,6 +22,9 @@
 //
 // History:
 // - 2021/02/21 (jerome@platform.uno): Adjust for hard link to AppDomain.AssemblyLoad
+// - 2021/11/28 (jerome@platform.uno): Disable assembly loading for Uno's as loaded types are never used.
+
+// #define SUPPORTS_LOAD_ASSEMBLIES
 
 using System;
 using System.Collections.Generic;
@@ -74,6 +77,7 @@ namespace Uno.Xaml
 
 		private void RegisterAssemblyLoaded()
 		{
+#if SUPPORTS_LOAD_ASSEMBLIES
 			var that = new WeakReference<XamlSchemaContext>(this);
 
 			void Hook(object o, AssemblyLoadEventArgs e)
@@ -95,13 +99,16 @@ namespace Uno.Xaml
 			// Register the Hook method to the AssemblyLoad event, so there's no
 			// hard link between "this" and the AssemblyLoad event delegate.
 			AppDomain.CurrentDomain.AssemblyLoad += Hook;
+#endif
 		}
 
+#if SUPPORTS_LOAD_ASSEMBLIES
 		~XamlSchemaContext ()
 		{
 			if (reference_assemblies == null)
 				unhookAssemblyLoad?.Invoke();
 		}
+#endif
 
 		IList<Assembly> reference_assemblies;
 
@@ -113,7 +120,9 @@ namespace Uno.Xaml
 		XamlType [] empty_xaml_types = new XamlType [0];
 		List<XamlType> run_time_types = new List<XamlType> ();
 		object gate = new object();
+#if SUPPORTS_LOAD_ASSEMBLIES
 		Action unhookAssemblyLoad;
+#endif
 
 		public bool FullyQualifyAssemblyNamesInClrNamespaces { get; private set; }
 
@@ -321,6 +330,7 @@ namespace Uno.Xaml
 			}
 		}
 
+#if SUPPORTS_LOAD_ASSEMBLIES
 		void OnAssemblyLoaded (object o, AssemblyLoadEventArgs e)
 		{
 			if (reference_assemblies != null)
@@ -335,6 +345,7 @@ namespace Uno.Xaml
 			if (all_xaml_types != null)
 				FillAllXamlTypes (e.LoadedAssembly);
 		}
+#endif
 
 		// cache updater methods
 		void FillXamlNamespaces (Assembly ass)

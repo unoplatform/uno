@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.System.Threading;
-using Windows.UI.Core;
 
+#if HAS_UNO_WINUI && IS_UNO_UI_DISPATCHING_PROJECT
+namespace Microsoft.UI.Dispatching
+#else
 namespace Windows.System
+#endif
 {
 	partial class DispatcherQueueTimer
 	{
@@ -35,7 +37,7 @@ namespace Windows.System
 
 		private void DispatchRaiseTick()
 		{
-			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () => RaiseTick());
+			Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(Uno.UI.Dispatching.CoreDispatcherPriority.Normal, () => RaiseTick());
 		}
 
 		private void StopNative()

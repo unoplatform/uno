@@ -15,8 +15,8 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[TestMethod]
 		public void Should_Throw_When_RoundingAlgorithm_Is_None()
 		{
-			IncrementNumberRounder rounder = new IncrementNumberRounder();
-			Assert.ThrowsException<ArgumentException>(() => rounder.RoundingAlgorithm = RoundingAlgorithm.None);
+			var sut = new IncrementNumberRounder();
+			Assert.ThrowsException<ArgumentException>(() => sut.RoundingAlgorithm = RoundingAlgorithm.None);
 		}
 
 		[DataTestMethod]
@@ -35,15 +35,15 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(0.0000000001792794743833166, true)]
 		public void When_Increment_Is_Invalid_Then_Should_Throw(double increment, bool shouldThrow)
 		{
-			IncrementNumberRounder rounder = new IncrementNumberRounder();
+			var sut = new IncrementNumberRounder();
 
 			if (shouldThrow)
 			{
-				Assert.ThrowsException<ArgumentException>(() => rounder.Increment = increment);
+				Assert.ThrowsException<ArgumentException>(() => sut.Increment = increment);
 			}
 			else
 			{
-				rounder.Increment = increment;
+				sut.Increment = increment;
 			}
 		}
 
@@ -58,10 +58,10 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(1 + 1e-22, 1e-20, 1 + 1e-22)]
 		public void When_UsingVariousIncrements(double value, double increment, double expected)
 		{
-			IncrementNumberRounder rounder = new IncrementNumberRounder();
-			rounder.Increment = increment;
+			var sut = new IncrementNumberRounder();
+			sut.Increment = increment;
 
-			var rounded = rounder.RoundDouble(value);
+			var rounded = sut.RoundDouble(value);
 			Assert.AreEqual(expected, rounded);
 		}
 
@@ -159,11 +159,11 @@ namespace Uno.UI.Tests.Windows_Globalization
 
 		public void When_UsingARoundingAlgorithmCore(double value, RoundingAlgorithm roundingAlgorithm, double expected)
 		{
-			IncrementNumberRounder rounder = new IncrementNumberRounder();
-			rounder.Increment = 0.25;
-			rounder.RoundingAlgorithm = roundingAlgorithm;
+			var sut = new IncrementNumberRounder();
+			sut.Increment = 0.25;
+			sut.RoundingAlgorithm = roundingAlgorithm;
 
-			var rounded = rounder.RoundDouble(value);
+			var rounded = sut.RoundDouble(value);
 			Assert.AreEqual(expected, rounded);
 		}
 	}

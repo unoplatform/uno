@@ -2,35 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class GuidHelper 
+	public static partial class GuidHelper 
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::System.Guid Empty
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GuidHelper.Empty is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::System.Guid CreateNewGuid()
-		{
-			throw new global::System.NotImplementedException("The member Guid GuidHelper.CreateNewGuid() is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared property Empty
+		// Skipping already declared method Windows.Foundation.GuidHelper.CreateNewGuid()
 		// Forced skipping of method Windows.Foundation.GuidHelper.Empty.get
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool Equals(ref global::System.Guid target, ref global::System.Guid value)
-		{
-			throw new global::System.NotImplementedException("The member bool GuidHelper.Equals(ref Guid target, ref Guid value) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.Foundation.GuidHelper.Equals(ref System.Guid, ref System.Guid)
 	}
 }

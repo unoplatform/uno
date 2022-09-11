@@ -30,6 +30,9 @@ namespace Windows.UI.Xaml
 
 			internal void Clear()
 				=> _entries.Clear();
+
+			internal void Dispose()
+				=> _entries.Dispose();
 		}
 	}
 }

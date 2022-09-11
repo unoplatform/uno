@@ -12,7 +12,7 @@ Since the Uno.UI.RuntimeTests tests run in the platform environment using the re
 
 1. Build and launch the SamplesApp, following [the instructions here](working-with-the-samples-apps.md). Note: if you're testing a mobile platform, it's recommended to run on a tablet in landscape mode. On a phone-sized layout, a few tests will fail because they don't have enough space to measure properly.
 2. From the sample menu, navigate to 'Unit Tests' > 'Unit Tests Runner'.
-3. (Optional) Add a filter string; only tests matching the filter will be run. Otherwise, all tests will run.
+3. (Optional) Add a filter string in the text input control at the top of the page (for example the name or part of the name of your test method); only tests matching the filter will be run. Otherwise, all tests will run.
 4. Press the 'Run' button. Tests will run in sequence, and the results will be shown.
 
 ## Authoring tests

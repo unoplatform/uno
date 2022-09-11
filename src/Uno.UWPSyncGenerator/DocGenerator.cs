@@ -50,7 +50,7 @@ namespace Uno.UWPSyncGenerator
 
 			using (_sb.Section("List of views implemented in Uno"))
 			{
-				_sb.AppendParagraph("The Uno.UI assembly includes all types and members from the UWP API (as of the Windows 10 October 2018 Update (17763)). Only some of these are actually implemented. The remainder are marked with the `[NotImplemented]` attribute and will throw an exception at runtime if used.");
+				_sb.AppendParagraph("The Uno.UI assembly includes all types and members from the UWP API (as of the May 2019 Update (18362)). Only some of these are actually implemented. The remainder are marked with the `[NotImplemented]` attribute and will throw an exception at runtime if used.");
 
 				_sb.AppendParagraph("This page lists controls that are currently implemented in Uno. Navigate to individual control entries to see which properties, methods, and events are implemented for a given control.");
 
@@ -124,12 +124,12 @@ namespace Uno.UWPSyncGenerator
 							_sb.AppendParagraph($"*Implemented for:* {ToDisplayString(view.ImplementedForMain)}");
 
 							var baseDocLinkUrl = @"https://docs.microsoft.com/en-us/uwp/api/" + view.UAPSymbol.ToDisplayString().ToLowerInvariant();
-							_sb.AppendParagraph($"This document lists all properties, methods, and events of {formattedViewName} that are currently implemented by the Uno Platform. See the {Hyperlink("UWP documentation", baseDocLinkUrl)} for detailed usage guidelines. ");
+							_sb.AppendParagraph($"This document lists all properties, methods, and events of {formattedViewName} that are currently implemented by the Uno Platform. See the {Hyperlink("WinUI and UWP documentation", baseDocLinkUrl)} for detailed usage guidelines which all automatically apply to Uno Platform. ");
 
 							var customDocLink = GetCustomDocLink(viewName);
 							if (customDocLink != null)
 							{
-								_sb.AppendParagraph($"{formattedViewName} has Uno-specific documentation {Hyperlink("here", customDocLink)}.");
+								_sb.AppendParagraph($"In addition, {formattedViewName} has Uno-specific documentation {Hyperlink("here", customDocLink)}.");
 							}
 
 							var properties = view.UAPSymbol.GetMembers().OfType<IPropertySymbol>().Select(p => GetAllMatchingPropertyMember(view, p)).ToArray();
@@ -361,7 +361,7 @@ namespace Uno.UWPSyncGenerator
 			switch (implementedFor)
 			{
 				case ImplementedFor.Main:
-					return "all platforms";
+					return "all platforms supported by Uno Platform";
 				case ImplementedFor.Mobile:
 					return "Android, iOS";
 				case ImplementedFor.Xamarin:

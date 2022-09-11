@@ -1,5 +1,5 @@
 ﻿using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.UI.Controls;
 using System;
 using System.Linq;
@@ -27,22 +27,29 @@ namespace Windows.UI.Xaml.Controls
 		public Panel()
 		{
 			Initialize();
-
-			this.RegisterLoadActions(UpdateBorder, () => _borderRenderer.Clear());
-
 		}
 
 		protected override void OnChildViewAdded(View child)
 		{
-			var element = child as IFrameworkElement;
-
-			if (element != null)
+			if (child is IFrameworkElement element)
 			{
 				OnChildAdded(element);
 			}
+
+			base.OnChildViewAdded(child);
 		}
 
 		partial void Initialize();
+
+		partial void OnLoadedPartial()
+		{
+			UpdateBorder();
+		}
+
+		partial void OnUnloadedPartial()
+		{
+			_borderRenderer.Clear();
+		}
 
 		partial void UpdateBorder()
 		{
@@ -57,10 +64,10 @@ namespace Windows.UI.Xaml.Controls
 					this,
 					Background,
 					InternalBackgroundSizing,
-					BorderThickness,
-					BorderBrush,
-					CornerRadius,
-					Padding,
+					BorderThicknessInternal,
+					BorderBrushInternal,
+					CornerRadiusInternal,
+					PaddingInternal,
 					willUpdateMeasures
 				);
 			}
@@ -75,7 +82,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnDraw(Android.Graphics.Canvas canvas)
 		{
-			AdjustCornerRadius(canvas, CornerRadius);
+			AdjustCornerRadius(canvas, CornerRadiusInternal);
 		}
 
 		protected virtual void OnChildrenChanged()
@@ -147,6 +154,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadiusInternal != CornerRadius.None;
 	}
 }

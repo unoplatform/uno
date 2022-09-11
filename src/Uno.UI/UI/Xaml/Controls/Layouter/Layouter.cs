@@ -6,13 +6,13 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
-using Microsoft.Extensions.Logging;
+
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Uno;
 using Uno.Extensions;
-using Uno.Logging;
+using Uno.Foundation.Logging;
 using Uno.Collections;
 using Uno.Diagnostics.Eventing;
 using Uno.UI;
@@ -48,13 +48,13 @@ namespace Windows.UI.Xaml.Controls
 	internal abstract partial class Layouter : ILayouter
 	{
 		private static readonly IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
-		private readonly ILogger _logDebug;
+		private readonly Logger _logDebug;
 
 		private readonly Size MaxSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
 
 		internal Size _unclippedDesiredSize;
 
-		private UIElement _elementAsUIElement;
+		private readonly UIElement _elementAsUIElement;
 
 		public IFrameworkElement Panel { get; }
 
@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml.Controls
 				var desiredSize = MeasureOverride(frameworkAvailableSize);
 				LayoutInformation.SetAvailableSize(Panel, availableSize);
 
-				_logDebug?.LogTrace($"{this}.MeasureOverride(availableSize={availableSize}); frameworkAvailableSize={frameworkAvailableSize}; desiredSize={desiredSize}");
+				_logDebug?.Trace($"{this}.MeasureOverride(availableSize={availableSize}); frameworkAvailableSize={frameworkAvailableSize}; desiredSize={desiredSize}");
 
 				if (
 					double.IsNaN(desiredSize.Width)
@@ -128,7 +128,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				desiredSize = desiredSize
-					.AtLeast(minSize)
+					.AtLeast((Panel as ILayoutOptOut)?.ShouldUseMinSize == false ? Size.Empty : minSize)
 					.AtLeastZero();
 
 				_unclippedDesiredSize = desiredSize;
@@ -173,8 +173,6 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		public void Arrange(Rect finalRect)
 		{
-			LayoutInformation.SetLayoutSlot(Panel, finalRect);
-
 			using var traceActivity = _trace.IsEnabled
 				? _trace.WriteEventActivity(
 					FrameworkElement.TraceProvider.FrameworkElement_ArrangeStart,
@@ -190,7 +188,7 @@ namespace Windows.UI.Xaml.Controls
 					UIElement.IsLayoutingVisualTreeRoot = true;
 				}
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("[{0}/{1}] Arrange({2}/{3}/{4}/{5})", LoggingOwnerTypeName, Name, GetType(), Panel.Name, finalRect, Panel.Margin);
 				}
@@ -323,7 +321,7 @@ namespace Windows.UI.Xaml.Controls
 				// Note: Visibility is checked in both Measure and MeasureChild, since some IFrameworkElement children may not have their own Layouter
 				LayoutInformation.SetDesiredSize(view, ret);
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					var viewName = frameworkElement.SelectOrDefault(f => f.Name, "NativeView");
 
@@ -403,7 +401,7 @@ namespace Windows.UI.Xaml.Controls
 				IsPositiveInfinity(ret.Height) || IsPositiveInfinity(ret.Width)
 			)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 				{
 					var viewName = frameworkElement.SelectOrDefault(f => f.Name, "NativeView");
 					var margin = frameworkElement.SelectOrDefault(f => f.Margin, Thickness.Empty);
@@ -424,7 +422,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					var viewName = frameworkElement.SelectOrDefault(f => f.Name, "NativeView");
 					var margin = frameworkElement.SelectOrDefault(f => f.Margin, Thickness.Empty);
@@ -465,6 +463,9 @@ namespace Windows.UI.Xaml.Controls
 			{
 				return;
 			}
+
+			LayoutInformation.SetLayoutSlot(view, frame);
+
 			var (finalFrame, clippedFrame) = ApplyMarginAndAlignments(view, frame);
 			if (view is UIElement elt)
 			{
@@ -477,7 +478,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void LogArrange(View view, Rect frame)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				var viewName = (view as IFrameworkElement).SelectOrDefault(f => f.Name, "NativeView");
 				var margin = (view as IFrameworkElement).SelectOrDefault(f => f.Margin, Thickness.Empty);
@@ -527,17 +528,19 @@ namespace Windows.UI.Xaml.Controls
 
 				var childMaxHeight = frameworkElement.MaxHeight;
 				var childMaxWidth = frameworkElement.MaxWidth;
-				var childMinHeight = frameworkElement.MinHeight;
-				var childMinWidth = frameworkElement.MinWidth;
+				var (childMinHeight, childMinWidth) = (frameworkElement as ILayoutOptOut)?.ShouldUseMinSize == false
+					? (0, 0)
+					: (frameworkElement.MinHeight, frameworkElement.MinWidth);
 				var childWidth = frameworkElement.Width;
 				var childHeight = frameworkElement.Height;
 				var childMargin = frameworkElement.Margin;
+
 				var hasChildHeight = !IsNaN(childHeight);
 				var hasChildWidth = !IsNaN(childWidth);
 				var hasChildMaxWidth = !IsInfinity(childMaxWidth) && !IsNaN(childMaxWidth);
 				var hasChildMaxHeight = !IsInfinity(childMaxHeight) && !IsNaN(childMaxHeight);
-				var hasChildMinWidth = childMinWidth > 0.0f;
-				var hasChildMinHeight = childMinHeight > 0.0f;
+				var hasChildMinWidth = childMinWidth > 0.0;
+				var hasChildMinHeight = childMinHeight > 0.0;
 
 				if (
 					childVerticalAlignment != VerticalAlignment.Stretch

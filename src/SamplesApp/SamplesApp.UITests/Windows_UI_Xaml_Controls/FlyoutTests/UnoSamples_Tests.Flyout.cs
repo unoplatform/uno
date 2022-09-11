@@ -32,7 +32,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			//_app.WaitForElement(_app.Marked("BottomFlyout"));
 			//var flyoutRect = _app.Marked("BottomFlyout").FirstResult().Rect;
 
-			//// Assert initial state 
+			//// Assert initial state
 			//Assert.AreEqual("0", flyoutRect.X.ToString());
 		}
 
@@ -55,7 +55,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 			_app.FastTap(dataBoundButton);
 			Assert.AreEqual("Button was clicked", dataBoundText.GetText());
-			
+
 			_app.TapCoordinates(10, 100);
 		}
 
@@ -151,6 +151,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 				"BottomFlyoutButton",
 				"TopFlyoutButton",
 				//"FullFlyoutButton", // unclosable without native back button/gesture
+				//"FullFlyoutButtonNoConstraint", // unclosable without native back button/gesture
 				"CenteredFullFlyoutButton",
 				//"FullOverlayFlyoutButton", // unclosable without native back button/gesture
 				"WithOffsetFlyoutButton",
@@ -164,11 +165,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			foreach (var button in testableFlyoutButtons)
 			{
 				// show flyout
-				button.Value.Tap();
+				button.Value.FastTap();
 				using var flyoutOpenedScreenshot = TakeScreenshot($"{majorStepIndex} {button.Key} 0 Opened", ignoreInSnapshotCompare: true);
 
 				// dismiss flyout
 				_app.TapCoordinates(dismissArea.X, dismissArea.Y);
+				_app.Wait(1);
 				using var flyoutDismissedScreenshot = TakeScreenshot($"{majorStepIndex} {button.Key} 1 Dismissed", ignoreInSnapshotCompare: true);
 
 				// compare
@@ -201,7 +203,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			Run("UITests.Windows_UI_Xaml_Controls.Flyout.Flyout_TemplatedParent");
 
 			var button01 = _app.Marked("button01");
-			var innerTextBlock = _app.Marked("innerTextBlock");
+			var innerTextBlock = new QueryEx(q => q.All().Marked("innerTextBlock"));
 
 			_app.FastTap(button01);
 			_app.WaitForElement(innerTextBlock);
@@ -230,6 +232,21 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			_app.WaitForDependencyPropertyValue(result2, "Text", "Control1_Tag");
 
 			_app.FastTap(closeButton);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void Flyout_ShowAt_Window_Content()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.FlyoutTests.Flyout_ShowAt_Window_Content");
+
+			var windowButton = _app.Marked("WindowButton");
+
+			_app.WaitForElement(windowButton);
+			_app.FastTap(windowButton);
+
+			using var result = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
+			ImageAssert.HasColorAt(result, result.Width / 2, 150, Color.Red);
 		}
 	}
 }

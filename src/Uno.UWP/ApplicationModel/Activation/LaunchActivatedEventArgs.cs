@@ -21,38 +21,23 @@ namespace Windows.ApplicationModel.Activation
 #if !__ANDROID__ && !__IOS__
 		[NotImplemented]
 #endif
-		public ActivationKind Kind
-		{
-			get;
-		}
+		public ActivationKind Kind { get; } = ActivationKind.Launch;
 
 		/// <summary>
 		/// Defaults to NotRunning, may not be accurate in all cases for all platforms.
 		/// </summary>
-		public ApplicationExecutionState PreviousExecutionState { get; }
+		public ApplicationExecutionState PreviousExecutionState { get; } = ApplicationExecutionState.NotRunning;
 
 		[NotImplemented]
-		public SplashScreen SplashScreen
-		{
-			get;
-		}
+		public SplashScreen SplashScreen { get; } = new SplashScreen();
 
 		[NotImplemented]
-		public int CurrentlyShownApplicationViewId
-		{
-			get;
-		}
+		public int CurrentlyShownApplicationViewId { get; }
 
-		public string Arguments
-		{
-			get;
-		}
+		public string Arguments { get; } = "";
 
 		[NotImplemented]
-		public string TileId
-		{
-			get;
-		}
+		public string TileId { get; } = "App";
 
 		public bool PrelaunchActivated => false; // No platform other than UWP supports prelaunch yet.
 	}
