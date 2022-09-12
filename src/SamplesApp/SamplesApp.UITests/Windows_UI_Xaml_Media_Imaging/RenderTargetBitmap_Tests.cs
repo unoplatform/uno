@@ -8,7 +8,7 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Imaging
 {
 	[TestFixture]
-	[ActivePlatforms(Platform.iOS | Platform.Android)]
+	[ActivePlatforms(Platform.iOS, Platform.Android)]
 	public partial class RenderTargetBitmap_Tests : SampleControlUITestBase
 	{
 		private const int TestTimeout = 7 * 60 * 1000;
