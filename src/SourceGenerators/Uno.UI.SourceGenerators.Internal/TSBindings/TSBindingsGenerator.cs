@@ -8,11 +8,10 @@ using Microsoft.CodeAnalysis;
 using Uno.Extensions;
 using Uno.Foundation.Interop;
 using Uno.UI.SourceGenerators.Helpers;
+using Uno.Roslyn;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
-#else
-using Uno.Roslyn;
 #endif
 
 namespace Uno.UI.SourceGenerators.TSBindings
