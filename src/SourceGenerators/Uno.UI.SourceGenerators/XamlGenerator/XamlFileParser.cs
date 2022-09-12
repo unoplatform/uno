@@ -99,7 +99,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// Force the line info, otherwise it will be enabled only when the debugger is attached.
 				var settings = new XamlXmlReaderSettings() { ProvideLineInfo = true };
 
-				var document = ApplyIgnorables(file, sourceText, cancellationToken, out var disableCaching);
+				(XmlReader document, bool disableCaching) = ApplyIgnorables(file, sourceText, cancellationToken);
 
 				using (var reader = new XamlXmlReader(document, context, settings))
 				{
@@ -137,7 +137,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private XmlReader ApplyIgnorables(AdditionalText file, SourceText sourceText, CancellationToken cancellationToken, out bool disableCaching)
+		private (XmlReader Reader, bool DisableCaching) ApplyIgnorables(AdditionalText file, SourceText sourceText, CancellationToken cancellationToken)
 		{
 			var originalString = sourceText.ToString();
 			StringBuilder adjusted;
@@ -146,7 +146,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			document.LoadXml(originalString);
 
 			var (ignorables, shouldCreateIgnorable) = FindIgnorables(document);
-			var conditionals = FindConditionals(document, out disableCaching);
+			var conditionals = FindConditionals(document);
 
 			shouldCreateIgnorable |= conditionals.ExcludedConditionals.Count > 0;
 
@@ -155,7 +155,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (ignorables == null && !shouldCreateIgnorable && !hasxBind)
 			{
 				// No need to modify file
-				return XmlReader.Create(new StringReader(originalString));
+				return (XmlReader.Create(new StringReader(originalString)), conditionals.DisableCaching);
 			}
 
 			var originalIgnorables = ignorables?.Value ?? "";
@@ -266,7 +266,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				adjusted = new(XBindExpressionParser.RewriteDocumentPaths(adjusted.ToString()));
 			}
 
-			return XmlReader.Create(new StringReader(adjusted.ToString().TrimEnd("\r\n")));
+			return (XmlReader.Create(new StringReader(adjusted.ToString().TrimEnd("\r\n"))), conditionals.DisableCaching);
 		}
 
 		private static StringBuilder ReplaceFirst(string targetString, string oldValue, string newValue)
@@ -319,9 +319,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Returns those XAML namespace definitions for which a conditional is set, grouped by those for which the conditional returns true and
 		/// should be included, and those for which it returns fales and should be excluded.
 		/// </summary>
-		private (List<XmlAttribute> IncludedConditionals, List<XmlAttribute> ExcludedConditionals) FindConditionals(XmlDocument document, out bool disableCaching)
+		private (List<XmlAttribute> IncludedConditionals, List<XmlAttribute> ExcludedConditionals, bool DisableCaching) FindConditionals(XmlDocument document)
 		{
-			disableCaching = false;
+			var disableCaching = false;
 			var included = new List<XmlAttribute>();
 			var excluded = new List<XmlAttribute>();
 
@@ -340,9 +340,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					continue;
 				}
 
-				if (ShouldInclude(out var disableCaching1) is bool shouldInclude)
+				(bool? shouldInclude, bool disableCaching1) = ShouldInclude();
+				disableCaching = disableCaching || disableCaching1;
+				if (shouldInclude.HasValue)
 				{
-					if (shouldInclude)
+					if (shouldInclude.GetValueOrDefault())
 					{
 						included.Add(attr);
 					}
@@ -352,11 +354,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				disableCaching = disableCaching || disableCaching1;
-
-				bool? ShouldInclude(out bool disableCaching)
+				(bool? ShouldInclude, bool DisableCaching) ShouldInclude()
 				{
-					disableCaching = false;
 					var elements = valueSplit[1].Split('(', ',', ')');
 
 					var methodName = elements[0];
@@ -370,9 +369,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {attr.Value}");
 							}
 
-							return methodName == nameof(ApiInformation.IsApiContractPresent) ?
+							return (methodName == nameof(ApiInformation.IsApiContractPresent) ?
 								ApiInformation.IsApiContractPresent(elements[1], majorVersion) :
-								ApiInformation.IsApiContractNotPresent(elements[1], majorVersion);
+								ApiInformation.IsApiContractNotPresent(elements[1], majorVersion), false);
 						case nameof(ApiInformation.IsTypePresent):
 						case nameof(ApiInformation.IsTypeNotPresent):
 							if (elements.Length < 2)
@@ -380,17 +379,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {attr.Value}");
 							}
 							var expectedType = elements[1];
-							disableCaching = true;
-							return methodName == nameof(ApiInformation.IsTypePresent) ?
+							return (methodName == nameof(ApiInformation.IsTypePresent) ?
 								ApiInformation.IsTypePresent(elements[1], _metadataHelper) :
-								ApiInformation.IsTypeNotPresent(elements[1], _metadataHelper);
+								ApiInformation.IsTypeNotPresent(elements[1], _metadataHelper), true);
 						default:
-							return null;// TODO: support IsPropertyPresent
+							return (null, false);// TODO: support IsPropertyPresent
 					}
 				}
 			}
 
-			return (included, excluded);
+			return (included, excluded, disableCaching);
 		}
 
 		private XamlFileDefinition Visit(XamlXmlReader reader, string file)
