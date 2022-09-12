@@ -433,7 +433,7 @@ namespace SamplesApp
 				builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Information);
 
 				// Display Skia related information
-				builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Information);
+				builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Debug);
 
 				// builder.AddFilter("Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug );
 				// builder.AddFilter("Windows.UI.Xaml.Controls.PopupPanel", LogLevel.Debug );
