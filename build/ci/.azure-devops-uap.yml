@@ -19,7 +19,6 @@ jobs:
 
   steps:
   - checkout: self
-    clean: true
 
   - template: templates/nuget-cache.yml
     parameters:
@@ -36,7 +35,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /p:Configuration=Release /p:UnoTargetFrameworkOverride=uap10.0.18362 /detailedsummary /bl:$(build.artifactstagingdirectory)/build-uap.binlog
+      msbuildArguments: /r /m /p:Configuration=Release /p:UnoTargetFrameworkOverride=uap10.0.18362 /p:UnoDisableTargetFrameworksCIOverride=true /detailedsummary /bl:$(build.artifactstagingdirectory)/build-uap.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false
