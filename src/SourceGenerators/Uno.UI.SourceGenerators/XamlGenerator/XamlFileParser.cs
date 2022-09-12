@@ -32,7 +32,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _includeXamlNamespacesProperty;
 		private readonly string[] _excludeXamlNamespaces;
 		private readonly string[] _includeXamlNamespaces;
+
+		/// <summary>
+		/// Usages of this field should be careful, since we avoid xaml parse caching if we use it.
+		/// If the usage affects the parse result, you need to disable caching for the file.
+		/// </summary>
 		private readonly RoslynMetadataHelper _metadataHelper;
+
 		private int _depth;
 
 		public XamlFileParser(string excludeXamlNamespaces, string includeXamlNamespaces, RoslynMetadataHelper roslynMetadataHelper)
@@ -42,7 +48,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_includeXamlNamespacesProperty = includeXamlNamespaces;
 			_includeXamlNamespaces = includeXamlNamespaces.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-			
+
 			_metadataHelper = roslynMetadataHelper;
 		}
 
@@ -69,7 +75,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				Console.WriteLine("Pre-processing XAML file: {0}", file);
 #endif
 
-				var document = ApplyIgnorables(file, cancellationToken, out var sourceText);
+				var sourceText = file.GetText(cancellationToken)!;
+				if (sourceText is null)
+				{
+					throw new Exception($"Failed to read additional file '{file.Path}'");
+				}
+
 				var cachedFileKey = new CachedFileKey(_includeXamlNamespacesProperty, _excludeXamlNamespacesProperty, file.Path, sourceText.GetChecksum());
 				if (_cachedFiles.TryGetValue(cachedFileKey, out var cached))
 				{
@@ -88,6 +99,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// Force the line info, otherwise it will be enabled only when the debugger is attached.
 				var settings = new XamlXmlReaderSettings() { ProvideLineInfo = true };
 
+				var document = ApplyIgnorables(file, sourceText, cancellationToken, out var disableCaching);
+
 				using (var reader = new XamlXmlReader(document, context, settings))
 				{
 					if (reader.Read())
@@ -95,7 +108,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						cancellationToken.ThrowIfCancellationRequested();
 
 						var xamlFileDefinition = Visit(reader, file.Path);
-						_cachedFiles[cachedFileKey] = new CachedFile(DateTimeOffset.Now, xamlFileDefinition);
+						if (!disableCaching)
+						{
+							_cachedFiles[cachedFileKey] = new CachedFile(DateTimeOffset.Now, xamlFileDefinition);
+						}
+
 						return xamlFileDefinition;
 					}
 				}
@@ -120,16 +137,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private XmlReader ApplyIgnorables(AdditionalText file, CancellationToken cancellationToken, out SourceText sourceTextOut)
+		private XmlReader ApplyIgnorables(AdditionalText file, SourceText sourceText, CancellationToken cancellationToken, out bool disableCaching)
 		{
-			var sourceText = file.GetText(cancellationToken)!;
-			if (sourceText is null)
-			{
-				throw new Exception($"Failed to read additional file '{file.Path}'");
-			}
-
-			sourceTextOut = sourceText;
-
 			var originalString = sourceText.ToString();
 			StringBuilder adjusted;
 
@@ -137,7 +146,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			document.LoadXml(originalString);
 
 			var (ignorables, shouldCreateIgnorable) = FindIgnorables(document);
-			var conditionals = FindConditionals(document);
+			var conditionals = FindConditionals(document, out disableCaching);
 
 			shouldCreateIgnorable |= conditionals.ExcludedConditionals.Count > 0;
 
@@ -165,7 +174,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				ignorables.Value = newIgnoredFlat;
 
 #if DEBUG
-				Console.WriteLine("Ignorable XAML namespaces: {0} for {1}", ignorables.Value, file);
+				Console.WriteLine("Ignorable XAML namespaces: {0} for {1}", ignorables.Value, file.Path);
 #endif
 				adjusted = new StringBuilder(originalString);
 
@@ -310,8 +319,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Returns those XAML namespace definitions for which a conditional is set, grouped by those for which the conditional returns true and
 		/// should be included, and those for which it returns fales and should be excluded.
 		/// </summary>
-		private (List<XmlAttribute> IncludedConditionals, List<XmlAttribute> ExcludedConditionals) FindConditionals(XmlDocument document)
+		private (List<XmlAttribute> IncludedConditionals, List<XmlAttribute> ExcludedConditionals) FindConditionals(XmlDocument document, out bool disableCaching)
 		{
+			disableCaching = false;
 			var included = new List<XmlAttribute>();
 			var excluded = new List<XmlAttribute>();
 
@@ -330,7 +340,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					continue;
 				}
 
-				if (ShouldInclude() is bool shouldInclude)
+				if (ShouldInclude(out var disableCaching1) is bool shouldInclude)
 				{
 					if (shouldInclude)
 					{
@@ -342,8 +352,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				bool? ShouldInclude()
+				disableCaching = disableCaching || disableCaching1;
+
+				bool? ShouldInclude(out bool disableCaching)
 				{
+					disableCaching = false;
 					var elements = valueSplit[1].Split('(', ',', ')');
 
 					var methodName = elements[0];
@@ -367,6 +380,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {attr.Value}");
 							}
 							var expectedType = elements[1];
+							disableCaching = true;
 							return methodName == nameof(ApiInformation.IsTypePresent) ?
 								ApiInformation.IsTypePresent(elements[1], _metadataHelper) :
 								ApiInformation.IsTypeNotPresent(elements[1], _metadataHelper);
