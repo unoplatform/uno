@@ -315,7 +315,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			});
 			TestUtilities.SetAsVisualTreeRoot(colorPicker);
 
-			// Uno docs: Commented out as this require additional test infrastructure.
+			// Uno docs: Commented out as this requires additional test infrastructure.
 			//VisualTreeTestHelper.VerifyVisualTree(root: colorPicker, verificationFileNamePrefix: "ColorPicker");
 		}
 
