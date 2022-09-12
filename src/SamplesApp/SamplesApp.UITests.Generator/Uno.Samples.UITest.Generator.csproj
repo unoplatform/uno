@@ -16,7 +16,12 @@
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
 		<PackageReference Include="Uno.RoslynHelpers" Version="1.2.0-dev.10" />
 		<PackageReference Include="Microsoft.CodeAnalysis">
-			<Version>3.8.0</Version>
+
+			<!--
+			This version needs to be aligned with the CI build override MicrosoftNetCompilerVersionOverride, as long as
+			SnapShotTestGenerator uses an inner Roslyn Workspace to generate the snapshots test.
+			-->
+			<Version>4.0.1</Version>
 			
 			<!-- Workspaces need to be included (and without ExcludeAssets) to allow for SnapShotTestGenerator to run properly -->
 			<!--<ExcludeAssets>runtime</ExcludeAssets>-->

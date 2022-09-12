@@ -4,9 +4,11 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Newtonsoft.Json;
 using Uno.RoslynHelpers;
 using Uno.Samples.UITest.Generator.Helper;
 
@@ -30,9 +32,30 @@ namespace Uno.Samples.UITest.Generator
 #if DEBUG
 			// Debugger.Launch();
 #endif
-			if (context.Compilation.Assembly.Name == "SamplesApp.UITests")
+			try
 			{
-				GenerateTests(context, "Uno.UI.Samples");
+				if (context.Compilation.Assembly.Name == "SamplesApp.UITests")
+				{
+					GenerateTests(context, "Uno.UI.Samples");
+				}
+			}
+			catch(Exception e)
+			{
+				if (e is ReflectionTypeLoadException)
+				{
+					var typeLoadException = e as ReflectionTypeLoadException;
+					var loaderExceptions = typeLoadException.LoaderExceptions;
+
+					StringBuilder sb = new();
+					foreach (var loaderException in loaderExceptions)
+					{
+						sb.Append(loaderException.ToString());
+					}
+
+					throw new Exception(sb.ToString());
+				}
+
+				throw;
 			}
 		}
 
