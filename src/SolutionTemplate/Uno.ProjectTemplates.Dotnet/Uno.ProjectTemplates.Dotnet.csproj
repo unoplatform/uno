@@ -41,8 +41,8 @@
 			<PackagePath>content/xamarinforms-wasm</PackagePath>
 		</Content>
 		<Content Include="content\unoapp-uitest\**\*">
-		  <PackagePath>content\unoapp-uitest</PackagePath>
-		  <Pack>true</Pack>
+			<PackagePath>content\unoapp-uitest</PackagePath>
+			<Pack>true</Pack>
 		</Content>
 		<Content Include="content/xamarinforms-wasm/UnoXFQuickStart.Wasm/**/*.*">
 			<Pack>true</Pack>
@@ -118,6 +118,17 @@
 
 		<_UnoLibTemplateFiles Include="..\UnoLibraryTemplate\**" Exclude="@(_UnoLibTemplateFilesExclude)" />
 	</ItemGroup>
+	
+	<ItemGroup>
+		<_UnoUITestTemplateFilesExclude Include="..\UnoUITestTemplate\*.vstemplate" />
+		<_UnoUITestTemplateFilesExclude Include="..\UnoUITestTemplate\__*.png" />
+		<_UnoUITestTemplateFilesExclude Include="..\UnoUITestTemplate\obj\**" />
+		<_UnoUITestTemplateFilesExclude Include="..\UnoUITestTemplate\bin\**" />
+		<_UnoUITestTemplateFilesExclude Include="..\UnoUITestTemplate\Properties\**" />
+		<_UnoUITestTemplateFilesExclude Include="..\UnoUITestTemplate\UnoUITestTemplate.csproj" />
+		
+		<_UnoUITestTemplateFiles Include="..\UnoUITestTemplate\**" Exclude="@(_UnoUITestTemplateFilesExclude)" />
+	</ItemGroup>
 
 	<ItemGroup>
 	  <Content Update="content\unoapp-uwp\UnoQuickStart-vsmac.slnf">
@@ -187,6 +198,25 @@
 			<Content Include="$(IntermediateTemplatePath)/**/*.*">
 				<Pack>true</Pack>
 				<PackagePath>content/unolib</PackagePath>
+			</Content>
+		</ItemGroup>
+	</Target>
+
+	<Target Name="CopyUnoUITestTemplate" BeforeTargets="Build">
+		<PropertyGroup>
+			<IntermediateTemplatePath>$(IntermediateOutputPath)\unoapp-uitest</IntermediateTemplatePath>
+		</PropertyGroup>
+
+		<RemoveDir Directories="$(IntermediateTemplatePath)" />
+
+		<Copy SourceFiles="@(_UnoUITestTemplateFiles)" DestinationFolder="$(IntermediateTemplatePath)\%(RecursiveDir)" />
+
+		<ReplaceContent SourcePath="$(IntermediateTemplatePath)" SafeProjectName="UnoUITestsLibrary" IsWinUI="False" />
+
+		<ItemGroup>
+			<Content Include="$(IntermediateTemplatePath)/**/*.*">
+				<Pack>true</Pack>
+				<PackagePath>content/unoapp-uitest</PackagePath>
 			</Content>
 		</ItemGroup>
 	</Target>
