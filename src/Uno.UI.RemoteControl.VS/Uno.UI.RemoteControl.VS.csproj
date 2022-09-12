@@ -57,22 +57,6 @@
 		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
 
-	<Target Name="_ForceRemoveAnalyzers" BeforeTargets="CoreCompile" Condition="$([MSBuild]::IsOsPlatform('Linux'))">
-		<!-- Workaround for Linux and macos when building against mono where Analyzers 2.9.x depend on unknown members. This should not happen when building
-		     with "dotnet build"
-		  CSC : error AD0001: Analyzer 'Microsoft.VisualStudio.Threading.Analyzers.VSTHRD010VsServiceUsageAnalyzer' threw an exception of
-			type 'System.Exception' with message 'Analyzer failure while processing syntax at /workspace/uno/src/Uno.UI.RemoteControl.VS/EntryPoint.cs(49,4):
-			System.BadImageFormatException Could not resolve field token 0x0400007c, due to: Could not load type of field
-			'Microsoft.VisualStudio.Threading.Analyzers.Utils+<>c:<>9__18_0' (5) due to: Could not load file or assembly
-			'Microsoft.CodeAnalysis.Workspaces, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35' or one of
-			 its dependencies. assembly:/home/gitpod/.nuget/packages/microsoft.visualstudio.threading.analyzers/15.6.31/analyzers/cs/Microsoft.VisualStudio.Threading.Analyzers.dll
-			  type:<>c member:(null). Syntax: globalPropertiesProvider(OnProvideGlobalPropertiesAsync)'. [/workspace/uno/src/Uno.UI.RemoteControl.VS/Uno.UI.RemoteControl.VS.csproj]
-		-->
-		<ItemGroup>
-			<Analyzer Remove="@(Analyzer)" />
-		</ItemGroup>
-	</Target>
-
 	<!-- VS2022 build issue -->
 	<Target Name="GetTargetPath" />
 
