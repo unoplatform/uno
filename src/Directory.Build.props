@@ -190,7 +190,7 @@
 
   <PropertyGroup>
     <IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
-    <IsSampleProject>$(MSBuildProjectName.Contains('Sample'))</IsSampleProject>
+    <IsSampleProject>$(MSBuildProjectName.Contains('Sample')) or $(MSBuildProjectName.Contains('UnoIslands'))</IsSampleProject>
   </PropertyGroup>
 
   <PropertyGroup>
