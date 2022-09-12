@@ -67,6 +67,7 @@
 	  <Compile Include="..\Uno.UI.SourceGenerators\Helpers\DependenciesInitializer.cs" Link="Helpers\DependenciesInitializer.cs" />
 	  <Compile Include="..\Uno.UI.SourceGenerators\Helpers\DesignTimeHelper.cs" Link="Helpers\DesignTimeHelper.cs" />
 	  <Compile Include="..\Uno.UI.SourceGenerators\Helpers\GeneratorExecutionContextExtensions.cs" Link="Helpers\GeneratorExecutionContextExtensions.cs" />
+		<Compile Include="..\Uno.UI.SourceGenerators\Helpers\Nullable.cs" Link="Helpers\Nullable.cs" />
 	  <Compile Include="..\Uno.UI.SourceGenerators\Helpers\HashBuilder.cs" Link="Helpers\HashBuilder.cs" />
 	  <Compile Include="..\Uno.UI.SourceGenerators\Helpers\PlatformHelper.cs" Link="Helpers\PlatformHelper.cs" />
 	  <Compile Include="..\Uno.UI.SourceGenerators\Helpers\SymbolExtensions.cs" Link="Helpers\SymbolExtensions.cs" />
