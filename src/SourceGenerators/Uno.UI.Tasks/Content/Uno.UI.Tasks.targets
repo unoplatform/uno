@@ -102,7 +102,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <_SubstitutionFiles Include="$(BaseIntermediateOutputPath)\Substitutions\*.Substitutions.xml" />
+	  <_SubstitutionFiles Include="$(IntermediateOutputPath)\Substitutions\*.Substitutions.xml" />
 	</ItemGroup>
 
 	<LinkerDefinitionMergerTask_v0

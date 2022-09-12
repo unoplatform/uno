@@ -38,7 +38,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			private string? _defaultNamespace;
 			private string? _projectFullPath;
 			private string? _projectDirectory;
-			private string? _baseIntermediateOutputPath;
+			private string? _intermediateOutputPath;
 			private string? _intermediatePath;
 			private string? _assemblyName;
 			private INamedTypeSymbol? _dependencyObjectSymbol;
@@ -66,10 +66,10 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						_projectDirectory = Path.GetDirectoryName(_projectFullPath)
 							?? throw new InvalidOperationException($"MSBuild property MSBuildProjectFullPath value {_projectFullPath} is not valid");
 
-						_baseIntermediateOutputPath = context.GetMSBuildPropertyValue("BaseIntermediateOutputPath");
+						_intermediateOutputPath = context.GetMSBuildPropertyValue("IntermediateOutputPath");
 						_intermediatePath = Path.Combine(
 							_projectDirectory,
-							_baseIntermediateOutputPath
+							_intermediateOutputPath
 						);
 						_assemblyName = context.GetMSBuildPropertyValue("AssemblyName");
 						_namedSymbolsLookup = context.Compilation.GetSymbolNameLookup();
@@ -192,7 +192,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				writer.AppendLineIndented("using System.Diagnostics;");
 
 				writer.AppendLineIndented($"// _intermediatePath: {_intermediatePath}");
-				writer.AppendLineIndented($"// _baseIntermediateOutputPath: {_baseIntermediateOutputPath}");
+				writer.AppendLineIndented($"// _intermediateOutputPath: {_intermediateOutputPath}");
 
 				using (writer.BlockInvariant("namespace {0}", _defaultNamespace))
 				{
