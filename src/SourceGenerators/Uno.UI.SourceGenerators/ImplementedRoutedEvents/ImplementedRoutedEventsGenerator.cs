@@ -149,7 +149,7 @@ public class ImplementedRoutedEventsGenerator : ISourceGenerator
 		{
 			if (typeDeclaration.Modifiers.Any(SyntaxKind.PartialKeyword))
 			{
-				// We have partial modifier, now we check the parent.
+				// We have a partial modifier, now we check the parent.
 				// If the parent isn't TypeDeclarationSyntax (e.g, CompilationUnitSyntax or NamespaceDeclarationSyntax), then
 				// we are good. Otherwise, recurse.
 				return typeDeclaration.Parent is not TypeDeclarationSyntax parent || IsPartialChainOfTypes(parent);

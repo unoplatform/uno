@@ -86,11 +86,11 @@ namespace Windows.UI.Xaml
 
 	1. Add/uncomment the routed event flag in RoutedEventFlag class.
 	2. Add the event in the proper group within RoutedEventFlagExtensions.
-	3. Move the RoutedEvent property and the event itself from generated partial class to here and initialize accodringly.
+	3. Move the RoutedEvent property and the event itself from generated partial class to here and initialize accordingly.
 	4. Add the exact event type handling to UIElement.InvokeHandler method.
-	5. If the event does not have a OnXYZ method on UIElement, FrameworkElement or Control, you are done. Otherwise:
-	6. Update the code in ImplementedRoutedEventsGenerator to generate the flag correctly when one of the aforementioned classes has a override.
-	7. Add the handler attachment code in SubscribeToOverridenRoutedEvents in UIElement, FrameworkElement or Control (depending on which level the method is declared).
+	5. If the event does not have an OnXYZ method on UIElement, FrameworkElement, or Control, you are done. Otherwise:
+	6. Update the code in ImplementedRoutedEventsGenerator to generate the flag correctly when one of the aforementioned classes has an override.
+	7. Add the handler attachment code in SubscribeToOverridenRoutedEvents in UIElement, FrameworkElement, or Control (depending on which level the method is declared).
 	 
 	 */
 

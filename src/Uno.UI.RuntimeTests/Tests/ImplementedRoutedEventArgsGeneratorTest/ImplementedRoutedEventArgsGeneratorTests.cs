@@ -26,7 +26,7 @@ namespace Uno.UI.RuntimeTests.Tests.ImplementedRoutedEventArgsGeneratorTest
 		public void Given_Button()
 		{
 			// It's okay to adjust the following assert if more events are needed and implemented in the future.
-			// This test is focused more of the source generator rather than Button functionality.
+			// This test is focused more on the source generator rather than the Button functionality.
 			AssertRoutedEvent(typeof(Button), RoutedEventFlag.PointerEntered | RoutedEventFlag.PointerPressed | RoutedEventFlag.PointerReleased | RoutedEventFlag.PointerExited | RoutedEventFlag.PointerMoved | RoutedEventFlag.PointerCaptureLost | RoutedEventFlag.KeyDown | RoutedEventFlag.KeyUp | RoutedEventFlag.GotFocus | RoutedEventFlag.LostFocus);
 		}
 	}
