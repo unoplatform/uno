@@ -2,69 +2,29 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Gaming.Input
 {
-	#if false
-	#if false
-	[global::Uno.NotImplemented]
-	#endif
-	public   enum GamepadButtons 
+	#if false || false || false || false || false || false || false
+	[global::System.FlagsAttribute]
+	public   enum GamepadButtons : uint
 	{
-		#if false
-		None,
-		#endif
-		#if false
-		Menu,
-		#endif
-		#if false
-		View,
-		#endif
-		#if false
-		A,
-		#endif
-		#if false
-		B,
-		#endif
-		#if false
-		X,
-		#endif
-		#if false
-		Y,
-		#endif
-		#if false
-		DPadUp,
-		#endif
-		#if false
-		DPadDown,
-		#endif
-		#if false
-		DPadLeft,
-		#endif
-		#if false
-		DPadRight,
-		#endif
-		#if false
-		LeftShoulder,
-		#endif
-		#if false
-		RightShoulder,
-		#endif
-		#if false
-		LeftThumbstick,
-		#endif
-		#if false
-		RightThumbstick,
-		#endif
-		#if false
-		Paddle1,
-		#endif
-		#if false
-		Paddle2,
-		#endif
-		#if false
-		Paddle3,
-		#endif
-		#if false
-		Paddle4,
-		#endif
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.None
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.Menu
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.View
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.A
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.B
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.X
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.Y
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.DPadUp
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.DPadDown
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.DPadLeft
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.DPadRight
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.LeftShoulder
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.RightShoulder
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.LeftThumbstick
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.RightThumbstick
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.Paddle1
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.Paddle2
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.Paddle3
+		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.Paddle4
 	}
 	#endif
 }

@@ -302,6 +302,43 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		}
 
 		[TestMethod]
+		public void When_CustomResource()
+		{
+			var savedState = Windows.UI.Xaml.Resources.CustomXamlResourceLoader.Current;
+			try
+			{
+				var loader = new TestCustomXamlResourceLoader();
+				var resourceValue = "This is a CustomResource.";
+				var resourceKey = "myCustomResource";
+				loader.TestCustomResources[resourceKey] = resourceValue;
+				Windows.UI.Xaml.Resources.CustomXamlResourceLoader.Current = loader;
+
+				var s = GetContent(nameof(When_CustomResource));
+				var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as Page;
+
+				Assert.IsNotNull(r);
+
+				var tb = r.Content as TextBlock;
+
+				Assert.IsNotNull(tb);
+				Assert.AreEqual(resourceValue, tb.Text);
+
+				var objectType = tb.GetType().FullName;
+				var propertyName = nameof(tb.Text);
+				var propertyType = tb.Text.GetType().FullName;
+
+				Assert.AreEqual(loader.LastResourceId, resourceKey);
+				Assert.AreEqual(loader.LastObjectType, objectType);
+				Assert.AreEqual(loader.LastPropertyName, propertyName);
+				Assert.AreEqual(loader.LastPropertyType, propertyType);
+			}
+			finally
+			{
+				Windows.UI.Xaml.Resources.CustomXamlResourceLoader.Current = savedState;
+			}
+		}
+
+		[TestMethod]
 		public void When_TextBlock_Basic()
 		{
 			var s = GetContent(nameof(When_TextBlock_Basic));

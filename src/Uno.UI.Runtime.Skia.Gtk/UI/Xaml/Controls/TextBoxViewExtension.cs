@@ -422,17 +422,14 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 
 		public void SetForeground(Windows.UI.Xaml.Media.Brush brush)
 		{
-			if (brush is SolidColorBrush scb)
+			if (_currentInputWidget is not null && brush is SolidColorBrush scb)
 			{
-#pragma warning disable CS0612 // Suppress Type or member is obsolete. This is a GtkSharp issue https://github.com/GtkSharp/GtkSharp/issues/362
-				_currentInputWidget?.OverrideColor(StateFlags.Normal, new Gdk.RGBA
-				{
-					Red = scb.ColorWithOpacity.R,
-					Green = scb.ColorWithOpacity.G,
-					Blue = scb.ColorWithOpacity.B,
-					Alpha = scb.ColorWithOpacity.A
-				});
-#pragma warning restore CS0612 // Type or member is obsolete
+				var provider = new CssProvider();
+				var color = $"rgba({scb.ColorWithOpacity.R},{scb.ColorWithOpacity.G},{scb.ColorWithOpacity.B},{scb.ColorWithOpacity.A})";
+				var data = $".textbox_foreground {{ caret-color: {color}; color: {color} }}";
+				provider.LoadFromData(data);
+				StyleContext.AddProviderForScreen(Gdk.Screen.Default, provider, priority: uint.MaxValue);
+				_currentInputWidget.StyleContext.AddClass("textbox_foreground");
 			}
 		}
 	}

@@ -15,7 +15,7 @@
 							Or '$(LangVersion)' == 'default'
 							Or (
 								'$(LangVersion)'!=''
-								and $([MSBuild]::VersionGreaterThan($(LangVersion), '9.0'))
+								and '$(LangVersion)' &gt; '9.0'
 							)">true</_canUseRoslynAnalyzer>
 
 		<UnoUIUseRoslynSourceGenerators Condition="'$(UnoUIUseRoslynSourceGenerators)'=='' and '$(_isRoslynAnalyzerAvailable)' == 'true' and '$(_canUseRoslynAnalyzer)'=='true'">true</UnoUIUseRoslynSourceGenerators>
@@ -29,6 +29,53 @@
 		<XamarinProjectType Condition="'$(TargetFramework)'=='net461'">net461</XamarinProjectType>
 	</PropertyGroup>
 
+  <ItemGroup Condition="'$(WindowsAppSDKWinUI)'!='true'">
+		<CompilerVisibleProperty Include="TargetPlatformIdentifier" />
+		<CompilerVisibleProperty Include="TargetFramework" />
+		<CompilerVisibleProperty Include="ProjectTypeGuidsProperty" />
+		<CompilerVisibleProperty Include="MSBuildProjectFullPath" />
+		<CompilerVisibleProperty Include="RootNamespace" />
+		<CompilerVisibleProperty Include="DefineConstantsProperty" />
+		<CompilerVisibleProperty Include="Configuration" />
+		<CompilerVisibleProperty Include="IntermediateOutputPath" />
+		<CompilerVisibleProperty Include="AndroidApplication" />
+		<CompilerVisibleProperty Include="OutputType" />
+		<CompilerVisibleProperty Include="MSBuildProjectName" />
+		<CompilerVisibleProperty Include="BuildingProject" />
+		<CompilerVisibleProperty Include="DesignTimeBuild" />
+		<CompilerVisibleProperty Include="UnoUISourceGeneratorDebuggerBreak" />
+		<CompilerVisibleProperty Include="UnoXamlHistoricalOutputGenerationPath" />
+		<CompilerVisibleProperty Include="IsHotReloadHost" />
+
+		<CompilerVisibleProperty Include="UseWPF" />
+		<CompilerVisibleProperty Include="IsUnoHead" />
+		<CompilerVisibleProperty Include="WindowsAppSDKWinUI" />
+		<CompilerVisibleProperty Include="UnoRemoteControlPort" />
+		<CompilerVisibleProperty Include="UnoRemoteControlHost" />
+		<CompilerVisibleProperty Include="UnoRemoteControlProcessorsPath" />
+		<CompilerVisibleProperty Include="TSBindingsPath" />
+		<CompilerVisibleProperty Include="UseUnoXamlParser" />
+		<CompilerVisibleProperty Include="UnoSkipUserControlsInVisualTree" />
+		<CompilerVisibleProperty Include="ShouldWriteErrorOnInvalidXaml" />
+		<CompilerVisibleProperty Include="IsUiAutomationMappingEnabled" />
+		<CompilerVisibleProperty Include="ShouldAnnotateGeneratedXaml" />
+		<CompilerVisibleProperty Include="DefaultLanguage" />
+		<CompilerVisibleProperty Include="UnoPlatformTelemetryOptOut" />
+		<CompilerVisibleProperty Include="ExcludeXamlNamespacesProperty" />
+		<CompilerVisibleProperty Include="IncludeXamlNamespacesProperty" />
+		<CompilerVisibleProperty Include="XamlGeneratorAnalyzerSuppressionsProperty" />
+		<CompilerVisibleProperty Include="LegacyTypesProperty" />
+		<CompilerVisibleProperty Include="UnoXamlResourcesTrimming"/>
+		<CompilerVisibleProperty Include="BaseIntermediateOutputPath"/>
+		<CompilerVisibleProperty Include="AssemblyName"/>
+
+	  <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
+	  <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Link" />
+	  <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="FullPath" />
+	  <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Identity" />
+	  <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="XamlRuntime" />
+  </ItemGroup>
+
 	<Choose>
 		<When Condition="'$(UnoUIUseRoslynSourceGenerators)'=='true' and '$(WindowsAppSDKWinUI)'!='true'">
 			<!-- C# 9.0 Generator -->
@@ -36,53 +83,6 @@
 			<PropertyGroup>
 				<UnoUIUseRoslynSourceGeneratorsValue>$(UnoUIUseRoslynSourceGenerators)</UnoUIUseRoslynSourceGeneratorsValue>
 			</PropertyGroup>
-
-			<ItemGroup>
-				<CompilerVisibleProperty Include="TargetPlatformIdentifier" />
-				<CompilerVisibleProperty Include="TargetFramework" />
-				<CompilerVisibleProperty Include="ProjectTypeGuidsProperty" />
-				<CompilerVisibleProperty Include="MSBuildProjectFullPath" />
-				<CompilerVisibleProperty Include="RootNamespace" />
-				<CompilerVisibleProperty Include="DefineConstantsProperty" />
-				<CompilerVisibleProperty Include="Configuration" />
-				<CompilerVisibleProperty Include="IntermediateOutputPath" />
-				<CompilerVisibleProperty Include="AndroidApplication" />
-				<CompilerVisibleProperty Include="OutputType" />
-				<CompilerVisibleProperty Include="MSBuildProjectName" />
-				<CompilerVisibleProperty Include="BuildingProject" />
-				<CompilerVisibleProperty Include="DesignTimeBuild" />
-				<CompilerVisibleProperty Include="UnoUISourceGeneratorDebuggerBreak" />
-				<CompilerVisibleProperty Include="UnoXamlHistoricalOutputGenerationPath" />
-				<CompilerVisibleProperty Include="IsHotReloadHost" />
-
-				<CompilerVisibleProperty Include="UseWPF" />
-				<CompilerVisibleProperty Include="IsUnoHead" />
-				<CompilerVisibleProperty Include="WindowsAppSDKWinUI" />
-				<CompilerVisibleProperty Include="UnoRemoteControlPort" />
-				<CompilerVisibleProperty Include="UnoRemoteControlHost" />
-				<CompilerVisibleProperty Include="UnoRemoteControlProcessorsPath" />
-				<CompilerVisibleProperty Include="TSBindingsPath" />
-				<CompilerVisibleProperty Include="UseUnoXamlParser" />
-				<CompilerVisibleProperty Include="UnoSkipUserControlsInVisualTree" />
-				<CompilerVisibleProperty Include="ShouldWriteErrorOnInvalidXaml" />
-				<CompilerVisibleProperty Include="IsUiAutomationMappingEnabled" />
-				<CompilerVisibleProperty Include="ShouldAnnotateGeneratedXaml" />
-				<CompilerVisibleProperty Include="DefaultLanguage" />
-				<CompilerVisibleProperty Include="UnoPlatformTelemetryOptOut" />
-				<CompilerVisibleProperty Include="ExcludeXamlNamespacesProperty" />
-				<CompilerVisibleProperty Include="IncludeXamlNamespacesProperty" />
-				<CompilerVisibleProperty Include="XamlGeneratorAnalyzerSuppressionsProperty" />
-				<CompilerVisibleProperty Include="LegacyTypesProperty" />
-				<CompilerVisibleProperty Include="UnoXamlResourcesTrimming"/>
-				<CompilerVisibleProperty Include="BaseIntermediateOutputPath"/>
-				<CompilerVisibleProperty Include="AssemblyName"/>
-
-				<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
-				<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Link" />
-				<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="FullPath" />
-				<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Identity" />
-				<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="XamlRuntime" />
-			</ItemGroup>
 
 		</When>
 		<Otherwise>
@@ -128,15 +128,33 @@
 
 		<!-- iOS -->
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="android" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="wasm" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="macos" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="skia" />
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='ios'" Include="not_ios" />
 		<!-- macOS -->
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="android" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="ios" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="wasm" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="skia" />
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='macos'" Include="not_macos" />
 		<!-- Android -->
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="ios" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="wasm" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="macos" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="skia" />
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='android'" Include="not_android" />
 		<!--WASM-->
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="android" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="ios" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="macos" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="skia" />
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='wasm'" Include="not_wasm" />
 		<!--Skia-->
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="android" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="ios" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="wasm" />
+		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="macos" />
 		<ExcludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_skia" />
 
 		<!-- 

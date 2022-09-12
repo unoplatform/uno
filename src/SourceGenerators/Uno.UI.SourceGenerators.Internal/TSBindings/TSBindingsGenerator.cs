@@ -37,7 +37,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			if (!DesignTimeHelper.IsDesignTime(context) && PlatformHelper.IsValidPlatform(context))
 			{
 				_bindingsPaths = context.GetMSBuildPropertyValue("TSBindingsPath")?.ToString();
-				_sourceAssemblies = context.GetMSBuildItems("TSBindingAssemblySource").Select(i => i.Identity).ToArray();
+				_sourceAssemblies = context.GetMSBuildItemsWithAdditionalFiles("TSBindingAssemblySource").Select(i => Path.GetFileName(i.Identity)).ToArray();
 
 				if (!string.IsNullOrEmpty(_bindingsPaths))
 				{

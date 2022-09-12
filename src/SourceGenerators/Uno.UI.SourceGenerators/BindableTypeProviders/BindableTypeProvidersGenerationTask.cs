@@ -472,7 +472,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						{
 							var propertyName = dependencyProperty.TrimEnd("Property");
 
-							var getMethod = ownerType.GetMethods().FirstOrDefault(m => m.Name == "Get" + propertyName && m.Parameters.Length == 1 && m.IsLocallyPublic(_currentModule!));
+							var getMethod = ownerType.GetMethodsWithName("Get" + propertyName).FirstOrDefault(m => m.Parameters.Length == 1 && m.IsLocallyPublic(_currentModule!));
 
 							if (getMethod == null)
 							{
