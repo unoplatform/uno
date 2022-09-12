@@ -290,7 +290,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 				for (int j = 0; j < wordCount; j++)
 				{
 					sb.Append(wordCount);
-					sb.Append(" ");
+					sb.Append(' ');
 				}
 				yield return sb.ToString();
 			}
