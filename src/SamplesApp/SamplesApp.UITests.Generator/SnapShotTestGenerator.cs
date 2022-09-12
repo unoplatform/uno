@@ -22,7 +22,7 @@ namespace Uno.Samples.UITest.Generator
 
 		public void Initialize(GeneratorInitializationContext context)
 		{
-
+			UI.SourceGenerators.DependenciesInitializer.Init();
 		}
 
 		public void Execute(GeneratorExecutionContext context)
