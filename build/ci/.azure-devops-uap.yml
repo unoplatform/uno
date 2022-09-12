@@ -26,6 +26,9 @@ jobs:
 
   - template: templates/gitversion.yml
 
+  # Required until Uno.Xaml can build without all targets enabled
+  - template: jdk-setup.yml
+
   - powershell: .\build\Install-WindowsSdkISO.ps1 18362
     displayName: Insider SDK
 
