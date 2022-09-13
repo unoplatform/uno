@@ -261,14 +261,14 @@ public partial class UIElement : DependencyObject
 		return managedId.Id;
 	}
 
-	public static void RemoveActivePointer(PointerIdentifier managedId)
+	internal static void RemoveActivePointer(PointerIdentifier managedId)
 	{
 		if (_managedToNativePointerId.TryGetValue(managedId, out var nativeId))
 		{
 			_managedToNativePointerId.Remove(managedId);
 			_nativeToManagedPointerId.Remove(nativeId);
 
-			if (_managedToNativePointerId is {Count: 0})
+			if (_managedToNativePointerId.Count == 0)
 			{
 				_lastUsedId = 0; // We reset the pointer ID only when there is no active pointer.
 			}
