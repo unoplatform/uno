@@ -12,7 +12,7 @@ using Uno.SourceGeneration;
 
 namespace Uno.UI.SourceGenerators
 {
-	public abstract class AbstractNamedTypeSymbolGenerator<TInitializationDataCollector, TExecutionDataCollector> : ISourceGenerator
+	public abstract class ClassBasedSymbolSourceGenerator<TInitializationDataCollector, TExecutionDataCollector> : ISourceGenerator
 		where TInitializationDataCollector : struct
 		where TExecutionDataCollector : struct
 	{
@@ -47,7 +47,7 @@ namespace Uno.UI.SourceGenerators
 			}
 		}
 
-		private protected abstract SymbolGenerator<TInitializationDataCollector, TExecutionDataCollector> GetGenerator(GeneratorExecutionContext context, TInitializationDataCollector initializationCollector, TExecutionDataCollector executionCollector);
+		private protected abstract ClassSymbolBasedGenerator<TInitializationDataCollector, TExecutionDataCollector> GetGenerator(GeneratorExecutionContext context, TInitializationDataCollector initializationCollector, TExecutionDataCollector executionCollector);
 		public abstract bool IsCandidateSymbolInRoslynInitialization(INamedTypeSymbol symbol, TInitializationDataCollector collector);
 		public abstract bool IsCandidateSymbolInRoslynExecution(GeneratorExecutionContext context, INamedTypeSymbol symbol, TExecutionDataCollector collector);
 		public abstract TInitializationDataCollector GetInitializationDataCollector(Compilation compilation);
@@ -55,10 +55,10 @@ namespace Uno.UI.SourceGenerators
 #if !NETFRAMEWORK
 		private sealed class ClassSyntaxReceiver : ISyntaxContextReceiver
 		{
-			private readonly AbstractNamedTypeSymbolGenerator<TInitializationDataCollector, TExecutionDataCollector> _generator;
+			private readonly ClassBasedSymbolSourceGenerator<TInitializationDataCollector, TExecutionDataCollector> _generator;
 			private TInitializationDataCollector? _collector;
 
-			public ClassSyntaxReceiver(AbstractNamedTypeSymbolGenerator<TInitializationDataCollector, TExecutionDataCollector> generator)
+			public ClassSyntaxReceiver(ClassBasedSymbolSourceGenerator<TInitializationDataCollector, TExecutionDataCollector> generator)
 			{
 				_generator = generator;
 			}

@@ -9,7 +9,7 @@ using Uno.SourceGeneration;
 
 namespace Uno.UI.SourceGenerators
 {
-	internal abstract class SymbolGenerator<TInitializationDataCollector, TExecutionDataCollector>
+	internal abstract class ClassSymbolBasedGenerator<TInitializationDataCollector, TExecutionDataCollector>
 #if NETFRAMEWORK
 		: SymbolVisitor
 #endif
@@ -19,13 +19,13 @@ namespace Uno.UI.SourceGenerators
 		protected GeneratorExecutionContext Context { get; }
 		protected TInitializationDataCollector InitializationDataCollector { get; }
 		protected TExecutionDataCollector ExecutionDataCollector { get; }
-		private readonly AbstractNamedTypeSymbolGenerator<TInitializationDataCollector, TExecutionDataCollector> _generator;
+		private readonly ClassBasedSymbolSourceGenerator<TInitializationDataCollector, TExecutionDataCollector> _generator;
 
-		protected SymbolGenerator(
+		protected ClassSymbolBasedGenerator(
 			GeneratorExecutionContext context,
 			TInitializationDataCollector initCollector,
 			TExecutionDataCollector execCollector,
-			AbstractNamedTypeSymbolGenerator<TInitializationDataCollector, TExecutionDataCollector> generator)
+			ClassBasedSymbolSourceGenerator<TInitializationDataCollector, TExecutionDataCollector> generator)
 		{
 			Context = context;
 			InitializationDataCollector = initCollector;
@@ -52,39 +52,42 @@ namespace Uno.UI.SourceGenerators
 		}
 
 #if NETFRAMEWORK
-			public override void VisitNamedType(INamedTypeSymbol type)
+		public override void VisitNamedType(INamedTypeSymbol type)
+		{
+			Context.CancellationToken.ThrowIfCancellationRequested();
+
+			foreach (var t in type.GetTypeMembers())
 			{
-				Context.CancellationToken.ThrowIfCancellationRequested();
+				VisitNamedType(t);
+			}
 
-				foreach (var t in type.GetTypeMembers())
-				{
-					VisitNamedType(t);
-				}
-
+			if (type.TypeKind == TypeKind.Class)
+			{
 				ProcessType(type);
 			}
+		}
 
-			public override void VisitModule(IModuleSymbol symbol)
+		public override void VisitModule(IModuleSymbol symbol)
+		{
+			Context.CancellationToken.ThrowIfCancellationRequested();
+
+			VisitNamespace(symbol.GlobalNamespace);
+		}
+
+		public override void VisitNamespace(INamespaceSymbol symbol)
+		{
+			Context.CancellationToken.ThrowIfCancellationRequested();
+
+			foreach (var n in symbol.GetNamespaceMembers())
 			{
-				Context.CancellationToken.ThrowIfCancellationRequested();
-
-				VisitNamespace(symbol.GlobalNamespace);
+				VisitNamespace(n);
 			}
 
-			public override void VisitNamespace(INamespaceSymbol symbol)
+			foreach (var t in symbol.GetTypeMembers())
 			{
-				Context.CancellationToken.ThrowIfCancellationRequested();
-
-				foreach (var n in symbol.GetNamespaceMembers())
-				{
-					VisitNamespace(n);
-				}
-
-				foreach (var t in symbol.GetTypeMembers())
-				{
-					VisitNamedType(t);
-				}
+				VisitNamedType(t);
 			}
+		}
 #endif
 	}
 }

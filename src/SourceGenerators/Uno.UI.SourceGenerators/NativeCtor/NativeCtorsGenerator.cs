@@ -52,7 +52,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 #if NETFRAMEWORK
 	[GenerateAfter("Uno.UI.SourceGenerators.XamlGenerator." + nameof(XamlGenerator.XamlCodeGenerator))]
 #endif
-	public class NativeCtorsGenerator : AbstractNamedTypeSymbolGenerator<NativeCtorInitializationDataCollector, NativeCtorExecutionDataCollector>
+	public class NativeCtorsGenerator : ClassBasedSymbolSourceGenerator<NativeCtorInitializationDataCollector, NativeCtorExecutionDataCollector>
 	{
 		public override NativeCtorExecutionDataCollector GetExecutionDataCollector(GeneratorExecutionContext context) => new NativeCtorExecutionDataCollector(context);
 		public override NativeCtorInitializationDataCollector GetInitializationDataCollector(Compilation compilation) => new NativeCtorInitializationDataCollector(compilation);
@@ -124,13 +124,13 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 			}
 		}
 
-		private protected override SymbolGenerator<NativeCtorInitializationDataCollector, NativeCtorExecutionDataCollector> GetGenerator(
+		private protected override ClassSymbolBasedGenerator<NativeCtorInitializationDataCollector, NativeCtorExecutionDataCollector> GetGenerator(
 			GeneratorExecutionContext context,
 			NativeCtorInitializationDataCollector initializationCollector,
 			NativeCtorExecutionDataCollector executionCollector)
 			=> new SerializationMethodsGenerator(context, initializationCollector, executionCollector, this);
 
-		private sealed class SerializationMethodsGenerator : SymbolGenerator<NativeCtorInitializationDataCollector, NativeCtorExecutionDataCollector>
+		private sealed class SerializationMethodsGenerator : ClassSymbolBasedGenerator<NativeCtorInitializationDataCollector, NativeCtorExecutionDataCollector>
 		{
 			public SerializationMethodsGenerator(
 				GeneratorExecutionContext context,

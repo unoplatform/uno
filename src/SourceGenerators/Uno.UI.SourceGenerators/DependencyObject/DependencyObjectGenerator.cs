@@ -59,7 +59,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 	}
 
 	[Generator]
-	public partial class DependencyObjectGenerator : AbstractNamedTypeSymbolGenerator<DependencyObjectInitializationDataCollector, DependencyObjectExecutionDataCollector>
+	public partial class DependencyObjectGenerator : ClassBasedSymbolSourceGenerator<DependencyObjectInitializationDataCollector, DependencyObjectExecutionDataCollector>
 	{
 		public override DependencyObjectInitializationDataCollector GetInitializationDataCollector(Compilation compilation) => new DependencyObjectInitializationDataCollector(compilation);
 
@@ -102,10 +102,10 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			return true;
 		}
 
-		private protected override SymbolGenerator<DependencyObjectInitializationDataCollector, DependencyObjectExecutionDataCollector> GetGenerator(GeneratorExecutionContext context, DependencyObjectInitializationDataCollector initializationCollector, DependencyObjectExecutionDataCollector executionCollector)
+		private protected override ClassSymbolBasedGenerator<DependencyObjectInitializationDataCollector, DependencyObjectExecutionDataCollector> GetGenerator(GeneratorExecutionContext context, DependencyObjectInitializationDataCollector initializationCollector, DependencyObjectExecutionDataCollector executionCollector)
 			=> new SerializationMethodsGenerator(context, initializationCollector, executionCollector, this);
 
-		private sealed class SerializationMethodsGenerator : SymbolGenerator<DependencyObjectInitializationDataCollector, DependencyObjectExecutionDataCollector>
+		private sealed class SerializationMethodsGenerator : ClassSymbolBasedGenerator<DependencyObjectInitializationDataCollector, DependencyObjectExecutionDataCollector>
 		{
 			public SerializationMethodsGenerator(
 				GeneratorExecutionContext context,
