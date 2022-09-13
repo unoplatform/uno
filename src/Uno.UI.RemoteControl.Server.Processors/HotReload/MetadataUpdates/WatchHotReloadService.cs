@@ -40,7 +40,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			public override int GetHashCode() => HashCode.Combine(ModuleId, ILDelta, MetadataDelta, PdbDelta);
 
 			public static bool operator ==(Update left, Update right) => left.Equals(right);
-			public static bool operator !=(Update left, Update right) => !(left == right);
+			public static bool operator !=(Update left, Update right) => !left.Equals(right);
 		}
 
 		public WatchHotReloadService(HostWorkspaceServices services, string[] metadataUpdateCapabilities)

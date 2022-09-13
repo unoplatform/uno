@@ -59,6 +59,6 @@ namespace Windows.UI.Input
 		}
 
 		public static bool operator ==(ManipulationVelocities left, ManipulationVelocities right) => left.Equals(right);
-		public static bool operator !=(ManipulationVelocities left, ManipulationVelocities right) => !(left == right);
+		public static bool operator !=(ManipulationVelocities left, ManipulationVelocities right) => !left.Equals(right);
 	}
 }

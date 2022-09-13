@@ -21,6 +21,6 @@ namespace Windows.Devices.Geolocation
 		}
 
 		public static bool operator ==(BasicGeoposition left, BasicGeoposition right) => left.Equals(right);
-		public static bool operator !=(BasicGeoposition left, BasicGeoposition right) => !(left == right);
+		public static bool operator !=(BasicGeoposition left, BasicGeoposition right) => !left.Equals(right);
 	}
 }

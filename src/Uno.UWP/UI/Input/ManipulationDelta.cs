@@ -76,6 +76,6 @@ namespace Windows.UI.Input
 		}
 
 		public static bool operator ==(ManipulationDelta left, ManipulationDelta right) => left.Equals(right);
-		public static bool operator !=(ManipulationDelta left, ManipulationDelta right) => !(left == right);
+		public static bool operator !=(ManipulationDelta left, ManipulationDelta right) => !left.Equals(right);
 	}
 }

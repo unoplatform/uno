@@ -39,6 +39,6 @@ namespace Windows.ApplicationModel
 		}
 
 		public static bool operator ==(PackageVersion left, PackageVersion right) => left.Equals(right);
-		public static bool operator !=(PackageVersion left, PackageVersion right) => !(left == right);
+		public static bool operator !=(PackageVersion left, PackageVersion right) => !left.Equals(right);
 	}
 }

@@ -27,6 +27,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static bool operator ==(FlowLayoutAnchorInfo left, FlowLayoutAnchorInfo right) => left.Equals(right);
-		public static bool operator !=(FlowLayoutAnchorInfo left, FlowLayoutAnchorInfo right) => !(left == right);
+		public static bool operator !=(FlowLayoutAnchorInfo left, FlowLayoutAnchorInfo right) => !left.Equals(right);
 	}
 }

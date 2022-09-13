@@ -67,5 +67,5 @@ public partial struct GamepadReading : IEquatable<GamepadReading>
 	}
 
 	public static bool operator ==(GamepadReading left, GamepadReading right) => left.Equals(right);
-	public static bool operator !=(GamepadReading left, GamepadReading right) => !(left == right);
+	public static bool operator !=(GamepadReading left, GamepadReading right) => !left.Equals(right);
 }

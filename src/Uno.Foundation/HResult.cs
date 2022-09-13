@@ -12,6 +12,6 @@ namespace Windows.Foundation
 		public override int GetHashCode() => -1937169414 + Value.GetHashCode();
 
 		public static bool operator ==(HResult left, HResult right) => left.Equals(right);
-		public static bool operator !=(HResult left, HResult right) => !(left == right);
+		public static bool operator !=(HResult left, HResult right) => !left.Equals(right);
 	}
 }
