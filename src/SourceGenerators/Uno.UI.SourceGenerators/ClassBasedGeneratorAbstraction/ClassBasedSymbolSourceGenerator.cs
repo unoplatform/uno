@@ -64,7 +64,7 @@ namespace Uno.UI.SourceGenerators
 			}
 
 			public HashSet<INamedTypeSymbol> NamedTypeSymbols { get; } = new(SymbolEqualityComparer.Default);
-			public TInitializationDataCollector? Collector { get; }
+			public TInitializationDataCollector? Collector => _collector;
 
 			public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
 			{
