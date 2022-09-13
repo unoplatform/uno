@@ -8,7 +8,6 @@
 
 		<!-- Required for TSBinding tests -->
 		<UnoRewriteEmbeddedResources>true</UnoRewriteEmbeddedResources>
-		<CompileTypeScriptDependsOn>CoreCompile; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
 
 		<UnoUIUseRoslynSourceGenerators>true</UnoUIUseRoslynSourceGenerators>
 	</PropertyGroup>
@@ -33,7 +32,7 @@
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
-
+ 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Wasm.csproj" />
@@ -44,10 +43,6 @@
 		<UpToDateCheckInput Include="WasmCSS\**\*" />
 		<EmbeddedResource Include="WasmScripts\*.js" />
 	</ItemGroup>
-
-	<PropertyGroup>
-		<CompileTypeScriptDependsOn>_UnoSourceGenerator; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
-	</PropertyGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 </Project>
