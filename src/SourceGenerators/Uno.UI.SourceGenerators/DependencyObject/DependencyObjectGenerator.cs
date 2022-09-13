@@ -16,44 +16,85 @@ using Uno.SourceGeneration;
 
 namespace Uno.UI.SourceGenerators.DependencyObject
 {
-	[Generator]
-	public partial class DependencyObjectGenerator : ISourceGenerator
-	{
-		public void Initialize(GeneratorInitializationContext context)
-		{
-			// Debugger.Launch();
-			// No initialization required for this one
-			DependenciesInitializer.Init();
 #if !NETFRAMEWORK
-			context.RegisterForSyntaxNotifications(() => new ClassSyntaxReceiver());
-#endif
-		}
-
-		public void Execute(GeneratorExecutionContext context)
+	public struct DependencyObjectInitializationDataCollector
+	{
+		public INamedTypeSymbol? DependencyObjectSymbol { get; }
+		public DependencyObjectInitializationDataCollector(Compilation compilation)
 		{
-			if (PlatformHelper.IsValidPlatform(context))
+			DependencyObjectSymbol = compilation.GetTypeByMetadataName(XamlConstants.Types.DependencyObject);
+		}
+	}
+
+	public struct DependencyObjectExecutionDataCollector
+	{
+		public bool IsUnoSolution { get; }
+
+		public DependencyObjectExecutionDataCollector(GeneratorExecutionContext context)
+		{
+			IsUnoSolution = context.GetMSBuildPropertyValue("_IsUnoUISolution") == "true";
+		}
+	}
+#endif
+
+	[Generator]
+	public partial class DependencyObjectGenerator : AbstractNamedTypeSymbolGenerator
+#if !NETFRAMEWORK
+		<DependencyObjectInitializationDataCollector, DependencyObjectExecutionDataCollector>
+#endif
+	{
+#if !NETFRAMEWORK
+
+		public override DependencyObjectInitializationDataCollector GetInitializationDataCollector(Compilation compilation) => new DependencyObjectInitializationDataCollector(compilation);
+
+		public override DependencyObjectExecutionDataCollector GetExecutionDataCollector(GeneratorExecutionContext context) => new DependencyObjectExecutionDataCollector(context);
+
+		public override bool IsCandidateSymbolInRoslynInitialization(GeneratorSyntaxContext context, INamedTypeSymbol symbol, DependencyObjectInitializationDataCollector collector)
+		{
+			var isDependencyObject = symbol.Interfaces.Any(t => SymbolEqualityComparer.Default.Equals(t, collector.DependencyObjectSymbol))
+				&& (symbol.BaseType?.GetAllInterfaces().None(t => SymbolEqualityComparer.Default.Equals(t, collector.DependencyObjectSymbol)) ?? true);
+
+			if (!isDependencyObject)
 			{
-				var generator = new SerializationMethodsGenerator(context);
-#if NETFRAMEWORK
-				generator.Visit(context.Compilation.SourceModule);
-#else
-				if (context.SyntaxContextReceiver is ClassSyntaxReceiver receiver)
-				{
-					foreach (var symbol in receiver.NamedTypeSymbols)
-					{
-						generator.ProcessType(symbol);
-					}
-				}
-#endif
+				return false;
 			}
+
+			return true;
 		}
 
-		private sealed class SerializationMethodsGenerator
-#if NETFRAMEWORK
-			: SymbolVisitor
-#endif
+		public override bool IsCandidateSymbolInRoslynExecution(GeneratorExecutionContext context, INamedTypeSymbol symbol, DependencyObjectExecutionDataCollector collector)
 		{
-			private readonly GeneratorExecutionContext _context;
+			if (!collector.IsUnoSolution)
+			{
+				var _iosViewSymbol = context.Compilation.GetTypeByMetadataName("UIKit.UIView");
+				var _macosViewSymbol = context.Compilation.GetTypeByMetadataName("AppKit.NSView");
+				var _androidViewSymbol = context.Compilation.GetTypeByMetadataName("Android.Views.View");
+
+				if (symbol.Is(_iosViewSymbol))
+				{
+					ReportDiagnostic(context, Diagnostic.Create(_descriptor, symbol.Locations[0], "UIKit.UIView"));
+					return false;
+				}
+				else if (symbol.Is(_androidViewSymbol))
+				{
+					ReportDiagnostic(context, Diagnostic.Create(_descriptor, symbol.Locations[0], "Android.Views.View"));
+					return false;
+				}
+				else if (symbol.Is(_macosViewSymbol))
+				{
+					ReportDiagnostic(context, Diagnostic.Create(_descriptor, symbol.Locations[0], "AppKit.NSView"));
+					return false;
+				}
+			}
+
+			return true;
+		}
+#endif
+
+		private protected override SymbolGenerator GetGenerator(GeneratorExecutionContext context) => new SerializationMethodsGenerator(context);
+
+		private sealed class SerializationMethodsGenerator : SymbolGenerator
+		{
 			private readonly INamedTypeSymbol? _dependencyObjectSymbol;
 			private readonly INamedTypeSymbol? _unoViewgroupSymbol;
 			private readonly INamedTypeSymbol? _iosViewSymbol;
@@ -68,10 +109,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			private readonly bool _isUnoSolution;
 			private readonly string[] _analyzerSuppressions;
 
-			public SerializationMethodsGenerator(GeneratorExecutionContext context)
+			public SerializationMethodsGenerator(GeneratorExecutionContext context) : base(context)
 			{
-				_context = context;
-
 				var comp = context.Compilation;
 
 				_dependencyObjectSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.DependencyObject);
@@ -87,125 +126,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				_frameworkElementSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.FrameworkElement");
 				_isUnoSolution = _context.GetMSBuildPropertyValue("_IsUnoUISolution") == "true";
 				_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-			}
-
-#if NETFRAMEWORK
-			public override void VisitNamedType(INamedTypeSymbol type)
-			{
-				_context.CancellationToken.ThrowIfCancellationRequested();
-
-				foreach (var t in type.GetTypeMembers())
-				{
-					VisitNamedType(t);
-				}
-
-				ProcessType(type);
-			}
-
-			public override void VisitModule(IModuleSymbol symbol)
-			{
-				_context.CancellationToken.ThrowIfCancellationRequested();
-
-				VisitNamespace(symbol.GlobalNamespace);
-			}
-
-			public override void VisitNamespace(INamespaceSymbol symbol)
-			{
-				_context.CancellationToken.ThrowIfCancellationRequested();
-
-				foreach (var n in symbol.GetNamespaceMembers())
-				{
-					VisitNamespace(n);
-				}
-
-				foreach (var t in symbol.GetTypeMembers())
-				{
-					VisitNamedType(t);
-				}
-			}
-#endif
-
-			public void ProcessType(INamedTypeSymbol typeSymbol)
-			{
-				_context.CancellationToken.ThrowIfCancellationRequested();
-
-				if (typeSymbol.TypeKind != TypeKind.Class)
-				{
-					return;
-				}
-
-				var isDependencyObject = typeSymbol.Interfaces.Any(t => SymbolEqualityComparer.Default.Equals(t, _dependencyObjectSymbol))
-					&& (typeSymbol.BaseType?.GetAllInterfaces().None(t => SymbolEqualityComparer.Default.Equals(t, _dependencyObjectSymbol)) ?? true);
-
-				if (isDependencyObject)
-				{
-					if (!_isUnoSolution)
-					{
-						if (typeSymbol.Is(_iosViewSymbol))
-						{
-							ReportDiagnostic(_context, Diagnostic.Create(_descriptor, typeSymbol.Locations[0], "UIKit.UIView"));
-							return;
-						}
-						else if (typeSymbol.Is(_androidViewSymbol))
-						{
-							ReportDiagnostic(_context, Diagnostic.Create(_descriptor, typeSymbol.Locations[0], "Android.Views.View"));
-							return;
-						}
-						else if (typeSymbol.Is(_macosViewSymbol))
-						{
-							ReportDiagnostic(_context, Diagnostic.Create(_descriptor, typeSymbol.Locations[0], "AppKit.NSView"));
-							return;
-						}
-					}
-
-					var builder = new IndentedStringBuilder();
-					builder.AppendLineIndented("// <auto-generated>");
-					builder.AppendLineIndented("// ******************************************************************");
-					builder.AppendLineIndented("// This file has been generated by Uno.UI (DependencyObjectGenerator)");
-					builder.AppendLineIndented("// ******************************************************************");
-					builder.AppendLineIndented("// </auto-generated>");
-					builder.AppendLine();
-					builder.AppendLineIndented("#pragma warning disable 1591 // Ignore missing XML comment warnings");
-					builder.AppendLineIndented($"using System;");
-					builder.AppendLineIndented($"using System.Linq;");
-					builder.AppendLineIndented($"using System.Collections.Generic;");
-					builder.AppendLineIndented($"using System.Collections;");
-					builder.AppendLineIndented($"using System.Diagnostics.CodeAnalysis;");
-					builder.AppendLineIndented($"using Uno.Disposables;");
-					builder.AppendLineIndented($"using System.Runtime.CompilerServices;");
-					builder.AppendLineIndented($"using Uno.UI;");
-					builder.AppendLineIndented($"using Uno.UI.Controls;");
-					builder.AppendLineIndented($"using Uno.UI.DataBinding;");
-					builder.AppendLineIndented($"using Windows.UI.Xaml;");
-					builder.AppendLineIndented($"using Windows.UI.Xaml.Data;");
-					builder.AppendLineIndented($"using Uno.Diagnostics.Eventing;");
-					builder.AppendLineIndented("#if __MACOS__");
-					builder.AppendLineIndented("using AppKit;");
-					builder.AppendLineIndented("#endif");
-
-					using (typeSymbol.ContainingNamespace.IsGlobalNamespace ? NullDisposable.Instance : builder.BlockInvariant($"namespace {typeSymbol.ContainingNamespace}"))
-					{
-						using (GenerateNestingContainers(builder, typeSymbol))
-						{
-							if (_bindableAttributeSymbol != null && typeSymbol.FindAttribute(_bindableAttributeSymbol) == null)
-							{
-								builder.AppendLineIndented(@"[global::Windows.UI.Xaml.Data.Bindable]");
-							}
-
-							AnalyzerSuppressionsGenerator.Generate(builder, _analyzerSuppressions);
-
-							var internalDependencyObject = _isUnoSolution && !typeSymbol.IsSealed ? ", IDependencyObjectInternal" : "";
-
-							using (builder.BlockInvariant($"partial class {typeSymbol.Name} : IDependencyObjectStoreProvider, IWeakReferenceProvider{internalDependencyObject}"))
-							{
-								GenerateDependencyObjectImplementation(typeSymbol, builder, hasDispatcherQueue: _dependencyObjectSymbol!.GetMembers("DispatcherQueue").Any());
-								GenerateIBinderImplementation(typeSymbol, builder);
-							}
-						}
-					}
-
-					_context.AddSource(HashBuilder.BuildIDFromSymbol(typeSymbol), builder.ToString());
-				}
 			}
 
 			private static IDisposable GenerateNestingContainers(IndentedStringBuilder builder, INamedTypeSymbol? typeSymbol)
@@ -933,24 +853,89 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					}
 				}
 			}
-		}
 
-#if !NETFRAMEWORK
-		private sealed class ClassSyntaxReceiver : ISyntaxContextReceiver
-		{
-			public HashSet<INamedTypeSymbol> NamedTypeSymbols { get; } = new(SymbolEqualityComparer.Default);
-
-			public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
+			private protected override bool IsCandidateSymbol(INamedTypeSymbol typeSymbol)
 			{
-				if (context.Node.IsKind(SyntaxKind.ClassDeclaration))
+				var isDependencyObject = typeSymbol.Interfaces.Any(t => SymbolEqualityComparer.Default.Equals(t, _dependencyObjectSymbol))
+					&& (typeSymbol.BaseType?.GetAllInterfaces().None(t => SymbolEqualityComparer.Default.Equals(t, _dependencyObjectSymbol)) ?? true);
+
+				if (!isDependencyObject)
 				{
-					if (context.SemanticModel.GetDeclaredSymbol(context.Node) is INamedTypeSymbol symbol)
+					return false;
+				}
+
+				if (!_isUnoSolution)
+				{
+					if (typeSymbol.Is(_iosViewSymbol))
 					{
-						NamedTypeSymbols.Add(symbol);
+						ReportDiagnostic(_context, Diagnostic.Create(_descriptor, typeSymbol.Locations[0], "UIKit.UIView"));
+						return false;
+					}
+					else if (typeSymbol.Is(_androidViewSymbol))
+					{
+						ReportDiagnostic(_context, Diagnostic.Create(_descriptor, typeSymbol.Locations[0], "Android.Views.View"));
+						return false;
+					}
+					else if (typeSymbol.Is(_macosViewSymbol))
+					{
+						ReportDiagnostic(_context, Diagnostic.Create(_descriptor, typeSymbol.Locations[0], "AppKit.NSView"));
+						return false;
 					}
 				}
+
+				return true;
+			}
+			private protected override string GetGeneratedCode(INamedTypeSymbol typeSymbol)
+			{
+				var builder = new IndentedStringBuilder();
+				builder.AppendLineIndented("// <auto-generated>");
+				builder.AppendLineIndented("// ******************************************************************");
+				builder.AppendLineIndented("// This file has been generated by Uno.UI (DependencyObjectGenerator)");
+				builder.AppendLineIndented("// ******************************************************************");
+				builder.AppendLineIndented("// </auto-generated>");
+				builder.AppendLine();
+				builder.AppendLineIndented("#pragma warning disable 1591 // Ignore missing XML comment warnings");
+				builder.AppendLineIndented($"using System;");
+				builder.AppendLineIndented($"using System.Linq;");
+				builder.AppendLineIndented($"using System.Collections.Generic;");
+				builder.AppendLineIndented($"using System.Collections;");
+				builder.AppendLineIndented($"using System.Diagnostics.CodeAnalysis;");
+				builder.AppendLineIndented($"using Uno.Disposables;");
+				builder.AppendLineIndented($"using System.Runtime.CompilerServices;");
+				builder.AppendLineIndented($"using Uno.UI;");
+				builder.AppendLineIndented($"using Uno.UI.Controls;");
+				builder.AppendLineIndented($"using Uno.UI.DataBinding;");
+				builder.AppendLineIndented($"using Windows.UI.Xaml;");
+				builder.AppendLineIndented($"using Windows.UI.Xaml.Data;");
+				builder.AppendLineIndented($"using Uno.Diagnostics.Eventing;");
+				builder.AppendLineIndented("#if __MACOS__");
+				builder.AppendLineIndented("using AppKit;");
+				builder.AppendLineIndented("#endif");
+
+				using (typeSymbol.ContainingNamespace.IsGlobalNamespace ? NullDisposable.Instance : builder.BlockInvariant($"namespace {typeSymbol.ContainingNamespace}"))
+				{
+					using (GenerateNestingContainers(builder, typeSymbol))
+					{
+						if (_bindableAttributeSymbol != null && typeSymbol.FindAttribute(_bindableAttributeSymbol) == null)
+						{
+							builder.AppendLineIndented(@"[global::Windows.UI.Xaml.Data.Bindable]");
+						}
+
+						AnalyzerSuppressionsGenerator.Generate(builder, _analyzerSuppressions);
+
+						var internalDependencyObject = _isUnoSolution && !typeSymbol.IsSealed ? ", IDependencyObjectInternal" : "";
+
+						using (builder.BlockInvariant($"partial class {typeSymbol.Name} : IDependencyObjectStoreProvider, IWeakReferenceProvider{internalDependencyObject}"))
+						{
+							GenerateDependencyObjectImplementation(typeSymbol, builder, hasDispatcherQueue: _dependencyObjectSymbol!.GetMembers("DispatcherQueue").Any());
+							GenerateIBinderImplementation(typeSymbol, builder);
+						}
+					}
+				}
+
+				return builder.ToString();
 			}
 		}
-#endif
+
 	}
 }

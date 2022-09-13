@@ -9,6 +9,9 @@ using System.Diagnostics;
 using Uno.Extensions;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Uno.Roslyn;
+using Uno.UI.SourceGenerators.XamlGenerator;
+
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
@@ -16,45 +19,123 @@ using Uno.SourceGeneration;
 
 namespace Uno.UI.SourceGenerators.NativeCtor
 {
+#if !NETFRAMEWORK
+	public struct NativeCtorInitializationDataCollector
+	{
+		public INamedTypeSymbol? iOSViewSymbol { get; }
+		public INamedTypeSymbol? ObjCRuntimeNativeHandle { get; }
+		public INamedTypeSymbol? MacOSViewSymbol { get; }
+		public INamedTypeSymbol? AndroidViewSymbol { get; }
+		public INamedTypeSymbol? IntPtrSymbol { get; }
+		public INamedTypeSymbol? JniHandleOwnershipSymbol { get; }
+		public INamedTypeSymbol?[] JavaCtorParams { get; }
+
+		public NativeCtorInitializationDataCollector(Compilation compilation)
+		{
+			iOSViewSymbol = compilation.GetTypeByMetadataName("UIKit.UIView");
+			ObjCRuntimeNativeHandle = compilation.GetTypeByMetadataName("ObjCRuntime.NativeHandle");
+			MacOSViewSymbol = compilation.GetTypeByMetadataName("AppKit.NSView");
+			AndroidViewSymbol = compilation.GetTypeByMetadataName("Android.Views.View");
+			IntPtrSymbol = compilation.GetTypeByMetadataName("System.IntPtr");
+			JniHandleOwnershipSymbol = compilation.GetTypeByMetadataName("Android.Runtime.JniHandleOwnership");
+			JavaCtorParams = new[] { IntPtrSymbol, JniHandleOwnershipSymbol };
+		}
+	}
+
+	public struct NativeCtorExecutionDataCollector
+	{
+		public NativeCtorExecutionDataCollector(GeneratorExecutionContext context)
+		{
+		}
+	}
+#endif
+
 	[Generator]
 #if NETFRAMEWORK
 	[GenerateAfter("Uno.UI.SourceGenerators.XamlGenerator." + nameof(XamlGenerator.XamlCodeGenerator))]
 #endif
-	public class NativeCtorsGenerator : ISourceGenerator
-	{
-		public void Initialize(GeneratorInitializationContext context)
-		{
-			DependenciesInitializer.Init();
+	public class NativeCtorsGenerator : AbstractNamedTypeSymbolGenerator
 #if !NETFRAMEWORK
-			context.RegisterForSyntaxNotifications(() => new ClassSyntaxReceiver());
+		<NativeCtorInitializationDataCollector, NativeCtorExecutionDataCollector>
 #endif
+	{
+#if !NETFRAMEWORK
+		public override NativeCtorExecutionDataCollector GetExecutionDataCollector(GeneratorExecutionContext context) => new NativeCtorExecutionDataCollector(context);
+		public override NativeCtorInitializationDataCollector GetInitializationDataCollector(Compilation compilation) => new NativeCtorInitializationDataCollector(compilation);
+
+		public override bool IsCandidateSymbolInRoslynExecution(GeneratorExecutionContext context, INamedTypeSymbol symbol, NativeCtorExecutionDataCollector collector)
+		{
+			return true;
 		}
 
-		public void Execute(GeneratorExecutionContext context)
+		public override bool IsCandidateSymbolInRoslynInitialization(GeneratorSyntaxContext context, INamedTypeSymbol symbol, NativeCtorInitializationDataCollector collector)
 		{
-			if (!DesignTimeHelper.IsDesignTime(context) && PlatformHelper.IsValidPlatform(context))
+
+			var isiOSView = symbol.Is(collector.iOSViewSymbol);
+			var ismacOSView = symbol.Is(collector.MacOSViewSymbol);
+			var isAndroidView = symbol.Is(collector.AndroidViewSymbol);
+
+			if (isiOSView || ismacOSView)
 			{
-				var generator = new SerializationMethodsGenerator(context);
-#if NETFRAMEWORK
-				generator.Visit(context.Compilation.SourceModule);
-#else
-				if (context.SyntaxContextReceiver is ClassSyntaxReceiver receiver)
+				Func<IMethodSymbol, bool> predicate = m =>
+					!m.Parameters.IsDefaultOrEmpty
+					&& (
+						SymbolEqualityComparer.Default.Equals(m.Parameters[0].Type, collector.IntPtrSymbol)
+						|| SymbolEqualityComparer.Default.Equals(m.Parameters[0].Type, collector.ObjCRuntimeNativeHandle));
+
+				var nativeCtor = GetNativeCtor(symbol, predicate, considerAllBaseTypes: false);
+
+				if (nativeCtor == null && GetNativeCtor(symbol.BaseType, predicate, considerAllBaseTypes: true) != null)
 				{
-					foreach (var symbol in receiver.NamedTypeSymbols)
-					{
-						generator.ProcessType(symbol);
-					}
+					return true;
 				}
-#endif
+			}
+
+			if (isAndroidView)
+			{
+				Func<IMethodSymbol, bool> predicate = m => m.Parameters.Select(p => p.Type).SequenceEqual(collector.JavaCtorParams ?? Array.Empty<ITypeSymbol?>());
+				var nativeCtor = GetNativeCtor(symbol, predicate, considerAllBaseTypes: false);
+
+				if (nativeCtor == null && GetNativeCtor(symbol.BaseType, predicate, considerAllBaseTypes: true) != null)
+				{
+					return true;
+				}
+			}
+
+			return false;
+
+			static IMethodSymbol? GetNativeCtor(INamedTypeSymbol? type, Func<IMethodSymbol, bool> predicate, bool considerAllBaseTypes)
+			{
+				// Consider:
+				// Type A -> Type B -> Type C
+				// HasCtor   NoCtor    NoCtor
+				// We want to generate the ctor for both Type B and Type C
+				// But since the generator doesn't guarantee Type B is getting processed first,
+				// We need to check the inheritance hierarchy.
+				// However, assume Type B wasn't declared in source, we can't generate the ctor for it.
+				// Consequently, Type C shouldn't generate source as well.
+				if (type is null)
+				{
+					return null;
+				}
+
+				var ctor = type.GetMembers(WellKnownMemberNames.InstanceConstructorName).Cast<IMethodSymbol>().FirstOrDefault(predicate);
+				if (ctor != null || !considerAllBaseTypes || !type.Locations.Any(l => l.IsInSource))
+				{
+					return ctor;
+				}
+				else
+				{
+					return GetNativeCtor(type.BaseType, predicate, true);
+				}
 			}
 		}
-
-		private sealed class SerializationMethodsGenerator
-#if NETFRAMEWORK
-			: SymbolVisitor
 #endif
+
+		private protected override SymbolGenerator GetGenerator(GeneratorExecutionContext context) => new SerializationMethodsGenerator(context);
+
+		private sealed class SerializationMethodsGenerator : SymbolGenerator
 		{
-			private readonly GeneratorExecutionContext _context;
 			private readonly INamedTypeSymbol? _iosViewSymbol;
 			private readonly INamedTypeSymbol? _objcNativeHandleSymbol;
 			private readonly INamedTypeSymbol? _macosViewSymbol;
@@ -63,10 +144,8 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 			private readonly INamedTypeSymbol? _jniHandleOwnershipSymbol;
 			private readonly INamedTypeSymbol?[]? _javaCtorParams;
 
-			public SerializationMethodsGenerator(GeneratorExecutionContext context)
+			public SerializationMethodsGenerator(GeneratorExecutionContext context) : base(context)
 			{
-				_context = context;
-
 				_iosViewSymbol = context.Compilation.GetTypeByMetadataName("UIKit.UIView");
 				_objcNativeHandleSymbol = context.Compilation.GetTypeByMetadataName("ObjCRuntime.NativeHandle");
 				_macosViewSymbol = context.Compilation.GetTypeByMetadataName("AppKit.NSView");
@@ -76,43 +155,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 				_javaCtorParams = new[] { _intPtrSymbol, _jniHandleOwnershipSymbol };
 			}
 
-#if NETFRAMEWORK
-			public override void VisitNamedType(INamedTypeSymbol type)
-			{
-				_context.CancellationToken.ThrowIfCancellationRequested();
-
-				foreach (var t in type.GetTypeMembers())
-				{
-					VisitNamedType(t);
-				}
-
-				ProcessType(type);
-			}
-
-			public override void VisitModule(IModuleSymbol symbol)
-			{
-				_context.CancellationToken.ThrowIfCancellationRequested();
-
-				VisitNamespace(symbol.GlobalNamespace);
-			}
-
-			public override void VisitNamespace(INamespaceSymbol symbol)
-			{
-				_context.CancellationToken.ThrowIfCancellationRequested();
-
-				foreach (var n in symbol.GetNamespaceMembers())
-				{
-					VisitNamespace(n);
-				}
-
-				foreach (var t in symbol.GetTypeMembers())
-				{
-					VisitNamedType(t);
-				}
-			}
-#endif
-
-			public void ProcessType(INamedTypeSymbol typeSymbol)
+			private protected override bool IsCandidateSymbol(INamedTypeSymbol typeSymbol)
 			{
 				var isiOSView = typeSymbol.Is(_iosViewSymbol);
 				var ismacOSView = typeSymbol.Is(_macosViewSymbol);
@@ -130,9 +173,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 
 					if (nativeCtor == null && GetNativeCtor(typeSymbol.BaseType, predicate, considerAllBaseTypes: true) != null)
 					{
-						_context.AddSource(
-							HashBuilder.BuildIDFromSymbol(typeSymbol),
-							GetGeneratedCode(typeSymbol));
+						return true;
 					}
 				}
 
@@ -143,90 +184,11 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 
 					if (nativeCtor == null && GetNativeCtor(typeSymbol.BaseType, predicate, considerAllBaseTypes: true) != null)
 					{
-						_context.AddSource(
-							HashBuilder.BuildIDFromSymbol(typeSymbol),
-							GetGeneratedCode(typeSymbol));
+						return true;
 					}
 				}
 
-				string GetGeneratedCode(INamedTypeSymbol typeSymbol)
-				{
-					var builder = new IndentedStringBuilder();
-					builder.AppendLineIndented("// <auto-generated>");
-					builder.AppendLineIndented("// *************************************************************");
-					builder.AppendLineIndented("// This file has been generated by Uno.UI (NativeCtorsGenerator)");
-					builder.AppendLineIndented("// *************************************************************");
-					builder.AppendLineIndented("// </auto-generated>");
-					builder.AppendLine();
-					builder.AppendLineIndented("using System;");
-					builder.AppendLine();
-					var disposables = typeSymbol.AddToIndentedStringBuilder(builder, beforeClassHeaderAction: builder =>
-					{
-						// These will be generated just before `partial class ClassName {`
-						builder.Append("#if __IOS__ || __MACOS__");
-						builder.AppendLine();
-						builder.AppendLineIndented("[global::Foundation.Register]");
-						builder.Append("#endif");
-						builder.AppendLine();
-					});
-
-					var syntacticValidSymbolName = SyntaxFacts.GetKeywordKind(typeSymbol.Name) == SyntaxKind.None ? typeSymbol.Name : "@" + typeSymbol.Name;
-
-					if (NeedsExplicitDefaultCtor(typeSymbol))
-					{
-						builder.AppendLineIndented("/// <summary>");
-						builder.AppendLineIndented("/// Initializes a new instance of the class.");
-						builder.AppendLineIndented("/// </summary>");
-						builder.AppendLineIndented($"public {syntacticValidSymbolName}() {{ }}");
-						builder.AppendLine();
-					}
-
-					builder.Append("#if __ANDROID__");
-					builder.AppendLine();
-					builder.AppendLineIndented("/// <summary>");
-					builder.AppendLineIndented("/// Native constructor, do not use explicitly.");
-					builder.AppendLineIndented("/// </summary>");
-					builder.AppendLineIndented("/// <remarks>");
-					builder.AppendLineIndented("/// Used by the Xamarin Runtime to materialize native ");
-					builder.AppendLineIndented("/// objects that may have been collected in the managed world.");
-					builder.AppendLineIndented("/// </remarks>");
-					builder.AppendLineIndented($"public {syntacticValidSymbolName}(IntPtr javaReference, global::Android.Runtime.JniHandleOwnership transfer) : base (javaReference, transfer) {{ }}");
-					builder.Append("#endif");
-					builder.AppendLine();
-
-					builder.Append("#if __IOS__ || __MACOS__ || __MACCATALYST__");
-					builder.AppendLine();
-					builder.AppendLineIndented("/// <summary>");
-					builder.AppendLineIndented("/// Native constructor, do not use explicitly.");
-					builder.AppendLineIndented("/// </summary>");
-					builder.AppendLineIndented("/// <remarks>");
-					builder.AppendLineIndented("/// Used by the Xamarin Runtime to materialize native ");
-					builder.AppendLineIndented("/// objects that may have been collected in the managed world.");
-					builder.AppendLineIndented("/// </remarks>");
-					builder.AppendLineIndented($"public {syntacticValidSymbolName}(IntPtr handle) : base (handle) {{ }}");
-
-					if (_objcNativeHandleSymbol != null)
-					{
-						builder.AppendLineIndented("/// <summary>");
-						builder.AppendLineIndented("/// Native constructor, do not use explicitly.");
-						builder.AppendLineIndented("/// </summary>");
-						builder.AppendLineIndented("/// <remarks>");
-						builder.AppendLineIndented("/// Used by the .NET Runtime to materialize native ");
-						builder.AppendLineIndented("/// objects that may have been collected in the managed world.");
-						builder.AppendLineIndented("/// </remarks>");
-						builder.AppendLineIndented($"public {syntacticValidSymbolName}(global::ObjCRuntime.NativeHandle handle) : base (handle) {{ }}");
-					}
-
-					builder.Append("#endif");
-					builder.AppendLine();
-
-					while (disposables.Count > 0)
-					{
-						disposables.Pop().Dispose();
-					}
-
-					return builder.ToString();
-				}
+				return false;
 
 				static IMethodSymbol? GetNativeCtor(INamedTypeSymbol? type, Func<IMethodSymbol, bool> predicate, bool considerAllBaseTypes)
 				{
@@ -255,40 +217,103 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 				}
 			}
 
-			private static bool NeedsExplicitDefaultCtor(INamedTypeSymbol typeSymbol)
+
+			private protected override string GetGeneratedCode(INamedTypeSymbol symbol)
 			{
-				var hasExplicitConstructor = typeSymbol
-					.GetMembers(WellKnownMemberNames.InstanceConstructorName)
-					.Any(m => m is IMethodSymbol { IsImplicitlyDeclared: false, Parameters: { Length: 0 } });
-				if (hasExplicitConstructor)
+				var builder = new IndentedStringBuilder();
+				builder.AppendLineIndented("// <auto-generated>");
+				builder.AppendLineIndented("// *************************************************************");
+				builder.AppendLineIndented("// This file has been generated by Uno.UI (NativeCtorsGenerator)");
+				builder.AppendLineIndented("// *************************************************************");
+				builder.AppendLineIndented("// </auto-generated>");
+				builder.AppendLine();
+				builder.AppendLineIndented("using System;");
+				builder.AppendLine();
+				var disposables = symbol.AddToIndentedStringBuilder(builder, beforeClassHeaderAction: builder =>
 				{
-					return false;
+					// These will be generated just before `partial class ClassName {`
+					builder.Append("#if __IOS__ || __MACOS__");
+					builder.AppendLine();
+					builder.AppendLineIndented("[global::Foundation.Register]");
+					builder.Append("#endif");
+					builder.AppendLine();
+				});
+
+				var syntacticValidSymbolName = SyntaxFacts.GetKeywordKind(symbol.Name) == SyntaxKind.None ? symbol.Name : "@" + symbol.Name;
+
+				if (NeedsExplicitDefaultCtor(symbol))
+				{
+					builder.AppendLineIndented("/// <summary>");
+					builder.AppendLineIndented("/// Initializes a new instance of the class.");
+					builder.AppendLineIndented("/// </summary>");
+					builder.AppendLineIndented($"public {syntacticValidSymbolName}() {{ }}");
+					builder.AppendLine();
 				}
 
-				var baseHasDefaultCtor = typeSymbol
-					.BaseType?
-					.GetMembers(WellKnownMemberNames.InstanceConstructorName)
-					.Any(m => m is IMethodSymbol { Parameters: { Length: 0 } }) ?? false;
-				return baseHasDefaultCtor;
-			}
-		}
+				builder.Append("#if __ANDROID__");
+				builder.AppendLine();
+				builder.AppendLineIndented("/// <summary>");
+				builder.AppendLineIndented("/// Native constructor, do not use explicitly.");
+				builder.AppendLineIndented("/// </summary>");
+				builder.AppendLineIndented("/// <remarks>");
+				builder.AppendLineIndented("/// Used by the Xamarin Runtime to materialize native ");
+				builder.AppendLineIndented("/// objects that may have been collected in the managed world.");
+				builder.AppendLineIndented("/// </remarks>");
+				builder.AppendLineIndented($"public {syntacticValidSymbolName}(IntPtr javaReference, global::Android.Runtime.JniHandleOwnership transfer) : base (javaReference, transfer) {{ }}");
+				builder.Append("#endif");
+				builder.AppendLine();
 
-#if !NETFRAMEWORK
-		private sealed class ClassSyntaxReceiver : ISyntaxContextReceiver
-		{
-			public HashSet<INamedTypeSymbol> NamedTypeSymbols { get; } = new(SymbolEqualityComparer.Default);
+				builder.Append("#if __IOS__ || __MACOS__ || __MACCATALYST__");
+				builder.AppendLine();
+				builder.AppendLineIndented("/// <summary>");
+				builder.AppendLineIndented("/// Native constructor, do not use explicitly.");
+				builder.AppendLineIndented("/// </summary>");
+				builder.AppendLineIndented("/// <remarks>");
+				builder.AppendLineIndented("/// Used by the Xamarin Runtime to materialize native ");
+				builder.AppendLineIndented("/// objects that may have been collected in the managed world.");
+				builder.AppendLineIndented("/// </remarks>");
+				builder.AppendLineIndented($"public {syntacticValidSymbolName}(IntPtr handle) : base (handle) {{ }}");
 
-			public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
-			{
-				if (context.Node.IsKind(SyntaxKind.ClassDeclaration))
+				if (_objcNativeHandleSymbol != null)
 				{
-					if (context.SemanticModel.GetDeclaredSymbol(context.Node) is INamedTypeSymbol symbol)
+					builder.AppendLineIndented("/// <summary>");
+					builder.AppendLineIndented("/// Native constructor, do not use explicitly.");
+					builder.AppendLineIndented("/// </summary>");
+					builder.AppendLineIndented("/// <remarks>");
+					builder.AppendLineIndented("/// Used by the .NET Runtime to materialize native ");
+					builder.AppendLineIndented("/// objects that may have been collected in the managed world.");
+					builder.AppendLineIndented("/// </remarks>");
+					builder.AppendLineIndented($"public {syntacticValidSymbolName}(global::ObjCRuntime.NativeHandle handle) : base (handle) {{ }}");
+				}
+
+				builder.Append("#endif");
+				builder.AppendLine();
+
+				while (disposables.Count > 0)
+				{
+					disposables.Pop().Dispose();
+				}
+
+				return builder.ToString();
+
+				static bool NeedsExplicitDefaultCtor(INamedTypeSymbol typeSymbol)
+				{
+					var hasExplicitConstructor = typeSymbol
+						.GetMembers(WellKnownMemberNames.InstanceConstructorName)
+						.Any(m => m is IMethodSymbol { IsImplicitlyDeclared: false, Parameters: { Length: 0 } });
+					if (hasExplicitConstructor)
 					{
-						NamedTypeSymbols.Add(symbol);
+						return false;
 					}
+
+					var baseHasDefaultCtor = typeSymbol
+						.BaseType?
+						.GetMembers(WellKnownMemberNames.InstanceConstructorName)
+						.Any(m => m is IMethodSymbol { Parameters: { Length: 0 } }) ?? false;
+					return baseHasDefaultCtor;
 				}
 			}
 		}
-#endif
+
 	}
 }
