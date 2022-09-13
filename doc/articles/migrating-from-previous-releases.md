@@ -2,6 +2,12 @@
 
 This article details the migration steps required to migrate from one version to the next.
 
+### Uno Platform 4.5
+
+#### ElevatedView
+
+The built-in `ElevatedView` control has undergone a visual unification, which means existing apps may experience slightly different shadow visuals, especially on Android, which now supports full range of colors including opacity. If you encounter visual discrepancies, please tweak the `Elevation` and `ShadowColor` properties to fit your needs.
+
 ### Uno 4.1
 
 ### Android 12 support
