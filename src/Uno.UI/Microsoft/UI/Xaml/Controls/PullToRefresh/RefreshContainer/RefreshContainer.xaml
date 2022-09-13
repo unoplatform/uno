@@ -18,8 +18,13 @@
 		<Setter Property="Template">
 			<Setter.Value>
 			<ControlTemplate TargetType="local:RefreshContainer">
-				<Grid x:Name="Root" Background="{TemplateBinding Background}" >
-				<ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" Background="Transparent"/>
+				<Grid x:Name="Root" Background="{TemplateBinding Background}">
+					<!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl #6452 -->
+					<ContentPresenter x:Name="ContentPresenter"
+								Content="{TemplateBinding Content}"
+								ContentTemplate="{TemplateBinding ContentTemplate}"
+								ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+								Background="Transparent"/>
 				<Grid x:Name="RefreshVisualizerPresenter"/>
 				</Grid>
 			</ControlTemplate>
@@ -37,7 +42,12 @@
 					<Grid x:Name="Root">
 						<uno:NativeRefreshControl x:Name="NativeRefreshControl">
 							<uno:NativeRefreshControl.Content>
-								<ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" Background="Transparent" />
+								<!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl #6452 -->
+								<ContentPresenter x:Name="ContentPresenter"
+									Content="{TemplateBinding Content}"
+									ContentTemplate="{TemplateBinding ContentTemplate}"
+									ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+									Background="Transparent"/>
 							</uno:NativeRefreshControl.Content>
 						</uno:NativeRefreshControl>
 						<Grid x:Name="RefreshVisualizerPresenter"/>

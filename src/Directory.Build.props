@@ -195,16 +195,6 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <!--
-        This works around the fact that AndroidResgenFile is
-        automatically included as compiled file, even if AndroidUseIntermediateDesignerFile
-        is set to true.
-        -->
-    <AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
-    <AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <UnoDisableNetAnalyzers Condition="('$(IsTestProject)' == 'true' or '$(IsSampleProject)' == 'true') and '$(UnoDisableNetAnalyzers)' == ''">true</UnoDisableNetAnalyzers>
     <UnoDisableNetAnalyzers Condition="'$(UnoDisableNetAnalyzers)' == ''">false</UnoDisableNetAnalyzers>
   </PropertyGroup>

@@ -423,11 +423,17 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public void RaiseColorChanged()
 		{
 			Color newColor = this.Color;
-
-			if (m_oldColor.A != newColor.A ||
+			var colorChanged =
+				m_oldColor.A != newColor.A ||
 				m_oldColor.R != newColor.R ||
 				m_oldColor.G != newColor.G ||
-				m_oldColor.B != newColor.B)
+				m_oldColor.B != newColor.B;
+			var areBothColorsBlack =
+				(m_oldColor.R == newColor.R && newColor.R == 0) ||
+				(m_oldColor.G == newColor.G && newColor.G == 0) ||
+				(m_oldColor.B == newColor.B && newColor.B == 0);
+
+			if (colorChanged || areBothColorsBlack)
 			{
 				var colorChangedEventArgs = new ColorChangedEventArgs();
 
