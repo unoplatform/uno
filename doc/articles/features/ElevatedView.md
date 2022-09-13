@@ -37,7 +37,7 @@ Will produce the following result:
 You can set the following properties:
 
 * `Elevation`: numeric number representing the level of the elevation effect. Typical values are between 5 and 30. The default is `0` - no elevation.
-* `ShadowColor`: By default the shadow will be `Black`, but you can set any other value. You can reduce the shadow effect by using the alpha channel [except Android]. On Android, the shadow color can only be changed since Android Pie (API 28+). The default is `Black` with alpha channel at 25%.
+* `ShadowColor`: By default the shadow will be `Black`, but you can set any other value. You can reduce the shadow effect by using the alpha channel.
 * `Background`: The default is `null`, which does not show a shadow. You'll need to specify a color to avoid having a shadow below a transparent surface if the stretching does not match the child.
 * `CornerRadius`: Use it to create rounded corner effects. The shadow will follow them.
 
