@@ -243,26 +243,39 @@ public partial class UIElement : DependencyObject
 		}
 	}
 
-	private static readonly Dictionary<PointerIdentifier, uint> _nativeToManagedPointerId = new();
+	private static readonly Dictionary<PointerIdentifier, PointerIdentifier> _nativeToManagedPointerId = new();
+	private static readonly Dictionary<PointerIdentifier, PointerIdentifier> _managedToNativePointerId = new();
 	private static uint _lastUsedId;
 
-	private static uint TransformPointerId(PointerIdentifier nativePointerIdentifier)
+	private static uint TransformPointerId(PointerIdentifier nativeId)
 	{
-		if (_nativeToManagedPointerId.TryGetValue(nativePointerIdentifier, out var pointerId))
+		if (_nativeToManagedPointerId.TryGetValue(nativeId, out var managedId))
 		{
-			return pointerId;
+			return managedId;
 		}
 
-		pointerId = ++_lastUsedId;
-		_nativeToManagedPointerId[nativePointerIdentifier] = pointerId;
-		return pointerId;
+		var managedId = new PointerIdentifier(nativeId.Type, ++_lastUsedId);
+		_managedToNativePointerId[managedId] = nativeId;
+		_nativeToManagedPointerId[nativeId] = managedId;
+		
+		return managedId.Id;
 	}
 
-	public static void RemoveActivePointer(uint pointerId)
+	public static void RemoveActivePointer(PointerIdentifier managedId)
 	{
-		if (pointerId == _lastUsedId)
+		if (_managedToNativePointerId.TryGetValue(managedId, out var nativeId))
 		{
-			_lastUsedId--;
+			_managedToNativePointerId.Remove(managedId);
+			_nativeToManagedPointerId.Remove(nativeId);
+
+			if (_managedToNativePointerId is {Count: 0})
+			{
+				_lastUsedId = 0; // We reset the pointer ID only when there is no active pointer.
+			}
+		}
+		else if (this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().Warn($"Received an invalid managed pointer id {managedId}");
 		}
 	}
 
