@@ -510,6 +510,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)]
 		public void When_Foreground_Is_Brush_Should_Take_Correct_Width()
 		{
 			Run("UITests.Windows_UI_Xaml_Media.GradientBrushTests.LinearGradientBrush_Width");
