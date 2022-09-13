@@ -2,9 +2,9 @@ Set-PSDebug -Trace 1
 
 $external_docs =
 @(
-    @("https://github.com/unoplatform/uno.wasm.bootstrap", "uno.wasm.bootstrap", "15c684b84f916ed9d86c225229d15733b4cc2318"),
-    @("https://github.com/unoplatform/uno.themes", "uno.themes", "4ce64a407a6a8d62ba78574a58ed8c46ec351b2c"),
-    @("https://github.com/unoplatform/uno.toolkit.ui", "uno.toolkit.ui", "aa04222a1eb6b0a397c586191bd5b9251b13f2a5"),
+    @("https://github.com/unoplatform/uno.wasm.bootstrap", "uno.wasm.bootstrap", "fbc462e7c6af3d83a989b957798a30cd9ba458ac"),
+    @("https://github.com/unoplatform/uno.themes", "uno.themes", "2b197004df3dbf8b49cec431edd7da7f55b469db"),
+    @("https://github.com/unoplatform/uno.toolkit.ui", "uno.toolkit.ui", "7ecfbffb13543c5ce83e44df8a9ab655ea512055"),
     @("https://github.com/unoplatform/uno.check", "uno.check", "34b1a60f5c1c51604b47362781969dde46979fd5"),
     @("https://github.com/unoplatform/uno.xamlmerge.task", "uno.xamlmerge.task", "a6d2efa69e24e8280c38300b5c1b7a8f2033f9f9"),
     @("https://github.com/unoplatform/figma-docs", "figma-docs", "1c39985a3823bcf40a82683422086342e249a00b"),
