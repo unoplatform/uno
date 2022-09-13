@@ -3,7 +3,7 @@ using System;
 namespace Windows.Devices.Sensors
 {
 	/// <summary>
-	/// Provides data for the sensor reading–changed event.
+	/// Provides data for the sensor readingâ€“changed event.
 	/// </summary>
 	public partial class SimpleOrientationSensorOrientationChangedEventArgs
 	{
