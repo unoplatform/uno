@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Uno.Extensions;
 using Uno.Roslyn;
 using Uno.UI.SourceGenerators.Helpers;
@@ -23,18 +24,34 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			// Debugger.Launch();
 			// No initialization required for this one
 			DependenciesInitializer.Init();
+#if !NETFRAMEWORK
+			context.RegisterForSyntaxNotifications(() => new ClassSyntaxReceiver());
+#endif
 		}
 
 		public void Execute(GeneratorExecutionContext context)
 		{
 			if (PlatformHelper.IsValidPlatform(context))
 			{
-				var visitor = new SerializationMethodsGenerator(context);
-				visitor.Visit(context.Compilation.SourceModule);
+				var generator = new SerializationMethodsGenerator(context);
+#if NETFRAMEWORK
+				generator.Visit(context.Compilation.SourceModule);
+#else
+				if (context.SyntaxContextReceiver is ClassSyntaxReceiver receiver)
+				{
+					foreach (var symbol in receiver.NamedTypeSymbols)
+					{
+						generator.ProcessType(symbol);
+					}
+				}
+#endif
 			}
 		}
 
-		private class SerializationMethodsGenerator : SymbolVisitor
+		private sealed class SerializationMethodsGenerator
+#if NETFRAMEWORK
+			: SymbolVisitor
+#endif
 		{
 			private readonly GeneratorExecutionContext _context;
 			private readonly INamedTypeSymbol? _dependencyObjectSymbol;
@@ -72,6 +89,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 			}
 
+#if NETFRAMEWORK
 			public override void VisitNamedType(INamedTypeSymbol type)
 			{
 				_context.CancellationToken.ThrowIfCancellationRequested();
@@ -105,8 +123,9 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					VisitNamedType(t);
 				}
 			}
+#endif
 
-			private void ProcessType(INamedTypeSymbol typeSymbol)
+			public void ProcessType(INamedTypeSymbol typeSymbol)
 			{
 				_context.CancellationToken.ThrowIfCancellationRequested();
 
@@ -189,7 +208,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 			}
 
-			private IDisposable GenerateNestingContainers(IndentedStringBuilder builder, INamedTypeSymbol? typeSymbol)
+			private static IDisposable GenerateNestingContainers(IndentedStringBuilder builder, INamedTypeSymbol? typeSymbol)
 			{
 				var disposables = new List<IDisposable>();
 
@@ -225,7 +244,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				WriteBinderImplementation(typeSymbol, builder);
 			}
 
-			private void WriteToStringOverride(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
+			private static void WriteToStringOverride(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
 			{
 				var hasNoToString = typeSymbol
 					.GetMethodsWithName("ToString")
@@ -735,7 +754,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 				builder.AppendMultiLineIndented($@"
 
-					#region DataContext DependencyProperty
+#region DataContext DependencyProperty
 
 					public object DataContext
 					{{
@@ -762,9 +781,9 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						DataContextChanged?.Invoke({dataContextChangedInvokeArgument}, new DataContextChangedEventArgs(DataContext));
 					}}
 
-					#endregion
+#endregion
 
-					#region TemplatedParent DependencyProperty
+#region TemplatedParent DependencyProperty
 
 					public DependencyObject TemplatedParent
 					{{
@@ -792,7 +811,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						OnTemplatedParentChangedPartial(e);
 					}}
 
-					#endregion
+#endregion
 
 					public void SetBinding(object target, string dependencyProperty, global::Windows.UI.Xaml.Data.BindingBase binding)
 					{{
@@ -915,5 +934,23 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 			}
 		}
+
+#if !NETFRAMEWORK
+		private sealed class ClassSyntaxReceiver : ISyntaxContextReceiver
+		{
+			public HashSet<INamedTypeSymbol> NamedTypeSymbols { get; } = new(SymbolEqualityComparer.Default);
+
+			public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
+			{
+				if (context.Node.IsKind(SyntaxKind.ClassDeclaration))
+				{
+					if (context.SemanticModel.GetDeclaredSymbol(context.Node) is INamedTypeSymbol symbol)
+					{
+						NamedTypeSymbols.Add(symbol);
+					}
+				}
+			}
+		}
+#endif
 	}
 }

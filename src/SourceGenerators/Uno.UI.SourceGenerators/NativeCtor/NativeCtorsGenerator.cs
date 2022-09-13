@@ -7,6 +7,8 @@ using Microsoft.CodeAnalysis.CSharp;
 using Uno.UI.SourceGenerators.Helpers;
 using System.Diagnostics;
 using Uno.Extensions;
+using System.Collections.Generic;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
@@ -23,21 +25,36 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 		public void Initialize(GeneratorInitializationContext context)
 		{
 			DependenciesInitializer.Init();
+#if !NETFRAMEWORK
+			context.RegisterForSyntaxNotifications(() => new ClassSyntaxReceiver());
+#endif
 		}
 
 		public void Execute(GeneratorExecutionContext context)
 		{
 			if (!DesignTimeHelper.IsDesignTime(context) && PlatformHelper.IsValidPlatform(context))
 			{
-
-				var visitor = new SerializationMethodsGenerator(context);
-				visitor.Visit(context.Compilation.SourceModule);
+				var generator = new SerializationMethodsGenerator(context);
+#if NETFRAMEWORK
+				generator.Visit(context.Compilation.SourceModule);
+#else
+				if (context.SyntaxContextReceiver is ClassSyntaxReceiver receiver)
+				{
+					foreach (var symbol in receiver.NamedTypeSymbols)
+					{
+						generator.ProcessType(symbol);
+					}
+				}
+#endif
 			}
 		}
 
-		private class SerializationMethodsGenerator : SymbolVisitor
-		{ 
-			private readonly GeneratorExecutionContext _context; 
+		private sealed class SerializationMethodsGenerator
+#if NETFRAMEWORK
+			: SymbolVisitor
+#endif
+		{
+			private readonly GeneratorExecutionContext _context;
 			private readonly INamedTypeSymbol? _iosViewSymbol;
 			private readonly INamedTypeSymbol? _objcNativeHandleSymbol;
 			private readonly INamedTypeSymbol? _macosViewSymbol;
@@ -59,6 +76,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 				_javaCtorParams = new[] { _intPtrSymbol, _jniHandleOwnershipSymbol };
 			}
 
+#if NETFRAMEWORK
 			public override void VisitNamedType(INamedTypeSymbol type)
 			{
 				_context.CancellationToken.ThrowIfCancellationRequested();
@@ -92,8 +110,9 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 					VisitNamedType(t);
 				}
 			}
+#endif
 
-			private void ProcessType(INamedTypeSymbol typeSymbol)
+			public void ProcessType(INamedTypeSymbol typeSymbol)
 			{
 				var isiOSView = typeSymbol.Is(_iosViewSymbol);
 				var ismacOSView = typeSymbol.Is(_macosViewSymbol);
@@ -186,7 +205,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 					builder.AppendLineIndented("/// </remarks>");
 					builder.AppendLineIndented($"public {syntacticValidSymbolName}(IntPtr handle) : base (handle) {{ }}");
 
-					if(_objcNativeHandleSymbol != null)
+					if (_objcNativeHandleSymbol != null)
 					{
 						builder.AppendLineIndented("/// <summary>");
 						builder.AppendLineIndented("/// Native constructor, do not use explicitly.");
@@ -253,6 +272,23 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 				return baseHasDefaultCtor;
 			}
 		}
+
+#if !NETFRAMEWORK
+		private sealed class ClassSyntaxReceiver : ISyntaxContextReceiver
+		{
+			public HashSet<INamedTypeSymbol> NamedTypeSymbols { get; } = new(SymbolEqualityComparer.Default);
+
+			public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
+			{
+				if (context.Node.IsKind(SyntaxKind.ClassDeclaration))
+				{
+					if (context.SemanticModel.GetDeclaredSymbol(context.Node) is INamedTypeSymbol symbol)
+					{
+						NamedTypeSymbols.Add(symbol);
+					}
+				}
+			}
+		}
+#endif
 	}
 }
-
