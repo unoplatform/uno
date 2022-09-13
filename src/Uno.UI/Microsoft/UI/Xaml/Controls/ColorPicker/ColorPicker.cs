@@ -342,6 +342,10 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				OnColorSpectrumComponentsChanged(args);
 			}
+			else if (property == OrientationProperty)
+			{
+				OnOrientationChanged(args);
+			}
 		}
 
 		internal Hsv GetCurrentHsv()
@@ -473,11 +477,17 @@ namespace Microsoft.UI.Xaml.Controls
 			SetThirdDimensionSliderChannel();
 		}
 
+		private void OnOrientationChanged(DependencyPropertyChangedEventArgs args)
+		{
+			UpdateVisualState(true);
+		}
+
 		private new void UpdateVisualState(bool useTransitions)
 		{
 			Color? previousColor = this.PreviousColor;
 			bool isAlphaEnabled = this.IsAlphaEnabled;
 			bool isColorSpectrumVisible = this.IsColorSpectrumVisible;
+			bool isVerticalOrientation = this.Orientation == Orientation.Vertical;
 
 			string previousColorStateName;
 
@@ -495,8 +505,9 @@ namespace Microsoft.UI.Xaml.Controls
 			VisualStateManager.GoToState(this, this.IsColorPreviewVisible ? "ColorPreviewVisible" : "ColorPreviewCollapsed", useTransitions);
 			VisualStateManager.GoToState(this, this.IsColorSliderVisible ? "ThirdDimensionSliderVisible" : "ThirdDimensionSliderCollapsed", useTransitions);
 			VisualStateManager.GoToState(this, isAlphaEnabled && this.IsAlphaSliderVisible ? "AlphaSliderVisible" : "AlphaSliderCollapsed", useTransitions);
-			VisualStateManager.GoToState(this, this.IsMoreButtonVisible ? "MoreButtonVisible" : "MoreButtonCollapsed", useTransitions);
-			VisualStateManager.GoToState(this, !this.IsMoreButtonVisible || m_textEntryGridOpened ? "TextEntryGridVisible" : "TextEntryGridCollapsed", useTransitions);
+			// More button is disabled in horizontal orientation; only respect IsMoreButtonVisible states when switching to Vertical orientation.
+			VisualStateManager.GoToState(this, this.IsMoreButtonVisible && isVerticalOrientation ? "MoreButtonVisible" : "MoreButtonCollapsed", useTransitions);
+			VisualStateManager.GoToState(this, !this.IsMoreButtonVisible || m_textEntryGridOpened || !isVerticalOrientation ? "TextEntryGridVisible" : "TextEntryGridCollapsed", useTransitions);
 
 			if (m_colorRepresentationComboBox is ComboBox colorRepresentationComboBox)
 			{
@@ -507,6 +518,7 @@ namespace Microsoft.UI.Xaml.Controls
 			VisualStateManager.GoToState(this, isAlphaEnabled && this.IsAlphaTextInputVisible ? "AlphaTextInputVisible" : "AlphaTextInputCollapsed", useTransitions);
 			VisualStateManager.GoToState(this, this.IsHexInputVisible ? "HexInputVisible" : "HexInputCollapsed", useTransitions);
 			VisualStateManager.GoToState(this, isAlphaEnabled ? "AlphaEnabled" : "AlphaDisabled", useTransitions);
+			VisualStateManager.GoToState(this, isVerticalOrientation ? "Vertical" : "Horizontal", useTransitions);
 		}
 
 		private void InitializeColor()
