@@ -5,9 +5,6 @@
 		<NoWarn>1701;1702;1705;109</NoWarn>
 		<AssemblyName>Uno.UI.BindingHelper.Android</AssemblyName>
 
-		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
-		<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
-
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 

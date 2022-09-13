@@ -122,3 +122,28 @@ To run the synchronization tool:
 - Run the `run-api-sync-tool.cmd` script; make sure to follow the instructions
 
 Note that as of Uno 3.10, the tool is manually run for the UWP part of the build and automatically run as part of the CI during the WinUI part of the build.
+
+### Android Resources ID generation
+
+To workaround a performance issue, all `Resource.designer.cs` generation is disabled for class libraries in this repo.
+
+If you need to add a new `@(AndroidResource)` value to be used from C# code inside of Uno.UI libraries:
+
+1. Comment out the `<PropertyGroup>` in `Directory.Build.targets` that sets `$(AndroidGenerateResourceDesigner)` and `$(AndroidUseIntermediateDesignerFile)` to `false`.
+
+2. Build Uno.UI as you normally would. You will get compiler errors about duplicate fields, but `obj\Debug\net6.0-android\Resource.designer.cs` should now be generated.
+
+3. Open `obj\Debug\net6.0-android\Resource.designer.cs`, and find the
+   field you need such as:
+
+```csharp
+// aapt resource value: 0x7F010000
+public static int foo = 2130771968;
+```
+
+4. Copy this field to the `Resource.designer.cs` checked into source
+   control, such as: `src/Uno.UI/Resources/Resource.designer.g.Android.cs`
+
+5. Restore the commented code in `Directory.Build.targets`.
+
+_This performance optimization is inspired from @jonathanpeppers's performance work done in https://github.com/dotnet/maui/pull/2606. Thanks Jonathan!_
