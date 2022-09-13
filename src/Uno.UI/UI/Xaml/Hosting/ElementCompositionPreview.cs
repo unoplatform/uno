@@ -31,7 +31,7 @@ public partial class ElementCompositionPreview
 	}
 
 	/// <summary>
-	/// Sets a custom Windows.UI.Composition.Visual as the last child of the element’s visual tree.
+	/// Sets a custom Windows.UI.Composition.Visual as the last child of the element's visual tree.
 	/// </summary>
 	/// <param name="element">The element to add the child Visual to.</param>
 	/// <param name="visual">The Visual to add to the element's visual tree.</param>
