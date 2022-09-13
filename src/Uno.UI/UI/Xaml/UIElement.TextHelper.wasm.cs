@@ -159,9 +159,8 @@ namespace Windows.UI.Xaml
 				case GradientBrush gradient:
 					this.SetStyle(
 						("background", gradient.ToCssString(this.RenderSize)),
-						("color", "transparent"),
-						("background-clip", "text")
-					);
+						("color", "transparent"));
+
 					break;
 
 				case ImageBrush imageBrush:

@@ -17,6 +17,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private const int MaxMeasureCache = 50;
 
+		private Run _run;
 		private bool _fontStyleChanged;
 		private bool _fontWeightChanged;
 		private bool _textChanged;
@@ -78,7 +79,7 @@ namespace Windows.UI.Xaml.Controls
 			ConditionalUpdate(ref _textDecorationsChanged, () => this.SetTextDecorations(TextDecorations));
 			ConditionalUpdate(ref _paddingChangedChanged, () => this.SetTextPadding(Padding));
 
-			if(_textTrimmingChanged || _textWrappingChanged)
+			if (_textTrimmingChanged || _textWrappingChanged)
 			{
 				_textTrimmingChanged = _textWrappingChanged = false;
 				this.SetTextWrappingAndTrimming(textTrimming: TextTrimming, textWrapping: TextWrapping);
@@ -90,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (UseInlinesFastPath)
 				{
-					this.SetText(Text);
+					_run?.SetText(Text);
 				}
 			}
 		}
@@ -156,6 +157,18 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnFontWeightChangedPartial() => _fontWeightChanged = true;
 
+		partial void UpdateInlinesFastPathPartial()
+		{
+			if (_run is null)
+			{
+				_run = new Run
+				{
+					Text = Text,
+				};
+				AddChild(_run);
+			}
+		}
+
 		partial void OnIsTextSelectionEnabledChangedPartial()
 		{
 			if (IsTextSelectionEnabled)
@@ -185,7 +198,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextTrimmingChangedPartial() => _textTrimmingChanged = true;
 
-		partial void OnForegroundChangedPartial() => this.SetForeground(Foreground);
+		partial void OnForegroundChangedPartial() => _run?.SetForeground(Foreground);
 
 		partial void OnTextAlignmentChangedPartial() => _textAlignmentChanged = true;
 

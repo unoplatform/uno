@@ -128,16 +128,16 @@ embed.uno-frameworkelement.uno-unarranged {
   user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 
-.uno-textblock {
+.uno-textblock, .uno-textelement {
   text-rendering: optimizeLegibility; /* iOS Safari */
+
+  /* overflow:hidden is required for text-overflow: ellipsis to work correctly */
+  overflow: hidden;
 
   /* Following are required for gradient brush as Foreground on text. Should not affect normal rendering. */
   -ms-background-clip: text !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
-
-  /* overflow:hidden is required for text-overflow: ellipsis to work correctly */
-  overflow: hidden;
 }
 
 [data-use-hand-cursor-interaction="true"] .uno-buttonbase,

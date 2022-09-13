@@ -707,10 +707,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		partial void UpdateInlinesFastPathPartial();
+
 		private void UpdateInlines(string text)
 		{
 			if (UseInlinesFastPath)
 			{
+				UpdateInlinesFastPathPartial();
 				return;
 			}
 
@@ -735,7 +738,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void ClearTextPartial();
 
-		#region Hyperlinks
+#region Hyperlinks
 
 #if __WASM__
 		// As on wasm the TextElements are UIElement, when the hosting TextBlock will capture the pointer on Pressed,
@@ -943,7 +946,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #endif
 
-		#endregion
+#endregion
 
 		private void InvalidateTextBlock()
 		{
