@@ -15,6 +15,7 @@ trigger:
     # don't trigger the CI if only docs files are changed
     - doc/*
     - '**/*.md'
+    - '*.md'
     
 pr: 
   branches:
