@@ -44,6 +44,11 @@ namespace Uno.UI.Xaml.Core
 #if __WASM__
 			//Uno WASM specific - set tabindex to 0 so the RootVisual is "native focusable"
 			SetAttribute("tabindex", "0");
+
+			AddHandler(
+				PointerCanceledEvent,
+				new PointerEventHandler((snd, args) => ProcessPointerCancelledWasm(args)),
+				handledEventsToo: true);
 #endif
 
 			AddHandler(
@@ -139,6 +144,13 @@ namespace Uno.UI.Xaml.Core
 				_canUnFocusOnNextLeftPointerRelease = true;
 			}
 		}
+
+#if __WASM__
+		private static void ProcessPointerCancelledWasm(PointerRoutedEventArgs args)
+		{
+			RemoveActivePointer(args.Pointer.PointerId);
+		}
+#endif
 
 		internal static void ProcessPointerUp(PointerRoutedEventArgs args, bool isAfterHandledUp = false)
 		{
