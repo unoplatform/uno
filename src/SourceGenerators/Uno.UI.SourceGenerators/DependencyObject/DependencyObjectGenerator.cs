@@ -82,21 +82,17 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 		{
 			if (!collector.IsUnoSolution)
 			{
-				var _iosViewSymbol = context.Compilation.GetTypeByMetadataName("UIKit.UIView");
-				var _macosViewSymbol = context.Compilation.GetTypeByMetadataName("AppKit.NSView");
-				var _androidViewSymbol = context.Compilation.GetTypeByMetadataName("Android.Views.View");
-
-				if (symbol.Is(_iosViewSymbol))
+				if (symbol.Is(collector.iOSViewSymbol))
 				{
 					ReportDiagnostic(context, Diagnostic.Create(_descriptor, symbol.Locations[0], "UIKit.UIView"));
 					return false;
 				}
-				else if (symbol.Is(_androidViewSymbol))
+				else if (symbol.Is(collector.AndroidViewSymbol))
 				{
 					ReportDiagnostic(context, Diagnostic.Create(_descriptor, symbol.Locations[0], "Android.Views.View"));
 					return false;
 				}
-				else if (symbol.Is(_macosViewSymbol))
+				else if (symbol.Is(collector.MacOSViewSymbol))
 				{
 					ReportDiagnostic(context, Diagnostic.Create(_descriptor, symbol.Locations[0], "AppKit.NSView"));
 					return false;

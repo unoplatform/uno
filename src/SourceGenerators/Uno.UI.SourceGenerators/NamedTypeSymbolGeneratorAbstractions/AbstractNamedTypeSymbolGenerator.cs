@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Uno.UI.SourceGenerators.Helpers;
@@ -11,8 +12,9 @@ using Uno.SourceGeneration;
 
 namespace Uno.UI.SourceGenerators
 {
-	public abstract class AbstractNamedTypeSymbolGenerator<TInitializationDataCollector, TExecutionDataCollector>
-		: ISourceGenerator
+	public abstract class AbstractNamedTypeSymbolGenerator<TInitializationDataCollector, TExecutionDataCollector> : ISourceGenerator
+		where TInitializationDataCollector : struct
+		where TExecutionDataCollector : struct
 	{
 		public void Initialize(GeneratorInitializationContext context)
 		{
@@ -70,7 +72,7 @@ namespace Uno.UI.SourceGenerators
 				if (context.Node.IsKind(SyntaxKind.ClassDeclaration))
 				{
 					if (context.SemanticModel.GetDeclaredSymbol(context.Node) is INamedTypeSymbol symbol &&
-						_generator.IsCandidateSymbolInRoslynInitialization(symbol, _collector))
+						_generator.IsCandidateSymbolInRoslynInitialization(symbol, _collector.Value))
 					{
 						NamedTypeSymbols.Add(symbol);
 					}

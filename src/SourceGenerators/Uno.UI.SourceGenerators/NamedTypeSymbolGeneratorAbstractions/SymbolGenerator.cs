@@ -13,6 +13,8 @@ namespace Uno.UI.SourceGenerators
 #if NETFRAMEWORK
 		: SymbolVisitor
 #endif
+		where TInitializationDataCollector : struct
+		where TExecutionDataCollector : struct
 	{
 		protected GeneratorExecutionContext Context { get; }
 		protected TInitializationDataCollector InitializationDataCollector { get; }
