@@ -19,7 +19,6 @@ using Uno.SourceGeneration;
 
 namespace Uno.UI.SourceGenerators.NativeCtor
 {
-#if !NETFRAMEWORK
 	public struct NativeCtorInitializationDataCollector
 	{
 		public INamedTypeSymbol? iOSViewSymbol { get; }
@@ -48,18 +47,13 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 		{
 		}
 	}
-#endif
 
 	[Generator]
 #if NETFRAMEWORK
 	[GenerateAfter("Uno.UI.SourceGenerators.XamlGenerator." + nameof(XamlGenerator.XamlCodeGenerator))]
 #endif
-	public class NativeCtorsGenerator : AbstractNamedTypeSymbolGenerator
-#if !NETFRAMEWORK
-		<NativeCtorInitializationDataCollector, NativeCtorExecutionDataCollector>
-#endif
+	public class NativeCtorsGenerator : AbstractNamedTypeSymbolGenerator<NativeCtorInitializationDataCollector, NativeCtorExecutionDataCollector>
 	{
-#if !NETFRAMEWORK
 		public override NativeCtorExecutionDataCollector GetExecutionDataCollector(GeneratorExecutionContext context) => new NativeCtorExecutionDataCollector(context);
 		public override NativeCtorInitializationDataCollector GetInitializationDataCollector(Compilation compilation) => new NativeCtorInitializationDataCollector(compilation);
 
@@ -68,9 +62,8 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 			return true;
 		}
 
-		public override bool IsCandidateSymbolInRoslynInitialization(GeneratorSyntaxContext context, INamedTypeSymbol symbol, NativeCtorInitializationDataCollector collector)
+		public override bool IsCandidateSymbolInRoslynInitialization(INamedTypeSymbol symbol, NativeCtorInitializationDataCollector collector)
 		{
-
 			var isiOSView = symbol.Is(collector.iOSViewSymbol);
 			var ismacOSView = symbol.Is(collector.MacOSViewSymbol);
 			var isAndroidView = symbol.Is(collector.AndroidViewSymbol);
@@ -130,93 +123,22 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 				}
 			}
 		}
-#endif
 
-		private protected override SymbolGenerator GetGenerator(GeneratorExecutionContext context) => new SerializationMethodsGenerator(context);
+		private protected override SymbolGenerator<NativeCtorInitializationDataCollector, NativeCtorExecutionDataCollector> GetGenerator(
+			GeneratorExecutionContext context,
+			NativeCtorInitializationDataCollector initializationCollector,
+			NativeCtorExecutionDataCollector executionCollector)
+			=> new SerializationMethodsGenerator(context, initializationCollector, executionCollector, this);
 
-		private sealed class SerializationMethodsGenerator : SymbolGenerator
+		private sealed class SerializationMethodsGenerator : SymbolGenerator<NativeCtorInitializationDataCollector, NativeCtorExecutionDataCollector>
 		{
-			private readonly INamedTypeSymbol? _iosViewSymbol;
-			private readonly INamedTypeSymbol? _objcNativeHandleSymbol;
-			private readonly INamedTypeSymbol? _macosViewSymbol;
-			private readonly INamedTypeSymbol? _androidViewSymbol;
-			private readonly INamedTypeSymbol? _intPtrSymbol;
-			private readonly INamedTypeSymbol? _jniHandleOwnershipSymbol;
-			private readonly INamedTypeSymbol?[]? _javaCtorParams;
-
-			public SerializationMethodsGenerator(GeneratorExecutionContext context) : base(context)
+			public SerializationMethodsGenerator(
+				GeneratorExecutionContext context,
+				NativeCtorInitializationDataCollector initCollector,
+				NativeCtorExecutionDataCollector execCollector,
+				NativeCtorsGenerator generator) : base(context, initCollector, execCollector, generator)
 			{
-				_iosViewSymbol = context.Compilation.GetTypeByMetadataName("UIKit.UIView");
-				_objcNativeHandleSymbol = context.Compilation.GetTypeByMetadataName("ObjCRuntime.NativeHandle");
-				_macosViewSymbol = context.Compilation.GetTypeByMetadataName("AppKit.NSView");
-				_androidViewSymbol = context.Compilation.GetTypeByMetadataName("Android.Views.View");
-				_intPtrSymbol = context.Compilation.GetTypeByMetadataName("System.IntPtr");
-				_jniHandleOwnershipSymbol = context.Compilation.GetTypeByMetadataName("Android.Runtime.JniHandleOwnership");
-				_javaCtorParams = new[] { _intPtrSymbol, _jniHandleOwnershipSymbol };
 			}
-
-			private protected override bool IsCandidateSymbol(INamedTypeSymbol typeSymbol)
-			{
-				var isiOSView = typeSymbol.Is(_iosViewSymbol);
-				var ismacOSView = typeSymbol.Is(_macosViewSymbol);
-				var isAndroidView = typeSymbol.Is(_androidViewSymbol);
-
-				if (isiOSView || ismacOSView)
-				{
-					Func<IMethodSymbol, bool> predicate = m =>
-						!m.Parameters.IsDefaultOrEmpty
-						&& (
-							SymbolEqualityComparer.Default.Equals(m.Parameters[0].Type, _intPtrSymbol)
-							|| SymbolEqualityComparer.Default.Equals(m.Parameters[0].Type, _objcNativeHandleSymbol));
-
-					var nativeCtor = GetNativeCtor(typeSymbol, predicate, considerAllBaseTypes: false);
-
-					if (nativeCtor == null && GetNativeCtor(typeSymbol.BaseType, predicate, considerAllBaseTypes: true) != null)
-					{
-						return true;
-					}
-				}
-
-				if (isAndroidView)
-				{
-					Func<IMethodSymbol, bool> predicate = m => m.Parameters.Select(p => p.Type).SequenceEqual(_javaCtorParams ?? Array.Empty<ITypeSymbol?>());
-					var nativeCtor = GetNativeCtor(typeSymbol, predicate, considerAllBaseTypes: false);
-
-					if (nativeCtor == null && GetNativeCtor(typeSymbol.BaseType, predicate, considerAllBaseTypes: true) != null)
-					{
-						return true;
-					}
-				}
-
-				return false;
-
-				static IMethodSymbol? GetNativeCtor(INamedTypeSymbol? type, Func<IMethodSymbol, bool> predicate, bool considerAllBaseTypes)
-				{
-					// Consider:
-					// Type A -> Type B -> Type C
-					// HasCtor   NoCtor    NoCtor
-					// We want to generate the ctor for both Type B and Type C
-					// But since the generator doesn't guarantee Type B is getting processed first,
-					// We need to check the inheritance hierarchy.
-					// However, assume Type B wasn't declared in source, we can't generate the ctor for it.
-					// Consequently, Type C shouldn't generate source as well.
-					if (type is null)
-					{
-						return null;
-					}
-
-					var ctor = type.GetMembers(WellKnownMemberNames.InstanceConstructorName).Cast<IMethodSymbol>().FirstOrDefault(predicate);
-					if (ctor != null || !considerAllBaseTypes || !type.Locations.Any(l => l.IsInSource))
-					{
-						return ctor;
-					}
-					else
-					{
-						return GetNativeCtor(type.BaseType, predicate, true);
-					}
-				}
-			}
-
 
 			private protected override string GetGeneratedCode(INamedTypeSymbol symbol)
 			{
@@ -274,7 +196,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 				builder.AppendLineIndented("/// </remarks>");
 				builder.AppendLineIndented($"public {syntacticValidSymbolName}(IntPtr handle) : base (handle) {{ }}");
 
-				if (_objcNativeHandleSymbol != null)
+				if (InitializationDataCollector.ObjCRuntimeNativeHandle != null)
 				{
 					builder.AppendLineIndented("/// <summary>");
 					builder.AppendLineIndented("/// Native constructor, do not use explicitly.");

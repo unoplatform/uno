@@ -9,28 +9,40 @@ using Uno.SourceGeneration;
 
 namespace Uno.UI.SourceGenerators
 {
-	internal abstract class SymbolGenerator
+	internal abstract class SymbolGenerator<TInitializationDataCollector, TExecutionDataCollector>
 #if NETFRAMEWORK
 		: SymbolVisitor
 #endif
 	{
-		protected readonly GeneratorExecutionContext _context;
+		protected GeneratorExecutionContext Context { get; }
+		protected TInitializationDataCollector InitializationDataCollector { get; }
+		protected TExecutionDataCollector ExecutionDataCollector { get; }
+		private readonly AbstractNamedTypeSymbolGenerator<TInitializationDataCollector, TExecutionDataCollector> _generator;
 
-		protected SymbolGenerator(GeneratorExecutionContext context)
+		protected SymbolGenerator(
+			GeneratorExecutionContext context,
+			TInitializationDataCollector initCollector,
+			TExecutionDataCollector execCollector,
+			AbstractNamedTypeSymbolGenerator<TInitializationDataCollector, TExecutionDataCollector> generator)
 		{
-			_context = context;
+			Context = context;
+			InitializationDataCollector = initCollector;
+			ExecutionDataCollector = execCollector;
+			_generator = generator;
 		}
 
-		private protected abstract bool IsCandidateSymbol(INamedTypeSymbol typeSymbol);
 		private protected abstract string GetGeneratedCode(INamedTypeSymbol typeSymbol);
 
 		public void ProcessType(INamedTypeSymbol typeSymbol)
 		{
 #if NETFRAMEWORK
-			if (IsCandidateSymbol(typeSymbol))
+			if (_generator.IsCandidateSymbolInRoslynInitialization(typeSymbol, InitializationDataCollector) &&
+				_generator.IsCandidateSymbolInRoslynExecution(Context, typeSymbol, ExecutionDataCollector))
+#else
+			if (_generator.IsCandidateSymbolInRoslynExecution(Context, typeSymbol, ExecutionDataCollector))
 #endif
 			{
-				_context.AddSource(
+				Context.AddSource(
 					HashBuilder.BuildIDFromSymbol(typeSymbol),
 					GetGeneratedCode(typeSymbol));
 			}
@@ -40,7 +52,7 @@ namespace Uno.UI.SourceGenerators
 #if NETFRAMEWORK
 			public override void VisitNamedType(INamedTypeSymbol type)
 			{
-				_context.CancellationToken.ThrowIfCancellationRequested();
+				Context.CancellationToken.ThrowIfCancellationRequested();
 
 				foreach (var t in type.GetTypeMembers())
 				{
@@ -52,14 +64,14 @@ namespace Uno.UI.SourceGenerators
 
 			public override void VisitModule(IModuleSymbol symbol)
 			{
-				_context.CancellationToken.ThrowIfCancellationRequested();
+				Context.CancellationToken.ThrowIfCancellationRequested();
 
 				VisitNamespace(symbol.GlobalNamespace);
 			}
 
 			public override void VisitNamespace(INamespaceSymbol symbol)
 			{
-				_context.CancellationToken.ThrowIfCancellationRequested();
+				Context.CancellationToken.ThrowIfCancellationRequested();
 
 				foreach (var n in symbol.GetNamespaceMembers())
 				{

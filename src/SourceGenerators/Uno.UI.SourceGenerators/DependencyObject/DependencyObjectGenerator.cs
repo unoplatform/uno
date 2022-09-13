@@ -16,7 +16,6 @@ using Uno.SourceGeneration;
 
 namespace Uno.UI.SourceGenerators.DependencyObject
 {
-#if !NETFRAMEWORK
 	public struct DependencyObjectInitializationDataCollector
 	{
 		public INamedTypeSymbol? DependencyObjectSymbol { get; }
@@ -29,27 +28,44 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 	public struct DependencyObjectExecutionDataCollector
 	{
 		public bool IsUnoSolution { get; }
+		public INamedTypeSymbol? UnoViewgroupSymbol { get; }
+		public INamedTypeSymbol? iOSViewSymbol { get; }
+		public INamedTypeSymbol? MacOSViewSymbol { get; }
+		public INamedTypeSymbol? AndroidViewSymbol { get; }
+		public INamedTypeSymbol? JavaObjectSymbol { get; }
+		public INamedTypeSymbol? AndroidActivitySymbol { get; }
+		public INamedTypeSymbol? AndroidFragmentSymbol { get; }
+		public INamedTypeSymbol? BindableAttributeSymbol { get; }
+		public INamedTypeSymbol? IFrameworkElementSymbol { get; }
+		public INamedTypeSymbol? FrameworkElementSymbol { get; }
+		public string[] AnalyzerSuppressions { get; }
 
 		public DependencyObjectExecutionDataCollector(GeneratorExecutionContext context)
 		{
+			var comp = context.Compilation;
 			IsUnoSolution = context.GetMSBuildPropertyValue("_IsUnoUISolution") == "true";
+			UnoViewgroupSymbol = comp.GetTypeByMetadataName("Uno.UI.UnoViewGroup");
+			iOSViewSymbol = comp.GetTypeByMetadataName("UIKit.UIView");
+			MacOSViewSymbol = comp.GetTypeByMetadataName("AppKit.NSView");
+			AndroidViewSymbol = comp.GetTypeByMetadataName("Android.Views.View");
+			JavaObjectSymbol = comp.GetTypeByMetadataName("Java.Lang.Object");
+			AndroidActivitySymbol = comp.GetTypeByMetadataName("Android.App.Activity");
+			AndroidFragmentSymbol = comp.GetTypeByMetadataName("AndroidX.Fragment.App.Fragment");
+			BindableAttributeSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.Data.BindableAttribute");
+			IFrameworkElementSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.IFrameworkElement);
+			FrameworkElementSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.FrameworkElement");
+			AnalyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 		}
 	}
-#endif
 
 	[Generator]
-	public partial class DependencyObjectGenerator : AbstractNamedTypeSymbolGenerator
-#if !NETFRAMEWORK
-		<DependencyObjectInitializationDataCollector, DependencyObjectExecutionDataCollector>
-#endif
+	public partial class DependencyObjectGenerator : AbstractNamedTypeSymbolGenerator<DependencyObjectInitializationDataCollector, DependencyObjectExecutionDataCollector>
 	{
-#if !NETFRAMEWORK
-
 		public override DependencyObjectInitializationDataCollector GetInitializationDataCollector(Compilation compilation) => new DependencyObjectInitializationDataCollector(compilation);
 
 		public override DependencyObjectExecutionDataCollector GetExecutionDataCollector(GeneratorExecutionContext context) => new DependencyObjectExecutionDataCollector(context);
 
-		public override bool IsCandidateSymbolInRoslynInitialization(GeneratorSyntaxContext context, INamedTypeSymbol symbol, DependencyObjectInitializationDataCollector collector)
+		public override bool IsCandidateSymbolInRoslynInitialization(INamedTypeSymbol symbol, DependencyObjectInitializationDataCollector collector)
 		{
 			var isDependencyObject = symbol.Interfaces.Any(t => SymbolEqualityComparer.Default.Equals(t, collector.DependencyObjectSymbol))
 				&& (symbol.BaseType?.GetAllInterfaces().None(t => SymbolEqualityComparer.Default.Equals(t, collector.DependencyObjectSymbol)) ?? true);
@@ -89,43 +105,18 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			return true;
 		}
-#endif
 
-		private protected override SymbolGenerator GetGenerator(GeneratorExecutionContext context) => new SerializationMethodsGenerator(context);
+		private protected override SymbolGenerator<DependencyObjectInitializationDataCollector, DependencyObjectExecutionDataCollector> GetGenerator(GeneratorExecutionContext context, DependencyObjectInitializationDataCollector initializationCollector, DependencyObjectExecutionDataCollector executionCollector)
+			=> new SerializationMethodsGenerator(context, initializationCollector, executionCollector, this);
 
-		private sealed class SerializationMethodsGenerator : SymbolGenerator
+		private sealed class SerializationMethodsGenerator : SymbolGenerator<DependencyObjectInitializationDataCollector, DependencyObjectExecutionDataCollector>
 		{
-			private readonly INamedTypeSymbol? _dependencyObjectSymbol;
-			private readonly INamedTypeSymbol? _unoViewgroupSymbol;
-			private readonly INamedTypeSymbol? _iosViewSymbol;
-			private readonly INamedTypeSymbol? _macosViewSymbol;
-			private readonly INamedTypeSymbol? _androidViewSymbol;
-			private readonly INamedTypeSymbol? _javaObjectSymbol;
-			private readonly INamedTypeSymbol? _androidActivitySymbol;
-			private readonly INamedTypeSymbol? _androidFragmentSymbol;
-			private readonly INamedTypeSymbol? _bindableAttributeSymbol;
-			private readonly INamedTypeSymbol? _iFrameworkElementSymbol;
-			private readonly INamedTypeSymbol? _frameworkElementSymbol;
-			private readonly bool _isUnoSolution;
-			private readonly string[] _analyzerSuppressions;
-
-			public SerializationMethodsGenerator(GeneratorExecutionContext context) : base(context)
+			public SerializationMethodsGenerator(
+				GeneratorExecutionContext context,
+				DependencyObjectInitializationDataCollector initializationCollector,
+				DependencyObjectExecutionDataCollector executionCollector,
+				DependencyObjectGenerator generator) : base(context, initializationCollector, executionCollector, generator)
 			{
-				var comp = context.Compilation;
-
-				_dependencyObjectSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.DependencyObject);
-				_unoViewgroupSymbol = comp.GetTypeByMetadataName("Uno.UI.UnoViewGroup");
-				_iosViewSymbol = comp.GetTypeByMetadataName("UIKit.UIView");
-				_macosViewSymbol = comp.GetTypeByMetadataName("AppKit.NSView");
-				_androidViewSymbol = comp.GetTypeByMetadataName("Android.Views.View");
-				_javaObjectSymbol = comp.GetTypeByMetadataName("Java.Lang.Object");
-				_androidActivitySymbol = comp.GetTypeByMetadataName("Android.App.Activity");
-				_androidFragmentSymbol = comp.GetTypeByMetadataName("AndroidX.Fragment.App.Fragment");
-				_bindableAttributeSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.Data.BindableAttribute");
-				_iFrameworkElementSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.IFrameworkElement);
-				_frameworkElementSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.FrameworkElement");
-				_isUnoSolution = _context.GetMSBuildPropertyValue("_IsUnoUISolution") == "true";
-				_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 			}
 
 			private static IDisposable GenerateNestingContainers(IndentedStringBuilder builder, INamedTypeSymbol? typeSymbol)
@@ -178,7 +169,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			private void WriteiOSMoveToSuperView(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
 			{
-				var isiosView = typeSymbol.Is(_iosViewSymbol);
+				var isiosView = typeSymbol.Is(ExecutionDataCollector.iOSViewSymbol);
 				var hasNoWillMoveToSuperviewMethod = typeSymbol
 					.GetMethodsWithName("WillMoveToSuperview")
 					.None(m => IsNotDependencyObjectGeneratorSourceFile(m));
@@ -210,13 +201,13 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 				else
 				{
-					builder.AppendIndented($"// Skipped _iosViewSymbol: {typeSymbol.Is(_iosViewSymbol)}, hasNoWillMoveToSuperviewMethod: {hasNoWillMoveToSuperviewMethod}");
+					builder.AppendIndented($"// Skipped _iosViewSymbol: {typeSymbol.Is(ExecutionDataCollector.iOSViewSymbol)}, hasNoWillMoveToSuperviewMethod: {hasNoWillMoveToSuperviewMethod}");
 				}
 			}
 
 			private void WriteMacOSViewWillMoveToSuperview(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
 			{
-				var isiosView = typeSymbol.Is(_macosViewSymbol);
+				var isiosView = typeSymbol.Is(ExecutionDataCollector.MacOSViewSymbol);
 				var hasNoWillMoveToSuperviewMethod = typeSymbol
 					.GetMethodsWithName("ViewWillMoveToSuperview")
 					.None(m => IsNotDependencyObjectGeneratorSourceFile(m));
@@ -248,18 +239,18 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 				else
 				{
-					builder.AppendIndented($"// Skipped _macosViewSymbol: {typeSymbol.Is(_macosViewSymbol)}, hasNoViewWillMoveToSuperviewMethod: {hasNoWillMoveToSuperviewMethod}");
+					builder.AppendIndented($"// Skipped _macosViewSymbol: {typeSymbol.Is(ExecutionDataCollector.MacOSViewSymbol)}, hasNoViewWillMoveToSuperviewMethod: {hasNoWillMoveToSuperviewMethod}");
 					builder.AppendLine();
 				}
 			}
 
 			private void WriteAndroidAttachedToWindow(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
 			{
-				var isAndroidView = typeSymbol.Is(_androidViewSymbol);
-				var isAndroidActivity = typeSymbol.Is(_androidActivitySymbol);
-				var isAndroidFragment = typeSymbol.Is(_androidFragmentSymbol);
-				var isUnoViewGroup = typeSymbol.Is(_unoViewgroupSymbol);
-				var implementsIFrameworkElement = typeSymbol.Interfaces.Any(t => SymbolEqualityComparer.Default.Equals(t, _iFrameworkElementSymbol));
+				var isAndroidView = typeSymbol.Is(ExecutionDataCollector.AndroidViewSymbol);
+				var isAndroidActivity = typeSymbol.Is(ExecutionDataCollector.AndroidActivitySymbol);
+				var isAndroidFragment = typeSymbol.Is(ExecutionDataCollector.AndroidFragmentSymbol);
+				var isUnoViewGroup = typeSymbol.Is(ExecutionDataCollector.UnoViewgroupSymbol);
+				var implementsIFrameworkElement = typeSymbol.Interfaces.Any(t => SymbolEqualityComparer.Default.Equals(t, ExecutionDataCollector.IFrameworkElementSymbol));
 				var hasOverridesAttachedToWindowAndroid = isAndroidView &&
 					typeSymbol
 					.GetMethodsWithName("OnAttachedToWindow")
@@ -384,7 +375,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			private void WriteAttachToWindow(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
 			{
-				var hasOverridesAttachedToWindowiOS = typeSymbol.Is(_iosViewSymbol) &&
+				var hasOverridesAttachedToWindowiOS = typeSymbol.Is(ExecutionDataCollector.iOSViewSymbol) &&
 									typeSymbol
 									.GetMethodsWithName("MovedToWindow")
 									.None(m => IsNotDependencyObjectGeneratorSourceFile(m));
@@ -429,7 +420,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			private void WriteViewDidMoveToWindow(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
 			{
-				var hasOverridesAttachedToWindowiOS = typeSymbol.Is(_macosViewSymbol) &&
+				var hasOverridesAttachedToWindowiOS = typeSymbol.Is(ExecutionDataCollector.MacOSViewSymbol) &&
 									typeSymbol
 									.GetMethodsWithName("ViewDidMoveToWindow")
 									.Where(m => IsNotDependencyObjectGeneratorSourceFile(m))
@@ -480,7 +471,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			private void WriteAndroidBinderDetails(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
 			{
-				var hasBinderDetails = typeSymbol.Is(_androidViewSymbol);
+				var hasBinderDetails = typeSymbol.Is(ExecutionDataCollector.AndroidViewSymbol);
 
 				if (hasBinderDetails)
 				{
@@ -579,7 +570,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			private void WriteDispose(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
 			{
-				var hasDispose = typeSymbol.Is(_iosViewSymbol) || typeSymbol.Is(_macosViewSymbol);
+				var hasDispose = typeSymbol.Is(ExecutionDataCollector.iOSViewSymbol) || typeSymbol.Is(ExecutionDataCollector.MacOSViewSymbol);
 
 				if (hasDispose)
 				{
@@ -653,12 +644,12 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				var virtualModifier = typeSymbol.IsSealed ? "" : "virtual";
 				var protectedModifier = typeSymbol.IsSealed ? "private" : "internal protected";
 				string dataContextChangedInvokeArgument;
-				if (typeSymbol.Is(_frameworkElementSymbol))
+				if (typeSymbol.Is(ExecutionDataCollector.FrameworkElementSymbol))
 				{
 					// We can pass 'this' safely to a parameter of type FrameworkElement.
 					dataContextChangedInvokeArgument = "this";
 				}
-				else if (_frameworkElementSymbol.Is(typeSymbol))
+				else if (ExecutionDataCollector.FrameworkElementSymbol.Is(typeSymbol))
 				{
 					// Example: Border -> FrameworkElement -> BindableView
 					// If we have a BindableView, it may or may not be FrameworkElement.
@@ -778,7 +769,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					.None(m => IsNotDependencyObjectGeneratorSourceFile(m))
 					&& (typeSymbol.BaseType?.GetMethodsWithName("Equals").None(m => m.IsSealed) ?? true);
 
-				if (hasEqualityOverride && typeSymbol.Is(_androidViewSymbol))
+				if (hasEqualityOverride && typeSymbol.Is(ExecutionDataCollector.AndroidViewSymbol))
 				{
 					builder.AppendMultiLineIndented($@"
 						public override int GetHashCode()
@@ -843,7 +834,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 				builder.AppendLineIndented("public void UnregisterPropertyChangedCallback(DependencyProperty dp, long token) => __Store.UnregisterPropertyChangedCallback(dp, token);");
 
-				if (_isUnoSolution && !typeSymbol.IsSealed)
+				if (ExecutionDataCollector.IsUnoSolution && !typeSymbol.IsSealed)
 				{
 					builder.AppendLineIndented("void IDependencyObjectInternal.OnPropertyChanged2(global::Windows.UI.Xaml.DependencyPropertyChangedEventArgs args) => OnPropertyChanged2(args);");
 
@@ -854,37 +845,6 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 			}
 
-			private protected override bool IsCandidateSymbol(INamedTypeSymbol typeSymbol)
-			{
-				var isDependencyObject = typeSymbol.Interfaces.Any(t => SymbolEqualityComparer.Default.Equals(t, _dependencyObjectSymbol))
-					&& (typeSymbol.BaseType?.GetAllInterfaces().None(t => SymbolEqualityComparer.Default.Equals(t, _dependencyObjectSymbol)) ?? true);
-
-				if (!isDependencyObject)
-				{
-					return false;
-				}
-
-				if (!_isUnoSolution)
-				{
-					if (typeSymbol.Is(_iosViewSymbol))
-					{
-						ReportDiagnostic(_context, Diagnostic.Create(_descriptor, typeSymbol.Locations[0], "UIKit.UIView"));
-						return false;
-					}
-					else if (typeSymbol.Is(_androidViewSymbol))
-					{
-						ReportDiagnostic(_context, Diagnostic.Create(_descriptor, typeSymbol.Locations[0], "Android.Views.View"));
-						return false;
-					}
-					else if (typeSymbol.Is(_macosViewSymbol))
-					{
-						ReportDiagnostic(_context, Diagnostic.Create(_descriptor, typeSymbol.Locations[0], "AppKit.NSView"));
-						return false;
-					}
-				}
-
-				return true;
-			}
 			private protected override string GetGeneratedCode(INamedTypeSymbol typeSymbol)
 			{
 				var builder = new IndentedStringBuilder();
@@ -916,18 +876,18 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				{
 					using (GenerateNestingContainers(builder, typeSymbol))
 					{
-						if (_bindableAttributeSymbol != null && typeSymbol.FindAttribute(_bindableAttributeSymbol) == null)
+						if (ExecutionDataCollector.BindableAttributeSymbol != null && typeSymbol.FindAttribute(ExecutionDataCollector.BindableAttributeSymbol) == null)
 						{
 							builder.AppendLineIndented(@"[global::Windows.UI.Xaml.Data.Bindable]");
 						}
 
-						AnalyzerSuppressionsGenerator.Generate(builder, _analyzerSuppressions);
+						AnalyzerSuppressionsGenerator.Generate(builder, ExecutionDataCollector.AnalyzerSuppressions);
 
-						var internalDependencyObject = _isUnoSolution && !typeSymbol.IsSealed ? ", IDependencyObjectInternal" : "";
+						var internalDependencyObject = ExecutionDataCollector.IsUnoSolution && !typeSymbol.IsSealed ? ", IDependencyObjectInternal" : "";
 
 						using (builder.BlockInvariant($"partial class {typeSymbol.Name} : IDependencyObjectStoreProvider, IWeakReferenceProvider{internalDependencyObject}"))
 						{
-							GenerateDependencyObjectImplementation(typeSymbol, builder, hasDispatcherQueue: _dependencyObjectSymbol!.GetMembers("DispatcherQueue").Any());
+							GenerateDependencyObjectImplementation(typeSymbol, builder, hasDispatcherQueue: InitializationDataCollector.DependencyObjectSymbol!.GetMembers("DispatcherQueue").Any());
 							GenerateIBinderImplementation(typeSymbol, builder);
 						}
 					}

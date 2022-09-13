@@ -11,10 +11,7 @@ using Uno.SourceGeneration;
 
 namespace Uno.UI.SourceGenerators
 {
-	public abstract class AbstractNamedTypeSymbolGenerator
-#if !NETFRAMEWORK
-		<TInitializationDataCollector, TExecutionDataCollector>
-#endif
+	public abstract class AbstractNamedTypeSymbolGenerator<TInitializationDataCollector, TExecutionDataCollector>
 		: ISourceGenerator
 	{
 		public void Initialize(GeneratorInitializationContext context)
@@ -29,32 +26,31 @@ namespace Uno.UI.SourceGenerators
 		{
 			if (!DesignTimeHelper.IsDesignTime(context) && PlatformHelper.IsValidPlatform(context))
 			{
-				var generator = GetGenerator(context);
 #if NETFRAMEWORK
+				var initCollector = GetInitializationDataCollector(context.Compilation);
+				var execCollector = GetExecutionDataCollector(context);
+				var generator = GetGenerator(context, initCollector, execCollector);
 				generator.Visit(context.Compilation.SourceModule);
 #else
-				var collector = GetExecutionDataCollector(context);
-				if (context.SyntaxContextReceiver is ClassSyntaxReceiver receiver)
+				if (context.SyntaxContextReceiver is ClassSyntaxReceiver receiver && receiver.Collector is TInitializationDataCollector initCollector)
 				{
+					var execCollector = GetExecutionDataCollector(context);
+					var generator = GetGenerator(context, initCollector, execCollector);
 					foreach (var symbol in receiver.NamedTypeSymbols)
 					{
-						if (IsCandidateSymbolInRoslynExecution(context, symbol, collector))
-						{
-							generator.ProcessType(symbol);
-						}
+						generator.ProcessType(symbol);
 					}
 				}
 #endif
 			}
 		}
 
-		private protected abstract SymbolGenerator GetGenerator(GeneratorExecutionContext context);
-#if !NETFRAMEWORK
-		public abstract bool IsCandidateSymbolInRoslynInitialization(GeneratorSyntaxContext context, INamedTypeSymbol symbol, TInitializationDataCollector collector);
+		private protected abstract SymbolGenerator<TInitializationDataCollector, TExecutionDataCollector> GetGenerator(GeneratorExecutionContext context, TInitializationDataCollector initializationCollector, TExecutionDataCollector executionCollector);
+		public abstract bool IsCandidateSymbolInRoslynInitialization(INamedTypeSymbol symbol, TInitializationDataCollector collector);
 		public abstract bool IsCandidateSymbolInRoslynExecution(GeneratorExecutionContext context, INamedTypeSymbol symbol, TExecutionDataCollector collector);
 		public abstract TInitializationDataCollector GetInitializationDataCollector(Compilation compilation);
 		public abstract TExecutionDataCollector GetExecutionDataCollector(GeneratorExecutionContext context);
-
+#if !NETFRAMEWORK
 		private sealed class ClassSyntaxReceiver : ISyntaxContextReceiver
 		{
 			private readonly AbstractNamedTypeSymbolGenerator<TInitializationDataCollector, TExecutionDataCollector> _generator;
@@ -66,6 +62,7 @@ namespace Uno.UI.SourceGenerators
 			}
 
 			public HashSet<INamedTypeSymbol> NamedTypeSymbols { get; } = new(SymbolEqualityComparer.Default);
+			public TInitializationDataCollector? Collector { get; }
 
 			public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
 			{
@@ -73,7 +70,7 @@ namespace Uno.UI.SourceGenerators
 				if (context.Node.IsKind(SyntaxKind.ClassDeclaration))
 				{
 					if (context.SemanticModel.GetDeclaredSymbol(context.Node) is INamedTypeSymbol symbol &&
-						_generator.IsCandidateSymbolInRoslynInitialization(context, symbol, _collector))
+						_generator.IsCandidateSymbolInRoslynInitialization(symbol, _collector))
 					{
 						NamedTypeSymbols.Add(symbol);
 					}
