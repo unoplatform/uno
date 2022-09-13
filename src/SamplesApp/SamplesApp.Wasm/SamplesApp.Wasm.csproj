@@ -10,7 +10,7 @@
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!='' and '$(UnoTargetFrameworkOverride)'!='netstandard2.0'">
 		<TargetFramework>$(UnoTargetFrameworkOverride)</TargetFramework>
 	</PropertyGroup>
 
@@ -80,7 +80,6 @@
 		<PackageReference Include="Uno.Wasm.WebSockets" />
 		<PackageReference Include="Uno.Wasm.Bootstrap" />
 		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" />
-		<PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.2" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
 	</ItemGroup>
 

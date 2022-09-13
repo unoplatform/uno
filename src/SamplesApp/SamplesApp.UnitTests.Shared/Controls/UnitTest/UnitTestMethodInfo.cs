@@ -21,10 +21,10 @@ internal record UnitTestMethodInfo
 		Method = method;
 		RunsOnUIThread = testClassInstance is SamplesApp.UITests.SampleControlUITestBase ||
 			HasCustomAttribute<RunsOnUIThreadAttribute>(method) ||
-			HasCustomAttribute<RunsOnUIThreadAttribute>(method.DeclaringType);
+			HasCustomAttribute<RunsOnUIThreadAttribute>(method.DeclaringType!);
 		RequiresFullWindow =
 			HasCustomAttribute<RequiresFullWindowAttribute>(method) ||
-			HasCustomAttribute<RequiresFullWindowAttribute>(method.DeclaringType);
+			HasCustomAttribute<RequiresFullWindowAttribute>(method.DeclaringType!);
 		ExpectedException = method
 			.GetCustomAttributes<ExpectedExceptionAttribute>()
 			.SingleOrDefault()
@@ -68,7 +68,7 @@ internal record UnitTestMethodInfo
 		var ignoreAttribute = Method.GetCustomAttribute<IgnoreAttribute>();
 		if (ignoreAttribute == null)
 		{
-			ignoreAttribute = Method.DeclaringType.GetCustomAttribute<IgnoreAttribute>();
+			ignoreAttribute = Method.DeclaringType!.GetCustomAttribute<IgnoreAttribute>();
 		}
 
 		if (ignoreAttribute != null)
