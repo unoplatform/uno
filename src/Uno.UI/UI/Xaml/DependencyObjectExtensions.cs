@@ -448,12 +448,6 @@ namespace Windows.UI.Xaml
 			uielement?.InvalidateArrange();
 		}
 
-		internal static void InvalidateRender(this DependencyObject d)
-		{
-			var uielement = d as UIElement ?? d.GetParents().OfType<UIElement>().FirstOrDefault();
-			uielement?.InvalidateRender();
-		}
-
 		/// <summary>
 		/// See <see cref="DependencyObjectStore.RegisterPropertyChangedCallbackStrong(ExplicitPropertyChangedCallback)"/> for more details
 		/// </summary>
