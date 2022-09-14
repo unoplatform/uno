@@ -36,13 +36,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (_popup == null)
 				{
-					_popup = new Popup { IsLightDismissEnabled = false };
+					_popup = new Popup { IsLightDismissEnabled = false, PropagatesDataContextToChild = false };
 					_popup.PopupPanel = new PopupPanel(_popup);
 					_popup.Opened += OnPopupOpened;
 					_popup.Closed += (sender, e) => IsOpen = false;
 				}
 
-				return _popup;
+				return _popup; 
 			}
 		}
 
@@ -141,7 +141,16 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (Parent == null)
 			{
+				var previousParent = this.GetParent();
+
 				Popup.Child = this;
+
+				// The tooltip is integrated into the PopupPanel, which automatically
+				// propagates its own datacontext through inheritance. This ends up changing
+				// the DataContext of the tooltip to a local value which cannot be overriden
+				// through the tooltip's own actual parent (the control that owns the TooltipService).
+				// Restoring the original parent ensures that an incorrect DataContext property will not flow through.
+				this.SetParent(previousParent);
 			}
 			else if (!ReferenceEquals(Parent, _popup))
 			{
