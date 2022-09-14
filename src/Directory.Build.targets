@@ -128,11 +128,6 @@
   </Target>
 
   <PropertyGroup>
-	  <!--
-	  macOS needs an explicit override of the current compiler when running under mono.
-	  On other targets, .NET 6.0's compiler takes precedence.
-	  -->
-	  <!-- IMPORTANT: TODO: Revert the change I'm doing here before merge. -->
 	  <MicrosoftNetCompilerVersionOverride>4.4.0-1.final</MicrosoftNetCompilerVersionOverride>
   </PropertyGroup>
 
