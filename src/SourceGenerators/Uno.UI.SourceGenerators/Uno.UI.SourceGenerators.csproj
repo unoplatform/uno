@@ -52,7 +52,7 @@
 		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
 		<PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis">
-			<Version>3.9.0</Version>
+			<Version>3.8.0</Version>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
 		<PackageReference Include="Mono.Cecil">
