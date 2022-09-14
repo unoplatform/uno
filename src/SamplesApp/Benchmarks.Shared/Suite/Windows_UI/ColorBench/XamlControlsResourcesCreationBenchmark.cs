@@ -1,5 +1,4 @@
-﻿#pragma warning disable CS0219
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using BenchmarkDotNet.Attributes;
