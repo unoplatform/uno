@@ -415,6 +415,7 @@ namespace Microsoft.CodeAnalysis
 			{"bool",       typeof(bool).ToString()},
 		};
 
+		// https://github.com/CommunityToolkit/dotnet/blob/b3b60f47971ab8c6e5b4fe258cdd72d3d1039be0/CommunityToolkit.Mvvm.SourceGenerators/Extensions/INamedTypeSymbolExtensions.cs#L16-L37
 		/// <summary>
 		/// Gets a valid filename for a given <see cref="INamedTypeSymbol"/> instance.
 		/// </summary>
