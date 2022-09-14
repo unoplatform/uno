@@ -251,10 +251,10 @@ public partial class UIElement : DependencyObject
 	{
 		if (_nativeToManagedPointerId.TryGetValue(nativeId, out var managedId))
 		{
-			return managedId;
+			return managedId.Id;
 		}
 
-		var managedId = new PointerIdentifier(nativeId.Type, ++_lastUsedId);
+		managedId = new PointerIdentifier(nativeId.Type, ++_lastUsedId);
 		_managedToNativePointerId[managedId] = nativeId;
 		_nativeToManagedPointerId[nativeId] = managedId;
 		
