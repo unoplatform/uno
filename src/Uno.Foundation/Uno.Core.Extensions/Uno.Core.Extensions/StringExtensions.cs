@@ -28,11 +28,6 @@ namespace Uno.Extensions
 {
 	internal static partial class StringExtensions
 	{
-#if (!SILVERLIGHT && !WINDOWS_UWP && HAS_COMPILEDREGEX) || WINDOWS_PHONE || HAS_COMPILEDREGEX
-        private static readonly Regex _newLineRegex = new Regex(@"^", RegexOptions.Compiled | RegexOptions.Multiline);
-#else
-		private static readonly Lazy<Regex> _newLineRegex = new Lazy<Regex>(() => new Regex(@"^", RegexOptions.Multiline));
-#endif
 		public static bool IsNullOrEmpty(this string instance)
 		{
 			return string.IsNullOrEmpty(instance);
@@ -237,11 +232,6 @@ namespace Uno.Extensions
 			{
 				return source;
 			}
-		}
-
-		public static string Indent(this string text, int indentCount = 1)
-		{
-			return _newLineRegex.Value.Replace(text, new String('\t', indentCount));
 		}
 
 		/// <summary>
