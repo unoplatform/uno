@@ -8,6 +8,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Analyzer.Utilities;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
@@ -29,6 +30,7 @@ namespace Uno.Roslyn
 		private readonly Func<INamedTypeSymbol, INamedTypeSymbol[]> _getAllTypesAttributedWith;
 		private readonly Dictionary<string, INamedTypeSymbol> _additionalTypesMap;
 		private readonly IReadOnlyDictionary<string, INamedTypeSymbol[]> _namedSymbolsLookup;
+		private readonly WellKnownTypeProvider _wellKnownTypeProvider;
 		public Compilation Compilation { get; }
 
 		public string AssemblyName => Compilation.AssemblyName;
@@ -36,6 +38,7 @@ namespace Uno.Roslyn
 		public RoslynMetadataHelper(string configuration, GeneratorExecutionContext context, Dictionary<string, string> legacyTypes = null)
 		{
 			Compilation = context.Compilation;
+			_wellKnownTypeProvider = WellKnownTypeProvider.GetOrCreate(Compilation);
 			_additionalTypesMap = GenerateAdditionalTypesMap();
 
 			_findTypesByName = Funcs.Create<string, ITypeSymbol[]>(SourceFindTypesByName).AsLockedMemoized();
@@ -43,7 +46,7 @@ namespace Uno.Roslyn
 			_legacyTypes = BuildLegacyTypes(legacyTypes);
 			_getAllDerivingTypes = Funcs.Create<INamedTypeSymbol, INamedTypeSymbol[]>(GetAllDerivingTypes).AsLockedMemoized();
 			_getAllTypesAttributedWith = Funcs.Create<INamedTypeSymbol, INamedTypeSymbol[]>(SourceGetAllTypesAttributedWith).AsLockedMemoized();
-			_nullableSymbol = Compilation.GetTypeByMetadataName("System.Nullable`1");
+			_nullableSymbol = Compilation.GetSpecialType(SpecialType.System_Nullable_T);
 
 			_namedSymbolsLookup = Compilation.GetSymbolNameLookup();
 		}
@@ -89,7 +92,7 @@ namespace Uno.Roslyn
 
 		private Dictionary<string, INamedTypeSymbol> BuildLegacyTypes(Dictionary<string, string> legacyTypes)
 			=> legacyTypes
-			?.Select(t => (Key: t.Key, Metadata: Compilation.GetTypeByMetadataName(t.Value)))
+			?.Select(t => (Key: t.Key, Metadata: _wellKnownTypeProvider.GetOrCreateTypeByMetadataName(t.Value)))
 			?.ToDictionary(t => t.Key, t => t.Metadata)
 			?? new Dictionary<string, INamedTypeSymbol>();
 
@@ -147,7 +150,7 @@ namespace Uno.Roslyn
 				return legacyType;
 			}
 
-			var symbol = Compilation.GetTypeByMetadataName(fullName);
+			var symbol = _wellKnownTypeProvider.GetOrCreateTypeByMetadataName(fullName);
 
 			if (symbol?.Kind == SymbolKind.ErrorType)
 			{

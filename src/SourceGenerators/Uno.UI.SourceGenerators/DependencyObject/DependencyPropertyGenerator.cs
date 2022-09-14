@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis;
 using Uno.Extensions;
 using Uno.UI.SourceGenerators.Helpers;
 using Uno.UI.SourceGenerators.XamlGenerator;
+using Analyzer.Utilities;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
@@ -27,7 +28,13 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 		{
 			if (PlatformHelper.IsValidPlatform(context))
 			{
-				var visitor = new SerializationMethodsGenerator(context);
+				var provider = WellKnownTypeProvider.GetOrCreate(context.Compilation);
+				if (!provider.TryGetOrCreateTypeByMetadataName("Uno.UI.Xaml.GeneratedDependencyPropertyAttribute", out var generatedDependencyPropertyAttributeSymbol))
+				{
+					return;
+				}
+
+				var visitor = new SerializationMethodsGenerator(context, provider, generatedDependencyPropertyAttributeSymbol);
 				visitor.Visit(context.Compilation.SourceModule);
 			}
 		}
@@ -39,17 +46,14 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			private readonly INamedTypeSymbol _dependencyPropertyChangedEventArgsSymbol;
 			private readonly INamedTypeSymbol _dependencyObjectSymbol;
 
-			public SerializationMethodsGenerator(GeneratorExecutionContext context)
+			public SerializationMethodsGenerator(GeneratorExecutionContext context, WellKnownTypeProvider provider, INamedTypeSymbol generatedDependencyPropertyAttributeSymbol)
 			{
 				_context = context;
 
-				var comp = context.Compilation;
-
-				_dependencyObjectSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.DependencyObject)
+				_generatedDependencyPropertyAttributeSymbol = generatedDependencyPropertyAttributeSymbol;
+				_dependencyObjectSymbol = provider.GetOrCreateTypeByMetadataName(XamlConstants.Types.DependencyObject)
 					?? throw new Exception("Unable to find " + XamlConstants.Types.DependencyObject);
-				_generatedDependencyPropertyAttributeSymbol = comp.GetTypeByMetadataName("Uno.UI.Xaml.GeneratedDependencyPropertyAttribute")
-					?? throw new Exception("Unable to find Uno.UI.Xaml.GeneratedDependencyPropertyAttribute");
-				_dependencyPropertyChangedEventArgsSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.DependencyPropertyChangedEventArgs")
+				_dependencyPropertyChangedEventArgsSymbol = provider.GetOrCreateTypeByMetadataName("Windows.UI.Xaml.DependencyPropertyChangedEventArgs")
 					?? throw new Exception("Unable to find Windows.UI.Xaml.DependencyPropertyChangedEventArgs");
 			}
 

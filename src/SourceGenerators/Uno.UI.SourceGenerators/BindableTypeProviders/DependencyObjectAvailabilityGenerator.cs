@@ -10,6 +10,7 @@ using Uno.Roslyn;
 using Uno.UI.SourceGenerators.XamlGenerator;
 using Uno.UI.SourceGenerators.Helpers;
 using System.Xml;
+using Analyzer.Utilities;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
@@ -73,7 +74,8 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						);
 						_assemblyName = context.GetMSBuildPropertyValue("AssemblyName");
 						_namedSymbolsLookup = context.Compilation.GetSymbolNameLookup();
-						_dependencyObjectSymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.DependencyObject");
+						var provider = WellKnownTypeProvider.GetOrCreate(context.Compilation);
+						_dependencyObjectSymbol = provider.GetOrCreateTypeByMetadataName("Windows.UI.Xaml.DependencyObject");
 						var modules = from ext in context.Compilation.ExternalReferences
 									  let sym = context.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
 									  where sym != null

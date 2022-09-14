@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Uno.UI.SourceGenerators.Helpers;
 using System.Diagnostics;
 using Uno.Extensions;
+using Analyzer.Utilities;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
@@ -50,12 +51,13 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 			{
 				_context = context;
 
-				_iosViewSymbol = context.Compilation.GetTypeByMetadataName("UIKit.UIView");
-				_objcNativeHandleSymbol = context.Compilation.GetTypeByMetadataName("ObjCRuntime.NativeHandle");
-				_macosViewSymbol = context.Compilation.GetTypeByMetadataName("AppKit.NSView");
-				_androidViewSymbol = context.Compilation.GetTypeByMetadataName("Android.Views.View");
-				_intPtrSymbol = context.Compilation.GetTypeByMetadataName("System.IntPtr");
-				_jniHandleOwnershipSymbol = context.Compilation.GetTypeByMetadataName("Android.Runtime.JniHandleOwnership");
+				var provider = WellKnownTypeProvider.GetOrCreate(context.Compilation);
+				_iosViewSymbol = provider.GetOrCreateTypeByMetadataName("UIKit.UIView");
+				_objcNativeHandleSymbol = provider.GetOrCreateTypeByMetadataName("ObjCRuntime.NativeHandle");
+				_macosViewSymbol = provider.GetOrCreateTypeByMetadataName("AppKit.NSView");
+				_androidViewSymbol = provider.GetOrCreateTypeByMetadataName("Android.Views.View");
+				_intPtrSymbol = provider.GetOrCreateTypeByMetadataName("System.IntPtr");
+				_jniHandleOwnershipSymbol = provider.GetOrCreateTypeByMetadataName("Android.Runtime.JniHandleOwnership");
 				_javaCtorParams = new[] { _intPtrSymbol, _jniHandleOwnershipSymbol };
 			}
 

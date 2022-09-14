@@ -10,6 +10,7 @@ using Uno.Extensions;
 using Uno.Foundation.Interop;
 using Uno.UI.SourceGenerators.Helpers;
 using Uno.Roslyn;
+using Analyzer.Utilities;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
@@ -42,10 +43,10 @@ namespace Uno.UI.SourceGenerators.TSBindings
 				if (!string.IsNullOrEmpty(_bindingsPaths))
 				{
 					Directory.CreateDirectory(_bindingsPaths);
-
-					_intPtrSymbol = context.Compilation.GetTypeByMetadataName("System.IntPtr");
-					_structLayoutSymbol = context.Compilation.GetTypeByMetadataName(typeof(StructLayoutAttribute).FullName);
-					_interopMessageSymbol = context.Compilation.GetTypeByMetadataName("Uno.Foundation.Interop.TSInteropMessageAttribute");
+					var provider = WellKnownTypeProvider.GetOrCreate(context.Compilation);
+					_intPtrSymbol = provider.GetOrCreateTypeByMetadataName("System.IntPtr");
+					_structLayoutSymbol = provider.GetOrCreateTypeByMetadataName(typeof(StructLayoutAttribute).FullName);
+					_interopMessageSymbol = provider.GetOrCreateTypeByMetadataName("Uno.Foundation.Interop.TSInteropMessageAttribute");
 
 					var modules = from ext in context.Compilation.ExternalReferences
 								  let sym = context.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol

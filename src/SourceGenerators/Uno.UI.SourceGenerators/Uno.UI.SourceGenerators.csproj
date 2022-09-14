@@ -61,6 +61,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.AnalyzerUtilities" Version="3.3.3" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Compile Include="..\..\Uno.Foundation\Point.cs">
 			<Link>XamlGenerator\XamlPathParser\Point.cs</Link>
 		</Compile>
