@@ -183,6 +183,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 		}
 
 		[TestMethod]
+#if __MACOS__ // #9282 for macOS
+		[Ignore]
+#endif
 		public async Task When_RepeatDuration()
 		{
 			var ct = CancellationToken.None; // Not supported yet by test engine
