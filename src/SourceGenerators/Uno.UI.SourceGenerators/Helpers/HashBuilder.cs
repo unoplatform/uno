@@ -15,8 +15,8 @@ namespace Uno.UI.SourceGenerators.Helpers
 		/// <summary>
 		/// Build a stable ID from the provided symbol
 		/// </summary>
-		public static string BuildIDFromSymbol(ITypeSymbol typeSymbol)
-			=> typeSymbol.GetFullName() + "_" + Build(typeSymbol.MetadataName + typeSymbol.ContainingAssembly.MetadataName);
+		public static string BuildIDFromSymbol(INamedTypeSymbol typeSymbol)
+			=> typeSymbol.GetFullMetadataNameForFileName() + "_" + Build(typeSymbol.MetadataName + typeSymbol.ContainingAssembly.MetadataName);
 
 		/// <summary>
 		/// Creates a non-cryptographically secure hash of the provided string, clamped to 16 bytes.
