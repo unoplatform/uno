@@ -25,6 +25,7 @@ namespace Uno.Extensions
 	/// </summary>
 	internal sealed class IndentedStringBuilder : IIndentedStringBuilder
 	{
+		// https://www.meziantou.net/split-a-string-into-lines-without-allocation.htm
 		// Must be a ref struct as it contains a ReadOnlySpan<char>
 		private ref struct LineSplitEnumerator
 		{
