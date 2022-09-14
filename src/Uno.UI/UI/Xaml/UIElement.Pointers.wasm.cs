@@ -273,9 +273,9 @@ public partial class UIElement : DependencyObject
 				_lastUsedId = 0; // We reset the pointer ID only when there is no active pointer.
 			}
 		}
-		else if (this.Log().IsEnabled(LogLevel.Warning))
+		else if (typeof(UIElement).Log().IsEnabled(LogLevel.Warning))
 		{
-			this.Log().Warn($"Received an invalid managed pointer id {managedId}");
+			typeof(UIElement).Log().Warn($"Received an invalid managed pointer id {managedId}");
 		}
 	}
 
