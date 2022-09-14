@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (UseInlinesFastPath)
 				{
-					_run?.SetText(Text);
+					UpdateText();
 				}
 			}
 		}
@@ -157,15 +157,17 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnFontWeightChangedPartial() => _fontWeightChanged = true;
 
-		partial void UpdateInlinesFastPathPartial()
+		private void UpdateText()
 		{
 			if (_run is null)
 			{
-				_run = new Run
-				{
-					Text = Text,
-				};
+				_run = new Run();
+				_run.SetText(Text);
 				AddChild(_run);
+			}
+			else
+			{
+				_run.SetText(Text);
 			}
 		}
 
@@ -184,7 +186,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnTextChangedPartial()
 		{
 			_textChanged = true;
-
+			UpdateText();
 			UpdateHitTest();
 		}
 

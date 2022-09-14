@@ -707,13 +707,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void UpdateInlinesFastPathPartial();
-
 		private void UpdateInlines(string text)
 		{
 			if (UseInlinesFastPath)
 			{
-				UpdateInlinesFastPathPartial();
 				return;
 			}
 
