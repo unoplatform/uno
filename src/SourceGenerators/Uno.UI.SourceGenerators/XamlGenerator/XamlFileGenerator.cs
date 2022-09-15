@@ -1406,7 +1406,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </remarks>
 		private string GetInitializerNameForResourceKey(int index)
 		{
-			return "Get_{0}_{1}".InvariantCultureFormat(_fileDefinition.UniqueID, index);
+			return $"Get_{index}";
 		}
 
 		/// <summary>
