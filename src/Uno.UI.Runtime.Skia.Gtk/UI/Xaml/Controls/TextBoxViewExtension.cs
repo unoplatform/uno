@@ -24,6 +24,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 	internal class TextBoxViewExtension : ITextBoxViewExtension
 	{
 		private const string TextBoxViewCssClass = "textboxview";
+
 		private static bool _warnedAboutSelectionColorChanges;
 
 		private readonly string _textBoxViewId = Guid.NewGuid().ToString();
@@ -108,8 +109,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			}
 
 			_contentElement = null;
-			RemoveForegroundProvider();
-
+			
 			if (_currentInputWidget != null)
 			{
 				var bounds = GetNativeSelectionBounds();
@@ -247,9 +247,9 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 				var inputText = GetInputText();
 				_currentInputWidget = CreateInputWidget(acceptsReturn, isPassword, isPasswordVisible);
 				SetWidgetText(inputText ?? string.Empty);
-				SetForeground(textBox.Foreground);
-				SetSelectionHighlightColor(textBox.SelectionHighlightColor);
 			}
+			SetForeground(textBox.Foreground);
+			SetSelectionHighlightColor(textBox.SelectionHighlightColor);
 		}
 
 		private Widget CreateInputWidget(bool acceptsReturn, bool isPassword, bool isPasswordVisible)

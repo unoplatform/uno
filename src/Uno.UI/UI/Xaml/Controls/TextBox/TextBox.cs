@@ -48,6 +48,7 @@ namespace Windows.UI.Xaml.Controls
 		private WeakReference<Button> _deleteButton;
 
 		private readonly SerialDisposable _selectionHighlightColorSubscription = new SerialDisposable();
+		private readonly SerialDisposable _foregroundBrushSubscription = new SerialDisposable();
 #pragma warning restore CS0067, CS0649
 
 		private ContentPresenter _header;
@@ -371,7 +372,16 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void UpdateFontPartial();
 
-		protected override void OnForegroundColorChanged(Brush oldValue, Brush newValue) => OnForegroundColorChangedPartial(newValue);
+		protected override void OnForegroundColorChanged(Brush oldValue, Brush newValue)
+		{
+			_foregroundBrushSubscription.Disposable = null;
+			if (newValue is SolidColorBrush brush)
+			{
+				OnForegroundColorChangedPartial(brush);
+				_foregroundBrushSubscription.Disposable =
+					Brush.AssignAndObserveBrush(brush, c => OnForegroundColorChangedPartial(brush));
+			}
+		}
 
 		partial void OnForegroundColorChangedPartial(Brush newValue);
 
