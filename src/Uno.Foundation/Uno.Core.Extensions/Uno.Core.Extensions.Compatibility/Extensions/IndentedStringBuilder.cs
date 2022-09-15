@@ -15,7 +15,7 @@
 //
 // ******************************************************************
 using System;
-using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Uno.Extensions
@@ -80,6 +80,18 @@ namespace Uno.Extensions
 			_stringBuilder.Append(text);
 		}
 
+		public void AppendIndented(ReadOnlySpan<char> text)
+		{
+			_stringBuilder.Append('\t', CurrentLevel);
+			unsafe
+			{
+				fixed (char* ptr = &MemoryMarshal.GetReference(text))
+				{
+					_stringBuilder.Append(ptr, text.Length);
+				}
+			}
+		}
+
 		private void AppendIndented(char c, int indentCount)
 		{
 			_stringBuilder.Append('\t', indentCount);
@@ -108,7 +120,7 @@ namespace Uno.Extensions
 		{
 			foreach (var line in text.SplitLines())
 			{
-				AppendIndented(line.ToString());
+				AppendIndented(line);
 				AppendLine();
 			}
 		}
