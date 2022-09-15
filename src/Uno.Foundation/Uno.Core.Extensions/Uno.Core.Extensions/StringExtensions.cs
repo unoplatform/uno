@@ -28,6 +28,65 @@ namespace Uno.Extensions
 {
 	internal static partial class StringExtensions
 	{
+		// https://www.meziantou.net/split-a-string-into-lines-without-allocation.htm
+		// Must be a ref struct as it contains a ReadOnlySpan<char>
+		public ref struct LineSplitEnumerator
+		{
+			private ReadOnlySpan<char> _str;
+
+			public LineSplitEnumerator(ReadOnlySpan<char> str)
+			{
+				_str = str;
+				Current = default;
+			}
+
+			// Needed to be compatible with the foreach operator
+			public LineSplitEnumerator GetEnumerator() => this;
+
+			public bool MoveNext()
+			{
+				var span = _str;
+				if (span.Length == 0) // Reach the end of the string
+					return false;
+
+				var index = span.IndexOfAny('\r', '\n');
+				if (index == -1) // The string is composed of only one line
+				{
+					_str = ReadOnlySpan<char>.Empty; // The remaining string is an empty string
+					Current = span;
+					return true;
+				}
+
+				if (index < span.Length - 1 && span[index] == '\r')
+				{
+					// Try to consume the '\n' associated to the '\r'
+					var next = span[index + 1];
+					if (next == '\n')
+					{
+						Current = span.Slice(0, index);
+						_str = span.Slice(index + 2);
+						return true;
+					}
+				}
+
+				Current = span.Slice(0, index);
+				_str = span.Slice(index + 1);
+				return true;
+			}
+
+			public ReadOnlySpan<char> Current { get; private set; }
+		}
+
+		public static LineSplitEnumerator SplitLines(this string instance)
+		{
+			return new LineSplitEnumerator(instance.AsSpan());
+		}
+
+		public static LineSplitEnumerator SplitLines(this ReadOnlySpan<char> instance)
+		{
+			return new LineSplitEnumerator(instance);
+		}
+
 		public static bool IsNullOrEmpty(this string instance)
 		{
 			return string.IsNullOrEmpty(instance);

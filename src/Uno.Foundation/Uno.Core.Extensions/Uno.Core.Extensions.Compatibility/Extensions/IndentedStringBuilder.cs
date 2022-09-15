@@ -25,55 +25,6 @@ namespace Uno.Extensions
 	/// </summary>
 	internal sealed class IndentedStringBuilder : IIndentedStringBuilder
 	{
-		// https://www.meziantou.net/split-a-string-into-lines-without-allocation.htm
-		// Must be a ref struct as it contains a ReadOnlySpan<char>
-		private ref struct LineSplitEnumerator
-		{
-			private ReadOnlySpan<char> _str;
-
-			public LineSplitEnumerator(ReadOnlySpan<char> str)
-			{
-				_str = str;
-				Current = default;
-			}
-
-			// Needed to be compatible with the foreach operator
-			public LineSplitEnumerator GetEnumerator() => this;
-
-			public bool MoveNext()
-			{
-				var span = _str;
-				if (span.Length == 0) // Reach the end of the string
-					return false;
-
-				var index = span.IndexOfAny('\r', '\n');
-				if (index == -1) // The string is composed of only one line
-				{
-					_str = ReadOnlySpan<char>.Empty; // The remaining string is an empty string
-					Current = span;
-					return true;
-				}
-
-				if (index < span.Length - 1 && span[index] == '\r')
-				{
-					// Try to consume the '\n' associated to the '\r'
-					var next = span[index + 1];
-					if (next == '\n')
-					{
-						Current = span.Slice(0, index);
-						_str = span.Slice(index + 2);
-						return true;
-					}
-				}
-
-				Current = span.Slice(0, index);
-				_str = span.Slice(index + 1);
-				return true;
-			}
-
-			public ReadOnlySpan<char> Current { get; private set; }
-		}
-
 		private readonly StringBuilder _stringBuilder;
 
 		public int CurrentLevel { get; private set; }
@@ -155,9 +106,7 @@ namespace Uno.Extensions
 		/// <param name="text">The string to append.</param>
 		public void AppendMultiLineIndented(string text)
 		{
-			// LineSplitEnumerator is a struct so there is no allocation here
-			var enumerator = new LineSplitEnumerator(text.AsSpan());
-			foreach (var line in enumerator)
+			foreach (var line in text.SplitLines())
 			{
 				AppendIndented(line.ToString());
 				AppendLine();
