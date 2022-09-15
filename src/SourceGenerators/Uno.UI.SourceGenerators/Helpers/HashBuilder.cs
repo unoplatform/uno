@@ -47,27 +47,22 @@ namespace Uno.UI.SourceGenerators.Helpers
 		/// <returns>A hex-formatted string of the hash</returns>
 		public static string Build(string input)
 		{
-			using (var algoritm = SHA256.Create())
+			using (var algorithm = SHA256.Create())
 			{
-				// Convert the input string to a byte array and compute the hash.
-				var data = algoritm.ComputeHash(Encoding.UTF8.GetBytes(input));
+				var data = algorithm.ComputeHash(Encoding.UTF8.GetBytes(input));
 
 				var min = Math.Min(data.Length, 16);
-				var result = new string((char)0, min * 2);
-				unsafe
+
+				Span<char> span = stackalloc char[32];
+				for (int i = 0; i < min; i++)
 				{
-					fixed (char* resultP = result)
-					{
-						for (int i = 0; i < min; i++)
-						{
-							var s = _formattedBytes[data[i]];
-							resultP[i * 2] = s[0];
-							resultP[i * 2 + 1] = s[1];
-						}
-					}
+					var s = _formattedBytes[data[i]];
+					span[i * 2] = s[0];
+					span[i * 2 + 1] = s[1];
 				}
 
-				return result;
+
+				return span.Slice(0, min).ToString();
 			}
 		}
 	}
