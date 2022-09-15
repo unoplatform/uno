@@ -294,11 +294,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					.OrderBy(f => f.UniqueID)
 					.ToArray();
 
-				for (int i = 0; i < files.Length; i++)
-				{
-					files[i].ShortId = i;
-				}
-
 				TrackStartGeneration(files);
 
 				var globalStaticResourcesMap = BuildAssemblyGlobalStaticResourcesMap(files, filesFull, _xamlSourceLinks, _generatorContext.CancellationToken);

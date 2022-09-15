@@ -201,7 +201,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Name to use for inner singleton containing top-level ResourceDictionary properties
 		/// </summary>
-		private string SingletonClassName => $"ResourceDictionarySingleton__{_fileDefinition.ShortId}";
+		private string SingletonClassName => $"ResourceDictionarySingleton__{_fileDefinition.UniqueID}";
 
 		private readonly bool _isHotReloadEnabled;
 
@@ -1406,7 +1406,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </remarks>
 		private string GetInitializerNameForResourceKey(int index)
 		{
-			return "Get_{0}_{1}".InvariantCultureFormat(_fileDefinition.ShortId, index);
+			return "Get_{0}_{1}".InvariantCultureFormat(_fileDefinition.UniqueID, index);
 		}
 
 		/// <summary>
