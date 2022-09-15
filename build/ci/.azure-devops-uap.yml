@@ -19,7 +19,6 @@ jobs:
 
   steps:
   - checkout: self
-    clean: true
 
   - template: templates/nuget-cache.yml
     parameters:
@@ -27,16 +26,19 @@ jobs:
 
   - template: templates/gitversion.yml
 
+  # Required until Uno.Xaml can build without all targets enabled
+  - template: templates/jdk-setup.yml
+
   - powershell: .\build\Install-WindowsSdkISO.ps1 18362
     displayName: Insider SDK
 
   - task: MSBuild@1
     inputs:
-      solution: src/SamplesApp/SamplesApp.UWP/SamplesApp.UWP.csproj
+      solution: src/Uno.UI-Windows-only.slnf
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /p:Configuration=Release /detailedsummary /bl:$(build.artifactstagingdirectory)/build-uap.binlog
+      msbuildArguments: /r /m /p:Configuration=Release /p:UnoTargetFrameworkOverride=uap10.0.18362 /p:UnoDisableTargetFrameworksCIOverride=true /detailedsummary /bl:$(build.artifactstagingdirectory)/build-uap.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false

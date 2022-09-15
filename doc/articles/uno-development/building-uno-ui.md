@@ -146,4 +146,4 @@ public static int foo = 2130771968;
 
 5. Restore the commented code in `Directory.Build.targets`.
 
-_This performance optimization is inspired from @jonathanpeppers's performance work done in https://github.com/dotnet/maui/pull/2606. Thanks Jonathan!_
+_This performance optimization is inspired by @jonathanpeppers's performance work done in https://github.com/dotnet/maui/pull/2606. Thanks Jonathan!_

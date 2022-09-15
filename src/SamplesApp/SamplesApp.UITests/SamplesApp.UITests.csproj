@@ -17,11 +17,19 @@
 		<PackageReference Include="Uno.UITest.Helpers" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-	</ItemGroup> 
-	  
-	<ItemGroup>
-		<SourceGenerator Include="..\SamplesApp.UITests.Generator\bin\$(Configuration)\Uno.Samples.UITest.Generator.dll" />
 	</ItemGroup>
+	
+	<ItemGroup>
+		<CompilerVisibleProperty Include="MSBuildExtensionsPath" />
+		<CompilerVisibleProperty Include="RootNamespace" />
+		<CompilerVisibleProperty Include="MSBuildProjectDirectory" />
+	</ItemGroup>
+
+	<Target Name="_UnoInjectAnalyzers" BeforeTargets="CoreCompile">
+		<ItemGroup>
+			<Analyzer Include="..\SamplesApp.UITests.Generator\bin\$(Configuration)\*.dll" />
+		</ItemGroup>
+	</Target>
 
 	<ItemGroup Condition="'$(DocsGeneration)'==''">
 		<ProjectReference Include="..\SamplesApp.UITests.Generator\Uno.Samples.UITest.Generator.csproj">

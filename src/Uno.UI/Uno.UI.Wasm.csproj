@@ -47,6 +47,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<CompilerVisibleProperty Include="TSBindingsPath" />
+		<CompilerVisibleItemMetadata Include="TSBindingAssemblySource" MetadataName="FullPath" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <EmbeddedResource Include="LinkerDefinition.Wasm.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 	  </EmbeddedResource>
@@ -54,7 +59,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.TypeScript.MSBuild" />
+		<PackageReference Include="Microsoft.TypeScript.MSBuild" PrivateAssets="all"/>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="System.Memory" Version="4.5.2" />
 	</ItemGroup>
@@ -71,9 +76,6 @@
 		<PRIResource Include="$(PlatformItemsBasePath)**\*.resw" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<EmbeddedResource Update="WasmScripts\*.js" />
-	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Microsoft\UI\Xaml\Controls\Repeater\" />
 	  <Folder Include="tsBindings\" />
@@ -105,7 +107,7 @@
 	<PropertyGroup>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
 
-		<CompileTypeScriptDependsOn>_UnoSourceGenerator; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
+		<CompileTypeScriptDependsOn>CoreCompile; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
 	</PropertyGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
