@@ -76,7 +76,8 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - script: |
-      mono '$(VS_MSBUILD)' '$(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Droid/SamplesApp.Droid.csproj' /m /r /p:Configuration=Release /p:IsUiAutomationMappingEnabled=true /p:AndroidBuildApplicationPackage=True /p:AndroidUseLatestPlatformSdk=true '/p:AndroidSupportedAbis=x86_64;arm64-v8a' /p:UnoDisableValidateAndroidSupportedAbis=true /bl:$(build.artifactstagingdirectory)/android-sampleapp.binlog
+      export AndroidSupportedAbis="AndroidSupportedAbis=x86_64;arm64-v8a"
+      mono '$(VS_MSBUILD)' '$(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Droid/SamplesApp.Droid.csproj' /m /r /p:Configuration=Release /p:IsUiAutomationMappingEnabled=true /p:AndroidBuildApplicationPackage=True /p:AndroidUseLatestPlatformSdk=true /p:UnoDisableValidateAndroidSupportedAbis=true /bl:$(build.artifactstagingdirectory)/android-sampleapp.binlog
     displayName: Build Android App
 
 
