@@ -395,12 +395,18 @@ namespace Windows.UI.Xaml.Controls
 
 		#region SelectionHighlightColor DependencyProperty
 
+		/// <summary>
+		/// Gets or sets the brush used to highlight the selected text.
+		/// </summary>
 		public SolidColorBrush SelectionHighlightColor
 		{
 			get => (SolidColorBrush)GetValue(SelectionHighlightColorProperty);
 			set => SetValue(SelectionHighlightColorProperty, value);
 		}
 
+		/// <summary>
+		/// Identifies the SelectionHighlightColor dependency property.
+		/// </summary>
 		public static DependencyProperty SelectionHighlightColorProperty { get; } =
 			DependencyProperty.Register(
 				nameof(SelectionHighlightColor),

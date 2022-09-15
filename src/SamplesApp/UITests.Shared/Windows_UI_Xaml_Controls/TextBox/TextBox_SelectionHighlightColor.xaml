@@ -12,5 +12,7 @@
 		<TextBox Text="Default highlight" />
 		<TextBox Text="Red highlight" SelectionHighlightColor="Red" />
 		<TextBox Text="Semi-transparent blue highlight" SelectionHighlightColor="#550000FF" />
+		<TextBox Text="Black" SelectionHighlightColor="Black" />
+		<TextBox Text="White" SelectionHighlightColor="White" />
 	</StackPanel>
 </Page>

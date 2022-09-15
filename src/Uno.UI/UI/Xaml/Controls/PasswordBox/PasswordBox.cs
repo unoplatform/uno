@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Uno.Disposables;
 using System.Text;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls.Primitives;
 
@@ -134,6 +135,24 @@ namespace Windows.UI.Xaml.Controls
 				nameof(Description), typeof(object),
 				typeof(global::Windows.UI.Xaml.Controls.PasswordBox),
 				new FrameworkPropertyMetadata(default(object), propertyChangedCallback: (s, e) => (s as PasswordBox)?.UpdateDescriptionVisibility(false)));
+
+		#region SelectionHighlightColor DependencyProperty
+
+		/// <summary>
+		/// Gets or sets the brush used to highlight the selected text.
+		/// </summary>
+		public new SolidColorBrush SelectionHighlightColor
+		{
+			get => base.SelectionHighlightColor;
+			set => base.SelectionHighlightColor = value;
+		}
+
+		/// <summary>
+		/// Identifies the SelectionHighlightColor dependency property.
+		/// </summary>
+		public new static DependencyProperty SelectionHighlightColorProperty => TextBox.SelectionHighlightColorProperty;
+
+		#endregion
 
 		protected override void OnTextChanged(DependencyPropertyChangedEventArgs e)
 		{
