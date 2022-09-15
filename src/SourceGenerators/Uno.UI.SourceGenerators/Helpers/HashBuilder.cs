@@ -62,7 +62,7 @@ namespace Uno.UI.SourceGenerators.Helpers
 				}
 
 
-				return span.Slice(0, min).ToString();
+				return span.Slice(0, min * 2).ToString();
 			}
 		}
 	}
