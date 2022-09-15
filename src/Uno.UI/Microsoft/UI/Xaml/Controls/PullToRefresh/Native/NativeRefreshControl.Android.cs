@@ -104,9 +104,6 @@ public partial class NativeRefreshControl : SwipeRefreshLayout, IShadowChildrenP
 		// the child at an invalid location when the visibility changes.
 
 		_layouter.Arrange(newSize);
-
-		// base.OnLayout is not invoked in the mixin to allow for the clipping algorithms
-		base.OnLayout(changed, left, top, right, bottom);
 	}
 	
 	private class NativeRefreshControlLayouter : Layouter
@@ -148,16 +145,11 @@ public partial class NativeRefreshControl : SwipeRefreshLayout, IShadowChildrenP
 
 			if (child != null)
 			{
-				var desiredChildSize = LayoutInformation.GetDesiredSize(child);
-
-				var width = Math.Max(slotSize.Width, desiredChildSize.Width);
-				var height = Math.Max(slotSize.Height, desiredChildSize.Height);
-
 				ArrangeChild(child, new Rect(
 					0,
 					0,
-					width,
-					height
+					slotSize.Width,
+					slotSize.Height
 				));
 
 				// Give opportunity to the the content to define the viewport size itself

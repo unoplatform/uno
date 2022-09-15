@@ -122,7 +122,7 @@
 			<_sdkProject Include="..\src\SolutionTemplate\UnoLibraryTemplate\CrossTargetedLibrary.csproj"/>
 			<_sdkProject Include="..\src\SolutionTemplate\UnoLibraryTemplate.net6\CrossTargetedLibrary.csproj"/>
 			<_sdkProject Include="..\src\SolutionTemplate\UnoLibraryTemplate.net6\CrossTargetedLibrary.csproj"/>
-
+			<_sdkProject Include="..\src\SolutionTemplate\UnoUITestTemplate\UnoUITestTemplate.csproj"/>
 			<_sdkProject Include="..\src\SolutionTemplate\Uno.ProjectTemplates.Dotnet\content\unolib-crossruntime\UnoCrossRuntimeLib\*.csproj"/>
 		</ItemGroup>
 
@@ -495,7 +495,7 @@
 			<PackageNamePrefix Condition="'$(UNO_UWP_BUILD)'=='true'">Uno.UI</PackageNamePrefix>
 		</PropertyGroup>
 
-		<Exec Command="dotnet tool install --tool-path $(MSBuildThisFileDirectory)\tools Uno.PackageDiff --version 1.1.0-dev.11" IgnoreExitCode="true" />
+		<Exec Command="dotnet tool install --tool-path $(MSBuildThisFileDirectory)\tools Uno.PackageDiff --version 1.1.0-dev.14" IgnoreExitCode="true" />
 		<Exec Command="$(MSBuildThisFileDirectory)\tools\generatepkgdiff.exe --base=$(PackageNamePrefix) --other=$(PackageNamePrefix).$(GITVERSION_SemVer).nupkg --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff.$(GITVERSION_SemVer).md" />
 	</Target>
 	

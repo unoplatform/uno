@@ -21,42 +21,42 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android | Platform.iOS)] // Starting and completed might not be raised by the WASM test engine
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // Starting and completed might not be raised by the WASM test engine
 		public void When_BasicDragSource() => RunTest("");
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android | Platform.iOS)] // Starting and completed might not be raised by the WASM test engine
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // Starting and completed might not be raised by the WASM test engine
 		public void When_TextDragSource() => RunTest("Text");
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android | Platform.iOS)] // Starting and completed might not be raised by the WASM test engine
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // Starting and completed might not be raised by the WASM test engine
 		public void When_LinkDragSource() => RunTest("UniformResourceLocatorW");
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android | Platform.iOS)] // Starting and completed might not be raised by the WASM test engine
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // Starting and completed might not be raised by the WASM test engine
 		public void When_ImageDragSource() => RunTest("Bitmap");
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android | Platform.iOS)] // Starting and completed might not be raised by the WASM test engine
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // Starting and completed might not be raised by the WASM test engine
 		public void When_BasicDragSource_And_GoAway_Then_GetLeave() => RunTest("");
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android | Platform.iOS)] // Starting and completed might not be raised by the WASM test engine
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // Starting and completed might not be raised by the WASM test engine
 		public void When_TextDragSource_And_GoAway_Then_GetLeave() => RunTest("Text");
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android | Platform.iOS)] // Starting and completed might not be raised by the WASM test engine
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // Starting and completed might not be raised by the WASM test engine
 		public void When_LinkDragSource_And_GoAway_Then_GetLeave() => RunTest("UniformResourceLocatorW");
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android | Platform.iOS)] // Starting and completed might not be raised by the WASM test engine
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // Starting and completed might not be raised by the WASM test engine
 		public void When_ImageDragSource_And_GoAway_Then_GetLeave() => RunTest("Bitmap");
 
 		private void RunTest(string? expectedData, [CallerMemberName] string? testName = null)

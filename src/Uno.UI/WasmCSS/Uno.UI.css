@@ -155,6 +155,17 @@ embed.uno-frameworkelement.uno-unarranged {
   background-color: transparent;
 }
 
+.uno-textbox {
+    cursor: text;
+}
+
+.uno-textboxview:-webkit-autofill,
+.uno-textboxview:-webkit-autofill:hover,
+.uno-textboxview:-webkit-autofill:focus {
+  /* Workaround based on https://stackoverflow.com/a/68240841 */
+  transition: background-color 600000s 0s, color 600000s 0s, background-image 600000s 0s, appearance 600000s 0s;
+}
+
 .uno-textelement {
   position: relative;
 }

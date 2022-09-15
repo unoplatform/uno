@@ -41,8 +41,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _isDesignTimeBuild;
 		private readonly string _defaultNamespace;
 		private readonly string[] _assemblySearchPaths;
-		private readonly string[] _excludeXamlNamespaces;
-		private readonly string[] _includeXamlNamespaces;
+		private readonly string _excludeXamlNamespaces;
+		private readonly string _includeXamlNamespaces;
 		private readonly string[] _analyzerSuppressions;
 		private readonly string[] _resourceFiles;
 		private readonly Dictionary<string, string[]> _uiAutomationMappings;
@@ -121,7 +121,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.ToList()
 				.ToDictionary(k => k, fullyQualifiedName => fullyQualifiedName.Split('.').Last());
 
-			_metadataHelper = new RoslynMetadataHelper("Debug", context, _legacyTypes);
+			_metadataHelper = new RoslynMetadataHelper(context, _legacyTypes);
 			_assemblySearchPaths = Array.Empty<string>();
 
 			_configuration = context.GetMSBuildPropertyValue("Configuration")
@@ -146,9 +146,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_xamlSourceLinks = xamlItems.Select(GetSourceLink).ToArray();
 
-			_excludeXamlNamespaces = context.GetMSBuildPropertyValue("ExcludeXamlNamespacesProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			_excludeXamlNamespaces = context.GetMSBuildPropertyValue("ExcludeXamlNamespacesProperty");
 
-			_includeXamlNamespaces = context.GetMSBuildPropertyValue("IncludeXamlNamespacesProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			_includeXamlNamespaces = context.GetMSBuildPropertyValue("IncludeXamlNamespacesProperty");
 
 			_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -293,11 +293,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					.Trim()
 					.OrderBy(f => f.UniqueID)
 					.ToArray();
-
-				for (int i = 0; i < files.Length; i++)
-				{
-					files[i].ShortId = i;
-				}
 
 				TrackStartGeneration(files);
 

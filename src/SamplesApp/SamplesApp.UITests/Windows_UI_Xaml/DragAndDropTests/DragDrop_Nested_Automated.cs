@@ -20,12 +20,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android | Platform.iOS)] // Starting and completed might not be raised by the WASM test engine
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // Starting and completed might not be raised by the WASM test engine
 		public void When_DragElementNestedInDraggableElement() => RunTest();
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android | Platform.iOS)] // Starting and completed might not be raised by the WASM test engine
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // Starting and completed might not be raised by the WASM test engine
 		public void When_DragElementNestedInDraggableElement_And_GoAway_Then_GetLeave() => RunTest();
 
 		private void RunTest([CallerMemberName] string? testName = null)

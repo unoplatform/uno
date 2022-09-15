@@ -60,15 +60,15 @@ internal record UnitTestMethodInfo
 
 	public bool RunsOnUIThread { get; }
 
-	private bool HasCustomAttribute<T>(MemberInfo testMethod)
-		=> testMethod.GetCustomAttribute(typeof(T)) != null;
+	private bool HasCustomAttribute<T>(MemberInfo? testMethod)
+		=> testMethod?.GetCustomAttribute(typeof(T)) != null;
 
 	public bool IsIgnored(out string ignoreMessage)
 	{
 		var ignoreAttribute = Method.GetCustomAttribute<IgnoreAttribute>();
 		if (ignoreAttribute == null)
 		{
-			ignoreAttribute = Method.DeclaringType.GetCustomAttribute<IgnoreAttribute>();
+			ignoreAttribute = Method.DeclaringType?.GetCustomAttribute<IgnoreAttribute>();
 		}
 
 		if (ignoreAttribute != null)

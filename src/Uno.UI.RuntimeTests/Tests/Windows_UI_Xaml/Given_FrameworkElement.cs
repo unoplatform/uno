@@ -164,7 +164,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __ANDROID__
+#if __ANDROID__ || __MACOS__ // #9282 for macOS
 		[Ignore]
 #endif
 		public async Task When_InvalidateDuringMeasure_Then_GetReMeasured()

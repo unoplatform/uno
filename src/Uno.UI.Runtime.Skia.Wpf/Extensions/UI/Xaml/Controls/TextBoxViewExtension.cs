@@ -3,9 +3,7 @@
 using System;
 using System.Windows;
 using Windows.UI.Xaml.Controls;
-using Uno.Disposables;
 using Uno.UI.Runtime.Skia.WPF.Controls;
-using Uno.UI.Skia.Platform;
 using Uno.UI.Xaml.Controls.Extensions;
 using Point = Windows.Foundation.Point;
 using WpfCanvas = System.Windows.Controls.Canvas;
@@ -17,11 +15,17 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 	{
 		private readonly TextBoxView _owner;
 		private ContentControl? _contentElement;
-		private WpfTextViewTextBox? _currentInputWidget;
+
+		private WpfTextViewTextBox? _currentTextBoxInputWidget;
+		private System.Windows.Controls.PasswordBox? _currentPasswordBoxInputWidget;
+
+		private readonly bool _isPasswordBox;
+		private bool _isPasswordRevealed;
 
 		public TextBoxViewExtension(TextBoxView owner)
 		{
 			_owner = owner ?? throw new ArgumentNullException(nameof(owner));
+			_isPasswordBox = owner.TextBox is PasswordBox;
 		}
 
 		private WpfCanvas? GetWindowTextInputLayer()
@@ -53,7 +57,14 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 
 			if (textInputLayer.Children.Count == 0)
 			{
-				textInputLayer.Children.Add(_currentInputWidget!);
+				textInputLayer.Children.Add(_currentTextBoxInputWidget!);
+
+				if (_isPasswordBox)
+				{
+					textInputLayer.Children.Add(_currentPasswordBoxInputWidget!);
+					_currentPasswordBoxInputWidget!.Visibility = _isPasswordRevealed ? Visibility.Collapsed : Visibility.Visible;
+					_currentTextBoxInputWidget!.Visibility = _isPasswordRevealed ? Visibility.Visible : Visibility.Collapsed;
+				}
 			}
 
 			UpdateNativeView();
@@ -61,31 +72,45 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 
 			InvalidateLayout();
 
-			_currentInputWidget!.Focus();
+			if (_isPasswordBox && !_isPasswordRevealed)
+			{
+				_currentPasswordBoxInputWidget!.Focus();
+			}
+			else
+			{
+				_currentTextBoxInputWidget!.Focus();
+			}
 		}
 
 		public void EndEntry()
 		{
-			if (_currentInputWidget is null)
+			if (_currentTextBoxInputWidget is null)
 			{
 				// No entry is in progress.
 				return;
 			}
 
-			if (GetInputText() is { } inputText)
-			{
-				_owner.UpdateTextFromNative(inputText);
-			}
+			_owner.UpdateTextFromNative(_currentTextBoxInputWidget.Text);
 
 			_contentElement = null;
 
 			var textInputLayer = GetWindowTextInputLayer();
-			textInputLayer?.Children.Remove(_currentInputWidget);
+			if (textInputLayer is null)
+			{
+				return;
+			}
+
+			textInputLayer.Children.Remove(_currentTextBoxInputWidget);
+
+			if (_currentPasswordBoxInputWidget is not null)
+			{
+				textInputLayer.Children.Remove(_currentPasswordBoxInputWidget);
+			}
 		}
 
 		public void UpdateNativeView()
 		{
-			if (_currentInputWidget == null)
+			if ((_isPasswordBox && _currentPasswordBoxInputWidget == null) || _currentTextBoxInputWidget == null)
 			{
 				// If the input widget does not exist, we don't need to update it.
 				return;
@@ -98,15 +123,33 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 				return;
 			}
 
-			EnsureWidgetForAcceptsReturn();
+			updateCommon(_currentTextBoxInputWidget);
+			updateCommon(_currentPasswordBoxInputWidget);
 
-			_currentInputWidget.FontSize = textBox.FontSize;
-			_currentInputWidget.FontWeight = FontWeight.FromOpenTypeWeight(textBox.FontWeight.Weight);
-			_currentInputWidget.AcceptsReturn = textBox.AcceptsReturn;
-			_currentInputWidget.TextWrapping = textBox.AcceptsReturn ? TextWrapping.Wrap : TextWrapping.NoWrap;
-			_currentInputWidget.MaxLength = textBox.MaxLength;
-			_currentInputWidget.IsReadOnly = textBox.IsReadOnly;
-			_currentInputWidget.Foreground = textBox.Foreground.ToWpfBrush();
+			if (_currentTextBoxInputWidget is not null)
+			{
+				_currentTextBoxInputWidget.AcceptsReturn = textBox.AcceptsReturn;
+				_currentTextBoxInputWidget.TextWrapping = textBox.AcceptsReturn ? TextWrapping.Wrap : TextWrapping.NoWrap;
+				_currentTextBoxInputWidget.MaxLength = textBox.MaxLength;
+				_currentTextBoxInputWidget.IsReadOnly = textBox.IsReadOnly;
+			}
+
+			if (_currentPasswordBoxInputWidget is not null)
+			{
+				_currentPasswordBoxInputWidget.MaxLength = textBox.MaxLength;
+			}
+
+			void updateCommon(System.Windows.Controls.Control? control)
+			{
+				if (control is null)
+				{
+					return;
+				}
+
+				control.FontSize = textBox.FontSize;
+				control.FontWeight = FontWeight.FromOpenTypeWeight(textBox.FontWeight.Weight);
+				control.Foreground = textBox.Foreground.ToWpfBrush();
+			}
 		}
 
 		public void InvalidateLayout()
@@ -118,46 +161,69 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 		public void UpdateSize()
 		{
 			var textInputLayer = GetWindowTextInputLayer();
-			if (_contentElement == null || _currentInputWidget == null || textInputLayer == null)
+			if (_contentElement == null|| textInputLayer == null)
 			{
 				return;
 			}
 
-			if (textInputLayer.Children.Contains(_currentInputWidget))
+			updateSizeCore(_currentTextBoxInputWidget);
+			updateSizeCore(_currentPasswordBoxInputWidget);
+
+			void updateSizeCore(FrameworkElement? frameworkElement)
 			{
-				_currentInputWidget.Width = _contentElement.ActualWidth;
-				_currentInputWidget.Height = _contentElement.ActualHeight;
+				if (frameworkElement is not null && textInputLayer.Children.Contains(frameworkElement))
+				{
+					frameworkElement.Width = _contentElement.ActualWidth;
+					frameworkElement.Height = _contentElement.ActualHeight;
+				}
 			}
 		}
 
 		public void UpdatePosition()
 		{
 			var textInputLayer = GetWindowTextInputLayer();
-			if (_contentElement == null || _currentInputWidget == null || textInputLayer == null)
+			if (_contentElement == null || textInputLayer == null)
 			{
 				return;
 			}
 
 			var transformToRoot = _contentElement.TransformToVisual(Windows.UI.Xaml.Window.Current.Content);
 			var point = transformToRoot.TransformPoint(new Point(0, 0));
-			if (textInputLayer.Children.Contains(_currentInputWidget))
+
+			updatePositionCore(_currentTextBoxInputWidget);
+			updatePositionCore(_currentPasswordBoxInputWidget);
+
+			void updatePositionCore(FrameworkElement? frameworkElement)
 			{
-				WpfCanvas.SetLeft(_currentInputWidget, point.X);
-				WpfCanvas.SetTop(_currentInputWidget, point.Y);
+				if (frameworkElement is not null && textInputLayer.Children.Contains(frameworkElement))
+				{
+					WpfCanvas.SetLeft(frameworkElement, point.X);
+					WpfCanvas.SetTop(frameworkElement, point.Y);
+				}
 			}
 		}
 
 		public void SetTextNative(string text)
 		{
-			if (_currentInputWidget != null)
+			if (_currentTextBoxInputWidget != null && _currentTextBoxInputWidget.Text != text)
 			{
-				_currentInputWidget.Text = text;
+				_currentTextBoxInputWidget.Text = text;
+			}
+
+			if (_currentPasswordBoxInputWidget != null && _currentPasswordBoxInputWidget.Password != text)
+			{
+				_currentPasswordBoxInputWidget.Password = text;
 			}
 		}
 
 		private void EnsureWidgetForAcceptsReturn()
 		{
-			_currentInputWidget ??= CreateInputControl();
+			_currentTextBoxInputWidget ??= CreateInputControl();
+			if (_isPasswordBox)
+			{
+				_currentPasswordBoxInputWidget ??= CreatePasswordControl();
+				_currentTextBoxInputWidget.Visibility = Visibility.Collapsed;
+			}
 		}
 
 		private WpfTextViewTextBox CreateInputControl()
@@ -167,40 +233,91 @@ namespace Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls
 			return textView;
 		}
 
-		private void WpfTextViewTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+		private System.Windows.Controls.PasswordBox CreatePasswordControl()
 		{
-			if (_currentInputWidget != null)
-			{
-				_owner.UpdateTextFromNative(_currentInputWidget.Text);
-			}
+			var passwordBox = new System.Windows.Controls.PasswordBox();
+			passwordBox.BorderBrush = System.Windows.Media.Brushes.Transparent;
+			passwordBox.Background = System.Windows.Media.Brushes.Transparent;
+			passwordBox.BorderThickness = new Thickness(0);
+			passwordBox.PasswordChanged += PasswordBoxViewPasswordChanged;
+			return passwordBox;
 		}
 
-		private string? GetInputText() => _currentInputWidget?.Text;
+		private void PasswordBoxViewPasswordChanged(object sender, System.Windows.RoutedEventArgs e)
+		{
+			_owner.UpdateTextFromNative(_currentPasswordBoxInputWidget!.Password);
+		}
+
+		private void WpfTextViewTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+		{
+			_owner.UpdateTextFromNative(_currentTextBoxInputWidget!.Text);
+		}
 
 		public void SetIsPassword(bool isPassword)
 		{
-			// No support for now.
+			_isPasswordRevealed = !isPassword;
+			if (_owner.TextBox is { } textBox)
+			{
+				if (_currentTextBoxInputWidget is not null)
+				{
+					_currentTextBoxInputWidget.Visibility = isPassword ? Visibility.Collapsed : Visibility.Visible;
+					if (_currentPasswordBoxInputWidget is not null)
+					{
+						_currentPasswordBoxInputWidget.Visibility = isPassword ? Visibility.Visible : Visibility.Collapsed;
+					}
+					
+				}
+			}
 		}
 
 		public void Select(int start, int length)
 		{
-			if (_currentInputWidget == null)
+			if (_isPasswordBox)
+			{
+				return;
+			}
+
+			if (_currentTextBoxInputWidget == null)
 			{
 				this.StartEntry();
 			}
 
-			_currentInputWidget!.Select(start, length);
+			_currentTextBoxInputWidget!.Select(start, length);
 		}
 
-		public int GetSelectionStart() => _currentInputWidget?.SelectionStart ?? 0;
+		public int GetSelectionStart()
+		{
+			if (!_isPasswordBox)
+			{
+				return _currentTextBoxInputWidget?.SelectionStart ?? 0;
+			}
 
-		public int GetSelectionLength() => _currentInputWidget?.SelectionLength ?? 0;
+			return 0;
+		}
+
+		public int GetSelectionLength()
+		{
+			if (!_isPasswordBox)
+			{
+				return _currentTextBoxInputWidget?.SelectionLength ?? 0;
+			}
+
+			return 0;
+		}
 
 		public void SetForeground(Windows.UI.Xaml.Media.Brush brush)
 		{
-			if (_currentInputWidget != null)
+			var wpfBrush = brush.ToWpfBrush();
+			if (_currentTextBoxInputWidget != null)
 			{
-				_currentInputWidget.Foreground = brush.ToWpfBrush();
+				_currentTextBoxInputWidget.Foreground = wpfBrush;
+				_currentTextBoxInputWidget.CaretBrush = wpfBrush;
+			}
+
+			if (_currentPasswordBoxInputWidget != null)
+			{
+				_currentPasswordBoxInputWidget.Foreground = wpfBrush;
+				_currentPasswordBoxInputWidget.CaretBrush = wpfBrush;
 			}
 		}
 	}

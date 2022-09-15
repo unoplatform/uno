@@ -4,10 +4,10 @@ This article explains how to build Uno.UI locally, for instance if you wish to c
 
 ## Prerequisites
 
-- Visual Studio 2022 (17.0 or later)
-    - `Mobile Development with .NET` (Xamarin) development
+- Visual Studio 2022 (17.3 or later)
     - `Visual Studio extensions development` (for the VSIX projects)
-    - `MAUI Preview` (In VS 2022 17.1 Preview 1 or later, for .NET 6 Android/iOS support)
+    - `MAUI`
+    - `Xamarin development` (Under the MAUI optional components)
     - `ASP.NET and Web Development`
     - `.NET Core cross-platform development`
     - `UWP Development`, install all recent UWP SDKs, starting from 10.0.18362 (or above or equal to `TargetPlatformVersion` line [in this file](https://github.com/unoplatform/uno/blob/master/src/Uno.CrossTargetting.props))
@@ -40,19 +40,19 @@ The step by step process is:
 
 1. Clone the Uno.UI repository locally, and ensure using a short target path, e.g. _D:\uno_ etc.  
 This is due to limitations in the legacy .NET versions used by Xamarin projects. This issue has been addressed in .NET 5, and will come to the rest of the projects in the future.
-1. Make sure you don't have the Uno.UI solution open in any Visual Studio instances. (Visual Studio may crash or behave inconsistently if it's open when the target override is changed.)
+1. Make sure you don't have the Uno.UI solution opened in any Visual Studio instances. (Visual Studio may crash or behave inconsistently if it's open when the target override is changed.)
 1. Make a copy of the [src/crosstargeting_override.props.sample](https://github.com/unoplatform/uno/blob/master/src/crosstargeting_override.props.sample) file and name this copy `src/crosstargeting_override.props`.
 1. In `crosstargeting_override.props`, uncomment the line `<UnoTargetFrameworkOverride>netstandard2.0</UnoTargetFrameworkOverride>`
-1. Set the build target inside ``<UnoTargetFrameworkOverride></UnoTargetFrameworkOverride>`` to the identifier for the target platform you wish to build for. (Identifiers for each platform are listed in the file.) Save the file.
-1. If you are debugging for `net6.0-XX` targets (`ios`, `android`, `maccatalyst` or `macos`)
-   - Ensure that you are running VS 2022 17.1 Preview 1 or later
-   - Replace the contents of the `global.json` file with the contents of `global-net6.json`
-1. In the `src` folder, look for the solution filter (`.slnf` file) corresponding to the target platform override you've set, which will be named `Uno.UI-[Platform]-only.slnf`, and open it.
+1. Set the build target inside ``<UnoTargetFrameworkOverride></UnoTargetFrameworkOverride>`` to the identifier for the target platform you wish to build for (Identifiers for each platform are listed in the `crosstargeting_override.props` file), then save the file.
+1. In the `src` folder, look for the solution filter (`.slnf` file) corresponding to the target platform override you've set, which will be named `Uno.UI-[Platform]-only.slnf` (or the name listed in `crosstargeting_override.props` for the selected `UnoTargetFrameworkOverride`), and open it.
 1. To confirm that everything works:
    - For iOS/Android/macOS you can right-click on the `Uno.UI` project in the Solution Explorer and 'Build'. 
    - For WebAssembly and Skia you can right-click on the `Uno.UI.Runtime.WebAssembly` or `Uno.UI.Runtime.Skia.[Gtk|Wpf]` project in the Solution Explorer and 'Build'.
 
 Once you've built successfully, for the next steps, [consult the guide here](debugging-uno-ui.md) for debugging Uno.UI.
+
+> [!IMPORTANT]
+> You will need to repeat the above steps 2. and subsequent when changing the active `UnoTargetFrameworkOverride` value.
 
 If you've followed the steps above, you have your environment set up with the listed prerequisites, and you still encounter errors when you try to build the solution, you can reach out to the core team on Uno's [Discord channel #uno-platform](https://discord.gg/eBHZSKG).
 
@@ -122,3 +122,28 @@ To run the synchronization tool:
 - Run the `run-api-sync-tool.cmd` script; make sure to follow the instructions
 
 Note that as of Uno 3.10, the tool is manually run for the UWP part of the build and automatically run as part of the CI during the WinUI part of the build.
+
+### Android Resources ID generation
+
+To workaround a performance issue, all `Resource.designer.cs` generation is disabled for class libraries in this repo.
+
+If you need to add a new `@(AndroidResource)` value to be used from C# code inside of Uno.UI libraries:
+
+1. Comment out the `<PropertyGroup>` in `Directory.Build.targets` that sets `$(AndroidGenerateResourceDesigner)` and `$(AndroidUseIntermediateDesignerFile)` to `false`.
+
+2. Build Uno.UI as you normally would. You will get compiler errors about duplicate fields, but `obj\Debug\net6.0-android\Resource.designer.cs` should now be generated.
+
+3. Open `obj\Debug\net6.0-android\Resource.designer.cs`, and find the
+   field you need such as:
+
+```csharp
+// aapt resource value: 0x7F010000
+public static int foo = 2130771968;
+```
+
+4. Copy this field to the `Resource.designer.cs` checked into source
+   control, such as: `src/Uno.UI/Resources/Resource.designer.g.Android.cs`
+
+5. Restore the commented code in `Directory.Build.targets`.
+
+_This performance optimization is inspired by @jonathanpeppers's performance work done in https://github.com/dotnet/maui/pull/2606. Thanks Jonathan!_
